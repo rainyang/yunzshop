@@ -59,11 +59,10 @@ class BalanceWithdrawController extends BaseController
                 return $this->message('打款失败,数据不存在或不符合打款规则!', yzWebUrl("finance.balance-withdraw.detail", ['id' => $requestData['id']]), 'error');
             }
             $result = $this->submitPay();
-            file_put_contents(storage_path('logs/wechat.log'),print_r($result,true));
             if ($result === true) {
                return $this->message('打款成功', yzWebUrl("finance.balance-withdraw.detail", ['id' => $requestData['id']]));
             }
-            return $this->message($result, yzWebUrl("finance.balance-withdraw.detail", ['id' => $requestData['id']]), 'error');
+            return $this->message($result ?: "打款失败", yzWebUrl("finance.balance-withdraw.detail", ['id' => $requestData['id']]), 'error');
         }
         return $this->message('提交数据有误，请刷新重试', yzWebUrl("finance.balance-withdraw.detail", ['id' => $requestData['id']]));
     }
@@ -103,7 +102,7 @@ class BalanceWithdrawController extends BaseController
             //微信打款
             $resultPay = $this->wechatWithdrawPay($remark);
         }
-        file_put_contents(storage_path('logs/withdraw2.log'),print_r($resultPay,true));
+        //file_put_contents(storage_path('logs/withdraw2.log'),print_r($resultPay,true));
         if ($resultPay === true) {
             $this->withdrawModel->pay_at = time();
             $this->withdrawModel->status = 2;
@@ -125,12 +124,12 @@ class BalanceWithdrawController extends BaseController
     private function wechatWithdrawPay($remark)
     {
         $resultPay = WithdrawService::wechatWithdrawPay($this->withdrawModel, $remark);
-        file_put_contents(storage_path('logs/withdraw1.log'),print_r($resultPay,true));
+        //file_put_contents(storage_path('logs/withdraw1.log'),print_r($resultPay,true));
         Log::info('MemberId:' . $this->withdrawModel->member_id . ', ' . $remark . "微信打款中!");
-        if ($resultPay['errno'] == 0){
+        if ($resultPay !== true){
             return $resultPay['message'];
         }
-        return $resultPay;
+        return true;
     }
 
 
