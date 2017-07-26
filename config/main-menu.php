@@ -2728,6 +2728,20 @@ return [
                     [
                         'finance',
                     ],
+                'child' => [
+                    'withdraw_set' => [
+                        'id' => '',
+                        'name' => '编辑保存',
+                        'url' => 'finance.withdraw.set',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 0,
+                        'icon' => '',
+                        'parent_id' => '59',
+                        'sort' => '0',
+                        'item' => 'withdraw_set',
+                        'parents' => ['withdraw', 'finance'],
+                    ],
 
             ],
 
