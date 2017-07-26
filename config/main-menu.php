@@ -2111,7 +2111,7 @@ return [
                 'name' => '会员关系',
                 'url' => '',
                 'url_params' => '',
-                'permit' => 0,
+                'permit' => 1,
                 'menu' => 1,
                 'icon' => 'fa-crosshairs',
                 'parent_id' => '38',
@@ -2140,6 +2140,26 @@ return [
                                 'member_relation',
                             ],
 
+                        'child' => [
+                            'user_relation_save' => [
+                                'name' => '保存设置',
+                                'url' => 'member.member-relation.save',
+                                'url_params' => '',
+                                'permit' => 1,
+                                'menu' => 1,
+                                'icon' => 'fa-sliders',
+                                'parent_id' => '100',
+                                'sort' => 0,
+                                'item' => 'user_relation_save',
+                                'parents' =>
+                                    [
+                                        'Member',
+                                        'member_relation',
+                                        'user_relation'
+                                    ],
+                                ]
+                        ],
+
                     ],
 
                     'agent_apply' => [
@@ -2158,6 +2178,44 @@ return [
                                 'Member',
                                 'member_relation',
                             ],
+
+                        'child' => [
+                            'agent_apply_chkApply' => [
+                                'name' => '审查申请',
+                                'url' => 'member.member-relation.chkApply',
+                                'url_params' => '',
+                                'permit' => 1,
+                                'menu' => 1,
+                                'icon' => 'fa-sliders',
+                                'parent_id' => '100',
+                                'sort' => 0,
+                                'item' => 'agent_apply_chkApplye',
+                                'parents' =>
+                                    [
+                                        'Member',
+                                        'member_relation',
+                                        'agent_apply'
+                                    ],
+                            ],
+
+                            'agent_apply_export' => [
+                                'name' => '导出申请',
+                                'url' => 'member.member-relation.export',
+                                'url_params' => '',
+                                'permit' => 1,
+                                'menu' => 1,
+                                'icon' => 'fa-sliders',
+                                'parent_id' => '100',
+                                'sort' => 0,
+                                'item' => 'agent_apply_export',
+                                'parents' =>
+                                    [
+                                        'Member',
+                                        'member_relation',
+                                        'agent_apply'
+                                    ],
+                            ]
+                        ],
 
                     ],
 
