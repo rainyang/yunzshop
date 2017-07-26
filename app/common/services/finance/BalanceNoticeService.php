@@ -55,7 +55,7 @@ class BalanceNoticeService
                 "color" => "#4a5077"
             ),
             'timet' => array(
-                'title' => '到账时间',
+                'title' => '提现时间',
                 'value' => date('Y-m-d H:i:s', $withdrawModel->arrival_at),
                 "color" => "#4a5077"
             ),
@@ -81,7 +81,7 @@ class BalanceNoticeService
                 "color" => "#4a5077"
             ),
             'timet' => array(
-                'title' => '审核时间',
+                'title' => '提现时间',
                 'value' => date('Y-m-d H:i:s', $withdrawModel->audit_at),
                 "color" => "#4a5077"
             ),
