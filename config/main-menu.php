@@ -865,7 +865,7 @@ return [
                         'permit' => 0,
                         'menu' => 0,
                         'icon' => '',
-                        'parents' => [],
+                        'parents'=>[],
                         'child' => []
                     ],
                     'goods_goods_edit' => [
@@ -2743,311 +2743,309 @@ return [
                         'parents' => ['withdraw', 'finance'],
                     ],
 
-                ],
+            ],
 
-                'finance_withdraw' => [
-                    'id' => '66',
-                    'name' => '提现记录',
-                    'url' => 'finance.withdraw',
-                    'url_params' => '',
-                    'permit' => 1,
-                    'menu' => 1,
-                    'icon' => 'fa-sliders',
-                    'parent_id' => '58',
-                    'sort' => 0,
-                    'item' => 'finance_withdraw',
-                    'parents' =>
-                        [
-                            'finance',
-                        ],
-                    'child' => [
-                        'withdraw_status_wait_audit' => [
-                            'id' => '92',
-                            'name' => '待审核提现',
-                            'url' => 'finance.withdraw.index',
-                            'url_params' => "&search[status]=0",
-                            'permit' => 1,
-                            'menu' => 1,
-                            'icon' => 'fa-circle-o',
-                            'parent_id' => '66',
-                            'sort' => 0,
-                            'item' => 'withdraw_status_wait_audit',
-                            'parents' =>
-                                [
-                                    'finance',
-                                    'finance_withdraw',
-                                ],
+            'finance_withdraw' => [
+                'id' => '66',
+                'name' => '提现记录',
+                'url' => 'finance.withdraw',
+                'url_params' => '',
+                'permit' => 1,
+                'menu' => 1,
+                'icon' => 'fa-sliders',
+                'parent_id' => '58',
+                'sort' => 0,
+                'item' => 'finance_withdraw',
+                'parents' =>
+                    [
+                        'finance',
+                    ],
+                'child' => [
+                    'withdraw_status_wait_audit' => [
+                        'id' => '92',
+                        'name' => '待审核提现',
+                        'url' => 'finance.withdraw.index',
+                        'url_params' => "&search[status]=0",
+                        'permit' => 1,
+                        'menu' => 1,
+                        'icon' => 'fa-circle-o',
+                        'parent_id' => '66',
+                        'sort' => 0,
+                        'item' => 'withdraw_status_wait_audit',
+                        'parents' =>
+                            [
+                                'finance',
+                                'finance_withdraw',
+                            ],
 
-                        ],
+                    ],
 
-                        'withdraw_status_wait_pay' => [
-                            'id' => '93',
-                            'name' => '待打款提现',
-                            'url' => 'finance.withdraw',
-                            'url_params' => "&search[status]=1",
-                            'permit' => 1,
-                            'menu' => 1,
-                            'icon' => 'fa-circle-o',
-                            'parent_id' => '66',
-                            'sort' => 0,
-                            'item' => 'withdraw_status_wait_pay',
-                            'parents' =>
-                                [
-                                    'finance',
-                                    'finance_withdraw',
-                                ],
+                    'withdraw_status_wait_pay' => [
+                        'id' => '93',
+                        'name' => '待打款提现',
+                        'url' => 'finance.withdraw',
+                        'url_params' => "&search[status]=1",
+                        'permit' => 1,
+                        'menu' => 1,
+                        'icon' => 'fa-circle-o',
+                        'parent_id' => '66',
+                        'sort' => 0,
+                        'item' => 'withdraw_status_wait_pay',
+                        'parents' =>
+                            [
+                                'finance',
+                                'finance_withdraw',
+                            ],
 
-                        ],
+                    ],
 
-                        'withdraw_status_pay' => [
-                            'id' => '94',
-                            'name' => '已打款提现',
-                            'url' => 'finance.withdraw',
-                            'url_params' => "&search[status]=2",
-                            'permit' => 1,
-                            'menu' => 1,
-                            'icon' => 'fa-circle-o',
-                            'parent_id' => '66',
-                            'sort' => 0,
-                            'item' => 'withdraw_status_pay',
-                            'parents' =>
-                                [
-                                    'finance',
-                                    'finance_withdraw',
-                                ],
+                    'withdraw_status_pay' => [
+                        'id' => '94',
+                        'name' => '已打款提现',
+                        'url' => 'finance.withdraw',
+                        'url_params' => "&search[status]=2",
+                        'permit' => 1,
+                        'menu' => 1,
+                        'icon' => 'fa-circle-o',
+                        'parent_id' => '66',
+                        'sort' => 0,
+                        'item' => 'withdraw_status_pay',
+                        'parents' =>
+                            [
+                                'finance',
+                                'finance_withdraw',
+                            ],
 
-                        ],
+                    ],
 
-                        'withdraw_status_arrival' => [
-                            'id' => '95',
-                            'name' => '已到账提现',
-                            'url' => 'finance.withdraw',
-                            'url_params' => "&search[status]=3",
-                            'permit' => 1,
-                            'menu' => 1,
-                            'icon' => 'fa-circle-o',
-                            'parent_id' => '66',
-                            'sort' => 0,
-                            'item' => 'withdraw_status_arrival',
-                            'parents' =>
-                                [
-                                    'finance',
-                                    'finance_withdraw',
-                                ],
+                    'withdraw_status_arrival' => [
+                        'id' => '95',
+                        'name' => '已到账提现',
+                        'url' => 'finance.withdraw',
+                        'url_params' => "&search[status]=3",
+                        'permit' => 1,
+                        'menu' => 1,
+                        'icon' => 'fa-circle-o',
+                        'parent_id' => '66',
+                        'sort' => 0,
+                        'item' => 'withdraw_status_arrival',
+                        'parents' =>
+                            [
+                                'finance',
+                                'finance_withdraw',
+                            ],
 
-                        ],
+                    ],
 
-                        'withdraw_status_invalid' => [
-                            'id' => '96',
-                            'name' => '无效提现',
-                            'url' => 'finance.withdraw',
-                            'url_params' => "&search[status]=-1",
-                            'permit' => 1,
-                            'menu' => 1,
-                            'icon' => 'fa-circle-o',
-                            'parent_id' => '66',
-                            'sort' => 0,
-                            'item' => 'withdraw_status_invalid',
-                            'parents' =>
-                                [
-                                    'finance',
-                                    'finance_withdraw',
-                                ],
-
-                        ],
+                    'withdraw_status_invalid' => [
+                        'id' => '96',
+                        'name' => '无效提现',
+                        'url' => 'finance.withdraw',
+                        'url_params' => "&search[status]=-1",
+                        'permit' => 1,
+                        'menu' => 1,
+                        'icon' => 'fa-circle-o',
+                        'parent_id' => '66',
+                        'sort' => 0,
+                        'item' => 'withdraw_status_invalid',
+                        'parents' =>
+                            [
+                                'finance',
+                                'finance_withdraw',
+                            ],
 
                     ],
 
                 ],
 
-                'finance_point' => [
-                    'id' => '81',
-                    'name' => '积分',
-                    'url' => '',
-                    'url_params' => '',
-                    'permit' => 1,
-                    'menu' => 1,
-                    'icon' => 'fa-circle-o',
-                    'parent_id' => '58',
-                    'sort' => 0,
-                    'item' => 'finance_point',
-                    'parents' =>
-                        [
-                            'finance',
-                        ],
+            ],
 
-                    'child' => [
-                        'point_set' => [
-                            'id' => '82',
-                            'name' => '积分基础设置',
-                            'url' => 'finance.point-set.index',
-                            'url_params' => '',
-                            'permit' => 1,
-                            'menu' => 1,
-                            'icon' => 'fa-circle-o',
-                            'parent_id' => '81',
-                            'sort' => 0,
-                            'item' => 'point_set',
-                            'parents' =>
-                                [
-                                    'finance',
-                                    'finance_point',
-                                ],
+            'finance_point' => [
+                'id' => '81',
+                'name' => '积分',
+                'url' => '',
+                'url_params' => '',
+                'permit' => 1,
+                'menu' => 1,
+                'icon' => 'fa-circle-o',
+                'parent_id' => '58',
+                'sort' => 0,
+                'item' => 'finance_point',
+                'parents' =>
+                    [
+                        'finance',
+                    ],
 
-                        ],
+                'child' => [
+                    'point_set' => [
+                        'id' => '82',
+                        'name' => '积分基础设置',
+                        'url' => 'finance.point-set.index',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 1,
+                        'icon' => 'fa-circle-o',
+                        'parent_id' => '81',
+                        'sort' => 0,
+                        'item' => 'point_set',
+                        'parents' =>
+                            [
+                                'finance',
+                                'finance_point',
+                            ],
 
-                        'point_member' => [
-                            'id' => '83',
-                            'name' => '会员积分',
-                            'url' => 'finance.point-member.index',
-                            'url_params' => '',
-                            'permit' => 1,
-                            'menu' => 1,
-                            'icon' => 'fa-circle-o',
-                            'parent_id' => '81',
-                            'sort' => 0,
-                            'item' => 'point_member',
-                            'parents' =>
-                                [
-                                    'finance',
-                                    'finance_point',
-                                ],
+                    ],
 
-                        ],
+                    'point_member' => [
+                        'id' => '83',
+                        'name' => '会员积分',
+                        'url' => 'finance.point-member.index',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 1,
+                        'icon' => 'fa-circle-o',
+                        'parent_id' => '81',
+                        'sort' => 0,
+                        'item' => 'point_member',
+                        'parents' =>
+                            [
+                                'finance',
+                                'finance_point',
+                            ],
 
-                        'point_log' => [
-                            'id' => '84',
-                            'name' => '积分明细',
-                            'url' => 'finance.point-log.index',
-                            'url_params' => '',
-                            'permit' => 1,
-                            'menu' => 1,
-                            'icon' => 'fa-circle-o',
-                            'parent_id' => '81',
-                            'sort' => 0,
-                            'item' => 'point_log',
-                            'parents' =>
-                                [
-                                    'finance',
-                                    'finance_point',
-                                ],
+                    ],
 
-                        ],
+                    'point_log' => [
+                        'id' => '84',
+                        'name' => '积分明细',
+                        'url' => 'finance.point-log.index',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 1,
+                        'icon' => 'fa-circle-o',
+                        'parent_id' => '81',
+                        'sort' => 0,
+                        'item' => 'point_log',
+                        'parents' =>
+                            [
+                                'finance',
+                                'finance_point',
+                            ],
 
                     ],
 
                 ],
 
-                'balance' => [
-                    'id' => '91',
-                    'name' => '余额管理',
-                    'url' => 'balance',
-                    'url_params' => '',
-                    'permit' => 1,
-                    'menu' => 1,
-                    'icon' => 'fa-circle-o',
-                    'parent_id' => '58',
-                    'sort' => 0,
-                    'item' => 'balance',
-                    'parents' =>
-                        [
-                            'finance',
-                        ],
-                    'child' => [
-                        'balance_set' => [
-                            'id' => '60',
-                            'name' => '余额基础设置',
-                            'url' => 'finance.balance.index',
-                            'url_params' => '',
-                            'permit' => 1,
-                            'menu' => 1,
-                            'icon' => 'fa-sliders',
-                            'parent_id' => '91',
-                            'sort' => 0,
-                            'item' => 'balance_set',
-                            'parents' =>
-                                [
-                                    'finance',
-                                    'balance',
-                                ],
+            ],
 
-                        ],
+            'balance' => [
+                'id' => '91',
+                'name' => '余额管理',
+                'url' => 'balance',
+                'url_params' => '',
+                'permit' => 1,
+                'menu' => 1,
+                'icon' => 'fa-circle-o',
+                'parent_id' => '58',
+                'sort' => 0,
+                'item' => 'balance',
+                'parents' =>
+                    [
+                        'finance',
+                    ],
+                'child' => [
+                    'balance_set' => [
+                        'id' => '60',
+                        'name' => '余额基础设置',
+                        'url' => 'finance.balance.index',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 1,
+                        'icon' => 'fa-sliders',
+                        'parent_id' => '91',
+                        'sort' => 0,
+                        'item' => 'balance_set',
+                        'parents' =>
+                            [
+                                'finance',
+                                'balance',
+                            ],
 
-                        'finance_balance_member' => [
-                            'id' => '61',
-                            'name' => '用户余额管理',
-                            'url' => 'finance.balance.member',
-                            'url_params' => '',
-                            'permit' => 1,
-                            'menu' => 1,
-                            'icon' => 'fa-sliders',
-                            'parent_id' => '91',
-                            'sort' => 0,
-                            'item' => 'finance_balance_member',
-                            'parents' =>
-                                [
-                                    'finance',
-                                    'balance',
-                                ],
+                    ],
 
-                        ],
+                    'finance_balance_member' => [
+                        'id' => '61',
+                        'name' => '用户余额管理',
+                        'url' => 'finance.balance.member',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 1,
+                        'icon' => 'fa-sliders',
+                        'parent_id' => '91',
+                        'sort' => 0,
+                        'item' => 'finance_balance_member',
+                        'parents' =>
+                            [
+                                'finance',
+                                'balance',
+                            ],
 
-                        'finance_balance_rechargeRecord' => [
-                            'id' => '62',
-                            'name' => '余额充值记录',
-                            'url' => 'finance.balance.rechargeRecord',
-                            'url_params' => '',
-                            'permit' => 1,
-                            'menu' => 1,
-                            'icon' => 'fa-sliders',
-                            'parent_id' => '91',
-                            'sort' => 0,
-                            'item' => 'finance_balance_rechargeRecord',
-                            'parents' =>
-                                [
-                                    'finance',
-                                    'balance',
-                                ],
+                    ],
 
-                        ],
+                    'finance_balance_rechargeRecord' => [
+                        'id' => '62',
+                        'name' => '余额充值记录',
+                        'url' => 'finance.balance.rechargeRecord',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 1,
+                        'icon' => 'fa-sliders',
+                        'parent_id' => '91',
+                        'sort' => 0,
+                        'item' => 'finance_balance_rechargeRecord',
+                        'parents' =>
+                            [
+                                'finance',
+                                'balance',
+                            ],
 
-                        'finance_balance_tansferRecord' => [
-                            'id' => '63',
-                            'name' => '余额转让记录',
-                            'url' => 'finance.balance.transferRecord',
-                            'url_params' => '',
-                            'permit' => 1,
-                            'menu' => 1,
-                            'icon' => 'fa-sliders',
-                            'parent_id' => '91',
-                            'sort' => 0,
-                            'item' => 'finance_balance_tansferRecord',
-                            'parents' =>
-                                [
-                                    'finance',
-                                    'balance',
-                                ],
+                    ],
 
-                        ],
+                    'finance_balance_tansferRecord' => [
+                        'id' => '63',
+                        'name' => '余额转让记录',
+                        'url' => 'finance.balance.transferRecord',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 1,
+                        'icon' => 'fa-sliders',
+                        'parent_id' => '91',
+                        'sort' => 0,
+                        'item' => 'finance_balance_tansferRecord',
+                        'parents' =>
+                            [
+                                'finance',
+                                'balance',
+                            ],
 
-                        'finance_balance_balanceDetail' => [
-                            'id' => '85',
-                            'name' => '余额明细',
-                            'url' => 'finance.balance.balanceDetail',
-                            'url_params' => '',
-                            'permit' => 1,
-                            'menu' => 1,
-                            'icon' => 'fa-file-text',
-                            'parent_id' => '91',
-                            'sort' => 0,
-                            'item' => 'finance_balance_balanceDetail',
-                            'parents' =>
-                                [
-                                    'finance',
-                                    'balance',
-                                ],
+                    ],
 
-                        ],
+                    'finance_balance_balanceDetail' => [
+                        'id' => '85',
+                        'name' => '余额明细',
+                        'url' => 'finance.balance.balanceDetail',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 1,
+                        'icon' => 'fa-file-text',
+                        'parent_id' => '91',
+                        'sort' => 0,
+                        'item' => 'finance_balance_balanceDetail',
+                        'parents' =>
+                            [
+                                'finance',
+                                'balance',
+                            ],
 
                     ],
 
@@ -3057,7 +3055,8 @@ return [
 
         ],
 
+    ],
 
-    ]
-    ];
+
+];
 
