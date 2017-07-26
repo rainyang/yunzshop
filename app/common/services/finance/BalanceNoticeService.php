@@ -56,7 +56,7 @@ class BalanceNoticeService
             ),
             'timet' => array(
                 'title' => '提现时间',
-                'value' => $withdrawModel->created_at->toDateTimeString(),
+                'value' => date('Y-m-d H:i:s', $withdrawModel->arrival_at),
                 "color" => "#4a5077"
             ),
             'remark' => array(
@@ -80,9 +80,9 @@ class BalanceNoticeService
                 'value' => '￥' . $withdrawModel->amounts . '元(手续费' .$withdrawModel->actual_poundage. '元)',
                 "color" => "#4a5077"
             ),
-            'timet' => array(
+            'time' => array(
                 'title' => '提现时间',
-                'value' => $withdrawModel->created_at->toDateTimeString(),
+                'value' => date('Y-m-d H:i:s', $withdrawModel->audit_at),
                 "color" => "#4a5077"
             ),
             'remark' => array(
