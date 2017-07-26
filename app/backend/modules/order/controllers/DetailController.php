@@ -35,7 +35,8 @@ class DetailController extends BaseController
             'order'         => $order ? $order->toArray() : [],
             'dispatch' => $dispatch,
             'var'           => \YunShop::app()->get(),
-            'ops'           => 'order.ops'
+            'ops'           => 'order.ops',
+            'edit_goods'    => 'goods.goods.edit'
         ])->render();
     }
 }
