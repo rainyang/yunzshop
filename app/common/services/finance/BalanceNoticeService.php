@@ -56,7 +56,7 @@ class BalanceNoticeService
             ),
             'timet' => array(
                 'title' => '提现时间',
-                'value' => date('Y-m-d H:i:s', $withdrawModel->arrival_at),
+                'value' => $withdrawModel->updated_at->toDateTimeString(),
                 "color" => "#4a5077"
             ),
             'remark' => array(
@@ -82,7 +82,7 @@ class BalanceNoticeService
             ),
             'timet' => array(
                 'title' => '提现时间',
-                'value' => date('Y-m-d H:i:s', $withdrawModel->audit_at),
+                'value' => $withdrawModel->updated_at->toDateTimeString(),
                 "color" => "#4a5077"
             ),
             'remark' => array(
