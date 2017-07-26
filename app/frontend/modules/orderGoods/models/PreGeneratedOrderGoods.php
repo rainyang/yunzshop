@@ -86,7 +86,8 @@ class PreGeneratedOrderGoods extends OrderGoods
                 'goods_option_title' => $this->goodsOption->title,
             ];
         }
-        $attributes = array_merge($this->getAttributes(), $attributes);
+
+        $attributes = array_merge($this->getAttributes(),$attributes);
 
         return $attributes;
     }
@@ -149,17 +150,15 @@ class PreGeneratedOrderGoods extends OrderGoods
      */
     public function save(array $options = [])
     {
-        if (!isset($this->order_id)) {
+        if (!isset($this->order)) {
 
-            if (!isset($this->order)) {
-
-                throw new AppException('订单信息不存在');
-            }
-            $this->order_id = $this->order->id;
-            $attributes = $this->getPreAttributes();
-
-            $this->setRawAttributes($attributes);
+            throw new AppException('订单信息不存在');
         }
+        $this->order_id = $this->order->id;
+        $attributes = $this->getPreAttributes();
+
+        $this->setRawAttributes($attributes);
+
         return parent::save($options);
     }
 
