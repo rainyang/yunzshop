@@ -865,7 +865,7 @@ return [
                         'permit' => 0,
                         'menu' => 0,
                         'icon' => '',
-                        'parents'=>[],
+                        'parents' => [],
                         'child' => []
                     ],
                     'goods_goods_edit' => [
@@ -2472,6 +2472,7 @@ return [
                         'item' => 'withdraw_set',
                         'parents' => ['withdraw', 'finance'],
                     ],
+                ],
 
             ],
 
