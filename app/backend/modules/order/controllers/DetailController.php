@@ -32,7 +32,7 @@ class DetailController extends BaseController
         }
 
         return view('order.detail', [
-            'order'         => $order ? $order->toArray() : [],
+            'order'         => $order ? $order : [],
             'dispatch' => $dispatch,
             'var'           => \YunShop::app()->get(),
             'ops'           => 'order.ops'

@@ -18,6 +18,7 @@ class PreOrderDeduction extends \app\common\models\order\OrderDeduction
     public function setOrder(PreGeneratedOrder $order)
     {
         $this->order = $order;
+        $this->uid = $order->uid;
         $order->orderDeductions->push($this);
     }
     public function save(array $options = [])

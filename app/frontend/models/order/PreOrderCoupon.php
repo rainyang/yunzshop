@@ -9,13 +9,16 @@
 namespace app\frontend\models\order;
 
 
+use app\frontend\modules\order\models\PreGeneratedOrder;
+
 class PreOrderCoupon extends \app\common\models\order\OrderCoupon
 {
-    public $orderDiscount;
+    public $order;
 
-    public function setOrderDiscount($orderDiscount)
+    public function setOrder(PreGeneratedOrder $order)
     {
-        $this->orderDiscount = $orderDiscount;
-        $orderDiscount->orderDiscount->push($this);
+        $this->order = $order;
+        $this->uid = $order->uid;
+        $order->orderCoupons->push($this);
     }
 }

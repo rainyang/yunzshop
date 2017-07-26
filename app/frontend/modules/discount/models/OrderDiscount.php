@@ -10,10 +10,10 @@ namespace app\frontend\modules\discount\models;
 
 use app\common\events\discount\OnDeductionPriceCalculatedEvent;
 use app\common\models\Coupon;
+use app\frontend\models\order\PreOrderDeduction;
 use app\frontend\models\order\PreOrderDiscount;
 use app\frontend\modules\coupon\services\CouponService;
 use app\frontend\modules\order\models\PreGeneratedOrder;
-use Illuminate\Database\Eloquent\Collection;
 
 class OrderDiscount
 {
@@ -21,13 +21,17 @@ class OrderDiscount
     private $couponPrice;
     private $deductionPrice;
     public $orderDeductions;
+    public $orderCoupons;
 
     public function __construct(PreGeneratedOrder $order)
     {
         $this->order = $order;
-        // 订单抵扣记录集合
-        $this->orderDeductions = (new PreOrderDiscount())->newCollection();
+        // 订单抵扣使用记录集合
+        $this->orderDeductions = (new PreOrderDeduction())->newCollection();
         $order->setRelation('orderDeductions', $this->orderDeductions);
+        // 订单优惠使用记录集合
+        $this->orderCoupons = (new PreOrderDiscount())->newCollection();
+        $order->setRelation('orderCoupons', $this->orderCoupons);
     }
 
 

@@ -72,7 +72,6 @@ class Order
             'amount' => $data['price'],
             'deduction_id' => 1,
             'qty' => $data['value'],
-            'uid' => $this->event->getOrderModel()->uid,
         ];
         $orderDeduction = new PreOrderDeduction($attributes);
         $orderDeduction->checked = $data['checked'];
