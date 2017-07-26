@@ -2742,6 +2742,7 @@ return [
                         'item' => 'withdraw_set',
                         'parents' => ['withdraw', 'finance'],
                     ],
+                ],
 
             ],
 
