@@ -59,6 +59,7 @@ class BalanceWithdrawController extends BaseController
                 return $this->message('打款失败,数据不存在或不符合打款规则!', yzWebUrl("finance.balance-withdraw.detail", ['id' => $requestData['id']]), 'error');
             }
             $result = $this->submitPay();
+            file_put_contents(storage_path('logs/wechat.log'),print_r($result,true));
             if ($result === true) {
                return $this->message('打款成功', yzWebUrl("finance.balance-withdraw.detail", ['id' => $requestData['id']]));
             }
