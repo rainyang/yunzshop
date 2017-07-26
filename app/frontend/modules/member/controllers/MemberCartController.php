@@ -98,9 +98,8 @@ class MemberCartController extends ApiController
      * */
     public function updateNum()
     {
-        //@todo 需要添加商品最多购买判断。会员限购数量判断
-        $cartId = \YunShop::request()->id;
-        $num = \YunShop::request()->num;
+        $cartId = request()->input('id');
+        $num = request()->input('num');
         if ($cartId && $num) {
             $cartModel = MemberCart::getMemberCartById($cartId);
             if ($cartModel) {
