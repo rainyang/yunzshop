@@ -13,6 +13,7 @@ class AddEnableTimeLimitToGoodsPrivilegeTable extends Migration
      */
     public function up()
     {
+
         if (!Schema::hasColumn('yz_goods_privilege', 'enable_time_limit')) {
 
             Schema::table('yz_goods_privilege', function (Blueprint $table) {
