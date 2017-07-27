@@ -60,14 +60,13 @@
                             </tr>
                             </tbody>
                         </table>
-                        {{$pager}}
+                        {!! $pager !!}
                     </div>
                 </div>
             </form>
 
         </div>
     </div>
-  <!--   @include('public.admin.mylink') -->
 @endsection()
 
 
