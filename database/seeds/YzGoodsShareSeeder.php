@@ -14,6 +14,7 @@ class YzGoodsShareSeeder extends Seeder
     
     public function run()
     {
+        return;
         if (!Schema::hasTable($this->oldTable)) {
             echo $this->oldTable." 不存在 跳过\n";
             return;
