@@ -59,7 +59,7 @@ class Coupon
         $this->timeLimit = $this->getTimeLimitInstance();
     }
 
-    public function getPreGeneratedOrderModel()
+    public function getPreGeneratedOrder()
     {
         return $this->preGeneratedOrder;
     }
@@ -213,7 +213,7 @@ class Coupon
      */
     public function unique()
     {
-        $memberCoupons = MemberCouponService::getCurrentMemberCouponCache($this->getPreGeneratedOrderModel()->belongsToMember);
+        $memberCoupons = MemberCouponService::getCurrentMemberCouponCache($this->getPreGeneratedOrder()->belongsToMember);
         //本优惠券与某个选中的优惠券是一张 就返回false
         return !$memberCoupons->contains(function ($memberCoupon) {
 
