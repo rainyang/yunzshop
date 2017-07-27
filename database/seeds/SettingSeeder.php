@@ -13,6 +13,11 @@ class SettingSeeder extends Seeder
      */
     public function run()
     {
+        return;
+        if (!Schema::hasTable($this->oldTable)) {
+            echo $this->oldTable." 不存在 跳过\n";
+            return;
+        }
        $newList = \Illuminate\Support\Facades\DB::table($this->newTable)->get();
        if($newList->isNotEmpty()){
           echo "yz_setting 已经有数据了跳过\n";

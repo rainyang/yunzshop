@@ -15,6 +15,7 @@ class YzDispatchSeeder extends Seeder
 
     public function run()
     {
+        return;
         $newList = \Illuminate\Support\Facades\DB::table($this->newTable)->get();
         if ($newList->isNotEmpty()) {
             echo "yz_goods_share 已经有数据了跳过\n";
