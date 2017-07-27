@@ -18,6 +18,15 @@ class OrderGoodsSeeder extends Seeder
      */
     public function run()
     {
+        return;
+        if (!Schema::hasTable($this->sourceTable)) {
+            echo $this->sourceTable." 不存在 跳过\n";
+            return;
+        }
+        if (!Schema::hasTable($this->sourceGoodsTable)) {
+            echo $this->sourceGoodsTable." 不存在 跳过\n";
+            return;
+        }
         //检测新的数据表是否有数据
 //        $newList = DB::table($this->table)->first();
 //        if($newList){

@@ -13,6 +13,7 @@ class YzOptionsTableSeeder extends Seeder
     public function run()
     {
 
+        return;
         $newList = \Illuminate\Support\Facades\DB::table('yz_options')->get();
         if($newList->isNotEmpty()){
             echo "yz_options 已经有数据了跳过\n";
