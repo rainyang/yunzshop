@@ -57,10 +57,10 @@ class AlipayController extends PaymentController
             if ($_GET['trade_status'] == 'TRADE_SUCCESS') {
                 redirect(Url::absoluteApp('member/payYes'))->send();
             } else {
-                redirect(Url::absoluteApp('member/payErr'))->send();
+                redirect(Url::absoluteApp('member/payErr', ['i' => \YunShop::app()->uniacid]))->send();
             }
         } else {
-            redirect(Url::absoluteApp('member/payErr'))->send();
+            redirect(Url::absoluteApp('member/payErr', ['i' => \YunShop::app()->uniacid]))->send();
         }
     }
 
