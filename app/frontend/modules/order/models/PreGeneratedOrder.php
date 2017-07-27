@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\Schema;
  * 事件通知
  *  终止订单生成
  *  订单生成后
- * Class PreGeneratedOrderModel
+ * Class preGeneratedOrder
  * @package app\frontend\modules\order\services\models
  * @property Collection orderDeductions
  * @property Collection orderCoupons
