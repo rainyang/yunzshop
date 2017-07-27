@@ -37,7 +37,7 @@ class OrderManager extends Container
             }
             return new PreGeneratedOrderGoods($attributes);
         });
-        $this->bind('PreGeneratedOrderModel', function ($orderManager, $attributes) {
+        $this->bind('PreGeneratedOrder', function ($orderManager, $attributes) {
             if (1) {
                 return new \app\frontend\modules\order\models\PreGeneratedOrder($attributes);
             }
