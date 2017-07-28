@@ -16,7 +16,7 @@ class ListController extends ApiController
 {
     public function index(\Request $request)
     {
-        $this->validate($request, [
+        $this->validate([
             'pagesize' => 'sometimes|filled|integer',
             'page' => 'sometimes|filled|integer',
         ]);

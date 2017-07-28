@@ -18,7 +18,7 @@ class OperationController extends ApiController
     public $transactionActions = ['*'];
     public function send(\Request $request)
     {
-        $this->validate($request, [
+        $this->validate([
             'refund_id' => 'required|filled|integer',
             'express_company_code' => 'required|string',
             'express_company_name' => 'required|string',
@@ -35,7 +35,7 @@ class OperationController extends ApiController
      */
     public function complete(\Request $request)
     {
-        $this->validate($request, [
+        $this->validate([
             'refund_id' => 'required'
         ]);
         /**
@@ -48,7 +48,7 @@ class OperationController extends ApiController
 
     public function cancel(\Request $request)
     {
-        $this->validate($request, [
+        $this->validate([
             'refund_id' => 'required|filled|integer',
         ]);
         RefundOperationService::refundCancel();
