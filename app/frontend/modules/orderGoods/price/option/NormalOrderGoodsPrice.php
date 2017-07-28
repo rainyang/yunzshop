@@ -27,6 +27,7 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
     {
         return $this->orderGoods->goods->price * $this->orderGoods->total;
     }
+
     //todo 此处混乱
     public function getFinalPrice()
     {
@@ -46,6 +47,7 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
     {
         return $this->orderGoods->goods->cost_price * $this->orderGoods->total;
     }
+
     public function getGoodsMarketPrice()
     {
         return $this->orderGoods->goods->market_price * $this->orderGoods->total;
@@ -54,6 +56,9 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
     //todo 此处混乱
     public function getFullPriceReductions()
     {
+        if (!isset($this->orderGoods->sale)) {
+            return 0;
+        }
         return $this->orderGoods->sale->getFullPriceReductions($this->getFinalPrice());
     }
 }
