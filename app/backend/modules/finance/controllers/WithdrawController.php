@@ -202,8 +202,8 @@ class WithdrawController extends BaseController
                 Income::updatedIncomePayStatus($key, ['pay_status' => '-1']);
             }
         }
-        $actual_poundage = sprintf("%.2f",$actual_amounts / 100 * $withdraw['poundage_rate']);
-        $actual_servicetax = sprintf("%.2f",($actual_amounts - $actual_poundage) / 100 * $withdraw['servicetax_rate']);
+        $actual_poundage = sprintf("%.2f", $actual_amounts / 100 * $withdraw['poundage_rate']);
+        $actual_servicetax = sprintf("%.2f", ($actual_amounts - $actual_poundage) / 100 * $withdraw['servicetax_rate']);
         $updatedData = [
             'status' => $withdrawStatus,
             'actual_amounts' => $actual_amounts - $actual_poundage - $actual_servicetax,

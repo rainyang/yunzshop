@@ -152,7 +152,7 @@ class IncomeController extends ApiController
         $config = \Config::get('income');
 
         foreach ($config as $key => $item) {
-            if($item['type'] == 'balance'){
+            if ($item['type'] == 'balance') {
                 continue;
             }
             $set[$key] = \Setting::get('withdraw.' . $key);
@@ -166,12 +166,12 @@ class IncomeController extends ApiController
             $incomeModel = $incomeModel->where('incometable_type', $item['class']);
             $amount = $incomeModel->sum('amount');
             $poundage = $incomeModel->sum('amount') / 100 * $set[$key]['poundage_rate'];
-            $poundage = number_format($poundage, 2);
+            $poundage = sprintf("%.2f", $poundage);
             //劳务税
             $servicetax = 0;
             if ($incomeSet['servicetax_rate']) {
                 $servicetax = ($amount - $poundage) / 100 * $incomeSet['servicetax_rate'];
-                $servicetax = number_format($servicetax, 2);
+                $servicetax = sprintf("%.2f", $servicetax);
             }
 
             if (($amount > 0) && (bccomp($amount, $set[$key]['roll_out_limit'], 2) != -1)) {
