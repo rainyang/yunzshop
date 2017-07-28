@@ -99,9 +99,11 @@ class PointService
         $this->point_data['point_mode'] = $this->getModeAttribute($this->point_data['point_mode']);
         $noticeMember = Member::getMemberByUid($this->member->uid)->with('hasOneFans')->first();
         if (!$noticeMember->hasOneFans->openid) {
+            \Log::info('Yangyang:没有openid返回');
             return;
         }
         if ($noticeMember->hasOneFans->follow != 1) {
+            \Log::info('Yangyang:未关注返回');
             return;
         }
         $nickname = @iconv("utf-8", "gbk", $this->member['nickname']);
@@ -113,8 +115,10 @@ class PointService
             "remark" => "",
         ];
         if (isset(\Setting::get('shop.notice')['task']) || !\Setting::get('shop.notice')['task']) {
+            \Log::info('Yangyang:没有temid返回');
             return;
         }
+        \Log::info('Yangyang:发送消息');
         MessageService::notice(\Setting::get('shop.notice')['task'], $msg, $noticeMember->hasOneFans->openid);
     }
 
