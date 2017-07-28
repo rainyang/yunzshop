@@ -60,7 +60,7 @@ class WithdrawController extends BaseController
         $endtime = time();
 
         $requestSearch = \YunShop::request()->search;
-        if($requestSearch){
+        if ($requestSearch) {
 
             if ($requestSearch['searchtime']) {
                 if ($requestSearch['times']['start'] != '请选择' && $requestSearch['times']['end'] != '请选择') {
@@ -68,10 +68,10 @@ class WithdrawController extends BaseController
                     $requestSearch['times']['end'] = strtotime($requestSearch['times']['end']);
                     $starttime = strtotime($requestSearch['times']['start']);
                     $endtime = strtotime($requestSearch['times']['end']);
-                }else{
+                } else {
                     $requestSearch['times'] = '';
                 }
-            }else{
+            } else {
                 $requestSearch['times'] = '';
             }
             $requestSearch = array_filter($requestSearch, function ($item) {
@@ -83,13 +83,13 @@ class WithdrawController extends BaseController
             $type[] = $config['class'];
         }
         $list = Withdraw::getWithdrawList($requestSearch)
-            ->whereIn('type',$type)
-            ->orderBy('created_at','desc')
+            ->whereIn('type', $type)
+            ->orderBy('created_at', 'desc')
             ->paginate($pageSize);
 
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
         $incomeConfug = Config::get('income');
-        if(!$requestSearch['searchtime']){
+        if (!$requestSearch['searchtime']) {
             $requestSearch['times']['start'] = time();
             $requestSearch['times']['end'] = time();
         }
@@ -160,8 +160,8 @@ class WithdrawController extends BaseController
                 Income::updatedIncomePayStatus($key, ['pay_status' => '-1']);
             }
         }
-        $actual_poundage = number_format($actual_amounts / 100 * $withdraw['poundage_rate'],2);
-        $actual_servicetax = number_format(($actual_amounts - $actual_poundage) / 100 * $withdraw['servicetax_rate'],2);
+        $actual_poundage = sprintf("%.2f", $actual_amounts / 100 * $withdraw['poundage_rate']);
+        $actual_servicetax = sprintf("%.2f", ($actual_amounts - $actual_poundage) / 100 * $withdraw['servicetax_rate']);
         $updatedData = [
             'status' => $withdrawStatus,
             'actual_amounts' => $actual_amounts - $actual_poundage - $actual_servicetax,
@@ -170,7 +170,7 @@ class WithdrawController extends BaseController
             'audit_at' => time(),
         ];
         $result = Withdraw::updatedWithdrawStatus($withdrawId, $updatedData);
-        
+
         if ($result) {
             $noticeData = $withdraw;
             $noticeData->status = $withdrawStatus;
@@ -202,8 +202,8 @@ class WithdrawController extends BaseController
                 Income::updatedIncomePayStatus($key, ['pay_status' => '-1']);
             }
         }
-        $actual_poundage = number_format($actual_amounts / 100 * $withdraw['poundage_rate'],2);
-        $actual_servicetax = number_format(($actual_amounts - $actual_poundage) / 100 * $withdraw['servicetax_rate'],2);
+        $actual_poundage = sprintf("%.2f", $actual_amounts / 100 * $withdraw['poundage_rate']);
+        $actual_servicetax = sprintf("%.2f", ($actual_amounts - $actual_poundage) / 100 * $withdraw['servicetax_rate']);
         $updatedData = [
             'status' => $withdrawStatus,
             'actual_amounts' => $actual_amounts - $actual_poundage - $actual_servicetax,
@@ -211,10 +211,10 @@ class WithdrawController extends BaseController
             'actual_servicetax' => $actual_servicetax,
             'audit_at' => time(),
         ];
-        
-        
+
+
         $result = Withdraw::updatedWithdrawStatus($withdrawId, $updatedData);
-        
+
         if ($result) {
             $noticeData = $withdraw;
             $noticeData->status = $withdrawStatus;
@@ -253,7 +253,7 @@ class WithdrawController extends BaseController
             //微信打款
 
             $resultPay = WithdrawService::wechatWithdrawPay($withdraw, $remark);
-            Log::info('resultPay:' . $resultPay );
+            Log::info('resultPay:' . $resultPay);
             Log::info('MemberId:' . $withdraw->member_id . ', ' . $remark . "微信打款中!");
 
         } elseif ($payWay == '4') {
