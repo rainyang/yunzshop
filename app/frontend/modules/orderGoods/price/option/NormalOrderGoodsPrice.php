@@ -31,7 +31,8 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
     //todo 此处混乱
     public function getFinalPrice()
     {
-        return $this->orderGoods->goods->finalPrice * $this->orderGoods->total - $this->orderGoods->sale->getFullPriceReductions($this->orderGoods->goods->finalPrice * $this->orderGoods->total);
+        $fullPrice = isset($this->orderGoods->sale) ? $this->orderGoods->sale->getFullPriceReductions($this->orderGoods->goods->finalPrice * $this->orderGoods->total) : 0;
+        return $this->orderGoods->goods->finalPrice * $this->orderGoods->total - $fullPrice;
     }
 
     public function getCouponPrice()
