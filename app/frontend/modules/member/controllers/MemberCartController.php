@@ -81,12 +81,12 @@ class MemberCartController extends ApiController
             $cartModel->setRawAttributes($data);
             $validator = $cartModel->validator($cartModel->getAttributes());
             if ($validator->fails()) {
-                $this->error($validator->messages());
+                return $this->errorJson("数据验证失败，添加购物车失败！！！");
             } else {
                 if ($cartModel->save()) {
-                    return $this->errorJson("添加购物车成功");
+                    return $this->successJson("添加购物车成功");
                 }else{
-                    return $this->successJson("写入出错，添加购物车失败！！！");
+                    return $this->errorJson("写入出错，添加购物车失败！！！");
                 }
             }
         }

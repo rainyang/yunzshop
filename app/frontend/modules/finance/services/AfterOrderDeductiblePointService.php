@@ -45,7 +45,6 @@ class AfterOrderDeductiblePointService
             return;
         }
         $this->addPointLog();
-
     }
 
     private function isDeductible()
@@ -54,6 +53,7 @@ class AfterOrderDeductiblePointService
         if (!self::isChecked($deduction_ids)) {
             return false;
         }
+        return true;
     }
 
     private function getPointData()
@@ -71,9 +71,6 @@ class AfterOrderDeductiblePointService
     private function addPointLog()
     {
         $point_service = new PointService($this->getPointData());
-        $point_model = $point_service->changePoint();
-        if ($point_model) {
-            //积分抵扣通知
-        }
+        $point_service->changePoint();
     }
 }
