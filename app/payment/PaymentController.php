@@ -58,10 +58,10 @@ class PaymentController extends BaseController
      * @return int
      */
     private function getUniacid()
-    {   \Log::debug(sprintf('body-%f', $_REQUEST['body']));
+    {  
         $body = !empty($_REQUEST['body']) ? $_REQUEST['body'] : '';
         $splits = explode(':', $body);
-        \Log::debug('body截取', $splits);
+        \Log::debug('body截取',$splits);
         if (!empty($splits[1])) {
 
             return intval($splits[1]);
