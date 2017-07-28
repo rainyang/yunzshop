@@ -96,7 +96,7 @@ class PointService
 
     public function messageNotice()
     {
-        \Log::info('Yangyang:notice', \Setting::get('shop.notice'));
+        \Log::info('Yangyang:notice['.\Setting::get('shop.notice')['task'].']');
         $this->point_data['point_mode'] = $this->getModeAttribute($this->point_data['point_mode']);
         $noticeMember = Member::getMemberByUid($this->member->uid)->with('hasOneFans')->first();
         if (!$noticeMember->hasOneFans->openid) {
