@@ -15,7 +15,7 @@ use app\common\models\refund\RefundApply;
 class DetailController extends ApiController
 {
     public function index(\Request $request){
-        $this->validate($request, [
+        $this->validate([
             'refund_id' => 'required|integer',
         ]);
         $refundApply = RefundApply::find($request->query('refund_id'));
