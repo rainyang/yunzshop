@@ -231,7 +231,7 @@ class YunShop
             return self::$_app;
         } else {
             self::$_app = new YunApp();
-            dd(self::$_app);
+            dd(self::$_app->uniacid);
             exit;
             return self::$_app;
         }
