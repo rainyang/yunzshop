@@ -443,7 +443,7 @@ class YunApp extends YunComponent
     public function __construct()
     {
         global $_W;
-        dd(!YunShop::isWeb() && !YunShop::isWechatApi());
+        dd($_W);
         exit;
         $this->values = !YunShop::isWeb() && !YunShop::isWechatApi() ? $this->getW() : (array)$_W;
         $this->routeList = Config::get('menu');
