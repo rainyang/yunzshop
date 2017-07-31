@@ -194,8 +194,7 @@ class Member extends \app\common\models\Member
                 return $query5->selectRaw('uid, count(uid) as total, sum(price) as sum')
                     ->uniacid()
                     ->groupBy('uid');
-            }])
-        ->orderBy('uid', 'desc');
+            }]);
 
         return $result;
     }
