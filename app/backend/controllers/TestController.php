@@ -16,6 +16,7 @@ use app\common\models\Member;
 use app\common\services\JsonRpc;
 use app\common\services\MessageService;
 use app\common\services\WechatPay;
+use app\frontend\modules\finance\controllers\IncomeController;
 use app\frontend\modules\finance\services\BalanceRechargeResultService;
 use app\frontend\modules\member\models\SubMemberModel;
 use Yunshop\TeamDividend\models\TeamDividendLevelModel;
@@ -24,25 +25,64 @@ class TestController extends BaseController
 {
     public function index()
     {
-        $orderSn = (new BalanceRecharge())->createOrderSn('TT','ordersn');
-        dd($orderSn);
+        $data = [
+            'total' => [
+                'amounts' => '3033.82',
+                'poundage' => '0',
+                'pay_way' => 'wechat',
+            ],
+            'withdrawal' => [
+                [
+                    'type' => 'Yunshop\ConsumeReturn\common\models\Log',
+                    'key_name' => 'consumeReturn',
+                    'type_name' => "消费返现",
+                    'type_id' => '6920,6965',
+                    "income" => '347.82',
+                    'poundage' => '0.00',
+                    'poundage_rate' => 0,
+                    'servicetax' => '34.78',
+                    'servicetax_rate' => 10,
+                    'can' => 1,
+                    'roll_out_limit' => 0,
+                    'selected' => 1,
+                ],
+                [
+                    'type' => 'Yunshop\FullReturn\common\models\Log',
+                    'key_name' => 'FullReturn',
+                    'type_name' => "满额返现",
+                    'type_id' => '6934,6939,6940,6941,6942,6943,6944,6947,6948,6957,6958,6959,6960,6961,6962',
+                    "income" => '2690.00',
+                    'poundage' => '0.00',
+                    'poundage_rate' => 0,
+                    'servicetax' => '269.00',
+                    'servicetax_rate' => 10,
+                    'can' => 1,
+                    'roll_out_limit' => 0,
+                    'selected' => 1,
+                ],
+            ],
+
+        ];
+        $result = (new IncomeController())->saveWithdraw($data);
+        dd($result);
     }
 
     public function op_database()
-    {$sub_data = array(
-        'member_id' => 999,
-        'uniacid' => 5,
-        'group_id' => 0,
-        'level_id' => 0,
-    );
+    {
+        $sub_data = array(
+            'member_id' => 999,
+            'uniacid' => 5,
+            'group_id' => 0,
+            'level_id' => 0,
+        );
 
-    SubMemberModel::insertData($sub_data);
+        SubMemberModel::insertData($sub_data);
 
-    if (SubMemberModel::insertData($sub_data)) {
-        echo 'ok';
-    } else {
-        echo 'ko';
-    }
+        if (SubMemberModel::insertData($sub_data)) {
+            echo 'ok';
+        } else {
+            echo 'ko';
+        }
 
     }
 
@@ -64,7 +104,8 @@ class TestController extends BaseController
                 "keyword2" => $message,
                 "remark" => "",
             ];
-            echo '<pre>';print_r($msg);
+            echo '<pre>';
+            print_r($msg);
             MessageService::notice($teamDividendNotice['template_id'], $msg, 'oNnNJwqQwIWjAoYiYfdnfiPuFV9Y');
 
         }
@@ -73,7 +114,7 @@ class TestController extends BaseController
 
     public function wx()
     {
-        $msg = (new WechatPay())->doWithdraw(369,'3232', 100);
+        $msg = (new WechatPay())->doWithdraw(369, '3232', 100);
 
         dd($msg);
     }
