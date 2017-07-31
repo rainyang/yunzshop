@@ -21,7 +21,6 @@ class Session{
      */
     public static function set($name, $data, $time=10 * 24 * 3600){
         $expire = time() + $time;
-        @ini_set('session.gc_maxlifetime', $expire);
 
         $session_data = array();
         $session_data['data'] = $data;
