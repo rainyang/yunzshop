@@ -219,10 +219,10 @@ class IncomeController extends ApiController
     /**
      * @return \Illuminate\Http\JsonResponse
      */
-    public function saveWithdraw()
+    public function saveWithdraw($withdrawData)
     {
         $config = \Config::get('income');
-        $withdrawData = \YunShop::request()->data;
+        //$withdrawData = \YunShop::request()->data;
         if (!$withdrawData) {
             return $this->errorJson('未检测到数据!');
         }
@@ -252,7 +252,7 @@ class IncomeController extends ApiController
 
         }
         Log::info("提现成功:提现成功");
-        $request = static::setWithdraw($withdrawData['withdrawal'], $withdrawTotal);
+        $request = static::setWithdraw($withdrawData);
         if ($request) {
             return $this->successJson('提现成功!');
         }
@@ -305,17 +305,17 @@ class IncomeController extends ApiController
      * @param $withdrawTotal
      * @return mixed
      */
-    public function setWithdraw($withdrawData, $withdrawTotal)
+    public function setWithdraw($withdrawData)
     {
-        return DB::transaction(function () use ($withdrawData, $withdrawTotal) {
-            return $this->_setWithdraw($withdrawData, $withdrawTotal);
+        return DB::transaction(function () use ($withdrawData) {
+            return $this->_setWithdraw($withdrawData);
         });
 
     }
 
-    public function _setWithdraw($withdrawData, $withdrawTotal)
+    public function _setWithdraw($withdrawData)
     {
-        foreach ($withdrawData as $item) {
+        foreach ($withdrawData['withdrawal'] as $item) {
             $data[] = [
                 'withdraw_sn' => Pay::setUniacidNo(\YunShop::app()->uniacid),
                 'uniacid' => \YunShop::app()->uniacid,
@@ -331,15 +331,18 @@ class IncomeController extends ApiController
                 'servicetax' => $item['servicetax'],
                 'servicetax_rate' => $item['servicetax_rate'],
                 'actual_servicetax' => $item['servicetax'],
-                'pay_way' => $withdrawTotal['pay_way'],
+                'pay_way' => $withdrawData['total']['pay_way'],
                 'status' => 0,
                 'created_at' => time(),
                 'updated_at' => time(),
             ];
             static::setIncomeAndOrder($item['type'], $item['type_id']);
         }
-        event(new AfterIncomeWithdrawEvent($data));
+        $withdrawData['total']['member_id'] = \YunShop::app()->getMemberId();
+        $withdrawData['withdrawal'] = $data;
+        event(new AfterIncomeWithdrawEvent($withdrawData));
         Log::info("Withdraw - data", $data);
+        dd('xixihaha');
         return Withdraw::insert($data);
     }
 
