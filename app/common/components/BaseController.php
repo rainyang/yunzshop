@@ -96,6 +96,7 @@ class BaseController extends Controller
         if (!empty($session_id)) {
             session_id($session_id);
         } else {
+            ini_set('session.gc_maxlifetime', self::COOKIE_EXPIRE);
             session_set_cookie_params( self::COOKIE_EXPIRE);
         }
 
