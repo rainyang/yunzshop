@@ -17,12 +17,16 @@ class Session{
      * 设置session
      * @param String $name   session name
      * @param Mixed  $data   session data
-     * @param Int    $expire 超时时间(秒)
+     * @param Int    $time 超时时间(秒)
      */
-    public static function set($name, $data, $expire=10 * 24 * 3600){
+    public static function set($name, $data, $time=10 * 24 * 3600){
+        $expire = time() + $time;
+        @ini_set('session.gc_maxlifetime', $expire);
+
         $session_data = array();
         $session_data['data'] = $data;
-        $session_data['expire'] = time()+$expire;
+        $session_data['expire'] = $expire;
+
         $_SESSION[$name] = $session_data;
     }
 

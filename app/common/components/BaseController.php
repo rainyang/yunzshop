@@ -24,6 +24,8 @@ use Validator;
 class BaseController extends Controller
 {
     use DispatchesJobs, MessageTrait, ValidatesRequests, TemplateTrait, PermissionTrait, JsonTrait;
+
+    const COOKIE_EXPIRE = 10 * 24 * 3600;
     /**
      * controller中执行报错需要回滚的action数组
      * @var array
@@ -97,6 +99,8 @@ class BaseController extends Controller
 
         if (!empty($session_id)) {
             session_id($session_id);
+        } else {
+            session_set_cookie_params( self::COOKIE_EXPIRE);
         }
 
         session_start();
