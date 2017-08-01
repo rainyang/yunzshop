@@ -336,6 +336,9 @@ class MemberController extends BaseController
             } else {
                 $fans = '';
             }
+            if (substr($item['nickname'], 0, strlen('=')) === '=') {
+                $item['nickname'] = '，' . $item['nickname'];
+            }
 
             $export_data[$key + 1] = [$item['uid'], $item['nickname'], $item['realname'], $item['mobile'],
                 $level, $group, date('YmdHis', $item['createtime']), $item['credit1'], $item['credit2'], $order,

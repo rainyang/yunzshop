@@ -203,8 +203,10 @@ class AlipayController extends PaymentController
         }
         $pay_refund_model = PayRefundOrder::getOrderInfo($pay_order->out_order_no);
 
+
         if (!$pay_refund_model) {
             return \Log::error('退款订单支付信息保存失败', $data);
+
         }
 
         $pay_refund_model->status = 2;

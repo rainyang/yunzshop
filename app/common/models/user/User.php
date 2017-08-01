@@ -12,6 +12,7 @@ namespace app\common\models\user;
 use app\backend\modules\user\observers\UserObserver;
 use app\common\models\BaseModel;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Schema;
 
 class User extends BaseModel
 {
@@ -29,7 +30,25 @@ class User extends BaseModel
         'remark' => '',
         'endtime' => 0
     ];
+
     protected $guarded = [''];
+
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+        $this->attributes = $this->getNewAttributes();
+    }
+
+    public function getNewAttributes()
+    {
+        if(Schema::hasColumn($this->table, 'owner_uid')){ //用于兼容新版微擎新增的字段
+            $this->attributes = array_merge($this->attributes, ['owner_uid' => '0']);
+        }
+        if(Schema::hasColumn($this->table, 'owner_uid')){ //用于兼容新版微擎新增的字段
+            $this->attributes = array_merge($this->attributes, ['founder_groupid' => '0']);
+        }
+        return $this->attributes;
+    }
 
     public function uniAccounts()
     {

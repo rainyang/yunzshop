@@ -2,6 +2,7 @@
 
 namespace app\common\components;
 
+use app\common\exceptions\ShopException;
 use app\common\models\Modules;
 use app\common\services\Check;
 use app\common\traits\JsonTrait;
@@ -31,6 +32,7 @@ class BaseController extends Controller
      * @var array
      */
     public $transactionActions = [];
+
     public function __construct()
     {
         $this->setCookie();
@@ -48,14 +50,13 @@ class BaseController extends Controller
         //strpos(request()->get('route'),'setting.key')!== 0 && Check::app();
 
         //是否为商城后台管理路径
-        strpos(request()->getBaseUrl(),'/web/index.php') === 0 && Check::setKey();
+        strpos(request()->getBaseUrl(), '/web/index.php') === 0 && Check::setKey();
     }
 
     protected function formatValidationErrors(Validator $validator)
     {
         return $validator->errors()->all();
     }
-
 
 
     /**
@@ -65,12 +66,15 @@ class BaseController extends Controller
      * @param array $messages
      * @param array $customAttributes
      */
-    public function validate(\Request $request, array $rules, array $messages = [], array $customAttributes = [])
+    public function validate(array $rules, \Request $request = null, array $messages = [], array $customAttributes = [])
     {
+        if (!isset($request)) {
+            $request = request();
+        }
         $validator = $this->getValidationFactory()->make($request->all(), $rules, $messages, $customAttributes);
 
         if ($validator->fails()) {
-            echo $this->message($validator->errors()->first(), '', 'error');exit;
+            throw new ShopException($validator->errors()->first());
         }
     }
 
@@ -89,7 +93,8 @@ class BaseController extends Controller
         }
 
         if (empty($session_id) && \YunShop::request()->session_id &&
-            \YunShop::request()->session_id != 'undefined') {
+            \YunShop::request()->session_id != 'undefined'
+        ) {
             $session_id = \YunShop::request()->session_id;
         }
 
@@ -108,7 +113,8 @@ class BaseController extends Controller
      * @param $action
      * @return bool
      */
-    public function needTransaction($action){
+    public function needTransaction($action)
+    {
         return in_array($action, $this->transactionActions) || in_array('*', $this->transactionActions) || $this->transactionActions == '*';
     }
 

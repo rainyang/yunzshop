@@ -28,7 +28,7 @@ class OrderGoods extends BaseModel
     //public function
     public function hasOneGoods()
     {
-        return $this->hasOne('\app\common\models\Goods', 'id', 'goods_id');
+        return $this->hasOne($this->getNearestModel('Goods'), 'id', 'goods_id');
     }
 
     public function goods()
@@ -85,8 +85,7 @@ class OrderGoods extends BaseModel
 
     public function goodsOption()
     {
-        return $this->hasOne('\app\common\models\GoodsOption', 'id', 'goods_option_id');
-
+        return $this->hasOne(app('GoodsManager')->make('GoodsOption'), 'id', 'goods_option_id');
     }
 
     public function hasOneComment()

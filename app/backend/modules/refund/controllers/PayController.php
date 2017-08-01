@@ -22,7 +22,7 @@ class PayController extends BaseController
      */
     public function index(\Request $request)
     {
-        $this->validate($request, [
+        $this->validate([
             'refund_id' => 'required'
         ]);
 
