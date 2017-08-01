@@ -62,6 +62,7 @@ class PaymentController extends BaseController
         $body = !empty($_REQUEST['body']) ? $_REQUEST['body'] : '';
         $splits = explode(':', $body);
         \Log::debug('body截取',$splits);
+
         if (!empty($splits[1])) {
 
             return intval($splits[1]);
