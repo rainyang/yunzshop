@@ -26,7 +26,7 @@ class CategoryController extends BaseController
     public function getCategory()
     {
         $set = Setting::get('shop.category');
-        $pageSize = 10;
+        $pageSize = 100;
         $parent_id = \YunShop::request()->parent_id ? \YunShop::request()->parent_id : '0';
         $list = Category::getCategorys($parent_id)->where('enabled', 1)->paginate($pageSize)->toArray();
         foreach ($list['data'] as &$item) {
@@ -43,7 +43,7 @@ class CategoryController extends BaseController
     
     public function getChildrenCategory()
     {
-        $pageSize = 10;
+        $pageSize = 100;
         $set = Setting::get('shop.category');
         $parent_id = intval(\YunShop::request()->parent_id);
         $list = Category::getChildrenCategorys($parent_id,$set)->paginate($pageSize)->toArray();

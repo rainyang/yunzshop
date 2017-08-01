@@ -19,6 +19,7 @@ use app\backend\modules\member\services\MemberServices;
 use app\common\components\BaseController;
 use app\common\events\member\MemberRelationEvent;
 use app\common\helpers\PaginationHelper;
+use app\common\services\ExportService;
 
 
 class MemberController extends BaseController
@@ -53,6 +54,7 @@ class MemberController extends BaseController
         }
 
         $list = Member::searchMembers($parames)
+            ->orderBy('uid', 'desc')
             ->paginate($this->pageSize)
             ->toArray();
 
@@ -299,16 +301,15 @@ class MemberController extends BaseController
      */
     public function export()
     {
-        $file_name = date('Ymdhis', time()) . '会员导出';
+        $member_builder = Member::searchMembers(\YunShop::request());
+        $export_page = request()->export_page ? request()->export_page : 1;
+        $export_model = new ExportService($member_builder, $export_page);
 
-        $parames = \YunShop::request();
-        $list = Member::searchMembers($parames)
-            ->get()
-            ->toArray();
+        $file_name = date('Ymdhis', time()) . '会员导出';
 
         $export_data[0] = ['会员ID', '粉丝', '姓名', '手机号', '等级', '分组', '注册时间', '积分', '余额', '订单', '金额', '关注'];
 
-        foreach ($list as $key => $item) {
+        foreach ($export_model->builder_model->toArray() as $key => $item) {
             if (!empty($item['yz_member']) && !empty($item['yz_member']['group'])) {
                 $group = $item['yz_member']['group']['group_name'];
 
@@ -341,23 +342,6 @@ class MemberController extends BaseController
                 $price, $fans];
         }
 
-        \Excel::create($file_name, function ($excel) use ($export_data) {
-            // Set the title
-            $excel->setTitle('Office 2005 XLSX Document');
-
-            // Chain the setters
-            $excel->setCreator('芸众商城')
-                ->setLastModifiedBy("芸众商城")
-                ->setSubject("Office 2005 XLSX Test Document")
-                ->setDescription("Test document for Office 2005 XLSX, generated using PHP classes.")
-                ->setKeywords("office 2005 openxml php")
-                ->setCategory("report file");
-
-            $excel->sheet('info', function ($sheet) use ($export_data) {
-                $sheet->rows($export_data);
-            });
-
-
-        })->export('xls');
+        $export_model->export($file_name, $export_data, \Request::query('route'));
     }
 }
