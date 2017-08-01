@@ -175,6 +175,7 @@ class MemberRelation extends BackendModel
      */
     private function changeChildAgent($mid, MemberShopInfo $model)
     {
+        \Log::debug(sprintf('成为下线mid-%d', $mid));
         $member_info = SubMemberModel::getMemberShopInfo($mid);
 
         if ($member_info && $member_info->is_agent) {
@@ -307,12 +308,13 @@ class MemberRelation extends BackendModel
             }
         } else {
             $parent = SubMemberModel::getMemberShopInfo($member->parent_id);
-
+\Log::debug(sprintf('会员上线ID: %d', $member->parent_id));
             $parent_is_agent = !empty($parent) && $parent->is_agent == 1 && $parent->status == 2;
 
             if ($parent_is_agent) {
                 if ($become_child == 1) {
                     if (empty($member->inviter) && $member->member_id != $parent->member_id) {
+                        \Log::debug(sprintf('会员赋值 parent_id: %d', $parent->member_id));
                         $member->parent_id = $parent->member_id;
                         $member->child_time = time();
                         $member->inviter = 1;

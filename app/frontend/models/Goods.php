@@ -66,12 +66,12 @@ class Goods extends \app\common\models\Goods
         if (empty($this->status)) {
             throw new AppException('(ID:' . $this->id . ')商品已下架');
         }
-        if (!isset($this->hasOneSale)) {
-            throw new AppException('(ID:' . $this->id . ')商品优惠信息数据已损坏');
-        }
-        if (!isset($this->hasOneGoodsDispatch)) {
-            throw new AppException('(ID:' . $this->id . ')商品配送信息数据已损坏');
-        }
+//        if (!isset($this->hasOneSale)) {
+//            throw new AppException('(ID:' . $this->id . ')商品优惠信息数据已损坏');
+//        }
+//        if (!isset($this->hasOneGoodsDispatch)) {
+//            throw new AppException('(ID:' . $this->id . ')商品配送信息数据已损坏');
+//        }
         if (isset($this->hasOnePrivilege)) {
             $this->hasOnePrivilege->validate($num);
         }

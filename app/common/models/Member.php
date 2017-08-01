@@ -281,17 +281,20 @@ class Member extends BackendModel
 
     public static function getMid()
     {
+      /*
         if (\YunShop::request()->mid) {
+            \Log::debug(sprintf('前端获取mid-%d', \YunShop::request()->mid));
             return \YunShop::request()->mid;
         } elseif (Session::get('client_url') && strpos(Session::get('client_url'), 'mid')) {
             preg_match('/.+mid=(\d+).+/', Session::get('client_url'), $matches);
-
+            \Log::debug('截取mid', $matches[1]);
             if (isset($matches) && !empty($matches[1])) {
                 return $matches[1];
             }
         }
+        */
 
-        return 0;
+        return \YunShop::request()->mid?:0;
     }
 
     /**

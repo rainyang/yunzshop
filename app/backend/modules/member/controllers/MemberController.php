@@ -324,8 +324,8 @@ class MemberController extends BaseController
                 $level = '';
             }
 
-            $order = 0;
-            $price = 0;
+            $order = $item['has_one_order']['total']?:0;
+            $price = $item['has_one_order']['sum']?:0;
 
             if (!empty($item['has_one_fans'])) {
                 if ($item['has_one_fans']['followed'] == 1) {
@@ -335,6 +335,9 @@ class MemberController extends BaseController
                 }
             } else {
                 $fans = '';
+            }
+            if (substr($item['nickname'], 0, strlen('=')) === '=') {
+                $item['nickname'] = '，' . $item['nickname'];
             }
 
             $export_data[$key + 1] = [$item['uid'], $item['nickname'], $item['realname'], $item['mobile'],

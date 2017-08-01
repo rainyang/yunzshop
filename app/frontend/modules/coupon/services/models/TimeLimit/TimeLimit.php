@@ -37,7 +37,7 @@ abstract class TimeLimit
     {
         $this->coupon = $coupon;
         $this->dbCoupon = $coupon->getMemberCoupon()->belongsToCoupon;
-        $this->orderModel = $coupon->getPreGeneratedOrderModel();
+        $this->orderModel = $coupon->getPreGeneratedOrder();
 
     }
     abstract public function valid();

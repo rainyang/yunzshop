@@ -77,15 +77,6 @@ class ApiController extends BaseController
         }
     }
 
-    public function validate(Request $request, array $rules, array $messages = [], array $customAttributes = [])
-    {
-        $validator = $this->getValidationFactory()->make($request->all(), $rules, $messages, $customAttributes);
-        //$validator->errors();
-        if ($validator->fails()) {
-            throw new AppException(current($this->formatValidationErrors($validator)));
-        }
-    }
-
     private function jumpUrl($type, $mid)
     {
         if (empty($type) || $type == 'undefined') {

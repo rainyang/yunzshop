@@ -24,7 +24,8 @@ class Goods extends \app\common\models\Goods
     public static function boot()
     {
         parent::boot();
-        static::observe(new GoodsObserver());
+        //注册观察者
+        static::observe(new GoodsObserver);
 
         static::addGlobalScope(function (Builder $builder) {
             $builder->isPlugin();

@@ -592,11 +592,6 @@ class MemberService
             $member_id = $this->openidLogin(\YunShop::app()->uniacid, $userinfo, $upperMemberId);
         }
 
-        $mid = $upperMemberId ?: Member::getMid();
-
-        //发展下线
-        Member::chkAgent($member_id, $mid);
-
         return $member_id;
     }
 }

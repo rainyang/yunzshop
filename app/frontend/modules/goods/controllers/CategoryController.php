@@ -25,6 +25,7 @@ class CategoryController extends BaseController
 {
     public function getCategory()
     {
+
         $set = Setting::get('shop.category');
         $pageSize = 100;
         $parent_id = \YunShop::request()->parent_id ? \YunShop::request()->parent_id : '0';
@@ -33,8 +34,7 @@ class CategoryController extends BaseController
             $item['thumb'] = replace_yunshop(tomedia($item['thumb']));
             $item['adv_img'] = replace_yunshop(tomedia($item['adv_img']));
         }
-        $set['cat_adv_img'] = replace_yunshop(tomedia($set['cat_adv_img']));
-        $list['set'] = $set;
+
         if($list['data']){
             return $this->successJson('获取分类数据成功!', $list);
         }

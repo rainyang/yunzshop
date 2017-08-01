@@ -68,7 +68,7 @@ class MergePayController extends ApiController
 
     public function index(\Request $request)
     {
-        $this->validate($request, [
+        $this->validate([
             'order_ids' => 'required|string'
         ]);
         $orders = $this->orders($request->input('order_ids'));
@@ -104,7 +104,7 @@ class MergePayController extends ApiController
 
     protected function pay($request, $payType)
     {
-        $this->validate($request, [
+        $this->validate([
             'order_pay_id' => 'required|integer'
         ]);
         $this->orderPay = $orderPay = OrderPay::find($request->input('order_pay_id'));

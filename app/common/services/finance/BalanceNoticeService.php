@@ -76,11 +76,11 @@ class BalanceNoticeService
                 "color" => "#4a5077"
             ),
             'money' => array(
-                'title' => '提现金额',
+                'title' => '审核金额',
                 'value' => '￥' . $withdrawModel->amounts . '元(手续费' .$withdrawModel->actual_poundage. '元)',
                 "color" => "#4a5077"
             ),
-            'timet' => array(
+            'time' => array(
                 'title' => '提现时间',
                 'value' => date('Y-m-d H:i:s', $withdrawModel->audit_at),
                 "color" => "#4a5077"

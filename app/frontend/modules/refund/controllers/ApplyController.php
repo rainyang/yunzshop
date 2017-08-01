@@ -19,7 +19,7 @@ class ApplyController extends ApiController
 {
     public function index(Request $request)
     {
-        $this->validate($request, [
+        $this->validate([
             'order_id' => 'required|integer'
         ]);
         $order = Order::find($request->query('order_id'));
@@ -58,7 +58,7 @@ class ApplyController extends ApiController
 
     public function store(Request $request)
     {
-        $this->validate($request, [
+        $this->validate([
             'reason' => 'required|string',
             'content' => 'sometimes|string',
             'images' => 'sometimes|filled|json',

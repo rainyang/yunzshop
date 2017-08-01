@@ -106,7 +106,7 @@ class CouponExpireNotice
     public function subscribe()
     {
         \Event::listen('cron.collectJobs', function () {
-            \Cron::add('Coupon-expire-notice', '*/1 * * * * *', function () {
+            \Cron::add('Coupon-expire-notice', '*/10 * * * * *', function () {
                 $this->handle();
                 return;
             });
