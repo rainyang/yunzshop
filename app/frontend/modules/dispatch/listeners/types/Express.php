@@ -95,13 +95,8 @@ class Express
         if ($this->event->getOrderModel()->is_virtual) {
             return false;
         }
-        $allGoodsIsReal = OrderService::allGoodsIsReal($this->event->getOrderModel()->getOrderGoodsModels());
 
-        if ($allGoodsIsReal) {
-            return true;
-        }
-
-        return false;
+        return true;
     }
 
     private function getOrderAddress()

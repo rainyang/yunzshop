@@ -51,13 +51,12 @@ class UnifyOrderDispatchPrice
 
     private function needDispatch()
     {
-        $allGoodsIsReal = OrderService::allGoodsIsReal($this->event->getOrderModel()->getOrderGoodsModels());
 
-        if ($allGoodsIsReal) {
-            return true;
+        if ($this->event->getOrderModel()->is_virtual) {
+            return false;
         }
 
-        return false;
+        return true;
     }
 
 }
