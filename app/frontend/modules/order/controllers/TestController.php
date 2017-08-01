@@ -6,6 +6,7 @@ use app\common\components\ApiController;
 
 
 use Carbon\Carbon;
+use Yunshop\Recharge\models\OrderModel;
 
 
 /**
@@ -19,8 +20,8 @@ class TestController extends ApiController
     public $transactionActions = [''];
     public function index()
     {
-        dd(Carbon::now()->startOfMonth()->timestamp);
-        dd(Carbon::now()->modify('-1 month')->endOfQuarter()->timestamp);
+        $r = OrderModel::get();
+        dd($r);exit;
         //(new MessageService(\app\frontend\models\Order::completed()->first()))->received();
     }
 

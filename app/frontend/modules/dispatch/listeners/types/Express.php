@@ -31,6 +31,9 @@ class Express
     {
         $this->event = $event;
 
+        if (!$this->needDispatch()) {
+            return;
+        }
         $event->getOrderModel()->setRelation('orderAddress', $this->getOrderAddress());
 
     }
@@ -73,13 +76,13 @@ class Express
         if (count($address)) {
             //$request->input('address');
             $this->validate([
-                    'address.address' => 'required|string',
-                    'address.mobile' => 'required|string',
-                    'address.username' => 'required|string',
-                    'address.province' => 'required|string',
-                    'address.city' => 'required|string',
-                    'address.district' => 'required|string',
-                ],['address' => $address]
+                'address.address' => 'required|string',
+                'address.mobile' => 'required|string',
+                'address.username' => 'required|string',
+                'address.province' => 'required|string',
+                'address.city' => 'required|string',
+                'address.district' => 'required|string',
+            ], ['address' => $address]
             );
             return new MemberAddress($address);
         }
@@ -89,6 +92,9 @@ class Express
 
     private function needDispatch()
     {
+        if ($this->event->getOrderModel()->is_virtual) {
+            return false;
+        }
         $allGoodsIsReal = OrderService::allGoodsIsReal($this->event->getOrderModel()->getOrderGoodsModels());
 
         if ($allGoodsIsReal) {

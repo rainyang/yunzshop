@@ -48,7 +48,7 @@ class OrderService
         $result->put('dispatch', self::getDispatchEventData($order));
 
         if (!$result->has('supplier')) {
-            $result->put('supplier', ['username' => array_get(\Setting::get('shop'),'name','自营'), 'id' => 0]);
+            $result->put('supplier', ['username' => array_get(\Setting::get('shop'), 'name', '自营'), 'id' => 0]);
         }
 
 
@@ -271,7 +271,7 @@ class OrderService
     public static function orderPay(array $param)
     {
         $orderOperation = OrderPay::find($param['order_id']);
-        if(isset($param['pay_type_id'])){
+        if (isset($param['pay_type_id'])) {
             $orderOperation->pay_type_id = $param['pay_type_id'];
         }
         return self::OrderOperate($orderOperation);

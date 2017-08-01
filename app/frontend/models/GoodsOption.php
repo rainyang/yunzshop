@@ -51,8 +51,4 @@ class GoodsOption extends \app\common\models\GoodsOption
         return $result;
     }
 
-    public function goods()
-    {
-        return $this->belongsTo(Goods::class, 'goods_id', 'id');
-    }
 }
