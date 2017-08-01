@@ -92,6 +92,10 @@ class Express
 
     private function needDispatch()
     {
+        if (isset($_GET['test']) && $_GET['test']) {
+            dd($this->event->getOrderModel()->is_virtual);
+            exit;
+        }
         if ($this->event->getOrderModel()->is_virtual) {
             return false;
         }
