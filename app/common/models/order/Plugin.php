@@ -13,6 +13,6 @@ use app\common\models\BaseModel;
 
 class Plugin extends BaseModel
 {
-    public $table = 'yz_order_plugin';
+    public $table = 'yz_plugin_order';
     protected $guarded = [''];
 }
