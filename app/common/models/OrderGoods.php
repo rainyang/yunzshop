@@ -85,8 +85,7 @@ class OrderGoods extends BaseModel
 
     public function goodsOption()
     {
-        return $this->hasOne('\app\common\models\GoodsOption', 'id', 'goods_option_id');
-
+        return $this->hasOne(app('GoodsManager')->make('GoodsOption'), 'id', 'goods_option_id');
     }
 
     public function hasOneComment()

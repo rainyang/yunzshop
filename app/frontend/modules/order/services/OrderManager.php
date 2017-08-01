@@ -30,17 +30,10 @@ class OrderManager extends Container
 
     private function bindModels()
     {
-        //
         $this->bind('PreGeneratedOrderGoods', function ($orderManager, $attributes) {
-            if (1) {
-                return new \app\frontend\modules\orderGoods\models\PreGeneratedOrderGoods($attributes);
-            }
             return new PreGeneratedOrderGoods($attributes);
         });
         $this->bind('PreGeneratedOrder', function ($orderManager, $attributes) {
-            if (1) {
-                return new \app\frontend\modules\order\models\PreGeneratedOrder($attributes);
-            }
             return new PreGeneratedOrder($attributes);
         });
         // 订单model

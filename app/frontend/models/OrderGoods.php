@@ -12,11 +12,6 @@ use Illuminate\Database\Eloquent\Builder;
 
 class OrderGoods extends \app\common\models\OrderGoods
 {
-    public function goodsOption()
-    {
-        return $this->hasOne(GoodsOption::class, 'id', 'goods_option_id');
-
-    }
 
     public function scopeDetail($query)
     {
