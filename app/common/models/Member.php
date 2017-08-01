@@ -346,9 +346,9 @@ class Member extends BackendModel
             ];
         }
 
-        $plugins = \Config::get('member_center.plugins');
+        // = \Config::get('member_center.plugins');
 
-        $data = array_merge($data,$plugins);
+        //$data = array_merge($data,$plugins);
 
         return $data;
     }
