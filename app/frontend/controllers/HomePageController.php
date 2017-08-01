@@ -68,6 +68,8 @@ class HomePageController extends ApiController
             $setting['diycode'] = html_entity_decode($setting['diycode']);
             $result['mailInfo'] = $setting;
 
+        } else {
+            $result['mailInfo']['is_bind_mobile'] = 0;
         }
 
         //用户信息, 原来接口在 member.member.getUserInfo
