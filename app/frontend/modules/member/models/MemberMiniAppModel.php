@@ -36,7 +36,7 @@ class MemberMiniAppModel extends \app\common\models\MemberMiniAppModel
     public static function updateData($uid, $data)
     {
         self::uniacid()
-            ->where('uid', $uid)
+            ->where('member_id', $uid)
             ->update($data);
     }
 }
