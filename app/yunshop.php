@@ -79,7 +79,8 @@ class YunShop
 
             $item = Menu::getCurrentItemByRoute($controller->route, $menuList);
             self::$currentItems = array_merge(Menu::getCurrentMenuParents($item, $menuList), [$item]);
-
+dump($item);
+dump(self::$currentItems);
             //检测权限
             if (!PermissionService::can($item)) {
                 //throw new NotFoundException('Sorry,无权限');
