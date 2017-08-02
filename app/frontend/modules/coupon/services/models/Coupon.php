@@ -145,7 +145,7 @@ class Coupon
     /**
      * 获取订单优惠价格
      */
-    public function getDiscountPrice()
+    public function getDiscountAmount()
     {
         return $this->price->getPrice();
     }
@@ -163,7 +163,7 @@ class Coupon
             'coupon_id'=>$this->memberCoupon->coupon_id,
             'member_coupon_id'=>$this->memberCoupon->id,
             'name'=>$this->memberCoupon->belongsToCoupon->name,
-            'amount'=>$this->getDiscountPrice()
+            'amount'=>$this->getDiscountAmount()
 
         ]);
         $preOrderCoupon->setOrder($this->preGeneratedOrder);

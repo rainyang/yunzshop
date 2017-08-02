@@ -176,8 +176,8 @@ class Order extends \app\common\models\Order
     {
         parent::boot();
 
-        static::addGlobalScope(function (Builder $builder) {
-            $builder->isPlugin();
-        });
+//        static::addGlobalScope(function (Builder $builder) {
+//            $builder->isPlugin();
+//        });
     }
 }
