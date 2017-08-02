@@ -54,7 +54,7 @@ class WithdrawController extends BaseController
 
     public function index()
     {
-        $pageSize = 20;
+        $pageSize = 10;
 
         $starttime = strtotime('-1 month');
         $endtime = time();
@@ -87,7 +87,7 @@ class WithdrawController extends BaseController
             ->orderBy('created_at', 'desc')
             ->paginate($pageSize);
 
-        $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
+        $pager = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
         $incomeConfug = Config::get('income');
         if (!$requestSearch['searchtime']) {
             $requestSearch['times']['start'] = time();
