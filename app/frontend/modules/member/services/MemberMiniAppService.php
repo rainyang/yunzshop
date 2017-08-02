@@ -13,7 +13,7 @@ use app\frontend\modules\member\models\MemberMiniAppModel;
 
 class MemberMiniAppService extends MemberService
 {
-    const LOGIN_TYPE    = 2;
+    const LOGIN_TYPE    = 2;  //小程序
 
     public function __construct()
     {}

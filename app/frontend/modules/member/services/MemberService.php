@@ -589,8 +589,10 @@ class MemberService
     public function memberLogin($userinfo, $upperMemberId = NULL)
     {
         if (is_array($userinfo) && !empty($userinfo['unionid'])) {
+            \Log::debug('---开放平台入口----');
             $member_id = $this->unionidLogin(\YunShop::app()->uniacid, $userinfo, $upperMemberId);
         } elseif (is_array($userinfo) && !empty($userinfo['openid'])) {
+            \Log::debug('---公众号入口----');
             $member_id = $this->openidLogin(\YunShop::app()->uniacid, $userinfo, $upperMemberId);
         }
 
