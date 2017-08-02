@@ -42,6 +42,9 @@ class PointService
     const POINT_MODE_TEAM = 7; //团队奖励
     const POINT_MODE_TEAM_ATTACHED = '团队奖励';
 
+    const POINT_MODE_LIVE = 8; //生活缴费奖励
+    const POINT_MODE_LIVE_ATTACHED = '生活缴费奖励';
+
     const POINT = 0;
 
     public $point_data;
@@ -155,6 +158,9 @@ class PointService
                 break;
             case (7):
                 $mode_attribute = self::POINT_MODE_TEAM_ATTACHED;
+                break;
+            case (8):
+                $mode_attribute = self::POINT_MODE_LIVE_ATTACHED;
                 break;
         }
         return $mode_attribute;
