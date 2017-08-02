@@ -226,7 +226,7 @@ class IncomeController extends ApiController
         if (!$withdrawData) {
             return $this->errorJson('未检测到数据!');
         }
-
+        dd($withdrawData);
         $withdrawTotal = $withdrawData['total'];
         Log::info("POST - Withdraw Total ", $withdrawTotal);
         Log::info("POST - Withdraw Data ", $withdrawData);
@@ -251,7 +251,6 @@ class IncomeController extends ApiController
             }
 
         }
-        dd($withdrawData);
         Log::info("提现成功:提现成功");
         $request = static::setWithdraw($withdrawData);
         if ($request) {
