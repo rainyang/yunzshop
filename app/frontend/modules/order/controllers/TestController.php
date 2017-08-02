@@ -6,6 +6,7 @@ use app\common\components\ApiController;
 
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Yunshop\Recharge\models\OrderModel;
 
 
@@ -20,8 +21,14 @@ class TestController extends ApiController
     public $transactionActions = [''];
     public function index()
     {
-        $r = OrderModel::get();
-        dd($r);exit;
+        return ;
+        if (\Schema::hasTable('mc_members')) {
+            $db_name =\YunShop::app()->config['db']['master']['database'];
+            $engine = DB::select("show table status from ".$db_name."  where name='ims_mc_members'");
+            if (isset($engine['0']['Engine']) && strtolower($engine['0']['Engine']) == 'myisam') {
+                DB::statement("ALTER TABLE ims_mc_members engine = InnoDB");
+            }
+        }
         //(new MessageService(\app\frontend\models\Order::completed()->first()))->received();
     }
 

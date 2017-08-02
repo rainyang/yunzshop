@@ -47,7 +47,7 @@ class Order
             return false;
         }
         $data = [
-            'id' => '1',//抵扣表id
+            'id' => $this->deductionId,//抵扣表id
             'name' => '积分抵扣',//名称
             'value' => $point->point,//数值
             'price' => $point->point_money,//金额
@@ -70,7 +70,7 @@ class Order
         $attributes = [
             'name' => $data['name'],
             'amount' => $data['price'],
-            'deduction_id' => 1,
+            'deduction_id' => $this->deductionId,
             'qty' => $data['value'],
         ];
         $orderDeduction = new PreOrderDeduction($attributes);

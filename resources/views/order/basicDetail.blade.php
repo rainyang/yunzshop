@@ -107,13 +107,7 @@
 @if (!empty($order['has_one_refund_apply']))
     @include('refund.index')
 @endif
-@if (!empty($order['address']))
-    @include('dispatch.detail')
-@endif
-@if (!empty($order['has_one_refund_apply']))
-    @include('refund.index')
-@endif
-@if (!$order->deductions->isEmpty())
+@if (count($order['deductions']))
 <div class="panel panel-default">
     <div class="panel-heading">
         抵扣信息
@@ -139,7 +133,7 @@
     </div>
 </div>
 @endif
-@if (!($order->coupons->isEmpty()))
+@if (count($order['coupons']))
     <div class="panel panel-default">
         <div class="panel-heading">
             优惠券信息
@@ -182,7 +176,7 @@
                 <th class="col-md-5 col-lg-1">操作</th>
             </tr>
             </thead>
-            @foreach ($order['hasManyOrderGoods'] as $order_goods)
+            @foreach ($order['has_many_order_goods'] as $order_goods)
 
                 <tr>
                     <td>{{$order_goods['goods_id']}}</td>

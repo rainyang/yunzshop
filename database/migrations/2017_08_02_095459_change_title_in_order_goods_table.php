@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateEngineInnodbToMcMembers extends Migration
+class ChangeTitleInOrderGoodsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,13 @@ class UpdateEngineInnodbToMcMembers extends Migration
      */
     public function up()
     {
-        if (\Schema::hasTable('mc_members')) {
-            DB::statement("ALTER TABLE ims_mc_members engine = InnoDB");
+        if (\Schema::hasTable('yz_order_goods')) {
+            Schema::table('yz_order_goods', function (Blueprint $table) {
+                if (Schema::hasColumn('yz_order_goods', 'title')) {
+                    $table->string('title')->change();
+                }
+            });
         }
-
     }
 
     /**
@@ -26,6 +29,6 @@ class UpdateEngineInnodbToMcMembers extends Migration
      */
     public function down()
     {
-        //
+
     }
 }

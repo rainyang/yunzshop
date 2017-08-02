@@ -282,6 +282,10 @@ class PreGeneratedOrderGoods extends OrderGoods
 
     }
 
+    /**
+     * 市场价
+     * @return mixed
+     */
     public function getGoodsMarketPrice()
     {
         return $this->getPriceCalculator()->getGoodsMarketPrice();
