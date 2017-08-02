@@ -281,7 +281,7 @@ return [
     //'menu_key'=>'menu',
     'menu'  => [
         'main_menu'     => 'main-menu',
-        'plugin_menu'   => 'plugin_menu',
+        'plugins_menu'  => 'plugins_menu',
         'founder_menu'  => 'founder-menu',
         //兼容旧插件使用
         'old_plugin_menu'   => 'menu'
