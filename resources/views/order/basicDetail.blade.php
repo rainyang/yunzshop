@@ -107,9 +107,6 @@
 @if (!empty($order['has_one_refund_apply']))
     @include('refund.index')
 @endif
-@if (!empty($order['has_one_refund_apply']))
-    @include('refund.index')
-@endif
 @if (count($order['deductions']))
 <div class="panel panel-default">
     <div class="panel-heading">
