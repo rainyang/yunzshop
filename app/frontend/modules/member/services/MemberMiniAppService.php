@@ -65,7 +65,7 @@ class MemberMiniAppService extends MemberService
             $json_user['nickname']   = $json_user['nickName'];
             $json_user['headimgurl'] = $json_user['avatarUrl'];
             $json_user['sex']        = $json_user['gender'];
-
+\Log::debug('---小程序会员信息---', $json_user);
             //Login
             $member_id = $this->memberLogin($json_user);
             $this->createMiniMember($json_user, ['uniacid'=>$uniacid, 'member_id'=>$member_id]);
