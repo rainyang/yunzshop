@@ -14,11 +14,11 @@ use app\frontend\models\OrderGoods;
 class Sale extends \app\common\models\Sale
 {
     /**
-     * 计算满额减
+     * 计算满额减金额
      * @param $goods_price
      * @return mixed
      */
-    public function getFullPriceReductions($goods_price)
+    public function getFullReductionAmount($goods_price)
     {
         if ($goods_price < $this->ed_full) {
             // 未满额

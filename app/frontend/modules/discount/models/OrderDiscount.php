@@ -62,24 +62,24 @@ class OrderDiscount
      * @return int
      */
 
-    public function getDiscountPrice()
+    public function getDiscountAmount()
     {
-        return $this->getCouponPrice();
+        return $this->getCouponAmount();
     }
 
-    public function getCouponPrice()
+    public function getCouponAmount()
     {
 
         if (isset($this->couponPrice)) {
             return $this->couponPrice;
         }
 
-        $this->couponPrice = $this->_getCouponPrice();
+        $this->couponPrice = $this->_getCouponAmount();
 
         return $this->couponPrice;
     }
 
-    private function _getCouponPrice()
+    private function _getCouponAmount()
     {
         $discountCouponService = (new CouponService($this->order, Coupon::COUPON_DISCOUNT));
         $discountPrice = $discountCouponService->getOrderDiscountPrice();

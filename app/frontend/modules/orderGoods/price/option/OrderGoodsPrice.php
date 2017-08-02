@@ -3,6 +3,7 @@
 namespace app\frontend\modules\orderGoods\price\option;
 
 use app\frontend\models\Goods;
+use app\frontend\modules\orderGoods\models\PreGeneratedOrderGoods;
 use app\frontend\modules\orderGoods\price\OrderGoodsPriceCalculator;
 
 /**
@@ -13,38 +14,42 @@ use app\frontend\modules\orderGoods\price\OrderGoodsPriceCalculator;
  */
 abstract class OrderGoodsPrice
 {
-    protected $orderGoodsPriceCalculator;
     /**
      * @var \app\frontend\modules\orderGoods\models\PreGeneratedOrderGoods
      */
     public $orderGoods;
 
-    public function __construct(OrderGoodsPriceCalculator $orderGoodsPriceCalculator)
+    public function __construct(PreGeneratedOrderGoods $preGeneratedOrderGoods)
     {
-        $this->orderGoodsPriceCalculator = $orderGoodsPriceCalculator;
-        $this->orderGoods = $orderGoodsPriceCalculator->getOrderGoods();
+        $this->orderGoods = $preGeneratedOrderGoods;
     }
 
     /**
-     * @var Goods
-     */
-    protected $goods;
-
-    /**
      * 计算成交价格
-     * @return int
+     * @return float
      */
     abstract public function getPrice();
 
     /**
      * 计算商品销售价格
-     * @return int
+     * @return float
      */
     abstract public function getGoodsPrice();
 
     /**
+     * 计算商品市场价格
+     * @return float
+     */
+    abstract public function getGoodsMarketPrice();
+
+    /**
+     * 计算商品市场价格
+     * @return float
+     */
+    abstract public function getGoodsCostPrice();
+    /**
      * 计算商品优惠价格
      * @return number
      */
-    abstract public function getDiscountPrice();
+    abstract public function getDiscountAmount();
 }
