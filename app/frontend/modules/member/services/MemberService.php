@@ -427,8 +427,10 @@ class MemberService
 
             //生成分销关系链
             if ($upperMemberId) {
+                \Log::debug('分销关系链-海报');
                 Member::createRealtion($member_id, $upperMemberId);
             } else {
+                \Log::debug('分销关系链-链接');
                 Member::createRealtion($member_id);
             }
         }
