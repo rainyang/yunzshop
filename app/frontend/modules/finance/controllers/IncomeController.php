@@ -251,9 +251,9 @@ class IncomeController extends ApiController
             }
 
         }
+        dd($withdrawData);
         Log::info("提现成功:提现成功");
         $request = static::setWithdraw($withdrawData);
-        dd($request);
         if ($request) {
             return $this->successJson('提现成功!');
         }
