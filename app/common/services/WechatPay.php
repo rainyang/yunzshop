@@ -295,7 +295,7 @@ class WechatPay extends Pay
     {
         $pay = \Setting::get('shop.pay');
 
-        if (is_null(\YunShop::request()->app_type) && \YunShop::request()->app_type == 'wechat') {
+        if (!is_null(\YunShop::request()->app_type) && \YunShop::request()->app_type == 'wechat') {
             $pay = [
                 'weixin_appid' => 'wx31002d5db09a6719',
                 'weixin_secret' => '217ceb372d5e3296f064593fe2e7c01e',
