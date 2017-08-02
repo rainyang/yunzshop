@@ -352,16 +352,19 @@ class MemberService
             \Log::debug('添加新会员');
 
             if (empty($member_model) && empty($mc_mapping_fans_model)) {
+                \Log::debug('--------mini1------');
                 $member_id = $this->addMemberInfo($uniacid, $userinfo);
 
                 if ($member_id === false) {
                     return show_json(8, '保存用户信息失败');
                 }
             } elseif ($mc_mapping_fans_model->uid) {
+                \Log::debug('--------mini2------');
                 $member_id = $mc_mapping_fans_model->uid;
 
                 $this->updateMemberInfo($member_id, $userinfo);
             } else {
+                \Log::debug('--------mini3------');
                 $this->addFansMember($member_id, $uniacid, $userinfo);
             }
 
