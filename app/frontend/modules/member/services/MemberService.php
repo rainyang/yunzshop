@@ -328,13 +328,8 @@ class MemberService
 
         //$mc_mapping_fans_model = McMappingFansModel::getUId($userinfo['openid']);
         $mc_mapping_fans_model = $this->getFansModel($userinfo['openid']);
-
-        if ($mc_mapping_fans_model) {
-            $member_model = Member::getMemberById($mc_mapping_fans_model->uid);
-            $member_shop_info_model = MemberShopInfo::getMemberShopInfo($mc_mapping_fans_model->uid);
-
-            $member_id = $mc_mapping_fans_model->uid;
-        }
+        $member_model = Member::getMemberById($member_id);
+        $member_shop_info_model = MemberShopInfo::getMemberShopInfo($member_id);
 
         if (!empty($UnionidInfo->unionid) && !empty($member_model)
             && !empty($mc_mapping_fans_model) && !empty($member_shop_info_model)) {
