@@ -321,7 +321,7 @@ class MemberService
         $userinfo['nickname'] = $this->filteNickname($userinfo);
 
         $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $userinfo['unionid'])->first();
-\Log::debug(sprintf('----------UnionidInfo-------', $UnionidInfo));
+\Log::debug'----------UnionidInfo-------', $UnionidInfo);
         if (!is_null($UnionidInfo)) {
             $member_id = $UnionidInfo->member_id;
         }
