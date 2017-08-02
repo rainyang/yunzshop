@@ -221,13 +221,11 @@ class IncomeController extends ApiController
      */
     public function saveWithdraw()
     {
-        echo '<pre>'; print_r(123); exit;
         $config = \Config::get('income');
         $withdrawData = \YunShop::request()->data;
         if (!$withdrawData) {
             return $this->errorJson('未检测到数据!');
         }
-        dd($withdrawData);
         $withdrawTotal = $withdrawData['total'];
         Log::info("POST - Withdraw Total ", $withdrawTotal);
         Log::info("POST - Withdraw Data ", $withdrawData);
