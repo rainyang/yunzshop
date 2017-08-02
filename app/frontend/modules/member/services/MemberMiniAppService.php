@@ -8,10 +8,9 @@
 
 namespace app\frontend\modules\member\services;
 
-use app\common\models\Member;
 use app\common\services\Session;
-use app\frontend\models\MemberShopInfo;
 use app\frontend\modules\member\models\MemberMiniAppModel;
+use app\frontend\modules\member\models\MemberUniqueModel;
 
 class MemberMiniAppService extends MemberService
 {
