@@ -328,6 +328,11 @@ class MemberService
 
         //$mc_mapping_fans_model = McMappingFansModel::getUId($userinfo['openid']);
         $mc_mapping_fans_model = $this->getFansModel($userinfo['openid']);
+
+        if (empty($member_id) && !empty($mc_mapping_fans_model)) {
+            $member_id = $mc_mapping_fans_model->uid;
+        }
+
         $member_model = Member::getMemberById($member_id);
         $member_shop_info_model = MemberShopInfo::getMemberShopInfo($member_id);
 
