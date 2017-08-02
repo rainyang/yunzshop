@@ -67,7 +67,7 @@ class YunShop
                 $dbMenu = \Cache::get('db_menu');
             }
 
-            $menuList = array_merge($dbMenu, (array)Config::get($menu_array['plugin_menu']));
+            $menuList = array_merge($dbMenu, (array)Config::get($menu_array['plugins_menu']));
             //兼容旧插件使用
             $menuList = array_merge($menuList, (array)Config::get($menu_array['old_plugin_menu']));
 
