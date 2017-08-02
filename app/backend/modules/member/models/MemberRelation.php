@@ -353,7 +353,7 @@ class MemberRelation extends BackendModel
         if (empty($member)) {
             return;
         }
-
+        \Log::debug(sprintf('会员上线-%d', $member->parent_id));
         $become_child = intval($set->become_child);
 
         $parent = SubMemberModel::getMemberShopInfo($member->parent_id);
