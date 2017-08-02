@@ -12,12 +12,8 @@
 
 namespace app\frontend\modules\member\models;
 
-use app\backend\models\BackendModel;
-
-class MemberMiniAppModel extends BackendModel
+class MemberMiniAppModel extends \app\common\models\MemberMiniAppModel
 {
-    public $table = 'yz_member_mini_app';
-
     public static function insertData($data)
     {
         self::insert($data);

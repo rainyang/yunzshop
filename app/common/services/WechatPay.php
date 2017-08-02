@@ -28,6 +28,7 @@ class WechatPay extends Pay
 
     public function doPay($data = [])
     {
+        $client_type = null;
         $text = $data['extra']['type'] == 1 ? '支付' : '充值';
         $op = '微信订单' . $text . ' 订单号：' . $data['order_no'];
         $pay_order_model = $this->log($data['extra']['type'], $this->pay_type[Pay::PAY_MODE_WECHAT], $data['amount'], $op, $data['order_no'], Pay::ORDER_STATUS_NON, \YunShop::app()->getMemberId());
@@ -36,7 +37,11 @@ class WechatPay extends Pay
             throw new AppException('无法获取用户ID');
         }
 
-        $openid = Member::getOpenId(\YunShop::app()->getMemberId());
+        if (\YunShop::request()->client_type) {
+            $client_type = \YunShop::request()->client_type;
+        }
+
+        $openid = Member::getOpenIdForType(\YunShop::app()->getMemberId(), $client_type);
 
         //不同支付类型选择参数
         $pay = $this->payParams();
