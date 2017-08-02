@@ -42,7 +42,7 @@ class WechatPay extends Pay
         }
 
         $openid = Member::getOpenIdForType(\YunShop::app()->getMemberId(), $client_type);
-
+\Log::debug('-----pay_member_id-----'. \YunShop::app()->getMemberId());
         //不同支付类型选择参数
         $pay = $this->payParams();
 
