@@ -23,19 +23,23 @@ class UnifyOrderDispatchPrice
         if (!$this->needDispatch()) {
             return;
         }
+        // 统一运费取所有商品统一运费的最大值
         $price = $event->getOrderModel()->getOrderGoodsModels()->max(function ($orderGoods) {
             /**
              * @var $orderGoods OrderGoods
              */
-
             if($orderGoods->isFreeShipping())
             {
+                // 免邮费
                 return 0;
             }
+
             if(!isset($orderGoods->hasOneGoodsDispatch)){
+                // 没有找到商品配送关联模型
                 return 0;
             }
             if ($orderGoods->hasOneGoodsDispatch->dispatch_type == GoodsDispatch::UNIFY_TYPE) {
+                // 商品配送类型为 统一运费
                 return $orderGoods->hasOneGoodsDispatch->dispatch_price;
             }
             return 0;
@@ -51,7 +55,7 @@ class UnifyOrderDispatchPrice
 
     private function needDispatch()
     {
-
+        // 虚拟物品不需要配送
         if ($this->event->getOrderModel()->is_virtual) {
             return false;
         }

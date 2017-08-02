@@ -27,6 +27,10 @@ class Express
     use ValidatesRequests;
     private $event;
 
+    /**
+     * 订单模型刚生成时(未添加订单商品)
+     * @param OnPreGenerateOrderCreatingEvent $event
+     */
     public function onCreating(OnPreGenerateOrderCreatingEvent $event)
     {
         $this->event = $event;
@@ -38,6 +42,10 @@ class Express
 
     }
 
+    /**
+     * 订单保存时
+     * @param AfterOrderCreatedEvent $event
+     */
     public function onSave(AfterOrderCreatedEvent $event)
     {
         $this->event = $event;
@@ -50,6 +58,10 @@ class Express
         return;
     }
 
+    /**
+     * 显示配送方式
+     * @param OnDispatchTypeInfoDisplayEvent $event
+     */
     public function onDisplay(OnDispatchTypeInfoDisplayEvent $event)
     {
         $this->event = $event;
@@ -68,6 +80,10 @@ class Express
         return;
     }
 
+    /**
+     * 获取用户配送地址模型
+     * @return MemberAddress
+     */
     private function getMemberAddress()
     {
         $request = \Request::capture();
@@ -90,6 +106,10 @@ class Express
         return $this->event->getOrderModel()->getMember()->defaultAddress;
     }
 
+    /**
+     * 需要配送
+     * @return bool
+     */
     private function needDispatch()
     {
         if ($this->event->getOrderModel()->is_virtual) {
@@ -99,6 +119,10 @@ class Express
         return true;
     }
 
+    /**
+     * 获取订单配送地址模型
+     * @return OrderAddress
+     */
     private function getOrderAddress()
     {
         $member_address = $this->getMemberAddress();
@@ -116,6 +140,11 @@ class Express
         return $order_address;
     }
 
+    /**
+     * 保存配送信息
+     * @return bool
+     * @throws AppException
+     */
     private function saveExpressInfo()
     {
         $order_address = $this->getOrderAddress();
@@ -147,6 +176,14 @@ class Express
 
     }
 
+    /**
+     * 校验参数
+     * @param $request
+     * @param array $rules
+     * @param array $messages
+     * @param array $customAttributes
+     * @throws AppException
+     */
     private function validate($request, array $rules, array $messages = [], array $customAttributes = [])
     {
 

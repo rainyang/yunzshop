@@ -174,6 +174,10 @@ class OrderService
         return $paySN;
     }
 
+    /**
+     * 订单操作类 todo 以前不了解抛异常机制,所有先check.现在可以移除check
+     * {@inheritdoc}
+     */
     private static function OrderOperate(OrderOperation $orderOperation)
     {
         if (!isset($orderOperation)) {
@@ -325,6 +329,10 @@ class OrderService
         return self::OrderOperate($order);
     }
 
+    /**
+     * 订单改价记录
+     * {@inheritdoc}
+     */
     private static function getOrderGoodsChangePriceLogs($param)
     {
         return collect($param['order_goods'])->map(function ($orderGoodsParams) use ($param) {
@@ -344,18 +352,9 @@ class OrderService
     }
 
     /**
-     * 所有订单商品都是实物 todo 没想好放在哪个类
-     * @param Collection $orderGoodsCollect
-     * @return bool
+     * 自动收货
+     * {@inheritdoc}
      */
-    public static function allGoodsIsReal(Collection $orderGoodsCollect)
-    {
-        return $orderGoodsCollect->contains(function ($orderGoods) {
-
-            return $orderGoods->belongsToGood->isRealGoods();
-        });
-    }
-
     public static function autoReceive()
     {
         $days = (int)\Setting::get('shop.trade.receive');
@@ -371,6 +370,10 @@ class OrderService
         }
     }
 
+    /**
+     * 自动关闭订单
+     * {@inheritdoc}
+     */
     public static function autoClose()
     {
         $days = (int)\Setting::get('shop.trade.close_order_days');

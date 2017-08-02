@@ -13,6 +13,7 @@ class UpdateEngineInnodbToMcMembers extends Migration
      */
     public function up()
     {
+        return ;
         if (\Schema::hasTable('mc_members')) {
             $db_name =\YunShop::app()->config['db']['master']['database'];
             $engine = DB::select("show table status from ".$db_name."  where name='ims_mc_members'");
