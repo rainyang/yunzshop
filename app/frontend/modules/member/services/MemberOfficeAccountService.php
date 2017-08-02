@@ -237,4 +237,74 @@ class MemberOfficeAccountService extends MemberService
     {
         return Session::get('client_url');
     }
+
+    /**
+     * 公众号开放平台授权登陆
+     *
+     * @param $uniacid
+     * @param $userinfo
+     * @return array|int|mixed
+     */
+    public function unionidLogin($uniacid, $userinfo, $upperMemberId = NULL)
+    {
+        $member_id = parent::unionidLogin($uniacid, $userinfo, $upperMemberId = NULL, self::LOGIN_TYPE);
+
+        return $member_id;
+    }
+
+    public function updateMemberInfo($member_id, $userinfo)
+    {
+        parent::updateMemberInfo($member_id, $userinfo);
+
+        $record = array(
+            'openid' => $userinfo['openid'],
+            'nickname' => stripslashes($userinfo['nickname']),
+            'follow' => isset($userinfo['subscribe'])?:0,
+            'tag' => base64_encode(serialize($userinfo))
+        );
+
+        McMappingFansModel::updateData($member_id, $record);
+    }
+
+    public function addMemberInfo($uniacid, $userinfo)
+    {
+        $uid = parent::addMemberInfo($uniacid, $userinfo);
+
+        //添加mapping_fans表
+        $this->addFansMember($uid, $uniacid, $userinfo);
+
+        return $uid;
+    }
+
+    public function addFansMember($uid, $uniacid, $userinfo)
+    {
+        McMappingFansModel::insertData($userinfo, array(
+            'uid' => $uid,
+            'acid' => $uniacid,
+            'uniacid' => $uniacid,
+            'salt' => Client::random(8),
+        ));
+    }
+
+    public function getFansModel($openid)
+    {
+        return McMappingFansModel::getUId($openid);
+    }
+
+    /**
+     * 会员关联表操作
+     *
+     * @param $uniacid
+     * @param $member_id
+     * @param $unionid
+     */
+    public function addMemberUnionid($uniacid, $member_id, $unionid)
+    {
+        MemberUniqueModel::insertData(array(
+            'uniacid' => $uniacid,
+            'unionid' => $unionid,
+            'member_id' => $member_id,
+            'type' => self::LOGIN_TYPE
+        ));
+    }
 }

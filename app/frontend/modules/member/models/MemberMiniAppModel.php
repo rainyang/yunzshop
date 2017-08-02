@@ -32,4 +32,11 @@ class MemberMiniAppModel extends \app\common\models\MemberMiniAppModel
             ->where('openid', $openid)
             ->update($data);
     }
+
+    public static function updateData($uid, $data)
+    {
+        self::uniacid()
+            ->where('uid', $uid)
+            ->update($data);
+    }
 }
