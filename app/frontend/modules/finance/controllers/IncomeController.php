@@ -342,7 +342,6 @@ class IncomeController extends ApiController
         $withdrawData['withdrawal'] = $data;
         event(new AfterIncomeWithdrawEvent($withdrawData));
         Log::info("Withdraw - data", $data);
-        dd('xixihaha');
         return Withdraw::insert($data);
     }
 
