@@ -221,7 +221,7 @@ class IncomeController extends ApiController
      */
     public function saveWithdraw()
     {
-        dd(123);
+        echo '<pre>'; print_r(123); exit;
         $config = \Config::get('income');
         $withdrawData = \YunShop::request()->data;
         if (!$withdrawData) {
