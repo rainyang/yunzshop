@@ -26,7 +26,7 @@ class ListController extends BaseController
     {
         parent::__construct();
         $params = \YunShop::request()->get();
-        $this->orderModel = Order::orders($params['search']);
+        $this->orderModel = Order::orders($params['search'])->isPlugin();
     }
 
     public function index()
