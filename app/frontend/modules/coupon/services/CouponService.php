@@ -36,7 +36,7 @@ class CouponService
              * @var $coupon Coupon
              */
             //$coupon->activate();
-            return $coupon->getDiscountPrice();
+            return $coupon->getDiscountAmount();
         });
     }
 
