@@ -498,9 +498,6 @@ class MemberController extends ApiController
 
         if (!empty($info)) {
             $info = $info->toArray();
-
-            $info['nickname'] = @iconv("utf-8", "gbk", $info['nickname']);
-            $info['nickname'] = @iconv("gbk", "utf-8", $info['nickname']);
         } else {
             $info = [];
         }
