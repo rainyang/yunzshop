@@ -227,7 +227,7 @@ class MemberRelation extends BackendModel
                 if (empty($become_child)) {
                     $model->child_time = time();
                     $model->inviter = 1;
-
+\Log::debug(sprintf('会员id-%d确定上线id-%d', $model->member_id, $mid));
                     $model->save();
                 }
             }
@@ -244,10 +244,11 @@ class MemberRelation extends BackendModel
 
                 if (empty($become_child)) {
                     $model->inviter = 1;
-
+                    \Log::debug(sprintf('会员id-%d确定上线id-%d', $model->member_id, $mid));
                     //notice
                     self::sendAgentNotify($member->member_id, $mid);
                 } else {
+                    \Log::debug(sprintf('会员id-%d未确定上线id-%d', $model->member_id, $mid));
                     $model->inviter = 0;
                 }
 
@@ -263,6 +264,7 @@ class MemberRelation extends BackendModel
                 $member->agent_time = time();
 
                 if ($member->inviter == 0) {
+                    \Log::debug(sprintf('会员id-%d无条件会员上线id-%d', $member->member_id, 0));
                     $member->inviter = 1;
                     $member->parent_id = 0;
                 }
@@ -300,6 +302,7 @@ class MemberRelation extends BackendModel
         $become_child = intval($set->become_child);
 
         if ($member->parent_id == 0) {
+            \Log::debug(sprintf('会员上线ID进入时1-: %d', $member->parent_id));
             if ($become_child == 1 && empty($member->inviter)) {
                 $member->child_time = time();
                 $member->inviter = 1;
@@ -308,7 +311,7 @@ class MemberRelation extends BackendModel
             }
         } else {
             $parent = SubMemberModel::getMemberShopInfo($member->parent_id);
-\Log::debug(sprintf('会员上线ID: %d', $member->parent_id));
+\Log::debug(sprintf('会员上线ID进入时2-: %d', $member->parent_id));
             $parent_is_agent = !empty($parent) && $parent->is_agent == 1 && $parent->status == 2;
 
             if ($parent_is_agent) {
