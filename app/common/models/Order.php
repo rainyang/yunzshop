@@ -14,6 +14,7 @@ use app\common\models\order\Address;
 use app\common\models\order\Express;
 use app\common\models\order\OrderChangePriceLog;
 use app\common\models\order\Pay;
+use app\common\models\order\Plugin;
 use app\common\models\order\Remark;
 use app\common\models\refund\RefundApply;
 use app\frontend\modules\order\services\status\StatusServiceFactory;
@@ -332,6 +333,28 @@ class Order extends BaseModel
         return $query->where('plugin_id', $pluginId);
     }
 
+    public function orderPlugin()
+    {
+        return $this->hasMany(Plugin::class);
+    }
+
+    /**
+     * 用来区分订单属于哪个.当插件需要查询自己的订单时,复写此方法
+     * @param $query
+     * @param int $pluginId
+     * @return mixed
+     */
+    public function scopeHasPluginId($query, $pluginId = 0)
+    {
+        if (!$pluginId) {
+            return $query;
+        }
+
+        return $query->whereHas('orderPlugin', function ($query) use ($pluginId) {
+            $query->where('plugin_id', $pluginId);
+        });
+    }
+
     /**
      * 通过会员ID获取订单信息
      *
@@ -380,6 +403,7 @@ class Order extends BaseModel
         // 添加了公众号id的全局条件.
         static::addGlobalScope(function (Builder $builder) {
             $builder->uniacid();
+            $builder->hasPluginId();
         });
     }
 }
