@@ -64,7 +64,7 @@ class ApplyController extends ApiController
             'images' => 'sometimes|filled|json',
             'refund_type' => 'required|integer',
             'order_id' => 'required|integer'
-        ], [
+        ], $request,[
             'images.json' => 'images非json格式'
         ]);
 
