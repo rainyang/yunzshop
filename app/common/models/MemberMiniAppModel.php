@@ -33,7 +33,7 @@ class MemberMiniAppModel extends BaseModel
      */
     public static function getUId($openid)
     {
-        return self::select('uid')
+        return self::select('member_id')
             ->uniacid()
             ->where('openid', $openid)
             ->first();
