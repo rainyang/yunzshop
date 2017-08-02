@@ -14,6 +14,7 @@ use app\frontend\modules\orderGoods\price\OrderGoodsPriceCalculator;
  */
 abstract class OrderGoodsPrice
 {
+    protected $goodsPrice;
     /**
      * @var \app\frontend\modules\orderGoods\models\PreGeneratedOrderGoods
      */
