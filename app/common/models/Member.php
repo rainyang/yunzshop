@@ -346,9 +346,11 @@ class Member extends BackendModel
             ];
         }
 
+        //获取插件会员中心链接挂件
         $plugins = \Config::get('member_center.plugins');
-
-        $data = array_merge($data,$plugins);
+        if (is_array($plugins)) {
+            $data = array_merge($data,$plugins);
+        }
 
         return $data;
     }
