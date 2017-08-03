@@ -21,6 +21,8 @@ class WechatController extends PaymentController
 {
     private $pay_type = ['JSAPI' => '微信', 'APP' => '微信APP'];
 
+    private $attach = [];
+
     public function __construct()
     {
         parent::__construct();
@@ -28,7 +30,9 @@ class WechatController extends PaymentController
         if (empty(\YunShop::app()->uniacid)) {
             $post = $this->getResponseResult();
 
-            \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $post['attach'];
+            $this->attach = explode(':', $post['attach']);
+            \Log::debug('---------attach数组--------', $this->attach);
+            \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $this->attach[0];
            
             AccountWechats::setConfig(AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid));
         }
@@ -68,6 +72,18 @@ class WechatController extends PaymentController
         switch ($post['trade_type']) {
             case 'JSAPI':
                 $pay = \Setting::get('shop.pay');
+
+                if (isset($this->attach[1]) && $this->attach[1] == 'wechat') {
+                    $pay = [
+                        'weixin_appid' => 'wx31002d5db09a6719',
+                        'weixin_secret' => '217ceb372d5e3296f064593fe2e7c01e',
+                        'weixin_mchid' => '1409112302',
+                        'weixin_apisecret' => '217ceb372d5e3296f064593fe2e7c01e',
+                        'weixin_cert'   => '',
+                        'weixin_key'    => ''
+                    ];
+                }
+
                 break;
             case 'APP':
                 $pay = \Setting::get('shop_app.pay');

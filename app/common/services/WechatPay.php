@@ -20,6 +20,7 @@ use EasyWeChat\Payment\Order as easyOrder;
 class WechatPay extends Pay
 {
     private $pay_type;
+    private static $client_type = 'account';
 
     public function __construct()
     {
@@ -42,7 +43,7 @@ class WechatPay extends Pay
         }
 
         $openid = Member::getOpenIdForType(\YunShop::app()->getMemberId(), $client_type);
-\Log::debug('-----pay_member_id-----'. \YunShop::app()->getMemberId());
+        \Log::debug('-----pay_member_id-----'. \YunShop::app()->getMemberId());
         //不同支付类型选择参数
         $pay = $this->payParams();
 
@@ -66,7 +67,7 @@ class WechatPay extends Pay
 
             $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_WAITPAY,'');
         } elseif ($result->return_code == 'SUCCESS') {
-                throw new AppException($result->err_code_des);
+            throw new AppException($result->err_code_des);
         } else {
             throw new AppException($result->return_msg);
         }
@@ -268,7 +269,7 @@ class WechatPay extends Pay
             'total_fee'        => $data['amount'] * 100, // 单位：分
             'nonce_str'        => Client::random(8) . "",
             'device_info'      => 'yun_shop',
-            'attach'           => \YunShop::app()->uniacid,
+            'attach'           => \YunShop::app()->uniacid . ':' . self::$client_type,
             'spbill_create_ip' => self::getClientIP(),
             'openid'           => $openid
         ];
@@ -295,14 +296,16 @@ class WechatPay extends Pay
     {
         $pay = \Setting::get('shop.pay');
 
-        if (!is_null(\YunShop::request()->app_type) && \YunShop::request()->app_type == 'wechat') {
+        if (is_null(\YunShop::request()->app_type) && \YunShop::request()->app_type == 'wechat') {
+            self::$client_type = 'wechat';
+
             $pay = [
                 'weixin_appid' => 'wx31002d5db09a6719',
                 'weixin_secret' => '217ceb372d5e3296f064593fe2e7c01e',
                 'weixin_mchid' => '1409112302',
                 'weixin_apisecret' => '217ceb372d5e3296f064593fe2e7c01e',
-                'weixin_cert'   => '',
-                'weixin_key'    => ''
+                'weixin_cert' => '',
+                'weixin_key' => ''
             ];
         }
 
