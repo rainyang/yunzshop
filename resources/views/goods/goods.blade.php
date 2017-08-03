@@ -55,6 +55,11 @@
             Tip.focus("#goodsname", "请输入商品名称!");
             return false;
         }
+        if ($(':input[name="goods[title]"]').val().length >= '40') {
+            $('#myTab a[href="#tab_basic"]').tab('show');
+            Tip.focus("#goodsname", "商品名称不能超过40个字符!");
+            return false;
+        }
         if ($(':input[name="category[parentid]"]').val() == 0) {
             $('#myTab a[href="#tab_basic"]').tab('show');
             Tip.focus(':input[name="category[parentid]"]', "请选择一级分类!");
