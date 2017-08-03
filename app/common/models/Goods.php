@@ -344,17 +344,6 @@ class Goods extends BaseModel
         return $this->type == self::REAL_GOODS;
     }
 
-    /**
-     * 用来区分订单属于哪个.当插件需要查询自己的订单时,复写此方法
-     * @param $query
-     * @param int $pluginId
-     * @return mixed
-     */
-    public function scopePluginId($query,$pluginId = 0)
-    {
-        return $query->where('plugin_id', $pluginId);
-    }
-
     public static function boot()
     {
         parent::boot();

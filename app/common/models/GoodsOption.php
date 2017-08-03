@@ -50,6 +50,6 @@ class GoodsOption extends \app\common\models\BaseModel
     }
     public function goods()
     {
-        return $this->belongsTo(Goods::class,'goods_id','id');
+        return $this->belongsTo(app('GoodsManager')->make('Goods'), 'goods_id', 'id');
     }
 }

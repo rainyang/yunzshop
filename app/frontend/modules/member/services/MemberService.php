@@ -427,8 +427,10 @@ class MemberService
 
             //生成分销关系链
             if ($upperMemberId) {
+                \Log::debug('分销关系链-海报');
                 Member::createRealtion($member_id, $upperMemberId);
             } else {
+                \Log::debug('分销关系链-链接');
                 Member::createRealtion($member_id);
             }
         }
@@ -591,11 +593,6 @@ class MemberService
         } elseif (is_array($userinfo) && !empty($userinfo['openid'])) {
             $member_id = $this->openidLogin(\YunShop::app()->uniacid, $userinfo, $upperMemberId);
         }
-
-        $mid = $upperMemberId ?: Member::getMid();
-
-        //发展下线
-        Member::chkAgent($member_id, $mid);
 
         return $member_id;
     }

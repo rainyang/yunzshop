@@ -10,30 +10,65 @@ namespace app\frontend\modules\orderGoods\price\option;
  */
 class NormalOrderGoodsPrice extends OrderGoodsPrice
 {
-    //todo 此处混乱
+    /**
+     * 支付价
+     */
+    public function getPayAmount()
+    {
+        // todo 成交价-抵扣金额(均摊)
+    }
+
+    /**
+     * 获取计算中的成交价
+     * @return mixed
+     */
+    public function getCalculationPrice(){
+        return $this->goodsPrice;
+    }
+    /**
+     * 成交价
+     * @return mixed
+     */
     public function getPrice()
     {
-        //成交价格=商品销售价-单品满减-优惠价格
-        $result = max($this->getFinalPrice() - $this->getFullPriceReductions() - $this->getDiscountPrice(), 0);
-        return $result;
+        $this->goodsPrice = max($this->getFinalPrice(),0);
+        $this->goodsPrice = max($this->goodsPrice - $this->getFullReductionAmount(),0);
+        $this->goodsPrice = max($this->goodsPrice - $this->getDiscountAmount(),0);
+        return $this->goodsPrice;
     }
 
-    public function getDiscountPrice()
+    /**
+     * 优惠金额
+     * @return int
+     */
+    public function getDiscountAmount()
     {
-        return $this->orderGoodsPriceCalculator->getCouponPrice();
+        return $this->getCouponAmount();
     }
 
+    /**
+     * 销售价
+     * @return mixed
+     */
     public function getGoodsPrice()
     {
         return $this->orderGoods->goods->price * $this->orderGoods->total;
     }
-    //todo 此处混乱
+
+    /**
+     * @return mixed
+     */
     public function getFinalPrice()
     {
-        return $this->orderGoods->goods->finalPrice * $this->orderGoods->total - $this->orderGoods->sale->getFullPriceReductions($this->orderGoods->goods->finalPrice * $this->orderGoods->total);
+        $fullPrice = isset($this->orderGoods->sale) ? $this->orderGoods->sale->getFullReductionAmount($this->orderGoods->goods->finalPrice * $this->orderGoods->total) : 0;
+        return $this->orderGoods->goods->finalPrice * $this->orderGoods->total - $fullPrice;
     }
 
-    public function getCouponPrice()
+    /**
+     * 优惠券价
+     * @return int
+     */
+    public function getCouponAmount()
     {
         if (!isset($this->orderGoods->coupons)) {
             return 0;
@@ -42,18 +77,33 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
         return $this->orderGoods->coupons->sum('amount');
     }
 
+    /**
+     * 成本价
+     * @return mixed
+     */
     public function getGoodsCostPrice()
     {
         return $this->orderGoods->goods->cost_price * $this->orderGoods->total;
     }
+
+    /**
+     * 市场价
+     * @return mixed
+     */
     public function getGoodsMarketPrice()
     {
         return $this->orderGoods->goods->market_price * $this->orderGoods->total;
     }
 
-    //todo 此处混乱
-    public function getFullPriceReductions()
+    /**
+     * 单品满减
+     * @return int
+     */
+    public function getFullReductionAmount()
     {
-        return $this->orderGoods->sale->getFullPriceReductions($this->getFinalPrice());
+        if (!isset($this->orderGoods->sale)) {
+            return 0;
+        }
+        return $this->orderGoods->sale->getFullReductionAmount($this->goodsPrice);
     }
 }

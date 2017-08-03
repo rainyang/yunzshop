@@ -9,6 +9,7 @@
 namespace app\frontend\modules\goods\services;
 
 use app\frontend\models\Goods;
+use app\frontend\models\GoodsOption;
 use Illuminate\Container\Container;
 
 class GoodsManager extends Container
@@ -23,6 +24,16 @@ class GoodsManager extends Container
             }else{
                 //后台
                 return new \app\backend\modules\goods\models\Goods($attributes);
+            }
+        });
+
+        $this->bind('GoodsOption', function ($orderManager, $attributes = []) {
+            if(\YunShop::isApi()){
+                //前台
+                return new GoodsOption($attributes);
+            }else{
+                //后台
+                return new \app\backend\modules\goods\models\GoodsOption($attributes);
             }
         });
     }

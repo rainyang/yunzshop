@@ -29,14 +29,13 @@ class DiscountCouponPrice extends CouponPrice
      */
     public function setOrderGoodsDiscountPrice()
     {
-        //echo 1;exit;
-        //dd($this->coupon);
+
         $this->coupon->getOrderGoodsInScope()->getOrderGoodsGroup()->map(function($orderGoods){
             /**
              * @var $OrderGoods PreGeneratedOrderGoods
              */
             //(优惠券金额/订单商品总金额)*订单商品价格
-            //dd(number_format(-($this->getDiscountPrice() / $this->getOrderGoodsInScope()->getPrice()) * $OrderGoods->getPrice(), 2));exit;
+            //dd(number_format(-($this->getDiscountAmount() / $this->getOrderGoodsInScope()->getPrice()) * $OrderGoods->getPrice(), 2));exit;
             $goodsMemberCoupon = new GoodsMemberCoupon();
             //todo 需要按照订单方式修改
 

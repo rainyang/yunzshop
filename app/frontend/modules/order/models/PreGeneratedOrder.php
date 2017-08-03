@@ -26,8 +26,10 @@ use Illuminate\Support\Facades\Schema;
  * 事件通知
  *  终止订单生成
  *  订单生成后
- * Class PreGeneratedOrderModel
+ * Class preGeneratedOrder
  * @package app\frontend\modules\order\services\models
+ * @property Collection orderDeductions
+ * @property Collection orderCoupons
  */
 class PreGeneratedOrder extends Order
 {
@@ -93,9 +95,9 @@ class PreGeneratedOrder extends Order
      * 计算订单优惠金额
      * @return number
      */
-    protected function getDiscountPrice()
+    protected function getDiscountAmount()
     {
-        return $this->orderDiscount->getDiscountPrice();
+        return $this->orderDiscount->getDiscountAmount();
     }
 
     /**
@@ -147,7 +149,7 @@ class PreGeneratedOrder extends Order
             'price' => sprintf('%.2f', $this->getPrice()),
             'goods_price' => sprintf('%.2f', $this->getFinalPrice()),
             'dispatch_price' => sprintf('%.2f', $this->getDispatchPrice()),
-            'discount_price' => sprintf('%.2f', $this->getDiscountPrice()),
+            'discount_price' => sprintf('%.2f', $this->getDiscountAmount()),
             'deduction_price' => sprintf('%.2f', $this->getDeductionPrice()),
 
         );
@@ -159,11 +161,8 @@ class PreGeneratedOrder extends Order
      */
     public function toArray()
     {
-
         $this->setRawAttributes(array_merge($this->getAttributes(),$this->getPreAttributes()));
-//        foreach ($this->orderGoodsModels as $orderGoodsModel) {
-//            $data['order_goods'][] = $orderGoodsModel->toArray();
-//        }
+
         return parent::toArray();
     }
 
@@ -226,7 +225,7 @@ class PreGeneratedOrder extends Order
             'price' => $this->getPrice(),//订单最终支付价格
             'order_goods_price' => $this->getOrderGoodsPrice(),//订单商品商城价
             'goods_price' => $this->getFinalPrice(),//订单会员价
-            'discount_price' => $this->getDiscountPrice(),//订单优惠金额
+            'discount_price' => $this->getDiscountAmount(),//订单优惠金额
             'deduction_price' => $this->getDeductionPrice(),//订单抵扣金额
             'dispatch_price' => $this->getDispatchPrice(),//订单运费
             'goods_total' => $this->getGoodsTotal(),//订单商品总数
@@ -265,7 +264,7 @@ class PreGeneratedOrder extends Order
     {
         //订单最终价格 = 商品最终价格 - 订单优惠 - 订单抵扣 + 订单运费
 
-        $result = max($this->getFinalPrice() - $this->getDiscountPrice() - $this->getDeductionPrice() + $this->getDispatchPrice(), 0);
+        $result = max($this->getFinalPrice() - $this->getDiscountAmount() - $this->getDeductionPrice() + $this->getDispatchPrice(), 0);
 
         return $result;
     }

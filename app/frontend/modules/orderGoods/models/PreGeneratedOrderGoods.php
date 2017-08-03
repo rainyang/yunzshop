@@ -11,6 +11,8 @@ namespace app\frontend\modules\orderGoods\models;
 use app\common\exceptions\AppException;
 use app\common\exceptions\ShopException;
 use app\frontend\models\OrderGoods;
+use app\frontend\modules\orderGoods\price\option\NormalOrderGoodsOptionPrice;
+use app\frontend\modules\orderGoods\price\option\NormalOrderGoodsPrice;
 use app\frontend\modules\orderGoods\price\OrderGoodsPriceCalculator;
 use app\frontend\modules\order\models\PreGeneratedOrder;
 use Illuminate\Support\Collection;
@@ -77,8 +79,8 @@ class PreGeneratedOrderGoods extends OrderGoods
             'goods_price' => $this->getGoodsPrice(),
             'goods_cost_price' => $this->getGoodsCostPrice(),
             'goods_market_price' => $this->getGoodsMarketPrice(),
-            'discount_price' => $this->getDiscountPrice(),
-            'coupon_price' => $this->getCouponPrice(),
+            'discount_price' => $this->getDiscountAmount(),
+            'coupon_price' => $this->getCouponAmount(),
         );
         if (isset($this->goodsOption)) {
 
@@ -173,38 +175,34 @@ class PreGeneratedOrderGoods extends OrderGoods
     }
 
     /**
-     * @var OrderGoodsPriceCalculator
+     * @var
      */
     protected $priceCalculator;
 
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
-        $this->setPriceCalculator($this);
+        $this->setPriceCalculator();
     }
 
     /**
      * 设置价格计算者
-     * @param $orderGoods
      */
-    public function setPriceCalculator($orderGoods)
+    public function setPriceCalculator()
     {
-        $this->priceCalculator = new OrderGoodsPriceCalculator($orderGoods);
+        if ($this->isOption()) {
+            $this->priceCalculator = new NormalOrderGoodsOptionPrice($this);
 
-    }
+        } else {
+            $this->priceCalculator = new NormalOrderGoodsPrice($this);
 
-    /**
-     * 添加价格装饰器
-     * @param $callback
-     */
-    public function pushPriceDecorator($callback)
-    {
-        $this->priceCalculator->pushDecorator($callback);
+        }
+
     }
 
     /**
      * 获取价格计算者
-     * @return OrderGoodsPriceCalculator
+     * @return mixed
      * @throws ShopException
      */
     protected function getPriceCalculator()
@@ -246,9 +244,9 @@ class PreGeneratedOrderGoods extends OrderGoods
     /**
      * 优惠金额
      */
-    public function getDiscountPrice()
+    public function getDiscountAmount()
     {
-        return $this->getPriceCalculator()->getDiscountPrice();
+        return $this->getPriceCalculator()->getDiscountAmount();
 
     }
 
@@ -256,9 +254,9 @@ class PreGeneratedOrderGoods extends OrderGoods
      * 优惠券金额
      * @return int
      */
-    public function getCouponPrice()
+    public function getCouponAmount()
     {
-        return $this->getPriceCalculator()->getCouponPrice();
+        return $this->getPriceCalculator()->getCouponAmount();
 
     }
 
@@ -266,9 +264,9 @@ class PreGeneratedOrderGoods extends OrderGoods
      * 计算单品满减价格
      * @return mixed
      */
-    protected function getFullPriceReductions()
+    protected function getFullReductionAmount()
     {
-        //return $this->getPriceCalculator()->getFullPriceReductions();
+        //return $this->getPriceCalculator()->getFullReductionAmount();
 
     }
 
@@ -282,6 +280,10 @@ class PreGeneratedOrderGoods extends OrderGoods
 
     }
 
+    /**
+     * 市场价
+     * @return mixed
+     */
     public function getGoodsMarketPrice()
     {
         return $this->getPriceCalculator()->getGoodsMarketPrice();

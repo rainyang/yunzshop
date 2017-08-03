@@ -219,10 +219,10 @@ class IncomeController extends ApiController
     /**
      * @return \Illuminate\Http\JsonResponse
      */
-    public function saveWithdraw($withdrawData)
+    public function saveWithdraw()
     {
         $config = \Config::get('income');
-        //$withdrawData = \YunShop::request()->data;
+        $withdrawData = \YunShop::request()->data;
         if (!$withdrawData) {
             return $this->errorJson('未检测到数据!');
         }
@@ -342,7 +342,6 @@ class IncomeController extends ApiController
         $withdrawData['withdrawal'] = $data;
         event(new AfterIncomeWithdrawEvent($withdrawData));
         Log::info("Withdraw - data", $data);
-        dd('xixihaha');
         return Withdraw::insert($data);
     }
 
@@ -355,6 +354,8 @@ class IncomeController extends ApiController
         if ($incomeWithdrawMode) {
             return $this->successJson('获取数据成功!', $incomeWithdrawMode);
         }
+
+        return $this->errorJson('未检测到数据!');
     }
 
 }

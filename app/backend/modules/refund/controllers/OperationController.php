@@ -27,9 +27,8 @@ class OperationController extends BaseController
     {
         parent::__construct();
         $request = \Request::capture();
-        $this->validate($request, [
+        $this->validate([
             'refund_id' => 'required',
-            //'reject_reason'=>''
         ]);
         $this->refundApply = RefundApply::find($request->input('refund_id'));
         if (!isset($this->refundApply)) {

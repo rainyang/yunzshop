@@ -30,7 +30,10 @@ class MemberCartService
 
     public static function newMemberCart($params)
     {
-
+        if (!isset($params['total'])) {
+            // 数量默认1
+            $params['total'] = 1;
+        }
         $cart = new MemberCart($params);
         $cart->validate();
         return $cart;
