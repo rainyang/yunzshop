@@ -238,9 +238,12 @@ class PreGeneratedOrderGoods extends OrderGoods
     public function getFinalPrice()
     {
         return $this->getPriceCalculator()->getFinalPrice();
-
     }
 
+    public function getCalculationPrice()
+    {
+        return $this->getPriceCalculator()->getCalculationPrice();
+    }
     /**
      * 优惠金额
      */

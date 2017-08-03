@@ -8,6 +8,7 @@ use app\common\components\ApiController;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Yunshop\Recharge\models\OrderModel;
+use Yunshop\StoreCashier\common\models\CashierGoods;
 
 
 /**
@@ -21,17 +22,21 @@ class TestController extends ApiController
     public $transactionActions = [''];
     public function index()
     {
-        return ;
-        if (\Schema::hasTable('mc_members')) {
-            $db_name =\YunShop::app()->config['db']['master']['database'];
-            $engine = DB::select("show table status from ".$db_name."  where name='ims_mc_members'");
-            if (isset($engine['0']['Engine']) && strtolower($engine['0']['Engine']) == 'myisam') {
-                DB::statement("ALTER TABLE ims_mc_members engine = InnoDB");
-            }
-        }
+        dd(fmod(5.5,5.4));
+        dd($this->aliquot(5.5,5.5));
+        dd($this->aliquot(1.91,1.90));
+        dd($this->aliquot(0.91,1.90));
+        dd($this->aliquot(2.51,6.50));
+        exit;
+        dd(2.11/2.1);
+        exit;
+        dd(unserialize(CashierGoods::first()->plugins));
+        dd(unserialize(CashierGoods::first()->profit));
         //(new MessageService(\app\frontend\models\Order::completed()->first()))->received();
     }
-
+    private function aliquot($a,$b){
+        return $a/$b == (int)($a/$b);
+    }
     public function index1()
     {
         // 最简单的单例
