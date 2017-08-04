@@ -2752,7 +2752,7 @@ return [
                         'url' => 'refund.list.exchangeGoods',
                         'url_params' => '',
                         'permit' => 1,
-                        'menu' => 0,
+                        'menu' => 1,
                         'icon' => 'fa-circle-o',
                         'parent_id' => '97',
                         'sort' => '4',
