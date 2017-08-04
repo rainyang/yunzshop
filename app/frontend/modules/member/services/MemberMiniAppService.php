@@ -8,9 +8,11 @@
 
 namespace app\frontend\modules\member\services;
 
+use app\common\helpers\Client;
 use app\common\services\Session;
 use app\frontend\modules\member\models\MemberMiniAppModel;
 use app\frontend\modules\member\models\MemberUniqueModel;
+use app\frontend\modules\member\models\McMappingFansModel;
 
 class MemberMiniAppService extends MemberService
 {
@@ -214,9 +216,20 @@ class MemberMiniAppService extends MemberService
     {
         $uid = parent::addMemberInfo($uniacid, $userinfo);
 
+        $this->addMcMemberFans($uid, $uniacid, $userinfo);
         $this->addFansMember($uid, $uniacid, $userinfo);
 
         return $uid;
+    }
+
+    public function addMcMemberFans($uid, $uniacid, $userinfo)
+    {
+        McMappingFansModel::insertData($userinfo, array(
+            'uid' => $uid,
+            'acid' => $uniacid,
+            'uniacid' => $uniacid,
+            'salt' => Client::random(8),
+        ));
     }
 
     public function addFansMember($uid, $uniacid, $userinfo)
