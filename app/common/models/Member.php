@@ -412,6 +412,7 @@ class Member extends BackendModel
         $model->save();
     }
 
+
     public static function getOpenIdForType($member_id, $type = null){
         switch ($type) {
             case 1:
@@ -429,5 +430,13 @@ class Member extends BackendModel
 
                 return $fans->openid;
         }
+    }
+    /**
+     * 判断用户是否关注
+     * @return bool
+     */
+    public function isFollow()
+    {
+        return isset($this->hasOneFans) && $this->hasOneFans->follow && !empty($this->hasOneFans->openid);
     }
 }
