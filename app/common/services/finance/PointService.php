@@ -104,9 +104,6 @@ class PointService
         if (!$noticeMember->hasOneFans->openid) {
             return;
         }
-        if ($noticeMember->hasOneFans->follow != 1) {
-            return;
-        }
         /*$nickname = @iconv("utf-8", "gbk", $this->member['nickname']);
         $nickname = @iconv("gbk", "utf-8", $nickname);*/
         $msg = [
