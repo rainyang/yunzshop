@@ -30,11 +30,7 @@ class BuyerMessage extends Message
         if (empty($this->templateId)) {
             return;
         }
-
-        $noticeMember = Member::getMemberByUid($uid)->with('hasOneFans')->first();
-        if (isset($noticeMember->hasOneFans) && $noticeMember->hasOneFans->follow && !empty($noticeMember->hasOneFans->openid)) {
-            $this->notice($this->templateId, $this->msg, $noticeMember->hasOneFans->openid);
-        }
+        $this->notice($this->templateId, $this->msg, $uid);
     }
 
     public function created()
