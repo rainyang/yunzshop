@@ -411,4 +411,13 @@ class Member extends BackendModel
 
         $model->save();
     }
+
+    /**
+     * 判断用户是否关注
+     * @return bool
+     */
+    public function isFollow()
+    {
+        return isset($this->hasOneFans) && $this->hasOneFans->follow && !empty($this->hasOneFans->openid);
+    }
 }

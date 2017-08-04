@@ -279,7 +279,10 @@ class YunShop
 
                     self::findRouteFile($controllerName, $action, $routes, $namespace, $path, $length, $currentRoutes, $requestRoute, true);
 
+                    if(!app('plugins')->isEnabled($pluginName)){
+                        throw new NotFoundException("{$pluginName}插件已禁用");
 
+                    }
                 } else {
                     throw new NotFoundException('无此插件');
 
