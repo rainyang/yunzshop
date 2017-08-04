@@ -10,7 +10,6 @@
 namespace app\frontend\modules\order\services\behavior;
 
 use app\common\models\Order;
-use app\frontend\modules\order\services\OrderService;
 
 class OrderPay extends ChangeStatusOperation
 {
@@ -20,13 +19,4 @@ class OrderPay extends ChangeStatusOperation
     protected $time_field = 'pay_time';
     protected $past_tense_class_name = 'OrderPaid';
 
-    public function execute()
-    {
-        $result = parent::execute();
-        if($this->isVirtual()){
-            OrderService::orderSend(['order_id' => $this->id]);
-            $result = OrderService::orderReceive(['order_id' => $this->id]);
-        }
-        return $result;
-    }
 }

@@ -5,6 +5,7 @@ namespace app\frontend\modules\order\controllers;
 use app\common\components\ApiController;
 
 
+use app\frontend\modules\order\services\OrderService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Yunshop\Recharge\models\OrderModel;
@@ -22,11 +23,7 @@ class TestController extends ApiController
     public $transactionActions = [''];
     public function index()
     {
-        dd(fmod(5.5,5.4));
-        dd($this->aliquot(5.5,5.5));
-        dd($this->aliquot(1.91,1.90));
-        dd($this->aliquot(0.91,1.90));
-        dd($this->aliquot(2.51,6.50));
+        OrderService::orderPay(['order_id'=>367]);
         exit;
         dd(2.11/2.1);
         exit;

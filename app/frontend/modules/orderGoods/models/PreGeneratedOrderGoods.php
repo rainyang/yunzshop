@@ -82,6 +82,7 @@ class PreGeneratedOrderGoods extends OrderGoods
             'discount_price' => $this->getDiscountAmount(),
             'coupon_price' => $this->getCouponAmount(),
         );
+
         if (isset($this->goodsOption)) {
 
             $attributes += [
