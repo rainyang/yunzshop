@@ -220,6 +220,9 @@ class MemberRelation extends BackendModel
 
         $parent = null;
 
+        $become_child =  intval($set->become_child);
+        $become_check = intval($set->become_check);
+
         if (!empty($mid)) {
             $parent =  SubMemberModel::getMemberShopInfo($mid);
         } else {
@@ -234,9 +237,6 @@ class MemberRelation extends BackendModel
         }
 
         $parent_is_agent = !empty($parent) && $parent->is_agent == 1 && $parent->status == 2;
-
-        $become_child =  intval($set->become_child);
-        $become_check = intval($set->become_check);
 
         if ($parent_is_agent && empty($member->inviter)) {
             if ($member->member_id != $parent->member_id) {
