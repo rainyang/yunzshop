@@ -4,6 +4,7 @@ namespace app\common\services;
 
 use app\common\events\message\SendMessageEvent;
 use app\common\models\AccountWechats;
+use app\common\models\Member;
 use app\Jobs\MessageNoticeJob;
 use EasyWeChat\Message\News;
 use EasyWeChat\Message\Text;
@@ -20,7 +21,7 @@ class MessageService
      * @param $data
      * @param $openId
      */
-    public static function notice($templateId, $data, $openId, $uniacid = '')
+    public static function notice($templateId, $data, $uid, $uniacid = '')
     {
         $res = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
         $options = [
@@ -28,8 +29,14 @@ class MessageService
             'secret' => $res['secret'],
         ];
         $app = new Application($options);
-        
-        (new MessageService())->noticeQueue($app->notice, $templateId, $data, $openId);
+        $member = Member::whereUid($uid)->first();
+        if (!isset($member)) {
+            \Log::error("微信消息推送失败,未找到uid:{$uid}的用户");
+        }
+        if (!$member->isFollow()) {
+            return false;
+        }
+        (new MessageService())->noticeQueue($app->notice, $templateId, $data, $member->hasOneFans->openid);
 //        $notice = $app->notice;
 //        $notice->uses($templateId)->andData($data)->andReceiver($openId)->send();
     }
@@ -38,8 +45,8 @@ class MessageService
     {
         $this->dispatch((new MessageNoticeJob($notice, $templateId, $data, $openId)));
         event(new SendMessageEvent([
-            'data'          => $data,
-            'openid'        => $openId
+            'data' => $data,
+            'openid' => $openId
         ]));
     }
 
