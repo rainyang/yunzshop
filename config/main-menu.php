@@ -2577,6 +2577,7 @@ return [
                                 'Order',
                                 'refund_list_refund',
                             ],
+                        'child' => []
 
                     ],
 
@@ -2596,6 +2597,7 @@ return [
                                 'Order',
                                 'refund_list_refund',
                             ],
+                        'child' => []
 
                     ],
 
@@ -2615,25 +2617,8 @@ return [
                                 'Order',
                                 'refund_list_refund',
                             ],
+                        'child' => []
 
-                    ],
-
-                    'refund_list_exchangeGoods' => [
-                        'id' => '109',
-                        'name' => '换货',
-                        'url' => 'refund.list.exchangeGoods',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 1,
-                        'icon' => 'fa-circle-o',
-                        'parent_id' => '97',
-                        'sort' => '4',
-                        'item' => 'refund_list_exchangeGoods',
-                        'parents' =>
-                            [
-                                'Order',
-                                'refund_list_refund',
-                            ],
                     ],
                     'refund_detail_index' => [
                         'id' => '109',
@@ -2641,7 +2626,7 @@ return [
                         'url' => 'refund.detail.index',
                         'url_params' => '',
                         'permit' => 1,
-                        'menu' => 1,
+                        'menu' => 0,
                         'icon' => 'fa-circle-o',
                         'parent_id' => '97',
                         'sort' => '4',
@@ -2651,6 +2636,7 @@ return [
                                 'Order',
                                 'refund_list_refund',
                             ],
+                        'child' => []
                     ],
                     'refund_operation_reject' => [
                         'id' => '109',
@@ -2658,7 +2644,7 @@ return [
                         'url' => 'refund.operation.reject',
                         'url_params' => '',
                         'permit' => 1,
-                        'menu' => 1,
+                        'menu' => 0,
                         'icon' => 'fa-circle-o',
                         'parent_id' => '97',
                         'sort' => '4',
@@ -2668,6 +2654,7 @@ return [
                                 'Order',
                                 'refund_list_refund',
                             ],
+                        'child' => []
                     ],
                     'refund_pay_index' => [
                         'id' => '109',
@@ -2675,7 +2662,7 @@ return [
                         'url' => 'refund.pay.index',
                         'url_params' => '',
                         'permit' => 1,
-                        'menu' => 1,
+                        'menu' => 0,
                         'icon' => 'fa-circle-o',
                         'parent_id' => '97',
                         'sort' => '4',
@@ -2685,6 +2672,7 @@ return [
                                 'Order',
                                 'refund_list_refund',
                             ],
+                        'child' => []
                     ],
                     'refund_operation_pass' => [
                         'id' => '109',
@@ -2692,7 +2680,7 @@ return [
                         'url' => 'refund.operation.pass',
                         'url_params' => '',
                         'permit' => 1,
-                        'menu' => 1,
+                        'menu' => 0,
                         'icon' => 'fa-circle-o',
                         'parent_id' => '97',
                         'sort' => '4',
@@ -2702,6 +2690,7 @@ return [
                                 'Order',
                                 'refund_list_refund',
                             ],
+                        'child' => []
                     ],
                     'refund_operation_receive_return_goods' => [
                         'id' => '109',
@@ -2709,7 +2698,7 @@ return [
                         'url' => 'refund.operation.receiveReturnGoods',
                         'url_params' => '',
                         'permit' => 1,
-                        'menu' => 1,
+                        'menu' => 0,
                         'icon' => 'fa-circle-o',
                         'parent_id' => '97',
                         'sort' => '4',
@@ -2719,6 +2708,7 @@ return [
                                 'Order',
                                 'refund_list_refund',
                             ],
+                        'child' => []
                     ],
                     'refund_operation_resend' => [
                         'id' => '109',
@@ -2726,7 +2716,7 @@ return [
                         'url' => 'refund.operation.resend',
                         'url_params' => '',
                         'permit' => 1,
-                        'menu' => 1,
+                        'menu' => 0,
                         'icon' => 'fa-circle-o',
                         'parent_id' => '97',
                         'sort' => '4',
@@ -2736,6 +2726,7 @@ return [
                                 'Order',
                                 'refund_list_refund',
                             ],
+                        'child' => []
                     ],
                     'refund_operation_consensus' => [
                         'id' => '109',
@@ -2743,7 +2734,7 @@ return [
                         'url' => 'refund.operation.consensus',
                         'url_params' => '',
                         'permit' => 1,
-                        'menu' => 1,
+                        'menu' => 0,
                         'icon' => 'fa-circle-o',
                         'parent_id' => '97',
                         'sort' => '4',
@@ -2753,6 +2744,25 @@ return [
                                 'Order',
                                 'refund_list_refund',
                             ],
+                        'child' => []
+                    ],
+                    'refund_list_exchangeGoods' => [
+                        'id' => '109',
+                        'name' => '换货',
+                        'url' => 'refund.list.exchangeGoods',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 0,
+                        'icon' => 'fa-circle-o',
+                        'parent_id' => '97',
+                        'sort' => '4',
+                        'item' => 'refund_list_exchangeGoods',
+                        'parents' =>
+                            [
+                                'Order',
+                                'refund_list_refund',
+                            ],
+                        'child' => []
                     ],
                 ],
 
