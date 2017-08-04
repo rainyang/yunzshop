@@ -321,7 +321,7 @@ class MemberService
         $userinfo['nickname'] = $this->filteNickname($userinfo);
 
         $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $userinfo['unionid'])->first();
-\Log::debug('----------UnionidInfo-------', $UnionidInfo);
+
         if (!is_null($UnionidInfo)) {
             $member_id = $UnionidInfo->member_id;
         }
@@ -342,9 +342,8 @@ class MemberService
 
             $types = explode('|', $UnionidInfo->type);
             $member_id = $UnionidInfo->member_id;
-\Log::debug('explode type', $types);
+
             if (!in_array($loginType, $types)) {
-                \Log::debug(sprintf('保存type-%s', $UnionidInfo->type . '|' . $loginType));
                 //更新ims_yz_member_unique表
                 MemberUniqueModel::updateData(array(
                     'unique_id' => $UnionidInfo->unique_id,
@@ -357,19 +356,16 @@ class MemberService
             \Log::debug('添加新会员');
 
             if (empty($member_model) && empty($mc_mapping_fans_model)) {
-                \Log::debug('--------mini1------');
                 $member_id = $this->addMemberInfo($uniacid, $userinfo);
 
                 if ($member_id === false) {
                     return show_json(8, '保存用户信息失败');
                 }
             } elseif ($mc_mapping_fans_model->uid) {
-                \Log::debug('--------mini2------');
                 $member_id = $mc_mapping_fans_model->uid;
 
                 $this->updateMemberInfo($member_id, $userinfo);
             } else {
-                \Log::debug('--------mini3------');
                 $this->addFansMember($member_id, $uniacid, $userinfo);
             }
 
@@ -439,10 +435,8 @@ class MemberService
 
             //生成分销关系链
             if ($upperMemberId) {
-                \Log::debug('分销关系链-海报');
                 Member::createRealtion($member_id, $upperMemberId);
             } else {
-                \Log::debug('分销关系链-链接');
                 Member::createRealtion($member_id);
             }
         }
@@ -601,10 +595,8 @@ class MemberService
     public function memberLogin($userinfo, $upperMemberId = NULL)
     {
         if (is_array($userinfo) && !empty($userinfo['unionid'])) {
-            \Log::debug('---开放平台入口----');
             $member_id = $this->unionidLogin(\YunShop::app()->uniacid, $userinfo, $upperMemberId);
         } elseif (is_array($userinfo) && !empty($userinfo['openid'])) {
-            \Log::debug('---公众号入口----');
             $member_id = $this->openidLogin(\YunShop::app()->uniacid, $userinfo, $upperMemberId);
         }
 
