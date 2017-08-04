@@ -74,7 +74,7 @@ class McMappingFansModel extends McMappingFans
         $fans_model->follow = $subscribe;
         $fans_model->followtime = $follow_time;
         $fans_model->unfollowtime = 0;
-        $fans_model->tag = base64_encode(serialize($userinfo));
+        $fans_model->tag = '';//base64_encode(serialize($userinfo));
 
         if ($fans_model->save()) {
             return $fans_model->uid;
