@@ -32,6 +32,7 @@ class MessageService
         $member = Member::whereUid($uid)->first();
         if (!isset($member)) {
             \Log::error("微信消息推送失败,未找到uid:{$uid}的用户");
+            return false;
         }
         if (!$member->isFollow()) {
             return false;
