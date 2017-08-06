@@ -98,6 +98,7 @@ class MemberOfficeAccountService extends MemberService
             return show_json(1, 'user_info_api');
         } else {
             redirect($redirect_url)->send();
+            exit;
         }
     }
 
