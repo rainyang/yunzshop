@@ -33,8 +33,8 @@ class CloudController extends PaymentController
     public function notifyUrl()
     {
         //$this->log($_GET);
-        $this->getSignResult();
-        if ('00' == $_GET['respcd'] && $_GET['errorDetail'] == "SUCCESS") {
+        
+        if ($this->getSignResult() && '00' == $_GET['respcd'] && $_GET['errorDetail'] == "SUCCESS") {
             \Log::debug('------验证成功-----');
             $data = [
                 'total_fee'    => floatval($_GET['txamt']),
