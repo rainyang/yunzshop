@@ -10,6 +10,7 @@ namespace app\payment\controllers;
 
 use app\common\helpers\Url;
 use app\common\models\AccountWechats;
+use app\common\services\Pay;
 use app\payment\PaymentController;
 use Yunshop\CloudPay\services\CloudPayNotifyService;
 
@@ -73,5 +74,18 @@ class CloudController extends PaymentController
         $notify->setKey($pay['key']);
 
         return $notify->verifySign();
+    }
+
+    /**
+     * 支付日志
+     *
+     * @param $post
+     */
+    public function log($data)
+    {
+        //访问记录
+        Pay::payAccessLog();
+        //保存响应数据
+        Pay::payResponseDataLog($data['out_trade_no'], '云收银微信支付', json_encode($data));
     }
 }
