@@ -412,7 +412,6 @@ class Member extends BackendModel
         $model->save();
     }
 
-
     public static function getOpenIdForType($member_id, $type = null){
         switch ($type) {
             case 1:
