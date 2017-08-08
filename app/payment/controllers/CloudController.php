@@ -46,6 +46,7 @@ class CloudController extends PaymentController
             ];
 
             $this->payResutl($data);
+            \Log::debug('---结束---');
             echo "success";
         } else {
             echo "fail";
