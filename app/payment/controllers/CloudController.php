@@ -23,7 +23,7 @@ class CloudController extends PaymentController
 
         if (empty(\YunShop::app()->uniacid)) {
             $this->attach = explode(':', $_GET['attach']);
-            \Log::debug('------回调-----', $_GET);
+
             \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $this->attach[0];
 
             AccountWechats::setConfig(AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid));
@@ -32,8 +32,8 @@ class CloudController extends PaymentController
 
     public function notifyUrl()
     {
-        //$this->log($_GET);
-        
+        $this->log($_GET);
+
         if ($this->getSignResult() && '00' == $_GET['respcd'] && $_GET['errorDetail'] == "SUCCESS") {
             \Log::debug('------验证成功-----');
             $data = [
