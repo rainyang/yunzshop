@@ -15,10 +15,9 @@ class CloudPay
     public function onGetPaymentTypes(GetOrderPaymentTypeEvent $event)
     {
         $set = \Setting::get('plugin.cloud_pay_set');
-        \Log::debug('云收银开启');
         if (!is_null($set) && 1 == $set['switch']) {
             $result = [
-                'name' => '云支付',
+                'name' => '云收银支付',
                 'value' => '3'
             ];
             $event->addData($result);
