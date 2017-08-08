@@ -18,7 +18,7 @@ class CloudPay
         if (!is_null($set) && 1 == $set['switch']) {
             $result = [
                 'name' => '云收银支付',
-                'value' => '3'
+                'value' => '6'
             ];
             $event->addData($result);
 
