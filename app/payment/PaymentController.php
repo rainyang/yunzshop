@@ -94,17 +94,14 @@ class PaymentController extends BaseController
                 \Log::debug('支付操作', ['charge.succeeded']);
 
                 $orderPay = OrderPay::where('pay_sn', $data['out_trade_no'])->first();
-                \Log::debug('订单号-'.$data['out_trade_no']);
+
                 if ($data['unit'] == 'fen') {
                     $orderPay->amount = $orderPay->amount * 100;
                 }
-                \Log::debug('订单金额'. $orderPay->amount);
-                \Log::debug('回调金额'. $data['total_fee']);
+
                 if (bccomp($orderPay->amount, $data['total_fee'], 2) == 0) {
-                    \Log::debug('订单', $orderPay);
                     \Log::debug('更新订单状态');
                     OrderService::ordersPay(['order_pay_id' => $orderPay->id]);
-
                 }
                 break;
             case "recharge.succeeded":
