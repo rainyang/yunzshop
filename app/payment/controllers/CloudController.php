@@ -86,6 +86,6 @@ class CloudController extends PaymentController
         //访问记录
         Pay::payAccessLog();
         //保存响应数据
-        Pay::payResponseDataLog($data['out_trade_no'], '云收银微信支付', json_encode($data));
+        Pay::payResponseDataLog($data['orderNum'], '云收银微信支付', json_encode($data));
     }
 }
