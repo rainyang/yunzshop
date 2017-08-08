@@ -37,7 +37,7 @@ class GoodsDiscount extends BaseModel
                 $result = $this->getMoneyPrice($price);
                 break;
             case self::MONEY_OFF:
-                $result = $this->getDiscountPrice($price);
+                $result = $this->getDiscountAmount($price);
                 break;
             default:
                 $result = $price;
@@ -65,7 +65,7 @@ class GoodsDiscount extends BaseModel
      * @param $price
      * @return mixed
      */
-    private function getDiscountPrice($price)
+    private function getDiscountAmount($price)
     {
 
         if ($this->discount_value == 0) {

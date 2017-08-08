@@ -27,14 +27,25 @@ class Express
     use ValidatesRequests;
     private $event;
 
+    /**
+     * 订单模型刚生成时(未添加订单商品)
+     * @param OnPreGenerateOrderCreatingEvent $event
+     */
     public function onCreating(OnPreGenerateOrderCreatingEvent $event)
     {
         $this->event = $event;
 
+        if (!$this->needDispatch()) {
+            return;
+        }
         $event->getOrderModel()->setRelation('orderAddress', $this->getOrderAddress());
 
     }
 
+    /**
+     * 订单保存时
+     * @param AfterOrderCreatedEvent $event
+     */
     public function onSave(AfterOrderCreatedEvent $event)
     {
         $this->event = $event;
@@ -47,6 +58,10 @@ class Express
         return;
     }
 
+    /**
+     * 显示配送方式
+     * @param OnDispatchTypeInfoDisplayEvent $event
+     */
     public function onDisplay(OnDispatchTypeInfoDisplayEvent $event)
     {
         $this->event = $event;
@@ -65,6 +80,10 @@ class Express
         return;
     }
 
+    /**
+     * 获取用户配送地址模型
+     * @return MemberAddress
+     */
     private function getMemberAddress()
     {
         $request = \Request::capture();
@@ -72,14 +91,14 @@ class Express
 
         if (count($address)) {
             //$request->input('address');
-            $this->validate(['address' => $address], [
-                    'address.address' => 'required|string',
-                    'address.mobile' => 'required|string',
-                    'address.username' => 'required|string',
-                    'address.province' => 'required|string',
-                    'address.city' => 'required|string',
-                    'address.district' => 'required|string',
-                ]
+            $this->validate([
+                'address.address' => 'required|string',
+                'address.mobile' => 'required|string',
+                'address.username' => 'required|string',
+                'address.province' => 'required|string',
+                'address.city' => 'required|string',
+                'address.district' => 'required|string',
+            ], ['address' => $address]
             );
             return new MemberAddress($address);
         }
@@ -87,17 +106,23 @@ class Express
         return $this->event->getOrderModel()->getMember()->defaultAddress;
     }
 
+    /**
+     * 需要配送
+     * @return bool
+     */
     private function needDispatch()
     {
-        $allGoodsIsReal = OrderService::allGoodsIsReal($this->event->getOrderModel()->getOrderGoodsModels());
-
-        if ($allGoodsIsReal) {
-            return true;
+        if ($this->event->getOrderModel()->is_virtual) {
+            return false;
         }
 
-        return false;
+        return true;
     }
 
+    /**
+     * 获取订单配送地址模型
+     * @return OrderAddress
+     */
     private function getOrderAddress()
     {
         $member_address = $this->getMemberAddress();
@@ -115,6 +140,11 @@ class Express
         return $order_address;
     }
 
+    /**
+     * 保存配送信息
+     * @return bool
+     * @throws AppException
+     */
     private function saveExpressInfo()
     {
         $order_address = $this->getOrderAddress();
@@ -146,6 +176,14 @@ class Express
 
     }
 
+    /**
+     * 校验参数
+     * @param $request
+     * @param array $rules
+     * @param array $messages
+     * @param array $customAttributes
+     * @throws AppException
+     */
     private function validate($request, array $rules, array $messages = [], array $customAttributes = [])
     {
 

@@ -68,6 +68,8 @@ class HomePageController extends ApiController
             $setting['diycode'] = html_entity_decode($setting['diycode']);
             $result['mailInfo'] = $setting;
 
+        } else {
+            $result['mailInfo']['is_bind_mobile'] = 0;
         }
 
         //用户信息, 原来接口在 member.member.getUserInfo
@@ -146,6 +148,9 @@ class HomePageController extends ApiController
             $result['item']['menustyle'] = self::defaultMenuStyle();
             $result['item']['data'] = ''; //前端需要该字段
         }
+
+        //增加小程序回去默认装修数据
+        $result['applet'] = self::defaultDesign();
 
         return $this->successJson('ok', $result);
     }

@@ -22,6 +22,11 @@ class IncomeWithdrawEvent extends Event
     
     public function getData()
     {
-        return $this->withdrawData; 
+        return $this->withdrawData['withdrawal'];
+    }
+
+    public function getWithdrawTotal()
+    {
+        return $this->withdrawData['total'];
     }
 }

@@ -19,7 +19,7 @@ class DetailController extends ApiController
 {
     public function index(Request $request)
     {
-        $this->validate($request, [
+        $this->validate([
             'order_id' => 'required|integer'
         ]);
         $orderId = $request->query('order_id');

@@ -21,6 +21,14 @@
             </div>
         </div>
         <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">申请时间 :</label>
+            <div class="col-sm-9 col-xs-12">
+
+            <p class="form-control-static">{{$order['has_one_refund_apply']['create_time']}}
+            </p>
+            </div>
+        </div>
+        <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款类型 :</label>
             <div class="col-sm-9 col-xs-12">
                 <p class="form-control-static">{{$order['has_one_refund_apply']['refund_type_name']}}</p>

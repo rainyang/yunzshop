@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\DB;
 
 class MergePayController extends ApiController
 {
-    public $transactionActions = ['wechatPay','alipay'];
+    public $transactionActions = ['wechatPay', 'alipay'];
     /**
      * @var Collection
      */
@@ -68,7 +68,7 @@ class MergePayController extends ApiController
 
     public function index(\Request $request)
     {
-        $this->validate($request, [
+        $this->validate([
             'order_ids' => 'required|string'
         ]);
         $orders = $this->orders($request->input('order_ids'));
@@ -104,7 +104,7 @@ class MergePayController extends ApiController
 
     protected function pay($request, $payType)
     {
-        $this->validate($request, [
+        $this->validate([
             'order_pay_id' => 'required|integer'
         ]);
         $this->orderPay = $orderPay = OrderPay::find($request->input('order_pay_id'));
@@ -129,6 +129,7 @@ class MergePayController extends ApiController
         });
 
         $query_str = $this->getPayParams($orderPay, $orders);
+
         $pay = PayFactory::create($payType);
         //如果支付模块常量改变 数据会受影响
 
@@ -146,8 +147,8 @@ class MergePayController extends ApiController
         return [
             'order_no' => $orderPay->pay_sn,
             'amount' => $orderPay->amount,
-            'subject' => $orders->first()->hasManyOrderGoods[0]->title,
-            'body' => $orders->first()->hasManyOrderGoods[0]->title . ':' . \YunShop::app()->uniacid,
+            'subject' => $orders->first()->hasManyOrderGoods[0]->title ?: '芸众商品',
+            'body' => ($orders->first()->hasManyOrderGoods[0]->title ?: '芸众商品'). ':' . \YunShop::app()->uniacid,
             'extra' => ['type' => 1]
         ];
     }

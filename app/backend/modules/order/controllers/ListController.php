@@ -26,7 +26,7 @@ class ListController extends BaseController
     {
         parent::__construct();
         $params = \YunShop::request()->get();
-        $this->orderModel = Order::orders($params['search']);
+        $this->orderModel = Order::orders($params['search'])->isPlugin();
     }
 
     public function index()
@@ -121,11 +121,12 @@ class ListController extends BaseController
     public function export($orders)
     {
         if (\YunShop::request()->export == 1) {
-            $orders = $orders->get();
-            if (!$orders->isEmpty()) {
+            $export_page = request()->export_page ? request()->export_page : 1;
+            $export_model = new ExportService($orders, $export_page);
+            if (!$export_model->builder_model->isEmpty()) {
                 $file_name = date('Ymdhis', time()) . '订单导出';//返现记录导出
                 $export_data[0] = $this->getColumns();
-                foreach ($orders->toArray() as $key => $item) {
+                foreach ($export_model->builder_model->toArray() as $key => $item) {
                     $export_data[$key + 1] = [
                         $item['order_sn'],
                         $item['has_one_order_pay']['pay_sn'],
@@ -150,7 +151,7 @@ class ListController extends BaseController
                         $item['has_one_order_remark']['remark'],
                     ];
                 }
-                (new ExportService())->export($file_name, $export_data);
+                $export_model->export($file_name, $export_data, \Request::query('route'));
             }
         }
     }

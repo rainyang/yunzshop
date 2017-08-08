@@ -19,6 +19,8 @@ use app\common\models\PayOrder;
 
 class WechatController extends PaymentController
 {
+    private $pay_type = ['JSAPI' => '微信', 'APP' => '微信APP'];
+
     public function __construct()
     {
         parent::__construct();
@@ -38,7 +40,7 @@ class WechatController extends PaymentController
 
         $this->log($post);
 
-        $verify_result = $this->getSignResult();
+        $verify_result = $this->getSignResult($post);
 
         if ($verify_result) {
             $data = [
@@ -46,14 +48,12 @@ class WechatController extends PaymentController
                 'out_trade_no' => $post['out_trade_no'],
                 'trade_no'     => $post['transaction_id'],
                 'unit'         => 'fen',
-                'pay_type'     => '微信'
+                'pay_type'     => $this->pay_type[$post['trade_type']]
             ];
 
             $this->payResutl($data);
             echo "success";
         } else {
-            if(isset($_GET['test_uid'])) {
-            }
             echo "fail";
         }
     }
@@ -63,13 +63,19 @@ class WechatController extends PaymentController
      *
      * @return bool
      */
-    public function getSignResult()
+    public function getSignResult($post)
     {
-        $pay = \Setting::get('shop.pay');
+        switch ($post['trade_type']) {
+            case 'JSAPI':
+                $pay = \Setting::get('shop.pay');
+                break;
+            case 'APP':
+                $pay = \Setting::get('shop_app.pay');
+                break;
+        }
 
         $app = $this->getEasyWeChatApp($pay);
         $payment = $app->payment;
-
         $notify = $payment->getNotify();
 
         return $notify->isValid();

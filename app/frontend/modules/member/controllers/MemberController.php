@@ -13,11 +13,13 @@ use app\backend\modules\order\models\Order;
 use app\common\components\ApiController;
 use app\common\facades\Setting;
 use app\common\helpers\ImageHelper;
+use app\common\helpers\Url;
 use app\common\models\AccountWechats;
 use app\common\models\Area;
 use app\common\models\Goods;
 use app\common\models\McMappingFans;
 use app\common\models\MemberShopInfo;
+use app\common\services\Session;
 use app\frontend\models\Member;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\SubMemberModel;
@@ -722,6 +724,13 @@ class MemberController extends ApiController
         $member_info = MemberModel::getMemberById($member_id);
 
         return $this->successJson('', $member_info);
+    }
+
+    public function forget()
+    {
+        Session::clear('member_id');
+
+        redirect(Url::absoluteApp('home'))->send();
     }
 
 }

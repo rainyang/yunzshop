@@ -12,6 +12,7 @@ namespace app\frontend\modules\coupon\services\models;
 use app\common\models\MemberCoupon;
 use app\common\models\Coupon as DbCoupon;
 
+use app\frontend\models\order\PreOrderCoupon;
 use app\frontend\modules\coupon\services\MemberCouponService;
 use app\frontend\modules\coupon\services\models\Price\CouponPrice;
 use app\frontend\modules\coupon\services\models\Price\DiscountCouponPrice;
@@ -43,24 +44,24 @@ class Coupon
     /**
      * @var PreGeneratedOrder
      */
-    private $preGeneratedOrderModel;
+    private $preGeneratedOrder;
     /**
      * @var \app\common\models\MemberCoupon
      */
     private $memberCoupon;
 
-    public function __construct(MemberCoupon $memberCoupon, PreGeneratedOrder $preGeneratedOrderModel)
+    public function __construct(MemberCoupon $memberCoupon, PreGeneratedOrder $preGeneratedOrder)
     {
         $this->memberCoupon = $memberCoupon;
-        $this->preGeneratedOrderModel = $preGeneratedOrderModel;
+        $this->preGeneratedOrder = $preGeneratedOrder;
         $this->price = $this->getPriceInstance();
         $this->useScope = $this->getUseScopeInstance();
         $this->timeLimit = $this->getTimeLimitInstance();
     }
 
-    public function getPreGeneratedOrderModel()
+    public function getPreGeneratedOrder()
     {
-        return $this->preGeneratedOrderModel;
+        return $this->preGeneratedOrder;
     }
 
     public function getMemberCoupon()
@@ -144,7 +145,7 @@ class Coupon
     /**
      * 获取订单优惠价格
      */
-    public function getDiscountPrice()
+    public function getDiscountAmount()
     {
         return $this->price->getPrice();
     }
@@ -156,7 +157,17 @@ class Coupon
     {
         //记录优惠券被选中了
         $this->getMemberCoupon()->selected = 1;
-        //dd($this->getMemberCoupon());
+
+        // todo 订单优惠券使用记录暂时加在这里,优惠券部分需要重构
+        $preOrderCoupon = new PreOrderCoupon([
+            'coupon_id'=>$this->memberCoupon->coupon_id,
+            'member_coupon_id'=>$this->memberCoupon->id,
+            'name'=>$this->memberCoupon->belongsToCoupon->name,
+            'amount'=>$this->getDiscountAmount()
+
+        ]);
+        $preOrderCoupon->setOrder($this->preGeneratedOrder);
+
         $this->setOrderGoodsDiscountPrice();
     }
 
@@ -202,7 +213,7 @@ class Coupon
      */
     public function unique()
     {
-        $memberCoupons = MemberCouponService::getCurrentMemberCouponCache($this->getPreGeneratedOrderModel()->belongsToMember);
+        $memberCoupons = MemberCouponService::getCurrentMemberCouponCache($this->getPreGeneratedOrder()->belongsToMember);
         //本优惠券与某个选中的优惠券是一张 就返回false
         return !$memberCoupons->contains(function ($memberCoupon) {
 

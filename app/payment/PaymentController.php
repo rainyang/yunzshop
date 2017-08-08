@@ -7,10 +7,7 @@ use app\common\events\payment\RechargeComplatedEvent;
 use app\common\models\AccountWechats;
 use app\common\models\OrderPay;
 use app\common\models\PayOrder;
-use app\frontend\models\Order;
 use app\frontend\modules\finance\services\BalanceRechargeResultService;
-use app\frontend\modules\finance\services\BalanceService;
-use app\frontend\modules\order\services\MessageService;
 use app\frontend\modules\order\services\OrderService;
 use Yunshop\Gold\frontend\services\RechargeService;
 
@@ -61,9 +58,10 @@ class PaymentController extends BaseController
      * @return int
      */
     private function getUniacid()
-    {
+    {  
         $body = !empty($_REQUEST['body']) ? $_REQUEST['body'] : '';
         $splits = explode(':', $body);
+        \Log::debug('body截取',$splits);
 
         if (!empty($splits[1])) {
 

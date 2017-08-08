@@ -50,7 +50,7 @@ class ChangeOrderPriceController extends BaseController
      */
     public function back(\Request $request){
         $orderId = $request->input('order_id');
-        $this->validate($request,[
+        $this->validate([
             'order_id'=>'required'
         ]);
         $order = Order::find($orderId);

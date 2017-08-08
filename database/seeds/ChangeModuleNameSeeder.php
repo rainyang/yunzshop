@@ -15,6 +15,7 @@ class ChangeModuleNameSeeder extends \Illuminate\Database\Seeder
      */
     public function run()
     {
+        return;
         /*
          *
          *

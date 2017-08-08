@@ -152,7 +152,7 @@ class IncomeController extends ApiController
         $config = \Config::get('income');
 
         foreach ($config as $key => $item) {
-            if($item['type'] == 'balance'){
+            if ($item['type'] == 'balance') {
                 continue;
             }
             $set[$key] = \Setting::get('withdraw.' . $key);
@@ -166,12 +166,12 @@ class IncomeController extends ApiController
             $incomeModel = $incomeModel->where('incometable_type', $item['class']);
             $amount = $incomeModel->sum('amount');
             $poundage = $incomeModel->sum('amount') / 100 * $set[$key]['poundage_rate'];
-            $poundage = number_format($poundage, 2);
+            $poundage = sprintf("%.2f", $poundage);
             //劳务税
             $servicetax = 0;
             if ($incomeSet['servicetax_rate']) {
                 $servicetax = ($amount - $poundage) / 100 * $incomeSet['servicetax_rate'];
-                $servicetax = number_format($servicetax, 2);
+                $servicetax = sprintf("%.2f", $servicetax);
             }
 
             if (($amount > 0) && (bccomp($amount, $set[$key]['roll_out_limit'], 2) != -1)) {
@@ -188,7 +188,7 @@ class IncomeController extends ApiController
                     'poundage' => $poundage,
                     'poundage_rate' => $set[$key]['poundage_rate'],
                     'servicetax' => $servicetax,
-                    'servicetax_rate' => $incomeSet['servicetax_rate'],
+                    'servicetax_rate' => $incomeSet['servicetax_rate'] ? $incomeSet['servicetax_rate'] : 0,
                     'can' => true,
                     'roll_out_limit' => $set[$key]['roll_out_limit'],
                     'selected' => true,
@@ -203,7 +203,7 @@ class IncomeController extends ApiController
                     'poundage' => $poundage,
                     'poundage_rate' => $set[$key]['poundage_rate'],
                     'servicetax' => $servicetax,
-                    'servicetax_rate' => $incomeSet['servicetax_rate'],
+                    'servicetax_rate' => $incomeSet['servicetax_rate'] ? $incomeSet['servicetax_rate'] : 0,
                     'can' => false,
                     'roll_out_limit' => $set[$key]['roll_out_limit'],
                     'selected' => false,
@@ -252,7 +252,7 @@ class IncomeController extends ApiController
 
         }
         Log::info("提现成功:提现成功");
-        $request = static::setWithdraw($withdrawData['withdrawal'], $withdrawTotal);
+        $request = static::setWithdraw($withdrawData);
         if ($request) {
             return $this->successJson('提现成功!');
         }
@@ -305,17 +305,17 @@ class IncomeController extends ApiController
      * @param $withdrawTotal
      * @return mixed
      */
-    public function setWithdraw($withdrawData, $withdrawTotal)
+    public function setWithdraw($withdrawData)
     {
-        return DB::transaction(function () use ($withdrawData, $withdrawTotal) {
-            return $this->_setWithdraw($withdrawData, $withdrawTotal);
+        return DB::transaction(function () use ($withdrawData) {
+            return $this->_setWithdraw($withdrawData);
         });
 
     }
 
-    public function _setWithdraw($withdrawData, $withdrawTotal)
+    public function _setWithdraw($withdrawData)
     {
-        foreach ($withdrawData as $item) {
+        foreach ($withdrawData['withdrawal'] as $item) {
             $data[] = [
                 'withdraw_sn' => Pay::setUniacidNo(\YunShop::app()->uniacid),
                 'uniacid' => \YunShop::app()->uniacid,
@@ -331,14 +331,16 @@ class IncomeController extends ApiController
                 'servicetax' => $item['servicetax'],
                 'servicetax_rate' => $item['servicetax_rate'],
                 'actual_servicetax' => $item['servicetax'],
-                'pay_way' => $withdrawTotal['pay_way'],
+                'pay_way' => $withdrawData['total']['pay_way'],
                 'status' => 0,
                 'created_at' => time(),
                 'updated_at' => time(),
             ];
             static::setIncomeAndOrder($item['type'], $item['type_id']);
         }
-        event(new AfterIncomeWithdrawEvent($data));
+        $withdrawData['total']['member_id'] = \YunShop::app()->getMemberId();
+        $withdrawData['withdrawal'] = $data;
+        event(new AfterIncomeWithdrawEvent($withdrawData));
         Log::info("Withdraw - data", $data);
         return Withdraw::insert($data);
     }
@@ -352,6 +354,8 @@ class IncomeController extends ApiController
         if ($incomeWithdrawMode) {
             return $this->successJson('获取数据成功!', $incomeWithdrawMode);
         }
+
+        return $this->errorJson('未检测到数据!');
     }
 
 }

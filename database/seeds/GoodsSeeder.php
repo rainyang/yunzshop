@@ -24,6 +24,7 @@ class GoodsSeeder extends \Illuminate\Database\Seeder
 
     public function run()
     {
+        return;
         if (!Schema::hasTable($this->oldGoodsTable)) {
             echo $this->oldGoodsTable." 不存在 跳过\n";
             return;

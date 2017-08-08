@@ -1796,6 +1796,24 @@ return [
                     ],
 
                 'child' => [
+                    'member_export' => [
+                        'name' => '会员导出',
+                        'url' => 'member.member.export',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 0,
+                        'icon' => 'fa-circle-o',
+                        'parent_id' => '39',
+                        'sort' => 0,
+                        'item' => 'member_export',
+                        'parents' =>
+                            [
+                                'Member',
+                                'member_all',
+                            ],
+
+                    ],
+
                     'member_detail' => [
                         'id' => '127',
                         'name' => '会员详情',
@@ -2093,7 +2111,7 @@ return [
                 'name' => '会员关系',
                 'url' => '',
                 'url_params' => '',
-                'permit' => 0,
+                'permit' => 1,
                 'menu' => 1,
                 'icon' => 'fa-crosshairs',
                 'parent_id' => '38',
@@ -2122,6 +2140,26 @@ return [
                                 'member_relation',
                             ],
 
+                        'child' => [
+                            'user_relation_save' => [
+                                'name' => '保存设置',
+                                'url' => 'member.member-relation.save',
+                                'url_params' => '',
+                                'permit' => 1,
+                                'menu' => 0,
+                                'icon' => 'fa-sliders',
+                                'parent_id' => '100',
+                                'sort' => 0,
+                                'item' => 'user_relation_save',
+                                'parents' =>
+                                    [
+                                        'Member',
+                                        'member_relation',
+                                        'user_relation'
+                                    ],
+                                ]
+                        ],
+
                     ],
 
                     'agent_apply' => [
@@ -2140,6 +2178,44 @@ return [
                                 'Member',
                                 'member_relation',
                             ],
+
+                        'child' => [
+                            'agent_apply_chkApply' => [
+                                'name' => '审查申请',
+                                'url' => 'member.member-relation.chkApply',
+                                'url_params' => '',
+                                'permit' => 1,
+                                'menu' => 0,
+                                'icon' => 'fa-sliders',
+                                'parent_id' => '100',
+                                'sort' => 0,
+                                'item' => 'agent_apply_chkApplye',
+                                'parents' =>
+                                    [
+                                        'Member',
+                                        'member_relation',
+                                        'agent_apply'
+                                    ],
+                            ],
+
+                            'agent_apply_export' => [
+                                'name' => '导出申请',
+                                'url' => 'member.member-relation.export',
+                                'url_params' => '',
+                                'permit' => 1,
+                                'menu' => 0,
+                                'icon' => 'fa-sliders',
+                                'parent_id' => '100',
+                                'sort' => 0,
+                                'item' => 'agent_apply_export',
+                                'parents' =>
+                                    [
+                                        'Member',
+                                        'member_relation',
+                                        'agent_apply'
+                                    ],
+                            ]
+                        ],
 
                     ],
 
@@ -2221,7 +2297,159 @@ return [
                             ],
 
                     ],
-
+                    'order_operation_close' => [
+                        'id' => '1117',
+                        'name' => '关闭订单',
+                        'url' => 'order.operation.Close',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 0,
+                        'icon' => 'fa-file-text',
+                        'parent_id' => '29',
+                        'sort' => 1,
+                        'item' => 'order_operation_close',
+                        'parents' =>
+                            [
+                                'Order',
+                                'order_list',
+                            ],
+                    ],
+                    'order_operation_pay' => [
+                        'id' => '1117',
+                        'name' => '付款',
+                        'url' => 'order.operation.pay',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 0,
+                        'icon' => 'fa-file-text',
+                        'parent_id' => '29',
+                        'sort' => 1,
+                        'item' => 'order_operation_pay',
+                        'parents' =>
+                            [
+                                'Order',
+                                'order_list',
+                            ],
+                    ],
+                    'order_operation_cancel_pay' => [
+                        'id' => '1117',
+                        'name' => '取消付款',
+                        'url' => 'order.operation.cancelPay',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 0,
+                        'icon' => 'fa-file-text',
+                        'parent_id' => '29',
+                        'sort' => 1,
+                        'item' => 'order_operation_cancel_pay',
+                        'parents' =>
+                            [
+                                'Order',
+                                'order_list',
+                            ],
+                    ],
+                    'order_operation_send' => [
+                        'id' => '1117',
+                        'name' => '发货',
+                        'url' => 'order.operation.send',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 0,
+                        'icon' => 'fa-file-text',
+                        'parent_id' => '29',
+                        'sort' => 1,
+                        'item' => 'order_operation_send',
+                        'parents' =>
+                            [
+                                'Order',
+                                'order_list',
+                            ],
+                    ],
+                    'order_operation_cancel_send' => [
+                        'id' => '1117',
+                        'name' => '取消发货',
+                        'url' => 'order.operation.cancelSend',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 0,
+                        'icon' => 'fa-file-text',
+                        'parent_id' => '29',
+                        'sort' => 1,
+                        'item' => 'order_operation_cancel_send',
+                        'parents' =>
+                            [
+                                'Order',
+                                'order_list',
+                            ],
+                    ],
+                    'order_operation_receive' => [
+                        'id' => '1117',
+                        'name' => '确认收货',
+                        'url' => 'order.operation.Receive',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 0,
+                        'icon' => 'fa-file-text',
+                        'parent_id' => '29',
+                        'sort' => 1,
+                        'item' => 'order_operation_receive',
+                        'parents' =>
+                            [
+                                'Order',
+                                'order_list',
+                            ],
+                    ],
+                    'change_order_price_index' => [
+                        'id' => '1117',
+                        'name' => '订单改价详情',
+                        'url' => 'order.changeOrderPrice.index',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 0,
+                        'icon' => 'fa-file-text',
+                        'parent_id' => '29',
+                        'sort' => 1,
+                        'item' => 'change_order_price_index',
+                        'parents' =>
+                            [
+                                'Order',
+                                'order_list',
+                            ],
+                    ],
+                    'order_operation_export' => [
+                        'id' => '1117',
+                        'name' => '订单导出',
+                        'url' => 'order.operation.export',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 0,
+                        'icon' => 'fa-file-text',
+                        'parent_id' => '29',
+                        'sort' => 1,
+                        'item' => 'order_operation_export',
+                        'parents' =>
+                            [
+                                'Order',
+                                'order_list',
+                            ],
+                    ],
+                    'change_order_price_store' => [
+                        'id' => '1117',
+                        'name' => '订单改价保存',
+                        'url' => 'order.changeOrderPrice.store',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 0,
+                        'icon' => 'fa-file-text',
+                        'parent_id' => '29',
+                        'sort' => 1,
+                        'item' => 'change_order_price_store',
+                        'parents' =>
+                            [
+                                'Order',
+                                'order_list',
+                            ],
+                    ],
                 ],
 
             ],
@@ -2349,6 +2577,7 @@ return [
                                 'Order',
                                 'refund_list_refund',
                             ],
+                        'child' => []
 
                     ],
 
@@ -2368,6 +2597,7 @@ return [
                                 'Order',
                                 'refund_list_refund',
                             ],
+                        'child' => []
 
                     ],
 
@@ -2387,16 +2617,142 @@ return [
                                 'Order',
                                 'refund_list_refund',
                             ],
+                        'child' => []
 
                     ],
-
+                    'refund_detail_index' => [
+                        'id' => '109',
+                        'name' => '售后详情',
+                        'url' => 'refund.detail.index',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 0,
+                        'icon' => 'fa-circle-o',
+                        'parent_id' => '97',
+                        'sort' => '4',
+                        'item' => 'refund_detail_index',
+                        'parents' =>
+                            [
+                                'Order',
+                                'refund_list_refund',
+                            ],
+                        'child' => []
+                    ],
+                    'refund_operation_reject' => [
+                        'id' => '109',
+                        'name' => '拒绝',
+                        'url' => 'refund.operation.reject',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 0,
+                        'icon' => 'fa-circle-o',
+                        'parent_id' => '97',
+                        'sort' => '4',
+                        'item' => 'refund_operation_reject',
+                        'parents' =>
+                            [
+                                'Order',
+                                'refund_list_refund',
+                            ],
+                        'child' => []
+                    ],
+                    'refund_pay_index' => [
+                        'id' => '109',
+                        'name' => '同意退款',
+                        'url' => 'refund.pay.index',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 0,
+                        'icon' => 'fa-circle-o',
+                        'parent_id' => '97',
+                        'sort' => '4',
+                        'item' => 'refund_pay_index',
+                        'parents' =>
+                            [
+                                'Order',
+                                'refund_list_refund',
+                            ],
+                        'child' => []
+                    ],
+                    'refund_operation_pass' => [
+                        'id' => '109',
+                        'name' => '同意',
+                        'url' => 'refund.operation.pass',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 0,
+                        'icon' => 'fa-circle-o',
+                        'parent_id' => '97',
+                        'sort' => '4',
+                        'item' => 'refund_operation_pass',
+                        'parents' =>
+                            [
+                                'Order',
+                                'refund_list_refund',
+                            ],
+                        'child' => []
+                    ],
+                    'refund_operation_receive_return_goods' => [
+                        'id' => '109',
+                        'name' => '商家确认收货',
+                        'url' => 'refund.operation.receiveReturnGoods',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 0,
+                        'icon' => 'fa-circle-o',
+                        'parent_id' => '97',
+                        'sort' => '4',
+                        'item' => 'refund_operation_receive_return_goods',
+                        'parents' =>
+                            [
+                                'Order',
+                                'refund_list_refund',
+                            ],
+                        'child' => []
+                    ],
+                    'refund_operation_resend' => [
+                        'id' => '109',
+                        'name' => '商家重新发货',
+                        'url' => 'refund.operation.resend',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 0,
+                        'icon' => 'fa-circle-o',
+                        'parent_id' => '97',
+                        'sort' => '4',
+                        'item' => 'refund_operation_resend',
+                        'parents' =>
+                            [
+                                'Order',
+                                'refund_list_refund',
+                            ],
+                        'child' => []
+                    ],
+                    'refund_operation_consensus' => [
+                        'id' => '109',
+                        'name' => '手动退款',
+                        'url' => 'refund.operation.consensus',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 0,
+                        'icon' => 'fa-circle-o',
+                        'parent_id' => '97',
+                        'sort' => '4',
+                        'item' => 'refund_operation_consensus',
+                        'parents' =>
+                            [
+                                'Order',
+                                'refund_list_refund',
+                            ],
+                        'child' => []
+                    ],
                     'refund_list_exchangeGoods' => [
                         'id' => '109',
                         'name' => '换货',
                         'url' => 'refund.list.exchangeGoods',
                         'url_params' => '',
                         'permit' => 1,
-                        'menu' => 1,
+                        'menu' => 0,
                         'icon' => 'fa-circle-o',
                         'parent_id' => '97',
                         'sort' => '4',
@@ -2406,8 +2762,8 @@ return [
                                 'Order',
                                 'refund_list_refund',
                             ],
+                        'child' => []
                     ],
-
                 ],
 
             ],
@@ -2458,6 +2814,21 @@ return [
                     [
                         'finance',
                     ],
+                'child' => [
+                    'withdraw_set' => [
+                        'id' => '',
+                        'name' => '编辑保存',
+                        'url' => 'finance.withdraw.set',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 0,
+                        'icon' => '',
+                        'parent_id' => '59',
+                        'sort' => '0',
+                        'item' => 'withdraw_set',
+                        'parents' => ['withdraw', 'finance'],
+                    ],
+                ],
 
             ],
 

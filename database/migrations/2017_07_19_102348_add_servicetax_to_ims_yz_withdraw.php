@@ -13,17 +13,19 @@ class AddServicetaxToImsYzWithdraw extends Migration
      */
     public function up()
     {
-        Schema::table('yz_withdraw', function (Blueprint $table) {
-            if (!Schema::hasColumn('yz_withdraw', 'servicetax')) {
-                $table->decimal('servicetax', 12)->nullable()->comment('劳务税');
-            }
-            if (!Schema::hasColumn('yz_withdraw', 'servicetax_rate')) {
-                $table->integer('servicetax_rate')->nullable()->comment('劳务税比例');
-            }
-            if (!Schema::hasColumn('yz_withdraw', 'actual_servicetax')) {
-                $table->decimal('actual_servicetax', 12)->nullable()->comment('最终劳务税');
-            }
-        });
+        if (\Schema::hasTable('yz_goods_coupon_queue')) {
+            Schema::table('yz_withdraw', function (Blueprint $table) {
+                if (!Schema::hasColumn('yz_withdraw', 'servicetax')) {
+                    $table->decimal('servicetax', 12)->nullable()->comment('劳务税');
+                }
+                if (!Schema::hasColumn('yz_withdraw', 'servicetax_rate')) {
+                    $table->integer('servicetax_rate')->nullable()->comment('劳务税比例');
+                }
+                if (!Schema::hasColumn('yz_withdraw', 'actual_servicetax')) {
+                    $table->decimal('actual_servicetax', 12)->nullable()->comment('最终劳务税');
+                }
+            });
+        }
     }
 
     /**

@@ -55,6 +55,11 @@
             Tip.focus("#goodsname", "请输入商品名称!");
             return false;
         }
+        if ($(':input[name="goods[title]"]').val().length >= '40') {
+            $('#myTab a[href="#tab_basic"]').tab('show');
+            Tip.focus("#goodsname", "商品名称不能超过40个字符!");
+            return false;
+        }
         if ($(':input[name="category[parentid]"]').val() == 0) {
             $('#myTab a[href="#tab_basic"]').tab('show');
             Tip.focus(':input[name="category[parentid]"]', "请选择一级分类!");
@@ -304,7 +309,13 @@
                 return false;
             }
         }
-
+        if ($(':input[name="widgets[area_dividend][has_dividend]"]').get(0).checked) {
+            if ($(':input[name="widgets[area_dividend][has_dividend_price]"]').val() == '') {
+                $('#myTab a[href="#tab_area_dividend"]').tab('show');
+                Tip.focus(':input[name="widgets[area_dividend][has_dividend_price]"]', "独立分红金额!");
+                return false;
+            }
+        }
         var full = true;
         if (window.type == '3') {
             if (window.virtual != '0') {  //如果单规格，不能有规格
