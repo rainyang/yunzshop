@@ -102,7 +102,6 @@ class PaymentController extends BaseController
                 if (bccomp($orderPay->amount, $data['total_fee'], 2) == 0) {
                     \Log::debug('更新订单状态');
                     OrderService::ordersPay(['order_pay_id' => $orderPay->id]);
-
                 }
                 break;
             case "recharge.succeeded":

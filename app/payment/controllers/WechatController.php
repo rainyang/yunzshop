@@ -9,12 +9,9 @@
 namespace app\payment\controllers;
 
 use app\common\models\AccountWechats;
-use app\common\models\Order;
 use app\common\services\Pay;
 use app\payment\PaymentController;
 use EasyWeChat\Foundation\Application;
-use app\common\services\WechatPay;
-use app\common\models\PayOrder;
 
 
 class WechatController extends PaymentController
@@ -59,6 +56,23 @@ class WechatController extends PaymentController
             echo "success";
         } else {
             echo "fail";
+        }
+    }
+
+    public function returnUrl()
+    {
+        $post = \YunShop::request();
+
+        $verify_result = $this->getSignResult($post);
+
+        if ($verify_result) {
+            if ($_GET['trade_status'] == 'TRADE_SUCCESS') {
+                redirect(Url::absoluteApp('member/payYes'))->send();
+            } else {
+                redirect(Url::absoluteApp('member/payErr', ['i' => \YunShop::app()->uniacid]))->send();
+            }
+        } else {
+            redirect(Url::absoluteApp('member/payErr', ['i' => \YunShop::app()->uniacid]))->send();
         }
     }
 
