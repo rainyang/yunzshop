@@ -30,7 +30,7 @@ class MoneyOffCouponPrice extends CouponPrice
      * @param $orderGoods
      * @return mixed
      */
-    private function getOrderGoodsPrice($orderGoods)
+    private function getOrderGoodsPrice(PreGeneratedOrderGoods $orderGoods)
     {
         //之前的
         return $orderGoods->getFinalPrice() - $orderGoods->couponDiscountPrice;

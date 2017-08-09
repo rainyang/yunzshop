@@ -24,7 +24,6 @@ use Illuminate\Support\Facades\Cookie;
 
 class MemberService
 {
-    const LOGIN_TYPE = '0';
 
     private static $_current_member;
 
@@ -316,20 +315,26 @@ class MemberService
      * @param $userinfo
      * @return array|int|mixed
      */
-    public function unionidLogin($uniacid, $userinfo, $upperMemberId = NULL)
+    public function unionidLogin($uniacid, $userinfo, $upperMemberId = NULL, $loginType)
     {
         $member_id = 0;
         $userinfo['nickname'] = $this->filteNickname($userinfo);
 
         $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $userinfo['unionid'])->first();
-        $mc_mapping_fans_model = McMappingFansModel::getUId($userinfo['openid']);
 
-        if ($mc_mapping_fans_model) {
-            $member_model = Member::getMemberById($mc_mapping_fans_model->uid);
-            $member_shop_info_model = MemberShopInfo::getMemberShopInfo($mc_mapping_fans_model->uid);
+        if (!is_null($UnionidInfo)) {
+            $member_id = $UnionidInfo->member_id;
+        }
 
+        //$mc_mapping_fans_model = McMappingFansModel::getUId($userinfo['openid']);
+        $mc_mapping_fans_model = $this->getFansModel($userinfo['openid']);
+
+        if (empty($member_id) && !empty($mc_mapping_fans_model)) {
             $member_id = $mc_mapping_fans_model->uid;
         }
+
+        $member_model = Member::getMemberById($member_id);
+        $member_shop_info_model = MemberShopInfo::getMemberShopInfo($member_id);
 
         if (!empty($UnionidInfo->unionid) && !empty($member_model)
             && !empty($mc_mapping_fans_model) && !empty($member_shop_info_model)) {
@@ -338,11 +343,11 @@ class MemberService
             $types = explode('|', $UnionidInfo->type);
             $member_id = $UnionidInfo->member_id;
 
-            if (!in_array(self::LOGIN_TYPE, $types)) {
+            if (!in_array($loginType, $types)) {
                 //更新ims_yz_member_unique表
                 MemberUniqueModel::updateData(array(
                     'unique_id' => $UnionidInfo->unique_id,
-                    'type' => $UnionidInfo->type . '|' . self::LOGIN_TYPE
+                    'type' => $UnionidInfo->type . '|' . $loginType
                 ));
             }
 
@@ -360,6 +365,8 @@ class MemberService
                 $member_id = $mc_mapping_fans_model->uid;
 
                 $this->updateMemberInfo($member_id, $userinfo);
+            } else {
+                $this->addFansMember($member_id, $uniacid, $userinfo);
             }
 
             if (empty($member_shop_info_model)) {
@@ -393,7 +400,8 @@ class MemberService
     {
         $member_id = 0;
         $userinfo['nickname'] = $this->filteNickname($userinfo);
-        $fans_mode = McMappingFansModel::getUId($userinfo['openid']);
+        //$fans_mode = McMappingFansModel::getUId($userinfo['openid']);
+        $fans_mode = $this->getFansModel($userinfo['openid']);
 
         if ($fans_mode) {
             $member_model = Member::getMemberById($fans_mode->uid);
@@ -427,10 +435,8 @@ class MemberService
 
             //生成分销关系链
             if ($upperMemberId) {
-                \Log::debug('分销关系链-海报');
                 Member::createRealtion($member_id, $upperMemberId);
             } else {
-                \Log::debug('分销关系链-链接');
                 Member::createRealtion($member_id);
             }
         }
@@ -496,12 +502,12 @@ class MemberService
         ));
         \Log::debug('add mapping fans');
         //添加mapping_fans表
-        McMappingFansModel::insertData($userinfo, array(
+        /*McMappingFansModel::insertData($userinfo, array(
             'uid' => $uid,
             'acid' => $uniacid,
             'uniacid' => $uniacid,
             'salt' => Client::random(8),
-        ));
+        ));*/
 
         return $uid;
     }
@@ -569,14 +575,14 @@ class MemberService
         MemberModel::updataData($member_id, $mc_data);
 
         //更新mapping_fans
-        $record = array(
+        /*$record = array(
             'openid' => $userinfo['openid'],
             'nickname' => stripslashes($userinfo['nickname']),
             'follow' => isset($userinfo['subscribe'])?:0,
             'tag' => base64_encode(serialize($userinfo))
         );
 
-        McMappingFansModel::updateData($member_id, $record);
+        McMappingFansModel::updateData($member_id, $record);*/
     }
 
     /**

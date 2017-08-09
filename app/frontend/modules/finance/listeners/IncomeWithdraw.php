@@ -32,7 +32,7 @@ class IncomeWithdraw
                 'poundage' => $item['poundage'],
                 'pay_way' => $item['pay_way'],
             ];
-            MessageService::incomeWithdraw($noticeData,$member->hasOneFans->toArray());
+            MessageService::incomeWithdraw($noticeData,$member);
         }
 
     }
@@ -54,7 +54,7 @@ class IncomeWithdraw
             'actual_poundage' => $data->actual_poundage,
             'pay_way' => $data->pay_way,
         ];
-        MessageService::withdrawCheck($noticeData,$member->hasOneFans->toArray());
+        MessageService::withdrawCheck($noticeData,$member);
     }
 
     /**
@@ -72,7 +72,7 @@ class IncomeWithdraw
             'actual_amounts' => $data->actual_amounts,
             'pay_way' => $data->pay_way,
         ];
-        MessageService::withdrawPay($noticeData,$member->hasOneFans->toArray());
+        MessageService::withdrawPay($noticeData,$member);
     }
 
     /**
@@ -90,7 +90,7 @@ class IncomeWithdraw
             'actual_amounts' => $data->actual_amounts,
             'pay_way' => $data->pay_way,
         ];
-        MessageService::withdrawArrival($noticeData,$member->hasOneFans->toArray());
+        MessageService::withdrawArrival($noticeData,$member);
     }
 
     public function subscribe($events)

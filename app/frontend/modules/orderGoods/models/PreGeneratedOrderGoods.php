@@ -82,6 +82,7 @@ class PreGeneratedOrderGoods extends OrderGoods
             'discount_price' => $this->getDiscountAmount(),
             'coupon_price' => $this->getCouponAmount(),
         );
+
         if (isset($this->goodsOption)) {
 
             $attributes += [
@@ -238,9 +239,12 @@ class PreGeneratedOrderGoods extends OrderGoods
     public function getFinalPrice()
     {
         return $this->getPriceCalculator()->getFinalPrice();
-
     }
 
+    public function getCalculationPrice()
+    {
+        return $this->getPriceCalculator()->getCalculationPrice();
+    }
     /**
      * 优惠金额
      */

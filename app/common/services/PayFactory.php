@@ -9,6 +9,8 @@
 namespace app\common\services;
 
 
+use Yunshop\CloudPay\services\CloudPayService;
+
 class PayFactory
 {
     /**
@@ -31,6 +33,16 @@ class PayFactory
      */
     const PAY_CASH = 4;
 
+    /**
+     * 云收银-微信
+     */
+    const PAY_CLOUD_WEACHAT = 5;
+
+    /**
+     * 云收银-支付宝
+     */
+    const PAY_CLOUD_ALIPAY = 6;
+
    public static function create($type = null)
     {
         $className = null;
@@ -47,6 +59,9 @@ class PayFactory
                 break;
             case self::PAY_CASH:
                 $className = new CashPay();
+                break;
+            case self::PAY_CLOUD_WEACHAT:
+                $className = new CloudPayService();
                 break;
             default:
                 $className = null;
