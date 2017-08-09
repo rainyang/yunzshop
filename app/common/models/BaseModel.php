@@ -137,4 +137,18 @@ class BaseModel extends Model
     {
         return $query->where('plugin_id', $pluginId);
     }
+
+    /**
+     * 用来区分订单属于哪个.当插件需要查询自己的订单时,复写此方法
+     * @param $query
+     * @param int $pluginId
+     * @return mixed
+     */
+    public function scopeUid($query,$uid = null)
+    {
+        if(!isset($uid)){
+            $uid = \YunShop::app()->getMemberId();
+        }
+        return $query->where('uid', $uid);
+    }
 }
