@@ -55,9 +55,17 @@ abstract class Pay
      */
     const PAY_MODE_CASH          = 4;
     /**
+     * 后台付款
+     */
+    const PAY_MODE_BACKEND          = 5;
+    /**
      * 云收银微信支付
      */
-    const PAY_MODE_CLOUDWECHAT        = 5;
+    const PAY_MODE_CLOUDWECHAT        = 6;
+    /**
+     * 云收银微信支付
+     */
+    const PAY_MODE_CLOUDALI       = 7;
     /**
      * 未付款
      */
