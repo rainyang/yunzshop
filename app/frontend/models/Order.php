@@ -109,7 +109,7 @@ class Order extends \app\common\models\Order
         parent::boot();
 
         self::addGlobalScope(function(Builder $query){
-            return $query->where('uid', \YunShop::app()->getMemberId());
+            return $query->uid();
         });
     }
 }

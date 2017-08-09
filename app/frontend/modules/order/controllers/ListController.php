@@ -32,7 +32,7 @@ class ListController extends ApiController
      */
     protected function _getOrder()
     {
-        return $this->order = Order::orders()->where('status', '<>', '-1');
+        return $this->order = app('OrderManager')->make('Order')->orders()->where('status', '<>', '-1');
     }
 
     protected function getData()

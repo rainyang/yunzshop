@@ -16,7 +16,10 @@ class PayType extends BaseModel
     const WECHAT_PAY = 1;//微信
     const ALIPAY = 2;//支付宝
     const CREDIT = 3;//余额支付
+    const CASH = 4;//货到付款
     const BACKEND = 5;//后台支付
+    const PAY_CLOUD_WEACHAT = 6;//云收银微信
+    const PAY_CLOUD_ALIPAY = 7;//云收银支付宝
 
     public static function defaultTypeName()
     {
