@@ -6,9 +6,6 @@
  * Time: 上午10:43
  */
 
-/**
- * PC扫码登录表
- */
 namespace app\frontend\modules\member\models;
 
 use app\backend\models\BackendModel;
@@ -22,8 +19,17 @@ class MemberWechatModel extends BackendModel
         self::insert($data);
     }
 
-    public function getMemberId()
+    public static function getUserInfo($openid)
     {
+        return self::uniacid()
+            ->where('openid', $openid)
+            ->first();
+    }
 
+    public static function updateUserInfo($openid, $data)
+    {
+        return self::uniacid()
+            ->where('openid', $openid)
+            ->update($data);
     }
 }
