@@ -181,7 +181,7 @@ class Client
             return true;
         }
         $agent = strtolower($_SERVER['HTTP_USER_AGENT']);
-        $yunzhong = (strpos($agent, 'yunzhong')) ? true : false;
+        $yunzhong = (strpos($agent, 'yunzshop')) ? true : false;
         if ($yunzhong) {
             return true;
         }
@@ -221,10 +221,13 @@ class Client
 
     static function getType()
     {
+        //微信浏览器
         if (self::is_weixin()) {
             return 1;
+            //app浏览器
+        } elseif (self::is_app()) {
+            return 7;
         }
-
         return 5;
     }
 

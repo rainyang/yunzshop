@@ -1,5 +1,4 @@
 <?php
-
 namespace app\frontend\modules\payment\listeners;
 
 use app\common\events\payment\GetOrderPaymentTypeEvent;
@@ -10,14 +9,14 @@ use app\common\events\payment\GetOrderPaymentTypeEvent;
  * Date: 2017/5/17
  * Time: 下午5:44
  */
-class Alipay
+class Wechat_App
 {
     public function onGetPaymentTypes(GetOrderPaymentTypeEvent $event)
     {
-        if (\Setting::get('shop.pay.alipay') && \YunShop::request()->type != 4) {
+        if (\Setting::get('shop_app.pay.weixin') && \YunShop::request()->type == 4) {
             $result = [
-                'name' => '支付宝支付',
-                'value' => '2'
+                'name' => '微信支付',
+                'value' => '4'
             ];
             $event->addData($result);
 

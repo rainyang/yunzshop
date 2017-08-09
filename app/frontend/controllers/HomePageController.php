@@ -31,7 +31,8 @@ class HomePageController extends ApiController
         $mid = \YunShop::request()->mid;
         $type = \YunShop::request()->type;
         $pageId = \YunShop::request()->page_id;
-        $member_id = \YunShop::app()->getMemberId();
+        $ssid = \YunShop::request()->ssid;
+        $member_id = \YunShop::app()->getMemberId($ssid);
 
         //商城设置, 原来接口在 setting.get
         $key = \YunShop::request()->setting_key ? \YunShop::request()->setting_key : 'shop';
