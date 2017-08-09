@@ -34,14 +34,19 @@ class PayFactory
     const PAY_CASH = 4;
 
     /**
+     * 后台付款
+     */
+    const PAY_BACKEND = 5;
+
+    /**
      * 云收银-微信
      */
-    const PAY_CLOUD_WEACHAT = 5;
+    const PAY_CLOUD_WEACHAT = 6;
 
     /**
      * 云收银-支付宝
      */
-    const PAY_CLOUD_ALIPAY = 6;
+    const PAY_CLOUD_ALIPAY = 7;
 
    public static function create($type = null)
     {
