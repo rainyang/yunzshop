@@ -174,4 +174,14 @@ class MergePayController extends ApiController
         $data = $this->pay($request, PayFactory::PAY_ALIPAY);
         return $this->successJson('成功', $data);
     }
+
+    public function cloudWechatPay(\Request $request)
+    {
+        if (\Setting::get('plugin.cloud_pay_set') == false) {
+            throw new AppException('商城未开启支付宝支付');
+        }
+
+        $data = $this->pay($request, PayFactory::PAY_CLOUD_WEACHAT);
+        return $this->successJson('成功', $data);
+    }
 }

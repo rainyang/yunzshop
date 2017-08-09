@@ -5,9 +5,11 @@ namespace app\frontend\modules\order\controllers;
 use app\common\components\ApiController;
 
 
+use app\frontend\modules\order\services\OrderService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Yunshop\Recharge\models\OrderModel;
+use Yunshop\StoreCashier\common\models\CashierGoods;
 
 
 /**
@@ -21,17 +23,22 @@ class TestController extends ApiController
     public $transactionActions = [''];
     public function index()
     {
-        return ;
-        if (\Schema::hasTable('mc_members')) {
-            $db_name =\YunShop::app()->config['db']['master']['database'];
-            $engine = DB::select("show table status from ".$db_name."  where name='ims_mc_members'");
-            if (isset($engine['0']['Engine']) && strtolower($engine['0']['Engine']) == 'myisam') {
-                DB::statement("ALTER TABLE ims_mc_members engine = InnoDB");
-            }
-        }
+        dd(date('Y-m-d'));
+        dd(\Setting::get('coin.deduction_proportion'));
+        dd(\Setting::get('coin.deduction'));
+        //Carbon::now();
+        exit;
+        OrderService::orderPay(['order_id'=>367]);
+        exit;
+        dd(2.11/2.1);
+        exit;
+        dd(unserialize(CashierGoods::first()->plugins));
+        dd(unserialize(CashierGoods::first()->profit));
         //(new MessageService(\app\frontend\models\Order::completed()->first()))->received();
     }
-
+    private function aliquot($a,$b){
+        return $a/$b == (int)($a/$b);
+    }
     public function index1()
     {
         // 最简单的单例

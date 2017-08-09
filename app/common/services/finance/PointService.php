@@ -104,9 +104,6 @@ class PointService
         if (!$noticeMember->hasOneFans->openid) {
             return;
         }
-        if ($noticeMember->hasOneFans->follow != 1) {
-            return;
-        }
         /*$nickname = @iconv("utf-8", "gbk", $this->member['nickname']);
         $nickname = @iconv("gbk", "utf-8", $nickname);*/
         $msg = [
@@ -118,7 +115,7 @@ class PointService
         if (!isset(\Setting::get('shop.notice')['task']) || !\Setting::get('shop.notice')['task']) {
             return;
         }
-        MessageService::notice(\Setting::get('shop.notice')['task'], $msg, $noticeMember->hasOneFans->openid);
+        MessageService::notice(\Setting::get('shop.notice')['task'], $msg, $this->member->uid);
     }
 
     /**

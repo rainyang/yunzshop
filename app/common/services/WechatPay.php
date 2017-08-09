@@ -20,6 +20,7 @@ use EasyWeChat\Payment\Order as easyOrder;
 class WechatPay extends Pay
 {
     private $pay_type;
+    private static $attach_type = 'account';
 
     public function __construct()
     {
@@ -28,6 +29,7 @@ class WechatPay extends Pay
 
     public function doPay($data = [])
     {
+        $client_type = null;
         $text = $data['extra']['type'] == 1 ? '支付' : '充值';
         $op = '微信订单' . $text . ' 订单号：' . $data['order_no'];
         $pay_order_model = $this->log($data['extra']['type'], $this->pay_type[Pay::PAY_MODE_WECHAT], $data['amount'], $op, $data['order_no'], Pay::ORDER_STATUS_NON, \YunShop::app()->getMemberId());
@@ -36,8 +38,12 @@ class WechatPay extends Pay
             throw new AppException('无法获取用户ID');
         }
 
-        $openid = Member::getOpenId(\YunShop::app()->getMemberId());
+        if (\YunShop::request()->client_type) {
+            $client_type = \YunShop::request()->client_type;
+        }
 
+        $openid = Member::getOpenIdForType(\YunShop::app()->getMemberId(), $client_type);
+        \Log::debug('-----pay_member_id-----'. \YunShop::app()->getMemberId());
         //不同支付类型选择参数
         $pay = $this->payParams();
 
@@ -61,7 +67,7 @@ class WechatPay extends Pay
 
             $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_WAITPAY,'');
         } elseif ($result->return_code == 'SUCCESS') {
-                throw new AppException($result->err_code_des);
+            throw new AppException($result->err_code_des);
         } else {
             throw new AppException($result->return_msg);
         }
@@ -263,7 +269,7 @@ class WechatPay extends Pay
             'total_fee'        => $data['amount'] * 100, // 单位：分
             'nonce_str'        => Client::random(8) . "",
             'device_info'      => 'yun_shop',
-            'attach'           => \YunShop::app()->uniacid,
+            'attach'           => \YunShop::app()->uniacid . ':' . self::$attach_type,
             'spbill_create_ip' => self::getClientIP(),
             'openid'           => $openid
         ];
@@ -290,14 +296,16 @@ class WechatPay extends Pay
     {
         $pay = \Setting::get('shop.pay');
 
-        if (is_null(\YunShop::request()->app_type) && \YunShop::request()->app_type == 'wechat') {
+        if (\YunShop::request()->app_type == 'wechat') {
+            self::$attach_type = 'wechat';
+
             $pay = [
                 'weixin_appid' => 'wx31002d5db09a6719',
                 'weixin_secret' => '217ceb372d5e3296f064593fe2e7c01e',
                 'weixin_mchid' => '1409112302',
                 'weixin_apisecret' => '217ceb372d5e3296f064593fe2e7c01e',
-                'weixin_cert'   => '',
-                'weixin_key'    => ''
+                'weixin_cert' => '',
+                'weixin_key' => ''
             ];
         }
 
