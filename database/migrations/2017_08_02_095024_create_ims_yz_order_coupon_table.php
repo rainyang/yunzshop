@@ -39,7 +39,7 @@ class CreateImsYzOrderCouponTable extends Migration {
 	{
         if (\Schema::hasTable('yz_order_coupon')) {
 
-            Schema::drop('ims_yz_order_coupon');
+            Schema::drop('yz_order_coupon');
         }
 	}
 

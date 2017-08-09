@@ -13,11 +13,13 @@ class AddIsVirtualToYzMemberTable extends Migration
      */
     public function up()
     {
-        Schema::table('yz_order', function (Blueprint $table) {
-            if (!Schema::hasColumn('yz_order', 'is_virtual')) {
-                $table->tinyInteger('is_virtual')->default(0);
-            }
-        });
+        if (\Schema::hasTable('yz_order')) {
+            Schema::table('yz_order', function (Blueprint $table) {
+                if (!Schema::hasColumn('yz_order', 'is_virtual')) {
+                    $table->tinyInteger('is_virtual')->default(0);
+                }
+            });
+        }
     }
 
     /**
@@ -27,10 +29,12 @@ class AddIsVirtualToYzMemberTable extends Migration
      */
     public function down()
     {
-        Schema::table('yz_goods_sale', function (Blueprint $table) {
-            if (!Schema::hasColumn('yz_order', 'is_virtual')) {
-                $table->dropColumn('is_virtual');
-            }
-        });
+        if (\Schema::hasTable('yz_order')) {
+            Schema::table('yz_order', function (Blueprint $table) {
+                if (!Schema::hasColumn('yz_order', 'is_virtual')) {
+                    $table->dropColumn('is_virtual');
+                }
+            });
+        }
     }
 }

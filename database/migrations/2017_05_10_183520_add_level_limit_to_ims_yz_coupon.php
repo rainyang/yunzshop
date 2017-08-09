@@ -13,11 +13,13 @@ class AddLevelLimitToImsYzCoupon extends Migration
      */
     public function up()
     {
-        Schema::table('yz_coupon', function (Blueprint $table) {
-            if (!Schema::hasColumn('yz_coupon', 'level_limit')) {
-                $table->integer('level_limit')->nullable()->after('get_type');
-            }
-        });
+        if (Schema::hasTable('yz_coupon')) {
+            Schema::table('yz_coupon', function (Blueprint $table) {
+                if (!Schema::hasColumn('yz_coupon', 'level_limit')) {
+                    $table->integer('level_limit')->nullable()->after('get_type');
+                }
+            });
+        }
     }
 
     /**
