@@ -107,7 +107,7 @@ class BalanceNoticeService
             return ;
         }
         if (isset($memberModel->hasOneFans) && !empty($memberModel->hasOneFans->openid) && $memberModel->hasOneFans->follow) {
-            MessageService::notice($templateId,$msg,$memberModel->hasOneFans->openid);
+            MessageService::notice($templateId,$msg,$memberModel->uid);
         }
 
     }

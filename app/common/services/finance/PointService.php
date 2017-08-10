@@ -115,7 +115,7 @@ class PointService
         if (!isset(\Setting::get('shop.notice')['task']) || !\Setting::get('shop.notice')['task']) {
             return;
         }
-        MessageService::notice(\Setting::get('shop.notice')['task'], $msg, $noticeMember->hasOneFans->openid);
+        MessageService::notice(\Setting::get('shop.notice')['task'], $msg, $this->member->uid);
     }
 
     /**

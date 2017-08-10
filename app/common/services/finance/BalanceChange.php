@@ -167,7 +167,7 @@ class BalanceChange extends Credit
             "remark" => "",
         ];
         if ($noticeMember->hasOneFans->follow) {
-            MessageService::notice($template_id, $msg, $noticeMember->hasOneFans->openid);
+            MessageService::notice($template_id, $msg, $noticeMember->uid);
         }
     }
 
