@@ -8,13 +8,11 @@
 
 namespace app\frontend\modules\member\services;
 
+use app\common\helpers\Client;
 use app\common\helpers\Url;
-use app\common\models\Member;
 use app\common\services\Session;
-use app\frontend\models\MemberShopInfo;
 use app\frontend\modules\member\models\McMappingFansModel;
 use app\frontend\modules\member\models\MemberWechatModel;
-use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\member\models\MemberUniqueModel;
 use app\frontend\modules\member\models\MemberModel;
 
@@ -91,23 +89,8 @@ class MemberAppYdbService extends MemberService
             $url = 'https://api.weixin.qq.com/sns/userinfo?access_token=' . $para['token'] . '&openid=' . $para['openid'];
             $res = @ihttp_get($url);
             $user_info = json_decode($res['content'], true);
-            \Log::info('获取用户信息：' . print_r($user_info, true));
             if (!empty($user_info) && !empty($user_info['unionid'])) {
-                $member_id = $this->memberLogin($user_info);
-                \Log::info('会员id：' . $member_id);
-                //添加yz_member_app_wechat表
-                MemberWechatModel::insertData(array(
-                    'uniacid' => $uniacid,
-                    'member_id' => $member_id,
-                    'openid' => $user_info['openid'],
-                    'nickname' => $user_info['nickname'],
-                    'avatar' => $user_info['headimgurl'],
-                    'gender' => $user_info['sex'],
-                    'province' => '',
-                    'country' => '',
-                    'city' => ''
-                ));
-                //$this->createMiniMember($user_info, ['uniacid' => $uniacid, 'member_id' => $member_id]);
+                $this->memberLogin($user_info);
             } else {
                 \Log::info('云打包获取用户信息错误：' . print_r($res, true));
             }
@@ -123,7 +106,7 @@ class MemberAppYdbService extends MemberService
             'nickname' => stripslashes($userinfo['nickname'])
         );
 
-        MemberMiniAppModel::updateData($member_id, $record);
+        MemberWechatModel::updateData($member_id, $record);
     }
 
     public function addMemberInfo($uniacid, $userinfo)
@@ -148,13 +131,16 @@ class MemberAppYdbService extends MemberService
 
     public function addFansMember($uid, $uniacid, $userinfo)
     {
-        MemberMiniAppModel::insertData(array(
+        MemberWechatModel::insertData(array(
             'uniacid' => $uniacid,
             'member_id' => $uid,
             'openid' => $userinfo['openid'],
             'nickname' => $userinfo['nickname'],
             'avatar' => $userinfo['headimgurl'],
             'gender' => $userinfo['sex'],
+            'province' => '',
+            'country' => '',
+            'city' => ''
         ));
     }
 

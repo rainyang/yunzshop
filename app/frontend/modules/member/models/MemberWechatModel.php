@@ -32,4 +32,11 @@ class MemberWechatModel extends BackendModel
             ->where('openid', $openid)
             ->update($data);
     }
+
+    public static function updateData($member_id, $data)
+    {
+        self::uniacid()
+            ->where('member_id', $member_id)
+            ->update($data);
+    }
 }
