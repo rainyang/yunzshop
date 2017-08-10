@@ -13,7 +13,7 @@ class Wechat
 {
     public function onGetPaymentTypes(GetOrderPaymentTypeEvent $event)
     {
-        if (\Setting::get('shop.pay.weixin') && \YunShop::request()->type != 4) {
+        if (\Setting::get('shop.pay.weixin') && \YunShop::request()->type != 7) {
             $result = [
                 'name' => '微信支付',
                 'value' => '1'

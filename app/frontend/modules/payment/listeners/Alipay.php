@@ -14,7 +14,7 @@ class Alipay
 {
     public function onGetPaymentTypes(GetOrderPaymentTypeEvent $event)
     {
-        if (\Setting::get('shop.pay.alipay') && \YunShop::request()->type != 4) {
+        if (\Setting::get('shop.pay.alipay') && \YunShop::request()->type != 7) {
             $result = [
                 'name' => '支付宝支付',
                 'value' => '2'

@@ -89,6 +89,8 @@ class EventServiceProvider extends ServiceProvider
         \app\frontend\modules\payment\listeners\Credit::class,
         \app\frontend\modules\payment\listeners\Wechat::class,
         \app\frontend\modules\payment\listeners\CloudPay::class,
+        \app\frontend\modules\payment\listeners\Wechat_App::class,
+        \app\frontend\modules\payment\listeners\Alipay_App::class,
         orderListener::class,
         IncomeWithdraw::class,
         CouponExpireNotice::class,
