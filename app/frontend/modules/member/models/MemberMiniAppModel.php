@@ -12,12 +12,8 @@
 
 namespace app\frontend\modules\member\models;
 
-use app\backend\models\BackendModel;
-
-class MemberMiniAppModel extends BackendModel
+class MemberMiniAppModel extends \app\common\models\MemberMiniAppModel
 {
-    public $table = 'yz_member_mini_app';
-
     public static function insertData($data)
     {
         self::insert($data);
@@ -34,6 +30,13 @@ class MemberMiniAppModel extends BackendModel
     {
         return self::uniacid()
             ->where('openid', $openid)
+            ->update($data);
+    }
+
+    public static function updateData($uid, $data)
+    {
+        self::uniacid()
+            ->where('member_id', $uid)
             ->update($data);
     }
 }

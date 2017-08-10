@@ -23,7 +23,7 @@ class MessageService
             Setting::$uniqueAccountId = $uniacid;
         }
         $withdrawNotice = Setting::get('withdraw.notice');
-        if ($withdrawNotice['template_id'] && ($member['follow'] == 1)) {
+        if ($withdrawNotice['template_id']) {
             $message = $withdrawNotice['incone_withdraw'];
             $message = str_replace('[昵称]', $member['nickname'], $message);
             $message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
@@ -38,7 +38,7 @@ class MessageService
                 "keyword2" => $message,
                 "remark" => "",
             ];
-            \app\common\services\MessageService::notice($withdrawNotice['template_id'], $msg, $member['openid'], $uniacid);
+            \app\common\services\MessageService::notice($withdrawNotice['template_id'], $msg, $member['uid'], $uniacid);
         }
         return;
     }
@@ -52,7 +52,7 @@ class MessageService
             Setting::$uniqueAccountId = $uniacid;
         }
         $withdrawNotice = Setting::get('withdraw.notice');
-        if ($withdrawNotice['template_id'] && ($member['follow'] == 1)) {
+        if ($withdrawNotice['template_id']) {
             $message = $withdrawNotice['incone_withdraw_check'];
             $message = str_replace('[昵称]', $member['nickname'], $message);
             $message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
@@ -69,7 +69,7 @@ class MessageService
                 "keyword2" => $message,
                 "remark" => "",
             ];
-            \app\common\services\MessageService::notice($withdrawNotice['template_id'], $msg, $member['openid'], $uniacid);
+            \app\common\services\MessageService::notice($withdrawNotice['template_id'], $msg, $member['uid'], $uniacid);
         }
         return;
     }
@@ -82,7 +82,7 @@ class MessageService
             Setting::$uniqueAccountId = $uniacid;
         }
         $withdrawNotice = Setting::get('withdraw.notice');
-        if ($withdrawNotice['template_id'] && ($member['follow'] == 1)) {
+        if ($withdrawNotice['template_id']) {
             $message = $withdrawNotice['incone_withdraw_pay'];
             $message = str_replace('[昵称]', $member['nickname'], $message);
             $message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
@@ -97,7 +97,7 @@ class MessageService
                 "keyword2" => $message,
                 "remark" => "",
             ];
-            \app\common\services\MessageService::notice($withdrawNotice['template_id'], $msg, $member['openid'], $uniacid);
+            \app\common\services\MessageService::notice($withdrawNotice['template_id'], $msg, $member['uid'], $uniacid);
         }
         return;
     }
@@ -110,7 +110,7 @@ class MessageService
             Setting::$uniqueAccountId = $uniacid;
         }
         $withdrawNotice = Setting::get('withdraw.notice');
-        if ($withdrawNotice['template_id'] && ($member['follow'] == 1)) {
+        if ($withdrawNotice['template_id']) {
             $message = $withdrawNotice['incone_withdraw_arrival'];
             $message = str_replace('[昵称]', $member['nickname'], $message);
             $message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
@@ -125,7 +125,7 @@ class MessageService
                 "keyword2" => $message,
                 "remark" => "",
             ];
-            \app\common\services\MessageService::notice($withdrawNotice['template_id'], $msg, $member['openid'], $uniacid);
+            \app\common\services\MessageService::notice($withdrawNotice['template_id'], $msg, $member['uid'], $uniacid);
         }
         return;
     }

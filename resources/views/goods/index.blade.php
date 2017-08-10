@@ -394,6 +394,10 @@
                         Tip.show(group.find(':input'), '请输入名称!');
                         return;
                     }
+                    if (type == 'title' && val.length >= '40') {
+                        Tip.show(group.find(':input'), '名称不能大于40字符!');
+                        return;
+                    }
                     group.prev().show().find('span').html(val);
                     group.hide();
                     fastChange(goodsid, type, val);

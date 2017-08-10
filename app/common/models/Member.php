@@ -412,6 +412,24 @@ class Member extends BackendModel
         $model->save();
     }
 
+    public static function getOpenIdForType($member_id, $type = null){
+        switch ($type) {
+            case 1:
+                $fans = McMappingFans::getFansById($member_id);
+
+                return $fans->openid;
+                break;
+            case 2:
+                $mini_app = MemberMiniAppModel::getFansById($member_id);
+
+                return $mini_app->openid;
+                break;
+            default:
+                $fans = McMappingFans::getFansById($member_id);
+
+                return $fans->openid;
+        }
+    }
     /**
      * 判断用户是否关注
      * @return bool

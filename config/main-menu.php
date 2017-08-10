@@ -286,7 +286,7 @@ return [
                         'url' => 'setting.shop.trade',
                         'url_params' => '',
                         'permit' => 1,
-                        'menu' => 0,
+                        'menu' => 1,
                         'icon' => 'fa-sliders',
                         'parent_id' => '2',
                         'sort' => '3',
@@ -410,7 +410,7 @@ return [
                         'url' => 'setting.shop.share',
                         'url_params' => '',
                         'permit' => 1,
-                        'menu' => 0,
+                        'menu' => 1,
                         'icon' => 'fa-sliders',
                         'parent_id' => '2',
                         'sort' => '5',
@@ -2577,6 +2577,7 @@ return [
                                 'Order',
                                 'refund_list_refund',
                             ],
+                        'child' => []
 
                     ],
 
@@ -2596,6 +2597,7 @@ return [
                                 'Order',
                                 'refund_list_refund',
                             ],
+                        'child' => []
 
                     ],
 
@@ -2615,9 +2617,135 @@ return [
                                 'Order',
                                 'refund_list_refund',
                             ],
+                        'child' => []
 
                     ],
-
+                    'refund_detail_index' => [
+                        'id' => '109',
+                        'name' => '售后详情',
+                        'url' => 'refund.detail.index',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 0,
+                        'icon' => 'fa-circle-o',
+                        'parent_id' => '97',
+                        'sort' => '4',
+                        'item' => 'refund_detail_index',
+                        'parents' =>
+                            [
+                                'Order',
+                                'refund_list_refund',
+                            ],
+                        'child' => []
+                    ],
+                    'refund_operation_reject' => [
+                        'id' => '109',
+                        'name' => '拒绝',
+                        'url' => 'refund.operation.reject',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 0,
+                        'icon' => 'fa-circle-o',
+                        'parent_id' => '97',
+                        'sort' => '4',
+                        'item' => 'refund_operation_reject',
+                        'parents' =>
+                            [
+                                'Order',
+                                'refund_list_refund',
+                            ],
+                        'child' => []
+                    ],
+                    'refund_pay_index' => [
+                        'id' => '109',
+                        'name' => '同意退款',
+                        'url' => 'refund.pay.index',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 0,
+                        'icon' => 'fa-circle-o',
+                        'parent_id' => '97',
+                        'sort' => '4',
+                        'item' => 'refund_pay_index',
+                        'parents' =>
+                            [
+                                'Order',
+                                'refund_list_refund',
+                            ],
+                        'child' => []
+                    ],
+                    'refund_operation_pass' => [
+                        'id' => '109',
+                        'name' => '同意',
+                        'url' => 'refund.operation.pass',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 0,
+                        'icon' => 'fa-circle-o',
+                        'parent_id' => '97',
+                        'sort' => '4',
+                        'item' => 'refund_operation_pass',
+                        'parents' =>
+                            [
+                                'Order',
+                                'refund_list_refund',
+                            ],
+                        'child' => []
+                    ],
+                    'refund_operation_receive_return_goods' => [
+                        'id' => '109',
+                        'name' => '商家确认收货',
+                        'url' => 'refund.operation.receiveReturnGoods',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 0,
+                        'icon' => 'fa-circle-o',
+                        'parent_id' => '97',
+                        'sort' => '4',
+                        'item' => 'refund_operation_receive_return_goods',
+                        'parents' =>
+                            [
+                                'Order',
+                                'refund_list_refund',
+                            ],
+                        'child' => []
+                    ],
+                    'refund_operation_resend' => [
+                        'id' => '109',
+                        'name' => '商家重新发货',
+                        'url' => 'refund.operation.resend',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 0,
+                        'icon' => 'fa-circle-o',
+                        'parent_id' => '97',
+                        'sort' => '4',
+                        'item' => 'refund_operation_resend',
+                        'parents' =>
+                            [
+                                'Order',
+                                'refund_list_refund',
+                            ],
+                        'child' => []
+                    ],
+                    'refund_operation_consensus' => [
+                        'id' => '109',
+                        'name' => '手动退款',
+                        'url' => 'refund.operation.consensus',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 0,
+                        'icon' => 'fa-circle-o',
+                        'parent_id' => '97',
+                        'sort' => '4',
+                        'item' => 'refund_operation_consensus',
+                        'parents' =>
+                            [
+                                'Order',
+                                'refund_list_refund',
+                            ],
+                        'child' => []
+                    ],
                     'refund_list_exchangeGoods' => [
                         'id' => '109',
                         'name' => '换货',
@@ -2634,125 +2762,7 @@ return [
                                 'Order',
                                 'refund_list_refund',
                             ],
-                    ],
-                    'refund_detail_index' => [
-                        'id' => '109',
-                        'name' => '售后详情',
-                        'url' => 'refund.detail.index',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 1,
-                        'icon' => 'fa-circle-o',
-                        'parent_id' => '97',
-                        'sort' => '4',
-                        'item' => 'refund_detail_index',
-                        'parents' =>
-                            [
-                                'Order',
-                                'refund_list_refund',
-                            ],
-                    ],
-                    'refund_operation_reject' => [
-                        'id' => '109',
-                        'name' => '拒绝',
-                        'url' => 'refund.operation.reject',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 1,
-                        'icon' => 'fa-circle-o',
-                        'parent_id' => '97',
-                        'sort' => '4',
-                        'item' => 'refund_operation_reject',
-                        'parents' =>
-                            [
-                                'Order',
-                                'refund_list_refund',
-                            ],
-                    ],
-                    'refund_pay_index' => [
-                        'id' => '109',
-                        'name' => '同意退款',
-                        'url' => 'refund.pay.index',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 1,
-                        'icon' => 'fa-circle-o',
-                        'parent_id' => '97',
-                        'sort' => '4',
-                        'item' => 'refund_pay_index',
-                        'parents' =>
-                            [
-                                'Order',
-                                'refund_list_refund',
-                            ],
-                    ],
-                    'refund_operation_pass' => [
-                        'id' => '109',
-                        'name' => '同意',
-                        'url' => 'refund.operation.pass',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 1,
-                        'icon' => 'fa-circle-o',
-                        'parent_id' => '97',
-                        'sort' => '4',
-                        'item' => 'refund_operation_pass',
-                        'parents' =>
-                            [
-                                'Order',
-                                'refund_list_refund',
-                            ],
-                    ],
-                    'refund_operation_receive_return_goods' => [
-                        'id' => '109',
-                        'name' => '商家确认收货',
-                        'url' => 'refund.operation.receiveReturnGoods',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 1,
-                        'icon' => 'fa-circle-o',
-                        'parent_id' => '97',
-                        'sort' => '4',
-                        'item' => 'refund_operation_receive_return_goods',
-                        'parents' =>
-                            [
-                                'Order',
-                                'refund_list_refund',
-                            ],
-                    ],
-                    'refund_operation_resend' => [
-                        'id' => '109',
-                        'name' => '商家重新发货',
-                        'url' => 'refund.operation.resend',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 1,
-                        'icon' => 'fa-circle-o',
-                        'parent_id' => '97',
-                        'sort' => '4',
-                        'item' => 'refund_operation_resend',
-                        'parents' =>
-                            [
-                                'Order',
-                                'refund_list_refund',
-                            ],
-                    ],
-                    'refund_operation_consensus' => [
-                        'id' => '109',
-                        'name' => '手动退款',
-                        'url' => 'refund.operation.consensus',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 1,
-                        'icon' => 'fa-circle-o',
-                        'parent_id' => '97',
-                        'sort' => '4',
-                        'item' => 'refund_operation_consensus',
-                        'parents' =>
-                            [
-                                'Order',
-                                'refund_list_refund',
-                            ],
+                        'child' => []
                     ],
                 ],
 
