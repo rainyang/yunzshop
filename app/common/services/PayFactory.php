@@ -9,7 +9,6 @@
 namespace app\common\services;
 
 
-use Yunshop\CloudPay\services\CloudPayService;
 
 class PayFactory
 {
@@ -74,7 +73,7 @@ class PayFactory
                 $className = new CashPay();
                 break;
             case self::PAY_CLOUD_WEACHAT:
-                $className = new CloudPayService();
+                $className = new \Yunshop\CloudPay\services\CloudPayService();
                 break;
             case self::PAY_APP_WEACHAT:
                 $className = new Wechat_App();
