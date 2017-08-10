@@ -8,13 +8,11 @@
 
 namespace app\frontend\modules\member\services;
 
+use app\common\helpers\Client;
 use app\common\helpers\Url;
-use app\common\models\Member;
 use app\common\services\Session;
-use app\frontend\models\MemberShopInfo;
 use app\frontend\modules\member\models\McMappingFansModel;
 use app\frontend\modules\member\models\MemberWechatModel;
-use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\member\models\MemberUniqueModel;
 use app\frontend\modules\member\models\MemberModel;
 
@@ -91,32 +89,80 @@ class MemberAppYdbService extends MemberService
             $url = 'https://api.weixin.qq.com/sns/userinfo?access_token=' . $para['token'] . '&openid=' . $para['openid'];
             $res = @ihttp_get($url);
             $user_info = json_decode($res['content'], true);
-            \Log::info('获取用户信息：' . print_r($user_info, true));
-            unset($user_info['province']);
             if (!empty($user_info) && !empty($user_info['unionid'])) {
-                //Login
-                $member_id = $this->memberLogin($user_info);
-                //添加yz_member_app_wechat表
-                MemberWechatModel::insertData(array(
-                    'uniacid' => $uniacid,
-                    'member_id' => $member_id,
-                    'openid' => $user_info['openid'],
-                    'nickname' => $user_info['nickname'],
-                    'avatar' => $user_info['headimgurl'],
-                    'gender' => $user_info['sex'],
-                    'province' => '',
-                    'country' => '',
-                    'city' => ''
-                ));
-                //$this->createMiniMember($user_info, ['uniacid' => $uniacid, 'member_id' => $member_id]);
+                $this->memberLogin($user_info);
             } else {
                 \Log::info('云打包获取用户信息错误：' . print_r($res, true));
             }
         }
     }
 
+    public function updateMemberInfo($member_id, $userinfo)
+    {
+        parent::updateMemberInfo($member_id, $userinfo);
+
+        $record = array(
+            'openid' => $userinfo['openid'],
+            'nickname' => stripslashes($userinfo['nickname'])
+        );
+
+        MemberWechatModel::updateData($member_id, $record);
+    }
+
+    public function addMemberInfo($uniacid, $userinfo)
+    {
+        $uid = parent::addMemberInfo($uniacid, $userinfo);
+
+        $this->addMcMemberFans($uid, $uniacid, $userinfo);
+        $this->addFansMember($uid, $uniacid, $userinfo);
+
+        return $uid;
+    }
+
+    public function addMcMemberFans($uid, $uniacid, $userinfo)
+    {
+        McMappingFansModel::insertData($userinfo, array(
+            'uid' => $uid,
+            'acid' => $uniacid,
+            'uniacid' => $uniacid,
+            'salt' => Client::random(8),
+        ));
+    }
+
+    public function addFansMember($uid, $uniacid, $userinfo)
+    {
+        MemberWechatModel::insertData(array(
+            'uniacid' => $uniacid,
+            'member_id' => $uid,
+            'openid' => $userinfo['openid'],
+            'nickname' => $userinfo['nickname'],
+            'avatar' => $userinfo['headimgurl'],
+            'gender' => $userinfo['sex'],
+            'province' => '',
+            'country' => '',
+            'city' => ''
+        ));
+    }
+
     public function getFansModel($openid)
     {
         return McMappingFansModel::getUId($openid);
+    }
+
+    /**
+     * 会员关联表操作
+     *
+     * @param $uniacid
+     * @param $member_id
+     * @param $unionid
+     */
+    public function addMemberUnionid($uniacid, $member_id, $unionid)
+    {
+        MemberUniqueModel::insertData(array(
+            'uniacid' => $uniacid,
+            'unionid' => $unionid,
+            'member_id' => $member_id,
+            'type' => self::LOGIN_TYPE
+        ));
     }
 }
