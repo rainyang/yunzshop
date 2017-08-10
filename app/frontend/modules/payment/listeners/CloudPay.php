@@ -17,7 +17,7 @@ class CloudPay
         $set = \Setting::get('plugin.cloud_pay_set');
         if (\YunShop::plugin()->get('cloud-pay') && !is_null($set) && 1 == $set['switch']) {
             $result = [
-                'name' => '云收银支付',
+                'name' => '微信支付',
                 'value' => '6'
             ];
             $event->addData($result);
