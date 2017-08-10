@@ -23,9 +23,7 @@ class TestController extends ApiController
     public $transactionActions = [''];
     public function index()
     {
-        dd(date('Y-m-d'));
-        dd(\Setting::get('coin.deduction_proportion'));
-        dd(\Setting::get('coin.deduction'));
+        dd(\app\common\models\PayType::whereName('后台付款')->count());
         //Carbon::now();
         exit;
         OrderService::orderPay(['order_id'=>367]);
