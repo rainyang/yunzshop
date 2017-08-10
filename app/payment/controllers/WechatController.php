@@ -8,7 +8,9 @@
 
 namespace app\payment\controllers;
 
+use app\common\helpers\Url;
 use app\common\models\AccountWechats;
+use app\common\models\OrderPay;
 use app\common\services\Pay;
 use app\payment\PaymentController;
 use EasyWeChat\Foundation\Application;
@@ -61,18 +63,16 @@ class WechatController extends PaymentController
 
     public function returnUrl()
     {
-        $post = \YunShop::request();
+        if (\YunShop::request()->outtradeno) {
+            $orderPay = OrderPay::where('pay_sn', \YunShop::request()->outtradeno)->first();
 
-        $verify_result = $this->getSignResult($post);
-
-        if ($verify_result) {
-            if ($_GET['trade_status'] == 'TRADE_SUCCESS') {
-                redirect(Url::absoluteApp('member/payYes'))->send();
-            } else {
-                redirect(Url::absoluteApp('member/payErr', ['i' => \YunShop::app()->uniacid]))->send();
+            if (is_null($orderPay)) {
+                redirect(Url::absoluteApp('home'))->send();
             }
+
+            redirect(Url::absoluteApp('member/orderdetail/'.$orderPay->id, ['i' => \YunShop::app()->uniacid]))->send();
         } else {
-            redirect(Url::absoluteApp('member/payErr', ['i' => \YunShop::app()->uniacid]))->send();
+            redirect(Url::absoluteApp('home'))->send();
         }
     }
 
