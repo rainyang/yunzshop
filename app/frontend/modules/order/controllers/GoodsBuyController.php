@@ -22,9 +22,6 @@ class GoodsBuyController extends PreGeneratedController
             'option_id' => request()->input('option_id'),
         ];
 
-        dd(request()->input());
-        exit;
-
         $result = collect();
         $result->push(MemberCartService::newMemberCart($goods_params));
         return $result;
