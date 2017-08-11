@@ -107,7 +107,8 @@ class BalanceController extends ApiController
         $result = (new BalanceService())->rechargeSet() ? $this->rechargeStart() : '未开启余额充值';
 
         if ($result === true) {
-            if (intval(\YunShop::request()->pay_type) == PayFactory::PAY_ALIPAY) {
+            $type = intval(\YunShop::request()->pay_type);
+            if ($type == PayFactory::PAY_ALIPAY || $type == PayFactory::PAY_CLOUD_WEACHAT) {
                 return $this->successJson('支付接口对接成功', ['ordersn' => $this->model->ordersn]);
             }
             return  $this->successJson('支付接口对接成功', $this->payOrder());
