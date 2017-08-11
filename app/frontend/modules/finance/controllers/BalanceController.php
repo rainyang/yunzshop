@@ -482,24 +482,13 @@ class BalanceController extends ApiController
             'old_money' => $this->memberInfo->credit2 ?: 0,
             'money' => floatval($change_money),
             'new_money' => $change_money + $this->memberInfo->credit2,
-            'ordersn' => $this->getRechargeOrderSN(),
+            'ordersn' => BalanceRecharge::createOrderSn('RV','ordersn'),
             'type' => intval(\YunShop::request()->pay_type),
             'status' => BalanceRecharge::PAY_STATUS_ERROR
         );
     }
 
-    //生成充值订单号
-    private function getRechargeOrderSN()
-    {
-        $ordersn = createNo('RV', true);
-        while (1) {
-            if (!BalanceRecharge::validatorOrderSn($ordersn)) {
-                break;
-            }
-            $ordersn = createNo('RV', true);
-        }
-        return $ordersn;
-    }
+
 
     /**
      * 会员余额充值支付接口
