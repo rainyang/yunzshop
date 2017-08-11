@@ -53,7 +53,7 @@ class BalanceRecharge extends Recharge
             //'old_money' => 'numeric',
             'money'     => 'numeric|regex:/^(?!0+(?:\.0+)?$)\d+(?:\.\d{1,2})?$/', //大于0，允许两位小数
             'new_money' => 'numeric',
-            'type'      => 'regex:/^[12]$/',              //只能匹配1，2 【1微信，2支付宝】
+            'type'      => 'regex:/^[126]$/',              //只能匹配1，2 【1微信，2支付宝】
             'ordersn'   => 'required',
             'status'    => 'required'
         ];
