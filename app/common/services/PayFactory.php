@@ -80,6 +80,7 @@ class PayFactory
                 break;
             case self::PAY_APP_ALIPAY:
                 $className = new Alipay_App();
+
                 break;
             default:
                 $className = null;
