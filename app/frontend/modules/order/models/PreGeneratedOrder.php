@@ -113,7 +113,7 @@ class PreGeneratedOrder extends Order
      * 计算订单运费
      * @return int|number
      */
-    protected function getDispatchPrice()
+    public function getDispatchPrice()
     {
         return $this->orderDispatch->getDispatchPrice();
     }
