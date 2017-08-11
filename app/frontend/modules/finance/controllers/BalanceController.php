@@ -61,6 +61,7 @@ class BalanceController extends ApiController
                     $result['cloud_pay'] = true;
                 }
             }
+            $result['cloud_pay'] = false;
             return $this->successJson('获取数据成功', $result);
         }
         return $this->errorJson('未获取到会员数据');
