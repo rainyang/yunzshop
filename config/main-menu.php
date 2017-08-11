@@ -2361,7 +2361,7 @@ return [
                             ],
                             'order_operation_receive' => [
                                 'name'              => '确认收货',
-                                'url'               => 'order.operation.Receive',
+                                'url'               => 'order.operation.receive',
                                 'url_params'        => '',
                                 'permit'            => 1,
                                 'menu'              => 0,
@@ -2714,85 +2714,63 @@ return [
         ],
     ],
 
-    'finance' => [
-        'id' => '58',
-        'name' => '财务管理',
-        'url' => '',
-        'url_params' => '',
-        'permit' => 1,
-        'menu' => 1,
-        'icon' => 'fa-rmb',
-        'parent_id' => 0,
-        'sort' => '5',
-        'item' => 'finance',
-        'parents' => [],
-        'child' => [
-            'withdraw' => [
-                'id' => '59',
-                'name' => '提现设置',
-                'url' => 'finance.withdraw.set',
-                'url_params' => '',
-                'permit' => 1,
-                'menu' => 1,
-                'icon' => 'fa-sliders',
-                'parent_id' => '58',
-                'sort' => 0,
-                'item' => 'withdraw',
-                'parents' =>
-                    [
-                        'finance',
-                    ],
-                'child' => [
-                    'withdraw_set' => [
-                        'id' => '',
-                        'name' => '编辑保存',
-                        'url' => 'finance.withdraw.set',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => '',
-                        'parent_id' => '59',
-                        'sort' => '0',
-                        'item' => 'withdraw_set',
-                        'parents' => ['withdraw', 'finance'],
+    'finance'           => [
+        'name'              => '财务管理',
+        'url'               => '',
+        'url_params'        => '',
+        'permit'            => 1,
+        'menu'              => 1,
+        'icon'              => 'fa-rmb',
+        'parent_id'         => 0,
+        'sort'              => '5',
+        'item'              => 'finance',
+        'parents'           => [],
+        'child'             => [
+            'withdraw'          => [
+                'name'              => '提现设置',
+                'url'               => 'finance.withdraw.set',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-sliders',
+                'sort'              => 0,
+                'item'              => 'withdraw',
+                'parents'           => ['finance'],
+                'child'             => [
+                    'withdraw_set'      => [
+                        'name'              => '编辑保存',
+                        'url'               => 'finance.withdraw.set',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => '0',
+                        'item'              => 'withdraw_set',
+                        'parents'           => ['withdraw', 'finance'],
                     ],
                 ],
-
             ],
-
-            'finance_withdraw' => [
-                'id' => '66',
-                'name' => '提现记录',
-                'url' => 'finance.withdraw',
-                'url_params' => '',
-                'permit' => 1,
-                'menu' => 1,
-                'icon' => 'fa-sliders',
-                'parent_id' => '58',
-                'sort' => 0,
-                'item' => 'finance_withdraw',
-                'parents' =>
-                    [
-                        'finance',
-                    ],
-                'child' => [
+            'finance_withdraw'  => [
+                'name'              => '提现记录',
+                'url'               => 'finance.withdraw',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-sliders',
+                'sort'              => 0,
+                'item'              => 'finance_withdraw',
+                'parents'           => ['finance'],
+                'child'             => [
                     'withdraw_status_wait_audit' => [
-                        'id' => '92',
-                        'name' => '待审核提现',
-                        'url' => 'finance.withdraw.index',
-                        'url_params' => "&search[status]=0",
-                        'permit' => 1,
-                        'menu' => 1,
-                        'icon' => 'fa-circle-o',
-                        'parent_id' => '66',
-                        'sort' => 0,
-                        'item' => 'withdraw_status_wait_audit',
-                        'parents' =>
-                            [
-                                'finance',
-                                'finance_withdraw',
-                            ],
-
+                        'name'              => '待审核提现',
+                        'url'               => 'finance.withdraw.index',
+                        'url_params'        => "&search[status]=0",
+                        'permit'            => 0,
+                        'menu'              => 1,
+                        'icon'              => 'fa-circle-o',
+                        'sort'              => 0,
+                        'item'              => 'withdraw_status_wait_audit',
+                        'parents'           => ['finance', 'finance_withdraw',],
                     ],
 
                     'withdraw_status_wait_pay' => [
