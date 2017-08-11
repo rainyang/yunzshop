@@ -2762,6 +2762,32 @@ return [
                         'sort'              => 0,
                         'item'              => 'finance_balance_member',
                         'parents'           => ['finance', 'balance'],
+                        'child'             => [
+
+                            'finance_balance_member_see'  => [
+                                'name'              => '浏览记录',
+                                'url'               => 'finance.balance.member',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => '',
+                                'sort'              => 0,
+                                'item'              => 'finance_balance_member_see',
+                                'parents'           => ['finance', 'balance', 'finance_balance_member'],
+                            ],
+
+                            'finance_balance_member_recharge'  => [
+                                'name'              => '余额充值',
+                                'url'               => 'finance.balance.recharge',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => '',
+                                'sort'              => 0,
+                                'item'              => 'finance_balance_member_recharge',
+                                'parents'           => ['finance', 'balance', 'finance_balance_member'],
+                            ],
+                        ],
                     ],
 
                     'finance_balance_rechargeRecord' => [
@@ -2788,9 +2814,9 @@ return [
                         'parents'           => ['finance', 'balance'],
                     ],
 
-                    'finance_balance_balanceDetail' => [
+                    'finance_balance_records' => [
                         'name'              => '余额明细',
-                        'url'               => 'finance.balance.balanceDetail',
+                        'url'               => 'finance.balance-records.index',
                         'url_params'        => '',
                         'permit'            => 1,
                         'menu'              => 1,
@@ -2798,195 +2824,258 @@ return [
                         'sort'              => 0,
                         'item'              => 'finance_balance_balanceDetail',
                         'parents'           => ['finance', 'balance'],
+                        'child'             => [
+
+                            'finance_balance_records_see'  => [
+                                'name'              => '浏览记录',
+                                'url'               => 'finance.balance-records.index',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => '',
+                                'sort'              => 0,
+                                'item'              => 'finance_balance_records_see',
+                                'parents'           => ['finance', 'balance', 'finance_balance_records'],
+                            ],
+
+                            'finance_balance_records_export'  => [
+                                'name'              => '导出 EXCEL',
+                                'url'               => 'finance.balance-records.export',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => '',
+                                'sort'              => 0,
+                                'item'              => 'finance_balance_records_export',
+                                'parents'           => ['finance', 'balance', 'finance_balance_records'],
+                            ],
+                        ],
                     ],
                 ],
 
             ],
             'withdraw'          => [
-                'name'              => '提现设置',
-                'url'               => 'finance.withdraw.set',
+                'name'              => '收入提现',
+                'url'               => '',
                 'url_params'        => '',
-                'permit'            => 1,
+                'permit'            => 0,
                 'menu'              => 1,
-                'icon'              => 'fa-sliders',
+                'icon'              => 'fa-money',
                 'sort'              => 0,
                 'item'              => 'withdraw',
                 'parents'           => ['finance'],
                 'child'             => [
 
-                    'withdraw_set'      => [
-                        'name'              => '编辑保存',
+                    'withdraw_set'  => [
+                        'name'              => '提现设置',
                         'url'               => 'finance.withdraw.set',
                         'url_params'        => '',
                         'permit'            => 1,
-                        'menu'              => 0,
-                        'icon'              => '',
-                        'sort'              => '0',
+                        'menu'              => 1,
+                        'icon'              => 'fa-gear',
+                        'sort'              => 0,
                         'item'              => 'withdraw_set',
-                        'parents'           => ['withdraw', 'finance'],
+                        'parents'           => ['finance','withdraw'],
+                        'child'             => [
+                            'withdraw_set'      => [
+                                'name'              => '编辑保存',
+                                'url'               => 'finance.withdraw.set',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => '',
+                                'sort'              => '0',
+                                'item'              => 'withdraw_set',
+                                'parents'           => ['finance','withdraw','withdraw_set'],
+                            ],
+                        ],
+                    ],
+
+                    'withdraw_records'  => [
+                        'name'              => '提现记录',
+                        'url'               => 'finance.withdraw',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => 'fa-pencil',
+                        'sort'              => 0,
+                        'item'              => 'withdraw_records',
+                        'parents'           => ['finance','withdraw'],
+                        'child'             => [
+
+                            'withdraw_records_see' => [
+                                'name'              => '浏览记录',
+                                'url'               => 'finance.withdraw.index',
+                                'url_params'        => "",
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => '',
+                                'sort'              => 0,
+                                'item'              => 'withdraw_records_see',
+                                'parents'           => ['finance','withdraw','withdraw_records'],
+                            ],
+
+                            'withdraw_records_balance_detail' => [
+                                'name'              => '余额提现详情',
+                                'url'               => 'finance.balance-withdraw.detail',
+                                'url_params'        => "",
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => '',
+                                'sort'              => 0,
+                                'item'              => 'withdraw_records_balance_detail',
+                                'parents'           => ['finance','withdraw','withdraw_records'],
+                            ],
+                            'withdraw_records_balance_examine' => [
+                                'name'              => '余额审核打款',
+                                'url'               => 'finance.balance-withdraw.examine',
+                                'url_params'        => "",
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => '',
+                                'sort'              => 0,
+                                'item'              => 'withdraw_records_balance_examine',
+                                'parents'           => ['finance','withdraw','withdraw_records'],
+                            ],
+
+                            'withdraw_records_detail' => [
+                                'name'              => '收入提现详情',
+                                'url'               => 'finance.withdraw.info',
+                                'url_params'        => "",
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => '',
+                                'sort'              => 0,
+                                'item'              => 'withdraw_records_detail',
+                                'parents'           => ['finance','withdraw','withdraw_records'],
+                            ],
+
+                            'withdraw_records_examine' => [
+                                'name'              => '收入审核打款',
+                                'url'               => 'finance.withdraw.dealt',
+                                'url_params'        => "",
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => '',
+                                'sort'              => 0,
+                                'item'              => 'withdraw_records_examine',
+                                'parents'           => ['finance','withdraw','withdraw_records'],
+                            ],
+
+                            'withdraw_status_wait_audit' => [
+                                'name'              => '待审核提现',
+                                'url'               => 'finance.withdraw.index',
+                                'url_params'        => "&search[status]=0",
+                                'permit'            => 0,
+                                'menu'              => 1,
+                                'icon'              => 'fa-clock-o',
+                                'sort'              => 0,
+                                'item'              => 'withdraw_status_wait_audit',
+                                'parents'           => ['finance','withdraw','withdraw_records'],
+                            ],
+
+                            'withdraw_status_wait_pay' => [
+                                'name'              => '待打款提现',
+                                'url'               => 'finance.withdraw',
+                                'url_params'        => "&search[status]=1",
+                                'permit'            => 0,
+                                'menu'              => 1,
+                                'icon'              => 'fa-inbox',
+                                'sort'              => 0,
+                                'item'              => 'withdraw_status_wait_pay',
+                                'parents'           => ['finance','withdraw','withdraw_records'],
+                            ],
+
+                            'withdraw_status_pay' => [
+                                'name'              => '已打款提现',
+                                'url'               => 'finance.withdraw',
+                                'url_params'        => "&search[status]=2",
+                                'permit'            => 0,
+                                'menu'              => 1,
+                                'icon'              => 'fa-check-circle-o',
+                                'sort'              => 0,
+                                'item'              => 'withdraw_status_pay',
+                                'parents'           => ['finance','withdraw','withdraw_records'],
+                            ],
+
+                            'withdraw_status_arrival' => [
+                                'name'              => '已到账提现',
+                                'url'               => 'finance.withdraw',
+                                'url_params'        => "&search[status]=3",
+                                'permit'            => 0,
+                                'menu'              => 1,
+                                'icon'              => 'fa-stack-overflow',
+                                'sort'              => 0,
+                                'item'              => 'withdraw_status_arrival',
+                                'parents'           => ['finance','withdraw','withdraw_records'],
+                            ],
+
+                            'withdraw_status_invalid' => [
+                                'name'              => '无效提现',
+                                'url'               => 'finance.withdraw',
+                                'url_params'        => "&search[status]=-1",
+                                'permit'            => 0,
+                                'menu'              => 1,
+                                'icon'              => 'fa-times-circle',
+                                'sort'              => 0,
+                                'item'              => 'withdraw_status_invalid',
+                                'parents'           => ['finance','withdraw','withdraw_records'],
+                            ],
+
+
+                        ],
                     ],
                 ],
             ],
 
-            'finance_withdraw'  => [
-                'name'              => '提现记录',
-                'url'               => 'finance.withdraw',
+            'finance_point'     => [
+                'name'              => '积分管理',
+                'url'               => '',
                 'url_params'        => '',
                 'permit'            => 1,
                 'menu'              => 1,
-                'icon'              => 'fa-sliders',
+                'icon'              => 'fa-database',
                 'sort'              => 0,
-                'item'              => 'finance_withdraw',
-                'parents'           => ['finance'],
+                'item'              => 'finance_point',
+                'parents'           => ['finance',],
                 'child'             => [
 
-                    'withdraw_status_wait_audit' => [
-                        'name'              => '待审核提现',
-                        'url'               => 'finance.withdraw.index',
-                        'url_params'        => "&search[status]=0",
-                        'permit'            => 0,
-                        'menu'              => 1,
-                        'icon'              => 'fa-circle-o',
-                        'sort'              => 0,
-                        'item'              => 'withdraw_status_wait_audit',
-                        'parents'           => ['finance', 'finance_withdraw',],
-                    ],
-
-                    'withdraw_status_wait_pay' => [
-                        'name'              => '待打款提现',
-                        'url'               => 'finance.withdraw',
-                        'url_params'        => "&search[status]=1",
+                    'point_set'         => [
+                        'name'              => '基础设置',
+                        'url'               => 'finance.point-set.index',
+                        'url_params'        => '',
                         'permit'            => 1,
                         'menu'              => 1,
-                        'icon'              => 'fa-circle-o',
+                        'icon'              => 'fa-gear',
                         'sort'              => 0,
-                        'item'              => 'withdraw_status_wait_pay',
-                        'parents'           => ['finance', 'finance_withdraw',],
+                        'item'              => 'point_set',
+                        'parents'           => ['finance', 'finance_point',],
                     ],
 
-                    'withdraw_status_pay' => [
-                        'name' => '已打款提现',
-                        'url' => 'finance.withdraw',
-                        'url_params' => "&search[status]=2",
-                        'permit' => 1,
-                        'menu' => 1,
-                        'icon' => 'fa-circle-o',
-                        'sort' => 0,
-                        'item' => 'withdraw_status_pay',
-                        'parents' =>
-                            [
-                                'finance',
-                                'finance_withdraw',
-                            ],
-
+                    'point_member'      => [
+                        'name'              => '会员积分',
+                        'url'               => 'finance.point-member.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => 'fa-database',
+                        'sort'              => 0,
+                        'item'              => 'point_member',
+                        'parents'           => ['finance', 'finance_point',],
                     ],
 
-                    'withdraw_status_arrival' => [
-                        'name' => '已到账提现',
-                        'url' => 'finance.withdraw',
-                        'url_params' => "&search[status]=3",
-                        'permit' => 1,
-                        'menu' => 1,
-                        'icon' => 'fa-circle-o',
-                        'sort' => 0,
-                        'item' => 'withdraw_status_arrival',
-                        'parents' =>
-                            [
-                                'finance',
-                                'finance_withdraw',
-                            ],
-
+                    'point_log'             => [
+                        'name'              => '积分明细',
+                        'url'               => 'finance.point-log.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => 'fa-file-text-o',
+                        'sort'              => 0,
+                        'item'              => 'point_log',
+                        'parents'           => ['finance', 'finance_point',],
                     ],
-
-                    'withdraw_status_invalid' => [
-                        'name' => '无效提现',
-                        'url' => 'finance.withdraw',
-                        'url_params' => "&search[status]=-1",
-                        'permit' => 1,
-                        'menu' => 1,
-                        'icon' => 'fa-circle-o',
-                        'sort' => 0,
-                        'item' => 'withdraw_status_invalid',
-                        'parents' =>
-                            [
-                                'finance',
-                                'finance_withdraw',
-                            ],
-
-                    ],
-
                 ],
-
-            ],
-
-            'finance_point' => [
-                'name' => '积分管理',
-                'url' => '',
-                'url_params' => '',
-                'permit' => 1,
-                'menu' => 1,
-                'icon' => 'fa-circle-o',
-                'sort' => 0,
-                'item' => 'finance_point',
-                'parents' =>
-                    [
-                        'finance',
-                    ],
-
-                'child' => [
-                    'point_set' => [
-                        'name' => '积分基础设置',
-                        'url' => 'finance.point-set.index',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 1,
-                        'icon' => 'fa-circle-o',
-                        'sort' => 0,
-                        'item' => 'point_set',
-                        'parents' =>
-                            [
-                                'finance',
-                                'finance_point',
-                            ],
-
-                    ],
-
-                    'point_member' => [
-                        'name' => '会员积分',
-                        'url' => 'finance.point-member.index',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 1,
-                        'icon' => 'fa-circle-o',
-                        'sort' => 0,
-                        'item' => 'point_member',
-                        'parents' =>
-                            [
-                                'finance',
-                                'finance_point',
-                            ],
-
-                    ],
-
-                    'point_log' => [
-                        'name' => '积分明细',
-                        'url' => 'finance.point-log.index',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 1,
-                        'icon' => 'fa-circle-o',
-                        'sort' => 0,
-                        'item' => 'point_log',
-                        'parents' =>
-                            [
-                                'finance',
-                                'finance_point',
-                            ],
-
-                    ],
-
-                ],
-
             ],
 
 
