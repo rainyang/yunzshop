@@ -23,7 +23,7 @@ class TestController extends ApiController
     public $transactionActions = [''];
     public function index()
     {
-        dd(app('plugins'));
+        dd(app('plugins')->isEnabled('store-cashier'));exit;
         //(new MessageService(\app\frontend\models\Order::completed()->first()))->received();
     }
     private function aliquot($a,$b){
