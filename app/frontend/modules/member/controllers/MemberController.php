@@ -625,6 +625,7 @@ class MemberController extends ApiController
         $logo_height = 40;
 
         $font_size = 15;
+        $font_size_show = 20;
 
         $member_id = \YunShop::app()->getMemberId();
 
@@ -633,7 +634,7 @@ class MemberController extends ApiController
         $shopLogo = $shopInfo['logo'] ? replace_yunshop(tomedia($shopInfo['logo'])) : base_path().'/static/images/logo.png'; //todo 默认值需要更新
         $shopImg = $shopInfo['signimg'] ? replace_yunshop(tomedia($shopInfo['signimg'])) : base_path().'/static/images/photo-mr.jpg'; //todo 默认值需要更新
 
-        $str_lenght = $logo_width + $font_size * mb_strlen($shopName);
+        $str_lenght = $logo_width + $font_size_show * mb_strlen($shopName);
 
         $space = ($width - $str_lenght) / 2;
 
