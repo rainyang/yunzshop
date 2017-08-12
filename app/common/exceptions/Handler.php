@@ -8,6 +8,7 @@ use EasyWeChat\Core\Exceptions\HttpException;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\DB;
 
 class Handler extends ExceptionHandler
 {
@@ -50,6 +51,14 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if (DB::logging()) {
+            \Log::debug('错误sql记录', array_map(function ($query) {
+                $result = str_replace(array('%', '?'), array('%%', '%s'), $query['query']);
+                $result = vsprintf($result, $query['bindings']);
+                return $result;
+            }, DB::getQueryLog()));
+        }
+
         // 商城异常
         if ($exception instanceof ShopException) {
             return $this->renderShopException($exception);

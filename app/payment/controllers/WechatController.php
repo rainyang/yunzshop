@@ -8,7 +8,10 @@
 
 namespace app\payment\controllers;
 
+use app\common\helpers\Url;
 use app\common\models\AccountWechats;
+use app\common\models\Order;
+use app\common\models\OrderPay;
 use app\common\services\Pay;
 use app\payment\PaymentController;
 use EasyWeChat\Foundation\Application;
@@ -26,11 +29,12 @@ class WechatController extends PaymentController
 
         if (empty(\YunShop::app()->uniacid)) {
             $post = $this->getResponseResult();
-
-            $this->attach = explode(':', $post['attach']);
-            \Log::debug('---------attach数组--------', $this->attach);
-            \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $this->attach[0];
-           
+            if (\YunShop::request()->attach) {
+                \Setting::$uniqueAccountId = \YunShop::app()->uniacid = \YunShop::request()->attach;
+            } else {
+                \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $post['attach'];
+            }
+            \Log::debug('---------attach数组--------', \YunShop::app()->uniacid);
             AccountWechats::setConfig(AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid));
         }
     }
@@ -61,18 +65,19 @@ class WechatController extends PaymentController
 
     public function returnUrl()
     {
-        $post = \YunShop::request();
-
-        $verify_result = $this->getSignResult($post);
-
-        if ($verify_result) {
-            if ($_GET['trade_status'] == 'TRADE_SUCCESS') {
-                redirect(Url::absoluteApp('member/payYes'))->send();
+        if (\YunShop::request()->outtradeno) {
+            $orderPay = OrderPay::where('pay_sn', \YunShop::request()->outtradeno)->first();
+            $orders = Order::whereIn('id', $orderPay->order_ids)->get();
+            if (is_null($orderPay)) {
+                redirect(Url::absoluteApp('home'))->send();
+            }
+            if ($orders->count() > 1) {
+                redirect(Url::absoluteApp('member/orderlist/', ['i' => \YunShop::app()->uniacid]))->send();
             } else {
-                redirect(Url::absoluteApp('member/payErr', ['i' => \YunShop::app()->uniacid]))->send();
+                redirect(Url::absoluteApp('member/orderdetail/'.$orders->first()->id, ['i' => \YunShop::app()->uniacid]))->send();
             }
         } else {
-            redirect(Url::absoluteApp('member/payErr', ['i' => \YunShop::app()->uniacid]))->send();
+            redirect(Url::absoluteApp('home'))->send();
         }
     }
 

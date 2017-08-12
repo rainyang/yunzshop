@@ -21,6 +21,7 @@ class GoodsBuyController extends PreGeneratedController
             'total' => request()->input('total'),
             'option_id' => request()->input('option_id'),
         ];
+
         $result = collect();
         $result->push(MemberCartService::newMemberCart($goods_params));
         return $result;

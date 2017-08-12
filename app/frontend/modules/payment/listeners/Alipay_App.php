@@ -7,17 +7,17 @@ use app\common\events\payment\GetOrderPaymentTypeEvent;
 /**
  * Created by PhpStorm.
  * Author: 芸众商城 www.yunzshop.com
- * Date: 2017/5/17
+ * Date: 2017/8/8
  * Time: 下午5:44
  */
-class Alipay
+class Alipay_App
 {
     public function onGetPaymentTypes(GetOrderPaymentTypeEvent $event)
     {
-        if (\Setting::get('shop.pay.alipay') && \YunShop::request()->type != 7) {
+        if (\Setting::get('shop_app.pay.alipay') && \YunShop::request()->type == 7) {
             $result = [
                 'name' => '支付宝支付',
-                'value' => '2'
+                'value' => '8'
             ];
             $event->addData($result);
 

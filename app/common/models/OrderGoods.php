@@ -10,6 +10,7 @@ namespace app\common\models;
 
 use app\common\models\goods\GoodsDispatch;
 use app\common\models\order\OrderGoodsChangePriceLog;
+use app\common\models\orderGoods\OrderGoodsExpansion;
 use Illuminate\Database\Eloquent\Builder;
 
 class OrderGoods extends BaseModel
@@ -39,20 +40,20 @@ class OrderGoods extends BaseModel
 
     public function scopeOrderGoods(Builder $query)
     {
-        return $query->select(['id', 'order_id', 'goods_id', 'goods_price', 'total', 'goods_option_title', 'price', 'thumb', 'title', 'goods_sn'])->with('goods',function ($query){
+        return $query->select(['id', 'order_id', 'goods_id', 'goods_price', 'total', 'goods_option_title', 'price', 'thumb', 'title', 'goods_sn'])->with('goods', function ($query) {
             return $query->goods();
         });
     }
 
     public function getButtonsAttribute()
     {
-        if($this->comment_status == 0){
+        if ($this->comment_status == 0) {
             $result[] = [
                 'name' => '评价',
                 'api' => '',
                 'value' => ''
             ];
-        }else if ($this->comment_status == 1) {
+        } else if ($this->comment_status == 1) {
             $result[] = [
                 'name' => '追评',
                 'api' => '',
@@ -102,5 +103,20 @@ class OrderGoods extends BaseModel
     public function isOption()
     {
         return !empty($this->goods_option_id);
+    }
+
+    public function Expansion()
+    {
+        return $this->hasMany(OrderGoodsExpansion::class);
+    }
+
+    public function getExpansion($key = '')
+    {
+        if (!$key) {
+            return $this->expansion;
+        }
+
+        return isset($this->expansion->where('key', $key)->first()['value']) ? $this->expansion->where('key', $key)->first()['value'] : null;
+
     }
 }
