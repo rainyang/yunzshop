@@ -32,7 +32,8 @@ class WechatController extends PaymentController
             if (\YunShop::request()->attach) {
                 \Setting::$uniqueAccountId = \YunShop::app()->uniacid = \YunShop::request()->attach;
             } else {
-                \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $post['attach'];
+                $this->attach = explode(':', $post['attach']);
+                \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $this->attach[0];
             }
             \Log::debug('---------attach数组--------', \YunShop::app()->uniacid);
             AccountWechats::setConfig(AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid));
