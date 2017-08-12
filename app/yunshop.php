@@ -514,7 +514,8 @@ class YunApp extends YunComponent
      */
     public function getMemberId($ssid = 0)
     {
-        if (config('app.debug')) {
+        //todo dev分支测试时 使用test uid  !!!!!不要合并到master
+        if (config('app.debug') || isset($_GET['test_uid'])) {
             if (isset($_GET['test_uid'])) {
                 return $_GET['test_uid'];
             }
