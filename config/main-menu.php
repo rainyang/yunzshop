@@ -848,43 +848,20 @@ return [
                 'parents'       => ['Goods',],
                 'child'         => [
 
-                    'goods_search'  => [
-                        'name'          => '搜索商品',
-                        'url'           => 'goods.goods.get-search-goods',
-                        'urlParams'     => '',
-                        'permit'        => 0,
-                        'menu'          => 0,
-                        'icon'          => '',
-                        'parents'       =>[],
-                        'child'         => []
-                    ],
-
-                    'goods_goods_edit'  => [
-                        'name'          => '编辑商品',
-                        'url'           => 'goods.goods.edit',
-                        'url_params'    => '',
-                        'permit'        => 1,
-                        'menu'          => 0,
-                        'icon'          => 'fa-circle-o',
-                        'sort'          => 0,
-                        'item'          => 'goods_goods_edit',
-                        'parents'       => ['Goods', 'goods_goods',],
-                    ],
-
-                    'goods_goods_index' => [
-                        'name'          => '查看设置',
+                    'goods_goods_see' => [
+                        'name'          => '浏览列表',
                         'url'           => 'goods.goods.index',
                         'url_params'    => '',
                         'permit'        => 1,
                         'menu'          => 0,
-                        'icon'          => 'fa-circle-o',
+                        'icon'          => '',
                         'sort'          => '22',
-                        'item'          => 'goods_goods_index',
+                        'item'          => 'goods_goods_see',
                         'parents'       => ['Goods', 'goods_goods'],
                     ],
 
                     'goods_goods_display_order' => [
-                        'name'          => '提交排序',
+                        'name'          => '修改排序',
                         'url'           => 'goods.goods.displayorder',
                         'url_params'    => '',
                         'permit'        => 1,
@@ -893,6 +870,65 @@ return [
                         'sort'          => '23',
                         'item'          => 'goods_goods_display_order',
                         'parents'       => ['Goods', 'goods_goods'],
+                    ],
+
+                    'goods_goods_add'  => [
+                        'name'          => '添加商品',
+                        'url'           => 'goods.goods.create',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => '',
+                        'item'          => 'goods_goods_add',
+                        'parents'       => ['Goods', 'goods_goods'],
+                    ],
+
+                    'goods_goods_copy'  => [
+                        'name'          => '复制商品',
+                        'url'           => 'goods.goods.copy',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'goods_goods_copy',
+                        'parents'       => ['Goods', 'goods_goods',],
+                    ],
+
+                    'goods_goods_edit'  => [
+                        'name'          => '编辑商品',
+                        'url'           => 'goods.goods.edit',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'goods_goods_edit',
+                        'parents'       => ['Goods', 'goods_goods',],
+                    ],
+
+                    'goods_goods_destroy'  => [
+                        'name'          => '删除商品',
+                        'url'           => 'goods.goods.destroy',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'goods_goods_destroy',
+                        'parents'       => ['Goods', 'goods_goods',],
+                    ],
+
+                    'goods_goods_change'  => [
+                        'name'          => '快捷改名称、价格、库存',
+                        'url'           => 'goods.goods.change',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'goods_goods_change',
+                        'parents'       => ['Goods', 'goods_goods',],
                     ],
                 ],
             ],
@@ -1091,19 +1127,6 @@ return [
                         'item'              => 'goods_dispatch_delete',
                         'parents'           => ['Goods', 'goods_dispatch',],
                     ],
-
-                    //添加配送模版白名单
-                    'goods_dispatch_no_permission' => [
-                        'name'              => '白名单（选择城市）',
-                        'url'               => 'area.area.select-city',
-                        'url_params'        => '',
-                        'permit'            => 0,
-                        'menu'              => 0,
-                        'icon'              => '',
-                        'sort'              => 0,
-                        'item'              => 'goods_dispatch_no_permission',
-                        'parents'           => ['Goods', 'goods_dispatch',],
-                    ],
                 ],
             ],
 
@@ -1251,6 +1274,57 @@ return [
                         'sort'              => '3',
                         'item'              => 'coupon_coupon_log',
                         'parents'           => ['Goods', 'coupon',],
+                    ],
+                ],
+            ],
+
+            //添加白名单
+            'goods_no_permission' => [
+                'name'              => '白名单（不控制权限）',
+                'url'               => 'area.area.select-city',
+                'url_params'        => '',
+                'permit'            => 0,
+                'menu'              => 0,
+                'icon'              => '',
+                'sort'              => 0,
+                'item'              => 'goods_no_permission',
+                'parents'           => ['Goods', 'goods_dispatch',],
+                'child'             => [
+
+                    'area_area_select_city' => [
+                        'name'              => '选择城市',
+                        'url'               => 'area.area.select-city',
+                        'url_params'        => '',
+                        'permit'            => 0,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'area_area_select_city',
+                        'parents'           => ['Goods', 'goods_no_permission',],
+                    ],
+
+                    'member_member_get_search_member' => [
+                        'name'              => '选择通知人',
+                        'url'               => 'member.member.get-search-member',
+                        'url_params'        => '',
+                        'permit'            => 0,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'member_member_get_search_member',
+                        'parents'           => ['Goods', 'goods_no_permission',],
+                    ],
+
+                    'coupon_coupon_get_search_coupons' => [
+                        'name'              => '选择优惠卷',
+                        'url'               => 'coupon.coupon.get-search-coupons',
+                        'url_params'        => '',
+                        'permit'            => 0,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'coupon_coupon_get_search_coupons',
+                        'parents'           => ['Goods', 'goods_no_permission',],
                     ],
                 ],
             ],
