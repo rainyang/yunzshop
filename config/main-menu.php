@@ -831,7 +831,7 @@ return [
         'url_params'    => '',
         'permit'        => 1,
         'menu'          => 1,
-        'icon'          => 'fa-pied-piper',
+        'icon'          => 'fa-archive',
         'sort'          => '2',
         'item'          => 'Goods',
         'parents'       => [],
@@ -842,7 +842,7 @@ return [
                 'url_params'    => '',
                 'permit'        => 1,
                 'menu'          => 1,
-                'icon'          => 'fa-sliders',
+                'icon'          => 'fa-cubes',
                 'sort'          => 0,
                 'item'          => 'goods_goods',
                 'parents'       => ['Goods',],
@@ -959,352 +959,152 @@ return [
                 ],
             ],
 
-            'goods_brand' => [
-                'id' => '7',
-                'name' => '品牌管理',
-                'url' => 'goods.brand.index',
-                'url_params' => '',
-                'permit' => 1,
-                'menu' => 1,
-                'icon' => 'fa-briefcase',
-                'parent_id' => '6',
-                'sort' => '3',
-                'item' => 'goods_brand',
-                'parents' =>
-                    [
-                        'Goods',
+            'goods_brand'   => [
+                'name'              => '品牌管理',
+                'url'               => 'goods.brand.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-briefcase',
+                'sort'              => '3',
+                'item'              => 'goods_brand',
+                'parents'           => ['Goods','goods_brand'],
+                'child'             => [
+                    'goods_brand_see'   => [
+                        'name'              => '浏览品牌',
+                        'url'               => 'goods.brand.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => '',
+                        'sort'              => '3',
+                        'item'              => 'goods_brand',
+                        'parents'           => ['Goods',],
                     ],
 
-                'child' => [
                     'goods_brand_add' => [
-                        'id' => '8',
-                        'name' => '创建品牌',
-                        'url' => 'goods.brand.add',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 1,
-                        'icon' => 'fa-plus',
-                        'parent_id' => '7',
-                        'sort' => 0,
-                        'item' => 'goods_brand_add',
-                        'parents' =>
-                            [
-                                'Goods',
-                                'goods_brand',
-                            ],
-
-                        'child' => [
-                            'goods_brand_add_index' => [
-                                'id' => '1150',
-                                'name' => '查看设置',
-                                'url' => 'goods.brand.add',
-                                'url_params' => '',
-                                'permit' => 1,
-                                'menu' => 0,
-                                'icon' => 'fa-circle',
-                                'parent_id' => '8',
-                                'sort' => '30',
-                                'item' => 'goods_brand_add_index',
-                                'parents' =>
-                                    [
-                                        'Goods',
-                                        'goods_brand',
-                                        'goods_brand_add',
-                                    ],
-
-                            ],
-
-                            'goods_brand_add_submit' => [
-                                'id' => '1151',
-                                'name' => '提交设置',
-                                'url' => 'goods.brand.add',
-                                'url_params' => '',
-                                'permit' => 1,
-                                'menu' => 0,
-                                'icon' => 'fa-circle',
-                                'parent_id' => '8',
-                                'sort' => '31',
-                                'item' => 'goods_brand_add_submit',
-                                'parents' =>
-                                    [
-                                        'Goods',
-                                        'goods_brand',
-                                        'goods_brand_add',
-                                    ],
-
-                            ],
-
-                        ],
-
+                        'name'              => '添加品牌',
+                        'url'               => 'goods.brand.add',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'goods_brand_add',
+                        'parents'           => ['Goods', 'goods_brand',],
                     ],
 
                     'goods_brand_edit' => [
-                        'id' => '9',
-                        'name' => '修改品牌',
-                        'url' => 'goods.brand.edit',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-edit',
-                        'parent_id' => '7',
-                        'sort' => '2',
-                        'item' => 'goods_brand_edit',
-                        'parents' =>
-                            [
-                                'Goods',
-                                'goods_brand',
-                            ],
-
+                        'name'              => '修改品牌',
+                        'url'               => 'goods.brand.edit',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => '2',
+                        'item'              => 'goods_brand_edit',
+                        'parents'           => ['Goods', 'goods_brand',],
                     ],
 
                     'goods_brand_delete' => [
-                        'id' => '10',
-                        'name' => '删除品牌',
-                        'url' => 'goods.brand.deleted-brand',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-remove',
-                        'parent_id' => '7',
-                        'sort' => '3',
-                        'item' => 'goods_brand_delete',
-                        'parents' =>
-                            [
-                                'Goods',
-                                'goods_brand',
-                            ],
-
+                        'name'              => '删除品牌',
+                        'url'               => 'goods.brand.deleted-brand',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => '3',
+                        'item'              => 'goods_brand_delete',
+                        'parents'           => ['Goods', 'goods_brand',],
                     ],
-
-                    'goods_brand_index' => [
-                        'id' => '1149',
-                        'name' => '查看设置',
-                        'url' => 'goods.brand.index',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-circle',
-                        'parent_id' => '7',
-                        'sort' => '29',
-                        'item' => 'goods_brand_index',
-                        'parents' =>
-                            [
-                                'Goods',
-                                'goods_brand',
-                            ],
-
-                    ],
-
                 ],
-
             ],
 
             'goods_dispatch' => [
-                'id' => '55',
-                'name' => '配送模板',
-                'url' => 'goods.dispatch',
-                'url_params' => '',
-                'permit' => 1,
-                'menu' => 1,
-                'icon' => 'fa-sliders',
-                'parent_id' => '6',
-                'sort' => '4',
-                'item' => 'goods_dispatch',
-                'parents' =>
-                    [
-                        'Goods',
+                'name'              => '配送模板',
+                'url'               => 'goods.dispatch.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-truck',
+                'sort'              => '4',
+                'item'              => 'goods_dispatch.index',
+                'parents'           => ['Goods',],
+                'child'             => [
+
+                    'goods_dispatch_see' => [
+                        'name'              => '浏览列表',
+                        'url'               => 'goods.dispatch.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => '4',
+                        'item'              => 'goods_dispatch_see',
+                        'parents'           => ['Goods','goods_dispatch']
                     ],
 
-                'child' => [
-                    'goods_dispatch_index' => [
-                        'id' => '56',
-                        'name' => '模板管理',
-                        'url' => 'goods.dispatch.index',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 1,
-                        'icon' => 'fa-sliders',
-                        'parent_id' => '55',
-                        'sort' => 0,
-                        'item' => 'goods_dispatch_index',
-                        'parents' =>
-                            [
-                                'Goods',
-                                'goods_dispatch',
-                            ],
-
-                        'child' => [
-                            'goods_dispatch_append' => [
-                                'id' => '133',
-                                'name' => '添加模板',
-                                'url' => 'goods.dispatch.add',
-                                'url_params' => '',
-                                'permit' => 1,
-                                'menu' => 0,
-                                'icon' => 'fa-circle-o',
-                                'parent_id' => '56',
-                                'sort' => 0,
-                                'item' => 'goods_dispatch_append',
-                                'parents' =>
-                                    [
-                                        'Goods',
-                                        'goods_dispatch',
-                                        'goods_dispatch_index',
-                                    ],
-
-                                'child' => [
-                                    'goods_dispatch_add_index' => [
-                                        'id' => '1153',
-                                        'name' => '查看设置',
-                                        'url' => 'goods.dispatch.add',
-                                        'url_params' => '',
-                                        'permit' => 1,
-                                        'menu' => 0,
-                                        'icon' => 'fa-circle',
-                                        'parent_id' => '133',
-                                        'sort' => '33',
-                                        'item' => 'goods_dispatch_add_index',
-                                        'parents' =>
-                                            [
-                                                'Goods',
-                                                'goods_dispatch',
-                                                'goods_dispatch_index',
-                                                'goods_dispatch_append',
-                                            ],
-
-                                    ],
-
-                                    'goods_dispatch_add_submit' => [
-                                        'id' => '1154',
-                                        'name' => '提交设置',
-                                        'url' => 'goods.dispatch.add',
-                                        'url_params' => '',
-                                        'permit' => 1,
-                                        'menu' => 0,
-                                        'icon' => 'fa-circle',
-                                        'parent_id' => '133',
-                                        'sort' => '34',
-                                        'item' => 'goods_dispatch_add_submit',
-                                        'parents' =>
-                                            [
-                                                'Goods',
-                                                'goods_dispatch',
-                                                'goods_dispatch_index',
-                                                'goods_dispatch_append',
-                                            ],
-
-                                    ],
-
-                                    'goods_dispatch_return' => [
-                                        'id' => '1155',
-                                        'name' => '返回列表',
-                                        'url' => 'goods.dispatch.index',
-                                        'url_params' => '',
-                                        'permit' => 1,
-                                        'menu' => 0,
-                                        'icon' => 'fa-circle',
-                                        'parent_id' => '133',
-                                        'sort' => '35',
-                                        'item' => 'goods_dispatch_return',
-                                        'parents' =>
-                                            [
-                                                'Goods',
-                                                'goods_dispatch',
-                                                'goods_dispatch_index',
-                                                'goods_dispatch_append',
-                                            ],
-
-                                    ],
-
-                                ],
-
-                            ],
-
-                            'goods_dispatch_alter' => [
-                                'id' => '134',
-                                'name' => '修改模板',
-                                'url' => 'goods.dispatch.edit',
-                                'url_params' => '',
-                                'permit' => 1,
-                                'menu' => 0,
-                                'icon' => 'fa-circle-o',
-                                'parent_id' => '56',
-                                'sort' => 0,
-                                'item' => 'goods_dispatch_alter',
-                                'parents' =>
-                                    [
-                                        'Goods',
-                                        'goods_dispatch',
-                                        'goods_dispatch_index',
-                                    ],
-
-                            ],
-
-                            'goods_dispatch_delete' => [
-                                'id' => '135',
-                                'name' => '删除模板',
-                                'url' => 'goods.dispatch.delete',
-                                'url_params' => '',
-                                'permit' => 1,
-                                'menu' => 0,
-                                'icon' => 'fa-circle-o',
-                                'parent_id' => '56',
-                                'sort' => 0,
-                                'item' => 'goods_dispatch_delete',
-                                'parents' =>
-                                    [
-                                        'Goods',
-                                        'goods_dispatch',
-                                        'goods_dispatch_index',
-                                    ],
-
-                            ],
-
-                            'goods_dispatch_index_one' => [
-                                'id' => '1152',
-                                'name' => '查看设置',
-                                'url' => 'goods.dispatch.index',
-                                'url_params' => '',
-                                'permit' => 1,
-                                'menu' => 0,
-                                'icon' => 'fa-circle',
-                                'parent_id' => '56',
-                                'sort' => '32',
-                                'item' => 'goods_dispatch_index_one',
-                                'parents' =>
-                                    [
-                                        'Goods',
-                                        'goods_dispatch',
-                                        'goods_dispatch_index',
-                                    ],
-
-                            ],
-
-                        ],
-
+                    'goods_dispatch_sort' => [
+                        'name'              => '修改排序',
+                        'url'               => 'goods.dispatch.sort',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => '4',
+                        'item'              => 'goods_dispatch_sort',
+                        'parents'           => ['Goods','goods_dispatch']
                     ],
 
                     'goods_dispatch_add_one' => [
-                        'id' => '1156',
-                        'name' => '添加模板',
-                        'url' => 'goods.dispatch.add',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-circle',
-                        'parent_id' => '55',
-                        'sort' => 0,
-                        'item' => 'goods_dispatch_add_one',
-                        'parents' =>
-                            [
-                                'Goods',
-                                'goods_dispatch',
-                            ],
-
+                        'name'              => '添加模板',
+                        'url'               => 'goods.dispatch.add',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'goods_dispatch_add_one',
+                        'parents'           => ['Goods', 'goods_dispatch',],
                     ],
 
-                ],
+                    'goods_dispatch_alter' => [
+                        'name'              => '修改模板',
+                        'url'               => 'goods.dispatch.edit',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'goods_dispatch_alter',
+                        'parents'           => ['Goods', 'goods_dispatch',],
+                    ],
 
+                    'goods_dispatch_delete' => [
+                        'name'              => '删除模板',
+                        'url'               => 'goods.dispatch.delete',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'goods_dispatch_delete',
+                        'parents'           => ['Goods', 'goods_dispatch',],
+                    ],
+
+                    //添加配送模版白名单
+                    'goods_dispatch_no_permission' => [
+                        'name'              => '白名单（选择城市）',
+                        'url'               => 'area.area.select-city',
+                        'url_params'        => '',
+                        'permit'            => 0,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'goods_dispatch_no_permission',
+                        'parents'           => ['Goods', 'goods_dispatch',],
+                    ],
+                ],
             ],
 
             'comment' => [
