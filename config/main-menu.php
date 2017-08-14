@@ -898,186 +898,65 @@ return [
             ],
 
             'goods_category'    => [
-                'id' => '11',
-                'name' => '商品分类',
-                'url' => 'goods.category.index',
-                'url_params' => '',
-                'permit' => 1,
-                'menu' => 1,
-                'icon' => 'fa-sitemap',
-                'parent_id' => '6',
-                'sort' => '2',
-                'item' => 'goods_category',
-                'parents' =>
-                    [
-                        'Goods',
+                'name'              => '商品分类',
+                'url'               => 'goods.category.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-sitemap',
+                'sort'              => '2',
+                'item'              => 'goods_category',
+                'parents'           => ['Goods',],
+                'child'             => [
+
+                    'goods_category_see' => [
+                        'name'              => '浏览分类',
+                        'url'               => 'goods.category.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => 'fa-plus',
+                        'sort'              => 0,
+                        'item'              => 'goods_category_see',
+                        'parents'           => ['Goods', 'goods_category',],
                     ],
 
-                'child' => [
                     'goods_category_add' => [
-                        'id' => '12',
-                        'name' => '创建分类',
-                        'url' => 'goods.category.add-category',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 1,
-                        'icon' => 'fa-plus',
-                        'parent_id' => '11',
-                        'sort' => 0,
-                        'item' => 'goods_category_add',
-                        'parents' =>
-                            [
-                                'Goods',
-                                'goods_category',
-                            ],
-
-                        'child' => [
-                            'goods_category.add-category' => [
-                                'id' => '1145',
-                                'name' => '查看设置',
-                                'url' => 'goods.category.add-category',
-                                'url_params' => '',
-                                'permit' => 1,
-                                'menu' => 0,
-                                'icon' => 'fa-circle',
-                                'parent_id' => '12',
-                                'sort' => '25',
-                                'item' => 'goods_category.add-category',
-                                'parents' =>
-                                    [
-                                        'Goods',
-                                        'goods_category',
-                                        'goods_category_add',
-                                    ],
-
-                            ],
-
-                            'goods_category.add-category_submit' => [
-                                'id' => '1146',
-                                'name' => '提交设置',
-                                'url' => 'goods.category.add-category',
-                                'url_params' => '',
-                                'permit' => 1,
-                                'menu' => 0,
-                                'icon' => '',
-                                'parent_id' => '12',
-                                'sort' => '26',
-                                'item' => 'goods_category.add-category_submit',
-                                'parents' =>
-                                    [
-                                        'Goods',
-                                        'goods_category',
-                                        'goods_category_add',
-                                    ],
-
-                            ],
-
-                        ],
-
+                        'name'              => '添加分类',
+                        'url'               => 'goods.category.add-category',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => 'fa-plus',
+                        'sort'              => 0,
+                        'item'              => 'goods_category_add',
+                        'parents'           => ['Goods', 'goods_category',],
                     ],
 
                     'goods_category_edit' => [
-                        'id' => '13',
-                        'name' => '修改分类',
-                        'url' => 'goods.category.edit-category',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-edit',
-                        'parent_id' => '11',
-                        'sort' => '2',
-                        'item' => 'goods_category_edit',
-                        'parents' =>
-                            [
-                                'Goods',
-                                'goods_category',
-                            ],
-
-                        'child' => [
-                            'goods_category_edit_category_submit' => [
-                                'id' => '1147',
-                                'name' => '提交设置',
-                                'url' => 'goods.category.edit-category',
-                                'url_params' => '',
-                                'permit' => 1,
-                                'menu' => 0,
-                                'icon' => 'fa-circle',
-                                'parent_id' => '13',
-                                'sort' => '27',
-                                'item' => 'goods_category_edit_category_submit',
-                                'parents' =>
-                                    [
-                                        'Goods',
-                                        'goods_category',
-                                        'goods_category_edit',
-                                    ],
-
-                            ],
-
-                            'goods_category_edit_category_index' => [
-                                'id' => '1148',
-                                'name' => '查看设置',
-                                'url' => 'goods.category.index',
-                                'url_params' => '',
-                                'permit' => 1,
-                                'menu' => 0,
-                                'icon' => 'fa-circle',
-                                'parent_id' => '13',
-                                'sort' => '28',
-                                'item' => 'goods_category_edit_category_index',
-                                'parents' =>
-                                    [
-                                        'Goods',
-                                        'goods_category',
-                                        'goods_category_edit',
-                                    ],
-
-                            ],
-
-                        ],
-
+                        'name'              => '修改分类',
+                        'url'               => 'goods.category.edit-category',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => 'fa-edit',
+                        'sort'              => '2',
+                        'item'              => 'goods_category_edit',
+                        'parents' => ['Goods', 'goods_category',]
                     ],
 
                     'goods_category_delete' => [
-                        'id' => '14',
-                        'name' => '删除分类',
-                        'url' => 'goods.category.deleted-category',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-sliders',
-                        'parent_id' => '11',
-                        'sort' => '3',
-                        'item' => 'goods_category_delete',
-                        'parents' =>
-                            [
-                                'Goods',
-                                'goods_category',
-                            ],
-
+                        'name'              => '删除分类',
+                        'url'               => 'goods.category.deleted-category',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => 'fa-sliders',
+                        'sort'              => '3',
+                        'item'              => 'goods_category_delete',
+                        'parents'           => ['Goods', 'goods_category',],
                     ],
-
-                    'goods_category_index' => [
-                        'id' => '1144',
-                        'name' => '查看设置',
-                        'url' => 'goods.category.index',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-circle',
-                        'parent_id' => '11',
-                        'sort' => '24',
-                        'item' => 'goods_category_index',
-                        'parents' =>
-                            [
-                                'Goods',
-                                'goods_category',
-                            ],
-
-                    ],
-
                 ],
-
             ],
 
             'goods_brand' => [
