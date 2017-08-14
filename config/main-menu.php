@@ -1108,162 +1108,65 @@ return [
             ],
 
             'comment' => [
-                'id' => '15',
-                'name' => '评论管理',
-                'url' => 'goods.comment.index',
-                'url_params' => '',
-                'permit' => 1,
-                'menu' => 1,
-                'icon' => 'fa-columns',
-                'parent_id' => '6',
-                'sort' => '5',
-                'item' => 'comment',
-                'parents' =>
-                    [
-                        'Goods',
-                    ],
-
+                'name'              => '评论管理',
+                'url'               => 'goods.comment.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-columns',
+                'sort'              => '5',
+                'item'              => 'comment',
+                'parents'           => ['Goods',],
                 'child' => [
-                    'goods_comment_add' => [
-                        'id' => '16',
-                        'name' => '创建评论',
-                        'url' => 'goods.comment.add-comment',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 1,
-                        'icon' => 'fa-plus',
-                        'parent_id' => '15',
-                        'sort' => 0,
-                        'item' => 'goods_comment_add',
-                        'parents' =>
-                            [
-                                'Goods',
-                                'comment',
-                            ],
 
-                        'child' => [
-                            'goods_comment_add-comment' => [
-                                'id' => '1158',
-                                'name' => '查看设置',
-                                'url' => 'goods.comment.add.comment',
-                                'url_params' => '',
-                                'permit' => 1,
-                                'menu' => 0,
-                                'icon' => 'fa-circle',
-                                'parent_id' => '16',
-                                'sort' => '37',
-                                'item' => 'goods_comment_add-comment',
-                                'parents' =>
-                                    [
-                                        'Goods',
-                                        'comment',
-                                        'goods_comment_add',
-                                    ],
-
-                            ],
-
-                            'goods_comment_add-comment_index' => [
-                                'id' => '1159',
-                                'name' => '提交设置',
-                                'url' => 'goods.comment.add-comment',
-                                'url_params' => '',
-                                'permit' => 1,
-                                'menu' => 0,
-                                'icon' => 'fa-circle',
-                                'parent_id' => '16',
-                                'sort' => '38',
-                                'item' => 'goods_comment_add-comment_index',
-                                'parents' =>
-                                    [
-                                        'Goods',
-                                        'comment',
-                                        'goods_comment_add',
-                                    ],
-
-                            ],
-
-                        ],
-
+                    'goods_comment_add'     => [
+                        'name'                  => '添加评价',
+                        'url'                   => 'goods.comment.add-comment',
+                        'url_params'            => '',
+                        'permit'                => 1,
+                        'menu'                  => 0,
+                        'icon'                  => '',
+                        'sort'                  => 0,
+                        'item'                  => 'goods_comment_add',
+                        'parents'               => ['Goods', 'comment',],
                     ],
 
-                    'goods_comment_edit' => [
-                        'id' => '17',
-                        'name' => '修改评论',
-                        'url' => 'goods.comment.updated',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-edit',
-                        'parent_id' => '15',
-                        'sort' => 0,
-                        'item' => 'goods_comment_edit',
-                        'parents' =>
-                            [
-                                'Goods',
-                                'comment',
-                            ],
-
+                    'goods_comment_reply'   => [
+                        'name'                  => '回复评价',
+                        'url'                   => 'goods.comment.reply',
+                        'url_params'            => '',
+                        'permit'                => 1,
+                        'menu'                  => 0,
+                        'icon'                  => '',
+                        'sort'                  => 0,
+                        'item'                  => 'goods_comment_reply',
+                        'parents'               => ['Goods','comment',],
                     ],
 
-                    'goods_comment_delete' => [
-                        'id' => '18',
-                        'name' => '删除评论',
-                        'url' => 'goods.comment.deleted',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-circle-o',
-                        'parent_id' => '15',
-                        'sort' => 0,
-                        'item' => 'goods_comment_delete',
-                        'parents' =>
-                            [
-                                'Goods',
-                                'comment',
-                            ],
-
+                    'goods_comment_delete'  => [
+                        'name'                  => '删除评价',
+                        'url'                   => 'goods.comment.deleted',
+                        'url_params'            => '',
+                        'permit'                => 1,
+                        'menu'                  => 0,
+                        'icon'                  => '',
+                        'sort'                  => 0,
+                        'item'                  => 'goods_comment_delete',
+                        'parents'               => ['Goods', 'comment',],
                     ],
 
-                    'goods_comment_reply' => [
-                        'id' => '19',
-                        'name' => '回复评论',
-                        'url' => 'goods.comment.reply',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-circle-o',
-                        'parent_id' => '15',
-                        'sort' => 0,
-                        'item' => 'goods_comment_reply',
-                        'parents' =>
-                            [
-                                'Goods',
-                                'comment',
-                            ],
-
+                    'comment_no_permission'  => [
+                        'name'                  => '白名单（搜索商品）',
+                        'url'                   => 'goods.goods.get-search-goods',
+                        'url_params'            => '',
+                        'permit'                => 0,
+                        'menu'                  => 0,
+                        'icon'                  => '',
+                        'sort'                  => 0,
+                        'item'                  => 'comment_no_permission',
+                        'parents'               => ['Goods', 'comment',],
                     ],
-
-                    'goods_comment_index' => [
-                        'id' => '1157',
-                        'name' => '查看设置',
-                        'url' => 'goods.comment.index',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-circle',
-                        'parent_id' => '15',
-                        'sort' => '36',
-                        'item' => 'goods_comment_index',
-                        'parents' =>
-                            [
-                                'Goods',
-                                'comment',
-                            ],
-
-                    ],
-
                 ],
-
             ],
 
             'coupon'    => [
