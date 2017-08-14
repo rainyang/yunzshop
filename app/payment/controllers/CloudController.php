@@ -65,7 +65,7 @@ class CloudController extends PaymentController
     public function frontUrl()
     {
         if (0 == $_GET['state'] && $_GET['errorDetail'] == '成功') {
-            redirect(Url::absoluteApp('member/balance_recharge', ['i' => $_GET['attach']]))->send();
+            redirect(Url::absoluteApp('member', ['i' => $_GET['attach']]))->send();
         } else {
             redirect(Url::absoluteApp('home', ['i' => $_GET['attach']]))->send();
         }
