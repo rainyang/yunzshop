@@ -18,19 +18,30 @@ return [
         'parents' => [],                //
         'child' => [],
     ],
-    'system' => [
-        'id' => 1,
-        'name' => '系统管理',
-        'url' => '',
-        'url_params' => '',
-        'permit' => 1,
-        'menu' => 1,
-        'icon' => 'fa-cogs',
-        'parent_id' => 0,
-        'sort' => 1,
-        'item' => 'system',
-        'parents' => [],
-        'child' => [
+    'system'    => [
+        'name'          => '系统管理',
+        'url'           => '',
+        'url_params'    => '',
+        'permit'        => 1,
+        'menu'          => 1,
+        'icon'          => 'fa-cogs',
+        'sort'          => 1,
+        'item'          => 'system',
+        'parents'       => [],
+        'child'         => [
+
+            'shop'          => [
+                'name'          => '商城入口',
+                'url'           => 'setting.shop.entry',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-hand-o-right',
+                'sort'          => 0,
+                'item'          => 'shop',
+                'parents'       => ['system',],
+            ],
+
             'Setting' => [
                 'id' => '2',
                 'name' => '商城设置',
@@ -686,141 +697,6 @@ return [
                 ],
 
             ],
-
-            'plugins' => [
-                'id' => '79',
-                'name' => '插件管理',
-                'url' => 'plugins.get-plugin-data',
-                'url_params' => '',
-                'permit' => 1,
-                'menu' => 1,
-                'icon' => 'fa-circle-o',
-                'parent_id' => 1,
-                'sort' => 0,
-                'item' => 'plugins',
-                'parents' =>
-                    [
-                        'system',
-                    ],
-
-                'child' => [
-                    'plugins_enable' => [
-                        'id' => '1113',
-                        'name' => '启用插件',
-                        'url' => 'plugins.enable',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-check-circle-o',
-                        'parent_id' => '79',
-                        'sort' => 1,
-                        'item' => 'plugins_enable',
-                        'parents' =>
-                            [
-                                'system',
-                                'plugins',
-                            ],
-
-                    ],
-
-                    'plugins_disable' => [
-                        'id' => '1114',
-                        'name' => '禁用插件',
-                        'url' => 'plugins.disable',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-power-off',
-                        'parent_id' => '79',
-                        'sort' => '2',
-                        'item' => 'plugins_disable',
-                        'parents' =>
-                            [
-                                'system',
-                                'plugins',
-                            ],
-
-                    ],
-
-                    'plugins_manage' => [
-                        'id' => '1112',
-                        'name' => '插件安装',
-                        'url' => 'plugins.manage',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-download',
-                        'parent_id' => '79',
-                        'sort' => '3',
-                        'item' => 'plugins_manage',
-                        'parents' =>
-                            [
-                                'system',
-                                'plugins',
-                            ],
-
-                    ],
-
-                    'plugins_delete' => [
-                        'id' => '1115',
-                        'name' => '插件卸载',
-                        'url' => 'plugins.delete',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-close',
-                        'parent_id' => '79',
-                        'sort' => '4',
-                        'item' => 'plugins_delete',
-                        'parents' =>
-                            [
-                                'system',
-                                'plugins',
-                            ],
-
-                    ],
-
-                    'plugins_update' => [
-                        'id' => '1116',
-                        'name' => '插件升级',
-                        'url' => 'plugins.update',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-history',
-                        'parent_id' => '79',
-                        'sort' => '5',
-                        'item' => 'plugins_update',
-                        'parents' =>
-                            [
-                                'system',
-                                'plugins',
-                            ],
-
-                    ],
-
-                ],
-
-            ],
-
-            'shop' => [
-                'id' => '106',
-                'name' => '商城入口',
-                'url' => 'setting.shop.entry',
-                'url_params' => '',
-                'permit' => 1,
-                'menu' => 1,
-                'icon' => 'fa-hand-o-right',
-                'parent_id' => 1,
-                'sort' => 0,
-                'item' => 'shop',
-                'parents' =>
-                    [
-                        'system',
-                    ],
-
-            ],
-
         ],
 
     ],
@@ -836,6 +712,58 @@ return [
         'item'          => 'Goods',
         'parents'       => [],
         'child'         => [
+
+            //添加白名单
+            'goods_no_permission' => [
+                'name'              => '白名单（不控制权限）',
+                'url'               => 'area.area.select-city',
+                'url_params'        => '',
+                'permit'            => 0,
+                'menu'              => 0,
+                'icon'              => '',
+                'sort'              => 0,
+                'item'              => 'goods_no_permission',
+                'parents'           => ['Goods', 'goods_dispatch',],
+                'child'             => [
+
+                    'area_area_select_city' => [
+                        'name'              => '选择城市',
+                        'url'               => 'area.area.select-city',
+                        'url_params'        => '',
+                        'permit'            => 0,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'area_area_select_city',
+                        'parents'           => ['Goods', 'goods_no_permission',],
+                    ],
+
+                    'member_member_get_search_member' => [
+                        'name'              => '选择通知人',
+                        'url'               => 'member.member.get-search-member',
+                        'url_params'        => '',
+                        'permit'            => 0,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'member_member_get_search_member',
+                        'parents'           => ['Goods', 'goods_no_permission',],
+                    ],
+
+                    'coupon_coupon_get_search_coupons' => [
+                        'name'              => '选择优惠卷',
+                        'url'               => 'coupon.coupon.get-search-coupons',
+                        'url_params'        => '',
+                        'permit'            => 0,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'coupon_coupon_get_search_coupons',
+                        'parents'           => ['Goods', 'goods_no_permission',],
+                    ],
+                ],
+            ],
+            
             'goods_goods'   => [
                 'name'          => '商品列表',
                 'url'           => 'goods.goods.index',
@@ -1278,56 +1206,6 @@ return [
                 ],
             ],
 
-            //添加白名单
-            'goods_no_permission' => [
-                'name'              => '白名单（不控制权限）',
-                'url'               => 'area.area.select-city',
-                'url_params'        => '',
-                'permit'            => 0,
-                'menu'              => 0,
-                'icon'              => '',
-                'sort'              => 0,
-                'item'              => 'goods_no_permission',
-                'parents'           => ['Goods', 'goods_dispatch',],
-                'child'             => [
-
-                    'area_area_select_city' => [
-                        'name'              => '选择城市',
-                        'url'               => 'area.area.select-city',
-                        'url_params'        => '',
-                        'permit'            => 0,
-                        'menu'              => 0,
-                        'icon'              => '',
-                        'sort'              => 0,
-                        'item'              => 'area_area_select_city',
-                        'parents'           => ['Goods', 'goods_no_permission',],
-                    ],
-
-                    'member_member_get_search_member' => [
-                        'name'              => '选择通知人',
-                        'url'               => 'member.member.get-search-member',
-                        'url_params'        => '',
-                        'permit'            => 0,
-                        'menu'              => 0,
-                        'icon'              => '',
-                        'sort'              => 0,
-                        'item'              => 'member_member_get_search_member',
-                        'parents'           => ['Goods', 'goods_no_permission',],
-                    ],
-
-                    'coupon_coupon_get_search_coupons' => [
-                        'name'              => '选择优惠卷',
-                        'url'               => 'coupon.coupon.get-search-coupons',
-                        'url_params'        => '',
-                        'permit'            => 0,
-                        'menu'              => 0,
-                        'icon'              => '',
-                        'sort'              => 0,
-                        'item'              => 'coupon_coupon_get_search_coupons',
-                        'parents'           => ['Goods', 'goods_no_permission',],
-                    ],
-                ],
-            ],
         ],
     ],
 
