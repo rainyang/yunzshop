@@ -8,7 +8,7 @@
  ****************************************************************/
 
 return [
-    'index' => [
+    'index'  => [
         'name' => '控制面板',
         'url' => 'index.index',         // url 可以填写http 也可以直接写路由
         'urlParams' => '',              //如果是url填写的是路由则启用参数否则不启用
@@ -18,94 +18,83 @@ return [
         'parents' => [],                //
         'child' => [],
     ],
+
     'system' => [
-        'id' => 1,
-        'name' => '系统管理',
-        'url' => '',
-        'url_params' => '',
-        'permit' => 1,
-        'menu' => 1,
-        'icon' => 'fa-cogs',
-        'parent_id' => 0,
-        'sort' => 1,
-        'item' => 'system',
-        'parents' => [],
-        'child' => [
-            'Setting' => [
-                'id' => '2',
-                'name' => '商城设置',
-                'url' => 'setting.shop.shop',
-                'url_params' => '',
-                'permit' => 0,
-                'menu' => 1,
-                'icon' => 'fa-cog',
-                'parent_id' => 1,
-                'sort' => 0,
-                'item' => 'Setting',
-                'parents' => ['system'],
-                'child' => [
+        'name'          => '系统管理',
+        'url'           => '',
+        'url_params'    => '',
+        'permit'        => 1,
+        'menu'          => 1,
+        'icon'          => 'fa-cogs',
+        'sort'          => 1,
+        'item'          => 'system',
+        'parents'       => [],
+        'child'         => [
+
+            'Setting'       => [
+                'name'          => '商城设置',
+                'url'           => 'setting.shop.shop',
+                'url_params'    => '',
+                'permit'        => 0,
+                'menu'          => 1,
+                'icon'          => 'fa-cog',
+                'sort'          => 0,
+                'item'          => 'Setting',
+                'parents'       => ['system'],
+                'child'         => [
+
                     'setting_shop' => [
-                        'id' => '21',
                         'name' => '基础设置',
                         'url' => 'setting.shop.index',
                         'url_params' => '',
                         'permit' => 1,
                         'menu' => 1,
                         'icon' => 'fa-sliders',
-                        'parent_id' => '2',
                         'sort' => 0,
                         'item' => 'setting_shop',
                         'parents' => ['system', 'Setting'],
                         'child' => [
                             'setting_shop_index' => [
-                                'id' => '145',
                                 'name' => '查看设置',
                                 'url' => 'setting.shop.index',
                                 'url_params' => '',
                                 'permit' => 1,
                                 'menu' => 0,
                                 'icon' => 'fa-eye',
-                                'parent_id' => '21',
                                 'sort' => 1,
                                 'item' => 'setting_shop_index',
                                 'parents' => ['system', 'Setting', 'setting_shop'],
 
                             ],
                             'setting_shop_submit' => [
-                                'id' => '1160',
                                 'name' => '编辑保存',
                                 'url' => '',
                                 'url_params' => '',
                                 'permit' => 1,
                                 'menu' => 0,
                                 'icon' => 'fa-floppy-o',
-                                'parent_id' => '21',
                                 'sort' => '2',
                                 'item' => 'setting_shop_submit',
                                 'parents' => ['system', 'Setting', 'setting_shop'],
                             ],
                             'setting_member' => [
-                                'id' => '128',
                                 'name' => '会员设置',
                                 'url' => 'setting.shop.member',
                                 'url_params' => '',
                                 'permit' => 1,
                                 'menu' => 0,
                                 'icon' => 'fa-puzzle-piece',
-                                'parent_id' => '21',
                                 'sort' => '3',
                                 'item' => 'setting_member',
                                 'parents' => ['system', 'Setting', 'setting_shop'],
                                 'child' => [
                                     'setting_member_index' => [
-                                        'id' => '146',
                                         'name' => '查看设置',
                                         'url' => 'setting.shop.index',
                                         'url_params' => '',
                                         'permit' => 1,
                                         'menu' => 0,
                                         'icon' => 'fa-eye',
-                                        'parent_id' => '128',
                                         'sort' => 1,
                                         'item' => 'setting_member_index',
                                         'parents' => ['system', 'Setting', 'setting_shop', 'setting_member'],
@@ -280,6 +269,7 @@ return [
                             ],
                         ],
                     ],
+
                     'setting_shop_trade' => [
                         'id' => '24',
                         'name' => '交易设置',
@@ -343,32 +333,24 @@ return [
                     ],
 
                     'setting_shop_pay' => [
-                        'id' => '25',
                         'name' => '支付方式',
                         'url' => 'setting.shop.pay',
                         'url_params' => '',
                         'permit' => 1,
                         'menu' => 1,
                         'icon' => 'fa-sliders',
-                        'parent_id' => '2',
                         'sort' => '3',
                         'item' => 'setting_shop_pay',
-                        'parents' =>
-                            [
-                                'system',
-                                'Setting',
-                            ],
-
+                        'parents' => ['system', 'Setting',],
                         'child' => [
+
                             'setting_pay_index' => [
-                                'id' => '1128',
                                 'name' => '查看设置',
                                 'url' => 'setting.shop.pay',
                                 'url_params' => '',
                                 'permit' => 1,
                                 'menu' => 0,
                                 'icon' => 'fa-circle',
-                                'parent_id' => '25',
                                 'sort' => '9',
                                 'item' => 'setting_pay_index',
                                 'parents' =>
@@ -597,46 +579,32 @@ return [
                         'parent_id' => '30',
                         'sort' => 0,
                         'item' => 'role_destory',
-                        'parents' =>
-                            [
-                                'system',
-                                'role',
-                            ],
-
+                        'parents' => ['system', 'role'],
                     ],
-
                 ],
-
             ],
 
-            'user' => [
-                'id' => '34',
-                'name' => '操作员',
-                'url' => 'user.user.index',
-                'url_params' => '',
-                'permit' => 1,
-                'menu' => 1,
-                'icon' => 'fa-list-ul',
-                'parent_id' => 1,
-                'sort' => 0,
-                'item' => 'user',
-                'parents' =>
-                    [
-                        'system',
-                    ],
+            'user'          => [
+                'name'          => '操作员',
+                'url'           => 'user.user.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-list-ul',
+                'sort'          => 0,
+                'item'          => 'user',
+                'parents'       => ['system',],
+                'child'         => [
 
-                'child' => [
-                    'user_store' => [
-                        'id' => '35',
-                        'name' => '添加操作员',
-                        'url' => 'user.user.store',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-plus',
-                        'parent_id' => '34',
-                        'sort' => 0,
-                        'item' => 'user_store',
+                    'user_store'    => [
+                        'name'          => '添加操作员',
+                        'url'           => 'user.user.store',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => 'fa-plus',
+                        'sort'          => 0,
+                        'item'          => 'user_store',
                         'parents' =>
                             [
                                 'system',
@@ -665,167 +633,22 @@ return [
                     ],
 
                     'user_destroy' => [
-                        'id' => '37',
                         'name' => '删除操作员',
                         'url' => 'user.user.destroy',
                         'url_params' => '',
                         'permit' => 1,
                         'menu' => 0,
                         'icon' => 'fa-remove',
-                        'parent_id' => '34',
                         'sort' => 0,
                         'item' => 'user_destroy',
-                        'parents' =>
-                            [
-                                'system',
-                                'user',
-                            ],
-
+                        'parents' => ['system', 'user',],
                     ],
-
                 ],
-
             ],
-
-            'plugins' => [
-                'id' => '79',
-                'name' => '插件管理',
-                'url' => 'plugins.get-plugin-data',
-                'url_params' => '',
-                'permit' => 1,
-                'menu' => 1,
-                'icon' => 'fa-circle-o',
-                'parent_id' => 1,
-                'sort' => 0,
-                'item' => 'plugins',
-                'parents' =>
-                    [
-                        'system',
-                    ],
-
-                'child' => [
-                    'plugins_enable' => [
-                        'id' => '1113',
-                        'name' => '启用插件',
-                        'url' => 'plugins.enable',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-check-circle-o',
-                        'parent_id' => '79',
-                        'sort' => 1,
-                        'item' => 'plugins_enable',
-                        'parents' =>
-                            [
-                                'system',
-                                'plugins',
-                            ],
-
-                    ],
-
-                    'plugins_disable' => [
-                        'id' => '1114',
-                        'name' => '禁用插件',
-                        'url' => 'plugins.disable',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-power-off',
-                        'parent_id' => '79',
-                        'sort' => '2',
-                        'item' => 'plugins_disable',
-                        'parents' =>
-                            [
-                                'system',
-                                'plugins',
-                            ],
-
-                    ],
-
-                    'plugins_manage' => [
-                        'id' => '1112',
-                        'name' => '插件安装',
-                        'url' => 'plugins.manage',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-download',
-                        'parent_id' => '79',
-                        'sort' => '3',
-                        'item' => 'plugins_manage',
-                        'parents' =>
-                            [
-                                'system',
-                                'plugins',
-                            ],
-
-                    ],
-
-                    'plugins_delete' => [
-                        'id' => '1115',
-                        'name' => '插件卸载',
-                        'url' => 'plugins.delete',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-close',
-                        'parent_id' => '79',
-                        'sort' => '4',
-                        'item' => 'plugins_delete',
-                        'parents' =>
-                            [
-                                'system',
-                                'plugins',
-                            ],
-
-                    ],
-
-                    'plugins_update' => [
-                        'id' => '1116',
-                        'name' => '插件升级',
-                        'url' => 'plugins.update',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-history',
-                        'parent_id' => '79',
-                        'sort' => '5',
-                        'item' => 'plugins_update',
-                        'parents' =>
-                            [
-                                'system',
-                                'plugins',
-                            ],
-
-                    ],
-
-                ],
-
-            ],
-
-            'shop' => [
-                'id' => '106',
-                'name' => '商城入口',
-                'url' => 'setting.shop.entry',
-                'url_params' => '',
-                'permit' => 1,
-                'menu' => 1,
-                'icon' => 'fa-hand-o-right',
-                'parent_id' => 1,
-                'sort' => 0,
-                'item' => 'shop',
-                'parents' =>
-                    [
-                        'system',
-                    ],
-
-            ],
-
         ],
-
     ],
 
-    'Goods'     => [
+    'Goods'  => [
         'name'          => '商品管理',
         'url'           => '',
         'url_params'    => '',
@@ -836,6 +659,94 @@ return [
         'item'          => 'Goods',
         'parents'       => [],
         'child'         => [
+            //添加白名单
+            'goods_no_permission' => [
+                'name'              => '白名单（不控制权限）',
+                'url'               => '',
+                'url_params'        => '',
+                'permit'            => 0,
+                'menu'              => 0,
+                'icon'              => '',
+                'sort'              => 0,
+                'item'              => 'goods_no_permission',
+                'parents'           => ['Goods', 'goods_dispatch',],
+                'child'             => [
+
+                    'area_area_select_city' => [
+                        'name'              => '白名单（选择城市）',
+                        'url'               => 'area.area.select-city',
+                        'url_params'        => '',
+                        'permit'            => 0,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'area_area_select_city',
+                        'parents'           => ['Goods', 'goods_no_permission',],
+                    ],
+
+                    'member_member_get_search_member' => [
+                        'name'              => '白名单（选择通知人）',
+                        'url'               => 'member.member.get-search-member',
+                        'url_params'        => '',
+                        'permit'            => 0,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'member_member_get_search_member',
+                        'parents'           => ['Goods', 'goods_no_permission',],
+                    ],
+
+                    'coupon_coupon_get_search_coupons' => [
+                        'name'              => '白名单（选择优惠卷）',
+                        'url'               => 'coupon.coupon.get-search-coupons',
+                        'url_params'        => '',
+                        'permit'            => 0,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'coupon_coupon_get_search_coupons',
+                        'parents'           => ['Goods', 'goods_no_permission',],
+                    ],
+
+                    //优惠卷白名单
+                    'coupon_no_permission'  => [
+                        'name'              => '白名单（指定商品）',
+                        'url'               => 'coupon.coupon.add-param',
+                        'url_params'        => '',
+                        'permit'            => 0,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => '2',
+                        'item'              => 'coupon_no_permission',
+                        'parents'           => ['Goods', 'coupon',],
+                    ],
+
+                    'goods_category_get_search_category'  => [
+                        'name'              => '白名单（选择分类）',
+                        'url'               => 'goods.category.get-search-categorys',
+                        'url_params'        => '',
+                        'permit'            => 0,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => '2',
+                        'item'              => 'goods_category_get_search_category',
+                        'parents'           => ['Goods', 'coupon',],
+                    ],
+
+                    'comment_no_permission'  => [
+                        'name'                  => '白名单（搜索商品）',
+                        'url'                   => 'goods.goods.get-search-goods',
+                        'url_params'            => '',
+                        'permit'                => 0,
+                        'menu'                  => 0,
+                        'icon'                  => '',
+                        'sort'                  => 0,
+                        'item'                  => 'comment_no_permission',
+                        'parents'               => ['Goods', 'comment',],
+                    ],
+                ],
+            ],
+
             'goods_goods'   => [
                 'name'          => '商品列表',
                 'url'           => 'goods.goods.index',
@@ -1177,18 +1088,6 @@ return [
                         'item'                  => 'goods_comment_delete',
                         'parents'               => ['Goods', 'comment',],
                     ],
-
-                    'comment_no_permission'  => [
-                        'name'                  => '白名单（搜索商品）',
-                        'url'                   => 'goods.goods.get-search-goods',
-                        'url_params'            => '',
-                        'permit'                => 0,
-                        'menu'                  => 0,
-                        'icon'                  => '',
-                        'sort'                  => 0,
-                        'item'                  => 'comment_no_permission',
-                        'parents'               => ['Goods', 'comment',],
-                    ],
                 ],
             ],
 
@@ -1242,7 +1141,7 @@ return [
 
                     'coupon_send_coupon' => [
                         'name'              => '发放优惠券',
-                        'url'               => 'coupon.send-coupon',
+                        'url'               => 'coupon.send-coupon.index',
                         'url_params'        => '',
                         'permit'            => 1,
                         'menu'              => 0,
@@ -1274,57 +1173,6 @@ return [
                         'sort'              => '3',
                         'item'              => 'coupon_coupon_log',
                         'parents'           => ['Goods', 'coupon',],
-                    ],
-                ],
-            ],
-
-            //添加白名单
-            'goods_no_permission' => [
-                'name'              => '白名单（不控制权限）',
-                'url'               => 'area.area.select-city',
-                'url_params'        => '',
-                'permit'            => 0,
-                'menu'              => 0,
-                'icon'              => '',
-                'sort'              => 0,
-                'item'              => 'goods_no_permission',
-                'parents'           => ['Goods', 'goods_dispatch',],
-                'child'             => [
-
-                    'area_area_select_city' => [
-                        'name'              => '选择城市',
-                        'url'               => 'area.area.select-city',
-                        'url_params'        => '',
-                        'permit'            => 0,
-                        'menu'              => 0,
-                        'icon'              => '',
-                        'sort'              => 0,
-                        'item'              => 'area_area_select_city',
-                        'parents'           => ['Goods', 'goods_no_permission',],
-                    ],
-
-                    'member_member_get_search_member' => [
-                        'name'              => '选择通知人',
-                        'url'               => 'member.member.get-search-member',
-                        'url_params'        => '',
-                        'permit'            => 0,
-                        'menu'              => 0,
-                        'icon'              => '',
-                        'sort'              => 0,
-                        'item'              => 'member_member_get_search_member',
-                        'parents'           => ['Goods', 'goods_no_permission',],
-                    ],
-
-                    'coupon_coupon_get_search_coupons' => [
-                        'name'              => '选择优惠卷',
-                        'url'               => 'coupon.coupon.get-search-coupons',
-                        'url_params'        => '',
-                        'permit'            => 0,
-                        'menu'              => 0,
-                        'icon'              => '',
-                        'sort'              => 0,
-                        'item'              => 'coupon_coupon_get_search_coupons',
-                        'parents'           => ['Goods', 'goods_no_permission',],
                     ],
                 ],
             ],
@@ -1814,7 +1662,7 @@ return [
 
     ],
 
-    'Order'         => [
+    'Order'  => [
         'name'          => '订单管理',
         'url'           => 'order.list',
         'url_params'    => '',
@@ -2283,7 +2131,7 @@ return [
         ],
     ],
 
-    'finance'           => [
+    'finance'=> [
         'name'              => '财务管理',
         'url'               => '',
         'url_params'        => '',
@@ -2415,6 +2263,18 @@ return [
                                 'icon'              => '',
                                 'sort'              => 0,
                                 'item'              => 'finance_balance_records_export',
+                                'parents'           => ['finance', 'balance', 'finance_balance_records'],
+                            ],
+
+                            'finance_balance_records_detail'  => [
+                                'name'              => '明细详情',
+                                'url'               => 'finance.balance.lookBalanceDetail',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => '',
+                                'sort'              => 0,
+                                'item'              => 'finance_balance_records_detail',
                                 'parents'           => ['finance', 'balance', 'finance_balance_records'],
                             ],
                         ],
@@ -2629,6 +2489,17 @@ return [
                         'icon'              => 'fa-database',
                         'sort'              => 0,
                         'item'              => 'point_member',
+                        'parents'           => ['finance', 'finance_point',],
+                    ],
+                    'point_recharge'             => [
+                        'name'              => '积分充值',
+                        'url'               => 'finance.point-recharge.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'point_recharge',
                         'parents'           => ['finance', 'finance_point',],
                     ],
 
