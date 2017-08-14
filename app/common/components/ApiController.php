@@ -85,7 +85,7 @@ class ApiController extends BaseController
 
         $queryString = ['type'=>$type,'session_id'=>session_id(), 'i'=>\YunShop::app()->uniacid, 'mid'=>$mid];
 
-        if (5 == $type) {
+        if (5 == $type || 7 == $type) {
             return $this->errorJson('',['login_status'=> 1,'login_url'=>'', 'type'=>$type,'session_id'=>session_id(), 'i'=>\YunShop::app()->uniacid, 'mid'=>$mid]);
         }
 

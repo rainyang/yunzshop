@@ -115,7 +115,7 @@ class MemberGroup extends \app\common\models\MemberGroup
         return [
             'group_name'    => [
                 'required',
-                Rule::unique($this->table)->where('uniacid', \YunShop::app()->uniacid)->ignore($this->id),
+                Rule::unique($this->table)->where('uniacid', \YunShop::app()->uniacid)->where('deleted_at','')->ignore($this->id),
                 'max:45'
                 ],
 

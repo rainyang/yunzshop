@@ -618,12 +618,25 @@ class MemberController extends ApiController
     //合成推广海报
     private function createPoster()
     {
+        $width = 320;
+        $height = 540;
+
+        $logo_width = 40;
+        $logo_height = 40;
+
+        $font_size = 15;
+        $font_size_show = 20;
+
         $member_id = \YunShop::app()->getMemberId();
 
         $shopInfo = Setting::get('shop.shop');
         $shopName = $shopInfo['name'] ?: '商城'; //todo 默认值需要更新
         $shopLogo = $shopInfo['logo'] ? replace_yunshop(tomedia($shopInfo['logo'])) : base_path().'/static/images/logo.png'; //todo 默认值需要更新
         $shopImg = $shopInfo['signimg'] ? replace_yunshop(tomedia($shopInfo['signimg'])) : base_path().'/static/images/photo-mr.jpg'; //todo 默认值需要更新
+
+        $str_lenght = $logo_width + $font_size_show * mb_strlen($shopName);
+
+        $space = ($width - $str_lenght) / 2;
 
         $uniacid = \YunShop::app()->uniacid;
         $path = storage_path('app/public/personalposter/'.$uniacid);
@@ -636,7 +649,7 @@ class MemberController extends ApiController
         $file = $md5.$extend;
 
         if(!file_exists($path.'/'.$file)){
-            $targetImg = imagecreatetruecolor(320, 540);
+            $targetImg = imagecreatetruecolor($width, $height);
             $white = imagecolorallocate($targetImg, 255, 255, 255);
             imagefill($targetImg,0,0,$white);
 
@@ -646,15 +659,15 @@ class MemberController extends ApiController
             $qrSource = imagecreatefromstring(file_get_contents($qrcode));
             $fingerPrintImg = imagecreatefromstring(file_get_contents(base_path().'/static/app/images/ewm.png'));
             $mergeData = [
-                'dst_left' => 90,
+                'dst_left' => $space,
                 'dst_top' => 10,
-                'dst_width' => 40,
-                'dst_height' => 40,
+                'dst_width' => $logo_width,
+                'dst_height' => $logo_height,
             ];
             self::mergeImage($targetImg, $logoSource, $mergeData); //合并商城logo图片
             $mergeData = [
-                'size' => 15,
-                'left' => 150,
+                'size' => $font_size,
+                'left' => $space + $logo_width + 10,
                 'top' => 37,
             ];
             self::mergeText($targetImg, $shopName, $mergeData);//合并商城名称(文字)

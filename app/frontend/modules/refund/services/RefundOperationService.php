@@ -29,7 +29,7 @@ class RefundOperationService
     public static function refundCancel()
     {
         //todo 需要与后台操作统一
-        $refundCancel = RefundCancel::find(\Request::query('refund_id'));
+        $refundCancel = RefundCancel::find(request()->input('refund_id'));
         if (!$refundCancel) {
             throw new AppException('售后申请记录不存在');
         }
@@ -41,7 +41,7 @@ class RefundOperationService
     public static function refundComplete()
     {
         //todo 需要与后台操作统一
-        $refundComplete = RefundComplete::find(\Request::query('refund_id'));
+        $refundComplete = RefundComplete::find(request()->input('refund_id'));
         if (!$refundComplete) {
             throw new AppException('售后申请记录不存在');
         }
