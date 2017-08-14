@@ -1266,149 +1266,92 @@ return [
 
             ],
 
-            'coupon' => [
-                'id' => '101',
-                'name' => '优惠券管理',
-                'url' => '',
-                'url_params' => '',
-                'permit' => 1,
-                'menu' => 1,
-                'icon' => 'fa-circle-o',
-                'parent_id' => '6',
-                'sort' => '6',
-                'item' => 'coupon',
-                'parents' =>
-                    [
-                        'Goods',
-                    ],
-
-                'child' => [
-                    'coupon_coupon_index' => [
-                        'id' => '102',
-                        'name' => '优惠券列表',
-                        'url' => 'coupon.coupon.index',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 1,
-                        'icon' => 'fa-circle-o',
-                        'parent_id' => '101',
-                        'sort' => 1,
-                        'item' => 'coupon_coupon_index',
-                        'parents' =>
-                            [
-                                'Goods',
-                                'coupon',
-                            ],
-
-                        'child' => [
-                            'coupon_coupon_edit' => [
-                                'id' => '116',
-                                'name' => '编辑优惠券',
-                                'url' => 'coupon.coupon.edit',
-                                'url_params' => 'id',
-                                'permit' => 1,
-                                'menu' => 0,
-                                'icon' => 'fa-circle-o',
-                                'parent_id' => '102',
-                                'sort' => 0,
-                                'item' => 'coupon_coupon_edit',
-                                'parents' =>
-                                    [
-                                        'Goods',
-                                        'coupon',
-                                        'coupon_coupon_index',
-                                    ],
-
-                            ],
-
-                            'coupon_coupon_destroy' => [
-                                'id' => '117',
-                                'name' => '删除优惠券',
-                                'url' => 'coupon.coupon.destory',
-                                'url_params' => 'id',
-                                'permit' => 1,
-                                'menu' => 0,
-                                'icon' => 'fa-circle-o',
-                                'parent_id' => '102',
-                                'sort' => 0,
-                                'item' => 'coupon_coupon_destory',
-                                'parents' =>
-                                    [
-                                        'Goods',
-                                        'coupon',
-                                        'coupon_coupon_index',
-                                    ],
-
-                            ],
-
-                            'coupon_send_coupon' => [
-                                'id' => '136',
-                                'name' => '发放优惠券',
-                                'url' => 'coupon.send-coupon',
-                                'url_params' => '',
-                                'permit' => 1,
-                                'menu' => 0,
-                                'icon' => 'fa-circle-o',
-                                'parent_id' => '102',
-                                'sort' => 0,
-                                'item' => 'coupon_send_coupon',
-                                'parents' =>
-                                    [
-                                        'Goods',
-                                        'coupon',
-                                        'coupon_coupon_index',
-                                    ],
-
-                            ],
-
-                        ],
-
-                    ],
+            'coupon'    => [
+                'name'              => '优惠券管理',
+                'url'               => '',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-tags',
+                'sort'              => '6',
+                'item'              => 'coupon',
+                'parents'           => ['Goods',],
+                'child'             => [
 
                     'coupon_coupon_create' => [
-                        'id' => '103',
-                        'name' => '创建优惠券',
-                        'url' => 'coupon.coupon.create',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 1,
-                        'icon' => 'fa-circle-o',
-                        'parent_id' => '101',
-                        'sort' => '2',
-                        'item' => 'coupon_coupon_create',
-                        'parents' =>
-                            [
-                                'Goods',
-                                'coupon',
-                            ],
+                        'name'              => '创建优惠券',
+                        'url'               => 'coupon.coupon.create',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => 'fa-ticket',
+                        'sort'              => '2',
+                        'item'              => 'coupon_coupon_create',
+                        'parents'           => ['Goods', 'coupon',],
+                    ],
 
+                    'coupon_coupon_edit' => [
+                        'name'              => '编辑优惠券',
+                        'url'               => 'coupon.coupon.edit',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'coupon_coupon_edit',
+                        'parents'           => ['Goods', 'coupon',],
+                    ],
+
+                    'coupon_coupon_destroy' => [
+                        'name'              => '删除优惠券',
+                        'url'               => 'coupon.coupon.destory',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'coupon_coupon_destory',
+                        'parents'           => ['Goods', 'coupon',],
+                    ],
+
+                    'coupon_send_coupon' => [
+                        'name'              => '发放优惠券',
+                        'url'               => 'coupon.send-coupon',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'coupon_send_coupon',
+                        'parents'           => ['Goods', 'coupon'],
+                    ],
+
+                    'coupon_coupon_index' => [
+                        'name'              => '优惠券列表',
+                        'url'               => 'coupon.coupon.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => 'fa-list-ul',
+                        'sort'              => 1,
+                        'item'              => 'coupon_coupon_index',
+                        'parents'           => ['Goods', 'coupon',],
                     ],
 
                     'coupon_coupon_log' => [
-                        'id' => '105',
-                        'name' => '领取发放记录',
-                        'url' => 'coupon.coupon.log',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 1,
-                        'icon' => 'fa-users',
-                        'parent_id' => '101',
-                        'sort' => '3',
-                        'item' => 'coupon_coupon_log',
-                        'parents' =>
-                            [
-                                'Goods',
-                                'coupon',
-                            ],
-
+                        'name'              => '领取发放记录',
+                        'url'               => 'coupon.coupon.log',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => 'fa-pencil',
+                        'sort'              => '3',
+                        'item'              => 'coupon_coupon_log',
+                        'parents'           => ['Goods', 'coupon',],
                     ],
-
                 ],
-
             ],
-
         ],
-
     ],
 
     'Member' => [
