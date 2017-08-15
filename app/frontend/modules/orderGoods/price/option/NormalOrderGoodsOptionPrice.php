@@ -10,21 +10,10 @@ namespace app\frontend\modules\orderGoods\price\option;
 
 class NormalOrderGoodsOptionPrice extends NormalOrderGoodsPrice
 {
-    public function getFinalPrice()
-    {
-        return $this->orderGoods->goodsOption->final_price * $this->orderGoods->total;
+    protected function goods(){
+        return $this->orderGoods->goodsOption;
     }
-
-    public function getGoodsPrice()
-    {
-        return $this->orderGoods->goodsOption->product_price * $this->orderGoods->total;
-    }
-    public function getGoodsCostPrice()
-    {
-        return $this->orderGoods->goodsOption->cost_price * $this->orderGoods->total;
-    }
-    public function getGoodsMarketPrice()
-    {
-        return $this->orderGoods->goodsOption->market_price * $this->orderGoods->total;
+    protected function aGoodsPrice(){
+        return $this->goods()->product_price;
     }
 }

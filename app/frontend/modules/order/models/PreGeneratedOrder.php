@@ -33,7 +33,7 @@ use Illuminate\Support\Facades\Schema;
  */
 class PreGeneratedOrder extends Order
 {
-    protected $appends = [];
+    protected $appends = ['pre_id'];
 
     /**
      * @var OrderDispatch 运费类
@@ -60,8 +60,18 @@ class PreGeneratedOrder extends Order
 
         $this->setDispatch();
         $this->setDiscount();
-    }
 
+    }
+    public function _init(){
+        $attributes = $this->getPreAttributes();
+        $this->setRawAttributes($attributes);
+        $this->orderGoods->each(function ($aOrderGoods) {
+            /**
+             * @var PreGeneratedOrderGoods $aOrderGoods
+             */
+            $aOrderGoods->_init();
+        });
+    }
     protected function setDiscount()
     {
         $this->orderDiscount = new OrderDiscount($this);
@@ -122,7 +132,7 @@ class PreGeneratedOrder extends Order
      * 订单生成前 分组订单的标识(规则: 将goods_id 排序之后用a连接)
      * @return string
      */
-    private function getPreId()
+    public function getPreIdAttribute()
     {
         return $this->getOrderGoodsModels()->pluck('goods_id')->sort()->implode('a');
     }
@@ -134,7 +144,7 @@ class PreGeneratedOrder extends Order
      */
     public function getParams($key = null)
     {
-        $result = collect(json_decode(\Request::input('orders'), true))->where('pre_id', $this->getPreId())->first();
+        $result = collect(json_decode(\Request::input('orders'), true))->where('pre_id', $this->pre_id)->first();
         if (isset($key)) {
             return $result[$key];
         }
@@ -144,24 +154,41 @@ class PreGeneratedOrder extends Order
 
     public function getPreAttributes()
     {
-        return array(
-            'pre_id' => $this->getPreId(),
-            'price' => sprintf('%.2f', $this->getPrice()),
-            'goods_price' => sprintf('%.2f', $this->getFinalPrice()),
-            'dispatch_price' => sprintf('%.2f', $this->getDispatchPrice()),
-            'discount_price' => sprintf('%.2f', $this->getDiscountAmount()),
-            'deduction_price' => sprintf('%.2f', $this->getDeductionPrice()),
-
+        $attributes = array(
+            'price' => $this->getPrice(),//订单最终支付价格
+            'order_goods_price' => $this->getOrderGoodsPrice(),//订单商品商城价
+            'goods_price' => $this->getFinalPrice(),//订单会员价
+            'discount_price' => $this->getDiscountAmount(),//订单优惠金额
+            'deduction_price' => $this->getDeductionPrice(),//订单抵扣金额
+            'dispatch_price' => $this->getDispatchPrice(),//订单运费
+            'goods_total' => $this->getGoodsTotal(),//订单商品总数
+            'order_sn' => OrderService::createOrderSN(),//订单编号
+            'create_time' => time(),
+            //配送类获取订单配送方式id
+            'dispatch_type_id' => 0,
+            'uid' => $this->uid,
+            'uniacid' => $this->uniacid,
         );
-    }
+
+        $attributes = array_merge($this->getAttributes(), $attributes);
+
+        return $attributes;    }
 
     /**
-     * 输出订单信息
+     * 显示订单数据
      * @return array
      */
     public function toArray()
     {
-        $this->setRawAttributes(array_merge($this->getAttributes(),$this->getPreAttributes()));
+        $attributes = $this->getAttributes();
+        // 格式化价格字段,将key中带有price,amount的属性,转为保留2位小数的字符串
+        $attributes = array_combine(array_keys($attributes), array_map(function ($value, $key) {
+            if (strpos($key, 'price') || strpos($key, 'amount')) {
+                $value = sprintf('%.2f', $value);
+            }
+            return $value;
+        }, $attributes, array_keys($attributes)));
+        $this->setRawAttributes($attributes);
 
         return parent::toArray();
     }
@@ -182,6 +209,7 @@ class PreGeneratedOrder extends Order
         return parent::push();
     }
 
+
     /**
      * 订单插入数据库,触发订单生成事件
      * @return mixed
@@ -189,9 +217,6 @@ class PreGeneratedOrder extends Order
      */
     public function generate()
     {
-        $orderAttributes = array_merge($this->getAttributes(),$this->createOrder());
-        //$this->get
-        $this->setRawAttributes($orderAttributes);
         $this->save();
 
         $result = $this->push();
@@ -212,32 +237,6 @@ class PreGeneratedOrder extends Order
 
         //$this->id = $order->id;
         return $this->id;
-    }
-
-
-    /**
-     * 订单插入数据库
-     * @return array 新生成的order model
-     */
-    private function createOrder()
-    {
-        $data = array(
-            'price' => $this->getPrice(),//订单最终支付价格
-            'order_goods_price' => $this->getOrderGoodsPrice(),//订单商品商城价
-            'goods_price' => $this->getFinalPrice(),//订单会员价
-            'discount_price' => $this->getDiscountAmount(),//订单优惠金额
-            'deduction_price' => $this->getDeductionPrice(),//订单抵扣金额
-            'dispatch_price' => $this->getDispatchPrice(),//订单运费
-            'goods_total' => $this->getGoodsTotal(),//订单商品总数
-            'order_sn' => OrderService::createOrderSN(),//订单编号
-            'create_time' => time(),
-            //配送类获取订单配送方式id
-            'dispatch_type_id' => 0,
-            'uid' => $this->uid,
-            'uniacid' => $this->uniacid,
-        );
-
-        return $data;
     }
 
     /**

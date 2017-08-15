@@ -26,12 +26,19 @@ class PreGeneratedOrderGoods extends OrderGoods
      */
     public $order;
     public $coupons;
-    /**
-     * todo 防止toArray方法死循环,order对象应该直接以属性赋值,而不是setRelation设置关联模型
-     * @var array
-     */
-    protected $hidden = ['order'];
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+        $this->setPriceCalculator();
+    }
 
+    /**
+     * 初始化属性,计算金额和价格,由于优惠金额的计算依赖于订单的优惠金额计算,所以需要在订单类计算完优惠金额之后,再执行这个方法
+     */
+    public function _init(){
+        $attributes = $this->getPreAttributes();
+        $this->setRawAttributes($attributes);
+    }
     /**
      * todo 应改为魔术方法
      * @return mixed
@@ -72,7 +79,7 @@ class PreGeneratedOrderGoods extends OrderGoods
             'goods_id' => $this->goods->id,
             'goods_sn' => $this->goods->goods_sn,
             'price' => $this->getPrice(),
-            'vip_price' => $this->getFinalPrice(),
+            'vip_discount_amount' => $this->getVipDiscountAmount(),
             'total' => $this->total,
             'title' => $this->goods->title,
             'thumb' => $this->goods->thumb,
@@ -91,7 +98,7 @@ class PreGeneratedOrderGoods extends OrderGoods
             ];
         }
 
-        $attributes = array_merge($this->getAttributes(),$attributes);
+        $attributes = array_merge($this->getAttributes(), $attributes);
 
         return $attributes;
     }
@@ -133,7 +140,7 @@ class PreGeneratedOrderGoods extends OrderGoods
      */
     public function toArray()
     {
-        $attributes = $this->getPreAttributes();
+        $attributes = $this->getAttributes();
         // 格式化价格字段,将key中带有price,amount的属性,转为保留2位小数的字符串
         $attributes = array_combine(array_keys($attributes), array_map(function ($value, $key) {
             if (strpos($key, 'price') || strpos($key, 'amount')) {
@@ -159,9 +166,7 @@ class PreGeneratedOrderGoods extends OrderGoods
             throw new AppException('订单信息不存在');
         }
         $this->order_id = $this->order->id;
-        $attributes = $this->getPreAttributes();
 
-        $this->setRawAttributes($attributes);
 
         return parent::save($options);
     }
@@ -180,11 +185,6 @@ class PreGeneratedOrderGoods extends OrderGoods
      */
     protected $priceCalculator;
 
-    public function __construct(array $attributes = [])
-    {
-        parent::__construct($attributes);
-        $this->setPriceCalculator();
-    }
 
     /**
      * 设置价格计算者
@@ -212,6 +212,10 @@ class PreGeneratedOrderGoods extends OrderGoods
             throw new ShopException('订单商品计算实例不存在');
         }
         return $this->priceCalculator;
+    }
+    protected function getVipDiscountAmount(){
+        return $this->getPriceCalculator()->getVipDiscountAmount();
+
     }
 
     /**
@@ -245,6 +249,7 @@ class PreGeneratedOrderGoods extends OrderGoods
     {
         return $this->getPriceCalculator()->getCalculationPrice();
     }
+
     /**
      * 优惠金额
      */
