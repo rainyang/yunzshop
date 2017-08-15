@@ -37,7 +37,7 @@
                                         @if(isset($valueTwo['child']))
                                             @foreach($valueTwo['child'] as $keyThird=>$valueThird)
                                                 @if(isset($valueThird['permit']) && $valueThird['permit'] === 1)
-                                                <label class="checkbox-inline">
+                                                <label class="checkbox-inline" style="width: 117px;">
 
                                                 <input type="checkbox"
                                                        name="perms[]"
