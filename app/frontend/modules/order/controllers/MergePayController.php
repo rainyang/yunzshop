@@ -102,17 +102,18 @@ class MergePayController extends ApiController
         return $result ? $result : [];
     }
 
-    protected function pay($request, $payType)
+    protected function pay($payType)
     {
         $this->validate([
             'order_pay_id' => 'required|integer'
         ]);
-        $this->orderPay = $orderPay = OrderPay::find($request->input('order_pay_id'));
+
+        $this->orderPay = $orderPay = OrderPay::find(request()->input('order_pay_id'));
         if (!isset($orderPay)) {
-            throw new AppException('(ID' . $request->input('order_pay_id') . ')支付流水记录不存在');
+            throw new AppException('(ID' . request()->input('order_pay_id') . ')支付流水记录不存在');
         }
         if ($orderPay->status > 0) {
-            throw new AppException('(ID' . $request->input('order_pay_id') . '),此流水号已支付');
+            throw new AppException('(ID' . request()->input('order_pay_id') . '),此流水号已支付');
         }
 
         $orders = $this->orders($orderPay->order_ids);
@@ -127,7 +128,9 @@ class MergePayController extends ApiController
                 throw new AppException('支付方式选择失败');
             }
         });
-
+        return $this->getPayResult($payType,$orderPay,$orders);
+    }
+    protected function getPayResult($payType,$orderPay,$orders){
         $query_str = $this->getPayParams($orderPay, $orders);
 
         $pay = PayFactory::create($payType);
@@ -138,17 +141,14 @@ class MergePayController extends ApiController
             throw new AppException('获取支付参数失败');
         }
         return $result;
-
-
     }
-
     protected function getPayParams($orderPay, Collection $orders)
     {
         return [
             'order_no' => $orderPay->pay_sn,
             'amount' => $orderPay->amount,
             'subject' => $orders->first()->hasManyOrderGoods[0]->title ?: '芸众商品',
-            'body' => ($orders->first()->hasManyOrderGoods[0]->title ?: '芸众商品'). ':' . \YunShop::app()->uniacid,
+            'body' => ($orders->first()->hasManyOrderGoods[0]->title ?: '芸众商品') . ':' . \YunShop::app()->uniacid,
             'extra' => ['type' => 1]
         ];
     }
@@ -158,7 +158,7 @@ class MergePayController extends ApiController
         if (\Setting::get('shop.pay.weixin') == false) {
             throw new AppException('商城未开启微信支付');
         }
-        $data = $this->pay($request, PayFactory::PAY_WEACHAT);
+        $data = $this->pay( PayFactory::PAY_WEACHAT);
         $data['js'] = json_decode($data['js'], 1);
         return $this->successJson('成功', $data);
     }
@@ -171,7 +171,7 @@ class MergePayController extends ApiController
         if ($request->has('uid')) {
             Session::set('member_id', $request->query('uid'));
         }
-        $data = $this->pay($request, PayFactory::PAY_ALIPAY);
+        $data = $this->pay( PayFactory::PAY_ALIPAY);
         return $this->successJson('成功', $data);
     }
 
@@ -181,7 +181,7 @@ class MergePayController extends ApiController
             throw new AppException('商城未开启支付宝支付');
         }
 
-        $data = $this->pay($request, PayFactory::PAY_CLOUD_WEACHAT);
+        $data = $this->pay( PayFactory::PAY_CLOUD_WEACHAT);
         return $this->successJson('成功', $data);
     }
 }
