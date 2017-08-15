@@ -62,7 +62,7 @@ class Category extends BaseModel
 
         $model->where('parent_id', $parentId);
         $model->where('enabled', 1);
-        $model->orderBy('id', 'asc');
+        $model->orderBy('display_order', 'asc');
         return $model;
     }
 
