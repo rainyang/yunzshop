@@ -9,6 +9,8 @@ namespace app\common\services;
 
 
 
+use app\common\helpers\Url;
+
 class ExportService
 {
     private $file_name;
@@ -99,7 +101,7 @@ class ExportService
         } else {
             echo '<div style="border: 6px solid #e0e0e0;width: 12%;margin: 0 auto;margin-top: 12%;padding: 26px 100px;box-shadow: 0 0 14px #a2a2a2;color: #616161;">共'.$this->page_count.'个excel文件, 已完成'.$this->export_page. '个。 <div>';
             $this->export_page += 1;
-            $url = yzWebUrl(\Request::query('route'), [\YunShop::request()->get()['search'], 'export' => 1, 'export_page' => $this->export_page]);
+            $url = Url::absoluteWeb(\Request::query('route'), ['search' => \YunShop::request()->get()['search'], 'export' => 1, 'export_page' => $this->export_page]);
             echo '<meta http-equiv="Refresh" content="1; url='.$url.'" />';
             exit;
         }

@@ -130,14 +130,14 @@ class ListController extends BaseController
                     $export_data[$key + 1] = [
                         $item['order_sn'],
                         $item['has_one_order_pay']['pay_sn'],
-                        $item['belongs_to_member']['nickname'],
+                        $this->getNickname($item['belongs_to_member']['nickname']),
                         $item['address']['realname'],
                         $item['address']['mobile'],
                         $item['address']['address'],
                         $this->getGoods($item, 'goods_title'),
                         $this->getGoods($item, 'goods_sn'),
                         $this->getGoods($item, 'total'),
-                        $item['has_one_pay_type']['name'],
+                        $item['pay_type_name'],
                         $item['goods_price'],
                         $item['dispatch_price'],
                         $item['price'],
@@ -151,7 +151,7 @@ class ListController extends BaseController
                         $item['has_one_order_remark']['remark'],
                     ];
                 }
-                $export_model->export($file_name, $export_data, \Request::query('route'));
+                $export_model->export($file_name, $export_data, 'order.list.index');
             }
         }
     }
@@ -184,5 +184,13 @@ class ListController extends BaseController
             'total' => $total
         ];
         return $res[$key];
+    }
+
+    private function getNickname($nickname)
+    {
+        if (substr($nickname, 0, strlen('=')) === '=') {
+            $nickname = '，' . $nickname;
+        }
+        return $nickname;
     }
 }
