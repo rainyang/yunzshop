@@ -54,6 +54,7 @@ class BalanceController extends ApiController
             $result['wechat'] = $pay['weixin'] ? true : false;
             $result['alipay'] = $pay['alipay'] ? true : false;
             //按丁冉要求，增加云付（微信支付2）2017-08-11
+            $result['cloud_pay'] = false;
             if (\YunShop::plugin()->get('cloud-pay')) {
 
                 $set = \Setting::get('plugin.cloud_pay_set');
@@ -61,7 +62,6 @@ class BalanceController extends ApiController
                     $result['cloud_pay'] = true;
                 }
             }
-            $result['cloud_pay'] = false;
             return $this->successJson('获取数据成功', $result);
         }
         return $this->errorJson('未获取到会员数据');
