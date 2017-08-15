@@ -20,7 +20,7 @@ use Yunshop\Love\Frontend\Models\LoveOrderGoods;
 
 class PreGeneratedOrderGoods extends OrderGoods
 {
-
+    protected $hidden = ['goods','sale'];
     /**
      * @var PreGeneratedOrder
      */

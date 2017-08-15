@@ -34,7 +34,7 @@ use Illuminate\Support\Facades\Schema;
 class PreGeneratedOrder extends Order
 {
     protected $appends = ['pre_id'];
-
+    protected $hidden = ['belongsToMember'];
     /**
      * @var OrderDispatch 运费类
      */
@@ -62,7 +62,9 @@ class PreGeneratedOrder extends Order
         $this->setDiscount();
 
     }
-    public function _init(){
+
+    public function _init()
+    {
         $attributes = $this->getPreAttributes();
         $this->setRawAttributes($attributes);
         $this->orderGoods->each(function ($aOrderGoods) {
@@ -72,6 +74,7 @@ class PreGeneratedOrder extends Order
             $aOrderGoods->_init();
         });
     }
+
     protected function setDiscount()
     {
         $this->orderDiscount = new OrderDiscount($this);
@@ -172,7 +175,8 @@ class PreGeneratedOrder extends Order
 
         $attributes = array_merge($this->getAttributes(), $attributes);
 
-        return $attributes;    }
+        return $attributes;
+    }
 
     /**
      * 显示订单数据
