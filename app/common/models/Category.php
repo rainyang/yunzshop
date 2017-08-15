@@ -56,7 +56,8 @@ class Category extends BaseModel
 
         if ($set['cat_level'] == 3) {
             $model->with(['hasManyChildren'=>function($qurey){
-                $qurey->where('enabled', 1);;
+                return $qurey->where('enabled', 1)
+                    ->orderBy('display_order', 'asc');
             }]);
         }
 
