@@ -11,6 +11,7 @@ namespace app\common\models\user;
 
 use app\backend\modules\user\observers\UserObserver;
 use app\common\models\BaseModel;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Schema;
 
@@ -88,12 +89,29 @@ class User extends BaseModel
             ->where('type', '=', YzPermission::TYPE_USER);
     }
 
-    /*
-     *   Get paging list
-     **/
-    public static function getPageList($pageSize = 20)
+    /**
+     * 排出供应商操作员
+     * @param $query
+     * @return mixed
+     */
+    public function scopeNoOperator($query)
     {
-        return self::whereHas('uniAccount', function($query){
+        if (Schema::hasTable('yz_supplier')) {
+            $ids = DB::table('yz_supplier')->select('uid')->get();
+
+            return $query->whereNotIn('uid',$ids);
+        }
+        return $query;
+    }
+
+
+    /**
+     * @param $query
+     * @return mixed
+     */
+    public function scopeRecords($query)
+    {
+        return $query->whereHas('uniAccount', function($query){
             return $query->uniacid();
         })
         ->with(['userProfile' => function($profile) {
@@ -103,25 +121,12 @@ class User extends BaseModel
             return $userRole->select('user_id', 'role_id')
                 ->with(['role' => function ($role) {
                     return $role->select('id', 'name')->uniacid();
-            }]);
-        }])
-        ->paginate($pageSize);
-
+                }]);
+        }]);
     }
 
-    /*
-     * 条件搜索分页列表  注意查询先后顺序关系
-     *
-     * @params int $pageSize
-     * @params array $keyword
-     *
-     * @return object */
-    public static function searchPagelist($pageSize, $keyword = [])
+    public function scopeSearch($query, array $keyword)
     {
-        //todo 查询语句，
-        $query = self::whereHas('uniAccount', function($query){
-            return $query->uniacid();
-        });
         if ($keyword['keyword']) {
             $query = $query->whereHas('userProfile', function ($profile) use ($keyword) {
                 return $profile->select('uid', 'realname', 'mobile')
@@ -137,9 +142,9 @@ class User extends BaseModel
                 return $userRole->where('role_id', $keyword['role_id']);
             });
         }
-
-        return $query->paginate($pageSize);
+        return $query;
     }
+
 
     /*
      * Get operator information through operator ID
