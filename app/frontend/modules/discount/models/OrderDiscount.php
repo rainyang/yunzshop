@@ -53,9 +53,9 @@ class OrderDiscount
         $this->deductionPrice = $this->_getDeductionPrice();
         // 将抵扣总金额保存在订单优惠信息表中
         $preOrderDiscount = new PreOrderDiscount([
-            'discount_code'=>'deduction',
-            'amount'=>$this->deductionPrice,
-            'name'=>'抵扣金额',
+            'discount_code' => 'deduction',
+            'amount' => $this->deductionPrice,
+            'name' => '抵扣金额',
 
         ]);
         $preOrderDiscount->setOrder($this->order);
@@ -67,7 +67,7 @@ class OrderDiscount
     {
         $event = new OnDeductionPriceCalculatedEvent($this->order);
         event($event);
-        return max($this->orderDeductions->sum('amount'),0);
+        return max($this->orderDeductions->sum('amount'), 0);
     }
 
     /**
@@ -80,11 +80,43 @@ class OrderDiscount
         return $this->getCouponAmount();
     }
 
+    private function setOrderDiscounts()
+    {
+        // 将所有订单商品的优惠
+        $orderGoodsDiscounts = $this->order->orderGoods->reduce(function ($result, $aOrderGoods) {
+            if (isset($aOrderGoods->orderGoodsDiscounts)) {
+                return $result->merge($aOrderGoods->orderGoodsDiscounts);
+            }
+            return $result;
+        }, collect());
+        // 按每个种类的优惠分组 求金额的和
+        $orderGoodsDiscounts->each(function ($orderGoodsDiscount) {
+            // 新类型添加
+            if ($this->order->orderDiscounts->where('discount_code', $orderGoodsDiscount->discount_code)->isEmpty()) {
+                $preOrderDiscount = new PreOrderDiscount([
+                    'discount_code' => $orderGoodsDiscount->discount_code,
+                    'amount' => $orderGoodsDiscount->amount,
+                    'name' => $orderGoodsDiscount->name,
+
+                ]);
+                $preOrderDiscount->setOrder($this->order);
+                return;
+            }
+            // 已存在的类型累加
+            $this->order->orderDiscounts->where('discount_code', $orderGoodsDiscount->discount_code)->first()->amount += 10000;
+        });
+    }
+
+    /**
+     * 获取订单优惠券总金额
+     * @return int
+     */
     public function getCouponAmount()
     {
         if (isset($this->couponPrice)) {
             return $this->couponPrice;
         }
+        $this->setOrderDiscounts();
 
         $this->couponPrice = $this->_getCouponAmount();
 
@@ -107,9 +139,9 @@ class OrderDiscount
         $result = $discountPrice + $moneyOffPrice;
         // 将抵扣总金额保存在订单优惠信息表中
         $preOrderDiscount = new PreOrderDiscount([
-            'discount_code'=>'coupon',
-            'amount'=>$result,
-            'name'=>'优惠券总金额',
+            'discount_code' => 'coupon',
+            'amount' => $result,
+            'name' => '优惠券总金额',
 
         ]);
         $preOrderDiscount->setOrder($this->order);

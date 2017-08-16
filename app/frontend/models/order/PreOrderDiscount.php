@@ -23,6 +23,6 @@ class PreOrderDiscount extends \app\common\models\order\OrderDiscount
     {
         $this->order = $order;
         $this->uid = $order->uid;
-        $order->setRelation('orderDiscount', $this);
+        $order->orderDiscounts->push($this);
     }
 }

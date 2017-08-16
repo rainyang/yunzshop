@@ -10,35 +10,48 @@ namespace app\frontend\modules\orderGoods\models;
 
 use app\common\exceptions\AppException;
 use app\common\exceptions\ShopException;
+use app\frontend\models\orderGoods\PreOrderGoodsDiscount;
 use app\frontend\models\OrderGoods;
 use app\frontend\modules\orderGoods\price\option\NormalOrderGoodsOptionPrice;
 use app\frontend\modules\orderGoods\price\option\NormalOrderGoodsPrice;
-use app\frontend\modules\orderGoods\price\OrderGoodsPriceCalculator;
 use app\frontend\modules\order\models\PreGeneratedOrder;
 use Illuminate\Support\Collection;
-use Yunshop\Love\Frontend\Models\LoveOrderGoods;
 
 class PreGeneratedOrderGoods extends OrderGoods
 {
-    protected $hidden = ['goods','sale'];
+    protected $hidden = ['goods', 'sale'];
     /**
      * @var PreGeneratedOrder
      */
     public $order;
     public $coupons;
+
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
         $this->setPriceCalculator();
+        // 订单商品优惠使用记录集合
+        $this->setRelation('orderGoodsDiscounts', $this->newCollection());
+
+        $attributes = $this->getPreAttributes();
+        $this->setRawAttributes($attributes);
     }
 
     /**
      * 初始化属性,计算金额和价格,由于优惠金额的计算依赖于订单的优惠金额计算,所以需要在订单类计算完优惠金额之后,再执行这个方法
      */
-    public function _init(){
-        $attributes = $this->getPreAttributes();
+    public function _init()
+    {
+        $attributes = [
+            'price' => $this->getPrice(),
+            'discount_price' => $this->getDiscountAmount(),
+            'coupon_price' => $this->getCouponAmount()
+        ];
+        $attributes = array_merge($this->getAttributes(),$attributes);
         $this->setRawAttributes($attributes);
+
     }
+
     /**
      * todo 应改为魔术方法
      * @return mixed
@@ -78,16 +91,14 @@ class PreGeneratedOrderGoods extends OrderGoods
         $attributes = array(
             'goods_id' => $this->goods->id,
             'goods_sn' => $this->goods->goods_sn,
-            'price' => $this->getPrice(),
-            'vip_discount_amount' => $this->getVipDiscountAmount(),
             'total' => $this->total,
             'title' => $this->goods->title,
             'thumb' => $this->goods->thumb,
             'goods_price' => $this->getGoodsPrice(),
             'goods_cost_price' => $this->getGoodsCostPrice(),
             'goods_market_price' => $this->getGoodsMarketPrice(),
-            'discount_price' => $this->getDiscountAmount(),
-            'coupon_price' => $this->getCouponAmount(),
+
+
         );
 
         if (isset($this->goodsOption)) {
@@ -213,8 +224,20 @@ class PreGeneratedOrderGoods extends OrderGoods
         }
         return $this->priceCalculator;
     }
-    protected function getVipDiscountAmount(){
-        return $this->getPriceCalculator()->getVipDiscountAmount();
+
+    protected function getVipDiscountAmount()
+    {
+        $result = $this->getPriceCalculator()->getVipDiscountAmount();
+
+        // 将抵扣总金额保存在订单优惠信息表中
+        $preOrderDiscount = new PreOrderGoodsDiscount([
+            'discount_code' => 'vipDiscount',
+            'amount' => $result,
+            'name' => '会员等级折扣',
+
+        ]);
+        $preOrderDiscount->setOrderGoods($this);
+        return $result;
 
     }
 
