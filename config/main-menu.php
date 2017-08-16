@@ -513,73 +513,76 @@ return [
 
             ],
 
-            'role' => [
-                'id' => '30',
-                'name' => '角色管理',
-                'url' => 'user.role.index',
-                'url_params' => '',
-                'permit' => 1,
-                'menu' => 1,
-                'icon' => 'fa-user',
-                'parent_id' => 1,
-                'sort' => 0,
-                'item' => 'role',
-                'parents' =>
-                    [
-                        'system',
+            'shop'          => [
+                'name'          => '商城入口',
+                'url'           => 'setting.shop.entry',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-hand-o-right',
+                'sort'          => 0,
+                'item'          => 'shop',
+                'parents'       => ['system',],
+            ],
+
+            'role'          => [
+                'name'          => '角色管理',
+                'url'           => 'user.role.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-user',
+                'sort'          => 0,
+                'item'          => 'role',
+                'parents'       => ['system',],
+                'child'         => [
+
+                    'role_see'          => [
+                        'name'              => '浏览角色',
+                        'url'               => 'user.role.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'role_see',
+                        'parents'           => ['system', 'role',],
                     ],
 
-                'child' => [
-                    'role_store' => [
-                        'id' => '31',
-                        'name' => '添加角色',
-                        'url' => 'user.role.store',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-plus',
-                        'parent_id' => '30',
-                        'sort' => 0,
-                        'item' => 'role_store',
-                        'parents' =>
-                            [
-                                'system',
-                                'role',
-                            ],
-
+                    'role_store'        => [
+                        'name'              => '添加角色',
+                        'url'               => 'user.role.store',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'role_store',
+                        'parents'           => ['system', 'role',],
                     ],
 
-                    'role_update' => [
-                        'id' => '32',
-                        'name' => '修改角色',
-                        'url' => 'user.role.update',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-pencil-square-o',
-                        'parent_id' => '30',
-                        'sort' => 0,
-                        'item' => 'role_update',
-                        'parents' =>
-                            [
-                                'system',
-                                'role',
-                            ],
-
+                    'role_update'       => [
+                        'name'              => '修改角色',
+                        'url'               => 'user.role.update',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'role_update',
+                        'parents'           => ['system', 'role',],
                     ],
 
-                    'role_destroy' => [
-                        'id' => '33',
-                        'name' => '删除角色',
-                        'url' => 'user.role.destory',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-remove',
-                        'parent_id' => '30',
-                        'sort' => 0,
-                        'item' => 'role_destory',
-                        'parents' => ['system', 'role'],
+                    'role_destroy'          => [
+                        'name'              => '删除角色',
+                        'url'               => 'user.role.destory',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'role_destroy',
+                        'parents'           => ['system', 'role'],
                     ],
                 ],
             ],
@@ -596,52 +599,52 @@ return [
                 'parents'       => ['system',],
                 'child'         => [
 
+                    'user_see'      => [
+                        'name'          => '浏览操作员',
+                        'url'           => 'user.user.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'user_see',
+                        'parents'       => ['system', 'user',],
+                    ],
+
                     'user_store'    => [
                         'name'          => '添加操作员',
                         'url'           => 'user.user.store',
                         'url_params'    => '',
                         'permit'        => 1,
                         'menu'          => 0,
-                        'icon'          => 'fa-plus',
+                        'icon'          => '',
                         'sort'          => 0,
                         'item'          => 'user_store',
-                        'parents' =>
-                            [
-                                'system',
-                                'user',
-                            ],
-
+                        'parents'       => ['system', 'user',],
                     ],
 
-                    'user_update' => [
-                        'id' => '36',
-                        'name' => '修改操作员',
-                        'url' => 'user.user.update',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-edit',
-                        'parent_id' => '34',
-                        'sort' => 0,
-                        'item' => 'user_update',
-                        'parents' =>
-                            [
-                                'system',
-                                'user',
-                            ],
-
+                    'user_update'   => [
+                        'name'          => '修改操作员',
+                        'url'           => 'user.user.update',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'user_update',
+                        'parents'       => ['system', 'user',],
                     ],
 
-                    'user_destroy' => [
-                        'name' => '删除操作员',
-                        'url' => 'user.user.destroy',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-remove',
-                        'sort' => 0,
-                        'item' => 'user_destroy',
-                        'parents' => ['system', 'user',],
+                    'user_destroy'  => [
+                        'name'          => '删除操作员',
+                        'url'           => 'user.user.destroy',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => 'fa-remove',
+                        'sort'          => 0,
+                        'item'          => 'user_destroy',
+                        'parents'       => ['system', 'user',],
                     ],
                 ],
             ],
