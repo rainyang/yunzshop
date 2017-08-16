@@ -19,7 +19,7 @@ use Illuminate\Support\Collection;
 
 class PreGeneratedOrderGoods extends OrderGoods
 {
-    protected $hidden = ['goods', 'sale','belongsToGood'];
+    protected $hidden = ['goods', 'sale','belongsToGood','hasOneGoodsDispatch'];
     /**
      * @var PreGeneratedOrder
      */
