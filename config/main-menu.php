@@ -103,7 +103,17 @@ return [
                         'parents'       => ['system', 'Setting', 'setting_shop'],
                     ],
 
-
+                    'setting_coupon'   => [
+                        'name'          => '优惠卷',
+                        'url'           => 'setting.coupon.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => '',
+                        'sort'          => '6',
+                        'item'          => 'setting_coupon',
+                        'parents'       => ['system', 'Setting', 'setting_shop'],
+                    ],
 
                     'setting_slide' => [
                         'name'          => '幻灯片',
