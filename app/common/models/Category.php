@@ -42,7 +42,7 @@ class Category extends BaseModel
     {
         return self::uniacid()
             ->where('parent_id', $parentId)
-            ->orderBy('id', 'asc');
+            ->orderBy('display_order', 'asc');
     }
 
     /**
@@ -56,13 +56,14 @@ class Category extends BaseModel
 
         if ($set['cat_level'] == 3) {
             $model->with(['hasManyChildren'=>function($qurey){
-                $qurey->where('enabled', 1);;
+                return $qurey->where('enabled', 1)
+                    ->orderBy('display_order', 'asc');
             }]);
         }
 
         $model->where('parent_id', $parentId);
         $model->where('enabled', 1);
-        $model->orderBy('id', 'asc');
+        $model->orderBy('display_order', 'asc');
         return $model;
     }
 

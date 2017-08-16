@@ -51,7 +51,7 @@ class BalanceController extends ApiController
             $result['member_credit2'] = $memberInfo->credit2;
 
             $pay = \Setting::get('shop.pay');
-            $result['wechat'] = $pay['weixin'] ? true : false;
+            $result['wechat'] = $pay['weixin'] && $pay['weixin_pay'] ? true : false;
             $result['alipay'] = $pay['alipay'] ? true : false;
             //按丁冉要求，增加云付（微信支付2）2017-08-11
             $result['cloud_pay'] = false;
