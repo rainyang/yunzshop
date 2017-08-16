@@ -39,8 +39,8 @@ class DiscountCouponPrice extends CouponPrice
             $goodsMemberCoupon = new GoodsMemberCoupon();
             //todo 需要按照订单方式修改
 
-            $goodsMemberCoupon->amount = ($orderGoods->getFinalPrice() / $this->coupon->getOrderGoodsInScope()->getFinalPrice()) * $this->getPrice();
-            $goodsMemberCoupon->enough = ($orderGoods->getFinalPrice() / $this->coupon->getOrderGoodsInScope()->getFinalPrice()) * $this->dbCoupon->enough;
+            $goodsMemberCoupon->amount = ($orderGoods->getPrice() / $this->coupon->getOrderGoodsInScope()->getFinalPrice()) * $this->getPrice();
+            $goodsMemberCoupon->enough = ($orderGoods->getPrice() / $this->coupon->getOrderGoodsInScope()->getFinalPrice()) * $this->dbCoupon->enough;
             if(!isset($orderGoods->coupons)){
                 $orderGoods->coupons = collect();
             }

@@ -24,6 +24,7 @@ class Goods extends \app\common\models\Goods
      */
     public function getFinalPriceAttribute()
     {
+
         // 商品价格 - 等级折扣金额
         return $this->price - $this->getVipDiscountAmount();
     }
