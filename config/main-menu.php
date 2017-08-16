@@ -887,239 +887,176 @@ return [
     ],
 
     'Member' => [
-        'name' => '会员管理',
-        'url' => '',
-        'url_params' => '',
-        'permit' => 1,
-        'menu' => 1,
-        'icon' => 'fa-users',
-        'sort' => '3',
-        'item' => 'Member',
-        'parents' => [],
+        'name'          => '会员管理',
+        'url'           => '',
+        'url_params'    => '',
+        'permit'        => 1,
+        'menu'          => 1,
+        'icon'          => 'fa-users',
+        'sort'          => '3',
+        'item'          => 'Member',
+        'parents'       => [],
+        'child'         => [
 
-        'child' => [
-            'member_all' => [
-                'name' => '全部会员',
-                'url' => 'member.member.index',
-                'url_params' => '',
-                'permit' => 1,
-                'menu' => 1,
-                'icon' => 'fa-users',
-                'sort' => 0,
-                'item' => 'member_all',
-                'parents' =>
-                    [
-                        'Member',
+            'member_all'    => [
+                'name'          => '全部会员',
+                'url'           => 'member.member.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-users',
+                'sort'          => 0,
+                'item'          => 'member_all',
+                'parents'       => ['Member',],
+                'child'         => [
+
+                    'member_see'     => [
+                        'name'          => '浏览列表',
+                        'url'           => 'member.member.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_see',
+                        'parents'       => ['Member', 'member_all',],
                     ],
 
-                'child' => [
-                    'member_export' => [
-                        'name' => '会员导出',
-                        'url' => 'member.member.export',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-circle-o',
-                        'sort' => 0,
-                        'item' => 'member_export',
-                        'parents' =>
-                            [
-                                'Member',
-                                'member_all',
-                            ],
-
+                    'member_export'     => [
+                        'name'          => '会员导出',
+                        'url'           => 'member.member.export',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_export',
+                        'parents'       => ['Member', 'member_all',],
                     ],
 
-                    'member_detail' => [
-                        'name' => '会员详情',
-                        'url' => 'member.member.detail',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-circle-o',
-                        'sort' => 0,
-                        'item' => 'member_detail',
-                        'parents' =>
-                            [
-                                'Member',
-                                'member_all',
-                            ],
-
+                    'member_detail'     => [
+                        'name'          => '查看会员详情',
+                        'url'           => 'member.member.detail',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_detail',
+                        'parents'       => ['Member', 'member_all',],
                     ],
 
-                    'order_list_indent' => [
-                        'name' => '会员订单',
-                        'url' => 'order.list',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-circle-o',
-                        'sort' => 0,
-                        'item' => 'order_list_indent',
-                        'parents' =>
-                            [
-                                'Member',
-                                'member_all',
-                            ],
-
+                    'member_detail_update'     => [
+                        'name'          => '修改会员信息',
+                        'url'           => 'member.member.update',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_detail_update',
+                        'parents'       => ['Member', 'member_all',],
                     ],
 
-                    'finance_point_recharge' => [
-                        'name' => '积分充值',
-                        'url' => 'finance.point-recharge',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-circle-o',
-                        'sort' => 0,
-                        'item' => 'finance_point_recharge',
-                        'parents' =>
-                            [
-                                'Member',
-                                'member_all',
-                            ],
-
-                    ],
-                    'finance_balance' => [
-                        'name' => '余额充值',
-                        'url' => 'finance.balance.recharge',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-circle-o',
-                        'sort' => 0,
-                        'item' => 'finance_balance',
-                        'parents' =>
-                            [
-                                'Member',
-                                'member_all',
-                            ],
-
-                    ],
 
                     'member_member_agent' => [
-                        'name' => '推广下线',
-                        'url' => 'member.member.agent',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-circle-o',
-                        'sort' => 0,
-                        'item' => 'member_member_agent',
-                        'parents' =>
-                            [
-                                'Member',
-                                'member_all',
-                            ],
-
+                        'name'          => '推广下线',
+                        'url'           => 'member.member.agent',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_member_agent',
+                        'parents'       => ['Member', 'member_all',],
                     ],
 
-                    'member_member_agent_blacklist' => [
-                        'name' => '加入黑名单',
-                        'url' => 'member.member.agent',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-circle-o',
-                        'sort' => 0,
-                        'item' => 'member_member_agent_blacklist',
-                        'parents' =>
-                            [
-                                'Member',
-                                'member_all',
-                            ],
-
+                    'member_member_black' => [
+                        'name'          => '加入黑名单',
+                        'url'           => 'member.member.black',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_member_black',
+                        'parents'       => ['Member', 'member_all',],
                     ],
 
                     'member_member_delete' => [
-                        'name' => '删除会员',
-                        'url' => 'member.member.delete',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-circle-o',
-                        'sort' => 0,
-                        'item' => 'member_member_delete',
-                        'parents' =>
-                            [
-                                'Member',
-                                'member_all',
-                            ],
-
+                        'name'          => '删除会员',
+                        'url'           => 'member.member.delete',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_member_delete',
+                        'parents'       => ['Member', 'member_all',],
                     ],
-
                 ],
-
             ],
 
-            'member_level' => [
-                'name' => '会员等级',
-                'url' => 'member.member-level.index',
-                'url_params' => '',
-                'permit' => 1,
-                'menu' => 1,
-                'icon' => 'fa-sort-amount-asc',
-                'sort' => 0,
-                'item' => 'member_level',
-                'parents' =>
-                    [
-                        'Member',
+            'member_level'  => [
+                'name'          => '会员等级',
+                'url'           => 'member.member-level.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-sort-amount-asc',
+                'sort'          => 0,
+                'item'          => 'member_level',
+                'parents'       => ['Member',],
+                'child'         => [
+
+                    'member_member_level_see' => [
+                        'name'          => '添加会员等级',
+                        'url'           => 'member.member-level.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_member_level_see',
+                        'parents'       => ['Member', 'member_level',],
                     ],
 
-                'child' => [
                     'member_member_level_store' => [
-                        'name' => '添加会员等级',
-                        'url' => 'member.member-level.store',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 1,
-                        'icon' => 'fa-plus',
-                        'sort' => 0,
-                        'item' => 'member_member_level_store',
-                        'parents' =>
-                            [
-                                'Member',
-                                'member_level',
-                            ],
-
+                        'name'          => '添加会员等级',
+                        'url'           => 'member.member-level.store',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => 'fa-plus',
+                        'sort'          => 0,
+                        'item'          => 'member_member_level_store',
+                        'parents'       => ['Member', 'member_level',],
                     ],
 
                     'member_member_level_update' => [
-                        'name' => '编辑会员等级',
-                        'url' => 'member.member-level.update',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-edit',
-                        'sort' => 0,
-                        'item' => 'member_member_level_update',
-                        'parents' =>
-                            [
-                                'Member',
-                                'member_level',
-                            ],
-
+                        'name'          => '编辑会员等级',
+                        'url'           => 'member.member-level.update',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => 'fa-edit',
+                        'sort'          => 0,
+                        'item'          => 'member_member_level_update',
+                        'parents'       => ['Member', 'member_level',],
                     ],
 
                     'member_member_level_destroy' => [
-                        'name' => '删除会员等级',
-                        'url' => 'member.member-level.destroy',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-remove',
-                        'sort' => 0,
-                        'item' => 'member_member_level_destroy',
-                        'parents' =>
-                            [
-                                'Member',
-                                'member_level',
-                            ],
-
+                        'name'          => '删除会员等级',
+                        'url'           => 'member.member-level.destroy',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => 'fa-remove',
+                        'sort'          => 0,
+                        'item'          => 'member_member_level_destroy',
+                        'parents'       => ['Member', 'member_level',],
                     ],
-
                 ],
-
             ],
 
             'member_group'  => [
@@ -1199,132 +1136,119 @@ return [
             ],
 
             'member_relation' => [
-                'name' => '会员关系',
-                'url' => '',
-                'url_params' => '',
-                'permit' => 1,
-                'menu' => 1,
-                'icon' => 'fa-crosshairs',
-                'sort' => 0,
-                'item' => 'member_relation',
-                'parents' =>
-                    [
-                        'Member',
-                    ],
+                'name'          => '会员关系',
+                'url'           => '',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-crosshairs',
+                'sort'          => 0,
+                'item'          => 'member_relation',
+                'parents'       => ['Member',],
+                'child'         => [
 
-                'child' => [
                     'user_relation' => [
-                        'name' => '会员关系设置',
-                        'url' => 'member.member-relation.index',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 1,
-                        'icon' => 'fa-sliders',
-                        'sort' => 0,
-                        'item' => 'user_relation',
-                        'parents' =>
-                            [
-                                'Member',
-                                'member_relation',
+                        'name'          => '会员关系设置',
+                        'url'           => 'member.member-relation.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => 'fa-sliders',
+                        'sort'          => 0,
+                        'item'          => 'user_relation',
+                        'parents'       => ['Member', 'member_relation',],
+                        'child'         => [
+
+                            'user_no_permission' => [
+                                'name'          => '搜索商品',
+                                'url'           => 'member.member-relation.query',
+                                'url_params'    => '',
+                                'permit'        => 0,
+                                'menu'          => 0,
+                                'icon'          => '',
+                                'sort'          => 0,
+                                'item'          => 'user_no_permission',
+                                'parents'       => ['Member', 'member_relation', 'user_relation'],
                             ],
 
-                        'child' => [
-                            'user_relation_save' => [
-                                'name' => '保存设置',
-                                'url' => 'member.member-relation.save',
-                                'url_params' => '',
-                                'permit' => 1,
-                                'menu' => 0,
-                                'icon' => 'fa-sliders',
-                                'sort' => 0,
-                                'item' => 'user_relation_save',
-                                'parents' =>
-                                    [
-                                        'Member',
-                                        'member_relation',
-                                        'user_relation'
-                                    ],
-                                ]
-                        ],
+                            'user_relation_see' => [
+                                'name'          => '查看设置',
+                                'url'           => 'member.member-relation.save',
+                                'url_params'    => '',
+                                'permit'        => 1,
+                                'menu'          => 0,
+                                'icon'          => '',
+                                'sort'          => 0,
+                                'item'          => 'user_relation_see',
+                                'parents'       => ['Member', 'member_relation', 'user_relation'],
+                            ],
 
+                            'user_relation_save' => [
+                                'name'          => '保存设置',
+                                'url'           => 'member.member-relation.save',
+                                'url_params'    => '',
+                                'permit'        => 1,
+                                'menu'          => 0,
+                                'icon'          => '',
+                                'sort'          => 0,
+                                'item'          => 'user_relation_save',
+                                'parents' => ['Member', 'member_relation', 'user_relation'],
+                            ],
+                        ],
                     ],
 
-                    'agent_apply' => [
-                        'name' => '资格申请',
-                        'url' => 'member.member-relation.apply',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 1,
-                        'icon' => 'fa-sliders',
-                        'sort' => 0,
-                        'item' => 'agent_apply',
-                        'parents' =>
-                            [
-                                'Member',
-                                'member_relation',
-                            ],
+                    'member_agent_apply'   => [
+                        'name'          => '资格申请',
+                        'url'           => 'member.member-relation.apply',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => 'fa-sliders',
+                        'sort'          => 0,
+                        'item'          => 'member_agent_apply',
+                        'parents'       => ['Member', 'member_relation',],
+                        'child'         => [
 
-                        'child' => [
                             'agent_apply_chkApply' => [
-                                'name' => '审查申请',
-                                'url' => 'member.member-relation.chkApply',
-                                'url_params' => '',
-                                'permit' => 1,
-                                'menu' => 0,
-                                'icon' => 'fa-sliders',
-                                'sort' => 0,
-                                'item' => 'agent_apply_chkApplye',
-                                'parents' =>
-                                    [
-                                        'Member',
-                                        'member_relation',
-                                        'agent_apply'
-                                    ],
+                                'name'              => '审核',
+                                'url'               => 'member.member-relation.chkApply',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => 'fa-sliders',
+                                'sort'              => 0,
+                                'item'              => 'agent_apply_chkApplye',
+                                'parents'           => ['Member', 'member_relation', 'agent_apply'],
                             ],
 
                             'agent_apply_export' => [
-                                'name' => '导出申请',
-                                'url' => 'member.member-relation.export',
-                                'url_params' => '',
-                                'permit' => 1,
-                                'menu' => 0,
-                                'icon' => 'fa-sliders',
-                                'sort' => 0,
-                                'item' => 'agent_apply_export',
-                                'parents' =>
-                                    [
-                                        'Member',
-                                        'member_relation',
-                                        'agent_apply'
-                                    ],
+                                'name'              => '导出申请',
+                                'url'               => 'member.member-relation.export',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => 'fa-sliders',
+                                'sort'              => 0,
+                                'item'              => 'agent_apply_export',
+                                'parents'           => ['Member', 'member_relation', 'agent_apply'],
                             ]
                         ],
-
                     ],
 
-                    'relation_base' => [
-                        'name' => '基础设置',
-                        'url' => 'member.member-relation.base',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 1,
-                        'icon' => 'fa-circle-o',
-                        'sort' => 0,
-                        'item' => 'relation_base',
-                        'parents' =>
-                            [
-                                'Member',
-                                'member_relation',
-                            ],
-
+                    'relation_base'     => [
+                        'name'          => '基础设置',
+                        'url'           => 'member.member-relation.base',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => 'fa-circle-o',
+                        'sort'          => 0,
+                        'item'          => 'relation_base',
+                        'parents'       => ['Member', 'member_relation',],
                     ],
-
                 ],
-
             ],
-
         ],
-
     ],
 
     'Order'  => [
@@ -1834,7 +1758,7 @@ return [
                     ],
 
                     'finance_balance_member'    => [
-                        'name'              => '余额管理',
+                        'name'              => '会员余额',
                         'url'               => 'finance.balance.member',
                         'url_params'        => '',
                         'permit'            => 1,
