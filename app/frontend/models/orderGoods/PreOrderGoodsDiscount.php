@@ -23,8 +23,6 @@ class PreOrderGoodsDiscount extends \app\common\models\orderGoods\OrderGoodsDisc
     {
         $this->orderGoods = $orderGoods;
         $orderGoods->orderGoodsDiscounts->push($this);
-        dd($orderGoods);
-        exit;
 
     }
     public function save(array $options = [])
