@@ -42,6 +42,7 @@ class OrderService
     public static function getOrderData(Order $order)
     {
         $result = collect();
+        // todo 这里为什么要toArray
         $result->put('order', $order->toArray());
         $result->put('discount', self::getDiscountEventData($order));
         $result->put('dispatch', self::getDispatchEventData($order));
@@ -138,6 +139,7 @@ class OrderService
 
         event(new OnPreGenerateOrderCreatingEvent($order));
         $order->setOrderGoods($orderGoodsArr);
+        $order->_init();
         return $order;
     }
 
