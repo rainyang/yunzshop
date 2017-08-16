@@ -20,7 +20,7 @@
                     @if(isset($valueOne['child']))
                         <div class='panel-body perm-group'>
                             @foreach($valueOne['child'] as $keyTwo=>$valueTwo)
-                                @if(isset($valueTwo['permit']) && $valueTwo['permit'] === 1)
+                                @if(isset($valueTwo['permit']) && $valueTwo['permit'] === 1 && $keyTwo != 'plugins' && $keyTwo != 'shop_upgrade')
                                     <span>
                                        <label class='checkbox-inline' >
                                            <input type='checkbox'
@@ -37,7 +37,7 @@
                                         @if(isset($valueTwo['child']))
                                             @foreach($valueTwo['child'] as $keyThird=>$valueThird)
                                                 @if(isset($valueThird['permit']) && $valueThird['permit'] === 1)
-                                                <label class="checkbox-inline">
+                                                <label class="checkbox-inline" style="width: 117px;">
 
                                                 <input type="checkbox"
                                                        name="perms[]"
