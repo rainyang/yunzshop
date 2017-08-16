@@ -887,30 +887,24 @@ return [
     ],
 
     'Member' => [
-        'id' => '38',
         'name' => '会员管理',
         'url' => '',
         'url_params' => '',
         'permit' => 1,
         'menu' => 1,
         'icon' => 'fa-users',
-        'parent_id' => 0,
         'sort' => '3',
         'item' => 'Member',
-        'parents' =>
-            [
-            ],
+        'parents' => [],
 
         'child' => [
             'member_all' => [
-                'id' => '39',
                 'name' => '全部会员',
                 'url' => 'member.member.index',
                 'url_params' => '',
                 'permit' => 1,
                 'menu' => 1,
                 'icon' => 'fa-users',
-                'parent_id' => '38',
                 'sort' => 0,
                 'item' => 'member_all',
                 'parents' =>
@@ -926,7 +920,6 @@ return [
                         'permit' => 1,
                         'menu' => 0,
                         'icon' => 'fa-circle-o',
-                        'parent_id' => '39',
                         'sort' => 0,
                         'item' => 'member_export',
                         'parents' =>
@@ -938,14 +931,12 @@ return [
                     ],
 
                     'member_detail' => [
-                        'id' => '127',
                         'name' => '会员详情',
                         'url' => 'member.member.detail',
                         'url_params' => '',
                         'permit' => 1,
                         'menu' => 0,
                         'icon' => 'fa-circle-o',
-                        'parent_id' => '39',
                         'sort' => 0,
                         'item' => 'member_detail',
                         'parents' =>
@@ -957,14 +948,12 @@ return [
                     ],
 
                     'order_list_indent' => [
-                        'id' => '137',
                         'name' => '会员订单',
                         'url' => 'order.list',
                         'url_params' => '',
                         'permit' => 1,
                         'menu' => 0,
                         'icon' => 'fa-circle-o',
-                        'parent_id' => '39',
                         'sort' => 0,
                         'item' => 'order_list_indent',
                         'parents' =>
@@ -976,14 +965,12 @@ return [
                     ],
 
                     'finance_point_recharge' => [
-                        'id' => '138',
                         'name' => '积分充值',
                         'url' => 'finance.point-recharge',
                         'url_params' => '',
                         'permit' => 1,
                         'menu' => 0,
                         'icon' => 'fa-circle-o',
-                        'parent_id' => '39',
                         'sort' => 0,
                         'item' => 'finance_point_recharge',
                         'parents' =>
@@ -994,14 +981,12 @@ return [
 
                     ],
                     'finance_balance' => [
-                        'id' => '139',
                         'name' => '余额充值',
                         'url' => 'finance.balance.recharge',
                         'url_params' => '',
                         'permit' => 1,
                         'menu' => 0,
                         'icon' => 'fa-circle-o',
-                        'parent_id' => '39',
                         'sort' => 0,
                         'item' => 'finance_balance',
                         'parents' =>
@@ -1013,14 +998,12 @@ return [
                     ],
 
                     'member_member_agent' => [
-                        'id' => '140',
                         'name' => '推广下线',
                         'url' => 'member.member.agent',
                         'url_params' => '',
                         'permit' => 1,
                         'menu' => 0,
                         'icon' => 'fa-circle-o',
-                        'parent_id' => '39',
                         'sort' => 0,
                         'item' => 'member_member_agent',
                         'parents' =>
@@ -1032,14 +1015,12 @@ return [
                     ],
 
                     'member_member_agent_blacklist' => [
-                        'id' => '141',
                         'name' => '加入黑名单',
                         'url' => 'member.member.agent',
                         'url_params' => '',
                         'permit' => 1,
                         'menu' => 0,
                         'icon' => 'fa-circle-o',
-                        'parent_id' => '39',
                         'sort' => 0,
                         'item' => 'member_member_agent_blacklist',
                         'parents' =>
@@ -1051,14 +1032,12 @@ return [
                     ],
 
                     'member_member_delete' => [
-                        'id' => '142',
                         'name' => '删除会员',
                         'url' => 'member.member.delete',
                         'url_params' => '',
                         'permit' => 1,
                         'menu' => 0,
                         'icon' => 'fa-circle-o',
-                        'parent_id' => '39',
                         'sort' => 0,
                         'item' => 'member_member_delete',
                         'parents' =>
@@ -1074,14 +1053,12 @@ return [
             ],
 
             'member_level' => [
-                'id' => '47',
                 'name' => '会员等级',
                 'url' => 'member.member-level.index',
                 'url_params' => '',
                 'permit' => 1,
                 'menu' => 1,
                 'icon' => 'fa-sort-amount-asc',
-                'parent_id' => '38',
                 'sort' => 0,
                 'item' => 'member_level',
                 'parents' =>
@@ -1091,14 +1068,12 @@ return [
 
                 'child' => [
                     'member_member_level_store' => [
-                        'id' => '48',
                         'name' => '添加会员等级',
                         'url' => 'member.member-level.store',
                         'url_params' => '',
                         'permit' => 1,
                         'menu' => 1,
                         'icon' => 'fa-plus',
-                        'parent_id' => '47',
                         'sort' => 0,
                         'item' => 'member_member_level_store',
                         'parents' =>
@@ -1110,14 +1085,12 @@ return [
                     ],
 
                     'member_member_level_update' => [
-                        'id' => '49',
                         'name' => '编辑会员等级',
                         'url' => 'member.member-level.update',
                         'url_params' => '',
                         'permit' => 1,
                         'menu' => 0,
                         'icon' => 'fa-edit',
-                        'parent_id' => '47',
                         'sort' => 0,
                         'item' => 'member_member_level_update',
                         'parents' =>
@@ -1129,14 +1102,12 @@ return [
                     ],
 
                     'member_member_level_destroy' => [
-                        'id' => '50',
                         'name' => '删除会员等级',
                         'url' => 'member.member-level.destroy',
                         'url_params' => '',
                         'permit' => 1,
                         'menu' => 0,
                         'icon' => 'fa-remove',
-                        'parent_id' => '47',
                         'sort' => 0,
                         'item' => 'member_member_level_destroy',
                         'parents' =>
@@ -1151,78 +1122,76 @@ return [
 
             ],
 
-            'member_group' => [
-                'id' => '51',
-                'name' => '会员分组',
-                'url' => 'member.member-group.index',
-                'url_params' => '',
-                'permit' => 1,
-                'menu' => 1,
-                'icon' => 'fa-sort-alpha-asc',
-                'parent_id' => '38',
-                'sort' => 0,
-                'item' => 'member_group',
-                'parents' =>
-                    [
-                        'Member',
+            'member_group'  => [
+                'name'          => '会员分组',
+                'url'           => 'member.member-group.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-sort-alpha-asc',
+                'sort'          => 0,
+                'item'          => 'member_group',
+                'parents'       => ['Member',],
+                'child'         => [
+
+                    'member_member_group_see' => [
+                        'name'          => '浏览会员分组',
+                        'url'           => 'member.member-group.store',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_member_group_see',
+                        'parents'       => ['Member', 'member_group',],
                     ],
 
-                'child' => [
-                    'member_member_group_store' => [
-                        'id' => '52',
-                        'name' => '添加会员分组',
-                        'url' => 'member.member-group.store',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 1,
-                        'icon' => 'fa-plus',
-                        'parent_id' => '51',
-                        'sort' => 0,
-                        'item' => 'member_member_group_store',
-                        'parents' =>
-                            [
-                                'Member',
-                                'member_group',
-                            ],
+                    'member_member_group_look' => [
+                        'name'          => '查看分组会员',
+                        'url'           => 'member.member.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_member_group_look',
+                        'parents'       => ['Member', 'member_group',],
+                    ],
 
+                    'member_member_group_store' => [
+                        'name'          => '添加会员分组',
+                        'url'           => 'member.member-group.store',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => 'fa-plus',
+                        'sort'          => 0,
+                        'item'          => 'member_member_group_store',
+                        'parents'       => ['Member', 'member_group',],
                     ],
 
                     'member_member_group_update' => [
-                        'id' => '53',
-                        'name' => '修改会员分组',
-                        'url' => 'member.member-group.update',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-pencil-square-o',
-                        'parent_id' => '51',
-                        'sort' => 0,
-                        'item' => 'member_member_group_update',
-                        'parents' =>
-                            [
-                                'Member',
-                                'member_group',
-                            ],
-
+                        'name'          => '修改会员分组',
+                        'url'           => 'member.member-group.update',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => 'fa-pencil-square-o',
+                        'sort'          => 0,
+                        'item'          => 'member_member_group_update',
+                        'parents'       => ['Member', 'member_group',],
                     ],
 
                     'member_member_group_destroy' => [
-                        'id' => '54',
-                        'name' => '删除会员分组',
-                        'url' => 'member.member-group.destroy',
-                        'url_params' => '',
-                        'permit' => 1,
-                        'menu' => 0,
-                        'icon' => 'fa-remove',
-                        'parent_id' => '51',
-                        'sort' => 0,
-                        'item' => 'member_member_group_destroy',
-                        'parents' =>
-                            [
-                                'Member',
-                                'member_group',
-                            ],
-
+                        'name'          => '删除会员分组',
+                        'url'           => 'member.member-group.destroy',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => 'fa-remove',
+                        'sort'          => 0,
+                        'item'          => 'member_member_group_destroy',
+                        'parents'       => ['Member', 'member_group',],
                     ],
 
                 ],
@@ -1230,14 +1199,12 @@ return [
             ],
 
             'member_relation' => [
-                'id' => '100',
                 'name' => '会员关系',
                 'url' => '',
                 'url_params' => '',
                 'permit' => 1,
                 'menu' => 1,
                 'icon' => 'fa-crosshairs',
-                'parent_id' => '38',
                 'sort' => 0,
                 'item' => 'member_relation',
                 'parents' =>
@@ -1247,14 +1214,12 @@ return [
 
                 'child' => [
                     'user_relation' => [
-                        'id' => '40',
                         'name' => '会员关系设置',
                         'url' => 'member.member-relation.index',
                         'url_params' => '',
                         'permit' => 1,
                         'menu' => 1,
                         'icon' => 'fa-sliders',
-                        'parent_id' => '100',
                         'sort' => 0,
                         'item' => 'user_relation',
                         'parents' =>
@@ -1271,7 +1236,6 @@ return [
                                 'permit' => 1,
                                 'menu' => 0,
                                 'icon' => 'fa-sliders',
-                                'parent_id' => '100',
                                 'sort' => 0,
                                 'item' => 'user_relation_save',
                                 'parents' =>
@@ -1286,14 +1250,12 @@ return [
                     ],
 
                     'agent_apply' => [
-                        'id' => '78',
                         'name' => '资格申请',
                         'url' => 'member.member-relation.apply',
                         'url_params' => '',
                         'permit' => 1,
                         'menu' => 1,
                         'icon' => 'fa-sliders',
-                        'parent_id' => '100',
                         'sort' => 0,
                         'item' => 'agent_apply',
                         'parents' =>
@@ -1310,7 +1272,6 @@ return [
                                 'permit' => 1,
                                 'menu' => 0,
                                 'icon' => 'fa-sliders',
-                                'parent_id' => '100',
                                 'sort' => 0,
                                 'item' => 'agent_apply_chkApplye',
                                 'parents' =>
@@ -1328,7 +1289,6 @@ return [
                                 'permit' => 1,
                                 'menu' => 0,
                                 'icon' => 'fa-sliders',
-                                'parent_id' => '100',
                                 'sort' => 0,
                                 'item' => 'agent_apply_export',
                                 'parents' =>
@@ -1343,14 +1303,12 @@ return [
                     ],
 
                     'relation_base' => [
-                        'id' => '104',
                         'name' => '基础设置',
                         'url' => 'member.member-relation.base',
                         'url_params' => '',
                         'permit' => 1,
                         'menu' => 1,
                         'icon' => 'fa-circle-o',
-                        'parent_id' => '100',
                         'sort' => 0,
                         'item' => 'relation_base',
                         'parents' =>
