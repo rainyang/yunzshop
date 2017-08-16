@@ -18,22 +18,41 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
         // todo 成交价-抵扣金额(均摊)
     }
 
+    protected function goods()
+    {
+        return $this->orderGoods->goods;
+    }
+    protected function aGoodsPrice(){
+        return $this->goods()->price;
+    }
     /**
      * 获取计算中的成交价
      * @return mixed
      */
-    public function getCalculationPrice(){
+    public function getCalculationPrice()
+    {
         return $this->goodsPrice;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getFinalPrice()
+    {
+        $fullPrice = isset($this->orderGoods->sale) ? $this->orderGoods->sale->getFullReductionAmount($this->orderGoods->goods->finalPrice * $this->orderGoods->total) : 0;
+
+        return $this->goods()->finalPrice * $this->orderGoods->total - $fullPrice;
+    }
+
     /**
      * 成交价
      * @return mixed
      */
     public function getPrice()
     {
-        $this->goodsPrice = max($this->getFinalPrice(),0);
-        $this->goodsPrice = max($this->goodsPrice - $this->getFullReductionAmount(),0);
-        $this->goodsPrice = max($this->goodsPrice - $this->getDiscountAmount(),0);
+        $this->goodsPrice = max($this->getFinalPrice(), 0);
+        $this->goodsPrice = max($this->goodsPrice - $this->getFullReductionAmount(), 0);
+        $this->goodsPrice = max($this->goodsPrice - $this->getDiscountAmount(), 0);
         return $this->goodsPrice;
     }
 
@@ -52,17 +71,7 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
      */
     public function getGoodsPrice()
     {
-        return $this->orderGoods->goods->price * $this->orderGoods->total;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getFinalPrice()
-    {
-        $fullPrice = isset($this->orderGoods->sale) ? $this->orderGoods->sale->getFullReductionAmount($this->orderGoods->goods->finalPrice * $this->orderGoods->total) : 0;
-
-        return $this->orderGoods->goods->finalPrice * $this->orderGoods->total - $fullPrice;
+        return $this->aGoodsPrice() * $this->orderGoods->total;
     }
 
     /**
@@ -84,7 +93,7 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
      */
     public function getGoodsCostPrice()
     {
-        return $this->orderGoods->goods->cost_price * $this->orderGoods->total;
+        return $this->goods()->cost_price * $this->orderGoods->total;
     }
 
     /**
@@ -93,7 +102,7 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
      */
     public function getGoodsMarketPrice()
     {
-        return $this->orderGoods->goods->market_price * $this->orderGoods->total;
+        return $this->goods()->market_price * $this->orderGoods->total;
     }
 
     /**
@@ -107,4 +116,10 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
         }
         return $this->orderGoods->sale->getFullReductionAmount($this->goodsPrice);
     }
+
+    public function getVipDiscountAmount()
+    {
+        return $this->goods()->getVipDiscountAmount() * $this->orderGoods->total;
+    }
+
 }

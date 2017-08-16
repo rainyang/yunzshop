@@ -17,14 +17,15 @@ use app\common\models\Coupon;
 class Goods extends \app\common\models\Goods
 {
     public $appends = ['vip_price'];
-
+    protected $vipDiscountAmount;
     /**
-     * 获取商品规格最终价格
+     * 获取商品最终价格
      * @return mixed
      */
     public function getFinalPriceAttribute()
     {
-        return $this->vip_price;
+        // 商品价格 - 等级折扣金额
+        return $this->price - $this->getVipDiscountAmount();
     }
     public function hasOneOptions()
     {
@@ -32,35 +33,55 @@ class Goods extends \app\common\models\Goods
     }
 
     /**
+     * 缓存等级折金额
+     * @param null $price
+     * @return int|mixed
+     */
+    public function getVipDiscountAmount($price = null){
+        if(isset($this->vipDiscountAmount)){
+            return $this->vipDiscountAmount;
+        }
+        return $this->vipDiscountAmount = $this->_getVipDiscountAmount($price);
+    }
+
+    /**
+     * 获取等级折扣金额
+     * @param null $price
+     * @return int|mixed
+     */
+    protected function _getVipDiscountAmount($price = null){
+        $result = 0;
+
+        if(!isset($price)){
+            $price = $this->price;
+        }
+        $member = MemberService::getCurrentMemberModel();
+        /**
+         *会员等级折扣
+         * @var $goodsDiscount GoodsDiscount
+         */
+        $goodsDiscount = $this->hasManyGoodsDiscount()->where('level_id', $member->yzMember->level_id)->first();
+        if (isset($goodsDiscount)) {
+            $result = $goodsDiscount->getAmount($price);
+        }
+
+        return $result;
+    }
+    /**
      * 获取商品的会员价格
      * @author shenyang
      * @return float
      */
     public function getVipPriceAttribute()
     {
-        $result = $this->price;
-        if (!isset($member)) {
-            $member = MemberService::getCurrentMemberModel();
-        }
-
-        /**
-         *会员等级折扣
-         * @var $goodsDiscount GoodsDiscount
-         */
-        $goodsDiscount = $this->hasManyGoodsDiscount()->where('level_id', $member->yzMember->level_id)->first();
-        if (isset($goodsDiscount) && $goodsDiscount->enable()) {
-            //优先使用商品设置
-            $result = $goodsDiscount->getPrice($this->price);
-        }else{
-            //其次等级商品全局设置
-            if (isset($member->yzMember->level)) {
-                $result = $member->yzMember->level->getMemberLevelGoodsDiscountPrice($this->price);
-            }
-        }
-
-        return $result;
+        return $this->price - $this->getVipDiscountAmount();
     }
 
+    /**
+     * 商品数据完整新验证
+     * @param null $num
+     * @throws AppException
+     */
     public function generalValidate($num = null)
     {
         if (empty($this->status)) {

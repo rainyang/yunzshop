@@ -1,6 +1,6 @@
 <?php
 
-namespace  app\payment;
+namespace app\payment;
 
 use app\common\components\BaseController;
 use app\common\events\payment\RechargeComplatedEvent;
@@ -58,10 +58,10 @@ class PaymentController extends BaseController
      * @return int
      */
     private function getUniacid()
-    {  
+    {
         $body = !empty($_REQUEST['body']) ? $_REQUEST['body'] : '';
         $splits = explode(':', $body);
-        \Log::debug('body截取',$splits);
+        \Log::debug('body截取', $splits);
 
         if (!empty($splits[1])) {
 
@@ -101,34 +101,34 @@ class PaymentController extends BaseController
 
                 if (bccomp($orderPay->amount, $data['total_fee'], 2) == 0) {
                     \Log::debug('更新订单状态');
-                    OrderService::ordersPay(['order_pay_id' => $orderPay->id]);
+                    OrderService::ordersPay(['order_pay_id' => $orderPay->id, 'pay_type_id' => $data['order_pay_id']]);
                 }
                 break;
             case "recharge.succeeded":
                 \Log::debug('支付操作', ['recharge.succeeded']);
                 (new BalanceRechargeResultService())->payResult([
-                    'order_sn'=> $data['out_trade_no'],
-                    'pay_sn'=> $data['trade_no']
+                    'order_sn' => $data['out_trade_no'],
+                    'pay_sn' => $data['trade_no']
                 ]);
 
                 //充值成功事件
                 event(new RechargeComplatedEvent([
-                    'order_sn'=> $data['out_trade_no'],
-                    'pay_sn'=> $data['trade_no']
+                    'order_sn' => $data['out_trade_no'],
+                    'pay_sn' => $data['trade_no']
                 ]));
-                
+
                 break;
             case "gold_recharge.succeeded":
                 \Log::debug('金币支付操作', ['gold_recharge.succeeded']);
                 RechargeService::payResult([
-                    'order_sn'=> $data['out_trade_no'],
-                    'pay_sn'=> $data['trade_no']
+                    'order_sn' => $data['out_trade_no'],
+                    'pay_sn' => $data['trade_no']
                 ]);
 
                 //充值成功事件
                 event(new RechargeComplatedEvent([
-                    'order_sn'=> $data['out_trade_no'],
-                    'pay_sn'=> $data['trade_no']
+                    'order_sn' => $data['out_trade_no'],
+                    'pay_sn' => $data['trade_no']
                 ]));
                 break;
         }
