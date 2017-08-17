@@ -12,17 +12,18 @@ class CreateImsYzOrderGoodsExpansionTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('yz_order_goods_expansion', function(Blueprint $table)
-		{
-			$table->increments('id');
-			$table->string('key')->default('');
-			$table->string('value')->default('');
-			$table->integer('order_goods_id');
-			$table->string('plugin_code', 50);
-			$table->integer('updated_at')->nullable();
-			$table->integer('created_at')->nullable();
-			$table->integer('deleted_at')->nullable();
-		});
+        if (!\Schema::hasTable('yz_order_goods_expansion')) {
+            Schema::create('yz_order_goods_expansion', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('key')->default('');
+                $table->string('value')->default('');
+                $table->integer('order_goods_id');
+                $table->string('plugin_code', 50);
+                $table->integer('updated_at')->nullable();
+                $table->integer('created_at')->nullable();
+                $table->integer('deleted_at')->nullable();
+            });
+        }
 	}
 
 
@@ -33,7 +34,9 @@ class CreateImsYzOrderGoodsExpansionTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('ims_yz_order_goods_expansion');
+        if (\Schema::hasTable('yz_order_goods_expansion')) {
+            Schema::drop('ims_yz_order_goods_expansion');
+        }
 	}
 
 }
