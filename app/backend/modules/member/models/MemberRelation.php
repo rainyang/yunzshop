@@ -203,7 +203,7 @@ class MemberRelation extends BackendModel
     public function becomeChildAgent($mid, \app\common\models\MemberShopInfo $model)
     {
         $set = self::getSetInfo()->first();
-\Log::debug(sprintf('-----会员上线----%d',$mid));
+
         if (empty($set)) {
             return;
         }
@@ -264,7 +264,7 @@ class MemberRelation extends BackendModel
                 $member->agent_time = time();
 
                 if ($member->inviter == 0) {
-                    \Log::debug(sprintf('会员id-%d无条件会员上线id-%d', $member->member_id, 0));
+                    \Log::debug(sprintf('会员id-%d无条件会员上线id-%d', $member->member_id, $mid));
                     $member->inviter = 1;
                     $member->parent_id = 0;
                 }
@@ -594,7 +594,7 @@ class MemberRelation extends BackendModel
             ];
 
             if ($notice['toggle'] && $notice['task']) {
-                MessageService::notice($notice['task'], $msg, $member->openid, $uniacid);
+                MessageService::notice($notice['task'], $msg, $member->uid, $uniacid);
             }
         }
     }
@@ -636,7 +636,7 @@ class MemberRelation extends BackendModel
             ];
 
             if ($notice['toggle'] && $notice['task']) {
-                MessageService::notice($notice['task'], $msg, $parent->openid, $uniacid);
+                MessageService::notice($notice['task'], $msg, $parent->uid, $uniacid);
             }
         }
     }
