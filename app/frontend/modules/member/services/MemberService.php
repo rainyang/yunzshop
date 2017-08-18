@@ -317,7 +317,6 @@ class MemberService
      */
     public function unionidLogin($uniacid, $userinfo, $upperMemberId = null, $loginType = null)
     {
-        \Log::debug(sprintf('-------unionidLogin bootstrap-----%d', $upperMemberId));
         $member_id = 0;
         $userinfo['nickname'] = $this->filteNickname($userinfo);
 
@@ -598,10 +597,8 @@ class MemberService
     public function memberLogin($userinfo, $upperMemberId = NULL)
     {
         if (is_array($userinfo) && !empty($userinfo['unionid'])) {
-            \Log::debug(sprintf('------unionidLogin----%d', $upperMemberId));
             $member_id = $this->unionidLogin(\YunShop::app()->uniacid, $userinfo, $upperMemberId);
         } elseif (is_array($userinfo) && !empty($userinfo['openid'])) {
-            \Log::debug(sprintf('------openidLogin----%d', $upperMemberId));
             $member_id = $this->openidLogin(\YunShop::app()->uniacid, $userinfo, $upperMemberId);
         }
 
