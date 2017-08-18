@@ -248,7 +248,6 @@ class MemberOfficeAccountService extends MemberService
      */
     public function unionidLogin($uniacid, $userinfo, $upperMemberId = null)
     {
-        \Log::debug('-----公众号开放平台授权登陆------');
         $member_id = parent::unionidLogin($uniacid, $userinfo, $upperMemberId, self::LOGIN_TYPE);
 
         return $member_id;
