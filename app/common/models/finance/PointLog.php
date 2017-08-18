@@ -11,6 +11,7 @@ namespace app\common\models\finance;
 
 use app\backend\modules\member\models\Member;
 use app\common\models\BaseModel;
+use app\common\services\finance\PointService;
 
 class PointLog extends BaseModel
 {
@@ -18,6 +19,7 @@ class PointLog extends BaseModel
     protected $guarded = [''];
     //搜索
     protected $search_fields = ['id'];
+    protected $appends = ['mode_name'];
 
     public static function getPointLogList($search)
     {
@@ -68,5 +70,40 @@ class PointLog extends BaseModel
             $query = $query->whereBetween('updated_at', [strtotime($search['time_range']['start']),strtotime($search['time_range']['end'])]);
         }
         return $query;
+    }
+
+    public function getModeNameAttribute()
+    {
+        $mode_attribute = '';
+        switch ($this->point_mode) {
+            case (1):
+                $mode_attribute = PointService::POINT_MODE_GOODS_ATTACHED;
+                break;
+            case (2):
+                $mode_attribute = PointService::POINT_MODE_ORDER_ATTACHED;
+                break;
+            case (3):
+                $mode_attribute = PointService::POINT_MODE_POSTER_ATTACHED;
+                break;
+            case (4):
+                $mode_attribute = PointService::POINT_MODE_ARTICLE_ATTACHED;
+                break;
+            case (5):
+                $mode_attribute = PointService::POINT_MODE_ADMIN_ATTACHED;
+                break;
+            case (6):
+                $mode_attribute = PointService::POINT_MODE_BY_ATTACHED;
+                break;
+            case (7):
+                $mode_attribute = PointService::POINT_MODE_TEAM_ATTACHED;
+                break;
+            case (8):
+                $mode_attribute = PointService::POINT_MODE_LIVE_ATTACHED;
+                break;
+            case (9):
+                $mode_attribute = PointService::POINT_MODE_CASHIER_ATTACHED;
+                break;
+        }
+        return $mode_attribute;
     }
 }
