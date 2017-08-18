@@ -246,9 +246,10 @@ class MemberOfficeAccountService extends MemberService
      * @param $userinfo
      * @return array|int|mixed
      */
-    public function unionidLogin($uniacid, $userinfo, $upperMemberId = NULL)
+    public function unionidLogin($uniacid, $userinfo, $upperMemberId = null)
     {
-        $member_id = parent::unionidLogin($uniacid, $userinfo, $upperMemberId = NULL, self::LOGIN_TYPE);
+        \Log::debug('-----公众号开放平台授权登陆------');
+        $member_id = parent::unionidLogin($uniacid, $userinfo, $upperMemberId, self::LOGIN_TYPE);
 
         return $member_id;
     }

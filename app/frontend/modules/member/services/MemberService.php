@@ -317,6 +317,7 @@ class MemberService
      */
     public function unionidLogin($uniacid, $userinfo, $upperMemberId = null, $loginType = null)
     {
+        \Log::debug(sprintf('-------unionidLogin bootstrap-----%d', $upperMemberId));
         $member_id = 0;
         $userinfo['nickname'] = $this->filteNickname($userinfo);
 
