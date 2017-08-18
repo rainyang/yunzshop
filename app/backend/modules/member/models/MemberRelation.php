@@ -203,7 +203,7 @@ class MemberRelation extends BackendModel
     public function becomeChildAgent($mid, \app\common\models\MemberShopInfo $model)
     {
         $set = self::getSetInfo()->first();
-
+\Log::debug(sprintf('-----会员上线----%d',$mid));
         if (empty($set)) {
             return;
         }
