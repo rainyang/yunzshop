@@ -248,7 +248,7 @@ class MemberOfficeAccountService extends MemberService
      */
     public function unionidLogin($uniacid, $userinfo, $upperMemberId = NULL)
     {
-        $member_id = parent::unionidLogin($uniacid, $userinfo, $upperMemberId = NULL, self::LOGIN_TYPE);
+        $member_id = parent::unionidLogin($uniacid, $userinfo, $upperMemberId, self::LOGIN_TYPE);
 
         return $member_id;
     }
