@@ -103,6 +103,7 @@
                     <li role="presentation" class="active" style="display: block;"><a aria-controls="link_system" role="tab" data-toggle="tab" href="#link_system" aria-expanded="true">系统页面</a></li>
                     <li role="presentation" style="display: block;"><a aria-controls="link_goods" role="tab" data-toggle="tab" href="#link_goods" aria-expanded="false">商品链接</a></li>
                     <li role="presentation" style="display: block;"><a aria-controls="link_cate" role="tab" data-toggle="tab" href="#link_cate" aria-expanded="false">商品分类</a></li>
+                    <li role="presentation" style="display: block;"><a aria-controls="link_brand" role="tab" data-toggle="tab" href="#link_brand" aria-expanded="false">商品品牌</a></li>
                    {{--  {!! my_link_extra('nav') !!} --}}
                     <li role="presentation" style="display: block;"><a aria-controls="link_other" role="tab" data-toggle="tab" href="#link_other" aria-expanded="false">自定义链接</a></li>
                 </ul>
@@ -334,6 +335,22 @@
                         @endforeach
                     </div>
 
+                </div>
+
+                <div role="tabpanel" class="tab-pane link_brand" id="link_brand">
+                    <div class="mylink-con">
+                        <?php $brands = \app\common\models\Brand::getBrands()->select('id','name')->get(); ?>
+                        @if($brands)
+                            @foreach ($brands->toArray() as $brand)
+                                <div class="mylink-line">
+                                    {{ $brand['name'] }}
+                                    <div class="mylink-sub">
+                                        <a href="javascript:;" id="category-{{ $brand['id'] }}" class="mylink-nav" ng-click="chooseLink(1, 'category-{{ $brand['id'] }}')" nhref="{{ yzAppFullUrl('brandgoods/' . $brand['id']) }}">选择</a>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @endif
+                    </div>
                 </div>
 
                 {!! my_link_extra('content') !!}
