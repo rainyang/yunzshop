@@ -1897,7 +1897,7 @@ return [
 
             ],
             'withdraw'          => [
-                'name'              => '收入提现',
+                'name'              => '提现管理',
                 'url'               => '',
                 'url_params'        => '',
                 'permit'            => 0,
