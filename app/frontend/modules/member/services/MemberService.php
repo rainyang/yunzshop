@@ -380,8 +380,10 @@ class MemberService
 
             //生成分销关系链
             if ($upperMemberId) {
+                \Log::debug(sprintf('----海报生成分销关系链----%d', $upperMemberId));
                 Member::createRealtion($member_id, $upperMemberId);
             } else {
+                \Log::debug(sprintf('----生成分销关系链----%d', $upperMemberId));
                 Member::createRealtion($member_id);
             }
         }
@@ -595,8 +597,10 @@ class MemberService
     public function memberLogin($userinfo, $upperMemberId = NULL)
     {
         if (is_array($userinfo) && !empty($userinfo['unionid'])) {
+            \Log::debug(sprintf('------unionidLogin----%d', $upperMemberId));
             $member_id = $this->unionidLogin(\YunShop::app()->uniacid, $userinfo, $upperMemberId);
         } elseif (is_array($userinfo) && !empty($userinfo['openid'])) {
+            \Log::debug(sprintf('------openidLogin----%d', $upperMemberId));
             $member_id = $this->openidLogin(\YunShop::app()->uniacid, $userinfo, $upperMemberId);
         }
 
