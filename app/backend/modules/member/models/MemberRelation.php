@@ -263,6 +263,8 @@ class MemberRelation extends BackendModel
                 $member->status = 2;
                 $member->agent_time = time();
 
+                self::sendGeneralizeNotify($member->member_id);
+                
                 if ($member->inviter == 0) {
                     \Log::debug(sprintf('会员id-%d无条件会员上线id-%d', $member->member_id, $mid));
                     $member->inviter = 1;
