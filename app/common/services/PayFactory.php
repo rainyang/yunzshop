@@ -9,7 +9,6 @@
 namespace app\common\services;
 
 
-use Yunshop\CloudPay\services\CloudPayService;
 
 class PayFactory
 {
@@ -34,14 +33,27 @@ class PayFactory
     const PAY_CASH = 4;
 
     /**
+     * 后台付款
+     */
+    const PAY_BACKEND = 5;
+
+    /**
      * 云收银-微信
      */
-    const PAY_CLOUD_WEACHAT = 5;
+    const PAY_CLOUD_WEACHAT = 6;
 
     /**
      * 云收银-支付宝
      */
-    const PAY_CLOUD_ALIPAY = 6;
+    const PAY_CLOUD_ALIPAY = 9;
+    /**
+     * APP-微信
+     */
+    const PAY_APP_WEACHAT = 7;
+    /**
+     * APP-支付宝
+     */
+    const PAY_APP_ALIPAY = 8;
 
    public static function create($type = null)
     {
@@ -61,7 +73,14 @@ class PayFactory
                 $className = new CashPay();
                 break;
             case self::PAY_CLOUD_WEACHAT:
-                $className = new CloudPayService();
+                $className = new \Yunshop\CloudPay\services\CloudPayService();
+                break;
+            case self::PAY_APP_WEACHAT:
+                $className = new Wechat_App();
+                break;
+            case self::PAY_APP_ALIPAY:
+                $className = new Alipay_App();
+
                 break;
             default:
                 $className = null;

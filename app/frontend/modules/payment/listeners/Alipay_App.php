@@ -1,4 +1,5 @@
 <?php
+
 namespace app\frontend\modules\payment\listeners;
 
 use app\common\events\payment\GetOrderPaymentTypeEvent;
@@ -6,17 +7,17 @@ use app\common\events\payment\GetOrderPaymentTypeEvent;
 /**
  * Created by PhpStorm.
  * Author: 芸众商城 www.yunzshop.com
- * Date: 2017/5/17
+ * Date: 2017/8/8
  * Time: 下午5:44
  */
-class Wechat
+class Alipay_App
 {
     public function onGetPaymentTypes(GetOrderPaymentTypeEvent $event)
     {
-        if (\Setting::get('shop.pay.weixin') && \Setting::get('shop.pay.weixin_pay') && \YunShop::request()->type != 7) {
+        if (\Setting::get('shop_app.pay.alipay') && \YunShop::request()->type == 7) {
             $result = [
-                'name' => '微信支付',
-                'value' => '1'
+                'name' => '支付宝支付',
+                'value' => '8'
             ];
             $event->addData($result);
 

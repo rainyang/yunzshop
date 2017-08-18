@@ -32,7 +32,7 @@ class MemberWechatService extends MemberService
 
     public function login()
     {
-        $uniacid = \YunApp::app()->uniacid;
+        $uniacid = \YunShop::app()->uniacid;
 
         $callback  =  \YunShop::app()->siteroot . 'app/index.php?' . $_SERVER['QUERY_STRING'];
 

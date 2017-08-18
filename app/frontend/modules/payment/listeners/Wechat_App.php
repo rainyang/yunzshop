@@ -9,14 +9,14 @@ use app\common\events\payment\GetOrderPaymentTypeEvent;
  * Date: 2017/5/17
  * Time: 下午5:44
  */
-class Wechat
+class Wechat_App
 {
     public function onGetPaymentTypes(GetOrderPaymentTypeEvent $event)
     {
-        if (\Setting::get('shop.pay.weixin') && \Setting::get('shop.pay.weixin_pay') && \YunShop::request()->type != 7) {
+        if (\Setting::get('shop_app.pay.weixin') && \YunShop::request()->type == 7) {
             $result = [
                 'name' => '微信支付',
-                'value' => '1'
+                'value' => '7'
             ];
             $event->addData($result);
 

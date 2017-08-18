@@ -51,9 +51,17 @@ class BalanceController extends ApiController
             $result['member_credit2'] = $memberInfo->credit2;
 
             $pay = \Setting::get('shop.pay');
-            $result['wechat'] = $pay['weixin'] ? true : false;
+            $result['wechat'] = $pay['weixin'] && $pay['weixin_pay'] ? true : false;
             $result['alipay'] = $pay['alipay'] ? true : false;
+            //按丁冉要求，增加云付（微信支付2）2017-08-11
+            $result['cloud_pay'] = false;
+            if (\YunShop::plugin()->get('cloud-pay')) {
 
+                $set = \Setting::get('plugin.cloud_pay_set');
+                if (!is_null($set) && 1 == $set['switch'] && \YunShop::request()->type != 7) {
+                    $result['cloud_pay'] = true;
+                }
+            }
             return $this->successJson('获取数据成功', $result);
         }
         return $this->errorJson('未获取到会员数据');
@@ -99,7 +107,8 @@ class BalanceController extends ApiController
         $result = (new BalanceService())->rechargeSet() ? $this->rechargeStart() : '未开启余额充值';
 
         if ($result === true) {
-            if (intval(\YunShop::request()->pay_type) == PayFactory::PAY_ALIPAY) {
+            $type = intval(\YunShop::request()->pay_type);
+            if ($type == PayFactory::PAY_ALIPAY || $type == PayFactory::PAY_CLOUD_WEACHAT) {
                 return $this->successJson('支付接口对接成功', ['ordersn' => $this->model->ordersn]);
             }
             return  $this->successJson('支付接口对接成功', $this->payOrder());
@@ -473,24 +482,13 @@ class BalanceController extends ApiController
             'old_money' => $this->memberInfo->credit2 ?: 0,
             'money' => floatval($change_money),
             'new_money' => $change_money + $this->memberInfo->credit2,
-            'ordersn' => $this->getRechargeOrderSN(),
+            'ordersn' => BalanceRecharge::createOrderSn('RV','ordersn'),
             'type' => intval(\YunShop::request()->pay_type),
             'status' => BalanceRecharge::PAY_STATUS_ERROR
         );
     }
 
-    //生成充值订单号
-    private function getRechargeOrderSN()
-    {
-        $ordersn = createNo('RV', true);
-        while (1) {
-            if (!BalanceRecharge::validatorOrderSn($ordersn)) {
-                break;
-            }
-            $ordersn = createNo('RV', true);
-        }
-        return $ordersn;
-    }
+
 
     /**
      * 会员余额充值支付接口

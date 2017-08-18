@@ -45,6 +45,18 @@ class PointService
     const POINT_MODE_LIVE = 8; //生活缴费奖励
     const POINT_MODE_LIVE_ATTACHED = '生活缴费奖励';
 
+    const POINT_MODE_AIR = 10; //飞机票
+    const POINT_MODE_AIR_ATTACHED = '飞机票奖励';
+
+    const POINT_MODE_CASHIER = 9; //收银台奖励
+    const POINT_MODE_CASHIER_ATTACHED = '收银台奖励';
+
+    const POINT_MODE_RECHARGE = 11; //话费充值奖励
+    const POINT_MODE_RECHARGE_ATTACHED = '话费充值奖励';
+
+    const POINT_MODE_FLOW = 12; //流量充值奖励
+    const POINT_MODE_FlOW_ATTACHED = '流量充值奖励';
+
     const POINT = 0;
 
     public $point_data;
@@ -115,7 +127,7 @@ class PointService
         if (!isset(\Setting::get('shop.notice')['task']) || !\Setting::get('shop.notice')['task']) {
             return;
         }
-        MessageService::notice(\Setting::get('shop.notice')['task'], $msg, $noticeMember->hasOneFans->openid);
+        MessageService::notice(\Setting::get('shop.notice')['task'], $msg, $this->member->uid);
     }
 
     /**
@@ -158,6 +170,18 @@ class PointService
                 break;
             case (8):
                 $mode_attribute = self::POINT_MODE_LIVE_ATTACHED;
+                break;
+            case (9):
+                $mode_attribute = self::POINT_MODE_CASHIER_ATTACHED;
+                break;
+            case (10):
+                $mode_attribute = self::POINT_MODE_AIR_ATTACHED;
+                break;
+            case (11):
+                $mode_attribute = self::POINT_MODE_RECHARGE_ATTACHED;
+                break;
+            case (12):
+                $mode_attribute = self::POINT_MODE_FLOW_ATTACHED;
                 break;
         }
         return $mode_attribute;

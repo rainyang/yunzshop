@@ -21,13 +21,21 @@
         
         <!-- weixin支付设置 _start -->
             <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">微信支付</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">微信</label>
                 <div class="col-sm-9 col-xs-12">
                     <label class='radio-inline'><input type='radio' name='pay[weixin]' value='1' @if ($set['weixin'] == 1) checked @endif/> 开启</label>
                     <label class='radio-inline'><input type='radio' name='pay[weixin]' value='0' @if ($set['weixin'] == 0) checked @endif /> 关闭</label>
                 </div>
             </div>
             <div id='certs' @if (empty($set['weixin'])) style="display:none" @endif>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">微信支付</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <label class='radio-inline'><input type='radio' name='pay[weixin_pay]' value='1' @if ($set['weixin_pay'] == 1) checked @endif/> 开启</label>
+                        <label class='radio-inline'><input type='radio' name='pay[weixin_pay]' value='0' @if ($set['weixin_pay'] == 0) checked @endif /> 关闭</label>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">身份标识<br>(appId)</label>
                     <div class="col-sm-9 col-xs-12">

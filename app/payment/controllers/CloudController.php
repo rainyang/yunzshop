@@ -46,6 +46,7 @@ class CloudController extends PaymentController
             ];
 
             $this->payResutl($data);
+            \Log::debug('----结束----');
             echo "success";
         } else {
             echo "fail";
@@ -58,6 +59,15 @@ class CloudController extends PaymentController
             redirect(Url::absoluteApp('member/payYes', ['i' => $_GET['attach']]))->send();
         } else {
             redirect(Url::absoluteApp('member/payErr', ['i' => $_GET['attach']]))->send();
+        }
+    }
+
+    public function frontUrl()
+    {
+        if (0 == $_GET['state'] && $_GET['errorDetail'] == '成功') {
+            redirect(Url::absoluteApp('member', ['i' => $_GET['attach']]))->send();
+        } else {
+            redirect(Url::absoluteApp('home', ['i' => $_GET['attach']]))->send();
         }
     }
 
