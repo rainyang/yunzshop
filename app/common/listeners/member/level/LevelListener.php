@@ -8,13 +8,14 @@
 namespace app\common\listeners\member\level;
 
 
+use Illuminate\Events\Dispatcher;
+
 class LevelListener
 {
     /**
      * 会员等级升级 （监听订单）
-     * @param AfterOrderReceivedEvent $event
      */
-    public function subscribe(AfterOrderReceivedEvent $event)
+    public function subscribe(Dispatcher $event)
     {
         $event->listen(
             \app\common\events\order\AfterOrderReceivedEvent::class,
