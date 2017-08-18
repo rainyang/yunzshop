@@ -24,13 +24,14 @@ class UserController extends BaseController
      **/
     public function index()
     {
-        $pageSize = 10;
-        $userList = User::getPageList(static::PageSize);
+        $records = User::records()->noOperator();
 
         $search = \YunShop::request()->search;
         if ($search) {
-            $userList = User::searchPagelist($pageSize, $search);
+            $records = $records->search($search);
         }
+
+        $userList = $records->orderBy('starttime','desc')->paginate(static::PageSize);
         $pager = PaginationHelper::show($userList->total(), $userList->currentPage(), $userList->perPage());
 
         $roleList = YzRole::getRoleListToUser();

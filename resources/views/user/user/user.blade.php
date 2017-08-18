@@ -27,7 +27,7 @@
                     <!--<label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">角色</label>-->
                     <div class="">
                         <select name="search[role_id]" class='form-control'>
-                            <option value="" selected >无角色</option>
+                            <option value="" selected >不搜索角色</option>
                             @foreach($roleList as $list)
                             <option value="{{ $list['id'] }}" @if($search['role_id'] == $list['id']) selected @endif>{{ $list['name'] }}</option>
                             @endforeach
@@ -39,7 +39,7 @@
                    <!-- <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">状态</label>-->
                     <div class="">
                         <select name="search[status]" class='form-control'>
-                            <option value="" selected >无状态</option>
+                            <option value="" selected >不搜索状态</option>
                             <option value="2" @if($search['status'] == 2) selected @endif>启用</option>
                             <option value="1" @if($search['status'] == 1) selected @endif>禁用</option>
                         </select>

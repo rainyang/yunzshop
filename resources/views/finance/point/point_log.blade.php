@@ -94,19 +94,7 @@
 
                         <td>{{ $log->created_at }}</td>
                         <td>
-                            @if ($log->point_mode == 1)
-                                <span class='label label-info'>商品赠送</span>
-                            @elseif($log->point_mode == 2)
-                                <span class='label label-success'>订单赠送</span>
-                            @elseif($log->point_mode == 3)
-                                <span class='label label-warning'>超级海报</span>
-                            @elseif($log->point_mode == 4)
-                                <span class='label label-primary'>文章营销</span>
-                            @elseif($log->point_mode == 5)
-                                <span class='label label-default'>后台充值</span>
-                            @elseif ($log->point_mode == 6)
-                                <span class='label label-success'>购物抵扣</span>
-                            @endif
+                            <span class='label label-info'>{{$log->mode_name}}</span>
                         </td>
                         <td>
                             {{--<span class='label label-success'>{{ $log->before_point }}</span><br />--}}

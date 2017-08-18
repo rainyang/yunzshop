@@ -48,6 +48,6 @@ class DetailController extends ApiController
 
     protected function getOrder()
     {
-        return Order::detail();
+        return app('OrderManager')->make('Order');
     }
 }

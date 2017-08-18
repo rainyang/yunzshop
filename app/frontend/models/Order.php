@@ -45,7 +45,7 @@ class Order extends \app\common\models\Order
     }
     public function belongsToMember()
     {
-        return $this->belongsTo(Member::class, 'uid', 'uid');
+        return $this->belongsTo(app('OrderManager')->make('Member'), 'uid', 'uid');
     }
 
     public function belongsToOrderGoods()

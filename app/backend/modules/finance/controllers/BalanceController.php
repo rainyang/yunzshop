@@ -129,15 +129,19 @@ class BalanceController extends BaseController
     public function transferRecord()
     {
         $pageSize = 20;
-        $tansferList = BalanceTransfer::getTransferPageList($pageSize);
-        if ($search = \YunShop::request()->search) {
-            $tansferList = BalanceTransfer::getSearchPageList($pageSize, $search);
+
+        $records = BalanceTransfer::records();
+
+        $search = \YunShop::request()->search;
+        if ($search) {
+            $records = $records->search($search);
         }
 
-        $pager = PaginationHelper::show($tansferList->total(), $tansferList->currentPage(), $tansferList->perPage());
+        $pageList = $records->orderBy('created_at','desc')->paginate($pageSize);
+        $pager = PaginationHelper::show($pageList->total(), $pageList->currentPage(), $pageList->perPage());
 
         return view('finance.balance.transferRecord', [
-            'tansferList'  => $tansferList,
+            'tansferList'  => $pageList,
             'pager'    => $pager,
             'search' => $search
         ])->render();

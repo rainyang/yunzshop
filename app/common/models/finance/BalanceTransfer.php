@@ -94,6 +94,40 @@ class BalanceTransfer extends BaseModel
         }]);
     }
 
+    /**
+     * 记录检索
+     * @param $query
+     * @return mixed
+     */
+    public function scopeRecords($query)
+    {
+        return $query->withTransfer()->withRecipient();
+    }
+
+    /**
+     * 条件检索
+     * @param $query
+     * @param $search
+     * @return mixed
+     */
+    public function scopeSearch($query,$search)
+    {
+        if ($search['keyword']) {
+            return $query->whereHas('transferInfo',function($query)use($search) {
+                $query->select('uid', 'nickname', 'realname', 'avatar', 'mobile')
+                    ->where('nickname','like', '%'.$search['keyword']. '%')
+                    ->orWhere('mobile','like','%'.$search['keyword']. '%')
+                    ->orWhere('realname','like','%'.$search['keyword']. '%');
+            });
+        }
+    }
+
+
+
+
+
+
+
 
 /////////////////////////////////
 
@@ -107,34 +141,6 @@ class BalanceTransfer extends BaseModel
     public function transferorInfo()
     {
         return $this->hasOne('app\common\models\Member', 'uid', 'transferor');
-    }
-    /**
-     * 获取余额转让记录分页列表，后台使用
-     * @param $pageSize
-     * @return mixed
-     */
-    public static function getTransferPageList($pageSize)
-    {
-        return self::uniacid()
-            ->with(['transferorInfo' => function($transferorInfo) {
-                return $transferorInfo->select('uid', 'nickname', 'realname', 'avatar', 'mobile');
-            }])
-            ->with(['recipientInfo' => function($recipientInfo) {
-                return $recipientInfo->select('uid', 'nickname', 'realname', 'avatar', 'mobile');
-            }])
-            ->orderBy('created_at','desc')->paginate($pageSize);
-    }
-
-    public static function getSearchPageList($pageSize, $search)
-    {
-        $query = static::uniacid();
-        if ($search['keyword']) {
-            $query = $query->whereHas('transferorInfo', function ($transferorInfo)use($search) {
-                $transferorInfo->select('uid', 'nickname', 'realname', 'avatar', 'mobile')
-                    ->where('nickname', 'like', $search['keyword']);
-            });
-        }
-        return $query->orderBy('created_at', 'desc')->paginate($pageSize);
     }
 
     /**
