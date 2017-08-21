@@ -387,7 +387,7 @@ class Member extends BackendModel
         $member_model = MemberModel::getMyAgentsParentInfo($mid)->first();
 
         if (!empty($member_model)) {
-            \Log::debug('生成关系3级关系链');
+            \Log::debug('model-生成关系3级关系链');
             $member_data = $member_model->toArray();
 
             $relation_str = $mid;
