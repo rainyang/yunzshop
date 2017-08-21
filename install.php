@@ -1027,7 +1027,7 @@ CREATE TABLE ". tablename('yz_member_relation')." (
   `become_order` tinyint(1) NOT NULL DEFAULT '0',
   `become_child` tinyint(1) NOT NULL DEFAULT '0',
   `become_ordercount` int(11) DEFAULT '0',
-  `become_moneycount` decimal(5,2) DEFAULT '0.00',
+  `become_moneycount` decimal(14,2) DEFAULT '0.00',
   `become_goods_id` int(11) DEFAULT '0',
   `become_info` tinyint(1) NOT NULL DEFAULT '1',
   `become_check` tinyint(1) NOT NULL DEFAULT '1',
