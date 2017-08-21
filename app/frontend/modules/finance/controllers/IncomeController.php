@@ -9,6 +9,7 @@
 
 namespace app\frontend\modules\finance\controllers;
 
+use app\common\models\MemberShopInfo;
 use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\common\events\finance\AfterIncomeWithdrawEvent;
@@ -226,6 +227,9 @@ class IncomeController extends ApiController
         if (!$withdrawData) {
             return $this->errorJson('未检测到数据!');
         }
+        if (!$this->getMemberAlipaySet() && $withdrawData['total']['pay_way'] == 'alipay') {
+            return $this->errorJson('您未配置支付宝信息，请先修改个人信息中支付宝信息');
+        }
         $withdrawTotal = $withdrawData['total'];
         Log::info("POST - Withdraw Total ", $withdrawTotal);
         Log::info("POST - Withdraw Data ", $withdrawData);
@@ -355,6 +359,15 @@ class IncomeController extends ApiController
         }
 
         return $this->errorJson('未检测到数据!');
+    }
+
+    private function getMemberAlipaySet()
+    {
+        $array = MemberShopInfo::select('alipay','alipayname')->where('member_id',\YunShop::app()->getMemberId())->first();
+        if ($array && $array['alipay'] && $array['alipayname']) {
+            return true;
+        }
+        return false;
     }
 
 }
