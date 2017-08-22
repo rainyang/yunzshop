@@ -14,26 +14,26 @@ use app\frontend\modules\order\services\OrderService;
 
 class OperationController extends ApiController
 {
-    private $_params;
-    private $_Order;
+    protected $params;
+    protected $order;
 
     public function __construct()
     {
 
         parent::__construct();
-        $this->_params = \YunShop::request()->get();
-        if (!isset($this->_params['order_id'])) {
+        $this->params = request()->input();
+        if (!isset($this->params['order_id'])) {
             return $this->errorJson('order_id 不能为空!');
         }
-        $this->_Order = Order::find($this->_params['order_id']);
-        if (!isset($this->_Order)) {
+        $this->order = app('OrderManager')->make('Order')->find($this->params['order_id']);
+        if (!isset($this->order)) {
             return $this->errorJson('未找到该订单!');
         }
     }
 
     public function pay()
     {
-        $message = OrderService::orderPay($this->_params);
+        $message = OrderService::orderPay($this->params);
 
         return $this->successJson($message);
 
@@ -41,38 +41,38 @@ class OperationController extends ApiController
 
     public function cancelPay()
     {
-        $message = OrderService::orderCancelPay($this->_params);
+        $message = OrderService::orderCancelPay($this->params);
         return $this->successJson($message);
     }
 
     public function send()
     {
-        $message = OrderService::orderSend($this->_params);
+        $message = OrderService::orderSend($this->params);
 
         return $this->successJson($message);
     }
 
     public function cancelSend()
     {
-        $message = OrderService::orderCancelSend($this->_params);
+        $message = OrderService::orderCancelSend($this->params);
         return $this->successJson($message);
     }
 
     public function Receive()
     {
-        $message = OrderService::orderReceive($this->_params);
+        $message = OrderService::orderReceive($this->params);
         return $this->successJson($message);
     }
 
     public function Delete()
     {
-        $message = OrderService::orderDelete($this->_params);
+        $message = OrderService::orderDelete($this->params);
         return $this->successJson($message);
     }
 
     public function Close()
     {
-        $message = OrderService::orderClose($this->_params);
+        $message = OrderService::orderClose($this->params);
         return $this->successJson($message);
     }
 }
