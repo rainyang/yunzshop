@@ -257,23 +257,25 @@ class MemberRelation extends BackendModel
         }
 
         if (empty($set->become) ) {
-            $member->is_agent = 1;
+            $model->is_agent = 1;
 
             if ($become_check == 0) {
-                $member->status = 2;
-                $member->agent_time = time();
+                $model->status = 2;
+                $model->agent_time = time();
 
-                if ($member->inviter == 0) {
-                    \Log::debug(sprintf('会员id-%d无条件会员上线id-%d', $member->member_id, 0));
-                    $member->inviter = 1;
-                    $member->parent_id = 0;
+                self::sendGeneralizeNotify($model->member_id);
+                
+                if ($model->inviter == 0) {
+                    \Log::debug(sprintf('会员id-%d无条件会员上线id-%d', $model->member_id, $mid));
+                    $model->inviter = 1;
+                    $model->parent_id = 0;
                 }
             } else {
-                $member->status = 1;
+                $model->status = 1;
             }
 
-            if ($member->save()) {
-                self::setRelationInfo($member);
+            if ($model->save()) {
+                self::setRelationInfo($model);
             }
         }
     }
