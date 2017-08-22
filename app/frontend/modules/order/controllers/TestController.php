@@ -31,25 +31,7 @@ class TestController extends ApiController
 
     public function index()
     {
-        $store = Store::mine()->first();
-        if (!isset($store)) {
-            throw new ShopException('未找到所属店铺信息');
-        }
-        $store_id = $store['id'];
-        $cashier_id = $store['cashier_id'];
-
-        $orders_amount = Order::whereHas('storeOrder', function ($query) use ($store_id) {
-            $query->where('store_id', $store_id);
-        })->sum('price');
-        $has_withdraw_amount = CashierOrder::where('cashier_id', $cashier_id)->where('has_withdraw',1)->sum('amount');
-        $unWithdraw_amount = CashierOrder::where('cashier_id', $cashier_id)->where('has_withdraw',0)->sum('amount');
-
-        // 抵扣
-        $pointDeductionsAmount = OrderDeduction::whereDeductionId(1)->sum('amount');
-        $couponAmount = OrderCoupon::sum('amount');
-
-        compact('orders_amount','has_withdraw_amount','unWithdraw_amount','pointDeductionsAmount','couponAmount');
-
+        echo 1;
         //(new MessageService(\app\frontend\models\Order::completed()->first()))->received();
     }
 
