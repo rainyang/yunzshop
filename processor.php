@@ -107,7 +107,7 @@ class Yun_shopModuleProcessor extends WeModuleProcessor
 
     public function respond()
     {
-        file_put_contents('../addons/yun_shop/storage/logs/poster.log', __FILE__);
+
         $rule = pdo_fetch('select * from ' . tablename('rule') . ' where id=:id limit 1', array(
             ':id' => $this->rule
         ));
@@ -125,6 +125,8 @@ class Yun_shopModuleProcessor extends WeModuleProcessor
             $kernel->handle(
                 $request = Illuminate\Http\Request::capture()
             );
+
+            \Log::debug('--触发海报--'.__FILE__);
 
             //微信接口事件
             $response = '';
