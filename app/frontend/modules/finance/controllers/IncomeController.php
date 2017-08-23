@@ -170,7 +170,7 @@ class IncomeController extends ApiController
             $poundage = sprintf("%.2f", $poundage);
             //劳务税
             $servicetax = 0;
-            if ($incomeSet['servicetax_rate']) {
+            if ($incomeSet['servicetax_rate'] && ($item['type'] != 'StoreCashier')) {
                 $servicetax = ($amount - $poundage) / 100 * $incomeSet['servicetax_rate'];
                 $servicetax = sprintf("%.2f", $servicetax);
             }
