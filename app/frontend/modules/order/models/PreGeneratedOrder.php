@@ -159,8 +159,8 @@ class PreGeneratedOrder extends Order
     {
         $attributes = array(
             'price' => $this->getPrice(),//订单最终支付价格
-            'order_goods_price' => $this->getOrderGoodsPrice(),//订单商品商城价
-            'goods_price' => $this->getOrderGoodsPrice(),//订单商品商城价  todo 原来通过final_price计算的 现在已删除
+            'order_goods_price' => $this->getOrderGoodsPrice(),//订单商品成交价
+            'goods_price' => $this->getGoodsPrice(),//订单商品原价
             'discount_price' => $this->getDiscountAmount(),//订单优惠金额
             'deduction_price' => $this->getDeductionPrice(),//订单抵扣金额
             'dispatch_price' => $this->getDispatchPrice(),//订单运费
@@ -280,6 +280,17 @@ class PreGeneratedOrder extends Order
     {
         $result = $this->orderGoods->sum(function ($aOrderGoods) {
             return $aOrderGoods->getPrice();
+        });
+        return $result;
+    }
+    /**
+     * 统计订单商品原价
+     * @return int
+     */
+    protected function getGoodsPrice()
+    {
+        $result = $this->orderGoods->sum(function ($aOrderGoods) {
+            return $aOrderGoods->getGoodsPrice();
         });
         return $result;
     }
