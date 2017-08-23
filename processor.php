@@ -107,7 +107,6 @@ class Yun_shopModuleProcessor extends WeModuleProcessor
 
     public function respond()
     {
-        \Log::debug('----触发海报----');
         $rule = pdo_fetch('select * from ' . tablename('rule') . ' where id=:id limit 1', array(
             ':id' => $this->rule
         ));
