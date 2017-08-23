@@ -16,7 +16,6 @@ use app\common\exceptions\AppException;
 use app\common\models\Order;
 
 use app\common\models\order\OrderGoodsChangePriceLog;
-use app\common\models\PayType;
 use \app\frontend\models\MemberCart;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\services\behavior\OrderCancelPay;
@@ -43,6 +42,7 @@ class OrderService
     public static function getOrderData(Order $order)
     {
         $result = collect();
+        // todo 这里为什么要toArray
         $result->put('order', $order->toArray());
         $result->put('discount', self::getDiscountEventData($order));
         $result->put('dispatch', self::getDispatchEventData($order));
@@ -139,6 +139,7 @@ class OrderService
 
         event(new OnPreGenerateOrderCreatingEvent($order));
         $order->setOrderGoods($orderGoodsArr);
+        $order->_init();
         return $order;
     }
 

@@ -22,6 +22,7 @@ class Member extends \app\common\models\Member
             ->with('hasOneFans')
             ->get();
     }
+
     /**
      * 获取会员列表
      *

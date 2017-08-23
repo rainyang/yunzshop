@@ -315,7 +315,7 @@ class MemberService
      * @param $userinfo
      * @return array|int|mixed
      */
-    public function unionidLogin($uniacid, $userinfo, $upperMemberId = NULL, $loginType)
+    public function unionidLogin($uniacid, $userinfo, $upperMemberId = null, $loginType = null)
     {
         $member_id = 0;
         $userinfo['nickname'] = $this->filteNickname($userinfo);
@@ -380,8 +380,10 @@ class MemberService
 
             //生成分销关系链
             if ($upperMemberId) {
+                \Log::debug(sprintf('----海报生成分销关系链----%d', $upperMemberId));
                 Member::createRealtion($member_id, $upperMemberId);
             } else {
+                \Log::debug(sprintf('----生成分销关系链----%d', $upperMemberId));
                 Member::createRealtion($member_id);
             }
         }

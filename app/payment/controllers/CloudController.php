@@ -42,7 +42,9 @@ class CloudController extends PaymentController
                 'out_trade_no' => $_GET['orderNum'],
                 'trade_no'     => $_GET['channelOrderNum'],
                 'unit'         => 'fen',
-                'pay_type'     => '云微信支付'
+                'pay_type'     => '云微信支付',
+                'pay_type_id'     => 6
+
             ];
 
             $this->payResutl($data);

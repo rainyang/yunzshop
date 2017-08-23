@@ -19,6 +19,7 @@ return [
         'child' => [],
     ],
 
+
     'system' => [
         'name'          => '系统管理',
         'url'           => '',
@@ -31,17 +32,31 @@ return [
         'parents'       => [],
         'child'         => [
 
-            'Setting'       => [
-                'name'          => '商城设置',
-                'url'           => 'setting.shop.shop',
+            'shop'          => [
+                'name'          => '商城入口',
+                'url'           => 'setting.shop.entry',
                 'url_params'    => '',
                 'permit'        => 1,
                 'menu'          => 1,
-                'icon'          => 'fa-cog',
+                'icon'          => 'fa-hand-o-right',
                 'sort'          => 0,
-                'item'          => 'Setting',
-                'parents'       => ['system'],
-                'child'         => [
+                'item'          => 'shop',
+                'parents'       => ['system',],
+            ],
+
+            'Setting' => [
+                'id' => '2',
+                'name' => '商城设置',
+                'url' => 'setting.shop.shop',
+                'url_params' => '',
+                'permit' => 0,
+                'menu' => 1,
+                'icon' => 'fa-cog',
+                'parent_id' => 1,
+                'sort' => 0,
+                'item' => 'Setting',
+                'parents' => ['system'],
+                'child' => [
 
                     'setting_shop'  => [
                         'name'          => '基础设置',
@@ -376,6 +391,7 @@ return [
         'item'          => 'Goods',
         'parents'       => [],
         'child'         => [
+
             //添加白名单
             'goods_no_permission' => [
                 'name'              => '白名单（不控制权限）',
@@ -424,7 +440,6 @@ return [
                         'item'              => 'coupon_coupon_get_search_coupons',
                         'parents'           => ['Goods', 'goods_no_permission',],
                     ],
-
                     //优惠卷白名单
                     'coupon_no_permission'  => [
                         'name'              => '白名单（指定商品）',

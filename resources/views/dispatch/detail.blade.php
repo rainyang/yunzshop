@@ -1,14 +1,3 @@
-<style>
-    .form-group {
-        overflow: hidden;
-        margin-bottom: 0 !important;
-    }
-
-    .line {
-        margin: 10px;
-        border-bottom: 1px solid #ddd
-    }
-</style>
 <div class="panel panel-default">
     <div class="panel-heading">
         收货信息

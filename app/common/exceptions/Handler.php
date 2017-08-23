@@ -70,6 +70,7 @@ class Handler extends ExceptionHandler
         }
         //默认异常
         if ($this->isHttpException($exception)) {
+            \Log::error('http exception',$exception);
             return $this->renderHttpException($exception);
         }
         //开发模式异常
