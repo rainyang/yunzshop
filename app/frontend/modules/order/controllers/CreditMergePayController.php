@@ -26,8 +26,8 @@ class CreditMergePayController extends MergePayController
             throw new AppException('商城未开启余额支付');
 
         }
-        DB::transaction(function () use($request) {
-            $result = $this->pay($request, PayFactory::PAY_CREDIT);
+        DB::transaction(function () {
+            $result = $this->pay( PayFactory::PAY_CREDIT);
 
             if (!$result) {
                 throw new AppException('余额扣除失败,请联系客服');

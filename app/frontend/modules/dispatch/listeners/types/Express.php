@@ -34,10 +34,10 @@ class Express
     public function onCreating(OnPreGenerateOrderCreatingEvent $event)
     {
         $this->event = $event;
-
         if (!$this->needDispatch()) {
             return;
         }
+        // 添加订单收货地址管理模型,当订单商品计算区域运费时需要使用这个模型
         $event->getOrderModel()->setRelation('orderAddress', $this->getOrderAddress());
 
     }

@@ -26,20 +26,18 @@ class WaitReceive extends Status
 
     public function getButtonModels()
     {
-        //            $button_id_arr[] = static::COMPLETE;//收货
-        $result =
-            [
-                [
-                    'name' => '确认收货',
-                    'api' => 'order.operation.receive',
-                    'value' => static::COMPLETE //todo
-                ],
-                [
-                    'name' => '查看物流', //todo 原来商城的逻辑是, 当有物流单号时, 才显示"查看物流"按钮
-                    'api' => 'dispatch.express',
-                    'value' => static::EXPRESS
-                ]
+        $result[] = [
+            'name' => '确认收货',
+            'api' => 'order.operation.receive',
+            'value' => static::COMPLETE //todo
+        ];
+        if (!$this->order->isVirtual()) {
+            $result[] = [
+                'name' => '查看物流', //todo 原来商城的逻辑是, 当有物流单号时, 才显示"查看物流"按钮
+                'api' => 'dispatch.express',
+                'value' => static::EXPRESS
             ];
+        }
         //$result = array_merge($result,self::getRefundButtons($this->order));
         return $result;
     }

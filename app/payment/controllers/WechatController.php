@@ -54,7 +54,8 @@ class WechatController extends PaymentController
                 'out_trade_no' => $post['out_trade_no'],
                 'trade_no'     => $post['transaction_id'],
                 'unit'         => 'fen',
-                'pay_type'     => $this->pay_type[$post['trade_type']]
+                'pay_type'     => $this->pay_type[$post['trade_type']],
+                'pay_type_id'     => 1
             ];
 
             $this->payResutl($data);

@@ -1,3 +1,14 @@
+<style>
+    .form-group {
+        overflow: hidden;
+        margin-bottom: 0 !important;
+    }
+
+    .line {
+        margin: 10px;
+        border-bottom: 1px solid #ddd
+    }
+</style>
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">粉丝 :</label>
     <div class="col-sm-9 col-xs-12">
@@ -108,30 +119,30 @@
     @include('refund.index')
 @endif
 @if (count($order['deductions']))
-<div class="panel panel-default">
-    <div class="panel-heading">
-        抵扣信息
-    </div>
-    <div class="panel-body table-responsive">
-        <table class="table table-hover">
-            <thead class="navbar-inner">
-            <tr>
-                <th class="col-md-5 col-lg-3">名称</th>
-                <th class="col-md-5 col-lg-1">抵扣值</th>
-                <th class="col-md-5 col-lg-3">抵扣金额</th>
-            </tr>
-            </thead>
-            @foreach ($order['deductions'] as $deduction)
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            抵扣信息
+        </div>
+        <div class="panel-body table-responsive">
+            <table class="table table-hover">
+                <thead class="navbar-inner">
                 <tr>
-                    <td>{{$deduction['name']}}</td>
-                    <td>{{$deduction['qty']}}</td>
-                    <td>¥{{$deduction['amount']}}</td>
+                    <th class="col-md-5 col-lg-3">名称</th>
+                    <th class="col-md-5 col-lg-1">抵扣值</th>
+                    <th class="col-md-5 col-lg-3">抵扣金额</th>
                 </tr>
+                </thead>
+                @foreach ($order['deductions'] as $deduction)
+                    <tr>
+                        <td>{{$deduction['name']}}</td>
+                        <td>{{$deduction['qty']}}</td>
+                        <td>¥{{$deduction['amount']}}</td>
+                    </tr>
 
-            @endforeach
-        </table>
+                @endforeach
+            </table>
+        </div>
     </div>
-</div>
 @endif
 @if (count($order['coupons']))
     <div class="panel panel-default">

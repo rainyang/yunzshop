@@ -16,8 +16,8 @@ use app\frontend\modules\order\services\OrderService;
 
 class OperationController extends BaseController
 {
-    private $param;
-    private $order;
+    protected $param;
+    protected $order;
 
     public function __construct()
     {

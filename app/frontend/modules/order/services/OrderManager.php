@@ -45,6 +45,9 @@ class OrderManager extends Container
                 return new Order();
             }
         });
+        $this->bind('Member', function ($orderManager, $attributes) {
+                return new \app\frontend\models\Member($attributes);
+        });
         $this->bind('OrderDeduction', function ($orderManager, $attributes) {
             return new OrderDeduction($attributes);
         });

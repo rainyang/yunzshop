@@ -106,12 +106,6 @@ class Member extends BackendModel
         return $query;
     }
 
-
-
-
-
-
-
     /**
      * 获取用户信息
      *
@@ -123,8 +117,8 @@ class Member extends BackendModel
         return self::select(['*'])
             ->uniacid()
             ->where('uid', $member_id)
-            ->whereHas('yzMember', function($query) {
-                $query->whereNull('deleted_at');
+            ->whereHas('yzMember', function($query) use($member_id) {
+                $query->where('member_id', $member_id)->whereNull('deleted_at');
             })
             ->with([
                 'yzMember' => function ($query) {

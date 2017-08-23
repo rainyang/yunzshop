@@ -14,6 +14,7 @@ class Alipay
 {
     public function onGetPaymentTypes(GetOrderPaymentTypeEvent $event)
     {
+        //开启了支付宝支付 并且不是app端
         if (\Setting::get('shop.pay.alipay') && \YunShop::request()->type != 7) {
             $result = [
                 'name' => '支付宝支付',
