@@ -343,7 +343,7 @@ class MemberService
             $types = explode('|', $UnionidInfo->type);
             $member_id = $UnionidInfo->member_id;
 
-            if (!in_array($loginType, $types)) {
+            if (!is_null($loginType) && !in_array($loginType, $types)) {
                 //更新ims_yz_member_unique表
                 MemberUniqueModel::updateData(array(
                     'unique_id' => $UnionidInfo->unique_id,
