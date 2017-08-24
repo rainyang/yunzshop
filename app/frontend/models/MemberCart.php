@@ -65,7 +65,7 @@ class MemberCart extends \app\common\models\MemberCart
 
     public function goodsOption()
     {
-        return $this->hasOne('app\common\models\GoodsOption', 'id', 'option_id');
+        return $this->belongsTo(app('GoodsManager')->make('GoodsOption'));
     }
 
     public static function getMemberCartById($cartId)
@@ -203,5 +203,9 @@ class MemberCart extends \app\common\models\MemberCart
         if (!$this->goodsOption->stockEnough($this->total)) {
             throw new AppException('(ID:' . $this->goods_id . ')商品库存不足');
         }
+    }
+    public function goods()
+    {
+        return $this->belongsTo(app('GoodsManager')->make('Goods'));
     }
 }
