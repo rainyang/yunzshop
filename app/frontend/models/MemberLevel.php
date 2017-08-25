@@ -16,11 +16,12 @@ class MemberLevel extends \app\common\models\MemberLevel
      * @param $goodsPrice
      * @return float|int
      */
-    public function getMemberLevelGoodsDiscountPrice($goodsPrice)
+    public function getMemberLevelGoodsDiscountAmount($goodsPrice)
     {
         // 商品折扣 默认 10折
+        $this->discount = trim($this->discount);
         $this->discount = $this->discount == false ? 10 : $this->discount;
         // 折扣/10 得到折扣百分比
-        return ($this->discount /10) * $goodsPrice;
+        return (1 - $this->discount / 10) * $goodsPrice;
     }
 }

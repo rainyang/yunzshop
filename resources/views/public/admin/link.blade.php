@@ -345,7 +345,7 @@
                                 <div class="mylink-line">
                                     {{ $brand['name'] }}
                                     <div class="mylink-sub">
-                                        <a href="javascript:;" id="category-{{ $brand['id'] }}" class="mylink-nav" ng-click="chooseLink(1, 'category-{{ $brand['id'] }}')" nhref="{{ yzAppFullUrl('brandgoods/' . $brand['id']) }}">选择</a>
+                                        <a href="javascript:;" id="brand-{{ $brand['id'] }}" class="mylink-nav" ng-click="chooseLink(1, 'brand-{{ $brand['id'] }}')" nhref="{{ yzAppFullUrl('brandgoods/' . $brand['id']) }}">选择</a>
                                     </div>
                                 </div>
                             @endforeach

@@ -151,4 +151,8 @@ class BaseModel extends Model
         }
         return $query->where('uid', $uid);
     }
+    public function scopeMine($query)
+    {
+        return $query->whereUid(\YunShop::app()->getMemberId());
+    }
 }

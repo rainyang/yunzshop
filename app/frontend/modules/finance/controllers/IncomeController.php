@@ -170,7 +170,7 @@ class IncomeController extends ApiController
             $poundage = sprintf("%.2f", $poundage);
             //劳务税
             $servicetax = 0;
-            if ($incomeSet['servicetax_rate']) {
+            if ($incomeSet['servicetax_rate'] && ($item['type'] != 'StoreCashier')) {
                 $servicetax = ($amount - $poundage) / 100 * $incomeSet['servicetax_rate'];
                 $servicetax = sprintf("%.2f", $servicetax);
             }
@@ -227,7 +227,7 @@ class IncomeController extends ApiController
         if (!$withdrawData) {
             return $this->errorJson('未检测到数据!');
         }
-        if (!$this->getMemberAlipaySet()) {
+        if (!$this->getMemberAlipaySet() && $withdrawData['total']['pay_way'] == 'alipay') {
             return $this->errorJson('您未配置支付宝信息，请先修改个人信息中支付宝信息');
         }
         $withdrawTotal = $withdrawData['total'];

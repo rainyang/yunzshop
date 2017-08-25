@@ -522,7 +522,8 @@ class BalanceController extends ApiController
             'body' => '会员充值金额' . $this->model->money . '元:'. \YunShop::app()->uniacid,
             'amount' => $this->model->money,
             'order_no' => $this->model->ordersn,
-            'extra' => ['type' => 2]
+            'extra' => ['type' => 2],
+            'ask_for'=> 'recharge'
         );
     }
 

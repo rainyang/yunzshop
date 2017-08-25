@@ -16,6 +16,10 @@ class ListController extends \app\backend\modules\order\controllers\ListControll
         $this->orderModel->whereHas('hasOneRefundApply',function ($query){
             return $query->refunding()->ReturnGoods();
         });
+        $orderModel = $this->orderModel->whereHas('hasOneRefundApply',function ($query){
+            return $query->refunding()->ReturnGoods();
+        });
+        $this->export($orderModel);
         return view('order.index', $this->getData())->render();
     }
 
@@ -24,6 +28,10 @@ class ListController extends \app\backend\modules\order\controllers\ListControll
         $this->orderModel->whereHas('hasOneRefundApply',function ($query){
             return $query->refunding()->ExchangeGoods();
         });
+        $orderModel = $this->orderModel->whereHas('hasOneRefundApply',function ($query){
+            return $query->refunding()->ExchangeGoods();
+        });
+        $this->export($orderModel);
         return view('order.index', $this->getData())->render();
     }
 
@@ -36,12 +44,17 @@ class ListController extends \app\backend\modules\order\controllers\ListControll
         $this->orderModel->whereHas('hasOneRefundApply',function ($query){
             return $query->refunding()->RefundMoney();
         });
+        $orderModel = $this->orderModel->whereHas('hasOneRefundApply',function ($query){
+            return $query->refunding()->RefundMoney();
+        });
+        $this->export($orderModel);
         return view('order.index', $this->getData())->render();
     }
 
     public function refunded()
     {
         $this->orderModel->refunded();
+        $this->export($this->orderModel->refunded());
         return view('order.index', $this->getData())->render();
     }
     public function refund()
@@ -49,6 +62,10 @@ class ListController extends \app\backend\modules\order\controllers\ListControll
         $this->orderModel->whereHas('hasOneRefundApply',function ($query){
             return $query->refunding();
         });
+        $orderModel = $this->orderModel->whereHas('hasOneRefundApply',function ($query){
+            return $query->refunding();
+        });
+        $this->export($orderModel);
         return view('order.index', $this->getData())->render();
     }
 }

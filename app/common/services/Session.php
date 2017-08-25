@@ -13,6 +13,8 @@ namespace app\common\services;
  */
 class Session{
 
+    const PREFIX = 'yunzshop_';
+
     /**
      * 设置session
      * @param String $name   session name
@@ -26,7 +28,7 @@ class Session{
         $session_data['data'] = $data;
         $session_data['expire'] = $expire;
 
-        $_SESSION[$name] = $session_data;
+        $_SESSION[self::PREFIX . $name] = $session_data;
     }
 
     /**
@@ -35,9 +37,9 @@ class Session{
      * @return Mixed
      */
     public static function get($name){
-        if(isset($_SESSION[$name])){
-            if($_SESSION[$name]['expire']>time()){
-                return $_SESSION[$name]['data'];
+        if(isset($_SESSION[self::PREFIX . $name])){
+            if($_SESSION[self::PREFIX . $name]['expire']>time()){
+                return $_SESSION[self::PREFIX . $name]['data'];
             }else{
                 self::clear($name);
             }
@@ -50,7 +52,7 @@ class Session{
      * @param  String  $name  session name
      */
     public static function clear($name){
-        unset($_SESSION[$name]);
+        unset($_SESSION[self::PREFIX . $name]);
     }
 
 }

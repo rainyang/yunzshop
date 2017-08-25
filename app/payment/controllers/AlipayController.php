@@ -9,6 +9,7 @@
 namespace app\payment\controllers;
 
 use app\backend\modules\refund\services\RefundOperationService;
+use app\common\events\finance\AlipayWithdrawEvent;
 use app\common\facades\Setting;
 use app\common\helpers\Url;
 use app\common\models\Order;
@@ -37,7 +38,9 @@ class AlipayController extends PaymentController
                     'out_trade_no' => $_POST['out_trade_no'],
                     'trade_no' => $_POST['trade_no'],
                     'unit' => 'yuan',
-                    'pay_type' => '支付宝'
+                    'pay_type' => '支付宝',
+                    'pay_type_id'     => 2
+
                 ];
 
                 $this->payResutl($data);
@@ -249,6 +252,8 @@ class AlipayController extends PaymentController
 
         if (bccomp($pay_refund_model->price, $data['total_fee'], 2) == 0) {
             Withdraw::paySuccess($data['trade_no']);
+
+            event(new AlipayWithdrawEvent($data['trade_no']));
         }
     }
 }

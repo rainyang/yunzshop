@@ -17,7 +17,7 @@ use Request;
 abstract class PreGeneratedController extends ApiController
 {
 
-    public function index(Request $request)
+    public function index()
     {
         $order_data = $this->getOrderData();
         $total_price = $order_data->sum('order.price');
