@@ -41,7 +41,7 @@ class Order extends \app\common\models\Order
     {
         return $query->with(['hasManyOrderGoods'=>function($query){
             return $query->select(['order_id','goods_id','goods_price','total','price','thumb','title','goods_option_id','goods_option_title','comment_status']);
-        }])->orderBy('id','desc');
+        }],'hasOnePayType')->orderBy('id','desc');
     }
     public function belongsToMember()
     {
