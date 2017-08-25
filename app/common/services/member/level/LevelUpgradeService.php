@@ -135,6 +135,11 @@ class LevelUpgradeService
         $memberModel = Member::select('uid','nickname','realname')->where('uid',$this->memberModel->member_id)->with('hasOneFans')->first();
 
         $member_name = $memberModel->realname ?: $memberModel->nickname;
+
+        $set = \Setting::get('shop.member');
+        $old_level = $set['level_name'] ?: '普通会员';
+        $old_level = $this->memberModel->level->level_name ?: $old_level;
+
         $msg              = array(
             'first' => array(
                 'value' => "亲爱的" . $member_name . ', 恭喜您成功升级！',
@@ -147,7 +152,7 @@ class LevelUpgradeService
             ),
             'keyword2' => array(
                 'title' => '通知类型',
-                'value' => '您会员等级从 ' . $this->memberModel->level->level_name . ' 升级为 ' . $this->new_level->level_name . ', 特此通知!',
+                'value' => '您会员等级从 ' . $old_level . ' 升级为 ' . $this->new_level->level_name . ', 特此通知!',
                 "color" => "#4a5077"
             ),
             'remark' => array(
