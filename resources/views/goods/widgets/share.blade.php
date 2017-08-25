@@ -9,23 +9,23 @@
                                            {{--@if ( $share->need_follow == 1) checked="true" @endif /> 必须关注</label>--}}
     {{--</div>--}}
 {{--</div>--}}
-<div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">未关注提示</label>
-    <div class="col-sm-6 col-xs-6">
-        <input type='text' class="form-control" name="widgets[share][no_follow_message]"
-               value="{{ $share->no_follow_message }}"/>
-        <span class='help-block'>购买商品必须关注，如果未关注，弹出的提示，如果为空默认为“如果您想要购买此商品，需要您关注我们的公众号，点击【确定】关注后再来购买吧~”</span>
-    </div>
-</div>
+{{--<div class="form-group">--}}
+    {{--<label class="col-xs-12 col-sm-3 col-md-2 control-label">未关注提示</label>--}}
+    {{--<div class="col-sm-6 col-xs-6">--}}
+        {{--<input type='text' class="form-control" name="widgets[share][no_follow_message]"--}}
+               {{--value="{{ $share->no_follow_message }}"/>--}}
+        {{--<span class='help-block'>购买商品必须关注，如果未关注，弹出的提示，如果为空默认为“如果您想要购买此商品，需要您关注我们的公众号，点击【确定】关注后再来购买吧~”</span>--}}
+    {{--</div>--}}
+{{--</div>--}}
 
-<div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">关注引导</label>
-    <div class="col-sm-6 col-xs-6">
-        <input type='text' class="form-control" name="widgets[share][follow_message]"
-               value="{{ $share->follow_message}}"/>
-        <span class='help-block'>购买商品必须关注，如果未关注，跳转的连接，如果为空默认为系统关注页</span>
-    </div>
-</div>
+{{--<div class="form-group">--}}
+    {{--<label class="col-xs-12 col-sm-3 col-md-2 control-label">关注引导</label>--}}
+    {{--<div class="col-sm-6 col-xs-6">--}}
+        {{--<input type='text' class="form-control" name="widgets[share][follow_message]"--}}
+               {{--value="{{ $share->follow_message}}"/>--}}
+        {{--<span class='help-block'>购买商品必须关注，如果未关注，跳转的连接，如果为空默认为系统关注页</span>--}}
+    {{--</div>--}}
+{{--</div>--}}
 
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">分享标题</label>
