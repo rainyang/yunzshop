@@ -6,12 +6,12 @@ use app\common\services\PermissionService;
 use app\common\helpers\Url;
 use Ixudra\Curl\Facades\Curl;
 
-if (!function_exists("tpl_ueditor")) {
-    function tpl_ueditor($id, $value = '', $options = array())
+
+    function yz_tpl_ueditor($id, $value = '', $options = array())
     {
         $s = '';
         if (!defined('TPL_INIT_UEDITOR')) {
-            $s .= '<script type="text/javascript" src="./resource/components/ueditor/ueditor.config.js"></script><script type="text/javascript" src="./resource/components/ueditor/ueditor.all.min.js"></script><script type="text/javascript" src="./resource/components/ueditor/lang/zh-cn/zh-cn.js"></script>';
+            $s .= '<script type="text/javascript" src="../addons/yun_shop/app/common/components/ueditor/ueditor.config.js"></script><script type="text/javascript" src="../addons/yun_shop/app/common/components/ueditor/ueditor.all.min.js"></script><script type="text/javascript" src="../addons/yun_shop/app/common/components/ueditor/lang/zh-cn/zh-cn.js"></script>';
         }
         $options['height'] = empty($options['height']) ? 200 : $options['height'];
         $s .= !empty($id) ? "<textarea id=\"{$id}\" name=\"{$id}\" type=\"text/plain\" style=\"height:{$options['height']}px;\">{$value}</textarea>" : '';
@@ -107,7 +107,7 @@ if (!function_exists("tpl_ueditor")) {
 	</script>";
         return $s;
     }
-}
+
 
 if (!function_exists("html_images")) {
 
