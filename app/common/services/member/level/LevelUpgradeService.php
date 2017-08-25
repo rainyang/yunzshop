@@ -10,6 +10,7 @@ namespace app\common\services\member\level;
 
 use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\facades\Setting;
+use app\common\models\Member;
 use app\common\models\MemberLevel;
 use app\common\models\MemberShopInfo;
 use app\common\models\Order;
@@ -112,6 +113,7 @@ class LevelUpgradeService
         $this->memberModel->level_id = $levelId;
 
         if ($this->memberModel->save()) {
+            $this->notice();
             \Log::info('会员ID'.$this->memberModel->member_id . '会员等级升级成功，等级ID' . $levelId);
         } else {
             \Log::info('会员ID'.$this->memberModel->member_id . '会员等级升级失败，等级ID' . $levelId);
@@ -119,6 +121,35 @@ class LevelUpgradeService
 
         //todo 会员等级升级通知
         return true;
+    }
+
+    private function notice()
+    {
+        $memberModel = Member::select('uid','nickname','realname')->where('uid',$this->memberModel->member_id)->first();
+
+        $member_name = $memberModel->realname ?: $memberModel->nickname;
+
+
+        $msg              = array(
+            'first' => array(
+                'value' => "亲爱的" . $member_name . ', 恭喜您成功升级！',
+                "color" => "#4a5077"
+            ),
+            'keyword1' => array(
+                'title' => '任务名称',
+                'value' => '会员升级',
+                "color" => "#4a5077"
+            ),
+            'keyword2' => array(
+                'title' => '通知类型',
+                'value' => '您会员等级从 ' . $defaultlevelname . ' 升级为 ' . $level['levelname'] . ', 特此通知!',
+                "color" => "#4a5077"
+            ),
+            'remark' => array(
+                'value' => "\r\n您即可享有" . $level['levelname'] . '的专属优惠及服务！',
+                "color" => "#4a5077"
+            )
+        );
     }
 
 
