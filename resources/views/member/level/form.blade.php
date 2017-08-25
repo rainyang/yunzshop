@@ -76,7 +76,7 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">折扣</label>
                             <div class="col-sm-9 col-xs-12">
                                 <input type="text" name="level[discount]" class="form-control" value="{{ $levelModel->discount }}"/>
-                                <span class='help-block'>请输入0.1~10之间的数字,值为空代表不设置折扣</span>
+                                <span class='help-block'>请输入0.1~10之间的数字,值为空代表不设置折扣(例如:设置9.5  会员价格=商品价格*(9.5/10))</span>
                             </div>
                         </div>
 

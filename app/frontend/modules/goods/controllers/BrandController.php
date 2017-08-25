@@ -25,7 +25,7 @@ class BrandController extends ApiController
 {
     public function getBrand()
     {
-        $pageSize = 10;
+        $pageSize = 100;
         $list = Brand::getBrands()->paginate($pageSize)->toArray();
         if($list['data']){
             foreach ($list['data'] as &$item) {
