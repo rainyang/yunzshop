@@ -14,6 +14,7 @@ use Illuminate\Filesystem\Filesystem;
 use Yunshop\Gold\frontend\services\MemberCenterService;
 use Yunshop\Love\Common\Services\SetService;
 use Yunshop\Micro\common\services\MicroShop\GetButtonService;
+use Yunshop\StoreCashier\common\models\Store;
 use Yunshop\Supplier\common\services\VerifyButton;
 
 /**
@@ -338,6 +339,18 @@ class Member extends BackendModel
                 'status'    => false,
                 'love_name' => '0',
             ];
+        }
+
+        if ($plugin_class->isEnabled('store-cashier')) {
+            $store = Store::getStoreByUid(\YunShop::app()->getMemberId())->first();
+            if ($store) {
+                $data['cashier'] = [
+                    'button_name' => '收银台',
+                    'api'         => 'plugin.store-cashier.frontend.cashier.center.index'
+                ];
+            }
+        } else {
+            $data['cashier'] = '';
         }
 
         //获取插件会员中心链接挂件
