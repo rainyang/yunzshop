@@ -14,6 +14,7 @@ use app\common\models\Member;
 use app\common\models\MemberLevel;
 use app\common\models\MemberShopInfo;
 use app\common\models\Order;
+use app\common\services\MessageService;
 use Monolog\Handler\IFTTTHandler;
 
 class LevelUpgradeService
@@ -21,6 +22,8 @@ class LevelUpgradeService
     private $orderModel;
 
     private $memberModel;
+
+    private $new_level;
 
     public function checkUpgrade(AfterOrderReceivedEvent $event)
     {
@@ -44,24 +47,24 @@ class LevelUpgradeService
         switch ($set['level_type'])
         {
             case 0:
-                $level =  $this->checkOrderMoney();
+                $this->new_level =  $this->checkOrderMoney();
                 break;
             case 1:
-                $level =  $this->checkOrderCount();
+                $this->new_level =  $this->checkOrderCount();
                 break;
             case 2:
-                $level =  $this->checkGoodsId();
+                $this->new_level =  $this->checkGoodsId();
                 break;
             default:
                 $level =  '';
         }
 
         //比对当前等级权重，判断是否升级
-        if ($level) {
+        if ($this->new_level) {
             $memberLevel = isset($this->memberModel->level->level) ? $this->memberModel->level->level : 0;
 
-            if ($level->level > $memberLevel) {
-                return $level->id;
+            if ($this->new_level->level > $memberLevel) {
+                return $this->new_level->id;
             }
             return '';
         }
@@ -125,11 +128,13 @@ class LevelUpgradeService
 
     private function notice()
     {
-        $memberModel = Member::select('uid','nickname','realname')->where('uid',$this->memberModel->member_id)->first();
+        $template_id = \Setting::get('shop.notice.customer_upgrade');
+        if (!trim($template_id)) {
+            return '';
+        }
+        $memberModel = Member::select('uid','nickname','realname')->where('uid',$this->memberModel->member_id)->with('hasOneFans')->first();
 
         $member_name = $memberModel->realname ?: $memberModel->nickname;
-
-
         $msg              = array(
             'first' => array(
                 'value' => "亲爱的" . $member_name . ', 恭喜您成功升级！',
@@ -142,14 +147,18 @@ class LevelUpgradeService
             ),
             'keyword2' => array(
                 'title' => '通知类型',
-                'value' => '您会员等级从 ' . $defaultlevelname . ' 升级为 ' . $level['levelname'] . ', 特此通知!',
+                'value' => '您会员等级从 ' . $this->memberModel->level->level_name . ' 升级为 ' . $this->new_level->level_name . ', 特此通知!',
                 "color" => "#4a5077"
             ),
             'remark' => array(
-                'value' => "\r\n您即可享有" . $level['levelname'] . '的专属优惠及服务！',
+                'value' => "\r\n您即可享有" . $this->new_level->level_name . '的专属优惠及服务！',
                 "color" => "#4a5077"
             )
         );
+
+        if (isset($memberModel->hasOneFans) && !empty($memberModel->hasOneFans->openid) && $memberModel->hasOneFans->follow) {
+            MessageService::notice($template_id,$msg,$memberModel->uid);
+        }
     }
 
 
