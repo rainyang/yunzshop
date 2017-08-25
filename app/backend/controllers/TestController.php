@@ -25,6 +25,11 @@ class TestController extends BaseController
 {
     public function index()
     {
+        $member =Member::select('uid','nickname','realname')->with(['yzMember'=>function($query) {
+            $query->withLevel();
+        }])->where('uid',204)->first();
+dump($member->yzMember->level->level);
+        dd($member);
         $data = [
             'total' => [
                 'amounts' => '3033.82',
