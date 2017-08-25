@@ -9,27 +9,17 @@
 namespace app\backend\controllers;
 
 
-use app\backend\modules\member\models\MemberRelation;
 use app\common\components\BaseController;
-use app\common\models\finance\BalanceRecharge;
 use app\common\models\Member;
-use app\common\services\JsonRpc;
 use app\common\services\MessageService;
 use app\common\services\WechatPay;
 use app\frontend\modules\finance\controllers\IncomeController;
-use app\frontend\modules\finance\services\BalanceRechargeResultService;
 use app\frontend\modules\member\models\SubMemberModel;
-use Yunshop\TeamDividend\models\TeamDividendLevelModel;
 
 class TestController extends BaseController
 {
     public function index()
     {
-        $member =Member::select('uid','nickname','realname')->with(['yzMember'=>function($query) {
-            $query->withLevel();
-        }])->where('uid',204)->first();
-dump($member->yzMember->level->level);
-        dd($member);
         $data = [
             'total' => [
                 'amounts' => '3033.82',
