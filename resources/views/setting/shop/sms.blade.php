@@ -74,14 +74,7 @@
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">注册模板变量:</label>
                         <div class="col-sm-9 col-xs-12">
-                            <textarea name="sms[product]" class="form-control">
-                            @if (!empty($set['product']))
-                                {{ $set['product'] }}
-
-                            @else
-                                product=xx商城
-                            @endif
-                            </textarea>
+                            <input type="text" name="sms[product]" class="form-control" value="{{ $set['product'] }}"  placeholder="product=xx商城" />
                         </div>
                     </div>
                     <div class="form-group">
@@ -93,20 +86,14 @@
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">找回密码变量:</label>
                         <div class="col-sm-9 col-xs-12">
-                            <textarea name="sms[forget]" class="form-control">
-                            @if (!empty($set['forget']))
-                                {{ $set['forget'] }}
-                            @else
-                                product=xx商城
-                            @endif
-                            </textarea>
+                            <input type="text" name="sms[forget]" class="form-control" value="{{ $set['forget'] }}"  placeholder="product=xx商城" />
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-                        <div class="col-sm-9 col-xs-12 alert alert-info">
-                            模板变量请以"变量名=变量值"形式填写,多个值请以回车换行。
-                        </div>
+                        {{--<div class="col-sm-9 col-xs-12 alert alert-info">--}}
+                            {{--模板变量请以"变量名=变量值"形式填写,多个值请以回车换行。--}}
+                        {{--</div>--}}
                     </div>
                 </div>
                 <!--
