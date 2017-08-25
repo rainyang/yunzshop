@@ -65,7 +65,7 @@ class MemberCart extends \app\common\models\MemberCart
 
     public function goodsOption()
     {
-        return $this->belongsTo(app('GoodsManager')->make('GoodsOption'));
+        return $this->belongsTo(app('GoodsManager')->make('GoodsOption'),'option_id');
     }
 
     public static function getMemberCartById($cartId)
