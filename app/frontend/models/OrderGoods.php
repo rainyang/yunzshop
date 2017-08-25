@@ -8,7 +8,6 @@
 
 namespace app\frontend\models;
 
-use Illuminate\Database\Eloquent\Builder;
 
 class OrderGoods extends \app\common\models\OrderGoods
 {
