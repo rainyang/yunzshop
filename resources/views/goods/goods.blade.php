@@ -218,7 +218,7 @@
          return false;
          }
          }*/
-        if ($(':input[name="widgets[sale][bonus]"]').val() == '') {
+        /*if ($(':input[name="widgets[sale][bonus]"]').val() == '') {
             $('#myTab a[href="#tab_sale"]').tab('show');
             Tip.focus(':input[name="widgets[sale][bonus]"]', "请输入红包金额!");
             return false;
@@ -228,7 +228,7 @@
                 Tip.focus(':input[name="widgets[sale][bonus]"]', '红包金额格式错误,最多两位小数.');
                 return false;
             }
-        }
+        }*/
 
         if ($.trim($(':input[name="widgets[share][share_thumb]"]').val()) != '' && !thumb.test($.trim($(':input[name="widgets[share][share_thumb]"]').val()))) {
             $('#myTab a[href="#tab_share"]').tab('show');
