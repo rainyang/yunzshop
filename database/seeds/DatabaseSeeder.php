@@ -11,33 +11,68 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        /**
+         * 商城基础设置
+         */
+
+
+        /**
+         * 商品模块
+         */
+
+
+        /**
+         * 会员模块
+         */
+
+
+        /**
+         * 订单模块
+         */
+
+
+        /**
+         * 分销
+         */
+
+
+        /**
+         * 店铺装修
+         */
+
+
+        /**
+         * 云币插件
+         */
+
+
         //配置
-        $this->call(SettingSeeder::class);
+        //$this->call(SettingSeeder::class);
         //权限
-        $this->call(YzPermissionSeeder::class);
+        //$this->call(YzPermissionSeeder::class);
         //用户角色
-        $this->call(YzUserRoleSeeder::class);
+        //$this->call(YzUserRoleSeeder::class);
         /**
          * 地址
          */
         //地址(省份,城市,区域)
-        $this->call(YzAddressSeeder::class);
+        //$this->call(YzAddressSeeder::class);
         //地址(街道)
-        $this->call(YzStreetSeeder::class);
+        //$this->call(YzStreetSeeder::class);
         /**
          * 商品
          */
         //商品分类
-        $this->call(YzCategorySeeder::class);
+        //$this->call(YzCategorySeeder::class);
         //商品评论
-        $this->call(YzCommentSeeder::class);
+        //$this->call(YzCommentSeeder::class);
         //商品消息推送
-        $this->call(YzNoticeSeeder::class);
+        //$this->call(YzNoticeSeeder::class);
         //商品消息推送
-        $this->call(YzSaleSeeder::class);
-        $this->call(YzOptionsTableSeeder::class);
+        //$this->call(YzSaleSeeder::class);
+        //$this->call(YzOptionsTableSeeder::class);
         //模板消息
-        $this->call(YzTemplateMessageTableSeeder::class);
-        $this->call(YzMenuUpgradeSeeder::class);
+        //$this->call(YzTemplateMessageTableSeeder::class);
+        //$this->call(YzMenuUpgradeSeeder::class);
     }
 }

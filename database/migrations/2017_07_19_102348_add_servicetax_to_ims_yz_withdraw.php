@@ -35,10 +35,12 @@ class AddServicetaxToImsYzWithdraw extends Migration
      */
     public function down()
     {
-        Schema::table('yz_withdraw', function (Blueprint $table) {
-            $table->dropColumn('servicetax');
-            $table->dropColumn('servicetax_rate');
-            $table->dropColumn('actual_servicetax');
-        });
+        if (\Schema::hasTable('yz_goods_coupon_queue')) {
+            Schema::table('yz_withdraw', function (Blueprint $table) {
+                $table->dropColumn('servicetax');
+                $table->dropColumn('servicetax_rate');
+                $table->dropColumn('actual_servicetax');
+            });
+        }
     }
 }

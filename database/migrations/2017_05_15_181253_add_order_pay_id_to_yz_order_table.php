@@ -13,14 +13,16 @@ class AddOrderPayIdToYzOrderTable extends Migration
      */
     public function up()
     {
-        Schema::table('yz_order', function(Blueprint $table)
-        {
-            if (!Schema::hasColumn('yz_order', 'order_pay_id')) {
+        if (Schema::hasTable('yz_order')) {
+            Schema::table('yz_order', function (Blueprint $table) {
+                if (!Schema::hasColumn('yz_order', 'order_pay_id')) {
 
-                $table->integer('order_pay_id')->default(0);
-            }
+                    $table->integer('order_pay_id')->default(0);
+                }
 
-        });    }
+            });
+        }
+    }
 
     /**
      * Reverse the migrations.
@@ -29,8 +31,10 @@ class AddOrderPayIdToYzOrderTable extends Migration
      */
     public function down()
     {
-        Schema::table('yz_order', function (Blueprint $table) {
-            $table->dropColumn('order_pay_id');
-        });
+        if (Schema::hasTable('yz_order')) {
+            Schema::table('yz_order', function (Blueprint $table) {
+                $table->dropColumn('order_pay_id');
+            });
+        }
     }
 }

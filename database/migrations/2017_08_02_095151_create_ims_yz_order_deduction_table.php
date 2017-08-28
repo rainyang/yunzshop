@@ -39,7 +39,7 @@ class CreateImsYzOrderDeductionTable extends Migration {
 	{
         if (\Schema::hasTable('yz_order_deduction')) {
 
-            Schema::drop('ims_yz_order_deduction');
+            Schema::drop('yz_order_deduction');
         }
 	}
 

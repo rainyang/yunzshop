@@ -13,14 +13,15 @@ class AddOrderSnToBalanceTransfer extends Migration
      */
     public function up()
     {
-        Schema::table('yz_balance_transfer', function(Blueprint $table)
-        {
-            if (!Schema::hasColumn('yz_balance_transfer', 'order_sn')) {
+        if (Schema::hasTable('yz_balance_transfer')) {
+            Schema::table('yz_balance_transfer', function (Blueprint $table) {
+                if (!Schema::hasColumn('yz_balance_transfer', 'order_sn')) {
 
-                $table->string('order_sn',255)->nullable();
-            }
+                    $table->string('order_sn', 255)->nullable();
+                }
 
-        });
+            });
+        }
     }
 
     /**
@@ -30,8 +31,10 @@ class AddOrderSnToBalanceTransfer extends Migration
      */
     public function down()
     {
-        Schema::table('yz_balance_transfer', function (Blueprint $table) {
-            $table->dropColumn('order_sn');
-        });
+        if (Schema::hasTable('yz_balance_transfer')) {
+            Schema::table('yz_balance_transfer', function (Blueprint $table) {
+                $table->dropColumn('order_sn');
+            });
+        }
     }
 }
