@@ -29,8 +29,8 @@ class GoodsSeeder extends \Illuminate\Database\Seeder
             echo $this->oldGoodsTable." 不存在 跳过\n";
             return;
         }
-        $newList = \Illuminate\Support\Facades\DB::table($this->goodsTable)->get();
-        if($newList->isNotEmpty()){
+        $dataList = \Illuminate\Support\Facades\DB::table($this->goodsTable)->get();
+        if($dataList->isNotEmpty()){
             echo "{$this->goodsTable}已经有数据了跳过\n";
             return ;
         }

@@ -13,18 +13,20 @@ class AddUpdatedAtToImsYzMemberUniqueTable extends Migration
      */
     public function up()
     {
-        Schema::table('yz_member_unique', function (Blueprint $table) {
-            if (!Schema::hasColumn('yz_member_unique', 'updated_at')) {
+        if (Schema::hasTable('yz_member_unique')) {
+            Schema::table('yz_member_unique', function (Blueprint $table) {
+                if (!Schema::hasColumn('yz_member_unique', 'updated_at')) {
 
-                $table->integer('updated_at')->default(0);
-            }
+                    $table->integer('updated_at')->default(0);
+                }
 
-            if (!Schema::hasColumn('yz_member_unique', 'deleted_at')) {
+                if (!Schema::hasColumn('yz_member_unique', 'deleted_at')) {
 
-                $table->integer('deleted_at')->nullable();
-            }
+                    $table->integer('deleted_at')->nullable();
+                }
 
-        });
+            });
+        }
     }
 
     /**
@@ -34,9 +36,11 @@ class AddUpdatedAtToImsYzMemberUniqueTable extends Migration
      */
     public function down()
     {
-        Schema::table('yz_member_unique', function (Blueprint $table) {
-            $table->dropColumn('updated_at');
-            $table->dropColumn('deleted_at');
-        });
+        if (Schema::hasTable('yz_member_unique')) {
+            Schema::table('yz_member_unique', function (Blueprint $table) {
+                $table->dropColumn('updated_at');
+                $table->dropColumn('deleted_at');
+            });
+        }
     }
 }

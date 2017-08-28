@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCronjobTable extends Migration {
+class CreateYzCronJobTable extends Migration {
 
     /**
      * Run the migrations.

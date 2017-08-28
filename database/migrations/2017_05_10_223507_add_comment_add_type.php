@@ -12,12 +12,13 @@ class AddCommentAddType extends Migration {
 	 */
 	public function up()
 	{
-		Schema::table('yz_comment', function(Blueprint $table)
-		{
-            if (!Schema::hasColumn('yz_comment', 'type')) {
-                $table->tinyInteger('type')->default(3);
-            }
-		});
+        if (Schema::hasTable('yz_comment')) {
+            Schema::table('yz_comment', function (Blueprint $table) {
+                if (!Schema::hasColumn('yz_comment', 'type')) {
+                    $table->tinyInteger('type')->default(3);
+                }
+            });
+        }
 	}
 
 
@@ -28,12 +29,13 @@ class AddCommentAddType extends Migration {
 	 */
 	public function down()
 	{
-		Schema::table('yz_comment', function(Blueprint $table)
-		{
-            if (Schema::hasColumn('yz_comment', 'type')) {
-                $table->dropColumn('type');
-            }
-		});
+        if (Schema::hasTable('yz_comment')) {
+            Schema::table('yz_comment', function (Blueprint $table) {
+                if (Schema::hasColumn('yz_comment', 'type')) {
+                    $table->dropColumn('type');
+                }
+            });
+        }
 	}
 
 }

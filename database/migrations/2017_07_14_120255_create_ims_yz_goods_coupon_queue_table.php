@@ -12,7 +12,7 @@ class CreateImsYzGoodsCouponQueueTable extends Migration {
 	 */
 	public function up()
 	{
-        if (!\Schema::hasTable('yz_goods_coupon_queue')) {
+        if (!Schema::hasTable('yz_goods_coupon_queue')) {
             Schema::create('yz_goods_coupon_queue', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('uniacid')->nullable();
@@ -37,8 +37,8 @@ class CreateImsYzGoodsCouponQueueTable extends Migration {
 	 */
 	public function down()
 	{
-        if (!\Schema::hasTable('yz_goods_coupon_queue')) {
-            Schema::drop('ims_yz_goods_coupon_queue');
+        if (Schema::hasTable('yz_goods_coupon_queue')) {
+            Schema::drop('yz_goods_coupon_queue');
         }
 	}
 

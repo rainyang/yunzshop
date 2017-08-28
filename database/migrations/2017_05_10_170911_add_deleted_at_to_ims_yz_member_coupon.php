@@ -13,11 +13,13 @@ class AddDeletedAtToImsYzMemberCoupon extends Migration
      */
     public function up()
     {
-        Schema::table('yz_member_coupon', function (Blueprint $table) {
-            if (!Schema::hasColumn('yz_member_coupon', 'deleted_at')) {
-                $table->integer('deleted_at')->nullable();
-            }
-        });
+        if (Schema::hasTable('yz_member_coupon')) {
+            Schema::table('yz_member_coupon', function (Blueprint $table) {
+                if (!Schema::hasColumn('yz_member_coupon', 'deleted_at')) {
+                    $table->integer('deleted_at')->nullable();
+                }
+            });
+        }
     }
 
     /**
@@ -27,8 +29,10 @@ class AddDeletedAtToImsYzMemberCoupon extends Migration
      */
     public function down()
     {
-        Schema::table('yz_member_coupon', function (Blueprint $table) {
-            $table->dropColumn('deleted_at');
-        });
+        if (Schema::hasTable('yz_member_coupon')) {
+            Schema::table('yz_member_coupon', function (Blueprint $table) {
+                $table->dropColumn('deleted_at');
+            });
+        }
     }
 }

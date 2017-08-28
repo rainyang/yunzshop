@@ -8,7 +8,6 @@
 
 namespace app\frontend\models;
 
-use Illuminate\Database\Eloquent\Builder;
 
 class OrderGoods extends \app\common\models\OrderGoods
 {
@@ -50,14 +49,5 @@ class OrderGoods extends \app\common\models\OrderGoods
         }
 
         return false;
-    }
-
-    public static function boot()
-    {
-        parent::boot();
-
-        self::addGlobalScope(function (Builder $query) {
-            return $query->where('uid', \YunShop::app()->getMemberId());
-        });
     }
 }

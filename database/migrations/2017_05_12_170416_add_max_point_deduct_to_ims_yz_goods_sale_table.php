@@ -13,9 +13,11 @@ class AddMaxPointDeductToImsYzGoodsSaleTable extends Migration
      */
     public function up()
     {
-        Schema::table('yz_goods_sale', function (Blueprint $table) {
-            $table->string('max_point_deduct', 255)->nullable();
-        });
+        if (Schema::hasTable('yz_goods_sale')) {
+            Schema::table('yz_goods_sale', function (Blueprint $table) {
+                $table->string('max_point_deduct', 255)->nullable();
+            });
+        }
     }
 
     /**
@@ -25,8 +27,10 @@ class AddMaxPointDeductToImsYzGoodsSaleTable extends Migration
      */
     public function down()
     {
-        Schema::table('yz_goods_sale', function (Blueprint $table) {
-            $table->dropColumn('max_point_deduct');
-        });
+        if (Schema::hasTable('yz_goods_sale')) {
+            Schema::table('yz_goods_sale', function (Blueprint $table) {
+                $table->dropColumn('max_point_deduct');
+            });
+        }
     }
 }

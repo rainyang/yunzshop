@@ -13,11 +13,13 @@ class DeletePointToImsYzGoodsSaleTable extends Migration
      */
     public function up()
     {
-        Schema::table('yz_goods_sale', function (Blueprint $table) {
-            if (Schema::hasColumn('yz_goods_sale', 'point')) {
-                $table->dropColumn('point');
-            }
-        });
+        if (Schema::hasTable('yz_goods_sale')) {
+            Schema::table('yz_goods_sale', function (Blueprint $table) {
+                if (Schema::hasColumn('yz_goods_sale', 'point')) {
+                    $table->dropColumn('point');
+                }
+            });
+        }
     }
 
     /**
@@ -27,8 +29,6 @@ class DeletePointToImsYzGoodsSaleTable extends Migration
      */
     public function down()
     {
-        Schema::table('yz_goods_sale', function (Blueprint $table) {
-            $table->dropColumn('point');
-        });
+
     }
 }
