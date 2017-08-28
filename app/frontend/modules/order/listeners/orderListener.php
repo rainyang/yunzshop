@@ -71,7 +71,7 @@ class orderListener
                 if ((int)\Setting::get('shop.trade.receive')) {
                     // 开启自动收货时
                     \Log::info("--订单自动完成start--");
-                    \Cron::add('OrderReceive', '*/' . $receive_min . ' * * * * *', function () {
+                    \Cron::add("OrderReceive{$u->uniacid}", '*/' . $receive_min . ' * * * * *', function () {
                         // 所有超时未收货的订单,遍历执行收货
                         OrderService::autoReceive();
                         // todo 使用队列执行
@@ -85,7 +85,7 @@ class orderListener
                 if ((int)\Setting::get('shop.trade.close_order_days')) {
                     // 开启自动关闭时
                     \Log::info("--订单自动关闭start--");
-                    \Cron::add('OrderClose', '*/' . $close_min . ' * * * * *', function () {
+                    \Cron::add("OrderClose{$u->uniacid}", '*/' . $close_min . ' * * * * *', function () {
                         // 所有超时付款的订单,遍历执行关闭
                         OrderService::autoClose();
                         // todo 使用队列执行

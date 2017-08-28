@@ -26,6 +26,7 @@ use Yunshop\Commission\models\CommissionOrder;
 
 class IncomeController extends ApiController
 {
+    protected $pageSize = 20;
     /**
      * @return \Illuminate\Http\JsonResponse
      */
@@ -97,8 +98,8 @@ class IncomeController extends ApiController
             }
         }
 
-        $incomeModel = Income::getIncomeInMonth($search)->where('member_id', \YunShop::app()->getMemberId());
-        $incomeModel = $incomeModel->get();
+//        $incomeModel = Income::getIncomeInMonth($search)->where('member_id', \YunShop::app()->getMemberId())->get();
+        $incomeModel = Income::getIncomesList($search)->where('member_id', \YunShop::app()->getMemberId())->paginate($this->pageSize);
         if ($incomeModel) {
             return $this->successJson('获取数据成功!', $incomeModel);
         }

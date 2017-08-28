@@ -83,21 +83,21 @@
                         <span class='help-block'>订单完成后 ，用户在x天内可以发起退款申请，设置0天不允许完成订单退款</span>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款说明</label>
-                    <div class="col-sm-9">
-                        <textarea  name="trade[refund_content]" class="form-control" value="{{ $set['refund_content'] }}" >{{ $set['refund_content'] }}</textarea>
-                        <span class='help-block'>用户在申请退款页面的说明</span>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否显示用户下单飘窗</label>
-                    <div class="col-sm-9">
-                        <label class='radio-inline'><input type='radio' name='trade[show_last_order]' value='1' @if ($set['show_last_order'] == 1) checked @endif/> 开启</label>
-                        <label class='radio-inline'><input type='radio' name='trade[show_last_order]' value='0' @if (empty($set['show_last_order'])) checked @endif /> 关闭</label>
-                        <span class='help-block'>是否显示商城用户下单飘窗提示</span>
-                    </div>
-                </div>
+                {{--<div class="form-group">--}}
+                    {{--<label class="col-xs-12 col-sm-3 col-md-2 control-label">退款说明</label>--}}
+                    {{--<div class="col-sm-9">--}}
+                        {{--<textarea  name="trade[refund_content]" class="form-control" value="{{ $set['refund_content'] }}" >{{ $set['refund_content'] }}</textarea>--}}
+                        {{--<span class='help-block'>用户在申请退款页面的说明</span>--}}
+                    {{--</div>--}}
+                {{--</div>--}}
+                {{--<div class="form-group">--}}
+                    {{--<label class="col-xs-12 col-sm-3 col-md-2 control-label">是否显示用户下单飘窗</label>--}}
+                    {{--<div class="col-sm-9">--}}
+                        {{--<label class='radio-inline'><input type='radio' name='trade[show_last_order]' value='1' @if ($set['show_last_order'] == 1) checked @endif/> 开启</label>--}}
+                        {{--<label class='radio-inline'><input type='radio' name='trade[show_last_order]' value='0' @if (empty($set['show_last_order'])) checked @endif /> 关闭</label>--}}
+                        {{--<span class='help-block'>是否显示商城用户下单飘窗提示</span>--}}
+                    {{--</div>--}}
+                {{--</div>--}}
 			</div>
 
 			<div class="panel-heading">
@@ -106,14 +106,14 @@
 
             <div class='panel-body'>
 
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">获取微信共享收货地址</label>
-                    <div class="col-sm-9 col-xs-12">
-                        <label class='radio-inline'><input type='radio' name='trade[share_address]' value='0' @if ($set['share_address'] == 0) checked @endif /> 关闭</label>
-                        <label class='radio-inline'><input type='radio' name='trade[share_address]' value='1' @if ($set['share_address'] == 1) checked @endif/> 开启</label>
-                        <span class='help-block'>是否在用户添加收货地址时候获取用户的微信收货地址</span>
-                    </div>
-                </div>
+                {{--<div class="form-group">--}}
+                    {{--<label class="col-xs-12 col-sm-3 col-md-2 control-label">获取微信共享收货地址</label>--}}
+                    {{--<div class="col-sm-9 col-xs-12">--}}
+                        {{--<label class='radio-inline'><input type='radio' name='trade[share_address]' value='0' @if ($set['share_address'] == 0) checked @endif /> 关闭</label>--}}
+                        {{--<label class='radio-inline'><input type='radio' name='trade[share_address]' value='1' @if ($set['share_address'] == 1) checked @endif/> 开启</label>--}}
+                        {{--<span class='help-block'>是否在用户添加收货地址时候获取用户的微信收货地址</span>--}}
+                    {{--</div>--}}
+                {{--</div>--}}
                 <div class="form-group">
 
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否开启乡镇及街道地址选择
