@@ -166,5 +166,18 @@ class Income extends BackendModel
             ->update($updatedData);
     }
 
+    public static function getIncomesList($search)
+    {
+        $model = self::uniacid();
+        $model->select('id', 'create_month', 'incometable_type', 'type_name', 'amount', 'created_at');
+        if ($search['type']) {
+            $model->where('incometable_type', $search['type']);
+        }
+        $model->where('member_id', \YunShop::app()->getMemberId());
+        $model->orderBy('id', 'desc');
+
+        return $model;
+    }
+
 
 }

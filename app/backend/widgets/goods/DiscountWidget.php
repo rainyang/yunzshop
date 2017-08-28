@@ -28,6 +28,7 @@ class DiscountWidget extends Widget
             }
         }
         $levels = MemberLevel::getMemberLevelList();
+        $levels = array_merge($this->defaultLevel(),$levels);
         $groups = MemberGroup::getMemberGroupList();
         return view('goods.widgets.discount', [
             'discount' => $discounts->toArray(),
@@ -35,5 +36,15 @@ class DiscountWidget extends Widget
             'levels' => $levels,
             'groups' => $groups
         ])->render();
+    }
+
+    private function defaultLevel()
+    {
+        return [
+            '0'=> [
+                'id' => "0",
+                'level_name' => \Setting::get('shop.member.level_name') ?: '普通会员'
+            ],
+        ];
     }
 }

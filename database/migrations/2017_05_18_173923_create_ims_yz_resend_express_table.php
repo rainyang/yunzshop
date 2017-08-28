@@ -13,7 +13,6 @@ class CreateImsYzResendExpressTable extends Migration {
 	public function up()
 	{
         if (!Schema::hasTable('yz_resend_express')) {
-
             Schema::create('yz_resend_express', function (Blueprint $table) {
                 $table->integer('id', true);
                 $table->integer('refund_id')->default(0)->index('idx_order_id');
@@ -35,7 +34,7 @@ class CreateImsYzResendExpressTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('ims_yz_resend_express');
+		Schema::dropIfExists('yz_resend_express');
 	}
 
 }

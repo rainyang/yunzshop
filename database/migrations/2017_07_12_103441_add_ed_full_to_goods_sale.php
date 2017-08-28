@@ -35,9 +35,11 @@ class AddEdFullToGoodsSale extends Migration
      */
     public function down()
     {
-        Schema::table('yz_goods_sale', function (Blueprint $table) {
-            $table->dropColumn('ed_full');
-            $table->dropColumn('ed_reduction');
-        });
+        if (\Schema::hasTable('yz_goods_sale')) {
+            Schema::table('yz_goods_sale', function (Blueprint $table) {
+                $table->dropColumn('ed_full');
+                $table->dropColumn('ed_reduction');
+            });
+        }
     }
 }

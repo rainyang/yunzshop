@@ -13,9 +13,11 @@ class AddPointToImsYzGoodsSaleTable extends Migration
      */
     public function up()
     {
-        Schema::table('yz_goods_sale', function (Blueprint $table) {
-            $table->string('point', 255)->nullable();
-        });
+        if (Schema::hasTable('yz_goods_sale')) {
+            Schema::table('yz_goods_sale', function (Blueprint $table) {
+                $table->string('point', 255)->nullable();
+            });
+        }
     }
 
     /**
@@ -25,8 +27,10 @@ class AddPointToImsYzGoodsSaleTable extends Migration
      */
     public function down()
     {
-        Schema::table('yz_goods_sale', function (Blueprint $table) {
-            $table->dropColumn('point');
-        });
+        if (Schema::hasTable('yz_goods_sale')) {
+            Schema::table('yz_goods_sale', function (Blueprint $table) {
+                $table->dropColumn('point');
+            });
+        }
     }
 }

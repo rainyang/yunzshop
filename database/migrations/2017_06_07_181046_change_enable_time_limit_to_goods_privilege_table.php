@@ -29,8 +29,6 @@ class ChangeEnableTimeLimitToGoodsPrivilegeTable extends Migration
      */
     public function down()
     {
-        Schema::table('yz_goods_privilege', function (Blueprint $table) {
-            $table->dropColumn('enable_time_limit');
-        });
+
     }
 }
