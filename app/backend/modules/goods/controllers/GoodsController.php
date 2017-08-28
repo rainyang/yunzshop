@@ -440,7 +440,7 @@ class GoodsController extends BaseController
         }
 
         if (\YunShop::request()->kw) {
-            $goods = Goods::getGoodsByName(\YunShop::request()->kw);
+            $goods = \app\common\models\Goods::getGoodsByName(\YunShop::request()->kw);
             $goods = set_medias($goods, array('thumb', 'share_icon'));
 
             $goods = collect($goods)->map(function($item) {
