@@ -21,7 +21,7 @@ class MemberCartController extends ApiController
     {
         $memberId = \YunShop::app()->getMemberId();
         if ($memberId) {
-            $cartList = MemberCart::getMemberCartList($memberId);
+            $cartList = app('OrderManager')->make('MemberCart')->getMemberCartList($memberId);
             //dd($cartList);
             foreach ($cartList as $key => $cart) {
                 $cartList[$key]['option_str'] = '';
@@ -66,7 +66,7 @@ class MemberCartController extends ApiController
                 'option_id' => $requestcart->option_id ? $requestcart->option_id : '0'
             );
             //验证商品是否存在购物车,存在则修改数量
-            $hasGoodsModel = MemberCart::hasGoodsToMemberCart($data);
+            $hasGoodsModel = app('OrderManager')->make('MemberCart')->hasGoodsToMemberCart($data);
             if ($hasGoodsModel) {
                 $hasGoodsModel->total = $hasGoodsModel->total + 1;
 
@@ -101,7 +101,7 @@ class MemberCartController extends ApiController
         $cartId = request()->input('id');
         $num = request()->input('num');
         if ($cartId && $num) {
-            $cartModel = MemberCart::getMemberCartById($cartId);
+            $cartModel = app('OrderManager')->make('MemberCart')->getMemberCartById($cartId);
             if ($cartModel) {
                 $cartModel->total = $cartModel->total + $num;
                 $cartModel->validate();
