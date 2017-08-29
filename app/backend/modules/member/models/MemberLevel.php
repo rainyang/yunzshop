@@ -127,7 +127,7 @@ class MemberLevel extends \app\common\models\MemberLevel
         $rule =  [
             'level'      => [
                 'required',
-                \Illuminate\Validation\Rule::unique($this->table)->where('uniacid',\YunShop::app()->uniacid)->ignore($this->id),
+                \Illuminate\Validation\Rule::unique($this->table)->where('uniacid',\YunShop::app()->uniacid)->where('deleted_at','')->ignore($this->id),
                 'numeric',
                 'between:1,9999'
             ],
