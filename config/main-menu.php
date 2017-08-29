@@ -49,7 +49,7 @@ return [
                 'name' => '商城设置',
                 'url' => 'setting.shop.shop',
                 'url_params' => '',
-                'permit' => 0,
+                'permit' => 1,
                 'menu' => 1,
                 'icon' => 'fa-cog',
                 'parent_id' => 1,
