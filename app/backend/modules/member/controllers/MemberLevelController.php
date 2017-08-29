@@ -11,6 +11,7 @@ namespace app\backend\modules\member\controllers;
 
 use app\backend\modules\goods\models\Goods;
 use app\backend\modules\member\models\MemberLevel;
+use app\backend\modules\member\models\MemberShopInfo;
 use app\common\components\BaseController;
 use app\common\facades\Setting;
 use app\common\helpers\PaginationHelper;
@@ -126,6 +127,7 @@ class MemberLevelController extends BaseController
             return $this->message('未找到记录或已删除','','error');
         }
         if($levelModel->delete()) {
+            MemberShopInfo::where('level_id',\YunShop::request()->id)->update(['level_id'=>'0']);
             return $this->message('删除等级成功',Url::absoluteWeb('member.member-level.index'));
         }else{
             return $this->message('删除等级失败','','error');
