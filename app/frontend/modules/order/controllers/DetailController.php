@@ -26,9 +26,9 @@ class DetailController extends ApiController
 
         $order = $this->getOrder()->with('hasManyOrderGoods')->find($orderId);
 
-        if ($order->uid != \YunShop::app()->getMemberId()) {
-            throw new AppException('(ID:' . $order->id . ')该订单属于其他用户');
-        }
+//        if ($order->uid != \YunShop::app()->getMemberId()) {
+//            throw new AppException('(ID:' . $order->id . ')该订单属于其他用户');
+//        }
         $data = $order->toArray();
         $data['button_models'] = array_merge($data['button_models'],$order->getStatusService()->getRefundButtons($order));
 
