@@ -121,13 +121,13 @@ class MergePayController extends ApiController
         $orderPay->pay_type_id = $payType;
         $orderPay->save();
         //订单支付方式,流水号保存
-        $orders->each(function ($order) use ($orderPay) {
-            $order->pay_type_id = $orderPay->pay_type_id;
-            $order->order_pay_id = $orderPay->id;
-            if (!$order->save()) {
-                throw new AppException('支付方式选择失败');
-            }
-        });
+//        $orders->each(function ($order) use ($orderPay) {
+//            $order->pay_type_id = $orderPay->pay_type_id;
+//            $order->order_pay_id = $orderPay->id;
+//            if (!$order->save()) {
+//                throw new AppException('支付方式选择失败');
+//            }
+//        });
         return $this->getPayResult($payType,$orderPay,$orders);
     }
     protected function getPayResult($payType,$orderPay,$orders){
