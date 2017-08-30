@@ -159,7 +159,9 @@ class SendCouponController extends BaseController
                 if ($res) { //发放优惠券成功
                     $log = '手动发放优惠券成功: 管理员( ID 为 ' . $this->adminId . ' )成功发放 ' . $sendTotal . ' 张优惠券( ID为 ' . $couponModel->id . ' )给用户( Member ID 为 ' . $memberId . ' )';
                     //扣除优惠券数量
-                    $couponModel->total --;
+                    if($couponModel->total >0){
+                        $couponModel->total --;
+                    }
                 } else { //发放优惠券失败
                     $log = '手动发放优惠券失败: 管理员( ID 为 ' . $this->adminId . ' )发放优惠券( ID为 ' . $couponModel->id . ' )给用户( Member ID 为 ' . $memberId . ' )时失败!';
                     $this->failedSend[] = $log; //失败时, 记录 todo 最后需要展示出来
