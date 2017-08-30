@@ -129,8 +129,7 @@ class SendCouponController extends BaseController
     //array $members
     public function sendCoupon($couponModel, $memberIds, $sendTotal, $responseData)
     {
-        $title = $responseData['title'];
-        $description = $responseData['description'];
+        $messageData = $responseData;
         $data = [
             'uniacid' => \YunShop::app()->uniacid,
             'coupon_id' => $couponModel->id,
@@ -141,9 +140,11 @@ class SendCouponController extends BaseController
 
         foreach ($memberIds as $memberId) {
 
-            //获取Openid
+//            //获取Openid
 //            $memberOpenid = McMappingFans::getFansById($memberId)->openid;
 
+
+            
             for ($i = 0; $i < $sendTotal; $i++) {
                 $memberCoupon = new MemberCoupon;
                 $data['uid'] = $memberId;
@@ -160,18 +161,17 @@ class SendCouponController extends BaseController
                 $this->log($log, $couponModel, $memberId);
             }
 
-            if (!empty($title)) { //没有关注公众号的用户是没有 openid
+            if (!empty($messageData['title'])) { //没有关注公众号的用户是没有 openid
                 $templateId = \Setting::get('coupon_template_id'); //模板消息ID
                 $nickname = Member::getMemberById($memberId)->nickname;
                 $dynamicData = [
                     'nickname' => $nickname,
                     'couponname' => $couponModel->name,
                 ];
-                $messageData['title'] = str_replace('[nickname]', $dynamicData['nickname'], $title);
-                $messageData['description'] = str_replace('[couponname]', $dynamicData['couponname'], $description);
-                $messageData['image'] = $title['image'];
-                $messageData['url'] = $title['url'];
-                Message::message($messageData, $templateId, $memberId); //默认使用微信"客服消息"通知, 对于超过 48 小时未和平台互动的用户, 使用"模板消息"通知
+                $messageData['title'] = self::dynamicMsg($messageData['title'], $dynamicData);
+                $messageData['description'] = self::dynamicMsg($messageData['description'], $dynamicData);
+
+                Message::message( $messageData, $templateId, $memberId); //默认使用微信"客服消息"通知, 对于超过 48 小时未和平台互动的用户, 使用"模板消息"通知
             }
         }
 
