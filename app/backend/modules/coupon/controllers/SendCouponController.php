@@ -5,7 +5,6 @@ namespace app\backend\modules\coupon\controllers;
 use app\common\components\BaseController;
 use app\backend\modules\member\models\MemberLevel;
 use app\backend\modules\member\models\MemberGroup;
-use app\common\exceptions\ShopException;
 use app\common\models\MemberCoupon;
 use app\common\models\McMappingFans;
 use app\common\models\Member;
@@ -89,34 +88,28 @@ class SendCouponController extends BaseController
 
             //获取发放的数量
             $sendTotal = \YunShop::request()->send_total;
-            if (!$couponModel->status) {
-                throw new ShopException('优惠券已下架,请先上架改优惠券');
-            }
 
             if (empty($memberIds)) {
-                throw new ShopException('该发放类型下还没有用户');
+                $this->error('该发放类型下还没有用户');
             } elseif ($sendTotal < 1) {
-                throw new ShopException('发放数量必须为整数, 而且不能小于 1');
+                $this->error('发放数量必须为整数, 而且不能小于 1');
             } elseif (isset($patternMatch) && !$patternMatch) {
-                throw new ShopException('Member ID 填写不正确, 请重新设置');
-            }
-            //验证剩余数量
-            if ($couponModel->total !=-1 && count($memberIds) * $sendTotal > $couponModel->total) {
-                throw new ShopException("优惠券剩余数量不足(库存{$couponModel->total}张,准备发放" . count($memberIds) * $sendTotal . "张)");
-            }
-
-            //发放优惠券
-            $responseData = [
-                'title' => htmlspecialchars_decode($couponModel->resp_title),
-                'image' => tomedia($couponModel->resp_thumb),
-                'description' => $couponModel->resp_desc ? htmlspecialchars_decode($couponModel->resp_desc) : '亲爱的 [nickname], 你获得了 1 张 "' . $couponModel->name . '" 优惠券',
-                'url' => $couponModel->resp_url ?: yzAppFullUrl('home'),
-            ];
-            $res = $this->sendCoupon($couponModel, $memberIds, $sendTotal, $responseData);
-            if ($res) {
-                return $this->message('手动发送优惠券成功');
+                $this->error('Member ID 填写不正确, 请重新设置');
             } else {
-                return $this->message('有部分优惠券未能发送, 请检查数据库', '', 'error');
+
+                //发放优惠券
+                $responseData = [
+                    'title' => htmlspecialchars_decode($couponModel->resp_title),
+                    'image' => tomedia($couponModel->resp_thumb),
+                    'description' => $couponModel->resp_desc ? htmlspecialchars_decode($couponModel->resp_desc) : '亲爱的 [nickname], 你获得了 1 张 "' . $couponModel->name . '" 优惠券',
+                    'url' => $couponModel->resp_url ?: yzAppFullUrl('home'),
+                ];
+                $res = $this->sendCoupon($couponModel, $memberIds, $sendTotal, $responseData);
+                if ($res) {
+                    return $this->message('手动发送优惠券成功');
+                } else {
+                    return $this->message('有部分优惠券未能发送, 请检查数据库', '', 'error');
+                }
             }
         }
 
@@ -136,9 +129,7 @@ class SendCouponController extends BaseController
     //array $members
     public function sendCoupon($couponModel, $memberIds, $sendTotal, $responseData)
     {
-
-        $title = $responseData['title'];
-        $description = $responseData['description'];
+        $messageData = $responseData;
         $data = [
             'uniacid' => \YunShop::app()->uniacid,
             'coupon_id' => $couponModel->id,
@@ -149,7 +140,8 @@ class SendCouponController extends BaseController
 
         foreach ($memberIds as $memberId) {
 
-
+//            //获取Openid
+//            $memberOpenid = McMappingFans::getFansById($memberId)->openid;
 
             for ($i = 0; $i < $sendTotal; $i++) {
                 $memberCoupon = new MemberCoupon;
@@ -159,10 +151,6 @@ class SendCouponController extends BaseController
                 //写入log
                 if ($res) { //发放优惠券成功
                     $log = '手动发放优惠券成功: 管理员( ID 为 ' . $this->adminId . ' )成功发放 ' . $sendTotal . ' 张优惠券( ID为 ' . $couponModel->id . ' )给用户( Member ID 为 ' . $memberId . ' )';
-                    //扣除优惠券数量
-                    if($couponModel->total >0){
-                        $couponModel->total --;
-                    }
                 } else { //发放优惠券失败
                     $log = '手动发放优惠券失败: 管理员( ID 为 ' . $this->adminId . ' )发放优惠券( ID为 ' . $couponModel->id . ' )给用户( Member ID 为 ' . $memberId . ' )时失败!';
                     $this->failedSend[] = $log; //失败时, 记录 todo 最后需要展示出来
@@ -171,22 +159,20 @@ class SendCouponController extends BaseController
                 $this->log($log, $couponModel, $memberId);
             }
 
-            if (!empty($title)) { //没有关注公众号的用户是没有 openid
+            if (!empty($messageData['title'])) { //没有关注公众号的用户是没有 openid
                 $templateId = \Setting::get('coupon_template_id'); //模板消息ID
                 $nickname = Member::getMemberById($memberId)->nickname;
                 $dynamicData = [
                     'nickname' => $nickname,
                     'couponname' => $couponModel->name,
                 ];
-                $messageData['title'] = str_replace('[nickname]', $dynamicData['nickname'], $title);
-                $messageData['description'] = str_replace('[couponname]', $dynamicData['couponname'], $description);
-                $messageData['image'] = $title['image'];
-                $messageData['url'] = $title['url'];
-                
-                Message::message($messageData, $templateId, $memberId); //默认使用微信"客服消息"通知, 对于超过 48 小时未和平台互动的用户, 使用"模板消息"通知
+                $messageData['title'] = self::dynamicMsg($messageData['title'], $dynamicData);
+                $messageData['description'] = self::dynamicMsg($messageData['description'], $dynamicData);
+
+                Message::message( $messageData, $templateId, $memberId); //默认使用微信"客服消息"通知, 对于超过 48 小时未和平台互动的用户, 使用"模板消息"通知
             }
         }
-        $couponModel->save();
+
         if (empty($this->failedSend)) {
             return true;
         } else {
