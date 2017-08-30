@@ -19,37 +19,8 @@ class PointInfoController extends ApiController
         $member_id = \YunShop::app()->getMemberId();
         $type = \YunShop::request()->status;
         $list = PointLog::getPointLogList($member_id, $type)->get();
-        $this->attachedServiceType($list);
         return $this->successJson('成功', [
             'list' => $list
         ]);
-    }
-
-    private function attachedServiceType($list)
-    {
-        if ($list) {
-            foreach ($list as $key => $log) {
-                switch ($log->point_mode) {
-                    case PointService::POINT_MODE_GOODS:
-                        $log->point_mode = PointService::POINT_MODE_GOODS_ATTACHED;
-                        break;
-                    case PointService::POINT_MODE_ORDER:
-                        $log->point_mode = PointService::POINT_MODE_ORDER_ATTACHED;
-                        break;
-                    case PointService::POINT_MODE_POSTER:
-                        $log->point_mode = PointService::POINT_MODE_POSTER_ATTACHED;
-                        break;
-                    case PointService::POINT_MODE_ARTICLE:
-                        $log->point_mode = PointService::POINT_MODE_ARTICLE_ATTACHED;
-                        break;
-                    case PointService::POINT_MODE_ADMIN:
-                        $log->point_mode = PointService::POINT_MODE_ADMIN_ATTACHED;
-                        break;
-                    case PointService::POINT_MODE_BY:
-                        $log->point_mode = PointService::POINT_MODE_BY_ATTACHED;
-                        break;
-                }
-            }
-        }
     }
 }

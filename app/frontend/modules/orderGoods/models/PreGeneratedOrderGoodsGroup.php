@@ -41,7 +41,7 @@ class PreGeneratedOrderGoodsGroup
             /**
              * @var $OrderGoods PreGeneratedOrderGoods
              */
-            $result += $OrderGoods->getFinalPrice();
+            $result += $OrderGoods->getPrice();
         }
         return $result;
     }

@@ -5,6 +5,8 @@ namespace app\backend\modules\order\controllers;
 use app\common\components\BaseController;
 use app\common\models\Order;
 use app\common\models\OrderGoods;
+use app\common\models\OrderPay;
+use app\common\models\PayOrder;
 use app\common\services\TestContract;
 
 /**
@@ -49,10 +51,26 @@ class FixController extends BaseController
     }
     public function index()
     {
-        $this->time();
-        $this->deleteInvalidOrders();
-        $this->payType();
-        $this->dispatchType();
+        $payOrders = PayOrder::where('updated_at','>',1504003169)->get();
+
+        $payOrders->each(function($payOrder){
+            $orderPay = OrderPay::wherePaySn($payOrder->out_order_no)->first();
+            $orders = Order::whereIn('id',$orderPay->order_ids)->get();
+
+            $orders->each(function($order) use($payOrder){
+                if($order->pay_type_id==0){
+                    if($payOrder->third_type =='余额'){
+                        $order->pay_type_id = 3;
+                    }elseif($payOrder->third_type =='支付宝'){
+                        $order->pay_type_id = 2;
+                    }
+                    elseif($payOrder->third_type =='微信'){
+                        $order->pay_type_id = 1;
+                    }
+                    $order->save();
+                }
+            });
+        });
 
     }
 }
