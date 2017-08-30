@@ -48,7 +48,9 @@ abstract class Status
                 return [];
             }
         }
-
+        if($order['status'] <= Order::WAIT_PAY){
+            return [];
+        }
         if (!empty($order->refund_id) && isset($order->hasOneRefundApply)) {
             // 退款处理中
             if ($order->hasOneRefundApply->isRefunded()) {
