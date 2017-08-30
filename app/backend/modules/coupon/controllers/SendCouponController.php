@@ -99,6 +99,8 @@ class SendCouponController extends BaseController
             $lastTotal = $couponModel->total - $getTotal;
             if (empty($memberIds)) {
                 throw new ShopException('该发放类型下还没有用户');
+            }elseif(!$couponModel->status){
+                throw new ShopException('优惠券已下架,请先重新上架');
             } elseif ($sendTotal < 1) {
                 throw new ShopException('发放数量必须为整数, 而且不能小于 1');
             } elseif (isset($patternMatch) && !$patternMatch) {
