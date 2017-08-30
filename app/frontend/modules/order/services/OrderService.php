@@ -18,6 +18,7 @@ use app\common\models\Order;
 use app\common\models\order\OrderGoodsChangePriceLog;
 use \app\frontend\models\MemberCart;
 use app\frontend\modules\member\services\MemberService;
+use app\frontend\modules\order\models\PreGeneratedOrder;
 use app\frontend\modules\order\services\behavior\OrderCancelPay;
 use app\frontend\modules\order\services\behavior\OrderCancelSend;
 use app\frontend\modules\order\services\behavior\OrderChangePrice;
@@ -139,6 +140,9 @@ class OrderService
 
         event(new OnPreGenerateOrderCreatingEvent($order));
         $order->setOrderGoods($orderGoodsArr);
+        /**
+         * @var PreGeneratedOrder $order
+         */
         $order->_init();
         return $order;
     }
