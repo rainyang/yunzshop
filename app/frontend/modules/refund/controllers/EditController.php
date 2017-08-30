@@ -50,7 +50,7 @@ class EditController extends ApiController
             'images' => 'sometimes|filled|json',
             'refund_type' => 'required|integer',
             'refund_id' => 'required|integer'
-        ], [
+        ],request(), [
             'images.json' => 'images非json格式'
         ]);
         $refundApply = RefundApply::find($request->input('refund_id'));
