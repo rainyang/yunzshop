@@ -34,4 +34,7 @@ class PayOrder extends BackendModel
             ->where('trade_no', $trade_no)
             ->orderBy('id', 'desc');
     }
+    public function orderPay(){
+        return $this->belongsTo(OrderPay::class);
+    }
 }

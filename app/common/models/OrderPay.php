@@ -14,6 +14,6 @@ class OrderPay extends BaseModel
     public $table = 'yz_order_pay';
     protected $guarded = ['id'];
     protected $search_fields = ['pay_sn'];
+    protected $casts = ['order_ids' => 'json'];
 
-    protected $casts = ['order_ids'=>'json'];
 }

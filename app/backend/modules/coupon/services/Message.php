@@ -2,23 +2,25 @@
 
 namespace app\backend\modules\coupon\services;
 
+use app\common\services\MessageService;
 use EasyWeChat\Message\News;
 use EasyWeChat\Message\Text;
 
 class Message
 {
     //默认使用微信"客服消息"通知, 对于超过 48 小时未和平台互动的用户, 使用"模板消息"通知
-    public static function message($openid, $data, $templateId = null)
+    public static function message($data, $templateId = null, $uid)
     {
-        try{
-            self::sendNotice($openid, $data);
-        }catch(\Exception $e){
-            try{
-                self::sendTemplateNotice($openid, $templateId, $data);
-            }catch(\Exception $e){
-                //
-            }
-        }
+        self::sendTemplateNotice($uid, $templateId, $data);
+//        try {
+//            self::sendNotice($openid, $data);
+//        } catch (\Exception $e) {
+//            try {
+//                self::sendTemplateNotice($uid, $templateId, $data);
+//            } catch (\Exception $e) {
+//                //
+//            }
+//        }
     }
 
     //发送微信"客服消息"
@@ -36,9 +38,9 @@ class Message
     public static function sendNotice($openid, $data)
     {
         $app = app('wechat');
-        if(array_key_exists('content', $data)){
+        if (array_key_exists('content', $data)) {
             $data = new Text($data); //发送文本消息
-        } else{
+        } else {
             $data = new News($data); //发送图文消息
         }
         $app->staff->message($data)->to($openid)->send();
@@ -61,20 +63,21 @@ class Message
                     'url' => 'your_url',
                 ];
      */
-    public static function sendTemplateNotice($openid, $templateId, $data)
+    public static function sendTemplateNotice($uid, $templateId, $data)
     {
-        $app = app('wechat');
-        $notice = $app->notice;
+//        $app = app('wechat');
+//        $notice = $app->notice;
 
         $url = $data['url'];
-        if(array_key_exists('description', $data)){ //如果需要和"客服消息"共用数据
+        if (array_key_exists('description', $data)) { //如果需要和"客服消息"共用数据
             $data = [
-                'first' =>  '您好',
+                'first' => '您好',
                 'keyword1' => $data['title'],
                 'keyword2' => $data['description'],
                 'remark' => '',
             ];
         }
-        $notice->to($openid)->uses($templateId)->andUrl($url)->data($data)->send();
+        MessageService::notice($templateId, $data, $uid);
+//        $notice->to($openid)->uses($templateId)->andUrl($url)->data($data)->send();
     }
 }
