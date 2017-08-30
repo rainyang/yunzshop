@@ -5,6 +5,7 @@ namespace app\backend\modules\order\controllers;
 use app\common\components\BaseController;
 use app\common\models\Order;
 use app\common\models\OrderGoods;
+use app\common\models\PayOrder;
 use app\common\services\TestContract;
 
 /**
@@ -49,10 +50,16 @@ class FixController extends BaseController
     }
     public function index()
     {
-        $this->time();
-        $this->deleteInvalidOrders();
-        $this->payType();
-        $this->dispatchType();
+        $payOrders = PayOrder::with('orderPay')->where('updated_at','>',1504003169)->get();
+        $payOrders->each(function($payOrder){
+            $orders = Order::whereIn('id',$payOrder->order_ids)->get();
+            $orders->each(function($order){
+                if($order->pay_type_id==0){
+                    dd($order->id);
+                    dd($order->order_sn);
+                }
+            });
+        });
 
     }
 }
