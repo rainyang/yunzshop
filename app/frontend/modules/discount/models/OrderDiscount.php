@@ -125,12 +125,13 @@ class OrderDiscount
 
     private function _getCouponAmount()
     {
-
+        // 优先计算折扣类订单优惠券
         $discountCouponService = (new CouponService($this->order, Coupon::COUPON_DISCOUNT));
         $discountPrice = $discountCouponService->getOrderDiscountPrice();
         $discountCouponService->activate();
         //dd($discountPrice);
 
+        // 满减订单优惠券
         $moneyOffCouponService = (new CouponService($this->order, Coupon::COUPON_MONEY_OFF));
         $moneyOffPrice = $moneyOffCouponService->getOrderDiscountPrice();
         //dd($moneyOffPrice);
