@@ -55,7 +55,7 @@
                                 </td>
                                 <td>
                                     <a class='btn btn-default' href="{{ yzWebUrl('member.member-level.update', array('id' => $list->id)) }}" title="编辑／查看"><i class='fa fa-edit'></i></a>
-                                    <a class='btn btn-default' href="{{ yzWebUrl('member.member-level.destroy', array('id' => $list->id)) }}" onclick="return confirm('确认删除此等级吗？');return false;"><i class='fa fa-remove'></i></a>
+                                    <a class='btn btn-default' href="{{ yzWebUrl('member.member-level.destroy', array('id' => $list->id)) }}" onclick="return confirm('删除此等级，所属该等级会员的等级降低为默认等级，确认删除？');return false;"><i class='fa fa-remove'></i></a>
                                 </td>
                             </tr>
                             @endforeach

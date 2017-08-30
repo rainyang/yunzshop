@@ -10,6 +10,7 @@ namespace app\backend\modules\member\controllers;
 
 
 use app\backend\modules\member\models\MemberGroup;
+use app\backend\modules\member\models\MemberShopInfo;
 use app\common\components\BaseController;
 use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
@@ -100,6 +101,7 @@ class MemberGroupController extends BaseController
             $this->error('未找到会员分组或已删除', Url::absoluteWeb('member.member-group.index'));
         }
         if ($groupModel->delete()) {
+            MemberShopInfo::where('group_id',\YunShop::request()->id)->update(['group_id'=>'0']);
             return $this->message("删除会员分组成功。", Url::absoluteWeb('member.member-group.index'));
         } else {
             $this->error("删除会员分组失败");
