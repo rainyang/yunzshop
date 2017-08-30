@@ -129,6 +129,8 @@ class SendCouponController extends BaseController
     //array $members
     public function sendCoupon($couponModel, $memberIds, $sendTotal, $responseData)
     {
+        $title = $responseData['title'];
+        $description = $responseData['description'];
         $data = [
             'uniacid' => \YunShop::app()->uniacid,
             'coupon_id' => $couponModel->id,
@@ -158,16 +160,18 @@ class SendCouponController extends BaseController
                 $this->log($log, $couponModel, $memberId);
             }
 
-            if (!empty($responseData['title'])) { //没有关注公众号的用户是没有 openid
+            if (!empty($title)) { //没有关注公众号的用户是没有 openid
                 $templateId = \Setting::get('coupon_template_id'); //模板消息ID
                 $nickname = Member::getMemberById($memberId)->nickname;
                 $dynamicData = [
                     'nickname' => $nickname,
                     'couponname' => $couponModel->name,
                 ];
-                $responseData['title'] = str_replace('[nickname]', $dynamicData['nickname'], $responseData['title']);
-                $responseData['description'] = str_replace('[couponname]', $dynamicData['couponname'], $responseData['description']);
-                Message::message($responseData, $templateId, $memberId); //默认使用微信"客服消息"通知, 对于超过 48 小时未和平台互动的用户, 使用"模板消息"通知
+                $messageData['title'] = str_replace('[nickname]', $dynamicData['nickname'], $title);
+                $messageData['description'] = str_replace('[couponname]', $dynamicData['couponname'], $description);
+                $messageData['image'] = $title['image'];
+                $messageData['url'] = $title['url'];
+                Message::message($messageData, $templateId, $memberId); //默认使用微信"客服消息"通知, 对于超过 48 小时未和平台互动的用户, 使用"模板消息"通知
             }
         }
 
