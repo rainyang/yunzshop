@@ -26,7 +26,7 @@
                         onclick="popwin = $('#modal-module-menus-coupon').modal();">选择优惠券
                 </button>
                 <button class="btn btn-danger" type="button"
-                        onclick="$('#coupon_id').val('');$('#coupon').val('');">清除选择
+                        onclick="$('#coupon_id').val('0');$('#coupon').val('');">清除选择
                 </button>
             </div>
         </div>
