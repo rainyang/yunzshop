@@ -25,6 +25,7 @@ class LoginController extends ApiController
         if (empty($type) || $type == 'undefined') {
             $type = Client::getType();
         }
+        
         if (!empty($type)) {
                 $member = MemberFactory::create($type);
 
