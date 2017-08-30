@@ -20,10 +20,11 @@
                     <div class="col-sm-9 col-xs-12">
                         <label class='radio-inline sms_type' type="1"><input type='radio' name='sms[type]' value='1' @if  ($set['type'] == 1 || !$set['type']) checked @endif/> 互亿无线</label>
                         <label class='radio-inline sms_type' type="2"><input type='radio' name='sms[type]' value='2' @if  ($set['type'] == 2) checked @endif /> 阿里大鱼</label>
+                        <label class='radio-inline sms_type' type="3"><input type='radio' name='sms[type]' value='3' @if  ($set['type'] == 3) checked @endif /> 阿里云</label>
                     </div>
                 </div>
 
-                <div id="sms1" @if ($set['type'] == 2) class="hide" @endif>
+                <div id="sms1" @if ($set['type'] == 2 || $set['type'] == 3) class="hide" @endif>
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">短信账号</label>
                         <div class="col-sm-9 col-xs-12">
@@ -38,7 +39,7 @@
                     </div>
                 </div>
 
-                <div id="sms2"  @if ($set['type'] == 1 || !$set['type']) class="hide" @endif>
+                <div id="sms2"  @if ($set['type'] == 1 || $set['type'] == 3 || !$set['type']) class="hide" @endif>
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                         <div class="col-sm-9 col-xs-12 alert alert-info">
@@ -96,6 +97,48 @@
                         {{--</div>--}}
                     </div>
                 </div>
+
+                <div id="sms3" @if ($set['type'] == 1 || $set['type'] == 2) class="hide" @endif>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                        <div class="col-sm-9 col-xs-12 alert alert-info">
+                            请到 <a href='https://dayu.aliyun.com' taget="_blank">阿里云</a> 去申请开通,短信模板中必须包含number,请参考默认用户注册验证码设置。
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">AccessKeyId:</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <input type="text" name="sms[aly_appkey]" class="form-control" value="{{ $set['aly_appkey'] }}" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">AccessKeySecret:</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <input type="text" name="sms[aly_secret]" class="form-control" value="{{ $set['aly_secret'] }}" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">短信签名:</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <input type="text" name="sms[aly_signname]"
+                                   class="form-control"
+                                   value="{{ $set['aly_signname'] }}" placeholder="例如: 注册验证" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">注册模板编号:</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <input type="text" name="sms[aly_templateCode]" class="form-control" value="{{ $set['aly_templateCode'] }}"  placeholder="例如: SMS_5057806" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">找回密码模板编号:</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <input type="text" name="sms[aly_templateCodeForget]" class="form-control" value="{{ $set['aly_templateCodeForget'] }}"  placeholder="例如: SMS_5057806" />
+                        </div>
+                    </div>
+                </div>
+
                 <!--
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">用于测试短信接口的手机号</label>
@@ -128,6 +171,7 @@ $(function(){
         var type = $(this).attr('type');
         $('#sms1').hide();
         $('#sms2').hide();
+        $('#sms3').hide();
         $('#sms'+type).removeClass('hide').show();
     });
 });

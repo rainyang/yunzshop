@@ -13,6 +13,7 @@ use app\common\helpers\Url;
 use app\common\models\MemberGroup;
 use app\common\models\MemberLevel;
 use app\common\models\MemberShopInfo;
+use app\common\services\aliyun\AliyunSMS;
 use app\common\services\Session;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\SubMemberModel;
@@ -172,7 +173,7 @@ class RegisterController extends ApiController
             } else {
                 return $this->errorJson($issendsms['SubmitResult']['msg']);
             }
-        } else {
+        } elseif ($sms['type'] == 2) {
             $result = MemberService::send_sms_alidayu($sms, $templateType);
 
             if (count($result['params']) > 1) {
@@ -209,6 +210,26 @@ class RegisterController extends ApiController
             } else {
                 //return $this->errorJson($issendsms->msg . '/' . $issendsms->sub_msg);
             }
+        } elseif ($sms['type'] == 3) {
+            $aly_sms = new AliyunSMS($sms['aly_appkey'], $sms['aly_secret']);
+
+            $response = $aly_sms->sendSms(
+                $sms['aly_signname'], // 短信签名
+                $sms['aly_templateCode'], // 短信模板编号
+                $mobile, // 短信接收者
+                Array(  // 短信模板中字段的值
+                    "number" => $code
+                )
+            );
+
+            if ($response->Code == 'OK' && $response->Message == 'OK') {
+                return $this->successJson();
+            } else {
+                return $this->errorJson($response->Message);
+            }
+
+        } else {
+            return $this->errorJson('未设置短信功能');
         }
     }
 
