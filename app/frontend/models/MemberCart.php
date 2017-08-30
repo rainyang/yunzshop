@@ -16,23 +16,7 @@ class MemberCart extends \app\common\models\MemberCart
     protected $fillable = [];
 
     protected $guarded = ['id'];
-
-
-    /**
-     * Get a list of members shopping cart through member ID
-     *
-     * @param int $memberId
-     *
-     * @return array
-     * */
-    public static function getMemberCartList($memberId)
-    {
-        $cartList = static::carts()->where('member_id', $memberId)
-            ->orderBy('created_at', 'desc')
-            ->get()
-            ->toArray();
-        return $cartList;
-    }
+    protected $hidden = ['member_id', 'uniacid'];
 
     /**
      * 根据购物车id数组,获取购物车记录数组
@@ -52,10 +36,10 @@ class MemberCart extends \app\common\models\MemberCart
 
     public function scopeCarts($query)
     {
-        $query->select('id', 'goods_id', 'total', 'option_id')
+        $query
             ->uniacid()
             ->with(['goods' => function ($query) {
-                return $query->withTrashed()->select('id', 'thumb', 'price', 'market_price', 'title','deleted_at');
+                return $query->withTrashed()->select('id', 'thumb', 'price', 'market_price', 'title', 'deleted_at');
             }])
             ->with(['goodsOption' => function ($query) {
                 return $query->select('id', 'title', 'thumb', 'product_price', 'market_price');
@@ -65,12 +49,7 @@ class MemberCart extends \app\common\models\MemberCart
 
     public function goodsOption()
     {
-        return $this->belongsTo(app('GoodsManager')->make('GoodsOption'),'option_id');
-    }
-
-    public static function getMemberCartById($cartId)
-    {
-        return static::uniacid()->where('id', $cartId)->first();
+        return $this->belongsTo(app('GoodsManager')->make('GoodsOption'), 'option_id');
     }
 
     /**
@@ -115,18 +94,6 @@ class MemberCart extends \app\common\models\MemberCart
             ])
             ->first();
         return $hasGoods ? $hasGoods : false;
-    }
-
-    /**
-     * Remove cart items by Ids
-     *
-     * @param array $cartIds
-     *
-     * @return 1 or 0
-     * */
-    public static function destroyMemberCart($cartIds)
-    {
-        return static::uniacid()->whereIn('id', $cartIds)->delete();
     }
 
     /**
@@ -204,6 +171,7 @@ class MemberCart extends \app\common\models\MemberCart
             throw new AppException('(ID:' . $this->goods_id . ')商品库存不足');
         }
     }
+
     public function goods()
     {
         return $this->belongsTo(app('GoodsManager')->make('Goods'));

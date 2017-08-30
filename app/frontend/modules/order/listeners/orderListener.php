@@ -31,7 +31,9 @@ class orderListener
     public function onPaid(AfterOrderPaidEvent $event)
     {
         $order = Order::find($event->getOrderModel()->id);
-        (new MessageService($order))->paid();
+        if (!$order->isVirtual()) {
+            (new MessageService($order))->paid();
+        }
     }
 
     public function onCanceled(AfterOrderCanceledEvent $event)
@@ -43,7 +45,9 @@ class orderListener
     public function onSent(AfterOrderSentEvent $event)
     {
         $order = Order::find($event->getOrderModel()->id);
-        (new MessageService($order))->sent();
+        if (!$order->isVirtual()) {
+            (new MessageService($order))->sent();
+        }
     }
 
     public function onReceived(AfterOrderReceivedEvent $event)
