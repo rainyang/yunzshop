@@ -43,6 +43,14 @@ class RuleKeyword extends BaseModel
         return empty($id) ? false : $id;
     }
 
+    public static function delKeyword($keyword)
+    {
+        return self::uniacid()
+            ->where('module', static::$module)
+            ->where('content', $keyword)
+            ->delete();
+    }
+
     /*
      * 通过 roleId 修改关键字
      *

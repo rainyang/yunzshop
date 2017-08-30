@@ -33,12 +33,16 @@ class YunShop
     {
         //检测命名空间
         if (!class_exists($namespace)) {
-            throw new NotFoundException(" 不存在命名空间: " . $namespace);
+            throw new NotFoundException(" 不存在类: " . $namespace);
         }
         //检测controller继承
         $controller = new $namespace;
         if (!$controller instanceof \app\common\components\BaseController) {
+            if(config('app.debug')){
+                throw new NotFoundException($controller.' 没有继承\app\common\components\BaseController: ' . $namespace);
+            }
             throw new NotFoundException(" 不存在控制器: " . $namespace);
+
         }
 
         //设置默认方法
@@ -325,8 +329,10 @@ class YunShop
                 $modules[] = $r;
                 $currentRoutes[] = $r;
             } else {
+
                 if ($length !== ($isPlugin ? $k + 3 : $k + 1)) {
-                    throw new NotFoundException('no found route:' . $requestRoute);
+
+                    throw new NotFoundException('路由长度有误:' . $requestRoute);
 
                 }
                 $action = strpos($r, '-') === false ? $r : Str::camel($r);

@@ -23,9 +23,7 @@ class MemberCartService
         if (!is_array($ids)) {
             throw new AppException('购物车ID格式不正确');
         }
-
-
-        return MemberCart::destroyMemberCart($ids);
+        return app('OrderManager')->make('MemberCart')->uniacid()->whereIn('id', $ids)->delete();
     }
 
     public static function newMemberCart($params)

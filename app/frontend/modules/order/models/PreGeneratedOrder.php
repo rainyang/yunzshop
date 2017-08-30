@@ -224,22 +224,9 @@ class PreGeneratedOrder extends Order
         $this->save();
 
         $result = $this->push();
-
-//        if($result === false){
-//            throw new AppException('订单相关信息保存失败');
-//        }
-//        //$orderGoodsModels = $this->createOrderGoods();
-//        dd($this);
-//
-//        $order = Order::create($orderModel);
-//        exit;
-//        $order->push();
-////        foreach ($orderGoodsModels as $orderGoodsModel) {
-////            $orderGoodsModel->order_id = $order->id;
-////            $orderGoodsModel->save();
-////        }
-
-        //$this->id = $order->id;
+        if($result === false){
+            throw new AppException('订单相关信息保存失败');
+        }
         return $this->id;
     }
 

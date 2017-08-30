@@ -24,11 +24,6 @@ class ApiController extends BaseController
     protected $publicAction = [];
     protected $ignoreAction = [];
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     public function preAction()
     {
         parent::preAction();
