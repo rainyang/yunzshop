@@ -95,7 +95,7 @@ class SendCouponController extends BaseController
 
             if (empty($memberIds)) {
                 throw new ShopException('该发放类型下还没有用户');
-            } elseif ($sendTotal < 1 || !is_integer($sendTotal)) {
+            } elseif ($sendTotal < 1) {
                 throw new ShopException('发放数量必须为整数, 而且不能小于 1');
             } elseif (isset($patternMatch) && !$patternMatch) {
                 throw new ShopException('Member ID 填写不正确, 请重新设置');
