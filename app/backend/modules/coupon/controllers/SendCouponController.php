@@ -129,7 +129,7 @@ class SendCouponController extends BaseController
     //array $members
     public function sendCoupon($couponModel, $memberIds, $sendTotal, $responseData)
     {
-        $messageData = $responseData;
+
         $data = [
             'uniacid' => \YunShop::app()->uniacid,
             'coupon_id' => $couponModel->id,
@@ -140,6 +140,7 @@ class SendCouponController extends BaseController
 
         foreach ($memberIds as $memberId) {
 
+            $messageData = $responseData;
 //            //获取Openid
 //            $memberOpenid = McMappingFans::getFansById($memberId)->openid;
 
