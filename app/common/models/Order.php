@@ -13,6 +13,9 @@ use app\backend\modules\order\services\OrderService;
 use app\common\models\order\Address;
 use app\common\models\order\Express;
 use app\common\models\order\OrderChangePriceLog;
+use app\common\models\order\OrderCoupon;
+use app\common\models\order\OrderDeduction;
+use app\common\models\order\OrderDiscount;
 use app\common\models\order\Pay;
 use app\common\models\order\Plugin;
 use app\common\models\order\Remark;
@@ -273,7 +276,7 @@ class Order extends BaseModel
     public function getPayTypeNameAttribute()
     {
 
-        if ( $this->pay_type_id != PayType::CASH_PAY && $this->status == self::WAIT_PAY) {
+        if ($this->pay_type_id != PayType::CASH_PAY && $this->status == self::WAIT_PAY) {
             return PayType::defaultTypeName();
         }
         return $this->hasOnePayType->name;
@@ -387,6 +390,21 @@ class Order extends BaseModel
     public function isVirtual()
     {
         return $this->is_virtual == 1;
+    }
+
+    public function orderDeduction()
+    {
+        return $this->hasMany(OrderDeduction::class);
+    }
+
+    public function orderCoupon()
+    {
+        return $this->hasMany(OrderCoupon::class);
+    }
+
+    public function orderDiscount()
+    {
+        return $this->hasMany(OrderDiscount::class);
     }
 
     public function close()

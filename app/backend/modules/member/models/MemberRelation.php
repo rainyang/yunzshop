@@ -262,8 +262,6 @@ class MemberRelation extends BackendModel
             if ($become_check == 0) {
                 $model->status = 2;
                 $model->agent_time = time();
-
-                self::sendGeneralizeNotify($model->member_id);
                 
                 if ($model->inviter == 0) {
                     \Log::debug(sprintf('会员id-%d无条件会员上线id-%d', $model->member_id, $mid));

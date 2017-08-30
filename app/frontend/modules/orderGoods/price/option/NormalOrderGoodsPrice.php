@@ -2,6 +2,8 @@
 
 namespace app\frontend\modules\orderGoods\price\option;
 
+use app\frontend\models\orderGoods\PreOrderGoodsDiscount;
+
 /**
  * Created by PhpStorm.
  * User: shenyang
@@ -10,54 +12,37 @@ namespace app\frontend\modules\orderGoods\price\option;
  */
 class NormalOrderGoodsPrice extends OrderGoodsPrice
 {
-    /**
-     * 支付价
-     */
-    public function getPayAmount()
-    {
-        // todo 成交价-抵扣金额(均摊)
-    }
 
+    /**
+     * 获取商品的模型,规格继承时复写这个方法
+     * @return mixed
+     */
     protected function goods()
     {
         return $this->orderGoods->goods;
     }
-    protected function aGoodsPrice(){
+
+    /**
+     * 商品的原价,为了规格继承时将属性名替换掉
+     * @return mixed
+     */
+    protected function aGoodsPrice()
+    {
         return $this->goods()->price;
     }
-    /**
-     * 获取计算中的成交价
-     * @return mixed
-     */
-    public function getCalculationPrice()
-    {
-        return $this->goodsPrice;
-    }
 
     /**
-     * @return mixed
-     */
-    public function getFinalPrice()
-    {
-        $fullPrice = isset($this->orderGoods->sale) ? $this->orderGoods->sale->getFullReductionAmount($this->orderGoods->goods->finalPrice * $this->orderGoods->total) : 0;
-
-        return $this->goods()->finalPrice * $this->orderGoods->total - $fullPrice;
-    }
-
-    /**
-     * 成交价
+     * 成交价(计算了间接优惠,原本为了方便分销分红等插件使用,但现在这个价格是动态设置的需要实时计算,所以没意义了)
      * @return mixed
      */
     public function getPrice()
     {
-        $this->goodsPrice = max($this->getFinalPrice(), 0);
-        $this->goodsPrice = max($this->goodsPrice - $this->getFullReductionAmount(), 0);
-        $this->goodsPrice = max($this->goodsPrice - $this->getDiscountAmount(), 0);
-        return $this->goodsPrice;
+        // 商品销售价 - 等级优惠金额  - 单品满减优惠金额
+        return max($this->getGoodsPrice() - $this->getVipDiscountAmount() - $this->getFullReductionAmount(),0);
     }
 
     /**
-     * 优惠金额
+     * 优惠金额(只计算了优惠券的间接优惠金额)
      * @return int
      */
     public function getDiscountAmount()
@@ -66,7 +51,7 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
     }
 
     /**
-     * 销售价
+     * 销售价(商品的原销售价)
      * @return mixed
      */
     public function getGoodsPrice()
@@ -111,12 +96,43 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
      */
     public function getFullReductionAmount()
     {
+        //dd($this->fullReductionAmount);
+        //dd(isset($this->fullReductionAmount));
+
+        if (isset($this->fullReductionAmount)) {
+            //echo 1;
+            return $this->fullReductionAmount;
+        }
         if (!isset($this->orderGoods->sale)) {
+            //echo 2;
             return 0;
         }
-        return $this->orderGoods->sale->getFullReductionAmount($this->goodsPrice);
+        $result = $this->orderGoods->sale->getFullReductionAmount($this->getGoodsPrice());
+
+        $this->fullReductionAmount = $result;
+        $this->setFullReductionOrderGoodsDiscount($result);
+        return $result;
     }
 
+    /**
+     * 定义订单商品的单品满减优惠
+     * @param $amount
+     */
+    private function setFullReductionOrderGoodsDiscount($amount)
+    {
+        $orderGoodsDiscount = new PreOrderGoodsDiscount([
+            'discount_code' => 'fullReduction',
+            'amount' => $amount,
+            'name' => '单品满额减',
+        ]);
+        $orderGoodsDiscount->setOrderGoods($this->orderGoods);
+
+    }
+
+    /**
+     * 商品的会员等级折扣金额
+     * @return mixed
+     */
     public function getVipDiscountAmount()
     {
         return $this->goods()->getVipDiscountAmount() * $this->orderGoods->total;
