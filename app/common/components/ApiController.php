@@ -44,13 +44,6 @@ class ApiController extends BaseController
                 $this->jumpUrl($type, $mid);
             }
         } else {
-            if (isset($_COOKIE['__cookie_client_url']) && !empty($_COOKIE['__cookie_client_url'])) {
-                $redir_url = $_COOKIE['__cookie_client_url'];
-                unset($_COOKIE['__cookie_client_url']);
-
-                redirect($redir_url)->send();
-            }
-
             if (!MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId())) {
                 Session::clear('member_id');
 
