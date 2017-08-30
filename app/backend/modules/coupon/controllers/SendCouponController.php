@@ -108,9 +108,9 @@ class SendCouponController extends BaseController
             } elseif (($couponModel->total != -1) && ($sendTotal * count($memberIds) > $lastTotal)) {
                 // 优惠券有限,并且发放数量超过限制
                 if($lastTotal<0){
-                    throw new ShopException("发放的优惠券数量大于剩余数量(准备发放".$sendTotal * count($memberIds)."张,此前已超发".abs($lastTotal)."张)");
+                    throw new ShopException("剩余优惠券不足(准备发放".$sendTotal * count($memberIds)."张,此前已超发".abs($lastTotal)."张)");
                 }
-                throw new ShopException("发放的优惠券数量大于剩余数量(准备发放".$sendTotal * count($memberIds)."张,剩余{$lastTotal}张)");
+                throw new ShopException("剩余优惠券不足(准备发放".$sendTotal * count($memberIds)."张,剩余{$lastTotal}张)");
             } else {
 
                 //发放优惠券
