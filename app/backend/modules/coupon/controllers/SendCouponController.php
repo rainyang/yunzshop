@@ -147,8 +147,7 @@ class SendCouponController extends BaseController
 
         foreach ($memberIds as $memberId) {
 
-            //获取Openid
-            $memberOpenid = McMappingFans::getFansById($memberId)->openid;
+
 
             for ($i = 0; $i < $sendTotal; $i++) {
                 $memberCoupon = new MemberCoupon;
@@ -169,7 +168,8 @@ class SendCouponController extends BaseController
                 }
                 $this->log($log, $couponModel, $memberId);
             }
-
+            //获取Openid
+            $memberOpenid = McMappingFans::whereUid($memberId)->value('openid');
             if (!empty($responseData['title']) && $memberOpenid) { //没有关注公众号的用户是没有 openid
                 $templateId = \Setting::get('coupon_template_id'); //模板消息ID
                 $nickname = Member::getMemberById($memberId)->nickname;
