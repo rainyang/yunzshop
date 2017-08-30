@@ -56,7 +56,7 @@ class SendCouponController extends BaseController
                 case self::BY_MEMBER_LEVEL: //根据"会员等级"获取 Member IDs
                     $sendLevel = \YunShop::request()->send_level;
                     if(!$sendLevel){
-                        return $this->message('请选择会员组！', '', 'error');
+                        return $this->message('请选择会员等级！', '', 'error');
                     }
                     $res = MemberLevel::getMembersByLevel($sendLevel);
                     if ($res['member']->isEmpty()) {
@@ -68,6 +68,9 @@ class SendCouponController extends BaseController
                     break;
                 case self::BY_MEMBER_GROUP: //根据"会员分组"获取 Member IDs
                     $sendGroup = \YunShop::request()->send_group;
+                    if(!$sendGroup){
+                        return $this->message('请选择会员组！', '', 'error');
+                    }
                     $res = MemberGroup::getMembersByGroupId($sendGroup);
                     if ($res['member']->isEmpty()) {
                         $memberIds = '';
