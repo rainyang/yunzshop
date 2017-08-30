@@ -143,6 +143,8 @@ class SendCouponController extends BaseController
 //            //获取Openid
 //            $memberOpenid = McMappingFans::getFansById($memberId)->openid;
 
+
+            
             for ($i = 0; $i < $sendTotal; $i++) {
                 $memberCoupon = new MemberCoupon;
                 $data['uid'] = $memberId;
