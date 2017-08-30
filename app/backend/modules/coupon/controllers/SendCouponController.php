@@ -177,7 +177,7 @@ class SendCouponController extends BaseController
                 ];
                 $responseData['title'] = self::dynamicMsg($responseData['title'], $dynamicData);
                 $responseData['description'] = self::dynamicMsg($responseData['description'], $dynamicData);
-                Message::message($memberOpenid, $responseData, $templateId); //默认使用微信"客服消息"通知, 对于超过 48 小时未和平台互动的用户, 使用"模板消息"通知
+                Message::message($memberOpenid, $responseData, $templateId, $memberId); //默认使用微信"客服消息"通知, 对于超过 48 小时未和平台互动的用户, 使用"模板消息"通知
             }
         }
         $couponModel->save();
