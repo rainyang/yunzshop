@@ -33,7 +33,7 @@ class MoneyOffCouponPrice extends CouponPrice
     private function getOrderGoodsPrice(PreGeneratedOrderGoods $orderGoods)
     {
         //之前的
-        return $orderGoods->getFinalPrice() - $orderGoods->couponDiscountPrice;
+        return $orderGoods->getPrice() - $orderGoods->couponDiscountPrice;
     }
 
     /**

@@ -261,7 +261,7 @@ class PreGeneratedOrderGoods extends OrderGoods
     }
 
     /**
-     * 销售价格
+     * 销售价格(是指商品扣除了直接优惠之后的价格,在优惠券类中使用)
      */
     public function getFinalPrice()
     {
