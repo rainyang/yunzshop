@@ -93,6 +93,13 @@ class PointService
      */
     public function changePoint()
     {
+        $point = floor($this->point_data['point'] * 100) / 100;
+        if ($this->point_data['point_income_type'] == self::POINT_INCOME_LOSE) {
+            $point = floor(abs($this->point_data['point']) * 100) / 100;
+        }
+        if ($point < 0.01) {
+            return;
+        }
         $this->getAfterPoint();
         Member::updateMemberInfoById(['credit1' => $this->member_point], $this->point_data['member_id']);
         return $this->addLog();
