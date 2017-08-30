@@ -107,6 +107,9 @@ class SendCouponController extends BaseController
                 throw new ShopException('Member ID 填写不正确, 请重新设置');
             } elseif (($couponModel->total != -1) && ($sendTotal * count($memberIds) > $lastTotal)) {
                 // 优惠券有限,并且发放数量超过限制
+                if($lastTotal<0){
+                    throw new ShopException("发放的优惠券数量大于剩余数量(准备发放".$sendTotal * count($memberIds)."张,此前已超发{-$lastTotal}张)");
+                }
                 throw new ShopException("发放的优惠券数量大于剩余数量(准备发放".$sendTotal * count($memberIds)."张,剩余{$lastTotal}张)");
             } else {
 
