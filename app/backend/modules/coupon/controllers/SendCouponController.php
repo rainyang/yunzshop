@@ -5,6 +5,7 @@ namespace app\backend\modules\coupon\controllers;
 use app\common\components\BaseController;
 use app\backend\modules\member\models\MemberLevel;
 use app\backend\modules\member\models\MemberGroup;
+use app\common\exceptions\ShopException;
 use app\common\models\MemberCoupon;
 use app\common\models\McMappingFans;
 use app\common\models\Member;
@@ -55,7 +56,7 @@ class SendCouponController extends BaseController
                     break;
                 case self::BY_MEMBER_LEVEL: //根据"会员等级"获取 Member IDs
                     $sendLevel = \YunShop::request()->send_level;
-                    if(!$sendLevel){
+                    if (!$sendLevel) {
                         return $this->message('请选择会员等级！', '', 'error');
                     }
                     $res = MemberLevel::getMembersByLevel($sendLevel);
@@ -68,7 +69,7 @@ class SendCouponController extends BaseController
                     break;
                 case self::BY_MEMBER_GROUP: //根据"会员分组"获取 Member IDs
                     $sendGroup = \YunShop::request()->send_group;
-                    if(!$sendGroup){
+                    if (!$sendGroup) {
                         return $this->message('请选择会员组！', '', 'error');
                     }
                     $res = MemberGroup::getMembersByGroupId($sendGroup);
@@ -94,13 +95,17 @@ class SendCouponController extends BaseController
 
             //获取发放的数量
             $sendTotal = \YunShop::request()->send_total;
-
+            $getTotal = MemberCoupon::uniacid()->where("coupon_id", $couponModel->id)->count();
+            $lastTotal = $couponModel->total - $getTotal;
             if (empty($memberIds)) {
-                $this->error('该发放类型下还没有用户');
+                throw new ShopException('该发放类型下还没有用户');
             } elseif ($sendTotal < 1) {
-                $this->error('发放数量必须为整数, 而且不能小于 1');
+                throw new ShopException('发放数量必须为整数, 而且不能小于 1');
             } elseif (isset($patternMatch) && !$patternMatch) {
-                $this->error('Member ID 填写不正确, 请重新设置');
+                throw new ShopException('Member ID 填写不正确, 请重新设置');
+            } elseif (($couponModel->total != -1) && ($sendTotal * count($memberIds) > $lastTotal)) {
+                // 优惠券有限,并且发放数量超过限制
+                throw new ShopException("发放的优惠券数量大于剩余数量(准备发放".$sendTotal * count($memberIds)."张,剩余{$lastTotal}张)");
             } else {
 
                 //发放优惠券
@@ -151,7 +156,6 @@ class SendCouponController extends BaseController
 //            $memberOpenid = McMappingFans::getFansById($memberId)->openid;
 
 
-            
             for ($i = 0; $i < $sendTotal; $i++) {
                 $memberCoupon = new MemberCoupon;
                 $data['uid'] = $memberId;
@@ -178,7 +182,7 @@ class SendCouponController extends BaseController
                 $messageData['title'] = self::dynamicMsg($messageData['title'], $dynamicData);
                 $messageData['description'] = self::dynamicMsg($messageData['description'], $dynamicData);
 
-                Message::message( $messageData, $templateId, $memberId); //默认使用微信"客服消息"通知, 对于超过 48 小时未和平台互动的用户, 使用"模板消息"通知
+                Message::message($messageData, $templateId, $memberId); //默认使用微信"客服消息"通知, 对于超过 48 小时未和平台互动的用户, 使用"模板消息"通知
             }
         }
 
