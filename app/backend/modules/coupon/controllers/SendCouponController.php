@@ -136,7 +136,9 @@ class SendCouponController extends BaseController
     //array $members
     public function sendCoupon($couponModel, $memberIds, $sendTotal, $responseData)
     {
-        // 验证日期
+
+        $title = $responseData['title'];
+        $description = $responseData['description'];
         $data = [
             'uniacid' => \YunShop::app()->uniacid,
             'coupon_id' => $couponModel->id,
@@ -168,18 +170,20 @@ class SendCouponController extends BaseController
                 }
                 $this->log($log, $couponModel, $memberId);
             }
-            //获取Openid
-            $memberOpenid = McMappingFans::whereUid($memberId)->value('openid');
-            if (!empty($responseData['title']) && $memberOpenid) { //没有关注公众号的用户是没有 openid
+
+            if (!empty($title)) { //没有关注公众号的用户是没有 openid
                 $templateId = \Setting::get('coupon_template_id'); //模板消息ID
                 $nickname = Member::getMemberById($memberId)->nickname;
                 $dynamicData = [
                     'nickname' => $nickname,
                     'couponname' => $couponModel->name,
                 ];
-                $responseData['title'] = self::dynamicMsg($responseData['title'], $dynamicData);
-                $responseData['description'] = self::dynamicMsg($responseData['description'], $dynamicData);
-                Message::message($memberOpenid, $responseData, $templateId, $memberId); //默认使用微信"客服消息"通知, 对于超过 48 小时未和平台互动的用户, 使用"模板消息"通知
+                $messageData['title'] = str_replace('[nickname]', $dynamicData['nickname'], $title);
+                $messageData['description'] = str_replace('[couponname]', $dynamicData['couponname'], $description);
+                $messageData['image'] = $title['image'];
+                $messageData['url'] = $title['url'];
+                
+                Message::message($messageData, $templateId, $memberId); //默认使用微信"客服消息"通知, 对于超过 48 小时未和平台互动的用户, 使用"模板消息"通知
             }
         }
         $couponModel->save();

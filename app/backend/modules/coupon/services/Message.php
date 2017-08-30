@@ -9,17 +9,18 @@ use EasyWeChat\Message\Text;
 class Message
 {
     //默认使用微信"客服消息"通知, 对于超过 48 小时未和平台互动的用户, 使用"模板消息"通知
-    public static function message($openid, $data, $templateId = null, $uid)
+    public static function message($data, $templateId = null, $uid)
     {
-        try {
-            self::sendNotice($openid, $data);
-        } catch (\Exception $e) {
-            try {
-                self::sendTemplateNotice($uid, $templateId, $data);
-            } catch (\Exception $e) {
-                //
-            }
-        }
+        self::sendTemplateNotice($uid, $templateId, $data);
+//        try {
+//            self::sendNotice($openid, $data);
+//        } catch (\Exception $e) {
+//            try {
+//                self::sendTemplateNotice($uid, $templateId, $data);
+//            } catch (\Exception $e) {
+//                //
+//            }
+//        }
     }
 
     //发送微信"客服消息"
