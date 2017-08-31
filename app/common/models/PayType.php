@@ -21,13 +21,4 @@ class PayType extends BaseModel
     const PAY_CLOUD_WEACHAT = 6;//云收银微信
     const PAY_CLOUD_ALIPAY = 7;//云收银支付宝
     const CASH_PAY = 8;//现金支付
-
-    public static function defaultTypeName()
-    {
-        $result = self::find(PayType::UNPaid);
-        if (isset($result)) {
-            return $result->name;
-        }
-        return '数据有误';
-    }
 }
