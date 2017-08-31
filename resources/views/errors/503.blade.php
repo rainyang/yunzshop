@@ -2,8 +2,9 @@
 <html>
     <head>
         <title>Be right back.</title>
-
-        <link href="https://fonts.googleapis.com/css?family=Lato:100" rel="stylesheet" type="text/css">
+        <!-- Fonts -->
+        <link href="{{static_url('yunshop/resources/css/fonts_one.css')}}">
+        {{--<link href="https://fonts.googleapis.com/css?family=Lato:100" rel="stylesheet" type="text/css">--}}
 
         <style>
             html, body {
