@@ -299,11 +299,17 @@ class WechatPay extends Pay
         if (\YunShop::request()->app_type == 'wechat') {
             self::$attach_type = 'wechat';
 
+            $min_set = \Setting::get('plugin.min_app');
+
+            if (is_null($min_set) || 0 == $min_set['switch']) {
+                throw new AppException('未开启小程序');
+            }
+
             $pay = [
-                'weixin_appid' => 'wx31002d5db09a6719',
-                'weixin_secret' => '217ceb372d5e3296f064593fe2e7c01e',
-                'weixin_mchid' => '1409112302',
-                'weixin_apisecret' => '217ceb372d5e3296f064593fe2e7c01e',
+                'weixin_appid' => $min_set['key'],
+                'weixin_secret' => $min_set['secret'],
+                'weixin_mchid' => $min_set['mchid'],
+                'weixin_apisecret' => $min_set['api_secret'],
                 'weixin_cert' => '',
                 'weixin_key' => ''
             ];

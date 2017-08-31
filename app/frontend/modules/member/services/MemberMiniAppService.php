@@ -27,16 +27,17 @@ class MemberMiniAppService extends MemberService
 
         $uniacid = \YunShop::app()->uniacid;
 
-        if (config('app.debug')) {
-            $appid = 'wx31002d5db09a6719';
-            $secret = '217ceb372d5e3296f064593fe2e7c01e';
+        $min_set = \Setting::get('plugin.min_app');
+
+        if (is_null($min_set) || 0 == $min_set['switch']) {
+            return show_json(0,'未开启小程序');
         }
 
         $para = \YunShop::request();
 
         $data = array(
-            'appid' => $appid,
-            'secret' => $secret,
+            'appid' => $min_set['key'],
+            'secret' => $min_set['secret'],
             'js_code' => $para['code'],
             'grant_type' => 'authorization_code',
         );
@@ -53,7 +54,7 @@ class MemberMiniAppService extends MemberService
         if (!empty($para['info'])) {
             $json_data = json_decode($para['info'], true);
 
-            $pc = new \WXBizDataCrypt($appid, $user_info['session_key']);
+            $pc = new \WXBizDataCrypt($min_set['key'], $user_info['session_key']);
             $errCode = $pc->decryptData($json_data['encryptedData'], $json_data['iv'], $data);
         }
 
