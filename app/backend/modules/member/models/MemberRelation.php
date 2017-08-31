@@ -344,6 +344,8 @@ class MemberRelation extends BackendModel
     public static function checkOrderPay($uid)
     {
         $set = self::getSetInfo()->first();
+        $become_check = intval($set->become_check);
+
         \Log::debug('付款后');
         if (empty($set)) {
             return;
@@ -393,15 +395,20 @@ class MemberRelation extends BackendModel
                 $result = self::checkOrderGoods($set->become_goods_id, $uid);
 
                 if ($result) {
-                    $member->status = 2;
                     $member->is_agent = 1;
-                    $member->agent_time = time();
 
-                    if ($member->inviter == 0) {
-                        $member->inviter = 1;
-                        $member->parent_id = 0;
+                    if ($become_check == 0) {
+                        $member->status = 2;
+                        $member->agent_time = time();
+
+                        if ($member->inviter == 0) {
+                            $member->inviter = 1;
+                            $member->parent_id = 0;
+                        }
+                    } else {
+                        $member->status = 1;
                     }
-
+                    
                     if ($member->save()) {
                         self::setRelationInfo($member);
                     }
@@ -433,8 +440,6 @@ class MemberRelation extends BackendModel
                     }
 
                     if ($can) {
-                        $become_check = intval($set->become_check);
-
                         $member->is_agent = 1;
 
                         if ($become_check == 0) {
@@ -468,6 +473,7 @@ class MemberRelation extends BackendModel
     public static function checkOrderFinish($uid)
     {
         $set = self::getSetInfo()->first();
+        $become_check = intval($set->become_check);
 
         \Log::debug('订单完成');
 
@@ -489,13 +495,18 @@ class MemberRelation extends BackendModel
                 $result = self::checkOrderGoods($set->become_goods_id, $uid);
 
                 if ($result) {
-                    $member->status = 2;
                     $member->is_agent = 1;
-                    $member->agent_time = time();
 
-                    if ($member->inviter == 0) {
-                        $member->inviter = 1;
-                        $member->parent_id = 0;
+                    if ($become_check == 0) {
+                        $member->status = 2;
+                        $member->agent_time = time();
+
+                        if ($member->inviter == 0) {
+                            $member->inviter = 1;
+                            $member->parent_id = 0;
+                        }
+                    } else {
+                        $member->status = 1;
                     }
 
                     if ($member->save()) {
@@ -531,8 +542,6 @@ class MemberRelation extends BackendModel
                     }
 
                     if ($can) {
-                        $become_check = intval($set->become_check);
-
                         $member->is_agent = 1;
 
                         if ($become_check == 0) {
