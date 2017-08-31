@@ -8,7 +8,8 @@
         <title>Laravel</title>
 
         <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="{{static_url('yunshop/resources/css/fonts_one.css?family=Raleway:100,600')}}" type="text/css">
+        {{--<link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">--}}
 
         <!-- Styles -->
         <style>
