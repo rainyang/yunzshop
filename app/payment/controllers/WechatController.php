@@ -95,11 +95,13 @@ class WechatController extends PaymentController
                 $pay = \Setting::get('shop.pay');
 
                 if (isset($this->attach[1]) && $this->attach[1] == 'wechat') {
+                    $min_set = \Setting::get('plugin.min_app');
+
                     $pay = [
-                        'weixin_appid' => 'wx31002d5db09a6719',
-                        'weixin_secret' => '217ceb372d5e3296f064593fe2e7c01e',
-                        'weixin_mchid' => '1409112302',
-                        'weixin_apisecret' => '217ceb372d5e3296f064593fe2e7c01e',
+                        'weixin_appid' => $min_set['key'],
+                        'weixin_secret' => $min_set['secret'],
+                        'weixin_mchid' => $min_set['mchid'],
+                        'weixin_apisecret' => $min_set['api_secret'],
                         'weixin_cert'   => '',
                         'weixin_key'    => ''
                     ];
