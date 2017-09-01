@@ -704,7 +704,12 @@ class AutoUpdate
             return self::NO_UPDATE_AVAILABLE;
         }
 
-        foreach ($this->_updates as $update) {
+        rsort($this->_updates);
+        foreach ($this->_updates as $key => $update) {
+            if ($key > 0) {
+                break;
+            }
+
             $this->_log->debug(sprintf('Update to version "%s"', $update['version']));
             // Check for temp directory
             if (empty($this->_tempDir) || !is_dir($this->_tempDir) || !is_writable($this->_tempDir)) {
