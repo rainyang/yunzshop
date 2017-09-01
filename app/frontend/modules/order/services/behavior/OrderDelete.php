@@ -18,14 +18,10 @@ class OrderDelete extends OrderOperation
     protected $name = '删除';
     protected $past_tense_class_name = 'OrderDeleted';
 
-    /**
-     * 覆盖父类的更新表方法
-     * @return int
-     */
-    protected function _updateTable()
+    public function execute()
     {
-        return $this->order->destroy($this->order->id);
+        $this->is_member_deleted = 1;
+        return $this->save();
     }
-
 
 }
