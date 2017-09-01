@@ -305,6 +305,10 @@ class WechatPay extends Pay
                 throw new AppException('未开启小程序');
             }
 
+            if (empty($min_set['mchid']) || empty($min_set['api_secret']) ) {
+                throw new AppException('未设置支付参数');
+            }
+
             $pay = [
                 'weixin_appid' => $min_set['key'],
                 'weixin_secret' => $min_set['secret'],
