@@ -109,7 +109,7 @@ class Order extends \app\common\models\Order
         parent::boot();
 
         self::addGlobalScope(function(Builder $query){
-            return $query->uid();
+            return $query->uid()->where('is_member_deleted',0);
         });
     }
 }
