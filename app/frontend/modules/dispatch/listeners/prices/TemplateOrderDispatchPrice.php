@@ -18,10 +18,11 @@ class TemplateOrderDispatchPrice
 {
     private $event;
     private $dispatch;
-
+    private $order;
     public function handle(OrderDispatchWasCalculated $event)
     {
         $this->event = $event;
+        $this->order = $event->getOrderModel();
         $price = $event->getOrderModel()->getOrderGoodsModels()->sum(function ($orderGoods) {
             /**
              * @var $orderGoods OrderGoods
@@ -90,7 +91,7 @@ class TemplateOrderDispatchPrice
         $weight = $orderGoods->hasOneGoods->weight * $orderGoods->total;
         $weight_data = unserialize($this->dispatch->weight_data);
         if ($weight_data) {
-            $address = json_decode(\YunShop::request()->address, true);
+            $address = $this->order->orderAddress;
             if ($address['city']) {
                 return $this->areaDispatchPrice($address['city'], $weight_data, $weight);
             } else {
