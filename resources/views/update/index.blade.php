@@ -18,6 +18,8 @@
             <li style="width: 10px"> </li>
             @if(!$list)
                 <li class="active"> ( 您已是最新版本! )</li>
+            @else
+                <li class="active"><div class="btn btn-primary btn-xs updateVersion">更新版本</div></li>
             @endif
         </ul>
     </div>
@@ -44,10 +46,6 @@
 
                 <div class="timeline-body">
                     <div class="form-group">{!! $item['description'] !!}</div>
-                </div>
-
-                <div class="timeline-footer">
-                    <a class="btn btn-primary btn-xs updateVersion">更新版本</a>
                 </div>
             </div>
         </li>
