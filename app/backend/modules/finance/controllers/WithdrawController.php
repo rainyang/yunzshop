@@ -18,6 +18,7 @@ use app\common\facades\Setting;
 use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
 use app\common\models\Income;
+use app\common\services\ExportService;
 use app\common\services\finance\BalanceSet;
 use app\common\services\MessageService;
 use Illuminate\Support\Facades\Config;
@@ -93,13 +94,14 @@ class WithdrawController extends BaseController
             $requestSearch['times']['start'] = time();
             $requestSearch['times']['end'] = time();
         }
+//        echo '<pre>'; print_r(yzWebUrl('finance.withdraw.index&search',['search[status]'=>$requestSearch['status']])); exit;
         return view('finance.withdraw.withdraw-list', [
             'list' => $list,
             'pager' => $pager,
             'search' => $requestSearch,
             'starttime' => $starttime,
             'endtime' => $endtime,
-            'types' => $incomeConfug
+            'types' => $incomeConfug,
         ])->render();
     }
 
@@ -274,6 +276,64 @@ class WithdrawController extends BaseController
             $result = WithdrawService::otherWithdrawSuccess($withdrawId);
             return ['msg' => '提现打款成功!'];
         }
+    }
+
+    public function export()
+    {
+
+        $requestSearch = \YunShop::request()->search;
+        if ($requestSearch) {
+            if ($requestSearch['searchtime']) {
+                if ($requestSearch['times']['start'] != '请选择' && $requestSearch['times']['end'] != '请选择') {
+                    $requestSearch['times']['start'] = strtotime($requestSearch['times']['start']);
+                    $requestSearch['times']['end'] = strtotime($requestSearch['times']['end']);
+                    $starttime = strtotime($requestSearch['times']['start']);
+                    $endtime = strtotime($requestSearch['times']['end']);
+                } else {
+                    $requestSearch['times'] = '';
+                }
+            } else {
+                $requestSearch['times'] = '';
+            }
+            $requestSearch = array_filter($requestSearch, function ($item) {
+                return $item !== '';// && $item !== 0;
+            });
+        }
+        $configs = Config::get('income');
+        foreach ($configs as $config) {
+            $type[] = $config['class'];
+        }
+        $list = Withdraw::getWithdrawList($requestSearch)
+            ->whereIn('type', $type);
+
+        $export_page = request()->export_page ? request()->export_page : 1;
+        $export_model = new ExportService($list, $export_page);
+
+        $file_name = date('Ymdhis', time()) . '提现记录导出';
+
+        $export_data[0] = [
+            '提现编号',
+            '粉丝',
+            '姓名、手机',
+            '收入类型',
+            '提现方式',
+            '申请金额',
+            '申请时间',
+        ];
+        foreach ($export_model->builder_model as $key => $item)
+        {
+            $export_data[$key + 1] = [
+                $item->withdraw_sn,
+                $item->hasOneMember->nickname,
+                $item->hasOneMember->realname.'/'.$item->hasOneMember->mobile,
+                $item->type_name,
+                $item->pay_way_name,
+                $item->amounts,
+                $item->created_at->toDateTimeString(),
+            ];
+        }
+        $export_model->export($file_name, $export_data, \Request::query('route'));
+
     }
 
 
