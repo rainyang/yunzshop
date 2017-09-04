@@ -39,7 +39,6 @@ class Express
         }
         // 添加订单收货地址管理模型,当订单商品计算区域运费时需要使用这个模型
         $event->getOrderModel()->setRelation('orderAddress', $this->getOrderAddress());
-
     }
 
     /**
@@ -136,7 +135,9 @@ class Express
         $order_address->city_id = Address::where('areaname', $member_address->city)->value('id');
         $order_address->district_id = Address::where('areaname', $member_address->district)->value('id');
         $order_address->realname = $member_address->username;
-
+        $order_address->province = $member_address->province;
+        $order_address->city = $member_address->city;
+        $order_address->district = $member_address->district;
         return $order_address;
     }
 
