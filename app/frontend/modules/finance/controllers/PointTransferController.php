@@ -24,19 +24,30 @@ class PointTransferController extends ApiController
 
     private $transferModel;
 
+    /**
+     * 积分转让接口
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function index()
     {
         $result = Setting::get('point.set.point_transfer') ? $this->transferStart() : '未开启积分转让';
         return $result === true ? $this->successJson('转让成功') : $this->errorJson($result);
     }
 
+    /**
+     * 被转让者信息接口
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getRecipientInfo()
     {
         $recipient = $this->getMemberInfo($this->getPostRecipient());
-        return $recipient ? $this->successJson('ok',$recipient) : $this->errorJson('未获取到被转让者');
+        return $recipient ? $this->successJson('ok',$recipient) : $this->errorJson('未获取到被转让者或被转让者不存在');
     }
 
-
+    /**
+     * 转让开始
+     * @return bool|string
+     */
     private function transferStart()
     {
 
@@ -65,7 +76,7 @@ class PointTransferController extends ApiController
         (new PointService($this->getTransferRecordData()))->changePoint();
         (new PointService($this->getRecipientRecordData()))->changePoint();
 
-        $result = $this->transferRecordSave();
+        $result = $this->updateTransferRecordStatus();
         if ($result !== true) {
             DB::rollBack();
             return '转让失败，记录修改出错';
@@ -75,6 +86,10 @@ class PointTransferController extends ApiController
         return true;
     }
 
+    /**
+     * 转让记录保存
+     * @return bool|\Illuminate\Support\MessageBag
+     */
     private function transferRecordSave()
     {
         $this->transferModel = new PointTransfer();
@@ -87,12 +102,20 @@ class PointTransferController extends ApiController
         return $this->transferModel->save();
     }
 
+    /**
+     * 修改转让状态
+     * @return mixed
+     */
     private function updateTransferRecordStatus()
     {
         $this->transferModel->status = ConstService::STATUS_SUCCESS;
         return $this->transferModel->save();
     }
 
+    /**
+     * 转让记录数据
+     * @return array
+     */
     private function getTransferData()
     {
         return [
