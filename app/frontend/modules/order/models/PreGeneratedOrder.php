@@ -63,6 +63,13 @@ class PreGeneratedOrder extends Order
 
     }
 
+    public function __construct(array $attributes = [])
+    {
+        $this->dispatch_type_id = request()->input('dispatch_type_id', 0);
+
+        parent::__construct($attributes);
+    }
+
     public function _init()
     {
         $attributes = $this->getPreAttributes();
@@ -167,8 +174,6 @@ class PreGeneratedOrder extends Order
             'goods_total' => $this->getGoodsTotal(),//订单商品总数
             'order_sn' => OrderService::createOrderSN(),//订单编号
             'create_time' => time(),
-            //配送类获取订单配送方式id
-            'dispatch_type_id' => request()->input('dispatch_type_id',0),
             'uid' => $this->uid,
             'uniacid' => $this->uniacid,
         );
@@ -224,7 +229,7 @@ class PreGeneratedOrder extends Order
         $this->save();
 
         $result = $this->push();
-        if($result === false){
+        if ($result === false) {
             throw new AppException('订单相关信息保存失败');
         }
         return $this->id;
@@ -270,6 +275,7 @@ class PreGeneratedOrder extends Order
         });
         return $result;
     }
+
     /**
      * 统计订单商品原价
      * @return int
