@@ -52,7 +52,7 @@ class PointRollbackService
     {
         return [
             'point_income_type' => PointService::POINT_INCOME_GET,
-            'point_mode'        => PointService::POINT_MODE_TRANSFER,
+            'point_mode'        => PointService::POINT_MODE_ROLLBACK,
             'member_id'         => $this->orderModel->uid,
             'point'             => $point,
             'remark'            => '订单：'.$this->orderModel->order_sn.'关闭，返还积分抵扣积分'.$point,

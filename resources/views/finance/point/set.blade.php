@@ -11,6 +11,18 @@
 
                 <div class='panel-body'>
                     <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">积分转让</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <label class="radio-inline">
+                                <input type="radio" name="set[point_transfer]" value='1' @if ($set['point_transfer'] == 1) checked @endif /> 开启
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="set[point_transfer]" value='0' @if (empty($set['point_transfer'])) checked @endif /> 关闭
+                            </label>
+                            <span class='help-block'>积分转让： 会员之间可以进行积分转让</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">积分抵扣</label>
                         <div class="col-sm-9 col-xs-12">
                             <label class="radio-inline">
