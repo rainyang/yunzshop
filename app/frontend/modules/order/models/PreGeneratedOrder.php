@@ -168,7 +168,7 @@ class PreGeneratedOrder extends Order
             'order_sn' => OrderService::createOrderSN(),//订单编号
             'create_time' => time(),
             //配送类获取订单配送方式id
-            'dispatch_type_id' => 0,
+            'dispatch_type_id' => request()->input('dispatch_type_id',0),
             'uid' => $this->uid,
             'uniacid' => $this->uniacid,
         );
