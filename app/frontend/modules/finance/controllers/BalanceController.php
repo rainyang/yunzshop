@@ -15,6 +15,7 @@ use app\common\models\MemberShopInfo;
 use app\common\services\credit\ConstService;
 use app\common\services\finance\BalanceChange;
 use app\common\services\finance\BalanceNoticeService;
+use app\common\events\payment\RechargeComplatedEvent;
 use app\common\services\PayFactory;
 use app\common\components\ApiController;
 
@@ -48,24 +49,26 @@ class BalanceController extends ApiController
         $memberInfo = $this->getMemberInfo();
         if ($memberInfo) {
             $result = (new BalanceService())->getBalanceSet();
-            $result['member_credit2'] = $memberInfo->credit2;
-
-            $pay = \Setting::get('shop.pay');
-            $result['wechat'] = $pay['weixin'] && $pay['weixin_pay'] ? true : false;
-            $result['alipay'] = $pay['alipay'] ? true : false;
-            //按丁冉要求，增加云付（微信支付2）2017-08-11
-            $result['cloud_pay'] = false;
-            if (\YunShop::plugin()->get('cloud-pay')) {
-
-                $set = \Setting::get('plugin.cloud_pay_set');
-                if (!is_null($set) && 1 == $set['switch'] && \YunShop::request()->type != 7) {
-                    $result['cloud_pay'] = true;
-                }
-            }
+            $result['credit2'] = $memberInfo->credit2;
+            $result['buttons'] = $this->getPayTypeButtons();
+            $result['typename'] = '充值';
             return $this->successJson('获取数据成功', $result);
         }
         return $this->errorJson('未获取到会员数据');
 
+    }
+
+    /**
+     * 获取充值按钮
+     *
+     * @return array
+     */
+    private function getPayTypeButtons()
+    {
+        $event = new RechargeComplatedEvent($data);
+        event($event);
+        $result = $event->getData();
+        return $result;
     }
 
 
@@ -105,20 +108,20 @@ class BalanceController extends ApiController
     public function recharge()
     {
         $result = (new BalanceService())->rechargeSet() ? $this->rechargeStart() : '未开启余额充值';
-
         if ($result === true) {
             $type = intval(\YunShop::request()->pay_type);
-            if ($type == PayFactory::PAY_ALIPAY || $type == PayFactory::PAY_CLOUD_WEACHAT) {
+            if ($type == PayFactory::PAY_WEACHAT) {
+                return  $this->successJson('支付接口对接成功', $this->payOrder());
+            } else {
                 return $this->successJson('支付接口对接成功', ['ordersn' => $this->model->ordersn]);
             }
-            return  $this->successJson('支付接口对接成功', $this->payOrder());
+
         }
-        //return $result === true ? $this->successJson('支付接口对接成功', $this->payOrder()) : $this->errorJson($result);
         return $this->errorJson($result);
     }
 
     //余额充值，如果是支付宝支付需要二次请求 alipay 支付接口
-    public function alipay()
+    public function cloudWechatPay()
     {
         $orderSn = \YunShop::request()->order_sn;
 
@@ -167,7 +170,6 @@ class BalanceController extends ApiController
             return '未获取到会员数据,请重试！';
         }
         $this->model = new BalanceRecharge();
-
         $this->model->fill($this->getRechargeData());
         $validator = $this->model->validator();
         if ($validator->fails()) {
