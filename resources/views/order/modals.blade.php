@@ -303,7 +303,7 @@
 
 <script language="javascript">
     function confirmSend() {
-        var numerictype = /^(0|[1-9]\d*)$/;
+        var numerictype = /^[a-zA-Z0-9]+$/;;
 
         if ($('#express_sn').val() == '' && $('#express_company').val() != '') {
             $('#send_form').val("order.list");
