@@ -19,6 +19,10 @@ class AddEnabledToYzOptions extends Migration
                 if (!Schema::hasColumn('yz_options', 'enabled')) {
                     $table->boolean('enabled')->default(0);
                 }
+                if (!Schema::hasColumn('yz_options', 'uniacid')) {
+                    $table->integer('uniacid')->default(0);
+                }
+                
             });
         }
 
