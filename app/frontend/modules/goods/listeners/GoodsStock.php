@@ -20,7 +20,7 @@ class GoodsStock
         $order = $event->getOrderModel();
         $order->hasManyOrderGoods->map(function ($orderGoods){
 
-            if($orderGoods->belongsToGood->reduce_stock_method != 0){
+            if(!in_array($orderGoods->belongsToGood->reduce_stock_method,[0,2])){
                 return false;
             }
             $this->reduceStock($orderGoods);
@@ -30,7 +30,7 @@ class GoodsStock
 
         $order = $event->getOrderModel();
         $order->hasManyOrderGoods->map(function ($orderGoods){
-            if($orderGoods->belongsToGood->reduce_stock_method != 1){
+            if(!in_array($orderGoods->belongsToGood->reduce_stock_method,[1,2])){
                 return false;
             }
             $this->reduceStock($orderGoods);

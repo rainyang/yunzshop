@@ -32,8 +32,8 @@ class FixController extends BaseController
     public function deleteInvalidOrders()
     {
         Order::doesntHave('hasManyOrderGoods')->delete();
-        Order::where('goods_price','<=',0)->delete();
-        OrderGoods::where('goods_price','<=',0)->delete();
+        Order::where('goods_price', '<=', 0)->delete();
+        OrderGoods::where('goods_price', '<=', 0)->delete();
         echo 'ok';
 
     }
@@ -44,27 +44,29 @@ class FixController extends BaseController
         echo 'ok';
 
     }
-    public function dispatchType(){
+
+    public function dispatchType()
+    {
         Order::whereIn('status', [2, 3])->where('dispatch_type_id', 0)->update(['dispatch_type_id' => 1]);
         echo 'ok';
 
     }
+
     public function index()
     {
-        $payOrders = PayOrder::where('updated_at','>',1504003169)->get();
+        $payOrders = PayOrder::where('updated_at', '>', 0)->get();
 
-        $payOrders->each(function($payOrder){
+        $payOrders->each(function ($payOrder) {
             $orderPay = OrderPay::wherePaySn($payOrder->out_order_no)->first();
-            $orders = Order::whereIn('id',$orderPay->order_ids)->get();
+            $orders = Order::whereIn('id', $orderPay->order_ids)->get();
 
-            $orders->each(function($order) use($payOrder){
-                if($order->pay_type_id==0){
-                    if($payOrder->third_type =='余额'){
+            $orders->each(function ($order) use ($payOrder) {
+                if ($order->pay_type_id == 0 && $order->status > 0) {
+                    if ($payOrder->third_type == '余额') {
                         $order->pay_type_id = 3;
-                    }elseif($payOrder->third_type =='支付宝'){
+                    } elseif ($payOrder->third_type == '支付宝') {
                         $order->pay_type_id = 2;
-                    }
-                    elseif($payOrder->third_type =='微信'){
+                    } elseif ($payOrder->third_type == '微信') {
                         $order->pay_type_id = 1;
                     }
                     $order->save();
