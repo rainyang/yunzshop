@@ -135,6 +135,27 @@
 </div>
 
 
+<div class="tab-pane  active">
+    <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">收入提现免审核</label>
+        <div class="col-sm-9 col-xs-12">
+            <label class='radio-inline'>
+                <input type='radio' name='withdraw[income][no_audit]' value='1' @if($set['no_audit'] == 1) checked @endif />
+                开启
+            </label>
+            <label class='radio-inline'>
+                <input type='radio' name='withdraw[income][no_audit]' value='0' @if($set['no_audit'] == 0) checked @endif />
+                关闭
+            </label>
+            <span class='help-block'>收入提现自动审核、自动打款（自动打款只支持提现到余额、提现到微信两种方式！）</span>
+        </div>
+    </div>
+</div>
+
+
+
+
+
 <script language="javascript">
     $(function () {
         $(":radio[name='withdraw[income][balance]']").click(function () {

@@ -138,6 +138,8 @@ class IncomeController extends ApiController
         return $this->errorJson('未检测到数据!');
     }
 
+
+
     /**
      * @return \Illuminate\Http\JsonResponse
      */
@@ -159,6 +161,21 @@ class IncomeController extends ApiController
         return $this->errorJson('未检测到数据!');
     }
 
+
+    /**
+     * 获取收入提现按钮开关
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getIncomeWithdrawMode()
+    {
+        $incomeWithdrawMode = IncomeService::getIncomeWithdrawMode();
+
+        if ($incomeWithdrawMode) {
+            return $this->successJson('获取数据成功!', $incomeWithdrawMode);
+        }
+
+        return $this->errorJson('未检测到数据!');
+    }
 
     /**
      * 可提现数据接口
@@ -186,73 +203,6 @@ class IncomeController extends ApiController
         return $this->errorJson('未检测到数据!');
     }
 
-    private function getItemData()
-    {
-        $this->getKeySet();
-        $this->getIncomeSet();
-        $this->getIncomeModelSum();
-
-        return [
-            'type'              => $this->item['class'],
-            'key_name'          => $this->item['type'],
-            'type_name'         => $this->item['title'],
-            'income'            => $this->amount,
-            'poundage'          => $this->getItemPoundage(),
-            'poundage_rate'     => $this->getItemPoundageRate(),
-            'servicetax'        => $this->getItemServiceTax(),
-            'servicetax_rate'   => $this->getItemServiceRate(),
-            'roll_out_limit'    => $this->getItemAmountFetter(),
-            'can'               => $this->itemIsCanWithdraw(),
-            'selected'          => $this->itemIsCanWithdraw(),
-            'type_id'           => $this->getItemTypeIds(),
-        ];
-    }
-
-    /**
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function saveWithdraw()
-    {
-        $config = \Config::get('income');
-        $withdrawData = \YunShop::request()->data;
-        if (!$withdrawData) {
-            return $this->errorJson('未检测到数据!');
-        }
-        if (!$this->getMemberAlipaySet() && $withdrawData['total']['pay_way'] == 'alipay') {
-            return $this->errorJson('您未配置支付宝信息，请先修改个人信息中支付宝信息');
-        }
-        $withdrawTotal = $withdrawData['total'];
-        Log::info("POST - Withdraw Total ", $withdrawTotal);
-        Log::info("POST - Withdraw Data ", $withdrawData);
-        /**
-         * 验证数据
-         */
-        foreach ($withdrawData['withdrawal'] as $item) {
-            $set[$item['key_name']] = \Setting::get('withdraw.' . $item['key_name']);
-
-            $incomes = Income::getIncomes()
-                ->where('member_id', \YunShop::app()->getMemberId())
-                ->where('status', '0')
-                ->whereIn('id', explode(',', $item['type_id']))
-                ->get();
-            $set[$item['key_name']]['roll_out_limit'] = $set[$item['key_name']]['roll_out_limit'] ? $set[$item['key_name']]['roll_out_limit'] : 0;
-
-            Log::info("roll_out_limit:");
-            Log::info($set[$item['key_name']]['roll_out_limit']);
-
-            if (bccomp($incomes->sum('amount'), $set[$item['key_name']]['roll_out_limit'], 2) == -1) {
-                return $this->errorJson('提现失败,' . $item['type_name'] . '未达到提现标准!');
-            }
-
-        }
-        Log::info("提现成功:提现成功");
-        $request = static::setWithdraw($withdrawData);
-        if ($request) {
-            return $this->successJson('提现成功!');
-        }
-        return $this->errorJson('提现失败!');
-    }
-
     /**
      * @param $type
      * @param $typeId
@@ -274,6 +224,75 @@ class IncomeController extends ApiController
         }
     }
 
+
+
+    /**
+     * 收入提现接口
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function saveWithdraw()
+    {
+        $withdrawData = \YunShop::request()->data;
+        if (!$withdrawData) {
+            return $this->errorJson('未检测到数据!');
+        }
+
+
+        //如果提现到支付宝，验证会员支付宝配置
+        if (!$this->getMemberAlipaySet() && $withdrawData['total']['pay_way'] == 'alipay') {
+            return $this->errorJson('您未配置支付宝信息，请先修改个人信息中支付宝信息');
+        }
+
+
+        //记录提现数据
+        Log::info("POST - Withdraw Total ", print_r($withdrawData['total'],true));
+        Log::info("POST - Withdraw Data ", print_r($withdrawData,true));
+
+
+
+        //提现数据验证
+        $validator = $this->validatorWithdrawData($withdrawData['withdrawal']);
+        if ($validator !== true) {
+            return $this->errorJson($validator);
+        }
+
+
+
+        Log::info("提现成功:提现成功");
+        $request = static::setWithdraw($withdrawData);
+        if ($request) {
+            return $this->successJson('提现成功!');
+        }
+        return $this->errorJson('提现失败!');
+    }
+
+
+    /**
+     * 提现数据验证
+     * @param array $withdrawData
+     * @return bool|string
+     */
+    private function validatorWithdrawData($withdrawData =[])
+    {
+        foreach ($withdrawData as $item) {
+
+            $set[$item['key_name']] = \Setting::get('withdraw.' . $item['key_name']);
+
+            $incomes = $this->getIncomeModel()->whereIn('id', explode(',', $item['type_id']))->get();
+            $set[$item['key_name']]['roll_out_limit'] = $set[$item['key_name']]['roll_out_limit'] ? $set[$item['key_name']]['roll_out_limit'] : 0;
+
+            Log::info("roll_out_limit:");
+            Log::info($set[$item['key_name']]['roll_out_limit']);
+
+            if (bccomp($incomes->sum('amount'), $set[$item['key_name']]['roll_out_limit'], 2) == -1) {
+                return '提现失败,' . $item['type_name'] . '未达到提现标准!';
+            }
+        }
+        return true;
+    }
+
+
+
     /**
      * @param $type
      * @param $typeId
@@ -285,50 +304,43 @@ class IncomeController extends ApiController
     }
 
     /**
-     * @param $type
-     * @param $typeId
-     */
-//    public function setCommissionOrder($type, $typeId)
-//    {
-//        Log::info('setCommissionOrder');
-//        $request = CommissionOrder::updatedCommissionOrderWithdraw($type, $typeId, '1');
-//    }
-
-    /**
-     * @param $withdrawData
-     * @param $withdrawTotal
+     * 增加数据库事务
+     * @param array $withdrawData
      * @return mixed
      */
-    public function setWithdraw($withdrawData)
+    private function setWithdraw($withdrawData =[])
     {
         return DB::transaction(function () use ($withdrawData) {
             return $this->_setWithdraw($withdrawData);
         });
-
     }
 
-    public function _setWithdraw($withdrawData)
+    /**
+     * @param array $withdrawData
+     * @return mixed
+     */
+    private function _setWithdraw($withdrawData =[])
     {
         foreach ($withdrawData['withdrawal'] as $item) {
             $data[] = [
-                'withdraw_sn' => Pay::setUniacidNo(\YunShop::app()->uniacid),
-                'uniacid' => \YunShop::app()->uniacid,
-                'member_id' => \YunShop::app()->getMemberId(),
-                'type' => $item['type'],
-                'type_name' => $item['type_name'],
-                'type_id' => $item['type_id'],
-                'amounts' => $item['income'],
-                'poundage' => $item['poundage'],
-                'poundage_rate' => $item['poundage_rate'],
-                'actual_amounts' => $item['income'] - $item['poundage'] - $item['servicetax'],
-                'actual_poundage' => $item['poundage'],
-                'servicetax' => $item['servicetax'],
-                'servicetax_rate' => $item['servicetax_rate'],
+                'withdraw_sn'       => Pay::setUniacidNo(\YunShop::app()->uniacid),
+                'uniacid'           => \YunShop::app()->uniacid,
+                'member_id'         => \YunShop::app()->getMemberId(),
+                'type'              => $item['type'],
+                'type_name'         => $item['type_name'],
+                'type_id'           => $item['type_id'],
+                'amounts'           => $item['income'],
+                'poundage'          => $item['poundage'],
+                'poundage_rate'     => $item['poundage_rate'],
+                'actual_amounts'    => $item['income'] - $item['poundage'] - $item['servicetax'],
+                'actual_poundage'   => $item['poundage'],
+                'servicetax'        => $item['servicetax'],
+                'servicetax_rate'   => $item['servicetax_rate'],
                 'actual_servicetax' => $item['servicetax'],
-                'pay_way' => $withdrawData['total']['pay_way'],
-                'status' => 0,
-                'created_at' => time(),
-                'updated_at' => time(),
+                'pay_way'           => $withdrawData['total']['pay_way'],
+                'status'            => 0,
+                'created_at'        => time(),
+                'updated_at'        => time(),
             ];
             static::setIncomeAndOrder($item['type'], $item['type_id']);
         }
@@ -339,19 +351,34 @@ class IncomeController extends ApiController
         return Withdraw::insert($data);
     }
 
-    public function getIncomeWithdrawMode()
+
+
+
+    /**
+     * 可提现数据 item
+     * @return array
+     */
+    private function getItemData()
     {
-        //finance.income.get-income-withdraw-mode
+        $this->getKeySet();
+        $this->getIncomeSet();
+        $this->getIncomeModelSum();
 
-        $incomeWithdrawMode = IncomeService::getIncomeWithdrawMode();
-
-        if ($incomeWithdrawMode) {
-            return $this->successJson('获取数据成功!', $incomeWithdrawMode);
-        }
-
-        return $this->errorJson('未检测到数据!');
+        return [
+            'type'              => $this->item['class'],
+            'key_name'          => $this->item['type'],
+            'type_name'         => $this->item['title'],
+            'income'            => $this->amount,
+            'poundage'          => $this->getItemPoundage(),
+            'poundage_rate'     => $this->getItemPoundageRate(),
+            'servicetax'        => $this->getItemServiceTax(),
+            'servicetax_rate'   => $this->getItemServiceRate(),
+            'roll_out_limit'    => $this->getItemAmountFetter(),
+            'can'               => $this->itemIsCanWithdraw(),
+            'selected'          => $this->itemIsCanWithdraw(),
+            'type_id'           => $this->getItemTypeIds(),
+        ];
     }
-
 
     /**
      * 检测会员支付宝配置，存在信息返回 true，不存在返回 false
@@ -387,7 +414,7 @@ class IncomeController extends ApiController
     {
         if ($this->itemIsCanWithdraw()) {
             $type_ids = '';
-            foreach ($this->getIncomeModel()->get() as $ids) {
+            foreach ($this->getIncomeModel()->where('incometable_type', $this->item['class'])->get() as $ids) {
                 $type_ids .= $ids->id . ",";
             }
             return $type_ids;
@@ -455,7 +482,7 @@ class IncomeController extends ApiController
      */
     private function getIncomeModelSum()
     {
-        return $this->amount = $this->getIncomeModel()->sum('amount');
+        return $this->amount = $this->getIncomeModel()->where('incometable_type', $this->item['class'])->sum('amount');
     }
 
 
@@ -498,8 +525,8 @@ class IncomeController extends ApiController
     {
         return Income::getIncomes()
             ->where('member_id', \YunShop::app()->getMemberId())
-            ->where('status', '0')
-            ->where('incometable_type', $this->item['class']);
+            ->where('status', '0');
+            //->where('incometable_type', $this->item['class']);
     }
 
 
