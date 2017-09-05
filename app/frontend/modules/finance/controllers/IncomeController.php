@@ -27,6 +27,20 @@ use Yunshop\Commission\models\CommissionOrder;
 class IncomeController extends ApiController
 {
     protected $pageSize = 20;
+
+    private $income_set;
+
+    private $key;
+
+    private $key_set;
+
+    private $item;
+
+    private $amount;
+
+
+
+
     /**
      * @return \Illuminate\Http\JsonResponse
      */
@@ -145,77 +159,53 @@ class IncomeController extends ApiController
         return $this->errorJson('未检测到数据!');
     }
 
+
     /**
+     * 可提现数据接口
      * @return \Illuminate\Http\JsonResponse
      */
     public function getWithdraw()
     {
-        $incomeSet = \Setting::get('withdraw.income');
         $config = \Config::get('income');
 
+        $incomeData = [];
         foreach ($config as $key => $item) {
+
             if ($item['type'] == 'balance') {
                 continue;
             }
-            $set[$key] = \Setting::get('withdraw.' . $key);
 
-            $set[$key]['roll_out_limit'] = $set[$key]['roll_out_limit'] ? $set[$key]['roll_out_limit'] : 0;
-            $set[$key]['poundage_rate'] = $set[$key]['poundage_rate'] ? $set[$key]['poundage_rate'] : 0;
+            $this->key = $key;
+            $this->item = $item;
 
-            $incomeModel = Income::getIncomes()->where('member_id', \YunShop::app()->getMemberId());
-            $incomeModel = $incomeModel->where('status', '0');
-
-            $incomeModel = $incomeModel->where('incometable_type', $item['class']);
-            $amount = $incomeModel->sum('amount');
-            $poundage = $incomeModel->sum('amount') / 100 * $set[$key]['poundage_rate'];
-            $poundage = sprintf("%.2f", $poundage);
-            //劳务税
-            $servicetax = 0;
-            if ($incomeSet['servicetax_rate'] && ($item['type'] != 'StoreCashier')) {
-                $servicetax = ($amount - $poundage) / 100 * $incomeSet['servicetax_rate'];
-                $servicetax = sprintf("%.2f", $servicetax);
-            }
-
-            if (($amount > 0) && (bccomp($amount, $set[$key]['roll_out_limit'], 2) != -1)) {
-                $type_id = '';
-                foreach ($incomeModel->get() as $ids) {
-                    $type_id .= $ids->id . ",";
-                }
-                $incomeData[] = [
-                    'type' => $item['class'],
-                    'key_name' => $item['type'],
-                    'type_name' => $item['title'],
-                    'type_id' => rtrim($type_id, ','),
-                    'income' => $incomeModel->sum('amount'),
-                    'poundage' => $poundage,
-                    'poundage_rate' => $set[$key]['poundage_rate'],
-                    'servicetax' => $servicetax,
-                    'servicetax_rate' => $incomeSet['servicetax_rate'] ? $incomeSet['servicetax_rate'] : 0,
-                    'can' => true,
-                    'roll_out_limit' => $set[$key]['roll_out_limit'],
-                    'selected' => true,
-                ];
-            } else {
-                $incomeData[] = [
-                    'type' => $item['class'],
-                    'key_name' => $item['type'],
-                    'type_name' => $item['title'],
-                    'type_id' => '',
-                    'income' => $incomeModel->sum('amount'),
-                    'poundage' => $poundage,
-                    'poundage_rate' => $set[$key]['poundage_rate'],
-                    'servicetax' => $servicetax,
-                    'servicetax_rate' => $incomeSet['servicetax_rate'] ? $incomeSet['servicetax_rate'] : 0,
-                    'can' => false,
-                    'roll_out_limit' => $set[$key]['roll_out_limit'],
-                    'selected' => false,
-                ];
-            }
+            $incomeData[] = $this->getItemData();
         }
         if ($incomeData) {
             return $this->successJson('获取数据成功!', $incomeData);
         }
         return $this->errorJson('未检测到数据!');
+    }
+
+    private function getItemData()
+    {
+        $this->getKeySet();
+        $this->getIncomeSet();
+        $this->getIncomeModelSum();
+
+        return [
+            'type'              => $this->item['class'],
+            'key_name'          => $this->item['type'],
+            'type_name'         => $this->item['title'],
+            'income'            => $this->amount,
+            'poundage'          => $this->getItemPoundage(),
+            'poundage_rate'     => $this->getItemPoundageRate(),
+            'servicetax'        => $this->getItemServiceTax(),
+            'servicetax_rate'   => $this->getItemServiceRate(),
+            'roll_out_limit'    => $this->getItemAmountFetter(),
+            'can'               => $this->itemIsCanWithdraw(),
+            'selected'          => $this->itemIsCanWithdraw(),
+            'type_id'           => $this->getItemTypeIds(),
+        ];
     }
 
     /**
@@ -362,6 +352,11 @@ class IncomeController extends ApiController
         return $this->errorJson('未检测到数据!');
     }
 
+
+    /**
+     * 检测会员支付宝配置，存在信息返回 true，不存在返回 false
+     * @return bool
+     */
     private function getMemberAlipaySet()
     {
         $array = MemberShopInfo::select('alipay','alipayname')->where('member_id',\YunShop::app()->getMemberId())->first();
@@ -369,6 +364,165 @@ class IncomeController extends ApiController
             return true;
         }
         return false;
+    }
+
+
+    /**
+     * 对应 key (提现挂件) 是否可以提现
+     * @return bool
+     */
+    private function itemIsCanWithdraw()
+    {
+        if (bccomp($this->amount,$this->getItemAmountFetter(),2) == -1) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 获取 item 对应 id 集
+     * @return string
+     */
+    private function getItemTypeIds()
+    {
+        if ($this->itemIsCanWithdraw()) {
+            $type_ids = '';
+            foreach ($this->getIncomeModel()->get() as $ids) {
+                $type_ids .= $ids->id . ",";
+            }
+            return $type_ids;
+        }
+        return '';
+    }
+
+
+    /**
+     * 获取对应 item 提现最小额度
+     * @return string
+     */
+    private function getItemAmountFetter()
+    {
+        return $this->judgmentValue($this->key_set['roll_out_limit']);
+    }
+
+
+    /**
+     * 获取 item 对应劳务税比例
+     * @return string
+     */
+    private function getItemServiceRate()
+    {
+        return $this->judgmentValue($this->income_set['servicetax_rate']);
+    }
+
+
+    /**
+     * 获取 item 对应劳务税
+     * @return string
+     */
+    private function getItemServiceTax()
+    {
+        if ($this->getItemServiceRate() && $this->item['type'] != 'StoreCashier') {
+            return $this->poundageMath(($this->amount - $this->getItemPoundage()), $this->getItemServiceRate());
+        }
+        return '0';
+    }
+
+
+    /**
+     * 获取 item 对应手续费比例
+     * @return string
+     */
+    private function getItemPoundageRate()
+    {
+       return $this->judgmentValue($this->key_set['poundage_rate']);
+    }
+
+
+    /**
+     * 获取 item 对应手续费
+     * @return string
+     */
+    private function getItemPoundage()
+    {
+        return $this->poundageMath($this->amount,$this->getItemPoundageRate());
+    }
+
+
+    /**
+     * 获取 key (提现挂件) 可提现金额
+     * @return mixed
+     */
+    private function getIncomeModelSum()
+    {
+        return $this->amount = $this->getIncomeModel()->sum('amount');
+    }
+
+
+    /**
+     * 获取劳务税比例
+     * @return string
+     */
+    private function getServiceRate()
+    {
+        return $this->judgmentValue($this->income_set['servicetax_rate']);
+    }
+
+
+    /**
+     * 获取收入提现全局设置
+     * @return mixed
+     */
+    private function getIncomeSet()
+    {
+        return $this->income_set = \Setting::get('withdraw.income');
+    }
+
+
+    /**
+     * 获取 key (提现挂件) 对应设置
+     * @return mixed
+     */
+    private function getKeySet()
+    {
+        return $this->key_set = \Setting::get('withdraw.' . $this->key);
+    }
+
+
+    /**
+     * 获取对应 class 实例
+     * @param $class
+     * @return mixed
+     */
+    private function getIncomeModel()
+    {
+        return Income::getIncomes()
+            ->where('member_id', \YunShop::app()->getMemberId())
+            ->where('status', '0')
+            ->where('incometable_type', $this->item['class']);
+    }
+
+
+    /**
+     * 手续费计算公式
+     * @param $amount
+     * @param $rate
+     * @return string
+     */
+    private function poundageMath($amount, $rate)
+    {
+        return bcmul(bcdiv($amount,100,4),$rate,2);
+    }
+
+
+    /**
+     * 数据验证（用于手续费、提现额度限制验证），为空返回 0
+     * @param $value
+     * @return string
+     */
+    private function judgmentValue($value)
+    {
+        return $value ? $value : '0';
     }
 
 }
