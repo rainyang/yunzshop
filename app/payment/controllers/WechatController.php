@@ -42,8 +42,9 @@ class WechatController extends PaymentController
 
     public function notifyUrl()
     {
+        \Log::debug('---app notifyUrl---');
         $post = $this->getResponseResult();
-
+        \Log::debug('---app post---', $post);
         $this->log($post);
 
         $verify_result = $this->getSignResult($post);
@@ -55,7 +56,7 @@ class WechatController extends PaymentController
                 'trade_no'     => $post['transaction_id'],
                 'unit'         => 'fen',
                 'pay_type'     => $this->pay_type[$post['trade_type']],
-                'pay_type_id'     => 1
+                'pay_type_id'     => $post['trade_type'] == 'JSAPI' ? 1 : 7
             ];
 
             $this->payResutl($data);
@@ -110,6 +111,7 @@ class WechatController extends PaymentController
                 break;
             case 'APP':
                 $pay = \Setting::get('shop_app.pay');
+                \Log::debug('----app pay---', $pay);
                 break;
         }
 
