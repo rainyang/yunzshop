@@ -8,12 +8,12 @@
 
 namespace app\backend\modules\goods\services;
 
-use app\backend\modules\goods\models\Goods;
 use app\backend\modules\goods\models\GoodsSpecItem;
 use app\backend\modules\goods\models\GoodsParam;
 use app\backend\modules\goods\models\GoodsSpec;
 use app\backend\modules\goods\models\GoodsOption;
 use app\backend\modules\goods\models\Brand;
+use app\common\models\Goods;
 use app\common\models\GoodsCategory;
 use Setting;
 
