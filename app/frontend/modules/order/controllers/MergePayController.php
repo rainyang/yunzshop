@@ -89,7 +89,7 @@ class MergePayController extends ApiController
             throw new AppException('支付流水记录保存失败');
         }
 
-        $data = ['order_pay' => $orderPay, 'member' => $member, 'buttons' => $buttons];
+        $data = ['order_pay' => $orderPay, 'member' => $member, 'buttons' => $buttons, 'typename' => '支付'];
 
         return $this->successJson('成功', $data);
     }

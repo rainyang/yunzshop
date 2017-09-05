@@ -15,6 +15,7 @@ use app\frontend\modules\member\models\McMappingFansModel;
 use app\frontend\modules\member\models\MemberWechatModel;
 use app\frontend\modules\member\models\MemberUniqueModel;
 use app\frontend\modules\member\models\MemberModel;
+use Crypt;
 
 class MemberAppYdbService extends MemberService
 {
@@ -63,38 +64,66 @@ class MemberAppYdbService extends MemberService
                     }
 
                     return show_json(1, $data);
-                } {
+                } else  {
                     return show_json(6, "手机号或密码错误");
                 }
             } else {
                 return show_json(6, "手机号或密码错误");
             }
         } else {
-            $set = \Setting::get('shop_app.pay');
-            $appid = $set['appid'];
-            $secret = $set['secret'];
-
             $para = \YunShop::request();
-            if (empty($para['openid'])) {
-                return show_json(0, array('msg' => '请求错误'));
+            if ($para['openid'] && $para['token']) {
+                $this->app_get_userinfo($para['token'], $para['openid']);
+            } elseif ($para['openid']) {
+                $this->redirect_link($para['openid']);
             }
-            $member = MemberWechatModel::getUserInfo($para['openid']);
-            if (!empty($member) && $_GET) {
+
+            if ($para['apptoken']) {
+                $openid = Crypt::decrypt($para['apptoken']);
+                $member = MemberWechatModel::getUserInfo($openid);
+                if (!$member) {
+                    return show_json(3, '登录失败，请重试');
+                }
                 Session::set('member_id', $member['member_id']);
-                $url = Url::absoluteApp('home', ["ssid" => $member['member_id']]);
-                redirect($url)->send();
-                exit();
-            }
-            //通过接口获取用户信息
-            $url = 'https://api.weixin.qq.com/sns/userinfo?access_token=' . $para['token'] . '&openid=' . $para['openid'];
-            $res = @ihttp_get($url);
-            $user_info = json_decode($res['content'], true);
-            if (!empty($user_info) && !empty($user_info['unionid'])) {
-                $this->memberLogin($user_info);
-            } else {
-                \Log::info('云打包获取用户信息错误：' . print_r($res, true));
+                return show_json(1, $member);
             }
         }
+    }
+
+    /**
+     * app获取用户信息并存储
+     *
+     * @param $token
+     * @param $openid
+     */
+    public function app_get_userinfo ($token, $openid) {
+        //通过接口获取用户信息
+        $url = 'https://api.weixin.qq.com/sns/userinfo?access_token=' . $token['token'] . '&openid=' . $openid;
+        $res = @ihttp_get($url);
+        $user_info = json_decode($res['content'], true);
+        if (!empty($user_info) && !empty($user_info['unionid'])) {
+            $this->memberLogin($user_info);
+            exit('success');
+        } else {
+            \Log::info('云打包获取用户信息错误：' . print_r($res, true));
+            exit('fail');
+        }
+    }
+
+    /**
+     * app登录跳转到前端
+     *
+     * @param $openid
+     */
+    public function redirect_link ($openid) {
+        if (!$openid) {
+            $url = Url::absoluteApp('login');
+        } else {
+            $apptoken = Crypt::encrypt($openid);
+            $url = Url::absoluteApp('login', ["apptoken" => $apptoken]);
+        }
+        redirect($url)->send();
+        exit();
     }
 
     public function updateMemberInfo($member_id, $userinfo)

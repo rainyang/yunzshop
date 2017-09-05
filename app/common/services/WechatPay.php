@@ -52,7 +52,6 @@ class WechatPay extends Pay
 
             throw new AppException('没有设定支付参数');
         }
-
         $notify_url = Url::shopUrl('payment/wechat/notifyUrl.php');
         $app     = $this->getEasyWeChatApp($pay, $notify_url);
         $payment = $app->payment;
@@ -61,7 +60,6 @@ class WechatPay extends Pay
         $prepayId = null;
 
         \Log::debug('预下单', $result->toArray());
-
         if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
             $prepayId = $result->prepay_id;
 
@@ -71,7 +69,6 @@ class WechatPay extends Pay
         } else {
             throw new AppException($result->return_msg);
         }
-
         $config = $payment->configForJSSDKPayment($prepayId);
         $config['appId'] = $pay['weixin_appid'];
 

@@ -25,6 +25,11 @@ class LoginController extends ApiController
         if (empty($type) || $type == 'undefined') {
             $type = Client::getType();
         }
+
+        //判断是否开启微信登录
+        if (\YunShop::request()->show_wechat_login) {
+            $this->init_login();
+        }
         
         if (!empty($type)) {
                 $member = MemberFactory::create($type);
@@ -47,5 +52,15 @@ class LoginController extends ApiController
         } else {
             return $this->errorJson('客户端类型错误', ['status'=> 0]);
         }
+    }
+
+    /**
+     * 初始化登录，判断是否开启微信登录
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    private function init_login () {
+        $weixin_oauth = \Setting::get('shop_app.pay.weixin_oauth');
+        return $this->successJson('', ['status'=> 1, 'wetach_login' => $weixin_oauth]);
     }
 }
