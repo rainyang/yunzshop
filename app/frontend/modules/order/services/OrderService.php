@@ -260,11 +260,11 @@ class OrderService
         if ($orders->isEmpty()) {
             throw new AppException('(ID:' . $orderPay->id . ')未找到订单流水号对应订单');
         }
-        DB::transaction(function () use ($orderPay, $orders, $param) {
+        DB::transaction(function () use ($orderPay, $orders) {
             $orderPay->status = 1;
             $orderPay->save();
-            $orders->each(function ($order) use ($param) {
-                if (!OrderService::orderPay(['order_id' => $order->id,'pay_type_id' => $param['pay_type_id']])) {
+            $orders->each(function ($order) {
+                if (!OrderService::orderPay(['order_id' => $order->id])) {
                     throw new AppException('订单状态改变失败,请联系客服');
                 }
             });
@@ -284,7 +284,7 @@ class OrderService
             $orderOperation->pay_type_id = $param['pay_type_id'];
         }
         $result = self::OrderOperate($orderOperation);
-        if ($orderOperation->isVirtual()) {
+        if($orderOperation->isVirtual()){
             self::orderSend(['order_id' => $orderOperation->id]);
             $result = self::orderReceive(['order_id' => $orderOperation->id]);
         }
