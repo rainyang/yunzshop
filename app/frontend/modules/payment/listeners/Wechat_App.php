@@ -16,7 +16,7 @@ class Wechat_App
         if (\Setting::get('shop_app.pay.weixin') && \YunShop::request()->type == 7) {
             $result = [
                 'name' => '微信',
-                'value' => '7'
+                'value' => '9'
             ];
             $event->addData($result);
 

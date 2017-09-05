@@ -18,7 +18,7 @@ class Alipay_App
         if (\Setting::get('shop_app.pay.alipay') && \YunShop::request()->type == 7) {
             $result = [
                 'name' => '支付宝',
-                'value' => '8'
+                'value' => '10'
             ];
             $event->addData($result);
 
