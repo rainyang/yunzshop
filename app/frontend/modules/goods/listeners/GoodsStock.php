@@ -30,9 +30,6 @@ class GoodsStock
 
         $order = $event->getOrderModel();
         $order->hasManyOrderGoods->map(function ($orderGoods){
-            if($orderGoods->belongsToGood->reduce_stock_method != 1){
-                return false;
-            }
             $this->reduceStock($orderGoods);
         });
     }
@@ -41,22 +38,27 @@ class GoodsStock
          * @var $orderGoods OrderGoods
          */
         if($orderGoods->isOption()){
-            $goods_option = $orderGoods->goodsOption;
+            $goodsOption = $orderGoods->goodsOption;
             /**
-             * @var $goods_option GoodsOption
+             * @var $goodsOption GoodsOption
              */
-            $goods_option->reduceStock($orderGoods->total);
             $orderGoods->hasOneGoods->addSales($orderGoods->total);
+            // 不是无限库存 减库存
+            if($orderGoods->belongsToGood->reduce_stock_method != 1){
+                $goodsOption->reduceStock($orderGoods->total);
+            }
             $orderGoods->hasOneGoods->save();
-            return $goods_option->save();
+            return $goodsOption->save();
         }
         /**
          * @var $goods Goods
          */
         $goods = $orderGoods->hasOneGoods;
-
-        $goods->reduceStock($orderGoods->total);
         $goods->addSales($orderGoods->total);
+        // 不是无限库存 减库存
+        if($orderGoods->belongsToGood->reduce_stock_method != 1) {
+            $goods->reduceStock($orderGoods->total);
+        }
 
         return $goods->save();
     }
