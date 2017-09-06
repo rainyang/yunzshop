@@ -108,10 +108,6 @@ class OptionRepository extends Repository
                         'option_value' => $value
                     ];
                 }
-                $pluginData = [
-                    'option_name' => $key,
-                    'option_value' => $value
-                ];
 
                 DB::table('yz_options')
                     ->insert($pluginData);

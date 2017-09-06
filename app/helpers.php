@@ -715,8 +715,9 @@ if (!function_exists('option')) {
             }
             return;
         }
-
-        return $options->get($key, $default, $raw);
+        $optionsData = $options->get();
+        return $optionsData[$key]['option_value'];
+//        return $options->get($key, $default, $raw);
     }
 }
 if (!function_exists('float_greater')) {
