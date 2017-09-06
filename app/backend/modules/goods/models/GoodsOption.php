@@ -35,7 +35,7 @@ class GoodsOption extends \app\common\models\GoodsOption
                 "product_price" => floatVal($optionPost['option_productprice_' . $ids][0]),
                 "cost_price" => floatVal($optionPost['option_costprice_' . $ids][0]),
                 "market_price" => floatVal($optionPost['option_marketprice_' . $ids][0]),
-                "stock" => $optionPost['option_stock_' . $ids][0],
+                "stock" => $optionPost['option_stock_' . $ids][0] ? $optionPost['option_stock_' . $ids][0] : 0,
                 "weight" => floatVal($optionPost['option_weight_' . $ids][0]),
                 "goods_sn" => $optionPost['option_goodssn_' . $ids][0],
                 "product_sn" => $optionPost['option_productsn_' . $ids][0],

@@ -3,6 +3,7 @@
 namespace app\frontend\modules\payment\listeners;
 
 use app\common\events\payment\GetOrderPaymentTypeEvent;
+use app\common\events\payment\RechargeComplatedEvent;
 
 /**
  * Created by PhpStorm.
@@ -16,8 +17,8 @@ class Alipay_App
     {
         if (\Setting::get('shop_app.pay.alipay') && \YunShop::request()->type == 7) {
             $result = [
-                'name' => '支付宝支付',
-                'value' => '8'
+                'name' => '支付宝',
+                'value' => '10'
             ];
             $event->addData($result);
 
@@ -25,10 +26,16 @@ class Alipay_App
         return null;
     }
 
+
     public function subscribe($events)
     {
         $events->listen(
             GetOrderPaymentTypeEvent::class,
+            self::class . '@onGetPaymentTypes'
+        );
+
+        $events->listen(
+            RechargeComplatedEvent::class,
             self::class . '@onGetPaymentTypes'
         );
     }
