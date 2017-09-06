@@ -77,7 +77,7 @@
             <table class="table table-hover">
                 <thead class="navbar-inner">
                 <tr>
-                    <td></td>
+                    <td style="width: 200px;"></td>
                     <th>收入ID</th>
                     <th>收入类型</th>
                     <th>收入金额</th>
@@ -98,6 +98,9 @@
                                 </label>
                                 <label class="radio-inline">
                                     <input type="radio" name="audit[{{$row['id']}}]" value="0"/> 无效
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="audit[{{$row['id']}}]" value="0"/> 驳回
                                 </label>
                             @endif
                             @if($item->status == '1' || $item->status == '2')
