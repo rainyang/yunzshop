@@ -8,12 +8,12 @@
 
 namespace app\backend\modules\goods\services;
 
+use app\backend\modules\goods\models\Goods;
 use app\backend\modules\goods\models\GoodsSpecItem;
 use app\backend\modules\goods\models\GoodsParam;
 use app\backend\modules\goods\models\GoodsSpec;
 use app\backend\modules\goods\models\GoodsOption;
 use app\backend\modules\goods\models\Brand;
-use app\common\models\Goods;
 use app\common\models\GoodsCategory;
 use Setting;
 
@@ -33,7 +33,7 @@ class EditGoodsService
         $this->goods_id = $goods_id;
         $this->request = $request;
         $this->goods_model = Goods::with('hasManyParams')->with('hasManySpecs')->with('hasManyGoodsCategory')->find($goods_id);
-        $this->goods = Goods::find($goods_id);
+        $this->goods = \app\common\models\Goods::find($goods_id);
     }
 
     public function edit()
