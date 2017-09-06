@@ -178,7 +178,7 @@ class IncomeController extends ApiController
     }
 
     /**
-     * 可提现数据接口
+     * 可提现数据接口【完成】
      * @return \Illuminate\Http\JsonResponse
      */
     public function getWithdraw()
@@ -377,6 +377,10 @@ class IncomeController extends ApiController
             'can'               => $this->itemIsCanWithdraw(),
             'selected'          => $this->itemIsCanWithdraw(),
             'type_id'           => $this->getItemTypeIds(),
+            'special_poundage'  => $this->getBalanceSpecialPoundage(),
+            'special_poundage_rate'  => $this->getBalanceSpecialPoundageRate(),
+            'special_service_tax'    => $this->getBalanceSpecialServiceTax(),
+            'special_service_tax_rate' => $this->getBalanceSpecialServiceTaxRate(),
         ];
     }
 
@@ -391,6 +395,56 @@ class IncomeController extends ApiController
             return true;
         }
         return false;
+    }
+
+
+    /**
+     * 提现到余额独立手续费
+     * @return string
+     */
+    private function getBalanceSpecialPoundage()
+    {
+        return $this->poundageMath($this->amount,$this->getBalanceSpecialPoundageRate());
+    }
+
+
+    /**
+     * 提现到余额独立劳务税
+     * @return string
+     */
+    private function getBalanceSpecialServiceTax()
+    {
+        return $this->poundageMath($this->amount,$this->getBalanceSpecialServiceTaxRate());
+    }
+
+
+    /**
+     * 提现到余额独立劳务税比例
+     * @return string
+     */
+    private function getBalanceSpecialPoundageRate()
+    {
+        return $this->getBalanceSpecialSet() ? $this->judgmentValue($this->income_set['special_service_tax']) : '0';
+    }
+
+
+    /**
+     * 提现到余额独立手续费比例
+     * @return string
+     */
+    private function getBalanceSpecialServiceTaxRate()
+    {
+        return $this->getBalanceSpecialSet() ? $this->judgmentValue($this->income_set['special_poundage']) : '0';
+    }
+
+
+    /**
+     * 是否开启提现到余额独立手续费、劳务税
+     * @return bool
+     */
+    private function getBalanceSpecialSet()
+    {
+        return $this->income_set['balance_special'] ? true : false;
     }
 
 
