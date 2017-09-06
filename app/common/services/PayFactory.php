@@ -49,11 +49,11 @@ class PayFactory
     /**
      * APP-微信
      */
-    const PAY_APP_WEACHAT = 7;
+    const PAY_APP_WEACHAT = 9;
     /**
      * APP-支付宝
      */
-    const PAY_APP_ALIPAY = 8;
+    const PAY_APP_ALIPAY = 10;
 
    public static function create($type = null)
     {
