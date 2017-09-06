@@ -22,7 +22,7 @@ class AddEnabledToYzOptions extends Migration
                 if (!Schema::hasColumn('yz_options', 'uniacid')) {
                     $table->integer('uniacid')->default(0);
                 }
-                
+
             });
         }
 
