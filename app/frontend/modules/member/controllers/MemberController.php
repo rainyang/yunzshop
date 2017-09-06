@@ -27,11 +27,12 @@ use app\frontend\modules\member\services\MemberService;
 use app\frontend\models\OrderListModel;
 use EasyWeChat\Foundation\Application;
 use Illuminate\Support\Str;
+use Yunshop\TeamDividend\models\YzMemberModel;
 
 class MemberController extends ApiController
 {
-    protected $publicAction = ['guideFollow'];
-    protected $ignoreAction = ['guideFollow'];
+    protected $publicAction = ['guideFollow', 'wxJsSdkConfig', 'memberFromHXQModule'];
+    protected $ignoreAction = ['guideFollow', 'wxJsSdkConfig', 'memberFromHXQModule'];
 
     /**
      * 获取用户信息
@@ -494,12 +495,14 @@ class MemberController extends ApiController
         $config = $js->config(array('onMenuShareTimeline','onMenuShareAppMessage', 'showOptionMenu'));
         $config = json_decode($config, 1);
 
-        $info = Member::getUserInfos(\YunShop::app()->getMemberId())->first();
+        $info = [];
 
-        if (!empty($info)) {
-            $info = $info->toArray();
-        } else {
-            $info = [];
+        if (\YunShop::app()->getMemberId()) {
+            $info = Member::getUserInfos(\YunShop::app()->getMemberId())->first();
+
+            if (!empty($info)) {
+                $info = $info->toArray();
+            }
         }
 
         $share = \Setting::get('shop.share');
@@ -741,6 +744,31 @@ class MemberController extends ApiController
         Session::clear('member_id');
 
         redirect(Url::absoluteApp('home'))->send();
+    }
+
+    public function memberFromHXQModule()
+    {
+        $uniacid  = \YunShop::app()->uniacid;
+        $member_id = \YunShop::request()->uid;
+
+        if (!empty($member_id)) {
+            $member_shop_info_model = MemberShopInfo::getMemberShopInfo($member_id);
+
+            if (is_null($member_shop_info_model)) {
+                (new MemberService)->addSubMemberInfo($uniacid, (int)$member_id);
+            }
+
+            $mid = \YunShop::request()->mid?:0;
+
+            Member::createRealtion($member_id, $mid);
+
+            \Log::debug('------HXQModule---------'.$member_id);
+            \Log::debug('------HXQModule---------'.$mid);
+
+            return json_encode(['status'=>1, 'result'=>'ok']);
+        }
+
+        return json_encode(['status'=>0, 'result'=>'uid为空']);
     }
 
 }

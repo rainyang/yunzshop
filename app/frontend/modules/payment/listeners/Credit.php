@@ -14,7 +14,7 @@ class Credit
     {
         if (\Setting::get('shop.pay.credit')) {
             $result = [
-                'name' => '余额支付',
+                'name' => '余额',
                 'value' => '3'
             ];
             $event->addData($result);

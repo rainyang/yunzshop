@@ -2,7 +2,7 @@
 namespace app\frontend\modules\payment\listeners;
 
 use app\common\events\payment\GetOrderPaymentTypeEvent;
-
+use app\common\events\payment\RechargeComplatedEvent;
 /**
  * Created by PhpStorm.
  * Author: 芸众商城 www.yunzshop.com
@@ -15,8 +15,8 @@ class Wechat_App
     {
         if (\Setting::get('shop_app.pay.weixin') && \YunShop::request()->type == 7) {
             $result = [
-                'name' => '微信支付',
-                'value' => '7'
+                'name' => '微信',
+                'value' => '9'
             ];
             $event->addData($result);
 
@@ -28,6 +28,10 @@ class Wechat_App
     {
         $events->listen(
             GetOrderPaymentTypeEvent::class,
+            self::class . '@onGetPaymentTypes'
+        );
+        $events->listen(
+            RechargeComplatedEvent::class,
             self::class . '@onGetPaymentTypes'
         );
     }
