@@ -100,7 +100,7 @@
                                     <input type="radio" name="audit[{{$row['id']}}]" value="0"/> 无效
                                 </label>
                                 <label class="radio-inline">
-                                    <input type="radio" name="audit[{{$row['id']}}]" value="0"/> 驳回
+                                    <input type="radio" name="audit[{{$row['id']}}]" value="-1"/> 驳回
                                 </label>
                             @endif
                             @if($item->status == '1' || $item->status == '2')
