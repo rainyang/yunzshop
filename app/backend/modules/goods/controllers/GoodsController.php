@@ -258,6 +258,9 @@ class GoodsController extends BaseController
 
         //todo 所有操作去service里进行，供应商共用此方法。
         $goods_service = new EditGoodsService($request->id, \YunShop::request());
+        if (!$goods_service->goods) {
+            return $this->message('未找到商品或已经被删除', '', 'error');
+        }
         $result = $goods_service->edit();
         if ($result['status'] == 1) {
             return $this->message('商品修改成功', Url::absoluteWeb('goods.goods.index'));
@@ -266,10 +269,6 @@ class GoodsController extends BaseController
                 $this->error($result['msg']);
             }
             !session()->has('flash_notification.message') && $this->error('商品修改失败');
-        }
-
-        if (!$goods_service->goods_model) {
-            return $this->message('商品不存在', '', 'error');
         }
 
         //dd($this->lang);
