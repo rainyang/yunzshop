@@ -279,14 +279,22 @@ class OrderService
 
     public static function orderPay(array $param)
     {
+        /**
+         * @var $orderOperation Order
+         */
         $orderOperation = OrderPay::find($param['order_id']);
         if (isset($param['pay_type_id'])) {
             $orderOperation->pay_type_id = $param['pay_type_id'];
         }
         $result = self::OrderOperate($orderOperation);
-        if($orderOperation->isVirtual()){
+        if ($orderOperation->isVirtual()) {
+            // 虚拟物品付款后直接完成
             self::orderSend(['order_id' => $orderOperation->id]);
             $result = self::orderReceive(['order_id' => $orderOperation->id]);
+        }
+        if (!$orderOperation->hasOneDispatchType->needSend()) {
+            // 不需要发货的物品直接改为待收货
+            self::orderSend(['order_id' => $orderOperation->id]);
         }
         return $result;
     }

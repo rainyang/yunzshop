@@ -425,4 +425,9 @@ class Order extends BaseModel
             $builder->hasPluginId();
         });
     }
+
+    public function needSend()
+    {
+        return $this->hasOneDispatchType->needSend();
+    }
 }

@@ -13,5 +13,7 @@ class OrderAddress extends BaseModel
 {
     public $table = 'yz_order_address';
     protected $guarded = ['id'];
-
+    public $province;
+    public $city;
+    public $district;
 }
