@@ -268,6 +268,10 @@ class GoodsController extends BaseController
             !session()->has('flash_notification.message') && $this->error('商品修改失败');
         }
 
+        if (!$goods_service->goods_model) {
+            return $this->message('商品不存在', '', 'error');
+        }
+
         //dd($this->lang);
         return view('goods.goods', [
             'goods' => $goods_service->goods_model,
