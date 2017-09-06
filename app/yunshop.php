@@ -518,7 +518,7 @@ class YunApp extends YunComponent
      * @todo set member id from session
      * @return int
      */
-    public function getMemberId($ssid = 0)
+    public function getMemberId()
     {
         if (config('app.debug')) {
             if (isset($_GET['test_uid'])) {
@@ -526,10 +526,7 @@ class YunApp extends YunComponent
             }
             //return false;
         }
-        if ($ssid > 0) {
-            Session::set('member_id', $ssid);
-            return $ssid;
-        }
+        
         if (Session::get('member_id')) {
             return Session::get('member_id');
         } else {

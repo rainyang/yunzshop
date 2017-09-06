@@ -84,6 +84,15 @@ class GoodsController extends ApiController
                 $specitem['thumb'] = replace_yunshop(tomedia($specitem['thumb']));
             }
         }
+        // todo 商品详情挂件
+        if (\Config::get('goods_detail')) {
+            foreach (\Config::get('goods_detail') as $key_name => $row) {
+                $row_res = $row['class']::$row['function']($id, true);
+                if ($row_res) {
+                    $goodsModel->$key_name = $row_res;
+                }
+            }
+        }
         //return $this->successJson($goodsModel);
         return $this->successJson('成功', $goodsModel);
     }

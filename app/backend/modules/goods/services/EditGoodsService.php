@@ -33,6 +33,7 @@ class EditGoodsService
         $this->goods_id = $goods_id;
         $this->request = $request;
         $this->goods_model = Goods::with('hasManyParams')->with('hasManySpecs')->with('hasManyGoodsCategory')->find($goods_id);
+        $this->goods = \app\common\models\Goods::find($goods_id);
     }
 
     public function edit()
