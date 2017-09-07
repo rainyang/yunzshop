@@ -11,17 +11,39 @@ namespace app\frontend\modules\finance\controllers;
 
 
 use app\common\components\ApiController;
+use app\common\facades\Setting;
+use app\frontend\models\Member;
 
 class PointPageController extends ApiController
 {
+    private $memberModel;
+
+
     public function index()
     {
+        $this->getMemberInfo();
+        if ($this->memberModel) {
+            $result['credit1'] = $this->memberModel->credit1;
+            $result['transfer'] = $this->getTransferStatus();
 
+            return $this->successJson('ok',$result);
+        }
+        return $this->errorJson('未获取到会员信息');
+    }
+
+    private function getTransferStatus()
+    {
+        return Setting::get('point.set.point_transfer') ? true : false;
+    }
+
+    private function getMemberInfo()
+    {
+        return $this->memberModel = Member::select('credit1')->where('uid',$this->getMemberId())->first();
     }
 
     private function getMemberId()
     {
-        return
+        return \YunShop::app()->getMemberId();
     }
 
 }
