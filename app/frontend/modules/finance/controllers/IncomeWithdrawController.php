@@ -214,7 +214,11 @@ class IncomeWithdrawController extends ApiController
         $incomeWithdrawMode = IncomeService::getIncomeWithdrawMode();
 
         if ($incomeWithdrawMode) {
-            return $this->successJson('获取数据成功!', $incomeWithdrawMode);
+            $data = [
+                'buttons' => $incomeWithdrawMode,
+                'setting' => ['balance_special' => $this->getBalanceSpecialSet()]
+            ];
+            return $this->successJson('获取数据成功!', $data);
         }
 
         return $this->errorJson('未检测到数据!');
