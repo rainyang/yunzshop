@@ -2,6 +2,7 @@
 
 namespace app\common\services;
 
+use Illuminate\Support\Facades\DB;
 use Log;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -247,6 +248,20 @@ class Utils
         ];
 
         return $phpFileUploadErrors[$errno];
+    }
+
+    public static function fieldexists($table, $field)
+    {
+        $prefix = DB::getTablePrefix();
+        $tb     = $prefix . $table;
+
+        $res = DB::select("Describe {$tb} {$field}");
+
+        if (!empty($res)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }
