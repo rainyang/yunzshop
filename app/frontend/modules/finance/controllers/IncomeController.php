@@ -81,8 +81,8 @@ class IncomeController extends ApiController
                 ]
             ]
         ];
-        //$result = $this->saveWithdraw($data);
-        //dd($result);
+        $result = $this->saveWithdraw($data);
+        dd($result);
     }
 
     /**
@@ -255,8 +255,9 @@ class IncomeController extends ApiController
      * 收入提现接口
      * @return \Illuminate\Http\JsonResponse
      */
-    public function saveWithdraw()
+    public function saveWithdraw($data)
     {
+        dd($this->isFreeAudit());
         $withdrawData = \YunShop::request()->data;
         //file_put_contents(storage_path('logs/income.log'),print_r($withdrawData,true));
         if (!$withdrawData) {
@@ -295,12 +296,21 @@ class IncomeController extends ApiController
             DB::rollBack();
             return $this->errorJson('提现失败!');
         }
-//dd($result);
+        DB::commit();
+
         //todo 如果开启免审核（提现到微信，提现到余额），直接审核
 
+        if ($this->isFreeAudit()) {
+            
+        }
 
 
         return $this->successJson('提现成功!');
+    }
+
+    private function isFreeAudit()
+    {
+        return Setting::get('withdraw.income.free_audit') ? true : false;
     }
 
 
