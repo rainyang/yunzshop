@@ -122,7 +122,7 @@ class PointTransferController extends ApiController
             'uniacid'       => \YunShop::app()->uniacid,
             'transferor'    => \YunShop::app()->getMemberId(),
             'recipient'     => $this->getPostRecipient(),
-            'value'         => $this->getPostTransferPoint(),
+            'value'         => -$this->getPostTransferPoint(),
             'status'        => ConstService::STATUS_FAILURE,
             'order_sn'      => PointTransfer::createOrderSn('PT')
         ];
@@ -135,7 +135,7 @@ class PointTransferController extends ApiController
             'point_mode'        => PointService::POINT_MODE_TRANSFER,
             'member_id'         => $this->transferModel->transferor,
             'point'             => $this->transferModel->value,
-            'remark'            => '积分转让-转出：' . $this->transferModel->value,
+            'remark'            => '积分转让-转出：' . -$this->transferModel->value,
         ];
     }
     private function getRecipientRecordData()

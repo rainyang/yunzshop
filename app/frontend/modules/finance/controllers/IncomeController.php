@@ -296,7 +296,7 @@ class IncomeController extends ApiController
             DB::rollBack();
             return $this->errorJson('提现失败!');
         }
-        DB::commit();
+
 
         //todo 如果开启免审核（提现到微信，提现到余额），直接审核
 
@@ -305,6 +305,7 @@ class IncomeController extends ApiController
         }
 
 
+        DB::commit();
         return $this->successJson('提现成功!');
     }
 
