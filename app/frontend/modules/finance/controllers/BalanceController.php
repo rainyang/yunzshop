@@ -49,7 +49,7 @@ class BalanceController extends ApiController
         $memberInfo = $this->getMemberInfo();
         if ($memberInfo) {
             $result = (new BalanceService())->getBalanceSet();
-            $result['credit2'] = $memberInfo->credit2;
+            $result['member_credit2'] = $memberInfo->credit2;
             $result['buttons'] = $this->getPayTypeButtons();
             $result['typename'] = '充值';
             return $this->successJson('获取数据成功', $result);
