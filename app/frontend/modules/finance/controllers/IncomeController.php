@@ -225,6 +225,7 @@ class IncomeController extends ApiController
     {
         $config = \Config::get('income');
         $withdrawData = \YunShop::request()->data;
+
         if (!$withdrawData) {
             return $this->errorJson('未检测到数据!');
         }
