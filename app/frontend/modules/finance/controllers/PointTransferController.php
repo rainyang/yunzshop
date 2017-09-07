@@ -134,8 +134,8 @@ class PointTransferController extends ApiController
             'point_income_type' => PointService::POINT_INCOME_LOSE,
             'point_mode'        => PointService::POINT_MODE_TRANSFER,
             'member_id'         => $this->transferModel->transferor,
-            'point'             => $this->transferModel->value,
-            'remark'            => '积分转让-转出：' . $this->transferModel->value,
+            'point'             => -$this->transferModel->value,
+            'remark'            => '积分转让-转出：' . -$this->transferModel->value,
         ];
     }
     private function getRecipientRecordData()
