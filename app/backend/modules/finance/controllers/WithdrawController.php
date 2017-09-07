@@ -114,7 +114,6 @@ class WithdrawController extends BaseController
         if (!$withdrawModel) {
             return $this->message('数据不存在或已被删除!', '', error);
         }
-
         return view('finance.withdraw.withdraw-info', [
             'item' => $withdrawModel,
             'set' => $set,
@@ -151,24 +150,23 @@ class WithdrawController extends BaseController
         if ($withdraw->status != '0') {
             return ['msg' => '审核失败,数据不符合提现规则!'];
         }
-        $withdrawStatus = "1";
+        $withdrawStatus = "-1";
         $actual_amounts = 0;
 
         // 修改 yz_member_income 表
         foreach ($incomeData as $key => $income) {
             if ($income == 1) {
+                $withdrawStatus = "1";
                 $actual_amounts += Income::getIncomeById($key)->get()->sum('amount');
                 Income::updatedIncomePayStatus($key, ['pay_status' => '1']);
 
             } elseif ($income == -1) {
-                Income::updatedIncomePayStatus($key, ['pay_status' => '0']);
+                $withdrawStatus = "1";
+                Income::updatedIncomePayStatus($key, ['pay_status' => '3']);
             } else {
-                $withdrawStatus = "-1";
                 Income::updatedIncomePayStatus($key, ['pay_status' => '-1']);
             }
         }
-        dump($actual_amounts);
-        dd($withdrawStatus);
         $actual_poundage = sprintf("%.2f", $actual_amounts / 100 * $withdraw['poundage_rate']);
         $actual_servicetax = sprintf("%.2f", ($actual_amounts - $actual_poundage) / 100 * $withdraw['servicetax_rate']);
         $updatedData = [
