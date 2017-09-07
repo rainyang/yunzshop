@@ -245,7 +245,7 @@ class IncomeWithdrawController extends ApiController
         }
         if ($incomeData) {
             $data = [
-                'buttons' => $incomeData,
+                'data' => $incomeData,
                 'setting' => ['balance_special' => $this->getBalanceSpecialSet()]
             ];
             return $this->successJson('获取数据成功!', $data);
