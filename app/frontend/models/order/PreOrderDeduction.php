@@ -20,10 +20,10 @@ class PreOrderDeduction extends \app\common\models\order\OrderDeduction
         $this->order = $order;
         $this->uid = $order->uid;
         $order->orderDeductions->push($this);
+
     }
     public function save(array $options = [])
     {
-
         if(!$this->checked){
             return false;
         }
