@@ -19,4 +19,9 @@ class PointPageController extends ApiController
 
     }
 
+    private function getMemberId()
+    {
+        return
+    }
+
 }
