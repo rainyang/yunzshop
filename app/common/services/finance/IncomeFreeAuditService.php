@@ -10,8 +10,9 @@
 namespace app\common\services\finance;
 
 
-use app\common\models\Withdraw;
+use app\backend\modules\finance\services\WithdrawService as Withdraw;
 use app\common\services\credit\ConstService;
+use app\common\services\PayFactory;
 
 class IncomeFreeAuditService
 {
@@ -20,24 +21,19 @@ class IncomeFreeAuditService
     public function incomeFreeAudit($withdraw,$payWay)
     {
         $result = false;
-        $remark = '提现打款-' . $withdraw->type_name . '-金额:' . $withdraw->actual_amounts . '元,' . '手续费:' . $withdraw->actual_poundage;
+        $remark = '提现打款-' . $withdraw->type_name . '-金额:' . $withdraw->actual_amounts . '元,';
 
         if ($payWay == 'balance') {
             $result = $this->balanceWithdrawPay($withdraw, $remark);
-            dd($result);
             \Log::info('MemberId:' . $withdraw->member_id . ', ' . $remark . "打款到余额中!");
         }
         if ($payWay == 'wechat') {
-
+            $result = $this->wechatWithdrawPay($withdraw, $remark);
             \Log::info('MemberId:' . $withdraw->member_id . ', ' . $remark . "微信打款中!");
         }
 
         if ($result) {
-            $withdraw->pay_status = 1;
-            //event(new AfterIncomeWithdrawPayEvent($withdraw));
-            //Withdraw::updatedWithdrawStatus($withdraw->id, ['pay_at' => time()]);
-            //WithdrawService::otherWithdrawSuccess($withdraw->id);
-            return true;
+            return Withdraw::otherWithdrawSuccess($withdraw->id);
         }
         return false;
     }
@@ -57,9 +53,9 @@ class IncomeFreeAuditService
         return (new BalanceChange())->income($data);
     }
 
-    private function wechatWithdrawPay()
+    private function wechatWithdrawPay($withdraw,$remark)
     {
-
+        return  PayFactory::create(1)->doWithdraw($withdraw->member_id, $withdraw->withdraw_sn, $withdraw->actual_amounts, $remark);
     }
 
 

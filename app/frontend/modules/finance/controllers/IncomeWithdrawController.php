@@ -300,8 +300,7 @@ class IncomeWithdrawController extends ApiController
             DB::rollBack();
             return $this->errorJson('提现失败!');
         }
-dd(999);
-        //DB::commit();
+        DB::commit();
         return $this->successJson('提现成功!');
     }
 
@@ -366,8 +365,8 @@ dd(999);
         foreach ($incomes as $key => $item) {
 
             $withdrawModel->fill($item);
-            //直接标为打款状态
-            $withdrawModel->status = 2;
+            //直接标为以审核状态
+            $withdrawModel->status = 1;
             $withdrawModel->pay_at = time();
             $withdrawModel->save();
 
