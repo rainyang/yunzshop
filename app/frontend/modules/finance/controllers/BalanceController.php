@@ -40,7 +40,6 @@ class BalanceController extends ApiController
     private $money;
 
 
-
     /**
      * 会员余额页面信息，（余额设置+会员余额值）
      * @return \Illuminate\Http\JsonResponse
