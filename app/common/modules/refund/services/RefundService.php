@@ -44,6 +44,12 @@ class RefundService
             case PayType::BACKEND:
                 $result = $this->backend();
                 break;
+            case PayType::WechatApp:
+                $result = $this->wechat();
+                break;
+            case PayType::AlipayApp:
+                $result = $this->alipay();
+                break;
             default:
                 $result = false;
                 break;

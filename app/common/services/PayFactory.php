@@ -58,7 +58,6 @@ class PayFactory
    public static function create($type = null)
     {
         $className = null;
-
         switch ($type) {
             case self::PAY_WEACHAT:
                 $className = new WechatPay();
@@ -76,10 +75,10 @@ class PayFactory
                 $className = new \Yunshop\CloudPay\services\CloudPayService();
                 break;
             case self::PAY_APP_WEACHAT:
-                $className = new Wechat_App();
+                $className = new WechatPay();
                 break;
             case self::PAY_APP_ALIPAY:
-                $className = new Alipay_App();
+                $className = new AliPay();
 
                 break;
             default:
