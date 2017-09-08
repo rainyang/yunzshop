@@ -32,6 +32,8 @@ class PreGeneratedOrderGoods extends OrderGoods
         $this->setPriceCalculator();
         // 订单商品优惠使用记录集合
         $this->setRelation('orderGoodsDiscounts', $this->newCollection());
+        // 订单商品优惠使用记录集合
+        $this->setRelation('orderGoodsDeductions', $this->newCollection());
         // 将会员等级折扣总金额保存在订单优惠信息表中
         $preOrderDiscount = new PreOrderGoodsDiscount([
             'discount_code' => 'vipDiscount',
