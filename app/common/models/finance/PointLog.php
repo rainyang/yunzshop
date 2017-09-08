@@ -103,15 +103,6 @@ class PointLog extends BaseModel
             case (9):
                 $mode_attribute = PointService::POINT_MODE_CASHIER_ATTACHED;
                 break;
-            case (13):
-                $mode_attribute = PointService::POINT_MODE_TRANSFER_ATTACHED;
-                break;
-            case (14):
-                $mode_attribute = PointService::OINT_MODE_RECIPIENT_ATTACHED;
-                break;
-            case (15):
-                $mode_attribute = PointService::POINT_MODE_ROLLBACK_ATTACHED;
-                break;
         }
         return $mode_attribute;
     }

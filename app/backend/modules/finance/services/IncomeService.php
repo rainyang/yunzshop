@@ -39,9 +39,6 @@ class IncomeService
             case 2:
                 return '已打款';
                 break;
-            case 3:
-                return '已驳回';
-                break;
         }
     }
 

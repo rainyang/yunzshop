@@ -24,7 +24,7 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
 
     /**
      * 商品的原价,为了规格继承时将属性名替换掉
-     * @return float
+     * @return mixed
      */
     protected function aGoodsPrice()
     {
@@ -33,39 +33,17 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
 
     /**
      * 成交价(计算了间接优惠,原本为了方便分销分红等插件使用,但现在这个价格是动态设置的需要实时计算,所以没意义了)
-     * @return float
+     * @return mixed
      */
     public function getPrice()
     {
         // 商品销售价 - 等级优惠金额  - 单品满减优惠金额
-        return max($this->getGoodsPrice() - $this->getVipDiscountAmount() - $this->getFullReductionAmount(), 0);
-    }
-
-    /**
-     * @return float
-     */
-    public function getPrivatePrice()
-    {
-        //
-        return $this->getPrice() - $this->getDiscountAmount() - $this->getDeductionAmount();
-    }
-
-    /**
-     *
-     * @return float
-     */
-    public function getDeductionAmount()
-    {
-        if (!isset($this->orderGoods->orderGoodsDeductions)) {
-            return 0;
-        }
-
-        return $this->orderGoods->orderGoodsDeductions->sum('amount');
+        return max($this->getGoodsPrice() - $this->getVipDiscountAmount() - $this->getFullReductionAmount(),0);
     }
 
     /**
      * 优惠金额(只计算了优惠券的间接优惠金额)
-     * @return float
+     * @return int
      */
     public function getDiscountAmount()
     {
@@ -74,7 +52,7 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
 
     /**
      * 销售价(商品的原销售价)
-     * @return float
+     * @return mixed
      */
     public function getGoodsPrice()
     {
@@ -83,7 +61,7 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
 
     /**
      * 优惠券价
-     * @return float
+     * @return int
      */
     public function getCouponAmount()
     {
@@ -96,7 +74,7 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
 
     /**
      * 成本价
-     * @return float
+     * @return mixed
      */
     public function getGoodsCostPrice()
     {
@@ -105,7 +83,7 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
 
     /**
      * 市场价
-     * @return float
+     * @return mixed
      */
     public function getGoodsMarketPrice()
     {
@@ -114,7 +92,7 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
 
     /**
      * 单品满减
-     * @return float
+     * @return int
      */
     public function getFullReductionAmount()
     {
@@ -153,7 +131,7 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
 
     /**
      * 商品的会员等级折扣金额
-     * @return float
+     * @return mixed
      */
     public function getVipDiscountAmount()
     {

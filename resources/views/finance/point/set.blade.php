@@ -11,18 +11,6 @@
 
                 <div class='panel-body'>
                     <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">积分转让</label>
-                        <div class="col-sm-9 col-xs-12">
-                            <label class="radio-inline">
-                                <input type="radio" name="set[point_transfer]" value='1' @if ($set['point_transfer'] == 1) checked @endif /> 开启
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio" name="set[point_transfer]" value='0' @if (empty($set['point_transfer'])) checked @endif /> 关闭
-                            </label>
-                            <span class='help-block'>积分转让： 会员之间可以进行积分转让</span>
-                        </div>
-                    </div>
-                    <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">积分抵扣</label>
                         <div class="col-sm-9 col-xs-12">
                             <label class="radio-inline">
@@ -32,18 +20,6 @@
                                 <input type="radio" name="set[point_deduct]" value='0' @if (empty($set['point_deduct'])) checked @endif /> 关闭
                             </label>
                             <span class='help-block'>开启积分抵扣, 商品最多抵扣的数目需要在商品【营销设置】中单独设置, 否则统一设置</span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">积分返还</label>
-                        <div class="col-sm-9 col-xs-12">
-                            <label class="radio-inline">
-                                <input type="radio" name="set[point_rollback]" value='1' @if ($set['point_rollback'] == 1) checked @endif /> 开启
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio" name="set[point_rollback]" value='0' @if (empty($set['point_rollback'])) checked @endif /> 关闭
-                            </label>
-                            <span class='help-block'>开启积分返还： 未付款订单、退款订单关闭订单后，用于抵扣的积分返还到会员积分账户</span>
                         </div>
                     </div>
                     <div class="form-group">

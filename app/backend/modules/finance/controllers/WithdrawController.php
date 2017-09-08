@@ -114,6 +114,7 @@ class WithdrawController extends BaseController
         if (!$withdrawModel) {
             return $this->message('数据不存在或已被删除!', '', error);
         }
+
         return view('finance.withdraw.withdraw-info', [
             'item' => $withdrawModel,
             'set' => $set,
@@ -125,7 +126,6 @@ class WithdrawController extends BaseController
         $resultData = \YunShop::request();
         if (isset($resultData['submit_check'])) {
             //提交审核
-            //dd($resultData);
             $result = $this->submitCheck($resultData['id'], $resultData['audit']);
             return $this->message($result['msg'], yzWebUrl("finance.withdraw.info", ['id' => $resultData['id']]));
 
@@ -152,17 +152,12 @@ class WithdrawController extends BaseController
         }
         $withdrawStatus = "-1";
         $actual_amounts = 0;
-
-        // 修改 yz_member_income 表
         foreach ($incomeData as $key => $income) {
-            if ($income == 1) {
-                $withdrawStatus = "1";
+            if ($income) {
                 $actual_amounts += Income::getIncomeById($key)->get()->sum('amount');
+                $withdrawStatus = "1";
                 Income::updatedIncomePayStatus($key, ['pay_status' => '1']);
 
-            } elseif ($income == -1) {
-                $withdrawStatus = "1";
-                Income::updatedIncomePayStatus($key, ['pay_status' => '3']);
             } else {
                 Income::updatedIncomePayStatus($key, ['pay_status' => '-1']);
             }
