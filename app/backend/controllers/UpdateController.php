@@ -12,13 +12,14 @@ use app\common\components\BaseController;
 use app\common\facades\Option;
 use app\common\facades\Setting;
 use app\common\services\AutoUpdate;
+use Illuminate\Filesystem\Filesystem;
 
 class UpdateController extends BaseController
 {
 
     public function index()
     {
-        $list = [];
+        /*$list = [];
 
         $key = Setting::get('shop.key')['key'];
         $secret = Setting::get('shop.key')['secret'];
@@ -38,10 +39,12 @@ class UpdateController extends BaseController
         }
         krsort($list);
         $version = config('version');
-        return view('update.index', [
+        return view('update.upgrad', [
             'list' => $list,
             'version' => $version,
-        ])->render();
+        ])->render();*/
+
+        return view('update.upgrad')->render();
     }
 
 
@@ -51,6 +54,8 @@ class UpdateController extends BaseController
      */
     public function check()
     {
+        $filesystem = new Filesystem();
+
         $result = ['msg' => '', 'last_version' => '', 'updated' => 0];
         $key = Setting::get('shop.key')['key'];
         $secret = Setting::get('shop.key')['secret'];
@@ -59,26 +64,61 @@ class UpdateController extends BaseController
         }
 
         $update = new AutoUpdate(null, null, 300);
-        $update->setUpdateFile('check_app.json');
+        $update->setUpdateFile('backcheck_app.json');
         $update->setCurrentVersion(config('version'));
-        $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
+
+        if (config('app.debug')) {
+            $update->setUpdateUrl('http://yun-yzshop.com/update'); //Replace with your server update directory
+        } else {
+            $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
+        }
+
         $update->setBasicAuth($key, $secret);
         //$update->setBasicAuth();
 
         //Check for a new update
-        if ($update->checkUpdate() === false) {
-            $result['msg'] = 'Could not check for updates! See log file for details.';
-              response()->json($result)->send();
-            return;
+        $ret = $update->checkBackUpdate();
+
+        if (is_array($ret)) {
+            if (1 == $ret['result']) {
+                $files = [];
+
+                if (!empty($ret['files'])) {
+                    foreach ($ret['files'] as $file) {
+                        $entry = base_path() . '/' . $file['path'];
+                        //如果本地没有此文件或者文件与服务器不一致
+                        if (!is_file($entry) || md5_file($entry) != $file['md5']) {
+                            $files[] = array(
+                                'path' => $file['path'],
+                                'download' => 0
+                            );
+                            $difffile[] = $file['path'];
+                        } else {
+                            $samefile[] = $file['path'];
+                        }
+                    }
+                }
+
+                $tmpdir = storage_path('app/public/tmp/'. date('ymd'));
+                if (!is_dir($tmpdir)) {
+                    $filesystem->makeDirectory($tmpdir, '0777', true);
+                }
+
+                $ret['files'] = $files;
+                file_put_contents($tmpdir . "/file.txt", json_encode($ret));
+
+                $result = [
+                    'result' => 1,
+                    'version' => $ret['version'],
+                    'files' => $ret['files'],
+                    'filecount' => count($files),
+                  //utf8  'log' => str_replace("\r\n", "<br/>", base64_decode($ret['log']))
+                ];
+            }
         }
 
-        if ($update->newVersionAvailable()) {
-            $result['last_version'] = $update->getLatestVersion()->getVersion();
-            $result['updated'] = 1;
-            $result['current_version'] = config('version');
-        }
-         response()->json($result)->send();
-        return;
+        return response()->json($result)->send();
+
     }
 
 
