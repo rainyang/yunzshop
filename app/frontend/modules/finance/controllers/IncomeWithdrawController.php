@@ -14,6 +14,7 @@ use app\common\components\ApiController;
 use app\common\events\finance\AfterIncomeWithdrawEvent;
 use app\common\facades\Setting;
 use app\common\models\Income;
+use app\common\services\finance\IncomeFreeAuditService;
 use app\common\services\finance\IncomeService;
 use app\common\services\Pay;
 use app\common\services\PayFactory;
@@ -54,11 +55,11 @@ class IncomeWithdrawController extends ApiController
                     'type' => 'Yunshop\Commission\models\CommissionOrder',
                     'key_name' => 'commission',
                     'type_name' => '分销佣金',
-                    'type_id' => '6992,6995,6999,7055,7059,7142,7145,7148,7158,7192,7248,7253,7278,7281,7286,7291,7296,7309,7318,7361,7428',
-                    'income' => '1717.01',
-                    'poundage' => '171.70',
+                    'type_id' => '7469',
+                    'income' => '350.00',
+                    'poundage' => '35.00',
                     'poundage_rate' => '10',
-                    'servicetax' => '154.53',
+                    'servicetax' => '31.50',
                     'servicetax_rate' => '10',
                     'can' => '1',
                     'roll_out_limit' => '10',
@@ -68,11 +69,11 @@ class IncomeWithdrawController extends ApiController
                     'type' => 'Yunshop\Merchant\common\models\MerchantBonusLog',
                     'key_name' => 'merchant',
                     'type_name' => '招商分红',
-                    'type_id' => '6902,6903,6910,6911,6912,6913,6914,6915,6955,6956,7313,7314',
-                    'income' => '99.00',
-                    'poundage' => '9.90',
-                    'poundage_rate' => '10',
-                    'servicetax' => '8.91',
+                    'type_id' => '6902',
+                    'income' => '10.00',
+                    'poundage' => '2.00',
+                    'poundage_rate' => '20',
+                    'servicetax' => '0.80',
                     'servicetax_rate' => '10',
                     'can' => '1',
                     'roll_out_limit' => '10',
@@ -258,10 +259,10 @@ class IncomeWithdrawController extends ApiController
      * 收入提现接口
      * @return \Illuminate\Http\JsonResponse
      */
-    public function saveWithdraw($data)
+    public function saveWithdraw($withdrawData)
     {
-        dd($this->isFreeAudit());
-        $withdrawData = \YunShop::request()->data;
+        //dd($this->isFreeAudit());
+        //$withdrawData = \YunShop::request()->data;
         //file_put_contents(storage_path('logs/income.log'),print_r($withdrawData,true));
         if (!$withdrawData) {
             return $this->errorJson('未检测到数据!');
@@ -294,24 +295,35 @@ class IncomeWithdrawController extends ApiController
 
 
         DB::beginTransaction();
-        $result = $this->withdrawRecordsSave($withdrawData);
-        if (!$result) {
+        $ids = $this->withdrawRecordsSave($withdrawData);
+        if (!$ids) {
             DB::rollBack();
             return $this->errorJson('提现失败!');
         }
-        DB::commit();
-
-        //todo 如果开启免审核（提现到微信，提现到余额），直接审核
-
-        if ($this->isFreeAudit()) {
-
-        }
-
-
+dd(999);
+        //DB::commit();
         return $this->successJson('提现成功!');
     }
 
+
+    /**
+     * 是否满足免审核条件，满足返回 true , 不满足返回 false
+     * @return bool
+     */
     private function isFreeAudit()
+    {
+        if ($this->freeAuditStatus() && ($this->pay_way == 'balance' || $this->pay_way == 'wechat')) {
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * 是否开启免审核【免审核（提现到微信，提现到余额），直接审核】
+     * @return bool
+     */
+    private function freeAuditStatus()
     {
         return Setting::get('withdraw.income.free_audit') ? true : false;
     }
@@ -336,7 +348,37 @@ class IncomeWithdrawController extends ApiController
         $withdrawData['withdrawal'] = $data;
         event(new AfterIncomeWithdrawEvent($withdrawData));
         Log::info("Withdraw - data", $data);
+
+        //是否免审核
+        if ($this->isFreeAudit()) {
+            return $this->incomeFreeAudit($data);
+        }
+
         return Withdraw::insert($data);
+    }
+
+
+    private function incomeFreeAudit($incomes = [])
+    {
+        $freeAudit = new IncomeFreeAuditService();
+        $withdrawModel = new Withdraw();
+
+        foreach ($incomes as $key => $item) {
+
+            $withdrawModel->fill($item);
+            //直接标为打款状态
+            $withdrawModel->status = 2;
+            $withdrawModel->pay_at = time();
+            $withdrawModel->save();
+
+
+            $result = $freeAudit->incomeFreeAudit($withdrawModel,$this->pay_way);
+            if ($result !== true) {
+                return '提现失败:' . $item['type_name'] . '免审核失败!';
+                break;
+            }
+        }
+        return true;
     }
 
 
@@ -356,11 +398,11 @@ class IncomeWithdrawController extends ApiController
             'amounts'           => $this->item['income'],
             'poundage'          => $this->getWithdrawPoundage(),
             'poundage_rate'     => $this->getWithdrawPoundageRate(),
-            'actual_poundage'   => $this->getWithdrawPoundageRate(),    //审核使用
+            'actual_poundage'   => $this->getWithdrawPoundage(),    //审核使用
             'actual_amounts'    => $this->getItemWithdrawAmount(),
             'servicetax'        => $this->getWithdrawServiceTax(),
             'servicetax_rate'   => $this->getWithdrawServiceTaxRate(),
-            'actual_servicetax' => $this->getWithdrawServiceTaxRate(),  //审核使用
+            'actual_servicetax' => $this->getWithdrawServiceTax(),  //审核使用
             'pay_way'           => $this->pay_way,
             'status'            => 0,
             'created_at'        => time(),
