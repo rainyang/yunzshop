@@ -60,16 +60,35 @@ class PaymentController extends BaseController
     private function getUniacid()
     {
         $body = !empty($_REQUEST['body']) ? $_REQUEST['body'] : '';
-        $splits = explode(':', $body);
-        \Log::debug('body截取', $splits);
+        //区分app支付获取
+        if ($_REQUEST['sign_type'] == 'MD5') {
+            $splits = explode(':', $body);
 
-        if (!empty($splits[1])) {
-
-            return intval($splits[1]);
+            $uniacid = $splits[1];
         } else {
-
+            $uniacid = $this->substr_var($_REQUEST['body']);
+            $uniacid;
+        }
+        \Log::debug('body获取unicid', $uniacid);
+        if (!empty($uniacid)) {
+            return intval($uniacid);
+        } else {
             return 0;
         }
+    }
+
+    /**
+     * 去除前后引号
+     *
+     * @param $value
+     * @return bool|string
+     */
+    public function substr_var($str)
+    {
+        if (strstr($str, '"')) {
+            return str_replace('"','', $str);
+        }
+        return $str;
     }
 
     /**
