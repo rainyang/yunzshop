@@ -32,13 +32,13 @@ class OtherMessageService
 
         $one_msg = [
             "first" => '您好',
-            "keyword1" => '一级下线发货通知',
+            "keyword1" => '一级下线下单成功通知',
             "keyword2" => '一级' . $content,
             "remark" => "",
         ];
         $two_msg = [
             "first" => '您好',
-            "keyword1" => '二级下线发货通知',
+            "keyword1" => '二级下线下单成功通知',
             "keyword2" => '二级' . $content,
             "remark" => "",
         ];
@@ -51,13 +51,13 @@ class OtherMessageService
 
         $one_msg = [
             "first" => '您好',
-            "keyword1" => '一级下线发货通知',
+            "keyword1" => '一级下线订单支付通知',
             "keyword2" => '一级' . $content,
             "remark" => "",
         ];
         $two_msg = [
             "first" => '您好',
-            "keyword1" => '二级下线发货通知',
+            "keyword1" => '二级下线订单支付通知',
             "keyword2" => '二级' . $content,
             "remark" => "",
         ];
@@ -70,13 +70,13 @@ class OtherMessageService
 
         $one_msg = [
             "first" => '您好',
-            "keyword1" => '一级下线发货通知',
+            "keyword1" => '一级下线订单发货通知',
             "keyword2" => '一级' . $content,
             "remark" => "",
         ];
         $two_msg = [
             "first" => '您好',
-            "keyword1" => '二级下线发货通知',
+            "keyword1" => '二级下线订单发货通知',
             "keyword2" => '二级' . $content,
             "remark" => "",
         ];
@@ -89,13 +89,13 @@ class OtherMessageService
 
         $one_msg = [
             "first" => '您好',
-            "keyword1" => '一级下线发货通知',
+            "keyword1" => '一级下线订单完成通知',
             "keyword2" => '一级' . $content,
             "remark" => "",
         ];
         $two_msg = [
             "first" => '您好',
-            "keyword1" => '二级下线发货通知',
+            "keyword1" => '二级下线订单完成通知',
             "keyword2" => '二级' . $content,
             "remark" => "",
         ];
