@@ -37,7 +37,6 @@ class PayController extends BaseController
         if (is_string($result)) {
             redirect($result)->send();
         }
-        exit;
         return $this->message('操作成功');
 
     }
