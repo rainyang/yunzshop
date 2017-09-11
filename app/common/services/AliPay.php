@@ -10,11 +10,15 @@ namespace app\common\services;
 
 use app\common\exceptions\AppException;
 use app\common\helpers\Client;
+use app\common\models\Order;
 use app\common\models\PayOrder;
+use app\common\models\PayType;
 use app\common\services\alipay\MobileAlipay;
 use app\common\services\alipay\WebAlipay;
 use app\common\services\alipay\WapAlipay;
 use app\common\models\Member;
+use app\common\services\alipay\AlipayTradeRefundRequest;
+use app\common\services\alipay\AopClient;
 
 class AliPay extends Pay
 {
@@ -85,26 +89,30 @@ class AliPay extends Pay
 
     public function doRefund($out_trade_no, $totalmoney, $refundmoney='0')
     {
+        $pay_type_id = Order::select('pay_type_id')->where('order_sn', $out_trade_no)->value('pay_type_id');
+        $pay_type_name = PayType::get_pay_type_name($pay_type_id);
         $out_refund_no = $this->setUniacidNo(\YunShop::app()->uniacid);
-
         $op = '支付宝退款 订单号：' . $out_trade_no . '退款单号：' . $out_refund_no . '退款总金额：' . $totalmoney;
-        $this->refundlog(Pay::PAY_TYPE_REFUND, $this->pay_type[Pay::PAY_MODE_ALIPAY], $totalmoney, $op, $out_trade_no, Pay::ORDER_STATUS_NON, 0);
+
+
+        $this->refundlog(Pay::PAY_TYPE_REFUND, $pay_type_name, $totalmoney, $op, $out_trade_no, Pay::ORDER_STATUS_NON, 0);
         
         //支付宝交易单号
         $pay_order_model = PayOrder::getPayOrderInfo($out_trade_no)->first();
-
         if ($pay_order_model) {
-            $alipay = app('alipay.web');
+            if ($pay_type_id == 10) {
+                throw new AppException('暂不支持退款款');
+            } else {
+                $alipay = app('alipay.web');
 
-            $alipay->setOutTradeNo($pay_order_model->trade_no);
-            $alipay->setTotalFee($totalmoney);
+                $alipay->setOutTradeNo($pay_order_model->trade_no);
+                $alipay->setTotalFee($totalmoney);
 
-            return $alipay->refund($out_refund_no);
+                return $alipay->refund($out_refund_no);
+            }
         } else {
             return false;
         }
-
-
     }
 
     public function doWithdraw($member_id, $out_trade_no, $money, $desc = '', $type=1)
