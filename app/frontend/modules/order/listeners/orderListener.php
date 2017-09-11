@@ -11,6 +11,7 @@ use app\common\models\Order;
 use app\common\models\UniAccount;
 use app\frontend\modules\order\services\MessageService;
 use app\frontend\modules\order\services\OrderService;
+use app\frontend\modules\order\services\OtherMessageService;
 use Carbon\Carbon;
 use Illuminate\Contracts\Events\Dispatcher;
 
@@ -26,6 +27,7 @@ class orderListener
     {
         $order = Order::find($event->getOrderModel()->id);
         (new MessageService($order))->created();
+        (new OtherMessageService($order))->created();
     }
 
     public function onPaid(AfterOrderPaidEvent $event)
@@ -33,6 +35,7 @@ class orderListener
         $order = Order::find($event->getOrderModel()->id);
         if (!$order->isVirtual()) {
             (new MessageService($order))->paid();
+            (new OtherMessageService($order))->paid();
         }
     }
 
@@ -47,6 +50,7 @@ class orderListener
         $order = Order::find($event->getOrderModel()->id);
         if (!$order->isVirtual()) {
             (new MessageService($order))->sent();
+            (new OtherMessageService($order))->sent();
         }
     }
 
@@ -54,6 +58,7 @@ class orderListener
     {
         $order = Order::find($event->getOrderModel()->id);
         (new MessageService($order))->received();
+        (new OtherMessageService($order))->received();
     }
 
     public function subscribe(Dispatcher $events)
