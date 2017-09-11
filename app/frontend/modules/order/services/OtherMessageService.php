@@ -113,7 +113,7 @@ class OtherMessageService
             return;
         }
         \Log::info('二级消息通知,模版ID通过');
-        dd($this->memberModel->yzMember->parent_id);
+        \Log::info('二级消息通知,模版ID通过'.$this->memberModel->yzMember->parent_id, print_r($this->memberModel->toArray(),true));
         if (isset($this->memberModel->yzMember) && $this->memberModel->yzMember->parent_id) {
             \Log::info('二级消息通知,一级消息通过');
             Notice::notice($templateId,$oneMsg,$this->memberModel->yzMember->parent_id);
@@ -134,8 +134,7 @@ class OtherMessageService
 
     private function getMemberModel($memberId = '')
     {
-        $memberId = $memberId ? $memberId : $this->memberModel->uid;
-
+        $memberId = $memberId ? $memberId : $this->orderModel->uid;
         return Member::select('uid','realname','nickname')->with(['yzMember'=>function($query) {
             return $query->select('member_id','parent_id','relation');
         }])->where('uid',$memberId)->first();
