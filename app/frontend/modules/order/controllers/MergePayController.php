@@ -175,6 +175,28 @@ class MergePayController extends ApiController
         return $this->successJson('成功', $data);
     }
 
+    public function wechatAppPay(\Request $request)
+    {
+        if (\Setting::get('shop_app.pay.weixin') == false) {
+            throw new AppException('商城未开启微信支付');
+        }
+        $data = $this->pay( PayFactory::PAY_APP_WEACHAT);
+        $data['js'] = json_decode($data['js'], 1);
+        return $this->successJson('成功', $data);
+    }
+
+    public function alipayAppRay(\Request $request)
+    {
+        if (\Setting::get('shop_app.pay.alipay') == false) {
+            throw new AppException('商城未开启支付宝支付');
+        }
+        if ($request->has('uid')) {
+            Session::set('member_id', $request->query('uid'));
+        }
+        $data = $this->pay( PayFactory::PAY_APP_ALIPAY);
+        return $this->successJson('成功', $data);
+    }
+
     public function cloudWechatPay(\Request $request)
     {
         if (\Setting::get('plugin.cloud_pay_set') == false) {
