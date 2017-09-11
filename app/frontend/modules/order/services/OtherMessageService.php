@@ -10,7 +10,7 @@
 namespace app\frontend\modules\order\services;
 
 
-use app\common\services\MessageService;
+use app\common\services\MessageService as Notice;
 use app\frontend\models\Member;
 
 class OtherMessageService
@@ -112,11 +112,11 @@ class OtherMessageService
             return;
         }
         if (isset($this->memberModel->yzMember) && $this->memberModel->yzMember->parent_id) {
-            MessageService::notice($templateId,$oneMsg,$this->memberModel->yzMember->parent_id);
+            Notice::notice($templateId,$oneMsg,$this->memberModel->yzMember->parent_id);
         }
         $twoSuperior = $this->getMemberModel($this->memberModel->yzMember->parent_id);
         if (isset($twoSuperior->yzMember) && $twoSuperior->yzMember->parent_id) {
-            MessageService::notice($templateId,$twoMsg,$twoSuperior->yzMember->parent_id);
+            Notice::notice($templateId,$twoMsg,$twoSuperior->yzMember->parent_id);
         }
         return;
     }
