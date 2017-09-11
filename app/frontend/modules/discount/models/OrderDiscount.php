@@ -65,9 +65,22 @@ class OrderDiscount
 
     private function _getDeductionPrice()
     {
-        $event = new OnDeductionPriceCalculatedEvent($this->order);
-        event($event);
-        return max($this->orderDeductions->sum('amount'), 0);
+//        $event = new OnDeductionPriceCalculatedEvent($this->order);
+//        event($event);
+//        return max($this->orderDeductions->sum('amount'), 0);
+        $orderDeductionInstances = app('OrderManager')->tagged('OrderDeductionInstance');
+        // todo 获取到订单所有的抵扣类
+        $orderDeductions = collect($orderDeductionInstances)->map(function($orderDeductionInstance){
+            $orderDeduction =  new PreOrderDeduction();
+            $orderDeduction->setInstance($orderDeductionInstance);
+            $orderDeduction->setOrder($this->order);
+            return $orderDeduction;
+        });
+        dd($orderDeductions->first()->toArray());
+        exit;
+
+        // 所有选中的抵扣
+        return max($this->order->orderDeductions->where('isChecked',1)->sum('amount'),0);
     }
 
     /**

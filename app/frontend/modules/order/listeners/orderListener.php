@@ -26,6 +26,7 @@ class orderListener
     {
         $order = Order::find($event->getOrderModel()->id);
         (new MessageService($order))->created();
+
     }
 
     public function onPaid(AfterOrderPaidEvent $event)

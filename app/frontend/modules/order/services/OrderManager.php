@@ -15,7 +15,6 @@ use app\frontend\models\MemberCart;
 use app\frontend\modules\orderGoods\models\PreGeneratedOrderGoods;
 use app\frontend\modules\order\models\PreGeneratedOrder;
 use Illuminate\Container\Container;
-use Yunshop\Love\Frontend\Models\LoveOrder;
 
 class OrderManager extends Container
 {
@@ -32,26 +31,12 @@ class OrderManager extends Container
 
     private function bindModels()
     {
-        $this->bind('LoveOrder',function($orderManager){
-            $loveOrder = new LoveOrder();
-            return $loveOrder;
-        });
 
         $this->bind('PreGeneratedOrderGoods', function ($orderManager, $attributes) {
             return new PreGeneratedOrderGoods($attributes);
         });
         $this->bind('PreGeneratedOrder', function ($orderManager, $attributes) {
-            $order = new PreGeneratedOrder($attributes);
-            $this->tag('LoveOrder','OrderRelations');
-            collect($this->tagged('OrderRelations'))->each(function($orderRelation) use($order){
-                $orderRelation->setOrder($order);
-            });
-
-            // 将订单的关联模型绑定到订单上
-//            $orderManager->make('orderRelations')->each(function($orderRelation) use($order){
-//                $orderRelation->setOrder($order);
-//            });
-            return $order;
+            return new PreGeneratedOrder($attributes);
         });
         // 订单model
         $this->bind('Order', function ($orderManager, $attributes) {

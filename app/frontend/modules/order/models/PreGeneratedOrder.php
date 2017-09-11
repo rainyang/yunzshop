@@ -73,6 +73,11 @@ class PreGeneratedOrder extends Order
              */
             $aOrderGoods->_init();
         });
+//        // 将订单绑定到关联模型中
+//        app('OrderManager')->tag('LoveOrder','OrderRelations');
+//        collect(app('OrderManager')->tagged('OrderRelations'))->each(function($orderRelation) {
+//            $orderRelation->setOrder($this);
+//        });
     }
 
     protected function setDiscount()
@@ -224,6 +229,7 @@ class PreGeneratedOrder extends Order
         $this->save();
 
         $result = $this->push();
+        dd($this->orderDeductions->first()->toArray());
         dd($this);
         exit;
 

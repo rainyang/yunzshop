@@ -10,7 +10,7 @@ namespace app\frontend\models\orderGoods;
 
 use app\frontend\modules\orderGoods\models\PreGeneratedOrderGoods;
 
-class PreOrderGoodsDeduction extends \app\common\models\orderGoods\OrderGoodsDiscount
+class PreOrderGoodsDeduction extends \app\common\models\orderGoods\OrderGoodsDeduction
 {
     public $orderGoods;
 
