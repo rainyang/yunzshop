@@ -113,7 +113,7 @@ class OtherMessageService
             return;
         }
         \Log::info('二级消息通知,模版ID通过');
-        file_put_contents(storage_path('logs/notice.log'),print_r($this->memberModel,true));
+        dd($this->memberModel->yzMember->parent_id);
         if (isset($this->memberModel->yzMember) && $this->memberModel->yzMember->parent_id) {
             \Log::info('二级消息通知,一级消息通过');
             Notice::notice($templateId,$oneMsg,$this->memberModel->yzMember->parent_id);
