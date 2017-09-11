@@ -107,15 +107,20 @@ class OtherMessageService
         if (!\Setting::get('shop.notice.other_toggle')) {
             return;
         }
+        \Log::info('二级消息通知,设置通过');
         $templateId = \Setting::get('shop.notice.task');
         if (!$templateId) {
             return;
         }
+        \Log::info('二级消息通知,模版ID通过');
         if (isset($this->memberModel->yzMember) && $this->memberModel->yzMember->parent_id) {
+            \Log::info('二级消息通知,一级消息通过');
             Notice::notice($templateId,$oneMsg,$this->memberModel->yzMember->parent_id);
         }
+
         $twoSuperior = $this->getMemberModel($this->memberModel->yzMember->parent_id);
         if (isset($twoSuperior->yzMember) && $twoSuperior->yzMember->parent_id) {
+            \Log::info('二级消息通知,二级消息通过');
             Notice::notice($templateId,$twoMsg,$twoSuperior->yzMember->parent_id);
         }
         return;
