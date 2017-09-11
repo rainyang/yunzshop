@@ -14,6 +14,13 @@ use app\frontend\models\Member;
  */
 class SettingController extends BaseController
 {
+    protected $_lang;
+
+    public function __construct()
+    {
+        $this->_lang = 'zh_cn';
+    }
+
     /**
      * 商城设置接口
      * @param string $key  setting表key字段值
@@ -59,6 +66,13 @@ class SettingController extends BaseController
 
         return $this->successJson('获取商城设置成功', $setting);
 
+    }
+
+    public function getLangSetting()
+    {
+        $lang = Setting::get('shop.lang');
+
+        return $this->successJson('获取商城语言设置成功', $lang[$lang['lang']]);
     }
 
 }
