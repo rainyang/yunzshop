@@ -27,7 +27,6 @@ use app\frontend\modules\member\services\MemberService;
 use app\frontend\models\OrderListModel;
 use EasyWeChat\Foundation\Application;
 use Illuminate\Support\Str;
-use Ixudra\Curl\Facades\Curl;
 use Yunshop\TeamDividend\models\YzMemberModel;
 
 class MemberController extends ApiController
@@ -657,12 +656,11 @@ class MemberController extends ApiController
             $white = imagecolorallocate($targetImg, 255, 255, 255);
             imagefill($targetImg,0,0,$white);
 
-            $imgSource = imagecreatefromstring(Curl::to($shopImg)->get());
-            $logoSource = imagecreatefromstring(Curl::to($shopLogo)->get());
+            $imgSource = imagecreatefromstring(file_get_contents($shopImg));
+            $logoSource = imagecreatefromstring(file_get_contents($shopLogo));
             $qrcode = MemberModel::getAgentQR();
-            $qrSource = imagecreatefromstring(Curl::to($qrcode)->get());
-            $fingerPrintImg = imagecreatefromstring(Curl::to(Url::shopUrl('/static/app/images/ewm.png'))->get());
-
+            $qrSource = imagecreatefromstring(file_get_contents($qrcode));
+            $fingerPrintImg = imagecreatefromstring(file_get_contents(base_path().'/static/app/images/ewm.png'));
             $mergeData = [
                 'dst_left' => $space,
                 'dst_top' => 10,
