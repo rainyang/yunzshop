@@ -162,7 +162,7 @@ class WithdrawController extends BaseController
 
             } elseif ($income == -1) {
                 $withdrawStatus = "1";
-                Income::updatedIncomePayStatus($key, ['pay_status' => '3']);
+                Income::updatedIncomePayStatus($key, ['pay_status' => '3','status'=> '0']);
             } else {
                 Income::updatedIncomePayStatus($key, ['pay_status' => '-1']);
             }
