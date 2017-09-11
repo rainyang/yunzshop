@@ -167,6 +167,11 @@
                             </div>
                         </div>
 
+                    </div>
+                    <div class='panel-heading'>
+                        关系通知
+                    </div>
+                    <div class='panel-body'>
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">两级消息通知</label>
                             <div class="col-sm-9 col-xs-12">
@@ -178,10 +183,9 @@
                                     <input type='radio' name='notice[other_toggle]' value='0'
                                            @if (empty($set['other_toggle'])) checked @endif />
                                     关闭</label>
-                                <div class="help-block">开启：会员可以收到一级、二级下线下单、发货、收货、佣金通知</div>
+                                <div class="help-block">开启：会员可以收到一级、二级下线下单、付款、发货、收货通知</div>
                             </div>
                         </div>
-
                     </div>
                     <div class='panel-heading'>
                         买家通知
