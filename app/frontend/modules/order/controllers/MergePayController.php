@@ -31,6 +31,7 @@ class MergePayController extends ApiController
     protected $ignoreAction = ['alipay'];
 
     /**
+     * 支付的时候,生成支付记录的时候,通过订单ids获取订单集合
      * @param $orderIds
      * @return Collection
      * @throws AppException
@@ -62,23 +63,26 @@ class MergePayController extends ApiController
                 throw new AppException('(ID:' . $order->id . ')该订单属于其他用户');
             }
         });
-
+        // 订单金额验证
+        if ($this->orders->sum('price') < 0) {
+            throw new AppException('(' . $this->orders->sum('price') . ')订单金额有误');
+        }
         return $this->orders;
     }
 
     public function index(\Request $request)
     {
+        // 验证
         $this->validate([
             'order_ids' => 'required|string'
         ]);
+        // 订单集合
         $orders = $this->orders($request->input('order_ids'));
-
+        // 用户余额
         $member = $orders->first()->belongsToMember()->select(['credit2'])->first()->toArray();
-        if ($orders->sum('price') < 0) {
-            throw new AppException('(' . $orders->sum('price') . ')订单金额有误');
-        }
+        // 支付类型
         $buttons = $this->getPayTypeButtons();
-
+        // 生成支付记录 记录订单号,支付金额,用户,支付号
         $orderPay = new OrderPay();
         $orderPay->order_ids = explode(',', $request->input('order_ids'));
         $orderPay->amount = $orders->sum('price');
@@ -107,6 +111,7 @@ class MergePayController extends ApiController
         $this->validate([
             'order_pay_id' => 'required|integer'
         ]);
+        // 支付记录
         $this->orderPay = $orderPay = OrderPay::find(request()->input('order_pay_id'));
         if (!isset($orderPay)) {
             throw new AppException('(ID' . request()->input('order_pay_id') . ')支付流水记录不存在');
@@ -114,19 +119,19 @@ class MergePayController extends ApiController
         if ($orderPay->status > 0) {
             throw new AppException('(ID' . request()->input('order_pay_id') . '),此流水号已支付');
         }
-
+        // 订单集合
         $orders = $this->orders($orderPay->order_ids);
         //支付流水号
-        $orderPay->pay_type_id = $payType;
-        $orderPay->save();
+//        $orderPay->pay_type_id = $payType;
+//        $orderPay->save();
         //订单支付方式,流水号保存
-        $orders->each(function ($order) use ($orderPay) {
-            $order->pay_type_id = $orderPay->pay_type_id;
-            $order->order_pay_id = $orderPay->id;
-            if (!$order->save()) {
-                throw new AppException('支付方式选择失败');
-            }
-        });
+//        $orders->each(function ($order) use ($orderPay) {
+//            $order->pay_type_id = $orderPay->pay_type_id;
+//            $order->order_pay_id = $orderPay->id;
+//            if (!$order->save()) {
+//                throw new AppException('支付方式选择失败');
+//            }
+//        });
         return $this->getPayResult($payType,$orderPay,$orders);
     }
     protected function getPayResult($payType,$orderPay,$orders){
@@ -171,7 +176,7 @@ class MergePayController extends ApiController
         $data = $this->pay( PayFactory::PAY_ALIPAY);
         return $this->successJson('成功', $data);
     }
-
+    
     public function wechatAppPay(\Request $request)
     {
         if (\Setting::get('shop_app.pay.weixin') == false) {
