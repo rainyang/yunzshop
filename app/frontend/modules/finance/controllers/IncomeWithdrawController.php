@@ -632,7 +632,7 @@ class IncomeWithdrawController extends ApiController
      */
     private function itemIsCanWithdraw()
     {
-        if (bccomp($this->amount,$this->getItemAmountFetter(),2) == -1) {
+        if (bccomp($this->amount,$this->getItemAmountFetter(),2) == -1 || bccomp($this->amount,0,2) != 1) {
             return false;
         }
         return true;
