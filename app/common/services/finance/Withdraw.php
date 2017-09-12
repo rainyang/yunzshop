@@ -61,6 +61,7 @@ class Withdraw
             'status' => 2,
             'arrival_at' => time(),
         ];
+        \Log::info('修改提现记录状态',print_r($updatedData,true));
         return WithdrawModel::updatedWithdrawStatus($withdrawId, $updatedData);
 
     }
