@@ -190,7 +190,7 @@ class User extends BaseModel
         if($list === null){
             $list =  static::select(['uid'])
                 ->where(['uid' => \YunShop::app()->uid])
-                ->where('type','!=', '1')
+                //->where('type','!=', '1')
                 ->with([
                     'userRole' => function ($query) {
                         return $query->select(['user_id','role_id'])
