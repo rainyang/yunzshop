@@ -243,7 +243,7 @@ class HomePageController extends ApiController
                 $result['item']['data'] = ''; //前端需要该字段
                 $footerMenuType = 1;
             }
-            
+
         } else { //如果是请求首页的数据, 但是没有安装"装修插件"或者"装修插件"没有开启, 则提供默认值
             $result['default'] = self::defaultDesign();
             $result['item']['menus'] = self::defaultMenu($i, $mid, $type);

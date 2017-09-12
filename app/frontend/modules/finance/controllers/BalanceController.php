@@ -40,7 +40,6 @@ class BalanceController extends ApiController
     private $money;
 
 
-
     /**
      * 会员余额页面信息，（余额设置+会员余额值）
      * @return \Illuminate\Http\JsonResponse
@@ -122,6 +121,18 @@ class BalanceController extends ApiController
     }
 
     //余额充值，如果是支付宝支付需要二次请求 alipay 支付接口
+    public function alipay()
+    {
+        $orderSn = \YunShop::request()->order_sn;
+
+        $this->model = BalanceRecharge::ofOrderSn($orderSn)->withoutGlobalScope('member_id')->first();
+        if ($this->model) {
+            return  $this->successJson('支付接口对接成功', $this->payOrder());
+        }
+
+        return $this->errorJson('充值订单不存在');
+    }
+
     public function cloudWechatPay()
     {
         $orderSn = \YunShop::request()->order_sn;

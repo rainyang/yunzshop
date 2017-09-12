@@ -93,8 +93,13 @@ class WechatPay extends Pay
 
         $op = '微信退款 订单号：' . $out_trade_no . '退款单号：' . $out_refund_no . '退款总金额：' . $totalmoney;
         $pay_order_model = $this->refundlog(Pay::PAY_TYPE_REFUND, $this->pay_type[Pay::PAY_MODE_WECHAT], $refundmoney, $op, $out_trade_no, Pay::ORDER_STATUS_NON, 0);
-
-        $pay = $this->payParams();
+        $pay_type_id = Order::select('pay_type_id')->where('order_sn', $out_trade_no)->value('pay_type_id');
+        //app退款查询app配置中的微信支付信息
+        if ($pay_type_id == 10) {
+            $pay = \Setting::get('shop_app.pay');
+        } else {
+            $pay = $this->payParams();
+        }
 
         if (empty($pay['weixin_mchid']) || empty($pay['weixin_apisecret'])) {
             throw new AppException('没有设定支付参数');
