@@ -23,4 +23,15 @@ class PayType extends BaseModel
     const CASH_PAY = 8;//现金支付
     const WechatApp = 9;//现金支付
     const AlipayApp = 10;//现金支付
+
+
+    /**
+     * 查询所有分类类型
+     *
+     * @return mixed
+     */
+    public static function get_pay_type_name($id)
+    {
+        return self::select('name')->where('id', $id)->value('name');
+    }
 }
