@@ -30,9 +30,7 @@ class YunShop
     }
 
     public static function run($namespace, $modules, $controllerName, $action, $currentRoutes)
-    {  Log::debug('------boot run-------');
-        include_once __DIR__ . '/../../../framework/bootstrap.inc.php';
-
+    {
         //检测命名空间
         if (!class_exists($namespace)) {
             throw new NotFoundException(" 不存在类: " . $namespace);
