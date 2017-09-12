@@ -28,17 +28,17 @@ class OtherMessageService
 
     public function created()
     {
-        $content = '下线会员'.$this->getMemberName()."，订单：" . $this->orderModel->order_sn ."，订单金额：".$this->orderModel->price. "已经成功下单（未支付）。";
+        $content = '会员'.$this->getMemberName()."，订单：" . $this->orderModel->order_sn ."，订单金额：".$this->orderModel->price. "已经成功下单（未支付）。";
 
         $one_msg = [
             "first" => '您好',
-            "keyword1" => '一级下线下单成功通知',
+            "keyword1" => '一级会员下单成功通知',
             "keyword2" => '一级' . $content,
             "remark" => "",
         ];
         $two_msg = [
             "first" => '您好',
-            "keyword1" => '二级下线下单成功通知',
+            "keyword1" => '二级会员下单成功通知',
             "keyword2" => '二级' . $content,
             "remark" => "",
         ];
@@ -47,17 +47,17 @@ class OtherMessageService
 
     public function paid()
     {
-        $content = '下线会员'.$this->getMemberName()."，订单：" . $this->orderModel->order_sn ."，订单金额：".$this->orderModel->price. "已经支付。";
+        $content = '会员'.$this->getMemberName()."，订单：" . $this->orderModel->order_sn ."，订单金额：".$this->orderModel->price. "已经支付。";
 
         $one_msg = [
             "first" => '您好',
-            "keyword1" => '一级下线订单支付通知',
+            "keyword1" => '一级会员订单支付通知',
             "keyword2" => '一级' . $content,
             "remark" => "",
         ];
         $two_msg = [
             "first" => '您好',
-            "keyword1" => '二级下线订单支付通知',
+            "keyword1" => '二级会员订单支付通知',
             "keyword2" => '二级' . $content,
             "remark" => "",
         ];
@@ -66,17 +66,17 @@ class OtherMessageService
 
     public function sent()
     {
-        $content = '下线会员'.$this->getMemberName()."，订单：" . $this->orderModel->order_sn ."，订单金额：".$this->orderModel->price. "已经发货。";
+        $content = '会员'.$this->getMemberName()."，订单：" . $this->orderModel->order_sn ."，订单金额：".$this->orderModel->price. "已经发货。";
 
         $one_msg = [
             "first" => '您好',
-            "keyword1" => '一级下线订单发货通知',
+            "keyword1" => '一级会员订单发货通知',
             "keyword2" => '一级' . $content,
             "remark" => "",
         ];
         $two_msg = [
             "first" => '您好',
-            "keyword1" => '二级下线订单发货通知',
+            "keyword1" => '二级会员订单发货通知',
             "keyword2" => '二级' . $content,
             "remark" => "",
         ];
@@ -85,17 +85,17 @@ class OtherMessageService
 
     public function received()
     {
-        $content = '下线会员'.$this->getMemberName()."，订单：" . $this->orderModel->order_sn ."，订单金额：".$this->orderModel->price. "已经完成。";
+        $content = '会员'.$this->getMemberName()."，订单：" . $this->orderModel->order_sn ."，订单金额：".$this->orderModel->price. "已经完成。";
 
         $one_msg = [
             "first" => '您好',
-            "keyword1" => '一级下线订单完成通知',
+            "keyword1" => '一级会员订单完成通知',
             "keyword2" => '一级' . $content,
             "remark" => "",
         ];
         $two_msg = [
             "first" => '您好',
-            "keyword1" => '二级下线订单完成通知',
+            "keyword1" => '二级会员订单完成通知',
             "keyword2" => '二级' . $content,
             "remark" => "",
         ];
