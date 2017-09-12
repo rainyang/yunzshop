@@ -427,9 +427,9 @@ class IncomeWithdrawController extends ApiController
                 foreach ($income as $item) {
                     //驳回数据重新初始化
                     if ($this->isFreeAudit()) {
-                        Income::updatedIncomePayStatus($income['id'],['pay_status'=>2]);
+                        Income::updatedIncomePayStatus($item['id'],['pay_status'=>2]);
                     } else {
-                        Income::updatedIncomePayStatus($income['id'],['pay_status'=>0]);
+                        Income::updatedIncomePayStatus($item['id'],['pay_status'=>0]);
                     }
 
                     $config['class']::$config['name']([$config['value'] => 1], ['id' => $item->incometable_id]);
