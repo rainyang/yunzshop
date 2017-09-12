@@ -86,9 +86,6 @@ class BaseController extends Controller
      */
     private function setCookie()
     {
-        \Log::debug('----cron task---');
-        include_once __DIR__ . '/../../../../../framework/class/loader.class.php';
-
         $session_id = '';
         if (isset(\YunShop::request()->state) && !empty(\YunShop::request()->state) && strpos(\YunShop::request()->state, 'yz-')) {
             $pieces = explode('-', \YunShop::request()->state);
