@@ -35,7 +35,7 @@ class AppServiceProvider extends ServiceProvider
         AccountWechats::setConfig(AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid));
 
         //开发模式下记录SQL
-        if (1) {
+        if ($this->app->environment() !== 'production') {
             DB::listen(
                 function ($sql) {
                     // $sql is an object with the properties:
