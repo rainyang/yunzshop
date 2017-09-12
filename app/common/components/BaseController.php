@@ -98,7 +98,22 @@ class BaseController extends Controller
             $session_id = \YunShop::request()->session_id;
         }
 
-        if (empty($session_id)) {
+
+        // TODO 修改
+
+
+        if (!empty($session_id)) {
+            session_id($session_id);
+        } else {
+            ini_set('session.gc_maxlifetime', self::COOKIE_EXPIRE);
+            session_set_cookie_params(self::COOKIE_EXPIRE);
+        }
+
+        session_start();
+
+
+
+        /*if (empty($session_id)) {
             $session_id = $_COOKIE[session_name()];
         }
 
@@ -112,7 +127,7 @@ class BaseController extends Controller
         session_id($session_id);
 
         load()->classs('wesession');
-        \WeSession::start(\YunShop::app()->uniacid, CLIENT_IP, self::COOKIE_EXPIRE);
+        \WeSession::start(\YunShop::app()->uniacid, CLIENT_IP, self::COOKIE_EXPIRE);*/
     }
 
     /**
