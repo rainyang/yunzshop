@@ -12,12 +12,14 @@ use app\common\facades\Setting;
 
 class IncomeService
 {
+    private static $pay_way = ['balance','wechat','alipay','manual'];
+
     public static function getIncomeWithdrawMode()
     {
         $set = Setting::get('withdraw.income');
         $modeData = [];
         foreach ($set as $key => $item) {
-            if($item){
+            if(in_array($key, static::$pay_way) && $item){
                 $modeData[$key] = [
                     'name' => self::getModeName($key),
                     'value' => $key

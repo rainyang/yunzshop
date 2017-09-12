@@ -9,10 +9,12 @@
 
 namespace app\common\listeners\point;
 
+use app\common\events\order\AfterOrderCanceledEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\models\Order;
 use app\common\services\finance\CalculationPointService;
+use app\common\services\finance\PointRollbackService;
 use app\common\services\finance\PointService;
 use app\frontend\modules\finance\services\AfterOrderDeductiblePointService;
 use Setting;
@@ -88,6 +90,12 @@ class PointListener
         $events->listen(
             AfterOrderCreatedEvent::class,
             AfterOrderDeductiblePointService::class . '@deductiblePoint'
+        );
+
+        //订单关闭 积分抵扣回滚
+        $events->listen(
+            AfterOrderCanceledEvent::class,
+            PointRollbackService::class . '@orderCancel'
         );
     }
 }

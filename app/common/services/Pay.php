@@ -51,6 +51,14 @@ abstract class Pay
      */
     const PAY_MODE_CREDIT        = 3;
     /**
+     * 微信app支付
+     */
+    const PAY_MODE_APPWECHAT        = 9;
+    /**
+     * 支付宝app支付
+     */
+    const PAY_MODE_APPALIPAY        = 10;
+    /**
      * 货到付款
      */
     const PAY_MODE_CASH          = 4;
