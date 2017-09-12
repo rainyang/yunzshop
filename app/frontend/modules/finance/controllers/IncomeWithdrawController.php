@@ -484,7 +484,7 @@ class IncomeWithdrawController extends ApiController
      */
     private function getWithdrawServiceTax()
     {
-        return $this->getBalanceSpecialSet() ? $this->getBalanceSpecialServiceTax() : $this->getItemServiceTax();
+        return $this->isUseBalanceSpecialSet() ? $this->getBalanceSpecialServiceTax() : $this->getItemServiceTax();
     }
 
     /**
@@ -493,7 +493,7 @@ class IncomeWithdrawController extends ApiController
      */
     private function getWithdrawPoundage()
     {
-        return $this->getBalanceSpecialSet() ? $this->getBalanceSpecialPoundage() : $this->getItemPoundage();
+        return $this->isUseBalanceSpecialSet() ? $this->getBalanceSpecialPoundage() : $this->getItemPoundage();
     }
 
     /**
@@ -502,7 +502,7 @@ class IncomeWithdrawController extends ApiController
      */
     private function getWithdrawServiceTaxRate()
     {
-        return $this->getBalanceSpecialSet() ? $this->getBalanceSpecialServiceTaxRate() : $this->getItemServiceRate();
+        return $this->isUseBalanceSpecialSet() ? $this->getBalanceSpecialServiceTaxRate() : $this->getItemServiceRate();
     }
 
     /**
@@ -511,7 +511,15 @@ class IncomeWithdrawController extends ApiController
      */
     private function getWithdrawPoundageRate()
     {
-        return $this->getBalanceSpecialSet() ? $this->getBalanceSpecialPoundageRate() : $this->getItemPoundageRate();
+        return $this->isUseBalanceSpecialSet() ? $this->getBalanceSpecialPoundageRate() : $this->getItemPoundageRate();
+    }
+
+    private function isUseBalanceSpecialSet()
+    {
+        if ($this->pay_way == 'balance' && $this->getBalanceSpecialSet()) {
+            return true;
+        }
+        return false;
     }
 
 
