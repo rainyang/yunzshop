@@ -425,6 +425,8 @@ class IncomeWithdrawController extends ApiController
             if (isset($config['name']) && ($type == $config['class'])) {
                 $income = \Yunshop\Commission\models\Income::whereIn('id', explode(',', $typeId))->get();
                 foreach ($income as $item) {
+                    //驳回数据重新初始化
+                    Income::updatedIncomePayStatus($income['id'],['pay_status'=>0]);
                     $config['class']::$config['name']([$config['value'] => 1], ['id' => $item->incometable_id]);
                 }
             }
