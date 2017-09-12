@@ -200,10 +200,14 @@ class WithdrawController extends BaseController
         $withdrawStatus = "-1";
         $actual_amounts = 0;
         foreach ($incomeData as $key => $income) {
-            if ($income) {
+            if ($income == 1) {
                 $actual_amounts += Income::getIncomeById($key)->get()->sum('amount');
                 $withdrawStatus = "1";
                 Income::updatedIncomePayStatus($key, ['pay_status' => '1']);
+
+            } elseif ($income == -1) {
+                $withdrawStatus = "1";
+                Income::updatedIncomePayStatus($key, ['pay_status' => '3','status'=> '0']);
 
             } else {
                 Income::updatedIncomePayStatus($key, ['pay_status' => '-1']);
