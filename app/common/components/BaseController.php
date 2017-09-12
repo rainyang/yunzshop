@@ -86,7 +86,8 @@ class BaseController extends Controller
      */
     private function setCookie()
     {
-        include_once IA_ROOT . '/framework/class/loader.class.php';
+        \Log::debug('----cron task---');
+        include_once __DIR__ . '/../../../../../framework/class/loader.class.php';
 
         $session_id = '';
         if (isset(\YunShop::request()->state) && !empty(\YunShop::request()->state) && strpos(\YunShop::request()->state, 'yz-')) {
@@ -114,7 +115,7 @@ class BaseController extends Controller
 
         session_id($session_id);
 
-        \load()->classs('wesession');
+        load()->classs('wesession');
         \WeSession::start(\YunShop::app()->uniacid, CLIENT_IP, self::COOKIE_EXPIRE);
     }
 
