@@ -425,15 +425,6 @@ class IncomeWithdrawController extends ApiController
             if (isset($config['name']) && ($type == $config['class'])) {
                 $income = \Yunshop\Commission\models\Income::whereIn('id', explode(',', $typeId))->get();
                 foreach ($income as $item) {
-                    //驳回数据重新初始化
-                    if ($this->isFreeAudit()) {
-                        Log::info("收入提现数据重新初始化:免审核");
-                        Income::updatedIncomePayStatus($item['id'],['pay_status'=>2]);
-                    } else {
-                        Log::info("收入提现数据重新初始化:需要审核");
-                        Income::updatedIncomePayStatus($item['id'],['pay_status'=>0]);
-                    }
-
                     $config['class']::$config['name']([$config['value'] => 1], ['id' => $item->incometable_id]);
                 }
             }
@@ -441,14 +432,21 @@ class IncomeWithdrawController extends ApiController
     }
 
     /**
-     * 杨雷 未修改
      * @param $type
      * @param $typeId
      */
     private function setIncome($type, $typeId)
     {
         Log::info('setIncome');
-        Income::updatedWithdraw($type, $typeId, '1');
+        if ($this->isFreeAudit()) {
+            Income::where('member_id', \YunShop::app()->getMemberId())
+                ->whereIn('id', explode(',', $typeId))
+                ->update(['status' => 1,'pay_status'=> 2]);
+        } else {
+            Income::where('member_id', \YunShop::app()->getMemberId())
+                ->whereIn('id', explode(',', $typeId))
+                ->update(['status' => 1,'pay_status'=> 0]);
+        }
     }
 
 
