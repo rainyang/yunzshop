@@ -259,10 +259,10 @@ class IncomeWithdrawController extends ApiController
      * 收入提现接口
      * @return \Illuminate\Http\JsonResponse
      */
-    public function saveWithdraw($withdrawData)
+    public function saveWithdraw()
     {
         //dd($this->isFreeAudit());
-        //$withdrawData = \YunShop::request()->data;
+        $withdrawData = \YunShop::request()->data;
         //file_put_contents(storage_path('logs/income.log'),print_r($withdrawData,true));
         if (!$withdrawData) {
             return $this->errorJson('未检测到数据!');
