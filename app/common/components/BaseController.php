@@ -35,7 +35,7 @@ class BaseController extends Controller
     public $transactionActions = [];
 
     public function __construct()
-    {
+    { \Log::debug('-----bootstrap----');
         $this->setCookie();
 
         $modules = Modules::getModuleName('yun_shop');
