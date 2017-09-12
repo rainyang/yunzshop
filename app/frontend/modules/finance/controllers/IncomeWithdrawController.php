@@ -427,8 +427,10 @@ class IncomeWithdrawController extends ApiController
                 foreach ($income as $item) {
                     //驳回数据重新初始化
                     if ($this->isFreeAudit()) {
+                        Log::info("收入提现数据重新初始化:免审核");
                         Income::updatedIncomePayStatus($item['id'],['pay_status'=>2]);
                     } else {
+                        Log::info("收入提现数据重新初始化:需要审核");
                         Income::updatedIncomePayStatus($item['id'],['pay_status'=>0]);
                     }
 
