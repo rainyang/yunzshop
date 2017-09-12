@@ -5,7 +5,6 @@ namespace app\common\components;
 use app\common\exceptions\ShopException;
 use app\common\models\Modules;
 use app\common\services\Check;
-use app\common\services\Utils;
 use app\common\traits\JsonTrait;
 use app\common\traits\MessageTrait;
 use app\common\traits\PermissionTrait;
@@ -104,7 +103,7 @@ class BaseController extends Controller
         }
 
         if (empty($session_id)) {
-            $session_id = "{\YunShop::app()->uniacid}-" .  Utils::random(20) ;
+            $session_id = "{\YunShop::app()->uniacid}-" .  random(20) ;
             $session_id = md5($session_id);
 
             setcookie(session_name(), $session_id);
