@@ -36,6 +36,8 @@ class BaseController extends Controller
 
     public function __construct()
     {
+        include_once __DIR__ . '/../../../../../framework/bootstrap.inc.php';
+
         $this->setCookie();
 
         $modules = Modules::getModuleName('yun_shop');
