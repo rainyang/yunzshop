@@ -107,7 +107,6 @@ class MergePayController extends ApiController
         $this->validate([
             'order_pay_id' => 'required|integer'
         ]);
-
         $this->orderPay = $orderPay = OrderPay::find(request()->input('order_pay_id'));
         if (!isset($orderPay)) {
             throw new AppException('(ID' . request()->input('order_pay_id') . ')支付流水记录不存在');
@@ -132,11 +131,9 @@ class MergePayController extends ApiController
     }
     protected function getPayResult($payType,$orderPay,$orders){
         $query_str = $this->getPayParams($orderPay, $orders);
-
         $pay = PayFactory::create($payType);
         //如果支付模块常量改变 数据会受影响
-
-        $result = $pay->doPay($query_str);
+        $result = $pay->doPay($query_str, $payType);
         if (!isset($result)) {
             throw new AppException('获取支付参数失败');
         }
@@ -181,8 +178,7 @@ class MergePayController extends ApiController
             throw new AppException('商城未开启微信支付');
         }
         $data = $this->pay( PayFactory::PAY_APP_WEACHAT);
-        $data['js'] = json_decode($data['js'], 1);
-        return $this->successJson('成功', $data);
+        return $this->successJson('成功', json_decode($data, 1));
     }
 
     public function alipayAppRay(\Request $request)
