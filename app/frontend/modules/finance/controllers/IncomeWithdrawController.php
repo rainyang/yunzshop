@@ -610,7 +610,7 @@ class IncomeWithdrawController extends ApiController
      */
     private function getBalanceSpecialPoundageRate()
     {
-        return $this->getBalanceSpecialSet() ? $this->judgmentValue($this->income_set['special_service_tax']) : '0';
+        return $this->getBalanceSpecialSet() ? $this->judgmentValue($this->income_set['special_poundage']) : '0';
     }
 
 
@@ -620,7 +620,7 @@ class IncomeWithdrawController extends ApiController
      */
     private function getBalanceSpecialServiceTaxRate()
     {
-        return $this->getBalanceSpecialSet() ? $this->judgmentValue($this->income_set['special_poundage']) : '0';
+        return $this->getBalanceSpecialSet() ? $this->judgmentValue($this->income_set['special_service_tax']) : '0';
     }
 
 
