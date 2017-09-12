@@ -259,10 +259,10 @@ class IncomeWithdrawController extends ApiController
      * 收入提现接口
      * @return \Illuminate\Http\JsonResponse
      */
-    public function saveWithdraw($withdrawData)
+    public function saveWithdraw()
     {
         //dd($this->isFreeAudit());
-        //$withdrawData = \YunShop::request()->data;
+        $withdrawData = \YunShop::request()->data;
         //file_put_contents(storage_path('logs/income.log'),print_r($withdrawData,true));
         if (!$withdrawData) {
             return $this->errorJson('未检测到数据!');
@@ -432,14 +432,21 @@ class IncomeWithdrawController extends ApiController
     }
 
     /**
-     * 杨雷 未修改
      * @param $type
      * @param $typeId
      */
     private function setIncome($type, $typeId)
     {
         Log::info('setIncome');
-        Income::updatedWithdraw($type, $typeId, '1');
+        if ($this->isFreeAudit()) {
+            Income::where('member_id', \YunShop::app()->getMemberId())
+                ->whereIn('id', explode(',', $typeId))
+                ->update(['status' => 1,'pay_status'=> 2]);
+        } else {
+            Income::where('member_id', \YunShop::app()->getMemberId())
+                ->whereIn('id', explode(',', $typeId))
+                ->update(['status' => 1,'pay_status'=> 0]);
+        }
     }
 
 
@@ -477,7 +484,7 @@ class IncomeWithdrawController extends ApiController
      */
     private function getWithdrawServiceTax()
     {
-        return $this->getBalanceSpecialSet() ? $this->getBalanceSpecialServiceTax() : $this->getItemServiceTax();
+        return $this->isUseBalanceSpecialSet() ? $this->getBalanceSpecialServiceTax() : $this->getItemServiceTax();
     }
 
     /**
@@ -486,7 +493,7 @@ class IncomeWithdrawController extends ApiController
      */
     private function getWithdrawPoundage()
     {
-        return $this->getBalanceSpecialSet() ? $this->getBalanceSpecialPoundage() : $this->getItemPoundage();
+        return $this->isUseBalanceSpecialSet() ? $this->getBalanceSpecialPoundage() : $this->getItemPoundage();
     }
 
     /**
@@ -495,7 +502,7 @@ class IncomeWithdrawController extends ApiController
      */
     private function getWithdrawServiceTaxRate()
     {
-        return $this->getBalanceSpecialSet() ? $this->getBalanceSpecialServiceTaxRate() : $this->getItemServiceRate();
+        return $this->isUseBalanceSpecialSet() ? $this->getBalanceSpecialServiceTaxRate() : $this->getItemServiceRate();
     }
 
     /**
@@ -504,7 +511,15 @@ class IncomeWithdrawController extends ApiController
      */
     private function getWithdrawPoundageRate()
     {
-        return $this->getBalanceSpecialSet() ? $this->getBalanceSpecialPoundageRate() : $this->getItemPoundageRate();
+        return $this->isUseBalanceSpecialSet() ? $this->getBalanceSpecialPoundageRate() : $this->getItemPoundageRate();
+    }
+
+    private function isUseBalanceSpecialSet()
+    {
+        if ($this->pay_way == 'balance' && $this->getBalanceSpecialSet()) {
+            return true;
+        }
+        return false;
     }
 
 
@@ -625,7 +640,7 @@ class IncomeWithdrawController extends ApiController
      */
     private function itemIsCanWithdraw()
     {
-        if (bccomp($this->amount,$this->getItemAmountFetter(),2) == -1) {
+        if (bccomp($this->amount,$this->getItemAmountFetter(),2) == -1 || bccomp($this->amount,0,2) != 1) {
             return false;
         }
         return true;
