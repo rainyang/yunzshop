@@ -36,8 +36,6 @@ class BaseController extends Controller
 
     public function __construct()
     {
-        include_once __DIR__ . '/../../../../../framework/bootstrap.inc.php';
-
         $this->setCookie();
 
         $modules = Modules::getModuleName('yun_shop');
@@ -88,6 +86,8 @@ class BaseController extends Controller
      */
     private function setCookie()
     {
+        include_once IA_ROOT . '/framework/class/loader.class.php';
+
         $session_id = '';
         if (isset(\YunShop::request()->state) && !empty(\YunShop::request()->state) && strpos(\YunShop::request()->state, 'yz-')) {
             $pieces = explode('-', \YunShop::request()->state);
