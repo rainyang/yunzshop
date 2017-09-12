@@ -103,7 +103,7 @@ class BaseController extends Controller
         }
 
         if (empty($session_id)) {
-            $session_id = "{\YunShop::app()->uniacid}-" . random(20) ;
+            $session_id = "{\YunShop::app()->uniacid}-" . \random(20) ;
             $session_id = md5($session_id);
 
             setcookie(session_name(), $session_id);
