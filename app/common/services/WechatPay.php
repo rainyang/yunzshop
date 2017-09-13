@@ -13,6 +13,7 @@ use app\common\helpers\Client;
 use app\common\helpers\Url;
 use app\common\models\McMappingFans;
 use app\common\models\Member;
+use app\common\models\Order;
 use app\common\services\finance\Withdraw;
 use EasyWeChat\Foundation\Application;
 use EasyWeChat\Payment\Order as easyOrder;
