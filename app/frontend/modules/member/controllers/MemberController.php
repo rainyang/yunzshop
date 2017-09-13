@@ -27,7 +27,8 @@ use app\frontend\modules\member\services\MemberService;
 use app\frontend\models\OrderListModel;
 use EasyWeChat\Foundation\Application;
 use Illuminate\Support\Str;
-use Yunshop\Poster\services\CenterShowPosterService;
+use Yunshop\Poster\models\Poster;
+use Yunshop\Poster\services\CreatePosterService;
 use Yunshop\TeamDividend\models\YzMemberModel;
 
 class MemberController extends ApiController
@@ -38,7 +39,7 @@ class MemberController extends ApiController
     /**
      * 获取用户信息
      *
-     * @return array
+     *
      */
     public function getUserInfo()
     {
@@ -65,8 +66,8 @@ class MemberController extends ApiController
                 }
 
                 //个人中心的推广二维码
-                $data['poster'] = $this->createPoster();
-                //$data['poster'] = $this->getPoster();
+                //$data['poster'] = $this->createPoster();
+                $data['poster'] = $this->getPoster();
                 //$data['poster'] = "http://test.yunzshop.com/addons/yun_shop/storage/app/public/poster/2/106a184f8525d30e01e530ed2c4cabcb.png";
 
                 //文章营销
@@ -625,12 +626,11 @@ class MemberController extends ApiController
     private function getPoster()
     {
         if (\YunShop::plugin()->get('poster')) {
+            $posterModel = Poster::select('id')->where('center_show',1)->first();
+            $file_path = (new CreatePosterService(\YunShop::app()->getMemberId(),$posterModel->id))->getMemberPosterPath();
 
-            $test = (new CenterShowPosterService())->getMemberPosterUrl(\YunShop::app()->getMemberId());
-            dump($test);
-            dd(1);
+            return  request()->getSchemeAndHttpHost() . '/'. substr($file_path, strpos($file_path, 'addons'));
         }
-        dd(2);
         return $this->createPoster();
     }
 
