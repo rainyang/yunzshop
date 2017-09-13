@@ -66,8 +66,8 @@ class MemberController extends ApiController
                 }
 
                 //个人中心的推广二维码
-                //$data['poster'] = $this->createPoster();
-                $data['poster'] = $this->getPoster();
+                $data['poster'] = $this->createPoster();
+                //$data['poster'] = $this->getPoster();
                 //$data['poster'] = "http://test.yunzshop.com/addons/yun_shop/storage/app/public/poster/2/106a184f8525d30e01e530ed2c4cabcb.png";
 
                 //文章营销
