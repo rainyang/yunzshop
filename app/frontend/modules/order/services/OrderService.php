@@ -286,6 +286,7 @@ class OrderService
         if (isset($param['pay_type_id'])) {
             $orderOperation->pay_type_id = $param['pay_type_id'];
         }
+
         if (isset($param['order_pay_id'])) {
             $orderOperation->order_pay_id = $param['order_pay_id'];
         }
