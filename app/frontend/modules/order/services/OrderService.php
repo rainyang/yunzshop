@@ -262,6 +262,9 @@ class OrderService
         }
         DB::transaction(function () use ($orderPay, $orders, $param) {
             $orderPay->status = 1;
+            if(isset($param['pay_type_id'])){
+                $orderPay->pay_type_id = $param['pay_type_id'];
+            }
             $orderPay->save();
             $orders->each(function ($order) use ($param) {
                 if (!OrderService::orderPay(['order_id' => $order->id,'order_pay_id'=>$param['order_pay_id'],'pay_type_id' => $param['pay_type_id']])) {

@@ -108,7 +108,12 @@ class WechatPay extends Pay
         $pay_type_name = PayType::get_pay_type_name($pay_type_id);
         $pay_order_model = $this->refundlog(Pay::PAY_TYPE_REFUND, $pay_type_name, $refundmoney, $op, $out_trade_no, Pay::ORDER_STATUS_NON, 0);
         //app退款查询app配置中的微信支付信息
-        $pay = $this->payParams($pay_type_id);
+        if ($pay_type_id == 9) {
+            $pay = \Setting::get('shop_app.pay');
+        } else {
+            $pay = $this->payParams();
+        }
+
         if (empty($pay['weixin_mchid']) || empty($pay['weixin_apisecret'])) {
             throw new AppException('没有设定支付参数');
         }
@@ -116,16 +121,12 @@ class WechatPay extends Pay
         if (empty($pay['weixin_cert']) || empty($pay['weixin_key']) || empty($pay['weixin_root'])) {
             throw new AppException('未上传完整的微信支付证书，请到【系统设置】->【支付方式】中上传!');
         }
-
         $notify_url = '';
         $app     = $this->getEasyWeChatApp($pay, $notify_url);
         $payment = $app->payment;
-
         $result = $payment->refund($out_trade_no, $out_refund_no, $totalmoney*100, $refundmoney*100);
-
         if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
             $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_COMPLETE, $result->transaction_id);
-
             $this->payResponseDataLog($out_trade_no, '微信退款', json_encode($result));
             return true;
         } else {
