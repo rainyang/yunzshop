@@ -161,7 +161,7 @@ class Withdraw extends BackendModel
     public static function updatedWithdrawStatus($id, $updatedData)
     {
         return self::where('id',$id)
-            ->orWhere('withdraw_sn',$id)
+            ->orWhere('withdraw_sn',(string)$id)
             ->update($updatedData);
     }
     
