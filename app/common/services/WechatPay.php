@@ -62,20 +62,21 @@ class WechatPay extends Pay
         $payment = $app->payment;
         $data['trade_type'] = $payType == 1 ? 'JSAPI' : 'APP';
         $order = self::getEasyWeChatOrder($data, $openid, $pay_order_model);
-
         $result = $payment->prepare($order);
+        \Log::debug('-----$result-----'. $result);
         $prepayId = null;
-        if ($payType == 1) {
-            \Log::debug('预下单', $result->toArray());
-            if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
-                $prepayId = $result->prepay_id;
 
-                $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_WAITPAY,'');
-            } elseif ($result->return_code == 'SUCCESS') {
-                throw new AppException($result->err_code_des);
-            } else {
-                throw new AppException($result->return_msg);
-            }
+        \Log::debug('预下单', $result->toArray());
+        if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
+            $prepayId = $result->prepay_id;
+
+            $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_WAITPAY,'');
+        } elseif ($result->return_code == 'SUCCESS') {
+            throw new AppException($result->err_code_des);
+        } else {
+            throw new AppException($result->return_msg);
+        }
+        if ($payType == 1) {
             $config = $payment->configForJSSDKPayment($prepayId);
             $config['appId'] = $pay['weixin_appid'];
 

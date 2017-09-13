@@ -183,7 +183,7 @@ class MergePayController extends ApiController
             throw new AppException('商城未开启微信支付');
         }
         $data = $this->pay( PayFactory::PAY_APP_WEACHAT);
-        return $this->successJson('成功', json_decode($data, 1));
+        return $this->successJson('成功', $data);
     }
 
     public function alipayAppRay(\Request $request)
