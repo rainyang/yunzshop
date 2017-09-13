@@ -8,7 +8,6 @@
 
 namespace app\backend\modules\refund\models\type;
 
-
 use app\backend\modules\refund\models\RefundApply;
 use app\common\events\order\AfterOrderRefundedEvent;
 use app\common\exceptions\AdminException;
