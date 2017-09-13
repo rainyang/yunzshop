@@ -94,8 +94,6 @@ class OperationController extends BaseController
         DB::transaction(function () use ($refundApply) {
             $refundApply->consensus();
             $refundApply->order->close();
-            event(new AfterOrderRefundedEvent($this->refundApply->order));
-
         });
         return $this->message('操作成功', '');
     }
