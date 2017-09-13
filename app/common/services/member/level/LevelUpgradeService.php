@@ -50,9 +50,9 @@ class LevelUpgradeService
         }
 
         if($this->validity['upgrade']){
-            $validity = $this->new_level->validity;
+            $validity = $this->new_level->validity * $this->validity['goods_total'];
         }else{
-            $validity = $this->memberModel->validity + $this->new_level->validity;
+            $validity = $this->memberModel->validity + $this->new_level->validity * $this->validity['goods_total'];
         }
 
         $this->memberModel->validity = $validity;
@@ -132,6 +132,7 @@ class LevelUpgradeService
         $level = MemberLevel::uniacid()->select('id','level','level_name','validity')->whereIn('goods_id', $goodsIds)->orderBy('level', 'desc')->first();
 
         $this->validity['is_goods'] = true; // 商品升级 开启等级期限
+        $this->validity['goods_total'] = $this->orderModel->hasManyOrderGoods->total;
 
         return $level ?: [];
     }
