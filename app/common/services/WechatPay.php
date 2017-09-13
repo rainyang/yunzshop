@@ -16,6 +16,7 @@ use app\common\models\Member;
 use app\common\models\OrderPay;
 use app\common\models\PayOrder;
 use app\common\models\PayType;
+use app\common\models\Order;
 use app\common\services\finance\Withdraw;
 use EasyWeChat\Foundation\Application;
 use EasyWeChat\Payment\Order as easyOrder;
