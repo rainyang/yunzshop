@@ -626,7 +626,7 @@ class MemberController extends ApiController
     private function getPoster()
     {
         if (\YunShop::plugin()->get('poster')) {
-            $posterModel = Poster::select('id')->where('center_show',1)->first();
+            $posterModel = Poster::uniacid()->select('id')->where('center_show',1)->first();
             if ($posterModel) {
                 $file_path = (new CreatePosterService(\YunShop::app()->getMemberId(), $posterModel->id))->getMemberPosterPath();
                 return request()->getSchemeAndHttpHost() . '/'. substr($file_path, strpos($file_path, 'addons'));
