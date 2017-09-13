@@ -10,6 +10,7 @@ namespace app\backend\modules\refund\models\type;
 
 
 use app\backend\modules\refund\models\RefundApply;
+use app\common\events\order\AfterOrderRefundedEvent;
 use app\common\exceptions\AdminException;
 
 abstract class RefundType
@@ -53,6 +54,8 @@ abstract class RefundType
         $this->validate([RefundApply::WAIT_CHECK], '手动退款');
 
         $this->refundApply->status = RefundApply::CONSENSUS;
+        event(new AfterOrderRefundedEvent($this->refundApply->order));
+
         return $this->refundApply->save();
     }
 
@@ -66,6 +69,8 @@ abstract class RefundType
 
         $this->refundApply->status = RefundApply::COMPLETE;
         $this->refundApply->price = $this->refundApply->order->price;//todo
+        event(new AfterOrderRefundedEvent($this->refundApply->order));
+
         return $this->refundApply->save();
     }
 
