@@ -91,9 +91,11 @@ class AliPay extends Pay
     {
         $out_refund_no = $this->setUniacidNo(\YunShop::app()->uniacid);
         $op = '支付宝退款 订单号：' . $out_trade_no . '退款单号：' . $out_refund_no . '退款总金额：' . $totalmoney;
+        if (empty($out_trade_no)) {
+            throw new AppException('参数错误');
+        }
         $pay_type_id = OrderPay::get_paysn_by_pay_type_id($out_trade_no);
         $pay_type_name = PayType::get_pay_type_name($pay_type_id);
-
         $this->refundlog(Pay::PAY_TYPE_REFUND, $pay_type_name, $totalmoney, $op, $out_trade_no, Pay::ORDER_STATUS_NON, 0);
         
         //支付宝交易单号

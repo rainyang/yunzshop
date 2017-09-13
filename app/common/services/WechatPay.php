@@ -47,7 +47,6 @@ class WechatPay extends Pay
         } else {
             $client_type = $payType;
         }
-
         $openid = Member::getOpenIdForType(\YunShop::app()->getMemberId(), $client_type);
         \Log::debug('-----pay_member_id-----'. \YunShop::app()->getMemberId());
         //不同支付类型选择参数
@@ -102,6 +101,9 @@ class WechatPay extends Pay
     {
         $out_refund_no = $this->setUniacidNo(\YunShop::app()->uniacid);
         $op = '微信退款 订单号：' . $out_trade_no . '退款单号：' . $out_refund_no . '退款总金额：' . $totalmoney;
+        if (empty($out_trade_no)) {
+            throw new AppException('参数错误');
+        }
         $pay_type_id = OrderPay::get_paysn_by_pay_type_id($out_trade_no);
         $pay_type_name = PayType::get_pay_type_name($pay_type_id);
         $pay_order_model = $this->refundlog(Pay::PAY_TYPE_REFUND, $pay_type_name, $refundmoney, $op, $out_trade_no, Pay::ORDER_STATUS_NON, 0);
