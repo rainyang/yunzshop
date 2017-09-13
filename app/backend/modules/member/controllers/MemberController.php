@@ -57,7 +57,6 @@ class MemberController extends BaseController
             ->orderBy('uid', 'desc')
             ->paginate($this->pageSize)
             ->toArray();
-
         $set = \Setting::get('shop.member');
 
         if (empty($set['level_name'])) {

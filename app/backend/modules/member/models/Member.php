@@ -140,8 +140,12 @@ class Member extends \app\common\models\Member
         }
 
         $result = $result->whereHas('yzMember', function ($query) use ($parame) {
-            $query->whereNull('deleted_at')
-                ->where('custom_value', 'like', '%' . $parame->custom_value . '%');
+            $query->whereNull('deleted_at');
+            if($parame->custom_value){
+                $query->where('custom_value', 'like', '%' . $parame->custom_value . '%');
+            }
+
+
         });
 
         if (!empty($parame['groupid']) || !empty($parame['level']) || $parame['isblack'] != ''
