@@ -25,6 +25,8 @@ class LevelUpgradeService
 
     private $new_level;
 
+    private $validity;
+
     public function checkUpgrade(AfterOrderReceivedEvent $event)
     {
         $this->orderModel   = $event->getOrderModel();
@@ -32,10 +34,30 @@ class LevelUpgradeService
 
 
         $result = $this->check();
+
+        $this->setValidity(); // 设置会员等级期限
+
         if ($result) {
             return $this->upgrade($result);
         }
         return '';
+    }
+
+    public function setValidity()
+    {
+        if(!$this->validity['is_goods']){
+            return;
+        }
+
+        if($this->validity['upgrade']){
+            $validity = $this->new_level->validity;
+        }else{
+            $validity = $this->memberModel->validity + $this->new_level->validity;
+        }
+
+        $this->memberModel->validity = $validity;
+
+        $this->memberModel->save();
     }
 
 
@@ -59,11 +81,13 @@ class LevelUpgradeService
                 $level =  '';
         }
 
+
         //比对当前等级权重，判断是否升级
         if ($this->new_level) {
             $memberLevel = isset($this->memberModel->level->level) ? $this->memberModel->level->level : 0;
 
             if ($this->new_level->level > $memberLevel) {
+                $this->validity['upgrade'] = true; // 会员期限 升级 期限叠加
                 return $this->new_level->id;
             }
             return '';
@@ -105,7 +129,9 @@ class LevelUpgradeService
     {
         $goodsIds = array_pluck($this->orderModel->hasManyOrderGoods->toArray(), 'goods_id');
 
-        $level = MemberLevel::uniacid()->select('id','level','level_name')->whereIn('goods_id', $goodsIds)->orderBy('level', 'desc')->first();
+        $level = MemberLevel::uniacid()->select('id','level','level_name','validity')->whereIn('goods_id', $goodsIds)->orderBy('level', 'desc')->first();
+
+        $this->validity['is_goods'] = true; // 商品升级 开启等级期限
 
         return $level ?: [];
     }
