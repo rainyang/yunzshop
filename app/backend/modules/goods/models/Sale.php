@@ -9,6 +9,8 @@
 namespace app\backend\modules\goods\models;
 
 
+use app\backend\modules\goods\observers\SettingObserver;
+
 class Sale extends \app\common\models\Sale
 {
     public $timestamps = false;
@@ -51,5 +53,12 @@ class Sale extends \app\common\models\Sale
         !$model && $model = new static;
 
         return $model;
+    }
+    public function __construct(array $attributes = [])
+    {
+
+        parent::__construct($attributes);
+        //注册观察者
+        static::observe(new SettingObserver());
     }
 }
