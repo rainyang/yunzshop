@@ -13,6 +13,9 @@ use app\common\helpers\Client;
 use app\common\helpers\Url;
 use app\common\models\McMappingFans;
 use app\common\models\Member;
+use app\common\models\OrderPay;
+use app\common\models\PayOrder;
+use app\common\models\PayType;
 use app\common\models\Order;
 use app\common\services\finance\Withdraw;
 use EasyWeChat\Foundation\Application;
@@ -28,12 +31,13 @@ class WechatPay extends Pay
         $this->pay_type = config('app.pay_type');
     }
 
-    public function doPay($data = [])
+    public function doPay($data = [], $payType = 1)
     {
         $client_type = null;
         $text = $data['extra']['type'] == 1 ? '支付' : '充值';
         $op = '微信订单' . $text . ' 订单号：' . $data['order_no'];
-        $pay_order_model = $this->log($data['extra']['type'], $this->pay_type[Pay::PAY_MODE_WECHAT], $data['amount'], $op, $data['order_no'], Pay::ORDER_STATUS_NON, \YunShop::app()->getMemberId());
+        $pay_type_name = PayType::get_pay_type_name($payType);
+        $pay_order_model = $this->log($data['extra']['type'], $pay_type_name, $data['amount'], $op, $data['order_no'], Pay::ORDER_STATUS_NON, \YunShop::app()->getMemberId());
 
         if (empty(\YunShop::app()->getMemberId())) {
             throw new AppException('无法获取用户ID');
@@ -41,13 +45,13 @@ class WechatPay extends Pay
 
         if (\YunShop::request()->client_type) {
             $client_type = \YunShop::request()->client_type;
+        } else {
+            $client_type = $payType;
         }
-
         $openid = Member::getOpenIdForType(\YunShop::app()->getMemberId(), $client_type);
         \Log::debug('-----pay_member_id-----'. \YunShop::app()->getMemberId());
         //不同支付类型选择参数
-        $pay = $this->payParams();
-
+        $pay = $this->payParams($payType);
         if (empty($pay['weixin_mchid']) || empty($pay['weixin_apisecret'])
             || empty($pay['weixin_appid']) || empty($pay['weixin_secret'])) {
 
@@ -56,28 +60,33 @@ class WechatPay extends Pay
         $notify_url = Url::shopUrl('payment/wechat/notifyUrl.php');
         $app     = $this->getEasyWeChatApp($pay, $notify_url);
         $payment = $app->payment;
+        $data['trade_type'] = $payType == 1 ? 'JSAPI' : 'APP';
         $order = self::getEasyWeChatOrder($data, $openid, $pay_order_model);
-        $result = $payment->prepare($order);
+
         $prepayId = null;
+        if ($payType == 1) {
+            $result = $payment->prepare($order);
+            \Log::debug('预下单', $result->toArray());
+            if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
+                $prepayId = $result->prepay_id;
 
-        \Log::debug('预下单', $result->toArray());
-        if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
-            $prepayId = $result->prepay_id;
+                $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_WAITPAY,'');
+            } elseif ($result->return_code == 'SUCCESS') {
+                throw new AppException($result->err_code_des);
+            } else {
+                throw new AppException($result->return_msg);
+            }
+            $config = $payment->configForJSSDKPayment($prepayId);
+            $config['appId'] = $pay['weixin_appid'];
 
-            $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_WAITPAY,'');
-        } elseif ($result->return_code == 'SUCCESS') {
-            throw new AppException($result->err_code_des);
+            $js = $app->js->config(array('chooseWXPay'));
+            $js = json_decode($js, 1);
+            $js['timestamp'] = strval($js['timestamp']);
+
+            return ['config'=>$config, 'js'=>json_encode($js)];
         } else {
-            throw new AppException($result->return_msg);
+            return true;
         }
-        $config = $payment->configForJSSDKPayment($prepayId);
-        $config['appId'] = $pay['weixin_appid'];
-
-        $js = $app->js->config(array('chooseWXPay'));
-        $js = json_decode($js, 1);
-        $js['timestamp'] = strval($js['timestamp']);
-
-        return ['config'=>$config, 'js'=>json_encode($js)];
     }
 
     /**
@@ -91,12 +100,15 @@ class WechatPay extends Pay
     public function doRefund($out_trade_no, $totalmoney, $refundmoney)
     {
         $out_refund_no = $this->setUniacidNo(\YunShop::app()->uniacid);
-
         $op = '微信退款 订单号：' . $out_trade_no . '退款单号：' . $out_refund_no . '退款总金额：' . $totalmoney;
-        $pay_order_model = $this->refundlog(Pay::PAY_TYPE_REFUND, $this->pay_type[Pay::PAY_MODE_WECHAT], $refundmoney, $op, $out_trade_no, Pay::ORDER_STATUS_NON, 0);
-        $pay_type_id = Order::select('pay_type_id')->where('order_sn', $out_trade_no)->value('pay_type_id');
+        if (empty($out_trade_no)) {
+            throw new AppException('参数错误');
+        }
+        $pay_type_id = OrderPay::get_paysn_by_pay_type_id($out_trade_no);
+        $pay_type_name = PayType::get_pay_type_name($pay_type_id);
+        $pay_order_model = $this->refundlog(Pay::PAY_TYPE_REFUND, $pay_type_name, $refundmoney, $op, $out_trade_no, Pay::ORDER_STATUS_NON, 0);
         //app退款查询app配置中的微信支付信息
-        if ($pay_type_id == 10) {
+        if ($pay_type_id == 9) {
             $pay = \Setting::get('shop_app.pay');
         } else {
             $pay = $this->payParams();
@@ -107,20 +119,15 @@ class WechatPay extends Pay
         }
 
         if (empty($pay['weixin_cert']) || empty($pay['weixin_key']) || empty($pay['weixin_root'])) {
-            throw new AppException('未上传完整的微信支付证书，请到【系统设置】->【支付方式】中上传!', '', 'error');
+            throw new AppException('未上传完整的微信支付证书，请到【系统设置】->【支付方式】中上传!');
         }
-
         $notify_url = '';
         $app     = $this->getEasyWeChatApp($pay, $notify_url);
         $payment = $app->payment;
-
         $result = $payment->refund($out_trade_no, $out_refund_no, $totalmoney*100, $refundmoney*100);
-
         if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
             $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_COMPLETE, $result->transaction_id);
-
             $this->payResponseDataLog($out_trade_no, '微信退款', json_encode($result));
-
             return true;
         } else {
             throw new AppException($result->err_code_des);
@@ -249,7 +256,6 @@ class WechatPay extends Pay
                 'notify_url'         => $notify_url
             ]
         ];
-
         $app = new Application($options);
 
         return $app;
@@ -266,7 +272,7 @@ class WechatPay extends Pay
     public static function getEasyWeChatOrder($data, $openid, &$pay_order_model)
     {
         $attributes = [
-            'trade_type'       => 'JSAPI', // JSAPI，NATIVE，APP...
+            'trade_type'       => $data['trade_type'], // JSAPI，NATIVE，APP...
             'body'             => $data['subject'],
             'out_trade_no'     => $data['order_no'],
             'total_fee'        => $data['amount'] * 100, // 单位：分
@@ -295,10 +301,9 @@ class WechatPay extends Pay
      * 支付参数
      * @return array|mixed
      */
-    private function payParams()
+    private function payParams($payType)
     {
         $pay = \Setting::get('shop.pay');
-
         if (\YunShop::request()->app_type == 'wechat') {
             self::$attach_type = 'wechat';
 
@@ -320,6 +325,10 @@ class WechatPay extends Pay
                 'weixin_cert' => '',
                 'weixin_key' => ''
             ];
+        } elseif ($payType == 9){
+            $pay = \Setting::get('shop_app.pay');
+        } else {
+            $pay = \Setting::get('shop.pay');
         }
 
         return $pay;
