@@ -20,13 +20,15 @@ class Withdraw
     {
         $withdrawModel = WithdrawModel::getWithdrawByWithdrawSN($withdrawSN);
         if ($withdrawModel && $withdrawModel->type == 'balance') {
-            $withdrawModel->status = 2;
-            $withdrawModel->arrival_at = time();
-            $result = $withdrawModel->save();
-            if ($result === true) {
-                BalanceNoticeService::withdrawSuccessNotice($withdrawModel);
+            if ($withdrawModel->status != 2) {
+                $withdrawModel->status = 2;
+                $withdrawModel->arrival_at = time();
+                $result = $withdrawModel->save();
+                if ($result === true) {
+                    BalanceNoticeService::withdrawSuccessNotice($withdrawModel);
+                }
             }
-            return $result;
+            return true;
         }
         return static::otherWithdrawSuccess($withdrawSN);
     }
