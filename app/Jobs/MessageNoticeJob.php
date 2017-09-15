@@ -25,22 +25,25 @@ class MessageNoticeJob implements ShouldQueue
      * @var int
      */
     public $timeout = 120;
-    
+
     protected $noticeModel;
     protected $templateId;
     protected $noticeData;
     protected $openId;
+    protected $url;
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($noticeModel,$templateId,$noticeData,$openId)
+    public function __construct($noticeModel, $templateId, $noticeData, $openId, $url)
     {
         $this->noticeModel = $noticeModel;
         $this->templateId = $templateId;
         $this->noticeData = $noticeData;
         $this->openId = $openId;
+        $this->url = $url;
     }
 
     /**
@@ -50,6 +53,6 @@ class MessageNoticeJob implements ShouldQueue
      */
     public function handle()
     {
-        $this->noticeModel->uses($this->templateId)->andData($this->noticeData)->andReceiver($this->openId)->send();
+        $this->noticeModel->uses($this->templateId)->andData($this->noticeData)->andReceiver($this->openId)->andUrl($this->url)->send();
     }
 }
