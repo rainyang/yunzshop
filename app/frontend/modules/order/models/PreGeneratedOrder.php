@@ -30,6 +30,7 @@ use Illuminate\Support\Facades\Schema;
  * @package app\frontend\modules\order\services\models
  * @property Collection orderDeductions
  * @property Collection orderCoupons
+ * @property Collection orderSettings
  */
 class PreGeneratedOrder extends Order
 {
@@ -68,6 +69,8 @@ class PreGeneratedOrder extends Order
         $this->dispatch_type_id = request()->input('dispatch_type_id', 0);
 
         parent::__construct($attributes);
+        $this->setRelation('orderSettings',$this->newCollection());
+
     }
 
     public function _init()
@@ -229,6 +232,9 @@ class PreGeneratedOrder extends Order
         $this->save();
 
         $result = $this->push();
+        dd($this);
+        exit;
+
         if ($result === false) {
             throw new AppException('订单相关信息保存失败');
         }
