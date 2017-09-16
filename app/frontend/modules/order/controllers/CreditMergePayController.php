@@ -33,15 +33,15 @@ class CreditMergePayController extends MergePayController
                 throw new AppException('余额扣除失败,请联系客服');
             }
             //todo 临时解决 需要重构
-
-            $this->orders->each(function ($order) {
-                if (!OrderService::orderPay(['order_id' => $order->id, 'pay_type_id' => PayFactory::PAY_CREDIT])) {
-                    throw new AppException('订单状态改变失败,请联系客服');
-                }
-            });
             $this->orderPay->pay_type_id = PayFactory::PAY_CREDIT;
             $this->orderPay->status = 1;
             $this->orderPay->save();
+            $this->orders->each(function ($order) {
+                if (!OrderService::orderPay(['order_id' => $order->id, 'order_pay_id' => $this->orderPay->id, 'pay_type_id' => PayFactory::PAY_CREDIT])) {
+                    throw new AppException('订单状态改变失败,请联系客服');
+                }
+            });
+
 
             //会员推广资格
             \Log::debug('余额支付-会员推广');

@@ -9,6 +9,7 @@ use app\common\services\Session;
 use app\common\repositories\OptionRepository;
 use app\common\services\PluginManager;
 use app\frontend\modules\member\models\MemberModel;
+use app\frontend\modules\member\models\MemberWechatModel;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
 use Yunshop\Gold\frontend\services\MemberCenterService;
@@ -421,13 +422,13 @@ class Member extends BackendModel
 
     public static function getOpenIdForType($member_id, $type = null){
         switch ($type) {
-            case 1:
-                $fans = McMappingFans::getFansById($member_id);
-
-                return $fans->openid;
-                break;
             case 2:
                 $mini_app = MemberMiniAppModel::getFansById($member_id);
+
+                return $mini_app->openid;
+                break;
+            case 9:
+                $mini_app = MemberWechatModel::getFansById($member_id);
 
                 return $mini_app->openid;
                 break;

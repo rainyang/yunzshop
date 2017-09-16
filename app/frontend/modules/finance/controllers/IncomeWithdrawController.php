@@ -339,6 +339,9 @@ class IncomeWithdrawController extends ApiController
         foreach ($withdrawData['withdrawal'] as $item) {
             $this->item = $item;
             $this->amount = $item['income'];
+            $this->key = $item['key_name'];
+            $this->getKeySet();
+
 
             $data[] = $this->getWithdrawRecordData();
             $this->setIncomeAndOrder($item['type'], $item['type_id']);
