@@ -131,6 +131,7 @@ class AlipayController extends PaymentController
 
     public function withdrawNotifyUrl()
     {
+        $data = [];
         \Log::debug('支付宝提现回调');
         $this->withdrawLog($_POST, '支付宝提现');
 
@@ -140,26 +141,34 @@ class AlipayController extends PaymentController
 
         if ($verify_result) {
             if ($_POST['success_details']) {
-                $plits = explode('^', $_POST['success_details']);
+                $post_success_details = implode('|', $_POST['success_details']);
 
-                if ($plits[4] == 'S') {
-                    $data = [
-                        'total_fee' => $plits[3],
-                        'trade_no' => $plits[0],
-                        'unit' => 'yuan',
-                        'pay_type' => '支付宝'
-                    ];
+                foreach ($post_success_details as $success_details) {
+                    $plits = explode('^', $success_details);
+
+                    if ($plits[4] == 'S') {
+                        $data[] = [
+                            'total_fee' => $plits[3],
+                            'trade_no' => $plits[0],
+                            'unit' => 'yuan',
+                            'pay_type' => '支付宝'
+                        ];
+                    }
                 }
             } else {
-                $plits = explode('^', $_POST['fail_details']);
+                $post_fail_details = implode('|', $_POST['fail_details']);
 
-                if ($plits[4] == 'F') {
-                    $data = [
-                        'total_fee' => $plits[3],
-                        'trade_no' => $plits[0],
-                        'unit' => 'yuan',
-                        'pay_type' => '支付宝'
-                    ];
+                foreach ($post_fail_details as $fail_details) {
+                    $plits = explode('^', $fail_details);
+
+                    if ($plits[4] == 'F') {
+                        $data[] = [
+                            'total_fee' => $plits[3],
+                            'trade_no' => $plits[0],
+                            'unit' => 'yuan',
+                            'pay_type' => '支付宝'
+                        ];
+                    }
                 }
             }
 
@@ -367,22 +376,26 @@ class AlipayController extends PaymentController
      *
      * @param $data
      */
-    public function withdrawResutl($data)
+    public function withdrawResutl($params)
     {
-        $pay_refund_model = PayWithdrawOrder::getOrderInfo($data['trade_no']);
+        if (!empty($params)) {
+            foreach ($params as $data ) {
+                $pay_refund_model = PayWithdrawOrder::getOrderInfo($data['trade_no']);
 
-        if ($pay_refund_model) {
-            $pay_refund_model->status = 2;
-            $pay_refund_model->trade_no = $data['trade_no'];
-            $pay_refund_model->save();
-        }
+                if ($pay_refund_model) {
+                    $pay_refund_model->status = 2;
+                    $pay_refund_model->trade_no = $data['trade_no'];
+                    $pay_refund_model->save();
+                }
 
-        \Log::debug('提现操作', 'withdraw.succeeded');
+                \Log::debug('提现操作', 'withdraw.succeeded');
 
-        if (bccomp($pay_refund_model->price, $data['total_fee'], 2) == 0) {
-            Withdraw::paySuccess($data['trade_no']);
+                if (bccomp($pay_refund_model->price, $data['total_fee'], 2) == 0) {
+                    Withdraw::paySuccess($data['trade_no']);
 
-            event(new AlipayWithdrawEvent($data['trade_no']));
+                    event(new AlipayWithdrawEvent($data['trade_no']));
+                }
+            }
         }
     }
 }

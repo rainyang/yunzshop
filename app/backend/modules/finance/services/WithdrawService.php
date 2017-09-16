@@ -31,6 +31,9 @@ class WithdrawService extends Withdraw
             case 2:
                 return '已打款';
                 break;
+            case 3:
+                return '驳回';
+                break;
 
         }
     }

@@ -147,7 +147,7 @@
             $(this).parents('.table').find('input[type="checkbox"]').prop('checked',$(this).prop('checked'));
         });
 
-        $('#batch_alipay').click(function() {
+        $(document).on('click', '#batch_alipay', function () {
             var total    = 0;
             var balance  = 0;
             var error    = 0;
@@ -168,16 +168,15 @@
                 }
             });
 
-
-            var myform = $('<form method="post"><input type="hidden" name="ids" value="' + ids + '" /></form>');
-            $(document.body).append(myform);
-
             if (error > 0) {
                 alert('提现方式错误');
+                return false;
             }
 
             if (balance == 0 || balance == total) {
-                var myform = $('<form>');
+                var myform = $('<form class="batch_alipay" method="post"><input type="hidden" name="ids" value="' + ids + '" /></form>');
+
+                $(document.body).append(myform);
 
                 if (balance == 0) {  //收入提现
                     myform.attr('action', '{!! yzWebUrl("finance.withdraw.batchAlipay") !!}');
@@ -188,9 +187,10 @@
                 myform.submit();
             } else {
                 alert('订单收入类型不一致');
+                return false;
             }
-
         });
+
     });
 </script>
 @endsection

@@ -313,7 +313,13 @@ class WithdrawController extends BaseController
             $result = WithdrawService::otherWithdrawSuccess($withdrawId);
             return ['msg' => '提现打款成功!'];
         } elseif ($resultPay && $payWay == '2') {
-            return ['msg' => '提现申请中!'];
+            //修改提现记录状态
+            $updatedData = [
+                'status' => 4,
+                'arrival_at' => time(),
+            ];
+            \Log::info('修改提现记录状态',print_r($updatedData,true));
+            return Withdraw::updatedWithdrawStatus($withdrawId, $updatedData);
         }
     }
 

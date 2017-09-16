@@ -102,6 +102,7 @@ class BalanceWithdrawController extends BaseController
             //微信打款
             $resultPay = $this->wechatWithdrawPay($remark);
         }
+
         //file_put_contents(storage_path('logs/withdraw2.log'),print_r($resultPay,true));
         if ($resultPay === true) {
             $this->withdrawModel->pay_at = time();
