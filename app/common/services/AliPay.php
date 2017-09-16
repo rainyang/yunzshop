@@ -76,7 +76,7 @@ class AliPay extends Pay
      * @param $amount 金额
      * @param $order_no 订单号
      * @param $extra 附加数据
-     * @return string
+     * @return strin5
      */
     public function doPay($data = [], $payType = 2)
     {
@@ -190,6 +190,42 @@ class AliPay extends Pay
         }
 
         return $alipay->withdraw($account, $name, $out_trade_no, $batch_no);
+    }
+
+    public function doBatchWithdraw($withdraws)
+    {
+        $account = [];
+        $name    = [];
+
+        $batch_no = $this->setUniacidNo(\YunShop::app()->uniacid);
+
+        foreach ($withdraws as $withdraw) {
+            $op = '支付宝提现 批次号：' . $withdraw->withdraw_sn . '提现金额：' . $withdraw->actual_amounts;
+
+
+            $this->withdrawlog(Pay::PAY_TYPE_REFUND, $this->pay_type[Pay::PAY_MODE_ALIPAY], $withdraw->actual_amounts, $op, $withdraw->withdraw_sn, Pay::ORDER_STATUS_NON, $withdraw->member_id);
+        }
+
+        $alipay = app('alipay.web');
+
+        foreach ($withdraws as $withdraw) {
+            $member_info = Member::getUserInfos($withdraw->member_id)->first();
+
+            if ($member_info) {
+                $member_info = $member_info->toArray();
+            } else {
+                throw new AppException('会员不存在');
+            }
+
+            if (!empty($member_info['yz_member']['alipay']) && !empty($member_info['yz_member']['alipayname'])) {
+                $account[] = $member_info['yz_member']['alipay'];
+                $name[]    = $member_info['yz_member']['alipayname'];
+            } else {
+                throw new AppException('没有设定支付宝账号');
+            }
+        }
+
+        return $alipay->batchWithdraw($account, $name, $withdraws, $batch_no);
     }
 
     public function buildRequestSign()

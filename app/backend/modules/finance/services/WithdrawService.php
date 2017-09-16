@@ -64,7 +64,12 @@ class WithdrawService extends Withdraw
 
     public static function alipayWithdrawPay($withdraw, $remark)
     {
-        $result = PayFactory::create(2)->doWithdraw($withdraw->member_id, $withdraw->withdraw_sn, $withdraw->actual_amounts, $remark);
+        if (is_array($withdraw)) {
+            $result = PayFactory::create(2)->doBatchWithdraw($withdraw);
+        } else {
+            $result = PayFactory::create(2)->doWithdraw($withdraw->member_id, $withdraw->withdraw_sn, $withdraw->actual_amounts, $remark);
+        }
+
         if ($result['errno'] == 1) {
             return $result['message'];
         }
