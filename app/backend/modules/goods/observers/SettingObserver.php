@@ -31,6 +31,9 @@ class SettingObserver extends \app\common\observers\BaseObserver
 
     public function saved(Model $model)
     {
+        if(empty($model->getDirty())){
+            return;
+        }
         $log = new AdminOperationLog();
         $log->table_name = $model->getTable();
 
