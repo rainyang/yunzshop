@@ -141,7 +141,7 @@ class AlipayController extends PaymentController
 
         if ($verify_result) {
             if ($_POST['success_details']) {
-                $post_success_details = implode('|', $_POST['success_details']);
+                $post_success_details = explode('|', rtrim($_POST['success_details'], '|'));
 
                 foreach ($post_success_details as $success_details) {
                     $plits = explode('^', $success_details);
@@ -156,7 +156,7 @@ class AlipayController extends PaymentController
                     }
                 }
             } else {
-                $post_fail_details = implode('|', $_POST['fail_details']);
+                $post_fail_details = explode('|', rtrim($_POST['fail_details'], '|'));
 
                 foreach ($post_fail_details as $fail_details) {
                     $plits = explode('^', $fail_details);
