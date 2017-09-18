@@ -75,6 +75,7 @@
     </div>
 </form>
 
+@if (1 == YunShop::request()->search['status'])
 <div class='panel panel-default'>
     <div class='panel-body' style="padding-bottom: 15px">
         <input type="hidden" name="pay_way" value="2">
@@ -82,6 +83,7 @@
         <label style="color:#ff0000;">批量打款所选的订单收入类型必须保持一致，收入类型分为余额提现和收入提现</label>
     </div>
 </div>
+@endif
 <div class='panel panel-default'>
     <div class='panel-body'>
         <table class="table">
