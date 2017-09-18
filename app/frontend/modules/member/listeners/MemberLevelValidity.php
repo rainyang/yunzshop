@@ -67,7 +67,7 @@ class MemberLevelValidity
     public function subscribe()
     {
         \Event::listen('cron.collectJobs', function () {
-            \Cron::add('Member-validity', '*/1 * * * * *', function () {
+            \Cron::add('Member-validity', '*/10 * * * * *', function () {
                 $this->handle();
                 return;
             });
