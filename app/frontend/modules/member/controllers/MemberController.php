@@ -27,7 +27,8 @@ use app\frontend\modules\member\services\MemberService;
 use app\frontend\models\OrderListModel;
 use EasyWeChat\Foundation\Application;
 use Illuminate\Support\Str;
-use Yunshop\Poster\services\CenterShowPosterService;
+use Yunshop\Poster\models\Poster;
+use Yunshop\Poster\services\CreatePosterService;
 use Yunshop\TeamDividend\models\YzMemberModel;
 
 class MemberController extends ApiController
@@ -38,7 +39,7 @@ class MemberController extends ApiController
     /**
      * 获取用户信息
      *
-     * @return array
+     *
      */
     public function getUserInfo()
     {
@@ -65,9 +66,7 @@ class MemberController extends ApiController
                 }
 
                 //个人中心的推广二维码
-                $data['poster'] = $this->createPoster();
-                //$data['poster'] = $this->getPoster();
-                //$data['poster'] = "http://test.yunzshop.com/addons/yun_shop/storage/app/public/poster/2/106a184f8525d30e01e530ed2c4cabcb.png";
+                $data['poster'] = $this->getPoster($member_info['yz_member']['is_agent']);
 
                 //文章营销
                 $articleSetting = Setting::get('plugin.article');
@@ -621,19 +620,24 @@ class MemberController extends ApiController
         return $this->errorJson('暂无数据', []);
     }
 
-    //会员中心推广二维码
-    private function getPoster()
+    /**
+     * 会员中心推广二维码(包含会员是否有生成海报权限)
+     * @param $isAgent
+     * @return string
+     */
+    private function getPoster($isAgent)
     {
         if (\YunShop::plugin()->get('poster')) {
-
-            $test = (new CenterShowPosterService())->getMemberPosterUrl(\YunShop::app()->getMemberId());
-            dump($test);
-            dd(1);
+            $posterModel = Poster::uniacid()->select('id','is_open')->where('center_show',1)->first();
+            if (($posterModel && $posterModel->is_open) || ($posterModel && !$posterModel->is_open && $isAgent)) {
+                $file_path = (new CreatePosterService(\YunShop::app()->getMemberId(), $posterModel->id))->getMemberPosterPath();
+                return request()->getSchemeAndHttpHost() . '/'. substr($file_path, strpos($file_path, 'addons'));
+            }
         }
-        dd(2);
         return $this->createPoster();
     }
 
+    //todo 此处海报生成是否可以公用超级海报代码  vs YITIAN
     //合成推广海报
     private function createPoster()
     {

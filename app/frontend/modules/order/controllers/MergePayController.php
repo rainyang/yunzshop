@@ -136,11 +136,9 @@ class MergePayController extends ApiController
     }
     protected function getPayResult($payType,$orderPay,$orders){
         $query_str = $this->getPayParams($orderPay, $orders);
-
         $pay = PayFactory::create($payType);
         //如果支付模块常量改变 数据会受影响
-
-        $result = $pay->doPay($query_str);
+        $result = $pay->doPay($query_str, $payType);
         if (!isset($result)) {
             throw new AppException('获取支付参数失败');
         }
@@ -176,6 +174,27 @@ class MergePayController extends ApiController
             Session::set('member_id', $request->query('uid'));
         }
         $data = $this->pay( PayFactory::PAY_ALIPAY);
+        return $this->successJson('成功', $data);
+    }
+    
+    public function wechatAppPay(\Request $request)
+    {
+        if (\Setting::get('shop_app.pay.weixin') == false) {
+            throw new AppException('商城未开启微信支付');
+        }
+        $data = $this->pay( PayFactory::PAY_APP_WEACHAT);
+        return $this->successJson('成功', $data);
+    }
+
+    public function alipayAppRay(\Request $request)
+    {
+        if (\Setting::get('shop_app.pay.alipay') == false) {
+            throw new AppException('商城未开启支付宝支付');
+        }
+        if ($request->has('uid')) {
+            Session::set('member_id', $request->query('uid'));
+        }
+        $data = $this->pay( PayFactory::PAY_APP_ALIPAY);
         return $this->successJson('成功', $data);
     }
 
