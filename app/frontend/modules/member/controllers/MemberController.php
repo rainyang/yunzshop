@@ -818,4 +818,21 @@ class MemberController extends ApiController
         return $this->successJson('保存失败！', []);
     }
 
+    public function withdrawByMobile()
+    {
+        if (\YunShop::app()->getMemberId() && \YunShop::app()->getMemberId() > 0) {
+            $member_model = Member::getMemberById(\YunShop::app()->getMemberId());
+
+            if ($member_model && $member_model->mobile) {
+                $setting['is_bind_mobile'] = 0;
+            } else {
+                $setting['is_bind_mobile'] = 1;
+            }
+        } else {
+            $setting['is_bind_mobile'] = 1;
+        }
+
+        return $this->successJson('ok', $setting);
+    }
+
 }
