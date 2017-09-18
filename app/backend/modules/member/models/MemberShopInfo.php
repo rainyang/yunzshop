@@ -10,6 +10,8 @@ namespace app\backend\modules\member\models;
 
 class MemberShopInfo extends \app\common\models\MemberShopInfo
 {
+    static protected $needLog = true;
+
     public function group()
     {
         return $this->belongsTo('app\backend\modules\member\models\MemberGroup');

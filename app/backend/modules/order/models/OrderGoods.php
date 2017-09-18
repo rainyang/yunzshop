@@ -13,6 +13,8 @@ use app\backend\modules\goods\models\Goods;
 
 class OrderGoods extends \app\common\models\OrderGoods
 {
+    static protected $needLog = true;
+
     public function goods()
     {
         return $this->hasOne(Goods::class, 'id', 'goods_id');

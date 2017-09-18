@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 class Category extends \app\common\models\Category
 {
+    static protected $needLog = true;
 
     /**
      * @return mixed

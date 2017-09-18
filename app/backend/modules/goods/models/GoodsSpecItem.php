@@ -10,5 +10,6 @@ namespace app\backend\modules\goods\models;
 
 class GoodsSpecItem extends \app\common\models\GoodsSpecItem
 {
-    
+    static protected $needLog = true;
+
 }
