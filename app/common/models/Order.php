@@ -430,4 +430,22 @@ class Order extends BaseModel
     {
         return $this->hasOneDispatchType->needSend();
     }
+
+    public function getSetting($key)
+    {
+        // 全局设置
+        $result = \app\common\facades\Setting::get($key);
+        if (isset($this->orderSettings)) {
+            // 订单设置
+            $keys = collect(explode('.', $key));
+            $orderSettingKey = $keys->shift();
+            $orderSettingValueKeys = $keys;
+            $orderSettingValue = array_get($this->orderSettings->where('key', $orderSettingKey)->first()->value, $orderSettingValueKeys->implode('.'));
+
+            if (isset($orderSettingValue)) {
+                $result = array_merge($result,$orderSettingValue);
+            }
+        }
+        return $result;
+    }
 }

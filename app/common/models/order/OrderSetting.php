@@ -21,4 +21,9 @@ class OrderSetting extends BaseModel
     protected $casts = [
         'value' => 'json'
     ];
+    public function get($key){
+        dd($key);
+        exit;
+
+    }
 }

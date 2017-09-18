@@ -14,6 +14,7 @@ use Setting;
 class CalculationPointService
 {
     private $orderGoodsModels;
+    private $order;
     private $point_set;
     public $point;
     private $member;
@@ -21,11 +22,12 @@ class CalculationPointService
 
     public function __construct($orderGoodsModels, $member_id)
     {
+        $this->orderGoodsModels = $orderGoodsModels;
+        $this->order = $orderGoodsModels->first()->order;
         //验证积分设置
         $this->verifyPointSet();
         //验证用户积分
         $this->verifyMemberPoint($member_id);
-        $this->orderGoodsModels = $orderGoodsModels;
         //计算积分
         $this->calculationPoint();
         $this->point_money = floor($this->point * $this->point_set['money'] * 100) / 100;
@@ -41,7 +43,10 @@ class CalculationPointService
         if (Setting::get('point.set')['point_deduct'] == 0) {
             return false;
         }
-        $this->point_set = Setting::get('point.set');
+        $this->point_set = $this->order->getSetting('point.set');
+        dd($this->point_set);
+        exit;
+
     }
 
     /**
