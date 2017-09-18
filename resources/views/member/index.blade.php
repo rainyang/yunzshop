@@ -118,6 +118,12 @@
                             </div>
                         </div>
 
+                        <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                            <div class="">
+                                <input type="text" class="form-control"  name="custom_value" value="{{$request['custom_value']}}" placeholder="自定义字段"/>
+                            </div>
+                        </div>
+
                         <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
 
                             <div class="time">
