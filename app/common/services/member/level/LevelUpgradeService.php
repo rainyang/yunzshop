@@ -54,7 +54,7 @@ class LevelUpgradeService
         }else{
             $validity = $this->memberModel->validity + $this->new_level->validity * $this->validity['goods_total'];
         }
-
+        
         $this->memberModel->validity = $validity;
 
         $this->memberModel->save();
@@ -129,10 +129,17 @@ class LevelUpgradeService
     {
         $goodsIds = array_pluck($this->orderModel->hasManyOrderGoods->toArray(), 'goods_id');
 
-        $level = MemberLevel::uniacid()->select('id','level','level_name','validity')->whereIn('goods_id', $goodsIds)->orderBy('level', 'desc')->first();
-
+        $level = MemberLevel::uniacid()->select('id','level','level_name','goods_id','validity')->whereIn('goods_id', $goodsIds)->orderBy('level', 'desc')->first();
         $this->validity['is_goods'] = true; // 商品升级 开启等级期限
-        $this->validity['goods_total'] = $this->orderModel->hasManyOrderGoods->total;
+
+        foreach ($this->orderModel->hasManyOrderGoods as $time)
+        {
+            if($time->goods_id == $level->goods_id){
+                $this->validity['goods_total'] = $time->total;
+            }
+        }
+
+
 
         return $level ?: [];
     }
