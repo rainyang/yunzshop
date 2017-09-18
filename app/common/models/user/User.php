@@ -211,6 +211,7 @@ class User extends BaseModel
      * @return array*/
     public static function getAllPermissions()
     {
+        set_time_limit(0);
         $userPermissions = self::getUserPermissionsCache()->toArray();
         //dd($userPermissions);
         $permissions = [];
