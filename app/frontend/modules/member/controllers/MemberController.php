@@ -627,10 +627,12 @@ class MemberController extends ApiController
     private function getPoster($isAgent)
     {
         if (\YunShop::plugin()->get('poster')) {
-            $posterModel = Poster::uniacid()->select('id','is_open')->where('center_show',1)->first();
-            if (($posterModel && $posterModel->is_open) || ($posterModel && !$posterModel->is_open && $isAgent)) {
-                $file_path = (new CreatePosterService(\YunShop::app()->getMemberId(), $posterModel->id))->getMemberPosterPath();
-                return request()->getSchemeAndHttpHost() . '/'. substr($file_path, strpos($file_path, 'addons'));
+            if (\Schema::hasColumn('yz_poster', 'center_show')) {
+                $posterModel = Poster::uniacid()->select('id', 'is_open')->where('center_show', 1)->first();
+                if (($posterModel && $posterModel->is_open) || ($posterModel && !$posterModel->is_open && $isAgent)) {
+                    $file_path = (new CreatePosterService(\YunShop::app()->getMemberId(), $posterModel->id))->getMemberPosterPath();
+                    return request()->getSchemeAndHttpHost() . '/' . substr($file_path, strpos($file_path, 'addons'));
+                }
             }
         }
         return $this->createPoster();
