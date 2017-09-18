@@ -11,4 +11,6 @@ namespace app\backend\modules\member\models;
 
 class McMappingFans extends \app\common\models\McMappingFans
 {
+    static protected $needLog = true;
+
 }

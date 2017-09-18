@@ -146,7 +146,7 @@ class Goods extends BaseModel
 
     public function hasOneSale()
     {
-        return $this->hasOne(Sale::class, 'goods_id', 'id');
+        return $this->hasOne(app('GoodsManager')->make('GoodsSale'), 'goods_id', 'id');
     }
 
     public function scopeIsPlugin($query)

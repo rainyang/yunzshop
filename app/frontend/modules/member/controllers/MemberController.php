@@ -59,26 +59,24 @@ class MemberController extends ApiController
 
                 //标识"会员关系链"是否开启(如果没有设置,则默认为未开启),用于前端判断是否显示个人中心的"推广二维码"
                 $info = MemberRelation::getSetInfo()->first();
-                if (!empty($info)){
-                    $data['relation_switch'] = $info->status == 1 ?  1 : 0;
-                } else{
+                if (!empty($info)) {
+                    $data['relation_switch'] = $info->status == 1 ? 1 : 0;
+                } else {
                     $data['relation_switch'] = 0;
                 }
 
                 //个人中心的推广二维码
-                $data['poster'] = $this->createPoster();
-                //$data['poster'] = $this->getPoster();
-                //$data['poster'] = "http://test.yunzshop.com/addons/yun_shop/storage/app/public/poster/2/106a184f8525d30e01e530ed2c4cabcb.png";
+                $data['poster'] = $this->getPoster($member_info['yz_member']['is_agent']);
 
                 //文章营销
                 $articleSetting = Setting::get('plugin.article');
-                if($articleSetting['enabled'] == 1){
+                if ($articleSetting['enabled'] == 1) {
                     $data['article_title'] = $articleSetting['center'] ? html_entity_decode($articleSetting['center']) : '文章营销';
                 }
 
                 return $this->successJson('', $data);
             } else {
-                return $this->errorJson('['. $member_id .']用户不存在');
+                return $this->errorJson('[' . $member_id . ']用户不存在');
             }
 
         } else {
@@ -104,8 +102,7 @@ class MemberController extends ApiController
             $info = $info->toArray();
         }
 
-        if (empty($member_info))
-        {
+        if (empty($member_info)) {
             return $this->errorJson('会员不存在');
         } else {
             $data = $member_info->toArray();
@@ -137,52 +134,52 @@ class MemberController extends ApiController
                     $member = $member_model->toArray();
                 }
                 break;
-           case 2:
-               $apply_qualification = 2;
-               $cost_num  = Order::getCostTotalNum(\YunShop::app()->getMemberId());
+            case 2:
+                $apply_qualification = 2;
+                $cost_num = Order::getCostTotalNum(\YunShop::app()->getMemberId());
 
-               if ($info['become_check'] && $cost_num >= $info['become_ordercount']) {
-                   $apply_qualification = 5;
-               }
-               break;
-           case 3:
-               $apply_qualification = 3;
-               $cost_price  = Order::getCostTotalPrice(\YunShop::app()->getMemberId());
+                if ($info['become_check'] && $cost_num >= $info['become_ordercount']) {
+                    $apply_qualification = 5;
+                }
+                break;
+            case 3:
+                $apply_qualification = 3;
+                $cost_price = Order::getCostTotalPrice(\YunShop::app()->getMemberId());
 
-               if ($info['become_check'] && $cost_price >= $info['become_moneycount']) {
-                   $apply_qualification = 6;
-               }
-               break;
-           case 4:
-               $apply_qualification = 4;
-               $goods = Goods::getGoodsById($info['become_goods_id']);
-               $goods_name = '';
+                if ($info['become_check'] && $cost_price >= $info['become_moneycount']) {
+                    $apply_qualification = 6;
+                }
+                break;
+            case 4:
+                $apply_qualification = 4;
+                $goods = Goods::getGoodsById($info['become_goods_id']);
+                $goods_name = '';
 
-               if (!empty($goods)) {
-                   $goods = $goods->toArray();
+                if (!empty($goods)) {
+                    $goods = $goods->toArray();
 
-                   $goods_name = $goods['title'];
-               }
+                    $goods_name = $goods['title'];
+                }
 
-               if ($info['become_check'] && MemberRelation::checkOrderGoods($info['become_goods_id'])) {
-                   $apply_qualification = 7;
-               }
-               break;
-           default:
-               $apply_qualification = 0;
-       }
+                if ($info['become_check'] && MemberRelation::checkOrderGoods($info['become_goods_id'])) {
+                    $apply_qualification = 7;
+                }
+                break;
+            default:
+                $apply_qualification = 0;
+        }
 
-       $relation = [
-           'switched' => $info['status'],
-           'become' => $apply_qualification,
-           'become1' => ['shop_name' => $account['name'],'parent_name' => $parent_name, 'realname' => $member['realname'], 'mobile' => $member['mobile']],
-           'become2' => ['shop_name' => $account['name'], 'total' => $info['become_ordercount'], 'cost' => $cost_num],
-           'become3' => ['shop_name' => $account['name'], 'total' => $info['become_moneycount'], 'cost' => $cost_price],
-           'become4' =>['shop_name' => $account['name'], 'goods_name' => $goods_name, 'goods_id' => $info['become_goods_id']],
-           'is_agent' => $data['is_agent'],
-           'status' => $data['status'],
-           'account' => $account['name']
-       ];
+        $relation = [
+            'switched' => $info['status'],
+            'become' => $apply_qualification,
+            'become1' => ['shop_name' => $account['name'], 'parent_name' => $parent_name, 'realname' => $member['realname'], 'mobile' => $member['mobile']],
+            'become2' => ['shop_name' => $account['name'], 'total' => $info['become_ordercount'], 'cost' => $cost_num],
+            'become3' => ['shop_name' => $account['name'], 'total' => $info['become_moneycount'], 'cost' => $cost_price],
+            'become4' => ['shop_name' => $account['name'], 'goods_name' => $goods_name, 'goods_id' => $info['become_goods_id']],
+            'is_agent' => $data['is_agent'],
+            'status' => $data['status'],
+            'account' => $account['name']
+        ];
 
         return $this->successJson('', $relation);
     }
@@ -210,13 +207,13 @@ class MemberController extends ApiController
      * @param string $extra
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getAgentQR($extra='')
+    public function getAgentQR($extra = '')
     {
         if (empty(\YunShop::app()->getMemberId())) {
             return $this->errorJson('请重新登录');
         }
 
-        $qr_url = MemberModel::getAgentQR($extra='');
+        $qr_url = MemberModel::getAgentQR($extra = '');
 
         return $this->successJson('', ['qr' => $qr_url]);
     }
@@ -237,11 +234,11 @@ class MemberController extends ApiController
         $sub_member_model->apply_time = time();
 
         if (!$sub_member_model->save()) {
-           return $this->errorJson('会员信息保存失败');
+            return $this->errorJson('会员信息保存失败');
         }
 
         $realname = \YunShop::request()->realname;
-        $moible =\YunShop::request()->mobile;
+        $moible = \YunShop::request()->mobile;
 
         $member_mode = MemberModel::getMemberById(\YunShop::app()->getMemberId());
 
@@ -262,7 +259,7 @@ class MemberController extends ApiController
      */
     public function getMyAgentCount()
     {
-         return $this->successJson('', ['count'=>MemberModel::getAgentCount(\YunShop::app()->getMemberId())]);
+        return $this->successJson('', ['count' => MemberModel::getAgentCount(\YunShop::app()->getMemberId())]);
     }
 
     /**
@@ -416,9 +413,9 @@ class MemberController extends ApiController
             }
 
             if ($member_model->save() && $member_shop_info_model->save()) {
-                    return $this->successJson('用户资料修改成功');
+                return $this->successJson('用户资料修改成功');
             } else {
-                    return $this->errorJson('更新用户资料失败');
+                return $this->errorJson('更新用户资料失败');
             }
         } else {
             return $this->errorJson('用户不存在');
@@ -477,18 +474,18 @@ class MemberController extends ApiController
         $pay = \Setting::get('shop.pay');
 
         if (!empty($pay['weixin_appid']) && !empty($pay['weixin_secret'])) {
-            $app_id  = $pay['weixin_appid'];
-            $secret  = $pay['weixin_secret'];
+            $app_id = $pay['weixin_appid'];
+            $secret = $pay['weixin_secret'];
         } else {
             $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
 
-            $app_id  = $account->key;
-            $secret  = $account->secret;
+            $app_id = $account->key;
+            $secret = $account->secret;
         }
 
         $options = [
-            'app_id'  => $app_id,
-            'secret'  => $secret
+            'app_id' => $app_id,
+            'secret' => $secret
         ];
 
         $app = new Application($options);
@@ -496,7 +493,7 @@ class MemberController extends ApiController
         $js = $app->js;
         $js->setUrl($url);
 
-        $config = $js->config(array('onMenuShareTimeline','onMenuShareAppMessage', 'showOptionMenu'));
+        $config = $js->config(array('onMenuShareTimeline', 'onMenuShareAppMessage', 'showOptionMenu'));
         $config = json_decode($config, 1);
 
         $info = [];
@@ -523,8 +520,8 @@ class MemberController extends ApiController
         $shop['logo'] = replace_yunshop(tomedia($shop['logo']));
 
         if (!is_null(\Config('customer_service'))) {
-            $class = array_get(\Config('customer_service'),'class');
-            $function = array_get(\Config('customer_service'),'function');
+            $class = array_get(\Config('customer_service'), 'class');
+            $function = array_get(\Config('customer_service'), 'function');
             $ret = $class::$function(request()->goods_id);
             if ($ret) {
                 $shop['cservice'] = $ret;
@@ -533,8 +530,8 @@ class MemberController extends ApiController
 
         $data = [
             'config' => $config,
-            'info'  => $info,   //商城设置
-            'shop'  => $shop,
+            'info' => $info,   //商城设置
+            'shop' => $shop,
             'share' => $share   //分享设置
         ];
 
@@ -548,9 +545,9 @@ class MemberController extends ApiController
      */
     public function applyProtocol()
     {
-       $protocol = Setting::get('apply_protocol');
+        $protocol = Setting::get('apply_protocol');
 
-        if($protocol){
+        if ($protocol) {
             return $this->successJson('获取数据成功!', $protocol);
         }
         return $this->successJson('未检测到数据!', []);
@@ -579,7 +576,7 @@ class MemberController extends ApiController
 
         if ($info) {
             return $this->successJson('', [
-                'banner'  => replace_yunshop(tomedia($info['banner']))
+                'banner' => replace_yunshop(tomedia($info['banner']))
             ]);
         }
 
@@ -589,7 +586,7 @@ class MemberController extends ApiController
     public function guideFollow()
     {
         $member_id = \YunShop::app()->getMemberId();
-        if(empty($member_id)){
+        if (empty($member_id)) {
             return $this->errorJson('用户未登录', []);
         }
 
@@ -622,12 +619,16 @@ class MemberController extends ApiController
         return $this->errorJson('暂无数据', []);
     }
 
-    //会员中心推广二维码
-    private function getPoster()
+    /**
+     * 会员中心推广二维码(包含会员是否有生成海报权限)
+     * @param $isAgent
+     * @return string
+     */
+    private function getPoster($isAgent)
     {
         if (\YunShop::plugin()->get('poster')) {
-            $posterModel = Poster::uniacid()->select('id')->where('center_show',1)->first();
-            if ($posterModel) {
+            $posterModel = Poster::uniacid()->select('id','is_open')->where('center_show',1)->first();
+            if (($posterModel && $posterModel->is_open) || ($posterModel && !$posterModel->is_open && $isAgent)) {
                 $file_path = (new CreatePosterService(\YunShop::app()->getMemberId(), $posterModel->id))->getMemberPosterPath();
                 return request()->getSchemeAndHttpHost() . '/'. substr($file_path, strpos($file_path, 'addons'));
             }
@@ -635,6 +636,7 @@ class MemberController extends ApiController
         return $this->createPoster();
     }
 
+    //todo 此处海报生成是否可以公用超级海报代码  vs YITIAN
     //合成推广海报
     private function createPoster()
     {
@@ -651,33 +653,33 @@ class MemberController extends ApiController
 
         $shopInfo = Setting::get('shop.shop');
         $shopName = $shopInfo['name'] ?: '商城'; //todo 默认值需要更新
-        $shopLogo = $shopInfo['logo'] ? replace_yunshop(tomedia($shopInfo['logo'])) : base_path().'/static/images/logo.png'; //todo 默认值需要更新
-        $shopImg = $shopInfo['signimg'] ? replace_yunshop(tomedia($shopInfo['signimg'])) : base_path().'/static/images/photo-mr.jpg'; //todo 默认值需要更新
+        $shopLogo = $shopInfo['logo'] ? replace_yunshop(tomedia($shopInfo['logo'])) : base_path() . '/static/images/logo.png'; //todo 默认值需要更新
+        $shopImg = $shopInfo['signimg'] ? replace_yunshop(tomedia($shopInfo['signimg'])) : base_path() . '/static/images/photo-mr.jpg'; //todo 默认值需要更新
 
         $str_lenght = $logo_width + $font_size_show * mb_strlen($shopName);
 
         $space = ($width - $str_lenght) / 2;
 
         $uniacid = \YunShop::app()->uniacid;
-        $path = storage_path('app/public/personalposter/'.$uniacid);
+        $path = storage_path('app/public/personalposter/' . $uniacid);
         if (!file_exists($path)) {
             load()->func('file');
             mkdirs($path);
         }
-        $md5 = md5($member_id.$shopInfo['name'].$shopInfo['logo'].$shopInfo['signimg']); //用于标识组成元素是否有变化
+        $md5 = md5($member_id . $shopInfo['name'] . $shopInfo['logo'] . $shopInfo['signimg']); //用于标识组成元素是否有变化
         $extend = '.png';
-        $file = $md5.$extend;
+        $file = $md5 . $extend;
 
-        if(!file_exists($path.'/'.$file)){
+        if (!file_exists($path . '/' . $file)) {
             $targetImg = imagecreatetruecolor($width, $height);
             $white = imagecolorallocate($targetImg, 255, 255, 255);
-            imagefill($targetImg,0,0,$white);
+            imagefill($targetImg, 0, 0, $white);
 
             $imgSource = imagecreatefromstring(file_get_contents($shopImg));
             $logoSource = imagecreatefromstring(file_get_contents($shopLogo));
             $qrcode = MemberModel::getAgentQR();
             $qrSource = imagecreatefromstring(file_get_contents($qrcode));
-            $fingerPrintImg = imagecreatefromstring(file_get_contents(base_path().'/static/app/images/ewm.png'));
+            $fingerPrintImg = imagecreatefromstring(file_get_contents(base_path() . '/static/app/images/ewm.png'));
             $mergeData = [
                 'dst_left' => $space,
                 'dst_top' => 10,
@@ -718,7 +720,7 @@ class MemberController extends ApiController
             imagepng($targetImg, $imgPath);
         }
 
-        $imgUrl = request()->getSchemeAndHttpHost() . '/'. substr($path, strpos($path, 'addons')) . '/' . $file;
+        $imgUrl = request()->getSchemeAndHttpHost() . '/' . substr($path, strpos($path, 'addons')) . '/' . $file;
         return $imgUrl;
     }
 
@@ -735,7 +737,7 @@ class MemberController extends ApiController
     //合并字符串
     private static function mergeText($destinationImg, $text, $data)
     {
-        putenv('GDFONTPATH='.IA_ROOT.'/addons/yun_shop/static/fonts');
+        putenv('GDFONTPATH=' . IA_ROOT . '/addons/yun_shop/static/fonts');
         $font = "source_han_sans";
 
         $black = imagecolorallocate($destinationImg, 0, 0, 0);
@@ -765,7 +767,7 @@ class MemberController extends ApiController
 
     public function memberFromHXQModule()
     {
-        $uniacid  = \YunShop::app()->uniacid;
+        $uniacid = \YunShop::app()->uniacid;
         $member_id = \YunShop::request()->uid;
 
         if (!empty($member_id)) {
@@ -775,17 +777,45 @@ class MemberController extends ApiController
                 (new MemberService)->addSubMemberInfo($uniacid, (int)$member_id);
             }
 
-            $mid = \YunShop::request()->mid?:0;
+            $mid = \YunShop::request()->mid ?: 0;
 
             Member::createRealtion($member_id, $mid);
 
-            \Log::debug('------HXQModule---------'.$member_id);
-            \Log::debug('------HXQModule---------'.$mid);
+            \Log::debug('------HXQModule---------' . $member_id);
+            \Log::debug('------HXQModule---------' . $mid);
 
-            return json_encode(['status'=>1, 'result'=>'ok']);
+            return json_encode(['status' => 1, 'result' => 'ok']);
         }
 
-        return json_encode(['status'=>0, 'result'=>'uid为空']);
+        return json_encode(['status' => 0, 'result' => 'uid为空']);
+    }
+
+    public function getCustomField()
+    {
+        // member.member.get-custom-field
+        $member = Setting::get('shop.member');
+        $data = [
+            'is_custom' => $member['is_custom'],
+            'custom_title' => $member['custom_title'],
+            'is_validity' => $member['level_type'] == 2 ? true : false,
+        ];
+        return $this->successJson('获取自定义字段成功！', $data);
+    }
+
+    public function saveCustomField()
+    {
+        // member.member.sava-custom-field
+        $member_id = \YunShop::app()->getMemberId();
+        $custom_value = \YunShop::request()->get('custom_value');
+
+        $data = [
+            'custom_value' => $custom_value,
+        ];
+        $request = MemberShopInfo::where('member_id', $member_id)->update($data);
+        if($request){
+            return $this->successJson('保存成功！', []);
+        }
+        return $this->successJson('保存失败！', []);
     }
 
 }

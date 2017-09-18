@@ -10,6 +10,8 @@ namespace app\backend\modules\goods\models;
 
 class GoodsOption extends \app\common\models\GoodsOption
 {
+    static protected $needLog = true;
+
     public static function saveOption($optionPost, $goods_id, $spec_items, $uniacid)
     {
         $option_ids = $optionPost['option_ids'];

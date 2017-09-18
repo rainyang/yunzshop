@@ -11,6 +11,8 @@ use app\common\traits\MessageTrait;
 
 class Notice extends \app\common\models\Notice
 {
+    static protected $needLog = true;
+
     use MessageTrait;
 
     public $timestamps = false;

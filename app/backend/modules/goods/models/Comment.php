@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class Comment extends \app\common\models\Comment
 {
+    static protected $needLog = true;
 
     /**
      * @param $pageSize
