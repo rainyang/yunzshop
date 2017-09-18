@@ -9,6 +9,8 @@
 namespace app\common\models;
 
 
+use app\Jobs\AdminOperationLogQueueJob;
+
 class AdminOperationLog extends BaseModel
 {
     protected $table = 'yz_admin_operation_log';
@@ -20,8 +22,8 @@ class AdminOperationLog extends BaseModel
     public function save(array $options = [])
     {
         $this->ip = request()->ip();
-        $this->admin = substr(isset(\YunShop::app()->username) ? \YunShop::app()->username : '',0,20);
+        $this->admin_uid = \YunShop::app()->uid;
 
-        return parent::save($options);
+        (new AdminOperationLogQueueJob($this->getAttributes()))->handle();
     }
 }
