@@ -39,6 +39,9 @@ class PermissionService
         if (self::isFounder()) {
             return true;
         }
+        if (self::isOwner()) {
+            return true;
+        }
         if (static::isManager()) {
             return true;
         }
