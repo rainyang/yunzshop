@@ -21,7 +21,7 @@ class MessageService
      * @param $data
      * @param $openId
      */
-    public static function notice($templateId, $data, $uid, $uniacid = '')
+    public static function notice($templateId, $data, $uid, $uniacid = '', $url = '')
     {
         $res = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
         $options = [
@@ -37,17 +37,18 @@ class MessageService
         if (!$member->isFollow()) {
             return false;
         }
-        (new MessageService())->noticeQueue($app->notice, $templateId, $data, $member->hasOneFans->openid);
+        (new MessageService())->noticeQueue($app->notice, $templateId, $data, $member->hasOneFans->openid, $url);
 //        $notice = $app->notice;
 //        $notice->uses($templateId)->andData($data)->andReceiver($openId)->send();
     }
 
-    public function noticeQueue($notice, $templateId, $data, $openId)
+    public function noticeQueue($notice, $templateId, $data, $openId, $url)
     {
-        $this->dispatch((new MessageNoticeJob($notice, $templateId, $data, $openId)));
+        $this->dispatch((new MessageNoticeJob($notice, $templateId, $data, $openId, $url)));
         event(new SendMessageEvent([
             'data' => $data,
-            'openid' => $openId
+            'openid' => $openId,
+            'url' => $url
         ]));
     }
 
