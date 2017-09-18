@@ -417,6 +417,18 @@ return [
                         'parents'           => ['Goods', 'goods_no_permission',],
                     ],
 
+                    'goods_get_spec_item_tpl' => [
+                        'name'              => '白名单（商品规格操作）',
+                        'url'               => 'goods.goods.getSpecItemTpl',
+                        'url_params'        => '',
+                        'permit'            => 0,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'goods_get_spec_item_tpl',
+                        'parents'           => ['Goods', 'goods_no_permission',],
+                    ],
+
                     'area_area_select_city' => [
                         'name'              => '白名单（选择城市）',
                         'url'               => 'area.area.select-city',
