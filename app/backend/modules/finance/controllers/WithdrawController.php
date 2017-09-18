@@ -242,12 +242,40 @@ class WithdrawController extends BaseController
 
     public function submitPay($withdrawId, $payWay)
     {
-        $withdraw = Withdraw::getWithdrawById($withdrawId)->first();
-        if ($withdraw->status != '1') {
-            return ['msg' => '打款失败,数据不存在或不符合打款规则!'];
+        if (!is_array($withdrawId)) {
+            $withdraw = Withdraw::getWithdrawById($withdrawId)->first();
+
+            if ($withdraw->status != '1') {
+                return ['msg' => '打款失败,数据不存在或不符合打款规则!'];
+            }
+
+            $remark = '提现打款-' . $withdraw->type_name . '-金额:' . $withdraw->actual_amounts . '元,' .
+                '手续费:' . $withdraw->actual_poundage;
+
+        } else {
+            //支付宝批量打款
+            $withdraw = [];
+            if ($payWay == '2' && !empty($withdrawId)) {
+                foreach ($withdrawId as $id) {
+                    $withdraw_modle = Withdraw::getWithdrawById($id)->first();
+
+                    if (!is_null($withdraw_modle)) {
+                        if ($withdraw_modle->status != '1') {
+                            return ['msg' => '打款失败,数据不存在或不符合打款规则!'];
+                        }
+
+                        $withdraw[] = $withdraw_modle;
+
+                        $remark[] = '提现打款-' . $withdraw_modle->type_name . '-金额:' . $withdraw_modle->actual_amounts . '元,' .
+                            '手续费:' . $withdraw_modle->actual_poundage;
+                    }
+                }
+
+                $remark = json_encode($remark);
+            }
         }
-        $remark = '提现打款-' . $withdraw->type_name . '-金额:' . $withdraw->actual_amounts . '元,' .
-            '手续费:' . $withdraw->actual_poundage;
+
+
         if ($payWay == '3') {
             //余额打款
 
@@ -274,7 +302,7 @@ class WithdrawController extends BaseController
 
         }
 
-        if ($resultPay) {
+        if ($resultPay && $payWay != '2') {
 
             $withdraw->pay_status = 1;
             //审核通知事件
@@ -284,6 +312,14 @@ class WithdrawController extends BaseController
             Withdraw::updatedWithdrawStatus($withdrawId, $updatedData);
             $result = WithdrawService::otherWithdrawSuccess($withdrawId);
             return ['msg' => '提现打款成功!'];
+        } elseif ($resultPay && $payWay == '2') {
+            //修改提现记录状态
+            $updatedData = [
+                'status' => 4,
+                'arrival_at' => time(),
+            ];
+            \Log::info('修改提现记录状态',print_r($updatedData,true));
+            return Withdraw::updatedWithdrawStatus($withdrawId, $updatedData);
         }
     }
 
@@ -345,5 +381,12 @@ class WithdrawController extends BaseController
 
     }
 
+    public function batchAlipay()
+    {
+        $ids = \YunShop::request()->ids;
 
+        $ids = explode(',', $ids);
+
+        $result = $this->submitPay($ids, 2);
+    }
 }
