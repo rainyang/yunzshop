@@ -10,6 +10,8 @@ namespace app\backend\modules\member\models;
 
 class Member extends \app\common\models\Member
 {
+    static protected $needLog = true;
+
     /**
      * @param $keyWord
      *
