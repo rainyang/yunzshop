@@ -93,6 +93,9 @@ class GoodsController extends ApiController
                 }
             }
         }
+        if($goodsModel->hasOneShare){
+            $goodsModel->hasOneShare->share_thumb = replace_yunshop(tomedia($goodsModel->hasOneShare->share_thumb));
+        }
         //return $this->successJson($goodsModel);
         return $this->successJson('成功', $goodsModel);
     }

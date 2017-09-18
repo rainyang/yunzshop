@@ -75,11 +75,21 @@
     </div>
 </form>
 
+@if (1 == YunShop::request()->search['status'])
+<div class='panel panel-default'>
+    <div class='panel-body' style="padding-bottom: 15px">
+        <input type="hidden" name="pay_way" value="2">
+        <input type="button" class="btn btn-success" id="batch_alipay" value="支付宝批量打款">
+        <label style="color:#ff0000;">批量打款所选的订单收入类型必须保持一致，收入类型分为余额提现和收入提现</label>
+    </div>
+</div>
+@endif
 <div class='panel panel-default'>
     <div class='panel-body'>
         <table class="table">
             <thead>
             <tr>
+                <th style='width:5%;'><input id="all" type="checkbox" value="0"> 全选</th>
                 <th style='width:20%;'>提现编号</th>
                 <th style='width:10%;'>粉丝</th>
                 <th style='width:10%;'>姓名</br>手机</th>
@@ -93,6 +103,7 @@
             <tbody>
             @foreach($list as $row)
                 <tr>
+                    <td><input type="checkbox" name="chk_withdraw" value="{{$row->id}}"></td>
                     <td title="{{$row->withdraw_sn}}" class="tip">{{$row->withdraw_sn}}</td>
                     <td><img src="{{tomedia($row->hasOneMember['avatar'])}}"
                              style="width: 30px; height: 30px;border:1px solid #ccc;padding:1px;">
@@ -133,6 +144,55 @@
             $('#form1').attr('action', '{!! yzWebUrl('finance.withdraw') !!}');
             $('#form1').submit();
         });
+
+        $('#all').change(function() {
+            $(this).parents('.table').find('input[type="checkbox"]').prop('checked',$(this).prop('checked'));
+        });
+
+        $(document).on('click', '#batch_alipay', function () {
+            var total    = 0;
+            var balance  = 0;
+            var error    = 0;
+            var ids     = []
+
+            $('input[type="checkbox"]').each(function() {
+                if ($(this).prop('checked') && $(this).val() != 0){
+                    total++;
+                    ids.push($(this).val());
+
+                    if ($(this).parent().siblings().eq(4).text() != '提现到支付宝') {
+                        error++;
+                    }
+
+                    if ($(this).parent().siblings().eq(3).text() == '余额提现') {
+                        balance++;
+                    }
+                }
+            });
+
+            if (error > 0) {
+                alert('提现方式错误');
+                return false;
+            }
+
+            if (balance == 0 || balance == total) {
+                var myform = $('<form class="batch_alipay" method="post"><input type="hidden" name="ids" value="' + ids + '" /></form>');
+
+                $(document.body).append(myform);
+
+                if (balance == 0) {  //收入提现
+                    myform.attr('action', '{!! yzWebUrl("finance.withdraw.batchAlipay") !!}');
+                } else { //余额提现
+                    myform.attr('action', '{!! yzWebUrl("finance.balance-withdraw.batchAlipay") !!}');
+                }
+
+                myform.submit();
+            } else {
+                alert('订单收入类型不一致');
+                return false;
+            }
+        });
+
     });
 </script>
 @endsection
