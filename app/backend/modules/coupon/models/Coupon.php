@@ -5,6 +5,8 @@ namespace app\backend\modules\coupon\models;
 
 class Coupon extends \app\common\models\Coupon
 {
+    static protected $needLog = true;
+
     public $table = 'yz_coupon';
 
     //类型转换

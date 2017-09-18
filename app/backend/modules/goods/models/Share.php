@@ -14,6 +14,8 @@ use app\common\traits\MessageTrait;
 
 class Share extends \app\common\models\goods\Share
 {
+    static protected $needLog = true;
+
     use MessageTrait;
     public $timestamps = true;
 

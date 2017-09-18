@@ -15,6 +15,8 @@ use app\common\traits\MessageTrait;
 
 class Discount extends \app\common\models\goods\Discount
 {
+    static protected $needLog = true;
+
     use MessageTrait;
     //public $timestamps = false;
     public $attributes = [

@@ -14,6 +14,8 @@ use app\common\traits\MessageTrait;
 
 class GoodsDispatch extends \app\common\models\goods\GoodsDispatch
 {
+    static protected $needLog = true;
+
     use MessageTrait;
     //public $timestamps = false;
     public $attributes = [
