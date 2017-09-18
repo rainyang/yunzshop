@@ -122,7 +122,6 @@ class MemberController extends BaseController
         if (empty($set['level_name'])) {
             $set['level_name'] = '普通会员';
         }
-
         return view('member.detail', [
             'member' => $member,
             'levels' => $levels,
@@ -162,7 +161,8 @@ class MemberController extends BaseController
             'alipayname' => $parame->data['alipayname'],
             'alipay' => $parame->data['alipay'],
             'is_black' => $parame->data['is_black'],
-            'content' => $parame->data['content']
+            'content' => $parame->data['content'],
+            'custom_value' => $parame->data['custom_value'],
         );
 
         if ($parame->data['agent']) {
