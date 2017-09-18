@@ -155,26 +155,11 @@ class AlipayController extends PaymentController
                         ];
                     }
                 }
-            } else {
-                $post_fail_details = explode('|', rtrim($_POST['fail_details'], '|'));
 
-                foreach ($post_fail_details as $fail_details) {
-                    $plits = explode('^', $fail_details);
+                $this->withdrawResutl($data);
 
-                    if ($plits[4] == 'F') {
-                        $data[] = [
-                            'total_fee' => $plits[3],
-                            'trade_no' => $plits[0],
-                            'unit' => 'yuan',
-                            'pay_type' => '支付宝'
-                        ];
-                    }
-                }
+                echo "success";
             }
-
-            $this->withdrawResutl($data);
-
-            echo "success";
         } else {
             echo "fail";
         }
