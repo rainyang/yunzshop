@@ -16,6 +16,8 @@ use app\common\exceptions\AdminException;
  */
 class RefundApply extends \app\common\models\refund\RefundApply
 {
+    static protected $needLog = true;
+
     protected $typeInstance;
 
     public function refundMoney()

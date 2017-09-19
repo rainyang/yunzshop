@@ -575,7 +575,7 @@ class SdkPayment
     }
 
     /**
-     * 统一提现
+     * 单次提现
      *
      * @param $collectioner_account
      * @param $collectioner_name
@@ -599,6 +599,52 @@ class SdkPayment
             'batch_fee' => $this->total_fee,
             'batch_num' => 1,
             'detail_data' => $out_trade_no . '^' . $collectioner_account . '^' . $collectioner_name . '^' . $this->total_fee . '^佣金提现_' . \YunShop::app()->uniacid,
+            '_input_charset' => strtolower($this->_input_charset),
+        );
+
+        $para = $this->buildRequestPara($parameter);
+
+        return $this->__gateway_new . $this->createLinkstringUrlencode($para);
+    }
+
+    /**
+     * 批量打款
+     *
+     * @param $collectioner_account
+     * @param $collectioner_name
+     * @param $out_trade_no
+     * @param $batch_no
+     * @return string
+     */
+    public function batchWithdraw($collectioner_account, $collectioner_name, $withdraws, $batch_no)
+    {
+        $service = 'batch_trans_notify';
+        $pay = Setting::get('shop.pay');
+
+        $notify_url = Url::shopUrl('payment/alipay/withdrawNotifyUrl.php');
+
+        $total_fee   = 0;
+        $detail_data = '';
+        $batch_num    = 0;
+
+        foreach ($withdraws as $key => $withdraw) {
+            $total_fee += $withdraw->actual_amounts;
+            $batch_num++;
+
+            $detail_data .= $withdraw->withdraw_sn . '^' . $collectioner_account[$key] . '^' . $collectioner_name[$key] . '^' . $withdraw->actual_amounts . '^佣金提现_' . \YunShop::app()->uniacid . '|';
+        }
+
+        $parameter = array(
+            'service' => $service,
+            'partner' => $this->partner,
+            'notify_url' => $notify_url,
+            'email' => $pay['alipay_number'],
+            'account_name' => $pay['alipay_name'],
+            'pay_date' => date('Ymd', time()),
+            'batch_no' => $batch_no,
+            'batch_fee' => $total_fee,
+            'batch_num' => $batch_num,
+            'detail_data' => rtrim($detail_data, '|'),
             '_input_charset' => strtolower($this->_input_charset),
         );
 

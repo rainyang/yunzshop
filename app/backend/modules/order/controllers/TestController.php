@@ -18,6 +18,7 @@ class TestController extends BaseController
 
     public function index()
     {
+        dd(\YunShop::app()->username);exit;
         $this->test();
         exit;
         //dd(Schema::table('yz_member'));

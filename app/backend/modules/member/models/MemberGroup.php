@@ -14,6 +14,7 @@ use Illuminate\Validation\Rule;
 class MemberGroup extends \app\common\models\MemberGroup
 {
 
+    static protected $needLog = true;
 
     public $guarded = [''];
 
