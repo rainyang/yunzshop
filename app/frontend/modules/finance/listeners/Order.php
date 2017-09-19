@@ -16,6 +16,9 @@ use app\frontend\modules\finance\services\CalculationPointService;
 
 class Order
 {
+    /**
+     * @var OnDeductionInfoDisplayEvent
+     */
     protected $event;
     protected $deductionId = 1;
 
@@ -41,7 +44,7 @@ class Order
     {
         $orderModel = $this->event->getOrderModel();
 
-        $point = new CalculationPointService($orderModel->getOrderGoodsModels(), $orderModel->uid);
+        $point = new CalculationPointService($orderModel, $orderModel->uid);
 
         if ($point == false || empty($point->point)) {
             return false;

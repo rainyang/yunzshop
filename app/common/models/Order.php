@@ -16,6 +16,7 @@ use app\common\models\order\OrderChangePriceLog;
 use app\common\models\order\OrderCoupon;
 use app\common\models\order\OrderDeduction;
 use app\common\models\order\OrderDiscount;
+use app\common\models\order\OrderSetting;
 use app\common\models\order\Pay;
 use app\common\models\order\Plugin;
 use app\common\models\order\Remark;
@@ -28,6 +29,7 @@ use app\backend\modules\order\observers\OrderObserver;
 class Order extends BaseModel
 {
     public $table = 'yz_order';
+    public $setting = null;
     private $StatusService;
     protected $fillable = [];
     protected $guarded = ['id'];
@@ -140,7 +142,9 @@ class Order extends BaseModel
     {
         return $this->hasMany(self::getNearestModel('OrderGoods'), 'order_id', 'id');
     }
-
+    public function orderGoods(){
+        return $this->hasMany(self::getNearestModel('OrderGoods'), 'order_id', 'id');
+    }
     /**
      * 关联模型 1对多:订单抵扣信息
      */
@@ -430,17 +434,28 @@ class Order extends BaseModel
     {
         return $this->hasOneDispatchType->needSend();
     }
-
+    public function orderSettings(){
+        return $this->hasMany(OrderSetting::class);
+    }
     public function getSetting($key)
     {
         // 全局设置
         $result = \app\common\facades\Setting::get($key);
-        if (isset($this->orderSettings)) {
+
+        if (isset($this->orderSettings) && $this->orderSettings->isNotEmpty()) {
             // 订单设置
             $keys = collect(explode('.', $key));
             $orderSettingKey = $keys->shift();
+            if($orderSettingKey == 'plugin'){
+                // 获取第一个不为plugin的key
+                $orderSettingKey = $keys->shift();
+            }
             $orderSettingValueKeys = $keys;
-            $orderSettingValue = array_get($this->orderSettings->where('key', $orderSettingKey)->first()->value, $orderSettingValueKeys->implode('.'));
+            if($orderSettingValueKeys->isNotEmpty()){
+                $orderSettingValue = array_get($this->orderSettings->where('key', $orderSettingKey)->first()->value, $orderSettingValueKeys->implode('.'));
+            }else{
+                $orderSettingValue = $this->orderSettings->where('key', $orderSettingKey)->first()->value;
+            }
 
             if (isset($orderSettingValue)) {
                 $result = array_merge($result,$orderSettingValue);

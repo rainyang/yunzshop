@@ -232,8 +232,7 @@ class PreGeneratedOrder extends Order
         $this->save();
 
         $result = $this->push();
-        dd($this);
-        exit;
+
 
         if ($result === false) {
             throw new AppException('订单相关信息保存失败');

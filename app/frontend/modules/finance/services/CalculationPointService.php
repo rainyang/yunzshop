@@ -9,21 +9,26 @@
 namespace app\frontend\modules\finance\services;
 
 use app\backend\modules\member\models\Member;
-use Setting;
+use app\common\models\Order;
 
 class CalculationPointService
 {
     private $orderGoodsModels;
+    /**
+     * @var Order
+     */
     private $order;
     private $point_set;
     public $point;
     private $member;
     public $point_money;
 
-    public function __construct($orderGoodsModels, $member_id)
+    public function __construct($order, $member_id)
     {
-        $this->orderGoodsModels = $orderGoodsModels;
-        $this->order = $orderGoodsModels->first()->order;
+
+        $this->order = $order;
+        $this->orderGoodsModels = $order->orderGoods;
+
         //验证积分设置
         $this->verifyPointSet();
         //验证用户积分
@@ -40,12 +45,11 @@ class CalculationPointService
      */
     private function verifyPointSet()
     {
-        if (Setting::get('point.set')['point_deduct'] == 0) {
-            return false;
-        }
-        $this->point_set = $this->order->getSetting('point.set');
-        dd($this->point_set);
-        exit;
+
+    if ($this->order->getSetting('point.set.point_deduct') == 0) {
+        return false;
+    }
+    $this->point_set = $this->order->getSetting('point.set');
 
     }
 
