@@ -123,52 +123,52 @@ class Member extends \app\common\models\Member
             'credit1', 'credit2'])
             ->uniacid();
 
-        if (!empty($parame['mid'])) {
-            $result = $result->where('uid', $parame['mid']);
+        if (!empty($parame['search']['mid'])) {
+            $result = $result->where('uid', $parame['search']['mid']);
         }
-        if (isset($parame['searchtime']) && $parame['searchtime'] == 1) {
-            if ($parame['times']['start'] != '请选择' && $parame['times']['end'] != '请选择') {
-                $range = [strtotime($parame['times']['start']), strtotime($parame['times']['end'])];
+        if (isset($parame['search']['searchtime']) && $parame['search']['searchtime'] == 1) {
+            if ($parame['search']['times']['start'] != '请选择' && $parame['search']['times']['end'] != '请选择') {
+                $range = [strtotime($parame['search']['times']['start']), strtotime($parame['search']['times']['end'])];
                 $result = $result->whereBetween('createtime', $range);
             }
         }
 
-        if (!empty($parame['realname'])) {
+        if (!empty($parame['search']['realname'])) {
             $result = $result->where(function ($w) use ($parame) {
-                $w->where('nickname', 'like', '%' . $parame['realname'] . '%')
-                    ->orWhere('realname', 'like', '%' . $parame['realname'] . '%')
-                    ->orWhere('mobile', 'like', $parame['realname'] . '%');
+                $w->where('nickname', 'like', '%' . $parame['search']['realname'] . '%')
+                    ->orWhere('realname', 'like', '%' . $parame['search']['realname'] . '%')
+                    ->orWhere('mobile', 'like', $parame['search']['realname'] . '%');
             });
         }
 
         $result = $result->whereHas('yzMember', function ($query) use ($parame) {
             $query->whereNull('deleted_at');
-            if($parame->custom_value){
-                $query->where('custom_value', 'like', '%' . $parame->custom_value . '%');
+            if($parame['search']['custom_value']){
+                $query->where('custom_value', 'like', '%' . $parame['search']['custom_value'] . '%');
             }
 
 
         });
 
-        if (!empty($parame['groupid']) || !empty($parame['level']) || $parame['isblack'] != ''
-            || $parame['isagent'] != ''
+        if (!empty($parame['search']['groupid']) || !empty($parame['search']['level']) || $parame['search']['isblack'] != ''
+            || $parame['search']['isagent'] != ''
         ) {
 
             $result = $result->whereHas('yzMember', function ($q) use ($parame) {
-                if (!empty($parame['groupid'])) {
-                    $q = $q->where('group_id', $parame['groupid']);
+                if (!empty($parame['search']['groupid'])) {
+                    $q = $q->where('group_id', $parame['search']['groupid']);
                 }
 
-                if (!empty($parame['level'])) {
-                    $q = $q->where('level_id', $parame['level']);
+                if (!empty($parame['search']['level'])) {
+                    $q = $q->where('level_id', $parame['search']['level']);
                 }
 
-                if ($parame['isblack'] != '') {
-                    $q->where('is_black', $parame['isblack']);
+                if ($parame['search']['isblack'] != '') {
+                    $q->where('is_black', $parame['search']['isblack']);
                 }
 
-                if ($parame['isagent'] != '') {
-                    $q->where('is_agent', $parame['isagent']);
+                if ($parame['search']['isagent'] != '') {
+                    $q->where('is_agent', $parame['search']['isagent']);
                 }
             });
         }
@@ -181,9 +181,9 @@ class Member extends \app\common\models\Member
             $result = $result->where($credit, '<', $parame['max_credit2']);
         }
 
-        if ($parame['followed'] != '') {
+        if ($parame['search']['followed'] != '') {
             $result = $result->whereHas('hasOneFans', function ($q2) use ($parame) {
-                $q2->where('follow', $parame['followed']);
+                $q2->where('follow', $parame['search']['followed']);
             });
         }
 
