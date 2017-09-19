@@ -163,6 +163,7 @@ class MemberController extends BaseController
             'is_black' => $parame->data['is_black'],
             'content' => $parame->data['content'],
             'custom_value' => $parame->data['custom_value'],
+            'validity' => $parame->data['validity'],
         );
 
         if ($parame->data['agent']) {
