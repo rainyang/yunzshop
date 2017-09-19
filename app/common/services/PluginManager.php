@@ -192,6 +192,7 @@ class PluginManager
     public
     function getEnabledPlugins()
     {
+        $only = [];
         foreach ($this->getEnabled() as $key=>$plugin) {
             if($plugin['enabled']){
                 $only[] = $key;

@@ -74,7 +74,7 @@ class Member extends \app\common\models\Member
                 $query->whereNull('deleted_at');
             })
             ->with(['yzMember' => function ($query) {
-                return $query->select(['member_id', 'parent_id', 'is_agent', 'group_id', 'level_id', 'is_black', 'alipayname', 'alipay', 'content', 'status','custom_value'])->where('is_black', 0)
+                return $query->select(['member_id', 'parent_id', 'is_agent', 'group_id', 'level_id', 'is_black', 'alipayname', 'alipay', 'content', 'status', 'custom_value', 'validity'])->where('is_black', 0)
                     ->with(['group' => function ($query1) {
                         return $query1->select(['id', 'group_name']);
                     }, 'level' => function ($query2) {
@@ -143,6 +143,7 @@ class Member extends \app\common\models\Member
 
         $result = $result->whereHas('yzMember', function ($query) use ($parame) {
             $query->whereNull('deleted_at');
+
             if($parame['search']['custom_value']){
                 $query->where('custom_value', 'like', '%' . $parame['search']['custom_value'] . '%');
             }
