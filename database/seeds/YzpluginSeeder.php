@@ -9,8 +9,22 @@ class YzpluginSeeder extends Seeder
 
     public function run()
     {
+
+
+        $is_plugin = \Illuminate\Support\Facades\DB::table($this->table)->where('option_name','test-plugins')->get();
+        if($is_plugin->isNotEmpty())
+        {
+            return;
+        }
         $plugins = \Illuminate\Support\Facades\DB::table($this->table)->get();
         $uniAccount = \Illuminate\Support\Facades\DB::table($this->uniTable)->get();
+
+        $data[] = [
+            'uniacid' => '0',
+            'option_name' => 'test-plugins',
+            'option_value' => 'true',
+            'enabled' => '1',
+        ];
 
         $data[] = [
             'uniacid' => '0',
@@ -33,7 +47,7 @@ class YzpluginSeeder extends Seeder
         }
 
 
-        $i = 2;
+        $i = 3;
         foreach ($uniAccount as $u) {
             foreach ($plugins as $plugin) {
 
