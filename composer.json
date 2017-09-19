@@ -49,7 +49,6 @@
     "files":[
       "app/yunshop.php",
       "app/helpers.php"
-//      "database/seeds/YzpluginSeeder.php"
     ]
   },
   "autoload-dev": {
