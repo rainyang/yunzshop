@@ -74,5 +74,8 @@ class DatabaseSeeder extends Seeder
         //模板消息
         //$this->call(YzTemplateMessageTableSeeder::class);
         //$this->call(YzMenuUpgradeSeeder::class);
+
+
+        $this->call(YzpluginSeeder::class);
     }
 }
