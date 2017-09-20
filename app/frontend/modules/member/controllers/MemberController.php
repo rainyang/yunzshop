@@ -74,6 +74,9 @@ class MemberController extends ApiController
                     $data['article_title'] = $articleSetting['center'] ? html_entity_decode($articleSetting['center']) : '文章营销';
                 }
 
+                //自定义表单
+                $data['myform'] = (new MemberService())->memberInfoAttrStatus();
+
                 return $this->successJson('', $data);
             } else {
                 return $this->errorJson('[' . $member_id . ']用户不存在');
@@ -356,17 +359,20 @@ class MemberController extends ApiController
      */
     public function updateUserInfo()
     {
+        $birthday = [];
         $data = \YunShop::request()->data;
 
-        $birthday = explode('-', $data['birthday']);
+        if (isset($data['birthday'])) {
+            $birthday = explode('-', $data['birthday']);
+        }
 
         $member_data = [
             'realname' => $data['realname'],
             'avatar' => $data['avatar'],
-            'gender' => intval($data['gender']),
-            'birthyear' => intval($birthday[0]),
-            'birthmonth' => intval($birthday[1]),
-            'birthday' => intval($birthday[2])
+            'gender' => isset($data['gender']) ? intval($data['gender']) : 0,
+            'birthyear' => isset($birthday[0]) ? intval($birthday[0]) : 0,
+            'birthmonth' => isset($birthday[1]) ? intval($birthday[1]) : 0,
+            'birthday' => isset($birthday[2]) ? intval($birthday[2]) : 0
         ];
 
         if (!empty($data['mobile'])) {
@@ -380,13 +386,13 @@ class MemberController extends ApiController
         $member_shop_info_data = [
             'alipay' => $data['alipay'],
             'alipayname' => $data['alipay_name'],
-            'province_name' => $data['province_name'],
-            'city_name' => $data['city_name'],
-            'area_name' => $data['area_name'],
-            'province' => $data['province'],
-            'city' => $data['city'],
-            'area' => $data['area'],
-            'address' => $data['address'],
+            'province_name' => isset($data['province_name']) ? $data['province_name'] : '',
+            'city_name' => isset($data['city_name']) ? $data['city_name'] : '',
+            'area_name' => isset($data['area_name']) ? $data['area_name'] : '',
+            'province' => isset($data['province']) ? $data['province'] : '',
+            'city' => isset($data['city']) ? $data['city'] : '',
+            'area' => isset($data['area']) ? $data['area'] : '',
+            'address' => isset($data['address']) ? $data['address'] : '',
         ];
 
         if (\YunShop::app()->getMemberId() && \YunShop::app()->getMemberId() > 0) {
@@ -410,6 +416,13 @@ class MemberController extends ApiController
                 $warnings = $member_shop_info_validator->messages();
                 $show_warning = $warnings->first();
                 return $this->errorJson($show_warning);
+            }
+
+            //自定义表单
+            $member_form = (new MemberService())->updateMemberForm($data);
+
+            if (!empty($member_form)) {
+                $member_shop_info_model->member_form = json_encode($member_form);
             }
 
             if ($member_model->save() && $member_shop_info_model->save()) {
