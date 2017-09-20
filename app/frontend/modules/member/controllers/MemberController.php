@@ -74,8 +74,6 @@ class MemberController extends ApiController
                     $data['article_title'] = $articleSetting['center'] ? html_entity_decode($articleSetting['center']) : '文章营销';
                 }
 
-                //提现绑定手机号
-                $data['is_bind_mobile'] = $this->withdrawByMobile();
                 return $this->successJson('', $data);
             } else {
                 return $this->errorJson('[' . $member_id . ']用户不存在');
@@ -822,7 +820,7 @@ class MemberController extends ApiController
         return $this->successJson('保存失败！', []);
     }
 
-    private function withdrawByMobile()
+    public function withdrawByMobile()
     {
         $trade = \Setting::get('shop.trade');
 
@@ -838,7 +836,7 @@ class MemberController extends ApiController
             $is_bind_mobile = 0;
         }
 
-        return $is_bind_mobile;
+        return $this->successJson('', [is_bind_mobile => $is_bind_mobile]);
     }
 
 }
