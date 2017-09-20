@@ -145,6 +145,25 @@
                 </div>
       
 			</div>
+
+            <div class="panel-heading">
+                提现绑定手机号
+            </div>
+
+            <div class='panel-body'>
+                <div class="form-group">
+
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否开启
+                    </label>
+                    <div class="col-sm-9 col-xs-12">
+
+                        <label class='radio-inline'><input type='radio' name='trade[is_bind]' value='1' @if ($set['is_bind'] == 1) checked @endif/> 开启</label>
+                        <label class='radio-inline'><input type='radio' name='trade[is_bind]' value='0' @if ($set['is_bind'] == 0) checked @endif /> 关闭</label>
+
+                    </div>
+                </div>
+            </div>
+
 			<div class="form-group"></div>
             <div class="form-group">
 				<label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>

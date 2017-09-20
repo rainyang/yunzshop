@@ -104,6 +104,11 @@ class Category extends \app\common\models\Category
 
     //根据商品分类ID获取分类名称
     public static function getCategoryNameByIds($categoryIds){
+        if(empty($categoryIds))
+        {
+            return '';
+        }
+
         if(is_array($categoryIds)){
             $res = static::uniacid()
                 ->select('name')
