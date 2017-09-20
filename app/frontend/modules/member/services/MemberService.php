@@ -607,6 +607,7 @@ class MemberService
 
     public function memberInfoAttrStatus()
     {
+        $form   = [];
         $member = MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId());
 
         $set = \Setting::get('shop.form');
@@ -623,8 +624,6 @@ class MemberService
                     $member_form = json_decode($member->member_form, true);
                     $form = self::getMemberForm($form, $member_form);
                 }
-
-                $set['form'] = $form;
             }
         } else {
             $set['base'] = [
@@ -633,6 +632,8 @@ class MemberService
                 'birthday' => 1
             ];
         }
+
+        $set['form'] = $form;
 
         return $set;
     }
