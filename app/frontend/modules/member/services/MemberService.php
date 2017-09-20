@@ -657,17 +657,21 @@ class MemberService
         $set = \Setting::get('shop.form');
         $set = json_decode($set, true);
 
+       // echo '<pre>';print_r($data['customDatas']);exit;
+
         if (!empty($set['form'])) {
             $member_form = $form = array_values(array_sort($set['form'], function ($value) {
                 return $value['sort'];
             }));
 
             foreach ($form as $key => &$item) {
-                if (array_key_exists($item['pinyin'], $data)) {
+                foreach ($data['customDatas'] as $rows) {
+                    if ($rows['pinyin'] == $item['pinyin']) {
 
-                    $item['del'] = 1;
+                        $item['del'] = 1;
 
-                    $member_form[$key]['value'] = $data[$item['pinyin']];
+                        $member_form[$key]['value'] = $rows['value'];
+                    }
                 }
             }
         }
