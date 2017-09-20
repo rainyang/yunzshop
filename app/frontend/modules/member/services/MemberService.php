@@ -626,9 +626,15 @@ class MemberService
 
                 $set['form'] = $form;
             }
+        } else {
+            $set['base'] = [
+                'sex' => 1,
+                'address' => 1,
+                'birthday' => 1
+            ];
         }
 
-        return $set ?: [];
+        return $set;
     }
 
     private function getMemberForm($form, $member_form)

@@ -15,6 +15,7 @@ use app\common\services\MessageService;
 use app\common\services\WechatPay;
 use app\frontend\modules\finance\controllers\IncomeController;
 use app\frontend\modules\member\models\SubMemberModel;
+use app\frontend\modules\member\services\MemberService;
 
 class TestController extends BaseController
 {
@@ -112,6 +113,29 @@ class TestController extends BaseController
         $msg = (new WechatPay())->doWithdraw(369, '3232', 100);
 
         dd($msg);
+    }
+
+    public function arr()
+    {
+        //
+        $data['myform'] = (new MemberService())->memberInfoAttrStatus();
+
+        echo json_encode($data);exit;
+        if (request()->getMethod() == 'POST') {
+            $datas = \YunShop::request()->data;
+            $member_shop_info_model = MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId());
+            //自定义表单
+            $member_form = (new MemberService())->updateMemberForm($datas);
+//echo '<pre>';print_r($member_form);exit;
+            if (!empty($member_form)) {
+                $member_shop_info_model->member_form = json_encode($member_form);
+                $member_shop_info_model->save();
+            }
+        }
+//echo '<pre>';print_r($data);exit;
+        return view('test.index', [
+            'data' => $data
+        ])->render();
     }
 
 }

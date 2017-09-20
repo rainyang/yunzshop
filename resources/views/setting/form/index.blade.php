@@ -45,36 +45,6 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">所在省份</label>
-                            <div class="col-sm-9 col-xs-12">
-
-                                <label class='radio-inline'><input type='radio' name='base[province]' value='1' @if ($set['base']['province'] == 1) checked @endif/> 开启</label>
-                                <label class='radio-inline'><input type='radio' name='base[province]' value='0' @if ($set['base']['province'] == 0) checked @endif /> 关闭</label>
-
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">所在城市</label>
-                            <div class="col-sm-9 col-xs-12">
-
-                                <label class='radio-inline'><input type='radio' name='base[city]' value='1' @if ($set['base']['city'] == 1) checked @endif/> 开启</label>
-                                <label class='radio-inline'><input type='radio' name='base[city]' value='0' @if ($set['base']['city'] == 0) checked @endif /> 关闭</label>
-
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">所在区县</label>
-                            <div class="col-sm-9 col-xs-12">
-
-                                <label class='radio-inline'><input type='radio' name='base[area]' value='1' @if ($set['base']['area'] == 1) checked @endif/> 开启</label>
-                                <label class='radio-inline'><input type='radio' name='base[area]' value='0' @if ($set['base']['area'] == 0) checked @endif /> 关闭</label>
-
-                            </div>
-                        </div>
-
-                        <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">详细地址</label>
                             <div class="col-sm-9 col-xs-12">
 
