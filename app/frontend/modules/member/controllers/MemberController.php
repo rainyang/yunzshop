@@ -849,7 +849,7 @@ class MemberController extends ApiController
             $is_bind_mobile = 0;
         }
 
-        return $this->successJson('', [is_bind_mobile => $is_bind_mobile]);
+        return $this->successJson('', ['is_bind_mobile' => $is_bind_mobile]);
     }
 
 }
