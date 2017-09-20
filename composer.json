@@ -27,7 +27,8 @@
     "liebig/cron": "dev-master",
     "zgldh/laravel-upload-manager": "^0.4.4",
     "vierbergenlars/php-semver": "3.0.*",
-    "doctrine/dbal": "v2.5.12"
+    "doctrine/dbal": "v2.5.12",
+    "orangehill/iseed": "dev-master"
   },
   "require-dev": {
     "filp/whoops": "^2.1",
