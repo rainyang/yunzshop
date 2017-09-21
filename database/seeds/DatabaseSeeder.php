@@ -76,6 +76,7 @@ class DatabaseSeeder extends Seeder
         //$this->call(YzMenuUpgradeSeeder::class);
 
 
-        $this->call(YzpluginSeeder::class);
+//        $this->call(YzpluginSeeder::class);
+        $this->call(YzPluginUniacidSeeder::class);
     }
 }
