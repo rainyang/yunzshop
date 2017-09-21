@@ -74,7 +74,7 @@ class DatabaseSeeder extends Seeder
         //模板消息
         //$this->call(YzTemplateMessageTableSeeder::class);
         $this->call(YzMenuUpgradeSeeder::class);
-        $this->call(YzUniacidPluginsSeeder::class);
+        $this->call(YzUniacidSeeder::class);
 
 
         Log::info(file_get_contents('/data/wwwroot/release.yunzshop.com/addons/yun_shop/vendor/composer/autoload_classmap.php'));

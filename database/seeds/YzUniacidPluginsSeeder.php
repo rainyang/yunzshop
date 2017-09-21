@@ -7,13 +7,13 @@
  */
 use Illuminate\Database\Seeder;
 
-class YzUniacidPluginsSeeder extends Seeder
+class YzUniacidSeeder extends Seeder
 {
 
     public function run()
     {
         
-        Log::info("调试-YzUniacidPluginsSeeder");
+        Log::info("调试-YzUniacidSeeder");
         return;
 
     }
