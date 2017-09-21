@@ -1,6 +1,11 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use app\common\services\PluginManager;
+use app\common\repositories\OptionRepository;
+use Illuminate\Events\Dispatcher;
+use Illuminate\Filesystem\Filesystem;
+
 
 class YzpluginSeeder extends Seeder
 {
@@ -10,13 +15,19 @@ class YzpluginSeeder extends Seeder
     public function run()
     {
 
+        $plugins = new PluginManager(app(), new OptionRepository(), new Dispatcher(), new Filesystem());
+        $installed = $plugins->getPlugins();
 
-        $is_plugin = \Illuminate\Support\Facades\DB::table($this->table)->where('option_name','test-plugins')->get();
-        if($is_plugin->isNotEmpty())
-        {
+        $is_plugin = \Illuminate\Support\Facades\DB::table($this->table)->where('option_name', 'test-plugins')->get();
+        if ($is_plugin->isNotEmpty()) {
             return;
         }
-        $plugins = \Illuminate\Support\Facades\DB::table($this->table)->get();
+
+        $plugins_enabled = \Illuminate\Support\Facades\DB::table($this->table)->where('option_name', 'plugins_enabled')->pluck("option_value")->first();
+        $key = \Illuminate\Support\Facades\DB::table($this->table)->where('option_name', 'key')->pluck('option_value')->first();
+        $market_source = \Illuminate\Support\Facades\DB::table($this->table)->where('option_name', 'market_source')->pluck("option_value")->first();
+
+
         $uniAccount = \Illuminate\Support\Facades\DB::table($this->uniTable)->get();
 
         $data[] = [
@@ -35,22 +46,18 @@ class YzpluginSeeder extends Seeder
         $data[] = [
             'uniacid' => '0',
             'option_name' => 'market_source',
-            'option_value' => 'http://yun.yunzshop.com/plugin.json',
+            'option_value' => $market_source,
             'enabled' => '1',
         ];
-
-        foreach ($plugins as $plugin) {
-            if ($plugin['option_name'] == 'plugins_enabled') {
-                $plugins_enabled = $plugin['option_value'];
-                continue;
-            }
-        }
-
-
-        $i = 3;
+        $data[] = [
+            'uniacid' => '0',
+            'option_name' => 'key',
+            'option_value' => $key,
+            'enabled' => '1',
+        ];
+        $i = 4;
         foreach ($uniAccount as $u) {
-            foreach ($plugins as $plugin) {
-
+            foreach ($installed as $key => $plugin) {
                 if ($plugin['option_name'] == 'plugins_enabled') {
                     continue;
                 }
@@ -63,17 +70,18 @@ class YzpluginSeeder extends Seeder
 
                 $data[$i] = [
                     'uniacid' => $u['uniacid'],
-                    'option_name' => $plugin['option_name'],
-                    'option_value' => $plugin['option_value'],
+                    'option_name' => $key,
+                    'option_value' => 'true',
                     'enabled' => 0,
                 ];
 
-                if (strpos($plugins_enabled, $plugin['option_name'])) {
+                if (strpos($plugins_enabled, $key)) {
                     $data[$i]['enabled'] = 1;
                 }
-                $i ++ ;
+                $i++;
             }
         }
+
         \Illuminate\Support\Facades\DB::table($this->table)->delete();
 
         \Illuminate\Support\Facades\DB::table($this->table)->insert($data);
