@@ -22,14 +22,43 @@ class BalancePasswordController extends ApiController
     private $memberModel;
 
 
+    /**
+     * 是否开启余额支付密码
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function isUse()
     {
+        if (!$this->getMemberModel()) {
+            return $this->errorJson('未获取到会员信息');
+        }
+
         $pay_set = Setting::get('shop.pay');
         if ($pay_set['balance_pay_proving']) {
             return $this->successJson('ok',['is_use' => true]);
         }
         return $this->successJson('ok',['is_use' => false]);
     }
+
+
+    /**
+     * 会员是否设置密码
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function isHasPassword()
+    {
+        if (!$this->getMemberModel()) {
+            return $this->errorJson('未获取到会员信息');
+        }
+
+        $mobile = $this->memberModel->mobile ? $this->memberModel->mobile : '';
+        if (!$this->memberModel->yzMember->pay_password || $this->memberModel->yzMember->salt) {
+            return $this->successJson('ok',['is_has' => true,'mobile'=>$mobile]);
+        }
+        return $this->successJson('ok',['is_has' => true,'mobile'=>$mobile]);
+    }
+
+
+
 
     public function index()
     {
