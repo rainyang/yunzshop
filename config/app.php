@@ -203,7 +203,9 @@ return [
         //上传
         zgldh\UploadManager\UploadManagerServiceProvider::class,
         // 订单管理
-        \app\common\providers\ShopProvider::class
+        \app\common\providers\ShopProvider::class,
+        //拼音
+        Overtrue\LaravelPinyin\ServiceProvider::class,
     ],
 
     /*
@@ -271,6 +273,8 @@ return [
         'SmsManager' => Toplan\Sms\Facades\SmsManager::class,
         //微信接口封装
         'wechat' => Overtrue\LaravelWechat\Facade::class,
+        //拼音
+        'Pinyin' => Overtrue\LaravelPinyin\Facades\Pinyin::class,
     ],
 
     'pay_type' => [
