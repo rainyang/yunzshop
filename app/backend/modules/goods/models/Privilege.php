@@ -14,6 +14,8 @@ use app\common\traits\MessageTrait;
 
 class Privilege extends \app\common\models\goods\Privilege
 {
+    static protected $needLog = true;
+
     use MessageTrait;
     //public $timestamps = false;
 

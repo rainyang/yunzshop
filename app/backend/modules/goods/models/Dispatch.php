@@ -12,6 +12,7 @@ namespace app\backend\modules\goods\models;
 
 class Dispatch extends \app\common\models\goods\Dispatch
 {
+    static protected $needLog = true;
 
     /**
      * 获取配送模板所有数据

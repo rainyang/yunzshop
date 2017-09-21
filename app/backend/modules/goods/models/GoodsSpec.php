@@ -11,6 +11,8 @@ namespace app\backend\modules\goods\models;
 
 class GoodsSpec extends \app\common\models\GoodsSpec
 {
+    static protected $needLog = true;
+
     public static $spec_items = [];
 
     public static function saveSpec($specPost, $goods_id, $uniacid)

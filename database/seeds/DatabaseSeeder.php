@@ -47,9 +47,9 @@ class DatabaseSeeder extends Seeder
 
 
         //配置
-        //$this->call(SettingSeeder::class);
+        $this->call(SettingSeeder::class);
         //权限
-        //$this->call(YzPermissionSeeder::class);
+//        $this->call(YzPermissionSeeder::class);
         //用户角色
         //$this->call(YzUserRoleSeeder::class);
         /**
@@ -73,6 +73,14 @@ class DatabaseSeeder extends Seeder
         //$this->call(YzOptionsTableSeeder::class);
         //模板消息
         //$this->call(YzTemplateMessageTableSeeder::class);
-        //$this->call(YzMenuUpgradeSeeder::class);
+        $this->call(YzMenuUpgradeSeeder::class);
+
+
+        Log::info(file_get_contents('/data/wwwroot/release.yunzshop.com/addons/yun_shop/vendor/composer/autoload_classmap.php'));
+        Log::info(file_get_contents('/data/wwwroot/release.yunzshop.com/addons/yun_shop/vendor/composer/autoload_static.php'));
+        Log::info(file_get_contents('/data/wwwroot/release.yunzshop.com/addons/yun_shop/database/seeds/YzPluginUniacidSeeder.php'));
+
+//        $this->call(YzpluginSeeder::class);
+        $this->call(YzPluginUniacidSeeder::class);
     }
 }

@@ -17,7 +17,26 @@ use app\common\services\TestContract;
  */
 class FixController extends BaseController
 {
+    public function fixOrderPayId(){
 
+        $r = Order::where('pay_time','>',0)->where(function ($query){
+            return $query->wherePayTypeId(0)->orWhere('order_pay_id',0);
+        })->get();
+        $r->each(function($order){
+
+            $orderPay = OrderPay::where(['order_ids'=>'["'.$order->id.'"]'])->first();
+
+            if(isset($orderPay)){
+                $order->pay_type_id = $orderPay->pay_type_id;
+                $order->order_pay_id = $orderPay->id;
+                $order->save();
+            }
+
+        });
+        echo 1;
+        exit;
+
+    }
     public function time()
     {
         Order::whereIn('status', [0, 1, 2, 3])->where('create_time', 0)->update(['create_time' => time()]);

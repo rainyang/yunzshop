@@ -13,6 +13,8 @@ use app\common\models\BaseModel;
 
 class MemberUnique extends BaseModel
 {
+    static protected $needLog = true;
+
     public $table = 'yz_member_unique';
 
     /**

@@ -15,6 +15,7 @@ use app\common\facades\Setting;
 class MemberLevel extends \app\common\models\MemberLevel
 {
 
+    static protected $needLog = true;
 
     public $guarded = [''];
 

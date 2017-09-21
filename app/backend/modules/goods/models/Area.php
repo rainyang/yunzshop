@@ -11,5 +11,6 @@ namespace app\backend\modules\goods\models;
 
 class Area  extends \app\common\models\Area
 {
-    
+    static protected $needLog = true;
+
 }
