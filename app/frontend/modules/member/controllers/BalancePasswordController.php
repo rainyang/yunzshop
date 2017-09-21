@@ -59,29 +59,8 @@ class BalancePasswordController extends ApiController
     }
 
 
-
-
-    public function index()
-    {
-        if (!$this->getMemberModel()) {
-            return $this->errorJson('未获取到会员信息');
-        }
-        if (!$this->memberModel->mobile) {
-            return $this->errorJson('请先绑定手机号');
-        }
-
-        if (!$this->memberModel->yzMember->pay_password || $this->memberModel->yzMember->salt) {
-            return $this->errorJson('请先设置密码',['mobile'=>$this->memberModel->mobile]);
-        }
-
-
-        return $this->successJson('ok');
-    }
-
-
-    //设置支付密码
-
     /**
+     * 设置支付密码
      * code 1 成功， 2失败， 3未绑定手机号
      * @return \Illuminate\Http\JsonResponse
      */
@@ -107,6 +86,10 @@ class BalancePasswordController extends ApiController
     }
 
 
+    /**
+     * 发送短信验证码
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function sendCode()
     {
         $mobile = \YunShop::request()->mobile;
@@ -133,16 +116,57 @@ class BalancePasswordController extends ApiController
 
 
     //修改密码
-    public function update()
+    public function updatePassword()
     {
         $result = $this->checkData();
         if ($result !== true) {
             return $this->errorJson($result);
         }
 
+        $password = trim(\YunShop::request()->password);
+        $old_password = trim(\YunShop::request()->old_password);
 
+        $passwordService = new PasswordService();
 
+        $result = $passwordService->check($old_password,$this->memberModel->yzMember->pay_password,$this->memberModel->yzMember->salt);
+        if (!$result) {
+            return $this->errorJson('原密码错误，请重试！');
+        }
+
+        //验证码验证
+        $check_code = MemberService::checkCode();
+        if ($check_code['status'] != 1) {
+            return $check_code['json'];
+        }
+
+        $password = $passwordService->make($password,$this->memberModel->salt);
+        $result = MemberShopInfo::where('member_id',\YunShop::app()->getMemberId())->update(['pay_password'=> $password]);
+
+        if (!$result) {
+            return $this->errorJson('密码修改失败，请重试');
+        }
+        return $this->successJson('密码修改成功');
     }
+
+
+    public function index()
+    {
+        if (!$this->getMemberModel()) {
+            return $this->errorJson('未获取到会员信息');
+        }
+        if (!$this->memberModel->mobile) {
+            return $this->errorJson('请先绑定手机号');
+        }
+
+        if (!$this->memberModel->yzMember->pay_password || $this->memberModel->yzMember->salt) {
+            return $this->errorJson('请先设置密码',['mobile'=>$this->memberModel->mobile]);
+        }
+
+
+        return $this->successJson('ok');
+    }
+
+
 
     private function checkData()
     {
