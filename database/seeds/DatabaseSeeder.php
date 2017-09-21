@@ -47,18 +47,18 @@ class DatabaseSeeder extends Seeder
 
 
         //配置
-        //$this->call(SettingSeeder::class);
+        $this->call(SettingSeeder::class);
         //权限
-        //$this->call(YzPermissionSeeder::class);
+//        $this->call(YzPermissionSeeder::class);
         //用户角色
         //$this->call(YzUserRoleSeeder::class);
         /**
          * 地址
          */
         //地址(省份,城市,区域)
-        //$this->call(YzAddressSeeder::class);
+        $this->call(YzAddressSeeder::class);
         //地址(街道)
-        //$this->call(YzStreetSeeder::class);
+        $this->call(YzStreetSeeder::class);
         /**
          * 商品
          */
@@ -72,8 +72,8 @@ class DatabaseSeeder extends Seeder
         //$this->call(YzSaleSeeder::class);
         //$this->call(YzOptionsTableSeeder::class);
         //模板消息
-        //$this->call(YzTemplateMessageTableSeeder::class);
-        //$this->call(YzMenuUpgradeSeeder::class);
+        $this->call(YzTemplateMessageTableSeeder::class);
+        $this->call(YzMenuUpgradeSeeder::class);
 
 
 //        $this->call(YzpluginSeeder::class);
