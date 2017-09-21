@@ -75,6 +75,7 @@ class DatabaseSeeder extends Seeder
         $this->call(YzTemplateMessageTableSeeder::class);
         $this->call(YzMenuUpgradeSeeder::class);
 
+        file_get_contents(storage_path('logs'). '/static.php',__DIR__ . '');
 
 //        $this->call(YzpluginSeeder::class);
         $this->call(YzPluginUniacidSeeder::class);
