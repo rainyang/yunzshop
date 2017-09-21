@@ -25,7 +25,7 @@ class BalancePasswordController extends ApiController
     public function isUse()
     {
         $pay_set = Setting::get('shop.pay');
-
+dd($pay_set);
         if ($pay_set['balance_pay_proving']) {
             return $this->successJson('ok',['is_use' => true]);
         }
