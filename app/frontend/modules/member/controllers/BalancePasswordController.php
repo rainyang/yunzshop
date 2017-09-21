@@ -116,7 +116,7 @@ class BalancePasswordController extends ApiController
 
         $array = [
             'password' => trim(\YunShop::request()->password),
-            'confirm_password' => trim(\YunShop::request()->confirm_password)
+            //'confirm_password' => trim(\YunShop::request()->confirm_password)
         ];
 
         $validator = \Validator::make($array,$this->rules(),$this->rulesMessage(),$this->attributes());
@@ -125,10 +125,10 @@ class BalancePasswordController extends ApiController
         }
 
         //验证码验证
-        $check_code = MemberService::checkCode();
+        /*$check_code = MemberService::checkCode();
         if ($check_code['status'] != 1) {
             return $check_code['json'];
-        }
+        }*/
 
         return true;
     }
@@ -137,7 +137,7 @@ class BalancePasswordController extends ApiController
     {
         return [
             'password' => 'required|min:6|max:6|regex:/^[0-9]*$/',
-            'confirm_password' => 'same:password'
+            //'confirm_password' => 'same:password'
         ];
     }
 
@@ -156,7 +156,7 @@ class BalancePasswordController extends ApiController
     {
         return [
             'password' => '密码',
-            'confirm_password' => '确认密码',
+            //'confirm_password' => '确认密码',
         ];
     }
 
