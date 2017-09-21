@@ -204,7 +204,7 @@ class BalancePasswordController extends ApiController
     private function rulesMessage()
     {
         return [
-            'regex'    => ':attribute 格式错误',
+            'regex'    => ':attribute 必须是纯数字',
             'required' => ':attribute 不能为空',
             'min' => ':attribute 最少6位',
             'max' => ':attribute 最多6位',
