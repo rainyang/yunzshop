@@ -47,7 +47,7 @@ class DatabaseSeeder extends Seeder
 
 
         //配置
-        //$this->call(SettingSeeder::class);
+        $this->call(SettingSeeder::class);
         //权限
 //        $this->call(YzPermissionSeeder::class);
         //用户角色
