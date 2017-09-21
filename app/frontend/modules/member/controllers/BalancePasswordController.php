@@ -11,6 +11,7 @@ namespace app\frontend\modules\member\controllers;
 
 
 use app\common\components\ApiController;
+use app\common\facades\Setting;
 use app\common\services\password\PasswordService;
 use app\frontend\models\Member;
 use app\frontend\models\MemberShopInfo;
@@ -21,6 +22,15 @@ class BalancePasswordController extends ApiController
     private $memberModel;
 
 
+    public function isUse()
+    {
+        $pay_set = Setting::get('shop.pay');
+
+        if ($pay_set['balance_pay_proving']) {
+            return $this->successJson('ok',['is_use' => true]);
+        }
+        return $this->successJson('ok',['is_use' => false]);
+    }
 
     public function index()
     {
