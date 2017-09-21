@@ -13,6 +13,9 @@ class YzMenuUpgradeSeeder extends Seeder
 
     public function run()
     {
+        
+        Log::info("调试-YzMenuUpgradeSeeder");
+        return;
         $item = \Illuminate\Support\Facades\DB::table($this->table)->where('item', 'system_update')->first();
         if ($item) {
             \Log::info('system_update 已经有数据了跳过');

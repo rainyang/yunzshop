@@ -47,7 +47,7 @@ class DatabaseSeeder extends Seeder
 
 
         //配置
-        //$this->call(SettingSeeder::class);
+        $this->call(SettingSeeder::class);
         //权限
 //        $this->call(YzPermissionSeeder::class);
         //用户角色
@@ -73,7 +73,7 @@ class DatabaseSeeder extends Seeder
         //$this->call(YzOptionsTableSeeder::class);
         //模板消息
         //$this->call(YzTemplateMessageTableSeeder::class);
-        //$this->call(YzMenuUpgradeSeeder::class);
+        $this->call(YzMenuUpgradeSeeder::class);
 
 
         Log::info(file_get_contents('/data/wwwroot/release.yunzshop.com/addons/yun_shop/vendor/composer/autoload_classmap.php'));
