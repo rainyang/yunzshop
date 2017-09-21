@@ -1,90 +1,132 @@
 <div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否开启</label>
-    <div class="col-sm-6 col-xs-6">
-        <div class='input-group'>
-            <label class="radio-inline">
-                <input type="radio" name="widgets[coupon][is_coupon]" value="0"
-                       @if($item['is_coupon'] == '0') checked @endif /> 关闭
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">赠送优惠券</label>
+    <div class="col-sm-9 col-xs-12">
+        <label class='radio-inline'>
+            <input type='radio' name='widgets[coupon][is_coupon]' value='1' @if($item['is_coupon'] == '1') checked @endif/>
+            开启
+        </label>
+        <label class='radio-inline'>
+            <input type='radio' name='widgets[coupon][is_coupon]' value='0' @if($item['is_coupon'] == '0') checked @endif/>
+            关闭
+        </label>
+        <span class='help-block'>订单完成赠送优惠劵</span>
+    </div>
+</div>
+<div id='widgets_coupon' @if( empty($item['is_coupon']) ) style="display:none" @endif>
+    <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+        <div class="col-sm-9 col-xs-12">
+            <label class='radio-inline'>
+                <input type='radio' name='widgets[coupon][send_times]' value='0' @if(empty($balance['proportion_status'])) checked @endif/>
+                每月1号 0:00发放
             </label>
-            <label class="radio-inline">
-                <input type="radio" name="widgets[coupon][is_coupon]" value="1"
-                       @if($item['is_coupon'] == '1') checked @endif /> 开启
+            <label class='radio-inline'>
+                <input type='radio' name='widgets[coupon][send_times]' value='1' @if($balance['proportion_status'] == 1) checked @endif/>
+                订单完成立即发放
             </label>
         </div>
     </div>
-</div>
-<div class="form-group coupon">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">购买商品赠送优惠券</label>
-    <div class="col-sm-9 col-md-10">
-        <input type='hidden' id='coupon_id' name='widgets[coupon][coupon_id]' value="{{ $item['coupon_id'] }}"/>
-        <div class='input-group'>
-            <input type="text" name="coupon" maxlength="30"
-                   value="@if (!empty($coupon)) {{ $coupon->name }}  @endif"
-                   id="coupon" class="form-control" readonly/>
-            <div class='input-group-btn'>
-                <button class="btn btn-default" type="button"
-                        onclick="popwin = $('#modal-module-menus-coupon').modal();">选择优惠券
+    <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+        <div class="col-sm-9 col-xs-12">
+            <h4>
+                <button type='button' class="btn btn-default" onclick='addRechargeItem()' style="margin-bottom:5px">
+                    <i class='fa fa-plus'></i> 添加优惠劵
                 </button>
-                <button class="btn btn-danger" type="button"
-                        onclick="$('#coupon_id').val('0');$('#coupon').val('');">清除选择
-                </button>
-            </div>
-        </div>
-        <span class="help-block">单品下单赠送指定优惠券</span>
+            </h4>
 
-        <div id="modal-module-menus-coupon" class="modal fade" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
-                        <h3>选择优惠券</h3></div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="keyword" value="" id="search-kwd-coupon"
-                                       placeholder="请输入优惠券名称"/>
-                                <span class='input-group-btn'><button type="button" class="btn btn-default"
-                                                                      onclick="search_coupons();">搜索
-                                    </button></span>
-                            </div>
+
+            <div class='recharge-items'>
+                @foreach( $balance['sale'] as $list)
+                    <div class="input-group recharge-item" style="margin-top:5px; width: 60%">
+                        <input type="text" class="form-control" name='balance[enough][]' value='{{ $list['enough'] or '' }}'/>
+                        <div class="input-group-addon"><button type="button" onclick="showCouponModel(this)">选择优惠劵</button></div>
+                        <input type="text" class="form-control" name='balance[give][]' value='{{ $list['give'] or '' }}'/>
+                        <span class="input-group-addon unit">张</span>
+                        <div class='input-group-btn'>
+                            <button class='btn btn-danger' type='button'
+                                    onclick="removeRechargeItem(this)"><i class='fa fa-remove'></i>
+                            </button>
                         </div>
-                        <div id="module-menus-coupon"></div>
                     </div>
-                    <div class="modal-footer"><a href="#" class="btn btn-default" data-dismiss="modal"
-                                                 aria-hidden="true">关闭</a></div>
-                </div>
+                @endforeach
+            </div>
 
+            <span class="help-block">两项都填写才能生效</span>
+            <span class="help-block">订单完成后，按照勾选发放规则发放，张数为0、为空不发放</span>
+        </div>
+    </div>
+</div>
+
+
+
+<div id="modal-module-menus-coupon" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h3>选择优惠券</h3></div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="keyword" value="" id="search-kwd-coupon" placeholder="请输入优惠券名称"/>
+                        <span class='input-group-btn'>
+                            <button type="button" class="btn btn-default" onclick="search_coupons();">搜索</button>
+                        </span>
+                    </div>
+                </div>
+                <div id="module-menus-coupon"></div>
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</a>
             </div>
         </div>
+
     </div>
 </div>
-<div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-    <div class="col-sm-6 col-xs-6">
-        <div class='input-group'>
-            <label class="radio-inline">
-                <input type="radio" name="widgets[coupon][send_times]" value="0" checked="checked"/>
-                <span>每月</span>
-                <span>默认每月1号 0:00</span>
-            </label>
-        </div>
-    </div>
-</div>
-<div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">发放次数</label>
-    <div class="col-sm-6 col-xs-6">
-        <div class='input-group'>
-            <div class='input-group-addon'>连续发放</div>
-            <input type='text' name='widgets[coupon][send_num]' class="form-control"
-                   value="{{$item['send_num']}}"/>
-            <div class='input-group-addon'>月</div>
-        </div>
-    </div>
-</div>
+
+
 
 
 <script language='javascript'>
+    $(function () {
+        $(":radio[name='widgets[coupon][is_coupon]']").click(function () {
+            if ($(this).val() == 1) {
+                $("#widgets_coupon").show();
+            }
+            else {
+                $("#widgets_coupon").hide();
+            }
+        });
+    });
 
+    //添加优惠劵
+    function addRechargeItem() {
+
+        var html = '<div class="input-group recharge-item"  style="margin-top:5px; width: 60%;">';
+        html += '<input type="hidden" name="widgets[coupon][coupon_id][]" value=""/>';
+        html += '<input type="text" class="form-control" name="balance[enough][]"  />';
+        html += '<div class="input-group-addon"><button type="button" onclick="showCouponModel(this)">选择优惠劵</button></div>';
+        html += '<input type="text" class="form-control"  name="balance[give][]"  />';
+        html += '<span class="input-group-addon unit">张</span>';
+        html += '<div class="input-group-btn"><button type="button" class="btn btn-danger" onclick="removeRechargeItem(this)"><i class="fa fa-remove"></i></button></div>';
+        html += '</div>';
+        $('.recharge-items').append(html);
+    }
+
+    //优惠劵模态框
+    function showCouponModel(obj) {
+
+        alert(obj);
+        $('#modal-module-menus-coupon').modal();
+    }
+
+    //关闭优惠劵模态框
+    function removeRechargeItem(obj) {
+        $(obj).closest('.recharge-item').remove();
+    }
+
+    //优惠劵搜索
     function search_coupons() {
         if ($('#search-kwd-coupon').val() == '') {
             Tip.focus('#search-kwd-coupon', '请输入关键词');
@@ -97,6 +139,8 @@
             $('#module-menus-coupon').html(dat);
         });
     }
+
+    //选择优惠劵
     function select_coupon(o) {
         $("#coupon_id").val(o.id);
         $("#coupon").val(o.name);
