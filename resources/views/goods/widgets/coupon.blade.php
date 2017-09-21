@@ -12,20 +12,38 @@
         <span class='help-block'>订单完成赠送优惠劵</span>
     </div>
 </div>
+
+
 <div id='widgets_coupon' @if( empty($item['is_coupon']) ) style="display:none" @endif>
     <div class="form-group">
         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
         <div class="col-sm-9 col-xs-12">
             <label class='radio-inline'>
-                <input type='radio' name='widgets[coupon][send_times]' value='0' @if(empty($balance['proportion_status'])) checked @endif/>
+                <input type='radio' name='widgets[coupon][send_times]' value='0' @if(empty($item['send_times'])) checked @endif/>
                 每月1号 0:00发放
             </label>
             <label class='radio-inline'>
-                <input type='radio' name='widgets[coupon][send_times]' value='1' @if($balance['proportion_status'] == 1) checked @endif/>
+                <input type='radio' name='widgets[coupon][send_times]' value='1' @if($item['send_times'] == 1) checked @endif/>
                 订单完成立即发放
             </label>
         </div>
     </div>
+
+
+
+    <div id="coupon_send_month" class="form-group" @if(!empty($item['send_times'])) style="display: none" @endif>
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+        <div class="col-sm-6 col-xs-6">
+            <div class='input-group'  style="width: 644px;" >
+                <div class='input-group-addon'>连续发放</div>
+                <input type='text' name='widgets[coupon][send_num]' class="form-control" value="{{$item['send_num']}}"/>
+                <div class='input-group-addon'>月</div>
+            </div>
+        </div>
+    </div>
+
+
+
     <div class="form-group">
         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
         <div class="col-sm-9 col-xs-12">
@@ -96,6 +114,14 @@
             }
             else {
                 $("#widgets_coupon").hide();
+            }
+        });
+        $(":radio[name='widgets[coupon][send_times]']").click(function () {
+            if ($(this).val() == 1) {
+                $("#coupon_send_month").hide();
+            }
+            else {
+                $("#coupon_send_month").show();
             }
         });
     });
