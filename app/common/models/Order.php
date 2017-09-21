@@ -10,7 +10,7 @@ namespace app\common\models;
 
 
 use app\backend\modules\order\services\OrderService;
-use app\common\models\order\Address;
+use app\common\models\order\Address as OrderAddress;
 use app\common\models\order\Express;
 use app\common\models\order\OrderChangePriceLog;
 use app\common\models\order\OrderCoupon;
@@ -248,7 +248,7 @@ class Order extends BaseModel
      */
     public function address()
     {
-        return $this->hasOne(Address::class, 'order_id', 'id');
+        return $this->hasOne(OrderAddress::class, 'order_id', 'id');
     }
 
     /**
