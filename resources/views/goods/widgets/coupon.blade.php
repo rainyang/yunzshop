@@ -48,7 +48,8 @@
         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
         <div class="col-sm-9 col-xs-12">
             <h4>
-                <button type='button' class="btn btn-default" onclick='addRechargeItem()' style="margin-bottom:5px">
+                <button id="coupon_add" type='button' class="btn btn-default"  style="margin-bottom:5px">
+                    <input type="hidden" id="coupon_input" value="0">
                     <i class='fa fa-plus'></i> 添加优惠劵
                 </button>
             </h4>
@@ -58,7 +59,7 @@
                 @foreach( $balance['sale'] as $list)
                     <div class="input-group recharge-item" style="margin-top:5px; width: 60%">
                         <input type="text" class="form-control" name='balance[enough][]' value='{{ $list['enough'] or '' }}'/>
-                        <div class="input-group-addon"><button type="button" onclick="showCouponModel(this)">选择优惠劵</button></div>
+                        <div class="input-group-addon"><button type="button">选择优惠劵</button></div>
                         <input type="text" class="form-control" name='balance[give][]' value='{{ $list['give'] or '' }}'/>
                         <span class="input-group-addon unit">张</span>
                         <div class='input-group-btn'>
@@ -127,12 +128,12 @@
     });
 
     //添加优惠劵
-    function addRechargeItem() {
+    function addRechargeItem(i) {
 
         var html = '<div class="input-group recharge-item"  style="margin-top:5px; width: 60%;">';
         html += '<input type="hidden" name="widgets[coupon][coupon_id][]" value=""/>';
         html += '<input type="text" class="form-control" name="balance[enough][]"  />';
-        html += '<div class="input-group-addon"><button type="button" onclick="showCouponModel(this)">选择优惠劵</button></div>';
+        html += '<div class="input-group-addon"><button type="button" class="input-group-add">选择优惠劵</button></div>';
         html += '<input type="text" class="form-control"  name="balance[give][]"  />';
         html += '<span class="input-group-addon unit">张</span>';
         html += '<div class="input-group-btn"><button type="button" class="btn btn-danger" onclick="removeRechargeItem(this)"><i class="fa fa-remove"></i></button></div>';
@@ -170,9 +171,26 @@
     function select_coupon(o) {
         $("#coupon_id").val(o.id);
         $("#coupon").val(o.name);
+        $('.select_coupon_id').val(o.id);
+        $('.select_coupon_name').val(o.name);
         $("#modal-module-menus-coupon .close").click();
+        console.log($(document).find('.recharge-item'));
+        $(document).find('input').removeClass('select_coupon_id');
+        $(document).find('input').removeClass('select_coupon_name');
     }
 
+
+    $(function(){
+        $(document).on('click', '#coupon_add', function() {
+            addRechargeItem();
+        });
+
+        $(document).on('click', '.input-group-add', function() {
+            showCouponModel($(this).get(0));
+            $(this).parents('.recharge-item').find('input[name="widgets[coupon][coupon_id][]"]').addClass('select_coupon_id');
+            $(this).parents('.recharge-item').find('input[name="balance[enough][]"]').addClass('select_coupon_name');
+        });
+    });
 </script>
 
 
