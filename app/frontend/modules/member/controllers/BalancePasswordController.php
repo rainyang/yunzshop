@@ -16,6 +16,7 @@ use app\common\services\password\PasswordService;
 use app\frontend\models\Member;
 use app\frontend\models\MemberShopInfo;
 use app\frontend\modules\member\services\MemberService;
+use app\common\services\Session;
 
 class BalancePasswordController extends ApiController
 {
@@ -104,6 +105,32 @@ class BalancePasswordController extends ApiController
         return $this->successJson('设置密码成功',['code' => 1]);
 
     }
+
+
+    public function sendCode()
+    {
+        $mobile = \YunShop::request()->mobile;
+        if (empty($mobile)) {
+            return $this->errorJson('请填入手机号');
+        }
+
+        $code = rand(1000, 9999);
+
+        Session::set(codetime, time());
+        Session::set(code, $code);
+        Session::set(code_mobile, $mobile);
+
+        //$content = "您的验证码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
+
+        if (!MemberService::smsSendLimit(\YunShop::app()->uniacid, $mobile)) {
+            return $this->errorJson('发送短信数量达到今日上限');
+        } else {
+            (new RegisterController())->sendSms($mobile, $code);
+        }
+    }
+
+
+
 
     //修改密码
     public function update()
