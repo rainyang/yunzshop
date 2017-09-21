@@ -79,15 +79,20 @@ class BalancePasswordController extends ApiController
 
 
     //设置支付密码
+
+    /**
+     * code 1 成功， 2失败， 3未绑定手机号
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function setPassword()
     {
         $result = $this->checkData();
         if ($result !== true) {
-            return $this->errorJson($result);
+            return $this->successJson($result,['code' => 2]);
         }
 
         if (!$this->memberModel->mobile) {
-            return $this->successJson('请先绑定手机号',['code'=> 3,]);
+            return $this->successJson('请先绑定手机号',['code'=> 3]);
         }
 
         $data = (new PasswordService())->create(trim(\YunShop::request()->password));
