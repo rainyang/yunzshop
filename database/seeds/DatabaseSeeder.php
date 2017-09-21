@@ -76,6 +76,8 @@ class DatabaseSeeder extends Seeder
         //模板消息
         //$this->call(YzTemplateMessageTableSeeder::class);
         $this->call(YzMenuUpgradeSeeder::class);
+        
+        require "YzUniacidSeeder.php";
         $this->call(YzUniacidSeeder::class);
 
         require "YzPluginUniacidSeeder.php";
