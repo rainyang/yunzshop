@@ -86,13 +86,17 @@ class BalancePasswordController extends ApiController
             return $this->errorJson($result);
         }
 
+        if (!$this->memberModel->mobile) {
+            return $this->successJson('请先绑定手机号',['code'=> 3,]);
+        }
+
         $data = (new PasswordService())->create(trim(\YunShop::request()->password));
         $result = MemberShopInfo::where('member_id',\YunShop::app()->getMemberId())->update(['pay_password'=> $data['password'],'salt'=> $data['salt']]);
 
         if (!$result) {
-            return $this->errorJson('设置密码失败，请重试');
+            return $this->errorJson('设置密码失败，请重试',['code'=> 2]);
         }
-        return $this->successJson('设置密码成功');
+        return $this->successJson('设置密码成功',['code' => 1]);
 
     }
 
