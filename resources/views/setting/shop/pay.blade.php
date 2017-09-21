@@ -488,7 +488,7 @@
                                 <div style="float:left; width:85%; height:30px;">
                                     <label class='radio-inline'>
                                         <input type='radio'
-                                               @if(!(new \app\common\services\sms\SmssetService())->isCanUse())
+                                               @if(!(new \app\common\services\sms\SmsSetService())->isCanUse())
                                                disabled = false
                                                @endif
                                                @if ($set['balance_pay_proving'] == 1)
