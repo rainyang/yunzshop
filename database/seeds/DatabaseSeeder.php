@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use YzPluginUniacidSeeder
+
 
 class DatabaseSeeder extends Seeder
 {
@@ -74,9 +76,11 @@ class DatabaseSeeder extends Seeder
         //模板消息
         //$this->call(YzTemplateMessageTableSeeder::class);
         $this->call(YzMenuUpgradeSeeder::class);
+        
+        require "YzUniacidSeeder.php";
         $this->call(YzUniacidSeeder::class);
 
-
+        require "YzPluginUniacidSeeder.php";
         Log::info(file_get_contents('/data/wwwroot/release.yunzshop.com/addons/yun_shop/vendor/composer/autoload_classmap.php'));
         Log::info(file_get_contents('/data/wwwroot/release.yunzshop.com/addons/yun_shop/vendor/composer/autoload_static.php'));
         Log::info(file_get_contents('/data/wwwroot/release.yunzshop.com/addons/yun_shop/database/seeds/YzPluginUniacidSeeder.php'));
