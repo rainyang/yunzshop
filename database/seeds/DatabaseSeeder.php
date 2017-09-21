@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use YzPluginUniacidSeeder
 
 
 class DatabaseSeeder extends Seeder
@@ -76,7 +75,7 @@ class DatabaseSeeder extends Seeder
         //模板消息
         //$this->call(YzTemplateMessageTableSeeder::class);
         $this->call(YzMenuUpgradeSeeder::class);
-        
+
         require "YzUniacidSeeder.php";
         $this->call(YzUniacidSeeder::class);
 
