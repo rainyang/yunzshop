@@ -123,8 +123,7 @@ class BalanceRecharge extends BaseModel
      * @params int $pageSize
      * @params array $search
      * return object
-     *
-     * @Author yitian */
+     * */
     public static function getSearchPageList($pageSize, $search =[])
     {
         $query = self::uniacid();
@@ -137,7 +136,8 @@ class BalanceRecharge extends BaseModel
                     $member = $member->select('uid', 'nickname','realname','mobile','avatar')
                         ->where('realname', 'like', '%' . $search['realname'] . '%')
                         ->orWhere('mobile', 'like', '%' . $search['realname'] . '%')
-                        ->orWhere('nickname', 'like', '%' . $search['realname'] . '%');
+                        ->orWhere('nickname', 'like', '%' . $search['realname'] . '%')
+                        ->orWhere('uid', $search['realname']);
                 }
                 if ($search['level_id']) {
                     $member = $member->whereHas('yzMember', function ($level)use($search) {
