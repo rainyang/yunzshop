@@ -51,10 +51,10 @@ class BalancePasswordController extends ApiController
         }
 
         $mobile = $this->memberModel->mobile ? $this->memberModel->mobile : '';
-        if (!$this->memberModel->yzMember->pay_password || $this->memberModel->yzMember->salt) {
+        if ($this->memberModel->yzMember->pay_password && $this->memberModel->yzMember->salt) {
             return $this->successJson('ok',['is_has' => true,'mobile'=>$mobile]);
         }
-        return $this->successJson('ok',['is_has' => true,'mobile'=>$mobile]);
+        return $this->successJson('ok',['is_has' => false,'mobile'=>$mobile]);
     }
 
 
