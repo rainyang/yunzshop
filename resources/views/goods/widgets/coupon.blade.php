@@ -132,7 +132,7 @@
 
         var html = '<div class="input-group recharge-item"  style="margin-top:5px; width: 60%;">';
         html += '<input type="hidden" name="widgets[coupon][coupon_id][]" value=""/>';
-        html += '<input type="text" class="form-control" name="balance[enough][]"  />';
+        html += '<input type="text" class="form-control" name="balance[enough][]"  readonly />';
         html += '<div class="input-group-addon"><button type="button" class="input-group-add">选择优惠劵</button></div>';
         html += '<input type="text" class="form-control"  name="balance[give][]"  />';
         html += '<span class="input-group-addon unit">张</span>';
@@ -143,8 +143,6 @@
 
     //优惠劵模态框
     function showCouponModel(obj) {
-
-        alert(obj);
         $('#modal-module-menus-coupon').modal();
     }
 
@@ -169,12 +167,12 @@
 
     //选择优惠劵
     function select_coupon(o) {
-        $("#coupon_id").val(o.id);
-        $("#coupon").val(o.name);
+        //$("#coupon_id").val(o.id);
+        //$("#coupon").val(o.name);
         $('.select_coupon_id').val(o.id);
         $('.select_coupon_name').val(o.name);
         $("#modal-module-menus-coupon .close").click();
-        console.log($(document).find('.recharge-item'));
+        //console.log($(document).find('.recharge-item'));
         $(document).find('input').removeClass('select_coupon_id');
         $(document).find('input').removeClass('select_coupon_name');
     }

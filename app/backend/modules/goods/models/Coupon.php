@@ -17,6 +17,13 @@ class Coupon extends GoodsCoupon
 
     public $timestamps = false;
 
+    public function relationValidator($goodsId, $data, $operate)
+    {
+        dump($goodsId);
+        dump($data);
+        dd($operate);
+    }
+
     public static function relationSave($goodsId, $data, $operate)
     {
         if (!$goodsId) {
