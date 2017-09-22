@@ -135,7 +135,7 @@ class BalanceController extends ApiController
 
     public function cloudWechatPay()
     {
-        $orderSn = \YunShop::request()->order_sn;
+        $orderSn = \YunShop::request()->ordersn;
 
         $this->model = BalanceRecharge::ofOrderSn($orderSn)->withoutGlobalScope('member_id')->first();
         if ($this->model) {

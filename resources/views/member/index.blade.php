@@ -25,29 +25,29 @@
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2 ">
                             <!--<label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">ID</label>-->
                             <div class="">
-                                <input type="text" placeholder="会员ID" class="form-control"  name="mid" value="{{$request['mid']}}"/>
+                                <input type="text" placeholder="会员ID" class="form-control"  name="search[mid]" value="{{$request['search']['mid']}}"/>
                             </div>
                         </div>
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                            <!-- <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员信息</label>-->
                             <div class="">
-                                <input type="text" class="form-control"  name="realname" value="{{$request['realname']}}" placeholder="可搜索昵称/姓名/手机号"/>
+                                <input type="text" class="form-control"  name="search[realname]" value="{{$request['search']['realname']}}" placeholder="可搜索昵称/姓名/手机号"/>
                             </div>
                         </div>
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                       <!--      <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">是否关注</label>-->
                             <div class="">
-                                <select name='followed' class='form-control'>
+                                <select name='search[followed]' class='form-control'>
                                     <option value=''>不限关注</option>
                                     </option>
                                     <option value='1'
-                                            @if($request['followed']=='1')
+                                            @if($request['search']['followed']=='1')
                                             selected
                                             @endif
                                     >已关注
                                     </option>
                                     <option value='0'
-                                            @if($request['followed']=='0')
+                                            @if($request['search']['followed']=='0')
                                             selected
                                             @endif
                                     >未关注
@@ -58,11 +58,11 @@
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                            <!-- <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员等级</label>-->
                             <div class="">
-                                <select name='level' class='form-control'>
+                                <select name='search[level]' class='form-control'>
                                     <option value=''>会员等级不限</option>
                                     @foreach($levels as $level)
                                         <option value='{{$level['id']}}'
-                                                @if($request['level']==$level['id'])
+                                                @if($request['search']['level']==$level['id'])
                                                 selected
                                                 @endif
                                         >{{$level['level_name']}}</option>
@@ -73,11 +73,11 @@
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                           <!--  <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员分组</label>-->
                             <div class="">
-                                <select name='groupid' class='form-control'>
+                                <select name='search[groupid]' class='form-control'>
                                     <option value=''>会员分组不限</option>
                                     @foreach($groups as $group)
                                         <option value='{{$group['id']}}'
-                                                @if($request['groupid']==$group['id'])
+                                                @if($request['search']['groupid']==$group['id'])
                                                 selected
                                                 @endif
                                         >{{$group['group_name']}}</option>
@@ -88,14 +88,14 @@
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                 <!--        <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">黑名单</label>-->
                         <div class="">
-                            <select name='isblack' class='form-control'>
+                            <select name='search[isblack]' class='form-control'>
                                 <option value=''>不限黑名单</option>
                                 <option value='0'
-                                        @if($request['isblack']=='0')
+                                        @if($request['search']['isblack']=='0')
                                 selected
                                 @endif>否</option>
                                 <option value='1'
-                                        @if($request['isblack']=='1')
+                                        @if($request['search']['isblack']=='1')
                                 selected
                                 @endif>是</option>
                             </select>
@@ -104,37 +104,43 @@
 
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                             <div class="">
-                                <select name='isagent' class='form-control'>
+                                <select name='search[isagent]' class='form-control'>
                                     <option value=''>推广员不限</option>
                                     <option value='0'
-                                            @if($request['isagent']=='0')
+                                            @if($request['search']['isagent']=='0')
                                             selected
                                             @endif>否</option>
                                     <option value='1'
-                                            @if($request['isagent']=='1')
+                                            @if($request['search']['isagent']=='1')
                                             selected
                                             @endif>是</option>
                                 </select>
                             </div>
                         </div>
 
-                        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+                        <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                            <div class="">
+                                <input type="text" class="form-control"  name="search[custom_value]" value="{{$request['search']['custom_value']}}" placeholder="自定义字段"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg">
 
                             <div class="time">
 
-                                <select name='searchtime' class='form-control'>
+                                <select name='search[searchtime]' class='form-control'>
                                     <option value='0'
-                                            @if($request['searchtime']=='0')
+                                            @if($request['search']['searchtime']=='0')
                                     selected
                                     @endif>注册时间不限</option>
                                     <option value='1'
-                                            @if($request['searchtime']=='1')
+                                            @if($request['search']['searchtime']=='1')
                                     selected
                                     @endif>搜索注册时间</option>
                                 </select>
                             </div>
                             <div class="search-select">
-                                {!! app\common\helpers\DateRange::tplFormFieldDateRange('times', [
+                                {!! app\common\helpers\DateRange::tplFormFieldDateRange('search[times]', [
                                 'starttime'=>date('Y-m-d H:i', $starttime),
                                 'endtime'=>date('Y-m-d H:i',$endtime),
                                 'start'=>0,
@@ -143,13 +149,14 @@
                             </div>
                         </div>
 
-                        <div class="form-group  col-xs-12 col-sm-7 col-lg-4">
+                        <div class="form-group  col-xs-12 col-md-12 col-lg-6">
                             <!--<label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>-->
                             <div class="">
+                                <button class="btn btn-success "><i class="fa fa-search"></i> 搜索</button>
                                 <button type="button" name="export" value="1" id="export" class="btn btn-default">导出
                                     Excel
                                 </button>
-                                <button class="btn btn-success "><i class="fa fa-search"></i> 搜索</button>
+
 
                             </div>
                         </div>

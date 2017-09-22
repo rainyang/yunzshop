@@ -45,8 +45,17 @@ class User extends BaseModel
         if(Schema::hasColumn($this->table, 'owner_uid')){ //用于兼容新版微擎新增的字段
             $this->attributes = array_merge($this->attributes, ['owner_uid' => '0']);
         }
-        if(Schema::hasColumn($this->table, 'owner_uid')){ //用于兼容新版微擎新增的字段
+        if(Schema::hasColumn($this->table, 'founder_groupid')){ //用于兼容新版微擎新增的字段
             $this->attributes = array_merge($this->attributes, ['founder_groupid' => '0']);
+        }
+        if(Schema::hasColumn($this->table, 'credit1')){ //用于兼容新版微擎新增的字段
+            $this->attributes = array_merge($this->attributes, ['credit1' => '0']);
+        }
+        if(Schema::hasColumn($this->table, 'credit2')){ //用于兼容新版微擎新增的字段
+            $this->attributes = array_merge($this->attributes, ['credit2' => '0']);
+        }
+        if(Schema::hasColumn($this->table, 'ucuserid')){ //用于兼容新版微擎新增的字段
+            $this->attributes = array_merge($this->attributes, ['ucuserid' => '0']);
         }
         return $this->attributes;
     }
@@ -190,7 +199,7 @@ class User extends BaseModel
         if($list === null){
             $list =  static::select(['uid'])
                 ->where(['uid' => \YunShop::app()->uid])
-                ->where('type','!=', '1')
+                //->where('type','!=', '1')
                 ->with([
                     'userRole' => function ($query) {
                         return $query->select(['user_id','role_id'])
@@ -211,6 +220,7 @@ class User extends BaseModel
      * @return array*/
     public static function getAllPermissions()
     {
+        set_time_limit(0);
         $userPermissions = self::getUserPermissionsCache()->toArray();
         //dd($userPermissions);
         $permissions = [];

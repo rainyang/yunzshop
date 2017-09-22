@@ -98,14 +98,22 @@ class BaseController extends Controller
             $session_id = \YunShop::request()->session_id;
         }
 
-        if (!empty($session_id)) {
-            session_id($session_id);
-        } else {
-            ini_set('session.gc_maxlifetime', self::COOKIE_EXPIRE);
-            session_set_cookie_params( self::COOKIE_EXPIRE);
+        if (empty($session_id)) {
+            $session_id = $_COOKIE[session_name()];
         }
 
-        session_start();
+        if (empty($session_id)) {
+            $session_id = "{\YunShop::app()->uniacid}-" . random(20) ;
+
+            $session_id = md5($session_id);
+
+            setcookie(session_name(), $session_id);
+        }
+
+        session_id($session_id);
+
+        load()->classs('wesession');
+        \WeSession::start(\YunShop::app()->uniacid, CLIENT_IP, self::COOKIE_EXPIRE);
     }
 
     /**

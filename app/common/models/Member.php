@@ -9,6 +9,7 @@ use app\common\services\Session;
 use app\common\repositories\OptionRepository;
 use app\common\services\PluginManager;
 use app\frontend\modules\member\models\MemberModel;
+use app\frontend\modules\member\models\MemberWechatModel;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
 use Yunshop\Gold\frontend\services\MemberCenterService;
@@ -353,6 +354,15 @@ class Member extends BackendModel
             $data['cashier'] = '';
         }
 
+        if ($plugin_class->isEnabled('elive')) {
+            $data['elive'] = [
+                'button_name' => '生活缴费',
+                'status'         => true
+            ];
+        } else {
+            $data['elive'] = ['status' => false];
+        }
+
         //获取插件会员中心链接挂件
         $plugins = \Config::get('member_center.plugins');
         if (is_array($plugins)) {
@@ -421,13 +431,13 @@ class Member extends BackendModel
 
     public static function getOpenIdForType($member_id, $type = null){
         switch ($type) {
-            case 1:
-                $fans = McMappingFans::getFansById($member_id);
-
-                return $fans->openid;
-                break;
             case 2:
                 $mini_app = MemberMiniAppModel::getFansById($member_id);
+
+                return $mini_app->openid;
+                break;
+            case 9:
+                $mini_app = MemberWechatModel::getFansById($member_id);
 
                 return $mini_app->openid;
                 break;

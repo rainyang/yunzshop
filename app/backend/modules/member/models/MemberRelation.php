@@ -16,6 +16,8 @@ use app\frontend\modules\member\models\SubMemberModel;
 
 class MemberRelation extends BackendModel
 {
+    static protected $needLog = true;
+
     public $table = 'yz_member_relation';
 
     public $timestamps = false;

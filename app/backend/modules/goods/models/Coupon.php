@@ -13,6 +13,8 @@ use app\common\models\goods\GoodsCoupon;
 
 class Coupon extends GoodsCoupon
 {
+    static protected $needLog = true;
+
     public $timestamps = false;
 
     public static function relationSave($goodsId, $data, $operate)

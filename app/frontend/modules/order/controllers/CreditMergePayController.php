@@ -22,26 +22,26 @@ class CreditMergePayController extends MergePayController
 {
     public function credit2(\Request $request)
     {
-        if(\Setting::get('shop.pay.credit') == false){
+        if (\Setting::get('shop.pay.credit') == false) {
             throw new AppException('商城未开启余额支付');
 
         }
         DB::transaction(function () {
-            $result = $this->pay( PayFactory::PAY_CREDIT);
+            $result = $this->pay(PayFactory::PAY_CREDIT);
 
             if (!$result) {
                 throw new AppException('余额扣除失败,请联系客服');
             }
             //todo 临时解决 需要重构
-
+            $this->orderPay->pay_type_id = PayFactory::PAY_CREDIT;
+            $this->orderPay->status = 1;
+            $this->orderPay->save();
             $this->orders->each(function ($order) {
-                if (!OrderService::orderPay(['order_id' => $order->id])) {
+                if (!OrderService::orderPay(['order_id' => $order->id, 'order_pay_id' => $this->orderPay->id, 'pay_type_id' => PayFactory::PAY_CREDIT])) {
                     throw new AppException('订单状态改变失败,请联系客服');
                 }
             });
 
-            $this->orderPay->status = 1;
-            $this->orderPay->save();
 
             //会员推广资格
             \Log::debug('余额支付-会员推广');
@@ -59,8 +59,8 @@ class CreditMergePayController extends MergePayController
             'remark' => '合并支付(id:' . $orderPay->id . '),余额付款' . $orderPay->amount . '元',
             'service_type' => Balance::BALANCE_CONSUME,
             'trade_no' => 0,
-            ];
+        ];
 
-        return array_merge(parent::getPayParams($orderPay,$orders), $result);
+        return array_merge(parent::getPayParams($orderPay, $orders), $result);
     }
 }

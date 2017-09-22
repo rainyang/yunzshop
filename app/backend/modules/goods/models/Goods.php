@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\DB;
 
 class Goods extends \app\common\models\Goods
 {
+    static protected $needLog = true;
+
     public $widgets = [];
 
     /**

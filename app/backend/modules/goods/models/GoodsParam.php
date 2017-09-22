@@ -10,6 +10,8 @@ namespace app\backend\modules\goods\models;
 
 class GoodsParam extends \app\common\models\GoodsParam
 {
+    static protected $needLog = true;
+
     public static function saveParam($data, $goods_id = 2)
     {
         $param_ids = $data->param_id;
