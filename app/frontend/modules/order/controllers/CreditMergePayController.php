@@ -13,6 +13,7 @@ namespace app\frontend\modules\order\controllers;
 use app\backend\modules\member\models\MemberRelation;
 use app\common\exceptions\AppException;
 use app\common\models\finance\Balance;
+use app\common\services\password\PasswordService;
 use app\common\services\PayFactory;
 use app\frontend\modules\order\services\OrderService;
 use Illuminate\Support\Collection;
@@ -26,6 +27,8 @@ class CreditMergePayController extends MergePayController
             throw new AppException('商城未开启余额支付');
 
         }
+        $this->checkPassword($orders->first()->uid);
+
         DB::transaction(function () {
             $result = $this->pay(PayFactory::PAY_CREDIT);
 
@@ -62,5 +65,20 @@ class CreditMergePayController extends MergePayController
         ];
 
         return array_merge(parent::getPayParams($orderPay, $orders), $result);
+    }
+    /**
+     * 校验支付密码
+     * @param $uid
+     * @return bool
+     */
+    private function checkPassword($uid){
+        if(!\Setting::get('shop.pay.balance_pay_proving')){
+            // 未开启
+            return true;
+        }
+        $this->validate([
+            'payment_password' => 'required|string'
+        ]);
+        return (new PasswordService())->checkMemberPassword($uid,request()->input('payment_password'));
     }
 }

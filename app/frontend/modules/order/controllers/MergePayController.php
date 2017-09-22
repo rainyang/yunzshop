@@ -106,22 +106,6 @@ class MergePayController extends ApiController
     }
 
     /**
-     * 校验支付密码
-     * @param $uid
-     * @return bool
-     */
-    private function checkPassword($uid){
-        if(!\Setting::get('shop.pay.balance_pay_proving')){
-            // 未开启
-            return true;
-        }
-        $this->validate([
-            'payment_password' => 'required|string'
-        ]);
-        return (new PasswordService())->checkMemberPassword($uid,request()->input('payment_password'));
-    }
-
-    /**
      * 通过事件获取支付按钮
      * @return array
      */
@@ -155,7 +139,6 @@ class MergePayController extends ApiController
         // 订单集合
         $orders = $this->orders($orderPay->order_ids);
         // 验证支付密码
-        $this->checkPassword($orders->first()->uid);
         return $this->getPayResult($payType,$orderPay,$orders);
     }
 
