@@ -139,7 +139,7 @@ class BalancePasswordController extends ApiController
             return $check_code['json'];
         }
 
-        $password = $passwordService->make($password,$this->memberModel->salt);
+        $password = $passwordService->make($password,$this->memberModel->yzMember->salt);
         $result = MemberShopInfo::where('member_id',\YunShop::app()->getMemberId())->update(['pay_password'=> $password]);
 
         if (!$result) {
