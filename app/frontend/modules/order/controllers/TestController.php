@@ -5,6 +5,7 @@ namespace app\frontend\modules\order\controllers;
 use app\common\components\ApiController;
 
 
+use app\common\exceptions\PaymentException;
 use app\common\exceptions\ShopException;
 use app\common\models\order\OrderCoupon;
 use app\common\models\order\OrderDeduction;
@@ -32,9 +33,7 @@ class TestController extends ApiController
 
     public function index()
     {
-        $r = Member::limit(5)->offset(1)->get();
-        dd($r);
-        exit;
+        throw new PaymentException();
 
         //(new MessageService(\app\frontend\models\Order::completed()->first()))->received();
     }

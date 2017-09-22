@@ -10,6 +10,7 @@
 namespace app\common\services\password;
 
 
+use app\common\exceptions\PaymentException;
 use app\common\models\Member;
 use app\common\models\MemberShopInfo;
 
@@ -26,9 +27,13 @@ class PasswordService
 
     public function checkMemberPassword($memberId,$password)
     {
-        $memberModel = MemberShopInfo::select('pay_password','salt')->where('member_id',$memberId)->first();
 
-        return $this->check($password, $memberModel->pay_password, $memberModel->salt);
+        $memberModel = MemberShopInfo::select('pay_password','salt')->where('member_id',$memberId)->first();
+        if($this->check($password, $memberModel->pay_password, $memberModel->salt)){
+            // 密码不匹配
+            throw new PaymentException();
+        }
+        return true;
     }
 
     /**

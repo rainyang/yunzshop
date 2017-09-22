@@ -105,6 +105,9 @@ class Handler extends ExceptionHandler
     {
         if (\Yunshop::isApi()) {
             \Log::error('api exception',$exception);
+            dd($exception->getCode());
+            exit;
+
             return $this->errorJson($exception->getMessage());
         }
         exit($this->message($exception->getMessage(), '', 'error'));
