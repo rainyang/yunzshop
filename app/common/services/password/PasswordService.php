@@ -11,7 +11,6 @@ namespace app\common\services\password;
 
 
 use app\common\exceptions\PaymentException;
-use app\common\models\Member;
 use app\common\models\MemberShopInfo;
 
 class PasswordService
@@ -25,13 +24,20 @@ class PasswordService
     }
 
 
-    public function checkMemberPassword($memberId,$password)
+    public function checkMemberPassword($memberId, $password)
     {
-
-        $memberModel = MemberShopInfo::select('pay_password','salt')->where('member_id',$memberId)->first();
-        if($this->check($password, $memberModel->pay_password, $memberModel->salt)){
+        $memberModel = MemberShopInfo::select('pay_password', 'salt')->where('member_id', $memberId)->first();
+        if(\Setting::get('shop.pay.balance_pay_proving')){
+            // 商城关闭支付密码
+            throw (new PaymentException())->settingClose();
+        }
+        if (!isset($memberModel->pay_password)) {
+            // 用户未设置
+            throw (new PaymentException())->notSet();
+        }
+        if ($this->check($password, $memberModel->pay_password, $memberModel->salt)) {
             // 密码不匹配
-            throw new PaymentException();
+            throw (new PaymentException())->passwordError();
         }
         return true;
     }
@@ -57,7 +63,7 @@ class PasswordService
     public function create($password)
     {
         $salt = $this->randNum(8);
-        return ['password' => $this->make($password,$salt),'salt' => $salt];
+        return ['password' => $this->make($password, $salt), 'salt' => $salt];
     }
 
 
@@ -70,7 +76,7 @@ class PasswordService
      */
     public function check($password, $sha1_value, $salt)
     {
-        return $sha1_value == $this-> make($password,$salt) ? true : false;
+        return $sha1_value == $this->make($password, $salt) ? true : false;
     }
 
 
@@ -80,7 +86,8 @@ class PasswordService
      * @param boolean $numeric 是否为纯数字
      * @return string
      */
-    public function randNum($length, $numeric = FALSE) {
+    public function randNum($length, $numeric = FALSE)
+    {
         $seed = base_convert(md5(microtime() . $_SERVER['DOCUMENT_ROOT']), 16, $numeric ? 10 : 35);
         $seed = $numeric ? (str_replace('0', '', $seed) . '012340567890') : ($seed . 'zZ' . strtoupper($seed));
         if ($numeric) {
