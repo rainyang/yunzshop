@@ -10,6 +10,9 @@
 namespace app\common\services\password;
 
 
+use app\common\models\Member;
+use app\common\models\MemberShopInfo;
+
 class PasswordService
 {
     private $auth_key;
@@ -20,6 +23,13 @@ class PasswordService
         $this->auth_key = \YunShop::app()->config['setting']['authkey'];
     }
 
+
+    public function checkMemberPassword($memberId,$password)
+    {
+        $memberModel = MemberShopInfo::select('pay_password','salt')->where('member_id',$memberId)->first();
+
+        return $this->check($password, $memberModel->pay_password, $memberModel->salt);
+    }
 
     /**
      * 生成哈希加密密码值
@@ -33,6 +43,12 @@ class PasswordService
         return sha1($password);
     }
 
+
+    /**
+     * 创建密码
+     * @param $password
+     * @return array
+     */
     public function create($password)
     {
         $salt = $this->randNum(8);
