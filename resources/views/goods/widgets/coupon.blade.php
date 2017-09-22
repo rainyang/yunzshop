@@ -58,9 +58,10 @@
             <div class='recharge-items'>
                 @foreach( $balance['sale'] as $list)
                     <div class="input-group recharge-item" style="margin-top:5px; width: 60%">
-                        <input type="text" class="form-control" name='balance[enough][]' value='{{ $list['enough'] or '' }}'/>
+                        <input type="hidden" name="widgets[coupon][coupon_id][]" value=""/>
+                        <input type="text" class="form-control" name='widgets[coupon][coupon_name][]' value='{{ $list['enough'] or '' }}'/>
                         <div class="input-group-addon"><button type="button">选择优惠劵</button></div>
-                        <input type="text" class="form-control" name='balance[give][]' value='{{ $list['give'] or '' }}'/>
+                        <input type="text" class="form-control" name='widgets[coupon][coupon_several][]' value='{{ $list['give'] or '' }}'/>
                         <span class="input-group-addon unit">张</span>
                         <div class='input-group-btn'>
                             <button class='btn btn-danger' type='button'
@@ -132,9 +133,9 @@
 
         var html = '<div class="input-group recharge-item"  style="margin-top:5px; width: 60%;">';
         html += '<input type="hidden" name="widgets[coupon][coupon_id][]" value=""/>';
-        html += '<input type="text" class="form-control" name="balance[enough][]"  readonly />';
+        html += '<input type="text" class="form-control" name="widgets[coupon][coupon_name][]"  readonly />';
         html += '<div class="input-group-addon"><button type="button" class="input-group-add">选择优惠劵</button></div>';
-        html += '<input type="text" class="form-control"  name="balance[give][]"  />';
+        html += '<input type="text" class="form-control"  name="widgets[coupon][coupon_several][]"  />';
         html += '<span class="input-group-addon unit">张</span>';
         html += '<div class="input-group-btn"><button type="button" class="btn btn-danger" onclick="removeRechargeItem(this)"><i class="fa fa-remove"></i></button></div>';
         html += '</div>';
@@ -186,7 +187,7 @@
         $(document).on('click', '.input-group-add', function() {
             showCouponModel($(this).get(0));
             $(this).parents('.recharge-item').find('input[name="widgets[coupon][coupon_id][]"]').addClass('select_coupon_id');
-            $(this).parents('.recharge-item').find('input[name="balance[enough][]"]').addClass('select_coupon_name');
+            $(this).parents('.recharge-item').find('input[name="widgets[coupon][coupon_name][]"]').addClass('select_coupon_name');
         });
     });
 </script>
