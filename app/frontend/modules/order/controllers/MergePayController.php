@@ -87,8 +87,6 @@ class MergePayController extends ApiController
         $orders = $this->orders($request->input('order_ids'));
         // 用户余额
         $member = $orders->first()->belongsToMember()->select(['credit2'])->first()->toArray();
-        // 验证支付密码
-        $this->checkPassword($orders->first()->uid);
         // 支付类型
         $buttons = $this->getPayTypeButtons();
         // 生成支付记录 记录订单号,支付金额,用户,支付号
@@ -156,6 +154,8 @@ class MergePayController extends ApiController
         }
         // 订单集合
         $orders = $this->orders($orderPay->order_ids);
+        // 验证支付密码
+        $this->checkPassword($orders->first()->uid);
         return $this->getPayResult($payType,$orderPay,$orders);
     }
 
