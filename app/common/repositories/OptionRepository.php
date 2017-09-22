@@ -17,10 +17,16 @@ class OptionRepository extends Repository
     public function __construct()
     {
         try {
-            $options = DB::table('yz_options')
-                ->where('uniacid', \YunShop::app()->uniacid)
-                ->orWhere('uniacid', 0)
-                ->get();
+            if(\YunShop::app()->uniacid == ''){
+                $options = DB::table('yz_options')
+                    ->where('enabled',1)
+                    ->get();
+            }else{
+                $options = DB::table('yz_options')
+                    ->where('uniacid', \YunShop::app()->uniacid)
+                    ->orWhere('uniacid', 0)
+                    ->get();
+            }
 //            $options = DB::table('yz_options')->get();
         } catch (QueryException $e) {
             $options = [];

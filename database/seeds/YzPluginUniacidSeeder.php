@@ -7,7 +7,7 @@ use Illuminate\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
 
 
-class YzpluginSeeder extends Seeder
+class YzPluginUniacidSeeder extends Seeder
 {
     protected $table = 'yz_options';
     protected $uniTable = 'uni_account';
