@@ -145,7 +145,7 @@ class CouponService
     {
         $orderGoods = $this->orderGoods;
         foreach ($orderGoods as $goods) {
-            $goodsCoupon = GoodsCoupon::getGoodsCouponByGoodsId($goods->goods_id)->first();
+            $goodsCoupon = GoodsCoupon::ofGoodsId($goods->goods_id)->first();
             //未开启 或 已关闭
             if(!$goodsCoupon || !$goodsCoupon->is_coupon){
                 continue;

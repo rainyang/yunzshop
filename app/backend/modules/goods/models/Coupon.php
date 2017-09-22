@@ -10,20 +10,52 @@ namespace app\backend\modules\goods\models;
 
 
 use app\common\models\goods\GoodsCoupon;
+use app\common\traits\MessageTrait;
 
 class Coupon extends GoodsCoupon
 {
+    //use MessageTrait;
+
+
     static protected $needLog = true;
 
-    public $timestamps = false;
 
+
+    /**
+     * @param $goodsId
+     * @param $data
+     * @param $operate
+     * @return bool
+     */
     public function relationValidator($goodsId, $data, $operate)
     {
-        dump($goodsId);
-        dump($data);
-        dd($operate);
+        $couponModel = self::getModel($goodsId,$operate);
+
+        $array = [
+            'goods_id'      => $goodsId,
+            'is_give'       => $data['is_give'],
+            'send_type'     => $data['send_type'],
+            'send_num'      => $data['send_num'],
+            'coupon'        => serialize($couponModel->recombination($data))
+        ];
+
+        $couponModel->fill($array);
+        $validator = $couponModel->validator();
+
+        if ($validator->fails()) {
+            $this->error($validator->messages());
+            return false;
+        }
+        return true;
     }
 
+
+    /**
+     * @param $goodsId
+     * @param $data
+     * @param $operate
+     * @return bool|null
+     */
     public static function relationSave($goodsId, $data, $operate)
     {
         if (!$goodsId) {
@@ -32,24 +64,71 @@ class Coupon extends GoodsCoupon
         if (!$data) {
             return false;
         }
-        $coupnModel = self::getModel($goodsId, $operate);
+        $couponModel = self::getModel($goodsId, $operate);
+
+        $array = [
+            'goods_id'      => $goodsId,
+            'is_give'       => $data['is_give'],
+            'send_type'     => $data['send_type'],
+            'send_num'      => $data['send_num'],
+            'coupon'        => serialize($couponModel->recombination($data))
+        ];
+
         //判断deleted
         if ($operate == 'deleted') {
-            return $coupnModel->delete();
+            return $couponModel->delete();
         }
         $data['goods_id'] = $goodsId;
-        $coupnModel->setRawAttributes($data);
-        return $coupnModel->save();
+        $couponModel->setRawAttributes($array);
+        return $couponModel->save();
     }
 
+
+    /**
+     * @param $goodsId
+     * @param $operate
+     * @return bool|static
+     */
     public static function getModel($goodsId, $operate)
     {
         $model = false;
         if ($operate != 'created') {
-            $model = static::where(['goods_id' => $goodsId])->first();
+            $model = Coupon::where(['goods_id' => $goodsId])->first();
         }
         !$model && $model = new static;
 
         return $model;
     }
+
+
+    /**
+     * @param $data
+     * @return array|bool
+     */
+    public function recombination($data)
+    {
+
+        $coupon = [];
+        $coupon_ids = is_array($data['coupon_id']) ? $data['coupon_id'] : array();
+        foreach ($coupon_ids as $key => $coupon_id) {
+
+            if (!preg_match('/^\+?[1-9]\d*$/', trim($data['coupon_several'][$key]))) {
+                $this->error('请输入正确的优惠劵赠送数量（正整数）');
+                return false;
+                break;
+            }
+
+            $coupon_id = trim($coupon_id);
+            if ($coupon_id) {
+                $coupon[] = array(
+                    'coupon_id' => trim($data['coupon_id'][$key]),
+                    'coupon_name' => trim($data['coupon_name'][$key]),
+                    'coupon_several' => trim($data['coupon_several'][$key])
+                );
+            }
+        }
+        return $coupon;
+    }
+
+
 }

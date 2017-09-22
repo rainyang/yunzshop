@@ -8,6 +8,7 @@ use app\backend\modules\goods\services\DiscountService;
 use app\backend\modules\goods\services\Privilege;
 use app\backend\modules\goods\services\PrivilegeService;
 use app\common\models\Goods;
+use app\common\traits\MessageTrait;
 use Illuminate\Database\Eloquent\Model;
 
 
@@ -19,6 +20,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class GoodsObserver extends \app\common\observers\BaseObserver
 {
+    use MessageTrait;
 
 
     public function saving(Model $model)

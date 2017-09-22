@@ -18,9 +18,12 @@ class CouponWidget extends Widget
 
     public function run()
     {
-        $couponModel = GoodsCoupon::getGoodsCouponByGoodsId($this->goods_id)->first();
+        $couponModel = GoodsCoupon::ofGoodsId($this->goods_id)->first();
 
-        $coupon = Coupon::getCouponById($couponModel->coupon_id);
+        $couponModel->coupon = unserialize($couponModel->coupon);
+
+        //dd($couponModel);
+        //$coupon = Coupon::getCouponById($couponModel->coupon_id);
 
         if(!$couponModel){
             $couponModel = [
@@ -31,8 +34,8 @@ class CouponWidget extends Widget
             ];
         }
         return view('goods.widgets.coupon', [
-            'item' => $couponModel,
-            'coupon' => $coupon,
+            'coupon' => $couponModel,
+            //'coupon' => $coupon,
         ])->render();
     }
 }

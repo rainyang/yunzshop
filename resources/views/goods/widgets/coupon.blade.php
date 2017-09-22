@@ -2,11 +2,11 @@
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">赠送优惠券</label>
     <div class="col-sm-9 col-xs-12">
         <label class='radio-inline'>
-            <input type='radio' name='widgets[coupon][is_coupon]' value='1' @if($item['is_coupon'] == '1') checked @endif/>
+            <input type='radio' name='widgets[coupon][is_give]' value='1' @if($coupon->is_give == '1') checked @endif/>
             开启
         </label>
         <label class='radio-inline'>
-            <input type='radio' name='widgets[coupon][is_coupon]' value='0' @if($item['is_coupon'] == '0') checked @endif/>
+            <input type='radio' name='widgets[coupon][is_give]' value='0' @if(empty($coupon->is_give)) checked @endif/>
             关闭
         </label>
         <span class='help-block'>订单完成赠送优惠劵</span>
@@ -14,16 +14,16 @@
 </div>
 
 
-<div id='widgets_coupon' @if( empty($item['is_coupon']) ) style="display:none" @endif>
+<div id='widgets_coupon' @if( empty($coupon->is_give) ) style="display:none" @endif>
     <div class="form-group">
         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
         <div class="col-sm-9 col-xs-12">
             <label class='radio-inline'>
-                <input type='radio' name='widgets[coupon][send_times]' value='0' @if(empty($item['send_times'])) checked @endif/>
+                <input type='radio' name='widgets[coupon][send_type]' value='0' @if(empty($coupon->send_type)) checked @endif/>
                 每月1号 0:00发放
             </label>
             <label class='radio-inline'>
-                <input type='radio' name='widgets[coupon][send_times]' value='1' @if($item['send_times'] == 1) checked @endif/>
+                <input type='radio' name='widgets[coupon][send_type]' value='1' @if($coupon->send_type == 1) checked @endif/>
                 订单完成立即发放
             </label>
         </div>
@@ -31,12 +31,12 @@
 
 
 
-    <div id="coupon_send_month" class="form-group" @if(!empty($item['send_times'])) style="display: none" @endif>
+    <div id="coupon_send_month" class="form-group" @if(!empty($coupon->send_type)) style="display: none" @endif>
         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
         <div class="col-sm-6 col-xs-6">
             <div class='input-group'  style="width: 644px;" >
                 <div class='input-group-addon'>连续发放</div>
-                <input type='text' name='widgets[coupon][send_num]' class="form-control" value="{{$item['send_num']}}"/>
+                <input type='text' name='widgets[coupon][send_num]' class="form-control" value="{{ $coupon->send_num }}"/>
                 <div class='input-group-addon'>月</div>
             </div>
         </div>
@@ -56,12 +56,12 @@
 
 
             <div class='recharge-items'>
-                @foreach( $balance['sale'] as $list)
+                @foreach( $coupon->coupon as $list)
                     <div class="input-group recharge-item" style="margin-top:5px; width: 60%">
-                        <input type="hidden" name="widgets[coupon][coupon_id][]" value=""/>
-                        <input type="text" class="form-control" name='widgets[coupon][coupon_name][]' value='{{ $list['enough'] or '' }}'/>
+                        <input type="hidden" name="widgets[coupon][coupon_id][]" value="{{ $list['coupon_id'] }}"/>
+                        <input type="text" class="form-control" name='widgets[coupon][coupon_name][]' value='{{ $list['coupon_name'] or '' }}'/>
                         <div class="input-group-addon"><button type="button">选择优惠劵</button></div>
-                        <input type="text" class="form-control" name='widgets[coupon][coupon_several][]' value='{{ $list['give'] or '' }}'/>
+                        <input type="text" class="form-control" name='widgets[coupon][coupon_several][]' value='{{ $list['coupon_several'] or '' }}'/>
                         <span class="input-group-addon unit">张</span>
                         <div class='input-group-btn'>
                             <button class='btn btn-danger' type='button'
@@ -73,7 +73,7 @@
             </div>
 
             <span class="help-block">两项都填写才能生效</span>
-            <span class="help-block">订单完成后，按照勾选发放规则发放，张数为0、为空不发放</span>
+            <span class="help-block">订单完成后，按照勾选发放规则发放</span>
         </div>
     </div>
 </div>
@@ -110,7 +110,7 @@
 
 <script language='javascript'>
     $(function () {
-        $(":radio[name='widgets[coupon][is_coupon]']").click(function () {
+        $(":radio[name='widgets[coupon][is_give]']").click(function () {
             if ($(this).val() == 1) {
                 $("#widgets_coupon").show();
             }
@@ -118,7 +118,7 @@
                 $("#widgets_coupon").hide();
             }
         });
-        $(":radio[name='widgets[coupon][send_times]']").click(function () {
+        $(":radio[name='widgets[coupon][send_type]']").click(function () {
             if ($(this).val() == 1) {
                 $("#coupon_send_month").hide();
             }
@@ -135,7 +135,7 @@
         html += '<input type="hidden" name="widgets[coupon][coupon_id][]" value=""/>';
         html += '<input type="text" class="form-control" name="widgets[coupon][coupon_name][]"  readonly />';
         html += '<div class="input-group-addon"><button type="button" class="input-group-add">选择优惠劵</button></div>';
-        html += '<input type="text" class="form-control"  name="widgets[coupon][coupon_several][]"  />';
+        html += '<input type="text" class="form-control"  name="widgets[coupon][coupon_several][]" placeholder="请输入赠送张数（正整数）" value="1"/>';
         html += '<span class="input-group-addon unit">张</span>';
         html += '<div class="input-group-btn"><button type="button" class="btn btn-danger" onclick="removeRechargeItem(this)"><i class="fa fa-remove"></i></button></div>';
         html += '</div>';
