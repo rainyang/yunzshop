@@ -27,7 +27,7 @@ class CreditMergePayController extends MergePayController
             throw new AppException('商城未开启余额支付');
 
         }
-        $this->checkPassword($orders->first()->uid);
+        $this->checkPassword(\YunShop::app()->getMemberId());
 
         DB::transaction(function () {
             $result = $this->pay(PayFactory::PAY_CREDIT);
