@@ -20,11 +20,11 @@ class WaitReceive extends Status
     public function __construct(Order $order)
     {
         $this->order = $order;
-        if ($this->order->dispatch_type == DispatchType::SELF_DELIVERY) {
+        if ($this->order->dispatch_type_id == DispatchType::SELF_DELIVERY) {
             // 自提
             $this->name = '使用';
         }
-        if ($this->order->dispatch_type == DispatchType::STORE_DELIVERY) {
+        if ($this->order->dispatch_type_id == DispatchType::STORE_DELIVERY) {
             // 商家配送
             $this->name = '核销';
         }

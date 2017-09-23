@@ -16,6 +16,6 @@ class DispatchType extends BaseModel
     const SELF_DELIVERY = 2; // 自提
     const STORE_DELIVERY = 3; // 门店配送
     public function needSend(){
-        return $this->id == self::EXPRESS;
+        return $this->need_send;
     }
 }

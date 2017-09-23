@@ -452,15 +452,25 @@ class Order extends BaseModel
             }
             $orderSettingValueKeys = $keys;
             if($orderSettingValueKeys->isNotEmpty()){
+
+
                 $orderSettingValue = array_get($this->orderSettings->where('key', $orderSettingKey)->first()->value, $orderSettingValueKeys->implode('.'));
+
             }else{
                 $orderSettingValue = $this->orderSettings->where('key', $orderSettingKey)->first()->value;
             }
 
             if (isset($orderSettingValue)) {
-                $result = array_merge($result,$orderSettingValue);
+                if(is_array($result)){
+                    // 数组合并
+                    $result = array_merge($result,$orderSettingValue);
+                }else{
+                    // 其他覆盖
+                    $result = $orderSettingValue;
+                }
             }
         }
+
         return $result;
     }
 }

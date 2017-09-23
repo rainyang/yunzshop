@@ -9,10 +9,10 @@
 namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
-use app\common\exceptions\AppException;
+use app\common\models\DispatchType;
 use app\common\requests\Request;
-use app\frontend\models\Order;
 use app\frontend\models\OrderAddress;
+use Yunshop\StoreCashier\common\models\StoreDelivery;
 
 
 class DetailController extends ApiController
@@ -34,9 +34,17 @@ class DetailController extends ApiController
 
         //$this->getStatusService()->
         //todo 配送类型
-        if ($order['dispatch_type_id'] == 1) {
+        if ($order['dispatch_type_id'] == DispatchType::EXPRESS) {
             $data['address_info'] = OrderAddress::select('address', 'mobile', 'realname')->where('order_id', $order['id'])->first();
         }
+        if(app('plugins')->isEnabled('store-cashier')){
+            if ($order['dispatch_type_id'] == DispatchType::SELF_DELIVERY) {
+                $data['address_info'] = \Yunshop\StoreCashier\common\models\SelfDelivery::where('order_id', $order['id'])->first();
+            }elseif($order['dispatch_type_id'] == DispatchType::STORE_DELIVERY){
+                $data['address_info'] = \Yunshop\StoreCashier\common\models\StoreDelivery::where('order_id', $order['id'])->first();
+            }
+        }
+        //todo 临时解决
         if (!$order) {
             return $this->errorJson($msg = '未找到数据', []);
         } else {

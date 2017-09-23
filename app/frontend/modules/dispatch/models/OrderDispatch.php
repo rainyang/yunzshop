@@ -36,16 +36,4 @@ class OrderDispatch
         return $result = array_sum(array_column($data, 'price'));
     }
 
-
-
-    /**
-     * 获取配送类型
-     * @return mixed
-     */
-    public function getDispatchTypeId()
-    {
-        $dispatchTypeId = array_get(\YunShop::request()->get('address'), 'dispatch_type_id', 0);
-        return $dispatchTypeId;
-    }
-
 }

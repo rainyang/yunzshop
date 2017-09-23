@@ -32,9 +32,7 @@ class TestController extends ApiController
 
     public function index()
     {
-        $r = Member::limit(5)->offset(1)->get();
-        dd($r);
-        exit;
+        dd(\app\common\models\Order::find(3317)->hasOneDispatchType->needSend());
 
         //(new MessageService(\app\frontend\models\Order::completed()->first()))->received();
     }

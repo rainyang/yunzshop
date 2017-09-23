@@ -18,7 +18,6 @@ use app\frontend\modules\order\models\PreGeneratedOrder;
 class PreOrderAddress extends OrderAddress
 {
     public $order;
-
     public function setOrder(PreGeneratedOrder $order)
     {
         $this->order = $order;
@@ -45,9 +44,6 @@ class PreOrderAddress extends OrderAddress
         list($this->province_id, $this->city_id, $this->district_id) = Address::whereIn('areaname', [$memberAddress->province, $memberAddress->city, $memberAddress->district])->pluck('id');
         $result['address'] = implode(' ', [$memberAddress->province, $memberAddress->city, $memberAddress->district, $memberAddress->address]);
         $result['realname'] = $memberAddress->username;
-        $result['province'] = $memberAddress->province;
-        $result['city'] = $memberAddress->city;
-        $result['district'] = $memberAddress->district;
         return $result;
     }
 
@@ -86,8 +82,6 @@ class PreOrderAddress extends OrderAddress
         if ($this->order->is_virtual) {
             return false;
         }
-
         return true;
     }
-
 }
