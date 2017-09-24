@@ -58,15 +58,15 @@ class PreOrderAddress extends OrderAddress
 
         if (count($address)) {
             //$request->input('address');
-            $this->validate([
-                'address.address' => 'required|string',
-                'address.mobile' => 'required|string',
-                'address.username' => 'required|string',
-                'address.province' => 'required|string',
-                'address.city' => 'required|string',
-                'address.district' => 'required|string',
-            ], ['address' => $address]
-            );
+//            $this->validate([
+//                'address.address' => 'required|string',
+//                'address.mobile' => 'required|string',
+//                'address.username' => 'required|string',
+//                'address.province' => 'required|string',
+//                'address.city' => 'required|string',
+//                'address.district' => 'required|string',
+//            ], ['address' => $address]
+//            );
             return new MemberAddress($address);
         }
 
