@@ -153,6 +153,11 @@ class CouponService
                 continue;
             }
 
+            //每月发送时，发送月数 为空 或为 0
+            if ($goodsCoupon->send_type == '0' && empty($goodsCoupon->send_num)) {
+                continue;
+            }
+
             for ($i = 1; $i <= $goods->total; $i++) {
 
                 switch ($goodsCoupon->send_type)
@@ -162,8 +167,9 @@ class CouponService
                         $this->promptlySendCoupon($goodsCoupon);
                         break;
                     //每月发送
-                    default:$this->addSendCouponQueue($goodsCoupon);
-                    break;
+                    case '0':
+                        $this->everyMonthSendCoupon($goodsCoupon);
+                        break;
                 }
             }
         }
@@ -182,6 +188,11 @@ class CouponService
             }
         }
         (new CouponSendService())->sendCouponsToMember($this->order->uid,$coupon_ids,4,$this->order->order_sn);
+    }
+
+    public function everyMonthSendCoupon($goodsCoupon)
+    {
+
     }
 
     public function addSendCouponQueue($goodsCoupon)
