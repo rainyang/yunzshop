@@ -172,6 +172,7 @@ return [
          * Application Service Providers...
          */
         app\common\providers\AppServiceProvider::class,
+        app\common\providers\ShopProvider::class,
         app\common\providers\PluginServiceProvider::class,
         // app\common\providers\BroadcastServiceProvider::class,
         app\common\providers\EventServiceProvider::class,
@@ -202,8 +203,7 @@ return [
         Liebig\Cron\Laravel5ServiceProvider::class,
         //上传
         zgldh\UploadManager\UploadManagerServiceProvider::class,
-        // 订单管理
-        \app\common\providers\ShopProvider::class
+
     ],
 
     /*
