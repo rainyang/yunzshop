@@ -11,13 +11,31 @@ namespace app\backend\modules\coupon\controllers;
 
 
 use app\common\components\BaseController;
+use app\common\helpers\Url;
 
 class BaseSetController extends BaseController
 {
 
-    public function index()
+    public function see()
     {
-        return view('coupon.base_set', [])->render();
+        $coupon_set = array_pluck(\Setting::getAllByGroup('coupon')->toArray(), 'value', 'key');
+        return view('coupon.base_set', ['coupon' => $coupon_set])->render();
+    }
+
+    /**
+     * 保存设置
+     * @return mixed|string
+     */
+    public function store()
+    {
+        $requestData = \YunShop::request()->coupon;
+        if ($requestData) {
+            foreach ($requestData as $key => $item) {
+                \Setting::set('coupon.' . $key, $item);
+            }
+            return $this->message("设置保存成功",Url::absoluteWeb('coupon.base-set.see'));
+        }
+        return $this->see();
     }
 
 }

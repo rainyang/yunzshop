@@ -861,14 +861,40 @@ return [
 
                     'coupon_coupon_set' => [
                         'name'              => '优惠劵设置',
-                        'url'               => 'coupon.base-set.index',
+                        'url'               => 'coupon.base-set.see',
                         'url_params'        => '',
                         'permit'            => 1,
                         'menu'              => 1,
                         'icon'              => 'fa-ticket',
                         'sort'              => '2',
-                        'item'              => 'coupon_coupon_create',
-                        'parents'           => ['Goods', 'coupon',],
+                        'item'              => 'coupon_coupon_set',
+                        'parents'           => ['Goods', 'coupon', 'coupon_coupon_set'],
+                        'child'             => [
+
+                            'coupon_coupon_set_see' => [
+                                'name'              => '查看设置',
+                                'url'               => 'coupon.base-set.see',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => 'fa-ticket',
+                                'sort'              => '2',
+                                'item'              => 'coupon_coupon_set_see',
+                                'parents'           => ['Goods', 'coupon',],
+                            ],
+
+                            'coupon_coupon_set_store' => [
+                                'name'              => '保存设置',
+                                'url'               => 'coupon.base-set.store',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => 'fa-ticket',
+                                'sort'              => '2',
+                                'item'              => 'coupon_coupon_set_store',
+                                'parents'           => ['Goods', 'coupon', 'coupon_coupon_set'],
+                            ],
+                        ],
                     ],
 
                     'coupon_coupon_create' => [

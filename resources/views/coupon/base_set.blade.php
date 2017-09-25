@@ -5,7 +5,7 @@
     <div class="rightlist">
 
 
-        <form action="{{ yzWebUrl('coupon.base-set.index') }}" method="post" class="form-horizontal form" enctype="multipart/form-data">
+        <form action="{{ yzWebUrl('coupon.base-set.store') }}" method="post" class="form-horizontal form" enctype="multipart/form-data">
             <div class='panel panel-default form-horizontal form'>
 
 
@@ -15,11 +15,11 @@
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">抵扣奖励积分：</label>
                         <div class="col-sm-4 col-xs-6">
                             <label class="radio-inline">
-                                <input type="radio" name="love[transfer]" value="1" @if ($love['transfer'] == 1) checked="checked" @endif />
+                                <input type="radio" name="coupon[award_point]" value="1" @if ($coupon['award_point'] == 1) checked="checked" @endif />
                                 开启
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" name="love[transfer]" value="0" @if ($love['transfer'] == 0) checked="checked" @endif />
+                                <input type="radio" name="coupon[award_point]" value="0" @if ($coupon['award_point'] == 0) checked="checked" @endif />
                                 关闭
                             </label>
                             <div class="help-block">
