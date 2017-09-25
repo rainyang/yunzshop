@@ -12,11 +12,14 @@ namespace app\common\models;
 class VirtualCoin extends BaseModel
 {
     protected $table = 'yz_virtual_coin';
-    // todo 有问题
-    private $amountOfCoin = 2;
+    private $amountOfCoin;
     private $amountOfMoney;
-    // todo 测试用
-    private $exchange_rate = 0.5;
+    public function setAmountOfCoin($amount){
+        $this->amountOfCoin = $amount;
+    }
+    public function setMountOfMoney($amount){
+        $this->amountOfMoney = $amount;
+    }
     public function getAmountOfCoin()
     {
         if(isset($this->amountOfCoin)){
