@@ -133,7 +133,8 @@ class CategoryController extends BaseController
             return $this->message('无此分类或已经删除','','error');
         }
 
-        $result = Category::daletedCategory(\YunShop::request()->id);
+        $result = Category::deletedAllCategory(\YunShop::request()->id);
+
         if($result) {
             return $this->message('删除分类成功',Url::absoluteWeb('goods.category.index'));
         }else{

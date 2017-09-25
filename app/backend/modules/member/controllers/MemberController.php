@@ -115,6 +115,8 @@ class MemberController extends BaseController
             } else {
                 $member['agent'] = 0;
             }
+
+            $myform = json_decode($member['yz_member']['member_form']);
         }
 
         $set = \Setting::get('shop.member');
@@ -126,7 +128,8 @@ class MemberController extends BaseController
             'member' => $member,
             'levels' => $levels,
             'groups' => $groups,
-            'set'    => $set
+            'set'    => $set,
+            'myform' => $myform
         ])->render();
     }
 
