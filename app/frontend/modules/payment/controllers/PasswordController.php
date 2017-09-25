@@ -14,14 +14,17 @@ use app\common\services\password\PasswordService;
 
 class PasswordController extends ApiController
 {
-    public function check(){
-        if(!\Setting::get('shop.pay.balance_pay_proving')){
+    public function check()
+    {
+
+        if (!\Setting::get('shop.pay.balance_pay_proving')) {
             // 未开启
             return true;
         }
         $this->validate([
             'password' => 'required|string'
         ]);
-        return (new PasswordService())->checkMemberPassword(\YunShop::app()->getMemberId(),request()->input('payment_password'));
+        (new PasswordService())->checkMemberPassword(\YunShop::app()->getMemberId(), request()->input('payment_password'));
+        return $this->successJson('成功', []);
     }
 }

@@ -27,7 +27,7 @@ class PasswordService
     public function checkMemberPassword($memberId, $password)
     {
         $memberModel = MemberShopInfo::select('pay_password', 'salt')->where('member_id', $memberId)->first();
-        if(\Setting::get('shop.pay.balance_pay_proving')){
+        if(!\Setting::get('shop.pay.balance_pay_proving')){
             // 商城关闭支付密码
             throw (new PaymentException())->settingClose();
         }
