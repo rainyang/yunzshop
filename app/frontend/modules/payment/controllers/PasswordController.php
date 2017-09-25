@@ -6,7 +6,7 @@
  * Time: 下午3:12
  */
 
-namespace app\frontend\modules\payment;
+namespace app\frontend\modules\payment\controllers;
 
 
 use app\common\components\ApiController;
@@ -20,7 +20,7 @@ class PasswordController extends ApiController
             return true;
         }
         $this->validate([
-            'payment_password' => 'required|string'
+            'password' => 'required|string'
         ]);
         return (new PasswordService())->checkMemberPassword(\YunShop::app()->getMemberId(),request()->input('payment_password'));
     }

@@ -10,9 +10,9 @@ namespace app\common\exceptions;
 
 class PaymentException extends ShopException
 {
-    const PAY_PASSWORD_SETTING_CLOSED = 20001; // 商城支付密码设置未开启
-    const MEMBER_NOT_SET_PAY_PASSWORD = 20002; // 用户未设置支付密码
-    const PAY_PASSWORD_ERROR = 20003; // 支付密码错误
+    const PAY_PASSWORD_SETTING_CLOSED = 2001; // 商城支付密码设置未开启
+    const MEMBER_NOT_SET_PAY_PASSWORD = 2002; // 用户未设置支付密码
+    const PAY_PASSWORD_ERROR = 2003; // 支付密码错误
 
 
     public function settingClose()
