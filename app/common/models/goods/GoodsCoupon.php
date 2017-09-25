@@ -19,6 +19,10 @@ class GoodsCoupon extends BaseModel
 
     protected $guarded = [''];
 
+    protected $casts = [
+        'coupon' => 'json',
+    ];
+
 
     public $attributes = [
         'goods_id'  => 0,

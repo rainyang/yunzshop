@@ -36,7 +36,7 @@ class Coupon extends GoodsCoupon
             'is_give'       => $data['is_give'],
             'send_type'     => $data['send_type'],
             'send_num'      => $data['send_num'],
-            'coupon'        => serialize($couponModel->recombination($data))
+            'coupon'        => $couponModel->recombination($data)
         ];
 
         $couponModel->fill($array);
@@ -71,7 +71,7 @@ class Coupon extends GoodsCoupon
             'is_give'       => $data['is_give'],
             'send_type'     => $data['send_type'],
             'send_num'      => $data['send_num'],
-            'coupon'        => serialize($couponModel->recombination($data))
+            'coupon'        => $couponModel->recombination($data)
         ];
 
         //判断deleted
@@ -79,7 +79,7 @@ class Coupon extends GoodsCoupon
             return $couponModel->delete();
         }
         $data['goods_id'] = $goodsId;
-        $couponModel->setRawAttributes($array);
+        $couponModel->fill($array);
         return $couponModel->save();
     }
 

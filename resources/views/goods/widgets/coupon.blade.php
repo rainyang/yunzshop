@@ -56,11 +56,12 @@
 
 
             <div class='recharge-items'>
-                @foreach( $coupon->coupon as $list)
+                @foreach( $coupon->coupon as $key => $list)
+
                     <div class="input-group recharge-item" style="margin-top:5px; width: 60%">
                         <input type="hidden" name="widgets[coupon][coupon_id][]" value="{{ $list['coupon_id'] }}"/>
-                        <input type="text" class="form-control" name='widgets[coupon][coupon_name][]' value='{{ $list['coupon_name'] or '' }}'/>
-                        <div class="input-group-addon"><button type="button">选择优惠劵</button></div>
+                        <input type="text" maxlength="30" class="form-control" name='widgets[coupon][coupon_name][]' value='{{ $list['coupon_name'] or '' }}' readonly/>
+                        <div class="input-group-addon"><button type="button" class="input-group-add">选择优惠劵</button></div>
                         <input type="text" class="form-control" name='widgets[coupon][coupon_several][]' value='{{ $list['coupon_several'] or '' }}'/>
                         <span class="input-group-addon unit">张</span>
                         <div class='input-group-btn'>
@@ -133,7 +134,7 @@
 
         var html = '<div class="input-group recharge-item"  style="margin-top:5px; width: 60%;">';
         html += '<input type="hidden" name="widgets[coupon][coupon_id][]" value=""/>';
-        html += '<input type="text" class="form-control" name="widgets[coupon][coupon_name][]"  readonly />';
+        html += '<input type="text" maxlength="30" class="form-control" name="widgets[coupon][coupon_name][]"  readonly />';
         html += '<div class="input-group-addon"><button type="button" class="input-group-add">选择优惠劵</button></div>';
         html += '<input type="text" class="form-control"  name="widgets[coupon][coupon_several][]" placeholder="请输入赠送张数（正整数）" value="1"/>';
         html += '<span class="input-group-addon unit">张</span>';
