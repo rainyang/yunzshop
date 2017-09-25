@@ -141,32 +141,56 @@ class CouponService
         });
     }
 
-    public function sendCoupun()
+    public function sendCoupon()
     {
         $orderGoods = $this->orderGoods;
         foreach ($orderGoods as $goods) {
             $goodsCoupon = GoodsCoupon::ofGoodsId($goods->goods_id)->first();
-            //未开启 或 已关闭
-            if(!$goodsCoupon || !$goodsCoupon->is_coupon){
+
+            //dump($goodsCoupon);
+            //未开启 或 已关闭 或 未设置优惠券
+            if(!$goodsCoupon || !$goodsCoupon->is_give || !$goodsCoupon->coupon){
                 continue;
             }
-            //未设置优惠券 或 未设置赠送月份
-            if(!$goodsCoupon->coupon_id || !$goodsCoupon->send_num){
-                continue;
-            }
+
             for ($i = 1; $i <= $goods->total; $i++) {
-                $this->addSendCoupunQueue($goodsCoupon);
+
+                switch ($goodsCoupon->send_type)
+                {
+                    //订单完成立即发送
+                    case '1':
+                        $this->promptlySendCoupon($goodsCoupon);
+                        break;
+                    //每月发送
+                    default:$this->addSendCouponQueue($goodsCoupon);
+                    break;
+                }
             }
         }
     }
 
-    public function addSendCoupunQueue($goodsCoupon)
+    public function promptlySendCoupon($goodsCoupon)
+    {
+        $coupon_ids = [];
+        foreach ($goodsCoupon->coupon as $key => $item) {
+            if ($item['coupon_several'] > 1) {
+                for ($i = 1; $i <= $item['coupon_several']; $i++) {
+                    $coupon_ids[] = $item['coupon_id'];
+                }
+            } else {
+                $coupon_ids[] = $item['coupon_id'];
+            }
+        }
+        (new CouponSendService())->sendCouponsToMember($this->order->uid,$coupon_ids,4,$this->order->order_sn);
+    }
+
+    public function addSendCouponQueue($goodsCoupon)
     {
         $queueData = [
             'uniacid' => \YunShop::app()->uniacid,
             'goods_id' => $goodsCoupon->goods_id,
             'uid' => $this->order->uid,
-            'coupon_id' => $goodsCoupon->coupon_id,
+            'coupon_id' => $goodsCoupon->coupon['coupon_id'],
             'send_num' => $goodsCoupon->send_num,
             'end_send_num' => 0,
             'status' => 0,

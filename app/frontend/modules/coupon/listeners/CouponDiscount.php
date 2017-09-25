@@ -58,7 +58,7 @@ class CouponDiscount
         $orderModel = $this->event->getOrderModel();
         $orderGoods = $orderModel->hasManyOrderGoods;//订单商品
         $couponService = new CouponService($orderModel, null, $orderGoods);
-        $couponService->sendCoupun();
+        $couponService->sendCoupon();
     }
 
     /**

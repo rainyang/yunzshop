@@ -70,7 +70,7 @@ class Coupon extends GoodsCoupon
             'goods_id'      => $goodsId,
             'is_give'       => $data['is_give'],
             'send_type'     => $data['send_type'],
-            'send_num'      => $data['send_num'],
+            'send_num'      => $data['send_num'] ?: '0',
             'coupon'        => $couponModel->recombination($data)
         ];
 
@@ -95,7 +95,7 @@ class Coupon extends GoodsCoupon
         if ($operate != 'created') {
             $model = Coupon::where(['goods_id' => $goodsId])->first();
         }
-        !$model && $model = new static;
+        !$model && $model = new Coupon;
 
         return $model;
     }
