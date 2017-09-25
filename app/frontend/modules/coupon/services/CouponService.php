@@ -192,20 +192,28 @@ class CouponService
 
     public function everyMonthSendCoupon($goodsCoupon)
     {
-
+        foreach ($goodsCoupon->coupon as $key => $item) {
+            if ($item['coupon_several'] > 1) {
+                for ($i = 1; $i <= $item['coupon_several']; $i++) {
+                    $this->addSendCouponQueue($goodsCoupon);
+                }
+            } else {
+                $this->addSendCouponQueue($goodsCoupon);
+            }
+        }
     }
 
     public function addSendCouponQueue($goodsCoupon)
     {
         $queueData = [
-            'uniacid' => \YunShop::app()->uniacid,
-            'goods_id' => $goodsCoupon->goods_id,
-            'uid' => $this->order->uid,
-            'coupon_id' => $goodsCoupon->coupon['coupon_id'],
-            'send_num' => $goodsCoupon->send_num,
-            'end_send_num' => 0,
-            'status' => 0,
-            'created_at' => time()
+            'uniacid'       => \YunShop::app()->uniacid,
+            'goods_id'      => $goodsCoupon->goods_id,
+            'uid'           => $this->order->uid,
+            'coupon_id'     => $goodsCoupon->coupon['coupon_id'],
+            'send_num'      => $goodsCoupon->send_num,
+            'end_send_num'  => 0,
+            'status'        => 0,
+            'created_at'    => time()
         ];
         $this->dispatch((new addGoodsCouponQueueJob($queueData)));
     }
