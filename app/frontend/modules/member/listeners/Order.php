@@ -15,8 +15,8 @@ class Order
 {
     public function handle($event){
         $cart_ids =\Request::input('cart_ids');
-        dd($cart_ids);
-        exit;
+//        dd($cart_ids);
+//        exit;
 
         @$cart_ids = json_decode($cart_ids);
 
