@@ -24,7 +24,7 @@ class PasswordController extends ApiController
         $this->validate([
             'password' => 'required|string'
         ]);
-        (new PasswordService())->checkMemberPassword(\YunShop::app()->getMemberId(), request()->input('payment_password'));
+        (new PasswordService())->checkMemberPassword(\YunShop::app()->getMemberId(), request()->input('password'));
         return $this->successJson('成功', []);
     }
 }

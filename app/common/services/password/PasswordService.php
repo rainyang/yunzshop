@@ -35,7 +35,8 @@ class PasswordService
             // 用户未设置
             throw (new PaymentException())->notSet();
         }
-        if ($this->check($password, $memberModel->pay_password, $memberModel->salt)) {
+
+        if (!$this->check($password, $memberModel->pay_password, $memberModel->salt)) {
             // 密码不匹配
             throw (new PaymentException())->passwordError();
         }
