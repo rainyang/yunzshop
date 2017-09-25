@@ -859,6 +859,18 @@ return [
                 'parents'           => ['Goods',],
                 'child'             => [
 
+                    'coupon_coupon_set' => [
+                        'name'              => '优惠劵设置',
+                        'url'               => 'coupon.base-set.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => 'fa-ticket',
+                        'sort'              => '2',
+                        'item'              => 'coupon_coupon_create',
+                        'parents'           => ['Goods', 'coupon',],
+                    ],
+
                     'coupon_coupon_create' => [
                         'name'              => '创建优惠券',
                         'url'               => 'coupon.coupon.create',
