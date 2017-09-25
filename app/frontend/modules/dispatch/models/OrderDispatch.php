@@ -27,7 +27,7 @@ class OrderDispatch
      */
     public function getDispatchPrice()
     {
-        if ($this->preGeneratedOrder->is_virtual) {
+        if (!$this->preGeneratedOrder->needSend()) {
             return 0;
         }
         $event = new OrderDispatchWasCalculated($this->preGeneratedOrder);
