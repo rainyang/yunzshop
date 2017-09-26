@@ -27,7 +27,7 @@ class OrderDispatch
      */
     public function getDispatchPrice()
     {
-        if (!$this->preGeneratedOrder->needSend()) {
+        if (!isset($this->preGeneratedOrder->hasOneDispatchType) || !$this->preGeneratedOrder->hasOneDispatchType->needSend()) {
             return 0;
         }
         $event = new OrderDispatchWasCalculated($this->preGeneratedOrder);
