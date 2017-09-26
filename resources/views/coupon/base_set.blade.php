@@ -10,6 +10,26 @@
 
 
                 <div class='panel-heading'>基础设置</div>
+
+                <div class='panel-body'>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">优惠劵转让：</label>
+                        <div class="col-sm-4 col-xs-6">
+                            <label class="radio-inline">
+                                <input type="radio" name="coupon[transfer]" value="1" @if ($coupon['transfer'] == 1) checked="checked" @endif />
+                                开启
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="coupon[transfer]" value="0" @if ($coupon['transfer'] == 0) checked="checked" @endif />
+                                关闭
+                            </label>
+                            <div class="help-block">
+                                优惠劵转让：会员之间可以转让自己拥有的优惠劵。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class='panel-body'>
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">抵扣奖励积分：</label>
