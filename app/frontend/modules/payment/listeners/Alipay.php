@@ -18,7 +18,9 @@ class Alipay
         if (\Setting::get('shop.pay.alipay') && \YunShop::request()->type != 7) {
             $result = [
                 'name' => '支付宝',
-                'value' => '2'
+                'value' => '2',
+                'need_password' => '0'
+
             ];
             $event->addData($result);
 

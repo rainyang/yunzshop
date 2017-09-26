@@ -37,11 +37,11 @@ class MemberController extends BaseController
 
         $parames = \YunShop::request();
 
-        if (strpos($parames['searchtime'], '×') !== FALSE) {
-            $search_time = explode('×', $parames['searchtime']);
+        if (strpos($parames['search']['searchtime'], '×') !== FALSE) {
+            $search_time = explode('×', $parames['search']['searchtime']);
 
             if (!empty($search_time)) {
-                $parames['searchtime'] = $search_time[0];
+                $parames['search']['searchtime'] = $search_time[0];
 
                 $start_time = explode('=', $search_time[1]);
                 $end_time = explode('=', $search_time[2]);
@@ -115,6 +115,8 @@ class MemberController extends BaseController
             } else {
                 $member['agent'] = 0;
             }
+
+            $myform = json_decode($member['yz_member']['member_form']);
         }
 
         $set = \Setting::get('shop.member');
@@ -126,7 +128,8 @@ class MemberController extends BaseController
             'member' => $member,
             'levels' => $levels,
             'groups' => $groups,
-            'set'    => $set
+            'set'    => $set,
+            'myform' => $myform
         ])->render();
     }
 
@@ -163,6 +166,7 @@ class MemberController extends BaseController
             'is_black' => $parame->data['is_black'],
             'content' => $parame->data['content'],
             'custom_value' => $parame->data['custom_value'],
+            'validity' => $parame->data['validity'] ? $parame->data['validity'] : 0,
         );
 
         if ($parame->data['agent']) {
