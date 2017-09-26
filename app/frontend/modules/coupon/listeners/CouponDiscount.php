@@ -42,7 +42,7 @@ class CouponDiscount
                 }
             }
         }
-        dd($point);
+        dd($orderDeductions);
         $data = [
             'point_income_type' => PointService::POINT_INCOME_GET,
             'point_mode'        => PointService::POINT_MODE_COUPON_DEDUCTION_AWARD,

@@ -902,7 +902,7 @@ return [
                         'url'               => 'coupon.coupon.create',
                         'url_params'        => '',
                         'permit'            => 1,
-                        'menu'              => 1,
+                        'menu'              => 0,
                         'icon'              => 'fa-ticket',
                         'sort'              => '2',
                         'item'              => 'coupon_coupon_create',
