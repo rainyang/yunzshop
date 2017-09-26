@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
+
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -47,7 +48,7 @@ class DatabaseSeeder extends Seeder
 
 
         //配置
-        $this->call(SettingSeeder::class);
+//        $this->call(SettingSeeder::class);
         //权限
 //        $this->call(YzPermissionSeeder::class);
         //用户角色
@@ -73,14 +74,19 @@ class DatabaseSeeder extends Seeder
         //$this->call(YzOptionsTableSeeder::class);
         //模板消息
         //$this->call(YzTemplateMessageTableSeeder::class);
-        $this->call(YzMenuUpgradeSeeder::class);
+//        $this->call(YzMenuUpgradeSeeder::class);
+
+//        require "YzUniacidSeeder.php";
+//        $this->call(YzUniacidSeeder::class);
 
 
-        Log::info(file_get_contents('/data/wwwroot/release.yunzshop.com/addons/yun_shop/vendor/composer/autoload_classmap.php'));
-        Log::info(file_get_contents('/data/wwwroot/release.yunzshop.com/addons/yun_shop/vendor/composer/autoload_static.php'));
-        Log::info(file_get_contents('/data/wwwroot/release.yunzshop.com/addons/yun_shop/database/seeds/YzPluginUniacidSeeder.php'));
+//        Log::info(file_get_contents('/data/wwwroot/release.yunzshop.com/addons/yun_shop/vendor/composer/autoload_classmap.php'));
+//        Log::info(file_get_contents('/data/wwwroot/release.yunzshop.com/addons/yun_shop/vendor/composer/autoload_static.php'));
+//        Log::info(file_get_contents('/data/wwwroot/release.yunzshop.com/addons/yun_shop/database/seeds/YzPluginUniacidSeeder.php'));
 
 //        $this->call(YzpluginSeeder::class);
+
+        require "YzPluginUniacidSeeder.php";
         $this->call(YzPluginUniacidSeeder::class);
     }
 }
