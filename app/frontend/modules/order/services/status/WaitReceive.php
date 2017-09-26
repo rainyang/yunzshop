@@ -9,25 +9,19 @@
 namespace app\frontend\modules\order\services\status;
 
 
-use app\common\models\DispatchType;
 use app\common\models\Order;
 
 class WaitReceive extends Status
 {
     protected $name = '收货';
-    private $order;
+    protected $api = 'order.operation.receive';
+    protected $value;
+    protected $order;
 
     public function __construct(Order $order)
     {
         $this->order = $order;
-        if ($this->order->dispatch_type_id == DispatchType::SELF_DELIVERY) {
-            // 自提
-            $this->name = '使用';
-        }
-        if ($this->order->dispatch_type_id == DispatchType::STORE_DELIVERY) {
-            // 商家配送
-            $this->name = '核销';
-        }
+        $this->value = static::COMPLETE;
     }
 
     public function getStatusName()
@@ -35,13 +29,16 @@ class WaitReceive extends Status
         return "待{$this->name}";
     }
 
+    public function getButton(){
+        return [
+            'name' => "确认{$this->name}",
+            'api' => $this->api,
+            'value' => $this->value
+        ];
+    }
     public function getButtonModels()
     {
-        $result[] = [
-            'name' => "确认{$this->name}",
-            'api' => 'order.operation.receive',
-            'value' => static::COMPLETE //todo
-        ];
+        $result[] = $this->getButton();
         // 确认核销
         // 确认
         if (!$this->order->isVirtual()) {
