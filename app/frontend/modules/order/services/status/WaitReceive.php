@@ -29,18 +29,15 @@ class WaitReceive extends Status
         return "待{$this->name}";
     }
 
-    public function getButton(){
+    protected function getNextStatusButton(){
         return [
             'name' => "确认{$this->name}",
             'api' => $this->api,
             'value' => $this->value
         ];
     }
-    public function getButtonModels()
-    {
-        $result[] = $this->getButton();
-        // 确认核销
-        // 确认
+    protected function getOtherButtons(){
+        $result = [];
         if (!$this->order->isVirtual()) {
             $result[] = [
                 'name' => '查看物流', //todo 原来商城的逻辑是, 当有物流单号时, 才显示"查看物流"按钮
@@ -48,7 +45,13 @@ class WaitReceive extends Status
                 'value' => static::EXPRESS
             ];
         }
-        //$result = array_merge($result,self::getRefundButtons($this->order));
+        return $result;
+    }
+    public function getButtonModels()
+    {
+        $result[] = $this->getNextStatusButton();
+        $result = array_merge($result,$this->getOtherButtons());
+
         return $result;
     }
 }

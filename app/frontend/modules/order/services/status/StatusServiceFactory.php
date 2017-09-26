@@ -21,11 +21,12 @@ class StatusServiceFactory
 
     function __construct($order)
     {
+        $this->order = $order;
     }
 
-    public function create($order)
+    public function create()
     {
-        $this->order = $order;
+        $order = $this->order;
         switch ($order->status) {
             case -1:
                 return new Close($order);
@@ -48,11 +49,11 @@ class StatusServiceFactory
 
     private function waitReceive()
     {
-        if (app('plugins')->isEnabled('store-cashier') && $this->order->pluginId == Store::PLUGIN_ID){
-            //门店订单
 
-            // 门店订单 用户
-            // 门店订单 核销员
+
+        if (app('plugins')->isEnabled('store-cashier') && $this->order->plugin_id == Store::PLUGIN_ID){
+            //门店订单
+            return (new \Yunshop\StoreCashier\common\order\status\WaitReceive())->handle($this->order);
 
         } else {
             // 正常订单

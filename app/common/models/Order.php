@@ -10,6 +10,8 @@ namespace app\common\models;
 
 
 use app\backend\modules\order\services\OrderService;
+use app\common\helpers\QrCodeHelper;
+use app\common\helpers\Url;
 use app\common\models\order\Address as OrderAddress;
 use app\common\models\order\Express;
 use app\common\models\order\OrderChangePriceLog;
@@ -142,9 +144,12 @@ class Order extends BaseModel
     {
         return $this->hasMany(self::getNearestModel('OrderGoods'), 'order_id', 'id');
     }
-    public function orderGoods(){
+
+    public function orderGoods()
+    {
         return $this->hasMany(self::getNearestModel('OrderGoods'), 'order_id', 'id');
     }
+
     /**
      * 关联模型 1对多:订单抵扣信息
      */
@@ -434,9 +439,12 @@ class Order extends BaseModel
     {
         return $this->hasOneDispatchType->needSend();
     }
-    public function orderSettings(){
+
+    public function orderSettings()
+    {
         return $this->hasMany(OrderSetting::class);
     }
+
     public function getSetting($key)
     {
         // 全局设置
@@ -446,25 +454,25 @@ class Order extends BaseModel
             // 订单设置
             $keys = collect(explode('.', $key));
             $orderSettingKey = $keys->shift();
-            if($orderSettingKey == 'plugin'){
+            if ($orderSettingKey == 'plugin') {
                 // 获取第一个不为plugin的key
                 $orderSettingKey = $keys->shift();
             }
             $orderSettingValueKeys = $keys;
-            if($orderSettingValueKeys->isNotEmpty()){
+            if ($orderSettingValueKeys->isNotEmpty()) {
 
 
                 $orderSettingValue = array_get($this->orderSettings->where('key', $orderSettingKey)->first()->value, $orderSettingValueKeys->implode('.'));
 
-            }else{
+            } else {
                 $orderSettingValue = $this->orderSettings->where('key', $orderSettingKey)->first()->value;
             }
 
             if (isset($orderSettingValue)) {
-                if(is_array($result)){
+                if (is_array($result)) {
                     // 数组合并
-                    $result = array_merge($result,$orderSettingValue);
-                }else{
+                    $result = array_merge($result, $orderSettingValue);
+                } else {
                     // 其他覆盖
                     $result = $orderSettingValue;
                 }
