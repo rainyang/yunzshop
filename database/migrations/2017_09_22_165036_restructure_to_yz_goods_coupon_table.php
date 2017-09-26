@@ -27,6 +27,10 @@ class RestructureToYzGoodsCouponTable extends Migration
                 if (\Schema::hasColumn('yz_goods_coupon', 'coupon_id')) {
                     \Schema::table('yz_goods_coupon',function ($table) {
                         $table->text('coupon_id')->change();
+                    });
+                }
+                if (\Schema::hasColumn('yz_goods_coupon', 'coupon_id')) {
+                    \Schema::table('yz_goods_coupon',function ($table) {
                         $table->renameColumn('coupon_id','coupon');
                     });
                 }
