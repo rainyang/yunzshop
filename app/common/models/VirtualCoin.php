@@ -15,6 +15,7 @@ class VirtualCoin extends BaseModel
     protected $attributes = [
         'amountOfCoin' => null,
         'amountOfMoney' => null,
+        'name' => ''
     ];
     protected $exchange_rate;
     public function setAmountOfCoin($amount){
