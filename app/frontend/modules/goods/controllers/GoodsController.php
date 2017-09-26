@@ -135,6 +135,20 @@ class GoodsController extends ApiController
             ->where("plugin_id", 0)
             ->orderBy($order_field, $order_by)
             ->paginate(20)->toArray();
+
+        if ($list['total'] > 0) {
+            $data = collect($list['data'])->map(function($rows) {
+                return collect($rows)->map(function($item, $key) {
+                    if ($key == 'thumb' && preg_match('/^images/', $item)) {
+                        return replace_yunshop(tomedia($item));
+                    } else {
+                        return $item;
+                    }
+                });
+            })->toArray();
+            $list['data'] = $data;
+        }
+
         if (empty($list)) {
             return $this->errorJson('没有找到商品.');
         }
