@@ -14,7 +14,6 @@ use app\common\components\ApiController;
 use app\frontend\models\Member;
 use app\frontend\modules\coupon\models\MemberCoupon;
 use app\frontend\modules\coupon\services\CouponSendService;
-use Illuminate\Support\Facades\DB;
 
 class CouponTransferController extends ApiController
 {
