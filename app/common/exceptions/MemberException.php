@@ -8,9 +8,9 @@
 
 namespace app\common\exceptions;
 
-use Exception;
-class ShopException extends Exception
+
+class MemberException extends ShopException
 {
-    const UNIACID_NOT_FOUND = -2; // 公众号id不存在
+    //const PAY_PASSWORD_SETTING_CLOSED = 20001; // 商城支付密码设置未开启
 
 }
