@@ -16,7 +16,7 @@ class RestructureToYzGoodsCouponTable extends Migration
     {
         if (Schema::hasTable('yz_goods_coupon')) {
 
-            DB::transaction(function() {
+
             if (\Schema::hasTable('yz_goods_coupon')) {
 
                 if (\Schema::hasColumn('yz_goods_coupon', 'is_coupon')) {
@@ -41,7 +41,7 @@ class RestructureToYzGoodsCouponTable extends Migration
                 }
 
 
-
+                DB::transaction(function() {
                     if (\Schema::hasColumns('yz_goods_coupon',['is_give','coupon','send_type'])) {
 
                         $list = DB::table('yz_goods_coupon')->get();
@@ -55,9 +55,9 @@ class RestructureToYzGoodsCouponTable extends Migration
                             }
                         }
                     }
-
+                });
             }
-            });
+
         }
     }
 
