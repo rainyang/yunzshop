@@ -536,6 +536,8 @@ class MemberService
             'uniacid' => $uniacid,
             'group_id' => $default_subgroup_id,
             'level_id' => 0,
+            'pay_password' => '',
+            'salt' => '',
         ));
     }
 
