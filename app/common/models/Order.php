@@ -404,7 +404,7 @@ class Order extends BaseModel
 
     public function orderDiscount()
     {
-        return $this->hasMany(OrderDiscount::class);
+        return $this->hasMany(OrderDiscount::class,'order_id','id');
     }
 
     public function close()

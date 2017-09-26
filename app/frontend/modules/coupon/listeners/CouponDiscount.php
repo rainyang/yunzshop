@@ -24,25 +24,25 @@ class CouponDiscount
     public function deductionAwardPoint(AfterOrderReceivedEvent $event)
     {
         if (!Setting::get('coupon.award_point')) {
-            dd(1);
             return null;
         }
         $orderModel = $event->getOrderModel();
 
-        $orderDeductions = $orderModel->deductions;
+        $orderDeductions = $orderModel->orderDiscount;
 
         $point = 0;
         if ($orderDeductions) {
             foreach ($orderDeductions as $key => $deduction) {
 
-
-                if ($deduction['deduction_id'] == 1) {
-                    $point = $deduction['qty'];
+                if ($deduction['discount_code'] == 'coupon') {
+                    $point = $deduction['amount'];
                     break;
                 }
             }
         }
-        dd($orderDeductions);
+        if ($point <= 0) {
+            return null;
+        }
         $data = [
             'point_income_type' => PointService::POINT_INCOME_GET,
             'point_mode'        => PointService::POINT_MODE_COUPON_DEDUCTION_AWARD,
