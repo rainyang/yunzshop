@@ -298,8 +298,7 @@ class OrderService
             // 虚拟物品付款后直接完成
             self::orderSend(['order_id' => $orderOperation->id]);
             $result = self::orderReceive(['order_id' => $orderOperation->id]);
-        }
-        if (!$orderOperation->hasOneDispatchType->needSend()) {
+        }elseif(!$orderOperation->hasOneDispatchType->needSend()) {
             // 不需要发货的物品直接改为待收货
             self::orderSend(['order_id' => $orderOperation->id]);
         }
