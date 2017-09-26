@@ -16,13 +16,15 @@ class CartBuyController extends PreGeneratedController
 {
     public function index()
     {
-        if (!isset($_GET['cart_ids'])) {
-            return $this->errorJson('请选择要结算的商品');
-        }
+        $this->validateParam();
 
         parent::index();
     }
-
+    protected function validateParam(){
+        $this->validate([
+            'cart_ids' => 'required',
+        ]);
+    }
 
     /**
      * 从url中获取购物车记录并验证
@@ -41,7 +43,7 @@ class CartBuyController extends PreGeneratedController
             throw new AppException('参数格式有误');
         }
         if(!isset($memberCarts)){
-            $memberCarts = MemberCart::getCartsByIds($cartIds);
+            $memberCarts = app('OrderManager')->make('MemberCart')->getCartsByIds($cartIds);
         }
         $memberCarts->each(function ($memberCart){
             $memberCart->validate();

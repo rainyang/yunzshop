@@ -8,15 +8,17 @@
 
 namespace app\frontend\modules\member\listeners;
 
-
-use app\frontend\modules\member\services\MemberCartService;
+use app\common\events\order\AfterOrderCreatedEvent;
 
 class Order
 {
-    public function handle($event){
-        $cart_ids =\Request::input('cart_ids');
-        @$cart_ids = json_decode($cart_ids);
+    public function handle(AfterOrderCreatedEvent $event){
 
-        MemberCartService::clearCartByIds($cart_ids);
+        $goods_ids = $event->getOrder()->first()->orderGoods->pluck('goods_id');
+        $goods_option_ids = $event->getOrder()->first()->orderGoods->pluck('goods_option_id');
+
+        app('OrderManager')->make('MemberCart')->uniacid()->whereIn('goods_id', $goods_ids)->delete();
+        app('OrderManager')->make('MemberCart')->uniacid()->whereIn('option_id', $goods_option_ids)->delete();
+
     }
 }

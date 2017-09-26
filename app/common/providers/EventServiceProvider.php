@@ -53,7 +53,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         AfterOrderCreatedEvent::class => [ //下单成功后调用会员成为下线事件
             \app\common\listeners\member\AfterOrderCreatedListener::class,
-            \app\frontend\modules\member\listeners\Order::class, //统一运费
+            \app\frontend\modules\member\listeners\Order::class, //清空购物车
         ],
         AfterOrderReceivedEvent::class => [ //确认收货
             \app\common\listeners\member\AfterOrderReceivedListener::class

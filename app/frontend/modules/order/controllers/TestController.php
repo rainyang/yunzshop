@@ -17,9 +17,7 @@ class TestController extends ApiController
 
     public function index()
     {
-        dd((new PasswordService())->checkMemberPassword(213,'sgl918'));
-
-        exit;
+        dd(\app\common\models\Order::find(3317)->hasOneDispatchType->needSend());
 
         //(new MessageService(\app\frontend\models\Order::completed()->first()))->received();
     }
