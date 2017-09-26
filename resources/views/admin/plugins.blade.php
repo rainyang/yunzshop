@@ -55,11 +55,11 @@
                                     @endif
 
                                 </a>
-                                <a class='btn btn-default btn-sm'
-                                   href="{{yzWebUrl('plugins.manage', ['name'=>$plugin['name'],'action'=>'delete'])}}"
-                                   title='删除' onclick="return confirm('确认删除此插件吗？');return false;">
-                                    <i class="fa fa-remove"></i>
-                                </a>
+                                {{--<a class='btn btn-default btn-sm'--}}
+                                   {{--href="{{yzWebUrl('plugins.manage', ['name'=>$plugin['name'],'action'=>'delete'])}}"--}}
+                                   {{--title='删除' onclick="return confirm('确认删除此插件吗？');return false;">--}}
+                                    {{--<i class="fa fa-remove"></i>--}}
+                                {{--</a>--}}
                             </td>
                         </tr>
                     @endforeach

@@ -15,6 +15,7 @@ use app\common\services\MessageService;
 use app\common\services\WechatPay;
 use app\frontend\modules\finance\controllers\IncomeController;
 use app\frontend\modules\member\models\SubMemberModel;
+use app\frontend\modules\member\services\MemberService;
 
 class TestController extends BaseController
 {
@@ -113,5 +114,4 @@ class TestController extends BaseController
 
         dd($msg);
     }
-
 }

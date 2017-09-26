@@ -61,7 +61,7 @@
                                                 @if($shopSet['level_type'] == 2)
                                                     <div class="col-sm-12">
                                                         <input type='hidden' class='form-control' id='goodsid'
-                                                               name='level[goods_id]' value=""/>
+                                                               name='level[goods_id]' value="{{ $levelModel->goods->id }}"/>
                                                         <div class='input-group'>
                                                             <div class='input-group-addon'
                                                                  style='border:none;background:#fff;'>

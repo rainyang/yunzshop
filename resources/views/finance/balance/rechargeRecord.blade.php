@@ -21,7 +21,7 @@
                         <div class="col-sm-12 col-lg-12 col-xs-12">
                             <div class='input-group'>
                                 <input class="form-control" name="search[ordersn]" type="text" value="{{ $search['ordersn'] or ''}}" placeholder="充值单号">
-                                <input class="form-control" name="search[realname]" type="text" value="{{ $search['realname'] or ''}}" placeholder="会员姓名／昵称／手机号">
+                                <input class="form-control" name="search[realname]" type="text" value="{{ $search['realname'] or ''}}" placeholder="会员ID／姓名／昵称／手机号">
 
                                 <div class="form-input">
                                     <select name="search[level_id]" class="form-control">

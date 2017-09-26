@@ -354,6 +354,15 @@ class Member extends BackendModel
             $data['cashier'] = '';
         }
 
+        if ($plugin_class->isEnabled('elive')) {
+            $data['elive'] = [
+                'button_name' => '生活缴费',
+                'status'         => true
+            ];
+        } else {
+            $data['elive'] = ['status' => false];
+        }
+
         //获取插件会员中心链接挂件
         $plugins = \Config::get('member_center.plugins');
         if (is_array($plugins)) {

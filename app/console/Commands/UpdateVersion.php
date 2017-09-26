@@ -51,7 +51,7 @@ class UpdateVersion extends Command
             \Artisan::call('migrate',['--force' => true,'--path' => $versionMigration]);
         }
         \Log::debug('数据迁移');
-        \Artisan::call('db:seed');
+        \Artisan::call('db:seed', ['--force' => true]);
     }
 
     public function createPluginFile()

@@ -93,13 +93,20 @@ class GoodsController extends ApiController
                 }
             }
         }
+
         if($goodsModel->hasOneShare){
             $goodsModel->hasOneShare->share_thumb = replace_yunshop(tomedia($goodsModel->hasOneShare->share_thumb));
         }
+        $this->setGoodsPluginsRelations($goodsModel);
         //return $this->successJson($goodsModel);
         return $this->successJson('成功', $goodsModel);
     }
-
+    private function setGoodsPluginsRelations($goods){
+        $goodsRelations = app('GoodsManager')->tagged('GoodsRelations');
+        collect($goodsRelations)->each(function($goodsRelation) use($goods){
+            $goodsRelation->setGoods($goods);
+        });
+    }
     public function searchGoods()
     {
         $requestSearch = \YunShop::request()->search;
