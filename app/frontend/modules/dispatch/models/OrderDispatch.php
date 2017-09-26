@@ -28,6 +28,7 @@ class OrderDispatch
     public function getDispatchPrice()
     {
         if (!isset($this->preGeneratedOrder->hasOneDispatchType) || !$this->preGeneratedOrder->hasOneDispatchType->needSend()) {
+            // 没选配送方式 或者 不需要配送配送
             return 0;
         }
         $event = new OrderDispatchWasCalculated($this->preGeneratedOrder);
