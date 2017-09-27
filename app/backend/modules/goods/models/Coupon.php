@@ -31,13 +31,18 @@ class Coupon extends GoodsCoupon
     {
         $couponModel = self::getModel($goodsId,$operate);
 
-        $array = [
-            'goods_id'      => $goodsId,
-            'is_give'       => $data['is_give'],
-            'send_type'     => $data['send_type'],
-            'send_num'      => $data['send_num'],
-            'coupon'        => $couponModel->recombination($data)
-        ];
+        $array = [];
+        if (!$data) {
+            $array['is_give'] = 0;
+        } else {
+            $array = [
+                'goods_id'      => $goodsId,
+                'is_give'       => $data['is_give'],
+                'send_type'     => $data['send_type'],
+                'send_num'      => $data['send_num'],
+                'coupon'        => $couponModel->recombination($data)
+            ];
+        }
 
         $couponModel->fill($array);
         $validator = $couponModel->validator();
