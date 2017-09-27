@@ -40,7 +40,7 @@ class OrderGoods extends BaseModel
 
     public function scopeOrderGoods(Builder $query)
     {
-        return $query->select(['id', 'order_id', 'goods_id', 'goods_price', 'total', 'goods_option_title', 'price', 'thumb', 'title', 'goods_sn'])->with('goods', function ($query) {
+        return $query->select(['id', 'order_id', 'goods_id', 'goods_price', 'total', 'goods_option_title', 'price', 'goods_market_price', 'goods_cost_price', 'thumb', 'title', 'goods_sn'])->with('goods', function ($query) {
             return $query->goods();
         });
     }
