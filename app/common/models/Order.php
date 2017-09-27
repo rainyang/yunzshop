@@ -403,17 +403,17 @@ class Order extends BaseModel
 
     public function orderDeduction()
     {
-        return $this->hasMany(OrderDeduction::class);
+        return $this->hasMany(OrderDeduction::class, 'order_id', 'id');
     }
 
     public function orderCoupon()
     {
-        return $this->hasMany(OrderCoupon::class);
+        return $this->hasMany(OrderCoupon::class, 'order_id', 'id');
     }
 
     public function orderDiscount()
     {
-        return $this->hasMany(OrderDiscount::class,'order_id','id');
+        return $this->hasMany(OrderDiscount::class, 'order_id', 'id');
     }
 
     public function close()
@@ -442,7 +442,7 @@ class Order extends BaseModel
 
     public function orderSettings()
     {
-        return $this->hasMany(OrderSetting::class);
+        return $this->hasMany(OrderSetting::class, 'order_id', 'id');
     }
 
     public function getSetting($key)
