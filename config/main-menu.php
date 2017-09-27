@@ -16,8 +16,20 @@ return [
         'menu' => 0,                    //如果不设置则不显示菜单，子菜单也将不显示
         'icon' => '',                   //菜单图标
         'parents' => [],                //
-        'child' => [],
+        'child' => [
+
+            'index'  => [
+                'name'          => '选择图标',
+                'url'           => 'frame.icon.index',
+                'urlParams'     => '',
+                'permit'        => 0,
+                'menu'          => 0,
+                'icon'          => '',
+                'parents'       => [],
+            ],
+        ],
     ],
+
 
 
     'system' => [
