@@ -2019,6 +2019,18 @@ return [
                                 'parents'           => ['finance','withdraw','withdraw_records'],
                             ],
 
+                            'withdraw_records_export' => [
+                                'name'              => '记录导出',
+                                'url'               => 'finance.withdraw.export',
+                                'url_params'        => "",
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => '',
+                                'sort'              => 0,
+                                'item'              => 'withdraw_records_export',
+                                'parents'           => ['finance','withdraw','withdraw_records'],
+                            ],
+
                             'withdraw_records_balance_detail' => [
                                 'name'              => '余额提现详情',
                                 'url'               => 'finance.balance-withdraw.detail',
