@@ -1,45 +1,34 @@
 @extends('layouts.base')
 @section('title', '转让记录')
 @section('content')
-
-    <div class="rightlist">
-        <div class="right-titpos">
-            <ul class="add-snav">
-                <li class="active"><a href="#">余额转让记录</a></li>
-
-
-            </ul>
-        </div>
-
+    <link href="{{static_url('yunshop/balance/balance.css')}}" media="all" rel="stylesheet" type="text/css"/>
+    <div id="member-blade" class="rightlist">
         <div class="panel panel-info">
-
+            <div class="panel-heading">余额转让记录</div>
             <div class="panel-body">
                 <form action="" method="post" class="form-horizontal" role="form" id="form1">
-                    <input type="hidden" name="c" value="site"/>
-                    <input type="hidden" name="a" value="entry"/>
-                    <input type="hidden" name="m" value="yun_shop"/>
-                    <div class="form-group col-sm-8 col-lg-11 col-xs-12">
-                        <!--<label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员信息</label>-->
+
+                    <div class="form-group col-sm-11 col-lg-11 col-xs-12">
                         <div class="">
-                            <input type="text" class="form-control" name="search[keyword]" value="{{ $search['keyword'] or '' }}"
-                                   placeholder='可搜索会员昵称/姓名/手机号'/>
-
+                            <div class='input-group'>
+                                <input class="form-control" name="search[transfer]" type="text"
+                                       value="{{ $search['transfer'] or ''}}" placeholder="转让者ID/昵称/姓名/手机号">
+                                <input class="form-control" name="search[recipient]" type="text"
+                                       value="{{ $search['recipient'] or ''}}" placeholder="被转让者ID/昵称/姓名/手机号">
+                            </div>
                         </div>
                     </div>
 
-
-                    <div class="form-group col-sm-7 col-lg-1 col-xs-12">
-                     <!--   <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>-->
-                        <div  >
-                            <button class="btn btn-success"><i class="fa fa-search"></i> 搜索</button>
-                            <input type="hidden" name="token" value="{$_W['token']}"/>
-                            <!--<button type="submit" name="export" value="1" class="btn btn-primary">导出 Excel</button> -->
+                    <div class="form-group col-sm-1 col-lg-1 col-xs-12">
+                        <div class="">
+                            <input type="submit" class="btn btn-block btn-success"
+                                   value="{{ trans('Yunshop\Coin::activation_record.button.search') }}">
                         </div>
                     </div>
-
                 </form>
             </div>
         </div>
+
         <div class="panel panel-default">
             <div class="panel-heading">总数：{{ $tansferList->total() }}</div>
             <div class="panel-body ">
