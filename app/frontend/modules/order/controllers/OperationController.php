@@ -14,6 +14,7 @@ use app\frontend\modules\order\services\OrderService;
 
 class OperationController extends ApiController
 {
+    public $transactionActions = ['*'];
     protected $params;
     protected $order;
 
