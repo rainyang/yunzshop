@@ -16,11 +16,14 @@ use app\frontend\modules\order\models\PreGeneratedOrder;
 abstract class CreatedOrderEvent extends Event
 {
     protected $orderModel;
-    protected $order;
     /**
-     * todo 需要重写,订单生成后与订单操作 使用的order对象冲突
-     * AfterOrderReceivedEvent constructor.
-     * @param Order $order_model
+     * @var Order
+     */
+    protected $order;
+
+    /**
+     * CreatedOrderEvent constructor.
+     * @param Order $order
      */
     public function __construct($order)
     {
@@ -32,11 +35,15 @@ abstract class CreatedOrderEvent extends Event
     }
     /**
      * (监听者)获取订单model
-     * @return mixed
+     * @return Order
      */
     public function getOrderModel(){
         return $this->orderModel;
     }
+
+    /**
+     * @return Order
+     */
     public function getOrder(){
         return $this->order;
     }

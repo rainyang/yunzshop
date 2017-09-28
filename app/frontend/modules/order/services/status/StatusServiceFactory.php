@@ -9,10 +9,25 @@
 namespace app\frontend\modules\order\services\status;
 
 
+use app\common\models\Order;
+use Yunshop\StoreCashier\common\models\Store;
+
 class StatusServiceFactory
 {
-    public static function createStatusService($order){
-        switch ($order->status){
+    /**
+     * @var Order
+     */
+    private $order;
+
+    function __construct($order)
+    {
+        $this->order = $order;
+    }
+
+    public function create()
+    {
+        $order = $this->order;
+        switch ($order->status) {
             case -1:
                 return new Close($order);
                 break;
@@ -23,12 +38,27 @@ class StatusServiceFactory
                 return new WaitSend($order);
                 break;
             case 2:
-                return new WaitReceive($order);
+                return $this->waitReceive();
                 break;
             case 3:
                 return new Complete($order);
                 break;
 
         }
+    }
+
+    private function waitReceive()
+    {
+
+
+        if (app('plugins')->isEnabled('store-cashier') && $this->order->plugin_id == Store::PLUGIN_ID){
+            //门店订单
+            return (new \Yunshop\StoreCashier\common\order\status\WaitReceive())->handle($this->order);
+
+        } else {
+            // 正常订单
+            return new WaitReceive($this->order);
+        }
+
     }
 }

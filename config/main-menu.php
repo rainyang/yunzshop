@@ -16,8 +16,20 @@ return [
         'menu' => 0,                    //如果不设置则不显示菜单，子菜单也将不显示
         'icon' => '',                   //菜单图标
         'parents' => [],                //
-        'child' => [],
+        'child' => [
+
+            'index'  => [
+                'name'          => '选择图标',
+                'url'           => 'frame.icon.index',
+                'urlParams'     => '',
+                'permit'        => 0,
+                'menu'          => 0,
+                'icon'          => '',
+                'parents'       => [],
+            ],
+        ],
     ],
+
 
 
     'system' => [
@@ -859,12 +871,50 @@ return [
                 'parents'           => ['Goods',],
                 'child'             => [
 
+                    'coupon_coupon_set' => [
+                        'name'              => '优惠劵设置',
+                        'url'               => 'coupon.base-set.see',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => 'fa-ticket',
+                        'sort'              => '2',
+                        'item'              => 'coupon_coupon_set',
+                        'parents'           => ['Goods', 'coupon', 'coupon_coupon_set'],
+                        'child'             => [
+
+                            'coupon_coupon_set_see' => [
+                                'name'              => '查看设置',
+                                'url'               => 'coupon.base-set.see',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => 'fa-ticket',
+                                'sort'              => '2',
+                                'item'              => 'coupon_coupon_set_see',
+                                'parents'           => ['Goods', 'coupon',],
+                            ],
+
+                            'coupon_coupon_set_store' => [
+                                'name'              => '保存设置',
+                                'url'               => 'coupon.base-set.store',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => 'fa-ticket',
+                                'sort'              => '2',
+                                'item'              => 'coupon_coupon_set_store',
+                                'parents'           => ['Goods', 'coupon', 'coupon_coupon_set'],
+                            ],
+                        ],
+                    ],
+
                     'coupon_coupon_create' => [
                         'name'              => '创建优惠券',
                         'url'               => 'coupon.coupon.create',
                         'url_params'        => '',
                         'permit'            => 1,
-                        'menu'              => 1,
+                        'menu'              => 0,
                         'icon'              => 'fa-ticket',
                         'sort'              => '2',
                         'item'              => 'coupon_coupon_create',
@@ -1978,6 +2028,18 @@ return [
                                 'icon'              => '',
                                 'sort'              => 0,
                                 'item'              => 'withdraw_records_see',
+                                'parents'           => ['finance','withdraw','withdraw_records'],
+                            ],
+
+                            'withdraw_records_export' => [
+                                'name'              => '记录导出',
+                                'url'               => 'finance.withdraw.export',
+                                'url_params'        => "",
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => '',
+                                'sort'              => 0,
+                                'item'              => 'withdraw_records_export',
                                 'parents'           => ['finance','withdraw','withdraw_records'],
                             ],
 

@@ -13,16 +13,58 @@ use app\common\models\BaseModel;
 class GoodsCoupon extends BaseModel
 {
     public $table = 'yz_goods_coupon';
-    public $attributes = [
-        'is_coupon' => 0,
-        'coupon_id' => 0,
-        'send_times' => 0,
-        'send_num' => 0,
+
+
+    public $timestamps = false;
+
+    protected $guarded = [''];
+
+    protected $casts = [
+        'coupon' => 'json',
     ];
 
-    public static function getGoodsCouponByGoodsId($goodsId)
+
+    public $attributes = [
+        'goods_id'  => 0,
+        'is_give'   => 0,
+        'send_type' => 0,
+        'send_num'  => 0,
+    ];
+
+
+    public function scopeOfGoodsId($query,$goodsId)
+    {
+        return $query->where('goods_id',$goodsId);
+    }
+
+
+    //todo 废弃使用==删除，使用 ofGoodsId() 方法
+    /*public static function getGoodsCouponByGoodsId($goodsId)
     {
         return self::where('goods_id',$goodsId);
+    }*/
+
+
+    public function rules()
+    {
+        return [
+            //'goods_id'  => '',
+            //'is_give'   => '',
+            //'coupon'    => '',
+            //'send_type' => '',
+            'send_num'  => 'numeric|integer',
+        ];
+    }
+
+    public function atributeNames()
+    {
+        return [
+            //'goods_id'  => '',
+            //'is_give'   => '',
+            //'coupon'    => '',
+            //'send_type' => '',
+            'send_num'  => '优惠劵发送次数',
+        ];
     }
 
 }

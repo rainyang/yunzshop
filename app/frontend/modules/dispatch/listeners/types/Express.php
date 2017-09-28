@@ -152,11 +152,6 @@ class Express
         if (!$order_address->save()) {
             throw new AppException('订单地址保存失败');
         }
-        $order = Order::find($this->event->getOrderModel()->id);
-        $order->dispatch_type_id = DispatchType::EXPRESS;
-        if (!$order->save()) {
-            throw new AppException('订单配送方式保存失败');
-        }
         return true;
     }
 

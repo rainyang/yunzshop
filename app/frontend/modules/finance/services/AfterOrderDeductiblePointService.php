@@ -58,7 +58,7 @@ class AfterOrderDeductiblePointService
 
     private function getPointData()
     {
-        $point_service = new CalculationPointService($this->order_model->hasManyOrderGoods, $this->order_model->uid);
+        $point_service = new CalculationPointService($this->order_model, $this->order_model->uid);
         return [
             'point_income_type' => -1,
             'point_mode' => 6,
