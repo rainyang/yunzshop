@@ -94,22 +94,59 @@
 
                                     </div>
                                 </div>
+
                                 <div class="form-group">
                                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                                     <div class="col-sm-9 col-xs-12">
                                         <div class="alipay" >
                                             <label class='radio-inline' >提现手续费</label>
                                         </div>
+                                        <div class="switch" >
+                                            <label class='radio-inline'>
+                                                <input type='radio' name='withdraw[balance][poundage_type]' value='1' @if($set['poundage_type'] == 1) checked @endif />
+                                                固定金额
+                                            </label>
+                                            <label class='radio-inline'>
+                                                <input type='radio' name='withdraw[balance][poundage_type]' value='0' @if(empty($set['poundage_type'])) checked @endif />
+                                                手续费比例
+                                            </label>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                                    <div class="col-sm-9 col-xs-12">
+                                        <div class="alipay" >
+                                            <label class='radio-inline' ></label>
+                                        </div>
                                         <div class="cost" >
                                             <label class='radio-inline'>
                                                 <div class="input-group">
-                                                    <input type="text" name="withdraw[balance][poundage]" class="form-control" value="{{ $set['poundage'] or '' }}" placeholder="请输入提现手续费比例"/>
-                                                    <div class="input-group-addon">%</div>
+                                                    <input type="text" name="withdraw[balance][poundage]" class="form-control" value="{{ $set['poundage'] or '' }}" placeholder="请输入提现手续费计算值"/>
+                                                    <div class="input-group-addon" id="poundage_attr">%</div>
                                                 </div>
                                             </label>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                                    <div class="col-sm-9 col-xs-12">
+                                        <div class="alipay" >
+                                            <label class='radio-inline' ></label>
+                                        </div>
+                                        <div class="cost" >
+                                            <label class='radio-inline'>
+                                                <div class="input-group">
+                                                    <input type="text" name="withdraw[balance][poundage_full_cut]" class="form-control" value="{{ $set['poundage_full_cut'] or '' }}" placeholder="提现金额达到 N元 减免手续费"/>
+                                                    <div class="input-group-addon" id="poundage_attr">元</div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="form-group">
                                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                                     <div class="col-sm-9 col-xs-12">
@@ -126,6 +163,11 @@
                                         </div>
                                     </div>
                                 </div>
+
+
+
+
+
                             </div>
                             {{--余额提现 end--}}
 
@@ -156,6 +198,15 @@
                 }
                 else {
                     $("#withdraw").hide();
+                }
+            });
+
+            $(":radio[name='withdraw[balance][poundage_type]']").click(function () {
+                if ($(this).val() == 1) {
+                    $("#poundage_attr").html('元');
+                }
+                else {
+                    $("#poundage_attr").html('%');
                 }
             });
         })

@@ -3,8 +3,16 @@
 @section('content')
     <link href="{{static_url('yunshop/balance/balance.css')}}" media="all" rel="stylesheet" type="text/css"/>
     <div id="member-blade" class="rightlist">
+
+        <div class="right-titpos">
+            <ul class="add-snav">
+                <li class="active"><a href="#">余额转让记录</a></li>
+            </ul>
+        </div>
+
+
         <div class="panel panel-info">
-            <div class="panel-heading">余额转让记录</div>
+            <div class="panel-heading">筛选</div>
             <div class="panel-body">
                 <form action="" method="post" class="form-horizontal" role="form" id="form1">
 
