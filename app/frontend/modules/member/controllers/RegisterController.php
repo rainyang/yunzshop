@@ -119,7 +119,7 @@ class RegisterController extends ApiController
     /**
      * 发送短信验证码
      *
-     * @return array
+     *
      */
     public function sendCode()
     {
@@ -165,7 +165,7 @@ class RegisterController extends ApiController
 
         //互亿无线
         if ($sms['type'] == 1) {
-            $issendsms = MemberService::send_sms($sms['account'], $sms['password'], $mobile, $code);
+            $issendsms = MemberService::send_sms(trim($sms['account']), trim($sms['password']), $mobile, $code);
 
             if ($issendsms['SubmitResult']['code'] == 2) {
                 MemberService::udpateSmsSendTotal(\YunShop::app()->uniacid, $mobile);
@@ -192,13 +192,13 @@ class RegisterController extends ApiController
                 $content = json_encode(array('code' => (string)$code, 'product' => $explode_param[1]));
             }
 
-            $top_client = new \iscms\AlismsSdk\TopClient($sms['appkey'], $sms['secret']);
-            $name = $sms['signname'];
-            $templateCode = $sms['templateCode'];
+            $top_client = new \iscms\AlismsSdk\TopClient(trim($sms['appkey']), trim($sms['secret']));
+            $name = trim($sms['signname']);
+            $templateCode = trim($sms['templateCode']);
 
             config([
-                'alisms.KEY' => $sms['appkey'],
-                'alisms.SECRETKEY' => $sms['secret']
+                'alisms.KEY' => trim($sms['appkey']),
+                'alisms.SECRETKEY' => trim($sms['secret'])
             ]);
 
             $sms = new Sms($top_client);
@@ -211,7 +211,7 @@ class RegisterController extends ApiController
                 //return $this->errorJson($issendsms->msg . '/' . $issendsms->sub_msg);
             }
         } elseif ($sms['type'] == 3) {
-            $aly_sms = new AliyunSMS($sms['aly_appkey'], $sms['aly_secret']);
+            $aly_sms = new AliyunSMS(trim($sms['aly_appkey']), trim($sms['aly_secret']));
 
             $response = $aly_sms->sendSms(
                 $sms['aly_signname'], // 短信签名

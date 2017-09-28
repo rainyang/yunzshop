@@ -11,6 +11,7 @@ namespace app\backend\modules\goods\models;
 
 class Brand extends \app\common\models\Brand
 {
+    static protected $needLog = true;
 
     /**
      * @param $id

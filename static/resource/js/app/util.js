@@ -417,7 +417,7 @@
 	
 	util.iconBrowser = function(callback){
 		var footer = '<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>';
-		var modalobj = util.dialog('请选择图标',['/web/index.php?c=utility&a=icon&callback=selectIconComplete'],footer,{containerName:'icon-container'});
+		var modalobj = util.dialog('请选择图标',['/web/index.php?c=site&a=entry&m=yun_shop&do=8991&route=frame.icon.index&callback=selectIconComplete'],footer,{containerName:'icon-container'});
 		modalobj.modal({'keyboard': false});
 		modalobj.find('.modal-dialog').css({'width':'70%'});
 		modalobj.find('.modal-body').css({'height':'70%','overflow-y':'scroll'});

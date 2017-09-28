@@ -57,6 +57,19 @@ class PointService
     const POINT_MODE_FLOW = 12; //流量充值奖励
     const POINT_MODE_FlOW_ATTACHED = '流量充值奖励';
 
+    const POINT_MODE_TRANSFER = 13; //转让
+    const POINT_MODE_TRANSFER_ATTACHED = '转让-转出';
+
+    const POINT_MODE_RECIPIENT = 14; //转让
+    const POINT_MODE_RECIPIENT_ATTACHED = '转让-转入';
+
+    const POINT_MODE_ROLLBACK = 15; //回滚
+    const POINT_MODE_ROLLBACK_ATTACHED = '积分返还';
+
+    const POINT_MODE_COUPON_DEDUCTION_AWARD = 16;
+    const POINT_MODE_COUPON_DEDUCTION_AWARD_ATTACHED = '优惠劵抵扣奖励';
+
+
     const POINT = 0;
 
     public $point_data;
@@ -190,6 +203,17 @@ class PointService
             case (12):
                 $mode_attribute = self::POINT_MODE_FLOW_ATTACHED;
                 break;
+            case (13):
+                $mode_attribute = self::POINT_MODE_TRANSFER_ATTACHED;
+                break;
+            case (14):
+                $mode_attribute = self::POINT_MODE_RECIPIENT_ATTACHED;
+                break;
+            case (15):
+                $mode_attribute = self::POINT_MODE_ROLLBACK_ATTACHED;
+                break;
+            case (16):
+                $mode_attribute = self::POINT_MODE_COUPON_DEDUCTION_AWARD_ATTACHED;
         }
         return $mode_attribute;
     }

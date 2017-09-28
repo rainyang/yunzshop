@@ -93,10 +93,20 @@ class GoodsController extends ApiController
                 }
             }
         }
+
+        if($goodsModel->hasOneShare){
+            $goodsModel->hasOneShare->share_thumb = replace_yunshop(tomedia($goodsModel->hasOneShare->share_thumb));
+        }
+        $this->setGoodsPluginsRelations($goodsModel);
         //return $this->successJson($goodsModel);
         return $this->successJson('成功', $goodsModel);
     }
-
+    private function setGoodsPluginsRelations($goods){
+        $goodsRelations = app('GoodsManager')->tagged('GoodsRelations');
+        collect($goodsRelations)->each(function($goodsRelation) use($goods){
+            $goodsRelation->setGoods($goods);
+        });
+    }
     public function searchGoods()
     {
         $requestSearch = \YunShop::request()->search;
@@ -125,6 +135,20 @@ class GoodsController extends ApiController
             ->where("plugin_id", 0)
             ->orderBy($order_field, $order_by)
             ->paginate(20)->toArray();
+
+        if ($list['total'] > 0) {
+            $data = collect($list['data'])->map(function($rows) {
+                return collect($rows)->map(function($item, $key) {
+                    if ($key == 'thumb' && preg_match('/^images/', $item)) {
+                        return replace_yunshop(tomedia($item));
+                    } else {
+                        return $item;
+                    }
+                });
+            })->toArray();
+            $list['data'] = $data;
+        }
+
         if (empty($list)) {
             return $this->errorJson('没有找到商品.');
         }

@@ -124,15 +124,10 @@ class PluginManager
         if (!$this->isEnabled($name)) {
             DB::transaction(function () use ($name) {
                 $plugin = $this->getPlugin($name);
-
                 $enabled = $this->getEnabled();
-
-                $enabled[] = $name;
-
-                $this->setEnabled($enabled);
-
+//                $enabled[] = $name;
+                $this->setEnabled($enabled[$name]['id'], 1, $name);
                 $plugin->setEnabled(true);
-
                 $this->dispatcher->fire(new events\PluginWasEnabled($plugin));
             });
         }
@@ -147,19 +142,26 @@ class PluginManager
     public
     function disable($name)
     {
+
         $enabled = $this->getEnabled();
 
-        if (($k = array_search($name, $enabled)) !== false) {
-            unset($enabled[$k]);
+        $plugin = $this->getPlugin($name);
 
-            $plugin = $this->getPlugin($name);
+        $this->setEnabled($enabled[$name]['id'], 0);
 
-            $this->setEnabled($enabled);
-
-            $plugin->setEnabled(false);
-
-            $this->dispatcher->fire(new events\PluginWasDisabled($plugin));
-        }
+        $plugin->setEnabled(true);
+        $this->dispatcher->fire(new events\PluginWasEnabled($plugin));
+//        if (($k = array_search($name, $enabled)) !== false) {
+//            unset($enabled[$k]);
+//
+//            $plugin = $this->getPlugin($name);
+//
+//            $this->setEnabled($enabled);
+//
+//            $plugin->setEnabled(false);
+//
+//            $this->dispatcher->fire(new events\PluginWasDisabled($plugin));
+//        }
     }
 
     /**
@@ -171,7 +173,6 @@ class PluginManager
     function uninstall($name)
     {
         $plugin = $this->getPlugin($name);
-
         $this->disable($name);
 
         // fire event before deleeting plugin files
@@ -191,7 +192,13 @@ class PluginManager
     public
     function getEnabledPlugins()
     {
-        return $this->getPlugins()->only($this->getEnabled());
+        $only = [];
+        foreach ($this->getEnabled() as $key=>$plugin) {
+            if($plugin['enabled']){
+                $only[] = $key;
+            }
+        }
+        return $this->getPlugins()->only($only);
     }
 
     /**
@@ -203,7 +210,6 @@ class PluginManager
     function getEnabledBootstrappers()
     {
         $bootstrappers = new Collection;
-
         foreach ($this->getEnabledPlugins() as $plugin) {
             if ($this->filesystem->exists($file = $plugin->getPath() . '/bootstrap.php')) {
                 $bootstrappers->push($file);
@@ -221,7 +227,9 @@ class PluginManager
     public
     function getEnabled()
     {
-        return (array)json_decode($this->option->get('plugins_enabled'), true);
+        //dd($this->option->get());
+        return (array)$this->option->get();
+//        return (array)json_decode($this->option->get('plugins_enabled'), true);
     }
 
     /**
@@ -230,14 +238,27 @@ class PluginManager
      * @param array $enabled
      */
     protected
-    function setEnabled(array $enabled)
+    function setEnabled($id, $enabled, $name = null)
     {
-        $enabled = array_values(array_unique($enabled));
+        if ($id) {
+            return $this->option->editEnabledById($id, $enabled);
+        } else {
+            $pluginData = [
+                'uniacid' => \YunShop::app()->uniacid,
+                'option_name' => $name,
+                'option_value' => 'true',
+                'enabled' => $enabled,
+            ];
+           return $this->option->insertPlugin($pluginData);
+        }
 
-        $this->option->set('plugins_enabled', json_encode($enabled));
 
-        // ensure to save options
-        $this->option->save();
+//        $enabled = array_values(array_unique($enabled));
+//
+//        $this->option->set('plugins_enabled', json_encode($enabled));
+//
+//        // ensure to save options
+//        $this->option->save();
     }
 
     /**
@@ -249,7 +270,9 @@ class PluginManager
     public
     function isEnabled($plugin)
     {
-        return in_array($plugin, $this->getEnabled());
+        $plugins = $this->getEnabled();
+        return $plugins[$plugin]['enabled'];
+//        return in_array($plugin, $this->getEnabled());
     }
 
     /**

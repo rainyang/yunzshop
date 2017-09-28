@@ -2,6 +2,7 @@
 
 namespace app\common\repositories;
 
+use app\common\models\UniAccount;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Arr;
 use Illuminate\Database\QueryException;
@@ -16,13 +17,23 @@ class OptionRepository extends Repository
     public function __construct()
     {
         try {
-            $options = DB::table('yz_options')->get();
+            if(\YunShop::app()->uniacid == ''){
+                $options = DB::table('yz_options')
+                    ->where('enabled',1)
+                    ->get();
+            }else{
+                $options = DB::table('yz_options')
+                    ->where('uniacid', \YunShop::app()->uniacid)
+                    ->orWhere('uniacid', 0)
+                    ->get();
+            }
+//            $options = DB::table('yz_options')->get();
         } catch (QueryException $e) {
             $options = [];
         }
 
         foreach ($options as $option) {
-            $this->items[$option['option_name']] = $option['option_value'];
+            $this->items[$option['option_name']] = $option;
         }
 
     }
@@ -30,9 +41,9 @@ class OptionRepository extends Repository
     /**
      * Get the specified option value.
      *
-     * @param  string  $key
-     * @param  mixed   $default
-     * @param  raw     $raw  return raw value without convertion
+     * @param  string $key
+     * @param  mixed $default
+     * @param  raw $raw return raw value without convertion
      * @return mixed
      */
     public function get($key, $default = null, $raw = false)
@@ -67,8 +78,8 @@ class OptionRepository extends Repository
     /**
      * Set a given option value.
      *
-     * @param  array|string  $key
-     * @param  mixed  $value
+     * @param  array|string $key
+     * @param  mixed $value
      * @return void
      */
     public function set($key, $value = null)
@@ -94,12 +105,22 @@ class OptionRepository extends Repository
     {
         try {
             if (!DB::table('yz_options')->where('option_name', $key)->first()) {
+                $uniAccount = UniAccount::get();
+                $pluginData = [];
+                foreach ($uniAccount as $u) {
+                    $pluginData[] = [
+                        'uniacid' => $u->uniacid,
+                        'option_name' => $key,
+                        'option_value' => $value
+                    ];
+                }
+
                 DB::table('yz_options')
-                    ->insert(['option_name' => $key, 'option_value' => $value]);
+                    ->insert($pluginData);
             } else {
                 DB::table('yz_options')
-                        ->where('option_name', $key)
-                        ->update(['option_value' => $value]);
+                    ->where('option_name', $key)
+                    ->update(['option_value' => $value]);
             }
         } catch (QueryException $e) {
             return;
@@ -123,8 +144,8 @@ class OptionRepository extends Repository
                         ->insert(['option_name' => $key, 'option_value' => $this[$key]]);
                 } else {
                     DB::table('yz_options')
-                            ->where('option_name', $key)
-                            ->update(['option_value' => $this[$key]]);
+                        ->where('option_name', $key)
+                        ->update(['option_value' => $this[$key]]);
                 }
             }
 
@@ -138,8 +159,8 @@ class OptionRepository extends Repository
     /**
      * Prepend a value onto an array option value.
      *
-     * @param  string  $key
-     * @param  mixed  $value
+     * @param  string $key
+     * @param  mixed $value
      * @return void
      */
     public function prepend($key, $value)
@@ -154,7 +175,7 @@ class OptionRepository extends Repository
     /**
      * Return the options with key in the given array.
      *
-     * @param  array  $array
+     * @param  array $array
      * @return array
      */
     public function only(Array $array)
@@ -177,5 +198,16 @@ class OptionRepository extends Repository
     {
         $this->save();
     }
+
+    public function editEnabledById($id, $enabled)
+    {
+        return DB::table('yz_options')->where('id', $id)->update(['enabled' => $enabled]);
+    }
+
+    public function insertPlugin($pluginData)
+    {
+        return DB::table('yz_options')->insert($pluginData);
+    }
+
 
 }

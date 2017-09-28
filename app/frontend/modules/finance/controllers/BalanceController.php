@@ -8,9 +8,6 @@
 
 namespace app\frontend\modules\finance\controllers;
 
-
-
-use app\common\facades\Setting;
 use app\common\models\MemberShopInfo;
 use app\common\services\credit\ConstService;
 use app\common\services\finance\BalanceChange;
@@ -121,9 +118,21 @@ class BalanceController extends ApiController
     }
 
     //余额充值，如果是支付宝支付需要二次请求 alipay 支付接口
-    public function cloudWechatPay()
+    public function alipay()
     {
         $orderSn = \YunShop::request()->order_sn;
+
+        $this->model = BalanceRecharge::ofOrderSn($orderSn)->withoutGlobalScope('member_id')->first();
+        if ($this->model) {
+            return  $this->successJson('支付接口对接成功', $this->payOrder());
+        }
+
+        return $this->errorJson('充值订单不存在');
+    }
+
+    public function cloudWechatPay()
+    {
+        $orderSn = \YunShop::request()->ordersn;
 
         $this->model = BalanceRecharge::ofOrderSn($orderSn)->withoutGlobalScope('member_id')->first();
         if ($this->model) {

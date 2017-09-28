@@ -141,36 +141,79 @@ class CouponService
         });
     }
 
-    public function sendCoupun()
+    public function sendCoupon()
     {
         $orderGoods = $this->orderGoods;
         foreach ($orderGoods as $goods) {
-            $goodsCoupon = GoodsCoupon::getGoodsCouponByGoodsId($goods->goods_id)->first();
-            //未开启 或 已关闭
-            if(!$goodsCoupon || !$goodsCoupon->is_coupon){
+            $goodsCoupon = GoodsCoupon::ofGoodsId($goods->goods_id)->first();
+
+            //dump($goodsCoupon);
+            //未开启 或 已关闭 或 未设置优惠券
+            if(!$goodsCoupon || !$goodsCoupon->is_give || !$goodsCoupon->coupon){
                 continue;
             }
-            //未设置优惠券 或 未设置赠送月份
-            if(!$goodsCoupon->coupon_id || !$goodsCoupon->send_num){
+
+            //每月发送时，发送月数 为空 或为 0
+            if ($goodsCoupon->send_type == '0' && empty($goodsCoupon->send_num)) {
                 continue;
             }
+
             for ($i = 1; $i <= $goods->total; $i++) {
-                $this->addSendCoupunQueue($goodsCoupon);
+
+                switch ($goodsCoupon->send_type)
+                {
+                    //订单完成立即发送
+                    case '1':
+                        $this->promptlySendCoupon($goodsCoupon);
+                        break;
+                    //每月发送
+                    case '0':
+                        $this->everyMonthSendCoupon($goodsCoupon);
+                        break;
+                }
             }
         }
     }
 
-    public function addSendCoupunQueue($goodsCoupon)
+    public function promptlySendCoupon($goodsCoupon)
+    {
+        $coupon_ids = [];
+        foreach ($goodsCoupon->coupon as $key => $item) {
+            if ($item['coupon_several'] > 1) {
+                for ($i = 1; $i <= $item['coupon_several']; $i++) {
+                    $coupon_ids[] = $item['coupon_id'];
+                }
+            } else {
+                $coupon_ids[] = $item['coupon_id'];
+            }
+        }
+        (new CouponSendService())->sendCouponsToMember($this->order->uid,$coupon_ids,4,$this->order->order_sn);
+    }
+
+    public function everyMonthSendCoupon($goodsCoupon)
+    {
+        foreach ($goodsCoupon->coupon as $key => $item) {
+            if ($item['coupon_several'] > 1) {
+                for ($i = 1; $i <= $item['coupon_several']; $i++) {
+                    $this->addSendCouponQueue($goodsCoupon);
+                }
+            } else {
+                $this->addSendCouponQueue($goodsCoupon);
+            }
+        }
+    }
+
+    public function addSendCouponQueue($goodsCoupon)
     {
         $queueData = [
-            'uniacid' => \YunShop::app()->uniacid,
-            'goods_id' => $goodsCoupon->goods_id,
-            'uid' => $this->order->uid,
-            'coupon_id' => $goodsCoupon->coupon_id,
-            'send_num' => $goodsCoupon->send_num,
-            'end_send_num' => 0,
-            'status' => 0,
-            'created_at' => time()
+            'uniacid'       => \YunShop::app()->uniacid,
+            'goods_id'      => $goodsCoupon->goods_id,
+            'uid'           => $this->order->uid,
+            'coupon_id'     => $goodsCoupon->coupon['coupon_id'],
+            'send_num'      => $goodsCoupon->send_num,
+            'end_send_num'  => 0,
+            'status'        => 0,
+            'created_at'    => time()
         ];
         $this->dispatch((new addGoodsCouponQueueJob($queueData)));
     }

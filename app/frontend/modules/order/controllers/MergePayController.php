@@ -13,6 +13,7 @@ use app\common\events\payment\GetOrderPaymentTypeEvent;
 use app\common\exceptions\AppException;
 use app\common\models\Order;
 use app\common\models\OrderPay;
+use app\common\services\password\PasswordService;
 use app\common\services\PayFactory;
 use app\common\services\Session;
 use app\frontend\modules\order\services\OrderService;
@@ -31,6 +32,7 @@ class MergePayController extends ApiController
     protected $ignoreAction = ['alipay'];
 
     /**
+     * 支付的时候,生成支付记录的时候,通过订单ids获取订单集合
      * @param $orderIds
      * @return Collection
      * @throws AppException
@@ -62,23 +64,32 @@ class MergePayController extends ApiController
                 throw new AppException('(ID:' . $order->id . ')该订单属于其他用户');
             }
         });
-
+        // 订单金额验证
+        if ($this->orders->sum('price') < 0) {
+            throw new AppException('(' . $this->orders->sum('price') . ')订单金额有误');
+        }
         return $this->orders;
     }
 
+    /**
+     * 获取支付按钮列表接口
+     * @param \Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     */
     public function index(\Request $request)
     {
+        // 验证
         $this->validate([
             'order_ids' => 'required|string'
         ]);
+        // 订单集合
         $orders = $this->orders($request->input('order_ids'));
-
+        // 用户余额
         $member = $orders->first()->belongsToMember()->select(['credit2'])->first()->toArray();
-        if ($orders->sum('price') < 0) {
-            throw new AppException('(' . $orders->sum('price') . ')订单金额有误');
-        }
+        // 支付类型
         $buttons = $this->getPayTypeButtons();
-
+        // 生成支付记录 记录订单号,支付金额,用户,支付号
         $orderPay = new OrderPay();
         $orderPay->order_ids = explode(',', $request->input('order_ids'));
         $orderPay->amount = $orders->sum('price');
@@ -94,6 +105,10 @@ class MergePayController extends ApiController
         return $this->successJson('成功', $data);
     }
 
+    /**
+     * 通过事件获取支付按钮
+     * @return array
+     */
     private function getPayTypeButtons()
     {
         $event = new GetOrderPaymentTypeEvent($this->orders);
@@ -102,12 +117,18 @@ class MergePayController extends ApiController
         return $result ? $result : [];
     }
 
+    /**
+     * 支付
+     * @param $payType
+     * @return \app\common\services\strin5|array|bool|mixed|void
+     * @throws AppException
+     */
     protected function pay($payType)
     {
         $this->validate([
             'order_pay_id' => 'required|integer'
         ]);
-
+        // 支付记录
         $this->orderPay = $orderPay = OrderPay::find(request()->input('order_pay_id'));
         if (!isset($orderPay)) {
             throw new AppException('(ID' . request()->input('order_pay_id') . ')支付流水记录不存在');
@@ -115,33 +136,37 @@ class MergePayController extends ApiController
         if ($orderPay->status > 0) {
             throw new AppException('(ID' . request()->input('order_pay_id') . '),此流水号已支付');
         }
-
+        // 订单集合
         $orders = $this->orders($orderPay->order_ids);
-        //支付流水号
-        $orderPay->pay_type_id = $payType;
-        $orderPay->save();
-        //订单支付方式,流水号保存
-        $orders->each(function ($order) use ($orderPay) {
-            $order->pay_type_id = $orderPay->pay_type_id;
-            $order->order_pay_id = $orderPay->id;
-            if (!$order->save()) {
-                throw new AppException('支付方式选择失败');
-            }
-        });
+        // 验证支付密码
         return $this->getPayResult($payType,$orderPay,$orders);
     }
+
+    /**
+     * 支付结果
+     * @param $payType
+     * @param $orderPay
+     * @param $orders
+     * @return \app\common\services\strin5|array|bool|mixed|void
+     * @throws AppException
+     */
     protected function getPayResult($payType,$orderPay,$orders){
         $query_str = $this->getPayParams($orderPay, $orders);
-
         $pay = PayFactory::create($payType);
         //如果支付模块常量改变 数据会受影响
-
-        $result = $pay->doPay($query_str);
+        $result = $pay->doPay($query_str, $payType);
         if (!isset($result)) {
             throw new AppException('获取支付参数失败');
         }
         return $result;
     }
+
+    /**
+     * 拼写支付参数
+     * @param $orderPay
+     * @param Collection $orders
+     * @return array
+     */
     protected function getPayParams($orderPay, Collection $orders)
     {
         return [
@@ -153,6 +178,12 @@ class MergePayController extends ApiController
         ];
     }
 
+    /**
+     * 微信支付
+     * @param \Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     */
     public function wechatPay(\Request $request)
     {
         if (\Setting::get('shop.pay.weixin') == false) {
@@ -163,6 +194,12 @@ class MergePayController extends ApiController
         return $this->successJson('成功', $data);
     }
 
+    /**
+     * 支付宝支付
+     * @param \Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     */
     public function alipay(\Request $request)
     {
         if (\Setting::get('shop.pay.alipay') == false) {
@@ -175,6 +212,45 @@ class MergePayController extends ApiController
         return $this->successJson('成功', $data);
     }
 
+    /**
+     * 微信app支付
+     * @param \Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     */
+    public function wechatAppPay(\Request $request)
+    {
+        if (\Setting::get('shop_app.pay.weixin') == false) {
+            throw new AppException('商城未开启微信支付');
+        }
+        $data = $this->pay( PayFactory::PAY_APP_WEACHAT);
+        return $this->successJson('成功', $data);
+    }
+
+    /**
+     * 支付宝app支付
+     * @param \Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     */
+    public function alipayAppRay(\Request $request)
+    {
+        if (\Setting::get('shop_app.pay.alipay') == false) {
+            throw new AppException('商城未开启支付宝支付');
+        }
+        if ($request->has('uid')) {
+            Session::set('member_id', $request->query('uid'));
+        }
+        $data = $this->pay( PayFactory::PAY_APP_ALIPAY);
+        return $this->successJson('成功', $data);
+    }
+
+    /**
+     * 微信云支付
+     * @param \Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     */
     public function cloudWechatPay(\Request $request)
     {
         if (\Setting::get('plugin.cloud_pay_set') == false) {

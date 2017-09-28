@@ -10,6 +10,8 @@ namespace app\backend\modules\member\models;
 
 class Member extends \app\common\models\Member
 {
+    static protected $needLog = true;
+
     /**
      * @param $keyWord
      *
@@ -33,25 +35,25 @@ class Member extends \app\common\models\Member
         return self::select(['uid', 'avatar', 'nickname', 'realname', 'mobile', 'createtime',
             'credit1', 'credit2'])
             ->uniacid()
-            ->whereHas('yzMember', function($query) {
+            ->whereHas('yzMember', function ($query) {
                 $query->whereNull('deleted_at');
             })
-            ->with(['yzMember'=>function($query){
-                return $query->select(['member_id','parent_id', 'is_agent', 'group_id','level_id', 'is_black'])->uniacid()
-                    ->with(['group'=>function($query1){
-                        return $query1->select(['id','group_name'])->uniacid();
-                    },'level'=>function($query2){
+            ->with(['yzMember' => function ($query) {
+                return $query->select(['member_id', 'parent_id', 'is_agent', 'group_id', 'level_id', 'is_black'])->uniacid()
+                    ->with(['group' => function ($query1) {
+                        return $query1->select(['id', 'group_name'])->uniacid();
+                    }, 'level' => function ($query2) {
                         return $query2->select(['id', 'level', 'level_name'])->uniacid();
-                    }, 'agent'=>function($query3){
+                    }, 'agent' => function ($query3) {
                         return $query3->select(['uid', 'avatar', 'nickname'])->uniacid();
                     }]);
-            }, 'hasOneFans' => function($query4) {
+            }, 'hasOneFans' => function ($query4) {
                 return $query4->select(['uid', 'follow as followed'])->uniacid();
             }, 'hasOneOrder' => function ($query5) {
                 return $query5->selectRaw('uid, count(uid) as total, sum(price) as sum')
-                              ->uniacid()
-                              ->where('status', 3)
-                              ->groupBy('uid');
+                    ->uniacid()
+                    ->where('status', 3)
+                    ->groupBy('uid');
             }])
             ->orderBy('uid', 'desc');
     }
@@ -68,25 +70,25 @@ class Member extends \app\common\models\Member
             'credit1', 'credit2'])
             ->uniacid()
             ->where('uid', $id)
-            ->whereHas('yzMember', function($query) {
+            ->whereHas('yzMember', function ($query) {
                 $query->whereNull('deleted_at');
             })
-            ->with(['yzMember'=>function($query){
-                return $query->select(['member_id','parent_id', 'is_agent', 'group_id','level_id', 'is_black', 'alipayname', 'alipay', 'content', 'status'])->where('is_black', 0)
-                    ->with(['group'=>function($query1){
-                        return $query1->select(['id','group_name']);
-                    },'level'=>function($query2){
+            ->with(['yzMember' => function ($query) {
+                return $query->select(['member_id', 'parent_id', 'is_agent', 'group_id', 'level_id', 'is_black', 'alipayname', 'alipay', 'content', 'status', 'custom_value', 'validity', 'member_form'])->where('is_black', 0)
+                    ->with(['group' => function ($query1) {
+                        return $query1->select(['id', 'group_name']);
+                    }, 'level' => function ($query2) {
                         return $query2->select(['id', 'level', 'level_name']);
-                    }, 'agent'=>function($query3){
+                    }, 'agent' => function ($query3) {
                         return $query3->select(['uid', 'avatar', 'nickname']);
                     }]);
-            }, 'hasOneFans' => function($query2) {
+            }, 'hasOneFans' => function ($query2) {
                 return $query2->select(['uid', 'follow as followed']);
             }, 'hasOneOrder' => function ($query5) {
                 return $query5->selectRaw('uid, count(uid) as total, sum(price) as sum')
-                              ->uniacid()
-                              ->where('status', 3)
-                              ->groupBy('uid');
+                    ->uniacid()
+                    ->where('status', 3)
+                    ->groupBy('uid');
             }
             ])
             ->first();
@@ -121,46 +123,53 @@ class Member extends \app\common\models\Member
             'credit1', 'credit2'])
             ->uniacid();
 
-        if (!empty($parame['mid'])) {
-            $result = $result->where('uid', $parame['mid']);
+        if (!empty($parame['search']['mid'])) {
+            $result = $result->where('uid', $parame['search']['mid']);
         }
-        if (isset($parame['searchtime']) && $parame['searchtime'] == 1) {
-            if ($parame['times']['start'] != '请选择' && $parame['times']['end'] != '请选择') {
-                $range = [strtotime($parame['times']['start']), strtotime($parame['times']['end'])];
+        if (isset($parame['search']['searchtime']) && $parame['search']['searchtime'] == 1) {
+            if ($parame['search']['times']['start'] != '请选择' && $parame['search']['times']['end'] != '请选择') {
+                $range = [strtotime($parame['search']['times']['start']), strtotime($parame['search']['times']['end'])];
                 $result = $result->whereBetween('createtime', $range);
             }
         }
 
-        if (!empty($parame['realname'])) {
+        if (!empty($parame['search']['realname'])) {
             $result = $result->where(function ($w) use ($parame) {
-               $w->where('nickname', 'like', '%' . $parame['realname'] . '%')
-                    ->orWhere('realname', 'like', '%' . $parame['realname'] . '%')
-                    ->orWhere('mobile', 'like', $parame['realname'] . '%');
+                $w->where('nickname', 'like', '%' . $parame['search']['realname'] . '%')
+                    ->orWhere('realname', 'like', '%' . $parame['search']['realname'] . '%')
+                    ->orWhere('mobile', 'like', $parame['search']['realname'] . '%');
             });
         }
 
-        $result = $result->whereHas('yzMember', function($query) {
-             $query->whereNull('deleted_at');
+        $result = $result->whereHas('yzMember', function ($query) use ($parame) {
+            $query->whereNull('deleted_at');
+
+            if($parame['search']['custom_value']){
+                $query->where('custom_value', 'like', '%' . $parame['search']['custom_value'] . '%');
+            }
+
+
         });
 
-        if (!empty($parame['groupid']) || !empty($parame['level']) || $parame['isblack'] != ''
-            || $parame['isagent'] != '') {
+        if (!empty($parame['search']['groupid']) || !empty($parame['search']['level']) || $parame['search']['isblack'] != ''
+            || $parame['search']['isagent'] != ''
+        ) {
 
-            $result = $result->whereHas('yzMember', function($q) use ($parame){
-                if (!empty($parame['groupid'])) {
-                    $q = $q->where('group_id', $parame['groupid']);
+            $result = $result->whereHas('yzMember', function ($q) use ($parame) {
+                if (!empty($parame['search']['groupid'])) {
+                    $q = $q->where('group_id', $parame['search']['groupid']);
                 }
 
-                if (!empty($parame['level'])) {
-                    $q = $q->where('level_id',$parame['level']);
+                if (!empty($parame['search']['level'])) {
+                    $q = $q->where('level_id', $parame['search']['level']);
                 }
 
-                if ($parame['isblack'] != '') {
-                    $q->where('is_black', $parame['isblack']);
+                if ($parame['search']['isblack'] != '') {
+                    $q->where('is_black', $parame['search']['isblack']);
                 }
 
-                if ($parame['isagent'] != '') {
-                    $q->where('is_agent', $parame['isagent']);
+                if ($parame['search']['isagent'] != '') {
+                    $q->where('is_agent', $parame['search']['isagent']);
                 }
             });
         }
@@ -173,29 +182,29 @@ class Member extends \app\common\models\Member
             $result = $result->where($credit, '<', $parame['max_credit2']);
         }
 
-        if ($parame['followed'] != '') {
+        if ($parame['search']['followed'] != '') {
             $result = $result->whereHas('hasOneFans', function ($q2) use ($parame) {
-                $q2->where('follow', $parame['followed']);
+                $q2->where('follow', $parame['search']['followed']);
             });
         }
 
 
-        $result = $result->with(['yzMember'=>function($query){
-                return $query->select(['member_id','parent_id', 'inviter', 'is_agent', 'group_id','level_id', 'is_black'])
-                    ->with(['group'=>function($query1){
-                        return $query1->select(['id','group_name'])->uniacid();
-                    },'level'=>function($query2){
-                        return $query2->select(['id','level_name'])->uniacid();
-                    }, 'agent'=>function($query3){
-                        return $query3->select(['uid', 'avatar', 'nickname'])->uniacid();
-                    }]);
-            }, 'hasOneFans' => function($query4) {
-                return $query4->select(['uid', 'follow as followed'])->uniacid();
-            }, 'hasOneOrder' => function ($query5) {
-                return $query5->selectRaw('uid, count(uid) as total, sum(price) as sum')
-                    ->uniacid()
-                    ->groupBy('uid');
-            }]);
+        $result = $result->with(['yzMember' => function ($query) {
+            return $query->select(['member_id', 'parent_id', 'inviter', 'is_agent', 'group_id', 'level_id', 'is_black'])
+                ->with(['group' => function ($query1) {
+                    return $query1->select(['id', 'group_name'])->uniacid();
+                }, 'level' => function ($query2) {
+                    return $query2->select(['id', 'level_name'])->uniacid();
+                }, 'agent' => function ($query3) {
+                    return $query3->select(['uid', 'avatar', 'nickname'])->uniacid();
+                }]);
+        }, 'hasOneFans' => function ($query4) {
+            return $query4->select(['uid', 'follow as followed'])->uniacid();
+        }, 'hasOneOrder' => function ($query5) {
+            return $query5->selectRaw('uid, count(uid) as total, sum(price) as sum')
+                ->uniacid()
+                ->groupBy('uid');
+        }]);
 
         return $result;
     }
@@ -210,9 +219,9 @@ class Member extends \app\common\models\Member
         $filters['referee_id'] = [];
         if ($filters['referee'] == '1' && $filters['referee_info']) {
             $query = self::select(['uid'])
-                     ->uniacid()
-                     ->searchLike($filters['referee_info'])
-                     ->get();
+                ->uniacid()
+                ->searchLike($filters['referee_info'])
+                ->get();
 
             if (!empty($query)) {
                 $data = $query->toArray();
@@ -226,34 +235,34 @@ class Member extends \app\common\models\Member
         $query = self::select(['uid', 'avatar', 'nickname', 'realname', 'mobile']);
         $query->uniacid();
 
-        if(isset($filters['member'])){
+        if (isset($filters['member'])) {
             $query->searchLike($filters['member']);
         }
 
-        $query->whereHas('yzMember', function($query) use ($filters){
-            if(isset($filters['searchtime']) && $filters['searchtime'] == 1){
-                if($filters['times']){
+        $query->whereHas('yzMember', function ($query) use ($filters) {
+            if (isset($filters['searchtime']) && $filters['searchtime'] == 1) {
+                if ($filters['times']) {
                     $range = [strtotime($filters['times']['start']), strtotime($filters['times']['end'])];
                     $query = $query->whereBetween('apply_time', $range);
                 }
             }
 
-            if($filters['referee'] == '0'){
+            if ($filters['referee'] == '0') {
                 $query->where('parent_id', $filters['referee']);
-            } elseif ($filters['referee'] == '1' && !empty($filters['referee_id'])){
+            } elseif ($filters['referee'] == '1' && !empty($filters['referee_id'])) {
                 $query->whereIn('parent_id', $filters['referee_id']);
             }
 
             $query->where('status', 1);
         });
 
-        $query->with(['yzMember'=>function($query){
-                return $query->select(['member_id','parent_id', 'apply_time'])
-                    ->with([ 'agent'=>function($query3){
-                        return $query3->select(['uid', 'avatar', 'nickname']);
-                    }]);
+        $query->with(['yzMember' => function ($query) {
+            return $query->select(['member_id', 'parent_id', 'apply_time'])
+                ->with(['agent' => function ($query3) {
+                    return $query3->select(['uid', 'avatar', 'nickname']);
+                }]);
         }])
-        ->orderBy('uid', 'desc');
+            ->orderBy('uid', 'desc');
         return $query;
     }
 
@@ -273,11 +282,11 @@ class Member extends \app\common\models\Member
             $query->searchLike($request->keyword);
         }
 
-        $query->whereHas('yzMember', function($query) use ($request){
+        $query->whereHas('yzMember', function ($query) use ($request) {
             $query->where('parent_id', $request->id);
 
             if ($request->aid) {
-                    $query->where('member_id', $request->aid);
+                $query->where('member_id', $request->aid);
             }
 
             if ($request->status != '') {
@@ -296,13 +305,13 @@ class Member extends \app\common\models\Member
             });
         }
 
-        $query->with(['yzMember'=>function($query){
-                return $query->select(['member_id','parent_id', 'is_agent', 'group_id','level_id', 'is_black','status'])->with(['agent'=>function($query){
-                        return $query->select(['uid', 'avatar', 'nickname']);
-                    }]);
-            }, 'hasOneFans' => function($query) {
-                return $query->select(['uid', 'follow as followed']);
-            }
+        $query->with(['yzMember' => function ($query) {
+            return $query->select(['member_id', 'parent_id', 'is_agent', 'group_id', 'level_id', 'is_black', 'status'])->with(['agent' => function ($query) {
+                return $query->select(['uid', 'avatar', 'nickname']);
+            }]);
+        }, 'hasOneFans' => function ($query) {
+            return $query->select(['uid', 'follow as followed']);
+        }
         ])
             ->orderBy('uid', 'desc');
 

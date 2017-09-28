@@ -10,9 +10,9 @@ namespace app\payment\controllers;
 
 use app\backend\modules\refund\services\RefundOperationService;
 use app\common\events\finance\AlipayWithdrawEvent;
-use app\common\facades\Setting;
 use app\common\helpers\Url;
 use app\common\models\Order;
+use app\common\models\OrderPay;
 use app\common\models\PayOrder;
 use app\common\models\PayRefundOrder;
 use app\common\models\PayWithdrawOrder;
@@ -23,11 +23,20 @@ use app\payment\PaymentController;
 
 class AlipayController extends PaymentController
 {
+    private $sign_type = ['MD5' => '支付宝', 'RSA' => '支付宝APP'];
+    private $pay_type_id = 2;
+
     public function notifyUrl()
     {
-        $this->log($_POST, '支付宝支付');
 
-        $verify_result = $this->getSignResult();
+        $this->log($_POST, '支付宝支付');
+        if ($_POST['sign_type'] == 'MD5') {
+            $verify_result = $this->getSignResult();
+        } else {
+            //定义app支付类型，验证app回调信息
+            $this->pay_type_id = 10;
+            $verify_result = $this->get_RSA_SignResult($_POST);
+        }
 
         \Log::debug(sprintf('支付回调验证结果[%d]', intval($verify_result)));
 
@@ -38,8 +47,8 @@ class AlipayController extends PaymentController
                     'out_trade_no' => $_POST['out_trade_no'],
                     'trade_no' => $_POST['trade_no'],
                     'unit' => 'yuan',
-                    'pay_type' => '支付宝',
-                    'pay_type_id'     => 2
+                    'pay_type' => $this->sign_type[$_POST['sign_type']],
+                    'pay_type_id' => $this->pay_type_id
 
                 ];
 
@@ -54,16 +63,35 @@ class AlipayController extends PaymentController
 
     public function returnUrl()
     {
-        $verify_result = $this->getSignResult();
 
-        if ($verify_result) {
-            if ($_GET['trade_status'] == 'TRADE_SUCCESS') {
-                redirect(Url::absoluteApp('member/payYes'))->send();
+        if ($_GET['sign_type'] == 'MD5') {
+            $verify_result = $this->getSignResult();
+            if ($verify_result) {
+                if ($_GET['trade_status'] == 'TRADE_SUCCESS') {
+                    redirect(Url::absoluteApp('member/payYes'))->send();
+                } else {
+                    redirect(Url::absoluteApp('member/payErr', ['i' => \YunShop::app()->uniacid]))->send();
+                }
             } else {
                 redirect(Url::absoluteApp('member/payErr', ['i' => \YunShop::app()->uniacid]))->send();
             }
         } else {
-            redirect(Url::absoluteApp('member/payErr', ['i' => \YunShop::app()->uniacid]))->send();
+            //定义app支付类型，验证app回调信息
+            $out_trade_no = $this->substr_var($_GET['out_trade_no']);
+            if ($out_trade_no) {
+                $orderPay = OrderPay::where('pay_sn', $out_trade_no)->first();
+                $orders = Order::whereIn('id', $orderPay->order_ids)->get();
+                if (is_null($orderPay)) {
+                    redirect(Url::absoluteApp('home'))->send();
+                }
+                if ($orders->count() > 1) {
+                    redirect(Url::absoluteApp('member/orderlist/', ['i' => \YunShop::app()->uniacid]))->send();
+                } else {
+                    redirect(Url::absoluteApp('member/orderdetail/'.$orders->first()->id, ['i' => \YunShop::app()->uniacid]))->send();
+                }
+            } else {
+                redirect(Url::absoluteApp('home'))->send();
+            }
         }
     }
 
@@ -103,6 +131,7 @@ class AlipayController extends PaymentController
 
     public function withdrawNotifyUrl()
     {
+        $data = [];
         \Log::debug('支付宝提现回调');
         $this->withdrawLog($_POST, '支付宝提现');
 
@@ -112,32 +141,25 @@ class AlipayController extends PaymentController
 
         if ($verify_result) {
             if ($_POST['success_details']) {
-                $plits = explode('^', $_POST['success_details']);
+                $post_success_details = explode('|', rtrim($_POST['success_details'], '|'));
 
-                if ($plits[4] == 'S') {
-                    $data = [
-                        'total_fee' => $plits[3],
-                        'trade_no' => $plits[0],
-                        'unit' => 'yuan',
-                        'pay_type' => '支付宝'
-                    ];
-                }
-            } else {
-                $plits = explode('^', $_POST['fail_details']);
+                foreach ($post_success_details as $success_details) {
+                    $plits = explode('^', $success_details);
 
-                if ($plits[4] == 'F') {
-                    $data = [
-                        'total_fee' => $plits[3],
-                        'trade_no' => $plits[0],
-                        'unit' => 'yuan',
-                        'pay_type' => '支付宝'
-                    ];
+                    if ($plits[4] == 'S') {
+                        $data[] = [
+                            'total_fee' => $plits[3],
+                            'trade_no' => $plits[0],
+                            'unit' => 'yuan',
+                            'pay_type' => '支付宝'
+                        ];
+                    }
                 }
+
+                $this->withdrawResutl($data);
+
+                echo "success";
             }
-
-            $this->withdrawResutl($data);
-
-            echo "success";
         } else {
             echo "fail";
         }
@@ -158,6 +180,107 @@ class AlipayController extends PaymentController
         $alipay->setKey($key);
 
         return $alipay->verify();
+    }
+
+    /**
+     * app签名验证
+     *
+     * @return bool
+     */
+    public function get_RSA_SignResult($params)
+    {
+        $sign = $params['sign'];
+        $params['sign_type'] = null;
+        $params['sign'] = null;
+        return $this->verify($this->getSignContent($params), $sign);
+    }
+
+    /**
+     * 通过支付宝公钥验证回调信息
+     *
+     * @param $data
+     * @param $sign
+     * @return bool
+     */
+    function verify($data, $sign) {
+        $alipay_sign_public = \Setting::get('shop_app.pay.alipay_sign_public');
+        if(!$this->checkEmpty($alipay_sign_public)){
+            $res = "-----BEGIN PUBLIC KEY-----\n" .
+                wordwrap($alipay_sign_public, 64, "\n", true) .
+                "\n-----END PUBLIC KEY-----";
+        }
+        ($res) or die('支付宝RSA公钥错误。请检查公钥文件格式是否正确');
+        \Log::debug('sign_public_key:'.$res);
+        \Log::debug('data:'.print_r($data, 1));
+        //调用openssl内置方法验签，返回bool值
+        $result = (bool)openssl_verify($data, base64_decode($sign), $res);
+        openssl_free_key($res);
+        return $result;
+    }
+
+    /**
+     * 验证数组重组
+     *
+     * @param $params
+     * @return string
+     */
+    public function getSignContent($params) {
+        ksort($params);
+        $stringToBeSigned = "";
+        $i = 0;
+        foreach ($params as $k => $v) {
+            if (false === $this->checkEmpty($v) && "@" != substr($v, 0, 1)) {
+
+                // 转换成目标字符集
+                $v = $this->characet($v, 'UTF-8');
+
+                if ($i == 0) {
+                    $stringToBeSigned .= "$k" . "=" . "$v";
+                } else {
+                    $stringToBeSigned .= "&" . "$k" . "=" . "$v";
+                }
+                $i++;
+            }
+        }
+
+        unset ($k, $v);
+        return $stringToBeSigned;
+    }
+
+    /**
+     * 校验$value是否非空
+     *  if not set ,return true;
+     *    if is null , return true;
+     **/
+    protected function checkEmpty($value) {
+        if (!isset($value))
+            return true;
+        if ($value === null)
+            return true;
+        if (trim($value) === "")
+            return true;
+
+        return false;
+    }
+
+    /**
+     * 转换字符集编码
+     * @param $data
+     * @param $targetCharset
+     * @return string
+     */
+    function characet($data, $targetCharset) {
+
+        if (!empty($data)) {
+            $fileType = $this->fileCharset;
+            if (strcasecmp($fileType, $targetCharset) != 0) {
+                $data = mb_convert_encoding($data, $targetCharset, $fileType);
+                //              $data = iconv($fileType, $targetCharset.'//IGNORE', $data);
+            }
+        }
+
+
+        return $data;
     }
 
     /**
@@ -238,22 +361,26 @@ class AlipayController extends PaymentController
      *
      * @param $data
      */
-    public function withdrawResutl($data)
+    public function withdrawResutl($params)
     {
-        $pay_refund_model = PayWithdrawOrder::getOrderInfo($data['trade_no']);
+        if (!empty($params)) {
+            foreach ($params as $data ) {
+                $pay_refund_model = PayWithdrawOrder::getOrderInfo($data['trade_no']);
 
-        if ($pay_refund_model) {
-            $pay_refund_model->status = 2;
-            $pay_refund_model->trade_no = $data['trade_no'];
-            $pay_refund_model->save();
-        }
+                if ($pay_refund_model) {
+                    $pay_refund_model->status = 2;
+                    $pay_refund_model->trade_no = $data['trade_no'];
+                    $pay_refund_model->save();
+                }
 
-        \Log::debug('提现操作', 'withdraw.succeeded');
+                \Log::debug('提现操作', 'withdraw.succeeded');
 
-        if (bccomp($pay_refund_model->price, $data['total_fee'], 2) == 0) {
-            Withdraw::paySuccess($data['trade_no']);
+                if (bccomp($pay_refund_model->price, $data['total_fee'], 2) == 0) {
+                    Withdraw::paySuccess($data['trade_no']);
 
-            event(new AlipayWithdrawEvent($data['trade_no']));
+                    event(new AlipayWithdrawEvent($data['trade_no']));
+                }
+            }
         }
     }
 }

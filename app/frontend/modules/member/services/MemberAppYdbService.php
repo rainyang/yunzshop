@@ -11,11 +11,13 @@ namespace app\frontend\modules\member\services;
 use app\common\helpers\Client;
 use app\common\helpers\Url;
 use app\common\services\Session;
+use app\frontend\models\Member;
 use app\frontend\modules\member\models\McMappingFansModel;
 use app\frontend\modules\member\models\MemberWechatModel;
 use app\frontend\modules\member\models\MemberUniqueModel;
 use app\frontend\modules\member\models\MemberModel;
 use Crypt;
+use app\common\models\MemberShopInfo;
 
 class MemberAppYdbService extends MemberService
 {
@@ -72,6 +74,7 @@ class MemberAppYdbService extends MemberService
             }
         } else {
             $para = \YunShop::request();
+            \Log::debug('获取用户信息：', print_r($para, 1));
             if ($para['openid'] && $para['token']) {
                 $this->app_get_userinfo($para['token'], $para['openid']);
             } elseif ($para['openid']) {
@@ -98,7 +101,7 @@ class MemberAppYdbService extends MemberService
      */
     public function app_get_userinfo ($token, $openid) {
         //通过接口获取用户信息
-        $url = 'https://api.weixin.qq.com/sns/userinfo?access_token=' . $token['token'] . '&openid=' . $openid;
+        $url = 'https://api.weixin.qq.com/sns/userinfo?access_token=' . $token . '&openid=' . $openid;
         $res = @ihttp_get($url);
         $user_info = json_decode($res['content'], true);
         if (!empty($user_info) && !empty($user_info['unionid'])) {

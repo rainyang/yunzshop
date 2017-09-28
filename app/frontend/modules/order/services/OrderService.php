@@ -262,9 +262,12 @@ class OrderService
         }
         DB::transaction(function () use ($orderPay, $orders, $param) {
             $orderPay->status = 1;
+            if (isset($param['pay_type_id'])) {
+                $orderPay->pay_type_id = $param['pay_type_id'];
+            }
             $orderPay->save();
             $orders->each(function ($order) use ($param) {
-                if (!OrderService::orderPay(['order_id' => $order->id,'pay_type_id' => $param['pay_type_id']])) {
+                if (!OrderService::orderPay(['order_id' => $order->id, 'order_pay_id' => $param['order_pay_id'], 'pay_type_id' => $param['pay_type_id']])) {
                     throw new AppException('订单状态改变失败,请联系客服');
                 }
             });
@@ -279,14 +282,25 @@ class OrderService
 
     public static function orderPay(array $param)
     {
+        /**
+         * @var $orderOperation Order
+         */
         $orderOperation = OrderPay::find($param['order_id']);
         if (isset($param['pay_type_id'])) {
             $orderOperation->pay_type_id = $param['pay_type_id'];
         }
+
+        if (isset($param['order_pay_id'])) {
+            $orderOperation->order_pay_id = $param['order_pay_id'];
+        }
         $result = self::OrderOperate($orderOperation);
         if ($orderOperation->isVirtual()) {
+            // 虚拟物品付款后直接完成
             self::orderSend(['order_id' => $orderOperation->id]);
             $result = self::orderReceive(['order_id' => $orderOperation->id]);
+        } elseif (isset($orderOperation->hasOneDispatchType) && !$orderOperation->hasOneDispatchType->needSend()) {
+            // 不需要发货的物品直接改为待收货
+            self::orderSend(['order_id' => $orderOperation->id]);
         }
         return $result;
     }
