@@ -275,8 +275,8 @@ class GoodsController extends BaseController
         return view('goods.goods', [
             'goods' => $goods_service->goods_model,
             'lang' => $this->lang,
-            'params' => $goods_service->goods_model->hasManyParams->toArray(),
-            'allspecs' => $goods_service->goods_model->hasManySpecs->toArray(),
+            'params' => collect($goods_service->goods_model->hasManyParams)->toArray(),
+            'allspecs' => collect($goods_service->goods_model->hasManySpecs)->toArray(),
             'html' => $goods_service->optionsHtml,
             'var' => \YunShop::app()->get(),
             'brands' => $goods_service->brands,
