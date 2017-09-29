@@ -55,6 +55,10 @@ class BalanceWithdrawController extends BalanceController
 
     private function getPagePoundage()
     {
+        $withdraw_poundage = $this->balanceSet->withdrawPoundage();
+        if (empty($withdraw_poundage)) {
+            return '';
+        }
         $poundage = '手续费比例：' . $this->balanceSet->withdrawPoundage() . '%';
         if ($this->balanceSet->withdrawPoundageType() == 1) {
             $poundage = '固定手续费：' . $this->balanceSet->withdrawPoundage() . '元';
