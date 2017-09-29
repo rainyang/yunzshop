@@ -73,7 +73,7 @@ class BalanceService
     //余额提现限额设置
     public function withdrawAstrict()
     {
-        return $this->_withdraw_set['withdrawmoney'];
+        return $this->_withdraw_set['withdrawmoney'] ?: '0';
     }
 
     //余额提现手续费
