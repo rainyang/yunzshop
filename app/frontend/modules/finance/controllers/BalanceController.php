@@ -113,37 +113,7 @@ class BalanceController extends ApiController
     }
 
 
-    /**
-     * 余额提现页面按钮接口
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function poundage()
-    {
-        if (!$this->getMemberInfo()) {
-            return $this->errorJson('未获取到会员信息');
-        }
 
-        $balanceSet = new BalanceService();
-        $data = [
-            'balance'       => $this->memberInfo->credit2 ?: 0,
-            'wechat'        => $balanceSet->withdrawWechat(),
-            'alipay'        => $balanceSet->withdrawAlipay(),
-            'poundage'      => $balanceSet->withdrawPoundage(),
-        ];
-
-        return $this->successJson('获取数据成功', $data);
-    }
-
-
-    //todo 已经重写，需要删除 2017-09-27
-    //提现+提现限制+提现手续费
-    public function withdraw()
-    {
-        $result = (new BalanceService())->withdrawSet() ? $this->withdrawStart() : '未开启余额提现';
-
-        return $result === true ? $this->successJson('提现申请提交成功') : $this->errorJson($result);
-    }
 
 
 
@@ -276,79 +246,6 @@ class BalanceController extends ApiController
         return '转让写入出错，请联系管理员';
     }
 
-    //提现开始
-    private function withdrawStart()
-    {
-        if (!$this->getMemberInfo()) {
-            return '未获取到会员数据,请重试！';
-        }
-
-        if (!$this->getWithdrawType()) {
-            return '未找到提现类型';
-        }
-        $withdrawType = $this->getWithdrawType();
-        if (!(new BalanceService())->withdrawWechat() && $withdrawType == 'wechat') {
-            return '未开启提现到微信';
-        }
-        if (!(new BalanceService())->withdrawAlipay() && $withdrawType == 'alipay') {
-            return '未开启提现到支付宝';
-        }
-        if (!$this->getMemberAlipaySet() && $withdrawType == 'alipay') {
-            return '您未配置支付宝信息，请先修改个人信息中支付宝信息';
-        }
-
-        $withdrawAstrict = (new BalanceService())->withdrawAstrict();
-        if ($withdrawAstrict > $this->getWithdrawMoney()) {
-            return '提现金额不能小于' . $withdrawAstrict . '元';
-        }
-        if (bccomp($this->getResultWithdrawMoney(),1,2) == -1) {
-            return '扣除手续费后的金额不能小于1元';
-        }
-
-        //写入提现记录
-        DB::beginTransaction();
-        $result = $this->withdrawRecordSave();
-        if ($result !== true) {
-            return $result;
-        }
-
-        //修改会员余额
-        $result = (new BalanceChange())->withdrawal($this->getChangeBalanceDataToWithdraw());
-        if ($result !== true) {
-            DB::rollBack();
-            return '提现写入失败，请联系管理员';
-        }
-
-        DB::commit();
-
-        BalanceNoticeService::withdrawSubmitNotice($this->model);
-        return true;
-    }
-
-
-    /**
-     * 提现记录写入
-     *
-     * @return bool|\Illuminate\Support\MessageBag|string
-     */
-    private function withdrawRecordSave()
-    {
-        $this->model = new Withdraw();
-
-        $this->model->fill($this->getWithdrawData());
-        $validator = $this->model->validator();
-        if ($validator->fails()) {
-            return $validator->messages();
-        }
-        if (!$this->model->save()) {
-            return '提现记录写入出错';
-        }
-        return true;
-    }
-
-
-
-
 
     //余额转让详细记录数据
     private function getChangeBalanceDataToTransfer()
@@ -366,23 +263,6 @@ class BalanceController extends ApiController
     }
 
 
-    /**
-     * 获取余额提现改变余额 data 数据
-     * @return array
-     */
-    private function getChangeBalanceDataToWithdraw()
-    {
-        return array(
-            'member_id'     => \YunShop::app()->getMemberId(),
-            'remark'        => '会员余额提现' . $this->model->amounts,
-            'source'        => ConstService::SOURCE_WITHDRAWAL,
-            'relation'      => $this->model->withdraw_sn,
-            'operator'      => ConstService::OPERATOR_MEMBER,
-            'operator_id'   => $this->model->member_id,
-            'change_value'  => $this->model->amounts
-        );
-    }
-
     private function getTransferData()
     {
         return array(
@@ -395,120 +275,6 @@ class BalanceController extends ApiController
         );
     }
 
-
-    /**
-     * 余额提现记录 data 数据
-     * @return array
-     */
-    private function getWithdrawData()
-    {
-        return array(
-            'withdraw_sn'           => $this->getWithdrawOrderSN(),
-            'uniacid'               => \YunShop::app()->uniacid,
-            'member_id'             => $this->memberInfo->uid,
-            'type'                  => 'balance',
-            'type_id'               => '',
-            'type_name'             => '余额提现',
-            'amounts'               => $this->getWithdrawMoney(),                   //提现金额
-            'poundage'              => $this->getWithdrawPoundageMoney(),           //提现手续费
-            'poundage_rate'         => $this->getWithdrawPoundage(),                //手续费比例
-            'pay_way'               => $this->getWithdrawType(),                    //打款方式
-            'status'                => '0',                                         //0未审核，1未打款，2已打款， -1无效
-            'actual_amounts'        => $this->getResultWithdrawMoney(),
-            'actual_poundage'       => $this->getWithdrawPoundageMoney()
-        );
-    }
-
-
-    /**
-     * 获取 post 提交的提现金额
-     * @return string
-     */
-    private function getWithdrawMoney()
-    {
-        return trim(\YunShop::request()->withdraw_money) ?: '0';
-    }
-
-
-    /**
-     * 获取提现类型
-     * @return string
-     */
-    private function getWithdrawType()
-    {
-        switch (trim(\YunShop::request()->withdraw_type))
-        {
-            case 1:
-                return 'wechat';
-                break;
-            case 2:
-                return 'alipay';
-                break;
-            default:
-                return '';
-        }
-    }
-
-
-    /**
-     * 获取提现手续费比例
-     * @return int
-     */
-    private function getWithdrawPoundage()
-    {
-        return (new BalanceService())->withdrawPoundage();
-    }
-
-
-    /**
-     * 获取提现手续费计算的金额值
-     * @return float|int|string
-     */
-    private function getWithdrawPoundageMoney()
-    {
-        $withdrawMoney = $this->getWithdrawMoney();
-        $withdrawProportion = $this->getWithdrawPoundage();
-
-        if ($withdrawMoney && $withdrawProportion) {
-            $poundage_money = bcdiv(bcmul($withdrawMoney,$withdrawProportion,2),100,2);
-            if (bccomp($poundage_money, 0.01,2) == -1) {
-                $poundage_money = 0.01;
-            }
-            return $poundage_money;
-        }
-        return 0;
-    }
-
-    /**
-     * 获取扣除手续费后可提现金额
-     * @return string
-     */
-    private function getResultWithdrawMoney()
-    {
-        $money = $this->getWithdrawMoney();
-        $poundage = $this->getWithdrawPoundageMoney();
-        if ($money && $poundage) {
-            return bcsub($money, $poundage, 2);
-        }
-        return $money;
-    }
-
-
-    /**
-     * 生成唯一提现订单号
-     * @return string
-     */
-    private function getWithdrawOrderSN()
-    {
-        $withdraw_sn = createNo('WS', true);
-        while (1) {
-            if (!Withdraw::validatorOrderSn($withdraw_sn)) {
-                break;
-            }
-            $withdraw_sn = createNo('WS', true);
-        }
-        return $withdraw_sn;
-    }
 
     /**
      * 生成唯一转让订单号
@@ -583,16 +349,6 @@ class BalanceController extends ApiController
             'ask_for'=> 'recharge'
         );
     }
-
-    private function getMemberAlipaySet()
-    {
-        $array = MemberShopInfo::select('alipay','alipayname')->where('member_id',\YunShop::app()->getMemberId())->first();
-        if ($array && $array['alipay'] && $array['alipayname']) {
-            return true;
-        }
-        return false;
-    }
-
 
 
 

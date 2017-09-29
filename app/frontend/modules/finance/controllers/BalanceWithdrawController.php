@@ -25,7 +25,25 @@ class BalanceWithdrawController extends BalanceController
     public $withdrawModel;
 
 
-    public function index()
+    /**
+     * 余额提现页面按钮接口
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function page()
+    {
+        $data = [
+            'balance'       => $this->memberModel->credit2 ?: 0,
+            'wechat'        => $this->balanceSet->withdrawWechat(),
+            'alipay'        => $this->balanceSet->withdrawAlipay(),
+            'poundage'      => $this->balanceSet->withdrawPoundage(),
+        ];
+
+        return $this->successJson('获取数据成功', $data);
+    }
+
+
+    public function withdraw()
     {
         if (!$this->balanceSet->withdrawSet()) {
             return $this->errorJson('未开启余额提现');
