@@ -32,6 +32,7 @@ class PreOrderAddress extends OrderAddress
     {
         if ($this->order->dispatch_type_id == DispatchType::EXPRESS) {
             $this->fill($this->getAddressByMember());
+            dd($this->validator()->failed());
         }
     }
 
@@ -42,6 +43,7 @@ class PreOrderAddress extends OrderAddress
         $result['address'] = implode(' ', [$memberAddress->province, $memberAddress->city, $memberAddress->district, $memberAddress->address]);
         $result['mobile'] = $memberAddress->mobile;
         list($this->province_id, $this->city_id, $this->district_id) = Address::whereIn('areaname', [$memberAddress->province, $memberAddress->city, $memberAddress->district])->pluck('id');
+
         $result['address'] = implode(' ', [$memberAddress->province, $memberAddress->city, $memberAddress->district, $memberAddress->address]);
         $result['realname'] = $memberAddress->username;
         return $result;
@@ -83,5 +85,37 @@ class PreOrderAddress extends OrderAddress
             return false;
         }
         return true;
+    }
+    /**
+     *  定义字段名
+     * 可使
+     * @return array */
+    public function atributeNames() {
+        return [
+            'address'=> '收货详细地址',
+            'mobile'=> '收货电话',
+            'realname'=> '收货人姓名',
+            'province_id'=> '收货省份',
+            'city_id'=> '收货城市',
+            'district_id'=> '收货地区',
+        ];
+    }
+
+    /**
+     * 字段规则
+     * @return array */
+    public function rules() {
+
+        $rule =  [
+            //具体unique可看文档 https://laravel.com/docs/5.4/validation#rule-unique
+            'address'=> 'required',
+            'mobile'=> 'required',
+            'realname'=> 'required',
+            'province_id'=> 'required',
+            'city_id'=> 'required',
+            'district_id'=> 'required',
+        ];
+
+        return $rule;
     }
 }
