@@ -36,7 +36,7 @@ class BalanceWithdrawController extends BalanceController
             'balance'       => $this->memberModel->credit2 ?: 0,
             'wechat'        => $this->balanceSet->withdrawWechat(),
             'alipay'        => $this->balanceSet->withdrawAlipay(),
-            'poundage'      => $this->balanceSet->withdrawPoundage(),
+            'poundage'      => $this->getPagePoundage(),
         ];
 
         return $this->successJson('获取数据成功', $data);
@@ -50,6 +50,21 @@ class BalanceWithdrawController extends BalanceController
         }
 
         return $this->withdrawStart();
+    }
+
+
+    private function getPagePoundage()
+    {
+        $poundage = '手续费比例：' . $this->balanceSet->withdrawPoundage() . '%';
+        if ($this->balanceSet->withdrawPoundageType() == 1) {
+            $poundage = '固定手续费：' . $this->balanceSet->withdrawPoundage() . '元';
+        }
+
+        $poundage_full_cut = $this->balanceSet->withdrawPoundageFullCut();
+        if (!empty($poundage_full_cut)) {
+            $poundage = $poundage . "，提现金额满" . $poundage_full_cut . "元减免手续费";
+        }
+        return $poundage;
     }
 
 

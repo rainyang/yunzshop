@@ -54,9 +54,9 @@ class BalanceController extends ApiController
      */
     private function getMemberModel()
     {
-        $memberModle = Member::where('uid',\YunShop::app()->getMemberId())->first();
-        if ($memberModle) {
-            return $memberModle;
+        $memberModel = Member::where('uid',\YunShop::app()->getMemberId())->first();
+        if ($memberModel) {
+            return $memberModel;
         }
         throw new AppException('未获取到会员信息');
     }
