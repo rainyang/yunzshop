@@ -82,7 +82,7 @@ class BalanceWithdrawController extends BalanceController
             return $this->errorJson('未开启提现到支付宝');
         }
         if ($withdrawType == 'alipay' && !$this->getMemberAlipaySet()) {
-            return '您未配置支付宝信息，请先修改个人信息中支付宝信息';
+            return $this->errorJson('您未配置支付宝信息，请先修改个人信息中支付宝信息');
         }
 
 
