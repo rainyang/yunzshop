@@ -32,9 +32,6 @@ class SettingController extends BaseController
             return $this->errorJson('未进行设置.');
         }
 
-        //增加商品详情显示爱心值 2017-09-29
-        $setting['goods_detail_show_love'] = Setting::get('love.goods_detail_show_love') ? true : false;
-
         $setting['logo'] = replace_yunshop(tomedia($setting['logo']));
 
         $relation = MemberRelation::getSetInfo()->first();
