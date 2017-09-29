@@ -17,7 +17,7 @@ class SettingController extends BaseController
     /**
      * 商城设置接口
      * @param string $key  setting表key字段值
-     * @return json
+     * @return
      */
     public function get()
     {
@@ -31,6 +31,9 @@ class SettingController extends BaseController
         if (!$setting) {
             return $this->errorJson('未进行设置.');
         }
+
+        //增加商品详情显示爱心值 2017-09-29
+        $setting['goods_detail_show_love'] = Setting::get('love.goods_detail_show_love') ? true : false;
 
         $setting['logo'] = replace_yunshop(tomedia($setting['logo']));
 
