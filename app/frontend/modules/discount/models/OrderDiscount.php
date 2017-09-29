@@ -67,7 +67,7 @@ class OrderDiscount
     private function _getDeductionPrice()
     {
         $orderDeductionInstances = app('OrderManager')->tagged('OrderDeductionInstances');
-        // 获取到订单所有的抵扣类
+        // 获取到订单所有已启用的抵扣类
         $orderDeductions = collect($orderDeductionInstances)->filter(function($orderDeductionInstance){
             /**
              * @var $orderDeductionInstance PreOrderDeduction
@@ -75,9 +75,8 @@ class OrderDiscount
             $orderDeductionInstance->setOrder($this->order);
             return $orderDeductionInstance->isEnable();
         });
-        dd($orderDeductions);
-        exit;
 
+        // 累加所有的抵扣金额
         $result = $orderDeductions->sum(function($orderDeduction){
             $result = 0;
             /**
@@ -89,8 +88,6 @@ class OrderDiscount
             return $result;
         });
 
-
-        // 所有选中的抵扣
         return max($result,0);
     }
 
