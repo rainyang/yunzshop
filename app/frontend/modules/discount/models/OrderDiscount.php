@@ -10,6 +10,7 @@ namespace app\frontend\modules\discount\models;
 
 use app\common\events\discount\OnDeductionPriceCalculatedEvent;
 use app\common\models\Coupon;
+use app\common\models\order\OrderDeduction;
 use app\frontend\models\order\PreOrderCoupon;
 use app\frontend\models\order\PreOrderDeduction;
 use app\frontend\models\order\PreOrderDiscount;
@@ -65,25 +66,32 @@ class OrderDiscount
 
     private function _getDeductionPrice()
     {
-//        $event = new OnDeductionPriceCalculatedEvent($this->order);
-//        event($event);
-//        return max($this->orderDeductions->sum('amount'), 0);
         $orderDeductionInstances = app('OrderManager')->tagged('OrderDeductionInstances');
         // 获取到订单所有的抵扣类
-        $orderDeductions = collect($orderDeductionInstances)->map(function($orderDeductionInstance){
+        $orderDeductions = collect($orderDeductionInstances)->filter(function($orderDeductionInstance){
             /**
              * @var $orderDeductionInstance PreOrderDeduction
              */
             $orderDeductionInstance->setOrder($this->order);
-            return $orderDeductionInstance;
+            return $orderDeductionInstance->isEnable();
         });
-
-        dd($orderDeductions->where('isChecked',1)->sum('amount'));
+        dd($orderDeductions);
         exit;
+
+        $result = $orderDeductions->sum(function($orderDeduction){
+            $result = 0;
+            /**
+             * @var PreOrderDeduction $orderDeduction
+             */
+            if($orderDeduction->isChecked()){
+                $result = $orderDeduction->amount;
+            }
+            return $result;
+        });
 
 
         // 所有选中的抵扣
-        return max($this->order->orderDeductions->where('isChecked',1)->sum('amount'),0);
+        return max($result,0);
     }
 
     /**

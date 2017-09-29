@@ -23,7 +23,7 @@ class VirtualCoin extends BaseModel
 
     /**
      * @param VirtualCoin $coin
-     * @return $this
+     * @return VirtualCoin
      */
     public function plus(VirtualCoin $coin){
         $this->amountOfMoney += $coin->getMoney();

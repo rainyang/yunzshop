@@ -26,7 +26,6 @@ abstract class PreOrderDeduction extends \app\common\models\order\OrderDeduction
         $this->uid = $this->order->uid;
         $this->order->orderDeductions->push($this);
         $this->coin = $this->getUsablePoint()->getCoin();
-
         $this->amount = $this->getUsablePoint()->getMoney();
 
         $this->name = $this->getName();
@@ -39,15 +38,42 @@ abstract class PreOrderDeduction extends \app\common\models\order\OrderDeduction
      */
     abstract public function getUsablePoint();
 
+    /**
+     * @return string
+     */
     abstract public function getCode();
 
+    /**
+     * @return string
+     */
     abstract public function getName();
 
+    /**
+     * @return int
+     */
+    abstract public function getDeductionId();
+
+    /**
+     * @return bool
+     */
+    abstract public function isEnable();
 
 
+    /**
+     * @return bool
+     */
     public function isChecked()
     {
-        return $this->isChecked();
+        $deduction_ids = $this->order->getParams('deduction_ids');
+
+        if (!is_array($deduction_ids)) {
+            $deduction_ids = json_decode($deduction_ids, true);
+            if (!is_array($deduction_ids)) {
+                $deduction_ids = explode(',', $deduction_ids);
+            }
+        }
+        return in_array($this->getDeductionId(), $deduction_ids);
+
     }
 
     public function save(array $options = [])
