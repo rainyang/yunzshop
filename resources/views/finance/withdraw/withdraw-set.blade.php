@@ -123,8 +123,9 @@
                                         <div class="cost" >
                                             <label class='radio-inline'>
                                                 <div class="input-group">
+                                                    <div class="input-group-addon" id="poundage_hint" style="width: 120px;">满额减免手续费</div>
                                                     <input type="text" name="withdraw[balance][poundage]" class="form-control" value="{{ $set['poundage'] or '' }}" placeholder="请输入提现手续费计算值"/>
-                                                    <div class="input-group-addon" id="poundage_attr">%</div>
+                                                    <div class="input-group-addon" id="poundage_unit">%</div>
                                                 </div>
                                             </label>
                                         </div>
@@ -139,8 +140,9 @@
                                         <div class="cost" >
                                             <label class='radio-inline'>
                                                 <div class="input-group">
+                                                    <div class="input-group-addon" style="width: 120px;">满额减免手续费</div>
                                                     <input type="text" name="withdraw[balance][poundage_full_cut]" class="form-control" value="{{ $set['poundage_full_cut'] or '' }}" placeholder="提现金额达到 N元 减免手续费"/>
-                                                    <div class="input-group-addon" id="poundage_attr">元</div>
+                                                    <div class="input-group-addon">元</div>
                                                 </div>
                                             </label>
                                         </div>
@@ -203,10 +205,12 @@
 
             $(":radio[name='withdraw[balance][poundage_type]']").click(function () {
                 if ($(this).val() == 1) {
-                    $("#poundage_attr").html('元');
+                    $("#poundage_unit").html('元');
+                    $("#poundage_hint").html('固定金额');
                 }
                 else {
-                    $("#poundage_attr").html('%');
+                    $("#poundage_unit").html('%');
+                    $("#poundage_hint").html('手续费比例')
                 }
             });
         })

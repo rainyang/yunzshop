@@ -8,6 +8,7 @@
 
 namespace app\frontend\modules\finance\controllers;
 
+use app\common\exceptions\AppException;
 use app\common\models\MemberShopInfo;
 use app\common\services\credit\ConstService;
 use app\common\services\finance\BalanceChange;
@@ -27,6 +28,49 @@ use Illuminate\Support\Facades\DB;
 
 class BalanceController extends ApiController
 {
+
+    public $memberModel;
+
+    public $balanceSet;
+
+    public $uniacid;
+
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->balanceSet = new BalanceService();
+        $this->memberModel = $this->getMemberModel();
+        $this->uniacid = \YunShop::app()->uniacid;
+    }
+
+
+
+    /**
+     * Get an instance of the login member model
+     * todo 会员 model 实例应该在 ApiController 中实现会员对象 YITIAN::2017-09-27
+     * @return mixed
+     * @throws AppException
+     */
+    private function getMemberModel()
+    {
+        $memberModle = Member::where('uid',\YunShop::app()->getMemberId())->first();
+        if ($memberModle) {
+            return $memberModle;
+        }
+        throw new AppException('未获取到会员信息');
+    }
+
+
+
+
+
+
+
+
+    //todo 余额 controller 重构 YiTian::2017-09-27
+
+
     protected $publicAction = ['alipay'];
     protected $ignoreAction = ['alipay'];
 
@@ -91,6 +135,8 @@ class BalanceController extends ApiController
         return $this->successJson('获取数据成功', $data);
     }
 
+
+    //todo 已经重写，需要删除 2017-09-27
     //提现+提现限制+提现手续费
     public function withdraw()
     {
