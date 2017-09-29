@@ -101,9 +101,9 @@ class Express
             ], ['address' => $address]
             );
             $memberAddress = new MemberAddress($address);
-            if ($memberAddress->validator()->fails()) {
-                throw new ShopException('请填写正确的收货信息');
-            }
+//            if ($memberAddress->validator()->fails()) {
+//                throw new ShopException('请填写正确的收货信息');
+//            }
 
             return $memberAddress;
         }
@@ -144,9 +144,9 @@ class Express
         $orderAddress->province = $member_address->province;
         $orderAddress->city = $member_address->city;
         $orderAddress->district = $member_address->district;
-        if ($orderAddress->validator()->fails()) {
-            throw new ShopException('请填写正确的收货信息');
-        }
+//        if ($orderAddress->validator()->fails()) {
+//            throw new ShopException('请填写正确的收货信息');
+//        }
         return $orderAddress;
     }
 
