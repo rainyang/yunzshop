@@ -90,6 +90,12 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现手机</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <div class='form-control-static'>{{$member['yz_member']['withdraw_mobile']}}</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">支付宝姓名</label>
                             <div class="col-sm-9 col-xs-12">
                                 <input type="text" name="data[alipayname]" class="form-control"
