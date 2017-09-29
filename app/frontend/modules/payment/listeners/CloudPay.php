@@ -20,7 +20,9 @@ class CloudPay
 
             $result = [
                 'name' => '微信',
-                'value' => '6'
+                'value' => '6',
+                'need_password' => '0'
+
             ];
             $event->addData($result);
 

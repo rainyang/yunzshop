@@ -119,7 +119,7 @@ class RegisterController extends ApiController
     /**
      * 发送短信验证码
      *
-     * @return array
+     *
      */
     public function sendCode()
     {

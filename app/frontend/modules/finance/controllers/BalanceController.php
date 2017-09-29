@@ -8,9 +8,6 @@
 
 namespace app\frontend\modules\finance\controllers;
 
-
-
-use app\common\facades\Setting;
 use app\common\models\MemberShopInfo;
 use app\common\services\credit\ConstService;
 use app\common\services\finance\BalanceChange;

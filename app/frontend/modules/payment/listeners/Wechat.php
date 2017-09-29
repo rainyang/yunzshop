@@ -16,7 +16,8 @@ class Wechat
         if (\Setting::get('shop.pay.weixin') && \Setting::get('shop.pay.weixin_pay') && \YunShop::request()->type != 7) {
             $result = [
                 'name' => '微信',
-                'value' => '1'
+                'value' => '1',
+                'need_password' => '0'
             ];
             $event->addData($result);
 

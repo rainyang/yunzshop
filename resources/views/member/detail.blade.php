@@ -96,6 +96,7 @@
                                        value="{{$member['yz_member']['alipayname']}}"/>
                             </div>
                         </div>
+
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">支付宝账号</label>
                             <div class="col-sm-9 col-xs-12">
@@ -103,6 +104,19 @@
                                        value="{{$member['yz_member']['alipay']}}"/>
                             </div>
                         </div>
+
+                        @if (!empty($myform))
+                            @foreach ($myform as $item)
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">{{$item->name}}</label>
+                                    <div class="col-sm-9 col-xs-12">
+                                        <input type="text" name="myform[{{$item->pinyin}}]" class="form-control"
+                                               value="{{$item->value}}"/>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @endif
+                        
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">积分</label>
                             <div class="col-sm-3">

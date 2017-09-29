@@ -11,5 +11,6 @@ namespace app\common\exceptions;
 use Exception;
 class ShopException extends Exception
 {
+    const UNIACID_NOT_FOUND = -2; // 公众号id不存在
 
 }

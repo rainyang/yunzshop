@@ -64,6 +64,35 @@ class Category extends \app\common\models\Category
             ->delete();
     }
 
+    public static function deletedAllCategory($id)
+    {
+        $res = self::with([
+            'hasManyChildren' => function ($query) use ($id) {
+                 return $query->select(['*'])
+                     ->with(['hasManyChildren' => function ($query) use ($id) {
+                         return $query->select(['*']);
+                     }]);
+            }])
+            ->where('id', $id)
+            ->first();
+
+        if (!is_null($res)) {
+            if (!$res->hasManyChildren->isEmpty()) {
+                foreach ($res->hasManyChildren as $coll) {
+                    if (!$coll->hasManyChildren->isEmpty()) {
+                        foreach ($coll->hasManyChildren as $rows) {
+                            $rows->delete();
+                        }
+                    }
+
+                    $coll->delete();
+                }
+            }
+
+            return $res->delete();
+        }
+    }
+
     /**
      *  定义字段名
      * 可使

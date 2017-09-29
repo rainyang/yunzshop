@@ -26,8 +26,8 @@ class PointListener
 
     public function changePoint(AfterOrderReceivedEvent $event)
     {
-        $this->pointSet = Setting::get('point.set');
         $this->orderModel = Order::find($event->getOrderModel()->id);
+        $this->pointSet = $this->orderModel->getSetting('point.set');
         $this->byGoodsGivePoint();
         $this->orderGivePoint();
     }

@@ -18,18 +18,19 @@ class OperationController extends BaseController
 {
     protected $param;
     protected $order;
+    public $transactionActions = ['*'];
 
     public function __construct()
     {
         parent::__construct();
         $this->param = \Request::input();
         if (!isset($this->param['order_id'])) {
-            return $this->message('order_id不能为空!','', 'error');
+            return $this->message('order_id不能为空!', '', 'error');
 
         }
         $this->order = Order::find($this->param['order_id']);
         if (!isset($this->order)) {
-            return $this->message('未找到该订单!','', 'error');
+            return $this->message('未找到该订单!', '', 'error');
 
         }
     }
@@ -46,7 +47,7 @@ class OperationController extends BaseController
     public function cancelPay()
     {
         $message = OrderService::orderCancelPay($this->param);
-            //return $this->message($message,'', 'error');
+        //return $this->message($message,'', 'error');
 
         return $this->message($message);
     }
@@ -78,6 +79,7 @@ class OperationController extends BaseController
 
         return $this->message($message);
     }
+
     public function Delete()
     {
         $message = OrderService::orderDelete($this->param);
