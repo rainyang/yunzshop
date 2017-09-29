@@ -838,9 +838,9 @@ class MemberController extends ApiController
         $trade = \Setting::get('shop.trade');
 
         if ($trade['is_bind'] && \YunShop::app()->getMemberId() && \YunShop::app()->getMemberId() > 0) {
-            $member_model = Member::getMemberById(\YunShop::app()->getMemberId());
+            $member_model = MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId());
 
-            if ($member_model && $member_model->mobile) {
+            if ($member_model && $member_model->withdraw_mobile) {
                 $is_bind_mobile = 0;
             } else {
                 $is_bind_mobile = 1;
