@@ -178,4 +178,10 @@ class MemberShopInfo extends BackendModel
         }
     }
 
+    public static function getUserInfo($mobile)
+    {
+        return self::uniacid()
+            ->where('withdraw_mobile', $mobile)
+            ->first();
+    }
 }

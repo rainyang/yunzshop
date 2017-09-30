@@ -8,6 +8,8 @@
  */
 namespace app\backend\modules\finance\models;
 
+use app\common\facades\Setting;
+
 class Withdraw extends \app\common\models\Withdraw
 {
     protected $appends = ['type_data'];
@@ -49,7 +51,7 @@ class Withdraw extends \app\common\models\Withdraw
     public function rules()
     {
         return [
-            'poundage'          => 'numeric|min:1|max:100',
+            'poundage' => 'numeric|min:1|max:999999999',
             'withdrawmoney'     => 'numeric|min:0|max:999999999',
             'roll_out_limit'    => 'regex:/^[0-9]+(.[0-9]{1,2})?$/',
             'poundage_rate'     => 'regex:/^[\d]{1,2}+(\.[0-9]{1,2})?$/',
