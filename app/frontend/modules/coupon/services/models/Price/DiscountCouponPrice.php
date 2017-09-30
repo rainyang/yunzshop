@@ -19,7 +19,7 @@ class DiscountCouponPrice extends CouponPrice
     {
         return (1 - $this->dbCoupon->discount/10) * $this->coupon->getOrderGoodsInScope()->getFinalPrice();
     }
-    protected function getOrderGoodsGroupPrice()
+    protected function getOrderGoodsCollectionPrice()
     {
         //会员价-折扣券优惠金额
         return $this->coupon->getOrderGoodsInScope()->getFinalPrice();
@@ -30,7 +30,7 @@ class DiscountCouponPrice extends CouponPrice
     public function setOrderGoodsDiscountPrice()
     {
 
-        $this->coupon->getOrderGoodsInScope()->getOrderGoodsGroup()->map(function($orderGoods){
+        $this->coupon->getOrderGoodsInScope()->map(function($orderGoods){
             /**
              * @var $OrderGoods PreGeneratedOrderGoods
              */

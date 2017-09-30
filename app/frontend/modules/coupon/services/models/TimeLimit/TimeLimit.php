@@ -10,7 +10,7 @@ namespace app\frontend\modules\coupon\services\models\TimeLimit;
 
 
 use app\frontend\modules\coupon\services\models\Coupon;
-use app\frontend\modules\orderGoods\models\PreGeneratedOrderGoodsGroup;
+use app\frontend\modules\orderGoods\models\PreOrderGoodsCollection;
 use app\frontend\modules\order\models\PreGeneratedOrder;
 
 abstract class TimeLimit
@@ -29,7 +29,7 @@ abstract class TimeLimit
      */
     protected $orderModel;
     /**
-     * @var PreGeneratedOrderGoodsGroup
+     * @var PreOrderGoodsCollection
      */
     protected $orderGoodsModelGroup;
 

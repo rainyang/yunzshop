@@ -19,7 +19,7 @@ class MoneyOffCouponPrice extends CouponPrice
      * 累加所有商品会员价
      * @return int
      */
-    protected function getOrderGoodsGroupPrice()
+    protected function getOrderGoodsCollectionPrice()
     {
         //会员价-折扣券优惠金额
         return $this->coupon->getOrderGoodsInScope()->getFinalPrice() - $this->coupon->getOrderGoodsInScope()->getCouponDiscountPrice();
@@ -51,19 +51,19 @@ class MoneyOffCouponPrice extends CouponPrice
     public function setOrderGoodsDiscountPrice()
     {
         //dd($this->getOrderGoodsInScope());
-        $this->coupon->getOrderGoodsInScope()->getOrderGoodsGroup()->map(function($orderGoods){
+        $this->coupon->getOrderGoodsInScope()->map(function($orderGoods){
                 /**
                  * @var $orderGoods PreGeneratedOrderGoods
                  */
                 //(优惠券金额/折扣优惠券后价格)*折扣优惠券后价格
 //            dd($this->getPrice());
-//            dd($this->getOrderGoodsGroupPrice());
+//            dd($this->getOrderGoodsCollectionPrice());
 //            dd($this->getOrderGoodsPrice($orderGoods));
 //            exit;
 
                 $goodsMemberCoupon = new GoodsMemberCoupon();
-                $goodsMemberCoupon->amount = $this->getOrderGoodsPrice($orderGoods)/ $this->getOrderGoodsGroupPrice() * $this->getPrice();
-                $goodsMemberCoupon->enough =  $this->getOrderGoodsPrice($orderGoods)/ $this->getOrderGoodsGroupPrice() * $this->dbCoupon->enough;
+                $goodsMemberCoupon->amount = $this->getOrderGoodsPrice($orderGoods)/ $this->getOrderGoodsCollectionPrice() * $this->getPrice();
+                $goodsMemberCoupon->enough =  $this->getOrderGoodsPrice($orderGoods)/ $this->getOrderGoodsCollectionPrice() * $this->dbCoupon->enough;
                 //todo 需要按照订单方式修改
                 if(!isset($orderGoods->coupons)){
                     $orderGoods->coupons = collect();

@@ -4,7 +4,7 @@ namespace app\frontend\modules\coupon\services\models\UseScope;
 
 use app\common\exceptions\AppException;
 use app\frontend\modules\orderGoods\models\PreGeneratedOrderGoods;
-use app\frontend\modules\orderGoods\models\PreGeneratedOrderGoodsGroup;
+use app\frontend\modules\orderGoods\models\PreOrderGoodsCollection;
 use Illuminate\Support\Collection;
 
 /**
