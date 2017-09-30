@@ -178,7 +178,7 @@ class IncomeController extends ApiController
     {
         $incomeSet = \Setting::get('withdraw.income');
         $config = \Config::get('income');
-
+        Log::info('获取提现数据');
         foreach ($config as $key => $item) {
             if ($item['type'] == 'balance') {
                 continue;
