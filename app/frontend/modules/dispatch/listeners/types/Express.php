@@ -114,11 +114,7 @@ class Express
      */
     private function needDispatch()
     {
-        if ($this->event->getOrderModel()->is_virtual) {
-            return false;
-        }
-
-        return true;
+        return $this->event->getOrderModel()->needSend();
     }
 
     /**

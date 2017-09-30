@@ -437,7 +437,7 @@ class Order extends BaseModel
 
     public function needSend()
     {
-        return $this->hasOneDispatchType->needSend();
+        return isset($this->hasOneDispatchType) && $this->hasOneDispatchType->needSend();
     }
 
     public function orderSettings()
