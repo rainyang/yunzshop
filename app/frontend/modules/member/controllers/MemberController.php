@@ -493,7 +493,7 @@ class MemberController extends ApiController
             }
 
             $salt = Str::random(8);
-            $member_model->mobile = $mobile;
+            $member_model->withdraw_mobile = $mobile;
 
             if ($member_model->save()) {
                 return $this->successJson('手机号码绑定成功');
