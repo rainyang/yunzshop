@@ -101,9 +101,6 @@ class Express
             ], ['address' => $address]
             );
             $memberAddress = new MemberAddress($address);
-//            if ($memberAddress->validator()->fails()) {
-//                throw new ShopException('请填写正确的收货信息');
-//            }
 
             return $memberAddress;
         }
@@ -156,9 +153,7 @@ class Express
     private function saveExpressInfo()
     {
         $orderAddress = $this->getOrderAddress();
-        if ($orderAddress->validator()->fails()) {
-            throw new ShopException('请填写正确的收货信息');
-        }
+
         if (!$orderAddress->save()) {
             throw new AppException('订单地址保存失败');
         }
