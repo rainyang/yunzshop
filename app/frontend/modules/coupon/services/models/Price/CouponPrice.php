@@ -37,7 +37,7 @@ abstract class CouponPrice
     {
         $this->coupon = $coupon;
         $this->dbCoupon = $coupon->getMemberCoupon()->belongsToCoupon;
-        $this->orderModel = $coupon->getPreGeneratedOrder();
+        $this->orderModel = $coupon->getPreOrder();
         //dd($this->orderModel);
     }
 

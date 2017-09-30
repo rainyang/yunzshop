@@ -136,7 +136,7 @@ class OrderService
         $shop = ShopService::getCurrentShopModel();
 
         $orderGoodsArr = OrderService::getOrderGoods($memberCarts);
-        $order = app('OrderManager')->make('PreGeneratedOrder', ['uid' => $member->uid, 'uniacid' => $shop->uniacid]);
+        $order = app('OrderManager')->make('PreOrder', ['uid' => $member->uid, 'uniacid' => $shop->uniacid]);
 
         event(new OnPreGenerateOrderCreatingEvent($order));
         $order->setOrderGoods($orderGoodsArr);

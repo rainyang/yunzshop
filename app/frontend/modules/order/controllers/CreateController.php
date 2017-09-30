@@ -16,7 +16,7 @@ use Request;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\frontend\modules\order\models\PreOrder;
 
-class CreateController extends PreGeneratedController
+class CreateController extends PreOrderController
 {
     protected function getMemberCarts()
     {

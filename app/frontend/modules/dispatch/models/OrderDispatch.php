@@ -10,15 +10,14 @@ namespace app\frontend\modules\dispatch\models;
 
 use app\common\events\dispatch\OrderDispatchWasCalculated;
 use app\frontend\modules\order\models\PreOrder;
-use app\frontend\modules\order\services\OrderService;
 
 class OrderDispatch
 {
-    private $preGeneratedOrder;
+    private $order;
 
-    public function __construct(PreOrder $preGeneratedOrder)
+    public function __construct(PreOrder $preOrder)
     {
-        $this->preGeneratedOrder = $preGeneratedOrder;
+        $this->order = $preOrder;
     }
 
     /**
@@ -27,11 +26,11 @@ class OrderDispatch
      */
     public function getDispatchPrice()
     {
-        if (!isset($this->preGeneratedOrder->hasOneDispatchType) || !$this->preGeneratedOrder->hasOneDispatchType->needSend()) {
+        if (!isset($this->order->hasOneDispatchType) || !$this->order->hasOneDispatchType->needSend()) {
             // 没选配送方式 或者 不需要配送配送
             return 0;
         }
-        $event = new OrderDispatchWasCalculated($this->preGeneratedOrder);
+        $event = new OrderDispatchWasCalculated($this->order);
         event($event);
         $data = $event->getData();
         return $result = array_sum(array_column($data, 'price'));

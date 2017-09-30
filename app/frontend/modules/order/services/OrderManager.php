@@ -35,7 +35,7 @@ class OrderManager extends Container
         $this->bind('PreOrderGoods', function ($orderManager, $attributes) {
             return new PreOrderGoods($attributes);
         });
-        $this->bind('PreGeneratedOrder', function ($orderManager, $attributes) {
+        $this->bind('PreOrder', function ($orderManager, $attributes) {
             return new PreOrder($attributes);
         });
         // 订单model

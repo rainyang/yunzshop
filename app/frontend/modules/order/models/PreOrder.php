@@ -3,7 +3,6 @@
 namespace app\frontend\modules\order\models;
 
 use app\common\exceptions\AppException;
-
 use app\frontend\models\Order;
 use app\frontend\modules\discount\models\OrderDiscount;
 use app\frontend\modules\dispatch\models\OrderDispatch;
@@ -14,19 +13,7 @@ use Illuminate\Support\Facades\Schema;
 
 /**
  * 订单生成类
- * 输入
- *  用户model
- *  店铺model
- *  未生成的订单商品(实例)app\frontend\modules\orderGoods\models\PreOrderGoods
- * 输出
- *  预下单信息
- *  订单表插入结果
- * 执行
- *  订单表操作
- * 事件通知
- *  终止订单生成
- *  订单生成后
- * Class preGeneratedOrder
+ * Class preOrder
  * @package app\frontend\modules\order\services\models
  * @property Collection orderDeductions
  * @property Collection orderCoupons
@@ -83,11 +70,6 @@ class PreOrder extends Order
              */
             $aOrderGoods->_init();
         });
-//        // 将订单绑定到关联模型中
-//        app('OrderManager')->tag('LoveOrder','OrderRelations');
-//        collect(app('OrderManager')->tagged('OrderRelations'))->each(function($orderRelation) {
-//            $orderRelation->setOrder($this);
-//        });
     }
 
     protected function setDiscount()
@@ -271,7 +253,6 @@ class PreOrder extends Order
     protected function getPrice()
     {
         //订单最终价格 = 商品最终价格 - 订单优惠 - 订单抵扣 + 订单运费
-
         $result = max($this->getOrderGoodsPrice() - $this->getDiscountAmount() - $this->getDeductionPrice() + $this->getDispatchPrice(), 0);
 
         return $result;

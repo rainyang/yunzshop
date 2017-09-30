@@ -16,7 +16,7 @@ class ShopScope extends CouponUseScope
 {
     protected function _getOrderGoodsOfUsedCoupon()
     {
-        $orderGoods = $this->coupon->getPreGeneratedOrder()->getOrderGoodsModels()->filter(
+        $orderGoods = $this->coupon->getPreOrder()->getOrderGoodsModels()->filter(
             function ($orderGoods) {
                 /**
                  * @var $orderGoods PreOrderGoods
