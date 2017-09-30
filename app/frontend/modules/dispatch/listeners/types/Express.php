@@ -144,9 +144,7 @@ class Express
         $orderAddress->province = $member_address->province;
         $orderAddress->city = $member_address->city;
         $orderAddress->district = $member_address->district;
-//        if ($orderAddress->validator()->fails()) {
-//            throw new ShopException('请填写正确的收货信息');
-//        }
+
         return $orderAddress;
     }
 
@@ -157,8 +155,11 @@ class Express
      */
     private function saveExpressInfo()
     {
-        $order_address = $this->getOrderAddress();
-        if (!$order_address->save()) {
+        $orderAddress = $this->getOrderAddress();
+        if ($orderAddress->validator()->fails()) {
+            throw new ShopException('请填写正确的收货信息');
+        }
+        if (!$orderAddress->save()) {
             throw new AppException('订单地址保存失败');
         }
         return true;
