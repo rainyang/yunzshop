@@ -221,21 +221,5 @@ class GoodsController extends ApiController
         return $this->successJson('成功', $brand);
     }
 
-    /**
-     * @param $goods_id
-     * @param null $option_id
-     * @return bool|\Illuminate\Database\Eloquent\Model|null|static
-     */
-    public function getGoodsCart()
-    {
-
-        $goodsService = new GoodsService();
-        $goods = $goodsService->getGoodsByCart(\YunShop::request()->goods_id, \YunShop::request()->option_id);
-        if (!$goods) {
-            return false;
-        }
-
-        return $goods;
-    }
 
 }

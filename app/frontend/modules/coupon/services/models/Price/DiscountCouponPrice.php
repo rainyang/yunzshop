@@ -11,7 +11,7 @@ namespace app\frontend\modules\coupon\services\models\Price;
 
 
 use app\common\models\coupon\GoodsMemberCoupon;
-use app\frontend\modules\orderGoods\models\PreGeneratedOrderGoods;
+use app\frontend\modules\orderGoods\models\PreOrderGoods;
 
 class DiscountCouponPrice extends CouponPrice
 {
@@ -32,7 +32,7 @@ class DiscountCouponPrice extends CouponPrice
 
         $this->coupon->getOrderGoodsInScope()->map(function($orderGoods){
             /**
-             * @var $OrderGoods PreGeneratedOrderGoods
+             * @var $OrderGoods PreOrderGoods
              */
             //(优惠券金额/订单商品总金额)*订单商品价格
             //dd(number_format(-($this->getDiscountAmount() / $this->getOrderGoodsInScope()->getPrice()) * $OrderGoods->getPrice(), 2));exit;

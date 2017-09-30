@@ -7,7 +7,7 @@ use app\common\exceptions\AppException;
 use app\frontend\models\Order;
 use app\frontend\modules\discount\models\OrderDiscount;
 use app\frontend\modules\dispatch\models\OrderDispatch;
-use app\frontend\modules\orderGoods\models\PreGeneratedOrderGoods;
+use app\frontend\modules\orderGoods\models\PreOrderGoods;
 use app\frontend\modules\order\services\OrderService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Schema;
  * 输入
  *  用户model
  *  店铺model
- *  未生成的订单商品(实例)app\frontend\modules\orderGoods\models\PreGeneratedOrderGoods
+ *  未生成的订单商品(实例)app\frontend\modules\orderGoods\models\PreOrderGoods
  * 输出
  *  预下单信息
  *  订单表插入结果
@@ -51,7 +51,7 @@ class PreGeneratedOrder extends Order
 
         $orderGoods->each(function ($aOrderGoods) {
             /**
-             * @var PreGeneratedOrderGoods $aOrderGoods
+             * @var PreOrderGoods $aOrderGoods
              */
 
             $this->orderGoods->push($aOrderGoods);
@@ -79,7 +79,7 @@ class PreGeneratedOrder extends Order
         $this->setRawAttributes($attributes);
         $this->orderGoods->each(function ($aOrderGoods) {
             /**
-             * @var PreGeneratedOrderGoods $aOrderGoods
+             * @var PreOrderGoods $aOrderGoods
              */
             $aOrderGoods->_init();
         });

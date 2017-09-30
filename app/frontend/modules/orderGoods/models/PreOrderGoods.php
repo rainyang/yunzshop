@@ -17,7 +17,7 @@ use app\frontend\modules\orderGoods\price\option\NormalOrderGoodsPrice;
 use app\frontend\modules\order\models\PreGeneratedOrder;
 use Illuminate\Support\Collection;
 
-class PreGeneratedOrderGoods extends OrderGoods
+class PreOrderGoods extends OrderGoods
 {
     protected $hidden = ['goods', 'sale','belongsToGood','hasOneGoodsDispatch'];
     /**
