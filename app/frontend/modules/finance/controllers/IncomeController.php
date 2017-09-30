@@ -27,6 +27,7 @@ use Yunshop\Commission\models\CommissionOrder;
 class IncomeController extends ApiController
 {
     protected $pageSize = 20;
+
     /**
      * @return \Illuminate\Http\JsonResponse
      */
@@ -124,18 +125,43 @@ class IncomeController extends ApiController
         return $this->errorJson('未检测到数据!');
     }
 
+    public function getLangTitle($data)
+    {
+        $lang = Setting::get('shop.lang');
+        $langData = $lang[$lang['lang']];
+        $titleType = '';
+        foreach ($langData as $key => $item) {
+            $names = explode('_', $key);
+            foreach ($names as $k => $name) {
+                if ($k == 0) {
+                    $titleType = $name;
+                } else {
+                    $titleType .= ucwords($name);
+                }
+            }
+
+            if ($data == $titleType) {
+                return $item[$key];
+            }
+        }
+
+    }
+
+
     /**
      * @return \Illuminate\Http\JsonResponse
      */
     public function getSearchType()
     {
+
+
         $configs = \Config::get('income');
         foreach ($configs as $key => $config) {
             if ($config['type'] == 'balance') {
                 continue;
             }
             $searchType[] = [
-                'title' => $config['title'],
+                'title' => $this->getLangTitle($key) ? $this->getLangTitle($key) : $config['title'],
                 'type' => $config['type']
             ];
         }
@@ -184,7 +210,7 @@ class IncomeController extends ApiController
                 $incomeData[] = [
                     'type' => $item['class'],
                     'key_name' => $item['type'],
-                    'type_name' => $item['title'],
+                    'type_name' => $this->getLangTitle($key) ? $this->getLangTitle($key) : $item['title'],
                     'type_id' => rtrim($type_id, ','),
                     'income' => $incomeModel->sum('amount'),
                     'poundage' => $poundage,
@@ -199,7 +225,7 @@ class IncomeController extends ApiController
                 $incomeData[] = [
                     'type' => $item['class'],
                     'key_name' => $item['type'],
-                    'type_name' => $item['title'],
+                    'type_name' => $this->getLangTitle($key) ? $this->getLangTitle($key) : $item['title'],
                     'type_id' => '',
                     'income' => $incomeModel->sum('amount'),
                     'poundage' => $poundage,
@@ -364,7 +390,7 @@ class IncomeController extends ApiController
 
     private function getMemberAlipaySet()
     {
-        $array = MemberShopInfo::select('alipay','alipayname')->where('member_id',\YunShop::app()->getMemberId())->first();
+        $array = MemberShopInfo::select('alipay', 'alipayname')->where('member_id', \YunShop::app()->getMemberId())->first();
         if ($array && $array['alipay'] && $array['alipayname']) {
             return true;
         }
