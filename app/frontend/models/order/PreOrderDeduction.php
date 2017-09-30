@@ -9,13 +9,13 @@
 namespace app\frontend\models\order;
 
 use app\common\models\VirtualCoin;
-use app\frontend\modules\order\models\PreGeneratedOrder;
+use app\frontend\modules\order\models\PreOrder;
 
 abstract class PreOrderDeduction extends \app\common\models\order\OrderDeduction
 {
     public $order;
 
-    public function setOrder(PreGeneratedOrder $order)
+    public function setOrder(PreOrder $order)
     {
         $this->order = $order;
         $this->_init();

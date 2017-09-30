@@ -8,7 +8,7 @@
 
 namespace app\frontend\models\order;
 
-use app\frontend\modules\order\models\PreGeneratedOrder;
+use app\frontend\modules\order\models\PreOrder;
 
 class PreOrderDiscount extends \app\common\models\order\OrderDiscount
 {
@@ -19,7 +19,7 @@ class PreOrderDiscount extends \app\common\models\order\OrderDiscount
         parent::__construct($attributes);
     }
 
-    public function setOrder(PreGeneratedOrder $order)
+    public function setOrder(PreOrder $order)
     {
         $this->order = $order;
         $this->uid = $order->uid;

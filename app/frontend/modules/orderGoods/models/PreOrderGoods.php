@@ -14,14 +14,14 @@ use app\frontend\models\orderGoods\PreOrderGoodsDiscount;
 use app\frontend\models\OrderGoods;
 use app\frontend\modules\orderGoods\price\option\NormalOrderGoodsOptionPrice;
 use app\frontend\modules\orderGoods\price\option\NormalOrderGoodsPrice;
-use app\frontend\modules\order\models\PreGeneratedOrder;
+use app\frontend\modules\order\models\PreOrder;
 use Illuminate\Support\Collection;
 
 class PreOrderGoods extends OrderGoods
 {
     protected $hidden = ['goods', 'sale','belongsToGood','hasOneGoodsDispatch'];
     /**
-     * @var PreGeneratedOrder
+     * @var PreOrder
      */
     public $order;
     public $coupons;
@@ -73,9 +73,9 @@ class PreOrderGoods extends OrderGoods
 
     /**
      * 为订单model提供的方法 ,设置所属的订单model
-     * @param PreGeneratedOrder $order
+     * @param PreOrder $order
      */
-    public function setOrder(PreGeneratedOrder $order)
+    public function setOrder(PreOrder $order)
     {
         $this->order = $order;
         $this->uid = $order->uid;

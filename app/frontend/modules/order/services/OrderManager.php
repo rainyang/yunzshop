@@ -13,7 +13,7 @@ use app\common\models\order\OrderCoupon;
 use app\common\models\order\OrderDeduction;
 use app\frontend\models\MemberCart;
 use app\frontend\modules\orderGoods\models\PreOrderGoods;
-use app\frontend\modules\order\models\PreGeneratedOrder;
+use app\frontend\modules\order\models\PreOrder;
 use Illuminate\Container\Container;
 
 class OrderManager extends Container
@@ -36,7 +36,7 @@ class OrderManager extends Container
             return new PreOrderGoods($attributes);
         });
         $this->bind('PreGeneratedOrder', function ($orderManager, $attributes) {
-            return new PreGeneratedOrder($attributes);
+            return new PreOrder($attributes);
         });
         // 订单model
         $this->bind('Order', function ($orderManager, $attributes) {

@@ -11,7 +11,7 @@ namespace app\frontend\modules\coupon\services\models\TimeLimit;
 
 use app\frontend\modules\coupon\services\models\Coupon;
 use app\frontend\modules\orderGoods\models\PreOrderGoodsCollection;
-use app\frontend\modules\order\models\PreGeneratedOrder;
+use app\frontend\modules\order\models\PreOrder;
 
 abstract class TimeLimit
 {
@@ -25,7 +25,7 @@ abstract class TimeLimit
      */
     protected $coupon;
     /**
-     * @var PreGeneratedOrder
+     * @var PreOrder
      */
     protected $orderModel;
     /**

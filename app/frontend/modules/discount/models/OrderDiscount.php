@@ -15,7 +15,7 @@ use app\frontend\models\order\PreOrderCoupon;
 use app\frontend\models\order\PreOrderDeduction;
 use app\frontend\models\order\PreOrderDiscount;
 use app\frontend\modules\coupon\services\CouponService;
-use app\frontend\modules\order\models\PreGeneratedOrder;
+use app\frontend\modules\order\models\PreOrder;
 
 class OrderDiscount
 {
@@ -26,7 +26,7 @@ class OrderDiscount
     public $orderCoupons;
     public $orderDiscounts;
 
-    public function __construct(PreGeneratedOrder $order)
+    public function __construct(PreOrder $order)
     {
         $this->order = $order;
         // 订单抵扣使用记录集合

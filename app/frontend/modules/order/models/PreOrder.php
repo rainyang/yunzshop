@@ -32,7 +32,7 @@ use Illuminate\Support\Facades\Schema;
  * @property Collection orderCoupons
  * @property Collection orderSettings
  */
-class PreGeneratedOrder extends Order
+class PreOrder extends Order
 {
     protected $appends = ['pre_id'];
     protected $hidden = ['belongsToMember'];

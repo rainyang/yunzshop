@@ -24,7 +24,7 @@ use app\frontend\modules\coupon\services\models\UseScope\CategoryScope;
 use app\frontend\modules\coupon\services\models\UseScope\CouponUseScope;
 use app\frontend\modules\coupon\services\models\UseScope\GoodsScope;
 use app\frontend\modules\coupon\services\models\UseScope\ShopScope;
-use app\frontend\modules\order\models\PreGeneratedOrder;
+use app\frontend\modules\order\models\PreOrder;
 
 class Coupon
 {
@@ -42,7 +42,7 @@ class Coupon
     private $timeLimit;
 
     /**
-     * @var PreGeneratedOrder
+     * @var PreOrder
      */
     private $preGeneratedOrder;
     /**
@@ -50,7 +50,7 @@ class Coupon
      */
     private $memberCoupon;
 
-    public function __construct(MemberCoupon $memberCoupon, PreGeneratedOrder $preGeneratedOrder)
+    public function __construct(MemberCoupon $memberCoupon, PreOrder $preGeneratedOrder)
     {
         $this->memberCoupon = $memberCoupon;
         $this->preGeneratedOrder = $preGeneratedOrder;
