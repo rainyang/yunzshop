@@ -15,7 +15,7 @@
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">返现</label>
     <div class="col-sm-9 col-xs-12">
-        <input type="text" name="setdata[team_return][return]" class="form-control" value="{{$set['team_return']['return']}}" />
+        <input type="text" name="setdata[team_return][return_name]" class="form-control" value="{{$set['team_return']['return_name']}}" />
     </div>
 </div>
 
