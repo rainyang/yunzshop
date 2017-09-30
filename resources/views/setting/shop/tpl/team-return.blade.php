@@ -1,4 +1,11 @@
 <div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">插件名称</label>
+    <div class="col-sm-9 col-xs-12">
+        <input type="text" name="setdata[team_return][title]" class="form-control" value="{{$set['team_return']['title']}}" />
+    </div>
+</div>
+
+<div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">团队返现</label>
     <div class="col-sm-9 col-xs-12">
         <input type="text" name="setdata[team_return][team_return]" class="form-control" value="{{$set['team_return']['team_return']}}" />

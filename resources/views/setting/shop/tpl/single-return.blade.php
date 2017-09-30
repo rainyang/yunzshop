@@ -1,4 +1,11 @@
 <div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">插件名称</label>
+    <div class="col-sm-9 col-xs-12">
+        <input type="text" name="setdata[single_return][title]" class="form-control" value="{{$set['single_return']['title']}}" />
+    </div>
+</div>
+
+<div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单返现</label>
     <div class="col-sm-9 col-xs-12">
         <input type="text" name="setdata[single_return][single_return]" class="form-control" value="{{$set['single_return']['single_return']}}" />
