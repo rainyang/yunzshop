@@ -73,13 +73,13 @@ class BalanceService
     //余额提现限额设置
     public function withdrawAstrict()
     {
-        return $this->_withdraw_set['withdrawmoney'];
+        return $this->_withdraw_set['withdrawmoney'] ?: '0';
     }
 
     //余额提现手续费
     public function withdrawPoundage()
     {
-        return $this->_withdraw_set['poundage'] ?: 0;
+        return $this->_withdraw_set['poundage'] ?: '0';
     }
 
     //余额提现到微信
@@ -92,6 +92,28 @@ class BalanceService
     public function withdrawAlipay()
     {
         return $this->_withdraw_set['alipay'] ? true : false;
+    }
+
+
+    /**
+     * 提现满 N元 减免手续费 [注意为 0， 为空则不计算，按正常手续费扣]
+     * 2017-09-28
+     * @return string
+     */
+    public function withdrawPoundageFullCut()
+    {
+        return $this->_withdraw_set['poundage_full_cut'] ?: '0';
+    }
+
+
+    /**
+     * 增加提现手续费类型，1固定金额，0（默认）手续费比例
+     * 2017-09-28
+     * @return int
+     */
+    public function withdrawPoundageType()
+    {
+        return $this->_withdraw_set['poundage_type'] ? 1 : 0;
     }
 
 

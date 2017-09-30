@@ -112,14 +112,26 @@ class BalanceTransfer extends BaseModel
      */
     public function scopeSearch($query,$search)
     {
-        if ($search['keyword']) {
-            return $query->whereHas('transferInfo',function($query)use($search) {
+        if ($search['transfer']) {
+            $query = $query->whereHas('transferInfo',function($query)use($search) {
                 $query->select('uid', 'nickname', 'realname', 'avatar', 'mobile')
-                    ->where('nickname','like', '%'.$search['keyword']. '%')
-                    ->orWhere('mobile','like','%'.$search['keyword']. '%')
-                    ->orWhere('realname','like','%'.$search['keyword']. '%');
+                    ->where('uid',$search['transfer'])
+                    ->orWhere('nickname','like', '%'.$search['transfer']. '%')
+                    ->orWhere('mobile','like','%'.$search['transfer']. '%')
+                    ->orWhere('realname','like','%'.$search['transfer']. '%');
             });
         }
+        if ($search['recipient']) {
+            $query = $query->whereHas('recipientInfo',function($query)use($search) {
+                $query->select('uid', 'nickname', 'realname', 'avatar', 'mobile')
+                    ->where('uid',$search['recipient'])
+                    ->orWhere('nickname','like', '%'.$search['recipient']. '%')
+                    ->orWhere('mobile','like','%'.$search['recipient']. '%')
+                    ->orWhere('realname','like','%'.$search['recipient']. '%');
+            });
+        }
+
+        return $query;
     }
 
 
