@@ -201,7 +201,7 @@ class IncomeController extends ApiController
                 $servicetax = ($amount - $poundage) / 100 * $incomeSet['servicetax_rate'];
                 $servicetax = sprintf("%.2f", $servicetax);
             }
-
+Log::info($this->getLangTitle($key) ? $this->getLangTitle($key) : $item['title']);
             if (($amount > 0) && (bccomp($amount, $set[$key]['roll_out_limit'], 2) != -1)) {
                 $type_id = '';
                 foreach ($incomeModel->get() as $ids) {
