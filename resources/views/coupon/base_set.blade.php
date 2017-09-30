@@ -56,7 +56,7 @@
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                     <div class="col-sm-9">
-                        <input type="submit" name="submit" value="{{ trans('Yunshop\Love::base_set.submit') }}" class="btn btn-primary col-lg-1" onclick='return formcheck()'/>
+                        <input type="submit" name="submit" value="保存设置" class="btn btn-primary col-lg-1" onclick='return formcheck()'/>
                     </div>
                 </div>
 
