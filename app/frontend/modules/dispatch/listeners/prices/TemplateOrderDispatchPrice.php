@@ -95,6 +95,7 @@ class TemplateOrderDispatchPrice
         $goods_total = $orderGoods->total;
 
         $piece_data = unserialize($this->dispatch->piece_data);
+
         // 存在重量数据
         if ($piece_data) {
             $dispatch = '';
@@ -115,10 +116,11 @@ class TemplateOrderDispatchPrice
 
             if ($dispatch) {
                 // 找到匹配的数量数据
-                if ($goods_total > $dispatch['first_piece']) {
-                    return $dispatch['first_piece_price'] + ceil(($goods_total - $dispatch['first_piece']) / $dispatch['another_piece']) * $dispatch['another_piece_price'];
+                if ($goods_total > $dispatch['first_weight']) {
+
+                    return $dispatch['first_weight_price'] + ceil(($goods_total - $dispatch['first_weight']) / $dispatch['another_weight']) * $dispatch['another_weight_price'];
                 } else {
-                    return $dispatch['first_piece_price'];
+                    return $dispatch['first_weight_price'];
                 }
             }
         }
@@ -145,12 +147,13 @@ class TemplateOrderDispatchPrice
             $dispatch = '';
 
             // 根据配送地址匹配区域数据
-            $city = isset($this->order->orderAddress['city']) ? $this->order->orderAddress['city'] : '';
-            if (!$city) {
+            $city_id = isset($this->order->orderAddress['city_id']) ? $this->order->orderAddress['city_id'] : '';
+            if (!$city_id) {
                 return 0;
             }
-            $city_id = Address::where('areaname', $city)->value('id');
+
             foreach ($weight_data as $key => $weight) {
+                //dd($weight['area_ids']);
                 $area_ids = explode(';', $weight['area_ids']);
                 if (in_array($city_id, $area_ids)) {
                     $dispatch = $weight;
