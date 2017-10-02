@@ -10,7 +10,6 @@ namespace app\frontend\modules\dispatch\models;
 
 use app\common\events\dispatch\OrderDispatchWasCalculated;
 use app\frontend\modules\order\models\PreGeneratedOrder;
-use app\frontend\modules\order\services\OrderService;
 
 class OrderDispatch
 {
