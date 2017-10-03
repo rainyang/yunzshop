@@ -166,6 +166,7 @@ class UpdateController extends BaseController
         $files   = $upgrade['files'];
         $path    = "";
         $nofiles = \YunShop::request()->nofiles;
+        $status  = 1;
 
         //找到一个没更新过的文件去更新
         foreach ($files as $f) {
@@ -251,8 +252,12 @@ class UpdateController extends BaseController
 
                 file_put_contents($tmpdir . "/file.txt", json_encode($upgrade));
 
+                if (intval($success + 1) == count($files)) {
+                    $status = 2;
+                }
+
                 return response()->json([
-                    'result' => 1,
+                    'result' => $status,
                     'total' => count($files),
                     'success' => $success
                 ])->send();
