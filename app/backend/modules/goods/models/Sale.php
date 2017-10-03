@@ -9,10 +9,11 @@
 namespace app\backend\modules\goods\models;
 
 
+
 class Sale extends \app\common\models\Sale
 {
     public $timestamps = false;
-
+    static protected $needLog = true;
     public static function getList($goodsId)
     {
         return self::where('goods_id', $goodsId)

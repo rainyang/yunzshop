@@ -11,12 +11,48 @@ namespace app\frontend\modules\coupon\listeners;
 use app\common\events\discount\OnDiscountInfoDisplayEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\events\order\AfterOrderReceivedEvent;
+use app\common\facades\Setting;
+use app\common\services\finance\PointService;
 use app\frontend\modules\coupon\services\models\Coupon;
 use app\frontend\modules\coupon\services\CouponService;
 
 class CouponDiscount
 {
     private $event;
+
+
+    public function deductionAwardPoint(AfterOrderReceivedEvent $event)
+    {
+        if (!Setting::get('coupon.award_point')) {
+            return null;
+        }
+        $orderModel = $event->getOrderModel();
+
+        $orderDeductions = $orderModel->orderDiscount;
+
+        $point = 0;
+        if ($orderDeductions) {
+            foreach ($orderDeductions as $key => $deduction) {
+
+                if ($deduction['discount_code'] == 'coupon') {
+                    $point = $deduction['amount'];
+                    break;
+                }
+            }
+        }
+        if ($point <= 0) {
+            return null;
+        }
+        $data = [
+            'point_income_type' => PointService::POINT_INCOME_GET,
+            'point_mode'        => PointService::POINT_MODE_COUPON_DEDUCTION_AWARD,
+            'member_id'         => $orderModel->uid,
+            'point'             => $point,
+            'remark'            => '订单：'.$orderModel->order_sn.'优惠劵抵扣奖励积分'.$point,
+        ];
+        return (new PointService($data))->changePoint();
+
+    }
 
     /**
      * @param OnDiscountInfoDisplayEvent $event
@@ -58,7 +94,7 @@ class CouponDiscount
         $orderModel = $this->event->getOrderModel();
         $orderGoods = $orderModel->hasManyOrderGoods;//订单商品
         $couponService = new CouponService($orderModel, null, $orderGoods);
-        $couponService->sendCoupun();
+        $couponService->sendCoupon();
     }
 
     /**
@@ -78,6 +114,10 @@ class CouponDiscount
         $events->listen(
             AfterOrderReceivedEvent::class,
             CouponDiscount::class . '@onOrderReceived'
+        );
+        $events->listen(
+            AfterOrderReceivedEvent::class,
+            CouponDiscount::class . '@deductionAwardPoint'
         );
 
     }

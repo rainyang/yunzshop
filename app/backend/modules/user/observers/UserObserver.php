@@ -103,7 +103,8 @@ class UserObserver extends BaseObserver
         }
 
         //框架操作员权限写入，只有创建后才会写入，商城不支持修改
-        $userPermissionModel = new UserPermission();
+        //todo 因为微擎新版勾选模块操作权限导致访问模块提示权限不足，暂时注释掉 2017-09-18
+        /*$userPermissionModel = new UserPermission();
 
         $permissionData = array(
             'uid'       => $model->uid,
@@ -117,7 +118,7 @@ class UserObserver extends BaseObserver
             dd("操作员user写入失败,请重试！！");
             $this->error("操作员user写入失败,请重试！！");
             return false;
-        }
+        }*/
 
     }
 

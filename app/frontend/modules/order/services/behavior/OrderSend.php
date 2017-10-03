@@ -8,6 +8,7 @@
 
 namespace app\frontend\modules\order\services\behavior;
 
+use app\common\models\DispatchType;
 use app\common\models\Order;
 use app\common\models\order\Express;
 
@@ -21,7 +22,7 @@ class OrderSend extends ChangeStatusOperation
     protected $past_tense_class_name = 'OrderSent';
     protected function updateTable(){
 
-        if(!$this->isVirtual()){
+        if($this->dispatch_type_id == DispatchType::EXPRESS){
             //实体订单
             $db_express_model = new Express();
             $db_express_model->order_id = request()->input('order_id');

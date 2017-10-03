@@ -13,7 +13,7 @@ use app\common\models\finance\Balance;
 use app\common\models\Member;
 use app\common\services\credit\ConstService;
 use app\common\services\credit\Credit;
-use app\common\services\MessageService;
+use app\common\services\MessageService as Message;
 
 class BalanceChange extends Credit
 {
@@ -167,7 +167,7 @@ class BalanceChange extends Credit
             "remark" => "",
         ];
         if ($noticeMember->hasOneFans->follow) {
-            MessageService::notice($template_id, $msg, $noticeMember->uid);
+            Message::notice($template_id, $msg, $noticeMember->uid);
         }
     }
 

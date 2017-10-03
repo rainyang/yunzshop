@@ -102,6 +102,7 @@ class BalanceWithdrawController extends BaseController
             //微信打款
             $resultPay = $this->wechatWithdrawPay($remark);
         }
+
         //file_put_contents(storage_path('logs/withdraw2.log'),print_r($resultPay,true));
         if ($resultPay === true) {
             $this->withdrawModel->pay_at = time();
@@ -114,9 +115,13 @@ class BalanceWithdrawController extends BaseController
         return $resultPay;
     }
 
-    private function alipayWithdrawPay($remark)
+    private function alipayWithdrawPay($remark, $withdraw=null)
     {
-        $resultPay = WithdrawService::alipayWithdrawPay($this->withdrawModel, $remark);
+        if (!is_null($withdraw)) {
+            $resultPay = WithdrawService::alipayWithdrawPay($withdraw, $remark);
+        } else {
+            $resultPay = WithdrawService::alipayWithdrawPay($this->withdrawModel, $remark);
+        }
         Log::info('MemberId:' . $this->withdrawModel->member_id . ', ' . $remark . "支付宝打款中!");
         return $resultPay;
     }
@@ -156,5 +161,32 @@ class BalanceWithdrawController extends BaseController
         return trim(\YunShop::request()->status);
     }
 
+    public function batchAlipay()
+    {
+        $ids = \YunShop::request()->ids;
 
+        $withdrawId = explode(',', $ids);
+
+        $withdraw = [];
+        if (!empty($withdrawId)) {
+            foreach ($withdrawId as $id) {
+                $withdraw_modle = Withdraw::getBalanceWithdrawById($id);
+
+                if (!is_null($withdraw_modle)) {
+                    if ($withdraw_modle->status != '1') {
+                        return $this->message('打款失败,数据不存在或不符合打款规则!', yzWebUrl("finance.balance-withdraw.detail", ['id' => $id]), 'error');
+                    }
+
+                    $withdraw[] = $withdraw_modle;
+
+                    $remark[] = '提现打款-' . $withdraw_modle->type_name . '-金额:' . $withdraw_modle->actual_amounts . '元,' .
+                        '手续费:' . $withdraw_modle->actual_poundage;
+                }
+            }
+
+            $remark = json_encode($remark);
+
+            $this->alipayWithdrawPay($remark, $withdraw);
+        }
+    }
 }

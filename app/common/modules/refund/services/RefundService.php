@@ -44,6 +44,12 @@ class RefundService
             case PayType::BACKEND:
                 $result = $this->backend();
                 break;
+            case PayType::WechatApp:
+                $result = $this->wechat();
+                break;
+            case PayType::AlipayApp:
+                $result = $this->alipayapp();
+                break;
             default:
                 $result = false;
                 break;
@@ -81,6 +87,20 @@ class RefundService
         $this->refundApply->alipay_batch_sn = $result['batch_no'];
         $this->refundApply->save();
         return $result['url'];
+    }
+
+    private function alipayapp()
+    {
+        RefundOperationService::refundComplete(['id' => $this->refundApply->id]);
+
+        $pay = PayFactory::create($this->refundApply->order->pay_type_id);
+
+        $result = $pay->doRefund($this->refundApply->order->hasOneOrderPay->pay_sn, $this->refundApply->order->hasOneOrderPay->amount, $this->refundApply->price);
+
+        if ($result === false) {
+            throw new AdminException('支付宝退款失败');
+        }
+        return $result;
     }
 
     private function backend()

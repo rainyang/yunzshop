@@ -27,9 +27,12 @@ class CreateController extends PreGeneratedController
             return MemberCartService::newMemberCart($memberCart);
         });
     }
+    protected function validateParam(){
 
+    }
     public function index(Request $request)
     {
+        $this->validateParam();
         //订单组
         $orders = collect();
         $shopOrder = $this->getShopOrder($this->getMemberCarts());

@@ -10,7 +10,6 @@ namespace app\frontend\modules\dispatch\models;
 
 use app\common\events\dispatch\OrderDispatchWasCalculated;
 use app\frontend\modules\order\models\PreGeneratedOrder;
-use app\frontend\modules\order\services\OrderService;
 
 class OrderDispatch
 {
@@ -27,25 +26,14 @@ class OrderDispatch
      */
     public function getDispatchPrice()
     {
-        if ($this->preGeneratedOrder->is_virtual) {
+        if (!isset($this->preGeneratedOrder->hasOneDispatchType) || !$this->preGeneratedOrder->hasOneDispatchType->needSend()) {
+            // 没选配送方式 或者 不需要配送配送
             return 0;
         }
         $event = new OrderDispatchWasCalculated($this->preGeneratedOrder);
         event($event);
         $data = $event->getData();
         return $result = array_sum(array_column($data, 'price'));
-    }
-
-
-
-    /**
-     * 获取配送类型
-     * @return mixed
-     */
-    public function getDispatchTypeId()
-    {
-        $dispatchTypeId = array_get(\YunShop::request()->get('address'), 'dispatch_type_id', 0);
-        return $dispatchTypeId;
     }
 
 }

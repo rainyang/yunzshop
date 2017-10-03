@@ -26,6 +26,9 @@ class WithdrawService extends \app\common\services\finance\WithdrawService
             case 2:
                 return '已打款';
                 break;
+            case 4:
+                return '打款中';
+                break;
         }
     }
 

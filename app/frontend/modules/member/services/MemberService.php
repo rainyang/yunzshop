@@ -536,6 +536,8 @@ class MemberService
             'uniacid' => $uniacid,
             'group_id' => $default_subgroup_id,
             'level_id' => 0,
+            'pay_password' => '',
+            'salt' => '',
         ));
     }
 
@@ -603,5 +605,82 @@ class MemberService
         }
 
         return $member_id;
+    }
+
+    public function memberInfoAttrStatus()
+    {
+        $form   = [];
+        $member = MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId());
+
+        $set = \Setting::get('shop.form');
+
+        if (!is_null($set)) {
+            $set = json_decode($set, true);
+
+            if (!empty($set['form'])) {
+                $form = array_values(array_sort($set['form'], function ($value) {
+                    return $value['sort'];
+                }));
+
+                if (!empty($member->member_form)) {
+                    $member_form = json_decode($member->member_form, true);
+                    $form = self::getMemberForm($form, $member_form);
+                }
+            }
+        } else {
+            $set['base'] = [
+                'sex' => 1,
+                'address' => 1,
+                'birthday' => 1
+            ];
+        }
+
+        $set['form'] = $form;
+
+        return $set;
+    }
+
+    private function getMemberForm($form, $member_form)
+    {
+        foreach ($form as &$rows) {
+            foreach ($member_form as $item) {
+                if ($item['pinyin'] == $rows['pinyin']) {
+                    $rows['value'] = $item['value'];
+                }
+            }
+        }
+
+        return $form;
+    }
+
+    public function updateMemberForm($data)
+    {
+        $member_form = [];
+        $set = \Setting::get('shop.form');
+        $set = json_decode($set, true);
+
+       // echo '<pre>';print_r($data['customDatas']);exit;
+
+        if (!empty($set['form'])) {
+            $member_form = $form = array_values(array_sort($set['form'], function ($value) {
+                return $value['sort'];
+            }));
+
+            foreach ($form as $key => &$item) {
+                foreach ($data['customDatas'] as $rows) {
+                    if ($rows['pinyin'] == $item['pinyin']) {
+
+                        $item['del'] = 1;
+
+                        $member_form[$key]['value'] = $rows['value'];
+                    }
+                }
+            }
+        }
+
+        $set['form'] = $form;
+        \Setting::set('shop.form', json_encode($set));
+
+        return $member_form;
     }
 }

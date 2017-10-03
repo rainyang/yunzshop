@@ -62,7 +62,7 @@ class CouponSend
             if ($surplusNums['coupon_id_' . $coupon->id] <= 0) {
                 continue;
             }
-            $this->sendCouponForMeber($couponSendQueue);//发放优惠券到会员
+            $this->sendCouponForMember($couponSendQueue);//发放优惠券到会员
             $this->sendCouponLog($couponSendQueue);//发放优惠券LOG
 
             $condition = [
@@ -78,7 +78,7 @@ class CouponSend
         }
     }
 
-    public function sendCouponForMeber($couponSendQueue)
+    public function sendCouponForMember($couponSendQueue)
     {
         $data = [
             'uniacid' => $couponSendQueue->uniacid,

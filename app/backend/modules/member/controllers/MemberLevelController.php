@@ -64,6 +64,7 @@ class MemberLevelController extends BaseController
             if (!$levelModel->goods_id) {
                 $levelModel->goods_id = 0;
             }
+            $levelModel->validity = $requestLevel['validity'] ? $requestLevel['validity'] : 0;
 
             //字段检测
             $validator = $levelModel->validator();
@@ -100,6 +101,7 @@ class MemberLevelController extends BaseController
             if (empty($requestLevel['goods_id'])) {
                 $levelModel->goods_id = 0;
             }
+            $levelModel->validity = $requestLevel['validity'] ? $requestLevel['validity'] : 0;
             $validator = $levelModel->validator();
             if ($validator->fails()) {//检测失败
                 $this->error($validator->messages());

@@ -15,8 +15,12 @@ class Credit
         if (\Setting::get('shop.pay.credit')) {
             $result = [
                 'name' => '余额',
-                'value' => '3'
+                'value' => '3',
+                'need_password' => '0'
             ];
+            if(\Setting::get('shop.pay.balance_pay_proving')){
+                $result['need_password'] = 1;
+            }
             $event->addData($result);
 
         }

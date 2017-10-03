@@ -18,21 +18,10 @@ class CouponWidget extends Widget
 
     public function run()
     {
-        $couponModel = GoodsCoupon::getGoodsCouponByGoodsId($this->goods_id)->first();
-
-        $coupon = Coupon::getCouponById($couponModel->coupon_id);
-
-        if(!$couponModel){
-            $couponModel = [
-                'is_coupon' => 0,
-                'coupon_id' => 0,
-                'send_times' => 0,
-                'send_num' => 0,
-            ];
-        }
+        $couponModel = GoodsCoupon::ofGoodsId($this->goods_id)->first();
         return view('goods.widgets.coupon', [
-            'item' => $couponModel,
-            'coupon' => $coupon,
+            'coupon' => $couponModel,
+            //'coupon' => $coupon,
         ])->render();
     }
 }

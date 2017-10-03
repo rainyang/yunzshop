@@ -11,11 +11,20 @@ class MemberCoupon extends BaseModel
     use SoftDeletes;
 
     public $table = 'yz_member_coupon';
-    protected $guarded = [];
-    protected $appends = ['time_start', 'time_end'];
+
     public $timestamps = false;
+
     public $dates = ['deleted_at'];
+
+
     protected $casts = ['get_time' => 'date'];
+
+    protected $guarded = [];
+
+    protected $appends = ['time_start', 'time_end'];
+
+
+
 
     /*
      *  定义字段名

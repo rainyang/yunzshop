@@ -39,4 +39,17 @@ class MemberWechatModel extends BackendModel
             ->where('member_id', $member_id)
             ->update($data);
     }
+
+    /**
+     * 获取用户信息
+     *
+     * @param $memberId
+     * @return mixed
+     */
+    public static function getFansById($memberId)
+    {
+        return self::uniacid()
+            ->where('member_id', $memberId)
+            ->first();
+    }
 }

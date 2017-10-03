@@ -9,23 +9,30 @@
 namespace app\frontend\modules\finance\services;
 
 use app\backend\modules\member\models\Member;
-use Setting;
+use app\common\models\Order;
 
 class CalculationPointService
 {
     private $orderGoodsModels;
+    /**
+     * @var Order
+     */
+    private $order;
     private $point_set;
     public $point;
     private $member;
     public $point_money;
 
-    public function __construct($orderGoodsModels, $member_id)
+    public function __construct($order, $member_id)
     {
+
+        $this->order = $order;
+        $this->orderGoodsModels = $order->orderGoods;
+
         //验证积分设置
         $this->verifyPointSet();
         //验证用户积分
         $this->verifyMemberPoint($member_id);
-        $this->orderGoodsModels = $orderGoodsModels;
         //计算积分
         $this->calculationPoint();
         $this->point_money = floor($this->point * $this->point_set['money'] * 100) / 100;
@@ -38,10 +45,12 @@ class CalculationPointService
      */
     private function verifyPointSet()
     {
-        if (Setting::get('point.set')['point_deduct'] == 0) {
-            return false;
-        }
-        $this->point_set = Setting::get('point.set');
+
+    if ($this->order->getSetting('point.set.point_deduct') == 0) {
+        return false;
+    }
+    $this->point_set = $this->order->getSetting('point.set');
+
     }
 
     /**
@@ -82,13 +91,13 @@ class CalculationPointService
         }
         if ($goods_model->goods->hasOneSale->max_point_deduct) {
             if (strexists($goods_model->goods->hasOneSale->max_point_deduct, '%')) {
-                $goods_point = floatval(str_replace('%', '', $goods_model->goods->hasOneSale->max_point_deduct) / 100 * $goods_model->goods_price * $goods_model->total / $this->point_set['money']);
+                $goods_point = floatval(str_replace('%', '', $goods_model->goods->hasOneSale->max_point_deduct) / 100 * $goods_model->goods_price / $this->point_set['money']);
             } else {
                 $goods_point = $goods_model->goods->hasOneSale->max_point_deduct * $goods_model->total / $this->point_set['money'];
             }
             return $goods_point;
         } else if ($this->point_set['money_max'] > 0 && empty($goods_model->goods->hasOneSale->max_point_deduct)) {
-            $goods_point = $this->point_set['money_max'] / 100 * $goods_model->price / $this->point_set['money'] * $goods_model->total;
+            $goods_point = $this->point_set['money_max'] / 100 * $goods_model->price / $this->point_set['money'];
             return $goods_point;
         }
     }

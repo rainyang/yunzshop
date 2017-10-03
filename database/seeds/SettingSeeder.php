@@ -13,6 +13,7 @@ class SettingSeeder extends Seeder
      */
     public function run()
     {
+        Log::info('调试-SettingSeeder');
         return;
         if (!Schema::hasTable($this->oldTable)) {
             echo $this->oldTable." 不存在 跳过\n";
