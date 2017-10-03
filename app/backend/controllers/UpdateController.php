@@ -216,9 +216,9 @@ class UpdateController extends BaseController
 
             //Check for a new download
             $ret = $update->checkBackDownload([
-                'path' => $path
+                'path' => urlencode($path)
             ]);
-echo '<pre>';print_r($ret);exit;
+
             if (is_array($ret)) {
                 $path    = $ret['path'];
                 $dirpath = dirname($path);
@@ -240,6 +240,7 @@ echo '<pre>';print_r($ret);exit;
                         $success++;
                     }
                 }
+
                 unset($f);
                 $upgrade['files'] = $files;
                 $tmpdir           = storage_path('app/public/tmp/'. date('ymd'));
@@ -247,6 +248,7 @@ echo '<pre>';print_r($ret);exit;
                 if (!is_dir($tmpdir)) {
                     $filesystem->makeDirectory($tmpdir, '0777', true);
                 }
+
                 file_put_contents($tmpdir . "/file.txt", json_encode($upgrade));
 
                 return response()->json([

@@ -847,6 +847,7 @@ class AutoUpdate
                 ->withHeader(
                     "Authorization: Basic " . base64_encode("{$this->_username}:{$this->_password}")
                 )
+                ->withData($data)
                 ->asJsonResponse(true)
                 ->get();
 
