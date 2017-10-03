@@ -55,7 +55,7 @@
                                         <button id="upgradebtn" class="btn btn-success" style="height: 32px">
                                             <i class="fa fa-download"></i> <label> 立即更新 </label>
                                         </button>
-                                        <span id="process">e33</span>
+                                        <span id="process"></span>
                                     </div>
                                     <div class="form-group">
                                         <label class="font-description"> 最新版本号：</label>
@@ -124,7 +124,7 @@
 
                         $("#upgradebtn").unbind('click').click(function(){
                             if($(this).attr('updating')=='1'){
-                             //   return;
+                                return;
                             }
 
                             $(this).attr('updating',1).val('正在更新中...');
