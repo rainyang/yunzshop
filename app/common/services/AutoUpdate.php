@@ -830,4 +830,32 @@ class AutoUpdate
             return $update;
         }
     }
+
+    public function checkBackDownload($data)
+    {
+        $this->_log->notice('Back Checking for a new download...');
+
+        $versions = $this->_cache->get('update-versions');
+        // Create absolute url to update file
+        $updateFile = $this->_updateUrl . '/' . $this->_updateFile;
+
+        // Check if cache is empty
+        if ($versions === null || $versions === false) {
+            $this->_log->debug(sprintf('Get new updates from %s', $updateFile));
+
+            $download = Curl::to($updateFile)
+                ->withHeader(
+                    "Authorization: Basic " . base64_encode("{$this->_username}:{$this->_password}")
+                )
+                ->asJsonResponse(true)
+                ->get();
+
+            if ($download === false) {
+                $this->_log->info(sprintf('Could not download update file "%s"!', $updateFile));
+                return false;
+            }
+
+            return $download;
+        }
+    }
 }

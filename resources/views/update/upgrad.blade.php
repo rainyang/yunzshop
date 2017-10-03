@@ -47,56 +47,33 @@
                             </ul>
                         </div>
                         <div class="col-md-6 main content-height-scroll">
-                            @foreach($data as $k => $item)
-                                <div id="detail{{$k}}" data-status="{{$item['versionStatus']}}" data-size="{{$item['size']}}" data-name="{{$item['name']}}" data-index="{{$k}}" class="display" style="@if($k==0) display: block; @else display: none;@endif">
-                                    <div class="form-group button_title">
-                                        <h4 style="text-align: center">{{$item['title']}}</h4>
-                                        <p style="text-align: right; font-size: 12px"> ——— {{$item['author']}}</p>
-                                    </div>
+
+                                <div id="upgrade" class="display" style="display: none;">
+                                    <div class="form-group button_title"></div>
 
                                     <div class="form-group">
-                                        @if($item['versionStatus'] == 'new')
-                                            <button onclick="isUpdated('{{$item['latestVersion']}}')" class="btn btn-info" style="height: 32px">
-                                                <i class="fa fa-download"> </i> <label> 升级 </label>
-                                            </button>
-                                        @elseif($item['versionStatus'] == 'installed')
-                                            <button onclick="" disabled class="btn btn-success" style="height: 32px">
-                                                <i class="fa fa-download"> </i> <label> 安装 </label>
-                                            </button>
-                                        @elseif($item['versionStatus'] == 'preview')
-                                            <button onclick="" class="btn btn-success" style="height: 32px">
-                                                <i class="fa fa-download"> </i> <label> 预览 </label>
-                                            </button>
-                                        @else
-                                            <button onclick="isDownload()" class="btn btn-success" style="height: 32px">
-                                                <i class="fa fa-download"></i> <label> 安装 </label>
-                                            </button>
-                                        @endif
+                                        <button id="upgradebtn" class="btn btn-success" style="height: 32px">
+                                            <i class="fa fa-download"></i> <label> 立即更新 </label>
+                                        </button>
+                                        <span id="process">e33</span>
                                     </div>
                                     <div class="form-group">
-                                        <label class="font-description"> 插件详情：</label><br/>
-                                        <div class="interval">{{$item['description']}}</div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="font-description"> 版本号：</label>
-                                        <span class="interval" id="versionNumber{{$k}}">{{$item['version']}}</span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="font-description"> 版本说明：</label><br/>
-                                        <div class="interval" id="versionDetail{{$k}}">
-                                            @foreach($item['versionList'] as $ver)
-                                                @if($ver['version'] == $item['version'])
-                                                    <span data-version="{{$item['version']}}">{!! $ver['description'] !!}</span>
-                                                @endif
-                                            @endforeach
-                                        </div>
+                                        <label class="font-description"> 最新版本号：</label>
+                                        <span class="interval" id="versionNumber" style="color: #ff0d0d">00</span>
                                     </div>
                                     <div class="form-group">
                                         <label class="font-description"> 大小：</label>
                                         <span class="interval" id="size{{$k}}">{{$item['size']}}</span>
                                     </div>
+                                    <div class="form-group">
+                                        <label class="font-description"> 版本说明：</label><br/>
+                                        <div class="interval" id="versionDetail">
+                                            222
+                                        </div>
+                                    </div>
+
                                 </div>
-                            @endforeach
+
                         </div>
                     </div>
                 </div>
@@ -107,8 +84,9 @@
 
     <script>
         $(function() {
+
             $.ajax({
-                url: '{!! yzWebUrl('update.check') !!}',
+                url: '{!! yzWebUrl('update.verifyheck') !!}',
                 type: 'get',
                 dataType: 'json',
                 beforeSend: function(){
@@ -138,6 +116,21 @@
                     }
 
                     $("#upgrad_file").html(html);
+
+                    if(ret.filecount>0 || ret.upgrade){
+                        $('#versionNumber').html(ret.version);
+                        $('#versionDetail').html(ret.log);
+                        $('#upgrade').show();
+
+                        $("#upgradebtn").unbind('click').click(function(){
+                            if($(this).attr('updating')=='1'){
+                             //   return;
+                            }
+
+                            $(this).attr('updating',1).val('正在更新中...');
+                            upgrade();
+                        });
+                    }
                 }
 
             }).fail(function (message) {
@@ -165,6 +158,39 @@
 
             });
         });
+
+        //文件更新
+        function upgrade(){
+            var $check_boxes = $('input[name="files"]:checked');
+            var fileIds = new Array();
+
+            $check_boxes.each(function(){
+                fileIds.push($(this).val());
+            });
+
+            $.ajax({
+                url: '{!! yzWebUrl('update.fileDownload') !!}',
+                data:{'nofiles': fileIds},
+                //traditional :true,
+                type:'post',
+                dataType:'json',
+                success:function(ret){
+                    if(ret.result==1)      {
+                        $('#process').html("已更新 " + ret.success + "个文件 / 共 " + ret.total +  " 个文件！");
+                        //循环更新
+                        upgrade();
+                    }
+                    else if(ret.result==2){
+                        $('#process').html("更新完成!");
+                        location.reload();
+                    }
+                    else if(ret.result==3){
+                        //跳过计数，3是不更新的
+                        upgrade();
+                    }
+                }
+            });
+        }
     </script>
 @endsection
 
