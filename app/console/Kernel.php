@@ -16,7 +16,7 @@ class Kernel extends ConsoleKernel
 
     protected $commands = [
         'app\console\Commands\UpdateVersion',
-        'app\console\Commands\FixIncome',
+        'app\console\Commands\RepairWithdraw',
     ];
 
     /**

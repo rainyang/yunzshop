@@ -3,6 +3,7 @@
 namespace app\Console\Commands;
 
 use app\common\models\Income;
+use app\common\models\Withdraw;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
