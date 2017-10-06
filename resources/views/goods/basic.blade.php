@@ -1,5 +1,5 @@
 <!-- 供货商end -->
-<link href="{{static_url('yunshop/goods/goods.css')}}" media="all" rel="stylesheet" type="text/css"/>
+{{--<link href="{{static_url('yunshop/goods/goods.css')}}" media="all" rel="stylesheet" type="text/css"/>--}}
 
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">排序</label>
@@ -79,7 +79,7 @@
 
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span >*</span>{{$lang['mainimg']}}</label>
-    <div class="col-sm-9 col-xs-12 detail-logo">
+    <div class="col-sm-9 col-xs-12 col-md-6 detail-logo">
         {!! app\common\helpers\ImageHelper::tplFormFieldImage('goods[thumb]', $goods['thumb']) !!}
         <span class="help-block">建议尺寸: 640 * 640 ，或正方型图片 </span>
         @if (!empty($goods['thumb']))
@@ -91,7 +91,7 @@
 </div>
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">其他图片</label>
-    <div class="col-sm-9 col-xs-12">
+    <div class="col-sm-9  col-md-6 col-xs-12">
 
         {!! app\common\helpers\ImageHelper::tplFormFieldMultiImage('goods[thumb_url]',$goods['thumb_url']) !!}
             <span class="help-block">建议尺寸: 640 * 640 ，或正方型图片 </span>
@@ -143,8 +143,8 @@
 
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">重量</label>
-    <div class="col-sm-6 col-xs-12">
-        <div class="input-group">
+    <div class="col-sm-6  col-xs-12">
+        <div class="input-group col-md-3">
             <input type="text" name="goods[weight]" id="weight" class="form-control" value="{{$goods['weight']?$goods['weight']:0}}" />
             <span class="input-group-addon">克</span>
         </div>
@@ -155,7 +155,7 @@
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span >*</span>库存</label>
     <div class="col-sm-6 col-xs-12">
-        <div class="input-group form-group col-sm-3">
+        <div class="input-group  col-md-3 form-group col-sm-3">
             <input type="text" name="goods[stock]" id="total" class="form-control" value="{{$goods['stock']}}" />
             <span class="input-group-addon">件</span>
         </div>

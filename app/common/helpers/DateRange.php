@@ -93,7 +93,7 @@ class DateRange
         $s .= '
         <input name="'.$name . '[start]'.'" type="hidden" value="'. $value['starttime'].'" />
         <input name="'.$name . '[end]'.'" type="hidden" value="'. $value['endtime'].'" />
-        <button class="btn btn-default daterange '.(!empty($time) ? 'daterange-time' : 'daterange-date').'" type="button"><span class="date-title">'.$value['starttime'].' 至 '.$value['endtime'].'</span> <i class="fa fa-calendar"></i></button>
+        <button class="btn btn-info daterange '.(!empty($time) ? 'daterange-time' : 'daterange-date').'" type="button"><span class="date-title">'.$value['starttime'].' 至 '.$value['endtime'].'</span> <i class="fa fa-calendar"></i></button>
         ';
         return $s;
     }

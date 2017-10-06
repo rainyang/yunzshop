@@ -568,7 +568,7 @@
 
 
 <link rel="stylesheet" type="text/css" href="{{static_url('css/font-awesome.min.css')}}">
-<link href="{{static_url('yunshop/goods/goods.css')}}" media="all" rel="stylesheet" type="text/css"/>
+{{--<link href="{{static_url('yunshop/goods/goods.css')}}" media="all" rel="stylesheet" type="text/css"/>--}}
 <div class="right-titpos">
     <ul class="add-snav">
         <li class="active"><a href="#">商品编辑</a></li>

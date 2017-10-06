@@ -6,7 +6,7 @@
 
 
         <input type='hidden' id='uid' name='widgets[notice][uid]' value="{{ $uid }}"/>
-        <div class='input-group'>
+        <div class='input-group col-md-6'>
             <input type="text" name="saler" maxlength="30"
                    value="@if (!empty($saler)) {{ $saler['nickname'] }} / {{ $saler['realname'] }} / {{ $saler['mobile'] }} @endif"
                    id="saler" class="form-control" readonly/>
@@ -14,7 +14,7 @@
                 <button class="btn btn-default" type="button"
                         onclick="popwin = $('#modal-module-menus-notice').modal();">选择通知人
                 </button>
-                <button class="btn btn-danger" type="button"
+                <button class="btn btn-danger" style="height:34px" type="button"
                         onclick="$('#uid').val('');$('#saler').val('');$('#saleravatar').hide()">清除选择
                 </button>
             </div>

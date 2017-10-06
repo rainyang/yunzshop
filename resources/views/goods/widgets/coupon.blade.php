@@ -34,7 +34,7 @@
     <div id="coupon_send_month" class="form-group" @if(!empty($coupon->send_type)) style="display: none" @endif>
         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
         <div class="col-sm-6 col-xs-6">
-            <div class='input-group'  style="width: 644px;" >
+            <div class='input-group col-md-6' >
                 <div class='input-group-addon'>连续发放</div>
                 <input type='text' name='widgets[coupon][send_num]' class="form-control" value="{{ $coupon->send_num }}"/>
                 <div class='input-group-addon'>月</div>

@@ -70,13 +70,13 @@
 </div>
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">每次限购数量</label>
-    <div class="col-sm-9 col-xs-12">
+    <div class="col-sm-9 col-md-2 col-xs-12">
         <input type="text" name="widgets[privilege][once_buy_limit]" id="widgets[privilege][once_buy_limit]" class="form-control" value="{{ $privilege['once_buy_limit'] }}" />
         <span class='help-block'>每次下单限购数量</span>
     </div>
 </div><div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员限购总数</label>
-    <div class="col-sm-9 col-xs-12">
+    <div class="col-sm-9 col-md-2 col-xs-12">
         <input type="text" name="widgets[privilege][total_buy_limit]" id="widgets[privilege][total_buy_limit]" class="form-control" value="{{ $privilege['total_buy_limit'] }}" />
         <span class='help-block'>会员限购的总数</span>
     </div>

@@ -1,6 +1,6 @@
 html,body,h1,h2,h3{font-family:arial, 'Hiragino Sans GB', 'Microsoft Yahei', '微软雅黑', '宋体', \5b8b\4f53, Tahoma, Arial, Helvetica, STHeiti}
 .ng-cloak{display:none;}
-body{overflow-y:scroll;background:#f9f9f9;}
+body{overflow-y:scroll;background:#fff;}
 a:hover{text-decoration:none;}
 a:focus{outline:none; -moz-outline:none}
 .list-group .list-group-item.active{background-color:#428bca;border-color:#428bca;}
@@ -302,5 +302,37 @@ p.module-description{display:block;padding:3px 10px;}
 
 .require{color:red; margin-right:5px}
 
+.list-filter-form {
+    border: 1px solid #f2f2f2;
+    margin-bottom: 15px;
+    padding: 15px 15px 0 15px;
+}
+@media (min-width: 1288px){
+    .list-filter-form .form-group {
+        width: 25%;
+        padding-right: 15px;
+        float: left;
+    }
+}
+    .list-filter-form .form-group {
+        width: 33.33%;
+        padding-right: 15px;
+        height: 30px;
+        float: left;
+    }
 
-
+.list-filter-form .form-group .control-label {
+    width: 90px;
+    padding-top: 5px;
+    text-align: left;
+    float: left;
+}
+.list-filter-form .form-group .controls {
+    margin-left: 90px;
+}
+.form-control {
+    padding: 4px 6px;
+    font-size: 12px;
+    box-shadow: none;
+    width:95%;
+}

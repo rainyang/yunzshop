@@ -1,26 +1,60 @@
-  <header class="main-header">
+<div class="main-panel">
+    <div class="content">
+        @yield('content')
+    </div>
+    <footer class="footer">
+        <div class="container-fluid">
+            <nav class="pull-left">
+                <ul>
+                    <li>
+                        <a href="#">
+                            Home
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            Company
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            Portfolio
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            Blog
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <p class="copyright pull-right">
+                &copy;
+                <script>
+                    document.write(new Date().getFullYear())
+                </script>
+                <a href="http://www.creative-tim.com">Creative Tim</a>, made with love for a better web
+            </p>
+        </div>
+    </footer>
+</div>
+{{--
 
-    <!-- Logo -->
+<header class="main-header">
+
     <a href="/" class="logo">
-      <!-- mini logo for sidebar mini 50x50 pixels -->
       <span class="logo-mini"><b>{{YunShop::app()->account['name']}}</b></span>
-      <!-- logo for regular state and mobile devices -->
       <span class="logo-lg"><b>{{YunShop::app()->account['name']}}</b></span>
     </a>
 
-    <!-- Header Navbar -->
     <nav class="navbar navbar-static-top" role="navigation">
-      <!-- Sidebar toggle button-->
       <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
         <span class="sr-only">Toggle navigation</span>
       </a>
-      <!-- Navbar Right Menu -->
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
 
-          <!-- User Account Menu -->
           <li class="dropdown user user-menu">
-            <!-- Menu Toggle Button -->
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <span class="hidden-xs"> <span  class="fa fa-group"></span>{{YunShop::app()->account['name']}}</span>
             </a>
@@ -40,9 +74,7 @@
             @endif
           </li>
 
-          <!-- User Account Menu -->
           <li class="dropdown user user-menu">
-            <!-- Menu Toggle Button -->
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <span class="hidden-xs"> <span class="fa fa-user fa-fw"></span>{{YunShop::app()->username}}(@if(YunShop::app()->role == 'founder')系统管理员@elseif(YunShop::app()->role =='manager')公众号管理员@else公众号操作员@endif)</span>
             </a>
@@ -60,4 +92,4 @@
         </ul>
       </div>
     </nav>
-  </header>
+  </header>--}}

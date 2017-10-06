@@ -14,6 +14,3 @@
         <li ><a href="{php echo $this->createWebUrl('sysset',array('op'=>'shop'))}">广告管理</a></li>--}}
     </ul>
 </div>
-
-
-

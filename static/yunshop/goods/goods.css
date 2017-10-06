@@ -265,6 +265,7 @@
     border-radius: 15px;
     background: #FFF;
     padding: 10px;margin-left: 10px;
+    z-index: 1002;
 }
 
 .selected .img {
@@ -284,8 +285,14 @@
 .table.table-hover .goods-state{
     border-bottom: 1px solid #eee;
 }
-
-
+table>tbody>tr{
+    border-bottom: 1px solid #f2efef;
+}
+.btn-group .btn-sm {
+    padding: 8px 12px !important;
+    background-color: #fffffd;
+    color: #797474;
+}
 .table.table-hover .goods-state td{
     text-align: left;
     padding: 6px 30px;
@@ -315,6 +322,8 @@
     padding-top: 4px;
     margin-bottom: 0;
     text-align: right;
+    margin-top:7px !important;
+    color: #2d2828 !important;
 }
 
 .form-group .col-xs-12.col-sm-3.col-md-2.control-label span{

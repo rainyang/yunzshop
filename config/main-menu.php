@@ -33,7 +33,7 @@ return [
 
 
     'system' => [
-        'name'          => '系统管理',
+        'name'          => '系统',
         'url'           => '',
         'url_params'    => '',
         'permit'        => 1,
@@ -393,7 +393,7 @@ return [
     ],
 
     'Goods'  => [
-        'name'          => '商品管理',
+        'name'          => '商品',
         'url'           => '',
         'url_params'    => '',
         'permit'        => 1,
@@ -986,7 +986,7 @@ return [
     ],
 
     'Member' => [
-        'name'          => '会员管理',
+        'name'          => '会员',
         'url'           => '',
         'url_params'    => '',
         'permit'        => 1,
@@ -1351,7 +1351,7 @@ return [
     ],
 
     'Order'  => [
-        'name'          => '订单管理',
+        'name'          => '订单',
         'url'           => 'order.list',
         'url_params'    => '',
         'permit'        => 1,
@@ -1820,7 +1820,7 @@ return [
     ],
 
     'finance'=> [
-        'name'              => '财务管理',
+        'name'              => '财务',
         'url'               => '',
         'url_params'        => '',
         'permit'            => 1,
