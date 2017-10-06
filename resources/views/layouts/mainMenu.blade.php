@@ -32,7 +32,7 @@
                     </li>
                 </ul>
             </div>
-            <div class="collapse navbar-collapse">
+            <div class="collapse navbar-collapse" style="float:right">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
                         <a href="#pablo" class="dropdown-toggle" data-toggle="dropdown">
