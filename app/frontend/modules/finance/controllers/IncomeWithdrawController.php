@@ -558,7 +558,7 @@ class IncomeWithdrawController extends ApiController
 
         return [
             'type'              => $this->item['class'],
-            'key_name'          => $this->item['type'],
+            'key_name'          => $this->getLangTitle($this->key) ? $this->getLangTitle($this->key) : $this->item['type'],
             'type_name'         => $this->item['title'],
             'income'            => $this->amount,
             'poundage'          => $this->getItemPoundage(),
@@ -575,7 +575,27 @@ class IncomeWithdrawController extends ApiController
             'special_service_tax_rate' => $this->getBalanceSpecialServiceTaxRate(),
         ];
     }
+    public function getLangTitle($data)
+    {
+        $lang = Setting::get('shop.lang');
+        $langData = $lang[$lang['lang']];
+        $titleType = '';
+        foreach ($langData as $key => $item) {
+            $names = explode('_', $key);
+            foreach ($names as $k => $name) {
+                if ($k == 0) {
+                    $titleType = $name;
+                } else {
+                    $titleType .= ucwords($name);
+                }
+            }
 
+            if ($data == $titleType) {
+                return $item[$key];
+            }
+        }
+
+    }
     /**
      * 检测会员支付宝配置，存在信息返回 true，不存在返回 false
      * @return bool
