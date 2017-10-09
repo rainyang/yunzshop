@@ -19,30 +19,32 @@ class UpdateController extends BaseController
 
     public function index()
     {
-        /*$list = [];
+        if (0) {
+            $list = [];
 
-        $key = Setting::get('shop.key')['key'];
-        $secret = Setting::get('shop.key')['secret'];
-        $update = new AutoUpdate(null, null, 300);
-        $update->setUpdateFile('check_app.json');
-        $update->setCurrentVersion(config('version'));
-        $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
+            $key = Setting::get('shop.key')['key'];
+            $secret = Setting::get('shop.key')['secret'];
+            $update = new AutoUpdate(null, null, 300);
+            $update->setUpdateFile('check_app.json');
+            $update->setCurrentVersion(config('version'));
+            $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
 
-        $update->setBasicAuth($key, $secret);
+            $update->setBasicAuth($key, $secret);
 
-        if ($update->checkUpdate() === false) {
-            $this->error('检测更新列表失败');
+            if ($update->checkUpdate() === false) {
+                $this->error('检测更新列表失败');
+            }
+
+            if ($update->newVersionAvailable()) {
+                $list = $update->getUpdates();
+            }
+            krsort($list);
+            $version = config('version');
+            return view('update.index', [
+                'list' => $list,
+                'version' => $version,
+            ])->render();
         }
-
-        if ($update->newVersionAvailable()) {
-            $list = $update->getUpdates();
-        }
-        krsort($list);
-        $version = config('version');
-        return view('update.upgrad', [
-            'list' => $list,
-            'version' => $version,
-        ])->render();*/
 
         return view('update.upgrad')->render();
     }
@@ -92,6 +94,15 @@ class UpdateController extends BaseController
     {
         $filesystem = new Filesystem();
 
+        $filter_file = ['.env', '.env.example', '.git', '.gitignore', '', 'composer.json', 'composer.lock', 'README.md'];
+        $plugins_dir = [];
+
+        if ($all_dir = $filesystem->directories(base_path('plugins'))) {
+            foreach ($all_dir as $dir) {
+                $plugins_dir[] = substr($dir, strrpos($dir, '/')+1);
+            }
+        }
+
         $result = ['msg' => '', 'last_version' => '', 'updated' => 0];
         $key = Setting::get('shop.key')['key'];
         $secret = Setting::get('shop.key')['secret'];
@@ -121,6 +132,19 @@ class UpdateController extends BaseController
 
                 if (!empty($ret['files'])) {
                     foreach ($ret['files'] as $file) {
+                        if (in_array($file['path'], $filter_file)) {
+                            continue;
+                        }
+
+                        if (preg_match('/^plugins/', $file['path'])) {
+                            $sub_dir = substr($file['path'], strpos($file['path'], '/')+1);
+                            $sub_dir = substr($sub_dir, 0, strpos($sub_dir, '/'));
+
+                            if (!in_array($sub_dir, $plugins_dir)) {
+                                continue;
+                            }
+                        }
+
                         $entry = base_path() . '/' . $file['path'];
                         //如果本地没有此文件或者文件与服务器不一致
                         if (!is_file($entry) || md5_file($entry) != $file['md5']) {
