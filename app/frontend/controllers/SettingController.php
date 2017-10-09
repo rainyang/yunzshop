@@ -70,9 +70,58 @@ class SettingController extends BaseController
 
     public function getLangSetting()
     {
-        $lang = Setting::get('shop.lang');
+        $lang = Setting::get('shop.lang.lang');
 
-        return $this->successJson('获取商城语言设置成功', $lang[$lang['lang']]);
+        $data = [
+            'test' => [],
+            'commission' => [
+                'title' => '',
+                'commission' => '',
+                'agent' => '',
+                'level_name' => '',
+                'commission_order' => '',
+                'commission_amount' => '',
+            ],
+            'single_return' => [
+                'title' => '',
+                'single_return' => '',
+                'return_name' => '',
+                'return_queue' => '',
+                'return_log' => '',
+                'return_detail' => '',
+                'return_amount' => '',
+            ],
+            'team_return' => [
+                'title' => '',
+                'team_return' => '',
+                'return_name' => '',
+                'team_level' => '',
+                'return_log' => '',
+                'return_detail' => '',
+                'return_amount' => '',
+                'return_rate' => '',
+                'team_name' => '',
+                'return_time' => '',
+            ],
+            'full_return' => [
+                'title' => '',
+                'full_return' => '',
+                'return_name' => '',
+                'full_return_log' => '',
+                'return_detail' => '',
+                'return_amount' => '',
+            ],
+            'team_dividend' => [
+                'title' => '',
+                'team_dividend' => '',
+                'team_agent_centre' => '',
+                'dividend' => '',
+            ]
+        ];
+
+        $langData = Setting::get('shop.lang.' . $lang, $data);
+
+        return $this->successJson('获取商城语言设置成功', $langData);
     }
 
 }

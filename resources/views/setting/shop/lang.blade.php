@@ -20,8 +20,8 @@
         <div class="info">
             <div class="panel-body">
                 <div class="tab-content">
-                    <div class="tab-pane active" id="tab_basic">@include('setting.shop.tpl.basic')</div>
-                    <div class="tab-pane" id="tab_commission">@include('setting.shop.tpl.commission')</div>
+                    {{--<div class="tab-pane active" id="tab_basic">@include('setting.shop.tpl.basic')</div>--}}
+                    <div class="tab-pane active" id="tab_commission">@include('setting.shop.tpl.commission')</div>
                     <div class="tab-pane" id="tab_single_return">@include('setting.shop.tpl.single-return')</div>
                     <div class="tab-pane" id="tab_team_return">@include('setting.shop.tpl.team-return')</div>
                     <div class="tab-pane" id="tab_full_return">@include('setting.shop.tpl.full-return')</div>
