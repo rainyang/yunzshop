@@ -61,14 +61,11 @@
                                         <label class="font-description"> 最新版本号：</label>
                                         <span class="interval" id="versionNumber" style="color: #ff0d0d">00</span>
                                     </div>
-                                    <div class="form-group">
-                                        <label class="font-description"> 大小：</label>
-                                        <span class="interval" id="size{{$k}}">{{$item['size']}}</span>
-                                    </div>
+
                                     <div class="form-group">
                                         <label class="font-description"> 版本说明：</label><br/>
                                         <div class="interval" id="versionDetail">
-                                            222
+
                                         </div>
                                     </div>
 
@@ -82,36 +79,15 @@
         </section><!-- /.content -->
     </div><!-- /.content-wrapper -->
 
-    <!-- Modal -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">支付宝提现</h4>
-                </div>
-                <div class="modal-body">
-                    提现打款是否成功？
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">失败</button>
-                    <button type="button" class="btn btn-primary withdraw_success">成功</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
         $(function() {
-
             $.ajax({
                 url: '{!! yzWebUrl('update.verifyheck') !!}',
                 type: 'get',
                 dataType: 'json',
                 beforeSend: function(){
-                    /*var html = '<li><br/>正在检查更新文件</li>';
-                    $("#upgrad_file").html(html);*/
-                    $('#myModal').modal('show');
+                    var html = '<li><br/>正在检查更新文件</li>';
+                    $("#upgrad_file").html(html);
                 }
             }).done(function (ret) {
                 console.log("Downloading finished");
@@ -121,11 +97,12 @@
                     var html = "";
 
                     if(ret.filecount<=0 && !ret.upgrade){
-                        html+="恭喜您，您现在是最新版本！"
+                        html+="<li><br/>当前版本：<span style='color: #dd4b39'>" + ret.version +"</span></li>"
+                        html+="<li><br/>恭喜您，您现在是最新版本！</li>"
                     }
                     else{
                         if(ret.filecount > 0){
-                            html+="<br/><b style='color:red'>更新之前请注意数据备份!</b><br/><br/>";
+                            html+="<br/><b style='color:#dd4b39'>更新之前请注意数据备份!</b><br/><br/>";
                             html += "更新文件(选中则不更新文件):<br>";
                             var data = ret.files;
 

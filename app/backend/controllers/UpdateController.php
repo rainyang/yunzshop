@@ -172,7 +172,7 @@ class UpdateController extends BaseController
                     'version' => $ret['version'],
                     'files' => $ret['files'],
                     'filecount' => count($files),
-                    //'log' => str_replace("\r\n", "<br/>", base64_decode($ret['log']))
+                    'log' => str_replace("\r\n", "<br/>", base64_decode($ret['log']))
                 ];
             }
         }
