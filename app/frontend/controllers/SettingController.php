@@ -24,7 +24,7 @@ class SettingController extends BaseController
     /**
      * 商城设置接口
      * @param string $key  setting表key字段值
-     * @return json
+     * @return
      */
     public function get()
     {

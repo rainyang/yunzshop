@@ -363,9 +363,10 @@ class IncomeWithdrawController extends ApiController
     private function incomeFreeAudit($incomes = [])
     {
         $freeAudit = new IncomeFreeAuditService();
-        $withdrawModel = new Withdraw();
+
 
         foreach ($incomes as $key => $item) {
+            $withdrawModel = new Withdraw();
 
             $withdrawModel->fill($item);
             //直接标为以审核状态
@@ -373,12 +374,15 @@ class IncomeWithdrawController extends ApiController
             $withdrawModel->pay_at = time();
             $withdrawModel->save();
 
-
             $result = $freeAudit->incomeFreeAudit($withdrawModel,$this->pay_way);
-            if ($result !== true) {
-                return '提现失败:' . $item['type_name'] . '免审核失败!';
+
+            if (!$result) {
+                Log::info('提现失败:' . $item['type_name'] . '免审核失败!');
+                return false;
                 break;
             }
+
+            unset($withdrawModel);
         }
         return true;
     }
