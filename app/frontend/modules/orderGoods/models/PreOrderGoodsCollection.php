@@ -8,16 +8,10 @@
 
 namespace app\frontend\modules\orderGoods\models;
 
+use Illuminate\Database\Eloquent\Collection;
 
-class PreOrderGoodsCollection extends \Illuminate\Database\Eloquent\Collection
+class PreOrderGoodsCollection extends Collection
 {
-    private $orderGoodsGroup;
-
-
-    public function __construct($items = [])
-    {
-        parent::__construct($items);
-    }
 
     /**
      * 获取商城价
@@ -52,8 +46,4 @@ class PreOrderGoodsCollection extends \Illuminate\Database\Eloquent\Collection
         });
     }
 
-    public function getOrderGoodsCollection()
-    {
-        return $this->orderGoodsGroup;
-    }
 }

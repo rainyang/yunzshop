@@ -9,7 +9,7 @@
 namespace app\common\models;
 
 
-class VirtualCoin extends BaseModel
+abstract class VirtualCoin extends BaseModel
 {
     protected $table = 'yz_virtual_coin';
 
@@ -20,7 +20,9 @@ class VirtualCoin extends BaseModel
     ];
     
     protected $exchange_rate;
-
+    abstract public function getCode();
+    abstract public function getName();
+    abstract public function getExchangeRate();
     /**
      * @param VirtualCoin $coin
      * @return VirtualCoin

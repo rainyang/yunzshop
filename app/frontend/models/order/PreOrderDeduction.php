@@ -9,15 +9,18 @@
 namespace app\frontend\models\order;
 
 use app\common\models\VirtualCoin;
+use app\frontend\modules\coin\deduction\models\Deduction;
 use app\frontend\modules\order\models\PreOrder;
 
 abstract class PreOrderDeduction extends \app\common\models\order\OrderDeduction
 {
     public $order;
 
+    // todo 初始化订单 初始化抵扣
     public function setOrder(PreOrder $order)
     {
         $this->order = $order;
+        $this->orderGoodsCollectionDeduction = $this->getOrderGoodsCollectionDeduction();
         $this->_init();
     }
 
@@ -33,10 +36,19 @@ abstract class PreOrderDeduction extends \app\common\models\order\OrderDeduction
 
     }
 
+    public function deduction(){
+        return $this->belongsTo(Deduction::class,'code','code');
+    }
+
     /**
      * @return VirtualCoin
      */
     abstract public function getUsablePoint();
+
+    /**
+     * @return OrderGoodsCollectionDeduction
+     */
+    abstract public function getOrderGoodsCollectionDeduction();
 
     /**
      * @return string
@@ -46,7 +58,10 @@ abstract class PreOrderDeduction extends \app\common\models\order\OrderDeduction
     /**
      * @return string
      */
-    abstract public function getName();
+    public function getName(){
+        $this->deduction->getName();
+
+    }
 
     /**
      * @return int
@@ -78,6 +93,9 @@ abstract class PreOrderDeduction extends \app\common\models\order\OrderDeduction
 
     public function save(array $options = [])
     {
+        dd($this);
+        exit;
+
         if (!$this->isChecked()) {
             // todo 应该返回什么
             return true;

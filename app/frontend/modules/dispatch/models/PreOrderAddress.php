@@ -32,6 +32,7 @@ class PreOrderAddress extends OrderAddress
     {
         if ($this->order->dispatch_type_id == DispatchType::EXPRESS) {
             $this->fill($this->getAddressByMember());
+            dd($this->validator()->failed());
         }
     }
 
@@ -42,6 +43,7 @@ class PreOrderAddress extends OrderAddress
         $result['address'] = implode(' ', [$memberAddress->province, $memberAddress->city, $memberAddress->district, $memberAddress->address]);
         $result['mobile'] = $memberAddress->mobile;
         list($this->province_id, $this->city_id, $this->district_id) = Address::whereIn('areaname', [$memberAddress->province, $memberAddress->city, $memberAddress->district])->pluck('id');
+
         $result['address'] = implode(' ', [$memberAddress->province, $memberAddress->city, $memberAddress->district, $memberAddress->address]);
         $result['realname'] = $memberAddress->username;
         return $result;

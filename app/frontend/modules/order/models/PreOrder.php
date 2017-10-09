@@ -8,6 +8,7 @@ use app\frontend\modules\discount\models\OrderDiscount;
 use app\frontend\modules\dispatch\models\OrderDispatch;
 use app\frontend\modules\orderGoods\models\PreOrderGoods;
 use app\frontend\modules\order\services\OrderService;
+use app\frontend\modules\orderGoods\models\PreOrderGoodsCollection;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
 
@@ -34,7 +35,7 @@ class PreOrder extends Order
 
     public function setOrderGoods(Collection $orderGoods)
     {
-        $this->setRelation('orderGoods', $this->newCollection());
+        $this->setRelation('orderGoods', new PreOrderGoodsCollection());
 
         $orderGoods->each(function ($aOrderGoods) {
             /**
