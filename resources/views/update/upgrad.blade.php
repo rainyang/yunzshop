@@ -82,6 +82,25 @@
         </section><!-- /.content -->
     </div><!-- /.content-wrapper -->
 
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">支付宝提现</h4>
+                </div>
+                <div class="modal-body">
+                    提现打款是否成功？
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">失败</button>
+                    <button type="button" class="btn btn-primary withdraw_success">成功</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         $(function() {
 
@@ -90,8 +109,9 @@
                 type: 'get',
                 dataType: 'json',
                 beforeSend: function(){
-                    var html = '<li><br/>正在检查更新文件</li>';
-                    $("#upgrad_file").html(html);
+                    /*var html = '<li><br/>正在检查更新文件</li>';
+                    $("#upgrad_file").html(html);*/
+                    $('#myModal').modal('show');
                 }
             }).done(function (ret) {
                 console.log("Downloading finished");
