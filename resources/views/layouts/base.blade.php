@@ -145,8 +145,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- Main Header -->
     @include('layouts.mainMenu')
     @include('layouts.mainSidebar')
-    @include('layouts.secondSidebar')
 
+    @if (Yunshop::isShowSecondMenu())
+        @include('layouts.secondSidebar')
+    @else
+        <style>
+            .main-panel{
+                width: calc(100% - 80px) !important;
+            }
+        </style>
+    @endif
     @include('layouts.mainHeader')
             <!-- Left side column. contains the logo and sidebar -->
 

@@ -9,7 +9,7 @@
 
                 @foreach(config(config('app.menu_key','menu')) as $key=>$value)
 
-                    @if(isset($value['menu']) && $value['menu'] == 1 && can($key) && $value['second_show'] == 1)
+                    @if(isset($value['menu']) && $value['menu'] == 1 && can($key) && $value['left_first_show'] == 1)
 
                         @if(isset($value['child']) && array_child_kv_exists($value['child'],'menu',1))
 

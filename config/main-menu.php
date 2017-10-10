@@ -9,14 +9,15 @@
 
 return [
     'index'  => [
-        'name' => '控制面板',
+        'name' => '商城',
         'url' => 'index.index',         // url 可以填写http 也可以直接写路由
         'urlParams' => '',              //如果是url填写的是路由则启用参数否则不启用
         'permit' => 0,                  //如果不设置则不会做权限检测
-        'menu' => 0,                    //如果不设置则不显示菜单，子菜单也将不显示
+        'menu' => 1,                    //如果不设置则不显示菜单，子菜单也将不显示
         'icon' => '',                   //菜单图标
-        'first_show'    => 1,
-        'second_show'   => 1,
+        'top_show'    => 1,
+        'left_first_show'   => 1,
+        'left_second_show'   => 0,
         'parents' => [],                //
         'child' => [
 
@@ -42,8 +43,9 @@ return [
         'menu'          => 1,
         'icon'          => 'fa-cogs',
         'sort'          => 1,
-        'first_show'    => 1,               //顶部导航是否显示
-        'second_show'   => 1,               //左侧导航是否显示
+        'top_show'    => 1,               //顶部导航是否显示
+        'left_first_show'   => 1,               //左侧导航是否显示
+        'left_second_show'   => 1,
         'item'          => 'system',
         'parents'       => [],
         'child'         => [
@@ -392,8 +394,9 @@ return [
         'url_params'    => '',
         'permit'        => 1,
         'menu'          => 1,
-        'first_show'    => 1,
-        'second_show'   => 1,
+        'top_show'    => 1,
+        'left_first_show'   => 1,
+        'left_second_show'   => 1,
         'icon'          => 'fa-archive',
         'sort'          => '2',
         'item'          => 'Goods',
@@ -987,8 +990,9 @@ return [
         'url_params'    => '',
         'permit'        => 1,
         'menu'          => 1,
-        'first_show'    => 1,
-        'second_show'   => 1,
+        'top_show'    => 1,
+        'left_first_show'   => 1,
+        'left_second_show'   => 1,
         'icon'          => 'fa-users',
         'sort'          => '3',
         'item'          => 'Member',
@@ -1354,8 +1358,9 @@ return [
         'url_params'    => '',
         'permit'        => 1,
         'menu'          => 1,
-        'first_show'    => 1,
-        'second_show'   => 1,
+        'top_show'    => 1,
+        'left_first_show'   => 1,
+        'left_second_show'   => 1,
         'icon'          => 'fa-shopping-cart',
         'sort'          => '4',
         'item'          => 'Order',
@@ -1825,8 +1830,9 @@ return [
         'url_params'        => '',
         'permit'            => 1,
         'menu'              => 1,
-        'first_show'        => 1,
-        'second_show'       => 1,
+        'top_show'        => 1,
+        'left_first_show'       => 1,
+        'left_second_show'   => 1,
         'icon'              => 'fa-rmb',
         'parent_id'         => 0,
         'sort'              => '5',
