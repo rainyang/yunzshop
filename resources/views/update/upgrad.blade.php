@@ -124,7 +124,9 @@
                                 return;
                             }
 
-                            $(this).attr('updating',1).val('正在更新中...');
+                            $(this).attr('updating',1);
+                            $(this).find('label').html('正在更新中...');
+
                             upgrade();
                         });
                     }
@@ -178,7 +180,8 @@
                         upgrade();
                     }
                     else if(ret.result==2){
-                        $('#process').html("更新完成!");
+                        $('#upgradebtn').find('label').html('更新完成');
+                        $('#process').html('');
                         location.reload();
                     }
                     else if(ret.result==3){
