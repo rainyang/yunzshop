@@ -106,7 +106,7 @@ class UpdateController extends BaseController
             }
         }
 
-        $result = ['msg' => '', 'last_version' => '', 'updated' => 0];
+        $result = ['msg' => '网络请求超时', 'last_version' => '', 'updated' => 0];
         $key = Setting::get('shop.key')['key'];
         $secret = Setting::get('shop.key')['secret'];
         if(!$key || !$secret) {

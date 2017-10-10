@@ -95,6 +95,10 @@
                 console.log("Downloading finished");
                 console.log(ret);
 
+                if (ret.msg) {
+                    $("#upgrad_file").html('<li><br/>' + ret.msg + '</li>');
+                }
+
                 if (1 == ret.result) {
                     var html = "";
 
