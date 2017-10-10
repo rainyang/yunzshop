@@ -283,7 +283,7 @@ class UpdateController extends BaseController
                     //更新完执行数据表
                     \Log::debug('----CLI----');
                     $plugins_dir = $this->getMemberPlugins($filesystem);
-                    \Artisan::call('update:version' ,['version'=>'air']);
+                    \Artisan::call('update:version' ,['version'=>$plugins_dir]);
 
                     $status = 2;
                 }
