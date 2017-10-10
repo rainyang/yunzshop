@@ -80,6 +80,8 @@
     </div><!-- /.content-wrapper -->
 
     <script>
+        var front_upgrade = '{{$list}}';
+        alert(front_upgrade);
         $(function() {
             $.ajax({
                 url: '{!! yzWebUrl('update.verifyheck') !!}',
@@ -182,7 +184,12 @@
                     else if(ret.result==2){
                         $('#upgradebtn').find('label').html('更新完成');
                         $('#process').html('');
-                        location.reload();
+
+                        if (front_upgrade > 0) {
+
+                        } else {
+                            location.reload();
+                        }
                     }
                     else if(ret.result==3){
                         //跳过计数，3是不更新的
