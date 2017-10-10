@@ -19,34 +19,35 @@ class UpdateController extends BaseController
 
     public function index()
     {
-        if (0) {
-            $list = [];
+        $list = [];
 
-            $key = Setting::get('shop.key')['key'];
-            $secret = Setting::get('shop.key')['secret'];
-            $update = new AutoUpdate(null, null, 300);
-            $update->setUpdateFile('check_app.json');
-            $update->setCurrentVersion(config('version'));
+        $key = Setting::get('shop.key')['key'];
+        $secret = Setting::get('shop.key')['secret'];
+        $update = new AutoUpdate(null, null, 300);
+        $update->setUpdateFile('check_app.json');
+        $update->setCurrentVersion(config('version'));
+
+        if (config('app.debug')) {
+            $update->setUpdateUrl('http://yun-yzshop.com/update'); //Replace with your server update directory
+        } else {
             $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
-
-            $update->setBasicAuth($key, $secret);
-
-            if ($update->checkUpdate() === false) {
-                $this->error('检测更新列表失败');
-            }
-
-            if ($update->newVersionAvailable()) {
-                $list = $update->getUpdates();
-            }
-            krsort($list);
-            $version = config('version');
-            return view('update.index', [
-                'list' => $list,
-                'version' => $version,
-            ])->render();
         }
 
-        return view('update.upgrad')->render();
+        $update->setBasicAuth($key, $secret);
+
+        $update->checkUpdate();
+
+        if ($update->newVersionAvailable()) {
+            $list = $update->getUpdates();
+        }
+
+        krsort($list);
+        $version = config('version');
+
+        return view('update.upgrad', [
+            'list' => count($list),
+            'version' => $version,
+        ])->render();
     }
 
     /**
