@@ -81,7 +81,7 @@
 
     <script>
         var front_upgrade = '{{$list}}';
-        alert(front_upgrade);
+        
         $(function() {
             $.ajax({
                 url: '{!! yzWebUrl('update.verifyheck') !!}',
@@ -177,23 +177,41 @@
                 dataType:'json',
                 success:function(ret){
                     if(ret.result==1)      {
-                        $('#process').html("已更新 " + ret.success + "个文件 / 共 " + ret.total +  " 个文件！");
+                        $('#process').html("后台文件已更新 " + ret.success + "个文件 / 共 " + ret.total +  " 个文件！");
                         //循环更新
                         upgrade();
                     }
                     else if(ret.result==2){
-                        $('#upgradebtn').find('label').html('更新完成');
-                        $('#process').html('');
-
                         if (front_upgrade > 0) {
-
+                            $('#process').html("前端文件下载更新");
+                            frontUpgrade();
                         } else {
+                            $('#upgradebtn').find('label').html('更新完成');
+                            $('#process').html('');
+
                             location.reload();
                         }
                     }
                     else if(ret.result==3){
                         //跳过计数，3是不更新的
                         upgrade();
+                    }
+                }
+            });
+        }
+
+        function frontUpgrade(){
+            $.ajax({
+                url: '{!! yzWebUrl('update.startDownload') !!}',
+                dataType:'json',
+                success:function(ret){
+                    if(ret.status==1)      {
+                        $('#upgradebtn').find('label').html('更新完成');
+                        $('#process').html('');
+
+                        location.reload();
+                    } else {
+                        $('#process').html('网络请求超时');
                     }
                 }
             });
