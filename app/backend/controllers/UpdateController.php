@@ -98,13 +98,7 @@ class UpdateController extends BaseController
         $filesystem = new Filesystem();
 
         $filter_file = ['.env', '.env.example', '.git', '.gitignore', '', 'composer.json', 'composer.lock', 'README.md'];
-        $plugins_dir = [];
-
-        if ($all_dir = $filesystem->directories(base_path('plugins'))) {
-            foreach ($all_dir as $dir) {
-                $plugins_dir[] = substr($dir, strrpos($dir, '/')+1);
-            }
-        }
+        $plugins_dir = $this->getMemberPlugins($filesystem);
 
         $result = ['msg' => '网络请求超时', 'last_version' => '', 'updated' => 0];
         $key = Setting::get('shop.key')['key'];
@@ -286,6 +280,11 @@ class UpdateController extends BaseController
                 file_put_contents($tmpdir . "/file.txt", json_encode($upgrade));
 
                 if (intval($success + 1) == count($files)) {
+                    //更新完执行数据表
+                    \Log::debug('----CLI----');
+                    $plugins_dir = $this->getMemberPlugins($filesystem);
+                    \Artisan::call('update:version' ,['plugins'=>$plugins_dir]);
+
                     $status = 2;
                 }
 
@@ -345,6 +344,19 @@ class UpdateController extends BaseController
         }
         response()->json($resultArr)->send();
         return;
+    }
+
+    private function getMemberPlugins(Filesystem $filesystem)
+    {
+        $plugins_dir = [];
+
+        if ($all_dir = $filesystem->directories(base_path('plugins'))) {
+            foreach ($all_dir as $dir) {
+                $plugins_dir[] = substr($dir, strrpos($dir, '/')+1);
+            }
+        }
+
+        return $plugins_dir;
     }
 
 }
