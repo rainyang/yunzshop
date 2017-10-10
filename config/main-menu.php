@@ -43,7 +43,7 @@ return [
         'menu'          => 1,
         'icon'          => 'fa-cogs',
         'sort'          => 1,
-        'top_show'    => 1,               //顶部导航是否显示
+        'top_show'      => 1,               //顶部导航是否显示
         'left_first_show'   => 1,               //左侧导航是否显示
         'left_second_show'   => 1,
         'item'          => 'system',
@@ -68,6 +68,9 @@ return [
                 'url' => 'setting.shop.index',
                 'url_params' => '',
                 'permit' => 1,
+                'top_show'      => 1,               //顶部导航是否显示
+                'left_first_show'   => 1,           //左侧一级导航是否显示
+                'left_second_show'  => 1,           //左侧二级导航是否显示
                 'menu' => 1,
                 'icon' => 'fa-cog',
                 'parent_id' => 1,
@@ -2206,6 +2209,73 @@ return [
 
         ],
 
+    ],
+
+    'charts' => [
+        'name'          => '统计',
+        'url'           => 'charts.member.count.index',
+        'url_params'    => '',
+        'permit'        => 1,
+        'menu'          => 1,
+        'icon'          => 'fa-bar-chart-o',
+        'sort'          => 1,
+        'top_show'      => 1,               //顶部导航是否显示
+        'left_first_show'   => 1,           //左侧一级导航是否显示
+        'left_second_show'  => 1,           //左侧二级导航是否显示
+        'item'          => 'system',
+        'parents'       => [],
+        'child'         => [
+
+            'member_charts'     => [
+                'name'          => '会员统计',
+                'url'           => 'charts.member.count.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'member_charts',
+                'parents'       => ['charts',],
+                'child'         => [
+                    'member_charts1'     => [
+                        'name'          => '会员统计',
+                        'url'           => 'charts.member.count.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => 'fa-bar-chart-o',
+                        'sort'          => 0,
+                        'item'          => 'member_charts1',
+                        'parents'       => ['charts','member_charts'],
+                    ],
+                ],
+            ],
+
+            'goods_charts'     => [
+                'name'          => '商品统计',
+                'url'           => 'charts.member.count.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'goods_charts',
+                'parents'       => ['charts',],
+            ],
+
+            'order_charts'     => [
+                'name'          => '订单统计',
+                'url'           => 'charts.member.count.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_charts',
+                'parents'       => ['charts',],
+            ],
+
+        ],
     ],
 
 

@@ -120,6 +120,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- Material Dashboard javascript methods -->
 {{--    <script src="{{static_url('assets/js/material-dashboard.js')}}"></script>--}}
 
+    <script src="{{static_url('js/echarts.js')}}" type="text/javascript"></script>
+
     <script type="text/javascript" src="{{static_url('resource/js/app/util.js')}}"></script>
     <script type="text/javascript" src="{{static_url('resource/js/require.js')}}"></script>
 

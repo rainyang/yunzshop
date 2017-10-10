@@ -113,15 +113,12 @@ class YunShop
 
     public static function isShowSecondMenu()
     {
+        $menu_list = (array)Config::get('menu');
 
-        $menulist = Config::get('menu');
-        $currentMenuItem = Config::get('currentMenuItem');
-        if (isset($currentMenuItem) && isset($menulist)) {
-
-            return $menulist[$currentMenuItem]['left_second_show'];
+        if (count(self::$currentItems) >= 1) {
+            return isset($menu_list[self::$currentItems[0]]['left_second_show']) ? $menu_list[self::$currentItems[0]]['left_second_show'] : false;
         }
-
-        return FALSE;
+        return false;
     }
 
     /**

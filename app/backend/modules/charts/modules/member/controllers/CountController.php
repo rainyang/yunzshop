@@ -17,7 +17,7 @@ class CountController extends BaseController
 
     public function index()
     {
-        return view()->render();
+        return view('charts.member.index')->render();
     }
 
 }
