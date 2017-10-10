@@ -12,12 +12,13 @@ class CreateImsCronManagerTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('cron_manager', function(Blueprint $table)
-		{
-			$table->increments('id');
-			$table->dateTime('rundate');
-			$table->float('runtime');
-		});
+        if (!Schema::hasTable('cron_manager')) {
+            Schema::create('cron_manager', function (Blueprint $table) {
+                $table->increments('id');
+                $table->dateTime('rundate');
+                $table->float('runtime');
+            });
+        }
 	}
 
 
