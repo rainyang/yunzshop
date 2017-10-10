@@ -93,6 +93,8 @@ class UpdateController extends BaseController
      */
     public function verifyheck()
     {
+        set_time_limit(0);
+
         $filesystem = new Filesystem();
 
         $filter_file = ['.env', '.env.example', '.git', '.gitignore', '', 'composer.json', 'composer.lock', 'README.md'];
@@ -137,6 +139,12 @@ class UpdateController extends BaseController
                             continue;
                         }
 
+                        //忽略前端样式文件
+                        if (preg_match('/^static\/app/', $file['path'])) {
+                            continue;
+                        }
+
+                        //忽略没有安装的插件
                         if (preg_match('/^plugins/', $file['path'])) {
                             $sub_dir = substr($file['path'], strpos($file['path'], '/')+1);
                             $sub_dir = substr($sub_dir, 0, strpos($sub_dir, '/'));
@@ -311,7 +319,7 @@ class UpdateController extends BaseController
         //Check for a new update
         if ($update->checkUpdate() === false) {
             $resultArr['msg'] = 'Could not check for updates! See log file for details.';
-             response()->json($resultArr)->send();
+            response()->json($resultArr)->send();
             return;
         }
 
@@ -334,7 +342,7 @@ class UpdateController extends BaseController
         } else {
             $resultArr['msg'] = 'Current Version is up to date';
         }
-         response()->json($resultArr)->send();
+        response()->json($resultArr)->send();
         return;
     }
 
