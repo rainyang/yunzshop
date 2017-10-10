@@ -15,6 +15,7 @@ use app\frontend\modules\order\models\PreOrder;
 abstract class PreOrderDeduction extends \app\common\models\order\OrderDeduction
 {
     public $order;
+    private $orderGoodsCollectionDeduction;
 
     // todo 初始化订单 初始化抵扣
     public function setOrder(PreOrder $order)
@@ -30,14 +31,14 @@ abstract class PreOrderDeduction extends \app\common\models\order\OrderDeduction
         $this->order->orderDeductions->push($this);
         $this->coin = $this->getUsablePoint()->getCoin();
         $this->amount = $this->getUsablePoint()->getMoney();
-
-        $this->name = $this->getName();
         $this->code = $this->getCode();
+        $this->name = $this->getName();
 
     }
 
-    public function deduction(){
-        return $this->belongsTo(Deduction::class,'code','code');
+    public function deduction()
+    {
+        return $this->belongsTo(Deduction::class, 'code', 'code');
     }
 
     /**
@@ -58,9 +59,10 @@ abstract class PreOrderDeduction extends \app\common\models\order\OrderDeduction
     /**
      * @return string
      */
-    public function getName(){
-        $this->deduction->getName();
+    public function getName()
+    {
 
+        return $this->deduction->getName();
     }
 
     /**
@@ -93,8 +95,6 @@ abstract class PreOrderDeduction extends \app\common\models\order\OrderDeduction
 
     public function save(array $options = [])
     {
-        dd($this);
-        exit;
 
         if (!$this->isChecked()) {
             // todo 应该返回什么

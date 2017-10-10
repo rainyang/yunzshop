@@ -73,6 +73,7 @@ class OrderDiscount
              * @var $orderDeductionInstance PreOrderDeduction
              */
             $orderDeductionInstance->setOrder($this->order);
+            // todo 设置抵扣实例
             return $orderDeductionInstance->isEnable();
         });
 

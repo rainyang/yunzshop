@@ -9,7 +9,7 @@
 namespace app\common\models;
 
 
-abstract class VirtualCoin extends BaseModel
+class VirtualCoin extends BaseModel
 {
     protected $table = 'yz_virtual_coin';
 
@@ -18,30 +18,48 @@ abstract class VirtualCoin extends BaseModel
         'amountOfMoney' => 0,
         'name' => ''
     ];
-    
+
     protected $exchange_rate;
-    abstract public function getCode();
-    abstract public function getName();
-    abstract public function getExchangeRate();
+
+    public function getCode()
+    {
+        return $this->code;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function getExchangeRate()
+    {
+        return $this->exchange_rate;
+    }
+
     /**
      * @param VirtualCoin $coin
      * @return VirtualCoin
      */
-    public function plus(VirtualCoin $coin){
+    public function plus(VirtualCoin $coin)
+    {
         $this->amountOfMoney += $coin->getMoney();
         return $this;
     }
 
-    public function setCoin($amount){
+    public function setCoin($amount)
+    {
 
         $this->amountOfCoin = $amount;
         return $this;
     }
-    public function setMoney($amount){
+
+    public function setMoney($amount)
+    {
 
         $this->amountOfMoney = $amount;
         return $this;
     }
+
     public function toArray()
     {
         $this->amountOfCoin = $this->getCoin();

@@ -4,6 +4,7 @@ namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
 use app\common\services\password\PasswordService;
+use app\frontend\modules\coin\deduction\models\Deduction;
 
 /**
  * Created by PhpStorm.
@@ -17,7 +18,24 @@ class TestController extends ApiController
 
     public function index()
     {
-        dd(\app\common\models\Order::find(3317)->hasOneDispatchType->needSend());
+        dd(Deduction::whereEnable(1)->get());
+        // todo 找到所有开启的抵扣
+        $deductions = Deduction::whereEnable(1)->get();
+        if($deductions->isEmpty()){
+            return 0;
+        }
+        // 遍历抵扣集合, 从容器中找到对应的抵扣设置注入到抵扣类中
+        // 遍历抵扣集合, 实例化订单抵扣类 ,向其传入订单模型和抵扣模型 返回订单抵扣集合
+        $orderDeductions = $deductions->map(function($deduction){
+            $orderDeduction = new OrderDeduction();
+            $orderDeduction->setDeduction($deduction);
+            $orderDeduction->setDeduction($deduction);
+
+            return $orderDeduction;
+        });
+        // 将订单抵扣集合绑定到订单的关联模型(展示,保存)
+        // 求和订单抵扣集合中所有已选中的可用金额
+        // 返回 这个金额
 
         //(new MessageService(\app\frontend\models\Order::completed()->first()))->received();
     }

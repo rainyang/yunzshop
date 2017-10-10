@@ -21,4 +21,8 @@ class Deduction extends BaseModel
     {
         return $this->hasOne(VirtualCoin::class,'code','code');
     }
+    public function getName(){
+        return $this->coin->name;
+    }
+
 }
