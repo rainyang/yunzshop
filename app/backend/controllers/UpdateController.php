@@ -316,6 +316,7 @@ class UpdateController extends BaseController
         $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
         Setting::get('auth.key');
         $update->setBasicAuth($key, $secret);
+        echo 'Check for a new update';exit;
         //Check for a new update
         if ($update->checkUpdate() === false) {
             $resultArr['msg'] = 'Could not check for updates! See log file for details.';
@@ -332,9 +333,9 @@ class UpdateController extends BaseController
 
             if ($result === true) {
                 $resultArr['status'] = 1;
-                $resultArr['msg'] = 'Update simulation successful';
+                $resultArr['msg'] = '更新成功';
             } else {
-                $resultArr['msg'] = 'Update simulation failed: ' . $result;
+                $resultArr['msg'] = '更新失败: ' . $result;
                 if ($result = AutoUpdate::ERROR_SIMULATE) {
                     $resultArr['data'] = $update->getSimulationResults();
                 }
