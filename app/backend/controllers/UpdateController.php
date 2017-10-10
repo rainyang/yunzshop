@@ -316,7 +316,7 @@ class UpdateController extends BaseController
         $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
         Setting::get('auth.key');
         $update->setBasicAuth($key, $secret);
-        echo 'Check for a new update';exit;
+
         //Check for a new update
         if ($update->checkUpdate() === false) {
             $resultArr['msg'] = 'Could not check for updates! See log file for details.';
