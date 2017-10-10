@@ -83,6 +83,9 @@ class YunShop
 
             $item = Menu::getCurrentItemByRoute($controller->route, $menuList);
             self::$currentItems = array_merge(Menu::getCurrentMenuParents($item, $menuList), [$item]);
+
+            Config::set('currentMenuItem', $item);
+            //dd($item);exit;
             //检测权限
             if (!PermissionService::can($item)) {
                 //throw new NotFoundException('Sorry,无权限');
@@ -108,6 +111,18 @@ class YunShop
         exit($content);
     }
 
+    public static function isShowSecondMenu()
+    {
+
+        $menulist = Config::get('menu');
+        $currentMenuItem = Config::get('currentMenuItem');
+        if (isset($currentMenuItem) && isset($menulist)) {
+
+            return $menulist[$currentMenuItem]['left_second_show'];
+        }
+
+        return FALSE;
+    }
 
     /**
      * Configures an object with the initial property values.

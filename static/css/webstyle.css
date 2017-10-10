@@ -3,7 +3,7 @@ html,body {
     min-width: 1000px;
     /*    font-size: 12px;*/
     line-height: 1.5em;
-    font-family: "Microsoft YaHei", Arial, Helvetica, sans-serif;
+    /*font-family: "Microsoft YaHei", Arial, Helvetica, sans-serif;*/
     /*font-family:"Helvetica Neue",STHeiti,"Microsoft YaHei",Verdana,Arial,Tahoma,sans-serif*/
 }
 a,a:hover,a:focus{text-decoration:none; cursor:pointer;}

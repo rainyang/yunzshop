@@ -1,7 +1,7 @@
 @extends('layouts.base')
 
 @section('content')
-    <div class="jumbotron clearfix alert alert-{{$status}}">
+    <div class="jumbotron clearfix alert alert-{{$status}}" style="top: 30px;width: 70%;margin: auto;">
         <div class="row">
             <div class="col-xs-12 col-sm-3 col-lg-2">
                 <i class="fa fa-5x
@@ -34,4 +34,10 @@
             </div>
         </div>
     </div>
+    <style>
+        .main-panel{
+            width:100%;
+        }
+        .sidebar{display:none !important;}
+    </style>
 @endsection
