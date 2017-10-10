@@ -252,7 +252,7 @@ class UpdateController extends BaseController
                 $dirpath = dirname($path);
 
                 if (!is_dir(base_path($dirpath))) {
-                    $filesystem->makeDirectory($dirpath, '0777', true);
+                    $filesystem->makeDirectory(base_path($dirpath), '0777', true);
                 }
 
                 $content = base64_decode($ret['content']);
@@ -283,7 +283,7 @@ class UpdateController extends BaseController
                     //更新完执行数据表
                     \Log::debug('----CLI----');
                     $plugins_dir = $this->getMemberPlugins($filesystem);
-                    \Artisan::call('update:version' ,['plugins'=>$plugins_dir]);
+                    \Artisan::call('update:version' ,['version'=>'air']);
 
                     $status = 2;
                 }

@@ -48,11 +48,12 @@ class UpdateVersion extends Command
         \Artisan::call('migrate',['--force' => true]);
 
         //更新插件数据表
-        $plugins = $this->argument('plugins');
-
+        $plugins = $this->argument('version');
+        \Log::debug('---plugins---' . $plugins);
         if (!is_null($plugins)) {
             foreach ($plugins as $p) {
                 $path = 'plugins/' . $p . '/migrations';
+                \Log::debug('更新数据表路径' . $path);
                 if(is_dir(base_path($path) )){
                     \Artisan::call('migrate',['--force' => true,'--path' => $path]);
                 }
