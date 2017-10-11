@@ -14,9 +14,9 @@ class Url
         if(empty($uri) || self::isHttp($uri)){
             return $uri;
         }
-        $domain = request()->getSchemeAndHttpHost();
+        //$domain = request()->getSchemeAndHttpHost();
         $module = request()->get('m','yun_shop');
-        return $domain . '/addons/' . $module . (strpos($uri,'/') === 0 ? '':'/') . $uri;
+        return '/addons/' . $module . (strpos($uri,'/') === 0 ? '':'/') . $uri;
     }
 
     /**
