@@ -9,18 +9,31 @@
 namespace app\frontend\models\order;
 
 use app\common\models\VirtualCoin;
-use app\frontend\modules\coin\deduction\models\Deduction;
+use app\frontend\models\MemberCoin;
+use app\frontend\models\orderGoods\PreOrderGoodsDeduction;
+use app\frontend\modules\coin\deduction\models\OrderGoodsCollectionDeduction;
 use app\frontend\modules\order\models\PreOrder;
 
-abstract class PreOrderDeduction extends \app\common\models\order\OrderDeduction
+class PreOrderDeduction extends \app\common\models\order\OrderDeduction
 {
     public $order;
     private $orderGoodsCollectionDeduction;
+    private $deduction;
+    private $memberCoin;
 
     // todo 初始化订单 初始化抵扣
     public function setOrder(PreOrder $order)
     {
+        $this->uid = $order->uid;
+        // todo
+        $this->memberCoin = new MemberCoin();
+        $loveOrderGoods = $order->orderGoods->map(function ($aOrderGoods) {
+            return new PreOrderGoodsDeduction([],$aOrderGoods,$this);
+        });
+        $this->setRelation('loveOrderGoods', $loveOrderGoods);
         $this->order = $order;
+
+
         $this->orderGoodsCollectionDeduction = $this->getOrderGoodsCollectionDeduction();
         $this->_init();
     }
@@ -36,44 +49,114 @@ abstract class PreOrderDeduction extends \app\common\models\order\OrderDeduction
 
     }
 
-    public function deduction()
+    public function setDeduction($deduction)
     {
-        return $this->belongsTo(Deduction::class, 'code', 'code');
+        $this->deduction = $deduction;
+    }
+
+    public function getDeduction()
+    {
+        return $this->deduction;
+    }
+
+    private function newCoin()
+    {
+        // todo
+        return new VirtualCoin();
     }
 
     /**
      * @return VirtualCoin
      */
-    abstract public function getUsablePoint();
+    public function getUsablePoint()
+    {
+        $result = $this->newCoin();
+
+        // 购买者不存在华侨币记录
+        if (!isset($this->memberCoin)) {
+            return $result;
+        }
+
+        // 累加所有订单商品的可用华侨币
+        /**
+         * @var VirtualCoin $virtualCoin
+         */
+        $virtualCoin = $this->orderGoodsCollectionDeduction->getUsablePoint();
+
+        // 商品可抵扣爱心值+运费可抵扣爱心值
+        $virtualCoin->plus($this->getDispatchPriceDeductionPoint());
+
+        // 取(用户可用爱心值)与(订单抵扣爱心值)的最小值
+        $amount = min($this->memberCoin->getMaxUsableLovePoint(), $virtualCoin->getMoney());
+
+        return $this->newCoin()->setMoney($amount);
+    }
+
+    /**
+     * 抵扣运费的爱心值
+     * @return LoveCoin
+     */
+    public function getDispatchPriceDeductionPoint()
+    {
+        $result = new LoveCoin();
+
+        //开关
+        if (!\Setting::get('love.deduction_freight')) {
+            return $result;
+        }
+
+        //订单运费
+        $amount = $this->order->getDispatchPrice();
+
+        $percentage = !\Setting::get('love.deduction_exchange') ? 100 : \Setting::get('love.deduction_exchange');
+        $dispatchPrice = $amount / ($percentage / 100);
+        $result->setMoney($dispatchPrice);
+        return $result;
+
+    }
 
     /**
      * @return OrderGoodsCollectionDeduction
      */
-    abstract public function getOrderGoodsCollectionDeduction();
+    public function getOrderGoodsCollectionDeduction()
+    {
+        if (isset($this->orderGoodsCollectionDeduction)) {
+            return $this->orderGoodsCollectionDeduction;
+        }
+        return $this->orderGoodsCollectionDeduction = new LoveOrderGoodsCollectionDeduction($this->loveOrderGoods);
+    }
 
     /**
      * @return string
      */
-    abstract public function getCode();
+    public function getCode()
+    {
+        return $this->deduction->getCode();
+    }
 
     /**
      * @return string
      */
     public function getName()
     {
-
         return $this->deduction->getName();
     }
 
     /**
      * @return int
      */
-    abstract public function getDeductionId();
+    public function getDeductionId()
+    {
+        $this->deduction->getId();
+    }
 
     /**
      * @return bool
      */
-    abstract public function isEnable();
+    public function isEnable()
+    {
+        $this->deduction->isEnable();
+    }
 
 
     /**

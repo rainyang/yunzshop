@@ -23,8 +23,6 @@ class ShopProvider extends ServiceProvider
         $this->app->singleton('GoodsManager',function(){
             return new GoodsManager();
         });
-        $this->app->singleton('ShopException',function($message){
-            return new ShopException($message);
-        });
+
     }
 }

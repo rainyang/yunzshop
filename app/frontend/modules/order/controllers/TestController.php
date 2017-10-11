@@ -27,16 +27,24 @@ class TestController extends ApiController
         // 遍历抵扣集合, 从容器中找到对应的抵扣设置注入到抵扣类中
         // 遍历抵扣集合, 实例化订单抵扣类 ,向其传入订单模型和抵扣模型 返回订单抵扣集合
         $orderDeductions = $deductions->map(function($deduction){
+            // todo
             $orderDeduction = new OrderDeduction();
             $orderDeduction->setDeduction($deduction);
-            $orderDeduction->setDeduction($deduction);
+            // todo
+            $orderDeduction->setOrder($this->order);
 
             return $orderDeduction;
         });
         // 将订单抵扣集合绑定到订单的关联模型(展示,保存)
         // 求和订单抵扣集合中所有已选中的可用金额
+        $amount = $orderDeductions->sum(function($orderDeduction){
+            if($orderDeduction->isChecked()){
+                return $orderDeduction->getUsablePoint();
+            }
+            return 0;
+        });
         // 返回 这个金额
-
+        return $amount;
         //(new MessageService(\app\frontend\models\Order::completed()->first()))->received();
     }
 
