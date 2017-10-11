@@ -95,7 +95,7 @@ class UpdateController extends BaseController
     {
         set_time_limit(0);
 
-        $filesystem = new Filesystem();
+        $filesystem = app(Filesystem::class);
 
         $filter_file = ['.env', '.env.example', '.git', '.gitignore', '', 'composer.json', 'composer.lock', 'README.md'];
         $plugins_dir = $this->getMemberPlugins($filesystem);
@@ -185,7 +185,7 @@ class UpdateController extends BaseController
 
     public function fileDownload()
     {
-        $filesystem = new Filesystem();
+        $filesystem = app(Filesystem::class);
 
         $tmpdir  = storage_path('app/public/tmp/'. date('ymd'));
         $f       = file_get_contents($tmpdir . "/file.txt");
