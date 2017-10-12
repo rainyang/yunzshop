@@ -14,6 +14,7 @@ use app\common\exceptions\AppException;
 use app\common\services\credit\ConstService;
 use app\common\services\finance\BalanceChange;
 use app\common\services\finance\BalanceNoticeService;
+use app\frontend\models\Member;
 use app\frontend\models\MemberShopInfo;
 use app\frontend\modules\finance\models\Withdraw;
 use app\frontend\modules\finance\models\WithdrawSetLog;
