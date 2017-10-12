@@ -112,6 +112,9 @@ class PointLog extends BaseModel
             case (15):
                 $mode_attribute = PointService::POINT_MODE_ROLLBACK_ATTACHED;
                 break;
+            case (16):
+                $mode_attribute = PointService::POINT_MODE_COUPON_DEDUCTION_AWARD_ATTACHED;
+                break;
         }
         return $mode_attribute;
     }

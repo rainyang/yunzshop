@@ -150,6 +150,35 @@ class RegisterController extends ApiController
         }
     }
 
+    public function sendWithdrawCode()
+    {
+        $mobile = \YunShop::request()->mobile;
+        $reset_pwd = \YunShop::request()->reset;
+
+        if (empty($mobile)) {
+            return $this->errorJson('请填入手机号');
+        }
+
+        $info = MemberShopInfo::getUserInfo($mobile);
+
+        if (!empty($info)) {
+            return $this->errorJson('该手机号已被注册！不能获取验证码');
+        }
+        $code = rand(1000, 9999);
+
+        Session::set(codetime, time());
+        Session::set(code, $code);
+        Session::set(code_mobile, $mobile);
+
+        //$content = "您的验证码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
+
+        if (!MemberService::smsSendLimit(\YunShop::app()->uniacid, $mobile)) {
+            return $this->errorJson('发送短信数量达到今日上限');
+        } else {
+            $this->sendSms($mobile, $code);
+        }
+    }
+
 
     /**
      * 发送短信

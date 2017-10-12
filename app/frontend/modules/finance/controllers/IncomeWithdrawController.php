@@ -363,9 +363,10 @@ class IncomeWithdrawController extends ApiController
     private function incomeFreeAudit($incomes = [])
     {
         $freeAudit = new IncomeFreeAuditService();
-        $withdrawModel = new Withdraw();
+
 
         foreach ($incomes as $key => $item) {
+            $withdrawModel = new Withdraw();
 
             $withdrawModel->fill($item);
             //直接标为以审核状态
@@ -373,12 +374,15 @@ class IncomeWithdrawController extends ApiController
             $withdrawModel->pay_at = time();
             $withdrawModel->save();
 
-
             $result = $freeAudit->incomeFreeAudit($withdrawModel,$this->pay_way);
-            if ($result !== true) {
-                return '提现失败:' . $item['type_name'] . '免审核失败!';
+
+            if (!$result) {
+                Log::info('提现失败:' . $item['type_name'] . '免审核失败!');
+                return false;
                 break;
             }
+
+            unset($withdrawModel);
         }
         return true;
     }
@@ -554,7 +558,7 @@ class IncomeWithdrawController extends ApiController
 
         return [
             'type'              => $this->item['class'],
-            'key_name'          => $this->item['type'],
+            'key_name'          => $this->getLangTitle($this->key) ? $this->getLangTitle($this->key) : $this->item['type'],
             'type_name'         => $this->item['title'],
             'income'            => $this->amount,
             'poundage'          => $this->getItemPoundage(),
@@ -571,7 +575,27 @@ class IncomeWithdrawController extends ApiController
             'special_service_tax_rate' => $this->getBalanceSpecialServiceTaxRate(),
         ];
     }
+    public function getLangTitle($data)
+    {
+        $lang = Setting::get('shop.lang');
+        $langData = $lang[$lang['lang']];
+        $titleType = '';
+        foreach ($langData as $key => $item) {
+            $names = explode('_', $key);
+            foreach ($names as $k => $name) {
+                if ($k == 0) {
+                    $titleType = $name;
+                } else {
+                    $titleType .= ucwords($name);
+                }
+            }
 
+            if ($data == $titleType) {
+                return $item[$key];
+            }
+        }
+
+    }
     /**
      * 检测会员支付宝配置，存在信息返回 true，不存在返回 false
      * @return bool

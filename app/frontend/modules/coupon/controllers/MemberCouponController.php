@@ -2,6 +2,7 @@
 namespace app\frontend\modules\coupon\controllers;
 
 use app\common\components\ApiController;
+use app\common\facades\Setting;
 use app\frontend\modules\coupon\models\Coupon;
 use app\frontend\modules\coupon\models\MemberCoupon;
 use app\common\models\MemberShopInfo;
@@ -27,6 +28,43 @@ class MemberCouponController extends ApiController
 
     const TEMPLATEID = 'OPENTM200605630'; //成功发放优惠券时, 发送的模板消息的 ID
 //    const TEMPLATEID = 'tqsXWjFgDGrlUmiOy0ci6VmVtjYxR7s-4BWtJX6jgeQ'; //临时调试用
+
+
+
+    public function couponsOfMemberByStatusV2()
+    {
+        $status = \YunShop::request()->get('status_request');
+        $uid = \YunShop::app()->getMemberId();
+
+        $now = strtotime('now');
+        $coupons = [];
+        switch ($status) {
+            case self::NOT_USED:
+                $coupons = self::getAvailableCoupons($uid, $now);
+                break;
+            case self::OVERDUE:
+                $coupons = self::getOverdueCoupons($uid, $now);
+                break;
+            case self::IS_USED:
+                $coupons = self::getUsedCoupons($uid);
+                break;
+        }
+
+        $data = [
+            'set' => [
+                'transfer' => Setting::get('coupon.transfer') ? true : false,
+            ],
+            'data' => $coupons,
+        ];
+
+        if (empty($coupons)){
+            return $this->errorJson('没有找到记录', $data);
+        } else{
+            return $this->successJson('ok', $data);
+        }
+    }
+
+
 
     /**
      * 获取用户所拥有的优惠券的数据接口

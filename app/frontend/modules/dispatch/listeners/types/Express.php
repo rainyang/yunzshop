@@ -14,6 +14,7 @@ use app\common\events\order\AfterOrderCreatedEvent;
 
 use app\common\events\order\OnPreGenerateOrderCreatingEvent;
 use app\common\exceptions\AppException;
+use app\common\exceptions\ShopException;
 use app\common\models\Address;
 use app\common\models\DispatchType;
 use app\common\models\Order;
@@ -99,7 +100,9 @@ class Express
                 'address.district' => 'required|string',
             ], ['address' => $address]
             );
-            return new MemberAddress($address);
+            $memberAddress = new MemberAddress($address);
+
+            return $memberAddress;
         }
 
         return $this->event->getOrderModel()->getMember()->defaultAddress;
@@ -111,11 +114,7 @@ class Express
      */
     private function needDispatch()
     {
-        if ($this->event->getOrderModel()->is_virtual) {
-            return false;
-        }
-
-        return true;
+        return $this->event->getOrderModel()->needSend();
     }
 
     /**
@@ -126,19 +125,20 @@ class Express
     {
         $member_address = $this->getMemberAddress();
 
-        $order_address = new OrderAddress();
+        $orderAddress = new OrderAddress();
 
-        $order_address->order_id = $this->event->getOrderModel()->id;
-        $order_address->address = implode(' ', [$member_address->province, $member_address->city, $member_address->district, $member_address->address]);
-        $order_address->mobile = $member_address->mobile;
-        $order_address->province_id = Address::where('areaname', $member_address->province)->value('id');
-        $order_address->city_id = Address::where('areaname', $member_address->city)->value('id');
-        $order_address->district_id = Address::where('areaname', $member_address->district)->value('id');
-        $order_address->realname = $member_address->username;
-        $order_address->province = $member_address->province;
-        $order_address->city = $member_address->city;
-        $order_address->district = $member_address->district;
-        return $order_address;
+        $orderAddress->order_id = $this->event->getOrderModel()->id;
+        $orderAddress->address = implode(' ', [$member_address->province, $member_address->city, $member_address->district, $member_address->address]);
+        $orderAddress->mobile = $member_address->mobile;
+        $orderAddress->province_id = Address::where('areaname', $member_address->province)->value('id');
+        $orderAddress->city_id = Address::where('areaname', $member_address->city)->value('id');
+        $orderAddress->district_id = Address::where('areaname', $member_address->district)->value('id');
+        $orderAddress->realname = $member_address->username;
+        $orderAddress->province = $member_address->province;
+        $orderAddress->city = $member_address->city;
+        $orderAddress->district = $member_address->district;
+
+        return $orderAddress;
     }
 
     /**
@@ -148,14 +148,10 @@ class Express
      */
     private function saveExpressInfo()
     {
-        $order_address = $this->getOrderAddress();
-        if (!$order_address->save()) {
+        $orderAddress = $this->getOrderAddress();
+
+        if (!$orderAddress->save()) {
             throw new AppException('订单地址保存失败');
-        }
-        $order = Order::find($this->event->getOrderModel()->id);
-        $order->dispatch_type_id = DispatchType::EXPRESS;
-        if (!$order->save()) {
-            throw new AppException('订单配送方式保存失败');
         }
         return true;
     }

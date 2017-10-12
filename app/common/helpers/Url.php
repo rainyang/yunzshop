@@ -14,6 +14,16 @@ class Url
         if(empty($uri) || self::isHttp($uri)){
             return $uri;
         }
+        //$domain = request()->getSchemeAndHttpHost();
+        $module = request()->get('m','yun_shop');
+        return '/addons/' . $module . (strpos($uri,'/') === 0 ? '':'/') . $uri;
+    }
+
+    public static function shopSchemeUrl($uri)
+    {
+        if(empty($uri) || self::isHttp($uri)){
+            return $uri;
+        }
         $domain = request()->getSchemeAndHttpHost();
         $module = request()->get('m','yun_shop');
         return $domain . '/addons/' . $module . (strpos($uri,'/') === 0 ? '':'/') . $uri;

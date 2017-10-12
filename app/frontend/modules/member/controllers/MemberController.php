@@ -476,6 +476,36 @@ class MemberController extends ApiController
     }
 
     /**
+     * 绑定提现手机号
+     *
+     */
+    public function bindWithdrawMobile()
+    {
+        $mobile = \YunShop::request()->mobile;
+
+        $member_model = MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId());
+
+        if (\YunShop::app()->getMemberId() && \YunShop::app()->getMemberId() > 0) {
+            $check_code = MemberService::checkCode();
+
+            if ($check_code['status'] != 1) {
+                return $this->errorJson($check_code['json']);
+            }
+
+            $salt = Str::random(8);
+            $member_model->withdraw_mobile = $mobile;
+
+            if ($member_model->save()) {
+                return $this->successJson('手机号码绑定成功');
+            } else {
+                return $this->errorJson('手机号码绑定失败');
+            }
+        } else {
+            return $this->errorJson('手机号或密码格式错误');
+        }
+    }
+
+    /**
      * @name 微信JSSDKConfig
      * @author
      * @param int $goods_id
@@ -838,9 +868,9 @@ class MemberController extends ApiController
         $trade = \Setting::get('shop.trade');
 
         if ($trade['is_bind'] && \YunShop::app()->getMemberId() && \YunShop::app()->getMemberId() > 0) {
-            $member_model = Member::getMemberById(\YunShop::app()->getMemberId());
+            $member_model = MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId());
 
-            if ($member_model && $member_model->mobile) {
+            if ($member_model && $member_model->withdraw_mobile) {
                 $is_bind_mobile = 0;
             } else {
                 $is_bind_mobile = 1;

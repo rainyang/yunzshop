@@ -88,7 +88,7 @@
                                 <span class="help-block">默认为完成订单金额</span>
                             </div>
                         </div>
-                    <!--
+
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员等级时间限制</label>
                     <div class="col-sm-9 col-xs-12">
@@ -96,7 +96,7 @@
                         <label class='radio-inline'><input type='radio' name='member[term]' value='1' @if ($set['term'] == 1) checked @endif/> 开启</label>
                     </div>
                 </div>
-
+                    <!--
                 <div class="form-group"  >
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员等级到期时间</label>
                     <div class="col-sm-8">
