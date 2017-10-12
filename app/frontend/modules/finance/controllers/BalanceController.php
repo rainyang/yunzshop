@@ -40,7 +40,7 @@ class BalanceController extends ApiController
     {
         parent::__construct();
         $this->balanceSet = new BalanceService();
-        $this->memberModel = $this->getMemberModel();
+        //$this->memberModel = $this->getMemberModel();
         $this->uniacid = \YunShop::app()->uniacid;
     }
 
@@ -49,6 +49,8 @@ class BalanceController extends ApiController
     /**
      * Get an instance of the login member model
      * todo 会员 model 实例应该在 ApiController 中实现会员对象 YITIAN::2017-09-27
+     *
+     * todo 余额支付宝充值 不能验证会员登录，导致目前不能正常使用，应该将 alipay 方法提出
      * @return mixed
      * @throws AppException
      */
