@@ -31,7 +31,7 @@
                             </thead>
                             <tbody>
                             <tr style="text-align: center;">
-                                <td>{{ $item['frist_value'] }}</td>
+                                <td>{{ $item['first_value'] }}</td>
                                 <td>{{ $item['second_value'] }}</td>
                                 <td>
                                     <div class="progress" style="height: 20px; margin-top: 15px;">
