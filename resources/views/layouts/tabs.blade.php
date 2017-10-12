@@ -1,9 +1,6 @@
 <div class="panel panel-info">
     <ul class="add-shopnav">
 
-
-        {{--{{ dd(config('menu')[Yunshop::$currentItems[0]]['child'][Yunshop::$currentItems[1]]['child']) }}--}}
-
         @foreach(config('menu')[Yunshop::$currentItems[0]]['child'][Yunshop::$currentItems[1]]['child'] as $key=>$value)
 
             @if(isset($value['menu']) && $value['menu'] == 1 && can($key))
