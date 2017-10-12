@@ -17,6 +17,7 @@ use app\frontend\models\order\PreOrderDiscount;
 use app\frontend\modules\coin\deduction\models\Deduction;
 use app\frontend\modules\coupon\services\CouponService;
 use app\frontend\modules\order\models\PreOrder;
+use Illuminate\Database\Eloquent\Collection;
 
 class OrderDiscount
 {
@@ -67,19 +68,25 @@ class OrderDiscount
 
     private function _getDeductionPrice()
     {
+        /**
+         * @var Collection $deductions
+         */
         $deductions = Deduction::whereEnable(1)->get();
         if($deductions->isEmpty()){
             return 0;
         }
+        //valid
+        $deductions = $deductions->(function($deduction){
+
+            $orderDeduction = new PreOrderDeduction([],$deduction,$this->order);
+
+            return $orderDeduction;
+        });
         // todo 遍历抵扣集合, 从容器中找到对应的抵扣设置注入到抵扣类中
         // 遍历抵扣集合, 实例化订单抵扣类 ,向其传入订单模型和抵扣模型 返回订单抵扣集合
         $orderDeductions = $deductions->map(function($deduction){
 
-            $orderDeduction = new PreOrderDeduction();
-            $orderDeduction->setDeduction($deduction);
-            $orderDeduction->setOrder($this->order);
-            dd($orderDeduction);
-            exit;
+            $orderDeduction = new PreOrderDeduction([],$deduction,$this->order);
 
             return $orderDeduction;
         });
@@ -94,6 +101,9 @@ class OrderDiscount
             }
             return 0;
         });
+        dd($result);
+        exit;
+
         // 返回 订单抵扣金额
         return $result;
     }

@@ -12,5 +12,13 @@ use Illuminate\Container\Container;
 
 class DeductionManager extends Container
 {
-
+    public function __construct()
+    {
+        $this->bind('GoodsDeductionManager', function ($deductionManager, $attributes = []) {
+            return new GoodsDeductionManager($attributes);
+        });
+        $this->bind('DeductionSettingManager', function ($deductionManager, $attributes = []) {
+            return new DeductionSettingManager($attributes);
+        });
+    }
 }
