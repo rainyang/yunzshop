@@ -554,7 +554,7 @@ class SdkPayment
     public function refund($out_refund_no)
     {
         $service = 'refund_fastpay_by_platform_pwd';
-        $notify_url = Url::shopUrl('payment/alipay/refundNotifyUrl.php');
+        $notify_url = Url::shopSchemeUrl('payment/alipay/refundNotifyUrl.php');
 
         $parameter = array(
             'service' => $service,
@@ -586,7 +586,7 @@ class SdkPayment
         $service = 'batch_trans_notify';
         $pay = Setting::get('shop.pay');
 
-        $notify_url = Url::shopUrl('payment/alipay/withdrawNotifyUrl.php');
+        $notify_url = Url::shopSchemeUrl('payment/alipay/withdrawNotifyUrl.php');
 
         $parameter = array(
             'service' => $service,
@@ -621,7 +621,7 @@ class SdkPayment
         $service = 'batch_trans_notify';
         $pay = Setting::get('shop.pay');
 
-        $notify_url = Url::shopUrl('payment/alipay/withdrawNotifyUrl.php');
+        $notify_url = Url::shopSchemeUrl('payment/alipay/withdrawNotifyUrl.php');
 
         $total_fee   = 0;
         $detail_data = '';
