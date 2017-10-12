@@ -14,6 +14,7 @@ use app\common\exceptions\AppException;
 use app\common\services\credit\ConstService;
 use app\common\services\finance\BalanceChange;
 use app\common\services\finance\BalanceNoticeService;
+use app\frontend\models\Member;
 use app\frontend\models\MemberShopInfo;
 use app\frontend\modules\finance\models\Withdraw;
 use app\frontend\modules\finance\models\WithdrawSetLog;
@@ -24,6 +25,14 @@ class BalanceWithdrawController extends BalanceController
 
     public $withdrawModel;
 
+    public $memberModel;
+
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->memberModel = $this->getMemberModel();
+    }
 
     /**
      * 余额提现页面按钮接口
@@ -280,6 +289,20 @@ class BalanceWithdrawController extends BalanceController
             return true;
         }
         return false;
+    }
+
+    /**
+     * 获取验证登录会员是否存在， 因支付宝不需要验证，暂时从 BalanceController 中提出来，
+     * @return mixed
+     * @throws AppException
+     */
+    private function getMemberModel()
+    {
+        $memberModel = Member::where('uid',\YunShop::app()->getMemberId())->first();
+        if ($memberModel) {
+            return $memberModel;
+        }
+        throw new AppException('未获取到会员信息');
     }
 
 
