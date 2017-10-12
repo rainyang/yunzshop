@@ -181,14 +181,6 @@ class PreOrderDeduction extends \app\common\models\order\OrderDeduction
     }
 
     /**
-     * @return int
-     */
-    public function getDeductionId()
-    {
-        $this->getDeduction()->getId();
-    }
-
-    /**
      * @return bool
      */
     public function isEnable()
@@ -202,15 +194,16 @@ class PreOrderDeduction extends \app\common\models\order\OrderDeduction
      */
     public function isChecked()
     {
-        $deduction_ids = $this->order->getParams('deduction_ids');
+        $deduction_codes = $this->order->getParams('deduction_ids');
 
-        if (!is_array($deduction_ids)) {
-            $deduction_ids = json_decode($deduction_ids, true);
-            if (!is_array($deduction_ids)) {
-                $deduction_ids = explode(',', $deduction_ids);
+        if (!is_array($deduction_codes)) {
+            $deduction_codes = json_decode($deduction_codes, true);
+            if (!is_array($deduction_codes)) {
+                $deduction_codes = explode(',', $deduction_codes);
             }
         }
-        return in_array($this->getDeductionId(), $deduction_ids);
+
+        return in_array($this->getCode(), $deduction_codes);
 
     }
 

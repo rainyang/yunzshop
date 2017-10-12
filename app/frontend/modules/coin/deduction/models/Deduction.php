@@ -28,6 +28,11 @@ class Deduction extends BaseModel
         return app('DeductionManager')->make('GoodsDeductionManager')->bound($this->getCode());
     }
 
+    public function getId()
+    {
+        return $this->id;
+    }
+
     public function getName()
     {
         return $this->coin->name;

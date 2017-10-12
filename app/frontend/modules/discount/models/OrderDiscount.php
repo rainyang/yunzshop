@@ -69,18 +69,19 @@ class OrderDiscount
     private function _getDeductionPrice()
     {
         /**
+         * 商城开启的抵扣
          * @var Collection $deductions
          */
         $deductions = Deduction::whereEnable(1)->get();
         if($deductions->isEmpty()){
             return 0;
         }
-        //valid
-        $deductions = $deductions->(function($deduction){
-
-            $orderDeduction = new PreOrderDeduction([],$deduction,$this->order);
-
-            return $orderDeduction;
+        // 过滤调无效的
+        $deductions = $deductions->filter(function($deduction){
+            /**
+             * @var Deduction $deduction
+             */
+            return $deduction->valid();
         });
         // todo 遍历抵扣集合, 从容器中找到对应的抵扣设置注入到抵扣类中
         // 遍历抵扣集合, 实例化订单抵扣类 ,向其传入订单模型和抵扣模型 返回订单抵扣集合
@@ -97,12 +98,10 @@ class OrderDiscount
              * @var PreOrderDeduction $orderDeduction
              */
             if($orderDeduction->isChecked()){
-                return $orderDeduction->getUsablePoint();
+                return $orderDeduction->getUsablePoint()->getMoney();
             }
             return 0;
         });
-        dd($result);
-        exit;
 
         // 返回 订单抵扣金额
         return $result;
