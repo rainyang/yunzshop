@@ -15,8 +15,6 @@ class DeductionSettingManager extends Container
 {
     public function __construct()
     {
-        $this->bind('love', function ($deductionSettingManager, $attributes = []) {
-            return new DeductionSetting($attributes);
-        });
+
     }
 }

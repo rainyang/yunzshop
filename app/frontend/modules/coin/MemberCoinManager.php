@@ -16,8 +16,6 @@ class MemberCoinManager extends Container
 {
     public function __construct()
     {
-        $this->bind('love', function ($memberCoinManager, $attributes = []) {
-            return new MemberLove($attributes);
-        });
+
     }
 }

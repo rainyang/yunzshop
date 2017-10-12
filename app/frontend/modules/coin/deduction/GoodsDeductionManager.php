@@ -15,8 +15,6 @@ class GoodsDeductionManager extends Container
 {
     public function __construct()
     {
-        $this->bind('love',function($goodsDeductionManager,$attribute = []){
-            return new GoodsLoveDeduction($attribute);
-        });
+
     }
 }

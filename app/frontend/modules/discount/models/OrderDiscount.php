@@ -102,7 +102,7 @@ class OrderDiscount
             }
             return 0;
         });
-
+dd($result);exit;
         // 返回 订单抵扣金额
         return $result;
     }
