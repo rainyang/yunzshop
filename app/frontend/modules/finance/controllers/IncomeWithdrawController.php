@@ -558,8 +558,8 @@ class IncomeWithdrawController extends ApiController
 
         return [
             'type'              => $this->item['class'],
-            'key_name'          => $this->getLangTitle($this->key) ? $this->getLangTitle($this->key) : $this->item['type'],
-            'type_name'         => $this->item['title'],
+            'key_name'          => $this->item['type'],
+            'type_name'         => $this->getLangTitle($this->key) ? $this->getLangTitle($this->key) : $this->item['title'],
             'income'            => $this->amount,
             'poundage'          => $this->getItemPoundage(),
             'poundage_rate'     => $this->getItemPoundageRate(),
