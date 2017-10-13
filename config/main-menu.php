@@ -2213,7 +2213,7 @@ return [
 
     'charts' => [
         'name'          => '统计',
-        'url'           => 'charts.member.count.index',
+        'url'           => 'charts.member.count',
         'url_params'    => '',
         'permit'        => 1,
         'menu'          => 1,
@@ -2228,7 +2228,20 @@ return [
 
             'member_charts'     => [
                 'name'          => '会员统计',
-                'url'           => 'charts.member.count',
+                'url'           => 'charts.member.count.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'member_charts',
+                'parents'       => ['charts',],
+
+            ],
+
+            'relation_charts'     => [
+                'name'          => '关系排行',
+                'url'           => 'charts.member.relation',
                 'url_params'    => '',
                 'permit'        => 1,
                 'menu'          => 1,
