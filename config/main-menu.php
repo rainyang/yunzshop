@@ -2241,7 +2241,7 @@ return [
 
             'relation_charts'     => [
                 'name'          => '关系排行',
-                'url'           => 'charts.member.relation',
+                'url'           => 'charts.member.relation.index',
                 'url_params'    => '',
                 'permit'        => 1,
                 'menu'          => 1,
