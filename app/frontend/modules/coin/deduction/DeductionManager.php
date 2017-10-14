@@ -14,10 +14,10 @@ class DeductionManager extends Container
 {
     public function __construct()
     {
-        $this->bind('GoodsDeductionManager', function ($deductionManager, $attributes = []) {
+        $this->singleton('GoodsDeductionManager', function ($deductionManager, $attributes = []) {
             return new GoodsDeductionManager($attributes);
         });
-        $this->bind('DeductionSettingManager', function ($deductionManager, $attributes = []) {
+        $this->singleton('DeductionSettingManager', function ($deductionManager, $attributes = []) {
             return new DeductionSettingManager($attributes);
         });
     }

@@ -8,9 +8,7 @@
 
 namespace app\frontend\models;
 
-use app\common\models\BaseModel;
-
-class MemberCoin extends BaseModel
+abstract class MemberCoin
 {
-
+    abstract function getMaxUsablePoint();
 }

@@ -220,6 +220,8 @@ class PreOrder extends Order
         $this->save();
 
         $result = $this->push();
+        dd($this);
+        exit;
 
         if($result === false){
 

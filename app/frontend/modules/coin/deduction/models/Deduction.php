@@ -16,11 +16,15 @@ class Deduction extends BaseModel
 {
     protected $table = 'yz_deduction';
     private $setting;
+    /**
+     * @var VirtualCoin
+     */
+    private $coin;
 
-    // todo 初始化setting
-    public function coin()
+    public function __construct(array $attributes = [])
     {
-        return $this->hasOne(VirtualCoin::class, 'code', 'code');
+        parent::__construct($attributes);
+        //$this->coin = $this->newCoin();
     }
 
     public function valid()
@@ -35,7 +39,7 @@ class Deduction extends BaseModel
 
     public function getName()
     {
-        return $this->coin->name;
+        return $this->getCoin()->getName();
     }
 
     public function getCode()
@@ -43,9 +47,12 @@ class Deduction extends BaseModel
         return $this->code;
     }
 
-    public function newCoin()
+    public function getCoin()
     {
-        return app('CoinManager')->make($this->getCode());
+        if (isset($this->coin)) {
+            return $this->coin;
+        }
+        return $this->coin = app('CoinManager')->make($this->getCode());
     }
 
     public function getSetting()
@@ -53,11 +60,17 @@ class Deduction extends BaseModel
         if (isset($this->setting)) {
             return $this->setting;
         }
+        if (app('DeductionManager')->make('DeductionSettingManager')->bound($this->getCode())) {
+            return false;
+        }
         return $this->setting = app('DeductionManager')->make('DeductionSettingManager')->make($this->getCode());
     }
 
     public function isEnableDeductDispatchPrice()
     {
+        if (!$this->getSetting()) {
+            return false;
+        }
         return $this->getSetting()->isEnableDeductDispatchPrice();
     }
 }

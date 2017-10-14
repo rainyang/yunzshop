@@ -8,14 +8,16 @@
 
 namespace app\frontend\modules\coin;
 
-
+use app\frontend\modules\finance\models\MemberPoint;
 use Illuminate\Container\Container;
-use Yunshop\Love\Frontend\Models\MemberLove;
 
 class MemberCoinManager extends Container
 {
     public function __construct()
     {
 
+        $this->bind('point',function($memberCoinManger,$attribute = [],$uid){
+            return new MemberPoint($uid);
+        });
     }
 }

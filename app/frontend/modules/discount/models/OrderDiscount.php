@@ -83,6 +83,7 @@ class OrderDiscount
              */
             return $deduction->valid();
         });
+
         // todo 遍历抵扣集合, 从容器中找到对应的抵扣设置注入到抵扣类中
         // 遍历抵扣集合, 实例化订单抵扣类 ,向其传入订单模型和抵扣模型 返回订单抵扣集合
         $orderDeductions = $deductions->map(function($deduction){
@@ -93,6 +94,7 @@ class OrderDiscount
         });
         // todo 将订单抵扣集合绑定到订单的关联模型(展示,保存)
         // 求和订单抵扣集合中所有已选中的可用金额
+
         $result = $orderDeductions->sum(function($orderDeduction){
             /**
              * @var PreOrderDeduction $orderDeduction

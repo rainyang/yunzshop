@@ -15,6 +15,11 @@ class DeductionSettingManager extends Container
 {
     public function __construct()
     {
-
+        /**
+         * 积分抵扣设置模型
+         */
+        $this->bind('point', function ($deductionSettingManager, $attributes = []) {
+            return new \app\frontend\modules\finance\deduction\DeductionSetting($attributes);
+        });
     }
 }

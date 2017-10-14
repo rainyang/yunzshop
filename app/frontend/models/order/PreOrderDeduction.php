@@ -10,9 +10,9 @@ namespace app\frontend\models\order;
 
 use app\common\models\VirtualCoin;
 use app\frontend\models\MemberCoin;
-use app\frontend\models\orderGoods\PreOrderGoodsDeduction;
 use app\frontend\modules\coin\deduction\models\Deduction;
 use app\frontend\modules\coin\deduction\models\OrderGoodsCollectionDeduction;
+use app\frontend\modules\coin\deduction\orderGoods\PreOrderGoodsDeduction;
 use app\frontend\modules\order\models\PreOrder;
 
 /**
@@ -36,17 +36,13 @@ class PreOrderDeduction extends \app\common\models\order\OrderDeduction
 
     public function __construct(array $attributes = [], $deduction, $order, $coin)
     {
-        $this->setDeduction($deduction);
-        $this->setCoin($coin);
+        $this->deduction = $deduction;
+        $this->coin = $coin;
+
         $this->setOrder($order);
         $this->setOrderGoodsDeductions();
         $this->_init();
         parent::__construct($attributes);
-    }
-
-    private function setDeduction($deduction)
-    {
-        $this->deduction = $deduction;
     }
 
     private function setOrder(PreOrder $order)
@@ -62,10 +58,6 @@ class PreOrderDeduction extends \app\common\models\order\OrderDeduction
         $this->setRelation('orderGoodsDeductions', $orderGoodsDeductions);
     }
 
-    private function setCoin($coin)
-    {
-        $this->coin = $coin;
-    }
 
     /**
      * @return MemberCoin
@@ -76,8 +68,8 @@ class PreOrderDeduction extends \app\common\models\order\OrderDeduction
             return $this->memberCoin;
         }
         $code = $this->getCode();
-        $memberCoin = app('CoinManager')->make('MemberCoinManager')->make($code);
-        return $this->memberCoin = $memberCoin->whereMemberId($this->uid)->first();
+
+        return  app('CoinManager')->make('MemberCoinManager')->make($code,$this->uid);
     }
 
     private function _init()
@@ -116,6 +108,7 @@ class PreOrderDeduction extends \app\common\models\order\OrderDeduction
 
         // 购买者不存在华侨币记录
         if (!$this->getMemberCoin()) {
+
             return $result;
         }
 
@@ -129,7 +122,7 @@ class PreOrderDeduction extends \app\common\models\order\OrderDeduction
         $virtualCoin->plus($this->getDispatchPriceDeductionPoint());
 
         // 取(用户可用爱心值)与(订单抵扣爱心值)的最小值
-        $amount = min($this->getMemberCoin()->getMaxUsableLovePoint(), $virtualCoin->getMoney());
+        $amount = min($this->getMemberCoin()->getMaxUsablePoint(), $virtualCoin->getMoney());
 
         return $this->newCoin()->setMoney($amount);
     }

@@ -9,7 +9,7 @@
 namespace app\common\models;
 
 
-class VirtualCoin extends BaseModel
+abstract class VirtualCoin extends BaseModel
 {
     protected $table = 'yz_virtual_coin';
 
@@ -21,20 +21,34 @@ class VirtualCoin extends BaseModel
 
     protected $exchange_rate;
 
+    function __construct($attribute = [])
+    {
+        parent::__construct($attribute);
+        $this->exchange_rate = $this->getExchangeRate();
+        $this->name = $this->getName();
+        $this->code = $this->getCode();
+    }
+
     public function getCode()
     {
-        return $this->code;
+        return isset($this->code) ? $this->code : $this->code = $this->_getCode();
     }
 
     public function getName()
     {
-        return $this->name;
+        return isset($this->name) ? $this->name : $this->name = $this->_getName();
     }
 
     public function getExchangeRate()
     {
-        return $this->exchange_rate;
+        return isset($this->exchange_rate) ? $this->exchange_rate : $this->exchange_rate = $this->_getExchangeRate();
     }
+
+    abstract protected function _getExchangeRate();
+
+    abstract protected function _getName();
+
+    abstract protected function _getCode();
 
     /**
      * @param VirtualCoin $coin
@@ -77,10 +91,10 @@ class VirtualCoin extends BaseModel
     public function getMoney()
     {
         return $this->amountOfMoney;
-//
-//        if(isset($this->amountOfMoney)){
-//        }
-//
-//        return $this->amountOfMoney = $this->amountOfCoin * $this->exchange_rate;
+    }
+
+    public function save(array $options = [])
+    {
+        return true;
     }
 }

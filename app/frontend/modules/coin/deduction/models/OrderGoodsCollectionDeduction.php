@@ -8,9 +8,8 @@
 
 namespace app\frontend\modules\coin\deduction\models;
 
-
 use app\common\models\VirtualCoin;
-use app\frontend\models\orderGoods\PreOrderGoodsDeduction;
+use app\frontend\modules\coin\deduction\orderGoods\PreOrderGoodsDeduction;
 use app\frontend\modules\orderGoods\models\PreOrderGoodsCollection;
 
 class OrderGoodsCollectionDeduction
@@ -32,12 +31,15 @@ class OrderGoodsCollectionDeduction
      */
     public function getUsablePoint()
     {
-        $result = new VirtualCoin();
         return $this->orderGoodsCollection->reduce(function ($result, $aOrderGoods) {
             /**
              * @var PreOrderGoodsDeduction $aOrderGoods
              */
-            return $result->plus($aOrderGoods->getUsablePoint());
-        }, $result);
+            if(!isset($result)){
+                return $aOrderGoods->getUsableCoin();
+            }
+            return $aOrderGoods->getUsableCoin()->plus($result);
+        });
+
     }
 }

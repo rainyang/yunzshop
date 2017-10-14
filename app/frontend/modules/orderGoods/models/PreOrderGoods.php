@@ -17,6 +17,12 @@ use app\frontend\modules\orderGoods\price\option\NormalOrderGoodsPrice;
 use app\frontend\modules\order\models\PreOrder;
 use Illuminate\Support\Collection;
 
+/**
+ * Class PreOrderGoods
+ * @package app\frontend\modules\orderGoods\models
+ * @property float goods_price
+ * @property int goods_id
+ */
 class PreOrderGoods extends OrderGoods
 {
     protected $hidden = ['goods', 'sale','belongsToGood','hasOneGoodsDispatch'];
