@@ -9,14 +9,14 @@
   {{--<script src="{{static_url('yunshop/dist/js/common.js')}}../assets/js/jquery-3.2.1.min.js" type="text/javascript"></script>--}}
 
   <!-- Material Dashboard DEMO methods, don't include it in your project! -->
- {{-- <script src="{{static_url('assets/js/demo.js')}}"></script>
+  <!--<script src="{{static_url('assets/js/demo.js')}}"></script>
   <script type="text/javascript">
       $(document).ready(function() {
 
           // Javascript method's body can be found in assets/js/demos.js
           demo.initDashboardPageCharts();
       });
-  </script>--}}
+  </script>-->
 
   <script type="text/javascript">
       require(['bootstrap'],function(){
