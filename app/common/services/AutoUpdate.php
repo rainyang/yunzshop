@@ -376,6 +376,7 @@ class AutoUpdate
                     "Authorization: Basic " . base64_encode("{$this->_username}:{$this->_password}")
                 )
                 ->get();
+
             if ($update === false) {
                 $this->_log->info(sprintf('Could not download update file "%s"!', $updateFile));
                 return false;
@@ -399,6 +400,11 @@ class AutoUpdate
                         $this->_log->error('Unable to parse json update file!');
                         return false;
                     }
+
+                    if (isset($versions['result']) && 0 == $versions['result']) {
+                         return $versions;
+                    }
+
                     break;
                 default:
                     $this->_log->error(sprintf('Unknown file extension "%s"', $updateFileExtension));

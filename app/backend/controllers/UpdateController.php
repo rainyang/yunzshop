@@ -66,15 +66,28 @@ class UpdateController extends BaseController
         $update = new AutoUpdate(null, null, 300);
         $update->setUpdateFile('check_app.json');
         $update->setCurrentVersion(config('version'));
-        $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
+
+        if (config('app.debug')) {
+            $update->setUpdateUrl('http://yun-yzshop.com/update'); //Replace with your server update directory
+        } else {
+            $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
+        }
+
         $update->setBasicAuth($key, $secret);
         //$update->setBasicAuth();
 
+        $res = $update->checkUpdate();
+
         //Check for a new update
-        if ($update->checkUpdate() === false) {
+        if ($res === false) {
             $result['msg'] = 'Could not check for updates! See log file for details.';
             response()->json($result)->send();
             return;
+        }
+
+        if (isset($res['result']) && 0 == $res['result']) {
+            $res['updated'] = 0;
+            return response()->json($res)->send();
         }
 
         if ($update->newVersionAvailable()) {
