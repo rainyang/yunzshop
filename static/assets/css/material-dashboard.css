@@ -12348,7 +12348,7 @@ footer .btn {
 }
 
 .card .category:not([class*="text-"]) {
-    color: #999999;
+    color: #201f1f;
     font-size: 14px;
 }
 
