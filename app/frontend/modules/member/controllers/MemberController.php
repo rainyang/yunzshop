@@ -720,10 +720,10 @@ class MemberController extends ApiController
             $white = imagecolorallocate($targetImg, 255, 255, 255);
             imagefill($targetImg, 0, 0, $white);
 
-            $imgSource = imagecreatefromstring(file_get_contents($shopImg));
-            $logoSource = imagecreatefromstring(file_get_contents($shopLogo));
+            $imgSource = imagecreatefromstring(\Curl::to($shopImg)->get());
+            $logoSource = imagecreatefromstring(\Curl::to($shopLogo)->get());
             $qrcode = MemberModel::getAgentQR();
-            $qrSource = imagecreatefromstring(file_get_contents($qrcode));
+            $qrSource = imagecreatefromstring(\Curl::to($qrcode)->get());
             $fingerPrintImg = imagecreatefromstring(file_get_contents(base_path() . '/static/app/images/ewm.png'));
             $mergeData = [
                 'dst_left' => $space,
