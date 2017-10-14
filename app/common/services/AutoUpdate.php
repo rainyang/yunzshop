@@ -10,6 +10,7 @@ namespace app\common\services;
 
 
 use app\common\models\Setting;
+use Illuminate\Filesystem\Filesystem;
 use Ixudra\Curl\Facades\Curl;
 use \vierbergenlars\SemVer\version;
 use \vierbergenlars\SemVer\expression;
@@ -815,10 +816,16 @@ class AutoUpdate
             // Read update file from update server
             //$update = @file_get_contents($updateFile, $this->_useBasicAuth());
 
+            $data = [
+                'plugins' => $this->getDirsByPath('plugins'),
+                'vendor'  => $this->getDirsByPath('vendor')
+            ];
+
             $update = Curl::to($updateFile)
                 ->withHeader(
                     "Authorization: Basic " . base64_encode("{$this->_username}:{$this->_password}")
                 )
+                ->withData($data)
                 ->asJsonResponse(true)
                 ->get();
 
@@ -858,5 +865,22 @@ class AutoUpdate
 
             return $download;
         }
+    }
+
+    public function getDirsByPath($path, Filesystem $filesystem = null)
+    {
+        $dirs = [];
+
+        if (is_null($filesystem)) {
+            $filesystem = app(Filesystem::class);
+        }
+
+        if ($all_dir = $filesystem->directories(base_path($path))) {
+            foreach ($all_dir as $dir) {
+                $dirs[] = substr($dir, strrpos($dir, '/')+1);
+            }
+        }
+
+        return $dirs;
     }
 }

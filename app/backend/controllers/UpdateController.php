@@ -96,9 +96,10 @@ class UpdateController extends BaseController
         set_time_limit(0);
 
         $filesystem = app(Filesystem::class);
+        $update = new AutoUpdate(null, null, 300);
 
-        $filter_file = ['.env', '.env.example', '.git', '.gitignore', '', 'composer.json', 'composer.lock', 'README.md'];
-        $plugins_dir = $this->getMemberPlugins($filesystem);
+        $filter_file = ['composer.json', 'composer.lock', 'README.md'];
+        $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
 
         $result = ['msg' => '网络请求超时', 'last_version' => '', 'updated' => 0];
         $key = Setting::get('shop.key')['key'];
@@ -345,18 +346,4 @@ class UpdateController extends BaseController
         response()->json($resultArr)->send();
         return;
     }
-
-    private function getMemberPlugins(Filesystem $filesystem)
-    {
-        $plugins_dir = [];
-
-        if ($all_dir = $filesystem->directories(base_path('plugins'))) {
-            foreach ($all_dir as $dir) {
-                $plugins_dir[] = substr($dir, strrpos($dir, '/')+1);
-            }
-        }
-
-        return $plugins_dir;
-    }
-
 }
