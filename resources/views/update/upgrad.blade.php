@@ -95,8 +95,16 @@
                 console.log("Downloading finished");
                 console.log(ret);
 
-                if (ret.msg) {
+                if (0 == ret.result) {
                     $("#upgrad_file").html('<li><br/>' + ret.msg + '</li>');
+                }
+
+                if (99 == ret.result) {
+                    var msg = '';
+                    msg+="<li><br/>当前版本：<span style='color: #dd4b39'>" + ret.last_version +"</span></li>"
+                    msg+="<li><br/>恭喜您，您现在是最新版本！</li>"
+
+                    $("#upgrad_file").html('<li><br/>' + msg + '</li>');
                 }
 
                 if (1 == ret.result) {
