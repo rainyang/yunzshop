@@ -2222,7 +2222,7 @@ return [
         'top_show'      => 1,               //顶部导航是否显示
         'left_first_show'   => 1,           //左侧一级导航是否显示
         'left_second_show'  => 1,           //左侧二级导航是否显示
-        'item'          => 'system',
+        'item'          => 'charts',
         'parents'       => [],
         'child'         => [
 
@@ -2241,14 +2241,42 @@ return [
 
             'relation_charts'     => [
                 'name'          => '关系排行',
-                'url'           => 'charts.member.relation.index',
+                'url'           => 'charts.member.relation',
                 'url_params'    => '',
                 'permit'        => 1,
                 'menu'          => 1,
                 'icon'          => 'fa-bar-chart-o',
                 'sort'          => 0,
-                'item'          => 'member_charts',
+                'item'          => 'relation_charts',
                 'parents'       => ['charts',],
+                'child'         => [
+
+                    'relation_count_charts'     => [
+                        'name'          => '下线排行',
+                        'url'           => 'charts.member.relation.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => 'fa-bar-chart-o',
+                        'sort'          => 0,
+                        'item'          => 'relation_count_charts',
+                        'parents'       => ['charts','relation_charts'],
+
+                    ],
+
+                    'relation_order_charts'     => [
+                        'name'          => '订单排行',
+                        'url'           => 'charts.member.relation.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => 'fa-bar-chart-o',
+                        'sort'          => 0,
+                        'item'          => 'relation_order_charts',
+                        'parents'       => ['charts','relation_charts'],
+
+                    ],
+                ],
 
             ],
 
