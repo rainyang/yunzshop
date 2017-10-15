@@ -2017,6 +2017,19 @@ return [
                         ],
                     ],
 
+                    'withdraw_statistics'  => [
+                        'name'              => '提现统计',
+                        'url'               => 'finance.withdraw-statistics.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => 'fa-gear',
+                        'sort'              => 0,
+                        'item'              => 'withdraw_statistics',
+                        'parents'           => ['finance','withdraw'],
+                        'child'             => []
+                    ],
+
                     'withdraw_records'  => [
                         'name'              => '提现记录',
                         'url'               => 'finance.withdraw',
