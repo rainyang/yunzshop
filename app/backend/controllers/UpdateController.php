@@ -178,7 +178,7 @@ class UpdateController extends BaseController
 
                 $tmpdir = storage_path('app/public/tmp/'. date('ymd'));
                 if (!is_dir($tmpdir)) {
-                    $filesystem->makeDirectory($tmpdir, '0777', true);
+                    $filesystem->makeDirectory($tmpdir, '0755', true);
                 }
 
                 $ret['files'] = $files;
@@ -235,7 +235,7 @@ class UpdateController extends BaseController
                     $upgrade['files'] = $files;
                     $tmpdir           = storage_path('app/public/tmp/'. date('ymd'));
                     if (!is_dir($tmpdir)) {
-                        $filesystem->makeDirectory($tmpdir, '0777', true);
+                        $filesystem->makeDirectory($tmpdir, '0755', true);
                     }
                     file_put_contents($tmpdir . "/file.txt", json_encode($upgrade));
 
@@ -271,7 +271,7 @@ class UpdateController extends BaseController
                 $dirpath = dirname($path);
 
                 if (!is_dir(base_path($dirpath))) {
-                    $filesystem->makeDirectory(base_path($dirpath), '0777', true);
+                    $filesystem->makeDirectory(base_path($dirpath), '0755', true);
                 }
 
                 $content = base64_decode($ret['content']);
@@ -293,7 +293,7 @@ class UpdateController extends BaseController
                 $tmpdir           = storage_path('app/public/tmp/'. date('ymd'));
 
                 if (!is_dir($tmpdir)) {
-                    $filesystem->makeDirectory($tmpdir, '0777', true);
+                    $filesystem->makeDirectory($tmpdir, '0755', true);
                 }
 
                 file_put_contents($tmpdir . "/file.txt", json_encode($upgrade));
