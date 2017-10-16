@@ -68,6 +68,40 @@ class SettingController extends BaseController
 
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     * 会员注册协议
+     */
+    public function getMemberProtocol()
+    {
+        $member_protocol = Setting::get('shop.member.protocol');
+        $member_protocol['content'] = html_entity_decode($member_protocol['content']);
+
+        return $this->successJson('获取注册协议成功', $member_protocol);
+    }
+
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     * 注册自定义表单接口
+     */
+    public function getRegisterDiyForm()
+    {
+        $member_set = Setting::get('shop.member');
+
+        $is_diyform = \YunShop::plugin()->get('diyform');
+        $data = [
+            'form_id' => 0,
+            'status' => 0,
+        ];
+        if($is_diyform){
+            $data['form_id'] = $member_set['form_id'];
+            $data['status'] = $data['form_id'] ? 1 : 0;
+        }
+
+        return $this->successJson('获取成功', $data);
+    }
+
+
     public function getLangSetting()
     {
         $lang = Setting::get('shop.lang.lang');
