@@ -55,4 +55,7 @@ class Member extends \app\backend\modules\member\models\Member
         return $query->where('gender', 0);
     }
 
+
+
+
 }

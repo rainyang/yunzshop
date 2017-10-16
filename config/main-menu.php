@@ -1895,9 +1895,22 @@ return [
         'parents'       => [],
         'child'         => [
 
-            'member_charts'     => [
+            'member_count_charts'     => [
                 'name'          => '会员统计',
-                'url'           => 'charts.member.count',
+                'url'           => 'charts.member.count.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'member_charts',
+                'parents'       => ['charts',],
+
+            ],
+
+            'member_relation_charts'     => [
+                'name'          => '关系统计',
+                'url'           => 'charts.member.relation.index',
                 'url_params'    => '',
                 'permit'        => 1,
                 'menu'          => 1,
