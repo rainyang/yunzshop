@@ -55,8 +55,8 @@
                     <tr>
                         <th style="text-align: center; height: 60px;">提现日期</th>
                         <th style="text-align: center;">提现到余额</th>
-                        <th style="text-align: center;">提现到支付宝</th>
                         <th style="text-align: center;">提现到微信</th>
+                        <th style="text-align: center;">提现到支付宝</th>
                         <th style="text-align: center;">总计提现金额</th>
 
                     </tr>
