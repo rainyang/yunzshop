@@ -364,7 +364,8 @@
                     }
                 }).done(function (json) {
                     if (json.status == 1) {
-                         alert('更新订单状态成功');
+                       //  alert('更新订单状态成功');
+                        location.reload();
                     } else {
                         alert('更新订单状态失败');
                     }
