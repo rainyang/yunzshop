@@ -301,7 +301,7 @@ class UpdateController extends BaseController
                 if (intval($success + 1) == count($files)) {
                     //更新完执行数据表
                     \Log::debug('----CLI----');
-                    $plugins_dir = $this->getMemberPlugins($filesystem);
+                    $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
                     \Artisan::call('update:version' ,['version'=>$plugins_dir]);
 
                     $status = 2;
