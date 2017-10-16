@@ -33,7 +33,7 @@
 
                         <div class="form-group col-sm-1 col-lg-1 col-xs-12">
                             <div class="">
-                                <input type="submit" class="btn btn-block btn-success" value="{{ trans('Yunshop\Love::member_love.button.search') }}">
+                                <input type="submit" class="btn btn-block btn-success" value="搜索">
                             </div>
 
                         </div>
@@ -59,14 +59,13 @@
 
 
 
-                        <?php $i = 1; ?>
                         @foreach($data as $key => $item)
                         <tr>
                             <td>
-                                @if($i <= 3)
-                                <labe class='label label-danger' style='padding:8px;'>&nbsp;{{ $i }}&nbsp;</labe>
+                                @if($key <= 2)
+                                <labe class='label label-danger' style='padding:8px;'>&nbsp;{{ $key + 1 }}&nbsp;</labe>
                                 @else
-                                <labe class='label label-default'  style='padding:8px;'>&nbsp;{{ $i }}&nbsp;</labe>
+                                <labe class='label label-default'  style='padding:8px;'>&nbsp;{{ $key + 1 }}&nbsp;</labe>
                                 @endif
                             </td>
                             <td>{{ $item['member_id'] }}</td>
@@ -85,7 +84,6 @@
                             <td>{{ $item['lv3_order_money'] }}</td>
                             <td>{{ $item['order_money_total'] }}</td>
                         </tr>
-                        <?php $i++; ?>
                         @endforeach
 
 

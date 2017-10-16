@@ -1908,43 +1908,43 @@ return [
 
             ],
 
-            'member_relation_charts'     => [
+            'member_offline_charts'     => [
                 'name'          => '关系统计',
-                'url'           => 'charts.member.relation.index',
+                'url'           => 'charts.member.offline-order.index',
                 'url_params'    => '',
                 'permit'        => 1,
                 'menu'          => 1,
                 'icon'          => 'fa-bar-chart-o',
                 'sort'          => 0,
-                'item'          => 'member_relation_charts',
+                'item'          => 'member_offline_charts',
                 'parents'       => ['charts',],
                 'child'         => [
 
 
 
-                    'member_relation_offline_charts'     => [
+                    'member_offline_count_charts'     => [
                         'name'          => '下线人数排行',
-                        'url'           => 'charts.member.relation.index',
+                        'url'           => 'charts.member.offline-count.index',
                         'url_params'    => '',
                         'permit'        => 1,
                         'menu'          => 1,
                         'icon'          => '',
                         'sort'          => 0,
-                        'item'          => 'member_relation_order_charts',
-                        'parents'       => ['charts','member_relation_charts'],
+                        'item'          => 'member_offline_count_charts',
+                        'parents'       => ['charts','member_offline_charts'],
 
                     ],
 
-                    'member_relation_order_charts'     => [
+                    'member_offline_order_charts'     => [
                         'name'          => '下线订单排行',
-                        'url'           => 'charts.member.relation.index',
+                        'url'           => 'charts.member.offline-order.index',
                         'url_params'    => '',
                         'permit'        => 1,
                         'menu'          => 1,
                         'icon'          => '',
                         'sort'          => 0,
-                        'item'          => 'member_relation_order_charts',
-                        'parents'       => ['charts','member_relation_charts'],
+                        'item'          => 'member_offline_order_charts',
+                        'parents'       => ['charts','member_offline_charts'],
 
                     ],
                 ]
