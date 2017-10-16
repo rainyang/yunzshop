@@ -118,41 +118,4 @@ class TestController extends BaseController
 
         dd($msg);
     }
-
-    public function recharge()
-    {
-        $pay = [
-            ['out_trade_no'=> 'RV20171011170920601697', 'trade_no'=>''],
-            ['out_trade_no'=> 'RV20171011151725879088', 'trade_no'=>'']
-        ];
-
-        foreach ($pay as $data) {
-            (new BalanceRechargeResultService())->payResult([
-                'order_sn' => $data['out_trade_no'],
-                'pay_sn' => $data['trade_no']
-            ]);
-        }
-    }
-
-    public function charge()
-    {
-        $pay = [
-            ['out_trade_no'=> 'PN20171011163059oi', 'trade_no'=>'4200000013201710117437085403']
-        ];
-
-        foreach ($pay as $data) {
-            $pay_order_model = PayOrder::getPayOrderInfo($data['out_trade_no'])->first();
-
-            if ($pay_order_model) {
-                $pay_order_model->status = 2;
-                $pay_order_model->trade_no = $data['trade_no'];
-                $pay_order_model->save();
-            }
-
-            $orderPay = OrderPay::where('pay_sn', $data['out_trade_no'])->first();
-
-
-            OrderService::ordersPay(['order_pay_id' => $orderPay->id, 'pay_type_id' => 1]);
-        }
-    }
 }
