@@ -18,12 +18,12 @@
 
                                     <div class='form-input'>
                                         <p class="input-group-addon" >会员ID</p>
-                                        <input class="form-control price" style="width: 135px;" type="text" name="search[min_love]" value="{{ $search['min_love'] or ''}}">
+                                        <input class="form-control price" style="width: 135px;" type="text" name="search[member_id]" value="{{ $search['member_id'] or ''}}">
                                     </div>
 
                                     <div class='form-input'>
                                         <p class="input-group-addon" >会员信息</p>
-                                        <input class="form-control price" style="width: 135px;" type="text" name="search[min_love]" value="{{ $search['min_love'] or ''}}">
+                                        <input class="form-control price" style="width: 135px;" type="text" name="search[member_info]" value="{{ $search['member_info'] or ''}}">
                                     </div>
 
                                 </div>
@@ -59,28 +59,39 @@
 
 
 
+                        <?php $i = 1; ?>
                         @foreach($data as $key => $item)
                         <tr>
                             <td>
-                                @if($key <= 2)
-                                <labe class='label label-danger' style='padding:8px;'>&nbsp;{{ $key + 1 }}&nbsp;</labe>
+                                @if($i <= 3)
+                                <labe class='label label-danger' style='padding:8px;'>&nbsp;{{ $i }}&nbsp;</labe>
                                 @else
-                                <labe class='label label-default'  style='padding:8px;'>&nbsp;{{ $key + 1 }}&nbsp;</labe>
+                                <labe class='label label-default'  style='padding:8px;'>&nbsp;{{ $i }}&nbsp;</labe>
                                 @endif
                             </td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td>{{ $item['member_id'] }}</td>
+                            <td>
+                                @if(!empty($item['avatar']))
+                                    <img src='{{$item['avatar']}}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
+                                @endif
+                                @if(empty($item['member_name']))
+                                    未更新
+                                @else
+                                    {{$item['member_name']}}
+                                @endif
+                            </td>
+                            <td>{{ $item['lv1_order_money'] }}</td>
+                            <td>{{ $item['lv2_order_money'] }}</td>
+                            <td>{{ $item['lv3_order_money'] }}</td>
+                            <td>{{ $item['order_money_total'] }}</td>
                         </tr>
+                        <?php $i++; ?>
                         @endforeach
 
 
 
                     </table>
-                    {$pager}
+                    {!! $page !!}
                 </div>
             </div>
         </div>

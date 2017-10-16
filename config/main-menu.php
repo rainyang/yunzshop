@@ -1903,7 +1903,7 @@ return [
                 'menu'          => 1,
                 'icon'          => 'fa-bar-chart-o',
                 'sort'          => 0,
-                'item'          => 'member_charts',
+                'item'          => 'member_count_charts',
                 'parents'       => ['charts',],
 
             ],
@@ -1916,8 +1916,38 @@ return [
                 'menu'          => 1,
                 'icon'          => 'fa-bar-chart-o',
                 'sort'          => 0,
-                'item'          => 'member_charts',
+                'item'          => 'member_relation_charts',
                 'parents'       => ['charts',],
+                'child'         => [
+
+
+
+                    'member_relation_offline_charts'     => [
+                        'name'          => '下线人数排行',
+                        'url'           => 'charts.member.relation.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_relation_order_charts',
+                        'parents'       => ['charts','member_relation_charts'],
+
+                    ],
+
+                    'member_relation_order_charts'     => [
+                        'name'          => '下线订单排行',
+                        'url'           => 'charts.member.relation.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_relation_order_charts',
+                        'parents'       => ['charts','member_relation_charts'],
+
+                    ],
+                ]
 
             ],
 
