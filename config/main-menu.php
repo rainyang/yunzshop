@@ -1815,7 +1815,7 @@ return [
 
             'finance_point'     => [
                 'name'              => '积分管理',
-                'url'               => '',
+                'url'               => 'finance.point-member.index',
                 'url_params'        => '',
                 'permit'            => 1,
                 'menu'              => 1,
