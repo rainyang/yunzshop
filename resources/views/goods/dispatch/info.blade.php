@@ -272,7 +272,7 @@
                                         <td style="padding:10px;" class="{{$key}}">
                                             <span class="areas">{{$piece['areas']}}</span>
 
-                                            <input type="hidden" value="{{$piece['area_id']}}" class="form-control areas-name"
+                                            <input type="hidden" value="{{$piece['areas']}}" class="form-control areas-name"
                                                    name="dispatch[piece][{{$key}}][areas]">
                                             <input type="hidden" value="{{$piece['area_ids']}}" class="form-control areas-ids"
                                                    name="dispatch[piece][{{$key}}][area_ids]">
