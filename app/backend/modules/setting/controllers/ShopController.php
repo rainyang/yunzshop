@@ -273,11 +273,11 @@ class ShopController extends BaseController
         Setting::set('alipay-mobile.sign_type', 'RSA');
         Setting::set('alipay-mobile.private_key_path', storage_path() . '/cert/private_key.pem');
         Setting::set('alipay-mobile.public_key_path', storage_path() . '/cert/public_key.pem');
-        Setting::set('alipay-mobile.notify_url', Url::shopUrl('payment/alipay/notifyUrl.php'));
+        Setting::set('alipay-mobile.notify_url', Url::shopSchemeUrl('payment/alipay/notifyUrl.php'));
         Setting::set('alipay-web.key', $data['alipay_secret']);
         Setting::set('alipay-web.sign_type', 'MD5');
-        Setting::set('alipay-web.notify_url', Url::shopUrl('payment/alipay/notifyUrl.php'));
-        Setting::set('alipay-web.return_url', Url::shopUrl('payment/alipay/returnUrl.php'));
+        Setting::set('alipay-web.notify_url', Url::shopSchemeUrl('payment/alipay/notifyUrl.php'));
+        Setting::set('alipay-web.return_url', Url::shopSchemeUrl('payment/alipay/returnUrl.php'));
     }
 
 

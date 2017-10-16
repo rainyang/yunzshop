@@ -81,7 +81,17 @@ return [
                         'item'          => 'setting_shop',
                         'parents'       => ['system', 'Setting'],
                     ],
-
+                    'setting_lang'  => [
+                        'name'          => '语言设置',
+                        'url'           => 'setting.lang.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => 'fa-sliders',
+                        'sort'          => 0,
+                        'item'          => 'setting_lang',
+                        'parents'       => ['system', 'Setting'],
+                    ],
                     'setting_member' => [
                         'name'          => '会员设置',
                         'url'           => 'setting.shop.member',
