@@ -70,7 +70,7 @@ class DispatchController extends BaseController
                 //数据保存
                 if ($dispatchModel->save()) {
                     //显示信息并跳转
-                    return $this->message('配送模板创建成功', '');
+                    return $this->message('配送模板创建成功', Url::absoluteWeb('goods.dispatch.edit',['id' => $dispatchModel->id]));
                 } else {
                     $this->error('配送模板创建失败');
                 }
