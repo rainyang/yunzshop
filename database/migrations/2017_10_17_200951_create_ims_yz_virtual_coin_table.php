@@ -12,7 +12,7 @@ class CreateImsYzVirtualCoinTable extends Migration {
 	 */
 	public function up()
 	{
-        if (!Schema::hasTable('yz_deduction')) {
+        if (!Schema::hasTable('yz_virtual_coin')) {
 
             Schema::create('yz_virtual_coin', function (Blueprint $table) {
                 $table->increments('id')->comment('虚拟币');
