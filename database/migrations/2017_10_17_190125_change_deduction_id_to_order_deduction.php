@@ -18,16 +18,18 @@ class ChangeDeductionIdToOrderDeduction extends Migration
             if (\Schema::hasColumn('yz_order_deduction', 'deduction_id')) {
                 \Schema::table('yz_order_deduction', function ($table) {
 
-                    $table->string('deduction_id', 50)->default('')->change();
                     $table->renameColumn('deduction_id', 'code');
+                    $table->string('code', 50)->default('')->change();
 
-                    $table->decimal('qty', 10)->default(0.00)->change();
                     $table->renameColumn('qty', 'coin');
+                    $table->decimal('coin', 10)->default(0.00)->change();
                 });
 
             }
             // id改为对应code
             $orderDeductions = \app\common\models\order\OrderDeduction::get();
+           
+
             $orderDeductions->each(function ($orderDeductions) {
                 if ($orderDeductions->code == 1) {
                     $orderDeductions->code = 'point';
