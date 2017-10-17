@@ -6,19 +6,25 @@
  * Time: 上午10:41
  */
 
-namespace app\frontend\modules\coin\deduction;
+namespace app\frontend\modules\deduction;
 
 use Illuminate\Container\Container;
 
+/**
+ * 抵扣容器
+ * Class DeductionManager
+ * @package app\frontend\modules\deduction
+ */
 class DeductionManager extends Container
 {
     public function __construct()
     {
-        $this->singleton('GoodsDeductionManager', function ($deductionManager, $attributes = []) {
-            return new GoodsDeductionManager($attributes);
-        });
         $this->singleton('DeductionSettingManager', function ($deductionManager, $attributes = []) {
             return new DeductionSettingManager($attributes);
         });
+        $this->singleton('GoodsDeductionManager', function ($deductionManager, $attributes = []) {
+            return new GoodsDeductionManager($attributes);
+        });
+
     }
 }

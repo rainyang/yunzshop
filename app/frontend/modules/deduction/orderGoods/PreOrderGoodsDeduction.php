@@ -6,15 +6,21 @@
  * Time: 下午7:10
  */
 
-namespace app\frontend\modules\coin\deduction\orderGoods;
+namespace app\frontend\modules\deduction\orderGoods;
 
+use app\common\models\order\OrderDeduction;
 use app\common\models\VirtualCoin;
-use app\frontend\modules\coin\deduction\models\Deduction;
-use app\frontend\modules\coin\deduction\orderGoods\amount\OrderGoodsDeductionAmount;
+use app\frontend\modules\deduction\DeductionSettingManagerInterface;
+use app\frontend\modules\deduction\models\Deduction;
+use app\frontend\modules\deduction\orderGoods\amount\FixedAmount;
+use app\frontend\modules\deduction\orderGoods\amount\GoodsPriceProportion;
+use app\frontend\modules\deduction\orderGoods\amount\Invalid;
+use app\frontend\modules\deduction\orderGoods\amount\OrderGoodsDeductionAmount;
 use app\frontend\modules\orderGoods\models\PreOrderGoods;
 use \app\common\models\orderGoods\OrderGoodsDeduction;
 
 /**
+ * 订单商品抵扣
  * Class PreOrderGoodsDeduction
  * @package app\frontend\models\orderGoods
  * @property string code
@@ -23,6 +29,7 @@ use \app\common\models\orderGoods\OrderGoodsDeduction;
  * @property float usable_coin
  * @property float used_amount
  * @property float used_coin
+ * @property int uid
  */
 class PreOrderGoodsDeduction extends OrderGoodsDeduction
 {
@@ -32,19 +39,30 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
     public $orderGoods;
 
     /**
-     * @var \app\frontend\modules\coin\deduction\GoodsDeduction
+     * @var \app\frontend\modules\deduction\GoodsDeduction
      */
     public $goodsDeduction;
     /**
+     * 抵扣模型
      * @var Deduction
      */
     private $deduction;
+    /**
+     * 可用的虚拟币
+     * @var VirtualCoin
+     */
     private $usablePoint;
+    /**
+     * 订单抵扣模型
+     * @var OrderDeduction
+     */
     private $orderDeduction;
     /**
+     * 订单商品金额类
      * @var OrderGoodsDeductionAmount
      */
     private $orderGoodsDeductionAmount;
+
     public function __construct(array $attributes = [], $orderGoods, $orderDeduction, $deduction)
     {
         parent::__construct($attributes);
@@ -106,13 +124,17 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
 
     private function setGoodsDeduction()
     {
-        $goodsDeduction = app('DeductionManager')->make('GoodsDeductionManager')->make($this->getCode());
-        /**
-         * @var \app\frontend\modules\coin\deduction\GoodsDeduction $goodsDeduction
-         */
-        $this->goodsDeduction = $goodsDeduction->where('goods_id',$this->orderGoods->goods_id)->first();
-    }
 
+        /**
+         * @var DeductionSettingManagerInterface $aDeductionSettingManager
+         */
+        $aDeductionSettingManager = app('DeductionManager')->make('DeductionSettingManager')->make($this->getCode());
+
+        $deductionSettingCollection = $aDeductionSettingManager->getDeductionSettingCollection($this->orderGoods->goods);
+
+        $this->goodsDeduction = app('DeductionManager')->make('GoodsDeductionManager')->make($this->getCode(), $deductionSettingCollection, $this->orderGoods->goods);
+
+    }
 
     /**
      * 订单抵扣模型
@@ -126,14 +148,35 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
         }
         return $this->orderDeduction;
     }
-    private function getOrderGoodsDeductionAmount(){
+
+    /**
+     * @return OrderGoodsDeductionAmount
+     */
+    private function getOrderGoodsDeductionAmount()
+    {
+
+        // 从商品抵扣中获取到类型
+        switch ($this->getGoodsDeduction()->getDeductionAmountCalculationType()) {
+            case 'FixedAmount':
+                $this->orderGoodsDeductionAmount = new FixedAmount($this->orderGoods, $this->getGoodsDeduction());
+                break;
+            case 'GoodsPriceProportion':
+                $this->orderGoodsDeductionAmount = new GoodsPriceProportion($this->orderGoods, $this->getGoodsDeduction());
+                break;
+            default:
+                $this->orderGoodsDeductionAmount = new Invalid($this->orderGoods, $this->getGoodsDeduction());
+                break;
+        }
         return $this->orderGoodsDeductionAmount;
     }
-    private function getGoodsDeduction(){
+
+    private function getGoodsDeduction()
+    {
         return $this->goodsDeduction;
     }
+
     /**
-     * 获取订单商品可用的爱心值
+     * 获取订单商品可用的虚拟币
      * @return VirtualCoin
      */
     public function getUsableCoin()
@@ -142,14 +185,17 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
             return $this->usablePoint;
         }
 
-        if (!$this->getGoodsDeduction()) {
+        if (!$this->getGoodsDeduction() || !$this->getGoodsDeduction()->deductible($this->orderGoods->goods)) {
+            dd($this->getGoodsDeduction());
+            dd($this->getGoodsDeduction()->deductible($this->orderGoods->goods));
+            exit;
+
             // 购买商品不存在抵扣记录
             return $this->newCoin();
         }
-        // 按比例
+
         $amount = $this->getOrderGoodsDeductionAmount()->getAmount();
-//        // todo 按固定金额
-//        // todo 抽象出抵扣价格类,按金额和按比例两个方法   金额,比例两个类 ,各有一个获取金额方法
+
         return $this->usablePoint = $this->newCoin()->setMoney($amount);
     }
 

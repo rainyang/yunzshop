@@ -1,0 +1,31 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: shenyang
+ * Date: 2017/10/11
+ * Time: 上午10:41
+ */
+
+namespace app\frontend\modules\deduction;
+
+use app\frontend\modules\finance\deduction\PointGoodsDeduction;
+use Illuminate\Container\Container;
+use Yunshop\Love\Frontend\Models\GoodsLove;
+
+/**
+ * 商品抵扣容器
+ * Class GoodsDeductionManager
+ * @package app\frontend\modules\deduction
+ */
+class GoodsDeductionManager extends Container
+{
+    public function __construct()
+    {
+        /**
+         * 积分抵扣设置模型
+         */
+        $this->bind('point', function ($deductionSettingManager,$deductionSettingCollection) {
+            return new PointGoodsDeduction($deductionSettingCollection);
+        });
+    }
+}

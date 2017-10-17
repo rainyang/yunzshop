@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Schema;
  * @property Collection orderDeductions
  * @property Collection orderCoupons
  * @property Collection orderSettings
+ * @property string order_sn
  */
 class PreOrder extends Order
 {

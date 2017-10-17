@@ -4,7 +4,7 @@ namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
 use app\common\services\password\PasswordService;
-use app\frontend\modules\coin\deduction\models\Deduction;
+use app\frontend\modules\deduction\models\Deduction;
 
 /**
  * Created by PhpStorm.

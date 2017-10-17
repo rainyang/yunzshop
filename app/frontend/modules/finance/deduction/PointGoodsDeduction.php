@@ -8,33 +8,30 @@
 
 namespace app\frontend\modules\finance\deduction;
 
-use app\frontend\modules\coin\deduction\GoodsDeduction;
+use app\frontend\modules\deduction\GoodsDeduction;
 
-class PointGoodsDeduction implements GoodsDeduction
+class PointGoodsDeduction extends GoodsDeduction
 {
-    private $goodsSale;
-    function __construct($goods)
+    // todo 有问题,先实现
+    public function getFixedAmount()
     {
-        $this->goodsSale = $goods->hasOneSale;
+        return $this->getDeductionSettingCollection()->getImportantAndValidFixedAmount();
     }
 
-    public function getGoodsDeductionProportion()
+    // todo 有问题,先实现
+    public function getPriceProportion()
     {
-        $maxPointDeduct = $this->goodsSale->max_point_deduct;
-        if ($maxPointDeduct === '0') {
-            return 0;
-        }
-        if ($maxPointDeduct) {
-            if (strexists($maxPointDeduct, '%')) {
-                // todo setting
-                $goods_point = floatval(str_replace('%', '', $maxPointDeduct) / 100 * $goodsPrice / $this->point_set['money']);
-            } else {
-                $goods_point = $maxPointDeduct * $goods_model->total / $this->point_set['money'];
-            }
-            return $goods_point;
-        } else if ($this->point_set['money_max'] > 0 && empty($maxPointDeduct)) {
-            $goods_point = $this->point_set['money_max'] / 100 * $goodsPrice / $this->point_set['money'];
-            return $goods_point;
-        }
+        return $this->getDeductionSettingCollection()->getImportantAndValidPriceProportion();
+    }
+
+    // todo 有问题,先实现
+    public function getDeductionAmountCalculationType()
+    {
+        return $this->getDeductionSettingCollection()->getImportantAndValidCalculationType();
+    }
+
+    public function deductible($goods)
+    {
+        return true;
     }
 }

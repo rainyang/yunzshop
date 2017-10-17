@@ -6,7 +6,7 @@
  * Time: 上午10:14
  */
 
-namespace app\frontend\modules\coin\deduction\models;
+namespace app\frontend\modules\deduction\models;
 
 
 use app\common\models\BaseModel;

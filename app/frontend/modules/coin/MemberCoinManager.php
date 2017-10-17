@@ -8,7 +8,7 @@
 
 namespace app\frontend\modules\coin;
 
-use app\frontend\modules\finance\models\MemberPoint;
+use app\frontend\modules\finance\models\MemberPointCoin;
 use Illuminate\Container\Container;
 
 class MemberCoinManager extends Container
@@ -16,8 +16,8 @@ class MemberCoinManager extends Container
     public function __construct()
     {
 
-        $this->bind('point',function($memberCoinManger,$attribute = [],$uid){
-            return new MemberPoint($uid);
+        $this->bind('point',function($memberCoinManger,$uid){
+            return new MemberPointCoin($uid);
         });
     }
 }

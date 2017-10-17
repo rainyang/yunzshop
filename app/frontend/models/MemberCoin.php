@@ -8,7 +8,24 @@
 
 namespace app\frontend\models;
 
+use app\common\models\VirtualCoin;
+
 abstract class MemberCoin
 {
-    abstract function getMaxUsablePoint();
+    /**
+     * @var Member
+     */
+    protected $member;
+
+    function __construct($member)
+    {
+        $this->member = $member;
+    }
+    abstract public function getMaxUsableCoin();
+
+    /**
+     * @param VirtualCoin $coin
+     * @return bool
+     */
+    abstract public function consume(VirtualCoin $coin,$data);
 }

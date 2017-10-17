@@ -16,7 +16,6 @@ abstract class VirtualCoin extends BaseModel
     protected $attributes = [
         'amountOfCoin' => 0,
         'amountOfMoney' => 0,
-        'name' => ''
     ];
 
     protected $exchange_rate;
@@ -69,7 +68,6 @@ abstract class VirtualCoin extends BaseModel
 
     public function setMoney($amount)
     {
-
         $this->amountOfMoney = $amount;
         return $this;
     }

@@ -10,6 +10,7 @@ namespace app\frontend\modules\orderGoods\models;
 
 use app\common\exceptions\AppException;
 use app\common\exceptions\ShopException;
+use app\frontend\models\Goods;
 use app\frontend\models\orderGoods\PreOrderGoodsDiscount;
 use app\frontend\models\OrderGoods;
 use app\frontend\modules\orderGoods\price\option\NormalOrderGoodsOptionPrice;
@@ -22,6 +23,8 @@ use Illuminate\Support\Collection;
  * @package app\frontend\modules\orderGoods\models
  * @property float goods_price
  * @property int goods_id
+ * @property Goods goods
+ * @property int uid
  */
 class PreOrderGoods extends OrderGoods
 {
