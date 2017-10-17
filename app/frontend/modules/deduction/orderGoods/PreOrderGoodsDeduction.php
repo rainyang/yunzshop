@@ -152,7 +152,6 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
      */
     private function getOrderGoodsDeductionAmount()
     {
-
         // 从商品抵扣中获取到类型
         switch ($this->getGoodsDeduction()->getDeductionAmountCalculationType()) {
             case 'FixedAmount':
@@ -184,7 +183,6 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
         }
 
         if (!$this->getGoodsDeduction() || !$this->getGoodsDeduction()->deductible($this->orderGoods->goods)) {
-
             // 购买商品不存在抵扣记录
             return $this->newCoin();
         }

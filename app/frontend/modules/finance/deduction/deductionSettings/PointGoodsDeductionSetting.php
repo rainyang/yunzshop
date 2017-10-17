@@ -27,13 +27,13 @@ class PointGoodsDeductionSetting implements \app\frontend\modules\deduction\Dedu
 
     public function isDisable()
     {
-        // 商品抵扣设置为0
+        // 商品抵扣设置为0,则商品不参与抵扣
         return $this->setting->max_point_deduct === '0';
     }
 
     public function getFixedAmount()
     {
-        return str_replace('%', '', $this->setting->max_point_deduct);
+        return str_replace('%', '', $this->setting->max_point_deduct) ?: false;
     }
 
     public function getPriceProportion()
@@ -47,6 +47,10 @@ class PointGoodsDeductionSetting implements \app\frontend\modules\deduction\Dedu
 
     public function getDeductionType()
     {
+        // 商品抵扣设置为空,则商品未设置独立抵扣
+        if($this->setting->max_point_deduct === ''){
+            return false;
+        }
         if(strexists($this->setting->max_point_deduct, '%')){
             return 'GoodsPriceProportion';
         }

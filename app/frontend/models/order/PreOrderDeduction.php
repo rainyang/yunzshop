@@ -119,22 +119,22 @@ class PreOrderDeduction extends OrderDeduction
     {
         $result = $this->newCoin();
 
-        // 购买者不存在华侨币记录
+        // 购买者不存在虚拟币记录
         if (!$this->getMemberCoin()) {
 
             return $result;
         }
 
-        // 累加所有订单商品的可用华侨币
+        // 累加所有订单商品的可用虚拟币
         /**
          * @var VirtualCoin $virtualCoin
          */
         $virtualCoin = $this->getOrderGoodsDeductionCollection()->getUsablePoint();
 
-        // 商品可抵扣爱心值+运费可抵扣爱心值
+        // 商品可抵扣虚拟币+运费可抵扣虚拟币
         $virtualCoin->plus($this->getDispatchPriceDeductionPoint());
 
-        // 取(用户可用爱心值)与(订单抵扣爱心值)的最小值
+        // 取(用户可用虚拟币)与(订单抵扣虚拟币)的最小值
 
         $amount = min($this->getMemberCoin()->getMaxUsableCoin()->getMoney(), $virtualCoin->getMoney());
 
