@@ -27,12 +27,12 @@ class ChangeDeductionIdToOrderDeduction extends Migration
                 // id改为对应code
                 $orderDeductions = \app\common\models\order\OrderDeduction::get();
                 $orderDeductions->each(function ($orderDeductions) {
-                    if ($orderDeductions->deduction_id == 1) {
-                        $orderDeductions->deduction_id = 'point';
-                    } elseif ($orderDeductions->deduction_id == 2) {
-                        $orderDeductions->deduction_id = 'love';
-                    } elseif ($orderDeductions->deduction_id == 3) {
-                        $orderDeductions->deduction_id = 'coin';
+                    if ($orderDeductions->code == 1) {
+                        $orderDeductions->code = 'point';
+                    } elseif ($orderDeductions->code == 2) {
+                        $orderDeductions->code = 'love';
+                    } elseif ($orderDeductions->code == 3) {
+                        $orderDeductions->code = 'coin';
                     }
                     $orderDeductions->save();
                 });
