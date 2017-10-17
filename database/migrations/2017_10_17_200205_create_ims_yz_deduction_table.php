@@ -14,7 +14,7 @@ class CreateImsYzDeductionTable extends Migration
     public function up()
     {
         if (!\Schema::hasColumn('yz_deduction', 'code')) {
-            Schema::drop('ims_yz_deduction');
+            Schema::drop('yz_deduction');
         }
         if (!Schema::hasTable('yz_deduction')) {
 
