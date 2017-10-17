@@ -32,7 +32,7 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
     }
 
     /**
-     * 成交价(计算了间接优惠,原本为了方便分销分红等插件使用,但现在这个价格是动态设置的需要实时计算,所以没意义了)
+     * 成交价
      * @return mixed
      */
     public function getPrice()

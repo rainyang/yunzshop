@@ -29,7 +29,7 @@ use Illuminate\Support\Collection;
  * @property float goods_price
  * @property float coupon_price
  * @property float discount_price
- * @property float deduction_price
+ * @property float $deduction_amount
  * @property float payment_amount
  * @property int goods_id
  * @property Goods goods
@@ -221,7 +221,7 @@ class PreOrderGoods extends OrderGoods
             throw new AppException('订单信息不存在');
         }
         $this->order_id = $this->order->id;
-        $this->deduction_price = $this->getDeductionAmount();
+        $this->deduction_amount = $this->getDeductionAmount();
         $this->payment_amount = $this->getPaymentAmount();
 
 
