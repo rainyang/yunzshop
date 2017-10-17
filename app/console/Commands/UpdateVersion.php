@@ -49,7 +49,7 @@ class UpdateVersion extends Command
 
         //更新插件数据表
         $plugins = $this->argument('version');
-        \Log::debug('---plugins---', $plugins);
+        \Log::debug('---plugins---' . $plugins);
         if (!is_null($plugins)) {
             foreach ($plugins as $p) {
                 $path = 'plugins/' . $p . '/migrations';
