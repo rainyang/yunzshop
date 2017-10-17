@@ -1,4 +1,5 @@
 <?php
+
 namespace app\frontend\controllers;
 
 use app\backend\modules\member\models\MemberRelation;
@@ -23,7 +24,7 @@ class SettingController extends BaseController
 
     /**
      * 商城设置接口
-     * @param string $key  setting表key字段值
+     * @param string $key setting表key字段值
      * @return
      */
     public function get()
@@ -74,8 +75,7 @@ class SettingController extends BaseController
      */
     public function getMemberProtocol()
     {
-        $member_protocol = Setting::get('shop.member.protocol');
-        $member_protocol['protocol'] = $member_protocol['protocol'];
+        $member_protocol = Setting::get('shop.protocol', ['protocol' => 0, 'content' => '']);
         $member_protocol['content'] = html_entity_decode($member_protocol['content']);
 
         return $this->successJson('获取注册协议成功', $member_protocol);
@@ -94,7 +94,7 @@ class SettingController extends BaseController
             'form_id' => 0,
             'status' => 0,
         ];
-        if($is_diyform){
+        if ($is_diyform) {
             $data['form_id'] = $member_set['form_id'];
             $data['status'] = $data['form_id'] ? 1 : 0;
         }
