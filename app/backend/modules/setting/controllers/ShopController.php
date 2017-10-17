@@ -13,6 +13,7 @@ use app\common\helpers\Url;
 use app\common\facades\Setting;
 use app\common\models\AccountWechats;
 use app\common\services\MyLink;
+use Yunshop\Diyform\models\DiyformTypeModel;
 
 class ShopController extends BaseController
 {
@@ -53,8 +54,17 @@ class ShopController extends BaseController
                 $this->error('会员设置失败');
             }
         }
+        $is_diyform = \YunShop::plugin()->get('diyform');
+        $diyForm = [];
+        if($is_diyform){
+            $diyForm = DiyformTypeModel::getDiyformList()->get();
+        }
+
+
         return view('setting.shop.member', [
-            'set' => $member
+            'set' => $member,
+            'is_diyform' => $is_diyform,
+            'diyForm' => $diyForm,
         ])->render();
     }
 
@@ -265,6 +275,23 @@ class ShopController extends BaseController
         ])->render();
     }
 
+    public function protocol()
+    {
+        $shop = Setting::get('shop.protocol');
+        $requestModel = \YunShop::request()->protocol;
+
+        if ($requestModel) {
+            if (Setting::set('shop.protocol', $requestModel)) {
+                return $this->message('注册协议设置成功', Url::absoluteWeb('setting.shop.protocol'));
+            } else {
+                $this->error('注册协议设置失败');
+            }
+        }
+
+        return view('setting.shop.protocol', [
+            'set' => $shop
+        ])->render();
+    }
     private function setAlipayParams($data)
     {
         Setting::set('alipay.pem', storage_path() . '/cert/cacert.pem');

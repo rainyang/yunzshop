@@ -265,35 +265,37 @@
                                                style="width:100px;"></td>
                                     <td></td>
                                 </tr>
+
                                 @foreach($dispatch->piece_data as $key=>$piece)
+
                                     <tr>
                                         <td style="padding:10px;" class="{{$key}}">
                                             <span class="areas">{{$piece['areas']}}</span>
 
-                                            <input type="hidden" value="{{$piece['area_id']}}" class="form-control areas-name"
+                                            <input type="hidden" value="{{$piece['areas']}}" class="form-control areas-name"
                                                    name="dispatch[piece][{{$key}}][areas]">
                                             <input type="hidden" value="{{$piece['area_ids']}}" class="form-control areas-ids"
                                                    name="dispatch[piece][{{$key}}][area_ids]">
                                             <a href='javascript:;' onclick='editArea(this)' random="{{$key}}">编辑</a>
                                         </td>
                                         <td class=" text-center">
-                                            <input type="number" value="{{ $piece['first_weight'] }}"
+                                            <input type="number" value="{{ $piece['first_piece'] }}"
                                                    class="form-control"
-                                                   name="dispatch[piece][{{$key}}][first_weight]" style="width:100px;">
+                                                   name="dispatch[piece][{{$key}}][first_piece]" style="width:100px;">
                                         </td>
                                         <td class=" text-center">
-                                            <input type="text" value="{{ $piece['first_weight_price'] }}"
+                                            <input type="text" value="{{ $piece['first_piece_price'] }}"
                                                    class="form-control"
-                                                   name="dispatch[piece][{{$key}}][first_weight_price]"
+                                                   name="dispatch[piece][{{$key}}][first_piece_price]"
                                                    style="width:100px;"></td>
                                         <td class=" text-center">
-                                            <input type="number" value="{{ $piece['another_weight'] }}"
-                                                   class="form-control" name="dispatch[piece][{{$key}}][another_weight]"
+                                            <input type="number" value="{{ $piece['another_piece'] }}"
+                                                   class="form-control" name="dispatch[piece][{{$key}}][another_piece]"
                                                    style="width:100px;"></td>
                                         <td class=" text-center">
-                                            <input type="text" value="{{ $piece['another_weight_price'] }}"
+                                            <input type="text" value="{{ $piece['another_piece_price'] }}"
                                                    class="form-control"
-                                                   name="dispatch[piece][{{$key}}][another_weight_price]"
+                                                   name="dispatch[piece][{{$key}}][another_piece_price]"
                                                    style="width:100px;">
                                         </td>
                                         <td>
