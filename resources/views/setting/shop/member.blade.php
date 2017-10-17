@@ -186,7 +186,7 @@
                                         <option value="0">选择表单</option>
                                         @foreach($diyForm as $form)
                                             <option value="{{$form->id}}"
-                                                    @if($item['form_id']==$form->id)
+                                                    @if($set['form_id']==$form->id)
                                                     selected
                                                     @endif
                                             >[ID:{{$form->id}}]{{$form->title}}</option>
