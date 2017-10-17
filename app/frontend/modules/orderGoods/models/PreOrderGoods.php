@@ -332,5 +332,4 @@ class PreOrderGoods extends OrderGoods
         return $this->getPriceCalculator()->getGoodsMarketPrice();
 
     }
-
 }

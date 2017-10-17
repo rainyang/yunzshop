@@ -11,7 +11,7 @@ namespace app\frontend\models\order;
 use app\common\models\VirtualCoin;
 use app\frontend\models\MemberCoin;
 use app\frontend\modules\deduction\models\Deduction;
-use app\frontend\modules\deduction\models\OrderGoodsCollectionDeduction;
+use app\frontend\modules\deduction\OrderGoodsCollectionDeduction;
 use app\frontend\modules\deduction\orderGoods\PreOrderGoodsDeduction;
 use app\frontend\modules\order\models\PreOrder;
 

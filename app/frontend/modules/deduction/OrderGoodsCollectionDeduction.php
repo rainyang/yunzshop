@@ -6,7 +6,7 @@
  * Time: 上午10:12
  */
 
-namespace app\frontend\modules\deduction\models;
+namespace app\frontend\modules\deduction;
 
 use app\common\models\VirtualCoin;
 use app\frontend\modules\deduction\orderGoods\PreOrderGoodsDeduction;
