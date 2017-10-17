@@ -120,7 +120,7 @@ class PreOrderGoods extends OrderGoods
 
         );
 
-        if (isset($this->goodsOption)) {
+        if ($this->isOption()) {
 
             $attributes += [
                 'goods_option_id' => $this->goodsOption->id,
