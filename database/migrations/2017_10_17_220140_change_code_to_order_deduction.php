@@ -15,9 +15,9 @@ class ChangeCodeToOrderDeduction extends Migration
     {
         if (Schema::hasTable('yz_order_deduction')) {
 
-            if (\Schema::hasColumn('yz_order_deduction', 'deduction_id')) {
+            if (\Schema::hasColumn('yz_order_deduction', 'code')) {
                 \Schema::table('yz_order_deduction', function ($table) {
-
+                    
                     $table->string('code', 50)->default('')->change();
                     $table->decimal('coin', 10)->default(0.00)->change();
                 });
