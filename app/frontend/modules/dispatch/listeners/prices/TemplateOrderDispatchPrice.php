@@ -139,7 +139,7 @@ class TemplateOrderDispatchPrice
     private function calculationByWeight($orderGoods)
     {
         // 订单商品总重
-        $weight_total = $orderGoods->hasOneGoods->weight * $orderGoods->total;
+        $weight_total = $orderGoods->getWeight() * $orderGoods->total;
 
         $weight_data = unserialize($this->dispatch->weight_data);
         // 存在重量数据
