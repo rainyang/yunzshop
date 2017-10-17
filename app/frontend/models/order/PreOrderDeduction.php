@@ -28,7 +28,7 @@ use app\frontend\modules\orderGoods\models\PreOrderGoods;
  */
 class PreOrderDeduction extends OrderDeduction
 {
-    protected $appends = ['is_checked'];
+    protected $appends = ['checked'];
     /**
      * @var PreOrder
      */
@@ -185,7 +185,7 @@ class PreOrderDeduction extends OrderDeduction
         return $this->getDeduction()->getName();
     }
 
-    public function getIsCheckedAttribute()
+    public function getCheckedAttribute()
     {
         return $this->isChecked();
     }
