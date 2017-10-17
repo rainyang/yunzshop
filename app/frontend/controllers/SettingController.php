@@ -75,6 +75,7 @@ class SettingController extends BaseController
     public function getMemberProtocol()
     {
         $member_protocol = Setting::get('shop.member.protocol');
+        $member_protocol['protocol'] = $member_protocol['protocol'];
         $member_protocol['content'] = html_entity_decode($member_protocol['content']);
 
         return $this->successJson('获取注册协议成功', $member_protocol);
