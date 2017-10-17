@@ -265,7 +265,9 @@
                                                style="width:100px;"></td>
                                     <td></td>
                                 </tr>
+
                                 @foreach($dispatch->piece_data as $key=>$piece)
+
                                     <tr>
                                         <td style="padding:10px;" class="{{$key}}">
                                             <span class="areas">{{$piece['areas']}}</span>

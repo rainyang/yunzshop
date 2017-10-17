@@ -47,6 +47,7 @@ class DispatchController extends BaseController
 
         $requestDispatch = \YunShop::request()->dispatch;
         $random = 1;
+
         if ($requestDispatch) {
 
             $requestDispatch = DispatchService::getDispatch($requestDispatch);
@@ -67,6 +68,8 @@ class DispatchController extends BaseController
                         $defaultModel->save();
                     }
                 }
+
+                //dd($dispatchModel);
                 //数据保存
                 if ($dispatchModel->save()) {
                     //显示信息并跳转
@@ -136,6 +139,8 @@ class DispatchController extends BaseController
                 }
             }
         }
+
+        //dd($dispatchModel);
         return view('goods.dispatch.info', [
             'dispatch' => $dispatchModel,
             'parents' => $areas->toArray(),
