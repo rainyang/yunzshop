@@ -38,7 +38,25 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
     public function getPrice()
     {
         // 商品销售价 - 等级优惠金额 - 单品满减优惠金额
-        return max($this->getGoodsPrice() - $this->getVipDiscountAmount() - $this->getFullReductionAmount(),0);
+        return max($this->getGoodsPrice() - $this->getVipDiscountAmount() - $this->getFullReductionAmount(), 0);
+    }
+
+    /**
+     * 获取订单商品支付金额
+     * @return float
+     */
+    public function getPaymentAmount()
+    {
+        return $this->getPrice() - $this->getDeductionAmount();
+    }
+
+    /**
+     * 获取订单商品抵扣金额
+     * @return float
+     */
+    public function getDeductionAmount()
+    {
+        return $this->orderGoods->getOrderGoodsDeductions()->getUsedPoint()->getMoney();
     }
 
     /**

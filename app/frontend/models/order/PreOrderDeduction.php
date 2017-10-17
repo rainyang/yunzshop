@@ -8,12 +8,14 @@
 
 namespace app\frontend\models\order;
 
+use app\common\models\order\OrderDeduction;
 use app\common\models\VirtualCoin;
 use app\frontend\models\MemberCoin;
 use app\frontend\modules\deduction\models\Deduction;
-use app\frontend\modules\deduction\OrderGoodsCollectionDeduction;
+use app\frontend\modules\deduction\OrderGoodsDeductionCollection;
 use app\frontend\modules\deduction\orderGoods\PreOrderGoodsDeduction;
 use app\frontend\modules\order\models\PreOrder;
+use app\frontend\modules\orderGoods\models\PreOrderGoods;
 
 /**
  * Class PreOrderDeduction
@@ -24,20 +26,23 @@ use app\frontend\modules\order\models\PreOrder;
  * @property int name
  * @property int code
  */
-class PreOrderDeduction extends \app\common\models\order\OrderDeduction
+class PreOrderDeduction extends OrderDeduction
 {
     protected $appends = ['is_checked'];
     /**
      * @var PreOrder
      */
     public $order;
-    private $orderGoodsCollectionDeduction;
     private $deduction;
     /**
      * @var MemberCoin
      */
     private $memberCoin;
     private $virtualCoin;
+    /**
+     * @var OrderGoodsDeductionCollection
+     */
+    private $orderGoodsDeductionCollection;
 
     public function __construct(array $attributes = [], $deduction, $order, $virtualCoin)
     {
@@ -55,12 +60,15 @@ class PreOrderDeduction extends \app\common\models\order\OrderDeduction
         $this->order = $order;
     }
 
+    /**
+     * 实例化并绑定所有的订单商品抵扣实例,集合  并将集合绑定在订单抵扣上
+     */
     private function setOrderGoodsDeductions()
     {
-        $orderGoodsDeductions = $this->order->orderGoods->map(function ($aOrderGoods) {
+        $orderGoodsDeductionCollection = $this->order->orderGoods->map(function (PreOrderGoods $aOrderGoods) {
             return new PreOrderGoodsDeduction([], $aOrderGoods, $this, $this->getDeduction());
         });
-        $this->setRelation('orderGoodsDeductions', $orderGoodsDeductions);
+        $this->orderGoodsDeductionCollection = new  OrderGoodsDeductionCollection($orderGoodsDeductionCollection);
     }
 
 
@@ -121,14 +129,14 @@ class PreOrderDeduction extends \app\common\models\order\OrderDeduction
         /**
          * @var VirtualCoin $virtualCoin
          */
-        $virtualCoin = $this->getOrderGoodsCollectionDeduction()->getUsablePoint();
+        $virtualCoin = $this->getOrderGoodsDeductionCollection()->getUsablePoint();
 
         // 商品可抵扣爱心值+运费可抵扣爱心值
         $virtualCoin->plus($this->getDispatchPriceDeductionPoint());
 
         // 取(用户可用爱心值)与(订单抵扣爱心值)的最小值
 
-        $amount = min($this->getMemberCoin()->getMaxUsableCoin(), $virtualCoin->getMoney());
+        $amount = min($this->getMemberCoin()->getMaxUsableCoin()->getMoney(), $virtualCoin->getMoney());
 
         return $this->newCoin()->setMoney($amount);
     }
@@ -153,14 +161,12 @@ class PreOrderDeduction extends \app\common\models\order\OrderDeduction
     }
 
     /**
-     * @return OrderGoodsCollectionDeduction
+     * @return OrderGoodsDeductionCollection
      */
-    public function getOrderGoodsCollectionDeduction()
+    public function getOrderGoodsDeductionCollection()
     {
-        if (isset($this->orderGoodsCollectionDeduction)) {
-            return $this->orderGoodsCollectionDeduction;
-        }
-        return $this->orderGoodsCollectionDeduction = new OrderGoodsCollectionDeduction($this->orderGoodsDeductions);
+        return $this->orderGoodsDeductionCollection;
+
     }
 
     /**
@@ -177,14 +183,6 @@ class PreOrderDeduction extends \app\common\models\order\OrderDeduction
     public function getName()
     {
         return $this->getDeduction()->getName();
-    }
-
-    /**
-     * @return bool
-     */
-    public function isEnable()
-    {
-        $this->getDeduction()->isEnable();
     }
 
     public function getIsCheckedAttribute()
@@ -207,16 +205,16 @@ class PreOrderDeduction extends \app\common\models\order\OrderDeduction
         }
 
         return in_array($this->getCode(), $deduction_codes);
-
     }
 
     public function save(array $options = [])
     {
-        if (!$this->isChecked() || $this->getOrderGoodsCollectionDeduction()->getUsablePoint() <= 0) {
+        if (!$this->isChecked() || $this->getOrderGoodsDeductionCollection()->getUsablePoint() <= 0) {
             // todo 应该返回什么
             return true;
         }
         $this->getMemberCoin()->consume($this->getUsablePoint(), ['order_sn' => $this->order->order_sn]);
+
         return parent::save($options);
     }
 }

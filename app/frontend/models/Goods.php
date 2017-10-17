@@ -14,6 +14,14 @@ use app\frontend\models\goods\Sale;
 use app\frontend\modules\member\services\MemberService;
 use app\common\models\Coupon;
 
+/**
+ * Class Goods
+ * @package app\frontend\models
+ * @property int id
+ * @property string goods_sn
+ * @property string title
+ * @property string thumb
+ */
 class Goods extends \app\common\models\Goods
 {
     public $appends = ['vip_price'];

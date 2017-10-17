@@ -8,8 +8,8 @@
 
 namespace app\frontend\modules\deduction\orderGoods;
 
-use app\common\models\order\OrderDeduction;
 use app\common\models\VirtualCoin;
+use app\frontend\models\order\PreOrderDeduction;
 use app\frontend\modules\deduction\DeductionSettingManagerInterface;
 use app\frontend\modules\deduction\models\Deduction;
 use app\frontend\modules\deduction\orderGoods\amount\FixedAmount;
@@ -54,7 +54,7 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
     private $usablePoint;
     /**
      * 订单抵扣模型
-     * @var OrderDeduction
+     * @var PreOrderDeduction
      */
     private $orderDeduction;
     /**
@@ -118,13 +118,11 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
     {
         $this->orderGoods = $orderGoods;
         $this->uid = $orderGoods->uid;
-
-        $orderGoods->setRelation($this->getCode() . 'OrderGoodsDeduction', $this);
+        $this->orderGoods->orderGoodsDeductions->push($this);
     }
 
     private function setGoodsDeduction()
     {
-
         /**
          * @var DeductionSettingManagerInterface $aDeductionSettingManager
          */
@@ -138,7 +136,7 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
 
     /**
      * 订单抵扣模型
-     * @return mixed
+     * @return PreOrderDeduction
      * @throws \Exception
      */
     private function getOrderDeduction()
@@ -186,9 +184,6 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
         }
 
         if (!$this->getGoodsDeduction() || !$this->getGoodsDeduction()->deductible($this->orderGoods->goods)) {
-            dd($this->getGoodsDeduction());
-            dd($this->getGoodsDeduction()->deductible($this->orderGoods->goods));
-            exit;
 
             // 购买商品不存在抵扣记录
             return $this->newCoin();
@@ -202,10 +197,10 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
     /**
      * @return VirtualCoin
      */
-    private function getUsedCoin()
+    public function getUsedCoin()
     {
         // 订单商品抵扣金额 * (订单商品集合抵扣金额/订单实际抵扣金额)
-        $amount = $this->getUsableCoin()->getMoney() * ($this->getOrderDeduction()->getOrderGoodsCollectionDeduction()->getUsablePoint()->getMoney() / $this->getOrderDeduction()->getUsablePoint()->getMoney());
+        $amount = $this->getUsableCoin()->getMoney() * ($this->getOrderDeduction()->getOrderGoodsDeductionCollection()->getUsablePoint()->getMoney() / $this->getOrderDeduction()->getUsablePoint()->getMoney());
         return $this->newCoin()->setMoney($amount);
     }
 

@@ -21,6 +21,10 @@ abstract class MemberCoin
     {
         $this->member = $member;
     }
+
+    /**
+     * @return VirtualCoin $coin
+     */
     abstract public function getMaxUsableCoin();
 
     /**

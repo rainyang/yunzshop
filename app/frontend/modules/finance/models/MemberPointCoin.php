@@ -20,7 +20,7 @@ class MemberPointCoin extends MemberCoin
      */
     public function getMaxUsableCoin()
     {
-        return $this->member->credit1;
+        return (new PointCoin)->setCoin($this->member->credit1);
     }
 
     function consume(VirtualCoin $coin,$data)
@@ -34,7 +34,7 @@ class MemberPointCoin extends MemberCoin
         ]);
         $point_service->changePoint();
 
-        $this->member->credit1 -= $coin->getMoney();
+        $this->member->credit1 -= $coin->getCoin();
         return $this->member->save();
     }
 }

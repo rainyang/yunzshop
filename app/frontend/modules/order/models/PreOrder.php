@@ -19,7 +19,19 @@ use Illuminate\Support\Facades\Schema;
  * @property Collection orderDeductions
  * @property Collection orderCoupons
  * @property Collection orderSettings
+ * @property int id
+ * @property float price
+ * @property float goods_price
+ * @property float order_goods_price
+ * @property float discount_price
+ * @property float deduction_price
+ * @property float dispatch_price
+ * @property int goods_total
  * @property string order_sn
+ * @property int create_time
+ * @property int uid
+ * @property int uniacid
+ * @property PreOrderGoodsCollection orderGoods
  */
 class PreOrder extends Order
 {

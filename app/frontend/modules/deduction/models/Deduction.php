@@ -11,7 +11,14 @@ namespace app\frontend\modules\deduction\models;
 
 use app\common\models\BaseModel;
 use app\common\models\VirtualCoin;
+use app\frontend\modules\deduction\DeductionSettingInterface;
 
+/**
+ * Class Deduction
+ * @package app\frontend\modules\deduction\models
+ * @property int id
+ * @property int code
+ */
 class Deduction extends BaseModel
 {
     protected $table = 'yz_deduction';
@@ -24,7 +31,6 @@ class Deduction extends BaseModel
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
-        //$this->coin = $this->newCoin();
     }
 
     public function valid()
@@ -55,6 +61,9 @@ class Deduction extends BaseModel
         return $this->coin = app('CoinManager')->make($this->getCode());
     }
 
+    /**
+     * @return bool | DeductionSettingInterface
+     */
     public function getSetting()
     {
         if (isset($this->setting)) {

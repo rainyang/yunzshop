@@ -61,8 +61,7 @@ abstract class VirtualCoin extends BaseModel
 
     public function setCoin($amount)
     {
-
-        $this->amountOfCoin = $amount;
+        $this->amountOfMoney = $amount * $this->exchange_rate;
         return $this;
     }
 
