@@ -24,19 +24,20 @@ class ChangeDeductionIdToOrderDeduction extends Migration
                     $table->decimal('qty', 10)->default(0.00)->change();
                     $table->renameColumn('qty', 'coin');
                 });
-                // id改为对应code
-                $orderDeductions = \app\common\models\order\OrderDeduction::get();
-                $orderDeductions->each(function ($orderDeductions) {
-                    if ($orderDeductions->code == 1) {
-                        $orderDeductions->code = 'point';
-                    } elseif ($orderDeductions->code == 2) {
-                        $orderDeductions->code = 'love';
-                    } elseif ($orderDeductions->code == 3) {
-                        $orderDeductions->code = 'coin';
-                    }
-                    $orderDeductions->save();
-                });
+
             }
+            // id改为对应code
+            $orderDeductions = \app\common\models\order\OrderDeduction::get();
+            $orderDeductions->each(function ($orderDeductions) {
+                if ($orderDeductions->code == 1) {
+                    $orderDeductions->code = 'point';
+                } elseif ($orderDeductions->code == 2) {
+                    $orderDeductions->code = 'love';
+                } elseif ($orderDeductions->code == 3) {
+                    $orderDeductions->code = 'coin';
+                }
+                $orderDeductions->save();
+            });
         }
     }
 
