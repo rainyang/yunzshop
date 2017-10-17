@@ -81,7 +81,17 @@ return [
                         'item'          => 'setting_shop',
                         'parents'       => ['system', 'Setting'],
                     ],
-
+                    'setting_lang'  => [
+                        'name'          => '语言设置',
+                        'url'           => 'setting.lang.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => 'fa-sliders',
+                        'sort'          => 0,
+                        'item'          => 'setting_lang',
+                        'parents'       => ['system', 'Setting'],
+                    ],
                     'setting_member' => [
                         'name'          => '会员设置',
                         'url'           => 'setting.shop.member',
@@ -2005,6 +2015,19 @@ return [
                                 'parents'           => ['finance','withdraw','withdraw_set'],
                             ],
                         ],
+                    ],
+
+                    'withdraw_statistics'  => [
+                        'name'              => '提现统计',
+                        'url'               => 'finance.withdraw-statistics.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => 'fa-gear',
+                        'sort'              => 0,
+                        'item'              => 'withdraw_statistics',
+                        'parents'           => ['finance','withdraw'],
+                        'child'             => []
                     ],
 
                     'withdraw_records'  => [
