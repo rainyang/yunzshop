@@ -195,8 +195,16 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
         return $this->newCoin()->setMoney($amount);
     }
 
+    public function used()
+    {
+        return $this->getUsedCoin()->getCoin() > 0;
+    }
+
     public function save(array $options = [])
     {
+        if (!$this->used()) {
+            return true;
+        }
         $this->used_amount = $this->getUsedCoin()->getMoney();
         $this->used_coin = $this->getUsedCoin()->getCoin();
         return parent::save($options);
