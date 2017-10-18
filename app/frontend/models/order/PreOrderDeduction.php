@@ -51,6 +51,9 @@ class PreOrderDeduction extends OrderDeduction
 
         $this->setOrder($order);
         $this->setOrderGoodsDeductions();
+        if(!$this->deductible()){
+            $this->order->orderDeductions->push($this);
+        }
         $this->_init();
         parent::__construct($attributes);
     }
@@ -59,7 +62,9 @@ class PreOrderDeduction extends OrderDeduction
     {
         $this->order = $order;
     }
-
+    private function deductible(){
+        return $this->getUsablePoint()->getCoin() > 0;
+    }
     /**
      * 实例化并绑定所有的订单商品抵扣实例,集合  并将集合绑定在订单抵扣上
      */
@@ -88,7 +93,7 @@ class PreOrderDeduction extends OrderDeduction
     private function _init()
     {
         $this->uid = $this->order->uid;
-        $this->order->orderDeductions->push($this);
+
         $this->coin = $this->getUsablePoint()->getCoin();
         $this->amount = $this->getUsablePoint()->getMoney();
         $this->code = $this->getCode();
