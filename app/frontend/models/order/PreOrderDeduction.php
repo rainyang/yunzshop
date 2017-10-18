@@ -92,7 +92,9 @@ class PreOrderDeduction extends OrderDeduction
     private function _init()
     {
         $this->uid = $this->order->uid;
-        $this->order->orderDeductions->push($this);
+        if($this->deductible()){
+            $this->order->orderDeductions->push($this);
+        }
 
         $this->coin = $this->getUsablePoint()->getCoin();
         $this->amount = $this->getUsablePoint()->getMoney();
