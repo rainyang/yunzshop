@@ -8,6 +8,7 @@
 
 namespace app\frontend\modules\deduction;
 
+use app\frontend\models\Goods;
 use app\frontend\modules\finance\deduction\PointGoodsDeduction;
 use Illuminate\Container\Container;
 use Yunshop\Love\Frontend\Models\GoodsLove;
@@ -24,7 +25,13 @@ class GoodsDeductionManager extends Container
         /**
          * 积分抵扣设置模型
          */
-        $this->bind('point', function ($deductionSettingManager,$deductionSettingCollection) {
+        $this->bind('point', function ($deductionSettingManager, Goods $goods) {
+            /**
+             * @var DeductionSettingManagerInterface $aDeductionSettingManager
+             */
+            $aDeductionSettingManager = app('DeductionManager')->make('DeductionSettingManager')->make('point');
+
+            $deductionSettingCollection = $aDeductionSettingManager->getDeductionSettingCollection($goods);
             return new PointGoodsDeduction($deductionSettingCollection);
         });
     }

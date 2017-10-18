@@ -21,6 +21,8 @@ use app\common\models\Coupon;
  * @property string goods_sn
  * @property string title
  * @property string thumb
+ * @property float price
+ * @property Sale hasOneSale
  */
 class Goods extends \app\common\models\Goods
 {

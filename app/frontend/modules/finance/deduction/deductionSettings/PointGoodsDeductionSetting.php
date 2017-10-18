@@ -9,9 +9,13 @@
 namespace app\frontend\modules\finance\deduction\deductionSettings;
 
 use app\frontend\models\Goods;
+use app\frontend\modules\deduction\DeductionSettingInterface;
 
-class PointGoodsDeductionSetting implements \app\frontend\modules\deduction\DeductionSettingInterface
+class PointGoodsDeductionSetting implements DeductionSettingInterface
 {
+    /**
+     * @var \app\frontend\models\goods\Sale
+     */
     private $setting;
 
     function __construct(Goods $goods)
