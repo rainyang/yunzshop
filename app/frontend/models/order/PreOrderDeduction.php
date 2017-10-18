@@ -129,6 +129,7 @@ class PreOrderDeduction extends OrderDeduction
         /**
          * @var VirtualCoin $virtualCoin
          */
+
         $virtualCoin = $this->getOrderGoodsDeductionCollection()->getUsablePoint();
 
         // 商品可抵扣虚拟币+运费可抵扣虚拟币

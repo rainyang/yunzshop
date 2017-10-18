@@ -123,14 +123,7 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
 
     private function setGoodsDeduction()
     {
-        /**
-         * @var DeductionSettingManagerInterface $aDeductionSettingManager
-         */
-        $aDeductionSettingManager = app('DeductionManager')->make('DeductionSettingManager')->make($this->getCode());
-
-        $deductionSettingCollection = $aDeductionSettingManager->getDeductionSettingCollection($this->orderGoods->goods);
-
-        $this->goodsDeduction = app('DeductionManager')->make('GoodsDeductionManager')->make($this->getCode(), $deductionSettingCollection, $this->orderGoods->goods);
+        $this->goodsDeduction = app('DeductionManager')->make('GoodsDeductionManager')->make($this->getCode(), $this->orderGoods->goods);
 
     }
 
