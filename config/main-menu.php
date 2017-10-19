@@ -1814,7 +1814,7 @@ return [
 
             'finance_point'     => [
                 'name'              => '积分管理',
-                'url'               => '',
+                'url'               => 'finance.point-member.index',
                 'url_params'        => '',
                 'permit'            => 1,
                 'menu'              => 1,
@@ -1894,16 +1894,59 @@ return [
         'parents'       => [],
         'child'         => [
 
-            'member_charts'     => [
+            'member_count_charts'     => [
                 'name'          => '会员统计',
-                'url'           => 'charts.member.count',
+                'url'           => 'charts.member.count.index',
                 'url_params'    => '',
                 'permit'        => 1,
                 'menu'          => 1,
                 'icon'          => 'fa-bar-chart-o',
                 'sort'          => 0,
-                'item'          => 'member_charts',
+                'item'          => 'member_count_charts',
                 'parents'       => ['charts',],
+
+            ],
+
+            'member_offline_charts'     => [
+                'name'          => '关系统计',
+                'url'           => 'charts.member.offline-order.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'member_offline_charts',
+                'parents'       => ['charts',],
+                'child'         => [
+
+
+
+                    'member_offline_count_charts'     => [
+                        'name'          => '下线人数排行',
+                        'url'           => 'charts.member.offline-count.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_offline_count_charts',
+                        'parents'       => ['charts','member_offline_charts'],
+
+                    ],
+
+                    'member_offline_order_charts'     => [
+                        'name'          => '下线订单排行',
+                        'url'           => 'charts.member.offline-order.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_offline_order_charts',
+                        'parents'       => ['charts','member_offline_charts'],
+
+                    ],
+                ]
 
             ],
 
@@ -2225,6 +2268,7 @@ return [
                 ],
             ],
 
+
             'user'          => [
                 'name'          => '操作员',
                 'url'           => 'user.user.index',
@@ -2248,6 +2292,7 @@ return [
                         'item'          => 'user_see',
                         'parents'       => ['system', 'user',],
                     ],
+
 
                     'user_store'    => [
                         'name'          => '添加操作员',

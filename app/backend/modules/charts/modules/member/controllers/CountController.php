@@ -25,7 +25,7 @@ class CountController extends BaseController
 
     public function index()
     {
-        return view('charts.member.index',[
+        return view('charts.member.count',[
             'gender' => json_encode($this->memberService->getMemberSexStatistic()),
             'source' => json_encode($this->memberService->getMemberSourceStatistic()),
             'member_count' => $this->memberCount(),
