@@ -337,7 +337,7 @@ class MemberController extends BaseController
                     $fans = '未关注';
                 }
             } else {
-                $fans = '';
+                $fans = '未关注';
             }
             if (substr($item['nickname'], 0, strlen('=')) === '=') {
                 $item['nickname'] = '，' . $item['nickname'];
