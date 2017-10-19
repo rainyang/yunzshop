@@ -175,6 +175,11 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
             return $this->usablePoint;
         }
 
+        return $this->usablePoint = $this->_getUsableCoin();
+    }
+
+    private function _getUsableCoin()
+    {
         if (!$this->getGoodsDeduction() || !$this->getGoodsDeduction()->deductible($this->orderGoods->goods)) {
             // 购买商品不存在抵扣记录
             return $this->newCoin();
@@ -182,7 +187,8 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
 
         $amount = $this->getOrderGoodsDeductionAmount()->getAmount();
 
-        return $this->usablePoint = $this->newCoin()->setMoney($amount);
+        $coin =   $this->newCoin()->setMoney($amount);
+        return $coin;
     }
 
     /**
@@ -190,14 +196,17 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
      */
     public function getUsedCoin()
     {
-        // 订单商品抵扣金额 * (订单商品集合抵扣金额/订单实际抵扣金额)
+        // 订单商品 积分抵扣 金额 * (订单商品集合 积分抵扣 金额/订单实际使用 积分抵扣 金额)
+        if(!$this->orderDeduction->isChecked()){
+            return $this->newCoin();
+        }
         $amount = $this->getUsableCoin()->getMoney() * ($this->getOrderDeduction()->getOrderGoodsDeductionCollection()->getUsablePoint()->getMoney() / $this->getOrderDeduction()->getUsablePoint()->getMoney());
         return $this->newCoin()->setMoney($amount);
     }
 
     public function used()
     {
-        return $this->getUsedCoin()->getCoin() > 0;
+        return $this->orderDeduction->isChecked() && $this->getUsedCoin()->getCoin() > 0;
     }
 
     public function save(array $options = [])
@@ -205,6 +214,7 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
         if (!$this->used()) {
             return true;
         }
+
         $this->used_amount = $this->getUsedCoin()->getMoney();
         $this->used_coin = $this->getUsedCoin()->getCoin();
         return parent::save($options);

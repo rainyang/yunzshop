@@ -55,8 +55,7 @@ abstract class VirtualCoin extends BaseModel
      */
     public function plus(VirtualCoin $coin)
     {
-        $this->amountOfMoney += $coin->getMoney();
-        return $this;
+        return (new static())->setMoney($this->amountOfMoney + $coin->getMoney());
     }
 
     public function setCoin($amount)
@@ -67,6 +66,7 @@ abstract class VirtualCoin extends BaseModel
 
     public function setMoney($amount)
     {
+
         $this->amountOfMoney = $amount;
         return $this;
     }

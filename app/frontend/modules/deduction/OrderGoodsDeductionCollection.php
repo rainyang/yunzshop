@@ -27,16 +27,15 @@ class OrderGoodsDeductionCollection extends Collection
              */
 
             if(!isset($result)){
-
                 return $orderGoodsDeduction->getUsableCoin();
             }
-
             return $orderGoodsDeduction->getUsableCoin()->plus($result);
         });
         return $result;
     }
 
     /**
+     * 订单商品抵扣集合中 已使用的积分
      * @return VirtualCoin
      */
     public function getUsedPoint()
@@ -47,7 +46,9 @@ class OrderGoodsDeductionCollection extends Collection
             /**
              * @var PreOrderGoodsDeduction $orderGoodsDeduction
              */
-
+            if(!$orderGoodsDeduction->used()){
+                return new InvalidVirtualCoin();
+            }
             if(!isset($result)){
                 return $orderGoodsDeduction->getUsedCoin();
             }
