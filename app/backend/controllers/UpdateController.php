@@ -204,9 +204,12 @@ class UpdateController extends BaseController
         $f       = file_get_contents($tmpdir . "/file.txt");
         $upgrade = json_decode($f, true);
         $files   = $upgrade['files'];
+        $total   = count($upgrade['files']);
         $path    = "";
         $nofiles = \YunShop::request()->nofiles;
         $status  = 1;
+
+        $update = new AutoUpdate(null, null, 300);
 
         //找到一个没更新过的文件去更新
         foreach ($files as $f) {
@@ -243,7 +246,6 @@ class UpdateController extends BaseController
                 return;
             }
 
-            $update = new AutoUpdate(null, null, 300);
             $update->setUpdateFile('backdownload_app.json');
             $update->setCurrentVersion(config('version'));
 
@@ -291,23 +293,23 @@ class UpdateController extends BaseController
                 }
 
                 file_put_contents($tmpdir . "/file.txt", json_encode($upgrade));
-
-                if (intval($success + 1) == count($files)) {
-                    //更新完执行数据表
-                    \Log::debug('----CLI----');
-                    $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
-                    \Artisan::call('update:version' ,['version'=>$plugins_dir]);
-
-                    $status = 2;
-                }
-
-                return response()->json([
-                    'result' => $status,
-                    'total' => count($files),
-                    'success' => $success
-                ])->send();
             }
+        } else {
+            //更新完执行数据表
+            \Log::debug('----CLI----');
+            $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
+            \Artisan::call('update:version' ,['version'=>$plugins_dir]);
+
+            $status = 2;
+
+            $success = $total;
         }
+
+        return response()->json([
+            'result' => $status,
+            'total' => $total,
+            'success' => $success
+        ])->send();
     }
 
     /**
