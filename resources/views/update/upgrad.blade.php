@@ -111,8 +111,34 @@
                     var html = "";
 
                     if(ret.filecount<=0 && !ret.upgrade){
-                        html+="<li><br/>当前版本：<span style='color: #dd4b39'>" + ret.version +"</span></li>"
-                        html+="<li><br/>恭喜您，您现在是最新版本！</li>"
+                        if (0 == front_upgrade) {
+                            html+="<li><br/>当前版本：<span style='color: #dd4b39'>" + ret.version +"</span></li>"
+                            html+="<li><br/>恭喜您，您现在是最新版本！</li>"
+                        } else {
+                            var version     = '{{$version}}';
+                            var new_version = '{{$list[0]['version']}}';
+
+                           //单独更新前端
+                            msg+="<li><br/>当前版本：<span style='color: #dd4b39'>" + version + "</span></li>"
+
+                            $("#upgrad_file").html('<li><br/>' + msg + '</li>');
+
+                            $('#versionNumber').html(new_version);
+                            $('#versionDetail').html('');
+                            $('#upgrade').show();
+
+                            $("#upgradebtn").unbind('click').click(function(){
+                                if($(this).attr('updating')=='1'){
+                                    return;
+                                }
+
+                                $(this).attr('updating',1);
+                                $(this).find('label').html('正在更新中...');
+
+                                $('#process').html("前端文件下载更新");
+                                frontUpgrade();
+                            });
+                        }
                     }
                     else{
                         if(ret.filecount > 0){
