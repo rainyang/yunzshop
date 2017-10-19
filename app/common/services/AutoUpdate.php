@@ -402,7 +402,7 @@ class AutoUpdate
                     }
 
                     if (isset($versions['result']) && 0 == $versions['result']) {
-                         return $versions;
+                        return $versions;
                     }
 
                     break;

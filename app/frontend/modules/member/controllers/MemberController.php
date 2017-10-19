@@ -843,6 +843,7 @@ class MemberController extends ApiController
             'is_custom' => $member['is_custom'],
             'custom_title' => $member['custom_title'],
             'is_validity' => $member['level_type'] == 2 ? true : false,
+            'term' => $member['term'] ? $member['term'] : 0,
         ];
         return $this->successJson('获取自定义字段成功！', $data);
     }

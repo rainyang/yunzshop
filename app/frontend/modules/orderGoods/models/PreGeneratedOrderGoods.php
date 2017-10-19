@@ -321,5 +321,10 @@ class PreGeneratedOrderGoods extends OrderGoods
         return $this->getPriceCalculator()->getGoodsMarketPrice();
 
     }
-
+    public function getWeight(){
+        if($this->isOption()){
+            return $this->goodsOption->weight;
+        }
+        return $this->goods->weight;
+    }
 }
