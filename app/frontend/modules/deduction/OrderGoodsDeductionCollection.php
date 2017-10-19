@@ -40,21 +40,18 @@ class OrderGoodsDeductionCollection extends Collection
      */
     public function getUsedPoint()
     {
-
-
-        $result =  $this->reduce(function ($result, $orderGoodsDeduction) {
+        $result = $this->reduce(function ($result, $orderGoodsDeduction) {
             /**
              * @var PreOrderGoodsDeduction $orderGoodsDeduction
              */
             if(!$orderGoodsDeduction->used()){
-                return new InvalidVirtualCoin();
+                // 没用过 0
+                return $result;
             }
-            if(!isset($result)){
-                return $orderGoodsDeduction->getUsedCoin();
-            }
+            return $result->plus($orderGoodsDeduction->getUsableCoin());
 
-            return $orderGoodsDeduction->getUsableCoin()->plus($result);
-        });
+        },new InvalidVirtualCoin());
+
         return $result?:new InvalidVirtualCoin();
     }
 }
