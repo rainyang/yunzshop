@@ -48,7 +48,7 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
     public function getPaymentAmount()
     {
 
-        return $this->getPrice() - $this->getDeductionAmount();
+        return $this->getPrice() - $this->getDeductionAmount() - $this->getDiscountAmount();
     }
 
     /**
