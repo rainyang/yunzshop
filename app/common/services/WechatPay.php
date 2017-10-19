@@ -57,7 +57,7 @@ class WechatPay extends Pay
 
             throw new AppException('没有设定支付参数');
         }
-        $notify_url = Url::shopUrl('payment/wechat/notifyUrl.php');
+        $notify_url = Url::shopSchemeUrl('payment/wechat/notifyUrl.php');
         $app     = $this->getEasyWeChatApp($pay, $notify_url);
         $payment = $app->payment;
         $data['trade_type'] = $payType == 1 ? 'JSAPI' : 'APP';
