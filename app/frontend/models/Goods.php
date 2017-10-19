@@ -70,9 +70,13 @@ class Goods extends \app\common\models\Goods
          *会员等级折扣
          * @var $goodsDiscount GoodsDiscount
          */
+
         $goodsDiscount = $this->hasManyGoodsDiscount()->where('level_id', $member->yzMember->level_id)->first();
+
         if (isset($goodsDiscount)) {
             $result = $goodsDiscount->getAmount($price);
+        }else{
+            $result = (new GoodsDiscount())->getAmount($price);
         }
 
         return $result;
