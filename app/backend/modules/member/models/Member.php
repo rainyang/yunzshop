@@ -190,7 +190,7 @@ class Member extends \app\common\models\Member
 
 
         $result = $result->with(['yzMember' => function ($query) {
-            return $query->select(['member_id', 'parent_id', 'inviter', 'is_agent', 'group_id', 'level_id', 'is_black'])
+            return $query->select(['member_id', 'parent_id', 'inviter', 'is_agent', 'group_id', 'level_id', 'is_black', 'withdraw_mobile'])
                 ->with(['group' => function ($query1) {
                     return $query1->select(['id', 'group_name'])->uniacid();
                 }, 'level' => function ($query2) {
