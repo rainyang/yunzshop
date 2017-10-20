@@ -51,8 +51,7 @@ class PreOrderDeduction extends OrderDeduction
 
         $this->setOrder($order);
         $this->setOrderGoodsDeductions();
-        if(!$this->deductible()){
-        }
+
         $this->_init();
         parent::__construct($attributes);
     }

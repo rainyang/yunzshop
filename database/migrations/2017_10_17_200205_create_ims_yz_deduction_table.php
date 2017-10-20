@@ -28,9 +28,9 @@ class CreateImsYzDeductionTable extends Migration
             });
             \Illuminate\Support\Facades\DB::select('INSERT INTO `ims_yz_deduction` (`id`, `code`, `enable`, `created_at`, `update_at`, `deleted_at`)
 VALUES
-	(1, \'love\', 0, NULL, NULL, NULL),
+	(1, \'love\', 1, NULL, NULL, NULL),
 	(2, \'point\', 1, NULL, NULL, NULL),
-	(3, \'coin\', 0, NULL, NULL, NULL);
+	(3, \'coin\', 1, NULL, NULL, NULL);
 
 ');
         }
