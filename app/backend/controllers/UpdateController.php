@@ -27,11 +27,7 @@ class UpdateController extends BaseController
         $update->setUpdateFile('check_app.json');
         $update->setCurrentVersion(config('version'));
 
-        if (config('app.debug')) {
-            $update->setUpdateUrl('http://yun-yzshop.com/update'); //Replace with your server update directory
-        } else {
-            $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
-        }
+        $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
 
         $update->setBasicAuth($key, $secret);
 
@@ -45,8 +41,9 @@ class UpdateController extends BaseController
         $version = config('version');
 
         return view('update.upgrad', [
-            'list' => count($list),
+            'list' => $list,
             'version' => $version,
+            'count' => count($list)
         ])->render();
     }
 
@@ -119,11 +116,7 @@ class UpdateController extends BaseController
         $update->setUpdateFile('backcheck_app.json');
         $update->setCurrentVersion(config('version'));
 
-        if (config('app.debug')) {
-            $update->setUpdateUrl('http://yun-yzshop.com/update'); //Replace with your server update directory
-        } else {
-            $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
-        }
+        $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
 
         $update->setBasicAuth($key, $secret);
         //$update->setBasicAuth();
@@ -249,11 +242,7 @@ class UpdateController extends BaseController
             $update->setUpdateFile('backdownload_app.json');
             $update->setCurrentVersion(config('version'));
 
-            if (config('app.debug')) {
-                $update->setUpdateUrl('http://yun-yzshop.com/update'); //Replace with your server update directory
-            } else {
-                $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
-            }
+            $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
 
             $update->setBasicAuth($key, $secret);
 
@@ -262,16 +251,19 @@ class UpdateController extends BaseController
                 'path' => urlencode($path)
             ]);
 
+            //预下载
             if (is_array($ret)) {
                 $path    = $ret['path'];
                 $dirpath = dirname($path);
+                $save_path = storage_path('app/auto-update/shop') . '/' . $dirpath;
 
-                if (!is_dir(base_path($dirpath))) {
-                    $filesystem->makeDirectory(base_path($dirpath), '0755', true);
+                if (!is_dir($save_path)) {
+                    $filesystem->makeDirectory($save_path, '0755', true);
                 }
 
+                //新建
                 $content = base64_decode($ret['content']);
-                file_put_contents(base_path($path), $content);
+                file_put_contents(storage_path('app/auto-update/shop') . '/' . $path, $content);
 
                 $success = 0;
                 foreach ($files as &$f) {
@@ -295,6 +287,21 @@ class UpdateController extends BaseController
                 file_put_contents($tmpdir . "/file.txt", json_encode($upgrade));
             }
         } else {
+            //覆盖
+            foreach ($files as $f) {
+                $path = $f['path'];
+                $file_dir = dirname($path);
+
+                if (!is_dir(base_path($file_dir))) {
+                    $filesystem->makeDirectory(base_path($file_dir), '0755', true);
+                }
+
+                $content = file_get_contents(storage_path('app/auto-update/shop') . '/' . $path);
+                file_put_contents(base_path($path), $content);
+
+                @unlink(storage_path('app/auto-update/shop') . '/' . $path);
+            }
+
             //更新完执行数据表
             \Log::debug('----CLI----');
             $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
