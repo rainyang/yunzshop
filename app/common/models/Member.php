@@ -424,9 +424,16 @@ class Member extends BackendModel
             $relation_str = '0,';
         }
 
+        $curr_arr = explode(',', $relation_str);
+        $res_arr  = array_unique($curr_arr);
+
+        if (count($res_arr) != count($curr_arr)) {
+            return false;
+        }
+
         $model->relation = $relation_str;
 
-        $model->save();
+        return $model->save();
     }
 
     public static function getOpenIdForType($member_id, $type = null){
