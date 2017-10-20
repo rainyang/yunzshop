@@ -10,7 +10,13 @@
 namespace app\backend\modules\charts\modules\order\controllers;
 
 
-class OrderTrendsController
+use app\common\components\BaseController;
+
+class OrderTrendsController extends BaseController
 {
+    public function index()
+    {
+        dd('all');
+    }
 
 }
