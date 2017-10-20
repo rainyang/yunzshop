@@ -297,7 +297,10 @@ class UpdateController extends BaseController
                 }
 
                 $content = file_get_contents(storage_path('app/auto-update/shop') . '/' . $path);
-                file_put_contents(base_path($path), $content);
+
+                if (!empty($content)) {
+                    file_put_contents(base_path($path), $content);
+                }
 
                 @unlink(storage_path('app/auto-update/shop') . '/' . $path);
             }
