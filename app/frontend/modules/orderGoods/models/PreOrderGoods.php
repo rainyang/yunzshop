@@ -348,7 +348,15 @@ class PreOrderGoods extends OrderGoods
         return $this->getPriceCalculator()->getGoodsMarketPrice();
 
     }
+
     public function getOrderGoodsDeductions(){
         return $this->orderGoodsDeductions;
+    }
+
+    public function getWeight(){
+        if($this->isOption()){
+            return $this->goodsOption->weight;
+        }
+        return $this->goods->weight;
     }
 }

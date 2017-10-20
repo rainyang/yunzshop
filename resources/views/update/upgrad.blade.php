@@ -80,7 +80,7 @@
     </div><!-- /.content-wrapper -->
 
     <script>
-        var front_upgrade = '{{$list}}';
+        var front_upgrade = '{{$count}}';
         
         $(function() {
             $.ajax({
@@ -111,10 +111,17 @@
                     var html = "";
 
                     if(ret.filecount<=0 && !ret.upgrade){
-                        html+="<li><br/>当前版本：<span style='color: #dd4b39'>" + ret.version +"</span></li>"
-                        html+="<li><br/>恭喜您，您现在是最新版本！</li>"
-                    }
-                    else{
+                        if (0 == front_upgrade) {
+                            html+="<li><br/>当前版本：<span style='color: #dd4b39'>" + ret.version +"</span></li>"
+                            html+="<li><br/>恭喜您，您现在是最新版本！</li>"
+                        } else {
+                            var version     = '{{$version}}';
+                            var new_version = '{{$list[$count-1]['version']}}';;
+
+                           //单独更新前端
+                            html+="<li><br/>当前版本：<span style='color: #dd4b39'>" + version + "</span></li>"
+                        }
+                    } else{
                         if(ret.filecount > 0){
                             html+="<br/><b style='color:#dd4b39'>更新之前请注意数据备份!</b><br/><br/>";
                             html += "更新文件(选中则不更新文件):<br>";
@@ -128,7 +135,25 @@
 
                     $("#upgrad_file").html(html);
 
-                    if(ret.filecount>0 || ret.upgrade){
+                    if (front_upgrade > 0) {
+                        $('#versionNumber').html(new_version);
+                        $('#versionDetail').html('');
+                        $('#upgrade').show();
+
+                        $("#upgradebtn").unbind('click').click(function(){
+                            if($(this).attr('updating')=='1'){
+                                return;
+                            }
+
+                            $(this).attr('updating',1);
+                            $(this).find('label').html('正在更新中...');
+
+                            $('#process').html("前端文件下载更新");
+                            frontUpgrade();
+                        });
+                    }
+
+                    if(ret.filecount > 0 || ret.upgrade){
                         $('#versionNumber').html(ret.version);
                         $('#versionDetail').html(ret.log);
                         $('#upgrade').show();

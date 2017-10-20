@@ -26,7 +26,9 @@ use app\frontend\modules\member\models\SubMemberModel;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\models\OrderListModel;
 use EasyWeChat\Foundation\Application;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Yunshop\Commission\models\Agents;
 use Yunshop\Poster\models\Poster;
 use Yunshop\Poster\services\CreatePosterService;
 use Yunshop\TeamDividend\models\YzMemberModel;
@@ -843,6 +845,7 @@ class MemberController extends ApiController
             'is_custom' => $member['is_custom'],
             'custom_title' => $member['custom_title'],
             'is_validity' => $member['level_type'] == 2 ? true : false,
+            'term' => $member['term'] ? $member['term'] : 0,
         ];
         return $this->successJson('获取自定义字段成功！', $data);
     }
@@ -880,6 +883,69 @@ class MemberController extends ApiController
         }
 
         return $this->successJson('', ['is_bind_mobile' => $is_bind_mobile]);
+    }
+
+    /**
+     * 修复关系链
+     *
+     * 历史遗留问题
+     */
+    public function fixRelation()
+    {
+        set_time_limit(0);
+        //获取修改数据
+        $members = MemberShopInfo::uniacid()
+            ->where('parent_id', '!=', 0)
+            ->where('is_agent', 1)
+            ->where('status', 2)
+            ->where('relation', '')
+            ->orWhereNull('relation')
+            ->orWhere('relation', '0,')
+            ->whereNull('deleted_at')
+            ->get();
+
+        if (!$members->isEmpty()) {
+            foreach ($members as $member) {
+                //yz_members
+                if ($member->is_agent == 1 && $member->status == 2) {
+                    Member::setMemberRelation($member->member_id,$member->parent_id);
+                }
+            }
+        }
+
+        echo 'yz_member修复完毕<BR>';
+
+        //yz_agents
+        //获取修改数据
+        $agents = Agents::uniacid()
+            ->where('parent_id', '!=', 0)
+            ->whereNull('deleted_at')
+            ->where('parent', '')
+            ->orWhereNull('parent')
+            ->orWhere('parent', '0,')
+            ->get();
+
+        foreach ($agents as $agent) {
+            $rows = DB::table('yz_member')
+                ->select()
+                ->where('uniacid', $agent->uniacid)
+                ->where('member_id', $agent->member_id)
+                ->where('parent_id', $agent->parent_id)
+                ->where('is_agent', 1)
+                ->where('status', 2)
+                ->whereNull('deleted_at')
+                ->first();
+
+            if (!empty($rows)) {
+                $agent->parent = $rows['relation'];
+
+                $agent->save();
+            }
+
+
+        }
+
+        echo 'yz_agents修复完毕';
     }
 
 }

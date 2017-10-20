@@ -310,7 +310,7 @@ class MemberController extends BaseController
 
         $file_name = date('Ymdhis', time()) . '会员导出';
 
-        $export_data[0] = ['会员ID', '粉丝', '姓名', '手机号', '等级', '分组', '注册时间', '积分', '余额', '订单', '金额', '关注'];
+        $export_data[0] = ['会员ID', '粉丝', '姓名', '手机号', '等级', '分组', '注册时间', '积分', '余额', '订单', '金额', '关注', '提现手机号'];
 
         foreach ($export_model->builder_model->toArray() as $key => $item) {
             if (!empty($item['yz_member']) && !empty($item['yz_member']['group'])) {
@@ -337,7 +337,7 @@ class MemberController extends BaseController
                     $fans = '未关注';
                 }
             } else {
-                $fans = '';
+                $fans = '未关注';
             }
             if (substr($item['nickname'], 0, strlen('=')) === '=') {
                 $item['nickname'] = '，' . $item['nickname'];
@@ -345,7 +345,7 @@ class MemberController extends BaseController
 
             $export_data[$key + 1] = [$item['uid'], $item['nickname'], $item['realname'], $item['mobile'],
                 $level, $group, date('YmdHis', $item['createtime']), $item['credit1'], $item['credit2'], $order,
-                $price, $fans];
+                $price, $fans, $item['yz_member']['withdraw_mobile']];
         }
 
         $export_model->export($file_name, $export_data, \Request::query('route'));

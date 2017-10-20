@@ -48,6 +48,65 @@ class Withdraw extends \app\common\models\Withdraw
         return $Model;
     }
 
+    public static function getAllWithdraw($type)
+    {
+        $ids = '';
+        $total = 0;
+
+        $data = self::getWithdrawListForType($type)->get();
+
+        if (!is_null($data)) {
+            foreach ($data as $rows) {
+                $ids .= $rows->id . ',';
+            }
+        }
+
+        $ids = rtrim($ids, ',');
+        $total = count($data);
+
+        if ($total == 0 && $ids == '') {
+            $status = 0;
+            $msg    = '暂无数据';
+        } elseif ($total != count(explode(',', $ids))) {
+            $status = -1;
+            $msg     = '数据不符';
+        } else {
+            $status = 1;
+            $msg    = 'ok';
+        }
+
+        return ['status' => $status, 'totals' => $total, 'ids' => $ids, 'msg' => $msg];
+    }
+
+    public static function getWithdrawListForType($type, $limit=800, $status=1)
+    {
+        $Model = self::uniacid();
+
+        switch ($type) {
+            case 1:
+                $Model->whereIn('type', ['balance']);
+                break;
+            case 2:
+                $Model->whereNotIn('type', ['balance']);
+                break;
+        }
+
+        $Model->where('status', $status)
+            ->where('pay_way', 'alipay')
+            ->limit($limit)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return $Model;
+    }
+
+    public static function updateWidthdrawOrderStatus($withdrawId)
+    {
+        return self::uniacid()
+            ->whereIn('id', $withdrawId)
+            ->update(['status' => 4]);
+    }
+
     public function rules()
     {
         return [
