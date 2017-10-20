@@ -2137,6 +2137,18 @@ return [
                                 'parents'           => ['finance','withdraw','withdraw_records'],
                             ],
 
+                            'withdraw_status_process_pay' => [
+                                'name'              => '打款中提现',
+                                'url'               => 'finance.withdraw',
+                                'url_params'        => "&search[status]=4",
+                                'permit'            => 0,
+                                'menu'              => 1,
+                                'icon'              => 'fa-inbox',
+                                'sort'              => 0,
+                                'item'              => 'withdraw_status_process_pay',
+                                'parents'           => ['finance','withdraw','withdraw_records'],
+                            ],
+
                             'withdraw_status_pay' => [
                                 'name'              => '已打款提现',
                                 'url'               => 'finance.withdraw',

@@ -389,4 +389,31 @@ class WithdrawController extends BaseController
 
         $result = $this->submitPay($ids, 2);
     }
+
+    public function getAllWithdraw()
+    {
+        $type = request('type');
+
+        $res = Withdraw::getAllWithdraw($type);
+
+        return json_encode($res);
+    }
+
+    public function updateWidthdrawOrderStatus()
+    {
+        $ids = \YunShop::request()->ids;
+        $status = 0;
+
+        if (empty($ids)) {
+            return json_encode(['status' => $status]);
+        }
+
+        $withdrawId = explode(',', $ids);
+
+        if (Withdraw::updateWidthdrawOrderStatus($withdrawId)) {
+            $status = 1;
+        }
+
+        return json_encode(['status' => $status]);
+    }
 }
