@@ -301,9 +301,9 @@ class UpdateController extends BaseController
                 if (!empty($content)) {
                     file_put_contents(base_path($path), $content);
                 }
-
-                @unlink(storage_path('app/auto-update/shop') . '/' . $path);
             }
+
+            $filesystem->deleteDirectory(storage_path('app/auto-update/shop'));
 
             //更新完执行数据表
             \Log::debug('----CLI----');
