@@ -23,7 +23,7 @@ class DeductionSettingManager extends Container
         /**
          * 积分抵扣设置模型
          */
-        $this->bind('point', function ($deductionSettingManager) {
+        $this->singleton('point', function ($deductionSettingManager) {
             return new PointDeductionSettingManager();
         });
     }

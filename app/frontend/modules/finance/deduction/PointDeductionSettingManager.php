@@ -37,10 +37,17 @@ class PointDeductionSettingManager extends Container implements DeductionSetting
      * @param Goods $goods
      * @return DeductionSettingCollection
      */
-    public function getDeductionSettingCollection(Goods $goods){
-        $deductionSettingCollection = new DeductionSettingCollection();
-        $deductionSettingCollection->push($this->make('goods',$goods));
-        $deductionSettingCollection->push($this->make('shop',$goods));
-        return $deductionSettingCollection;
+    public function getDeductionSettingCollection(Goods $goods)
+    {
+        $deductionSettingCollection = collect();
+        foreach ($this->getBindings() as $key => $value) {
+            $deductionSettingCollection->push($this->make($key, $goods));
+        }
+        // 按权重排序
+        $deductionSettingCollection = $deductionSettingCollection->sortBy(function ($deductionSetting) {
+            return $deductionSetting->getWeight();
+        });
+
+        return new DeductionSettingCollection($deductionSettingCollection);
     }
 }

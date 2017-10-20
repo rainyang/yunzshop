@@ -15,6 +15,14 @@ namespace app\frontend\modules\deduction;
  */
 interface DeductionSettingInterface
 {
+    /**
+     * @return int
+     */
+    public function getWeight();
+
+    /**
+     * @return bool
+     */
     public function isEnableDeductDispatchPrice();
 
     /**

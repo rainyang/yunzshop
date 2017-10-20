@@ -22,6 +22,7 @@ class DeductionSettingCollection extends Collection
      */
     public function getImportantAndValidFixedAmount()
     {
+        // todo 按权重排序
         // 获取抵扣设置集合中设置了抵扣金额的,权重最高的设置项
         /**
          * @var DeductionSettingInterface $deductionSetting
@@ -47,6 +48,7 @@ class DeductionSettingCollection extends Collection
      */
     public function getImportantAndValidPriceProportion()
     {
+        // todo 按权重排序
 
         // 找到抵扣设置集合中设置了价格比例的,权重最高的设置项
 
@@ -69,6 +71,8 @@ class DeductionSettingCollection extends Collection
     }
 
     public function getImportantAndValidCalculationType(){
+        // todo 按权重排序
+
         $type = '';
         foreach ($this as $deductionSetting){
             /**

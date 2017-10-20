@@ -10,7 +10,6 @@ namespace app\frontend\modules\deduction\orderGoods;
 
 use app\common\models\VirtualCoin;
 use app\frontend\models\order\PreOrderDeduction;
-use app\frontend\modules\deduction\DeductionSettingManagerInterface;
 use app\frontend\modules\deduction\models\Deduction;
 use app\frontend\modules\deduction\orderGoods\amount\FixedAmount;
 use app\frontend\modules\deduction\orderGoods\amount\GoodsPriceProportion;

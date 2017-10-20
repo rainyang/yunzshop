@@ -13,6 +13,11 @@ use app\frontend\modules\deduction\DeductionSettingInterface;
 
 class PointGoodsDeductionSetting implements DeductionSettingInterface
 {
+    public function getWeight()
+    {
+        return 10;
+    }
+
     /**
      * @var \app\frontend\models\goods\Sale
      */

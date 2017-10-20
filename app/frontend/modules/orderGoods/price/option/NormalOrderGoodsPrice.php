@@ -57,7 +57,6 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
      */
     public function getDeductionAmount()
     {
-
         return $this->orderGoods->getOrderGoodsDeductions()->getUsedPoint()->getMoney();
     }
 
