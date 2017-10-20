@@ -43,16 +43,15 @@
 
 
                 <div class='panel-body'>
-                    <table class="table table-hover">
+                    <table class="table table-hover" style="text-align: center;">
                         <thead>
                         <tr>
-                            <th style='width:80px;'>排行</th>
-                            <th>会员</th>
-                            <th>昵称</th>
-                            <th>姓名<br/>手机号</th>
-                            <th>等级<br/>分组</th>
-                            <th>订单数</th>
-                            <th>订单总额</th>
+                            <th style="text-align: center;">排行</th>
+                            <th style="text-align: center;">会员</th>
+                            <th style="text-align: center;">昵称</th>
+                            <th style="text-align: center;">姓名<br/>手机号</th>
+                            <th style="text-align: center;">订单数</th>
+                            <th style="text-align: center;">订单总额</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -68,28 +67,31 @@
                                         <labe class='label label-default'  style='padding:8px;'>&nbsp;{{ $key + 1 }}&nbsp;</labe>
                                     @endif
                                 </td>
-                                <td>{{ $item['member_id'] }}</td>
+                                <td>{{ $item['uid'] }}</td>
                                 <td>
                                     @if(!empty($item['avatar']))
                                         <img src='{{$item['avatar']}}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
                                     @endif
-                                    @if(empty($item['member_name']))
+                                    @if(empty($item['nickname']))
                                         未更新
                                     @else
-                                        {{$item['member_name']}}
+                                        {{$item['nickname']}}
                                     @endif
                                 </td>
-                                <td>{{ $item['lv1_offline_count'] }}</td>
-                                <td>{{ $item['lv2_offline_count'] }}</td>
-                                <td>{{ $item['lv3_offline_count'] }}</td>
-                                <td>{{ $item['offline_count'] }}</td>
+                                <td>
+                                    {{ $item['realname'] }}
+                                    <br/>
+                                    {{ $item['mobile'] }}
+                                </td>
+                                <td>{{ $item['order_count'] }}</td>
+                                <td>{{ $item['order_money'] }}</td>
                             </tr>
                         @endforeach
 
 
 
                     </table>
-                    {!! $page !!}
+                    {!! $pagination !!}
                 </div>
             </div>
         </div>

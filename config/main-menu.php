@@ -1977,7 +1977,7 @@ return [
 
             'order_ranking_charts'     => [
                 'name'          => '会员订单排行',
-                'url'           => 'charts.order.order-ranking.index',
+                'url'           => 'charts.order.order-ranking.count',
                 'url_params'    => '',
                 'permit'        => 1,
                 'menu'          => 1,
@@ -1987,9 +1987,22 @@ return [
                 'parents'       => ['charts',],
                 'child'         => [
 
-                    'order_money_ranking_charts'     => [
+                    'order_count_ranking_charts'     => [
                         'name'          => '订单数量排行',
-                        'url'           => 'charts.order.order-ranking.index',
+                        'url'           => 'charts.order.order-ranking.count',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'order_count_ranking_charts',
+                        'parents'       => ['charts','order_ranking_charts'],
+
+                    ],
+
+                    'order_money_ranking_charts'     => [
+                        'name'          => '订单金额排行',
+                        'url'           => 'charts.order.order-ranking.money',
                         'url_params'    => '',
                         'permit'        => 1,
                         'menu'          => 1,
@@ -2000,18 +2013,7 @@ return [
 
                     ],
 
-                    'order_count_ranking_charts'     => [
-                        'name'          => '订单金额排行',
-                        'url'           => 'charts.order.order-ranking.index',
-                        'url_params'    => '',
-                        'permit'        => 1,
-                        'menu'          => 1,
-                        'icon'          => '',
-                        'sort'          => 0,
-                        'item'          => 'order_count_ranking_charts',
-                        'parents'       => ['charts','order_ranking_charts'],
 
-                    ],
                 ]
             ],
 
