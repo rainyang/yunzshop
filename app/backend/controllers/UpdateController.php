@@ -346,10 +346,10 @@ class UpdateController extends BaseController
         }
 
         if ($update->newVersionAvailable()) {
-            $update->onEachUpdateFinish(function($version){
+            /*$update->onEachUpdateFinish(function($version){
                 \Log::debug('----CLI----');
                 \Artisan::call('update:version' ,['version'=>$version]);
-            });
+            });*/
             $result = $update->update();
 
             if ($result === true) {
