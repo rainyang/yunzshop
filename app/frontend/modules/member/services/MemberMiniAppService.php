@@ -217,7 +217,7 @@ class MemberMiniAppService extends MemberService
     {
         $uid = parent::addMemberInfo($uniacid, $userinfo);
 
-        $this->addMcMemberFans($uid, $uniacid, $userinfo);
+        //$this->addMcMemberFans($uid, $uniacid, $userinfo);
         $this->addFansMember($uid, $uniacid, $userinfo);
 
         return $uid;

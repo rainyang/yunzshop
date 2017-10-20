@@ -8,11 +8,11 @@
             <ul class="nav">
 
 
-
                 @foreach(config('menu')[Yunshop::$currentItems[0]]['child'] as $key=>$value)
 
                     @if(isset($value['menu']) && $value['menu'] == 1 && can($key))
                         @if(isset($value['child']) && array_child_kv_exists($value['child'],'menu',1))
+
                             <li class="{{in_array($key,Yunshop::$currentItems) ? 'active' : ''}}">
                                 <a href="{{isset($value['url']) ? yzWebFullUrl($value['url']):''}}{{$value['url_params'] or ''}}">
                                     <i class="fa {{array_get($value,'icon','fa-circle-o') ?: 'fa-circle-o'}}"></i>

@@ -184,7 +184,6 @@ return [
                         'item'          => 'goods_goods_see',
                         'parents'       => ['Goods', 'goods_goods'],
                     ],
-
                     'goods_goods_display_order' => [
                         'name'          => '修改排序',
                         'url'           => 'goods.goods.displayorder',
@@ -2173,7 +2172,6 @@ return [
                         'item'              => 'setting_shop_share',
                         'parents'           => ['system', 'Setting',],
                     ],
-
                     'setting_shop_notice' => [
                         'name'              => '消息提醒',
                         'url'               => 'setting.shop.notice',

@@ -32,7 +32,7 @@ class PreOrderAddress extends OrderAddress
     {
         if ($this->order->dispatch_type_id == DispatchType::EXPRESS) {
             $this->fill($this->getAddressByMember());
-            dd($this->validator()->failed());
+            //dd($this->validator()->failed());
         }
     }
 
