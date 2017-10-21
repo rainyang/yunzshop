@@ -24,7 +24,7 @@ use app\frontend\modules\coupon\services\models\UseScope\CategoryScope;
 use app\frontend\modules\coupon\services\models\UseScope\CouponUseScope;
 use app\frontend\modules\coupon\services\models\UseScope\GoodsScope;
 use app\frontend\modules\coupon\services\models\UseScope\ShopScope;
-use app\frontend\modules\order\models\PreGeneratedOrder;
+use app\frontend\modules\order\models\PreOrder;
 
 class Coupon
 {
@@ -42,26 +42,26 @@ class Coupon
     private $timeLimit;
 
     /**
-     * @var PreGeneratedOrder
+     * @var PreOrder
      */
-    private $preGeneratedOrder;
+    private $order;
     /**
      * @var \app\common\models\MemberCoupon
      */
     private $memberCoupon;
 
-    public function __construct(MemberCoupon $memberCoupon, PreGeneratedOrder $preGeneratedOrder)
+    public function __construct(MemberCoupon $memberCoupon, PreOrder $order)
     {
         $this->memberCoupon = $memberCoupon;
-        $this->preGeneratedOrder = $preGeneratedOrder;
+        $this->order = $order;
         $this->price = $this->getPriceInstance();
         $this->useScope = $this->getUseScopeInstance();
         $this->timeLimit = $this->getTimeLimitInstance();
     }
 
-    public function getPreGeneratedOrder()
+    public function getPreOrder()
     {
-        return $this->preGeneratedOrder;
+        return $this->order;
     }
 
     public function getMemberCoupon()
@@ -166,7 +166,7 @@ class Coupon
             'amount'=>$this->getDiscountAmount()
 
         ]);
-        $preOrderCoupon->setOrder($this->preGeneratedOrder);
+        $preOrderCoupon->setOrder($this->order);
 
         $this->setOrderGoodsDiscountPrice();
     }
@@ -213,7 +213,7 @@ class Coupon
      */
     public function unique()
     {
-        $memberCoupons = MemberCouponService::getCurrentMemberCouponCache($this->getPreGeneratedOrder()->belongsToMember);
+        $memberCoupons = MemberCouponService::getCurrentMemberCouponCache($this->getPreOrder()->belongsToMember);
         //本优惠券与某个选中的优惠券是一张 就返回false
         return !$memberCoupons->contains(function ($memberCoupon) {
 

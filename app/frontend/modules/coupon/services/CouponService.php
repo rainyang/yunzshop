@@ -5,7 +5,7 @@ namespace app\frontend\modules\coupon\services;
 use app\common\helpers\ArrayHelper;
 use app\common\models\goods\GoodsCoupon;
 use app\frontend\modules\coupon\services\models\Coupon;
-use app\frontend\modules\order\models\PreGeneratedOrder;
+use app\frontend\modules\order\models\PreOrder;
 use app\Jobs\addGoodsCouponQueueJob;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Collection;

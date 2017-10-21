@@ -12,7 +12,7 @@ use app\common\exceptions\AppException;
 use \app\frontend\models\MemberCart;
 use Illuminate\Support\Collection;
 
-class CartBuyController extends PreGeneratedController
+class CartBuyController extends PreOrderController
 {
     public function index()
     {
