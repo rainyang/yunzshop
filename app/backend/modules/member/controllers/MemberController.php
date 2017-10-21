@@ -124,12 +124,22 @@ class MemberController extends BaseController
         if (empty($set['level_name'])) {
             $set['level_name'] = '普通会员';
         }
+
+        if (0 == $member['yz_member']['parent_id']) {
+            $parent_name = '总店';
+        } else {
+            $parent = Member::getMemberById($member['yz_member']['parent_id']);
+
+            $parent_name = $parent->nickname;
+        }
+
         return view('member.detail', [
             'member' => $member,
             'levels' => $levels,
             'groups' => $groups,
             'set'    => $set,
-            'myform' => $myform
+            'myform' => $myform,
+            'parent_name' => $parent_name
         ])->render();
     }
 
@@ -158,6 +168,7 @@ class MemberController extends BaseController
 
         $yz = array(
             'member_id' => $uid,
+            'parent_id' => $parame->data['parent_id'],
             'uniacid' => \YunShop::app()->uniacid,
             'level_id' => $parame->data['level_id'] ?: 0,
             'group_id' => $parame->data['group_id'],
@@ -349,5 +360,28 @@ class MemberController extends BaseController
         }
 
         $export_model->export($file_name, $export_data, \Request::query('route'));
+    }
+
+    public function change_relation()
+    {
+        $members    = '';
+        $parent_id = \YunShop::request()->parent;
+        $uid       = \YunShop::request()->member;
+
+        if (is_numeric($parent_id) && $parent_id > 0) {
+            if (Member::setMemberRelation($uid, $parent_id)) {
+                $member = Member::getMemberById($parent_id);
+
+                if (!is_null($member)) {
+                    $members[] = $member->toArray();
+                }
+            } else {
+                return response('')->send();
+            }
+        }
+
+        return view('member.query', [
+            'members' => $members
+        ])->render();
     }
 }
