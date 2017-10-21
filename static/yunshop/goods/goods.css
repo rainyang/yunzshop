@@ -260,9 +260,9 @@
     display: none;
     position: absolute;
     top: -55px;
-    right: 44px;
+    right: 62px;
     border: 1px solid #d0aaaa;
-    border-radius: 15px;
+    border-radius: 5px;
     background: #FFF;
     padding: 10px;margin-left: 10px;
     z-index: 1002;
@@ -322,7 +322,7 @@ table>tbody>tr{
     padding-top: 4px;
     margin-bottom: 0;
     text-align: right;
-    margin-top:7px !important;
+    margin-top:2px !important;
     color: #2d2828 !important;
 }
 

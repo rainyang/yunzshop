@@ -41,7 +41,7 @@ return [
         'url_params'    => '',
         'permit'        => 1,
         'menu'          => 1,
-        'top_show'    => 1,
+        'top_show'    => 0,
         'left_first_show'   => 1,
         'left_second_show'   => 1,
         'icon'          => 'fa-archive',
@@ -506,7 +506,7 @@ return [
 
             'coupon'    => [
                 'name'              => '优惠券管理',
-                'url'               => '',
+                'url'               => 'coupon.coupon.index',
                 'url_params'        => '',
                 'permit'            => 1,
                 'menu'              => 1,
@@ -636,7 +636,7 @@ return [
         'url_params'    => '',
         'permit'        => 1,
         'menu'          => 1,
-        'top_show'    => 1,
+        'top_show'    => 0,
         'left_first_show'   => 1,
         'left_second_show'   => 1,
         'icon'          => 'fa-users',
@@ -1004,7 +1004,7 @@ return [
         'url_params'    => '',
         'permit'        => 1,
         'menu'          => 1,
-        'top_show'    => 1,
+        'top_show'    => 0,
         'left_first_show'   => 1,
         'left_second_show'   => 1,
         'icon'          => 'fa-shopping-cart',
@@ -1477,7 +1477,7 @@ return [
         'permit' => 0,                  //如果不设置则不会做权限检测
         'menu' => 1,                    //如果不设置则不显示菜单，子菜单也将不显示
         'icon' => 'fa-cubes',                   //菜单图标
-        'top_show'    => 1,
+        'top_show'    => 0,
         'left_first_show'   => 1,
         'left_second_show'   => 0,
         'parents' => [],                //
@@ -1501,7 +1501,7 @@ return [
         'url_params'        => '',
         'permit'            => 1,
         'menu'              => 1,
-        'top_show'        => 1,
+        'top_show'        => 0,
         'left_first_show'       => 1,
         'left_second_show'   => 1,
         'icon'              => 'fa-rmb',
@@ -1887,7 +1887,7 @@ return [
         'menu'          => 1,
         'icon'          => 'fa-bar-chart-o',
         'sort'          => 1,
-        'top_show'      => 1,               //顶部导航是否显示
+        'top_show'      => 0,               //顶部导航是否显示
         'left_first_show'   => 1,           //左侧一级导航是否显示
         'left_second_show'  => 1,           //左侧二级导航是否显示
         'item'          => 'system',
@@ -1985,7 +1985,7 @@ return [
         'menu'          => 1,
         'icon'          => 'fa-cogs',
         'sort'          => 1,
-        'top_show'      => 1,               //顶部导航是否显示
+        'top_show'      => 0,               //顶部导航是否显示
         'left_first_show'   => 1,               //左侧导航是否显示
         'left_second_show'   => 1,
         'item'          => 'system',

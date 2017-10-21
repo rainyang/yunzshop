@@ -6441,7 +6441,7 @@ h2.title {
     line-height: 35px;
     width: 30px;
     text-align: center;
-    color: #a9afbb;
+    color: #f23a12;
 }
 
 .sidebar .sidebar-background {
@@ -9009,16 +9009,16 @@ label,
 .label-on-right {
     font-size: 14px;
     line-height: 1.42857;
-    color: #AAAAAA;
+    color: #4c4a4a;
     font-weight: 400;
 }
 
 label.control-label {
     font-size: 11px;
-    line-height: 1.07143;
+    /*line-height: 1.07143;*/
     color: #433f3f;
     font-weight: 400;
-    margin: 16px 0 0 0;
+    /*margin: 16px 0 0 0;*/
 }
 
 .help-block {
@@ -11049,7 +11049,7 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
 .panel .panel-heading {
     background-color: transparent;
     border-bottom: 1px solid #ddd;
-    padding: 25px 10px 5px 0px;
+    /*padding: 25px 10px 5px 0px;*/
 }
 
 .panel .panel-heading .panel-title {
@@ -11097,7 +11097,7 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
     margin: 0 3px;
     min-width: 30px;
     height: 30px;
-    line-height: 30px;
+    line-height: 24px;
     color: #999999;
     font-weight: 400;
     font-size: 12px;
@@ -12653,8 +12653,10 @@ footer .btn {
 }
 
 .card [data-background-color="rose"] {
-    background: linear-gradient(60deg, #ec407a, #d81b60);
-    box-shadow: 0 4px 20px 0px rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgba(233, 30, 99, 0.4);
+    /*background: linear-gradient(60deg, #ec407a, #d81b60);*/
+    /*box-shadow: 0 4px 20px 0px rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgba(233, 30, 99, 0.4);*/
+    background: linear-gradient(60deg, #40aeec, #1b78d8);
+    box-shadow: 0 4px 10px 0px rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgba(30, 72, 233, 0.4);
 }
 
 .card [data-icon-bg-color="rose"] i {

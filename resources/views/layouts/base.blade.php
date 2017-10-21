@@ -189,7 +189,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="{{static_url('yunshop/dist/js/app.min.js')}}"></script>
 
 <!-- dataTables -->
-<script src="{{static_url('yunshop/dist/js/common.js')}}"></script>--}}
+<script src="{{static_url('yunshop/dist/js/common.js')}}"></script>
 
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
      Both of these plugins are recommended to enhance the

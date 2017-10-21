@@ -64,10 +64,10 @@
             </div>
 
             <div class="form-group col-xs-12 col-sm-4">
-
-                <input type="button" class="btn btn-success" id="export" value="导出">
-
-                <input type="button" class="btn btn-success pull-right" id="search" value="搜索">
+                <div style="width: 110px;margin: auto;">
+                    <input type="button" class="btn btn-success" id="export" value="导出">
+                    <input type="button" class="btn btn-success pull-right" id="search" value="搜索">
+                </div>
 
             </div>
 
