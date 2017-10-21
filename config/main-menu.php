@@ -1895,7 +1895,7 @@ return [
         'child'         => [
 
             'member_count_charts'     => [
-                'name'          => '会员统计',
+                'name'          => '会员数据统计',
                 'url'           => 'charts.member.count.index',
                 'url_params'    => '',
                 'permit'        => 1,
@@ -1908,8 +1908,8 @@ return [
             ],
 
             'member_offline_charts'     => [
-                'name'          => '关系统计',
-                'url'           => 'charts.member.offline-order.index',
+                'name'          => '会员关系统计',
+                'url'           => 'charts.member.offline-count.index',
                 'url_params'    => '',
                 'permit'        => 1,
                 'menu'          => 1,
@@ -1950,9 +1950,9 @@ return [
 
             ],
 
-            'goods_charts'     => [
-                'name'          => '商品统计',
-                'url'           => 'charts.member.count.index',
+            'goods_sales_count_charts'     => [
+                'name'          => '商品数据统计',
+                'url'           => 'charts.goods.sales-count.index',
                 'url_params'    => '',
                 'permit'        => 1,
                 'menu'          => 1,
@@ -1963,7 +1963,7 @@ return [
             ],
 
             'order_charts'     => [
-                'name'          => '订单统计',
+                'name'          => '订单数据统计',
                 'url'           => 'charts.member.count.index',
                 'url_params'    => '',
                 'permit'        => 1,
@@ -1972,6 +1972,48 @@ return [
                 'sort'          => 0,
                 'item'          => 'order_charts',
                 'parents'       => ['charts',],
+            ],
+
+            'order_ranking_charts'     => [
+                'name'          => '会员订单排行',
+                'url'           => 'charts.order.order-ranking.count',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts',],
+                'child'         => [
+
+                    'order_count_ranking_charts'     => [
+                        'name'          => '订单数量排行',
+                        'url'           => 'charts.order.order-ranking.count',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'order_count_ranking_charts',
+                        'parents'       => ['charts','order_ranking_charts'],
+
+                    ],
+
+                    'order_money_ranking_charts'     => [
+                        'name'          => '订单金额排行',
+                        'url'           => 'charts.order.order-ranking.money',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'order_money_ranking_charts',
+                        'parents'       => ['charts','order_ranking_charts'],
+
+                    ],
+
+
+                ]
             ],
 
         ],
