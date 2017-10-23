@@ -18,6 +18,7 @@ class CreateImsYzMemberBankCardTable extends Migration {
                 $table->integer('uniacid');
                 $table->integer('member_id');
                 $table->string('member_name', 45)->default('');
+                $table->string('bank_name', 45)->default('');
                 $table->string('bank_card', 100)->default('');
                 $table->boolean('is_default');
                 $table->integer('created_at');

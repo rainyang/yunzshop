@@ -34,6 +34,14 @@
                         </div>
 
                         <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">开户行</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <input type="text" name="bank[bank_name]" class="form-control"
+                                       value="{{ $member->bankCard->bank_name or '' }}"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">银行卡号</label>
                             <div class="col-sm-9 col-xs-12">
                                 <input type="text" name="bank[bank_card]" class="form-control"
