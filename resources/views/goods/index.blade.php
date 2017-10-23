@@ -335,7 +335,7 @@
                     $(this).addClass("selected");
                 },
                 function () {
-                    //$(this).removeClass("selected");
+                    $(this).removeClass("selected");
                 })
         function fastChange(id, type, value) {
             $.ajax({

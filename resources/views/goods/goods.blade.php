@@ -571,7 +571,7 @@
 {{--<link href="{{static_url('yunshop/goods/goods.css')}}" media="all" rel="stylesheet" type="text/css"/>--}}
 <div class="right-titpos">
     <ul class="add-snav">
-        <li class="active"><a href="#">商品编辑</a></li>
+        <li class="active"><a href="#"><i class="fa fa-circle-o" style="color: #33b5d2;"></i>商品编辑</a></li>
     </ul>
 </div>
 {{--<div class="main rightlist">--}}
