@@ -169,7 +169,7 @@ class Order extends \app\common\models\Order
 
     public static function getOrderDetailById($order_id)
     {
-        return self::orders()->find($order_id);
+        return self::orders()->with(['deductions','coupons'])->find($order_id);
     }
 
     public static function boot()
