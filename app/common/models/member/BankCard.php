@@ -34,6 +34,7 @@ class BankCard extends BaseModel
         return [
             'member_name' => '会员姓名',
             'bank_card'  => '银行卡号 ',
+            'bank_name'  => '开户行 ',
         ];
     }
 
@@ -45,8 +46,9 @@ class BankCard extends BaseModel
     public function rules()
     {
         return [
-            'member_name' => 'required',
-            'bank_card'  => 'required ',
+            'member_name' => 'required|max:45',
+            'bank_card'  => 'required|max:100',
+            'bank_name'  => 'required|max:45',
         ];
     }
 
