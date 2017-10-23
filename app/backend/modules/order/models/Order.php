@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Builder;
 
 class Order extends \app\common\models\Order
 {
-    static protected $needLog = true;
     //订单导出订单数据
     public static function getExportOrders($search)
     {
@@ -169,7 +168,7 @@ class Order extends \app\common\models\Order
 
     public static function getOrderDetailById($order_id)
     {
-        return self::orders()->find($order_id);
+        return self::orders()->with(['deductions','coupons'])->find($order_id);
     }
 
     public static function boot()

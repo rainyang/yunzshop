@@ -23,7 +23,7 @@ class AdminOperationLog extends BaseModel
     {
         $this->ip = request()->ip();
         $this->admin_uid = \YunShop::app()->uid;
-
+        $this->uid = \YunShop::app()->getMemberId();
         (new AdminOperationLogQueueJob($this->getAttributes()))->handle();
     }
 }
