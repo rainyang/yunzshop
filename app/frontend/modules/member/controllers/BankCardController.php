@@ -32,12 +32,14 @@ class BankCardController extends ApiController
 
         !$bankCard && $bankCard = new MemberBankCard();
 
-        $post = \YunShop::request()->bank;
-        if ($post) {
-            $post = json_decode($post);
-            $bankCard->member_name = $post['member_name'];
-            $bankCard->bank_card = $post['bank_card'];
-            $bankCard->bank_name = $post['bank_name'];
+        $member_name = \YunShop::request()->member_name;
+        $bank_card = \YunShop::request()->bank_card;
+        $bank_name = \YunShop::request()->bank_name;
+        if ($bank_name && $bank_card && $member_name) {
+            //$post = json_decode($post);
+            $bankCard->member_name = $member_name;
+            $bankCard->bank_card = $bank_card;
+            $bankCard->bank_name = $bank_name;
             $bankCard->is_default  = 1;
             $bankCard->uniacid     = \YunShop::app()->uniacid;
 
