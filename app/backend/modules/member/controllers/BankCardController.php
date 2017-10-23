@@ -34,11 +34,17 @@ class BankCardController extends BaseController
             $_model->is_default  = 1;
             $_model->uniacid     = \YunShop::app()->uniacid;
 
-            //dd($_model->save());
-            if ($_model->save()) {
-                return $this->message('银行卡信息更新成功', Url::absoluteWeb('member.bank-card.edit',['member_id'=>$this->getMemberId()]));
+            $validator = $_model->validator();
+            if ($validator->fails()) {
+                $this->error($validator->messages());
+            } else {
+                //dd($_model->save());
+                if ($_model->save()) {
+                    return $this->message('银行卡信息更新成功', Url::absoluteWeb('member.bank-card.edit',['member_id'=>$this->getMemberId()]));
+                }
+                return $this->message('银行卡信息更新失败，请重试','', 'error');
             }
-            return $this->message('银行卡信息更新失败，请重试','', 'error');
+
         }
 
 
