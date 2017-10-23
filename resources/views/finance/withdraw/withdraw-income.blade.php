@@ -118,6 +118,7 @@
                 <input type='radio' name='withdraw[income][manual]' value='0' @if($set['manual'] == 0) checked @endif />
                 关闭
             </label>
+            <span class='help-block'>开启后，用户选择手动提现需要填写银行卡信息</span>
         </div>
     </div>
 </div>
