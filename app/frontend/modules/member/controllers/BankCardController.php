@@ -36,6 +36,9 @@ class BankCardController extends ApiController
         if ($post) {
             $bankCard->member_name = $post['member_name'];
             $bankCard->member_name = $post['bank_card'];
+            $bankCard->is_default  = 1;
+            $bankCard->uniacid     = \YunShop::app()->uniacid;
+
 
             $validator = $bankCard->validator();
             if ($validator->fails()) {

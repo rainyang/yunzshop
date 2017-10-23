@@ -24,6 +24,30 @@ class BankCard extends BaseModel
         return $this->belongsTo('app\common\models\Member', 'member_id', 'uid');
     }
 
+    /**
+     * 定义字段名
+     *
+     * @return array
+     */
+    public function atributeNames()
+    {
+        return [
+            'member_name' => '会员姓名',
+            'bank_card'  => '银行卡号 ',
+        ];
+    }
 
+    /**
+     * 字段规则
+     *
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            'member_name' => 'required',
+            'bank_card'  => 'required ',
+        ];
+    }
 
 }
