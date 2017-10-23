@@ -23,7 +23,7 @@ class BankCardController extends BaseController
         $post = request()->input('bank');
         if ($post) {
 
-            $_model = MemberBankCard::where('id',$post['bank_card_id'])->first();
+            $_model = MemberBankCard::where('member_id',$this->getMemberId())->first();
 
             !$_model && $_model = new MemberBankCard();
 
@@ -33,7 +33,8 @@ class BankCardController extends BaseController
             $_model->member_id   = $this->getMemberId();
             $_model->is_default  = 1;
             $_model->uniacid     = \YunShop::app()->uniacid;
-            //dd($_model);
+
+            //dd($_model->save());
             if ($_model->save()) {
                 return $this->message('银行卡信息更新成功', Url::absoluteWeb('member.bank-card.edit',['member_id'=>$this->getMemberId()]));
             }

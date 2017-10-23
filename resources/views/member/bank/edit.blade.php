@@ -51,7 +51,6 @@
                             <div class="col-sm-9 col-xs-12">
                                 <input type="submit" name="submit" value="更新" class="btn btn-success" onclick="return confirm('确定更新会员银行卡信息吗？');" />
                                 <input type="hidden" name="token" value="{{$var['token']}}"/>
-                                <input type="hidden" name="bank_card_id" value="{{ $member->bankCard->id or '' }}"/>
                                 <button class="btn btn-default">
                                     <a href="{{ yzWebUrl('member.member.index') }}">返回</a>
                                 </button>
