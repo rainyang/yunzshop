@@ -19,9 +19,9 @@ class BankCardController extends ApiController
     {
         $bankCard = MemberBankCard::where('member_id', $this->getMemberId())->first();
         if ($bankCard && $bankCard->member_name && $bankCard->bank_card) {
-            return $this->successJson('ok', ['code' => true]);
+            return $this->successJson('ok', ['status' => true]);
         }
-        return $this->successJson('ok', ['code' => false]);
+        return $this->successJson('ok', ['status' => false]);
     }
 
 
