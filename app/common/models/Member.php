@@ -426,11 +426,28 @@ class Member extends BackendModel
             $relation_str = '0';
         }
 
-        $curr_arr = explode(',', $relation_str);
-        $res_arr  = array_unique($curr_arr);
+        if ($relation_str != '0') {
+            $curr_arr = explode(',', $relation_str);
+            $res_arr  = array_unique($curr_arr);
+            $total    = count($curr_arr);
 
-        if (count($res_arr) != count($curr_arr)) {
-            return false;
+            if (count($res_arr) != count($curr_arr)) {
+                return false;
+            }
+
+            $parent = MemberShopInfo::getMemberShopInfo($curr_arr[$total-1]);
+
+            if (!$parent->relation) {
+                return false;
+            }
+
+            $parent_arr = explode(',', $parent->relation);
+
+            foreach ($curr_arr as $val) {
+                if (in_array($val, $parent_arr)) {
+                    return false;
+                }
+            }
         }
 
         $model->relation = $relation_str;

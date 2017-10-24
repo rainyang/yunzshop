@@ -327,14 +327,16 @@
         }
 
         function select_member(o) {
-            $("#parent_info").html("[" + o.uid + "]" + o.nickname);
-            $('#parent_id').val(o.uid);
-            $("#modal-module-menus-members .close").click();
-
             $.get('{!! yzWebUrl('member.member.change_relation') !!}', {
                     parent: $.trim(o.uid),
                     member: '{{$member['yz_member']['member_id']}}'
                 }, function (dat) {
+                    if (1 == dat.status) {
+                        $("#parent_info").html("[" + o.uid + "]" + o.nickname);
+                        $('#parent_id').val(o.uid);
+                    }
+
+                    $("#modal-module-menus-members .close").click();
                 }
             );
         }
