@@ -13,6 +13,7 @@ use app\backend\modules\member\models\McMappingFans;
 use app\backend\modules\member\models\Member;
 use app\backend\modules\member\models\MemberGroup;
 use app\backend\modules\member\models\MemberLevel;
+use app\backend\modules\member\models\MemberRecord;
 use app\backend\modules\member\models\MemberShopInfo;
 use app\backend\modules\member\models\MemberUnique;
 use app\backend\modules\member\services\MemberServices;
@@ -393,12 +394,27 @@ class MemberController extends BaseController
             if (Member::setMemberRelation($uid, $parent_id)) {
                 $member = MemberShopInfo::getMemberShopInfo($uid);
 
+                $record = new MemberRecord();
+                $record->uniacid   = \YunShop::app()->uniacid;
+                $record->uid       = $uid;
+                $record->parent_id = $member->parent_id;
+
                 $member->parent_id = $parent_id;
                 $member->save();
+                $record->save();
                 return response(['status' => 1])->send();
             } else {
                 return response(['status' => 0])->send();
             }
         }
+    }
+
+    public function member_record()
+    {
+        $records = MemberRecord::getRecord(\YunShop::request()->member);
+
+        return view('member.record', [
+            'records' => $records
+        ])->render();
     }
 }

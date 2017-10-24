@@ -204,13 +204,14 @@
 
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员上线</label>
-                            <div class="col-sm-3">
+                            <div class="col-sm-5">
                                 <div class='input-group'>
                                     <input type="hidden" id="parent_id" name="data[parent_id]" value="{{$member['yz_member']['parent_id']}}">
                                     <div class=' input-group-addon' id="parent_info">[{{$member['yz_member']['parent_id']}}]{{$parent_name}}</div>
                                     <div class='input-group-btn'><a class='btn btn-success'
                                                                     href="javascript:;" id="change_relation">修改</a>
                                     </div>
+                                    <span class="help-block">&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:;" id="members_record">修改记录</a></span>
                                 </div>
                             </div>
                         </div>
@@ -301,10 +302,47 @@
         </div>
     </div>
 
+    <div class="form-group">
+        <div class="col-sm-9">
+            <div id="modal-module-members-record" class="modal fade" tabindex="-1">
+                <div class="modal-dialog" style='width: 920px;'>
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button aria-hidden="true" data-dismiss="modal"
+                                    class="close" type="button">
+                                ×
+                            </button>
+                            <h3>修改记录</h3></div>
+                        <div class="modal-body">
+                            <div id="module-members-record"
+                                 style="padding-top:5px;"></div>
+                        </div>
+                        <div class="modal-footer"><a href="#"
+                                                     class="btn btn-default"
+                                                     data-dismiss="modal"
+                                                     aria-hidden="true">关闭</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         $(function () {
             $('#change_relation').click(function () {
                 $('#modal-module-menus-members').modal();
+            });
+
+            $('#members_record').click(function() {
+                $('#modal-module-members-record').modal();
+
+                $.get('{!! yzWebUrl('member.member.member_record') !!}', {
+                    member: '{{$member['yz_member']['member_id']}}'
+                    }, function (dat) {
+                        $('#module-members-record').html(dat);
+                    }
+                );
             });
         });
 
