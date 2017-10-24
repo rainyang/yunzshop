@@ -1106,7 +1106,7 @@ return [
 
                     'member_bank_card' => [
                         'name'          => '银行卡管理',
-                        'url'           => 'member.member.delete',
+                        'url'           => 'member.bank-card.edit',
                         'url_params'    => '',
                         'permit'        => 1,
                         'menu'          => 0,
