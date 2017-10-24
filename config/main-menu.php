@@ -1242,6 +1242,7 @@ return [
                         'item'              => 'order_list_completed_see',
                         'parents'           => ['Order','order_list_completed'],
                         'child' => [],
+
                     ],
                 ],
             ],
