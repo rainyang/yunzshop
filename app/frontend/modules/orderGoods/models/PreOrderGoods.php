@@ -224,7 +224,6 @@ class PreOrderGoods extends OrderGoods
         $this->deduction_amount = $this->getDeductionAmount();
         $this->payment_amount = $this->getPaymentAmount();
 
-
         return parent::save($options);
     }
 
