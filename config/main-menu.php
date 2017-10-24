@@ -884,7 +884,7 @@ return [
 
             'member_relation' => [
                 'name'          => '会员关系',
-                'url'           => '',
+                'url'           => 'member.member-relation.index',
                 'url_params'    => '',
                 'permit'        => 1,
                 'menu'          => 1,

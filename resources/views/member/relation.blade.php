@@ -6,12 +6,8 @@
 
     <div class="w1200 m0a">
         <div class="rightlist">
-            <div class="right-titpos">
-                <ul class="add-snav">
-                    <li class="active"><a href="#">会员关系设置</a></li>
 
-                </ul>
-            </div>
+            @include('layouts.tabs')
             <form id="setform"  action="{{ yzWebUrl('member.member-relation.save') }}" method="post" class="form-horizontal form">
                 <div class='panel panel-default'>
 

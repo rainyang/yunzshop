@@ -3,6 +3,7 @@
 @section('content')
 
 <div class="w1200 m0a">
+    @include('layouts.tabs')
     <form action="" method="post" class="form-horizontal" role="form" id="form1">
         <input type="hidden" name="c" value="site" />
         <input type="hidden" name="a" value="entry" />

@@ -3,70 +3,7 @@
 @section('content')
 
 <div class="w1200 m0a">
-    <div class="panel panel-info">
-        <ul class="add-shopnav">
-            <li>
-                <a href="http://n1.cn/web/index.php?c=site&amp;a=entry&amp;m=yun_shop&amp;do=9995&amp;route=setting.shop.index">
-                    基础设置
-                </a>
-            </li>
-
-            <li>
-                <a href="http://n1.cn/web/index.php?c=site&amp;a=entry&amp;m=yun_shop&amp;do=4868&amp;route=setting.shop.member">
-                    会员设置
-                </a>
-            </li>
-
-            <li>
-                <a href="http://n1.cn/web/index.php?c=site&amp;a=entry&amp;m=yun_shop&amp;do=1791&amp;route=setting.shop.category">
-                    分类层级
-                </a>
-            </li>
-
-            <li>
-                <a href="http://n1.cn/web/index.php?c=site&amp;a=entry&amp;m=yun_shop&amp;do=3373&amp;route=setting.shop.contact">
-                    联系方式
-                </a>
-            </li>
-
-            <li>
-                <a href="http://n1.cn/web/index.php?c=site&amp;a=entry&amp;m=yun_shop&amp;do=4011&amp;route=setting.shop.sms">
-                    短信设置
-                </a>
-            </li>
-
-            <li>
-                <a href="http://n1.cn/web/index.php?c=site&amp;a=entry&amp;m=yun_shop&amp;do=2076&amp;route=setting.coupon.index">
-                    优惠卷
-                </a>
-            </li>
-
-            <li>
-                <a href="http://n1.cn/web/index.php?c=site&amp;a=entry&amp;m=yun_shop&amp;do=7120&amp;route=setting.shop.trade">
-                    交易设置
-                </a>
-            </li>
-
-            <li>
-                <a href="http://n1.cn/web/index.php?c=site&amp;a=entry&amp;m=yun_shop&amp;do=5057&amp;route=setting.shop.pay">
-                    支付方式
-                </a>
-            </li>
-
-            <li>
-                <a href="http://n1.cn/web/index.php?c=site&amp;a=entry&amp;m=yun_shop&amp;do=6070&amp;route=setting.shop.share">
-                    分享引导
-                </a>
-            </li>
-
-            <li>
-                <a href="http://n1.cn/web/index.php?c=site&amp;a=entry&amp;m=yun_shop&amp;do=6720&amp;route=setting.shop.notice">
-                    消息提醒
-                </a>
-            </li>
-
-        </ul>
-    </div>
+    @include('layouts.tabs')
     <form action="" method="post" class="form-horizontal" role="form" id="form1">
         <input type="hidden" name="c" value="site" />
         <input type="hidden" name="a" value="entry" />
