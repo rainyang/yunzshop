@@ -7,7 +7,6 @@ use app\common\models\Order;
 use app\common\models\OrderGoods;
 use app\common\models\OrderPay;
 use app\common\models\PayOrder;
-use app\common\services\TestContract;
 
 /**
  * Created by PhpStorm.

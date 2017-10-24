@@ -48,7 +48,7 @@ class OrderGoodsDeductionCollection extends Collection
                 // 没用过 0
                 return $result;
             }
-            return $result->plus($orderGoodsDeduction->getUsableCoin());
+            return $result->plus($orderGoodsDeduction->getUsedCoin());
 
         },new InvalidVirtualCoin());
 
