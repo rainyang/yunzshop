@@ -92,6 +92,9 @@ class BaseModel extends Model
     //后台全局筛选统一账号scope
     public function scopeUniacid($query)
     {
+        if(\YunShop::app()->uniacid === null){
+            return $query;
+        }
         return $query->where('uniacid', \YunShop::app()->uniacid);
     }
 
