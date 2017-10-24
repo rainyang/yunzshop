@@ -9,15 +9,12 @@ use app\common\events\order\AfterOrderPaidEvent;
 use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\events\PayLog;
 use app\common\events\WechatProcessor;
-use app\common\listeners\member\AfterOrderPaidListener;
 use app\common\listeners\PayLogListener;
 use app\common\listeners\point\PointListener;
 use app\common\listeners\WechatProcessorListener;
 use app\frontend\modules\coupon\listeners\CouponSend;
 use app\frontend\modules\finance\listeners\IncomeWithdraw;
-use app\frontend\modules\finance\listeners\Order;
 use app\frontend\modules\goods\listeners\GoodsStock;
-use app\frontend\modules\member\listeners\level\LevelListener;
 use app\frontend\modules\member\listeners\MemberLevelValidity;
 use app\frontend\modules\order\listeners\orderListener;
 use app\frontend\modules\coupon\listeners\CouponExpireNotice;
@@ -35,9 +32,6 @@ class EventServiceProvider extends ServiceProvider
         ],
         \app\common\events\discount\OrderDiscountWasCalculated::class => [ //订单优惠计算
             \app\frontend\modules\order\listeners\discount\TestOrderDiscount::class, //立减优惠
-        ],
-        \app\common\events\dispatch\OrderGoodsDispatchWasCalculated::class => [ //商品运费统计
-            \app\frontend\modules\dispatch\listeners\prices\UnifyGoodsDispatch::class, //统一运费
         ],
         \app\common\events\dispatch\OrderDispatchWasCalculated::class => [ //订单邮费计算
             \app\frontend\modules\dispatch\listeners\prices\UnifyOrderDispatchPrice::class, //统一运费
@@ -84,7 +78,7 @@ class EventServiceProvider extends ServiceProvider
         \app\frontend\modules\coupon\listeners\CouponDiscount::class,
         PointListener::class,
         GoodsStock::class,
-        Order::class,
+        //Order::class,
         \app\frontend\modules\discount\listeners\Order::class,
         \app\frontend\modules\payment\listeners\Alipay::class,
         \app\frontend\modules\payment\listeners\Credit::class,

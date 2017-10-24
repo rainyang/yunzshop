@@ -12,6 +12,12 @@ namespace app\frontend\models;
 use app\common\models\GoodsDiscount;
 use app\frontend\modules\member\services\MemberService;
 
+/**
+ * Class GoodsOption
+ * @package app\frontend\models
+ * @property int id
+ * @property int goods_id
+ */
 class GoodsOption extends \app\common\models\GoodsOption
 {
     /**

@@ -157,9 +157,24 @@ class AlipayController extends PaymentController
                 }
 
                 $this->withdrawResutl($data);
+            } elseif ($_POST['fail_details']) {
+                $post_fail_details = explode('|', rtrim($_POST['fail_details'], '|'));
 
-                echo "success";
+                foreach ($post_fail_details as $fail_details) {
+                    $plits = explode('^', $fail_details);
+
+                    if ($plits[4] == 'F') {
+                        $data[] = [
+                            'total_fee' => $plits[3],
+                            'trade_no' => $plits[0],
+                        ];
+                    }
+                }
+
+                $this->withdrawFailResutl($data);
             }
+
+            echo "success";
         } else {
             echo "fail";
         }
@@ -379,6 +394,25 @@ class AlipayController extends PaymentController
                     Withdraw::paySuccess($data['trade_no']);
 
                     event(new AlipayWithdrawEvent($data['trade_no']));
+                }
+            }
+        }
+    }
+
+    public function withdrawFailResutl($params)
+    {
+        $trade_no = [];
+
+        if (!empty($params)) {
+            foreach ($params as $data ) {
+                $pay_refund_model = PayWithdrawOrder::getOrderInfo($data['trade_no']);
+
+                if ($pay_refund_model) {
+                    \Log::debug('提现操作', 'withdraw.failed');
+
+                    if (bccomp($pay_refund_model->price, $data['total_fee'], 2) == 0) {
+                        Withdraw::payFail($data['trade_no']);
+                    }
                 }
             }
         }

@@ -10,6 +10,7 @@ namespace app\common\services;
 
 
 use app\common\models\Setting;
+use Illuminate\Filesystem\Filesystem;
 use Ixudra\Curl\Facades\Curl;
 use \vierbergenlars\SemVer\version;
 use \vierbergenlars\SemVer\expression;
@@ -375,6 +376,7 @@ class AutoUpdate
                     "Authorization: Basic " . base64_encode("{$this->_username}:{$this->_password}")
                 )
                 ->get();
+
             if ($update === false) {
                 $this->_log->info(sprintf('Could not download update file "%s"!', $updateFile));
                 return false;
@@ -398,6 +400,11 @@ class AutoUpdate
                         $this->_log->error('Unable to parse json update file!');
                         return false;
                     }
+
+                    if (isset($versions['result']) && 0 == $versions['result']) {
+                        return $versions;
+                    }
+
                     break;
                 default:
                     $this->_log->error(sprintf('Unknown file extension "%s"', $updateFileExtension));
@@ -411,6 +418,7 @@ class AutoUpdate
             $this->_log->error(sprintf('Could not read versions from server %s', $updateFile));
             return false;
         }
+
         // Check for latest version
         foreach ($versions as $versionRaw => $updateUrl) {
             $version = new version($versionRaw);
@@ -798,5 +806,87 @@ class AutoUpdate
         foreach ($this->onAllUpdateFinishCallbacks as $callback) {
             call_user_func($callback, $updatedVersions);
         }
+    }
+
+    public function checkBackUpdate()
+    {
+        $this->_log->notice('Back Checking for a new update...');
+
+        $versions = $this->_cache->get('update-versions');
+        // Create absolute url to update file
+        $updateFile = $this->_updateUrl . '/' . $this->_updateFile;
+
+        // Check if cache is empty
+        if ($versions === null || $versions === false) {
+            $this->_log->debug(sprintf('Get new updates from %s', $updateFile));
+            // Read update file from update server
+            //$update = @file_get_contents($updateFile, $this->_useBasicAuth());
+
+            $data = [
+                'plugins' => $this->getDirsByPath('plugins'),
+                'vendor'  => $this->getDirsByPath('vendor')
+            ];
+
+            $update = Curl::to($updateFile)
+                ->withHeader(
+                    "Authorization: Basic " . base64_encode("{$this->_username}:{$this->_password}")
+                )
+                ->withData($data)
+                ->asJsonResponse(true)
+                ->get();
+
+            if ($update === false) {
+                $this->_log->info(sprintf('Could not download update file "%s"!', $updateFile));
+                return false;
+            }
+
+            return $update;
+        }
+    }
+
+    public function checkBackDownload($data)
+    {
+        $this->_log->notice('Back Checking for a new download...');
+
+        $versions = $this->_cache->get('update-versions');
+        // Create absolute url to update file
+        $updateFile = $this->_updateUrl . '/' . $this->_updateFile;
+
+        // Check if cache is empty
+        if ($versions === null || $versions === false) {
+            $this->_log->debug(sprintf('Get new updates from %s', $updateFile));
+
+            $download = Curl::to($updateFile)
+                ->withHeader(
+                    "Authorization: Basic " . base64_encode("{$this->_username}:{$this->_password}")
+                )
+                ->withData($data)
+                ->asJsonResponse(true)
+                ->get();
+
+            if ($download === false) {
+                $this->_log->info(sprintf('Could not download update file "%s"!', $updateFile));
+                return false;
+            }
+
+            return $download;
+        }
+    }
+
+    public function getDirsByPath($path, Filesystem $filesystem = null)
+    {
+        $dirs = [];
+
+        if (is_null($filesystem)) {
+            $filesystem = app(Filesystem::class);
+        }
+
+        if ($all_dir = $filesystem->directories(base_path($path))) {
+            foreach ($all_dir as $dir) {
+                $dirs[] = substr($dir, strrpos($dir, '/')+1);
+            }
+        }
+
+        return $dirs;
     }
 }

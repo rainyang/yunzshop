@@ -30,7 +30,7 @@
                     <div class="form-group col-sm-1 col-lg-1 col-xs-12">
                         <div class="">
                             <input type="submit" class="btn btn-block btn-success"
-                                   value="{{ trans('Yunshop\Coin::activation_record.button.search') }}">
+                                   value="搜索">
                         </div>
                     </div>
                 </form>

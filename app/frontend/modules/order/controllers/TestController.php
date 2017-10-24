@@ -3,7 +3,12 @@
 namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
+use app\common\models\OrderPay;
 use app\common\services\password\PasswordService;
+use app\frontend\modules\coin\InvalidVirtualCoin;
+use app\frontend\modules\deduction\models\Deduction;
+use app\frontend\modules\finance\models\PointCoin;
+use Yunshop\Love\Common\Models\LoveCoin;
 
 /**
  * Created by PhpStorm.
@@ -17,9 +22,7 @@ class TestController extends ApiController
 
     public function index()
     {
-        dd(\app\common\models\Order::find(3317)->hasOneDispatchType->needSend());
-
-        //(new MessageService(\app\frontend\models\Order::completed()->first()))->received();
+        dd(OrderPay::first()->order_ids);
     }
 
     public function index1()

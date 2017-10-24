@@ -3,36 +3,37 @@
 namespace app\frontend\modules\order\models;
 
 use app\common\exceptions\AppException;
-
 use app\frontend\models\Order;
 use app\frontend\modules\discount\models\OrderDiscount;
 use app\frontend\modules\dispatch\models\OrderDispatch;
-use app\frontend\modules\orderGoods\models\PreGeneratedOrderGoods;
+use app\frontend\modules\orderGoods\models\PreOrderGoods;
 use app\frontend\modules\order\services\OrderService;
+use app\frontend\modules\orderGoods\models\PreOrderGoodsCollection;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
 
 /**
  * 订单生成类
- * 输入
- *  用户model
- *  店铺model
- *  未生成的订单商品(实例)app\frontend\modules\orderGoods\models\PreGeneratedOrderGoods
- * 输出
- *  预下单信息
- *  订单表插入结果
- * 执行
- *  订单表操作
- * 事件通知
- *  终止订单生成
- *  订单生成后
- * Class preGeneratedOrder
+ * Class preOrder
  * @package app\frontend\modules\order\services\models
  * @property Collection orderDeductions
  * @property Collection orderCoupons
  * @property Collection orderSettings
+ * @property int id
+ * @property float price
+ * @property float goods_price
+ * @property float order_goods_price
+ * @property float discount_price
+ * @property float deduction_price
+ * @property float dispatch_price
+ * @property int goods_total
+ * @property string order_sn
+ * @property int create_time
+ * @property int uid
+ * @property int uniacid
+ * @property PreOrderGoodsCollection orderGoods
  */
-class PreGeneratedOrder extends Order
+class PreOrder extends Order
 {
     protected $appends = ['pre_id'];
     protected $hidden = ['belongsToMember'];
@@ -47,11 +48,11 @@ class PreGeneratedOrder extends Order
 
     public function setOrderGoods(Collection $orderGoods)
     {
-        $this->setRelation('orderGoods', $this->newCollection());
+        $this->setRelation('orderGoods', new PreOrderGoodsCollection());
 
         $orderGoods->each(function ($aOrderGoods) {
             /**
-             * @var PreGeneratedOrderGoods $aOrderGoods
+             * @var PreOrderGoods $aOrderGoods
              */
 
             $this->orderGoods->push($aOrderGoods);
@@ -79,7 +80,7 @@ class PreGeneratedOrder extends Order
         $this->setRawAttributes($attributes);
         $this->orderGoods->each(function ($aOrderGoods) {
             /**
-             * @var PreGeneratedOrderGoods $aOrderGoods
+             * @var PreOrderGoods $aOrderGoods
              */
             $aOrderGoods->_init();
         });
@@ -233,8 +234,8 @@ class PreGeneratedOrder extends Order
 
         $result = $this->push();
 
+        if($result === false){
 
-        if ($result === false) {
             throw new AppException('订单相关信息保存失败');
         }
         return $this->id;
@@ -262,11 +263,14 @@ class PreGeneratedOrder extends Order
      */
     protected function getPrice()
     {
+        if(isset($this->price)){
+            return $this->price;
+        }
+
         //订单最终价格 = 商品最终价格 - 订单优惠 - 订单抵扣 + 订单运费
-
-        $result = max($this->getOrderGoodsPrice() - $this->getDiscountAmount() - $this->getDeductionPrice() + $this->getDispatchPrice(), 0);
-
-        return $result;
+        $this->price = max($this->getOrderGoodsPrice() - $this->getDiscountAmount() + $this->getDispatchPrice(), 0);
+        $this->price = $this->price - $this->getDeductionPrice();
+        return $this->price;
     }
 
     /**

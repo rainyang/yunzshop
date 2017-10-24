@@ -2,14 +2,14 @@
 @section('title', '会员列表')
 @section('content')
 
-<link href="{{static_url('yunshop/css/member.css')}}" media="all" rel="stylesheet" type="text/css"/>
+    <link href="{{static_url('yunshop/css/member.css')}}" media="all" rel="stylesheet" type="text/css"/>
     <div class="w1200 m0a">
         <div class="rightlist">
             <!-- 新增加右侧顶部三级菜单 -->
             <div class="right-titpos">
                 <ul class="add-snav">
                     <li class="active"><a href="{{yzWebUrl('member.member.index')}}">会员管理</a></li>
-                    <li><a href="javascript:void"> &nbsp;  <i class="fa fa-angle-double-right"></i> &nbsp;全部会员</a></li>
+                    <li><a href="javascript:void"> &nbsp; <i class="fa fa-angle-double-right"></i> &nbsp;全部会员</a></li>
                 </ul>
             </div>
             <!-- 新增加右侧顶部三级菜单结束 -->
@@ -21,21 +21,23 @@
                         <input type="hidden" name="a" value="entry"/>
                         <input type="hidden" name="m" value="yun_shop"/>
                         <input type="hidden" name="do" value="member" id="form_do"/>
-                        <input type="hidden" name="route" value="member.member.index" id="route" />
+                        <input type="hidden" name="route" value="member.member.index" id="route"/>
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2 ">
                             <!--<label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">ID</label>-->
                             <div class="">
-                                <input type="text" placeholder="会员ID" class="form-control"  name="search[mid]" value="{{$request['search']['mid']}}"/>
+                                <input type="text" placeholder="会员ID" class="form-control" name="search[mid]"
+                                       value="{{$request['search']['mid']}}"/>
                             </div>
                         </div>
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
-                           <!-- <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员信息</label>-->
+                            <!-- <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员信息</label>-->
                             <div class="">
-                                <input type="text" class="form-control"  name="search[realname]" value="{{$request['search']['realname']}}" placeholder="可搜索昵称/姓名/手机号"/>
+                                <input type="text" class="form-control" name="search[realname]"
+                                       value="{{$request['search']['realname']}}" placeholder="可搜索昵称/姓名/手机号"/>
                             </div>
                         </div>
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
-                      <!--      <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">是否关注</label>-->
+                            <!--      <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">是否关注</label>-->
                             <div class="">
                                 <select name='search[followed]' class='form-control'>
                                     <option value=''>不限关注</option>
@@ -56,7 +58,7 @@
                             </div>
                         </div>
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
-                           <!-- <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员等级</label>-->
+                            <!-- <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员等级</label>-->
                             <div class="">
                                 <select name='search[level]' class='form-control'>
                                     <option value=''>会员等级不限</option>
@@ -71,7 +73,7 @@
                             </div>
                         </div>
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
-                          <!--  <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员分组</label>-->
+                            <!--  <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员分组</label>-->
                             <div class="">
                                 <select name='search[groupid]' class='form-control'>
                                     <option value=''>会员分组不限</option>
@@ -86,21 +88,23 @@
                             </div>
                         </div>
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
-                <!--        <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">黑名单</label>-->
-                        <div class="">
-                            <select name='search[isblack]' class='form-control'>
-                                <option value=''>不限黑名单</option>
-                                <option value='0'
-                                        @if($request['search']['isblack']=='0')
-                                selected
-                                @endif>否</option>
-                                <option value='1'
-                                        @if($request['search']['isblack']=='1')
-                                selected
-                                @endif>是</option>
-                            </select>
+                            <!--        <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">黑名单</label>-->
+                            <div class="">
+                                <select name='search[isblack]' class='form-control'>
+                                    <option value=''>不限黑名单</option>
+                                    <option value='0'
+                                            @if($request['search']['isblack']=='0')
+                                            selected
+                                            @endif>否
+                                    </option>
+                                    <option value='1'
+                                            @if($request['search']['isblack']=='1')
+                                            selected
+                                            @endif>是
+                                    </option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
 
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                             <div class="">
@@ -109,18 +113,21 @@
                                     <option value='0'
                                             @if($request['search']['isagent']=='0')
                                             selected
-                                            @endif>否</option>
+                                            @endif>否
+                                    </option>
                                     <option value='1'
                                             @if($request['search']['isagent']=='1')
                                             selected
-                                            @endif>是</option>
+                                            @endif>是
+                                    </option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                             <div class="">
-                                <input type="text" class="form-control"  name="search[custom_value]" value="{{$request['search']['custom_value']}}" placeholder="自定义字段"/>
+                                <input type="text" class="form-control" name="search[custom_value]"
+                                       value="{{$request['search']['custom_value']}}" placeholder="自定义字段"/>
                             </div>
                         </div>
 
@@ -131,12 +138,14 @@
                                 <select name='search[searchtime]' class='form-control'>
                                     <option value='0'
                                             @if($request['search']['searchtime']=='0')
-                                    selected
-                                    @endif>注册时间不限</option>
+                                            selected
+                                            @endif>注册时间不限
+                                    </option>
                                     <option value='1'
                                             @if($request['search']['searchtime']=='1')
-                                    selected
-                                    @endif>搜索注册时间</option>
+                                            selected
+                                            @endif>搜索注册时间
+                                    </option>
                                 </select>
                             </div>
                             <div class="search-select">
@@ -163,7 +172,8 @@
 
                     </form>
                 </div>
-            </div><div class="clearfix">
+            </div>
+            <div class="clearfix">
                 <div class="panel panel-default">
                     <div class="panel-heading">总数：{{$total}}   </div>
                     <div class="panel-body" style="margin-bottom:200px">
@@ -199,10 +209,12 @@
                                                 <label class='label label-default'>暂无</label>
                                             @else
                                                 @if(empty($row['yz_member']['parent_id']))
-                                                        <label class='label label-primary'>总店</label>
+                                                    <label class='label label-primary'>总店</label>
                                                 @else
                                                     @if(!empty($row['yz_member']['agent']['avatar']))
-                                                        <img src='{{$row['yz_member']['agent']['avatar']}}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
+                                                        <img src='{{$row['yz_member']['agent']['avatar']}}'
+                                                             style='width:30px;height:30px;padding:1px;border:1px solid #ccc'/>
+                                                        <br/>
                                                     @endif
                                                     @if(empty($row['yz_member']['agent']['nickname']))
                                                         未更新
@@ -215,7 +227,8 @@
                                     @endif
                                     <td style="text-align: center;">
                                         @if(!empty($row['avatar']))
-                                            <img src='{{$row['avatar']}}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
+                                            <img src='{{$row['avatar']}}'
+                                                 style='width:30px;height:30px;padding:1px;border:1px solid #ccc'/><br/>
                                         @endif
                                         @if(empty($row['nickname']))
                                             未更新
@@ -240,13 +253,14 @@
                                     <td>
                                         {{date('Y-m-d',$row['createtime'])}}<br/>
                                         {{date('H:i',$row['createtime'])}}</td>
-                                    <td><label class="label label-info">积分：{{$row['credit1']}}</label><br/><label class="label label-danger">余额：{{$row['credit2']}}</label></td>
+                                    <td><label class="label label-info">积分：{{$row['credit1']}}</label><br/><label
+                                                class="label label-danger">余额：{{$row['credit2']}}</label></td>
                                     <td><label class="label label-info">订单：
-                                        @if(!empty($row['has_one_order']['total']))
+                                            @if(!empty($row['has_one_order']['total']))
                                                 {{$row['has_one_order']['total']}}
-                                        @else
-                                            0
-                                        @endif</label><br/>
+                                            @else
+                                                0
+                                            @endif</label><br/>
                                         <label class="label label-danger">金额：@if(!empty($row['has_one_order']['sum']))
                                                 {{$row['has_one_order']['sum']}}
                                             @else
@@ -254,7 +268,8 @@
                                             @endif</label></td>
                                     <td>
                                         @if($row['yz_member']['is_black']==1)
-                                            <span class="label label-default" style='color:#fff;background:black'>黑名单</span>
+                                            <span class="label label-default"
+                                                  style='color:#fff;background:black'>黑名单</span>
                                         @else
                                             @if(empty($row['has_one_fans']['followed']))
                                                 <label class='label label-default'>未关注</label>
@@ -263,21 +278,50 @@
                                             @endif
                                         @endif
                                     </td>
-                                    <td  style="overflow:visible;">
-                                        <div class="btn-group btn-group-sm" >
-                                            <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="javascript:;">操作 <span class="caret"></span></a>
-                                            <ul class="dropdown-menu dropdown-menu-left" role="menu" style='z-index: 9999'>
-                                                <li><a href="{{yzWebUrl('member.member.detail', ['id' => $row['uid']])}}" title="会员详情"><i class='fa fa-edit'></i> 会员详情</a></li>
-                                                <li><a  href="{{yzWebUrl('order.list', ['search[ambiguous][field]' => 'order','search[ambiguous][string]'=>'uid:'.$row['uid']])}}" title='会员订单'><i class='fa fa-list'></i> 会员订单</a></li>
-                                                <li><a href="{{yzWebUrl('finance.point-recharge',['id'=>$row['uid']])}}" title='充值积分'><i class='fa fa-credit-card'></i> 充值积分</a></li>
-                                                <li><a href="{{yzWebUrl('finance.balance.recharge', ['member_id'=>$row['uid']])}}" title='充值余额'><i class='fa fa-money'></i> 充值余额 </a></li>
-                                                <li><a href="{{yzWebUrl('member.member.agent', ['id'=>$row['uid']])}}" title='我的下线'><i class='fa fa-exchange'></i> 推广下线 </a></li>
-                                                @if($row['yz_member']['is_black']==1)
-                                                    <li><a href="{{yzWebUrl('member.member.black', ['id' => $row['uid'],'black'=>0])}}" title='取消黑名单'><i class='fa fa-minus-square'></i> 取消黑名单</a></li>
-                                                @else
-                                                    <li><a href="{{yzWebUrl('member.member.black', ['id' => $row['uid'],'black'=>1])}}" title='设置黑名单'><i class='fa fa-minus-circle'></i> 设置黑名单</a></li>
+                                    <td style="overflow:visible;">
+                                        <div class="btn-group btn-group-sm">
+                                            <a class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                                               aria-expanded="false" href="javascript:;">操作 <span class="caret"></span></a>
+                                            <ul class="dropdown-menu dropdown-menu-left" role="menu"
+                                                style='z-index: 9999'>
+                                                <li>
+                                                    <a href="{{yzWebUrl('member.member.detail', ['id' => $row['uid']])}}"
+                                                       title="会员详情"><i class='fa fa-edit'></i> 会员详情</a></li>
+                                                @if($set['form_id'])
+                                                    <li>
+                                                        <a href="{{yzWebUrl('plugin.diyform.admin.diyform-data.get-member-form-data', ['member_id' => $row['uid'],'form_type'=>'register'])}}"
+                                                           title="会员详情"><i class='fa fa-edit'></i> 自定义表单信息</a></li>
                                                 @endif
-                                                <li><a  href="{{yzWebUrl('member.member.delete', ['id' => $row['uid']])}}" title='删除会员' onclick="return confirm('确定要删除该会员吗？');"><i class='fa fa-remove'></i> 删除会员</a></li>
+                                                <li>
+                                                    <a href="{{yzWebUrl('order.list', ['search[ambiguous][field]' => 'order','search[ambiguous][string]'=>'uid:'.$row['uid']])}}"
+                                                       title='会员订单'><i class='fa fa-list'></i> 会员订单</a></li>
+                                                <li><a href="{{yzWebUrl('finance.point-recharge',['id'=>$row['uid']])}}"
+                                                       title='充值积分'><i class='fa fa-credit-card'></i> 充值积分</a></li>
+                                                <li>
+                                                    <a href="{{yzWebUrl('finance.balance.recharge', ['member_id'=>$row['uid']])}}"
+                                                       title='充值余额'><i class='fa fa-money'></i> 充值余额 </a></li>
+                                                <li><a href="{{yzWebUrl('member.member.agent', ['id'=>$row['uid']])}}"
+                                                       title='我的下线'><i class='fa fa-exchange'></i> 推广下线 </a></li>
+                                                @if($row['yz_member']['is_black']==1)
+                                                    <li>
+                                                        <a href="{{yzWebUrl('member.member.black', ['id' => $row['uid'],'black'=>0])}}"
+                                                           title='取消黑名单'><i class='fa fa-minus-square'></i> 取消黑名单</a>
+                                                    </li>
+                                                @else
+                                                    <li>
+                                                        <a href="{{yzWebUrl('member.member.black', ['id' => $row['uid'],'black'=>1])}}"
+                                                           title='设置黑名单'><i class='fa fa-minus-circle'></i> 设置黑名单</a>
+                                                    </li>
+                                                @endif
+                                                <li>
+                                                    <a href="{{yzWebUrl('member.member.delete', ['id' => $row['uid']])}}"
+                                                       title='删除会员' onclick="return confirm('确定要删除该会员吗？');"><i class='fa fa-remove'></i> 删除会员</a>
+                                                </li>
+
+                                                <li>
+                                                    <a href="{{yzWebUrl('member.bank-card.edit', ['member_id' => $row['uid']])}}"
+                                                       title='银行卡管理'><i class='fa fa-credit-card'></i>银行卡管理</a>
+                                                </li>
                                             </ul>
                                         </div>
                                     </td>
@@ -294,7 +338,7 @@
     </div>
     <script language='javascript'>
         $(function () {
-            $('#export').click(function(){
+            $('#export').click(function () {
                 $('#route').val("member.member.export");
                 $('#form1').submit();
                 $('#route').val("member.member.index");

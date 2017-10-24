@@ -10,7 +10,7 @@ namespace app\common\events\order;
 use app\common\events\Event;
 
 
-class PreGeneratedOrderDisplayEvent extends Event
+class PreOrderDisplayEvent extends Event
 {
     private $_order_model;
 

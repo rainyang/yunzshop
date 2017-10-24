@@ -1103,6 +1103,18 @@ return [
                         'item'          => 'member_member_delete',
                         'parents'       => ['Member', 'member_all',],
                     ],
+
+                    'member_bank_card' => [
+                        'name'          => '银行卡管理',
+                        'url'           => 'member.bank-card.edit',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_bank_card',
+                        'parents'       => ['Member', 'member_all',],
+                    ],
                 ],
             ],
 
@@ -2017,6 +2029,19 @@ return [
                         ],
                     ],
 
+                    'withdraw_statistics'  => [
+                        'name'              => '提现统计',
+                        'url'               => 'finance.withdraw-statistics.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => 'fa-gear',
+                        'sort'              => 0,
+                        'item'              => 'withdraw_statistics',
+                        'parents'           => ['finance','withdraw'],
+                        'child'             => []
+                    ],
+
                     'withdraw_records'  => [
                         'name'              => '提现记录',
                         'url'               => 'finance.withdraw',
@@ -2121,6 +2146,18 @@ return [
                                 'icon'              => 'fa-inbox',
                                 'sort'              => 0,
                                 'item'              => 'withdraw_status_wait_pay',
+                                'parents'           => ['finance','withdraw','withdraw_records'],
+                            ],
+
+                            'withdraw_status_process_pay' => [
+                                'name'              => '打款中提现',
+                                'url'               => 'finance.withdraw',
+                                'url_params'        => "&search[status]=4",
+                                'permit'            => 0,
+                                'menu'              => 1,
+                                'icon'              => 'fa-inbox',
+                                'sort'              => 0,
+                                'item'              => 'withdraw_status_process_pay',
                                 'parents'           => ['finance','withdraw','withdraw_records'],
                             ],
 

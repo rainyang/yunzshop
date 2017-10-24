@@ -10,6 +10,12 @@ namespace app\common\models;
 
 use app\frontend\modules\member\services\MemberService;
 
+/**
+ * Class GoodsDiscount
+ * @package app\common\models
+ * @property int discount_method
+ * @property int discount_value
+ */
 class GoodsDiscount extends BaseModel
 {
     public $table = 'yz_goods_discount';
@@ -59,7 +65,7 @@ class GoodsDiscount extends BaseModel
         //其次等级商品全局设置
         switch ($this->discount_method) {
             case self::DISCOUNT:
-                $result = $this->getMoneyAmount($price);
+                $result = $this->getMoneyAmount();
                 break;
             case self::MONEY_OFF:
                 $result = $this->getDiscountAmount($price);
@@ -73,7 +79,6 @@ class GoodsDiscount extends BaseModel
 
     /**
      * 商品独立等级立减后优惠金额
-     * @param $price
      * @return mixed
      */
     private function getMoneyAmount()

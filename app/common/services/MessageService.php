@@ -23,6 +23,13 @@ class MessageService
      */
     public static function notice($templateId, $data, $uid, $uniacid = '', $url = '')
     {
+        //监听消息通知
+        event(new SendMessageEvent([
+            'data' => $data,
+            'uid' => $uid,
+            'url' => $url
+        ]));
+
         $res = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
         $options = [
             'app_id' => $res['key'],
@@ -34,6 +41,7 @@ class MessageService
             \Log::error("微信消息推送失败,未找到uid:{$uid}的用户");
             return false;
         }
+
         if (!$member->isFollow()) {
             return false;
         }
@@ -45,11 +53,7 @@ class MessageService
     public function noticeQueue($notice, $templateId, $data, $openId, $url)
     {
         $this->dispatch((new MessageNoticeJob($notice, $templateId, $data, $openId, $url)));
-        event(new SendMessageEvent([
-            'data' => $data,
-            'openid' => $openId,
-            'url' => $url
-        ]));
+
     }
 
     public static function getWechatTemplates()

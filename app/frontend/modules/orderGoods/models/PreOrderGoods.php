@@ -10,20 +10,51 @@ namespace app\frontend\modules\orderGoods\models;
 
 use app\common\exceptions\AppException;
 use app\common\exceptions\ShopException;
+use app\frontend\models\Goods;
+use app\frontend\models\goods\Sale;
+use app\frontend\models\GoodsOption;
 use app\frontend\models\orderGoods\PreOrderGoodsDiscount;
 use app\frontend\models\OrderGoods;
+use app\frontend\modules\deduction\OrderGoodsDeductionCollection;
 use app\frontend\modules\orderGoods\price\option\NormalOrderGoodsOptionPrice;
 use app\frontend\modules\orderGoods\price\option\NormalOrderGoodsPrice;
-use app\frontend\modules\order\models\PreGeneratedOrder;
+use app\frontend\modules\order\models\PreOrder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
-class PreGeneratedOrderGoods extends OrderGoods
+/**
+ * Class PreOrderGoods
+ * @package app\frontend\modules\orderGoods\models
+ * @property float price
+ * @property float goods_price
+ * @property float coupon_price
+ * @property float discount_price
+ * @property float $deduction_amount
+ * @property float payment_amount
+ * @property int goods_id
+ * @property Goods goods
+ * @property int id
+ * @property int order_id
+ * @property int uid
+ * @property int total
+ * @property int uniacid
+ * @property int goods_option_id
+ * @property string goods_option_title
+ * @property GoodsOption goodsOption
+ * @property OrderGoodsDeductionCollection orderGoodsDeductions
+ * @property Collection orderGoodsDiscounts
+ * @property Sale sale
+ */
+class PreOrderGoods extends OrderGoods
 {
     protected $hidden = ['goods', 'sale','belongsToGood','hasOneGoodsDispatch'];
     /**
-     * @var PreGeneratedOrder
+     * @var PreOrder
      */
     public $order;
+    /**
+     * @var Collection
+     */
     public $coupons;
 
     public function __construct(array $attributes = [])
@@ -32,6 +63,8 @@ class PreGeneratedOrderGoods extends OrderGoods
         $this->setPriceCalculator();
         // 订单商品优惠使用记录集合
         $this->setRelation('orderGoodsDiscounts', $this->newCollection());
+        // 订单商品优惠使用记录集合
+        $this->setRelation('orderGoodsDeductions', new OrderGoodsDeductionCollection());
         // 将会员等级折扣总金额保存在订单优惠信息表中
         $preOrderDiscount = new PreOrderGoodsDiscount([
             'discount_code' => 'vipDiscount',
@@ -71,9 +104,9 @@ class PreGeneratedOrderGoods extends OrderGoods
 
     /**
      * 为订单model提供的方法 ,设置所属的订单model
-     * @param PreGeneratedOrder $order
+     * @param PreOrder $order
      */
-    public function setOrder(PreGeneratedOrder $order)
+    public function setOrder(PreOrder $order)
     {
         $this->order = $order;
         $this->uid = $order->uid;
@@ -109,7 +142,7 @@ class PreGeneratedOrderGoods extends OrderGoods
 
         );
 
-        if (isset($this->goodsOption)) {
+        if ($this->isOption()) {
 
             $attributes += [
                 'goods_option_id' => $this->goodsOption->id,
@@ -136,6 +169,9 @@ class PreGeneratedOrderGoods extends OrderGoods
                 ? $models->all() : [$models];
 
             foreach (array_filter($models) as $model) {
+                /**
+                 * @var Model $model
+                 */
                 // 添加 order_goods_id 外键
                 if (!isset($model->order_goods_id) && \Schema::hasColumn($model->getTable(), 'order_goods_id')) {
                     $model->order_goods_id = $this->id;
@@ -185,6 +221,8 @@ class PreGeneratedOrderGoods extends OrderGoods
             throw new AppException('订单信息不存在');
         }
         $this->order_id = $this->order->id;
+        $this->deduction_amount = $this->getDeductionAmount();
+        $this->payment_amount = $this->getPaymentAmount();
 
 
         return parent::save($options);
@@ -200,7 +238,7 @@ class PreGeneratedOrderGoods extends OrderGoods
     }
 
     /**
-     * @var
+     * @var NormalOrderGoodsPrice
      */
     protected $priceCalculator;
 
@@ -222,7 +260,7 @@ class PreGeneratedOrderGoods extends OrderGoods
 
     /**
      * 获取价格计算者
-     * @return mixed
+     * @return NormalOrderGoodsPrice
      * @throws ShopException
      */
     protected function getPriceCalculator()
@@ -256,21 +294,13 @@ class PreGeneratedOrderGoods extends OrderGoods
     public function getGoodsPrice()
     {
         return $this->getPriceCalculator()->getGoodsPrice();
-
-
     }
-
     /**
-     * 销售价格(是指商品扣除了直接优惠之后的价格,在优惠券类中使用)
+     * 原始价格
      */
-    public function getFinalPrice()
+    public function getPaymentAmount()
     {
-        return $this->getPriceCalculator()->getFinalPrice();
-    }
-
-    public function getCalculationPrice()
-    {
-        return $this->getPriceCalculator()->getCalculationPrice();
+        return $this->getPriceCalculator()->getPaymentAmount();
     }
 
     /**
@@ -281,7 +311,14 @@ class PreGeneratedOrderGoods extends OrderGoods
         return $this->getPriceCalculator()->getDiscountAmount();
 
     }
+    /**
+     * 抵扣金额
+     */
+    public function getDeductionAmount()
+    {
+        return $this->getPriceCalculator()->getDeductionAmount();
 
+    }
     /**
      * 优惠券金额
      * @return int
@@ -289,16 +326,6 @@ class PreGeneratedOrderGoods extends OrderGoods
     public function getCouponAmount()
     {
         return $this->getPriceCalculator()->getCouponAmount();
-
-    }
-
-    /**
-     * 计算单品满减价格
-     * @return mixed
-     */
-    protected function getFullReductionAmount()
-    {
-        //return $this->getPriceCalculator()->getFullReductionAmount();
 
     }
 
@@ -322,4 +349,14 @@ class PreGeneratedOrderGoods extends OrderGoods
 
     }
 
+    public function getOrderGoodsDeductions(){
+        return $this->orderGoodsDeductions;
+    }
+
+    public function getWeight(){
+        if($this->isOption()){
+            return $this->goodsOption->weight;
+        }
+        return $this->goods->weight;
+    }
 }

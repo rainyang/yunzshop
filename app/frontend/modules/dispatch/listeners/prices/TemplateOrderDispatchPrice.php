@@ -116,11 +116,11 @@ class TemplateOrderDispatchPrice
 
             if ($dispatch) {
                 // 找到匹配的数量数据
-                if ($goods_total > $dispatch['first_weight']) {
+                if ($goods_total > $dispatch['first_piece']) {
 
-                    return $dispatch['first_weight_price'] + ceil(($goods_total - $dispatch['first_weight']) / $dispatch['another_weight']) * $dispatch['another_weight_price'];
+                    return $dispatch['first_piece_price'] + ceil(($goods_total - $dispatch['first_piece_price']) / $dispatch['first_piece_price']) * $dispatch['first_piece_price'];
                 } else {
-                    return $dispatch['first_weight_price'];
+                    return $dispatch['first_piece_price'];
                 }
             }
         }
@@ -139,7 +139,7 @@ class TemplateOrderDispatchPrice
     private function calculationByWeight($orderGoods)
     {
         // 订单商品总重
-        $weight_total = $orderGoods->hasOneGoods->weight * $orderGoods->total;
+        $weight_total = $orderGoods->getWeight() * $orderGoods->total;
 
         $weight_data = unserialize($this->dispatch->weight_data);
         // 存在重量数据
@@ -165,6 +165,7 @@ class TemplateOrderDispatchPrice
                 // 找到匹配的重量数据
                 if ($weight_total > $dispatch['first_weight']) {
                     // 续重:   首重价格+(重量-首重)/续重*续重价格
+                    // 20 + (500 - 400)
                     return $dispatch['first_weight_price'] + ceil(($weight_total - $dispatch['first_weight']) / $dispatch['another_weight']) * $dispatch['another_weight_price'];
                 } else {
                     return $dispatch['first_weight_price'];
@@ -174,7 +175,7 @@ class TemplateOrderDispatchPrice
 
         // 默认全国重量运费
         if ($weight_total > $this->dispatch->first_weight) {
-            return $this->dispatch->first_weight_price + ceil(($weight_total - $this->dispatch->first_weight) / $this->dispatch->another_weight) * $this->dispatch->another_weight_price;
+            return $this->dispatch->first_weight_price + floor(($weight_total - $this->dispatch->first_weight) / $this->dispatch->another_weight) * $this->dispatch->another_weight_price;
         } else {
             return $this->dispatch->first_weight_price;
         }

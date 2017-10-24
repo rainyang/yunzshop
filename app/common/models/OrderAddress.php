@@ -41,8 +41,8 @@ class OrderAddress extends BaseModel
         $rule =  [
             //具体unique可看文档 https://laravel.com/docs/5.4/validation#rule-unique
             'address'=> 'required',
-            'mobile'=> 'required',
-            'realname'=> 'required',
+            //'mobile'=> 'required',
+            //'realname'=> 'required',
             'province_id'=> 'required',
             'city_id'=> 'required',
             'district_id'=> 'required',

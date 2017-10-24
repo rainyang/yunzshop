@@ -12,6 +12,7 @@
         {{--<li ><a href="{php echo $this->createWebUrl('sysset',array('op'=>'shop'))}">公告管理</a></li>
         <li ><a href="{php echo $this->createWebUrl('sysset',array('op'=>'shop'))}">幻灯片管理</a></li>
         <li ><a href="{php echo $this->createWebUrl('sysset',array('op'=>'shop'))}">广告管理</a></li>--}}
+        <li @if(\YunShop::request()->route == 'setting.shop.protocol') class="active" @endif> <a href="{{ yzWebUrl('setting.shop.protocol')}}">注册协议</a></li>
     </ul>
 </div>
 

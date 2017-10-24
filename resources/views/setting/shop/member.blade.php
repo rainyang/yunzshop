@@ -89,13 +89,15 @@
                             </div>
                         </div>
 
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员等级时间限制</label>
-                    <div class="col-sm-9 col-xs-12">
-                        <label class='radio-inline'><input type='radio' name='member[term]' value='0' @if ($set['term'] == 0) checked @endif /> 关闭</label>
-                        <label class='radio-inline'><input type='radio' name='member[term]' value='1' @if ($set['term'] == 1) checked @endif/> 开启</label>
-                    </div>
-                </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员等级时间限制</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <label class='radio-inline'><input type='radio' name='member[term]' value='0'
+                                                                   @if ($set['term'] == 0) checked @endif /> 关闭</label>
+                                <label class='radio-inline'><input type='radio' name='member[term]' value='1'
+                                                                   @if ($set['term'] == 1) checked @endif/> 开启</label>
+                            </div>
+                        </div>
                     <!--
                 <div class="form-group"  >
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员等级到期时间</label>
@@ -174,6 +176,26 @@
                                 <span class="help-block"></span>
                             </div>
                         </div>
+
+
+                        @if($is_diyform)
+                            <div class="form-group">
+                                <label class="col-xs-12 col-sm-3 col-md-2 control-label">自定义表单</label>
+                                <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                                    <select class="form-control tpl-category-parent" id="level" name="member[form_id]">
+                                        <option value="0">选择表单</option>
+                                        @foreach($diyForm as $form)
+                                            <option value="{{$form->id}}"
+                                                    @if($set['form_id']==$form->id)
+                                                    selected
+                                                    @endif
+                                            >[ID:{{$form->id}}]{{$form->title}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        @endif
+
 
                         <div class="form-group"></div>
                         <div class="form-group">

@@ -27,6 +27,7 @@ class orderListener
     {
         $order = Order::find($event->getOrderModel()->id);
         (new MessageService($order))->created();
+
         (new OtherMessageService($order))->created();
     }
 

@@ -14,7 +14,7 @@ use app\frontend\modules\member\services\MemberCartService;
 use app\frontend\modules\order\services\OrderService;
 use Request;
 
-abstract class PreGeneratedController extends ApiController
+abstract class PreOrderController extends ApiController
 {
 
     public function index()

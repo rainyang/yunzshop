@@ -10,8 +10,8 @@ namespace app\frontend\modules\coupon\services\models\Price;
 
 
 use app\frontend\modules\coupon\services\models\Coupon;
-use app\frontend\modules\orderGoods\models\PreGeneratedOrderGoodsGroup;
-use app\frontend\modules\order\models\PreGeneratedOrder;
+use app\frontend\modules\orderGoods\models\PreOrderGoodsCollection;
+use app\frontend\modules\order\models\PreOrder;
 
 abstract class CouponPrice
 {
@@ -25,11 +25,11 @@ abstract class CouponPrice
      */
     protected $coupon;
     /**
-     * @var PreGeneratedOrder
+     * @var PreOrder
      */
     protected $orderModel;
     /**
-     * @var PreGeneratedOrderGoodsGroup
+     * @var PreOrderGoodsCollection
      */
     protected $orderGoodsModelGroup;
 
@@ -37,7 +37,7 @@ abstract class CouponPrice
     {
         $this->coupon = $coupon;
         $this->dbCoupon = $coupon->getMemberCoupon()->belongsToCoupon;
-        $this->orderModel = $coupon->getPreGeneratedOrder();
+        $this->orderModel = $coupon->getPreOrder();
         //dd($this->orderModel);
     }
 
@@ -48,7 +48,7 @@ abstract class CouponPrice
     public function valid()
     {
         // 商品价格中未使用优惠的金额 不小于 满减额度
-        if (!float_lesser($this->getOrderGoodsGroupUnusedEnoughMoney(), $this->dbCoupon->enough)) {
+        if (!float_lesser($this->getOrderGoodsCollectionUnusedEnoughMoney(), $this->dbCoupon->enough)) {
             return true;
         }
         return false;
@@ -61,7 +61,7 @@ abstract class CouponPrice
     public function isOptional()
     {
         // 商品价格 不小于 满减额度
-        if (!float_lesser($this->getOrderGoodsGroupPrice(), $this->dbCoupon->enough)) {
+        if (!float_lesser($this->getOrderGoodsCollectionPrice(), $this->dbCoupon->enough)) {
             return true;
         }
         return false;
@@ -71,15 +71,15 @@ abstract class CouponPrice
      * 累加所有商品未使用优惠的金额
      * @return mixed
      */
-    protected function getOrderGoodsGroupUnusedEnoughMoney()
+    protected function getOrderGoodsCollectionUnusedEnoughMoney()
     {
-        $enough = $this->coupon->getOrderGoodsInScope()->getOrderGoodsGroup()->sum(function ($orderGoods) {
+        $enough = $this->coupon->getOrderGoodsInScope()->sum(function ($orderGoods) {
             if (!isset($orderGoods->coupons)) {
                 return 0;
             }
             return $orderGoods->coupons->sum('enough');
         });
-        return $this->getOrderGoodsGroupPrice() - $enough;
+        return $this->getOrderGoodsCollectionPrice() - $enough;
     }
 
     /**
@@ -87,6 +87,6 @@ abstract class CouponPrice
      * @return mixed
      */
     abstract public function getPrice();
-    abstract protected function getOrderGoodsGroupPrice();
+    abstract protected function getOrderGoodsCollectionPrice();
     abstract public function setOrderGoodsDiscountPrice();
 }

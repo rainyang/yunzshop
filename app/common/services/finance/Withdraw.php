@@ -67,4 +67,32 @@ class Withdraw
         return WithdrawModel::updatedWithdrawStatus($withdrawId, $updatedData);
 
     }
+
+    public static function payFail($withdrawSN)
+    {
+        $withdrawModel = WithdrawModel::getWithdrawByWithdrawSN($withdrawSN);
+        if ($withdrawModel && $withdrawModel->type == 'balance') {
+            if ($withdrawModel->status != 1 && $withdrawModel->status == 4) {
+                $withdrawModel->status = 1;
+                $withdrawModel->arrival_at = time();
+                $withdrawModel->save();
+            }
+        }
+
+        return static::otherWithdrawFail($withdrawSN);
+    }
+
+    public static function otherWithdrawFail($withdrawId)
+    {
+        $withdraw = WithdrawModel::getWithdrawById($withdrawId)->first();
+        if ($withdraw->status != '1' && $withdraw->status == '4') {
+            $updatedData = [
+                'status' => 1,
+                'arrival_at' => time(),
+            ];
+
+            \Log::info('修改提现记录状态',print_r($updatedData,true));
+            return WithdrawModel::updatedWithdrawStatus($withdrawId, $updatedData);
+        }
+    }
 }
