@@ -11,6 +11,11 @@ namespace app\frontend\models\goods;
 
 use app\frontend\models\OrderGoods;
 
+/**
+ * Class Sale
+ * @package app\frontend\models\goods
+ * @property string max_point_deduct
+ */
 class Sale extends \app\common\models\Sale
 {
     /**

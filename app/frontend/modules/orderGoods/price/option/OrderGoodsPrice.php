@@ -3,7 +3,7 @@
 namespace app\frontend\modules\orderGoods\price\option;
 
 use app\frontend\models\Goods;
-use app\frontend\modules\orderGoods\models\PreGeneratedOrderGoods;
+use app\frontend\modules\orderGoods\models\PreOrderGoods;
 use app\frontend\modules\orderGoods\price\OrderGoodsPriceCalculator;
 
 /**
@@ -16,13 +16,13 @@ abstract class OrderGoodsPrice
 {
     protected $goodsPrice;
     /**
-     * @var \app\frontend\modules\orderGoods\models\PreGeneratedOrderGoods
+     * @var \app\frontend\modules\orderGoods\models\PreOrderGoods
      */
     public $orderGoods;
 
-    public function __construct(PreGeneratedOrderGoods $preGeneratedOrderGoods)
+    public function __construct(PreOrderGoods $preOrderGoods)
     {
-        $this->orderGoods = $preGeneratedOrderGoods;
+        $this->orderGoods = $preOrderGoods;
     }
 
     /**

@@ -8,7 +8,7 @@
 
 namespace app\frontend\models\orderGoods;
 
-use app\frontend\modules\orderGoods\models\PreGeneratedOrderGoods;
+use app\frontend\modules\orderGoods\models\PreOrderGoods;
 
 class PreOrderGoodsDiscount extends \app\common\models\orderGoods\OrderGoodsDiscount
 {
@@ -19,7 +19,7 @@ class PreOrderGoodsDiscount extends \app\common\models\orderGoods\OrderGoodsDisc
         parent::__construct($attributes);
     }
 
-    public function setOrderGoods(PreGeneratedOrderGoods $orderGoods)
+    public function setOrderGoods(PreOrderGoods $orderGoods)
     {
         $this->orderGoods = $orderGoods;
         $orderGoods->orderGoodsDiscounts->push($this);

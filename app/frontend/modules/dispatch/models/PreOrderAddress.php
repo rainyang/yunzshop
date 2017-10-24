@@ -13,12 +13,12 @@ use app\common\models\Address;
 use app\common\models\DispatchType;
 use app\frontend\models\OrderAddress;
 use app\frontend\modules\member\models\MemberAddress;
-use app\frontend\modules\order\models\PreGeneratedOrder;
+use app\frontend\modules\order\models\PreOrder;
 
 class PreOrderAddress extends OrderAddress
 {
     public $order;
-    public function setOrder(PreGeneratedOrder $order)
+    public function setOrder(PreOrder $order)
     {
         $this->order = $order;
         $order->setRelation('orderAddress', $this);

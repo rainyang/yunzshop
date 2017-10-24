@@ -9,13 +9,13 @@
 namespace app\common\events\order;
 
 use app\common\events\Event;
-use app\frontend\modules\orderGoods\models\PreGeneratedOrderGoods;
+use app\frontend\modules\orderGoods\models\PreOrderGoods;
 
 abstract class OrderGoodsEvent extends Event
 {
     private $_order_goods_model;
 
-    public function __construct(PreGeneratedOrderGoods $order_goods_model)
+    public function __construct(PreOrderGoods $order_goods_model)
     {
         $this->_order_goods_model = $order_goods_model;
     }

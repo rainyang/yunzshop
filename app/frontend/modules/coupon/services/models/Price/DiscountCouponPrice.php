@@ -11,7 +11,7 @@ namespace app\frontend\modules\coupon\services\models\Price;
 
 
 use app\common\models\coupon\GoodsMemberCoupon;
-use app\frontend\modules\orderGoods\models\PreGeneratedOrderGoods;
+use app\frontend\modules\orderGoods\models\PreOrderGoods;
 
 class DiscountCouponPrice extends CouponPrice
 {
@@ -19,7 +19,7 @@ class DiscountCouponPrice extends CouponPrice
     {
         return (1 - $this->dbCoupon->discount/10) * $this->coupon->getOrderGoodsInScope()->getFinalPrice();
     }
-    protected function getOrderGoodsGroupPrice()
+    protected function getOrderGoodsCollectionPrice()
     {
         //会员价-折扣券优惠金额
         return $this->coupon->getOrderGoodsInScope()->getFinalPrice();
@@ -30,9 +30,9 @@ class DiscountCouponPrice extends CouponPrice
     public function setOrderGoodsDiscountPrice()
     {
 
-        $this->coupon->getOrderGoodsInScope()->getOrderGoodsGroup()->map(function($orderGoods){
+        $this->coupon->getOrderGoodsInScope()->map(function($orderGoods){
             /**
-             * @var $OrderGoods PreGeneratedOrderGoods
+             * @var $OrderGoods PreOrderGoods
              */
             //(优惠券金额/订单商品总金额)*订单商品价格
             //dd(number_format(-($this->getDiscountAmount() / $this->getOrderGoodsInScope()->getPrice()) * $OrderGoods->getPrice(), 2));exit;

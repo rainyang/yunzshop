@@ -8,7 +8,11 @@
 
 namespace app\frontend\models;
 
-
+/**
+ * Class OrderGoods
+ * @package app\frontend\models
+ * @property GoodsOption goodsOption
+ */
 class OrderGoods extends \app\common\models\OrderGoods
 {
 

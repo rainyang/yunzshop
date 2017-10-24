@@ -24,6 +24,13 @@ use Yunshop\Supplier\common\services\VerifyButton;
  * Date: 21/02/2017
  * Time: 12:58
  */
+
+/**
+ * Class Member
+ * @package app\common\models
+ * @property int uid
+ * @property float credit1
+ */
 class Member extends BackendModel
 {
     public $table = 'mc_members';
@@ -42,6 +49,11 @@ class Member extends BackendModel
 
     public $timestamps = false;
 
+
+    public function bankCard()
+    {
+        return $this->hasOne('app\common\models\member\BankCard', 'member_id', 'uid');
+    }
     /**
      * 主从表1:1
      *

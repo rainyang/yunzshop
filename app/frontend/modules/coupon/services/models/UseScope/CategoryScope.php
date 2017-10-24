@@ -10,16 +10,16 @@ namespace app\frontend\modules\coupon\services\models\UseScope;
 
 
 use app\common\exceptions\AppException;
-use app\frontend\modules\orderGoods\models\PreGeneratedOrderGoods;
+use app\frontend\modules\orderGoods\models\PreOrderGoods;
 
 class CategoryScope extends CouponUseScope
 {
     protected function _getOrderGoodsOfUsedCoupon()
     {
-        $orderGoods = $this->coupon->getPreGeneratedOrder()->getOrderGoodsModels()->filter(
+        $orderGoods = $this->coupon->getPreOrder()->getOrderGoodsModels()->filter(
             function ($orderGoods) {
                 /**
-                 * @var $orderGoods PreGeneratedOrderGoods
+                 * @var $orderGoods PreOrderGoods
                  */
                 //订单商品所属的所有分类id
                 $orderGoodsCategoryIds = explode(',',data_get($orderGoods->belongsToGood->belongsToCategorys->first(),'category_ids',''));

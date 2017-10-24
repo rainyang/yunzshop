@@ -91,12 +91,15 @@ class CalculationPointService
         }
         if ($goods_model->goods->hasOneSale->max_point_deduct) {
             if (strexists($goods_model->goods->hasOneSale->max_point_deduct, '%')) {
+                // 独立价格比例
                 $goods_point = floatval(str_replace('%', '', $goods_model->goods->hasOneSale->max_point_deduct) / 100 * $goods_model->goods_price / $this->point_set['money']);
             } else {
+                // 独立固定金额
                 $goods_point = $goods_model->goods->hasOneSale->max_point_deduct * $goods_model->total / $this->point_set['money'];
             }
             return $goods_point;
         } else if ($this->point_set['money_max'] > 0 && empty($goods_model->goods->hasOneSale->max_point_deduct)) {
+            // 全局比例
             $goods_point = $this->point_set['money_max'] / 100 * $goods_model->price / $this->point_set['money'];
             return $goods_point;
         }

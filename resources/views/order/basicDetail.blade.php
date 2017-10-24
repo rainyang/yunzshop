@@ -135,7 +135,7 @@
                 @foreach ($order['deductions'] as $deduction)
                     <tr>
                         <td>{{$deduction['name']}}</td>
-                        <td>{{$deduction['qty']}}</td>
+                        <td>{{$deduction['coin']}}</td>
                         <td>¥{{$deduction['amount']}}</td>
                     </tr>
 
