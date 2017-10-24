@@ -25,6 +25,21 @@ class BankCardController extends ApiController
     }
 
 
+    public function show()
+    {
+        $bankCard = MemberBankCard::where('member_id', $this->getMemberId())->first();
+
+        !$bankCard && $bankCard = new MemberBankCard();
+
+        $data = [
+            'member_name' => $bankCard->member_name ?: "",
+            'bank_card'   => $bankCard->bank_card ?: "",
+            'bank_name'   => $bankCard->bank_name ?: "",
+        ];
+
+        return $this->successJson('ok',$data);
+    }
+
 
     public function edit()
     {
