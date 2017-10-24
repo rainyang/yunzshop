@@ -18,7 +18,7 @@ use app\common\models\Order;
 use app\common\models\order\OrderGoodsChangePriceLog;
 use \app\frontend\models\MemberCart;
 use app\frontend\modules\member\services\MemberService;
-use app\frontend\modules\order\models\PreGeneratedOrder;
+use app\frontend\modules\order\models\PreOrder;
 use app\frontend\modules\order\services\behavior\OrderCancelPay;
 use app\frontend\modules\order\services\behavior\OrderCancelSend;
 use app\frontend\modules\order\services\behavior\OrderChangePrice;
@@ -105,7 +105,7 @@ class OrderService
                 'goods_option_id' => (int)$memberCart->option_id,
                 'total' => (int)$memberCart->total,
             ];
-            return app('OrderManager')->make('PreGeneratedOrderGoods', $data);
+            return app('OrderManager')->make('PreOrderGoods', $data);
         });
 
         return $result;
@@ -136,12 +136,12 @@ class OrderService
         $shop = ShopService::getCurrentShopModel();
 
         $orderGoodsArr = OrderService::getOrderGoods($memberCarts);
-        $order = app('OrderManager')->make('PreGeneratedOrder', ['uid' => $member->uid, 'uniacid' => $shop->uniacid]);
+        $order = app('OrderManager')->make('PreOrder', ['uid' => $member->uid, 'uniacid' => $shop->uniacid]);
 
         event(new OnPreGenerateOrderCreatingEvent($order));
         $order->setOrderGoods($orderGoodsArr);
         /**
-         * @var PreGeneratedOrder $order
+         * @var PreOrder $order
          */
         $order->_init();
         return $order;
@@ -283,7 +283,7 @@ class OrderService
     public static function orderPay(array $param)
     {
         /**
-         * @var $orderOperation Order
+         * @var OrderOperation $orderOperation
          */
         $orderOperation = OrderPay::find($param['order_id']);
         if (isset($param['pay_type_id'])) {
@@ -291,7 +291,11 @@ class OrderService
         }
 
         if (isset($param['order_pay_id'])) {
-            $orderOperation->order_pay_id = $param['order_pay_id'];
+            if (isset($orderOperation->hasOneOrderPay)) {
+                if (in_array($param['order_id'], $orderOperation->hasOneOrderPay->order_ids)) {
+                    $orderOperation->order_pay_id = $param['order_pay_id'];
+                }
+            }
         }
         $result = self::OrderOperate($orderOperation);
         if ($orderOperation->isVirtual()) {

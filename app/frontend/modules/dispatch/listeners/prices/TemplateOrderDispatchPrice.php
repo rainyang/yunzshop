@@ -116,11 +116,11 @@ class TemplateOrderDispatchPrice
 
             if ($dispatch) {
                 // 找到匹配的数量数据
-                if ($goods_total > $dispatch['first_weight']) {
+                if ($goods_total > $dispatch['first_piece']) {
 
-                    return $dispatch['first_weight_price'] + ceil(($goods_total - $dispatch['first_weight']) / $dispatch['another_weight']) * $dispatch['another_weight_price'];
+                    return $dispatch['first_piece_price'] + ceil(($goods_total - $dispatch['first_piece_price']) / $dispatch['first_piece_price']) * $dispatch['first_piece_price'];
                 } else {
-                    return $dispatch['first_weight_price'];
+                    return $dispatch['first_piece_price'];
                 }
             }
         }
@@ -165,6 +165,7 @@ class TemplateOrderDispatchPrice
                 // 找到匹配的重量数据
                 if ($weight_total > $dispatch['first_weight']) {
                     // 续重:   首重价格+(重量-首重)/续重*续重价格
+                    // 20 + (500 - 400)
                     return $dispatch['first_weight_price'] + ceil(($weight_total - $dispatch['first_weight']) / $dispatch['another_weight']) * $dispatch['another_weight_price'];
                 } else {
                     return $dispatch['first_weight_price'];

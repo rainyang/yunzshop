@@ -11,6 +11,7 @@ namespace app\backend\modules\finance\controllers;
 
 use app\backend\modules\finance\models\Withdraw;
 use app\backend\modules\finance\services\WithdrawService;
+use app\backend\modules\member\models\MemberBankCard;
 use app\common\components\BaseController;
 use app\common\events\finance\AfterIncomeWithdrawCheckEvent;
 use app\common\events\finance\AfterIncomeWithdrawPayEvent;
@@ -364,6 +365,7 @@ class WithdrawController extends BaseController
             '提现方式',
             '申请金额',
             '申请时间',
+            '银行卡信息'
         ];
         foreach ($export_model->builder_model as $key => $item)
         {
@@ -375,10 +377,19 @@ class WithdrawController extends BaseController
                 $item->pay_way_name,
                 $item->amounts,
                 $item->created_at->toDateTimeString(),
+                !($item->pay_way == 'manual') ? $this->getMemberBankCard($item->member_id) : ''
             ];
         }
+
         $export_model->export($file_name, $export_data, \Request::query('route'));
 
+    }
+
+
+    private function getMemberBankCard($member_id)
+    {
+        $bankCard = MemberBankCard::select('bank_card')->where('member_id',$member_id)->first();
+        return $bankCard ? $bankCard->bank_card : '';
     }
 
     public function batchAlipay()
@@ -388,5 +399,32 @@ class WithdrawController extends BaseController
         $ids = explode(',', $ids);
 
         $result = $this->submitPay($ids, 2);
+    }
+
+    public function getAllWithdraw()
+    {
+        $type = request('type');
+
+        $res = Withdraw::getAllWithdraw($type);
+
+        return json_encode($res);
+    }
+
+    public function updateWidthdrawOrderStatus()
+    {
+        $ids = \YunShop::request()->ids;
+        $status = 0;
+
+        if (empty($ids)) {
+            return json_encode(['status' => $status]);
+        }
+
+        $withdrawId = explode(',', $ids);
+
+        if (Withdraw::updateWidthdrawOrderStatus($withdrawId)) {
+            $status = 1;
+        }
+
+        return json_encode(['status' => $status]);
     }
 }

@@ -9,7 +9,6 @@
 namespace app\backend\modules\order\observers;
 
 use app\common\observers\BaseObserver;
-use app\frontend\modules\order\services\OrderService;
 use Illuminate\Database\Eloquent\Model;
 
 class OrderObserver extends BaseObserver

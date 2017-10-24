@@ -14,6 +14,10 @@ use app\common\exceptions\ShopException;
 use app\common\traits\ValidatorTrait;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class BaseModel
+ * @package app\common\models
+ */
 class BaseModel extends Model
 {
     use ValidatorTrait;

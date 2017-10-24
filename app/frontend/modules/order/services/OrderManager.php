@@ -12,8 +12,8 @@ use app\backend\modules\order\models\Order;
 use app\common\models\order\OrderCoupon;
 use app\common\models\order\OrderDeduction;
 use app\frontend\models\MemberCart;
-use app\frontend\modules\orderGoods\models\PreGeneratedOrderGoods;
-use app\frontend\modules\order\models\PreGeneratedOrder;
+use app\frontend\modules\orderGoods\models\PreOrderGoods;
+use app\frontend\modules\order\models\PreOrder;
 use Illuminate\Container\Container;
 
 class OrderManager extends Container
@@ -31,11 +31,12 @@ class OrderManager extends Container
 
     private function bindModels()
     {
-        $this->bind('PreGeneratedOrderGoods', function ($orderManager, $attributes) {
-            return new PreGeneratedOrderGoods($attributes);
+
+        $this->bind('PreOrderGoods', function ($orderManager, $attributes) {
+            return new PreOrderGoods($attributes);
         });
-        $this->bind('PreGeneratedOrder', function ($orderManager, $attributes) {
-            return new PreGeneratedOrder($attributes);
+        $this->bind('PreOrder', function ($orderManager, $attributes) {
+            return new PreOrder($attributes);
         });
         // 订单model
         $this->bind('Order', function ($orderManager, $attributes) {
@@ -58,5 +59,9 @@ class OrderManager extends Container
         $this->bind('MemberCart', function ($orderManager, $attributes) {
             return new MemberCart($attributes);
         });
+
+
+
+
     }
 }

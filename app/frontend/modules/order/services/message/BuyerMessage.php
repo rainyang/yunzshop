@@ -12,6 +12,7 @@ use app\common\models\Member;
  */
 class BuyerMessage extends Message
 {
+
     protected function sendToBuyer()
     {
         return $this->sendToMember($this->order->uid);

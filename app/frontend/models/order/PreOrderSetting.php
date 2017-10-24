@@ -9,13 +9,13 @@
 namespace app\frontend\models\order;
 
 
-use app\frontend\modules\order\models\PreGeneratedOrder;
+use app\frontend\modules\order\models\PreOrder;
 
 class PreOrderSetting extends \app\common\models\order\OrderSetting
 {
     public $order;
 
-    public function setOrder(PreGeneratedOrder $order)
+    public function setOrder(PreOrder $order)
     {
         $this->order = $order;
         $order->orderSettings->push($this);

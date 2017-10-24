@@ -14,6 +14,16 @@ use app\frontend\models\goods\Sale;
 use app\frontend\modules\member\services\MemberService;
 use app\common\models\Coupon;
 
+/**
+ * Class Goods
+ * @package app\frontend\models
+ * @property int id
+ * @property string goods_sn
+ * @property string title
+ * @property string thumb
+ * @property float price
+ * @property Sale hasOneSale
+ */
 class Goods extends \app\common\models\Goods
 {
     public $appends = ['vip_price'];
@@ -60,9 +70,13 @@ class Goods extends \app\common\models\Goods
          *会员等级折扣
          * @var $goodsDiscount GoodsDiscount
          */
+
         $goodsDiscount = $this->hasManyGoodsDiscount()->where('level_id', $member->yzMember->level_id)->first();
+
         if (isset($goodsDiscount)) {
             $result = $goodsDiscount->getAmount($price);
+        }else{
+            $result = (new GoodsDiscount())->getAmount($price);
         }
 
         return $result;
