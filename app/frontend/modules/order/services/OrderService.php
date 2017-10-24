@@ -291,8 +291,8 @@ class OrderService
         }
 
         if (isset($param['order_pay_id'])) {
-            if(isset($orderOperation->hasOneOrderPay)){
-                if(in_array($param['order_pay_id'],$orderOperation->hasOneOrderPay->order_ids)){
+            if (isset($orderOperation->hasOneOrderPay)) {
+                if (in_array($param['order_id'], $orderOperation->hasOneOrderPay->order_ids)) {
                     $orderOperation->order_pay_id = $param['order_pay_id'];
                 }
             }
