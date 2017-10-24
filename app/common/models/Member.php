@@ -391,6 +391,8 @@ class Member extends BackendModel
      * 会员3级关系链
      *
      * @param $uid
+     * @param string $mid
+     * @return bool
      */
     public static function setMemberRelation($uid, $mid='')
     {
@@ -421,7 +423,7 @@ class Member extends BackendModel
                 }
             }
         } else {
-            $relation_str = '0,';
+            $relation_str = '0';
         }
 
         $curr_arr = explode(',', $relation_str);

@@ -362,26 +362,43 @@ class MemberController extends BaseController
         $export_model->export($file_name, $export_data, \Request::query('route'));
     }
 
-    public function change_relation()
+    public function search_member()
     {
-        $members    = '';
+        $members    = [];
         $parent_id = \YunShop::request()->parent;
-        $uid       = \YunShop::request()->member;
 
-        if (is_numeric($parent_id) && $parent_id > 0) {
-            if (Member::setMemberRelation($uid, $parent_id)) {
-                $member = Member::getMemberById($parent_id);
+        if (is_numeric($parent_id)) {
+            $member = Member::getMemberById($parent_id);
 
-                if (!is_null($member)) {
-                    $members[] = $member->toArray();
-                }
-            } else {
-                return response('')->send();
+            if (!is_null($member)) {
+                $members[] = $member->toArray();
+            }
+
+            if (0 == $parent_id) {
+                $members = 0;
             }
         }
 
         return view('member.query', [
             'members' => $members
         ])->render();
+    }
+
+    public function change_relation()
+    {
+        $parent_id = \YunShop::request()->parent;
+        $uid       = \YunShop::request()->member;
+
+        if (is_numeric($parent_id)) {
+            if (Member::setMemberRelation($uid, $parent_id)) {
+                $member = MemberShopInfo::getMemberShopInfo($uid);
+
+                $member->parent_id = $parent_id;
+                $member->save();
+                return response(['status' => 1])->send();
+            } else {
+                return response(['status' => 0])->send();
+            }
+        }
     }
 }
