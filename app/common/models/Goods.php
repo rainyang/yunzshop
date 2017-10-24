@@ -33,6 +33,9 @@ class Goods extends BaseModel
     public $widgets = [];
 
     protected $search_fields = ['title'];
+
+    static protected $needLog = true;
+
     /**
      * 实物
      */
