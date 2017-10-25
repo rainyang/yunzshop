@@ -389,7 +389,7 @@ class WithdrawController extends BaseController
                 ($item->pay_way == 'manual') ? $bankCardModel['bank_city'] : '',
                 ($item->pay_way == 'manual') ? $bankCardModel['bank_branch'] : '',
 
-                ($item->pay_way == 'manual') ? $bankCardModel['bank_card'] : '',
+                ($item->pay_way == 'manual') ? (string)$bankCardModel['bank_card'] : '',
                 ($item->pay_way == 'manual') ? $bankCardModel['member_name'] : ''
             ];
         }
