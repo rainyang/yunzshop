@@ -49,6 +49,11 @@ class Member extends BackendModel
 
     public $timestamps = false;
 
+
+    public function bankCard()
+    {
+        return $this->hasOne('app\common\models\member\BankCard', 'member_id', 'uid');
+    }
     /**
      * 主从表1:1
      *

@@ -283,16 +283,20 @@ class OrderService
     public static function orderPay(array $param)
     {
         /**
-         * @var $orderOperation Order
+         * @var OrderOperation $orderOperation
          */
         $orderOperation = OrderPay::find($param['order_id']);
         if (isset($param['pay_type_id'])) {
             $orderOperation->pay_type_id = $param['pay_type_id'];
         }
-
-        if (isset($param['order_pay_id'])) {
-            $orderOperation->order_pay_id = $param['order_pay_id'];
-        }
+        $orderOperation->order_pay_id = (int)$param['order_pay_id'];
+//        if (isset($param['order_pay_id'])) {
+//            if (isset($orderOperation->hasOneOrderPay)) {
+//                if (in_array($param['order_id'], $orderOperation->hasOneOrderPay->order_ids)) {
+//                    $orderOperation->order_pay_id = $param['order_pay_id'];
+//                }
+//            }
+//        }
         $result = self::OrderOperate($orderOperation);
         if ($orderOperation->isVirtual()) {
             // 虚拟物品付款后直接完成
