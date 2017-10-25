@@ -23,20 +23,20 @@ class BankCardController extends BaseController
         $post = request()->input('bank');
         if ($post) {
 
-            $_model = MemberBankCard::where('member_id',$this->getMemberId())->first();
+            $_model = MemberBankCard::where('member_id', $this->getMemberId())->first();
 
             !$_model && $_model = new MemberBankCard();
 
 
             $_model->member_name = $post['member_name'];
-            $_model->bank_card   = $post['bank_card'];
-            $_model->bank_name   = $post['bank_name'];
-            $_model->bank_name   = $post['bank_province'];
-            $_model->bank_name   = $post['bank_city'];
-            $_model->bank_name   = $post['bank_branch'];
-            $_model->member_id   = $this->getMemberId();
-            $_model->is_default  = 1;
-            $_model->uniacid     = \YunShop::app()->uniacid;
+            $_model->bank_card = $post['bank_card'];
+            $_model->bank_name = $post['bank_name'];
+            $_model->bank_province = $post['bank_province'];
+            $_model->bank_city = $post['bank_city'];
+            $_model->bank_branch = $post['bank_branch'];
+            $_model->member_id = $this->getMemberId();
+            $_model->is_default = 1;
+            $_model->uniacid = \YunShop::app()->uniacid;
 
             $validator = $_model->validator();
             if ($validator->fails()) {
@@ -44,20 +44,20 @@ class BankCardController extends BaseController
             } else {
                 //dd($_model->save());
                 if ($_model->save()) {
-                    return $this->message('银行卡信息更新成功', Url::absoluteWeb('member.bank-card.edit',['member_id'=>$this->getMemberId()]));
+                    return $this->message('银行卡信息更新成功', Url::absoluteWeb('member.bank-card.edit', ['member_id' => $this->getMemberId()]));
                 }
-                return $this->message('银行卡信息更新失败，请重试','', 'error');
+                return $this->message('银行卡信息更新失败，请重试', '', 'error');
             }
 
         }
 
 
-        return view('member.bank.edit',['member' => $this->getMemberModel()])->render();
+        return view('member.bank.edit', ['member' => $this->getMemberModel()])->render();
     }
 
     private function getMemberModel()
     {
-         return  Member::select('uid','nickname','realname','mobile','avatar')
+        return Member::select('uid', 'nickname', 'realname', 'mobile', 'avatar')
             ->with('bankCard')
             ->where('uid', $this->getMemberId())
             ->first();
