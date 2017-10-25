@@ -365,10 +365,13 @@ class WithdrawController extends BaseController
             '提现方式',
             '申请金额',
             '申请时间',
-            '银行卡信息'
+            '开户行',
+            '银行卡信息',
+            '开户人姓名'
         ];
         foreach ($export_model->builder_model as $key => $item)
         {
+            $bankCardModel = ($item->pay_way == 'manual') ? $this->getMemberBankCard($item->member_id) : [];
             $export_data[$key + 1] = [
                 $item->withdraw_sn,
                 $item->hasOneMember->nickname,
@@ -377,20 +380,21 @@ class WithdrawController extends BaseController
                 $item->pay_way_name,
                 $item->amounts,
                 $item->created_at->toDateTimeString(),
-                !($item->pay_way == 'manual') ? $this->getMemberBankCard($item->member_id) : ''
+                ($item->pay_way == 'manual') ? $bankCardModel['bank_name'] : '',
+                ($item->pay_way == 'manual') ? $bankCardModel['bank_card'] : '',
+                ($item->pay_way == 'manual') ? $bankCardModel['member_name'] : ''
             ];
         }
-
         $export_model->export($file_name, $export_data, \Request::query('route'));
 
     }
 
-
     private function getMemberBankCard($member_id)
     {
-        $bankCard = MemberBankCard::select('bank_card')->where('member_id',$member_id)->first();
-        return $bankCard ? $bankCard->bank_card : '';
+        $bankCard = MemberBankCard::select('bank_card','member_name','bank_name')->where('member_id',$member_id)->first();
+        return $bankCard ? $bankCard->toArray() : '';
     }
+
 
     public function batchAlipay()
     {
