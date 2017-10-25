@@ -63,6 +63,9 @@ class BankCardController extends ApiController
             $bankCard->member_name = $member_name;
             $bankCard->bank_card = $bank_card;
             $bankCard->bank_name = $bank_name;
+            $bankCard->bank_province = $bank_province;
+            $bankCard->bank_city = $bank_city;
+            $bankCard->bank_branch = $bank_branch;
             $bankCard->is_default  = 1;
             $bankCard->uniacid     = \YunShop::app()->uniacid;
 
