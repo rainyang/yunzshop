@@ -5,14 +5,8 @@
     <link href="{{static_url('yunshop/css/member.css')}}" media="all" rel="stylesheet" type="text/css"/>
     <div class="w1200 m0a">
         <div class="rightlist">
-            <!-- 新增加右侧顶部三级菜单 -->
-            <div class="right-titpos">
-                <ul class="add-snav">
-                    <li><a href="javascript:;"> &nbsp; <i class="fa fa-angle-double-right"></i>
-                            &nbsp;会员/会员关系/资格申请</a></li>
-                </ul>
-            </div>
-            <!-- 新增加右侧顶部三级菜单结束 -->
+        @include('layouts.tabs')
+           
             <div class="panel panel-info"><!--
                 <div class="panel-heading">筛选</div>-->
                 <div class="panel-body">

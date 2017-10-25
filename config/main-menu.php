@@ -884,7 +884,7 @@ return [
 
             'member_relation' => [
                 'name'          => '会员关系',
-                'url'           => '',
+                'url'           => 'member.member-relation.index',
                 'url_params'    => '',
                 'permit'        => 1,
                 'menu'          => 1,
@@ -1242,6 +1242,7 @@ return [
                         'item'              => 'order_list_completed_see',
                         'parents'           => ['Order','order_list_completed'],
                         'child' => [],
+
                     ],
                 ],
             ],
@@ -1514,7 +1515,7 @@ return [
 
 
             'balance_set'       => [
-                'name'              => '余额管理',
+                'name'              => '余额设置',
                 'url'               => 'finance.balance.index',
                 'url_params'        => '',
                 'permit'            => 1,
@@ -1962,16 +1963,46 @@ return [
                 'parents'       => ['charts',],
             ],
 
-            'order_charts'     => [
+            'order_total_charts'=> [
                 'name'          => '订单数据统计',
-                'url'           => 'charts.member.count.index',
+                'url'           => 'charts.order.today-trends.index',
                 'url_params'    => '',
                 'permit'        => 1,
                 'menu'          => 1,
                 'icon'          => 'fa-bar-chart-o',
                 'sort'          => 0,
-                'item'          => 'order_charts',
+                'item'          => 'order_total_charts',
                 'parents'       => ['charts',],
+                'child'         => [
+
+                    'today_order_total_charts'     => [
+                        'name'          => '今日订单统计',
+                        'url'           => 'charts.order.today-trends.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'today_order_total_charts',
+                        'parents'       => ['charts','order_total_charts'],
+
+                    ],
+
+                    'all_order_total_charts'     => [
+                        'name'          => '全部订单统计',
+                        'url'           => 'charts.order.order-trends.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'all_order_total_charts',
+                        'parents'       => ['charts','order_total_charts'],
+
+                    ],
+
+
+                ]
             ],
 
             'order_ranking_charts'     => [

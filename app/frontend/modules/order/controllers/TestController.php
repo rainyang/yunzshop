@@ -3,6 +3,7 @@
 namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
+use app\common\models\OrderPay;
 use app\common\services\password\PasswordService;
 use app\frontend\modules\coin\InvalidVirtualCoin;
 use app\frontend\modules\deduction\models\Deduction;
@@ -21,10 +22,7 @@ class TestController extends ApiController
 
     public function index()
     {
-        $coin = (new LoveCoin())->setMoney(10);
-
-
-        dd((new InvalidVirtualCoin())->plus($coin)->getMoney());
+        dd(OrderPay::first()->order_ids);
     }
 
     public function index1()

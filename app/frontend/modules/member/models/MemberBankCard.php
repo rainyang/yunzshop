@@ -1,22 +1,18 @@
 <?php
 /****************************************************************
  * Author:  libaojia
- * Date:    2017/10/17 下午3:07
+ * Date:    2017/10/23 下午5:34
  * Email:   livsyitian@163.com
  * QQ:      995265288
  * User:    芸众商城 www.yunzshop.com
  ****************************************************************/
 
-namespace app\backend\modules\charts\modules\order\controllers;
+namespace app\frontend\modules\member\models;
 
 
-use app\common\components\BaseController;
+use app\common\models\member\BankCard;
 
-class OrderTrendsController extends BaseController
+class MemberBankCard extends BankCard
 {
-    public function index()
-    {
-        dd('all');
-    }
 
 }
