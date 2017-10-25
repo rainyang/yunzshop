@@ -366,6 +366,9 @@ class WithdrawController extends BaseController
             '申请金额',
             '申请时间',
             '开户行',
+            '开户行省份',
+            '开户行城市',
+            '开户行支行',
             '银行卡信息',
             '开户人姓名'
         ];
@@ -381,18 +384,22 @@ class WithdrawController extends BaseController
                 $item->amounts,
                 $item->created_at->toDateTimeString(),
                 ($item->pay_way == 'manual') ? $bankCardModel['bank_name'] : '',
+
+                ($item->pay_way == 'manual') ? $bankCardModel['bank_province'] : '',
+                ($item->pay_way == 'manual') ? $bankCardModel['bank_city'] : '',
+                ($item->pay_way == 'manual') ? $bankCardModel['bank_branch'] : '',
+
                 ($item->pay_way == 'manual') ? $bankCardModel['bank_card'] : '',
                 ($item->pay_way == 'manual') ? $bankCardModel['member_name'] : ''
             ];
         }
         $export_model->export($file_name, $export_data, \Request::query('route'));
-
     }
 
     private function getMemberBankCard($member_id)
     {
-        $bankCard = MemberBankCard::select('bank_card','member_name','bank_name')->where('member_id',$member_id)->first();
-        return $bankCard ? $bankCard->toArray() : '';
+        $bankCard = MemberBankCard::where('member_id',$member_id)->first();
+        return $bankCard ? $bankCard->toArray() : [];
     }
 
 
