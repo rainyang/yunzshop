@@ -35,6 +35,9 @@ class BankCardController extends ApiController
             'member_name' => $bankCard->member_name ?: "",
             'bank_card'   => $bankCard->bank_card ?: "",
             'bank_name'   => $bankCard->bank_name ?: "",
+            'bank_province'   => $bankCard->bank_province ?: "",
+            'bank_city'   => $bankCard->bank_city ?: "",
+            'bank_branch'   => $bankCard->bank_branch ?: "",
         ];
 
         return $this->successJson('ok',$data);
@@ -50,7 +53,11 @@ class BankCardController extends ApiController
         $member_name = \YunShop::request()->member_name;
         $bank_card = \YunShop::request()->bank_card;
         $bank_name = \YunShop::request()->bank_name;
-        if ($bank_name && $bank_card && $member_name) {
+        $bank_province = \YunShop::request()->bank_province;
+        $bank_city = \YunShop::request()->bank_city;
+        $bank_branch = \YunShop::request()->bank_branch;
+
+        if ($bank_name && $bank_card && $member_name && $bank_province && $bank_city && $bank_branch) {
             //$post = json_decode($post);
             $bankCard->member_id = \YunShop::app()->getMemberId();
             $bankCard->member_name = $member_name;
@@ -69,14 +76,7 @@ class BankCardController extends ApiController
             }
             return $this->successJson('银行卡信息更新成功');
         }
-
-        $data = [
-            'member_name' => $bankCard->member_name,
-            'bank_card'   => $bankCard->bank_card,
-            'bank_name'   => $bankCard->bank_name,
-        ];
-
-        return $this->successJson('ok',$data);
+        return $this->errorJson('未获取到银行卡数据');
     }
 
 

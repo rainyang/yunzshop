@@ -33,8 +33,11 @@ class BankCard extends BaseModel
     {
         return [
             'member_name' => '会员姓名',
-            'bank_card'  => '银行卡号 ',
-            'bank_name'  => '开户行 ',
+            'bank_card' => '银行卡号 ',
+            'bank_name' => '开户行 ',
+            'bank_province' => '开户行省份',
+            'bank_city' => '开户城市',
+            'bank_branch' => '开户支行'
         ];
     }
 
@@ -47,8 +50,11 @@ class BankCard extends BaseModel
     {
         return [
             'member_name' => 'required|max:45',
-            'bank_card'  => 'required|max:100',
-            'bank_name'  => 'required|max:45',
+            'bank_card' => 'required|max:100',
+            'bank_name' => 'required|max:45',
+            'bank_province' => 'required|max:45',
+            'bank_city' => 'required|max:45',
+            'bank_branch' => 'required|max:45'
         ];
     }
 

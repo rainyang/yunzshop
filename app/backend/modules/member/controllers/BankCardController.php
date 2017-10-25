@@ -31,6 +31,9 @@ class BankCardController extends BaseController
             $_model->member_name = $post['member_name'];
             $_model->bank_card   = $post['bank_card'];
             $_model->bank_name   = $post['bank_name'];
+            $_model->bank_name   = $post['bank_province'];
+            $_model->bank_name   = $post['bank_city'];
+            $_model->bank_name   = $post['bank_branch'];
             $_model->member_id   = $this->getMemberId();
             $_model->is_default  = 1;
             $_model->uniacid     = \YunShop::app()->uniacid;
