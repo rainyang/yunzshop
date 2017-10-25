@@ -172,7 +172,7 @@
         <table class="table">
             <thead>
             <tr>
-                <th style='width:5%;'><input id="all" type="checkbox" value="0"> 全选</th>
+                <th style='width:8%;'><input id="all" type="checkbox" value="0"> 全选</th>
                 <th style='width:20%;'>提现编号</th>
                 <th style='width:10%;'>粉丝</th>
                 <th style='width:10%;'>姓名</br>手机</th>

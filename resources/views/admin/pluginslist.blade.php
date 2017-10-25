@@ -16,18 +16,19 @@
             @foreach($plugins as $plugin)
             <div class="col-md-3">
                 <div class="col-md-11">
-                    <div class="card card-pricing card-raised" style="border-radius:4px;    height: 290px;">
+                    <div class="card card-pricing1 card-raised" style="border-radius:4px;    height: 100px;">
                         <div class="content">
-                            <h6 class="category">{{$plugin['name']}}</h6>
-                            <div class="icon icon-rose">
-                                {{--<i class="material-icons">home</i>--}}
+                            {{--<div class="icon icon-rose">
                                 <i class="fa {{$plugin['icon']}}"></i>
                             </div>
                             <h3 class="card-title"></h3>
                             <p class="card-description">
 
-                            </p>
-                            <a href="{{yzWebFullUrl($plugin['url'])}}" class="btn btn-rose btn-round">{{$plugin['name']}}</a>
+                            </p>--}}
+                            <div class="icon icon-rose">
+                                <i class="fa {{$plugin['icon']}}"></i>
+                            </div>
+                            <a style="display: inline-block;margin-top: 8px;" href="{{yzWebFullUrl($plugin['url'])}}" class="btn btn-rose btn-round">{{$plugin['name']}}</a>
                         </div>
                     </div>
                 </div>

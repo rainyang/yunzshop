@@ -6359,6 +6359,11 @@ h2.title {
     border-top: 1px solid #ececf2;
     border-bottom: 1px solid #ececf2;
 }
+
+.sidebar2 .nav li.active>a i{
+    color: #0acde0 !important;
+}
+
 .sidebar2 .nav li>a {
 
     margin: 0px 0px 0;
@@ -6886,7 +6891,7 @@ h2.title {
     margin: 10px 1px;*/
     padding: 8px 20px;
     margin: 0px 1px;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 400;
     text-transform: uppercase;
     letter-spacing: 0;
@@ -7132,7 +7137,7 @@ fieldset[disabled] .navbar .navbar-nav>li>a.btn.btn-default.active {
 .open>.navbar .navbar-nav>li>a.btn.btn-primary.dropdown-toggle,
 .open>.navbar .navbar-nav>li>a.btn.btn-primary.dropdown-toggle:focus,
 .open>.navbar .navbar-nav>li>a.btn.btn-primary.dropdown-toggle:hover {
-    background-color: #9c27b0;
+    background-color: #0AC0D2;
     color: #FFFFFF;
 }
 
@@ -7682,7 +7687,7 @@ fieldset[disabled] .navbar .navbar-nav>li>a.btn.btn-danger.active {
 .open>.navbar .navbar-nav>li>a.btn.btn-rose.dropdown-toggle,
 .open>.navbar .navbar-nav>li>a.btn.btn-rose.dropdown-toggle:focus,
 .open>.navbar .navbar-nav>li>a.btn.btn-rose.dropdown-toggle:hover {
-    background-color: #e91e63;
+    background-color: #1e80e9;
     color: #FFFFFF;
 }
 
@@ -12195,7 +12200,7 @@ footer .btn {
 .dropdown-menu li a:hover,
 .dropdown-menu li a:focus,
 .dropdown-menu li a:active {
-    background-color: #9c27b0;
+    background-color: #1692d1;
     color: #FFFFFF;
 }
 
@@ -12755,7 +12760,8 @@ footer .btn {
 }
 
 .card-raised {
-    box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.42), 0 4px 25px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2);
+    /*box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.42), 0 4px 25px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2);*/
+    box-shadow:0 2px 10px -12px rgba(240, 232, 232, 0.42), 0 5px 15px 0px rgba(0, 0, 0, 0.12), 0 2px 10px -5px rgba(0, 0, 0, 0.2)
 }
 
 .iframe-container {
@@ -12839,6 +12845,11 @@ footer .btn {
     text-align: center;
 }
 
+.card-pricing1 {
+    text-align: center;
+    padding: 15px;
+}
+
 .card-pricing .card-title {
     margin-top: 30px;
 }
@@ -12851,7 +12862,14 @@ footer .btn {
     padding: 10px 0 0px;
     color: #999999;
 }
+.card-pricing1 .icon.icon-rose {
+    color: #e9a01e;
+}
 
+.card-pricing1 .icon {
+    padding: 10px 0 0px;
+    color: #999999;
+}
 .card-pricing .icon i {
     font-size: 55px;
     border: 1px solid #E5E5E5;
@@ -12860,7 +12878,16 @@ footer .btn {
     line-height: 130px;
     height: 130px;
 }
-
+.card-pricing1 .icon i {
+    font-size: 45px;
+    border: 1px solid #E5E5E5;
+    border-radius: 50%;
+    width: 50px;
+    line-height: 50px;
+    height: 50px;
+    float: left;
+    margin-left: 20px;
+}
 .card-pricing .icon.icon-primary {
     color: #9c27b0;
 }

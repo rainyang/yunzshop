@@ -15,7 +15,7 @@
                 <div class="panel-body">
                     <div class="card">
                         <div class="card-header card-header-icon" data-background-color="rose">
-                            <i class="material-icons">mail_outline</i>
+                            <i class="fa fa-bars" style="font-size: 24px;" aria-hidden="true"></i>
                         </div>
                         <div class="card-content">
                             <h4 class="card-title">订单管理</h4>

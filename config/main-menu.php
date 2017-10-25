@@ -15,8 +15,8 @@ return [
         'permit' => 0,                  //如果不设置则不会做权限检测
         'menu' => 1,                    //如果不设置则不显示菜单，子菜单也将不显示
         'icon' => 'fa-home',                   //菜单图标
-        'top_show'    => 1,
-        'left_first_show'   => 1,
+        'top_show'    => 0,
+        'left_first_show'   => 0,
         'left_second_show'   => 0,
         'parents' => [],                //
         'child' => [
@@ -2095,7 +2095,7 @@ return [
                 'child' => [
 
                     'setting_shop'  => [
-                        'name'          => '基础设置',
+                        'name'          => '设置',
                         'url'           => 'setting.shop.index',
                         'url_params'    => '',
                         'permit'        => 1,
@@ -2107,7 +2107,7 @@ return [
                     ],
 
                     'setting_member' => [
-                        'name'          => '会员设置',
+                        'name'          => '会员',
                         'url'           => 'setting.shop.member',
                         'url_params'    => '',
                         'permit'        => 1,
@@ -2119,7 +2119,7 @@ return [
                     ],
 
                     'setting_category' => [
-                        'name'          => '分类层级',
+                        'name'          => '分类',
                         'url'           => 'setting.shop.category',
                         'url_params'    => '',
                         'permit'        => 1,
@@ -2143,7 +2143,7 @@ return [
                     ],
 
                     'setting_sms'   => [
-                        'name'          => '短信设置',
+                        'name'          => '短信',
                         'url'           => 'setting.shop.sms',
                         'url_params'    => '',
                         'permit'        => 1,
@@ -2155,7 +2155,7 @@ return [
                     ],
 
                     'setting_coupon'   => [
-                        'name'          => '优惠卷',
+                        'name'          => '优惠券',
                         'url'           => 'setting.coupon.index',
                         'url_params'    => '',
                         'permit'        => 1,
@@ -2166,10 +2166,8 @@ return [
                         'parents'       => ['system', 'Setting', 'setting_shop'],
                     ],
 
-
-
-                    'setting_shop_trade' => [
-                        'name'              => '交易设置',
+                    /*'setting_shop_trade' => [
+                        'name'              => '交易',
                         'url'               => 'setting.shop.trade',
                         'url_params'        => '',
                         'permit'            => 1,
@@ -2178,22 +2176,11 @@ return [
                         'sort'              => '3',
                         'item'              => 'setting_shop_trade',
                         'parents'           => ['system', 'Setting',],
-                    ],
+                    ],*/
 
-                    'setting_shop_pay'  => [
-                        'name'              => '支付方式',
-                        'url'               => 'setting.shop.pay',
-                        'url_params'        => '',
-                        'permit'            => 1,
-                        'menu'              => 1,
-                        'icon'              => 'fa-facebook-square',
-                        'sort'              => '3',
-                        'item'              => 'setting_shop_pay',
-                        'parents'           => ['system', 'Setting',],
-                    ],
 
                     'setting_shop_share' => [
-                        'name'              => '分享引导',
+                        'name'              => '分享',
                         'url'               => 'setting.shop.share',
                         'url_params'        => '',
                         'permit'            => 1,
@@ -2203,9 +2190,10 @@ return [
                         'item'              => 'setting_shop_share',
                         'parents'           => ['system', 'Setting',],
                     ],
+
                     'setting_shop_notice' => [
-                        'name'              => '消息提醒',
-                        'url'               => 'setting.shop.notice',
+                        'name'              => '幻灯片',
+                        'url'               => 'setting.slide.index',
                         'url_params'        => '',
                         'permit'            => 1,
                         'menu'              => 1,
@@ -2217,66 +2205,43 @@ return [
                 ],
             ],
 
-            'setting_slide' => [
-                'name'          => '幻灯片',
-                'url'           => 'setting.slide.index',
+            'setting_shop_trade' => [
+                'name'          => '交易',
+                'url'           => 'setting.shop.trade',
                 'url_params'    => '',
                 'permit'        => 1,
                 'menu'          => 1,
-                'icon'          => '',
+                'icon'          => 'fa-compress',
                 'sort'          => '7',
-                'item'          => 'setting_slide',
+                'item'          => 'setting_shop_trade',
                 'parents'       => ['system'],
                 'child'         => [
-
-                    'setting_slide_index' => [
-                        'name'          => '浏览列表',
-                        'url'           => 'setting.slide.index',
-                        'url_params'    => '',
-                        'permit'        => 1,
-                        'menu'          => 0,
-                        'icon'          => '',
-                        'sort'          => '6',
-                        'item'          => 'setting_slide_index',
-                        'parents'       => ['system', 'Setting', 'setting_shop', 'setting_slide'],
-                    ],
-
-                    'setting_slide_create' => [
-                        'name'          => '创建幻灯片',
-                        'url'           => 'setting.slide.create',
-                        'url_params'    => '',
-                        'permit'        => 1,
-                        'menu'          => 0,
-                        'icon'          => '',
-                        'sort'          => '6',
-                        'item'          => 'setting_slide_create',
-                        'parents'       => ['system', 'Setting', 'setting_shop', 'setting_slide'],
-                    ],
-
-                    'setting_slide_edit' => [
-                        'name'          => '编辑幻灯片',
-                        'url'           => 'setting.slide.edit',
-                        'url_params'    => '',
-                        'permit'        => 1,
-                        'menu'          => 0,
-                        'icon'          => '',
-                        'sort'          => '6',
-                        'item'          => 'setting_slide_edit',
-                        'parents'       => ['system', 'Setting', 'setting_shop', 'setting_slide'],
-                    ],
-
-                    'setting_slide_deleted' => [
-                        'name'          => '删除幻灯片',
-                        'url'           => 'setting.slide.deleted',
-                        'url_params'    => '',
-                        'permit'        => 1,
-                        'menu'          => 0,
-                        'icon'          => '',
-                        'sort'          => '6',
-                        'item'          => 'setting_slide_deleted',
-                        'parents'       => ['system', 'Setting', 'setting_shop', 'setting_slide'],
-                    ],
                 ],
+            ],
+
+
+            'setting_shop_pay'  => [
+                'name'              => '支付',
+                'url'               => 'setting.shop.pay',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-facebook-square',
+                'sort'              => '3',
+                'item'              => 'setting_shop_pay',
+                'parents'           => ['system', 'Setting',],
+            ],
+
+            'setting_shop_notice' => [
+                'name'              => '消息',
+                'url'               => 'setting.shop.notice',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-bell-o',
+                'sort'              => '6',
+                'item'              => 'setting_shop_notice',
+                'parents'           => ['system', 'Setting',],
             ],
 
             'role'          => [
@@ -2340,7 +2305,6 @@ return [
                     ],
                 ],
             ],
-
 
             'user'          => [
                 'name'          => '操作员',

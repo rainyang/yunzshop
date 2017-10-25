@@ -191,7 +191,7 @@ z-index: 2;position: fixed;
     height: 34px;
 }
 .panel-body.perm-group .checkbox-inline{width: 120px;}
-.btn-primary:hover,.btn-primary:focus,.btn-primary:active,.btn-primary.active,.open>.dropdown-toggle.btn-primary{color:#fff;background-color:#38B922 !important;border-color:#0EAD1C !important;}
+.btn-primary:hover,.btn-primary:focus,.btn-primary:active,.btn-primary.active,.open>.dropdown-toggle.btn-primary{color:#fff;background-color:#0ab2dc !important;border-color:#0EAD1C !important;}
 /*.panel{border: 0}*/
 /*
  *.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus{background-color: hsl(111, 62%, 49%);
