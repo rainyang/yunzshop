@@ -39,7 +39,6 @@ class OperationController extends BaseController
     {
         $this->param['pay_type_id'] = PayType::BACKEND;
         $message = OrderService::orderPay($this->param);
-        $this->param->pay_type_id = PayType::BACKEND;
         return $this->successJson($message);
 
     }

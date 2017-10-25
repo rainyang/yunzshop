@@ -28,6 +28,19 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use app\backend\modules\order\observers\OrderObserver;
 
+/**
+ * Class Order
+ * @package app\common\models
+ * @property int plugin_id
+ * @property int id
+ * @property int order_id
+ * @property int price
+ * @property int status_name
+ * @property int status
+ * @property int pay_type_name
+ * @property int pay_type_id
+ * @property int order_pay_id
+ */
 class Order extends BaseModel
 {
     public $table = 'yz_order';
