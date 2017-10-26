@@ -394,6 +394,7 @@ class MemberModel extends Member
             $member_info['city'] =  $yz_member['city'];
             $member_info['area'] =  $yz_member['area'];
             $member_info['address'] =  $yz_member['address'];
+            $member_info['wechat'] =  $yz_member['wechat'];
 
             if (!empty( $yz_member['group'])) {
                 $member_info['group_id'] =  $yz_member['group']['id'];
