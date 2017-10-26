@@ -191,7 +191,7 @@
                 <tr>
                     <td>{{$order_goods['goods_id']}}</td>
                     <td>
-                        <a href="{{yzWebUrl('goods.goods.edit', array('id' => $order_goods['goods_id']))}}">{{$order_goods['title']}}</a>
+                        <a href="{{yzWebUrl($edit_goods, array('id' => $order_goods['goods_id']))}}">{{$order_goods['title']}}</a>
                     </td>
                     <td>{{$order_goods['goods_option_title']}}</td>
                     <td>{{$order_goods['goods_price']}}
