@@ -7660,7 +7660,7 @@ fieldset[disabled] .navbar .navbar-nav>li>a.btn.btn-danger.active {
 
 .btn.btn-rose,
 .navbar .navbar-nav>li>a.btn.btn-rose {
-    box-shadow: 0 2px 2px 0 rgba(233, 30, 99, 0.14), 0 3px 1px -2px rgba(233, 30, 99, 0.2), 0 1px 5px 0 rgba(233, 30, 99, 0.12);
+    box-shadow: 0 2px 2px 0 rgba(30, 173, 233, 0.14), 0 3px 1px -2px rgba(30, 171, 233, 0.2), 0 1px 5px 0 rgba(30, 176, 233, 0.12)
 }
 
 .btn.btn-rose,
@@ -7697,7 +7697,7 @@ fieldset[disabled] .navbar .navbar-nav>li>a.btn.btn-danger.active {
 .navbar .navbar-nav>li>a.btn.btn-rose:focus,
 .navbar .navbar-nav>li>a.btn.btn-rose:active,
 .navbar .navbar-nav>li>a.btn.btn-rose:hover {
-    box-shadow: 0 14px 26px -12px rgba(233, 30, 99, 0.42), 0 4px 23px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(233, 30, 99, 0.2);
+    box-shadow: 0 14px 26px -12px rgba(30, 209, 233, 0.42), 0 4px 23px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(30, 212, 233, 0.2);
 }
 
 .btn.btn-rose.disabled,
