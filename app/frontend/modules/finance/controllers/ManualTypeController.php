@@ -19,7 +19,7 @@ class ManualTypeController extends ApiController
 {
     public function isCanSubmit()
     {
-        $manual_type = Setting::get('withdraw.income')['$manual_type'] ?: 1;
+        $manual_type = Setting::get('withdraw.income')['manual_type'] ?: 1;
 
         switch ($manual_type) {
             case 2:
