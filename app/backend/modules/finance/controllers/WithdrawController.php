@@ -12,6 +12,7 @@ namespace app\backend\modules\finance\controllers;
 use app\backend\modules\finance\models\Withdraw;
 use app\backend\modules\finance\services\WithdrawService;
 use app\backend\modules\member\models\MemberBankCard;
+use app\backend\modules\member\models\MemberShopInfo;
 use app\common\components\BaseController;
 use app\common\events\finance\AfterIncomeWithdrawCheckEvent;
 use app\common\events\finance\AfterIncomeWithdrawPayEvent;
@@ -365,6 +366,14 @@ class WithdrawController extends BaseController
             '提现方式',
             '申请金额',
             '申请时间',
+
+            '打款至',
+
+            '打款微信号',
+
+            '支付宝姓名',
+            '支付宝账号',
+
             '开户行',
             '开户行省份',
             '开户行城市',
@@ -374,7 +383,6 @@ class WithdrawController extends BaseController
         ];
         foreach ($export_model->builder_model as $key => $item)
         {
-            $bankCardModel = ($item->pay_way == 'manual') ? $this->getMemberBankCard($item->member_id) : [];
             $export_data[$key + 1] = [
                 $item->withdraw_sn,
                 $item->hasOneMember->nickname,
@@ -383,23 +391,54 @@ class WithdrawController extends BaseController
                 $item->pay_way_name,
                 $item->amounts,
                 $item->created_at->toDateTimeString(),
-                ($item->pay_way == 'manual') ? $bankCardModel['bank_name'] : '',
-
-                ($item->pay_way == 'manual') ? $bankCardModel['bank_province'] : '',
-                ($item->pay_way == 'manual') ? $bankCardModel['bank_city'] : '',
-                ($item->pay_way == 'manual') ? $bankCardModel['bank_branch'] : '',
-
-                ($item->pay_way == 'manual') ? (string)$bankCardModel['bank_card'] : '',
-                ($item->pay_way == 'manual') ? $bankCardModel['member_name'] : ''
             ];
+            if ($item->pay_way == 'manual') {
+                switch ($item->manual_type) {
+                    case 2:
+                        $export_data[$key + 1][] = '微信';
+                        $export_data[$key + 1] = array_merge($export_data[$key + 1], $this->getMemberWeChat($item->member_id));
+                        break;
+                    case 3:
+                        $export_data[$key + 1][] = '支付宝';
+                        $export_data[$key + 1] = array_merge($export_data[$key + 1], $this->getMemberAlipay($item->member_id));
+                        break;
+                    default:
+                        $export_data[$key + 1][] = '银行卡';
+                        $export_data[$key + 1] = array_merge($export_data[$key + 1], $this->getMemberBankCard($item->member_id));
+                        break;
+                }
+            }
         }
         $export_model->export($file_name, $export_data, \Request::query('route'));
+    }
+
+    private function getMemberAlipay($member_id)
+    {
+        $yzMember = MemberShopInfo::select('alipayname','alipay')->where('member_id',$member_id)->first();
+        return $yzMember ? [ '', $yzMember->alipayname ?: '', $yzMember->alipay ?: '' ] : ['', ''];
+    }
+
+    private function getMemberWeChat($member_id)
+    {
+        $yzMember = MemberShopInfo::select('wechat')->where('member_id',$member_id)->first();
+        return $yzMember ? [ $yzMember->wechat ?: '' ] : [''];
     }
 
     private function getMemberBankCard($member_id)
     {
         $bankCard = MemberBankCard::where('member_id',$member_id)->first();
-        return $bankCard ? $bankCard->toArray() : [];
+        if ($bankCard) {
+            return [
+                '', '', '',
+                $bankCard->bank_name ?: '',
+                $bankCard->bank_province ?: '',
+                $bankCard->bank_city ?: '',
+                $bankCard->bank_branch ?: '',
+                $bankCard->bank_card ?: '',
+                $bankCard->member_name ?: ''
+            ];
+        }
+        return ['','','','','','','','',''];
     }
 
 

@@ -168,6 +168,7 @@ class MemberController extends BaseController
 
         $yz = array(
             'member_id' => $uid,
+            'wechat' => $parame->data['wechat'],
             'parent_id' => $parame->data['parent_id'],
             'uniacid' => \YunShop::app()->uniacid,
             'level_id' => $parame->data['level_id'] ?: 0,
