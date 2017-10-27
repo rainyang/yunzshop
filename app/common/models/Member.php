@@ -447,18 +447,8 @@ class Member extends BackendModel
                 return false;
             }
 
-            $parent = MemberShopInfo::getMemberShopInfo($curr_arr[$total-1]);
-
-            if (!$parent->relation) {
+            if (in_array($uid, $curr_arr)) {
                 return false;
-            }
-
-            $parent_arr = explode(',', $parent->relation);
-
-            foreach ($curr_arr as $val) {
-                if (in_array($val, $parent_arr)) {
-                    return false;
-                }
             }
         }
 
