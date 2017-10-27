@@ -37,6 +37,7 @@ class UpdateController extends BaseController
             $list = $update->getUpdates();
         }
 
+
         krsort($list);
         $version = config('version');
 
