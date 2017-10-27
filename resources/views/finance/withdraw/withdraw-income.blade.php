@@ -118,7 +118,29 @@
                 <input type='radio' name='withdraw[income][manual]' value='0' @if($set['manual'] == 0) checked @endif />
                 关闭
             </label>
-            <span class='help-block'>开启后，用户选择手动提现需要填写银行卡信息</span>
+            <span class='help-block'>手动提现包含 银行卡、微信号、支付宝等三种类型，会员需要完善对应资料才可以提现</span>
+        </div>
+    </div>
+</div>
+
+<div id='manual_type' @if(empty($set['manual']))style="display:none"@endif>
+    <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+        <div class="col-sm-9 col-xs-12">
+            <div class="switch">
+                <label class='radio-inline'>
+                    <input type='radio' name='withdraw[income][manual_type]' value='1' @if( empty($set['manual_type']) || $set['balance_special'] == 1) checked @endif />
+                    银行卡
+                </label>
+                <label class='radio-inline'>
+                    <input type='radio' name='withdraw[income][manual_type]' value='2' @if($set['manual_type'] == 2) checked @endif />
+                    微信
+                </label>
+                <label class='radio-inline'>
+                    <input type='radio' name='withdraw[income][manual_type]' value='3' @if($set['manual_type'] == 3) checked @endif />
+                    支付宝
+                </label>
+            </div>
         </div>
     </div>
 </div>
@@ -173,6 +195,14 @@
             }
             else {
                 $("#balance_special").hide();
+            }
+        });
+        $(":radio[name='withdraw[income][manual]']").click(function () {
+            if ($(this).val() == 1) {
+                $("#manual_type").show();
+            }
+            else {
+                $("#manual_type").hide();
             }
         });
     })

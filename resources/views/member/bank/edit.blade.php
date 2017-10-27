@@ -42,6 +42,30 @@
                         </div>
 
                         <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">开户行省份</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <input type="text" name="bank[bank_province]" class="form-control"
+                                       value="{{ $member->bankCard->bank_province or '' }}"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">开户城市</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <input type="text" name="bank[bank_city]" class="form-control"
+                                       value="{{ $member->bankCard->bank_city or '' }}"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">开户支行</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <input type="text" name="bank[bank_branch]" class="form-control"
+                                       value="{{ $member->bankCard->bank_branch or '' }}"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">银行卡号</label>
                             <div class="col-sm-9 col-xs-12">
                                 <input type="text" name="bank[bank_card]" class="form-control"
