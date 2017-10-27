@@ -19,8 +19,10 @@ use app\backend\modules\member\models\MemberUnique;
 use app\backend\modules\member\services\MemberServices;
 use app\common\components\BaseController;
 use app\common\events\member\MemberRelationEvent;
+use app\common\events\member\RegisterByAgent;
 use app\common\helpers\PaginationHelper;
 use app\common\services\ExportService;
+use Yunshop\Commission\models\Agents;
 
 
 class MemberController extends BaseController
@@ -403,6 +405,16 @@ class MemberController extends BaseController
                 $member->parent_id = $parent_id;
                 $member->save();
                 $record->save();
+
+                if (app('plugins')->isEnabled('commission')) {
+                   $agents = Agents::uniacid()->where('member_id', $uid)->first();
+
+                   $agents->parent_id = $parent_id;
+                   $agents->parent    = $member->relation;
+
+                   $agents->save();
+                }
+
                 return response(['status' => 1])->send();
             } else {
                 return response(['status' => 0])->send();
