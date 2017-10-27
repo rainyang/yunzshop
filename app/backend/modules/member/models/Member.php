@@ -175,11 +175,11 @@ class Member extends \app\common\models\Member
         }
 
         //余额区间搜索
-        if ($parame['min_credit2']) {
-            $result = $result->where($credit, '>', $parame['min_credit2']);
+        if ($parame['search']['min_credit2']) {
+            $result = $result->where($credit, '>', $parame['search']['min_credit2']);
         }
-        if ($parame['max_credit2']) {
-            $result = $result->where($credit, '<', $parame['max_credit2']);
+        if ($parame['search']['max_credit2']) {
+            $result = $result->where($credit, '<', $parame['search']['max_credit2']);
         }
 
         if ($parame['search']['followed'] != '') {
