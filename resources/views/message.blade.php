@@ -3,6 +3,13 @@
 @section('content')
     <div class="jumbotron clearfix alert alert-{{$status}}" style="top: 30px;width: 70%;margin: auto;">
         <div class="row">
+            {{--<div class="alert alert-danger">
+                <button type="button" aria-hidden="true" class="close">
+                    <i class="material-icons">close</i>
+                </button>
+                <span><b> Danger - </b> This is a regular notification made with ".alert-danger"</span>
+            </div>--}}
+
             <div class="col-xs-12 col-sm-3 col-lg-2">
                 <i class="fa fa-5x
                 @if($status=='success') fa-check-circle @endif
