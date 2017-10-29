@@ -188,7 +188,7 @@ z-index: 2;position: fixed;
     border-color: #13BD22;color: #FFFFFF;}
 .btn {border-radius: 2px;padding: 8px 12px;box-sizing: border-box;}
 .form-group .btn.btn-default{
-    height: 34px;
+    /*height: 34px;*/
 }
 .panel-body.perm-group .checkbox-inline{width: 120px;}
 .btn-primary:hover,.btn-primary:focus,.btn-primary:active,.btn-primary.active,.open>.dropdown-toggle.btn-primary{color:#fff;background-color:#0ab2dc !important;border-color:#0EAD1C !important;}
