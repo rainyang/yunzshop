@@ -410,6 +410,7 @@ class IncomeWithdrawController extends ApiController
             'servicetax_rate'   => $this->getWithdrawServiceTaxRate(),
             'actual_servicetax' => $this->getWithdrawServiceTax(),  //审核使用
             'pay_way'           => $this->pay_way,
+            'manual_type'       => Setting::get('withdraw.income')['manual_type'] ?: 1,
             'status'            => 0,
             'created_at'        => time(),
             'updated_at'        => time(),

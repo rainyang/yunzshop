@@ -13,13 +13,16 @@ use app\backend\modules\member\models\McMappingFans;
 use app\backend\modules\member\models\Member;
 use app\backend\modules\member\models\MemberGroup;
 use app\backend\modules\member\models\MemberLevel;
+use app\backend\modules\member\models\MemberRecord;
 use app\backend\modules\member\models\MemberShopInfo;
 use app\backend\modules\member\models\MemberUnique;
 use app\backend\modules\member\services\MemberServices;
 use app\common\components\BaseController;
 use app\common\events\member\MemberRelationEvent;
+use app\common\events\member\RegisterByAgent;
 use app\common\helpers\PaginationHelper;
 use app\common\services\ExportService;
+use Yunshop\Commission\models\Agents;
 
 
 class MemberController extends BaseController
@@ -168,6 +171,7 @@ class MemberController extends BaseController
 
         $yz = array(
             'member_id' => $uid,
+            'wechat' => $parame->data['wechat'],
             'parent_id' => $parame->data['parent_id'],
             'uniacid' => \YunShop::app()->uniacid,
             'level_id' => $parame->data['level_id'] ?: 0,
@@ -362,26 +366,68 @@ class MemberController extends BaseController
         $export_model->export($file_name, $export_data, \Request::query('route'));
     }
 
-    public function change_relation()
+    public function search_member()
     {
-        $members    = '';
+        $members    = [];
         $parent_id = \YunShop::request()->parent;
-        $uid       = \YunShop::request()->member;
 
-        if (is_numeric($parent_id) && $parent_id > 0) {
-            if (Member::setMemberRelation($uid, $parent_id)) {
-                $member = Member::getMemberById($parent_id);
+        if (is_numeric($parent_id)) {
+            $member = Member::getMemberById($parent_id);
 
-                if (!is_null($member)) {
-                    $members[] = $member->toArray();
-                }
-            } else {
-                return response('')->send();
+            if (!is_null($member)) {
+                $members[] = $member->toArray();
+            }
+
+            if (0 == $parent_id) {
+                $members = 0;
             }
         }
 
         return view('member.query', [
             'members' => $members
+        ])->render();
+    }
+
+    public function change_relation()
+    {
+        $parent_id = \YunShop::request()->parent;
+        $uid       = \YunShop::request()->member;
+
+        if (is_numeric($parent_id)) {
+            if (Member::setMemberRelation($uid, $parent_id)) {
+                $member = MemberShopInfo::getMemberShopInfo($uid);
+
+                $record = new MemberRecord();
+                $record->uniacid   = \YunShop::app()->uniacid;
+                $record->uid       = $uid;
+                $record->parent_id = $member->parent_id;
+
+                $member->parent_id = $parent_id;
+                $member->save();
+                $record->save();
+
+                if (app('plugins')->isEnabled('commission')) {
+                   $agents = Agents::uniacid()->where('member_id', $uid)->first();
+
+                   $agents->parent_id = $parent_id;
+                   $agents->parent    = $member->relation;
+
+                   $agents->save();
+                }
+
+                return response(['status' => 1])->send();
+            } else {
+                return response(['status' => 0])->send();
+            }
+        }
+    }
+
+    public function member_record()
+    {
+        $records = MemberRecord::getRecord(\YunShop::request()->member);
+
+        return view('member.record', [
+            'records' => $records
         ])->render();
     }
 }

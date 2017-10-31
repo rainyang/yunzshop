@@ -29,7 +29,7 @@ class CategoryController extends BaseController
         $parent_id = \YunShop::request()->parent_id ? \YunShop::request()->parent_id : '0';
         $parent = Category::getCategory($parent_id);
 
-        $list = Category::getCategorys($parent_id)->paginate($pageSize)->toArray();
+        $list = Category::getCategorys($parent_id)->pluginId()->paginate($pageSize)->toArray();
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
         return view('goods.category.list', [
             'list' => $list['data'],

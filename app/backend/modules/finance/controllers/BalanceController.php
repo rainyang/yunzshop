@@ -186,7 +186,7 @@ class BalanceController extends BaseController
         $search = \YunShop::request()->search;
         $memberList = Member::getMembers()->paginate($pageSize);
         if ($search) {
-            $memberList = Member::searchMembers($search)->paginate($pageSize);
+            $memberList = Member::searchMembers(['search' => $search])->paginate($pageSize);
         }
         $pager = PaginationHelper::show($memberList->total(), $memberList->currentPage(), $memberList->perPage());
 

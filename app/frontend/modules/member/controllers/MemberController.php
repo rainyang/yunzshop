@@ -395,6 +395,7 @@ class MemberController extends ApiController
             'city' => isset($data['city']) ? $data['city'] : 0,
             'area' => isset($data['area']) ? $data['area'] : 0,
             'address' => isset($data['address']) ? $data['address'] : '',
+            'wechat' => isset($data['wx']) ? $data['wx'] : '',
         ];
 
         if (\YunShop::app()->getMemberId() && \YunShop::app()->getMemberId() > 0) {
