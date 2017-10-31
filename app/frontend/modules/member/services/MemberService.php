@@ -21,6 +21,7 @@ use app\frontend\modules\member\models\MemberUniqueModel;
 use app\frontend\modules\member\models\smsSendLimitModel;
 use app\frontend\modules\member\models\SubMemberModel;
 use Illuminate\Support\Facades\Cookie;
+use Ixudra\Curl\Facades\Curl;
 
 class MemberService
 {
@@ -270,17 +271,26 @@ class MemberService
                 $content = "提醒您，您的核销码为：" . $code . "，订购的票型是：" . $title . "，数量：" . $total . "张，购票人：" . $name . "，电话：" . $mobile . "，门店电话：" . $tel . "。请妥善保管，验票使用！";
 
             }
-
         }
 
         if ($state == '86') {
             $url = 'http://106.ihuyi.cn/webservice/sms.php?method=Submit';
+
+            $smsrs = file_get_contents($url .'&account=' . $account . '&password=' . $pwd . '&mobile=' . $mobile . '&content=' . rawurlencode($content));
         } else {
             $url = 'http://api.isms.ihuyi.com/webservice/isms.php?method=Submit';
             $mobile = $state . ' ' . $mobile;
+
+            $data = array(
+                'account' => $account,
+                'password' => $pwd,
+                'mobile' => $mobile,
+                'content' => $content,
+            );
+            $query = http_build_query($data);
+            $smsrs = file_get_contents($url.'&'.$query);
         }
-\Log::debug($url .'&account=' . $account . '&password=' . $pwd . '&mobile=' . $mobile . '&content=' . urldecode($content));
-        $smsrs = file_get_contents($url .'&account=' . $account . '&password=' . $pwd . '&mobile=' . $mobile . '&content=' . urldecode($content));
+
         return xml_to_array($smsrs);
     }
 
