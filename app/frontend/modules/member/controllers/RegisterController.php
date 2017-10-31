@@ -155,7 +155,7 @@ class RegisterController extends ApiController
         $mobile = \YunShop::request()->mobile;
         $reset_pwd = \YunShop::request()->reset;
 
-        $state = \YunShop::request()->state;
+        $state = \YunShop::request()->state?:'86';
 
         if (empty($mobile)) {
             return $this->errorJson('请填入手机号');
@@ -299,7 +299,14 @@ class RegisterController extends ApiController
 
         //互亿无线
         if ($sms['type'] == 1) {
-            $issendsms = MemberService::send_smsV2(trim($sms['account']), trim($sms['password']), $mobile, $code, $state);
+            if ($state != '86') {
+                $account = trim($sms['account2']);
+                $password = trim($sms['password2']);
+            } else {
+                $account = trim($sms['account']);
+                $password = trim($sms['password']);
+            }
+            $issendsms = MemberService::send_smsV2($account, $password, $mobile, $code, $state);
 
             if ($issendsms['SubmitResult']['code'] == 2) {
                 MemberService::udpateSmsSendTotal(\YunShop::app()->uniacid, $mobile);

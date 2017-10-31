@@ -258,7 +258,8 @@ class MemberService
     public static function send_smsV2($account, $pwd, $mobile, $code, $state='86', $type = 'check', $name, $title, $total, $tel)
     {
         if ($type == 'check') {
-            $content = "您的验证码是：" . $code . "。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
+            //$content = "您的验证码是：" . $code . "。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
+            $content = "您的验证码是：" . $code . "。请不要把验证码泄露给其他人。";
 
         } elseif ($type == 'verify') {
             $verify_set = $sms = \Setting::get('shop.sms');
@@ -278,7 +279,7 @@ class MemberService
             $url = 'http://api.isms.ihuyi.com/webservice/isms.php?method=Submit';
             $mobile = $state . ' ' . $mobile;
         }
-
+\Log::debug($url .'&account=' . $account . '&password=' . $pwd . '&mobile=' . $mobile . '&content=' . urldecode($content));
         $smsrs = file_get_contents($url .'&account=' . $account . '&password=' . $pwd . '&mobile=' . $mobile . '&content=' . urldecode($content));
         return xml_to_array($smsrs);
     }
