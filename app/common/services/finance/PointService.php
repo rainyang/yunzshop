@@ -69,6 +69,8 @@ class PointService
     const POINT_MODE_COUPON_DEDUCTION_AWARD = 16;
     const POINT_MODE_COUPON_DEDUCTION_AWARD_ATTACHED = '优惠劵抵扣奖励';
 
+    const POINT_MODE_TASK_REWARD = 17;
+    const POINT_MODE_TASK_REWARD_ATTACHED = '任务奖励';
 
     const POINT = 0;
 
@@ -214,6 +216,9 @@ class PointService
                 break;
             case (16):
                 $mode_attribute = self::POINT_MODE_COUPON_DEDUCTION_AWARD_ATTACHED;
+                break;
+            case (17):
+                $mode_attribute = self::POINT_MODE_TASK_REWARD_ATTACHED;
         }
         return $mode_attribute;
     }
