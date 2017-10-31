@@ -57,5 +57,7 @@
     $(function () {
         check_yun_shop_upgrade();
     });
+
+
   </script>
   @endif

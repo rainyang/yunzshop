@@ -83,3 +83,4 @@ function trans(key, parameters = {}) {
 
   return temp;
 }
+

@@ -82,6 +82,7 @@ class YunShop
             Config::set('menu', $menuList);
 
             $item = Menu::getCurrentItemByRoute($controller->route, $menuList);
+            //dd($controller->route);
             self::$currentItems = array_merge(Menu::getCurrentMenuParents($item, $menuList), [$item]);
 //dd(self::$currentItems);
             Config::set('currentMenuItem', $item);

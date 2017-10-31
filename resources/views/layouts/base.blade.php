@@ -79,6 +79,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- jQuery 2.2.0 -->
     <script src="//cdn.bootcss.com/jquery/2.2.3/jquery.min.js"></script>
     <script type="text/javascript" src="{{static_url('js/general.js')}}"></script>
+    <script type="text/javascript" src="{{static_url('js/clipboard.min.js')}}"></script>
 
 {{--    <script src="{{static_url('assets/js/bootstrap.min.js')}}" type="text/javascript"></script>--}}
     <script src="{{static_url('assets/js/material.min.js')}}" type="text/javascript"></script>
@@ -201,5 +202,24 @@ scratch. This page gets rid of all links and provides the needed markup only.
 {!! yz_footer('admin') !!}
 </div>
 <!-- ./wrapper -->
+<script>
+    if (Clipboard.isSupported()) {
+        var clipboard =  new Clipboard('.js-clip');
+        clipboard.on('success', function(e) {
+            //alert('复制成功');
+            swal({
+                title: "复制成功",
+                buttonsStyling: false,
+                confirmButtonClass: "btn btn-success"
+            });
+            //swal('Any fool can use a computer')
+            e.clearSelection();
+        });
+    } else {
+        $('.js-clip').each(function () {
+            util.clip(this, $(this).attr('data-url'));
+        });
+    }
+</script>
 </body>
 </html>

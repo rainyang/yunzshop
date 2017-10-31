@@ -258,7 +258,7 @@
                                                            return false;" class="" title="删除">删除</a>
 
                                                 <a href="javascript:;"
-                                                   data-url="{{yzAppFullUrl('goods/'.$item['id'])}}"
+                                                   data-clipboard-text="{{yzAppFullUrl('goods/'.$item['id'])}}" data-url="{{yzAppFullUrl('goods/'.$item['id'])}}"
                                                    title="复制连接" class="js-clip">复制链接</a>
                                             </div>
                                             <div>
@@ -326,9 +326,7 @@
     </div>
 
     <script type="text/javascript">
-        $('.js-clip').each(function () {
-            util.clip(this, $(this).attr('data-url'));
-        });
+
         //鼠标划过显示商品链接二维码
         $('.umphp').hover(function () {
                     var url = $(this).attr('data-url');

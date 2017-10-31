@@ -434,7 +434,7 @@ class WithdrawController extends BaseController
                 $bankCard->bank_province ?: '',
                 $bankCard->bank_city ?: '',
                 $bankCard->bank_branch ?: '',
-                $bankCard->bank_card ?: '',
+                $bankCard->bank_card ? $bankCard->bank_card . ",": '',
                 $bankCard->member_name ?: ''
             ];
         }
