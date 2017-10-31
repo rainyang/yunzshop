@@ -3,12 +3,14 @@
 namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
+use app\common\models\Order;
 use app\common\models\OrderPay;
 use app\common\services\password\PasswordService;
 use app\frontend\modules\coin\InvalidVirtualCoin;
 use app\frontend\modules\deduction\models\Deduction;
 use app\frontend\modules\finance\models\PointCoin;
 use Yunshop\Love\Common\Models\LoveCoin;
+use Yunshop\StoreCashier\common\models\Store;
 
 /**
  * Created by PhpStorm.
@@ -22,18 +24,16 @@ class TestController extends ApiController
 
     public function index()
     {
-        dd(OrderPay::first()->order_ids);
+        $order = Order::first();
+        $paymentTypes = app('PaymentManager')->make('OrderPaymentManager')->getOrderPaymentTypes($order);
+        dd($paymentTypes);
+        exit;
     }
-
-    public function index1()
-    {
-        // 最简单的单例
-        $result = app()->share(function ($var) {
-            return $var + 1;
-        });
-        dd($result(100));
-
-        dd($result(3));
+    public function store(){
+        $order = Order::where('plugin_id',Store::PLUGIN_ID)->first();
+        $paymentTypes = app('PaymentManager')->make('OrderPaymentManager')->getOrderPaymentTypes($order);
+        dd($paymentTypes);
+        exit;
     }
 
 }

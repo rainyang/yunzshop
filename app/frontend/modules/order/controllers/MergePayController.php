@@ -111,10 +111,13 @@ class MergePayController extends ApiController
      */
     private function getPayTypeButtons()
     {
-        $event = new GetOrderPaymentTypeEvent($this->orders);
-        event($event);
-        $result = $event->getData();
-        return $result ? $result : [];
+        $paymentTypes = app('PaymentManager')->make('OrderPaymentManger')->getOrderPaymentTypes();
+        dd($paymentTypes);exit;
+//        // todo 通过支付方式管理者获取
+//        $event = new GetOrderPaymentTypeEvent($this->orders);
+//        event($event);
+//        $result = $event->getData();
+//        return $result ? $result : [];
     }
 
     /**

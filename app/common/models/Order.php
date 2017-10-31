@@ -23,7 +23,7 @@ use app\common\models\order\Pay;
 use app\common\models\order\Plugin;
 use app\common\models\order\Remark;
 use app\common\models\refund\RefundApply;
-use app\frontend\modules\order\services\status\StatusServiceFactory;
+use app\frontend\modules\order\services\status\StatusFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use app\backend\modules\order\observers\OrderObserver;
@@ -40,6 +40,7 @@ use app\backend\modules\order\observers\OrderObserver;
  * @property int pay_type_name
  * @property int pay_type_id
  * @property int order_pay_id
+ * @property int dispatch_type_id
  */
 class Order extends BaseModel
 {
@@ -261,7 +262,7 @@ class Order extends BaseModel
     public function getStatusService()
     {
         if (!isset($this->StatusService)) {
-            $this->StatusService = (new StatusServiceFactory($this))->create();
+            $this->StatusService = (new StatusFactory($this))->create();
         }
         return $this->StatusService;
     }

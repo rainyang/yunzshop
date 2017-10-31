@@ -12,7 +12,7 @@ namespace app\frontend\modules\order\services\status;
 use app\common\models\Order;
 use Yunshop\StoreCashier\common\models\Store;
 
-class StatusServiceFactory
+class StatusFactory
 {
     /**
      * @var Order

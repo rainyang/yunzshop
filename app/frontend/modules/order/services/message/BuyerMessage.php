@@ -15,7 +15,12 @@ class BuyerMessage extends Message
 
     protected function sendToBuyer()
     {
-        return $this->sendToMember($this->order->uid);
+        try {
+
+            return $this->sendToMember($this->order->uid);
+        } catch (\Exception $exception) {
+
+        }
     }
 
     protected function sendToParentBuyer()
@@ -48,7 +53,7 @@ class BuyerMessage extends Message
             ),
             'keyword1' => array(
                 //todo
-                'value' => (string)array_get(\Setting::get('shop'),'name','自营'),
+                'value' => (string)array_get(\Setting::get('shop'), 'name', '自营'),
                 "color" => "#4a5077"
             ),
             'keyword2' => array(
@@ -100,7 +105,7 @@ class BuyerMessage extends Message
                 "color" => "#4a5077"
             ),
             'keyword4' => array(
-                'value' => array_get(\Setting::get('shop'),'name','自营'),
+                'value' => array_get(\Setting::get('shop'), 'name', '自营'),
                 "color" => "#4a5077"
             ),
             'keyword5' => array(
