@@ -20,9 +20,6 @@ use Illuminate\Container\Container;
  */
 class OrderPaymentSettingManager extends Container
 {
-    public function __construct()
-    {
-    }
 
     /**
      * 获取订单支付方式的设置集合
@@ -32,11 +29,10 @@ class OrderPaymentSettingManager extends Container
     public function getOrderPaymentSettingCollection(Order $order)
     {
         $settings = collect($this->getBindings())->map(function ($value, $key) use ($order) {
-            // 注册过的
             return $this->make($key, $order);
         })->filter(function (OrderPaymentSettingInterface $setting) {
             // 可用的
-            return $setting->isEnable();
+            return $setting->exist();
         });
         return new OrderPaymentSettingCollection($settings);
     }

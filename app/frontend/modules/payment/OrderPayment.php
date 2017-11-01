@@ -9,29 +9,29 @@
 namespace app\frontend\modules\payment;
 
 use app\common\models\Order;
+use app\frontend\modules\payment\managers\OrderPaymentSettingManager;
 
 /**
  * 支付设置
  * Class PaymentSetting
  * @package app\frontend\modules\payment
  */
-abstract class OrderPayment
+class OrderPayment
 {
     /**
      * @var OrderPaymentSettingCollection
      */
     protected $orderPaymentSettings;
+    /**
+     * @var string
+     */
+    protected $code;
 
-    function __construct(Order $order)
+    function __construct($code,Order $order,OrderPaymentSettingCollection $orderPaymentSettings)
     {
         $this->order = $order;
-
-        /**
-         * @var OrderPaymentSettingManager $settingManager
-         */
-        $settingManager = app('PaymentManager')->make('OrderPaymentSettingManagers')->make($this->getCode());
-
-        $this->orderPaymentSettings = $settingManager->getOrderPaymentSettingCollection($order);
+        $this->code = $code;
+        $this->orderPaymentSettings = $orderPaymentSettings;
 
     }
 
@@ -39,10 +39,10 @@ abstract class OrderPayment
      * 开启
      * @return bool
      */
-    public function isEnable()
+    public function canUse()
     {
 
-        return $this->orderPaymentSettings->isEnable();
+        return $this->orderPaymentSettings->canUse();
     }
 
     /**
@@ -58,7 +58,8 @@ abstract class OrderPayment
      * 满足使用条件
      * @return mixed
      */
-    public function canPay(){
+    public function canPay()
+    {
         return $this->orderPaymentSettings->canPay();
     }
 
@@ -68,8 +69,7 @@ abstract class OrderPayment
      */
     public function getCode()
     {
-        // 类名小写作为默认值
-        return lcfirst(end(explode('\\',static::class)));
+        return $this->code;
     }
     // todo 需要密码
 }

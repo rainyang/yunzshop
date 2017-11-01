@@ -15,16 +15,17 @@ namespace app\frontend\modules\payment;
  */
 interface OrderPaymentSettingInterface
 {
-    // 开启
     /**
+     * 开启
      * @return bool
      */
-    public function isEnable();
+    public function exist();
 
     /**
+     * 满足条件
      * @return bool
      */
-    public function canPay();
+    public function canUse();
 
     /**
      * 获取权重

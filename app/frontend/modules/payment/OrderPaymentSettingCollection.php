@@ -21,7 +21,7 @@ class OrderPaymentSettingCollection extends Collection
      * 是否开启
      * @return bool
      */
-    public function isEnable()
+    public function canUse()
     {
         $settings = $this->sortByDesc(function (OrderPaymentSettingInterface $setting) {
             return $setting->getWeight();
@@ -31,7 +31,7 @@ class OrderPaymentSettingCollection extends Collection
          * 以影响范围排序,从大到小
          */
         $canNotPay = $settings->contains(function (OrderPaymentSettingInterface $orderPaymentSetting) {
-            return !$orderPaymentSetting->canPay();
+            return !$orderPaymentSetting->canUse();
         });
         return !$canNotPay;
     }
