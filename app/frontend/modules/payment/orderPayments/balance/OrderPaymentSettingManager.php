@@ -20,6 +20,7 @@ class OrderPaymentSettingManager extends \app\frontend\modules\payment\OrderPaym
 {
     public function __construct()
     {
+        echo 1;exit;
         parent::__construct();
         $this->bind('shop', function (OrderPaymentSettingManager $manager, Order $order) {
             return new ShopOrderPaymentSetting($order);

@@ -6,9 +6,11 @@
  * Time: 下午5:20
  */
 
-namespace app\frontend\modules\payment;
+namespace app\frontend\modules\payment\managers;
 
 use app\common\models\Order;
+use app\frontend\modules\payment\OrderPaymentSettingCollection;
+use app\frontend\modules\payment\OrderPaymentSettingInterface;
 use Illuminate\Container\Container;
 
 /**
@@ -16,7 +18,7 @@ use Illuminate\Container\Container;
  * Class OrderPaymentSettingManager
  * @package app\frontend\modules\payment\managers
  */
-abstract class OrderPaymentSettingManager extends Container
+class OrderPaymentSettingManager extends Container
 {
     public function __construct()
     {
