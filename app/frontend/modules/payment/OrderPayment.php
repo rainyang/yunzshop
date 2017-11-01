@@ -9,7 +9,6 @@
 namespace app\frontend\modules\payment;
 
 use app\common\models\Order;
-use app\frontend\modules\payment\orderPayments\OrderPaymentSettingManager;
 
 /**
  * 支付设置
@@ -25,10 +24,8 @@ abstract class OrderPayment
 
     function __construct(Order $order)
     {
-
         $this->order = $order;
-        // todo
-        //dd($this->getCode());
+
         /**
          * @var OrderPaymentSettingManager $settingManager
          */

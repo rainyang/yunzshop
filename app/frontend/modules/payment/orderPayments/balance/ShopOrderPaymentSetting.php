@@ -12,6 +12,6 @@ class ShopOrderPaymentSetting extends \app\frontend\modules\payment\settings\Sho
 {
     public function canPay()
     {
-        return \Setting::get('shop.pay.credit');
+        return (bool)\Setting::get('shop.pay.credit');
     }
 }

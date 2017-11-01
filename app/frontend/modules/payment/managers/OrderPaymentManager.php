@@ -46,6 +46,7 @@ class OrderPaymentManager extends Container
      */
     public function getOrderPaymentTypes($order)
     {
+
         /**
          * 商城中存在的支付方式集合
          * @var \Illuminate\Database\Eloquent\Collection $paymentTypes
@@ -57,16 +58,10 @@ class OrderPaymentManager extends Container
 
         // 实例化订单所有支付方式
         $orderPaymentTypes = $paymentTypes->map(function(PayType $payType) use($order){
-//            // 支付方式对应的支付设置
-//            /**
-//             * @var OrderPaymentSettingManager $orderPaymentSettingManager
-//             */
-//            $orderPaymentSettingManager = $this->paymentManager->make('OrderPaymentSettingManager');
-//            $settings = $orderPaymentSettingManager->getOrderPaymentSettingCollection($order,$payType);
 
             // 对应的类在容器中注册过
             if($this->bound($payType->code)){
-                return $this->make($payType->code);
+                return $this->make($payType->code,$order);
             }
             return null;
         });

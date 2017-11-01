@@ -21,7 +21,7 @@ class OrderPaymentSettingManager extends \app\frontend\modules\payment\OrderPaym
     public function __construct()
     {
         parent::__construct();
-        $this->singleton('shop', function (OrderPaymentSettingManager $manager, Order $order) {
+        $this->bind('shop', function (OrderPaymentSettingManager $manager, Order $order) {
             return new ShopOrderPaymentSetting($order);
         });
     }

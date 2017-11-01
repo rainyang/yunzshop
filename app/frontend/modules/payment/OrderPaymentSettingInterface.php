@@ -20,7 +20,12 @@ interface OrderPaymentSettingInterface
      * @return bool
      */
     public function isEnable();
+
+    /**
+     * @return bool
+     */
     public function canPay();
+
     /**
      * 获取权重
      * @return int
