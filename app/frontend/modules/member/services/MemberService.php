@@ -21,6 +21,7 @@ use app\frontend\modules\member\models\MemberUniqueModel;
 use app\frontend\modules\member\models\smsSendLimitModel;
 use app\frontend\modules\member\models\SubMemberModel;
 use Illuminate\Support\Facades\Cookie;
+use Ixudra\Curl\Facades\Curl;
 
 class MemberService
 {
@@ -240,7 +241,7 @@ class MemberService
             $content = "您的验证码是：" . $code . "。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
 
         } elseif ($type == 'verify') {
-            $verify_set = $sms = Setting::get('shop.sms');
+            $verify_set = $sms = \Setting::get('shop.sms');
             $allset = iunserializer($verify_set['plugins']);
             if (is_array($allset) && !empty($allset['verify']['code_template'])) {
                 $content = sprintf($allset['verify']['code_template'], $code, $title, $total, $name, $mobile, $tel);
@@ -252,6 +253,44 @@ class MemberService
         }
 
         $smsrs = file_get_contents('http://106.ihuyi.cn/webservice/sms.php?method=Submit&account=' . $account . '&password=' . $pwd . '&mobile=' . $mobile . '&content=' . urldecode($content));
+        return xml_to_array($smsrs);
+    }
+
+    public static function send_smsV2($account, $pwd, $mobile, $code, $state='86', $type = 'check', $name, $title, $total, $tel)
+    {
+        if ($type == 'check') {
+            //$content = "您的验证码是：" . $code . "。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
+            $content = "您的验证码是：" . $code . "。请不要把验证码泄露给其他人。";
+
+        } elseif ($type == 'verify') {
+            $verify_set = $sms = \Setting::get('shop.sms');
+            $allset = iunserializer($verify_set['plugins']);
+            if (is_array($allset) && !empty($allset['verify']['code_template'])) {
+                $content = sprintf($allset['verify']['code_template'], $code, $title, $total, $name, $mobile, $tel);
+            } else {
+                $content = "提醒您，您的核销码为：" . $code . "，订购的票型是：" . $title . "，数量：" . $total . "张，购票人：" . $name . "，电话：" . $mobile . "，门店电话：" . $tel . "。请妥善保管，验票使用！";
+
+            }
+        }
+
+        if ($state == '86') {
+            $url = 'http://106.ihuyi.cn/webservice/sms.php?method=Submit';
+
+            $smsrs = file_get_contents($url .'&account=' . $account . '&password=' . $pwd . '&mobile=' . $mobile . '&content=' . rawurlencode($content));
+        } else {
+            $url = 'http://api.isms.ihuyi.com/webservice/isms.php?method=Submit';
+            $mobile = $state . ' ' . $mobile;
+
+            $data = array(
+                'account' => $account,
+                'password' => $pwd,
+                'mobile' => $mobile,
+                'content' => $content,
+            );
+            $query = http_build_query($data);
+            $smsrs = file_get_contents($url.'&'.$query);
+        }
+
         return xml_to_array($smsrs);
     }
 
