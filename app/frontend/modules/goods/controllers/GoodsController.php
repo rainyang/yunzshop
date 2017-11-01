@@ -20,6 +20,9 @@ use Illuminate\Support\Facades\DB;
  */
 class GoodsController extends ApiController
 {
+    protected $publicAction = ['getRecommendGoods'];
+    protected $ignoreAction = ['getRecommendGoods'];
+
     public function getGoods()
     {
         $id = intval(\YunShop::request()->id);
