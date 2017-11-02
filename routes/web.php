@@ -53,7 +53,8 @@ Route::any('/', function () {
     if (strpos(request()->getRequestUri(), '/addons/') !== false &&
         strpos(request()->getRequestUri(), '/api.php') !== false
     ) {
-        return redirect(request()->getSchemeAndHttpHost().'/addons/yun_shop/?menu#/home?i='.request()->get('i'));
+        YunShop::parseRoute(request()->input('route'));
+        return;
     }
     //shop.php
     if (strpos(request()->getRequestUri(), '/addons/') !== false &&
