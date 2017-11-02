@@ -4,7 +4,7 @@
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">积分抵扣</label>
     <div class="col-xs-12 col-sm-9 col-md-10">
-        <div class='input-group'>
+        <div class='input-group col-md-3'>
             <span class="input-group-addon">最多抵扣</span>
             <input type="text" name="widgets[sale][max_point_deduct]" value="{{ $item->max_point_deduct }}"
                    class="form-control"/>
@@ -32,7 +32,7 @@
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">单品满件包邮</label>
     <div class="col-xs-12 col-sm-9 col-md-10">
-        <div class='input-group'>
+        <div class='input-group col-md-3'>
             <span class="input-group-addon">满</span>
             <input type="text" name="widgets[sale][ed_num]" value="{{ $item->ed_num }}" class="form-control"/>
             <span class="input-group-addon">件</span>
@@ -45,7 +45,7 @@
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">单品满额包邮</label>
     <div class="col-xs-12 col-sm-9 col-md-10">
-        <div class='input-group'>
+        <div class='input-group col-md-3'>
             <span class="input-group-addon">满</span>
             <input type="text" name="widgets[sale][ed_money]" value="{{ $item->ed_money }}" class="form-control"/>
             <span class="input-group-addon">元</span>
@@ -59,10 +59,13 @@
     <div class="col-sm-9 col-xs-12">
         <div class="table-responsive ">
             <div class="return-queue">
-                <div class="input-group">
+                <div class="input-group col-md-2">
                     <div class="input-group-addon">满</div>
                     <input type="text" name="widgets[sale][ed_full]" class="form-control" value="{{ $item->ed_full }}"/>
-                    <div class="input-group-addon">元 减</div>
+                    <div class="input-group-addon">元</div>
+                </div>
+                <div class="input-group col-md-2">
+                    <div class="input-group-addon">减</div>
                     <input type="text" name="widgets[sale][ed_reduction]" class="form-control"
                            value="{{ $item->ed_reduction }}"/>
                     <div class="input-group-addon">元</div>
@@ -86,7 +89,7 @@
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">赠送积分</label>
     <div class="col-xs-12 col-sm-9 col-md-10">
-        <div class='input-group'>
+        <div class='input-group col-md-3'>
             <input type="text" name="widgets[sale][point]" value="{{ $item->point }}" class="form-control"/>
             <span class="input-group-addon">积分</span>
         </div>

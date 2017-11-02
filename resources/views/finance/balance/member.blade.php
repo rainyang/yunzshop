@@ -4,11 +4,11 @@
 <link href="{{static_url('yunshop/balance/balance.css')}}" media="all" rel="stylesheet" type="text/css"/>
         <div id="member-blade" class="rightlist">
             <!-- 新增加右侧顶部三级菜单 -->
-            <div class="right-titpos">
+            {{--<div class="right-titpos">
                 <ul class="add-snav">
                     <li class="active"><a href="#">余额管理</a></li>
                 </ul>
-            </div>
+            </div>--}}
             <!-- 新增加右侧顶部三级菜单结束 -->
             <div class="panel panel-info">
                 <div class="panel-heading">筛选</div>

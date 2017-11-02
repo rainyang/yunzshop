@@ -64,7 +64,7 @@ class YunShop
         if (self::isWeb()) {
             //菜单生成
             $menu_array = Config::get('app.menu');
-            if (!\Cache::has('db_menu')) {
+            if (!\Cache::has('db_menu') || 1) {
                 $dbMenu = Config::get($menu_array['main_menu']);//$dbMenu = Menu::getMenuList();
                 \Cache::put('db_menu', $dbMenu, 3600);
             } else {
@@ -82,7 +82,11 @@ class YunShop
             Config::set('menu', $menuList);
 
             $item = Menu::getCurrentItemByRoute($controller->route, $menuList);
+            //dd($controller->route);
             self::$currentItems = array_merge(Menu::getCurrentMenuParents($item, $menuList), [$item]);
+//dd(self::$currentItems);
+            Config::set('currentMenuItem', $item);
+            //dd($item);exit;
             //检测权限
             if (!PermissionService::can($item)) {
                 //throw new NotFoundException('Sorry,无权限');
@@ -108,6 +112,15 @@ class YunShop
         exit($content);
     }
 
+    public static function isShowSecondMenu()
+    {
+        $menu_list = (array)Config::get('menu');
+
+        if (count(self::$currentItems) >= 1) {
+            return isset($menu_list[self::$currentItems[0]]['left_second_show']) ? $menu_list[self::$currentItems[0]]['left_second_show'] : false;
+        }
+        return false;
+    }
 
     /**
      * Configures an object with the initial property values.

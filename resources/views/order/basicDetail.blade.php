@@ -191,7 +191,7 @@
                 <tr>
                     <td>{{$order_goods['goods_id']}}</td>
                     <td>
-                        <a href="{{yzWebUrl('goods.goods.edit', array('id' => $order_goods['goods_id']))}}">{{$order_goods['title']}}</a>
+                        <a href="{{yzWebUrl($edit_goods, array('id' => $order_goods['goods_id']))}}">{{$order_goods['title']}}</a>
                     </td>
                     <td>{{$order_goods['goods_option_title']}}</td>
                     <td>{{$order_goods['goods_price']}}
@@ -203,7 +203,7 @@
                         <br/>{{$order['price']}}
                     </td>
                     <td>
-                        <a href="{!! yzWebUrl('goods.goods.edit', array('id' => $order_goods['goods']['id'])) !!}"
+                        <a href="{!! yzWebUrl($edit_goods, array('id' => $order_goods['goods']['id'])) !!}"
                            class="btn btn-default btn-sm" title="编辑"><i
                                     class="fa fa-edit"></i></a>&nbsp;&nbsp;
                     </td>
@@ -212,13 +212,13 @@
                     <td colspan="8">
                         @if ($order_goods['goods']['status'] == 1)
                             <label data="1"
-                                   class="label label-default text-default label-info text-pinfo">上架</label>
+                                   class="label label-default  label-info">上架</label>
                         @else
                             <label data="1"
-                                   class="label label-default text-default label-info text-pinfo">下架</label>
+                                   class="label label-default label-info ">下架</label>
                         @endif
                         <label data="1"
-                               class="label label-default text-default label-info text-pinfo">
+                               class="label label-default label-info">
                             @if ($order_goods['goods']['type'] == 1)
                                 实体商品
                             @else

@@ -9,6 +9,7 @@
 		<li class="active"><a href="#">引导分享设置</a></li>
 	</ul>
 </div>
+@include('layouts.tabs')
 <!-- 新增加右侧顶部三级菜单结束 -->
     <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" >
         <div class="panel panel-default">

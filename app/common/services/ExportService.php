@@ -18,7 +18,7 @@ class ExportService
     private $page_count;
     public $builder_model;
     private $export_page;
-    private $page_size = 500;
+    private $page_size = 50000;
 
     public function __construct($builder, $export_page = 1)
     {
@@ -42,12 +42,12 @@ class ExportService
 
     private function smallExcel()
     {
-        $this->exportBuilder()->export('xls');
+        $this->exportBuilder()->export('csv');
     }
 
     private function bigExcel()
     {
-        $this->exportBuilder()->store('xls');
+        $this->exportBuilder()->store('csv');
     }
 
     private function exportBuilder()

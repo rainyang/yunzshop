@@ -403,6 +403,8 @@ class Member extends BackendModel
      * 会员3级关系链
      *
      * @param $uid
+     * @param string $mid
+     * @return bool
      */
     public static function setMemberRelation($uid, $mid='')
     {
@@ -433,14 +435,21 @@ class Member extends BackendModel
                 }
             }
         } else {
-            $relation_str = '0,';
+            $relation_str = '0';
         }
 
-        $curr_arr = explode(',', $relation_str);
-        $res_arr  = array_unique($curr_arr);
+        if ($relation_str != '0') {
+            $curr_arr = explode(',', $relation_str);
+            $res_arr  = array_unique($curr_arr);
+            $total    = count($curr_arr);
 
-        if (count($res_arr) != count($curr_arr)) {
-            return false;
+            if (count($res_arr) != count($curr_arr)) {
+                return false;
+            }
+
+            if (in_array($uid, $curr_arr)) {
+                return false;
+            }
         }
 
         $model->relation = $relation_str;

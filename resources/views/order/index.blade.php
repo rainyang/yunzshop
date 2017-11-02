@@ -11,124 +11,133 @@
         <script type="text/javascript" src="{{static_url('js/dist/tooltipbox.js')}}"></script>
 
         <div class="rightlist">
-            <div class="right-titpos">
-                <ul class="add-snav">
-                    <li class="active"><a href="#">订单管理</a></li>
-                </ul>
-            </div>
             <div class="panel panel-info">
                 <div class="panel-body">
-                    <form action="" method="get" class="form-horizontal" role="form" id="form1">
-                        @section('form')
-                            <input type="hidden" name="c" value="site"/>
-                            <input type="hidden" name="a" value="entry"/>
-                            <input type="hidden" name="m" value="yun_shop"/>
-                            <input type="hidden" name="do" value="order" id="form_do"/>
-                            <input type="hidden" name="route" value="{{$url}}" id="form_p"/>
-                        @show
-                        <div class="">
-                            @section('search_bar')
-                                <div class='form-group col-sm-8 col-lg-5 col-xs-12'>
-                                    <select name="search[ambiguous][field]" id="ambiguous-field"
-                                            class="form-control">
-                                        <option value="order"
-                                                @if(array_get($requestSearch,'ambiguous.field','') =='order')  selected="selected"@endif >
-                                            订单号/支付号
-                                        </option>
-                                        <option value="member"
-                                                @if( array_get($requestSearch,'ambiguous.field','')=='member')  selected="selected"@endif>
-                                            用户姓名/ID/昵称/手机号
-                                        </option>
-                                        <option value="order_goods"
-                                                @if( array_get($requestSearch,'ambiguous.field','')=='order_goods')  selected="selected"@endif>
-                                            商品名称/ID
-                                        </option>
-                                        <option value="dispatch"
-                                                @if( array_get($requestSearch,'ambiguous.field','')=='dispatch')  selected="selected"@endif>
-                                            快递单号
-                                        </option>
-                                    </select>
-                                    <input class="form-control" name="search[ambiguous][string]" type="text"
-                                           value="{{array_get($requestSearch,'ambiguous.string','')}}"
-                                           placeholder="订单号/支付单号">
-                                </div>
-                                <div class='form-group form-group col-sm-8 col-lg-2 col-xs-12'>
-
-                                    <select name="search[pay_type]" class="form-control">
-                                        <option value=""
-                                                @if( array_get($requestSearch,'pay_type',''))  selected="selected"@endif>
-                                            支付方式
-                                        </option>
-                                        <option value="1"
-                                                @if( array_get($requestSearch,'pay_type','') == '1')  selected="selected"@endif>
-                                            微信支付
-                                        </option>
-                                        <option value="2"
-                                                @if( array_get($requestSearch,'pay_type','') == '2')  selected="selected"@endif>
-                                            支付宝支付
-                                        </option>
-                                        <option value="3"
-                                                @if( array_get($requestSearch,'pay_type','') == '3')  selected="selected"@endif>
-                                            余额支付
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class='form-group col-sm-8 col-lg-5 col-xs-12'>
-
-                                    <select name="search[time_range][field]" class="form-control form-time">
-                                        <option value=""
-                                                @if( array_get($requestSearch,'time_range.field',''))selected="selected"@endif >
-                                            操作时间
-                                        </option>
-                                        <option value="create_time"
-                                                @if( array_get($requestSearch,'time_range.field','')=='create_time')  selected="selected"@endif >
-                                            下单
-                                        </option>
-                                        <option value="pay_time"
-                                                @if( array_get($requestSearch,'time_range.field','')=='pay_time')  selected="selected"@endif>
-                                            付款
-                                        </option>
-                                        <option value="send_time"
-                                                @if( array_get($requestSearch,'time_range.field','')=='send_time')  selected="selected"@endif>
-                                            发货
-                                        </option>
-                                        <option value="finish_time"
-                                                @if( array_get($requestSearch,'time_range.field','')=='finish_time')  selected="selected"@endif>
-                                            完成
-                                        </option>
-                                    </select>
-                                    {!!
-                                        app\common\helpers\DateRange::tplFormFieldDateRange('search[time_range]', [
-                                'starttime'=>array_get($requestSearch,'time_range.start',0),
-                                'endtime'=>array_get($requestSearch,'time_range.end',0),
-                                'start'=>0,
-                                'end'=>0
-                                ], true)!!}
-
-                                </div>
-                            @show
+                    <div class="card">
+                        <div class="card-header card-header-icon" data-background-color="rose">
+                            <i class="fa fa-bars" style="font-size: 24px;" aria-hidden="true"></i>
                         </div>
-
-                        <div class="form-group">
-
-                            <div class="col-sm-7 col-lg-9 col-xs-12">
-                                <button class="btn btn-success"><i class="fa fa-search"></i> 搜索</button>
-                                <input type="hidden" name="token" value="{{$var['token']}}"/>
-                                @section('export')
-                                    <button type="submit" name="export" value="1" id="export" class="btn btn-default">导出
-                                        Excel
-                                    </button>
+                        <div class="card-content">
+                            <h4 class="card-title">订单管理</h4>
+                            <form  action="" method="get" class="form-horizontal" id="form1">
+                                @section('form')
+                                    <input type="hidden" name="c" value="site"/>
+                                    <input type="hidden" name="a" value="entry"/>
+                                    <input type="hidden" name="m" value="yun_shop"/>
+                                    <input type="hidden" name="do" value="order" id="form_do"/>
+                                    <input type="hidden" name="route" value="{{$url}}" id="form_p"/>
                                 @show
-                                @if( $requestSearch['plugin'] != "fund")
-                                    <a class="btn btn-warning"
-                                       href="{!! yzWebUrl('order.export') !!}">自定义导出</a>
+                                <div>
+                                    @section('search_bar')
+                                        <div class="form-group  col-md-2 col-sm-6">
+                                            <select name="search[ambiguous][field]" id="ambiguous-field"
+                                                    class="form-control">
+                                                <option value="order"
+                                                        @if(array_get($requestSearch,'ambiguous.field','') =='order')  selected="selected"@endif >
+                                                    订单号/支付号
+                                                </option>
+                                                <option value="member"
+                                                        @if( array_get($requestSearch,'ambiguous.field','')=='member')  selected="selected"@endif>
+                                                    用户姓名/ID/昵称/手机号
+                                                </option>
+                                                <option value="order_goods"
+                                                        @if( array_get($requestSearch,'ambiguous.field','')=='order_goods')  selected="selected"@endif>
+                                                    商品名称/ID
+                                                </option>
+                                                <option value="dispatch"
+                                                        @if( array_get($requestSearch,'ambiguous.field','')=='dispatch')  selected="selected"@endif>
+                                                    快递单号
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group  col-md-2 col-sm-6">
 
-                                @endif
-                            </div>
+                                            <input class="form-control" name="search[ambiguous][string]" type="text"
+                                                   value="{{array_get($requestSearch,'ambiguous.string','')}}"
+                                                   placeholder="订单号/支付单号">
+                                        </div>
+                                        <div class="form-group form-group col-sm-8 col-lg-2 col-xs-12">
 
+                                            <select name="search[pay_type]" class="form-control">
+                                                <option value=""
+                                                        @if( array_get($requestSearch,'pay_type',''))  selected="selected"@endif>
+                                                    支付方式
+                                                </option>
+                                                <option value="1"
+                                                        @if( array_get($requestSearch,'pay_type','') == '1')  selected="selected"@endif>
+                                                    微信支付
+                                                </option>
+                                                <option value="2"
+                                                        @if( array_get($requestSearch,'pay_type','') == '2')  selected="selected"@endif>
+                                                    支付宝支付
+                                                </option>
+                                                <option value="3"
+                                                        @if( array_get($requestSearch,'pay_type','') == '3')  selected="selected"@endif>
+                                                    余额支付
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-sm-8 col-lg-5 col-xs-12">
+
+                                            <select name="search[time_range][field]" class="form-control form-time">
+                                                <option value=""
+                                                        @if( array_get($requestSearch,'time_range.field',''))selected="selected"@endif >
+                                                    操作时间
+                                                </option>
+                                                <option value="create_time"
+                                                        @if( array_get($requestSearch,'time_range.field','')=='create_time')  selected="selected"@endif >
+                                                    下单
+                                                </option>
+                                                <option value="pay_time"
+                                                        @if( array_get($requestSearch,'time_range.field','')=='pay_time')  selected="selected"@endif>
+                                                    付款
+                                                </option>
+                                                <option value="send_time"
+                                                        @if( array_get($requestSearch,'time_range.field','')=='send_time')  selected="selected"@endif>
+                                                    发货
+                                                </option>
+                                                <option value="finish_time"
+                                                        @if( array_get($requestSearch,'time_range.field','')=='finish_time')  selected="selected"@endif>
+                                                    完成
+                                                </option>
+                                            </select>
+                                            {!!
+                                                app\common\helpers\DateRange::tplFormFieldDateRange('search[time_range]', [
+                                        'starttime'=>array_get($requestSearch,'time_range.start',0),
+                                        'endtime'=>array_get($requestSearch,'time_range.end',0),
+                                        'start'=>0,
+                                        'end'=>0
+                                        ], true)!!}
+
+                                        </div>
+                                    @show
+                                </div>
+
+                                <div class="form-group">
+
+                                    <div class="col-sm-7 col-lg-9 col-xs-12">
+                                        <button class="btn btn-success"><i class="fa fa-search"></i> 搜索</button>
+                                        <input type="hidden" name="token" value="{{$var['token']}}"/>
+                                        @section('export')
+                                            <button type="submit" name="export" value="1" id="export" class="btn btn-info">导出
+                                                Excel
+                                            </button>
+                                        @show
+                                        @if( $requestSearch['plugin'] != "fund")
+                                            <a class="btn btn-warning"
+                                               href="{!! yzWebUrl('order.export') !!}">自定义导出</a>
+
+                                        @endif
+                                    </div>
+
+                                </div>
+                            </form>
                         </div>
+                    </div>
+                    {{--<form action="" method="get" class="form-horizontal" id="form1">--}}
 
-                    </form>
+
+                    {{--</form>--}}
                 </div>
             </div>
 
@@ -271,7 +280,8 @@
                                                 </table>
                                             </td>
                                             <td rowspan="{{count($order['has_many_order_goods'])}}"><label
-                                                        class='label label-info'>{{$order['status_name']}}</label><br/>
+                                                        class='label label-info'>{{$order['status_name']}}</label>
+                                                <br/>
                                                 <a href="{!! yzWebUrl($detail_url,['id'=>$order['id']])!!}">查看详情</a>
                                             </td>
                                             <td rowspan="{{count($order['has_many_order_goods'])}}" width="10%">

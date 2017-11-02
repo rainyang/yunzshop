@@ -37,6 +37,7 @@ class UpdateController extends BaseController
             $list = $update->getUpdates();
         }
 
+
         krsort($list);
         $version = config('version');
 
@@ -186,7 +187,7 @@ class UpdateController extends BaseController
             }
         }
 
-        return response()->json($result)->send();
+        response()->json($result)->send();
     }
 
     public function fileDownload()
@@ -317,7 +318,7 @@ class UpdateController extends BaseController
             $success = $total;
         }
 
-        return response()->json([
+        response()->json([
             'result' => $status,
             'total' => $total,
             'success' => $success

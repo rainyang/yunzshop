@@ -26,8 +26,8 @@ use app\common\exceptions\AppException;
 class RegisterController extends ApiController
 {
     protected $publicController = ['Register'];
-    protected $publicAction = ['index', 'sendCode', 'checkCode', 'sendSms', 'changePassword'];
-    protected $ignoreAction = ['index', 'sendCode', 'checkCode', 'sendSms', 'changePassword'];
+    protected $publicAction = ['index', 'sendCode', 'sendCodeV2', 'checkCode', 'sendSms', 'changePassword'];
+    protected $ignoreAction = ['index', 'sendCode', 'sendCodeV2', 'checkCode', 'sendSms', 'changePassword'];
 
     public function index()
     {
@@ -150,6 +150,37 @@ class RegisterController extends ApiController
         }
     }
 
+    public function sendCodeV2()
+    {
+        $mobile = \YunShop::request()->mobile;
+        $reset_pwd = \YunShop::request()->reset;
+
+        $state = \YunShop::request()->state?:'86';
+
+        if (empty($mobile)) {
+            return $this->errorJson('请填入手机号');
+        }
+
+        $info = MemberModel::getId(\YunShop::app()->uniacid, $mobile);
+
+        if (!empty($info) && empty($reset_pwd)) {
+            return $this->errorJson('该手机号已被注册！不能获取验证码');
+        }
+        $code = rand(1000, 9999);
+
+        Session::set(codetime, time());
+        Session::set(code, $code);
+        Session::set(code_mobile, $mobile);
+
+        //$content = "您的验证码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
+
+        if (!MemberService::smsSendLimit(\YunShop::app()->uniacid, $mobile)) {
+            return $this->errorJson('发送短信数量达到今日上限');
+        } else {
+            $this->sendSmsV2($mobile, $code, $state);
+        }
+    }
+
     public function sendWithdrawCode()
     {
         $mobile = \YunShop::request()->mobile;
@@ -195,6 +226,87 @@ class RegisterController extends ApiController
         //互亿无线
         if ($sms['type'] == 1) {
             $issendsms = MemberService::send_sms(trim($sms['account']), trim($sms['password']), $mobile, $code);
+
+            if ($issendsms['SubmitResult']['code'] == 2) {
+                MemberService::udpateSmsSendTotal(\YunShop::app()->uniacid, $mobile);
+                return $this->successJson();
+            } else {
+                return $this->errorJson($issendsms['SubmitResult']['msg']);
+            }
+        } elseif ($sms['type'] == 2) {
+            $result = MemberService::send_sms_alidayu($sms, $templateType);
+
+            if (count($result['params']) > 1) {
+                $nparam['code'] = "{$code}";
+                foreach ($result['params'] as $param) {
+                    $param = trim($param);
+                    $explode_param = explode("=", $param);
+                    if (!empty($explode_param[0])) {
+                        $nparam[$explode_param[0]] = "{$explode_param[1]}";
+                    }
+                }
+
+                $content = json_encode($nparam);
+            } else {
+                $explode_param = explode("=", $result['params'][0]);
+                $content = json_encode(array('code' => (string)$code, 'product' => $explode_param[1]));
+            }
+
+            $top_client = new \iscms\AlismsSdk\TopClient(trim($sms['appkey']), trim($sms['secret']));
+            $name = trim($sms['signname']);
+            $templateCode = trim($sms['templateCode']);
+
+            config([
+                'alisms.KEY' => trim($sms['appkey']),
+                'alisms.SECRETKEY' => trim($sms['secret'])
+            ]);
+
+            $sms = new Sms($top_client);
+            $issendsms = $sms->send($mobile, $name, $content, $templateCode);
+
+            if (isset($issendsms->result->success)) {
+                MemberService::udpateSmsSendTotal(\YunShop::app()->uniacid, $mobile);
+                return $this->successJson();
+            } else {
+                //return $this->errorJson($issendsms->msg . '/' . $issendsms->sub_msg);
+            }
+        } elseif ($sms['type'] == 3) {
+            $aly_sms = new AliyunSMS(trim($sms['aly_appkey']), trim($sms['aly_secret']));
+
+            $response = $aly_sms->sendSms(
+                $sms['aly_signname'], // 短信签名
+                $sms['aly_templateCode'], // 短信模板编号
+                $mobile, // 短信接收者
+                Array(  // 短信模板中字段的值
+                    "number" => $code
+                )
+            );
+
+            if ($response->Code == 'OK' && $response->Message == 'OK') {
+                return $this->successJson();
+            } else {
+                return $this->errorJson($response->Message);
+            }
+
+        } else {
+            return $this->errorJson('未设置短信功能');
+        }
+    }
+
+    public function sendSmsV2($mobile, $code, $state, $templateType = 'reg')
+    {
+        $sms = \Setting::get('shop.sms');
+
+        //互亿无线
+        if ($sms['type'] == 1) {
+            if ($state != '86') {
+                $account = trim($sms['account2']);
+                $password = trim($sms['password2']);
+            } else {
+                $account = trim($sms['account']);
+                $password = trim($sms['password']);
+            }
+            $issendsms = MemberService::send_smsV2($account, $password, $mobile, $code, $state);
 
             if ($issendsms['SubmitResult']['code'] == 2) {
                 MemberService::udpateSmsSendTotal(\YunShop::app()->uniacid, $mobile);

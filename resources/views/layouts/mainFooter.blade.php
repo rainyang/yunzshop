@@ -1,12 +1,22 @@
-  <footer class="main-footer">
-    <!-- To the right -->
-    <div class="pull-right hidden-xs">
-        Yun Shop
-    </div>
-    <!-- Default to the left -->
-    <strong>Copyright &copy; 2017 {{\Config::get('module.name')}}.</strong> All rights reserved.
+  {{--<footer class="main-footer">--}}
+    {{--<div class="pull-right hidden-xs">--}}
+        {{--Yun Shop--}}
+    {{--</div>--}}
+    {{--<strong>Copyright &copy; 2017 {{\Config::get('module.name')}}.</strong> All rights reserved.--}}
 
-  </footer>
+  {{--</footer>--}}
+  <!--   Core JS Files   -->
+  {{--<script src="{{static_url('yunshop/dist/js/common.js')}}../assets/js/jquery-3.2.1.min.js" type="text/javascript"></script>--}}
+
+  <!-- Material Dashboard DEMO methods, don't include it in your project! -->
+  <!--<script src="{{static_url('assets/js/demo.js')}}"></script>
+  <script type="text/javascript">
+      $(document).ready(function() {
+
+          // Javascript method's body can be found in assets/js/demos.js
+          demo.initDashboardPageCharts();
+      });
+  </script>-->
 
   <script type="text/javascript">
       require(['bootstrap'],function(){
@@ -47,5 +57,7 @@
     $(function () {
         check_yun_shop_upgrade();
     });
+
+
   </script>
   @endif
