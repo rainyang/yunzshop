@@ -10110,10 +10110,10 @@ fieldset[disabled] .form-group.is-focused .radio label {
 }
 
 .radio input[type=radio] {
-    opacity: 0;
-    height: 0;
-    width: 0;
-    overflow: hidden;
+    /*opacity: 0;*/
+    /*height: 0;*/
+    /*width: 0;*/
+    /*overflow: hidden;*/
 }
 
 .radio input[type=radio]:checked~.check,
