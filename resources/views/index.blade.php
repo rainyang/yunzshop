@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container-fluid" style="margin-top:10px">
-        <div class="row">
+        <!--<div class="row">
             <div class="col-lg-6 col-md-12">
                 {{--<div class="card card-stats">
                     <div class="card-header" data-background-color="orange">
@@ -189,7 +189,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>-->
 
     </div>
 @endsection
