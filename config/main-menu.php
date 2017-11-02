@@ -2220,7 +2220,7 @@ return [
             ],
 
             'setting_shop_trade' => [
-                'name'          => '交易',
+                'name'          => '交易设置',
                 'url'           => 'setting.shop.trade',
                 'url_params'    => '',
                 'permit'        => 1,
@@ -2235,7 +2235,7 @@ return [
 
 
             'setting_shop_pay'  => [
-                'name'              => '支付',
+                'name'              => '支付方式',
                 'url'               => 'setting.shop.pay',
                 'url_params'        => '',
                 'permit'            => 1,
@@ -2247,7 +2247,7 @@ return [
             ],
 
             'setting_shop_notice' => [
-                'name'              => '消息',
+                'name'              => '消息提醒',
                 'url'               => 'setting.shop.notice',
                 'url_params'        => '',
                 'permit'            => 1,
@@ -2255,6 +2255,18 @@ return [
                 'icon'              => 'fa-bell-o',
                 'sort'              => '6',
                 'item'              => 'setting_shop_notice',
+                'parents'           => ['system', 'Setting',],
+            ],
+
+            'setting_shop_lang' => [
+                'name'              => '语言设置',
+                'url'               => 'setting.lang.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-bell-o',
+                'sort'              => '6',
+                'item'              => 'setting_shop_lang',
                 'parents'           => ['system', 'Setting',],
             ],
 
