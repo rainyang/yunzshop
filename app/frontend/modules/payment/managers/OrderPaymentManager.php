@@ -52,44 +52,47 @@ class OrderPaymentManager extends Container
                         return new BalanceSetting($order);
                     }
                 ],
-            ], 'alipay' => [
-                'settings' => [
-                    'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
-                        return new AlipaySetting($order);
-                    }
-
-                ],
-            ], 'wechatPay' => [
-                'settings' => [
-                    'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
-                        return new WechatPaySetting($order);
-                    }
-
-                ],
-            ], 'alipayApp' => [
-                'settings' => [
-                    'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
-                        return new AlipayAppSetting($order);
-                    }
-
-                ],
-            ], 'cloudPayWechat' => [
-                'settings' => [
-                    'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
-                        return new CloudPayWechatSetting($order);
-                    }
-
-                ],
-
             ],
-            'wechatAppPay' => [
-                'settings' => [
-                    'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
-                        return new WechatAppPaySetting($order);
-                    }
-
-                ],
-            ]];
+//            'alipay' => [
+//                'settings' => [
+//                    'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
+//                        return new AlipaySetting($order);
+//                    }
+//
+//                ],
+//            ]
+//            , 'wechatPay' => [
+//                'settings' => [
+//                    'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
+//                        return new WechatPaySetting($order);
+//                    }
+//
+//                ],
+//            ], 'alipayApp' => [
+//                'settings' => [
+//                    'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
+//                        return new AlipayAppSetting($order);
+//                    }
+//
+//                ],
+//            ], 'cloudPayWechat' => [
+//                'settings' => [
+//                    'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
+//                        return new CloudPayWechatSetting($order);
+//                    }
+//
+//                ],
+//
+//            ],
+//            'wechatAppPay' => [
+//                'settings' => [
+//                    'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
+//                        return new WechatAppPaySetting($order);
+//                    }
+//
+//                ],
+//            ]
+        ];
     }
 
     public function addPaymentConfig($paymentConfig)
@@ -110,6 +113,8 @@ class OrderPaymentManager extends Container
                  * @var OrderPaymentSettingManager $settingManager
                  */
                 $settingManager = app('PaymentManager')->make('OrderPaymentSettingManagers')->make($code);
+
+
                 $settings = $settingManager->getOrderPaymentSettingCollection($order);
 
                 return new OrderPayment($code, $order, $settings);
@@ -126,6 +131,7 @@ class OrderPaymentManager extends Container
                 }
                 return $manager;
             });
+
         });
     }
 
@@ -156,9 +162,12 @@ class OrderPaymentManager extends Container
             }
             return null;
         });
+//        dd($orderPaymentTypes);
+//        exit;
 
         // 过滤掉无效的
         $orderPaymentTypes = $orderPaymentTypes->filter(function (OrderPayment $paymentType) {
+
             // 可用的
             return isset($paymentType) && $paymentType->canUse();
         });

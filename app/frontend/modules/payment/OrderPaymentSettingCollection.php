@@ -18,11 +18,14 @@ use Illuminate\Support\Collection;
 class OrderPaymentSettingCollection extends Collection
 {
     /**
-     * 是否开启
+     * 是否可用
      * @return bool
      */
     public function canUse()
     {
+        if ($this->isEmpty()) {
+            return false;
+        }
         $settings = $this->sortByDesc(function (OrderPaymentSettingInterface $setting) {
             return $setting->getWeight();
         });
@@ -30,9 +33,13 @@ class OrderPaymentSettingCollection extends Collection
         /**
          * 以影响范围排序,从大到小
          */
+
         $canNotPay = $settings->contains(function (OrderPaymentSettingInterface $orderPaymentSetting) {
+            //dd($orderPaymentSetting->canUse());
+
             return !$orderPaymentSetting->canUse();
         });
+
         return !$canNotPay;
     }
 
@@ -45,13 +52,6 @@ class OrderPaymentSettingCollection extends Collection
         return 1;
     }
 
-    /**
-     * todo 满足支付使用条件
-     * @return bool
-     */
-    public function canPay(){
-        return true;
-    }
     /**
      * todo 过滤无效的
      */

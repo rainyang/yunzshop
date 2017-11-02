@@ -13,4 +13,8 @@ class AlipaySetting extends BaseSetting
     {
         return \Setting::get('shop.pay.alipay') && \YunShop::request()->type == 7;
     }
+    public function exist()
+    {
+        return \Setting::get('shop.pay.alipay') !== null;
+    }
 }

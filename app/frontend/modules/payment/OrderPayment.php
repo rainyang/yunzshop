@@ -29,6 +29,7 @@ class OrderPayment
 
     function __construct($code,Order $order,OrderPaymentSettingCollection $orderPaymentSettings)
     {
+
         $this->order = $order;
         $this->code = $code;
         $this->orderPaymentSettings = $orderPaymentSettings;
@@ -36,7 +37,7 @@ class OrderPayment
     }
 
     /**
-     * 开启
+     * 满足使用条件
      * @return bool
      */
     public function canUse()
@@ -52,15 +53,6 @@ class OrderPayment
     public function index()
     {
         return $this->orderPaymentSettings->index();
-    }
-
-    /**
-     * 满足使用条件
-     * @return mixed
-     */
-    public function canPay()
-    {
-        return $this->orderPaymentSettings->canPay();
     }
 
     /**

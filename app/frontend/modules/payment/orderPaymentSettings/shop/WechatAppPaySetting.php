@@ -14,4 +14,8 @@ class WechatAppPaySetting extends BaseSetting
         // 开启微信通用支付和开启微信支付总开关,并且访问端不是app
         return \Setting::get('shop.pay.weixin') && \YunShop::request()->type == 7;
     }
+    public function exist()
+    {
+        return \Setting::get('shop.pay.weixin') !== null;
+    }
 }
