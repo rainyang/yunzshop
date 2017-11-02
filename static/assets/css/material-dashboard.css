@@ -6263,6 +6263,7 @@ h2.title {
 
 .sidebar[data-background-color="black"] {
     background-color: #454242;
+    /*252726*/
 }
 
 .sidebar .sidebar-wrapper {
@@ -11374,7 +11375,7 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
 .navbar {
     border: 0;
     border-radius: 0px !important;
-    border-bottom: 1px solid #ededf3;
+    /*border-bottom: 1px solid #ededf3;*/
     padding: 0px 0;
 }
 
@@ -11969,8 +11970,9 @@ fieldset[disabled] .navbar .btn-link:focus {
 }
 
 .navbar.navbar-transparent {
-    background-color: #fff;
+    background-color: #2161f4 !important;
     box-shadow: none;
+    color: #fff;
 }
 
 .navbar.navbar-transparent .logo-container .brand {
@@ -13911,14 +13913,14 @@ footer .btn {
 }
 
 .pull-left li:hover>a,.pull-left li.active>a {
-    color: #00bcd4;
+    color: #fff;
     height: 32px;
 }
 
 .pull-left a{
     display: block;
     font-weight: 700;
-    color: #333;
+    color: #fff;
     height: 35px;
     line-height: 20px;
     padding: 0 0 3px;
