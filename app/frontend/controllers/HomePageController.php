@@ -19,8 +19,8 @@ use app\frontend\modules\shop\controllers\IndexController;
 
 class HomePageController extends ApiController
 {
-    protected $publicAction = ['index', 'defaultDesign', 'defaultMenu', 'defaultMenuStyle'];
-    protected $ignoreAction = ['index', 'defaultDesign', 'defaultMenu', 'defaultMenuStyle'];
+    protected $publicAction = ['index', 'defaultDesign', 'defaultMenu', 'defaultMenuStyle', 'bindMobile'];
+    protected $ignoreAction = ['index', 'defaultDesign', 'defaultMenu', 'defaultMenuStyle', 'bindMobile'];
 
     /**
      * @return \Illuminate\Http\JsonResponse 当路由不包含page_id参数时,提供商城首页数据; 当路由包含page_id参数时,提供装修预览数据
@@ -382,6 +382,29 @@ class HomePageController extends ApiController
             "showborder2" => 1,
             "bgalpha" => ".5",
         );
+    }
+
+    public function bindMobile()
+    {
+        $member_id = \YunShop::app()->getMemberId();
+
+        //强制绑定手机号
+        $member_set = Setting::get('shop.member');
+        $is_bind_mobile = 0;
+
+        if (!is_null($member_set)) {
+            if ((1 == $member_set['is_bind_mobile']) && $member_id && $member_id > 0) {
+                $member_model = Member::getMemberById($member_id);
+
+                if ($member_model && empty($member_model->mobile)) {
+                    $is_bind_mobile = 1;
+                }
+            }
+        }
+
+        $result['is_bind_mobile'] = $is_bind_mobile;
+
+        return $this->successJson('ok', $result);
     }
 
 }
