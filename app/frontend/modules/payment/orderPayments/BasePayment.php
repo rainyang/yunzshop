@@ -80,9 +80,15 @@ abstract class BasePayment
      */
     public function needPassword()
     {
-        if(!$this->payType->need_password){
+        if (!$this->payType->need_password) {
             return false;
         }
+        // 临时解决 只考虑了余额设置,后续需要改为setting中获取
         return (bool)\Setting::get('shop.pay.balance_pay_proving');
+    }
+
+    public function getId()
+    {
+        return $this->payType->id;
     }
 }
