@@ -58,8 +58,8 @@ class OrderPaymentManager extends Container
                 ],
             ],
             'alipay' => [
-                'payment' => function ($code, $order, $settings) {
-                    return new WebPayment($code, $order, $settings);
+                'payment' => function ($payType, $order, $settings) {
+                    return new WebPayment($payType, $order, $settings);
                 },
                 'settings' => [
                     'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
@@ -68,8 +68,8 @@ class OrderPaymentManager extends Container
                 ],
             ]
             , 'wechatPay' => [
-                'payment' => function ($code, $order, $settings) {
-                    return new WebPayment($code, $order, $settings);
+                'payment' => function ($payType, $order, $settings) {
+                    return new WebPayment($payType, $order, $settings);
                 },
                 'settings' => [
                     'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
@@ -77,8 +77,8 @@ class OrderPaymentManager extends Container
                     }
                 ],
             ], 'alipayApp' => [
-                'payment' => function ($code, $order, $settings) {
-                    return new AppPayment($code, $order, $settings);
+                'payment' => function ($payType, $order, $settings) {
+                    return new AppPayment($payType, $order, $settings);
                 },
                 'settings' => [
                     'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
@@ -86,8 +86,8 @@ class OrderPaymentManager extends Container
                     }
                 ],
             ], 'cloudPayWechat' => [
-                'payment' => function ($code, $order, $settings) {
-                    return new CloudPayment($code, $order, $settings);
+                'payment' => function ($payType, $order, $settings) {
+                    return new CloudPayment($payType, $order, $settings);
                 },
                 'settings' => [
                     'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
@@ -96,8 +96,8 @@ class OrderPaymentManager extends Container
                 ],
             ],
             'wechatAppPay' => [
-                'payment' => function ($code, $order, $settings) {
-                    return new AppPayment($code, $order, $settings);
+                'payment' => function ($payType, $order, $settings) {
+                    return new AppPayment($payType, $order, $settings);
                 },
                 'settings' => [
                     'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
@@ -121,17 +121,21 @@ class OrderPaymentManager extends Container
              * 分别绑定支付方式与支付方式设置类. 只定义不实例化,以便于插件在支付方式实例化之前,追加支付方式与支付方式的设置类
              */
             // 绑定支付方式
-            $this->bind($code, function (OrderPaymentManager $manager, Order $order) use ($code, $payment) {
+            $this->bind($code, function (OrderPaymentManager $manager, array $parameter) use ($payment) {
                 /**
                  * @var OrderPaymentSettingManager $settingManager
+                 * @var Order $order
+                 * @var PayType $payType
                  */
-                $settingManager = app('PaymentManager')->make('OrderPaymentSettingManagers')->make($code);
+                list($order,$payType) = $parameter;
+
+                $settingManager = app('PaymentManager')->make('OrderPaymentSettingManagers')->make($payType->code);
                 $settings = $settingManager->getOrderPaymentSettingCollection($order);
 
                 if (isset($payment['payment']) && $payment['payment'] instanceof \Closure) {
-                    return call_user_func($payment['payment'], $code, $order, $settings);
+                    return call_user_func($payment['payment'], $payType, $order, $settings);
                 }
-                return new NormalPayment($code, $order, $settings);
+                return new NormalPayment($payType, $order, $settings);
             });
 
 
@@ -173,7 +177,8 @@ class OrderPaymentManager extends Container
 
             // 对应的类在容器中注册过
             if ($this->bound($payType->code)) {
-                return $this->make($payType->code, $order);
+
+                return $this->make($payType->code, [$order, $payType]);
             }
             return null;
         });

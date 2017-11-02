@@ -13,6 +13,9 @@ namespace app\common\models;
  * @package app\common\models
  * @property string code
  * @property string setting_key
+ * @property string name
+ * @property int need_password
+ * @property int id
  */
 class PayType extends BaseModel
 {

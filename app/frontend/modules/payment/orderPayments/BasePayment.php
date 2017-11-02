@@ -9,6 +9,7 @@
 namespace app\frontend\modules\payment\orderPayments;
 
 use app\common\models\Order;
+use app\common\models\PayType;
 use app\frontend\modules\payment\orderPaymentSettings\OrderPaymentSettingCollection;
 
 /**
@@ -23,15 +24,15 @@ abstract class BasePayment
      */
     protected $orderPaymentSettings;
     /**
-     * @var string
+     * @var PayType
      */
-    protected $code;
+    protected $payType;
 
-    function __construct($code,Order $order,OrderPaymentSettingCollection $orderPaymentSettings)
+    function __construct(PayType $payType, Order $order, OrderPaymentSettingCollection $orderPaymentSettings)
     {
 
         $this->order = $order;
-        $this->code = $code;
+        $this->payType = $payType;
         $this->orderPaymentSettings = $orderPaymentSettings;
 
     }
@@ -57,11 +58,31 @@ abstract class BasePayment
 
     /**
      * 获取支付码
-     * @return mixed
+     * @return string
      */
     public function getCode()
     {
-        return $this->code;
+        return $this->payType->code;
     }
-    // todo 需要密码
+
+    /**
+     * 获取支付名
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->payType->name;
+    }
+
+    /**
+     * 需要支付密码
+     * @return bool
+     */
+    public function needPassword()
+    {
+        if(!$this->payType->need_password){
+            return false;
+        }
+        return (bool)\Setting::get('shop.pay.balance_pay_proving');
+    }
 }

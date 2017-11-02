@@ -17,6 +17,7 @@ use app\common\services\password\PasswordService;
 use app\common\services\PayFactory;
 use app\common\services\Session;
 use app\frontend\modules\order\services\OrderService;
+use app\frontend\modules\payment\orderPayments\BasePayment;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -88,7 +89,7 @@ class MergePayController extends ApiController
         // 用户余额
         $member = $orders->first()->belongsToMember()->select(['credit2'])->first()->toArray();
         // 支付类型
-        $buttons = $this->getPayTypeButtons();
+        $buttons = $this->getPayTypeButtons($orders->first());
         // 生成支付记录 记录订单号,支付金额,用户,支付号
         $orderPay = new OrderPay();
         $orderPay->order_ids = explode(',', $request->input('order_ids'));
@@ -107,17 +108,18 @@ class MergePayController extends ApiController
 
     /**
      * 通过事件获取支付按钮
-     * @return array
+     * @param $order
      */
-    private function getPayTypeButtons()
+    private function getPayTypeButtons($order)
     {
-        $paymentTypes = app('PaymentManager')->make('OrderPaymentManger')->getOrderPaymentTypes();
-        dd($paymentTypes);exit;
-//        // todo 通过支付方式管理者获取
-//        $event = new GetOrderPaymentTypeEvent($this->orders);
-//        event($event);
-//        $result = $event->getData();
-//        return $result ? $result : [];
+        $paymentTypes = app('PaymentManager')->make('OrderPaymentManger')->getOrderPaymentTypes($order);
+        return $paymentTypes->map(function (BasePayment $paymentType) {
+            return [
+                'name' => $paymentType->getName(),
+                'value' => $paymentType->getCode(),
+                'need_password' => $paymentType->needPassword(),
+            ];
+        });
     }
 
     /**
