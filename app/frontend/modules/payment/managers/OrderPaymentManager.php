@@ -10,6 +10,7 @@ namespace app\frontend\modules\payment\managers;
 
 use app\common\models\Order;
 use app\common\models\PayType;
+use app\frontend\modules\payment\orderPayments\BasePayment;
 use app\frontend\modules\payment\orderPayments\AppPayment;
 use app\frontend\modules\payment\orderPayments\CloudPayment;
 use app\frontend\modules\payment\orderPayments\NormalPayment;
@@ -64,7 +65,6 @@ class OrderPaymentManager extends Container
                     'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
                         return new AlipaySetting($order);
                     }
-
                 ],
             ]
             , 'wechatPay' => [
@@ -75,7 +75,6 @@ class OrderPaymentManager extends Container
                     'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
                         return new WechatPaySetting($order);
                     }
-
                 ],
             ], 'alipayApp' => [
                 'payment' => function ($code, $order, $settings) {
@@ -85,7 +84,6 @@ class OrderPaymentManager extends Container
                     'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
                         return new AlipayAppSetting($order);
                     }
-
                 ],
             ], 'cloudPayWechat' => [
                 'payment' => function ($code, $order, $settings) {
@@ -95,9 +93,7 @@ class OrderPaymentManager extends Container
                     'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
                         return new CloudPayWechatSetting($order);
                     }
-
                 ],
-
             ],
             'wechatAppPay' => [
                 'payment' => function ($code, $order, $settings) {
@@ -107,7 +103,6 @@ class OrderPaymentManager extends Container
                     'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
                         return new WechatAppPaySetting($order);
                     }
-
                 ],
             ]
         ];
@@ -184,7 +179,7 @@ class OrderPaymentManager extends Container
         });
 
         // 过滤掉无效的
-        $orderPaymentTypes = $orderPaymentTypes->filter(function (OrderPayment $paymentType) {
+        $orderPaymentTypes = $orderPaymentTypes->filter(function (BasePayment $paymentType) {
 
             // 可用的
             return isset($paymentType) && $paymentType->canUse();
