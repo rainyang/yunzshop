@@ -53,45 +53,45 @@ class OrderPaymentManager extends Container
                     }
                 ],
             ],
-//            'alipay' => [
-//                'settings' => [
-//                    'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
-//                        return new AlipaySetting($order);
-//                    }
-//
-//                ],
-//            ]
-//            , 'wechatPay' => [
-//                'settings' => [
-//                    'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
-//                        return new WechatPaySetting($order);
-//                    }
-//
-//                ],
-//            ], 'alipayApp' => [
-//                'settings' => [
-//                    'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
-//                        return new AlipayAppSetting($order);
-//                    }
-//
-//                ],
-//            ], 'cloudPayWechat' => [
-//                'settings' => [
-//                    'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
-//                        return new CloudPayWechatSetting($order);
-//                    }
-//
-//                ],
-//
-//            ],
-//            'wechatAppPay' => [
-//                'settings' => [
-//                    'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
-//                        return new WechatAppPaySetting($order);
-//                    }
-//
-//                ],
-//            ]
+            'alipay' => [
+                'settings' => [
+                    'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
+                        return new AlipaySetting($order);
+                    }
+
+                ],
+            ]
+            , 'wechatPay' => [
+                'settings' => [
+                    'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
+                        return new WechatPaySetting($order);
+                    }
+
+                ],
+            ], 'alipayApp' => [
+                'settings' => [
+                    'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
+                        return new AlipayAppSetting($order);
+                    }
+
+                ],
+            ], 'cloudPayWechat' => [
+                'settings' => [
+                    'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
+                        return new CloudPayWechatSetting($order);
+                    }
+
+                ],
+
+            ],
+            'wechatAppPay' => [
+                'settings' => [
+                    'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
+                        return new WechatAppPaySetting($order);
+                    }
+
+                ],
+            ]
         ];
     }
 
