@@ -34,8 +34,9 @@ class BalanceService
             'recharge'          => $this->_recharge_set['recharge'] ? 1 : 0,
             'transfer'          => $this->_recharge_set['transfer'] ? 1 : 0,
             'withdraw'          => $this->_withdraw_set['status'] ? 1 : 0,
-            'withdrawToWechat'  => $this->_withdraw_set['wechat'] ? true : false,
-            'withdrawToAlipay'  => $this->_withdraw_set['alipay'] ? true : false
+            'withdrawToWechat'  => $this->withdrawWechat(),
+            'withdrawToAlipay'  => $this->withdrawAlipay(),
+            'withdrawToManual'  => $this->withdrawManual()
         );
     }
 
@@ -92,6 +93,12 @@ class BalanceService
     public function withdrawAlipay()
     {
         return $this->_withdraw_set['alipay'] ? true : false;
+    }
+
+    //余额手动提现
+    public function withdrawManual()
+    {
+        return $this->_withdraw_set['balance_manual'] ? true : false;
     }
 
 
