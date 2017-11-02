@@ -160,7 +160,21 @@ return [
                     ],
                 ],
             ],
+            'add_goods'   => [
+                'name'          => '发布商品',
+                'url'           => 'goods.goods.create',
+                'url_params'    => '',
+                'permit'        => 1,
+                'style'         => 'pulish',
+                'menu'          => 1,
+                'icon'          => 'fa-cubes',
+                'sort'          => 0,
+                'item'          => 'goods_goods',
+                'parents'       => ['Goods',],
+                'child'         => [
 
+                ],
+            ],
             'goods_goods'   => [
                 'name'          => '商品列表',
                 'url'           => 'goods.goods.index',

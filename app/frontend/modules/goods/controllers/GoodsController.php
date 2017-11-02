@@ -20,6 +20,9 @@ use Illuminate\Support\Facades\DB;
  */
 class GoodsController extends ApiController
 {
+    protected $publicAction = ['getRecommendGoods'];
+    protected $ignoreAction = ['getRecommendGoods'];
+
     public function getGoods()
     {
         $id = intval(\YunShop::request()->id);
@@ -221,5 +224,14 @@ class GoodsController extends ApiController
         return $this->successJson('成功', $brand);
     }
 
-
+    public function getRecommendGoods()
+    {
+        $list = Goods::uniacid()
+            ->select('id', 'id as goods_id', 'title', 'thumb', 'price', 'market_price')
+            ->where('is_recommand', '1')
+            ->whereStatus('1')
+            ->orderBy('id', 'desc')
+            ->get();
+        return $this->successJson('获取推荐商品成功', $list);
+    }
 }

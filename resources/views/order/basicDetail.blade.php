@@ -203,7 +203,7 @@
                         <br/>{{$order['price']}}
                     </td>
                     <td>
-                        <a href="{!! yzWebUrl('goods.goods.edit', array('id' => $order_goods['goods']['id'])) !!}"
+                        <a href="{!! yzWebUrl($edit_goods, array('id' => $order_goods['goods']['id'])) !!}"
                            class="btn btn-default btn-sm" title="编辑"><i
                                     class="fa fa-edit"></i></a>&nbsp;&nbsp;
                     </td>
