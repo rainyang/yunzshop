@@ -6,7 +6,7 @@
  * Time: 上午10:00
  */
 
-namespace app\frontend\modules\payment;
+namespace app\frontend\modules\payment\orderPaymentSettings;
 
 /**
  * 支付设置

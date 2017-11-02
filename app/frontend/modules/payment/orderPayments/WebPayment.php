@@ -6,17 +6,17 @@
  * Time: 上午10:00
  */
 
-namespace app\frontend\modules\payment;
+namespace app\frontend\modules\payment\orderPayments;
 
 use app\common\models\Order;
-use app\frontend\modules\payment\managers\OrderPaymentSettingManager;
+use app\frontend\modules\payment\orderPaymentSettings\OrderPaymentSettingCollection;
 
 /**
  * 支付设置
  * Class PaymentSetting
  * @package app\frontend\modules\payment
  */
-class OrderPayment
+class WebPayment
 {
     /**
      * @var OrderPaymentSettingCollection
@@ -43,7 +43,7 @@ class OrderPayment
     public function canUse()
     {
 
-        return $this->orderPaymentSettings->canUse();
+        return $this->orderPaymentSettings->canUse() && \YunShop::request()->type != 7;
     }
 
     /**

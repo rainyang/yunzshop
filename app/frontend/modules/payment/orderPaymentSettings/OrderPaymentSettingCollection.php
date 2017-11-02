@@ -6,7 +6,7 @@
  * Time: 下午2:20
  */
 
-namespace app\frontend\modules\payment;
+namespace app\frontend\modules\payment\orderPaymentSettings;
 
 use Illuminate\Support\Collection;
 
@@ -35,7 +35,6 @@ class OrderPaymentSettingCollection extends Collection
          */
 
         $canNotPay = $settings->contains(function (OrderPaymentSettingInterface $orderPaymentSetting) {
-            //dd($orderPaymentSetting->canUse());
 
             return !$orderPaymentSetting->canUse();
         });

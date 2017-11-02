@@ -10,7 +10,10 @@ namespace app\frontend\modules\payment\managers;
 
 use app\common\models\Order;
 use app\common\models\PayType;
-use app\frontend\modules\payment\OrderPayment;
+use app\frontend\modules\payment\orderPayments\AppPayment;
+use app\frontend\modules\payment\orderPayments\CloudPayment;
+use app\frontend\modules\payment\orderPayments\NormalPayment;
+use app\frontend\modules\payment\orderPayments\WebPayment;
 use app\frontend\modules\payment\orderPaymentSettings\shop\AlipayAppSetting;
 use app\frontend\modules\payment\orderPaymentSettings\shop\AlipaySetting;
 use app\frontend\modules\payment\orderPaymentSettings\shop\BalanceSetting;
@@ -54,6 +57,9 @@ class OrderPaymentManager extends Container
                 ],
             ],
             'alipay' => [
+                'payment' => function ($code, $order, $settings) {
+                    return new WebPayment($code, $order, $settings);
+                },
                 'settings' => [
                     'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
                         return new AlipaySetting($order);
@@ -62,6 +68,9 @@ class OrderPaymentManager extends Container
                 ],
             ]
             , 'wechatPay' => [
+                'payment' => function ($code, $order, $settings) {
+                    return new WebPayment($code, $order, $settings);
+                },
                 'settings' => [
                     'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
                         return new WechatPaySetting($order);
@@ -69,6 +78,9 @@ class OrderPaymentManager extends Container
 
                 ],
             ], 'alipayApp' => [
+                'payment' => function ($code, $order, $settings) {
+                    return new AppPayment($code, $order, $settings);
+                },
                 'settings' => [
                     'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
                         return new AlipayAppSetting($order);
@@ -76,6 +88,9 @@ class OrderPaymentManager extends Container
 
                 ],
             ], 'cloudPayWechat' => [
+                'payment' => function ($code, $order, $settings) {
+                    return new CloudPayment($code, $order, $settings);
+                },
                 'settings' => [
                     'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
                         return new CloudPayWechatSetting($order);
@@ -85,6 +100,9 @@ class OrderPaymentManager extends Container
 
             ],
             'wechatAppPay' => [
+                'payment' => function ($code, $order, $settings) {
+                    return new AppPayment($code, $order, $settings);
+                },
                 'settings' => [
                     'shop' => function (OrderPaymentSettingManager $manager, Order $order) {
                         return new WechatAppPaySetting($order);
@@ -108,17 +126,19 @@ class OrderPaymentManager extends Container
              * 分别绑定支付方式与支付方式设置类. 只定义不实例化,以便于插件在支付方式实例化之前,追加支付方式与支付方式的设置类
              */
             // 绑定支付方式
-            $this->bind($code, function (OrderPaymentManager $manager, Order $order) use ($code) {
+            $this->bind($code, function (OrderPaymentManager $manager, Order $order) use ($code, $payment) {
                 /**
                  * @var OrderPaymentSettingManager $settingManager
                  */
                 $settingManager = app('PaymentManager')->make('OrderPaymentSettingManagers')->make($code);
-
-
                 $settings = $settingManager->getOrderPaymentSettingCollection($order);
 
-                return new OrderPayment($code, $order, $settings);
+                if (isset($payment['payment']) && $payment['payment'] instanceof \Closure) {
+                    return call_user_func($payment['payment'], $code, $order, $settings);
+                }
+                return new NormalPayment($code, $order, $settings);
             });
+
 
             // 绑定支付方式对应的设置
             app('PaymentManager')->make('OrderPaymentSettingManagers')->singleton($code, function (OrderPaymentSettingManagers $managers) use ($payment) {
@@ -162,8 +182,6 @@ class OrderPaymentManager extends Container
             }
             return null;
         });
-//        dd($orderPaymentTypes);
-//        exit;
 
         // 过滤掉无效的
         $orderPaymentTypes = $orderPaymentTypes->filter(function (OrderPayment $paymentType) {

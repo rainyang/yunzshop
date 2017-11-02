@@ -10,6 +10,7 @@ use app\frontend\modules\coin\InvalidVirtualCoin;
 use app\frontend\modules\deduction\models\Deduction;
 use app\frontend\modules\finance\models\PointCoin;
 use Yunshop\Love\Common\Models\LoveCoin;
+use Yunshop\SingleReturn\services\TimedTaskReturnService;
 use Yunshop\StoreCashier\common\models\Store;
 
 /**

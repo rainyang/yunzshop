@@ -12,7 +12,7 @@ class WechatPaySetting extends BaseSetting
     public function canUse()
     {
         // 开启微信通用支付和开启微信支付总开关,并且访问端不是app
-        return \Setting::get('shop.pay.weixin') && \Setting::get('shop.pay.weixin') && \YunShop::request()->type != 7;
+        return \Setting::get('shop.pay.weixin') && \Setting::get('shop.pay.weixin');
     }
     public function exist()
     {

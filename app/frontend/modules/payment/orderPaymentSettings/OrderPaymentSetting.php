@@ -6,7 +6,7 @@
  * Time: 下午8:01
  */
 
-namespace app\frontend\modules\payment;
+namespace app\frontend\modules\payment\orderPaymentSettings;
 
 use app\common\models\Order;
 
