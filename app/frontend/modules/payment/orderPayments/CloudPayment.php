@@ -13,6 +13,6 @@ class CloudPayment extends WebPayment
 {
     public function canUse()
     {
-        return \YunShop::plugin()->get('cloud-pay');
+        return $this->orderPaymentSettings->canUse() && \YunShop::plugin()->get('cloud-pay');
     }
 }
