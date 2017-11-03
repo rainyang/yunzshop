@@ -11,5 +11,8 @@ namespace app\frontend\modules\payment\orderPayments;
 
 class CloudPayment extends WebPayment
 {
-
+    public function canUse()
+    {
+        return \YunShop::plugin()->get('cloud-pay');
+    }
 }
