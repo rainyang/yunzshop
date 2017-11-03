@@ -9,7 +9,7 @@
 namespace app\frontend\modules\payment\orderPaymentSettings\shop;
 
 use app\common\models\Order;
-use app\frontend\modules\payment\OrderPaymentSettings\OrderPaymentSetting;
+use app\frontend\modules\payment\orderPaymentSettings\OrderPaymentSetting;
 
 abstract class BaseSetting extends OrderPaymentSetting
 {

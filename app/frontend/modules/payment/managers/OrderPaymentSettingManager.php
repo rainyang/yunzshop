@@ -9,8 +9,8 @@
 namespace app\frontend\modules\payment\managers;
 
 use app\common\models\Order;
-use app\frontend\modules\payment\OrderPaymentSettings\OrderPaymentSettingCollection;
-use app\frontend\modules\payment\OrderPaymentSettings\OrderPaymentSettingInterface;
+use app\frontend\modules\payment\orderPaymentSettings\OrderPaymentSettingCollection;
+use app\frontend\modules\payment\orderPaymentSettings\OrderPaymentSettingInterface;
 use Illuminate\Container\Container;
 
 /**
