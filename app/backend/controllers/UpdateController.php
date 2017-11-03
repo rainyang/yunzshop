@@ -37,7 +37,6 @@ class UpdateController extends BaseController
             $list = $update->getUpdates();
         }
 
-
         krsort($list);
         $version = config('version');
 
@@ -359,6 +358,11 @@ class UpdateController extends BaseController
             $result = $update->update();
 
             if ($result === true) {
+                $list = $update->getUpdates();
+                if (!empty($list)) {
+                    $this->setSystemVersion($list);
+                }
+
                 $resultArr['status'] = 1;
                 $resultArr['msg'] = '更新成功';
             } else {
@@ -372,5 +376,15 @@ class UpdateController extends BaseController
         }
         response()->json($resultArr)->send();
         return;
+    }
+
+    private function setSystemVersion($updateList)
+    {
+        rsort($updateList);
+        $version = $updateList[0]['version']->getVersion();
+        $str = file_get_contents(base_path('config/') . 'version.php');
+
+        $str = preg_replace('/"[\d\.]+"/', '"'. $version . '"', $str);
+        file_put_contents(base_path('config/') . 'version.php', $str);
     }
 }
