@@ -12,6 +12,7 @@ use app\common\models\Member;
 use app\common\models\Coupon;
 use app\common\models\CouponLog;
 use app\backend\modules\coupon\services\Message;
+use app\common\models\MemberShopInfo;
 
 
 class SendCouponController extends BaseController
@@ -81,18 +82,19 @@ class SendCouponController extends BaseController
                     }
                     break;
                 case self::TO_ALL_MEMBERS:
-                    $res = Member::getMembersId();
+//                    $res = Member::getMembersId();
+                    $res = MemberShopInfo::getYzMembersId();
                     if (!$res) {
                         $members = '';
                     } else {
                         $members = $res->toArray();
                     }
-                    $memberIds = array_column($members, 'uid');
+                    $memberIds = array_column($members, 'member_id');
                     break;
                 default:
                     $memberIds = '';
             }
-
+            
             //获取发放的数量
             $sendTotal = \YunShop::request()->send_total;
             $getTotal = MemberCoupon::uniacid()->where("coupon_id", $couponModel->id)->count();
