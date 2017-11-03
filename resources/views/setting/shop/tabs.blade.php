@@ -15,6 +15,3 @@
         <li @if(\YunShop::request()->route == 'setting.shop.protocol') class="active" @endif> <a href="{{ yzWebUrl('setting.shop.protocol')}}">注册协议</a></li>
     </ul>
 </div>
-
-
-

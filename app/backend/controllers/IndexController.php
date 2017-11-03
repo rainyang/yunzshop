@@ -9,6 +9,7 @@
 namespace app\backend\controllers;
 
 use app\common\components\BaseController;
+use app\common\helpers\Url;
 use app\common\services\Check;
 
 class IndexController extends BaseController
@@ -16,6 +17,7 @@ class IndexController extends BaseController
     public function index()
     {
         strpos(request()->getBaseUrl(),'/web/index.php') === 0 && Check::setKey();
+        //redirect(Url::absoluteWeb('goods.goods.index'))->send();
         return view('index',[])->render();
     }
 }

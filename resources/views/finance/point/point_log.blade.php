@@ -4,6 +4,11 @@
 <link href="{{static_url('yunshop/balance/balance.css')}}" media="all" rel="stylesheet" type="text/css"/>
     <div id="recharge-blade" class="rightlist">
         <div class="panel panel-info">
+
+            <div class="right-titpos">
+                @include('layouts.tabs')
+            </div>
+
             <div class="panel-heading">筛选</div>
             <div class="panel-body">
                 <form action=" " method="post" class="form-horizontal" role="form">

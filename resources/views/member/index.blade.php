@@ -278,41 +278,21 @@
                                             @endif
                                         @endif
                                     </td>
-                                    <td style="overflow:visible;">
-                                        <div class="btn-group btn-group-sm">
-                                            <a class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-                                               aria-expanded="false" href="javascript:;">操作 <span class="caret"></span></a>
-                                            <ul class="dropdown-menu dropdown-menu-left" role="menu"
-                                                style='z-index: 9999'>
-                                                <li>
-                                                    <a href="{{yzWebUrl('member.member.detail', ['id' => $row['uid']])}}"
-                                                       title="会员详情"><i class='fa fa-edit'></i> 会员详情</a></li>
-                                                @if($set['form_id'])
-                                                    <li>
-                                                        <a href="{{yzWebUrl('plugin.diyform.admin.diyform-data.get-member-form-data', ['member_id' => $row['uid'],'form_type'=>'register'])}}"
-                                                           title="会员详情"><i class='fa fa-edit'></i> 自定义表单信息</a></li>
-                                                @endif
-                                                <li>
-                                                    <a href="{{yzWebUrl('order.list', ['search[ambiguous][field]' => 'order','search[ambiguous][string]'=>'uid:'.$row['uid']])}}"
-                                                       title='会员订单'><i class='fa fa-list'></i> 会员订单</a></li>
-                                                <li><a href="{{yzWebUrl('finance.point-recharge',['id'=>$row['uid']])}}"
-                                                       title='充值积分'><i class='fa fa-credit-card'></i> 充值积分</a></li>
-                                                <li>
-                                                    <a href="{{yzWebUrl('finance.balance.recharge', ['member_id'=>$row['uid']])}}"
-                                                       title='充值余额'><i class='fa fa-money'></i> 充值余额 </a></li>
-                                                <li><a href="{{yzWebUrl('member.member.agent', ['id'=>$row['uid']])}}"
-                                                       title='我的下线'><i class='fa fa-exchange'></i> 推广下线 </a></li>
+                                    <td  style="overflow:visible;">
+                                        <div class="btn-group btn-group-sm" >
+                                            <a class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="javascript:;">操作 <span class="caret"></span></a>
+                                            <ul class="dropdown-menu dropdown-menu-left" role="menu" style='z-index: 9999'>
+                                                <li><a href="{{yzWebUrl('member.member.detail', ['id' => $row['uid']])}}" title="会员详情"><i class='fa fa-edit'></i> 会员详情</a></li>
+                                                <li><a  href="{{yzWebUrl('order.list', ['search[ambiguous][field]' => 'order','search[ambiguous][string]'=>'uid:'.$row['uid']])}}" title='会员订单'><i class='fa fa-list'></i> 会员订单</a></li>
+                                                <li><a href="{{yzWebUrl('finance.point-recharge',['id'=>$row['uid']])}}" title='充值积分'><i class='fa fa-credit-card'></i> 充值积分</a></li>
+                                                <li><a href="{{yzWebUrl('finance.balance.recharge', ['member_id'=>$row['uid']])}}" title='充值余额'><i class='fa fa-money'></i> 充值余额 </a></li>
+                                                <li><a href="{{yzWebUrl('member.member.agent', ['id'=>$row['uid']])}}" title='我的下线'><i class='fa fa-exchange'></i> 推广下线 </a></li>
                                                 @if($row['yz_member']['is_black']==1)
-                                                    <li>
-                                                        <a href="{{yzWebUrl('member.member.black', ['id' => $row['uid'],'black'=>0])}}"
-                                                           title='取消黑名单'><i class='fa fa-minus-square'></i> 取消黑名单</a>
-                                                    </li>
+                                                    <li><a href="{{yzWebUrl('member.member.black', ['id' => $row['uid'],'black'=>0])}}" title='取消黑名单'><i class='fa fa-minus-square'></i> 取消黑名单</a></li>
                                                 @else
-                                                    <li>
-                                                        <a href="{{yzWebUrl('member.member.black', ['id' => $row['uid'],'black'=>1])}}"
-                                                           title='设置黑名单'><i class='fa fa-minus-circle'></i> 设置黑名单</a>
-                                                    </li>
+                                                    <li><a href="{{yzWebUrl('member.member.black', ['id' => $row['uid'],'black'=>1])}}" title='设置黑名单'><i class='fa fa-minus-circle'></i> 设置黑名单</a></li>
                                                 @endif
+
                                                 <li>
                                                     <a href="{{yzWebUrl('member.member.delete', ['id' => $row['uid']])}}"
                                                        title='删除会员' onclick="return confirm('确定要删除该会员吗？');"><i class='fa fa-remove'></i> 删除会员</a>

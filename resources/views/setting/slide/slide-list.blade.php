@@ -4,13 +4,7 @@
 
     <div class="w1200 m0a">
         <div class="rightlist">
-            <!-- 新增加右侧顶部三级菜单 -->
-            <div class="right-titpos">
-                <ul class="add-snav">
-                    <li class="active"><a href="#">商城设置</a></li>
-                </ul>
-            </div>
-            @include('setting.shop.tabs')
+
             <form action="" method="post">
                 <div class="panel panel-default">
                     <div class="panel-body table-responsive">

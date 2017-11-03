@@ -3,11 +3,11 @@
 @section('content')
 
     <div class="main rightlist">
-        <div class="right-titpos">
+        {{--<div class="right-titpos">
             <ul class="add-snav">
                 <li class="active"><a href="#"> 余额设置</a></li>
             </ul>
-        </div>
+        </div>--}}
 
         <form action="{{ yzWebUrl('finance.balance.index') }}" method="post" class="form-horizontal form" enctype="multipart/form-data">
             <div class="panel panel-default">

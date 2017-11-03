@@ -3,6 +3,11 @@
 @section('content')
 
     <div class="main rightlist">
+        <div class="right-titpos">
+            @include('layouts.tabs')
+        </div>
+
+
         <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data">
             <div class="panel panel-default">
                 <div class="panel-heading">

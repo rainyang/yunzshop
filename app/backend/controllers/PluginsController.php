@@ -17,6 +17,7 @@ use Illuminate\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\Request;
 use app\common\services\PluginManager;
+use Illuminate\Support\Facades\Config;
 
 class PluginsController extends BaseController
 {
@@ -74,6 +75,18 @@ class PluginsController extends BaseController
         
         return view('admin.plugins',[
             'installed' => $installed
+        ]);
+    }
+
+    public function getPluginList()
+    {
+        //$plugins = new PluginManager(app(),new OptionRepository(),new Dispatcher(),new Filesystem());
+        //$plugins = $plugins->getPlugins();
+
+        $plugins = Config::get('plugins_menu');
+        //dd($plugins);exit;
+        return view('admin.pluginslist',[
+            'plugins' => $plugins
         ]);
     }
 

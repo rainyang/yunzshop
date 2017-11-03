@@ -1,13 +1,12 @@
 @extends('layouts.base')
 @section('title', '会员关系基础设置')
 @section('content')
+    @include('layouts.tabs')
     <section class="content">
 
         <form id="setform" action="" method="post" class="form-horizontal form">
             <div class='panel panel-default'>
-                <div class='panel-heading'>
-                    {{trans('基础设置')}}
-                </div>
+
                 <div class='panel-body'>
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">Banner</label>

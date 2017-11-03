@@ -137,10 +137,10 @@
             </div>
 
             <div class="form-group col-xs-12 col-sm-4">
-
-                <input type="button" class="btn btn-success" id="export" value="导出">
-
-                <input type="button" class="btn btn-success pull-right" id="search" value="搜索">
+                <div style="width: 110px;margin: auto;">
+                    <input type="button" class="btn btn-success" id="export" value="导出">
+                    <input type="button" class="btn btn-success pull-right" id="search" value="搜索">
+                </div>
 
             </div>
 
@@ -172,7 +172,7 @@
         <table class="table">
             <thead>
             <tr>
-                <th style='width:5%;'><input id="all" type="checkbox" value="0"> 全选</th>
+                <th style='width:8%;'><input id="all" type="checkbox" value="0"> 全选</th>
                 <th style='width:20%;'>提现编号</th>
                 <th style='width:10%;'>粉丝</th>
                 <th style='width:10%;'>姓名</br>手机</th>
