@@ -24,10 +24,10 @@ class TestController extends ApiController
         $data = $paymentTypes->map(function (BasePayment $paymentType) {
             return [
                 'name' => $paymentType->getName(),
-                'value' => $paymentType->getCode(),
+                'value' => $paymentType->getId(),
                 'need_password' => $paymentType->needPassword(),
             ];
-        });
+        })->values();
         dd($data);
         exit;
 
