@@ -76,9 +76,7 @@
 
 </style>
 <div class="right-titpos">
-    <ul class="add-snav">
-        <li class="active"><a href="#">提现记录</a></li>
-    </ul>
+    @include('layouts.tabs')
 </div>
 
 {{--<form action="" method="post" class="form-horizontal">--}}
