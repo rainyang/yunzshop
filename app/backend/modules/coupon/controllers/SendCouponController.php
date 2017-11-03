@@ -94,7 +94,7 @@ class SendCouponController extends BaseController
                 default:
                     $memberIds = '';
             }
-            
+
             //获取发放的数量
             $sendTotal = \YunShop::request()->send_total;
             $getTotal = MemberCoupon::uniacid()->where("coupon_id", $couponModel->id)->count();
