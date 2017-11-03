@@ -112,7 +112,7 @@ class MergePayController extends ApiController
      */
     private function getPayTypeButtons($order)
     {
-        $paymentTypes = app('PaymentManager')->make('OrderPaymentManger')->getOrderPaymentTypes($order);
+        $paymentTypes = app('PaymentManager')->make('OrderPaymentManager')->getOrderPaymentTypes($order);
         return $paymentTypes->map(function (BasePayment $paymentType) {
             return [
                 'name' => $paymentType->getName(),
