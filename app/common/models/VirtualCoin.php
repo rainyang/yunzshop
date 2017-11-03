@@ -73,9 +73,9 @@ abstract class VirtualCoin extends BaseModel
 
     public function toArray()
     {
-        $this->amountOfCoin = $this->getCoin();
+        $this->amountOfCoin = sprintf('%.2f', $this->getCoin());
 
-        $this->amountOfMoney = $this->getMoney();
+        $this->amountOfMoney = sprintf('%.2f', $this->getCoin());
 
         return parent::toArray();
     }
