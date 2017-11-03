@@ -1700,7 +1700,7 @@ return [
                         'icon'              => '',
                         'sort'              => 0,
                         'item'              => 'withdraw_records_see',
-                        'parents'           => ['finance','withdraw','withdraw_records'],
+                        'parents'           => ['finance','withdraw_records'],
                     ],
 
                     'withdraw_records_export' => [
@@ -1712,7 +1712,7 @@ return [
                         'icon'              => '',
                         'sort'              => 0,
                         'item'              => 'withdraw_records_export',
-                        'parents'           => ['finance','withdraw','withdraw_records'],
+                        'parents'           => ['finance','withdraw_records'],
                     ],
 
                     'withdraw_records_balance_detail' => [
@@ -1724,7 +1724,7 @@ return [
                         'icon'              => '',
                         'sort'              => 0,
                         'item'              => 'withdraw_records_balance_detail',
-                        'parents'           => ['finance','withdraw','withdraw_records'],
+                        'parents'           => ['finance','withdraw_records'],
                     ],
                     'withdraw_records_balance_examine' => [
                         'name'              => '余额审核打款',
@@ -1735,7 +1735,7 @@ return [
                         'icon'              => '',
                         'sort'              => 0,
                         'item'              => 'withdraw_records_balance_examine',
-                        'parents'           => ['finance','withdraw','withdraw_records'],
+                        'parents'           => ['finance','withdraw_records'],
                     ],
 
                     'withdraw_records_detail' => [
@@ -1747,7 +1747,7 @@ return [
                         'icon'              => '',
                         'sort'              => 0,
                         'item'              => 'withdraw_records_detail',
-                        'parents'           => ['finance','withdraw','withdraw_records'],
+                        'parents'           => ['finance','withdraw_records'],
                     ],
 
                     'withdraw_records_examine' => [
@@ -1759,7 +1759,7 @@ return [
                         'icon'              => '',
                         'sort'              => 0,
                         'item'              => 'withdraw_records_examine',
-                        'parents'           => ['finance','withdraw','withdraw_records'],
+                        'parents'           => ['finance','withdraw_records'],
                     ],
 
                     'withdraw_status_wait_audit' => [
@@ -1771,7 +1771,7 @@ return [
                         'icon'              => 'fa-clock-o',
                         'sort'              => 0,
                         'item'              => 'withdraw_status_wait_audit',
-                        'parents'           => ['finance','withdraw','withdraw_records'],
+                        'parents'           => ['finance','withdraw_records'],
                     ],
 
                     'withdraw_status_wait_pay' => [
@@ -1783,7 +1783,7 @@ return [
                         'icon'              => 'fa-inbox',
                         'sort'              => 0,
                         'item'              => 'withdraw_status_wait_pay',
-                        'parents'           => ['finance','withdraw','withdraw_records'],
+                        'parents'           => ['finance','withdraw_records'],
                     ],
 
                     'withdraw_status_pay' => [
@@ -1795,7 +1795,7 @@ return [
                         'icon'              => 'fa-check-circle-o',
                         'sort'              => 0,
                         'item'              => 'withdraw_status_pay',
-                        'parents'           => ['finance','withdraw','withdraw_records'],
+                        'parents'           => ['finance','withdraw_records'],
                     ],
 
                     'withdraw_status_arrival' => [
@@ -1807,7 +1807,7 @@ return [
                         'icon'              => 'fa-stack-overflow',
                         'sort'              => 0,
                         'item'              => 'withdraw_status_arrival',
-                        'parents'           => ['finance','withdraw','withdraw_records'],
+                        'parents'           => ['finance','withdraw_records'],
                     ],
 
                     'withdraw_status_invalid' => [
@@ -1819,7 +1819,7 @@ return [
                         'icon'              => 'fa-times-circle',
                         'sort'              => 0,
                         'item'              => 'withdraw_status_invalid',
-                        'parents'           => ['finance','withdraw','withdraw_records'],
+                        'parents'           => ['finance','withdraw_records'],
                     ],
 
 
