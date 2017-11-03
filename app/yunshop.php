@@ -64,7 +64,7 @@ class YunShop
         if (self::isWeb()) {
             //菜单生成
             $menu_array = Config::get('app.menu');
-            if (!\Cache::has('db_menu') || 1) {
+            if (!\Cache::has('db_menu')) {
                 $dbMenu = Config::get($menu_array['main_menu']);//$dbMenu = Menu::getMenuList();
                 \Cache::put('db_menu', $dbMenu, 3600);
             } else {
