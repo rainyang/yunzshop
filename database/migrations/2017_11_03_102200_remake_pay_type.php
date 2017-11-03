@@ -20,6 +20,9 @@ class RemakePayType extends Migration
                     if (!Schema::hasColumn('yz_pay_type', 'setting_key')) {
                         $table->string('setting_key')->nullable();
                     }
+                    if (!Schema::hasColumn('yz_pay_type', 'need_password')) {
+                        $table->integer('need_password')->default(0);
+                    }
                 });
         }
         \Illuminate\Support\Facades\DB::select('INSERT INTO `ims_yz_pay_type` (`id`, `name`, `code`, `setting_key`, `type`, `plugin_id`, `unit`, `updated_at`, `created_at`, `deleted_at`, `need_password`)
