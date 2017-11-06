@@ -11,6 +11,7 @@ namespace app\frontend\modules\finance\controllers;
 
 
 use app\common\exceptions\AppException;
+use app\common\facades\Setting;
 use app\common\services\credit\ConstService;
 use app\common\services\finance\BalanceChange;
 use app\common\services\finance\BalanceNoticeService;
@@ -18,6 +19,7 @@ use app\frontend\models\Member;
 use app\frontend\models\MemberShopInfo;
 use app\frontend\modules\finance\models\Withdraw;
 use app\frontend\modules\finance\models\WithdrawSetLog;
+use app\frontend\modules\finance\services\WithdrawManualService;
 use Illuminate\Support\Facades\DB;
 
 class BalanceWithdrawController extends BalanceController
@@ -45,6 +47,7 @@ class BalanceWithdrawController extends BalanceController
             'balance'       => $this->memberModel->credit2 ?: 0,
             'wechat'        => $this->balanceSet->withdrawWechat(),
             'alipay'        => $this->balanceSet->withdrawAlipay(),
+            'manual'        => $this->balanceSet->withdrawManual(),
             'poundage'      => $this->getPagePoundage(),
         ];
 
@@ -59,6 +62,15 @@ class BalanceWithdrawController extends BalanceController
         }
 
         return $this->withdrawStart();
+    }
+
+
+    public function isCanSubmit()
+    {
+        if ($this->balanceSet->withdrawManual()) {
+            return $this->successJson('ok', $this->manualIsCanSubmit());
+        }
+        return $this->errorJson('未开启余额手动提现');
     }
 
 
@@ -92,6 +104,14 @@ class BalanceWithdrawController extends BalanceController
         }
         if ($withdrawType == 'alipay' && !$this->getMemberAlipaySet()) {
             return $this->errorJson('您未配置支付宝信息，请先修改个人信息中支付宝信息');
+        }
+        if ($withdrawType == 'manual' && !$this->balanceSet->withdrawManual()) {
+            return $this->errorJson('未开启余额手动提现提现');
+        }
+
+        $manual_result = $this->manualIsCanSubmit();
+        if ($withdrawType == 'manual' && !$manual_result['status']) {
+            return $this->errorJson('需要完善信息',$manual_result);
         }
 
 
@@ -166,7 +186,8 @@ class BalanceWithdrawController extends BalanceController
             'pay_way'               => $this->getWithdrawType(),                    //打款方式
             'status'                => '0',                                         //0未审核，1未打款，2已打款， -1无效
             'actual_amounts'        => bcsub($this->getWithdrawMoney(),$this->getPoundage(),2),
-            'actual_poundage'       => $this->getPoundage()
+            'actual_poundage'       => $this->getPoundage(),
+            'manual_type'           => Setting::get('withdraw.balance')['balance_manual_type'] ?: 1,
         );
     }
 
@@ -267,11 +288,36 @@ class BalanceWithdrawController extends BalanceController
             case 2:
                 return 'alipay';
                 break;
+            case 3:
+                return 'manual';
+                break;
             default:
                 throw new AppException('未找到提现类型');
                 break;
         }
     }
+
+    private function manualIsCanSubmit()
+    {
+        $manual_type = Setting::get('withdraw.balance')['balance_manual_type'] ?: 1;
+        $manualService = new WithdrawManualService();
+
+        switch ($manual_type) {
+            case 2:
+                $result['manual_type'] = 'wechat';
+                $result['status'] = $manualService->getWeChatStatus();
+                break;
+            case 3:
+                $result['manual_type'] = 'alipay';
+                $result['status'] = $manualService->getAlipayStatus();
+                break;
+            default:
+                $result['manual_type'] = 'bank';
+                $result['status'] = $manualService->getBankStatus();
+        }
+        return $result;
+    }
+
 
 
 

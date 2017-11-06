@@ -184,4 +184,16 @@ class MemberShopInfo extends BackendModel
             ->where('withdraw_mobile', $mobile)
             ->first();
     }
+
+    /**
+     * 获取该公众号下所有用户的 member ID
+     *
+     * @return mixed
+     */
+    public static function getYzMembersId()
+    {
+        return static::uniacid()
+            ->select (['member_id'])
+            ->get();
+    }
 }
