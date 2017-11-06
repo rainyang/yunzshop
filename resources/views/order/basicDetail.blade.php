@@ -212,13 +212,13 @@
                     <td colspan="8">
                         @if ($order_goods['goods']['status'] == 1)
                             <label data="1"
-                                   class="label label-default text-default label-info text-pinfo">上架</label>
+                                   class="label label-default  label-info">上架</label>
                         @else
                             <label data="1"
-                                   class="label label-default text-default label-info text-pinfo">下架</label>
+                                   class="label label-default label-info ">下架</label>
                         @endif
                         <label data="1"
-                               class="label label-default text-default label-info text-pinfo">
+                               class="label label-default label-info">
                             @if ($order_goods['goods']['type'] == 1)
                                 实体商品
                             @else

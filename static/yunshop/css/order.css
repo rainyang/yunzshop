@@ -53,14 +53,14 @@
 .panel.panel-default{overflow: hidden}
 .order-info{    overflow: hidden;
     padding: 10px 10px 0;}
-.order-info .order-title{float:left;border:1px solid #ccc;margin-top:5px;margin-bottom:0px;table-layout: fixed;}
-.order-info .order-main{float:left;border:1px solid #ccc;border-top:none;table-layout: fixed;}
+.order-info .order-title{float:left;border-left:1px solid #ccc;border-right:1px solid #ccc;margin-top:5px;margin-bottom:0px;table-layout: fixed;}
+.order-info .order-main{float:left;border:1px solid #ccc;border-top:none;table-layout: fixed;background-color: #fff;margin-bottom: 0px;}
 .order-info .order-main .trbody .top{border-left:none;text-align: left;/*width:400px*/;}
 .order-info .order-main .trbody .price{border-left:none;text-align:left;}
 .order-info .order-main .trbody .goods-price{width:100%;}
 .order-info .order-main .trbody .goods-price tr td{border:none;text-align:right;}
-.order-info .order-title tbody tr td.left{ border-bottom:1px solid #ccc;background:#f8f8f8;border-top:1px solid #ccc;}
-.order-info .order-title tbody tr td.right{ border-bottom:1px solid #ccc;background:#f8f8f8;text-align: center;border-top:1px solid #ccc;}
+.order-info .order-title tbody tr td.left{ background:#f8f8f8;border-top:1px solid #ccc;}
+.order-info .order-title tbody tr td.right{ background:#f8f8f8;text-align: center;border-top:1px solid #ccc;}
 #pager{background: #fff;
     padding: 0 15px 15px;overflow: hidden}
 .label.label-info{margin-top: 0 !important;}

@@ -129,7 +129,7 @@
                                     </button>
                                     <h3>收入信息</h3>
 
-                                    @foreach($row['detail'] as $data)
+                                    @foreach(json_decode($row['detail'],true) as $data)
                                         <div class="form-group">{{$data['title']}}</div>
                                         @foreach($data['data'] as $value)
 

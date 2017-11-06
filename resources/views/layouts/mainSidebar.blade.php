@@ -1,56 +1,46 @@
-<aside class="main-sidebar">
 
     <!-- sidebar: style can be found in sidebar.less -->
-    <section class="sidebar">
+    <section  class="sidebar" data-active-color="blue" data-background-color="black" data-image="../assets/img/sidebar-1.jpg">
 
-        <!-- Sidebar Menu -->
-        <ul class="sidebar-menu">
-            <li class="header" style="color: white">栏目导航</li>
-            <!-- Optionally, you can add icons to the links -->
-            @if(YunShop::app()->role)
-                <li>
-                    <a href="{{yzWebFullUrl('index.index')}}">
-                        <i class="fa fa-dashboard"></i>
-                        <span>控制面板</span>
-                    </a>
-                </li>
-            @endif
 
-            @foreach(config(config('app.menu_key','menu')) as $key=>$value)
-                @if(isset($value['menu']) && $value['menu'] == 1 && can($key))
-                    @if(isset($value['child']) && array_child_kv_exists($value['child'],'menu',1))
+        <div class="sidebar-wrapper">
 
-                        <li class="treeview {{in_array($key,Yunshop::$currentItems) ? 'active' : ''}}">
-                            <a href="javascript:void(0);">
-                                <i class="fa {{array_get($value,'icon','fa-circle-o') ?: 'fa-circle-o'}}"></i>
-                                <span class="pull-right-container">
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </span>
-                                <span>{{$value['name']}}</span>
-                            </a>
-                            @include('layouts.childMenu',['childs'=>$value['child'],'item'=>$key])
-                        </li>
-                    @elseif($value['menu'] == 1)
-                        <li class="{{in_array($key,Yunshop::$currentItems) ? 'active' : ''}}">
-                            <a href="{{isset($value['url']) ? yzWebFullUrl($value['url']):''}}{{$value['url_params'] or ''}}">
-                                <i class="fa {{array_get($value,'icon','fa-circle-o') ?: 'fa-circle-o'}}"></i>
-                                <span>{{$value['name'] or ''}}</span>
-                            </a>
-                        </li>
+            <ul class="nav">
+
+                @foreach(config(config('app.menu_key','menu')) as $key=>$value)
+
+                    @if(isset($value['menu']) && $value['menu'] == 1 && can($key) && $value['left_first_show'] == 1)
+
+                        @if(isset($value['child']) && array_child_kv_exists($value['child'],'menu',1))
+
+                            <li class="{{in_array($key,Yunshop::$currentItems) ? 'active' : ''}}">
+                                <a href="{{isset($value['url']) ? yzWebFullUrl($value['url']):''}}{{$value['url_params'] or ''}}">
+                                    <i class="fa {{array_get($value,'icon','fa-circle-o') ?: 'fa-circle-o'}}"></i>
+                                    {{--<span class="pull-right-container">--}}
+                                        {{--<i class="fa fa-angle-left pull-right"></i>--}}
+                                    {{--</span>--}}
+                                    <p style=" margin-top: -5px;">{{$value['name']}}</p>
+                                </a>
+                                {{--@include('layouts.childMenu',['childs'=>$value['child'],'item'=>$key])--}}
+                            </li>
+                        @elseif($value['menu'] == 1)
+                            <li class="{{in_array($key,Yunshop::$currentItems) ? 'active' : ''}}">
+                                <a href="{{isset($value['url']) ? yzWebFullUrl($value['url']):''}}{{$value['url_params'] or ''}}">
+                                    <i class="fa {{array_get($value,'icon','fa-circle-o') ?: 'fa-circle-o'}}"></i>
+                                    <p style=" margin-top: -5px;">{{$value['name'] or ''}}</p>
+                                </a>
+                            </li>
+                        @endif
                     @endif
-                @endif
-            @endforeach
-        </ul>
+                @endforeach
+            </ul>
+            {{--菜单结束--}}
+        </div>
+        <!-- Sidebar Menu -->
+
         <!-- /.sidebar-menu -->
     </section>
-    <!-- /.sidebar -->
-</aside>
 
-<style type="text/css">
-    .sidebar-menu {
-        min-height: 800px;
-    }
-</style>
 
 
 

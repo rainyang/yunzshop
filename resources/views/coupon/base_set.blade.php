@@ -3,7 +3,7 @@
 @section('content')
 
     <div class="rightlist">
-
+        @include('layouts.tabs')
 
         <form action="{{ yzWebUrl('coupon.base-set.store') }}" method="post" class="form-horizontal form" enctype="multipart/form-data">
             <div class='panel panel-default form-horizontal form'>

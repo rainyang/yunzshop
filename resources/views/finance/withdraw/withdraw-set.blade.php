@@ -18,8 +18,13 @@
  <style> .add-snav >li>a {height:46px!important}</style>
 <link href="{{static_url('yunshop/balance/balance.css')}}" media="all" rel="stylesheet" type="text/css"/>
     <div class="main rightlist">
-        <div class="right-titpos">
-            <ul class="add-snav" id="myTab">
+        {{--<div class="right-titpos">
+            <ul class="add-snav">
+                <li class="active"><a href="#"><i class="fa fa-circle-o" style="color: #33b5d2;"></i>提现设置</a></li>
+            </ul>
+        </div>--}}
+        <div>
+            <ul class="add-shopnav" id="myTab">
                 <li class="active" ><a href="#tab_balance">余额提现</a></li>
 
                 @foreach(Config::get('widget.withdraw') as $key=>$value)

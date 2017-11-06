@@ -6,19 +6,23 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <html>
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>@yield('title') | {{YunShop::app()->account['name']}} - 后台管理系统</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <meta name="_token" content="{{ csrf_token() }}"/>
     <!-- Bootstrap 3.3.6 -->
-    <link rel="stylesheet" href="{{static_url('yunshop/bootstrap/css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{static_url('assets/css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{static_url('assets/css/demo.css')}}">
     <!-- Font Awesome -->
+    <link rel="stylesheet" href="{{static_url('assets/css/material-dashboard.css?v=1.2.0')}}">
     <link rel="stylesheet" href="{{static_url('yunshop/libs/font-awesome/4.5.0/css/font-awesome.min.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{static_url('assets/css/google-font.css?family=Roboto:300,400,500,700|Material+Icons')}}" />
+
     <!-- Ionicons -->
     <link rel="stylesheet" href="{{static_url('yunshop/libs/ionicons/2.0.1/css/ionicons.min.css')}}">
     <!-- Theme style -->
-    <link rel="stylesheet" href="{{static_url('yunshop/dist/css/AdminLTE.css')}}">
+    {{--<link rel="stylesheet" href="{{static_url('yunshop/dist/css/AdminLTE.css')}}">--}}
 
     <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
           page. However, you can choose any other skin. Make sure you
@@ -29,7 +33,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 
     {{--loding--}}
-    <link href="{{static_url('yunshop/dist/css/load/load.css')}}" rel="stylesheet">
+    {{--<link href="{{static_url('yunshop/dist/css/load/load.css')}}" rel="stylesheet">--}}
     <link rel="stylesheet" type="text/css" href="{{static_url('css/webstyle.css')}}">
     @yield('css')
     {!! yz_header('admin') !!}
@@ -75,6 +79,49 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- jQuery 2.2.0 -->
     <script src="//cdn.bootcss.com/jquery/2.2.3/jquery.min.js"></script>
     <script type="text/javascript" src="{{static_url('js/general.js')}}"></script>
+    <script type="text/javascript" src="{{static_url('js/clipboard.min.js')}}"></script>
+
+{{--    <script src="{{static_url('assets/js/bootstrap.min.js')}}" type="text/javascript"></script>--}}
+    <script src="{{static_url('assets/js/material.min.js')}}" type="text/javascript"></script>
+    <script src="{{static_url('assets/js/vue.js')}}" type="text/javascript"></script>
+    <script src="{{static_url('assets/js/perfect-scrollbar.jquery.min.js')}}" type="text/javascript"></script>
+    <!-- Library for adding dinamically elements -->
+    <script src="{{static_url('assets/js/arrive.min.js')}}" type="text/javascript"></script>
+    <!-- Forms Validations Plugin -->
+    <script src="{{static_url('assets/js/jquery.validate.min.js')}}"></script>
+    <!-- Promise Library for SweetAlert2 working on IE -->
+    <script src="{{static_url('assets/js/es6-promise-auto.min.js')}}"></script>
+    <!--  Plugin for Date Time Picker and Full Calendar Plugin-->
+    <script src="{{static_url('assets/js/moment.min.js')}}"></script>
+    <!--  Charts Plugin, full documentation here: https://gionkunz.github.io/chartist-js/ -->
+    <script src="{{static_url('assets/js/chartist.min.js')}}"></script>
+    <!--  Plugin for the Wizard, full documentation here: https://github.com/VinceG/twitter-bootstrap-wizard -->
+    <script src="{{static_url('assets/js/jquery.bootstrap-wizard.js')}}"></script>
+    <!--  Notifications Plugin, full documentation here: http://bootstrap-notify.remabledesigns.com/    -->
+    <script src="{{static_url('assets/js/bootstrap-notify.js')}}"></script>
+    <!--  Plugin for the DateTimePicker, full documentation here: https://eonasdan.github.io/bootstrap-datetimepicker/ -->
+    <script src="{{static_url('assets/js/bootstrap-datetimepicker.js')}}"></script>
+    <!-- Vector Map plugin, full documentation here: http://jvectormap.com/documentation/ -->
+    <script src="{{static_url('assets/js/jquery-jvectormap.js')}}"></script>
+    <!-- Sliders Plugin, full documentation here: https://refreshless.com/nouislider/ -->
+    <script src="{{static_url('assets/js/nouislider.min.js')}}"></script>
+    <!--  Google Maps Plugin    -->
+    <!--  Plugin for Select, full documentation here: http://silviomoreto.github.io/bootstrap-select -->
+    <script src="{{static_url('assets/js/jquery.select-bootstrap.js')}}"></script>
+    <!--  DataTables.net Plugin, full documentation here: https://datatables.net/    -->
+    <script src="{{static_url('assets/js/jquery.datatables.js')}}"></script>
+    <!-- Sweet Alert 2 plugin, full documentation here: https://limonte.github.io/sweetalert2/ -->
+    <script src="{{static_url('assets/js/sweetalert2.js')}}"></script>
+    <!-- Plugin for Fileupload, full documentation here: http://www.jasny.net/bootstrap/javascript/#fileinput -->
+    <script src="{{static_url('assets/js/jasny-bootstrap.min.js')}}"></script>
+    <!--  Full Calendar Plugin, full documentation here: https://github.com/fullcalendar/fullcalendar    -->
+    <script src="{{static_url('assets/js/fullcalendar.min.js')}}"></script>
+    <!-- Plugin for Tags, full documentation here: https://github.com/bootstrap-tagsinput/bootstrap-tagsinputs  -->
+    <script src="{{static_url('assets/js/jquery.tagsinput.js')}}"></script>
+    <!-- Material Dashboard javascript methods -->
+{{--    <script src="{{static_url('assets/js/material-dashboard.js')}}"></script>--}}
+
+    <script src="{{static_url('js/echarts.js')}}" type="text/javascript"></script>
 
     <script type="text/javascript" src="{{static_url('resource/js/app/util.js')}}"></script>
     <script type="text/javascript" src="{{static_url('resource/js/require.js')}}"></script>
@@ -84,37 +131,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 
 </head>
-<style type="text/css">
-    .red {float:left;color:red}
-    .white{float:left;color:#fff}
 
-    .tooltipbox {
-        background:#ffffff;border:1px solid #c40808; position:absolute; left:0;top:0; text-align:center;height:25px;
-        color:#c40808;padding:2px 5px 1px 5px; border-radius:3px;z-index:1000;
-    }
-    .red { float:left;color:red}
-</style>
-<!--
-BODY TAG OPTIONS:
-=================
-Apply one or more of the following classes to get the
-desired effect
-|---------------------------------------------------------|
-| SKINS         | skin-blue                               |
-|               | skin-black                              |
-|               | skin-purple                             |
-|               | skin-yellow                             |
-|               | skin-red                                |
-|               | skin-green                              |
-|---------------------------------------------------------|
-|LAYOUT OPTIONS | fixed                                   |
-|               | layout-boxed                            |
-|               | layout-top-nav                          |
-|               | sidebar-collapse                        |
-|               | sidebar-mini                            |
-|---------------------------------------------------------|
--->
-<body class="hold-transition skin-red sidebar-mini" >
+<body>
 <div id="loading">
     <div id="loading-center">
         <div id="loading-center-absolute">
@@ -128,47 +146,40 @@ desired effect
 <div class="wrapper">
 
     <!-- Main Header -->
+    @include('layouts.mainMenu')
+    @include('layouts.mainSidebar')
+
+    @if (Yunshop::isShowSecondMenu())
+        @include('layouts.secondSidebar')
+    @else
+        <style>
+            .main-panel{
+                width: calc(100% - 80px) !important;
+            }
+        </style>
+    @endif
     @include('layouts.mainHeader')
             <!-- Left side column. contains the logo and sidebar -->
-    @include('layouts.mainSidebar')
+
             <!-- Content Wrapper. Contains page content -->
 
-    <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
+    {{--<div class="content-wrapper">
         <section class="content-header">
-            {{--<h1>
-              @yield('pageHeader')
-              <small>@yield('pageDesc')</small>
-            </h1>
-            <ol class="breadcrumb">
-              <li><a href="/admin"><i class="fa fa-dashboard"></i> 控制面板</a></li>
-              <li class="active">Here</li>
-            </ol>--}}
-            <h6>
-              {{--  @if(Request::is('admin/log-viewer*'))
-                    仪表盘
-                @else
-                    {!! Breadcrumbs::render(Route::currentRouteName()) !!}
-                @endif--}}
 
+            <h6>
             </h6>
         </section>
-      @include('public.admin.message')
-        <!-- Main content -->
+        @include('public.admin.message')
         <section class="content">
-
             @yield('content')
-                    <!-- Your Page Content Here -->
-
         </section>
-        <!-- /.content -->
-    </div>
+    </div>--}}
     <!-- /.content-wrapper -->
 
 
     <!-- Add the sidebar's background. This div must be placed
          immediately after the control sidebar -->
-    <div class="control-sidebar-bg"></div>
+    {{--<div class="control-sidebar-bg"></div>--}}
 
 
 
@@ -191,5 +202,24 @@ desired effect
 {!! yz_footer('admin') !!}
 </div>
 <!-- ./wrapper -->
+<script>
+    if (Clipboard.isSupported()) {
+        var clipboard =  new Clipboard('.js-clip');
+        clipboard.on('success', function(e) {
+            //alert('复制成功');
+            swal({
+                title: "复制成功",
+                buttonsStyling: false,
+                confirmButtonClass: "btn btn-success"
+            });
+            //swal('Any fool can use a computer')
+            e.clearSelection();
+        });
+    } else {
+        $('.js-clip').each(function () {
+            util.clip(this, $(this).attr('data-url'));
+        });
+    }
+</script>
 </body>
 </html>

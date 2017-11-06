@@ -10,7 +10,7 @@
         <link rel="stylesheet" type="text/css" href="{{static_url('yunshop/goods/goods.css')}}"/>
 
         <div id="goods-index" class=" rightlist ">
-            <div class="right-titpos">
+            {{--<div class="right-titpos">
                 <ul class="add-snav">
                     <li class="active"><a href="#">商品发布</a></li>
 
@@ -20,7 +20,7 @@
 
                 </ul>
             </div>
-
+--}}
             <div class="right-addbox"><!-- 此处是右侧内容新包一层div -->
 
                 <div class="panel panel-info">
@@ -81,7 +81,7 @@
                                            value="" onclick="value='';" ／>
                                     <p class="line">—</p>
                                     <input class="form-control price" name="search[max_price]" id="max_price"
-                                           type="text" value="" onclick="value='';" ／>
+                                           type="text" value="" onclick="value='';">
                                 </div>
 
                                 <div class="form-group col-xs-12 col-sm-8 col-lg-5 goods-type">
@@ -139,14 +139,14 @@
                                     <th width="6%">ID</th>
                                     <th width="6%">排序</th>
                                     <th width="6%">{{$lang['good']}}</th>
-                                    <th width="26%">&nbsp;</th>
-                                    <th width="16%">{{$lang['price']}}<br/>{{$lang['repertory']}}</th>
+                                    <th width="31%">&nbsp;</th>
+                                    <th width="10%">{{$lang['price']}}<br/>{{$lang['repertory']}}</th>
 
-                                    <th width="10%">销量</th>
+                                    <th width="5%">销量</th>
 
                                     <th width="10%">@section('status')状态@show</th>
 
-                                    <th width="20%">操作</th>
+                                    <th width="25%">操作</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -165,7 +165,7 @@
                                             <img src="{{tomedia($item['thumb'])}}"
                                                  style="width:40px;height:40px;padding:1px;border:1px solid #ccc;"/>
                                         </td>
-                                        <td title="{{$item['title']}}" class='tdedit' width="26%">
+                                        <td title="{{$item['title']}}" class='tdedit' width="26%" style="white-space:normal">
                                             <span class=' fa-edit-item' style='cursor:pointer'><i class='fa fa-pencil'
                                                                                                   style="display:none"></i> <span
                                                         class="title">{{$item['title']}}</span> </span>
@@ -173,7 +173,7 @@
                                                  data-goodsid="{{$item['id']}}">
                                                 <input type='text' class='form-control' value="{{$item['title']}}"/>
                                                 <div class="input-group-btn">
-                                                    <button type="button" class="btn btn-default"
+                                                    <button type="button" class="btn btn-info"
                                                             data-goodsid='{{$item['id']}}' data-type="title"><i
                                                                 class="fa fa-check"></i></button>
                                                 </div>
@@ -190,7 +190,7 @@
                                                      data-goodsid="{{$item['id']}}">
                                                     <input type='text' class='form-control' value="{{$item['price']}}"/>
                                                     <div class="input-group-btn">
-                                                        <button type="button" class="btn btn-default"
+                                                        <button type="button" class="btn btn-info"
                                                                 data-goodsid='{{$item['id']}}' data-type="price"><i
                                                                     class="fa fa-check"></i></button>
                                                     </div>
@@ -207,7 +207,7 @@
                                                      data-goodsid="{{$item['id']}}">
                                                     <input type='text' class='form-control' value="{{$item['stock']}}"/>
                                                     <div class="input-group-btn">
-                                                        <button type="button" class="btn btn-default"
+                                                        <button type="button" class="btn btn-info"
                                                                 data-goodsid='{{$item['id']}}' data-type="stock"><i
                                                                     class="fa fa-check"></i></button>
                                                     </div>
@@ -221,7 +221,7 @@
                                         <td>
 
                                             <label data='{{$item['status']}}'
-                                                   class='label  label-default @if($item['status']==1) label-info @endif'
+                                                   class='@if($item['status']==1) btn btn-info @else  btn btn-default  @endif'
                                                    onclick="setProperty(this, {{$item['id']}},'status')">
                                                 @if($item['status']==1)
                                                     {{$lang['putaway']}}
@@ -232,61 +232,53 @@
 
                                         </td>
 
-                                        <td style="position:relative; overflow:visible;" width="20%">
+                                        <td style="position:relative; overflow:visible;" width="25%">
+                                            <div class="btn-group">
+                                            {{--<div class="td-actions text-right">--}}
+                                                {{--<a tabindex="0" class="btn btn-lg btn-danger" role="button" data-toggle="popover" data-trigger="focus" title="推广二维码" data-content="And here's some amazing content. It's very engaging. Right?">
+                                                    可消失的弹出框
+                                                </a>--}}
+                                                <a class="umphp" title="商品二维码"
+                                                   data-url="{{yzAppFullUrl('goods/'.$item['id'])}}"
+                                                   data-goodsid="{{$item['id']}}">
+                                                    <div class="img">
+                                                        {!! QrCode::size(120)->generate(yzAppFullUrl('goods/'.$item['id'])) !!}
+                                                    </div>
+                                                    <span>推广链接</span>
+                                                </a>
+                                                <a href="{{$yz_url($copy_url, array('id' => $item['id']))}}"
+                                                   title="{{$lang['copyshop']}}" class=""
+                                                   style="">复制商品</a>
+
+                                                <a href="{{$yz_url($edit_url, array('id' => $item['id']))}}"
+                                                   class="" title="编辑">编辑</a>
+
+                                                <a href="{{$yz_url($delete_url, array('id' => $item['id']))}}"
+                                                   onclick="return confirm('{{$delete_msg}}');
+                                                           return false;" class="" title="删除">删除</a>
+
+                                                <a href="javascript:;"
+                                                   data-clipboard-text="{{yzAppFullUrl('goods/'.$item['id'])}}" data-url="{{yzAppFullUrl('goods/'.$item['id'])}}"
+                                                   title="复制连接" class="js-clip">复制链接</a>
+                                            </div>
+                                            <div>
+                                                <label data='{{$item['is_new']}}'
+                                                       class='btn btn-sm @if($item['is_new']==1) btn-info @else btn-default @endif'
+                                                       onclick="setProperty(this,{{$item['id']}},'is_new')">新品</label>
+
+                                                <label data='{{$item['is_hot']}}'
+                                                       class='btn btn-sm @if($item['is_hot']==1) btn-info @else btn-default @endif'
+                                                       onclick="setProperty(this,{{$item['id']}},'is_hot')">热卖</label>
+
+                                                <label data='{{$item['is_recommand']}}'
+                                                       class='btn btn-sm @if($item['is_recommand']==1) btn-info @else btn-default @endif'
+                                                       onclick="setProperty(this,{{$item['id']}},'is_recommand')">推荐</label>
+
+                                                <label data='{{$item['is_discount']}}'
+                                                       class='btn btn-sm @if($item['is_discount']==1) btn-info @else btn-default @endif'
+                                                       onclick="setProperty(this,{{$item['id']}},'is_discount')">促销</label>
+                                            </div>
                                             <!-- yitian_add::商品链接二维码 2017-02-07 qq:751818588 -->
-                                            <a class="btn btn-sm btn-default umphp" title="商品二维码"
-                                               data-url="{{yzAppFullUrl('goods/'.$item['id'])}}"
-                                               data-goodsid="{{$item['id']}}">
-                                                <div class="img">
-                                                    {!! QrCode::size(120)->generate(yzAppFullUrl('goods/'.$item['id'])) !!}
-                                                </div>
-                                                <i class="fa fa-qrcode"></i>
-                                            </a>
-
-                                            <a href="{{$yz_url($copy_url, array('id' => $item['id']))}}"
-                                               title="{{$lang['copyshop']}}" class="btn btn-default btn-smjs-clip"
-                                               style="font-size: 13px;"><i class="fa fa-article"></i></a>
-
-                                            <a href="{{$yz_url($edit_url, array('id' => $item['id']))}}"
-                                               class="btn btn-sm btn-default" title="编辑"><i class="fa fa-edit"></i></a>
-
-                                            <a href="{{$yz_url($delete_url, array('id' => $item['id']))}}"
-                                               onclick="return confirm('{{$delete_msg}}');
-                                                       return false;" class="btn btn-default  btn-sm" title="删除"><i
-                                                        class="fa fa-trash"></i></a>
-
-                                            <a href="javascript:;"
-                                               data-url="{{yzAppFullUrl('goods/'.$item['id'])}}"
-                                               title="复制连接" class="btn btn-default btn-sm js-clip"><i
-                                                        class="fa fa-link"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr class="goods-state">
-                                        <td colspan="10">
-                                            <label class="empty"></label>
-
-                                            {{--@if($item['goods_sn'])
-                                                <label data='{{$item['isnew']}}'
-                                                       class='label label-default text-default'>商品编号：</label><span
-                                                        style="font-size:14px;color:#7B7B7B; margin-right:20px;">{{$item['goods_sn']}}</span>
-                                            @endif--}}
-                                            <label data='{{$item['is_new']}}'
-                                                   class='label label-default text-default @if($item['is_new']==1)label-info text-pinfo @endif'
-                                                   onclick="setProperty(this,{{$item['id']}},'is_new')">新品</label>-
-
-                                            <label data='{{$item['is_hot']}}'
-                                                   class='label label-default text-default @if($item['is_hot']==1)label-info text-pinfo @endif'
-                                                   onclick="setProperty(this,{{$item['id']}},'is_hot')">热卖</label>-
-
-                                            <label data='{{$item['is_recommand']}}'
-                                                   class='label label-default text-default @if($item['is_recommand']==1)label-info text-pinfo @endif'
-                                                   onclick="setProperty(this,{{$item['id']}},'is_recommand')">推荐</label>-
-
-                                            <label data='{{$item['is_discount']}}'
-                                                   class='label label-default text-default @if($item['is_discount']==1)label-info text-pinfo @endif'
-                                                   onclick="setProperty(this,{{$item['id']}},'is_discount')">促销</label>-
-
-
                                         </td>
                                     </tr>
 
@@ -316,7 +308,7 @@
 
 
                         </div>
-                        <div class='panel-footer'>
+                        <div style="margin-left:13px;margin-top:8px">
                             @section('add_goods')
                             <a class='btn btn-success ' href="{{yzWebUrl('goods.goods.create')}}"><i
                                         class='fa fa-plus'></i> 发布{{$lang['good']}}</a>
@@ -334,9 +326,7 @@
     </div>
 
     <script type="text/javascript">
-        $('.js-clip').each(function () {
-            util.clip(this, $(this).attr('data-url'));
-        });
+
         //鼠标划过显示商品链接二维码
         $('.umphp').hover(function () {
                     var url = $(this).attr('data-url');

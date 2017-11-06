@@ -42,7 +42,7 @@
 
                     </div>
                     <div class="row">
-                        <div class="col-md-6 sidebar scrollbox  left-menu-border content-height-scroll" >
+                        <div class="col-md-6  scrollbox  left-menu-border content-height-scroll" >
                             <ul class="nav nav-sidebar" id="upgrad_file">
                             </ul>
                         </div>
