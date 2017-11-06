@@ -24,7 +24,7 @@
             </div>
 
             <!-- 新增加右侧顶部三级菜单 -->
-        @include('setting.shop.tabs')
+        @include('layouts.tabs')
         <!-- 新增加右侧顶部三级菜单结束 -->
             <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" id="shopform" onsubmit="return checkform()" >
                 <div class="panel panel-default">
