@@ -1965,7 +1965,7 @@ return [
 
             ],
 
-            'goods_sales_count_charts'     => [
+           /* 'goods_sales_count_charts'     => [
                 'name'          => '商品数据统计',
                 'url'           => 'charts.goods.sales-count.index',
                 'url_params'    => '',
@@ -2017,7 +2017,7 @@ return [
 
 
                 ]
-            ],
+            ],*/
 
             'order_ranking_charts'     => [
                 'name'          => '会员订单排行',
