@@ -43,6 +43,16 @@
                         ￥{{number_format( $order['goods_price'] ,2)}}</td>
                 </tr>
                 <tr>
+                    <td style='border:none;text-align:right;'>优惠：</td>
+                    <td style='border:none;text-align:right;'>
+                        ￥{{number_format( $order['discount_price'] ,2)}}</td>
+                </tr>
+                <tr>
+                    <td style='border:none;text-align:right;'>抵扣：</td>
+                    <td style='border:none;text-align:right;'>
+                        ￥{{number_format( $order['deduction_price'] ,2)}}</td>
+                </tr>
+                <tr>
                     <td style='border:none;text-align:right;'>应收款：</td>
                     <td style='border:none;text-align:right;color:green;'>
                         ￥{{number_format($order['price'],2)}}</td>
