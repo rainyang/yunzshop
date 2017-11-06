@@ -126,6 +126,9 @@
                     @elseif($item['pay_way'] == 'alipay')
                         <input type="hidden" name="pay_way" value="2">
                         <input type="submit" name="submit_pay" value="打款到支付宝" class="btn btn-primary col-lg-1" style='margin-left:10px;' onclick='return '/>
+                    @elseif($item['pay_way'] == 'manual')
+                        <input type="hidden" name="pay_way" value="4">
+                        <input type="submit" name="submit_pay" value="手动打款" class="btn btn-primary " style='margin-left:10px;' onclick='return '/>
                     @endif
                 @endif
 
@@ -134,8 +137,10 @@
                 @endif
 
 
-                <input type="button" class="btn btn-default" name="submit" onclick="history.go(-1)" value="返回"
-                       style='margin-left:10px;'/>
+                    <button class="btn btn-default" style="margin-left: 10px;">
+                        <a href="{{ yzWebUrl('finance.withdraw.index') }}">返回</a>
+                    </button>
+
             </div>
         </form>
 
