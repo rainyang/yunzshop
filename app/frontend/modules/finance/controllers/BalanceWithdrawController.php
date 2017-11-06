@@ -65,6 +65,12 @@ class BalanceWithdrawController extends BalanceController
     }
 
 
+    public function isCanSubmit()
+    {
+        return $this->successJson('ok',$this->manualIsCanSubmit());
+    }
+
+
     private function getPagePoundage()
     {
         $withdraw_poundage = $this->balanceSet->withdrawPoundage();
