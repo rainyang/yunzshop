@@ -67,7 +67,10 @@ class BalanceWithdrawController extends BalanceController
 
     public function isCanSubmit()
     {
-        return $this->successJson('ok',$this->manualIsCanSubmit());
+        if ($this->balanceSet->withdrawManual()) {
+            return $this->successJson('ok', $this->manualIsCanSubmit());
+        }
+        return $this->errorJson('未开启余额手动提现');
     }
 
 
