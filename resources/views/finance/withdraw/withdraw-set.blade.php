@@ -74,9 +74,7 @@
                                                 <input type='radio' name='withdraw[balance][wechat]' value='0' @if($set['wechat'] == 0) checked @endif />
                                                 关闭
                                             </label>
-
                                         </div>
-
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -94,9 +92,53 @@
                                                 <input type='radio' name='withdraw[balance][alipay]' value='0' @if($set['alipay'] == 0) checked @endif />
                                                 关闭
                                             </label>
-
                                         </div>
+                                    </div>
+                                </div>
 
+
+                                <div class="form-group" style="margin-bottom: 30px;">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                                    <div class="col-sm-9 col-xs-12">
+                                        <div class="alipay" >
+                                            <label class='radio-inline' >手动提现</label>
+                                        </div>
+                                        <div class="switch">
+                                            <label class='radio-inline'>
+                                                <input type='radio' name='withdraw[balance][balance_manual]' value='1' @if($set['balance_manual'] == 1) checked @endif />
+                                                开启
+                                            </label>
+                                            <label class='radio-inline'>
+                                                <input type='radio' name='withdraw[balance][balance_manual]' value='0' @if($set['balance_manual'] == 0) checked @endif />
+                                                关闭
+                                            </label>
+                                            <span class='help-block'>手动提现包含 银行卡、微信号、支付宝等三种类型，会员需要完善对应资料才可以提现</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id='balance_manual' @if(empty($set['balance_manual']))style="display:none"@endif>
+                                    <div class="form-group">
+                                        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                                        <div class="col-sm-9 col-xs-12">
+                                            <div class="alipay" >
+                                                <label class='radio-inline' ></label>
+                                            </div>
+                                            <div class="switch">
+                                                <label class='radio-inline'>
+                                                    <input type='radio' name='withdraw[balance][balance_manual_type]' value='1' @if(empty($set['balance_manual_type']) || $set['balance_manual_type'] == 1) checked @endif />
+                                                    银行卡
+                                                </label>
+                                                <label class='radio-inline'>
+                                                    <input type='radio' name='withdraw[balance][balance_manual_type]' value='2' @if($set['balance_manual_type'] == 2) checked @endif />
+                                                    微信
+                                                </label>
+                                                <label class='radio-inline'>
+                                                    <input type='radio' name='withdraw[balance][balance_manual_type]' value='3' @if($set['balance_manual_type'] == 3) checked @endif />
+                                                    支付宝
+                                                </label>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -123,12 +165,12 @@
                                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                                     <div class="col-sm-9 col-xs-12">
                                         <div class="alipay" >
-                                            <label class='radio-inline' ></label>
+                                            <label class='radio-inline'></label>
                                         </div>
                                         <div class="cost" >
                                             <label class='radio-inline'>
                                                 <div class="input-group">
-                                                    <div class="input-group-addon" id="poundage_hint" style="width: 120px;">满额减免手续费</div>
+                                                    <div class="input-group-addon" id="poundage_hint" style="width: 120px;">@if($set['poundage_type'] == 1) 固定金额 @else 手续费比例 @endif</div>
                                                     <input type="text" name="withdraw[balance][poundage]" class="form-control" value="{{ $set['poundage'] or '' }}" placeholder="请输入提现手续费计算值"/>
                                                     <div class="input-group-addon" id="poundage_unit">%</div>
                                                 </div>
@@ -216,6 +258,14 @@
                 else {
                     $("#poundage_unit").html('%');
                     $("#poundage_hint").html('手续费比例')
+                }
+            });
+            $(":radio[name='withdraw[balance][balance_manual]']").click(function () {
+                if ($(this).val() == 1) {
+                    $("#balance_manual").show();
+                }
+                else {
+                    $("#balance_manual").hide();
                 }
             });
         })

@@ -9,10 +9,10 @@
 namespace app\backend\modules\finance\controllers;
 
 
+use app\common\exceptions\AppException;
 use app\common\models\Withdraw;
 use app\backend\modules\finance\services\WithdrawService;
 use app\common\components\BaseController;
-use app\common\facades\Setting;
 use app\common\services\finance\BalanceNoticeService;
 use Illuminate\Support\Facades\Log;
 
@@ -21,134 +21,233 @@ class BalanceWithdrawController extends BaseController
     private $withdrawModel;
 
 
-    private $withdrawPoundage;
-
-
     /**
      * 提现详情
      * @return mixed|string
      */
     public function detail()
     {
-        if (!$this->attachedMode()) {
-            return $this->message('数据错误，请刷新重试！','','error');
-        }
-
-        return view('finance.balance.withdraw', [
-            'item' => $this->withdrawModel->toArray(),
-        ])->render();
+        $this->withdrawModel = $this->attachedMode();
+        return view('finance.balance.withdraw', ['item' => $this->withdrawModel->toArray(),])->render();
     }
 
+
+    /**
+     * 提现审核、打款
+     * @return mixed
+     */
     public function examine()
     {
-        if (!$this->attachedMode()) {
-            return $this->message('数据错误，请刷新重试!', '', 'error');
+        $requestData = \YunShop::request();
+        $this->withdrawModel = $this->attachedMode();
+
+        //审核、重新审核
+        if (isset($requestData['submit_check'])) {
+            return $this->submitCheck();
         }
 
-        $requestData = \YunShop::request();
-        if (isset($requestData['submit_check']) || isset($requestData['submit_cancel'])) {
-            //审核--重新审核
-            $result = $this->submitCheck();
-            if ($result === true) {
-                return $this->message('提交审核成功', yzWebUrl("finance.balance-withdraw.detail", ['id' => $requestData['id']]));
-            }
-            return $this->message($result, yzWebUrl("finance.balance-withdraw.detail", ['id' => $requestData['id']]), 'error');
-        } elseif (isset($requestData['submit_pay'])) {
-            //打款
-            if ($this->withdrawModel->status !== 1) {
-                return $this->message('打款失败,数据不存在或不符合打款规则!', yzWebUrl("finance.balance-withdraw.detail", ['id' => $requestData['id']]), 'error');
-            }
-            $result = $this->submitPay();
-            if ($result === true) {
-               return $this->message('打款成功', yzWebUrl("finance.balance-withdraw.detail", ['id' => $requestData['id']]));
-            }
-            return $this->message($result ?: "打款失败", yzWebUrl("finance.balance-withdraw.detail", ['id' => $requestData['id']]), 'error');
+        //重新审核
+        if (isset($requestData['submit_cancel'])) {
+            return $this->submitCancel();
         }
-        return $this->message('提交数据有误，请刷新重试', yzWebUrl("finance.balance-withdraw.detail", ['id' => $requestData['id']]));
+
+        //打款
+        if (isset($requestData['submit_pay'])) {
+            return $this->submitPay();
+        }
+
+        return $this->message('提交数据有误，请刷新重试', yzWebUrl("finance.balance-withdraw.detail", ['id' => $this->getPostId()]));
     }
 
-    //提交审核
+
+    /**
+     * 提现审核
+     * @return mixed
+     */
     private function submitCheck()
     {
         $this->withdrawModel->status = $this->getPostStatus();
         $this->withdrawModel->audit_at = time();
-        $result = $this->withdrawUpdate();
-        if ($result !== true) {
-            return $result;
-        }
-        if ($this->withdrawModel->status == -1) {
-            BalanceNoticeService::withdrawFailureNotice($this->withdrawModel);
-        }
-        return true;
+
+        $this->withdrawUpdate();
+        return $this->message('提交审核成功', yzWebUrl("finance.balance-withdraw.detail", ['id' => $this->getPostId()]));
     }
 
 
-    //保存数据
-    private function withdrawUpdate()
+
+    /**
+     * 提现重新审核
+     * @return mixed
+     */
+    private function submitCancel()
     {
-        return $this->withdrawModel->save() ?: '数据修改失败，请刷新重试';
+        BalanceNoticeService::withdrawFailureNotice($this->withdrawModel);
+
+        return $this->submitCheck();
     }
 
-    //打款
+
+
+    /**
+     * 提现打款
+     * @return mixed
+     * @throws AppException
+     */
     private function submitPay()
     {
-        $resultPay = '';
-        $remark = '提现打款-' . $this->withdrawModel->type_name . '-金额:' . $this->withdrawModel->actual_amounts . '元,' .
-            '手续费:' . $this->withdrawModel->actual_poundage;
-        if ($this->withdrawModel->pay_way == 'alipay') {
-           $resultPay = $this->alipayWithdrawPay($remark);
-
-        } elseif ($this->withdrawModel->pay_way == 'wechat') {
-            //微信打款
-            $resultPay = $this->wechatWithdrawPay($remark);
+        if ($this->withdrawModel->status !== 1) {
+            throw new AppException('打款失败,数据不存在或不符合打款规则!');
         }
 
-        //file_put_contents(storage_path('logs/withdraw2.log'),print_r($resultPay,true));
-        if ($resultPay === true) {
-            $this->withdrawModel->pay_at = time();
-            $this->withdrawModel->status = 2;
-            if ($this->withdrawModel->save()) {
-                Log::info('打款完成!');
-                return true;
-            }
-        }
-        return $resultPay;
+        $this->withdrawModel->pay_at = time();
+        $this->withdrawModel->status = 2;
+
+        $this->withdrawUpdate();
+        return $this->payment();
     }
 
-    private function alipayWithdrawPay($remark, $withdraw=null)
-    {
-        if (!is_null($withdraw)) {
-            $resultPay = WithdrawService::alipayWithdrawPay($withdraw, $remark);
-        } else {
-            $resultPay = WithdrawService::alipayWithdrawPay($this->withdrawModel, $remark);
-        }
-        Log::info('MemberId:' . $this->withdrawModel->member_id . ', ' . $remark . "支付宝打款中!");
-        return $resultPay;
-    }
 
-    private function wechatWithdrawPay($remark)
+
+    /**
+     * 提现 model 数据保存
+     * @return bool
+     * @throws AppException
+     */
+    private function withdrawUpdate()
     {
-        $resultPay = WithdrawService::wechatWithdrawPay($this->withdrawModel, $remark);
-        //file_put_contents(storage_path('logs/withdraw1.log'),print_r($resultPay,true));
-        Log::info('MemberId:' . $this->withdrawModel->member_id . ', ' . $remark . "微信打款中!");
-        if ($resultPay !== true){
-            return $resultPay['message'];
+        if (!$this->withdrawModel->save()) {
+            throw new AppException('数据修改失败，请刷新重试');
         }
         return true;
     }
 
 
     /**
-     * 获取提现数据 model
+     * 提现打款，区分打款方式
      * @return mixed
+     * @throws AppException
+     */
+    private function payment()
+    {
+        switch ($this->withdrawModel->pay_way) {
+            case 'alipay':
+                return $this->alipayPayment($this->paymentRemark());
+                break;
+            case 'wechat':
+                return $this->wechatPayment();
+                break;
+            case 'manual':
+                return $this->manualPayment();
+                break;
+            default:
+                throw new AppException('未知打款方式！！！');
+        }
+    }
+
+
+
+    /**
+     * 打款日志（备注）
+     * @return string
+     */
+    private function paymentRemark()
+    {
+        return $remark = '提现打款-' . $this->withdrawModel->type_name . '-金额:' . $this->withdrawModel->actual_amounts . '元,' . '手续费:' . $this->withdrawModel->actual_poundage;
+    }
+
+
+
+    /**
+     * 支付宝打款
+     * @param $remark
+     * @param null $withdraw
+     */
+    private function alipayPayment($remark, $withdraw = null)
+    {
+        if (!is_null($withdraw)) {
+            $result = WithdrawService::alipayWithdrawPay($withdraw, $remark);
+        } else {
+            $result = WithdrawService::alipayWithdrawPay($this->withdrawModel, $remark);
+        }
+
+        Log::info('MemberId:' . $this->withdrawModel->member_id . ', ' . $remark . "支付宝打款中!");
+        if ($result !== true){
+            return $this->paymentError($result['message']);
+        }
+        return $result;
+    }
+
+
+
+    /**
+     * 微信打款
+     * @return mixed
+     */
+    private function wechatPayment()
+    {
+        $result = WithdrawService::wechatWithdrawPay($this->withdrawModel, $this->paymentRemark());
+        //file_put_contents(storage_path('logs/withdraw1.log'),print_r($resultPay,true));
+        Log::info('MemberId:' . $this->withdrawModel->member_id . ', ' . $this->paymentRemark() . "微信打款中!");
+
+        if ($result !== true){
+            return $this->paymentError($result['message']);
+        }
+        return $this->paymentSuccess();
+    }
+
+
+    /**
+     * 手动打款
+     * @return mixed
+     */
+    private function manualPayment()
+    {
+        return $this->paymentSuccess();
+    }
+
+
+
+    /**
+     * 打款成功
+     * @return mixed
+     */
+    private function paymentSuccess()
+    {
+        return $this->message('打款成功', yzWebUrl("finance.balance-withdraw.detail", ['id' => $this->getPostId()]));
+    }
+
+
+    /**
+     * 打款失败
+     * @param string $message
+     * @throws AppException
+     */
+    private function paymentError($message = '')
+    {
+        $this->withdrawModel->status = 1;
+        $this->withdrawUpdate();
+
+        throw new AppException($message ?: '打款失败，请重试');
+    }
+
+
+    /**
+     * 附值打款 model
+     * @return mixed
+     * @throws AppException
      */
     private function attachedMode()
     {
-        return $this->withdrawModel = Withdraw::getBalanceWithdrawById($this->getPostId());
+        $result = Withdraw::getBalanceWithdrawById($this->getPostId());
+
+        if (!$result) {
+            throw new AppException('数据错误，请刷新重试');
+        }
+        return $result;
     }
 
+
     /**
-     * 获取 post 提交的ID值
      * @return string
      */
     private function getPostId()
@@ -156,11 +255,20 @@ class BalanceWithdrawController extends BaseController
         return trim(\YunShop::request()->id);
     }
 
+
+    /**
+     * @return string
+     */
     private function getPostStatus()
     {
         return trim(\YunShop::request()->status);
     }
 
+
+    /**
+     * 丁冉增加批量打款
+     * @return mixed
+     */
     public function batchAlipay()
     {
         $ids = \YunShop::request()->ids;
@@ -186,7 +294,7 @@ class BalanceWithdrawController extends BaseController
 
             $remark = json_encode($remark);
 
-            $this->alipayWithdrawPay($remark, $withdraw);
+            $this->alipayPayment($remark, $withdraw);
         }
     }
 }
