@@ -2216,6 +2216,18 @@ return [
                         'item'              => 'setting_shop_notice',
                         'parents'           => ['system', 'Setting',],
                     ],
+
+                    'setting_shop_form' => [
+                        'name'              => '会员资料自定义表单',
+                        'url'               => 'setting.form.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => 'fa-bell-o',
+                        'sort'              => '7',
+                        'item'              => 'setting_shop_form',
+                        'parents'           => ['system', 'Setting',],
+                    ],
                 ],
             ],
 

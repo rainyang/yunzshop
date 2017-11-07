@@ -13,6 +13,7 @@ namespace app\frontend\modules\finance\controllers;
 use app\common\components\ApiController;
 use app\common\facades\Setting;
 use app\frontend\models\MemberShopInfo;
+use app\frontend\modules\finance\services\WithdrawManualService;
 use app\frontend\modules\member\models\MemberBankCard;
 
 class ManualTypeController extends ApiController
@@ -20,53 +21,23 @@ class ManualTypeController extends ApiController
     public function isCanSubmit()
     {
         $manual_type = Setting::get('withdraw.income')['manual_type'] ?: 1;
+        $manualService = new WithdrawManualService();
 
         switch ($manual_type) {
             case 2:
                 $result['manual_type'] = 'wechat';
-                $result['status'] = $this->getWeChatStatus();
+                $result['status'] = $manualService->getWeChatStatus();
                 break;
             case 3:
                 $result['manual_type'] = 'alipay';
-                $result['status'] = $this->getAlipayStatus();
+                $result['status'] = $manualService->getAlipayStatus();
                 break;
             default:
                 $result['manual_type'] = 'bank';
-                $result['status'] = $this->getBankStatus();
+                $result['status'] = $manualService->getBankStatus();
 
         }
         return $this->successJson('ok',$result);
-    }
-
-    private function getWeChatStatus()
-    {
-        $yzMember = MemberShopInfo::select('wechat')->where('member_id',\YunShop::app()->getMemberId())->first();
-        return $yzMember ? $yzMember->wechat ? true : false : false;
-    }
-
-    private function getAlipayStatus()
-    {
-        $yzMember = MemberShopInfo::select('alipayname','alipay')->where('member_id',\YunShop::app()->getMemberId())->first();
-        return $yzMember ? ($yzMember->alipayname && $yzMember->alipay) ? true : false : false;
-    }
-
-
-    private function getBankStatus()
-    {
-
-        $bankCard = MemberBankCard::select('member_name','bank_card','bank_name','bank_province','bank_city','bank_branch')
-            ->where('member_id', \YunShop::app()->getMemberId())->first();
-
-        if ($bankCard->member_name &&
-            $bankCard->bank_card &&
-            $bankCard->bank_name &&
-            $bankCard->bank_province &&
-            $bankCard->bank_city &&
-            $bankCard->bank_branch
-        ) {
-            return true;
-        }
-        return false;
     }
 
 

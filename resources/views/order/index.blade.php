@@ -75,6 +75,10 @@
                                                         @if( array_get($requestSearch,'pay_type','') == '3')  selected="selected"@endif>
                                                     余额支付
                                                 </option>
+                                                <option value="5"
+                                                        @if( array_get($requestSearch,'pay_type','') == '5')  selected="selected"@endif>
+                                                    后台付款
+                                                </option>
                                             </select>
                                         </div>
                                         <div class="form-group col-sm-8 col-lg-5 col-xs-12">

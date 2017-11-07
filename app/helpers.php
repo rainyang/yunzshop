@@ -11,7 +11,7 @@ use Ixudra\Curl\Facades\Curl;
     {
         $s = '';
         if (!defined('TPL_INIT_UEDITOR')) {
-            $s .= '<script type="text/javascript" src="../addons/yun_shop/app/common/components/ueditor/ueditor.config.js"></script><script type="text/javascript" src="../addons/yun_shop/app/common/components/ueditor/ueditor.all.min.js"></script><script type="text/javascript" src="../addons/yun_shop/app/common/components/ueditor/lang/zh-cn/zh-cn.js"></script>';
+            $s .= '<script type="text/javascript" src="../addons/yun_shop/app/common/components/ueditor/ueditor.config.js"></script><script type="text/javascript" src="../addons/yun_shop/app/common/components/ueditor/ueditor.all.min.js"></script><script type="text/javascript" src="../addons/yun_shop/app/common/components/ueditor/lang/zh-cn/zh-cn.js"></script><link href="/web/resource/components/webuploader/webuploader.css" rel="stylesheet"><link href="/web/resource/components/webuploader/style.css" rel="stylesheet">';
         }
         $options['height'] = empty($options['height']) ? 200 : $options['height'];
         $s .= !empty($id) ? "<textarea id=\"{$id}\" name=\"{$id}\" type=\"text/plain\" style=\"height:{$options['height']}px;\">{$value}</textarea>" : '';
@@ -20,7 +20,7 @@ use Ixudra\Curl\Facades\Curl;
 			var ueditoroption = {
 				'autoClearinitialContent' : false,
 				'toolbars' : [['fullscreen', 'source', 'preview', '|', 'bold', 'italic', 'underline', 'strikethrough', 'forecolor', 'backcolor', '|',
-					'justifyleft', 'justifycenter', 'justifyright', '|', 'insertorderedlist', 'insertunorderedlist', 'blockquote', 'emotion', 'insertvideo',
+					'justifyleft', 'justifycenter', 'justifyright', '|', 'insertorderedlist', 'insertunorderedlist', 'blockquote', 'emotion',
 					'link', 'removeformat', '|', 'rowspacingtop', 'rowspacingbottom', 'lineheight','indent', 'paragraph', 'fontsize', '|',
 					'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol',
 					'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', '|', 'anchor', 'map', 'print', 'drafts']],
@@ -94,6 +94,47 @@ use Ixudra\Curl\Facades\Curl;
 				});
 				return btn;
 			}, 19);
+			UE.registerUI('myinsertvideo',function(editor,uiName){
+    editor.registerCommand(uiName, {
+        execCommand:function(){
+            require(['../addons/yun_shop/static/js/fileUploader.min.js'],
+                function(uploader){
+                    uploader.show(function(video){
+                        if (!video) {
+                            return;
+                        } else {
+                            var videoType = video.isRemote ? 'iframe' : 'video';
+                            editor.execCommand('insertvideo', {
+                                'url' : video.url,
+                                'width' : 300,
+                                'height' : 200
+                            }, videoType);
+                        }
+                    }, {type:'video'});
+                }
+            );
+        }
+    });
+    var btn = new UE.ui.Button({
+        name: '插入视频',
+        title: '插入视频',
+        cssRules :'background-position: -320px -20px',
+        onclick:function () {
+            editor.execCommand(uiName);
+        }
+    });
+    editor.addListener('selectionchange', function () {
+        var state = editor.queryCommandState(uiName);
+        if (state == -1) {
+            btn.setDisabled(true);
+            btn.setChecked(false);
+        } else {
+            btn.setDisabled(false);
+            btn.setChecked(state);
+        }
+    });
+    return btn;
+}, 20);
 			".(!empty($id) ? "
 				$(function(){
 					var ue = UE.getEditor('{$id}', ueditoroption);
