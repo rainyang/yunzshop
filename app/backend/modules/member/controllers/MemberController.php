@@ -409,10 +409,12 @@ class MemberController extends BaseController
                 if (app('plugins')->isEnabled('commission')) {
                    $agents = Agents::uniacid()->where('member_id', $uid)->first();
 
-                   $agents->parent_id = $parent_id;
-                   $agents->parent    = $member->relation;
+                   if (!is_null($agents)) {
+                       $agents->parent_id = $parent_id;
+                       $agents->parent    = $member->relation;
 
-                   $agents->save();
+                       $agents->save();
+                   }
                 }
 
                 return response(['status' => 1])->send();
