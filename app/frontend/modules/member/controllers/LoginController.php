@@ -39,7 +39,9 @@ class LoginController extends ApiController
 
                     if (!empty($msg)) {
                         if ($msg['status'] == 1) {
-                            return $this->successJson($msg['json'], ['status'=> $msg['status'], 'return_url' => $_COOKIE['__cookie_client_url']?:'']);
+                            $uniacid = \YunShop::app()->uniacid;
+                            $url = Url::absoluteApp('member', ['i' => $uniacid]);
+                            return $this->successJson($msg['json'], ['status'=> $msg['status'], 'url' => $url]);
                         } else {
                             return $this->errorJson($msg['json'], ['status'=> $msg['status']]);
                         }
