@@ -42,7 +42,7 @@ class PermissionService
         if (self::isOwner()) {
             return true;
         }
-        if (static::isManager()) {
+        if (self::isManager()) {
             return true;
         }
         if (self::checkNoPermission($item) === true) {
