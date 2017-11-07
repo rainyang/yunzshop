@@ -10,6 +10,7 @@ namespace app\frontend\modules\member\controllers;
 
 use app\common\components\ApiController;
 use app\common\helpers\Client;
+use app\common\helpers\Url;
 use app\frontend\modules\member\services\factory\MemberFactory;
 
 class LoginController extends ApiController
