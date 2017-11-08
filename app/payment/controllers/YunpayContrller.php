@@ -11,6 +11,7 @@ use app\common\helpers\Url;
 use app\common\models\AccountWechats;
 use app\common\services\Pay;
 use app\payment\PaymentController;
+use Yunshop\YunPay\services\YunPayNotifyService;
 
 class YunpayContrller extends PaymentController
 {
@@ -31,25 +32,35 @@ class YunpayContrller extends PaymentController
 
     public function notifyUrl()
     {
-        $this->log($_GET);
+        $parameter = $_POST;
 
-        if ($this->getSignResult() && '00' == $_GET['respcd'] && $_GET['errorDetail'] == "SUCCESS") {
-            \Log::debug('------验证成功-----');
-            $data = [
-                'total_fee'    => floatval($_GET['txamt']),
-                'out_trade_no' => $_GET['orderNum'],
-                'trade_no'     => $_GET['channelOrderNum'],
-                'unit'         => 'fen',
-                'pay_type'     => '云微信支付',
-                'pay_type_id'     => 6
+        $this->log($parameter, '芸微信支付');
 
-            ];
+        if(!empty($parameter)){
+            if($this->getSignResult()) {
+                if ($_POST['respCode'] == '0000') {
+                    \Log::debug('------验证成功-----');
+                    $data = [
+                        'total_fee'    => floatval($parameter['transAmt']),
+                        'out_trade_no' => $parameter['orderNo'],
+                        'trade_no'     => $parameter['orderId'],
+                        'unit'         => 'fen',
+                        'pay_type'     => '芸微信支付',
+                        'pay_type_id'     => 12
 
-            $this->payResutl($data);
-            \Log::debug('----结束----');
-            echo "success";
-        } else {
-            echo "fail";
+                    ];
+
+                    $this->payResutl($data);
+                    \Log::debug('----结束----');
+                    echo 'SUCCESS';
+                } else {
+                    //其他错误
+                }
+            } else {
+                //签名验证失败
+            }
+        }else {
+            echo 'FAIL';
         }
     }
 
@@ -78,9 +89,9 @@ class YunpayContrller extends PaymentController
      */
     public function getSignResult()
     {
-        $pay = \Setting::get('plugin.cloud_pay_set');
+        $pay = \Setting::get('plugin.yun_pay_set');
 
-        $notify = new CloudPayNotifyService();
+        $notify = new YunPayNotifyService();
         $notify->setKey($pay['key']);
 
         return $notify->verifySign();
@@ -91,11 +102,11 @@ class YunpayContrller extends PaymentController
      *
      * @param $post
      */
-    public function log($data)
+    public function log($data, $third_type)
     {
         //访问记录
         Pay::payAccessLog();
         //保存响应数据
-        Pay::payResponseDataLog($data['orderNum'], '云收银微信支付', json_encode($data));
+        Pay::payResponseDataLog($data['orderNo'], $third_type, json_encode($data));
     }
 }
