@@ -6,7 +6,7 @@
  * Time: 下午10:55
  */
 
-namespace app\frontend\modules\payment\orderPaymentSettings\shop;
+namespace app\frontend\modules\payment\paymentSettings\shop;
 
 
 class CloudPayWechatSetting extends BaseSetting

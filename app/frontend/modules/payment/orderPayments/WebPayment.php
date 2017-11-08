@@ -9,7 +9,7 @@
 namespace app\frontend\modules\payment\orderPayments;
 
 use app\common\models\Order;
-use app\frontend\modules\payment\orderPaymentSettings\OrderPaymentSettingCollection;
+use app\frontend\modules\payment\paymentSettings\OrderPaymentSettingCollection;
 
 /**
  * 支付设置

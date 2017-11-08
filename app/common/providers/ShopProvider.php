@@ -36,8 +36,5 @@ class ShopProvider extends ServiceProvider
         $this->app->singleton('OrderManager',function(){
             return new OrderManager();
         });
-
-
-
     }
 }

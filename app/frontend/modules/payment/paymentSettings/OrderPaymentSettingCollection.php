@@ -6,7 +6,7 @@
  * Time: 下午2:20
  */
 
-namespace app\frontend\modules\payment\orderPaymentSettings;
+namespace app\frontend\modules\payment\paymentSettings;
 
 use Illuminate\Support\Collection;
 
@@ -26,7 +26,7 @@ class OrderPaymentSettingCollection extends Collection
         if ($this->isEmpty()) {
             return false;
         }
-        $settings = $this->sortByDesc(function (OrderPaymentSettingInterface $setting) {
+        $settings = $this->sortByDesc(function (PaymentSettingInterface $setting) {
             return $setting->getWeight();
         });
 
@@ -34,7 +34,7 @@ class OrderPaymentSettingCollection extends Collection
          * 以影响范围排序,从大到小
          */
 
-        $canNotPay = $settings->contains(function (OrderPaymentSettingInterface $orderPaymentSetting) {
+        $canNotPay = $settings->contains(function (PaymentSettingInterface $orderPaymentSetting) {
 
             return !$orderPaymentSetting->canUse();
         });

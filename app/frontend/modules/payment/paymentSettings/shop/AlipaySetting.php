@@ -5,7 +5,7 @@
  * Date: 2017/10/27
  * Time: 上午11:52
  */
-namespace app\frontend\modules\payment\orderPaymentSettings\shop;
+namespace app\frontend\modules\payment\paymentSettings\shop;
 
 class AlipaySetting extends BaseSetting
 {

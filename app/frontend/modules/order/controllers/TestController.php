@@ -20,7 +20,7 @@ class TestController extends ApiController
     public function index()
     {
         $order = Order::where('id', 3310)->first();
-        $paymentTypes = app('PaymentManager')->make('OrderPaymentManager')->getOrderPaymentTypes($order);
+        $paymentTypes = app('PaymentManager')->make('OrderPaymentTypeManager')->getOrderPaymentTypes();
         $data = $paymentTypes->map(function (BasePayment $paymentType) {
             return [
                 'name' => $paymentType->getName(),

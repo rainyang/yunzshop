@@ -6,14 +6,14 @@
  * Time: 上午10:00
  */
 
-namespace app\frontend\modules\payment\orderPaymentSettings;
+namespace app\frontend\modules\payment\paymentSettings;
 
 /**
  * 支付设置
  * Class PaymentSetting
  * @package app\frontend\modules\payment
  */
-interface OrderPaymentSettingInterface
+interface PaymentSettingInterface
 {
     /**
      * 开启
