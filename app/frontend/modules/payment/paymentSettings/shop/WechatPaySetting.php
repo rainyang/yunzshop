@@ -5,6 +5,7 @@
  * Date: 2017/10/27
  * Time: 上午11:52
  */
+
 namespace app\frontend\modules\payment\paymentSettings\shop;
 
 class WechatPaySetting extends BaseSetting
@@ -14,6 +15,7 @@ class WechatPaySetting extends BaseSetting
         // 开启微信通用支付和开启微信支付总开关,并且访问端不是app
         return \Setting::get('shop.pay.weixin') && \Setting::get('shop.pay.weixin');
     }
+
     public function exist()
     {
         return \Setting::get('shop.pay.weixin') !== null || \Setting::get('shop.pay.weixin') !== null;
