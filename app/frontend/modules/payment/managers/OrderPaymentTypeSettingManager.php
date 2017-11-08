@@ -9,6 +9,7 @@
 namespace app\frontend\modules\payment\managers;
 
 use app\frontend\modules\payment\paymentSettings\OrderPaymentSettingCollection;
+use app\frontend\modules\payment\paymentSettings\PaymentSettingInterface;
 use Illuminate\Container\Container;
 
 class OrderPaymentTypeSettingManager extends Container
@@ -19,6 +20,9 @@ class OrderPaymentTypeSettingManager extends Container
 
         $settings = collect($settings)->map(function($setting) use ($order){
             return call_user_func($setting,$order);
+        });
+        $settings = $settings->filter(function(PaymentSettingInterface $setting){
+            return $setting->exist();
         });
         return new OrderPaymentSettingCollection($settings);
     }

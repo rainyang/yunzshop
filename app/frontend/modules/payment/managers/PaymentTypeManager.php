@@ -54,6 +54,7 @@ class PaymentTypeManager extends Container
     public function addPaymentConfig($paymentConfig)
     {
         $this->paymentConfig = array_merge_recursive($this->paymentConfig, $paymentConfig);
+
     }
 
     /**
@@ -66,10 +67,29 @@ class PaymentTypeManager extends Container
     }
 
     /**
+     * 绑定支付设置类,订单支付设置类会复写这个方法 todo 感觉这个里有问题
+     */
+    private function bindSettings()
+    {
+
+        // 支付方式集合
+        collect($this->paymentConfig)->each(function ($payment, $code) {
+            // 绑定支付方式对应的设置管理者
+            //dd(app('PaymentManager')->make('OrderPaymentTypeSettingManager'));
+            //exit;
+
+            $this->getSettingManager()->singleton($code, function (Container $container) use ($payment) {
+                return $payment['settings'];
+            });
+        });
+    }
+    /**
      * 绑定支付方式类
      */
     private function bindPayments()
     {
+
+
         // 支付方式集合
         collect($this->paymentConfig)->each(function ($payment, $code) {
             /**
@@ -97,22 +117,6 @@ class PaymentTypeManager extends Container
         });
     }
 
-    /**
-     * 绑定支付设置类,订单支付设置类会复写这个方法 todo 感觉这个里有问题
-     */
-    private function bindSettings()
-    {
-        // 支付方式集合
-        collect($this->paymentConfig)->each(function ($payment, $code) {
-            // 绑定支付方式对应的设置管理者
-            //dd(app('PaymentManager')->make('OrderPaymentTypeSettingManager'));
-            //exit;
-
-            $this->getSettingManager()->singleton($code, function (Container $container) use ($payment) {
-                return $payment['settings'];
-            });
-        });
-    }
 
     /**
      * 获取订单可用的支付方式
@@ -121,8 +125,8 @@ class PaymentTypeManager extends Container
      */
     public function getOrderPaymentTypes($order = null)
     {
-        $this->bindPayments();
         $this->bindSettings();
+        $this->bindPayments();
 
         /**
          * 商城中存在的支付方式集合
