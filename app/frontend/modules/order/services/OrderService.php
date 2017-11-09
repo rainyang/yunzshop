@@ -383,8 +383,10 @@ class OrderService
      * 自动收货
      * {@inheritdoc}
      */
-    public static function autoReceive()
+    public static function autoReceive($uniacid)
     {
+        \YunShop::app()->uniacid = $uniacid;
+        \Setting::$uniqueAccountId = $uniacid;
         $days = (int)\Setting::get('shop.trade.receive');
         if (!$days) {
             return;

@@ -74,6 +74,7 @@ class orderListener
         $events->listen('cron.collectJobs', function () {
             $uniAccount = UniAccount::get();
             foreach ($uniAccount as $u) {
+                $uniacid = $u->uniacid;
                 \YunShop::app()->uniacid = $u->uniacid;
                 \Setting::$uniqueAccountId = $u->uniacid;
                 // 订单自动收货执行间隔时间 默认60分钟
@@ -81,9 +82,9 @@ class orderListener
                 if ((int)\Setting::get('shop.trade.receive')) {
                     // 开启自动收货时
                     \Log::info("--订单自动完成start--");
-                    \Cron::add("OrderReceive{$u->uniacid}", '*/' . $receive_min . ' * * * * *', function () {
+                    \Cron::add("OrderReceive{$u->uniacid}", '*/' . $receive_min . ' * * * * *', function () use ($uniacid) {
                         // 所有超时未收货的订单,遍历执行收货
-                        OrderService::autoReceive();
+                        OrderService::autoReceive($uniacid);
                         // todo 使用队列执行
                     });
                 }
