@@ -25,7 +25,7 @@ class UpdateController extends BaseController
         $secret = Setting::get('shop.key')['secret'];
         $update = new AutoUpdate(null, null, 300);
         $update->setUpdateFile('check_app.json');
-        $update->setCurrentVersion(config('version'));
+        $update->setCurrentVersion(config('front-version'));
 
         $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
 
@@ -38,7 +38,7 @@ class UpdateController extends BaseController
         }
 
         krsort($list);
-        $version = config('version');
+        $version = config('front-version');
 
         return view('update.upgrad', [
             'list' => $list,
@@ -102,7 +102,7 @@ class UpdateController extends BaseController
         $filesystem = app(Filesystem::class);
         $update = new AutoUpdate(null, null, 300);
 
-        $filter_file = ['composer.json', 'composer.lock', 'README.md'];
+        $filter_file = ['composer.json', 'composer.lock', 'README.md', 'config/front-version'];
         $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
 
         $result = ['result' => 0, 'msg' => '网络请求超时', 'last_version' => ''];
@@ -170,10 +170,6 @@ class UpdateController extends BaseController
 
                 $ret['files'] = $files;
                 file_put_contents($tmpdir . "/file.txt", json_encode($ret));
-
-                if (1 == count($files) && $files['path'] == 'config/version/php') {
-                    $files = [];
-                }
 
                 if (empty($files)) {
                     $version = config('version');
@@ -389,13 +385,31 @@ class UpdateController extends BaseController
         return;
     }
 
+    /**
+     * 更新本地前端版本号
+     *
+     * @param $updateList
+     */
     private function setSystemVersion($updateList)
+    {
+        $version = $this->getFrontVersion($updateList);
+
+        $str = file_get_contents(base_path('config/') . 'front-version.php');
+        $str = preg_replace('/"[\d\.]+"/', '"'. $version . '"', $str);
+        file_put_contents(base_path('config/') . 'front-version.php', $str);
+    }
+
+    /**
+     * 获取前端版本号
+     *
+     * @param $updateList
+     * @return mixed
+     */
+    private function getFrontVersion($updateList)
     {
         rsort($updateList);
         $version = $updateList[0]['version']->getVersion();
-        $str = file_get_contents(base_path('config/') . 'version.php');
 
-        $str = preg_replace('/"[\d\.]+"/', '"'. $version . '"', $str);
-        file_put_contents(base_path('config/') . 'version.php', $str);
+        return $version;
     }
 }
