@@ -91,18 +91,18 @@ class orderListener
                 }
 
                 // 订单自动关闭执行间隔时间 默认60分钟
-//                $close_min = (int)\Setting::get('shop.trade.close_order_time') ?: 60;
-//
-//
-//                if ((int)\Setting::get('shop.trade.close_order_days')) {
-//                    // 开启自动关闭时
-//                    \Log::info("--订单自动关闭start--");
-//                    \Cron::add("OrderClose{$u->uniacid}", '*/' . $close_min . ' * * * * *', function () {
-//                        // 所有超时付款的订单,遍历执行关闭
-//                        OrderService::autoClose();
-//                        // todo 使用队列执行
-//                    });
-//                }
+                $close_min = (int)\Setting::get('shop.trade.close_order_time') ?: 60;
+
+
+                if ((int)\Setting::get('shop.trade.close_order_days')) {
+                    // 开启自动关闭时
+                    \Log::info("--订单自动关闭start--");
+                    \Cron::add("OrderClose{$u->uniacid}", '*/' . $close_min . ' * * * * *', function () use($uniacid) {
+                        // 所有超时付款的订单,遍历执行关闭
+                        OrderService::autoClose($uniacid);
+                        // todo 使用队列执行
+                    });
+                }
             }
         });
     }

@@ -409,8 +409,10 @@ class OrderService
      * 自动关闭订单
      * {@inheritdoc}
      */
-    public static function autoClose()
+    public static function autoClose($uniacid)
     {
+        \YunShop::app()->uniacid = $uniacid;
+        \Setting::$uniqueAccountId = $uniacid;
         $days = (int)\Setting::get('shop.trade.close_order_days');
         if (!$days) {
             return;
