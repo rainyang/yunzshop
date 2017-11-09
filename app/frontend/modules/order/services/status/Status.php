@@ -26,7 +26,7 @@ abstract class Status
     const IN_AFTER_SALE = 17;
     const REFUND_INFO = 18;
     const COMMENTED = 19;
-
+    const STORE_PAY = 20;
     abstract function getStatusName();
 
     abstract function getButtonModels();
