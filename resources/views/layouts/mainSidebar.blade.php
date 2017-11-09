@@ -14,7 +14,14 @@
                         @if(isset($value['child']) && array_child_kv_exists($value['child'],'menu',1))
 
                             <li class="{{in_array($key,Yunshop::$currentItems) ? 'active' : ''}}">
-                                <a href="{{isset($value['url']) ? yzWebFullUrl($value['url']):''}}{{$value['url_params'] or ''}}">
+
+
+
+                                <a href="{{ \app\common\services\MenuService::canAccess($key) }}">
+
+
+
+                                {{--<a href="{{isset($value['url']) ? yzWebFullUrl($value['url']):''}}{{$value['url_params'] or ''}}">--}}
                                     <i class="fa {{array_get($value,'icon','fa-circle-o') ?: 'fa-circle-o'}}"></i>
                                     {{--<span class="pull-right-container">--}}
                                         {{--<i class="fa fa-angle-left pull-right"></i>--}}
@@ -25,7 +32,7 @@
                             </li>
                         @elseif($value['menu'] == 1)
                             <li class="{{in_array($key,Yunshop::$currentItems) ? 'active' : ''}}">
-                                <a href="{{isset($value['url']) ? yzWebFullUrl($value['url']):''}}{{$value['url_params'] or ''}}">
+                                <a href="{{ \app\common\services\MenuService::canAccess($key) }}">
                                     <i class="fa {{array_get($value,'icon','fa-circle-o') ?: 'fa-circle-o'}}"></i>
                                     <p style=" margin-top: -5px;">{{$value['name'] or ''}}</p>
                                 </a>

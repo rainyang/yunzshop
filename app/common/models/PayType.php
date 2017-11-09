@@ -8,7 +8,15 @@
 
 namespace app\common\models;
 
-
+/**
+ * Class PayType
+ * @package app\common\models
+ * @property string code
+ * @property string setting_key
+ * @property string name
+ * @property int need_password
+ * @property int id
+ */
 class PayType extends BaseModel
 {
     public $table = 'yz_pay_type';
@@ -23,6 +31,7 @@ class PayType extends BaseModel
     const CASH_PAY = 8;//现金支付
     const WechatApp = 9;//现金支付
     const AlipayApp = 10;//现金支付
+    const STORE_PAY = 11;//门店
 
 
     /**

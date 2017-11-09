@@ -3,12 +3,9 @@
 namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
-use app\common\models\OrderPay;
-use app\common\services\password\PasswordService;
-use app\frontend\modules\coin\InvalidVirtualCoin;
-use app\frontend\modules\deduction\models\Deduction;
-use app\frontend\modules\finance\models\PointCoin;
-use Yunshop\Love\Common\Models\LoveCoin;
+use app\common\models\Order;
+use app\frontend\modules\payment\orderPayments\BasePayment;
+use Yunshop\StoreCashier\common\models\Store;
 
 /**
  * Created by PhpStorm.
@@ -22,18 +19,34 @@ class TestController extends ApiController
 
     public function index()
     {
-        dd(OrderPay::first()->order_ids);
+        $order = Order::where('id', 3310)->first();
+        $paymentTypes = app('PaymentManager')->make('OrderPaymentTypeManager')->getOrderPaymentTypes($order);
+        $data = $paymentTypes->map(function (BasePayment $paymentType) {
+            return [
+                'name' => $paymentType->getName(),
+                'value' => $paymentType->getId(),
+                'need_password' => $paymentType->needPassword(),
+            ];
+        })->values();
+        dd($data);
+        exit;
+
+        $result = [
+            'name' => '支付宝',
+            'value' => '2',
+            'need_password' => '0'
+
+        ];
+        dd($paymentTypes);
+        exit;
     }
 
-    public function index1()
+    public function store()
     {
-        // 最简单的单例
-        $result = app()->share(function ($var) {
-            return $var + 1;
-        });
-        dd($result(100));
-
-        dd($result(3));
+        $order = Order::where('plugin_id', Store::PLUGIN_ID)->first();
+        $paymentTypes = app('PaymentManager')->make('OrderPaymentManager')->getOrderPaymentTypes($order);
+        dd($paymentTypes);
+        exit;
     }
 
 }

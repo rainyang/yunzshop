@@ -23,7 +23,7 @@ class FixController extends BaseController
         })->get();
         $r->each(function($order){
 
-            $orderPay = OrderPay::where(['order_ids'=>'["'.$order->id.'"]'])->first();
+            $orderPay = OrderPay::where(['order_ids'=>'["'.$order->id.'"]'])->orderBy('id','desc')->first();
 
             if(isset($orderPay)){
                 $order->pay_type_id = $orderPay->pay_type_id;

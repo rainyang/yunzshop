@@ -14,8 +14,14 @@ use app\common\models\Order;
 class WaitPay extends Status
 {
     private $order;
+    protected $name = '付款';
+    protected $value;
+    protected $api = 'order.operation.pay';
+
     public function __construct(Order $order)
     {
+        $this->value = static::PAY;
+
         $this->order = $order;
     }
 
@@ -24,21 +30,27 @@ class WaitPay extends Status
         return '待付款';
     }
 
+    protected function getNextStatusButton(){
+        return [
+            'name' => "确认{$this->name}",
+            'api' => $this->api,
+            'value' => $this->value
+        ];
+    }
+    protected function getOtherButtons(){
+        $result = [];
+            $result[] = [
+                'name' => '取消订单',
+                'api' => 'order.operation.close',
+                'value' => static::CANCEL //todo
+            ];
+        return $result;
+    }
     public function getButtonModels()
     {
-        $result =
-            [
-                [
-                    'name' => '付款',
-                    'api' => 'order.operation.pay',
-                    'value' => static::PAY
-                ],
-                [
-                    'name' => '取消订单',
-                    'api' => 'order.operation.close',
-                    'value' => static::CANCEL //todo
-                ],
-            ];
+        $result[] = $this->getNextStatusButton();
+        $result = array_merge($result,$this->getOtherButtons());
+
         return $result;
     }
 }
