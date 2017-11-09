@@ -52,7 +52,7 @@
 
 <div class="row">
     <div class="col-sm-8" style="padding-right: 50px;">
-        <input type="hidden" name="tp_id" value="{{$temp['id']}}" />
+        <input type="hidden" name="id" value="{{$list['id']}}" />
 
         <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label" >模板名称</label>
@@ -64,11 +64,7 @@
         <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label" >模板消息ID</label>
             <div class="col-sm-9 ">
-                @if (1)
-                    <input type="text"  id="tp_template_id" name="temp[template_id]" class="form-control" value="{{$temp['template_id']}}" placeholder="模版消息ID，例：P8MxRKmW7wdejmZl14-swiGmsJVrFJiWYM7zKSPXq4I" data-rule-required='true' />
-                @else
-                    <div class='form-control-static'>{{$temp['template_id']}}</div>
-                @endif
+                    <input type="text" readonly="readonly" id="template_id" name="temp[template_id]" class="form-control" value="{{$temp['template_id']}}" placeholder="模版消息ID，例：P8MxRKmW7wdejmZl14-swiGmsJVrFJiWYM7zKSPXq4I" data-rule-required='true' />
             </div>
         </div>
         <div class="form-group">
@@ -81,7 +77,7 @@
             </div>
             <div class="col-sm-1" style='padding-left:0;' >
 
-                <input type="color" name="temp[first_color]" value="{{$temp['firstcolor']}}" style="width:32px;height:32px;" />
+                <input type="color" name="temp[first_color]" value="{{$temp['first_color']}}" style="width:32px;height:32px;" />
 
             </div>
 
@@ -108,7 +104,7 @@
             </div>
             <div class="col-sm-1" style='padding-left:0' >
 
-                <input type="color" name="temp[remark_color]" value="{{$temp['remarkcolor']}}" style="width:32px;height:32px;" />
+                <input type="color" name="temp[remark_color]" value="{{$temp['remark_color']}}" style="width:32px;height:32px;" />
 
             </div>
 
@@ -466,8 +462,8 @@
             $("#shili").html(temp.content);
 
             $(".shilidiv").show();
-            $("#tp_title").val(temp.title);
-            $("#tp_template_id").val(temp.template_id);
+            $("#title").val(temp.title);
+            $("#template_id").val(temp.template_id);
 
             $('.key_item').remove();
 

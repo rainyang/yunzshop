@@ -1,14 +1,6 @@
 @extends('layouts.base')
 @section('title', '模板消息设置')
 @section('content')
-    <script type="text/javascript">
-        require(['bootstrap'], function () {
-            $('#myTab a').click(function (e) {
-                e.preventDefault();
-                $(this).tab('show');
-            })
-        });
-    </script>
     <div class="right-addbox"><!-- 此处是右侧内容新包一层div -->
         <div class="panel panel-default">
             <div class="panel-body">
@@ -22,6 +14,12 @@
                     <div class="info">
                         <div class="panel-body">
                             <div class="tab-content">
+                                {{--<div class="tab-pane active" id="tab_base">
+                                    @include('setting.diytemp.tpl.base')
+                                </div>--}}
+                                {{--<div class="tab-pane active" id="tab_customnotice">
+                                    @include('setting.diytemp.tpl.customnotice')
+                                </div>--}}
                                 <div class="tab-pane active" id="tab_setting">
                                     @include('setting.diytemp.tpl.tempnotice')
                                 </div>
@@ -48,20 +46,7 @@
 
 <script>
 
-    /*var types ={$type_json};
 
-
-    $("#typegroup").change(function(){
-
-        $("#typecode").html("");
-        for(var type  in types){
-            if($(this).val()==types[type].typegroup)
-            {
-                $("#typecode").append( "<option value='"+types[type].typecode+"' >"+types[type].name+"</option>" );
-            }
-
-        }
-    });*/
 
     require(['bootstrap'],function(){
         $('#settingTab a').click(function (e) {
@@ -88,56 +73,28 @@
     })
 
     $('form').submit(function(){
-
-        if($('#title').val()=='')
-        {
-            $('#settingTab a[href=#tab_base]').tab('show');
-            tip.msgbox.err('请填写模板名称!');
-            $('form').attr('stop',1);
+        if($('#title').val() == ''){
+            Tip.focus($('#title'),'请填写模板名称!');
             return false;
         }
-
-
-        var messagetype = $('.messagetype:checked').val();
-
-        if(messagetype==0||messagetype==2)
-        {
-            if($('#send_desc').val()=='')
-            {
-                $('#settingTab a[href=#tab_base]').tab('show');
-                tip.msgbox.err('请填写客服消息!');
+        if($('.key_item').length <= 0){
+            Tip.focus($('.key_item'),'请添加一条键!');
+            return false;
+        }
+        var checkkw = true;
+        $(":input[name='tp_kw[]']").each(function(){
+            if ( $.trim( $(this).val() ) ==''){
+                checkkw = false;
+                tip.msgbox.err('请输入键名!');
+                $(this).focus();
                 $('form').attr('stop',1);
                 return false;
             }
+        });
+        if( !checkkw){
+            return false;
         }
-
-        if(messagetype==0||messagetype==1)
-        {
-            if($('.key_item').length<=0){
-                tip.msgbox.err('请添加一条键!');
-                $('#settingTab a[href=#tab_setting]').tab('show');
-                $('form').attr('stop',1);
-                return false;
-            }
-
-            var checkkw = true;
-            $(":input[name='tp_kw[]']").each(function(){
-                if ( $.trim( $(this).val() ) ==''){
-                    checkkw = false;
-                    tip.msgbox.err('请输入键名!');
-                    $(this).focus();
-                    $('form').attr('stop',1);
-                    return false;
-                }
-            });
-            if( !checkkw){
-                return false;
-            }
-        }
-
-
-        $('form').removeAttr('stop');
         return true;
-    });
+    })
 </script>
 @endsection
