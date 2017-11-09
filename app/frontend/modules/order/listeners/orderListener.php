@@ -75,34 +75,35 @@ class orderListener
             $uniAccount = UniAccount::get();
             foreach ($uniAccount as $u) {
                 \YunShop::app()->uniacid = $u->uniacid;
-                \Setting::$uniqueAccountId = $u->uniacid;
+                \Setting::$uniqueAccountId = $uniacid= $u->uniacid;
+
                 // 订单自动收货执行间隔时间 默认60分钟
                 $receive_min = (int)\Setting::get('shop.trade.receive_time') ?: 60;
+
                 if ((int)\Setting::get('shop.trade.receive')) {
                     // 开启自动收货时
                     \Log::info("--订单自动完成start--");
-                    \Cron::add("OrderReceive{$u->uniacid}", '*/' . $receive_min . ' * * * * *', function () {
+                    \Cron::add("OrderReceive{$u->uniacid}", '*/' . $receive_min . ' * * * * *', function () use($uniacid) {
                         // 所有超时未收货的订单,遍历执行收货
-                        OrderService::autoReceive();
+                        OrderService::autoReceive($uniacid);
                         // todo 使用队列执行
                     });
                 }
 
                 // 订单自动关闭执行间隔时间 默认60分钟
-                $close_min = (int)\Setting::get('shop.trade.close_order_time') ?: 60;
-
-
-                if ((int)\Setting::get('shop.trade.close_order_days')) {
-                    // 开启自动关闭时
-                    \Log::info("--订单自动关闭start--");
-                    \Cron::add("OrderClose{$u->uniacid}", '*/' . $close_min . ' * * * * *', function () {
-                        // 所有超时付款的订单,遍历执行关闭
-                        OrderService::autoClose();
-                        // todo 使用队列执行
-                    });
-                }
+//                $close_min = (int)\Setting::get('shop.trade.close_order_time') ?: 60;
+//
+//
+//                if ((int)\Setting::get('shop.trade.close_order_days')) {
+//                    // 开启自动关闭时
+//                    \Log::info("--订单自动关闭start--");
+//                    \Cron::add("OrderClose{$u->uniacid}", '*/' . $close_min . ' * * * * *', function () {
+//                        // 所有超时付款的订单,遍历执行关闭
+//                        OrderService::autoClose();
+//                        // todo 使用队列执行
+//                    });
+//                }
             }
-
         });
     }
 }

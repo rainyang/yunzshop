@@ -103,7 +103,7 @@ class BaseController extends Controller
         }
 
         if (empty($session_id)) {
-            $session_id = "{\YunShop::app()->uniacid}-" . random(20) ;
+            $session_id = "{".\YunShop::app()->uniacid."}-" . random(20) ;
 
             $session_id = md5($session_id);
 
@@ -112,7 +112,7 @@ class BaseController extends Controller
 
         session_id($session_id);
 
-        load()->classs('wesession');
+        load()->classs('wesession'); 
         \WeSession::start(\YunShop::app()->uniacid, CLIENT_IP, self::COOKIE_EXPIRE);
     }
 
