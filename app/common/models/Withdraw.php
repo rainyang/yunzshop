@@ -1,9 +1,10 @@
 <?php
 /**
  * Created by PhpStorm.
- * Author: 芸众商城 www.yunzshop.com
- * Date: 2017/3/30
- * Time: 上午9:34
+ * Class Withdraw
+ * Author: Yitan
+ * Date: 2017/11/06
+ * @package app\common\models
  */
 
 namespace app\common\models;
@@ -13,66 +14,162 @@ use app\backend\models\BackendModel;
 use app\frontend\modules\finance\services\WithdrawService;
 use Illuminate\Support\Facades\Config;
 
+
+
 class Withdraw extends BackendModel
 {
     public $table = 'yz_withdraw';
+
+    protected $guarded = [];
+
+    protected $appends = ['status_name', 'pay_way_name'];
+
+
+    //审核状态
+    const STATUS_INVALID    = -1;
+
+    const STATUS_INITIAL    = 0;
+
+    const STATUS_AUDIT      = 1;
+
+    const STATUS_PAY        = 2;
+
+    const STATUS_REJECT     = 3;
+
+    const STATUS_PAYING     = 4;
+
+
+
+
+    const WITHDRAW_WITH_BALANCE = 'balance';
+
+    const WITHDRAW_WITH_WECHAT = 'wechat';
+
+    const WITHDRAW_WITH_ALIPAY = 'alipay';
+
+    const WITHDRAW_WITH_MANUAL = 'manual';
+
+
+
+
+    public static $statusComment = [
+        self::STATUS_INVALID    => '无效',
+        self::STATUS_INITIAL    => '未审核',
+        self::STATUS_AUDIT      => '未打款',
+        self::STATUS_PAY        => '已打款',
+        self::STATUS_REJECT     => '已驳回',
+        self::STATUS_PAYING     => '打款中',
+    ];
+
+    public static $payWayComment = [
+        self::WITHDRAW_WITH_BALANCE     => '提现到余额',
+        self::WITHDRAW_WITH_WECHAT      => '提现到微信',
+        self::WITHDRAW_WITH_ALIPAY      => '提现到支付宝',
+        self::WITHDRAW_WITH_MANUAL      => '提现手动打款',
+    ];
+
+
+
+
+    public function hasOneMember()
+    {
+        return $this->hasOne('app\common\models\Member', 'uid', 'member_id');
+    }
+
+
+
+
+    /**
+     * 通过 $status 值获取 $status 名称
+     * @param $status
+     * @return mixed|string
+     */
+    public static function getStatusComment($status)
+    {
+        return isset(static::$statusComment[$status]) ? static::$statusComment[$status] : '';
+    }
+
+
+
+
+    /**
+     * 通过 $pay_way 值获取 $pay_way 名称
+     * @param $pay_way
+     * @return mixed|string
+     */
+    public static function getPayWayComment($pay_way)
+    {
+        return isset(static::$payWayComment[$pay_way]) ? static::$payWayComment[$pay_way] : '';
+    }
+
+
+
+
+    /**
+     * 通过字段 status 输出 status_name ;
+     * @return string
+     */
+    public function getStatusNameAttribute()
+    {
+        return static::getStatusComment($this->attributes['status']);
+    }
+
+
+
+
+    /**
+     * 通过字段 pay_way 输出 pay_way_name ;
+     * @return string
+     */
+    public function getPayWayNameAttribute()
+    {
+        return static::getPayWayComment($this->attributes['pay_way']);
+    }
+
+
+
+
+    public function atributeNames()
+    {
+        return [
+            'member_id'     => '会员ID',
+            'type'          => '提现类型',
+            'amounts'       => '提现金额',
+            'pay_way'       => '打款方式',
+        ];
+    }
+
+
+
+
+    public function rules()
+    {
+        return  [
+            'member_id'     => 'required',
+            'type'          => 'required',
+            'amounts'       => 'required',
+            'pay_way'       => 'required',
+        ];
+    }
+
+
+
+
+
+/********************* 以下代码不确定功能逻辑，需要处理删除 ****************/
+
+
+
+
+    public $widgets = [];
+
+    public $attributes = [];
 
     public $StatusService;
 
     public $PayWayService;
 
     public $TypeData;
-
-    public $timestamps = true;
-
-    public $widgets = [];
-
-    public $attributes = [];
-
-    protected $guarded = [];
-
-
-    protected $appends = ['status_name', 'pay_way_name'];
-
-    /**
-     * @return string
-     */
-    public function getStatusService()
-    {
-        if (!isset($this->StatusService)) {
-
-            $this->StatusService = WithdrawService::createStatusService($this);
-        }
-        return $this->StatusService;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStatusNameAttribute()
-    {
-        return $this->getStatusService();
-    }
-
-    /**
-     * @return string
-     */
-    public function getPayWayService()
-    {
-        if (!isset($this->PayWayService)) {
-
-            $this->PayWayService = WithdrawService::createPayWayService($this);
-        }
-        return $this->PayWayService;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPayWayNameAttribute()
-    {
-        return $this->getPayWayService();
-    }
 
 
     /**
@@ -143,13 +240,8 @@ class Withdraw extends BackendModel
         return $Model;
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function hasOneMember()
-    {
-        return $this->hasOne('app\common\models\Member', 'uid', 'member_id');
-    }
+
+
 
 //    public function hasOneAgent()
 //    {
@@ -162,35 +254,6 @@ class Withdraw extends BackendModel
             ->orWhere('withdraw_sn',(string)$id)
             ->update($updatedData);
     }
-    
-    /**
-     *  定义字段名
-     * 可使
-     * @return array
-     */
-    public function atributeNames()
-    {
-        return [
-            'member_id' => '会员ID',
-            'type' => '提现类型',
-            'amounts' => '提现金额',
-            'pay_way' => '打款方式',
-        ];
-    }
 
-    /**
-     * 字段规则
-     * @return array
-     * @Author yitian */
-    public function rules()
-    {
-        $rule =  [
-            'member_id' => 'required',
-            'type' => 'required',
-            'amounts' => 'required',
-            'pay_way' => 'required',
-        ];
 
-        return $rule;
-    }
 }

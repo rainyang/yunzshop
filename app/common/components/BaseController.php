@@ -3,6 +3,7 @@
 namespace app\common\components;
 
 use app\common\exceptions\ShopException;
+use app\common\helpers\WeSession;
 use app\common\models\Modules;
 use app\common\services\Check;
 use app\common\traits\JsonTrait;
@@ -103,7 +104,7 @@ class BaseController extends Controller
         }
 
         if (empty($session_id)) {
-            $session_id = "{\YunShop::app()->uniacid}-" . random(20) ;
+            $session_id = "{".\YunShop::app()->uniacid."}-" . str_random(20) ;
 
             $session_id = md5($session_id);
 
@@ -112,8 +113,8 @@ class BaseController extends Controller
 
         session_id($session_id);
 
-        load()->classs('wesession');
-        \WeSession::start(\YunShop::app()->uniacid, CLIENT_IP, self::COOKIE_EXPIRE);
+        load()->classs('wesession'); 
+        WeSession::start(\YunShop::app()->uniacid, CLIENT_IP, self::COOKIE_EXPIRE);
     }
 
     /**

@@ -130,7 +130,7 @@ class WechatPay extends Pay
             $this->payResponseDataLog($out_trade_no, '微信退款', json_encode($result));
             return true;
         } else {
-            throw new AppException($result->err_code_des);
+            throw new AppException('微信接口错误:'.$result->return_msg);
         }
     }
 
