@@ -22,6 +22,11 @@ class MessageTemp extends BaseModel
         'data' => 'json'
     ];
 
+    public static function getTempById($temp_id)
+    {
+        return self::select()->whereId($temp_id);
+    }
+
     public static function fetchTempList($kwd)
     {
         return self::select()->likeTitle($kwd);

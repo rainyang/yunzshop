@@ -15,6 +15,8 @@ use app\common\models\notice\MessageTemp;
 
 class DiyTempController extends BaseController
 {
+    private $temp_model;
+
     public function index()
     {
         $kwd = request()->keyword;
@@ -32,7 +34,6 @@ class DiyTempController extends BaseController
     {
         if (request()->temp) {
             $temp_model = new MessageTemp();
-            dump($temp_model::handleArray(request()->temp));
             $ret = $temp_model::create($temp_model::handleArray(request()->temp));
             if (!$ret) {
                 return $this->message('添加模板失败', Url::absoluteWeb('setting.diy-temp.index'), 'error');
@@ -47,15 +48,25 @@ class DiyTempController extends BaseController
 
     public function edit()
     {
-        $temp = '';
+        $this->verifyParam();
+        if (request()->temp) {
+            $this->temp_model->fill(MessageTemp::handleArray(request()->temp));
+            $ret = $this->temp_model->save();
+            if (!$ret) {
+                return $this->message('修改模板失败', Url::absoluteWeb('setting.diy-temp.index'), 'error');
+            }
+            return $this->message('修改模板成功', Url::absoluteWeb('setting.diy-temp.index'));
+        }
 
         return view('setting.diytemp.detail', [
-            'temp' => $temp
+            'temp' => $this->temp_model
         ])->render();
     }
 
     public function del()
     {
+        $this->verifyParam();
+        $this->temp_model->delete();
         return $this->message('删除成功', Url::absoluteWeb('setting.diy-temp.index'));
     }
 
@@ -65,5 +76,18 @@ class DiyTempController extends BaseController
             'kw' => request()->kw,
             'tpkw' => request()->tpkw,
         ])->render();
+    }
+
+    private function verifyParam()
+    {
+        $temp_id = intval(request()->id);
+        if (!$temp_id) {
+            return $this->message('参数错误', Url::absoluteWeb('setting.diy-temp.index'), 'error');
+        }
+        $temp_model = MessageTemp::getTempById($temp_id)->first();
+        if (!$temp_model) {
+            return $this->message('未找到数据', Url::absoluteWeb('setting.diy-temp.index'), 'error');
+        }
+        $this->temp_model = $temp_model;
     }
 }

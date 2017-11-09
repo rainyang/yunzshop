@@ -52,7 +52,7 @@
 
 <div class="row">
     <div class="col-sm-8" style="padding-right: 50px;">
-        <input type="hidden" name="tp_id" value="{{$list['id']}}" />
+        <input type="hidden" name="tp_id" value="{{$temp['id']}}" />
 
         <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label" >模板名称</label>
@@ -65,9 +65,9 @@
             <label class="col-xs-12 col-sm-3 col-md-2 control-label" >模板消息ID</label>
             <div class="col-sm-9 ">
                 @if (1)
-                    <input type="text"  id="tp_template_id" name="temp[template_id]" class="form-control" value="{{$list['template_id']}}" placeholder="模版消息ID，例：P8MxRKmW7wdejmZl14-swiGmsJVrFJiWYM7zKSPXq4I" data-rule-required='true' />
+                    <input type="text"  id="tp_template_id" name="temp[template_id]" class="form-control" value="{{$temp['template_id']}}" placeholder="模版消息ID，例：P8MxRKmW7wdejmZl14-swiGmsJVrFJiWYM7zKSPXq4I" data-rule-required='true' />
                 @else
-                    <div class='form-control-static'>{{$list['template_id']}}</div>
+                    <div class='form-control-static'>{{$temp['template_id']}}</div>
                 @endif
             </div>
         </div>
@@ -76,18 +76,18 @@
 
             <div class="col-sm-8 title" style='padding-right:0' >
 
-                <textarea name="temp[first]" class="form-control" value="" data-rule-required='true' placeholder="@{{first.DATA}}" rows="5">{{$list['first']}}</textarea>
+                <textarea name="temp[first]" class="form-control" value="" data-rule-required='true' placeholder="@{{first.DATA}}" rows="5">{{$temp['first']}}</textarea>
                 <span class='help-block'>对填充模板 @{{first.DATA}} 的值 </span>
             </div>
             <div class="col-sm-1" style='padding-left:0;' >
 
-                <input type="color" name="temp[first_color]" value="{{$list['firstcolor']}}" style="width:32px;height:32px;" />
+                <input type="color" name="temp[first_color]" value="{{$temp['firstcolor']}}" style="width:32px;height:32px;" />
 
             </div>
 
         </div>
 
-        @foreach($data as $list2)
+        @foreach($temp->data as $temp2)
             @include('setting.diytemp.tpl.common')
         @endforeach
         <div id="type-items"></div>
@@ -103,12 +103,12 @@
         <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label" >尾部描述</label>
             <div class="col-sm-8 title" style='padding-right:0' >
-                <textarea name="temp[remark]" class="form-control" placeholder="@{{remark.DATA}}" rows="5" >{{$list['remark']}}</textarea>
+                <textarea name="temp[remark]" class="form-control" placeholder="@{{remark.DATA}}" rows="5" >{{$temp['remark']}}</textarea>
                 <span class='help-block'>填充模板 @{{remark.DATA}} 的值</span>
             </div>
             <div class="col-sm-1" style='padding-left:0' >
 
-                <input type="color" name="temp[remark_color]" value="{{$list['remarkcolor']}}" style="width:32px;height:32px;" />
+                <input type="color" name="temp[remark_color]" value="{{$temp['remarkcolor']}}" style="width:32px;height:32px;" />
 
             </div>
 

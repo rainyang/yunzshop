@@ -13,7 +13,7 @@
         <input type="hidden" name="a" value="entry"/>
         <input type="hidden" name="m" value="yun_shop"/>
         <input type="hidden" name="do" value="temp" id="form_do"/>
-        <input type="hidden" name="route" value="{!! yzWebUrl('setting.diy-temp.index') !!}" id="route" />
+        <input type="hidden" name="route" value="setting.diy-temp.index" id="route" />
         <div class="page-toolbar">
              <span class=''>
                  <a class='btn btn-primary btn-sm' href="{!! yzWebUrl('setting.wechat-notice.index') !!}"><i class="fa fa-plus"></i> 微信模板管理</a>
@@ -34,26 +34,20 @@
             <thead>
             <tr>
                 <th >模板名称</th>
-                <th></th>
-                <th style="width: 65px;">操作</th>
+                <th style="width: 100px;">操作</th>
             </tr>
             </thead>
             <tbody>
             @foreach($list as $row)
             <tr>
                 <td>{{$row['title']}}</td>
-                <td></td>
                 <td>
-                    <a class='btn btn-op btn-operation' href="{!! yzWebUrl('setting.diy-temp.ediy', ['id' => $row['id']]) !!}" >
-                        <span data-toggle="tooltip" data-placement="top" data-original-title="编辑">
-                            <i class='icow icow-bianji2'></i>
-                        </span>
-                    </a>
-                    <a class='btn btn-op btn-operation'  data-toggle='ajaxRemove' href="{!! yzWebUrl('setting.diy-temp.del', ['id' => $row['id']]) !!}" data-confirm="确认删除此模板吗？" >
-                        <span data-toggle="tooltip" data-placement="top" data-original-title="删除">
-                            <i class='icow icow-shanchu1'></i>
-                        </span>
-                    </a>
+                    <a class="btn btn-info btn-sm disbut"
+                       href="{!! yzWebUrl('setting.diy-temp.edit', array('id' => $row['id'])) !!}">修改</a>
+
+                    <a class="btn btn-danger btn-sm disbut"
+                       href="{!! yzWebUrl('setting.diy-temp.del', array('id' => $row['id'])) !!}"
+                       onclick="return confirm('此操作不可逆,确认要删除?');return false;">删除</a>
                 </td>
             </tr>
 
