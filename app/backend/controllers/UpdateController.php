@@ -358,7 +358,13 @@ class UpdateController extends BaseController
         $secret = Setting::get('shop.key')['secret'];
         $update = new AutoUpdate(null, null, 300);
         $update->setUpdateFile('check_app.json');
-        $update->setCurrentVersion(config('version'));
+
+        if (is_file(base_path() . '/' . 'config/front-version.php')) {
+            $update->setCurrentVersion(config('front-version'));
+        } else {
+            $update->setCurrentVersion(config('version'));
+        }
+
         $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
         Setting::get('auth.key');
         $update->setBasicAuth($key, $secret);
