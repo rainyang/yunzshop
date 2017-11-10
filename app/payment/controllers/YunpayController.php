@@ -13,14 +13,14 @@ use app\common\services\Pay;
 use app\payment\PaymentController;
 use Yunshop\YunPay\services\YunPayNotifyService;
 
-class YunpayContrller extends PaymentController
+class YunpayController extends PaymentController
 {
     private $attach = [];
 
     public function __construct()
     {
         parent::__construct();
-
+        \Log::debug('---芸支付回调参数1----', $_POST);
         if (empty(\YunShop::app()->uniacid)) {
             $this->attach = explode(':', $_GET['attach']);
 
@@ -33,7 +33,7 @@ class YunpayContrller extends PaymentController
     public function notifyUrl()
     {
         $parameter = $_POST;
-\Log::debug('---芸支付回调参数----', $parameter);
+\Log::debug('---芸支付回调参数2----', $parameter);
         $this->log($parameter);
 
         if(!empty($parameter)){
