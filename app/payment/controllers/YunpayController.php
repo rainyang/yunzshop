@@ -20,10 +20,10 @@ class YunpayController extends PaymentController
     public function __construct()
     {
         parent::__construct();
-        \Log::debug('---芸支付回调参数1----', $_POST);
+
         if (empty(\YunShop::app()->uniacid)) {
             $this->attach = explode(':', $_POST['orderNo']);
-            \Log::debug('---attach----', $this->attach);
+
             \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $this->attach[1];
 
             AccountWechats::setConfig(AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid));
@@ -33,7 +33,7 @@ class YunpayController extends PaymentController
     public function notifyUrl()
     {
         $parameter = $_POST;
-\Log::debug('---芸支付回调参数2----', $parameter);
+
         $this->log($parameter);
 
         if(!empty($parameter)){
@@ -49,7 +49,7 @@ class YunpayController extends PaymentController
                         'pay_type_id'     => 12
 
                     ];
-                    \Log::debug('---芸支付回调data----', $data);
+                  
                     $this->payResutl($data);
                     \Log::debug('----结束----');
                     echo 'SUCCESS';
