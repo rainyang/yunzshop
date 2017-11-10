@@ -33,8 +33,8 @@ class YunpayContrller extends PaymentController
     public function notifyUrl()
     {
         $parameter = $_POST;
-
-        $this->log($parameter, '芸微信支付');
+\Log::debug('---芸支付回调参数----', $parameter);
+        $this->log($parameter);
 
         if(!empty($parameter)){
             if($this->getSignResult()) {
@@ -102,11 +102,11 @@ class YunpayContrller extends PaymentController
      *
      * @param $post
      */
-    public function log($data, $third_type)
+    public function log($data)
     {
         //访问记录
         Pay::payAccessLog();
         //保存响应数据
-        Pay::payResponseDataLog($data['orderNo'], $third_type, json_encode($data));
+        Pay::payResponseDataLog($data['orderNo'], '芸微信支付', json_encode($data));
     }
 }
