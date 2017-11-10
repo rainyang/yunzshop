@@ -21,6 +21,7 @@ use app\frontend\modules\finance\models\Withdraw;
 use app\frontend\modules\finance\services\WithdrawManualService;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class IncomeWithdrawController extends ApiController
 {
@@ -143,7 +144,7 @@ class IncomeWithdrawController extends ApiController
     public function saveWithdraw()
     {
         $withdraw_data = $this->getPostValue();
-
+        Log::info('收入提现开始：', print_r($withdraw_data, true));
 
         $this->pay_way = $withdraw_data['total']['pay_way'];
 
@@ -173,6 +174,7 @@ class IncomeWithdrawController extends ApiController
         if ($result === true) {
             return $this->successJson('提现成功!');
         }
+        Log::info('收入提现-提现失败：', print_r($withdraw_data, true));
         return $this->errorJson($result ?: '提现失败');
     }
 
@@ -198,8 +200,9 @@ class IncomeWithdrawController extends ApiController
 
             if ($this->isFreeAudit()) {
                 $remark = '提现打款-' . $item['type_name'] . '-金额:' . $item['actual_amounts'] . '元,';
+                Log::info('收入提现余额免审核打款开始：'. $remark, print_r($item, true));
                 $result = (new BalanceChange())->income($this->getBalancePayData($item, $remark));
-                if ($result !== true) {
+                if ($result === true) {
                     //throw new AppException('提现失败：微信打款失败');
                     DB::rollBack();
                     return false;
@@ -233,6 +236,7 @@ class IncomeWithdrawController extends ApiController
 
             if ($this->isFreeAudit()) {
                 $remark = '提现打款-' . $item['type_name'] . '-金额:' . $item['actual_amounts'] . '元,';
+                Log::info('收入提现微信免审核打款开始：'. $remark, print_r($item, true));
                 $result = PayFactory::create(PayFactory::PAY_WEACHAT)->doWithdraw($this->getMemberId(), $item['withdraw_sn'], $item['amounts'], $remark);
                 if ($result !== true) {
                     //throw new AppException('提现失败：微信打款失败');
@@ -348,7 +352,7 @@ class IncomeWithdrawController extends ApiController
         }
 
         if ($this->withdraw_amounts != $amounts) {
-            //throw new AppException('提现失败：提现金额错误');
+            throw new AppException('提现失败：提现金额错误');
         }
         return $array;
     }
@@ -368,7 +372,7 @@ class IncomeWithdrawController extends ApiController
 
         $amount = $this->getIncomeModel()->whereIn('id', explode(',', $income['type_id']))->sum('amount');
         if ($amount != $income['income']) {
-            //throw new AppException($income['type_name'] . '提现金额错误！');
+            throw new AppException($income['type_name'] . '提现金额错误！');
         }
 
         $roll_out_limit = array_get($this->income_set, 'roll_out_limit', 0);
@@ -376,6 +380,12 @@ class IncomeWithdrawController extends ApiController
 
         if ($amount < $roll_out_limit) {
             throw new AppException($income['type_name'] . '提现金额不能小于'.$roll_out_limit.'元');
+        }
+
+        $poundage = $this->poundageMath($income['income'], $this->poundage_rate);
+        $service_tax = $this->poundageMath(($income['income'] - $poundage), $this->service_tax_rate);
+        if (($income['income'] - $poundage - $service_tax) < 1) {
+            throw new AppException($income['type_name'] . '扣除手续费、劳务税金额不能小于1元');
         }
     }
 
@@ -398,7 +408,7 @@ class IncomeWithdrawController extends ApiController
         }
         $result = Income::where('member_id', \YunShop::app()->getMemberId())->whereIn('id', explode(',', $type_id))->update($data);
         if ($result) {
-            //throw new AppException('提现失败:' . $income_type . '收入记录更新失败');
+            throw new AppException('提现失败:' . $income_type . '收入记录更新失败');
         }
     }
 
