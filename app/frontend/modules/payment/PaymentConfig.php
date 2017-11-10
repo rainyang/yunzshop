@@ -79,7 +79,7 @@ class PaymentConfig
                         return new WechatAppPaySetting($order);
                     }
             ],
-        ], 'YunPayWechat' => [
+        ], 'yunPayWechat' => [
             'payment' => function ($payType, $settings) {
                     return new YunPayment($payType, $settings);
             },
