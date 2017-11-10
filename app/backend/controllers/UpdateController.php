@@ -25,7 +25,14 @@ class UpdateController extends BaseController
         $secret = Setting::get('shop.key')['secret'];
         $update = new AutoUpdate(null, null, 300);
         $update->setUpdateFile('check_app.json');
-        $update->setCurrentVersion(config('front-version'));
+
+        if (is_file(base_path() . '/' . 'config/front-version.php')) {
+            $update->setCurrentVersion(config('front-version'));
+            $version = config('front-version');
+        } else {
+            $update->setCurrentVersion(config('version'));
+            $version = config('version');
+        }
 
         $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
 
@@ -38,7 +45,6 @@ class UpdateController extends BaseController
         }
 
         krsort($list);
-        $version = config('front-version');
 
         return view('update.upgrad', [
             'list' => $list,
@@ -102,7 +108,7 @@ class UpdateController extends BaseController
         $filesystem = app(Filesystem::class);
         $update = new AutoUpdate(null, null, 300);
 
-        $filter_file = ['composer.json', 'composer.lock', 'README.md', 'config/front-version'];
+        $filter_file = ['composer.json', 'composer.lock', 'README.md'];
         $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
 
         $result = ['result' => 0, 'msg' => '网络请求超时', 'last_version' => ''];
