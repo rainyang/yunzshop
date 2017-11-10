@@ -18,7 +18,7 @@ class AddVirtualSalesToImsYzGoodsTable extends Migration
                     if (!Schema::hasColumn('yz_goods',
                         'virtual_sales')
                     ) {
-                        $table->integer('virtual_sales')->default(0);
+                        $table->integer('virtual_sales')->nullable()->default(0);
                     }
                 });
         }
