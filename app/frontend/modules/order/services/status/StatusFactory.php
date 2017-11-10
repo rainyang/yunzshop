@@ -12,7 +12,7 @@ namespace app\frontend\modules\order\services\status;
 use app\common\models\Order;
 use Yunshop\StoreCashier\common\models\Store;
 
-class StatusServiceFactory
+class StatusFactory
 {
     /**
      * @var Order
@@ -32,7 +32,7 @@ class StatusServiceFactory
                 return new Close($order);
                 break;
             case 0:
-                return new WaitPay($order);
+                return $this->waitPay();
                 break;
             case 1:
                 return new WaitSend($order);
@@ -46,7 +46,20 @@ class StatusServiceFactory
 
         }
     }
+    private function waitPay()
+    {
 
+
+        if (app('plugins')->isEnabled('store-cashier') && $this->order->plugin_id == Store::PLUGIN_ID){
+            //门店订单
+            return (new \Yunshop\StoreCashier\common\order\status\WaitPay())->handle($this->order);
+
+        } else {
+            // 正常订单
+            return new WaitPay($this->order);
+        }
+
+    }
     private function waitReceive()
     {
 

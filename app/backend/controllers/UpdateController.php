@@ -171,9 +171,20 @@ class UpdateController extends BaseController
                 $ret['files'] = $files;
                 file_put_contents($tmpdir . "/file.txt", json_encode($ret));
 
+                if (1 == count($files) && $files['path'] == 'config/version/php') {
+                    $files = [];
+                }
+
+                if (empty($files)) {
+                    $version = config('version');
+                    //TODO 更新日志记录
+                } else {
+                    $version = $ret['version'];
+                }
+
                 $result = [
                     'result' => 1,
-                    'version' => $ret['version'],
+                    'version' => $version,
                     'files' => $ret['files'],
                     'filecount' => count($files),
                     'log' => nl2br(base64_decode($ret['log']))
