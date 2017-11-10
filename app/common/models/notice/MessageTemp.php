@@ -18,6 +18,8 @@ class MessageTemp extends BaseModel
     protected $guarded = [''];
     public $timestamps = true;
 
+    public static $template_id = null;
+
     protected $casts = [
         'data' => 'json'
     ];
@@ -58,5 +60,42 @@ class MessageTemp extends BaseModel
         static::addGlobalScope(function (Builder $builder) {
             $builder->uniacid();
         });
+    }
+
+    public static function getSendMsg($temp_id, $params)
+    {
+        if (!intval($temp_id)) {
+            return false;
+        }
+        $temp = self::getTempById($temp_id)->first();
+        if (!$temp) {
+            return false;
+        }
+        self::$template_id = $temp->template_id;
+        $msg = [
+            'first' => [
+                'value' => self::replaceTemplate($temp->first, $params),
+                'color' => $temp->first_color
+            ],
+            'remark' => [
+                'value' => self::replaceTemplate($temp->remark, $params),
+                'color' => $temp->remark_color
+            ]
+        ];
+        foreach ($temp->data as $row) {
+            $msg[$row['keywords']] = [
+                'value' => self::replaceTemplate($row['value'], $params),
+                'color' => $row['color']
+            ];
+        }
+        return $msg;
+    }
+
+    private static function replaceTemplate($str, $datas = array())
+    {
+        foreach ($datas as $row ) {
+            $str = str_replace('[' . $row['name'] . ']', $row['value'], $str);
+        }
+        return $str;
     }
 }

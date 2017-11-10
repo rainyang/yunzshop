@@ -52,7 +52,7 @@
 
 <div class="row">
     <div class="col-sm-8" style="padding-right: 50px;">
-        <input type="hidden" name="id" value="{{$list['id']}}" />
+        <input type="hidden" name="id" value="{{$temp['id']}}" />
 
         <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label" >模板名称</label>
@@ -114,7 +114,7 @@
         <div class=""  >
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    <span style="font-size: 15px">第一步：</span>添加我的模板
+                    <span style="font-size: 15px">步骤一：</span>添加我的模板
                 </div>
                 <div class="panel-body">
                     <input type="text" id="tempcode" class="form-control" placeholder="模板编号,例:TM00015" style="margin-bottom: 5px;"  value="" />
@@ -126,7 +126,7 @@
         <div class="" >
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    <span style="font-size: 15px">第二步：</span>选择模板
+                    <span style="font-size: 15px">步骤二：</span>选择模板
                 </div>
                 <div class="panel-body">
                     <select id="selecttemplate"  class=" form-control" style="margin-bottom: 5px;">
@@ -136,13 +136,13 @@
             </div>
         </div>
 
-        <div class="  shilidiv"  >
+        <div class="example-div"  >
             <div class="panel panel-default">
                 <div class="panel-heading">
                     模板展示:
                 </div>
                 <div class="panel-body">
-                    <div id="shili" class="text">
+                    <div id="example" class="text">
                     </div>
                 </div>
             </div>
@@ -153,43 +153,26 @@
                 <div class="panel-heading">
                     <select class="form-control" onchange="$('.tm').hide();$('.tm-'+$(this).val()).show()">
                         <option value="" >选择模板变量类型</option>
-                        <option value="order">订单类</option>
+                        @foreach(\Config::get('template') as $item)
+                            <option value="{{$item['value']}}">{{$item['title']}}</option>
+                        @endforeach
                     </select>
                 </div>
-                <div class="panel-heading tm tm-order" style="display:none">
-                    订单信息
-                </div>
-                <div class="panel-body tm tm-order" style="display:none">
-                    <a href='JavaScript:' class="btn btn-default  btn-sm">商城名称</a>
-                    <a href='JavaScript:' class="btn btn-default btn-sm">粉丝昵称</a>
-                    <a href='JavaScript:' class="btn btn-default btn-sm">订单号</a>
-                    <a href='JavaScript:' class="btn btn-default btn-sm">订单金额</a>
-                    <a href='JavaScript:' class="btn btn-default btn-sm">运费</a>
-                    <a href='JavaScript:' class="btn btn-default btn-sm">商品详情</a>
-                    <a href='JavaScript:' class="btn btn-default btn-sm">单品详情</a>(单品商家下单通知变量)
-                    <a href='JavaScript:' class="btn btn-default btn-sm">快递公司</a>
-                    <a href='JavaScript:' class="btn btn-default btn-sm">快递单号</a>
-                    <a href='JavaScript:' class="btn btn-default btn-sm">购买者姓名</a>
-                    <a href='JavaScript:' class="btn btn-default btn-sm">购买者电话</a>
-                    <a href='JavaScript:' class="btn btn-default btn-sm">收货地址</a>
-                    <a href='JavaScript:' class="btn btn-default btn-sm">下单时间</a>
-                    <a href='JavaScript:' class="btn btn-default btn-sm">支付时间</a>
-                    <a href='JavaScript:' class="btn btn-default btn-sm">发货时间</a>
-                    <a href='JavaScript:' class="btn btn-default btn-sm">收货时间</a>
-                    <a href='JavaScript:' class="btn btn-default btn-sm">门店</a>
-                    <a href='JavaScript:' class="btn btn-default btn-sm">门店地址</a>
-                    <a href='JavaScript:' class="btn btn-default btn-sm">门店联系人</a>
-                    <a href='JavaScript:' class="btn btn-default btn-sm">门店营业时间</a>
-                    <a href='JavaScript:' class="btn btn-default btn-sm">虚拟物品自动发货内容</a>
-                    <a href='JavaScript:' class="btn btn-default btn-sm">虚拟卡密自动发货内容</a>
-                    <a href='JavaScript:' class="btn btn-default btn-sm">自提码</a>
-                    <a href='JavaScript:' class="btn btn-default btn-sm">备注信息</a>
-                </div>
+                @foreach(\Config::get('template') as $item)
+                    <div class="panel-heading tm tm-{{$item['value']}}" style="display:none">
+                        {{$item['subtitle']}}
+                    </div>
+                    <div class="panel-body tm tm-{{$item['value']}}" style="display:none">
+                        @foreach($item['param'] as $row)
+                            <a href='JavaScript:' class="btn btn-default btn-sm">{{$row}}</a>
+                        @endforeach
+                    </div>
+                @endforeach
 
                 <div class="panel-body">
                     点击变量后会自动插入选择的文本框的焦点位置，在发送给粉丝时系统会自动替换对应变量值
                     <div class="text text-danger">
-                        注意：以上模板消息变量只适用于系统类通知，会员群发工具不适用
+                        注意：请选择对应模板变量, 否则消息通知内容有误 .
                     </div>
                 </div>
             </div>
@@ -211,7 +194,7 @@
         var temp;
 
         for(var i=0;i<temps.length;i++){
-            if(temps[i].template_id==tid)
+            if(temps[i].template_id == tid)
             {
                 temp =temps[i];
                 break;
@@ -223,13 +206,13 @@
         } else {
             contents = temp.contents;
 
-            if(contents[0]!='first' || contents[contents.length-1] != 'remark') {
+            if(contents[0] != 'first' || contents[contents.length-1] != 'remark') {
                 alert("此模板不可用!");
                 return;
             }
-            $("#shili").html(temp.content);
+            $("#example").html(temp.content);
 
-            $(".shilidiv").show();
+            $(".example-div").show();
             $("#title").val(temp.title);
             $("#template_id").val(temp.template_id);
 

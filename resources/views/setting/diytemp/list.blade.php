@@ -3,7 +3,7 @@
 @section('content')
     <div class="right-titpos">
         <ul class="add-snav">
-            <li class="active"><a href="#">自定义模板管理</a></li>
+            <li class="active"><a href="#">自定义模板管理<span style="color:red;">[{{$list->total()}}个]</span></a></li>
         </ul>
     </div>
 <div class="page-header">
@@ -16,8 +16,8 @@
         <input type="hidden" name="route" value="setting.diy-temp.index" id="route" />
         <div class="page-toolbar">
              <span class=''>
-                 <a class='btn btn-primary btn-sm' href="{!! yzWebUrl('setting.wechat-notice.index') !!}"><i class="fa fa-plus"></i> 微信模板管理</a>
-                 <a class='btn btn-primary btn-sm' href="{!! yzWebUrl('setting.diy-temp.add') !!}"><i class="fa fa-plus"></i> 添加新模板</a>
+                 <a class='btn btn-info btn-sm' href="{!! yzWebUrl('setting.wechat-notice.index') !!}"><i class="fa fa-plus-square"></i> 微信模板管理</a>
+                 <a class='btn btn-info btn-sm' href="{!! yzWebUrl('setting.diy-temp.add') !!}"><i class="fa fa-plus-square"></i> 添加新模板</a>
              </span>
              <div class="col-sm-6 pull-right">
                  <div class="input-group">
