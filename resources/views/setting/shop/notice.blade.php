@@ -56,15 +56,53 @@
                             </div>
                         </div>
                     </div>
+
                     <div class='panel-heading'>
-                        任务处理通知
+                        积分变动通知
                     </div>
                     <div class='panel-body'>
                         <div class="form-group">
-                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">任务处理通知</label>
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">积分变动通知</label>
                             <div class="col-sm-9 col-xs-12">
-                                <input type="text" name="notice[task]" class="form-control" value="{{ $set['task'] }}"/>
-                                <div class="help-block">积分、余额、新增下线等通知</div>
+                                <select name='notice[point_change]' class='form-control'>
+                                    <option value="" @if(!$set['point_change'])
+                                    selected
+                                            @endif;
+                                    >
+                                        请选择消息模板
+                                    </option>
+                                    @foreach ($temp_list as $item)
+                                        <option value="{{$item['id']}}"
+                                                @if($set['point_change'] == $item['id'])
+                                                selected
+                                                @endif>{{$item['title']}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class='panel-heading'>
+                        余额变动通知
+                    </div>
+                    <div class='panel-body'>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额变动通知</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <select name='notice[blance_change]' class='form-control'>
+                                    <option value="" @if(!$set['blance_change'])
+                                    selected
+                                            @endif;
+                                    >
+                                        请选择消息模板
+                                    </option>
+                                    @foreach ($temp_list as $item)
+                                        <option value="{{$item['id']}}"
+                                                @if($set['blance_change'] == $item['id'])
+                                                selected
+                                                @endif>{{$item['title']}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -76,7 +114,20 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单生成通知</label>
                             <div class="col-sm-9 col-xs-12">
-                                <input type="text" name="notice[new]" class="form-control" value="{{ $set['new'] }}"/>
+                                <select name='notice[new]' class='form-control'>
+                                    <option value="" @if(!$set['new'])
+                                    selected
+                                            @endif;
+                                    >
+                                        请选择消息模板
+                                    </option>
+                                    @foreach ($temp_list as $item)
+                                        <option value="{{$item['id']}}"
+                                                @if($set['new'] == $item['id'])
+                                                selected
+                                                @endif>{{$item['title']}}</option>
+                                    @endforeach
+                                </select>
                                 <div class="help-block">通知公众平台模板消息编号: OPENTM205213550</div>
                             </div>
                         </div>
@@ -182,6 +233,25 @@
                                 <div class="help-block">开启：会员可以收到一级、二级下线下单、付款、发货、收货通知（使用任务处理通知）</div>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                            <div class="col-sm-9 col-xs-12">
+                                <select name='notice[other_toggle_temp]' class='form-control'>
+                                    <option value="" @if(!$set['other_toggle_temp'])
+                                    selected
+                                            @endif;
+                                    >
+                                        请选择消息模板
+                                    </option>
+                                    @foreach ($temp_list as $item)
+                                        <option value="{{$item['id']}}"
+                                                @if($set['other_toggle_temp'] == $item['id'])
+                                                selected
+                                                @endif>{{$item['title']}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
                     </div>
                     <div class='panel-heading'>
                         买家通知
@@ -191,27 +261,43 @@
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单提交成功通知</label>
                                 <div class="col-sm-9 col-xs-12">
-                                    <input type="text" name="notice[order_submit_success]" class="form-control"
-                                           value="{{ $set['order_submit_success'] }}"/>
-                                    <div class="help-block">公众平台模板消息编号: OPENTM200746866</div>
+                                    <select name='notice[order_submit_success]' class='form-control'>
+                                        <option value="" @if(!$set['order_submit_success'])
+                                        selected
+                                                @endif;
+                                        >
+                                            请选择消息模板
+                                        </option>
+                                        @foreach ($temp_list as $item)
+                                            <option value="{{$item['id']}}"
+                                                    @if($set['order_submit_success'] == $item['id'])
+                                                    selected
+                                                    @endif>{{$item['title']}}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="help-block">通知公众平台模板消息编号: OPENTM200746866</div>
                                 </div>
                             </div>
                         @endif
-
-                        {{--<div class="form-group">--}}
-                        {{--<label class="col-xs-12 col-sm-3 col-md-2 control-label">自提订单提交成功通知</label>--}}
-                        {{--<div class="col-sm-9 col-xs-12">--}}
-                        {{--<input type="text" name="notice[carrier]" class="form-control" value="{{ $set['carrier'] }}" />--}}
-                        {{--<div class="help-block">公众平台模板消息编号:  OPENTM201594720  </div>--}}
-                        {{--</div>--}}
-                        {{--</div>--}}
                         @if(YunShop::notice()->getNotSend('order_cancel'))
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单取消通知</label>
                                 <div class="col-sm-9 col-xs-12">
-                                    <input type="text" name="notice[order_cancel]" class="form-control"
-                                           value="{{ $set['order_cancel'] }}"/>
-                                    <div class="help-block">公众平台模板消息编号: TM00850</div>
+                                    <select name='notice[order_cancel]' class='form-control'>
+                                        <option value="" @if(!$set['order_cancel'])
+                                        selected
+                                                @endif;
+                                        >
+                                            请选择消息模板
+                                        </option>
+                                        @foreach ($temp_list as $item)
+                                            <option value="{{$item['id']}}"
+                                                    @if($set['order_cancel'] == $item['id'])
+                                                    selected
+                                                    @endif>{{$item['title']}}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="help-block">通知公众平台模板消息编号: TM00850</div>
                                 </div>
                             </div>
                         @endif
@@ -219,9 +305,21 @@
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单支付成功通知</label>
                                 <div class="col-sm-9 col-xs-12">
-                                    <input type="text" name="notice[order_pay_success]" class="form-control"
-                                           value="{{ $set['order_pay_success'] }}"/>
-                                    <div class="help-block">公众平台模板消息编号: OPENTM204987032</div>
+                                    <select name='notice[order_pay_success]' class='form-control'>
+                                        <option value="" @if(!$set['order_pay_success'])
+                                        selected
+                                                @endif;
+                                        >
+                                            请选择消息模板
+                                        </option>
+                                        @foreach ($temp_list as $item)
+                                            <option value="{{$item['id']}}"
+                                                    @if($set['order_pay_success'] == $item['id'])
+                                                    selected
+                                                    @endif>{{$item['title']}}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="help-block">通知公众平台模板消息编号: OPENTM204987032</div>
                                 </div>
                             </div>
                         @endif
@@ -229,9 +327,21 @@
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单发货通知</label>
                                 <div class="col-sm-9 col-xs-12">
-                                    <input type="text" name="notice[order_send]" class="form-control"
-                                           value="{{ $set['order_send'] }}"/>
-                                    <div class="help-block">公众平台模板消息编号: OPENTM202243318</div>
+                                    <select name='notice[order_send]' class='form-control'>
+                                        <option value="" @if(!$set['order_send'])
+                                        selected
+                                                @endif;
+                                        >
+                                            请选择消息模板
+                                        </option>
+                                        @foreach ($temp_list as $item)
+                                            <option value="{{$item['id']}}"
+                                                    @if($set['order_send'] == $item['id'])
+                                                    selected
+                                                    @endif>{{$item['title']}}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="help-block">通知公众平台模板消息编号: OPENTM202243318</div>
                                 </div>
                             </div>
                         @endif
@@ -239,9 +349,21 @@
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单确认收货通知</label>
                                 <div class="col-sm-9 col-xs-12">
-                                    <input type="text" name="notice[order_finish]" class="form-control"
-                                           value="{{ $set['order_finish'] }}"/>
-                                    <div class="help-block">公众平台模板消息编号: OPENTM202314085</div>
+                                    <select name='notice[order_finish]' class='form-control'>
+                                        <option value="" @if(!$set['order_finish'])
+                                        selected
+                                                @endif;
+                                        >
+                                            请选择消息模板
+                                        </option>
+                                        @foreach ($temp_list as $item)
+                                            <option value="{{$item['id']}}"
+                                                    @if($set['order_finish'] == $item['id'])
+                                                    selected
+                                                    @endif>{{$item['title']}}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="help-block">通知公众平台模板消息编号: OPENTM202314085</div>
                                 </div>
                             </div>
                         @endif
@@ -249,9 +371,21 @@
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款申请通知</label>
                                 <div class="col-sm-9 col-xs-12">
-                                    <input type="text" name="notice[order_refund_apply]" class="form-control"
-                                           value="{{ $set['order_refund_apply'] }}"/>
-                                    <div class="help-block">公众平台模板消息编号: TM00431</div>
+                                    <select name='notice[order_refund_apply]' class='form-control'>
+                                        <option value="" @if(!$set['order_refund_apply'])
+                                        selected
+                                                @endif;
+                                        >
+                                            请选择消息模板
+                                        </option>
+                                        @foreach ($temp_list as $item)
+                                            <option value="{{$item['id']}}"
+                                                    @if($set['order_refund_apply'] == $item['id'])
+                                                    selected
+                                                    @endif>{{$item['title']}}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="help-block">通知公众平台模板消息编号: TM00431</div>
                                 </div>
                             </div>
                         @endif
@@ -259,9 +393,21 @@
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款成功通知</label>
                                 <div class="col-sm-9 col-xs-12">
-                                    <input type="text" name="notice[order_refund_success]" class="form-control"
-                                           value="{{ $set['order_refund_success'] }}"/>
-                                    <div class="help-block">公众平台模板消息编号: TM00430</div>
+                                    <select name='notice[order_refund_success]' class='form-control'>
+                                        <option value="" @if(!$set['order_refund_success'])
+                                        selected
+                                                @endif;
+                                        >
+                                            请选择消息模板
+                                        </option>
+                                        @foreach ($temp_list as $item)
+                                            <option value="{{$item['id']}}"
+                                                    @if($set['order_refund_success'] == $item['id'])
+                                                    selected
+                                                    @endif>{{$item['title']}}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="help-block">通知公众平台模板消息编号: TM00430</div>
                                 </div>
                             </div>
                         @endif
@@ -269,44 +415,65 @@
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款申请驳回通知</label>
                                 <div class="col-sm-9 col-xs-12">
-                                    <input type="text" name="notice[order_refund_reject]" class="form-control"
-                                           value="{{ $set['order_refund_reject'] }}"/>
-                                    <div class="help-block">公众平台模板消息编号: TM00432</div>
+                                    <select name='notice[order_refund_reject]' class='form-control'>
+                                        <option value="" @if(!$set['order_refund_reject'])
+                                        selected
+                                                @endif;
+                                        >
+                                            请选择消息模板
+                                        </option>
+                                        @foreach ($temp_list as $item)
+                                            <option value="{{$item['id']}}"
+                                                    @if($set['order_refund_reject'] == $item['id'])
+                                                    selected
+                                                    @endif>{{$item['title']}}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="help-block">通知公众平台模板消息编号: TM00432</div>
                                 </div>
                             </div>
                         @endif
                         @if(YunShop::notice()->getNotSend('customer_upgrade'))
                             <div class="form-group">
-                                <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员升级通知(任务处理通知)</label>
+                                <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员升级通知</label>
                                 <div class="col-sm-9 col-xs-12">
-                                    <input type="text" name="notice[customer_upgrade]" class="form-control"
-                                           value="{{ $set['customer_upgrade'] }}"/>
-                                    <div class="help-block">请搜索“任务处理通知”公众平台模板消息编号: OPENTM200605630</div>
+                                    <select name='notice[customer_upgrade]' class='form-control'>
+                                        <option value="" @if(!$set['customer_upgrade'])
+                                        selected
+                                                @endif;
+                                        >
+                                            请选择消息模板
+                                        </option>
+                                        @foreach ($temp_list as $item)
+                                            <option value="{{$item['id']}}"
+                                                    @if($set['customer_upgrade'] == $item['id'])
+                                                    selected
+                                                    @endif>{{$item['title']}}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="help-block">通知公众平台模板消息编号: OPENTM200605630</div>
                                 </div>
                             </div>
                         @endif
-
-                        {{--<div class="form-group">
-                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">充值成功通知</label>
-                            <div class="col-sm-9 col-xs-12">
-                                <input type="text" name="notice[recharge_success]" class="form-control" value="{{ $set['recharge_success'] }}" />
-                                <div class="help-block">公众平台模板消息编号:  TM00977</div>
-                            </div>
-                        </div>
-                         <div class="form-group">
-                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">充值退款通知</label>
-                            <div class="col-sm-9 col-xs-12">
-                                <input type="text" name="notice[recharge_refund]" class="form-control" value="{{ $set['recharge_refund'] }}" />
-                                <div class="help-block">搜索“退款通知”，公众平台模板消息编号:  TM00004</div>
-                            </div>
-                        </div>--}}
                         @if(YunShop::notice()->getNotSend('withdraw_submit'))
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现提交通知</label>
                                 <div class="col-sm-9 col-xs-12">
-                                    <input type="text" name="notice[withdraw_submit]" class="form-control"
-                                           value="{{ $set['withdraw_submit'] }}"/>
-                                    <div class="help-block">公众平台模板消息编号: TM00979</div>
+                                    <select name='notice[withdraw_submit]' class='form-control'>
+                                        <option value="" @if(!$set['withdraw_submit'])
+                                        selected
+                                                @endif;
+                                        >
+                                            请选择消息模板
+                                        </option>
+                                        @foreach ($temp_list as $item)
+                                            <option value="{{$item['id']}}"
+                                                    @if($set['withdraw_submit'] == $item['id'])
+                                                    selected
+                                                    @endif>{{$item['title']}}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="help-block">通知公众平台模板消息编号: TM00979</div>
                                 </div>
                             </div>
                         @endif
@@ -314,9 +481,21 @@
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现成功通知</label>
                                 <div class="col-sm-9 col-xs-12">
-                                    <input type="text" name="notice[withdraw_success]" class="form-control"
-                                           value="{{ $set['withdraw_success'] }}"/>
-                                    <div class="help-block">公众平台模板消息编号: TM00980</div>
+                                    <select name='notice[withdraw_success]' class='form-control'>
+                                        <option value="" @if(!$set['withdraw_success'])
+                                        selected
+                                                @endif;
+                                        >
+                                            请选择消息模板
+                                        </option>
+                                        @foreach ($temp_list as $item)
+                                            <option value="{{$item['id']}}"
+                                                    @if($set['withdraw_success'] == $item['id'])
+                                                    selected
+                                                    @endif>{{$item['title']}}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="help-block">通知公众平台模板消息编号: TM00980</div>
                                 </div>
                             </div>
                         @endif
@@ -324,9 +503,21 @@
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现失败通知</label>
                                 <div class="col-sm-9 col-xs-12">
-                                    <input type="text" name="notice[withdraw_fail]" class="form-control"
-                                           value="{{ $set['withdraw_fail'] }}"/>
-                                    <div class="help-block">公众平台模板消息编号: TM00981</div>
+                                    <select name='notice[withdraw_fail]' class='form-control'>
+                                        <option value="" @if(!$set['withdraw_fail'])
+                                        selected
+                                                @endif;
+                                        >
+                                            请选择消息模板
+                                        </option>
+                                        @foreach ($temp_list as $item)
+                                            <option value="{{$item['id']}}"
+                                                    @if($set['withdraw_fail'] == $item['id'])
+                                                    selected
+                                                    @endif>{{$item['title']}}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="help-block">通知公众平台模板消息编号: TM00981</div>
                                 </div>
                             </div>
                         @endif

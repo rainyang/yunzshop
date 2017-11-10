@@ -90,4 +90,15 @@ class DiyTempController extends BaseController
         }
         $this->temp_model = $temp_model;
     }
+
+    public function query()
+    {
+        $kwd = trim(request()->keyword);
+        if ($kwd) {
+            $temp_list = MessageTemp::fetchTempList($kwd)->get();
+            return view('setting.diytemp.query', [
+                'temp_list' => $temp_list
+            ])->render();
+        }
+    }
 }

@@ -6,16 +6,96 @@
  */
 
 return [
-    'order_param' => [
-        'title' => '订单类',
-        'subtitle' => '订单信息',
-        'value' => 'order',
+    'seller_pay' => [
+        'title' => '卖家通知(会员付款通知)',
+        'subtitle' => '会员付款通知',
+        'value' => 'seller_pay',
         'param' => [
-            '商城名称', '粉丝昵称', '订单号', '订单金额', '运费', '商品详情', '购买者姓名', '购买者电话', '收货地址', '下单时间', '支付时间', '发货时间', '收货时间', '备注信息'
+            '粉丝昵称', '订单号', '下单时间', '支付时间', '支付方式', '订单金额', '运费', '商品详情（含规格）', '收件人姓名', '收件人电话', '收件人地址'
+        ]
+    ],
+    'seller_receipt' => [
+        'title' => '卖家通知(会员确认收货通知)',
+        'subtitle' => '会员确认收货通知',
+        'value' => 'seller_receipt',
+        'param' => [
+            '粉丝昵称', '订单号', '确认收货时间', '运费', '商品详情（含规格）', '收件人姓名', '收件人电话', '收件人地址'
+        ]
+    ],
+    'buyer_order_create_success' => [
+        'title' => '买家通知(订单提交成功通知)',
+        'subtitle' => '订单提交成功通知',
+        'value' => 'buyer_order_create_success',
+        'param' => [
+            '商城名称', '粉丝昵称', '订单号', '下单时间', '订单金额', '运费', '商品详情（含规格）', '支付方式'
+        ]
+    ],
+    'buyer_order_pay_success' => [
+        'title' => '买家通知(订单支付成功通知)',
+        'subtitle' => '订单支付成功通知',
+        'value' => 'buyer_order_pay_success',
+        'param' => [
+            '商城名称', '粉丝昵称', '订单号', '下单时间', '订单金额', '运费', '商品详情（含规格）', '支付方式', '支付时间'
+        ]
+    ],
+    'buyer_order_sending' => [
+        'title' => '买家通知(订单发货通知)',
+        'subtitle' => '订单发货通知',
+        'value' => 'buyer_order_sending',
+        'param' => [
+            '商城名称', '粉丝昵称', '订单号', '下单时间', '订单金额', '运费', '商品详情（含规格）', '发货时间', '快递公司', '快递单号'
+        ]
+    ],
+    'buyer_order_receipt_success' => [
+        'title' => '买家通知(订单确认收货通知)',
+        'subtitle' => '订单确认收货通知',
+        'value' => 'buyer_order_receipt_success',
+        'param' => [
+            '商城名称', '粉丝昵称', '订单号', '下单时间', '订单金额', '运费', '商品详情（含规格）', '确认收货时间'
+        ]
+    ],
+    'buyer_order_cancle_success' => [
+        'title' => '买家通知(订单取消通知)',
+        'subtitle' => '订单取消通知',
+        'value' => 'buyer_order_cancle_success',
+        'param' => [
+            '商城名称', '粉丝昵称', '订单号', '下单时间', '订单金额', '运费', '商品详情（含规格）', '支付方式', '订单取消时间'
+        ]
+    ],
+    'buyer_refund_apply' => [
+        'title' => '买家通知(退款申请通知)',
+        'subtitle' => '退款申请通知',
+        'value' => 'buyer_refund_apply',
+        'param' => [
+            '商城名称', '粉丝昵称', '订单号', '下单时间', '订单金额', '运费', '商品详情（含规格）', '支付方式', '支付时间', '退款申请时间', '退款方式', '退款申请金额'
+        ]
+    ],
+    'buyer_refund_apply_success' => [
+        'title' => '买家通知(退款成功通知)',
+        'subtitle' => '退款成功通知',
+        'value' => 'buyer_refund_apply_success',
+        'param' => [
+            '商城名称', '粉丝昵称', '订单号', '下单时间', '订单金额', '运费', '商品详情（含规格）', '支付方式', '支付时间', '退款申请时间', '退款成功时间', '退款方式', '退款金额'
+        ]
+    ],
+    'buyer_refund_apply_reject' => [
+        'title' => '买家通知(退款申请驳回通知)',
+        'subtitle' => '退款申请驳回通知',
+        'value' => 'buyer_refund_apply_reject',
+        'param' => [
+            '商城名称', '粉丝昵称', '订单号', '下单时间', '订单金额', '运费', '商品详情（含规格）', '支付方式', '支付时间', '退款申请时间', '退款方式', '退款申请金额', '退款驳回时间', '驳回原因'
+        ]
+    ],
+    'buyer_order_status_change' => [
+        'title' => '买家通知(订单状态更新)',
+        'subtitle' => '订单状态更新',
+        'value' => 'buyer_order_status_change',
+        'param' => [
+            '商城名称', '粉丝昵称', '订单号', '下单时间', '订单金额', '运费', '商品详情（含规格）', '支付方式', '原订单价格', '修改后订单价格', '修改时间'
         ]
     ],
     'member_upgrade' => [
-        'title' => '会员升级',
+        'title' => '会员(会员升级)',
         'subtitle' => '会员升级',
         'value' => 'member_upgrade',
         'param' => [
@@ -23,19 +103,59 @@ return [
         ]
     ],
     'member_agent' => [
-        'title' => '会员推广',
-        'subtitle' => '会员推广',
+        'title' => '会员(获得推广权限通知)',
+        'subtitle' => '获得推广权限通知',
         'value' => 'member_agent',
         'param' => [
             '商城名称', '粉丝昵称', '时间', '上级昵称'
         ]
     ],
-    'member_fans' => [
-        'title' => '新增下线',
-        'subtitle' => '新增下线',
-        'value' => 'member_fans',
+    'member_new_lower' => [
+        'title' => '会员(新增下线通知)',
+        'subtitle' => '新增下线通知',
+        'value' => 'member_new_lower',
         'param' => [
-            '粉丝昵称', '时间', '下级会员昵称'
+            '昵称', '时间', '下级会员昵称'
+        ]
+    ],
+    'finance_blance_change' => [
+        'title' => '财务(余额变动通知)',
+        'subtitle' => '余额变动通知',
+        'value' => 'finance_blance_change',
+        'param' => [
+            '商城名称', '昵称', '时间', '余额变动金额', '余额变动类型', '变动后余额数值'
+        ]
+    ],
+    'finance_point_change' => [
+        'title' => '财务(积分变动通知)',
+        'subtitle' => '积分变动通知',
+        'value' => 'finance_point_change',
+        'param' => [
+            '商城名称', '昵称', '时间', '积分变动金额', '积分变动类型', '变动后余额数值'
+        ]
+    ],
+    'finance_withdraw_apply' => [
+        'title' => '财务(提现申请提交通知)',
+        'subtitle' => '提现申请提交通知',
+        'value' => 'finance_withdraw_apply',
+        'param' => [
+            '商城名称', '昵称', '提现编号', '收入类型', '提现方式', '申请金额', '手续费', '劳务税', '申请时间'
+        ]
+    ],
+    'finance_withdraw_examine' => [
+        'title' => '财务(提现审核通知)',
+        'subtitle' => '提现审核通知',
+        'value' => 'finance_withdraw_examine',
+        'param' => [
+            '商城名称', '昵称', '提现申请时间', '收入类型', '提现方式', '申请金额', '通过审核金额', '驳回金额', '无效金额', '审核通过手续费', '审核通过劳务税', '审核通过应打款金额'
+        ]
+    ],
+    'finance_withdraw_play' => [
+        'title' => '财务(提现打款通知)',
+        'subtitle' => '提现打款通知',
+        'value' => 'finance_withdraw_play',
+        'param' => [
+            '商城名称', '昵称', '提现申请时间', '收入类型', '提现方式', '申请金额', '打款金额', '手续费', '劳务税', '提现状态'
         ]
     ],
 
