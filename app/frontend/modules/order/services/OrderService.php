@@ -16,6 +16,7 @@ use app\common\exceptions\AppException;
 use app\common\models\Order;
 
 use app\common\models\order\OrderGoodsChangePriceLog;
+use app\common\models\UniAccount;
 use \app\frontend\models\MemberCart;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\models\PreOrder;
@@ -383,17 +384,23 @@ class OrderService
      * 自动收货
      * {@inheritdoc}
      */
-    public static function autoReceive()
+    public static function autoReceive($uniacid)
     {
+        \YunShop::app()->uniacid = $uniacid;
+        \Setting::$uniqueAccountId = $uniacid;
         $days = (int)\Setting::get('shop.trade.receive');
+
         if (!$days) {
             return;
         }
         $orders = \app\backend\modules\order\models\Order::waitReceive()->where('send_time', '<', (int)Carbon::now()->addDays(-$days)->timestamp)->normal()->get();
         if (!$orders->isEmpty()) {
             $orders->each(function ($order) {
-                //dd($order->send_time);
-                OrderService::orderReceive(['order_id' => $order->id]);
+                try{
+                    OrderService::orderReceive(['order_id' => $order->id]);
+                }catch (\Exception $e){
+
+                }
             });
         }
     }
@@ -402,8 +409,10 @@ class OrderService
      * 自动关闭订单
      * {@inheritdoc}
      */
-    public static function autoClose()
+    public static function autoClose($uniacid)
     {
+        \YunShop::app()->uniacid = $uniacid;
+        \Setting::$uniqueAccountId = $uniacid;
         $days = (int)\Setting::get('shop.trade.close_order_days');
         if (!$days) {
             return;

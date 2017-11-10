@@ -1,5 +1,5 @@
-<div style='max-height:500px;overflow:auto;min-width:850px;'>
-    <table class="table table-hover" style="min-width:850px;">
+<div style='max-height:500px;overflow:auto;'>
+    <table class="table table-hover">
         <tbody>
         @if (is_array($members))
             @foreach($members as $row)
