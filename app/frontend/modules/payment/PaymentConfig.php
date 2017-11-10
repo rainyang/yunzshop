@@ -68,17 +68,25 @@ class PaymentConfig
                     return new CloudPayWechatSetting($order);
                 }
             ],
-        ],
-            'wechatAppPay' => [
-                'payment' => function ($payType, $settings) {
+        ], 'wechatAppPay' => [
+            'payment' => function ($payType, $settings) {
                     return new AppPayment($payType, $settings);
-                },
-                'settings' => [
+            },
+            'settings' => [
                     'shop' => function (OrderPaymentTypeSettingManager $manager, Order $order) {
                         return new WechatAppPaySetting($order);
                     }
-                ],
-            ]
+            ],
+        ], 'YunPayWechat' => [
+            'payment' => function ($payType, $settings) {
+                    return new CloudPayment($payType, $settings);
+            },
+            'settings' => [
+                    'shop' => function (OrderPaymentTypeSettingManager $manager, Order $order) {
+                        return new CloudPayWechatSetting($order);
+                    }
+            ],
+        ],
         ];
     }
 }
