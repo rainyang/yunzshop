@@ -407,7 +407,7 @@ class IncomeWithdrawController extends ApiController
             $data = ['status' => 1,'pay_status'=> 2];
         }
         $result = Income::where('member_id', \YunShop::app()->getMemberId())->whereIn('id', explode(',', $type_id))->update($data);
-        if ($result) {
+        if (!$result) {
             throw new AppException('提现失败:' . $income_type . '收入记录更新失败');
         }
     }
@@ -650,6 +650,8 @@ class IncomeWithdrawController extends ApiController
         $special_poundage_rate = empty(array_get($this->withdraw_set,'special_poundage', 0)) ? 0 : array_get($this->withdraw_set,'special_poundage', 0);
         $special_service_tax_rate = empty(array_get($this->withdraw_set,'special_service_tax', 0)) ? 0 : array_get($this->withdraw_set,'special_service_tax', 0);
 
+        $special_poundage = $this->poundageMath($this->withdraw_amounts, $special_poundage_rate);
+        $special_service_tax = $this->poundageMath($this->withdraw_amounts - $special_poundage, $special_service_tax_rate);
         return [
             'type'              => $income['class'],
             'key_name'          => $income['type'],
@@ -663,9 +665,9 @@ class IncomeWithdrawController extends ApiController
             'can'               => $this->incomeIsCanWithdraw(),
             'selected'          => $this->incomeIsCanWithdraw(),
             'type_id'           => $this->getIncomeTypeIds($income['class']),
-            'special_poundage'  => $this->poundageMath($this->withdraw_amounts, $special_poundage_rate),
+            'special_poundage'  => $special_poundage,
             'special_poundage_rate'  => $special_poundage_rate,
-            'special_service_tax'    => $this->poundageMath($this->withdraw_amounts, $special_service_tax_rate),
+            'special_service_tax'    => $special_service_tax,
             'special_service_tax_rate' => $special_service_tax_rate,
         ];
     }
