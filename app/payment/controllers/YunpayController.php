@@ -22,9 +22,9 @@ class YunpayController extends PaymentController
         parent::__construct();
         \Log::debug('---芸支付回调参数1----', $_POST);
         if (empty(\YunShop::app()->uniacid)) {
-            $this->attach = explode(':', $_GET['attach']);
-
-            \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $this->attach[0];
+            $this->attach = explode(':', $_POST['orderNo']);
+            \Log::debug('---attach----', $this->attach);
+            \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $this->attach[1];
 
             AccountWechats::setConfig(AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid));
         }
@@ -42,14 +42,14 @@ class YunpayController extends PaymentController
                     \Log::debug('------验证成功-----');
                     $data = [
                         'total_fee'    => floatval($parameter['transAmt']),
-                        'out_trade_no' => $parameter['orderNo'],
+                        'out_trade_no' => $this->attach[0],
                         'trade_no'     => $parameter['orderId'],
                         'unit'         => 'fen',
                         'pay_type'     => '芸微信支付',
                         'pay_type_id'     => 12
 
                     ];
-
+                    \Log::debug('---芸支付回调data----', $data);
                     $this->payResutl($data);
                     \Log::debug('----结束----');
                     echo 'SUCCESS';
@@ -104,9 +104,10 @@ class YunpayController extends PaymentController
      */
     public function log($data)
     {
+        $orderNo = explode(':', $data['orderNo']);
         //访问记录
         Pay::payAccessLog();
         //保存响应数据
-        Pay::payResponseDataLog($data['orderNo'], '芸微信支付', json_encode($data));
+        Pay::payResponseDataLog($orderNo[0], '芸微信支付', json_encode($data));
     }
 }
