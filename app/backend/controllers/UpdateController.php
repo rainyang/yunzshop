@@ -130,6 +130,7 @@ class UpdateController extends BaseController
 
                 if (!empty($ret['files'])) {
                     foreach ($ret['files'] as $file) {
+                        //忽略指定文件
                         if (in_array($file['path'], $filter_file)) {
                             continue;
                         }
@@ -149,7 +150,13 @@ class UpdateController extends BaseController
                             }
                         }
 
+                        //忽略前端版本号记录文件
+                        if ($file['path'] == 'config/front-version.php' && is_file(base_path() . '/' . $file['path'])) {
+                            continue;
+                        }
+
                         $entry = base_path() . '/' . $file['path'];
+
                         //如果本地没有此文件或者文件与服务器不一致
                         if (!is_file($entry) || md5_file($entry) != $file['md5']) {
                             $files[] = array(
