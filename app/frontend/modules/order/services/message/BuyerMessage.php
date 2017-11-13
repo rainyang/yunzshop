@@ -51,6 +51,9 @@ class BuyerMessage extends Message
     private function transfer($temp_id, $params, $type = false)
     {
         $this->msg = MessageTemp::getSendMsg($temp_id, $params);
+        if (!$this->msg) {
+            return;
+        }
         $this->templateId = MessageTemp::$template_id;
         $this->sendToBuyer();
         if ($type) {
