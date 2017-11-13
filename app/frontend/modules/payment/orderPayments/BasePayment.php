@@ -8,7 +8,6 @@
 
 namespace app\frontend\modules\payment\orderPayments;
 
-use app\common\models\Order;
 use app\common\models\PayType;
 use app\frontend\modules\payment\paymentSettings\OrderPaymentSettingCollection;
 
