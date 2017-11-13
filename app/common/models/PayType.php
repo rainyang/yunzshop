@@ -32,6 +32,7 @@ class PayType extends BaseModel
     const WechatApp = 9;//现金支付
     const AlipayApp = 10;//现金支付
     const STORE_PAY = 11;//门店
+    const PAY_YUN_WECHAT = 12;//芸支付微信支付
 
 
     /**
