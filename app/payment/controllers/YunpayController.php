@@ -82,6 +82,25 @@ class YunpayController extends PaymentController
         }
     }
 
+    public function refundUrl()
+    {
+        $parameter = $_POST;
+
+        if (!empty($parameter)) {
+            if ($this->getSignResult()) {
+                if ($_POST['respCode'] == '0000') {
+                    //验证成功，业务逻辑
+                } else {
+                    //其他错误
+                }
+            } else {
+                //签名验证失败
+            }
+        } else {
+            echo 'FAIL';
+        }
+    }
+
     /**
      * 签名验证
      *
