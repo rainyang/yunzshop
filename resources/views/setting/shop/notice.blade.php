@@ -112,10 +112,10 @@
                     </div>
                     <div class='panel-body'>
                         <div class="form-group">
-                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单生成通知</label>
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单生成通知[卖家]</label>
                             <div class="col-sm-9 col-xs-12">
-                                <select name='notice[new]' class='form-control'>
-                                    <option value="" @if(!$set['new'])
+                                <select name='notice[seller_order_create]' class='form-control'>
+                                    <option value="" @if(!$set['seller_order_create'])
                                     selected
                                             @endif;
                                     >
@@ -123,12 +123,51 @@
                                     </option>
                                     @foreach ($temp_list as $item)
                                         <option value="{{$item['id']}}"
-                                                @if($set['new'] == $item['id'])
+                                                @if($set['seller_order_create'] == $item['id'])
                                                 selected
                                                 @endif>{{$item['title']}}</option>
                                     @endforeach
                                 </select>
-                                <div class="help-block">通知公众平台模板消息编号: OPENTM205213550</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单支付通知[卖家]</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <select name='notice[seller_order_pay]' class='form-control'>
+                                    <option value="" @if(!$set['seller_order_pay'])
+                                    selected
+                                            @endif;
+                                    >
+                                        请选择消息模板
+                                    </option>
+                                    @foreach ($temp_list as $item)
+                                        <option value="{{$item['id']}}"
+                                                @if($set['seller_order_pay'] == $item['id'])
+                                                selected
+                                                @endif>{{$item['title']}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单完成通知[卖家]</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <select name='notice[seller_order_finish]' class='form-control'>
+                                    <option value="" @if(!$set['seller_order_finish'])
+                                    selected
+                                            @endif;
+                                    >
+                                        请选择消息模板
+                                    </option>
+                                    @foreach ($temp_list as $item)
+                                        <option value="{{$item['id']}}"
+                                                @if($set['seller_order_finish'] == $item['id'])
+                                                selected
+                                                @endif>{{$item['title']}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
 
