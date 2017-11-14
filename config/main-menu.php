@@ -1645,7 +1645,7 @@ return [
 
             'withdraw_set'  => [
                 'name'              => '提现设置',
-                'url'               => 'finance.withdraw.set',
+                'url'               => 'finance.withdraw-set.see',
                 'url_params'        => '',
                 'permit'            => 1,
                 'menu'              => 1,
@@ -1654,15 +1654,15 @@ return [
                 'item'              => 'withdraw_set',
                 'parents'           => ['finance','withdraw'],
                 'child'             => [
-                    'withdraw_set'      => [
+                    'withdraw_set_see'      => [
                         'name'              => '编辑保存',
-                        'url'               => 'finance.withdraw.set',
+                        'url'               => 'finance.withdraw-set.see',
                         'url_params'        => '',
                         'permit'            => 1,
                         'menu'              => 0,
                         'icon'              => '',
                         'sort'              => '0',
-                        'item'              => 'withdraw_set',
+                        'item'              => 'withdraw_set_see',
                         'parents'           => ['finance','withdraw','withdraw_set'],
                     ],
                 ],
