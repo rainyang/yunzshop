@@ -15,53 +15,120 @@ class Income extends BackendModel
 {
     public $table = 'yz_member_income';
 
-    public $timestamps = true;
-
-    public $widgets = [];
-
-    public $attributes = [];
 
     protected $guarded = [];
 
-    public $StatusService;
-
-    public $PayStatusService;
-
     protected $appends = ['status_name', 'pay_status_name'];
 
-    /**
-     * @return mixed
-     */
-    public function getStatusService()
-    {
-        if (!isset($this->StatusService)) {
 
-            $this->StatusService = IncomeService::createStatusService($this);
-        }
-        return $this->StatusService;
+
+    //状态
+    const STATUS_INVALID    = -1;
+
+    const STATUS_INITIAL    = 0;
+
+    const STATUS_WITHDRAW   = 1;
+
+    const STATUS_REJECT     = 3;
+
+
+    //打款状态
+    const PAY_STATUS_INVALID    = -1;
+
+    const PAY_STATUS_INITIAL    = 0;
+
+    const PAY_STATUS_WAIT       = 1;
+
+    const PAY_STATUS_FINISH     = 2;
+
+    const PAY_STATUS_REJECT     = 3;
+
+
+
+
+    public static $statusComment = [
+        self::STATUS_INVALID    => '无效',
+        self::STATUS_INITIAL    => '未提现',
+        self::STATUS_WITHDRAW   => '已提现',
+        self::STATUS_REJECT     => '已驳回',
+    ];
+
+
+    public static $payStatusComment = [
+        self::PAY_STATUS_INVALID    => '无效',
+        self::PAY_STATUS_INITIAL    => '未审核',
+        self::PAY_STATUS_WAIT       => '未打款',
+        self::PAY_STATUS_FINISH     => '已打款',
+        self::PAY_STATUS_REJECT     => '已驳回',
+    ];
+
+
+    /**
+     * 通过 $status 值获取 $status 名称
+     * @param $status
+     * @return mixed|string
+     */
+    public static function getStatusComment($status)
+    {
+        return isset(static::$statusComment[$status]) ? static::$statusComment[$status] : '';
     }
 
+
+
+
     /**
-     * @return mixed
+     * 通过 $pay_way 值获取 $pay_status 名称
+     * @param $pay_way
+     * @return mixed|string
+     */
+    public static function getPayWayComment($pay_status)
+    {
+        return isset(static::$payStatusComment[$pay_status]) ? static::$payStatusComment[$pay_status] : '';
+    }
+
+
+
+
+    /**
+     * 通过字段 status 输出 status_name ;
+     * @return string
      */
     public function getStatusNameAttribute()
     {
-        return $this->getStatusService();
+        return static::getStatusComment($this->attributes['status']);
     }
 
-    public function getPayStatusService()
-    {
-        if (!isset($this->PayStatusService)) {
 
-            $this->PayStatusService = IncomeService::createPayStatusService($this);
-        }
-        return $this->PayStatusService;
-    }
 
+
+    /**
+     * 通过字段 pay_status 输出 pay_status_name ;
+     * @return string
+     */
     public function getPayStatusNameAttribute()
     {
-        return $this->getPayStatusService();
+        return static::getPayWayComment($this->attributes['pay_status']);
     }
+
+
+
+
+
+
+    public function scopeCanWithdraw($query)
+    {
+        return $query->whereIn('status', [static::STATUS_INITIAL,static::STATUS_REJECT]);
+    }
+
+
+
+
+
+
+
+
+
+    //todo 以下代码未检查 yitian :: 2017-11-14
 
     /**
      * @param $id

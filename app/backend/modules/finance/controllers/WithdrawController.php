@@ -14,7 +14,6 @@ use app\backend\modules\finance\services\WithdrawService;
 use app\common\components\BaseController;
 use app\common\events\finance\AfterIncomeWithdrawCheckEvent;
 use app\common\events\finance\AfterIncomeWithdrawPayEvent;
-use app\common\facades\Setting;
 use app\common\models\Income;
 use Illuminate\Support\Facades\Log;
 

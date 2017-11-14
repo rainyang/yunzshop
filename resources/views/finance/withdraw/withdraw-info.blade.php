@@ -72,7 +72,7 @@
     <div class='panel-heading'>
         收入提现申请信息 共计 <span style="color:red; ">{{$item->type_data['income_total']}}</span> 条收入
     </div>
-    <form action="{{yzWebUrl("finance.withdraw.dealt",['id'=>$item->id])}}" method='post' class='form-horizontal'>
+    <form action="{{yzWebUrl("finance.withdraw-audit.index",['id'=>$item->id])}}" method='post' class='form-horizontal'>
         <div class='panel-body'>
             <table class="table table-hover">
                 <thead class="navbar-inner">

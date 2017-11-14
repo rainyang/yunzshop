@@ -1683,7 +1683,7 @@ return [
             'withdraw_records'  => [
                 'name'              => '提现记录',
                 'url'               => 'finance.withdraw-records',
-                'url_params'        => '',
+                'url_params'        => '&search[status]=0',
                 'permit'            => 1,
                 'menu'              => 1,
                 'icon'              => 'fa-pencil',
