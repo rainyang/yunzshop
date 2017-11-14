@@ -34,6 +34,8 @@ class MemberAppYdbService extends MemberService
         $uniacid = \YunShop::app()->uniacid;
         $mobile   = \YunShop::request()->mobile;
         $password = \YunShop::request()->password;
+        $uuid = \YunShop::request()->uuid;
+
         if (!empty($mobile) && !empty($password)){
             if (\Request::isMethod('post') && MemberService::validate($mobile, $password)) {
                 $has_mobile = MemberModel::checkMobile($uniacid, $mobile);
@@ -65,6 +67,19 @@ class MemberAppYdbService extends MemberService
                         $data = $member_info;
                     }
 
+                    if (!empty($uuid)) {
+                        $wechat_member = MemberWechatModel::getFansById($member_info['uid']);
+                        if (!empty($wechat_member)) {
+                            MemberWechatModel::updateData($member_info['uid'], array('uuid' => $uuid));
+                        } else {
+                            MemberWechatModel::insertData(array(
+                                'uniacid' => $uniacid,
+                                'member_id' => $member_info['uid'],
+                                'uuid' => $uuid
+                            ));
+                        }
+                    }
+
                     return show_json(1, $data);
                 } else  {
                     return show_json(6, "手机号或密码错误");
@@ -76,7 +91,7 @@ class MemberAppYdbService extends MemberService
             $para = \YunShop::request();
             \Log::debug('获取用户信息：', print_r($para, 1));
             if ($para['openid'] && $para['token']) {
-                $this->app_get_userinfo($para['token'], $para['openid']);
+                $this->app_get_userinfo($para['token'], $para['openid'], $uuid);
             } elseif ($para['openid']) {
                 $this->redirect_link($para['openid']);
             }
@@ -99,11 +114,16 @@ class MemberAppYdbService extends MemberService
      * @param $token
      * @param $openid
      */
-    public function app_get_userinfo ($token, $openid) {
+    public function app_get_userinfo ($token, $openid, $uuid) {
         //通过接口获取用户信息
         $url = 'https://api.weixin.qq.com/sns/userinfo?access_token=' . $token . '&openid=' . $openid;
         $res = @ihttp_get($url);
         $user_info = json_decode($res['content'], true);
+
+        if (!empty($user_info['uuid'])) {
+            $user_info['uuid'] = $uuid;
+        }
+
         if (!empty($user_info) && !empty($user_info['unionid'])) {
             $this->memberLogin($user_info);
             exit('success');
@@ -135,9 +155,9 @@ class MemberAppYdbService extends MemberService
 
         $record = array(
             'openid' => $userinfo['openid'],
-            'nickname' => stripslashes($userinfo['nickname'])
+            'nickname' => stripslashes($userinfo['nickname']),
+            'uuid'  => $userinfo['uuid']
         );
-
         MemberWechatModel::updateData($member_id, $record);
     }
 
@@ -172,7 +192,8 @@ class MemberAppYdbService extends MemberService
             'gender' => $userinfo['sex'],
             'province' => '',
             'country' => '',
-            'city' => ''
+            'city' => '',
+            'uuid' => $userinfo['uuid']
         ));
     }
 

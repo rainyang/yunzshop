@@ -109,7 +109,16 @@ class RegisterController extends ApiController
             $yz_member = MemberShopInfo::getMemberShopInfo($member_id)->toArray();
 
             $data = MemberModel::userData($member_info, $yz_member);
-
+            //app注册添加member_wechat表中数据
+            $type = \YunShop::request()->type;
+            if ($type == 7) {
+                $uuid = \YunShop::request()->uuid;
+                MemberWechatModel::insertData(array(
+                    'uniacid' => $uniacid,
+                    'member_id' => $member_id,
+                    'uuid' => $uuid
+                ));
+            }
             return $this->successJson('', $data);
         } else {
             return $this->errorJson('手机号或密码格式错误');
