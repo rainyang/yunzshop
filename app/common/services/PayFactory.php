@@ -94,4 +94,13 @@ class PayFactory
 
         return $className;
     }
+
+    public static function pay($type, $data)
+    {
+        $pay = self::create($type);
+
+        $result = $pay->doPay($data);
+
+        return $result;
+    }
 }
