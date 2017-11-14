@@ -645,7 +645,7 @@ class IncomeWithdrawController extends ApiController
         $this->withdraw_amounts = $this->getIncomeModel()->where('incometable_type', $income['class'])->sum('amount');
 
         $poundage = $this->poundageMath($this->withdraw_amounts, $this->poundage_rate);
-        $service_tax = $this->poundageMath($this->withdraw_amounts, $this->service_tax_rate);
+        $service_tax = $this->poundageMath($this->withdraw_amounts - $poundage, $this->service_tax_rate);
 
         $special_poundage_rate = empty(array_get($this->withdraw_set,'special_poundage', 0)) ? 0 : array_get($this->withdraw_set,'special_poundage', 0);
         $special_service_tax_rate = empty(array_get($this->withdraw_set,'special_service_tax', 0)) ? 0 : array_get($this->withdraw_set,'special_service_tax', 0);
