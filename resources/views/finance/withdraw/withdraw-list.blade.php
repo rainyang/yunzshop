@@ -198,11 +198,10 @@
                     <td>
                         @if($row->type == 'balance')
                             <a class='btn btn-default'
-                               href="{{yzWebUrl('finance.balance-withdraw.detail', ['id' => $row->id])}}"
-                               title='详情'>详情</a>
+                               href="{{yzWebUrl('finance.balance-withdraw.detail', ['id' => $row->id])}}" title='详情'>详情</a>
                         @else
                             <a class='btn btn-default'
-                               href="{{yzWebUrl('finance.withdraw.info', ['id' => $row->id])}}" title='详情'>详情</a>
+                               href="{{yzWebUrl('finance.withdraw-detail.index', ['id' => $row->id])}}" title='详情'>详情</a>
                         @endif
                     </td>
                 </tr>
@@ -236,11 +235,11 @@
 <script language='javascript'>
     $(function () {
         $('#export').click(function () {
-            $('#form1').attr('action', '{!! yzWebUrl('finance.withdraw-records.export') !!}');
+            $('#form1').attr('action', '{!! yzWebUrl('finance.withdraw.export') !!}');
             $('#form1').submit();
         });
         $('#search').click(function () {
-            $('#form1').attr('action', '{!! yzWebUrl('finance.withdraw-records.index') !!}');
+            $('#form1').attr('action', '{!! yzWebUrl('finance.withdraw-records,in') !!}');
             $('#form1').submit();
         });
 
