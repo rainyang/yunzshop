@@ -51,6 +51,15 @@ class Withdraw extends BackendModel
 
 
 
+    //手动提现位置
+    const MANUAL_TO_BANK = 1;
+
+    const MANUAL_TO_WECHAT = 2;
+
+    const MANUAL_TO_ALIPAY = 3;
+
+
+
 
     public static $statusComment = [
         self::STATUS_INVALID    => '无效',

@@ -64,6 +64,9 @@ class EditGoodsService
             if ($this->type == 1) {
                 $goods_data['status'] = 0;
             }
+            if (!$goods_data['virtual_sales']) {
+                $goods_data['virtual_sales'] = 0;
+            }
             $goods_data['has_option'] = $goods_data['has_option'] ? $goods_data['has_option'] : 0;
             //将数据赋值到model
             $goods_data['thumb'] = tomedia($goods_data['thumb']);

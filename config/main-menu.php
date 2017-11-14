@@ -2206,7 +2206,7 @@ return [
                         'parents'           => ['system', 'Setting',],
                     ],
 
-                    'setting_shop_notice' => [
+                    'setting_shop_slide' => [
                         'name'              => '幻灯片',
                         'url'               => 'setting.slide.index',
                         'url_params'        => '',
@@ -2214,12 +2214,12 @@ return [
                         'menu'              => 1,
                         'icon'              => 'fa-bell-o',
                         'sort'              => '6',
-                        'item'              => 'setting_shop_notice',
+                        'item'              => 'setting_shop_slide',
                         'parents'           => ['system', 'Setting',],
                     ],
 
                     'setting_shop_form' => [
-                        'name'              => '会员资料自定义表单',
+                        'name'              => '会员资料表单',
                         'url'               => 'setting.form.index',
                         'url_params'        => '',
                         'permit'            => 1,
@@ -2256,7 +2256,7 @@ return [
                 'icon'              => 'fa-facebook-square',
                 'sort'              => '3',
                 'item'              => 'setting_shop_pay',
-                'parents'           => ['system', 'Setting',],
+                'parents'           => ['system',],
             ],
 
             'setting_shop_notice' => [
@@ -2268,7 +2268,7 @@ return [
                 'icon'              => 'fa-bell-o',
                 'sort'              => '6',
                 'item'              => 'setting_shop_notice',
-                'parents'           => ['system', 'Setting',],
+                'parents'           => ['system',],
             ],
 
             'setting_shop_lang' => [
@@ -2280,7 +2280,7 @@ return [
                 'icon'              => 'fa-bell-o',
                 'sort'              => '6',
                 'item'              => 'setting_shop_lang',
-                'parents'           => ['system', 'Setting',],
+                'parents'           => ['system',],
             ],
 
             'role'          => [
