@@ -202,7 +202,7 @@ class IncomeWithdrawController extends ApiController
                 $remark = '提现打款-' . $item['type_name'] . '-金额:' . $item['actual_amounts'] . '元,';
                 Log::info('收入提现余额免审核打款开始：'. $remark, print_r($item, true));
                 $result = (new BalanceChange())->income($this->getBalancePayData($item, $remark));
-                if ($result === true) {
+                if ($result !== true) {
                     //throw new AppException('提现失败：微信打款失败');
                     DB::rollBack();
                     return false;
