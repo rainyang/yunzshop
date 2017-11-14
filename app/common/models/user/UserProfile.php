@@ -74,6 +74,9 @@ class UserProfile extends BaseModel
         if(Schema::hasColumn($this->table, 'is_send_mobile_status')){ //用于兼容新版微擎新增的字段
             $this->attributes = array_merge($this->attributes, ['is_send_mobile_status' =>0]);
         }
+        if(Schema::hasColumn($this->table, 'send_expire_status')){ //用于兼容新版微擎新增的字段
+            $this->attributes = array_merge($this->attributes, ['send_expire_status' =>0]);
+        }
     }
 
     /*
