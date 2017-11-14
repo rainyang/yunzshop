@@ -15,20 +15,20 @@ use app\frontend\modules\member\models\MemberBankCard;
 class WithdrawManualService
 {
 
-    public function getWeChatStatus()
+    public static function getWeChatStatus()
     {
         $yzMember = MemberShopInfo::select('wechat')->where('member_id',\YunShop::app()->getMemberId())->first();
         return $yzMember ? $yzMember->wechat ? true : false : false;
     }
 
-    public function getAlipayStatus()
+    public static function getAlipayStatus()
     {
         $yzMember = MemberShopInfo::select('alipayname','alipay')->where('member_id',\YunShop::app()->getMemberId())->first();
         return $yzMember ? ($yzMember->alipayname && $yzMember->alipay) ? true : false : false;
     }
 
 
-    public function getBankStatus()
+    public static function getBankStatus()
     {
 
         $bankCard = MemberBankCard::select('member_name','bank_card','bank_name','bank_province','bank_city','bank_branch')

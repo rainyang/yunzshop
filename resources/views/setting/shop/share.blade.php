@@ -3,14 +3,8 @@
 @section('content')
 <div class="w1200 m0a">
 <div class="rightlist">
-<!-- 新增加右侧顶部三级菜单 -->
-<div class="right-titpos">
-	<ul class="add-snav">
-		<li class="active"><a href="#">引导分享设置</a></li>
-	</ul>
-</div>
-@include('layouts.tabs')
-<!-- 新增加右侧顶部三级菜单结束 -->
+
+    @include('layouts.tabs')
     <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" >
         <div class="panel panel-default">
 
