@@ -50,6 +50,9 @@ class RefundService
             case PayType::AlipayApp:
                 $result = $this->alipayapp();
                 break;
+            case PayType::PAY_YUN_WECHAT:
+                $result = $this->yunWechat();
+                break;
             default:
                 $result = false;
                 break;
@@ -135,6 +138,20 @@ class RefundService
 
         if ($result !== true) {
             throw new AdminException($result);
+        }
+        return $result;
+    }
+
+    private function yunWechat()
+    {
+        //芸支付微信退款 同步改变退款和订单状态
+        RefundOperationService::refundComplete(['id' => $this->refundApply->id]);
+        $pay = PayFactory::create($this->refundApply->order->pay_type_id);
+
+        $result = $pay->doRefund($this->refundApply->order->hasOneOrderPay->pay_sn, $this->refundApply->order->hasOneOrderPay->amount, $this->refundApply->price);
+
+        if (!$result) {
+            throw new AdminException('芸支付微信退款失败');
         }
         return $result;
     }

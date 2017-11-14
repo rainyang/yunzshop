@@ -25,7 +25,14 @@ class UpdateController extends BaseController
         $secret = Setting::get('shop.key')['secret'];
         $update = new AutoUpdate(null, null, 300);
         $update->setUpdateFile('check_app.json');
-        $update->setCurrentVersion(config('version'));
+
+        if (is_file(base_path() . '/' . 'config/front-version.php')) {
+            $update->setCurrentVersion(config('front-version'));
+            $version = config('front-version');
+        } else {
+            $update->setCurrentVersion(config('version'));
+            $version = config('version');
+        }
 
         $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
 
@@ -38,7 +45,6 @@ class UpdateController extends BaseController
         }
 
         krsort($list);
-        $version = config('version');
 
         return view('update.upgrad', [
             'list' => $list,
@@ -130,6 +136,7 @@ class UpdateController extends BaseController
 
                 if (!empty($ret['files'])) {
                     foreach ($ret['files'] as $file) {
+                        //忽略指定文件
                         if (in_array($file['path'], $filter_file)) {
                             continue;
                         }
@@ -149,7 +156,13 @@ class UpdateController extends BaseController
                             }
                         }
 
+                        //忽略前端版本号记录文件
+                        if ($file['path'] == 'config/front-version.php' && is_file(base_path() . '/' . $file['path'])) {
+                            continue;
+                        }
+
                         $entry = base_path() . '/' . $file['path'];
+
                         //如果本地没有此文件或者文件与服务器不一致
                         if (!is_file($entry) || md5_file($entry) != $file['md5']) {
                             $files[] = array(
@@ -170,10 +183,6 @@ class UpdateController extends BaseController
 
                 $ret['files'] = $files;
                 file_put_contents($tmpdir . "/file.txt", json_encode($ret));
-
-                if (1 == count($files) && $files['path'] == 'config/version/php') {
-                    $files = [];
-                }
 
                 if (empty($files)) {
                     $version = config('version');
@@ -349,7 +358,13 @@ class UpdateController extends BaseController
         $secret = Setting::get('shop.key')['secret'];
         $update = new AutoUpdate(null, null, 300);
         $update->setUpdateFile('check_app.json');
-        $update->setCurrentVersion(config('version'));
+
+        if (is_file(base_path() . '/' . 'config/front-version.php')) {
+            $update->setCurrentVersion(config('front-version'));
+        } else {
+            $update->setCurrentVersion(config('version'));
+        }
+
         $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
         Setting::get('auth.key');
         $update->setBasicAuth($key, $secret);
@@ -389,13 +404,31 @@ class UpdateController extends BaseController
         return;
     }
 
+    /**
+     * 更新本地前端版本号
+     *
+     * @param $updateList
+     */
     private function setSystemVersion($updateList)
+    {
+        $version = $this->getFrontVersion($updateList);
+
+        $str = file_get_contents(base_path('config/') . 'front-version.php');
+        $str = preg_replace('/"[\d\.]+"/', '"'. $version . '"', $str);
+        file_put_contents(base_path('config/') . 'front-version.php', $str);
+    }
+
+    /**
+     * 获取前端版本号
+     *
+     * @param $updateList
+     * @return mixed
+     */
+    private function getFrontVersion($updateList)
     {
         rsort($updateList);
         $version = $updateList[0]['version']->getVersion();
-        $str = file_get_contents(base_path('config/') . 'version.php');
 
-        $str = preg_replace('/"[\d\.]+"/', '"'. $version . '"', $str);
-        file_put_contents(base_path('config/') . 'version.php', $str);
+        return $version;
     }
 }
