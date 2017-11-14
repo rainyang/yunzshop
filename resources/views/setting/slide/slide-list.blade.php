@@ -5,6 +5,8 @@
     <div class="w1200 m0a">
         <div class="rightlist">
 
+
+            @include('layouts.tabs')
             <form action="" method="post">
                 <div class="panel panel-default">
                     <div class="panel-body table-responsive">

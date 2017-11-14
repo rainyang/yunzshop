@@ -101,6 +101,10 @@ class GoodsController extends ApiController
             $goodsModel->hasOneShare->share_thumb = replace_yunshop(tomedia($goodsModel->hasOneShare->share_thumb));
         }
         $this->setGoodsPluginsRelations($goodsModel);
+
+        //销量等于虚拟销量加真实销量
+        $goodsModel->show_sales += $goodsModel->virtual_sales;
+
         //return $this->successJson($goodsModel);
         return $this->successJson('成功', $goodsModel);
     }

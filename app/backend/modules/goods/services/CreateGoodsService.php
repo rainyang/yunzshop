@@ -51,6 +51,9 @@ class CreateGoodsService
                     }, $goods_data['thumb_url'])
                 );
             }
+            if (!$goods_data['virtual_sales']) {
+                $goods_data['virtual_sales'] = 0;
+            }
             $this->goods_model->setRawAttributes($goods_data);
             $this->goods_model->widgets = $this->request->widgets;
             $this->goods_model->uniacid = \YunShop::app()->uniacid;
