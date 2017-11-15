@@ -10,6 +10,7 @@ namespace app\backend\modules\finance\controllers;
 
 
 use app\common\exceptions\AppException;
+use app\common\helpers\Url;
 use app\common\models\Withdraw;
 use app\backend\modules\finance\services\WithdrawService;
 use app\common\components\BaseController;
@@ -37,7 +38,7 @@ class BalanceWithdrawController extends BaseController
      * @return mixed
      */
     public function examine()
-    {return true;
+    {
         $requestData = \YunShop::request();
         $this->withdrawModel = $this->attachedMode();
 
@@ -53,7 +54,11 @@ class BalanceWithdrawController extends BaseController
 
         //打款
         if (isset($requestData['submit_pay'])) {
-            return $this->submitPay();
+            if (is_bool($this->submitPay()) && $this->submitPay()) {
+                redirect(Url::web('finance.balance-withdraw.detail', ['id'=>\YunShop::request()->id]))->send();
+            } else {
+                return $this->submitPay();
+            }
         }
 
         return $this->message('提交数据有误，请刷新重试', yzWebUrl("finance.balance-withdraw.detail", ['id' => $this->getPostId()]));

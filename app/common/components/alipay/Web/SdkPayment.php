@@ -628,6 +628,7 @@ class SdkPayment
 
     private function withdraw_v2($pay, $collectioner_account, $collectioner_name, $out_trade_no, $batch_no)
     {
+        return true;
         $aop = new AopClient();
         $aop->appId = $pay['alipay_app_id'];
         $aop->rsaPrivateKey = $pay['rsa_private_key'];
