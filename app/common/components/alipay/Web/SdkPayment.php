@@ -5,6 +5,8 @@ namespace app\common\components\alipay\Web;
 use app\common\events\PayLog;
 use app\common\facades\Setting;
 use app\common\helpers\Url;
+use app\common\services\alipay\AopClient;
+use app\common\services\alipay\request\AlipayFundTransToaccountTransferRequest;
 use app\common\services\alipay\WebAlipay;
 
 class SdkPayment
@@ -59,6 +61,8 @@ class SdkPayment
     private $paymethod = "bankPay";  //付款方式, 用于网银支付时为bankPay
 
     private $defaultbank;  //银行简码，用于网银支付
+
+    private $payee_type = 'ALIPAY_LOGONID';
 
     public function __construct()
     {
@@ -583,9 +587,21 @@ class SdkPayment
      */
     public function withdraw($collectioner_account, $collectioner_name, $out_trade_no, $batch_no)
     {
-        $service = 'batch_trans_notify';
         $pay = Setting::get('shop.pay');
 
+        switch ($pay['api_version']) {
+            case 1:
+                return $this->withdraw_v1($pay, $collectioner_account, $collectioner_name, $out_trade_no, $batch_no);
+                break;
+            case 2:
+                return $this->withdraw_v2($pay, $collectioner_account, $collectioner_name, $out_trade_no, $batch_no);
+                break;
+        }
+    }
+
+    private function withdraw_v1($pay, $collectioner_account, $collectioner_name, $out_trade_no, $batch_no)
+    {
+        $service = 'batch_trans_notify';
         $notify_url = Url::shopSchemeUrl('payment/alipay/withdrawNotifyUrl.php');
 
         $parameter = array(
@@ -605,6 +621,40 @@ class SdkPayment
         $para = $this->buildRequestPara($parameter);
 
         return $this->__gateway_new . $this->createLinkstringUrlencode($para);
+    }
+
+    private function withdraw_v2($pay, $collectioner_account, $collectioner_name, $out_trade_no, $batch_no)
+    {
+        $aop = new AopClient();
+        $aop->appId = $pay['alipay_app_id'];
+        $aop->rsaPrivateKey = $pay['rsa_private_key'];
+        $aop->alipayrsaPublicKey= $pay['rsa_public_key'];
+        $aop->signType = 'RSA2';
+        //$aop->postCharset = strtolower($this->_input_charset);
+
+        $request = new AlipayFundTransToaccountTransferRequest();
+
+        $data = [
+            'out_biz_no' => $out_trade_no,
+            'payee_type' => $this->payee_type,
+            'payee_account' => $collectioner_account,
+            'amount'     => $this->total_fee,
+            'payer_show_name' => $pay['alipay_name'],
+            'payee_real_name' => $collectioner_name,
+            'remark' => '佣金提现'
+        ];
+
+        $request->setBizContent(json_encode($data));
+        $result = $aop->execute ( $request);
+
+        $responseNode = str_replace(".", "_", $request->getApiMethodName()) . "_response";
+        $resultCode = $result->$responseNode->code;
+        if(!empty($resultCode) && $resultCode == 10000){
+            echo "成功";
+        } else {
+            echo "失败";
+        }
+         return true;
     }
 
     /**
