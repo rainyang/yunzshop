@@ -2,9 +2,12 @@
 
 namespace app\common\components\alipay\Web;
 
+use app\common\events\finance\AlipayWithdrawEvent;
 use app\common\events\PayLog;
 use app\common\facades\Setting;
 use app\common\helpers\Url;
+use app\common\models\PayWithdrawOrder;
+use app\common\services\finance\Withdraw;
 use app\common\services\alipay\AopClient;
 use app\common\services\alipay\request\AlipayFundTransToaccountTransferRequest;
 use app\common\services\alipay\WebAlipay;
@@ -647,18 +650,29 @@ class SdkPayment
         $request->setBizContent(json_encode($data));
         $result = $aop->execute ( $request);
         $result = json_decode($result);
+
         \Log::debug('-----返回参数result----', gettype($result));
         $responseNode = str_replace(".", "_", $request->getApiMethodName()) . "_response";
         $resultCode = $result->$responseNode->code;
         \Log::debug('-----返回参数code----', [$resultCode]);
+
         if(!empty($resultCode) && $resultCode == 10000){
             \Log::debug('-----成功----');
-            echo "成功";
+            $out_biz_no = $result->$responseNode->out_biz_no;
+            $data[] = [
+                'trade_no' => $out_biz_no,
+                'unit' => 'yuan',
+                'pay_type' => '支付宝'
+            ];
+
+            $this->withdrawResutl($data);
+
+            return true;
         } else {
             \Log::debug('-----失败----');
-            echo "失败";
         }
-         return true;
+
+        return false;
     }
 
     /**
@@ -705,5 +719,29 @@ class SdkPayment
         $para = $this->buildRequestPara($parameter);
 
         return $this->__gateway_new . $this->createLinkstringUrlencode($para);
+    }
+
+    /**
+     * 支付宝提现回调操作
+     *
+     * @param $data
+     */
+    public function withdrawResutl($params)
+    {
+        if (!empty($params)) {
+            foreach ($params as $data ) {
+                $pay_refund_model = PayWithdrawOrder::getOrderInfo($data['trade_no']);
+
+                if ($pay_refund_model) {
+                    $pay_refund_model->status = 2;
+                    $pay_refund_model->trade_no = $data['trade_no'];
+                    $pay_refund_model->save();
+                }
+
+                \Log::debug('提现操作', 'withdraw.succeeded');
+                Withdraw::paySuccess($data['trade_no']);
+                event(new AlipayWithdrawEvent($data['trade_no']));
+            }
+        }
     }
 }
