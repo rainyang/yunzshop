@@ -115,7 +115,7 @@ class Income extends BackendModel
      */
     public function scopeCanWithdraw($query)
     {
-        return $query->whereIn('status', [static::STATUS_INITIAL,static::STATUS_REJECT]);
+        return $query->where('status', static::STATUS_INITIAL);
     }
 
 
