@@ -299,13 +299,13 @@ class WithdrawController extends BaseController
             if ($status == Withdraw::STATUS_AUDIT) {
                 $adopt_count += 1;
                 $actual_amounts += Income::uniacid()->where('id', $income_id)->sum('amount');
-                Income::where('id',$income_id)->update(['pay_status' => Income::STATUS_WITHDRAW]);
+                Income::where('id',$income_id)->update(['pay_status' => Income::PAY_STATUS_WAIT]);
             }
 
             //无效
             if ($status == Withdraw::STATUS_INVALID) {
                 $invalid_count += 1;
-                Income::where('id',$income_id)->update(['pay_status' => Income::STATUS_WITHDRAW]);
+                Income::where('id',$income_id)->update(['pay_status' => Income::PAY_STATUS_INVALID]);
             }
 
             //驳回
@@ -336,9 +336,11 @@ class WithdrawController extends BaseController
 
 
         $this->withdrawModel->audit_at = time();
-        $this->withdrawModel->actual_amounts = $actual_amounts;
-        $this->withdrawModel->actual_poundage = $this->getActualPoundage();
-        $this->withdrawModel->actual_servicetax = $this->getActualServiceTax();
+
+        $this->withdrawModel->actual_poundage = $this->getActualPoundage($actual_amounts);
+        $this->withdrawModel->actual_servicetax = $this->getActualServiceTax($actual_amounts);
+        $this->withdrawModel->actual_amounts = $actual_amounts - $this->getActualPoundage($actual_amounts) - $this->getActualServiceTax($actual_amounts);
+        
 
 
         $result = $this->withdrawModel->save();
@@ -356,9 +358,9 @@ class WithdrawController extends BaseController
      * 手续费
      * @return string
      */
-    private function getActualPoundage()
+    private function getActualPoundage($amount)
     {
-        return bcdiv(bcmul($this->withdrawModel->actual_amounts,$this->withdrawModel->poundage_rate,4),100,2);
+        return bcdiv(bcmul($amount,$this->withdrawModel->poundage_rate,4),100,2);
     }
 
 
@@ -367,9 +369,9 @@ class WithdrawController extends BaseController
      * 劳务税
      * @return string
      */
-    private function getActualServiceTax()
+    private function getActualServiceTax($amount)
     {
-        $amount = $this->withdrawModel->actual_amounts - $this->getActualPoundage();
+        $amount =$amount - $this->getActualPoundage($amount);
 
         return bcdiv(bcmul($amount,$this->withdrawModel->servicetax_rate,4),100,2);
     }
