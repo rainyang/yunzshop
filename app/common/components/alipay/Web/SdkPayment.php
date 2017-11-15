@@ -588,7 +588,7 @@ class SdkPayment
     public function withdraw($collectioner_account, $collectioner_name, $out_trade_no, $batch_no)
     {
         $pay = Setting::get('shop.pay');
-
+\Log::debug('----提现类型----', [$pay['api_version']]);
         switch ($pay['api_version']) {
             case 1:
                 return $this->withdraw_v1($pay, $collectioner_account, $collectioner_name, $out_trade_no, $batch_no);
@@ -643,6 +643,7 @@ class SdkPayment
             'payee_real_name' => $collectioner_name,
             'remark' => '佣金提现'
         ];
+\Log::debug('-----提现参数----', $data);
 
         $request->setBizContent(json_encode($data));
         $result = $aop->execute ( $request);
