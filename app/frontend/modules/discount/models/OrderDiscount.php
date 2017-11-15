@@ -146,7 +146,7 @@ class OrderDiscount
                 return;
             }
             // 已存在的类型累加
-            $this->order->orderDiscounts->where('discount_code', $orderGoodsDiscount->discount_code)->first()->amount += 10000;
+            $this->order->orderDiscounts->where('discount_code', $orderGoodsDiscount->discount_code)->first()->amount += $orderGoodsDiscount->amount;
         });
     }
 

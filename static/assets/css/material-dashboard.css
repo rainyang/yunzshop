@@ -8310,7 +8310,7 @@ fieldset[disabled] .navbar .navbar-nav>li>a.btn.btn-rose.active {
 
 .close {
     font-size: inherit;
-    color: #FFFFFF;
+    color: #989292;
     opacity: .9;
     text-shadow: none;
 }
@@ -8318,7 +8318,7 @@ fieldset[disabled] .navbar .navbar-nav>li>a.btn.btn-rose.active {
 .close:hover,
 .close:focus {
     opacity: 1;
-    color: #FFFFFF;
+    color: #3d3a3a;
 }
 
 .close i {
