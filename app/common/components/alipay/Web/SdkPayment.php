@@ -647,7 +647,7 @@ class SdkPayment
         $request->setBizContent(json_encode($data));
         $result = $aop->execute ( $request);
 
-        \Log::debug('-----返回参数result----', var_dump($result));
+        \Log::debug('-----返回参数result----', gettype($result));
         $responseNode = str_replace(".", "_", $request->getApiMethodName()) . "_response";
         $resultCode = $result->$responseNode->code;
         \Log::debug('-----返回参数code----', [$resultCode]);
