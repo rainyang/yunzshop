@@ -37,7 +37,7 @@ class BalanceWithdrawController extends BaseController
      * @return mixed
      */
     public function examine()
-    {
+    {return true;
         $requestData = \YunShop::request();
         $this->withdrawModel = $this->attachedMode();
 
