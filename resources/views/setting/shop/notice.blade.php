@@ -1,6 +1,11 @@
 @extends('layouts.base')
 
 @section('content')
+    <script type="text/javascript">
+        require(['select2'], function () {
+            $('.diy-notice').select2();
+        })
+    </script>
     <div class="w1200 m0a">
         <div class="rightlist">
             <!-- 新增加右侧顶部三级菜单 -->
@@ -64,7 +69,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">积分变动通知</label>
                             <div class="col-sm-9 col-xs-12">
-                                <select name='notice[point_change]' class='form-control'>
+                                <select name='notice[point_change]' class='form-control diy-notice'>
                                     <option value="" @if(!$set['point_change'])
                                     selected
                                             @endif;
@@ -89,7 +94,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额变动通知</label>
                             <div class="col-sm-9 col-xs-12">
-                                <select name='notice[blance_change]' class='form-control'>
+                                <select name='notice[blance_change]' class='form-control diy-notice'>
                                     <option value="" @if(!$set['blance_change'])
                                     selected
                                             @endif;
@@ -114,7 +119,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单生成通知[卖家]</label>
                             <div class="col-sm-9 col-xs-12">
-                                <select name='notice[seller_order_create]' class='form-control'>
+                                <select name='notice[seller_order_create]' class='form-control diy-notice'>
                                     <option value="" @if(!$set['seller_order_create'])
                                     selected
                                             @endif;
@@ -134,7 +139,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单支付通知[卖家]</label>
                             <div class="col-sm-9 col-xs-12">
-                                <select name='notice[seller_order_pay]' class='form-control'>
+                                <select name='notice[seller_order_pay]' class='form-control diy-notice'>
                                     <option value="" @if(!$set['seller_order_pay'])
                                     selected
                                             @endif;
@@ -154,7 +159,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单完成通知[卖家]</label>
                             <div class="col-sm-9 col-xs-12">
-                                <select name='notice[seller_order_finish]' class='form-control'>
+                                <select name='notice[seller_order_finish]' class='form-control diy-notice'>
                                     <option value="" @if(!$set['seller_order_finish'])
                                     selected
                                             @endif;
@@ -275,7 +280,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                             <div class="col-sm-9 col-xs-12">
-                                <select name='notice[other_toggle_temp]' class='form-control'>
+                                <select name='notice[other_toggle_temp]' class='form-control diy-notice'>
                                     <option value="" @if(!$set['other_toggle_temp'])
                                     selected
                                             @endif;
@@ -300,7 +305,7 @@
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单提交成功通知</label>
                                 <div class="col-sm-9 col-xs-12">
-                                    <select name='notice[order_submit_success]' class='form-control'>
+                                    <select name='notice[order_submit_success]' class='form-control diy-notice'>
                                         <option value="" @if(!$set['order_submit_success'])
                                         selected
                                                 @endif;
@@ -322,7 +327,7 @@
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单取消通知</label>
                                 <div class="col-sm-9 col-xs-12">
-                                    <select name='notice[order_cancel]' class='form-control'>
+                                    <select name='notice[order_cancel]' class='form-control diy-notice'>
                                         <option value="" @if(!$set['order_cancel'])
                                         selected
                                                 @endif;
@@ -344,7 +349,7 @@
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单支付成功通知</label>
                                 <div class="col-sm-9 col-xs-12">
-                                    <select name='notice[order_pay_success]' class='form-control'>
+                                    <select name='notice[order_pay_success]' class='form-control diy-notice'>
                                         <option value="" @if(!$set['order_pay_success'])
                                         selected
                                                 @endif;
@@ -366,7 +371,7 @@
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单发货通知</label>
                                 <div class="col-sm-9 col-xs-12">
-                                    <select name='notice[order_send]' class='form-control'>
+                                    <select name='notice[order_send]' class='form-control diy-notice'>
                                         <option value="" @if(!$set['order_send'])
                                         selected
                                                 @endif;
@@ -388,7 +393,7 @@
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单确认收货通知</label>
                                 <div class="col-sm-9 col-xs-12">
-                                    <select name='notice[order_finish]' class='form-control'>
+                                    <select name='notice[order_finish]' class='form-control diy-notice'>
                                         <option value="" @if(!$set['order_finish'])
                                         selected
                                                 @endif;
@@ -410,7 +415,7 @@
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款申请通知</label>
                                 <div class="col-sm-9 col-xs-12">
-                                    <select name='notice[order_refund_apply]' class='form-control'>
+                                    <select name='notice[order_refund_apply]' class='form-control diy-notice'>
                                         <option value="" @if(!$set['order_refund_apply'])
                                         selected
                                                 @endif;
@@ -432,7 +437,7 @@
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款成功通知</label>
                                 <div class="col-sm-9 col-xs-12">
-                                    <select name='notice[order_refund_success]' class='form-control'>
+                                    <select name='notice[order_refund_success]' class='form-control diy-notice'>
                                         <option value="" @if(!$set['order_refund_success'])
                                         selected
                                                 @endif;
@@ -454,7 +459,7 @@
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款申请驳回通知</label>
                                 <div class="col-sm-9 col-xs-12">
-                                    <select name='notice[order_refund_reject]' class='form-control'>
+                                    <select name='notice[order_refund_reject]' class='form-control diy-notice'>
                                         <option value="" @if(!$set['order_refund_reject'])
                                         selected
                                                 @endif;
@@ -476,7 +481,7 @@
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员升级通知</label>
                                 <div class="col-sm-9 col-xs-12">
-                                    <select name='notice[customer_upgrade]' class='form-control'>
+                                    <select name='notice[customer_upgrade]' class='form-control diy-notice'>
                                         <option value="" @if(!$set['customer_upgrade'])
                                         selected
                                                 @endif;
@@ -498,7 +503,7 @@
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现提交通知</label>
                                 <div class="col-sm-9 col-xs-12">
-                                    <select name='notice[withdraw_submit]' class='form-control'>
+                                    <select name='notice[withdraw_submit]' class='form-control diy-notice'>
                                         <option value="" @if(!$set['withdraw_submit'])
                                         selected
                                                 @endif;
@@ -520,7 +525,7 @@
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现成功通知</label>
                                 <div class="col-sm-9 col-xs-12">
-                                    <select name='notice[withdraw_success]' class='form-control'>
+                                    <select name='notice[withdraw_success]' class='form-control diy-notice'>
                                         <option value="" @if(!$set['withdraw_success'])
                                         selected
                                                 @endif;
@@ -542,7 +547,7 @@
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现失败通知</label>
                                 <div class="col-sm-9 col-xs-12">
-                                    <select name='notice[withdraw_fail]' class='form-control'>
+                                    <select name='notice[withdraw_fail]' class='form-control diy-notice'>
                                         <option value="" @if(!$set['withdraw_fail'])
                                         selected
                                                 @endif;
