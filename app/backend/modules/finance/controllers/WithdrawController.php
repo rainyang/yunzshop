@@ -16,6 +16,7 @@ use app\common\events\finance\AfterIncomeWithdrawCheckEvent;
 use app\common\events\finance\AfterIncomeWithdrawPayEvent;
 use app\common\exceptions\AppException;
 use app\common\models\Income;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class WithdrawController extends BaseController
@@ -30,19 +31,19 @@ class WithdrawController extends BaseController
             //提交审核
             //dd($resultData);
             $result = $this->submitCheck($resultData['id'], $resultData['audit']);
-            return $this->message($result['msg'], yzWebUrl("finance.withdraw.info", ['id' => $resultData['id']]));
+            return $this->message($result['msg'], yzWebUrl("finance.withdraw-detail.index", ['id' => $resultData['id']]));
 
         } elseif (isset($resultData['submit_pay'])) {
             //打款
             $result = $this->submitPay($resultData['id'], $resultData['pay_way']);
-            return $this->message($result['msg'], yzWebUrl("finance.withdraw.info", ['id' => $resultData['id']]));
+            return $this->message($result['msg'], yzWebUrl("finance.withdraw-detail.index", ['id' => $resultData['id']]));
 
         } elseif (isset($resultData['submit_cancel'])) {
             //重新审核
             $result = $this->submitCancel($resultData['id'], $resultData['audit']);
-            return $this->message($result['msg'], yzWebUrl("finance.withdraw.info", ['id' => $resultData['id']]));
+            return $this->message($result['msg'], yzWebUrl("finance.withdraw-detail.index", ['id' => $resultData['id']]));
         }
-        return $this->message('提交数据有误，请刷新重试', yzWebUrl("finance.withdraw.info", ['id' => $resultData['id']]));
+        return $this->message('提交数据有误，请刷新重试', yzWebUrl("finance.withdraw-detail.index", ['id' => $resultData['id']]));
     }
 
     public function submitCheck($withdrawId, $incomeData)
@@ -50,7 +51,7 @@ class WithdrawController extends BaseController
         $this->withdrawModel = $this->getWithdrawModel($withdrawId);
 
         if ($this->withdrawModel->status != Withdraw::STATUS_INITIAL) {
-            return '审核失败,数据不符合提现规则!';
+            return ['msg' => '审核失败,数据不符合提现规则!'];
         }
         return $this->examine();
         /*$withdraw = Withdraw::getWithdrawById($withdrawId)->first();
@@ -100,7 +101,13 @@ class WithdrawController extends BaseController
 
     public function submitCancel($withdrawId, $incomeData)
     {
-        $withdraw = Withdraw::getWithdrawById($withdrawId)->first();
+        $this->withdrawModel = $this->getWithdrawModel($withdrawId);
+
+        if ($this->withdrawModel->status != Withdraw::STATUS_INVALID) {
+            return ['msg' => '重审核失败,数据不符合提现规则!'];
+        }
+        return $this->examine();
+        /*$withdraw = Withdraw::getWithdrawById($withdrawId)->first();
         if ($withdraw->status != '-1') {
             return ['msg' => '审核失败,数据不符合提现规则!'];
         }
@@ -143,8 +150,9 @@ class WithdrawController extends BaseController
             event(new AfterIncomeWithdrawCheckEvent($noticeData));
             return ['msg' => '审核成功!'];
         }
-        return ['msg' => '审核失败!'];
+        return ['msg' => '审核失败!'];*/
     }
+
 
 
     public function submitPay($withdrawId, $payWay)
@@ -269,6 +277,104 @@ class WithdrawController extends BaseController
 
         return json_encode(['status' => $status]);
     }
+
+
+
+    private function examine()
+    {
+        $audit_data = \YunShop::request()->audit;
+
+        $audit_count = count($audit_data);
+
+        $actual_amounts = 0;
+
+        $adopt_count    = 0;
+        $invalid_count  = 0;
+        $reject_count   = 0;
+
+        DB::beginTransaction();
+        foreach ($audit_data as $income_id => $status) {
+
+            //通过
+            if ($status == Withdraw::STATUS_AUDIT) {
+                $adopt_count += 1;
+                $actual_amounts += Income::uniacid()->where('id', $income_id)->sum('amount');
+                Income::where('id',$income_id)->update(['pay_status' => Income::STATUS_WITHDRAW]);
+            }
+
+            //无效
+            if ($status == Withdraw::STATUS_INVALID) {
+                $invalid_count += 1;
+                Income::where('id',$income_id)->update(['pay_status' => Income::STATUS_WITHDRAW]);
+            }
+
+            //驳回
+            if ($status == Withdraw::STATUS_REJECT) {
+                $reject_count += 1;
+                Income::where('id',$income_id)->update(['status' => Income::STATUS_INITIAL, 'pay_status' => Income::PAY_STATUS_REJECT]);
+            }
+        }
+
+        $this->withdrawModel->status = Withdraw::STATUS_AUDIT;
+
+        //如果全无效
+        if ($invalid_count > 0 && $invalid_count == $audit_count) {
+            $this->withdrawModel->status = Withdraw::STATUS_INVALID;
+        }
+
+        //如果全驳回
+        if ($reject_count > 0 && $reject_count == $audit_count) {
+            $this->withdrawModel->status = Withdraw::STATUS_PAY;
+            $this->withdrawModel->pay_at = $this->withdrawModel->arrival_at = time();
+        }
+
+        //如果是无效 + 驳回 [同全驳回，直接完成]
+        if ($invalid_count > 0 && $reject_count > 0 && ($invalid_count + $reject_count) == $audit_count) {
+            $this->withdrawModel->status = Withdraw::STATUS_PAY;
+            $this->withdrawModel->pay_at = $this->withdrawModel->arrival_at = time();
+        }
+
+
+        $this->withdrawModel->audit_at = time();
+        $this->withdrawModel->actual_amounts = $actual_amounts;
+        $this->withdrawModel->actual_poundage = $this->getActualPoundage();
+        $this->withdrawModel->actual_servicetax = $this->getActualServiceTax();
+
+
+        $result = $this->withdrawModel->save();
+        if ($result !== true) {
+            DB::rollBack();
+            return ['msg' => '审核失败：记录修改失败!'];
+        }
+
+        DB::commit();
+        return ['msg' => '审核成功!'];
+    }
+
+
+    /**
+     * 手续费
+     * @return string
+     */
+    private function getActualPoundage()
+    {
+        return bcdiv(bcmul($this->withdrawModel->actual_amounts,$this->withdrawModel->poundage_rate,4),100,2);
+    }
+
+
+
+    /**
+     * 劳务税
+     * @return string
+     */
+    private function getActualServiceTax()
+    {
+        $amount = $this->withdrawModel->actual_amounts - $this->getActualPoundage();
+
+        return bcdiv(bcmul($amount,$this->withdrawModel->servicetax_rate,4),100,2);
+    }
+
+
 
 
     private function getWithdrawModel($withdraw_id)
