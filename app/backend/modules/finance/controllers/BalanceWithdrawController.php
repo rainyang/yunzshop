@@ -54,10 +54,12 @@ class BalanceWithdrawController extends BaseController
 
         //打款
         if (isset($requestData['submit_pay'])) {
-            if (is_bool($this->submitPay()) && $this->submitPay()) {
+            $result = $this->submitPay();
+
+            if (is_bool($result) && $result) {
                 redirect(Url::web('finance.balance-withdraw.detail', ['id'=>\YunShop::request()->id]))->send();
             } else {
-                return $this->submitPay();
+                return $result;
             }
         }
 
