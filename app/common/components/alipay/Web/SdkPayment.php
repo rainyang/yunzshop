@@ -630,7 +630,6 @@ class SdkPayment
         $aop->rsaPrivateKey = $pay['rsa_private_key'];
         $aop->alipayrsaPublicKey= $pay['rsa_public_key'];
         $aop->signType = 'RSA2';
-        //$aop->postCharset = strtolower($this->_input_charset);
 
         $request = new AlipayFundTransToaccountTransferRequest();
 
@@ -647,7 +646,8 @@ class SdkPayment
 
         $request->setBizContent(json_encode($data));
         $result = $aop->execute ( $request);
-        \Log::debug('-----返回参数result----', $result);
+
+        \Log::debug('-----返回参数result----', var_dump($result));
         $responseNode = str_replace(".", "_", $request->getApiMethodName()) . "_response";
         $resultCode = $result->$responseNode->code;
         \Log::debug('-----返回参数code----', [$resultCode]);
