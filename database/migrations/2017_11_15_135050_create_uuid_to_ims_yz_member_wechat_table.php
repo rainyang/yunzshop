@@ -13,7 +13,7 @@ class CreateUuidToImsYzMemberWechatTable extends Migration
     public function up()
     {
         if (Schema::hasTable('yz_member_wechat')) {
-            Schema::table('yz_member_UuidMemberWechatwechat',
+            Schema::table('yz_member_wechat',
                 function (Blueprint $table) {
                     if (!Schema::hasColumn('yz_member_wechat',
                         'uuid')
