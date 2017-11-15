@@ -608,9 +608,8 @@ class IncomeWithdrawController extends ApiController
      */
     private function getIncomeModel()
     {
-        return Income::getIncomes()
-            ->where('member_id', \YunShop::app()->getMemberId())
-            ->where('status', '0');
+        return Income::uniacid()->canWithdraw()
+            ->where('member_id', \YunShop::app()->getMemberId());
         //->where('incometable_type', $this->item['class']);
     }
 

@@ -52,8 +52,7 @@ class WithdrawDetailController extends BaseController
     {
         $this->withdrawModel = Withdraw::find($this->getPostWithdrawId());
         if (!$this->withdrawModel) {
-            //throw new AppException('数据不存在或已被删除!');
-            return $this->message('数据不存在或已被删除!',yzWebUrl('finance.withdraw-records.index'));
+            throw new AppException('数据不存在或已被删除!');
         }
     }
 
@@ -65,8 +64,7 @@ class WithdrawDetailController extends BaseController
     {
         $withdraw_id = trim(\YunShop::request()->id);
         if (empty($withdraw_id)) {
-            //throw new AppException('数据错误，请重试!');
-            return $this->message('数据错误，请重试!',yzWebUrl('finance.withdraw-records.index'));
+            throw new AppException('数据错误，请重试!');
         }
         return $withdraw_id;
     }

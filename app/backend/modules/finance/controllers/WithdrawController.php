@@ -14,13 +14,13 @@ use app\backend\modules\finance\services\WithdrawService;
 use app\common\components\BaseController;
 use app\common\events\finance\AfterIncomeWithdrawCheckEvent;
 use app\common\events\finance\AfterIncomeWithdrawPayEvent;
+use app\common\exceptions\AppException;
 use app\common\models\Income;
 use Illuminate\Support\Facades\Log;
 
 class WithdrawController extends BaseController
 {
-
-
+    private $withdrawModel;
 
 
     public function dealt()
@@ -41,15 +41,19 @@ class WithdrawController extends BaseController
             //重新审核
             $result = $this->submitCancel($resultData['id'], $resultData['audit']);
             return $this->message($result['msg'], yzWebUrl("finance.withdraw.info", ['id' => $resultData['id']]));
-
         }
-
+        return $this->message('提交数据有误，请刷新重试', yzWebUrl("finance.withdraw.info", ['id' => $resultData['id']]));
     }
 
     public function submitCheck($withdrawId, $incomeData)
     {
-        $incomeSet = \Setting::get('withdraw.income');
-        $withdraw = Withdraw::getWithdrawById($withdrawId)->first();
+        $this->withdrawModel = $this->getWithdrawModel($withdrawId);
+
+        if ($this->withdrawModel->status != Withdraw::STATUS_INITIAL) {
+            return '审核失败,数据不符合提现规则!';
+        }
+        return $this->examine();
+        /*$withdraw = Withdraw::getWithdrawById($withdrawId)->first();
         if ($withdraw->status != '0') {
             return ['msg' => '审核失败,数据不符合提现规则!'];
         }
@@ -91,7 +95,7 @@ class WithdrawController extends BaseController
             event(new AfterIncomeWithdrawCheckEvent($noticeData));
             return ['msg' => '审核成功!'];
         }
-        return ['msg' => '审核失败!'];
+        return ['msg' => '审核失败!'];*/
     }
 
     public function submitCancel($withdrawId, $incomeData)
@@ -265,4 +269,16 @@ class WithdrawController extends BaseController
 
         return json_encode(['status' => $status]);
     }
+
+
+    private function getWithdrawModel($withdraw_id)
+    {
+        $_model = Withdraw::find($withdraw_id);
+        if (!$_model) {
+            throw new AppException('数据不存在或已被删除!');
+        }
+        return $_model;
+    }
+
+
 }

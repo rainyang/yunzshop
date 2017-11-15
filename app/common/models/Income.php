@@ -23,13 +23,10 @@ class Income extends BackendModel
 
 
     //状态
-    const STATUS_INVALID    = -1;
-
     const STATUS_INITIAL    = 0;
 
     const STATUS_WITHDRAW   = 1;
 
-    const STATUS_REJECT     = 3;
 
 
     //打款状态
@@ -47,10 +44,8 @@ class Income extends BackendModel
 
 
     public static $statusComment = [
-        self::STATUS_INVALID    => '无效',
         self::STATUS_INITIAL    => '未提现',
         self::STATUS_WITHDRAW   => '已提现',
-        self::STATUS_REJECT     => '已驳回',
     ];
 
 
@@ -113,12 +108,19 @@ class Income extends BackendModel
 
 
 
-
-
+    /**
+     * 可提现收入检索条件
+     * @param $query
+     * @return mixed
+     */
     public function scopeCanWithdraw($query)
     {
         return $query->whereIn('status', [static::STATUS_INITIAL,static::STATUS_REJECT]);
     }
+
+
+
+
 
 
 
