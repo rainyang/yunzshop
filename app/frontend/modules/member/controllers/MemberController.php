@@ -571,7 +571,7 @@ class MemberController extends ApiController
                 $shop['cservice'] = $ret;
             }
         }
-$share = $shop = null;
+
         if (is_null($share) && is_null($shop)) {
             $share = [
                 'title' => '商家分享',
