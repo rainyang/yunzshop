@@ -16,6 +16,6 @@ class WechatAppPaySetting extends BaseSetting
     }
     public function exist()
     {
-        return \Setting::get('shop.pay.weixin') !== null && \Setting::get('shop.pay.weixin') !== null;
+        return \Setting::get('shop.pay.weixin') !== null && \Setting::get('shop_app.pay.weixin') !== null;
     }
 }
