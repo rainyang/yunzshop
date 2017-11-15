@@ -54,9 +54,9 @@ class BalanceWithdrawController extends BaseController
         //打款
         if (isset($requestData['submit_pay'])) {
             echo 'd';
-             $this->submitPay();
+            return $this->submitPay();
         }
-
+exit;
         return $this->message('提交数据有误，请刷新重试', yzWebUrl("finance.balance-withdraw.detail", ['id' => $this->getPostId()]));
     }
 
