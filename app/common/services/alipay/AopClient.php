@@ -4,6 +4,8 @@ namespace app\common\services\alipay;
 
 use app\common\exceptions\AppException;
 
+require_once __DIR__ . '/function/AopEncrypt.php';
+
 class AopClient {
 	//应用ID
 	public $appId;

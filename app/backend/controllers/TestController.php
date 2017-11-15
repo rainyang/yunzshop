@@ -118,4 +118,11 @@ class TestController extends BaseController
 
         dd($msg);
     }
+
+    public function tt()
+    {
+        $pay = \Setting::get('shop.pay');
+
+        echo '<pre>';print_r($pay);exit;
+    }
 }
