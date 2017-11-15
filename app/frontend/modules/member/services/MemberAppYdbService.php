@@ -75,6 +75,13 @@ class MemberAppYdbService extends MemberService
                             MemberWechatModel::insertData(array(
                                 'uniacid' => $uniacid,
                                 'member_id' => $member_info['uid'],
+                                'openid' => $member_info['mobile'],
+                                'nickname' => $member_info['nickname'],
+                                'gender' => $member_info['gender'],
+                                'avatar' => $member_info['avatar'],
+                                'province' => $member_info['resideprovince'],
+                                'city' => $member_info['residecity'],
+                                'country' => $member_info['nationality'],
                                 'uuid' => $uuid
                             ));
                         }
