@@ -53,11 +53,9 @@ class BalanceWithdrawController extends BaseController
 
         //打款
         if (isset($requestData['submit_pay'])) {
-            echo 'd';
-            return true;
-            //return $this->submitPay();
+            return $this->submitPay();
         }
-exit;
+
         return $this->message('提交数据有误，请刷新重试', yzWebUrl("finance.balance-withdraw.detail", ['id' => $this->getPostId()]));
     }
 
@@ -105,7 +103,6 @@ exit;
         $this->withdrawModel->status = 2;
 
         $this->withdrawUpdate();
-        echo 'c';
         return $this->payment();
     }
 
@@ -134,7 +131,6 @@ exit;
     {
         switch ($this->withdrawModel->pay_way) {
             case 'alipay':
-                echo 'b';
                 return $this->alipayPayment($this->paymentRemark());
                 break;
             case 'wechat':
@@ -178,7 +174,6 @@ exit;
         if ($result !== true){
             return $this->paymentError($result['message']);
         }
-        echo 'a';
         return $result;
     }
 
