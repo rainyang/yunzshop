@@ -5,6 +5,8 @@
  * Time: 下午6:10
  */
 
+namespace app\common\services\alipay\functions;
+
 /**
  *   加密工具类
  *
