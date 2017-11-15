@@ -300,20 +300,19 @@ class BalanceWithdrawController extends BalanceController
     private function manualIsCanSubmit()
     {
         $manual_type = Setting::get('withdraw.balance')['balance_manual_type'] ?: 1;
-        $manualService = new WithdrawManualService();
 
         switch ($manual_type) {
             case 2:
                 $result['manual_type'] = 'wechat';
-                $result['status'] = $manualService->getWeChatStatus();
+                $result['status'] = WithdrawManualService::getWeChatStatus();
                 break;
             case 3:
                 $result['manual_type'] = 'alipay';
-                $result['status'] = $manualService->getAlipayStatus();
+                $result['status'] = WithdrawManualService::getAlipayStatus();
                 break;
             default:
                 $result['manual_type'] = 'bank';
-                $result['status'] = $manualService->getBankStatus();
+                $result['status'] = WithdrawManualService::getBankStatus();
         }
         return $result;
     }

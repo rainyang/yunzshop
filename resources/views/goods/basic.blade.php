@@ -163,6 +163,17 @@
     </div>
 </div>
 
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span >*</span>虚拟销量</label>
+    <div class="col-sm-6 col-xs-12">
+        <div class="input-group  col-md-3 form-group col-sm-3">
+            <input type="text" onkeyup="value=value.replace(/[^\d]/g,'')" name="goods[virtual_sales]" id="total" class="form-control" value="{{$goods['virtual_sales']}}" />
+            <span class="input-group-addon">件</span>
+        </div>
+        <span class="help-block">前端真实销量 = 虚拟销量 + 真实销量</span>
+    </div>
+</div>
+
 
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">减库存方式</label>
