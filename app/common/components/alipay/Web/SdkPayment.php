@@ -629,7 +629,7 @@ class SdkPayment
         $aop->appId = $pay['alipay_app_id'];
         $aop->rsaPrivateKey = $pay['rsa_private_key'];
         $aop->alipayrsaPublicKey= $pay['rsa_public_key'];
-        $aop->signType = 'RSA2';
+        $aop->signType = 'RSA1';
         //$aop->postCharset = strtolower($this->_input_charset);
 
         $request = new AlipayFundTransToaccountTransferRequest();
