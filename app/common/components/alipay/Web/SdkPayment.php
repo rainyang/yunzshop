@@ -628,7 +628,6 @@ class SdkPayment
 
     private function withdraw_v2($pay, $collectioner_account, $collectioner_name, $out_trade_no, $batch_no)
     {
-        return true;
         $aop = new AopClient();
         $aop->appId = $pay['alipay_app_id'];
         $aop->rsaPrivateKey = $pay['rsa_private_key'];
@@ -646,7 +645,6 @@ class SdkPayment
             'payee_real_name' => $collectioner_name,
             'remark' => '佣金提现'
         ];
-\Log::debug('-----提现参数----', $data);
 
         $request->setBizContent(json_encode($data));
         $result = $aop->execute ( $request);
@@ -669,10 +667,9 @@ class SdkPayment
             $this->withdrawResutl($data);
 
             return true;
-        } else {
-            \Log::debug('-----失败----');
         }
 
+        \Log::debug('-----失败----');
         return false;
     }
 
