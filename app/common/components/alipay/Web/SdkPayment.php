@@ -647,9 +647,10 @@ class SdkPayment
 
         $request->setBizContent(json_encode($data));
         $result = $aop->execute ( $request);
-
+        \Log::debug('-----返回参数result----', $result);
         $responseNode = str_replace(".", "_", $request->getApiMethodName()) . "_response";
         $resultCode = $result->$responseNode->code;
+        \Log::debug('-----返回参数code----', [$resultCode]);
         if(!empty($resultCode) && $resultCode == 10000){
             echo "成功";
         } else {
