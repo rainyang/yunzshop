@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePluginIdToImsYzCategoryTable extends Migration
+class CreateUuidToImsYzMemberWechatTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreatePluginIdToImsYzCategoryTable extends Migration
     public function up()
     {
         if (Schema::hasTable('yz_member_wechat')) {
-            Schema::table('yz_member_wechat',
+            Schema::table('yz_member_UuidMemberWechatwechat',
                 function (Blueprint $table) {
                     if (!Schema::hasColumn('yz_member_wechat',
                         'uuid')
