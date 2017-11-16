@@ -283,4 +283,20 @@ class MergePayController extends ApiController
         $data = $this->pay( PayFactory::PAY_YUN_WEACHAT);
         return $this->successJson('成功', $data);
     }
+
+    /**
+     * 支付宝云支付
+     * @param \Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     */
+    public function cloudAliPay(\Request $request)
+    {
+        if (\Setting::get('plugin.cloud_pay_set') == false) {
+            throw new AppException('商城未开启微信支付');
+        }
+
+        $data = $this->pay( PayFactory::PAY_CLOUD_ALIPAY);
+        return $this->successJson('成功', $data);
+    }
 }

@@ -45,7 +45,7 @@ class PayFactory
     /**
      * 云收银-支付宝
      */
-    const PAY_CLOUD_ALIPAY = 9;
+    const PAY_CLOUD_ALIPAY = 7;
     /**
      * APP-微信
      */
@@ -87,6 +87,9 @@ class PayFactory
                 break;
             case self::PAY_YUN_WEACHAT:
                 $className = new \Yunshop\YunPay\services\YunPayService();
+                break;
+            case self::PAY_CLOUD_ALIPAY:
+                $className = new \Yunshop\CloudPay\services\CloudPayService();
                 break;
             default:
                 $className = null;
