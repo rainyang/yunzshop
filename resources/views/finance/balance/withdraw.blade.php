@@ -137,9 +137,7 @@
                 @endif
 
 
-                    <button class="btn btn-default" style="margin-left: 10px;">
-                        <a href="{{ yzWebUrl('finance.withdraw.index') }}">返回</a>
-                    </button>
+                    <input type="button" class="btn btn-default" name="submit" onclick="history.go(-1)" value="返回" style='margin-left:10px;'/>
 
             </div>
         </form>
