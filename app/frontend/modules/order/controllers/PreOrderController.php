@@ -21,7 +21,7 @@ abstract class PreOrderController extends ApiController
     {
         $order_data = $this->getOrderData();
         $total_price = $order_data->sum('order.price');
-        $total_goods_price = $order_data->sum('order.goods_price');
+        $total_goods_price = $order_data->sum('order.order_goods_price');
         $total_dispatch_price = $order_data->sum('order.dispatch_price');
         $total_discount_price = $order_data->sum('order.discount_price');
         $total_deduction_price = $order_data->sum('order.deduction_price');
