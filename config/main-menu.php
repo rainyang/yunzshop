@@ -1141,6 +1141,18 @@ return [
                                 'item'              => 'order_operation_close',
                                 'parents'           => ['Order', 'order_list'],
                             ],
+
+                            'order_operation_remark' => [
+                                'name'              => '订单备注',
+                                'url'               => 'order.remark.update-remark',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => '',
+                                'sort'              => 1,
+                                'item'              => 'order_operation_remark',
+                                'parents'           => ['Order', 'order_list'],
+                            ],
                         ],
                     ],
                 ],
