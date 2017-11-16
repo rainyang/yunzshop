@@ -203,6 +203,7 @@ class IncomeWithdrawController extends ApiController
                 Log::info('收入提现余额免审核打款开始：'. $remark, print_r($item, true));
                 $result = (new BalanceChange())->income($this->getBalancePayData($item, $remark));
                 if ($result !== true) {
+                    //Log::info('收入提现余额免审核打款失败：'. $remark, print_r($this->getBalancePayData($item, $remark), true));
                     //throw new AppException('提现失败：微信打款失败');
                     DB::rollBack();
                     return false;
@@ -608,9 +609,8 @@ class IncomeWithdrawController extends ApiController
      */
     private function getIncomeModel()
     {
-        return Income::getIncomes()
-            ->where('member_id', \YunShop::app()->getMemberId())
-            ->where('status', '0');
+        return Income::uniacid()->canWithdraw()
+            ->where('member_id', \YunShop::app()->getMemberId());
         //->where('incometable_type', $this->item['class']);
     }
 
@@ -736,11 +736,11 @@ class IncomeWithdrawController extends ApiController
             'amounts'           => $income['income'],
             'poundage'          => $poundage,
             'poundage_rate'     => $this->poundage_rate,
-            'actual_poundage'   => $this->isFreeAudit() ? $poundage : 0,    //审核使用
-            'actual_amounts'    => $this->isFreeAudit() ? $actual_amounts : 0,
+            'actual_poundage'   => $poundage,
+            'actual_amounts'    => $actual_amounts,
             'servicetax'        => $service_tax,
             'servicetax_rate'   => $this->service_tax_rate,
-            'actual_servicetax' => $this->isFreeAudit() ? $service_tax : 0,  //审核使用
+            'actual_servicetax' => $service_tax,
             'pay_way'           => $this->pay_way,
             'manual_type'       => !empty($this->withdraw_set['manual_type']) ? $this->withdraw_set['manual_type'] : 1,
             'status'            => $this->withdraw_status,
@@ -763,7 +763,7 @@ class IncomeWithdrawController extends ApiController
             'relation'      => $data['withdraw_sn'],
             'operator'      => ConstService::OPERATOR_MEMBER,
             'operator_id'   => $data['member_id'],
-            'change_value'  => $data['actual_poundage']
+            'change_value'  => $data['actual_amounts']
         ];
     }
 

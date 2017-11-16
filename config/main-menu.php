@@ -1141,6 +1141,18 @@ return [
                                 'item'              => 'order_operation_close',
                                 'parents'           => ['Order', 'order_list'],
                             ],
+
+                            'order_operation_remark' => [
+                                'name'              => '订单备注',
+                                'url'               => 'order.remark.update-remark',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => '',
+                                'sort'              => 1,
+                                'item'              => 'order_operation_remark',
+                                'parents'           => ['Order', 'order_list'],
+                            ],
                         ],
                     ],
                 ],
@@ -1645,7 +1657,7 @@ return [
 
             'withdraw_set'  => [
                 'name'              => '提现设置',
-                'url'               => 'finance.withdraw.set',
+                'url'               => 'finance.withdraw-set.see',
                 'url_params'        => '',
                 'permit'            => 1,
                 'menu'              => 1,
@@ -1654,24 +1666,36 @@ return [
                 'item'              => 'withdraw_set',
                 'parents'           => ['finance','withdraw'],
                 'child'             => [
-                    'withdraw_set'      => [
+                    'withdraw_set_see'      => [
                         'name'              => '编辑保存',
-                        'url'               => 'finance.withdraw.set',
+                        'url'               => 'finance.withdraw-set.see',
                         'url_params'        => '',
                         'permit'            => 1,
                         'menu'              => 0,
                         'icon'              => '',
                         'sort'              => '0',
-                        'item'              => 'withdraw_set',
+                        'item'              => 'withdraw_set_see',
                         'parents'           => ['finance','withdraw','withdraw_set'],
                     ],
                 ],
             ],
 
+            'withdraw_statistics'  => [
+                'name'              => '提现统计',
+                'url'               => 'finance.withdraw-statistics.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-line-chart',
+                'sort'              => 0,
+                'item'              => 'withdraw_statistics',
+                'parents'           => ['finance','withdraw'],
+            ],
+
             'withdraw_records'  => [
                 'name'              => '提现记录',
-                'url'               => 'finance.withdraw',
-                'url_params'        => '',
+                'url'               => 'finance.withdraw-records',
+                'url_params'        => '&search[status]=0',
                 'permit'            => 1,
                 'menu'              => 1,
                 'icon'              => 'fa-pencil',
@@ -1682,7 +1706,7 @@ return [
 
                     'withdraw_records_see' => [
                         'name'              => '浏览记录',
-                        'url'               => 'finance.withdraw.index',
+                        'url'               => 'finance.withdraw-records.index',
                         'url_params'        => "",
                         'permit'            => 1,
                         'menu'              => 0,
@@ -1729,7 +1753,7 @@ return [
 
                     'withdraw_records_detail' => [
                         'name'              => '收入提现详情',
-                        'url'               => 'finance.withdraw.info',
+                        'url'               => 'finance.withdraw-detail.index',
                         'url_params'        => "",
                         'permit'            => 1,
                         'menu'              => 0,
@@ -1753,7 +1777,7 @@ return [
 
                     'withdraw_status_wait_audit' => [
                         'name'              => '待审核提现',
-                        'url'               => 'finance.withdraw.index',
+                        'url'               => 'finance.withdraw-records.index',
                         'url_params'        => "&search[status]=0",
                         'permit'            => 0,
                         'menu'              => 1,
@@ -1765,7 +1789,7 @@ return [
 
                     'withdraw_status_wait_pay' => [
                         'name'              => '待打款提现',
-                        'url'               => 'finance.withdraw',
+                        'url'               => 'finance.withdraw-records.index',
                         'url_params'        => "&search[status]=1",
                         'permit'            => 0,
                         'menu'              => 1,
@@ -1777,7 +1801,7 @@ return [
 
                     'withdraw_status_pay' => [
                         'name'              => '已打款提现',
-                        'url'               => 'finance.withdraw',
+                        'url'               => 'finance.withdraw-records.index',
                         'url_params'        => "&search[status]=2",
                         'permit'            => 0,
                         'menu'              => 1,
@@ -1789,7 +1813,7 @@ return [
 
                     'withdraw_status_arrival' => [
                         'name'              => '已到账提现',
-                        'url'               => 'finance.withdraw',
+                        'url'               => 'finance.withdraw-records.index',
                         'url_params'        => "&search[status]=3",
                         'permit'            => 0,
                         'menu'              => 1,
@@ -1801,7 +1825,7 @@ return [
 
                     'withdraw_status_invalid' => [
                         'name'              => '无效提现',
-                        'url'               => 'finance.withdraw',
+                        'url'               => 'finance.withdraw-records.index',
                         'url_params'        => "&search[status]=-1",
                         'permit'            => 0,
                         'menu'              => 1,
