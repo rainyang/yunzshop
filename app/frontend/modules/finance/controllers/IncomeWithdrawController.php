@@ -344,7 +344,7 @@ class IncomeWithdrawController extends ApiController
 
             //附值手续费、劳务税(收银台不计算手续费、劳务税)
             //收银台 不计算手续费、劳务税，提现到余额独立手续费、劳务税也不计算
-            if ($income['type'] == 'StoreCashier') {
+            if ($income['key_name'] == 'StoreCashier') {
                 $this->poundage_rate = 0;
                 $this->service_tax_rate = 0;
             } else {
