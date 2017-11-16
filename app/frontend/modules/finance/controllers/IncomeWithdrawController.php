@@ -47,6 +47,14 @@ class IncomeWithdrawController extends ApiController
     private $service_tax_rate;
 
 
+    //
+    private $special_poundage_rate;
+
+
+    //
+    private $special_service_tax_rate;
+
+
     //提现状态
     private $withdraw_status = Withdraw::STATUS_INITIAL;
 
@@ -86,12 +94,16 @@ class IncomeWithdrawController extends ApiController
             $this->setIncomeSet($income['type']);
 
             //附值手续费、劳务税(收银台不计算手续费、劳务税)
-            if ($income['key_name'] == 'StoreCashier') {
+            if ($income['type'] == 'StoreCashier') {
                 $this->poundage_rate = 0;
                 $this->service_tax_rate = 0;
+                $this->special_poundage_rate = 0;
+                $this->special_service_tax_rate = 0;
             } else {
                 $this->setPoundageRate($income['type']);
                 $this->setServiceTaxRate();
+                $this->setSpecialPoundageRate();
+                $this->setSpecialServiceTaxRate();
             }
 
 
@@ -517,6 +529,32 @@ class IncomeWithdrawController extends ApiController
 
 
 
+    /**
+     * 提现到余额独立手续费比例
+     * @return int|mixed
+     */
+    private function setSpecialPoundageRate()
+    {
+        $value = array_get($this->withdraw_set, 'special_poundage', 0);
+
+        return $this->special_poundage_rate = empty($value) ? 0 : $value;
+    }
+
+
+
+    /**
+     * 提现到余额独立劳务税
+     * @return int|mixed
+     */
+    private function setSpecialServiceTaxRate()
+    {
+        $value = array_get($this->withdraw_set, 'special_service_tax', 0);
+
+        return $this->special_service_tax_rate = empty($value) ? 0 : $value;
+    }
+
+
+
 
     /**
      * 是否使用余额独立手续费、劳务税
@@ -648,11 +686,9 @@ class IncomeWithdrawController extends ApiController
         $poundage = $this->poundageMath($this->withdraw_amounts, $this->poundage_rate);
         $service_tax = $this->poundageMath($this->withdraw_amounts - $poundage, $this->service_tax_rate);
 
-        $special_poundage_rate = empty(array_get($this->withdraw_set,'special_poundage', 0)) ? 0 : array_get($this->withdraw_set,'special_poundage', 0);
-        $special_service_tax_rate = empty(array_get($this->withdraw_set,'special_service_tax', 0)) ? 0 : array_get($this->withdraw_set,'special_service_tax', 0);
 
-        $special_poundage = $this->poundageMath($this->withdraw_amounts, $special_poundage_rate);
-        $special_service_tax = $this->poundageMath($this->withdraw_amounts - $special_poundage, $special_service_tax_rate);
+        $special_poundage = $this->poundageMath($this->withdraw_amounts, $this->special_poundage_rate);
+        $special_service_tax = $this->poundageMath(($this->withdraw_amounts - $special_poundage), $this->special_service_tax_rate);
         return [
             'type'              => $income['class'],
             'key_name'          => $income['type'],
@@ -667,9 +703,9 @@ class IncomeWithdrawController extends ApiController
             'selected'          => $this->incomeIsCanWithdraw(),
             'type_id'           => $this->getIncomeTypeIds($income['class']),
             'special_poundage'  => $special_poundage,
-            'special_poundage_rate'  => $special_poundage_rate,
+            'special_poundage_rate'  => $this->special_poundage_rate,
             'special_service_tax'    => $special_service_tax,
-            'special_service_tax_rate' => $special_service_tax_rate,
+            'special_service_tax_rate' => $this->special_service_tax_rate,
         ];
     }
 
