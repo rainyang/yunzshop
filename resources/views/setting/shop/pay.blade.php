@@ -105,7 +105,7 @@
                                 </div>
                                 <div style="float:left; width:85%; height:30px;">
                                     <input type="hidden" name="pay[weixin_cert]" value="{{ $set['weixin_cert'] }}"/>
-                                    <input type="file" name="weixin_cert_file" class="form-control"/>
+                                    <input type="file" name="weixin_cert" class="form-control"/>
                                     <span class="help-block">
                                         @if (!empty($set['weixin_cert']))
                                             <span class='label label-success'>已上传</span>
@@ -129,7 +129,7 @@
                                 <div style="float:left; width:85%; height:30px;">
                                     <input type="hidden" name="pay[weixin_key]" value="{{ $set['weixin_key'] }}"/>
 
-                                    <input type="file" name="weixin_key_file" class="form-control"/>
+                                    <input type="file" name="weixin_key" class="form-control"/>
                                     <span class="help-block">
                                         @if (!empty($set['weixin_key']))
                                             <span class='label label-success'>已上传</span>
@@ -152,7 +152,7 @@
                                 <div style="float:left; width:85%; height:30px;">
                                     <input type="hidden" name="pay[weixin_root]" value="{{ $set['weixin_root'] }}"/>
 
-                                    <input type="file" name="weixin_root_file" class="form-control"/>
+                                    <input type="file" name="weixin_root" class="form-control"/>
                                     <span class="help-block">
                                         @if (!empty($set['weixin_root']))
                                             <span class='label label-success'>已上传</span>
