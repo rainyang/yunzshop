@@ -76,6 +76,12 @@ class WithdrawService extends Withdraw
         if ($result['errno'] == 1) {
             return $result['message'];
         }
+
+
+        if (is_bool($result)) {
+            return $result;
+        }
+
         redirect($result)->send();
     }
 }
