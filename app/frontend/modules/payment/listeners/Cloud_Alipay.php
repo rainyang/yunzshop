@@ -19,7 +19,7 @@ class Cloud_Alipay
         if (\YunShop::plugin()->get('cloud-pay') && !is_null($set) && 1 == $set['switch'] && \YunShop::request()->type != 7) {
 
             $result = [
-                'name' => '支付宝',
+                'name' => '云收银支付宝',
                 'value' => '7',
                 'need_password' => '0'
 
