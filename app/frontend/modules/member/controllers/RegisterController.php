@@ -17,6 +17,7 @@ use app\common\services\aliyun\AliyunSMS;
 use app\common\services\Session;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\SubMemberModel;
+use app\frontend\modules\member\models\MemberWechatModel;
 use app\frontend\modules\member\services\MemberService;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Str;
@@ -109,7 +110,23 @@ class RegisterController extends ApiController
             $yz_member = MemberShopInfo::getMemberShopInfo($member_id)->toArray();
 
             $data = MemberModel::userData($member_info, $yz_member);
-
+            //app注册添加member_wechat表中数据
+            $type = \YunShop::request()->type;
+            if ($type == 7) {
+                $uuid = \YunShop::request()->uuid;
+                MemberWechatModel::insertData(array(
+                    'uniacid' => $uniacid,
+                    'member_id' => $member_info['uid'],
+                    'openid' => $member_info['mobile'],
+                    'nickname' => $member_info['nickname'],
+                    'gender' => $member_info['gender'],
+                    'avatar' => $member_info['avatar'],
+                    'province' => $member_info['resideprovince'],
+                    'city' => $member_info['residecity'],
+                    'country' => $member_info['nationality'],
+                    'uuid' => $uuid
+                ));
+            }
             return $this->successJson('', $data);
         } else {
             return $this->errorJson('手机号或密码格式错误');
