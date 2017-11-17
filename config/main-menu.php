@@ -1591,6 +1591,20 @@ return [
                 'parents'           => ['finance', 'balance',],
             ],
 
+            //茶余饭后独立开发充值满额统计
+            /*'finance_balance_recharge_statistics' => [
+                'name'              => '满额统计',
+                'url'               => 'finance.balanceRechargeStatistics.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-download',
+                'sort'              => 0,
+                'item'              => 'finance_balance_recharge_statistics',
+                'parents'           => ['finance', 'balance',],
+            ],*/
+
+
             'finance_balance_tansferRecord' => [
                 'name'              => '转让记录',
                 'url'               => 'finance.balance.transferRecord',
