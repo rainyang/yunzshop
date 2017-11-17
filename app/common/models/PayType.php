@@ -44,4 +44,38 @@ class PayType extends BaseModel
     {
         return self::select('name')->where('id', $id)->value('name');
     }
+
+    public static function fetchPayName()
+    {
+        return self::select('name')
+            ->groupBy('name')
+            ->get();
+    }
+
+    public static function fetchPayType($name)
+    {
+        return self::where('name', $name)
+            ->get();
+    }
+
+
+    public static function payTypeColl()
+    {
+        $coll = [];
+        $pay_names = PayType::fetchPayName();
+
+        if (!$pay_names->isEmpty()) {
+            foreach ($pay_names as $item) {
+                $pay_types = PayType::fetchPayType($item->name);
+
+                if (!$pay_types->isEmpty()) {
+                    foreach ($pay_types as $rows) {
+                        $coll[$item->name][] = $rows->id;
+                    }
+                }
+            }
+        }
+
+        return $coll;
+    }
 }
