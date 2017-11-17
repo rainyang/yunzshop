@@ -123,6 +123,7 @@ Route::any('/', function () {
             $eid = YunShop::request()->eid;
 
             if (!empty($eid)) {
+                //return redirect('?c=site&a=entry&do=shop&m=yun_shop&route=index.index');
                 $entry = module_entry($eid);
 
                 switch ($entry['do']) {
@@ -136,7 +137,7 @@ Route::any('/', function () {
                         return redirect('?c=site&a=entry&do=shop&m=yun_shop&route=order.list');
                         break;
                     case 'finance':
-                        return redirect('?c=site&a=entry&do=shop&m=yun_shop&route=finance.withdraw.set');
+                        return redirect('?c=site&a=entry&do=shop&m=yun_shop&route=finance.withdraw-set.see');
                         break;
                     case 'plugins':
                         return redirect('?c=site&a=entry&do=shop&m=yun_shop&route=plugins.get-plugin-data');
