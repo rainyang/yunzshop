@@ -1718,7 +1718,7 @@ return [
 
                     'withdraw_records_export' => [
                         'name'              => '记录导出',
-                        'url'               => 'finance.withdraw.export',
+                        'url'               => 'finance.withdraw-records.export',
                         'url_params'        => "",
                         'permit'            => 1,
                         'menu'              => 0,
