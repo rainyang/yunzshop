@@ -599,6 +599,8 @@ class SdkPayment
             case 2:
                 return $this->withdraw_v2($pay, $collectioner_account, $collectioner_name, $out_trade_no, $batch_no);
                 break;
+            default:
+                return $this->withdraw_v1($pay, $collectioner_account, $collectioner_name, $out_trade_no, $batch_no);
         }
     }
 
