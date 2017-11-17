@@ -123,7 +123,6 @@ Route::any('/', function () {
             $eid = YunShop::request()->eid;
 
             if (!empty($eid)) {
-                //return redirect('?c=site&a=entry&do=shop&m=yun_shop&route=index.index');
                 $entry = module_entry($eid);
 
                 switch ($entry['do']) {

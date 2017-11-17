@@ -13,6 +13,7 @@ use Exception;
 class ShopException extends Exception
 {
     public $redirect = '';
+
     const UNIACID_NOT_FOUND = -2; // 公众号id不存在
 
     public function setRedirect($redirect)
