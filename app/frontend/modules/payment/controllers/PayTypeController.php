@@ -15,17 +15,21 @@ class PayTypeController extends BaseController
 {
     public function index()
     {
+        $buttons = [];
+        
         $paymentTypes = app('PaymentManager')->make('OrderPaymentTypeManager')->getOrderPaymentTypes();
 
-        $buttons =  $paymentTypes->map(function (BasePayment $paymentType) {
+         $paymentTypes->map(function (BasePayment $paymentType) {
             return [
                 'name' => $paymentType->getName(),
                 'value' => $paymentType->getId(),
                 'need_password' => $paymentType->needPassword(),
             ];
+        })->each(function($item, $key) use (&$buttons) {
+            $buttons[] = $item;
         });
 
-        $data = [ 'buttons' => $buttons];
+        $data = ['buttons' => $buttons];
 
         return $this->successJson('成功', $data);
     }
