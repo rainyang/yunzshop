@@ -58,7 +58,6 @@ class PayType extends BaseModel
             ->get();
     }
 
-
     public static function payTypeColl()
     {
         $coll = [];
