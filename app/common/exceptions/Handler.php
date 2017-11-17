@@ -101,13 +101,14 @@ class Handler extends ExceptionHandler
         return redirect()->guest('login');
     }
 
-    protected function renderShopException(Exception $exception)
+    protected function renderShopException(ShopException $exception)
     {
         if (\Yunshop::isApi()) {
             \Log::error('api exception',$exception);
             return $this->errorJson($exception->getMessage(),['code'=>$exception->getCode()]);
         }
-        exit($this->message($exception->getMessage(), '', 'error'));
+        $redirect = $exception->redirect ?: '';
+        exit($this->message($exception->getMessage(), $redirect, 'error'));
     }
 
     /**
