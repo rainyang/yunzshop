@@ -127,7 +127,7 @@ class MemberAppYdbService extends MemberService
         $res = @ihttp_get($url);
         $user_info = json_decode($res['content'], true);
 
-        if (!empty($user_info['uuid'])) {
+        if (!empty($uuid)) {
             $user_info['uuid'] = $uuid;
         }
 
