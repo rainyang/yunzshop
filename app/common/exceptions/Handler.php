@@ -47,7 +47,7 @@ class Handler extends ExceptionHandler
      *
      * @param  \Illuminate\Http\Request $request
      * @param  \Exception $exception
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response|\Symfony\Component\HttpFoundation\Response
      */
     public function render($request, Exception $exception)
     {
@@ -101,13 +101,14 @@ class Handler extends ExceptionHandler
         return redirect()->guest('login');
     }
 
-    protected function renderShopException(Exception $exception)
+    protected function renderShopException(ShopException $exception)
     {
         if (\Yunshop::isApi()) {
             \Log::error('api exception',$exception);
             return $this->errorJson($exception->getMessage(),['code'=>$exception->getCode()]);
         }
-        exit($this->message($exception->getMessage(), '', 'error'));
+        $redirect = $exception->redirect ?: '';
+        exit($this->message($exception->getMessage(), $redirect, 'error'));
     }
 
     /**

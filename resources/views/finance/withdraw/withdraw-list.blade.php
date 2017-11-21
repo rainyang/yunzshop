@@ -235,11 +235,11 @@
 <script language='javascript'>
     $(function () {
         $('#export').click(function () {
-            $('#form1').attr('action', '{!! yzWebUrl('finance.withdraw.export') !!}');
+            $('#form1').attr('action', '{!! yzWebUrl('finance.withdraw-records.export') !!}');
             $('#form1').submit();
         });
         $('#search').click(function () {
-            $('#form1').attr('action', '{!! yzWebUrl('finance.withdraw-records,in') !!}');
+            $('#form1').attr('action', '{!! yzWebUrl('finance.withdraw-records.index') !!}');
             $('#form1').submit();
         });
 

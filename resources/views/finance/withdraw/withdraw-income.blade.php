@@ -10,7 +10,7 @@
                 <input type='radio' name='withdraw[income][balance]' value='0' @if($set['balance'] == 0) checked @endif />
                 关闭
             </label>
-            <span class='help-block'>可开启独立手续费设置，独立手续费：提现到余额的收入，计算比例按照独立手续费中的比例计算【优先级高于插件独立设置】</span>
+            <span class='help-block'>可开启独立手续费设置，独立手续费：提现到余额的收入(不含收银台)，计算比例按照独立手续费中的比例计算【优先级高于插件独立设置】</span>
         </div>
     </div>
 </div>
