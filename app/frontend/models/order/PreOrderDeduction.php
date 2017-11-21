@@ -28,6 +28,14 @@ use app\frontend\modules\orderGoods\models\PreOrderGoods;
  */
 class PreOrderDeduction extends OrderDeduction
 {
+    public function toArray()
+    {
+        $this->amount = sprintf('%.2f', $this->amount);
+
+        $this->coin = sprintf('%.2f', $this->coin);
+        return parent::toArray();
+    }
+
     protected $appends = ['checked'];
     /**
      * @var PreOrder
