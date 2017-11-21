@@ -283,6 +283,17 @@ class MemberController extends ApiController
         }
     }
 
+    public function getMyReferral_v2()
+    {
+        $data = MemberModel::getMyReferral_v2();
+
+        if (!empty($data)) {
+            return $this->successJson('', $data);
+        } else {
+            return $this->errorJson('会员不存在');
+        }
+    }
+
     /**
      * 我推荐的人
      *

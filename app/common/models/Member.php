@@ -482,4 +482,19 @@ class Member extends BackendModel
     {
         return isset($this->hasOneFans) && $this->hasOneFans->follow && !empty($this->hasOneFans->openid);
     }
+
+    public function getMemberRole($builder)
+    {
+        $query = $builder->with([
+            'yzMember' => function ($query) {
+                return $query->select(['member_id', 'parent_id', 'is_agent', 'group_id', 'level_id', 'is_black', 'alipayname', 'alipay', 'status', 'inviter'])
+                    ->where('is_black', 0)
+                    ->with(['level'=>function($query2){
+                        return $query2->select(['id','level_name'])->uniacid();
+                    }]);
+            }
+        ]);
+
+        return $query;
+    }
 }

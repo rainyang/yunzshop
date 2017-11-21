@@ -19,7 +19,7 @@ class RechargeComplatedEvent extends Event
         $this->data = $data;
     }
 
-    public function getRechargeData()
+    public function getChargeData()
     {
         return $this->data;
     }

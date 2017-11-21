@@ -119,15 +119,7 @@ class MemberModel extends Member
     {
         return self::select(['uid'])->uniacid()
             ->where('uid', $uid)
-            ->with([
-                'yzMember' => function ($query) {
-                    return $query->select(['member_id', 'parent_id', 'is_agent', 'group_id', 'level_id', 'is_black', 'alipayname', 'alipay', 'status', 'inviter'])
-                        ->where('is_black', 0)
-                        ->with(['level'=>function($query2){
-                            return $query2->select(['id','level_name'])->uniacid();
-                        }]);
-                }
-            ]);
+            ;
     }
 
     /**
@@ -252,6 +244,59 @@ class MemberModel extends Member
     {
         $member_info = self::getMyReferrerInfo(\YunShop::app()->getMemberId())->first();
 
+        $set = \Setting::get('shop.member');
+
+        $data = [];
+
+        if (!empty($member_info)) {
+            if (isset($set) && $set['headimg']) {
+                $avatar = replace_yunshop(tomedia($set['headimg']));
+            } else {
+                $avatar = Url::shopUrl('static/images/photo-mr.jpg');
+            }
+
+            $member_info = $member_info->toArray();
+
+            $referrer_info = self::getUserInfos($member_info['yz_member']['parent_id'])->first();
+
+            if ($member_info['yz_member']['inviter'] == 1) {
+                if (!empty($referrer_info)) {
+                    $info = $referrer_info->toArray();
+                    $data = [
+                        'uid' => $info['uid'],
+                        'avatar' => $info['avatar'],
+                        'nickname' => $info['nickname'],
+                        'level' => $info['yz_member']['level']['level_name'],
+                        'is_show' => $set['is_referrer']
+                    ];
+                } else {
+                    $data = [
+                        'uid' => '',
+                        'avatar' => $avatar,
+                        'nickname' => '总店',
+                        'level' => '',
+                        'is_show' => $set['is_referrer']
+                    ];
+                }
+            } else {
+                $data = [
+                    'uid' => '',
+                    'avatar' => $avatar,
+                    'nickname' => '暂无',
+                    'level' => '',
+                    'is_show' => $set['is_referrer']
+                ];
+            }
+        }
+
+        return $data;
+    }
+
+    public static function getMyReferral_v2()
+    {
+        $builder     = self::getMyReferrerInfo(\YunShop::app()->getMemberId());
+        $member_info = self::getMemberRole($builder)->first();
+dd($member_info);
         $set = \Setting::get('shop.member');
 
         $data = [];
