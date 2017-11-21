@@ -37,6 +37,9 @@ class PointSetController extends BaseController
             }
         }
 
+        $love_name = Setting::get('love.name');
+        $set['love_name'] = $love_name ? $love_name : '爱心值';
+
         return view('finance.point.set', [
             'set' => $set
         ])->render();
