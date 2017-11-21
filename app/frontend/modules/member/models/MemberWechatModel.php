@@ -26,6 +26,13 @@ class MemberWechatModel extends BackendModel
             ->first();
     }
 
+    public static function getUserInfo_memberid($member_id)
+    {
+        return self::uniacid()
+            ->where('member_id', $member_id)
+            ->first();
+    }
+
     public static function updateUserInfo($openid, $data)
     {
         return self::uniacid()

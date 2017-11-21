@@ -315,18 +315,6 @@
             });
         })
 
-        function changePrice(orderid) {
-            $.post("{!! yzWebUrl('order.change-order-price') !!}", {order_id: orderid}, function (html) {
-                if (html == -1) {
-                    alert('订单不能改价!');
-                    return;
-                }
-                $('#changeprice_container').html(html);
-                $('#modal-changeprice').modal().on('shown.bs.modal', function () {
-                    mc_init();
-                })
-            });
-        }
     </script>
 @section('plugin_js')
 @show
