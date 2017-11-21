@@ -300,6 +300,70 @@ class MemberModel extends Member
         return $data;
     }
 
+
+    /**
+     * 我的推荐人 v2
+     *
+     * @return array
+     */
+    public static function getMyReferral_v2()
+    {
+        $builder     = self::getMyReferrerInfo(\YunShop::app()->getMemberId());
+        $member_info = self::getMemberRole($builder)->first();
+
+        $member_role = self::convertRoleText($member_info);
+
+        $set = \Setting::get('shop.member');
+
+        $data = [];
+
+        if (!empty($member_info)) {
+            if (isset($set) && $set['headimg']) {
+                $avatar = replace_yunshop(tomedia($set['headimg']));
+            } else {
+                $avatar = Url::shopUrl('static/images/photo-mr.jpg');
+            }
+
+            $member_info = $member_info->toArray();
+
+            $referrer_info = self::getUserInfos($member_info['yz_member']['parent_id'])->first();
+
+            if ($member_info['yz_member']['inviter'] == 1) {
+                if (!empty($referrer_info)) {
+                    $info = $referrer_info->toArray();
+                    $data = [
+                        'uid' => $info['uid'],
+                        'avatar' => $info['avatar'],
+                        'nickname' => $info['nickname'],
+                        'level' => $info['yz_member']['level']['level_name'],
+                        'is_show' => $set['is_referrer'],
+                        'role'   => $member_role
+                    ];
+                } else {
+                    $data = [
+                        'uid' => '',
+                        'avatar' => $avatar,
+                        'nickname' => '总店',
+                        'level' => '',
+                        'is_show' => $set['is_referrer'],
+                        'role'   => $member_role
+                    ];
+                }
+            } else {
+                $data = [
+                    'uid' => '',
+                    'avatar' => $avatar,
+                    'nickname' => '暂无',
+                    'level' => '',
+                    'is_show' => $set['is_referrer'],
+                    'role'   => $member_role
+                ];
+            }
+        }
+
+        return $data;
+    }
+
     /**
      * 推广二维码
      *
@@ -329,6 +393,57 @@ class MemberModel extends Member
      * @return array
      */
     public static function getMyAgent()
+    {
+        $agent_ids = [];
+        $data = [];
+
+        $agent_info = MemberModel::getMyAgentInfo(\YunShop::app()->getMemberId());
+        $agent_model = $agent_info->get();
+
+        if (!empty($agent_model)) {
+            $agent_data = $agent_model->toArray();
+
+            foreach ($agent_data as $key => $item) {
+                $agent_ids[$key] = $item['uid'];
+                $agent_data[$key]['agent_total'] = 0;
+            }
+        } else {
+            return '数据为空';
+        }
+
+        $all_count = MemberShopInfo::getAgentAllCount($agent_ids);
+
+        foreach ($all_count as $k => $rows) {
+            foreach ($agent_data as $key => $item) {
+                if ($rows['parent_id'] == $item['uid']) {
+                    $agent_data[$key]['agent_total'] = $rows['total'];
+
+                    break 1;
+                }
+            }
+        }
+
+        if ($agent_data) {
+            foreach ($agent_data as $item) {
+                $data[] = [
+                    'uid' => $item['uid'],
+                    'avatar' => $item['avatar'],
+                    'nickname' => $item['nickname'],
+                    'order_total' => $item['has_one_order']['total'],
+                    'order_price' => $item['has_one_order']['sum'],
+                    'agent_total' => $item['agent_total'],
+                ];
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * 我推荐的人v2
+     * @return array
+     */
+    public static function getMyAgent_v2()
     {
         $agent_ids = [];
         $data = [];
@@ -450,5 +565,46 @@ class MemberModel extends Member
         if (!is_dir($dest)) {
             (@mkdir($dest, 0777, true));
         }
+    }
+
+    public static function convertRoleText($member_modle)
+    {
+         $member_role = '';
+
+         if (!is_null($member_modle)) {
+             if (!is_null($member_modle->hasOneAgent)) {
+                 $member_role .= '分销商&';
+             }
+
+             if (!is_null($member_modle->hasOneTeamDividend)) {
+                 $member_role .= '经销商&';
+             }
+
+             if (!is_null($member_modle->hasOneAreaDividend)) {
+                 $member_role .= '区域代理&';
+             }
+
+             if (!is_null($member_modle->hasOneMerchant)) {
+                 $member_role .= '招商员&';
+             }
+
+             if (!is_null($member_modle->hasOneMerchantCenter)) {
+                 $member_role .= '招商中心&';
+             }
+
+             if (!is_null($member_modle->hasOneMicro)) {
+                 $member_role .= '微店店主&';
+             }
+
+             if (!is_null($member_modle->hasOneSupplier)) {
+                 $member_role .= '供应商&';
+             }
+         }
+
+         if (!empty($member_role)) {
+             $member_role = rtrim($member_role, '&');
+         }
+
+         return $member_role;
     }
 }

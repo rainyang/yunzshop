@@ -300,6 +300,22 @@ class MemberController extends ApiController
     }
 
     /**
+     * 我推荐的人 v2
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getMyAgent_v2()
+    {
+        $data = MemberModel::getMyAgent_v2();
+
+        if (!empty($data)) {
+            return $this->successJson('', $data);
+        } else {
+            return $this->errorJson('会员不存在');
+        }
+    }
+
+    /**
      * 会员中心我的关系
      *
      * @return \Illuminate\Http\JsonResponse
