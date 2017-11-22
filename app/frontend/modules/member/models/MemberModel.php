@@ -18,6 +18,7 @@ use app\common\models\MemberShopInfo;
 use app\common\models\Setting;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use app\common\models\Order;
+use Yunshop\Commission\models\AgentLevel;
 
 class MemberModel extends Member
 {
@@ -541,6 +542,11 @@ class MemberModel extends Member
 
         $data[0]['total'] = count($agent_level_first_info) + count($agent_level_second_info) + count($agent_level_third_info);
 
+        //TODO search
+        if (\YunShop::request()->keyword) {
+            $data = self::searchMemberRelation($data);
+        }
+
         return $data;
     }
 
@@ -639,11 +645,15 @@ class MemberModel extends Member
              }
 
              if (!is_null($member_modle->hasOneMerchant)) {
-                 $member_role .= '招商员&';
+                 if (0 == $member_modle->hasOneMerchant->is_center) {
+                     $member_role .= '招商员&';
+                 }
              }
 
              if (!is_null($member_modle->hasOneMerchantCenter)) {
-                 $member_role .= '招商中心&';
+                 if (1 == $member_modle->hasOneMerchant->is_center) {
+                     $member_role .= '招商中心&';
+                 }
              }
 
              if (!is_null($member_modle->hasOneMicro)) {
@@ -675,6 +685,7 @@ class MemberModel extends Member
             $agent_order_price = 0;
 
             $role              = self::convertRoleText($item);
+            $role_type         = self::setRoleLevel($item);
 
             $child_agent = MemberModel::getMyAllAgentsInfo($item->uid, 1)->get();
 
@@ -704,8 +715,101 @@ class MemberModel extends Member
                 'order_price' => $order_price,
                 'agent_total' => $agent_total,
                 'agent_order_price' => $agent_order_price,
-                'role' => $role
+                'role' => $role,
+                'role_type' => $role_type
             ];
         });
+    }
+
+    public static function searchMemberRelation($data)
+    {
+        $keyword = \YunShop::request()->keyword;
+        $level   = \YunShop::request()->level;
+
+        $coll = collect($data[0]['data'])->map(function ($item) use ($keyword, $level) {
+            return collect($item)->mapWithKeys(function ($item, $key) use ($keyword, $level) {
+                if ($key == 'level') {
+                    $res['level'] = $item;
+                }
+
+                if ($key == 'data') {
+                    $res['data'] = collect($item)->filter(function ($item) use ($keyword, $level) {
+                        $role_level = false;
+
+                        if (!empty($item['role_type'])) {
+                            foreach ($item['role_type'] as $rows) {
+                                foreach ($rows as $key => $val) {
+                                    if ($key == $keyword && $val == $level) {
+                                        $role_level = true;
+                                    }
+
+                                    break 2;
+                                }
+                            }
+                        }
+
+                        return preg_match("/{$keyword}/", $item['role']) && $role_level;
+                    });
+
+                    $res['data'] = array_values($res['data']->toArray());
+
+                    $res['total'] = count($res['data']);
+                }
+
+                return $res;
+            });
+        });
+
+        if (!$coll->isEmpty()) {
+            $total = 0;
+
+            foreach ($coll as $rows) {
+                $total += $rows['total'];
+            }
+
+            $result[0] = [
+                'total' => $total,
+                'data'  => $coll->toArray()
+            ];
+        }
+
+        return $result;
+    }
+
+    public static function setRoleLevel($member_modle)
+    {
+        $role_type = [];
+
+        if (!is_null($member_modle)) {
+            if (!is_null($member_modle->hasOneAgent)) {
+                array_push($role_type, ['分销商'=>$member_modle->hasOneAgent->agent_level_id]);
+            }
+
+            if (!is_null($member_modle->hasOneTeamDividend)) {
+                array_push($role_type, ['经销商'=>$member_modle->hasOneTeamDividend->level]);
+            }
+
+            if (!is_null($member_modle->hasOneAreaDividend)) {
+                array_push($role_type, ['区域代理'=>$member_modle->hasOneAreaDividend->agent_level]);
+            }
+
+            if (!is_null($member_modle->hasOneMerchant)) {
+            }
+
+            if (!is_null($member_modle->hasOneMerchantCenter)) {
+                if (1 == $member_modle->hasOneMerchant->is_center) {
+                    array_push($role_type, ['招商中心'=>$member_modle->hasOneMerchantCenter->level_id]);
+                }
+            }
+
+            if (!is_null($member_modle->hasOneMicro)) {
+                array_push($role_type, ['微店店主'=>$member_modle->hasOneMicro->level_id]);
+            }
+
+            if (!is_null($member_modle->hasOneSupplier)) {
+            }
+        }
+
+        return $role_type;
     }
 }
