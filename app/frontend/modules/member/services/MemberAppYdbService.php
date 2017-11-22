@@ -127,7 +127,7 @@ class MemberAppYdbService extends MemberService
         $res = @ihttp_get($url);
         $user_info = json_decode($res['content'], true);
 
-        if (!empty($user_info['uuid'])) {
+        if (!empty($uuid)) {
             $user_info['uuid'] = $uuid;
         }
 
@@ -190,18 +190,23 @@ class MemberAppYdbService extends MemberService
 
     public function addFansMember($uid, $uniacid, $userinfo)
     {
-        MemberWechatModel::insertData(array(
-            'uniacid' => $uniacid,
-            'member_id' => $uid,
-            'openid' => $userinfo['openid'],
-            'nickname' => $userinfo['nickname'],
-            'avatar' => $userinfo['headimgurl'],
-            'gender' => $userinfo['sex'],
-            'province' => '',
-            'country' => '',
-            'city' => '',
-            'uuid' => $userinfo['uuid']
-        ));
+        $user = MemberWechatModel::getUserInfo_memberid($uid);
+        if (!empty($user)) {
+            $this->updateMemberInfo($uid, $userinfo);
+        } else {
+            MemberWechatModel::insertData(array(
+                'uniacid' => $uniacid,
+                'member_id' => $uid,
+                'openid' => $userinfo['openid'],
+                'nickname' => $userinfo['nickname'],
+                'avatar' => $userinfo['headimgurl'],
+                'gender' => $userinfo['sex'],
+                'province' => '',
+                'country' => '',
+                'city' => '',
+                'uuid' => $userinfo['uuid']
+            ));
+        }
     }
 
     public function getFansModel($openid)

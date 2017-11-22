@@ -417,6 +417,14 @@ class MemberController extends BaseController
                    }
                 }
 
+                $agent_data = [
+                    'member_id' => $uid,
+                    'parent_id' => $parent_id,
+                    'parent'   => $member->relation
+                ];
+
+                event(new RegisterByAgent($agent_data));
+
                 return response(['status' => 1])->send();
             } else {
                 return response(['status' => 0])->send();

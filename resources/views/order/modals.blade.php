@@ -201,22 +201,18 @@
 
 <script language='javascript'>
 
+
     function changePrice(orderid) {
-
-        $.ajax({
-            url: "{php echo $this->createWebUrl('order/list',array('op'=>'deal','to'=>'changepricemodal'))}&id=" + orderid,
-            success: function (html) {
-                if (html == -1) {
-                    alert('订单不能改价!');
-                    return;
-                }
-                $('#changeprice_container').html(html);
-                $('#modal-changeprice').modal().on('shown.bs.modal', function () {
-                    mc_init();
-                })
-
+        $.post("{!! yzWebUrl('order.change-order-price') !!}", {order_id: orderid}, function (html) {
+            if (html == -1) {
+                alert('订单不能改价!');
+                return;
             }
-        })
+            $('#changeprice_container').html(html);
+            $('#modal-changeprice').modal().on('shown.bs.modal', function () {
+                mc_init();
+            })
+        });
     }
     var order_price = 0;
     var dispatch_price = 0;
