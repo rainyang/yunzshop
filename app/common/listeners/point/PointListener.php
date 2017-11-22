@@ -13,10 +13,12 @@ use app\common\events\order\AfterOrderCanceledEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\models\Order;
+use app\common\models\UniAccount;
 use app\common\services\finance\CalculationPointService;
 use app\common\services\finance\PointRollbackService;
 use app\common\services\finance\PointService;
 use app\frontend\modules\finance\services\AfterOrderDeductiblePointService;
+use app\Jobs\PointToLoveJob;
 use Setting;
 
 class PointListener
@@ -97,5 +99,30 @@ class PointListener
             AfterOrderCanceledEvent::class,
             PointRollbackService::class . '@orderCancel'
         );
+
+        //积分自动转入爱心值
+        $events->listen('cron.collectJobs', function() {
+
+            \Log::info("--积分自动转入爱心值检测--");
+            $uniAccount = UniAccount::get();
+            foreach ($uniAccount as $u) {
+                \YunShop::app()->uniacid = $u->uniacid;
+                \Setting::$uniqueAccountId = $uniacid = $u->uniacid;
+
+                $point_set = Setting::get('point.set');
+
+                if (isset($point_set['transfer_love'])
+                    && $point_set['transfer_love'] == 1
+                    && \YunShop::plugin()->get('love')
+                    && Setting::get('point.last_to_love_time') != date('d')
+                ) {
+
+                    \Log::info("--积分自动转入爱心值Uniacid:{$u->uniacid}加入队列--");
+                    \Cron::add("Point_To_Love{$u->uniacid}", '*/1 * * * * *', function () use($uniacid) {
+                        (new PointToLoveJob($uniacid))->handle();
+                    });
+                }
+            }
+        });
     }
 }

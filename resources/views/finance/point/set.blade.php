@@ -85,7 +85,7 @@
 
 
                 <div class="panel-heading">
-                    自动转入设置
+                    自动转出设置
                 </div>
 
                 @if(YunShop::plugin()->get('love'))
@@ -103,7 +103,7 @@
                         <span class='help-block'>会员积分每天1:00自动转入可用{{ $set['love_name'] }}</span>
                     </div>
                 </div>
-                <div id='transfer_love' @if(empty($set['transfer_love']))style="display:block"@endif>
+                <div id='transfer_love' @if(empty($set['transfer_love']))style="display:none"@endif>
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                         <div class="col-sm-9 col-xs-12">
@@ -115,7 +115,7 @@
                                 </div>
                             </div>
                             <div class="help-block">
-                                可以在会员积分页面设置会员独立的转入比例，优先使用独立转入比例，独立转入
+                                可以在会员积分页面设置会员独立的转入比例，优先使用独立转入比例
                             </div>
                         </div>
                     </div>

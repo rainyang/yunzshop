@@ -1912,6 +1912,31 @@ return [
                         'item'              => 'point_log',
                         'parents'           => ['finance', 'finance_point',],
                     ],
+
+
+                    'point_love_see'             => [
+                        'name'              => '查看转出设置',
+                        'url'               => 'finance.point-love.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'point_love_see',
+                        'parents'           => ['finance', 'finance_point',],
+                    ],
+
+                    'point_love_update'             => [
+                        'name'              => '修改转出设置',
+                        'url'               => 'finance.point-love.update',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'point_love_update',
+                        'parents'           => ['finance', 'finance_point',],
+                    ],
                 ],
             ],
 

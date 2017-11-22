@@ -35,6 +35,11 @@ class Member extends BackendModel
 {
     public $table = 'mc_members';
 
+    public $timestamps = false;
+
+
+
+
     protected $guarded = ['credit1', 'credit2', 'credit3', 'credit4', 'credit5'];
 
     protected $fillable = ['uniacid', 'mobile', 'groupid', 'createtime', 'nickname', 'avatar', 'gender', 'salt', 'password'];
@@ -47,13 +52,20 @@ class Member extends BackendModel
 
     protected $primaryKey = 'uid';
 
-    public $timestamps = false;
 
 
     public function bankCard()
     {
         return $this->hasOne('app\common\models\member\BankCard', 'member_id', 'uid');
     }
+
+
+    public function pointLove()
+    {
+        return $this->hasOne('app\common\models\finance\PointLoveSet', 'member_id', 'uid');
+    }
+
+
     /**
      * 主从表1:1
      *
@@ -73,6 +85,8 @@ class Member extends BackendModel
     {
         return $this->hasOne('app\common\models\McMappingFans', 'uid', 'uid');
     }
+
+
 
     /**
      * 会员－订单1:1关系 todo 会员和订单不是一对多关系吗?
