@@ -6,7 +6,7 @@
     <h2>批量发货</h2>
 </div>
 <div class="alert alert-info">
-    功能介绍: 使用excel快速导入进行订单发货
+    功能介绍: 使用excel快速导入进行订单发货, 文件格式<b style="color:red;">[xls]</b>
     <span style="padding-left: 60px;">如重复导入数据将以最新导入数据为准，请谨慎使用</span>
     <span style="padding-left: 60px;">数据导入订单状态自动修改为已发货</span>
     <span style="padding-left: 60px;">一次导入的数据不要太多,大量数据请分批导入,建议在服务器负载低的时候进行</span>
@@ -137,7 +137,7 @@
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary" name="cancelsend" value="yes">确认导入</button>
 
-                <a class="btn btn-primary" href="{php echo webUrl('order/batchsend/import')}" style="margin-right: 10px;" ><i class="fa fa-download" title=""></i> 下载Excel模板文件</a>
+                <a class="btn btn-primary" href="{{yzWebUrl('order.batch-send.get-example')}}" style="margin-right: 10px;" ><i class="fa fa-download" title=""></i> 下载Excel模板文件</a>
             </div>
         </div>
     </div>
