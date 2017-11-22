@@ -164,6 +164,22 @@ class MemberModel extends Member
             }]);
     }
 
+    public static function getMyAllAgentsInfo($uid, $level)
+    {
+        return self::uniacid()
+            ->whereHas('yzMember', function($query) use ($uid, $level){
+                $query->whereRaw('FIND_IN_SET(?, relation)' . ($level != 0 ? ' = ?' : ''), [$uid, $level]);
+            })
+            ->with(['yzMember' => function ($query) {
+                return $query->select('member_id', 'is_agent', 'status');
+            }, 'hasOneOrder' => function ($query) {
+                return $query->selectRaw('uid, count(uid) as total, sum(price) as sum')
+                    ->uniacid()
+                    ->where('status', 3)
+                    ->groupBy('uid');
+            }]);
+    }
+
     /**
      * 我的下线信息 3级
      *
@@ -445,47 +461,85 @@ class MemberModel extends Member
      */
     public static function getMyAgent_v2()
     {
-        $agent_ids = [];
-        $data = [];
+        $data[] = [
+            'total' => 0,
+            'data' => []
+        ];
+        $agent_level = [1,2,3];  //TODO
 
-        $agent_info = MemberModel::getMyAgentInfo(\YunShop::app()->getMemberId());
-        $agent_model = $agent_info->get();
+        $agent_level_first_info = [];
+        $agent_level_second_info = [];
+        $agent_level_third_info = [];
 
-        if (!empty($agent_model)) {
-            $agent_data = $agent_model->toArray();
+        foreach ($agent_level as $val) {
+            switch ($val) {
+                case 1:
+                    $builder = MemberModel::getMyAllAgentsInfo(\YunShop::app()->getMemberId(), 1);
+                    $agent_info = self::getMemberRole($builder)->get();
 
-            foreach ($agent_data as $key => $item) {
-                $agent_ids[$key] = $item['uid'];
-                $agent_data[$key]['agent_total'] = 0;
+                    $agent_level_first_info = self::fetchAgentInfo($agent_info);
+
+                    if (!empty($agent_level_first_info)) {
+                        $data[0]['data'][] = [
+                            'level' => 1,
+                            'data' => $agent_level_first_info->toArray(),
+                            'total' => count($agent_level_first_info)
+                        ];
+                    } else {
+                        $data[0]['data'][] = [
+                            'level' => 1,
+                            'data' => [],
+                            'total' => 0
+                        ];
+                    }
+
+                    break;
+                case 2:
+                    $builder = MemberModel::getMyAllAgentsInfo(\YunShop::app()->getMemberId(),2);
+                    $agent_info = self::getMemberRole($builder)->get();
+
+                    $agent_level_second_info = self::fetchAgentInfo($agent_info);
+
+                    if (!empty($agent_level_second_info)) {
+                        $data[0]['data'][] = [
+                            'level' => 2,
+                            'data' => $agent_level_second_info->toArray(),
+                            'total' => count($agent_level_second_info)
+                        ];
+                    } else {
+                        $data[0]['data'][] = [
+                            'level' => 2,
+                            'data' => [],
+                            'total' => 0
+                        ];
+                    }
+
+                    break;
+                case 3:
+                    $builder = MemberModel::getMyAllAgentsInfo(\YunShop::app()->getMemberId(),3);
+                    $agent_info = self::getMemberRole($builder)->get();
+
+                    $agent_level_third_info = self::fetchAgentInfo($agent_info);
+
+                    if (!empty($agent_level_third_info)) {
+                        $data[0]['data'][] = [
+                            'level' => 3,
+                            'data' => $agent_level_third_info->toArray(),
+                            'total' => count($agent_level_third_info)
+                        ];
+                    } else {
+                        $data[0]['data'][] = [
+                            'level' => 3,
+                            'data' => [],
+                            'total' => 0
+                        ];
+                    }
+
+                    break;
             }
-        } else {
-            return '数据为空';
         }
 
-        $all_count = MemberShopInfo::getAgentAllCount($agent_ids);
-
-        foreach ($all_count as $k => $rows) {
-            foreach ($agent_data as $key => $item) {
-                if ($rows['parent_id'] == $item['uid']) {
-                    $agent_data[$key]['agent_total'] = $rows['total'];
-
-                    break 1;
-                }
-            }
-        }
-
-        if ($agent_data) {
-            foreach ($agent_data as $item) {
-                $data[] = [
-                    'uid' => $item['uid'],
-                    'avatar' => $item['avatar'],
-                    'nickname' => $item['nickname'],
-                    'order_total' => $item['has_one_order']['total'],
-                    'order_price' => $item['has_one_order']['sum'],
-                    'agent_total' => $item['agent_total'],
-                ];
-            }
-        }
+        $data[0]['total'] = count($agent_level_first_info) + count($agent_level_second_info) + count($agent_level_third_info);
 
         return $data;
     }
@@ -606,5 +660,52 @@ class MemberModel extends Member
          }
 
          return $member_role;
+    }
+
+    public static function fetchAgentInfo($agent_info)
+    {
+        if ($agent_info->isEmpty()) {
+            return [];
+        }
+
+        return collect($agent_info)->map(function($item) {
+            $is_agent          = 0;
+            $order_price       = 0;
+            $agent_total       = 0;
+            $agent_order_price = 0;
+
+            $role              = self::convertRoleText($item);
+
+            $child_agent = MemberModel::getMyAllAgentsInfo($item->uid, 1)->get();
+
+            if (!is_null($child_agent)) {
+                $agent_total = count($child_agent);
+
+                foreach ($child_agent as $rows) {
+                    $agent_order_price += $rows->hasOneOrder->sum;
+                }
+            }
+
+            if (!is_null($item->yzMember)) {
+                if (1 == $item->yzMember->is_agent && 2 == $item->yzMember->status) {
+                    $is_agent = 1;
+                }
+            }
+
+            if (!is_null($item->hasOneOrder)) {
+                $order_price = $item->hasOneOrder->sum;
+            }
+
+            return [
+                'id' => $item->uid,
+                'is_agent' => $is_agent,
+                'nickname' => $item->nickname,
+                'avatar'   => $item->avatar,
+                'order_price' => $order_price,
+                'agent_total' => $agent_total,
+                'agent_order_price' => $agent_order_price,
+                'role' => $role
+            ];
+        });
     }
 }

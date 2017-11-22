@@ -570,18 +570,22 @@ class Member extends BackendModel
     {
         return isset($this->hasOneFans) && $this->hasOneFans->follow && !empty($this->hasOneFans->openid);
     }
-    
+
     public function getMemberRole($builder)
     {
         $result = $builder
         ->with([
             'hasOneAgent',
             'hasOneTeamDividend',
-            'hasOneAreaDividend',
+            'hasOneAreaDividend' => function ($query) {
+                return $query->where('status', 1);
+            },
             'hasOneMerchant',
             'hasOneMerchantCenter',
             'hasOneMicro',
-            'hasOneSupplier'
+            'hasOneSupplier' => function ($query) {
+                return $query->where('status', 1);
+            }
         ]);
 
         return $result;
