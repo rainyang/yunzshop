@@ -465,6 +465,7 @@ class MemberModel extends Member
      */
     public static function getMyAgent_v2()
     {
+        $pageSize = 5;
         $data[] = [
             'total' => 0,
             'data' => []
@@ -486,9 +487,9 @@ class MemberModel extends Member
             switch ($val) {
                 case 1:
                     $builder = MemberModel::getMyAllAgentsInfo(\YunShop::app()->getMemberId(), 1);
-                    $agent_info = self::getMemberRole($builder)->get();
+                    $agent_info = self::getMemberRole($builder)->paginate($pageSize);
 
-                    $agent_level_first_info = self::fetchAgentInfo($agent_info);
+                    $agent_level_first_info = self::fetchAgentInfo($agent_info->items());
 
                     if (!empty($agent_level_first_info)) {
                         $data[0]['data'][] = [
@@ -507,9 +508,9 @@ class MemberModel extends Member
                     break;
                 case 2:
                     $builder = MemberModel::getMyAllAgentsInfo(\YunShop::app()->getMemberId(),2);
-                    $agent_info = self::getMemberRole($builder)->get();
+                    $agent_info = self::getMemberRole($builder)->paginate($pageSize);
 
-                    $agent_level_second_info = self::fetchAgentInfo($agent_info);
+                    $agent_level_second_info = self::fetchAgentInfo($agent_info->items());
 
                     if (!empty($agent_level_second_info)) {
                         $data[0]['data'][] = [
@@ -528,9 +529,9 @@ class MemberModel extends Member
                     break;
                 case 3:
                     $builder = MemberModel::getMyAllAgentsInfo(\YunShop::app()->getMemberId(),3);
-                    $agent_info = self::getMemberRole($builder)->get();
+                    $agent_info = self::getMemberRole($builder)->paginate($pageSize);
 
-                    $agent_level_third_info = self::fetchAgentInfo($agent_info);
+                    $agent_level_third_info = self::fetchAgentInfo($agent_info->items());
 
                     if (!empty($agent_level_third_info)) {
                         $data[0]['data'][] = [
@@ -684,7 +685,7 @@ class MemberModel extends Member
 
     public static function fetchAgentInfo($agent_info)
     {
-        if ($agent_info->isEmpty()) {
+        if (empty($agent_info)) {
             return [];
         }
 
@@ -735,7 +736,7 @@ class MemberModel extends Member
     {
         $keyword = \YunShop::request()->keyword;
         $level   = \YunShop::request()->level;
-        $filter  = ['招商员', '供应商'];
+        $filter  = ['招商员', '供应商']; //没有等级
 
         $coll = collect($data[0]['data'])->map(function ($item) use ($keyword, $level, $filter) {
             return collect($item)->mapWithKeys(function ($item, $key) use ($keyword, $level, $filter) {
