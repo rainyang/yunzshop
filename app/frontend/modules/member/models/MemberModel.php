@@ -465,7 +465,7 @@ class MemberModel extends Member
      */
     public static function getMyAgent_v2()
     {
-        $pageSize = 5;
+        $pageSize = 10;
         $data[] = [
             'total' => 0,
             'data' => []
