@@ -59,12 +59,11 @@ class BatchSendController extends BaseController
         $originalName = $file->getClientOriginalName(); // 文件原名
         $ext = $file->getClientOriginalExtension();     // 扩展名
         $realPath = $file->getRealPath();   //临时文件的绝对路径
-
-        if (!in_array($ext, ['xls'])) {
-            throw new ShopException('不是xls文件格式！');
+        if (!in_array($ext, ['xls', 'xlsx'])) {
+            throw new ShopException('不是xls、xlsx文件格式！');
         }
 
-        $newOriginalName = md5($originalName . str_random(6)) . '.xls';
+        $newOriginalName = md5($originalName . str_random(6)) . $ext;
         \Storage::disk('orderexcel')->put($newOriginalName, file_get_contents($realPath));
 
         $this->originalName = $newOriginalName;
