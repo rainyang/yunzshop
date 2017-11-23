@@ -1606,6 +1606,20 @@ return [
                 'parents'           => ['finance', 'balance',],
             ],
 
+            //茶余饭后独立开发充值满额统计
+            /*'finance_balance_recharge_statistics' => [
+                'name'              => '满额统计',
+                'url'               => 'finance.balanceRechargeStatistics.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-download',
+                'sort'              => 0,
+                'item'              => 'finance_balance_recharge_statistics',
+                'parents'           => ['finance', 'balance',],
+            ],*/
+
+
             'finance_balance_tansferRecord' => [
                 'name'              => '转让记录',
                 'url'               => 'finance.balance.transferRecord',
@@ -1733,7 +1747,7 @@ return [
 
                     'withdraw_records_export' => [
                         'name'              => '记录导出',
-                        'url'               => 'finance.withdraw.export',
+                        'url'               => 'finance.withdraw-records.export',
                         'url_params'        => "",
                         'permit'            => 1,
                         'menu'              => 0,
@@ -2120,7 +2134,6 @@ return [
             ],
 
             'Setting' => [
-                'id' => '2',
                 'name' => '商城设置',
                 'url' => 'setting.shop.index',
                 'url_params' => '',
@@ -2130,7 +2143,6 @@ return [
                 'left_second_show'  => 1,           //左侧二级导航是否显示
                 'menu' => 1,
                 'icon' => 'fa-cog',
-                'parent_id' => 1,
                 'sort' => 0,
                 'item' => 'Setting',
                 'parents' => ['system'],
@@ -2207,19 +2219,6 @@ return [
                         'item'          => 'setting_coupon',
                         'parents'       => ['system', 'Setting', 'setting_shop'],
                     ],
-
-                    /*'setting_shop_trade' => [
-                        'name'              => '交易',
-                        'url'               => 'setting.shop.trade',
-                        'url_params'        => '',
-                        'permit'            => 1,
-                        'menu'              => 1,
-                        'icon'              => 'fa-compress',
-                        'sort'              => '3',
-                        'item'              => 'setting_shop_trade',
-                        'parents'           => ['system', 'Setting',],
-                    ],*/
-
 
                     'setting_shop_share' => [
                         'name'              => '分享',

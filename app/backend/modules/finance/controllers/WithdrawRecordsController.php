@@ -13,9 +13,9 @@ namespace app\backend\modules\finance\controllers;
 use app\backend\modules\finance\models\Withdraw;
 use app\backend\modules\member\models\MemberBankCard;
 use app\backend\modules\member\models\MemberShopInfo;
-use app\backend\modules\order\services\ExportService;
 use app\common\components\BaseController;
 use app\common\helpers\PaginationHelper;
+use app\common\services\ExportService;
 use Illuminate\Support\Facades\Config;
 
 class WithdrawRecordsController extends BaseController

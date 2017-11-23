@@ -48,15 +48,13 @@ class User extends BaseModel
         if(Schema::hasColumn($this->table, 'founder_groupid')){ //用于兼容新版微擎新增的字段
             $this->attributes = array_merge($this->attributes, ['founder_groupid' => '0']);
         }
-        if(Schema::hasColumn($this->table, 'credit1')){ //用于兼容新版微擎新增的字段
-            $this->attributes = array_merge($this->attributes, ['credit1' => '0']);
+        if(Schema::hasColumn($this->table, 'register_type')){
+            $this->attributes = array_merge($this->attributes, ['register_type' => '0']);
         }
-        if(Schema::hasColumn($this->table, 'credit2')){ //用于兼容新版微擎新增的字段
-            $this->attributes = array_merge($this->attributes, ['credit2' => '0']);
+        if(Schema::hasColumn($this->table, 'openid')){
+            $this->attributes = array_merge($this->attributes, ['openid' => '']);
         }
-        if(Schema::hasColumn($this->table, 'ucuserid')){ //用于兼容新版微擎新增的字段
-            $this->attributes = array_merge($this->attributes, ['ucuserid' => '0']);
-        }
+
         return $this->attributes;
     }
 

@@ -89,8 +89,10 @@ class YunShop
             //dd($item);exit;
             //检测权限
             if (!PermissionService::can($item)) {
-                //throw new NotFoundException('Sorry,无权限');
-                throw new \app\common\exceptions\AppException('Sorry,您没有操作无权限，请联系管理员！');
+                //throw new \app\common\exceptions\ShopException('Sorry,您没有操作无权限，请联系管理员!');
+                $exception = new \app\common\exceptions\ShopException('Sorry,您没有操作无权限，请联系管理员!');
+                $exception->setRedirect(yzWebUrl('index.index'));
+                throw $exception;
             }
         }
 
