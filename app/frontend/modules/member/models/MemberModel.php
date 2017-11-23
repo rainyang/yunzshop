@@ -19,6 +19,9 @@ use app\common\models\Setting;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use app\common\models\Order;
 use Yunshop\Commission\models\AgentLevel;
+use Yunshop\Merchant\common\models\MerchantLevel;
+use Yunshop\Micro\common\models\MicroShopLevel;
+use Yunshop\TeamDividend\models\TeamDividendLevelModel;
 
 class MemberModel extends Member
 {
@@ -819,5 +822,58 @@ class MemberModel extends Member
         }
 
         return $role_type;
+    }
+
+    public static function filterMemberRoleAndLevel()
+    {
+        $data = [];
+
+        $agent_level = AgentLevel::uniacid()->get();
+
+        if (!$agent_level->isEmpty()) {
+            $agent_level = collect($agent_level)->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'level_name' => $item->name
+                ];
+            });
+
+            array_push($data, ['role' => '分销商', 'level' =>$agent_level->all()]);
+        } else {
+            array_push($data, ['role' => '分销商', 'level' =>[]]);
+        }
+
+        $teamdividend_level = TeamDividendLevelModel::uniacid()->get();
+
+        if (!$teamdividend_level->isEmpty()) {
+            array_push($data, ['role' => '经销商', 'level' =>$teamdividend_level->toArray()]);
+        } else {
+            array_push($data, ['role' => '经销商', 'level' =>[]]);
+        }
+
+        array_push($data, ['role' => '区域代理', 'level' =>[
+            ['id' =>1, 'level_name'=>'省代理'],['id' =>2, 'level_name'=>'市代理'],['id' =>3, 'level_name'=>'区代理'],['id'=>4, 'level_name'=>'街道代理']
+        ]]);
+
+        array_push($data, ['role' => '招商员', 'level' =>[]]);
+
+        $merchant_level = MerchantLevel::uniacid()->get();
+
+        if (!$merchant_level->isEmpty()) {
+            array_push($data, ['role' => '招商中心', 'level' =>$merchant_level->toArray()]);
+        } else {
+            array_push($data, ['role' => '招商中心', 'level' =>[]]);
+        }
+
+        $microShop_level = MicroShopLevel::uniacid()->get();
+        if (!$microShop_level->isEmpty()) {
+            array_push($data, ['role' => '微店店主', 'level' =>$microShop_level->toArray()]);
+        } else {
+            array_push($data, ['role' => '微店店主', 'level' =>[]]);
+        }
+
+        array_push($data, ['role' => '供应商', 'level' =>[]]);
+
+        return $data;
     }
 }

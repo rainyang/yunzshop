@@ -987,4 +987,40 @@ class MemberController extends ApiController
         echo 'yz_agents修复完毕';
     }
 
+    public function memberRelationFilter()
+    {
+        $data = MemberModel::filterMemberRoleAndLevel();
+
+        /*$data = [
+            [
+                'role' => '分销商',
+                 'level'=> [
+                    [
+                        'id' => 1,
+                        'level' => '默认等级'
+                    ],
+                    [
+                        'id' => 2,
+                        'level' => 'VIP1'
+                    ]
+                ]
+            ],
+            [
+                'role' =>'供应商',
+                'level'=> [
+                    [
+                        'id' => 1,
+                        'level' => '默认等级'
+                    ],
+                    [
+                        'id' => 2,
+                        'level' => 'VIP1'
+                    ]
+                ]
+            ]
+        ];*/
+
+        return $this->successJson('', $data);
+    }
+
 }
