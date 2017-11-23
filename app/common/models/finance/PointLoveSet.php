@@ -25,7 +25,7 @@ class PointLoveSet extends BaseModel
     public function rules()
     {
         return [
-            'rate'      => 'numeric|regex:/^[\-\+]?\d+(?:\.\d{1,2})?$/|max:100|main:-1'
+            'rate'      => 'numeric|regex:/^[\-\+]?\d+(?:\.\d{1,2})?$/|max:100|min:-1'
         ];
     }
 
