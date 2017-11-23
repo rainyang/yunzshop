@@ -1483,6 +1483,21 @@ return [
                     ],
                 ],
             ],
+
+            'order_batch_send' => [
+                'name'              => '批量发货',
+                'url'               => 'order.batch-send.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-send',
+                'sort'              => '8',
+                'item'              => 'order_batch_send',
+                'parents'           => ['Order'],
+                'child' => [
+
+                ],
+            ],
         ],
     ],
 
