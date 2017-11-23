@@ -466,7 +466,14 @@ class MemberModel extends Member
             'total' => 0,
             'data' => []
         ];
-        $agent_level = [1,2,3];  //TODO
+
+        $agent_level = [1];
+
+        $relation_base = \Setting::get('relation_base');
+
+        if (!is_null($relation_base['relation_level'])) {
+            $agent_level = $relation_base['relation_level'];
+        }
 
         $agent_level_first_info = [];
         $agent_level_second_info = [];
@@ -725,21 +732,22 @@ class MemberModel extends Member
     {
         $keyword = \YunShop::request()->keyword;
         $level   = \YunShop::request()->level;
+        $filter  = ['招商员', '供应商'];
 
-        $coll = collect($data[0]['data'])->map(function ($item) use ($keyword, $level) {
-            return collect($item)->mapWithKeys(function ($item, $key) use ($keyword, $level) {
+        $coll = collect($data[0]['data'])->map(function ($item) use ($keyword, $level, $filter) {
+            return collect($item)->mapWithKeys(function ($item, $key) use ($keyword, $level, $filter) {
                 if ($key == 'level') {
                     $res['level'] = $item;
                 }
 
                 if ($key == 'data') {
-                    $res['data'] = collect($item)->filter(function ($item) use ($keyword, $level) {
+                    $res['data'] = collect($item)->filter(function ($item) use ($keyword, $level, $filter) {
                         $role_level = false;
 
                         if (!empty($item['role_type'])) {
                             foreach ($item['role_type'] as $rows) {
                                 foreach ($rows as $key => $val) {
-                                    if ($key == $keyword && $val == $level) {
+                                    if (in_array($keyword, $filter) || ($key == $keyword && $val == $level)) {
                                         $role_level = true;
                                     }
 
