@@ -100,7 +100,7 @@
                             <input type="radio" name="set[transfer_love]" value="0" @if ($set['transfer_love'] == 0) checked="checked" @endif />
                             关闭
                         </label>
-                        <span class='help-block'>会员积分每天1:00自动转入可用{{ $set['love_name'] }}</span>
+                        <span class='help-block'>会员积分每天1:00自动转入可用{{ $set['love_name'] }}：会员积分 * N% = 转入的{{ $set['love_name'] }}</span>
                     </div>
                 </div>
                 <div id='transfer_love' @if(empty($set['transfer_love']))style="display:none"@endif>
@@ -116,6 +116,9 @@
                             </div>
                             <div class="help-block">
                                 可以在会员积分页面设置会员独立的转入比例，优先使用独立转入比例
+                            </div>
+                            <div class="help-block">
+                                如果自动转入比例为空、为零，同时会员设置了独立比例，则只自操作有设置比例的会员积分
                             </div>
                         </div>
                     </div>
