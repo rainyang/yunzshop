@@ -12,7 +12,7 @@ class CreateImsYzPointLoveSetTable extends Migration {
 	 */
 	public function up()
 	{
-        if (!Schema::hasTable('yz_category')) {
+        if (!Schema::hasTable('yz_point_love_set')) {
             Schema::create('yz_point_love_set', function (Blueprint $table) {
                 $table->integer('id', true);
                 $table->integer('uniacid')->comment('所属公众号');
