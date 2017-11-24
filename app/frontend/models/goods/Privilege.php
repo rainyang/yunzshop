@@ -75,9 +75,9 @@ class Privilege extends \app\common\models\goods\Privilege
     public function validateTotalBuyLimit($num = 1)
     {
         $history_num = MemberService::getCurrentMemberModel()->orderGoods()->where('goods_id', $this->goods_id)->sum('total');
-        if ($this->once_buy_limit > 0) {
-            if ($history_num + $num > $this->once_buy_limit)
-                throw new AppException('您已购买' . $history_num . '件商品(' . $this->goods->title . '),最多可购买' . $this->once_buy_limit . '件');
+        if ($this->total_buy_limit > 0) {
+            if ($history_num + $num > $this->total_buy_limit)
+                throw new AppException('您已购买' . $history_num . '件商品(' . $this->goods->title . '),最多可购买' . $this->total_buy_limit . '件');
         }
     }
 

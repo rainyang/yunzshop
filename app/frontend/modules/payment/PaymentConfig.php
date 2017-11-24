@@ -26,7 +26,8 @@ use app\frontend\modules\payment\paymentSettings\shop\YunPayWechatSetting;
 
 class PaymentConfig
 {
-    static function get(){
+    static function get()
+    {
         return [
             'balance' => [
                 'settings' => [
@@ -46,51 +47,52 @@ class PaymentConfig
                 ],
             ]
             , 'wechatPay' => [
-            'payment' => function ($payType, $settings) {
-                return new WebPayment($payType, $settings);
-            },
-            'settings' => [
-                'shop' => function (OrderPaymentTypeSettingManager $manager, Order $order) {
-                    return new WechatPaySetting($order);
-                }
-            ],
-        ], 'alipayApp' => [
-            'payment' => function ($payType, $settings) {
-                return new AppPayment($payType, $settings);
-            },
-            'settings' => [
-                'shop' => function (OrderPaymentTypeSettingManager $manager, Order $order) {
-                    return new AlipayAppSetting($order);
-                }
-            ],
-        ], 'cloudPayWechat' => [
-            'payment' => function ($payType, $settings) {
-                return new CloudPayment($payType, $settings);
-            },
-            'settings' => [
-                'shop' => function (OrderPaymentTypeSettingManager $manager, Order $order) {
-                    return new CloudPayWechatSetting($order);
-                }
-            ],
-        ], 'wechatAppPay' => [
-            'payment' => function ($payType, $settings) {
-                    return new AppPayment($payType, $settings);
-            },
-            'settings' => [
+                'payment' => function ($payType, $settings) {
+                    return new WebPayment($payType, $settings);
+                },
+                'settings' => [
                     'shop' => function (OrderPaymentTypeSettingManager $manager, Order $order) {
-                        return new WechatAppPaySetting($order);
+                        return new WechatPaySetting();
                     }
-            ],
-        ], 'yunPayWechat' => [
-            'payment' => function ($payType, $settings) {
+                ],
+            ], 'alipayApp' => [
+                'payment' => function ($payType, $settings) {
+                    return new AppPayment($payType, $settings);
+                },
+                'settings' => [
+                    'shop' => function (OrderPaymentTypeSettingManager $manager, Order $order) {
+                        return new AlipayAppSetting($order);
+                    }
+                ],
+            ], 'cloudPayWechat' => [
+                'payment' => function ($payType, $settings) {
+                    return new CloudPayment($payType, $settings);
+                },
+                'settings' => [
+                    'shop' => function (OrderPaymentTypeSettingManager $manager, Order $order) {
+                        return new CloudPayWechatSetting($order);
+                    }
+                ],
+            ], 'wechatApp' => [
+                'payment' => function ($payType, $settings) {
+
+                    return new AppPayment($payType, $settings);
+                },
+                'settings' => [
+                    'shop' => function (OrderPaymentTypeSettingManager $manager, Order $order) {
+                        return new WechatAppPaySetting();
+                    }
+                ],
+            ], 'yunPayWechat' => [
+                'payment' => function ($payType, $settings) {
                     return new YunPayment($payType, $settings);
-            },
-            'settings' => [
+                },
+                'settings' => [
                     'shop' => function (OrderPaymentTypeSettingManager $manager, Order $order) {
                         return new YunPayWechatSetting($order);
                     }
-            ],
-        ], 'cloudPayAlipay' => [
+                ],
+            ],'cloudPayAlipay' => [
                 'payment' => function ($payType, $settings) {
                     return new CloudAliPayment($payType, $settings);
                 },

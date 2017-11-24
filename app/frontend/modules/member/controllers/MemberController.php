@@ -558,12 +558,10 @@ class MemberController extends ApiController
             if ($share['icon']) {
                 $share['icon'] = replace_yunshop(tomedia($share['icon']));
             }
-        } else {
-            $share = [];
         }
 
         $shop = \Setting::get('shop');
-        $shop['logo'] = replace_yunshop(tomedia($shop['logo']));
+        $shop['icon'] = replace_yunshop(tomedia($shop['logo']));
 
         if (!is_null(\Config('customer_service'))) {
             $class = array_get(\Config('customer_service'), 'class');
@@ -572,6 +570,14 @@ class MemberController extends ApiController
             if ($ret) {
                 $shop['cservice'] = $ret;
             }
+        }
+
+        if (is_null($share) && is_null($shop)) {
+            $share = [
+                'title' => '商家分享',
+                'icon'  => '#',
+                'desc'  => '商家分享'
+            ];
         }
 
         $data = [
