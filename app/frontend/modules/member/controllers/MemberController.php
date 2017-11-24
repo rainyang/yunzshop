@@ -988,8 +988,6 @@ class MemberController extends ApiController
 
                 $agent->save();
             }
-
-
         }
 
         echo 'yz_agents修复完毕';
