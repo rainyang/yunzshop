@@ -465,10 +465,9 @@ class MemberModel extends Member
      */
     public static function getMyAgent_v2()
     {
-        return self::getMyAgentData_v2();exit;
+       // return self::getMyAgentData_v2();exit;
         $data = [
-            'total' => 0,
-            'data' => []
+            'total' => 0
         ];
 
         $total = 0;
@@ -479,6 +478,8 @@ class MemberModel extends Member
         }
 
         for ($i = 1; $i <= 3; $i++) {
+            $text  = 'level' . $i;
+            
             switch ($i) {
                 case 1:
                     $is_show = in_array($i, $agent_level) ?: false;
@@ -504,11 +505,11 @@ class MemberModel extends Member
 
             $total += count($agent_data);
 
-            array_push($data['data'], [
+            $data[$text] = [
                 'level' => $level,
                 'total' => count($agent_data),
                 'is_show' => $is_show
-            ]);
+            ];
         }
 
         $data['total'] = $total;
