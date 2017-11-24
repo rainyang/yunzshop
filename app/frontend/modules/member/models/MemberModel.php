@@ -537,7 +537,7 @@ class MemberModel extends Member
             $data = $agent_data->toArray();
         }
 
-        if (\YunShop::request()->keyword) {
+        if (\YunShop::request()->keyword != 'undefined' && \YunShop::request()->level != 'undefined') {
             $data = self::searchMemberRelation($data);
         }
 
