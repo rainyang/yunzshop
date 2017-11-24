@@ -477,7 +477,7 @@ class YunApp extends YunComponent
             'weid' => request()->get('i'),
             'acid' => request()->get('i'),
             'account' => \app\common\models\AccountWechats::getAccountByUniacid(request()->get('i')) ? \app\common\models\AccountWechats::getAccountByUniacid(request()->get('i'))->toArray() : '',
-            'setting' => setting_load()
+            'setting' => \setting_load()
         ];
     }
 
