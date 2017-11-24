@@ -324,11 +324,7 @@ class MemberController extends ApiController
     {
         $data = MemberModel::getMyAgent_v2();
 
-        if (!empty($data)) {
-            return $this->successJson('', $data);
-        } else {
-            return $this->errorJson('会员不存在');
-        }
+        return $this->successJson('', $data);
     }
 
     /**

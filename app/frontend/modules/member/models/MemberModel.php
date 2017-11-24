@@ -460,24 +460,23 @@ class MemberModel extends Member
     }
 
     /**
-     * 我推荐的人v2
+     * 我推荐的人v2 基本信息
      * @return array
      */
     public static function getMyAgent_v2()
     {
-        $pageSize = 10;
+        return self::getMyAgentData_v2();exit;
         $data = [
             'total' => 0,
             'data' => []
         ];
 
+        $total = 0;
         $relation_base = \Setting::get('relation_base');
 
         if (!is_null($relation_base['relation_level'])) {
             $agent_level = $relation_base['relation_level'];
         }
-
-        $total = 0;
 
         for ($i = 1; $i <= 3; $i++) {
             switch ($i) {
@@ -499,9 +498,9 @@ class MemberModel extends Member
             }
 
             $builder = MemberModel::getMyAllAgentsInfo(\YunShop::app()->getMemberId(), $i);
-            $agent_info = self::getMemberRole($builder)->paginate($pageSize);
+            $agent_info = self::getMemberRole($builder)->get();
 
-            $agent_data = self::fetchAgentInfo($agent_info->items());
+            $agent_data = self::fetchAgentInfo($agent_info->toArray());
 
             $total += count($agent_data);
 
@@ -513,6 +512,33 @@ class MemberModel extends Member
         }
 
         $data['total'] = $total;
+
+        return $data;
+    }
+
+    /**
+     * 我推荐的人v2 数据
+     * @return array
+     */
+    public static function getMyAgentData_v2()
+    {
+        $pageSize = 10;
+        $data = [];
+
+        $i = \YunShop::request()->relationLevel ?: 0;
+
+        $builder = MemberModel::getMyAllAgentsInfo(\YunShop::app()->getMemberId(), $i);
+        $agent_info = self::getMemberRole($builder)->paginate($pageSize);
+
+        $agent_data = self::fetchAgentInfo($agent_info->items());
+
+        if (!empty($agent_data)) {
+            $data = $agent_data->toArray();
+        }
+
+        if (\YunShop::request()->keyword) {
+            $data = self::searchMemberRelation($data);
+        }
 
         return $data;
     }
@@ -800,6 +826,39 @@ class MemberModel extends Member
     }
 
     public static function searchMemberRelation($data)
+    {
+        $result = [];
+        $keyword = \YunShop::request()->keyword;
+        $level   = \YunShop::request()->level;
+        $filter  = ['招商员', '供应商']; //没有等级
+
+        $coll = collect($data)->filter(function ($item) use ($keyword, $level, $filter) {
+            $role_level = false;
+
+            if (!empty($item['role_type'])) {
+                foreach ($item['role_type'] as $rows) {
+                    foreach ($rows as $key => $val) {
+                        if (($key == $keyword) && (in_array($keyword, $filter) || ($val == $level))) {
+                            echo "xx{$key}-{$keyword}xx";
+                            $role_level = true;
+                        }
+
+                        break 2;
+                    }
+                }
+            }
+            echo $keyword . '-' . $item['role'] . '-' . intval($role_level) . '<BR>';
+            return preg_match("/{$keyword}/", $item['role']) && $role_level;
+        });
+
+        if (!$coll->isEmpty()) {
+            $result = array_values($coll->toArray());
+        }
+
+        return $result;
+    }
+
+    public static function searchMemberRelation2($data)
     {
         $keyword = \YunShop::request()->keyword;
         $level   = \YunShop::request()->level;
