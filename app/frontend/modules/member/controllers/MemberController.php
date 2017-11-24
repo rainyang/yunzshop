@@ -316,13 +316,25 @@ class MemberController extends ApiController
     }
 
     /**
-     * 我推荐的人 v2
+     * 我推荐的人 v2 基本信息
      *
      * @return \Illuminate\Http\JsonResponse
      */
     public function getMyAgent_v2()
     {
         $data = MemberModel::getMyAgent_v2();
+
+        return $this->successJson('', $data);
+    }
+
+    /**
+     * 我推荐的人 v2 数据
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getMyAgentData_v2()
+    {
+        $data = MemberModel::getMyAgentData_v2();
 
         return $this->successJson('', $data);
     }

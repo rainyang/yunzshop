@@ -465,7 +465,7 @@ class MemberModel extends Member
      */
     public static function getMyAgent_v2()
     {
-       // return self::getMyAgentData_v2();exit;
+        //return self::getMyAgentData_v2();exit;
         $data = [
             'total' => 0
         ];
@@ -479,7 +479,7 @@ class MemberModel extends Member
 
         for ($i = 1; $i <= 3; $i++) {
             $text  = 'level' . $i;
-            
+
             switch ($i) {
                 case 1:
                     $is_show = in_array($i, $agent_level) ?: false;
@@ -839,8 +839,7 @@ class MemberModel extends Member
             if (!empty($item['role_type'])) {
                 foreach ($item['role_type'] as $rows) {
                     foreach ($rows as $key => $val) {
-                        if (($key == $keyword) && (in_array($keyword, $filter) || ($val == $level))) {
-                            echo "xx{$key}-{$keyword}xx";
+                        if ($key == $keyword && $val == $level) {
                             $role_level = true;
                         }
 
@@ -848,7 +847,11 @@ class MemberModel extends Member
                     }
                 }
             }
-            echo $keyword . '-' . $item['role'] . '-' . intval($role_level) . '<BR>';
+
+            if (in_array($keyword, $filter)) {
+                $role_level = true;
+            }
+
             return preg_match("/{$keyword}/", $item['role']) && $role_level;
         });
 
