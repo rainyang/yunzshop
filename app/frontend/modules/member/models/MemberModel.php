@@ -465,7 +465,6 @@ class MemberModel extends Member
      */
     public static function getMyAgent_v2()
     {
-        //return self::getMyAgentData_v2();exit;
         $data = [
             'total' => 0
         ];
@@ -525,6 +524,8 @@ class MemberModel extends Member
     {
         $pageSize = 10;
         $data = [];
+        $keyword = \YunShop::request()->keyword;
+        $level   = \YunShop::request()->level;
 
         $i = \YunShop::request()->relationLevel ?: 0;
 
@@ -537,9 +538,11 @@ class MemberModel extends Member
             $data = $agent_data->toArray();
         }
 
-        if (!empty(\YunShop::request()->keyword) && !empty(\YunShop::request()->level)) {
-            $data = self::searchMemberRelation($data);
+        if (empty($keyword) && empty($level)) {
+            return $data;
         }
+
+        $data = self::searchMemberRelation($data);
 
         return $data;
     }
@@ -836,20 +839,22 @@ class MemberModel extends Member
         $coll = collect($data)->filter(function ($item) use ($keyword, $level, $filter) {
             $role_level = false;
 
-            if (!empty($item['role_type'])) {
-                foreach ($item['role_type'] as $rows) {
-                    foreach ($rows as $key => $val) {
-                        if ($key == $keyword && $val == $level) {
-                            $role_level = true;
-                        }
+            if ($item['role'] == $keyword) {
+                if (!empty($item['role_type'])) {
+                    foreach ($item['role_type'] as $rows) {
+                        foreach ($rows as $key => $val) {
+                            if ($key == $keyword && $val == $level) {
+                                $role_level = true;
+                            }
 
-                        break 2;
+                            break 2;
+                        }
                     }
                 }
-            }
 
-            if (in_array($keyword, $filter)) {
-                $role_level = true;
+                if (in_array($keyword, $filter)) {
+                    $role_level = true;
+                }
             }
 
             return preg_match("/{$keyword}/", $item['role']) && $role_level;
