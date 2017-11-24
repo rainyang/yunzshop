@@ -466,6 +466,60 @@ class MemberModel extends Member
     public static function getMyAgent_v2()
     {
         $pageSize = 10;
+        $data = [
+            'total' => 0,
+            'data' => []
+        ];
+
+        $relation_base = \Setting::get('relation_base');
+
+        if (!is_null($relation_base['relation_level'])) {
+            $agent_level = $relation_base['relation_level'];
+        }
+
+        $total = 0;
+
+        for ($i = 1; $i <= 3; $i++) {
+            switch ($i) {
+                case 1:
+                    $is_show = in_array($i, $agent_level) ?: false;
+                    $level = '一级';
+
+                    break;
+                case 2:
+                    $is_show = in_array($i, $agent_level) ?: false;
+                    $level = '二级';
+
+                    break;
+                case 3:
+                    $is_show = in_array($i, $agent_level) ?: false;
+                    $level = '三级';
+
+                    break;
+            }
+
+            $builder = MemberModel::getMyAllAgentsInfo(\YunShop::app()->getMemberId(), $i);
+            $agent_info = self::getMemberRole($builder)->paginate($pageSize);
+
+            $agent_data = self::fetchAgentInfo($agent_info->items());
+
+            $total += count($agent_data);
+
+            array_push($data['data'], [
+                'level' => $level,
+                'total' => count($agent_data),
+                'is_show' => $is_show
+            ]);
+        }
+
+        $data['total'] = $total;
+
+        return $data;
+    }
+
+    public static function getMyAgent_vv2()
+    {
+        $pageSize = 10;
         $data[] = [
             'total' => 0,
             'data' => []
@@ -483,9 +537,14 @@ class MemberModel extends Member
         $agent_level_second_info = [];
         $agent_level_third_info = [];
 
+        $leve_first  = false;
+        $leve_second = false;
+        $leve_third  = false;
+
         foreach ($agent_level as $val) {
             switch ($val) {
                 case 1:
+                    $leve_first = true;
                     $builder = MemberModel::getMyAllAgentsInfo(\YunShop::app()->getMemberId(), 1);
                     $agent_info = self::getMemberRole($builder)->paginate($pageSize);
 
@@ -493,20 +552,23 @@ class MemberModel extends Member
 
                     if (!empty($agent_level_first_info)) {
                         $data[0]['data'][] = [
-                            'level' => 1,
-                            'data' => $agent_level_first_info->toArray(),
-                            'total' => count($agent_level_first_info)
+                            'level' => '一级',
+                        //    'data' => $agent_level_first_info->toArray(),
+                            'total' => count($agent_level_first_info),
+                            'is_show' => $leve_first
                         ];
                     } else {
                         $data[0]['data'][] = [
-                            'level' => 1,
-                            'data' => [],
-                            'total' => 0
+                            'level' => '一级',
+                        //    'data' => [],
+                            'total' => 0,
+                            'is_show' => $leve_first
                         ];
                     }
 
                     break;
                 case 2:
+                    $leve_second = true;
                     $builder = MemberModel::getMyAllAgentsInfo(\YunShop::app()->getMemberId(),2);
                     $agent_info = self::getMemberRole($builder)->paginate($pageSize);
 
@@ -514,20 +576,23 @@ class MemberModel extends Member
 
                     if (!empty($agent_level_second_info)) {
                         $data[0]['data'][] = [
-                            'level' => 2,
-                            'data' => $agent_level_second_info->toArray(),
-                            'total' => count($agent_level_second_info)
+                            'level' => '二级',
+                            //'data' => $agent_level_second_info->toArray(),
+                            'total' => count($agent_level_second_info),
+                            'is_show' => $leve_second
                         ];
                     } else {
                         $data[0]['data'][] = [
-                            'level' => 2,
-                            'data' => [],
-                            'total' => 0
+                            'level' => '二级',
+                           // 'data' => [],
+                            'total' => 0,
+                            'is_show' => $leve_second
                         ];
                     }
 
                     break;
                 case 3:
+                    $leve_third = true;
                     $builder = MemberModel::getMyAllAgentsInfo(\YunShop::app()->getMemberId(),3);
                     $agent_info = self::getMemberRole($builder)->paginate($pageSize);
 
@@ -535,15 +600,17 @@ class MemberModel extends Member
 
                     if (!empty($agent_level_third_info)) {
                         $data[0]['data'][] = [
-                            'level' => 3,
-                            'data' => $agent_level_third_info->toArray(),
-                            'total' => count($agent_level_third_info)
+                            'level' => '三级',
+                       //     'data' => $agent_level_third_info->toArray(),
+                            'total' => count($agent_level_third_info),
+                            'is_show' => $leve_third
                         ];
                     } else {
                         $data[0]['data'][] = [
-                            'level' => 3,
-                            'data' => [],
-                            'total' => 0
+                            'level' => '三级',
+                        //    'data' => [],
+                            'total' => 0,
+                            'is_show' => $leve_third
                         ];
                     }
 
