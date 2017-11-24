@@ -59,6 +59,8 @@ class CategoryController extends BaseController
         }
         
         $requestCategory = \YunShop::request()->category;
+        $requestCategory['thumb'] = tomedia($requestCategory['thumb']);
+
         if ($requestCategory) {
             //将数据赋值到model
             $categoryModel->fill($requestCategory);
