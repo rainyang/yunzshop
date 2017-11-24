@@ -52,7 +52,7 @@ class PointToLoveService
                 'point_income_type' => PointService::POINT_INCOME_LOSE,
                 'point_mode'        => PointService::POINT_MODE_TRANSFER_LOVE,
                 'member_id'         => $member->uid,
-                'point'             => $change_value,
+                'point'             => -$change_value,
                 'remark'            => '积分自动转入：'.$change_value. '转入比例：' . $rate,
             ];
 
