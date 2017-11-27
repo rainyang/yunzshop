@@ -7,6 +7,8 @@ use app\common\services\alipay\functions;
 
 //require_once __DIR__ . '/functions/AopEncrypt.php';
 
+require_once __DIR__ . '/function/AopEncrypt.php';
+
 class AopClient {
 	//应用ID
 	public $appId;

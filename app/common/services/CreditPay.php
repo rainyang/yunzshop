@@ -40,11 +40,10 @@ class CreditPay extends Pay
         //切换新余额接口，原接口废弃
         $data = [
             'member_id'     => \YunShop::app()->getMemberId(),
-            'remark'        => $params['remark'],
-            'source'        => $params['service_type'],
+            'remark'        => $params['remark'] ?: '',
             'relation'      => $params['order_no'],
-            'operator'      => $params['operator'],
-            'operator_id'   => $params['operator_id'],
+            'operator'      => $params['operator'] ?: 0,
+            'operator_id'   => $params['operator_id'] ?: 0,
             'change_value'  => $params['amount']
         ];
         $result = (new BalanceChange())->consume($data);

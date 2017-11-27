@@ -25,8 +25,8 @@ class IndexController extends ApiController
         $set['cat_adv_img'] = replace_yunshop(tomedia($set['cat_adv_img']));
         $category = $this->getRecommentCategoryList();
         foreach ($category  as &$item){
-            $item['thumb'] = replace_yunshop(tomedia($item['thumb']));
-            $item['adv_img'] = replace_yunshop(tomedia($item['adv_img']));
+            $item['thumb'] = replace_yunshop(yz_tomedia($item['thumb']));
+            $item['adv_img'] = replace_yunshop(yz_tomedia($item['adv_img']));
         }
         $data = [
             'ads' => $this->getAds(),

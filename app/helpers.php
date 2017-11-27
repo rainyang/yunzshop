@@ -227,6 +227,44 @@ if (!function_exists("tomedia")) {
     }
 }
 
+function yz_tomedia($src, $local_path = false)
+{
+    $setting = \setting_load();
+
+    if (empty($src)) {
+        return '';
+    }
+    if (strexists($src, 'addons/')) {
+        return request()->getSchemeAndHttpHost() . substr($src, strpos($src, 'addons/'));
+    }
+    //如果远程地址中包含本地host也检测是否远程图片
+    if (strexists($src, request()->getSchemeAndHttpHost()) && !strexists($src, '/addons/')) {
+        $urls = parse_url($src);
+        $src = $t = substr($urls['path'], strpos($urls['path'], 'images'));
+    }
+    $t = strtolower($src);
+    if (strexists($t, 'http://') || strexists($t, 'https://') || substr($t, 0, 2) == '//') {
+        return $src;
+    }
+
+    if ($local_path || empty($setting['remote']['type']) || file_exists(base_path('../../') . '/' . YunShop::app()->config['upload']['attachdir'] . '/' . $src)) {
+        $src = request()->getSchemeAndHttpHost() . '/attachment/' . $src;
+    } else {
+        if ($setting['remote']['type'] == 1) {
+            $attachurl_remote = $setting['remote']['ftp']['url'] . '/';
+        } elseif ($setting['remote']['type'] == 2) {
+            $attachurl_remote = $setting['remote']['alioss']['url'].'/';
+        } elseif ($setting['remote']['type'] == 3) {
+            $attachurl_remote = $setting['remote']['qiniu']['url'].'/';
+        } elseif ($setting['remote']['type'] == 4) {
+            $attachurl_remote = $setting['remote']['cos']['url'].'/';
+        }
+
+        $src = $attachurl_remote . $src;
+    }
+    return $src;
+}
+
 if (!function_exists("replace_yunshop")) {
     function replace_yunshop($url)
     {
