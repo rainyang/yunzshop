@@ -538,7 +538,7 @@ class MemberModel extends Member
             $data = $agent_data->toArray();
         }
 
-        if (empty($keyword) && empty($level)) {
+        if (empty($keyword)) {
             return $data;
         }
 
@@ -730,6 +730,10 @@ class MemberModel extends Member
             $role       = preg_match("/{$keyword}/", $item['role']);
 
             if ($role) {
+                if (in_array($keyword, $filter) || empty($level)) {
+                    $role_level = true;
+                }
+
                 if (!empty($item['role_type'])) {
                     foreach ($item['role_type'] as $rows) {
                         foreach ($rows as $key => $val) {
@@ -740,10 +744,6 @@ class MemberModel extends Member
                             break 2;
                         }
                     }
-                }
-
-                if (in_array($keyword, $filter)) {
-                    $role_level = true;
                 }
             }
 
