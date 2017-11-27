@@ -626,11 +626,14 @@ class MemberModel extends Member
 
     public static function convertRoleText($member_modle)
     {
+         $commission = self::langFiled('commission');
+
          $member_role = '';
 
          if (!is_null($member_modle)) {
              if (!is_null($member_modle->hasOneAgent)) {
-                 $member_role .= '分销商&';
+                 $member_role .= $commission['agent'] ?:'分销商';
+                 $member_role .= '&';
              }
 
              if (!is_null($member_modle->hasOneTeamDividend)) {
@@ -757,11 +760,13 @@ class MemberModel extends Member
 
     public static function setRoleLevel($member_modle)
     {
+        $commission = self::langFiled('commission');
+        $commission_filed = $commission['agent'] ?: '分销商';
         $role_type = [];
 
         if (!is_null($member_modle)) {
             if (!is_null($member_modle->hasOneAgent)) {
-                array_push($role_type, ['分销商'=>$member_modle->hasOneAgent->agent_level_id]);
+                array_push($role_type, [$commission_filed=>$member_modle->hasOneAgent->agent_level_id]);
             }
 
             if (!is_null($member_modle->hasOneTeamDividend)) {
@@ -794,6 +799,8 @@ class MemberModel extends Member
 
     public static function filterMemberRoleAndLevel()
     {
+        $commission = self::langFiled('commission');
+        $commission_filed = $commission['agent'] ?: '分销商';
         $data = [];
 
         $agent_level = AgentLevel::uniacid()->get();
@@ -806,9 +813,9 @@ class MemberModel extends Member
                 ];
             });
 
-            array_push($data, ['role' => '分销商', 'level' =>$agent_level->all()]);
+            array_push($data, ['role' => $commission_filed, 'level' =>$agent_level->all()]);
         } else {
-            array_push($data, ['role' => '分销商', 'level' =>[]]);
+            array_push($data, ['role' => $commission_filed, 'level' =>[]]);
         }
 
         $teamdividend_level = TeamDividendLevelModel::uniacid()->get();
@@ -843,5 +850,13 @@ class MemberModel extends Member
         array_push($data, ['role' => '供应商', 'level' =>[]]);
 
         return $data;
+    }
+
+    private static function langFiled($filed)
+    {
+        $lang = \Setting::get('shop.lang', ['lang' => 'zh_cn']);
+        $set = $lang[$lang['lang']];
+
+        return $set[$filed];
     }
 }
