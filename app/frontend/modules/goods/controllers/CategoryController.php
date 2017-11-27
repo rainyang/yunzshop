@@ -48,14 +48,14 @@ class CategoryController extends BaseController
         $parent_id = intval(\YunShop::request()->parent_id);
         $list = Category::getChildrenCategorys($parent_id,$set)->paginate($pageSize)->toArray();
         foreach ($list['data'] as &$item) {
-            $item['thumb'] = replace_yunshop(tomedia($item['thumb']));
-            $item['adv_img'] = replace_yunshop(tomedia($item['adv_img']));
+            $item['thumb'] = replace_yunshop(yz_tomedia($item['thumb']));
+            $item['adv_img'] = replace_yunshop(yz_tomedia($item['adv_img']));
             foreach ($item['has_many_children'] as &$has_many_child) {
-                $has_many_child['thumb'] = replace_yunshop(tomedia($has_many_child['thumb']));
-                $has_many_child['adv_img'] = replace_yunshop(tomedia($has_many_child['adv_img']));
+                $has_many_child['thumb'] = replace_yunshop(yz_tomedia($has_many_child['thumb']));
+                $has_many_child['adv_img'] = replace_yunshop(yz_tomedia($has_many_child['adv_img']));
             }
         }
-        $set['cat_adv_img'] = replace_yunshop(tomedia($set['cat_adv_img']));
+        $set['cat_adv_img'] = replace_yunshop(yz_tomedia($set['cat_adv_img']));
         $list['set'] = $set;
         if($list){
             return $this->successJson('获取子分类数据成功!', $list);

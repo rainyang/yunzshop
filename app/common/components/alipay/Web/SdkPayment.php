@@ -630,6 +630,9 @@ class SdkPayment
 
     private function withdraw_v2($pay, $collectioner_account, $collectioner_name, $out_trade_no, $batch_no)
     {
+        $res['status'] = 0;
+        $res['msg'] = '系统异常,提现失败';
+
         $aop = new AopClient();
         $aop->appId = $pay['alipay_app_id'];
         $aop->rsaPrivateKey = $pay['rsa_private_key'];
@@ -669,12 +672,19 @@ class SdkPayment
 
             $this->withdrawResutl($data);
 
-            return true;
+            $res['status'] = 1;
+            $res['msg']    = 'ok';
+
+            return $res;
         }
 
         \Log::debug('-----失败----');
-        return false;
 
+        if (isset($result->$responseNode)) {
+            $res['msg'] = $result->$responseNode->msg;
+        }
+
+        return $res;
     }
 
     /**
