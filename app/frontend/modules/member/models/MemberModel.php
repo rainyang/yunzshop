@@ -727,8 +727,9 @@ class MemberModel extends Member
 
         $coll = collect($data)->filter(function ($item) use ($keyword, $level, $filter) {
             $role_level = false;
+            $role       = preg_match("/{$keyword}/", $item['role']);
 
-            if ($item['role'] == $keyword) {
+            if ($role) {
                 if (!empty($item['role_type'])) {
                     foreach ($item['role_type'] as $rows) {
                         foreach ($rows as $key => $val) {
@@ -746,7 +747,7 @@ class MemberModel extends Member
                 }
             }
 
-            return preg_match("/{$keyword}/", $item['role']) && $role_level;
+            return $role && $role_level;
         });
 
         if (!$coll->isEmpty()) {
