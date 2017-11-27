@@ -487,8 +487,6 @@ class MemberService
                 }
             });
 
-
-
             //生成分销关系链
             if ($upperMemberId) {
                 Member::createRealtion($member_id, $upperMemberId);
