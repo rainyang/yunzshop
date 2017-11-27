@@ -283,6 +283,11 @@ class MemberController extends ApiController
         }
     }
 
+    /**
+     * 我的推荐人v2
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getMyReferral_v2()
     {
         $data = MemberModel::getMyReferral_v2();
@@ -308,6 +313,30 @@ class MemberController extends ApiController
         } else {
             return $this->errorJson('会员不存在');
         }
+    }
+
+    /**
+     * 我推荐的人 v2 基本信息
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getMyAgent_v2()
+    {
+        $data = MemberModel::getMyAgent_v2();
+
+        return $this->successJson('', $data);
+    }
+
+    /**
+     * 我推荐的人 v2 数据
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getMyAgentData_v2()
+    {
+        $data = MemberModel::getMyAgentData_v2();
+
+        return $this->successJson('', $data);
     }
 
     /**
@@ -959,11 +988,16 @@ class MemberController extends ApiController
 
                 $agent->save();
             }
-
-
         }
 
         echo 'yz_agents修复完毕';
+    }
+
+    public function memberRelationFilter()
+    {
+        $data = MemberModel::filterMemberRoleAndLevel();
+
+        return $this->successJson('', $data);
     }
 
 }
