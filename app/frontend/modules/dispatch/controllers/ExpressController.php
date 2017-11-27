@@ -5,7 +5,6 @@ namespace app\frontend\modules\dispatch\controllers;
 use app\common\components\ApiController;
 use app\common\exceptions\AppException;
 use app\frontend\models\Order;
-use Ixudra\Curl\Facades\Curl;
 use \Request;
 
 /**
@@ -36,7 +35,7 @@ class ExpressController extends ApiController
         $data['company_name'] = $order->express->express_company_name;
         $data['data'] = $express['data'];
         $data['thumb'] = $order->hasManyOrderGoods[0]->thumb;
-        $data['tel'] = '95533';
+        $data['tel'] = $express['tel'];
         $data['status_name'] = $express['status_name'];
         return $this->successJson('成功', $data);
     }
