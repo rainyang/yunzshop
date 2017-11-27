@@ -631,35 +631,47 @@ class MemberModel extends Member
          $member_role = '';
 
          if (!is_null($member_modle)) {
-             if (!is_null($member_modle->hasOneAgent)) {
-                 $member_role .= $commission['agent'] ?:'分销商';
-                 $member_role .= '&';
-             }
-
-             if (!is_null($member_modle->hasOneTeamDividend)) {
-                 $member_role .= '经销商&';
-             }
-
-             if (!is_null($member_modle->hasOneAreaDividend)) {
-                 $member_role .= '区域代理&';
-             }
-
-             if (!is_null($member_modle->hasOneMerchant)) {
-                 $member_role .= '招商员&';
-             }
-
-             if (!is_null($member_modle->hasOneMerchantCenter)) {
-                 if (1 == $member_modle->hasOneMerchant->is_center) {
-                     $member_role .= '招商中心&';
+             if (app('plugins')->isEnabled('commission')) {
+                 if (!is_null($member_modle->hasOneAgent)) {
+                     $member_role .= $commission['agent'] ?:'分销商';
+                     $member_role .= '&';
                  }
              }
 
-             if (!is_null($member_modle->hasOneMicro)) {
-                 $member_role .= '微店店主&';
+             if (app('plugins')->isEnabled('team-dividend')) {
+                 if (!is_null($member_modle->hasOneTeamDividend)) {
+                     $member_role .= '经销商&';
+                 }
              }
 
-             if (!is_null($member_modle->hasOneSupplier)) {
-                 $member_role .= '供应商&';
+             if (app('plugins')->isEnabled('area-dividend')) {
+                 if (!is_null($member_modle->hasOneAreaDividend)) {
+                     $member_role .= '区域代理&';
+                 }
+             }
+
+             if (app('plugins')->isEnabled('merchant')) {
+                 if (!is_null($member_modle->hasOneMerchant)) {
+                     $member_role .= '招商员&';
+                 }
+
+                 if (!is_null($member_modle->hasOneMerchantCenter)) {
+                     if (1 == $member_modle->hasOneMerchant->is_center) {
+                         $member_role .= '招商中心&';
+                     }
+                 }
+             }
+
+             if (app('plugins')->isEnabled('micro')) {
+                 if (!is_null($member_modle->hasOneMicro)) {
+                     $member_role .= '微店店主&';
+                 }
+             }
+
+             if (app('plugins')->isEnabled('supplier')) {
+                 if (!is_null($member_modle->hasOneSupplier)) {
+                     $member_role .= '供应商&';
+                 }
              }
          }
 
@@ -765,32 +777,44 @@ class MemberModel extends Member
         $role_type = [];
 
         if (!is_null($member_modle)) {
-            if (!is_null($member_modle->hasOneAgent)) {
-                array_push($role_type, [$commission_filed=>$member_modle->hasOneAgent->agent_level_id]);
-            }
-
-            if (!is_null($member_modle->hasOneTeamDividend)) {
-                array_push($role_type, ['经销商'=>$member_modle->hasOneTeamDividend->level]);
-            }
-
-            if (!is_null($member_modle->hasOneAreaDividend)) {
-                array_push($role_type, ['区域代理'=>$member_modle->hasOneAreaDividend->agent_level]);
-            }
-
-            if (!is_null($member_modle->hasOneMerchant)) {
-            }
-
-            if (!is_null($member_modle->hasOneMerchantCenter)) {
-                if (1 == $member_modle->hasOneMerchant->is_center) {
-                    array_push($role_type, ['招商中心'=>$member_modle->hasOneMerchantCenter->level_id]);
+            if (app('plugins')->isEnabled('commission')) {
+                if (!is_null($member_modle->hasOneAgent)) {
+                    array_push($role_type, [$commission_filed=>$member_modle->hasOneAgent->agent_level_id]);
                 }
             }
 
-            if (!is_null($member_modle->hasOneMicro)) {
-                array_push($role_type, ['微店店主'=>$member_modle->hasOneMicro->level_id]);
+            if (app('plugins')->isEnabled('team-dividend')) {
+                if (!is_null($member_modle->hasOneTeamDividend)) {
+                    array_push($role_type, ['经销商'=>$member_modle->hasOneTeamDividend->level]);
+                }
             }
 
-            if (!is_null($member_modle->hasOneSupplier)) {
+            if (app('plugins')->isEnabled('area-dividend')) {
+                if (!is_null($member_modle->hasOneAreaDividend)) {
+                    array_push($role_type, ['区域代理'=>$member_modle->hasOneAreaDividend->agent_level]);
+                }
+            }
+
+            if (app('plugins')->isEnabled('merchant')) {
+                if (!is_null($member_modle->hasOneMerchant)) {
+                }
+
+                if (!is_null($member_modle->hasOneMerchantCenter)) {
+                    if (1 == $member_modle->hasOneMerchant->is_center) {
+                        array_push($role_type, ['招商中心'=>$member_modle->hasOneMerchantCenter->level_id]);
+                    }
+                }
+            }
+
+            if (app('plugins')->isEnabled('micro')) {
+                if (!is_null($member_modle->hasOneMicro)) {
+                    array_push($role_type, ['微店店主'=>$member_modle->hasOneMicro->level_id]);
+                }
+            }
+
+            if (app('plugins')->isEnabled('supplier')) {
+                if (!is_null($member_modle->hasOneSupplier)) {
+                }
             }
         }
 
@@ -803,51 +827,63 @@ class MemberModel extends Member
         $commission_filed = $commission['agent'] ?: '分销商';
         $data = [];
 
-        $agent_level = AgentLevel::uniacid()->get();
+        if (app('plugins')->isEnabled('commission')) {
+            $agent_level = AgentLevel::uniacid()->get();
 
-        if (!$agent_level->isEmpty()) {
-            $agent_level = collect($agent_level)->map(function ($item) {
-                return [
-                    'id' => $item->id,
-                    'level_name' => $item->name
-                ];
-            });
+            if (!$agent_level->isEmpty()) {
+                $agent_level = collect($agent_level)->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'level_name' => $item->name
+                    ];
+                });
 
-            array_push($data, ['role' => $commission_filed, 'level' =>$agent_level->all()]);
-        } else {
-            array_push($data, ['role' => $commission_filed, 'level' =>[]]);
+                array_push($data, ['role' => $commission_filed, 'level' =>$agent_level->all()]);
+            } else {
+                array_push($data, ['role' => $commission_filed, 'level' =>[]]);
+            }
         }
 
-        $teamdividend_level = TeamDividendLevelModel::uniacid()->get();
+        if (app('plugins')->isEnabled('team-dividend')) {
+            $teamdividend_level = TeamDividendLevelModel::uniacid()->get();
 
-        if (!$teamdividend_level->isEmpty()) {
-            array_push($data, ['role' => '经销商', 'level' =>$teamdividend_level->toArray()]);
-        } else {
-            array_push($data, ['role' => '经销商', 'level' =>[]]);
+            if (!$teamdividend_level->isEmpty()) {
+                array_push($data, ['role' => '经销商', 'level' =>$teamdividend_level->toArray()]);
+            } else {
+                array_push($data, ['role' => '经销商', 'level' =>[]]);
+            }
         }
 
-        array_push($data, ['role' => '区域代理', 'level' =>[
-            ['id' =>1, 'level_name'=>'省代理'],['id' =>2, 'level_name'=>'市代理'],['id' =>3, 'level_name'=>'区代理'],['id'=>4, 'level_name'=>'街道代理']
-        ]]);
-
-        array_push($data, ['role' => '招商员', 'level' =>[]]);
-
-        $merchant_level = MerchantLevel::uniacid()->get();
-
-        if (!$merchant_level->isEmpty()) {
-            array_push($data, ['role' => '招商中心', 'level' =>$merchant_level->toArray()]);
-        } else {
-            array_push($data, ['role' => '招商中心', 'level' =>[]]);
+        if (app('plugins')->isEnabled('area-dividend')) {
+            array_push($data, ['role' => '区域代理', 'level' =>[
+                ['id' =>1, 'level_name'=>'省代理'],['id' =>2, 'level_name'=>'市代理'],['id' =>3, 'level_name'=>'区代理'],['id'=>4, 'level_name'=>'街道代理']
+            ]]);
         }
 
-        $microShop_level = MicroShopLevel::uniacid()->get();
-        if (!$microShop_level->isEmpty()) {
-            array_push($data, ['role' => '微店店主', 'level' =>$microShop_level->toArray()]);
-        } else {
-            array_push($data, ['role' => '微店店主', 'level' =>[]]);
+        if (app('plugins')->isEnabled('merchant')) {
+            array_push($data, ['role' => '招商员', 'level' =>[]]);
+
+            $merchant_level = MerchantLevel::uniacid()->get();
+
+            if (!$merchant_level->isEmpty()) {
+                array_push($data, ['role' => '招商中心', 'level' =>$merchant_level->toArray()]);
+            } else {
+                array_push($data, ['role' => '招商中心', 'level' =>[]]);
+            }
         }
 
-        array_push($data, ['role' => '供应商', 'level' =>[]]);
+        if (app('plugins')->isEnabled('micro')) {
+            $microShop_level = MicroShopLevel::uniacid()->get();
+            if (!$microShop_level->isEmpty()) {
+                array_push($data, ['role' => '微店店主', 'level' =>$microShop_level->toArray()]);
+            } else {
+                array_push($data, ['role' => '微店店主', 'level' =>[]]);
+            }
+        }
+
+        if (app('plugins')->isEnabled('supplier')) {
+            array_push($data, ['role' => '供应商', 'level' =>[]]);
+        }
 
         return $data;
     }

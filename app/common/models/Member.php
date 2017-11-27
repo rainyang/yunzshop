@@ -573,20 +573,48 @@ class Member extends BackendModel
 
     public function getMemberRole($builder)
     {
-        $result = $builder
-        ->with([
-            'hasOneAgent',
-            'hasOneTeamDividend',
-            'hasOneAreaDividend' => function ($query) {
-                return $query->where('status', 1);
-            },
-            'hasOneMerchant',
-            'hasOneMerchantCenter',
-            'hasOneMicro',
-            'hasOneSupplier' => function ($query) {
-                return $query->where('status', 1);
-            }
-        ]);
+        $result = $builder;
+
+        if (app('plugins')->isEnabled('commission')) {
+            $result = $result->with([
+                'hasOneAgent'
+            ]);
+        }
+
+        if (app('plugins')->isEnabled('team-dividend')) {
+            $result = $result->with([
+                'hasOneTeamDividend'
+            ]);
+        }
+
+        if (app('plugins')->isEnabled('area-dividend')) {
+            $result = $result->with([
+                'hasOneAreaDividend' => function ($query) {
+                    return $query->where('status', 1);
+                }
+            ]);
+        }
+
+        if (app('plugins')->isEnabled('merchant')) {
+            $result = $result->with([
+                'hasOneMerchant',
+                'hasOneMerchantCenter'
+            ]);
+        }
+
+        if (app('plugins')->isEnabled('micro')) {
+            $result = $result->with([
+                'hasOneMicro'
+            ]);
+        }
+
+        if (app('plugins')->isEnabled('supplier')) {
+            $result = $result->with([
+                'hasOneSupplier' => function ($query) {
+                    return $query->where('status', 1);
+                }
+            ]);
+        }
 
         return $result;
     }
