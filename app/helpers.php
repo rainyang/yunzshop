@@ -229,6 +229,8 @@ if (!function_exists("tomedia")) {
 
 function yz_tomedia($src, $local_path = false)
 {
+    $setting = \setting_load();
+
     if (empty($src)) {
         return '';
     }
@@ -245,17 +247,17 @@ function yz_tomedia($src, $local_path = false)
         return $src;
     }
 
-    if ($local_path || empty(YunShop::app()->setting['remote']['type']) || file_exists(base_path('../../') . '/' . YunShop::app()->config['upload']['attachdir'] . '/' . $src)) {
+    if ($local_path || empty($setting['remote']['type']) || file_exists(base_path('../../') . '/' . YunShop::app()->config['upload']['attachdir'] . '/' . $src)) {
         $src = request()->getSchemeAndHttpHost() . '/attachment/' . $src;
     } else {
-        if (YunShop::app()->setting['remote']['type'] == 1) {
-            $attachurl_remote = YunShop::app()->setting['remote']['ftp']['url'] . '/';
-        } elseif (YunShop::app()->setting['remote']['type'] == 2) {
-            $attachurl_remote = YunShop::app()->setting['remote']['alioss']['url'].'/';
-        } elseif (YunShop::app()->setting['remote']['type'] == 3) {
-            $attachurl_remote = YunShop::app()->setting['remote']['qiniu']['url'].'/';
-        } elseif (YunShop::app()->setting['remote']['type'] == 4) {
-            $attachurl_remote = YunShop::app()->setting['remote']['cos']['url'].'/';
+        if ($setting['remote']['type'] == 1) {
+            $attachurl_remote = $setting['remote']['ftp']['url'] . '/';
+        } elseif ($setting['remote']['type'] == 2) {
+            $attachurl_remote = $setting['remote']['alioss']['url'].'/';
+        } elseif ($setting['remote']['type'] == 3) {
+            $attachurl_remote = $setting['remote']['qiniu']['url'].'/';
+        } elseif ($setting['remote']['type'] == 4) {
+            $attachurl_remote = $setting['remote']['cos']['url'].'/';
         }
 
         $src = $attachurl_remote . $src;
