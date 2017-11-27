@@ -642,9 +642,7 @@ class MemberModel extends Member
              }
 
              if (!is_null($member_modle->hasOneMerchant)) {
-                 if (0 == $member_modle->hasOneMerchant->is_center) {
-                     $member_role .= '招商员&';
-                 }
+                 $member_role .= '招商员&';
              }
 
              if (!is_null($member_modle->hasOneMerchantCenter)) {
