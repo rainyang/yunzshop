@@ -358,7 +358,7 @@ class IncomeWithdrawController extends ApiController
 
 
             //更新收入提现状态
-            $this->updateIncomeStatus($income['key_name'], $income['type_id']);
+            $this->updateIncomeStatus($income['type'], $income['type_id']);
 
 
             $this->withdraw_amounts += $income['income'];
