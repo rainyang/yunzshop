@@ -123,6 +123,7 @@ class PointListener
                         (new PointToLoveJob($uniacid))->handle();
                     });
                 }
+                \Log::info("--积分自动转入爱心值Uniacid:{$u->uniacid}未满足调价--",print_r($point_set,true));
             }
         });
     }
