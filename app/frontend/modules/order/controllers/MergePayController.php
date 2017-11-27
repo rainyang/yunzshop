@@ -126,10 +126,11 @@ class MergePayController extends ApiController
     /**
      * 支付
      * @param $payType
+     * @param array $payParams
      * @return \app\common\services\strin5|array|bool|mixed|void
      * @throws AppException
      */
-    protected function pay($payType)
+    protected function pay($payType, $payParams=[])
     {
         $this->validate([
             'order_pay_id' => 'required|integer'
@@ -145,7 +146,7 @@ class MergePayController extends ApiController
         // 订单集合
         $orders = $this->orders($orderPay->order_ids);
         // 验证支付密码
-        return $this->getPayResult($payType,$orderPay,$orders);
+        return $this->getPayResult($payType,$orderPay,$orders, $payParams);
     }
 
     /**
@@ -153,11 +154,12 @@ class MergePayController extends ApiController
      * @param $payType
      * @param $orderPay
      * @param $orders
-     * @return \app\common\services\strin5|array|bool|mixed|void
+     * @param array $payParams
+     * @return \app\common\services\strin5|array|bool|mixed|string|void
      * @throws AppException
      */
-    protected function getPayResult($payType,$orderPay,$orders){
-        $query_str = $this->getPayParams($orderPay, $orders);
+    protected function getPayResult($payType,$orderPay,$orders, $payParams=[]){
+        $query_str = $this->getPayParams($orderPay, $orders, $payParams);
         $pay = PayFactory::create($payType);
         //如果支付模块常量改变 数据会受影响
         $result = $pay->doPay($query_str, $payType);
@@ -171,16 +173,26 @@ class MergePayController extends ApiController
      * 拼写支付参数
      * @param $orderPay
      * @param Collection $orders
+     * @param array $option
      * @return array
+     * @throws AppException
      */
-    protected function getPayParams($orderPay, Collection $orders)
+    protected function getPayParams($orderPay, Collection $orders, $option=[])
     {
+        $extra = ['type' => 1];
+
+        if (!is_array($option)) {
+            throw new AppException('参数类型错误');
+        }
+
+        $extra   = array_merge($extra, $option);
+
         return [
             'order_no' => $orderPay->pay_sn,
             'amount' => $orderPay->amount,
             'subject' => $orders->first()->hasManyOrderGoods[0]->title ?: '芸众商品',
             'body' => ($orders->first()->hasManyOrderGoods[0]->title ?: '芸众商品') . ':' . \YunShop::app()->uniacid,
-            'extra' => ['type' => 1]
+            'extra' => $extra
         ];
     }
 
@@ -281,6 +293,22 @@ class MergePayController extends ApiController
         }
 
         $data = $this->pay( PayFactory::PAY_YUN_WEACHAT);
+        return $this->successJson('成功', $data);
+    }
+
+    /**
+     * 支付宝云支付
+     * @param \Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     */
+    public function cloudAliPay(\Request $request)
+    {
+        if (\Setting::get('plugin.cloud_pay_set') == false) {
+            throw new AppException('商城未开启支付宝支付');
+        }
+
+        $data = $this->pay( PayFactory::PAY_CLOUD_ALIPAY, ['pay' => 'cloud_alipay']);
         return $this->successJson('成功', $data);
     }
 }
