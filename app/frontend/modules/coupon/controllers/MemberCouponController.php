@@ -57,11 +57,8 @@ class MemberCouponController extends ApiController
             'data' => $coupons,
         ];
 
-        if (empty($coupons)){
-            return $this->errorJson('没有找到记录', $data);
-        } else{
-            return $this->successJson('ok', $data);
-        }
+
+        return $this->successJson('ok', $data);
     }
 
 
