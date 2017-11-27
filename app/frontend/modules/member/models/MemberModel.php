@@ -328,10 +328,7 @@ class MemberModel extends Member
      */
     public static function getMyReferral_v2()
     {
-        $builder     = self::getMyReferrerInfo(\YunShop::app()->getMemberId());
-        $member_info = self::getMemberRole($builder)->first();
-
-        $member_role = self::convertRoleText($member_info);
+        $member_info     = self::getMyReferrerInfo(\YunShop::app()->getMemberId())->first();
 
         $set = \Setting::get('shop.member');
 
@@ -346,7 +343,10 @@ class MemberModel extends Member
 
             $member_info = $member_info->toArray();
 
-            $referrer_info = self::getUserInfos($member_info['yz_member']['parent_id'])->first();
+            $builder = self::getUserInfos($member_info['yz_member']['parent_id']);
+            $referrer_info = self::getMemberRole($builder)->first();
+
+            $member_role = self::convertRoleText($referrer_info);
 
             if ($member_info['yz_member']['inviter'] == 1) {
                 if (!empty($referrer_info)) {
