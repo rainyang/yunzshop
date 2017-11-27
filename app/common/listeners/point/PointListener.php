@@ -122,8 +122,9 @@ class PointListener
                     \Cron::add("Point_To_Love{$u->uniacid}", '*/30 * * * * *', function () use($uniacid) {
                         (new PointToLoveJob($uniacid))->handle();
                     });
+                } else {
+                    \Log::info("--积分自动转入爱心值Uniacid:{$u->uniacid}未满足调价--",print_r($point_set,true));
                 }
-                \Log::info("--积分自动转入爱心值Uniacid:{$u->uniacid}未满足调价--",print_r($point_set,true));
             }
         });
     }
