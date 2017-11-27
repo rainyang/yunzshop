@@ -114,12 +114,12 @@ class PointListener
                 if (isset($point_set['transfer_love'])
                     && $point_set['transfer_love'] == 1
                     && \YunShop::plugin()->get('love')
-                    && Setting::get('point.last_to_love_time') != date('d')
-                    && date('H') == 1
+                    //&& Setting::get('point.last_to_love_time') != date('d')
+                    //&& date('H') == 1
                 ) {
 
                     \Log::info("--积分自动转入爱心值Uniacid:{$u->uniacid}加入队列--");
-                    \Cron::add("Point_To_Love{$u->uniacid}", '*/10 * * * * *', function () use($uniacid) {
+                    \Cron::add("Point_To_Love{$u->uniacid}", '*/30 * * * * *', function () use($uniacid) {
                         (new PointToLoveJob($uniacid))->handle();
                     });
                 }
