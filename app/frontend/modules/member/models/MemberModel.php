@@ -123,7 +123,15 @@ class MemberModel extends Member
     {
         return self::select(['uid'])->uniacid()
             ->where('uid', $uid)
-            ;
+            ->with([
+                'yzMember' => function ($query) {
+                    return $query->select(['member_id', 'parent_id', 'is_agent', 'group_id', 'level_id', 'is_black', 'alipayname', 'alipay', 'status', 'inviter'])
+                        ->where('is_black', 0)
+                        ->with(['level'=>function($query2){
+                            return $query2->select(['id','level_name'])->uniacid();
+                        }]);
+                }
+            ]);
     }
 
     /**
@@ -322,7 +330,7 @@ class MemberModel extends Member
         $member_info     = self::getMyReferrerInfo(\YunShop::app()->getMemberId())->first();
 
         $set = \Setting::get('shop.member');
-        dd($member_info['yz_member']['parent_id']);
+      
         $data = [];
 
         if (!empty($member_info)) {
