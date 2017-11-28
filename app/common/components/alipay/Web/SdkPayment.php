@@ -653,6 +653,7 @@ class SdkPayment
 
         $request->setBizContent(json_encode($data));
         $result = $aop->execute ( $request);
+
         $result = json_decode($result);
 
         \Log::debug('-----返回参数result----', gettype($result));

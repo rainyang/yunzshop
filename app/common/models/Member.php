@@ -4,19 +4,23 @@ namespace app\common\models;
 use app\backend\models\BackendModel;
 use app\backend\modules\member\models\MemberRelation;
 use app\common\events\member\BecomeAgent;
-use app\common\services\Session;
-
 use app\common\repositories\OptionRepository;
 use app\common\services\PluginManager;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\MemberWechatModel;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
+use Yunshop\AreaDividend\models\AreaDividendAgent;
+use Yunshop\Commission\models\Agents;
 use Yunshop\Gold\frontend\services\MemberCenterService;
 use Yunshop\Love\Common\Services\SetService;
+use Yunshop\Merchant\common\models\Merchant;
+use Yunshop\Micro\common\models\MicroShop;
 use Yunshop\Micro\common\services\MicroShop\GetButtonService;
 use Yunshop\StoreCashier\common\models\Store;
+use Yunshop\Supplier\admin\models\Supplier;
 use Yunshop\Supplier\common\services\VerifyButton;
+use Yunshop\TeamDividend\models\TeamDividendAgencyModel;
 
 /**
  * Created by PhpStorm.
@@ -105,6 +109,90 @@ class Member extends BackendModel
     public function hasManyMemberCoupon()
     {
         return $this->hasOne(MemberCoupon::class, 'uid', 'uid');
+    }
+
+    /**
+     * 角色
+     *
+     * 会员-分销商
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function hasOneAgent()
+    {
+        return $this->hasOne(Agents::class, 'member_id', 'uid');
+    }
+
+    /**
+     * 角色
+     *
+     * 会员-经销商
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function hasOneTeamDividend()
+    {
+        return $this->hasOne(TeamDividendAgencyModel::class, 'uid', 'uid');
+    }
+
+    /**
+     * 角色
+     *
+     * 会员-区域代理
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function hasOneAreaDividend()
+    {
+        return $this->hasOne(AreaDividendAgent::class, 'member_id', 'uid');
+    }
+
+    /**
+     * 角色
+     *
+     * 会员-招商员
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function hasOneMerchant()
+    {
+        return $this->hasOne(Merchant::class, 'member_id', 'uid');
+    }
+
+    /**
+     * 角色
+     *
+     * 会员-招商中心
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function hasOneMerchantCenter()
+    {
+        return $this->hasOne(Merchant::class, 'member_id', 'uid');
+    }
+
+    /**
+     * 角色
+     *
+     * 会员-微店店主
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function hasOneMicro()
+    {
+        return $this->hasOne(MicroShop::class, 'member_id', 'uid');
+    }
+
+    /**
+     * 角色
+     *
+     * 会员-供应商
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function hasOneSupplier()
+    {
+        return $this->hasOne(Supplier::class, 'member_id', 'uid');
     }
 
     public function scopeOfUid($query,$uid)
@@ -495,5 +583,53 @@ class Member extends BackendModel
     public function isFollow()
     {
         return isset($this->hasOneFans) && $this->hasOneFans->follow && !empty($this->hasOneFans->openid);
+    }
+
+    public function getMemberRole($builder)
+    {
+        $result = $builder;
+
+        if (app('plugins')->isEnabled('commission')) {
+            $result = $result->with([
+                'hasOneAgent'
+            ]);
+        }
+
+        if (app('plugins')->isEnabled('team-dividend')) {
+            $result = $result->with([
+                'hasOneTeamDividend'
+            ]);
+        }
+
+        if (app('plugins')->isEnabled('area-dividend')) {
+            $result = $result->with([
+                'hasOneAreaDividend' => function ($query) {
+                    return $query->where('status', 1);
+                }
+            ]);
+        }
+
+        if (app('plugins')->isEnabled('merchant')) {
+            $result = $result->with([
+                'hasOneMerchant',
+                'hasOneMerchantCenter'
+            ]);
+        }
+
+        if (app('plugins')->isEnabled('micro')) {
+            $result = $result->with([
+                'hasOneMicro'
+            ]);
+        }
+
+        if (app('plugins')->isEnabled('supplier')) {
+            $result = $result->with([
+                'hasOneSupplier' => function ($query) {
+                    return $query->where('status', 1);
+                }
+            ]);
+        }
+
+        return $result;
     }
 }

@@ -110,7 +110,7 @@ class MemberAppYdbService extends MemberService
                     return show_json(3, '登录失败，请重试');
                 }
                 Session::set('member_id', $member['member_id']);
-                return show_json(1, $member);
+                return show_json(1, $member->toArray());
             }
         }
     }
