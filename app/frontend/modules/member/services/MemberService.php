@@ -412,6 +412,7 @@ class MemberService
 
                 if (empty($member_shop_info_model)) {
                     if (0 == $member_id) {
+                        \Log::debug(sprintf('----用户数据异常---%s', $userinfo['nickname']));
                         throw new AppException('用户数据异常, 注册失败');
                     }
 
@@ -480,6 +481,7 @@ class MemberService
 
                 if (empty($member_shop_info_model)) {
                     if (0 == $member_id) {
+                        \Log::debug(sprintf('----用户数据异常---%s', $userinfo['nickname']));
                         throw new AppException('用户数据异常, 注册失败');
                     }
 
