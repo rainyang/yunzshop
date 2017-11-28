@@ -114,8 +114,8 @@ class PointListener
                 if (isset($point_set['transfer_love'])
                     && $point_set['transfer_love'] == 1
                     && \YunShop::plugin()->get('love')
-                    //&& Setting::get('point.last_to_love_time') != date('d')
-                    //&& date('H') == 1
+                    && Setting::get('point.last_to_love_time') != date('d')
+                    && date('H') == 1
                 ) {
 
                     \Log::info("--积分自动转入爱心值Uniacid:{$u->uniacid}加入队列--");
@@ -123,7 +123,7 @@ class PointListener
                         (new PointToLoveJob($uniacid))->handle();
                     });
                 } else {
-                    \Log::info("--积分自动转入爱心值Uniacid:{$u->uniacid}未满足调价--",print_r($point_set,true));
+                    \Log::info("--积分自动转入爱心值Uniacid:{$u->uniacid}未满足条件--",print_r($point_set,true));
                 }
             }
         });
