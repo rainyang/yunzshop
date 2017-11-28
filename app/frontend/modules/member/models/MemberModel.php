@@ -57,7 +57,7 @@ class MemberModel extends Member
         $member_model->nickname = stripslashes($userinfo['nickname']);
         $member_model->avatar = $userinfo['headimgurl'];
         $member_model->gender = $userinfo['sex'];
-        $member_model->nationality = $userinfo['country'];
+        $member_model->nationality = $userinfo['country'] ?: '';
         $member_model->resideprovince = $userinfo['province'] . '省';
         $member_model->residecity = $userinfo['city'] . '市';
         $member_model->salt = '';

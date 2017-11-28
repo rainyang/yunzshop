@@ -2280,6 +2280,18 @@ return [
                         'item'              => 'setting_shop_form',
                         'parents'           => ['system', 'Setting',],
                     ],
+
+                    'setting_shop_protocol' => [
+                        'name'              => '注册协议',
+                        'url'               => 'setting.shop.protocol',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => 'fa-bell-o',
+                        'sort'              => '7',
+                        'item'              => 'setting_shop_protocol',
+                        'parents'           => ['system', 'Setting',],
+                    ],
                 ],
             ],
 
