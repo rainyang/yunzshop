@@ -28,7 +28,6 @@ class PointToLoveService
         }
         //\Setting::set('love.last_month_activation',date('m'));
         //\Setting::set('love.last_week_activation',date('W'));
-        \Setting::set('point.last_to_love_time',date('d'));
         \Log::info('--积分自动转入爱心值Uniacid:'.$uniacid.'自动转入完成--');
     }
 

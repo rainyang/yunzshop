@@ -122,6 +122,7 @@ class PointListener
                     \Cron::add("Point_To_Love{$u->uniacid}", '*/30 * * * * *', function () use($uniacid) {
                         (new PointToLoveJob($uniacid))->handle();
                     });
+                    \Setting::set('point.last_to_love_time',date('d'));
                 } else {
                     \Log::info("--积分自动转入爱心值Uniacid:{$u->uniacid}未满足条件--",print_r($point_set,true));
                 }
