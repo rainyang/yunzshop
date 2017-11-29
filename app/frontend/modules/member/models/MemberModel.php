@@ -533,6 +533,8 @@ class MemberModel extends Member
      */
     public static function getMyAgent_v2()
     {
+        set_time_limit(0);
+
         $data = [
             'total' => 0
         ];
@@ -565,18 +567,28 @@ class MemberModel extends Member
                     break;
             }
 
-            $builder = MemberModel::getMyAllAgentsInfo(\YunShop::app()->getMemberId(), $i);
-            $agent_info = self::getMemberRole($builder)->get();
+            if ($is_show) {
+                $builder = MemberModel::getMyAllAgentsInfo(\YunShop::app()->getMemberId(), $i);
+                $agent_info = self::getMemberRole($builder)->get();
 
-            $agent_data = self::fetchAgentInfo($agent_info->toArray());
+                $agent_data = self::fetchAgentInfo($agent_info->toArray());
 
-            $total += count($agent_data);
+                $total += count($agent_data);
 
-            $data[$text] = [
-                'level' => $level,
-                'total' => count($agent_data),
-                'is_show' => $is_show
-            ];
+                $data[$text] = [
+                    'level' => $level,
+                    'total' => count($agent_data),
+                    'is_show' => $is_show
+                ];
+            } else {
+                $total += 0;
+
+                $data[$text] = [
+                    'level' => $level,
+                    'total' => 0,
+                    'is_show' => $is_show
+                ];
+            }
         }
 
         $data['total'] = $total;
@@ -590,6 +602,8 @@ class MemberModel extends Member
      */
     public static function getMyAgentData_v2()
     {
+        set_time_limit(0);
+
         $pageSize = 10;
         $data = [];
         $keyword = \YunShop::request()->keyword ?: '';
