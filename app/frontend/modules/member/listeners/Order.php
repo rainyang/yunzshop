@@ -13,9 +13,9 @@ use app\common\events\order\AfterOrderCreatedEvent;
 class Order
 {
     public function handle(AfterOrderCreatedEvent $event){
-
-        $goods_ids = $event->getOrder()->first()->orderGoods->pluck('goods_id');
-        $goods_option_ids = $event->getOrder()->first()->orderGoods->pluck('goods_option_id');
+        $order = \app\common\models\Order::find($event->getOrder()->id);
+        $goods_ids = $order->orderGoods->pluck('goods_id');
+        $goods_option_ids = $order->orderGoods->pluck('goods_option_id');
 
         app('OrderManager')->make('MemberCart')->uniacid()->whereIn('goods_id', $goods_ids)->delete();
         app('OrderManager')->make('MemberCart')->uniacid()->whereIn('option_id', $goods_option_ids)->delete();
