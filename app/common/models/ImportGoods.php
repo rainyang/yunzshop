@@ -31,9 +31,15 @@ class ImportGoods extends BaseModel
             return $query->with('hasManySpecsItem');
         }]);
         $model->with('hasManyOptions');
+        $model->with('hasManyParam');
         $model->with('hasOneShare');
 
         return $model;
+    }
+
+    public function hasManyParam()
+    {
+        return $this->hasMany('app\common\models\GoodsParam','goods_id','id');
     }
 
     public function hasManySpecs()
