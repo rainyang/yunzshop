@@ -94,8 +94,8 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额变动通知</label>
                             <div class="col-sm-9 col-xs-12">
-                                <select name='notice[blance_change]' class='form-control diy-notice'>
-                                    <option value="" @if(!$set['blance_change'])
+                                <select name='notice[balance_change]' class='form-control diy-notice'>
+                                    <option value="" @if(!$set['balance_change'])
                                     selected
                                             @endif;
                                     >
@@ -103,7 +103,7 @@
                                     </option>
                                     @foreach ($temp_list as $item)
                                         <option value="{{$item['id']}}"
-                                                @if($set['blance_change'] == $item['id'])
+                                                @if($set['balance_change'] == $item['id'])
                                                 selected
                                                 @endif>{{$item['title']}}</option>
                                     @endforeach

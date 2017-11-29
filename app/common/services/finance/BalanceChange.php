@@ -158,7 +158,7 @@ class BalanceChange extends Credit
             return;
         }
 
-        $temp_id = \Setting::get('shop.notice')['blance_change'];
+        $temp_id = \Setting::get('shop.notice')['balance_change'];
         if (!$temp_id) {
             return;
         }

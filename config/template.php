@@ -118,10 +118,10 @@ return [
             '昵称', '时间', '下级会员昵称'
         ]
     ],
-    'finance_blance_change' => [
+    'finance_balance_change' => [
         'title' => '财务(余额变动通知)',
         'subtitle' => '余额变动通知',
-        'value' => 'finance_blance_change',
+        'value' => 'finance_balance_change',
         'param' => [
             '商城名称', '昵称', '时间', '余额变动金额', '余额变动类型', '变动后余额数值'
         ]
