@@ -604,6 +604,12 @@ class MemberModel extends Member
 
         if (!empty($agent_data)) {
             $data = $agent_data->toArray();
+
+            $data = [
+                'current_page' => $agent_info->currentPage() ?: 1,
+                'last_page' => $agent_info->lastPage() ?: 1,
+                'data' => $data
+            ];
         }
 
        /* if (empty($keyword)) {
