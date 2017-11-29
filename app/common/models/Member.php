@@ -468,6 +468,18 @@ class Member extends BackendModel
             $data['cashier'] = '';
         }
 
+        if ($plugin_class->isEnabled('store-cashier')) {
+            $store = Store::getStoreByUid(\YunShop::app()->getMemberId())->first();
+            if ($store) {
+                $data['store'] = [
+                    'button_name' => '店长中心',
+                    'api'         => 'plugin.store-cashier.frontend.store.center.index.index'
+                ];
+            }
+        } else {
+            $data['store'] = '';
+        }
+
         if ($plugin_class->isEnabled('elive')) {
             $data['elive'] = [
                 'button_name' => '生活缴费',
