@@ -34,7 +34,7 @@ class CalculationPointService
             } else {
                 $point_data['point'] = $point_set['give_point'] * $order_goods_model->total;
             }
-            $point_data['remark'] = "购买商品[统一设置(". $point_set['give_point'] .")]赠送[{$point_data['point']}]积分！";
+            $point_data['remark'] = "购买商品[统一设置(比例:". $point_set['give_point'] .")]赠送[{$point_data['point']}]积分！";
         }
         return $point_data;
     }
