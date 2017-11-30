@@ -184,6 +184,75 @@ class MemberModel extends Member
             }]);
     }
 
+    public static function getMyAllAgentsInfoBySearch($uid, $level, $keyword, $role_level)
+    {
+        $commission = self::langFiled('commission');
+        $commission_filed = $commission['agent'] ?: '分销商';
+
+        $result = self::uniacid()
+            ->whereHas('yzMember', function($query) use ($uid, $level){
+                $query->whereRaw('FIND_IN_SET(?, relation)' . ($level != 0 ? ' = ?' : ''), [$uid, $level]);
+            });
+
+            if (!empty($keyword)) {
+                switch ($keyword) {
+                    case $commission_filed:
+                        $result = $result->whereHas('hasOneAgent', function($query) use ($role_level) {
+                            if (!empty($role_level)) {
+                                $query->where('agent_level_id', $role_level);
+                            }
+                        });
+                        break;
+                    case '经销商':
+                        $result = $result->whereHas('hasOneTeamDividend', function ($query) use ($role_level) {
+                            if (!empty($role_level)) {
+                                $query->where('level', $role_level);
+                            }
+                        });
+                        break;
+                    case '区域代理':
+                        $result = $result->whereHas('hasOneAreaDividend', function ($query) use ($role_level) {
+                            if (!empty($role_level)) {
+                                $query->where('agent_level', $role_level);
+                            }
+                        });
+                        break;
+                    case '招商员':
+                        $result = $result->whereHas('hasOneMerchant');
+                        break;
+                    case '招商中心':
+                        $result = $result->whereHas('hasOneMerchantCenter', function ($query) use ($role_level) {
+                            if (!empty($role_level)) {
+                                $query->where('level_id', $role_level);
+                            }
+                        });
+                        break;
+                    case '微店店主':
+                        $result = $result->whereHas('hasOneMicro', function ($query) use ($role_level) {
+                            if (!empty($role_level)) {
+                                $query->where('level_id', $role_level);
+                            }
+                        });
+                        break;
+                    case '供应商':
+                        $result = $result->whereHas('hasOneSupplier');
+                        break;
+                }
+            }
+
+        $result =  $result->with(['yzMember' => function ($query) {
+            return $query->select('member_id', 'is_agent', 'status');
+        }, 'hasOneOrder' => function ($query) {
+            return $query->selectRaw('uid, count(uid) as total, sum(price) as sum')
+                ->uniacid()
+                ->where('status', 3)
+                ->groupBy('uid');
+        }]);
+
+
+        return $result;
+    }
+
     /**
      * 我的下线信息 3级
      *
@@ -464,6 +533,8 @@ class MemberModel extends Member
      */
     public static function getMyAgent_v2()
     {
+        set_time_limit(0);
+
         $data = [
             'total' => 0
         ];
@@ -496,18 +567,28 @@ class MemberModel extends Member
                     break;
             }
 
-            $builder = MemberModel::getMyAllAgentsInfo(\YunShop::app()->getMemberId(), $i);
-            $agent_info = self::getMemberRole($builder)->get();
+            if ($is_show) {
+                $builder = MemberModel::getMyAllAgentsInfo(\YunShop::app()->getMemberId(), $i);
+                $agent_info = self::getMemberRole($builder)->get();
 
-            $agent_data = self::fetchAgentInfo($agent_info->toArray());
+                $agent_data = self::fetchAgentInfo($agent_info->toArray());
 
-            $total += count($agent_data);
+                $total += count($agent_data);
 
-            $data[$text] = [
-                'level' => $level,
-                'total' => count($agent_data),
-                'is_show' => $is_show
-            ];
+                $data[$text] = [
+                    'level' => $level,
+                    'total' => count($agent_data),
+                    'is_show' => $is_show
+                ];
+            } else {
+                $total += 0;
+
+                $data[$text] = [
+                    'level' => $level,
+                    'total' => 0,
+                    'is_show' => $is_show
+                ];
+            }
         }
 
         $data['total'] = $total;
@@ -521,27 +602,35 @@ class MemberModel extends Member
      */
     public static function getMyAgentData_v2()
     {
+        set_time_limit(0);
+
         $pageSize = 10;
         $data = [];
-        $keyword = \YunShop::request()->keyword;
-        $level   = \YunShop::request()->level;
+        $keyword = \YunShop::request()->keyword ?: '';
+        $level   = \YunShop::request()->level ?: 0;
 
         $i = \YunShop::request()->relationLevel ?: 0;
 
-        $builder = MemberModel::getMyAllAgentsInfo(\YunShop::app()->getMemberId(), $i);
+        $builder = MemberModel::getMyAllAgentsInfoBySearch(\YunShop::app()->getMemberId(), $i, $keyword, $level);
         $agent_info = self::getMemberRole($builder)->paginate($pageSize);
 
         $agent_data = self::fetchAgentInfo($agent_info->items());
 
         if (!empty($agent_data)) {
             $data = $agent_data->toArray();
+
+            $data = [
+                'current_page' => $agent_info->currentPage() ?: 1,
+                'last_page' => $agent_info->lastPage() ?: 1,
+                'data' => $data
+            ];
         }
 
-        if (empty($keyword)) {
+       /* if (empty($keyword)) {
             return $data;
         }
 
-        $data = self::searchMemberRelation($data);
+        $data = self::searchMemberRelation($data);*/
 
         return $data;
     }
@@ -696,6 +785,7 @@ class MemberModel extends Member
             $role              = self::convertRoleText($item);
             $role_type         = self::setRoleLevel($item);
 
+            //下线的下线1级
             $child_agent = MemberModel::getMyAllAgentsInfo($item->uid, 1)->get();
 
             if (!is_null($child_agent)) {
