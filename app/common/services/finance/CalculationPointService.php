@@ -27,14 +27,14 @@ class CalculationPointService
             } else {
                 $point_data['point'] = $order_goods_model->hasOneGoods->hasOneSale->point * $order_goods_model->total;
             }
-            $point_data['remark'] = '购买商品[' . $order_goods_model->hasOneGoods->title .']赠送[$order_goods->hasOneGoods->hasOneSale->point]积分！';
+            $point_data['remark'] = '购买商品[' . $order_goods_model->hasOneGoods->title .'(比例:'. $order_goods_model->hasOneGoods->hasOneSale->point .')]赠送[$order_goods->hasOneGoods->hasOneSale->point]积分！';
         } else if (!empty($point_set['give_point'] && $point_set['give_point'])) {
             if (strexists($point_set['give_point'], '%')) {
                 $point_data['point'] = floatval(str_replace('%', '', $point_set['give_point']) / 100 * ($order_goods_model->price - $order_goods_model->coupon_price) * $order_goods_model->total);
             } else {
                 $point_data['point'] = $point_set['give_point'] * $order_goods_model->total;
             }
-            $point_data['remark'] = "购买商品[统一设置]赠送[{$point_data['point']}]积分！";
+            $point_data['remark'] = "购买商品[统一设置(比例:". $point_set['give_point'] .")]赠送[{$point_data['point']}]积分！";
         }
         return $point_data;
     }

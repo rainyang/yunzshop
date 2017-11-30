@@ -107,7 +107,7 @@ class WechatController extends PaymentController
                 }
 
                 break;
-            case 'APP':
+            case 'APP' :
                 $pay = \Setting::get('shop_app.pay');
                 break;
         }
