@@ -122,8 +122,8 @@ class Withdraw extends \app\common\models\Withdraw
         return [
             'poundage'          => "提现手续费",
             'withdrawmoney'     => "提现限制金额",
-            'roll_out_limit'    => "佣金提现额度",
-            'poundage_rate'     => "佣金提现手续费"
+            'roll_out_limit'    => "提现额度",
+            'poundage_rate'     => "提现手续费"
         ];
     }
 
