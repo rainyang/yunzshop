@@ -116,6 +116,7 @@ class Category extends \app\common\models\Category
             'name' => ['required',  $rule->ignore($this->id)
                 ->where('uniacid', \YunShop::app()->uniacid)
                 ->where('parent_id', $this->parent_id)
+                ->where('plugin_id', 0)
                 ->where('deleted_at', null)],
         ];
     }
