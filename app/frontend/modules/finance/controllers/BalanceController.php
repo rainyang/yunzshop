@@ -25,6 +25,7 @@ use app\frontend\modules\finance\services\BalanceService;
 
 use app\backend\modules\member\models\Member;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class BalanceController extends ApiController
 {
@@ -327,6 +328,7 @@ class BalanceController extends ApiController
         $pay = PayFactory::create($this->model->type);
 
         $result = $pay->doPay($this->payData());
+        Log::info('++++++++++++++++++', print_r($result, true));
         if ($this->model->type == 1) {
             $result['js'] = json_decode($result['js'], 1);
         }
