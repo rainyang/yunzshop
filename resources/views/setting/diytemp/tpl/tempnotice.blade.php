@@ -151,7 +151,7 @@
         <div class="">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <select class="form-control" onchange="$('.tm').hide();$('.tm-'+$(this).val()).show()">
+                    <select class="form-control diy-notice" onchange="$('.tm').hide();$('.tm-'+$(this).val()).show()">
                         <option value="" >选择模板变量类型</option>
                         @foreach(\Config::get('template') as $item)
                             <option value="{{$item['value']}}">{{$item['title']}}</option>
@@ -298,4 +298,7 @@
         });
         kw++;
     }
+    require(['select2'], function () {
+        $('.diy-notice').select2();
+    })
 </script>
