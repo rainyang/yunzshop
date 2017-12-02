@@ -118,6 +118,9 @@ class PointLog extends BaseModel
             case (17):
                 $mode_attribute = PointService::POINT_MODE_TRANSFER_LOVE_ATTACHED;
                 break;
+            case (92):
+                $mode_attribute = PointService::POINT_MODE_RECHARGE_CODE_ATTACHED;
+                break;
         }
         return $mode_attribute;
     }
