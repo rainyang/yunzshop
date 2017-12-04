@@ -3,11 +3,6 @@
 @section('content')
 
     <div class="main rightlist">
-        {{--<div class="right-titpos">
-            <ul class="add-snav">
-                <li class="active"><a href="#"> 余额设置</a></li>
-            </ul>
-        </div>--}}
 
         <form action="{{ yzWebUrl('finance.balance.index') }}" method="post" class="form-horizontal form" enctype="multipart/form-data">
             <div class="panel panel-default">
@@ -31,6 +26,54 @@
                             <span class='help-block'>是否允许用户对账户余额进行充值</span>
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                        <div class="col-sm-9 col-xs-12">
+                            <label class='radio-inline'>
+                                <input type='radio' name='balance[recharge_activity]' value='1' @if($balance['recharge_activity'] == 1) checked @endif/>
+                                启用充值活动
+                            </label>
+                            <label class='radio-inline'>
+                                <input type='radio' name='balance[recharge_activity]' value='0' @if(empty($balance['recharge_activity'])) checked @endif/>
+                                关闭充值活动
+                            </label>
+                            <span class='help-block'>开启时需选择活动开始及结束时间、会员最多参与次数(-1，0，空则不限参与次数)</span>
+                            <div id='recharge_activity' @if( empty($balance['recharge_activity']) ) style="display:none" @endif>
+                                <div class="col-sm-9 col-xs-12">
+                                    <div class="alipay" >
+                                        <label class='radio-inline' ></label>
+                                    </div>
+                                    <div class="cost" >
+                                        <label class='radio-inline'>
+                                            <div class="input-group" style="width: 330px;">
+                                                <div class="input-group-addon" style="width: 120px;">会员最多参与次数</div>
+                                                <input type="text" name="balance[recharge_activity]" class="form-control" value="{{ $set['poundage_full_cut'] or -1 }}" placeholder=""/>
+                                                <div class="input-group-addon">次</div>
+                                            </div>
+                                        </label>
+                                        <label class='radio-inline'>
+                                            <div class="search-select">
+                                                {!! app\common\helpers\DateRange::tplFormFieldDateRange('balance[recharge_activity]', [
+                                                'starttime'=>date('Y-m-d H:i', strtotime($balance['recharge_activity']) ?: strtotime('-1 month')),
+                                                'endtime'=>date('Y-m-d H:i',strtotime($balance['recharge_activity']) ?: time()),
+                                                'start'=>0,
+                                                'end'=>0
+                                                ], true) !!}
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+
+                    </div>
+
+
                     <div id='recharge' @if( empty($balance['recharge']) ) style="display:none" @endif>
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
@@ -110,6 +153,14 @@
                 }
                 else {
                     $("#recharge").hide();
+                }
+            });
+            $(":radio[name='balance[recharge_activity]']").click(function () {
+                if ($(this).val() == 1) {
+                    $("#recharge_activity").show();
+                }
+                else {
+                    $("#recharge_activity").hide();
                 }
             });
             $(":radio[name='balance[proportion_status]']").click(function () {
