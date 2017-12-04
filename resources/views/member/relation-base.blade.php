@@ -30,7 +30,7 @@
                     {{trans('通知设置')}}
                 </div>
                 <div class='panel-body'>
-                    <div class="form-group">
+                    {{--<div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">获得推广权限通知</label>
                         <div class="col-sm-9 col-xs-12">
                             <input type="text"  name="base[generalize_title]" class="form-control" value="{{$base['generalize_title']}}" ></input>
@@ -44,9 +44,26 @@
                             <textarea  name="base[generalize_msg]" class="form-control" >{{$base['generalize_msg']}}</textarea>
                             模板变量: [昵称] [时间]
                         </div>
-                    </div>
+                    </div>--}}
 
                     <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">获得推广权限通知</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <select name='base[member_agent]' class='form-control diy-notice'>
+                                <option value="" @if(!$base['member_agent']) selected @endif >
+                                    请选择消息模板
+                                </option>
+                                @foreach ($temp_list as $item)
+                                    <option value="{{$item['id']}}"
+                                            @if($base['member_agent'] == $item['id'])
+                                            selected
+                                            @endif>{{$item['title']}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    {{--<div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">新增下线通知</label>
                         <div class="col-sm-9 col-xs-12">
                             <input type="text"  name="base[agent_title]" class="form-control" value="{{$base['agent_title']}}" ></input>
@@ -59,6 +76,23 @@
                         <div class="col-sm-9 col-xs-12">
                             <textarea  name="base[agent_msg]" class="form-control" >{{$base['agent_msg']}}</textarea>
                             模板变量: [昵称] [时间] [下级昵称]
+                        </div>
+                    </div>--}}
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">新增下线通知</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <select name='base[member_new_lower]' class='form-control diy-notice'>
+                                <option value="" @if(!$base['member_new_lower']) selected @endif >
+                                    请选择消息模板
+                                </option>
+                                @foreach ($temp_list as $item)
+                                    <option value="{{$item['id']}}"
+                                            @if($base['member_new_lower'] == $item['id'])
+                                            selected
+                                            @endif>{{$item['title']}}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
 
@@ -74,4 +108,10 @@
                 </div>
             </div>
         </form>
+
+        <script>
+            require(['select2'], function () {
+                $('.diy-notice').select2();
+            })
+        </script>
     </section>@endsection
