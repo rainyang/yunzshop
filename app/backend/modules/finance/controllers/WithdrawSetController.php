@@ -14,6 +14,7 @@ use app\backend\modules\finance\models\Withdraw;
 use app\common\components\BaseController;
 use app\common\facades\Setting;
 use app\common\helpers\Url;
+use app\common\models\notice\MessageTemp;
 
 class WithdrawSetController extends BaseController
 {

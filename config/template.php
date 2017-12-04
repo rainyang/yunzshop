@@ -134,28 +134,36 @@ return [
             '商城名称', '昵称', '时间', '积分变动金额', '积分变动类型', '变动后余额数值'
         ]
     ],
-    'finance_withdraw_apply' => [
-        'title' => '财务(提现申请提交通知)',
-        'subtitle' => '提现申请提交通知',
-        'value' => 'finance_withdraw_apply',
+    'finance_incone_withdraw' => [
+        'title' => '财务(提现申请通知)',
+        'subtitle' => '提现申请通知',
+        'value' => 'finance_incone_withdraw',
         'param' => [
-            '商城名称', '昵称', '提现编号', '收入类型', '提现方式', '申请金额', '手续费', '劳务税', '申请时间'
+            '昵称', '时间', '收入类型', '金额', '手续费', '提现方式'
         ]
     ],
-    'finance_withdraw_examine' => [
+    'finance_incone_withdraw_check' => [
         'title' => '财务(提现审核通知)',
         'subtitle' => '提现审核通知',
-        'value' => 'finance_withdraw_examine',
+        'value' => 'finance_incone_withdraw_check',
         'param' => [
-            '商城名称', '昵称', '提现申请时间', '收入类型', '提现方式', '申请金额', '通过审核金额', '驳回金额', '无效金额', '审核通过手续费', '审核通过劳务税', '审核通过应打款金额'
+            '昵称', '时间', '收入类型', '状态', '金额', '手续费', '审核通过金额', '提现方式'
         ]
     ],
-    'finance_withdraw_play' => [
+    'finance_incone_withdraw_pay' => [
         'title' => '财务(提现打款通知)',
         'subtitle' => '提现打款通知',
-        'value' => 'finance_withdraw_play',
+        'value' => 'finance_incone_withdraw_pay',
         'param' => [
-            '商城名称', '昵称', '提现申请时间', '收入类型', '提现方式', '申请金额', '打款金额', '手续费', '劳务税', '提现状态'
+            '昵称', '时间', '收入类型', '状态', '金额', '提现方式'
+        ]
+    ],
+    'finance_incone_withdraw_arrival' => [
+        'title' => '财务(提现到账通知)',
+        'subtitle' => '提现到账通知',
+        'value' => 'finance_incone_withdraw_arrival',
+        'param' => [
+            '昵称', '时间', '收入类型', '状态', '金额', '提现方式'
         ]
     ],
 
@@ -164,7 +172,7 @@ return [
         'subtitle' => '余额提现提交通知',
         'value' => 'finance_balance_withdraw_submit',
         'param' => [
-            '时间','金额','手续费'
+            '时间', '金额', '手续费'
         ]
     ],
 
@@ -174,7 +182,7 @@ return [
         'subtitle' => '余额提现成功通知',
         'value' => 'finance_balance_withdraw_success',
         'param' => [
-            '时间','金额','手续费'
+            '时间', '金额', '手续费'
         ]
     ],
 
@@ -183,7 +191,7 @@ return [
         'subtitle' => '余额提现失败通知',
         'value' => 'finance_balance_withdraw_fail',
         'param' => [
-            '时间','金额','手续费'
+            '时间', '金额', '手续费'
         ]
     ],
 
