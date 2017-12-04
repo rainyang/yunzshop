@@ -20,7 +20,7 @@ class DiyTempController extends BaseController
     public function index()
     {
         $kwd = request()->keyword;
-        $list = MessageTemp::fetchTempList($kwd)->orderBy('id', 'desc')->paginate();
+        $list = MessageTemp::fetchTempList($kwd)->orderBy('id', 'desc')->paginate(8);
         $pager  = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
 
         return view('setting.diytemp.list', [
