@@ -395,7 +395,7 @@ class MemberService
         } else {
             \Log::debug('添加新会员');
 
-            DB::transaction(function () use ($member_model, $mc_mapping_fans_model, $member_shop_info_model, $member_id, $uniacid, $userinfo, $UnionidInfo, $upperMemberId) {
+            DB::transaction(function () use (&$member_id, $member_model, $mc_mapping_fans_model, $member_shop_info_model, $uniacid, $userinfo, $UnionidInfo, $upperMemberId) {
                 if (empty($member_model) && empty($mc_mapping_fans_model)) {
                     $member_id = $this->addMemberInfo($uniacid, $userinfo);
 
@@ -466,7 +466,7 @@ class MemberService
         } else {
             \Log::debug('添加新会员');
 
-            DB::transaction(function () use ($member_id, $uniacid, $userinfo, $member_model, $fans_mode, $member_shop_info_model, $upperMemberId){
+            DB::transaction(function () use (&$member_id, $uniacid, $userinfo, $member_model, $fans_mode, $member_shop_info_model, $upperMemberId){
                 if (empty($member_model) && empty($fans_mode)) {
                     $member_id = $this->addMemberInfo($uniacid, $userinfo);
 
