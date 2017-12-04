@@ -101,7 +101,7 @@ class BalanceController extends BaseController
             'page'         => $page,
             'search'        => $search,
             'shopSet'       => Setting::get('shop.member'),
-            'serviceType'   => \app\common\models\finance\Balance::$balanceComment
+            'serviceType'   => \app\common\models\finance\Balance::getSourceComment()
         ])->render();
     }
 

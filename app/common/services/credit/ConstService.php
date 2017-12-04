@@ -60,7 +60,7 @@ class ConstService
 
 
 
-    public function __construct($title)
+    public function __construct($title = '')
     {
         static::$title              = $title ?: static::$title;
     }
