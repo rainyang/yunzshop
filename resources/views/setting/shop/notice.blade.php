@@ -501,7 +501,7 @@
                         @endif
                         @if(YunShop::notice()->getNotSend('withdraw_submit'))
                             <div class="form-group">
-                                <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现提交通知</label>
+                                <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额提现提交通知</label>
                                 <div class="col-sm-9 col-xs-12">
                                     <select name='notice[withdraw_submit]' class='form-control diy-notice'>
                                         <option value="" @if(!$set['withdraw_submit'])
@@ -523,7 +523,7 @@
                         @endif
                         @if(YunShop::notice()->getNotSend('withdraw_success'))
                             <div class="form-group">
-                                <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现成功通知</label>
+                                <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额提现成功通知</label>
                                 <div class="col-sm-9 col-xs-12">
                                     <select name='notice[withdraw_success]' class='form-control diy-notice'>
                                         <option value="" @if(!$set['withdraw_success'])
@@ -545,7 +545,7 @@
                         @endif
                         @if(YunShop::notice()->getNotSend('withdraw_fail'))
                             <div class="form-group">
-                                <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现失败通知</label>
+                                <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额提现失败通知</label>
                                 <div class="col-sm-9 col-xs-12">
                                     <select name='notice[withdraw_fail]' class='form-control diy-notice'>
                                         <option value="" @if(!$set['withdraw_fail'])

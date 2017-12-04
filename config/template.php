@@ -99,7 +99,7 @@ return [
         'subtitle' => '会员升级',
         'value' => 'member_upgrade',
         'param' => [
-            '商城名称', '粉丝昵称', '旧等级', '新等级', '时间', '等级有效期'
+            '粉丝昵称', '旧等级', '新等级', '时间',
         ]
     ],
     'member_agent' => [
@@ -156,6 +156,34 @@ return [
         'value' => 'finance_withdraw_play',
         'param' => [
             '商城名称', '昵称', '提现申请时间', '收入类型', '提现方式', '申请金额', '打款金额', '手续费', '劳务税', '提现状态'
+        ]
+    ],
+
+    'finance_balance_withdraw_submit' => [
+        'title' => '余额(提现提交通知)',
+        'subtitle' => '余额提现提交通知',
+        'value' => 'finance_balance_withdraw_submit',
+        'param' => [
+            '时间','金额','手续费'
+        ]
+    ],
+
+
+    'finance_balance_withdraw_success' => [
+        'title' => '余额(提现成功通知)',
+        'subtitle' => '余额提现成功通知',
+        'value' => 'finance_balance_withdraw_success',
+        'param' => [
+            '时间','金额','手续费'
+        ]
+    ],
+
+    'finance_balance_withdraw_fail' => [
+        'title' => '余额(提现失败通知)',
+        'subtitle' => '余额提现失败通知',
+        'value' => 'finance_balance_withdraw_fail',
+        'param' => [
+            '时间','金额','手续费'
         ]
     ],
 
