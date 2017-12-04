@@ -1141,6 +1141,18 @@ return [
                                 'item'              => 'order_operation_close',
                                 'parents'           => ['Order', 'order_list'],
                             ],
+
+                            'order_operation_remark' => [
+                                'name'              => '订单备注',
+                                'url'               => 'order.remark.update-remark',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => '',
+                                'sort'              => 1,
+                                'item'              => 'order_operation_remark',
+                                'parents'           => ['Order', 'order_list'],
+                            ],
                         ],
                     ],
                 ],
@@ -1471,6 +1483,21 @@ return [
                     ],
                 ],
             ],
+
+            'order_batch_send' => [
+                'name'              => '批量发货',
+                'url'               => 'order.batch-send.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-send',
+                'sort'              => '8',
+                'item'              => 'order_batch_send',
+                'parents'           => ['Order'],
+                'child' => [
+
+                ],
+            ],
         ],
     ],
 
@@ -1579,6 +1606,20 @@ return [
                 'parents'           => ['finance', 'balance',],
             ],
 
+            //茶余饭后独立开发充值满额统计
+            /*'finance_balance_recharge_statistics' => [
+                'name'              => '满额统计',
+                'url'               => 'finance.balanceRechargeStatistics.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-download',
+                'sort'              => 0,
+                'item'              => 'finance_balance_recharge_statistics',
+                'parents'           => ['finance', 'balance',],
+            ],*/
+
+
             'finance_balance_tansferRecord' => [
                 'name'              => '转让记录',
                 'url'               => 'finance.balance.transferRecord',
@@ -1645,7 +1686,7 @@ return [
 
             'withdraw_set'  => [
                 'name'              => '提现设置',
-                'url'               => 'finance.withdraw.set',
+                'url'               => 'finance.withdraw-set.see',
                 'url_params'        => '',
                 'permit'            => 1,
                 'menu'              => 1,
@@ -1654,24 +1695,36 @@ return [
                 'item'              => 'withdraw_set',
                 'parents'           => ['finance','withdraw'],
                 'child'             => [
-                    'withdraw_set'      => [
+                    'withdraw_set_see'      => [
                         'name'              => '编辑保存',
-                        'url'               => 'finance.withdraw.set',
+                        'url'               => 'finance.withdraw-set.see',
                         'url_params'        => '',
                         'permit'            => 1,
                         'menu'              => 0,
                         'icon'              => '',
                         'sort'              => '0',
-                        'item'              => 'withdraw_set',
+                        'item'              => 'withdraw_set_see',
                         'parents'           => ['finance','withdraw','withdraw_set'],
                     ],
                 ],
             ],
 
+            'withdraw_statistics'  => [
+                'name'              => '提现统计',
+                'url'               => 'finance.withdraw-statistics.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-line-chart',
+                'sort'              => 0,
+                'item'              => 'withdraw_statistics',
+                'parents'           => ['finance','withdraw'],
+            ],
+
             'withdraw_records'  => [
                 'name'              => '提现记录',
-                'url'               => 'finance.withdraw',
-                'url_params'        => '',
+                'url'               => 'finance.withdraw-records',
+                'url_params'        => '&search[status]=0',
                 'permit'            => 1,
                 'menu'              => 1,
                 'icon'              => 'fa-pencil',
@@ -1682,7 +1735,7 @@ return [
 
                     'withdraw_records_see' => [
                         'name'              => '浏览记录',
-                        'url'               => 'finance.withdraw.index',
+                        'url'               => 'finance.withdraw-records.index',
                         'url_params'        => "",
                         'permit'            => 1,
                         'menu'              => 0,
@@ -1694,7 +1747,7 @@ return [
 
                     'withdraw_records_export' => [
                         'name'              => '记录导出',
-                        'url'               => 'finance.withdraw.export',
+                        'url'               => 'finance.withdraw-records.export',
                         'url_params'        => "",
                         'permit'            => 1,
                         'menu'              => 0,
@@ -1729,7 +1782,7 @@ return [
 
                     'withdraw_records_detail' => [
                         'name'              => '收入提现详情',
-                        'url'               => 'finance.withdraw.info',
+                        'url'               => 'finance.withdraw-detail.index',
                         'url_params'        => "",
                         'permit'            => 1,
                         'menu'              => 0,
@@ -1753,7 +1806,7 @@ return [
 
                     'withdraw_status_wait_audit' => [
                         'name'              => '待审核提现',
-                        'url'               => 'finance.withdraw.index',
+                        'url'               => 'finance.withdraw-records.index',
                         'url_params'        => "&search[status]=0",
                         'permit'            => 0,
                         'menu'              => 1,
@@ -1765,7 +1818,7 @@ return [
 
                     'withdraw_status_wait_pay' => [
                         'name'              => '待打款提现',
-                        'url'               => 'finance.withdraw',
+                        'url'               => 'finance.withdraw-records.index',
                         'url_params'        => "&search[status]=1",
                         'permit'            => 0,
                         'menu'              => 1,
@@ -1777,7 +1830,7 @@ return [
 
                     'withdraw_status_pay' => [
                         'name'              => '已打款提现',
-                        'url'               => 'finance.withdraw',
+                        'url'               => 'finance.withdraw-records.index',
                         'url_params'        => "&search[status]=2",
                         'permit'            => 0,
                         'menu'              => 1,
@@ -1789,7 +1842,7 @@ return [
 
                     'withdraw_status_arrival' => [
                         'name'              => '已到账提现',
-                        'url'               => 'finance.withdraw',
+                        'url'               => 'finance.withdraw-records.index',
                         'url_params'        => "&search[status]=3",
                         'permit'            => 0,
                         'menu'              => 1,
@@ -1801,7 +1854,7 @@ return [
 
                     'withdraw_status_invalid' => [
                         'name'              => '无效提现',
-                        'url'               => 'finance.withdraw',
+                        'url'               => 'finance.withdraw-records.index',
                         'url_params'        => "&search[status]=-1",
                         'permit'            => 0,
                         'menu'              => 1,
@@ -1872,6 +1925,31 @@ return [
                         'icon'              => 'fa-file-text-o',
                         'sort'              => 0,
                         'item'              => 'point_log',
+                        'parents'           => ['finance', 'finance_point',],
+                    ],
+
+
+                    'point_love_see'             => [
+                        'name'              => '查看转出设置',
+                        'url'               => 'finance.point-love.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'point_love_see',
+                        'parents'           => ['finance', 'finance_point',],
+                    ],
+
+                    'point_love_update'             => [
+                        'name'              => '修改转出设置',
+                        'url'               => 'finance.point-love.update',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'point_love_update',
                         'parents'           => ['finance', 'finance_point',],
                     ],
                 ],
@@ -2081,7 +2159,6 @@ return [
             ],
 
             'Setting' => [
-                'id' => '2',
                 'name' => '商城设置',
                 'url' => 'setting.shop.index',
                 'url_params' => '',
@@ -2091,7 +2168,6 @@ return [
                 'left_second_show'  => 1,           //左侧二级导航是否显示
                 'menu' => 1,
                 'icon' => 'fa-cog',
-                'parent_id' => 1,
                 'sort' => 0,
                 'item' => 'Setting',
                 'parents' => ['system'],
@@ -2169,19 +2245,6 @@ return [
                         'parents'       => ['system', 'Setting', 'setting_shop'],
                     ],
 
-                    /*'setting_shop_trade' => [
-                        'name'              => '交易',
-                        'url'               => 'setting.shop.trade',
-                        'url_params'        => '',
-                        'permit'            => 1,
-                        'menu'              => 1,
-                        'icon'              => 'fa-compress',
-                        'sort'              => '3',
-                        'item'              => 'setting_shop_trade',
-                        'parents'           => ['system', 'Setting',],
-                    ],*/
-
-
                     'setting_shop_share' => [
                         'name'              => '分享',
                         'url'               => 'setting.shop.share',
@@ -2215,6 +2278,18 @@ return [
                         'icon'              => 'fa-bell-o',
                         'sort'              => '7',
                         'item'              => 'setting_shop_form',
+                        'parents'           => ['system', 'Setting',],
+                    ],
+
+                    'setting_shop_protocol' => [
+                        'name'              => '注册协议',
+                        'url'               => 'setting.shop.protocol',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => 'fa-bell-o',
+                        'sort'              => '7',
+                        'item'              => 'setting_shop_protocol',
                         'parents'           => ['system', 'Setting',],
                     ],
                 ],

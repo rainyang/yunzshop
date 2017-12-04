@@ -13,6 +13,7 @@ use app\common\components\BaseController;
 use app\common\models\Member;
 use app\common\models\OrderPay;
 use app\common\models\PayOrder;
+use app\common\models\PayType;
 use app\common\services\MessageService;
 use app\common\services\WechatPay;
 use app\frontend\modules\finance\controllers\IncomeController;

@@ -95,6 +95,27 @@
                             </select>
                         </div>
                     </div>
+                </div>
+
+                <div class='panel-heading'>
+                    {{trans('会员关系')}}
+                </div>
+
+                <div class='panel-body'>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">显示关系等级</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <label class="checkbox-inline">
+                                <input type="checkbox"  name="base[relation_level][]" value="1" @if (in_array(1, $relation_level)) checked @endif >1级</input>
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox"  name="base[relation_level][]" value="2" @if (in_array(2, $relation_level)) checked @endif >2级</input>
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox"  name="base[relation_level][]"  value="3" @if (in_array(3, $relation_level)) checked @endif >3级</input>
+                            </label>
+                        </div>
+                    </div>
 
                     <div class="form-group"></div>
                     <div class="form-group">
@@ -104,7 +125,6 @@
                                    onclick='return formcheck()'/>
                         </div>
                     </div>
-
                 </div>
             </div>
         </form>

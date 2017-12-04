@@ -3,12 +3,14 @@
 namespace app\payment;
 
 use app\common\components\BaseController;
+use app\common\events\payment\ChargeComplatedEvent;
 use app\common\events\payment\RechargeComplatedEvent;
 use app\common\models\AccountWechats;
 use app\common\models\OrderPay;
 use app\common\models\PayOrder;
 use app\frontend\modules\finance\services\BalanceRechargeResultService;
 use app\frontend\modules\order\services\OrderService;
+use Yunshop\ClockIn\models\ClockPayLogModel;
 use Yunshop\Gold\frontend\services\RechargeService;
 
 /**
@@ -151,6 +153,23 @@ class PaymentController extends BaseController
                     'pay_sn' => $data['trade_no']
                 ]));
                 break;
+            case "card_charge.succeeded":
+                \Log::debug('打卡支付操作', ['card_charge.succeeded']);
+
+                $orderPay = ClockPayLogModel::where('order_sn', $data['out_trade_no'])->first();
+
+                if ($data['unit'] == 'fen') {
+                    $orderPay->amount = $orderPay->amount * 100;
+                }
+
+                if (bccomp($orderPay->amount, $data['total_fee'], 2) == 0) {
+                    \Log::debug('更新订单状态');
+                    event(new ChargeComplatedEvent([
+                        'order_sn' => $data['out_trade_no'],
+                        'pay_sn' => $data['trade_no']
+                    ]));
+                }
+                break;
         }
     }
 
@@ -171,6 +190,8 @@ class PaymentController extends BaseController
                 return 'recharge.succeeded';
             } elseif ('RG' == strtoupper($tag)) {
                 return 'gold_recharge.succeeded';
+            } elseif ('CI' == strtoupper($tag)) {
+                return 'card_charge.succeeded';
             }
         }
 

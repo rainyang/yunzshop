@@ -253,6 +253,7 @@ class OrderService
      */
     public static function ordersPay(array $param)
     {
+        \Log::info('---------订单支付ordersPay--------', $param);
         $orderPay = \app\common\models\OrderPay::find($param['order_pay_id']);
         if (!isset($orderPay)) {
             throw new AppException('支付流水记录不存在');
@@ -273,6 +274,8 @@ class OrderService
                 }
             });
         });
+        \Log::info('---------订单支付成功ordersPay--------', []);
+
     }
 
     /**

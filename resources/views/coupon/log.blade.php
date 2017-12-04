@@ -99,6 +99,8 @@
                                 <label class="label label-danger">领取</label>
                             @elseif($row['getfrom'] == 4)
                                 <label class="label label-success">购物赠送</label>
+                            @elseif($row['getfrom'] == 5)
+                                <label class="label label-success">会员转赠</label>
                             @elseif($row['getfrom'] == 0)
                                 <label class="label label-warning">发放</label>
                             @endif

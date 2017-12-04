@@ -3,6 +3,11 @@
 namespace app\common\services\alipay;
 
 use app\common\exceptions\AppException;
+use app\common\services\alipay\functions;
+
+//require_once __DIR__ . '/functions/AopEncrypt.php';
+
+require_once __DIR__ . '/function/AopEncrypt.php';
 
 class AopClient {
 	//应用ID
@@ -369,7 +374,7 @@ class AopClient {
 			}
 
 			// 执行加密
-			$enCryptContent = encrypt($apiParams['biz_content'], $this->encryptKey);
+			$enCryptContent = functions\encrypt($apiParams['biz_content'], $this->encryptKey);
 			$apiParams['biz_content'] = $enCryptContent;
 
 		}
@@ -486,7 +491,7 @@ class AopClient {
 			}
 
 			// 执行加密
-			$enCryptContent = encrypt($apiParams['biz_content'], $this->encryptKey);
+			$enCryptContent = functions\encrypt($apiParams['biz_content'], $this->encryptKey);
 			$apiParams['biz_content'] = $enCryptContent;
 
 		}
@@ -1003,7 +1008,7 @@ class AopClient {
 		$bodyIndexContent = substr($responseContent, 0, $parsetItem->startIndex);
 		$bodyEndContent = substr($responseContent, $parsetItem->endIndex, strlen($responseContent) + 1 - $parsetItem->endIndex);
 
-		$bizContent = decrypt($parsetItem->encryptContent, $this->encryptKey);
+		$bizContent = functions\decrypt($parsetItem->encryptContent, $this->encryptKey);
 		return $bodyIndexContent . $bizContent . $bodyEndContent;
 
 	}
@@ -1067,7 +1072,7 @@ class AopClient {
 
 		$bodyIndexContent = substr($responseContent, 0, $parsetItem->startIndex);
 		$bodyEndContent = substr($responseContent, $parsetItem->endIndex, strlen($responseContent) + 1 - $parsetItem->endIndex);
-		$bizContent = decrypt($parsetItem->encryptContent, $this->encryptKey);
+		$bizContent = functions\decrypt($parsetItem->encryptContent, $this->encryptKey);
 
 		return $bodyIndexContent . $bizContent . $bodyEndContent;
 

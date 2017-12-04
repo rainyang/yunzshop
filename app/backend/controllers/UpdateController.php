@@ -21,6 +21,9 @@ class UpdateController extends BaseController
     {
         $list = [];
 
+        //删除非法文件
+        $this->deleteFile();
+
         $key = Setting::get('shop.key')['key'];
         $secret = Setting::get('shop.key')['secret'];
         $update = new AutoUpdate(null, null, 300);
@@ -430,5 +433,35 @@ class UpdateController extends BaseController
         $version = $updateList[0]['version']->getVersion();
 
         return $version;
+    }
+
+    /**
+     * 删除文件
+     *
+     */
+    private function deleteFile()
+    {
+        $filesystem = app(Filesystem::class);
+
+        $files = [
+            [
+                'path' => storage_path('cert'),
+                'ext' => ['pem']
+            ]
+        ];
+
+        foreach ($files as $rows) {
+            $scan_file = $filesystem->files($rows['path']);
+
+            if (!empty($scan_file)) {
+                foreach ($scan_file as $item) {
+                    $file_info = pathinfo($item);
+
+                    if (!in_array($file_info['extension'], $rows['ext'])) {
+                        @unlink($item);
+                    }
+                }
+            }
+        }
     }
 }

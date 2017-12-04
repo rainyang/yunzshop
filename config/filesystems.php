@@ -67,6 +67,12 @@ return [
             'root' => storage_path('cert'),
         ],
 
+        // 批量发货上传excel文件保存路径
+        'orderexcel' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/orderexcel'),
+        ],
+
         'upload' => [
             'driver' => 'local',
             'root' => storage_path('app/public/avatar'),

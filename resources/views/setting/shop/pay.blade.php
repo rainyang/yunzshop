@@ -105,7 +105,7 @@
                                 </div>
                                 <div style="float:left; width:85%; height:30px;">
                                     <input type="hidden" name="pay[weixin_cert]" value="{{ $set['weixin_cert'] }}"/>
-                                    <input type="file" name="weixin_cert_file" class="form-control"/>
+                                    <input type="file" name="weixin_cert" class="form-control"/>
                                     <span class="help-block">
                                         @if (!empty($set['weixin_cert']))
                                             <span class='label label-success'>已上传</span>
@@ -129,7 +129,7 @@
                                 <div style="float:left; width:85%; height:30px;">
                                     <input type="hidden" name="pay[weixin_key]" value="{{ $set['weixin_key'] }}"/>
 
-                                    <input type="file" name="weixin_key_file" class="form-control"/>
+                                    <input type="file" name="weixin_key" class="form-control"/>
                                     <span class="help-block">
                                         @if (!empty($set['weixin_key']))
                                             <span class='label label-success'>已上传</span>
@@ -152,7 +152,7 @@
                                 <div style="float:left; width:85%; height:30px;">
                                     <input type="hidden" name="pay[weixin_root]" value="{{ $set['weixin_root'] }}"/>
 
-                                    <input type="file" name="weixin_root_file" class="form-control"/>
+                                    <input type="file" name="weixin_root" class="form-control"/>
                                     <span class="help-block">
                                         @if (!empty($set['weixin_root']))
                                             <span class='label label-success'>已上传</span>
@@ -438,6 +438,58 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                             <div class="col-sm-9 col-xs-12">
+                                <label class='radio-inline'>
+                                    <input type='radio' name='pay[api_version]' value='1' @if ( empty($set['api_version']) || $set['api_version'] == 1) checked @endif/>
+                                    旧接口
+                                </label>
+                                <label class='radio-inline'>
+                                    <input type='radio' name='pay[api_version]' value='2' @if ( $set['api_version'] == 2) checked @endif />
+                                    新接口
+                                </label>
+                            </div>
+                        </div>
+
+                        <div id="open_alipay" @if ( empty($set['api_version']) || $set['api_version'] == 1) style="display: none" @endif>
+                            <div class="form-group">
+                                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                                <div class="col-sm-9 col-xs-12">
+                                    <div style="float:left; width:15%; height:30px;">
+                                        <label class='radio-inline'  style="padding-left:0px">应用ID：</label>
+                                    </div>
+                                    <div style="float:left; width:85%; height:30px;">
+                                        <input class="col-sm-6" type="text" name="pay[alipay_app_id]" value="{{ $set['alipay_app_id'] }}"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                                <div class="col-sm-9 col-xs-12">
+                                    <div style="float:left; width:15%; height:30px;">
+                                        <label class='radio-inline'  style="padding-left:0px">开发者私钥：</label>
+                                    </div>
+                                    <div style="float:left;">
+                                        <textarea name="pay[rsa_private_key]" class="form-control rich-text" cols="85" rows="5">{{ $set['rsa_private_key'] }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                                <div class="col-sm-9 col-xs-12">
+                                    <div style="float:left; width:15%; height:30px;">
+                                        <label class='radio-inline'  style="padding-left:0px">支付宝公钥：</label>
+                                    </div>
+                                    <div style="float:left;">
+                                        <textarea name="pay[rsa_public_key]" class="form-control rich-text" cols="85" rows="5">{{ $set['rsa_public_key'] }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                            <div class="col-sm-9 col-xs-12">
                                 <div style="float:left; width:15%; height:30px;">
                                     <label class='radio-inline'  style="padding-left:0px">付款账号：</label>
                                 </div>
@@ -576,7 +628,14 @@
                                 $("#balance").hide();
                             }
                         })
-
+                        $(":radio[name='pay[api_version]']").click(function () {
+                            if ($(this).val() == 2) {
+                                $("#open_alipay").show();
+                            }
+                            else {
+                                $("#open_alipay").hide();
+                            }
+                        })
                     })
                 </script>
             </form>

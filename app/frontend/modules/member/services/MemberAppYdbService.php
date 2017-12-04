@@ -34,6 +34,8 @@ class MemberAppYdbService extends MemberService
         $uniacid = \YunShop::app()->uniacid;
         $mobile   = \YunShop::request()->mobile;
         $password = \YunShop::request()->password;
+        $uuid = \YunShop::request()->uuid;
+
         if (!empty($mobile) && !empty($password)){
             if (\Request::isMethod('post') && MemberService::validate($mobile, $password)) {
                 $has_mobile = MemberModel::checkMobile($uniacid, $mobile);
@@ -65,6 +67,26 @@ class MemberAppYdbService extends MemberService
                         $data = $member_info;
                     }
 
+                    if (!empty($uuid)) {
+                        $wechat_member = MemberWechatModel::getFansById($member_info['uid']);
+                        if (!empty($wechat_member)) {
+                            MemberWechatModel::updateData($member_info['uid'], array('uuid' => $uuid));
+                        } else {
+                            MemberWechatModel::insertData(array(
+                                'uniacid' => $uniacid,
+                                'member_id' => $member_info['uid'],
+                                'openid' => $member_info['mobile'],
+                                'nickname' => $member_info['nickname'],
+                                'gender' => $member_info['gender'],
+                                'avatar' => $member_info['avatar'],
+                                'province' => $member_info['resideprovince'],
+                                'city' => $member_info['residecity'],
+                                'country' => $member_info['nationality'],
+                                'uuid' => $uuid
+                            ));
+                        }
+                    }
+
                     return show_json(1, $data);
                 } else  {
                     return show_json(6, "手机号或密码错误");
@@ -76,7 +98,7 @@ class MemberAppYdbService extends MemberService
             $para = \YunShop::request();
             \Log::debug('获取用户信息：', print_r($para, 1));
             if ($para['openid'] && $para['token']) {
-                $this->app_get_userinfo($para['token'], $para['openid']);
+                $this->app_get_userinfo($para['token'], $para['openid'], $uuid);
             } elseif ($para['openid']) {
                 $this->redirect_link($para['openid']);
             }
@@ -88,7 +110,7 @@ class MemberAppYdbService extends MemberService
                     return show_json(3, '登录失败，请重试');
                 }
                 Session::set('member_id', $member['member_id']);
-                return show_json(1, $member);
+                return show_json(1, $member->toArray());
             }
         }
     }
@@ -99,11 +121,16 @@ class MemberAppYdbService extends MemberService
      * @param $token
      * @param $openid
      */
-    public function app_get_userinfo ($token, $openid) {
+    public function app_get_userinfo ($token, $openid, $uuid) {
         //通过接口获取用户信息
         $url = 'https://api.weixin.qq.com/sns/userinfo?access_token=' . $token . '&openid=' . $openid;
         $res = @ihttp_get($url);
         $user_info = json_decode($res['content'], true);
+
+        if (!empty($uuid)) {
+            $user_info['uuid'] = $uuid;
+        }
+
         if (!empty($user_info) && !empty($user_info['unionid'])) {
             $this->memberLogin($user_info);
             exit('success');
@@ -135,9 +162,9 @@ class MemberAppYdbService extends MemberService
 
         $record = array(
             'openid' => $userinfo['openid'],
-            'nickname' => stripslashes($userinfo['nickname'])
+            'nickname' => stripslashes($userinfo['nickname']),
+            'uuid'  => $userinfo['uuid']
         );
-
         MemberWechatModel::updateData($member_id, $record);
     }
 
@@ -163,17 +190,23 @@ class MemberAppYdbService extends MemberService
 
     public function addFansMember($uid, $uniacid, $userinfo)
     {
-        MemberWechatModel::insertData(array(
-            'uniacid' => $uniacid,
-            'member_id' => $uid,
-            'openid' => $userinfo['openid'],
-            'nickname' => $userinfo['nickname'],
-            'avatar' => $userinfo['headimgurl'],
-            'gender' => $userinfo['sex'],
-            'province' => '',
-            'country' => '',
-            'city' => ''
-        ));
+        $user = MemberWechatModel::getUserInfo_memberid($uid);
+        if (!empty($user)) {
+            $this->updateMemberInfo($uid, $userinfo);
+        } else {
+            MemberWechatModel::insertData(array(
+                'uniacid' => $uniacid,
+                'member_id' => $uid,
+                'openid' => $userinfo['openid'],
+                'nickname' => $userinfo['nickname'],
+                'avatar' => $userinfo['headimgurl'],
+                'gender' => $userinfo['sex'],
+                'province' => '',
+                'country' => '',
+                'city' => '',
+                'uuid' => $userinfo['uuid']
+            ));
+        }
     }
 
     public function getFansModel($openid)

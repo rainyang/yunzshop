@@ -21,6 +21,7 @@ use app\frontend\modules\member\models\MemberUniqueModel;
 use app\frontend\modules\member\models\smsSendLimitModel;
 use app\frontend\modules\member\models\SubMemberModel;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\DB;
 use Ixudra\Curl\Facades\Curl;
 
 class MemberService
@@ -394,37 +395,44 @@ class MemberService
         } else {
             \Log::debug('添加新会员');
 
-            if (empty($member_model) && empty($mc_mapping_fans_model)) {
-                $member_id = $this->addMemberInfo($uniacid, $userinfo);
+            DB::transaction(function () use (&$member_id, $member_model, $mc_mapping_fans_model, $member_shop_info_model, $uniacid, $userinfo, $UnionidInfo, $upperMemberId) {
+                if (empty($member_model) && empty($mc_mapping_fans_model)) {
+                    $member_id = $this->addMemberInfo($uniacid, $userinfo);
 
-                if ($member_id === false) {
-                    return show_json(8, '保存用户信息失败');
+                    if ($member_id === false) {
+                        return show_json(8, '保存用户信息失败');
+                    }
+                } elseif ($mc_mapping_fans_model->uid) {
+                    $member_id = $mc_mapping_fans_model->uid;
+
+                    $this->updateMemberInfo($member_id, $userinfo);
+                } else {
+                    $this->addFansMember($member_id, $uniacid, $userinfo);
                 }
-            } elseif ($mc_mapping_fans_model->uid) {
-                $member_id = $mc_mapping_fans_model->uid;
 
-                $this->updateMemberInfo($member_id, $userinfo);
-            } else {
-                $this->addFansMember($member_id, $uniacid, $userinfo);
-            }
+                if (empty($member_shop_info_model)) {
+                    if (0 == $member_id) {
+                        \Log::debug(sprintf('----用户数据异常---%s-%s', $userinfo['openid'],$userinfo['nickname']));
+                        throw new AppException('用户数据异常, 注册失败');
+                    }
 
-            if (empty($member_shop_info_model)) {
-                $this->addSubMemberInfo($uniacid, $member_id);
-            }
+                    $this->addSubMemberInfo($uniacid, $member_id);
+                }
 
-            if (empty($UnionidInfo->unionid)) {
-                //添加ims_yz_member_unique表
-                $this->addMemberUnionid($uniacid, $member_id, $userinfo['unionid']);
-            }
+                if (empty($UnionidInfo->unionid)) {
+                    //添加ims_yz_member_unique表
+                    $this->addMemberUnionid($uniacid, $member_id, $userinfo['unionid']);
+                }
 
-            //生成分销关系链
-            if ($upperMemberId) {
-                \Log::debug(sprintf('----海报生成分销关系链----%d', $upperMemberId));
-                Member::createRealtion($member_id, $upperMemberId);
-            } else {
-                \Log::debug(sprintf('----生成分销关系链----%d', $upperMemberId));
-                Member::createRealtion($member_id);
-            }
+                //生成分销关系链
+                if ($upperMemberId) {
+                    \Log::debug(sprintf('----海报生成分销关系链----%d', $upperMemberId));
+                    Member::createRealtion($member_id, $upperMemberId);
+                } else {
+                    \Log::debug(sprintf('----生成分销关系链----%d', $upperMemberId));
+                    Member::createRealtion($member_id);
+                }
+            });
         }
 
         return $member_id;
@@ -458,28 +466,35 @@ class MemberService
         } else {
             \Log::debug('添加新会员');
 
-            if (empty($member_model) && empty($fans_mode)) {
-                $member_id = $this->addMemberInfo($uniacid, $userinfo);
+            DB::transaction(function () use (&$member_id, $uniacid, $userinfo, $member_model, $fans_mode, $member_shop_info_model, $upperMemberId){
+                if (empty($member_model) && empty($fans_mode)) {
+                    $member_id = $this->addMemberInfo($uniacid, $userinfo);
 
-                if ($member_id === false) {
-                    return show_json(8, '保存用户信息失败');
+                    if ($member_id === false) {
+                        return show_json(8, '保存用户信息失败');
+                    }
+                } elseif ($fans_mode->uid) {
+                    $member_id = $fans_mode->uid;
+
+                    $this->updateMemberInfo($member_id, $userinfo);
                 }
-            } elseif ($fans_mode->uid) {
-                $member_id = $fans_mode->uid;
 
-                $this->updateMemberInfo($member_id, $userinfo);
-            }
+                if (empty($member_shop_info_model)) {
+                    if (0 == $member_id) {
+                        \Log::debug(sprintf('----用户数据异常---%s-%s', $userinfo['openid'],$userinfo['nickname']));
+                        throw new AppException('用户数据异常, 注册失败');
+                    }
 
-            if (empty($member_shop_info_model)) {
-                $this->addSubMemberInfo($uniacid, $member_id);
-            }
+                    $this->addSubMemberInfo($uniacid, $member_id);
+                }
 
-            //生成分销关系链
-            if ($upperMemberId) {
-                Member::createRealtion($member_id, $upperMemberId);
-            } else {
-                Member::createRealtion($member_id);
-            }
+                //生成分销关系链
+                if ($upperMemberId) {
+                    Member::createRealtion($member_id, $upperMemberId);
+                } else {
+                    Member::createRealtion($member_id);
+                }
+            });
         }
 
         return $member_id;

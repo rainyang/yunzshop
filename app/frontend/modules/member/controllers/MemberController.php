@@ -284,6 +284,22 @@ class MemberController extends ApiController
     }
 
     /**
+     * 我的推荐人v2
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getMyReferral_v2()
+    {
+        $data = MemberModel::getMyReferral_v2();
+
+        if (!empty($data)) {
+            return $this->successJson('', $data);
+        } else {
+            return $this->errorJson('会员不存在');
+        }
+    }
+
+    /**
      * 我推荐的人
      *
      * @return \Illuminate\Http\JsonResponse
@@ -297,6 +313,30 @@ class MemberController extends ApiController
         } else {
             return $this->errorJson('会员不存在');
         }
+    }
+
+    /**
+     * 我推荐的人 v2 基本信息
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getMyAgent_v2()
+    {
+        $data = MemberModel::getMyAgent_v2();
+
+        return $this->successJson('', $data);
+    }
+
+    /**
+     * 我推荐的人 v2 数据
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getMyAgentData_v2()
+    {
+        $data = MemberModel::getMyAgentData_v2();
+
+        return $this->successJson('', $data);
     }
 
     /**
@@ -558,12 +598,10 @@ class MemberController extends ApiController
             if ($share['icon']) {
                 $share['icon'] = replace_yunshop(tomedia($share['icon']));
             }
-        } else {
-            $share = [];
         }
 
         $shop = \Setting::get('shop');
-        $shop['logo'] = replace_yunshop(tomedia($shop['logo']));
+        $shop['icon'] = replace_yunshop(tomedia($shop['logo']));
 
         if (!is_null(\Config('customer_service'))) {
             $class = array_get(\Config('customer_service'), 'class');
@@ -572,6 +610,14 @@ class MemberController extends ApiController
             if ($ret) {
                 $shop['cservice'] = $ret;
             }
+        }
+
+        if (is_null($share) && is_null($shop)) {
+            $share = [
+                'title' => '商家分享',
+                'icon'  => '#',
+                'desc'  => '商家分享'
+            ];
         }
 
         $data = [
@@ -942,11 +988,16 @@ class MemberController extends ApiController
 
                 $agent->save();
             }
-
-
         }
 
         echo 'yz_agents修复完毕';
+    }
+
+    public function memberRelationFilter()
+    {
+        $data = MemberModel::filterMemberRoleAndLevel();
+
+        return $this->successJson('', $data);
     }
 
 }

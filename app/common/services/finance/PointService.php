@@ -70,6 +70,11 @@ class PointService
     const POINT_MODE_COUPON_DEDUCTION_AWARD = 16;
     const POINT_MODE_COUPON_DEDUCTION_AWARD_ATTACHED = '优惠劵抵扣奖励';
 
+    const POINT_MODE_TRANSFER_LOVE = 17;
+    const POINT_MODE_TRANSFER_LOVE_ATTACHED = '自动转出';
+
+    const POINT_MODE_RECHARGE_CODE = 92;
+    const POINT_MODE_RECHARGE_CODE_ATTACHED = '充值码充值积分';
 
     const POINT = 0;
 
@@ -103,8 +108,9 @@ class PointService
 
     /**
      * @name 更新会员积分
-     * @return PointLog point_model
+     * @return
      */
+
     public function changePoint()
     {
         $point = floor($this->point_data['point'] * 100) / 100;
@@ -112,7 +118,7 @@ class PointService
             $point = floor(abs($this->point_data['point']) * 100) / 100;
         }
         if ($point < 0.01) {
-            return;
+            return false;
         }
         $this->getAfterPoint();
         Member::updateMemberInfoById(['credit1' => $this->member_point], $this->point_data['member_id']);
@@ -221,6 +227,13 @@ class PointService
                 break;
             case (16):
                 $mode_attribute = self::POINT_MODE_COUPON_DEDUCTION_AWARD_ATTACHED;
+                break;
+            case (17):
+                $mode_attribute = self::POINT_MODE_TRANSFER_LOVE_ATTACHED;
+                break;
+            case (92):
+                $mode_attribute = self::POINT_MODE_RECHARGE_CODE_ATTACHED;
+                break;
         }
         return $mode_attribute;
     }

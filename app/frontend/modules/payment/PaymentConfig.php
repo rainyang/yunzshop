@@ -11,12 +11,14 @@ namespace app\frontend\modules\payment;
 use app\common\models\Order;
 use app\frontend\modules\payment\managers\OrderPaymentTypeSettingManager;
 use app\frontend\modules\payment\orderPayments\AppPayment;
+use app\frontend\modules\payment\orderPayments\CloudAliPayment;
 use app\frontend\modules\payment\orderPayments\CloudPayment;
 use app\frontend\modules\payment\orderPayments\WebPayment;
 use app\frontend\modules\payment\orderPayments\YunPayment;
 use app\frontend\modules\payment\paymentSettings\shop\AlipayAppSetting;
 use app\frontend\modules\payment\paymentSettings\shop\AlipaySetting;
 use app\frontend\modules\payment\paymentSettings\shop\BalanceSetting;
+use app\frontend\modules\payment\paymentSettings\shop\CloudPayAliSetting;
 use app\frontend\modules\payment\paymentSettings\shop\CloudPayWechatSetting;
 use app\frontend\modules\payment\paymentSettings\shop\WechatAppPaySetting;
 use app\frontend\modules\payment\paymentSettings\shop\WechatPaySetting;
@@ -24,7 +26,8 @@ use app\frontend\modules\payment\paymentSettings\shop\YunPayWechatSetting;
 
 class PaymentConfig
 {
-    static function get(){
+    static function get()
+    {
         return [
             'balance' => [
                 'settings' => [
@@ -44,51 +47,61 @@ class PaymentConfig
                 ],
             ]
             , 'wechatPay' => [
-            'payment' => function ($payType, $settings) {
-                return new WebPayment($payType, $settings);
-            },
-            'settings' => [
-                'shop' => function (OrderPaymentTypeSettingManager $manager, Order $order) {
-                    return new WechatPaySetting($order);
-                }
-            ],
-        ], 'alipayApp' => [
-            'payment' => function ($payType, $settings) {
-                return new AppPayment($payType, $settings);
-            },
-            'settings' => [
-                'shop' => function (OrderPaymentTypeSettingManager $manager, Order $order) {
-                    return new AlipayAppSetting($order);
-                }
-            ],
-        ], 'cloudPayWechat' => [
-            'payment' => function ($payType, $settings) {
-                return new CloudPayment($payType, $settings);
-            },
-            'settings' => [
-                'shop' => function (OrderPaymentTypeSettingManager $manager, Order $order) {
-                    return new CloudPayWechatSetting($order);
-                }
-            ],
-        ], 'wechatAppPay' => [
-            'payment' => function ($payType, $settings) {
-                    return new AppPayment($payType, $settings);
-            },
-            'settings' => [
+                'payment' => function ($payType, $settings) {
+                    return new WebPayment($payType, $settings);
+                },
+                'settings' => [
                     'shop' => function (OrderPaymentTypeSettingManager $manager, Order $order) {
-                        return new WechatAppPaySetting($order);
+                        return new WechatPaySetting();
                     }
-            ],
-        ], 'yunPayWechat' => [
-            'payment' => function ($payType, $settings) {
+                ],
+            ], 'alipayApp' => [
+                'payment' => function ($payType, $settings) {
+                    return new AppPayment($payType, $settings);
+                },
+                'settings' => [
+                    'shop' => function (OrderPaymentTypeSettingManager $manager, Order $order) {
+                        return new AlipayAppSetting($order);
+                    }
+                ],
+            ], 'cloudPayWechat' => [
+                'payment' => function ($payType, $settings) {
+                    return new CloudPayment($payType, $settings);
+                },
+                'settings' => [
+                    'shop' => function (OrderPaymentTypeSettingManager $manager, Order $order) {
+                        return new CloudPayWechatSetting($order);
+                    }
+                ],
+            ], 'wechatApp' => [
+                'payment' => function ($payType, $settings) {
+
+                    return new AppPayment($payType, $settings);
+                },
+                'settings' => [
+                    'shop' => function (OrderPaymentTypeSettingManager $manager, Order $order) {
+                        return new WechatAppPaySetting();
+                    }
+                ],
+            ], 'yunPayWechat' => [
+                'payment' => function ($payType, $settings) {
                     return new YunPayment($payType, $settings);
-            },
-            'settings' => [
+                },
+                'settings' => [
                     'shop' => function (OrderPaymentTypeSettingManager $manager, Order $order) {
                         return new YunPayWechatSetting($order);
                     }
-            ],
-        ],
+                ],
+            ],'cloudPayAlipay' => [
+                'payment' => function ($payType, $settings) {
+                    return new CloudAliPayment($payType, $settings);
+                },
+                'settings' => [
+                    'shop' => function (OrderPaymentTypeSettingManager $manager, Order $order) {
+                        return new CloudPayAliSetting($order);
+                    }
+                ],
+            ]
         ];
     }
 }

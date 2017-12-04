@@ -72,19 +72,19 @@ class GoodsController extends ApiController
                 'reduce_stock_method',
             ]);
         if ($goodsModel->thumb) {
-            $goodsModel->thumb = replace_yunshop(tomedia($goodsModel->thumb));
+            $goodsModel->thumb = yz_tomedia($goodsModel->thumb);
         }
         if ($goodsModel->thumb_url) {
             $thumb_url = unserialize($goodsModel->thumb_url);
             foreach ($thumb_url as &$item) {
-                $item = replace_yunshop(tomedia($item));
+                $item = yz_tomedia($item);
             }
             $goodsModel->thumb_url = $thumb_url;
         }
         foreach ($goodsModel->hasManySpecs as &$spec) {
             $spec['specitem'] = GoodsSpecItem::select('id', 'title', 'specid', 'thumb')->where('specid', $spec['id'])->get();
             foreach ($spec['specitem'] as &$specitem) {
-                $specitem['thumb'] = replace_yunshop(tomedia($specitem['thumb']));
+                $specitem['thumb'] = yz_tomedia($specitem['thumb']);
             }
         }
         // todo 商品详情挂件
@@ -98,7 +98,7 @@ class GoodsController extends ApiController
         }
 
         if($goodsModel->hasOneShare){
-            $goodsModel->hasOneShare->share_thumb = replace_yunshop(tomedia($goodsModel->hasOneShare->share_thumb));
+            $goodsModel->hasOneShare->share_thumb = yz_tomedia($goodsModel->hasOneShare->share_thumb);
         }
         $this->setGoodsPluginsRelations($goodsModel);
 

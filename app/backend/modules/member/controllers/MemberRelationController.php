@@ -187,7 +187,8 @@ class MemberRelationController extends BaseController
             'banner'  => tomedia($info['banner']),
             'content' => $info['content'],
             'base'      => $info,
-            'temp_list' => $temp_list
+            'temp_list' => $temp_list,
+            'relation_level' => $info['relation_level']
         ])->render();
     }
 

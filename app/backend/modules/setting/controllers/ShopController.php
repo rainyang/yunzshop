@@ -245,31 +245,23 @@ class ShopController extends BaseController
         $requestModel = \YunShop::request()->pay;
 
         if ($requestModel) {
+            $updatefile = $this->updateFile($_FILES);
 
-            if ($_FILES['weixin_cert_file']['name']) {
-                $file_name = $this->upload('weixin_cert_file');
-                if (!empty($file_name)) {
-                    $requestModel['weixin_cert'] = storage_path('cert/' . $file_name);
+            if (!is_null($updatefile)) {
+                if ($updatefile['status'] == -1) {
+                    return $this->message('上传文件类型错误', Url::absoluteWeb('setting.shop.pay'), 'warning');
                 }
-            }
 
-            if ($_FILES['weixin_key_file']['name']) {
-                $file_name = $this->upload('weixin_key_file');
-                if (!empty($file_name)) {
-                    $requestModel['weixin_key'] = storage_path('cert/' . $file_name);
+                if ($updatefile['status'] == 0) {
+                    return $this->message('上传文件失败', Url::absoluteWeb('setting.shop.pay'), 'warning');
                 }
-            }
 
-            if ($_FILES['weixin_root_file']['name']) {
-                $file_name = $this->upload('weixin_root_file');
-                if (!empty($file_name)) {
-                    $requestModel['weixin_root'] = storage_path('cert/' . $file_name);
-                }
+                $requestModel = array_merge($requestModel, $updatefile['data']);
             }
 
             if (Setting::set('shop.pay', $requestModel)) {
                 $this->setAlipayParams($requestModel);
-                return $this->message(' 支付方式设置成功', Url::absoluteWeb('setting.shop.pay'));
+                return $this->message('支付方式设置成功', Url::absoluteWeb('setting.shop.pay'));
             } else {
                 $this->error('支付方式设置失败');
             }
@@ -315,6 +307,8 @@ class ShopController extends BaseController
 
     private function upload($fileinput)
     {
+        $valid_ext = ['pem'];
+
         if (\Request::isMethod('post')) {
             $file = \Request::file($fileinput);
 
@@ -322,12 +316,16 @@ class ShopController extends BaseController
 
                 // 获取文件相关信息
                 $originalName = $file->getClientOriginalName(); // 文件原名
-                //$ext = $file->getClientOriginalExtension();     // 扩展名
+                $ext = $file->getClientOriginalExtension();     // 扩展名
                 $realPath = $file->getRealPath();   //临时文件的绝对路径
+
+                if (!in_array($ext, $valid_ext)) {
+                    return ['status' => -1];
+                }
 
                 $bool = \Storage::disk('cert')->put($originalName, file_get_contents($realPath));
 
-                return $bool ? $originalName : '';
+                return $bool ? ['status' => 1, 'file' => $originalName] : ['status' => 0];
             }
         }
     }
@@ -342,5 +340,30 @@ class ShopController extends BaseController
         return view('setting.shop.entry', [
 
         ])->render();
+    }
+
+    private function updateFile ($file)
+    {
+        $data = [];
+
+        foreach ($file as $key => $val) {
+            if ($val['name']) {
+                $update = $this->upload($key);
+
+                if ($update['status'] == -1 || $update['status'] == 0) {
+                    return $update;
+                }
+
+                if ($update['status'] == 1) {
+                    $data[$key] = storage_path('cert/' . $update['file']);
+                }
+            }
+        }
+
+        if (!empty($data)) {
+            return ['status' => 1, 'data' => $data];
+        }
+
+        return null;
     }
 }
