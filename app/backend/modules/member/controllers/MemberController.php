@@ -22,6 +22,7 @@ use app\common\events\member\MemberRelationEvent;
 use app\common\events\member\RegisterByAgent;
 use app\common\helpers\PaginationHelper;
 use app\common\services\ExportService;
+use app\frontend\modules\member\models\SubMemberModel;
 use Yunshop\Commission\models\Agents;
 
 
@@ -394,6 +395,16 @@ class MemberController extends BaseController
         $uid       = \YunShop::request()->member;
 
         if (is_numeric($parent_id)) {
+            if (!empty($parent_id)) {
+                $parent =  SubMemberModel::getMemberShopInfo($parent_id);
+
+                $parent_is_agent = !empty($parent) && $parent->is_agent == 1 && $parent->status == 2;
+
+                if (!$parent_is_agent) {
+                    return $this->message('上线没有推广权限', yzWebUrl('member.member.detail'), 'warning');
+                }
+            }
+
             if (Member::setMemberRelation($uid, $parent_id)) {
                 $member = MemberShopInfo::getMemberShopInfo($uid);
 
@@ -403,6 +414,8 @@ class MemberController extends BaseController
                 $record->parent_id = $member->parent_id;
 
                 $member->parent_id = $parent_id;
+                $member->inviter = 1;
+
                 $member->save();
                 $record->save();
 
