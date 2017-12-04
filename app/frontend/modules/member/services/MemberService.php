@@ -395,7 +395,7 @@ class MemberService
         } else {
             \Log::debug('添加新会员');
 
-            DB::transaction(function () use ($member_model, $mc_mapping_fans_model, $member_shop_info_model, $member_id, $uniacid, $userinfo, $UnionidInfo) {
+            DB::transaction(function () use (&$member_id, $member_model, $mc_mapping_fans_model, $member_shop_info_model, $uniacid, $userinfo, $UnionidInfo, $upperMemberId) {
                 if (empty($member_model) && empty($mc_mapping_fans_model)) {
                     $member_id = $this->addMemberInfo($uniacid, $userinfo);
 
@@ -423,16 +423,16 @@ class MemberService
                     //添加ims_yz_member_unique表
                     $this->addMemberUnionid($uniacid, $member_id, $userinfo['unionid']);
                 }
-            });
 
-            //生成分销关系链
-            if ($upperMemberId) {
-                \Log::debug(sprintf('----海报生成分销关系链----%d', $upperMemberId));
-                Member::createRealtion($member_id, $upperMemberId);
-            } else {
-                \Log::debug(sprintf('----生成分销关系链----%d', $upperMemberId));
-                Member::createRealtion($member_id);
-            }
+                //生成分销关系链
+                if ($upperMemberId) {
+                    \Log::debug(sprintf('----海报生成分销关系链----%d', $upperMemberId));
+                    Member::createRealtion($member_id, $upperMemberId);
+                } else {
+                    \Log::debug(sprintf('----生成分销关系链----%d', $upperMemberId));
+                    Member::createRealtion($member_id);
+                }
+            });
         }
 
         return $member_id;
@@ -466,7 +466,7 @@ class MemberService
         } else {
             \Log::debug('添加新会员');
 
-            DB::transaction(function () use ($uniacid, $userinfo, $member_model, $fans_mode, $member_shop_info_model){
+            DB::transaction(function () use (&$member_id, $uniacid, $userinfo, $member_model, $fans_mode, $member_shop_info_model, $upperMemberId){
                 if (empty($member_model) && empty($fans_mode)) {
                     $member_id = $this->addMemberInfo($uniacid, $userinfo);
 
@@ -487,14 +487,14 @@ class MemberService
 
                     $this->addSubMemberInfo($uniacid, $member_id);
                 }
-            });
 
-            //生成分销关系链
-            if ($upperMemberId) {
-                Member::createRealtion($member_id, $upperMemberId);
-            } else {
-                Member::createRealtion($member_id);
-            }
+                //生成分销关系链
+                if ($upperMemberId) {
+                    Member::createRealtion($member_id, $upperMemberId);
+                } else {
+                    Member::createRealtion($member_id);
+                }
+            });
         }
 
         return $member_id;
