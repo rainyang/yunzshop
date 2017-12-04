@@ -235,7 +235,7 @@ function yz_tomedia($src, $local_path = false)
         return '';
     }
     if (strexists($src, 'addons/')) {
-        return request()->getSchemeAndHttpHost() . substr($src, strpos($src, 'addons/'));
+        return request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/addons/'));
     }
     //如果远程地址中包含本地host也检测是否远程图片
     if (strexists($src, request()->getSchemeAndHttpHost()) && !strexists($src, '/addons/')) {
