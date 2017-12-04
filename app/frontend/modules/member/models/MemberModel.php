@@ -172,7 +172,11 @@ class MemberModel extends Member
     {
         return self::uniacid()
             ->whereHas('yzMember', function($query) use ($uid, $level){
-                $query->whereRaw('FIND_IN_SET(?, relation)' . ($level != 0 ? ' = ?' : ''), [$uid, $level]);
+                if (1 == $level) {
+                    $query->where('parent_id', $uid);
+                } else {
+                    $query->whereRaw('FIND_IN_SET(?, relation)' . ($level != 0 ? ' = ?' : ''), [$uid, $level]);
+                }
             })
             ->with(['yzMember' => function ($query) {
                 return $query->select('member_id', 'is_agent', 'status');
@@ -191,7 +195,11 @@ class MemberModel extends Member
 
         $result = self::uniacid()
             ->whereHas('yzMember', function($query) use ($uid, $level){
-                $query->whereRaw('FIND_IN_SET(?, relation)' . ($level != 0 ? ' = ?' : ''), [$uid, $level]);
+                if (1 == $level) {
+                    $query->where('parent_id', $uid);
+                } else {
+                    $query->whereRaw('FIND_IN_SET(?, relation)' . ($level != 0 ? ' = ?' : ''), [$uid, $level]);
+                }
             });
 
             if (!empty($keyword)) {
