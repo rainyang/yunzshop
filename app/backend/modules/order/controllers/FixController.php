@@ -3,6 +3,7 @@
 namespace app\backend\modules\order\controllers;
 
 use app\common\components\BaseController;
+use app\common\models\Address;
 use app\common\models\Member;
 use app\common\models\MemberAddress;
 use app\common\models\Order;
@@ -30,19 +31,20 @@ class FixController extends BaseController
         )->whereIn('status', [0, 1])->get();
         $orders->each(function($order){
 
-            $defaultAddress = $order->belongsToMember->defaultAddress;
-            dd($defaultAddress);
-            exit;
+            $memberAddress = $order->belongsToMember->defaultAddress;
+            $result['address'] = implode(' ', [$memberAddress->province, $memberAddress->city, $memberAddress->district, $memberAddress->address]);
+            $result['mobile'] = $memberAddress->mobile;
+            $result['address'] = implode(' ', [$memberAddress->province, $memberAddress->city, $memberAddress->district, $memberAddress->address]);
+            $result['realname'] = $memberAddress->username;
+            $result['order_id'] = $order->id;
 
-            $orderAddress = new OrderAddress(
+            list($result['province_id'], $result['city_id'], $result['district_id']) = Address::whereIn('areaname', [$memberAddress->province, $memberAddress->city, $memberAddress->district])->pluck('id');
 
-            );
+            $orderAddress = new OrderAddress($result);
             $orderAddress->save();
             $order->dispatch_type_id = 1;
             $order->save();
         });
-        dd($orders);
-        exit;
 
     }
 
