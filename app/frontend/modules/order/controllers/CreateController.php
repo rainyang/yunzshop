@@ -32,6 +32,7 @@ class CreateController extends PreOrderController
     }
     public function index(Request $request)
     {
+        \Log::info('用户下单',request()->input());
         $this->validateParam();
         //订单组
         $orders = collect();
