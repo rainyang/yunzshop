@@ -76,6 +76,7 @@ class PointService
     const POINT_MODE_RECHARGE_CODE = 92;
     const POINT_MODE_RECHARGE_CODE_ATTACHED = '充值码充值积分';
 
+
     const POINT_MODE_TASK_REWARD = 17;
     const POINT_MODE_TASK_REWARD_ATTACHED = '任务奖励';
 
