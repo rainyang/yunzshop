@@ -142,9 +142,7 @@ class PointService
 
     public function messageNotice()
     {
-        \Log::info('code', $this->point_data['point_mode']);
         $this->point_data['point_mode'] = $this->getModeAttribute($this->point_data['point_mode']);
-        \Log::info('code_name', $this->point_data['point_mode']);
         $noticeMember = Member::getMemberByUid($this->member->uid)->with('hasOneFans')->first();
         if (!$noticeMember->hasOneFans->openid) {
             return;
@@ -162,9 +160,7 @@ class PointService
             ['name' => '积分变动类型', 'value' => $this->point_data['point_mode']],
             ['name' => '变动后余额数值', 'value' => $this->point_data['after_point']]
         ];
-        \Log::info('params', $params);
         $msg = MessageTemp::getSendMsg($temp_id, $params);
-        \Log::info('msg', $msg);
         if (!$msg) {
             return;
         }
@@ -238,6 +234,7 @@ class PointService
                 break;
             case (17):
                 $mode_attribute = self::POINT_MODE_TASK_REWARD_ATTACHED;
+                break;
             case (18):
                 $mode_attribute = self::POINT_MODE_TRANSFER_LOVE_ATTACHED;
                 break;
