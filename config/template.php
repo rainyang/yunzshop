@@ -115,7 +115,7 @@ return [
         'subtitle' => '获得推广权限通知',
         'value' => 'member_agent',
         'param' => [
-            '粉丝昵称', '时间'
+            '昵称', '时间'
         ]
     ],
     'member_new_lower' => [
