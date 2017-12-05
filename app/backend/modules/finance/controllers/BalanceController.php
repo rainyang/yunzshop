@@ -47,7 +47,6 @@ class BalanceController extends BaseController
     {
         $balance = Setting::get('finance.balance');
         $requestModel = \YunShop::request()->balance;
-        dd($requestModel);
         if ($requestModel) {
             $requestModel['sale'] = $this->rechargeSale($requestModel);
 
