@@ -239,7 +239,7 @@ class PointService
             case (92):
                 $mode_attribute = self::POINT_MODE_RECHARGE_CODE_ATTACHED;
                 break;
-                
+
         }
         return $mode_attribute;
     }
