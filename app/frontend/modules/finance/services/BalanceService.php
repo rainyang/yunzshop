@@ -123,5 +123,10 @@ class BalanceService
         return $this->_withdraw_set['poundage_type'] ? 1 : 0;
     }
 
+    public function rechargeActivityStatus()
+    {
+        return $this->_recharge_set['recharge_activity'] ? true : false;
+    }
+
 
 }

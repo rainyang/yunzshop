@@ -34,7 +34,7 @@ use app\common\services\finance\BalanceChange;
 class BalanceController extends BaseController
 {
 
-    private $_memebr_model;
+    private $_member_model;
 
     private $_recharge_model;
     /**
@@ -42,10 +42,12 @@ class BalanceController extends BaseController
      *
      * @return mixed|string
      * @Author yitian */
+    //todo 可以删除此方法，已经转移到 BalanceSetController 2017-12-05 LYT:995265288
     public function index()
     {
         $balance = Setting::get('finance.balance');
         $requestModel = \YunShop::request()->balance;
+        dd($requestModel);
         if ($requestModel) {
             $requestModel['sale'] = $this->rechargeSale($requestModel);
 
@@ -208,13 +210,13 @@ class BalanceController extends BaseController
     public function recharge()
     {
         $memberInfo =$this->getMemberInfo();
-        if (!$this->_memebr_model) {
+        if (!$this->_member_model) {
             return $this->message('未获取到会员信息', Url::absoluteWeb('finance.balance.member'), 'error');
         }
-        if ($this->_memebr_model && \YunShop::request()->num) {
+        if ($this->_member_model && \YunShop::request()->num) {
             $result = $this->rechargeStart();
             if ($result === true) {
-                return $this->message('余额充值成功', Url::absoluteWeb('finance.balance.recharge',array('member_id' => $this->_memebr_model->uid)), 'success');
+                return $this->message('余额充值成功', Url::absoluteWeb('finance.balance.recharge',array('member_id' => $this->_member_model->uid)), 'success');
             }
             $this->error($result);
         }
@@ -264,7 +266,7 @@ class BalanceController extends BaseController
 
     private function getMemberInfo()
     {
-        return $this->_memebr_model = Member::getMemberInfoById(\YunShop::request()->member_id) ?: false;
+        return $this->_member_model = Member::getMemberInfoById(\YunShop::request()->member_id) ?: false;
     }
 
     //充值记录数据
@@ -274,7 +276,7 @@ class BalanceController extends BaseController
         return array(
             'uniacid'       => \YunShop::app()->uniacid,
             'member_id'     => \YunShop::request()->member_id,
-            'old_money'     => $this->_memebr_model->credit2,
+            'old_money'     => $this->_member_model->credit2,
             'money'         => $rechargeMoney,
             'new_money'     => $this->getNewMoney(),
             'type'          => BalanceRecharge::PAY_TYPE_SHOP,
@@ -286,7 +288,7 @@ class BalanceController extends BaseController
     //获取计算后的余额值
     private function getNewMoney()
     {
-        $newMoney = $this->_memebr_model->credit2 + trim(\YunShop::request()->num);
+        $newMoney = $this->_member_model->credit2 + trim(\YunShop::request()->num);
         return $newMoney > 0 ? $newMoney : 0;
     }
 
