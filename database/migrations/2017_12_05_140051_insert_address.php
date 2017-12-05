@@ -19,7 +19,7 @@ class InsertAddress extends Migration
                 'level'    => 3
             ]);
             \app\common\models\Street::insert([
-                ['areaname' => '含鸿山', 'parentid' => $ret_id, 'level' => 4],
+                ['areaname' => '鸿山', 'parentid' => $ret_id, 'level' => 4],
                 ['areaname' => '江溪', 'parentid' => $ret_id, 'level' => 4],
                 ['areaname' => '旺庄', 'parentid' => $ret_id, 'level' => 4],
                 ['areaname' => '硕放', 'parentid' => $ret_id, 'level' => 4],
