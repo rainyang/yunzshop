@@ -186,8 +186,6 @@ class IncomeWithdrawController extends ApiController
         }
 
         if ($result === true) {
-            $withdrawData['total']['member_id'] = \YunShop::app()->getMemberId();
-            event(new AfterIncomeWithdrawEvent($withdraw_data));
             return $this->successJson('提现成功!');
         }
         Log::info('收入提现-提现失败：', print_r($withdraw_data, true));
@@ -372,6 +370,7 @@ class IncomeWithdrawController extends ApiController
         if ($this->withdraw_amounts != $amounts) {
             throw new AppException('提现失败：提现金额错误');
         }
+        event(new AfterIncomeWithdrawEvent($array));
         return $array;
     }
 
