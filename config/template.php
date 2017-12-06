@@ -123,7 +123,7 @@ return [
         'subtitle' => '新增下线通知',
         'value' => 'member_new_lower',
         'param' => [
-            '昵称', '时间', '下级会员昵称'
+            '昵称', '时间', '下级昵称'
         ]
     ],
     'finance_balance_change' => [
