@@ -14,6 +14,7 @@ use app\common\events\finance\AfterIncomeWithdrawPayEvent;
 use app\common\models\Member;
 use app\common\services\finance\MessageService;
 use app\common\services\finance\WithdrawService;
+use Illuminate\Support\Facades\Log;
 
 class IncomeWithdraw
 {
@@ -23,6 +24,7 @@ class IncomeWithdraw
      */
     public function withdraw(AfterIncomeWithdrawEvent $event)
     {
+        Log::info('哇哈哈哈哈');
         $data = $event->getData();
         foreach ($data as $item) {
             $member = Member::getMemberByUid($item['member_id'])->with('hasOneFans')->first();
