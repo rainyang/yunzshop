@@ -657,10 +657,10 @@ class SdkPayment
 
         $result = json_decode($result);
 
-        \Log::debug('-----返回参数result----', gettype($result));
         $responseNode = str_replace(".", "_", $request->getApiMethodName()) . "_response";
         $resultCode = $result->$responseNode->code;
         \Log::debug('-----返回参数code----', [$resultCode]);
+        \Log::debug('-----返回参数sub_code----', [$result->$responseNode->sub_code]);
 
         if(!empty($resultCode) && $resultCode == 10000){
             \Log::debug('-----成功----');
