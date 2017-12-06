@@ -65,10 +65,9 @@ class IncomeWithdraw
     {
         $data = $event->getData();
         $member = Member::getMemberByUid($data->member_id)->with('hasOneFans')->first();
-        $payStatusName = WithdrawService::getPayStatusName($data->pay_status);
         $noticeData = [
             'type_name' => $data->type_name,
-            'pay_status' => $payStatusName,
+            'pay_status' => $data->status_name,
             'actual_amounts' => $data->actual_amounts,
             'pay_way' => $data->pay_way,
         ];
@@ -83,10 +82,9 @@ class IncomeWithdraw
     {
         $data = $event->getData();
         $member = Member::getMemberByUid($data->member_id)->with('hasOneFans')->first();
-        $payStatusName = WithdrawService::getPayStatusName($data->pay_status);
         $noticeData = [
             'type_name' => $data->type_name,
-            'pay_status' => $payStatusName,
+            'pay_status' => $data->status_name,
             'actual_amounts' => $data->actual_amounts,
             'pay_way' => $data->pay_way,
         ];
