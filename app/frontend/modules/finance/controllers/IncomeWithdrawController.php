@@ -9,6 +9,7 @@
 
 namespace app\frontend\modules\finance\controllers;
 
+use app\common\events\finance\AfterIncomeWithdrawEvent;
 use app\common\exceptions\AppException;
 use app\common\components\ApiController;
 use app\common\facades\Setting;
@@ -184,6 +185,7 @@ class IncomeWithdrawController extends ApiController
         }
 
         if ($result === true) {
+            event(new AfterIncomeWithdrawEvent($withdraw_data));
             return $this->successJson('提现成功!');
         }
         Log::info('收入提现-提现失败：', print_r($withdraw_data, true));
