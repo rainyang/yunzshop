@@ -45,14 +45,11 @@ class IncomeWithdraw
     public function withdrawCheck(AfterIncomeWithdrawCheckEvent $event)
     {
         $data = $event->getData();
-        Log::info("提现审核通知", print_r($data->toArray(), true));
-        Log::info("提现审核通知", print_r($data->status_name, true));
         $member = Member::getMemberByUid($data->member_id)->with('hasOneFans')->first();
-        $withdrawStatusName = WithdrawService::getWithdrawStatusName($data->status);
         $noticeData = [
             'type_name'     => $data->type_name,
             'amounts'       => $data->amounts,
-            'status'        => $withdrawStatusName,
+            'status'        => $data->status_name,
             'actual_amounts'    => $data->actual_amounts,
             'actual_poundage'   => $data->actual_poundage,
             'pay_way'       => $data->pay_way,
