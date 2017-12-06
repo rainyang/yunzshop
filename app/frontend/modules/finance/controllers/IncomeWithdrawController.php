@@ -186,6 +186,7 @@ class IncomeWithdrawController extends ApiController
         }
 
         if ($result === true) {
+            $withdrawData['total']['member_id'] = \YunShop::app()->getMemberId();
             event(new AfterIncomeWithdrawEvent($withdraw_data));
             return $this->successJson('提现成功!');
         }

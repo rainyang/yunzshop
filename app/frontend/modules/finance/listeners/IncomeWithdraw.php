@@ -24,7 +24,6 @@ class IncomeWithdraw
      */
     public function withdraw(AfterIncomeWithdrawEvent $event)
     {
-        Log::info('哇哈哈哈哈');
         $data = $event->getData();
         foreach ($data as $item) {
             $member = Member::getMemberByUid($item['member_id'])->with('hasOneFans')->first();
