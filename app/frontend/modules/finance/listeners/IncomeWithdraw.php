@@ -67,7 +67,7 @@ class IncomeWithdraw
         $member = Member::getMemberByUid($data->member_id)->with('hasOneFans')->first();
         $noticeData = [
             'type_name' => $data->type_name,
-            'pay_status' => $data->status_name,
+            'pay_status' => "已打款",
             'actual_amounts' => $data->actual_amounts,
             'pay_way' => $data->pay_way,
         ];
@@ -84,7 +84,7 @@ class IncomeWithdraw
         $member = Member::getMemberByUid($data->member_id)->with('hasOneFans')->first();
         $noticeData = [
             'type_name' => $data->type_name,
-            'pay_status' => $data->status_name,
+            'pay_status' => "已到账",
             'actual_amounts' => $data->actual_amounts,
             'pay_way' => $data->pay_way,
         ];
