@@ -73,12 +73,13 @@ class BalanceWithdrawController extends BaseController
      */
     private function submitCheck()
     {
-        if ($this->getPostStatus() == -1) {
-            BalanceNoticeService::withdrawFailureNotice($this->withdrawModel);
-        }
+
         $this->withdrawModel->status = $this->getPostStatus();
         $this->withdrawModel->audit_at = time();
 
+        if ($this->getPostStatus() == -1) {
+            BalanceNoticeService::withdrawFailureNotice($this->withdrawModel);
+        }
         $this->withdrawUpdate();
         return $this->message('提交审核成功', yzWebUrl("finance.balance-withdraw.detail", ['id' => $this->getPostId()]));
     }
