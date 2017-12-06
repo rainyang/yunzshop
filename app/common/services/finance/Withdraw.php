@@ -24,7 +24,7 @@ class Withdraw
                 $withdrawModel->status = 2;
                 $withdrawModel->arrival_at = time();
                 $result = $withdrawModel->save();
-                if ($result === true) {
+                if ($result) {
                     BalanceNoticeService::withdrawSuccessNotice($withdrawModel);
                 }
             }

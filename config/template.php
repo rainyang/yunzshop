@@ -142,34 +142,34 @@ return [
             '商城名称', '昵称', '时间', '积分变动金额', '积分变动类型', '变动后余额数值'
         ]
     ],
-    'finance_incone_withdraw' => [
+    'finance_income_withdraw' => [
         'title' => '财务(提现申请通知)',
         'subtitle' => '提现申请通知',
-        'value' => 'finance_incone_withdraw',
+        'value' => 'finance_income_withdraw',
         'param' => [
             '昵称', '时间', '收入类型', '金额', '手续费', '提现方式'
         ]
     ],
-    'finance_incone_withdraw_check' => [
+    'finance_income_withdraw_check' => [
         'title' => '财务(提现审核通知)',
         'subtitle' => '提现审核通知',
-        'value' => 'finance_incone_withdraw_check',
+        'value' => 'finance_income_withdraw_check',
         'param' => [
             '昵称', '时间', '收入类型', '状态', '金额', '手续费', '审核通过金额', '提现方式'
         ]
     ],
-    'finance_incone_withdraw_pay' => [
+    'finance_income_withdraw_pay' => [
         'title' => '财务(提现打款通知)',
         'subtitle' => '提现打款通知',
-        'value' => 'finance_incone_withdraw_pay',
+        'value' => 'finance_income_withdraw_pay',
         'param' => [
             '昵称', '时间', '收入类型', '状态', '金额', '提现方式'
         ]
     ],
-    'finance_incone_withdraw_arrival' => [
+    'finance_income_withdraw_arrival' => [
         'title' => '财务(提现到账通知)',
         'subtitle' => '提现到账通知',
-        'value' => 'finance_incone_withdraw_arrival',
+        'value' => 'finance_income_withdraw_arrival',
         'param' => [
             '昵称', '时间', '收入类型', '状态', '金额', '提现方式'
         ]

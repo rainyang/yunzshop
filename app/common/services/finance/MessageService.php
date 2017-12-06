@@ -17,20 +17,22 @@ class MessageService
 
     public static function incomeWithdraw($withdrawData, $member, $uniacid = '')
     {
-        if (!\YunShop::notice()->getNotSend('withdraw.incone_withdraw_title')) {
+        Log::info("收入提现提交通知开始");
+        if (!\YunShop::notice()->getNotSend('withdraw.income_withdraw_title')) {
             return;
         }
         if ($uniacid) {
             Setting::$uniqueAccountId = $uniacid;
         }
         $withdrawNotice = Setting::get('withdraw.notice');
-        $temp_id = $withdrawNotice['incone_withdraw'];
+        $temp_id = $withdrawNotice['income_withdraw'];
+        Log::info("收入提现提交通知",print_r($temp_id,true));
         if (!$temp_id) {
             return;
         }
         static::messageNotice($temp_id, $member, $withdrawData, $uniacid);
 //        if ($withdrawNotice['template_id']) {
-//            $message = $withdrawNotice['incone_withdraw'];
+//            $message = $withdrawNotice['income_withdraw'];
 //            $message = str_replace('[昵称]', $member['nickname'], $message);
 //            $message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
 //            $message = str_replace('[收入类型]', $withdrawData['type_name'], $message);
@@ -40,7 +42,7 @@ class MessageService
 //            $message = str_replace('[提现方式]', $payWay, $message);
 //            $msg = [
 //                "first" => '您好',
-//                "keyword1" => $withdrawNotice['incone_withdraw_title'] ? $withdrawNotice['incone_withdraw_title'] : '提现申请通知',
+//                "keyword1" => $withdrawNotice['income_withdraw_title'] ? $withdrawNotice['income_withdraw_title'] : '提现申请通知',
 //                "keyword2" => $message,
 //                "remark" => "",
 //            ];
@@ -51,21 +53,21 @@ class MessageService
 
     public static function withdrawCheck($withdrawData, $member, $uniacid = '')
     {
-        if (!\YunShop::notice()->getNotSend('withdraw.incone_withdraw_check_title')) {
+        if (!\YunShop::notice()->getNotSend('withdraw.income_withdraw_check_title')) {
             return;
         }
         if ($uniacid) {
             Setting::$uniqueAccountId = $uniacid;
         }
         $withdrawNotice = Setting::get('withdraw.notice');
-        $temp_id = $withdrawNotice['incone_withdraw_check'];
+        $temp_id = $withdrawNotice['income_withdraw_check'];
         if (!$temp_id) {
             return;
         }
         $withdrawData['poundage'] = $withdrawData['actual_poundage'];
         static::messageNotice($temp_id, $member, $withdrawData, $uniacid);
 //        if ($withdrawNotice['template_id']) {
-//            $message = $withdrawNotice['incone_withdraw_check'];
+//            $message = $withdrawNotice['income_withdraw_check'];
 //            $message = str_replace('[昵称]', $member['nickname'], $message);
 //            $message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
 //            $message = str_replace('[收入类型]', $withdrawData['type_name'], $message);
@@ -77,7 +79,7 @@ class MessageService
 //            $message = str_replace('[提现方式]', $payWay, $message);
 //            $msg = [
 //                "first" => '您好',
-//                "keyword1" => $withdrawNotice['incone_withdraw_check_title'] ? $withdrawNotice['incone_withdraw_check_title'] : '提现审核通知',
+//                "keyword1" => $withdrawNotice['income_withdraw_check_title'] ? $withdrawNotice['income_withdraw_check_title'] : '提现审核通知',
 //                "keyword2" => $message,
 //                "remark" => "",
 //            ];
@@ -88,14 +90,14 @@ class MessageService
 
     public static function withdrawPay($withdrawData, $member, $uniacid = '')
     {
-        if (!\YunShop::notice()->getNotSend('withdraw.incone_withdraw_pay_title')) {
+        if (!\YunShop::notice()->getNotSend('withdraw.income_withdraw_pay_title')) {
             return;
         }
         if ($uniacid) {
             Setting::$uniqueAccountId = $uniacid;
         }
         $withdrawNotice = Setting::get('withdraw.notice');
-        $temp_id = $withdrawNotice['incone_withdraw_pay'];
+        $temp_id = $withdrawNotice['income_withdraw_pay'];
         if (!$temp_id) {
             return;
         }
@@ -103,7 +105,7 @@ class MessageService
         $withdrawData['status'] = $withdrawData['pay_status'];
         static::messageNotice($temp_id, $member, $withdrawData, $uniacid);
 //        if ($withdrawNotice['template_id']) {
-//            $message = $withdrawNotice['incone_withdraw_pay'];
+//            $message = $withdrawNotice['income_withdraw_pay'];
 //            $message = str_replace('[昵称]', $member['nickname'], $message);
 //            $message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
 //            $message = str_replace('[收入类型]', $withdrawData['type_name'], $message);
@@ -113,7 +115,7 @@ class MessageService
 //            $message = str_replace('[提现方式]', $payWay, $message);
 //            $msg = [
 //                "first" => '您好',
-//                "keyword1" => $withdrawNotice['incone_withdraw_pay_title'] ? $withdrawNotice['incone_withdraw_pay_title'] : '提现打款通知',
+//                "keyword1" => $withdrawNotice['income_withdraw_pay_title'] ? $withdrawNotice['income_withdraw_pay_title'] : '提现打款通知',
 //                "keyword2" => $message,
 //                "remark" => "",
 //            ];
@@ -124,14 +126,14 @@ class MessageService
 
     public static function withdrawArrival($withdrawData, $member, $uniacid = '')
     {
-        if (!\YunShop::notice()->getNotSend('withdraw.incone_withdraw_arrival_title')) {
+        if (!\YunShop::notice()->getNotSend('withdraw.income_withdraw_arrival_title')) {
             return;
         }
         if ($uniacid) {
             Setting::$uniqueAccountId = $uniacid;
         }
         $withdrawNotice = Setting::get('withdraw.notice');
-        $temp_id = $withdrawNotice['incone_withdraw_arrival'];
+        $temp_id = $withdrawNotice['income_withdraw_arrival'];
         if (!$temp_id) {
             return;
         }
@@ -139,7 +141,7 @@ class MessageService
         $withdrawData['status'] = $withdrawData['pay_status'];
         static::messageNotice($temp_id, $member, $withdrawData, $uniacid);
 //        if ($withdrawNotice['template_id']) {
-//            $message = $withdrawNotice['incone_withdraw_arrival'];
+//            $message = $withdrawNotice['income_withdraw_arrival'];
 //            $message = str_replace('[昵称]', $member['nickname'], $message);
 //            $message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
 //            $message = str_replace('[收入类型]', $withdrawData['type_name'], $message);
@@ -149,7 +151,7 @@ class MessageService
 //            $message = str_replace('[提现方式]', $payWay, $message);
 //            $msg = [
 //                "first" => '您好',
-//                "keyword1" => $withdrawNotice['incone_withdraw_arrival_title'] ? $withdrawNotice['incone_withdraw_arrival_title'] : '提现到账通知',
+//                "keyword1" => $withdrawNotice['income_withdraw_arrival_title'] ? $withdrawNotice['income_withdraw_arrival_title'] : '提现到账通知',
 //                "keyword2" => $message,
 //                "remark" => "",
 //            ];
