@@ -74,6 +74,7 @@ class BalanceRechargeResultService
 
             if (!($start_time <= $recharge_time) || !($end_time >= $recharge_time)) {
                 Log::debug('余额充值：订单号'. $array['order_sn']."充值时间未在充值活动时间之内，取消赠送");
+                DB::commit();
                 return true;
             }
 
@@ -85,6 +86,7 @@ class BalanceRechargeResultService
             $fetter = $this->balance_set->rechargeActivityFetter();
             if ($fetter && $fetter >= 1 && $rechargeActivity && $rechargeActivity->partake_count >= $fetter) {
                 Log::debug('余额充值：订单号'. $array['order_sn']."会员参与次数已达到上限");
+                DB::commit();
                 return true;
             }
 
