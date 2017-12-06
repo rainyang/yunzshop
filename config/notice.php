@@ -16,9 +16,9 @@ return [
         /**
          * 财务管理-提现 不发送消息通知
          */
-//        'incone_withdraw_title', // 提现申请通知
-//        'incone_withdraw_check_title', // 提现审核通知
-//        'incone_withdraw_pay_title', // 提现打款通知
-//        'incone_withdraw_arrival_title', // 提现到账通知
+//        'income_withdraw_title', // 提现申请通知
+//        'income_withdraw_check_title', // 提现审核通知
+//        'income_withdraw_pay_title', // 提现打款通知
+//        'income_withdraw_arrival_title', // 提现到账通知
     ]
 ];
