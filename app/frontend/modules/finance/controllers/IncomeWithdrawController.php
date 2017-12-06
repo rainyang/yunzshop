@@ -10,6 +10,7 @@
 namespace app\frontend\modules\finance\controllers;
 
 use app\common\events\finance\AfterIncomeWithdrawEvent;
+use app\common\events\finance\AfterIncomeWithdrawPayEvent;
 use app\common\exceptions\AppException;
 use app\common\components\ApiController;
 use app\common\facades\Setting;

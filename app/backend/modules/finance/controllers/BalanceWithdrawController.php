@@ -73,6 +73,9 @@ class BalanceWithdrawController extends BaseController
      */
     private function submitCheck()
     {
+        if ($this->getPostStatus() == -1) {
+            BalanceNoticeService::withdrawFailureNotice($this->withdrawModel);
+        }
         $this->withdrawModel->status = $this->getPostStatus();
         $this->withdrawModel->audit_at = time();
 
@@ -88,8 +91,6 @@ class BalanceWithdrawController extends BaseController
      */
     private function submitCancel()
     {
-        BalanceNoticeService::withdrawFailureNotice($this->withdrawModel);
-
         return $this->submitCheck();
     }
 
