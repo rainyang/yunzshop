@@ -43,7 +43,7 @@ class BalanceController extends BaseController
      * @return mixed|string
      * @Author yitian */
     //todo 可以删除此方法，已经转移到 BalanceSetController 2017-12-05 LYT:995265288
-    public function index()
+    public function index111()
     {
         $balance = Setting::get('finance.balance');
         $requestModel = \YunShop::request()->balance;

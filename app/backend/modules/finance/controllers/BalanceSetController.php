@@ -156,7 +156,7 @@ class BalanceSetController extends BaseController
         return [
             'balance.recharge'                  => 'required|numeric|regex:/^[01]$/',
             'balance.recharge_activity'         => 'required|numeric|regex:/^[012]$/',
-            'balance.recharge_activity_fetter'  => 'required|numeric|integer|min:0|max:99999999',
+            'balance.recharge_activity_fetter'  => 'required|numeric|integer|min:-1|max:99999999',
             'balance.recharge_activity_time'    => '',
             'balance.proportion_status'         => 'required|numeric|regex:/^[01]$/',
             'balance.transfer'                  => 'required|numeric|regex:/^[01]$/',

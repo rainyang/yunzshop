@@ -45,7 +45,7 @@
                                 <input type='radio' name='balance[recharge_activity]' value='0' @if(empty($balance['recharge_activity'])) checked @endif/>
                                 关闭充值活动
                             </label>
-                            <span class='help-block'>开启时需选择活动开始及结束时间、会员最多参与次数(-1，0，空则不限参与次数)，重置重置活动：开启新充值活动统计</span>
+                            <span class='help-block'>开启时需选择活动开始及结束时间、会员最多参与次数(-1，0，空则不限参与次数)，重置充值活动：开启新充值活动统计</span>
                             <div id='recharge_activity' @if( empty($balance['recharge_activity']) ) style="display:none" @endif>
                                 <div class="col-sm-9 col-xs-12">
                                     <div class="alipay" >
@@ -62,8 +62,8 @@
                                         <label class='radio-inline'>
                                             <div class="search-select">
                                                 {!! app\common\helpers\DateRange::tplFormFieldDateRange('balance[recharge_activity_time]', [
-                                                'starttime'=>date('Y-m-d H:i',$balance['recharge_activity_start']) ?: strtotime(time()),
-                                                'endtime'=>date('Y-m-d H:i',$balance['recharge_activity_end']) ?: strtotime(strtotime('1 month')),
+                                                'starttime'=>date('Y-m-d H:i',$balance['recharge_activity_start'] ?: time()),
+                                                'endtime'=>date('Y-m-d H:i',$balance['recharge_activity_end'] ?: strtotime('1 month')),
                                                 'start'=>0,
                                                 'end'=>0
                                                 ], true) !!}
