@@ -16,6 +16,7 @@ use app\common\facades\Setting;
 use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
 use app\common\models\Goods;
+use app\common\models\notice\MessageTemp;
 
 class MemberRelationController extends BaseController
 {
@@ -180,10 +181,13 @@ class MemberRelationController extends BaseController
             }
         }
 
+        $temp_list = MessageTemp::select('id', 'title')->get();
+
         return view('member.relation-base', [
             'banner'  => tomedia($info['banner']),
             'content' => $info['content'],
             'base'      => $info,
+            'temp_list' => $temp_list,
             'relation_level' => $info['relation_level']
         ])->render();
     }

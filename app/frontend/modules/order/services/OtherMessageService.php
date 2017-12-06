@@ -10,6 +10,7 @@
 namespace app\frontend\modules\order\services;
 
 
+use app\common\models\notice\MessageTemp;
 use app\common\services\MessageService as Notice;
 use app\frontend\models\Member;
 
@@ -28,101 +29,94 @@ class OtherMessageService
 
     public function created()
     {
-        $content = '会员'.$this->getMemberName()."，订单：" . $this->orderModel->order_sn ."，订单金额：".$this->orderModel->price. "已经成功下单（未支付）。";
+        $params = [
+            ['name' => '下级昵称', 'value' => $this->getMemberName()],
+            ['name' => '订单状态', 'value' => '下单（未付款）'],
+            ['name' => '订单号', 'value' => $this->orderModel->order_sn],
+            ['name' => '订单金额', 'value' => $this->orderModel->price],
+        ];
 
-        $one_msg = [
-            "first" => '您好',
-            "keyword1" => '一级会员下单成功通知',
-            "keyword2" => '一级' . $content,
-            "remark" => "",
-        ];
-        $two_msg = [
-            "first" => '您好',
-            "keyword1" => '二级会员下单成功通知',
-            "keyword2" => '二级' . $content,
-            "remark" => "",
-        ];
-        $this->notice($one_msg,$two_msg);
+        $this->notice($params);
     }
 
     public function paid()
     {
-        $content = '会员'.$this->getMemberName()."，订单：" . $this->orderModel->order_sn ."，订单金额：".$this->orderModel->price. "已经支付。";
 
-        $one_msg = [
-            "first" => '您好',
-            "keyword1" => '一级会员订单支付通知',
-            "keyword2" => '一级' . $content,
-            "remark" => "",
+        $params = [
+            ['name' => '下级昵称', 'value' => $this->getMemberName()],
+            ['name' => '订单状态', 'value' => '已支付'],
+            ['name' => '订单号', 'value' => $this->orderModel->order_sn],
+            ['name' => '订单金额', 'value' => $this->orderModel->price],
         ];
-        $two_msg = [
-            "first" => '您好',
-            "keyword1" => '二级会员订单支付通知',
-            "keyword2" => '二级' . $content,
-            "remark" => "",
-        ];
-        $this->notice($one_msg,$two_msg);
+
+        $this->notice($params);
     }
 
     public function sent()
     {
-        $content = '会员'.$this->getMemberName()."，订单：" . $this->orderModel->order_sn ."，订单金额：".$this->orderModel->price. "已经发货。";
+        $params = [
+            ['name' => '下级昵称', 'value' => $this->getMemberName()],
+            ['name' => '订单状态', 'value' => '已发货'],
+            ['name' => '订单号', 'value' => $this->orderModel->order_sn],
+            ['name' => '订单金额', 'value' => $this->orderModel->price],
+        ];
 
-        $one_msg = [
-            "first" => '您好',
-            "keyword1" => '一级会员订单发货通知',
-            "keyword2" => '一级' . $content,
-            "remark" => "",
-        ];
-        $two_msg = [
-            "first" => '您好',
-            "keyword1" => '二级会员订单发货通知',
-            "keyword2" => '二级' . $content,
-            "remark" => "",
-        ];
-        $this->notice($one_msg,$two_msg);
+        $this->notice($params);
     }
 
     public function received()
     {
-        $content = '会员'.$this->getMemberName()."，订单：" . $this->orderModel->order_sn ."，订单金额：".$this->orderModel->price. "已经完成。";
+        $params = [
+            ['name' => '下级昵称', 'value' => $this->getMemberName()],
+            ['name' => '订单状态', 'value' => '已完成'],
+            ['name' => '订单号', 'value' => $this->orderModel->order_sn],
+            ['name' => '订单金额', 'value' => $this->orderModel->price],
+        ];
 
-        $one_msg = [
-            "first" => '您好',
-            "keyword1" => '一级会员订单完成通知',
-            "keyword2" => '一级' . $content,
-            "remark" => "",
-        ];
-        $two_msg = [
-            "first" => '您好',
-            "keyword1" => '二级会员订单完成通知',
-            "keyword2" => '二级' . $content,
-            "remark" => "",
-        ];
-        $this->notice($one_msg,$two_msg);
+        $this->notice($params);
     }
 
-    private function notice($oneMsg,$twoMsg)
+    private function notice($params)
     {
         if (!\Setting::get('shop.notice.other_toggle')) {
             return;
         }
         \Log::info('二级消息通知,设置通过');
-        $templateId = \Setting::get('shop.notice.task');
-        if (!$templateId) {
+
+
+        $template_id = \Setting::get('shop.notice.other_toggle_temp');
+        if (!$template_id) {
             return;
         }
         \Log::info('二级消息通知,模版ID通过');
-        \Log::info('二级消息通知,模版ID通过'.$this->memberModel->yzMember->parent_id, print_r($this->memberModel->toArray(),true));
+
+
+        //\Log::info('二级消息通知,模版ID通过'.$this->memberModel->yzMember->parent_id, print_r($this->memberModel->toArray(),true));
         if (isset($this->memberModel->yzMember) && $this->memberModel->yzMember->parent_id) {
             \Log::info('二级消息通知,一级消息通过');
-            Notice::notice($templateId,$oneMsg,$this->memberModel->yzMember->parent_id);
+
+            $params[] = ['name' => '下级层级', 'value' => '一级'];
+
+            $msg = MessageTemp::getSendMsg($template_id, $params);
+            if (!$msg) {
+                return;
+            }
+
+            Notice::notice(MessageTemp::$template_id,$msg,$this->memberModel->yzMember->parent_id);
         }
 
         $twoSuperior = $this->getMemberModel($this->memberModel->yzMember->parent_id);
         if (isset($twoSuperior->yzMember) && $twoSuperior->yzMember->parent_id) {
             \Log::info('二级消息通知,二级消息通过');
-            Notice::notice($templateId,$twoMsg,$twoSuperior->yzMember->parent_id);
+
+            $params[] = ['name' => '下级层级', 'value' => '二级'];
+
+            $msg = MessageTemp::getSendMsg($template_id, $params);
+            if (!$msg) {
+                return;
+            }
+
+            Notice::notice(MessageTemp::$template_id,$msg,$twoSuperior->yzMember->parent_id);
         }
         return;
     }

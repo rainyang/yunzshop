@@ -14,6 +14,7 @@ use app\common\events\finance\AfterIncomeWithdrawPayEvent;
 use app\common\models\Member;
 use app\common\services\finance\MessageService;
 use app\common\services\finance\WithdrawService;
+use Illuminate\Support\Facades\Log;
 
 class IncomeWithdraw
 {
@@ -45,14 +46,13 @@ class IncomeWithdraw
     {
         $data = $event->getData();
         $member = Member::getMemberByUid($data->member_id)->with('hasOneFans')->first();
-        $withdrawStatusName = WithdrawService::getWithdrawStatusName($data->status);
         $noticeData = [
-            'type_name' => $data->type_name,
-            'amounts' => $data->amounts,
-            'status' => $withdrawStatusName,
-            'actual_amounts' => $data->actual_amounts,
-            'actual_poundage' => $data->actual_poundage,
-            'pay_way' => $data->pay_way,
+            'type_name'     => $data->type_name,
+            'amounts'       => $data->amounts,
+            'status'        => "已审核",
+            'actual_amounts'    => $data->actual_amounts,
+            'actual_poundage'   => $data->actual_poundage,
+            'pay_way'       => $data->pay_way,
         ];
         MessageService::withdrawCheck($noticeData,$member);
     }
@@ -65,10 +65,9 @@ class IncomeWithdraw
     {
         $data = $event->getData();
         $member = Member::getMemberByUid($data->member_id)->with('hasOneFans')->first();
-        $payStatusName = WithdrawService::getPayStatusName($data->pay_status);
         $noticeData = [
             'type_name' => $data->type_name,
-            'pay_status' => $payStatusName,
+            'pay_status' => "已打款",
             'actual_amounts' => $data->actual_amounts,
             'pay_way' => $data->pay_way,
         ];
@@ -83,10 +82,9 @@ class IncomeWithdraw
     {
         $data = $event->getData();
         $member = Member::getMemberByUid($data->member_id)->with('hasOneFans')->first();
-        $payStatusName = WithdrawService::getPayStatusName($data->pay_status);
         $noticeData = [
             'type_name' => $data->type_name,
-            'pay_status' => $payStatusName,
+            'pay_status' => "已到账",
             'actual_amounts' => $data->actual_amounts,
             'pay_way' => $data->pay_way,
         ];

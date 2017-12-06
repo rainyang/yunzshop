@@ -2356,6 +2356,30 @@ return [
                 'parents'           => ['system',],
             ],
 
+            'setting_wechat_notice' => [
+                'name'              => '微信模板管理',
+                'url'               => 'setting.wechat-notice.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-wechat',
+                'sort'              => '6',
+                'item'              => 'setting_wechat_notice',
+                'parents'           => ['system', 'Setting',],
+            ],
+
+            'setting_diy_temp' => [
+                'name'              => '自定义模板管理',
+                'url'               => 'setting.diy-temp.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-bars',
+                'sort'              => '6',
+                'item'              => 'setting_diy_temp',
+                'parents'           => ['system', 'Setting',],
+            ],
+
             'setting_shop_lang' => [
                 'name'              => '语言设置',
                 'url'               => 'setting.lang.index',
