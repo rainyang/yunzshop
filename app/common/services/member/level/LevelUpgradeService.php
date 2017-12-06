@@ -13,6 +13,7 @@ use app\common\facades\Setting;
 use app\common\models\Member;
 use app\common\models\MemberLevel;
 use app\common\models\MemberShopInfo;
+use app\common\models\notice\MessageTemp;
 use app\common\models\Order;
 use app\common\services\MessageService;
 use Monolog\Handler\IFTTTHandler;
@@ -165,6 +166,7 @@ class LevelUpgradeService
     private function notice()
     {
         $template_id = \Setting::get('shop.notice.customer_upgrade');
+
         if (!trim($template_id)) {
             return '';
         }
@@ -176,30 +178,19 @@ class LevelUpgradeService
         $old_level = $set['level_name'] ?: '普通会员';
         $old_level = $this->memberModel->level->level_name ?: $old_level;
 
-        $msg = array(
-            'first' => array(
-                'value' => "亲爱的" . $member_name . ', 恭喜您成功升级！',
-                "color" => "#4a5077"
-            ),
-            'keyword1' => array(
-                'title' => '任务名称',
-                'value' => '会员升级',
-                "color" => "#4a5077"
-            ),
-            'keyword2' => array(
-                'title' => '通知类型',
-                'value' => '您会员等级从 ' . $old_level . ' 升级为 ' . $this->new_level->level_name . ', 特此通知!',
-                "color" => "#4a5077"
-            ),
-            'remark' => array(
-                'value' => "\r\n您即可享有" . $this->new_level->level_name . '的专属优惠及服务！',
-                "color" => "#4a5077"
-            )
-        );
+        $params = [
+            ['name' => '粉丝昵称', 'value' => $member_name],
+            ['name' => '旧等级', 'value' => $old_level],
+            ['name' => '新等级', 'value' => $this->new_level->level_name],
+            ['name' => '时间', 'value' => date('Y-m-d H:i',time())],
+        ];
 
-        if (isset($memberModel->hasOneFans) && !empty($memberModel->hasOneFans->openid) && $memberModel->hasOneFans->follow) {
-            MessageService::notice($template_id, $msg, $memberModel->uid);
+        $msg = MessageTemp::getSendMsg($template_id, $params);
+        if (!$msg) {
+            return;
         }
+
+        MessageService::notice(MessageTemp::$template_id, $msg, $memberModel->uid);
     }
 
 

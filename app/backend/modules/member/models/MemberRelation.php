@@ -11,6 +11,7 @@ namespace app\backend\modules\member\models;
 use app\backend\models\BackendModel;
 use app\backend\modules\order\models\Order;
 use app\common\events\member\MemberRelationEvent;
+use app\common\models\notice\MessageTemp;
 use app\common\services\MessageService;
 use app\frontend\modules\member\models\SubMemberModel;
 
@@ -590,24 +591,30 @@ class MemberRelation extends BackendModel
 
     public static function generalizeMessage($member, $uniacid)
     {
-        $notice = \Setting::get('shop.notice');
+        $noticeMember = Member::getMemberByUid($member->uid)->with('hasOneFans')->first();
 
-        $msg_set = \Setting::get('relation_base');
-        if ($notice['task'] && ($member->follow == 1)) {
-            $message = $msg_set['generalize_msg'];
-            $message = str_replace('[昵称]', $member->nickname, $message);
-            $message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
-            $msg = [
-                "first" => '您好',
-                "keyword1" => !empty($msg_set['generalize_title'])?$msg_set['generalize_title']:"获得推广权限通知",
-                "keyword2" => $message,
-                "remark" => "",
-            ];
-
-            if ($notice['toggle'] && $notice['task']) {
-                MessageService::notice($notice['task'], $msg, $member->uid, $uniacid);
-            }
+        if (!$noticeMember->hasOneFans->openid) {
+            return;
         }
+
+        $temp_id = \Setting::get('relation_base')['member_agent'];
+
+        if (!$temp_id) {
+            return;
+        }
+
+        $params = [
+            ['name' => '昵称', 'value' => $member->nickname],
+            ['name' => '时间', 'value' => date('Y-m-d H:i', time())]
+        ];
+
+        $msg = MessageTemp::getSendMsg($temp_id, $params);
+
+        if (!$msg) {
+            return;
+        }
+
+        MessageService::notice(MessageTemp::$template_id, $msg, $member->uid);
     }
 
     /**
@@ -631,25 +638,31 @@ class MemberRelation extends BackendModel
 
     public static function agentMessage($parent, $member, $uniacid)
     {
-        $notice = \Setting::get('shop.notice');
+        $noticeMember = Member::getMemberByUid($parent->uid)->with('hasOneFans')->first();
 
-        $msg_set = \Setting::get('relation_base');
-        if ($notice['task'] && ($parent->follow == 1)) {
-            $message = $msg_set['agent_msg'];
-            $message = str_replace('[昵称]', $parent->nickname, $message);
-            $message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
-            $message = str_replace('[下级昵称]', $member->nickname, $message);
-            $msg = [
-                "first" => '您好',
-                "keyword1" => !empty($msg_set['agent_title'])?$msg_set['agent_title']:"新增下线通知",
-                "keyword2" => $message,
-                "remark" => "",
-            ];
-
-            if ($notice['toggle'] && $notice['task']) {
-                MessageService::notice($notice['task'], $msg, $parent->uid, $uniacid);
-            }
+        if (!$noticeMember->hasOneFans->openid) {
+            return;
         }
+
+        $temp_id = \Setting::get('relation_base')['member_new_lower'];
+
+        if (!$temp_id) {
+            return;
+        }
+
+        $params = [
+            ['name' => '昵称', 'value' => $parent->nickname],
+            ['name' => '时间', 'value' => date('Y-m-d H:i', time())],
+            ['name' => '下级昵称', 'value' => $member->nickname]
+        ];
+
+        $msg = MessageTemp::getSendMsg($temp_id, $params);
+
+        if (!$msg) {
+            return;
+        }
+
+        MessageService::notice(MessageTemp::$template_id, $msg, $parent->uid);
     }
 
     private static function setRelationInfo($member)

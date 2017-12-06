@@ -201,7 +201,16 @@ class CouponController extends BaseController
             'coupons' => $coupons
         ])->render();
     }
-
+    /**
+     * 获取搜索优惠券
+     * @return html
+     */
+    public function getVueSearchCoupons()
+    {
+        $keyword = \YunShop::request()->keyword;
+        $coupons = Coupon::getCouponsByName($keyword);
+        echo  json_encode($coupons);
+    }
     //用于"适用范围"添加商品或者分类
     public function addParam()
     {

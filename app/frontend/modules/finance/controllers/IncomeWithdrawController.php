@@ -9,6 +9,8 @@
 
 namespace app\frontend\modules\finance\controllers;
 
+use app\common\events\finance\AfterIncomeWithdrawEvent;
+use app\common\events\finance\AfterIncomeWithdrawPayEvent;
 use app\common\exceptions\AppException;
 use app\common\components\ApiController;
 use app\common\facades\Setting;
@@ -202,6 +204,9 @@ class IncomeWithdrawController extends ApiController
 
         $withdraw_items = $this->getWithdrawItems($withdraw_data['withdrawal'], $withdraw_data['total']['amounts']);
 
+        //todo 兼容原杨雷设计事件 需要重构事件模型
+        $this->afterIncomeWithdrawEvent($withdraw_data, $withdraw_items);
+
         foreach ($withdraw_items as $key => $item) {
             $result = Withdraw::insert($item);
             if (!$result) {
@@ -237,6 +242,9 @@ class IncomeWithdrawController extends ApiController
         DB::beginTransaction();
 
         $withdraw_items = $this->getWithdrawItems($withdraw_data['withdrawal'], $withdraw_data['total']['amounts']);
+
+        //todo 兼容原杨雷设计事件 需要重构事件模型
+        $this->afterIncomeWithdrawEvent($withdraw_data, $withdraw_items);
 
         foreach ($withdraw_items as $key => $item) {
 
@@ -279,6 +287,9 @@ class IncomeWithdrawController extends ApiController
 
         $withdraw_items = $this->getWithdrawItems($withdraw_data['withdrawal'], $withdraw_data['total']['amounts']);
 
+        //todo 兼容原杨雷设计事件 需要重构事件模型
+        $this->afterIncomeWithdrawEvent($withdraw_data, $withdraw_items);
+
         $result = Withdraw::insert($withdraw_items);
         if (!$result > 0) {
             DB::rollBack();
@@ -315,6 +326,9 @@ class IncomeWithdrawController extends ApiController
 
         $withdraw_items = $this->getWithdrawItems($withdraw_data['withdrawal'], $withdraw_data['total']['amounts']);
 
+        //todo 兼容原杨雷设计事件 需要重构事件模型
+        $this->afterIncomeWithdrawEvent($withdraw_data, $withdraw_items);
+
         $result = Withdraw::insert($withdraw_items);
         if (!$result > 0) {
             DB::rollBack();
@@ -324,6 +338,15 @@ class IncomeWithdrawController extends ApiController
         return true;
     }
 
+    /**
+     * todo 兼容原杨雷设计事件 需要重构事件模型
+     * @param $withdraw_data
+     */
+    private function afterIncomeWithdrawEvent($withdraw_data, $withdrawal)
+    {
+        $withdraw_data['withdrawal'] = $withdrawal;
+        event(new AfterIncomeWithdrawEvent($withdraw_data));
+    }
 
 
     /**

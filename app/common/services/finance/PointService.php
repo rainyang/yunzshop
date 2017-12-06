@@ -11,6 +11,7 @@ namespace app\common\services\finance;
 
 use app\backend\modules\member\models\Member;
 use app\common\models\finance\PointLog;
+use app\common\models\notice\MessageTemp;
 use app\common\services\MessageService;
 use EasyWeChat\Foundation\Application;
 use EasyWeChat\Message\News;
@@ -69,11 +70,15 @@ class PointService
     const POINT_MODE_COUPON_DEDUCTION_AWARD = 16;
     const POINT_MODE_COUPON_DEDUCTION_AWARD_ATTACHED = '优惠劵抵扣奖励';
 
-    const POINT_MODE_TRANSFER_LOVE = 17;
+    const POINT_MODE_TRANSFER_LOVE = 18;
     const POINT_MODE_TRANSFER_LOVE_ATTACHED = '自动转出';
 
     const POINT_MODE_RECHARGE_CODE = 92;
     const POINT_MODE_RECHARGE_CODE_ATTACHED = '充值码充值积分';
+
+
+    const POINT_MODE_TASK_REWARD = 17;
+    const POINT_MODE_TASK_REWARD_ATTACHED = '任务奖励';
 
     const POINT = 0;
 
@@ -142,18 +147,24 @@ class PointService
         if (!$noticeMember->hasOneFans->openid) {
             return;
         }
-        /*$nickname = @iconv("utf-8", "gbk", $this->member['nickname']);
-        $nickname = @iconv("gbk", "utf-8", $nickname);*/
-        $msg = [
-            "first" => '您好',
-            "keyword1" => '积分变动通知',
-            "keyword2" => '尊敬的[' . $this->member['nickname'] . ']，您于[' . date('Y-m-d H:i', time()) . ']发生积分变动，变动数值为[' . $this->point_data['point'] . ']，类型[' . $this->point_data['point_mode'] . ']，您目前积分余值为[' . $this->point_data['after_point'] . ']',
-            "remark" => "",
-        ];
-        if (!isset(\Setting::get('shop.notice')['task']) || !\Setting::get('shop.notice')['task']) {
+
+        $temp_id = \Setting::get('shop.notice')['point_change'];
+        if (!$temp_id) {
             return;
         }
-        MessageService::notice(\Setting::get('shop.notice')['task'], $msg, $this->member->uid);
+        $params = [
+            ['name' => '商城名称', 'value' => \Setting::get('shop.shop')['name']],
+            ['name' => '昵称', 'value' => $this->member['nickname']],
+            ['name' => '时间', 'value' => date('Y-m-d H:i', time())],
+            ['name' => '积分变动金额', 'value' => $this->point_data['point']],
+            ['name' => '积分变动类型', 'value' => $this->point_data['point_mode']],
+            ['name' => '变动后余额数值', 'value' => $this->point_data['after_point']]
+        ];
+        $msg = MessageTemp::getSendMsg($temp_id, $params);
+        if (!$msg) {
+            return;
+        }
+        MessageService::notice(MessageTemp::$template_id, $msg, $this->member->uid);
     }
 
     /**
@@ -222,11 +233,15 @@ class PointService
                 $mode_attribute = self::POINT_MODE_COUPON_DEDUCTION_AWARD_ATTACHED;
                 break;
             case (17):
+                $mode_attribute = self::POINT_MODE_TASK_REWARD_ATTACHED;
+                break;
+            case (18):
                 $mode_attribute = self::POINT_MODE_TRANSFER_LOVE_ATTACHED;
                 break;
             case (92):
                 $mode_attribute = self::POINT_MODE_RECHARGE_CODE_ATTACHED;
                 break;
+
         }
         return $mode_attribute;
     }

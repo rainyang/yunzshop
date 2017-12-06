@@ -1528,7 +1528,7 @@ return [
 
     'finance'=> [
         'name'              => '财务',
-        'url'               => 'finance.balance',
+        'url'               => 'finance.balance-set.see',
         'url_params'        => '',
         'permit'            => 1,
         'menu'              => 1,
@@ -1542,18 +1542,40 @@ return [
         'parents'           => [],
         'child'             => [
 
-
-
-            'balance_set'       => [
+            'finance_balance_set'       => [
                 'name'              => '余额设置',
-                'url'               => 'finance.balance.index',
+                'url'               => 'finance.balance-set.see',
                 'url_params'        => '',
                 'permit'            => 1,
                 'menu'              => 1,
                 'icon'              => 'fa-gear',
                 'sort'              => 0,
-                'item'              => 'balance_set',
-                'parents'           => ['finance', 'balance'],
+                'item'              => 'finance_balance_set',
+                'parents'           => ['finance'],
+                'child'             => [
+
+                    'finance_balance_set_see' => [
+                        'name'              => '查看设置',
+                        'url'               => 'finance.balance-set.see',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => 'fa-gear',
+                        'item'              => 'finance_balance_set_see',
+                        'parents'           => ['finance', 'finance_balance_set'],
+                    ],
+
+                    'finance_balance_set_store' => [
+                        'name'              => '修改设置',
+                        'url'               => 'finance.balance-set.store',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => 'fa-gear',
+                        'item'              => 'finance_balance_set_see',
+                        'parents'           => ['finance', 'finance_balance_set'],
+                    ],
+                ],
             ],
 
             'finance_balance_member'    => [
@@ -2332,6 +2354,30 @@ return [
                 'sort'              => '6',
                 'item'              => 'setting_shop_notice',
                 'parents'           => ['system',],
+            ],
+
+            'setting_wechat_notice' => [
+                'name'              => '微信模板管理',
+                'url'               => 'setting.wechat-notice.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-wechat',
+                'sort'              => '6',
+                'item'              => 'setting_wechat_notice',
+                'parents'           => ['system', 'Setting',],
+            ],
+
+            'setting_diy_temp' => [
+                'name'              => '自定义模板管理',
+                'url'               => 'setting.diy-temp.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-bars',
+                'sort'              => '6',
+                'item'              => 'setting_diy_temp',
+                'parents'           => ['system', 'Setting',],
             ],
 
             'setting_shop_lang' => [

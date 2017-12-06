@@ -116,6 +116,9 @@ class PointLog extends BaseModel
                 $mode_attribute = PointService::POINT_MODE_COUPON_DEDUCTION_AWARD_ATTACHED;
                 break;
             case (17):
+                $mode_attribute = PointService::POINT_MODE_TASK_REWARD_ATTACHED;
+                break;
+            case (18):
                 $mode_attribute = PointService::POINT_MODE_TRANSFER_LOVE_ATTACHED;
                 break;
             case (92):
