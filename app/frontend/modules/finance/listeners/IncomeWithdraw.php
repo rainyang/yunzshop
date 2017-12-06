@@ -33,7 +33,6 @@ class IncomeWithdraw
                 'poundage' => $item['poundage'],
                 'pay_way' => $item['pay_way'],
             ];
-            Log::info("收入提现提交通知",print_r($noticeData,true));
             MessageService::incomeWithdraw($noticeData,$member);
         }
 
@@ -46,15 +45,16 @@ class IncomeWithdraw
     public function withdrawCheck(AfterIncomeWithdrawCheckEvent $event)
     {
         $data = $event->getData();
+        Log::info("提现审核通知", print_r($data, true));
         $member = Member::getMemberByUid($data->member_id)->with('hasOneFans')->first();
         $withdrawStatusName = WithdrawService::getWithdrawStatusName($data->status);
         $noticeData = [
-            'type_name' => $data->type_name,
-            'amounts' => $data->amounts,
-            'status' => $withdrawStatusName,
-            'actual_amounts' => $data->actual_amounts,
-            'actual_poundage' => $data->actual_poundage,
-            'pay_way' => $data->pay_way,
+            'type_name'     => $data->type_name,
+            'amounts'       => $data->amounts,
+            'status'        => $withdrawStatusName,
+            'actual_amounts'    => $data->actual_amounts,
+            'actual_poundage'   => $data->actual_poundage,
+            'pay_way'       => $data->pay_way,
         ];
         MessageService::withdrawCheck($noticeData,$member);
     }
