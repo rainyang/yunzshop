@@ -370,6 +370,7 @@ class IncomeWithdrawController extends ApiController
         if ($this->withdraw_amounts != $amounts) {
             throw new AppException('提现失败：提现金额错误');
         }
+        Log::info('收入提现：提现数据重组', print_r($array, true));
         event(new AfterIncomeWithdrawEvent($array));
         return $array;
     }
