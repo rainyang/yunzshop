@@ -49,7 +49,7 @@ class IncomeWithdraw
         $noticeData = [
             'type_name'     => $data->type_name,
             'amounts'       => $data->amounts,
-            'status'        => $data->status_name,
+            'status'        => "已审核",
             'actual_amounts'    => $data->actual_amounts,
             'actual_poundage'   => $data->actual_poundage,
             'pay_way'       => $data->pay_way,
