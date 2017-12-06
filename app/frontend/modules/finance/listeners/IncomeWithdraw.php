@@ -33,6 +33,7 @@ class IncomeWithdraw
                 'poundage' => $item['poundage'],
                 'pay_way' => $item['pay_way'],
             ];
+            Log::info("收入提现提交通知",print_r($noticeData,true));
             MessageService::incomeWithdraw($noticeData,$member);
         }
 
