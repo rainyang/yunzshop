@@ -17,7 +17,7 @@ class EditAddressAndStreet extends Migration
         if ($area) {
             $parent_id = $area->id;
             $area->delete();
-            \app\common\models\Address::select()->where('parentid', $parent_id)->whereLevel(4)->delete();
+            \app\common\models\Street::select()->where('parentid', $parent_id)->whereLevel(4)->delete();
         }
         \app\common\models\Address::insertGetId([
             'id'       => 320214,
@@ -39,8 +39,7 @@ class EditAddressAndStreet extends Migration
                     $parent_id)->get();
                 if (!$self_deliverys->isEmpty()) {
                     $self_deliverys->each(function($item){
-                        $item->district_id = 320214;
-                        $item->save();
+                        DB::table('yz_plugin_store_self_delivery')->whereId($item['id'])->update(['district_id' => 320214]);
                     });
                 }
             }
@@ -49,8 +48,7 @@ class EditAddressAndStreet extends Migration
                     $parent_id)->get();
                 if (!$store_deliverys->isEmpty()) {
                     $store_deliverys->each(function($item){
-                        $item->district_id = 320214;
-                        $item->save();
+                        DB::table('yz_plugin_store_store_delivery')->whereId($item['id'])->update(['district_id' => 320214]);
                     });
                 }
             }
@@ -59,8 +57,7 @@ class EditAddressAndStreet extends Migration
                     $parent_id)->get();
                 if (!$order_address->isEmpty()) {
                     $order_address->each(function($item){
-                        $item->district_id = 320214;
-                        $item->save();
+                        DB::table('yz_order_address')->whereId($item['id'])->update(['district_id' => 320214]);
                     });
                 }
             }
@@ -69,8 +66,7 @@ class EditAddressAndStreet extends Migration
                     $parent_id)->get();
                 if (!$stores->isEmpty()) {
                     $stores->each(function($item){
-                        $item->district_id = 320214;
-                        $item->save();
+                        DB::table('yz_store')->whereId($item['id'])->update(['district_id' => 320214]);
                     });
                 }
             }
