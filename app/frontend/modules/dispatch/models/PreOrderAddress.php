@@ -35,14 +35,19 @@ class PreOrderAddress extends OrderAddress
             //dd($this->validator()->failed());
         }
     }
+    private function getAreaIdsByNames($names){
+        $address = Address::whereIn('areaname', $names)->pluck('id');
+        dd($address);
+        exit;
 
+    }
     protected function getAddressByMember()
     {
         $memberAddress = $this->getMemberAddress();
 
         $result['address'] = implode(' ', [$memberAddress->province, $memberAddress->city, $memberAddress->district, $memberAddress->address]);
         $result['mobile'] = $memberAddress->mobile;
-        list($this->province_id, $this->city_id, $this->district_id) = Address::whereIn('areaname', [$memberAddress->province, $memberAddress->city, $memberAddress->district])->pluck('id');
+        list($this->province_id, $this->city_id, $this->district_id) = $this->getAreaIdsByNames([$memberAddress->province, $memberAddress->city, $memberAddress->district]);
 
         $result['address'] = implode(' ', [$memberAddress->province, $memberAddress->city, $memberAddress->district, $memberAddress->address]);
         $result['realname'] = $memberAddress->username;
