@@ -198,7 +198,7 @@
                                             @endif
                                             <br/>
                                             @if($item['has_option']==1)
-                                                <span class='tip' title='多规格不支持快速修改'>{{$item['stock']}}</span>
+                                                <span class='tip' title='多规格不支持快速修改'>{{$item->hasManyOptions->sum('stock')}}</span>
                                             @else
                                                 <span class=' fa-edit-item' style='cursor:pointer'><i
                                                             class='fa fa-pencil' style="display:none"></i> <span

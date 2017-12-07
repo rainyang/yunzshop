@@ -99,9 +99,9 @@ class GoodsController extends BaseController
             ]
         );
 
-        $list = Goods::Search($requestSearch)->pluginId()->orderBy('display_order', 'desc')->orderBy('yz_goods.id', 'desc')->paginate(20)->toArray();
+        $list = Goods::Search($requestSearch)->pluginId()->orderBy('display_order', 'desc')->orderBy('yz_goods.id', 'desc')->paginate(20);
 
-        $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
+        $pager = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
 
 
 
@@ -110,7 +110,7 @@ class GoodsController extends BaseController
         $delete_msg = '确认删除此商品？';
         $sort_url = 'goods.goods.displayorder';
         return view('goods.index', [
-            'list' => $list['data'],
+            'list' => $list,
             'pager' => $pager,
             //'status' => $status,
             'brands' => $brands,
