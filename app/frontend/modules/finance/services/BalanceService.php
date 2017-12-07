@@ -123,5 +123,30 @@ class BalanceService
         return $this->_withdraw_set['poundage_type'] ? 1 : 0;
     }
 
+    public function rechargeActivityStatus()
+    {
+        return $this->_recharge_set['recharge_activity'] ? true : false;
+    }
+
+    public function rechargeActivityStartTime()
+    {
+        return $this->_recharge_set['recharge_activity_start'] ?: 0;
+    }
+
+    public function rechargeActivityEndTime()
+    {
+        return $this->_recharge_set['recharge_activity_end'] ?: 0;
+    }
+
+    public function rechargeActivityCount()
+    {
+        return $this->_recharge_set['recharge_activity_count'] ?: 1;
+    }
+
+    public function rechargeActivityFetter()
+    {
+        return $this->_recharge_set['recharge_activity_fetter'];
+    }
+
 
 }

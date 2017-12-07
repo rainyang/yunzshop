@@ -25,6 +25,7 @@ use app\frontend\modules\finance\services\BalanceService;
 
 use app\backend\modules\member\models\Member;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class BalanceController extends ApiController
 {
@@ -125,7 +126,7 @@ class BalanceController extends ApiController
         $result = (new BalanceService())->rechargeSet() ? $this->rechargeStart() : '未开启余额充值';
         if ($result === true) {
             $type = intval(\YunShop::request()->pay_type);
-            if ($type == PayFactory::PAY_WEACHAT) {
+            if ($type == PayFactory::PAY_WEACHAT || $type == PayFactory::PAY_YUN_WEACHAT) {
                 return  $this->successJson('支付接口对接成功', array_merge(['ordersn' => $this->model->ordersn], $this->payOrder()));
             } else {
                 return $this->successJson('支付接口对接成功', ['ordersn' => $this->model->ordersn]);
@@ -327,6 +328,7 @@ class BalanceController extends ApiController
         $pay = PayFactory::create($this->model->type);
 
         $result = $pay->doPay($this->payData());
+        Log::info('++++++++++++++++++', print_r($result, true));
         if ($this->model->type == 1) {
             $result['js'] = json_decode($result['js'], 1);
         }

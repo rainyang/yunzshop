@@ -340,9 +340,9 @@ class WithdrawController extends BaseController
         $this->withdrawModel->actual_poundage = $this->getActualPoundage($actual_amounts);
         $this->withdrawModel->actual_servicetax = $this->getActualServiceTax($actual_amounts);
         $this->withdrawModel->actual_amounts = $actual_amounts - $this->getActualPoundage($actual_amounts) - $this->getActualServiceTax($actual_amounts);
-        
 
 
+        event(new AfterIncomeWithdrawCheckEvent($this->withdrawModel));
         $result = $this->withdrawModel->save();
         if ($result !== true) {
             DB::rollBack();

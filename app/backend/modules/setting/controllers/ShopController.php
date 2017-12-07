@@ -12,6 +12,7 @@ use app\common\components\BaseController;
 use app\common\helpers\Url;
 use app\common\facades\Setting;
 use app\common\models\AccountWechats;
+use app\common\models\notice\MessageTemp;
 use app\common\services\MyLink;
 use Yunshop\Diyform\models\DiyformTypeModel;
 
@@ -184,6 +185,9 @@ class ShopController extends BaseController
 //        $salers = []; //订单通知的商家列表,数据如何取待定?
         //$new_type = []; //通知方式的数组,数据如何来的待定?
         $requestModel = \YunShop::request()->notice;
+
+        $temp_list = MessageTemp::select('id', 'title')->get();
+
         if (!empty($requestModel)) {
 
             if (Setting::set('shop.notice', $requestModel)) {
@@ -194,6 +198,7 @@ class ShopController extends BaseController
         }
         return view('setting.shop.notice', [
             'set' => $notice,
+            'temp_list' => $temp_list
         ])->render();
     }
 

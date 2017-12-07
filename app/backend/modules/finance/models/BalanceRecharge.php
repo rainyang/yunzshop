@@ -13,6 +13,7 @@ use app\common\traits\ValidatorTrait;
 
 class BalanceRecharge
 {
+    //todo 可以删除此文件，验证规则已经转移到 BalanceSetController 2017-12-05 LYT:995265288
     use ValidatorTrait;
 
     public function rules()

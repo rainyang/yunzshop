@@ -10,10 +10,12 @@
 namespace app\frontend\modules\finance\services;
 
 
+use app\common\models\finance\BalanceRechargeActivity;
 use app\common\services\credit\ConstService;
 use app\common\services\finance\BalanceChange;
 use app\frontend\modules\finance\models\BalanceRecharge;
 use EasyWeChat\Support\Log;
+use Illuminate\Support\Facades\DB;
 
 class BalanceRechargeResultService
 {
@@ -25,6 +27,14 @@ class BalanceRechargeResultService
 
     private $give;
 
+    private $balance_set;
+
+
+    public function __construct()
+    {
+        $this->balance_set = new BalanceService();
+
+    }
 
     /**
      * 余额充值支付回调
@@ -39,21 +49,69 @@ class BalanceRechargeResultService
             return '没有获取到订单号';
         }
 
+        DB::beginTransaction();
+
         $result = $this->updateRechargeStatus();
         if ($result !== true) {
             Log::debug('余额充值：订单号'. $array['order_sn']."修改充值状态失败");
+            DB::rollBack();
             return true;
         }
         $result = $this->updateMemberBalance();
         if ($result !== true) {
             Log::debug('余额充值：订单号'. $array['order_sn']."修改会员余额失败");
+            DB::rollBack();
             return true;
         }
+
+        //是否增加充值活动限制
+        if ($this->balance_set->rechargeActivityStatus()) {
+
+            //是否在活动时间
+            $start_time = $this->balance_set->rechargeActivityStartTime();
+            $end_time = $this->balance_set->rechargeActivityEndTime();
+            $recharge_time = $this->rechargeModel->created_at->timestamp;
+
+            if (!($start_time <= $recharge_time) || !($end_time >= $recharge_time)) {
+                Log::debug('余额充值：订单号'. $array['order_sn']."充值时间未在充值活动时间之内，取消赠送");
+                DB::commit();
+                return true;
+            }
+
+            //参与次数检测
+            $rechargeActivity = BalanceRechargeActivity::where('member_id', $this->rechargeModel->member_id)
+                ->where('activity_id',$this->balance_set->rechargeActivityCount())
+                ->first();
+
+            $fetter = $this->balance_set->rechargeActivityFetter();
+            if ($fetter && $fetter >= 1 && $rechargeActivity && $rechargeActivity->partake_count >= $fetter) {
+                Log::debug('余额充值：订单号'. $array['order_sn']."会员参与次数已达到上限");
+                DB::commit();
+                return true;
+            }
+
+            //更新会员参与活动次数
+            if ($rechargeActivity) {
+                $rechargeActivity->partake_count += 1;
+            } else {
+                $rechargeActivity = new BalanceRechargeActivity();
+
+                $rechargeActivity->uniacid = $this->rechargeModel->uniacid;
+                $rechargeActivity->member_id = $this->rechargeModel->member_id;
+                $rechargeActivity->partake_count += 1;
+                $rechargeActivity->activity_id = $this->balance_set->rechargeActivityCount();
+            }
+            $rechargeActivity->save();
+        }
+
+
         $result = $this->rechargeEnoughGive();
         if ($result !== true) {
             Log::debug('余额充值：订单号'. $array['order_sn']."充值满奖失败");
+            DB::rollBack();
             return true;
         }
+        DB::commit();
         return true;
     }
 
@@ -145,7 +203,7 @@ class BalanceRechargeResultService
      */
     private function getRechargeSale()
     {
-        $sale = (new BalanceService())->rechargeSale();
+        $sale = $this->balance_set->rechargeSale();
 
         $sale = array_values(array_sort($sale, function ($value) {
             return $value['enough'];
@@ -188,7 +246,7 @@ class BalanceRechargeResultService
      */
     private function getProportionStatus()
     {
-        return (new BalanceService())->proportionStatus();
+        return $this->balance_set->proportionStatus();
     }
 
 
