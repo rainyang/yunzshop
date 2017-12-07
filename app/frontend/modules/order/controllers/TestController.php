@@ -3,6 +3,7 @@
 namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
+use app\common\models\Address;
 use app\common\models\Order;
 use app\frontend\modules\payment\orderPayments\BasePayment;
 use Yunshop\StoreCashier\common\models\Store;
@@ -19,26 +20,7 @@ class TestController extends ApiController
 
     public function index()
     {
-        $order = Order::where('id', 3310)->first();
-        $paymentTypes = app('PaymentManager')->make('OrderPaymentTypeManager')->getOrderPaymentTypes($order);
-        $data = $paymentTypes->map(function (BasePayment $paymentType) {
-            return [
-                'name' => $paymentType->getName(),
-                'value' => $paymentType->getId(),
-                'need_password' => $paymentType->needPassword(),
-            ];
-        })->values();
-        dd($data);
-        exit;
-
-        $result = [
-            'name' => '支付宝',
-            'value' => '2',
-            'need_password' => '0'
-
-        ];
-        dd($paymentTypes);
-        exit;
+        dd(Address::whereIn('areaname', ['河北省','石家庄市' , '桥西区'])->pluck('id'));
     }
 
     public function store()
