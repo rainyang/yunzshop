@@ -2,6 +2,10 @@
 
 return [
     'goods' => [
+        'div_from' => [
+            'title' => '表单',
+            'class' => 'app\backend\widgets\goods\DivFromWidget'
+        ],
         'tab_sale' => [
             'title' => '营销',
             'class' => 'app\backend\widgets\goods\SaleWidget',
