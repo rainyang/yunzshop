@@ -5,6 +5,7 @@ namespace app\frontend\modules\order\controllers;
 use app\common\components\ApiController;
 use app\common\models\Address;
 use app\common\models\Order;
+use app\common\models\Setting;
 use app\frontend\modules\payment\orderPayments\BasePayment;
 use Yunshop\StoreCashier\common\models\Store;
 
@@ -20,7 +21,7 @@ class TestController extends ApiController
 
     public function index()
     {
-        dd(Address::whereIn('areaname', ['河北省','石家庄市' , '桥西区'])->pluck('id'));
+        dd();
     }
 
     public function store()
