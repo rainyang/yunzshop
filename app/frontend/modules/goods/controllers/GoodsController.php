@@ -59,6 +59,7 @@ class GoodsController extends ApiController
         if ($goodsModel->has_option) {
             $goodsModel->min_price = $goodsModel->hasManyOptions->min("product_price");
             $goodsModel->max_price = $goodsModel->hasManyOptions->max("product_price");
+            $goodsModel->stock = $goodsModel->hasManyOptions->sum('stock');
         }
 
         $goodsModel->setHidden(
