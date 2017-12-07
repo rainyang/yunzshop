@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateAddress extends Migration
+class EditAddressAndStreet extends Migration
 {
     /**
      * Run the migrations.
