@@ -58,7 +58,7 @@ class BalanceWithdrawController extends BaseController
 
             BalanceNoticeService::withdrawSuccessNotice($this->withdrawModel);
 
-            if (is_bool($result) && $result) {
+            if (!empty($result) && 0 == $result['errno']) {
                 redirect(Url::absoluteWeb('finance.balance-withdraw.detail', ['id'=>\YunShop::request()->id]))->send();
             } else {
                 return $result;
@@ -175,6 +175,8 @@ class BalanceWithdrawController extends BaseController
      */
     private function alipayPayment($remark, $withdraw = null)
     {
+        $result = [];
+
         if (!is_null($withdraw)) {
             $result = WithdrawService::alipayWithdrawPay($withdraw, $remark);
         } else {
@@ -182,7 +184,7 @@ class BalanceWithdrawController extends BaseController
         }
 
         Log::info('MemberId:' . $this->withdrawModel->member_id . ', ' . $remark . "支付宝打款中!");
-        if ($result !== true){
+        if (!empty($result) && 1 == $result['errno']){
             return $this->paymentError($result['message']);
         }
         return $result;
