@@ -34,7 +34,12 @@ class MemberAddressController extends ApiController
         $msg = "获取列表成功";
         return $this->successJson($msg, $addressList);
     }
+    public function street(){
+        $districtId = request()->input('district_id');
+        $street = Street::getStreetByParentId($districtId);
+        return $this->successJson('数据获取成功', $street->toArray());
 
+    }
     /*
      * 地址JSON数据接口
      *

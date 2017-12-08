@@ -36,6 +36,4 @@ class Address extends BaseModel
             ->where('level', '3')
             ->get();
     }
-    
-
 }

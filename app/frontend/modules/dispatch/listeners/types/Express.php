@@ -131,8 +131,8 @@ class Express
         $orderAddress->address = implode(' ', [$member_address->province, $member_address->city, $member_address->district, $member_address->address]);
         $orderAddress->mobile = $member_address->mobile;
         $orderAddress->province_id = Address::where('areaname', $member_address->province)->value('id');
-        $orderAddress->city_id = Address::where('areaname', $member_address->city)->value('id');
-        $orderAddress->district_id = Address::where('areaname', $member_address->district)->value('id');
+        $orderAddress->city_id = Address::where('areaname', $member_address->city)->where('parentid',$orderAddress->province_id)->value('id');
+        $orderAddress->district_id = Address::where('areaname', $member_address->district)->where('parentid',$orderAddress->city_id)->value('id');
         $orderAddress->realname = $member_address->username;
         $orderAddress->province = $member_address->province;
         $orderAddress->city = $member_address->city;

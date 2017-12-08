@@ -819,6 +819,23 @@ if (!function_exists('float_equal')) {
 
 }
 
+if (!function_exists('sdd')) {
+    function sdd()
+    {
+        global $testDd;
+        $testDd = !$testDd;
+    }
+}
+if (!function_exists('tdd')) {
+    function tdd()
+    {
+        global $testDd;
+        if($testDd){
+            dd(func_get_args());
+        }
+    }
+
+}
   /*
    * 生成一个随机订单号：如果需要唯一性，请自己验证重复调用
    *

@@ -35,9 +35,10 @@ class Setting extends BaseModel
         //$cacheKey = 'setting.' . $uniqueAccountId . '.' . $key;
         //$value = Cache::get($cacheKey);
         //if ($value == null) {
-            list($group, $item) = $this->parseKey($key);
-            $value = array_get($this->getItems($uniqueAccountId, $group), $item, $default);
-            //Cache::put($cacheKey, $value,Carbon::now()->addSeconds(3600));
+        list($group, $item) = $this->parseKey($key);
+
+        $value = array_get($this->getItems($uniqueAccountId, $group), $item, $default);
+        //Cache::put($cacheKey, $value,Carbon::now()->addSeconds(3600));
         //}
         return $value;
 
@@ -123,8 +124,8 @@ class Setting extends BaseModel
         //$cacheKey = 'setting.' . $uniqueAccountId . '.' . $group;
         //$value = Cache::get($cacheKey);
         //if ($value == null) {
-            $value = self::where('group', $group)->where('uniacid',$uniqueAccountId)->get();
-          //  Cache::put($cacheKey, $value,Carbon::now()->addSeconds(3600));
+        $value = self::where('group', $group)->where('uniacid', $uniqueAccountId)->get();
+        //  Cache::put($cacheKey, $value,Carbon::now()->addSeconds(3600));
         //}
         return $value;
     }
