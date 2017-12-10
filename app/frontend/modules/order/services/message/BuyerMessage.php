@@ -69,7 +69,7 @@ class BuyerMessage extends Message
         }
         $params = [
             ['name' => '商城名称', 'value' => \Setting::get('shop.shop')['name']],
-            ['name' => '粉丝昵称', 'value' => $this->order->belongsToMembe->nickname],
+            ['name' => '粉丝昵称', 'value' => $this->order->belongsToMember->nickname],
             ['name' => '订单号', 'value' => $this->order->order_sn],
             ['name' => '下单时间', 'value' => $this->order['create_time']->toDateTimeString()],
             ['name' => '订单金额', 'value' => $this->order['price']],
@@ -87,7 +87,7 @@ class BuyerMessage extends Message
         }
         $params = [
             ['name' => '商城名称', 'value' => \Setting::get('shop.shop')['name']],
-            ['name' => '粉丝昵称', 'value' => $this->order->belongsToMembe->nickname],
+            ['name' => '粉丝昵称', 'value' => $this->order->belongsToMember->nickname],
             ['name' => '订单号', 'value' => $this->order->order_sn],
             ['name' => '下单时间', 'value' => $this->order->created_at],
             ['name' => '订单金额', 'value' => $this->order['price']],
@@ -107,7 +107,7 @@ class BuyerMessage extends Message
         }
         $params = [
             ['name' => '商城名称', 'value' => \Setting::get('shop.shop')['name']],
-            ['name' => '粉丝昵称', 'value' => $this->order->belongsToMembe->nickname],
+            ['name' => '粉丝昵称', 'value' => $this->order->belongsToMember->nickname],
             ['name' => '订单号', 'value' => $this->order->order_sn],
             ['name' => '下单时间', 'value' => $this->order->created_at],
             ['name' => '订单金额', 'value' => $this->order['price']],
@@ -127,7 +127,7 @@ class BuyerMessage extends Message
         }
         $params = [
             ['name' => '商城名称', 'value' => \Setting::get('shop.shop')['name']],
-            ['name' => '粉丝昵称', 'value' => $this->order->belongsToMembe->nickname],
+            ['name' => '粉丝昵称', 'value' => $this->order->belongsToMember->nickname],
             ['name' => '订单号', 'value' => $this->order->order_sn],
             ['name' => '下单时间', 'value' => $this->order->created_at],
             ['name' => '订单金额', 'value' => $this->order['price']],
@@ -148,7 +148,7 @@ class BuyerMessage extends Message
         }
         $params = [
             ['name' => '商城名称', 'value' => \Setting::get('shop.shop')['name']],
-            ['name' => '粉丝昵称', 'value' => $this->order->belongsToMembe->nickname],
+            ['name' => '粉丝昵称', 'value' => $this->order->belongsToMember->nickname],
             ['name' => '订单号', 'value' => $this->order->order_sn],
             ['name' => '下单时间', 'value' => $this->order->created_at],
             ['name' => '订单金额', 'value' => $this->order['price']],
