@@ -6,6 +6,7 @@ use app\common\components\ApiController;
 use app\common\models\Address;
 use app\common\models\Order;
 use app\common\models\Setting;
+use app\common\modules\address\services\AddressService;
 use app\frontend\modules\payment\orderPayments\BasePayment;
 use Yunshop\StoreCashier\common\models\Store;
 
@@ -21,7 +22,7 @@ class TestController extends ApiController
 
     public function index()
     {
-        dd();
+        AddressService::makeTree();
     }
 
     public function store()

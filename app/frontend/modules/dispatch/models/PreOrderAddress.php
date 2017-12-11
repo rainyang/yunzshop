@@ -37,8 +37,7 @@ class PreOrderAddress extends OrderAddress
     }
     private function getAreaIdsByNames($names){
         $address = Address::whereIn('areaname', $names)->pluck('id');
-        dd($address);
-        exit;
+        return $address;
 
     }
     protected function getAddressByMember()
