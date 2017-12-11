@@ -41,26 +41,44 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">任务处理通知</label>
-                        <div class="col-sm-9 col-xs-12">
-                            <input type="text" name="coupon[template_id]" class="form-control" value="{{$set['template_id']}}" />
-                        </div>
-                    </div>
+                    {{--<div class="form-group">--}}
+                        {{--<label class="col-xs-12 col-sm-3 col-md-2 control-label">任务处理通知</label>--}}
+                        {{--<div class="col-sm-9 col-xs-12">--}}
+                            {{--<input type="text" name="coupon[template_id]" class="form-control" value="{{$set['template_id']}}" />--}}
+                        {{--</div>--}}
+                    {{--</div>--}}
 
-                    <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">优惠券过期提醒</label>
-                        <div class="col-sm-9 col-xs-12">
-                            <input type="text" name="coupon[expire_title]" class="form-control" value="{{$set['expire_title']}}" />
-                            <div class="help-block">标题，默认"优惠券过期提醒"</div>
-                        </div>
-                    </div>
+                    {{--<div class="form-group">--}}
+                        {{--<label class="col-xs-12 col-sm-3 col-md-2 control-label">优惠券过期提醒</label>--}}
+                        {{--<div class="col-sm-9 col-xs-12">--}}
+                            {{--<input type="text" name="coupon[expire_title]" class="form-control" value="{{$set['expire_title']}}" />--}}
+                            {{--<div class="help-block">标题，默认"优惠券过期提醒"</div>--}}
+                        {{--</div>--}}
+                    {{--</div>--}}
 
-                    <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-                        <div class="col-sm-9 col-xs-12">
-                            <textarea  name="coupon[expire]" class="form-control" >{{$set['expire']}}</textarea>
-                            模板变量: [优惠券名称][优惠券使用范围][过期时间]
+                    {{--<div class="form-group">--}}
+                        {{--<label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>--}}
+                        {{--<div class="col-sm-9 col-xs-12">--}}
+                            {{--<textarea  name="coupon[expire]" class="form-control" >{{$set['expire']}}</textarea>--}}
+                            {{--模板变量: [优惠券名称][优惠券使用范围][过期时间]--}}
+                        {{--</div>--}}
+                    {{--</div>--}}
+                    <div class='panel-body'>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">优惠券过期提醒</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <select name='coupon[expire]' class='form-control diy-notice'>
+                                    <option value="" @if(!$set['expire']) selected @endif >
+                                        请选择消息模板
+                                    </option>
+                                    @foreach ($temp_list as $item)
+                                        <option value="{{$item['id']}}"
+                                                @if($set['expire'] == $item['id'])
+                                                selected
+                                                @endif>{{$item['title']}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
                     </div>
 
@@ -77,4 +95,9 @@
         </form>
     </div>
 </div>
+<script>
+    require(['select2'], function () {
+        $('.diy-notice').select2();
+    })
+</script>
 @endsection

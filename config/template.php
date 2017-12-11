@@ -202,6 +202,15 @@ return [
             '时间', '金额', '手续费'
         ]
     ],
+    'coupon_expire' => [
+        'title' => '优惠券(优惠券过期提醒)',
+        'subtitle' => '优惠券过期提醒',
+        'value' => 'coupon_expire',
+        'param' => [
+            '优惠券名称', '优惠券使用范围', '过期时间'
+        ]
+    ],
+
 
     /*$data = [
         [
