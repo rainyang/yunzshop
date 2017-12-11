@@ -29,8 +29,6 @@ class MemberLevelController extends ApiController
 
         $data = MemberLevel::getLevelData($settinglevel['level_type']);
 
-        dd($data);
-
         $this->successJson('ok',$data);
     }
 }
