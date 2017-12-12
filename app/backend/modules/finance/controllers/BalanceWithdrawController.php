@@ -111,11 +111,16 @@ class BalanceWithdrawController extends BaseController
             throw new AppException('打款失败,数据不存在或不符合打款规则!');
         }
 
-        $this->withdrawModel->pay_at = time();
-        $this->withdrawModel->status = 2;
+        $result = $this->payment();
 
-        $this->withdrawUpdate();
-        return $this->payment();
+        if (!empty($result) && 0 == $result['errno']) {
+            $this->withdrawModel->pay_at = time();
+            $this->withdrawModel->status = 2;
+
+            $this->withdrawUpdate();
+        }
+
+        return $result;
     }
 
 
