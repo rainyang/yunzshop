@@ -1000,4 +1000,18 @@ class MemberController extends ApiController
         return $this->successJson('', $data);
     }
 
+    public function isOpenRelation()
+    {
+        $data = ['switch' => 0];
+
+        $relation = MemberRelation::getSetInfo()->first();
+
+        if (!is_null($relation) && 1 == $relation->status) {
+            $data = [
+                'switch' => 1
+            ];
+        }
+
+        return $this->successJson('', $data);
+    }
 }
