@@ -22,15 +22,12 @@ class TestController extends ApiController
 
     public function index()
     {
-        AddressService::makeTree();
-    }
 
-    public function store()
-    {
-        $order = Order::where('plugin_id', Store::PLUGIN_ID)->first();
-        $paymentTypes = app('PaymentManager')->make('OrderPaymentManager')->getOrderPaymentTypes($order);
+
+        $paymentTypes = app('PaymentManager')->make('OrderPaymentTypeManager')->getOrderPaymentTypes();
         dd($paymentTypes);
         exit;
+
     }
 
 }
