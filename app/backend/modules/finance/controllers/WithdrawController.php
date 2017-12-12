@@ -227,7 +227,7 @@ class WithdrawController extends BaseController
             Withdraw::updatedWithdrawStatus($withdrawId, $updatedData);
             $result = WithdrawService::otherWithdrawSuccess($withdrawId);
             return ['msg' => '提现打款成功!'];
-        } elseif ($resultPay && $payWay == '2') {
+        } elseif ($resultPay && $payWay == '2' && 1 == $resultPay['errno']) {
             //修改提现记录状态
             $updatedData = [
                 'status' => 4,
