@@ -195,6 +195,9 @@ class WithdrawController extends BaseController
             //余额打款
 
             $resultPay = WithdrawService::balanceWithdrawPay($withdraw, $remark);
+            if (is_bool($resultPay)) {
+                $resultPay = ['errno' => 0, 'message' => '余额打款成功'];
+            }
             Log::info('MemberId:' . $withdraw->member_id . ', ' . $remark . "打款到余额中!");
 
         } elseif ($payWay == '2') {
@@ -212,12 +215,12 @@ class WithdrawController extends BaseController
 
         } elseif ($payWay == '4') {
             //手动打款
-            $resultPay = true;
+            $resultPay = ['errno' => 0, 'message' => '手动打款成功'];
             Log::info('MemberId:' . $withdraw->member_id . ', ' . $remark . "手动打款!");
 
         }
 
-        if ($resultPay && $payWay != '2') {
+        if (!empty($resultPay) && 0 == $resultPay['errno']) {
 
             $withdraw->pay_status = 1;
             //审核通知事件
@@ -227,7 +230,7 @@ class WithdrawController extends BaseController
             Withdraw::updatedWithdrawStatus($withdrawId, $updatedData);
             $result = WithdrawService::otherWithdrawSuccess($withdrawId);
             return ['msg' => '提现打款成功!'];
-        } elseif ($resultPay && $payWay == '2' && 1 == $resultPay['errno']) {
+        } elseif ($payWay == '2') {
             //修改提现记录状态
             $updatedData = [
                 'status' => 4,
