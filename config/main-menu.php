@@ -1618,7 +1618,7 @@ return [
 
             'finance_balance_rechargeRecord' => [
                 'name'              => '充值记录',
-                'url'               => 'finance.balance.rechargeRecord',
+                'url'               => 'finance.balance-recharge-records.index',
                 'url_params'        => '',
                 'permit'            => 1,
                 'menu'              => 1,
