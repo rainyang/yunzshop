@@ -283,7 +283,7 @@ class Member extends \app\common\models\Member
         }
 
         $query->whereHas('yzMember', function ($query) use ($request) {
-            $query->where('parent_id', $request->id);
+            $query->where('parent_id', $request->id)->where('inviter', 1);
 
             if ($request->aid) {
                 $query->where('member_id', $request->aid);
