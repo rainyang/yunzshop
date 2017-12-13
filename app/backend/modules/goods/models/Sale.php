@@ -8,16 +8,28 @@
 
 namespace app\backend\modules\goods\models;
 
-
+use Illuminate\Support\Facades\DB;
+use app\backend\modules\goods\models\Goods;
 
 class Sale extends \app\common\models\Sale
 {
     public $timestamps = false;
     static protected $needLog = true;
+    /**
+     * Author:blank
+     * UpdateTime:2017/12/13
+     * @param  [int] $goodsId 商品id
+     * @return object $saleData 商品营销对象
+     */
     public static function getList($goodsId)
     {
-        return self::where('goods_id', $goodsId)
+        $saleData = self::where('goods_id', $goodsId)
             ->first();
+        if ($saleData->is_push == 1) {
+            $arr = explode('-', $saleData->push_goods_ids);
+            $saleData->push_goods_ids = Goods::select('id','title')->whereIn('id', $arr)->get()->toArray();
+        }
+        return $saleData;
     }
 
 
@@ -38,6 +50,18 @@ class Sale extends \app\common\models\Sale
         $data['ed_full'] = empty($data['ed_full']) ? 0 : $data['ed_full'];
         $data['ed_reduction'] = empty($data['ed_reduction']) ? 0 : $data['ed_reduction'];
         $data['point'] = trim($data['point']);
+
+        /**
+         * Author:blank
+         * UpdateTime:2017/12/13
+         */
+        if ($data['is_push'] == 1) {
+            $data['push_goods_ids'] = implode('-', $data['push_goods_ids']);
+        } else {
+            $data['push_goods_ids'] = '';
+        }
+
+
         $saleModel->setRawAttributes($data);
 
         return $saleModel->save();

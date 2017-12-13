@@ -13,6 +13,8 @@ use app\backend\modules\member\models\MemberLevel as backendMemberLevel;
 class MemberLevel extends backendMemberLevel
 {
 
+    protected $hidden = ['goods_id'];
+
     /**
      * 获取会员等级信息
      * @param  string $type 会员等级依据
