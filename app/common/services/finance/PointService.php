@@ -178,7 +178,6 @@ class PointService
             $this->member_point = PointService::POINT;
         }
         $this->point_data['after_point'] = $this->member_point;
-        print_r($this->point_data);exit;
     }
 
     public function getModeAttribute($mode)
