@@ -15,6 +15,7 @@ class Sale extends \app\common\models\Sale
 {
     public $timestamps = false;
     static protected $needLog = true;
+
     /**
      * Author:blank
      * UpdateTime:2017/12/13
@@ -27,7 +28,8 @@ class Sale extends \app\common\models\Sale
             ->first();
         if ($saleData->is_push == 1) {
             $arr = explode('-', $saleData->push_goods_ids);
-            $saleData->push_goods_ids = Goods::select('id','title')->whereIn('id', $arr)->get()->toArray();
+            $saleData->push_goods_ids = Goods::getPushGoods($arr);
+            // Goods::select('id','title')->whereIn('id', $arr)->where('status', 1)->get()->toArray();
         }
         return $saleData;
     }
