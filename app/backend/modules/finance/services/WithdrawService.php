@@ -2,6 +2,7 @@
 namespace app\backend\modules\finance\services;
 
 use app\backend\modules\finance\services\BalanceService;
+use app\common\exceptions\AppException;
 use app\common\services\credit\ConstService;
 use app\common\services\finance\BalanceChange;
 use app\common\services\finance\Withdraw;
@@ -73,12 +74,7 @@ class WithdrawService extends Withdraw
             $result = PayFactory::create(2)->doWithdraw($withdraw->member_id, $withdraw->withdraw_sn, $withdraw->actual_amounts, $remark);
         }
 
-        if ($result['errno'] == 1) {
-            return $result['message'];
-        }
-
-
-        if (is_bool($result)) {
+        if (is_array($result)) {
             return $result;
         }
 
