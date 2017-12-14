@@ -55,6 +55,23 @@ class BalanceRecharge extends BaseModel
     }
 
 
+    public function scopeWithMember($query)
+    {
+        return $query->with(['member' => function($query) {
+            return $query->select('uid', 'nickname','realname','mobile','avatar')
+                ->with(['yzMember' => function($memberInfo) {
+                    return $memberInfo->select('member_id', 'group_id', 'level_id')
+                        ->with(['level' => function($level) {
+                            return $level->select('id','level_name');
+                        }])
+                        ->with(['group'=> function($group) {
+                            return $group->select('id', 'group_name');
+                        }]);
+                }]);
+        }]);
+    }
+
+
 
 
 
