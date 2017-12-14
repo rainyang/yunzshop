@@ -118,7 +118,7 @@ class MemberController extends ApiController
             case 0:
             case 1:
                 $apply_qualification = 1;
-                $mid = \YunShop::request()->mid ? \YunShop::request()->mid : 0;
+                $mid = \app\common\models\Member::getMid();
                 $parent_name = '';
 
                 if (empty($mid)) {
@@ -684,7 +684,7 @@ class MemberController extends ApiController
 
         $set = \Setting::get('shop.share');
         $fans_model = McMappingFans::getFansById($member_id);
-        $mid = \YunShop::request()->mid ? \YunShop::request()->mid : 0;
+        $mid = \app\common\models\Member::getMid();
 
         if (!empty($set['follow_url']) && $fans_model->follow === 0) {
 

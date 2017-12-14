@@ -35,7 +35,7 @@ class ApiController extends BaseController
         $relaton_set = MemberRelation::getSetInfo()->first();
 
         $type  = \YunShop::request()->type;
-        $mid   = \YunShop::request()->mid ? \YunShop::request()->mid : 0;
+        $mid   = Member::getMid();
 
         if (!MemberService::isLogged()) {
             if (($relaton_set->status == 1 && !in_array($this->action,$this->ignoreAction))
@@ -57,8 +57,6 @@ class ApiController extends BaseController
             if (MemberShopInfo::isBlack(\YunShop::app()->getMemberId())) {
                 return $this->errorJson('黑名单用户，请联系管理员', ['login_status' => -1]);
             }
-
-            $mid = Member::getMid();
 
             //发展下线
             Member::chkAgent(\YunShop::app()->getMemberId(), $mid);
