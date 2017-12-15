@@ -70,7 +70,7 @@ class Member extends BackendModel
     }
     public function defaultAddress()
     {
-        return $this->hasOne(MemberAddress::class, 'uid', 'uid')->where('isdefault', 1);
+        return $this->hasOne(app('MemberAddressRepository')->model(), 'uid', 'uid')->where('isdefault', 1);
     }
 
     /**

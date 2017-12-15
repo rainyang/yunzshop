@@ -11,8 +11,8 @@ namespace app\frontend\models;
 
 use app\common\models\Coupon;
 use app\common\models\MemberCoupon;
-use app\frontend\modules\member\models\MemberAddress;
 use app\frontend\models\OrderGoods;
+use app\frontend\repositories\MemberAddressRepository;
 
 class Member extends \app\common\models\Member
 {
@@ -33,7 +33,7 @@ class Member extends \app\common\models\Member
 
     public function defaultAddress()
     {
-        return $this->hasOne(MemberAddress::class, 'uid', 'uid')->where('isdefault', 1);
+        return $this->hasOne(app('MemberAddressRepository')->model(), 'uid', 'uid')->where('isdefault', 1);
     }
 
     public function orderGoods()

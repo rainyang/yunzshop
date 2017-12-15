@@ -29,7 +29,8 @@
     "vierbergenlars/php-semver": "3.0.*",
     "doctrine/dbal": "v2.5.12",
     "orangehill/iseed": "dev-master",
-    "overtrue/laravel-pinyin": "~3.0"
+    "overtrue/laravel-pinyin": "~3.0",
+    "bosnadev/repositories": "0.*"
   },
   "require-dev": {
     "filp/whoops": "^2.1",

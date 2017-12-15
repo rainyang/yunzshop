@@ -73,7 +73,7 @@ class PreOrderAddress extends OrderAddress
 //                'address.district' => 'required|string',
 //            ], ['address' => $address]
 //            );
-            return new MemberAddress($address);
+            return app('MemberAddressRepository')->fill($address);
         }
 
         return $this->order->belongsToMember->defaultAddress;

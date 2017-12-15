@@ -14,13 +14,9 @@ use app\common\events\order\AfterOrderCreatedEvent;
 
 use app\common\events\order\OnPreGenerateOrderCreatingEvent;
 use app\common\exceptions\AppException;
-use app\common\exceptions\ShopException;
 use app\common\models\Address;
-use app\common\models\DispatchType;
-use app\common\models\Order;
 use app\common\models\OrderAddress;
 use app\frontend\modules\member\models\MemberAddress;
-use app\frontend\modules\order\services\OrderService;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 
 class Express
@@ -100,7 +96,7 @@ class Express
                 'address.district' => 'required|string',
             ], ['address' => $address]
             );
-            $memberAddress = new MemberAddress($address);
+            $memberAddress = app('MemberAddressRepository')->fill($address);
 
             return $memberAddress;
         }
