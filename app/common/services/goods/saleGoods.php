@@ -23,11 +23,15 @@ class SaleGoods extends Sale
 
         if ($data->is_push == 1) {
             $goods_ids = explode('-', $data->push_goods_ids);
-            $data->push_goods_ids = Goods::getPushGoods($goods_ids);
+            $push_goods = Goods::getPushGoods($goods_ids);
+            
+            foreach ($push_goods as &$value) {
+               $value['thumb'] = replace_yunshop(tomedia($value['thumb']));
+            }
         } else {
-            $data->push_goods_ids = array();
+            $push_goods = array();
         }
 
-        return $data->push_goods_ids;
+        return $push_goods;
     }
 }

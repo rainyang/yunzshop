@@ -32,6 +32,11 @@ class MemberLevel extends backendMemberLevel
             ->with(['goods' => function($query) {
                 return $query->select('id','title','thumb','price');
             }])->orderBy('level')->get()->toArray();
+
+            //处理图片地址
+            foreach ($data['data'] as &$value) {
+                $value['goods']['thumb'] = replace_yunshop(tomedia($value['goods']['thumb']));     
+            }
             return $data;
         }
 
