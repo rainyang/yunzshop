@@ -95,17 +95,16 @@ class TemplateOrderDispatchPrice
         $goods_total = $orderGoods->total;
 
         $piece_data = unserialize($this->dispatch->piece_data);
-
         // 存在重量数据
         if ($piece_data) {
             $dispatch = '';
 
             // 根据配送地址匹配区域数据
-            $city = isset($this->order->orderAddress['city']) ? $this->order->orderAddress['city'] : '';
-            if (!$city) {
+            $city_id = isset($this->order->orderAddress['city_id']) ?: 0;
+
+            if (!$city_id) {
                 return 0;
             }
-            $city_id = Address::where('areaname', $city)->value('id');
             foreach ($piece_data as $key => $piece) {
                 $area_ids = explode(';', $piece['area_ids']);
                 if (in_array($city_id, $area_ids)) {
