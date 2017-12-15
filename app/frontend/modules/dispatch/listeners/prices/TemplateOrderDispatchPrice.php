@@ -100,14 +100,14 @@ class TemplateOrderDispatchPrice
             $dispatch = '';
 
             // 根据配送地址匹配区域数据
-            $city_id = isset($this->order->orderAddress['city_id']) ?: 0;
+            $city_id = isset($this->order->orderAddress->city_id) ? $this->order->orderAddress->city_id : 0;
 
             if (!$city_id) {
                 return 0;
             }
             foreach ($piece_data as $key => $piece) {
                 $area_ids = explode(';', $piece['area_ids']);
-                if (in_array($city_id, $area_ids)) {
+                if (in_array($this->order->orderAddress->city_id, $area_ids)) {
                     $dispatch = $piece;
                     break;
                 }
@@ -146,7 +146,7 @@ class TemplateOrderDispatchPrice
             $dispatch = '';
 
             // 根据配送地址匹配区域数据
-            $city_id = isset($this->order->orderAddress['city_id']) ? $this->order->orderAddress['city_id'] : '';
+            $city_id = isset($this->order->orderAddress->city_id) ? $this->order->orderAddress->city_id : '';
             if (!$city_id) {
                 return 0;
             }
