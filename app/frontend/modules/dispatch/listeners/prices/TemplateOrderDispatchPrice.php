@@ -174,7 +174,7 @@ class TemplateOrderDispatchPrice
 
         // 默认全国重量运费
         if ($weight_total > $this->dispatch->first_weight) {
-            return $this->dispatch->first_weight_price + floor(($weight_total - $this->dispatch->first_weight) / $this->dispatch->another_weight) * $this->dispatch->another_weight_price;
+            return $this->dispatch->first_weight_price + ceil(($weight_total - $this->dispatch->first_weight) / $this->dispatch->another_weight) * $this->dispatch->another_weight_price;
         } else {
             return $this->dispatch->first_weight_price;
         }
