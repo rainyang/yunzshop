@@ -173,7 +173,7 @@ class MemberModel extends Member
         return self::uniacid()
             ->whereHas('yzMember', function($query) use ($uid, $level){
                 if (1 == $level) {
-                    $query->where('parent_id', $uid);
+                    $query->where('parent_id', $uid)->where('inviter', 1);
                 } else {
                     $query->whereRaw('FIND_IN_SET(?, relation)' . ($level != 0 ? ' = ?' : ''), [$uid, $level]);
                 }
@@ -196,7 +196,7 @@ class MemberModel extends Member
         $result = self::uniacid()
             ->whereHas('yzMember', function($query) use ($uid, $level){
                 if (1 == $level) {
-                    $query->where('parent_id', $uid);
+                    $query->where('parent_id', $uid)->where('inviter', 1);
                 } else {
                     $query->whereRaw('FIND_IN_SET(?, relation)' . ($level != 0 ? ' = ?' : ''), [$uid, $level]);
                 }

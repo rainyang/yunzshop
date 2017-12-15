@@ -11,6 +11,7 @@ namespace app\backend\modules\setting\controllers;
 use app\common\components\BaseController;
 use app\common\facades\Setting;
 use app\common\helpers\Url;
+use app\common\models\notice\MessageTemp;
 
 class CouponController extends BaseController
 {
@@ -31,10 +32,11 @@ class CouponController extends BaseController
                 'name' => $i . ":00",
             ];
         }
-
+        $temp_list = MessageTemp::select('id', 'title')->get();
         return view('setting.shop.coupon', [
             'set' => $coupon,
             'hourData' => $hourData,
+            'temp_list' => $temp_list,
         ])->render();
     }
 }

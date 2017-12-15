@@ -118,13 +118,15 @@
                         <td>{{ $list->created_at }}</td>
                         <td>
                             @if($list->type == 0)
-                                <span class='label label-default'>后台充值</span>
+                                <span class='label label-default'>{{ $list->type_name }}</span>
                             @elseif($list->type ==1)
-                                <span class='label label-success'>微信支付</span>
-                            @elseif($lsit->type == 2)
-                                <span class='label label-warning'>支付宝</span>
+                                <span class='label label-success'>{{ $list->type_name }}</span>
+                            @elseif($list->type == 2)
+                                <span class='label label-warning'>{{ $list->type_name }}</span>
+                            @elseif($list->type == 9 || $list->type == 10)
+                                <span class='label label-info'>{{ $list->type_name }}</span>
                             @else
-                                <span class='label label-primary'>其他支付</span>
+                                <span class='label label-primary'>{{ $list->type_name }}</span>
                             @endif
 
                         </td>

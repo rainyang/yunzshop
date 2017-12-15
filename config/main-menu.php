@@ -1618,7 +1618,7 @@ return [
 
             'finance_balance_rechargeRecord' => [
                 'name'              => '充值记录',
-                'url'               => 'finance.balance.rechargeRecord',
+                'url'               => 'finance.balance-recharge-records.index',
                 'url_params'        => '',
                 'permit'            => 1,
                 'menu'              => 1,
@@ -1850,6 +1850,18 @@ return [
                         'parents'           => ['finance','withdraw_records'],
                     ],
 
+                    'withdraw_status_paying' => [
+                        'name'              => '打款中提现',
+                        'url'               => 'finance.withdraw-records.index',
+                        'url_params'        => "&search[status]=4",
+                        'permit'            => 0,
+                        'menu'              => 1,
+                        'icon'              => 'fa-check-circle-o',
+                        'sort'              => 0,
+                        'item'              => 'withdraw_status_paying',
+                        'parents'           => ['finance','withdraw_records'],
+                    ],
+
                     'withdraw_status_pay' => [
                         'name'              => '已打款提现',
                         'url'               => 'finance.withdraw-records.index',
@@ -1861,6 +1873,7 @@ return [
                         'item'              => 'withdraw_status_pay',
                         'parents'           => ['finance','withdraw_records'],
                     ],
+
 
                     'withdraw_status_arrival' => [
                         'name'              => '已到账提现',
