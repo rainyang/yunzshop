@@ -43,6 +43,7 @@ class HomePageController extends ApiController
 
         if($setting){
             $setting['logo'] = replace_yunshop(yz_tomedia($setting['logo']));
+
             $relation = MemberRelation::getSetInfo()->first();
 
             if ($relation) {
@@ -172,6 +173,7 @@ class HomePageController extends ApiController
 
         if($setting){
             $setting['logo'] = replace_yunshop(yz_tomedia($setting['logo']));
+
             $relation = MemberRelation::getSetInfo()->first();
 
             if ($relation) {

@@ -31,8 +31,8 @@ class CategoryController extends BaseController
         $parent_id = \YunShop::request()->parent_id ? \YunShop::request()->parent_id : '0';
         $list = Category::getCategorys($parent_id)->pluginId()->where('enabled', 1)->paginate($pageSize)->toArray();
         foreach ($list['data'] as &$item) {
-            $item['thumb'] = replace_yunshop(tomedia($item['thumb']));
-            $item['adv_img'] = replace_yunshop(tomedia($item['adv_img']));
+            $item['thumb'] = replace_yunshop(yz_tomedia($item['thumb']));
+            $item['adv_img'] = replace_yunshop(yz_tomedia($item['adv_img']));
         }
 
         if($list['data']){
