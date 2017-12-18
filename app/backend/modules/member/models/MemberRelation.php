@@ -121,7 +121,7 @@ class MemberRelation extends BackendModel
 
         $isAgent = false;
         if ($info['status'] == 1 && $data['is_agent'] == 0) {
-            $mid = \YunShop::request()->mid ? \YunShop::request()->mid : 0;
+            $mid = \app\common\models\Member::getMid();
             if ($mid != 0 && $data['member_id'] != $mid) {
                 $member_info->parent_id = $mid;
                 $member_info->save();

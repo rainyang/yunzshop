@@ -388,7 +388,7 @@ class Member extends BackendModel
         if ($upperMemberId) {
             event(new BecomeAgent($upperMemberId, $model));
         } else {
-            event(new BecomeAgent(\YunShop::request()->mid, $model));
+            event(new BecomeAgent(self::getMid(), $model));
         }
     }
 
@@ -407,7 +407,9 @@ class Member extends BackendModel
         }
         */
 
-        return \YunShop::request()->mid?:0;
+        $mid = \YunShop::request()->mid;
+
+        return ($mid && ($mid != 'null' || $mid != 'undefined')) ? (int)$mid : 0;
     }
 
     /**
