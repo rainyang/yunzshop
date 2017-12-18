@@ -158,7 +158,7 @@ class MemberModel extends Member
     {
         return self::uniacid()
             ->whereHas('yzMember', function($query) use ($uid){
-                         $query->where('parent_id', $uid);
+                         $query->where('parent_id', $uid)->where('inviter', 1);
             })
             ->with(['hasOneOrder' => function ($query) {
                 return $query->selectRaw('uid, count(uid) as total, sum(price) as sum')
