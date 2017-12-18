@@ -429,7 +429,7 @@ class MemberService
                     \Log::debug(sprintf('----海报生成分销关系链----%d', $upperMemberId));
                     Member::createRealtion($member_id, $upperMemberId);
                 } else {
-                    \Log::debug(sprintf('----生成分销关系链----%d', $upperMemberId));
+                    \Log::debug(sprintf('----生成分销关系链----%d-%d', $upperMemberId, $member_id));
                     Member::createRealtion($member_id);
                 }
             //});
