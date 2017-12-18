@@ -596,12 +596,12 @@ class MemberController extends ApiController
 
         if ($share) {
             if ($share['icon']) {
-                $share['icon'] = replace_yunshop(tomedia($share['icon']));
+                $share['icon'] = replace_yunshop(yz_tomedia($share['icon']));
             }
         }
 
         $shop = \Setting::get('shop');
-        $shop['icon'] = replace_yunshop(tomedia($shop['logo']));
+        $shop['icon'] = replace_yunshop(yz_tomedia($shop['logo']));
 
         if (!is_null(\Config('customer_service'))) {
             $class = array_get(\Config('customer_service'), 'class');
