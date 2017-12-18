@@ -18,7 +18,8 @@ return [
         'top_show'    => 0,
         'left_first_show'   => 0,
         'left_second_show'   => 0,
-        'parents' => [],                //
+        'parents' => [],
+        'item' => 'index',
         'child' => [
 
             'index'  => [
@@ -1511,19 +1512,8 @@ return [
         'top_show'    => 0,
         'left_first_show'   => 1,
         'left_second_show'   => 0,
-        'parents' => [],                //
-        'child' => [
-
-            'index'  => [
-                'name'          => '选择图标',
-                'url'           => 'frame.icon.index',
-                'urlParams'     => '',
-                'permit'        => 0,
-                'menu'          => 0,
-                'icon'          => '',
-                'parents'       => [],
-            ],
-        ],
+        'parents' => [],
+        'item' => 'plugins',
     ],
 
     'finance'=> [
