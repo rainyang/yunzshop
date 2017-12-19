@@ -463,7 +463,7 @@ class Member extends BackendModel
 
         if ($plugin_class->isEnabled('store-cashier')) {
             $store = Store::getStoreByUid(\YunShop::app()->getMemberId())->first();
-            if ($store) {
+            if ($store && $store->hasOneCashier->hasOneCashierGoods->is_open == 1) {
                 $data['cashier'] = [
                     'button_name' => '收银台',
                     'api'         => 'plugin.store-cashier.frontend.cashier.center.index'
