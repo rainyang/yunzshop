@@ -421,7 +421,13 @@ class MemberCouponController extends ApiController
                         'resp_desc' => $respDesc,
                         'resp_url' => $couponModel->resp_url,
                     ];
-//                    self::sendTemplateMessage($openid, self::TEMPLATEID, $messageData);
+                    $articles[] = [
+                        'title' => urlencode($respTitle),
+                        'description' => urlencode($respDesc),
+                        'url' => $couponModel->resp_url,
+                        'picurl' => yz_tomedia($couponModel->resp_thumb)
+                    ];
+                    self::sendTemplateMessage($openid, $articles);
                 }
 
                 //写入log
@@ -444,37 +450,23 @@ class MemberCouponController extends ApiController
         }
     }
 
-    //发送模板消息
-    public static function sendTemplateMessage($openid, $templateid, $data)
+    public static function getAccount()
     {
-        $app = app('wechat');
-        $notice = $app->notice;
-        $notice->uses($templateid)->andData($data)->andReceiver($openid)->send();
-//        $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
-//
-//        $options = [
-//            'app_id' => $account->key,
-//            'secret' => $account->secret,
-//            'token' => \YunShop::app()->account['token'],
-//        ];
-//        $app = new Application($options);
-//        $notice = $app->notice;
-//        $url = $data['resp_url'];
-//
-//        $templateData = array(
-//            "first" => $data['resp_title'],
-//            "keyword1" => $data['resp_thumb'],
-//            "keyword2" => $data['resp_url'],
-//            "remark" => $data['resp_desc'],
-//        );
-//
-//        $result = $notice->uses($templateid)->withUrl($url)->andData($templateData)->andReceiver($openid)->send();
-//        $resultArray = json_decode($result, true);
-//        if($resultArray['errcode'] != 0){
-//            return false;
-//        }
-//
-//        return $resultArray;
+        global $_W;
+        load()->model('account');
+        if (!(empty($_W['acid'])))
+        {
+            return \WeAccount::create($_W['acid']);
+        }
+        $acid = pdo_fetchcolumn('SELECT acid FROM ' . tablename('account_wechats') . ' WHERE `uniacid`=:uniacid LIMIT 1', array(':uniacid' => $_W['uniacid']));
+        return \WeAccount::create($acid);
+    }
+
+    //发送模板消息
+    public static function sendTemplateMessage($openid, $articles)
+    {
+        $account = self::getAccount();
+        return $account->sendCustomNotice(array( 'touser' => $openid, 'msgtype' => 'news', 'news' => array('articles' => $articles) ));
     }
 
     //动态显示内容
