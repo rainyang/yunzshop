@@ -205,9 +205,6 @@
                                             title='ID: {{$row['yz_member']['parent_id']}}'
                                                 @endif
                                         >
-                                            @if(empty($row['yz_member']['inviter']))
-                                                <label class='label label-default'>暂无</label>
-                                            @else
                                                 @if(empty($row['yz_member']['parent_id']))
                                                     <label class='label label-primary'>总店</label>
                                                 @else
@@ -220,9 +217,11 @@
                                                         未更新
                                                     @else
                                                         {{$row['yz_member']['agent']['nickname']}}
-                                                    @endif
+                                                            @if(empty($row['yz_member']['inviter']))
+                                                                (暂定)
+                                                            @endif
+                                                     @endif
                                                 @endif
-                                            @endif
                                         </td>
                                     @endif
                                     <td style="text-align: center;">
