@@ -42,7 +42,8 @@ class HomePageController extends ApiController
         }
 
         if($setting){
-            $setting['logo'] = yz_tomedia($setting['logo']);
+            $setting['logo'] = replace_yunshop(yz_tomedia($setting['logo']));
+
             $relation = MemberRelation::getSetInfo()->first();
 
             if ($relation) {
@@ -171,7 +172,8 @@ class HomePageController extends ApiController
         }
 
         if($setting){
-            $setting['logo'] = yz_tomedia($setting['logo']);
+            $setting['logo'] = replace_yunshop(yz_tomedia($setting['logo']));
+
             $relation = MemberRelation::getSetInfo()->first();
 
             if ($relation) {
@@ -259,11 +261,11 @@ class HomePageController extends ApiController
     public static function defaultDesign()
     {
         $set = Setting::get('shop.category');
-        $set['cat_adv_img'] = yz_tomedia($set['cat_adv_img']);
+        $set['cat_adv_img'] = replace_yunshop(yz_tomedia($set['cat_adv_img']));
         $category = (new IndexController())->getRecommentCategoryList();
         foreach ($category  as &$item){
-            $item['thumb'] = yz_tomedia($item['thumb']);
-            $item['adv_img'] = yz_tomedia($item['adv_img']);
+            $item['thumb'] = replace_yunshop(yz_tomedia($item['thumb']));
+            $item['adv_img'] = replace_yunshop(yz_tomedia($item['adv_img']));
         }
         return  Array(
             'ads' => (new IndexController())->getAds(),

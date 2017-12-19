@@ -668,7 +668,7 @@ class MemberController extends ApiController
 
         if ($info) {
             return $this->successJson('', [
-                'banner' => replace_yunshop(tomedia($info['banner']))
+                'banner' => replace_yunshop(yz_tomedia($info['banner']))
             ]);
         }
 
