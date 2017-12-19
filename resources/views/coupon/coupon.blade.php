@@ -11,7 +11,7 @@
                     <li class="active" ><a href="#tab_basic">基本信息</a></li>
                     <li><a href="#tab_coupon_type">优惠方式</a></li>
                     {{--<li><a href="#tab_desc">使用说明</a></li>--}}
-                    <li><a href="#tab_message">推送消息</a></li>
+                    {{--<li><a href="#tab_message">推送消息</a></li>--}}
                 </ul>
 
                 <div class='panel-body'>
