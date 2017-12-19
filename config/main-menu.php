@@ -1504,11 +1504,11 @@ return [
 
     'plugins'  => [
         'name' => '应用',
-        'url' => 'plugins.get-plugin-list',         // url 可以填写http 也可以直接写路由
-        'urlParams' => '',              //如果是url填写的是路由则启用参数否则不启用
-        'permit' => 1,                  //如果不设置则不会做权限检测
-        'menu' => 1,                    //如果不设置则不显示菜单，子菜单也将不显示
-        'icon' => 'fa-cubes',                   //菜单图标
+        'url' => 'plugins.get-plugin-list',
+        'urlParams' => '',
+        'permit' => 1,
+        'menu' => 1,
+        'icon' => 'fa-cubes',
         'top_show'    => 0,
         'left_first_show'   => 1,
         'left_second_show'   => 0,
