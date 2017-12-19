@@ -19,7 +19,7 @@
                         <div class="tab-pane  active" id="tab_basic">@include('coupon.basic')</div>
                         <div class="tab-pane" id="tab_coupon_type">@include('coupon.coupontype')</div>
                         {{--<div class="tab-pane" id="tab_desc">@include('coupon.desc')</div>--}}
-                        <div class="tab-pane" id="tab_message">@include('coupon.message')</div>
+                        {{--<div class="tab-pane" id="tab_message">@include('coupon.message')</div>--}}
                     </div>
 
                     <div class="form-group"></div>
