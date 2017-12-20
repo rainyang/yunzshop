@@ -55,7 +55,7 @@
         *update date 2017/12/20 16:44
         *添加排序的验证
         */
-        if (!numerictype.test($(':input[name="goods[dispay_order]"]').val())) {
+        if (!numerictype.test($(':input[name="goods[display_order]"]').val())) {
             $('#myTab a[href="#tab_basic"]').tab('show');
             Tip.focus("#displayorder", "排序必须是整数!");
             return false;
