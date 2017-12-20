@@ -50,6 +50,17 @@
         var numerictype = /^(0|[1-9]\d*)$/; //整数验证
         var thumb = /\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/;
         var datetime = /(\d{2}|\d{4})(?:\-)?([0]{1}\d{1}|[1]{1}[0-2]{1})(?:\-)?([0-2]{1}\d{1}|[3]{1}[0-1]{1})(?:\s)?([0-1]{1}\d{1}|[2]{1}[0-3]{1})(?::)?([0-5]{1}\d{1})(?::)?([0-5]{1}\d{1})/;
+
+        /*
+        *update date 2017/12/20 16:44
+        *添加排序的验证
+        */
+        if (!numerictype.test($(':input[name="goods[dispay_order]"]').val())) {
+            $('#myTab a[href="#tab_basic"]').tab('show');
+            Tip.focus("#displayorder", "排序必须是整数!");
+            return false;
+        }
+
         if ($(':input[name="goods[title]"]').val() == '') {
             $('#myTab a[href="#tab_basic"]').tab('show');
             Tip.focus("#goodsname", "请输入商品名称!");
