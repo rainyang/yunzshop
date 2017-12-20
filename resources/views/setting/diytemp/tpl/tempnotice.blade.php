@@ -274,7 +274,10 @@
         $.ajax({
             "url": url,
             success: function (ret) {
-                var ret = $.parseJSON(ret);
+                if (typeof ret === "string") {
+                    var ret = $.parseJSON(ret);
+                }
+                
                 if (ret.result == 1) {
                     $("#selecttemplate option").remove();
                     temps = ret.data.tmp_list;
