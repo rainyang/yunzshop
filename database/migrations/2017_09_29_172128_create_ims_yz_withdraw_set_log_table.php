@@ -34,7 +34,7 @@ class CreateImsYzWithdrawSetLogTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('ims_yz_withdraw_set_log');
+		Schema::drop('yz_withdraw_set_log');
 	}
 
 }
