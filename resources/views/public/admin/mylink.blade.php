@@ -92,6 +92,14 @@
     .fart-form .product .adv .img img {height:100%; width: auto;}
     .fart-form .product .adv .info {height: 90px;}
     .fart-form .product .adv .del {height: 24px; width: 24px; background: rgba(0,0,0,0.5); text-align: center; line-height: 24px; color: #fff; font-size: 18px; position: absolute; top: -10px; right: -10px; border-radius: 30px; cursor: pointer;}
+
+    .page-header {
+        height: 40px;
+    }
+
+    .mylink-nav {
+        margin: 5px 0;
+    }
 </style>
 
 <div id="modal-mylink" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
