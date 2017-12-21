@@ -11,10 +11,7 @@ namespace app\common\models;
 
 
 use app\backend\models\BackendModel;
-use app\frontend\modules\finance\services\WithdrawService;
 use Illuminate\Support\Facades\Config;
-
-
 
 class Withdraw extends BackendModel
 {
@@ -43,20 +40,20 @@ class Withdraw extends BackendModel
 
     const WITHDRAW_WITH_BALANCE = 'balance';
 
-    const WITHDRAW_WITH_WECHAT = 'wechat';
+    const WITHDRAW_WITH_WECHAT  = 'wechat';
 
-    const WITHDRAW_WITH_ALIPAY = 'alipay';
+    const WITHDRAW_WITH_ALIPAY  = 'alipay';
 
-    const WITHDRAW_WITH_MANUAL = 'manual';
+    const WITHDRAW_WITH_MANUAL  = 'manual';
 
 
 
     //手动提现位置
-    const MANUAL_TO_BANK = 1;
+    const MANUAL_TO_BANK    = 1;
 
-    const MANUAL_TO_WECHAT = 2;
+    const MANUAL_TO_WECHAT  = 2;
 
-    const MANUAL_TO_ALIPAY = 3;
+    const MANUAL_TO_ALIPAY  = 3;
 
 
 
@@ -165,7 +162,7 @@ class Withdraw extends BackendModel
 
 
 
-/********************* 以下代码不确定功能逻辑，需要处理删除 ****************/
+/********************* todo 以下代码不确定功能逻辑，需要处理删除 yitian 2017-12-19 ****************/
 
 
 
