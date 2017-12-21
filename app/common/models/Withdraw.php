@@ -40,11 +40,11 @@ class Withdraw extends BackendModel
 
     const WITHDRAW_WITH_BALANCE = 'balance';
 
-    const WITHDRAW_WITH_WECHAT = 'wechat';
+    const WITHDRAW_WITH_WECHAT  = 'wechat';
 
-    const WITHDRAW_WITH_ALIPAY = 'alipay';
+    const WITHDRAW_WITH_ALIPAY  = 'alipay';
 
-    const WITHDRAW_WITH_MANUAL = 'manual';
+    const WITHDRAW_WITH_MANUAL  = 'manual';
 
 
 

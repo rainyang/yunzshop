@@ -344,7 +344,7 @@ class BalanceController extends ApiController
      */
     private function payData()
     {
-        return array(
+        $array = array(
             'subject' => '会员充值',
             'body' => '会员充值金额' . $this->model->money . '元:'. \YunShop::app()->uniacid,
             'amount' => $this->model->money,
@@ -352,6 +352,10 @@ class BalanceController extends ApiController
             'extra' => ['type' => 2],
             'ask_for'=> 'recharge'
         );
+        if ($this->model->type == PayFactory::PAY_CLOUD_ALIPAY) {
+            $array['extra'] = ['type' => 2, 'pay' => 'cloud_alipay'];
+        }
+        return $array;
     }
 
 
