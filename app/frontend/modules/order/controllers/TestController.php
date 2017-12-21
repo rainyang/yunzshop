@@ -22,7 +22,13 @@ class TestController extends ApiController
 
     public function index()
     {
-        AddressService::makeTree();
+        $r= Order::find('774');
+        dd($r);
+        exit;
+
+        exit;
+
+        //->getTablePrefix();
     }
 
     public function store()

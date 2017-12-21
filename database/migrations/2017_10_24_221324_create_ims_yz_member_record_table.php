@@ -12,16 +12,18 @@ class CreateImsYzMemberRecordTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('yz_member_record', function(Blueprint $table)
-		{
-			$table->increments('id');
-			$table->integer('uniacid');
-			$table->integer('uid');
-			$table->integer('parent_id');
-			$table->integer('created_at');
-			$table->integer('updated_at');
-			$table->integer('deleted_at')->nullable();
-		});
+        if (!Schema::hasTable('yz_member_record')) {
+
+            Schema::create('yz_member_record', function (Blueprint $table) {
+                $table->increments('id');
+                $table->integer('uniacid');
+                $table->integer('uid');
+                $table->integer('parent_id');
+                $table->integer('created_at');
+                $table->integer('updated_at');
+                $table->integer('deleted_at')->nullable();
+            });
+        }
 	}
 
 
@@ -32,7 +34,10 @@ class CreateImsYzMemberRecordTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('ims_yz_member_record');
+        if (Schema::hasTable('yz_member_record')) {
+
+            Schema::drop('yz_member_record');
+        }
 	}
 
 }

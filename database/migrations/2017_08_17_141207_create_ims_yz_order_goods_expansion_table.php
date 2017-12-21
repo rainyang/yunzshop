@@ -35,7 +35,7 @@ class CreateImsYzOrderGoodsExpansionTable extends Migration {
 	public function down()
 	{
         if (\Schema::hasTable('yz_order_goods_expansion')) {
-            Schema::drop('ims_yz_order_goods_expansion');
+            Schema::drop('yz_order_goods_expansion');
         }
 	}
 

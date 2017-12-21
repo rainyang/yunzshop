@@ -32,7 +32,7 @@ class CreateImsYzPointLoveSetTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::dropIfExists('ims_yz_point_love_set');
+		Schema::dropIfExists('yz_point_love_set');
 	}
 
 }

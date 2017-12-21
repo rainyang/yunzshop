@@ -259,7 +259,6 @@ class PreOrder extends Order
     /**
      * 计算订单成交价格
      * @return int
-     * @throws AppException
      */
     protected function getPrice()
     {
