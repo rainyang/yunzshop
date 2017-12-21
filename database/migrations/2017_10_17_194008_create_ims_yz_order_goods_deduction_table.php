@@ -40,9 +40,9 @@ class CreateImsYzOrderGoodsDeductionTable extends Migration {
 	 */
 	public function down()
 	{
-        if (Schema::hasTable('ims_yz_order_goods_deduction')) {
+        if (Schema::hasTable('yz_order_goods_deduction')) {
 
-            Schema::drop('ims_yz_order_goods_deduction');
+            Schema::drop('yz_order_goods_deduction');
         }
 	}
 

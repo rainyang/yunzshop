@@ -17,7 +17,7 @@ class CreateImsYzDeductionTable extends Migration
             Schema::drop('yz_deduction');
         }
         if (!Schema::hasTable('yz_deduction')) {
-
+            //$this->connection->getTablePrefix()
             Schema::create('yz_deduction', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('code', 50)->default('')->comment('抵扣名称');
@@ -26,7 +26,7 @@ class CreateImsYzDeductionTable extends Migration
                 $table->integer('update_at')->nullable();
                 $table->integer('deleted_at')->nullable();
             });
-            \Illuminate\Support\Facades\DB::select('INSERT INTO `ims_yz_deduction` (`id`, `code`, `enable`, `created_at`, `update_at`, `deleted_at`)
+            \Illuminate\Support\Facades\DB::select('INSERT INTO `'.app('db')->getTablePrefix().'yz_deduction` (`id`, `code`, `enable`, `created_at`, `update_at`, `deleted_at`)
 VALUES
 	(1, \'love\', 1, NULL, NULL, NULL),
 	(2, \'point\', 1, NULL, NULL, NULL),
@@ -46,7 +46,7 @@ VALUES
     {
         if (Schema::hasTable('yz_deduction')) {
 
-            Schema::drop('ims_yz_deduction');
+            Schema::drop('yz_deduction');
         }
     }
 

@@ -33,7 +33,7 @@ class CreateImsYzBalanceRechargeActivityTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::dropIfExists('ims_yz_balance_recharge_activity');
+		Schema::dropIfExists('yz_balance_recharge_activity');
 	}
 
 }
