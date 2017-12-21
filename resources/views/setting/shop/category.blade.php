@@ -79,5 +79,5 @@
     </form>
 </div>
 </div>
-
+    @include('public.admin.mylink')
 @endsection
