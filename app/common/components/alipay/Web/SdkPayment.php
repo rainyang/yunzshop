@@ -4,6 +4,7 @@ namespace app\common\components\alipay\Web;
 
 use app\common\events\finance\AlipayWithdrawEvent;
 use app\common\events\PayLog;
+use app\common\exceptions\AppException;
 use app\common\facades\Setting;
 use app\common\helpers\Url;
 use app\common\models\PayWithdrawOrder;
@@ -630,8 +631,8 @@ class SdkPayment
 
     private function withdraw_v2($pay, $collectioner_account, $collectioner_name, $out_trade_no, $batch_no)
     {
-        $res['status'] = 0;
-        $res['msg'] = '系统异常,提现失败';
+        $res['errno'] = 1;
+        $res['message'] = '系统异常,提现失败';
 
         $aop = new AopClient();
         $aop->appId = $pay['alipay_app_id'];
@@ -672,8 +673,8 @@ class SdkPayment
 
             $this->withdrawResutl($data);
 
-            $res['status'] = 1;
-            $res['msg']    = 'ok';
+            $res['errno'] = 0;
+            $res['message']    = '提现成功';
 
             return $res;
         }
@@ -681,7 +682,7 @@ class SdkPayment
         \Log::debug('-----失败----');
 
         if (isset($result->$responseNode)) {
-            $res['msg'] = $result->$responseNode->msg;
+            throw new AppException($result->$responseNode->msg);
         }
 
         return $res;

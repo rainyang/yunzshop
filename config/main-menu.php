@@ -18,7 +18,8 @@ return [
         'top_show'    => 0,
         'left_first_show'   => 0,
         'left_second_show'   => 0,
-        'parents' => [],                //
+        'parents' => [],
+        'item' => 'index',
         'child' => [
 
             'index'  => [
@@ -1503,27 +1504,16 @@ return [
 
     'plugins'  => [
         'name' => '应用',
-        'url' => 'plugins.get-plugin-list',         // url 可以填写http 也可以直接写路由
-        'urlParams' => '',              //如果是url填写的是路由则启用参数否则不启用
-        'permit' => 1,                  //如果不设置则不会做权限检测
-        'menu' => 1,                    //如果不设置则不显示菜单，子菜单也将不显示
-        'icon' => 'fa-cubes',                   //菜单图标
+        'url' => 'plugins.get-plugin-list',
+        'urlParams' => '',
+        'permit' => 1,
+        'menu' => 1,
+        'icon' => 'fa-cubes',
         'top_show'    => 0,
         'left_first_show'   => 1,
         'left_second_show'   => 0,
-        'parents' => [],                //
-        'child' => [
-
-            'index'  => [
-                'name'          => '选择图标',
-                'url'           => 'frame.icon.index',
-                'urlParams'     => '',
-                'permit'        => 0,
-                'menu'          => 0,
-                'icon'          => '',
-                'parents'       => [],
-            ],
-        ],
+        'parents' => [],
+        'item' => 'plugins',
     ],
 
     'finance'=> [
@@ -1618,7 +1608,7 @@ return [
 
             'finance_balance_rechargeRecord' => [
                 'name'              => '充值记录',
-                'url'               => 'finance.balance.rechargeRecord',
+                'url'               => 'finance.balance-recharge-records.index',
                 'url_params'        => '',
                 'permit'            => 1,
                 'menu'              => 1,
@@ -1850,6 +1840,18 @@ return [
                         'parents'           => ['finance','withdraw_records'],
                     ],
 
+                    'withdraw_status_paying' => [
+                        'name'              => '打款中提现',
+                        'url'               => 'finance.withdraw-records.index',
+                        'url_params'        => "&search[status]=4",
+                        'permit'            => 0,
+                        'menu'              => 1,
+                        'icon'              => 'fa-check-circle-o',
+                        'sort'              => 0,
+                        'item'              => 'withdraw_status_paying',
+                        'parents'           => ['finance','withdraw_records'],
+                    ],
+
                     'withdraw_status_pay' => [
                         'name'              => '已打款提现',
                         'url'               => 'finance.withdraw-records.index',
@@ -1861,6 +1863,7 @@ return [
                         'item'              => 'withdraw_status_pay',
                         'parents'           => ['finance','withdraw_records'],
                     ],
+
 
                     'withdraw_status_arrival' => [
                         'name'              => '已到账提现',

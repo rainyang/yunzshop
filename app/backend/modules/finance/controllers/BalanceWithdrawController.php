@@ -58,11 +58,11 @@ class BalanceWithdrawController extends BaseController
 
             BalanceNoticeService::withdrawSuccessNotice($this->withdrawModel);
 
-            if (is_bool($result) && $result) {
-                redirect(Url::absoluteWeb('finance.balance-withdraw.detail', ['id'=>\YunShop::request()->id]))->send();
-            } else {
-                return $result;
+            if (!empty($result) && 0 == $result['errno']) {
+                return $this->message('提现成功', yzWebUrl('finance.balance-withdraw.detail', ['id'=>\YunShop::request()->id]));
             }
+
+            return $this->message('提现失败', yzWebUrl('finance.balance-withdraw.detail', ['id'=>\YunShop::request()->id]));
         }
 
         return $this->message('提交数据有误，请刷新重试', yzWebUrl("finance.balance-withdraw.detail", ['id' => $this->getPostId()]));
@@ -110,11 +110,21 @@ class BalanceWithdrawController extends BaseController
             throw new AppException('打款失败,数据不存在或不符合打款规则!');
         }
 
-        $this->withdrawModel->pay_at = time();
-        $this->withdrawModel->status = 2;
+        $result = $this->payment();
 
-        $this->withdrawUpdate();
-        return $this->payment();
+        if (!empty($result) && 0 == $result['errno']) {
+            $this->withdrawModel->pay_at = time();
+            $this->withdrawModel->status = 2;
+
+            $this->withdrawUpdate();
+        } elseif ($this->withdrawModel->pay_way == 'alipay') {
+            $this->withdrawModel->pay_at = time();
+            $this->withdrawModel->status = 4;
+
+            $this->withdrawUpdate();
+        }
+
+        return $result;
     }
 
 
@@ -175,6 +185,8 @@ class BalanceWithdrawController extends BaseController
      */
     private function alipayPayment($remark, $withdraw = null)
     {
+        $result = [];
+
         if (!is_null($withdraw)) {
             $result = WithdrawService::alipayWithdrawPay($withdraw, $remark);
         } else {
@@ -182,7 +194,7 @@ class BalanceWithdrawController extends BaseController
         }
 
         Log::info('MemberId:' . $this->withdrawModel->member_id . ', ' . $remark . "支付宝打款中!");
-        if ($result !== true){
+        if (!empty($result) && 1 == $result['errno']){
             return $this->paymentError($result['message']);
         }
         return $result;
@@ -200,10 +212,12 @@ class BalanceWithdrawController extends BaseController
         //file_put_contents(storage_path('logs/withdraw1.log'),print_r($resultPay,true));
         Log::info('MemberId:' . $this->withdrawModel->member_id . ', ' . $this->paymentRemark() . "微信打款中!");
 
-        if ($result !== true){
+        if (!empty($result) && 1 == $result['errno']){
             return $this->paymentError($result['message']);
         }
-        return $this->paymentSuccess();
+
+        return $result;
+        //return $this->paymentSuccess();
     }
 
 
@@ -213,7 +227,8 @@ class BalanceWithdrawController extends BaseController
      */
     private function manualPayment()
     {
-        return $this->paymentSuccess();
+        return ['errno' => 0, 'message' => '手动打款成功'];
+        //return $this->paymentSuccess();
     }
 
 

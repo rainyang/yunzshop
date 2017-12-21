@@ -69,6 +69,21 @@ class Url
         return   '/addons/' . $module . '/?menu#'.$route .  ($params ? '?'.http_build_query($params) : '');
     }
 
+    public static function appDiy($route, $params = [])
+    {
+        if(empty($route) || self::isHttp($route)){
+            return $route;
+        }
+        if(strpos($route, '/') !== 0){
+            $route = '/' . $route;
+        }
+        if(!isset($params['i'])){
+            $params['i'] = \YunShop::app()->uniacid;
+        }
+        $module = request()->get('m','yun_shop');
+        return   '/addons/' . $module . '/?menu#'.$route .  ($params ? '/'. $params['page_id'] . '/?i=' . $params['i'] : '');
+    }
+
     /**
      *  前端api接口相对Url
      *
@@ -138,6 +153,15 @@ class Url
         }
         empty($domain) && $domain = request()->getSchemeAndHttpHost();
         return $domain . self::app($route,$params);
+    }
+
+    public static function absoluteDiyApp($route, $params = [], $domain = '')
+    {
+        if(empty($route) || self::isHttp($route)){
+            return $route;
+        }
+        empty($domain) && $domain = request()->getSchemeAndHttpHost();
+        return $domain . self::appDiy($route,$params);
     }
 
     /**

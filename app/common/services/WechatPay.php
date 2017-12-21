@@ -218,11 +218,11 @@ class WechatPay extends Pay
 
             Withdraw::paySuccess($result->partner_trade_no);
 
-            return true;
+            return ['errno' => 0, 'message' => '微信提现成功'];
         } elseif ($result->return_code == 'SUCCESS') {
-            throw new AppException($result->err_code_des);
+            return ['errno' => 1, 'message' => $result->err_code_des];
         } else {
-            throw new AppException($result->return_msg);
+            return ['errno' => 1, 'message' => $result->return_msg];
         }
     }
 
