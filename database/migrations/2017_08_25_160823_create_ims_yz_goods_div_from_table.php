@@ -31,7 +31,7 @@ class CreateImsYzGoodsDivFromTable extends Migration {
 	public function down()
 	{
         if (Schema::hasTable('yz_goods_div_from')) {
-            Schema::drop('ims_yz_goods_div_from');
+            Schema::drop('yz_goods_div_from');
         }
 	}
 

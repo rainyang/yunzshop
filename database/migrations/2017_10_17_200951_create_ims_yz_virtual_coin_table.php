@@ -3,15 +3,16 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateImsYzVirtualCoinTable extends Migration {
+class CreateImsYzVirtualCoinTable extends Migration
+{
 
-	/**
-	 * Run the migrations.
-	 *
-	 * @return void
-	 */
-	public function up()
-	{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
         if (!Schema::hasTable('yz_virtual_coin')) {
 
             Schema::create('yz_virtual_coin', function (Blueprint $table) {
@@ -20,7 +21,11 @@ class CreateImsYzVirtualCoinTable extends Migration {
                 $table->string('code', 50)->default('');
                 $table->decimal('exchange_rate', 10)->default(1.00)->comment('汇率');
             });
-            \Illuminate\Support\Facades\DB::select('INSERT INTO `ims_yz_virtual_coin` (`id`, `name`, `code`, `exchange_rate`)
+        }
+        if (Schema::hasTable('yz_virtual_coin')) {
+
+            \Illuminate\Support\Facades\DB::select('TRUNCATE TABLE `' . app('db')->getTablePrefix() . 'yz_virtual_coin`');
+            \Illuminate\Support\Facades\DB::select('INSERT INTO `' . app('db')->getTablePrefix() . 'yz_virtual_coin' . '` (`id`, `name`, `code`, `exchange_rate`)
 VALUES
 	(1, \'爱心值\', \'love\', 1.00),
 	(2, \'积分\', \'point\', 1.00),
@@ -28,20 +33,20 @@ VALUES
 
 ');
         }
-	}
+    }
 
 
-	/**
-	 * Reverse the migrations.
-	 *
-	 * @return void
-	 */
-	public function down()
-	{
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
         if (Schema::hasTable('yz_virtual_coin')) {
 
-            Schema::drop('ims_yz_virtual_coin');
+            Schema::drop('yz_virtual_coin');
         }
-	}
+    }
 
 }

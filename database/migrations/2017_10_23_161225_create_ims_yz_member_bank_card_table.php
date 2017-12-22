@@ -35,7 +35,7 @@ class CreateImsYzMemberBankCardTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('ims_yz_member_bank_card');
+		Schema::drop('yz_member_bank_card');
 	}
 
 }

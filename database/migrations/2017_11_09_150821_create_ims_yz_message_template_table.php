@@ -38,7 +38,7 @@ class CreateImsYzMessageTemplateTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('ims_yz_message_template');
+		Schema::drop('yz_message_template');
 	}
 
 }
