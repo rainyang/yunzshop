@@ -102,6 +102,10 @@ class PayFactory
     {
         $pay = self::create($type);
 
+        if ($type == self::PAY_CLOUD_ALIPAY) {
+            $data['extra']['pay'] = 'cloud_alipay';
+        }
+
         $result = $pay->doPay($data);
 
         return $result;
