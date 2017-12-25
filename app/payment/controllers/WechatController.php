@@ -116,7 +116,15 @@ class WechatController extends PaymentController
         $payment = $app->payment;
         $notify = $payment->getNotify();
 
-        return $notify->isValid();
+        //老版本-无参数
+        $valid = $notify->isValid();
+
+        if (!$valid) {
+            //新版本-有参数
+            $valid = $notify->isValid($pay['weixin_apisecret']);
+        }
+
+        return $valid;
     }
 
     /**
