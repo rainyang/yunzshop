@@ -131,10 +131,12 @@ class MemberAddressController extends ApiController
                 'city'      => \YunShop::request()->city,
                 'district'  => \YunShop::request()->district,
                 'address'   => \YunShop::request()->address,
-                'street'   => \YunShop::request()->street,
             );
-
+            if(\Setting::get('shop.trade.is_street')){
+                $data['street'] = \YunShop::request()->street;
+            }
             $addressModel = $this->memberAddressRepository->fill($data);
+
 
 
             $memberId = \YunShop::app()->getMemberId();
