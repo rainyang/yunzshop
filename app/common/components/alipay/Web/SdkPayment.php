@@ -682,7 +682,7 @@ class SdkPayment
         \Log::debug('-----失败----');
 
         if (isset($result->$responseNode)) {
-            throw new AppException($result->$responseNode->msg);
+            throw new AppException($result->$responseNode->sub_msg . '[' . $result->$responseNode->msg . ']');
         }
 
         return $res;
