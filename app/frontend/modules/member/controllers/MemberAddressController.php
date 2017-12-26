@@ -307,8 +307,12 @@ class MemberAddressController extends ApiController
     {
         //member.member-address.get-street
         $districtId = \YunShop::request()->get('district_id');
-
-        $street = Street::getStreetByParentId($districtId);
+        if(\Setting::get('shop.trade.is_street')){
+            // 开启街道设置
+            $street = Street::getStreetByParentId($districtId);
+        }else{
+            $street = [];
+        }
 
         if($street){
             return $this->successJson('获取街道数据成功!', $street);

@@ -15,7 +15,7 @@ class MemberAddressRepository extends Repository
 {
     public function model()
     {
-        if (1||\Setting::get('shop.trade.is_street')) {
+        if (\Setting::get('shop.trade.is_street')) {
             return YzMemberAddress::class;
         } else {
             return MemberAddress::class;
