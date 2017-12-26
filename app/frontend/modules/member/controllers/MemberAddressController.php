@@ -15,10 +15,11 @@ use app\frontend\repositories\MemberAddressRepository;
 
 class MemberAddressController extends ApiController
 {
-    protected $publicAction = ['address'];
+    protected $publicAction = ['address','street'];
     private $memberAddressRepository;
     public function __construct()
     {
+        parent::__construct();
         $this->memberAddressRepository = app(MemberAddressRepository::class);
     }
 
@@ -91,7 +92,6 @@ class MemberAddressController extends ApiController
      * */
     public function store()
     {
-        $addressModel = $this->memberAddressRepository;
         $requestAddress = \YunShop::request();
         if (!\YunShop::request()->username) {
             return $this->errorJson('收件人不能为空');
@@ -120,6 +120,7 @@ class MemberAddressController extends ApiController
         if (!\YunShop::request()->address) {
             return $this->errorJson('请输入详细地址');
         }
+
         if ($requestAddress) {
             $data = array(
                 'username'  => \YunShop::request()->username,
@@ -130,8 +131,12 @@ class MemberAddressController extends ApiController
                 'city'      => \YunShop::request()->city,
                 'district'  => \YunShop::request()->district,
                 'address'   => \YunShop::request()->address,
+                'street'   => \YunShop::request()->street,
             );
-            $addressModel->fill($data);
+
+            $addressModel = $this->memberAddressRepository->fill($data);
+
+
             $memberId = \YunShop::app()->getMemberId();
             //验证默认收货地址状态并修改
             $addressList = $this->memberAddressRepository->getAddressList($memberId);
