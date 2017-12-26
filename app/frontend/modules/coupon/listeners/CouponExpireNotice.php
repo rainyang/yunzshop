@@ -1,10 +1,12 @@
 <?php
+
 namespace app\frontend\modules\coupon\listeners;
 
 use app\common\facades\Setting;
 use app\common\models\Coupon;
 use app\common\models\Member;
 use app\common\models\MemberCoupon;
+use app\common\models\notice\MessageTemp;
 use app\common\models\UniAccount;
 
 /**
@@ -44,7 +46,7 @@ class CouponExpireNotice
         }
         $this->setLog['current_d'] = date('d');
         Setting::set('shop.coupon_log', $this->setLog);
-        
+
         $memberCoupons = MemberCoupon::getExpireCoupon($this->set)->get();
 
         foreach ($memberCoupons as $memberCoupon) {
@@ -69,17 +71,31 @@ class CouponExpireNotice
     public function sendNotice($ouponData, $member)
     {
         if ($this->set['template_id'] && ($member['follow'] == 1)) {
-            $message = $this->set['expire'];
-            $message = str_replace('[优惠券名称]', $ouponData['name'], $message);
-            $message = str_replace('[优惠券使用范围]', $ouponData['api_limit'], $message);
-            $message = str_replace('[过期时间]', $ouponData['time_end'], $message);
-            $msg = [
-                "first" => '您好',
-                "keyword1" => $this->set['expire_title'] ? $this->set['expire_title'] : '优惠券过期提醒',
-                "keyword2" => $message,
-                "remark" => "",
+//            $message = $this->set['expire'];
+//            $message = str_replace('[优惠券名称]', $ouponData['name'], $message);
+//            $message = str_replace('[优惠券使用范围]', $ouponData['api_limit'], $message);
+//            $message = str_replace('[过期时间]', $ouponData['time_end'], $message);
+//            $msg = [
+//                "first" => '您好',
+//                "keyword1" => $this->set['expire_title'] ? $this->set['expire_title'] : '优惠券过期提醒',
+//                "keyword2" => $message,
+//                "remark" => "",
+//            ];
+//            \app\common\services\MessageService::notice($this->set['template_id'], $msg, $member['openid'], $this->uniacid);
+            $temp_id = $this->set['expire'];
+            if (!$temp_id) {
+                return;
+            }
+            $params = [
+                ['name' => '优惠券名称', 'value' => $ouponData['name']],
+                ['name' => '优惠券使用范围', 'value' => $ouponData['api_limit']],
+                ['name' => '过期时间', 'value' => $ouponData['time_end']],
             ];
-            \app\common\services\MessageService::notice($this->set['template_id'], $msg, $member['openid'], $this->uniacid);
+            $msg = MessageTemp::getSendMsg($temp_id, $params);
+            if (!$msg) {
+                return;
+            }
+            \app\common\services\MessageService::notice(MessageTemp::$template_id, $msg, $member->uid, $this->uniacid);
         }
         return;
     }

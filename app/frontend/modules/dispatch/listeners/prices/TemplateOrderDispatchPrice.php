@@ -95,20 +95,19 @@ class TemplateOrderDispatchPrice
         $goods_total = $orderGoods->total;
 
         $piece_data = unserialize($this->dispatch->piece_data);
-
         // 存在重量数据
         if ($piece_data) {
             $dispatch = '';
 
             // 根据配送地址匹配区域数据
-            $city = isset($this->order->orderAddress['city']) ? $this->order->orderAddress['city'] : '';
-            if (!$city) {
+            $city_id = isset($this->order->orderAddress->city_id) ? $this->order->orderAddress->city_id : 0;
+
+            if (!$city_id) {
                 return 0;
             }
-            $city_id = Address::where('areaname', $city)->value('id');
             foreach ($piece_data as $key => $piece) {
                 $area_ids = explode(';', $piece['area_ids']);
-                if (in_array($city_id, $area_ids)) {
+                if (in_array($this->order->orderAddress->city_id, $area_ids)) {
                     $dispatch = $piece;
                     break;
                 }
@@ -147,7 +146,7 @@ class TemplateOrderDispatchPrice
             $dispatch = '';
 
             // 根据配送地址匹配区域数据
-            $city_id = isset($this->order->orderAddress['city_id']) ? $this->order->orderAddress['city_id'] : '';
+            $city_id = isset($this->order->orderAddress->city_id) ? $this->order->orderAddress->city_id : '';
             if (!$city_id) {
                 return 0;
             }
@@ -175,7 +174,7 @@ class TemplateOrderDispatchPrice
 
         // 默认全国重量运费
         if ($weight_total > $this->dispatch->first_weight) {
-            return $this->dispatch->first_weight_price + floor(($weight_total - $this->dispatch->first_weight) / $this->dispatch->another_weight) * $this->dispatch->another_weight_price;
+            return $this->dispatch->first_weight_price + ceil(($weight_total - $this->dispatch->first_weight) / $this->dispatch->another_weight) * $this->dispatch->another_weight_price;
         } else {
             return $this->dispatch->first_weight_price;
         }

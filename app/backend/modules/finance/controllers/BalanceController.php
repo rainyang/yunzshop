@@ -155,8 +155,8 @@ class BalanceController extends BaseController
      * @Author yitian */
     public function rechargeRecord()
     {
-        //todo 需要重新编写此处逻辑，（如果搜素会导致二次查库，影响效率  YITIAN）
-        $pageSize = 10;
+        return (new BalanceRechargeRecordsController())->index();
+        /*$pageSize = 10;
         $recordList = BalanceRecharge::getPageList($pageSize);
         if ($search = \YunShop::request()->search) {
             $recordList = BalanceRecharge::getSearchPageList($pageSize, $search);
@@ -172,7 +172,7 @@ class BalanceController extends BaseController
             'memberGroup'   => MemberGroup::getMemberGroupList(),
             'memberLevel'   => MemberLevel::getMemberLevelList(),
             'search'        => $search
-        ])->render();
+        ])->render();*/
     }
 
 

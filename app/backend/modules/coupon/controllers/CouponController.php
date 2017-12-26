@@ -73,7 +73,7 @@ class CouponController extends BaseController
         $memberLevels = MemberLevel::getMemberLevelList();
 
         //获取优惠券统一的模板消息 ID (因为是统一的,所以写在 setting)
-        $template_id = Setting::get('coupon_template_id');
+        //$template_id = Setting::get('coupon_template_id');
 
         //表单验证
         if($_POST){
@@ -83,7 +83,7 @@ class CouponController extends BaseController
             if($validator->fails()){
                 $this->error($validator->messages());
             } elseif($coupon->save()) {
-                Setting::set('coupon_template_id', \YunShop::request()->template_id); //设置优惠券统一的模板消息ID
+                //Setting::set('coupon_template_id', \YunShop::request()->template_id); //设置优惠券统一的模板消息ID
                 return $this->message('优惠券创建成功', Url::absoluteWeb('coupon.coupon.index'));
             } else{
                 $this->error('优惠券创建失败');
@@ -95,7 +95,7 @@ class CouponController extends BaseController
             'memberlevels' => $memberLevels,
             'timestart' => strtotime(\YunShop::request()->time['start']),
             'timeend' => strtotime(\YunShop::request()->time['end']),
-            'template_id' => $template_id,
+            //'template_id' => $template_id,
         ])->render();
     }
 
@@ -111,7 +111,7 @@ class CouponController extends BaseController
         $memberLevels = MemberLevel::getMemberLevelList();
 
         //获取优惠券统一的模板消息 ID (因为是统一的,所以写在 setting)
-        $template_id = Setting::get('coupon_template_id');
+        //$template_id = Setting::get('coupon_template_id');
 
         $coupon = Coupon::getCouponById($coupon_id);
         if(!empty($coupon->goods_ids)){
@@ -140,7 +140,7 @@ class CouponController extends BaseController
                 $this->error($validator->messages());
             } else{
                 if($coupon->save()){
-                    Setting::set('coupon_template_id', \YunShop::request()->template_id); //设置优惠券统一的模板消息ID
+                    //Setting::set('coupon_template_id', \YunShop::request()->template_id); //设置优惠券统一的模板消息ID
                     return $this->message('优惠券修改成功', Url::absoluteWeb('coupon.coupon.index'));
                 } else{
                     $this->error('优惠券修改失败');
@@ -158,7 +158,7 @@ class CouponController extends BaseController
             'memberlevels' => $memberLevels,
             'timestart' => $coupon->time_start->timestamp,
             'timeend' => $coupon->time_end->timestamp,
-            'template_id' => $template_id,
+            //'template_id' => $template_id,
         ])->render();
     }
 

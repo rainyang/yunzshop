@@ -118,7 +118,7 @@ class MemberController extends ApiController
             case 0:
             case 1:
                 $apply_qualification = 1;
-                $mid = \YunShop::request()->mid ? \YunShop::request()->mid : 0;
+                $mid = \app\common\models\Member::getMid();
                 $parent_name = '';
 
                 if (empty($mid)) {
@@ -596,12 +596,12 @@ class MemberController extends ApiController
 
         if ($share) {
             if ($share['icon']) {
-                $share['icon'] = replace_yunshop(tomedia($share['icon']));
+                $share['icon'] = replace_yunshop(yz_tomedia($share['icon']));
             }
         }
 
         $shop = \Setting::get('shop');
-        $shop['icon'] = replace_yunshop(tomedia($shop['logo']));
+        $shop['icon'] = replace_yunshop(yz_tomedia($shop['logo']));
 
         if (!is_null(\Config('customer_service'))) {
             $class = array_get(\Config('customer_service'), 'class');
@@ -668,7 +668,7 @@ class MemberController extends ApiController
 
         if ($info) {
             return $this->successJson('', [
-                'banner' => replace_yunshop(tomedia($info['banner']))
+                'banner' => replace_yunshop(yz_tomedia($info['banner']))
             ]);
         }
 
@@ -684,7 +684,7 @@ class MemberController extends ApiController
 
         $set = \Setting::get('shop.share');
         $fans_model = McMappingFans::getFansById($member_id);
-        $mid = \YunShop::request()->mid ? \YunShop::request()->mid : 0;
+        $mid = \app\common\models\Member::getMid();
 
         if (!empty($set['follow_url']) && $fans_model->follow === 0) {
 
@@ -1000,4 +1000,18 @@ class MemberController extends ApiController
         return $this->successJson('', $data);
     }
 
+    public function isOpenRelation()
+    {
+        $data = ['switch' => 0];
+
+        $relation = MemberRelation::getSetInfo()->first();
+
+        if (!is_null($relation) && 1 == $relation->status) {
+            $data = [
+                'switch' => 1
+            ];
+        }
+
+        return $this->successJson('', $data);
+    }
 }
