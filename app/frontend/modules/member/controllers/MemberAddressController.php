@@ -225,6 +225,9 @@ class MemberAddressController extends ApiController
                 'district'      => \YunShop::request()->district,
                 'address'       => \YunShop::request()->address,
             );
+            if(\Setting::get('shop.trade.is_street')){
+                $data['street'] = \YunShop::request()->street;
+            }
             $addressModel->fill($requestAddress);
 
             $validator = $addressModel->validator($addressModel->getAttributes());
