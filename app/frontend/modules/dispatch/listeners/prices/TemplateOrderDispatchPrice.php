@@ -117,7 +117,9 @@ class TemplateOrderDispatchPrice
                 // 找到匹配的数量数据
                 if ($goods_total > $dispatch['first_piece']) {
 
-                    return $dispatch['first_piece_price'] + ceil(($goods_total - $dispatch['first_piece_price']) / $dispatch['first_piece_price']) * $dispatch['first_piece_price'];
+                    return $dispatch['first_piece_price'] + ($goods_total - $dispatch['another_piece']) * $dispatch['another_piece_price'];
+
+                    /*return $dispatch['first_piece_price'] + ceil(($goods_total - $dispatch['first_piece_price']) / $dispatch['first_piece_price']) * $dispatch['first_piece_price'];*/
                 } else {
                     return $dispatch['first_piece_price'];
                 }
@@ -125,8 +127,11 @@ class TemplateOrderDispatchPrice
         }
 
         // 默认全国重量运费
-        if ($orderGoods->total > $this->dispatch->first_piece) {
-            return $this->dispatch->first_piece_price + ceil(($orderGoods->total - $this->dispatch->first_piece) / $this->dispatch->another_piece) * $this->dispatch->another_piece_price;
+        if ($goods_total > $this->dispatch->first_piece) {
+
+            return $this->dispatch->first_piece_price + ($goods_total - $this->dispatch->another_piece) * $this->dispatch->another_piece_price;
+
+            /*return $this->dispatch->first_piece_price + ceil(($orderGoods->total - $this->dispatch->first_piece) / $this->dispatch->another_piece) * $this->dispatch->another_piece_price;*/
         } else {
             return $this->dispatch->first_piece_price;
         }
