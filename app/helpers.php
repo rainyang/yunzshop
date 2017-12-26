@@ -566,6 +566,13 @@ if (!function_exists('yzAppFullUrl')) {
     }
 }
 
+if (!function_exists('yzDiyFullUrl')) {
+    function yzDiyFullUrl($route, $params = [])
+    {
+        return Url::absoluteDiyApp($route, $params);
+    }
+}
+
 if (!function_exists('yzUrl')) {
     function yzUrl($route, $params = [])
     {

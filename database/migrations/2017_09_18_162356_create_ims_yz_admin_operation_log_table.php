@@ -41,7 +41,7 @@ class CreateImsYzAdminOperationLogTable extends Migration
     public function down()
     {
         if (\Schema::hasTable('yz_admin_operation_log')) {
-            Schema::drop('ims_yz_admin_operation_log');
+            Schema::drop('yz_admin_operation_log');
         }
     }
 

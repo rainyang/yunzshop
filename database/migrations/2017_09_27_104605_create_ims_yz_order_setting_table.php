@@ -34,7 +34,7 @@ class CreateImsYzOrderSettingTable extends Migration {
 	public function down()
 	{
         if (Schema::hasTable('yz_order_setting')) {
-            Schema::drop('ims_yz_order_setting');
+            Schema::drop('yz_order_setting');
         }
 	}
 

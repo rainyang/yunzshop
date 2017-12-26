@@ -22,7 +22,7 @@ class ChangeDispatchType extends Migration
             }
             if (!\app\common\models\DispatchType::where('name','门店自提')->count()) {
                 \app\common\models\DispatchType::where('id','>','-1')->delete();
-                \Illuminate\Support\Facades\DB::select('INSERT INTO `ims_yz_dispatch_type` (`id`, `name`, `plugin`, `need_send`)
+                \Illuminate\Support\Facades\DB::select('INSERT INTO `'.app('db')->getTablePrefix().'yz_dispatch_type` (`id`, `name`, `plugin`, `need_send`)
 VALUES
 	(1, \'快递\', 0, 1),
 	(2, \'门店自提\', 0, 0),
