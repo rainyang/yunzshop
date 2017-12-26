@@ -55,6 +55,30 @@ class CloudController extends PaymentController
         }
     }
 
+    public function notifyAliPayUrl()
+    {
+        $this->log($_GET);
+
+        if ($this->getSignResult() && '00' == $_GET['respcd'] && $_GET['errorDetail'] == "SUCCESS") {
+            \Log::debug('------验证成功-----');
+            $data = [
+                'total_fee'    => floatval($_GET['txamt']),
+                'out_trade_no' => $_GET['orderNum'],
+                'trade_no'     => $_GET['channelOrderNum'],
+                'unit'         => 'fen',
+                'pay_type'     => '云支付宝支付',
+                'pay_type_id'     => 7
+
+            ];
+
+            $this->payResutl($data);
+            \Log::debug('----结束----');
+            echo "success";
+        } else {
+            echo "fail";
+        }
+    }
+
     public function returnUrl()
     {
         if (0 == $_GET['state'] && $_GET['errorDetail'] == '成功') {
