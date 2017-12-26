@@ -43,9 +43,18 @@ class MemberAddressController extends ApiController
         return $this->successJson($msg, $addressList);
     }
     public function street(){
-        $districtId = request()->input('district_id');
-        $street = Street::getStreetByParentId($districtId);
-        return $this->successJson('数据获取成功', $street->toArray());
+        $districtId = \YunShop::request()->get('district_id');
+        if(\Setting::get('shop.trade.is_street')){
+            // 开启街道设置
+            $street = Street::getStreetByParentId($districtId);
+        }else{
+            $street = [];
+        }
+
+        if($street){
+            return $this->successJson('获取街道数据成功!', $street);
+        }
+        return $this->successJson('获取数据失败!', $street);
 
     }
     /*
