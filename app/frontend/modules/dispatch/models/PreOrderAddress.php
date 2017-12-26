@@ -14,6 +14,7 @@ use app\common\models\DispatchType;
 use app\frontend\models\OrderAddress;
 use app\frontend\modules\member\models\MemberAddress;
 use app\frontend\modules\order\models\PreOrder;
+use app\frontend\repositories\MemberAddressRepository;
 
 class PreOrderAddress extends OrderAddress
 {
@@ -73,7 +74,7 @@ class PreOrderAddress extends OrderAddress
 //                'address.district' => 'required|string',
 //            ], ['address' => $address]
 //            );
-            return app('MemberAddressRepository')->fill($address);
+            return app(MemberAddressRepository::class)->fill($address);
         }
 
         return $this->order->belongsToMember->defaultAddress;

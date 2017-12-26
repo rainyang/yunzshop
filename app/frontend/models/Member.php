@@ -33,7 +33,7 @@ class Member extends \app\common\models\Member
 
     public function defaultAddress()
     {
-        return $this->hasOne(app('MemberAddressRepository')->model(), 'uid', 'uid')->where('isdefault', 1);
+        return $this->hasOne(app(MemberAddressRepository::class)->model(), 'uid', 'uid')->where('isdefault', 1);
     }
 
     public function orderGoods()

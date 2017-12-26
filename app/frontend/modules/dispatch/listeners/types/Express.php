@@ -17,6 +17,7 @@ use app\common\exceptions\AppException;
 use app\common\models\Address;
 use app\common\models\OrderAddress;
 use app\frontend\modules\member\models\MemberAddress;
+use app\frontend\repositories\MemberAddressRepository;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 
 class Express
@@ -96,7 +97,7 @@ class Express
                 'address.district' => 'required|string',
             ], ['address' => $address]
             );
-            $memberAddress = app('MemberAddressRepository')->fill($address);
+            $memberAddress = app(MemberAddressRepository::class)->fill($address);
 
             return $memberAddress;
         }
