@@ -78,7 +78,7 @@ class MemberOfficeAccountService extends MemberService
 
             if (is_array($userinfo) && !empty($userinfo['errcode'])) {
                 \Log::debug('微信登陆授权失败');
-                return show_json('-3', '微信登陆授权失败');
+                return show_json(-3, '微信登陆授权失败');
             }
 
             //Login
