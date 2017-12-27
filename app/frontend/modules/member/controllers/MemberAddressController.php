@@ -226,7 +226,7 @@ class MemberAddressController extends ApiController
                 'address'       => \YunShop::request()->address,
             );
             if(\Setting::get('shop.trade.is_street')){
-                $data['street'] = \YunShop::request()->street;
+                $requestAddress['street'] = \YunShop::request()->street;
             }
             $addressModel->fill($requestAddress);
 

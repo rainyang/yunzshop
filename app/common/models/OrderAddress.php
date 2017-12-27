@@ -18,6 +18,10 @@ class OrderAddress extends BaseModel
     public $province;
     public $city;
     public $district;
+    public $street;
+    protected $attributes = [
+        'street_id' => 0
+    ];
     /**
      *  定义字段名
      * 可使
