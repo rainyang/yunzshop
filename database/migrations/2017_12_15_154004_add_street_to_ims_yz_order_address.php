@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddStreetToImsYzOrderAddressTable extends Migration
+class AddStreetToImsYzOrderAddress extends Migration
 {
     /**
      * Run the migrations.
