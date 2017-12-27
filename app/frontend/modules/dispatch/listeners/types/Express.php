@@ -14,6 +14,7 @@ use app\common\events\order\AfterOrderCreatedEvent;
 
 use app\common\events\order\OnPreGenerateOrderCreatingEvent;
 use app\common\exceptions\AppException;
+use app\common\exceptions\ShopException;
 use app\common\models\Address;
 use app\common\models\OrderAddress;
 use app\common\models\Street;
@@ -133,7 +134,10 @@ class Express
         $orderAddress->address = implode(' ', [$member_address->province, $member_address->city, $member_address->district, $member_address->address]);
 
         if (isset($member_address->street)) {
-            $orderAddress->street_id = Street::where('areaname', $member_address->street)->where('parentid', $orderAddress->district_id)->value('id') ?: 0;
+            $orderAddress->street_id = Street::where('areaname', $member_address->street)->where('parentid', $orderAddress->district_id)->value('id');
+            if(!isset($orderAddress->street_id)){
+                throw new ShopException('收货地址有误请重新保存收货地址');
+            }
             $orderAddress->street = $member_address->street;
             $orderAddress->address = implode(' ', [$member_address->province, $member_address->city, $member_address->district, $orderAddress->street, $member_address->address]);
 
