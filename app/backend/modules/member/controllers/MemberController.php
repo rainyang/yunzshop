@@ -99,7 +99,7 @@ class MemberController extends BaseController
                 }
 
             }
-            $list = Member::whereIn('member_id', $result_ids);
+            $list = Member::whereIn('uid', $result_ids);
         }
 
 
