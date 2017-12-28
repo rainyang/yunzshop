@@ -44,8 +44,11 @@ class LoginController extends ApiController
                             $url = Url::absoluteApp('member', ['i' => $uniacid]);
                             return $this->successJson($msg['json'], ['status'=> $msg['status'], 'url' => $url]);
                         } else {
-                            return view('errors.login',['title'=>$msg['json'], 'content'=>$msg['json']])->render();
-                            //return $this->errorJson($msg['json'], ['status'=> $msg['status']]);
+                            if ($msg['status'] == -3) {
+                                return view('errors.login',['title'=>$msg['json'], 'content'=>$msg['json']])->render();
+                            }
+
+                            return $this->errorJson($msg['json'], ['status'=> $msg['status']]);
                         }
                     } else {
                         return $this->errorJson('登录失败', ['status' => 3]);

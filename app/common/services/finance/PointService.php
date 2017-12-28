@@ -52,6 +52,9 @@ class PointService
     const POINT_MODE_CASHIER = 9; //收银台奖励
     const POINT_MODE_CASHIER_ATTACHED = '收银台奖励';
 
+    const POINT_MODE_STORE = 93; //收银台奖励
+    const POINT_MODE_STORE_ATTACHED = '门店奖励';
+
     const POINT_MODE_RECHARGE = 11; //话费充值奖励
     const POINT_MODE_RECHARGE_ATTACHED = '话费充值奖励';
 
@@ -240,6 +243,9 @@ class PointService
                 break;
             case (92):
                 $mode_attribute = self::POINT_MODE_RECHARGE_CODE_ATTACHED;
+                break;
+            case (93):
+                $mode_attribute = self::POINT_MODE_STORE_ATTACHED;
                 break;
 
         }
