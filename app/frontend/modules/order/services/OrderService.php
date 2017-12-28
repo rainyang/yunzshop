@@ -144,9 +144,7 @@ class OrderService
         /**
          * @var PreOrder $order
          */
-        echo '<pre>';print_r($order);
         $order->_init();
-        echo '<pre>';print_r($order);exit();
         return $order;
     }
 
