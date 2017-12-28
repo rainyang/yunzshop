@@ -27,13 +27,10 @@ class OrderGoodsDeductionCollection extends Collection
              */
 
             if(!isset($result)){
-                echo '<pre>';print_r(1);exit();
                 return $orderGoodsDeduction->getUsableCoin();
             }
-            echo '<pre>';print_r(2);exit();
             return $orderGoodsDeduction->getUsableCoin()->plus($result);
         });
-        echo '<pre>';print_r(3);exit();
         return $result;
     }
 
