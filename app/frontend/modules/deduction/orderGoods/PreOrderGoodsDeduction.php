@@ -185,7 +185,7 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
         }
 
         $amount = $this->getOrderGoodsDeductionAmount()->getAmount();
-        echo '<pre>';print_r($amount);exit();
+
         $coin =   $this->newCoin()->setMoney($amount);
         return $coin;
     }
