@@ -84,7 +84,6 @@ class PreOrderDeduction extends OrderDeduction
     private function setOrderGoodsDeductions()
     {
         $orderGoodsDeductionCollection = $this->order->orderGoods->map(function (PreOrderGoods $aOrderGoods) {
-            echo '<pre>';print_r(1);exit();
             return new PreOrderGoodsDeduction([], $aOrderGoods, $this, $this->getDeduction());
         });
         $this->orderGoodsDeductionCollection = new  OrderGoodsDeductionCollection($orderGoodsDeductionCollection);
