@@ -20,7 +20,6 @@ abstract class PreOrderController extends ApiController
     public function index()
     {
         $order_data = $this->getOrderData();
-        echo '<pre>';print_r($order_data->toArray());exit();
         $total_price = $order_data->sum('order.price');
         $total_goods_price = $order_data->sum('order.order_goods_price');
         $total_dispatch_price = $order_data->sum('order.dispatch_price');
@@ -62,7 +61,7 @@ abstract class PreOrderController extends ApiController
     {
         $order_data = collect();
         $shop_order = $this->getShopOrder($this->getMemberCarts());
-
+        echo '<pre>';print_r($shop_order->toArray());exit();
         if (!empty($shop_order)) {
 
             $order_data->push(OrderService::getOrderData($shop_order));
