@@ -61,7 +61,7 @@ abstract class PreOrderController extends ApiController
     {
         $order_data = collect();
         $shop_order = $this->getShopOrder($this->getMemberCarts());
-        echo '<pre>';print_r($shop_order->toArray());exit();
+
         if (!empty($shop_order)) {
 
             $order_data->push(OrderService::getOrderData($shop_order));
