@@ -21,13 +21,13 @@ class PointGoodsDeduction extends GoodsDeduction
     // todo 有问题,先实现
     public function getPriceProportion()
     {
-        echo '<pre>';print_r($this->getDeductionSettingCollection()->getImportantAndValidPriceProportion());exit();
         return $this->getDeductionSettingCollection()->getImportantAndValidPriceProportion();
     }
 
     // todo 有问题,先实现
     public function getDeductionAmountCalculationType()
     {
+        echo '<pre>';print_r($this->getDeductionSettingCollection()->getImportantAndValidCalculationType());exit();
         return $this->getDeductionSettingCollection()->getImportantAndValidCalculationType();
     }
 
