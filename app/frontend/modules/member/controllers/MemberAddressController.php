@@ -235,8 +235,9 @@ class MemberAddressController extends ApiController
                 return $this->errorJson($validator->message());
             }
             if ($addressModel->isdefault) {
+
                 //todo member_id 未附值
-                $this->memberAddressRepository->cancelDefaultAddress($addressModel->member_id);
+                $this->memberAddressRepository->cancelDefaultAddress(\YunShop::app()->getMemberId());
             }
             if ($addressModel->save()) {
                 return $this->successJson('修改收货地址成功');
