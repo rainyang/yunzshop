@@ -17,7 +17,7 @@ class FixedAmount extends OrderGoodsDeductionAmount
 {
     public function getAmount()
     {
-        echo '<pre>';print_r(1);exit();
+        echo '<pre>';print_r($this->getOrderGoods()->toArray());exit();
         $result = $this->getGoodsDeduction()->getFixedAmount() * $this->getOrderGoods()->total;
         return max($result, 0);
     }
