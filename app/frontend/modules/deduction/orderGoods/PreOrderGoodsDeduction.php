@@ -156,6 +156,7 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
                 $this->orderGoodsDeductionAmount = new Invalid($this->orderGoods, $this->getGoodsDeduction());
                 break;
         }
+        echo '<pre>';print_r($this->orderGoodsDeductionAmount);exit();
         return $this->orderGoodsDeductionAmount;
     }
 
