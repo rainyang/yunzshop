@@ -156,7 +156,6 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
                 $this->orderGoodsDeductionAmount = new Invalid($this->orderGoods, $this->getGoodsDeduction());
                 break;
         }
-        echo '<pre>';print_r($this->orderGoodsDeductionAmount->getAmount());exit();
         return $this->orderGoodsDeductionAmount;
     }
 
@@ -188,6 +187,7 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
         $amount = $this->getOrderGoodsDeductionAmount()->getAmount();
 
         $coin =   $this->newCoin()->setMoney($amount);
+        echo '<pre>';print_r($coin);exit();
         return $coin;
     }
 
