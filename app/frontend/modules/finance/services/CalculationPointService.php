@@ -26,7 +26,6 @@ class CalculationPointService
     public function __construct($order, $member_id)
     {
 
-        echo '<pre>';print_r(1);exit();
         $this->order = $order;
         $this->orderGoodsModels = $order->orderGoods;
 
