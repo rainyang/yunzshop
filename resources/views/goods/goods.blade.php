@@ -50,7 +50,7 @@
         var numerictype = /^(0|[1-9]\d*)$/; //整数验证
         var thumb = /\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/;
         var datetime = /(\d{2}|\d{4})(?:\-)?([0]{1}\d{1}|[1]{1}[0-2]{1})(?:\-)?([0-2]{1}\d{1}|[3]{1}[0-1]{1})(?:\s)?([0-1]{1}\d{1}|[2]{1}[0-3]{1})(?::)?([0-5]{1}\d{1})(?::)?([0-5]{1}\d{1})/;
-
+        
         /*
         *update date 2017/12/20 16:44
         *添加排序的验证
@@ -59,6 +59,23 @@
             $('#myTab a[href="#tab_basic"]').tab('show');
             Tip.focus("#displayorder", "排序必须是整数!");
             return false;
+        }
+
+        if ($(':input[name="widgets[video_demand][is_course]"]:checked').val() == 1) {
+            
+            if ($(':input[name="widgets[video_demand][lecturer_id]"]').val() == '') {
+                alert('课程讲师不能为空');
+                $('#myTab a[href="#tab_video_demand"]').tab('show');
+                Tip.focus(':input[name="widgets[video_demand][lecturer_id]"]', "课程讲师不能为空");
+                return false;
+            }
+
+            if ($(':input[name="widgets[video_demand][chapter][chapter_id][]"]').length <= 0) {
+                alert('课程章节不能为空');
+                $('#myTab a[href="#tab_video_demand"]').tab('show');
+                Tip.focus('#chapter_button', "课程章节不能为空");
+                return false;
+            }
         }
 
         if ($(':input[name="goods[title]"]').val() == '') {
