@@ -3,6 +3,7 @@
 namespace app\frontend\modules\order\services\message;
 
 use app\common\models\Member;
+use app\common\models\MemberShopInfo;
 use app\common\models\notice\MessageTemp;
 
 /**
@@ -25,7 +26,6 @@ class BuyerMessage extends Message
     protected function sendToBuyer()
     {
         try {
-
             return $this->sendToMember($this->order->uid);
         } catch (\Exception $exception) {
 
@@ -34,10 +34,42 @@ class BuyerMessage extends Message
 
     protected function sendToParentBuyer()
     {
-        if (!isset($this->order->belongsToMember->yzMember->parent_id)) {
+        $temp_id = \Setting::get('shop.notice')['other_toggle_temp'];
+        if (!$temp_id) {
             return;
         }
-        return $this->sendToMember($this->order->belongsToMember->yzMember->parent_id);
+        $params = [
+            ['name' => '下级昵称', 'value' => $this->order->belongsToMember->nickname],
+            ['name' => '订单状态', 'value' => $this->order->status_name],
+            ['name' => '订单号', 'value' => $this->order->order_sn],
+            ['name' => '订单金额', 'value' => $this->order['price']]
+        ];
+        // 一级
+        $parent_id = $this->order->belongsToMember->yzMember->parent_id;
+        if (!isset($parent_id)) {
+            return;
+        }
+        $params['下级层级'] = '一级下线';
+        $msg = MessageTemp::getSendMsg($temp_id, $params);
+        if (!$msg) {
+            return;
+        }
+        $templateId = MessageTemp::$template_id;
+        if (!$templateId) {
+            return;
+        }
+        $this->notice($templateId, $msg, $parent_id);
+        // 二级
+        $member = MemberShopInfo::getMemberShopInfo($parent_id);
+        if ($member->parent_id == 0) {
+            return;
+        }
+        $params['下级层级'] = '二级下线';
+        $msg = MessageTemp::getSendMsg($temp_id, $params);
+        if (!$msg) {
+            return;
+        }
+        $this->notice($templateId, $msg, $member->parent_id);
     }
 
     protected function sendToMember($uid)
@@ -76,7 +108,7 @@ class BuyerMessage extends Message
             ['name' => '运费', 'value' => $this->order['dispatch_price']],
             ['name' => '商品详情（含规格）', 'value' => $this->goods_title],
         ];
-        $this->transfer($temp_id, $params);
+        $this->transfer($temp_id, $params, true);
     }
 
     public function paid()
@@ -96,7 +128,7 @@ class BuyerMessage extends Message
             ['name' => '支付方式', 'value' => $this->order->pay_type_name],
             ['name' => '支付时间', 'value' => $this->order['pay_time']->toDateTimeString()],
         ];
-        $this->transfer($temp_id, $params);
+        $this->transfer($temp_id, $params, true);
     }
 
     public function canceled()
@@ -116,7 +148,7 @@ class BuyerMessage extends Message
             ['name' => '支付方式', 'value' => $this->order->pay_type_name],
             ['name' => '订单取消时间', 'value' => $this->order['cancel_time']->toDateTimeString()],
         ];
-        $this->transfer($temp_id, $params, true);
+        $this->transfer($temp_id, $params);
     }
 
     public function sent()
@@ -137,7 +169,7 @@ class BuyerMessage extends Message
             ['name' => '快递公司', 'value' => $this->order['express']['express_company_name'] ?: "暂无信息"],
             ['name' => '快递单号', 'value' => $this->order['express']['express_sn'] ?: "暂无信息"],
         ];
-        $this->transfer($temp_id, $params);
+        $this->transfer($temp_id, $params, true);
     }
 
     public function received()
@@ -156,6 +188,6 @@ class BuyerMessage extends Message
             ['name' => '商品详情（含规格）', 'value' => $this->goods_title],
             ['name' => '确认收货时间', 'value' => $this->order['finish_time']->toDateTimeString()],
         ];
-        $this->transfer($temp_id, $params);
+        $this->transfer($temp_id, $params, true);
     }
 }
