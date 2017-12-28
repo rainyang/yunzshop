@@ -174,7 +174,6 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
             return $this->usablePoint;
         }
 
-        echo '<pre>';print_r($this->_getUsableCoin()->toArray());exit();
         return $this->usablePoint = $this->_getUsableCoin();
     }
 
@@ -188,6 +187,7 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
         $amount = $this->getOrderGoodsDeductionAmount()->getAmount();
 
         $coin =   $this->newCoin()->setMoney($amount);
+        echo '<pre>';print_r($amount);echo '<pre>';print_r($coin);exit();
         return $coin;
     }
 
