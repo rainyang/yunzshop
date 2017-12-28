@@ -175,7 +175,7 @@ class MemberModel extends Member
                 if (1 == $level) {
                     $query->where('parent_id', $uid)->where('inviter', 1);
                 } else {
-                    $query->whereRaw('FIND_IN_SET(?, relation)' . ($level != 0 ? ' = ?' : ''), [$uid, $level]);
+                    $query->where('inviter', 1)->whereRaw('FIND_IN_SET(?, relation)' . ($level != 0 ? ' = ?' : ''), [$uid, $level]);
                 }
             })
             ->with(['yzMember' => function ($query) {
@@ -198,7 +198,7 @@ class MemberModel extends Member
                 if (1 == $level) {
                     $query->where('parent_id', $uid)->where('inviter', 1);
                 } else {
-                    $query->whereRaw('FIND_IN_SET(?, relation)' . ($level != 0 ? ' = ?' : ''), [$uid, $level]);
+                    $query->where('inviter', 1)->whereRaw('FIND_IN_SET(?, relation)' . ($level != 0 ? ' = ?' : ''), [$uid, $level]);
                 }
             });
 
