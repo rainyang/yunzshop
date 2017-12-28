@@ -26,6 +26,7 @@ class CalculationPointService
     public function __construct($order, $member_id)
     {
 
+        echo '<pre>';print_r(1);exit();
         $this->order = $order;
         $this->orderGoodsModels = $order->orderGoods;
 
@@ -84,7 +85,6 @@ class CalculationPointService
      */
     private function getGoodsPoint($goods_model)
     {
-        echo '<pre>';print_r($goods_model->toArray());exit();
         if ($goods_model->goods->hasOneSale->max_point_deduct === '0') {
             return 0;
         }
