@@ -95,7 +95,6 @@ class TemplateOrderDispatchPrice
         $goods_total = $orderGoods->total;
 
         $piece_data = unserialize($this->dispatch->piece_data);
-        echo '<pre>';print_r($piece_data);exit();
         // 存在
         if ($piece_data) {
             $dispatch = '';
@@ -129,12 +128,14 @@ class TemplateOrderDispatchPrice
             }
         }
 
-        // 默认全国重量运费
+        // 默认件数
         if ($goods_total > $this->dispatch->first_piece) {
-
-            return $this->dispatch->first_piece_price + ($goods_total - $this->dispatch->another_piece) * $this->dispatch->another_piece_price;
-
-            /*return $this->dispatch->first_piece_price + ceil(($orderGoods->total - $this->dispatch->first_piece) / $this->dispatch->another_piece) * $this->dispatch->another_piece_price;*/
+            $diff = $goods_total - $this->dispatch->another_piece;
+            $another_piece = $this->dispatch->another_piece_price;
+            if ($diff > 0) {
+                $another_piece = ceil($diff / $this->dispatch->another_piece) * $this->dispatch->another_piece_price;
+            }
+            return $this->dispatch->first_piece_price + $another_piece;
         } else {
             return $this->dispatch->first_piece_price;
         }
