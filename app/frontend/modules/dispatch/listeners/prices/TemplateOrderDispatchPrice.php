@@ -95,6 +95,7 @@ class TemplateOrderDispatchPrice
         $goods_total = $orderGoods->total;
 
         $piece_data = unserialize($this->dispatch->piece_data);
+        echo '<pre>';print_r($piece_data);exit();
         // 存在
         if ($piece_data) {
             $dispatch = '';
@@ -114,7 +115,6 @@ class TemplateOrderDispatchPrice
             }
 
             if ($dispatch) {
-                echo '<pre>';print_r($goods_total);exit();
                 // 找到匹配的数量数据
                 if ($goods_total > $dispatch['first_piece']) {
                     $diff = $goods_total - $dispatch['another_piece'];
