@@ -72,34 +72,30 @@ class MemberController extends BaseController
             $result_ids = [];
             foreach ($member_ids as $key => $member) {
 
-                //dd($member);
+                $is_added = true;
                 if ($parames['search']['first_count']) {
                     $first_count = $this->getMembersLower($member->member_id,1);
-                    if ($first_count > $parames['search']['first_count']) {
-                        $result_ids[] = $member->member_id;
-                    }
+                    $result_ids = $this->getResultIds($result_ids,$member->member_id,$parames['search']['first_count'],$first_count,$is_added);
+                    $is_added = false;
                 }
                 if ($parames['search']['second_count']) {
+
                     $second_count = $this->getMembersLower($member->member_id,2);
-                    if ($second_count > $parames['search']['second_count']) {
-                        $result_ids[] = $member->member_id;
-                    }
+                    $result_ids = $this->getResultIds($result_ids,$member->member_id,$parames['search']['first_count'],$second_count,$is_added);
+                    $is_added = false;
                 }
                 if ($parames['search']['third_count']) {
                     $third_count = $this->getMembersLower($member->member_id,3);
-                    if ($third_count > $parames['search']['third_count']) {
-                        $result_ids[] = $member->member_id;
-                    }
+                    $result_ids = $this->getResultIds($result_ids,$member->member_id,$parames['search']['first_count'],$third_count,$is_added);
+                    $is_added = false;
                 }
                 if ($parames['search']['team_count']) {
                     $team_count = $this->getMemberTeam($member->member_id);
-                    if ($team_count > $parames['search']['team_count']) {
-                        $result_ids[] = $member->member_id;
-                    }
+                    $result_ids = $this->getResultIds($result_ids,$member->member_id,$parames['search']['first_count'],$team_count,$is_added);
                 }
 
             }
-            $list = Member::whereIn('uid', $result_ids);
+            $list = $list->whereIn('uid', $result_ids);
         }
 
 
@@ -140,6 +136,17 @@ class MemberController extends BaseController
     }
 
 
+
+    private function getResultIds(array $result_ids, $member_id, $compare, $compared, $is_added)
+    {
+        if ($compare < $compared) {
+            ($is_added && !in_array($member_id, $result_ids)) && $result_ids[] = $member_id;
+        } else {
+            $key = array_search($member_id, $result_ids);
+            $key !== false && array_splice($result_ids,$key,1);
+        }
+        return $result_ids;
+    }
 
     private function getMembersLower($memberId,$level = '')
     {
