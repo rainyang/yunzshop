@@ -58,7 +58,7 @@ class MemberOfficeAccountService extends MemberService
                 $authurl = $this->_getAuthUrl($appId, $callback, $state);
             }
         } else {
-            $authurl = $this->_getAuthBaseUrl($appId, $callback, $state);
+            $authurl = $this->_getAuthUrl($appId, $callback, $state);
         }
 
         $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
