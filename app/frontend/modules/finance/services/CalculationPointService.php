@@ -45,12 +45,10 @@ class CalculationPointService
      */
     private function verifyPointSet()
     {
-
-    if ($this->order->getSetting('point.set.point_deduct') == 0) {
-        return false;
-    }
-    $this->point_set = $this->order->getSetting('point.set');
-
+        if ($this->order->getSetting('point.set.point_deduct') == 0) {
+            return false;
+        }
+        $this->point_set = $this->order->getSetting('point.set');
     }
 
     /**
