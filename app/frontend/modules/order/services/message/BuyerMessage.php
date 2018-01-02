@@ -3,6 +3,7 @@
 namespace app\frontend\modules\order\services\message;
 
 use app\common\models\Member;
+use app\common\models\MemberShopInfo;
 use app\common\models\notice\MessageTemp;
 
 /**
@@ -25,19 +26,10 @@ class BuyerMessage extends Message
     protected function sendToBuyer()
     {
         try {
-
             return $this->sendToMember($this->order->uid);
         } catch (\Exception $exception) {
 
         }
-    }
-
-    protected function sendToParentBuyer()
-    {
-        if (!isset($this->order->belongsToMember->yzMember->parent_id)) {
-            return;
-        }
-        return $this->sendToMember($this->order->belongsToMember->yzMember->parent_id);
     }
 
     protected function sendToMember($uid)
@@ -48,7 +40,7 @@ class BuyerMessage extends Message
         $this->notice($this->templateId, $this->msg, $uid);
     }
 
-    private function transfer($temp_id, $params, $type = false)
+    private function transfer($temp_id, $params)
     {
         $this->msg = MessageTemp::getSendMsg($temp_id, $params);
         if (!$this->msg) {
@@ -56,9 +48,6 @@ class BuyerMessage extends Message
         }
         $this->templateId = MessageTemp::$template_id;
         $this->sendToBuyer();
-        if ($type) {
-            $this->sendToParentBuyer();
-        }
     }
 
     public function created()
@@ -116,7 +105,7 @@ class BuyerMessage extends Message
             ['name' => '支付方式', 'value' => $this->order->pay_type_name],
             ['name' => '订单取消时间', 'value' => $this->order['cancel_time']->toDateTimeString()],
         ];
-        $this->transfer($temp_id, $params, true);
+        $this->transfer($temp_id, $params);
     }
 
     public function sent()
