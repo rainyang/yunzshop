@@ -82,7 +82,8 @@ class MergePayController extends ApiController
     {
         // 验证
         $this->validate([
-            'order_ids' => 'required|string'
+            //'order_ids' => 'required|string'  //todo, string就会报错,奇怪...
+            'order_ids' => 'required'
         ]);
         // 订单集合
         $orders = $this->orders($request->input('order_ids'));
