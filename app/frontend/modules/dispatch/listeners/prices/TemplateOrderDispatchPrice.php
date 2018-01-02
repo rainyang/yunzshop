@@ -91,11 +91,11 @@ class TemplateOrderDispatchPrice
      */
     private function calculationByPiece($orderGoods)
     {
-        // 订单商品总重
+        // 件数
         $goods_total = $orderGoods->total;
 
         $piece_data = unserialize($this->dispatch->piece_data);
-        // 存在重量数据
+        // 存在
         if ($piece_data) {
             $dispatch = '';
 
@@ -116,17 +116,26 @@ class TemplateOrderDispatchPrice
             if ($dispatch) {
                 // 找到匹配的数量数据
                 if ($goods_total > $dispatch['first_piece']) {
-
-                    return $dispatch['first_piece_price'] + ceil(($goods_total - $dispatch['first_piece_price']) / $dispatch['first_piece_price']) * $dispatch['first_piece_price'];
+                    $diff = $goods_total - $dispatch['another_piece'];
+                    $another_piece = $dispatch['another_piece_price'];
+                    if ($diff > 0) {
+                        $another_piece = ceil($diff / $dispatch['another_piece']) * $dispatch['another_piece_price'];
+                    }
+                    return $dispatch['first_piece_price'] + $another_piece;
                 } else {
                     return $dispatch['first_piece_price'];
                 }
             }
         }
 
-        // 默认全国重量运费
-        if ($orderGoods->total > $this->dispatch->first_piece) {
-            return $this->dispatch->first_piece_price + ceil(($orderGoods->total - $this->dispatch->first_piece) / $this->dispatch->another_piece) * $this->dispatch->another_piece_price;
+        // 默认件数
+        if ($goods_total > $this->dispatch->first_piece) {
+            $diff = $goods_total - $this->dispatch->another_piece;
+            $another_piece = $this->dispatch->another_piece_price;
+            if ($diff > 0) {
+                $another_piece = ceil($diff / $this->dispatch->another_piece) * $this->dispatch->another_piece_price;
+            }
+            return $this->dispatch->first_piece_price + $another_piece;
         } else {
             return $this->dispatch->first_piece_price;
         }

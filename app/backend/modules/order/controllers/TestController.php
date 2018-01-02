@@ -3,6 +3,7 @@
 namespace app\backend\modules\order\controllers;
 
 use app\common\components\BaseController;
+use app\common\models\Order;
 use app\common\models\OrderAddress;
 use app\common\services\TestContract;
 use Illuminate\Support\Facades\Schema;
@@ -18,26 +19,10 @@ class TestController extends BaseController
 
     public function index()
     {
-        dd(\YunShop::app()->username);exit;
-        $this->test();
+        \Illuminate\Support\Facades\DB::select('
+            update ims_yz_plugin_store_order as so  join ims_yz_order as o on o.id = so.order_id and so.amount=0 set so.amount = if((o.price - so.fee)>0,o.price - so.fee,0);
+');
         exit;
-        //dd(Schema::table('yz_member'));
-        //exit;
-        $table = 'yz_member';
-
-        collect(Schema::getColumnListing('yz_member'))->each(
-            function ($column) use ($table) {
-                dd($column);
-                return;
-                $type = Schema::getColumnType('yz_member', $column);
-
-                $table->$type($column);
-
-                if (Schema::hasColumn('yz_member', $column)) {
-                    $table->change();
-                }
-            }
-        );
 
     }
 

@@ -14,7 +14,7 @@ class UpdateEngineInnodbToMcMembers extends Migration
     public function up()
     {
         if (\Schema::hasTable('mc_members')) {
-            \Illuminate\Support\Facades\DB::statement("ALTER TABLE ims_mc_members engine = InnoDB");
+            \Illuminate\Support\Facades\DB::statement("ALTER TABLE ".app('db')->getTablePrefix()."mc_members engine = InnoDB");
         }
 
     }

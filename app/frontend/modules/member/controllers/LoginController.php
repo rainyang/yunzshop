@@ -31,7 +31,7 @@ class LoginController extends ApiController
         if (\YunShop::request()->show_wechat_login) {
             return $this->init_login();
         }
-        
+      
         if (!empty($type)) {
                 $member = MemberFactory::create($type);
 
@@ -44,6 +44,10 @@ class LoginController extends ApiController
                             $url = Url::absoluteApp('member', ['i' => $uniacid]);
                             return $this->successJson($msg['json'], ['status'=> $msg['status'], 'url' => $url]);
                         } else {
+                            if ($msg['status'] == -3) {
+                                return view('errors.login',['title'=>$msg['json'], 'content'=>$msg['json']])->render();
+                            }
+
                             return $this->errorJson($msg['json'], ['status'=> $msg['status']]);
                         }
                     } else {

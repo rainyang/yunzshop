@@ -14,7 +14,7 @@ class AddYunpayToYzPayType extends Migration
     public function up()
     {
         if (Schema::hasTable('yz_pay_type')) {
-            \Illuminate\Support\Facades\DB::select('INSERT INTO `ims_yz_pay_type` (`id`, `name`, `code`, `setting_key`, `type`, `plugin_id`, `unit`, `updated_at`, `created_at`, `deleted_at`, `need_password`)
+            \Illuminate\Support\Facades\DB::select('INSERT INTO `'.app('db')->getTablePrefix().'yz_pay_type` (`id`, `name`, `code`, `setting_key`, `type`, `plugin_id`, `unit`, `updated_at`, `created_at`, `deleted_at`, `need_password`)
 VALUES
 	(12, \'芸\', \'yunPayWechat\', \'plugin.yun_pay_set\', 2, 0, \'元\', 1505785687, NULL, NULL, 0)
 ');

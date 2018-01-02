@@ -38,7 +38,7 @@ class CreateImsYzOrderDiscountTable extends Migration {
 	public function down()
 	{
         if (\Schema::hasTable('yz_order_discount')) {
-            Schema::drop('ims_yz_order_discount');
+            Schema::drop('yz_order_discount');
         }
 	}
 
