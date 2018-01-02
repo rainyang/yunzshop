@@ -119,4 +119,11 @@ class TestController extends BaseController
 
         dd($msg);
     }
+
+    public function tt()
+    {
+        $str = '测试商品2017-12-24 10-00开始:12';
+
+        echo substr($str, strrpos($str, ':')+1);
+    }
 }
