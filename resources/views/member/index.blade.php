@@ -327,6 +327,10 @@
                                                     <a href="{{yzWebUrl('member.bank-card.edit', ['member_id' => $row['uid']])}}"
                                                        title='银行卡管理'><i class='fa fa-credit-card'></i>银行卡管理</a>
                                                 </li>
+                                                <li>
+                                                    <a href="{{yzWebUrl('member.member-address.index', ['member_id' => $row['uid']])}}"
+                                                       title='银行卡管理'><i class='fa fa-truck'></i>收获地址管理</a>
+                                                </li>
                                             </ul>
                                         </div>
                                     </td>

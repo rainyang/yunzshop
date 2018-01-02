@@ -68,6 +68,8 @@ class Member extends BackendModel
     {
         return $this->hasOne('app\common\models\finance\PointLoveSet', 'member_id', 'uid');
     }
+
+
     public function defaultAddress()
     {
         return $this->hasOne(MemberAddress::class, 'uid', 'uid')->where('isdefault', 1);
