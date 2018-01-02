@@ -9,14 +9,19 @@
 namespace app\frontend\modules\member\controllers;
 
 use app\common\components\ApiController;
-use app\common\components\BaseController;
 use app\common\models\member\Address;
 use app\common\models\Street;
-use app\frontend\modules\member\models\MemberAddress;
+use app\frontend\repositories\MemberAddressRepository;
 
 class MemberAddressController extends ApiController
 {
-    protected $publicAction = ['address'];
+    protected $publicAction = ['address','street'];
+    private $memberAddressRepository;
+    public function __construct()
+    {
+        parent::__construct();
+        $this->memberAddressRepository = app(MemberAddressRepository::class);
+    }
 
     /*
      * 会员收货地址列表
@@ -25,7 +30,10 @@ class MemberAddressController extends ApiController
     public function index()
     {
         $memberId = \YunShop::app()->getMemberId();
-        $addressList = MemberAddress::getAddressList($memberId);
+//        dd(get_class($this->memberAddressRepository->makeModel()));
+//        exit;
+
+        $addressList = $this->memberAddressRepository->getAddressList($memberId);
         //获取省市ID
         if ($addressList) {
             $address = Address::getAllAddress();
@@ -35,9 +43,18 @@ class MemberAddressController extends ApiController
         return $this->successJson($msg, $addressList);
     }
     public function street(){
-        $districtId = request()->input('district_id');
-        $street = Street::getStreetByParentId($districtId);
-        return $this->successJson('数据获取成功', $street->toArray());
+        $districtId = \YunShop::request()->get('district_id');
+        if(\Setting::get('shop.trade.is_street')){
+            // 开启街道设置
+            $street = Street::getStreetByParentId($districtId);
+        }else{
+            $street = [];
+        }
+
+        if($street){
+            return $this->successJson('获取街道数据成功!', $street);
+        }
+        return $this->successJson('获取数据失败!', $street);
 
     }
     /*
@@ -61,13 +78,14 @@ class MemberAddressController extends ApiController
     public function setDefault()
     {
         $memberId = \YunShop::app()->getMemberId();
-        $addressModel = MemberAddress::getAddressById(\YunShop::request()->address_id);
+        $addressModel = $this->memberAddressRepository->getAddressById(\YunShop::request()->address_id);
+
         if ($addressModel) {
             if ($addressModel->isdefault) {
                 return $this->errorJson('默认地址不支持取消，请编辑或修改其他默认地址');
             }
             $addressModel->isdefault = 1;
-            MemberAddress::cancelDefaultAddress($memberId);
+            $this->memberAddressRepository->cancelDefaultAddress($memberId);
             if ($addressModel->save()) {
                 return $this->successJson('修改默认地址成功');
             } else {
@@ -83,7 +101,6 @@ class MemberAddressController extends ApiController
      * */
     public function store()
     {
-        $addressModel = new MemberAddress();
         $requestAddress = \YunShop::request();
         if (!\YunShop::request()->username) {
             return $this->errorJson('收件人不能为空');
@@ -112,6 +129,7 @@ class MemberAddressController extends ApiController
         if (!\YunShop::request()->address) {
             return $this->errorJson('请输入详细地址');
         }
+
         if ($requestAddress) {
             $data = array(
                 'username'  => \YunShop::request()->username,
@@ -123,15 +141,21 @@ class MemberAddressController extends ApiController
                 'district'  => \YunShop::request()->district,
                 'address'   => \YunShop::request()->address,
             );
-            $addressModel->fill($data);
+            if(\Setting::get('shop.trade.is_street')){
+                $data['street'] = \YunShop::request()->street;
+            }
+            $addressModel = $this->memberAddressRepository->fill($data);
+
+
+
             $memberId = \YunShop::app()->getMemberId();
             //验证默认收货地址状态并修改
-            $addressList = MemberAddress::getAddressList($memberId);
+            $addressList = $this->memberAddressRepository->getAddressList($memberId);
             if (empty($addressList)) {
                 $addressModel->isdefault = '1';
             } elseif ($addressModel->isdefault) {
                 //修改默认收货地址
-                MemberAddress::cancelDefaultAddress($memberId);
+                $this->memberAddressRepository->cancelDefaultAddress($memberId);
             }
 
             $addressModel->uid = $memberId;
@@ -155,7 +179,7 @@ class MemberAddressController extends ApiController
      * */
     public function update()
     {
-        $addressModel = MemberAddress::getAddressById(\YunShop::request()->address_id);
+        $addressModel = $this->memberAddressRepository->getAddressById(\YunShop::request()->address_id);
         if (!$addressModel) {
             return $this->errorJson("未找到数据或已删除");
         }
@@ -201,6 +225,9 @@ class MemberAddressController extends ApiController
                 'district'      => \YunShop::request()->district,
                 'address'       => \YunShop::request()->address,
             );
+            if(\Setting::get('shop.trade.is_street')){
+                $requestAddress['street'] = \YunShop::request()->street;
+            }
             $addressModel->fill($requestAddress);
 
             $validator = $addressModel->validator($addressModel->getAttributes());
@@ -208,8 +235,9 @@ class MemberAddressController extends ApiController
                 return $this->errorJson($validator->message());
             }
             if ($addressModel->isdefault) {
+
                 //todo member_id 未附值
-                MemberAddress::cancelDefaultAddress($addressModel->member_id);
+                $this->memberAddressRepository->cancelDefaultAddress(\YunShop::app()->getMemberId());
             }
             if ($addressModel->save()) {
                 return $this->successJson('修改收货地址成功');
@@ -228,12 +256,12 @@ class MemberAddressController extends ApiController
     public function destroy()
     {
         $addressId = \YunShop::request()->address_id;
-        $addressModel = MemberAddress::getAddressById($addressId);
+        $addressModel = $this->memberAddressRepository->getAddressById($addressId);
         if (!$addressModel) {
             return $this->errorJson("未找到数据或已删除");
         }
         //todo 需要考虑删除默认地址选择其他地址改为默认
-        $result = MemberAddress::destroyAddress($addressId);
+        $result = $this->memberAddressRepository->destroyAddress($addressId);
         if ($result) {
             return $this->successJson();
         } else {
@@ -294,8 +322,12 @@ class MemberAddressController extends ApiController
     {
         //member.member-address.get-street
         $districtId = \YunShop::request()->get('district_id');
-
-        $street = Street::getStreetByParentId($districtId);
+        if(\Setting::get('shop.trade.is_street')){
+            // 开启街道设置
+            $street = Street::getStreetByParentId($districtId);
+        }else{
+            $street = [];
+        }
 
         if($street){
             return $this->successJson('获取街道数据成功!', $street);

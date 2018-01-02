@@ -16,11 +16,10 @@ use app\common\events\order\OnPreGenerateOrderCreatingEvent;
 use app\common\exceptions\AppException;
 use app\common\exceptions\ShopException;
 use app\common\models\Address;
-use app\common\models\DispatchType;
-use app\common\models\Order;
 use app\common\models\OrderAddress;
+use app\common\models\Street;
 use app\frontend\modules\member\models\MemberAddress;
-use app\frontend\modules\order\services\OrderService;
+use app\frontend\repositories\MemberAddressRepository;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 
 class Express
@@ -100,7 +99,7 @@ class Express
                 'address.district' => 'required|string',
             ], ['address' => $address]
             );
-            $memberAddress = new MemberAddress($address);
+            $memberAddress = app(MemberAddressRepository::class)->fill($address);
 
             return $memberAddress;
         }
@@ -128,11 +127,22 @@ class Express
         $orderAddress = new OrderAddress();
 
         $orderAddress->order_id = $this->event->getOrderModel()->id;
-        $orderAddress->address = implode(' ', [$member_address->province, $member_address->city, $member_address->district, $member_address->address]);
         $orderAddress->mobile = $member_address->mobile;
         $orderAddress->province_id = Address::where('areaname', $member_address->province)->value('id');
-        $orderAddress->city_id = Address::where('areaname', $member_address->city)->where('parentid',$orderAddress->province_id)->value('id');
-        $orderAddress->district_id = Address::where('areaname', $member_address->district)->where('parentid',$orderAddress->city_id)->value('id');
+        $orderAddress->city_id = Address::where('areaname', $member_address->city)->where('parentid', $orderAddress->province_id)->value('id');
+        $orderAddress->district_id = Address::where('areaname', $member_address->district)->where('parentid', $orderAddress->city_id)->value('id');
+        $orderAddress->address = implode(' ', [$member_address->province, $member_address->city, $member_address->district, $member_address->address]);
+
+        if (isset($member_address->street)) {
+            $orderAddress->street_id = Street::where('areaname', $member_address->street)->where('parentid', $orderAddress->district_id)->value('id');
+            if(!isset($orderAddress->street_id)){
+                throw new ShopException('收货地址有误请重新保存收货地址');
+            }
+            $orderAddress->street = $member_address->street;
+            $orderAddress->address = implode(' ', [$member_address->province, $member_address->city, $member_address->district, $orderAddress->street, $member_address->address]);
+
+        }
+
         $orderAddress->realname = $member_address->username;
         $orderAddress->province = $member_address->province;
         $orderAddress->city = $member_address->city;
