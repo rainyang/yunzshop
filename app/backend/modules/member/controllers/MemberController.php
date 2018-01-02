@@ -535,9 +535,9 @@ class MemberController extends BaseController
 
                 event(new RegisterByAgent($agent_data));
 
-                return response(['status' => 1])->send();
+                response(['status' => 1])->send();
             } else {
-                return response(['status' => 0])->send();
+                response(['status' => 0])->send();
             }
         }
     }

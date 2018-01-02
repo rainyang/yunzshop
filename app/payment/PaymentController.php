@@ -65,12 +65,9 @@ class PaymentController extends BaseController
         $body = !empty($_REQUEST['body']) ? $_REQUEST['body'] : '';
         //区分app支付获取
         if ($_REQUEST['sign_type'] == 'MD5') {
-            $splits = explode(':', $body);
-
-            $uniacid = $splits[1];
+            $uniacid = substr($body, strrpos($body, ':')+1);
         } else {
             $uniacid = $this->substr_var($_REQUEST['body']);
-            $uniacid;
         }
         \Log::debug('body获取unicid', $uniacid);
         if (!empty($uniacid)) {
