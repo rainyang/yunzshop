@@ -8,6 +8,7 @@ use app\common\repositories\OptionRepository;
 use app\common\services\PluginManager;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\MemberWechatModel;
+use app\frontend\repositories\MemberAddressRepository;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
 use Yunshop\AreaDividend\models\AreaDividendAgent;
@@ -72,7 +73,7 @@ class Member extends BackendModel
 
     public function defaultAddress()
     {
-        return $this->hasOne(MemberAddress::class, 'uid', 'uid')->where('isdefault', 1);
+        return $this->hasOne(app(MemberAddressRepository::class)->model(), 'uid', 'uid')->where('isdefault', 1);
     }
 
     /**

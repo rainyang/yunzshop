@@ -9,11 +9,9 @@
 namespace app\common\models;
 
 
-
-class MemberAddress extends BaseModel
+class YzMemberAddress extends BaseModel
 {
-    protected $table = 'mc_member_address';
-    protected $guarded = ['street'];
+    protected $table = 'yz_member_address';
 
     public $timestamps = false;
 

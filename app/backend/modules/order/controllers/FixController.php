@@ -25,10 +25,9 @@ class FixController extends BaseController
         $orders = Order::where(
             [
                 'plugin_id' => 0,
-                'dispatch_type_id' => 0,
                 'is_virtual' => 0,
             ]
-        )->whereIn('status', [0, 1])->get();
+        )->where('id', [534])->get();
         $orders->each(function($order){
 
             $memberAddress = $order->belongsToMember->defaultAddress;
