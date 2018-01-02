@@ -7,6 +7,8 @@ use app\common\models\Address;
 use app\common\models\Order;
 use app\common\models\Setting;
 use app\common\modules\address\services\AddressService;
+use app\common\repositories\MemberAddressRepository;
+use app\frontend\models\Member;
 use app\frontend\modules\payment\orderPayments\BasePayment;
 use Yunshop\StoreCashier\common\models\Store;
 
@@ -22,21 +24,14 @@ class TestController extends ApiController
 
     public function index()
     {
-        $r= Order::find('774');
-        dd($r);
+        $a = app('MemberAddressRepository');
+        dd($a);
         exit;
 
-        exit;
-
-        //->getTablePrefix();
-    }
-
-    public function store()
-    {
-        $order = Order::where('plugin_id', Store::PLUGIN_ID)->first();
-        $paymentTypes = app('PaymentManager')->make('OrderPaymentManager')->getOrderPaymentTypes($order);
+        $paymentTypes = app('PaymentManager')->make('OrderPaymentTypeManager')->getOrderPaymentTypes();
         dd($paymentTypes);
         exit;
+
     }
 
 }

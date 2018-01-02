@@ -39,7 +39,7 @@ class AddressService
                     'n' => $d->areaname,
                     'v' => $d->id,
                 ];
-            })->toArray();
+            })->values()->toArray();
             //$dArr =
             // 城市
             $c['c'] = $ds;
@@ -51,7 +51,7 @@ class AddressService
                     'v' => $c->id,
                     'c' => $c->c,
                 ];
-            })->toArray();
+            })->values()->toArray();
         });
         $result = $provinces->map(function ($p) {
             return [
