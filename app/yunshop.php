@@ -219,7 +219,8 @@ class YunShop
         $plugin_class = new PluginManager(app(), new OptionRepository(), new Dispatcher(), new Filesystem());
         if ($plugin_class->isEnabled('supplier')) {
             if (Schema::hasColumn('yz_supplier', 'uid')) {
-                $res = \Yunshop\Supplier\common\models\Supplier::getSupplierByUid($_W['uid'])->first();
+                $res = \Illuminate\Support\Facades\DB::table('yz_supplier')->where('uid', $_W['uid'])->first();
+                //$res = \Yunshop\Supplier\common\models\Supplier::getSupplierByUid($_W['uid'])->first();
                 if ($res) {
                     return $res;
                 }
