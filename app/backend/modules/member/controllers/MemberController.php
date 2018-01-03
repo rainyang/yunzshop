@@ -81,17 +81,17 @@ class MemberController extends BaseController
                 if ($parames['search']['second_count']) {
 
                     $second_count = $this->getMembersLower($member->member_id,2);
-                    $result_ids = $this->getResultIds($result_ids,$member->member_id,$parames['search']['first_count'],$second_count,$is_added);
+                    $result_ids = $this->getResultIds($result_ids,$member->member_id,$parames['search']['second_count'],$second_count,$is_added);
                     $is_added = false;
                 }
                 if ($parames['search']['third_count']) {
                     $third_count = $this->getMembersLower($member->member_id,3);
-                    $result_ids = $this->getResultIds($result_ids,$member->member_id,$parames['search']['first_count'],$third_count,$is_added);
+                    $result_ids = $this->getResultIds($result_ids,$member->member_id,$parames['search']['third_count'],$third_count,$is_added);
                     $is_added = false;
                 }
                 if ($parames['search']['team_count']) {
                     $team_count = $this->getMemberTeam($member->member_id);
-                    $result_ids = $this->getResultIds($result_ids,$member->member_id,$parames['search']['first_count'],$team_count,$is_added);
+                    $result_ids = $this->getResultIds($result_ids,$member->member_id,$parames['search']['team_count'],$team_count,$is_added);
                 }
 
             }
