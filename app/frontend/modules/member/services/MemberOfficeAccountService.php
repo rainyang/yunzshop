@@ -58,7 +58,7 @@ class MemberOfficeAccountService extends MemberService
                 $authurl = $this->_getAuthUrl($appId, $callback, $state);
             }
         } else {
-            $authurl = $this->_getAuthBaseUrl($appId, $callback, $state);
+            $authurl = $this->_getAuthUrl($appId, $callback, $state);
         }
 
         $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
@@ -75,7 +75,7 @@ class MemberOfficeAccountService extends MemberService
             }
 
             $userinfo = $this->getUserInfo($appId, $appSecret, $token);
-
+\Log::debug('----userinfo----', $userinfo);
             if (is_array($userinfo) && !empty($userinfo['errcode'])) {
                 \Log::debug('微信登陆授权失败');
                 return show_json(-3, '微信登陆授权失败');
