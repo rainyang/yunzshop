@@ -29,7 +29,8 @@ use app\common\helpers\Url;
 use app\common\models\GoodsCategory;
 use app\frontend\modules\coupon\listeners\CouponSend;
 use Setting;
-use Yunshop\VideoDemand\models\CourseGoodsModel;
+use app\common\services\goods\VideoDemandCourseGoods;
+
 
 class GoodsController extends BaseController
 {
@@ -38,9 +39,6 @@ class GoodsController extends BaseController
     private $shoppay;
     //private $goods;
     private $lang = null;
-
-    //视频点播插件设置
-    protected $videoDemand;
 
     public function __construct()
     {
@@ -71,19 +69,12 @@ class GoodsController extends BaseController
 
     public function index()
     {
+        
+        //课程商品id集合
+        $videoDemand = new VideoDemandCourseGoods();
+        $courseGoods_ids = $videoDemand->courseGoodsIds();
 
-        $courseGoods_ids = [];
-        //是否启用视频点播
-        if (app('plugins')->isEnabled('video-demand')) {
-            if ($this->videoDemand['is_video_demand']) {
-                $courseGoods = CourseGoodsModel::getCourseGoodsData();
 
-                foreach ($courseGoods as $value) {
-                    $courseGoods_ids[] = $value['goods_id'];
-                }
-
-            }
-        }
         //增加商品属性搜索
         $product_attr_list = [
             'is_new' => '新品',
