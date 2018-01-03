@@ -35,7 +35,7 @@ class IncomeController extends ApiController
     {
         $status = \YunShop::request()->status;
         $incomeModel = Income::getIncomes()->where('member_id', \YunShop::app()->getMemberId())->get();
-        if ($status >= '0') {
+        if ($status >= 0) {
             $incomeModel = $incomeModel->where('status', $status);
         }
         $config = \Config::get('plugin');
