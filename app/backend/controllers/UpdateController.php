@@ -181,7 +181,7 @@ class UpdateController extends BaseController
 
                 $tmpdir = storage_path('app/public/tmp/'. date('ymd'));
                 if (!is_dir($tmpdir)) {
-                    $filesystem->makeDirectory($tmpdir, '0755', true);
+                    $filesystem->makeDirectory($tmpdir, 0755, true);
                 }
 
                 $ret['files'] = $files;
@@ -248,7 +248,7 @@ class UpdateController extends BaseController
                     $upgrade['files'] = $files;
                     $tmpdir           = storage_path('app/public/tmp/'. date('ymd'));
                     if (!is_dir($tmpdir)) {
-                        $filesystem->makeDirectory($tmpdir, '0755', true);
+                        $filesystem->makeDirectory($tmpdir, 0755, true);
                     }
                     file_put_contents($tmpdir . "/file.txt", json_encode($upgrade));
 
@@ -281,7 +281,7 @@ class UpdateController extends BaseController
                 $save_path = storage_path('app/auto-update/shop') . '/' . $dirpath;
 
                 if (!is_dir($save_path)) {
-                    $filesystem->makeDirectory($save_path, '0755', true);
+                    $filesystem->makeDirectory($save_path, 0755, true);
                 }
 
                 //新建
@@ -304,7 +304,7 @@ class UpdateController extends BaseController
                 $tmpdir           = storage_path('app/public/tmp/'. date('ymd'));
 
                 if (!is_dir($tmpdir)) {
-                    $filesystem->makeDirectory($tmpdir, '0755', true);
+                    $filesystem->makeDirectory($tmpdir, 0755, true);
                 }
 
                 file_put_contents($tmpdir . "/file.txt", json_encode($upgrade));
@@ -316,7 +316,7 @@ class UpdateController extends BaseController
                 $file_dir = dirname($path);
 
                 if (!is_dir(base_path($file_dir))) {
-                    $filesystem->makeDirectory(base_path($file_dir), '0755', true);
+                    $filesystem->makeDirectory(base_path($file_dir), 0755, true);
                 }
 
                 $content = file_get_contents(storage_path('app/auto-update/shop') . '/' . $path);
