@@ -141,6 +141,7 @@ class ListController extends BaseController
                         $item['goods_price'],
                         $item['dispatch_price'],
                         $item['price'],
+                        $this->getGoods($item, 'cost_price'),
                         $item['status_name'],
                         $item['create_time'],
                         !empty(strtotime($item['pay_time']))?$item['pay_time']:'',
@@ -158,7 +159,7 @@ class ListController extends BaseController
 
     private function getColumns()
     {
-        return ["订单编号", "支付单号", "粉丝昵称", "会员姓名", "联系电话", "收货地址", "商品名称", "商品编码", "商品数量", "支付方式", "商品小计", "运费", "应收款", "状态", "下单时间", "付款时间", "发货时间", "完成时间", "快递公司", "快递单号", "订单备注"];
+        return ["订单编号", "支付单号", "粉丝昵称", "会员姓名", "联系电话", "收货地址", "商品名称", "商品编码", "商品数量", "支付方式", "商品小计", "运费", "应收款", "成本价", "状态", "下单时间", "付款时间", "发货时间", "完成时间", "快递公司", "快递单号", "订单备注"];
     }
 
     private function getGoods($order, $key)
@@ -166,6 +167,7 @@ class ListController extends BaseController
         $goods_title = '';
         $goods_sn = '';
         $total = '';
+        $cost_price = 0;
         foreach ($order['has_many_order_goods'] as $goods) {
             $res_title = $goods['title'];
             $res_title = str_replace('-', '，', $res_title);
@@ -181,11 +183,13 @@ class ListController extends BaseController
             $goods_title .= $res_title . '，';
             $goods_sn .= $goods['goods_sn'].'/';
             $total .= $goods['total'].'/';
+            $cost_price += $goods['goods_cost_price'];
         }
         $res = [
             'goods_title' => $goods_title,
             'goods_sn' => $goods_sn,
-            'total' => $total
+            'total' => $total,
+            'cost_price' => $cost_price
         ];
         return $res[$key];
     }
