@@ -116,7 +116,7 @@ class TemplateOrderDispatchPrice
             if ($dispatch) {
                 // 找到匹配的数量数据
                 if ($goods_total > $dispatch['first_piece']) {
-                    $diff = $goods_total - $dispatch['another_piece'];
+                    $diff = $goods_total - $dispatch['first_piece'];
                     $another_piece = $dispatch['another_piece_price'];
                     if ($diff > 0) {
                         $another_piece = ceil($diff / $dispatch['another_piece']) * $dispatch['another_piece_price'];
