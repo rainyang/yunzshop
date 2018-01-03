@@ -6,9 +6,9 @@
 
 namespace app\common\services\goods;
 
-use Setting;
 use Yunshop\VideoDemand\models\CourseGoodsModel;
 use app\common\components\BaseController;
+use Setting;
 
 class VideoDemandCourseGoods extends BaseController
 {   
@@ -30,7 +30,7 @@ class VideoDemandCourseGoods extends BaseController
         $courseGoods_ids = [];
         if (app('plugins')->isEnabled('video-demand')) {
             if ($this->videoDemand['is_video_demand']) {
-                $courseGoods = CourseGoodsModel::getCourseGoodsData();
+                $courseGoods = CourseGoodsModel::getCourseGoodsIdsData()->toArray();
 
                 foreach ($courseGoods as $value) {
                     $courseGoods_ids[] = $value['goods_id'];
