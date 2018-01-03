@@ -57,8 +57,50 @@ class MemberController extends BaseController
             }
         }
 
-        $list = Member::searchMembers($parames)
-            ->orderBy('uid', 'desc')
+        $list = Member::searchMembers($parames);
+
+
+        if ($parames['search']['first_count'] ||
+            $parames['search']['second_count'] ||
+            $parames['search']['third_count'] ||
+            $parames['search']['team_count']
+        ) {
+
+            //set_time_limit(0);
+            $member_ids = MemberShopInfo::uniacid()->select('member_id')->get();
+
+            $result_ids = [];
+            foreach ($member_ids as $key => $member) {
+
+                $is_added = true;
+                if ($parames['search']['first_count']) {
+                    $first_count = $this->getMembersLower($member->member_id,1);
+                    $result_ids = $this->getResultIds($result_ids,$member->member_id,$parames['search']['first_count'],$first_count,$is_added);
+                    $is_added = false;
+                }
+                if ($parames['search']['second_count']) {
+
+                    $second_count = $this->getMembersLower($member->member_id,2);
+                    $result_ids = $this->getResultIds($result_ids,$member->member_id,$parames['search']['second_count'],$second_count,$is_added);
+                    $is_added = false;
+                }
+                if ($parames['search']['third_count']) {
+                    $third_count = $this->getMembersLower($member->member_id,3);
+                    $result_ids = $this->getResultIds($result_ids,$member->member_id,$parames['search']['third_count'],$third_count,$is_added);
+                    $is_added = false;
+                }
+                if ($parames['search']['team_count']) {
+                    $team_count = $this->getMemberTeam($member->member_id);
+                    $result_ids = $this->getResultIds($result_ids,$member->member_id,$parames['search']['team_count'],$team_count,$is_added);
+                }
+
+            }
+            $list = $list->whereIn('uid', $result_ids);
+        }
+
+
+
+        $list = $list->orderBy('uid', 'desc')
             ->paginate($this->pageSize)
             ->toArray();
         $set = \Setting::get('shop.member');
@@ -92,6 +134,61 @@ class MemberController extends BaseController
             'opencommission' => 1
         ])->render();
     }
+
+
+
+    private function getResultIds(array $result_ids, $member_id, $compare, $compared, $is_added)
+    {
+        if ($compare < $compared) {
+            ($is_added && !in_array($member_id, $result_ids)) && $result_ids[] = $member_id;
+        } else {
+            $key = array_search($member_id, $result_ids);
+            $key !== false && array_splice($result_ids,$key,1);
+        }
+        return $result_ids;
+    }
+
+    private function getMembersLower($memberId,$level = '')
+    {
+        $array      = $level ? [$memberId,$level] : [$memberId];
+        $condition  = $level ? ' = ?' : '';
+        return MemberShopInfo::select('member_id')->whereRaw('FIND_IN_SET(?,relation)' . $condition, $array)->count();
+    }
+
+    private function getMemberTeam($memberId)
+    {
+        $first = MemberShopInfo::select('member_id','parent_id')->where('parent_id',$memberId)->get();
+
+        $result_ids = [];
+        if ($first) {
+            foreach($first as $key => $member) {
+                $result_ids[] = $member->member_id;
+                $second = MemberShopInfo::select('member_id','parent_id')->where('parent_id',$member->member_id)->get();
+                if ($second) {
+                    $ids = $this->getMemberTeamRecursion($second);
+                    $result_ids = array_merge($result_ids,$ids);
+                }
+            }
+        }
+
+        return count($result_ids);
+    }
+
+    private function getMemberTeamRecursion($memberIds)
+    {
+        $result_ids = [];
+        foreach($memberIds as $key => $member) {
+            $result_ids[] = $member->member_id;
+            $first = MemberShopInfo::select('member_id','parent_id')->where('parent_id',$member->member_id)->get();
+            if ($first) {
+                $ids = $this->getMemberTeamRecursion($first);
+                $result_ids = array_merge($result_ids,$ids);
+            }
+        }
+
+        return $result_ids;
+    }
+
 
     /**
      * 详情

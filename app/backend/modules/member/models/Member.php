@@ -12,6 +12,12 @@ class Member extends \app\common\models\Member
 {
     static protected $needLog = true;
 
+
+    public function address()
+    {
+        return $this->hasMany('app\backend\modules\member\models\MemberAddress', 'uid', 'uid');
+    }
+
     /**
      * @param $keyWord
      *
