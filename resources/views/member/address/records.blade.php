@@ -34,7 +34,7 @@
                         <th>省份</th>
                         <th>城市</th>
                         <th>区域</th>
-                        <th>街道</th>
+                        <th>详细地址</th>
                     </tr>
                     </thead>
                     <tbody>
