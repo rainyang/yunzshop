@@ -49,13 +49,16 @@ class VideoDemandCourseGoods extends BaseController
      */
     public function isCourse($goods_id)
     {
-        $data = 0;
+
         if (app('plugins')->isEnabled('video-demand')) {
 
             if ($this->videoDemand['is_video_demand']) {
                 $data = CourseGoodsModel::uniacid()->select('is_course')->where('goods_id', $goods_id)->value('is_course');
             }
         }
+
+        $data = $data === null ? 0 : $data;
+
         return $data;
     }
 
