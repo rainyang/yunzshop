@@ -20,7 +20,9 @@ use app\common\models\refund\RefundApply;
 use app\common\services\finance\Withdraw;
 use app\common\services\Pay;
 use app\payment\PaymentController;
-use Illuminate\Support\Facades\DB;
+use app\common\models\OrderGoods;
+use app\common\services\goods\VideoDemandCourseGoods;
+
 
 class AlipayController extends PaymentController
 {
@@ -64,21 +66,28 @@ class AlipayController extends PaymentController
 
     public function returnVideoDemandPlugins($pay_sn)
     {
-        $i = \YunShop::app()->uniacid;
-
         $orderPay = OrderPay::where('pay_sn', $pay_sn)->first();
 
-         $order_goods_id = DB::table('yz_order_goods')->select('goods_id')->whereIn('order_id', $orderPay->order_ids)->get();
-         dd($order_goods_id);
+         $order_goods_id = OrderGoods::uniacid()->select('goods_id')->whereIn('order_id', $orderPay->order_ids)->first();
+
         //视频点播插件支付回调
-        // if (app('plugins')->isEnabled('video-demand')) {
+        $videoDemand = new VideoDemandCourseGoods();
 
-        //     $videoDemand = \Setting::get('plugin.video_demand');
+        $bool = $videoDemand->isCourse($order_goods_id->goods_id);
 
-        //     if ($videoDemand['is_video_demand']) {
+        if ($bool) {
 
-        //     }
-        // }
+            return [
+                'status' => 1,
+                'data' => $order_goods_id->goods_id,
+            ];
+        }
+
+        return [
+            'status' => 0,
+            'data' => '',
+        ];
+
     }
 
     public function returnUrl()
@@ -90,18 +99,14 @@ class AlipayController extends PaymentController
                 if ($_GET['trade_status'] == 'TRADE_SUCCESS') {
                     //视频点播插件支付回调
                     
-                    $this->returnVideoDemandPlugins($_GET['pay_sn']);
+                    $goodsArr = $this->returnVideoDemandPlugins($_GET['pay_sn']);
+                    
+                    if ($goodsArr['status']) {
 
- /*                   if (app('plugins')->isEnabled('video-demand')) {
+                        redirect(Url::absoluteApp('member/courseindex'))->send();
 
-                        $videoDemand = \Setting::get('plugin.video_demand');
+                    }
 
-                        if ($videoDemand['is_video_demand']) {
-                            $_GET['pay_sn']
-
-                            redirect(Url::absoluteApp());
-                        }
-                    }*/
                     redirect(Url::absoluteApp('member/payYes'))->send();
                 } else {
                     redirect(Url::absoluteApp('member/payErr', ['i' => \YunShop::app()->uniacid]))->send();
