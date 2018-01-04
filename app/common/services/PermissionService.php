@@ -28,11 +28,9 @@ class PermissionService
      */
     public static function can($item)
     {
-        /*
         if(!$item){
             return false;
         }
-        */
         if (\Yunshop::isPHPUnit()) {
             return true;
         }
