@@ -21,7 +21,6 @@ use app\common\services\finance\Withdraw;
 use app\common\services\Pay;
 use app\payment\PaymentController;
 use app\common\models\OrderGoods;
-use app\common\services\goods\VideoDemandCourseGoods;
 
 
 class AlipayController extends PaymentController
@@ -64,32 +63,6 @@ class AlipayController extends PaymentController
         }
     }
 
-    public function returnVideoDemandPlugins($pay_sn)
-    {
-        $orderPay = OrderPay::where('pay_sn', $pay_sn)->first();
-
-         $order_goods_id = OrderGoods::uniacid()->select('goods_id')->whereIn('order_id', $orderPay->order_ids)->first();
-
-        //视频点播插件支付回调
-        $videoDemand = new VideoDemandCourseGoods();
-
-        $bool = $videoDemand->isCourse($order_goods_id->goods_id);
-
-        if ($bool) {
-
-            return [
-                'status' => 1,
-                'data' => $order_goods_id->goods_id,
-            ];
-        }
-
-        return [
-            'status' => 0,
-            'data' => '',
-        ];
-
-    }
-
     public function returnUrl()
     {
 
@@ -97,16 +70,7 @@ class AlipayController extends PaymentController
             $verify_result = $this->getSignResult();
             if ($verify_result) {
                 if ($_GET['trade_status'] == 'TRADE_SUCCESS') {
-                    //视频点播插件支付回调
-                    
-                    $goodsArr = $this->returnVideoDemandPlugins($_GET['pay_sn']);
-                    
-                    if ($goodsArr['status']) {
-
-                        redirect(Url::absoluteApp('member/courseindex'))->send();
-
-                    }
-
+                  
                     redirect(Url::absoluteApp('member/payYes'))->send();
                 } else {
                     redirect(Url::absoluteApp('member/payErr', ['i' => \YunShop::app()->uniacid]))->send();
