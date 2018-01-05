@@ -111,7 +111,8 @@ class WechatController extends PaymentController
             //视频插件回调
             $goodsArr = $this->returnVideoDemandPlugins(\YunShop::request()->outtradeno);
             if ($goodsArr['status']) {
-                redirect(Url::absoluteApp('member/courseindex'))->send();
+                \Log::debug('跳转成功');
+                redirect(Url::absoluteApp('member/courseindex', ['i' => \YunShop::app()->uniacid]))->send();
 
             }
             //
