@@ -1289,7 +1289,7 @@ return [
             ],
             'refund_list_refund' => [
                 'name'              => '退换货订单',
-                'url'               => 'refund.list',
+                'url'               => 'refund.list.index',
                 'url_params'        => '',
                 'permit'            => 1,
                 'menu'              => 1,
