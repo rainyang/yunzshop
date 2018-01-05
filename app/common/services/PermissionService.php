@@ -28,9 +28,9 @@ class PermissionService
      */
     public static function can($item)
     {
-        if(!$item){
+        /*if(!$item){
             return false;
-        }
+        }*/
         if (\Yunshop::isPHPUnit()) {
             return true;
         }
@@ -76,7 +76,7 @@ class PermissionService
 
     public static function founderPermission()
     {
-        return ['plugins','plugins_enable','plugins_disable','plugins_manage','plugins_delete','plugins_update','shop_upgrade'];
+        return ['founder_plugins','plugins_enable','plugins_disable','plugins_manage','plugins_delete','plugins_update','shop_upgrade'];
     }
 
     /**

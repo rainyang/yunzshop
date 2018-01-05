@@ -83,6 +83,7 @@
                                                 @endif>{{$item['title']}}</option>
                                     @endforeach
                                 </select>
+                                <div class="help-block">通知公众平台模板消息编号: OPENTM207509450</div>
                             </div>
                         </div>
                     </div>
@@ -108,6 +109,7 @@
                                                 @endif>{{$item['title']}}</option>
                                     @endforeach
                                 </select>
+                                <div class="help-block">通知公众平台模板消息编号: OPENTM401833445</div>
                             </div>
                         </div>
                     </div>
@@ -153,6 +155,7 @@
                                                 @endif>{{$item['title']}}</option>
                                     @endforeach
                                 </select>
+                                <div class="help-block">通知公众平台模板消息编号: OPENTM207525131</div>
                             </div>
                         </div>
 
@@ -173,6 +176,7 @@
                                                 @endif>{{$item['title']}}</option>
                                     @endforeach
                                 </select>
+                                <div class="help-block">通知公众平台模板消息编号: OPENTM413711838</div>
                             </div>
                         </div>
 
@@ -274,7 +278,7 @@
                                     <input type='radio' name='notice[other_toggle]' value='0'
                                            @if (empty($set['other_toggle'])) checked @endif />
                                     关闭</label>
-                                <div class="help-block">开启：会员可以收到一级、二级下线下单、付款、发货、收货通知（使用任务处理通知）</div>
+                                <div class="help-block">开启：会员可以收到一级、二级下线下单、付款、发货、收货通知（使用任务处理通知）建议使用业务处理通知模板消息编号: OPENTM207574677</div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -341,7 +345,7 @@
                                                     @endif>{{$item['title']}}</option>
                                         @endforeach
                                     </select>
-                                    <div class="help-block">通知公众平台模板消息编号: TM00850</div>
+                                    <div class="help-block">通知公众平台模板消息编号: OPENTM412815063</div>
                                 </div>
                             </div>
                         @endif
@@ -385,7 +389,7 @@
                                                     @endif>{{$item['title']}}</option>
                                         @endforeach
                                     </select>
-                                    <div class="help-block">通知公众平台模板消息编号: OPENTM202243318</div>
+                                    <div class="help-block">通知公众平台模板消息编号: OPENTM413713493</div>
                                 </div>
                             </div>
                         @endif
@@ -407,7 +411,7 @@
                                                     @endif>{{$item['title']}}</option>
                                         @endforeach
                                     </select>
-                                    <div class="help-block">通知公众平台模板消息编号: OPENTM202314085</div>
+                                    <div class="help-block">通知公众平台模板消息编号: OPENTM411450578</div>
                                 </div>
                             </div>
                         @endif
@@ -495,7 +499,7 @@
                                                     @endif>{{$item['title']}}</option>
                                         @endforeach
                                     </select>
-                                    <div class="help-block">通知公众平台模板消息编号: OPENTM200605630</div>
+                                    <div class="help-block">通知公众平台模板消息编号: OPENTM400341556</div>
                                 </div>
                             </div>
                         @endif

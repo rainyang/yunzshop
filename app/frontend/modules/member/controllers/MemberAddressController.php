@@ -135,7 +135,7 @@ class MemberAddressController extends ApiController
                 'username'  => \YunShop::request()->username,
                 'mobile'    => \YunShop::request()->mobile,
                 'zipcode'   => '',
-                'isdefault' => \YunShop::request()->isdefault,
+                'isdefault' => \YunShop::request()->isdefault?:0,
                 'province'  => \YunShop::request()->province,
                 'city'      => \YunShop::request()->city,
                 'district'  => \YunShop::request()->district,

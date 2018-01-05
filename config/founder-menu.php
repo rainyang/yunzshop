@@ -8,7 +8,7 @@
  ****************************************************************/
 
 return [
-    'plugins'       => [
+    'founder_plugins'       => [
         'name'          => '插件管理',
         'url'           => 'plugins.get-plugin-data',
         'url_params'    => '',
