@@ -14,7 +14,7 @@ use app\common\models\Order;
 use app\common\requests\Request;
 use app\frontend\models\OrderAddress;
 use Yunshop\StoreCashier\common\models\StoreDelivery;
-
+use app\frontend\modules\order\services\VideoDemandOrderGoodsService;
 
 class DetailController extends ApiController
 {
@@ -49,6 +49,14 @@ class DetailController extends ApiController
         if (!$order) {
             return $this->errorJson($msg = '未找到数据', []);
         } else {
+
+            //视频点播
+            if (VideoDemandOrderGoodsService::whetherEnabled()) {
+                foreach ($data['has_many_order_goods'] as &$value) {
+                    $value['is_course'] = VideoDemandOrderGoodsService::whetherCourse($value['goods_id']);
+                }
+            }
+            
             return $this->successJson($msg = 'ok', $data);
         }
 
