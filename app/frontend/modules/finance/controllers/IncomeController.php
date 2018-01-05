@@ -35,9 +35,8 @@ class IncomeController extends ApiController
     {
         //todo 为了获取一个数据重复调用此方法，效率地下，需要重构 2018-01-05-YITIAN
         $status = \YunShop::request()->status;
-        empty($status) && $status = 0;
         $incomeModel = Income::getIncomes()->where('member_id', \YunShop::app()->getMemberId())->get();
-        if ($status >= 0) {
+        if ($status !== null) {
             $incomeModel = $incomeModel->where('status', $status);
         }
         $config = \Config::get('plugin');
