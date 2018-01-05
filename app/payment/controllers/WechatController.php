@@ -16,7 +16,6 @@ use app\common\services\Pay;
 use app\payment\PaymentController;
 use EasyWeChat\Foundation\Application;
 use app\common\models\OrderGoods;
-use app\common\services\goods\VideoDemandCourseGoods;
 
 
 class WechatController extends PaymentController
@@ -66,38 +65,6 @@ class WechatController extends PaymentController
         }
     }
 
-    /**
-     * 视频点播插件支付判断回调
-     * @param  [type] $pay_sn [description]
-     * @return [type]         [description]
-     */
-    public function returnVideoDemandPlugins($pay_sn)
-    {
-        $orderPay = OrderPay::where('pay_sn', $pay_sn)->first();
-
-         $order_goods_id = OrderGoods::uniacid()->select('goods_id')->whereIn('order_id', $orderPay->order_ids)->first();
-
-        //视频点播插件支付回调
-        $videoDemand = new VideoDemandCourseGoods();
-
-        $bool = $videoDemand->isCourse($order_goods_id->goods_id);
-
-        if ($bool) {
-
-            return [
-                'status' => 1,
-                'data' => $order_goods_id->goods_id,
-            ];
-        }
-
-        return [
-            'status' => 0,
-            'data' => '',
-        ];
-
-    }
-
-
 
     public function returnUrl()
     {
@@ -108,14 +75,6 @@ class WechatController extends PaymentController
                 redirect(Url::absoluteApp('home'))->send();
             }
 
-            //视频插件回调
-            $goodsArr = $this->returnVideoDemandPlugins(\YunShop::request()->outtradeno);
-            if ($goodsArr['status']) {
-                \Log::debug('跳转成功');
-                redirect(Url::absoluteApp('member/courseindex', ['i' => \YunShop::app()->uniacid]))->send();
-
-            }
-            //
             if ($orders->count() > 1) {
                 redirect(Url::absoluteApp('member/orderlist/', ['i' => \YunShop::app()->uniacid]))->send();
             } else {
