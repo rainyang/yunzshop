@@ -579,7 +579,7 @@ class MemberModel extends Member
                 $builder = MemberModel::getMyAllAgentsInfo(\YunShop::app()->getMemberId(), $i);
                 $agent_info = self::getMemberRole($builder)->get();
 
-                $agent_data = self::fetchAgentInfo($agent_info->toArray());
+                $agent_data = $agent_info->toArray();
 
                 $total += count($agent_data);
 
@@ -620,6 +620,7 @@ class MemberModel extends Member
         $i = \YunShop::request()->relationLevel ?: 0;
 
         $builder = MemberModel::getMyAllAgentsInfoBySearch(\YunShop::app()->getMemberId(), $i, $keyword, $level);
+
         $agent_info = self::getMemberRole($builder)->paginate($pageSize);
 
         $agent_data = self::fetchAgentInfo($agent_info->items());

@@ -75,9 +75,7 @@ class YunShop
             //兼容旧插件使用
             $menuList = array_merge($menuList, (array)Config::get($menu_array['old_plugin_menu']));
 
-            if (PermissionService::isFounder()) {
-                $menuList['system']['child'] = array_merge($menuList['system']['child'], (array)Config::get($menu_array['founder_menu']));
-            }
+            $menuList['system']['child'] = array_merge($menuList['system']['child'], (array)Config::get($menu_array['founder_menu']));
 
             Config::set('menu', $menuList);
 
