@@ -95,9 +95,10 @@ class OtherMessageService
         if (isset($this->memberModel->yzMember) && $this->memberModel->yzMember->parent_id) {
             \Log::info('二级消息通知,一级消息通过');
 
-            $params[] = ['name' => '下级层级', 'value' => '一级'];
+            $params_first = $params;
+            $params_first[] = ['name' => '下级层级', 'value' => '一级'];
 
-            $msg = MessageTemp::getSendMsg($template_id, $params);
+            $msg = MessageTemp::getSendMsg($template_id, $params_first);
             if (!$msg) {
                 return;
             }
@@ -109,9 +110,10 @@ class OtherMessageService
         if (isset($twoSuperior->yzMember) && $twoSuperior->yzMember->parent_id) {
             \Log::info('二级消息通知,二级消息通过');
 
-            $params[] = ['name' => '下级层级', 'value' => '二级'];
+            $params_second = $params;
+            $params_second[] = ['name' => '下级层级', 'value' => '二级'];
 
-            $msg = MessageTemp::getSendMsg($template_id, $params);
+            $msg = MessageTemp::getSendMsg($template_id, $params_second);
             if (!$msg) {
                 return;
             }
