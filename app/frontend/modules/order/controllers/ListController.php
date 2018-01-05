@@ -6,6 +6,7 @@ use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\frontend\models\Order;
 use app\frontend\models\OrderListModel;
+use app\frontend\modules\order\services\VideoDemandOrderGoodsService;
 
 class ListController extends ApiController
 {
@@ -39,7 +40,18 @@ class ListController extends ApiController
     {
         $pageSize = \YunShop::request()->pagesize;
         $pageSize = $pageSize ? $pageSize : 20;
-        return $this->getOrder()->paginate($pageSize)->toArray();
+        $data = $this->getOrder()->paginate($pageSize)->toArray();
+
+        //视频点播
+        if (VideoDemandOrderGoodsService::whetherEnabled()) {
+            foreach ($data['data'] as &$orderCourse) {
+                foreach ($orderCourse['has_many_order_goods'] as &$value) {
+                    $value['is_course'] = VideoDemandOrderGoodsService::whetherCourse($value['goods_id']);
+                }
+            }
+        }
+
+        return $data;
     }
 
     /**
@@ -48,6 +60,7 @@ class ListController extends ApiController
      */
     public function index()
     {
+
         return $this->successJson($msg = 'ok', $data = $this->getData());
 
     }
