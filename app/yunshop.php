@@ -84,7 +84,7 @@ class YunShop
             $item = Menu::getCurrentItemByRoute($controller->route, $menuList);
             //dd($controller->route);
             self::$currentItems = array_merge(Menu::getCurrentMenuParents($item, $menuList), [$item]);
-//dd(self::$currentItems);
+// dd(self::$currentItems);
             Config::set('currentMenuItem', $item);
             //dd($item);exit;
             //检测权限
