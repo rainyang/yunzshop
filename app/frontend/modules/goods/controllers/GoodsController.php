@@ -127,7 +127,7 @@ class GoodsController extends ApiController
         
         if ($requestSearch) {
             $requestSearch = array_filter($requestSearch, function ($item) {
-                return !empty($item) && $item !== 0;
+                return !empty($item) && $item !== 0 && $item !== "undefined ";
             });
 
             $categorySearch = array_filter(\YunShop::request()->category, function ($item) {
