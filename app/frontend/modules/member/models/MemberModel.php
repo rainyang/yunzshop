@@ -412,7 +412,7 @@ class MemberModel extends Member
 
         if (!empty($member_info)) {
             if (isset($set) && $set['headimg']) {
-                $avatar = replace_yunshop(tomedia($set['headimg']));
+                $avatar = replace_yunshop(yz_tomedia($set['headimg']));
             } else {
                 $avatar = Url::shopUrl('static/images/photo-mr.jpg');
             }
