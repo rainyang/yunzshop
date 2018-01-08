@@ -314,17 +314,21 @@ class OrderService
 
         //视频点播商品
         if (app('plugins')->isEnabled('video-demand')) {
-            $course = \Yunshop\VideoDemand\models\CourseGoodsModel::checkCourse($orderOperation->goods_id, 1)->first();
+            $goods_id = $orderOperation->hasManyOrderGoods[0]->goods_id;
 
-            if (!is_null($course)) {
-                $orderOperation->dispatch_type_id = 0;
-                $orderOperation->save();
+            if ($goods_id) {
+                $course = \Yunshop\VideoDemand\models\CourseGoodsModel::checkCourse($goods_id, 1)->first();
 
-                self::orderSend(['order_id' => $orderOperation->id]);
-                $result = self::orderReceive(['order_id' => $orderOperation->id]);
+                if (!is_null($course)) {
+                    $orderOperation->dispatch_type_id = 0;
+                    $orderOperation->save();
+
+                    self::orderSend(['order_id' => $orderOperation->id]);
+                    $result = self::orderReceive(['order_id' => $orderOperation->id]);
+                }
             }
         }
-        
+
         return $result;
     }
 
