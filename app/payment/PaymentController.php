@@ -167,6 +167,14 @@ class PaymentController extends BaseController
                     ]));
                 }
                 break;
+            case "dashang_charge.succeeded":
+                \Log::debug('打赏支付操作', ['card_charge.succeeded']);
+                event(new ChargeComplatedEvent([
+                    'order_sn' => $data['out_trade_no'],
+                    'pay_sn' => '',
+                    'unit' => 'fen',
+                    'total_fee' => $data['total_fee']
+                ]));
         }
     }
 
@@ -189,6 +197,8 @@ class PaymentController extends BaseController
                 return 'gold_recharge.succeeded';
             } elseif ('CI' == strtoupper($tag)) {
                 return 'card_charge.succeeded';
+            } elseif ('DS' == strtoupper($tag)) {
+                return 'dashang_charge.succeeded';
             }
         }
 
