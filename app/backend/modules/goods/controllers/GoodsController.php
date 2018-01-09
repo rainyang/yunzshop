@@ -29,6 +29,7 @@ use app\common\helpers\Url;
 use app\common\models\GoodsCategory;
 use app\frontend\modules\coupon\listeners\CouponSend;
 use Setting;
+use app\common\services\goods\VideoDemandCourseGoods;
 
 
 class GoodsController extends BaseController
@@ -63,10 +64,16 @@ class GoodsController extends BaseController
         $this->goods_id = (int)\YunShop::request()->id;
         $this->shopset = Setting::get('shop.category');
         //$this->init();
+        $this->videoDemand = Setting::get('plugin.video_demand');
     }
 
     public function index()
     {
+        
+        //课程商品id集合
+        $videoDemand = new VideoDemandCourseGoods();
+        $courseGoods_ids = $videoDemand->courseGoodsIds();
+
 
         //增加商品属性搜索
         $product_attr_list = [
@@ -112,6 +119,8 @@ class GoodsController extends BaseController
         return view('goods.index', [
             'list' => $list,
             'pager' => $pager,
+            //课程商品id
+            'courseGoods_ids' => $courseGoods_ids,
             //'status' => $status,
             'brands' => $brands,
             'requestSearch' => $requestSearch,
