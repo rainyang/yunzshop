@@ -23,7 +23,6 @@ class PaymentController extends BaseController
 {
     public function __construct()
     {
-        \Log::debug('-----芸支付-------', $_POST);
         parent::__construct();
 
         $this->init();
@@ -175,6 +174,7 @@ class PaymentController extends BaseController
                     'unit' => 'fen',
                     'total_fee' => $data['total_fee']
                 ]));
+                break;
         }
     }
 
