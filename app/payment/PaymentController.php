@@ -171,7 +171,7 @@ class PaymentController extends BaseController
                 event(new ChargeComplatedEvent([
                     'order_sn' => $data['out_trade_no'],
                     'pay_sn' => '',
-                    'unit' => 'fen',
+                    'unit' => $data['unit'],
                     'total_fee' => $data['total_fee']
                 ]));
                 break;
