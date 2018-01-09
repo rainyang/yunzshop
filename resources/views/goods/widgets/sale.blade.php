@@ -169,7 +169,7 @@
                     ×
                 </button>
                 <h3>选择商品</h3></div>
-            <div class="modal-body">
+            <div class="modal-body" style="height: 600px">
                 <div class="row">
                     <div class="input-group">
                         <input type="text" class="form-control" name="keyword" value=""
