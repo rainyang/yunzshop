@@ -167,7 +167,7 @@ class PaymentController extends BaseController
                 }
                 break;
             case "dashang_charge.succeeded":
-                \Log::debug('打赏支付操作', ['card_charge.succeeded']);
+                \Log::debug('打赏支付操作', ['dashang_charge.succeeded']);
                 event(new ChargeComplatedEvent([
                     'order_sn' => $data['out_trade_no'],
                     'pay_sn' => '',
