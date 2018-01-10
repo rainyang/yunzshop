@@ -11,6 +11,8 @@ use app\common\models\GoodsCategory;
 use app\common\models\GoodsSpecItem;
 use app\frontend\modules\goods\services\GoodsService;
 use Illuminate\Support\Facades\DB;
+use app\common\services\goods\SaleGoods;
+use app\common\services\goods\VideoDemandCourseGoods;
 
 /**
  * Created by PhpStorm.
@@ -103,8 +105,16 @@ class GoodsController extends ApiController
         }
         $this->setGoodsPluginsRelations($goodsModel);
 
+        //该商品下的推广
+        $goodsModel->show_push = SaleGoods::getPushGoods($id);
+
         //销量等于虚拟销量加真实销量
         $goodsModel->show_sales += $goodsModel->virtual_sales;
+
+        //判断该商品是否是视频插件商品
+        $videoDemand = new VideoDemandCourseGoods();
+        $goodsModel->is_course = $videoDemand->isCourse($id);
+
 
         //return $this->successJson($goodsModel);
         return $this->successJson('成功', $goodsModel);

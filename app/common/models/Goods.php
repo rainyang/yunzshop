@@ -347,6 +347,16 @@ class Goods extends BaseModel
         return $this->type == self::REAL_GOODS;
     }
 
+    /**
+     * 推广商品
+     * @param  [array] $goodsIds [商品id组]
+     * @return [array]           [推广的商品数据]
+     */
+    public static function getPushGoods($goodsIds)
+    {
+        return self::select('id','title','thumb','price')->whereIn('id', $goodsIds)->where('status', 1)->get()->toArray();
+    }
+
     public static function boot()
     {
         parent::boot();

@@ -16,6 +16,7 @@ use app\common\exceptions\AppException;
 use app\common\models\Order;
 
 use app\common\models\order\OrderGoodsChangePriceLog;
+use app\common\models\OrderGoods;
 use app\common\models\UniAccount;
 use \app\frontend\models\MemberCart;
 use app\frontend\modules\member\services\MemberService;
@@ -310,6 +311,24 @@ class OrderService
             // 不需要发货的物品直接改为待收货
             self::orderSend(['order_id' => $orderOperation->id]);
         }
+
+        //视频点播商品
+        if (app('plugins')->isEnabled('video-demand')) {
+            $goods_id = $orderOperation->hasManyOrderGoods[0]->goods_id;
+
+            if ($goods_id) {
+                $course = \Yunshop\VideoDemand\models\CourseGoodsModel::checkCourse($goods_id, 1)->first();
+
+                if (!is_null($course)) {
+                    $orderOperation->dispatch_type_id = 0;
+                    $orderOperation->save();
+
+                    self::orderSend(['order_id' => $orderOperation->id]);
+                    $result = self::orderReceive(['order_id' => $orderOperation->id]);
+                }
+            }
+        }
+
         return $result;
     }
 
