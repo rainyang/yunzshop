@@ -33,9 +33,10 @@ class IncomeController extends ApiController
      */
     public function getIncomeCount()
     {
+        //todo 为了获取一个数据重复调用此方法，效率地下，需要重构 2018-01-05-YITIAN
         $status = \YunShop::request()->status;
         $incomeModel = Income::getIncomes()->where('member_id', \YunShop::app()->getMemberId())->get();
-        if ($status >= '0') {
+        if ($status !== null && $status >= '0') {
             $incomeModel = $incomeModel->where('status', $status);
         }
         $config = \Config::get('plugin');
