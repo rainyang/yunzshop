@@ -20,6 +20,8 @@ use app\common\models\refund\RefundApply;
 use app\common\services\finance\Withdraw;
 use app\common\services\Pay;
 use app\payment\PaymentController;
+use app\common\models\OrderGoods;
+
 
 class AlipayController extends PaymentController
 {
@@ -68,6 +70,7 @@ class AlipayController extends PaymentController
             $verify_result = $this->getSignResult();
             if ($verify_result) {
                 if ($_GET['trade_status'] == 'TRADE_SUCCESS') {
+                  
                     redirect(Url::absoluteApp('member/payYes'))->send();
                 } else {
                     redirect(Url::absoluteApp('member/payErr', ['i' => \YunShop::app()->uniacid]))->send();

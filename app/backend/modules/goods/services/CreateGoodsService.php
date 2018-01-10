@@ -40,6 +40,8 @@ class CreateGoodsService
         $this->brands = Brand::getBrands()->get();
 
         if ($goods_data) {
+            // dd($this->request);
+
             if ($this->type == 1) {
                 $goods_data['status'] = 0;
             }

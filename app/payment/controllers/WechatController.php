@@ -15,6 +15,7 @@ use app\common\models\OrderPay;
 use app\common\services\Pay;
 use app\payment\PaymentController;
 use EasyWeChat\Foundation\Application;
+use app\common\models\OrderGoods;
 
 
 class WechatController extends PaymentController
@@ -64,6 +65,7 @@ class WechatController extends PaymentController
         }
     }
 
+
     public function returnUrl()
     {
         if (\YunShop::request()->outtradeno) {
@@ -72,6 +74,7 @@ class WechatController extends PaymentController
             if (is_null($orderPay)) {
                 redirect(Url::absoluteApp('home'))->send();
             }
+
             if ($orders->count() > 1) {
                 redirect(Url::absoluteApp('member/orderlist/', ['i' => \YunShop::app()->uniacid]))->send();
             } else {
