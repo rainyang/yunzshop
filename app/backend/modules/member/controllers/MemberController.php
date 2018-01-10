@@ -309,7 +309,7 @@ class MemberController extends BaseController
                     event(new MemberRelationEvent($member));
                 }
 
-                return $this->message("用户资料更新成功", yzWebUrl('member.member.detail', ['id' => $uid]));
+                return $this->message("用户资料更新成功", yzWebUrl('member.member.index'));
             }
         }
         return $this->message("用户资料更新失败", yzWebUrl('member.member.detail', ['id' => $uid]),'error');
