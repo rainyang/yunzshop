@@ -28,4 +28,10 @@ class MemberUnique extends BaseModel
             ->where('member_id', $id)
             ->delete();
     }
+
+    public static function  getMemberInfoById($unionid)
+    {
+        return self::uniacid()
+            ->where('unionid', $unionid);
+    }
 }
