@@ -257,9 +257,20 @@
                                                    onclick="return confirm('{{$delete_msg}}');
                                                            return false;" class="" title="删除">删除</a>
 
-                                                <a href="javascript:;"
-                                                   data-clipboard-text="{{yzAppFullUrl('goods/'.$item['id'])}}" data-url="{{yzAppFullUrl('goods/'.$item['id'])}}"
-                                                   title="复制连接" class="js-clip">复制链接</a>
+                                                @if (empty($courseGoods_ids))
+                                                    <a href="javascript:;"
+                                                    data-clipboard-text="{{yzAppFullUrl('goods/'.$item['id'])}}" data-url="{{yzAppFullUrl('goods/'.$item['id'])}}"
+                                                    title="复制连接" class="js-clip">复制链接</a>
+                                                @elseif (in_array($item['id'], $courseGoods_ids))
+                                                    <a href="javascript:;"
+                                                    data-clipboard-text="{{yzAppFullUrl('member/coursedetail/'.$item['id'])}}" data-url="{{yzAppFullUrl('member/coursedetail/'.$item['id'])}}"
+                                                    title="复制连接" class="js-clip">复制链接</a>
+                                                @else 
+                                                    <a href="javascript:;"
+                                                    data-clipboard-text="{{yzAppFullUrl('goods/'.$item['id'])}}" data-url="{{yzAppFullUrl('goods/'.$item['id'])}}"
+                                                    title="复制连接" class="js-clip">复制链接</a>
+
+                                                @endif
                                             </div>
                                             <div>
                                                 <label data='{{$item['is_new']}}'

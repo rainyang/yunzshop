@@ -23,7 +23,6 @@ class PaymentController extends BaseController
 {
     public function __construct()
     {
-        \Log::debug('-----芸支付-------', $_POST);
         parent::__construct();
 
         $this->init();
@@ -167,6 +166,15 @@ class PaymentController extends BaseController
                     ]));
                 }
                 break;
+            case "dashang_charge.succeeded":
+                \Log::debug('打赏支付操作', ['dashang_charge.succeeded']);
+                event(new ChargeComplatedEvent([
+                    'order_sn' => $data['out_trade_no'],
+                    'pay_sn' => '',
+                    'unit' => $data['unit'],
+                    'total_fee' => $data['total_fee']
+                ]));
+                break;
         }
     }
 
@@ -189,6 +197,8 @@ class PaymentController extends BaseController
                 return 'gold_recharge.succeeded';
             } elseif ('CI' == strtoupper($tag)) {
                 return 'card_charge.succeeded';
+            } elseif ('DS' == strtoupper($tag)) {
+                return 'dashang_charge.succeeded';
             }
         }
 

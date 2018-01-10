@@ -102,6 +102,7 @@ class Category extends \app\common\models\Category
     {
         return [
             'name' => '分类名称',
+            'display_order' => '排序',
         ];
     }
 
@@ -118,6 +119,7 @@ class Category extends \app\common\models\Category
                 ->where('parent_id', $this->parent_id)
                 ->where('plugin_id', 0)
                 ->where('deleted_at', null)],
+            'display_order' => ['required','integer'],
         ];
     }
 
