@@ -184,7 +184,7 @@ class ShopController extends BaseController
         $notice = Setting::get('shop.notice');
 //        $salers = []; //订单通知的商家列表,数据如何取待定?
         //$new_type = []; //通知方式的数组,数据如何来的待定?
-        $requestModel = \YunShop::request()->notice;
+        $requestModel = \YunShop::request()->yz_notice;
 
         $temp_list = MessageTemp::select('id', 'title')->get();
 
