@@ -486,6 +486,7 @@ class UpdateController extends BaseController
                 }
             }
 
+            $pay['secret'] = 1;
             \Setting::set('shop.pay', $pay);
         }
     }
