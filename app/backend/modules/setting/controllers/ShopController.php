@@ -14,6 +14,7 @@ use app\common\facades\Setting;
 use app\common\models\AccountWechats;
 use app\common\models\notice\MessageTemp;
 use app\common\services\MyLink;
+use app\common\services\Utils;
 use Yunshop\Diyform\models\DiyformTypeModel;
 
 class ShopController extends BaseController
@@ -259,6 +260,10 @@ class ShopController extends BaseController
                 $requestModel = array_merge($requestModel, $updatefile['data']);
             }
 
+            if (isset($pay['secret']) && 1 == $pay['secret']) {
+                Utils::dataEncrypt($requestModel);
+            }
+
             if (Setting::set('shop.pay', $requestModel)) {
                 $this->setAlipayParams($requestModel);
                 return $this->message('支付方式设置成功', Url::absoluteWeb('setting.shop.pay'));
@@ -266,6 +271,11 @@ class ShopController extends BaseController
                 $this->error('支付方式设置失败');
             }
         }
+
+        if (isset($pay['secret']) && 1 == $pay['secret']) {
+            Utils::dataDecrypt($pay);
+        }
+
         return view('setting.shop.pay', [
             'set' => $pay,
             'data' => $data
