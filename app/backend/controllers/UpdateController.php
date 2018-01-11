@@ -11,6 +11,7 @@ namespace app\backend\controllers;
 use app\common\components\BaseController;
 use app\common\facades\Option;
 use app\common\facades\Setting;
+use app\common\models\UniAccount;
 use app\common\services\AutoUpdate;
 use Illuminate\Filesystem\Filesystem;
 
@@ -469,25 +470,36 @@ class UpdateController extends BaseController
 
     private function dataSecret()
     {
-        $pay = \Setting::get('shop.pay');
+        $uniAccount = UniAccount::get();
 
-        if (!isset($pay['secret'])) {
-            foreach ($pay as $key => &$val) {
-                if (!empty($val)) {
-                    switch ($key) {
-                        case 'alipay_app_id':
-                        case 'rsa_private_key':
-                        case 'rsa_public_key':
-                        case 'alipay_number':
-                        case 'alipay_name':
-                            $val = encrypt($val);
-                            break;
+        foreach ($uniAccount as $u) {
+            \YunShop::app()->uniacid = $u->uniacid;
+            \Setting::$uniqueAccountId = $u->uniacid;
+
+            $pay = \Setting::get('shop.pay');
+
+            if (!isset($pay['secret'])) {
+                foreach ($pay as $key => &$val) {
+                    if (!empty($val)) {
+                        switch ($key) {
+                            case 'alipay_app_id':
+                            case 'rsa_private_key':
+                            case 'rsa_public_key':
+                            case 'alipay_number':
+                            case 'alipay_name':
+                                $val = encrypt($val);
+                                break;
+                        }
                     }
                 }
-            }
 
-            $pay['secret'] = 1;
-            \Setting::set('shop.pay', $pay);
+                $pay['secret'] = 1;
+                \Setting::set('shop.pay', $pay);
+            }
         }
+
+
+
+
     }
 }
