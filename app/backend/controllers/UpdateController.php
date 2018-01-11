@@ -23,6 +23,8 @@ class UpdateController extends BaseController
 
         //删除非法文件
         $this->deleteFile();
+        //修复支付宝提现数据加密
+        $this->dataSecret();
 
         $key = Setting::get('shop.key')['key'];
         $secret = Setting::get('shop.key')['secret'];
@@ -462,6 +464,29 @@ class UpdateController extends BaseController
                     }
                 }
             }
+        }
+    }
+
+    private function dataSecret()
+    {
+        $pay = \Setting::get('shop.pay');
+
+        if (!isset($pay['secret'])) {
+            foreach ($pay as $key => &$val) {
+                if (!empty($val)) {
+                    switch ($key) {
+                        case 'alipay_app_id':
+                        case 'rsa_private_key':
+                        case 'rsa_public_key':
+                        case 'alipay_number':
+                        case 'alipay_name':
+                            $val = encrypt($val);
+                            break;
+                    }
+                }
+            }
+
+            \Setting::set('shop.pay', $pay);
         }
     }
 }
