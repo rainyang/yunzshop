@@ -263,4 +263,38 @@ class Utils
             return false;
         }
     }
+
+    public static function dataEncrypt(&$data)
+    {
+        foreach ($data as $key => &$val) {
+            if (!empty($val)) {
+                switch ($key) {
+                    case 'alipay_app_id':
+                    case 'rsa_private_key':
+                    case 'rsa_public_key':
+                    case 'alipay_number':
+                    case 'alipay_name':
+                        $val = encrypt($val);
+                        break;
+                }
+            }
+        }
+    }
+
+    public static function dataDecrypt(&$data)
+    {
+        foreach ($data as $key => &$val) {
+            if (!empty($val)) {
+                switch ($key) {
+                    case 'alipay_app_id':
+                    case 'rsa_private_key':
+                    case 'rsa_public_key':
+                    case 'alipay_number':
+                    case 'alipay_name':
+                        $val = decrypt($val);
+                        break;
+                }
+            }
+        }
+    }
 }
