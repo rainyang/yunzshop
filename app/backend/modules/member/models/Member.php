@@ -101,6 +101,37 @@ class Member extends \app\common\models\Member
     }
 
     /**
+     * 获取会员基本信息
+     *
+     * @param $id
+     * @return mixed
+     */
+    public static function getMemberBaseInfoById($id)
+    {
+        return self::select(['uid', 'avatar', 'nickname', 'realname', 'mobile', 'createtime',
+            'credit1', 'credit2'])
+            ->uniacid()
+            ->where('uid', $id)
+            ->whereHas('yzMember', function ($query) {
+                $query->whereNull('deleted_at');
+            })
+            ->with(['yzMember' => function ($query) {
+                return $query->select(['member_id', 'parent_id', 'is_agent', 'group_id', 'level_id', 'is_black', 'alipayname', 'alipay', 'content', 'status', 'custom_value', 'validity', 'member_form', 'withdraw_mobile','wechat'])->where('is_black', 0)
+                    ->with(['group' => function ($query1) {
+                        return $query1->select(['id', 'group_name']);
+                    }, 'level' => function ($query2) {
+                        return $query2->select(['id', 'level', 'level_name']);
+                    }, 'agent' => function ($query3) {
+                        return $query3->select(['uid', 'avatar', 'nickname']);
+                    }]);
+            }, 'hasOneFans' => function ($query2) {
+                return $query2->select(['uid', 'follow as followed', 'unionid']);
+            }
+            ])
+            ->first();
+    }
+
+    /**
      * 更新会员信息
      *
      * @param $data

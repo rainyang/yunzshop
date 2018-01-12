@@ -38,4 +38,16 @@ class MemberMiniAppModel extends BaseModel
             ->where('openid', $openid)
             ->first();
     }
+
+    /**
+     * 删除会员信息
+     *
+     * @param $id
+     */
+    public static function  deleteMemberInfoById($id)
+    {
+        return self::uniacid()
+            ->where('member_id', $id)
+            ->delete();
+    }
 }
