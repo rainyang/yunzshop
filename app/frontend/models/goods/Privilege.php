@@ -88,17 +88,23 @@ class Privilege extends \app\common\models\goods\Privilege
      */
     public function validateMemberLevelLimit()
     {
-        if (empty($this->buy_levels)) {
-            return;
-        }
-        $buy_levels = explode(',', $this->buy_levels);
-        $level_names = MemberLevel::select(DB::raw('group_concat(level_name) as level_name'))->whereIn('id', $buy_levels)->value('level_name');
-        if (empty($level_names)) {
+
+        if (empty($this->buy_levels) && $this->buy_levels !== '0') {
             return;
         }
 
+        $buy_levels = explode(',', $this->buy_levels);
+
+        if ($this->buy_levels !== '0') {
+            $level_names = MemberLevel::select(DB::raw('group_concat(level_name) as level_name'))->whereIn('id', $buy_levels)->value('level_name');
+            if (empty($level_names)) {
+                return;
+            }
+        }
         if (!in_array(MemberShopInfo::whereMemberId(\YunShop::app()->getMemberId())->value('level_id'), $buy_levels)) {
-            throw new AppException('商品(' . $this->goods->title . ')仅限' . $level_names . '购买');
+            $ordinaryMember = in_array('0', $buy_levels)? '普通会员 ':'';
+
+            throw new AppException('商品(' . $this->goods->title . ')仅限' . $ordinaryMember.$level_names . '购买');
         }
     }
 
