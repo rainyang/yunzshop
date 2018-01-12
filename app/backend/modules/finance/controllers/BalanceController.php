@@ -37,74 +37,9 @@ class BalanceController extends BaseController
     private $_member_model;
 
     private $_recharge_model;
-    /**
-     * 余额基础设置页面[完成]
-     *
-     * @return mixed|string
-     * @Author yitian */
-    //todo 可以删除此方法，已经转移到 BalanceSetController 2017-12-05 LYT:995265288
-    public function index111()
-    {
-        $balance = Setting::get('finance.balance');
-        $requestModel = \YunShop::request()->balance;
-        if ($requestModel) {
-            $requestModel['sale'] = $this->rechargeSale($requestModel);
 
 
-            if (!empty($requestModel['sale'])) {
-                $validator = null;
-                foreach ($requestModel['sale'] as $key => $item) {
-                    $validator = (new BackendBalanceRecharge())->validator($item);
-                    if ($validator->fails()) {
-                        $this->error($validator->messages());
-                        break;
-                    }
-                }
-                if ($validator && !$validator->fails()) {
-                    //echo '<pre>'; print_r(12); exit;
-                    unset($requestModel['enough']);
-                    unset($requestModel['give']);
-                    if (Setting::set('finance.balance', $requestModel)) {
-                        return $this->message('余额基础设置保存成功', Url::absoluteWeb('finance.balance.index'),'success');
-                    }
-                    $this->error('余额基础设置保存失败！！');
-                }
-            } else {
-                if (Setting::set('finance.balance', $requestModel)) {
-                    return $this->message('余额基础设置保存成功', Url::absoluteWeb('finance.balance.index'),'success');
-                }
-                $this->error('余额基础设置保存失败！！');
-            }
-        }
-        return view('finance.balance.index', [
-            'balance' => $balance,
-        ])->render();
-    }
 
-    // todo 方法废弃，可以删除，已经转移到 BalanceRecordsController.php
-    public function balanceDetail()
-    {
-
-        $pageSize = 20;
-        $search = \YunShop::request()->search;
-        if ($search) {
-            $detailList = \app\common\models\finance\Balance::getSearchPageList($pageSize,$search);
-        } else {
-            $detailList = \app\common\models\finance\Balance::getPageList($pageSize);
-        }
-        //echo '<pre>'; print_r($detailList); exit;
-
-        $page = PaginationHelper::show($detailList->total(), $detailList->currentPage(), $detailList->perPage());
-
-
-        return view('finance.balance.balanceRecords', [
-            'pageList'      => $detailList,
-            'page'         => $page,
-            'search'        => $search,
-            'shopSet'       => Setting::get('shop.member'),
-            'serviceType'   => \app\common\models\finance\Balance::getSourceComment()
-        ])->render();
-    }
 
     /**
      * 查看余额明细详情
