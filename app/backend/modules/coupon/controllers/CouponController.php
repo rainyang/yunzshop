@@ -116,7 +116,9 @@ class CouponController extends BaseController
         $coupon = Coupon::getCouponById($coupon_id);
         if(!empty($coupon->goods_ids)){
             $coupon->goods_ids = array_filter(array_unique($coupon->goods_ids)); //去重,去空值
-            $coupon->goods_names = Goods::getGoodNameByGoodIds($coupon->goods_ids); //因为商品名称可能修改,所以必须以商品表为准 //todo category_names和goods_names是不可靠的, 考虑删除这2个字段
+            if (!empty($coupon->goods_ids)) {
+                $coupon->goods_names = Goods::getGoodNameByGoodIds($coupon->goods_ids); //因为商品名称可能修改,所以必须以商品表为准 //todo category_names和goods_names是不可靠的, 考虑删除这2个字段
+            }
         }
         if(!empty($coupon->category_ids)){
             $coupon->category_ids = array_filter(array_unique($coupon->category_ids)); //去重,去空值
