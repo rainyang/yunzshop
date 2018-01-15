@@ -312,4 +312,19 @@ class MergePayController extends ApiController
         $data = $this->pay( PayFactory::PAY_CLOUD_ALIPAY, ['pay' => 'cloud_alipay']);
         return $this->successJson('成功', $data);
     }
+
+    /**
+     * 找人代付
+     * @param \Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     */
+    public function anotherPay(\Request $request)
+    {
+        if (\Setting::get('another_pay_set') == false) {
+            throw new AppException('商城未开启支付宝支付');
+        }
+
+        return $this->successJson('成功', []);
+    }
 }
