@@ -2370,18 +2370,6 @@ return [
                 'parents'           => ['system',],
             ],
 
-            'setting_shop_another'  => [
-                'name'              => '找人代付',
-                'url'               => 'setting.shop.another',
-                'url_params'        => '',
-                'permit'            => 1,
-                'menu'              => 1,
-                'icon'              => 'fa-child',
-                'sort'              => '3',
-                'item'              => 'setting_shop_another',
-                'parents'           => ['system',],
-            ],
-
             'setting_shop_notice' => [
                 'name'              => '消息提醒',
                 'url'               => 'setting.shop.notice',

@@ -352,31 +352,6 @@ class ShopController extends BaseController
         ])->render();
     }
 
-    public function another()
-    {
-        $set = \Setting::get('another_pay_set');
-
-        if (\Request::getMethod() == 'POST') {
-            $data = \YunShop::request()->set;
-
-            if (empty($data['title'])) {
-                $data['title'] = '土豪大大，跪求代付';
-            }
-
-            if($data){
-                if (\Setting::set('another_pay_set', $data)) {
-                    return $this->message('设置成功', Url::absoluteWeb('setting.shop.another'));
-                } else {
-                    return $this->error('设置失败');
-                }
-            }
-        }
-
-        return view('setting.shop.another', [
-            'set' => $set
-        ])->render();
-    }
-
     private function updateFile ($file)
     {
         $data = [];

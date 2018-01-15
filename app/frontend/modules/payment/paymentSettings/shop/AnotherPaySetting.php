@@ -12,11 +12,11 @@ class AnotherPaySetting extends BaseSetting
 {
     public function canUse()
     {
-        return \Setting::get('another_pay_set');
+        return \Setting::get('shop.pay.another');
     }
 
     public function exist()
     {
-        return \Setting::get('another_pay_set') !== null;
+        return \Setting::get('shop.pay.another') !== null;
     }
 }

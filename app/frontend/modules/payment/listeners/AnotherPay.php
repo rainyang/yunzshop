@@ -16,7 +16,7 @@ class AnotherPay
     public function onGetPaymentTypes(GetOrderPaymentTypeEvent $event)
     {
         //开启了支付宝支付 并且不是app端
-        if (\Setting::get('another_pay_set') && \YunShop::request()->type != 7) {
+        if (\Setting::get('shop.pay.another') && \YunShop::request()->type != 7) {
             $result = [
                 'name' => '找人代付',
                 'value' => '13',
