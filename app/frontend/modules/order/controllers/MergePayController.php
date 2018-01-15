@@ -16,6 +16,7 @@ use app\common\models\OrderPay;
 use app\common\services\password\PasswordService;
 use app\common\services\PayFactory;
 use app\common\services\Session;
+use app\frontend\models\Member;
 use app\frontend\modules\order\services\OrderService;
 use app\frontend\modules\payment\orderPayments\BasePayment;
 use Illuminate\Support\Collection;
@@ -102,7 +103,7 @@ class MergePayController extends ApiController
             throw new AppException('支付流水记录保存失败');
         }
 
-        $data = ['order_pay' => $orderPay, 'member' => $member, 'buttons' => $buttons, 'typename' => '支付'];
+        $data = ['order_pay' => $orderPay, 'member' => $member, 'buttons' => $buttons, 'typename' => ''];
 
         return $this->successJson('成功', $data);
     }
@@ -326,5 +327,46 @@ class MergePayController extends ApiController
         }
 
         return $this->successJson('成功', []);
+    }
+
+    public function anotherPayOrder(\Request $request)
+    {
+        $this->validate([
+            //'order_ids' => 'required|string'  //todo, string就会报错,奇怪...
+            'order_ids' => 'required',
+            'mid' => 'required'
+        ]);
+
+        // 订单集合
+        $orders = $this->orders($request->input('order_ids'));
+
+        if (is_null($orders)) {
+            return $this->errorJson('订单不存在', '');
+        }
+
+        // 支付类型
+        $buttons = $this->getPayTypeButtons($orders->first());
+
+        if (array_key_exists(14, $buttons)) {
+            unset($buttons[14]);
+        }
+
+        $member = Member::getMemberById($request->input('mid'));
+
+        // 生成支付记录 记录订单号,支付金额,用户,支付号
+        $orderPay = new OrderPay();
+        $orderPay->order_ids = explode(',', $request->input('order_ids'));
+        $orderPay->amount = $orders->sum('price');
+        $orderPay->uid = $orders->first()->uid;
+        $orderPay->pay_sn = OrderService::createPaySN();
+        $orderPayId = $orderPay->save();
+
+        if (!$orderPayId) {
+            throw new AppException('支付流水记录保存失败');
+        }
+
+        $data = ['order_pay' => $orderPay, 'member' => $member, 'buttons' => $buttons, 'typename' => ''];
+
+        return $this->successJson('成功', $data);
     }
 }
