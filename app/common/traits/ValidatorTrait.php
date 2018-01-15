@@ -49,7 +49,7 @@ trait ValidatorTrait
      */
     public  function validator($data =[])
     {
-        $validator = Validator::make($data?:$this->getAttributes(), $this->rules(), $this->validationMessages());
+        $validator = \Illuminate\Support\Facades\Validator::make($data?:$this->getAttributes(), $this->rules(), $this->validationMessages());
 
         //自定义字段名
         $validator->setAttributeNames($this->atributeNames());
