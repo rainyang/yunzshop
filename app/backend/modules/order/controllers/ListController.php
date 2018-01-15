@@ -180,9 +180,9 @@ class ListController extends BaseController
                 $res_title .= '['. $goods['goods_option_title'] .']';
             }
 
-            $goods_title .= $res_title . '，';
-            $goods_sn .= $goods['goods_sn'].'/';
-            $total .= $goods['total'].'/';
+            $goods_title .= '【' . $res_title . '*' . $goods['total'] . '】';
+            $goods_sn .= '【' . $goods['goods_sn'].'】';
+            $total .= '【' . $goods['total'].'】';
             $cost_price += $goods['goods_cost_price'];
         }
         $res = [
