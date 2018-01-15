@@ -2376,7 +2376,7 @@ return [
                 'url_params'        => '',
                 'permit'            => 1,
                 'menu'              => 1,
-                'icon'              => 'fa-user-o',
+                'icon'              => 'fa-child',
                 'sort'              => '3',
                 'item'              => 'setting_shop_another',
                 'parents'           => ['system',],
