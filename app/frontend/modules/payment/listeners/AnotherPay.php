@@ -19,7 +19,7 @@ class AnotherPay
         if (\Setting::get('shop.pay.another') && \YunShop::request()->type != 7) {
             $result = [
                 'name' => '找人代付',
-                'value' => '13',
+                'value' => '14',
                 'need_password' => '0'
 
             ];
