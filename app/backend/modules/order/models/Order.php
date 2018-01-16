@@ -152,6 +152,14 @@ class Order extends \app\common\models\Order
                     $query->searchLike($params['ambiguous']['string']);
                 });
             }
+
+            //快递单号
+            if ($params['ambiguous']['field'] == 'dispatch') {
+                $order_builder->whereHas('express', function ($query) use ($params) {
+                    $query->searchLike($params['ambiguous']['string']);
+                });
+            }
+
         }
         //支付方式
         if (array_get($params, 'pay_type', '')) {
