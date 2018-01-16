@@ -346,6 +346,11 @@ class MergePayController extends ApiController
 
         // 支付类型
         $buttons = $this->getPayTypeButtons($orders->first());
+        $buttons = collect($buttons)->filter(function ($value, $key) {
+            if ($value['name'] != '找人代付') {
+                return $value;
+            }
+        });
 
         if (array_key_exists(14, $buttons)) {
             unset($buttons[14]);
