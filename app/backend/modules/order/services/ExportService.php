@@ -91,7 +91,12 @@ class ExportService
         $order['goods_sn'] = '';
         $order['total'] = '';
         foreach ($order['has_many_order_goods'] as $key => $goods) {
-            $order['goods_title'] .= $goods['title'].'/';
+            $goods_title = $goods['title'];
+            if ($goods['goods_option_title']) {
+                $goods_title .= '['. $goods['goods_option_title'] .']';
+            }
+
+            $order['goods_title'] .= '【' . $goods_title . '*' . $goods['total'] . '】';
             $order['goods_sn'] .= $goods['goods']['goods_sn'].'/';
             $order['total'] .= $goods['total'].'/';
         }

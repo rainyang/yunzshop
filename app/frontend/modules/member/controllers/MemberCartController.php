@@ -25,7 +25,7 @@ class MemberCartController extends ApiController
             $cartList = app('OrderManager')->make('MemberCart')->carts()->where('member_id', $memberId)
                 ->orderBy('created_at', 'desc')
                 ->get()
-                ->toArray();;
+                ->toArray();
             //dd($cartList);
             foreach ($cartList as $key => $cart) {
                 $cartList[$key]['option_str'] = '';
