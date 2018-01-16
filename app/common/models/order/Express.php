@@ -16,6 +16,8 @@ class Express extends BaseModel
 {
     public $table = 'yz_order_express';
 
+    protected $guarded = [];
+
     public function getExpress($express = null, $express_sn = null)
     {
         if (!isset($express)) {
