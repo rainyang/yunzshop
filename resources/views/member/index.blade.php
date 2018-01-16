@@ -4,7 +4,7 @@
 
     <link href="{{static_url('yunshop/css/member.css')}}" media="all" rel="stylesheet" type="text/css"/>
     <div class="w1200 m0a">
-        <div class="rightlist">
+        <div class="rightlist" style="padding-bottom:100px">
             <!-- 新增加右侧顶部三级菜单 -->
             <div class="right-titpos">
                 <ul class="add-snav">
@@ -329,7 +329,7 @@
                                                 </li>
                                                 <li>
                                                     <a href="{{yzWebUrl('member.member-address.index', ['member_id' => $row['uid']])}}"
-                                                       title='银行卡管理'><i class='fa fa-truck'></i>收获地址管理</a>
+                                                       title='收获地址管理'><i class='fa fa-truck'></i>收获地址管理</a>
                                                 </li>
                                             </ul>
                                         </div>
