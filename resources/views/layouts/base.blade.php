@@ -71,7 +71,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         'attachurl_remote': '{{YunShop::app()->attachurl_remote}}',
 
         'cookie' : {'pre': '{{YunShop::app()->config['cookie']['pre']}}'},
-        'get_address' : '{!! yzWebFullUrl("address.get-address") !!}'
+        'get_address' : '{!! yzWebUrl("address.get-address") !!}'
 
       };
     </script>
