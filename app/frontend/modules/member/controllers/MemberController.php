@@ -1030,7 +1030,7 @@ class MemberController extends ApiController
 
         $title = Setting::get('shop.pay.another_share_title');
 
-        $url   = '';
+        $url   = yzAppFullUrl('/member/payanotherdetail', ['mid'=>$mid, 'order_ids'=>$order_ids]);
 
         if (empty($title)) {
             $title = '土豪大大，跪求代付';
