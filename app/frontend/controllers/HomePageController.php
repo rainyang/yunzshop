@@ -16,6 +16,7 @@ use app\common\repositories\OptionRepository;
 use app\common\models\AccountWechats;
 use app\common\models\McMappingFans;
 use app\frontend\modules\shop\controllers\IndexController;
+use app\common\services\goods\VideoDemandCourseGoods;
 
 class HomePageController extends ApiController
 {
@@ -105,6 +106,15 @@ class HomePageController extends ApiController
             }
             if ($page) {
                 $designer = (new \Yunshop\Designer\services\DesignerService())->getPageForHomePage($page->toArray());
+                //课程商品判断
+                $videoDemand = new VideoDemandCourseGoods();
+                foreach ($designer['data'] as &$value) {
+                    if ($value['temp'] == 'goods') {
+                        foreach ($value['data'] as &$course) {
+                            $course['is_course'] = $videoDemand->isCourse($course['goodid']);
+                        }
+                    }
+                }
                 $result['item'] = $designer;
                 $footerMenuType = $designer['footertype']; //底部菜单: 0 - 不显示, 1 - 显示系统默认, 2 - 显示选中的自定义菜单
                 $footerMenuId = $designer['footermenu'];
