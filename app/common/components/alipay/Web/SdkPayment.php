@@ -12,6 +12,7 @@ use app\common\services\finance\Withdraw;
 use app\common\services\alipay\AopClient;
 use app\common\services\alipay\request\AlipayFundTransToaccountTransferRequest;
 use app\common\services\alipay\WebAlipay;
+use app\common\services\Utils;
 
 class SdkPayment
 {
@@ -614,8 +615,8 @@ class SdkPayment
             'service' => $service,
             'partner' => $this->partner,
             'notify_url' => $notify_url,
-            'email' => $pay['alipay_number'],
-            'account_name' => $pay['alipay_name'],
+            'email' => Utils::dataDecrypt($pay['alipay_number']),
+            'account_name' => Utils::dataDecrypt($pay['alipay_name']),
             'pay_date' => date('Ymd', time()),
             'batch_no' => $batch_no,
             'batch_fee' => $this->total_fee,
@@ -635,9 +636,9 @@ class SdkPayment
         $res['message'] = '系统异常,提现失败';
 
         $aop = new AopClient();
-        $aop->appId = $pay['alipay_app_id'];
-        $aop->rsaPrivateKey = $pay['rsa_private_key'];
-        $aop->alipayrsaPublicKey= $pay['rsa_public_key'];
+        $aop->appId = Utils::dataDecrypt($pay['alipay_app_id']);
+        $aop->rsaPrivateKey = Utils::dataDecrypt($pay['rsa_private_key']);
+        $aop->alipayrsaPublicKey= Utils::dataDecrypt($pay['rsa_public_key']);
         $aop->signType = 'RSA2';
 
         $request = new AlipayFundTransToaccountTransferRequest();
@@ -647,7 +648,7 @@ class SdkPayment
             'payee_type' => $this->payee_type,
             'payee_account' => $collectioner_account,
             'amount'     => $this->total_fee,
-            'payer_show_name' => $pay['alipay_name'],
+            'payer_show_name' => Utils::dataDecrypt($pay['alipay_name']),
             'payee_real_name' => $collectioner_name,
             'remark' => '佣金提现'
         ];
@@ -719,8 +720,8 @@ class SdkPayment
             'service' => $service,
             'partner' => $this->partner,
             'notify_url' => $notify_url,
-            'email' => $pay['alipay_number'],
-            'account_name' => $pay['alipay_name'],
+            'email' => Utils::dataDecrypt($pay['alipay_number']),
+            'account_name' => Utils::dataDecrypt($pay['alipay_name']),
             'pay_date' => date('Ymd', time()),
             'batch_no' => $batch_no,
             'batch_fee' => $total_fee,

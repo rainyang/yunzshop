@@ -423,6 +423,7 @@
 -->
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">支付宝提现</label>
+                        <input type="hidden" name="pay[secret]" value="1">
                         <div class="col-sm-9 col-xs-12">
                             <label class='radio-inline'>
                                 <input type='radio' name='pay[alipay_withdrawals]' value='1' @if ( $set['alipay_withdrawals'] == 1) checked @endif/>

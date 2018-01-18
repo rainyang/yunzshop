@@ -65,6 +65,17 @@ class BalanceController extends ApiController
     }
 
 
+    public function memberBalance()
+    {
+        $memberInfo = $this->getMemberInfo();
+        if ($memberInfo) {
+            $result['credit2'] = $memberInfo->credit2;
+            return $this->successJson('获取数据成功', $result);
+        }
+        return $this->errorJson('未获取到会员数据');
+    }
+
+
 
 
 

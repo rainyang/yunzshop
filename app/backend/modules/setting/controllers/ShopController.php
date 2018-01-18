@@ -14,6 +14,7 @@ use app\common\facades\Setting;
 use app\common\models\AccountWechats;
 use app\common\models\notice\MessageTemp;
 use app\common\services\MyLink;
+use app\common\services\Utils;
 use Yunshop\Diyform\models\DiyformTypeModel;
 
 class ShopController extends BaseController
@@ -184,7 +185,7 @@ class ShopController extends BaseController
         $notice = Setting::get('shop.notice');
 //        $salers = []; //订单通知的商家列表,数据如何取待定?
         //$new_type = []; //通知方式的数组,数据如何来的待定?
-        $requestModel = \YunShop::request()->notice;
+        $requestModel = \YunShop::request()->yz_notice;
 
         $temp_list = MessageTemp::select('id', 'title')->get();
 
@@ -259,6 +260,10 @@ class ShopController extends BaseController
                 $requestModel = array_merge($requestModel, $updatefile['data']);
             }
 
+            if (isset($pay['secret']) && 1 == $pay['secret']) {
+                Utils::dataEncrypt($requestModel);
+            }
+
             if (Setting::set('shop.pay', $requestModel)) {
                 $this->setAlipayParams($requestModel);
                 return $this->message('支付方式设置成功', Url::absoluteWeb('setting.shop.pay'));
@@ -266,6 +271,11 @@ class ShopController extends BaseController
                 $this->error('支付方式设置失败');
             }
         }
+
+        if (isset($pay['secret']) && 1 == $pay['secret']) {
+            Utils::dataDecrypt($pay);
+        }
+
         return view('setting.shop.pay', [
             'set' => $pay,
             'data' => $data

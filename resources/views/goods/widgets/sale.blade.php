@@ -100,7 +100,6 @@
             如: 购买2件，设置10%积分, 成交价格2 * 200= 400， 则购买后获得 40 积分（400*10%）</span>
     </div>
 </div>
-
 {{--<div class="form-group">--}}
     {{--<label class="col-xs-12 col-sm-3 col-md-2 control-label">红包</label>--}}
     {{--<div class="col-xs-12 col-sm-9 col-md-10">--}}
@@ -111,5 +110,125 @@
         {{--<span class="help-block">如果设置0，则不发放红包</span>--}}
     {{--</div>--}}
 {{--</div>--}}
+
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">推广相关商品显示设置</label>
+    <div class="col-sm-9 col-xs-12">
+        <label class='radio-inline'>
+            <input type='radio' name='widgets[sale][is_push]' value='1' @if($item->is_push == '1') checked @endif/>
+            开启
+        </label>
+        <label class='radio-inline'>
+            <input type='radio' name='widgets[sale][is_push]' value='0' @if( $item->is_push == 0) checked @endif/>
+            关闭
+        </label>
+    </div>
+</div>
+
+<div id='widgets_sale' @if( $item->is_push == 0 ) style="display:none" @endif>
+    <div class="form-group">
+        <div class='panel panel-default'>
+            <div class='panel-body'>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>
+                        推广商品选择</label>
+                    <div class="col-sm-9">
+                        <div class='input-group'>
+                            <input type="text" maxlength="30" class="form-control" readonly/>
+                            <div class='input-group-btn'>
+                                <button class="btn btn-default" type="button"
+                                        onclick="$('#modal-goods-push').modal();">选择商品
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+    <ul id="push_goods_li">
+        @if ( $item->is_push == 1 )
+            @foreach ($item->push_goods_ids as $pushgoods)
+             <li class="input-group form-group col-sm-3" style="float:left;margin: 10px 100px 30px 0;">
+                <input type="hidden" name="widgets[sale][push_goods_ids][]" value="{{$pushgoods['id']}}">
+                <span class="input-group-addon" style="border-left:1px solid #ccc;">{{$pushgoods['title']}}</span>
+                <span class="input-group-addon" onclick="push_goods_ids_del(this);" style="background: white;cursor:pointer;">X</span>
+            </li>
+            @endforeach
+        @endif
+    </ul>
+</div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 商品选择搜索 -->
+<div id="modal-goods-push" class="modal fade" tabindex="-1">
+    <div class="modal-dialog" style='width: 920px;'>
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">
+                    ×
+                </button>
+                <h3>选择商品</h3></div>
+            <div class="modal-body" style="height: 600px">
+                <div class="row">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="keyword" value=""
+                               id="search-kwd-goods" placeholder="请输入商品名称"/>
+                        <span class='input-group-btn'>
+                            <button type="button" class="btn btn-default"
+                                    onclick="search_goods();">搜索
+                            </button></span>
+                    </div>
+                </div>
+                <div id="module-menus-goods" style="padding-top:5px;"></div>
+            </div>
+            <div class="modal-footer"><a href="#" class="btn btn-default"
+                                         data-dismiss="modal" aria-hidden="true">关闭</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script language='javascript'>
+    $(function () {
+        $(":radio[name='widgets[sale][is_push]']").click(function () {
+            if ($(this).val() == 1) {
+                $("#widgets_sale").show();
+            }
+            else {
+                $("#widgets_sale").hide();
+            }
+        });
+    });
+        
+    //删除推广商品
+    function push_goods_ids_del(obj) {
+        $(obj).parent().remove();
+    }
+
+    //搜索商品
+    function search_goods() {
+        if ($.trim($('#search-kwd-goods').val()) == '') {
+            Tip.focus('#search-kwd-goods', '请输入关键词');
+            return;
+        }
+        $("#module-menus-goods").html("正在搜索....");
+        $.get('{!! yzWebUrl('goods.goods.getSearchGoods') !!}', {
+                keyword: $.trim($('#search-kwd-goods').val())
+            }, function (dat) {
+                $('#module-menus-goods').html(dat);
+            }
+        );
+    }
+    //选择商品
+    function select_good(obj) {
+
+        var str = '<li class="input-group form-group col-sm-3" style="float:left;margin: 10px 100px 30px 0;"><input type="hidden" name="widgets[sale][push_goods_ids][]" value="'+ obj.id +'"><span class="input-group-addon" style="border-left:1px solid #ccc;">'+ obj.title +'</span><span class="input-group-addon" onclick="push_goods_ids_del(this);" style="background: white;cursor:pointer;">X</span></li>';
+
+        $('#push_goods_li').append(str);
+
+        $("#modal-goods-push .close").click();
+    }
+</script>
+
 
 @include('area.selectprovinces')

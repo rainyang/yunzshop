@@ -48,6 +48,7 @@ class ListController extends ApiController
      */
     public function index()
     {
+
         return $this->successJson($msg = 'ok', $data = $this->getData());
 
     }
