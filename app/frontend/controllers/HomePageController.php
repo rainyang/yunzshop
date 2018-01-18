@@ -45,6 +45,7 @@ class HomePageController extends ApiController
         if($setting){
             $setting['logo'] = replace_yunshop(yz_tomedia($setting['logo']));
             $relation = MemberRelation::getSetInfo()->first();
+            $setting['signimg'] = replace_yunshop(yz_tomedia($setting['signimg']));
             if ($relation) {
                 $setting['agent'] = $relation->status ? true : false;
             } else {
