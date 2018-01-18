@@ -8,7 +8,9 @@
 
 namespace app\backend\modules\order\controllers;
 
+use app\backend\modules\goods\models\GoodsOption;
 use app\backend\modules\order\models\Order;
+use app\backend\modules\order\models\OrderGoods;
 use app\backend\modules\order\models\OrderJoinOrderGoods;
 use app\common\components\BaseController;
 
@@ -179,9 +181,17 @@ class ListController extends BaseController
             if ($goods['goods_option_title']) {
                 $res_title .= '['. $goods['goods_option_title'] .']';
             }
+            $order_goods = OrderGoods::find($goods['id']);
+            if ($order_goods->goods_option_id) {
+                $goods_option = GoodsOption::find($order_goods->goods_option_id);
+                if ($goods_option) {
+                    $goods_sn .= '【' . $goods_option->goods_sn.'】';
+                }
+            } else {
+                $goods_sn .= '【' . $goods['goods_sn'].'】';
+            }
 
             $goods_title .= '【' . $res_title . '*' . $goods['total'] . '】';
-            $goods_sn .= '【' . $goods['goods_sn'].'】';
             $total .= '【' . $goods['total'].'】';
             $cost_price += $goods['goods_cost_price'];
         }
