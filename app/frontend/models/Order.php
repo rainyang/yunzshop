@@ -108,8 +108,11 @@ class Order extends \app\common\models\Order
     {
         parent::boot();
 
-        self::addGlobalScope(function(Builder $query){
-            return $query->uid()->where('is_member_deleted',0);
+        //找人代付
+        $uid = \YunShop::request()->mid?:null;
+
+        self::addGlobalScope(function(Builder $query) use ($uid){
+            return $query->uid($uid)->where('is_member_deleted',0);
         });
     }
 }
