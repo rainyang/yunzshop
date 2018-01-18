@@ -22,7 +22,7 @@ class BalanceAwardService
         $this->orderModel = $event->getOrderModel();
 
         $data = $this->getChangeData();
-dd($this->orderModel);
+
         $result = (new BalanceChange())->award($data);
         if ($result !== true) {
             throw new ShopException('购物赠送余额失败，请重试！');
@@ -54,7 +54,7 @@ dd($this->orderModel);
             if (!$goodsSaleModel || empty($goodsSaleModel->award_balance)) {
                 continue;
             }
-            $change_value += $this->proportionMath($goodsModel->price, $goodsSaleModel->award_balance, $goodsModel->total);
+            $change_value += $this->proportionMath($goodsModel->payment_amount, $goodsSaleModel->award_balance, $goodsModel->total);
         }
 
         return $change_value;
