@@ -1,16 +1,15 @@
 <?php
 /**
- * Created by PhpStorm.
  * Author: 芸众商城 www.yunzshop.com
- * Date: 2017/4/6
- * Time: 下午4:35
+ * Date: 2018/1/18
+ * Time: 下午2:21
  */
+
 namespace app\frontend\models;
 
-use app\frontend\models\Member;
 use Illuminate\Database\Eloquent\Builder;
 
-class Order extends \app\common\models\Order
+class AnotherPayOrder extends \app\common\models\Order
 {
     protected $appends = ['status_name', 'pay_type_name', 'button_models'];
     protected $hidden = [
@@ -79,8 +78,8 @@ class Order extends \app\common\models\Order
             $operator['status'] = 0;
         }
         return self::whereHas('hasManyOrderGoods', function($query) use ($operator){
-                return $query->where('comment_status', $operator['operator'], $operator['status']);
-            })
+            return $query->where('comment_status', $operator['operator'], $operator['status']);
+        })
             ->with([
                 'hasManyOrderGoods' => self::orderGoodsBuilder($status)
             ])->where('status', 3)->orderBy('id', 'desc')->get();
@@ -108,8 +107,11 @@ class Order extends \app\common\models\Order
     {
         parent::boot();
 
-        self::addGlobalScope(function(Builder $query){
-            return $query->uid()->where('is_member_deleted',0);
+        //找人代付
+        $uid = \YunShop::request()->mid?:null;
+
+        self::addGlobalScope(function(Builder $query) use ($uid){
+            return $query->uid($uid)->where('is_member_deleted',0);
         });
     }
 }
