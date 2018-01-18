@@ -10,6 +10,7 @@ namespace app\common\services\finance;
 
 
 use app\common\events\order\AfterOrderReceivedEvent;
+use app\common\exceptions\ShopException;
 use app\common\services\credit\ConstService;
 
 class BalanceAwardService
@@ -23,8 +24,9 @@ class BalanceAwardService
         $data = $this->getChangeData();
 
         $result = (new BalanceChange())->award($data);
-        dd($result);
-        dd($this->orderModel);
+        if ($result !== true) {
+            throw new ShopException('购物赠送余额失败，请重试！');
+        }
     }
 
     private function getChangeData()
