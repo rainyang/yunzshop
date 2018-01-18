@@ -30,15 +30,23 @@ class DetailController extends ApiController
 //        if ($order->uid != \YunShop::app()->getMemberId()) {
 //            throw new AppException('(ID:' . $order->id . ')该订单属于其他用户');
 //        }
-        $data = $order->toArray();
-        $data['button_models'] = array_merge($data['button_models'],$order->getStatusService()->getRefundButtons($order));
 
+        $data = $order->toArray();
+        $backups_button = $data['button_models'];
+        $data['button_models'] = array_merge($data['button_models'],$order->getStatusService()->getRefundButtons($order));
         //$this->getStatusService()->
         //todo 配送类型
         if ($order['dispatch_type_id'] == DispatchType::EXPRESS) {
             $data['address_info'] = OrderAddress::select('address', 'mobile', 'realname')->where('order_id', $order['id'])->first();
         }
         if(app('plugins')->isEnabled('store-cashier')){
+
+            //临时解决
+            $storeObj = \Yunshop\StoreCashier\common\models\Store::getStoreByCashierId($order->hasManyOrderGoods[0]->goods_id)->first();
+            if ($storeObj) {
+                $data['button_models'] = $backups_button;
+            }
+
             if ($order['dispatch_type_id'] == DispatchType::SELF_DELIVERY) {
                 $data['address_info'] = \Yunshop\StoreCashier\common\models\SelfDelivery::where('order_id', $order['id'])->first();
             }elseif($order['dispatch_type_id'] == DispatchType::STORE_DELIVERY){
@@ -56,7 +64,7 @@ class DetailController extends ApiController
                     $value['is_course'] = VideoDemandOrderGoodsService::whetherCourse($value['goods_id']);
                 }
             }
-            
+
             return $this->successJson($msg = 'ok', $data);
         }
 

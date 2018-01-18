@@ -8,6 +8,7 @@ use app\common\models\Category;
 use app\common\models\Goods;
 use app\common\models\Slide;
 use Illuminate\Support\Facades\DB;
+use app\common\services\goods\VideoDemandCourseGoods;
 
 /**
  * Created by PhpStorm.
@@ -49,6 +50,12 @@ class IndexController extends ApiController
             ->orderBy("id", 'desc')
             ->get();
 
+        //是否是课程商品
+        $videoDemand = new VideoDemandCourseGoods();
+        foreach ($goodsList as &$value) {
+            $value->is_course = $videoDemand->isCourse($value->goods_id);
+        }
+        
         return $goodsList;
     }
 

@@ -20,6 +20,21 @@ class VideoDemandCourseGoods extends BaseController
         $this->videoDemand = Setting::get('plugin.video_demand');
     }
 
+
+    /**
+     * 是否启用视频点播
+     */
+    public function whetherEnabled()
+    {
+        if (app('plugins')->isEnabled('video-demand')) {
+            if ($this->videoDemand['is_video_demand']) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * 是课程商品的id集合
      * @return [array] [$courseGoods_ids]
@@ -28,14 +43,12 @@ class VideoDemandCourseGoods extends BaseController
     {
         //是否启用视频点播
         $courseGoods_ids = [];
-        if (app('plugins')->isEnabled('video-demand')) {
-            if ($this->videoDemand['is_video_demand']) {
-                $courseGoods = CourseGoodsModel::getCourseGoodsIdsData()->toArray();
 
-                foreach ($courseGoods as $value) {
-                    $courseGoods_ids[] = $value['goods_id'];
-                }
-
+        if ($this->whetherEnabled()) {
+            
+            $courseGoods = CourseGoodsModel::getCourseGoodsIdsData()->toArray();
+            foreach ($courseGoods as $value) {
+                $courseGoods_ids[] = $value['goods_id'];
             }
         }
 
@@ -50,11 +63,12 @@ class VideoDemandCourseGoods extends BaseController
     public function isCourse($goods_id)
     {
 
-        if (app('plugins')->isEnabled('video-demand')) {
-
-            if ($this->videoDemand['is_video_demand']) {
-                $data = CourseGoodsModel::uniacid()->select('is_course')->where('goods_id', $goods_id)->value('is_course');
-            }
+        if ($this->whetherEnabled()) {
+            
+            $data = CourseGoodsModel::uniacid()
+                                    ->select('is_course')
+                                    ->where('goods_id', $goods_id)
+                                    ->value('is_course');
         }
 
         $data = $data === null ? 0 : $data;

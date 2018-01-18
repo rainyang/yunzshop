@@ -138,6 +138,7 @@ class BatchSendController extends BaseController
             $express_model->express_code = $send_data['express_code'];
             $express_model->express_sn = $express_sn;
             $express_model->save();
+            $order->send_time = time();
             $order->status = 2;
             $order->save();
             $this->success_num += 1;

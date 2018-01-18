@@ -15,6 +15,11 @@ use Ixudra\Curl\Facades\Curl;
 class Express extends BaseModel
 {
     public $table = 'yz_order_express';
+    
+    protected $search_fields = ['express_sn', 'express_company_name'];
+
+    protected $guarded = [];
+
 
     public function getExpress($express = null, $express_sn = null)
     {
