@@ -13,7 +13,16 @@ class AddFieldAwardBalanceToYzGoodsSale extends Migration
      */
     public function up()
     {
-        //
+        if (Schema::hasTable('yz_goods_sale')) {
+            Schema::table('yz_goods_sale',
+                function (Blueprint $table) {
+                    if (!Schema::hasColumn('yz_goods_sale',
+                        'award_balance')
+                    ) {
+                        $table->string('award_balance', 255)->nullable()->default(0);
+                    }
+                });
+        }
     }
 
     /**
