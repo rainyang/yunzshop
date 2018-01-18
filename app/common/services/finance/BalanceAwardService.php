@@ -21,11 +21,15 @@ class BalanceAwardService
     {
         $this->orderModel = $event->getOrderModel();
 
-        $data = $this->getChangeData();
+        $change_value = $this->getChangeValue();
+        if ($change_value > 0) {
+            $data = $this->getChangeData();
+            $data['change_value'] = $change_value;
 
-        $result = (new BalanceChange())->award($data);
-        if ($result !== true) {
-            throw new ShopException('购物赠送余额失败，请重试！');
+            $result = (new BalanceChange())->award($data);
+            if ($result !== true) {
+                throw new ShopException('购物赠送余额失败，请重试！');
+            }
         }
     }
 
@@ -37,7 +41,7 @@ class BalanceAwardService
             'relation'      => $this->orderModel->order_sn,
             'operator'      => ConstService::OPERATOR_MEMBER,
             'operator_id'   => $this->orderModel->uid,
-            'change_value'  => $this->getChangeValue(),
+            //'change_value'  => $this->getChangeValue(),
         ];
     }
 
