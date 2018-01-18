@@ -73,6 +73,7 @@ class EventServiceProvider extends ServiceProvider
     protected $subscribe = [
         //会员等级升级
         \app\common\listeners\member\level\LevelListener::class,
+        \app\common\listeners\balance\BalanceListener::class,
 
         \app\frontend\modules\dispatch\listeners\types\Express::class,
         \app\frontend\modules\coupon\listeners\CouponDiscount::class,

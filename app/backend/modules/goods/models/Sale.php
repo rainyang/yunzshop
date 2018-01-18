@@ -52,6 +52,7 @@ class Sale extends \app\common\models\Sale
         $data['ed_full'] = empty($data['ed_full']) ? 0 : $data['ed_full'];
         $data['ed_reduction'] = empty($data['ed_reduction']) ? 0 : $data['ed_reduction'];
         $data['point'] = trim($data['point']);
+        $data['award_balance'] = trim($data['award_balance']);
 
         /**
          * Author:blank

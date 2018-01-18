@@ -1,20 +1,5 @@
 <link href="{{static_url('yunshop/goods/goods.css')}}" media="all" rel="stylesheet" type="text/css"/>
 
-
-<div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">积分抵扣</label>
-    <div class="col-xs-12 col-sm-9 col-md-10">
-        <div class='input-group col-md-3'>
-            <span class="input-group-addon">最多抵扣</span>
-            <input type="text" name="widgets[sale][max_point_deduct]" value="{{ $item->max_point_deduct }}"
-                   class="form-control"/>
-            <span class="input-group-addon">元</span>
-        </div>
-        <span class="help-block">如果设置空，则采用积分统一设置<br>如果设置0，则不支持积分抵扣</span>
-
-    </div>
-</div>
-
 {{--<div class="form-group">--}}
     {{--<label class="col-xs-12 col-sm-3 col-md-2 control-label">余额抵扣</label>--}}
     {{--<div class="col-xs-12 col-sm-9 col-md-10">--}}
@@ -61,13 +46,12 @@
             <div class="return-queue">
                 <div class="input-group col-md-2">
                     <div class="input-group-addon">满</div>
-                    <input type="text" name="widgets[sale][ed_full]" class="form-control" value="{{ $item->ed_full }}"/>
+                    <input type="text" name="widgets[sale][ed_full]" class="form-control" value="{{ $item->ed_full }}" style="width: 136px;"/>
                     <div class="input-group-addon">元</div>
                 </div>
                 <div class="input-group col-md-2">
                     <div class="input-group-addon">减</div>
-                    <input type="text" name="widgets[sale][ed_reduction]" class="form-control"
-                           value="{{ $item->ed_reduction }}"/>
+                    <input type="text" name="widgets[sale][ed_reduction]" class="form-control" value="{{ $item->ed_reduction }}" style="width: 136px;"/>
                     <div class="input-group-addon">元</div>
                 </div>
             </div>
@@ -75,14 +59,19 @@
     </div>
 </div>
 
-<div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">不参与单品包邮地区</label>
-    <div class="col-xs-12 col-sm-9 col-md-10">
-        <div id="areas" class="form-control-static">{{ $item->ed_areas }}</div>
-        <a href="javascript:;" class="btn btn-default selectareas" onclick="selectAreas()">添加不参加满包邮的地区</a>
-        <input type="hidden" id='selectedareas' name="widgets[sale][ed_areas]" value="{{ $item->ed_areas }}"/>
-        <input type="hidden" id='selectedareaids' name="widgets[sale][ed_areaids]" value="{{ $item->ed_areaids }}"/>
 
+
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">赠送余额</label>
+    <div class="col-xs-12 col-sm-9 col-md-10">
+        <div class='input-group col-md-3'>
+            <input type="text" name="widgets[sale][award_balance]" value="{{ $item->award_balance }}" class="form-control"/>
+            <span class="input-group-addon">余额</span>
+        </div>
+        <span class="help-block">
+            如果设置0，则不赠送<br>
+            如: 购买2件，设置10 余额, 不管成交价格是多少， 则购买后获得20余额<br>
+            如: 购买2件，设置10%余额, 成交价格2 * 200= 400， 则购买后获得 40 余额（400*10%）</span>
     </div>
 </div>
 
@@ -111,6 +100,32 @@
     {{--</div>--}}
 {{--</div>--}}
 
+
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">积分抵扣</label>
+    <div class="col-xs-12 col-sm-9 col-md-10">
+        <div class='input-group col-md-3'>
+            <span class="input-group-addon">最多抵扣</span>
+            <input type="text" name="widgets[sale][max_point_deduct]" value="{{ $item->max_point_deduct }}"
+                   class="form-control"/>
+            <span class="input-group-addon">元</span>
+        </div>
+        <span class="help-block">如果设置空，则采用积分统一设置<br>如果设置0，则不支持积分抵扣</span>
+
+    </div>
+</div>
+
+
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">不参与单品包邮地区</label>
+    <div class="col-xs-12 col-sm-9 col-md-10">
+        <div id="areas" class="form-control-static">{{ $item->ed_areas }}</div>
+        <a href="javascript:;" class="btn btn-default selectareas" onclick="selectAreas()">添加不参加满包邮的地区</a>
+        <input type="hidden" id='selectedareas' name="widgets[sale][ed_areas]" value="{{ $item->ed_areas }}"/>
+        <input type="hidden" id='selectedareaids' name="widgets[sale][ed_areaids]" value="{{ $item->ed_areaids }}"/>
+
+    </div>
+</div>
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">推广相关商品显示设置</label>
     <div class="col-sm-9 col-xs-12">
