@@ -210,6 +210,9 @@ class WechatPay extends Pay
             $result = $luckyMoney->sendNormal($luckyMoneyData);
         }
 
+        //响应数据
+        $this->payResponseDataLog($pay_order_model->id, $pay_order_model->third_type, json_encode($result));
+
         if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
             \Log::debug('提现返回结果', $result->toArray());
             $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_COMPLETE, $result->payment_no);
