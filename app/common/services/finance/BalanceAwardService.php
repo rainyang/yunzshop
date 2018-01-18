@@ -22,7 +22,7 @@ class BalanceAwardService
         $this->orderModel = $event->getOrderModel();
 
         $data = $this->getChangeData();
-
+dd($this->orderModel);
         $result = (new BalanceChange())->award($data);
         if ($result !== true) {
             throw new ShopException('购物赠送余额失败，请重试！');
