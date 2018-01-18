@@ -71,6 +71,6 @@ class AnotherPayDetailController extends ApiController
 
     protected function getOrder()
     {
-        return app('OrderManager')->make('Order');
+        return new AnotherPayOrder();
     }
 }
