@@ -62,7 +62,9 @@ class MergePayController extends ApiController
             if ($order->status == Order::CLOSE) {
                 throw new AppException('(ID:' . $order->id . ')订单已关闭,无法付款');
             }
-            if ($order->uid != \YunShop::app()->getMemberId()) {
+
+            //找人代付
+            if ($order->uid != \YunShop::app()->getMemberId() && !Member::getMid()) {
                 throw new AppException('(ID:' . $order->id . ')该订单属于其他用户');
             }
         });
