@@ -1014,4 +1014,40 @@ class MemberController extends ApiController
 
         return $this->successJson('', $data);
     }
+
+    public function anotherShare()
+    {
+        $order_ids = \YunShop::request()->order_ids;
+        $mid   = \YunShop::app()->getMemberId();
+
+        if (empty($order_ids)) {
+            return $this->errorJson('参数错误', '');
+        }
+
+        if (empty($mid)) {
+            return $this->errorJson('用户未登陆', '');
+        }
+
+        $title = Setting::get('shop.pay.another_share_title');
+        $url   = yzAppFullUrl('/member/payanotherdetail', ['mid'=>$mid, 'order_ids'=>$order_ids]);
+
+        $order_goods = Order::find($order_ids)->hasManyOrderGoods;
+
+        if (is_null($order_goods)) {
+            return $this->errorJson('订单商品不存在', '');
+        }
+
+        if (empty($title)) {
+            $title = '土豪大大，跪求代付';
+        }
+
+        $data = [
+            'title' => $title,
+            'url' => $url,
+            'content' => $order_goods[0]->title,
+            'img' => replace_yunshop(yz_tomedia($order_goods[0]->thumb))
+        ];
+
+        return $this->successJson('', $data);
+    }
 }

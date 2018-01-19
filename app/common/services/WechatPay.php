@@ -205,10 +205,13 @@ class WechatPay extends Pay
 
             //请求数据日志
             $this->payRequestDataLog($pay_order_model->id, $pay_order_model->type,
-                $pay_order_model->third_type, json_encode($luckyMoneyData));
+                $pay_order_model->type, json_encode($luckyMoneyData));
 
             $result = $luckyMoney->sendNormal($luckyMoneyData);
         }
+
+        //响应数据
+        $this->payResponseDataLog($pay_order_model->out_order_no, $pay_order_model->type, json_encode($result));
 
         if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
             \Log::debug('提现返回结果', $result->toArray());

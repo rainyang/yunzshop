@@ -3,12 +3,6 @@
 @section('content')
 <div class="w1200 m0a">
     <div class="rightlist">
-        <!-- 新增加右侧顶部三级菜单 -->
-        <div class="right-titpos">
-            <ul class="add-snav">
-                <li class="active"><a href="#">商城入口</a></li>
-            </ul>
-        </div>
         <!-- 商城入口二维码 -->
         <div class="panel panel-info">
             <div class="panel-heading">商城页面链接</div>
