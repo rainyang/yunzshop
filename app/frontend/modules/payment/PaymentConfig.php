@@ -10,6 +10,7 @@ namespace app\frontend\modules\payment;
 
 use app\common\models\Order;
 use app\frontend\modules\payment\managers\OrderPaymentTypeSettingManager;
+use app\frontend\modules\payment\orderPayments\AnotherPayment;
 use app\frontend\modules\payment\orderPayments\AppPayment;
 use app\frontend\modules\payment\orderPayments\CloudAliPayment;
 use app\frontend\modules\payment\orderPayments\CloudPayment;
@@ -17,6 +18,7 @@ use app\frontend\modules\payment\orderPayments\WebPayment;
 use app\frontend\modules\payment\orderPayments\YunPayment;
 use app\frontend\modules\payment\paymentSettings\shop\AlipayAppSetting;
 use app\frontend\modules\payment\paymentSettings\shop\AlipaySetting;
+use app\frontend\modules\payment\paymentSettings\shop\AnotherPaySetting;
 use app\frontend\modules\payment\paymentSettings\shop\BalanceSetting;
 use app\frontend\modules\payment\paymentSettings\shop\CloudPayAliSetting;
 use app\frontend\modules\payment\paymentSettings\shop\CloudPayWechatSetting;
@@ -99,6 +101,15 @@ class PaymentConfig
                 'settings' => [
                     'shop' => function (OrderPaymentTypeSettingManager $manager, Order $order) {
                         return new CloudPayAliSetting($order);
+                    }
+                ],
+            ],'anotherPay' => [
+                'payment' => function ($payType, $settings) {
+                    return new AnotherPayment($payType, $settings);
+                },
+                'settings' => [
+                    'shop' => function (OrderPaymentTypeSettingManager $manager, Order $order) {
+                        return new AnotherPaySetting($order);
                     }
                 ],
             ]

@@ -561,6 +561,38 @@
                     {{--<label class='radio-inline'><input type='radio' name='pay[weixin_withdrawals]' value='0' @if ( $set['weixin_withdrawals'] == 0) checked @endif /> 关闭</label>--}}
                     {{--</div>--}}
                     {{--</div>--}}
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">找人代付</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <label class='radio-inline'>
+                                <input type='radio' name='pay[another]' value='1' @if ( $set['another'] == 1) checked @endif/>
+                                开启
+                            </label>
+                            <label class='radio-inline'>
+                                <input type='radio' name='pay[another]' value='0' @if ( $set['another'] == 0) checked @endif />
+                                关闭
+                            </label>
+                            <span class="help-block">启用代付功能后，代付发起人（买家）下单后，可将订单分享给小伙伴（朋友圈、微信群、微信好友），请他帮忙付款。</span>
+                        </div>
+                    </div>
+
+                    <div id='another' @if ( empty($set['another'])) style="display:none" @endif>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                            <div class="col-sm-9 col-xs-12">
+                                <div style="float:left; width:15%; height:30px;">
+                                    <label class='radio-inline' style="padding-left:0px">发起人求助：</label>
+                                </div>
+
+                                <div style="float:left; width:85%; height:30px;">
+                                    <input type="text" name="pay[another_share_title]" class="form-control" value="{{$set['another_share_title']}}" autocomplete="off" placeholder="土豪大大，跪求代付">
+                                    <span class="help-block">默认分享标题：土豪大大，跪求代付</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="form-group"></div>
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
@@ -635,6 +667,14 @@
                             }
                             else {
                                 $("#open_alipay").hide();
+                            }
+                        })
+                        $(":radio[name='pay[another]']").click(function () {
+                            if ($(this).val() == 1) {
+                                $("#another").show();
+                            }
+                            else {
+                                $("#another").hide();
                             }
                         })
                     })
