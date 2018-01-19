@@ -44,9 +44,8 @@ class HomePageController extends ApiController
 
         if($setting){
             $setting['logo'] = replace_yunshop(yz_tomedia($setting['logo']));
-
             $relation = MemberRelation::getSetInfo()->first();
-
+            $setting['signimg'] = replace_yunshop(yz_tomedia($setting['signimg']));
             if ($relation) {
                 $setting['agent'] = $relation->status ? true : false;
             } else {
@@ -56,7 +55,6 @@ class HomePageController extends ApiController
             $setting['diycode'] = html_entity_decode($setting['diycode']);
             $result['mailInfo'] = $setting;
         }
-
         //强制绑定手机号
         $member_set = Setting::get('shop.member');
         $is_bind_mobile = 0;
