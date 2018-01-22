@@ -69,13 +69,12 @@ class EarningController extends ApiController
     private function earningDetail()
     {
         $config = \Config::get('plugin');
-        dd($this->incomeModel);
-        dd(Income::uniacid()->where('member_id',$this->getMemberId()));
-        exit;
+
         $array = [];
         foreach ($config as $key => $item) {
 
-            $typeModel = $this->incomeModel->where('incometable_type', $item['class']);
+            //$typeModel = $this->incomeModel->where('incometable_type', $item['class']);
+            $typeModel = Income::uniacid()->where('member_id',$this->getMemberId())->where('incometable_type', $item['class']);
             $array[] = [
                 'title' => $item['title'],
                 'ico'   => $item['ico'],
