@@ -31,6 +31,8 @@ class EarningController extends ApiController
         parent::__construct();
 
         $this->incomeModel = Income::uniacid()->where('member_id',$this->getMemberId());
+        dd($this->incomeModel->get());
+        exit;
     }
 
     /**
