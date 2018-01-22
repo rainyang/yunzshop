@@ -73,9 +73,10 @@ class EarningController extends ApiController
         $array = [];
         foreach ($config as $key => $item) {
 
-            //dd($item['class']);
+            dd($item['class']);
+            dd($this->incomeModel->get());
             $typeModel = $this->incomeModel->where('incometable_type', $item['class']);
-            //dd($typeModel->get());
+            dd($typeModel->get());
             $array[] = [
                 'title' => $item['title'],
                 'ico'   => $item['ico'],
@@ -85,7 +86,7 @@ class EarningController extends ApiController
                 'can' => $this->itemIsShow($item)
             ];
         }
-        //exit;
+        exit;
         return $array;
     }
 
