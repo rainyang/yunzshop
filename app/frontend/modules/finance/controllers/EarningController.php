@@ -74,7 +74,8 @@ class EarningController extends ApiController
         foreach ($config as $key => $item) {
 
             if ($item['class'] == 'Yunshop\Commission\models\CommissionOrder') {
-                dd($this->incomeModel->where('incometable_type', $item['class']));
+                dd($this->incomeModel->where('incometable_type', $item['class'])->get());
+                
                 dd(Income::uniacid()->where('member_id',$this->getMemberId())->whereStatus(0)->whereIncometableType($item['class'])->get());
             }
             $typeModel = $this->incomeModel->where('incometable_type', $item['class']);
