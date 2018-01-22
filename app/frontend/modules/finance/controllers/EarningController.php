@@ -73,10 +73,10 @@ class EarningController extends ApiController
         $array = [];
         foreach ($config as $key => $item) {
 
-            dd($item['class']);
-            dd($this->incomeModel->get());
+            if ($item['class'] == 'Yunshop\Commission\models\CommissionOrder') {
+                dd($this->incomeModel->get());
+            }
             $typeModel = $this->incomeModel->where('incometable_type', $item['class']);
-            dd($typeModel->get());
             $array[] = [
                 'title' => $item['title'],
                 'ico'   => $item['ico'],
