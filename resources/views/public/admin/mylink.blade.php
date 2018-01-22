@@ -346,6 +346,7 @@
 <script language="javascript">
     require(['jquery'],function(){
 
+
     $(function() {
         $("#chkoption").click(function() {
             var obj = $(this);
@@ -375,8 +376,8 @@
             $("input[data-id="+id+"]").val(href);
             $("#modal-mylink").attr("data-id","");
         }else{
-            //console.log(href);
-            ue.execCommand('link', {href:href});
+            // console.log(href);
+            // ue.execCommand('link', {href:href});
         }
 
         $("#modal-mylink .close").click();
