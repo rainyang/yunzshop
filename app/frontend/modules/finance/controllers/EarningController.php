@@ -31,8 +31,6 @@ class EarningController extends ApiController
         parent::__construct();
 
         $this->incomeModel = Income::uniacid()->where('member_id',$this->getMemberId());
-        dd($this->incomeModel->get());
-        exit;
     }
 
     /**
@@ -76,6 +74,7 @@ class EarningController extends ApiController
         foreach ($config as $key => $item) {
 
             $typeModel = $this->incomeModel->where('incometable_type', $item['class']);
+            dd($typeModel->get());
             $array[] = [
                 'title' => $item['title'],
                 'ico'   => $item['ico'],
@@ -85,6 +84,7 @@ class EarningController extends ApiController
                 'can' => $this->itemIsShow($item)
             ];
         }
+        exit;
         return $array;
     }
 
