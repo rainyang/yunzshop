@@ -139,7 +139,7 @@ return [
         'subtitle' => '积分变动通知',
         'value' => 'finance_point_change',
         'param' => [
-            '商城名称', '昵称', '时间', '积分变动金额', '积分变动类型', '变动后余额数值'
+            '商城名称', '昵称', '时间', '积分变动金额', '积分变动类型', '变动后积分数值'
         ]
     ],
     'finance_income_withdraw' => [

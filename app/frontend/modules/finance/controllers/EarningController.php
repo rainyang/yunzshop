@@ -73,7 +73,8 @@ class EarningController extends ApiController
         $array = [];
         foreach ($config as $key => $item) {
 
-            $typeModel = $this->incomeModel->where('incometable_type', $item['class']);
+            //$typeModel = $this->incomeModel->where('incometable_type', $item['class']);
+            $typeModel = Income::uniacid()->where('member_id',$this->getMemberId())->whereStatus(0)->where('incometable_type', $item['class']);
             $array[] = [
                 'title' => $item['title'],
                 'ico'   => $item['ico'],
