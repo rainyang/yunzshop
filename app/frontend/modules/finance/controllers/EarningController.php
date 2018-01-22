@@ -75,7 +75,7 @@ class EarningController extends ApiController
 
             dd($item['class']);
             $typeModel = $this->incomeModel->where('incometable_type', $item['class']);
-            dd($typeModel);
+            dd($typeModel->get());
             $array[] = [
                 'title' => $item['title'],
                 'ico'   => $item['ico'],
