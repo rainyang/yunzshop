@@ -542,6 +542,18 @@ return [
                         'parents'               => ['Goods','comment',],
                     ],
 
+                    'goods_comment_update'   => [
+                        'name'                  => '修改评价',
+                        'url'                   => 'goods.comment.update',
+                        'url_params'            => '',
+                        'permit'                => 1,
+                        'menu'                  => 0,
+                        'icon'                  => '',
+                        'sort'                  => 0,
+                        'item'                  => 'goods_comment_update',
+                        'parents'               => ['Goods','comment',],
+                    ],
+
                     'goods_comment_delete'  => [
                         'name'                  => '删除评价',
                         'url'                   => 'goods.comment.deleted',
