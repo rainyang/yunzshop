@@ -2326,6 +2326,41 @@ return [
                         'sort'              => '6',
                         'item'              => 'setting_shop_slide',
                         'parents'           => ['system', 'Setting',],
+                        'child' => [
+
+                            'setting_shop_slide_index' => [
+                                'name'              => '浏览列表',
+                                'url'               => 'setting.slide.index',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => '',
+                                'item'              => 'setting_shop_slide_index',
+                                'parents'           => ['system', 'Setting','setting_shop_slide'],
+                            ],
+
+                            'setting_shop_slide_edit' => [
+                                'name'              => '修改幻灯片',
+                                'url'               => 'setting.slide.edit',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => '',
+                                'item'              => 'setting_shop_slide_edit',
+                                'parents'           => ['system', 'Setting','setting_shop_slide'],
+                            ],
+
+                            'setting_shop_slide_deleted' => [
+                                'name'              => '删除幻灯片',
+                                'url'               => 'setting.slide.deleted',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => '',
+                                'item'              => 'setting_shop_slide_deleted',
+                                'parents'           => ['system', 'Setting','setting_shop_slide'],
+                            ],
+                        ]
                     ],
 
                     'setting_shop_form' => [
