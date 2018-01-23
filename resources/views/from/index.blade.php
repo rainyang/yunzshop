@@ -22,7 +22,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">内容</label>
                             <div class="col-sm-9 col-xs-12">
-                                <textarea name="div_from[explain_content]" class="form-control">{{ $div_from['explain_content'] }}</textarea>
+                                <textarea name="div_from[explain_content]" rows="10" class="form-control">{{ $div_from['explain_content'] }}</textarea>
                             </div>
                         </div>
                     </div>

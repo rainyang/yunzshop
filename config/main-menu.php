@@ -272,6 +272,43 @@ return [
                 ],
             ],
 
+            'goods_div_from'=> [
+                'name'              => '商品表单',
+                'url'               => 'from.div-from.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-file-excel-o',
+                'sort'              => '2',
+                'item'              => 'goods_div_from',
+                'parents'           => ['Goods',],
+                'child'             => [
+
+                    'goods_div_from_see'=> [
+                        'name'              => '查看内容',
+                        'url'               => 'from.div-from.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => '2',
+                        'item'              => 'goods_div_from_see',
+                        'parents'           => ['Goods','goods_div_from'],
+                    ],
+                    'goods_div_from_store'=> [
+                        'name'              => '编辑修改',
+                        'url'               => 'from.div-from.store',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => '2',
+                        'item'              => 'goods_div_from_store',
+                        'parents'           => ['Goods','goods_div_from'],
+                    ],
+                ],
+            ],
+
             'goods_category'    => [
                 'name'              => '商品分类',
                 'url'               => 'goods.category.index',
