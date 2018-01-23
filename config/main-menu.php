@@ -2399,8 +2399,7 @@ return [
                 'sort'          => '7',
                 'item'          => 'setting_shop_trade',
                 'parents'       => ['system'],
-                'child'         => [
-                ],
+
             ],
 
 
@@ -2438,6 +2437,38 @@ return [
                 'sort'              => '6',
                 'item'              => 'setting_wechat_notice',
                 'parents'           => ['system', 'Setting',],
+                'child'         => [
+
+                    'setting_wechat_notice_see'  => [
+                        'name'              => '查看',
+                        'url'               => 'setting.wechat-notice.see',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'item'              => 'setting_wechat_notice_see',
+                        'parents'           => ['system','setting_wechat_notice'],
+                    ],
+
+                    'setting_wechat_notice_del'  => [
+                        'name'              => '删除',
+                        'url'               => 'setting.wechat-notice.del',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'item'              => 'setting_wechat_notice_del',
+                        'parents'           => ['system','setting_wechat_notice'],
+                    ],
+
+                    'setting_wechat_notice_add'  => [
+                        'name'              => '添加模版',
+                        'url'               => 'setting.wechat-notice.addTmp',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'item'              => 'setting_wechat_notice_add',
+                        'parents'           => ['system','setting_wechat_notice'],
+                    ],
+                ]
             ],
 
             'setting_diy_temp' => [
