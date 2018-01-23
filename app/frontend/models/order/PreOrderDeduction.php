@@ -160,7 +160,9 @@ class PreOrderDeduction extends OrderDeduction
         $orderVirtualCoin = $orderGoodsVirtualCoin->plus($this->getDispatchPriceDeductionPoint());
 
         // 不能超过订单使用其他抵扣金额后的价格
-        $afterOtherDeductionAmount = min($this->order->price - $this->getOtherDeducitonAmount(),$orderVirtualCoin->getMoney());
+        //$afterOtherDeductionAmount = min($this->order->price - $this->getOtherDeducitonAmount(),$orderVirtualCoin->getMoney());
+        // 订单商品价格计算，不包含运算
+        $afterOtherDeductionAmount = min($this->order->goods_price - $this->getOtherDeducitonAmount(),$orderVirtualCoin->getMoney());
 
         // 取(用户可用虚拟币)与(订单抵扣虚拟币)的最小值
         $amount = min($this->getMemberCoin()->getMaxUsableCoin()->getMoney(), $afterOtherDeductionAmount);
