@@ -1520,6 +1520,17 @@ return [
                 'parents'           => ['Order'],
                 'child' => [
 
+                    'order_batch_send_get_example' => [
+                        'name'              => '下载模版',
+                        'url'               => 'order.batch-send.get-example',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'item'              => 'order_batch_send_get_example',
+                        'parents'           => ['Order','order_batch_send'],
+                        'child' => [],
+                    ],
                 ],
             ],
         ],
