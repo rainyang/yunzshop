@@ -237,10 +237,10 @@
         }
 
         if ($.trim($(':input[name="widgets[sale][max_point_deduct]"]').val()) != ''
-                    && $(':input[name="widgets[sale][max_point_deduct]"]').val() != 0
+                    && parseInt($(':input[name="widgets[sale][max_point_deduct]"]').val()) != 0
                     && $.trim($(':input[name="goods[price]"]').val()) != ''
-                    && $.trim($(':input[name="widgets[sale][max_point_deduct]"]').val())
-                           > $.trim($(':input[name="goods[price]"]').val())) {
+                    && parseFloat($(':input[name="widgets[sale][max_point_deduct]"]').val())
+                           > parseFloat($(':input[name="goods[price]"]').val())) {
             $('#myTab a[href="#tab_sale"]').tab('show');
             Tip.focus(':input[name="widgets[sale][max_point_deduct]"]', "积分抵扣金额不能大于商品现价!");
             return false;
