@@ -85,6 +85,12 @@ class EditGoodsService
             }
             GoodsService::saveGoodsCategory($this->goods_model, \YunShop::request()->category, Setting::get('shop.category'));
 
+            if (!empty($this->request->widgets['sale']['max_point_deduct'])
+                && !empty($goods_data['price'])
+                && $this->request->widgets['sale']['max_point_deduct'] > $goods_data['price']) {
+                return ['status' => -1, 'msg' => '积分抵扣金额大于商品现价'];
+            }
+
             $this->goods_model->setRawAttributes($goods_data);
             $this->goods_model->widgets = $this->request->widgets;
             //其他字段赋值
