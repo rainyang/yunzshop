@@ -178,6 +178,32 @@
         </div>
     </div>
 @endif
+@if($div_from['status'])
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            个人表单信息
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">真实姓名 :</label>
+                <div class="col-sm-9 col-xs-12">
+                    <p class="form-control-static">
+                        {{ $div_from['member_name'] }}
+                    </p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">身份证 :</label>
+                <div class="col-sm-9 col-xs-12">
+                    <p class="form-control-static">
+                        {{ $div_from['member_card'] }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+@endif
+
 
 <div class="panel panel-default">
     <div class="panel-heading">
