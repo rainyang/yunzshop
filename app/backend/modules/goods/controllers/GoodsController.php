@@ -14,6 +14,7 @@ use app\backend\modules\goods\models\Category;
 use app\backend\modules\goods\models\Goods;
 use app\backend\modules\goods\models\GoodsOption;
 use app\backend\modules\goods\models\GoodsSpecItem;
+use app\backend\modules\goods\models\Sale;
 use app\backend\modules\goods\services\CopyGoodsService;
 use app\backend\modules\goods\services\CreateGoodsService;
 use app\backend\modules\goods\services\EditGoodsService;
@@ -323,6 +324,17 @@ class GoodsController extends BaseController
         $id = \YunShop::request()->id;
         $field = \YunShop::request()->type;
         $goods = \app\common\models\Goods::find($id);
+
+        if ($field == 'price') {
+            $sale = Sale::getList($goods->id);
+
+            if (!empty($sale->max_point_deduct)
+                && $sale->max_point_deduct > \YunShop::request()->value) {
+                echo json_encode(['status' => -1, 'msg' => '积分抵扣金额大于商品价格']);
+                exit;
+            }
+        }
+
         $goods->$field = \YunShop::request()->value;
         $goods->save();
         //$this->error($goods);
