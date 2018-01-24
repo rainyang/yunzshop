@@ -27,7 +27,7 @@ class User extends BaseModel
 
     public $attributes = [
         'groupid' => 0 ,
-        'type' => 0,
+        'type' => 1,
         'remark' => '',
         'endtime' => 0
     ];
