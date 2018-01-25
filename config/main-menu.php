@@ -493,6 +493,19 @@ return [
                         'parents'               => ['Goods', 'comment',],
                     ],
 
+
+                    'goods_comment_updated'   => [
+                        'name'                  => '修改评价',
+                        'url'                   => 'goods.comment.updated',
+                        'url_params'            => '',
+                        'permit'                => 1,
+                        'menu'                  => 0,
+                        'icon'                  => '',
+                        'sort'                  => 0,
+                        'item'                  => 'goods_comment_updated',
+                        'parents'               => ['Goods','comment',],
+                    ],
+
                     'goods_comment_reply'   => [
                         'name'                  => '回复评价',
                         'url'                   => 'goods.comment.reply',
