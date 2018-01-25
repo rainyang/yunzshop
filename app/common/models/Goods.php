@@ -132,9 +132,15 @@ class Goods extends BaseModel
         return $this->hasOne('app\common\models\goods\GoodsDispatch');
     }
 
+    //该条关联可能出错了不是一对一关系 是一对多
     public function hasOneDiscount()
     {
         return $this->hasOne('app\common\models\goods\Discount');
+    }
+
+    public function hasManyDiscount()
+    {
+        return $this->hasMany('app\common\models\goods\Discount');
     }
 
     public function hasManyGoodsCategory()
@@ -150,6 +156,11 @@ class Goods extends BaseModel
     public function hasOneSale()
     {
         return $this->hasOne(app('GoodsManager')->make('GoodsSale'), 'goods_id', 'id');
+    }
+
+    public function hasOneGoodsCoupon()
+    {
+        return $this->hasOne('app\common\models\goods\GoodsCoupon', 'goods_id', 'id');
     }
 
     public function scopeIsPlugin($query)

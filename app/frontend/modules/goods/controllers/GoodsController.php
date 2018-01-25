@@ -13,7 +13,8 @@ use app\frontend\modules\goods\services\GoodsService;
 use Illuminate\Support\Facades\DB;
 use app\common\services\goods\SaleGoods;
 use app\common\services\goods\VideoDemandCourseGoods;
-
+use app\common\models\MemberShopInfo;
+use app\frontend\modules\goods\services\GoodsDiscountService;
 /**
  * Created by PhpStorm.
  * Author: 芸众商城 www.yunzshop.com
@@ -31,6 +32,10 @@ class GoodsController extends ApiController
         if (!$id) {
             return $this->errorJson('请传入正确参数.');
         }
+
+        $member = MemberShopInfo::uniacid()->ofMemberId(\YunShop::app()->getMemberId())->withLevel()->first();
+
+
         //$goods = new Goods();
         $goodsModel = Goods::uniacid()->with(['hasManyParams' => function ($query) {
             return $query->select('goods_id', 'title', 'value');
@@ -38,11 +43,14 @@ class GoodsController extends ApiController
             return $query->select('id', 'goods_id', 'title', 'description');
         }])->with(['hasManyOptions' => function ($query) {
             return $query->select('id', 'goods_id', 'title', 'thumb', 'product_price', 'market_price', 'stock', 'specs', 'weight');
+        }])->with(['hasManyDiscount' => function ($query) use ($member) {
+            return $query->where('level_id', $member->level_id);
         }])
         ->with('hasOneShare')
-        ->with('hasOneDiscount')
         ->with('hasOneGoodsDispatch')
         ->with('hasOnePrivilege')
+        ->with('hasOneSale')
+        ->with('hasOneGoodsCoupon')
         ->with(['hasOneBrand' => function ($query) {
             return $query->select('id', 'name');
         }])
@@ -56,6 +64,13 @@ class GoodsController extends ApiController
             return $this->errorJson('商品已下架.');
         }
 
+        //商品营销
+        $goodsModel->goods_sale = $this->getGoodsSale($goodsModel);
+        //商品会员优惠
+        $goodsModel->member_discount = $this->getDiscount($goodsModel, $member);
+        //商品购买优惠卷赠送
+        $goodsModel->hasOneGoodsCoupon->coupon_count = count($goodsModel->hasOneGoodsCoupon->coupon);
+// dd($goodsModel->toArray());
         $goodsModel->content = html_entity_decode($goodsModel->content);
 
         if ($goodsModel->has_option) {
@@ -114,7 +129,6 @@ class GoodsController extends ApiController
         //判断该商品是否是视频插件商品
         $videoDemand = new VideoDemandCourseGoods();
         $goodsModel->is_course = $videoDemand->isCourse($id);
-
 
         //return $this->successJson($goodsModel);
         return $this->successJson('成功', $goodsModel);
@@ -248,5 +262,90 @@ class GoodsController extends ApiController
             ->orderBy('id', 'desc')
             ->get();
         return $this->successJson('获取推荐商品成功', $list);
+    }
+
+    /**
+     * 会员折扣后的价格
+     * @param  [type] $discountModel [description]
+     * @param  [type] $member        [description]
+     * @return [type]                [description]
+     */
+    public function getDiscount($goodsModel, $memberModel)
+    {
+        $discountModel = $goodsModel->hasManyDiscount[0];
+// dd($discountModel);
+// dd($goodsModel);
+        switch ($discountModel->discount_method) {
+            case 1:
+                $discount_value = $goodsModel->price * ($discountModel->discount_value / 10);
+                break;
+            case 2:
+                $discount_value = $goodsModel->price - $discountModel->discount_value;
+                break;
+            default:
+                $discount_value = 0;
+                break;
+        }
+// dd($discount_value);
+        if ($memberModel->level) {
+
+            if (!$discount_value) {
+                $discount_value = $goodsModel->price * ($memberModel->level->discount / 10);
+            }
+
+            $data = [
+                'level_name' => $memberModel->level->level_name,
+                'discount_value' => $discount_value,
+
+            ];
+        } else {
+            
+            $data = [
+                'level_name' => '普通会员',
+                'discount_value' => $discount_value,
+
+            ];
+
+        }
+
+        return $data['discount_value'] ? $data : [];
+    }
+
+    /**
+     * 商品的营销
+     * @param  [type] $goodsModel [description]
+     * @return [type]             [description]
+     */
+    public function getGoodsSale($goodsModel)
+    {
+
+        $data = [];
+        if ($goodsModel->hasOneSale->ed_num) {
+            $data['ed_num'] = '本商品满'.$goodsModel->hasOneSale->ed_num.'件包邮';
+        }
+
+        if ($goodsModel->hasOneSale->ed_money) {
+            $data['ed_money'] = '本商品满￥'.$goodsModel->hasOneSale->ed_money.'元包邮';
+        }
+
+        if (ceil($goodsModel->hasOneSale->ed_full) || ceil($goodsModel->hasOneSale->ed_reduction)) {
+            $data['goods_full_reduction'] = '本商品满￥'.$goodsModel->hasOneSale->ed_full.'元立减￥'.$goodsModel->hasOneSale->ed_reduction.'元';
+        }
+
+        if ($goodsModel->hasOneSale->award_balance) {
+            $data['award_balance'] = $goodsModel->hasOneSale->award_balance;
+        }
+
+        if ($goodsModel->hasOneSale->point) {
+            $data['point'] = $goodsModel->hasOneSale->point;
+        }
+
+        if ($goodsModel->hasOneSale->max_point_deduct) {
+            $data['max_point_deduct'] = $goodsModel->hasOneSale->max_point_deduct;
+        }
+
+        $data['sale_count'] = count($data);
+        
+        return $data;
     }
 }
