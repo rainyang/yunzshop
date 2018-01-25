@@ -132,7 +132,10 @@ class BatchSendController extends BaseController
                 $this->err_array[] = $order_sn;
                 continue;
             }
-            $express_model = new Express();
+            $express_model = Express::where('order_id',$order->id)->first();
+
+            !$express_model && $express_model = new Express();
+
             $express_model->order_id = $order->id;
             $express_model->express_company_name = $send_data['express_company_name'];
             $express_model->express_code = $send_data['express_code'];

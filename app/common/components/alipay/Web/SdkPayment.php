@@ -593,6 +593,7 @@ class SdkPayment
     public function withdraw($collectioner_account, $collectioner_name, $out_trade_no, $batch_no)
     {
         $pay = Setting::get('shop.pay');
+        Utils::dataDecrypt($pay);
 \Log::debug('----提现类型----', [$pay['api_version']]);
         switch ($pay['api_version']) {
             case 1:
@@ -615,8 +616,8 @@ class SdkPayment
             'service' => $service,
             'partner' => $this->partner,
             'notify_url' => $notify_url,
-            'email' => Utils::dataDecrypt($pay['alipay_number']),
-            'account_name' => Utils::dataDecrypt($pay['alipay_name']),
+            'email' => $pay['alipay_number'],
+            'account_name' => $pay['alipay_name'],
             'pay_date' => date('Ymd', time()),
             'batch_no' => $batch_no,
             'batch_fee' => $this->total_fee,
@@ -636,9 +637,9 @@ class SdkPayment
         $res['message'] = '系统异常,提现失败';
 
         $aop = new AopClient();
-        $aop->appId = Utils::dataDecrypt($pay['alipay_app_id']);
-        $aop->rsaPrivateKey = Utils::dataDecrypt($pay['rsa_private_key']);
-        $aop->alipayrsaPublicKey= Utils::dataDecrypt($pay['rsa_public_key']);
+        $aop->appId = $pay['alipay_app_id'];
+        $aop->rsaPrivateKey = $pay['rsa_private_key'];
+        $aop->alipayrsaPublicKey= $pay['rsa_public_key'];
         $aop->signType = 'RSA2';
 
         $request = new AlipayFundTransToaccountTransferRequest();
@@ -648,7 +649,7 @@ class SdkPayment
             'payee_type' => $this->payee_type,
             'payee_account' => $collectioner_account,
             'amount'     => $this->total_fee,
-            'payer_show_name' => Utils::dataDecrypt($pay['alipay_name']),
+            'payer_show_name' => $pay['alipay_name'],
             'payee_real_name' => $collectioner_name,
             'remark' => '佣金提现'
         ];
@@ -702,6 +703,7 @@ class SdkPayment
     {
         $service = 'batch_trans_notify';
         $pay = Setting::get('shop.pay');
+        Utils::dataDecrypt($pay);
 
         $notify_url = Url::shopSchemeUrl('payment/alipay/withdrawNotifyUrl.php');
 
@@ -720,8 +722,8 @@ class SdkPayment
             'service' => $service,
             'partner' => $this->partner,
             'notify_url' => $notify_url,
-            'email' => Utils::dataDecrypt($pay['alipay_number']),
-            'account_name' => Utils::dataDecrypt($pay['alipay_name']),
+            'email' => $pay['alipay_number'],
+            'account_name' => $pay['alipay_name'],
             'pay_date' => date('Ymd', time()),
             'batch_no' => $batch_no,
             'batch_fee' => $total_fee,
