@@ -101,6 +101,11 @@ class GoodsPosterController extends ApiController
         $target = $this->mergePriceImage($target, $priceImg);
 
 
+        // header ( "Content-type: image/png" );
+        // imagePng ( $target );
+        // exit();
+
+
         imagepng($target, $this->getGoodsPosterPath());
         imagedestroy($target);
 
@@ -195,6 +200,7 @@ class GoodsPosterController extends ApiController
     {
         putenv('GDFONTPATH='.IA_ROOT.'/addons/yun_shop/static/fonts');
         $font = "source_han_sans";
+
         // $font="c:/windows/fonts/simhei.ttf";
 
         $text = $this->autowrap(16, 0, $font, $text, 320);
@@ -246,24 +252,28 @@ class GoodsPosterController extends ApiController
         $color  = imagecolorallocate($target, 107, 107, 107);
         //设置白色背景色
         imagefill($priceImg,0,0,$white);
-        //设置线条
-        imageline($priceImg, 150, 23, 250, 25, $color);
+
             
 
         putenv('GDFONTPATH='.IA_ROOT.'/addons/yun_shop/static/fonts');
+        
         $font = "source_han_sans";
 
-            // $font="c:/windows/fonts/simhei.ttf";
+        // $font="c:/windows/fonts/simhei.ttf";
             
         $price = '￥'.$this->goodsModel->price;
         $market_price = '￥'.$this->goodsModel->market_price;
         $black = imagecolorallocate($priceImg, 241,83,83);//当前价格颜色
 
+        $price_box = imagettfbbox(20, 0, $font, $price);
+        $market_price_box = imagettfbbox(14, 0, $font, $market_price);
         $gray = imagecolorallocate($priceImg, 107,107,107);//原价颜色
 
+        //设置删除线条
+        imageline($priceImg, $price_box[2] + 10, 23, $price_box[2]+$market_price_box[2] + 10, 25, $color);
 
         imagettftext($priceImg, 20, 0, 0, 30, $black, $font, $price);
-        imagettftext($priceImg, 14, 0, 150, 30, $gray, $font, $market_price);
+        imagettftext($priceImg, 14, 0, $price_box[2]+5, 30, $gray, $font, $market_price);
 
         // imagedestroy($priceImg);
 
@@ -277,7 +287,6 @@ class GoodsPosterController extends ApiController
      */
     private function generateQr()
     {
-// /'.\YunShop::app()->uniacid
         $path = storage_path('app/public/goods/qrcode/'.\YunShop::app()->uniacid);
         if (!is_dir($path)) {
             load()->func('file');
@@ -300,7 +309,7 @@ class GoodsPosterController extends ApiController
      * 字体换行
      * @param  [int] $fontsize [字体大小]
      * @param  [int] $angle    [角度]
-     * @param  [string] $fontface [字体名称]
+     * @param  [string] $fontface [字体类型]
      * @param  [string] $string   [字符串]
      * @param  [int] $width    [预设宽度]
      * @return [string]           [处理好的字符串]
