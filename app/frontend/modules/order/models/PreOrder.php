@@ -281,6 +281,10 @@ class PreOrder extends Order
         $result = $this->orderGoods->sum(function ($aOrderGoods) {
             return $aOrderGoods->getPrice();
         });
+
+        //订单属性添加商品价格属性
+        $this->goods_price = $result;
+
         return $result;
     }
 
