@@ -68,7 +68,7 @@ class GoodsController extends ApiController
         $goodsModel->goods_sale = $this->getGoodsSale($goodsModel);
         //商品会员优惠
         $goodsModel->member_discount = $this->getDiscount($goodsModel, $member);
-// dd($goodsModel->toArray());
+dd($goodsModel->toArray());
         $goodsModel->content = html_entity_decode($goodsModel->content);
 
         if ($goodsModel->has_option) {
@@ -317,67 +317,85 @@ class GoodsController extends ApiController
     public function getGoodsSale($goodsModel)
     {
 
-        $data = [
-            'first_strip' => '',
-            'ed_num' => '',
-            'ed_money' => '',
-            'goods_full_reduction' => '',
-            'award_balance' => '',
-            'point' => '',
-            'max_point_deduct' => '',
-            'coupon' => '',
-            'sale_count' => 0,
-        ];
-        if (ceil($goodsModel->hasOneSale->ed_full) || ceil($goodsModel->hasOneSale->ed_reduction)) {
-            $data['goods_full_reduction'] = '本商品满￥'.$goodsModel->hasOneSale->ed_full.'元立减￥'.$goodsModel->hasOneSale->ed_reduction.'元';
-            $data['first_strip'] = $data['goods_full_reduction'];
+        $set = \Setting::get('point.set');
 
+        $data = [
+            'first_strip' => '', //默认显示
+            'ed_num' => 0,      //满件包邮
+            'ed_money' => 0,    //满额包邮
+            'ed_full' => 0,      //单品满额
+            'ed_reduction' => 0, //单品立减
+            'award_balance' => 0, //赠送余额
+            'point' => 0,        //赠送积分
+            'max_point_deduct' => '', //积分抵扣
+            'coupon' => '',         //商品优惠券赠送
+            'sale_count' => 0,      //活动总数
+        ];
+
+
+        if (ceil($goodsModel->hasOneSale->ed_full) && ceil($goodsModel->hasOneSale->ed_reduction)) {
+            $data['ed_full'] = $goodsModel->hasOneSale->ed_full;
+            $data['ed_reduction'] = $goodsModel->hasOneSale->ed_reduction;
+            $data['first_strip'] = $data['ed_full'];
             $data['sale_count'] += 1;
 
         }
 
         if ($goodsModel->hasOneSale->award_balance) {
-            $data['award_balance'] = '单件赠送余额'.$goodsModel->hasOneSale->award_balance;
+            $data['award_balance'] = $goodsModel->hasOneSale->award_balance;
             $data['first_strip'] = $data['award_balance'];
 
             $data['sale_count'] += 1;
 
         }
 
-        if ($goodsModel->hasOneSale->point) {
-            $data['point'] = '单件赠送积分'.$goodsModel->hasOneSale->point;
-            $data['first_strip'] = $data['point'];
+        if ($goodsModel->hasOneSale->point !== '0') {
 
-            $data['sale_count'] += 1;
+            if ($goodsModel->hasOneSale->point) {
+                $data['point'] = $goodsModel->hasOneSale->point;
+                $data['sale_count'] += 1;
+
+            } else if ($set['give_point']) {
+                $data['point'] = $set['give_point'];
+                $data['sale_count'] += 1;
+            }
 
         }
 
-        if ($goodsModel->hasOneSale->max_point_deduct) {
-            $data['max_point_deduct'] = '积分最高抵扣'.$goodsModel->hasOneSale->max_point_deduct;
-            $data['first_strip'] = $data['max_point_deduct'];
-            $data['sale_count'] += 1;
+        if ($set['point_deduct']) {
+
+            if ($goodsModel->hasOneSale->max_point_deduct) {
+
+                $data['max_point_deduct'] = $goodsModel->hasOneSale->max_point_deduct;
+
+            } else {
+                $data['max_point_deduct'] = $set['money_max'].'%';
+
+            }
+                $data['sale_count'] += 1;
 
         }
 
         if ($goodsModel->hasOneGoodsCoupon->is_give) {
 
-            $data['coupon'] = $goodsModel->hasOneGoodsCoupon->send_type ? '商品订单完成返优惠卷' : '每月返优惠卷,返'.$goodsModel->hasOneGoodsCoupon->send_num.'个月';
+            $data['coupon'] = $goodsModel->hasOneGoodsCoupon->send_type ? '商品订单完成返优惠卷' : '每月一号返优惠卷';
             $data['first_strip'] = $data['coupon'];
             $data['sale_count'] += 1;
         }
 
         if ($goodsModel->hasOneSale->ed_num) {
-            $data['ed_num'] = '本商品满'.$goodsModel->hasOneSale->ed_num.'件包邮';
+            $data['ed_num'] = $goodsModel->hasOneSale->ed_num;
             $data['first_strip'] = $data['ed_num'];
             $data['sale_count'] += 1;
         }
 
         if ($goodsModel->hasOneSale->ed_money) {
-            $data['ed_money'] = '本商品满￥'.$goodsModel->hasOneSale->ed_money.'元包邮';
+            $data['ed_money'] = $goodsModel->hasOneSale->ed_money;
             $data['first_strip'] = $data['ed_money'];
             $data['sale_count'] += 1;
 
         }
+
         return $data;
     }
 }

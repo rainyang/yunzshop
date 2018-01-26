@@ -21,14 +21,22 @@ class GoodsPosterController extends ApiController
     private $shopSet;
     private $goodsModel;
 
+    //画布大小
+    // private $canvas = [
+    //     'width' => 338,
+    //     'height' => 485,
+    // ];
+
     private $shopText = [
-        'left' => 310,
-        'top'  => 90
+        'left' => 160,
+        'top'  => 45,
+        'type' => 0,
     ];
 
     private $goodsText = [
-        'left' => 80,
-        'top' => 830,
+        'left' => 10,
+        'top' => 400,
+        'type' => 1,
     ];
 
     public function generateGoodsPoster()
@@ -46,7 +54,7 @@ class GoodsPosterController extends ApiController
         $imgPath = $this->get_lt();
         
         $urlPath =  request()->getSchemeAndHttpHost() . '/' . substr($imgPath, strpos($imgPath, 'addons'));
-        
+            
         return $this->successJson('ok', $urlPath);
 
     }
@@ -61,13 +69,13 @@ class GoodsPosterController extends ApiController
         set_time_limit(0);
         @ini_set('memory_limit', '256M');
 
-        $target = imagecreatetruecolor(640, 1008);
+        $target = imagecreatetruecolor(335, 485);
         $white  = imagecolorallocate($target, 255, 255, 255);
         $color  = imagecolorallocate($target, 226, 226, 226);
         //设置白色背景色
         imagefill($target,0,0,$white);
         //设置线条
-        imageline( $target, 0, 130, 640, 130, $color);
+        imageline( $target, 0, 60, 485, 60, $color);
 
         $shopLogo = imagecreatefromstring(file_get_contents(yz_tomedia($this->shopSet['logo'])));
 
@@ -85,7 +93,6 @@ class GoodsPosterController extends ApiController
         $goodsQr =  $this->generateQr();
 
         $target = $this->mergeLogoImage($target, $shopLogo);
-        $target = $this->mergeQrImage($target, $goodsQr);
 
 
         if ($this->goodsModel->hasOneShare->share_title) {
@@ -100,10 +107,11 @@ class GoodsPosterController extends ApiController
 
         $target = $this->mergePriceImage($target, $priceImg);
 
+        $target = $this->mergeQrImage($target, $goodsQr);
 
-        // header ( "Content-type: image/png" );
-        // imagePng ( $target );
-        // exit();
+        header ( "Content-type: image/png" );
+        imagePng ( $target );
+        exit();
 
 
         imagepng($target, $this->getGoodsPosterPath());
@@ -135,9 +143,7 @@ class GoodsPosterController extends ApiController
         $width  = imagesx($img);
         $height = imagesy($img);
 
-        $narrowW = 630 > $width ? $width : 550;
-        $narrowH = 700 > $height ? $height : 550;
-        imagecopyresized($target, $img, (640-$narrowW) / 2, (900-$narrowH) / 2, 0, 0, $narrowW, $narrowH, $width, $height);
+        imagecopyresized($target, $img, 31.5, 80, 0, 0, 272, 272, $width, $height);
         imagedestroy($img);
 
         return $target;
@@ -152,7 +158,7 @@ class GoodsPosterController extends ApiController
     {
         $width  = imagesx($img);
         $height = imagesy($img);
-        imagecopyresized($target, $img, 250, 60, 0, 0, 50, 50, $width, $height);
+        imagecopyresized($target, $img, 122, 20, 0, 0, 31, 31, $width, $height);
         imagedestroy($img);
 
         return $target;
@@ -168,7 +174,7 @@ class GoodsPosterController extends ApiController
     {
         $width  = imagesx($img);
         $height = imagesy($img);
-        imagecopy($target, $img, 80, 900, 0, 0, $width, $height);
+        imagecopy($target, $img, 10, 430, 0, 0, $width, $height);
         imagedestroy($img);
 
         return $target;
@@ -183,7 +189,7 @@ class GoodsPosterController extends ApiController
     {
         $width  = imagesx($img);
         $height = imagesy($img);
-        imagecopy($target, $img, 440, 800, 0, 0, $width, $height);
+        imagecopy($target, $img, 230, 380, 0, 0, $width, $height);
         imagedestroy($img);
 
         return $target;
@@ -199,12 +205,13 @@ class GoodsPosterController extends ApiController
     private function mergeText($target, $params, $text)
     {
         putenv('GDFONTPATH='.IA_ROOT.'/addons/yun_shop/static/fonts');
-        $font = "source_han_sans";
+        // $font = "source_han_sans";
 
-        // $font="c:/windows/fonts/simhei.ttf";
+        $font="c:/windows/fonts/simhei.ttf";
 
-        $text = $this->autowrap(16, 0, $font, $text, 320);
-
+        if ($params['type']) {
+            $text = $this->autowrap(16, 0, $font, $text, 187);
+        }
 
         $black = imagecolorallocate($target,  51, 51, 51);//文字颜色
         imagettftext($target, 16, 0, $params['left'], $params['top'], $black, $font, $text);
@@ -257,9 +264,9 @@ class GoodsPosterController extends ApiController
 
         putenv('GDFONTPATH='.IA_ROOT.'/addons/yun_shop/static/fonts');
         
-        $font = "source_han_sans";
+        // $font = "source_han_sans";
 
-        // $font="c:/windows/fonts/simhei.ttf";
+        $font="c:/windows/fonts/simhei.ttf";
             
         $price = '￥'.$this->goodsModel->price;
         $market_price = '￥'.$this->goodsModel->market_price;
@@ -296,10 +303,10 @@ class GoodsPosterController extends ApiController
 
         if (!is_file($path.'/'.$file)) {
 
-            \QrCode::format('png')->size(150)->generate(yzAppFullUrl('goods/'.$this->goodsModel->id), $path.'/'.$file);
+            \QrCode::format('png')->size(79)->generate(yzAppFullUrl('goods/'.$this->goodsModel->id), $path.'/'.$file);
         }
-
         $img = imagecreatefromstring(file_get_contents($path.'/'.$file));
+        // unlink($path.'/'.$file);
 
         return $img;
     }
@@ -317,6 +324,7 @@ class GoodsPosterController extends ApiController
     private function autowrap($fontsize, $angle, $fontface, $string, $width) 
     {
         $content = "";
+        $num = 0;
         // 将字符串拆分成一个个单字 保存到数组 letter 中
         for ($i=0;$i<mb_strlen($string);$i++) {
             $letter[] = mb_substr($string, $i, 1);
@@ -326,6 +334,12 @@ class GoodsPosterController extends ApiController
             $testbox = imagettfbbox($fontsize, $angle, $fontface, $teststr);
             // 判断拼接后的字符串是否超过预设的宽度
             if (($testbox[2] > $width) && ($content !== "")) {
+                $num += 1;
+                if ($num > 1) {
+                    $content .= '...';
+                    // dd($content);
+                    return $content;
+                }
                 $content .= "\n";
             }
             $content .= $l;
