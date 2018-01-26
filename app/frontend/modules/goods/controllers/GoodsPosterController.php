@@ -109,9 +109,9 @@ class GoodsPosterController extends ApiController
 
         $target = $this->mergeQrImage($target, $goodsQr);
 
-        header ( "Content-type: image/png" );
-        imagePng ( $target );
-        exit();
+        // header ( "Content-type: image/png" );
+        // imagePng ( $target );
+        // exit();
 
 
         imagepng($target, $this->getGoodsPosterPath());
@@ -205,9 +205,9 @@ class GoodsPosterController extends ApiController
     private function mergeText($target, $params, $text)
     {
         putenv('GDFONTPATH='.IA_ROOT.'/addons/yun_shop/static/fonts');
-        // $font = "source_han_sans";
+        $font = "source_han_sans";
 
-        $font="c:/windows/fonts/simhei.ttf";
+        // $font="c:/windows/fonts/simhei.ttf";
 
         if ($params['type']) {
             $text = $this->autowrap(16, 0, $font, $text, 187);
@@ -264,9 +264,9 @@ class GoodsPosterController extends ApiController
 
         putenv('GDFONTPATH='.IA_ROOT.'/addons/yun_shop/static/fonts');
         
-        // $font = "source_han_sans";
+        $font = "source_han_sans";
 
-        $font="c:/windows/fonts/simhei.ttf";
+        // $font="c:/windows/fonts/simhei.ttf";
             
         $price = '￥'.$this->goodsModel->price;
         $market_price = '￥'.$this->goodsModel->market_price;
