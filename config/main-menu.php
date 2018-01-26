@@ -2507,13 +2507,23 @@ return [
                 'parents'           => ['system', 'Setting',],
                 'child'         => [
 
-                    'setting_diy_temp'  => [
+                    'setting_diy_temp_choose'  => [
+                        'name'              => '选择模版（白名单）',
+                        'url'               => 'setting.wechat-notice.returnJson',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'item'              => 'setting_diy_temp_choose',
+                        'parents'           => ['system','setting_diy_temp'],
+                    ],
+
+                    'setting_diy_temp_index'  => [
                         'name'              => '浏览列表',
                         'url'               => 'setting.diy-temp.index',
                         'url_params'        => '',
                         'permit'            => 1,
                         'menu'              => 0,
-                        'item'              => 'setting_diy_temp',
+                        'item'              => 'setting_diy_temp_index',
                         'parents'           => ['system','setting_diy_temp'],
                     ],
                     'setting_diy_temp_add'  => [
