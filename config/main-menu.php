@@ -2352,6 +2352,17 @@ return [
                                 'parents'           => ['system', 'Setting','setting_shop_slide'],
                             ],
 
+                            'setting_shop_slide_add' => [
+                                'name'              => '添加幻灯片',
+                                'url'               => 'setting.slide.create',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => '',
+                                'item'              => 'setting_shop_slide_add',
+                                'parents'           => ['system', 'Setting','setting_shop_slide'],
+                            ],
+
                             'setting_shop_slide_edit' => [
                                 'name'              => '修改幻灯片',
                                 'url'               => 'setting.slide.edit',
