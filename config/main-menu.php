@@ -2517,6 +2517,17 @@ return [
                         'parents'           => ['system','setting_diy_temp'],
                     ],
 
+
+                    'setting_diy_temp_choose2'  => [
+                        'name'              => '选择模版（白名单）',
+                        'url'               => 'setting.diy-temp.tpl',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'item'              => 'setting_diy_temp_choose',
+                        'parents'           => ['system','setting_diy_temp'],
+                    ],
+
                     'setting_diy_temp_index'  => [
                         'name'              => '浏览列表',
                         'url'               => 'setting.diy-temp.index',
