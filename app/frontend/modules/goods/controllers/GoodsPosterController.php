@@ -189,7 +189,7 @@ class GoodsPosterController extends ApiController
     {
         $width  = imagesx($img);
         $height = imagesy($img);
-        imagecopy($target, $img, 230, 380, 0, 0, $width, $height);
+        imagecopy($target, $img, 220, 360, 0, 0, $width, $height);
         imagedestroy($img);
 
         return $target;
@@ -303,7 +303,7 @@ class GoodsPosterController extends ApiController
 
         if (!is_file($path.'/'.$file)) {
 
-            \QrCode::format('png')->size(79)->generate(yzAppFullUrl('goods/'.$this->goodsModel->id), $path.'/'.$file);
+            \QrCode::format('png')->size(120)->generate(yzAppFullUrl('goods/'.$this->goodsModel->id), $path.'/'.$file);
         }
         $img = imagecreatefromstring(file_get_contents($path.'/'.$file));
         // unlink($path.'/'.$file);
