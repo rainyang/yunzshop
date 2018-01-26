@@ -68,7 +68,7 @@ class GoodsController extends ApiController
         $goodsModel->goods_sale = $this->getGoodsSale($goodsModel);
         //商品会员优惠
         $goodsModel->member_discount = $this->getDiscount($goodsModel, $member);
-dd($goodsModel->toArray());
+// dd($goodsModel->toArray());
         $goodsModel->content = html_entity_decode($goodsModel->content);
 
         if ($goodsModel->has_option) {
