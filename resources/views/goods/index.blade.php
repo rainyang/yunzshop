@@ -354,6 +354,11 @@
                 cache: false,
                 success: function ($data) {
                     //console.log($data);
+                    objData = JSON.parse($data)
+
+                    if (objData.status == -1) {
+                      alert(objData.msg);
+                    }
                     location.reload();
                 }
             })
