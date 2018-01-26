@@ -2508,25 +2508,25 @@ return [
                 'child'         => [
 
                     'setting_diy_temp'  => [
-                        'name'              => '浏览',
+                        'name'              => '浏览列表',
                         'url'               => 'setting.diy-temp.index',
                         'url_params'        => '',
                         'permit'            => 1,
                         'menu'              => 0,
-                        'item'              => 'setting.diy-temp.add',
+                        'item'              => 'setting_diy_temp',
                         'parents'           => ['system','setting_diy_temp'],
                     ],
                     'setting_diy_temp_add'  => [
-                        'name'              => '添加',
-                        'url'               => 'setting.wechat-notice.add',
+                        'name'              => '添加模版',
+                        'url'               => 'setting.diy-temp.add',
                         'url_params'        => '',
                         'permit'            => 1,
                         'menu'              => 0,
-                        'item'              => 'setting_wechat_notice_add',
+                        'item'              => 'setting_diy_temp_add',
                         'parents'           => ['system','setting_diy_temp'],
                     ],
                     'setting_diy_temp_edit'  => [
-                        'name'              => '修改',
+                        'name'              => '修改模版',
                         'url'               => 'setting.diy-temp.edit',
                         'url_params'        => '',
                         'permit'            => 1,
@@ -2535,7 +2535,7 @@ return [
                         'parents'           => ['system','setting_diy_temp'],
                     ],
                     'setting_diy_temp_delete'  => [
-                        'name'              => '删除',
+                        'name'              => '删除模版',
                         'url'               => 'setting.diy-temp.del',
                         'url_params'        => '',
                         'permit'            => 1,
