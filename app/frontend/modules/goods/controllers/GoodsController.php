@@ -319,32 +319,50 @@ class GoodsController extends ApiController
     public function getGoodsSale($goodsModel)
     {
 
-        $data = [];
+        $data = [
+            'ed_num' => '',
+            'ed_money' => '',
+            'goods_full_reduction' => '',
+            'award_balance' => '',
+            'point' => '',
+            'max_point_deduct' => '',
+            'sale_count' => 0,
+        ];
         if ($goodsModel->hasOneSale->ed_num) {
             $data['ed_num'] = '本商品满'.$goodsModel->hasOneSale->ed_num.'件包邮';
+            $data['sale_count'] += 1;
         }
 
         if ($goodsModel->hasOneSale->ed_money) {
             $data['ed_money'] = '本商品满￥'.$goodsModel->hasOneSale->ed_money.'元包邮';
+            $data['sale_count'] += 1;
+
         }
 
         if (ceil($goodsModel->hasOneSale->ed_full) || ceil($goodsModel->hasOneSale->ed_reduction)) {
             $data['goods_full_reduction'] = '本商品满￥'.$goodsModel->hasOneSale->ed_full.'元立减￥'.$goodsModel->hasOneSale->ed_reduction.'元';
+            $data['sale_count'] += 1;
+
         }
 
         if ($goodsModel->hasOneSale->award_balance) {
             $data['award_balance'] = $goodsModel->hasOneSale->award_balance;
+            $data['sale_count'] += 1;
+
         }
 
         if ($goodsModel->hasOneSale->point) {
             $data['point'] = $goodsModel->hasOneSale->point;
+            $data['sale_count'] += 1;
+
         }
 
         if ($goodsModel->hasOneSale->max_point_deduct) {
             $data['max_point_deduct'] = $goodsModel->hasOneSale->max_point_deduct;
+            $data['sale_count'] += 1;
+            
         }
 
-        $data['sale_count'] = count($data);
         
         return $data;
     }
