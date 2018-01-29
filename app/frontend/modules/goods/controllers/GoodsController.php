@@ -332,6 +332,7 @@ class GoodsController extends ApiController
         $data = [
             'first_strip_key' => 0,
             'point_name' => $point_name, //积分名称
+            'love_name' => '爱心值',
             'ed_num' => 0,      //满件包邮
             'ed_money' => 0,    //满额包邮
             'ed_full' => 0,      //单品满额
@@ -340,6 +341,8 @@ class GoodsController extends ApiController
             'point' => 0,        //赠送积分
             'max_point_deduct' => 0, //积分抵扣
             'coupon' => 0,         //商品优惠券赠送
+            'deduction_proportion' => 0, //爱心值最高抵扣
+            'award_proportion' => 0, //奖励爱心值
             'sale_count' => 0,      //活动总数
         ];
 
@@ -419,7 +422,7 @@ class GoodsController extends ApiController
 
         $exist_love = app('plugins')->isEnabled('love');
         if ($exist_love) {
-            $love_goods = $this->getLoveSet($goodsModel->id);
+            $love_goods = $this->getLoveSet($goodsModel);
             $data['love_name'] = $love_goods['name'];
             if ($love_goods['deduction']) {
                 $data['deduction_proportion'] = $love_goods['deduction_proportion'];
@@ -440,7 +443,7 @@ class GoodsController extends ApiController
     /**
      * 获取商品爱心值设置
      */
-    public static function getLoveSet($goods_id)
+    public static function getLoveSet($goods)
     {
 
 
@@ -452,17 +455,24 @@ class GoodsController extends ApiController
             'award_proportion' => 0, //奖励爱心值
         ];
 
-        $item = GoodsLove::ofGoodsId($goods_id)->first();
+        $item = GoodsLove::ofGoodsId($goods->id)->first();
+        // dd($item);
         if ($item->deduction) {
             $deduction_proportion = floor($item->deduction_proportion) ? $item->deduction_proportion : \Setting::get('love.deduction_proportion');
+
+            $price = $goods->price * ($deduction_proportion / 100);
+
             $data['deduction'] = $item->deduction;
-            $data['deduction_proportion'] = $deduction_proportion.'%';
+            $data['deduction_proportion'] = $price;
         }
 
         if ($item->award) {
             $award_proportion = floor($item->award_proportion) ? $item->award_proportion : \Setting::get('love.award_proportion');
+
+            $award_price = $goods->price * ($award_proportion / 100);
+
             $data['award'] = $item->award;
-            $data['award_proportion'] = $item->award_proportion.'%';
+            $data['award_proportion'] = $award_price;
 
         }
 
