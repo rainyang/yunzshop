@@ -183,7 +183,6 @@ class ShopController extends BaseController
     {
         $noticeConfig = \Config::get('notice.not-send');
         $notice = Setting::get('shop.notice');
-        dump($notice);
 //        $salers = []; //订单通知的商家列表,数据如何取待定?
         //$new_type = []; //通知方式的数组,数据如何来的待定?
         $requestModel = \YunShop::request()->yz_notice;
@@ -191,7 +190,7 @@ class ShopController extends BaseController
         $temp_list = MessageTemp::select('id', 'title')->get();
 
         if (!empty($requestModel)) {
-            dump($requestModel);
+
             if (Setting::set('shop.notice', $requestModel)) {
                 return $this->message(' 消息提醒设置成功', Url::absoluteWeb('setting.shop.notice'));
             } else {
