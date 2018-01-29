@@ -24,8 +24,6 @@ class UpdateController extends BaseController
 
         //删除非法文件
         $this->deleteFile();
-        //修复支付宝提现数据加密
-        $this->dataSecret();
 
         $key = Setting::get('shop.key')['key'];
         $secret = Setting::get('shop.key')['secret'];
@@ -51,6 +49,9 @@ class UpdateController extends BaseController
         }
 
         krsort($list);
+
+        //修复支付宝提现数据加密
+        $this->dataSecret();
 
         return view('update.upgrad', [
             'list' => $list,
