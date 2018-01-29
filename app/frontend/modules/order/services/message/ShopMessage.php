@@ -124,12 +124,10 @@ class ShopMessage extends Message
             if (!$temp_id) {
                 continue;
             }
-            \Log::info('AAAAAAAAAA', $goods);
-            \Log::info('BBBBBBBBBB', $this->getGoodsTitle($goods));
             $params = [
                 ['name' => '会员昵称', 'value' => $this->order->belongsToMember->nickname],
                 ['name' => '订单编号', 'value' => $this->order->order_sn],
-                ['name' => '商品详情（含规格）', 'value' => $this->getGoodsTitle($goods)],
+                ['name' => '商品名称（含规格）', 'value' => $this->getGoodsTitle($goods)],
                 ['name' => '商品金额', 'value' => $goods->price],
                 ['name' => '商品数量', 'value' => $goods->total],
                 ['name' => '订单状态', 'value' => $this->order->status_name],
