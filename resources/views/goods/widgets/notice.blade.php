@@ -58,16 +58,16 @@
 
 
         <label class="checkbox-inline">
-            <input type="checkbox" value="0" name='widgets[notice][type][]'
-                   @if (in_array(0, $noticetype)) checked @endif /> 下单通知
-        </label>
-        <label class="checkbox-inline">
             <input type="checkbox" value="1" name='widgets[notice][type][]'
-                   @if (in_array(1, $noticetype)) checked @endif /> 付款通知
+                   @if (in_array(1, $noticetype)) checked @endif /> 下单通知
         </label>
         <label class="checkbox-inline">
             <input type="checkbox" value="2" name='widgets[notice][type][]'
-                   @if (in_array(2, $noticetype)) checked @endif /> 买家收货通知
+                   @if (in_array(2, $noticetype)) checked @endif /> 付款通知
+        </label>
+        <label class="checkbox-inline">
+            <input type="checkbox" value="3" name='widgets[notice][type][]'
+                   @if (in_array(3, $noticetype)) checked @endif /> 买家收货通知
         </label>
         <div class="help-block">通知商家方式</div>
 
