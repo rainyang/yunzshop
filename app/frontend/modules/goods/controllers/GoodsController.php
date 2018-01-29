@@ -15,6 +15,8 @@ use app\common\services\goods\SaleGoods;
 use app\common\services\goods\VideoDemandCourseGoods;
 use app\common\models\MemberShopInfo;
 use app\frontend\modules\goods\services\GoodsDiscountService;
+use Yunshop\Love\Common\Models\GoodsLove;
+
 /**
  * Created by PhpStorm.
  * Author: 芸众商城 www.yunzshop.com
@@ -319,16 +321,25 @@ class GoodsController extends ApiController
 
         $set = \Setting::get('point.set');
 
+        $shopSet = \Setting::get('shop.shop');
+        
+        if (!empty($shopSet['credit1'])) {
+            $point_name = $shopSet['credit1'];
+        } else {
+            $point_name = '积分';
+        }
+
         $data = [
-            'first_strip' => '', //默认显示
+            'first_strip_key' => 0,
+            'point_name' => $point_name, //积分名称
             'ed_num' => 0,      //满件包邮
             'ed_money' => 0,    //满额包邮
             'ed_full' => 0,      //单品满额
             'ed_reduction' => 0, //单品立减
             'award_balance' => 0, //赠送余额
             'point' => 0,        //赠送积分
-            'max_point_deduct' => '', //积分抵扣
-            'coupon' => '',         //商品优惠券赠送
+            'max_point_deduct' => 0, //积分抵扣
+            'coupon' => 0,         //商品优惠券赠送
             'sale_count' => 0,      //活动总数
         ];
 
@@ -336,15 +347,16 @@ class GoodsController extends ApiController
         if (ceil($goodsModel->hasOneSale->ed_full) && ceil($goodsModel->hasOneSale->ed_reduction)) {
             $data['ed_full'] = $goodsModel->hasOneSale->ed_full;
             $data['ed_reduction'] = $goodsModel->hasOneSale->ed_reduction;
-            $data['first_strip'] = $data['ed_full'];
+
+            $data['first_strip_key'] = 'ed_full';
             $data['sale_count'] += 1;
 
         }
 
         if ($goodsModel->hasOneSale->award_balance) {
             $data['award_balance'] = $goodsModel->hasOneSale->award_balance;
-            $data['first_strip'] = $data['award_balance'];
 
+            $data['first_strip_key'] = 'award_balance';
             $data['sale_count'] += 1;
 
         }
@@ -353,10 +365,14 @@ class GoodsController extends ApiController
 
             if ($goodsModel->hasOneSale->point) {
                 $data['point'] = $goodsModel->hasOneSale->point;
+
+                $data['first_strip_key'] = 'point';
                 $data['sale_count'] += 1;
 
             } else if ($set['give_point']) {
                 $data['point'] = $set['give_point'];
+
+                $data['first_strip_key'] = 'point';
                 $data['sale_count'] += 1;
             }
 
@@ -372,6 +388,8 @@ class GoodsController extends ApiController
                 $data['max_point_deduct'] = $set['money_max'].'%';
 
             }
+
+                $data['first_strip_key'] = 'max_point_deduct';
                 $data['sale_count'] += 1;
 
         }
@@ -379,20 +397,72 @@ class GoodsController extends ApiController
         if ($goodsModel->hasOneGoodsCoupon->is_give) {
 
             $data['coupon'] = $goodsModel->hasOneGoodsCoupon->send_type ? '商品订单完成返优惠卷' : '每月一号返优惠卷';
-            $data['first_strip'] = $data['coupon'];
+
+            $data['first_strip_key'] = 'coupon';
             $data['sale_count'] += 1;
         }
 
         if ($goodsModel->hasOneSale->ed_num) {
             $data['ed_num'] = $goodsModel->hasOneSale->ed_num;
-            $data['first_strip'] = $data['ed_num'];
+
+            $data['first_strip_key'] = 'ed_num';            
             $data['sale_count'] += 1;
         }
 
         if ($goodsModel->hasOneSale->ed_money) {
             $data['ed_money'] = $goodsModel->hasOneSale->ed_money;
-            $data['first_strip'] = $data['ed_money'];
+
+            $data['first_strip_key'] = 'ed_money';
             $data['sale_count'] += 1;
+
+        }
+
+        $exist_love = app('plugins')->isEnabled('love');
+        if ($exist_love) {
+            $love_goods = $this->getLoveSet($goodsModel->id);
+            $data['love_name'] = $love_goods['name'];
+            if ($love_goods['deduction']) {
+                $data['deduction_proportion'] = $love_goods['deduction_proportion'];
+                $data['first_strip_key'] = 'deduction_proportion';
+                $data['sale_count'] += 1;
+            }
+
+            if ($love_goods['award']) {
+                $data['award_proportion'] = $love_goods['award_proportion'];
+                $data['first_strip_key'] = 'award_proportion';
+                $data['sale_count'] += 1;
+            }
+
+        }
+        return $data;
+    }
+
+    /**
+     * 获取商品爱心值设置
+     */
+    public static function getLoveSet($goods_id)
+    {
+
+
+        $data = [
+            'name' => \Setting::get('love.name') ? : '爱心值',
+            'deduction' => 0, //是否开启爱心值抵扣 0否，1是
+            'deduction_proportion' => 0, //爱心值最高抵扣
+            'award' => 0, //是否开启爱心值奖励 0否，1是
+            'award_proportion' => 0, //奖励爱心值
+        ];
+
+        $item = GoodsLove::ofGoodsId($goods_id)->first();
+        if ($item->deduction) {
+            $deduction_proportion = floor($item->deduction_proportion) ? $item->deduction_proportion : \Setting::get('love.deduction_proportion');
+            $data['deduction'] = $item->deduction;
+            $data['deduction_proportion'] = $deduction_proportion.'%';
+        }
+
+        if ($item->award) {
+            $award_proportion = floor($item->award_proportion) ? $item->award_proportion : \Setting::get('love.award_proportion');
+            $data['award'] = $item->award;
+            $data['award_proportion'] = $item->award_proportion.'%';
 
         }
 
