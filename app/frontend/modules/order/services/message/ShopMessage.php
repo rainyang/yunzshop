@@ -137,7 +137,7 @@ class ShopMessage extends Message
                 ['name' => '时间', 'value' => $this->getOrderTime($status)],
             ];
             $msg = MessageTemp::getSendMsg($temp_id, $params);
-            if ($msg) {
+            if (!$msg) {
                 \Log::info('未找到消息模板');
                 continue;
             }
