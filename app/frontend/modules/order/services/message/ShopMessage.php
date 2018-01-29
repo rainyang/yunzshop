@@ -120,14 +120,17 @@ class ShopMessage extends Message
      */
     public function goodsBuy($status)
     {
+        \Log::info('购买商品通知开始');
         $order_goods = $this->order->hasManyOrderGoods()->get();
         foreach ($order_goods as $goods) {
             $goods_notice = Notice::select()->where('goods_id', $goods->goods_id)->whereType($status)->first();
             if (!$goods_notice) {
+                \Log::info('未找到商品通知设置');
                 continue;
             }
             $temp_id = \Setting::get('shop.notice')['buy_goods_msg'];
             if (!$temp_id) {
+                \Log::info('未找到消息模板id');
                 continue;
             }
             $params = [
@@ -141,6 +144,7 @@ class ShopMessage extends Message
             ];
             $msg = MessageTemp::getSendMsg($temp_id, $params);
             if ($msg) {
+                \Log::info('未找到消息模板');
                 continue;
             }
             $template_id = MessageTemp::$template_id;
