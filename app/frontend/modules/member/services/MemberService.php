@@ -92,7 +92,7 @@ class MemberService
                 'confirm_password' => $confirm_password
             );
             $rules = array(
-                'mobile' => 'regex:/^1d{10}$/',
+                'mobile' => 'regex:/^1\d{10}$/',
                 'password' => 'required|min:6|regex:/^[A-Za-z0-9@!#\$%\^&\*]+$/',
                 'confirm_password' => 'same:password'
             );
