@@ -131,7 +131,7 @@
                                     </option>
                                     @foreach ($temp_list as $item)
                                         <option value="{{$item['id']}}"
-                                                @if($set['seller_order_create'] == $item['id'])
+                                                @if($set['buy_goods_msg'] == $item['id'])
                                                 selected
                                                 @endif>{{$item['title']}}</option>
                                     @endforeach

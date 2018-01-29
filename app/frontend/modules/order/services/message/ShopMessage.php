@@ -48,8 +48,6 @@ class ShopMessage extends Message
 
     public function created()
     {
-        $this->goodsBuy(1);
-
         $temp_id = \Setting::get('shop.notice')['seller_order_create'];
         if (!$temp_id) {
             return;
@@ -68,8 +66,6 @@ class ShopMessage extends Message
 
     public function paid()
     {
-        $this->goodsBuy(2);
-
         $temp_id = \Setting::get('shop.notice')['seller_order_pay'];
         if (!$temp_id) {
             return;
@@ -93,8 +89,6 @@ class ShopMessage extends Message
 
     public function received()
     {
-        $this->goodsBuy(3);
-
         $temp_id = \Setting::get('shop.notice')['seller_order_finish'];
         if (!$temp_id) {
             return;
