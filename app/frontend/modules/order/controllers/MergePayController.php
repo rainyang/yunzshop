@@ -94,6 +94,10 @@ class MergePayController extends ApiController
         $member = $orders->first()->belongsToMember()->select(['credit2'])->first()->toArray();
         // 支付类型
         $buttons = $this->getPayTypeButtons($orders->first());
+        $type    = \YunShop::request()->type ?:0;
+        if ($type == 2 && !empty($buttons[2])) {
+            unset($buttons[2]);
+        }
         // 生成支付记录 记录订单号,支付金额,用户,支付号
         $orderPay = new OrderPay();
         $orderPay->order_ids = explode(',', $request->input('order_ids'));
@@ -348,14 +352,15 @@ class MergePayController extends ApiController
 
         // 支付类型
         $buttons = $this->getPayTypeButtons($orders->first());
-        $buttons = collect($buttons)->filter(function ($value, $key) {
+        $type    = \YunShop::request()->type ?:0;
+        $buttons = collect($buttons)->filter(function ($value, $key) use ($type) {
             if ($value['name'] != '找人代付') {
                 return $value;
             }
         });
 
-        if (array_key_exists(14, $buttons)) {
-            unset($buttons[14]);
+        if ($type == 2 && !empty($buttons[2])) {
+            unset($buttons[2]);
         }
 
         $member = Member::getMemberById($request->input('mid'));

@@ -530,6 +530,19 @@ return [
                         'parents'               => ['Goods', 'comment',],
                     ],
 
+
+                    'goods_comment_updated'   => [
+                        'name'                  => '修改评价',
+                        'url'                   => 'goods.comment.updated',
+                        'url_params'            => '',
+                        'permit'                => 1,
+                        'menu'                  => 0,
+                        'icon'                  => '',
+                        'sort'                  => 0,
+                        'item'                  => 'goods_comment_updated',
+                        'parents'               => ['Goods','comment',],
+                    ],
+
                     'goods_comment_reply'   => [
                         'name'                  => '回复评价',
                         'url'                   => 'goods.comment.reply',
@@ -1569,6 +1582,17 @@ return [
                 'parents'           => ['Order'],
                 'child' => [
 
+                    'order_batch_send_get_example' => [
+                        'name'              => '下载模版',
+                        'url'               => 'order.batch-send.get-example',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'item'              => 'order_batch_send_get_example',
+                        'parents'           => ['Order','order_batch_send'],
+                        'child' => [],
+                    ],
                 ],
             ],
         ],
@@ -2364,6 +2388,52 @@ return [
                         'sort'              => '6',
                         'item'              => 'setting_shop_slide',
                         'parents'           => ['system', 'Setting',],
+                        'child' => [
+
+                            'setting_shop_slide_index' => [
+                                'name'              => '浏览列表',
+                                'url'               => 'setting.slide.index',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => '',
+                                'item'              => 'setting_shop_slide_index',
+                                'parents'           => ['system', 'Setting','setting_shop_slide'],
+                            ],
+
+                            'setting_shop_slide_add' => [
+                                'name'              => '添加幻灯片',
+                                'url'               => 'setting.slide.create',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => '',
+                                'item'              => 'setting_shop_slide_add',
+                                'parents'           => ['system', 'Setting','setting_shop_slide'],
+                            ],
+
+                            'setting_shop_slide_edit' => [
+                                'name'              => '修改幻灯片',
+                                'url'               => 'setting.slide.edit',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => '',
+                                'item'              => 'setting_shop_slide_edit',
+                                'parents'           => ['system', 'Setting','setting_shop_slide'],
+                            ],
+
+                            'setting_shop_slide_deleted' => [
+                                'name'              => '删除幻灯片',
+                                'url'               => 'setting.slide.deleted',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => '',
+                                'item'              => 'setting_shop_slide_deleted',
+                                'parents'           => ['system', 'Setting','setting_shop_slide'],
+                            ],
+                        ]
                     ],
 
                     'setting_shop_form' => [
@@ -2402,8 +2472,7 @@ return [
                 'sort'          => '7',
                 'item'          => 'setting_shop_trade',
                 'parents'       => ['system'],
-                'child'         => [
-                ],
+
             ],
 
 
@@ -2441,6 +2510,38 @@ return [
                 'sort'              => '6',
                 'item'              => 'setting_wechat_notice',
                 'parents'           => ['system', 'Setting',],
+                'child'         => [
+
+                    'setting_wechat_notice_see'  => [
+                        'name'              => '查看',
+                        'url'               => 'setting.wechat-notice.see',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'item'              => 'setting_wechat_notice_see',
+                        'parents'           => ['system','setting_wechat_notice'],
+                    ],
+
+                    'setting_wechat_notice_del'  => [
+                        'name'              => '删除',
+                        'url'               => 'setting.wechat-notice.del',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'item'              => 'setting_wechat_notice_del',
+                        'parents'           => ['system','setting_wechat_notice'],
+                    ],
+
+                    'setting_wechat_notice_add'  => [
+                        'name'              => '添加模版',
+                        'url'               => 'setting.wechat-notice.addTmp',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'item'              => 'setting_wechat_notice_add',
+                        'parents'           => ['system','setting_wechat_notice'],
+                    ],
+                ]
             ],
 
             'setting_diy_temp' => [
@@ -2453,6 +2554,66 @@ return [
                 'sort'              => '6',
                 'item'              => 'setting_diy_temp',
                 'parents'           => ['system', 'Setting',],
+                'child'         => [
+
+                    'setting_diy_temp_choose'  => [
+                        'name'              => '选择模版（白名单）',
+                        'url'               => 'setting.wechat-notice.returnJson',
+                        'url_params'        => '',
+                        'permit'            => 0,
+                        'menu'              => 0,
+                        'item'              => 'setting_diy_temp_choose',
+                        'parents'           => ['system','setting_diy_temp'],
+                    ],
+
+
+                    'setting_diy_temp_choose2'  => [
+                        'name'              => '选择模版（白名单）',
+                        'url'               => 'setting.diy-temp.tpl',
+                        'url_params'        => '',
+                        'permit'            => 0,
+                        'menu'              => 0,
+                        'item'              => 'setting_diy_temp_choose2',
+                        'parents'           => ['system','setting_diy_temp'],
+                    ],
+
+                    'setting_diy_temp_index'  => [
+                        'name'              => '浏览列表',
+                        'url'               => 'setting.diy-temp.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'item'              => 'setting_diy_temp_index',
+                        'parents'           => ['system','setting_diy_temp'],
+                    ],
+                    'setting_diy_temp_add'  => [
+                        'name'              => '添加模版',
+                        'url'               => 'setting.diy-temp.add',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'item'              => 'setting_diy_temp_add',
+                        'parents'           => ['system','setting_diy_temp'],
+                    ],
+                    'setting_diy_temp_edit'  => [
+                        'name'              => '修改模版',
+                        'url'               => 'setting.diy-temp.edit',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'item'              => 'setting_diy_temp_edit',
+                        'parents'           => ['system','setting_diy_temp'],
+                    ],
+                    'setting_diy_temp_delete'  => [
+                        'name'              => '删除模版',
+                        'url'               => 'setting.diy-temp.del',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'item'              => 'setting_diy_temp_delete',
+                        'parents'           => ['system','setting_diy_temp'],
+                    ],
+                ]
             ],
 
             'setting_shop_lang' => [
