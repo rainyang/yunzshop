@@ -159,7 +159,7 @@ abstract class Credit
     //加法
     protected function addition($data)
     {
-        if (!$data['change_value'] || $data['change_value'] <= 0) {
+        if (!$data['change_value'] || $data['change_value'] < 0) {
             return '变动值必须是正数';
         }
         $this->data = $data;
