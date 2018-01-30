@@ -118,6 +118,27 @@
                         卖家通知
                     </div>
                     <div class='panel-body'>
+
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">购买商品通知</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <select name='yz_notice[buy_goods_msg]' class='form-control diy-notice'>
+                                    <option value="" @if(!$set['buy_goods_msg'])
+                                    selected
+                                            @endif;
+                                    >
+                                        请选择消息模板
+                                    </option>
+                                    @foreach ($temp_list as $item)
+                                        <option value="{{$item['id']}}"
+                                                @if($set['buy_goods_msg'] == $item['id'])
+                                                selected
+                                                @endif>{{$item['title']}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单生成通知[卖家]</label>
                             <div class="col-sm-9 col-xs-12">
