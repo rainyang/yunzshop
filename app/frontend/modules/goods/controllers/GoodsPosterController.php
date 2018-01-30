@@ -179,7 +179,7 @@ class GoodsPosterController extends ApiController
     {
         $width  = imagesx($img);
         $height = imagesy($img);
-        imagecopy($target, $img, 10, 430, 0, 0, $width, $height);
+        imagecopy($target, $img, 10, 435, 0, 0, $width, $height);
         imagedestroy($img);
 
         return $target;
@@ -215,11 +215,11 @@ class GoodsPosterController extends ApiController
         // $font="c:/windows/fonts/simhei.ttf";
 
         if ($params['type']) {
-            $text = $this->autowrap(16, 0, $font, $text, 187);
+            $text = $this->autowrap(14, 0, $font, $text, 187);
         }
 
         $black = imagecolorallocate($target,  51, 51, 51);//文字颜色
-        imagettftext($target, 16, 0, $params['left'], $params['top'], $black, $font, $text);
+        imagettftext($target, 14, 0, $params['left'], $params['top'], $black, $font, $text);
 
 
         return $target;
@@ -258,7 +258,7 @@ class GoodsPosterController extends ApiController
      */
     private function generatePriceImgage()
     {
-        $priceImg = imagecreatetruecolor(250, 60);
+        $priceImg = imagecreatetruecolor(250, 55);
         $white  = imagecolorallocate($priceImg, 255, 255, 255);
 
         $color  = imagecolorallocate($target, 107, 107, 107);
