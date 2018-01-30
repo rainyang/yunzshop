@@ -21,6 +21,7 @@ class GoodsPosterController extends ApiController
     private $shopSet;
     private $goodsModel;
 
+    private $mid;
     //画布大小
     // private $canvas = [
     //     'width' => 338,
@@ -28,7 +29,7 @@ class GoodsPosterController extends ApiController
     // ];
 
     private $shopText = [
-        'left' => 160,
+        'left' => 140,
         'top'  => 45,
         'type' => 0,
     ];
@@ -43,9 +44,13 @@ class GoodsPosterController extends ApiController
     {
         $id = intval(\YunShop::request()->id);
 
+        $this->mid = \YunShop::app()->getMemberId();
+
         if (!$id) {
             return $this->errorJson('请传入正确参数.');
         }
+
+
 
         $this->shopSet = \Setting::get('shop.shop');
 
@@ -158,7 +163,7 @@ class GoodsPosterController extends ApiController
     {
         $width  = imagesx($img);
         $height = imagesy($img);
-        imagecopyresized($target, $img, 122, 20, 0, 0, 31, 31, $width, $height);
+        imagecopyresized($target, $img, 102, 20, 0, 0, 31, 31, $width, $height);
         imagedestroy($img);
 
         return $target;
@@ -189,7 +194,7 @@ class GoodsPosterController extends ApiController
     {
         $width  = imagesx($img);
         $height = imagesy($img);
-        imagecopy($target, $img, 220, 360, 0, 0, $width, $height);
+        imagecopy($target, $img, 210, 360, 0, 0, $width, $height);
         imagedestroy($img);
 
         return $target;
@@ -272,15 +277,15 @@ class GoodsPosterController extends ApiController
         $market_price = '￥'.$this->goodsModel->market_price;
         $black = imagecolorallocate($priceImg, 241,83,83);//当前价格颜色
 
-        $price_box = imagettfbbox(20, 0, $font, $price);
-        $market_price_box = imagettfbbox(14, 0, $font, $market_price);
+        $price_box = imagettfbbox(18, 0, $font, $price);
+        $market_price_box = imagettfbbox(12, 0, $font, $market_price);
         $gray = imagecolorallocate($priceImg, 107,107,107);//原价颜色
 
         //设置删除线条
         imageline($priceImg, $price_box[2] + 10, 23, $price_box[2]+$market_price_box[2] + 10, 25, $color);
 
-        imagettftext($priceImg, 20, 0, 0, 30, $black, $font, $price);
-        imagettftext($priceImg, 14, 0, $price_box[2]+5, 30, $gray, $font, $market_price);
+        imagettftext($priceImg, 18, 0, 0, 30, $black, $font, $price);
+        imagettftext($priceImg, 12, 0, $price_box[2]+5, 30, $gray, $font, $market_price);
 
         // imagedestroy($priceImg);
 
@@ -294,6 +299,8 @@ class GoodsPosterController extends ApiController
      */
     private function generateQr()
     {
+        $url = yzAppFullUrl('/goods/'.$this->goodsModel->id, ['mid'=> $this->mid]);
+
         $path = storage_path('app/public/goods/qrcode/'.\YunShop::app()->uniacid);
         if (!is_dir($path)) {
             load()->func('file');
@@ -303,7 +310,7 @@ class GoodsPosterController extends ApiController
 
         if (!is_file($path.'/'.$file)) {
 
-            \QrCode::format('png')->size(120)->generate(yzAppFullUrl('goods/'.$this->goodsModel->id), $path.'/'.$file);
+            \QrCode::format('png')->size(120)->generate($url, $path.'/'.$file);
         }
         $img = imagecreatefromstring(file_get_contents($path.'/'.$file));
         // unlink($path.'/'.$file);
