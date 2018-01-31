@@ -88,8 +88,9 @@ class GoodsPosterController extends ApiController
 
         } else {
 
-            $goodsThumb = imagecreatefromstring(\Curl::to($this->goodsModel->thumb)->get());
+            $goodsThumb = imagecreatefromstring(\Curl::to(yz_tomedia($this->goodsModel->thumb))->get());
         }
+        
         $target = $this->mergeGoodsImage($target, $goodsThumb);
         
         //商品二维码
