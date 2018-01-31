@@ -150,7 +150,7 @@ class ListController extends BaseController
                         !empty(strtotime($item['send_time']))?$item['send_time']:'',
                         !empty(strtotime($item['finish_time']))?$item['finish_time']:'',
                         $item['express']['express_company_name'],
-                        $item['express']['express_sn'],
+                        '['.$item['express']['express_sn'].']',
                         $item['has_one_order_remark']['remark'],
                     ];
                 }
