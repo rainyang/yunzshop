@@ -460,10 +460,10 @@ class GoodsController extends ApiController
         if ($item->deduction) {
             $deduction_proportion = floor($item->deduction_proportion) ? $item->deduction_proportion : \Setting::get('love.deduction_proportion');
 
-            // $price = $goods->price * ($deduction_proportion / 100);
+            $price = $goods->price * ($deduction_proportion / 100);
 
             $data['deduction'] = $item->deduction;
-            $data['deduction_proportion'] = $deduction_proportion.'%';
+            $data['deduction_proportion'] = $price;
         }
 
         if ($item->award) {
@@ -472,7 +472,7 @@ class GoodsController extends ApiController
             // $award_price = $goods->price * ($award_proportion / 100);
 
             $data['award'] = $item->award;
-            $data['award_proportion'] = $award_proportion.'%';
+            $data['award_proportion'] = $award_price;
 
         }
 
