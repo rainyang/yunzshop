@@ -50,14 +50,13 @@ class GoodsPosterController extends ApiController
             return $this->errorJson('请传入正确参数.');
         }
 
-
-
         $this->shopSet = \Setting::get('shop.shop');
 
         $this->goodsModel = Goods::uniacid()->with('hasOneShare')->find($id);
 
         $imgPath = $this->get_lt();
-        
+
+
         $urlPath =  request()->getSchemeAndHttpHost() . '/' . substr($imgPath, strpos($imgPath, 'addons'));
             
         return $this->successJson('ok', $urlPath);
@@ -82,15 +81,14 @@ class GoodsPosterController extends ApiController
         //设置线条
         imageline( $target, 0, 60, 485, 60, $color);
 
-        $shopLogo = imagecreatefromstring(file_get_contents(yz_tomedia($this->shopSet['logo'])));
-
+        $shopLogo = imagecreatefromstring(\Curl::to(yz_tomedia($this->shopSet['logo']))->get());
         if ($this->goodsModel->hasOneShare->share_thumb) {
 
-            $goodsThumb = imagecreatefromstring(file_get_contents(yz_tomedia($this->goodsModel->hasOneShare->share_thumb)));
+            $goodsThumb = imagecreatefromstring(\Curl::to(yz_tomedia($this->goodsModel->hasOneShare->share_thumb))->get());
 
         } else {
 
-            $goodsThumb = imagecreatefromstring(file_get_contents($this->goodsModel->thumb));
+            $goodsThumb = imagecreatefromstring(\Curl::to($this->goodsModel->thumb)->get());
         }
         $target = $this->mergeGoodsImage($target, $goodsThumb);
         
@@ -105,12 +103,12 @@ class GoodsPosterController extends ApiController
         } else {
             $text = $this->goodsModel->title;
         }
+        
         $target = $this->mergeText($target, $this->goodsText, $text);
         $target = $this->mergeText($target, $this->shopText, $this->shopSet['name']);
 
-        $priceImg = $this->generatePriceImgage();
+        $target = $this->mergePriceText($target);
 
-        $target = $this->mergePriceImage($target, $priceImg);
 
         $target = $this->mergeQrImage($target, $goodsQr);
 
@@ -170,22 +168,6 @@ class GoodsPosterController extends ApiController
     }
 
     /**
-     * 合并商品价格图片
-     * @param  [type] $target [description]
-     * @param  [type] $img    [description]
-     * @return [type]         [description]
-     */
-    private function mergePriceImage($target, $img)
-    {
-        $width  = imagesx($img);
-        $height = imagesy($img);
-        imagecopy($target, $img, 10, 435, 0, 0, $width, $height);
-        imagedestroy($img);
-
-        return $target;
-    }
-
-    /**
      * 合并商品二维码 到 $target
      * @param [type] $target [description]
      * @param [type] $img    [description]
@@ -226,46 +208,13 @@ class GoodsPosterController extends ApiController
     }
 
     /**
-     * 合并商品名称
-     * @param $target
-     * @param $params
-     * @param $text
-     * @return mixed
-     */
-    // private function mergeGoodsText($target)
-    // {
-    //     if ($this->goodsModel->hasOneShare->share_title) {
-    //         $text = $this->goodsModel->hasOneShare->share_title;
-    //     } else {
-    //         $text = $this->goodsModel->title;
-    //     }
-    //     $font="c:/windows/fonts/simhei.ttf";
-    //         $text = $this->autowrap(14, 0, $font, $text, 198);
-
-    //         $text = $text."\n\n￥".$this->goodsModel->price;
-    //     // putenv('GDFONTPATH='.IA_ROOT.'/addons/yun_shop/static/fonts');
-    //     // $font = "source_han_sans";
-    //     $black = imagecolorallocate($target,  51, 51, 51);//文字颜色
-    //     imagettftext($target, 16, 0, 80, 830, $black, $font, $text);
-
-
-    //     return $target;
-    // }
-
-    /**
-     * 生成商品价格图
+     * 合并商品价格
      * @return [type] [description]
      */
-    private function generatePriceImgage()
+    private function mergePriceText($target)
     {
-        $priceImg = imagecreatetruecolor(250, 55);
-        $white  = imagecolorallocate($priceImg, 255, 255, 255);
 
         $color  = imagecolorallocate($target, 107, 107, 107);
-        //设置白色背景色
-        imagefill($priceImg,0,0,$white);
-
-            
 
         putenv('GDFONTPATH='.IA_ROOT.'/addons/yun_shop/static/fonts');
         
@@ -275,21 +224,19 @@ class GoodsPosterController extends ApiController
             
         $price = '￥'.$this->goodsModel->price;
         $market_price = '￥'.$this->goodsModel->market_price;
-        $black = imagecolorallocate($priceImg, 241,83,83);//当前价格颜色
+        $black = imagecolorallocate($target, 241,83,83);//当前价格颜色
 
         $price_box = imagettfbbox(18, 0, $font, $price);
         $market_price_box = imagettfbbox(12, 0, $font, $market_price);
-        $gray = imagecolorallocate($priceImg, 107,107,107);//原价颜色
+        $gray = imagecolorallocate($target, 107,107,107);//原价颜色
 
         //设置删除线条
-        imageline($priceImg, $price_box[2] + 10, 23, $price_box[2]+$market_price_box[2] + 10, 25, $color);
+        imageline($target, $price_box[2] + 12, 458, $price_box[2]+$market_price_box[2] + 14, 460, $color);
 
-        imagettftext($priceImg, 18, 0, 0, 30, $black, $font, $price);
-        imagettftext($priceImg, 12, 0, $price_box[2]+5, 30, $gray, $font, $market_price);
+        imagettftext($target, 18, 0, 5, 465, $black, $font, $price);
+        imagettftext($target, 12, 0, $price_box[2]+10, 465, $gray, $font, $market_price);
 
-        // imagedestroy($priceImg);
-
-        return $priceImg;
+        return $target;
         
     }
 
@@ -306,7 +253,7 @@ class GoodsPosterController extends ApiController
             load()->func('file');
             mkdirs($path);
         }
-        $file = $this->goodsModel->id.'.png';
+        $file = 'mid-'.$this->mid.'-goods-'.$this->goodsModel->id.'.png';
 
         if (!is_file($path.'/'.$file)) {
 
