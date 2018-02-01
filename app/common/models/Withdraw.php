@@ -76,12 +76,11 @@ class Withdraw extends BackendModel
 
 
 
-
+    //后台子类有使用
     public function hasOneMember()
     {
         return $this->hasOne('app\common\models\Member', 'uid', 'member_id');
     }
-
 
 
 
@@ -134,6 +133,60 @@ class Withdraw extends BackendModel
 
 
 
+    /**
+     * @param $query
+     * @return mixed
+     */
+    public function scopeRecords($query)
+    {
+        $types = static::getIncomeTypes();
+
+        return $query->uniacid()->whereIn('type', $types);
+    }
+
+
+
+
+    public function scopeOfStatus($query, $status)
+    {
+        return $query->where('status', $status);
+    }
+
+
+
+
+    public function scopeOfType($query, $type)
+    {
+        return $query->where('status', $type);
+    }
+
+
+
+    public function scopeOfWithdrawSn($query, $withdraw_sn)
+    {
+        return $query->where('withdraw_sn', $withdraw_sn);
+    }
+
+
+
+
+    /**
+     * 获取已开启插件 type 字段集
+     * @return array
+     */
+    public static function getIncomeTypes()
+    {
+        $configs = Config::get('income');
+
+        $types = [];
+        foreach ($configs as $config) {
+            $types[] = $config['class'];
+        }
+        return $types;
+    }
+
+
+
 
     public function atributeNames()
     {
@@ -163,6 +216,11 @@ class Withdraw extends BackendModel
 
 
 /********************* todo 以下代码不确定功能逻辑，需要处理删除 yitian 2017-12-19 ****************/
+
+
+
+
+
 
 
 

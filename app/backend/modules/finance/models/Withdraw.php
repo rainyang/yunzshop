@@ -2,16 +2,66 @@
 
 /**
  * Created by PhpStorm.
- * Author: 芸众商城 www.yunzshop.com
- * Date: 2017/3/31
- * Time: 下午3:05
+ *
+ * User: king/QQ：995265288
+ * Date: 2018/1/30 上午10:08
+ * Email: livsyitian@163.com
  */
 namespace app\backend\modules\finance\models;
 
-use app\common\facades\Setting;
 
 class Withdraw extends \app\common\models\Withdraw
 {
+
+    public function scopeRecords($query)
+    {
+        $query->with(['hasOneMember' => function ($query) {
+            return $query->select('uid', 'mobile', 'realname', 'nickname', 'avatar');
+        }]);
+
+        return parent::scopeRecords($query);
+    }
+
+
+
+    public function scopeSearch($query, $search)
+    {
+        if (isset($search['status'])) {
+            $query->ofStatus($search['status']);
+        }
+
+        if($search['withdraw_sn']) {
+            $query->ofWithdrawSn($search['withdraw_sn']);
+        }
+
+        if($search['type']) {
+            $query->ofType($search['type']);
+        }
+
+        if($search['searchtime']){
+            $range = [$search['times']['start'], $search['times']['end']];
+
+            $query->whereBetween('created_at', $range);
+        }
+
+        if($search['member']) {
+            $query->whereHas('hasOneMember', function($query)use($search){
+                return $query->searchLike($search['member']);
+            });
+        }
+
+        return $query;
+    }
+
+
+
+
+
+
+
+
+
+
     protected $appends = ['type_data'];
 
     public static function getWithdrawList($search = [])
