@@ -31,6 +31,10 @@ class WithdrawRecordsController extends BaseController
     }
 
 
+    /**
+     * 提现记录
+     * @return string
+     */
     public function index()
     {
         $records = $this->getRecords();
@@ -45,62 +49,17 @@ class WithdrawRecordsController extends BaseController
         ])->render();
     }
 
+    
 
 
-    private function getRecords()
-    {
-        $search = \YunShop::request()->search;
-
-        if ($search) {
-            $this->withdrawModel->search($search);
-        }
-
-        return $this->withdrawModel->orderBy('created_at', 'desc')->paginate();
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    /**
+     * 提现记录导出
+     */
     public function export()
     {
-
-        $requestSearch = \YunShop::request()->search;
-        if ($requestSearch) {
-            if ($requestSearch['searchtime']) {
-                if ($requestSearch['times']['start'] != '请选择' && $requestSearch['times']['end'] != '请选择') {
-                    $requestSearch['times']['start'] = strtotime($requestSearch['times']['start']);
-                    $requestSearch['times']['end'] = strtotime($requestSearch['times']['end']);
-                    $starttime = strtotime($requestSearch['times']['start']);
-                    $endtime = strtotime($requestSearch['times']['end']);
-                } else {
-                    $requestSearch['times'] = '';
-                }
-            } else {
-                $requestSearch['times'] = '';
-            }
-            $requestSearch = array_filter($requestSearch, function ($item) {
-                return $item !== '';// && $item !== 0;
-            });
-        }
-        $configs = Config::get('income');
-        foreach ($configs as $config) {
-            $type[] = $config['class'];
-        }
-        $list = Withdraw::getWithdrawList($requestSearch)
-            ->whereIn('type', $type);
-
+        $records = $this->getRecords();
         $export_page = request()->export_page ? request()->export_page : 1;
-        $export_model = new ExportService($list, $export_page);
+        $export_model = new ExportService($records, $export_page);
 
         $file_name = date('Ymdhis', time()) . '提现记录导出';
 
@@ -187,6 +146,19 @@ class WithdrawRecordsController extends BaseController
             ];
         }
         return ['','','','','','','','',''];
+    }
+
+
+
+    private function getRecords()
+    {
+        $search = \YunShop::request()->search;
+
+        if ($search) {
+            $this->withdrawModel->search($search);
+        }
+
+        return $this->withdrawModel->orderBy('created_at', 'desc')->paginate();
     }
 
 
