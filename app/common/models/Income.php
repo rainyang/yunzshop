@@ -73,7 +73,7 @@ class Income extends BackendModel
 
     /**
      * 通过 $pay_way 值获取 $pay_status 名称
-     * @param $pay_way
+     * @param $pay_status
      * @return mixed|string
      */
     public static function getPayWayComment($pay_status)

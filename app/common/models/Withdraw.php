@@ -31,7 +31,7 @@ class Withdraw extends BackendModel
 
     const STATUS_PAY        = 2;
 
-    const STATUS_REJECT     = 3;
+    const STATUS_REBUT      = 3;
 
     const STATUS_PAYING     = 4;
 
@@ -59,11 +59,11 @@ class Withdraw extends BackendModel
 
 
     public static $statusComment = [
-        self::STATUS_INVALID    => '无效',
-        self::STATUS_INITIAL    => '未审核',
-        self::STATUS_AUDIT      => '未打款',
+        self::STATUS_INVALID    => '已无效',
+        self::STATUS_INITIAL    => '待审核',
+        self::STATUS_AUDIT      => '待打款',
         self::STATUS_PAY        => '已打款',
-        self::STATUS_REJECT     => '已驳回',
+        self::STATUS_REBUT      => '已驳回',
         self::STATUS_PAYING     => '打款中',
     ];
 
