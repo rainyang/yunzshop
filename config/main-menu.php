@@ -1971,7 +1971,7 @@ return [
                         'item'              => 'withdraw_status_pay',
                         'parents'           => ['finance','withdraw_records'],
                     ],
-                    
+
                     'withdraw_status_arrival' => [
                         'name'              => '已驳回',
                         'url'               => 'finance.withdraw-records.index',
