@@ -1842,11 +1842,11 @@ return [
                 'child'             => [
 
                     'withdraw_records_see' => [
-                        'name'              => '浏览记录',
+                        'name'              => '全部记录',
                         'url'               => 'finance.withdraw-records.index',
                         'url_params'        => "",
                         'permit'            => 1,
-                        'menu'              => 0,
+                        'menu'              => 1,
                         'icon'              => '',
                         'sort'              => 0,
                         'item'              => 'withdraw_records_see',
@@ -1909,18 +1909,6 @@ return [
                         'icon'              => '',
                         'sort'              => 0,
                         'item'              => 'withdraw_records_examine',
-                        'parents'           => ['finance','withdraw_records'],
-                    ],
-
-                    'withdraw_status_all' => [
-                        'name'              => '全部记录',
-                        'url'               => 'finance.withdraw-records.index',
-                        'url_params'        => "",
-                        'permit'            => 0,
-                        'menu'              => 1,
-                        'icon'              => 'fa-clock-o',
-                        'sort'              => 0,
-                        'item'              => 'withdraw_status_all',
                         'parents'           => ['finance','withdraw_records'],
                     ],
 
