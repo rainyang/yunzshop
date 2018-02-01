@@ -124,12 +124,12 @@
                     </select>
                 </div>
                 <div class="col-sm-7 col-lg-7 col-xs-12">
-                    {!! app\common\helpers\DateRange::tplFormFieldDateRange('search[times]', [
-                                                        'starttime'=>date('Y-m-d H:i', $search['times']['start']),
-                                                        'endtime'=>date('Y-m-d H:i', $search['times']['end']),
-                                                        'start'=>date('Y-m-d H:i', $search['times']['start']),
-                                                        'end'=>date('Y-m-d H:i', $search['times']['end'])
-                                                        ], true) !!}
+                    {!! app\common\helpers\DateRange::tplFormFieldDateRange('search[time]', [
+                        'starttime'=>date('Y-m-d H:i', strtotime($search['time']['start']) ?: strtotime('-1 month')),
+                        'endtime'=>date('Y-m-d H:i',strtotime($search['time']['end']) ?: time()),
+                        'start'=>0,
+                        'end'=>0
+                    ], true) !!}
                 </div>
 
             </div>
