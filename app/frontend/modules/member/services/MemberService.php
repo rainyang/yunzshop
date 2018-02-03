@@ -747,26 +747,25 @@ class MemberService
 
     public function checkMember($UnionidInfo, $fansInfo)
     {
+        \Log::debug('----unionid---', $UnionidInfo->member_id);
+        \Log::debug('----fans----', $fansInfo->uid);
         if ($UnionidInfo->member_id != $fansInfo->uid) {
             //小程序
-            $minApp = MemberMiniAppModel::find($UnionidInfo->member_id)->first();
+            $minApp = MemberMiniAppModel::where('member_id', $UnionidInfo->member_id)->first();
 
             if (!is_null($minApp)) {
-                $minApp->member_id = $fansInfo->uid;
-                $minApp->save();
+                MemberMiniAppModel::updateData($minApp->member_id, ['member_id'=>$fansInfo->uid]);
             }
 
             //wechat app
-            $wechatApp = MemberWechatModel::find($UnionidInfo->member_id)->first();
+            $wechatApp = MemberWechatModel::where('member_id', $UnionidInfo->member_id)->first();
 
             if (!is_null($wechatApp)) {
-                $wechatApp->member_id = $fansInfo->uid;
-                $wechatApp->save();
+                MemberWechatModel::updateData($wechatApp->member_id, ['member_id'=>$fansInfo->uid]);
             }
 
             //商城unionid
-            $UnionidInfo->member_id = $fansInfo->uid;
-            $UnionidInfo->save();
+            MemberUniqueModel::where('unique_id', $UnionidInfo->unique_id)->update(['member_id'=>$fansInfo->uid]);
         }
 
         return $fansInfo->uid;
