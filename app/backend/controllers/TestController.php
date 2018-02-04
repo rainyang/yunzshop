@@ -112,18 +112,4 @@ class TestController extends BaseController
         }
         return;
     }
-
-    public function wx()
-    {
-        $msg = (new WechatPay())->doWithdraw(369, '3232', 100);
-
-        dd($msg);
-    }
-
-    public function tt()
-    {
-        $str = '测试商品2017-12-24 10-00开始:12';
-
-        echo substr($str, strrpos($str, ':')+1);
-    }
 }
