@@ -147,13 +147,13 @@
 </form>
 
 @if (1 == YunShop::request()->search['status'])
-<div class='panel panel-default'>
-    <div class="loadEffect"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
-    <div class='panel-body' style="padding-bottom: 15px">
-        <input type="hidden" name="pay_way" value="2">
-        <input type="button" class="btn btn-success" id="batch_alipay" value="支付宝批量打款">
-        <label style="color:#ff0000;">批量打款所选的订单收入类型必须保持一致，收入类型分为余额提现和收入提现</label>
-    </div>
+    <div class='panel panel-default'>
+        <div class="loadEffect"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        <div class='panel-body' style="padding-bottom: 15px">
+            <input type="hidden" name="pay_way" value="2">
+            <input type="button" class="btn btn-success" id="batch_alipay" value="支付宝批量打款">
+            <label style="color:#ff0000;">批量打款所选的订单收入类型必须保持一致，收入类型分为余额提现和收入提现</label>
+        </div>
 
         <div class='panel-body' style="padding-bottom: 15px">
             <input type="hidden" name="pay_way" value="2">
@@ -163,7 +163,7 @@
         </div>
 
 
-</div>
+    </div>
 @endif
 <div class='panel panel-default'>
     <div class='panel-body'>
@@ -182,7 +182,7 @@
             </tr>
             </thead>
             <tbody>
-            @foreach($list as $row)
+            @foreach($records as $row)
                 <tr>
                     <td><input type="checkbox" name="chk_withdraw" value="{{$row->id}}"></td>
                     <td title="{{$row->withdraw_sn}}" class="tip">{{$row->withdraw_sn}}</td>
@@ -208,7 +208,7 @@
             @endforeach
             </tbody>
         </table>
-        {!! $pager !!}
+        {!! $page !!}
 
     </div>
 </div>
@@ -322,22 +322,22 @@
                     $(_that).attr('disabled',"true");
                 }
             }).done(function (json) {
-                    if (json.status == 0 || json.status == -1) {
-                        //alert(json.msg)
+                if (json.status == 0 || json.status == -1) {
+                    //alert(json.msg)
 
-                        return false;
-                    }
+                    return false;
+                }
 
-                    if (json.status == 1) {
-                        myform = $('<form class="batch_alipay_form" method="post" target="_blank"><input type="hidden" name="ids" value="' + json.ids + '" /></form>');
+                if (json.status == 1) {
+                    myform = $('<form class="batch_alipay_form" method="post" target="_blank"><input type="hidden" name="ids" value="' + json.ids + '" /></form>');
 
-                        $(myform).attr('action', action);
-                        $(document.body).append(myform);
+                    $(myform).attr('action', action);
+                    $(document.body).append(myform);
 
-                        $(myform).submit();
-                    }
+                    $(myform).submit();
+                }
             }).fail(function (message) {
-                    console.log('fail:', message)
+                console.log('fail:', message)
             }).always(function () {
                 $('.loadEffect').hide();
                 $('#myModal').modal();
@@ -361,7 +361,7 @@
                     }
                 }).done(function (json) {
                     if (json.status == 1) {
-                       //  alert('更新订单状态成功');
+                        //  alert('更新订单状态成功');
                         location.reload();
                     } else {
                         alert('更新订单状态失败');
