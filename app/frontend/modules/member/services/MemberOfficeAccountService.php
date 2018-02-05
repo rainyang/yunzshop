@@ -124,7 +124,7 @@ class MemberOfficeAccountService extends MemberService
             ->asJsonResponse(true)
             ->get();
 
-        if (0 == $user_info['subscribe']) {
+        if (0 == $user_info['subscribe']) { //未关注拉取不到用户信息
             $userinfo_url = $this->_getUserInfoUrl($token['access_token'], $token['openid']);
 
             $user_info = \Curl::to($userinfo_url)
@@ -258,7 +258,7 @@ class MemberOfficeAccountService extends MemberService
         parent::updateMemberInfo($member_id, $userinfo);
 
         $record = array(
-            'openid' => $userinfo['openid'],
+            //'openid' => $userinfo['openid'],
             'nickname' => stripslashes($userinfo['nickname']),
             'follow' => isset($userinfo['subscribe'])?:0,
             'tag' => base64_encode(serialize($userinfo))

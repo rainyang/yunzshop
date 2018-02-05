@@ -16,8 +16,10 @@ use app\common\models\MemberShopInfo;
 use app\common\services\Session;
 use app\frontend\models\McGroupsModel;
 use app\frontend\modules\member\models\McMappingFansModel;
+use app\frontend\modules\member\models\MemberMiniAppModel;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\MemberUniqueModel;
+use app\frontend\modules\member\models\MemberWechatModel;
 use app\frontend\modules\member\models\smsSendLimitModel;
 use app\frontend\modules\member\models\SubMemberModel;
 use Illuminate\Support\Facades\Cookie;
@@ -371,6 +373,11 @@ class MemberService
 
         if (empty($member_id) && !empty($mc_mapping_fans_model)) {
             $member_id = $mc_mapping_fans_model->uid;
+        }
+
+        //检查member_id是否一致
+        if (!is_null($UnionidInfo) && !is_null($mc_mapping_fans_model)) {
+            $member_id = $this->checkMember($UnionidInfo, $mc_mapping_fans_model);
         }
 
         $member_model = Member::getMemberById($member_id);
@@ -736,5 +743,31 @@ class MemberService
         \Setting::set('shop.form', json_encode($set));
 
         return $member_form;
+    }
+
+    public function checkMember($UnionidInfo, $fansInfo)
+    {
+        \Log::debug('----unionid---', $UnionidInfo->member_id);
+        \Log::debug('----fans----', $fansInfo->uid);
+        if ($UnionidInfo->member_id != $fansInfo->uid) {
+            //小程序
+            $minApp = MemberMiniAppModel::where('member_id', $UnionidInfo->member_id)->first();
+
+            if (!is_null($minApp)) {
+                MemberMiniAppModel::updateData($minApp->member_id, ['member_id'=>$fansInfo->uid]);
+            }
+
+            //wechat app
+            $wechatApp = MemberWechatModel::where('member_id', $UnionidInfo->member_id)->first();
+
+            if (!is_null($wechatApp)) {
+                MemberWechatModel::updateData($wechatApp->member_id, ['member_id'=>$fansInfo->uid]);
+            }
+
+            //商城unionid
+            MemberUniqueModel::where('unique_id', $UnionidInfo->unique_id)->update(['member_id'=>$fansInfo->uid]);
+        }
+
+        return $fansInfo->uid;
     }
 }
