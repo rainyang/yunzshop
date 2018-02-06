@@ -31,8 +31,30 @@ class SaleGoods extends Sale
                $value['is_course'] = $video_demand->isCourse($value['id']);
             }
         } else {
-            $push_goods = array();
+            return array();
+        }
+
+        if (count($push_goods) > 4) {
+            $push_goods = array_slice(self::shuffle_assoc($push_goods), 0, 4);
         }
         return $push_goods;
     }
+
+     /**
+     * 打乱二维数组
+     * @param  [type] $list [description]
+     * @return [type]       [description]
+     */
+    public static function shuffle_assoc($list) { 
+        if (!is_array($list)) return $list; 
+        $keys = array_keys($list); 
+        shuffle($keys); 
+
+        $random = array(); 
+
+        foreach ($keys as $key) {
+            $random[$key] = $list[$key];
+        } 
+        return $random; 
+    } 
 }
