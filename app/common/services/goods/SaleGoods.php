@@ -35,10 +35,9 @@ class SaleGoods extends Sale
         }
 
         if (count($push_goods) > 4) {
-            $pushGoods = array_slice($this->shuffle_assoc($push_goods), 0, 4);
+            $push_goods = array_slice(self::shuffle_assoc($push_goods), 0, 4);
         }
-
-        return $pushGoods;
+        return $push_goods;
     }
 
      /**
@@ -46,7 +45,7 @@ class SaleGoods extends Sale
      * @param  [type] $list [description]
      * @return [type]       [description]
      */
-    public function shuffle_assoc($list) { 
+    public static function shuffle_assoc($list) { 
         if (!is_array($list)) return $list; 
         $keys = array_keys($list); 
         shuffle($keys); 
