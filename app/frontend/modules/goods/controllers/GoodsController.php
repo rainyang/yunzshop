@@ -13,6 +13,9 @@ use app\frontend\modules\goods\services\GoodsService;
 use Illuminate\Support\Facades\DB;
 use app\common\services\goods\SaleGoods;
 use app\common\services\goods\VideoDemandCourseGoods;
+use app\common\models\MemberShopInfo;
+use app\frontend\modules\goods\services\GoodsDiscountService;
+use Yunshop\Love\Common\Models\GoodsLove;
 
 /**
  * Created by PhpStorm.
@@ -31,6 +34,10 @@ class GoodsController extends ApiController
         if (!$id) {
             return $this->errorJson('请传入正确参数.');
         }
+
+        $member = MemberShopInfo::uniacid()->ofMemberId(\YunShop::app()->getMemberId())->withLevel()->first();
+
+
         //$goods = new Goods();
         $goodsModel = Goods::uniacid()->with(['hasManyParams' => function ($query) {
             return $query->select('goods_id', 'title', 'value');
@@ -38,11 +45,14 @@ class GoodsController extends ApiController
             return $query->select('id', 'goods_id', 'title', 'description');
         }])->with(['hasManyOptions' => function ($query) {
             return $query->select('id', 'goods_id', 'title', 'thumb', 'product_price', 'market_price', 'stock', 'specs', 'weight');
+        }])->with(['hasManyDiscount' => function ($query) use ($member) {
+            return $query->where('level_id', $member->level_id);
         }])
         ->with('hasOneShare')
-        ->with('hasOneDiscount')
         ->with('hasOneGoodsDispatch')
         ->with('hasOnePrivilege')
+        ->with('hasOneSale')
+        ->with('hasOneGoodsCoupon')
         ->with(['hasOneBrand' => function ($query) {
             return $query->select('id', 'name');
         }])
@@ -56,6 +66,11 @@ class GoodsController extends ApiController
             return $this->errorJson('商品已下架.');
         }
 
+        //商品营销
+        $goodsModel->goods_sale = $this->getGoodsSale($goodsModel);
+        //商品会员优惠
+        $goodsModel->member_discount = $this->getDiscount($goodsModel, $member);
+// dd($goodsModel->toArray());
         $goodsModel->content = html_entity_decode($goodsModel->content);
 
         if ($goodsModel->has_option) {
@@ -114,7 +129,6 @@ class GoodsController extends ApiController
         //判断该商品是否是视频插件商品
         $videoDemand = new VideoDemandCourseGoods();
         $goodsModel->is_course = $videoDemand->isCourse($id);
-
 
         //return $this->successJson($goodsModel);
         return $this->successJson('成功', $goodsModel);
@@ -248,5 +262,220 @@ class GoodsController extends ApiController
             ->orderBy('id', 'desc')
             ->get();
         return $this->successJson('获取推荐商品成功', $list);
+    }
+
+    /**
+     * 会员折扣后的价格
+     * @param  [type] $discountModel [description]
+     * @param  [type] $member        [description]
+     * @return [type]                [description]
+     */
+    public function getDiscount($goodsModel, $memberModel)
+    {
+        $discountModel = $goodsModel->hasManyDiscount[0];
+// dd($discountModel);
+// dd($goodsModel);
+        switch ($discountModel->discount_method) {
+            case 1:
+                $discount_value = $goodsModel->price * ($discountModel->discount_value / 10);
+                break;
+            case 2:
+                $discount_value = $goodsModel->price - $discountModel->discount_value;
+                break;
+            default:
+                $discount_value = 0;
+                break;
+        }
+// dd($discount_value);
+        if ($memberModel->level) {
+
+            if (!$discount_value) {
+                $discount_value = $goodsModel->price * ($memberModel->level->discount / 10);
+            }
+
+            $data = [
+                'level_name' => $memberModel->level->level_name,
+                'discount_value' => $discount_value,
+
+            ];
+        } else {
+            
+            $data = [
+                'level_name' => '普通会员',
+                'discount_value' => $discount_value,
+
+            ];
+
+        }
+
+        return $data['discount_value'] ? $data : [];
+    }
+
+    /**
+     * 商品的营销
+     * @param  [type] $goodsModel [description]
+     * @return [type]             [description]
+     */
+    public function getGoodsSale($goodsModel)
+    {
+
+        $set = \Setting::get('point.set');
+
+        $shopSet = \Setting::get('shop.shop');
+        
+        if (!empty($shopSet['credit1'])) {
+            $point_name = $shopSet['credit1'];
+        } else {
+            $point_name = '积分';
+        }
+
+        $data = [
+            'first_strip_key' => 0,
+            'point_name' => $point_name, //积分名称
+            'love_name' => '爱心值',
+            'ed_num' => 0,      //满件包邮
+            'ed_money' => 0,    //满额包邮
+            'ed_full' => 0,      //单品满额
+            'ed_reduction' => 0, //单品立减
+            'award_balance' => 0, //赠送余额
+            'point' => 0,        //赠送积分
+            'max_point_deduct' => 0, //积分抵扣
+            'coupon' => 0,         //商品优惠券赠送
+            'deduction_proportion' => 0, //爱心值最高抵扣
+            'award_proportion' => 0, //奖励爱心值
+            'sale_count' => 0,      //活动总数
+        ];
+
+
+        if (ceil($goodsModel->hasOneSale->ed_full) && ceil($goodsModel->hasOneSale->ed_reduction)) {
+            $data['ed_full'] = $goodsModel->hasOneSale->ed_full;
+            $data['ed_reduction'] = $goodsModel->hasOneSale->ed_reduction;
+
+            $data['first_strip_key'] = 'ed_full';
+            $data['sale_count'] += 1;
+
+        }
+
+        if ($goodsModel->hasOneSale->award_balance) {
+            $data['award_balance'] = $goodsModel->hasOneSale->award_balance;
+
+            $data['first_strip_key'] = 'award_balance';
+            $data['sale_count'] += 1;
+
+        }
+
+        if ($goodsModel->hasOneSale->point !== '0') {
+
+            if ($goodsModel->hasOneSale->point) {
+                $data['point'] = $goodsModel->hasOneSale->point;
+
+                $data['first_strip_key'] = 'point';
+                $data['sale_count'] += 1;
+
+            } else if ($set['give_point']) {
+                $data['point'] = $set['give_point'];
+
+                $data['first_strip_key'] = 'point';
+                $data['sale_count'] += 1;
+            }
+
+        }
+
+        if ($set['point_deduct']) {
+
+            if ($goodsModel->hasOneSale->max_point_deduct) {
+
+                $data['max_point_deduct'] = $goodsModel->hasOneSale->max_point_deduct;
+
+            } else {
+                $data['max_point_deduct'] = $set['money_max'].'%';
+
+            }
+
+                $data['first_strip_key'] = 'max_point_deduct';
+                $data['sale_count'] += 1;
+
+        }
+
+        if ($goodsModel->hasOneGoodsCoupon->is_give) {
+
+            $data['coupon'] = $goodsModel->hasOneGoodsCoupon->send_type ? '商品订单完成返优惠卷' : '每月一号返优惠卷';
+
+            $data['first_strip_key'] = 'coupon';
+            $data['sale_count'] += 1;
+        }
+
+        if ($goodsModel->hasOneSale->ed_num) {
+            $data['ed_num'] = $goodsModel->hasOneSale->ed_num;
+
+            $data['first_strip_key'] = 'ed_num';            
+            $data['sale_count'] += 1;
+        }
+
+        if ($goodsModel->hasOneSale->ed_money) {
+            $data['ed_money'] = $goodsModel->hasOneSale->ed_money;
+
+            $data['first_strip_key'] = 'ed_money';
+            $data['sale_count'] += 1;
+
+        }
+
+        $exist_love = app('plugins')->isEnabled('love');
+        if ($exist_love) {
+            $love_goods = $this->getLoveSet($goodsModel);
+            $data['love_name'] = $love_goods['name'];
+            if ($love_goods['deduction']) {
+                $data['deduction_proportion'] = $love_goods['deduction_proportion'];
+                $data['first_strip_key'] = 'deduction_proportion';
+                $data['sale_count'] += 1;
+            }
+
+            if ($love_goods['award']) {
+                $data['award_proportion'] = $love_goods['award_proportion'];
+                $data['first_strip_key'] = 'award_proportion';
+                $data['sale_count'] += 1;
+            }
+
+        }
+        return $data;
+    }
+
+    /**
+     * 获取商品爱心值设置
+     */
+    public static function getLoveSet($goods)
+    {
+
+
+        $data = [
+            'name' => \Setting::get('love.name') ? : '爱心值',
+            'deduction' => 0, //是否开启爱心值抵扣 0否，1是
+            'deduction_proportion' => 0, //爱心值最高抵扣
+            'award' => 0, //是否开启爱心值奖励 0否，1是
+            'award_proportion' => 0, //奖励爱心值
+        ];
+
+        $item = GoodsLove::ofGoodsId($goods->id)->first();
+        // dd($item);
+        if ($item->deduction) {
+            $deduction_proportion = floor($item->deduction_proportion) ? $item->deduction_proportion : \Setting::get('love.deduction_proportion');
+
+            // $price = $goods->price * ($deduction_proportion / 100);
+
+            $data['deduction'] = $item->deduction;
+            $data['deduction_proportion'] = $deduction_proportion.'%';
+        }
+
+        if ($item->award) {
+            $award_proportion = floor($item->award_proportion) ? $item->award_proportion : \Setting::get('love.award_proportion');
+
+            // $award_price = $goods->price * ($award_proportion / 100);
+
+            $data['award'] = $item->award;
+            $data['award_proportion'] = $award_proportion.'%';
+
+        }
+
+        return $data;
     }
 }

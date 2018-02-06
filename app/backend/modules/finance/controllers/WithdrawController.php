@@ -312,7 +312,7 @@ class WithdrawController extends BaseController
             }
 
             //驳回
-            if ($status == Withdraw::STATUS_REJECT) {
+            if ($status == Withdraw::STATUS_REBUT) {
                 $reject_count += 1;
                 Income::where('id',$income_id)->update(['status' => Income::STATUS_INITIAL, 'pay_status' => Income::PAY_STATUS_REJECT]);
             }

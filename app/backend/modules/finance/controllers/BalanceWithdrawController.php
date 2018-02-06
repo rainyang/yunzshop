@@ -56,7 +56,7 @@ class BalanceWithdrawController extends BaseController
         if (isset($requestData['submit_pay'])) {
             $result = $this->submitPay();
 
-            BalanceNoticeService::withdrawSuccessNotice($this->withdrawModel);
+            //BalanceNoticeService::withdrawSuccessNotice($this->withdrawModel);
 
             if (!empty($result) && 0 == $result['errno']) {
                 return $this->message('提现成功', yzWebUrl('finance.balance-withdraw.detail', ['id'=>\YunShop::request()->id]));
