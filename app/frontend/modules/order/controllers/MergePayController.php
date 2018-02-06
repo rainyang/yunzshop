@@ -267,7 +267,8 @@ class MergePayController extends ApiController
         if ($request->has('uid')) {
             Session::set('member_id', $request->query('uid'));
         }
-        $data = $this->pay( PayFactory::PAY_APP_ALIPAY);
+        $data['payurl'] = $this->pay( PayFactory::PAY_APP_ALIPAY);
+        $data['isnewalipay'] = \Setting::get('shop_app.pay.newalipay');
         return $this->successJson('成功', $data);
     }
 
