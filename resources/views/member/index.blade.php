@@ -319,11 +319,6 @@
                                                 @endif
 
                                                 <li>
-                                                    <a href="{{yzWebUrl('member.member.delete', ['id' => $row['uid']])}}"
-                                                       title='删除会员' onclick="return confirm('确定要删除该会员吗？');"><i class='fa fa-remove'></i> 删除会员</a>
-                                                </li>
-
-                                                <li>
                                                     <a href="{{yzWebUrl('member.bank-card.edit', ['member_id' => $row['uid']])}}"
                                                        title='银行卡管理'><i class='fa fa-credit-card'></i>银行卡管理</a>
                                                 </li>

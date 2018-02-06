@@ -468,7 +468,8 @@ class MemberModel extends Member
      */
     public static function getAgentQR($extra='')
     {
-        $url = Url::absoluteApp('/home');
+        //把首页链接换成会员中心链接
+        $url = Url::absoluteApp('/member');
         $url = $url . '&mid=' . \YunShop::app()->getMemberId();
 
         if (!empty($extra)) {
