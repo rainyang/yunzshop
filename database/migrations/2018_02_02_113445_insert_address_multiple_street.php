@@ -13,7 +13,7 @@ class InsertAddressMultipleStreet extends Migration
      */
     public function up()
     {
-        $arr = \app\common\services\StreetAddress::$completion;
+        $arr = \app\common\services\address\StreetAddress::$completion;
 
         foreach ($arr as $val) {
 
