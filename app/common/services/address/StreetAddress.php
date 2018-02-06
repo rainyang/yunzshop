@@ -1,6 +1,6 @@
 <?php
 
-namespace app\common\services;
+namespace app\common\services\address;
 
 /**
 * 
@@ -230,8 +230,6 @@ class StreetAddress
             'level'    => 3,
             'street'   => ['梨树镇','岔河镇','双山镇','响水乡','竹园乡','文阁乡','小坝镇','青龙街道办事处','金海湖办事处'],
         ],
-
-
 
         [
             'areaname' => '东沙群岛',    //广东 东沙群岛 东沙群岛
