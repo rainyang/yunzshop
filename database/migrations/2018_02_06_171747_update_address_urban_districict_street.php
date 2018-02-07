@@ -13,7 +13,28 @@ class UpdateAddressUrbanDistricictStreet extends Migration
      */
     public function up()
     {
-        //
+
+        $arr = \app\common\services\address\UrbanDistricictAddres::$completion;
+        
+
+        foreach ($arr as $val) {
+
+            $ret = \app\common\models\Address::select('areaname', 'parentid', 'level')->where('parentid', $val['parentid'])->whereLevel(3)->get();
+
+            \app\common\models\Address::where('parentid', $val['parentid'])->whereLevel(3)->delete();
+            
+            $ret_id = \app\common\models\Address::insertGetId([
+                        'areaname' => $val['areaname'],
+                        'parentid' => $val['parentid'],
+                        'level'    => 3
+                    ]);
+            foreach ($ret as $value) {
+                $street[] = ['areaname'=> $value->areaname, 'parentid'=> $ret_id, 'level'=>4];    
+            }
+            $bool = \app\common\models\Street::insert($street);
+            $street = [];
+        }
+        
     }
 
     /**
