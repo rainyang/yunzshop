@@ -31,7 +31,7 @@ class UpdateAddressUrbanDistricictStreet extends Migration
             foreach ($ret as $value) {
                 $street[] = ['areaname'=> $value->areaname, 'parentid'=> $ret_id, 'level'=>4];    
             }
-            $bool = \app\common\models\Street::insert($street);
+            \app\common\models\Street::insert($street);
             $street = [];
         }
         
