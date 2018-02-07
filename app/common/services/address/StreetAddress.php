@@ -238,6 +238,14 @@ class StreetAddress
             'street'   => ['东沙群岛'],
 
         ],
+
+        [
+            'areaname' => '阿拉山口市',    //新疆 博尔 阿拉山口市 
+            'parentid' => 652700,
+            'level'    => 3,
+            'street'   => ['艾比湖街道','阿拉套街道'],
+
+        ],
     ];
     
 }

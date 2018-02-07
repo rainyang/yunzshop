@@ -111,6 +111,28 @@ class UrbanDistricictAddress
             'areaname' => '神农架林区',    //湖北 神农架林区 神农架林区
             'parentid' =>  429021,
         ],
+
+        [
+            'areaname' => '嘉峪关市',    //湖北 嘉峪关市 嘉峪关市
+            'parentid' =>  620200,
+        ],
+
+        [
+            'areaname' => '石河子市',    //新疆 石河子市 石河子市
+            'parentid' =>  659001,
+        ],
+        [
+            'areaname' => '阿拉尔市',    //新疆 阿拉尔市 阿拉尔市
+            'parentid' =>  659002,
+        ],
+        [
+            'areaname' => '图木舒克市',    //新疆 图木舒克市 图木舒克市
+            'parentid' =>  659003,
+        ],
+        [
+            'areaname' => '五家渠市',    //新疆 五家渠市 五家渠市
+            'parentid' =>  659004,
+        ],
     ];
     
 }
