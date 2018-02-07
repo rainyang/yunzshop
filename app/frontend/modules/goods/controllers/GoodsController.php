@@ -500,11 +500,10 @@ class GoodsController extends ApiController
             return 0;
         }
         $coupons = $coupons->get()->toArray();
+
         foreach($coupons as &$v){
             if (($v['total'] != MemberCouponController::NO_LIMIT) && ($v['has_many_member_coupon_count'] >= $v['total'])){
 
-            } elseif ($v['member_got_count'] > 0) {
-                
             } else {
 
                 return 1;
