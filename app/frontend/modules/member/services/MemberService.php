@@ -15,7 +15,6 @@ use app\common\models\MemberGroup;
 use app\common\models\MemberShopInfo;
 use app\common\services\Session;
 use app\frontend\models\McGroupsModel;
-use app\frontend\modules\member\models\McMappingFansModel;
 use app\frontend\modules\member\models\MemberMiniAppModel;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\MemberUniqueModel;
@@ -23,8 +22,6 @@ use app\frontend\modules\member\models\MemberWechatModel;
 use app\frontend\modules\member\models\smsSendLimitModel;
 use app\frontend\modules\member\models\SubMemberModel;
 use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Facades\DB;
-use Ixudra\Curl\Facades\Curl;
 
 class MemberService
 {
@@ -762,6 +759,20 @@ class MemberService
 
             if (!is_null($wechatApp)) {
                 MemberWechatModel::updateData($wechatApp->member_id, ['member_id'=>$fansInfo->uid]);
+            }
+
+            //删除重复微擎会员
+            $mc_member = Member::getMemberById($UnionidInfo->member_id);
+
+            if (!is_null($mc_member)) {
+                $mc_member->delete();
+            }
+
+            //删除重复商城会员
+            $sub_member = MemberShopInfo::getMemberShopInfo($UnionidInfo->member_id);
+
+            if (!is_null($sub_member)) {
+                $sub_member->delete();
             }
 
             //商城unionid
