@@ -31,11 +31,11 @@ class InsertAddress340000Street extends Migration
         }
 
 
-        //合肥市 庐阳区
-        $ret_340103 = \app\common\models\Address::select()->where('areaname', '庐阳区')->where('parentid',  340100)->whereLevel(3)->first();
+        //合肥市 庐江县
+        $ret_340103 = \app\common\models\Address::select()->where('areaname', '庐江县')->where('parentid',  340100)->whereLevel(3)->first();
         if (!$ret_340103) {
             $ret_id_340103 = \app\common\models\Address::insertGetId([
-                'areaname' => '庐阳区',
+                'areaname' => '庐江县',
                 'parentid' =>  340100,
                 'level'    => 3
             ]);
