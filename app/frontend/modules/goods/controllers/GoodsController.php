@@ -16,6 +16,9 @@ use app\common\services\goods\VideoDemandCourseGoods;
 use app\common\models\MemberShopInfo;
 use app\frontend\modules\goods\services\GoodsDiscountService;
 use Yunshop\Love\Common\Models\GoodsLove;
+use app\frontend\modules\coupon\models\Coupon;
+use app\frontend\modules\coupon\controllers\MemberCouponController;
+
 
 /**
  * Created by PhpStorm.
@@ -70,6 +73,7 @@ class GoodsController extends ApiController
         $goodsModel->goods_sale = $this->getGoodsSale($goodsModel);
         //商品会员优惠
         $goodsModel->member_discount = $this->getDiscount($goodsModel, $member);
+        $goodsModel->availability = $this->couponsMemberLj();
 // dd($goodsModel->toArray());
         $goodsModel->content = html_entity_decode($goodsModel->content);
 
@@ -443,7 +447,7 @@ class GoodsController extends ApiController
     /**
      * 获取商品爱心值设置
      */
-    public static function getLoveSet($goods)
+    public function getLoveSet($goods)
     {
 
 
@@ -478,4 +482,35 @@ class GoodsController extends ApiController
 
         return $data;
     }
+
+    public function couponsMemberLj()
+    {
+        $uid = \YunShop::app()->getMemberId();
+        $member = MemberShopInfo::getMemberShopInfo($uid);
+        if(empty($member)){
+            return $this->errorJson('没有找到该用户', []);
+        }
+        $memberLevel = $member->level_id;
+
+        $now = strtotime('now');
+        $coupons = Coupon::getCouponsForMember($uid, $memberLevel, null, $now)
+            ->orderBy('display_order','desc')
+            ->orderBy('updated_at','desc');
+        if($coupons->get()->isEmpty()){
+            return 0;
+        }
+        $coupons = $coupons->get()->toArray();
+
+        foreach($coupons as &$v){
+            if (($v['total'] != MemberCouponController::NO_LIMIT) && ($v['has_many_member_coupon_count'] >= $v['total'])){
+
+            } else {
+
+                return 1;
+            }
+        }
+
+        return 0;
+    }
+
 }
