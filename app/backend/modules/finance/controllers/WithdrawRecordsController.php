@@ -45,7 +45,7 @@ class WithdrawRecordsController extends BaseController
             'records' => $records,
             'page' => $page,
             'search' => \YunShop::request()->search,
-            'types' => Withdraw::getIncomeTypes(),
+            'types' => Withdraw::getTypes(),
         ])->render();
     }
 

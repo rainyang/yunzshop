@@ -53,11 +53,7 @@ class Withdraw extends \app\common\models\Withdraw
         return $query;
     }
 
-    /**
-     * 重写父级 getIncomeTypes 方法
-     * @return array
-     */
-    public static function getIncomeTypes()
+    public static function getTypes()
     {
         $configs = \Config::get('income');
         
