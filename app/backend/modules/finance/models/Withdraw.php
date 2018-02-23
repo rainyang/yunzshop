@@ -26,7 +26,7 @@ class Withdraw extends \app\common\models\Withdraw
 
     public function scopeSearch($query, $search)
     {
-        if (isset($search['status'])) {
+        if (isset($search['status']) && $search['status'] != "") {
             $query->ofStatus($search['status']);
         }
 
