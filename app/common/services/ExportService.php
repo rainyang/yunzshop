@@ -20,12 +20,14 @@ class ExportService
     private $export_page;
     private $page_size = 1000;
 
-    public function __construct($builder, $export_page = 1)
+    //修改说明 由于没有获取到(ORM对象)报 skip 方法不存在，添加 $orm_model 参数
+    public function __construct($builder, $export_page = 1, $orm_model)
     {
         $this->export_page = $export_page;
         $builder_count = $builder->count();
-        $this->page_count = ceil($builder_count / $this->page_size);
-        $this->builder_model = $builder->skip(($export_page - 1) * $this->page_size)->take($this->page_size)->get();
+        //当 page_count 等于 0 会出现 死循环
+        $this->page_count = ceil($builder_count / $this->page_size) != 0 ? ceil($builder_count / $this->page_size) :1;
+        $this->builder_model = $orm_model->skip(($export_page - 1) * $this->page_size)->take($this->page_size)->get();
     }
 
     private function swith()
