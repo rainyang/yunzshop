@@ -57,9 +57,11 @@ class WithdrawRecordsController extends BaseController
      */
     public function export()
     {
-        $records = $this->getRecords();
+
+        $records = $this->withdrawModel->search(\YunShop::request()->search)->orderBy('created_at', 'desc');
+        
         $export_page = request()->export_page ? request()->export_page : 1;
-        $export_model = new ExportService($records, $export_page, $this->withdrawModel);
+        $export_model = new ExportService($records, $export_page);
 
         $file_name = date('Ymdhis', time()) . '提现记录导出';
 
