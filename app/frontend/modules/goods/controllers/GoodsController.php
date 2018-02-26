@@ -134,6 +134,9 @@ class GoodsController extends ApiController
         $videoDemand = new VideoDemandCourseGoods();
         $goodsModel->is_course = $videoDemand->isCourse($id);
 
+        //商城租赁
+        $this->goods_lease_set($goodsModel);
+
         //return $this->successJson($goodsModel);
         return $this->successJson('成功', $goodsModel);
     }
@@ -511,6 +514,15 @@ class GoodsController extends ApiController
         }
 
         return 0;
+    }
+
+    private function goods_lease_set(&$goodsModel)
+    {
+        //TODO 租赁插件是否开启
+        //TODO 商品租赁设置
+        $goodsModel->is_lease = 1;
+        $goodsModel->level_equity = 1;
+        $goodsModel->buy_goods = 99;
     }
 
 }
