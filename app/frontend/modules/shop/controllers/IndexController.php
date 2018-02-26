@@ -54,6 +54,10 @@ class IndexController extends ApiController
         $videoDemand = new VideoDemandCourseGoods();
         foreach ($goodsList as &$value) {
             $value->is_course = $videoDemand->isCourse($value->goods_id);
+
+            //TODO 租赁插件是否开启 $lease_switch
+            $lease_switch = 1;
+            $this->goods_lease_set($value, $lease_switch);
         }
         
         return $goodsList;
@@ -90,6 +94,29 @@ class IndexController extends ApiController
             }
         }
         return $slide;
+    }
+
+    private function goods_lease_set(&$goodsModel, $lease_switch)
+    {
+        if ($lease_switch) {
+            //TODO 商品租赁设置 $goods_id
+
+            if (config('app.debug')) {
+                $goodsModel->is_lease = 0;
+                $goodsModel->level_equity = 0;
+                $goodsModel->buy_goods = 99;
+            }
+
+            if ($goodsModel->goods_id == 69) {
+                $goodsModel->is_lease = 1;
+                $goodsModel->level_equity = 1;
+                $goodsModel->buy_goods = 99;
+            }
+        } else {
+            $goodsModel->is_lease = 0;
+            $goodsModel->level_equity = 0;
+            $goodsModel->buy_goods = 99;
+        }
     }
 
 }

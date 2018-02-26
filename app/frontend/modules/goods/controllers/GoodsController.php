@@ -529,7 +529,7 @@ class GoodsController extends ApiController
     private function goods_lease_set(&$goodsModel, $lease_switch)
     {
         if ($lease_switch) {
-            //TODO 商品租赁设置
+            //TODO 商品租赁设置 $id
 
             if (is_array($goodsModel)) {
                 if (config('app.debug')) {
