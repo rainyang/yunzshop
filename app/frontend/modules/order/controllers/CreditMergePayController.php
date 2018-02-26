@@ -11,6 +11,7 @@ namespace app\frontend\modules\order\controllers;
 
 
 use app\backend\modules\member\models\MemberRelation;
+use app\common\events\payment\ChargeComplatedEvent;
 use app\common\exceptions\AppException;
 use app\common\models\finance\Balance;
 use app\common\services\password\PasswordService;
@@ -45,6 +46,9 @@ class CreditMergePayController extends MergePayController
                 }
             });
 
+            event(new ChargeComplatedEvent([
+                'order_pay_id' => $this->orderPay->id
+            ]));
 
             //会员推广资格
             \Log::debug('余额支付-会员推广');
