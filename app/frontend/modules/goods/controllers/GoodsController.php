@@ -135,7 +135,9 @@ class GoodsController extends ApiController
         $goodsModel->is_course = $videoDemand->isCourse($id);
 
         //商城租赁
-        $this->goods_lease_set($goodsModel);
+        //TODO 租赁插件是否开启 $lease_switch
+        $lease_switch = 1;
+        $this->goods_lease_set($goodsModel, $lease_switch);
 
         //return $this->successJson($goodsModel);
         return $this->successJson('成功', $goodsModel);
@@ -185,6 +187,14 @@ class GoodsController extends ApiController
                     }
                 });
             })->toArray();
+
+            //租赁商品
+            //TODO 租赁插件是否开启 $lease_switch
+            $lease_switch = 1;
+            foreach ($data as &$item) {
+                $this->goods_lease_set($item, $lease_switch);
+            }
+
             $list['data'] = $data;
         }
 
@@ -516,18 +526,46 @@ class GoodsController extends ApiController
         return 0;
     }
 
-    private function goods_lease_set(&$goodsModel)
+    private function goods_lease_set(&$goodsModel, $lease_switch)
     {
-        //TODO 租赁插件是否开启
-        //TODO 商品租赁设置
-        $goodsModel->is_lease = 0;
-        $goodsModel->level_equity = 0;
-        $goodsModel->buy_goods = 99;
-        
-        if ($goodsModel->id == 69) {
-            $goodsModel->is_lease = 1;
-            $goodsModel->level_equity = 1;
-            $goodsModel->buy_goods = 99;
+        if ($lease_switch) {
+            //TODO 商品租赁设置
+
+            if (is_array($goodsModel)) {
+                if (config('app.debug')) {
+                    $goodsModel['is_lease'] = 0;
+                    $goodsModel['level_equity'] = 0;
+                    $goodsModel['buy_goods'] = 99;
+                }
+
+                if ($goodsModel['id'] == 69) {
+                    $goodsModel['is_lease'] = 1;
+                    $goodsModel['level_equity'] = 1;
+                    $goodsModel['buy_goods'] = 99;
+                }
+            } else {
+                if (config('app.debug')) {
+                    $goodsModel->is_lease = 0;
+                    $goodsModel->level_equity = 0;
+                    $goodsModel->buy_goods = 99;
+                }
+
+                if ($goodsModel->id == 69) {
+                    $goodsModel->is_lease = 1;
+                    $goodsModel->level_equity = 1;
+                    $goodsModel->buy_goods = 99;
+                }
+            }
+        } else {
+            if (is_array($goodsModel)) {
+                $goodsModel['is_lease'] = 0;
+                $goodsModel['level_equity'] = 0;
+                $goodsModel['buy_goods'] = 99;
+            } else {
+                $goodsModel->is_lease = 0;
+                $goodsModel->level_equity = 0;
+                $goodsModel->buy_goods = 99;
+            }
         }
     }
 
