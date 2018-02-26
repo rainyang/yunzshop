@@ -63,6 +63,17 @@
                                 </div>
                             </div>
                         </div>--}}
+
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员等级权益页面是否显示</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <label class='radio-inline'><input type='radio' name='member[display_page]' value='0'
+                                                                   @if ($set['display_page'] == 0) checked @endif />否</label>
+                                <label class='radio-inline'><input type='radio' name='member[display_page]' value='1'
+                                                                   @if ($set['display_page'] == 1) checked @endif/> 是</label>
+                            <!-- <span class="help-block">后台会员等级权益页面是否显示设置为是， 前端会员中心等级按钮形式则可以点击进入</span> -->
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员等级升级依据</label>
                             <div class="col-sm-9 col-xs-12">

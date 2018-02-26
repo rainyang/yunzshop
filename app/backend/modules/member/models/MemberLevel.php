@@ -19,6 +19,8 @@ class MemberLevel extends \app\common\models\MemberLevel
 
     public $guarded = [''];
 
+    // protected $attributes = [];
+
     public function getLevelNameAttribute()
     {
         return static::defaultLevelName($this->attributes['level_name']);
@@ -115,7 +117,8 @@ class MemberLevel extends \app\common\models\MemberLevel
             'order_money'   => '订单金额',
             'order_count'   => '订单数量',
             'goods_id'      => '商品ID',
-            'discount'      => '折扣'
+            'discount'      => '折扣',
+            'freight_reduction' => '运费减免'
         ];
     }
 
@@ -133,7 +136,8 @@ class MemberLevel extends \app\common\models\MemberLevel
                 'between:1,9999'
             ],
             'level_name' => 'required',
-            'discount'   => 'numeric|between:0.1,10'
+            'discount'   => 'numeric|between:0.1,10',
+            'freight_reduction' => 'numeric|min:0'
         ];
 
         $levelSet = Setting::get('shop.member');
