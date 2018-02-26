@@ -520,9 +520,15 @@ class GoodsController extends ApiController
     {
         //TODO 租赁插件是否开启
         //TODO 商品租赁设置
-        $goodsModel->is_lease = 1;
-        $goodsModel->level_equity = 1;
+        $goodsModel->is_lease = 0;
+        $goodsModel->level_equity = 0;
         $goodsModel->buy_goods = 99;
+        
+        if ($goodsModel->id == 69) {
+            $goodsModel->is_lease = 1;
+            $goodsModel->level_equity = 1;
+            $goodsModel->buy_goods = 99;
+        }
     }
 
 }
