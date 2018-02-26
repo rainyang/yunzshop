@@ -157,7 +157,7 @@ class Withdraw extends BackendModel
 
     public function scopeOfType($query, $type)
     {
-        return $query->where('status', $type);
+        return $query->where('type', $type);
     }
 
 
