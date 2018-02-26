@@ -174,14 +174,14 @@ class GoodsController extends ApiController
         $list = Goods::Search($requestSearch)->select('*', 'yz_goods.id as goods_id')
             ->where("status", 1)
             ->where("plugin_id", 0)
-            ->orderBy($order_field, $order_by)
+            ->orderBy($order_field, $order_by) 
             ->paginate(20)->toArray();
 
         if ($list['total'] > 0) {
             $data = collect($list['data'])->map(function($rows) {
                 return collect($rows)->map(function($item, $key) {
                     if ($key == 'thumb' && preg_match('/^images/', $item)) {
-                        return replace_yunshop(tomedia($item));
+                        return replace_yunshop(yz_tomedia($item));
                     } else {
                         return $item;
                     }

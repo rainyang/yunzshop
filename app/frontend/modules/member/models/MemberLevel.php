@@ -35,7 +35,7 @@ class MemberLevel extends backendMemberLevel
 
             //处理图片地址
             foreach ($data['data'] as &$value) {
-                $value['goods']['thumb'] = replace_yunshop(tomedia($value['goods']['thumb']));     
+                $value['goods']['thumb'] = replace_yunshop(yz_tomedia($value['goods']['thumb']));     
             }
             return $data;
         }
