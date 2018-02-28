@@ -24,7 +24,7 @@ class MemberLevel extends \app\common\models\MemberLevel
 
         $content = ($type == 1) ? 'order_count' : 'order_money';
 
-        $data = self::select('level_name', 'discount', 'freight_reduction', $content)
+        $data = self::select('id', 'level_name', 'discount', 'freight_reduction', $content)
             ->uniacid()
             ->orderBy('level')
             ->get()->toArray();
@@ -40,7 +40,7 @@ class MemberLevel extends \app\common\models\MemberLevel
     public function getLevelGoods()
     {
 
-        $data = self::select('level_name','goods_id', 'discount', 'freight_reduction')->uniacid()
+        $data = self::select('id', 'level_name','goods_id', 'discount', 'freight_reduction')->uniacid()
         ->with(['goods' => function($query) {
             return $query->select('id','title','thumb','price');
         }])->orderBy('level')->get()->toArray();

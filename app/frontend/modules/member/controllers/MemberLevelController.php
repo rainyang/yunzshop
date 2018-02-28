@@ -49,7 +49,6 @@ class MemberLevelController extends ApiController
 
         $levelData = [
             'level_type' => $this->settinglevel['level_type'],
-            //'display_page' => $this->settinglevel['display_page'],
             'data' => $data
         ];
 // dd($levelData);
@@ -80,7 +79,8 @@ class MemberLevelController extends ApiController
 
         $detail->level_type = $this->settinglevel['level_type'];
 
-        //dd($detail->toArray());
+
+        // dd($detail->toArray());
         return $this->successJson('leveldetail', $detail);
     }
 }
