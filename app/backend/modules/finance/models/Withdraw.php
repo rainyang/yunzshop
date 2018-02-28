@@ -26,7 +26,7 @@ class Withdraw extends \app\common\models\Withdraw
 
     public function scopeSearch($query, $search)
     {
-        if (isset($search['status'])) {
+        if (isset($search['status']) && $search['status'] != "") {
             $query->ofStatus($search['status']);
         }
 
@@ -53,6 +53,12 @@ class Withdraw extends \app\common\models\Withdraw
         return $query;
     }
 
+    public static function getTypes()
+    {
+        $configs = \Config::get('income');
+        
+        return $configs;
+    }
 
 
 
