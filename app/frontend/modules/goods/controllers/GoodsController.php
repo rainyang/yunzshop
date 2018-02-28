@@ -134,6 +134,11 @@ class GoodsController extends ApiController
         $videoDemand = new VideoDemandCourseGoods();
         $goodsModel->is_course = $videoDemand->isCourse($id);
 
+        //商城租赁
+        //TODO 租赁插件是否开启 $lease_switch
+        $lease_switch = 1;
+        $this->goods_lease_set($goodsModel, $lease_switch);
+
         //return $this->successJson($goodsModel);
         return $this->successJson('成功', $goodsModel);
     }
@@ -169,19 +174,27 @@ class GoodsController extends ApiController
         $list = Goods::Search($requestSearch)->select('*', 'yz_goods.id as goods_id')
             ->where("status", 1)
             ->where("plugin_id", 0)
-            ->orderBy($order_field, $order_by)
+            ->orderBy($order_field, $order_by) 
             ->paginate(20)->toArray();
 
         if ($list['total'] > 0) {
             $data = collect($list['data'])->map(function($rows) {
                 return collect($rows)->map(function($item, $key) {
                     if ($key == 'thumb' && preg_match('/^images/', $item)) {
-                        return replace_yunshop(tomedia($item));
+                        return replace_yunshop(yz_tomedia($item));
                     } else {
                         return $item;
                     }
                 });
             })->toArray();
+
+            //租赁商品
+            //TODO 租赁插件是否开启 $lease_switch
+            $lease_switch = 1;
+            foreach ($data as &$item) {
+                $this->goods_lease_set($item, $lease_switch);
+            }
+
             $list['data'] = $data;
         }
 
@@ -511,6 +524,49 @@ class GoodsController extends ApiController
         }
 
         return 0;
+    }
+
+    private function goods_lease_set(&$goodsModel, $lease_switch)
+    {
+        if ($lease_switch) {
+            //TODO 商品租赁设置 $id
+
+            if (is_array($goodsModel)) {
+                if (config('app.debug')) {
+                    $goodsModel['is_lease'] = 0;
+                    $goodsModel['level_equity'] = 0;
+                    $goodsModel['buy_goods'] = 99;
+                }
+
+                if ($goodsModel['id'] == 69) {
+                    $goodsModel['is_lease'] = 1;
+                    $goodsModel['level_equity'] = 1;
+                    $goodsModel['buy_goods'] = 99;
+                }
+            } else {
+                if (config('app.debug')) {
+                    $goodsModel->is_lease = 0;
+                    $goodsModel->level_equity = 0;
+                    $goodsModel->buy_goods = 99;
+                }
+
+                if ($goodsModel->id == 69) {
+                    $goodsModel->is_lease = 1;
+                    $goodsModel->level_equity = 1;
+                    $goodsModel->buy_goods = 99;
+                }
+            }
+        } else {
+            if (is_array($goodsModel)) {
+                $goodsModel['is_lease'] = 0;
+                $goodsModel['level_equity'] = 0;
+                $goodsModel['buy_goods'] = 99;
+            } else {
+                $goodsModel->is_lease = 0;
+                $goodsModel->level_equity = 0;
+                $goodsModel->buy_goods = 99;
+            }
+        }
     }
 
 }

@@ -45,7 +45,7 @@ class WithdrawRecordsController extends BaseController
             'records' => $records,
             'page' => $page,
             'search' => \YunShop::request()->search,
-            'income_type' => Withdraw::getIncomeTypes(),
+            'types' => Withdraw::getTypes(),
         ])->render();
     }
 
@@ -57,7 +57,9 @@ class WithdrawRecordsController extends BaseController
      */
     public function export()
     {
-        $records = $this->getRecords();
+
+        $records = $this->withdrawModel->search(\YunShop::request()->search);
+        
         $export_page = request()->export_page ? request()->export_page : 1;
         $export_model = new ExportService($records, $export_page);
 

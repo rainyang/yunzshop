@@ -30,7 +30,6 @@ class MemberLevel extends \app\common\models\MemberLevel
             ->get()->toArray();
 
         return $data;
-
     }
 
       /**
