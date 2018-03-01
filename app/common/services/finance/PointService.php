@@ -110,7 +110,7 @@ class PointService
         $this->point_data = $point_data;
         $member = Member::getMemberById($point_data['member_id']);
         $this->member = $member;
-        $this->member_point = $member['credit1'];
+        $this->member_point = $this->member->credit1;
     }
 
     /**
