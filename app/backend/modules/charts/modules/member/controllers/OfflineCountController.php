@@ -71,7 +71,6 @@ class OfflineCountController extends BaseController
             ];
         }
 
-        //dd($data);
         return $this->arraySort($data, 'offline_count');
     }
 
