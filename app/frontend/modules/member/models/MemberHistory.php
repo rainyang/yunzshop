@@ -60,7 +60,7 @@ class MemberHistory extends \app\common\models\MemberHistory
             ->with(['goods' => function($query) {
                 return $query->select('id', 'thumb', 'price', 'market_price', 'title');
             }])
-            ->orderBy('updated_at')
+            ->orderBy('updated_at', 'desc')
             ->get()->toArray();
     }
 
