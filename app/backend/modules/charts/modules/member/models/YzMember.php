@@ -21,11 +21,11 @@ class YzMember extends MemberShopInfo
      * @param string $level 【1，2，3】
      * @return mixed
      */
-    public static function getMemberOffline($memberId,$level = '')
-    {
-        $array      = $level ? [$memberId,$level] : [$memberId];
-        $condition  = $level ? ' = ?' : '';
-        return static::select('member_id')->whereRaw('FIND_IN_SET(?,relation)' . $condition, $array)->get();
-    }
+    /* public static function getMemberOffline($memberId,$level = '')
+     {
+         $array      = $level ? [$memberId,$level] : [$memberId];
+         $condition  = $level ? ' = ?' : '';
+         return static::select('member_id')->whereRaw('FIND_IN_SET(?,relation)' . $condition, $array)->get();
+     }*/
 
 }
