@@ -372,7 +372,7 @@
                         <div class="form-group" style="overflow: hidden;">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label" style="line-height: 34px;">链接地址</label>
                             <div class="col-sm-9 col-xs-12">
-                                <textarea name="mylink_href" class="form-control" style="height: 90px; resize: none;" placeholder="请以http://开头"></textarea>
+                                <textarea name="mylink_href" class="form-control" style="height: 90px; resize: none;" placeholder="请以https://开头"></textarea>
                             </div>
                         </div>
                         <div class="form-group" style="overflow: hidden; margin-bottom: 0px;">
