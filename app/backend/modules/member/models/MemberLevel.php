@@ -51,7 +51,7 @@ class MemberLevel extends \app\common\models\MemberLevel
     public static function getMemberLevelNameById($levelId)
     {
         $level = MemberLevel::when($levelId, function ($query) use ($levelId) {
-            return $query->select('levelname')->where('id', $levelId);
+            return $query->select('level_name')->where('id', $levelId);
         })
         ->first()->levelname;
         return $level ? $level : '';
