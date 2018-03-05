@@ -175,7 +175,8 @@ class BalanceChange extends Credit
             return;
         }
 
-        if ($noticeMember->hasOneFans->follow) {
+        //todo 临时增加余额变动之为零时不发送消息通知，后期需要修改
+        if ($noticeMember->hasOneFans->follow && $this->change_value > 0) {
             Message::notice(MessageTemp::$template_id, $msg, $noticeMember->uid);
         }
     }

@@ -140,10 +140,18 @@ class BalanceController extends ApiController
             if ($type == PayFactory::PAY_WEACHAT || $type == PayFactory::PAY_YUN_WEACHAT) {
                 return  $this->successJson('支付接口对接成功', array_merge(['ordersn' => $this->model->ordersn], $this->payOrder()));
             } else {
-                return $this->successJson('支付接口对接成功', ['ordersn' => $this->model->ordersn]);
-            }
+                //app支付宝支付添加新支付配置
+                if ($type == PayFactory::PAY_APP_ALIPAY) {
+                    $isnewalipay = \Setting::get('shop_app.pay.newalipay');
+                    return $this->successJson('支付接口对接成功', ['ordersn' => $this->model->ordersn, 'isnewalipay' => $isnewalipay]);
+                } else {
+                    return $this->successJson('支付接口对接成功', ['ordersn' => $this->model->ordersn]);
+                }
 
+            }
         }
+        //app支付宝新旧版值
+
         return $this->errorJson($result);
     }
 
