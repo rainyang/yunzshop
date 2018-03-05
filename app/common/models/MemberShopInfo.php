@@ -13,7 +13,7 @@ use app\backend\models\BackendModel;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class MemberShopInfo extends BackendModel
+class MemberShopInfo extends BaseModel
 {
     use SoftDeletes;
 
@@ -21,12 +21,28 @@ class MemberShopInfo extends BackendModel
 
     protected $guarded = [''];
 
-    public $timestamps = true;
+    //public $timestamps = true;
 
-    public $primaryKey = 'member_id';
+    //public $primaryKey = 'member_id';
+
+
+    private $lv1_offline;
+
+    private $lv2_offline;
+
+    private $lv3_offline;
+
+    //团队
+    //private $team_offline;
+
+
+
+
+
 
 
     /**
+     * todo common 中的 model 不应该使用全局作用域 2018-03-02
      * 设置全局作用域
      */
     public static function boot()
@@ -37,14 +53,138 @@ class MemberShopInfo extends BackendModel
         });
     }
 
+
+
+
     /**
      * 关联会员等级表
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function level()
     {
-        return $this->belongsTo('app\backend\modules\member\models\MemberLevel', 'level_id', 'id');
+        return $this->hasOne('app\common\models\MemberLevel', 'id', 'level_id');
     }
+
+
+    /**
+     * 会员第一级推客集合
+     * @param $member_id
+     * @return array
+     */
+    public function getLv1Offline($member_id)
+    {
+        return $this->setLv1Offline($member_id);
+    }
+
+
+    /**
+     * 会员第二级推客集合
+     * @param $member_id
+     * @return array
+     */
+    public function getLv2Offline($member_id)
+    {
+        return $this->setLv2Offline($member_id);
+    }
+
+
+    /**
+     * 会员第三级推客集合
+     * @param $member_id
+     * @return array
+     */
+    public function getLv3Offline($member_id)
+    {
+        return $this->setLv3Offline($member_id);
+    }
+
+
+
+    //团队
+    public function getTeamOffline($member_id)
+    {
+        return $this->setTeamOffline($member_id);
+    }
+
+
+    /**
+     * 会员第一级推客集合
+     * @param $member_id
+     * @return array
+     */
+    private function setLv1Offline($member_id)
+    {
+        $member_ids[] = $member_id;
+
+        $this->lv1_offline = $this->getMemberOffline($member_ids);
+
+        return $this->lv1_offline;
+    }
+
+
+    /**
+     * 会员第二级推客集合
+     * @param $member_id
+     * @return array
+     */
+    private function setLv2Offline($member_id)
+    {
+        !isset($this->lv1_offline) && $this->setLv1Offline($member_id);
+
+        $this->lv2_offline = $this->getMemberOffline($this->lv1_offline);
+
+        return  $this->lv2_offline;
+    }
+
+
+    /**
+     * 会员第三级推客集合
+     * @param $member_id
+     * @return array
+     */
+    private function setLv3Offline($member_id)
+    {
+        !isset($this->lv2_offline) && $this->setLv2Offline($member_id);
+
+        $this->lv3_offline = $this->getMemberOffline($this->lv2_offline);
+
+        return  $this->lv3_offline;
+    }
+
+
+    //团队
+    private function setTeamOffline($member_id)
+    {
+
+    }
+
+
+    /**
+     * 查询会员推客集合 会员ID集合
+     * @param array $member_ids
+     * @return array
+     */
+    private function getMemberOffline(array $member_ids)
+    {
+        if (count($member_ids) > 10000) {
+
+            $member_ids = array_chunk($member_ids, 10000);
+            $result_assemble = [];
+            foreach ($member_ids as $item) {
+                $assemble = static::select('member_id')->whereIn('parent_id',$item)->get();
+                $assemble = $assemble->isEmpty() ? [] : array_pluck($assemble->toArray(), 'member_id');
+
+                $result_assemble = array_merge($result_assemble,$assemble);
+            }
+            return $result_assemble;
+        }
+
+        $assemble = static::select('member_id')->whereIn('parent_id',$member_ids)->get();
+
+        return $assemble->isEmpty() ? [] : array_pluck($assemble->toArray(), 'member_id');
+    }
+
+
 
     public function scopeSearch($query,$search)
     {
@@ -57,15 +197,21 @@ class MemberShopInfo extends BackendModel
         return $query;
     }
 
+
+
     public function scopeOfLevelId($query,$levelId)
     {
         return $query->where('level_id',$levelId);
     }
 
+
+
     public function scopeOfGroupId($query,$groupId)
     {
         return $query->where('group_id',$groupId);
     }
+
+
 
     /**
      * 会员ID检索
@@ -77,6 +223,8 @@ class MemberShopInfo extends BackendModel
     {
         return $query->where('member_id', $memberId);
     }
+
+
 
     /**
      * 检索关联会员等级表
@@ -125,9 +273,9 @@ class MemberShopInfo extends BackendModel
     public static function getAgentCount()
     {
         return self::uniacid()
-             ->where('parent_id', \YunShop::app()->getMemberId())
-             ->where('is_black', 0)
-             ->count();
+            ->where('parent_id', \YunShop::app()->getMemberId())
+            ->where('is_black', 0)
+            ->count();
     }
 
     /**

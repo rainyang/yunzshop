@@ -19,6 +19,16 @@ class OfflineCountController extends BaseController
 {
     protected $page_size = 10;
 
+    protected $yzMember;
+
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->yzMember = new YzMember();
+    }
+
 
     public function index()
     {
@@ -45,9 +55,9 @@ class OfflineCountController extends BaseController
         $data = [];
         foreach ($members as $key => $member) {
 
-            $lv1 = $this->getLv1Offline($member->uid)->isEmpty() ? 0 : count($this->getLv1Offline($member->uid));
-            $lv2 = $this->getLv2Offline($member->uid)->isEmpty() ? 0 : count($this->getLv2Offline($member->uid));
-            $lv3 = $this->getLv3Offline($member->uid)->isEmpty() ? 0 : count($this->getLv3Offline($member->uid));
+            $lv1 = count($this->getLv1Offline($member->uid));
+            $lv2 = count($this->getLv2Offline($member->uid));
+            $lv3 = count($this->getLv3Offline($member->uid));
 
             $data[] = [
                 'member_id'         => $member->uid,
@@ -60,6 +70,7 @@ class OfflineCountController extends BaseController
 
             ];
         }
+
         return $this->arraySort($data, 'offline_count');
     }
 
@@ -77,19 +88,19 @@ class OfflineCountController extends BaseController
 
     protected function getLv1Offline($member_id)
     {
-        return YzMember::getMemberOffline($member_id,1);
+        return $this->yzMember->getLv1Offline($member_id);
 
     }
 
     protected function getLv2Offline($member_id)
     {
-        return YzMember::getMemberOffline($member_id,2);
+        return $this->yzMember->getLv2Offline($member_id);
 
     }
 
     protected function getLv3Offline($member_id)
     {
-        return YzMember::getMemberOffline($member_id,3);
+        return $this->yzMember->getLv3Offline($member_id);
     }
 
 
