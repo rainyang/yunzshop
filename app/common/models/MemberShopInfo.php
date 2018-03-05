@@ -23,7 +23,7 @@ class MemberShopInfo extends BaseModel
 
     //public $timestamps = true;
 
-    //public $primaryKey = 'member_id';
+    public $primaryKey = 'member_id';
 
 
     private $lv1_offline;
