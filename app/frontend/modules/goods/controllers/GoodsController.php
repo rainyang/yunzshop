@@ -18,6 +18,8 @@ use app\frontend\modules\goods\services\GoodsDiscountService;
 use Yunshop\Love\Common\Models\GoodsLove;
 use app\frontend\modules\coupon\models\Coupon;
 use app\frontend\modules\coupon\controllers\MemberCouponController;
+use app\common\services\goods\LeaseToyGoods;
+
 
 
 /**
@@ -136,7 +138,8 @@ class GoodsController extends ApiController
 
         //商城租赁
         //TODO 租赁插件是否开启 $lease_switch
-        $lease_switch = 1;
+        $lease_switch = LeaseToyGoods::whetherEnabled();
+
         $this->goods_lease_set($goodsModel, $lease_switch);
 
         //return $this->successJson($goodsModel);
@@ -190,7 +193,7 @@ class GoodsController extends ApiController
 
             //租赁商品
             //TODO 租赁插件是否开启 $lease_switch
-            $lease_switch = 1;
+            $lease_switch = LeaseToyGoods::whetherEnabled();
             foreach ($data as &$item) {
                 $this->goods_lease_set($item, $lease_switch);
             }
@@ -530,41 +533,27 @@ class GoodsController extends ApiController
     {
         if ($lease_switch) {
             //TODO 商品租赁设置 $id
-
             if (is_array($goodsModel)) {
-                if (config('app.debug')) {
-                    $goodsModel['is_lease'] = 0;
-                    $goodsModel['level_equity'] = 0;
-                    $goodsModel['buy_goods'] = 99;
-                }
+                $goodsModel['lease_toy'] = LeaseToyGoods::getDate($goodsModel['id']);
 
-                if ($goodsModel['id'] == 69) {
-                    $goodsModel['is_lease'] = 1;
-                    $goodsModel['level_equity'] = 1;
-                    $goodsModel['buy_goods'] = 99;
-                }
             } else {
-                if (config('app.debug')) {
-                    $goodsModel->is_lease = 0;
-                    $goodsModel->level_equity = 0;
-                    $goodsModel->buy_goods = 99;
-                }
-
-                if ($goodsModel->id == 69) {
-                    $goodsModel->is_lease = 1;
-                    $goodsModel->level_equity = 1;
-                    $goodsModel->buy_goods = 99;
-                }
+                $goodsModel->lease_toy = LeaseToyGoods::getDate($goodsModel->id);
             }
+
         } else {
             if (is_array($goodsModel)) {
-                $goodsModel['is_lease'] = 0;
-                $goodsModel['level_equity'] = 0;
-                $goodsModel['buy_goods'] = 99;
+
+                $goodsModel['lease_toy'] = [
+                    'is_lease' => $lease_switch,
+                    'is_rights' => 0,
+                    'immed_goods_id' => 0,
+                ];
             } else {
-                $goodsModel->is_lease = 0;
-                $goodsModel->level_equity = 0;
-                $goodsModel->buy_goods = 99;
+                $goodsModel->lease_toy = [
+                    'is_lease' => $lease_switch,
+                    'is_rights' => 0,
+                    'immed_goods_id' => 0,
+                ];
             }
         }
     }
