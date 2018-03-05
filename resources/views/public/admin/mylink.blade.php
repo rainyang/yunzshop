@@ -361,7 +361,7 @@
         });
     })
 
-    /*$(document).on("click",".nav-link",function(){
+    $(document).on("click",".nav-link",function(){
         var id = $(this).data("id");
         if(id){
             $("#modal-mylink").attr({"data-id":id});
@@ -398,7 +398,7 @@
             $("textarea[name=mylink_href]").focus();
             alert("链接不能为空!");
         }
-    });*/
+    });
     // ajax 选择商品
     $("#select-good-btn").click(function(){
         var kw = $("#select-good-kw").val();
