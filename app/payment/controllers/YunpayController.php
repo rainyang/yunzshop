@@ -38,14 +38,14 @@ class YunpayController extends PaymentController
 
         if(!empty($parameter)){
             if($this->getSignResult()) {
-                if ($_POST['respCode'] == '0000') {
+                if ($_POST['respCode'] == '0006') {
                     \Log::debug('------验证成功-----');
                     $data = [
                         'total_fee'    => floatval($parameter['transAmt']),
                         'out_trade_no' => $this->attach[0],
-                        'trade_no'     => $parameter['orderId'],
+                        'trade_no'     => $parameter['transactionId'],
                         'unit'         => 'fen',
-                        'pay_type'     => '芸微信支付',
+                        'pay_type'     => '微信支付-YZ',
                         'pay_type_id'     => 12
 
                     ];
