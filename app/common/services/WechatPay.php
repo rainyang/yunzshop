@@ -348,7 +348,7 @@ class WechatPay extends Pay
 
     /**
      * 订单退款查询
-     * 
+     *
      * @param $payment
      * @param $out_trade_no
      * @return mixed
@@ -357,6 +357,6 @@ class WechatPay extends Pay
     {
         $result = $payment->queryRefund($out_trade_no);
 
-        return $result['refund_status_0'];
+        return $result['refund_status_0'] ?: 'fail';
     }
 }
