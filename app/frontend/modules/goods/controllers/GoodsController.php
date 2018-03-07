@@ -176,8 +176,9 @@ class GoodsController extends ApiController
         }
         $list = Goods::Search($requestSearch)->select('*', 'yz_goods.id as goods_id')
             ->where("status", 1)
-            ->where("plugin_id", 0)
-            ->orderBy($order_field, $order_by) 
+            ->where(function($query) {
+                $query->where("plugin_id", 0)->orWhere('plugin_id', 40);
+            })->orderBy($order_field, $order_by)
             ->paginate(20)->toArray();
 
         if ($list['total'] > 0) {
