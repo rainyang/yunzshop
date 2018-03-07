@@ -125,12 +125,21 @@ class WechatPay extends Pay
         $app     = $this->getEasyWeChatApp($pay, $notify_url);
         $payment = $app->payment;
         $result = $payment->refund($out_trade_no, $out_refund_no, $totalmoney*100, $refundmoney*100);
+
+        $this->payResponseDataLog($out_trade_no, '微信退款', json_encode($result));
+
         if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
             $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_COMPLETE, $result->transaction_id);
-            $this->payResponseDataLog($out_trade_no, '微信退款', json_encode($result));
             return true;
         } else {
-            throw new AppException('微信接口错误:'.$result->return_msg);
+            $status = $this->queryRefund($payment, $out_trade_no);
+
+            if ($status == 'SUCCESS') {
+                $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_COMPLETE, $result->transaction_id);
+                return true;
+            }
+
+            throw new AppException('微信接口错误:'.$result->return_msg . '/' . $status);
         }
     }
 
@@ -335,5 +344,19 @@ class WechatPay extends Pay
         }
 
         return $pay;
+    }
+
+    /**
+     * 订单退款查询
+     * 
+     * @param $payment
+     * @param $out_trade_no
+     * @return mixed
+     */
+    public function queryRefund($payment, $out_trade_no)
+    {
+        $result = $payment->queryRefund($out_trade_no);
+
+        return $result['refund_status_0'];
     }
 }
