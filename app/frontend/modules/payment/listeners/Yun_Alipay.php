@@ -1,16 +1,17 @@
 <?php
 /**
  * Author: 芸众商城 www.yunzshop.com
- * Date: 2017/11/7
- * Time: 下午4:07
+ * Date: 2018/3/6
+ * Time: 下午3:29
  */
 
 namespace app\frontend\modules\payment\listeners;
 
+
 use app\common\events\payment\GetOrderPaymentTypeEvent;
 use app\common\events\payment\RechargeComplatedEvent;
 
-class YunPay
+class Yun_Alipay
 {
     public function onGetPaymentTypes(GetOrderPaymentTypeEvent $event)
     {
@@ -19,8 +20,8 @@ class YunPay
         if (\YunShop::plugin()->get('yun-pay') && !is_null($set) && 1 == $set['switch'] && \YunShop::request()->type != 7) {
 
             $result = [
-                'name' => '微信支付-YZ',
-                'value' => '12',
+                'name' => '支付宝支付-YZ',
+                'value' => '15',
                 'need_password' => '0'
 
             ];
