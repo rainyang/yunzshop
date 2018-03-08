@@ -35,11 +35,11 @@ use app\common\services\goods\VideoDemandCourseGoods;
 
 class GoodsController extends BaseController
 {
-    protected $goods_id = null;
-    protected $shopset;
-    protected $shoppay;
+    private $goods_id = null;
+    private $shopset;
+    private $shoppay;
     //private $goods;
-    protected $lang = null;
+    private $lang = null;
 
     public function __construct()
     {
@@ -186,7 +186,178 @@ class GoodsController extends BaseController
         ])->render();
     }
 
- 
+    public function edit(\Request $request)
+    {
+        /*$this->goods_id = intval(\YunShop::request()->id);
+
+        if (!$this->goods_id){
+            $this->message('请传入正确参数.');
+        }
+
+        $requestGoods = \YunShop::request()->goods;
+        $goodsModel = Goods::with('hasManyParams')->with('hasManySpecs')->with('hasManyGoodsCategory')->find($this->goods_id);//->getGoodsById(2);
+        //dd($goodsModel->hasManyGoodsCategory->toArray());
+
+        //获取规格名及规格项
+        foreach ($goodsModel->hasManySpecs as &$spec) {
+            $spec['items'] = GoodsSpecItem::where('specid', $spec['id'])->get()->toArray();
+        }
+
+        //获取具体规格内容html
+        $optionsHtml = GoodsOptionService::getOptions($this->goods_id, $goodsModel->hasManySpecs);
+
+        //商品其它图片反序列化
+        $goodsModel->thumb_url = !empty($goodsModel->thumb_url) ? unserialize($goodsModel->thumb_url) : [];
+        //$goodsModel->piclist = !empty($goodsModel->thumb_url) ? $goodsModel->thumb_url : [];
+
+
+        //$catetorys = Category::getAllCategoryGroup();
+        if ($requestGoods) {
+
+            $requestGoods['has_option'] = $requestGoods['has_option'] ? $requestGoods['has_option'] : 0;
+            if ($requestGoods['has_option'] && !\YunShop::request()['option_ids']) {
+                $requestGoods['has_option'] = 0;
+                //return $this->message('启用商品规格，必须添加规格项等信息', Url::absoluteWeb('goods.goods.index'));
+            }
+            //将数据赋值到model
+            $requestGoods['thumb'] = tomedia($requestGoods['thumb']);
+
+            if(isset($requestGoods['thumb_url'])){
+                $requestGoods['thumb_url'] = serialize(
+                    array_map(function($item){
+                        return tomedia($item);
+                    }, $requestGoods['thumb_url'])
+                );
+            }
+
+            $category_model = GoodsCategory::where("goods_id", $goodsModel->id)->first();
+            if (!empty($category_model)) {
+                $category_model->delete();
+            }
+            GoodsService::saveGoodsCategory($goodsModel, \YunShop::request()->category, $this->shopset);
+
+            $goodsModel->setRawAttributes($requestGoods);
+            $goodsModel->widgets = \YunShop::request()->widgets;
+            //其他字段赋值
+            $goodsModel->uniacid = \YunShop::app()->uniacid;
+            $goodsModel->id = $this->goods_id;
+            $validator = $goodsModel->validator($goodsModel->getAttributes());
+            if ($validator->fails()) {
+                $this->error($validator->messages());
+            } else {
+                //数据保存
+                if ($goodsModel->save()) {
+                    GoodsParam::saveParam(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
+                    GoodsSpec::saveSpec(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
+                    GoodsOption::saveOption(\YunShop::request(), $goodsModel->id, GoodsSpec::$spec_items, \YunShop::app()->uniacid);
+                    //显示信息并跳转
+                    return $this->message('商品修改成功', Url::absoluteWeb('goods.goods.index'));
+                } else {
+                    !session()->has('flash_notification.message') && $this->error('商品修改失败');
+                    //$this->error('商品修改失败');
+                }
+            }
+
+        }
+
+        $brands = Brand::getBrands()->get();
+
+        //dd($goods_categorys);
+        $catetory_menus = '';
+        if (isset($goodsModel->hasManyGoodsCategory[0])){
+            foreach($goods_categorys = $goodsModel->hasManyGoodsCategory->toArray() as $goods_category){
+                $catetory_menus = CategoryService::getCategoryMenu(['catlevel' => $this->shopset['cat_level'], 'ids' => explode(",", $goods_category['category_ids'])]);
+            }
+        }*/
+
+        //todo 所有操作去service里进行，供应商共用此方法。
+        $goods_service = new EditGoodsService($request->id, \YunShop::request());
+        if (!$goods_service->goods) {
+            return $this->message('未找到商品或已经被删除', '', 'error');
+        }
+        $result = $goods_service->edit();
+        if ($result['status'] == 1) {
+            return $this->message('商品修改成功', Url::absoluteWeb('goods.goods.index'));
+        } else if ($result['status'] == -1){
+            if (isset($result['msg'])) {
+                $this->error($result['msg']);
+            }
+            !session()->has('flash_notification.message') && $this->error('商品修改失败');
+        }
+
+        //dd($this->lang);
+        return view('goods.goods', [
+            'goods' => $goods_service->goods_model,
+            'lang' => $this->lang,
+            'params' => collect($goods_service->goods_model->hasManyParams)->toArray(),
+            'allspecs' => collect($goods_service->goods_model->hasManySpecs)->toArray(),
+            'html' => $goods_service->optionsHtml,
+            'var' => \YunShop::app()->get(),
+            'brands' => $goods_service->brands,
+            'catetory_menus' => $goods_service->catetory_menus,
+            'virtual_types' => [],
+            'shopset' => $this->shopset
+        ])->render();
+    }
+
+    public function qrcode()
+    {
+
+        //$this->error($goods);
+    }
+
+    public function displayorder()
+    {
+        $displayOrders = \YunShop::request()->display_order;
+        foreach($displayOrders as $id => $displayOrder){
+            $goods = \app\common\models\Goods::find($id);
+            $goods->display_order = $displayOrder;
+            $goods->save();
+        }
+        return $this->message('商品排序成功', Url::absoluteWeb('goods.goods.index'));
+        //$this->error($goods);
+    }
+
+    public function change()
+    {
+        //dd(\YunShop::request());
+        $id = \YunShop::request()->id;
+        $field = \YunShop::request()->type;
+        $goods = \app\common\models\Goods::find($id);
+
+        if ($field == 'price') {
+            $sale = Sale::getList($goods->id);
+
+            if (!empty($sale->max_point_deduct)
+                && $sale->max_point_deduct > \YunShop::request()->value) {
+                echo json_encode(['status' => -1, 'msg' => '积分抵扣金额大于商品价格']);
+                exit;
+            }
+        }
+
+        $goods->$field = \YunShop::request()->value;
+        $goods->save();
+        //$this->error($goods);
+    }
+
+    public function setProperty()
+    {
+        $id = \YunShop::request()->id;
+        $field = \YunShop::request()->type;
+        $data = (\YunShop::request()->data == 1 ? '0' : '1');
+        $goods = \app\common\models\Goods::find($id);
+        $goods->$field = $data;
+        //dd($goods);
+        $goods->save();
+        echo json_encode(["data" => $data, "result" => 1]);
+    }
+
+    public function destroy()
+    {
+        $id = \YunShop::request()->id;
+        $goods = Goods::destroy($id);
+        return $this->message('商品删除成功', Url::absoluteWeb('goods.goods.index'));
+    }
 
     /**
      * 获取参数模板
