@@ -129,7 +129,7 @@ class WechatPay extends Pay
         $this->payResponseDataLog($out_trade_no, '微信退款', json_encode($result));
         $status = $this->queryRefund($payment, $out_trade_no);
 
-        if ($status == 'SUCCESS'){
+        if ($status == 'PROCESSING' || $status == 'SUCCESS'){
             $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_COMPLETE, $result->transaction_id);
             return true;
         } else {
