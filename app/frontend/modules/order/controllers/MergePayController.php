@@ -382,4 +382,21 @@ class MergePayController extends ApiController
 
         return $this->successJson('成功', $data);
     }
+
+    /**
+     * 支付宝—YZ
+     *
+     * @param \Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     */
+    public function yunPayAlipay(\Request $request)
+    {
+        if (\Setting::get('plugin.yun_pay_set') == false) {
+            throw new AppException('商城未开启芸支付');
+        }
+
+        $data = $this->pay( PayFactory::PAY_YUN_WEACHAT, ['pay' => 'alipay']);
+        return $this->successJson('成功', $data);
+    }
 }
