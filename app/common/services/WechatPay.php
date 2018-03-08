@@ -221,7 +221,7 @@ class WechatPay extends Pay
         //响应数据
         $this->payResponseDataLog($pay_order_model->out_order_no, $pay_order_model->type, json_encode($result));
 
-        if ($result->status == 'SUCCESS' || $result->status == 'SENDING'){
+        if ($result->status == 'PROCESSING' || $result->status == 'SUCCESS' || $result->status == 'SENDING' || $result->status == 'SENT'){
             \Log::debug('提现返回结果', $result->toArray());
             $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_COMPLETE, $result->payment_no);
 
