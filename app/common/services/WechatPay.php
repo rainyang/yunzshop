@@ -354,6 +354,12 @@ class WechatPay extends Pay
     {
         $result = $payment->queryRefund($out_trade_no);
 
-        return $result['refund_status_0'] ?: 'fail';
+        foreach ($result as $key => $value) {
+            if (preg_match('/refund_status_\d+/', $key)) {
+                return $value;
+            }
+        }
+
+        return 'fail';
     }
 }
