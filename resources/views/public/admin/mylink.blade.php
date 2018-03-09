@@ -294,9 +294,10 @@
                                 </div>
                                 <?php
                                 $sub_level = null;
+                                $parent_id = $goodcate_parent['id'];
                                 if (!is_null($second_category)) {
-                                    $sub_level = collect($second_category)->filter(function ($val, $key) use ($goodcate_parent['id']) {
-                                        if ($val['parent_id'] == $goodcate_parent['id']) {
+                                    $sub_level = collect($second_category)->filter(function ($val, $key) use ($parent_id) {
+                                        if ($val['parent_id'] == $parent_id) {
                                             return $val;
                                         }
                                     });
@@ -313,9 +314,10 @@
                                         </div>
                                         <?php
                                         $third_level = null;
+                                        $secod_parent_id = $goodcate_chlid['id'];
                                         if (!is_null($third_category)) {
-                                            $third_level = collect($third_category)->filter(function ($val, $key) use ($goodcate_chlid['id']) {
-                                                if ($val['parent_id'] == $goodcate_parent['id']) {
+                                            $third_level = collect($third_category)->filter(function ($val, $key) use ($secod_parent_id) {
+                                                if ($val['parent_id'] == $secod_parent_id) {
                                                     return $val;
                                                 }
                                             });
