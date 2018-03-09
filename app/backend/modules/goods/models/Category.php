@@ -188,7 +188,7 @@ class Category extends \app\common\models\Category
 
     /**
      * 三级菜单
-     * 
+     *
      * @return mixed
      */
     public function getCategoryThirdLevel()
