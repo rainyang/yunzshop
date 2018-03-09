@@ -222,16 +222,20 @@ class AlipayController extends PaymentController
      */
     function verify($data, $sign) {
         $alipay_sign_public = \Setting::get('shop_app.pay.alipay_sign_public');
+        //如果isnewalipay为1，则为rsa2支付类型
+        $isnewalipay = \Setting::get('shop_app.pay.newalipay');
         if(!$this->checkEmpty($alipay_sign_public)){
             $res = "-----BEGIN PUBLIC KEY-----\n" .
                 wordwrap($alipay_sign_public, 64, "\n", true) .
                 "\n-----END PUBLIC KEY-----";
         }
         ($res) or die('支付宝RSA公钥错误。请检查公钥文件格式是否正确');
-        \Log::debug('sign_public_key:'.$res);
-        \Log::debug('data:'.print_r($data, 1));
         //调用openssl内置方法验签，返回bool值
-        $result = (bool)openssl_verify($data, base64_decode($sign), $res);
+        if ($isnewalipay) {
+            $result = (bool)openssl_verify($data, base64_decode($sign), $res, OPENSSL_ALGO_SHA256);
+        } else {
+            $result = (bool)openssl_verify($data, base64_decode($sign), $res);
+        }
         openssl_free_key($res);
         return $result;
     }

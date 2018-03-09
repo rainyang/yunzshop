@@ -39,8 +39,7 @@ class Withdraw extends \app\common\models\Withdraw
         }
 
         if($search['searchtime']){
-            $range = [$search['times']['start'], $search['times']['end']];
-
+            $range = [strtotime($search['time']['start']),  strtotime($search['time']['end'])];
             $query->whereBetween('created_at', $range);
         }
 

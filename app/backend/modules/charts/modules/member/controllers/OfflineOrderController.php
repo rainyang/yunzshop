@@ -17,6 +17,7 @@ class OfflineOrderController extends OfflineCountController
 {
     public function index()
     {
+        set_time_limit(0);
         $data = $this->getData($this->getAllMembers());
 
         //分页

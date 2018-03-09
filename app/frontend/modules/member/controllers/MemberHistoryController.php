@@ -19,7 +19,6 @@ class MemberHistoryController extends ApiController
     public function index()
     {
         $memberId = \YunShop::app()->getMemberId();
-        $memberId = 9;
 
         $historyList = MemberHistory::getMemberHistoryList($memberId);
         return $this->successJson('获取列表成功', $historyList);
@@ -27,8 +26,7 @@ class MemberHistoryController extends ApiController
 
     public function store()
     {
-        $memberId = 9;
-        //$goodsId = 100;
+        $memberId = \YunShop::app()->getMemberId();
         $goodsId = \YunShop::request()->goods_id;
         if (!$goodsId) {
             return $this->errorJson('未获取到商品ID，添加失败！');

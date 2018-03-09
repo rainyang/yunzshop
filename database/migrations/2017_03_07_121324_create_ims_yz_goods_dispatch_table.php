@@ -20,6 +20,9 @@ class CreateImsYzGoodsDispatchTable extends Migration {
                 $table->integer('dispatch_price')->nullable()->default(0);
                 $table->integer('dispatch_id')->nullable();
                 $table->boolean('is_cod')->default(1);
+                $table->integer('created_at')->nullable();
+                $table->integer('updated_at')->nullable();
+                $table->integer('deleted_at')->nullable();
             });
         }
 	}
