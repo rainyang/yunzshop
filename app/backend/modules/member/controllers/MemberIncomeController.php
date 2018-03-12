@@ -62,6 +62,7 @@ class MemberIncomeController extends BaseController
         //检测收入数据
 //        $status = $member['yz_member']['status'];
         $incomeModel = Income::getIncomes()->where('member_id', $uid)->get();
+        $config = \Config::get('income');
 //        if ($status !== null && $status >= '0') {
 //            $incomeModel = $incomeModel->where('status', $status);
 //        }
@@ -75,16 +76,16 @@ class MemberIncomeController extends BaseController
             'withdraw' => $incomeModel->where('status', 1)->sum('amount'),
             'no_withdraw' => $incomeModel->where('status', 0)->sum('amount')
         ];
-        $incomeGroup = Income::where('member_id', $uid)->select('type_name')->distinct()->get();
 
-        foreach ($incomeGroup as $key => $item) {
-            $incomeData[$key] = [
-                'type_name' => $item['type_name'],
-                'income' => $incomeModel->where('type_name', $item['type_name'])->sum('amount'),
-                'withdraw' => $incomeModel->where('type_name', $item['type_name'])->where('status', 1)->sum('amount'),
-                'no_withdraw' => $incomeModel->where('type_name', $item['type_name'])->where('status', 0)->sum('amount')
-            ];
-        }
+//        $incomeGroup = Income::where('member_id', $uid)->select('type_name')->distinct()->get();
+//        foreach ($incomeGroup as $key => $item) {
+//            $incomeData[$key] = [
+//                'type_name' => $item['type_name'],
+//                'income' => $incomeModel->where('type_name', $item['type_name'])->sum('amount'),
+//                'withdraw' => $incomeModel->where('type_name', $item['type_name'])->where('status', 1)->sum('amount'),
+//                'no_withdraw' => $incomeModel->where('type_name', $item['type_name'])->where('status', 0)->sum('amount')
+//            ];
+//        }
 //        foreach ($incomeModel as $key => $item) {
 //
 //            $typeModel = $incomeModel->where('incometable_type', $item['class']);
@@ -123,6 +124,47 @@ class MemberIncomeController extends BaseController
 //            return $this->successJson('获取数据成功!', $incomeData);
 //        }
 //        return $this->errorJson('未检测到数据!');
+        foreach ($config as $key => $item) {
+
+            $typeModel = $incomeModel->where('incometable_type', $item['class']);
+            $incomeData[$key] = [
+                'title' => $item['title'],
+                'ico' => $item['ico'],
+                'type' => $item['type'],
+                'type_name' => $item['title'],
+                'income' => $typeModel->sum('amount'),
+                'withdraw' => $typeModel->where('status', 1)->sum('amount'),
+                'no_withdraw' => $typeModel->where('status', 0)->sum('amount')
+            ];
+            if ($item['agent_class']) {
+                $agentModel = $item['agent_class']::$item['agent_name'](\YunShop::app()->getMemberId());
+
+                if ($item['agent_status']) {
+                    $agentModel = $agentModel->where('status', 1);
+                }
+
+                //推广中心显示
+                if (!$agentModel) {
+                    $incomeData[$key]['can'] = false;
+                } else {
+                    $agent = $agentModel->first();
+                    if ($agent) {
+                        $incomeData[$key]['can'] = true;
+                    } else {
+                        $incomeData[$key]['can'] = false;
+                    }
+                }
+            } else {
+                $incomeData[$key]['can'] = true;
+            }
+
+        }
+
+//        if ($incomeData) {
+//            return $this->successJson('获取数据成功!', $incomeData);
+//        }
+//        return $this->errorJson('未检测到数据!');
+
 
         return view('member.income', [
             'member' => $member,
