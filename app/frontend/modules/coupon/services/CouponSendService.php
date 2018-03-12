@@ -27,13 +27,15 @@ class CouponSendService
 
     protected $relation;  //关联，订单号 或 ID值
 
+    protected $transferId; //转让者ID
+
 
 
     //todo 确定 get_type 类型，增加类型数据验证，
 
 
 
-    public function sendCouponsToMember($memberId, array $couponIds, $get_type = '0', $relation = '')
+    public function sendCouponsToMember($memberId, array $couponIds, $get_type = '0', $relation = '', $transferId = '')
     {
         if (empty($memberId) || !is_numeric($memberId)) {
             Log::info('优惠劵发送接口调用失败，会员ID错误！', print_r($memberId,true));
@@ -49,6 +51,7 @@ class CouponSendService
         $this->get_type = $get_type;
         $this->send_total = count($couponIds);
         $this->relation = $relation;
+        $this->transferId = $transferId;
 
 
         $data = array();
@@ -66,7 +69,7 @@ class CouponSendService
     }
 
 
-    public function sendCouponToMembers(array $memberIds, $couponId, $get_type = '0', $relation = '')
+    public function sendCouponToMembers(array $memberIds, $couponId, $get_type = '0', $relation = '',$transferId)
     {
         if (empty($couponId) || !is_numeric($couponId)) {
             Log::info('优惠劵发送接口调用失败，会员ID错误！', print_r($couponId,true));
@@ -81,6 +84,7 @@ class CouponSendService
         $this->get_type = $get_type;
         $this->send_total = 1;
         $this->relation = $relation;
+        $this->transferId = $transferId;
 
 
 
@@ -167,7 +171,7 @@ class CouponSendService
                 $remark = '购物赠送优惠券: 订单:'.$this->relation.'完成，成功赠送会员【ID:' . $this->memberId . '】1张优惠券【优惠劵ID:' . $this->couponId . '】';
                 break;
             case '5':
-                $remark = '会员转赠: 会员【ID:' . $this->memberId . '】优惠劵变动 1张【优惠劵ID:' . $this->couponId . '】';
+                $remark = '会员转赠: 会员【ID:' . $this->memberId . '】优惠劵变动 1张【优惠劵ID:' . $this->couponId . '】转让会员【ID:'.$this->transferId.'】';
                 break;
             default:
                 $remark = '未知优惠劵变动：会员【ID:' . $this->memberId . '】优惠劵变动 1张【优惠劵ID:' . $this->couponId . '】';
