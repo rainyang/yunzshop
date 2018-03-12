@@ -63,6 +63,7 @@ class MemberIncomeController extends BaseController
 //        $status = $member['yz_member']['status'];
         $incomeModel = Income::getIncomes()->where('member_id', $uid)->get();
         $config = \Config::get('income');
+        unset($config['balance']);
 //        if ($status !== null && $status >= '0') {
 //            $incomeModel = $incomeModel->where('status', $status);
 //        }
