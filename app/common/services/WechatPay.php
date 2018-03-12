@@ -125,12 +125,16 @@ class WechatPay extends Pay
         $app     = $this->getEasyWeChatApp($pay, $notify_url);
         $payment = $app->payment;
         $result = $payment->refund($out_trade_no, $out_refund_no, $totalmoney*100, $refundmoney*100);
-        if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
+
+        $this->payResponseDataLog($out_trade_no, '微信退款', json_encode($result));
+        $status = $this->queryRefund($payment, $out_trade_no);
+\Log::debug('---退款状态---', [$status]);
+        if ($status == 'PROCESSING' || $status == 'SUCCESS'){
             $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_COMPLETE, $result->transaction_id);
-            $this->payResponseDataLog($out_trade_no, '微信退款', json_encode($result));
             return true;
         } else {
-            throw new AppException('微信接口错误:'.$result->return_msg);
+
+            throw new AppException('微信接口错误:'.$result->return_msg . '/' . $status);
         }
     }
 
@@ -187,7 +191,10 @@ class WechatPay extends Pay
             $this->payRequestDataLog($pay_order_model->id, $pay_order_model->type,
                 $pay_order_model->type, json_encode($merchantPayData));
 
-            $result = $merchantPay->send($merchantPayData);
+            $pay_result = $merchantPay->send($merchantPayData);
+
+            $result = $merchantPay->query($pay_result->partner_trade_no);
+
         } else {//红包
             $luckyMoney = $app->lucky_money;
 
@@ -207,13 +214,14 @@ class WechatPay extends Pay
             $this->payRequestDataLog($pay_order_model->id, $pay_order_model->type,
                 $pay_order_model->type, json_encode($luckyMoneyData));
 
-            $result = $luckyMoney->sendNormal($luckyMoneyData);
+            $pay_result = $luckyMoney->sendNormal($luckyMoneyData);
+            $result = $luckyMoney->query($pay_result->mch_billno);
         }
 
         //响应数据
         $this->payResponseDataLog($pay_order_model->out_order_no, $pay_order_model->type, json_encode($result));
-
-        if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
+\Log::debug('---提现状态---', [$result->status]);
+        if ($result->status == 'PROCESSING' || $result->status == 'SUCCESS' || $result->status == 'SENDING' || $result->status == 'SENT'){
             \Log::debug('提现返回结果', $result->toArray());
             $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_COMPLETE, $result->payment_no);
 
@@ -222,8 +230,6 @@ class WechatPay extends Pay
             Withdraw::paySuccess($result->partner_trade_no);
 
             return ['errno' => 0, 'message' => '微信提现成功'];
-        } elseif ($result->return_code == 'SUCCESS') {
-            return ['errno' => 1, 'message' => $result->err_code_des];
         } else {
             return ['errno' => 1, 'message' => $result->return_msg];
         }
@@ -335,5 +341,25 @@ class WechatPay extends Pay
         }
 
         return $pay;
+    }
+
+    /**
+     * 订单退款查询
+     *
+     * @param $payment
+     * @param $out_trade_no
+     * @return mixed
+     */
+    public function queryRefund($payment, $out_trade_no)
+    {
+        $result = $payment->queryRefund($out_trade_no);
+
+        foreach ($result as $key => $value) {
+            if (preg_match('/refund_status_\d+/', $key)) {
+                return $value;
+            }
+        }
+
+        return 'fail';
     }
 }
