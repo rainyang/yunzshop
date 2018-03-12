@@ -770,6 +770,18 @@ return [
                         'parents'       => ['Member', 'member_all',],
                     ],
 
+                    'member_income'     => [
+                        'name'          => '收入详情',
+                        'url'           => 'member.member-income.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_income',
+                        'parents'       => ['Member', 'member_all',],
+                    ],
+
                     'member_detail_update'     => [
                         'name'          => '修改会员信息',
                         'url'           => 'member.member.update',
