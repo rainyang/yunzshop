@@ -159,4 +159,43 @@ class Category extends \app\common\models\Category
         }
         return $res;
     }
+
+    /**
+     * 一级菜单
+     *
+     * @return mixed
+     */
+    public function getCategoryFirstLevel()
+    {
+        return self::uniacid()
+            ->where('level', 1)
+            ->orderBy('id', 'asc')
+            ->get();
+    }
+
+    /**
+     * 二级菜单
+     *
+     * @return mixed
+     */
+    public function getCategorySecondLevel()
+    {
+        return self::uniacid()
+            ->where('level', 2)
+            ->orderBy('id', 'asc')
+            ->get();
+    }
+
+    /**
+     * 三级菜单
+     *
+     * @return mixed
+     */
+    public function getCategoryThirdLevel()
+    {
+        return self::uniacid()
+            ->where('level', 3)
+            ->orderBy('id', 'asc')
+            ->get();
+    }
 }
