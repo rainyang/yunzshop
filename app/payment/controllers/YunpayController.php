@@ -45,8 +45,8 @@ class YunpayController extends PaymentController
                         'out_trade_no' => $this->attach[0],
                         'trade_no'     => $parameter['transactionId'],
                         'unit'         => 'fen',
-                        'pay_type'     => '微信支付-YZ',
-                        'pay_type_id'     => 12
+                        'pay_type'     => intval($_POST['productId']) == 112 ? '微信-YZ' : '支付宝-YZ',
+                        'pay_type_id'     => intval($_POST['productId']) == 112 ? 12 : 15
 
                     ];
                   
