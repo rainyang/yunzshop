@@ -11,7 +11,7 @@ use app\common\services\MessageService;
 use app\common\facades\Setting;
 use app\common\models\notice\MessageTemp;
 use app\common\models\Coupon;
-use app\backend\modules\member\models\member;
+use app\backend\modules\member\models\Member;
 
 class MessageNotice extends MessageService
 {
