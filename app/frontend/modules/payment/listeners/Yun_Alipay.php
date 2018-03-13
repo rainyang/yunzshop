@@ -20,7 +20,7 @@ class Yun_Alipay
         if (\YunShop::plugin()->get('yun-pay') && !is_null($set) && 1 == $set['switch'] && \YunShop::request()->type != 7) {
 
             $result = [
-                'name' => '支付宝支付-YZ',
+                'name' => '支付宝-YZ',
                 'value' => '15',
                 'need_password' => '0'
 

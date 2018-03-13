@@ -40,7 +40,7 @@ class CouponTransferController extends ApiController
         }
 
         $couponService = new CouponSendService();
-        $result = $couponService->sendCouponsToMember($recipient,[$_model->coupon_id],'5');
+        $result = $couponService->sendCouponsToMember($recipient,[$_model->coupon_id],'5','',$this->memberModel->uid);
         if (!$result) {
             return $this->errorJson('转让失败：(写入出错)');
         }
@@ -49,8 +49,9 @@ class CouponTransferController extends ApiController
         if (!$result) {
             return $this->errorJson('转让失败：(记录修改出错)');
         }
+//        '.$this->memberModel->uid.''.[$_model->coupon_id].'
 
-        return $this->successJson('转让成功');
+        return $this->successJson('转让成功,');
     }
 
 
