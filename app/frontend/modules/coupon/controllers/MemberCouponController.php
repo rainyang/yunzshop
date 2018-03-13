@@ -10,6 +10,7 @@ use app\common\models\CouponLog;
 use app\common\models\McMappingFans;
 use app\common\models\AccountWechats;
 use EasyWeChat\Foundation\Application;
+use app\backend\modules\coupon\services\MessageNotice;
 
 
 class MemberCouponController extends ApiController
@@ -423,6 +424,8 @@ class MemberCouponController extends ApiController
                     ];
 //                    self::sendTemplateMessage($openid, self::TEMPLATEID, $messageData);
                 }
+                //发送获取通知
+                MessageNotice::couponNotice($couponModel->id,$memberId);
 
                 //写入log
                 $logData = [

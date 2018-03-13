@@ -49,6 +49,26 @@
                     </div>
                 </div>
 
+                <div class='panel-body'>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">通知设置：</label>
+                        <div class="col-sm-4 col-xs-6">
+                            <select name='coupon[coupon_notice]' class='form-control diy-notice'>
+                                <option value="" @if(!$coupon['coupon_notice']) selected @endif >
+                                    请选择消息模板
+                                </option>
+                                @foreach ($temp_list as $item)
+                                    <option value="{{$item['id']}}"
+                                            @if($coupon['coupon_notice'] == $item['id'])
+                                            selected
+                                            @endif>{{$item['title']}}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
 
 
 

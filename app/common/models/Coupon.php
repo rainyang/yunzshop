@@ -87,6 +87,30 @@ class  Coupon extends BaseModel
             ->value($attribute);
     }
 
+    //获取优惠券优惠方式
+    public static  function getPromotionMethod($couponId) {
+        $useType = static::uniacid()->where('id', '=', $couponId)->value('coupon_method');
+        switch ($useType){
+            case self::COUPON_MONEY_OFF:
+                return [
+                    'type' =>  self::COUPON_GOODS_USE,
+                    'mode' => static::uniacid()->where('id', '=', $couponId)->value('deduct'),
+                ];
+                break;
+            case self::COUPON_DISCOUNT:
+                return [
+                    'type' => self::COUPON_CATEGORY_USE,
+                    'mode' => static::uniacid()->where('id', '=', $couponId)->value('discount'),
+                ];
+                break;
+            default:
+                return [
+                    'type' => self::COUPON_SHOP_USE,
+                ];
+                break;
+        }
+    }
+
     //获取优惠券的适用范围
     public static function getApplicableScope($couponId){
         $useType = static::uniacid()
