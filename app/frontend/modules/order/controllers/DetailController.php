@@ -9,6 +9,7 @@
 namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
+use app\common\exceptions\AppException;
 use app\common\models\DispatchType;
 use app\common\models\Order;
 use app\common\requests\Request;
@@ -30,6 +31,10 @@ class DetailController extends ApiController
 //        if ($order->uid != \YunShop::app()->getMemberId()) {
 //            throw new AppException('(ID:' . $order->id . ')该订单属于其他用户');
 //        }
+
+        if (is_null($order)) {
+            throw new AppException('该订单查询失败');
+        }
 
         $data = $order->toArray();
         $backups_button = $data['button_models'];
