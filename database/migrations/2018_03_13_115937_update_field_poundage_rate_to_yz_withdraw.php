@@ -16,6 +16,7 @@ class UpdateFieldPoundageRateToYzWithdraw extends Migration
         if (Schema::hasTable('yz_withdraw')) {
             Schema::table('yz_withdraw', function (Blueprint $table) {
                 $table->decimal('poundage_rate',11)->change();
+                $table->decimal('servicetax_rate',11)->change();
             });
         }
     }
