@@ -51,7 +51,7 @@ class CouponTransferController extends ApiController
         }
 //        '.$this->memberModel->uid.''.[$_model->coupon_id].'
 
-        return $this->successJson('转让成功,');
+        return $this->successJson('转让成功');
     }
 
 
