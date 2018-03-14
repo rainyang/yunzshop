@@ -9,6 +9,7 @@ use app\frontend\modules\order\models\PreOrder;
 use app\Jobs\addGoodsCouponQueueJob;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Collection;
+use app\backend\modules\coupon\services\MessageNotice;
 
 class CouponService
 {
