@@ -396,6 +396,10 @@ class MemberCouponController extends ApiController
                 $mappingFans = McMappingFans::getFansById($memberId);
                 $openid = $mappingFans->openid;
                 $nickname = $mappingFans->nickname;
+
+                //发送获取通知
+                MessageNotice::couponNotice($couponModel->id,$memberId);
+
                 if(!empty($openid) && !empty($couponModel->resp_title)){ //如果没有设置标题, 或者该用户没有openid,则不发送通知
 
                     //可读的有效期
@@ -424,8 +428,6 @@ class MemberCouponController extends ApiController
                     ];
 //                    self::sendTemplateMessage($openid, self::TEMPLATEID, $messageData);
                 }
-                //发送获取通知
-                MessageNotice::couponNotice($couponModel->id,$memberId);
 
                 //写入log
                 $logData = [

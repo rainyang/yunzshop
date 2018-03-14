@@ -219,7 +219,7 @@ return [
         ]
     ],
     'coupon_obtain' => [
-        'title' => '获得优惠券通知',
+        'title' => '优惠券(获得优惠券通知)',
         'subtitle' => '获得优惠券通知',
         'value' => 'coupon_obtain',
         'param' => [

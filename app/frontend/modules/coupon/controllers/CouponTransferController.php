@@ -53,7 +53,7 @@ class CouponTransferController extends ApiController
 //        '.$this->memberModel->uid.''.[$_model->coupon_id].'
 
         //发送获取通知
-        MessageNotice::couponNotice($_model->coupon_id,$this->memberModel->uid);
+        MessageNotice::couponNotice($_model->coupon_id,$recipient);
 
         return $this->successJson('转让成功,');
     }

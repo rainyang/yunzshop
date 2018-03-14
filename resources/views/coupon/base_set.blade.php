@@ -83,6 +83,11 @@
             </div>
         </form>
     </div>
+    <script>
+        require(['select2'], function () {
+            $('.diy-notice').select2();
+        })
+    </script>
 
 
 @endsection
