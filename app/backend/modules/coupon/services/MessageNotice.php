@@ -54,7 +54,12 @@ class MessageNotice extends MessageService
         //结束时间
         $coupon_time_end = Coupon::getTimeLimit($couponDate->id);
         if($coupon_time_end['type'] == 0) {
-            $time_end = date('Y-m-d H:i:s',(strtotime('+'.$coupon_time_end['time_end'].'day',time())));
+            if ($coupon_time_end['time_end'] == 0) {
+                $time_end = "无时间限制";
+            } else {
+                $time_end = date('Y-m-d H:i:s',(strtotime('+'.$coupon_time_end['time_end'].'day',time())));
+            }
+
         } elseif ($coupon_time_end['type'] == 1) {
 
             $time_end = $coupon_time_end['time_end'];
@@ -81,6 +86,7 @@ class MessageNotice extends MessageService
         if (!$msg) {
             return false;
         }
+        dd($msg);
         MessageService::notice(MessageTemp::$template_id, $msg, $member->uid, $uniacid);
     }
 }
