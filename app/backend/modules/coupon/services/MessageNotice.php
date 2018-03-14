@@ -86,7 +86,6 @@ class MessageNotice extends MessageService
         if (!$msg) {
             return false;
         }
-        dd($msg);
         MessageService::notice(MessageTemp::$template_id, $msg, $member->uid, $uniacid);
     }
 }
