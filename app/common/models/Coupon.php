@@ -93,14 +93,37 @@ class  Coupon extends BaseModel
         switch ($useType){
             case self::COUPON_MONEY_OFF:
                 return [
-                    'type' =>  self::COUPON_GOODS_USE,
+                    'type' =>  self::COUPON_MONEY_OFF,
                     'mode' => static::uniacid()->where('id', '=', $couponId)->value('deduct'),
                 ];
                 break;
             case self::COUPON_DISCOUNT:
                 return [
-                    'type' => self::COUPON_CATEGORY_USE,
+                    'type' => self::COUPON_DISCOUNT,
                     'mode' => static::uniacid()->where('id', '=', $couponId)->value('discount'),
+                ];
+                break;
+            default:
+                return [
+                    'type' => self::COUPON_SHOP_USE,
+                ];
+                break;
+        }
+    }
+    //获取优惠券适用期限
+    public static function getTimeLimit ($couponId) {
+        $time_limit = static::uniacid()->where('id', '=', $couponId)->value('time_limit');
+        switch ($time_limit){
+            case self::COUPON_SINCE_RECEIVE:
+                return [
+                    'type' =>  self::COUPON_SINCE_RECEIVE,
+                    'time_end' => static::uniacid()->where('id', '=', $couponId)->value('time_days'),
+                ];
+                break;
+            case self::COUPON_DATE_TIME_RANGE:
+                return [
+                    'type' => self::COUPON_DATE_TIME_RANGE,
+                    'time_end' => static::uniacid()->where('id', '=', $couponId)->value('time_end'),
                 ];
                 break;
             default:
