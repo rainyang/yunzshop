@@ -14,6 +14,7 @@ use app\common\components\ApiController;
 use app\frontend\models\Member;
 use app\frontend\modules\coupon\models\MemberCoupon;
 use app\frontend\modules\coupon\services\CouponSendService;
+use app\backend\modules\coupon\services\MessageNotice;
 
 class CouponTransferController extends ApiController
 {
@@ -51,7 +52,10 @@ class CouponTransferController extends ApiController
         }
 //        '.$this->memberModel->uid.''.[$_model->coupon_id].'
 
-        return $this->successJson('转让成功');
+        //发送获取通知
+        MessageNotice::couponNotice($_model->coupon_id,$recipient);
+
+        return $this->successJson('转让成功,');
     }
 
 

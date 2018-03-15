@@ -9,6 +9,7 @@ use app\Jobs\addSendCouponJob;
 use app\Jobs\addSendCouponLogJob;
 use app\Jobs\updateCouponQueueJob;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use app\backend\modules\coupon\services\MessageNotice;
 
 /**
  * Author: 芸众商城 www.yunzshop.com
@@ -63,6 +64,8 @@ class CouponSend
                 continue;
             }
             $this->sendCouponForMember($couponSendQueue);//发放优惠券到会员
+            //发送获取通知
+            MessageNotice::couponNotice($couponSendQueue->coupon_id,$couponSendQueue->uid);
             $this->sendCouponLog($couponSendQueue);//发放优惠券LOG
 
             $condition = [
