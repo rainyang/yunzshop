@@ -52,7 +52,7 @@ class PayController extends BaseController
         if (is_string($result)) {
             redirect($result)->send();
         }
-        RefundMessageService::passMessage($this->refundApply);
+        RefundMessageService::passMessage($this->refundApply);//通知买家
         return $this->message('操作成功');
 
     }

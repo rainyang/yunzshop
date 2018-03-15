@@ -50,7 +50,7 @@ class OperationController extends BaseController
             $refundApply->reject(\Request::only(['reject_reason']));
             $refundApply->order->refund_id = 0;
             $refundApply->order->save();
-            RefundMessageService::rejectMessage($refundApply);
+            RefundMessageService::rejectMessage($refundApply);//通知买家
         });
 
 
@@ -96,7 +96,7 @@ class OperationController extends BaseController
         DB::transaction(function () use ($refundApply) {
             $refundApply->consensus();
             $refundApply->order->close();
-            RefundMessageService::passMessage($refundApply);
+            RefundMessageService::passMessage($refundApply);//通知买家
         });
         return $this->message('操作成功', '');
     }
