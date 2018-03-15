@@ -87,7 +87,6 @@ class RefundMessageService extends MessageService
         if (!$msg) {
             return false;
         }
-        dd($msg);
         MessageService::notice(MessageTemp::$template_id, $msg, $refundApply->uid, $uniacid);
     }
 
