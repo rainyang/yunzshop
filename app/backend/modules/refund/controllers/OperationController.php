@@ -8,6 +8,7 @@ use app\common\events\order\AfterOrderRefundedEvent;
 use app\common\exceptions\AdminException;
 use app\common\models\refund\ResendExpress;
 use Illuminate\Support\Facades\DB;
+use app\backend\modules\refund\services\RefundMessageService;
 
 /**
  * 退款申请操作
@@ -44,11 +45,12 @@ class OperationController extends BaseController
     public function reject(\Request $request)
     {
         $refundApply = $this->refundApply;
-
+//        RefundMessageService::rejectMessage($refundApply);
         DB::transaction(function () use ($refundApply) {
             $refundApply->reject(\Request::only(['reject_reason']));
             $refundApply->order->refund_id = 0;
             $refundApply->order->save();
+            RefundMessageService::rejectMessage($refundApply);
         });
 
 
@@ -74,7 +76,6 @@ class OperationController extends BaseController
 
     public function resend(\Request $request)
     {
-
         $resendExpress = new ResendExpress($request->only('express_code', 'express_company_name', 'express_sn'));
 
         $this->refundApply->resendExpress()->save($resendExpress);
@@ -90,10 +91,12 @@ class OperationController extends BaseController
      */
     public function consensus(\Request $request)
     {
+
         $refundApply = $this->refundApply;
         DB::transaction(function () use ($refundApply) {
             $refundApply->consensus();
             $refundApply->order->close();
+            RefundMessageService::passMessage($refundApply);
         });
         return $this->message('操作成功', '');
     }
