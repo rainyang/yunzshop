@@ -87,6 +87,53 @@ class  Coupon extends BaseModel
             ->value($attribute);
     }
 
+    //获取优惠券优惠方式
+    public static  function getPromotionMethod($couponId) {
+        $useType = static::uniacid()->where('id', '=', $couponId)->value('coupon_method');
+        switch ($useType){
+            case self::COUPON_MONEY_OFF:
+                return [
+                    'type' =>  self::COUPON_MONEY_OFF,
+                    'mode' => static::uniacid()->where('id', '=', $couponId)->value('deduct'),
+                ];
+                break;
+            case self::COUPON_DISCOUNT:
+                return [
+                    'type' => self::COUPON_DISCOUNT,
+                    'mode' => static::uniacid()->where('id', '=', $couponId)->value('discount'),
+                ];
+                break;
+            default:
+                return [
+                    'type' => self::COUPON_SHOP_USE,
+                ];
+                break;
+        }
+    }
+    //获取优惠券适用期限
+    public static function getTimeLimit ($couponId) {
+        $time_limit = static::uniacid()->where('id', '=', $couponId)->value('time_limit');
+        switch ($time_limit){
+            case self::COUPON_SINCE_RECEIVE:
+                return [
+                    'type' =>  self::COUPON_SINCE_RECEIVE,
+                    'time_end' => static::uniacid()->where('id', '=', $couponId)->value('time_days'),
+                ];
+                break;
+            case self::COUPON_DATE_TIME_RANGE:
+                return [
+                    'type' => self::COUPON_DATE_TIME_RANGE,
+                    'time_end' => static::uniacid()->where('id', '=', $couponId)->value('time_end'),
+                ];
+                break;
+            default:
+                return [
+                    'type' => self::COUPON_SHOP_USE,
+                ];
+                break;
+        }
+    }
+
     //获取优惠券的适用范围
     public static function getApplicableScope($couponId){
         $useType = static::uniacid()

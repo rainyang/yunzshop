@@ -10,6 +10,7 @@ use app\common\models\CouponLog;
 use app\common\models\McMappingFans;
 use app\common\models\AccountWechats;
 use EasyWeChat\Foundation\Application;
+use app\backend\modules\coupon\services\MessageNotice;
 
 
 class MemberCouponController extends ApiController
@@ -395,6 +396,10 @@ class MemberCouponController extends ApiController
                 $mappingFans = McMappingFans::getFansById($memberId);
                 $openid = $mappingFans->openid;
                 $nickname = $mappingFans->nickname;
+
+                //发送获取通知
+                MessageNotice::couponNotice($couponModel->id,$memberId);
+
                 if(!empty($openid) && !empty($couponModel->resp_title)){ //如果没有设置标题, 或者该用户没有openid,则不发送通知
 
                     //可读的有效期
