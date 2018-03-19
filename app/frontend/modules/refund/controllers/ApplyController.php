@@ -7,6 +7,7 @@ use app\common\exceptions\AppException;
 use app\common\models\refund\RefundApply;
 use app\frontend\models\Order;
 use app\frontend\modules\refund\services\RefundService;
+use app\frontend\modules\refund\services\RefundMessageService;
 use Request;
 
 /**
@@ -52,6 +53,7 @@ class ApplyController extends ApiController
             ];
         }
         $data = compact('order', 'refundTypes', 'reasons');
+//        dd($data);
         return $this->successJson('成功', $data);
     }
 
@@ -94,6 +96,8 @@ class ApplyController extends ApiController
         if (!$order->save()) {
             throw new AppException('订单退款状态改变失败');
         }
+        //通知买家
+        RefundMessageService::applyRefundNotice($refundApply);
         return $this->successJson('成功', $refundApply->toArray());
     }
 }
