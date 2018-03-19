@@ -11,11 +11,26 @@ namespace app\backend\modules\refund\controllers;
 use app\common\components\BaseController;
 use app\common\exceptions\ShopException;
 use app\common\modules\refund\services\RefundService;
+use app\backend\modules\refund\services\RefundMessageService;
+use app\backend\modules\refund\models\RefundApply;
 
 
 class PayController extends BaseController
 {
+    private $refundApply;
     public $transactionActions = ['*'];
+    public function __construct()
+    {
+        parent::__construct();
+        $request = \Request::capture();
+        $this->validate([
+            'refund_id' => 'required',
+        ]);
+        $this->refundApply = RefundApply::find($request->input('refund_id'));
+        if (!isset($this->refundApply)) {
+            throw new AdminException('退款记录不存在');
+        }
+    }
 
     /**
      * {@inheritdoc}
@@ -37,6 +52,7 @@ class PayController extends BaseController
         if (is_string($result)) {
             redirect($result)->send();
         }
+        RefundMessageService::passMessage($this->refundApply);//通知买家
         return $this->message('操作成功');
 
     }
