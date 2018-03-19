@@ -10,6 +10,8 @@ namespace app\frontend\modules\member\controllers;
 
 use app\common\components\ApiController;
 use app\frontend\modules\member\models\MemberLevel;
+use app\common\services\goods\LeaseToyGoods;
+use  Yunshop\LeaseToy\models\LevelRightsModel;
 
 class MemberLevelController extends ApiController
 {
@@ -39,9 +41,18 @@ class MemberLevelController extends ApiController
         //升级条件判断
         if ($this->settinglevel['level_type'] == 2) {
             $data =  MemberLevel::getLevelGoods();
-
+            $bool = LeaseToyGoods::whetherEnabled();
             //商品图片处理
             foreach ($data as &$value) {
+                $value['rent_free'] = 0;
+                $value['deposit_free'] = 0;
+                if ($bool) {
+                    $levelRights = LevelRightsModel::getRights($value['id']);
+                    if ($levelRights) {
+                        $value['rent_free'] = $levelRights->rent_free;
+                        $value['deposit_free'] = $levelRights->deposit_free;
+                    }
+                }
                 $value['goods']['thumb'] = replace_yunshop(yz_tomedia($value['goods']['thumb']));
             }
         } else {
