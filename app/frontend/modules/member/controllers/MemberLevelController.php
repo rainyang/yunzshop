@@ -11,7 +11,9 @@ namespace app\frontend\modules\member\controllers;
 use app\common\components\ApiController;
 use app\frontend\modules\member\models\MemberLevel;
 use app\common\services\goods\LeaseToyGoods;
-use  Yunshop\LeaseToy\models\LevelRightsModel;
+use Yunshop\LeaseToy\models\LevelRightsModel;
+use app\frontend\modules\member\models\MemberModel;
+
 
 class MemberLevelController extends ApiController
 {
@@ -59,11 +61,43 @@ class MemberLevelController extends ApiController
             $data = MemberLevel::getLevelData($this->settinglevel['level_type']);
         }
 
+        //会员信息
+        $uid = \Yunshop::app()->getMemberId();
+        $member_info = $this->getUserInfo($uid);
+        if (!empty($member_info)) {
+            $member_info = $member_info->toArray();
+
+            if (!empty($member_info['yz_member']['level'])) {
+                $memberData['level_id'] =  $member_info['yz_member']['level']['id'];
+                $memberData['level_name'] =  $member_info['yz_member']['level']['level_name'];
+                $levelRights = LevelRightsModel::getRights($member_info['yz_member']['level']['id']);
+
+                $memberData['rights'] = [
+                    'discount' => $member_info['yz_member']['level']['discount'] ? $member_info['yz_member']['level']['discount'] : 0,
+                    'freight_reduction' => $member_info['yz_member']['level']['freight_reduction'] ? $member_info['yz_member']['level']['discount'] : 0,
+                    'rent_free' => $levelRights->rent_free ? $levelRights->rent_free : 0,
+                    'deposit_free' => $levelRights->deposit_free ? $levelRights->deposit_free : 0,
+                ];
+            } else {
+                $memberData['level_id'] =  0;
+                $memberData['level_name'] =   $this->settinglevel['level_name'] ?  $this->settinglevel['level_name'] : '普通会员';
+            }
+
+            $memberData['nickname'] =  $member_info['nickname'];
+            $memberData['avatar'] = $member_info['avatar'];
+            $memberData['validity'] = $member_info['yz_member']['validity'];
+        }
+
+        $shopSet = \Setting::get('shop.shop');
+        $shopContact = \Setting::get('shop.contact');
         $levelData = [
+            'member_data' => $memberData,
             'level_type' => $this->settinglevel['level_type'],
-            'data' => $data
+            'data' => $data,
+            'cservice' => $shopSet['cservice'],
+            'shop_description' => html_entity_decode($shopContact['description']),
         ];
-// dd($levelData);
+
         return $this->successJson('ok',$levelData);
     }
 
@@ -84,16 +118,44 @@ class MemberLevelController extends ApiController
                     ->with(['goods' => function($query) {
                         return $query->select('id', 'title', 'thumb', 'price');
                     }])->find($id);
+            $bool = LeaseToyGoods::whetherEnabled();
+            $detail->rent_free = 0;
+            $detail->deposit_free = 0;
+            if ($bool) {
+                $levelRights = LevelRightsModel::getRights($id);
+                if ($levelRights) {
+                    $detail->rent_free = $levelRights->rent_free;
+                    $detail->deposit_free = $levelRights->deposit_free;
+                }
+            }
+
+
             $detail->goods->thumb = replace_yunshop(yz_tomedia($detail->goods->thumb));
+            $detail->interests_rules = html_entity_decode($detail->interests_rules);
         } else {
             $detail = MemberLevel::uniacid()->find($id);
+            $detail->interests_rules = html_entity_decode($detail->interests_rules);
         }
 
         $detail->level_type = $this->settinglevel['level_type'];
 
-
-        // dd($detail->toArray());
         return $this->successJson('leveldetail', $detail);
+    }
+
+    public function getUserInfo($member_id)
+    {
+        return MemberModel::select(['*'])
+            ->uniacid()
+            ->where('uid', $member_id)
+            ->whereHas('yzMember', function($query) use($member_id) {
+                $query->where('member_id', $member_id)->whereNull('deleted_at');
+            })
+            ->with(['yzMember' => function ($query) {
+                    return $query->select(['*'])->where('is_black', 0)
+                    ->with(['level' => function ($query2) {
+                        return $query2->select(['id', 'level_name', 'discount', 'freight_reduction']);
+                    }]);
+            }])->first();
     }
 }
 
