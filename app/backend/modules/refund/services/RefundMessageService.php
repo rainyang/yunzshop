@@ -76,13 +76,12 @@ class RefundMessageService extends MessageService
 //            ['name' => '商品详情（含规格）', 'value' => $goods_title],
 //            ['name' => '支付方式', 'value' => $orderDate->pay_type_name],
 //            ['name' => '支付时间', 'value' => $orderDate->pay_time],
-            ['name' => '退款申请时间', 'value' => $refundApply->create_time],
+            ['name' => '退款申请时间', 'value' => date('Y-m-d H:i:s', $refundApply->create_at)],
             ['name' => '退款方式', 'value' => $orderDate->pay_type_name],
             ['name' => '退款金额', 'value' => $refundApply->price],
             ['name' => '退款原因', 'value' => $refundApply->reason],
-            ['name' => '退款成功时间', 'value' => date('Y-m-d H:i:s', $refundApply->updated_at)],
+            ['name' => '退款成功时间', 'value' => date('Y-m-d H:i:s', time())],
         ];
-
         $msg = MessageTemp::getSendMsg($temp_id, $params);
         if (!$msg) {
             return false;

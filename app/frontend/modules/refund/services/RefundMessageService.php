@@ -21,7 +21,7 @@ class RefundMessageService extends MessageService
     public static function applyRefundNotice($refundApply,$uniacid = '')
     {
         $couponNotice = Setting::get('shop.notice');
-        $temp_id = $couponNotice['order_refund_reject'];
+        $temp_id = $couponNotice['order_refund_apply'];
         if (!$temp_id) {
             return false;
         }
