@@ -75,7 +75,7 @@ class MemberOfficeAccountService extends MemberService
             }
 
             $userinfo = $this->getUserInfo($appId, $appSecret, $token);
-\Log::debug('----userinfo----', $userinfo);
+
             if (is_array($userinfo) && !empty($userinfo['errcode'])) {
                 \Log::debug('微信登陆授权失败');
                 return show_json(-3, '微信登陆授权失败');
@@ -271,6 +271,7 @@ class MemberOfficeAccountService extends MemberService
     {
         $uid = parent::addMemberInfo($uniacid, $userinfo);
 
+        \Log::debug('----mapping_fans----');
         //添加mapping_fans表
         $this->addFansMember($uid, $uniacid, $userinfo);
 
