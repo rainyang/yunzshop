@@ -406,6 +406,9 @@ class MemberService
                     if ($member_id === false) {
                         return show_json(8, '保存用户信息失败');
                     }
+                } elseif (empty($member_model) && 0 == $mc_mapping_fans_model->uid) {
+                    $member_id = $this->addMcMemberInfo($uniacid, $userinfo);
+                    $this->updateFansMember($mc_mapping_fans_model->fanid, $member_id, $userinfo);
                 } elseif ($mc_mapping_fans_model->uid) {
                     $member_id = $mc_mapping_fans_model->uid;
 
@@ -477,6 +480,9 @@ class MemberService
                     if ($member_id === false) {
                         return show_json(8, '保存用户信息失败');
                     }
+                } elseif (empty($member_model) && 0 == $fans_mode->uid) {
+                    $member_id = $this->addMcMemberInfo($uniacid, $userinfo);
+                    $this->updateFansMember($fans_mode->fanid, $member_id, $userinfo);
                 } elseif ($fans_mode->uid) {
                     $member_id = $fans_mode->uid;
 
@@ -780,5 +786,10 @@ class MemberService
         }
 
         return $fansInfo->uid;
+    }
+
+    public function updateFansMember($fanid, $member_id, $userinfo)
+    {
+        //TODO
     }
 }

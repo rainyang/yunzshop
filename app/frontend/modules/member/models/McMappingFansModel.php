@@ -95,4 +95,25 @@ class McMappingFansModel extends McMappingFans
             ->where('uid', $uid)
             ->update($data);
     }
+
+    public static function updateDataById($id, $data)
+    {
+        self::uniacid()
+            ->where('fanid', $id)
+            ->update($data);
+    }
+
+    /**
+     * 获取粉丝数据
+     *
+     * @param $openid
+     * @return mixed
+     */
+    public static function getFansData($openid)
+    {
+        return self::select('fanid', 'uid')
+            ->uniacid()
+            ->where('openid', $openid)
+            ->first();
+    }
 }
