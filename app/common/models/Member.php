@@ -488,12 +488,12 @@ class Member extends BackendModel
         if ($plugin_class->isEnabled('sign')) {
             $data['sign'] = [
                 'status'  => true,
-                'love_name'=> SetService::getLoveName(),
+                'plugin_name'=> trans('Yunshop\Sign::sign.plugin_name'),
             ];
         } else {
             $data['sign'] = [
                 'status'    => false,
-                'love_name' => '签到',
+                'plugin_name' => '签到',
             ];
         }
 
