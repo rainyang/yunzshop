@@ -10,6 +10,7 @@ namespace app\frontend\modules\dispatch\models;
 
 use app\common\events\dispatch\OrderDispatchWasCalculated;
 
+use app\common\models\goods\GoodsDispatch;
 use app\frontend\modules\order\models\PreOrder;
 
 
@@ -35,7 +36,25 @@ class OrderDispatch
         $event = new OrderDispatchWasCalculated($this->order);
         event($event);
         $data = $event->getData();
-        return $result = array_sum(array_column($data, 'price'));
+
+
+
+        $template_dispatch = collect($data)->max(function ($item) {
+            if ($item['type'] == GoodsDispatch::TEMPLATE_TYPE) {
+                return $item['price'];
+            }
+        });
+
+        $unify_dispatch = collect($data)->max(function ($item) {
+            if ($item['type'] == GoodsDispatch::UNIFY_TYPE) {
+                return $item['price'];
+            }
+        });
+        //dump($unify_dispatch);
+        //dd($template_dispatch);
+
+        return bcadd($template_dispatch, $unify_dispatch, 2);
+        //return $result = array_sum(array_column($data, 'price'));
     }
 
 }

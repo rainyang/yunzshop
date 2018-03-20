@@ -41,8 +41,10 @@ class TemplateOrderDispatchPrice
         });
         $data = [
             'price' => $price,
+            'type' => GoodsDispatch::TEMPLATE_TYPE,
             'name' => '运费模板',
         ];
+
         //返回给事件
         $event->addData($data);
         return;
@@ -56,6 +58,8 @@ class TemplateOrderDispatchPrice
         } else {
             $this->dispatch = Dispatch::getOne($this->dispatch->dispatch_id);
         }
+
+        dd($this->dispatch);
         //存不存在都没有的情况
         return $this->calculation($orderGoods);
     }
