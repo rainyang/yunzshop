@@ -21,7 +21,7 @@ use app\common\services\goods\VideoDemandCourseGoods;
 class HomePageController extends ApiController
 {
     protected $publicAction = ['index', 'defaultDesign', 'defaultMenu', 'defaultMenuStyle', 'bindMobile'];
-    protected $ignoreAction = ['defaultDesign', 'defaultMenu', 'defaultMenuStyle', 'bindMobile'];
+    protected $ignoreAction = ['index', 'defaultDesign', 'defaultMenu', 'defaultMenuStyle', 'bindMobile'];
 
     /**
      * @return \Illuminate\Http\JsonResponse 当路由不包含page_id参数时,提供商城首页数据; 当路由包含page_id参数时,提供装修预览数据
