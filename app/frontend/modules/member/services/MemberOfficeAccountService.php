@@ -290,7 +290,7 @@ class MemberOfficeAccountService extends MemberService
 
     public function getFansModel($openid)
     {
-        return McMappingFansModel::getUId($openid);
+        return McMappingFansModel::getFansData($openid);
     }
 
     /**
@@ -308,5 +308,32 @@ class MemberOfficeAccountService extends MemberService
             'member_id' => $member_id,
             'type' => self::LOGIN_TYPE
         ));
+    }
+
+    public function updateFansMember($fanid, $member_id, $userinfo)
+    {
+        $record = array(
+            //'openid' => $userinfo['openid'],
+            'uid'       => $member_id,
+            'nickname' => stripslashes($userinfo['nickname']),
+            'follow' => isset($userinfo['subscribe'])?:0,
+            'tag' => base64_encode(serialize($userinfo))
+        );
+
+        McMappingFansModel::updateDataById($fanid, $record);
+    }
+
+    /**
+     * 添加会员主表信息
+     *
+     * @param $uniacid
+     * @param $userinfo
+     * @return mixed
+     */
+    public function addMcMemberInfo($uniacid, $userinfo)
+    {
+        $uid = parent::addMemberInfo($uniacid, $userinfo);
+
+        return $uid;
     }
 }
