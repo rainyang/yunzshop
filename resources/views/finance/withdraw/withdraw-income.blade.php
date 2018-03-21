@@ -129,7 +129,7 @@
         <div class="col-sm-9 col-xs-12">
             <div class="switch">
                 <label class='radio-inline'>
-                    <input type='radio' name='withdraw[income][manual_type]' value='1' @if($set['manual_type'] == 1 || $set['balance_special'] == 1) checked @endif />
+                    <input type='radio' name='withdraw[income][manual_type]' value='1' @if($set['manual_type'] == 1 || $set['balance_special'] == 1 || empty($set['manual_type'])) checked @endif />
                     银行卡
                 </label>
                 <label class='radio-inline'>
