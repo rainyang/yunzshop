@@ -722,6 +722,18 @@ return [
         'parents'       => [],
         'child'         => [
 
+            'member_search'     => [
+                'name'          => '搜索会员',
+                'url'           => 'member.member.search_member',
+                'url_params'    => '',
+                'permit'        => 0,
+                'menu'          => 0,
+                'icon'          => '',
+                'sort'          => 0,
+                'item'          => 'member_see',
+                'parents'       => ['Member',],
+            ],
+
             'member_all'    => [
                 'name'          => '全部会员',
                 'url'           => 'member.member.index',
