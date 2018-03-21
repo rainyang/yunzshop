@@ -47,7 +47,7 @@ abstract class PreOrderController extends ApiController
             'total_discount_price' => sprintf('%.2f',$total_discount_price)
         ];
 
-        //dd($data);
+        dd($data);
         //exit;
         return $this->successJson('成功', $data);
 
