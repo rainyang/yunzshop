@@ -11,6 +11,7 @@ namespace app\frontend\modules\member\controllers;
 use app\common\components\ApiController;
 use app\common\helpers\Client;
 use app\common\helpers\Url;
+use app\common\models\Member;
 use app\frontend\modules\member\services\factory\MemberFactory;
 
 class LoginController extends ApiController
@@ -41,7 +42,8 @@ class LoginController extends ApiController
                     if (!empty($msg)) {
                         if ($msg['status'] == 1) {
                             $uniacid = \YunShop::app()->uniacid;
-                            $url = Url::absoluteApp('member', ['i' => $uniacid]);
+                            $mid = Member::getMid();
+                            $url = Url::absoluteApp('member', ['i' => $uniacid, 'mid' => $mid]);
                             return $this->successJson($msg['json'], ['status'=> $msg['status'], 'url' => $url]);
                         } else {
                             if ($msg['status'] == -3) {
