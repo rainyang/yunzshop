@@ -83,6 +83,9 @@ class PointService
     const POINT_MODE_TASK_REWARD = 17;
     const POINT_MODE_TASK_REWARD_ATTACHED = '任务奖励';
 
+    const POINT_MODE_SIGN_REWARD = 19;
+    const POINT_MODE_SIGN_REWARD_ATTACHED = '签到奖励';
+
     const POINT = 0;
 
     public $point_data;
