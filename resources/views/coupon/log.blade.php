@@ -101,6 +101,8 @@
                                 <label class="label label-success">购物赠送</label>
                             @elseif($row['getfrom'] == 5)
                                 <label class="label label-success">会员转赠</label>
+                            @elseif($row['getfrom'] == 6)
+                                <label class="label label-success">签到奖励</label>
                             @elseif($row['getfrom'] == 0)
                                 <label class="label label-warning">发放</label>
                             @endif

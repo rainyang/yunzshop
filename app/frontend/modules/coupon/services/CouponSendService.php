@@ -173,6 +173,9 @@ class CouponSendService
             case '5':
                 $remark = '会员转赠: 会员【ID:' . $this->memberId . '】优惠劵变动 1张【优惠劵ID:' . $this->couponId . '】转让会员【ID:'.$this->transferId.'】';
                 break;
+            case '6':
+                $remark = '签到奖励: 会员【ID:' . $this->memberId . '】优惠劵变动 1张【优惠劵ID:' . $this->couponId . '】';
+                break;
             default:
                 $remark = '未知优惠劵变动：会员【ID:' . $this->memberId . '】优惠劵变动 1张【优惠劵ID:' . $this->couponId . '】';
                 break;
