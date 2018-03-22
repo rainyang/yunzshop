@@ -75,7 +75,7 @@ class MemberOfficeAccountService extends MemberService
             }
 
             $userinfo = $this->getUserInfo($appId, $appSecret, $token);
-\Log::debug('----userinfo----', $userinfo);
+
             if (is_array($userinfo) && !empty($userinfo['errcode'])) {
                 \Log::debug('微信登陆授权失败');
                 return show_json(-3, '微信登陆授权失败');
@@ -271,6 +271,7 @@ class MemberOfficeAccountService extends MemberService
     {
         $uid = parent::addMemberInfo($uniacid, $userinfo);
 
+        \Log::debug('----mapping_fans----');
         //添加mapping_fans表
         $this->addFansMember($uid, $uniacid, $userinfo);
 
@@ -289,7 +290,7 @@ class MemberOfficeAccountService extends MemberService
 
     public function getFansModel($openid)
     {
-        return McMappingFansModel::getUId($openid);
+        return McMappingFansModel::getFansData($openid);
     }
 
     /**
@@ -307,5 +308,32 @@ class MemberOfficeAccountService extends MemberService
             'member_id' => $member_id,
             'type' => self::LOGIN_TYPE
         ));
+    }
+
+    public function updateFansMember($fanid, $member_id, $userinfo)
+    {
+        $record = array(
+            //'openid' => $userinfo['openid'],
+            'uid'       => $member_id,
+            'nickname' => stripslashes($userinfo['nickname']),
+            'follow' => isset($userinfo['subscribe'])?:0,
+            'tag' => base64_encode(serialize($userinfo))
+        );
+
+        McMappingFansModel::updateDataById($fanid, $record);
+    }
+
+    /**
+     * 添加会员主表信息
+     *
+     * @param $uniacid
+     * @param $userinfo
+     * @return mixed
+     */
+    public function addMcMemberInfo($uniacid, $userinfo)
+    {
+        $uid = parent::addMemberInfo($uniacid, $userinfo);
+
+        return $uid;
     }
 }

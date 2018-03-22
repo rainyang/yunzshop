@@ -21,7 +21,7 @@ class CreateImsYzWithdrawTable extends Migration {
                 $table->string('type_id', 60)->nullable();
                 $table->decimal('amounts', 14)->nullable();
                 $table->decimal('poundage', 14)->nullable();
-                $table->integer('poundage_rate')->nullable();
+                $table->decimal('poundage_rate')->nullable();
                 $table->string('pay_way', 100)->nullable();
                 $table->boolean('status')->nullable();
                 $table->integer('created_at')->nullable();

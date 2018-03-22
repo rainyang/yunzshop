@@ -13,7 +13,7 @@ class AddServicetaxToImsYzWithdraw extends Migration
      */
     public function up()
     {
-        if (\Schema::hasTable('yz_goods_coupon_queue')) {
+        if (\Schema::hasTable('yz_withdraw')) {
             Schema::table('yz_withdraw', function (Blueprint $table) {
                 if (!Schema::hasColumn('yz_withdraw', 'servicetax')) {
                     $table->decimal('servicetax', 12)->nullable()->comment('劳务税');
@@ -35,7 +35,7 @@ class AddServicetaxToImsYzWithdraw extends Migration
      */
     public function down()
     {
-        if (\Schema::hasTable('yz_goods_coupon_queue')) {
+        if (\Schema::hasTable('yz_withdraw')) {
             Schema::table('yz_withdraw', function (Blueprint $table) {
                 $table->dropColumn('servicetax');
                 $table->dropColumn('servicetax_rate');
