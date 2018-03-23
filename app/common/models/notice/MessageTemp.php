@@ -15,10 +15,26 @@ use Illuminate\Database\Eloquent\Builder;
 class MessageTemp extends BaseModel
 {
     public $table = 'yz_message_template';
+
+
     protected $guarded = [''];
+
+
     public $timestamps = true;
 
+
     public static $template_id = null;
+
+
+    public static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope(function (Builder $builder) {
+            $builder->uniacid();
+        });
+    }
+
+
 
     protected $casts = [
         'data' => 'json'
@@ -54,13 +70,7 @@ class MessageTemp extends BaseModel
         return array_except($data, ['tp_kw', 'tp_value', 'tp_color']);
     }
 
-    public static function boot()
-    {
-        parent::boot();
-        static::addGlobalScope(function (Builder $builder) {
-            $builder->uniacid();
-        });
-    }
+
 
     public static function getSendMsg($temp_id, $params)
     {
