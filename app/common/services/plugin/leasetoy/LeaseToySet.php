@@ -11,7 +11,8 @@ use app\common\components\BaseController;
 class LeaseToySet extends BaseController
 {
     protected $leaseToy;
-    
+        
+
     function __construct()
     {
         parent::__construct();
@@ -19,6 +20,7 @@ class LeaseToySet extends BaseController
         $this->leaseToy =  \Setting::get('plugin.lease_toy');
     }
 
+    //是否开启
     public static function whetherEnabled()
     {
         $leaseToy = \Setting::get('plugin.lease_toy');

@@ -57,10 +57,11 @@ class DetailController extends ApiController
 
 
         //租赁插件
-        if (LeaseToySet::whetherEnabled() && $order->plugin_id == 40) {
-            $lease_toy = \Yunshop\LeaseToy\api\order\LeaseOrderDetailController::detailInfo($order);
+        $lease_enabled = LeaseToySet::whetherEnabled();
+        if ($lease_enabled && $order->plugin_id == 40) {
+            $lease_toy = \Yunshop\LeaseToy\services\LeaseOrderDetail::detailInfo($order);
             foreach ($data['has_many_order_goods'] as &$goods) {
-                $goods['lease_toy_goods'] = \Yunshop\LeaseToy\api\order\LeaseOrderDetailController::LeaseOrderGoodsDetail($goods['id']);
+                $goods['lease_toy_goods'] = \Yunshop\LeaseToy\services\LeaseOrderDetail::LeaseOrderGoodsDetail($goods['id']);
             }
 
             if ($order->status >= 2) {
