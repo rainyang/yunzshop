@@ -40,6 +40,11 @@ class MemberLevelController extends ApiController
         if (!$this->settinglevel) {
             return $this->errorJson('未进行等级设置');
         }
+
+        if ($this->settinglevel['level_type'] != 2) {
+            return $this->errorJson('.....');
+        }
+
         //升级条件判断
         if ($this->settinglevel['level_type'] == 2) {
             $data =  MemberLevel::getLevelGoods();
@@ -111,6 +116,10 @@ class MemberLevelController extends ApiController
 
         if (!$id) {
             return $this->errorJson('参数无效');
+        }
+
+        if ($this->settinglevel['level_type'] != 2) {
+            return $this->errorJson('.....');
         }
 
         if ($this->settinglevel['level_type'] == 2) {

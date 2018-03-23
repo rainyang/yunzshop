@@ -15,6 +15,7 @@ use app\common\requests\Request;
 use app\frontend\models\OrderAddress;
 use Yunshop\StoreCashier\common\models\StoreDelivery;
 use app\frontend\modules\order\services\VideoDemandOrderGoodsService;
+use app\common\services\plugin\leasetoy\LeaseToySet;
 
 class DetailController extends ApiController
 {
@@ -53,6 +54,22 @@ class DetailController extends ApiController
                 $data['address_info'] = \Yunshop\StoreCashier\common\models\StoreDelivery::where('order_id', $order['id'])->first();
             }
         }
+
+
+        //租赁插件
+        if (LeaseToySet::whetherEnabled() && $order->plugin_id == 40) {
+            $lease_toy = \Yunshop\LeaseToy\api\order\LeaseOrderDetailController::detailInfo($order);
+            foreach ($data['has_many_order_goods'] as &$goods) {
+                $goods['lease_toy_goods'] = \Yunshop\LeaseToy\api\order\LeaseOrderDetailController::LeaseOrderGoodsDetail($goods['id']);
+            }
+
+            if ($order->status >= 2) {
+                $data['button_models'] = array_merge($data['button_models'], $lease_toy['button']);
+            }
+
+            $data['lease_toy'] = $lease_toy['data'];
+
+        }
         //todo 临时解决
         if (!$order) {
             return $this->errorJson($msg = '未找到数据', []);
@@ -64,7 +81,6 @@ class DetailController extends ApiController
                     $value['is_course'] = VideoDemandOrderGoodsService::whetherCourse($value['goods_id']);
                 }
             }
-
             return $this->successJson($msg = 'ok', $data);
         }
 

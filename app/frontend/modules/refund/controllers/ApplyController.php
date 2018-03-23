@@ -8,8 +8,6 @@ use app\common\models\refund\RefundApply;
 use app\frontend\models\Order;
 use app\frontend\modules\refund\services\RefundService;
 use Request;
-use app\common\services\plugin\leasetoy\LeaseToySet;
-use Yunshop\LeaseToy\api\order\LeaseApplyController;
 
 /**
  * Created by PhpStorm.
@@ -43,10 +41,11 @@ class ApplyController extends ApiController
             ];
         }
         if ($order->status >= \app\common\models\Order::WAIT_RECEIVE) {
-            $refundTypes[] = [
-                'name' => '退款退货',
-                'value' => 1
-            ];
+
+                $refundTypes[] = [
+                    'name' => '退款退货',
+                    'value' => 1
+                ];
         }
         if ($order->status >= \app\common\models\Order::COMPLETE) {
             $refundTypes[] = [
@@ -55,12 +54,6 @@ class ApplyController extends ApiController
             ];
         }
 
-
-        $lease_toy_set = LeaseToySet::whetherEnabled();
-
-        if ($order->plugin_id == 40 && $lease_toy_set) {
-            $order->deposit_total = LeaseApplyController::getLeaseReturn($order);
-        }
         $data = compact('order', 'refundTypes', 'reasons');
         return $this->successJson('成功', $data);
     }
@@ -96,17 +89,7 @@ class ApplyController extends ApiController
         $refundApply->content = $request->input('content', '');
         $refundApply->refund_sn = RefundService::createOrderRN();
         $refundApply->create_time = time();
-
-        //租赁商品退还
-        $lease_toy_set = LeaseToySet::whetherEnabled();
-        if ($order->plugin_id == 40 && $lease_toy_set) {
-            $refundApply->price = LeaseApplyController::getLeaseReturn($order);
-            $refundApply->return_address = $request->input('address', '');
-
-        } else {
-            $refundApply->price = $order->price;
-        }
-
+        $refundApply->price = $order->price; 
 
         if (!$refundApply->save()) {
             throw new AppException('请求信息保存失败');
