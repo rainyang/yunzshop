@@ -328,12 +328,15 @@ class ShopController extends BaseController
                 $originalName = $file->getClientOriginalName(); // 文件原名
                 $ext = $file->getClientOriginalExtension();     // 扩展名
                 $realPath = $file->getRealPath();   //临时文件的绝对路径
+                $i = \YunShop::app()->uniaccount['uniacid'];
+
+                $upload_file = $i . '_' . $originalName;
 
                 if (!in_array($ext, $valid_ext)) {
                     return ['status' => -1];
                 }
 
-                $bool = \Storage::disk('cert')->put($originalName, file_get_contents($realPath));
+                $bool = \Storage::disk('cert')->put($upload_file, file_get_contents($realPath));
 
                 return $bool ? ['status' => 1, 'file' => $originalName] : ['status' => 0];
             }
