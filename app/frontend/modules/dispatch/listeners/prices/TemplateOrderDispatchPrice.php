@@ -154,7 +154,7 @@ class TemplateOrderDispatchPrice
     private function calculation($dispatch_id, $dispatch_good_total, $dispatch_good_weight)
     {
         $price = 0;
-        if (!$dispatch_id) {
+        if (!$dispatch_id || !$dispatch_good_total || !$dispatch_good_weight) {
             return $price;
         }
 
