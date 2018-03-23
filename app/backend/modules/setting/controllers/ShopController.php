@@ -368,7 +368,8 @@ class ShopController extends BaseController
                 }
 
                 if ($update['status'] == 1) {
-                    $data[$key] = storage_path('cert/' . $update['file']);
+                    $uniacid = \YunShop::app()->uniacid;
+                    $data[$key] = storage_path('cert/' . $uniacid . "_" . $update['file']);
                 }
             }
         }
