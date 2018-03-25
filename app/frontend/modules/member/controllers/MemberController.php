@@ -1102,7 +1102,7 @@ class MemberController extends ApiController
             ];
         }
 
-        if (app('plugins')->isEnabled('clock_in')) {
+        if (app('plugins')->isEnabled('clock-in')) {
             $clockInService = new \Yunshop\ClockIn\services\ClockInService();
             $pluginName = $clockInService->get('plugin_name');
 
@@ -1112,18 +1112,6 @@ class MemberController extends ApiController
                 $data[] = [
                     'name' => 'clock_in',
                     'title' => $pluginName
-                ];
-            }
-        }
-
-
-        if (app('plugins')->isEnabled('store-cashier')) {
-            $store = \Yunshop\StoreCashier\common\models\Store::getStoreByUid(\YunShop::app()->getMemberId())->first();
-
-            if ($store && $store->is_black != 1) {
-                $data[] = [
-                    'name' => 'store-cashier',
-                    'title' => '门店'
                 ];
             }
         }
