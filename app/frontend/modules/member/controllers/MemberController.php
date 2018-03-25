@@ -1069,8 +1069,17 @@ class MemberController extends ApiController
         })->each(function ($item) use (&$data) {
             $info = $item->toArray();
 
+            $name = $info['name'];
+            if ($info['name'] == "store-cashier") {
+
+                $name = 'store_cashier';
+            } elseif ($info['name'] == 'recharge-code') {
+                $name = 'recharge_code';
+            }
+
+
             $data[] = [
-                'name'  => $info['name'],
+                'name'  => $name,
                 'title' => $info['title']
             ];
         });
@@ -1120,7 +1129,7 @@ class MemberController extends ApiController
 
         if ($video_demand_setting && $video_demand_setting['is_video_demand']) {
             $data[] = [
-                'name' => 'video-demand',
+                'name' => 'video_demand',
                 'title' => '视频点播'
             ];
         }
