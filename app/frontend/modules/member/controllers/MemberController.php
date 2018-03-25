@@ -1110,7 +1110,7 @@ class MemberController extends ApiController
 
             if ($clock_in_setting && 1 == $clock_in_setting['is_clock_in']) {
                 $data[] = [
-                    'name' => 'clock-in',
+                    'name' => 'clock_in',
                     'title' => $pluginName
                 ];
             }
