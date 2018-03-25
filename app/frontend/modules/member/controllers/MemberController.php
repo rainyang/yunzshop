@@ -1110,7 +1110,7 @@ class MemberController extends ApiController
 
             if ($clock_in_setting && 1 == $clock_in_setting['is_clock_in']) {
                 $data[] = [
-                    'name' => 'clock_in',
+                    'name' => 'clock-in',
                     'title' => $pluginName
                 ];
             }
@@ -1120,7 +1120,7 @@ class MemberController extends ApiController
 
         if ($video_demand_setting && $video_demand_setting['is_video_demand']) {
             $data[] = [
-                'name' => 'video_demand',
+                'name' => 'video-demand',
                 'title' => '视频点播'
             ];
         }
