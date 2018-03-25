@@ -1050,4 +1050,24 @@ class MemberController extends ApiController
 
         return $this->successJson('', $data);
     }
+
+    public function getEnablePlugins()
+    {
+        $data = [];
+
+        $data[] = collect(app('plugins')->getPlugins())->filter(function ($item) {
+                if (1 == $item->getEnabled()) {
+                    return $item;
+                }
+        })->map(function ($item) {
+            $info = $item->toArray();
+            return [
+                'name'  => $info['name'],
+                'title' => $info['title']
+            ];
+        });
+
+
+        return $this->successJson('', $data);
+    }
 }
