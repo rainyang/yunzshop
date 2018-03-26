@@ -66,7 +66,8 @@ class Url
             $params['i'] = \YunShop::app()->uniacid;
         }
         $module = request()->get('m','yun_shop');
-        return   '/addons/' . $module . '/?menu#'.$route .  ($params ? '?'.http_build_query($params) : '');
+        //return   '/addons/' . $module . '/?menu#'.$route .  ($params ? '?'.http_build_query($params) : '');
+        return   '/addons/' . $module . '/?#'.$route .  ($params ? '?'.http_build_query($params) : '');
     }
 
     public static function appDiy($route, $params = [])
@@ -81,7 +82,8 @@ class Url
             $params['i'] = \YunShop::app()->uniacid;
         }
         $module = request()->get('m','yun_shop');
-        return   '/addons/' . $module . '/?menu#'.$route .  ($params ? '/'. $params['page_id'] . '/?i=' . $params['i'] : '');
+        //return   '/addons/' . $module . '/?menu#'.$route .  ($params ? '/'. $params['page_id'] . '/?i=' . $params['i'] : '');
+        return   '/addons/' . $module . '/?#'.$route .  ($params ? '/'. $params['page_id'] . '/?i=' . $params['i'] : '');
     }
 
     /**
