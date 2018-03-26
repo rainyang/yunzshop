@@ -23,9 +23,7 @@ class MessageListener implements ShouldQueue
 
     public function subscribe(MessageEvent $event)
     {
-        $event->listen(MessageEvent::class, function ($event) {
-            $this->handel($event);
-        });
+        $event->listen(MessageEvent::class, MessageListener::class . "@handel");
     }
 
 
