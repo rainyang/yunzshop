@@ -730,7 +730,7 @@ return [
                 'menu'          => 0,
                 'icon'          => '',
                 'sort'          => 0,
-                'item'          => 'member_see',
+                'item'          => 'member_search',
                 'parents'       => ['Member',],
             ],
 
@@ -771,7 +771,7 @@ return [
                     ],
 
                     'member_detail'     => [
-                        'name'          => '查看会员详情',
+                        'name'          => '查看详情',
                         'url'           => 'member.member.detail',
                         'url_params'    => '',
                         'permit'        => 1,
@@ -795,7 +795,7 @@ return [
                     ],
 
                     'member_detail_update'     => [
-                        'name'          => '修改会员信息',
+                        'name'          => '修改信息',
                         'url'           => 'member.member.update',
                         'url_params'    => '',
                         'permit'        => 1,
@@ -806,6 +806,17 @@ return [
                         'parents'       => ['Member', 'member_all',],
                     ],
 
+                    'member_change_relation' => [
+                        'name'          => '修改关系',
+                        'url'           => 'member.member.change_relation',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_change_relation',
+                        'parents'       => ['Member', 'member_all',],
+                    ],
 
                     'member_member_agent' => [
                         'name'          => '推广下线',
