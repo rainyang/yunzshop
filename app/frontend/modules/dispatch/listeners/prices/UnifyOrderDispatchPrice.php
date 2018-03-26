@@ -46,6 +46,7 @@ class UnifyOrderDispatchPrice
         });
         $data = [
             'price' => $price,
+            'type' => GoodsDispatch::UNIFY_TYPE,
             'name' => '统一运费',
         ];
         //返回给事件
