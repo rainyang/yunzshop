@@ -471,11 +471,12 @@ class YunApp extends YunComponent
 
     public function getW()
     {
+        $account = \app\common\models\AccountWechats::getAccountByUniacid(request()->get('i'));
         return [
             'uniacid' => request()->get('i'),
             'weid' => request()->get('i'),
             'acid' => request()->get('i'),
-            'account' => \app\common\models\AccountWechats::getAccountByUniacid(request()->get('i')) ? \app\common\models\AccountWechats::getAccountByUniacid(request()->get('i'))->toArray() : '',
+            'account' => $account ? $account->toArray() : '',
         ];
     }
 

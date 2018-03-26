@@ -1050,4 +1050,90 @@ class MemberController extends ApiController
 
         return $this->successJson('', $data);
     }
+
+    public function getEnablePlugins()
+    {
+        $filter = [
+            'conference', 'store-cashier', 'recharge-code'
+        ];
+        $data = [];
+
+        collect(app('plugins')->getPlugins())->filter(function ($item) use ($filter) {
+            if (1 == $item->getEnabled()) {
+                $info = $item->toArray();
+
+                if (in_array($info['name'], $filter)) {
+                    return $item;
+                }
+            }
+        })->each(function ($item) use (&$data) {
+            $info = $item->toArray();
+
+            $name = $info['name'];
+            if ($info['name'] == "store-cashier") {
+
+                $name = 'store_cashier';
+            } elseif ($info['name'] == 'recharge-code') {
+                $name = 'recharge_code';
+            }
+
+
+            $data[] = [
+                'name'  => $name,
+                'title' => $info['title']
+            ];
+        });
+
+        $credit_setting = Setting::get('plugin.credit');
+
+        if ($credit_setting && 1 == $credit_setting['is_credit']) {
+            $data[] = [
+                'name' => 'credit',
+                'title' => '信用值'
+            ];
+        }
+
+        $ranking_setting = Setting::get('plugin.ranking');
+
+        if ($ranking_setting && 1 == $ranking_setting['is_ranking']) {
+            $data[] = [
+                'name' => 'ranking',
+                'title' => '排行榜'
+            ];
+        }
+
+        $article_setting = Setting::get('plugin.article');
+
+        if ($article_setting) {
+            $data[] = [
+                'name' => 'article',
+                'title' => $article_setting['center'] ? $article_setting['center'] : '文章中心'
+            ];
+        }
+
+        if (app('plugins')->isEnabled('clock-in')) {
+            $clockInService = new \Yunshop\ClockIn\services\ClockInService();
+            $pluginName = $clockInService->get('plugin_name');
+
+            $clock_in_setting = Setting::get('plugin.clock_in');
+
+            if ($clock_in_setting && 1 == $clock_in_setting['is_clock_in']) {
+                $data[] = [
+                    'name' => 'clock_in',
+                    'title' => $pluginName
+                ];
+            }
+        }
+
+        $video_demand_setting = Setting::get('plugin.video_demand');
+
+        if ($video_demand_setting && $video_demand_setting['is_video_demand']) {
+            $data[] = [
+                'name' => 'video_demand',
+                'title' => '视频点播'
+            ];
+        }
+
+        return $this->successJson('ok', $data);
+    }
 }
