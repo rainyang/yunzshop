@@ -193,7 +193,12 @@ class WechatPay extends Pay
 
             $pay_result = $merchantPay->send($merchantPayData);
 
-            $result = $merchantPay->query($pay_result->partner_trade_no);
+            if (isset($pay_result->partner_trade_no)) {
+                $result = $merchantPay->query($pay_result->partner_trade_no);
+            } else {
+                $result = $pay_result;
+            }
+
 
         } else {//红包
             $luckyMoney = $app->lucky_money;
@@ -215,13 +220,19 @@ class WechatPay extends Pay
                 $pay_order_model->type, json_encode($luckyMoneyData));
 
             $pay_result = $luckyMoney->sendNormal($luckyMoneyData);
-            $result = $luckyMoney->query($pay_result->mch_billno);
+
+            if (isset($pay_result->mch_billno)) {
+                $result = $luckyMoney->query($pay_result->mch_billno);
+            } else {
+                $result = $pay_result;
+            }
+
         }
 
         //响应数据
         $this->payResponseDataLog($pay_order_model->out_order_no, $pay_order_model->type, json_encode($result));
 \Log::debug('---提现状态---', [$result->status]);
-        if ($result->status == 'PROCESSING' || $result->status == 'SUCCESS' || $result->status == 'SENDING' || $result->status == 'SENT'){
+        if (isset($result->status) && ($result->status == 'PROCESSING' || $result->status == 'SUCCESS' || $result->status == 'SENDING' || $result->status == 'SENT')){
             \Log::debug('提现返回结果', $result->toArray());
             $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_COMPLETE, $result->payment_no);
 
