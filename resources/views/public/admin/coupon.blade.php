@@ -27,13 +27,13 @@
 
 
 
-    //优惠劵模态框
+    //优惠券模态框
     function showCouponModel(obj) {
         $('#modal-module-menus-coupon').modal();
     }
 
 
-    //优惠劵搜索
+    //优惠券搜索
     function search_coupons() {
         if ($('#search-kwd-coupon').val() == '') {
             Tip.focus('#search-kwd-coupon', '请输入关键词');
@@ -47,7 +47,7 @@
         });
     }
 
-    //选择优惠劵
+    //选择优惠券
     function select_coupon(o) {
         //$("#coupon_id").val(o.id);
         //$("#coupon").val(o.name);
