@@ -113,7 +113,7 @@ return [
                     ],
 
                     'coupon_coupon_get_search_coupons' => [
-                        'name'              => '白名单（选择优惠卷）',
+                        'name'              => '白名单（选择优惠券）',
                         'url'               => 'coupon.coupon.get-search-coupons',
                         'url_params'        => '',
                         'permit'            => 0,
@@ -123,7 +123,7 @@ return [
                         'item'              => 'coupon_coupon_get_search_coupons',
                         'parents'           => ['Goods', 'goods_no_permission',],
                     ],
-                    //优惠卷白名单
+                    //优惠券白名单
                     'coupon_no_permission'  => [
                         'name'              => '白名单（指定商品）',
                         'url'               => 'coupon.coupon.add-param',
@@ -594,7 +594,7 @@ return [
                 'child'             => [
 
                     'coupon_coupon_set' => [
-                        'name'              => '优惠劵设置',
+                        'name'              => '优惠券设置',
                         'url'               => 'coupon.base-set.see',
                         'url_params'        => '',
                         'permit'            => 1,

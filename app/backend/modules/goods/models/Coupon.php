@@ -114,7 +114,7 @@ class Coupon extends GoodsCoupon
         foreach ($coupon_ids as $key => $coupon_id) {
 
             if (!preg_match('/^\+?[1-9]\d*$/', trim($data['coupon_several'][$key]))) {
-                $this->error('请输入正确的优惠劵赠送数量（正整数）');
+                $this->error('请输入正确的优惠券赠送数量（正整数）');
                 return false;
                 break;
             }

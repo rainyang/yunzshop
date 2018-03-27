@@ -38,11 +38,11 @@ class CouponSendService
     public function sendCouponsToMember($memberId, array $couponIds, $get_type = '0', $relation = '', $transferId = '')
     {
         if (empty($memberId) || !is_numeric($memberId)) {
-            Log::info('优惠劵发送接口调用失败，会员ID错误！', print_r($memberId,true));
+            Log::info('优惠券发送接口调用失败，会员ID错误！', print_r($memberId,true));
             return null;
         }
         if (empty($couponIds) || !is_array($couponIds)) {
-            Log::info('优惠劵发送接口调用失败，优惠劵ID错误！', print_r($couponIds,true));
+            Log::info('优惠券发送接口调用失败，优惠券ID错误！', print_r($couponIds,true));
             return null;
         }
 
@@ -72,11 +72,11 @@ class CouponSendService
     public function sendCouponToMembers(array $memberIds, $couponId, $get_type = '0', $relation = '',$transferId)
     {
         if (empty($couponId) || !is_numeric($couponId)) {
-            Log::info('优惠劵发送接口调用失败，会员ID错误！', print_r($couponId,true));
+            Log::info('优惠券发送接口调用失败，会员ID错误！', print_r($couponId,true));
             return null;
         }
         if (empty($memberIds) || !is_array($memberIds)) {
-            Log::info('优惠劵发送接口调用失败，优惠劵ID错误！', print_r($memberIds,true));
+            Log::info('优惠券发送接口调用失败，优惠券ID错误！', print_r($memberIds,true));
             return null;
         }
 
@@ -104,11 +104,11 @@ class CouponSendService
     protected function updateMemberCoupons(array $data, array $log_data)
     {
         if (empty($data) || !is_array($data)) {
-            Log::info('优惠劵发送接口调用失败，修改会员优惠劵数据有误！', print_r($data,true));
+            Log::info('优惠券发送接口调用失败，修改会员优惠券数据有误！', print_r($data,true));
             return null;
         }
         if (empty($log_data) || !is_array($log_data)) {
-            Log::info('优惠劵发送接口调用失败，优惠劵变动记录数据有误！', print_r($log_data,true));
+            Log::info('优惠券发送接口调用失败，优惠券变动记录数据有误！', print_r($log_data,true));
             return null;
         }
 
@@ -159,25 +159,25 @@ class CouponSendService
 
         switch ($this->get_type) {
             //case '0':
-                //$remark = '手动发放优惠券: 管理员【ID:' . $adminId . '】成功发放 ' . $this->send_total . ' 张优惠券【优惠劵ID:' . $this->couponId . '】给用户【会员ID:' . $this->memberId . '】';
+                //$remark = '手动发放优惠券: 管理员【ID:' . $adminId . '】成功发放 ' . $this->send_total . ' 张优惠券【优惠券ID:' . $this->couponId . '】给用户【会员ID:' . $this->memberId . '】';
                 //break;
             //case '1':
-                //$remark = '会员领取优惠券: 会员【ID:' . $this->memberId . '】成功领取' . $this->send_total . ' 张优惠券【优惠劵ID:' . $this->couponId . '】';
+                //$remark = '会员领取优惠券: 会员【ID:' . $this->memberId . '】成功领取' . $this->send_total . ' 张优惠券【优惠券ID:' . $this->couponId . '】';
                 //break;
             //case '3':
                 //$remark = '';
                 //break;
             case '4':
-                $remark = '购物赠送优惠券: 订单:'.$this->relation.'完成，成功赠送会员【ID:' . $this->memberId . '】1张优惠券【优惠劵ID:' . $this->couponId . '】';
+                $remark = '购物赠送优惠券: 订单:'.$this->relation.'完成，成功赠送会员【ID:' . $this->memberId . '】1张优惠券【优惠券ID:' . $this->couponId . '】';
                 break;
             case '5':
-                $remark = '会员转赠: 会员【ID:' . $this->memberId . '】优惠劵变动 1张【优惠劵ID:' . $this->couponId . '】转让会员【ID:'.$this->transferId.'】';
+                $remark = '会员转赠: 会员【ID:' . $this->memberId . '】优惠券变动 1张【优惠券ID:' . $this->couponId . '】转让会员【ID:'.$this->transferId.'】';
                 break;
             case '6':
-                $remark = '签到奖励: 会员【ID:' . $this->memberId . '】优惠劵变动 1张【优惠劵ID:' . $this->couponId . '】';
+                $remark = '签到奖励: 会员【ID:' . $this->memberId . '】优惠券变动 1张【优惠券ID:' . $this->couponId . '】';
                 break;
             default:
-                $remark = '未知优惠劵变动：会员【ID:' . $this->memberId . '】优惠劵变动 1张【优惠劵ID:' . $this->couponId . '】';
+                $remark = '未知优惠券变动：会员【ID:' . $this->memberId . '】优惠券变动 1张【优惠券ID:' . $this->couponId . '】';
                 break;
         }
         return $remark;
