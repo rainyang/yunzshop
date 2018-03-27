@@ -48,7 +48,7 @@ class CouponDiscount
             'point_mode'        => PointService::POINT_MODE_COUPON_DEDUCTION_AWARD,
             'member_id'         => $orderModel->uid,
             'point'             => $point,
-            'remark'            => '订单：'.$orderModel->order_sn.'优惠劵抵扣奖励积分'.$point,
+            'remark'            => '订单：'.$orderModel->order_sn.'优惠券抵扣奖励积分'.$point,
         ];
         return (new PointService($data))->changePoint();
 

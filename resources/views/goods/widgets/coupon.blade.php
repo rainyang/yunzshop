@@ -9,7 +9,7 @@
             <input type='radio' name='widgets[coupon][is_give]' value='0' @if(empty($coupon->is_give)) checked @endif/>
             关闭
         </label>
-        <span class='help-block'>订单完成赠送优惠劵</span>
+        <span class='help-block'>订单完成赠送优惠券</span>
     </div>
 </div>
 
@@ -50,7 +50,7 @@
             <h4>
                 <button id="coupon_add" type='button' class="btn btn-default"  style="margin-bottom:5px">
                     <input type="hidden" id="coupon_input" value="0">
-                    <i class='fa fa-plus'></i> 添加优惠劵
+                    <i class='fa fa-plus'></i> 添加优惠券
                 </button>
             </h4>
 
@@ -61,7 +61,7 @@
                     <div class="input-group recharge-item" style="margin-top:5px; width: 60%">
                         <input type="hidden" name="widgets[coupon][coupon_id][]" value="{{ $list['coupon_id'] }}"/>
                         <input type="text" maxlength="30" class="form-control" name='widgets[coupon][coupon_name][]' value='{{ $list['coupon_name'] or '' }}' readonly/>
-                        <div class="input-group-addon"><button type="button" class="input-group-add">选择优惠劵</button></div>
+                        <div class="input-group-addon"><button type="button" class="input-group-add">选择优惠券</button></div>
                         <input type="text" class="form-control" name='widgets[coupon][coupon_several][]' value='{{ $list['coupon_several'] or '' }}'/>
                         <span class="input-group-addon unit">张</span>
                         <div class='input-group-btn'>
@@ -129,13 +129,13 @@
         });
     });
 
-    //添加优惠劵
+    //添加优惠券
     function addRechargeItem(i) {
 
         var html = '<div class="input-group recharge-item"  style="margin-top:5px; width: 60%;">';
         html += '<input type="hidden" name="widgets[coupon][coupon_id][]" value=""/>';
         html += '<input type="text" maxlength="30" class="form-control" name="widgets[coupon][coupon_name][]"  readonly />';
-        html += '<div class="input-group-addon"><button type="button" class="input-group-add">选择优惠劵</button></div>';
+        html += '<div class="input-group-addon"><button type="button" class="input-group-add">选择优惠券</button></div>';
         html += '<input type="text" class="form-control"  name="widgets[coupon][coupon_several][]" placeholder="请输入赠送张数（正整数）" value="1"/>';
         html += '<span class="input-group-addon unit">张</span>';
         html += '<div class="input-group-btn"><button type="button" class="btn btn-danger" onclick="removeRechargeItem(this)"><i class="fa fa-remove"></i></button></div>';
@@ -143,17 +143,17 @@
         $('.recharge-items').append(html);
     }
 
-    //优惠劵模态框
+    //优惠券模态框
     function showCouponModel(obj) {
         $('#modal-module-menus-coupon').modal();
     }
 
-    //关闭优惠劵模态框
+    //关闭优惠券模态框
     function removeRechargeItem(obj) {
         $(obj).closest('.recharge-item').remove();
     }
 
-    //优惠劵搜索
+    //优惠券搜索
     function search_coupons() {
         if ($('#search-kwd-coupon').val() == '') {
             Tip.focus('#search-kwd-coupon', '请输入关键词');
@@ -167,7 +167,7 @@
         });
     }
 
-    //选择优惠劵
+    //选择优惠券
     function select_coupon(o) {
         //$("#coupon_id").val(o.id);
         //$("#coupon").val(o.name);
