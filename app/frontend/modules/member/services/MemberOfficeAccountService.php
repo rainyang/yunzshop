@@ -223,7 +223,11 @@ class MemberOfficeAccountService extends MemberService
     private function _setClientRequestUrl()
     {
         if (\YunShop::request()->yz_redirect) {
-            Session::set('client_url', base64_decode(\YunShop::request()->yz_redirect));
+            $yz_redirect = base64_decode(\YunShop::request()->yz_redirect);
+
+            $redirect_url = preg_replace('/menu/', 'redir_menu', $yz_redirect);
+
+            Session::set('client_url', $redirect_url);
         } else {
             Session::set('client_url', '');
         }
