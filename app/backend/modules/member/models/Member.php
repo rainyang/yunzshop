@@ -26,6 +26,9 @@ class Member extends \app\common\models\Member
     {
         return self::uniacid()
             ->searchLike($keyWord)
+            ->whereHas('yzMember', function ($query) {
+                $query->whereNull('deleted_at');
+            })
             ->with('yzMember')
             ->with('hasOneFans')
             ->get();
