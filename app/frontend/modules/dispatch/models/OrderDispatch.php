@@ -10,6 +10,7 @@ namespace app\frontend\modules\dispatch\models;
 
 use app\common\events\dispatch\OrderDispatchWasCalculated;
 
+use app\common\models\goods\GoodsDispatch;
 use app\frontend\modules\order\models\PreOrder;
 
 
@@ -35,6 +36,7 @@ class OrderDispatch
         $event = new OrderDispatchWasCalculated($this->order);
         event($event);
         $data = $event->getData();
+
         return $result = array_sum(array_column($data, 'price'));
     }
 
