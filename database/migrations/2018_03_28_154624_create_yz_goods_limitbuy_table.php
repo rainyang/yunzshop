@@ -16,7 +16,7 @@ class CreateYzGoodsLimitbuyTable extends Migration
         if (!Schema::hasTable('yz_goods_limitbuy')) {
 
             Schema::create('yz_goods_limitbuy', function (Blueprint $table) {
-                $table->integer('id', true);
+                $table->integer('id', true);//自增:设置第二个参数为true
                 $table->integer('uniacid');
                 $table->integer('goods_id');
                 $table->tinyInteger('status')->default(0);
@@ -35,5 +35,6 @@ class CreateYzGoodsLimitbuyTable extends Migration
     public function down()
     {
         Schema::dropIfExists('ims_yz_goods_limitbuy');
+        //dropIfExists()判断表是否存在,如果存在则删除
     }
 }
