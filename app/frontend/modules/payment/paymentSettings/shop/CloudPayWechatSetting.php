@@ -15,7 +15,7 @@ class CloudPayWechatSetting extends BaseSetting
     {
         $set = \Setting::get('plugin.cloud_pay_set');
 
-        return !is_null($set) && 1 == $set['switch'] && \Setting::get('shop.pay.weixin');
+        return \YunShop::request()->type != 7 && !is_null($set) && 1 == $set['switch'] && \Setting::get('shop.pay.weixin');
     }
     public function exist()
     {
