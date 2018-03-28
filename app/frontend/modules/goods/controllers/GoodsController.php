@@ -58,6 +58,7 @@ class GoodsController extends ApiController
         ->with('hasOnePrivilege')
         ->with('hasOneSale')
         ->with('hasOneGoodsCoupon')
+        ->with('hasOneGoodsLimitBuy')
         ->with(['hasOneBrand' => function ($query) {
             return $query->select('id', 'name');
         }])
