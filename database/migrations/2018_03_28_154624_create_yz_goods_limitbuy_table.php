@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableYzGoodsLimitbuy extends Migration
+class CreateYzGoodsLimitbuyTable extends Migration
 {
     /**
      * Run the migrations.
@@ -16,12 +16,13 @@ class CreateTableYzGoodsLimitbuy extends Migration
         if (!Schema::hasTable('yz_goods_limitbuy')) {
 
             Schema::create('yz_goods_limitbuy', function (Blueprint $table) {
-                $table->increments('id');
-                $table->integer('uniacid')->unsigned()->index('idx_uinacid');
-                $table->integer('goods_id')->unsigned()->index('idx_uid');
-                $table->integer('status');
-                $table->integer('start_time', 11);
-                $table->integer('end_time', 11);
+                $table->integer('id', true);
+                $table->integer('uniacid');
+                $table->integer('goods_id');
+                $table->tinyInteger('status')->default(0);
+                $table->integer('start_time');
+                $table->integer('end_time');
+
             });
         }
     }
@@ -33,9 +34,6 @@ class CreateTableYzGoodsLimitbuy extends Migration
      */
     public function down()
     {
-        if (Schema::hasTable('ims_yz_goods_limitbuy')) {
-
-            Schema::drop('ims_yz_goods_limitbuy');
-        }
+        Schema::dropIfExists('ims_yz_goods_limitbuy');
     }
 }
