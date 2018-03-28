@@ -154,7 +154,7 @@ class TemplateOrderDispatchPrice
     private function calculation($dispatch_id, $dispatch_good_total, $dispatch_good_weight)
     {
         $price = 0;
-        if (!$dispatch_id || !$dispatch_good_total || !$dispatch_good_weight) {
+        if (!$dispatch_id) {
             return $price;
         }
 
@@ -188,6 +188,9 @@ class TemplateOrderDispatchPrice
 
     private function calculationByPiece($dispatchModel, $goods_total)
     {
+        if (!$goods_total) {
+            return 0;
+        }
         $piece_data = unserialize($dispatchModel->piece_data);
 
         // 存在
@@ -238,6 +241,9 @@ class TemplateOrderDispatchPrice
 
     private function calculationByWeight($dispatchModel, $weight_total)
     {
+        if (!$weight_total) {
+            return 0;
+        }
         $weight_data = unserialize($dispatchModel->weight_data);
 
         // 存在重量数据
