@@ -163,6 +163,11 @@ class Goods extends BaseModel
         return $this->hasOne('app\common\models\goods\GoodsCoupon', 'goods_id', 'id');
     }
 
+    public function hasOneGoodsLimitBuy()
+    {
+        return $this->hasOne('app\common\models\goods\GoodsLimitBuy', 'goods_id', 'id');
+    }
+
     public function scopeIsPlugin($query)
     {
         return $query->where('is_plugin', 0);
