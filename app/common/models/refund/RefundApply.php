@@ -91,15 +91,8 @@ class RefundApply extends BaseModel
         }
         if ($this->status == self::WAIT_RETURN_GOODS) {
 
-            if($this->order->plugin_id == 40) {
+            if(!($this->order->plugin_id == 40)) {
                   $result[] = [
-                    'name' => '填写快递',
-                    'api' => 'refund.send',
-                    'value' => 2
-                ];
-            } else {
-
-                $result[] = [
                     'name' => '填写快递',
                     'api' => 'refund.send',
                     'value' => 2

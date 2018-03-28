@@ -65,7 +65,7 @@ class DetailController extends ApiController
             }
 
             if ($order->status >= 2) {
-                $data['button_models'] = array_merge($data['button_models'], $lease_toy['button']);
+                $data['button_models'] = array_merge($backups_button, $lease_toy['button']);
             }
 
             $data['lease_toy'] = $lease_toy['data'];
