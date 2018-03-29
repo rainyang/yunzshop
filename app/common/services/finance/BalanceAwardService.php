@@ -69,7 +69,7 @@ class BalanceAwardService
     {
         if (strexists($proportion, '%')) {
             $proportion = str_replace('%', '', $proportion);
-            return bcmul(bcdiv(bcmul($price,$proportion,4),100,2),$total,2);
+            return bcdiv(bcmul($price,$proportion,4),100,2);
         }
         return bcmul($proportion,$total,2);
     }
