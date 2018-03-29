@@ -82,7 +82,7 @@ class TemplateOrderDispatchPrice
 
                 $dispatch_id = $goodsDispatch->dispatch_id;
                 if (empty($dispatch_id)) {
-                    $dispatch_id = $this->getDefaultDispatchId();
+                    $goodsDispatch->dispatch_id = $this->getDefaultDispatchId();
                 }
 
                 if (!in_array($dispatch_id, $dispatch_ids)) {
