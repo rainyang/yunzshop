@@ -31,6 +31,7 @@ use app\common\models\GoodsCategory;
 use app\frontend\modules\coupon\listeners\CouponSend;
 use Setting;
 use app\common\services\goods\VideoDemandCourseGoods;
+use Yunshop\StoreCashier\common\models\Store;
 
 
 class GoodsController extends BaseController
@@ -469,6 +470,12 @@ class GoodsController extends BaseController
 
         if (\YunShop::request()->kw) {
             $goods = \app\common\models\Goods::getGoodsByName(\YunShop::request()->kw);
+            foreach ($goods as $key => $item) {
+                $storeList = Store::getStoreByCashierId($item['id'])->first();
+                if ($storeList) {
+                    unset($goods[$key]);
+                }
+            }
             $goods = set_medias($goods, array('thumb', 'share_icon'));
 
             $goods = collect($goods)->map(function($item) {
