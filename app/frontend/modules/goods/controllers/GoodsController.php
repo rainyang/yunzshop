@@ -134,14 +134,14 @@ class GoodsController extends ApiController
         $videoDemand = new VideoDemandCourseGoods();
         $goodsModel->is_course = $videoDemand->isCourse($id);
 
-        //装修 不用type显示不同详情页0-普通1-门店2-课程
+        //装修 不用type显示不同详情页0-普通1-门店2-课程 
         $goodsModel->goods_type = 0;
         if ($goodsModel->plugin_id == 32) {
             $goodsModel->goods_type = 1;
         } elseif ($goodsModel->plugin_id == 0 && $goodsModel->is_course == 1) {
             $goodsModel->goods_type = 2;
         }
-        
+
         //return $this->successJson($goodsModel);
         return $this->successJson('成功', $goodsModel);
     }
