@@ -14,7 +14,6 @@ use app\common\services\goods\LeaseToyGoods;
 use Yunshop\LeaseToy\models\LevelRightsModel;
 use app\frontend\modules\member\models\MemberModel;
 
-
 class MemberLevelController extends ApiController
 {
 
@@ -165,6 +164,22 @@ class MemberLevelController extends ApiController
                         return $query2->select(['id', 'level_name', 'discount', 'freight_reduction']);
                     }]);
             }])->first();
+    }
+
+    public function isOpen()
+    {
+
+        $info['is_open'] = 0;
+
+        if (LeaseToyGoods::whetherEnabled()) {
+           if ($this->settinglevel['display_page'] && ($this->settinglevel['level_type'] == 2))
+           {
+                $info['is_open'] = 1;
+           }
+        }
+
+        return $this->successJson('是否开启', $info);
+
     }
 }
 

@@ -64,7 +64,7 @@ class DetailController extends ApiController
                 $goods['lease_toy_goods'] = \Yunshop\LeaseToy\services\LeaseOrderDetail::LeaseOrderGoodsDetail($goods['id']);
             }
 
-            if ($order->status >= 2) {
+            if ($order->status > 2) {
                 $data['button_models'] = array_merge($backups_button, $lease_toy['button']);
             }
 

@@ -38,6 +38,10 @@ return [
             'title' => '限时购',
             'class' => 'app\backend\widgets\goods\LimitBuyWidget'
         ],
+        'tab_filtering' => [
+            'title' => '搜索过滤',
+            'class' => 'app\backend\widgets\goods\FilteringWidget'
+        ],
 
     ],
     'withdraw' => [

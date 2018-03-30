@@ -20,7 +20,7 @@ class Filtering extends SearchFiltering
 
     public function getList($parent_id = 0)
     {
-        return self::where('parent_id', $parent_id);
+        return self::where('parent_id', $parent_id)->orderBy('id');
     }
 
     public function getFilterNumAttribute()
