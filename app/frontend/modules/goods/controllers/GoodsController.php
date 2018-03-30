@@ -403,7 +403,7 @@ class GoodsController extends ApiController
 
         if ($goodsModel->hasOneGoodsCoupon->is_give) {
 
-            $data['coupon'] = $goodsModel->hasOneGoodsCoupon->send_type ? '商品订单完成返优惠卷' : '每月一号返优惠卷';
+            $data['coupon'] = $goodsModel->hasOneGoodsCoupon->send_type ? '商品订单完成返优惠券' : '每月一号返优惠券';
 
             $data['first_strip_key'] = 'coupon';
             $data['sale_count'] += 1;
