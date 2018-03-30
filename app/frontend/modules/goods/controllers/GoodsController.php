@@ -135,28 +135,6 @@ class GoodsController extends ApiController
         $videoDemand = new VideoDemandCourseGoods();
         $goodsModel->is_course = $videoDemand->isCourse($id);
 
-        //装修 不用type显示不同详情页0-普通1-门店2-课程
-        $goodsModel->goods_type = 0;
-        if ($goodsModel->plugin_id == 32) {
-            $goodsModel->store_id = 0;
-            $goodsModel->goods_type = 1;
-
-            if (app('plugins')->isEnabled('store-cashier')) {
-                try {
-                    $store_goods = new \Yunshop\StoreCashier\common\models\StoreGoods();
-                    $store_id = $store_goods->where('goods_id', $goodsModel->goods_id)->value('store_id');
-
-                    if ($store_id) {
-                        $goodsModel->store_id = $store_id;
-                    }
-                } catch (\Exception $e) {
-                    throw new AppException($e->getMessage());
-                }
-            }
-        } elseif ($goodsModel->plugin_id == 0 && $goodsModel->is_course == 1) {
-            $goodsModel->goods_type = 2;
-        }
-
         //return $this->successJson($goodsModel);
         return $this->successJson('成功', $goodsModel);
     }
