@@ -5,6 +5,7 @@ namespace app\common\services;
 use app\common\events\message\SendMessageEvent;
 use app\common\models\AccountWechats;
 use app\common\models\Member;
+use app\common\models\notice\MessageTemp;
 use app\Jobs\MessageNoticeJob;
 use EasyWeChat\Message\News;
 use EasyWeChat\Message\Text;
@@ -13,13 +14,126 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 
 class MessageService
 {
+
+    /**
+     * 消息推送，暂时使用，需要优化
+     *
+     * @param int $member_id
+     * @param int $template_id
+     * @param array $params
+     * @param string $url
+     * @return bool
+     */
+    public function push($member_id, $template_id, array $params, $url='', $uniacid='')
+    {
+
+
+        if (!$member_id || !$template_id) {
+            return false;
+        }
+
+
+        //todo MessageTemp 用法有点乱，需要重构
+
+        $params = MessageTemp::getSendMsg($template_id, $params);
+        $template_id = MessageTemp::$template_id;
+
+
+        if (!$template_id) {
+            \Log::error("微信消息推送：MessageTemp::template_id参数不存在");
+            return false;
+        }
+
+
+        $memberModel = $this->getMemberModel($member_id);
+
+        $config = $this->getConfiguration($uniacid);
+
+        $app = new Application($config);
+
+
+        $app = $app->notice;
+        $app = $app->uses($template_id);
+        $app = $app->andData($params);
+        $app = $app->andReceiver($memberModel->hasOneFans->openid);
+        $app = $app->andUrl($url);
+
+        $app->send();
+        return true;
+    }
+
+
+    /**
+     * 会员信息
+     *
+     * @param $member_id
+     * @return bool
+     */
+    private function getMemberModel($member_id)
+    {
+        if (!$member_id) {
+            \Log::error("微信消息推送：uid参数不存在");
+            return false;
+        }
+
+        $memberModel = Member::whereUid($member_id)->first();
+
+        if (!isset($memberModel)) {
+            \Log::error("微信消息推送：未找到uid:{$member_id}的用户");
+            return false;
+        }
+        if (!$memberModel->isFollow()) {
+            \Log::error("微信消息推送：会员uid:{$member_id}未关注公众号");
+            return false;
+        }
+
+        return $memberModel;
+    }
+
+
+    /**
+     * 获取公众号配置信息
+     *
+     * @return array|bool
+     */
+    private function getConfiguration($uniacid)
+    {
+        if (!\YunShop::app()->uniacid) {
+            \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $uniacid;
+        }
+
+        $accountWechat = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
+
+        if (!isset($accountWechat)) {
+            \Log::error("微信消息推送：未找到uniacid:{$uniacid}的配置信息");
+            return false;
+        }
+
+        return ['app_id' => $accountWechat->key, 'secret' => $accountWechat->secret];
+    }
+
+
+
+
+
+
+
+
+    /*todo 一下代码需要重构，重新分化类功能 2018-03-23 yitian*/
+
+
     use DispatchesJobs;
+
 
     /**
      * 发送微信模板消息
+     *
      * @param $templateId
      * @param $data
-     * @param $openId
+     * @param $uid
+     * @param string $uniacid
+     * @param string $url
+     * @return bool
      */
     public static function notice($templateId, $data, $uid, $uniacid = '', $url = '')
     {

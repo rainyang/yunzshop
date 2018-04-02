@@ -8,13 +8,12 @@
 namespace app\common\services\finance;
 
 
+use app\common\events\MessageEvent;
 use app\common\exceptions\AppException;
 use app\common\models\finance\Balance;
 use app\common\models\Member;
-use app\common\models\notice\MessageTemp;
 use app\common\services\credit\ConstService;
 use app\common\services\credit\Credit;
-use app\common\services\MessageService as Message;
 
 class BalanceChange extends Credit
 {
@@ -58,7 +57,7 @@ class BalanceChange extends Credit
         $this->memberModel->credit2 = $this->new_value;
 
         if ($this->memberModel->save()) {
-            $this->notice();
+            $this->sendMessage();
             return true;
         }
         return '写入会员余额失败';
@@ -151,17 +150,10 @@ class BalanceChange extends Credit
     /**
      * 余额变动消息通知
      */
-    private function notice()
+    private function sendMessage()
     {
-        $noticeMember = Member::getMemberByUid($this->memberModel->uid)->with('hasOneFans')->first();
-        if (!$noticeMember->hasOneFans->openid) {
-            return;
-        }
+        $template_id = \Setting::get('shop.notice')['balance_change'];
 
-        $temp_id = \Setting::get('shop.notice')['balance_change'];
-        if (!$temp_id) {
-            return;
-        }
         $params = [
             ['name' => '商城名称', 'value' => \Setting::get('shop.shop')['name']],
             ['name' => '昵称', 'value' => $this->memberModel->nickname],
@@ -170,15 +162,8 @@ class BalanceChange extends Credit
             ['name' => '余额变动类型', 'value' => (new ConstService(''))->sourceComment()[$this->source]],
             ['name' => '变动后余额数值', 'value' => $this->new_value]
         ];
-        $msg = MessageTemp::getSendMsg($temp_id, $params);
-        if (!$msg) {
-            return;
-        }
 
-        //todo 临时增加余额变动之为零时不发送消息通知，后期需要修改
-        if ($noticeMember->hasOneFans->follow && $this->change_value > 0) {
-            Message::notice(MessageTemp::$template_id, $msg, $noticeMember->uid);
-        }
+        event(new MessageEvent($this->memberModel->uid, $template_id, $params, $url=''));
     }
 
 
