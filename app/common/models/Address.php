@@ -36,4 +36,10 @@ class Address extends BaseModel
             ->where('level', '3')
             ->get();
     }
+
+    public static function getAddress($data)
+    {
+        return self::whereIn('id', $data)
+            ->get();
+    }
 }
