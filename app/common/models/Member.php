@@ -491,6 +491,13 @@ class Member extends BackendModel
             $data = array_merge($data,$plugins);
         }
 
+        //帮助中心插件控制
+        if ($plugin_class->isEnabled('help-center')) {
+            $data['help-center'] = MhemberCenterService::button(\YunShop::app()->getMemberId());
+        } else {
+            $data['help-center'] = '';
+        }
+
         return $data;
     }
 
