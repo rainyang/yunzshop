@@ -491,7 +491,7 @@ class Member extends BackendModel
             $data = array_merge($data,$plugins);
         }
 
-        if ($plugin_class->isEnabled('help_center')) {
+        if ($plugin_class->isEnabled('help-center')) {
             $data['help_center'] = [
                 'button_name' => '帮助中心',
                 'status'         => true

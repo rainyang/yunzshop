@@ -1157,5 +1157,4 @@ class MemberController extends ApiController
 
         return $this->successJson('ok', $data);
     }
-
 }
