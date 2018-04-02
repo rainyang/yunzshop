@@ -305,6 +305,8 @@ class OrderService
         $result = self::OrderOperate($orderOperation);
         if ($orderOperation->isVirtual()) {
             // 虚拟物品付款后直接完成
+            $orderOperation->dispatch_type_id = 0;
+            $orderOperation->save();
             self::orderSend(['order_id' => $orderOperation->id]);
             $result = self::orderReceive(['order_id' => $orderOperation->id]);
         } elseif (isset($orderOperation->hasOneDispatchType) && !$orderOperation->hasOneDispatchType->needSend()) {
@@ -312,22 +314,22 @@ class OrderService
             self::orderSend(['order_id' => $orderOperation->id]);
         }
 
-        //视频点播商品
-        if (app('plugins')->isEnabled('video-demand')) {
-            $goods_id = $orderOperation->hasManyOrderGoods[0]->goods_id;
+        // //视频点播商品 改为虚拟商品
+        // if (app('plugins')->isEnabled('video-demand')) {
+        //     $goods_id = $orderOperation->hasManyOrderGoods[0]->goods_id;
 
-            if ($goods_id) {
-                $course = \Yunshop\VideoDemand\models\CourseGoodsModel::checkCourse($goods_id, 1)->first();
+        //     if ($goods_id) {
+        //         $course = \Yunshop\VideoDemand\models\CourseGoodsModel::checkCourse($goods_id, 1)->first();
 
-                if (!is_null($course)) {
-                    $orderOperation->dispatch_type_id = 0;
-                    $orderOperation->save();
+        //         if (!is_null($course)) {
+        //             $orderOperation->dispatch_type_id = 0;
+        //             $orderOperation->save();
 
-                    self::orderSend(['order_id' => $orderOperation->id]);
-                    $result = self::orderReceive(['order_id' => $orderOperation->id]);
-                }
-            }
-        }
+        //             self::orderSend(['order_id' => $orderOperation->id]);
+        //             $result = self::orderReceive(['order_id' => $orderOperation->id]);
+        //         }
+        //     }
+        // }
 
         return $result;
     }
