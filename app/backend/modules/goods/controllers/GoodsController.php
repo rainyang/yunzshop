@@ -31,7 +31,7 @@ use app\common\models\GoodsCategory;
 use app\frontend\modules\coupon\listeners\CouponSend;
 use Setting;
 use app\common\services\goods\VideoDemandCourseGoods;
-use Yunshop\StoreCashier\common\models\Store;
+use Yunshop\Designer\models\Store;
 
 
 class GoodsController extends BaseController
