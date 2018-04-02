@@ -497,7 +497,7 @@ class Member extends BackendModel
                 'status'         => true
             ];
         } else {
-            $data['help-center'] = [
+            $data['help_center'] = [
                 'button_name' => '帮助中心',
                 'status' => false
             ];
