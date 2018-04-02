@@ -134,7 +134,7 @@ class WechatPay extends Pay
             return true;
         } else {
 
-            throw new AppException('微信接口错误:'.$result->return_msg . '/' . $status);
+            throw new AppException('微信接口错误:'.$result->return_msg . '-' . $result->err_code_des . '/' . $status);
         }
     }
 
@@ -242,7 +242,7 @@ class WechatPay extends Pay
 
             return ['errno' => 0, 'message' => '微信提现成功'];
         } else {
-            return ['errno' => 1, 'message' => $result->return_msg];
+            return ['errno' => 1, 'message' => '微信接口错误:' . $result->return_msg . '-' . $result->err_code_des];
         }
     }
 
