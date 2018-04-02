@@ -41,6 +41,11 @@ return [
             'function_validator'=>'relationValidator',
             'function_save'=>'relationSave'
         ],
+        'filtering'=>[
+            'class'=>'app\backend\modules\goods\models\GoodsFiltering',
+            'function_validator'=>'relationValidator',
+            'function_save'=>'relationSave'
+        ],
         'limitbuy'=>[
             'class'=>'app\backend\modules\goods\models\LimitBuy',
             'function_validator'=>'relationValidator',

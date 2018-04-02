@@ -9,8 +9,8 @@
 namespace app\frontend\modules\dispatch\models;
 
 use app\common\events\dispatch\OrderDispatchWasCalculated;
-
 use app\frontend\modules\order\models\PreOrder;
+use app\common\models\MemberShopInfo;
 
 
 class OrderDispatch
@@ -35,7 +35,29 @@ class OrderDispatch
         $event = new OrderDispatchWasCalculated($this->order);
         event($event);
         $data = $event->getData();
-        return $result = array_sum(array_column($data, 'price'));
+        
+        $freight_reduction = $this->levelFreeFreight();
+
+        $freight = array_sum(array_column($data, 'price'));
+
+        return $result = $freight * $freight_reduction;
+        //return $result = array_sum(array_column($data, 'price'));
+    }
+    /**
+     * Author: aaa Date: 2018/4/2
+     * 会员等级运费优惠
+     * @return [int] [优惠百分比]
+     */
+    public function levelFreeFreight()
+    {
+        $uid = intval($this->order->belongsToMember->uid);
+        $member = MemberShopInfo::select('level_id')->with('level')->find($uid);
+
+        if (isset($member->level)) {
+            $freight_reduction = intval($member->level->freight_reduction);
+            return (1 - ($freight_reduction / 100));
+        }
+        return 0;
     }
 
 }

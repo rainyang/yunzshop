@@ -45,7 +45,10 @@ class IndexController extends ApiController
         $goodsList = Goods::uniacid()->select(DB::raw(implode(',', $field)))
             ->where("is_recommand", 1)
             ->where("status", 1)
-            ->where('plugin_id', 0)
+            ->where(function ($query) {
+                $query->where('plugin_id', 0)
+                ->orWhere('plugin_id', 40);
+            })
             ->orderBy("display_order", 'desc')
             ->orderBy("id", 'desc')
             ->get();

@@ -14,7 +14,11 @@ class SearchFiltering extends \app\common\models\BaseModel
 
     public $table = 'yz_search_filtering';
 
-    public $guarded = [];
+    protected $guarded = [];
+
+    protected $hidden = [
+        'deleted_at',
+    ];
 
     
 }
