@@ -187,6 +187,14 @@ class Goods extends BaseModel
                     $category[] = ['id' => $value * 1];
                     $query->with("")->where('category_id', $category);
                     break;*/
+                //新加过滤搜索
+                case 'filtering':
+                    $scope = explode(',', $value);
+                        $query->join('yz_goods_filtering', function ($join) use ($scope) {
+                            $join->on('yz_goods_filtering.goods_id', '=', 'yz_goods.id')
+                                ->whereIn('yz_goods_filtering.filtering_id', $scope);
+                        });
+                    break;
                 case 'keyword':
                     $query->where('title', 'LIKE', "%{$value}%");
                     break;
