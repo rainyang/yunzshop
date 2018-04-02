@@ -493,9 +493,12 @@ class Member extends BackendModel
 
         //帮助中心插件控制
         if ($plugin_class->isEnabled('help-center')) {
-            $data['help-center'] = MhemberCenterService::button(\YunShop::app()->getMemberId());
+            $data['help-center'] = [
+                'button_name' => '帮助中心',
+                'status'         => true
+            ];
         } else {
-            $data['help-center'] = '';
+            $data['help-center'] = ['status' => false];
         }
 
         return $data;
