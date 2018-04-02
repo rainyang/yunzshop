@@ -593,6 +593,7 @@ class Member extends BackendModel
     }
     /**
      * 判断用户是否关注
+     *
      * @return bool
      */
     public function isFollow()
