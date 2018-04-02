@@ -391,14 +391,13 @@ class GoodsController extends ApiController
 
                 $data['max_point_deduct'] = $goodsModel->hasOneSale->max_point_deduct;
 
-            } else {
+            } elseif ($goodsModel->hasOneSale->max_point_deduct !== '0') {
                 $data['max_point_deduct'] = $set['money_max'].'%';
 
             }
 
                 $data['first_strip_key'] = 'max_point_deduct';
                 $data['sale_count'] += 1;
-
         }
 
         if ($goodsModel->hasOneGoodsCoupon->is_give) {
