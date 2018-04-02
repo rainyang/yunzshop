@@ -471,7 +471,7 @@ class GoodsController extends BaseController
         if (\YunShop::request()->kw) {
             $goods = \app\common\models\Goods::getGoodsByName(\YunShop::request()->kw);
             foreach ($goods as $key => $item) {
-                $storeList = Store::getStoreByCashierId($item['id'])->first();
+                $storeList = Store::getStoreByCashierId($item['id']);
                 if ($storeList) {
                     unset($goods[$key]);
                 }
