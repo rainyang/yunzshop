@@ -180,7 +180,7 @@ class PreOrder extends Order
             'create_time' => time(),
             'uid' => $this->uid,
             'uniacid' => $this->uniacid,
-            //'is_virtual' => $this->getGoodsType(),//是否是虚拟商品订单
+            'is_virtual' => $this->getGoodsType(),//是否是虚拟商品订单
         );
         $attributes = array_merge($this->getAttributes(), $attributes);
         return $attributes;
