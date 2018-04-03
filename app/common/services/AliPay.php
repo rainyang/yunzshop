@@ -143,13 +143,10 @@ class AliPay extends Pay
         $request = new AlipayTradeRefundRequest();
         $aop->gatewayUrl = 'https://openapi.alipay.com/gateway.do';
         $aop->appId = $set['alipay_appid'];
-        //'2017021705717916';
-        //$aop->alipayrsaPublicKey = 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCnxj/9qwVfgoUh/y2W89L6BkRAFljhNhgPdyPuBV64bfQNN1PjbCzkIM6qRdKBoLPXmKKMiFYnkd6rAoprih3/PrQEB/VsW8OoM8fxn67UDYuyBTqA23MML9q1+ilIZwBC2AQ2UBVOrFXfFl75p6/B5KsiNG9zpgmLCUYuLkxpLQIDAQAB';
-        $aop->alipayrsaPublicKey = $set['alipay_sign_public'];
-        $aop->rsaPrivateKey = $set['alipay_sign_private'];
-        //$aop->rsaPrivateKey='MIICXAIBAAKBgQCxWoj9wQuXF0yZkkjpCeoU8OIHKV/S1bdmq8AJUqknyvR6qlLncU5+/pLg4v1RANqVvbvhZP6M2B0aP/Xa1osX3UN61qaEEVuhlmsJH6wyjndElBaezuD50Hon8sj9ks2Cs6BJPyTJ3zLJUHwE/GPS2rPZ5i3K+YVjCRu6m9ps/QIDAQABAoGATSOcvAowGVqH9a/byIiIaO1Q0l6bkB9msuB3GVb7vhQXfBcDEimFQ9VEW04/cfEWIdUxl9qOoQIKvnUdYT65pkEDrqYUiryWXJ3e5SsEjCvzH6a+zelDfgsHZFTBk3d1m5OFJpMqSVdQGY5kS861l5uuwrj9/VJPPXqdwOA3oQECQQDfjN74m8cg3U1YJ35nz02qCleIWsC74JamFIIjZCDYFMysXygDw/66nn/rMp/6/2+FrF2hQOI0nDg3E2MiNoo9AkEAyxj/V3rNmQlqBQ9c06JhyPD8AlhBL8XLGL7nypTBWKroOKki9BSDrTgpeSLBy7ydA40nOPcpoFzQ4x8BSTFZwQJBALIxiEqDYedAgDaUxJ3bEP1J4Rw/uwIHtA4Oqu2rEsMrUTrVXwAhaxs23KCOaheZJTxYeQngvm9RVz4PpiXPc8ECQCiHRn0YfmqpnESCOk3pO4YzwLZfEjMMT2kSv4KHiMW+5TRZXCZE6bnpWS1ZKD8V1mddBZSyjdX4b57DEyid9oECQHn6o0B++V3F0cIzg+DAVI+blKNP6C5bFcPSic9MwU8hfOA6W/QQA0wkZOR4i2xfp/ygjsygX0o/S5yWuYBaLhQ=';
+        $aop->alipayrsaPublicKey = $set['refund_alipay_sign_public'] ?: $set['alipay_sign_public'];
+        $aop->rsaPrivateKey = $set['refund_alipay_sign_private'] ?: $set['alipay_sign_private'];
         $aop->apiVersion = '1.0';
-        $aop->signType = 'RSA';
+        $aop->signType = $set['refund_newalipay'] == 1 ? 'RSA2' : 'RSA';
         $aop->postCharset='UTF-8';
         $aop->format='json';
         $json = json_encode($refund_data);
