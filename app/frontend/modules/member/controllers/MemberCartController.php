@@ -66,21 +66,22 @@ class MemberCartController extends ApiController
             'uniacid' => \YunShop::app()->uniacid,
             'goods_id' => request()->input('goods_id'),
             'total' => request()->input('total'),
-            'option_id' => (int)request()->input('option_id', 0)
+            'option_id' => (int)request()->input('option_id', 0),
         );
 
         $cartModel = app('OrderManager')->make('MemberCart',$data);
-
-
+//        dd($cartModel);
         //验证商品是否存在购物车,存在则修改数量
         $hasGoodsModel = app('OrderManager')->make('MemberCart')->hasGoodsToMemberCart($data);
+        $cart_id = $hasGoodsModel['id'];
+//dd($cart_id);
         if ($hasGoodsModel) {
             $hasGoodsModel->total = $hasGoodsModel->total + 1;
 
             $hasGoodsModel->validate();
 
             if ($hasGoodsModel->update()) {
-                return $this->successJson('添加购物车成功');
+                return $this->successJson('添加购物车成功',['cart_id' => $cart_id]);
             }
             return $this->errorJson('数据更新失败，请重试！');
         }
@@ -95,7 +96,7 @@ class MemberCartController extends ApiController
                 return $this->errorJson("写入出错，添加购物车失败！！！");
             }
         }
-        return $this->errorJson("接收数据出错，添加购物车失败！");
+        return $this->errorJson("接收数据出错，添加购物车失败!");
     }
 
     /*
@@ -124,6 +125,7 @@ class MemberCartController extends ApiController
      **/
     public function destroy()
     {
+
         $ids = explode(',', request()->input('ids'));
 
         $result = MemberCartService::clearCartByIds($ids);
@@ -131,6 +133,8 @@ class MemberCartController extends ApiController
             return $this->successJson('移除购物车成功。');
         }
         throw new AppException('写入出错，移除购物车失败！');
+
+
     }
 
 }
