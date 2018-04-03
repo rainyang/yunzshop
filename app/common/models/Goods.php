@@ -189,7 +189,11 @@ class Goods extends BaseModel
                     break;*/
                 //新加过滤搜索
                 case 'filtering':
-                    $scope = explode(',', $value);
+                    if (is_string($value)) {
+                        $scope = explode(',', $value);
+                    } else {
+                        $scope = $value;
+                    }
                         $query->join('yz_goods_filtering', function ($join) use ($scope) {
                             $join->on('yz_goods_filtering.goods_id', '=', 'yz_goods.id')
                                 ->whereIn('yz_goods_filtering.filtering_id', $scope);
