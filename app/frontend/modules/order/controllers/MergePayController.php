@@ -341,7 +341,7 @@ class MergePayController extends ApiController
         $this->validate([
             //'order_ids' => 'required|string'  //todo, string就会报错,奇怪...
             'order_ids' => 'required',
-            'mid' => 'required'
+            'pid' => 'required'
         ]);
 
         // 订单集合
@@ -364,7 +364,7 @@ class MergePayController extends ApiController
             unset($buttons[2]);
         }
 
-        $member = Member::getMemberById($request->input('mid'));
+        $member = Member::getMemberById($request->input('pid'));
 
         // 生成支付记录 记录订单号,支付金额,用户,支付号
         $orderPay = new OrderPay();
