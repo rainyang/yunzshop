@@ -371,35 +371,28 @@ class GoodsController extends ApiController
 
         if ($goodsModel->hasOneSale->point !== '0') {
 
+            $data['point'] = $set['give_point'];
+            
             if ($goodsModel->hasOneSale->point) {
                 $data['point'] = $goodsModel->hasOneSale->point;
+            } 
 
-                $data['first_strip_key'] = 'point';
-                $data['sale_count'] += 1;
-
-            } else if ($set['give_point']) {
-                $data['point'] = $set['give_point'];
-
-                $data['first_strip_key'] = 'point';
-                $data['sale_count'] += 1;
-            }
+            $data['first_strip_key'] = 'point';
+            $data['sale_count'] += 1;
 
         }
 
-        if ($set['point_deduct']) {
+        if ($set['point_deduct'] && $goodsModel->hasOneSale->max_point_deduct !== '0') {
+
+            $data['max_point_deduct'] = $set['money_max'].'%';
 
             if ($goodsModel->hasOneSale->max_point_deduct) {
 
                 $data['max_point_deduct'] = $goodsModel->hasOneSale->max_point_deduct;
-
-            } else {
-                $data['max_point_deduct'] = $set['money_max'].'%';
-
             }
 
-                $data['first_strip_key'] = 'max_point_deduct';
-                $data['sale_count'] += 1;
-
+            $data['first_strip_key'] = 'max_point_deduct';
+            $data['sale_count'] += 1;
         }
 
         if ($goodsModel->hasOneGoodsCoupon->is_give) {
