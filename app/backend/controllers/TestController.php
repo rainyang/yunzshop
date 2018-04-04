@@ -112,28 +112,4 @@ class TestController extends BaseController
         }
         return;
     }
-
-    public function tt()
-    {
-        $cartId = null;
-        $memberId = 277;
-        $goods_id = 2;
-
-        if (!is_null($memberId) && !is_null($goods_id)) {
-            $cartList = app('OrderManager')->make('MemberCart')->carts()->where('member_id', $memberId)
-                ->orderBy('created_at', 'desc')
-                ->get();
-
-            if (!$cartList->isEmpty()) {
-                collect($cartList)->map(function ($item, $key) use ($goods_id, &$cartId) {
-
-                    if ($item->goods_id == $goods_id) {
-                        $cartId = $item->id;
-                    }
-                });
-            }
-        }
-
-        return $cartId;
-    }
 }
