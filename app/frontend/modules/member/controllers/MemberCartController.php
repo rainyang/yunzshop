@@ -131,7 +131,7 @@ class MemberCartController extends ApiController
     {
         $ids = explode(',', request()->input('ids'));
 
-        if (is_null($ids)) {
+        if (is_null(request()->input('ids'))) {
             $ids = $this->getMemberCarId();
         }
 
