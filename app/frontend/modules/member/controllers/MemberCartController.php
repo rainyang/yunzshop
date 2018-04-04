@@ -154,18 +154,15 @@ class MemberCartController extends ApiController
                 ->get();
 
             if (!$cartList->isEmpty()) {
-                $cartId = collect($cartList)->map(function ($item, $key) use ($goods_id) {
+                collect($cartList)->map(function ($item, $key) use ($goods_id, &$cartId) {
+
                     if ($item->goods_id == $goods_id) {
-                        return $item->id;
+                        $cartId = $item->id;
                     }
                 });
-
-                if (!$cartId->isEmpty()) {
-                    return $cartId[0];
-                }
             }
-
-            return $cartId;
         }
+
+        return $cartId;
     }
 }
