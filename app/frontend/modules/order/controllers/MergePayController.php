@@ -98,12 +98,13 @@ class MergePayController extends ApiController
         if ($orders->first()->price == 0) {
             unset($buttons[0]);
             unset($buttons[1]);
-            unset($buttons[5]);
+            unset($buttons[2]);
             unset($buttons[6]);
-            unset($buttons[8]);
+            unset($buttons[7]);
             unset($buttons[9]);
-            unset($buttons[11]);
-            unset($buttons[13]);
+            unset($buttons[10]);
+            unset($buttons[12]);
+            unset($buttons[14]);
         }
         $type    = \YunShop::request()->type ?:0;
         if ($type == 2 && !empty($buttons[2])) {
