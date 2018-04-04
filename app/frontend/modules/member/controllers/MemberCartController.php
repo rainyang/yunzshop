@@ -153,12 +153,16 @@ class MemberCartController extends ApiController
                 ->orderBy('created_at', 'desc')
                 ->get();
 
-            if (!is_null($cartList)) {
+            if (!$cartList->isEmpty()) {
                 $cartId = collect($cartList)->map(function ($item, $key) use ($goods_id) {
                     if ($item->goods_id == $goods_id) {
                         return $item->id;
                     }
                 });
+
+                if (!$cartId->isEmpty()) {
+                    return $cartId[0];
+                }
             }
 
             return $cartId;
