@@ -1059,7 +1059,7 @@ class MemberController extends ApiController
         $data = [];
 
         collect(app('plugins')->getPlugins())->filter(function ($item) use ($filter) {
-            if (1 == $item->getEnabled()) {
+            if (1 == $item->isEnabled()) {
                 $info = $item->toArray();
 
                 if (in_array($info['name'], $filter)) {
