@@ -220,6 +220,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
             util.clip(this, $(this).attr('data-url'));
         });
     }
+    $(".yz-menu").click(function(){
+        console.log('sidebar', $(".sidebar"));
+        $(".sidebar").toggle();
+    });
 </script>
 </body>
 </html>
