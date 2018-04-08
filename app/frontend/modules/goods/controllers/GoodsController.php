@@ -4,6 +4,7 @@ namespace app\frontend\modules\goods\controllers;
 use app\backend\modules\goods\models\Brand;
 use app\common\components\ApiController;
 use app\common\components\BaseController;
+use app\common\exceptions\AppException;
 use app\common\helpers\PaginationHelper;
 use app\common\models\Category;
 use app\common\models\Goods;
