@@ -36,26 +36,27 @@ class OrderDispatch
         event($event);
         $data = $event->getData();
         
-        $freight_reduction = $this->levelFreeFreight();
 
         $freight = array_sum(array_column($data, 'price'));
 
-        return $result = $freight * $freight_reduction;
+        $freight_reduction = $this->levelFreeFreight($freight);
+
+        return $result = max(($freight - $freight_reduction), 0);
         //return $result = array_sum(array_column($data, 'price'));
     }
     /**
      * Author: aaa Date: 2018/4/2
      * 会员等级运费优惠
-     * @return [int] [优惠百分比]
+     * @return [int] [优惠金额]
      */
-    public function levelFreeFreight()
+    public function levelFreeFreight($freight)
     {
         $uid = intval($this->order->belongsToMember->uid);
         $member = MemberShopInfo::select('level_id')->with('level')->find($uid);
 
         if (isset($member->level)) {
             $freight_reduction = intval($member->level->freight_reduction);
-            return (1 - ($freight_reduction / 100));
+            return ($freight * ($freight_reduction / 100));
         }
         return 0;
     }

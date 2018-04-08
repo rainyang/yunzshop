@@ -137,7 +137,7 @@ class MemberLevel extends \app\common\models\MemberLevel
             ],
             'level_name' => 'required',
             'discount'   => 'numeric|between:0.1,10',
-            'freight_reduction' => 'numeric|min:0'
+            'freight_reduction' => 'numeric|between:0,100'
         ];
 
         $levelSet = Setting::get('shop.member');
