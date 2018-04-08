@@ -370,7 +370,7 @@ class GoodsController extends ApiController
 
         if ($goodsModel->hasOneSale->point !== '0') {
 
-            $data['point'] = $set['give_point'];
+            $data['point'] = $set['give_point'] ? $set['give_point'] : 0;
             
             if ($goodsModel->hasOneSale->point) {
                 $data['point'] = $goodsModel->hasOneSale->point;
@@ -383,7 +383,7 @@ class GoodsController extends ApiController
 
         if ($set['point_deduct'] && $goodsModel->hasOneSale->max_point_deduct !== '0') {
 
-            $data['max_point_deduct'] = $set['money_max'].'%';
+            $data['max_point_deduct'] = $set['money_max'] ? $set['money_max'].'%' : 0;
 
             if ($goodsModel->hasOneSale->max_point_deduct) {
 
