@@ -15,7 +15,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link rel="stylesheet" href="{{static_url('assets/css/bootstrap.min.css')}}">
     <link rel="stylesheet" href="{{static_url('assets/css/demo.css')}}">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="{{static_url('assets/css/material-dashboard.css?v=1.2.0')}}">
+    <link rel="stylesheet" href="{{static_url('assets/css/material-dashboard.css?v=1.2.1')}}">
     <link rel="stylesheet" href="{{static_url('yunshop/libs/font-awesome/4.5.0/css/font-awesome.min.css')}}">
     <link rel="stylesheet" type="text/css" href="{{static_url('assets/css/google-font.css?family=Roboto:300,400,500,700|Material+Icons')}}" />
 
