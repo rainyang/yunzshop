@@ -109,6 +109,13 @@ class MemberCartController extends ApiController
             $cartModel = app('OrderManager')->make('MemberCart')->find($cartId);
             if ($cartModel) {
                 $cartModel->total = $cartModel->total + $num;
+
+                if ($cartModel->total < 1) {
+                     $result = MemberCartService::clearCartByIds([$cartModel->id]);
+                    if ($result) {
+                        return $this->successJson('移除购物车成功。');
+                    }
+                }
                 $cartModel->validate();
                 if ($cartModel->update()) {
                     return $this->successJson('修改数量成功');
