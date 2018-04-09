@@ -104,12 +104,34 @@ class HomePageController extends ApiController
             }
             if ($page) {
                 $designer = (new \Yunshop\Designer\services\DesignerService())->getPageForHomePage($page->toArray());
+
+                $store_goods = null;
+                if (app('plugins')->isEnabled('store-cashier')) {
+                    $store_goods = new \Yunshop\StoreCashier\common\models\StoreGoods();
+                }
+
                 //课程商品判断
                 $videoDemand = new VideoDemandCourseGoods();
                 foreach ($designer['data'] as &$value) {
                     if ($value['temp'] == 'goods') {
-                        foreach ($value['data'] as &$course) {
-                            $course['is_course'] = $videoDemand->isCourse($course['goodid']);
+                        foreach ($value['data'] as &$info) {
+                            $info['is_course'] = $videoDemand->isCourse($info['goodid']);
+
+                            $info['goods_type'] = 0;
+                            $info['store_id'] = 0;
+
+                            if (!is_null($store_goods)) {
+                                $store_id = $store_goods->where('goods_id', $info['goodid'])->value('store_id');
+
+                                if ($store_id) {
+                                    $info['goods_type'] = 1;
+                                    $info['store_id'] = $store_id;
+                                }
+                            }
+
+                            if ($info['is_course']) {
+                                $info['goods_type'] = 2;
+                            }
                         }
                     }
                 }
