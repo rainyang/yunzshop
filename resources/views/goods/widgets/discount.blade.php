@@ -56,7 +56,8 @@
                     <input type='text' name='widgets[discount][discount_value][{{$level["id"] }}]'
                            class="form-control discounts_value"
                            value="@if (!empty($discountValue)){{ $discountValue[$level["id"]] }}@endif"/>
-                    <div class='input-group-addon waytxt'>折</div>
+                    <div class='input-group-addon waytxt'> @if ( !empty($discount) && $discount[0]['discount_method'] == 1)
+                            折 @else 元 @endif</div>
                 </div>
             </div>
         </div>
