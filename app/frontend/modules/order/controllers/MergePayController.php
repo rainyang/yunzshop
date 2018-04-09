@@ -64,7 +64,7 @@ class MergePayController extends ApiController
             }
 
             //找人代付
-            if ($order->uid != \YunShop::app()->getMemberId() && !Member::getMid()) {
+            if ($order->uid != \YunShop::app()->getMemberId() && !Member::getPid()) {
                 throw new AppException('(ID:' . $order->id . ')该订单属于其他用户');
             }
         });
