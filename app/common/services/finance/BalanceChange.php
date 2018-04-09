@@ -152,6 +152,9 @@ class BalanceChange extends Credit
      */
     private function sendMessage()
     {
+        if ($this->change_value == 0) {
+            return;
+        }
         $template_id = \Setting::get('shop.notice')['balance_change'];
 
         $params = [
