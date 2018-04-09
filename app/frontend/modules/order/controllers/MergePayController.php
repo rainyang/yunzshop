@@ -94,6 +94,18 @@ class MergePayController extends ApiController
         $member = $orders->first()->belongsToMember()->select(['credit2'])->first()->toArray();
         // 支付类型
         $buttons = $this->getPayTypeButtons($orders->first());
+        //订单金额为0时只显示‘余额支付’按钮
+        if ($orders->first()->price == 0) {
+            unset($buttons[0]);
+            unset($buttons[1]);
+            unset($buttons[2]);
+            unset($buttons[6]);
+            unset($buttons[7]);
+            unset($buttons[9]);
+            unset($buttons[10]);
+            unset($buttons[12]);
+            unset($buttons[14]);
+        }
         $type    = \YunShop::request()->type ?:0;
         if ($type == 2 && !empty($buttons[2])) {
             unset($buttons[2]);
