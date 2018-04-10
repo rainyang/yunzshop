@@ -298,6 +298,42 @@
             }
         }
 
+        if ($(':input[name="widgets[privilege][day_buy_limit]"]').val() == '') {
+            $('#myTab a[href="#tab_privilege"]').tab('show');
+            Tip.focus(':input[name="widgets[privilege][day_buy_limit]"]', "请输入会员每天限购数量!");
+            return false;
+        } else {
+            if (!numerictype.test($(':input[name="widgets[privilege][day_buy_limit]"]').val())) {
+                $('#myTab a[href="#tab_privilege"]').tab('show');
+                Tip.focus(':input[name="widgets[privilege][day_buy_limit]"]', '会员每天限购数量格式错误,只能为非负整数.');
+                return false;
+            }
+        }
+
+        if ($(':input[name="widgets[privilege][week_buy_limit]"]').val() == '') {
+            $('#myTab a[href="#tab_privilege"]').tab('show');
+            Tip.focus(':input[name="widgets[privilege][week_buy_limit]"]', "请输入会员每周限购数量!");
+            return false;
+        } else {
+            if (!numerictype.test($(':input[name="widgets[privilege][week_buy_limit]"]').val())) {
+                $('#myTab a[href="#tab_privilege"]').tab('show');
+                Tip.focus(':input[name="widgets[privilege][week_buy_limit]"]', '会员每周限购数量格式错误,只能为非负整数.');
+                return false;
+            }
+        }
+
+        if ($(':input[name="widgets[privilege][month_buy_limit]"]').val() == '') {
+            $('#myTab a[href="#tab_privilege"]').tab('show');
+            Tip.focus(':input[name="widgets[privilege][month_buy_limit]"]', "请输入会员每月限购总数!");
+            return false;
+        } else {
+            if (!numerictype.test($(':input[name="widgets[privilege][month_buy_limit]"]').val())) {
+                $('#myTab a[href="#tab_privilege"]').tab('show');
+                Tip.focus(':input[name="widgets[privilege][month_buy_limit]"]', '会员每月限购总数格式错误,只能为非负整数.');
+                return false;
+            }
+        }
+
         /*if ($(':input[name="widgets[privilege][time_begin_limit]"]').val() == '') {
          $('#myTab a[href="#tab_privilege"]').tab('show');
          Tip.focus(':input[name="widgets[privilege][time_begin_limit]"]', "请输入限购起始时间!");

@@ -22,6 +22,9 @@ class CreateImsYzGoodsPrivilegeTable extends Migration {
                 $table->text('buy_groups', 65535)->nullable();
                 $table->integer('once_buy_limit')->nullable()->default(0);
                 $table->integer('total_buy_limit')->nullable()->default(0);
+                $table->integer('day_buy_limit')->nullable()->default(0);
+                $table->integer('week_buy_limit')->nullable()->default(0);
+                $table->integer('month_buy_limit')->nullable()->default(0);
                 $table->integer('time_begin_limit')->nullable();
                 $table->integer('time_end_limit')->nullable();
                 $table->boolean('enable_time_limit');
