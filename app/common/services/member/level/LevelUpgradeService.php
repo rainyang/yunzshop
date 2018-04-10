@@ -33,6 +33,9 @@ class LevelUpgradeService
         $this->orderModel = $event->getOrderModel();
         $this->memberModel = MemberShopInfo::ofMemberId($this->orderModel->uid)->withLevel()->first();
 
+        if (is_null($this->memberModel)) {
+            return;
+        }
 
         $result = $this->check();
 
