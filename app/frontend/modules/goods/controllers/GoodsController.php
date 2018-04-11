@@ -44,7 +44,7 @@ class GoodsController extends ApiController
         $member = MemberShopInfo::uniacid()->ofMemberId(\YunShop::app()->getMemberId())->withLevel()->first();
 
 
-        //$goods = new Goods();
+//        $goods = new Goods();
         $goodsModel = Goods::uniacid()->with(['hasManyParams' => function ($query) {
             return $query->select('goods_id', 'title', 'value');
         }])->with(['hasManySpecs' => function ($query) {
@@ -63,10 +63,21 @@ class GoodsController extends ApiController
         ->with(['hasOneBrand' => function ($query) {
             return $query->select('id', 'name');
         }])
+        ->with('hasOneGoodsLimitbuy', function ($query) {
+            return $query->select('goods_id', 'end_time');
+        })
         ->find($id);
 
         if (!$goodsModel) {
             return $this->errorJson('商品不存在.');
+        }
+        $current_time = time();
+
+        if (!is_null($goodsModel->hasOneGoodsLimitbuy)) {
+            if ($goodsModel->hasOneGoodsLimitbuy->end_time < $current_time) {
+                $goodsModel->status = 0;
+                $goodsModel->save();
+            }
         }
 
         if (!$goodsModel->status) {
