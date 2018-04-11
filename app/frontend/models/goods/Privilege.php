@@ -28,6 +28,9 @@ class Privilege extends \app\common\models\goods\Privilege
     {
         $this->validateTimeLimit();
         $this->validateOneBuyLimit($num);
+        $this->validateDayBuyLimit($num);
+        $this->validateWeekBuyLimit($num);
+        $this->validateMonthBuyLimit($num);
         $this->validateTotalBuyLimit($num);
         $this->validateMemberLevelLimit();
         $this->validateMemberGroupLimit();
@@ -64,6 +67,69 @@ class Privilege extends \app\common\models\goods\Privilege
         if ($this->once_buy_limit > 0) {
             if ($num > $this->once_buy_limit)
                 throw new AppException('商品(' . $this->goods->title . ')单次最多可购买' . $this->once_buy_limit . '件');
+        }
+    }
+
+    /**
+     * 用户每日购买限制
+     * @param $num
+     * @throws AppException
+     */
+    public function validateDayBuyLimit($num = 1)
+    {
+        $start_time = Carbon::today()->timestamp;
+        $end_time = Carbon::now()->timestamp;
+        $rang = [$start_time,$end_time];
+        $history_num = MemberService::getCurrentMemberModel()
+            ->orderGoods()
+            ->where('goods_id', $this->goods_id)
+            ->whereBetween('created_at',$rang)
+            ->sum('total');
+        if ($this->day_buy_limit > 0) {
+            if ($history_num + $num > $this->day_buy_limit)
+                throw new AppException('您今天已购买' . $history_num . '件商品(' . $this->goods->title . '),该商品每天最多可购买' . $this->day_buy_limit . '件');
+        }
+    }
+
+    /**
+     * 用户每周购买限制
+     * @param $num
+     * @throws AppException
+     */
+    public function validateWeekBuyLimit($num = 1)
+    {
+        $start_time = Carbon::now()->startOfWeek()->timestamp;
+        $end_time = Carbon::now()->timestamp;
+        $rang = [$start_time,$end_time];
+        $history_num = MemberService::getCurrentMemberModel()
+            ->orderGoods()
+            ->where('goods_id', $this->goods_id)
+            ->whereBetween('created_at',$rang)
+            ->sum('total');
+        if ($this->week_buy_limit > 0) {
+            if ($history_num + $num > $this->week_buy_limit)
+                throw new AppException('您这周已购买' . $history_num . '件商品(' . $this->goods->title . '),该商品每周最多可购买' . $this->week_buy_limit . '件');
+        }
+    }
+
+    /**
+     * 用户每月购买限制
+     * @param $num
+     * @throws AppException
+     */
+    public function validateMonthBuyLimit($num = 1)
+    {
+        $start_time = Carbon::now()->startOfMonth()->timestamp;
+        $end_time = Carbon::now()->timestamp;
+        $rang = [$start_time,$end_time];
+        $history_num = MemberService::getCurrentMemberModel()
+            ->orderGoods()
+            ->where('goods_id', $this->goods_id)
+            ->whereBetween('created_at',$rang)
+            ->sum('total');
+        if ($this->month_buy_limit > 0) {
+            if ($history_num + $num > $this->month_buy_limit)
+                throw new AppException('您这个月已购买' . $history_num . '件商品(' . $this->goods->title . '),该商品每月最多可购买' . $this->month_buy_limit . '件');
         }
     }
 
