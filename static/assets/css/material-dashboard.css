@@ -13365,15 +13365,28 @@ footer .btn {
     .off-canvas-sidebar nav .navbar-collapse>ul {
         margin-top: 19px;
     }
+    .sidebar2{
+        left: -2px !important;
+    }
+    .yz-menu{
+        display: block !important;
+        font-size: 24px;
+        position: fixed;
+        z-index: 1222;
+        color: #fff;
+    }
+    .sidebar2 .nav li>a{
+        color:#fff;
+    }
     .sidebar,
     .off-canvas-sidebar nav .navbar-collapse {
         position: fixed;
-        display: block;
+        display: none;
         top: 0;
         height: 100vh;
         width: 60px;
         right: 0;
-        left: auto;
+        left: -62px;
         z-index: 1032;
         visibility: visible;
         background-color: #9A9A9A;
@@ -13942,4 +13955,8 @@ ol, ul {
     margin: 0;
     padding: 0;
     list-style: none;
+}
+
+.yz-menu{
+    display:none;
 }
