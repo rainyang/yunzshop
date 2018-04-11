@@ -46,8 +46,7 @@ class LimitBuy
     public function subscribe()
     {
         \Event::listen('cron.collectJobs', function () {
-            \Cron::add('Limit-buy', '*/1 * * * * *', function() {
-                \Log::debug('---限购---');
+            \Cron::add('Limit-buy', '*/10 * * * * *', function() {
                 $this->handle();
                 return;
             });
