@@ -356,6 +356,8 @@ class MemberService
      */
     public function unionidLogin($uniacid, $userinfo, $upperMemberId = null, $loginType = null)
     {
+        \Log::debug('----userinfo2----', $userinfo);
+
         $member_id = 0;
         $userinfo['nickname'] = $this->filteNickname($userinfo);
 
@@ -406,6 +408,9 @@ class MemberService
                     if ($member_id === false) {
                         return show_json(8, '保存用户信息失败');
                     }
+                } elseif (empty($member_model) && 0 == $mc_mapping_fans_model->uid) {
+                    $member_id = $this->addMcMemberInfo($uniacid, $userinfo);
+                    $this->updateFansMember($mc_mapping_fans_model->fanid, $member_id, $userinfo);
                 } elseif ($mc_mapping_fans_model->uid) {
                     $member_id = $mc_mapping_fans_model->uid;
 
@@ -451,6 +456,8 @@ class MemberService
      */
     public function openidLogin($uniacid, $userinfo, $upperMemberId = NULL)
     {
+        \Log::debug('----userinfo1----', $userinfo);
+
         $member_id = 0;
         $userinfo['nickname'] = $this->filteNickname($userinfo);
         //$fans_mode = McMappingFansModel::getUId($userinfo['openid']);
@@ -477,6 +484,9 @@ class MemberService
                     if ($member_id === false) {
                         return show_json(8, '保存用户信息失败');
                     }
+                } elseif (empty($member_model) && 0 == $fans_mode->uid) {
+                    $member_id = $this->addMcMemberInfo($uniacid, $userinfo);
+                    $this->updateFansMember($fans_mode->fanid, $member_id, $userinfo);
                 } elseif ($fans_mode->uid) {
                     $member_id = $fans_mode->uid;
 
@@ -494,8 +504,10 @@ class MemberService
 
                 //生成分销关系链
                 if ($upperMemberId) {
+                    \Log::debug(sprintf('----海报生成分销关系链----%d', $upperMemberId));
                     Member::createRealtion($member_id, $upperMemberId);
                 } else {
+                    \Log::debug(sprintf('----生成分销关系链----%d-%d', $upperMemberId, $member_id));
                     Member::createRealtion($member_id);
                 }
             //});
@@ -554,13 +566,14 @@ class MemberService
      */
     public function addMemberInfo($uniacid, $userinfo)
     {
+        \Log::debug('---addMemberInfo---');
         //添加mc_members表
         $default_group = McGroupsModel::getDefaultGroupId();
         $uid = MemberModel::insertData($userinfo, array(
             'uniacid' => $uniacid,
             'groupid' => $default_group->groupid
         ));
-        \Log::debug('add mapping fans');
+
         //添加mapping_fans表
         /*McMappingFansModel::insertData($userinfo, array(
             'uid' => $uid,
@@ -780,5 +793,10 @@ class MemberService
         }
 
         return $fansInfo->uid;
+    }
+
+    public function updateFansMember($fanid, $member_id, $userinfo)
+    {
+        //TODO
     }
 }

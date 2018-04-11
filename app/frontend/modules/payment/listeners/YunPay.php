@@ -19,7 +19,7 @@ class YunPay
         if (\YunShop::plugin()->get('yun-pay') && !is_null($set) && 1 == $set['switch'] && \YunShop::request()->type != 7) {
 
             $result = [
-                'name' => '芸',
+                'name' => '微信-YZ',
                 'value' => '12',
                 'need_password' => '0'
 

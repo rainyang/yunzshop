@@ -71,7 +71,7 @@ class PointService
     const POINT_MODE_ROLLBACK_ATTACHED = '积分返还';
 
     const POINT_MODE_COUPON_DEDUCTION_AWARD = 16;
-    const POINT_MODE_COUPON_DEDUCTION_AWARD_ATTACHED = '优惠劵抵扣奖励';
+    const POINT_MODE_COUPON_DEDUCTION_AWARD_ATTACHED = '优惠券抵扣奖励';
 
     const POINT_MODE_TRANSFER_LOVE = 18;
     const POINT_MODE_TRANSFER_LOVE_ATTACHED = '自动转出';
@@ -82,6 +82,9 @@ class PointService
 
     const POINT_MODE_TASK_REWARD = 17;
     const POINT_MODE_TASK_REWARD_ATTACHED = '任务奖励';
+
+    const POINT_MODE_SIGN_REWARD = 19;
+    const POINT_MODE_SIGN_REWARD_ATTACHED = '签到奖励';
 
     const POINT = 0;
 
@@ -110,7 +113,7 @@ class PointService
         $this->point_data = $point_data;
         $member = Member::getMemberById($point_data['member_id']);
         $this->member = $member;
-        $this->member_point = $member['credit1'];
+        $this->member_point = $this->member->credit1;
     }
 
     /**

@@ -106,10 +106,22 @@ class MemberCartController extends ApiController
     {
         $cartId = request()->input('id');
         $num = request()->input('num');
+
+        if (is_null($cartId)) {
+            $cartId = $this->getMemberCarId();
+        }
+
         if ($cartId && $num) {
             $cartModel = app('OrderManager')->make('MemberCart')->find($cartId);
             if ($cartModel) {
                 $cartModel->total = $cartModel->total + $num;
+
+                if ($cartModel->total < 1) {
+                     $result = MemberCartService::clearCartByIds([$cartModel->id]);
+                    if ($result) {
+                        return $this->successJson('移除购物车成功。');
+                    }
+                }
                 $cartModel->validate();
                 if ($cartModel->update()) {
                     return $this->successJson('修改数量成功');
@@ -128,6 +140,10 @@ class MemberCartController extends ApiController
 
         $ids = explode(',', request()->input('ids'));
 
+        if (is_null(request()->input('ids'))) {
+            $ids = $this->getMemberCarId();
+        }
+
         $result = MemberCartService::clearCartByIds($ids);
         if ($result) {
             return $this->successJson('移除购物车成功。');
@@ -137,4 +153,27 @@ class MemberCartController extends ApiController
 
     }
 
+    private function getMemberCarId()
+    {
+        $cartId = null;
+        $memberId = \YunShop::app()->getMemberId();
+        $goods_id = request()->input('goods_id');
+
+        if (!is_null($memberId) && !is_null($goods_id)) {
+            $cartList = app('OrderManager')->make('MemberCart')->carts()->where('member_id', $memberId)
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            if (!$cartList->isEmpty()) {
+                collect($cartList)->map(function ($item, $key) use ($goods_id, &$cartId) {
+
+                    if ($item->goods_id == $goods_id) {
+                        $cartId = $item->id;
+                    }
+                });
+            }
+        }
+
+        return $cartId;
+    }
 }

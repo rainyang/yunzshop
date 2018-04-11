@@ -71,9 +71,12 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $subscribe = [
+        \app\common\listeners\MessageListener::class,
+
         //会员等级升级
         \app\common\listeners\member\level\LevelListener::class,
         \app\common\listeners\balance\BalanceListener::class,
+
 
         \app\frontend\modules\dispatch\listeners\types\Express::class,
         \app\frontend\modules\coupon\listeners\CouponDiscount::class,
@@ -89,6 +92,7 @@ class EventServiceProvider extends ServiceProvider
         \app\frontend\modules\payment\listeners\Alipay_App::class,
         \app\frontend\modules\payment\listeners\YunPay::class,
         \app\frontend\modules\payment\listeners\Cloud_Alipay::class,
+        \app\frontend\modules\payment\listeners\Yun_Alipay::class,
         orderListener::class,
         IncomeWithdraw::class,
         CouponExpireNotice::class,

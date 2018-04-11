@@ -34,7 +34,7 @@ class PointToLoveService
 
     private function transferStart()
     {
-        $members = Member::where('credit1','>',0)->with('pointLove')->get();
+        $members = Member::uniacid()->where('credit1','>',0)->with('pointLove')->get();
 
 
         DB::beginTransaction();

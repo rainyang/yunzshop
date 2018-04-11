@@ -280,19 +280,31 @@
 
 
                 <div role="tabpanel" class="tab-pane link_cate" id="link_cate">
-                    <?php $category = \app\backend\modules\goods\models\Category::getAllCategory(); ?>
+                    <?php $first_category = \app\backend\modules\goods\models\Category::getCategoryFirstLevel(); ?>
+                    <?php $second_category = \app\backend\modules\goods\models\Category::getCategorySecondLevel(); ?>
+                    <?php $third_category = \app\backend\modules\goods\models\Category::getCategoryThirdLevel(); ?>
                     <div class="mylink-con">
-                        @foreach ($category as $goodcate_parent)
-                            @if (empty($goodcate_parent['parent_id']))
+                        @if (!is_null($first_category))
+                            @foreach ($first_category as $goodcate_parent)
                                 <div class="mylink-line">
                                     {{ $goodcate_parent['name'] }}
                                     <div class="mylink-sub">
                                         <a href="javascript:;" id="category-{{ $goodcate_parent['id'] }}" class="mylink-nav" ng-click="chooseLink(1, 'category-{{ $goodcate_parent['id'] }}')" data-href="{{ yzAppFullUrl('catelist/:id') }}">选择</a>
                                     </div>
                                 </div>
-
-                                @foreach ($category as $goodcate_chlid)
-                                    @if ($goodcate_chlid['parent_id'] == $goodcate_parent['id'])
+                                <?php
+                                $sub_level = null;
+                                $parent_id = $goodcate_parent['id'];
+                                if (!is_null($second_category)) {
+                                    $sub_level = collect($second_category)->filter(function ($val, $key) use ($parent_id) {
+                                        if ($val['parent_id'] == $parent_id) {
+                                            return $val;
+                                        }
+                                    });
+                                }
+                                ?>
+                                @if (!is_null($sub_level))
+                                    @foreach ($sub_level as $goodcate_chlid)
                                         <div class="mylink-line">
                                             <span style='height:10px; width: 10px; margin-left: 10px; margin-right: 10px; display:inline-block; border-bottom: 1px dashed #ddd; border-left: 1px dashed #ddd;'></span>
                                             {{ $goodcate_chlid['name'] }}
@@ -300,21 +312,35 @@
                                                 <a href="javascript:;" class="mylink-nav" data-href="{{ yzAppFullUrl('catelist/' . $goodcate_chlid['id']) }}">选择</a>
                                             </div>
                                         </div>
-                                        @foreach ($category as $goodcate_third)
-                                            @if ($goodcate_third['parent_id'] == $goodcate_chlid['id'])
-                                                <div class="mylink-line">
-                                                    <span style='height:10px; width: 10px; margin-left: 30px; margin-right: 10px; display:inline-block; border-bottom: 1px dashed #ddd; border-left: 1px dashed #ddd;'></span>
-                                                    {{ $goodcate_third['name'] }}
-                                                    <div class="mylink-sub">
-                                                        <a href="javascript:;" class="mylink-nav" data-href="{{ yzAppFullUrl('catelist/' . $goodcate_third['id']) }}">选择</a>
+                                        <?php
+                                        $third_level = null;
+                                        $secod_parent_id = $goodcate_chlid['id'];
+                                        if (!is_null($third_category)) {
+                                            $third_level = collect($third_category)->filter(function ($val, $key) use ($secod_parent_id) {
+                                                if ($val['parent_id'] == $secod_parent_id) {
+                                                    return $val;
+                                                }
+                                            });
+                                        }
+
+                                        ?>
+                                        @if (!is_null($third_level))
+                                            @foreach ($third_level as $goodcate_third)
+                                                @if ($goodcate_third['parent_id'] == $goodcate_chlid['id'])
+                                                    <div class="mylink-line">
+                                                        <span style='height:10px; width: 10px; margin-left: 30px; margin-right: 10px; display:inline-block; border-bottom: 1px dashed #ddd; border-left: 1px dashed #ddd;'></span>
+                                                        {{ $goodcate_third['name'] }}
+                                                        <div class="mylink-sub">
+                                                            <a href="javascript:;" class="mylink-nav" data-href="{{ yzAppFullUrl('catelist/' . $goodcate_third['id']) }}">选择</a>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            @endif
-                                        @endforeach
-                                    @endif
-                                @endforeach
-                            @endif
-                        @endforeach
+                                                @endif
+                                            @endforeach
+                                        @endif
+                                    @endforeach
+                                @endif
+                            @endforeach
+                        @endif
                     </div>
                 </div>
 
@@ -361,7 +387,7 @@
         });
     })
 
-    /*$(document).on("click",".nav-link",function(){
+    $(document).on("click",".nav-link",function(){
         var id = $(this).data("id");
         if(id){
             $("#modal-mylink").attr({"data-id":id});
@@ -398,7 +424,7 @@
             $("textarea[name=mylink_href]").focus();
             alert("链接不能为空!");
         }
-    });*/
+    });
     // ajax 选择商品
     $("#select-good-btn").click(function(){
         var kw = $("#select-good-kw").val();

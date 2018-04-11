@@ -113,7 +113,7 @@ return [
                     ],
 
                     'coupon_coupon_get_search_coupons' => [
-                        'name'              => '白名单（选择优惠卷）',
+                        'name'              => '白名单（选择优惠券）',
                         'url'               => 'coupon.coupon.get-search-coupons',
                         'url_params'        => '',
                         'permit'            => 0,
@@ -123,7 +123,7 @@ return [
                         'item'              => 'coupon_coupon_get_search_coupons',
                         'parents'           => ['Goods', 'goods_no_permission',],
                     ],
-                    //优惠卷白名单
+                    //优惠券白名单
                     'coupon_no_permission'  => [
                         'name'              => '白名单（指定商品）',
                         'url'               => 'coupon.coupon.add-param',
@@ -594,7 +594,7 @@ return [
                 'child'             => [
 
                     'coupon_coupon_set' => [
-                        'name'              => '优惠劵设置',
+                        'name'              => '优惠券设置',
                         'url'               => 'coupon.base-set.see',
                         'url_params'        => '',
                         'permit'            => 1,
@@ -803,6 +803,18 @@ return [
         'parents'       => [],
         'child'         => [
 
+            'member_search'     => [
+                'name'          => '搜索会员',
+                'url'           => 'member.member.search_member',
+                'url_params'    => '',
+                'permit'        => 0,
+                'menu'          => 0,
+                'icon'          => '',
+                'sort'          => 0,
+                'item'          => 'member_search',
+                'parents'       => ['Member',],
+            ],
+
             'member_all'    => [
                 'name'          => '全部会员',
                 'url'           => 'member.member.index',
@@ -840,7 +852,7 @@ return [
                     ],
 
                     'member_detail'     => [
-                        'name'          => '查看会员详情',
+                        'name'          => '查看详情',
                         'url'           => 'member.member.detail',
                         'url_params'    => '',
                         'permit'        => 1,
@@ -851,8 +863,20 @@ return [
                         'parents'       => ['Member', 'member_all',],
                     ],
 
+                    'member_income'     => [
+                        'name'          => '收入详情',
+                        'url'           => 'member.member-income.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_income',
+                        'parents'       => ['Member', 'member_all',],
+                    ],
+
                     'member_detail_update'     => [
-                        'name'          => '修改会员信息',
+                        'name'          => '修改信息',
                         'url'           => 'member.member.update',
                         'url_params'    => '',
                         'permit'        => 1,
@@ -863,6 +887,17 @@ return [
                         'parents'       => ['Member', 'member_all',],
                     ],
 
+                    'member_change_relation' => [
+                        'name'          => '修改关系',
+                        'url'           => 'member.member.change_relation',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_change_relation',
+                        'parents'       => ['Member', 'member_all',],
+                    ],
 
                     'member_member_agent' => [
                         'name'          => '推广下线',

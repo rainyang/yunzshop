@@ -63,7 +63,7 @@ class PointTransferController extends ApiController
         if (bccomp($this->getPostTransferPoint(), 0,2) != 1){
             return '转让积分必须大于 0.01';
         }
-        if (bccomp($this->transfer->credit1,$this->getPostTransferPoint(),2) != 1) {
+        if (bccomp($this->transfer->credit1,$this->getPostTransferPoint(),2) == -1) {
             return '转让积分不能大于您的剩余积分';
         }
 

@@ -301,21 +301,31 @@
                 </div>
 
                 <div role="tabpanel" class="tab-pane link_cate" id="link_cate">
+                    <?php $first_category = \app\backend\modules\goods\models\Category::getCategoryFirstLevel(); ?>
+                    <?php $second_category = \app\backend\modules\goods\models\Category::getCategorySecondLevel(); ?>
+                    <?php $third_category = \app\backend\modules\goods\models\Category::getCategoryThirdLevel(); ?>
                     <div class="mylink-con">
-
-                        <?php $category = \app\backend\modules\goods\models\Category::getAllCategory(); ?>
-                        @foreach ($category as $goodcate_parent)
-                            @if (empty($goodcate_parent['parent_id']))
+                        @if (!is_null($first_category))
+                            @foreach ($first_category as $goodcate_parent)
                                 <div class="mylink-line">
                                     {{ $goodcate_parent['name'] }}
                                     <div class="mylink-sub">
                                         <a href="javascript:;" id="category-{{ $goodcate_parent['id'] }}" class="mylink-nav" ng-click="chooseLink(1, 'category-{{ $goodcate_parent['id'] }}')" nhref="{{ yzAppFullUrl('catelist/' . $goodcate_parent['id']) }}">选择</a>
                                     </div>
                                 </div>
-
-                                <!-- 二级分类 -->
-                                @foreach ($category as $goodcate_chlid)
-                                    @if ($goodcate_chlid['parent_id'] == $goodcate_parent['id'])
+                                <?php
+                                $sub_level = null;
+                                $parent_id = $goodcate_parent['id'];
+                                if (!is_null($second_category)) {
+                                    $sub_level = collect($second_category)->filter(function ($val, $key) use ($parent_id) {
+                                        if ($val['parent_id'] == $parent_id) {
+                                            return $val;
+                                        }
+                                    });
+                                }
+                                ?>
+                                @if (!is_null($sub_level))
+                                    @foreach ($sub_level as $goodcate_chlid)
                                         <div class="mylink-line">
                                             <span style='height:10px; width: 10px; margin-left: 10px; margin-right: 10px; display:inline-block; border-bottom: 1px dashed #ddd; border-left: 1px dashed #ddd;'></span>
                                             {{ $goodcate_chlid['name'] }}
@@ -323,28 +333,35 @@
                                                 <a href="javascript:;" id="category-{{ $goodcate_chlid['id'] }}" class="mylink-nav" ng-click="chooseLink(1, 'category-{{ $goodcate_chlid['id'] }}')" nhref="{{ yzAppFullUrl('catelist/' . $goodcate_chlid['id']) }}">选择</a>
                                             </div>
                                         </div>
+                                        <?php
+                                        $third_level = null;
+                                        $secod_parent_id = $goodcate_chlid['id'];
+                                        if (!is_null($third_category)) {
+                                            $third_level = collect($third_category)->filter(function ($val, $key) use ($secod_parent_id) {
+                                                if ($val['parent_id'] == $secod_parent_id) {
+                                                    return $val;
+                                                }
+                                            });
+                                        }
 
-                                        <!-- 三级分类 -->
-                                        @foreach ($category as $goodcate_third)
-                                            @if ($goodcate_third['parent_id'] == $goodcate_chlid['id'])
-                                                <div class="mylink-line">
-                                                    <span style='height:10px; width: 10px; margin-left: 30px; margin-right: 10px; display:inline-block; border-bottom: 1px dashed #ddd; border-left: 1px dashed #ddd;'></span>
-                                                    {{ $goodcate_third['name'] }}
-                                                    <div class="mylink-sub">
-                                                        <a href="javascript:;" id="category-{{ $goodcate_third['id'] }}" class="mylink-nav" ng-click="chooseLink(1, 'category-{{ $goodcate_third['id'] }}')" nhref="{{ yzAppFullUrl('catelist/' . $goodcate_third['id']) }}">选择</a>
+                                        ?>
+                                        @if (!is_null($third_level))
+                                            @foreach ($third_level as $goodcate_third)
+                                                @if ($goodcate_third['parent_id'] == $goodcate_chlid['id'])
+                                                    <div class="mylink-line">
+                                                        <span style='height:10px; width: 10px; margin-left: 30px; margin-right: 10px; display:inline-block; border-bottom: 1px dashed #ddd; border-left: 1px dashed #ddd;'></span>
+                                                        {{ $goodcate_third['name'] }}
+                                                        <div class="mylink-sub">
+                                                            <a href="javascript:;" id="category-{{ $goodcate_third['id'] }}" class="mylink-nav" ng-click="chooseLink(1, 'category-{{ $goodcate_third['id'] }}')" nhref="{{ yzAppFullUrl('catelist/' . $goodcate_third['id']) }}">选择</a>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            @endif
-                                        @endforeach
-
-                                        <!-- 三级分类 end -->
-
-                                    @endif
-                                @endforeach
-
-                                <!-- 二级分类 end -->
-                            @endif
-                        @endforeach
+                                                @endif
+                                            @endforeach
+                                        @endif
+                                    @endforeach
+                                @endif
+                            @endforeach
+                        @endif
                     </div>
 
                 </div>
@@ -372,7 +389,7 @@
                         <div class="form-group" style="overflow: hidden;">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label" style="line-height: 34px;">链接地址</label>
                             <div class="col-sm-9 col-xs-12">
-                                <textarea name="mylink_href" class="form-control" style="height: 90px; resize: none;" placeholder="请以http://开头"></textarea>
+                                <textarea name="mylink_href" class="form-control" style="height: 90px; resize: none;" placeholder="请以https://开头"></textarea>
                             </div>
                         </div>
                         <div class="form-group" style="overflow: hidden; margin-bottom: 0px;">

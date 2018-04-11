@@ -11,6 +11,8 @@ namespace app\backend\modules\coupon\controllers;
 
 
 use app\common\components\BaseController;
+use app\common\models\notice\MessageTemp;
+use app\common\facades\Setting;
 use app\common\helpers\Url;
 
 class BaseSetController extends BaseController
@@ -19,7 +21,11 @@ class BaseSetController extends BaseController
     public function see()
     {
         $coupon_set = array_pluck(\Setting::getAllByGroup('coupon')->toArray(), 'value', 'key');
-        return view('coupon.base_set', ['coupon' => $coupon_set])->render();
+        $temp_list = MessageTemp::select('id', 'title')->get();
+        return view('coupon.base_set', [
+            'coupon' => $coupon_set,
+            'temp_list' => $temp_list,
+        ])->render();
     }
 
     /**
@@ -29,6 +35,7 @@ class BaseSetController extends BaseController
     public function store()
     {
         $requestData = \YunShop::request()->coupon;
+//        dump($requestData);exit();
         if ($requestData) {
             foreach ($requestData as $key => $item) {
                 \Setting::set('coupon.' . $key, $item);

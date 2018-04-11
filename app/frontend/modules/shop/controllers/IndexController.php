@@ -68,6 +68,7 @@ class IndexController extends ApiController
 
         $request = Category::getRecommentCategoryList()
         ->where('is_home','1')
+        ->pluginId()
         ->get();
         foreach ($request as &$item) {
             $item['thumb'] = replace_yunshop(yz_tomedia($item['thumb']));

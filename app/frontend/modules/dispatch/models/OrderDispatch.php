@@ -9,6 +9,7 @@
 namespace app\frontend\modules\dispatch\models;
 
 use app\common\events\dispatch\OrderDispatchWasCalculated;
+use app\common\models\goods\GoodsDispatch;
 use app\frontend\modules\order\models\PreOrder;
 use app\common\models\MemberShopInfo;
 

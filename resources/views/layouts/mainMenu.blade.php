@@ -1,3 +1,6 @@
+<div class="yz-menu">
+    <i class="fa fa-bars"></i>
+</div>
 <div class="yz-menu-header">
     <nav class="navbar navbar-transparent navbar-absolute">
         <div class="container-fluid">

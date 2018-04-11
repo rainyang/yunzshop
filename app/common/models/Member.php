@@ -460,7 +460,7 @@ class Member extends BackendModel
         } else {
             $data['love'] = [
                 'status'    => false,
-                'love_name' => '0',
+                'love_name' => '爱心值',
             ];
         }
 
@@ -485,10 +485,16 @@ class Member extends BackendModel
             $data['elive'] = ['status' => false];
         }
 
-        //获取插件会员中心链接挂件
-        $plugins = \Config::get('member_center.plugins');
-        if (is_array($plugins)) {
-            $data = array_merge($data,$plugins);
+        if ($plugin_class->isEnabled('sign')) {
+            $data['sign'] = [
+                'status'  => true,
+                'plugin_name'=> trans('Yunshop\Sign::sign.plugin_name'),
+            ];
+        } else {
+            $data['sign'] = [
+                'status'    => false,
+                'plugin_name' => '签到',
+            ];
         }
 
         //帮助中心插件开启控制
@@ -602,6 +608,7 @@ class Member extends BackendModel
     }
     /**
      * 判断用户是否关注
+     *
      * @return bool
      */
     public function isFollow()

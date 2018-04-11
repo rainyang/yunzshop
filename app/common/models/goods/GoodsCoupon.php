@@ -63,7 +63,7 @@ class GoodsCoupon extends BaseModel
             //'is_give'   => '',
             //'coupon'    => '',
             //'send_type' => '',
-            'send_num'  => '优惠劵发送次数',
+            'send_num'  => '优惠券发送次数',
         ];
     }
 

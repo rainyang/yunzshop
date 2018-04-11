@@ -31,6 +31,7 @@ use app\common\models\GoodsCategory;
 use app\frontend\modules\coupon\listeners\CouponSend;
 use Setting;
 use app\common\services\goods\VideoDemandCourseGoods;
+use Yunshop\Designer\models\Store;
 
 
 class GoodsController extends BaseController
@@ -469,6 +470,17 @@ class GoodsController extends BaseController
 
         if (\YunShop::request()->kw) {
             $goods = \app\common\models\Goods::getGoodsByName(\YunShop::request()->kw);
+            //判断门店-收银台插件是否存在
+            $exist_store_cashier = app('plugins')->isEnabled('store-cashier');
+            if ($exist_store_cashier) {
+                //unset搜索出的门店名称的商品
+                foreach ($goods as $key => $item) {
+                    $storeList = Store::getStoreByCashierId($item['id']);
+                    if ($storeList) {
+                        unset($goods[$key]);
+                    }
+                }
+            }
             $goods = set_medias($goods, array('thumb', 'share_icon'));
 
             $goods = collect($goods)->map(function($item) {
