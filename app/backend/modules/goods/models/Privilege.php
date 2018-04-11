@@ -50,6 +50,9 @@ class Privilege extends \app\common\models\goods\Privilege
         $privilegeModel->buy_groups = !empty($data['buy_groups']) ? implode(',', $data['buy_groups']) : '';
         $privilegeModel->once_buy_limit = !empty($data['once_buy_limit']) ? $data['once_buy_limit'] : '0';
         $privilegeModel->total_buy_limit = !empty($data['total_buy_limit']) ? $data['total_buy_limit']: '0';
+        $privilegeModel->day_buy_limit = !empty($data['day_buy_limit']) ? $data['day_buy_limit']: '0';
+        $privilegeModel->week_buy_limit = !empty($data['week_buy_limit']) ? $data['week_buy_limit']: '0';
+        $privilegeModel->month_buy_limit = !empty($data['month_buy_limit']) ? $data['month_buy_limit']: '0';
         $privilegeModel->time_begin_limit = !empty($data['time_begin_limit']) ? strtotime($data['time_begin_limit']) : '0';
         $privilegeModel->time_end_limit = !empty($data['time_end_limit']) ? strtotime($data['time_end_limit']): '0';
         return $privilegeModel->save();
