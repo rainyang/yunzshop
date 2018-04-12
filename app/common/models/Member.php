@@ -648,4 +648,11 @@ class Member extends BackendModel
 
         return $result;
     }
+
+    public static function getPid()
+    {
+        $pid = \YunShop::request()->pid;
+
+        return ($pid && ($pid != 'null' || $pid != 'undefined')) ? (int)$pid : 0;
+    }
 }

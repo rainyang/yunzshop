@@ -28,9 +28,9 @@ class AnotherPayDetailController extends ApiController
         foreach ($order_ids as $orderId) {
             $order = $this->getOrder()->with(['hasManyOrderGoods','orderDeduction','orderDiscount','orderCoupon'])->find($orderId);
 
-//        if ($order->uid != \YunShop::app()->getMemberId()) {
-//            throw new AppException('(ID:' . $order->id . ')该订单属于其他用户');
-//        }
+            if (is_null($order)) {
+                return $this->errorJson($msg = '未找到数据', []);
+            }
 
             $data = $order->toArray();
             $backups_button = $data['button_models'];
