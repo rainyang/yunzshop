@@ -10,7 +10,7 @@ var _provinceNetworkData =null;
 var _cityNetworkData =null;
 var _districtNetworkData =null;
 var _streetNetworkData =null;
-function cascdeInit(v1,v2,v3,v4){alert(v1)
+function cascdeInit(v1,v2,v3,v4){
    getProvinceData(v1,v2,v3,v4);
 }
 
