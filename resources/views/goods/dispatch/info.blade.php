@@ -177,18 +177,18 @@
 
                                     </td>
                                     <td class=" text-center">
-                                        <input type="number" value="{{ $dispatch->first_weight }}" class="form-control"
+                                        <input type="number" value="{{ $dispatch->first_weight ? $dispatch->first_weight :0 }}" class="form-control"
                                                name="dispatch[first_weight]" style="width:100px;"></td>
                                     <td class=" text-center">
-                                        <input type="text" value="{{ $dispatch->first_weight_price }}"
+                                        <input type="text" value="{{ $dispatch->first_weight_price ? $dispatch->first_weight_price : 0 }}"
                                                class="form-control" name="dispatch[first_weight_price]"
                                                style="width:100px;"></td>
                                     <td class=" text-center">
-                                        <input type="number" value="{{ $dispatch->another_weight }}"
+                                        <input type="number" value="{{ $dispatch->another_weight ? $dispatch->another_weight : 0 }}"
                                                class="form-control" name="dispatch[another_weight]"
                                                style="width:100px;"></td>
                                     <td class=" text-center">
-                                        <input type="text" value="{{ $dispatch->another_weight_price }}"
+                                        <input type="text" value="{{ $dispatch->another_weight_price ? $dispatch->another_weight_price : 0 }}"
                                                class="form-control" name="dispatch[another_weight_price]"
                                                style="width:100px;"></td>
                                     <td class=""></td>
@@ -204,22 +204,22 @@
                                             <a href='javascript:;' onclick='editArea(this)' random="{{$key}}">编辑</a>
                                         </td>
                                         <td class=" text-center">
-                                            <input type="number" value="{{ $weight['first_weight'] }}"
+                                            <input type="number" value="{{ $weight['first_weight'] ? $weight['first_weight'] : 0 }}"
                                                    class="form-control"
                                                    name="dispatch[weight][{{$key}}][first_weight]" style="width:100px;">
                                         </td>
                                         <td class=" text-center">
-                                            <input type="text" value="{{ $weight['first_weight_price'] }}"
+                                            <input type="text" value="{{ $weight['first_weight_price'] ? $weight['first_weight_price'] : 0}}"
                                                    class="form-control"
                                                    name="dispatch[weight][{{$key}}][first_weight_price]"
                                                    style="width:100px;"></td>
                                         <td class=" text-center">
-                                            <input type="number" value="{{ $weight['another_weight'] }}"
+                                            <input type="number" value="{{ $weight['another_weight'] ? $weight['another_weight'] : 0}}"
                                                    class="form-control"
                                                    name="dispatch[weight][{{$key}}][another_weight]"
                                                    style="width:100px;"></td>
                                         <td class=" text-center">
-                                            <input type="text" value="{{ $weight['another_weight_price'] }}"
+                                            <input type="text" value="{{ $weight['another_weight_price'] ? $weight['another_weight_price'] :0}}"
                                                    class="form-control"
                                                    name="dispatch[weight][{{$key}}][another_weight_price]"
                                                    style="width:100px;">
@@ -250,17 +250,17 @@
                                                name="dispatch[areas]">
                                     </td>
                                     <td class=" text-center">
-                                        <input type="number" value="{{ $dispatch->first_piece }}" class="form-control"
+                                        <input type="number" value="{{ $dispatch->first_piece ? $dispatch->first_piece : 0 }}" class="form-control"
                                                name="dispatch[first_piece]" style="width:100px;"></td>
                                     <td class=" text-center">
-                                        <input type="text" value="{{ $dispatch->first_piece_price }}"
+                                        <input type="text" value="{{ $dispatch->first_piece_price ? $dispatch->first_piece_price : 0 }}"
                                                class="form-control" name="dispatch[first_piece_price]"
                                                style="width:100px;"></td>
                                     <td class=" text-center">
-                                        <input type="number" value="{{ $dispatch->another_piece }}" class="form-control"
+                                        <input type="number" value="{{ $dispatch->another_piece ? $dispatch->another_piece : 0 }}" class="form-control"
                                                name="dispatch[another_piece]" style="width:100px;"></td>
                                     <td class=" text-center">
-                                        <input type="text" value="{{ $dispatch->another_piece_price }}"
+                                        <input type="text" value="{{ $dispatch->another_piece_price ? $dispatch->another_piece_price : 0 }}"
                                                class="form-control" name="dispatch[another_piece_price]"
                                                style="width:100px;"></td>
                                     <td></td>
@@ -279,21 +279,21 @@
                                             <a href='javascript:;' onclick='editArea(this)' random="{{$key}}">编辑</a>
                                         </td>
                                         <td class=" text-center">
-                                            <input type="number" value="{{ $piece['first_piece'] }}"
+                                            <input type="number" value="{{ $piece['first_piece'] ? $piece['first_piece'] :0 }}"
                                                    class="form-control"
                                                    name="dispatch[piece][{{$key}}][first_piece]" style="width:100px;">
                                         </td>
                                         <td class=" text-center">
-                                            <input type="text" value="{{ $piece['first_piece_price'] }}"
+                                            <input type="text" value="{{ $piece['first_piece_price'] ? $piece['first_piece_price'] :0 }}"
                                                    class="form-control"
                                                    name="dispatch[piece][{{$key}}][first_piece_price]"
                                                    style="width:100px;"></td>
                                         <td class=" text-center">
-                                            <input type="number" value="{{ $piece['another_piece'] }}"
+                                            <input type="number" value="{{ $piece['another_piece'] ? $piece['another_piece'] :0 }}"
                                                    class="form-control" name="dispatch[piece][{{$key}}][another_piece]"
                                                    style="width:100px;"></td>
                                         <td class=" text-center">
-                                            <input type="text" value="{{ $piece['another_piece_price'] }}"
+                                            <input type="text" value="{{ $piece['another_piece_price'] ? $piece['another_piece_price'] :0 }}"
                                                    class="form-control"
                                                    name="dispatch[piece][{{$key}}][another_piece_price]"
                                                    style="width:100px;">
