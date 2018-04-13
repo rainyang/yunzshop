@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container-fluid" style="margin-top:10px">
-        <!--<div class="row">
+        <div class="row">
             <div class="col-lg-6 col-md-12">
                 {{--<div class="card card-stats">
                     <div class="card-header" data-background-color="orange">
@@ -21,25 +21,24 @@
                 </div>--}}
                 <div class="card card-stats">
                     <div class="card-header" data-background-color="orange">
-                        <h4 class="card-title">芸众商城</h4>
-                        <p class="category">版本:v2.3.21</p>
+                        <h4 class="card-title">{{YunShop::app()->account['name']}}</h4>
+                        <p class="category">版本:{{config('version')}}</p>
                     </div>
                     <div class="card-content" style="padding-bottom: 35px;">
-                        <button class="btn btn-success">发布商品</button>
-                        <button class="btn btn-default">店铺装修</button>
-                        <button class="btn btn-default">查看订单</button>
-                        <button class="btn btn-default">访问店铺</button>
+                        <button class="btn btn-default"><a href="{{yzWebUrl('goods.goods.index')}}">发布商品</a></button>
+                        <button class="btn btn-default"><a href="{{yzWebUrl('plugin.designer.admin.list.index')}}">店铺装修</a></button>
+                        <button class="btn btn-default"><a href="{{yzWebUrl('order.list.index')}}">查看订单</a></button>
+                        <button class="btn btn-default"><a href="{!! yzAppFullUrl('home') !!}" target="_blank">访问店铺</a></button>
                     </div>
                     <div class="card-footer">
                         <div class="stats">
-                            <i class="material-icons text-danger">warning</i>
-                            <a href="#pablo">Get More Space...</a>
+                            hi,{{YunShop::app()->username}},欢迎回到{{YunShop::app()->account['name']}}.
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row">
+        {{--<div class="row">
             <div class="col-md-4">
                 <div class="card card-chart">
                     <div class="card-header" data-background-color="rose" data-header-animation="true">
@@ -122,8 +121,8 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
+        </div>--}}
+        {{--<div class="row">
             <div class="col-lg-3 col-md-6 col-sm-6">
                 <div class="card card-stats">
                     <div class="card-header" data-background-color="orange">
@@ -189,7 +188,7 @@
                     </div>
                 </div>
             </div>
-        </div>-->
+        </div>--}}
 
     </div>
 @endsection
