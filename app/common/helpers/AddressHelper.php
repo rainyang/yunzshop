@@ -44,4 +44,40 @@ class AddressHelper extends BaseController
         return $html;
     }
 
+    public static function tplLinkedAddress2($names, $data)
+    {
+        $html = "";
+
+        //省
+        $html .= '<div class="form-group col-xs-12 col-sm-8 col-lg-4">';
+        $html .= '<select id="sel-provance0" name="' . $names[0] . '" class="form-control">';
+        $html .= '<option value="">请选择省份</option>';
+        $html .= ' </select>';
+        $html .= ' </div>';
+
+        //市
+        $html .= '<div class="form-group col-xs-12 col-sm-8 col-lg-4">';
+        $html .= '<select id="sel-city0" name="' . $names[1] . '"  class="form-control">';
+        $html .= '<option value="">请选择城市</option>';
+        $html .= ' </select>';
+        $html .= ' </div>';
+
+        //区
+        $html .= '<div class="form-group col-xs-12 col-sm-8 col-lg-4">';
+        $html .= '<select id="sel-area0" name="' . $names[2] . '" class="form-control">';
+        $html .= '<option value="" >请选择区</option>';
+        $html .= '</select>';
+        $html .= ' </div>';
+
+        //街道
+        if (isset($names[3])) {
+            $html .= '<div class="form-group col-xs-12 col-sm-8 col-lg-4">';
+            $html .= '<select id="sel-street0" name="' . $names[3] . '"  class="form-control">';
+            $html .= '<option value="">请选择街道</option>';
+            $html .= '</select>';
+            $html .= ' </div>';
+        }
+        return $html;
+    }
+
 }

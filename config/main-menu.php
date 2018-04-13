@@ -9,20 +9,20 @@
 
 return [
     'index'  => [
-        'name' => '商城',
-        'url' => 'index.index',         // url 可以填写http 也可以直接写路由
-        'urlParams' => '',              //如果是url填写的是路由则启用参数否则不启用
-        'permit' => 0,                  //如果不设置则不会做权限检测
-        'menu' => 1,                    //如果不设置则不显示菜单，子菜单也将不显示
-        'icon' => 'fa-home',                   //菜单图标
-        'top_show'    => 0,
+        'name'              => '商城',
+        'url'               => 'index.index',
+        'urlParams'         => '',
+        'permit'            => 0,
+        'menu'              => 1,
+        'icon'              => 'fa-home',
+        'top_show'          => 0,
         'left_first_show'   => 0,
-        'left_second_show'   => 0,
-        'parents' => [],
-        'item' => 'index',
-        'child' => [
+        'left_second_show'  => 0,
+        'parents'           => [],
+        'item'              => 'index',
+        'child'             => [
 
-            'index'  => [
+            'index'         => [
                 'name'          => '选择图标',
                 'url'           => 'frame.icon.index',
                 'urlParams'     => '',
@@ -30,6 +30,18 @@ return [
                 'menu'          => 0,
                 'icon'          => '',
                 'parents'       => [],
+            ],
+
+            'address_get_address' => [
+                'name'              => '白名单（选择地址）',
+                'url'               => 'address.get-address',
+                'url_params'        => '',
+                'permit'            => 0,
+                'menu'              => 0,
+                'icon'              => '',
+                'sort'              => 0,
+                'item'              => 'address_get_address',
+                'parents'           => ['index'],
             ],
         ],
     ],

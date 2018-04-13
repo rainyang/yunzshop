@@ -1029,7 +1029,7 @@ class MemberController extends ApiController
         }
 
         $title = Setting::get('shop.pay.another_share_title');
-        $url   = yzAppFullUrl('/member/payanotherdetail', ['mid'=>$mid, 'order_ids'=>$order_ids]);
+        $url   = yzAppFullUrl('/member/payanotherdetail', ['pid'=>$mid, 'order_ids'=>$order_ids]);
 
         $order_goods = Order::find($order_ids)->hasManyOrderGoods;
 

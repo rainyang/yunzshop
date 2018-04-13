@@ -12,6 +12,7 @@ namespace app\common\listeners;
 
 use app\common\events\MessageEvent;
 use app\Jobs\MessageJob;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
@@ -21,7 +22,7 @@ class MessageListener implements ShouldQueue
     use DispatchesJobs;
 
 
-    public function subscribe(MessageEvent $event)
+    public function subscribe(Dispatcher $event)
     {
         $event->listen(MessageEvent::class, MessageListener::class . "@handel");
     }
