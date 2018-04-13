@@ -280,21 +280,25 @@ class GoodsController extends ApiController
         $discountModel = $goodsModel->hasManyDiscount[0];
 // dd($discountModel);
 // dd($goodsModel);
-        switch ($discountModel->discount_method) {
-            case 1:
-                $discount_value = $goodsModel->price * ($discountModel->discount_value / 10);
-                break;
-            case 2:
-                $discount_value = $goodsModel->price - $discountModel->discount_value;
-                break;
-            default:
-                $discount_value = 0;
-                break;
+        $discount_value = null;
+
+        if ((float)$discountModel->discount_value) {
+            switch ($discountModel->discount_method) {
+                case 1:
+                    $discount_value = $goodsModel->price * ($discountModel->discount_value / 10);
+                    break;
+                case 2:
+                    $discount_value = max($goodsModel->price - $discountModel->discount_value, 0);
+                    break;
+                default:
+                    $discount_value = null;
+                    break;
+            }
         }
-// dd($discount_value);
+
         if ($memberModel->level) {
 
-            if (!$discount_value) {
+            if ($discount_value === null) {
                 $discount_value = $goodsModel->price * ($memberModel->level->discount / 10);
             }
 
@@ -313,7 +317,7 @@ class GoodsController extends ApiController
 
         }
 
-        return $data['discount_value'] ? $data : [];
+        return $data['discount_value'] !== null ? $data : [];
     }
 
     /**
