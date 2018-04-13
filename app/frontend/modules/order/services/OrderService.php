@@ -303,7 +303,8 @@ class OrderService
 //            }
 //        }
         $result = self::OrderOperate($orderOperation);
-        if ($orderOperation->isVirtual()) {
+        //是虚拟商品或有标识直接完成
+        if ($orderOperation->isVirtual() || $orderOperation->mark) {
             // 虚拟物品付款后直接完成
             $orderOperation->dispatch_type_id = 0;
             $orderOperation->save();

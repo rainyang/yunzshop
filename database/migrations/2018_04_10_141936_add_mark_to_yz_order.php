@@ -16,7 +16,7 @@ class AddMarkToYzOrder extends Migration
         if (Schema::hasTable('yz_order')) {
             Schema::table('yz_order', function (Blueprint $table) {
                 if (!Schema::hasColumn('yz_order', 'mark')) {
-                    $table->string('mark', 100)->nullable()->default(0)->comment('柜子标识');
+                    $table->string('mark', 100)->nullable()->default('')->comment('柜子标识');
                 }
             });
         }

@@ -69,6 +69,9 @@ class PreOrder extends Order
     {
         $this->dispatch_type_id = request()->input('dispatch_type_id', 0);
 
+        //临时处理，无扩展性
+        $this->mark = request()->input('mark', '');
+
         parent::__construct($attributes);
         $this->setRelation('orderSettings',$this->newCollection());
 

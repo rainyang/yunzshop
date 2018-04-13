@@ -33,6 +33,12 @@ class OrderDispatch
             // 没选配送方式 或者 不需要配送配送
             return 0;
         }
+
+        //临时解决，是柜子的不算运费
+        if (!empty($this->order->mark)) {
+            return 0;
+        }
+
         $event = new OrderDispatchWasCalculated($this->order);
         event($event);
         $data = $event->getData();
