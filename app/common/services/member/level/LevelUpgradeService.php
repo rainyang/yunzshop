@@ -57,7 +57,7 @@ class LevelUpgradeService
             return;
         }
 
-        $result = $this->check();
+        $result = $this->check(1);
 
         $this->setValidity(); // 设置会员等级期限
 
@@ -90,7 +90,7 @@ class LevelUpgradeService
     }
 
 
-    private function check()
+    private function check($status)
     {
         $set = Setting::get('shop.member');
 
@@ -103,7 +103,15 @@ class LevelUpgradeService
                 $this->new_level = $this->checkOrderCount();
                 break;
             case 2:
-                $this->new_level = $this->checkGoodsId();
+                if ($status == 1) {
+                    if ($set['level_after'] == 1) {
+                        $this->new_level = $this->checkGoodsId();
+                    }
+                } else {
+                    if(empty($set['level_after'])) {
+                        $this->new_level = $this->checkGoodsId();
+                    }
+                }
                 break;
             default:
                 $level = '';
