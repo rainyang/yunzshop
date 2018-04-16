@@ -325,7 +325,7 @@
                                                 </li>
                                                 <li>
                                                     <a href="{{yzWebUrl('member.member-address.index', ['member_id' => $row['uid']])}}"
-                                                       title='收获地址管理'><i class='fa fa-truck'></i>收获地址管理</a>
+                                                       title='收货地址管理'><i class='fa fa-truck'></i>收货地址管理</a>
                                                 </li>
                                             </ul>
                                         </div>
