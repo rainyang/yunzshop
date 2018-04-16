@@ -91,7 +91,7 @@
                                 </label>
                                 <label class="radio radio-inline">
                                     <input type="radio" name="member[level_after]" value="0"
-                                           @if (empty($set['level_after'] == 1)) checked @endif/>
+                                           @if (empty($set['level_after'])) checked @endif/>
                                     完成后
                                 </label>
                                 <span class="help-block">
