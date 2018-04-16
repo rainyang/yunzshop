@@ -70,17 +70,17 @@ class WithdrawStatisticsController extends BaseController
 
     private function getWithdrawToBalanceAmounts($start_time,$end_time)
     {
-        return $this->withdrawModel->where('pay_way','balance')->whereBetween('created_at',[$start_time,$end_time])->sum('amounts');
+        return $this->withdrawModel->uniacid()->where('pay_way','balance')->whereBetween('created_at',[$start_time,$end_time])->sum('amounts');
     }
 
     private function getWithdrawToWeChatAmounts($start_time,$end_time)
     {
-        return $this->withdrawModel->where('pay_way','wechat')->whereBetween('created_at',[$start_time,$end_time])->sum('amounts');
+        return $this->withdrawModel->uniacid()->where('pay_way','wechat')->whereBetween('created_at',[$start_time,$end_time])->sum('amounts');
     }
 
     private function getWithdrawToAlipayAmounts($start_time,$end_time)
     {
-        return $this->withdrawModel->where('pay_way','alipay')->whereBetween('created_at',[$start_time,$end_time])->sum('amounts');
+        return $this->withdrawModel->uniacid()->where('pay_way','alipay')->whereBetween('created_at',[$start_time,$end_time])->sum('amounts');
     }
 
 }
