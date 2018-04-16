@@ -20,11 +20,13 @@ class LevelListener
     {
         $set = Setting::get('shop.member');
         if ($set['level_after'] == 1) {
+            //付款后
             $event->listen(
                 \app\common\events\order\AfterOrderPaidEvent::class,
                 \app\common\services\member\level\LevelUpgradeService::class.'@checkUpgradeAfterPaid'
             );
         } else {
+            //完成后
             $event->listen(
                 \app\common\events\order\AfterOrderReceivedEvent::class,
                 \app\common\services\member\level\LevelUpgradeService::class.'@checkUpgrade'

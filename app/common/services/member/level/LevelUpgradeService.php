@@ -130,8 +130,10 @@ class LevelUpgradeService
     {
         $set = Setting::get('shop.member');
         if ($set['level_after'] == 1) {
+            //付款后
             $orderMoney = Order::where('uid', $this->orderModel->uid)->whereBetween('status', [Order::WAIT_SEND,Order::COMPLETE])->sum('price');
         } else {
+            //完成后
             $orderMoney = Order::where('uid', $this->orderModel->uid)->where('status', Order::COMPLETE)->sum('price');
         }
 
@@ -148,8 +150,10 @@ class LevelUpgradeService
     {
         $set = Setting::get('shop.member');
         if ($set['level_after'] == 1) {
+            //付款后
             $orderCount = Order::where('uid', $this->orderModel->uid)->whereBetween('status', [Order::WAIT_SEND,Order::COMPLETE])->count();
         } else {
+            //完成后
             $orderCount = Order::where('uid', $this->orderModel->uid)->where('status', Order::COMPLETE)->count();
         }
 

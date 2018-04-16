@@ -86,13 +86,17 @@
                             <div class="col-sm-9 col-xs-12">
                                 <label class="radio radio-inline">
                                     <input type="radio" name="member[level_after]" value="1"
-                                           @if ($set['level_after']) checked @endif/> 付款后
+                                           @if ($set['level_after']) checked @endif/>
+                                    付款后
                                 </label>
                                 <label class="radio radio-inline">
                                     <input type="radio" name="member[level_after]" value="0"
-                                           @if (empty($set['level_after'] == 1)) checked @endif/> 完成后
+                                           @if (empty($set['level_after'] == 1)) checked @endif/>
+                                    完成后
                                 </label>
-                                <span class="help-block">如果选择付款后，只要用户下单付款满足升级依据，即可升级；如果选择完成后，则表示需要订单完成状态才能升级</span>
+                                <span class="help-block">
+                                    如果选择付款后，只要用户下单付款满足升级依据，即可升级；如果选择完成后，则表示需要订单完成状态才能升级
+                                </span>
                             </div>
                         </div>
 
