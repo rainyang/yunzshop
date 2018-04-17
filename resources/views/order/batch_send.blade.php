@@ -117,7 +117,7 @@
                     <option value="zhongxinda" data-name="忠信达">忠信达</option>
                     <option value="zhimakaimen" data-name="芝麻开门">芝麻开门</option>
                 </select>
-                <input type='hidden' name='send[express_company_name]' id='expresscom' value=""/>
+                <input type='hidden' name='send[express_company_name]' id='expresscom' value="顺丰"/>
             </div>
         </div>
 
