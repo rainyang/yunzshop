@@ -104,11 +104,11 @@ class LevelUpgradeService
                 break;
             case 2:
                 if ($status == 1) {
-                    if ($set['level_after'] == 1) {
+                    if ($set['level_after']) {
                         $this->new_level = $this->checkGoodsId();
                     }
                 } else {
-                    if(empty($set['level_after'])) {
+                    if(!$set['level_after']) {
                         $this->new_level = $this->checkGoodsId();
                     }
                 }
