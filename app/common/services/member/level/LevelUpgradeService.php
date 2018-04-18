@@ -57,7 +57,7 @@ class LevelUpgradeService
             return;
         }
 
-        $result = $this->check();
+        $result = $this->check(1);
 
         $this->setValidity(); // 设置会员等级期限
 
@@ -90,7 +90,7 @@ class LevelUpgradeService
     }
 
 
-    private function check()
+    private function check($status)
     {
         $set = Setting::get('shop.member');
 
@@ -103,7 +103,15 @@ class LevelUpgradeService
                 $this->new_level = $this->checkOrderCount();
                 break;
             case 2:
-                $this->new_level = $this->checkGoodsId();
+                if ($status == 1) {
+                    if ($set['level_after']) {
+                        $this->new_level = $this->checkGoodsId();
+                    }
+                } else {
+                    if(!$set['level_after']) {
+                        $this->new_level = $this->checkGoodsId();
+                    }
+                }
                 break;
             default:
                 $level = '';
@@ -130,8 +138,10 @@ class LevelUpgradeService
     {
         $set = Setting::get('shop.member');
         if ($set['level_after'] == 1) {
+            //付款后
             $orderMoney = Order::where('uid', $this->orderModel->uid)->whereBetween('status', [Order::WAIT_SEND,Order::COMPLETE])->sum('price');
         } else {
+            //完成后
             $orderMoney = Order::where('uid', $this->orderModel->uid)->where('status', Order::COMPLETE)->sum('price');
         }
 
@@ -148,8 +158,10 @@ class LevelUpgradeService
     {
         $set = Setting::get('shop.member');
         if ($set['level_after'] == 1) {
+            //付款后
             $orderCount = Order::where('uid', $this->orderModel->uid)->whereBetween('status', [Order::WAIT_SEND,Order::COMPLETE])->count();
         } else {
+            //完成后
             $orderCount = Order::where('uid', $this->orderModel->uid)->where('status', Order::COMPLETE)->count();
         }
 

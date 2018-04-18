@@ -45,14 +45,14 @@
                                         <div class="col-sm-9 col-xs-12">
                                             <div class='input-group'>
                                                 @if(empty($shopSet['level_type']))
-                                                    <span class='input-group-addon'>完成订单金额满</span>
+                                                    <span class='input-group-addon'>订单金额满</span>
                                                     <input type="text" name="level[order_money]" class="form-control"
                                                            value="{{ $levelModel->order_money }}"/>
                                                     <span class='input-group-addon'>元</span>
                                                 @endif
 
                                                 @if($shopSet['level_type'] == 1)
-                                                    <span class='input-group-addon'>完成订单数量满</span>
+                                                    <span class='input-group-addon'>订单数量满</span>
                                                     <input type="text" name="level[order_count]" class="form-control"
                                                            value="{{ $levelModel->order_count }}"/>
                                                     <span class='input-group-addon'>个</span>
