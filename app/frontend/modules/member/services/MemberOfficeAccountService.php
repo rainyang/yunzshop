@@ -225,7 +225,7 @@ class MemberOfficeAccountService extends MemberService
         if (\YunShop::request()->yz_redirect) {
             $yz_redirect = base64_decode(\YunShop::request()->yz_redirect);
 
-            $redirect_url = $yz_redirect . '?t=' . time();
+            $redirect_url = $yz_redirect . '&t=' . time();
            /* if (preg_match('menu', $yz_redirect)) {
                 $redirect_url = preg_replace('/menu/', 'redir_menu', $yz_redirect);
             } else {
