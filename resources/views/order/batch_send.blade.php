@@ -147,8 +147,8 @@
 
 <script language='javascript'>
     $("#express").change(function () {
-        var obj = $(this);
-        var sel = obj.find("option:selected").attr("data-name");
+        var sel = $(this).find("option:selected").text();
+        // var sel = $(this).find("option:selected").attr("data-name");
         $("#expresscom").val(sel);
     });
 
