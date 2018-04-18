@@ -34,6 +34,7 @@ class BatchSendController extends BaseController
     {
         $send_data = request()->send;
         if (\Request::isMethod('post')) {
+            dd($send_data);
             if (!$send_data['excelfile']) {
                 return $this->message('请上传文件', Url::absoluteWeb('order.batch-send.index'), 'error');
             }
