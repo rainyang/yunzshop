@@ -34,10 +34,14 @@ class BatchSendController extends BaseController
     {
         $send_data = request()->send;
         if (\Request::isMethod('post')) {
-            dd($send_data);
+            if ($send_data['express_company_name'] == "顺丰" && $send_data['express_code'] != "shunfeng") {
+                return $this->message('上传失败，请重新上传', Url::absoluteWeb('order.batch-send.index'), 'error');
+            }
+
             if (!$send_data['excelfile']) {
                 return $this->message('请上传文件', Url::absoluteWeb('order.batch-send.index'), 'error');
             }
+
             if ($send_data['excelfile']->isValid()) {
 
                 $this->uploadExcel($send_data['excelfile']);
