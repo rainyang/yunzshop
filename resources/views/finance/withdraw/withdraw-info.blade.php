@@ -44,6 +44,29 @@
             <p>
                 <b>提现方式: </b>{{$item->pay_way_name}}
             </p>
+            @if($item->pay_way == 'manual')
+                <p>
+                    <b>手动打款方式：</b>
+                @if($item->manual_type == 1 || empty($item->manual_type))
+                    银行卡
+                </p>
+                    <p>
+                        <b>银行卡：</b>{{$item->bankCard->bank_card}}
+                    </p>
+                @elseif($item->manual_type == 2)
+                    微信
+                </p>
+                    <p>
+                        <b>微信：</b>{{$item->hasOneYzMember->wechat}}
+                    </p>
+                @elseif($item->manual_type == 3)
+                    支付宝
+                </p>
+                    <p>
+                        <b>支付宝：</b>{{$item->hasOneYzMember->alipay}}
+                    </p>
+                @endif
+            @endif
             <p>
                 <b>状态: </b>{{$item->status_name}}
             </p>
