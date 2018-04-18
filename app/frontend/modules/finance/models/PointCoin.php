@@ -24,10 +24,9 @@ class PointCoin extends VirtualCoin
 
     protected function _getName()
     {
-        if (\Setting::get('shop.shop.credit1')) {
-            return \Setting::get('shop.shop.credit1');
-        }
-        return '积分';
+        $credit1 = trim(\Setting::get('shop.shop.credit1'));
+
+        return $credit1 ? $credit1 : '积分';
         // return \Setting::get('shop.shop.credit1','积分');
     }
 
