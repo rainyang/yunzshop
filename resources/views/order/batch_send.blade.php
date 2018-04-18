@@ -116,8 +116,10 @@
                     <option value="zhongyouwuliu" data-name="中邮物流">中邮物流</option>
                     <option value="zhongxinda" data-name="忠信达">忠信达</option>
                     <option value="zhimakaimen" data-name="芝麻开门">芝麻开门</option>
+                    <option value="jd" data-name="京东物流">京东物流</option>
+                    <option value="guosong" data-name="国送快运">国送快运</option>
                 </select>
-                <input type='hidden' name='send[express_company_name]' id='expresscom' value="顺丰"/>
+                <input type="hidden" name='send[express_company_name]' id='expresscom' value="顺丰"/>
             </div>
         </div>
 
@@ -146,14 +148,16 @@
 
 
 <script language='javascript'>
-    $("#express").change(function () {
-        var obj = $(this);
-        var sel = obj.find("option:selected").attr("data-name");
-        $("#expresscom").val(sel);
-    });
+    $(function () {
+        $("#express").change(function () {
+            var obj = $(this);
+            var sel = obj.find("option:selected").attr("data-name");
+            $("#expresscom").val(sel);
+        });
 
-    require(['select2'], function () {
-        $('#express').select2();
+        require(['select2'], function () {
+            $('#express').select2();
+        })
     })
 
 </script>
