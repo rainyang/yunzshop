@@ -79,6 +79,9 @@ class MemberController extends ApiController
                 //自定义表单
                 $data['myform'] = (new MemberService())->memberInfoAttrStatus();
 
+                //修复微信头像地址
+                $data['avatar'] = ImageHelper::fix_wechatAvatar($data['avatar']);
+
                 return $this->successJson('', $data);
             } else {
                 return $this->errorJson('[' . $member_id . ']用户不存在');
