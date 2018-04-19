@@ -46,6 +46,9 @@ class PointToLoveService
             }
 
             $change_value = bcdiv(bcmul($member->credit1,$rate,4),100,2);
+            if ($change_value <= 0) {
+                continue;
+            }
 
             $point_change_data = [
                 'point_income_type' => PointService::POINT_INCOME_LOSE,
@@ -56,9 +59,11 @@ class PointToLoveService
             ];
 
             $result = (new PointService($point_change_data))->changePoint();
+
             if (!$result) {
                 Log::info('积分自动转入爱心值失败',print_r($point_change_data,true));
                 DB::rollBack();
+                return false;
             }
 
             $love_change_data = [
@@ -75,6 +80,7 @@ class PointToLoveService
             if (!$result) {
                 Log::info('积分自动转入爱心值失败',print_r($love_change_data,true));
                 DB::rollBack();
+                return false;
             }
         }
         DB::commit();
