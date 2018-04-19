@@ -144,6 +144,8 @@
                                 <option value="zhongyouwuliu" data-name="中邮物流">中邮物流</option>
                                 <option value="zhongxinda" data-name="忠信达">忠信达</option>
                                 <option value="zhimakaimen" data-name="芝麻开门">芝麻开门</option>
+                                <option value="jd" data-name="京东物流">京东物流</option>
+                                <option value="guosong" data-name="国送快运">国送快运</option>
                             </select>
                             <input type='hidden' name='express_company_name' id='expresscom'/>
                         </div>

@@ -82,6 +82,18 @@ class Withdraw extends BackendModel
         return $this->hasOne('app\common\models\Member', 'uid', 'member_id');
     }
 
+    //商城yz会员
+    public function hasOneYzMember()
+    {
+        return $this->hasOne('app\backend\modules\member\models\MemberShopInfo', 'member_id', 'member_id');
+
+    }
+
+    //商城银行卡
+    public function bankCard()
+    {
+        return $this->hasOne('app\common\models\member\BankCard', 'member_id', 'member_id');
+    }
 
 
     /**
@@ -281,11 +293,14 @@ class Withdraw extends BackendModel
             ->with(['hasOneMember' => function($query) {
                 return $query->select('uid', 'mobile', 'realname', 'nickname', 'avatar')
                     ->with(['yzMember' => function($member) {
-                        return $member->select('member_id', 'group_id')
+                        return $member->select('member_id', 'group_id','alipay','wechat')
                             ->with(['group' => function($group) {
                                 return $group->select('id', 'group_name');
                             }]);
                     }]);
+            }])
+            ->with(['bankCard'=> function($bank){
+                return $bank->select('member_id','bank_card');
             }])
             ->first();
 
