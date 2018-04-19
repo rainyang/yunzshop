@@ -148,16 +148,14 @@
 
 
 <script language='javascript'>
-    $(function () {
-        $("#express").change(function () {
-            var obj = $(this);
-            var sel = obj.find("option:selected").attr("data-name");
-            $("#expresscom").val(sel);
-        });
+    $("#express").change(function () {
+        var sel = $(this).find("option:selected").text();
+        // var sel = $(this).find("option:selected").attr("data-name");
+        $("#expresscom").val(sel);
+    });
 
         require(['select2'], function () {
             $('#express').select2();
-        })
     })
 
 </script>
