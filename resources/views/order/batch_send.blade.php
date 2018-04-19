@@ -119,7 +119,7 @@
                     <option value="jd" data-name="京东物流">京东物流</option>
                     <option value="guosong" data-name="国送快运">国送快运</option>
                 </select>
-                <input type='hidden' name='send[express_company_name]' id='expresscom' value="顺丰"/>
+                <input type="hidden" name='send[express_company_name]' id='expresscom' value="顺丰"/>
             </div>
         </div>
 
@@ -154,8 +154,8 @@
         $("#expresscom").val(sel);
     });
 
-    require(['select2'], function () {
-        $('#express').select2();
+        require(['select2'], function () {
+            $('#express').select2();
     })
 
 </script>
