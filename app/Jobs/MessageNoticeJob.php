@@ -35,7 +35,7 @@ class MessageNoticeJob implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @return void
+     *
      */
     public function __construct($noticeModel, $templateId, $noticeData, $openId, $url)
     {
