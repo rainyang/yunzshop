@@ -35,6 +35,10 @@
                     <option value="ems" data-name="ems快递">ems快递</option>
                     <option value="huitongkuaidi" data-name="汇通快运">汇通快运</option>
                     <option value="quanfengkuaidi" data-name="全峰快递">全峰快递</option>
+                    <option value="jd" data-name="京东物流">京东物流</option>
+                    <option value="guosong" data-name="国送快运">国送快运</option>
+                    <option value="baishiwuliu" data-name="百世快运">百世快运</option>
+                    <option value="htky" data-name="百世快递">百世快递</option>
                     <option value="zhaijisong" data-name="宅急送">宅急送</option>
                     <option value="aae" data-name="aae全球专递">aae全球专递</option>
                     <option value="anjie" data-name="安捷快递">安捷快递</option>
@@ -116,10 +120,6 @@
                     <option value="zhongyouwuliu" data-name="中邮物流">中邮物流</option>
                     <option value="zhongxinda" data-name="忠信达">忠信达</option>
                     <option value="zhimakaimen" data-name="芝麻开门">芝麻开门</option>
-                    <option value="jd" data-name="京东物流">京东物流</option>
-                    <option value="guosong" data-name="国送快运">国送快运</option>
-                    <option value="baishiwuliu" data-name="百世快运">百世快运</option>
-                    <option value="htky" data-name="百世快递">百世快递</option>
                 </select>
                 <input type="hidden" name='send[express_company_name]' id='expresscom' value="顺丰"/>
             </div>
