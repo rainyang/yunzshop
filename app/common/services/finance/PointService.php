@@ -150,7 +150,7 @@ class PointService
     public function messageNotice()
     {
 
-        if ($this->change_value == 0) {
+        if ($this->point_data['point'] == 0) {
             return;
         }
         $template_id = \Setting::get('shop.notice')['point_change'];
