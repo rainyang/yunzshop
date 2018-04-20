@@ -146,6 +146,8 @@
                                 <option value="zhimakaimen" data-name="芝麻开门">芝麻开门</option>
                                 <option value="jd" data-name="京东物流">京东物流</option>
                                 <option value="guosong" data-name="国送快运">国送快运</option>
+                                <option value="baishiwuliu" data-name="百世快运">百世快运</option>
+                                <option value="htky" data-name="百世快递">百世快递</option>
                             </select>
                             <input type='hidden' name='express_company_name' id='expresscom'/>
                         </div>
