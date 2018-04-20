@@ -193,4 +193,9 @@ EOF;
             }
         }
     }
+
+    public static function fix_wechatAvatar($avatar)
+    {
+        return preg_replace('/132132/', '132', $avatar);
+    }
 }
