@@ -10,6 +10,7 @@ namespace app\common\services\finance;
 
 
 use app\backend\modules\member\models\Member;
+use app\common\events\MessageEvent;
 use app\common\models\finance\PointLog;
 use app\common\models\notice\MessageTemp;
 use app\common\services\MessageService;
@@ -148,29 +149,23 @@ class PointService
 
     public function messageNotice()
     {
-        $this->point_data['point_mode'] = $this->getModeAttribute($this->point_data['point_mode']);
-        $noticeMember = Member::getMemberByUid($this->member->uid)->with('hasOneFans')->first();
-        if (!$noticeMember->hasOneFans->openid) {
-            return;
-        }
 
-        $temp_id = \Setting::get('shop.notice')['point_change'];
-        if (!$temp_id) {
+        if ($this->point_data['point'] == 0) {
             return;
         }
+        $template_id = \Setting::get('shop.notice')['point_change'];
+
         $params = [
             ['name' => '商城名称', 'value' => \Setting::get('shop.shop')['name']],
             ['name' => '昵称', 'value' => $this->member['nickname']],
             ['name' => '时间', 'value' => date('Y-m-d H:i', time())],
             ['name' => '积分变动金额', 'value' => $this->point_data['point']],
-            ['name' => '积分变动类型', 'value' => $this->point_data['point_mode']],
+            ['name' => '积分变动类型', 'value' => $this->getModeAttribute($this->point_data['point_mode'])],
             ['name' => '变动后积分数值', 'value' => $this->point_data['after_point']]
         ];
-        $msg = MessageTemp::getSendMsg($temp_id, $params);
-        if (!$msg) {
-            return;
-        }
-        MessageService::notice(MessageTemp::$template_id, $msg, $this->member->uid);
+
+        event(new MessageEvent($this->member->uid, $template_id, $params, $url=''));
+
     }
 
     /**
