@@ -34,21 +34,27 @@
                         <th>省份</th>
                         <th>城市</th>
                         <th>区域</th>
+                        @if(\Setting::get('shop.trade.is_street'))
+                            <th>街道</th>
+                        @endif
                         <th>详细地址</th>
                     </tr>
                     </thead>
                     <tbody>
 
 
-                    @foreach($member->address as $key => $addres)
+                    @foreach($address as $key => $addres)
                         <tr style="background: #eee">
-                            <th>{{ $addres->id }}</th>
-                            <th>{{ $addres->username }}</th>
-                            <th>{{ $addres->mobile }}</th>
-                            <th>{{ $addres->province }}</th>
-                            <th>{{ $addres->city }}</th>
-                            <th>{{ $addres->district }}</th>
-                            <th>{{ $addres->address }}</th>
+                            <th>{{ $addres['id'] }}</th>
+                            <th>{{ $addres['username'] }}</th>
+                            <th>{{ $addres['mobile'] }}</th>
+                            <th>{{ $addres['province'] }}</th>
+                            <th>{{ $addres['city'] }}</th>
+                            <th>{{ $addres['district'] }}</th>
+                            @if(\Setting::get('shop.trade.is_street'))
+                                <th>{{ $addres['street'] }}</th>
+                            @endif
+                            <th>{{ $addres['address'] }}</th>
                         </tr>
                     @endforeach
                 </table>
