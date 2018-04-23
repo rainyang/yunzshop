@@ -160,7 +160,7 @@ class PointService
             ['name' => '昵称', 'value' => $this->member['nickname']],
             ['name' => '时间', 'value' => date('Y-m-d H:i', time())],
             ['name' => '积分变动金额', 'value' => $this->point_data['point']],
-            ['name' => '积分变动类型', 'value' => $this->getModeAttribute($this->point_data['point_mode']),
+            ['name' => '积分变动类型', 'value' => $this->getModeAttribute($this->point_data['point_mode'])],
             ['name' => '变动后积分数值', 'value' => $this->point_data['after_point']]
         ];
 
