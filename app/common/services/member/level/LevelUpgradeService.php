@@ -8,6 +8,7 @@
 namespace app\common\services\member\level;
 
 
+use app\common\events\order\AfterOrderPaidEvent;
 use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\facades\Setting;
 use app\common\models\Member;
@@ -47,6 +48,25 @@ class LevelUpgradeService
         return '';
     }
 
+    public function checkUpgradeAfterPaid(AfterOrderPaidEvent $event)
+    {
+        $this->orderModel = $event->getOrderModel();
+        $this->memberModel = MemberShopInfo::ofMemberId($this->orderModel->uid)->withLevel()->first();
+
+        if (is_null($this->memberModel)) {
+            return;
+        }
+
+        $result = $this->check(1);
+
+        $this->setValidity(); // 设置会员等级期限
+
+        if ($result) {
+            return $this->upgrade($result);
+        }
+        return '';
+    }
+
     public function setValidity()
     {
         $set = Setting::get('shop.member');
@@ -70,7 +90,7 @@ class LevelUpgradeService
     }
 
 
-    private function check()
+    private function check($status)
     {
         $set = Setting::get('shop.member');
 
@@ -83,12 +103,19 @@ class LevelUpgradeService
                 $this->new_level = $this->checkOrderCount();
                 break;
             case 2:
-                $this->new_level = $this->checkGoodsId();
+                if ($status == 1) {
+                    if ($set['level_after']) {
+                        $this->new_level = $this->checkGoodsId();
+                    }
+                } else {
+                    if(!$set['level_after']) {
+                        $this->new_level = $this->checkGoodsId();
+                    }
+                }
                 break;
             default:
                 $level = '';
         }
-
 
         //比对当前等级权重，判断是否升级
         if ($this->new_level) {
@@ -109,7 +136,14 @@ class LevelUpgradeService
      */
     private function checkOrderMoney()
     {
-        $orderMoney = Order::where('uid', $this->orderModel->uid)->where('status', Order::COMPLETE)->sum('price');
+        $set = Setting::get('shop.member');
+        if ($set['level_after'] == 1) {
+            //付款后
+            $orderMoney = Order::where('uid', $this->orderModel->uid)->whereBetween('status', [Order::WAIT_SEND,Order::COMPLETE])->sum('price');
+        } else {
+            //完成后
+            $orderMoney = Order::where('uid', $this->orderModel->uid)->where('status', Order::COMPLETE)->sum('price');
+        }
 
         $level = MemberLevel::uniacid()->select('id', 'level', 'level_name')->whereBetween('order_money', [1, $orderMoney])->orderBy('level', 'desc')->first();
 
@@ -122,7 +156,14 @@ class LevelUpgradeService
      */
     private function checkOrderCount()
     {
-        $orderCount = Order::where('uid', $this->orderModel->uid)->count();
+        $set = Setting::get('shop.member');
+        if ($set['level_after'] == 1) {
+            //付款后
+            $orderCount = Order::where('uid', $this->orderModel->uid)->whereBetween('status', [Order::WAIT_SEND,Order::COMPLETE])->count();
+        } else {
+            //完成后
+            $orderCount = Order::where('uid', $this->orderModel->uid)->where('status', Order::COMPLETE)->count();
+        }
 
         $level = MemberLevel::uniacid()->select('id', 'level', 'level_name')->whereBetween('order_count', [1, $orderCount])->orderBy('level', 'desc')->first();
 

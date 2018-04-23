@@ -9,6 +9,7 @@ namespace app\common\listeners\member\level;
 
 
 use Illuminate\Events\Dispatcher;
+use app\common\facades\Setting;
 
 class LevelListener
 {
@@ -17,10 +18,21 @@ class LevelListener
      */
     public function subscribe(Dispatcher $event)
     {
-        $event->listen(
-            \app\common\events\order\AfterOrderReceivedEvent::class,
-            \app\common\services\member\level\LevelUpgradeService::class.'@checkUpgrade'
-        );
+        $set = Setting::get('shop.member');
+        if ($set['level_after'] == 1) {
+            //付款后
+            $event->listen(
+                \app\common\events\order\AfterOrderPaidEvent::class,
+                \app\common\services\member\level\LevelUpgradeService::class.'@checkUpgradeAfterPaid'
+            );
+        } else {
+            //完成后
+            $event->listen(
+                \app\common\events\order\AfterOrderReceivedEvent::class,
+                \app\common\services\member\level\LevelUpgradeService::class.'@checkUpgrade'
+            );
+        }
+
 
     }
 }

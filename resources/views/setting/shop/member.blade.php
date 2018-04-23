@@ -79,18 +79,35 @@
                             <div class="col-sm-9 col-xs-12">
                                 <label class="radio radio-inline">
                                     <input type="radio" name="member[level_type]" value="0"
-                                           @if (empty($set['level_type'])) checked @endif/> 已完成的订单金额
+                                           @if (empty($set['level_type'])) checked @endif/> 订单金额
                                 </label>
                                 <label class="radio radio-inline">
                                     <input type="radio" name="member[level_type]" value="1"
-                                           @if ($set['level_type'] == 1) checked @endif/> 已完成的订单数量
+                                           @if ($set['level_type'] == 1) checked @endif/> 订单数量
                                 </label>
                                 <label class="radio radio-inline">
                                     <input type="radio" name="member[level_type]" value="2"
                                            @if ($set['level_type'] == 2) checked @endif/> 购买指定商品
                                 </label>
+                            </div>
+                        </div>
 
-                                <span class="help-block">默认为完成订单金额</span>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                            <div class="col-sm-9 col-xs-12">
+                                <label class="radio radio-inline">
+                                    <input type="radio" name="member[level_after]" value="1"
+                                           @if ($set['level_after']) checked @endif/>
+                                    付款后
+                                </label>
+                                <label class="radio radio-inline">
+                                    <input type="radio" name="member[level_after]" value="0"
+                                           @if (empty($set['level_after'])) checked @endif/>
+                                    完成后
+                                </label>
+                                <span class="help-block">
+                                    如果选择付款后，只要用户下单付款满足升级依据，即可升级；如果选择完成后，则表示需要订单完成状态才能升级
+                                </span>
                             </div>
                         </div>
 
