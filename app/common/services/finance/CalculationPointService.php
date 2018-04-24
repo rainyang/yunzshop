@@ -20,17 +20,20 @@ class CalculationPointService
         if (isset($order_goods_model->hasOneGoods->hasOneSale) && $order_goods_model->hasOneGoods->hasOneSale->point !== '' && intval($order_goods_model->hasOneGoods->hasOneSale->point) === 0) {
             return $point_data;
         }
+
+
+
         //todo 如果不等于空，按商品设置赠送积分，否则按统一设置赠送积分
         if (isset($order_goods_model->hasOneGoods->hasOneSale) && !empty($order_goods_model->hasOneGoods->hasOneSale->point)) {
             if (strexists($order_goods_model->hasOneGoods->hasOneSale->point, '%')) {
-                $point_data['point'] = floatval(str_replace('%', '', $order_goods_model->hasOneGoods->hasOneSale->point) / 100 * ($order_goods_model->price - $order_goods_model->coupon_price));
+                $point_data['point'] = floatval(str_replace('%', '', $order_goods_model->hasOneGoods->hasOneSale->point) / 100 * $order_goods_model->payment_amount);
             } else {
                 $point_data['point'] = $order_goods_model->hasOneGoods->hasOneSale->point * $order_goods_model->total;
             }
             $point_data['remark'] = '购买商品[' . $order_goods_model->hasOneGoods->title .'(比例:'. $order_goods_model->hasOneGoods->hasOneSale->point .')]赠送[$order_goods->hasOneGoods->hasOneSale->point]积分！';
         } else if (!empty($point_set['give_point'] && $point_set['give_point'])) {
             if (strexists($point_set['give_point'], '%')) {
-                $point_data['point'] = floatval(str_replace('%', '', $point_set['give_point']) / 100 * ($order_goods_model->price - $order_goods_model->coupon_price));
+                $point_data['point'] = floatval(str_replace('%', '', $point_set['give_point']) / 100 * $order_goods_model->payment_amount);
             } else {
                 $point_data['point'] = $point_set['give_point'] * $order_goods_model->total;
             }
