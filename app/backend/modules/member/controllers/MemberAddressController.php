@@ -13,23 +13,31 @@ namespace app\backend\modules\member\controllers;
 use app\backend\modules\member\models\Member;
 use app\backend\modules\member\models\MemberAddress;
 use app\common\components\BaseController;
+use app\frontend\repositories\MemberAddressRepository;
 
 class MemberAddressController extends BaseController
 {
+    private $memberAddressRepository;
+    public function __construct()
+    {
+        parent::__construct();
+        $this->memberAddressRepository = app(MemberAddressRepository::class);
+    }
 
     public function index()
     {
-        //dd($this->getMemberModel());
+        $addressList = $this->memberAddressRepository->getAddressList($this->getMemberId());
 
         return view('member.address.records',[
-            'member' => $this->getMemberModel()
+            'member' => $this->getMemberModel(),
+            'address' => $addressList
         ])->render();
     }
 
     private function getMemberModel()
     {
         return Member::select('uid', 'nickname', 'realname', 'mobile', 'avatar')
-            ->with('address')
+//            ->with('address')
             ->where('uid', $this->getMemberId())
             ->first();
     }
