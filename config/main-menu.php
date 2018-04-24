@@ -716,6 +716,79 @@ return [
                     ],
                 ],
             ],
+
+            'goods_return' => [
+                'name'              => '退货地址设置',
+                'url'               => 'goods.return.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-tags',
+                'sort'              => '6',
+                'item'              => 'coupon',
+                'parents'           => ['Goods',],
+                'child'             => [
+                    'goods_return_see' => [
+                        'name'              => '浏览列表',
+                        'url'               => 'goods.return.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => '4',
+                        'item'              => 'goods_return_see',
+                        'parents'           => ['Goods','goods_return']
+                    ],
+
+                    'goods_return_sort' => [
+                        'name'              => '修改排序',
+                        'url'               => 'goods.return.sort',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => '4',
+                        'item'              => 'goods_return_sort',
+                        'parents'           => ['Goods','goods_return']
+                    ],
+
+                    'goods_return_add_one' => [
+                        'name'              => '添加模板',
+                        'url'               => 'goods.return.add',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'goods_return_add_one',
+                        'parents'           => ['Goods', 'goods_return',],
+                    ],
+
+                    'goods_return_alter' => [
+                        'name'              => '修改模板',
+                        'url'               => 'goods.return.edit',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'goods_return_alter',
+                        'parents'           => ['Goods', 'goods_return',],
+                    ],
+
+                    'goods_return_delete' => [
+                        'name'              => '删除模板',
+                        'url'               => 'goods.return.delete',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'goods_return_delete',
+                        'parents'           => ['Goods', 'goods_return',],
+                    ],
+                ],
+            ],
         ],
     ],
 
