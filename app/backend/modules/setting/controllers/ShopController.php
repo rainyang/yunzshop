@@ -231,6 +231,8 @@ class ShopController extends BaseController
     {
         $pay = Setting::get('shop.pay');
 
+        self::shareDefault();
+
         $account      = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
 
         if (empty($pay['weixin_appid']) && empty($pay['weixin_secret']) && !empty($account)) {
@@ -379,5 +381,22 @@ class ShopController extends BaseController
         }
 
         return null;
+    }
+
+    /**
+     * 设置分享默认值
+     */
+    public function shareDefault() {
+        $share = \Setting::get('shop.share');
+        if (!$share) {
+            $requestModel = [
+                'follow_url' => '',
+                'title' => '',
+                'icon' => '',
+                'desc' => '',
+                'url' => ''
+            ];
+            \Setting::set('shop.share', $requestModel);
+        }
     }
 }
