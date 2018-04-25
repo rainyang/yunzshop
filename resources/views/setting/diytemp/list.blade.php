@@ -42,11 +42,9 @@
             <tr>
                 <td>{{$row['title']}}</td>
                 <td>
-                    <a class="btn btn-info btn-sm disbut"
-                       href="{!! yzWebUrl('setting.diy-temp.edit', array('id' => $row['id'])) !!}">修改</a>
+                    <a href="{!! yzWebUrl('setting.diy-temp.edit', array('id' => $row['id'])) !!}">修改</a>
 
-                    <a class="btn btn-danger btn-sm disbut"
-                       href="{!! yzWebUrl('setting.diy-temp.del', array('id' => $row['id'])) !!}"
+                    <a href="{!! yzWebUrl('setting.diy-temp.del', array('id' => $row['id'])) !!}"
                        onclick="return confirm('此操作不可逆,确认要删除?');return false;">删除</a>
                 </td>
             </tr>
