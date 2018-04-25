@@ -1107,7 +1107,7 @@ class MemberController extends ApiController
 
         $article_setting = Setting::get('plugin.article');
 
-        if (app('plugins')->isEnabled('article') && 1 == $article_setting['enabled']) {
+        if ($article_setting) {
             $data[] = [
                 'name' => 'article',
                 'title' => $article_setting['center'] ? $article_setting['center'] : '文章中心'

@@ -34,6 +34,4 @@ class IndexController extends BaseController
             echo $e->getMessage();
         }
     }
-
-
 }
