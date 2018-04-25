@@ -292,15 +292,17 @@ class HomePageController extends ApiController
     {
         $set = Setting::get('shop.category');
         $set['cat_adv_img'] = replace_yunshop(yz_tomedia($set['cat_adv_img']));
-        $category = (new IndexController())->getRecommentCategoryList();
-        foreach ($category  as &$item){
-            $item['thumb'] = replace_yunshop(yz_tomedia($item['thumb']));
-            $item['adv_img'] = replace_yunshop(yz_tomedia($item['adv_img']));
-        }
+//        $category = (new IndexController())->getRecommentCategoryList();
+//        foreach ($category  as &$item){
+//            $item['thumb'] = replace_yunshop(yz_tomedia($item['thumb']));
+//            $item['adv_img'] = replace_yunshop(yz_tomedia($item['adv_img']));
+//        }
         return  Array(
             'ads' => (new IndexController())->getAds(),
             'advs' => (new IndexController())->getAdv(),
+            'brand' => (new IndexController())->getRecommentBrandList(),
             'category' => (new IndexController())->getRecommentCategoryList(),
+            'time_goods' => (new IndexController())->getTimeLimitGoods(),
             'set' => $set,
             'goods' => (new IndexController())->getRecommentGoods(),
         );

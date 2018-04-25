@@ -7,6 +7,7 @@ use app\common\facades\Setting;
 use app\common\models\Category;
 use app\common\models\Goods;
 use app\common\models\Slide;
+use app\frontend\modules\goods\models\Brand;
 use Illuminate\Support\Facades\DB;
 use app\common\services\goods\VideoDemandCourseGoods;
 use app\common\models\Adv;
@@ -38,7 +39,47 @@ class IndexController extends ApiController
         ];
         return $this->successJson('成功', $data);
     }
+    //获取推荐品牌
+    public function getRecommentBrandList()
+    {
+        $request = Brand::uniacid()->select('id', 'name', 'logo')->where('is_recommend', 1)->get();
 
+        foreach ($request as &$item) {
+            if ($item['logo']) {
+                $item['logo'] = replace_yunshop(yz_tomedia($item['logo']));
+            }
+        }
+        return $request;
+    }
+
+    //获取限时购商品
+    public function getTimeLimitGoods()
+    {
+        $time = time();
+        $field = ['id', 'thumb', 'title', 'price', 'market_price'];
+        $timeGoods = Goods::uniacid()->select(DB::raw(implode(',', $field)))
+            ->whereHas('hasOneGoodsLimitBuy', function ($query) use ($time) {
+                $query->where('status', 1)->where('start_time', '<=', $time);
+            })
+            ->with('hasOneGoodsLimitBuy')
+            ->where("is_recommand", 1)
+            ->where("status", 1)
+            ->where(function ($query) {
+                $query->where('plugin_id', 0)
+                ->orWhere('plugin_id', 40);
+            })
+            ->orderBy("display_order", 'desc')
+            ->orderBy("id", 'desc')
+            ->get();
+        if (!empty($timeGoods->toArray())) {
+            foreach ($timeGoods as $key => &$value) {
+                $value->thumb = yz_tomedia($value->thumb);
+                $value->hasOneGoodsLimitBuy->start_time = date('Y/m/d H:i:s',  $value->hasOneGoodsLimitBuy->start_time);
+                $value->hasOneGoodsLimitBuy->end_time = date('Y/m/d H:i:s',  $value->hasOneGoodsLimitBuy->end_time);
+            }
+        }
+        return $timeGoods;
+    }
     public function getRecommentGoods()
     {
         //$goods = new Goods();
