@@ -1141,7 +1141,7 @@ class MemberController extends ApiController
 
             $courier_setting = Setting::get('courier.courier');
 
-            if ($courier_setting && 1 == $courier_setting['status']) {
+            if ($courier_setting && 1 == $courier_setting['radio']) {
                 $data[] = [
                     'name' => 'courier',
                     'title' => '快递单'
