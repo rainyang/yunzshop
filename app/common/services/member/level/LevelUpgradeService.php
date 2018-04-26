@@ -50,7 +50,21 @@ class LevelUpgradeService
 
     public function checkUpgradeAfterPaid(AfterOrderPaidEvent $event)
     {
+        $set = Setting::get('shop.member');
+
         $this->orderModel = $event->getOrderModel();
+
+        if (!is_null($set)) {
+            $uniacid = $this->orderModel->uniacid;
+            \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $uniacid;
+
+            $set = Setting::get('shop.member');
+        }
+
+        if ($set['level_after'] != 1) {
+            return;
+        }
+
         $this->memberModel = MemberShopInfo::ofMemberId($this->orderModel->uid)->withLevel()->first();
 
         if (is_null($this->memberModel)) {
