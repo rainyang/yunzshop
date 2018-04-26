@@ -733,6 +733,9 @@
 			}, opts);
 		});
 	};
+	util.getUrl = function(route) {
+		return '/web/index.php?c=site&a=entry&m=yun_shop&do=7296&route='+route;
+	};
 	if (typeof define === "function" && define.amd) {
 		define(['bootstrap'], function(){
 			return util;

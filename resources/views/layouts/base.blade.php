@@ -127,7 +127,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
     <script src="//unpkg.com/iview/dist/iview.js"></script>
-    <script type="text/javascript" src="{{static_url('resource/js/app/util.js')}}"></script>
+    <script type="text/javascript" src="{{static_url('resource/js/app/util.js?time=3232')}}"></script>
     <script type="text/javascript" src="{{static_url('resource/js/require.js')}}"></script>
 
     <script type="text/javascript" src="{{static_url('js/app/config.js')}}"></script>
