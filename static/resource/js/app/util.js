@@ -715,7 +715,6 @@
 			}, opts);
 		});
 	};
-
 	util.material = function(callback, options) {
 		var opts = {
 			type :'news',
