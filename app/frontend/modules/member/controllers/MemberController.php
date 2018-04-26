@@ -1137,6 +1137,18 @@ class MemberController extends ApiController
             ];
         }
 
+        if (app('plugins')->isEnabled('courier')) {
+
+            $courier_setting = Setting::get('courier.courier');
+
+            if ($courier_setting && 1 == $courier_setting['status']) {
+                $data[] = [
+                    'name' => 'courier',
+                    'title' => '快递单'
+                ];
+            }
+        }
+
         return $this->successJson('ok', $data);
     }
 }
