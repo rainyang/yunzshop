@@ -716,6 +716,79 @@ return [
                     ],
                 ],
             ],
+
+            'goods_return' => [
+                'name'              => '退货地址设置',
+                'url'               => 'goods.return-address.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-truck',
+                'sort'              => '6',
+                'item'              => 'coupon',
+                'parents'           => ['Goods',],
+                'child'             => [
+                    'goods_return_see' => [
+                        'name'              => '浏览列表',
+                        'url'               => 'goods.return-address.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => '4',
+                        'item'              => 'goods_return_see',
+                        'parents'           => ['Goods','goods_return']
+                    ],
+
+                    'goods_return_sort' => [
+                        'name'              => '修改排序',
+                        'url'               => 'goods.return-address.sort',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => '4',
+                        'item'              => 'goods_return_sort',
+                        'parents'           => ['Goods','goods_return']
+                    ],
+
+                    'goods_return_add_one' => [
+                        'name'              => '添加模板',
+                        'url'               => 'goods.return-address.add',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'goods_return_add_one',
+                        'parents'           => ['Goods', 'goods_return',],
+                    ],
+
+                    'goods_return_alter' => [
+                        'name'              => '修改模板',
+                        'url'               => 'goods.return-address.edit',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'goods_return_alter',
+                        'parents'           => ['Goods', 'goods_return',],
+                    ],
+
+                    'goods_return_delete' => [
+                        'name'              => '删除模板',
+                        'url'               => 'goods.return-address.delete',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'goods_return_delete',
+                        'parents'           => ['Goods', 'goods_return',],
+                    ],
+                ],
+            ],
         ],
     ],
 
@@ -2199,59 +2272,59 @@ return [
 
             ],
 
-           /* 'goods_sales_count_charts'     => [
-                'name'          => '商品数据统计',
-                'url'           => 'charts.goods.sales-count.index',
-                'url_params'    => '',
-                'permit'        => 1,
-                'menu'          => 1,
-                'icon'          => 'fa-bar-chart-o',
-                'sort'          => 0,
-                'item'          => 'goods_charts',
-                'parents'       => ['charts',],
-            ],
+            /* 'goods_sales_count_charts'     => [
+                 'name'          => '商品数据统计',
+                 'url'           => 'charts.goods.sales-count.index',
+                 'url_params'    => '',
+                 'permit'        => 1,
+                 'menu'          => 1,
+                 'icon'          => 'fa-bar-chart-o',
+                 'sort'          => 0,
+                 'item'          => 'goods_charts',
+                 'parents'       => ['charts',],
+             ],
 
-            'order_total_charts'=> [
-                'name'          => '订单数据统计',
-                'url'           => 'charts.order.today-trends.index',
-                'url_params'    => '',
-                'permit'        => 1,
-                'menu'          => 1,
-                'icon'          => 'fa-bar-chart-o',
-                'sort'          => 0,
-                'item'          => 'order_total_charts',
-                'parents'       => ['charts',],
-                'child'         => [
+             'order_total_charts'=> [
+                 'name'          => '订单数据统计',
+                 'url'           => 'charts.order.today-trends.index',
+                 'url_params'    => '',
+                 'permit'        => 1,
+                 'menu'          => 1,
+                 'icon'          => 'fa-bar-chart-o',
+                 'sort'          => 0,
+                 'item'          => 'order_total_charts',
+                 'parents'       => ['charts',],
+                 'child'         => [
 
-                    'today_order_total_charts'     => [
-                        'name'          => '今日订单统计',
-                        'url'           => 'charts.order.today-trends.index',
-                        'url_params'    => '',
-                        'permit'        => 1,
-                        'menu'          => 1,
-                        'icon'          => '',
-                        'sort'          => 0,
-                        'item'          => 'today_order_total_charts',
-                        'parents'       => ['charts','order_total_charts'],
+                     'today_order_total_charts'     => [
+                         'name'          => '今日订单统计',
+                         'url'           => 'charts.order.today-trends.index',
+                         'url_params'    => '',
+                         'permit'        => 1,
+                         'menu'          => 1,
+                         'icon'          => '',
+                         'sort'          => 0,
+                         'item'          => 'today_order_total_charts',
+                         'parents'       => ['charts','order_total_charts'],
 
-                    ],
+                     ],
 
-                    'all_order_total_charts'     => [
-                        'name'          => '全部订单统计',
-                        'url'           => 'charts.order.order-trends.index',
-                        'url_params'    => '',
-                        'permit'        => 1,
-                        'menu'          => 1,
-                        'icon'          => '',
-                        'sort'          => 0,
-                        'item'          => 'all_order_total_charts',
-                        'parents'       => ['charts','order_total_charts'],
+                     'all_order_total_charts'     => [
+                         'name'          => '全部订单统计',
+                         'url'           => 'charts.order.order-trends.index',
+                         'url_params'    => '',
+                         'permit'        => 1,
+                         'menu'          => 1,
+                         'icon'          => '',
+                         'sort'          => 0,
+                         'item'          => 'all_order_total_charts',
+                         'parents'       => ['charts','order_total_charts'],
 
-                    ],
+                     ],
 
 
-                ]
-            ],*/
+                 ]
+             ],*/
 
             'order_ranking_charts'     => [
                 'name'          => '会员订单排行',

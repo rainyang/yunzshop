@@ -1,0 +1,32 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: yunzhong
+ * Date: 2018/4/25
+ * Time: 10:29
+ */
+
+namespace app\backend\modules\goods\models;
+
+
+class ReturnAddress extends \app\common\models\goods\ReturnAddress
+{
+    static protected $needLog = true;
+
+    public static function getOneByDefault()
+    {
+        return self::where('is_default', 1)
+            ->first();
+    }
+
+    /**
+     * 获取配送模板单条数据
+     * @param int $goodsId
+     * @return array
+     */
+    public static function getOne($id)
+    {
+        return self::where('id', $id)
+            ->first();
+    }
+}
