@@ -58,9 +58,15 @@ class GoodsController extends ApiController
         ->with('hasOneSale')
         ->with('hasOneGoodsCoupon')
         ->with(['hasOneBrand' => function ($query) {
-            return $query->select('id', 'name');
+            return $query->select('id','logo', 'name', 'desc');
         }])
         ->find($id);
+
+        //商品品牌处理
+        if ($goodsModel->hasOneBrand) {
+            $goodsModel->hasOneBrand->desc = html_entity_decode($goodsModel->hasOneBrand->desc);
+            $goodsModel->hasOneBrand->logo = yz_tomedia($goodsModel->hasOneBrand->logo);
+        }
 
         if (!$goodsModel) {
             return $this->errorJson('商品不存在.');
