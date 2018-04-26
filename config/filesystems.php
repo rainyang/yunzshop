@@ -80,6 +80,13 @@ return [
             'visibility' => 'public',
         ],
 
+        'banner' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/banner'),
+            'url' => env('APP_URL').'/storage/public/banner',
+            'visibility' => 'public',
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_KEY'),
