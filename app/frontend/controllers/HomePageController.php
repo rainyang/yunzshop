@@ -299,6 +299,7 @@ class HomePageController extends ApiController
         }
         return  Array(
             'ads' => (new IndexController())->getAds(),
+            'advs' => (new IndexController())->getAdv(),
             'category' => (new IndexController())->getRecommentCategoryList(),
             'set' => $set,
             'goods' => (new IndexController())->getRecommentGoods(),

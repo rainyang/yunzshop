@@ -2481,6 +2481,17 @@ return [
                             ],
                         ]
                     ],
+                    'setting_shop_adv' => [
+                        'name'              => '广告位',
+                        'url'               => 'setting.shop-advs.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => 'fa-bell-o',
+                        'sort'              => '7',
+                        'item'              => 'setting_shop_adv',
+                        'parents'           => ['system', 'Setting',],
+                    ],
 
                     'setting_shop_form' => [
                         'name'              => '会员资料表单',

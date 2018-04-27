@@ -9,6 +9,7 @@ use app\common\models\Goods;
 use app\common\models\Slide;
 use Illuminate\Support\Facades\DB;
 use app\common\services\goods\VideoDemandCourseGoods;
+use app\common\models\Adv;
 
 /**
  * Created by PhpStorm.
@@ -91,6 +92,23 @@ class IndexController extends ApiController
             }
         }
         return $slide;
+    }
+
+    public function getAdv()
+    {
+        $adv = Adv::first();
+        $advs = [];
+        if ($adv) {
+            $i = 0;
+            foreach ($adv->advs as $key => $value) {
+                if ($value['img'] || $value['link']) {
+                    $advs[$i]['img'] = yz_tomedia($value['img']);
+                    $advs[$i]['link'] = $value['link'];
+                    $i +=1;
+                }
+            }    
+        }
+        return $advs;
     }
 
 }
