@@ -80,6 +80,20 @@ return [
             'visibility' => 'public',
         ],
 
+        //淘宝CSV实例
+        'taobaoCSV' => [
+            'driver' => 'local',
+            'root'=> base_path('plugins/goods-assistant/storage/examples'),
+            'url' => env('APP_URL').'plugins/goods-assistant/storage/examples',
+        ],
+
+        //淘宝CSV上传
+        'taobaoCSVupload' => [
+            'driver' => 'local',
+            'root'=> base_path('plugins/goods-assistant/storage/upload'),
+            'url' => env('APP_URL').'plugins/goods-assistant/storage/upload',
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_KEY'),
@@ -87,6 +101,7 @@ return [
             'region' => env('AWS_REGION'),
             'bucket' => env('AWS_BUCKET'),
         ],
+
 
     ],
 
