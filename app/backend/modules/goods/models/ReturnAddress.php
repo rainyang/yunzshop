@@ -29,4 +29,11 @@ class ReturnAddress extends \app\common\models\goods\ReturnAddress
         return self::where('id', $id)
             ->first();
     }
+
+    public static function getOneByPluginsId($id)
+    {
+        return self::where('plugins_id', $id)
+            ->where('is_default', 1)
+            ->first();
+    }
 }
