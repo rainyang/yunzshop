@@ -21,6 +21,7 @@ use Setting;
 
 class ReturnAddressController extends BaseController
 {
+    const PLUGINS_ID = 0;
     /**
      * 退货地址列表
      * @return array $item
@@ -29,7 +30,7 @@ class ReturnAddressController extends BaseController
     {
         $pageSize = 10;
         $plugins_id = 0;//商城
-        $list = ReturnAddress::uniacid()->where('plugins_id', $plugins_id)->orderBy('id', 'desc')->orderBy('id', 'desc')->paginate($pageSize)->toArray();
+        $list = ReturnAddress::uniacid()->where('plugins_id', self::PLUGINS_ID)->orderBy('id', 'desc')->orderBy('id', 'desc')->paginate($pageSize)->toArray();
 //        dd($list);
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
         return view('goods.return.list', [
@@ -79,7 +80,7 @@ class ReturnAddressController extends BaseController
             } else {
                 //取消其他默认模板
                 if($addressModel->is_default){
-                    $defaultModel = ReturnAddress::getOneByDefault();
+                    $defaultModel = ReturnAddress::getOneByPluginsId(self::PLUGINS_ID);
                     if ($defaultModel) {
                         $defaultModel->is_default = 0;
                         $defaultModel->save();
@@ -144,7 +145,7 @@ class ReturnAddressController extends BaseController
             } else {
                 //取消其他默认模板
                 if($addressModel->is_default){
-                    $defaultModel = ReturnAddress::getOneByDefault();
+                    $defaultModel = ReturnAddress::getOneByPluginsId(self::PLUGINS_ID);
 
                     if ($defaultModel && ($defaultModel->id != \YunShop::request()->id) ) {
                         $defaultModel->is_default = 0;
