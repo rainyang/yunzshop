@@ -28,7 +28,8 @@ class ReturnAddressController extends BaseController
     public function index()
     {
         $pageSize = 10;
-        $list = ReturnAddress::uniacid()->where('plugins_id', 0)->orderBy('id', 'desc')->orderBy('id', 'desc')->paginate($pageSize)->toArray();
+        $plugins_id = 0;//商城
+        $list = ReturnAddress::uniacid()->where('plugins_id', $plugins_id)->orderBy('id', 'desc')->orderBy('id', 'desc')->paginate($pageSize)->toArray();
 //        dd($list);
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
         return view('goods.return.list', [
@@ -69,7 +70,7 @@ class ReturnAddressController extends BaseController
             $addressModel->city_name = $city;
             $addressModel->district_name = $district;
             $addressModel->street_name = $street;
-            $addressModel->plugins_id = 0;
+            $addressModel->plugins_id = 0;//商城
             $addressModel->uniacid = \YunShop::app()->uniacid;
             //字段检测
             $validator = $addressModel->validator($addressModel->getAttributes());
