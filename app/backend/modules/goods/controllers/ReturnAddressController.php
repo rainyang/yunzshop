@@ -71,7 +71,7 @@ class ReturnAddressController extends BaseController
             $addressModel->city_name = $city;
             $addressModel->district_name = $district;
             $addressModel->street_name = $street;
-            $addressModel->plugins_id = 0;//商城
+            $addressModel->plugins_id = self::PLUGINS_ID;//商城
             $addressModel->uniacid = \YunShop::app()->uniacid;
             //字段检测
             $validator = $addressModel->validator($addressModel->getAttributes());
