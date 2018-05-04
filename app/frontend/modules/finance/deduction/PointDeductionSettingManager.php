@@ -9,7 +9,6 @@
 namespace app\frontend\modules\finance\deduction;
 
 use app\frontend\models\Goods;
-use app\frontend\modules\deduction\DeductionSettingCollection;
 use app\frontend\modules\deduction\DeductionSettingManagerInterface;
 use app\frontend\modules\finance\deduction\deductionSettings\PointGoodsDeductionSetting;
 use app\frontend\modules\finance\deduction\deductionSettings\PointShopDeductionSetting;
@@ -35,7 +34,7 @@ class PointDeductionSettingManager extends Container implements DeductionSetting
 
     /**
      * @param Goods $goods
-     * @return DeductionSettingCollection
+     * @return PointDeductionSettingCollection
      */
     public function getDeductionSettingCollection(Goods $goods)
     {
@@ -48,6 +47,6 @@ class PointDeductionSettingManager extends Container implements DeductionSetting
             return $deductionSetting->getWeight();
         });
 
-        return new DeductionSettingCollection($deductionSettingCollection);
+        return new PointDeductionSettingCollection($deductionSettingCollection);
     }
 }

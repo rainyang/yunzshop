@@ -11,7 +11,7 @@ namespace app\frontend\modules\deduction\models;
 
 use app\common\models\BaseModel;
 use app\common\models\VirtualCoin;
-use app\frontend\modules\deduction\DeductionSettingInterface;
+use app\frontend\modules\deduction\DeductionSettingCollection;
 
 /**
  * Class Deduction
@@ -22,7 +22,7 @@ use app\frontend\modules\deduction\DeductionSettingInterface;
 class Deduction extends BaseModel
 {
     protected $table = 'yz_deduction';
-    private $setting;
+    private $settingCollection;
     /**
      * @var VirtualCoin
      */
@@ -62,24 +62,27 @@ class Deduction extends BaseModel
     }
 
     /**
-     * @return bool | DeductionSettingInterface
+     * @return bool | DeductionSettingCollection
      */
-    public function getSetting()
+    public function getSettingCollection()
     {
-        if (isset($this->setting)) {
-            return $this->setting;
+        if (isset($this->settingCollection)) {
+            return $this->settingCollection;
         }
-        if (app('DeductionManager')->make('DeductionSettingManager')->bound($this->getCode())) {
+        if (!app('DeductionManager')->make('DeductionSettingManager')->bound($this->getCode())) {
             return false;
         }
-        return $this->setting = app('DeductionManager')->make('DeductionSettingManager')->make($this->getCode());
+//        dd(app('DeductionManager')->make('DeductionSettingManager')->make($this->getCode()));
+//        exit;
+
+        return $this->settingCollection = app('DeductionManager')->make('DeductionSettingManager')->make($this->getCode())->getDeductionSettingCollection();
     }
 
     public function isEnableDeductDispatchPrice()
     {
-        if (!$this->getSetting()) {
+        if (!$this->getSettingCollection()) {
             return false;
         }
-        return $this->getSetting()->isEnableDeductDispatchPrice();
+        return $this->getSettingCollection()->isEnableDeductDispatchPrice();
     }
 }
