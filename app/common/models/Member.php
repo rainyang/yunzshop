@@ -673,6 +673,12 @@ class Member extends BackendModel
         return ($pid && ($pid != 'null' || $pid != 'undefined')) ? (int)$pid : 0;
     }
 
+    public static function getMemberInfo($uid)
+    {
+        $model = self::uniacid()->find($uid);
+        return $model;
+    }
+
     public function getEnablePlugins()
     {
         $filter = [
