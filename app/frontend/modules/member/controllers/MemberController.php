@@ -1144,7 +1144,7 @@ class MemberController extends ApiController
             if ($courier_setting && 1 == $courier_setting['radio']) {
                 $data[] = [
                     'name' => 'courier',
-                    'title' => '快递单'
+                    'title' => $courier_setting['name'] ? $courier_setting['name'] : '快递单'
                 ];
             }
         }
