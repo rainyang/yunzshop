@@ -227,16 +227,16 @@ return [
         ]
     ],
     'courier_pass' => [
-        'title' => '审核通过',
-        'subtitle' => '审核通过通知',
+        'title' => '快递单审核通过',
+        'subtitle' => '快递单审核通过通知',
         'value' => 'courier_pass',
         'param' => [
             '会员昵称', '时间', '审核状态'
         ]
     ],
     'courier_back' => [
-        'title' => '审核驳回',
-        'subtitle' => '审核驳回通知',
+        'title' => '快递单审核驳回',
+        'subtitle' => '快递单审核驳回通知',
         'value' => 'courier_back',
         'param' => [
             '会员昵称', '时间', '审核状态'

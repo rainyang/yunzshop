@@ -784,7 +784,7 @@ class Member extends BackendModel
             if ($courier_setting && 1 == $courier_setting['status']) {
                 $data[] = [
                     'name' => 'courier',
-                    'title' => '快递单'
+                    'title' => $courier_setting['name'] ? $courier_setting['name'] : '快递单'
                 ];
             }
         }
