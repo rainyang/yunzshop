@@ -85,6 +85,12 @@ return [
             'root' => storage_path('app/public/banner'),
             'url' => env('APP_URL').'/storage/public/banner',
             'visibility' => 'public',
+                
+        //淘宝CSV上传
+        'taobaoCSVupload' => [
+            'driver' => 'local',
+            'root'=> base_path('plugins/goods-assistant/storage/upload'),
+            'url' => env('APP_URL').'plugins/goods-assistant/storage/upload',
         ],
 
         's3' => [
@@ -94,6 +100,7 @@ return [
             'region' => env('AWS_REGION'),
             'bucket' => env('AWS_BUCKET'),
         ],
+
 
     ],
 
