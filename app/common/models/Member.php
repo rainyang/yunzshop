@@ -675,7 +675,6 @@ class Member extends BackendModel
 
     public static function getMemberInfo($uid)
     {
-        $model = self::uniacid()->find($uid);
-        return $model;
+        return self::uniacid()->find($uid);
     }
 }
