@@ -225,8 +225,24 @@ return [
         'param' => [
             '优惠券名称', '优惠券使用范围', '优惠券使用条件','优惠方式', '过期时间'
         ]
+    ],
+    'courier_pass' => [
+        'title' => '审核通过',
+        'subtitle' => '审核通过通知',
+        'value' => 'courier_pass',
+        'param' => [
+            '会员昵称', '时间', '审核状态'
+        ]
+    ],
+    'courier_back' => [
+        'title' => '审核驳回',
+        'subtitle' => '审核驳回通知',
+        'value' => 'courier_back',
+        'param' => [
+            '会员昵称', '时间', '审核状态'
+        ]
+    ],
 
-    ]
 
 
     /*$data = [
