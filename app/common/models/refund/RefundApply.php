@@ -171,6 +171,9 @@ class RefundApply extends BaseModel
         return $this->getStatusNameMapping()[$this->status];
     }
 
+    public function getIsPlugin($order_id) {
+        return \app\common\models\Order::where('id',$order_id)->select('is_plugin','plugin_id')->first();
+    }
 
     public function getIsRefundedAttribute()
     {
