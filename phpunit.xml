@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit backupGlobals="false"
          backupStaticAttributes="false"
-         bootstrap="tests/bootstrap.php"
+         bootstrap="bootstrap/app.php"
          colors="true"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
@@ -22,14 +22,5 @@
     <php>
         <env name="APP_ENV" value="testing"/>
         <env name="CACHE_DRIVER" value="array"/>
-        <server name="REMOTE_ADDR" value="127.0.0.1"/>
-        <cookie name="622d___uniacid" value="10"/>
-        <cookie name="622d___uid" value="1"/>
-        <cookie name="622d___switch" value="PZHWi"/>
-        <cookie name="PHPSESSID" value="24e12901a12f746613b70e7b25e884d7"/>
-        <cookie name="622d___session" value="edd7hYtWTSoiJYz56LcBZeoHXTMInQTNqJb0Jy0xBsy0R6wesUTY0qOQFXdY5EMlnm0tTIlfSH4PaU2Bbu2Qrn8IUi2Rc7UDs6c40mB4lemIlms+CbMFtEfROh52CX5pxsk3lLgh2fuyIIsIR32AJ9YxbV2FGyUv6ClsgY2wPDK1ySM"/>
-        <cookie name="622d_module_status:1" value="{'upgrade':{'upgrade':0},'ban':0}"/>
-        <cookie name="622d___lastvisit_1" value="10,http://dev-yz.com/web/index.php?"/>
-        <cookie name="622d___notice" value="1524054485"/>
     </php>
 </phpunit>
