@@ -63,7 +63,7 @@
                                 <div class="form-group col-xs-12 col-sm-8 col-lg-3">
                                     <!--<label class="col-xs-12 col-sm-3 col-md-2 control-label">品牌</label>-->
                                     <div class="col-sm-8 col-xs-12">
-                                        <select name="search[brand_id]" id="brand">
+                                        <select class="form-control tpl-category-child" name="search[brand_id]" id="brand">
                                             <option value="">请选择品牌</option>
                                             @if(!empty($brands))
                                                 @foreach($brands as $brand)
@@ -433,7 +433,7 @@
         }
         @show
         require(['select2'], function () {
-            $('#brand').select2();
+          //  $('#brand').select2();
         })
     </script>
 
