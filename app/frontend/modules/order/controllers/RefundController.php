@@ -20,9 +20,9 @@ class RefundController extends ApiController
 {
     public function returnAddress() {
         $plugins_id = \YunShop::request()->plugins_id;
-        $address = ReturnAddress::getOneByPluginsId($plugins_id)->toarray();
+        $address = ReturnAddress::getOneByPluginsId($plugins_id)->first();
         if ($address) {
-            return $this->successJson('获取退货地址成功!', $address);
+            return $this->successJson('获取退货地址成功!', $address->toarray());
         }
         return $this->errorJson('获取退货地址失败',$address);
     }
