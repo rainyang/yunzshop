@@ -156,17 +156,17 @@ class GoodsPosterController extends ApiController
         } else {
             $text = $this->goodsModel->title;
         }
+        $target = $this->mergeQrImage($target, $goodsQr);
         
         $target = $this->mergeText($target, $this->goodsText, $text);
         $target = $this->mergeText($target, $this->shopText, $this->shopSet['name']);
 
         $target = $this->mergePriceText($target);
        
-        $target = $this->mergeQrImage($target, $goodsQr);
 
-        // header ( "Content-type: image/png" );
-        // imagePng ( $target );
-        // exit();
+        header ( "Content-type: image/png" );
+        imagePng ( $target );
+        exit();
 
         imagepng($target, $this->getGoodsPosterPath());
         imagedestroy($target);
