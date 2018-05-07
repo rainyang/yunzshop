@@ -164,9 +164,9 @@ class GoodsPosterController extends ApiController
         $target = $this->mergePriceText($target);
        
 
-        header ( "Content-type: image/png" );
-        imagePng ( $target );
-        exit();
+        // header ( "Content-type: image/png" );
+        // imagePng ( $target );
+        // exit();
 
         imagepng($target, $this->getGoodsPosterPath());
         imagedestroy($target);
