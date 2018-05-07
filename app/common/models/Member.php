@@ -500,7 +500,7 @@ class Member extends BackendModel
         //快递单插件开启
         if ($plugin_class->isEnabled('courier')) {
             //dd(123);
-            $status = \Setting::get('courier.courier.status');
+            $status = \Setting::get('courier.courier.radio');
 
             $data['courier'] = [
                 'button_name' => '快递',
@@ -673,6 +673,7 @@ class Member extends BackendModel
         return ($pid && ($pid != 'null' || $pid != 'undefined')) ? (int)$pid : 0;
     }
 
+    //快递单获取会员信息
     public static function getMemberInfo($uid)
     {
         $model = self::uniacid()->find($uid);
