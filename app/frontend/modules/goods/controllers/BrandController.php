@@ -39,13 +39,9 @@ class BrandController extends ApiController
     public function getBrandGoods()
     {
         $id = intval(\YunShop::request()->id);
-        //分站id
-        $as_id = intval(\YunShop::request()->as_id);
-
         if (!$id) {
             return $this->errorJson('请传入正确参数.');
         }
-
         $brand_detail = Brand::uniacid()->select("name", "logo", "id", "desc")->find($id);
 
         if (!$brand_detail) {
@@ -58,7 +54,7 @@ class BrandController extends ApiController
         $brand_detail->desc = html_entity_decode($brand_detail->desc);
 
         $list = Goods::select('id', 'id as goods_id', 'title', 'thumb', 'price', 'market_price')
-            ->AreaStore($as_id)->where("status", 1)
+            ->where("status", 1)
             ->where(function($query) {
                 $query->where("plugin_id", 0)->orWhere('plugin_id', 40);
             })->where('brand_id', $id)->orderBy('display_order', 'desc')
@@ -84,5 +80,24 @@ class BrandController extends ApiController
         $brand_detail['goods'] = $list; 
 
         return $this->successJson('成功', $brand_detail);
+    }
+    public function getBrandDetail()
+    {
+        $id = intval(\YunShop::request()->id);
+        if (!$id) {
+            return $this->errorJson('请传入正确参数.');
+        }
+        $brand_detail = Brand::uniacid()->select("name", "logo", "id", "desc")->find($id);
+
+        if (!$brand_detail) {
+            return $this->errorJson('品牌已被删除或不存在...');
+        }
+
+        if ($brand_detail->logo) {
+            $brand_detail->logo = yz_tomedia($brand_detail->logo);
+        }
+        $brand_detail->desc = html_entity_decode($brand_detail->desc);
+
+        return $brand_detail;
     }
 }
