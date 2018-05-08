@@ -716,6 +716,87 @@ return [
                     ],
                 ],
             ],
+
+            /**
+             * 搜索过滤
+             * create 2018/3/26
+             * Author: blank
+             */
+            'search_filtering' => [
+                'name'              => '搜索过滤',
+                'url'               => 'filtering.filtering.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-sitemap',
+                'sort'              => '6',
+                'item'              => 'search_filtering',
+                'parents'           => ['Goods',],
+                'child'             => [
+                    'filtering_group_index' => [
+                        'name'              => '过滤列表',
+                        'url'               => 'filtering.filtering.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => 'fa-sitemap',
+                        'sort'              => '2',
+                        'item'              => 'filtering_group_index',
+                        'parents'           => ['Goods','search_filtering'],
+                        'child'             => []
+                    ],
+                    'filtering_value_index' => [
+                        'name'              => '过滤值列表',
+                        'url'               => 'filtering.filtering.filter-value',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => '',
+                        'sort'              => '2',
+                        'item'              => 'filtering_value_index',
+                        'parents'           => ['Goods','search_filtering'],
+                        'child'             => []
+                    ],
+                    'filtering_create' => [
+                        'name'              => '新增过滤',
+                        'url'               => 'filtering.filtering.create',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => '2',
+                        'item'              => 'filtering_create',
+                        'parents'           => ['Goods','search_filtering'],
+                        'child'             => []
+                    ],
+                    'filtering_edit' => [
+                        'name'              => '编辑过滤',
+                        'url'               => 'filtering.filtering.edit',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => '2',
+                        'item'              => 'filtering_edit',
+                        'parents'           => ['Goods','search_filtering'],
+                        'child'             => []
+                    ],
+                    'filtering_del' => [
+                        'name'              => '过滤删除',
+                        'url'               => 'filtering.filtering.del',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => '2',
+                        'item'              => 'filtering_del',
+                        'parents'           => ['Goods','search_filtering'],
+                        'child'             => []
+                    ],
+                ],
+
+            ],
+
         ],
     ],
 

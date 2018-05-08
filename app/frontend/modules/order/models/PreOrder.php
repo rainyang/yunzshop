@@ -69,6 +69,10 @@ class PreOrder extends Order
     {
         $this->dispatch_type_id = request()->input('dispatch_type_id', 0);
 
+        //临时处理，无扩展性
+        if (request()->input('mark') !== 'undefined') {
+            $this->mark = request()->input('mark', '');
+        }
         parent::__construct($attributes);
         $this->setRelation('orderSettings',$this->newCollection());
 
@@ -180,10 +184,9 @@ class PreOrder extends Order
             'create_time' => time(),
             'uid' => $this->uid,
             'uniacid' => $this->uniacid,
+            'is_virtual' => $this->getGoodsType(),//是否是虚拟商品订单
         );
-
         $attributes = array_merge($this->getAttributes(), $attributes);
-
         return $attributes;
     }
 
@@ -253,6 +256,21 @@ class PreOrder extends Order
         });
 
         return $result;
+    }
+
+    //统计订单商品是否有虚拟商品
+    protected function getGoodsType()
+    {
+        $result = $this->orderGoods->filter(function ($aOrderGoods) {
+            return $aOrderGoods->goods->type == 1;
+        });
+
+        //虚拟
+        if (empty($result->toArray())) {
+            return 1;
+        }
+        //实体
+        return 0;
     }
 
 

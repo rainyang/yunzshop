@@ -19,6 +19,8 @@ use app\frontend\modules\goods\services\GoodsDiscountService;
 use Yunshop\Love\Common\Models\GoodsLove;
 use app\frontend\modules\coupon\models\Coupon;
 use app\frontend\modules\coupon\controllers\MemberCouponController;
+use app\common\services\goods\LeaseToyGoods;
+
 
 
 /**
@@ -42,7 +44,7 @@ class GoodsController extends ApiController
         $member = MemberShopInfo::uniacid()->ofMemberId(\YunShop::app()->getMemberId())->withLevel()->first();
 
 
-        //$goods = new Goods();
+//        $goods = new Goods();
         $goodsModel = Goods::uniacid()->with(['hasManyParams' => function ($query) {
             return $query->select('goods_id', 'title', 'value');
         }])->with(['hasManySpecs' => function ($query) {
@@ -57,9 +59,13 @@ class GoodsController extends ApiController
         ->with('hasOnePrivilege')
         ->with('hasOneSale')
         ->with('hasOneGoodsCoupon')
+        ->with('hasOneGoodsLimitBuy')
         ->with(['hasOneBrand' => function ($query) {
             return $query->select('id','logo', 'name', 'desc');
         }])
+        ->with('hasOneGoodsLimitbuy', function ($query) {
+            return $query->select('goods_id', 'end_time');
+        })
         ->find($id);
 
         //商品品牌处理
@@ -70,6 +76,14 @@ class GoodsController extends ApiController
 
         if (!$goodsModel) {
             return $this->errorJson('商品不存在.');
+        }
+        $current_time = time();
+
+        if (!is_null($goodsModel->hasOneGoodsLimitbuy)) {
+            if ($goodsModel->hasOneGoodsLimitbuy->end_time < $current_time) {
+                $goodsModel->status = 0;
+                $goodsModel->save();
+            }
         }
 
         if (!$goodsModel->status) {
@@ -141,6 +155,12 @@ class GoodsController extends ApiController
         $videoDemand = new VideoDemandCourseGoods();
         $goodsModel->is_course = $videoDemand->isCourse($id);
 
+        //商城租赁
+        //TODO 租赁插件是否开启 $lease_switch
+        $lease_switch = LeaseToyGoods::whetherEnabled();
+
+        $this->goods_lease_set($goodsModel, $lease_switch);
+
         //return $this->successJson($goodsModel);
         return $this->successJson('成功', $goodsModel);
     }
@@ -175,8 +195,9 @@ class GoodsController extends ApiController
         }
         $list = Goods::Search($requestSearch)->select('*', 'yz_goods.id as goods_id')
             ->where("status", 1)
-            ->where("plugin_id", 0)
-            ->orderBy($order_field, $order_by) 
+            ->where(function($query) {
+                $query->where("plugin_id", 0)->orWhere('plugin_id', 40);
+            })->orderBy($order_field, $order_by)
             ->paginate(20)->toArray();
 
         if ($list['total'] > 0) {
@@ -189,6 +210,14 @@ class GoodsController extends ApiController
                     }
                 });
             })->toArray();
+
+            //租赁商品
+            //TODO 租赁插件是否开启 $lease_switch
+            $lease_switch = LeaseToyGoods::whetherEnabled();
+            foreach ($data as &$item) {
+                $this->goods_lease_set($item, $lease_switch);
+            }
+
             $list['data'] = $data;
         }
 
@@ -518,6 +547,35 @@ class GoodsController extends ApiController
         }
 
         return 0;
+    }
+
+    private function goods_lease_set(&$goodsModel, $lease_switch)
+    {
+        if ($lease_switch) {
+            //TODO 商品租赁设置 $id
+            if (is_array($goodsModel)) {
+                $goodsModel['lease_toy'] = LeaseToyGoods::getDate($goodsModel['id']);
+
+            } else {
+                $goodsModel->lease_toy = LeaseToyGoods::getDate($goodsModel->id);
+            }
+
+        } else {
+            if (is_array($goodsModel)) {
+
+                $goodsModel['lease_toy'] = [
+                    'is_lease' => $lease_switch,
+                    'is_rights' => 0,
+                    'immed_goods_id' => 0,
+                ];
+            } else {
+                $goodsModel->lease_toy = [
+                    'is_lease' => $lease_switch,
+                    'is_rights' => 0,
+                    'immed_goods_id' => 0,
+                ];
+            }
+        }
     }
 
 }
