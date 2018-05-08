@@ -32,12 +32,14 @@ class GoodsPosterController extends ApiController
         'left' => 260,
         'top'  => 65,
         'type' => 0,
+        'size' => 30,
     ];
 
     private $goodsText = [
         'left' => 30,
         'top' => 800,
         'type' => 1,
+        'size' => 16,
     ];
 
     public function generateGoodsPoster()
@@ -164,9 +166,9 @@ class GoodsPosterController extends ApiController
         $target = $this->mergePriceText($target);
        
 
-        // header ( "Content-type: image/png" );
-        // imagePng ( $target );
-        // exit();
+//         header ( "Content-type: image/png" );
+//         imagePng ( $target );
+//         exit();
 
         imagepng($target, $this->getGoodsPosterPath());
         imagedestroy($target);
@@ -249,11 +251,11 @@ class GoodsPosterController extends ApiController
         // $font="c:/windows/fonts/simhei.ttf";
 
         if ($params['type']) {
-            $text = $this->autowrap(30, 0, $font, $text, 320);
+            $text = $this->autowrap($params['size'], 0, $font, $text, 380);
         }
 
         $black = imagecolorallocate($target,  51, 51, 51);//文字颜色
-        imagettftext($target, 30, 0, $params['left'], $params['top'], $black, $font, $text);
+        imagettftext($target, $params['size'], 0, $params['left'], $params['top'], $black, $font, $text);
 
         return $target;
     }
