@@ -15,6 +15,3 @@ class YunAliPayment extends WebPayment
         return $this->orderPaymentSettings->canUse() && \YunShop::plugin()->get('yun-pay');
     }
 }
-{
-
-}
