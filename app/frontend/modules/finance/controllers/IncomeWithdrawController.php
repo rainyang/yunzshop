@@ -258,7 +258,7 @@ class IncomeWithdrawController extends ApiController
             if ($this->isFreeAudit()) {
                 $remark = '提现打款-' . $item['type_name'] . '-金额:' . $item['actual_amounts'] . '元,';
                 Log::info('收入提现微信免审核打款开始：'. $remark, print_r($item, true));
-                $result = PayFactory::create(PayFactory::PAY_WEACHAT)->doWithdraw($this->getMemberId(), $item['withdraw_sn'], $item['amounts'], $remark);
+                $result = PayFactory::create(PayFactory::PAY_WEACHAT)->doWithdraw($this->getMemberId(), $item['withdraw_sn'], $item['actual_amounts'], $remark);
                 if ($result['errno'] == 1) {
                     //throw new AppException('提现失败：微信打款失败');
                     DB::rollBack();
