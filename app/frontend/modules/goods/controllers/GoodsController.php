@@ -80,7 +80,7 @@ class GoodsController extends ApiController
         $current_time = time();
 
         if (!is_null($goodsModel->hasOneGoodsLimitbuy)) {
-            if ($goodsModel->hasOneGoodsLimitbuy->end_time < $current_time) {
+            if ($goodsModel->hasOneGoodsLimitbuy->end_time < $current_time && $goodsModel->hasOneGoodsLimitbuy->status == 1) {
                 $goodsModel->status = 0;
                 $goodsModel->save();
             }
