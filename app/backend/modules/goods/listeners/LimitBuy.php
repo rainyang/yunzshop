@@ -34,7 +34,7 @@ class LimitBuy
 
             foreach ($goods_model as $key => $item) {
                 $end_time = $item->hasOneGoodsLimitbuy->end_time;
-                if ($end_time < $current_time) {
+                if ($end_time < $current_time && $item->hasOneGoodsLimitbuy->status == 1) {
                     $item->status = 0;
                     $item->save();
                 }
