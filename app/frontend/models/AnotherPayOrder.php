@@ -108,7 +108,11 @@ class AnotherPayOrder extends \app\common\models\Order
         parent::boot();
 
         //找人代付
-        $uid = \YunShop::request()->pid?:null;
+        $uid = \YunShop::request()->pid;
+
+        if (isset($uid) && $uid == "null") {
+            $uid = \YunShop::app()->getMemberId();
+        }
 
         self::addGlobalScope(function(Builder $query) use ($uid){
             return $query->uid($uid)->where('is_member_deleted',0);
