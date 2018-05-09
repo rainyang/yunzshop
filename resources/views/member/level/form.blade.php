@@ -115,15 +115,15 @@
                                             <span class='help-block'>快递运费减免优惠%</span>
                                         </div>
                                     </div>
-
+                                    {{--
                                     <div class="form-group">
                                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员权益细则</label>
                                         <div class="col-sm-9 col-xs-12">
-                                                                {!! yz_tpl_ueditor('level[interests_rules]', $levelModel->interests_rules) !!}
+                                            {!! yz_tpl_ueditor('level[interests_rules]', $levelModel->interests_rules) !!}
 
                                         </div>
                                     </div>
-
+                                    --}}
                                     <script type="text/javascript">
                                       require(['bootstrap'], function ($) {
                                         $(document).scroll(function () {

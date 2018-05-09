@@ -59,7 +59,9 @@ class MemberLevelController extends ApiController
                         $value['deposit_free'] = $levelRights->deposit_free;
                     }
                 }
-                $value['goods']['thumb'] = replace_yunshop(yz_tomedia($value['goods']['thumb']));
+                if ($value['goods']) {
+                    $value['goods']['thumb'] = replace_yunshop(yz_tomedia($value['goods']['thumb']));
+                }
             }
         } else {
             $data = MemberLevel::getLevelData($this->settinglevel['level_type']);
@@ -78,7 +80,7 @@ class MemberLevelController extends ApiController
 
                 $memberData['rights'] = [
                     'discount' => $member_info['yz_member']['level']['discount'] ? $member_info['yz_member']['level']['discount'] : 0,
-                    'freight_reduction' => $member_info['yz_member']['level']['freight_reduction'] ? $member_info['yz_member']['level']['discount'] : 0,
+                    'freight_reduction' => $member_info['yz_member']['level']['freight_reduction'] ? $member_info['yz_member']['level']['freight_reduction'] : 0,
                     'rent_free' => $levelRights->rent_free ? $levelRights->rent_free : 0,
                     'deposit_free' => $levelRights->deposit_free ? $levelRights->deposit_free : 0,
                 ];

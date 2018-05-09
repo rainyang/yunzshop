@@ -98,6 +98,6 @@ class BrandController extends ApiController
         }
         $brand_detail->desc = html_entity_decode($brand_detail->desc);
 
-        return $brand_detail;
+        return $this->successJson('brand_detail', $brand_detail);
     }
 }
