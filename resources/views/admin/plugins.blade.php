@@ -98,33 +98,44 @@
                 });
 
                 var arr = new Array();
+                var url = "{!! yzWebUrl('plugins.batchMange') !!}"
+
                 $(".batchenable").click(function () {
+                    $(this).html('启用中...');
                     $("input[type='checkbox']:checked").each(function(i){
                         arr[i] = $(this).val();
                     });
                     var vals = arr.join(",");
                     $.ajax({
-                        url: "{!! yzWebUrl('plugins.batchMange') !!}",
+                        url: url,
                         type: 'post',
                         data: {
-                            names: vals,
+                            names: arr,
                             action: 'enable',
                         },
                         cache: false,
-                        success: function(){
-                            alert('批量启用成功');
-                            location.reload();
+                        success: function(data){
+                            if (data.result == 0) {
+                                alert('启用失败，请联系管理员')
+                            } else {
+                                $(".batchenable").html('启用成功');
+                                setTimeout(location.reload(), 3000);
+                            }
+                        },
+                        error: function () {
+                            alert('启用失败，请联系管理员')
                         }
                     });
                 });
 
                 $(".batchdisable").click(function () {
+                    $(this).html('禁用中...');
                     $("input[type='checkbox']:checked").each(function(i){
                         arr[i] = $(this).val();
                     });
                     var vals = arr.join(",");
                     $.ajax({
-                        url: "{!! yzWebUrl('plugins.batchMange') !!}",
+                        url: url,
                         type: 'post',
                         data: {
                             names: vals,
@@ -132,8 +143,15 @@
                         },
                         cache: false,
                         success: function(){
-                            alert('批量禁用成功');
-                            location.reload();
+                            if (data.result == 0) {
+                                alert('启用失败，请联系管理员')
+                            } else {
+                                $(".batchdisable").html('禁用成功');
+                                setTimeout(location.reload(), 3000);
+                            }
+                        },
+                        error:function () {
+                            alert('启用失败，请联系管理员')
                         }
                     });
                 });

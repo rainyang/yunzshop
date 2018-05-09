@@ -10,6 +10,7 @@ namespace app\backend\controllers;
 
 
 use app\common\components\BaseController;
+use app\common\exceptions\AdminException;
 use app\common\helpers\Url;
 use app\common\repositories\OptionRepository;
 use Datatables;
@@ -74,35 +75,23 @@ class PluginsController extends BaseController
         foreach ($names as $name) {
             $plugin = plugin($name);
             if ($plugin) {
-                // pass the plugin title through the translator
                 $plugin->title = trans($plugin->title);
-
                 switch (\YunShop::request()->action) {
                     case 'enable':
                         $plugins->enable($name);
-//                        return $this->message('启用成功!', Url::absoluteWeb('plugins.get-plugin-data'));
-//                    return json(trans('admin.plugins.operations.enabled', ['plugin' => $plugin->title]), 0);
                         break;
-
                     case 'disable':
                         $plugins->disable($name);
-//                        return $this->message('禁用成功!', Url::absoluteWeb('plugins.get-plugin-data'));
-//                    return json(trans('admin.plugins.operations.disabled', ['plugin' => $plugin->title]), 0);
                         break;
-
-                    case 'delete':
-                        $plugins->uninstall($name);
-//                        return $this->message('删除成功!', Url::absoluteWeb('plugins.get-plugin-data'));
-//                    return json(trans('admin.plugins.operations.deleted'), 0);
-                        break;
-
                     default:
-                        # code...
+                        die(json_encode(array(
+                            "result" => 0,
+                            "error" => "操作错误"
+                        )));
                         break;
                 }
             }
         }
-
     }
 
     public function getPluginData()
