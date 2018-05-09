@@ -229,7 +229,7 @@
 
         html += '<th class="info" style="width:13%;"><div><div style="padding-bottom:10px;text-align:center;font-size:16px;">库存</div><div class="input-group"><input type="text" class="form-control option_stock_all"VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_stock\');"></a></span></div></div></th>';
 
-        html += '<th class="success" style="width:30%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">市场价格</div><div class="input-group"><input type="text" class="form-control option_marketprice_all"VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_marketprice\');"></a></span></div></div></th>';
+        html += '<th class="success" style="width:18%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">市场价格</div><div class="input-group"><input type="text" class="form-control option_marketprice_all"VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_marketprice\');"></a></span></div></div></th>';
         html += '<th class="warning" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">现价</div><div class="input-group"><input type="text" class="form-control option_productprice_all"VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_productprice\');"></a></span></div></div></th>';
         html += '<th class="danger" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">成本价格</div><div class="input-group"><input type="text" class="form-control option_costprice_all"VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_costprice\');"></a></span></div></div></th>';
 
@@ -237,6 +237,7 @@
         html += '<th class="primary" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品编码</div><div class="input-group"><input type="text" class="form-control option_goodssn_all"VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_goodssn\');"></a></span></div></div></th>';
         html += '<th class="danger" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品条码</div><div class="input-group"><input type="text" class="form-control option_productsn_all"VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_productsn\');"></a></span></div></div></th>';
         html += '<th class="info" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">重量（克）</div><div class="input-group"><input type="text" class="form-control option_weight_all"VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_weight\');"></a></span></div></div></th>';
+         html += '<th class="info" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">点击图片上传<br /> 推荐（100*100）</div></div></th>';
 
         html += '</tr></thead>';
 
@@ -297,7 +298,8 @@
                 productsn: "",
                 goodssn: "",
                 virtual: virtuals,
-                redprice: ""
+                redprice: "",
+                thumb: ""
             };
             if ($(".option_id_" + ids).length > 0) {
                 val = {
@@ -312,7 +314,9 @@
                     weight: $(".option_weight_" + ids + ":eq(0)").val(),
                     virtual: virtuals,
                     redprice: $(".option_redprice_" + ids + ":eq(0)").val(),
+                    thumb: $(".option_thumb_" + ids + ":eq(0)").attr('url'),
                 }
+                // console.log(val);
             }
             hh += '<td class="info">'
             hh += '<input name="option_stock_' + ids + '[]"type="text" class="form-control option_stock option_stock_' + ids + '" value="' + (val.stock == 'undefined' ? '' : val.stock ) + '"/></td>';
@@ -333,12 +337,22 @@
             hh += '<td class="primary"><input name="option_goodssn_' + ids + '[]" type="text" class="form-control option_goodssn option_goodssn_' + ids + '" " value="' + (val.goodssn == 'undefined' ? '' : val.goodssn ) + '"/></td>';
             hh += '<td class="danger"><input name="option_productsn_' + ids + '[]" type="text" class="form-control option_productsn option_productsn_' + ids + '" " value="' + (val.productsn == 'undefined' ? '' : val.productsn ) + '"/></td>';
             hh += '<td class="info"><input name="option_weight_' + ids + '[]" type="text" class="form-control option_weight option_weight_' + ids + '" " value="' + (val.weight == 'undefined' ? '' : val.weight ) + '"/></td>';
+
+            hh += '<td class="info"><div class="input-group"><input name="option_thumb_' + ids + '[]"  type="hidden" class="option_thumb_' + ids + '" url="'+(val.thumb == 'undefined' ? '' : val.thumb )+'" value="'+(val.thumb == 'undefined' ? '' : val.thumb )+'"/><span><button style="display:none" class="btn btn-default" onclick="showImageDialog(this);" type="button"></button></span></div><div class="input-group" onclick="tu(this)" style="margin-top:.5em;"><img src="'+(val.thumb == 'undefined' ? '' : val.thumb )+'" onerror="this.src=\'/addons/yun_shop/static/resource/images/nopic.jpg\'; this.title=\'图片未找到.\'" class="img-responsive img-thumbnail" style="width:50px;height:50px"></div></td>';
+
             hh += "</tr>";
+
         }
         html += hh;
         html += "</table>";
         $("#options").html(html);
     }
+
+    function tu(obj) {
+        var button =  $(obj).parent().find('button');
+        showImageDialog(button);
+    }
+
     function setCol(cls) {
         $("." + cls).val($("." + cls + "_all").val());
     }
