@@ -109,7 +109,7 @@ class PluginsController extends BaseController
         //$plugins = $plugins->getPlugins();
 
         $plugins = Config::get('plugins_menu');
-        dd($plugins);exit;
+        //dd($plugins);exit;
         return view('admin.pluginslist',[
             'plugins' => $plugins
         ]);
