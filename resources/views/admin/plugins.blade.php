@@ -106,26 +106,18 @@
                         arr[i] = $(this).val();
                     });
                     var vals = arr.join(",");
-                    $.ajax({
-                        url: url,
-                        type: 'post',
-                        data: {
-                            names: arr,
-                            action: 'enable',
-                        },
-                        cache: false,
-                        success: function(data){
-                            if (data.result == 0) {
-                                alert('启用失败，请联系管理员')
-                            } else {
-                                $(".batchenable").html('启用成功');
-                                setTimeout(location.reload(), 3000);
-                            }
-                        },
-                        error: function () {
-                            alert('启用失败，请联系管理员')
+                    var postdata = {
+                        names: vals,
+                        action: 'enable',
+                    };
+                    $.post(url,postdata,function(data){
+                        if (data.result == 0) {
+                            alert(data.error);
+                            return false;
                         }
-                    });
+                        $(".batchenable").html(data.success);
+                        setTimeout(location.reload(), 3000);
+                    },"json");
                 });
 
                 $(".batchdisable").click(function () {
@@ -134,26 +126,18 @@
                         arr[i] = $(this).val();
                     });
                     var vals = arr.join(",");
-                    $.ajax({
-                        url: url,
-                        type: 'post',
-                        data: {
-                            names: vals,
-                            action: 'disable',
-                        },
-                        cache: false,
-                        success: function(){
-                            if (data.result == 0) {
-                                alert('启用失败，请联系管理员')
-                            } else {
-                                $(".batchdisable").html('禁用成功');
-                                setTimeout(location.reload(), 3000);
-                            }
-                        },
-                        error:function () {
-                            alert('启用失败，请联系管理员')
+                    var postdata = {
+                        names: vals,
+                        action: 'disable',
+                    };
+                    $.post(url,postdata,function (data) {
+                        if (data.result == 0) {
+                            alert(data.error);
+                            return false;
                         }
-                    });
+                        $(".batchdisable").html(data.success);
+                        setTimeout(location.reload(), 3000);
+                    },"json");
                 });
             });
         </script>
