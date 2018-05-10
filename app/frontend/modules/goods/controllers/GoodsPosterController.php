@@ -24,8 +24,8 @@ class GoodsPosterController extends ApiController
     private $mid;
     //画布大小
     // private $canvas = [
-    //     'width' => 338,
-    //     'height' => 485,
+    //     'width' => 600,
+    //     'height' => 1000,
     // ];
 
     private $shopText = [
@@ -39,7 +39,7 @@ class GoodsPosterController extends ApiController
         'left' => 30,
         'top' => 800,
         'type' => 1,
-        'size' => 16,
+        'size' => 24,
     ];
 
     public function generateGoodsPoster()
@@ -166,9 +166,9 @@ class GoodsPosterController extends ApiController
         $target = $this->mergePriceText($target);
        
 
-//         header ( "Content-type: image/png" );
-//         imagePng ( $target );
-//         exit();
+        // header ( "Content-type: image/png" );
+        // imagePng ( $target );
+        // exit();
 
         imagepng($target, $this->getGoodsPosterPath());
         imagedestroy($target);
@@ -251,7 +251,7 @@ class GoodsPosterController extends ApiController
         // $font="c:/windows/fonts/simhei.ttf";
 
         if ($params['type']) {
-            $text = $this->autowrap($params['size'], 0, $font, $text, 380);
+            $text = $this->autowrap($params['size'], 0, $font, $text, 360);
         }
 
         $black = imagecolorallocate($target,  51, 51, 51);//文字颜色
@@ -343,7 +343,7 @@ class GoodsPosterController extends ApiController
             if (($testbox[2] > $width) && ($content !== "")) {
                 $num += 1;
                 if ($num > 1) {
-                    $content .= '...';
+                    $content .= '..';
                     // dd($content);
                     return $content;
                 }
