@@ -123,6 +123,22 @@
             Tip.focus("#address", "请填写地址", "top");
             return false;
         }
+        if ($(':input[name="address[province_id]"]').val() == 0) {
+            alert('请选择省份');
+            return false;
+        }
+        if ($(':input[name="address[city_id]"]').val() == 0) {
+            alert('请选择城市');
+            return false;
+        }
+        if ($(':input[name="address[district_id]"]').val() == 0) {
+            alert('请选择区域');
+            return false;
+        }
+        if ($(':input[name="address[street_id]"]').val() == 0) {
+            alert('请选择街道');
+            return false;
+        }
         return true;
     }
 </script>
