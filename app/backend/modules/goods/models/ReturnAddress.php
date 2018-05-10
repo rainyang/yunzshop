@@ -34,6 +34,6 @@ class ReturnAddress extends \app\common\models\goods\ReturnAddress
     {
         return self::where('plugins_id', $id)
             ->where('is_default', 1)
-            ->get();
+            ->first();
     }
 }

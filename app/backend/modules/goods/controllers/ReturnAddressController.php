@@ -49,16 +49,16 @@ class ReturnAddressController extends BaseController
         $requestAddress = \YunShop::request()->address;
         if ($requestAddress) {
             if (!$requestAddress['province_id']) {
-                $this->message('请选择省份', '', 'error');
+                return $this->message('请选择省份', Url::absoluteWeb('goods.return-address.add'));
             }
             if (!$requestAddress['city_id']) {
-                $this->message('请选择城市', '', 'error');
+                return $this->message('请选择城市', Url::absoluteWeb('goods.return-address.add'));
             }
             if (!$requestAddress['district_id']) {
-                $this->message('请选择区域', '', 'error');
+                return $this->message('请选择区域', Url::absoluteWeb('goods.return-address.add'));
             }
             if (!$requestAddress['street_id']) {
-                $this->message('请选择街道', '', 'error');
+                return $this->message('请选择街道', Url::absoluteWeb('goods.return-address.add'));
             }
             //将数据赋值到model
             $addressModel->setRawAttributes($requestAddress);
@@ -114,16 +114,16 @@ class ReturnAddressController extends BaseController
 
         if ($requestAddress) {
             if (!$requestAddress['province_id']) {
-                $this->message('请选择省份', '', 'error');
+                return $this->message('请选择省份', Url::absoluteWeb('goods.return-address.edit',['id' => $addressModel->id]));
             }
             if (!$requestAddress['city_id']) {
-                $this->message('请选择城市', '', 'error');
+                return $this->message('请选择城市', Url::absoluteWeb('goods.return-address.edit',['id' => $addressModel->id]));
             }
             if (!$requestAddress['district_id']) {
-                $this->message('请选择区域', '', 'error');
+                return $this->message('请选择区域', Url::absoluteWeb('goods.return-address.edit',['id' => $addressModel->id]));
             }
             if (!$requestAddress['street_id']) {
-                $this->message('请选择街道', '', 'error');
+                return $this->message('请选择街道', Url::absoluteWeb('goods.return-address.edit',['id' => $addressModel->id]));
             }
             //将数据赋值到model
             $addressModel->setRawAttributes($requestAddress);
@@ -158,7 +158,7 @@ class ReturnAddressController extends BaseController
                     //显示信息并跳转
                     return $this->message('退货地址更新成功', '');
                 } else {
-                    $this->error('退货地址更新失败');
+                    return $this->message('退货地址更新失败');
                 }
             }
         }
