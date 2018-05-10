@@ -111,13 +111,13 @@
                         action: 'enable',
                     };
                     $.post(url,postdata,function(data){
-                        if (data.result == 0) {
-                            alert(data.error);
+                        if (data) {
+                            alert('操作失败，请重新选择');
                             return false;
                         }
-                        $(".batchenable").html(data.success);
+                        $(".batchenable").html('启用成功');
                         setTimeout(location.reload(), 3000);
-                    },"json");
+                    });
                 });
 
                 $(".batchdisable").click(function () {
@@ -131,13 +131,13 @@
                         action: 'disable',
                     };
                     $.post(url,postdata,function (data) {
-                        if (data.result == 0) {
-                            alert(data.error);
+                        if (data) {
+                            alert('操作失败，请重新选择');
                             return false;
                         }
-                        $(".batchdisable").html(data.success);
+                        $(".batchdisable").html('禁用成功');
                         setTimeout(location.reload(), 3000);
-                    },"json");
+                    });
                 });
             });
         </script>

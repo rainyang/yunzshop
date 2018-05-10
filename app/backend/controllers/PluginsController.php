@@ -79,17 +79,9 @@ class PluginsController extends BaseController
                 switch (\YunShop::request()->action) {
                     case 'enable':
                         $plugins->enable($name);
-                        die(json_encode(array(
-                            "result" => 1,
-                            "success" => "启用成功"
-                        )));
                         break;
                     case 'disable':
                         $plugins->disable($name);
-                        die(json_encode(array(
-                            "result" => 1,
-                            "success" => "禁用成功"
-                        )));
                         break;
                     default:
                         die(json_encode(array(
@@ -117,7 +109,7 @@ class PluginsController extends BaseController
         //$plugins = $plugins->getPlugins();
 
         $plugins = Config::get('plugins_menu');
-        //dd($plugins);exit;
+        dd($plugins);exit;
         return view('admin.pluginslist',[
             'plugins' => $plugins
         ]);
