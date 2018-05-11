@@ -80,13 +80,53 @@ class PluginsController extends BaseController
 
     public function getPluginList()
     {
-        //$plugins = new PluginManager(app(),new OptionRepository(),new Dispatcher(),new Filesystem());
-        //$plugins = $plugins->getPlugins();
+        $dividend['name'] = '分润类';
+        $industry['name'] = '行业类';
+        $marketing['name'] = '营销类';
+        $tool['name'] = '工具类';
+        $recharge['name'] = '生活充值';
+        $api['name'] = '接口类';
 
+        $pluginsModel = new PluginManager(app(),new OptionRepository(),new Dispatcher(),new Filesystem());
         $plugins = Config::get('plugins_menu');
+        foreach ($plugins as $key => $plugin) {
+            $type = $plugin['type'];
+            switch ($type) {
+                case 'dividend':
+                    $dividend[$key] = $plugin;
+                    $dividend[$key]['description'] = $pluginsModel->getPlugin($key)->description;
+                break;
+                case 'industry':
+                    $industry[$key] = $plugin;
+                    $industry[$key]['description'] = $pluginsModel->getPlugin($key)->description;
+                break;
+                case 'marketing':
+                    $marketing[$key] = $plugin;
+                    $marketing[$key]['description'] = $pluginsModel->getPlugin($key)->description;
+                break;
+                case 'tool':
+                    $tool[$key] = $plugin;
+                    $tool[$key]['description'] = $pluginsModel->getPlugin($key)->description;
+                break;
+                case 'recharge':
+                    $recharge[$key] = $plugin;
+                    $recharge[$key]['description'] = $pluginsModel->getPlugin($key)->description;
+                break;
+                case 'api':
+                    $api[$key] = $plugin;
+                    $api[$key]['description'] = $pluginsModel->getPlugin($key)->description;
+                break;
+            }
+        }
         //dd($plugins);exit;
         return view('admin.pluginslist',[
-            'plugins' => $plugins
+            'plugins' => $plugins,
+            'dividend' => $dividend,
+            'industry' => $industry,
+            'marketing' => $marketing,
+            'tool' => $tool,
+            'recharge' => $recharge,
+            'api' => $api,
         ]);
     }
 
