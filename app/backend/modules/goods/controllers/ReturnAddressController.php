@@ -156,9 +156,9 @@ class ReturnAddressController extends BaseController
                 //数据保存
                 if ($addressModel->save()) {
                     //显示信息并跳转
-                    return $this->message('退货地址更新成功', Url::absoluteWeb('goods.return-address.index'));
+                    return $this->message('退货地址修改成功', Url::absoluteWeb('goods.return-address.index'));
                 } else {
-                    return $this->message('退货地址更新失败');
+                    return $this->message('退货地址修改失败');
                 }
             }
         }
