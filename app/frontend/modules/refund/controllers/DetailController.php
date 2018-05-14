@@ -25,8 +25,15 @@ class DetailController extends ApiController
 
         //判断是门店还是供应商
         $plugin = RefundApply::getIsPlugin($refundApply->order_id);
-        $refundApply->is_plugin = $plugin->is_plugin;
-        $refundApply->plugin_id = $plugin->plugin_id;
+        if($plugin->is_plugin) {
+            $refundApply->is_plugin = $plugin->is_plugin;
+            $refundApply->supplier_id = RefundApply::getSupplierId($refundApply->order_id);
+        }
+        if ($plugin->plugin_id) {
+            $refundApply->plugin_id = $plugin->plugin_id;
+            $refundApply->store_id = RefundApply::getStoreId($refundApply->order_id);
+        }
+
 
 
         return $this->successJson('成功',$refundApply);

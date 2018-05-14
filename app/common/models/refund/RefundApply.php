@@ -175,6 +175,14 @@ class RefundApply extends BaseModel
         return \app\common\models\Order::where('id',$order_id)->select('is_plugin','plugin_id')->first();
     }
 
+    public function getSupplierId($order_id) {
+        return \Yunshop\Supplier\common\models\SupplierOrder::where('order_id',$order_id)->value('supplier_id');
+    }
+
+    public function getStoreId($order_id) {
+        return \Yunshop\StoreCashier\common\models\StoreOrder::where('order_id',$order_id)->value('store_id');
+    }
+
     public function getIsRefundedAttribute()
     {
         return $this->isRefunded();
