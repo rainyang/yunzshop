@@ -17,7 +17,7 @@ class Yun_Alipay
     {
         $set = \Setting::get('plugin.yun_pay_set');
 
-        if (\YunShop::plugin()->get('yun-pay') && !is_null($set) && 1 == $set['switch'] && \YunShop::request()->type != 7) {
+        if (\YunShop::plugin()->get('yun-pay') && !is_null($set) && 1 == $set['alipay_switch'] && \YunShop::request()->type != 7) {
 
             $result = [
                 'name' => '支付宝-YZ',

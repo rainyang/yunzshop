@@ -36,11 +36,11 @@ use Yunshop\Designer\models\Store;
 
 class GoodsController extends BaseController
 {
-    private $goods_id = null;
-    private $shopset;
-    private $shoppay;
+    protected $goods_id = null;
+    protected $shopset;
+    protected $shoppay;
     //private $goods;
-    private $lang = null;
+    protected $lang = null;
 
     public function __construct()
     {
@@ -328,12 +328,13 @@ class GoodsController extends BaseController
 
         if ($field == 'price') {
             $sale = Sale::getList($goods->id);
-
+/*
             if (!empty($sale->max_point_deduct)
                 && $sale->max_point_deduct > \YunShop::request()->value) {
                 echo json_encode(['status' => -1, 'msg' => '积分抵扣金额大于商品价格']);
                 exit;
             }
+*/
         }
 
         $goods->$field = \YunShop::request()->value;
