@@ -33,26 +33,30 @@ class CouponService
     public function getOrderDiscountPrice()
     {
         return $this->getAllValidCoupons()->sum(function ($coupon) {
-            /**
-             * @var $coupon Coupon
-             */
-            //$coupon->activate();
-            return $coupon->getDiscountAmount();
-        });
-    }
-
-    /**
-     * 激活订单优惠券
-     */
-    public function activate()
-    {
-        return $this->getAllValidCoupons()->each(function ($coupon) {
+            if(!$coupon->valid()){
+                return 0;
+            }
             /**
              * @var $coupon Coupon
              */
             $coupon->activate();
+            return $coupon->getDiscountAmount();
         });
     }
+
+//    /**
+//     * 激活订单优惠券
+//     */
+//    public function activate()
+//    {
+//        return $this->getAllValidCoupons()->each(function ($coupon) {
+//            /**
+//             * @var $coupon Coupon
+//             */
+//            dump(1);
+//            $coupon->activate();
+//        });
+//    }
 
     /**
      * 获取订单可算的优惠券

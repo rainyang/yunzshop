@@ -147,6 +147,8 @@ class Coupon
      */
     public function getDiscountAmount()
     {
+        $this->setOrderGoodsDiscountPrice();
+
         return $this->price->getPrice();
     }
 
@@ -155,6 +157,9 @@ class Coupon
      */
     public function activate()
     {
+        if($this->getMemberCoupon()->selected){
+            return;
+        }
         //记录优惠券被选中了
         $this->getMemberCoupon()->selected = 1;
 
@@ -168,7 +173,6 @@ class Coupon
         ]);
         $preOrderCoupon->setOrder($this->order);
 
-        $this->setOrderGoodsDiscountPrice();
     }
 
     /**
