@@ -30,7 +30,8 @@ class AddressHelper extends BaseController
         if(isset($names[3])){
             $html .= '<select id="sel-area" name="' . $names[2] . '" onchange="selectstreet();" class="select">';
         }else{
-            $html .= '<select id="sel-provance" name="' . $names[2] . '" class="select">';
+            //$html .= '<select id="sel-provance" name="' . $names[2] . '" class="select">';
+            $html .= '<select id="sel-area" name="' . $names[2] . '" class="select">';
         }
         $html .= '<option value="" >请选择区</option>';
         $html .= '</select>';
