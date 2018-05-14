@@ -19,12 +19,13 @@ use app\frontend\modules\member\models\MemberModel;
 
 class IncomePageController extends ApiController
 {
+    /**
+     * 收入页面接口
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function index()
     {
-        $lang = \Setting::get('shop.lang', ['lang' => 'zh_cn']);
-        //$langData = \Setting::get('shop.lang.' . $lang);
-        //dd($lang);
-
         list($available, $unavailable) = $this->getIncomeInfo();
 
         $data = [
@@ -37,6 +38,11 @@ class IncomePageController extends ApiController
     }
 
 
+    /**
+     * 页面信息
+     *
+     * @return array
+     */
     private function getPageInfo()
     {
         $member_id = \YunShop::app()->getMemberId();
@@ -52,6 +58,10 @@ class IncomePageController extends ApiController
     }
 
 
+    /**
+     * 收入信息
+     * @return array
+     */
     private function getIncomeInfo()
     {
         $lang_set = $this->getLangSet();
@@ -86,6 +96,11 @@ class IncomePageController extends ApiController
     }
 
 
+    /**
+     * 获取商城中的插件名称自定义设置
+     *
+     * @return mixed
+     */
     private function getLangSet()
     {
         $lang = \Setting::get('shop.lang', ['lang' => 'zh_cn']);
