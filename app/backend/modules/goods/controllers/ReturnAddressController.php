@@ -80,7 +80,7 @@ class ReturnAddressController extends BaseController
             } else {
                 //取消其他默认模板
                 if($addressModel->is_default){
-                    $defaultModel = ReturnAddress::getOneByPluginsId(self::PLUGINS_ID);
+                    $defaultModel = ReturnAddress::getOneByPluginsId(self::PLUGINS_ID,0,0);
                     if ($defaultModel) {
                         $defaultModel->is_default = 0;
                         $defaultModel->save();
@@ -145,7 +145,7 @@ class ReturnAddressController extends BaseController
             } else {
                 //取消其他默认模板
                 if($addressModel->is_default){
-                    $defaultModel = ReturnAddress::getOneByPluginsId(self::PLUGINS_ID);
+                    $defaultModel = ReturnAddress::getOneByPluginsId(self::PLUGINS_ID,0,0);
 
                     if ($defaultModel && ($defaultModel->id != \YunShop::request()->id) ) {
                         $defaultModel->is_default = 0;

@@ -31,6 +31,8 @@ class CreateImsYzGoodsReturnAddressTable extends Migration
                 $table->string('street_name', 32)->nullable();
                 $table->string('address', 512);
                 $table->integer('plugins_id')->default(0);
+                $table->integer('store_id')->default(0);
+                $table->integer('supplier_id')->default(0);
                 $table->boolean('is_default')->default(0);
                 $table->integer('created_at')->default(0);
                 $table->integer('updated_at')->default(0);
