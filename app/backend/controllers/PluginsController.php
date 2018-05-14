@@ -88,37 +88,36 @@ class PluginsController extends BaseController
         $api['name'] = '接口类';
 
         $pluginsModel = new PluginManager(app(),new OptionRepository(),new Dispatcher(),new Filesystem());
-        $plugins = Config::get('plugins_menu');
+        $plugins = Config::get('plugins_menu');//全部插件
         foreach ($plugins as $key => $plugin) {
             $type = $plugin['type'];
             switch ($type) {
-                case 'dividend':
+                case 'dividend'://分润类
                     $dividend[$key] = $plugin;
                     $dividend[$key]['description'] = $pluginsModel->getPlugin($key)->description;
                 break;
-                case 'industry':
+                case 'industry'://行业类
                     $industry[$key] = $plugin;
                     $industry[$key]['description'] = $pluginsModel->getPlugin($key)->description;
                 break;
-                case 'marketing':
+                case 'marketing'://营销类
                     $marketing[$key] = $plugin;
                     $marketing[$key]['description'] = $pluginsModel->getPlugin($key)->description;
                 break;
-                case 'tool':
+                case 'tool'://工具类
                     $tool[$key] = $plugin;
                     $tool[$key]['description'] = $pluginsModel->getPlugin($key)->description;
                 break;
-                case 'recharge':
+                case 'recharge'://生活充值类
                     $recharge[$key] = $plugin;
                     $recharge[$key]['description'] = $pluginsModel->getPlugin($key)->description;
                 break;
-                case 'api':
+                case 'api'://接口类
                     $api[$key] = $plugin;
                     $api[$key]['description'] = $pluginsModel->getPlugin($key)->description;
                 break;
             }
         }
-        //dd($plugins);exit;
         return view('admin.pluginslist',[
             'plugins' => $plugins,
             'dividend' => $dividend,
