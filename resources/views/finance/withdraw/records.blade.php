@@ -80,8 +80,7 @@
 </div>
 
 {{--<form action="" method="post" class="form-horizontal">--}}
-<form action="" method="post" class="form-horizontal"
-      id="form1">
+<form action="" method="post" class="form-horizontal" id="form1">
     <div class="panel panel-info">
         <div class="panel-body">
             <input type="hidden" name="search[status]" value="{{$search['status']}}">
@@ -103,7 +102,7 @@
             </div>
 
             <div class="form-group">
-                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">类型</label>
+                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">收入类型：</label>
                 <div class="col-xs-12 col-sm-8 col-lg-9">
                     <select name='search[type]' class='form-control'>
                         <option value='' @if($search['type']=='') selected @endif>全部</option>
@@ -116,7 +115,20 @@
             </div>
 
             <div class="form-group">
-                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">提现时间</label>
+                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">提现方式：</label>
+                <div class="col-xs-12 col-sm-8 col-lg-9">
+                    <select name='search[pay_way]' class='form-control'>
+                        <option value='' @if(empty($search['pay_way'])) selected @endif>不搜索</option>
+                        <option value='wechat' @if($search['pay_way']==1) selected @endif >提现到微信</option>
+                        <option value='alipay' @if($search['pay_way']==1) selected @endif >提现到支付宝</option>
+                        <option value='balance' @if($search['pay_way']==1) selected @endif >提现到余额</option>
+                        <option value='manual' @if($search['pay_way']==1) selected @endif >提现到手动打款</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">提现时间：</label>
                 <div class="col-sm-2">
                     <select name='search[searchtime]' class='form-control'>
                         <option value='' @if(empty($search['searchtime'])) selected @endif>不搜索</option>
