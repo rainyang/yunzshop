@@ -231,7 +231,7 @@ return [
         'subtitle' => '快递单审核通过通知',
         'value' => 'courier_pass',
         'param' => [
-            '任务名称', '通知类型'
+            '会员昵称', '时间'
         ]
     ],
     'courier_back' => [
@@ -239,7 +239,7 @@ return [
         'subtitle' => '快递单审核驳回通知',
         'value' => 'courier_back',
         'param' => [
-            '任务名称', '通知类型'
+            '会员昵称', '时间'
         ]
     ],
 
