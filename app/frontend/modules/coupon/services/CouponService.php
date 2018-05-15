@@ -16,8 +16,8 @@ class CouponService
     use DispatchesJobs;
     private $order;
     private $orderGoods;
-    private $coupon_method = null;
-
+    private $coupon_method;
+    private $selectedMemberCoupon;
     public function __construct( $order, $coupon_method = null, $orderGoods = [])
     {
 
@@ -91,7 +91,8 @@ class CouponService
      */
     public function destroyUsedCoupons()
     {
-        $this->getSelectedMemberCoupon()->map(function ($memberCoupon) {
+        $this->getSelectedMemberCoupon()->each(function ($memberCoupon) {
+
             return (new Coupon($memberCoupon, $this->order))->destroy();
         });
     }
@@ -139,11 +140,15 @@ class CouponService
      */
     private function getSelectedMemberCoupon()
     {
-        $member_coupon_ids = ArrayHelper::unreliableDataToArray(\Request::input('member_coupon_ids'));
+        if(!isset($this->selectedMemberCoupon)){
+            $member_coupon_ids = ArrayHelper::unreliableDataToArray(\Request::input('member_coupon_ids'));
 
-        return $this->getMemberCoupon()->filter(function ($memberCoupon) use ($member_coupon_ids) {
-            return in_array($memberCoupon->id, $member_coupon_ids);
-        });
+            $this->selectedMemberCoupon = $this->getMemberCoupon()->filter(function ($memberCoupon) use ($member_coupon_ids) {
+                return in_array($memberCoupon->id, $member_coupon_ids);
+            });
+        }
+
+        return $this->selectedMemberCoupon;
     }
 
     public function sendCoupon()

@@ -157,20 +157,22 @@ class Coupon
      */
     public function activate()
     {
-        if($this->getMemberCoupon()->selected){
+        if ($this->getMemberCoupon()->selected) {
             return;
         }
         //记录优惠券被选中了
         $this->getMemberCoupon()->selected = 1;
+        $this->getMemberCoupon()->used = 1;
+        //dump($this->getMemberCoupon());
 
         // todo 订单优惠券使用记录暂时加在这里,优惠券部分需要重构
         $preOrderCoupon = new PreOrderCoupon([
-            'coupon_id'=>$this->memberCoupon->coupon_id,
-            'member_coupon_id'=>$this->memberCoupon->id,
-            'name'=>$this->memberCoupon->belongsToCoupon->name,
-            'amount'=>$this->getDiscountAmount()
-
+            'coupon_id' => $this->memberCoupon->coupon_id,
+            'member_coupon_id' => $this->memberCoupon->id,
+            'name' => $this->memberCoupon->belongsToCoupon->name,
+            'amount' => $this->getDiscountAmount()
         ]);
+        $preOrderCoupon->setRelation('memberCoupon', $this->memberCoupon);
         $preOrderCoupon->setOrder($this->order);
 
     }
@@ -282,10 +284,10 @@ class Coupon
      * 记录优惠券已使用
      * @return bool
      */
-    public function destroy()
-    {
-        $memberCoupon = $this->memberCoupon->fresh();
-        $memberCoupon->used = 1;
-        return $memberCoupon->save();
-    }
+//    public function destroy()
+//    {
+//        $memberCoupon = $this->memberCoupon->fresh();
+//        $memberCoupon->used = 1;
+//        return $memberCoupon->save();
+//    }
 }
