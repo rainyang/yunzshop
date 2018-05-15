@@ -39,7 +39,7 @@
                                     <i class="plugin-i"></i>
                                 </div>
                                 <span class="plugin-span">{{$plugin['name']}}</span>
-                                <span class="plugin-span-down">{{$plugin['description']}}</span>
+                                {{--<span class="plugin-span-down">{{$plugin['description']}}</span>--}}
                             </a>
                         </div>
                         @endif
@@ -60,7 +60,7 @@
                                         <i class="plugin-i"></i>
                                     </div>
                                     <span class="plugin-span">{{$plugin['name']}}</span>
-                                    <span class="plugin-span-down">{{$plugin['description']}}</span>
+                                    {{--<span class="plugin-span-down">{{$plugin['description']}}</span>--}}
                                 </a>
                             </div>
                         @endif
@@ -81,7 +81,7 @@
                                         <i class="plugin-i"></i>
                                     </div>
                                     <span class="plugin-span">{{$plugin['name']}}</span>
-                                    <span class="plugin-span-down">{{$plugin['description']}}</span>
+                                    {{--<span class="plugin-span-down">{{$plugin['description']}}</span>--}}
                                 </a>
                             </div>
                         @endif
@@ -102,7 +102,7 @@
                                         <i class="plugin-i"></i>
                                     </div>
                                     <span class="plugin-span">{{$plugin['name']}}</span>
-                                    <span class="plugin-span-down">{{$plugin['description']}}</span>
+                                    {{--<span class="plugin-span-down">{{$plugin['description']}}</span>--}}
                                 </a>
                             </div>
                         @endif
@@ -123,7 +123,7 @@
                                         <i class="plugin-i"></i>
                                     </div>
                                     <span class="plugin-span">{{$plugin['name']}}</span>
-                                    <span class="plugin-span-down">{{$plugin['description']}}</span>
+                                    {{--<span class="plugin-span-down">{{$plugin['description']}}</span>--}}
                                 </a>
                             </div>
                         @endif
@@ -144,7 +144,7 @@
                                         <i class="plugin-i"></i>
                                     </div>
                                     <span class="plugin-span">{{$plugin['name']}}</span>
-                                    <span class="plugin-span-down">{{$plugin['description']}}</span>
+                                    {{--<span class="plugin-span-down">{{$plugin['description']}}</span>--}}
                                 </a>
                             </div>
                         @endif
