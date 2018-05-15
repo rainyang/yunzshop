@@ -1920,6 +1920,31 @@ return [
 
             ],
 
+            //todo 待开发
+          /*  'member_income'  => [
+                'name'              => '会员收入',
+                'url'               => 'income.member-income.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-book',
+                'sort'              => 0,
+                'item'              => 'member_income',
+                'parents'           => ['finance'],
+            ],*/
+
+            'income_records'  => [
+                'name'              => '收入明细',
+                'url'               => 'income.income-records.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-file-text-o',
+                'sort'              => 0,
+                'item'              => 'income_records',
+                'parents'           => ['finance'],
+            ],
+
             'withdraw_set'  => [
                 'name'              => '提现设置',
                 'url'               => 'finance.withdraw-set.see',
