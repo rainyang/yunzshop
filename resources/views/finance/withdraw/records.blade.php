@@ -80,7 +80,12 @@
 </div>
 
 {{--<form action="" method="post" class="form-horizontal">--}}
-<form action="" method="post" class="form-horizontal" id="form1">
+<form action="" method="get" class="form-horizontal" id="form1">
+    <input type="hidden" name="c" value="site" />
+    <input type="hidden" name="a" value="entry" />
+    <input type="hidden" name="m" value="yun_shop" />
+    <input type="hidden" name="do" value="5201" />
+    <input type="hidden" name="route" value="finance.withdraw-records" id="route" />
     <div class="panel panel-info">
         <div class="panel-body">
             <input type="hidden" name="search[status]" value="{{$search['status']}}">
@@ -119,10 +124,10 @@
                 <div class="col-xs-12 col-sm-8 col-lg-9">
                     <select name='search[pay_way]' class='form-control'>
                         <option value='' @if(empty($search['pay_way'])) selected @endif>不搜索</option>
-                        <option value='wechat' @if($search['pay_way']==1) selected @endif >提现到微信</option>
-                        <option value='alipay' @if($search['pay_way']==1) selected @endif >提现到支付宝</option>
-                        <option value='balance' @if($search['pay_way']==1) selected @endif >提现到余额</option>
-                        <option value='manual' @if($search['pay_way']==1) selected @endif >提现到手动打款</option>
+                        <option value='wechat' @if($search['pay_way']=='wechat') selected @endif >提现到微信</option>
+                        <option value='alipay' @if($search['pay_way']=='alipay') selected @endif >提现到支付宝</option>
+                        <option value='balance' @if($search['pay_way']=='balance') selected @endif >提现到余额</option>
+                        <option value='manual' @if($search['pay_way']=='manual') selected @endif >提现到手动打款</option>
                     </select>
                 </div>
             </div>
@@ -247,8 +252,9 @@
 <script language='javascript'>
     $(function () {
         $('#export').click(function () {
-            $('#form1').attr('action', '{!! yzWebUrl('finance.withdraw-records.export') !!}');
+            $('#route').val("finance.withdraw-records.export");
             $('#form1').submit();
+            $('#route').val("finance.withdraw-records");
         });
         $('#search').click(function () {
             $('#form1').attr('action', '{!! yzWebUrl('finance.withdraw-records.index') !!}');
