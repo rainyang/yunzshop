@@ -49,11 +49,11 @@
                         <div class="">
                             <select name='search[pay_status]' class='form-control'>
                                 <option value=''>打款状态</option>
-                                <option value='-1' @if($search['status']=='-1') selected @endif>无效</option>
-                                <option value='0' @if($search['status']=='0') selected @endif>未审核</option>
-                                <option value='1' @if($search['status']=='1') selected @endif>未打款</option>
-                                <option value='2' @if($search['status']=='2') selected @endif>已打款</option>
-                                <option value='3' @if($search['status']=='3') selected @endif>已驳回</option>
+                                <option value='-1' @if($search['pay_status']=='-1') selected @endif>无效</option>
+                                <option value='0' @if($search['pay_status']=='0') selected @endif>未审核</option>
+                                <option value='1' @if($search['pay_status']=='1') selected @endif>未打款</option>
+                                <option value='2' @if($search['pay_status']=='2') selected @endif>已打款</option>
+                                <option value='3' @if($search['pay_status']=='3') selected @endif>已驳回</option>
                             </select>
                         </div>
                     </div>
