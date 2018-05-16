@@ -34,6 +34,7 @@ class RegisterController extends ApiController
 
     public function index()
     {
+        echo 5555555555555;die;
         $mobile = \YunShop::request()->mobile;
         $password = \YunShop::request()->password;
         $confirm_password = \YunShop::request()->confirm_password;
