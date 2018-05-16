@@ -320,6 +320,7 @@ class RegisterController extends ApiController
 
     public function sendSmsV2($mobile, $code, $state, $templateType = 'reg')
     {
+        echo 366959;die;
         $sms = \Setting::get('shop.sms');
 
         //互亿无线
