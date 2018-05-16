@@ -1,3 +1,13 @@
+.plugin-a{color: #000000;padding: 15px;margin-bottom: 30px;background: #ffffff;border: 1px #E5E5E5 solid;border-radius: 5px; display: inline-block;}
+.plugin-a:focus,
+.plugin-a:active,
+.plugin-a:hover {color: #000000;box-shadow: 0px 14px 26px -12px rgba(34, 133, 233, 0.42), 0px 4px 23px 0px rgba(0, 0, 0, 0.12), 0px 8px 10px -5px rgba(38, 130, 233, 0.2);}
+.plugin-a:disabled{box-shadow: none;}
+.plugin-i {font-size: 45px;border: 1px solid #E5E5E5; border-radius: 20%;width: 64px;line-height: 64px;height: 64px;float: left;background-color: #f6f6f6
+}
+.plugin-i-div{color: #999999;}
+.plugin-span {font-size: 18px; margin-left: 20px;}
+
 .pl {
     display: inline-block;
     font: normal normal normal 14px/1 FontAwesome;
@@ -7,6 +17,160 @@
     -moz-osx-font-smoothing: grayscale;
     transform: translate(0, 0);
 }
-.api-group-purchase {
-    background-image: url('../img/api/group-purchase.png');
+
+.commission {
+    background-image: url('../img/dividend/commission.png');
+}
+.micro {
+    background-image: url('../img/dividend/micro.png');
+}
+.area_dividend {
+    background-image: url('../img/dividend/area_dividend.png');
+}
+.merchant {
+    background-image: url('../img/dividend/merchant.png');
+}
+.team_dividend {
+    background-image: url('../img/dividend/team_dividend.png');
+}
+.shareholder_dividend {
+    background-image: url('../img/dividend/shareholder_dividend.png');
+}
+
+.supplier {
+    background-image: url('../img/industry/supplier.png');
+}
+.conference {
+    background-image: url('../img/industry/conference.png');
+}
+.video_demand {
+    background-image: url('../img/industry/video_demand.png');
+}
+.lease_toy {
+    background-image: url('../img/industry/lease_toy.png');
+}
+.store_cashier {
+    background-image: url('../img/industry/store_cashier.png');
+}
+
+.gold {
+    background-image: url('../img/marketing/gold.png');
+}
+.credit {
+    background-image: url('../img/marketing/credit.png');
+}
+.poster {
+    background-image: url('../img/marketing/poster.png');
+}
+.article {
+    background-image: url('../img/marketing/article.png');
+}
+.ranking {
+    background-image: url('../img/marketing/ranking.png');
+}
+.clock_in {
+    background-image: url('../img/marketing/clock_in.png');
+}
+.full_return {
+    background-image: url('../img/marketing/full_return.png');
+}
+.love {
+    background-image: url("../img/marketing/love.png");
+}
+.team_return {
+    background-image: url('../img/marketing/team_return.png');
+}
+.fixed_reward {
+    background-image: url('../img/marketing/fixed_reward.png');
+}
+.level_return {
+    background-image: url('../img/marketing/level_return.png');
+}
+.recharge_code {
+    background-image: url('../img/marketing/recharge_code.png');
+}
+.single_return {
+    background-image: url('../img/marketing/single_return.png');
+}
+.consume_return {
+    background-image: url('../img/marketing/consume_return.png');
+}
+.coin {
+    background-image: url('../img/marketing/coin.png');
+}
+.sign {
+    background-image: url('../img/marketing/sign.png');
+}
+.task_reward {
+    background-image: url('../img/marketing/task_reward.png');
+}
+.app_set {
+    background-image: url('../img/tool/app_set.png');
+}
+.printer {
+    background-image: url('../img/tool/printer.png');
+}
+.designer {
+    background-image: url('../img/tool/designer.png');
+}
+.exhelper {
+    background-image: url('../img/tool/exhelper.png');
+}
+.goods_assistant {
+    background-image: url('../img/tool/goods_assistant.png');
+}
+.min_app {
+    background-image: url('../img/tool/min_app.png');
+}
+.yun_pay {
+    background-image: url('../img/tool/yun_pay.png');
+}
+.diyform {
+    background-image: url('../img/tool/diyform.png');
+}
+.cloud_pay {
+    background-image: url('../img/tool/cloud_pay.png');
+}
+
+.air {
+    background-image: url('../img/recharge/air.png');
+}
+.phone {
+    background-image: url('../img/recharge/phone.png');
+}
+.live {
+    background-image: url('../img/recharge/live.png');
+}
+.flow_recharge {
+    background-image: url('../img/recharge/flow_recharge.png');
+}
+.elive {
+    background-image: url('../img/recharge/elive.png');
+}
+.train {
+    background-image: url('../img/recharge/train.png');
+}
+.gasoline {
+    background-image: url('../img/recharge/gasoline.png');
+}
+.recharge {
+    background-image: url('../img/recharge/recharge.png');
+}
+.hawk_ticket {
+    background-image: url('../img/api/hawk_ticket.png');
+}
+.group_purchase {
+    background-image: url('../img/api/group_purchase.png');
+}
+.super_kjs {
+    background-image: url('../img/api/super_kjs.png');
+}
+.dzp {
+    background-image: url('../img/api/dzp.png');
+}
+.community {
+    background-image: url('../img/api/community.png');
+}
+.order_meals {
+    background-image: url('../img/api/order_meals.png');
 }

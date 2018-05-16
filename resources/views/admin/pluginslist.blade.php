@@ -1,21 +1,11 @@
 @extends('layouts.base')
 @section('title', trans('应用中心'))
 @section('content')
-    <style>
-        .plugin-a{color: #000000;padding: 15px;margin-bottom: 30px;background: #ffffff;border: 1px #E5E5E5 solid;border-radius: 5px; display: inline-block;}
-        .plugin-a:focus,
-        .plugin-a:active,
-        .plugin-a:hover {color: #000000;box-shadow: 0px 14px 26px -12px rgba(34, 133, 233, 0.42), 0px 4px 23px 0px rgba(0, 0, 0, 0.12), 0px 8px 10px -5px rgba(38, 130, 233, 0.2);}
-        .plugin-a:disabled{box-shadow: none;}
-        .plugin-i {font-size: 45px;border: 1px solid #E5E5E5; border-radius: 20%;width: 64px;line-height: 64px;height: 64px;float: left;background-color: #2398ff
-        }
-        .plugin-i-div{color: #999999;}
-        .plugin-span {font-size: 18px; margin-left: 20px;}
-        .plugin-span-down {font-size: 12px; margin-left: 20px;color: #404040}
-    </style>
     <div class="w1200 m0a">
         <script language="javascript" src="{{static_url('js/dist/nestable/jquery.nestable.js')}}"></script>
         <link rel="stylesheet" type="text/css" href="{{static_url('js/dist/nestable/nestable.css')}}"/>
+
+        <!--应用列表样式-->
         <link rel="stylesheet" type="text/css" href="{{static_url('yunshop/plugins/list-icon/css/list-icon.css')}}">
 
         <!-- 新增加右侧顶部三级菜单 -->
@@ -37,7 +27,7 @@
                         <div class="col-md-2">
                             <a href="{{yzWebFullUrl($plugin['url'])}}" class="plugin-a col-md-12">
                                 <div class="plugin-i-div">
-                                    <i class="plugin-i"></i>
+                                    <i class="plugin-i {{$plugin['list_icon']}}"></i>
                                 </div>
                                 <span class="plugin-span">{{$plugin['name']}}</span>
                                 {{--<span class="plugin-span-down">{{$plugin['description']}}</span>--}}
@@ -58,7 +48,7 @@
                             <div class="col-md-2">
                                 <a href="{{yzWebFullUrl($plugin['url'])}}" class="plugin-a col-md-12">
                                     <div class="plugin-i-div">
-                                        <i class="plugin-i"></i>
+                                        <i class="plugin-i {{$plugin['list_icon']}}"></i>
                                     </div>
                                     <span class="plugin-span">{{$plugin['name']}}</span>
                                     {{--<span class="plugin-span-down">{{$plugin['description']}}</span>--}}
@@ -79,7 +69,7 @@
                             <div class="col-md-2">
                                 <a href="{{yzWebFullUrl($plugin['url'])}}" class="plugin-a col-md-12">
                                     <div class="plugin-i-div">
-                                        <i class="plugin-i"></i>
+                                        <i class="plugin-i {{$plugin['list_icon']}}"></i>
                                     </div>
                                     <span class="plugin-span">{{$plugin['name']}}</span>
                                     {{--<span class="plugin-span-down">{{$plugin['description']}}</span>--}}
@@ -100,7 +90,7 @@
                             <div class="col-md-2">
                                 <a href="{{yzWebFullUrl($plugin['url'])}}" class="plugin-a col-md-12">
                                     <div class="plugin-i-div">
-                                        <i class="plugin-i"></i>
+                                        <i class="plugin-i {{$plugin['list_icon']}}"></i>
                                     </div>
                                     <span class="plugin-span">{{$plugin['name']}}</span>
                                     {{--<span class="plugin-span-down">{{$plugin['description']}}</span>--}}
@@ -121,7 +111,7 @@
                             <div class="col-md-2">
                                 <a href="{{yzWebFullUrl($plugin['url'])}}" class="plugin-a col-md-12">
                                     <div class="plugin-i-div">
-                                        <i class="plugin-i"></i>
+                                        <i class="plugin-i {{$plugin['list_icon']}}"></i>
                                     </div>
                                     <span class="plugin-span">{{$plugin['name']}}</span>
                                     {{--<span class="plugin-span-down">{{$plugin['description']}}</span>--}}
@@ -142,7 +132,7 @@
                             <div class="col-md-2">
                                 <a href="{{yzWebFullUrl($plugin['url'])}}" class="plugin-a col-md-12">
                                     <div class="plugin-i-div">
-                                        <i class="plugin-i"></i>
+                                        <i class="plugin-i {{$plugin['list_icon']}}"></i>
                                     </div>
                                     <span class="plugin-span">{{$plugin['name']}}</span>
                                     {{--<span class="plugin-span-down">{{$plugin['description']}}</span>--}}
