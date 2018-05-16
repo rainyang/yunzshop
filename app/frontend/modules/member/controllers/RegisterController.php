@@ -23,6 +23,8 @@ use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Str;
 use iscms\Alisms\SendsmsPusher as Sms;
 use app\common\exceptions\AppException;
+use Gregwar\Captcha\CaptchaBuilder;
+use Gregwar\Captcha\PhraseBuilder;
 
 class RegisterController extends ApiController
 {
@@ -248,7 +250,7 @@ class RegisterController extends ApiController
                 MemberService::udpateSmsSendTotal(\YunShop::app()->uniacid, $mobile);
                 return $this->successJson();
             } else {
-                return $this->errorJson($issendsms['SubmitResult']['msg']);
+                return $this->errorJson('短信配置'.$issendsms['SubmitResult']['msg']);
             }
         } elseif ($sms['type'] == 2) {
             $result = MemberService::send_sms_alidayu($sms, $templateType);
@@ -329,7 +331,7 @@ class RegisterController extends ApiController
                 MemberService::udpateSmsSendTotal(\YunShop::app()->uniacid, $mobile);
                 return $this->successJson();
             } else {
-                return $this->errorJson($issendsms['SubmitResult']['msg']);
+                return $this->errorJson('短信配置'.$issendsms['SubmitResult']['msg']);
             }
         } elseif ($sms['type'] == 2) {
             $result = MemberService::send_sms_alidayu($sms, $templateType);
