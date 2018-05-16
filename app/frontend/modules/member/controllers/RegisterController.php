@@ -34,7 +34,6 @@ class RegisterController extends ApiController
 
     public function index()
     {
-        echo 5555555555555;die;
         $mobile = \YunShop::request()->mobile;
         $password = \YunShop::request()->password;
         $confirm_password = \YunShop::request()->confirm_password;
@@ -172,9 +171,9 @@ class RegisterController extends ApiController
     }
 
     public function sendCodeV2()
-    {echo 1;die;
+    {
         $mobile = \YunShop::request()->mobile;
-        dd($mobile);
+
         $reset_pwd = \YunShop::request()->reset;
 
         $state = \YunShop::request()->state?:'86';
@@ -199,7 +198,6 @@ class RegisterController extends ApiController
         if (!MemberService::smsSendLimit(\YunShop::app()->uniacid, $mobile)) {
             return $this->errorJson('发送短信数量达到今日上限');
         } else {
-            echo 33333;die;
             $this->sendSmsV2($mobile, $code, $state);
         }
     }
@@ -254,7 +252,6 @@ class RegisterController extends ApiController
                 MemberService::udpateSmsSendTotal(\YunShop::app()->uniacid, $mobile);
                 return $this->successJson();
             } else {
-                echo 11111;die;
                 return $this->errorJson('短信配置'.$issendsms['SubmitResult']['msg']);
             }
         } elseif ($sms['type'] == 2) {
@@ -313,14 +310,12 @@ class RegisterController extends ApiController
             }
 
         } else {
-            echo 21222;die;
             return $this->errorJson('未设置短信功能');
         }
     }
 
     public function sendSmsV2($mobile, $code, $state, $templateType = 'reg')
     {
-        echo 366959;die;
         $sms = \Setting::get('shop.sms');
 
         //互亿无线
@@ -338,7 +333,6 @@ class RegisterController extends ApiController
                 MemberService::udpateSmsSendTotal(\YunShop::app()->uniacid, $mobile);
                 return $this->successJson();
             } else {
-                echo 333333;die;
                 return $this->errorJson('短信配置'.$issendsms['SubmitResult']['msg']);
             }
         } elseif ($sms['type'] == 2) {
@@ -397,7 +391,6 @@ class RegisterController extends ApiController
             }
 
         } else {
-            echo 4444444;die;
             return $this->errorJson('未设置短信功能');
         }
     }
