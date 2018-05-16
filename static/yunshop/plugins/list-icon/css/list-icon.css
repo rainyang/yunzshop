@@ -1,0 +1,12 @@
+.pl {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transform: translate(0, 0);
+}
+.api-group-purchase {
+    background-image: url('../img/api/group-purchase.png');
+}

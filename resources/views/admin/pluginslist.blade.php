@@ -16,11 +16,12 @@
     <div class="w1200 m0a">
         <script language="javascript" src="{{static_url('js/dist/nestable/jquery.nestable.js')}}"></script>
         <link rel="stylesheet" type="text/css" href="{{static_url('js/dist/nestable/nestable.css')}}"/>
+        <link rel="stylesheet" type="text/css" href="{{static_url('yunshop/plugins/list-icon/css/list-icon.css')}}">
 
         <!-- 新增加右侧顶部三级菜单 -->
         <section class="content-header">
             <h3 style="display: inline-block;    padding-left: 10px;">
-                {{ trans('应用中心') }}
+                {{ trans('应用中心') }}<i class="pl api-group-purchase"></i>
             </h3>
         </section>
 
