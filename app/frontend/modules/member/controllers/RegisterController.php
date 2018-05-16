@@ -252,7 +252,7 @@ class RegisterController extends ApiController
                 MemberService::udpateSmsSendTotal(\YunShop::app()->uniacid, $mobile);
                 return $this->successJson();
             } else {
-                return $this->errorJson('短信配置'.$issendsms['SubmitResult']['msg']);
+                return $this->errorJson('短信设置'.$issendsms['SubmitResult']['msg'].'请前往设置');
             }
         } elseif ($sms['type'] == 2) {
             $result = MemberService::send_sms_alidayu($sms, $templateType);
@@ -333,7 +333,7 @@ class RegisterController extends ApiController
                 MemberService::udpateSmsSendTotal(\YunShop::app()->uniacid, $mobile);
                 return $this->successJson();
             } else {
-                return $this->errorJson('短信配置'.$issendsms['SubmitResult']['msg']);
+                return $this->errorJson('短信设置'.$issendsms['SubmitResult']['msg'].'请前往设置');
             }
         } elseif ($sms['type'] == 2) {
             $result = MemberService::send_sms_alidayu($sms, $templateType);
