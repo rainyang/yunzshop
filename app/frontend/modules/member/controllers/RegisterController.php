@@ -173,6 +173,7 @@ class RegisterController extends ApiController
     public function sendCodeV2()
     {
         $mobile = \YunShop::request()->mobile;
+        dd($mobile);
         $reset_pwd = \YunShop::request()->reset;
 
         $state = \YunShop::request()->state?:'86';
