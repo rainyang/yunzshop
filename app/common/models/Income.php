@@ -21,34 +21,64 @@ class Income extends BackendModel
     protected $appends = ['status_name', 'pay_status_name'];
 
 
-
-    //状态
+    /**
+     * 提现状态：未提现
+     */
     const STATUS_INITIAL    = 0;
 
+
+    /**
+     * 提现状态：已提现
+     */
     const STATUS_WITHDRAW   = 1;
 
 
-
-    //打款状态
+    /**
+     * 打款状态：无效
+     */
     const PAY_STATUS_INVALID    = -1;
 
+
+    /**
+     * 打款状态：未审核
+     */
     const PAY_STATUS_INITIAL    = 0;
 
+
+    /**
+     * 打款状态：未打款
+     */
     const PAY_STATUS_WAIT       = 1;
 
+
+    /**
+     * 打款状态：已打款
+     */
     const PAY_STATUS_FINISH     = 2;
 
+
+    /**
+     * 打款状态：已驳回
+     */
     const PAY_STATUS_REJECT     = 3;
 
 
-
-
+    /**
+     * 提现状态名称集合
+     *
+     * @var array
+     */
     public static $statusComment = [
         self::STATUS_INITIAL    => '未提现',
         self::STATUS_WITHDRAW   => '已提现',
     ];
 
 
+    /**
+     * 打款状态名称集合
+     *
+     * @var array
+     */
     public static $payStatusComment = [
         self::PAY_STATUS_INVALID    => '无效',
         self::PAY_STATUS_INITIAL    => '未审核',
@@ -60,6 +90,7 @@ class Income extends BackendModel
 
     /**
      * 通过 $status 值获取 $status 名称
+     *
      * @param $status
      * @return mixed|string
      */
@@ -69,10 +100,9 @@ class Income extends BackendModel
     }
 
 
-
-
     /**
      * 通过 $pay_way 值获取 $pay_status 名称
+     *
      * @param $pay_status
      * @return mixed|string
      */
@@ -82,10 +112,9 @@ class Income extends BackendModel
     }
 
 
-
-
     /**
      * 通过字段 status 输出 status_name ;
+     *
      * @return string
      */
     public function getStatusNameAttribute()
@@ -94,10 +123,9 @@ class Income extends BackendModel
     }
 
 
-
-
     /**
      * 通过字段 pay_status 输出 pay_status_name ;
+     *
      * @return string
      */
     public function getPayStatusNameAttribute()
@@ -106,16 +134,26 @@ class Income extends BackendModel
     }
 
 
-
-
     /**
      * 可提现收入检索条件
+     *
      * @param $query
      * @return mixed
      */
     public function scopeCanWithdraw($query)
     {
         return $query->where('status', static::STATUS_INITIAL);
+    }
+
+
+    /**
+     * 关联会员数据表
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function member()
+    {
+        return $this->belongsTo('app\common\models\Member');
     }
 
 
