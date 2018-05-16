@@ -14,7 +14,9 @@
             <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data">
 
                 <div class='alert alert-info alert-important'>
-                    请将公众平台模板消息所在行业选择为： IT科技/互联网|电子商务
+                    请将公众平台模板消息所在行业选择为： IT科技/互联网|电子商务<br>
+                    提示：点击模版消息后方开关按钮<input name="notice_select" type="checkbox" data-size="mini" disabled>即可开启默认模版消息，无需进行额外设置。<br>
+                    如需进行消息推送个性化消息，点击进入自定义模版管理。
                 </div>
 
                 <div class="panel panel-default">
@@ -68,7 +70,7 @@
                     <div class='panel-body'>
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">积分变动通知</label>
-                            <div class="col-sm-9 col-xs-12">
+                            <div class="col-sm-8 col-xs-12">
                                 <select name='yz_notice[point_change]' class='form-control diy-notice'>
                                     <option value="" @if(!$set['point_change'])
                                     selected
@@ -84,6 +86,30 @@
                                     @endforeach
                                 </select>
                                 <div class="help-block">通知公众平台模板消息编号: OPENTM207509450</div>
+                            </div>
+                            <div class="col-sm-2 col-xs-6 ">
+                                <input name="notice_default" type="checkbox" data-size="small" value="point_change">
+                                <script type="text/javascript">
+                                    $('[name="notice_select"]').bootstrapSwitch({
+                                        onText:"开",
+                                        offText:"关",
+                                        onColor:"success",
+                                        offColor:"info",
+                                        onSwitchChange:function(event,state){
+                                            if(state==true){
+                                                var url = "{!! yzWebUrl('setting.default-notice.index') !!}"
+                                                var postdata = {
+                                                    notice_name: $(this).val()
+                                                };
+                                                $.post(url,postdata,function(data){
+                                                    $(".batchenable").html('启用成功');
+                                                });
+                                            }else{
+
+                                            }
+                                        }
+                                    })
+                                </script>
                             </div>
                         </div>
                     </div>

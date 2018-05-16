@@ -13,6 +13,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <meta name="_token" content="{{ csrf_token() }}"/>
     <!-- Bootstrap 3.3.6 -->
     <link rel="stylesheet" href="{{static_url('assets/css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{static_url('css/bootstrap-switch.min.css')}}">
     <link rel="stylesheet" href="{{static_url('assets/css/demo.css')}}">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{static_url('assets/css/material-dashboard.css?v=1.2.1')}}">
@@ -80,6 +81,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="//cdn.bootcss.com/jquery/2.2.3/jquery.min.js"></script>
     <script type="text/javascript" src="{{static_url('js/general.js')}}"></script>
     <script type="text/javascript" src="{{static_url('js/clipboard.min.js')}}"></script>
+    <script type="text/javascript" src="{{static_url('js/bootstrap-switch.min.js')}}"></script>
 
 {{--    <script src="{{static_url('assets/js/bootstrap.min.js')}}" type="text/javascript"></script>--}}
     <script src="{{static_url('assets/js/material.min.js')}}" type="text/javascript"></script>
