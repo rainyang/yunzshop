@@ -497,6 +497,21 @@ class Member extends BackendModel
             ];
         }
 
+        //帮助中心插件开启控制
+        if ($plugin_class->isEnabled('help-center')) {
+            //dd(123);
+            $status = \Setting::get('help-center.status');
+
+            $data['help_center'] = [
+                'button_name' => '帮助中心',
+                'status'         => $status ? true : false
+            ];
+        } else {
+            $data['help_center'] = [
+                'button_name' => '帮助中心',
+                'status' => false
+            ];
+        }
 
         return $data;
     }

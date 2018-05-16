@@ -9,9 +9,9 @@
 namespace app\frontend\modules\dispatch\models;
 
 use app\common\events\dispatch\OrderDispatchWasCalculated;
-
 use app\common\models\goods\GoodsDispatch;
 use app\frontend\modules\order\models\PreOrder;
+use app\common\models\MemberShopInfo;
 
 
 class OrderDispatch
@@ -33,11 +33,39 @@ class OrderDispatch
             // 没选配送方式 或者 不需要配送配送
             return 0;
         }
+
+        //临时解决，是柜子的不算运费
+        if (!empty($this->order->mark)) {
+            return 0;
+        }
+
         $event = new OrderDispatchWasCalculated($this->order);
         event($event);
         $data = $event->getData();
+        
 
-        return $result = array_sum(array_column($data, 'price'));
+        $freight = array_sum(array_column($data, 'price'));
+
+        $freight_reduction = $this->levelFreeFreight($freight);
+
+        return $result = max(($freight - $freight_reduction), 0);
+        //return $result = array_sum(array_column($data, 'price'));
+    }
+    /**
+     * Author: aaa Date: 2018/4/2
+     * 会员等级运费优惠
+     * @return [int] [优惠金额]
+     */
+    public function levelFreeFreight($freight)
+    {
+        $uid = intval($this->order->belongsToMember->uid);
+        $member = MemberShopInfo::select('level_id')->with('level')->find($uid);
+
+        if (isset($member->level)) {
+            $freight_reduction = intval($member->level->freight_reduction);
+            return ($freight * ($freight_reduction / 100));
+        }
+        return 0;
     }
 
 }

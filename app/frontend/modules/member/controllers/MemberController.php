@@ -1062,7 +1062,7 @@ class MemberController extends ApiController
         $data = [];
 
         collect(app('plugins')->getPlugins())->filter(function ($item) use ($filter) {
-            if (1 == $item->getEnabled()) {
+            if (1 == $item->isEnabled()) {
                 $info = $item->toArray();
 
                 if (in_array($info['name'], $filter)) {
@@ -1087,31 +1087,37 @@ class MemberController extends ApiController
             ];
         });
 
-        $credit_setting = Setting::get('plugin.credit');
+        if (app('plugins')->isEnabled('credit')) {
+            $credit_setting = Setting::get('plugin.credit');
 
-        if ($credit_setting && 1 == $credit_setting['is_credit']) {
-            $data[] = [
-                'name' => 'credit',
-                'title' => '信用值'
-            ];
+            if ($credit_setting && 1 == $credit_setting['is_credit']) {
+                $data[] = [
+                    'name' => 'credit',
+                    'title' => '信用值'
+                ];
+            }
         }
 
-        $ranking_setting = Setting::get('plugin.ranking');
+        if (app('plugins')->isEnabled('ranking')) {
+            $ranking_setting = Setting::get('plugin.ranking');
 
-        if ($ranking_setting && 1 == $ranking_setting['is_ranking']) {
-            $data[] = [
-                'name' => 'ranking',
-                'title' => '排行榜'
-            ];
+            if ($ranking_setting && 1 == $ranking_setting['is_ranking']) {
+                $data[] = [
+                    'name' => 'ranking',
+                    'title' => '排行榜'
+                ];
+            }
         }
 
-        $article_setting = Setting::get('plugin.article');
+        if (app('plugins')->isEnabled('article')) {
+            $article_setting = Setting::get('plugin.article');
 
-        if (app('plugins')->isEnabled('article') && 1 == $article_setting['enabled']) {
-            $data[] = [
-                'name' => 'article',
-                'title' => $article_setting['center'] ? $article_setting['center'] : '文章中心'
-            ];
+            if ($article_setting) {
+                $data[] = [
+                    'name' => 'article',
+                    'title' => $article_setting['center'] ? $article_setting['center'] : '文章中心'
+                ];
+            }
         }
 
         if (app('plugins')->isEnabled('clock-in')) {
@@ -1128,13 +1134,28 @@ class MemberController extends ApiController
             }
         }
 
-        $video_demand_setting = Setting::get('plugin.video_demand');
+        if (app('plugins')->isEnabled('video_demand')) {
 
-        if ($video_demand_setting && $video_demand_setting['is_video_demand']) {
-            $data[] = [
-                'name' => 'video_demand',
-                'title' => '视频点播'
-            ];
+            $video_demand_setting = Setting::get('plugin.video_demand');
+
+            if ($video_demand_setting && $video_demand_setting['is_video_demand']) {
+                $data[] = [
+                    'name' => 'video_demand',
+                    'title' => '视频点播'
+                ];
+            }
+        }
+
+        if (app('plugins')->isEnabled('help-center')) {
+
+            $help_center_setting = Setting::get('plugin.help_center');
+
+            if ($help_center_setting && 1 == $help_center_setting['status']) {
+                $data[] = [
+                    'name' => 'help_center',
+                    'title' => '帮助中心'
+                ];
+            }
         }
 
         return $this->successJson('ok', $data);
