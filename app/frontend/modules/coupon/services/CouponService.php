@@ -82,6 +82,7 @@ class CouponService
 
             return true;
         })->values();
+
         $result = collect($this->order->orderCoupons)->map(function($orderCoupon){
             // 已参与订单价格计算的优惠券
             $orderCoupon->coupon->getMemberCoupon()->valid = true;
@@ -148,7 +149,10 @@ class CouponService
     {
         if(!isset($this->selectedMemberCoupon)){
             $member_coupon_ids = ArrayHelper::unreliableDataToArray(\Request::input('member_coupon_ids'));
-
+            
+            if(\Setting::get('coupon.is_singleton')){
+                $member_coupon_ids = array_slice($member_coupon_ids,0,1);
+            }
             $this->selectedMemberCoupon = $this->getMemberCoupon()->filter(function ($memberCoupon) use ($member_coupon_ids) {
                 return in_array($memberCoupon->id, $member_coupon_ids);
             });

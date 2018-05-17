@@ -10,7 +10,24 @@
 
 
                 <div class='panel-heading'>基础设置</div>
-
+                <div class='panel-body'>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">优惠券使用限制：</label>
+                        <div class="col-sm-4 col-xs-6">
+                            <label class="radio-inline">
+                                <input type="radio" name="coupon[is_singleton]" value="1" @if ($coupon['is_singleton'] == 1) checked="checked" @endif />
+                                单张
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="coupon[is_singleton]" value="0" @if ($coupon['is_singleton'] == 0) checked="checked" @endif />
+                                多张
+                            </label>
+                            <div class="help-block">
+                                选中单张时每个订单最多只能使用一张优惠券
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class='panel-body'>
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">优惠券转让：</label>
