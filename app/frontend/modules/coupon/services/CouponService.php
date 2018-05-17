@@ -81,13 +81,13 @@ class CouponService
             $coupon->getMemberCoupon()->checked = false;//界面选中
 
             return true;
-        });
-        $result = $this->order->orderCoupons->map(function($orderCoupon){
+        })->values();
+        $result = collect($this->order->orderCoupons)->map(function($orderCoupon){
             // 已参与订单价格计算的优惠券
             $orderCoupon->coupon->getMemberCoupon()->valid = true;
             $orderCoupon->coupon->getMemberCoupon()->checked = true;
             return $orderCoupon->coupon;
-        })->push($result);
+        })->merge($result);
 
         return $result;
     }
