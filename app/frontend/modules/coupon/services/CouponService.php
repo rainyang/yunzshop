@@ -77,11 +77,17 @@ class CouponService
             if (!$coupon->isOptional()) {
                 return false;
             }
-            $coupon->getMemberCoupon()->valid = $coupon->isChecked() || $coupon->valid();//界面标蓝
-            $coupon->getMemberCoupon()->checked = $coupon->isChecked();//界面选中
+            $coupon->getMemberCoupon()->valid = $coupon->valid();//界面标蓝
+            $coupon->getMemberCoupon()->checked = false;//界面选中
 
             return true;
         });
+        $result = $this->order->orderCoupons->map(function($orderCoupon){
+            // 已参与订单价格计算的优惠券
+            $orderCoupon->coupon->getMemberCoupon()->valid = true;
+            $orderCoupon->coupon->getMemberCoupon()->checked = true;
+            return $orderCoupon->coupon;
+        })->merge($result);
 
         return $result;
     }

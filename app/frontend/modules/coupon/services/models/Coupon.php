@@ -173,6 +173,7 @@ class Coupon
             'amount' => $this->getDiscountAmount()
         ]);
         $preOrderCoupon->setRelation('memberCoupon', $this->memberCoupon);
+        $preOrderCoupon->coupon = $this;
         $preOrderCoupon->setOrder($this->order);
 
     }
