@@ -87,7 +87,7 @@ class CouponService
             $orderCoupon->coupon->getMemberCoupon()->valid = true;
             $orderCoupon->coupon->getMemberCoupon()->checked = true;
             return $orderCoupon->coupon;
-        })->merge($result);
+        })->push($result);
 
         return $result;
     }
