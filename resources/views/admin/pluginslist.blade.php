@@ -27,7 +27,7 @@
                         <div class="col-md-2">
                             <a href="{{yzWebFullUrl($plugin['url'])}}" class="plugin-a col-md-12">
                                 <div class="plugin-i-div">
-                                    <i class="plugin-i {{$plugin['list_icon']}}"></i>
+                                    <i class="plugin-i {{$plugin['list_icon']}}" style="background-color: #F15353"></i>
                                 </div>
                                 <span class="plugin-span">{{$plugin['name']}}</span>
                                 <object>
@@ -57,7 +57,7 @@
                             <div class="col-md-2">
                                 <a href="{{yzWebFullUrl($plugin['url'])}}" class="plugin-a col-md-12">
                                     <div class="plugin-i-div">
-                                        <i class="plugin-i {{$plugin['list_icon']}}"></i>
+                                        <i class="plugin-i {{$plugin['list_icon']}}" style="background-color: #eb6f50"></i>
                                     </div>
                                     <span class="plugin-span">{{$plugin['name']}}</span>
                                     <object>
@@ -87,7 +87,7 @@
                             <div class="col-md-2">
                                 <a href="{{yzWebFullUrl($plugin['url'])}}" class="plugin-a col-md-12">
                                     <div class="plugin-i-div">
-                                        <i class="plugin-i {{$plugin['list_icon']}}"></i>
+                                        <i class="plugin-i {{$plugin['list_icon']}}" style="background-color: #f0b652"></i>
                                     </div>
                                     <span class="plugin-span">{{$plugin['name']}}</span>
                                     <object>
@@ -117,7 +117,7 @@
                             <div class="col-md-2">
                                 <a href="{{yzWebFullUrl($plugin['url'])}}" class="plugin-a col-md-12">
                                     <div class="plugin-i-div">
-                                        <i class="plugin-i {{$plugin['list_icon']}}"></i>
+                                        <i class="plugin-i {{$plugin['list_icon']}}" style="background-color: #f59753"></i>
                                     </div>
                                     <span class="plugin-span">{{$plugin['name']}}</span>
                                     <object>
@@ -147,7 +147,7 @@
                             <div class="col-md-2">
                                 <a href="{{yzWebFullUrl($plugin['url'])}}" class="plugin-a col-md-12">
                                     <div class="plugin-i-div">
-                                        <i class="plugin-i {{$plugin['list_icon']}}"></i>
+                                        <i class="plugin-i {{$plugin['list_icon']}}" style="background-color: #50d9a7"></i>
                                     </div>
                                     <span class="plugin-span">{{$plugin['name']}}</span>
                                     <object>
@@ -177,7 +177,7 @@
                             <div class="col-md-2">
                                 <a href="{{yzWebFullUrl($plugin['url'])}}" class="plugin-a col-md-12">
                                     <div class="plugin-i-div">
-                                        <i class="plugin-i {{$plugin['list_icon']}}"></i>
+                                        <i class="plugin-i {{$plugin['list_icon']}}" style="background-color: #53d5f0"></i>
                                     </div>
                                     <span class="plugin-span">{{$plugin['name']}}</span>
                                     <object>
