@@ -149,7 +149,7 @@ class CouponService
     {
         if(!isset($this->selectedMemberCoupon)){
             $member_coupon_ids = ArrayHelper::unreliableDataToArray(\Request::input('member_coupon_ids'));
-            
+
             if(\Setting::get('coupon.is_singleton')){
                 $member_coupon_ids = array_slice($member_coupon_ids,0,1);
             }

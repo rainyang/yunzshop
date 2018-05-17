@@ -220,6 +220,10 @@ class Coupon
      */
     public function unique()
     {
+        //允许多张使用
+        if($this->getMemberCoupon()->belongsToCoupon->is_complex){
+            return true;
+        }
         $memberCoupons = MemberCouponService::getCurrentMemberCouponCache($this->getPreOrder()->belongsToMember);
         //本优惠券与某个选中的优惠券是一张 就返回false
         return !$memberCoupons->contains(function ($memberCoupon) {
