@@ -32,7 +32,7 @@ class FilteringController extends BaseController
     {
         $filteringGroup = Filtering::find(\YunShop::request()->parent_id);
         if(!$filteringGroup) {
-            return $this->message('无此过滤组或已经删除','','error');
+            return $this->message('无此标签组或已经删除','','error');
         }
 
         $filteringValue = Filtering::getList(\YunShop::request()->parent_id)->paginate($this->pageSize)->toArray();
@@ -55,7 +55,7 @@ class FilteringController extends BaseController
         if ($parent_id) {
             $parent = Filtering::find($parent_id);
             if(!$parent) {
-                return $this->message('无此过滤组或已经删除','','error');
+                return $this->message('无此标签组或已经删除','','error');
             }
 
             $url = Url::absoluteWeb('filtering.filtering.filter-value', ['parent_id' => $parent_id]);
@@ -101,7 +101,7 @@ class FilteringController extends BaseController
         if ($parent_id) {
             $parent = Filtering::find($parent_id);
             if(!$parent) {
-                return $this->message('无此过滤组或已经删除','','error');
+                return $this->message('无此标签组或已经删除','','error');
             }
             $url = Url::absoluteWeb('filtering.filtering.filter-value', ['parent_id' => $parent_id]);
         }
@@ -128,6 +128,20 @@ class FilteringController extends BaseController
             'item' => $filtering,
             'parent_id' => $parent_id,
             'parent' => isset($parent) ? $parent : collect([]),
+        ])->render();
+    }
+
+      /**
+     * 获取搜索标签组
+     * @return html
+     */
+    public function getSearchLabel()
+    {
+
+        $keyword = \YunShop::request()->keyword;
+        $filter_group = Filtering::getFilterGroup($keyword);
+        return view('filtering.query', [
+            'filter_group' => $filter_group->toArray(),
         ])->render();
     }
 
