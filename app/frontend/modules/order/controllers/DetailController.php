@@ -47,6 +47,10 @@ class DetailController extends ApiController
         }
         if(app('plugins')->isEnabled('store-cashier')){
 
+            //加入门店ID，订单跳转商品详情需要
+            $store_id = \Yunshop\StoreCashier\store\models\StoreGoods::select()->byGoodsId($order->hasManyOrderGoods[0]->goods_id)->first()->store_id;
+            $data['has_many_order_goods']['0']['store_id'] = $store_id;
+
             //临时解决
             $storeObj = \Yunshop\StoreCashier\common\models\Store::getStoreByCashierId($order->hasManyOrderGoods[0]->goods_id)->first();
             if ($storeObj) {
