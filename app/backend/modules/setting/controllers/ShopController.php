@@ -15,6 +15,7 @@ use app\common\models\AccountWechats;
 use app\common\models\notice\MessageTemp;
 use app\common\services\MyLink;
 use app\common\services\Utils;
+use Mews\Captcha\Captcha;
 use Yunshop\Diyform\models\DiyformTypeModel;
 use Gregwar\Captcha\CaptchaBuilder;
 use Gregwar\Captcha\PhraseBuilder;
@@ -152,15 +153,15 @@ class ShopController extends BaseController
                 $this->error('短信设置失败');
             }
         }
-//        $captcha = self::captcha();
+        $captcha = self::captchao();
+        dd($captcha);
         return view('setting.shop.sms', [
             'set' => $sms,
-//            'captcha' => $captcha,
         ])->render();
     }
 
     //验证码测试
-    public static function captcha()
+    public static function captchapp()
     {
         $phrase = new PhraseBuilder();
         $code = $phrase->build(4);
@@ -179,6 +180,12 @@ class ShopController extends BaseController
         header('Cache-Control: no-cache, must-revalidate');
         header('Content-Type: image/jpeg');
         $builder->output();
+    }
+
+    //验证码测试22
+    public static function captchao()
+    {
+        return Captcha::create();
     }
 
     /**
