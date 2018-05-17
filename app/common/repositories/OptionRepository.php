@@ -204,6 +204,11 @@ class OptionRepository extends Repository
         return DB::table('yz_options')->where('id', $id)->update(['enabled' => $enabled]);
     }
 
+    public function editTopShowById($id, $enabled)
+    {
+        return DB::table('yz_options')->where('uniacid', \YunShop::app()->uniacid)->where('id', $id)->update(['top_show' => $enabled]);
+    }
+
     public function insertPlugin($pluginData)
     {
         return DB::table('yz_options')->insert($pluginData);

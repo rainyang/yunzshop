@@ -30,6 +30,15 @@
                                     <i class="plugin-i {{$plugin['list_icon']}}"></i>
                                 </div>
                                 <span class="plugin-span">{{$plugin['name']}}</span>
+                                <object>
+                                    <a class="top_show"
+                                       style="display: none;"
+                                       href="{{yzWebUrl('plugins.setTopShow',['name'=>$key,'action'=>(app('plugins')->isTopShow($key) ? 1 : 0)])}}">
+                                        <i class="fa fa-tags" @if(app('plugins')->isTopShow($key))style="color: red" @endif
+                                        data-toggle="tooltip"  data-placement="top"
+                                           @if(app('plugins')->isTopShow($key))title="取消顶部显示?" @else title="选择顶部显示?"@endif></i>
+                                    </a>
+                                </object>
                                 {{--<span class="plugin-span-down">{{$plugin['description']}}</span>--}}
                             </a>
                         </div>
@@ -51,6 +60,15 @@
                                         <i class="plugin-i {{$plugin['list_icon']}}"></i>
                                     </div>
                                     <span class="plugin-span">{{$plugin['name']}}</span>
+                                    <object>
+                                        <a class="top_show"
+                                           style="display: none;"
+                                           href="{{yzWebUrl('plugins.setTopShow',['name'=>$key,'action'=>(app('plugins')->isTopShow($key) ? 1 : 0)])}}">
+                                            <i class="fa fa-tags" @if(app('plugins')->isTopShow($key))style="color: red" @endif
+                                            data-toggle="tooltip"  data-placement="top"
+                                               @if(app('plugins')->isTopShow($key))title="取消顶部显示?" @else title="选择顶部显示?"@endif></i>
+                                        </a>
+                                    </object>
                                     {{--<span class="plugin-span-down">{{$plugin['description']}}</span>--}}
                                 </a>
                             </div>
@@ -72,6 +90,15 @@
                                         <i class="plugin-i {{$plugin['list_icon']}}"></i>
                                     </div>
                                     <span class="plugin-span">{{$plugin['name']}}</span>
+                                    <object>
+                                        <a class="top_show"
+                                           style="display: none;"
+                                           href="{{yzWebUrl('plugins.setTopShow',['name'=>$key,'action'=>(app('plugins')->isTopShow($key) ? 1 : 0)])}}">
+                                            <i class="fa fa-tags" @if(app('plugins')->isTopShow($key))style="color: red" @endif
+                                            data-toggle="tooltip"  data-placement="top"
+                                               @if(app('plugins')->isTopShow($key))title="取消顶部显示?" @else title="选择顶部显示?"@endif></i>
+                                        </a>
+                                    </object>
                                     {{--<span class="plugin-span-down">{{$plugin['description']}}</span>--}}
                                 </a>
                             </div>
@@ -93,6 +120,15 @@
                                         <i class="plugin-i {{$plugin['list_icon']}}"></i>
                                     </div>
                                     <span class="plugin-span">{{$plugin['name']}}</span>
+                                    <object>
+                                        <a class="top_show"
+                                           style="display: none;"
+                                           href="{{yzWebUrl('plugins.setTopShow',['name'=>$key,'action'=>(app('plugins')->isTopShow($key) ? 1 : 0)])}}">
+                                            <i class="fa fa-tags" @if(app('plugins')->isTopShow($key))style="color: red" @endif
+                                            data-toggle="tooltip"  data-placement="top"
+                                               @if(app('plugins')->isTopShow($key))title="取消顶部显示?" @else title="选择顶部显示?"@endif></i>
+                                        </a>
+                                    </object>
                                     {{--<span class="plugin-span-down">{{$plugin['description']}}</span>--}}
                                 </a>
                             </div>
@@ -114,6 +150,15 @@
                                         <i class="plugin-i {{$plugin['list_icon']}}"></i>
                                     </div>
                                     <span class="plugin-span">{{$plugin['name']}}</span>
+                                    <object>
+                                        <a class="top_show"
+                                           style="display: none;"
+                                           href="{{yzWebUrl('plugins.setTopShow',['name'=>$key,'action'=>(app('plugins')->isTopShow($key) ? 1 : 0)])}}">
+                                            <i class="fa fa-tags" @if(app('plugins')->isTopShow($key))style="color: red" @endif
+                                            data-toggle="tooltip"  data-placement="top"
+                                               @if(app('plugins')->isTopShow($key))title="取消顶部显示?" @else title="选择顶部显示?"@endif></i>
+                                        </a>
+                                    </object>
                                     {{--<span class="plugin-span-down">{{$plugin['description']}}</span>--}}
                                 </a>
                             </div>
@@ -135,6 +180,15 @@
                                         <i class="plugin-i {{$plugin['list_icon']}}"></i>
                                     </div>
                                     <span class="plugin-span">{{$plugin['name']}}</span>
+                                    <object>
+                                        <a class="top_show"
+                                           style="display: none;"
+                                           href="{{yzWebUrl('plugins.setTopShow',['name'=>$key,'action'=>(app('plugins')->isTopShow($key) ? 1 : 0)])}}">
+                                            <i class="fa fa-tags" @if(app('plugins')->isTopShow($key))style="color: red" @endif
+                                            data-toggle="tooltip"  data-placement="top"
+                                               @if(app('plugins')->isTopShow($key))title="取消顶部显示?" @else title="选择顶部显示?"@endif></i>
+                                        </a>
+                                    </object>
                                     {{--<span class="plugin-span-down">{{$plugin['description']}}</span>--}}
                                 </a>
                             </div>
@@ -143,5 +197,16 @@
                 </div>
             </div>
         </div>
+    </div>
+
+        <script>
+            $(function () { $("[data-toggle='tooltip']").tooltip(); });
+            $(".plugin-a").mouseover(function(){
+                $(this).find("a").css("display","inline");
+            });
+            $(".plugin-a").mouseleave(function () {
+                $(this).find("a").css("display","none");
+            })
+        </script>
 
 @endsection

@@ -80,6 +80,7 @@ class PluginsController extends BaseController
 
     public function getPluginList()
     {
+
         $dividend['name'] = '分润类';
         $industry['name'] = '行业类';
         $marketing['name'] = '营销类';
@@ -114,10 +115,16 @@ class PluginsController extends BaseController
                 break;
                 case 'api'://接口类
                     $api[$key] = $plugin;
-                    $api[$key]['description'] = $pluginsModel->getPlugin($key)->description;
+//                    if (!$pluginsModel->getPlugin($key)) {
+//                        $api[$key]['description'] = $pluginsModel->getPlugin(str_replace("_","-",$key));
+//                    } else {
+//                        $api[$key]['description'] = $pluginsModel->getPlugin($key);
+//                    }
+//                    $api[$key]['description'] = $pluginsModel->getPlugin($key)->description;
                 break;
             }
         }
+
         return view('admin.pluginslist',[
             'plugins' => $plugins,
             'dividend' => $dividend,
@@ -127,6 +134,18 @@ class PluginsController extends BaseController
             'recharge' => $recharge,
             'api' => $api,
         ]);
+    }
+
+    public function setTopShow() {
+        $data = request()->input();
+        $data['action'] ?  : app('plugins')->enTopShow($data['name'],1);
+        if ($data['action']) {
+            app('plugins')->enTopShow($data['name'],0);
+            return $this->message('取消顶部栏成功',Url::absoluteWeb('plugins.getPluginList'));
+        } else {
+            app('plugins')->enTopShow($data['name'],1);
+            return $this->message('添加顶部栏成功',Url::absoluteWeb('plugins.getPluginList'));
+        }
     }
 
 }
