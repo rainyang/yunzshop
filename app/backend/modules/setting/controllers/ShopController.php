@@ -143,6 +143,7 @@ class ShopController extends BaseController
     {
         $sms = Setting::get('shop.sms');
         $requestModel = \YunShop::request()->sms;
+//        dd($requestModel);
         if ($requestModel) {
             if (Setting::set('shop.sms', $requestModel)) {
                 return $this->message(' 短信设置成功', Url::absoluteWeb('setting.shop.sms'));

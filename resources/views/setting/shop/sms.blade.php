@@ -32,11 +32,20 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">短信验证码</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <input type="radio" name="sms[status]" value="{{ $set['status'] }}" /> 开启
+                            &nbsp;&nbsp;
+                            <input type="radio" name="sms[status]" value="" /> 关闭
+                        </div>
+                    </div>
 
+                    <div class="form-group">
                         <div class="col-sm-12 col-xs-12">
                             <hr>
                         </div>
                     </div>
+
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">国际短信账号</label>
                         <div class="col-sm-9 col-xs-12">
