@@ -77,7 +77,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     </script>
 
     <!-- jQuery 2.2.0 -->
-    <script src="//cdn.bootcss.com/jquery/2.2.3/jquery.min.js"></script>
+    <script src="{{static_url('js/jquery-2.2.3.min.js')}}"></script>
     <script type="text/javascript" src="{{static_url('js/general.js')}}"></script>
     <script type="text/javascript" src="{{static_url('js/clipboard.min.js')}}"></script>
 
