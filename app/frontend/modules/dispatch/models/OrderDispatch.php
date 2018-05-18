@@ -27,7 +27,7 @@ class OrderDispatch
      * 订单运费
      * @return float|int
      */
-    public function getDispatchPrice()
+    public function getDispatchPrice($orderPrice)
     {
         if (!isset($this->order->hasOneDispatchType) || !$this->order->hasOneDispatchType->needSend()) {
             // 没选配送方式 或者 不需要配送配送
@@ -47,9 +47,30 @@ class OrderDispatch
 
         $freight_reduction = $this->levelFreeFreight($freight);
 
-        $result = max(($freight - $freight_reduction), 0);
+        $result = max(($freight - $this->fullAmountFree($orderPrice,$freight) - $freight_reduction), 0);
 
         return $result;
+    }
+
+    /**
+     * 全场满额包邮
+     * @param $orderPrice
+     * @return bool
+     */
+    private function fullAmountFree($orderPrice,$freight)
+    {
+        if (!\Setting::get('dispatch.fullAmountFree.open')) {
+            return 0;
+        }
+        // 设置为0 全额包邮
+        if (\Setting::get('dispatch.fullAmountFree.amount') === 0 || \Setting::get('dispatch.fullAmountFree.amount') === '0') {
+            return $freight;
+        }
+        // 订单金额满足满减金额
+        if ($orderPrice >= \Setting::get('dispatch.fullAmountFree.enough')) {
+            return min(\Setting::get('dispatch.fullAmountFree.amount'),$freight);
+        }
+        return 0;
     }
 
     /**

@@ -74,7 +74,7 @@ class PreOrder extends Order
             $this->mark = request()->input('mark', '');
         }
         parent::__construct($attributes);
-        $this->setRelation('orderSettings',$this->newCollection());
+        $this->setRelation('orderSettings', $this->newCollection());
 
     }
 
@@ -141,9 +141,9 @@ class PreOrder extends Order
      * 计算订单运费
      * @return int|number
      */
-    public function getDispatchPrice()
+    public function getDispatchPrice($orderPrice)
     {
-        return $this->orderDispatch->getDispatchPrice();
+        return $this->orderDispatch->getDispatchPrice($orderPrice);
     }
 
     /**
@@ -237,7 +237,7 @@ class PreOrder extends Order
 
         $result = $this->push();
 
-        if($result === false){
+        if ($result === false) {
 
             throw new AppException('订单相关信息保存失败');
         }
@@ -280,12 +280,13 @@ class PreOrder extends Order
      */
     protected function getPrice()
     {
-        if(isset($this->price)){
+        if (isset($this->price)) {
             return $this->price;
         }
 
         //订单最终价格 = 商品最终价格 - 订单优惠 - 订单抵扣 + 订单运费
-        $this->price = max($this->getOrderGoodsPrice() - $this->getDiscountAmount() + $this->getDispatchPrice(), 0);
+        $this->price = max($this->getOrderGoodsPrice() - $this->getDiscountAmount(), 0);
+        $this->price += $this->getDispatchPrice($this->price);
         $this->price = $this->price - $this->getDeductionPrice();
         return $this->price;
     }
