@@ -138,6 +138,12 @@
 .another_pay {
     background-image: url('../img/tool/another_pay.png');
 }
+.help_center {
+     background-image: url('../img/tool/help_center.png');
+}
+.wanmi_pay {
+    background-image: url('../img/tool/wanmi_pay.png');
+}
 
 .air {
     background-image: url('../img/recharge/air.png');
