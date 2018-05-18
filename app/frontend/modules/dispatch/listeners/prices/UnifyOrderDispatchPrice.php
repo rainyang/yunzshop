@@ -23,7 +23,7 @@ class UnifyOrderDispatchPrice
         if (!$this->needDispatch()) {
             return;
         }
-        // 统一运费取所有商品统一运费的最大值 todo 按goods_id distinct
+        // 统一运费取所有商品统一运费的最大值
         $price = $event->getOrderModel()->getOrderGoodsModels()->max(function ($orderGoods) {
             /**
              * @var $orderGoods OrderGoods
