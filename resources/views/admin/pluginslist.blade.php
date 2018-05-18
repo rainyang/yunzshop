@@ -16,10 +16,10 @@
         </section>
 
         <div class="row">
+            @if($dividend)
             <div class="panel panel-default">
                 <div class="panel-heading" style="background-color: #f6f6f6">
-                    <h3 class="panel-title">{{$dividend['name']}}</h3>
-                    @unset($dividend['name'])
+                    <h3 class="panel-title">分润类</h3>
                 </div>
                 <div class="panel-body">
                     @foreach($dividend as $key => $plugin)
@@ -46,10 +46,11 @@
                     @endforeach
                 </div>
             </div>
+            @endif
+            @if($industry)
             <div class="panel panel-default">
                 <div class="panel-heading" style="background-color: #f6f6f6">
-                    <h3 class="panel-title">{{$industry['name']}}</h3>
-                    @unset($industry['name'])
+                    <h3 class="panel-title">行业类</h3>
                 </div>
                 <div class="panel-body">
                     @foreach($industry as $key => $plugin)
@@ -76,10 +77,11 @@
                     @endforeach
                 </div>
             </div>
+            @endif
+            @if($marketing)
             <div class="panel panel-default">
                 <div class="panel-heading" style="background-color: #f6f6f6">
-                    <h3 class="panel-title">{{$marketing['name']}}</h3>
-                    @unset($marketing['name'])
+                    <h3 class="panel-title">营销类</h3>
                 </div>
                 <div class="panel-body">
                     @foreach($marketing as $key => $plugin)
@@ -106,10 +108,11 @@
                     @endforeach
                 </div>
             </div>
+            @endif
+            @if($tool)
             <div class="panel panel-default">
                 <div class="panel-heading" style="background-color: #f6f6f6">
-                    <h3 class="panel-title">{{$tool['name']}}</h3>
-                    @unset($tool['name'])
+                    <h3 class="panel-title"></h3>
                 </div>
                 <div class="panel-body">
                     @foreach($tool as $key => $plugin)
@@ -136,10 +139,11 @@
                     @endforeach
                 </div>
             </div>
+            @endif
+            @if($recharge)
             <div class="panel panel-default">
                 <div class="panel-heading" style="background-color: #f6f6f6">
-                    <h3 class="panel-title">{{$recharge['name']}}</h3>
-                    @unset($recharge['name'])
+                    <h3 class="panel-title">生活充值</h3>
                 </div>
                 <div class="panel-body">
                     @foreach($recharge as $key => $plugin)
@@ -166,10 +170,11 @@
                     @endforeach
                 </div>
             </div>
+            @endif
+            @if($api)
             <div class="panel panel-default">
                 <div class="panel-heading" style="background-color: #f6f6f6">
-                    <h3 class="panel-title">{{$api['name']}}</h3>
-                    @unset($api['name'])
+                    <h3 class="panel-title">接口类</h3>
                 </div>
                 <div class="panel-body">
                     @foreach($api as $key => $plugin)
@@ -196,6 +201,7 @@
                     @endforeach
                 </div>
             </div>
+            @endif
         </div>
     </div>
 
