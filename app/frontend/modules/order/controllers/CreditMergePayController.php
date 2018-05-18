@@ -61,7 +61,7 @@ class CreditMergePayController extends MergePayController
         if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
             $redirect = $trade['redirect_url'];
         }
-        \Log::debug('------credit----', $redirect);
+
         return $this->successJson('成功', ['redirect'=>$redirect]);
     }
 

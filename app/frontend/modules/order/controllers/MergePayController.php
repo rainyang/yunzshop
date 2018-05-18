@@ -240,7 +240,6 @@ class MergePayController extends ApiController
         $data = $this->pay( PayFactory::PAY_WEACHAT);
         $data['js'] = json_decode($data['js'], 1);
 
-        \Log::debug('------wechat----', $data);
         return $this->successJson('成功', $data);
     }
 
