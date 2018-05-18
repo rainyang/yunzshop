@@ -37,7 +37,9 @@ class RegisterController extends ApiController
     {
         $mobile = \YunShop::request()->mobile;
         $password = \YunShop::request()->password;
+        
         $captcha = \Yunshop::request()->captcha;
+
         $confirm_password = \YunShop::request()->confirm_password;
         $uniacid = \YunShop::app()->uniacid;
 
@@ -181,13 +183,11 @@ class RegisterController extends ApiController
 
     public function sendCodeV2()
     {
-        $status = \Setting::get('shop.sms.status');
-
         $mobile = \YunShop::request()->mobile;
 
         $reset_pwd = \YunShop::request()->reset;
 
-        $state = \YunShop::request()->state?:'86';
+        $state = \YunShop::request()->state ?: '86';
 
         if (empty($mobile)) {
             return $this->errorJson('请填入手机号');
@@ -206,15 +206,6 @@ class RegisterController extends ApiController
 
         //$content = "您的验证码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
 
-        //添加验证码测试
-        $captcha = app('captcha');
-
-        $captcha_base64 = $captcha->create('default', true);
-
-        if ($status == 1) {
-            return $this->successJson('ok', ['captcha_base64' => $captcha_base64]);
-        }
-
         if (!MemberService::smsSendLimit(\YunShop::app()->uniacid, $mobile)) {
             return $this->errorJson('发送短信数量达到今日上限');
         } else {
@@ -222,6 +213,19 @@ class RegisterController extends ApiController
         }
     }
 
+    //添加验证码测试
+    public function captchaTest()
+    {
+        $status = \Setting::get('shop.sms.status');
+
+        $captcha = app('captcha');
+
+        $captcha_base64 = $captcha->create('default', true);
+
+        if ($status == 1) {
+            return $this->successJson('ok', ['captcha_base64' => $captcha_base64]);
+        }
+    }
 
     public function sendWithdrawCode()
     {
