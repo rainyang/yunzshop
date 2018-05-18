@@ -62,6 +62,10 @@ class OrderDispatch
         if (!\Setting::get('dispatch.fullAmountFree.open')) {
             return 0;
         }
+        // 不参与包邮地区
+        if (in_array($this->order->orderAddress->city_id, \Setting::get('dispatch.fullAmountFree.exceptCityIds'))) {
+            return 0;
+        }
         // 设置为0 全额包邮
         if (\Setting::get('dispatch.fullAmountFree.amount') === 0 || \Setting::get('dispatch.fullAmountFree.amount') === '0') {
             return $freight;
