@@ -183,6 +183,16 @@ class MergePayController extends ApiController
         $pay = PayFactory::create($payType);
         //如果支付模块常量改变 数据会受影响
         $result = $pay->doPay($query_str, $payType);
+
+        $trade = \Setting::get('shop.trade');
+        $redirect = '';
+
+        if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
+            $redirect = $trade['redirect_url'];
+        }
+
+        $result['redirect'] = $redirect;
+
         if (!isset($result)) {
             throw new AppException('获取支付参数失败');
         }
@@ -230,14 +240,6 @@ class MergePayController extends ApiController
         $data = $this->pay( PayFactory::PAY_WEACHAT);
         $data['js'] = json_decode($data['js'], 1);
 
-        $trade = \Setting::get('shop.trade');
-        $redirect = '';
-
-        if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
-            $redirect = $trade['redirect_url'];
-        }
-
-        $data['redirect'] = $redirect;
         \Log::debug('------wechat----', $data);
         return $this->successJson('成功', $data);
     }
