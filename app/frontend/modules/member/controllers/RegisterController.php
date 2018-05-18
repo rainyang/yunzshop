@@ -20,6 +20,7 @@ use app\frontend\modules\member\models\SubMemberModel;
 use app\frontend\modules\member\models\MemberWechatModel;
 use app\frontend\modules\member\services\MemberService;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Str;
 use iscms\Alisms\SendsmsPusher as Sms;
 use app\common\exceptions\AppException;
@@ -36,6 +37,7 @@ class RegisterController extends ApiController
     {
         $mobile = \YunShop::request()->mobile;
         $password = \YunShop::request()->password;
+        $captcha = \Yunshop::request()->captcha;
         $confirm_password = \YunShop::request()->confirm_password;
         $uniacid = \YunShop::app()->uniacid;
 
@@ -56,6 +58,13 @@ class RegisterController extends ApiController
 
             if (!empty($member_info)) {
                 return $this->errorJson('该手机号已被注册');
+            }
+
+            $rules = ['captcha' => 'required | captcha'];
+
+            $validator = \Validator::make(Input::all(), $rules);
+            if ($validator->fails()) {
+                return $this->errorJson('验证失败');
             }
 
             //添加mc_members表
@@ -143,7 +152,7 @@ class RegisterController extends ApiController
     public function sendCode()
     {
         $mobile = \YunShop::request()->mobile;
-        dd($mobile);
+
         $reset_pwd = \YunShop::request()->reset;
 
         if (empty($mobile)) {
@@ -172,6 +181,8 @@ class RegisterController extends ApiController
 
     public function sendCodeV2()
     {
+        $status = \Setting::get('shop.sms.status');
+
         $mobile = \YunShop::request()->mobile;
 
         $reset_pwd = \YunShop::request()->reset;
@@ -195,18 +206,7 @@ class RegisterController extends ApiController
 
         //$content = "您的验证码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
 
-        if (!MemberService::smsSendLimit(\YunShop::app()->uniacid, $mobile)) {
-            return $this->errorJson('发送短信数量达到今日上限');
-        } else {
-            $this->sendSmsV2($mobile, $code, $state);
-        }
-    }
-
-    //添加验证码测试
-    public function captchaTest()
-    {
-        $status = \Setting::get('shop.sms.status');
-
+        //添加验证码测试
         $captcha = app('captcha');
 
         $captcha_base64 = $captcha->create('default', true);
@@ -214,7 +214,14 @@ class RegisterController extends ApiController
         if ($status == 1) {
             return $this->successJson('ok', ['captcha_base64' => $captcha_base64]);
         }
+
+        if (!MemberService::smsSendLimit(\YunShop::app()->uniacid, $mobile)) {
+            return $this->errorJson('发送短信数量达到今日上限');
+        } else {
+            $this->sendSmsV2($mobile, $code, $state);
+        }
     }
+
 
     public function sendWithdrawCode()
     {
