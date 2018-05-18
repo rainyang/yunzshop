@@ -35,6 +35,7 @@ class TemplateOrderDispatchPrice
         $price = $this->getPrice();
 
         //dd($price);
+
         $data = [
             'price' => $price,
             'type' => GoodsDispatch::TEMPLATE_TYPE,
@@ -151,9 +152,11 @@ class TemplateOrderDispatchPrice
      */
     private function getGoodsTotalInOrder(PreOrderGoods $orderGoods)
     {
-        return $orderGoods->order->orderGoods->where('goods_id', $orderGoods)->sum(function ($orderGoods) {
+        $result = $orderGoods->order->orderGoods->where('goods_id', $orderGoods->goods_id)->sum(function ($orderGoods) {
             return $orderGoods->total;
         });
+
+        return $result;
     }
 
     /**
@@ -163,9 +166,11 @@ class TemplateOrderDispatchPrice
      */
     private function getGoodsTotalWeightInOrder(PreOrderGoods $orderGoods)
     {
-        return $orderGoods->order->orderGoods->where('goods_id', $orderGoods)->sum(function ($orderGoods) {
+        $result = $orderGoods->order->orderGoods->where('goods_id', $orderGoods->goods_id)->sum(function ($orderGoods) {
             return $orderGoods->total * $orderGoods->getWeight();
         });
+
+        return $result;
     }
 
     private function calculation($dispatch_id, $dispatch_good_total, $dispatch_good_weight)
