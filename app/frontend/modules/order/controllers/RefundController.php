@@ -19,9 +19,9 @@ use app\backend\modules\goods\models\ReturnAddress;
 class RefundController extends ApiController
 {
     public function returnAddress() {
-        $plugins_id = \YunShop::request()->plugins_id;
-        $store_id = \YunShop::request()->store_id?\YunShop::request()->store_id:0;
-        $supplier_id = \YunShop::request()->supplier_id?\YunShop::request()->supplier_id:0;
+        $plugins_id = \YunShop::request()->plugins_id ? \YunShop::request()->plugins_id : 0;
+        $store_id = \YunShop::request()->store_id ? \YunShop::request()->store_id : 0;
+        $supplier_id = \YunShop::request()->supplier_id ? \YunShop::request()->supplier_id : 0;
         $address = ReturnAddress::getOneByPluginsId($plugins_id, $store_id, $supplier_id);
         if ($address) {
             return $this->successJson('获取退货地址成功!', $address->toarray());

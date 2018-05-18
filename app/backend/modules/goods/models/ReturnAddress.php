@@ -30,7 +30,7 @@ class ReturnAddress extends \app\common\models\goods\ReturnAddress
             ->first();
     }
 
-    public static function getOneByPluginsId($id, $store_id = 0, $supplier_id = 0)
+    public static function getOneByPluginsId($id = 0, $store_id = 0, $supplier_id = 0)
     {
         return self::where('plugins_id', $id)
             ->where('store_id', $store_id)
