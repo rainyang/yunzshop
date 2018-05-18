@@ -21,6 +21,9 @@
 .commission {
     background-image: url('../img/dividend/commission.png');
 }
+.bonus_commission {
+    background-image: url('../img/dividend/bonus_commission.png');
+}
 .micro {
     background-image: url('../img/dividend/micro.png');
 }
