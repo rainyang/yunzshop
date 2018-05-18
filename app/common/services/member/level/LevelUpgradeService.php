@@ -91,18 +91,23 @@ class LevelUpgradeService
         if (!$this->validity['is_goods']) {
             return;
         }
-
         if ($this->validity['upgrade']) {
             $validity = $this->new_level->validity * $this->validity['goods_total'];
         } else {
-            $validity = $this->memberModel->validity + $this->new_level->validity * $this->validity['goods_total'];
+            //bug 会员当前等级 > 新的等级  有效期不应该叠加, 当等级相等时才叠加
+            //$validity = $this->memberModel->validity + $this->new_level->validity * $this->validity['goods_total'];
+            
+            if ($this->validity['superposition']) {
+                $validity = $this->memberModel->validity + $this->new_level->validity * $this->validity['goods_total'];
+            }
         }
 
-        $this->memberModel->validity = $validity;
+        if (isset($validity)) {
+            $this->memberModel->validity = $validity;
+            $this->memberModel->save();
+        }
 
-        $this->memberModel->save();
     }
-
 
     private function check($status)
     {
@@ -135,10 +140,16 @@ class LevelUpgradeService
         if ($this->new_level) {
             $memberLevel = isset($this->memberModel->level->level) ? $this->memberModel->level->level : 0;
 
+            if ($this->new_level->level == $memberLevel) {
+                $this->validity['superposition'] = true; //会员期限叠加
+            }
+
             if ($this->new_level->level > $memberLevel) {
                 $this->validity['upgrade'] = true; // 会员期限 升级 期限叠加
                 return $this->new_level->id;
             }
+
+
             return '';
         }
         return '';

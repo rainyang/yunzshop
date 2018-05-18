@@ -36,11 +36,11 @@ use Yunshop\Designer\models\Store;
 
 class GoodsController extends BaseController
 {
-    private $goods_id = null;
-    private $shopset;
-    private $shoppay;
+    protected $goods_id = null;
+    protected $shopset;
+    protected $shoppay;
     //private $goods;
-    private $lang = null;
+    protected $lang = null;
 
     public function __construct()
     {

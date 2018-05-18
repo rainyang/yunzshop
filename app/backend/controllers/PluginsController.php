@@ -10,6 +10,7 @@ namespace app\backend\controllers;
 
 
 use app\common\components\BaseController;
+use app\common\exceptions\AdminException;
 use app\common\helpers\Url;
 use app\common\repositories\OptionRepository;
 use Datatables;
@@ -68,11 +69,35 @@ class PluginsController extends BaseController
         }
     }
 
+    public function batchMange() {
+        $plugins = app('app\common\services\PluginManager');
+        $names =  explode(',',\YunShop::request()->names);
+        foreach ($names as $name) {
+            $plugin = plugin($name);
+            if ($plugin) {
+                $plugin->title = trans($plugin->title);
+                switch (\YunShop::request()->action) {
+                    case 'enable':
+                        $plugins->enable($name);
+                        break;
+                    case 'disable':
+                        $plugins->disable($name);
+                        break;
+                    default:
+                        die(json_encode(array(
+                            "result" => 0,
+                            "error" => "操作错误"
+                        )));
+                        break;
+                }
+            }
+        }
+    }
+
     public function getPluginData()
     {
         $plugins = new PluginManager(app(),new OptionRepository(),new Dispatcher(),new Filesystem());
         $installed = $plugins->getPlugins();
-        
         return view('admin.plugins',[
             'installed' => $installed
         ]);
