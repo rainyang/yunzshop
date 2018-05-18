@@ -199,7 +199,7 @@ class RegisterController extends ApiController
             $captcha =  self::captchaTest();
             return $this->successJson('ok', ['captcha' => $captcha]);
         }
-
+        
         $info = MemberModel::getId(\YunShop::app()->uniacid, $mobile);
 
         if (!empty($info) && empty($reset_pwd)) {
