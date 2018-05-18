@@ -88,7 +88,7 @@
                                 <div class="help-block">通知公众平台模板消息编号: OPENTM207509450</div>
                             </div>
                             <div class="col-sm-2 col-xs-6 ">
-                                <input name="notice_default" type="checkbox" data-size="small" value="point_change">
+                                <input name="notice_select" type="checkbox" data-size="small" value="point_change">
                                 <script type="text/javascript">
                                     $('[name="notice_select"]').bootstrapSwitch({
                                         onText:"开",
@@ -628,8 +628,6 @@
 
                     </div>
                     <script language='javascript'>
-
-
                         function search_members() {
                             if ($.trim($('#search-kwd').val()) == '') {
                                 Tip.focus('#search-kwd', '请输入关键词');
@@ -658,7 +656,6 @@
                             $("#saler_container").append(html);
                             refresh_members();
                         }
-
                         function remove_member(obj) {
                             $(obj).parent().remove();
                             refresh_members();
@@ -670,7 +667,6 @@
                             });
                             $('#salers').val(nickname);
                         }
-
                     </script>
                 </div>
             </form>

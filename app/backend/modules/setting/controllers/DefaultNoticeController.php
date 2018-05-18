@@ -14,6 +14,8 @@ use app\common\components\BaseController;
 class DefaultNoticeController extends BaseController
 {
     public function index() {
-        $natice_name = \YunShop::request()->notice_name;
+        //template_id_short = OPENTM207509450 积分消息通知
+        $notice_name = \YunShop::request()->notice_name;
+        dd($notice_name);
     }
 }
