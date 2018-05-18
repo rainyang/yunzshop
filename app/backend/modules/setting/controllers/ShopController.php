@@ -153,8 +153,6 @@ class ShopController extends BaseController
                 $this->error('短信设置失败');
             }
         }
-        $captcha = self::captchao();
-        dd($captcha);
         return view('setting.shop.sms', [
             'set' => $sms,
         ])->render();
@@ -180,13 +178,6 @@ class ShopController extends BaseController
         header('Cache-Control: no-cache, must-revalidate');
         header('Content-Type: image/jpeg');
         $builder->output();
-    }
-
-    //验证码测试22
-    public static function captchao()
-    {
-        $captcha = app('captcha');
-        $captcha_base64 = $captcha->create('default', true);
     }
 
     /**
