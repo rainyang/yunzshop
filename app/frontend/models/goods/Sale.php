@@ -10,6 +10,7 @@ namespace app\frontend\models\goods;
 
 
 use app\frontend\models\OrderGoods;
+use app\frontend\modules\orderGoods\models\PreOrderGoods;
 
 /**
  * Class Sale
@@ -30,7 +31,7 @@ class Sale extends \app\common\models\Sale
             return 0;
         }
 
-        if ($this->ed_reduction < 0 ) {
+        if ($this->ed_reduction < 0) {
             // 减额非正数时,记录异常
             \Log::error('商品计算满减价格时,减额数据非正数', [$this->id, $this->ed_full, $this->ed_reduction]);
             return 0;
@@ -59,7 +60,31 @@ class Sale extends \app\common\models\Sale
             return false;
         }
 
-        return $this->enoughQuantity($orderGoods->total) || $this->enoughAmount($orderGoods->price);
+        return $this->enoughQuantity($this->goodsTotalInOrder($orderGoods)) || $this->enoughAmount($this->goodsPriceInOrder($orderGoods));
+    }
+
+    /**
+     * 获取同订单中同商品总数(包括不同规格)
+     * @param $orderGoods
+     * @return mixed
+     */
+    private function goodsPriceInOrder(PreOrderGoods $orderGoods)
+    {
+        return $orderGoods->order->orderGoods->where('goods_id', $orderGoods->goods_id)->sum(function ($orderGoods) {
+            return $orderGoods->total;
+        });
+    }
+
+    /**
+     * 获取同订单中同商品总数(包括不同规格)
+     * @param $orderGoods
+     * @return mixed
+     */
+    private function goodsTotalInOrder($orderGoods)
+    {
+        return $orderGoods->order->orderGoods->where('goods_id', $orderGoods->goods_id)->sum(function ($orderGoods) {
+            return $orderGoods->price;
+        });
     }
 
     /**

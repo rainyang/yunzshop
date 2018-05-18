@@ -34,7 +34,7 @@ class TemplateOrderDispatchPrice
         $this->order = $event->getOrderModel();
 
         $goodsModels = $event->getOrderModel()->getOrderGoodsModels();
-
+// todo 按goods_id distinct
         $price = $this->getPrice($goodsModels);
 
         //dd($price);
@@ -138,7 +138,7 @@ class TemplateOrderDispatchPrice
             if ($dispatchModel->dispatch_id != $dispatch_id) {
                 continue;
             }
-
+            // todo order->orderGoods->where(goods_id)->sum(total),order->orderGoods->where(goods_id)->sum(weight)
             $dispatch_good_total += $goodsModel->total;
             $dispatch_good_weight += $goodsModel->getWeight() * $goodsModel->total;
         }
