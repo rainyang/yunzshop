@@ -11,39 +11,35 @@ namespace app\frontend\modules\dispatch\listeners\prices;
 use app\backend\modules\goods\models\Dispatch;
 use app\common\events\dispatch\OrderDispatchWasCalculated;
 use app\common\models\goods\GoodsDispatch;
+use app\frontend\modules\order\models\PreOrder;
+use app\frontend\modules\orderGoods\models\PreOrderGoods;
+use app\frontend\modules\orderGoods\models\PreOrderGoodsCollection;
 
 
 class TemplateOrderDispatchPrice
 {
     private $event;
 
-
+    /**
+     * @var PreOrder
+     */
     private $order;
 
-
-
-
-    private $goodsModel;
-
-
-
-    public function handle(OrderDispatchWasCalculated $event) {
+    public function handle(OrderDispatchWasCalculated $event)
+    {
 
         $this->event = $event;
 
         $this->order = $event->getOrderModel();
 
-        $goodsModels = $event->getOrderModel()->getOrderGoodsModels();
-
-        $price = $this->getPrice($goodsModels);
+        $price = $this->getPrice();
 
         //dd($price);
         $data = [
             'price' => $price,
-            'type'  => GoodsDispatch::TEMPLATE_TYPE,
-            'name'  => '运费模板',
+            'type' => GoodsDispatch::TEMPLATE_TYPE,
+            'name' => '运费模板',
         ];
-
 
         //返回给事件
         $event->addData($data);
@@ -51,13 +47,15 @@ class TemplateOrderDispatchPrice
     }
 
 
-    private function getPrice($goodsModels)
+    private function getPrice()
     {
+        //去掉重复的OrderGoods
+        $uniqueOrderGoods = $this->order->getOrderGoodsModels()->unique('goods_id');
         $dispatch_prices = [];
-        $dispatch_ids = $this->getDispatchIds($goodsModels);
+        $dispatch_ids = $this->getDispatchIds($uniqueOrderGoods);
 
         foreach ($dispatch_ids as $dispatch_id) {
-            $dispatch_prices[] = $this->getDispatchPrice($dispatch_id, $goodsModels);
+            $dispatch_prices[] = $this->getDispatchPrice($dispatch_id, $uniqueOrderGoods);
         }
 
 
@@ -68,15 +66,15 @@ class TemplateOrderDispatchPrice
     /**
      * 通过订单商品集合 获取所用到的配送模版 ID 集
      *
-     * @param $goodsModels
+     * @param $orderGoodsCollection
      * @return array
      */
-    private function getDispatchIds($goodsModels)
+    private function getDispatchIds(PreOrderGoodsCollection $orderGoodsCollection)
     {
         $dispatch_ids = [];
-        foreach ($goodsModels as $goodsModel) {
+        foreach ($orderGoodsCollection as $aOrderGoods) {
 
-            $goodsDispatch = $goodsModel->hasOneGoodsDispatch;
+            $goodsDispatch = $aOrderGoods->hasOneGoodsDispatch;
 
             if ($goodsDispatch->dispatch_type == GoodsDispatch::TEMPLATE_TYPE) {
 
@@ -105,21 +103,21 @@ class TemplateOrderDispatchPrice
     }
 
 
-    private function getDispatchPrice($dispatch_id, $goodsModels)
+    private function getDispatchPrice($dispatch_id, $orderGoods)
     {
 
         $dispatch_good_total = 0;
         $dispatch_good_weight = 0;
 
 
-        foreach ($goodsModels as $goodsModel) {
+        foreach ($orderGoods as $aOrderGoods) {
 
             //商品满额、满件减免运费
-            if ($goodsModel->isFreeShipping()) {
+            if ($aOrderGoods->isFreeShipping()) {
                 continue;
             }
 
-            $dispatchModel = $goodsModel->hasOneGoodsDispatch;
+            $dispatchModel = $aOrderGoods->hasOneGoodsDispatch;
 
             //配送模版不存在
             if (!isset($dispatchModel)) {
@@ -127,7 +125,7 @@ class TemplateOrderDispatchPrice
             }
 
             //如果是默认配送模版
-            if (!$dispatchModel->dispatch_id){
+            if (!$dispatchModel->dispatch_id) {
                 $dispatchModel->dispatch_id = $this->getDefaultDispatchId();
             }
 
@@ -139,17 +137,36 @@ class TemplateOrderDispatchPrice
                 continue;
             }
 
-            $dispatch_good_total += $goodsModel->total;
-            $dispatch_good_weight += $goodsModel->getWeight() * $goodsModel->total;
+            $dispatch_good_total += $this->getGoodsTotalInOrder($aOrderGoods);
+            $dispatch_good_weight += $this->getGoodsTotalWeightInOrder($aOrderGoods);
         }
 
-        /*dump($dispatch_good_total);
-        dump($dispatch_good_weight);
-        dd($dispatch_id);*/
         return $this->calculation($dispatch_id, $dispatch_good_total, $dispatch_good_weight);
     }
 
+    /**
+     * 累加订单中每个 同类型不同规格商品 的总数
+     * @param PreOrderGoods $orderGoods
+     * @return mixed
+     */
+    private function getGoodsTotalInOrder(PreOrderGoods $orderGoods)
+    {
+        return $orderGoods->order->orderGoods->where('goods_id', $orderGoods)->sum(function ($orderGoods) {
+            return $orderGoods->total;
+        });
+    }
 
+    /**
+     * 累加订单中每个 同类型不同规格商品 的总重量
+     * @param PreOrderGoods $orderGoods
+     * @return mixed
+     */
+    private function getGoodsTotalWeightInOrder(PreOrderGoods $orderGoods)
+    {
+        return $orderGoods->order->orderGoods->where('goods_id', $orderGoods)->sum(function ($orderGoods) {
+            return $orderGoods->total * $orderGoods->getWeight();
+        });
+    }
 
     private function calculation($dispatch_id, $dispatch_good_total, $dispatch_good_weight)
     {
@@ -284,178 +301,5 @@ class TemplateOrderDispatchPrice
             return $dispatchModel->first_weight_price;
         }
     }
-
-
-
-
-
-
-    /*public function handle(OrderDispatchWasCalculated $event)
-    {
-        $this->event = $event;
-        $this->order = $event->getOrderModel();
-        $price = $event->getOrderModel()->getOrderGoodsModels()->sum(function ($orderGoods) {
-
-            if ($orderGoods->isFreeShipping()) {
-                return 0;
-            }
-            if (!isset($orderGoods->hasOneGoodsDispatch)) {
-                return 0;
-            }
-            if ($orderGoods->hasOneGoodsDispatch->dispatch_type == GoodsDispatch::TEMPLATE_TYPE) {
-                return $this->getPrice($orderGoods);
-            }
-            return 0;
-        });
-        $data = [
-            'price' => $price,
-            'type' => GoodsDispatch::TEMPLATE_TYPE,
-            'name' => '运费模板',
-        ];
-
-        //返回给事件
-        $event->addData($data);
-        return;
-    }
-
-    private function getPrice($orderGoods)
-    {
-        $this->dispatch = $orderGoods->hasOneGoodsDispatch;
-        if (empty($this->dispatch->dispatch_id)) {
-            $this->dispatch = Dispatch::getOneByDefault();
-        } else {
-            $this->dispatch = Dispatch::getOne($this->dispatch->dispatch_id);
-        }
-
-        //存不存在都没有的情况
-        return $this->calculation($orderGoods);
-    }
-
-    private function calculation($orderGoods)
-    {
-        $price = 0;
-        if (!$this->dispatch) {
-            return $price;
-        }
-        switch ($this->dispatch->calculate_type) {
-            case 1:
-                $price = $this->calculationByPiece($orderGoods);
-                break;
-            case 0:
-                $price = $this->calculationByWeight($orderGoods);
-                break;
-        }
-        $price = $this->verify($price);
-        return $price;
-    }
-
-    private function verify($price)
-    {
-        if (empty($price)) {
-            return 0;
-        }
-        return $price;
-    }
-
-
-    private function calculationByPiece($orderGoods)
-    {
-        // 件数
-        $goods_total = $orderGoods->total;
-
-        $piece_data = unserialize($this->dispatch->piece_data);
-        // 存在
-        if ($piece_data) {
-            $dispatch = '';
-
-            // 根据配送地址匹配区域数据
-            $city_id = isset($this->order->orderAddress->city_id) ? $this->order->orderAddress->city_id : 0;
-
-            if (!$city_id) {
-                return 0;
-            }
-            foreach ($piece_data as $key => $piece) {
-                $area_ids = explode(';', $piece['area_ids']);
-                if (in_array($this->order->orderAddress->city_id, $area_ids)) {
-                    $dispatch = $piece;
-                    break;
-                }
-            }
-
-            if ($dispatch) {
-                // 找到匹配的数量数据
-                if ($goods_total > $dispatch['first_piece']) {
-                    $diff = $goods_total - $dispatch['first_piece'];
-                    $another_piece = $dispatch['another_piece_price'];
-                    if ($diff > 0) {
-                        $another_piece = ceil($diff / $dispatch['another_piece']) * $dispatch['another_piece_price'];
-                    }
-                    return $dispatch['first_piece_price'] + $another_piece;
-                } else {
-                    return $dispatch['first_piece_price'];
-                }
-            }
-        }
-
-        // 默认件数
-        if ($goods_total > $this->dispatch->first_piece) {
-            $diff = $goods_total - $this->dispatch->another_piece;
-            $another_piece = $this->dispatch->another_piece_price;
-            if ($diff > 0) {
-                $another_piece = ceil($diff / $this->dispatch->another_piece) * $this->dispatch->another_piece_price;
-            }
-            return $this->dispatch->first_piece_price + $another_piece;
-        } else {
-            return $this->dispatch->first_piece_price;
-        }
-    }
-
-
-    private function calculationByWeight($orderGoods)
-    {
-        // 订单商品总重
-        $weight_total = $orderGoods->getWeight() * $orderGoods->total;
-
-        $weight_data = unserialize($this->dispatch->weight_data);
-        // 存在重量数据
-        if ($weight_data) {
-            $dispatch = '';
-
-            // 根据配送地址匹配区域数据
-            $city_id = isset($this->order->orderAddress->city_id) ? $this->order->orderAddress->city_id : '';
-            if (!$city_id) {
-                return 0;
-            }
-
-            foreach ($weight_data as $key => $weight) {
-                //dd($weight['area_ids']);
-                $area_ids = explode(';', $weight['area_ids']);
-                if (in_array($city_id, $area_ids)) {
-                    $dispatch = $weight;
-                    break;
-                }
-            }
-
-            if ($dispatch) {
-                // 找到匹配的重量数据
-                if ($weight_total > $dispatch['first_weight']) {
-                    // 续重:   首重价格+(重量-首重)/续重*续重价格
-                    // 20 + (500 - 400)
-                    return $dispatch['first_weight_price'] + ceil(($weight_total - $dispatch['first_weight']) / $dispatch['another_weight']) * $dispatch['another_weight_price'];
-                } else {
-                    return $dispatch['first_weight_price'];
-                }
-            }
-        }
-
-        // 默认全国重量运费
-        if ($weight_total > $this->dispatch->first_weight) {
-            return $this->dispatch->first_weight_price + ceil(($weight_total - $this->dispatch->first_weight) / $this->dispatch->another_weight) * $this->dispatch->another_weight_price;
-        } else {
-            return $this->dispatch->first_weight_price;
-        }
-
-    }*/
-
 
 }

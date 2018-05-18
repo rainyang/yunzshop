@@ -68,23 +68,26 @@ class Sale extends \app\common\models\Sale
      * @param $orderGoods
      * @return mixed
      */
-    private function goodsPriceInOrder(PreOrderGoods $orderGoods)
+    private function goodsTotalInOrder($orderGoods)
     {
-        return $orderGoods->order->orderGoods->where('goods_id', $orderGoods->goods_id)->sum(function ($orderGoods) {
+        $result =  $orderGoods->order->orderGoods->where('goods_id', $orderGoods->goods_id)->sum(function ($orderGoods) {
             return $orderGoods->total;
         });
+        return $result;
+
     }
 
     /**
-     * 获取同订单中同商品总数(包括不同规格)
+     * 获取同订单中同商品价格(包括不同规格)
      * @param $orderGoods
      * @return mixed
      */
-    private function goodsTotalInOrder($orderGoods)
+    private function goodsPriceInOrder(PreOrderGoods $orderGoods)
     {
-        return $orderGoods->order->orderGoods->where('goods_id', $orderGoods->goods_id)->sum(function ($orderGoods) {
+        $result =  $orderGoods->order->orderGoods->where('goods_id', $orderGoods->goods_id)->sum(function ($orderGoods) {
             return $orderGoods->price;
         });
+        return $result;
     }
 
     /**

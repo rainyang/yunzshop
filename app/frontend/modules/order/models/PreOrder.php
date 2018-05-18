@@ -102,7 +102,7 @@ class PreOrder extends Order
 
     /**
      * 对外提供的获取订单商品方法
-     * @return Collection
+     * @return PreOrderGoodsCollection
      */
     public function getOrderGoodsModels()
     {
