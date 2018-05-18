@@ -38,10 +38,6 @@
                             &nbsp;&nbsp;
                             <input type="radio" name="sms[status]" value="0" @if ($set['status'] == 0) checked @endif/> 关闭
                         </div>
-                        <div>
-                            <image></image>
-                            {{--{{ $captcha }}--}}
-                        </div>
                     </div>
 
                     <div class="form-group">

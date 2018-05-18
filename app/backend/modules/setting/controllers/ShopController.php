@@ -185,7 +185,8 @@ class ShopController extends BaseController
     //验证码测试22
     public static function captchao()
     {
-        return Captcha::create();
+        $captcha = app('captcha');
+        $captcha_base64 = $captcha->create('default', true);
     }
 
     /**

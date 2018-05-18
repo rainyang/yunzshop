@@ -202,6 +202,20 @@ class RegisterController extends ApiController
         }
     }
 
+    //添加验证码测试
+    public function captchaTest()
+    {
+        $status = \Setting::get('shop.sms.status');
+
+        $captcha = app('captcha');
+
+        $captcha_base64 = $captcha->create('default', true);
+
+        if ($status == 1) {
+            return $this->successJson('ok', ['captcha_base64' => $captcha_base64]);
+        }
+    }
+
     public function sendWithdrawCode()
     {
         $mobile = \YunShop::request()->mobile;

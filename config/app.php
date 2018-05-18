@@ -209,7 +209,7 @@ return [
         Overtrue\LaravelPinyin\ServiceProvider::class,
 
         //验证码
-        Mews\Tests\Captcha\CaptchaServiceProviderTest::class,
+        Mews\Captcha\CaptchaServiceProvider::class,
     ],
 
     /*
