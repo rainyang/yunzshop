@@ -14,6 +14,9 @@ use app\backend\modules\coupon\services\MessageNotice;
 class CouponService
 {
     use DispatchesJobs;
+    /**
+     * @var PreOrder
+     */
     private $order;
     private $orderGoods;
     private $coupon_method;
@@ -64,7 +67,7 @@ class CouponService
                 return false;
             }
             //商城开启了多张优惠券 并且当前优惠券组合可以继续添加这张
-            $coupon->getMemberCoupon()->valid = !\Setting::get('coupon.is_singleton') && $coupon->valid();//界面标蓝
+            $coupon->getMemberCoupon()->valid = (!\Setting::get('coupon.is_singleton')||$this->order->orderCoupons->isEmpty()) && $coupon->valid();//界面标蓝
             $coupon->getMemberCoupon()->checked = false;//界面选中
 
             return true;
