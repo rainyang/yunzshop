@@ -370,6 +370,8 @@ class MemberService
         //$mc_mapping_fans_model = McMappingFansModel::getUId($userinfo['openid']);
         $mc_mapping_fans_model = $this->getFansModel($userinfo['openid']);
 
+        $this->checkFansUid($mc_mapping_fans_model, $userinfo);
+
         if (empty($member_id) && !empty($mc_mapping_fans_model)) {
             $member_id = $mc_mapping_fans_model->uid;
         }
@@ -425,7 +427,7 @@ class MemberService
                         throw new AppException('用户数据异常, 注册失败');
                     }
 
-                    $this->addSubMemberInfo($uniacid, $member_id);
+                    $this->addSubMemberInfo($uniacid, $member_id, $userinfo['openid']);
                 }
 
                 if (empty($UnionidInfo->unionid)) {
@@ -463,6 +465,9 @@ class MemberService
         //$fans_mode = McMappingFansModel::getUId($userinfo['openid']);
         $fans_mode = $this->getFansModel($userinfo['openid']);
 
+        // TODO 验证$fans_mode->uid是否为0，与yz_mmeber匹配
+        $this->checkFansUid($fans_mode, $userinfo);
+
         if ($fans_mode) {
             $member_model = Member::getMemberById($fans_mode->uid);
             $member_shop_info_model = MemberShopInfo::getMemberShopInfo($fans_mode->uid);
@@ -499,7 +504,7 @@ class MemberService
                         throw new AppException('用户数据异常, 注册失败');
                     }
 
-                    $this->addSubMemberInfo($uniacid, $member_id);
+                    $this->addSubMemberInfo($uniacid, $member_id, $userinfo['openid']);
                 }
 
                 //生成分销关系链
@@ -591,7 +596,7 @@ class MemberService
      * @param $uniacid
      * @param $member_id
      */
-    public function addSubMemberInfo($uniacid, $member_id)
+    public function addSubMemberInfo($uniacid, $member_id, $openid=0)
     {
         //添加yz_member表
         $default_sub_group_id = MemberGroup::getDefaultGroupId()->first();
@@ -609,6 +614,7 @@ class MemberService
             'level_id' => 0,
             'pay_password' => '',
             'salt' => '',
+            'yz_openid' => $openid,
         ));
     }
 
@@ -798,5 +804,18 @@ class MemberService
     public function updateFansMember($fanid, $member_id, $userinfo)
     {
         //TODO
+    }
+
+    private function checkFansUid($fansModel, $userInfo)
+    {
+        if ($fansModel && 0 == $fansModel->uid) {
+            $member_id = SubMemberModel::getMemberId($userInfo['opneid']);
+
+            if (!is_null($member_id)) {
+                $fansModel->uid = $member_id;
+
+                $fansModel->save();
+            }
+        }
     }
 }
