@@ -814,7 +814,7 @@ class MemberService
             if (!is_null($member_id)) {
                 $fansModel->uid = $member_id;
 
-                $fansModel->save();
+                $this->updateFansMember($fansModel->fanid, $member_id, $userInfo);
             }
         }
     }
