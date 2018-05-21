@@ -14,7 +14,6 @@ use app\frontend\modules\orderGoods\models\PreOrderGoods;
 
 class MoneyOffCouponPrice extends CouponPrice
 {
-
     /**
      * 累加所有商品会员价
      * @return int
@@ -50,29 +49,33 @@ class MoneyOffCouponPrice extends CouponPrice
      */
     public function setOrderGoodsDiscountPrice()
     {
+        if($this->isSet){
+            return;
+        }
         //dd($this->getOrderGoodsInScope());
-        $this->coupon->getOrderGoodsInScope()->map(function($orderGoods){
-                /**
-                 * @var $orderGoods PreOrderGoods
-                 */
-                //(优惠券金额/折扣优惠券后价格)*折扣优惠券后价格
+        $this->coupon->getOrderGoodsInScope()->map(function ($orderGoods) {
+            /**
+             * @var $orderGoods PreOrderGoods
+             */
+            //(优惠券金额/折扣优惠券后价格)*折扣优惠券后价格
 //            dd($this->getPrice());
 //            dd($this->getOrderGoodsCollectionPrice());
 //            dd($this->getOrderGoodsPrice($orderGoods));
 //            exit;
 
-                $goodsMemberCoupon = new GoodsMemberCoupon();
-                $goodsMemberCoupon->amount = $this->getOrderGoodsPrice($orderGoods)/ $this->getOrderGoodsCollectionPrice() * $this->getPrice();
-                $goodsMemberCoupon->enough =  $this->getOrderGoodsPrice($orderGoods)/ $this->getOrderGoodsCollectionPrice() * $this->dbCoupon->enough;
-                //todo 需要按照订单方式修改
-                if(!isset($orderGoods->coupons)){
-                    $orderGoods->coupons = collect();
-                }
-                $orderGoods->coupons->push($goodsMemberCoupon);
+            $goodsMemberCoupon = new GoodsMemberCoupon();
+            $goodsMemberCoupon->amount = $this->getOrderGoodsPrice($orderGoods) / $this->getOrderGoodsCollectionPrice() * $this->getPrice();
+            $goodsMemberCoupon->enough = $this->getOrderGoodsPrice($orderGoods) / $this->getOrderGoodsCollectionPrice() * $this->dbCoupon->enough;
+            //todo 需要按照订单方式修改
+            if (!isset($orderGoods->coupons)) {
+                $orderGoods->coupons = collect();
+            }
 
-                //$orderGoods->setRelation('coupon',$goodsMemberCoupon);
-            });
+            $orderGoods->coupons->push($goodsMemberCoupon);
 
+            //$orderGoods->setRelation('coupon',$goodsMemberCoupon);
+        });
+        $this->isSet = true;
     }
 
 }
