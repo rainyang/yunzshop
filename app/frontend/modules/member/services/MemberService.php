@@ -384,6 +384,10 @@ class MemberService
         $member_model = Member::getMemberById($member_id);
         $member_shop_info_model = MemberShopInfo::getMemberShopInfo($member_id);
 
+        if ( $member_id = $this->checkYzMember($member_model, $mc_mapping_fans_model, $member_shop_info_model, $userinfo)) {
+            $member_shop_info_model = true;
+        }
+
         if (!empty($UnionidInfo->unionid) && !empty($member_model)
             && !empty($mc_mapping_fans_model) && !empty($member_shop_info_model)) {
             \Log::debug('微信登陆更新');
@@ -473,6 +477,10 @@ class MemberService
             $member_shop_info_model = MemberShopInfo::getMemberShopInfo($fans_mode->uid);
 
             $member_id = $fans_mode->uid;
+        }
+
+        if ($member_id = $this->checkYzMember($member_model, $fans_mode, $member_shop_info_model, $userinfo)) {
+            $member_shop_info_model = true;
         }
 
         if ((!empty($member_model)) && (!empty($fans_mode) && !empty($member_shop_info_model))) {
@@ -806,6 +814,16 @@ class MemberService
         //TODO
     }
 
+    /**
+     * 扫海报关注
+     *
+     * 关注->微擎注册->商城注册
+     *
+     * 接口延迟，商城无法监控微擎行为导致会员注册重复1(fans->uid=0; mc_members=null)
+     *
+     * @param $fansModel
+     * @param $userInfo
+     */
     private function checkFansUid($fansModel, $userInfo)
     {
         if ($fansModel && 0 == $fansModel->uid) {
@@ -817,5 +835,37 @@ class MemberService
                 $this->updateFansMember($fansModel->fanid, $member_id, $userInfo);
             }
         }
+    }
+
+    /**
+     * 扫海报关注
+     *
+     * 关注->微擎注册->商城注册
+     *
+     * 接口延迟，商城无法监控微擎行为导致会员注册重复2(fans->uid被更新; mc_members存在)
+     *
+     * @param $mc_members
+     * @param $fans
+     * @param $yz_member
+     * @param $userInfo
+     * @return int
+     */
+    private function checkYzMember($mc_members, $fans, $yz_member, $userInfo)
+    {
+        if (!is_null($mc_members) && !is_null($fans) && is_null($yz_member)) {
+            $member_id = SubMemberModel::getMemberId($userInfo['openid']);
+
+            if (!is_null($member_id) && $member_id != 0 && $member_id != $fans->uid) {
+                if (Member::getMemberById($member_id))
+                {
+                    Member::deleted($fans->uid);
+                    $this->updateFansMember($fans->fanid, $member_id, $userInfo);
+                }
+
+                return $member_id;
+            }
+        }
+
+        return 0;
     }
 }
