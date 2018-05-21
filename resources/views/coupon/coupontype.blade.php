@@ -54,7 +54,7 @@
         <label class='radio-inline'>
             <input type="radio" name="coupon[is_complex]" value="1" @if($coupon['is_complex']==1) checked @endif/>多张一起使用
         </label>
-        <span class='help-block'>如选择单张使用，则一笔订单只能使用一张优惠券；
+        <span class='help-block'>如选择单张使用，则一笔订单只能使用一张该类型的优惠券；
 选择多张一起使用，则满足使用的金额就可以， 比如我有300-50优惠券3张，下单金额满900元，可以用三张，下单金额满600元可以用2张，下单金额满300元可以用一张</span>
     </div>
 </div>
