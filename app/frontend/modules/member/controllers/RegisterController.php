@@ -183,8 +183,6 @@ class RegisterController extends ApiController
 
     public function sendCodeV2()
     {
-        $status = \Setting::get('shop.sms.status');
-
         $mobile = \YunShop::request()->mobile;
 
         $reset_pwd = \YunShop::request()->reset;
@@ -194,11 +192,6 @@ class RegisterController extends ApiController
         if (empty($mobile)) {
             return $this->errorJson('请填入手机号');
         }
-
-//        if ($status == 1) {
-//            $captcha =  self::captchaTest();
-//            return $this->successJson('ok', ['captcha' => $captcha]);
-//        }
 
         $info = MemberModel::getId(\YunShop::app()->uniacid, $mobile);
 
@@ -218,16 +211,6 @@ class RegisterController extends ApiController
         } else {
             $this->sendSmsV2($mobile, $code, $state);
         }
-    }
-
-    //添加验证码测试
-    public function captchaTest()
-    {
-        $captcha = app('captcha');
-
-        $captcha_base64 = $captcha->create('default', true);
-
-        return $captcha_base64;
     }
 
     public function sendWithdrawCode()

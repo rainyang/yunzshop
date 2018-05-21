@@ -182,7 +182,24 @@ class HomePageController extends ApiController
         //增加小程序回去默认装修数据
         $result['applet'] = self::defaultDesign();
 
+        //增加验证码功能
+        $status = \Setting::get('shop.sms.status');
+        $captcha = self::captchaTest();
+        if ($status == 1) {
+            $result['status'] = $status;
+            $result['captcha'] = $captcha;
+        }
+
         return $this->successJson('ok', $result);
+    }
+
+    //增加验证码功能
+    public function captchaTest()
+    {
+        $captcha = app('captcha');
+        $captcha_base64 = $captcha->create('default', true);
+
+        return $captcha_base64;
     }
 
     public function wxapp()
