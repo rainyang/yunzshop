@@ -186,8 +186,8 @@ class HomePageController extends ApiController
         $status = \Setting::get('shop.sms.status');
         $captcha = self::captchaTest();
         if ($status == 1) {
-            $result['status'] = $status;
             $result['captcha'] = $captcha;
+            $result['captcha']['status'] = $status;
         }
 
         return $this->successJson('ok', $result);
