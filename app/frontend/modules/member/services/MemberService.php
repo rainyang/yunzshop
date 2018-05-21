@@ -384,7 +384,8 @@ class MemberService
         $member_model = Member::getMemberById($member_id);
         $member_shop_info_model = MemberShopInfo::getMemberShopInfo($member_id);
 
-        if ( $member_id = $this->checkYzMember($member_model, $mc_mapping_fans_model, $member_shop_info_model, $userinfo)) {
+        if ($yz_member_id = $this->checkYzMember($member_model, $mc_mapping_fans_model, $member_shop_info_model, $userinfo)) {
+            $member_id = $yz_member_id;
             $member_shop_info_model = true;
         }
 
@@ -479,7 +480,8 @@ class MemberService
             $member_id = $fans_mode->uid;
         }
 
-        if ($member_id = $this->checkYzMember($member_model, $fans_mode, $member_shop_info_model, $userinfo)) {
+        if ($yz_member_id = $this->checkYzMember($member_model, $fans_mode, $member_shop_info_model, $userinfo)) {
+            $member_id = $yz_member_id;
             $member_shop_info_model = true;
         }
 
