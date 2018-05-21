@@ -26,6 +26,7 @@ use iscms\Alisms\SendsmsPusher as Sms;
 use app\common\exceptions\AppException;
 use Gregwar\Captcha\CaptchaBuilder;
 use Gregwar\Captcha\PhraseBuilder;
+use Mews\Captcha\Captcha;
 
 class RegisterController extends ApiController
 {
@@ -62,11 +63,9 @@ class RegisterController extends ApiController
                 return $this->errorJson('该手机号已被注册');
             }
 
-            $rules = ['captcha' => 'required | captcha'];
-
-            $validator = \Validator::make(Input::all(), $rules);
-            if ($validator->fails()) {
-                return $this->errorJson('验证失败');
+            dd(Input::get('captcha'));
+            if (Captcha::check(Input::get('captcha')) == false) {
+                return $this->errorJson('验证码错误');
             }
 
             //添加mc_members表
