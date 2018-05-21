@@ -195,11 +195,11 @@ class RegisterController extends ApiController
             return $this->errorJson('请填入手机号');
         }
 
-        if ($status == 1) {
-            $captcha =  self::captchaTest();
-            return $this->successJson('ok', ['captcha' => $captcha]);
-        }
-        
+//        if ($status == 1) {
+//            $captcha =  self::captchaTest();
+//            return $this->successJson('ok', ['captcha' => $captcha]);
+//        }
+
         $info = MemberModel::getId(\YunShop::app()->uniacid, $mobile);
 
         if (!empty($info) && empty($reset_pwd)) {
