@@ -112,7 +112,7 @@
             @if($tool)
             <div class="panel panel-default">
                 <div class="panel-heading" style="background-color: #f6f6f6">
-                    <h3 class="panel-title"></h3>
+                    <h3 class="panel-title">工具类</h3>
                 </div>
                 <div class="panel-body">
                     @foreach($tool as $key => $plugin)
