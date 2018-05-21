@@ -295,9 +295,6 @@ class PluginManager
         $enabled = $this->getEnabled();
 
         $this->setTopShow($enabled[$name]['id'], $enable);
-        $plugin = $this->getPlugin($name);
-        $plugin->setEnabled(true);
-        $this->dispatcher->fire(new events\PluginWasEnabled($plugin));
     }
 
     public
