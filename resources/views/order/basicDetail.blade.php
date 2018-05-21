@@ -235,7 +235,7 @@
                         /{{$order_goods['goods_cost_price']}}元
                     </td>
                     <td>{{$order_goods['total']}}</td>
-                    <td style='color:red;font-weight:bold;'>{{sprintf('%.2f', $order['goods_price']/$order_goods['total'])}}
+                    <td style='color:red;font-weight:bold;'>{{sprintf('%.2f', $order_goods['goods_price']/$order_goods['total'])}}
                         <br/>{{sprintf('%.2f', $order['price']/$order_goods['total'])}}
                     </td>
                     <td>

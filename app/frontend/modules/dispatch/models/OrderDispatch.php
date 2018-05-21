@@ -47,7 +47,7 @@ class OrderDispatch
 
         $freight_reduction = $this->levelFreeFreight($freight);
 
-        $result = max(($freight - $this->fullAmountFree($orderPrice,$freight) - $freight_reduction), 0);
+        $result = max(($freight - $this->fullAmountReduce($orderPrice,$freight) - $freight_reduction), 0);
 
         return $result;
     }
@@ -57,22 +57,22 @@ class OrderDispatch
      * @param $orderPrice
      * @return bool
      */
-    private function fullAmountFree($orderPrice,$freight)
+    private function fullAmountReduce($orderPrice,$freight)
     {
-        if (!\Setting::get('dispatch.fullAmountFree.open')) {
+        if (!\Setting::get('dispatch.fullAmountReduce.open')) {
             return 0;
         }
         // 不参与包邮地区
-        if (in_array($this->order->orderAddress->city_id, \Setting::get('dispatch.fullAmountFree.exceptCityIds'))) {
+        if (in_array($this->order->orderAddress->city_id, \Setting::get('dispatch.fullAmountReduce.exceptCityIds'))) {
             return 0;
         }
         // 设置为0 全额包邮
-        if (\Setting::get('dispatch.fullAmountFree.amount') === 0 || \Setting::get('dispatch.fullAmountFree.amount') === '0') {
+        if (\Setting::get('dispatch.fullAmountReduce.amount') === 0 || \Setting::get('dispatch.fullAmountReduce.amount') === '0') {
             return $freight;
         }
         // 订单金额满足满减金额
-        if ($orderPrice >= \Setting::get('dispatch.fullAmountFree.enough')) {
-            return min(\Setting::get('dispatch.fullAmountFree.amount'),$freight);
+        if ($orderPrice >= \Setting::get('dispatch.fullAmountReduce.enough')) {
+            return min(\Setting::get('dispatch.fullAmountReduce.amount'),$freight);
         }
         return 0;
     }
