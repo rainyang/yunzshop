@@ -50,13 +50,13 @@ class MemberLevelController extends ApiController
             $bool = LeaseToyGoods::whetherEnabled();
             //商品图片处理
             foreach ($data as &$value) {
-                $value['rent_free'] = 0;
-                $value['deposit_free'] = 0;
+                $value['rent_free'] = null;
+                $value['deposit_free'] = null;
                 if ($bool) {
                     $levelRights = LevelRightsModel::getRights($value['id']);
                     if ($levelRights) {
-                        $value['rent_free'] = $levelRights->rent_free;
-                        $value['deposit_free'] = $levelRights->deposit_free;
+                        $value['rent_free'] = $levelRights->rent_free ? $levelRights->rent_free : 0;
+                        $value['deposit_free'] = $levelRights->deposit_free ? $levelRights->deposit_free : 0;
                     }
                 }
                 if ($value['goods']) {
@@ -79,8 +79,8 @@ class MemberLevelController extends ApiController
                 $memberData['rights'] = [
                     'discount' => $member_info['yz_member']['level']['discount'] ? $member_info['yz_member']['level']['discount'] : 0,
                     'freight_reduction' => $member_info['yz_member']['level']['freight_reduction'] ? $member_info['yz_member']['level']['freight_reduction'] : 0,
-                    'rent_free' => 0,
-                    'deposit_free' => 0,
+                    'rent_free' => null,
+                    'deposit_free' => null,
                 ];
                 if ($bool) {
                     $levelRights = LevelRightsModel::getRights($member_info['yz_member']['level']['id']);
@@ -133,13 +133,13 @@ class MemberLevelController extends ApiController
                 }])->find($id);
         //是否开启租赁
         $bool = LeaseToyGoods::whetherEnabled();
-        $detail->rent_free = 0;
-        $detail->deposit_free = 0;
+        $detail->rent_free = null;
+        $detail->deposit_free = null;
         if ($bool) {
             $levelRights = LevelRightsModel::getRights($id);
             if ($levelRights) {
-                $detail->rent_free = $levelRights->rent_free;
-                $detail->deposit_free = $levelRights->deposit_free;
+                $detail->rent_free = $levelRights->rent_free ? $levelRights->rent_free : 0;
+                $detail->deposit_free = $levelRights->deposit_free ? $levelRights->deposit_free : 0;
             }
         }
 
