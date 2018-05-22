@@ -74,7 +74,7 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">积分变动通知</label>
                             <div class="col-sm-8 col-xs-12">
                                 <select name='yz_notice[point_change]' class='form-control diy-notice'>
-                                    <option value="{{$set['point_change']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['point_change'])))
+                                    <option value="{{$set['point_change']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['point_change']))
                                     selected
                                             @endif;
                                     >
@@ -138,7 +138,7 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额变动通知</label>
                             <div class="col-sm-8 col-xs-12">
                                 <select name='yz_notice[balance_change]' class='form-control diy-notice'>
-                                    <option value="" @if(!$set['balance_change'])
+                                    <option value="{{$set['balance_change']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['balance_change']))
                                     selected
                                             @endif;
                                     >
@@ -154,27 +154,10 @@
                                 <div class="help-block">通知公众平台模板消息编号: OPENTM401833445</div>
                             </div>
                             <div class="col-sm-2 col-xs-6">
-                                <input class="mui-switch mui-switch-animbg select_status" type="checkbox" checked value="balance_change"/>
-                                <input class="mui-switch mui-switch-animbg" type="checkbox" checked value="aaa" onclick="ddd()"/>
-                                <script>
-                                    function ddd() {
-                                        alert($(this).val())
-                                    }
-                                    $(document).ready(function() {
-                                        $(".select_status").on('click', function(){
-                                            clickSwitch()
-                                        });
-                                        var clickSwitch = function() {
-                                            if ($(".select_status").is(':checked')) {
-                                                $(this).val();
-                                                alert($(this).val())
-                                                // alert('开')
-                                            } else {
-                                                alert('关')
-                                            }
-                                        };
-                                    });
-                                </script>
+                                <input class="mui-switch mui-switch-animbg" id="balance_change" type="checkbox"
+                                       @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['balance_change']))
+                                       checked @endif
+                                       onclick="message_default(this.id)"/>
                             </div>
                         </div>
                     </div>
@@ -666,6 +649,38 @@
 
 
                     </div>
+                    <script>
+                        function message_default(name) {
+                            var id = "#" + name;
+                            if ($(id).is(':checked')) {
+                                //开
+                                var url = "{!! yzWebUrl('setting.default-notice.index') !!}"
+                                var postdata = {
+                                    notice_name: name
+                                };
+                                $.post(url,postdata,function(data){
+                                    alert('启用成功');
+                                    location.reload()
+                                });
+                            } else {
+                                //关
+                                var url = "{!! yzWebUrl('setting.default-notice.cancel') !!}"
+                                var postdata = {
+                                    notice_name: name
+                                };
+                                $.post(url,postdata,function(data){
+                                    alert('关闭成功');
+                                    location.reload()
+                                });
+                            }
+                        }
+                        $(document).ready(function() {
+                            $(".select_status").on('click', function(){
+
+                            });
+
+                        });
+                    </script>
                     <script language='javascript'>
                         function search_members() {
                             if ($.trim($('#search-kwd').val()) == '') {
