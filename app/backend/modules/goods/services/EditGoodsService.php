@@ -70,7 +70,9 @@ class EditGoodsService
             $goods_data['has_option'] = $goods_data['has_option'] ? $goods_data['has_option'] : 0;
             //将数据赋值到model
             $goods_data['thumb'] = tomedia($goods_data['thumb']);
-
+            //商品视频地址
+            $goods_data['goods_video'] = tomedia($goods_data['goods_video']);
+            
             if(isset($goods_data['thumb_url'])){
                 $goods_data['thumb_url'] = serialize(
                     array_map(function($item){

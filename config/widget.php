@@ -42,6 +42,10 @@ return [
             'title' => '搜索过滤',
             'class' => 'app\backend\widgets\goods\FilteringWidget'
         ],
+        'tab_service' => [
+            'title' => '服务提供',
+            'class' => 'app\backend\widgets\goods\ServiceWidget'
+        ],
 
     ],
     'withdraw' => [

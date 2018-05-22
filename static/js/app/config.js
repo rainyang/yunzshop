@@ -23,8 +23,10 @@ require.config({
         'kindeditor.main':'../../components/kindeditor/kindeditor-min',
         'css': '../lib/css.min',
         'webuploader' : '../../components/webuploader/webuploader.min',
-        //'fileUploader' : window.sysinfo['static_url'] + (window.sysinfo['is_new'] !='1' ? 'resource/js/app/fileUploader': 'js/fileUploader.min'),
-        'fileUploader' : window.sysinfo['static_url'] + (window.sysinfo['is_new'] !='1' ? 'resource/js/app/fileUploader': 'resource/js/app/fileUploader.min'),
+        // 'fileUploader' : window.sysinfo['static_url'] + (window.sysinfo['is_new'] !='1' ? 'resource/js/app/fileUploader': 'js/fileUploader.min'),
+        //'fileUploader' : window.sysinfo['static_url'] + (window.sysinfo['is_new'] !='1' ? 'resource/js/app/fileUploader': 'resource/js/app/fileUploader.min'),
+        //视频上传需要
+        'fileUploader' : window.sysinfo['static_url'] + (window.sysinfo['is_new'] !='1' ? 'resource/js/app/fileUploader': 'js/app/fileUploader.min'),
         'json2' : '../lib/json2',
         'wapeditor' : './wapeditor',
         'jquery.wookmark': '../lib/jquery.wookmark.min',
