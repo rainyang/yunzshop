@@ -22,6 +22,7 @@ class MemberCoupon extends BaseModel
     protected $guarded = [];
 
     protected $appends = ['time_start', 'time_end'];
+    public $selected;
 
 
 
