@@ -235,8 +235,8 @@
                         /{{$order_goods['goods_cost_price']}}元
                     </td>
                     <td>{{$order_goods['total']}}</td>
-                    <td style='color:red;font-weight:bold;'>{{$order['goods_price']}}
-                        <br/>{{$order['price']}}
+                    <td style='color:red;font-weight:bold;'>{{sprintf('%.2f', $order['goods_price']/$order_goods['total'])}}
+                        <br/>{{sprintf('%.2f', $order['price']/$order_goods['total'])}}
                     </td>
                     <td>
                         <a href="{!! yzWebUrl($edit_goods, array('id' => $order_goods['goods']['id'])) !!}"
