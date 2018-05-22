@@ -14,7 +14,8 @@ use app\frontend\modules\order\models\PreOrder;
 class PreOrderCoupon extends \app\common\models\order\OrderCoupon
 {
     public $order;
-
+    protected $hidden =['memberCoupon'];
+    public $coupon;
     public function setOrder(PreOrder $order)
     {
         $this->order = $order;
