@@ -10,12 +10,69 @@ namespace app\backend\modules\setting\controllers;
 
 
 use app\common\components\BaseController;
+use app\common\services\notice\WechatApi;
+use app\common\models\TemplateMessageDefault;
+use app\common\models\notice\MessageTemp;
+
 
 class DefaultNoticeController extends BaseController
 {
+    private $WechatApiModel;
+    private $TemplateModel;
+
+    public function __construct() {
+        $this->WechatApiModel = new WechatApi();
+        $this->TemplateModel = new TemplateMessageDefault();
+    }
+
     public function index() {
-        //template_id_short = OPENTM207509450 积分消息通知
+//        $notice_name = "point_change";
         $notice_name = \YunShop::request()->notice_name;
-        dd($notice_name);
+//        dd($notice_name);
+        $notice = \Setting::get('shop.notice');
+        $temp_model = new MessageTemp();
+        $tem_id = $temp_model->getTempIdByNoticeType($notice_name);
+        if ($tem_id){
+            $notice[$notice_name] = (string)$tem_id;
+        } else {
+            foreach(\Config::get('notice-template') as $key => $item) {
+                if ($key == $notice_name) {
+                    $template_id_short = $item['template_id_short'];
+                    unset($item['template_id_short']);
+                    $template_default_data1 = $item;
+                }
+            }
+            $template_data = $this->TemplateModel->getData($template_id_short);
+            if (!$template_data) {
+                $template_id = $this->WechatApiModel->getTemplateIdByTemplateIdShort($template_id_short);
+                $this->TemplateModel->template_id_short = $template_id_short;
+                $this->TemplateModel->template_id = $template_id;
+                $this->TemplateModel->uniacid = \YunShop::app()->uniacid;
+                $this->TemplateModel->save();
+            } else {
+                $template_default_data2 = [
+                    'uniacid' => \YunShop::app()->uniacid,
+                    'template_id' => $template_data['template_id'],
+                    'is_default' => 1,
+                    'notice_type' => $notice_name,
+                ];
+                $template_default_data = array_merge($template_default_data1, $template_default_data2);
+
+                $ret = $temp_model::create($template_default_data);
+
+                $notice[$notice_name] = (string)$ret->id;
+            }
+
+        }
+        \Setting::set('shop.notice', $notice);
+    }
+
+    public function cancel() {
+//        $notice_name = "point_change";
+        $notice_name = \YunShop::request()->notice_name;
+//        dd($notice_name);
+        $notice = \Setting::get('shop.notice');
+        $notice[$notice_name] = "0";
+        \Setting::set('shop.notice', $notice);
     }
 }

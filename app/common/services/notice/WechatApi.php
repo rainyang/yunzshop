@@ -38,6 +38,20 @@ class WechatApi
     }
 
     /**
+     * @name 通过模板编号从行业模板库获取模版id
+     * @author
+     * @param $templateIdShort
+     * @return array
+     */
+    public function getTemplateIdByTemplateIdShort($templateIdShort)
+    {
+        $param = '{"template_id_short":"' . $templateIdShort . '"}';
+        $http_result = $this->ihttp_request($this->getTmpUrl(), $param);
+        $result = @json_decode($http_result['content'], true);
+        return $result['template_id'];
+    }
+
+    /**
      * @name 通过模板ID删除
      * @author
      * @param $templateId
@@ -61,6 +75,7 @@ class WechatApi
     {
         $http_result = $this->ihttp_request($this->getTmpListUrl());
         $result = @json_decode($http_result['content'], true);
+        dd($result);
         if (!is_array($result)) {
             throw new ShopException('请求失败');
         }

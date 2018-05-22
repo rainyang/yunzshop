@@ -39,6 +39,15 @@ class MessageTemp extends BaseModel
     protected $casts = [
         'data' => 'json'
     ];
+    public function getTempIdByNoticeType($notice_type)
+    {
+        return self::where('notice_type',$notice_type)->value('id');
+    }
+
+    public function getIsDefaultById($temp_id)
+    {
+        return self::whereId($temp_id)->where('is_default',1)->first();
+    }
 
     public static function getTempById($temp_id)
     {

@@ -1,6 +1,8 @@
 @extends('layouts.base')
 
 @section('content')
+    <link rel="stylesheet" href="{{static_url('css/honeySwitch.css')}}">
+    <script type="text/javascript" src="{{static_url('js/honeySwitch.js')}}"></script>
     <script type="text/javascript">
         require(['select2'], function () {
             $('.diy-notice').select2();
@@ -72,43 +74,57 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">积分变动通知</label>
                             <div class="col-sm-8 col-xs-12">
                                 <select name='yz_notice[point_change]' class='form-control diy-notice'>
-                                    <option value="" @if(!$set['point_change'])
+                                    <option value="{{$set['point_change']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['point_change'])))
                                     selected
                                             @endif;
                                     >
-                                        请选择消息模板
+                                        默认消息模板
                                     </option>
+                                    {{--@if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['point_change']))--}}
+                                        {{--<option value="{{$set['point_change']}}" selected>--}}
+                                            {{--默认模版--}}
+                                        {{--</option>--}}
+                                    {{--@endif--}}
                                     @foreach ($temp_list as $item)
                                         <option value="{{$item['id']}}"
-                                                @if($set['point_change'] == $item['id'])
-                                                selected
-                                                @endif>{{$item['title']}}</option>
+                                            @if($set['point_change'] == $item['id'])
+                                            selected
+                                            @endif>
+                                            {{$item['title']}}
+                                        </option>
                                     @endforeach
+
                                 </select>
                                 <div class="help-block">通知公众平台模板消息编号: OPENTM207509450</div>
                             </div>
                             <div class="col-sm-2 col-xs-6 ">
-                                <input name="notice_select" type="checkbox" data-size="small" value="point_change">
+                                <span @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['point_change']))
+                                      class='switch-on'
+                                      @else
+                                      class="switch-off"
+                                      @endif id='point_change'></span>
                                 <script type="text/javascript">
-                                    $('[name="notice_select"]').bootstrapSwitch({
-                                        onText:"开",
-                                        offText:"关",
-                                        onColor:"success",
-                                        offColor:"info",
-                                        onSwitchChange:function(event,state){
-                                            if(state==true){
-                                                var url = "{!! yzWebUrl('setting.default-notice.index') !!}"
-                                                var postdata = {
-                                                    notice_name: $(this).val()
-                                                };
-                                                $.post(url,postdata,function(data){
-                                                    $(".batchenable").html('启用成功');
-                                                });
-                                            }else{
-
-                                            }
-                                        }
-                                    })
+                                    $(function() {
+                                        switchEvent("#point_change", function () {
+                                            var url = "{!! yzWebUrl('setting.default-notice.index') !!}"
+                                            var postdata = {
+                                                notice_name: $("#point_change").attr("id")
+                                            };
+                                            $.post(url,postdata,function(data){
+                                                alert('启用成功');
+                                                location.reload()
+                                            });
+                                        }, function () {
+                                            var url = "{!! yzWebUrl('setting.default-notice.cancel') !!}"
+                                            var postdata = {
+                                                notice_name: $("#point_change").attr("id")
+                                            };
+                                            $.post(url,postdata,function(data){
+                                                alert('关闭成功');
+                                                location.reload()
+                                            });
+                                        })
+                                    });
                                 </script>
                             </div>
                         </div>
@@ -120,7 +136,7 @@
                     <div class='panel-body'>
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额变动通知</label>
-                            <div class="col-sm-9 col-xs-12">
+                            <div class="col-sm-8 col-xs-12">
                                 <select name='yz_notice[balance_change]' class='form-control diy-notice'>
                                     <option value="" @if(!$set['balance_change'])
                                     selected
@@ -136,6 +152,29 @@
                                     @endforeach
                                 </select>
                                 <div class="help-block">通知公众平台模板消息编号: OPENTM401833445</div>
+                            </div>
+                            <div class="col-sm-2 col-xs-6">
+                                <input class="mui-switch mui-switch-animbg select_status" type="checkbox" checked value="balance_change"/>
+                                <input class="mui-switch mui-switch-animbg" type="checkbox" checked value="aaa" onclick="ddd()"/>
+                                <script>
+                                    function ddd() {
+                                        alert($(this).val())
+                                    }
+                                    $(document).ready(function() {
+                                        $(".select_status").on('click', function(){
+                                            clickSwitch()
+                                        });
+                                        var clickSwitch = function() {
+                                            if ($(".select_status").is(':checked')) {
+                                                $(this).val();
+                                                alert($(this).val())
+                                                // alert('开')
+                                            } else {
+                                                alert('关')
+                                            }
+                                        };
+                                    });
+                                </script>
                             </div>
                         </div>
                     </div>
