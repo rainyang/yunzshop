@@ -222,7 +222,7 @@ class PointService
                 $mode_attribute = self::POINT_MODE_RECHARGE_ATTACHED;
                 break;
             case (12):
-                $mode_attribute = self::POINT_MODE_FLOW_ATTACHED;
+                $mode_attribute = self::POINT_MODE_FlOW_ATTACHED;
                 break;
             case (13):
                 $mode_attribute = self::POINT_MODE_TRANSFER_ATTACHED;
