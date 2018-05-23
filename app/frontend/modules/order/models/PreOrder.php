@@ -143,9 +143,8 @@ class PreOrder extends Order
      */
     public function getDispatchPrice()
     {
-        $orderPrice = max($this->getOrderGoodsPrice() - $this->getDiscountAmount(), 0);
 
-        return $this->orderDispatch->getDispatchPrice($orderPrice);
+        return $this->orderDispatch->getFreight();
     }
 
     /**
@@ -282,14 +281,13 @@ class PreOrder extends Order
      */
     protected function getPrice()
     {
-        if (isset($this->price)) {
-            return $this->price;
-        }
+        if (!isset($this->price)) {
+            //订单最终价格 = 商品最终价格 - 订单优惠 - 订单抵扣 + 订单运费
+            $this->price = max($this->getOrderGoodsPrice() - $this->getDiscountAmount(), 0);
 
-        //订单最终价格 = 商品最终价格 - 订单优惠 - 订单抵扣 + 订单运费
-        $this->price = max($this->getOrderGoodsPrice() - $this->getDiscountAmount(), 0);
-        $this->price += $this->getDispatchPrice($this->price);
-        $this->price = $this->price - $this->getDeductionPrice();
+            $this->price += $this->getDispatchPrice();
+            $this->price = $this->price - $this->getDeductionPrice();
+        }
         return $this->price;
     }
 

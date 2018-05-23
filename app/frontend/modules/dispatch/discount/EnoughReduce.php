@@ -8,42 +8,18 @@
 
 namespace app\frontend\modules\dispatch\discount;
 
-use app\frontend\models\order\PreOrderDiscount;
 
-class EnoughReduce
+/**
+ * 全场运费满额减
+ * Class EnoughReduce
+ * @package app\frontend\modules\dispatch\discount
+ */
+class EnoughReduce extends BaseFreightDiscount
 {
-    private $order;
-    private $price;
-    public function __construct($order)
-    {
-        $this->order = $order;
-    }
+    protected $name = '全场运费满额减';
+    protected $code = 'EnoughReduce';
 
-    /**
-     * 全场满额包邮
-     * @param $orderPrice
-     * @param $freight
-     * @return bool
-     */
-    public function getPrice($orderPrice, $freight)
-    {
-        if(!isset($this->price)){
-            $enoughReduce = $this->_enoughReduce($orderPrice,$freight);
-            if ($enoughReduce > 0) {
-                $preOrderDiscount = new PreOrderDiscount([
-                    'discount_code' => 'enoughReduce',
-                    'amount' => $enoughReduce,
-                    'name' => '全场满额包邮',
-
-                ]);
-                $preOrderDiscount->setOrder($this->order);
-            }
-            $this->price = $enoughReduce;
-        }
-        return $this->price;
-    }
-
-    private function _enoughReduce($orderPrice, $freight)
+    protected function _getAmount()
     {
         if (!\Setting::get('enoughReduce.freeFreight.open')) {
             return 0;
@@ -54,11 +30,11 @@ class EnoughReduce
         }
         // 设置为0 全额包邮
         if (\Setting::get('enoughReduce.freeFreight.enough') === 0 || \Setting::get('enoughReduce.freeFreight.enough') === '0') {
-            return $freight;
+            return $this->order->getDispatchPrice();
         }
         // 订单金额满足满减金额
-        if ($orderPrice >= \Setting::get('enoughReduce.freeFreight.enough')) {
-            return $freight;
+        if ($this->order->price >= \Setting::get('enoughReduce.freeFreight.enough')) {
+            return $this->order->getDispatchPrice();
         }
         return 0;
     }
