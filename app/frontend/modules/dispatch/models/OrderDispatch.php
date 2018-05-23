@@ -9,7 +9,7 @@
 namespace app\frontend\modules\dispatch\models;
 
 use app\common\events\dispatch\OrderDispatchWasCalculated;
-use app\common\models\goods\GoodsDispatch;
+use app\frontend\models\order\PreOrderDiscount;
 use app\frontend\modules\order\models\PreOrder;
 use app\common\models\MemberShopInfo;
 
@@ -47,42 +47,37 @@ class OrderDispatch
 
         $freight_reduction = $this->levelFreeFreight($freight);
 
-        $result = max(($freight - $this->fullAmountReduce($orderPrice,$freight) - $freight_reduction), 0);
+        $enoughReduce = $this->enoughReduce($orderPrice, $freight);
+
+        $result = max(($freight - $enoughReduce - $freight_reduction), 0);
 
         return $result;
     }
 
-    /**
-     * 全场满额包邮
-     * @param $orderPrice
-     * @return bool
-     */
-    private function fullAmountReduce($orderPrice,$freight)
+
+
+    private function levelFreeFreight($freight)
     {
-        if (!\Setting::get('dispatch.fullAmountReduce.open')) {
-            return 0;
+        $levelFreeFreight = $this->_levelFreeFreight($freight);
+        if ($levelFreeFreight > 0) {
+            $preOrderDiscount = new PreOrderDiscount([
+                'discount_code' => 'levelFreeFreight',
+                'amount' => $levelFreeFreight,
+                'name' => '会员等级运费优惠',
+
+            ]);
+            $preOrderDiscount->setOrder($this->order);
         }
-        // 不参与包邮地区
-        if (in_array($this->order->orderAddress->city_id, \Setting::get('dispatch.fullAmountReduce.exceptCityIds'))) {
-            return 0;
-        }
-        // 设置为0 全额包邮
-        if (\Setting::get('dispatch.fullAmountReduce.amount') === 0 || \Setting::get('dispatch.fullAmountReduce.amount') === '0') {
-            return $freight;
-        }
-        // 订单金额满足满减金额
-        if ($orderPrice >= \Setting::get('dispatch.fullAmountReduce.enough')) {
-            return min(\Setting::get('dispatch.fullAmountReduce.amount'),$freight);
-        }
-        return 0;
+        return $levelFreeFreight;
     }
+
 
     /**
      * Author: aaa Date: 2018/4/2
      * 会员等级运费优惠
      * @return [int] [优惠金额]
      */
-    public function levelFreeFreight($freight)
+    private function _levelFreeFreight($freight)
     {
         $uid = intval($this->order->belongsToMember->uid);
         $member = MemberShopInfo::select('level_id')->with('level')->find($uid);

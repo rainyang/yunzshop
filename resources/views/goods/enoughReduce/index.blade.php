@@ -188,15 +188,18 @@
                 saveAreas() {
                     let cities = [];
                     let city_ids = [];
+                    let province_ids = [];
                     this.$refs.addressTree.getCheckedNodes().forEach(function (node) {
-
-                        if (node.level == 2) {
+                        if (node.level == 1) {
+                            province_ids.push(node.id);
+                        }else if (node.level == 2) {
                             city_ids.push(node.id);
                             cities.push(node.areaname)
                         }
                     });
                     this.form.freeFreight.city_ids = city_ids;
                     this.form.freeFreight.cities = cities;
+                    this.form.freeFreight.province_ids = province_ids;
                     this.centerDialogVisible = false
 
                 }
