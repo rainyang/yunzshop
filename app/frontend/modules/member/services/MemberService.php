@@ -466,8 +466,7 @@ class MemberService
         $userinfo['nickname'] = $this->filteNickname($userinfo);
         //$fans_mode = McMappingFansModel::getUId($userinfo['openid']);
         $fans_mode = $this->getFansModel($userinfo['openid']);
-
-        // TODO 验证$fans_mode->uid是否为0，与yz_mmeber匹配
+        
         $this->checkFansUid($fans_mode, $userinfo);
 
         if ($fans_mode) {
