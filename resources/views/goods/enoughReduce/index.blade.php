@@ -12,21 +12,21 @@
     <div class="rightlist">
         @include('layouts.tabs')
         <div id="test-vue">
-            <el-form ref="form" :model="form" label-width="17%">
+            <el-form ref="form" :model="form" label-width="17%" v-loading="formLoading">
 
                 <el-form-item label="满额减">
 
                     <template v-for="enoughReduce in form.enoughReduce">
                         <el-row>
-                                <el-input placeholder="金额" v-model="enoughReduce.enough" size="medium" style="width: 25%">
-                                    <template slot="prepend">满</template>
-                                    <template slot="append">元</template>
-                                </el-input>
-                                <el-input placeholder="金额" v-model="enoughReduce.reduce" size="medium" style="width: 25%">
-                                    <template slot="prepend">减</template>
-                                    <template slot="append">元</template>
-                                </el-input>
-                                <el-button type="danger" plain size="mini" @click="remove(this)">x</el-button>
+                            <el-input placeholder="金额" v-model="enoughReduce.enough" size="medium" style="width: 25%">
+                                <template slot="prepend">满</template>
+                                <template slot="append">元</template>
+                            </el-input>
+                            <el-input placeholder="金额" v-model="enoughReduce.reduce" size="medium" style="width: 25%">
+                                <template slot="prepend">减</template>
+                                <template slot="append">元</template>
+                            </el-input>
+                            <el-button type="danger" plain size="mini" @click="remove(this)">x</el-button>
                         </el-row>
                     </template>
 
@@ -118,13 +118,14 @@
                     //     },
                     //
                     // },
-                    form:{!! $setting !!},
+                    form: {!! $setting !!},
                     props: {
                         label: 'areaname',
                         children: 'children',
                         isLeaf: 'isLeaf'
                     },
                     loading: false,
+                    formLoading: false,
                     centerDialogVisible: false,
                     treeData: []
                 }
@@ -144,10 +145,15 @@
                     this.form.enoughReduce.splice(i, 1)
                 },
                 onSubmit() {
+                    this.formLoading = true;
                     this.$http.post("{!! yzWebUrl('goods.enough-reduce.store') !!}", {'setting': this.form}).then(response => {
-                        console.log(response);
-                        return;
-                        window.location.href = 'http://www.ddhbb.com';
+                        // console.log(response.data);
+                        // return;
+                        this.formLoading = false;
+                        this.$message({
+                            message: '保存成功',
+                            type: 'success'
+                        });
                     }, response => {
                         console.log(response);
                     });
@@ -192,7 +198,7 @@
                     this.$refs.addressTree.getCheckedNodes().forEach(function (node) {
                         if (node.level == 1) {
                             province_ids.push(node.id);
-                        }else if (node.level == 2) {
+                        } else if (node.level == 2) {
                             city_ids.push(node.id);
                             cities.push(node.areaname)
                         }
