@@ -126,16 +126,17 @@
                         </form>
                     </div>
                 </div>
-
-                <style type="text/css">
-
-                </style>
                 <form id="goods-list" action="{!! yzWebUrl($sort_url) !!}" method="post">
                     <div class="panel panel-default">
                         <div class="panel-body table-responsive">
+                            <label class="btn btn-success" id="checkall">全选</label>
+                            <label class="btn btn-info batchenable" type="submit">批量上架</label>
+                            <label class="btn batchdisable" type="submit">批量下架</label>
+                            <label class="btn btn-danger batchdisable" type="submit">批量删除</label>
                             <table class="table table-hover">
                                 <thead class="navbar-inner">
                                 <tr>
+                                    <th width="3%">选择</th>
                                     <th width="6%">ID</th>
                                     <th width="6%">排序</th>
                                     <th width="6%">{{$lang['good']}}</th>
@@ -155,6 +156,7 @@
                                 @foreach($list as $item)
 
                                     <tr>
+                                        <td width="3%"><input type="checkbox" name="check1" value="{{$item['id']}}"></td>
                                         <td width="6%">{{$item['id']}}</td>
                                         <td width="6%">
                                             <input type="text" class="form-control"
@@ -312,11 +314,13 @@
                                     </tr>
                                 </tbody>
                             </table>
-
+                            <label class="btn btn-success" id="checkall">全选</label>
+                            <label class="btn btn-info batchenable" type="submit">批量上架</label>
+                            <label class="btn batchdisable" type="submit">批量下架</label>
+                            <label class="btn btn-danger batchdisable" type="submit">批量删除</label>
 
                             {!!$pager!!}
                                     <!--分页-->
-
 
                         </div>
                         <div style="margin-left:13px;margin-top:8px">
@@ -335,6 +339,69 @@
         </div>
     </div>
     </div>
+<script>
+    $(function(){
+        $("#checkall").click(function(){
+            //全选
+            if($(this).html() == '全选') {
+                $(this).html('全不选');
+                $('[name=check1]:checkbox').prop('checked',true);
+            } else {
+                $(this).html('全选');
+                $('[name=check1]:checkbox').prop('checked',false);
+            }
+        });
+        $("#checkrev").click(function(){
+            //反选
+            $('[name=check1]:checkbox').each(function(){
+                this.checked=!this.checked;
+            });
+        });
+
+        var arr = new Array();
+        var url = "{!! yzWebUrl('plugins.batchMange') !!}"
+
+        $(".batchenable").click(function () {
+            $(this).html('启用中...');
+            $("input[type='checkbox']:checked").each(function(i){
+                arr[i] = $(this).val();
+            });
+            var vals = arr.join(",");
+            var postdata = {
+                names: vals,
+                action: 'enable',
+            };
+            $.post(url,postdata,function(data){
+                if (data) {
+                    alert('操作失败，请重新选择');
+                    return false;
+                }
+                $(".batchenable").html('启用成功');
+                setTimeout(location.reload(), 3000);
+            });
+        });
+
+        $(".batchdisable").click(function () {
+            $(this).html('禁用中...');
+            $("input[type='checkbox']:checked").each(function(i){
+                arr[i] = $(this).val();
+            });
+            var vals = arr.join(",");
+            var postdata = {
+                names: vals,
+                action: 'disable',
+            };
+            $.post(url,postdata,function (data) {
+                if (data) {
+                    alert('操作失败，请重新选择');
+                    return false;
+                }
+                $(".batchdisable").html('禁用成功');
+                setTimeout(location.reload(), 3000);
+            });
+        });
+    });
+</script>
 
     <script type="text/javascript">
 
