@@ -670,4 +670,11 @@ class Member extends BackendModel
 
         return ($pid && ($pid != 'null' || $pid != 'undefined')) ? (int)$pid : 0;
     }
+
+    public static function deleted($uid)
+    {
+        self::uniacid()
+            ->where('uid', $uid)
+            ->delete();
+    }
 }
