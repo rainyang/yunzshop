@@ -745,7 +745,7 @@
 			}else{
 				var year = $this.modalobj.find('#select-year .btn-info').data('id');
 				var month = $this.modalobj.find('#select-month .btn-info').data('id');
-				var url = './index.php?c=utility&a=file&do=tolocal';
+				var url = './index.php?c=utility&a=file&do=local';
 				var params = {'page': page, 'year': year, 'month': month, 'pagesize':36};
 			}
 			var $history = $this.modalobj.find('#history_image');
@@ -871,7 +871,7 @@
 				var url = './index.php?c=utility&a=wechat_file&do=browser';
 				var params = {'page': page, 'type' : type, 'mode' : mode, 'psize' : 5};
 			}else{
-				var url = './index.php?c=utility&a=file&do=tolocal&type=audio&pagesize=5';
+				var url = './index.php?c=utility&a=file&do=local&type=audio&pagesize=5';
 				var params = {'page': page};
 			}
 			var $history = $this.modalobj.find('#history_audio');
@@ -969,7 +969,7 @@
 				var url = './index.php?c=utility&a=wechat_file&do=browser';
 				var params = {'page': page, 'type' : type, 'psize' : 5};
 			}else{
-				var url = './index.php?c=utility&a=file&do=tolocal&type=video&pagesize=5';
+				var url = './index.php?c=utility&a=file&do=local&type=video&pagesize=5';
 				var params = {'page': page};
 			}
 			var $history = $this.modalobj.find('#history_video');
