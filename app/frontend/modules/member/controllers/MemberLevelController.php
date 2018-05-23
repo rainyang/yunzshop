@@ -41,7 +41,7 @@ class MemberLevelController extends ApiController
         }
 
         if ($this->settinglevel['level_type'] != 2) {
-            return $this->errorJson('.....');
+            return $this->errorJson('暂不支持该升级条件...');
         }
 
         //升级条件判断
@@ -50,13 +50,13 @@ class MemberLevelController extends ApiController
             $bool = LeaseToyGoods::whetherEnabled();
             //商品图片处理
             foreach ($data as &$value) {
-                $value['rent_free'] = 0;
-                $value['deposit_free'] = 0;
+                $value['rent_free'] = null;
+                $value['deposit_free'] = null;
                 if ($bool) {
                     $levelRights = LevelRightsModel::getRights($value['id']);
                     if ($levelRights) {
-                        $value['rent_free'] = $levelRights->rent_free;
-                        $value['deposit_free'] = $levelRights->deposit_free;
+                        $value['rent_free'] = $levelRights->rent_free ? $levelRights->rent_free : 0;
+                        $value['deposit_free'] = $levelRights->deposit_free ? $levelRights->deposit_free : 0;
                     }
                 }
                 if ($value['goods']) {
@@ -76,14 +76,18 @@ class MemberLevelController extends ApiController
             if (!empty($member_info['yz_member']['level'])) {
                 $memberData['level_id'] =  $member_info['yz_member']['level']['id'];
                 $memberData['level_name'] =  $member_info['yz_member']['level']['level_name'];
-                $levelRights = LevelRightsModel::getRights($member_info['yz_member']['level']['id']);
-
                 $memberData['rights'] = [
                     'discount' => $member_info['yz_member']['level']['discount'] ? $member_info['yz_member']['level']['discount'] : 0,
                     'freight_reduction' => $member_info['yz_member']['level']['freight_reduction'] ? $member_info['yz_member']['level']['freight_reduction'] : 0,
-                    'rent_free' => $levelRights->rent_free ? $levelRights->rent_free : 0,
-                    'deposit_free' => $levelRights->deposit_free ? $levelRights->deposit_free : 0,
+                    'rent_free' => null,
+                    'deposit_free' => null,
                 ];
+                if ($bool) {
+                    $levelRights = LevelRightsModel::getRights($member_info['yz_member']['level']['id']);
+                    $memberData['rights']['rent_free'] = $levelRights->rent_free ? $levelRights->rent_free : 0;
+                    $memberData['rights']['deposit_free'] = $levelRights->deposit_free ? $levelRights->deposit_free : 0;
+                }
+
             } else {
                 $memberData['level_id'] =  0;
                 $memberData['level_name'] =   $this->settinglevel['level_name'] ?  $this->settinglevel['level_name'] : '普通会员';
@@ -120,38 +124,39 @@ class MemberLevelController extends ApiController
         }
 
         if ($this->settinglevel['level_type'] != 2) {
-            return $this->errorJson('.....');
+            return $this->errorJson('暂不支持该升级条件...');
         }
 
-        if ($this->settinglevel['level_type'] == 2) {
-            $detail = MemberLevel::uniacid()
-                    ->with(['goods' => function($query) {
-                        return $query->select('id', 'title', 'thumb', 'price');
-                    }])->find($id);
-            $bool = LeaseToyGoods::whetherEnabled();
-            $detail->rent_free = 0;
-            $detail->deposit_free = 0;
-            if ($bool) {
-                $levelRights = LevelRightsModel::getRights($id);
-                if ($levelRights) {
-                    $detail->rent_free = $levelRights->rent_free;
-                    $detail->deposit_free = $levelRights->deposit_free;
-                }
+        $detail = MemberLevel::uniacid()
+                ->with(['goods' => function($query) {
+                    return $query->select('id', 'title', 'thumb', 'price');
+                }])->find($id);
+        //是否开启租赁
+        $bool = LeaseToyGoods::whetherEnabled();
+        $detail->rent_free = null;
+        $detail->deposit_free = null;
+        if ($bool) {
+            $levelRights = LevelRightsModel::getRights($id);
+            if ($levelRights) {
+                $detail->rent_free = $levelRights->rent_free ? $levelRights->rent_free : 0;
+                $detail->deposit_free = $levelRights->deposit_free ? $levelRights->deposit_free : 0;
             }
-
-
-            $detail->goods->thumb = replace_yunshop(yz_tomedia($detail->goods->thumb));
-            $detail->interests_rules = html_entity_decode($detail->interests_rules);
-        } else {
-            $detail = MemberLevel::uniacid()->find($id);
-            $detail->interests_rules = html_entity_decode($detail->interests_rules);
         }
+
+
+        $detail->goods->thumb = replace_yunshop(yz_tomedia($detail->goods->thumb));
+        // $detail->interests_rules = html_entity_decode($detail->interests_rules);
+        
+        //升级条件不为 2
+        // $detail = MemberLevel::uniacid()->find($id);
+        // $detail->interests_rules = html_entity_decode($detail->interests_rules);
 
         $detail->level_type = $this->settinglevel['level_type'];
 
         return $this->successJson('leveldetail', $detail);
     }
 
+    //获取用户数据
     public function getUserInfo($member_id)
     {
         return MemberModel::select(['*'])
@@ -173,11 +178,10 @@ class MemberLevelController extends ApiController
 
         $info['is_open'] = 0;
 
-        if (LeaseToyGoods::whetherEnabled()) {
-           if ($this->settinglevel['display_page'] && ($this->settinglevel['level_type'] == 2))
-           {
-                $info['is_open'] = 1;
-           }
+        //判断是否显示等级页
+        if ($this->settinglevel['display_page'] && ($this->settinglevel['level_type'] == 2))
+        {
+            $info['is_open'] = 1;
         }
 
         return $this->successJson('是否开启', $info);
