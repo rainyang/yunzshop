@@ -796,38 +796,38 @@ return [
                 ],
 
             ],
-            'full-amount-reduce' => [
+            'enough_reduce' => [
                 'name'              => '满额优惠',
-                'url'               => 'goods.full-amount-reduce.index',
+                'url'               => 'goods.enough-reduce.index',
                 'url_params'        => '',
                 'permit'            => 1,
                 'menu'              => 1,
                 'icon'              => 'fa-gift',
                 'sort'              => '6',
-                'item'              => 'full_amount_reduce',
+                'item'              => 'enough_reduce',
                 'parents'           => ['Goods',],
                 'child'             => [
                     'filtering_group_index' => [
                         'name'              => '满额优惠设置',
-                        'url'               => 'goods.full-amount-reduce.index',
+                        'url'               => 'goods.enough-reduce.index',
                         'url_params'        => '',
                         'permit'            => 1,
                         'menu'              => 0,
                         'icon'              => 'fa-sitemap',
                         'sort'              => '2',
-                        'item'              => 'full_amount_reduce_index',
+                        'item'              => 'enough_reduce_index',
                         'parents'           => ['Goods'],
                         'child'             => []
                     ],
                     'filtering_group_store' => [
                         'name'              => '保存满额优惠',
-                        'url'               => 'goods.full-amount-reduce.store',
+                        'url'               => 'goods.enough-reduce.store',
                         'url_params'        => '',
                         'permit'            => 1,
                         'menu'              => 0,
                         'icon'              => 'fa-sitemap',
                         'sort'              => '2',
-                        'item'              => 'full_amount_reduce_store',
+                        'item'              => 'enough_reduce_store',
                         'parents'           => ['Goods','search_filtering'],
                         'child'             => []
                     ],
