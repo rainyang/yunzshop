@@ -4,8 +4,9 @@ namespace app\frontend\modules\order\models;
 
 use app\common\exceptions\AppException;
 use app\frontend\models\Order;
-use app\frontend\modules\discount\models\OrderDiscount;
+use app\frontend\modules\deduction\OrderDeduction;
 use app\frontend\modules\dispatch\models\OrderDispatch;
+use app\frontend\modules\order\Discount;
 use app\frontend\modules\orderGoods\models\PreOrderGoods;
 use app\frontend\modules\order\services\OrderService;
 use app\frontend\modules\orderGoods\models\PreOrderGoodsCollection;
@@ -17,9 +18,12 @@ use Illuminate\Support\Facades\Schema;
  * Class preOrder
  * @package app\frontend\modules\order\services\models
  * @property Collection orderDeductions
+ * @property Collection orderDiscounts
  * @property Collection orderCoupons
  * @property Collection orderSettings
  * @property int id
+ * @property string mark
+ * @property string pre_id
  * @property float price
  * @property float goods_price
  * @property float order_goods_price
@@ -42,9 +46,13 @@ class PreOrder extends Order
      */
     protected $orderDispatch;
     /**
-     * @var OrderDiscount 优惠类
+     * @var Discount 优惠类
      */
-    protected $orderDiscount;
+    protected $discount;
+    /**
+     * @var OrderDeduction 抵扣类
+     */
+    protected $orderDeduction;
 
     public function setOrderGoods(Collection $orderGoods)
     {
@@ -60,8 +68,9 @@ class PreOrder extends Order
             $aOrderGoods->setOrder($this);
         });
 
-        $this->setDispatch();
-        $this->setDiscount();
+        $this->discount = new Discount($this);
+        $this->orderDispatch = new OrderDispatch($this);
+        $this->orderDeduction = new OrderDeduction($this);
 
     }
 
@@ -90,16 +99,6 @@ class PreOrder extends Order
         });
     }
 
-    protected function setDiscount()
-    {
-        $this->orderDiscount = new OrderDiscount($this);
-    }
-
-    protected function setDispatch()
-    {
-        $this->orderDispatch = new OrderDispatch($this);
-    }
-
     /**
      * 对外提供的获取订单商品方法
      * @return PreOrderGoodsCollection
@@ -125,23 +124,23 @@ class PreOrder extends Order
      */
     protected function getDiscountAmount()
     {
-        return $this->orderDiscount->getDiscountAmount();
+        return $this->discount->getAmount();
     }
 
     /**
      * 获取订单抵扣金额
      * @return number
      */
-    protected function getDeductionPrice()
+    protected function getDeductionAmount()
     {
-        return $this->orderDiscount->getDeductionPrice();
+        return $this->orderDeduction->getAmount();
     }
 
     /**
      * 计算订单运费
      * @return int|number
      */
-    public function getDispatchPrice()
+    public function getDispatchAmount()
     {
 
         return $this->orderDispatch->getFreight();
@@ -163,7 +162,7 @@ class PreOrder extends Order
      */
     public function getParams($key = null)
     {
-        $result = collect(json_decode(\Request::input('orders'), true))->where('pre_id', $this->pre_id)->first();
+        $result = collect(json_decode(request()->input('orders'), true))->where('pre_id', $this->pre_id)->first();
         if (isset($key)) {
             return $result[$key];
         }
@@ -178,8 +177,8 @@ class PreOrder extends Order
             'order_goods_price' => $this->getOrderGoodsPrice(),//订单商品成交价
             'goods_price' => $this->getGoodsPrice(),//订单商品原价
             'discount_price' => $this->getDiscountAmount(),//订单优惠金额
-            'deduction_price' => $this->getDeductionPrice(),//订单抵扣金额
-            'dispatch_price' => $this->getDispatchPrice(),//订单运费
+            'deduction_price' => $this->getDeductionAmount(),//订单抵扣金额
+            'dispatch_price' => $this->getDispatchAmount(),//订单运费
             'goods_total' => $this->getGoodsTotal(),//订单商品总数
             'order_sn' => OrderService::createOrderSN(),//订单编号
             'create_time' => time(),
@@ -282,11 +281,11 @@ class PreOrder extends Order
     protected function getPrice()
     {
         if (!isset($this->price)) {
-            //订单最终价格 = 商品最终价格 - 订单优惠 - 订单抵扣 + 订单运费
-            $this->price = max($this->getOrderGoodsPrice() - $this->getDiscountAmount(), 0);
-
-            $this->price += $this->getDispatchPrice();
-            $this->price = $this->price - $this->getDeductionPrice();
+            //订单最终价格 = 商品最终价格 - 订单优惠 + 订单运费 - 订单抵扣
+            $this->price = $this->getOrderGoodsPrice();
+            $this->price -= $this->getDiscountAmount();
+            $this->price += $this->getDispatchAmount();
+            $this->price -= $this->getDeductionAmount();
         }
         return $this->price;
     }
@@ -297,7 +296,7 @@ class PreOrder extends Order
      */
     protected function getOrderGoodsPrice()
     {
-        $result = $this->orderGoods->sum(function ($aOrderGoods) {
+        $result = $this->orderGoods->sum(function (PreOrderGoods $aOrderGoods) {
             return $aOrderGoods->getPrice();
         });
 
@@ -313,14 +312,10 @@ class PreOrder extends Order
      */
     protected function getGoodsPrice()
     {
-        $result = $this->orderGoods->sum(function ($aOrderGoods) {
+        $result = $this->orderGoods->sum(function (PreOrderGoods $aOrderGoods) {
             return $aOrderGoods->getGoodsPrice();
         });
         return $result;
     }
 
-    public function __get($key)
-    {
-        return parent::__get($key); // TODO: Change the autogenerated stub
-    }
 }

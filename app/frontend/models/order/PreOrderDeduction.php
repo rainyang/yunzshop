@@ -191,7 +191,7 @@ class PreOrderDeduction extends OrderDeduction
         //开关
         if ($this->getDeduction()->isEnableDeductDispatchPrice()) {
             //订单运费
-            $amount = $this->order->getDispatchPrice();
+            $amount = $this->order->getDispatchAmount();
 
             $result->setMoney($amount);
         }

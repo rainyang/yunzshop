@@ -28,7 +28,7 @@ class CouponService
 
     /**
      * 获取订单优惠金额
-     * @return int
+     * @return float
      */
     public function getOrderDiscountPrice()
     {

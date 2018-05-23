@@ -34,7 +34,7 @@ class EnoughReduce extends BaseFreightDiscount
         }
         // 订单金额满足满减金额
         if ($this->order->price >= \Setting::get('enoughReduce.freeFreight.enough')) {
-            return $this->order->getDispatchPrice();
+            return $this->order->getDispatchAmount();
         }
         return 0;
     }

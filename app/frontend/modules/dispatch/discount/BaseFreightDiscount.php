@@ -9,15 +9,19 @@
 namespace app\frontend\modules\dispatch\discount;
 
 use app\frontend\models\order\PreOrderDiscount;
+use app\frontend\modules\order\models\PreOrder;
 
 abstract class BaseFreightDiscount
 {
+    /**
+     * @var PreOrder
+     */
     protected $order;
     protected $price;
     protected $name;
     protected $code;
 
-    public function __construct($order)
+    public function __construct(PreOrder $order)
     {
         $this->order = $order;
     }

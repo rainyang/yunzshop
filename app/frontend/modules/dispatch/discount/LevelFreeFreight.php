@@ -27,7 +27,7 @@ class LevelFreeFreight extends BaseFreightDiscount
         if (isset($member->level) && isset($member->level->freight_reduction)) {
             $freight_reduction = intval($member->level->freight_reduction);
 
-            return ($this->order->getDispatchPrice() * ($freight_reduction / 100));
+            return ($this->order->getDispatchAmount() * ($freight_reduction / 100));
         }
         return 0;
     }
