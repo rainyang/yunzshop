@@ -118,7 +118,7 @@ class PayFactory
 
         $trade = \Setting::get('shop.trade');
         $redirect = '';
-f
+
         if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
             $redirect = $trade['redirect_url'];
         }
