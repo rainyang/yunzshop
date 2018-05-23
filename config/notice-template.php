@@ -21,17 +21,12 @@ return [
             ],
             1 => [
                 "keywords" => "keyword2",
-                "value" => "[会员昵称][订单状态][商品名称（含规格]",
+                "value" => "[会员昵称][订单状态][商品详情（含规格）]",
                 "color" => "#000000",
             ],
             2 => [
                 "keywords" => "keyword3",
                 "value" => "[订单编号]",
-                "color" => "#000000",
-            ],
-            3 => [
-                "keywords" => "keyword4",
-                "value" => "[变动后积分数值]",
                 "color" => "#000000",
             ],
         ],
@@ -52,17 +47,12 @@ return [
             ],
             1 => [
                 "keywords" => "keyword2",
-                "value" => "[会员昵称][订单状态][商品名称（含规格]",
+                "value" => "[会员昵称][订单状态][商品详情（含规格）]",
                 "color" => "#000000",
             ],
             2 => [
                 "keywords" => "keyword3",
                 "value" => "[订单编号]",
-                "color" => "#000000",
-            ],
-            3 => [
-                "keywords" => "keyword4",
-                "value" => "[变动后积分数值]",
                 "color" => "#000000",
             ],
         ],
@@ -104,7 +94,7 @@ return [
         'data' => [
             0 => [
                 "keywords" => "keyword1",
-                "value" => "[订单号][商品详情（含规格)]",
+                "value" => "[订单号][商品详情（含规格）]",
                 "color" => "#000000",
             ],
             1 => [
@@ -166,7 +156,7 @@ return [
             ],
             2 => [
                 "keywords" => "keyword3",
-                "value" => "[商品详情（含规格)]",
+                "value" => "[商品详情（含规格）]",
                 "color" => "#000000",
             ],
             3 => [
@@ -530,7 +520,7 @@ return [
         'data' => [
             0 => [
                 "keywords" => "keyword1",
-                "value" => "[变动时间]",
+                "value" => "[时间]",
                 "color" => "#000000",
             ],
             1 => [
