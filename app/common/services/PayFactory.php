@@ -114,16 +114,24 @@ class PayFactory
             $data['extra']['pay'] = 'cloud_alipay';
         }
 
-        $result = (array) $pay->doPay($data);
+        $result = $pay->doPay($data);
 
-        $trade = \Setting::get('shop.trade');
-        $redirect = '';
+        switch ($type) {
+            case self::PAY_WEACHAT:
+            case self::PAY_CREDIT:
+                if (is_bool($result)) {
+                    $result = (array) $result;
+                }
 
-        if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
-            $redirect = $trade['redirect_url'];
+                $trade = \Setting::get('shop.trade');
+                $redirect = '';
+
+                if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
+                    $redirect = $trade['redirect_url'];
+                }
+
+                $result['redirect'] = $redirect;
         }
-
-        $result['redirect'] = $redirect;
 
         return $result;
     }
