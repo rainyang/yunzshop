@@ -17,7 +17,7 @@
 
                 <div class='alert alert-info alert-important'>
                     请将公众平台模板消息所在行业选择为： IT科技/互联网|电子商务<br>
-                    提示：点击模版消息后方开关按钮<input name="notice_select" type="checkbox" data-size="mini" disabled>即可开启默认模版消息，无需进行额外设置。<br>
+                    提示：点击模版消息后方开关按钮<input class="mui-switch" type="checkbox" disabled/>即可开启默认模版消息，无需进行额外设置。<br>
                     如需进行消息推送个性化消息，点击进入自定义模版管理。
                 </div>
 
@@ -76,15 +76,10 @@
                                 <select name='yz_notice[point_change]' class='form-control diy-notice'>
                                     <option value="{{$set['point_change']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['point_change']))
                                     selected
-                                            @endif;
+                                            @endif
                                     >
                                         默认消息模板
                                     </option>
-                                    {{--@if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['point_change']))--}}
-                                        {{--<option value="{{$set['point_change']}}" selected>--}}
-                                            {{--默认模版--}}
-                                        {{--</option>--}}
-                                    {{--@endif--}}
                                     @foreach ($temp_list as $item)
                                         <option value="{{$item['id']}}"
                                             @if($set['point_change'] == $item['id'])
@@ -97,13 +92,12 @@
                                 </select>
                                 <div class="help-block">通知公众平台模板消息编号: OPENTM207509450</div>
                             </div>
-                            <div class="col-sm-2 col-xs-6 ">
+                            <div class="col-sm-2 col-xs-6">
                                 <input class="mui-switch mui-switch-animbg" id="point_change" type="checkbox"
                                        @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['point_change']))
                                        checked
                                        @endif
                                        onclick="message_default(this.id)"/>
-
                             </div>
                         </div>
                     </div>
@@ -148,13 +142,13 @@
 
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">购买商品通知</label>
-                            <div class="col-sm-9 col-xs-12">
+                            <div class="col-sm-8 col-xs-12">
                                 <select name='yz_notice[buy_goods_msg]' class='form-control diy-notice'>
-                                    <option value="" @if(!$set['buy_goods_msg'])
+                                    <option value="{{$set['buy_goods_msg']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['buy_goods_msg']))
                                     selected
                                             @endif;
                                     >
-                                        请选择消息模板
+                                        默认消息模板
                                     </option>
                                     @foreach ($temp_list as $item)
                                         <option value="{{$item['id']}}"
@@ -164,17 +158,24 @@
                                     @endforeach
                                 </select>
                             </div>
+                            <div class="col-sm-2 col-xs-6">
+                                <input class="mui-switch mui-switch-animbg" id="buy_goods_msg" type="checkbox"
+                                       @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['buy_goods_msg']))
+                                       checked
+                                       @endif
+                                       onclick="message_default(this.id)"/>
+                            </div>
                         </div>
 
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单生成通知[卖家]</label>
-                            <div class="col-sm-9 col-xs-12">
+                            <div class="col-sm-8 col-xs-12">
                                 <select name='yz_notice[seller_order_create]' class='form-control diy-notice'>
-                                    <option value="" @if(!$set['seller_order_create'])
+                                    <option value="{{$set['seller_order_create']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['seller_order_create']))
                                     selected
                                             @endif;
                                     >
-                                        请选择消息模板
+                                        默认消息模板
                                     </option>
                                     @foreach ($temp_list as $item)
                                         <option value="{{$item['id']}}"
@@ -184,17 +185,24 @@
                                     @endforeach
                                 </select>
                             </div>
+                            <div class="col-sm-2 col-xs-6">
+                                <input class="mui-switch mui-switch-animbg" id="seller_order_create" type="checkbox"
+                                       @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['seller_order_create']))
+                                       checked
+                                       @endif
+                                       onclick="message_default(this.id)"/>
+                            </div>
                         </div>
 
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单支付通知[卖家]</label>
-                            <div class="col-sm-9 col-xs-12">
+                            <div class="col-sm-8 col-xs-12">
                                 <select name='yz_notice[seller_order_pay]' class='form-control diy-notice'>
-                                    <option value="" @if(!$set['seller_order_pay'])
+                                    <option value="{{$set['seller_order_pay']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['seller_order_pay']))
                                     selected
                                             @endif;
                                     >
-                                        请选择消息模板
+                                        默认消息模板
                                     </option>
                                     @foreach ($temp_list as $item)
                                         <option value="{{$item['id']}}"
@@ -205,17 +213,24 @@
                                 </select>
                                 <div class="help-block">通知公众平台模板消息编号: OPENTM207525131</div>
                             </div>
+                            <div class="col-sm-2 col-xs-6">
+                                <input class="mui-switch mui-switch-animbg" id="seller_order_pay" type="checkbox"
+                                       @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['seller_order_pay']))
+                                       checked
+                                       @endif
+                                       onclick="message_default(this.id)"/>
+                            </div>
                         </div>
 
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单完成通知[卖家]</label>
-                            <div class="col-sm-9 col-xs-12">
+                            <div class="col-sm-8 col-xs-12">
                                 <select name='yz_notice[seller_order_finish]' class='form-control diy-notice'>
-                                    <option value="" @if(!$set['seller_order_finish'])
+                                    <option value="{{$set['seller_order_finish']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['seller_order_finish']))
                                     selected
                                             @endif;
                                     >
-                                        请选择消息模板
+                                        默认消息模板
                                     </option>
                                     @foreach ($temp_list as $item)
                                         <option value="{{$item['id']}}"
@@ -226,11 +241,18 @@
                                 </select>
                                 <div class="help-block">通知公众平台模板消息编号: OPENTM413711838</div>
                             </div>
+                            <div class="col-sm-2 col-xs-6">
+                                <input class="mui-switch mui-switch-animbg" id="seller_order_finish" type="checkbox"
+                                       @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['seller_order_finish']))
+                                       checked
+                                       @endif
+                                       onclick="message_default(this.id)"/>
+                            </div>
                         </div>
 
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-                            <div class="col-sm-9 col-xs-12">
+                            <div class="col-sm-6 col-xs-12">
                                 <div class='input-group'>
                                     <input type="text" id='salers' name="salers" maxlength="30"
                                            value="@foreach ($set['salers'] as $saler) {{ $saler['nickname'] }} @endforeach"
@@ -331,13 +353,13 @@
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-                            <div class="col-sm-9 col-xs-12">
+                            <div class="col-sm-8 col-xs-12">
                                 <select name='yz_notice[other_toggle_temp]' class='form-control diy-notice'>
-                                    <option value="" @if(!$set['other_toggle_temp'])
+                                    <option value="{{$set['other_toggle_temp']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['other_toggle_temp']))
                                     selected
                                             @endif;
                                     >
-                                        请选择消息模板
+                                        默认消息模板
                                     </option>
                                     @foreach ($temp_list as $item)
                                         <option value="{{$item['id']}}"
@@ -346,6 +368,13 @@
                                                 @endif>{{$item['title']}}</option>
                                     @endforeach
                                 </select>
+                            </div>
+                            <div class="col-sm-2 col-xs-6">
+                                <input class="mui-switch mui-switch-animbg" id="other_toggle_temp" type="checkbox"
+                                       @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['other_toggle_temp']))
+                                       checked
+                                       @endif
+                                       onclick="message_default(this.id)"/>
                             </div>
                         </div>
                     </div>
@@ -356,13 +385,13 @@
                         @if(YunShop::notice()->getNotSend('order_submit_success'))
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单提交成功通知</label>
-                                <div class="col-sm-9 col-xs-12">
+                                <div class="col-sm-8 col-xs-12">
                                     <select name='yz_notice[order_submit_success]' class='form-control diy-notice'>
-                                        <option value="" @if(!$set['order_submit_success'])
+                                        <option value="{{$set['order_submit_success']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_submit_success']))
                                         selected
                                                 @endif;
                                         >
-                                            请选择消息模板
+                                            默认消息模板
                                         </option>
                                         @foreach ($temp_list as $item)
                                             <option value="{{$item['id']}}"
@@ -373,18 +402,25 @@
                                     </select>
                                     <div class="help-block">通知公众平台模板消息编号: OPENTM200746866</div>
                                 </div>
+                                <div class="col-sm-2 col-xs-6">
+                                    <input class="mui-switch mui-switch-animbg" id="order_submit_success" type="checkbox"
+                                           @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_submit_success']))
+                                           checked
+                                           @endif
+                                           onclick="message_default(this.id)"/>
+                                </div>
                             </div>
                         @endif
                         @if(YunShop::notice()->getNotSend('order_cancel'))
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单取消通知</label>
-                                <div class="col-sm-9 col-xs-12">
+                                <div class="col-sm-8 col-xs-12">
                                     <select name='yz_notice[order_cancel]' class='form-control diy-notice'>
-                                        <option value="" @if(!$set['order_cancel'])
+                                        <option value="{{$set['order_cancel']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_cancel']))
                                         selected
                                                 @endif;
                                         >
-                                            请选择消息模板
+                                            默认消息模板
                                         </option>
                                         @foreach ($temp_list as $item)
                                             <option value="{{$item['id']}}"
@@ -395,18 +431,25 @@
                                     </select>
                                     <div class="help-block">通知公众平台模板消息编号: OPENTM412815063</div>
                                 </div>
+                                <div class="col-sm-2 col-xs-6">
+                                    <input class="mui-switch mui-switch-animbg" id="order_cancel" type="checkbox"
+                                           @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_cancel']))
+                                           checked
+                                           @endif
+                                           onclick="message_default(this.id)"/>
+                                </div>
                             </div>
                         @endif
                         @if(YunShop::notice()->getNotSend('order_pay_success'))
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单支付成功通知</label>
-                                <div class="col-sm-9 col-xs-12">
+                                <div class="col-sm-8 col-xs-12">
                                     <select name='yz_notice[order_pay_success]' class='form-control diy-notice'>
-                                        <option value="" @if(!$set['order_pay_success'])
+                                        <option value="{{$set['order_pay_success']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_pay_success']))
                                         selected
                                                 @endif;
                                         >
-                                            请选择消息模板
+                                            默认消息模板
                                         </option>
                                         @foreach ($temp_list as $item)
                                             <option value="{{$item['id']}}"
@@ -417,18 +460,25 @@
                                     </select>
                                     <div class="help-block">通知公众平台模板消息编号: OPENTM204987032</div>
                                 </div>
+                                <div class="col-sm-2 col-xs-6">
+                                    <input class="mui-switch mui-switch-animbg" id="order_pay_success" type="checkbox"
+                                           @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_pay_success']))
+                                           checked
+                                           @endif
+                                           onclick="message_default(this.id)"/>
+                                </div>
                             </div>
                         @endif
                         @if(YunShop::notice()->getNotSend('order_send'))
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单发货通知</label>
-                                <div class="col-sm-9 col-xs-12">
+                                <div class="col-sm-8 col-xs-12">
                                     <select name='yz_notice[order_send]' class='form-control diy-notice'>
-                                        <option value="" @if(!$set['order_send'])
+                                        <option value="{{$set['order_send']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_send']))
                                         selected
                                                 @endif;
                                         >
-                                            请选择消息模板
+                                            默认消息模板
                                         </option>
                                         @foreach ($temp_list as $item)
                                             <option value="{{$item['id']}}"
@@ -439,18 +489,25 @@
                                     </select>
                                     <div class="help-block">通知公众平台模板消息编号: OPENTM413713493</div>
                                 </div>
+                                <div class="col-sm-2 col-xs-6">
+                                    <input class="mui-switch mui-switch-animbg" id="order_send" type="checkbox"
+                                           @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_send']))
+                                           checked
+                                           @endif
+                                           onclick="message_default(this.id)"/>
+                                </div>
                             </div>
                         @endif
                         @if(YunShop::notice()->getNotSend('order_finish'))
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单确认收货通知</label>
-                                <div class="col-sm-9 col-xs-12">
+                                <div class="col-sm-8 col-xs-12">
                                     <select name='yz_notice[order_finish]' class='form-control diy-notice'>
-                                        <option value="" @if(!$set['order_finish'])
+                                        <option value="{{$set['order_finish']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_finish']))
                                         selected
                                                 @endif;
                                         >
-                                            请选择消息模板
+                                            默认消息模板
                                         </option>
                                         @foreach ($temp_list as $item)
                                             <option value="{{$item['id']}}"
@@ -461,18 +518,25 @@
                                     </select>
                                     <div class="help-block">通知公众平台模板消息编号: OPENTM411450578</div>
                                 </div>
+                                <div class="col-sm-2 col-xs-6">
+                                    <input class="mui-switch mui-switch-animbg" id="order_finish" type="checkbox"
+                                           @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_finish']))
+                                           checked
+                                           @endif
+                                           onclick="message_default(this.id)"/>
+                                </div>
                             </div>
                         @endif
                         @if(YunShop::notice()->getNotSend('order_refund_apply'))
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款申请通知</label>
-                                <div class="col-sm-9 col-xs-12">
+                                <div class="col-sm-8 col-xs-12">
                                     <select name='yz_notice[order_refund_apply]' class='form-control diy-notice'>
-                                        <option value="" @if(!$set['order_refund_apply'])
+                                        <option value="{{$set['order_refund_apply']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_refund_apply']))
                                         selected
                                                 @endif;
                                         >
-                                            请选择消息模板
+                                            默认消息模板
                                         </option>
                                         @foreach ($temp_list as $item)
                                             <option value="{{$item['id']}}"
@@ -483,18 +547,25 @@
                                     </select>
                                     <div class="help-block">通知公众平台模板消息编号: TM00431</div>
                                 </div>
+                                <div class="col-sm-2 col-xs-6">
+                                    <input class="mui-switch mui-switch-animbg" id="order_refund_apply" type="checkbox"
+                                           @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_refund_apply']))
+                                           checked
+                                           @endif
+                                           onclick="message_default(this.id)"/>
+                                </div>
                             </div>
                         @endif
                         @if(YunShop::notice()->getNotSend('order_refund_success'))
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款成功通知</label>
-                                <div class="col-sm-9 col-xs-12">
+                                <div class="col-sm-8 col-xs-12">
                                     <select name='yz_notice[order_refund_success]' class='form-control diy-notice'>
-                                        <option value="" @if(!$set['order_refund_success'])
+                                        <option value="{{$set['order_refund_success']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_refund_success']))
                                         selected
                                                 @endif;
                                         >
-                                            请选择消息模板
+                                            默认消息模板
                                         </option>
                                         @foreach ($temp_list as $item)
                                             <option value="{{$item['id']}}"
@@ -505,18 +576,25 @@
                                     </select>
                                     <div class="help-block">通知公众平台模板消息编号: TM00430</div>
                                 </div>
+                                <div class="col-sm-2 col-xs-6">
+                                    <input class="mui-switch mui-switch-animbg" id="order_refund_success" type="checkbox"
+                                           @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_refund_success']))
+                                           checked
+                                           @endif
+                                           onclick="message_default(this.id)"/>
+                                </div>
                             </div>
                         @endif
                         @if(YunShop::notice()->getNotSend('order_refund_reject'))
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款申请驳回通知</label>
-                                <div class="col-sm-9 col-xs-12">
+                                <div class="col-sm-8 col-xs-12">
                                     <select name='yz_notice[order_refund_reject]' class='form-control diy-notice'>
-                                        <option value="" @if(!$set['order_refund_reject'])
+                                        <option value="{{$set['order_refund_reject']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_refund_reject']))
                                         selected
                                                 @endif;
                                         >
-                                            请选择消息模板
+                                            默认消息模板
                                         </option>
                                         @foreach ($temp_list as $item)
                                             <option value="{{$item['id']}}"
@@ -527,18 +605,25 @@
                                     </select>
                                     <div class="help-block">通知公众平台模板消息编号: TM00432</div>
                                 </div>
+                                <div class="col-sm-2 col-xs-6">
+                                    <input class="mui-switch mui-switch-animbg" id="order_refund_reject" type="checkbox"
+                                           @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_refund_reject']))
+                                           checked
+                                           @endif
+                                           onclick="message_default(this.id)"/>
+                                </div>
                             </div>
                         @endif
                         @if(YunShop::notice()->getNotSend('customer_upgrade'))
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员升级通知</label>
-                                <div class="col-sm-9 col-xs-12">
+                                <div class="col-sm-8 col-xs-12">
                                     <select name='yz_notice[customer_upgrade]' class='form-control diy-notice'>
-                                        <option value="" @if(!$set['customer_upgrade'])
+                                        <option value="{{$set['customer_upgrade']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['customer_upgrade']))
                                         selected
                                                 @endif;
                                         >
-                                            请选择消息模板
+                                            默认消息模板
                                         </option>
                                         @foreach ($temp_list as $item)
                                             <option value="{{$item['id']}}"
@@ -549,18 +634,25 @@
                                     </select>
                                     <div class="help-block">通知公众平台模板消息编号: OPENTM400341556</div>
                                 </div>
+                                <div class="col-sm-2 col-xs-6">
+                                    <input class="mui-switch mui-switch-animbg" id="customer_upgrade" type="checkbox"
+                                           @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['customer_upgrade']))
+                                           checked
+                                           @endif
+                                           onclick="message_default(this.id)"/>
+                                </div>
                             </div>
                         @endif
                         @if(YunShop::notice()->getNotSend('withdraw_submit'))
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额提现提交通知</label>
-                                <div class="col-sm-9 col-xs-12">
+                                <div class="col-sm-8 col-xs-12">
                                     <select name='yz_notice[withdraw_submit]' class='form-control diy-notice'>
-                                        <option value="" @if(!$set['withdraw_submit'])
+                                        <option value="{{$set['withdraw_submit']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['withdraw_submit']))
                                         selected
                                                 @endif;
                                         >
-                                            请选择消息模板
+                                            默认消息模板
                                         </option>
                                         @foreach ($temp_list as $item)
                                             <option value="{{$item['id']}}"
@@ -571,18 +663,25 @@
                                     </select>
                                     <div class="help-block">通知公众平台模板消息编号: TM00979</div>
                                 </div>
+                                <div class="col-sm-2 col-xs-6">
+                                    <input class="mui-switch mui-switch-animbg" id="withdraw_submit" type="checkbox"
+                                           @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['withdraw_submit']))
+                                           checked
+                                           @endif
+                                           onclick="message_default(this.id)"/>
+                                </div>
                             </div>
                         @endif
                         @if(YunShop::notice()->getNotSend('withdraw_success'))
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额提现成功通知</label>
-                                <div class="col-sm-9 col-xs-12">
+                                <div class="col-sm-8 col-xs-12">
                                     <select name='yz_notice[withdraw_success]' class='form-control diy-notice'>
-                                        <option value="" @if(!$set['withdraw_success'])
+                                        <option value="{{$set['withdraw_success']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['withdraw_success']))
                                         selected
                                                 @endif;
                                         >
-                                            请选择消息模板
+                                            默认消息模板
                                         </option>
                                         @foreach ($temp_list as $item)
                                             <option value="{{$item['id']}}"
@@ -593,18 +692,25 @@
                                     </select>
                                     <div class="help-block">通知公众平台模板消息编号: TM00980</div>
                                 </div>
+                                <div class="col-sm-2 col-xs-6">
+                                    <input class="mui-switch mui-switch-animbg" id="withdraw_success" type="checkbox"
+                                           @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['withdraw_success']))
+                                           checked
+                                           @endif
+                                           onclick="message_default(this.id)"/>
+                                </div>
                             </div>
                         @endif
                         @if(YunShop::notice()->getNotSend('withdraw_fail'))
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额提现失败通知</label>
-                                <div class="col-sm-9 col-xs-12">
+                                <div class="col-sm-8 col-xs-12">
                                     <select name='yz_notice[withdraw_fail]' class='form-control diy-notice'>
-                                        <option value="" @if(!$set['withdraw_fail'])
+                                        <option value="{{$set['withdraw_fail']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['withdraw_fail']))
                                         selected
                                                 @endif;
                                         >
-                                            请选择消息模板
+                                            默认消息模板
                                         </option>
                                         @foreach ($temp_list as $item)
                                             <option value="{{$item['id']}}"
@@ -614,6 +720,13 @@
                                         @endforeach
                                     </select>
                                     <div class="help-block">通知公众平台模板消息编号: TM00981</div>
+                                </div>
+                                <div class="col-sm-2 col-xs-6">
+                                    <input class="mui-switch mui-switch-animbg" id="withdraw_fail" type="checkbox"
+                                           @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['withdraw_fail']))
+                                           checked
+                                           @endif
+                                           onclick="message_default(this.id)"/>
                                 </div>
                             </div>
                         @endif

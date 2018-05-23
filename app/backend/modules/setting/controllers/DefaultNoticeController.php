@@ -26,11 +26,8 @@ class DefaultNoticeController extends BaseController
     }
 
     public function index() {
-//        $notice_name = "point_change";
         $notice_name = \YunShop::request()->notice_name;
         $setting_name = \YunShop::request()->setting_name;
-//        dd($notice_name);
-//        $notice = \Setting::get('shop.notice');
         $notice = \Setting::get($setting_name);
         $temp_model = new MessageTemp();
         $tem_id = $temp_model->getTempIdByNoticeType($notice_name);
@@ -63,18 +60,13 @@ class DefaultNoticeController extends BaseController
 
             $ret = $temp_model::create($template_default_data);
             $notice[$notice_name] = (string)$ret->id;
-            }
-
         }
         \Setting::set($setting_name, $notice);
     }
 
     public function cancel() {
-//        $notice_name = "point_change";
         $notice_name = \YunShop::request()->notice_name;
         $setting_name = \YunShop::request()->setting_name;
-//        dd($notice_name);
-//        $notice = \Setting::get('shop.notice');
         $notice = \Setting::get($setting_name);
         $notice[$notice_name] = "0";
         \Setting::set($setting_name, $notice);
