@@ -38,9 +38,6 @@ class RegisterController extends ApiController
     {
         $mobile = \YunShop::request()->mobile;
         $password = \YunShop::request()->password;
-
-        $captcha = \Yunshop::request()->captcha;
-
         $confirm_password = \YunShop::request()->confirm_password;
         $uniacid = \YunShop::app()->uniacid;
 
@@ -63,6 +60,7 @@ class RegisterController extends ApiController
                 return $this->errorJson('该手机号已被注册');
             }
 
+            //增加验证码验证
             dd(Input::get('captcha'));
             if (Captcha::check(Input::get('captcha')) == false) {
                 return $this->errorJson('验证码错误');
