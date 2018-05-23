@@ -48,7 +48,6 @@ class WechatApi
         $param = '{"template_id_short":"' . $templateIdShort . '"}';
         $http_result = $this->ihttp_request($this->getTmpUrl(), $param);
         $result = @json_decode($http_result['content'], true);
-        dd($result);
         return $result['template_id'];
     }
 

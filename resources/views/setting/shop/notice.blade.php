@@ -754,7 +754,7 @@
                                 };
                                 $.post(url,postdata,function(data){
                                     alert('启用成功');
-                                    // location.reload()
+                                    location.reload()
                                 });
                             } else {
                                 //关
