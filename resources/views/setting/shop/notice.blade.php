@@ -631,11 +631,13 @@
                     <script>
                         function message_default(name) {
                             var id = "#" + name;
+                            var setting_name = "shop.notice";
                             if ($(id).is(':checked')) {
                                 //开
                                 var url = "{!! yzWebUrl('setting.default-notice.index') !!}"
                                 var postdata = {
-                                    notice_name: name
+                                    notice_name: name,
+                                    setting_name: setting_name
                                 };
                                 $.post(url,postdata,function(data){
                                     alert('启用成功');
@@ -645,7 +647,8 @@
                                 //关
                                 var url = "{!! yzWebUrl('setting.default-notice.cancel') !!}"
                                 var postdata = {
-                                    notice_name: name
+                                    notice_name: name,
+                                    setting_name: setting_name
                                 };
                                 $.post(url,postdata,function(data){
                                     alert('关闭成功');
@@ -653,12 +656,6 @@
                                 });
                             }
                         }
-                        $(document).ready(function() {
-                            $(".select_status").on('click', function(){
-
-                            });
-
-                        });
                     </script>
                     <script language='javascript'>
                         function search_members() {

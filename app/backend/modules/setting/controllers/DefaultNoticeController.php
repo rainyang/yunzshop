@@ -28,8 +28,10 @@ class DefaultNoticeController extends BaseController
     public function index() {
 //        $notice_name = "point_change";
         $notice_name = \YunShop::request()->notice_name;
+        $setting_name = \YunShop::request()->setting_name;
 //        dd($notice_name);
-        $notice = \Setting::get('shop.notice');
+//        $notice = \Setting::get('shop.notice');
+        $notice = \Setting::get($setting_name);
         $temp_model = new MessageTemp();
         $tem_id = $temp_model->getTempIdByNoticeType($notice_name);
         if ($tem_id){
@@ -49,30 +51,32 @@ class DefaultNoticeController extends BaseController
                 $this->TemplateModel->template_id = $template_id;
                 $this->TemplateModel->uniacid = \YunShop::app()->uniacid;
                 $this->TemplateModel->save();
-            } else {
-                $template_default_data2 = [
-                    'uniacid' => \YunShop::app()->uniacid,
-                    'template_id' => $template_data['template_id'],
-                    'is_default' => 1,
-                    'notice_type' => $notice_name,
-                ];
-                $template_default_data = array_merge($template_default_data1, $template_default_data2);
+                $template_data['template_id'] = $template_id;
+            }
+            $template_default_data2 = [
+                'uniacid' => \YunShop::app()->uniacid,
+                'template_id' => $template_data['template_id'],
+                'is_default' => 1,
+                'notice_type' => $notice_name,
+            ];
+            $template_default_data = array_merge($template_default_data1, $template_default_data2);
 
-                $ret = $temp_model::create($template_default_data);
-
-                $notice[$notice_name] = (string)$ret->id;
+            $ret = $temp_model::create($template_default_data);
+            $notice[$notice_name] = (string)$ret->id;
             }
 
         }
-        \Setting::set('shop.notice', $notice);
+        \Setting::set($setting_name, $notice);
     }
 
     public function cancel() {
 //        $notice_name = "point_change";
         $notice_name = \YunShop::request()->notice_name;
+        $setting_name = \YunShop::request()->setting_name;
 //        dd($notice_name);
-        $notice = \Setting::get('shop.notice');
+//        $notice = \Setting::get('shop.notice');
+        $notice = \Setting::get($setting_name);
         $notice[$notice_name] = "0";
-        \Setting::set('shop.notice', $notice);
+        \Setting::set($setting_name, $notice);
     }
 }
