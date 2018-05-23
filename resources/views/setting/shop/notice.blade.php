@@ -98,34 +98,12 @@
                                 <div class="help-block">通知公众平台模板消息编号: OPENTM207509450</div>
                             </div>
                             <div class="col-sm-2 col-xs-6 ">
-                                <span @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['point_change']))
-                                      class='switch-on'
-                                      @else
-                                      class="switch-off"
-                                      @endif id='point_change'></span>
-                                <script type="text/javascript">
-                                    $(function() {
-                                        switchEvent("#point_change", function () {
-                                            var url = "{!! yzWebUrl('setting.default-notice.index') !!}"
-                                            var postdata = {
-                                                notice_name: $("#point_change").attr("id")
-                                            };
-                                            $.post(url,postdata,function(data){
-                                                alert('启用成功');
-                                                location.reload()
-                                            });
-                                        }, function () {
-                                            var url = "{!! yzWebUrl('setting.default-notice.cancel') !!}"
-                                            var postdata = {
-                                                notice_name: $("#point_change").attr("id")
-                                            };
-                                            $.post(url,postdata,function(data){
-                                                alert('关闭成功');
-                                                location.reload()
-                                            });
-                                        })
-                                    });
-                                </script>
+                                <input class="mui-switch mui-switch-animbg" id="point_change" type="checkbox"
+                                       @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['point_change']))
+                                       checked
+                                       @endif
+                                       onclick="message_default(this.id)"/>
+
                             </div>
                         </div>
                     </div>
@@ -142,7 +120,7 @@
                                     selected
                                             @endif;
                                     >
-                                        请选择消息模板
+                                        默认消息模版
                                     </option>
                                     @foreach ($temp_list as $item)
                                         <option value="{{$item['id']}}"
@@ -156,7 +134,8 @@
                             <div class="col-sm-2 col-xs-6">
                                 <input class="mui-switch mui-switch-animbg" id="balance_change" type="checkbox"
                                        @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['balance_change']))
-                                       checked @endif
+                                       checked
+                                       @endif
                                        onclick="message_default(this.id)"/>
                             </div>
                         </div>

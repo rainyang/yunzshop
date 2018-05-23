@@ -75,7 +75,6 @@ class WechatApi
     {
         $http_result = $this->ihttp_request($this->getTmpListUrl());
         $result = @json_decode($http_result['content'], true);
-        dd($result);
         if (!is_array($result)) {
             throw new ShopException('请求失败');
         }
