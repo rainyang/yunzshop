@@ -116,6 +116,23 @@ class PayFactory
 
         $result = $pay->doPay($data);
 
+        switch ($type) {
+            case self::PAY_WEACHAT:
+            case self::PAY_CREDIT:
+                if (is_bool($result)) {
+                    $result = (array) $result;
+                }
+
+                $trade = \Setting::get('shop.trade');
+                $redirect = '';
+
+                if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
+                    $redirect = $trade['redirect_url'];
+                }
+
+                $result['redirect'] = $redirect;
+        }
+
         return $result;
     }
 }
