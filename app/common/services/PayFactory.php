@@ -114,11 +114,11 @@ class PayFactory
             $data['extra']['pay'] = 'cloud_alipay';
         }
 
-        $result = $pay->doPay($data);
+        $result = (array) $pay->doPay($data);
 
         $trade = \Setting::get('shop.trade');
         $redirect = '';
-
+f
         if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
             $redirect = $trade['redirect_url'];
         }
