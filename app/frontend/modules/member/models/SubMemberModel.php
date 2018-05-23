@@ -46,4 +46,11 @@ class SubMemberModel extends MemberShopInfo
             ->where('yz_openid', $openid)
             ->value('member_id');
     }
+
+    public static function updateOpenid($uid, $data)
+    {
+        self::uniacid()
+            ->where('member_id', $uid)
+            ->update($data);
+    }
 }

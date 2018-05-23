@@ -372,13 +372,13 @@ class MemberService
 
         $this->checkFansUid($mc_mapping_fans_model, $userinfo);
 
-        if (empty($member_id) && !empty($mc_mapping_fans_model)) {
-            $member_id = $mc_mapping_fans_model->uid;
-        }
-
         //检查member_id是否一致
         if (!is_null($UnionidInfo) && !is_null($mc_mapping_fans_model)) {
             $member_id = $this->checkMember($UnionidInfo, $mc_mapping_fans_model, $userinfo);
+        }
+
+        if (empty($member_id) && !empty($mc_mapping_fans_model)) {
+            $member_id = $mc_mapping_fans_model->uid;
         }
 
         $member_model = Member::getMemberById($member_id);
@@ -428,6 +428,8 @@ class MemberService
                     }
 
                     $this->addSubMemberInfo($uniacid, $member_id, $userinfo['openid']);
+                } else {
+                    $this->updateSubMemberInfo($member_id, $userinfo['openid']);
                 }
 
                 if (empty($UnionidInfo->unionid)) {
@@ -623,6 +625,13 @@ class MemberService
         ));
     }
 
+    private function updateSubMemberInfo($uid, $userinfo)
+    {
+        SubMemberModel::updateOpenid(
+            $uid, ['yz_openid' => $userinfo['openid']]
+        );
+    }
+
     /**
      * 会员关联表操作
      *
@@ -810,7 +819,7 @@ class MemberService
             //MemberUniqueModel::where('unique_id', $UnionidInfo->unique_id)->update(['member_id'=>$fansInfo->uid]);
         }
 
-        return $fansInfo->uid;
+        return $UnionidInfo->member_id;
     }
 
     public function updateFansMember($fanid, $member_id, $userinfo)
