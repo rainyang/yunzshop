@@ -141,8 +141,10 @@ class PreOrder extends Order
      * 计算订单运费
      * @return int|number
      */
-    public function getDispatchPrice($orderPrice)
+    public function getDispatchPrice()
     {
+        $orderPrice = max($this->getOrderGoodsPrice() - $this->getDiscountAmount(), 0);
+
         return $this->orderDispatch->getDispatchPrice($orderPrice);
     }
 
