@@ -3,7 +3,7 @@
 @section('content')
 @section('title', trans('商品列表'))
     <div class="w1200 ">
-
+        <script src="{{static_url('assets/js/bootstrap.min.js')}}" type="text/javascript"></script>
 
         <script type="text/javascript" src="./resource/js/lib/jquery-ui-1.10.3.min.js"></script>
         <link rel="stylesheet" type="text/css" href="{{static_url('css/font-awesome.min.css')}}">
@@ -130,9 +130,9 @@
                     <div class="panel panel-default">
                         <div class="panel-body table-responsive">
                             <label class="btn btn-success checkall">全选</label>
-                            <label class="btn btn-info batchenable" type="submit">批量上架</label>
-                            <label class="btn batchdisable" type="submit">批量下架</label>
-                            <label class="btn btn-danger batchdisable" type="submit">批量删除</label>
+                            <label class="btn btn-info batchenable">批量上架</label>
+                            <label class="btn batchdisable">批量下架</label>
+                            <label class="btn btn-danger batchdel">批量删除</label>
                             <table class="table table-hover">
                                 <thead class="navbar-inner">
                                 <tr>
@@ -315,9 +315,9 @@
                                 </tbody>
                             </table>
                             <label class="btn btn-success checkall">全选</label>
-                            <label class="btn btn-info batchenable" type="submit">批量上架</label>
-                            <label class="btn batchdisable" type="submit">批量下架</label>
-                            <label class="btn btn-danger batchdisable" type="submit">批量删除</label>
+                            <label class="btn btn-info batchenable">批量上架</label>
+                            <label class="btn batchdisable">批量下架</label>
+                            <label class="btn btn-danger batchdel">批量删除</label>
 
                             {!!$pager!!}
                                     <!--分页-->
@@ -359,52 +359,51 @@
         });
 
         var arr = new Array();
-        var url = "{!! yzWebUrl('plugins.batchMange') !!}"
+        var url = "{!! yzWebUrl('goods.goods.batchSetProperty') !!}"
 
         $(".batchenable").click(function () {
-            $(this).html('启用中...');
+            $(this).html('上架中...');
             $("input[type='checkbox']:checked").each(function(i){
                 arr[i] = $(this).val();
             });
-            var vals = arr.join(",");
-            var postdata = {
-                names: vals,
-                action: 'enable',
-            };
-            $.post(url,postdata,function(data){
-                if (data) {
-                    alert('操作失败，请重新选择');
-                    return false;
-                }
-                $(".batchenable").html('启用成功');
-                setTimeout(location.reload(), 3000);
-            });
+            postgoods(this,arr,1)
         });
-
         $(".batchdisable").click(function () {
-            $(this).html('禁用中...');
+            $(this).html('下架中...');
             $("input[type='checkbox']:checked").each(function(i){
                 arr[i] = $(this).val();
             });
-            var vals = arr.join(",");
-            var postdata = {
-                names: vals,
-                action: 'disable',
-            };
-            $.post(url,postdata,function (data) {
-                if (data) {
-                    alert('操作失败，请重新选择');
-                    return false;
-                }
-                $(".batchdisable").html('禁用成功');
-                setTimeout(location.reload(), 3000);
-            });
+            postgoods(this,arr,0)
         });
+        function postgoods(obj,ids,data) {
+            $.post(url, {ids: ids, data: data}
+                , function (d) {
+                    if (d.result) {
+                        $(obj).html('下架成功');
+                        setTimeout(location.reload(), 3000);
+                    }
+                } , "json"
+            );
+        }
+        $(".batchdel").click(function () {
+            $(this).html('删除中...');
+            $("input[type='checkbox']:checked").each(function(i){
+                arr[i] = $(this).val();
+            });
+            $.post("{!! yzWebUrl('goods.goods.batchDestroy') !!}", {ids: arr}
+                , function (d) {
+                    if (d.result) {
+                        $(".batchdel").html('删除成功');
+                        setTimeout(location.reload(), 3000);
+                    }
+                } , "json"
+            );
+        })
+
     });
 </script>
 
     <script type="text/javascript">
-
         //鼠标划过显示商品链接二维码
         $('.umphp').hover(function () {
                     var url = $(this).attr('data-url');
