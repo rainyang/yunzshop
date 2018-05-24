@@ -41,6 +41,9 @@ class RegisterController extends ApiController
         $confirm_password = \YunShop::request()->confirm_password;
         $uniacid = \YunShop::app()->uniacid;
 
+        dd(Input::get('captcha'));
+        dd(Captcha::check(Input::get('captcha')));
+        
         if ((\Request::getMethod() == 'POST')) {
             $check_code = MemberService::checkCode();
 
@@ -61,7 +64,8 @@ class RegisterController extends ApiController
             }
 
             //增加验证码验证
-            dd(Captcha::check(Input::get('captcha')));
+
+
             if ( Captcha::check(Input::get('captcha'))== false) {
                 return $this->errorJson('验证码错误');
             }
