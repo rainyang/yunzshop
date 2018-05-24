@@ -21,6 +21,7 @@ use app\frontend\modules\member\models\MemberWechatModel;
 use app\frontend\modules\member\services\MemberService;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use iscms\Alisms\SendsmsPusher as Sms;
 use app\common\exceptions\AppException;
@@ -51,7 +52,7 @@ class RegisterController extends ApiController
             'captcha.captcha' => '验证码错误，请重试'
         ];
 
-        $validator = \validator(Input::get('captcha'), $rules, $messages);
+        $validator = \validator(Input::get('captcha'), $rules);
         if ($validator->fails()) {
             return $this->errorJson('验证码错误', $validator);
         }
