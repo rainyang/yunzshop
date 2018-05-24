@@ -128,7 +128,7 @@
             delimiters: ['[[', ']]'],
             data() {
                 let temp = {!! $setting !!};
-                if(!temp){
+                if(!temp || temp.length == 0){
                 temp = {
                         enoughReduce: [],
                         freeFreight: {
