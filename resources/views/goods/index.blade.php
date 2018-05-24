@@ -129,7 +129,7 @@
                 <form id="goods-list" action="{!! yzWebUrl($sort_url) !!}" method="post">
                     <div class="panel panel-default">
                         <div class="panel-body table-responsive">
-                            <label class="btn btn-success" id="checkall">全选</label>
+                            <label class="btn btn-success checkall">全选</label>
                             <label class="btn btn-info batchenable" type="submit">批量上架</label>
                             <label class="btn batchdisable" type="submit">批量下架</label>
                             <label class="btn btn-danger batchdisable" type="submit">批量删除</label>
@@ -314,7 +314,7 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            <label class="btn btn-success" id="checkall">全选</label>
+                            <label class="btn btn-success checkall">全选</label>
                             <label class="btn btn-info batchenable" type="submit">批量上架</label>
                             <label class="btn batchdisable" type="submit">批量下架</label>
                             <label class="btn btn-danger batchdisable" type="submit">批量删除</label>
@@ -341,7 +341,7 @@
     </div>
 <script>
     $(function(){
-        $("#checkall").click(function(){
+        $(".checkall").click(function(){
             //全选
             if($(this).html() == '全选') {
                 $(this).html('全不选');
@@ -351,7 +351,7 @@
                 $('[name=check1]:checkbox').prop('checked',false);
             }
         });
-        $("#checkrev").click(function(){
+        $(".checkrev").click(function(){
             //反选
             $('[name=check1]:checkbox').each(function(){
                 this.checked=!this.checked;
