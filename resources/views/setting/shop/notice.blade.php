@@ -3,11 +3,7 @@
 @section('content')
     <link rel="stylesheet" href="{{static_url('css/honeySwitch.css')}}">
     <script type="text/javascript" src="{{static_url('js/honeySwitch.js')}}"></script>
-    <script type="text/javascript">
-        require(['select2'], function () {
-            $('.diy-notice').select2();
-        })
-    </script>
+
     <div class="w1200 m0a">
         <div class="rightlist">
             <!-- 新增加右侧顶部三级菜单 -->
@@ -810,6 +806,9 @@
                             });
                             $('#salers').val(nickname);
                         }
+                    </script>
+                    <script type="text/javascript">
+                        $('.diy-notice').select2();
                     </script>
                 </div>
             </form>
