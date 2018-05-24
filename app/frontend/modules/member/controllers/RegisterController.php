@@ -42,22 +42,21 @@ class RegisterController extends ApiController
         $password = \YunShop::request()->password;
         $confirm_password = \YunShop::request()->confirm_password;
         $uniacid = \YunShop::app()->uniacid;
-
+        $captcha = \YunShop::request()->captcha;
 //echo 1;die;
-        $rules = [
-            "captcha" => 'required|captcha'
-        ];
-        $messages = [
-            'captcha.required' => '请输入验证码',
-            'captcha.captcha' => '验证码错误，请重试'
-        ];
+//        $rules = [
+//            "captcha" => 'required|captcha'
+//        ];
+//        $messages = [
+//            'captcha.required' => '请输入验证码',
+//            'captcha.captcha' => '验证码错误，请重试'
+//        ];
 
-        $validator = \validator(Input::get('captcha'), $rules);
-        if ($validator->fails()) {
-            return $this->errorJson('验证码错误', $validator);
-        }
+//        $validator = \validator(Input::get('captcha'), $rules);
+//        if ($validator->fails()) {
+//            return $this->errorJson('验证码错误', $validator);
+//        }
 //        dd(Captcha::check(Input::get('captcha')));
-
         if ((\Request::getMethod() == 'POST')) {
             $check_code = MemberService::checkCode();
 
@@ -65,7 +64,7 @@ class RegisterController extends ApiController
                 return $this->errorJson($check_code['json']);
             }
 
-            $msg = MemberService::validate($mobile, $password, $confirm_password);
+            $msg = MemberService::validate($mobile, $password, $confirm_password, $captcha);
 
             if ($msg['status'] != 1) {
                 return $this->errorJson($msg['json']);
@@ -73,15 +72,13 @@ class RegisterController extends ApiController
 
             $member_info = MemberModel::getId($uniacid, $mobile);
 
+            //增加验证码验证
+//            if ( Captcha::check(Input::get('captcha')) == false) {
+//                return $this->errorJson('验证码错误');
+//            }
+
             if (!empty($member_info)) {
                 return $this->errorJson('该手机号已被注册');
-            }
-
-            //增加验证码验证
-
-
-            if ( Captcha::check(Input::get('captcha'))== false) {
-                return $this->errorJson('验证码错误');
             }
 
             //添加mc_members表
