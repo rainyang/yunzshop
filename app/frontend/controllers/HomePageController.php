@@ -31,32 +31,20 @@ class HomePageController extends ApiController
         $i = \YunShop::request()->i;
         $mid = \YunShop::request()->mid;
         $type = \YunShop::request()->type;
-        $pageId = \YunShop::request()->page_id ?:0;
+        $pageId = \YunShop::request()->page_id;
         $member_id = \YunShop::app()->getMemberId();
 
         //商城设置, 原来接口在 setting.get
         $key = \YunShop::request()->setting_key ? \YunShop::request()->setting_key : 'shop';
-        // TODO
-        if(!\Cache::has('shop_' . $key)){
+        if (!empty($key)) {
             $setting = Setting::get('shop.' . $key);
-
-            if (!is_null($setting)) {
-                \Cache::put('shop_setting',$setting,3600);
-            }
-        }else{
-            $setting = \Cache::get('shop_setting');
+        } else {
+            $setting = Setting::get('shop');
         }
 
         if($setting){
             $setting['logo'] = replace_yunshop(yz_tomedia($setting['logo']));
-            // TODO
-            if(!\Cache::has('member_relation')){
-                $relation = MemberRelation::getSetInfo()->first();
-                \Cache::put('member_relation',$relation,3600);
-             }else{
-                $relation = \Cache::get('member_relation');
-            }
-
+            $relation = MemberRelation::getSetInfo()->first();
             $setting['signimg'] = replace_yunshop(yz_tomedia($setting['signimg']));
             if ($relation) {
                 $setting['agent'] = $relation->status ? true : false;
@@ -67,33 +55,13 @@ class HomePageController extends ApiController
             $setting['diycode'] = html_entity_decode($setting['diycode']);
             $result['mailInfo'] = $setting;
         }
-
         //强制绑定手机号
-        // TODO
-        if(!\Cache::has('shop_member')){
-            $member_set = Setting::get('shop.member');
-
-            if (!is_null($member_set)) {
-                \Cache::put('shop_member',$member_set,4200);
-            }
-        }else{
-            $member_set = \Cache::get('shop_member');
-        }
-
+        $member_set = Setting::get('shop.member');
         $is_bind_mobile = 0;
 
         if (!is_null($member_set)) {
             if ((1 == $member_set['is_bind_mobile']) && $member_id && $member_id > 0) {
-                // TODO
-                if(!\Cache::has('member_info')){
-                    $member_model = Member::getMemberById($member_id);
-
-                    if (!is_null($member_model)) {
-                        \Cache::put('member_info',$member_model,4200);
-                    }
-                }else{
-                    $member_model = \Cache::get('member_info');
-                }
+                $member_model = Member::getMemberById($member_id);
 
                 if ($member_model && empty($member_model->mobile)) {
                     $is_bind_mobile = 1;
@@ -104,10 +72,8 @@ class HomePageController extends ApiController
         $result['mailInfo']['is_bind_mobile'] = $is_bind_mobile;
 
         //用户信息, 原来接口在 member.member.getUserInfo
-        /*
         if(empty($pageId)){ //如果是请求首页的数据
             if (!empty($member_id)) {
-                // TODO
                 $member_info = MemberModel::getUserInfos($member_id)->first();
 
                 if (!empty($member_info)) {
@@ -119,53 +85,25 @@ class HomePageController extends ApiController
                 }
             }
         }
-        */
 
         //插件信息, 原来接口在 plugins.get-plugin-data
-        // TODO
-        if(!\Cache::has('plugins_enabled')){
-            $plugins = new PluginManager(app(),new OptionRepository(),new Dispatcher(),new Filesystem());
-            $enableds = $plugins->getEnabledPlugins()->toArray();
-
-            \Cache::put('plugins_enabled',$enableds,4200);
-        }else{
-            $enableds = \Cache::get('plugins_enabled');
-        }
+        $plugins = new PluginManager(app(),new OptionRepository(),new Dispatcher(),new Filesystem());
+        $enableds = $plugins->getEnabledPlugins()->toArray();
 
         //如果安装了装修插件并开启插件
         if(array_key_exists('designer', $enableds)){
 
             //系统信息
-            // TODO
-            if(!\Cache::has('desiginer_system')){
-                $result['system'] = (new \Yunshop\Designer\services\DesignerService())->getSystemInfo();
-
-                \Cache::put('desiginer_system',$result['system'],4200);
-            }else{
-                $result['system'] = \Cache::get('desiginer_system');
-            }
+            $result['system'] = (new \Yunshop\Designer\services\DesignerService())->getSystemInfo();
 
             //装修数据, 原来接口在 plugin.designer.home.index.page
-            if(!\Cache::has('desiginer_page_' . $pageId)){
-                if(empty($pageId)){ //如果是请求首页的数据
-                    $page = Designer::getDefaultDesigner();
-                } else{
-                    $page = Designer::getDesignerByPageID($pageId);
-                }
-
-                \Cache::put('desiginer_page_' . $pageId,$page,4200);
-            }else{
-                $page = \Cache::get('desiginer_page_' . $pageId);
+            if(empty($pageId)){ //如果是请求首页的数据
+                $page = Designer::getDefaultDesigner();
+            } else{
+                $page = Designer::getDesignerByPageID($pageId);
             }
-
             if ($page) {
-                if(!\Cache::has('desiginer_default')){
-                    $designer = (new \Yunshop\Designer\services\DesignerService())->getPageForHomePage($page->toArray());
-
-                    \Cache::put('desiginer_default',$designer,4200);
-                }else{
-                    $designer = \Cache::get('desiginer_default');
-                }
+                $designer = (new \Yunshop\Designer\services\DesignerService())->getPageForHomePage($page->toArray());
 
                 $store_goods = null;
                 if (app('plugins')->isEnabled('store-cashier')) {
@@ -174,16 +112,10 @@ class HomePageController extends ApiController
 
                 //课程商品判断
                 $videoDemand = new VideoDemandCourseGoods();
-                $video_open  = $videoDemand->whetherEnabled();
-
                 foreach ($designer['data'] as &$value) {
                     if ($value['temp'] == 'goods') {
                         foreach ($value['data'] as &$info) {
-                            $info['is_course'] = 0;
-
-                            if ($video_open) {
-                                $info['is_course'] = $videoDemand->isCourse($info['goodid']);
-                            }
+                            $info['is_course'] = $videoDemand->isCourse($info['goodid']);
 
                             $info['goods_type'] = 0;
                             $info['store_id'] = 0;
@@ -223,13 +155,7 @@ class HomePageController extends ApiController
                     break;
                 case 2:
                     if(!empty($footerMenuId)){
-                        if(!\Cache::has('menustyle')){
-                            $menustyle = DesignerMenu::getMenuById($footerMenuId);
-                            \Cache::put('menustyle',$menustyle,4200);
-                        }else{
-                            $menustyle = \Cache::get('menustyle');
-                        }
-
+                        $menustyle = DesignerMenu::getMenuById($footerMenuId);
                         if(!empty($menustyle->menus) && !empty($menustyle->params)){
                             $result['item']['menus'] = json_decode($menustyle->toArray()['menus'], true);
                             $result['item']['menustyle'] = json_decode($menustyle->toArray()['params'], true);
@@ -364,14 +290,7 @@ class HomePageController extends ApiController
      */
     public static function defaultDesign()
     {
-        if(!\Cache::has('shop_category')){
-            $set = Setting::get('shop.category');
-
-            \Cache::put('shop_category',$set,4200);
-        }else{
-            $set = \Cache::get('shop_category');
-        }
-
+        $set = Setting::get('shop.category');
         $set['cat_adv_img'] = replace_yunshop(yz_tomedia($set['cat_adv_img']));
 //        $category = (new IndexController())->getRecommentCategoryList();
 //        foreach ($category  as &$item){
@@ -398,7 +317,6 @@ class HomePageController extends ApiController
      */
     public static function defaultMenu($i, $mid, $type)
     {
-        if(!\Cache::has('defaultMenu')){
         $defaultMenu = Array(
             Array(
                 "id"=>1,
@@ -421,6 +339,19 @@ class HomePageController extends ApiController
                 "subMenus"=>[],
                 "textcolor"=>"#70c10b",
                 "bgcolor"=>"#24d7e6",
+                "iconcolor"=>"#666666",
+                "bordercolor"=>"#bfbfbf"
+            ),
+            Array(
+                "id"=>"menu_1489731319695",
+                "classt"=>"no",
+                "title"=>"推广",
+                "icon"=>"fa fa-send",
+                "url"=>"/addons/yun_shop/?#/member/extension?i=".$i."&mid=".$mid."&type=".$type,
+                "name"=>"extension",
+                "subMenus"=>[],
+                "textcolor"=>"#666666",
+                "bgcolor"=>"#837aef",
                 "iconcolor"=>"#666666",
                 "bordercolor"=>"#bfbfbf"
             ),
@@ -450,7 +381,7 @@ class HomePageController extends ApiController
             ),
         );
 
-        //如果开启了"会员关系链", 则默认菜单里面添加"推广"菜单
+       /* //如果开启了"会员关系链", 则默认菜单里面添加"推广"菜单
         $relation = MemberRelation::getSetInfo()->first();
         if($relation->status == 1){
             $promoteMenu = Array(
@@ -469,13 +400,7 @@ class HomePageController extends ApiController
             $defaultMenu[4] = $defaultMenu[3]; //第 5 个按钮改成"会员中心"
             $defaultMenu[3] = $defaultMenu[2]; //第 4 个按钮改成"购物车"
             $defaultMenu[2] = $promoteMenu; //在第 3 个按钮的位置加入"推广"
-        }
-
-            \Cache::put('defaultMenu',$defaultMenu,4200);
-        }else{
-            $defaultMenu = \Cache::get('defaultMenu');
-        }
-
+        }*/
         return $defaultMenu;
 
     }
