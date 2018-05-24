@@ -145,7 +145,7 @@ return [
                         'icon'              => '',
                         'sort'              => '2',
                         'item'              => 'coupon_no_permission',
-                        'parents'           => ['Goods', 'coupon',],
+                        'parents'           => ['Goods', 'goods_no_permission',],
                     ],
 
                     'goods_category_get_search_category'  => [
@@ -169,7 +169,18 @@ return [
                         'icon'                  => '',
                         'sort'                  => 0,
                         'item'                  => 'comment_no_permission',
-                        'parents'               => ['Goods', 'comment',],
+                        'parents'               => ['Goods', 'goods_no_permission',],
+                    ],
+                    'goods_goods_my_ling_goods'  => [
+                        'name'                  => '白名单（搜索商品）',
+                        'url'                   => 'goods.goods.getMyLinkGoods',
+                        'url_params'            => '',
+                        'permit'                => 0,
+                        'menu'                  => 0,
+                        'icon'                  => '',
+                        'sort'                  => 0,
+                        'item'                  => 'goods_goods_my_ling_goods',
+                        'parents'               => ['Goods', 'goods_no_permission',],
                     ],
                 ],
             ],
