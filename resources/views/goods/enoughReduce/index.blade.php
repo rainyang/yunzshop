@@ -12,45 +12,66 @@
     <div class="rightlist">
         @include('layouts.tabs')
         <div id="test-vue">
-            <el-form ref="form" :model="form" label-width="17%" v-loading="formLoading">
+            <el-form ref="form" :rules="rules" :model="form" label-width="17%">
+                <template v-for="(enoughReduce,index) in form.enoughReduce">
 
                 <el-form-item label="满额减">
 
-                    <template v-for="enoughReduce in form.enoughReduce">
-                        <el-row>
-                            <el-input placeholder="金额" v-model="enoughReduce.enough" size="medium" style="width: 25%">
-                                <template slot="prepend">满</template>
-                                <template slot="append">元</template>
-                            </el-input>
-                            <el-input placeholder="金额" v-model="enoughReduce.reduce" size="medium" style="width: 25%">
-                                <template slot="prepend">减</template>
-                                <template slot="append">元</template>
-                            </el-input>
-                            <el-button type="danger" plain size="mini" @click="remove(this)">x</el-button>
-                        </el-row>
-                    </template>
+                        <el-form-item>
+                            <el-row :gutter="3">
 
-                    <el-button @click="add">增加优惠项目</el-button>
+                                <el-col :span="6">
+                                    <el-form-item prop="enoughReduce.enough">
+                                        <el-input min="0" max="999999999" placeholder="金额"
+                                                  v-model.number="enoughReduce.enough" size="medium">
+                                            <template slot="prepend">满</template>
+                                            <template slot="append">元</template>
+                                        </el-input>
+                                    </el-form-item>
+                                </el-col>
+
+                                <el-col :span="6">
+
+                                    <el-form-item prop="enoughReduce.reduce">
+                                        <el-input min="0" max="999999999" placeholder="金额"
+                                                  v-model.number="enoughReduce.reduce" size="medium">
+                                            <template slot="prepend">减</template>
+                                            <template slot="append">元</template>
+                                        </el-input>
+                                    </el-form-item>
+                                </el-col>
+
+                                <el-col :span="3">
+                                    <el-button plain size="mini" @click="remove(this)">x</el-button>
+                                </el-col>
+                            </el-row>
+                        </el-form-item>
+
+
 
                 </el-form-item>
-
+                </template>
+                <el-form-item label="">
+                <el-row>
+                    <el-button @click="add">增加满减规则</el-button>
+                </el-row>
+                </el-form-item>
 
                 <el-form-item label="满额包邮">
 
-                    <el-row>
-                        <el-tooltip :content="form.open?'已开启':'已关闭'" placement="top">
-                            <el-switch v-model="form.freeFreight.open">
-                            </el-switch>
-                        </el-tooltip>
-                    </el-row>
-
-                    <el-input placeholder="金额" v-model="form.freeFreight.enough" size="medium" style="width: 27%">
-                        <template slot="prepend">满</template>
-                        <template slot="append">元包邮</template>
-                    </el-input>
-
+                    <el-tooltip :content="form.open?'已开启':'已关闭'" placement="top">
+                        <el-switch v-model="form.freeFreight.open">
+                        </el-switch>
+                    </el-tooltip>
+                    <el-form-item prop="freeFreight.enough">
+                        <el-input min="0" max="999999999" placeholder="金额"
+                                  v-model.number="form.freeFreight.enough" size="medium"
+                                  style="width: 27%">
+                            <template slot="prepend">满</template>
+                            <template slot="append">元包邮</template>
+                        </el-input>
+                    </el-form-item>
                 </el-form-item>
-
                 <el-form-item label="不参与地区">
                     <el-row>
                         <el-tag
@@ -91,10 +112,10 @@
                 </el-form-item>
 
                 <el-form-item>
-                    <el-button type="success" @click="onSubmit">提交</el-button>
+                    <el-button type="success" @click.native.prevent="onSubmit" v-loading="formLoading">提交
+                    </el-button>
                     <el-button>取消</el-button>
                 </el-form-item>
-
             </el-form>
         </div>
 
@@ -106,19 +127,22 @@
             el: '#test-vue',
             delimiters: ['[[', ']]'],
             data() {
+                let temp = {!! $setting !!};
+                if(!temp){
+                temp = {
+                        enoughReduce: [],
+                        freeFreight: {
+                            'open': false,
+                            'enough': 0,
+                            'cities': [],
+                            'city_ids': [],
+                            'province_ids': [],
+                        },
+
+                    }
+                }
                 return {
-                    // form: {
-                    //     enoughReduce: [{'enough': 100, 'reduce': 10}, {'enough': 200, 'reduce': 20}],
-                    //     freeFreight: {
-                    //         'open': false,
-                    //         'enough': 88,
-                    //         'cities': ['北京市', '天津市'],
-                    //         'city_ids': [110100, 120100],
-                    //         'province_ids': [110000, 120000],
-                    //     },
-                    //
-                    // },
-                    form: {!! $setting !!},
+                    form: temp,
                     props: {
                         label: 'areaname',
                         children: 'children',
@@ -127,10 +151,45 @@
                     loading: false,
                     formLoading: false,
                     centerDialogVisible: false,
-                    treeData: []
+                    treeData: [],
+                    rules: {
+                        'freeFreight.enough': [{
+                            type: 'number',
+                            min: 0,
+                            max: 999999999,
+                            message: '请输入正确金额',
+                            transform(value) {
+                                return Number(value)
+                            }
+                        }],
+                        'enoughReduce':{
+                            type:'array'
+                        }
+                        // 'enoughReduce.reduce': [{
+                        //     type: 'number',
+                        //     min: 0,
+                        //     max: 999999999,
+                        //     message: '请输入正确金额',
+                        //     transform(value) {
+                        //         return Number(value)
+                        //     }
+                        // }],
+                        // 'enoughReduce.enough': [{
+                        //     type: 'number',
+                        //     min: 0,
+                        //     max: 999999999,
+                        //     message: '请输入正确金额',
+                        //     transform(value) {
+                        //         return Number(value)
+                        //     }
+                        //
+                        // }]
+                    }
                 }
             },
-
+            mounted: function(){
+                console.log(this.form)
+            },
             methods: {
                 add() {
                     this.form.enoughReduce.push(
@@ -145,15 +204,22 @@
                     this.form.enoughReduce.splice(i, 1)
                 },
                 onSubmit() {
+                    if (this.formLoading) {
+                        return;
+                    }
                     this.formLoading = true;
+
+                    this.$refs.form.validate((valid) => {
+                        console.log(valid)
+                    });
                     this.$http.post("{!! yzWebUrl('goods.enough-reduce.store') !!}", {'setting': this.form}).then(response => {
                         // console.log(response.data);
                         // return;
-                        this.formLoading = false;
                         this.$message({
                             message: '保存成功',
                             type: 'success'
                         });
+                        this.formLoading = false;
                     }, response => {
                         console.log(response);
                     });

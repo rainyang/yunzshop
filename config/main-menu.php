@@ -809,7 +809,7 @@ return [
                 'child'             => [
                     'filtering_group_index' => [
                         'name'              => '满额优惠设置',
-                        'url'               => 'goods.enough-reduce.index',
+                        'url'               => 'enoughReduce.index.index',
                         'url_params'        => '',
                         'permit'            => 1,
                         'menu'              => 0,
@@ -821,14 +821,14 @@ return [
                     ],
                     'filtering_group_store' => [
                         'name'              => '保存满额优惠',
-                        'url'               => 'goods.enough-reduce.store',
+                        'url'               => 'enoughReduce.store.index',
                         'url_params'        => '',
                         'permit'            => 1,
                         'menu'              => 0,
                         'icon'              => 'fa-sitemap',
                         'sort'              => '2',
                         'item'              => 'enough_reduce_store',
-                        'parents'           => ['Goods','search_filtering'],
+                        'parents'           => ['Goods'],
                         'child'             => []
                     ],
                 ],
