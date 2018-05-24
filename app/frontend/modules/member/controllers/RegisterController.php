@@ -61,7 +61,7 @@ class RegisterController extends ApiController
             }
 
             //增加验证码验证
-            dd(Input::get('captcha'));
+            
             if (Captcha::check(Input::get('captcha')) == false) {
                 return $this->errorJson('验证码错误');
             }
