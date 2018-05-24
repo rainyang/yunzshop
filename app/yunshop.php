@@ -313,8 +313,8 @@ class YunShop
                 }
             }
         }catch (Exception $exception){
-            dd($exception);
-            exit;
+//            dd($exception);
+//            exit;
 
         }
         //执行run
@@ -352,8 +352,8 @@ class YunShop
             } else {
 
                 if ($length !== ($isPlugin ? $k + 3 : $k + 1)) {
-dump($controllerFile);
-dump($path);
+//dump($controllerFile);
+//dump($path);
                     throw new NotFoundException('路由长度有误:' . $requestRoute);
 
                 }

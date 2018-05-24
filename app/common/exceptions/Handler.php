@@ -70,7 +70,7 @@ class Handler extends ExceptionHandler
         }
         //默认异常
         if ($this->isHttpException($exception)) {
-            \Log::error('http exception',$exception);
+            \Log::error('http exception', $exception);
             return $this->renderHttpException($exception);
         }
         //开发模式异常
@@ -79,7 +79,7 @@ class Handler extends ExceptionHandler
         }
         //api异常
         if (\YunShop::isApi()) {
-            \Log::error('api exception',$exception);
+            \Log::error('api exception', $exception);
             return $this->errorJson($exception->getMessage());
         }
         return parent::render($request, $exception);
@@ -103,9 +103,9 @@ class Handler extends ExceptionHandler
 
     protected function renderShopException(ShopException $exception)
     {
-        if (\Yunshop::isApi()) {
-            \Log::error('api exception',$exception);
-            return $this->errorJson($exception->getMessage(),['code'=>$exception->getCode()]);
+        if (\Yunshop::isApi() || request()->ajax()) {
+            \Log::error('api exception', $exception);
+            return $this->errorJson($exception->getMessage(), ['code' => $exception->getCode()]);
         }
         $redirect = $exception->redirect ?: '';
         exit($this->message($exception->getMessage(), $redirect, 'error'));
@@ -131,11 +131,11 @@ class Handler extends ExceptionHandler
 
     protected function renderNotFoundException(NotFoundException $exception)
     {
-        if(\Yunshop::isPHPUnit()){
+        if (\Yunshop::isPHPUnit()) {
 
-            exit( $exception->getMessage());
+            exit($exception->getMessage());
         }
-        if (\Yunshop::isApi()) {
+        if (\Yunshop::isApi() || request()->ajax()) {
             return $this->errorJson($exception->getMessage());
         }
 

@@ -127,7 +127,7 @@
             el: '#test-vue',
             delimiters: ['[[', ']]'],
             data() {
-                let temp = {!! $setting !!};
+                let temp = JSON.parse('{!! $setting !!}');
                 if(!temp || temp.length == 0){
                 temp = {
                         enoughReduce: [],

@@ -8,13 +8,15 @@
 
 namespace app\backend\modules\EnoughReduce\controllers;
 
-use app\common\components\AdminApiController;
+use app\common\components\BaseController;
+use app\common\exceptions\AppException;
 use app\common\helpers\Url;
 
-class StoreController extends AdminApiController
+class StoreController extends BaseController
 {
     public function index()
     {
+        throw new AppException();
         $setting = request()->input('setting');
         foreach ($setting as $key => $value) {
             \Setting::set('enoughReduce.' . $key, $value);
