@@ -28,6 +28,7 @@ use Gregwar\Captcha\CaptchaBuilder;
 use Gregwar\Captcha\PhraseBuilder;
 use Mews\Captcha\Captcha;
 
+
 class RegisterController extends ApiController
 {
     protected $publicController = ['Register'];
@@ -41,9 +42,21 @@ class RegisterController extends ApiController
         $confirm_password = \YunShop::request()->confirm_password;
         $uniacid = \YunShop::app()->uniacid;
 
-        dd(Input::get('captcha'));
-        dd(Captcha::check(Input::get('captcha')));
-        
+//echo 1;die;
+        $rules = [
+            "captcha" => 'required|captcha'
+        ];
+        $messages = [
+            'captcha.required' => '请输入验证码',
+            'captcha.captcha' => '验证码错误，请重试'
+        ];
+
+        $validator = \validator(Input::get('captcha'), $rules, $messages);
+        if ($validator->fails()) {
+            return $this->errorJson('验证码错误', $validator);
+        }
+//        dd(Captcha::check(Input::get('captcha')));
+
         if ((\Request::getMethod() == 'POST')) {
             $check_code = MemberService::checkCode();
 
