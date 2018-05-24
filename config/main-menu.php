@@ -798,7 +798,7 @@ return [
             ],
             'enough_reduce' => [
                 'name'              => '满额优惠',
-                'url'               => 'goods.enough-reduce.index',
+                'url'               => 'enoughReduce.index.index',
                 'url_params'        => '',
                 'permit'            => 1,
                 'menu'              => 1,
