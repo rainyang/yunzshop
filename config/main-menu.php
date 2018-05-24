@@ -182,6 +182,18 @@ return [
                         'item'                  => 'goods_goods_my_ling_goods',
                         'parents'               => ['Goods', 'goods_no_permission',],
                     ],
+                    'member_member_level_search_goods'  => [
+                        'name'                  => '白名单（搜索商品）',
+                        'url'                   => 'member.member-level.searchGoods',
+                        'url_params'            => '',
+                        'permit'                => 0,
+                        'menu'                  => 0,
+                        'icon'                  => '',
+                        'sort'                  => 0,
+                        'item'                  => 'member_member_level_search_goods',
+                        'parents'               => ['Goods', 'goods_no_permission',],
+                    ],
+
                 ],
             ],
             'add_goods'   => [
