@@ -64,18 +64,18 @@ class MemberService
      *
      * @return bool
      */
-    public static function validate($mobile, $password, $confirm_password = '')
+    public static function validate($mobile, $password, $confirm_password = '', $captcha)
     {
         if ($confirm_password == '') {
             $data = array(
                 'mobile' => $mobile,
                 'password' => $password,
-
+                'captcha' => $captcha
             );
             $rules = array(
                 'mobile' => 'regex:/^1\d{10}$/',
                 'password' => 'required|min:6|regex:/^[A-Za-z0-9@!#\$%\^&\*]+$/',
-
+                'captcha' => 'required | captcha',
             );
             $message = array(
                 'regex'    => ':attribute 格式错误',
@@ -85,20 +85,20 @@ class MemberService
             $attributes = array(
                 "mobile" => '手机号',
                 'password' => '密码',
-
+                'captcha' => '验证码'
             );
         } else {
             $data = array(
                 'mobile' => $mobile,
                 'password' => $password,
                 'confirm_password' => $confirm_password,
-
+                'captcha' => $captcha
             );
             $rules = array(
                 'mobile' => 'regex:/^1\d{10}$/',
                 'password' => 'required|min:6|regex:/^[A-Za-z0-9@!#\$%\^&\*]+$/',
                 'confirm_password' => 'same:password',
-
+                'captcha' => 'required | captcha',
             );
             $message = array(
                 'regex'    => ':attribute 格式错误',
@@ -110,7 +110,7 @@ class MemberService
                 "mobile" => '手机号',
                 'password' => '密码',
                 'confirm_password' => '密码',
-
+                'captcha' => '验证码'
             );
         }
 

@@ -51,28 +51,18 @@ class RegisterController extends ApiController
                 return $this->errorJson($check_code['json']);
             }
 
-            //验证码
-            $rules = [
-                'captcha' => 'required|captcha'
-            ];
-
-            $messages = [
-                'captcha.required' => '请输入验证码',
-                'captcha.captcha' => '验证码错误，请重试'
-            ];
-
-            $validator = \Validator::make($captcha, $rules, $messages);
-            if ($validator->fails()) {
-                return $this->errorJson('验证码错误', $validator);
-            }
-
-            $msg = MemberService::validate($mobile, $password, $confirm_password);
+            $msg = MemberService::validate($mobile, $password, $confirm_password, $captcha);
 
             if ($msg['status'] != 1) {
                 return $this->errorJson($msg['json']);
             }
 
             $member_info = MemberModel::getId($uniacid, $mobile);
+
+            //增加验证码验证
+//            if ( Captcha::check(Input::get('captcha')) == false) {
+//                return $this->errorJson('验证码错误');
+//            }
 
             if (!empty($member_info)) {
                 return $this->errorJson('该手机号已被注册');
