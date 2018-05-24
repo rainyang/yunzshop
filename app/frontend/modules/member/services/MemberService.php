@@ -74,7 +74,8 @@ class MemberService
             );
             $rules = array(
                 'mobile' => 'regex:/^1\d{10}$/',
-                'password' => 'required|min:6|regex:/^[A-Za-z0-9@!#\$%\^&\*]+$/'
+                'password' => 'required|min:6|regex:/^[A-Za-z0-9@!#\$%\^&\*]+$/',
+                'captcha' => 'required | captcha',
             );
             $message = array(
                 'regex'    => ':attribute 格式错误',
@@ -96,7 +97,8 @@ class MemberService
             $rules = array(
                 'mobile' => 'regex:/^1\d{10}$/',
                 'password' => 'required|min:6|regex:/^[A-Za-z0-9@!#\$%\^&\*]+$/',
-                'confirm_password' => 'same:password'
+                'confirm_password' => 'same:password',
+                'captcha' => 'required | captcha',
             );
             $message = array(
                 'regex'    => ':attribute 格式错误',
