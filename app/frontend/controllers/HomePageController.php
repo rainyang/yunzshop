@@ -5,7 +5,6 @@ namespace app\frontend\controllers;
 use app\common\components\ApiController;
 use app\common\services\Session;
 use Gregwar\Captcha\CaptchaBuilder;
-use SuperClosure\Serializer;
 use Yunshop\Designer\models\Designer;
 use Yunshop\Designer\models\DesignerMenu;
 use app\frontend\modules\member\models\MemberModel;
@@ -187,9 +186,7 @@ class HomePageController extends ApiController
 
         //增加验证码功能1
         $status = Setting::get('shop.sms.status');
-
         $captcha = self::captchaTest();
-        dd($captcha);
         if ($status == 1) {
             $result['captcha'] = $captcha;
             $result['captcha']['status'] = $status;
@@ -210,11 +207,6 @@ class HomePageController extends ApiController
     {
         $captcha = app('captcha');
         $captcha_base64 = $captcha->create('default', true);
-
-        if (!is_null($captcha_base64)) {
-            $serialize = new Serializer();
-            Session::set('captcha_img', $serialize->serialize($captcha));
-        }
 
         return $captcha_base64;
     }
