@@ -458,7 +458,6 @@ class HomePageController extends ApiController
 
     public function bindMobile()
     {
-        app('captcha')->check();
         $member_id = \YunShop::app()->getMemberId();
 
         //强制绑定手机号

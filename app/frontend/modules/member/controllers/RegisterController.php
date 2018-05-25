@@ -60,7 +60,7 @@ class RegisterController extends ApiController
             $member_info = MemberModel::getId($uniacid, $mobile);
 
             //增加验证码验证
-            if ( Captcha::check(Input::get('captcha')) == false) {
+            if ( app('captcha')->check(Input::get('captcha')) == false) {
                 return $this->errorJson('验证码错误');
             }
 

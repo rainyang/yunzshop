@@ -104,8 +104,9 @@ class AppServiceProvider extends ServiceProvider
             return new Setting();
         });
 
-        App::bind('Illuminate\Session\Store',function(){
+        App::bind(\Illuminate\Session\Store::class,function(){
             return new Session();
         });
+
     }
 }
