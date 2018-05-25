@@ -68,4 +68,14 @@ class Session
     {
         self::clear($name);
     }
+    public static function has($name)
+    {
+        if(!isset($_SESSION[self::PREFIX . $name])){
+            return false;
+        }
+        if($_SESSION[self::PREFIX . $name]['expire'] <= time()){
+            return false;
+        }
+        return true;
+    }
 }
