@@ -28,12 +28,11 @@ class InsertMultipleAddressStreet extends Migration
             $parentid = $ret ? $ret->id : $ret_id;
 
             foreach ($val['street'] as $key => $value) {
-                // $street[] = ['areaname'=> $value, 'parentid'=> $parentid, 'level'=> 4];
-                \app\common\models\Street::firstOrCreate(['areaname'=> $value, 'parentid'=> $parentid, 'level'=> 4]);
+                $street[] = ['areaname'=> $value, 'parentid'=> $parentid, 'level'=> 4];
             }
 
         }
-        // \app\common\models\Street::insert($street);
+        \app\common\models\Street::insert($street);
     }
 
     /**
