@@ -11,17 +11,19 @@ namespace app\common\services;
 /**
  * Session控制类
  */
-class Session{
+class Session
+{
 
     const PREFIX = 'yunzshop_';
 
     /**
      * 设置session
-     * @param String $name   session name
-     * @param Mixed  $data   session data
-     * @param Int    $time 超时时间(秒)
+     * @param String $name session name
+     * @param Mixed $data session data
+     * @param Int $time 超时时间(秒)
      */
-    public static function set($name, $data, $time=10 * 24 * 3600){
+    public static function set($name, $data, $time = 10 * 24 * 3600)
+    {
         $expire = time() + $time;
 
         $session_data = array();
@@ -33,14 +35,15 @@ class Session{
 
     /**
      * 读取session
-     * @param  String $name  session name
+     * @param  String $name session name
      * @return Mixed
      */
-    public static function get($name){
-        if(isset($_SESSION[self::PREFIX . $name])){
-            if($_SESSION[self::PREFIX . $name]['expire']>time()){
+    public static function get($name)
+    {
+        if (isset($_SESSION[self::PREFIX . $name])) {
+            if ($_SESSION[self::PREFIX . $name]['expire'] > time()) {
                 return $_SESSION[self::PREFIX . $name]['data'];
-            }else{
+            } else {
                 self::clear($name);
             }
         }
@@ -49,10 +52,20 @@ class Session{
 
     /**
      * 清除session
-     * @param  String  $name  session name
+     * @param  String $name session name
      */
-    public static function clear($name){
+    public static function clear($name)
+    {
         unset($_SESSION[self::PREFIX . $name]);
     }
 
+    public static function put($name, $data, $time = 10 * 24 * 3600)
+    {
+        self::set($name, $data, $time);
+    }
+
+    public static function remove($name)
+    {
+        self::clear($name);
+    }
 }
