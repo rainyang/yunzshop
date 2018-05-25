@@ -216,6 +216,9 @@
                                        @endif
                                        onclick="message_default(this.id)"/>
                             </div>
+                            <script>
+                                switchEvent()
+                            </script>
                         </div>
 
                         <div class="form-group">
@@ -749,7 +752,6 @@
                                     setting_name: setting_name
                                 };
                                 $.post(url,postdata,function(data){
-                                    alert('启用成功');
                                     location.reload()
                                 });
                             } else {
@@ -760,7 +762,6 @@
                                     setting_name: setting_name
                                 };
                                 $.post(url,postdata,function(data){
-                                    alert('关闭成功');
                                     location.reload()
                                 });
                             }

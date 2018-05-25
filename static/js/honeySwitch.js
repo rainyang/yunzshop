@@ -111,4 +111,32 @@ honeySwitch.showOff = function(ele) {
 }
 $(function() {
 	honeySwitch.init();
-}); 
+});
+
+var muiSwitch = {}
+muiSwitch.init = function () {
+    window.muiSwitchEvent = function(id, name, setting_name) {
+        var url_open = "{!! yzWebUrl('setting.default-notice.index') !!}"
+        var url_close = "{!! yzWebUrl('setting.default-notice.cancel') !!}"
+        var postdata = {
+            notice_name: name,
+            setting_name: setting_name
+        };
+        if ($(id).is(':checked')) {
+            //开
+            $.post(url_open,postdata,function(data){
+                alert('启用成功');
+                location.reload()
+            });
+        } else {
+            //关
+            $.post(url_close,postdata,function(data){
+                alert('关闭成功');
+                location.reload()
+            });
+        }
+    }
+}
+$(function() {
+    muiSwitch.init();
+});

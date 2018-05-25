@@ -62,6 +62,9 @@ class DefaultNoticeController extends BaseController
             $notice[$notice_name] = (string)$ret->id;
         }
         \Setting::set($setting_name, $notice);
+        echo json_encode([
+            'result' => '1',
+        ]);
     }
 
     public function cancel() {
@@ -70,5 +73,8 @@ class DefaultNoticeController extends BaseController
         $notice = \Setting::get($setting_name);
         $notice[$notice_name] = "0";
         \Setting::set($setting_name, $notice);
+        echo json_encode([
+            'result' => '1',
+        ]);
     }
 }

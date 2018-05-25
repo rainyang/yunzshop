@@ -3,6 +3,8 @@
 @section('content')
     @include('layouts.tabs')
     <section class="content">
+        <link rel="stylesheet" href="{{static_url('css/honeySwitch.css')}}">
+        <script type="text/javascript" src="{{static_url('js/honeySwitch.js')}}"></script>
 
         <form id="setform" action="" method="post" class="form-horizontal form">
             <div class='panel panel-default'>
@@ -48,10 +50,11 @@
 
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">获得推广权限通知</label>
-                        <div class="col-sm-9 col-xs-12">
+                        <div class="col-sm-8 col-xs-12">
                             <select name='base[member_agent]' class='form-control diy-notice'>
-                                <option value="" @if(!$base['member_agent']) selected @endif >
-                                    请选择消息模板
+                                <option value="{{$base['member_agent']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($base['member_agent']))
+                                selected @endif>
+                                    默认消息模板
                                 </option>
                                 @foreach ($temp_list as $item)
                                     <option value="{{$item['id']}}"
@@ -61,6 +64,10 @@
                                 @endforeach
                             </select>
                         </div>
+                        <input class="mui-switch mui-switch-animbg" id="member_agent" type="checkbox"
+                               @if(\app\common\models\notice\MessageTemp::getIsDefaultById($base['member_agent']))
+                               checked @endif
+                               onclick="message_default(this.id)"/>
                     </div>
 
                     {{--<div class="form-group">
@@ -81,10 +88,11 @@
 
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">新增下线通知</label>
-                        <div class="col-sm-9 col-xs-12">
+                        <div class="col-sm-8 col-xs-12">
                             <select name='base[member_new_lower]' class='form-control diy-notice'>
-                                <option value="" @if(!$base['member_new_lower']) selected @endif >
-                                    请选择消息模板
+                                <option value="{{$base['member_new_lower']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($base['member_new_lower']))
+                                selected @endif>
+                                    默认消息模板
                                 </option>
                                 @foreach ($temp_list as $item)
                                     <option value="{{$item['id']}}"
@@ -94,6 +102,10 @@
                                 @endforeach
                             </select>
                         </div>
+                        <input class="mui-switch mui-switch-animbg" id="member_new_lower" type="checkbox"
+                               @if(\app\common\models\notice\MessageTemp::getIsDefaultById($base['member_new_lower']))
+                               checked @endif
+                               onclick="message_default(this.id)"/>
                     </div>
                 </div>
 
@@ -130,8 +142,29 @@
         </form>
 
         <script>
-            require(['select2'], function () {
-                $('.diy-notice').select2();
-            })
+            $('.diy-notice').select2();
+        </script>
+        <script>
+            function message_default(name) {
+                var id = "#" + name;
+                var setting_name = "relation_base";
+                var url_open = "{!! yzWebUrl('setting.default-notice.index') !!}"
+                var url_close = "{!! yzWebUrl('setting.default-notice.cancel') !!}"
+                var postdata = {
+                    notice_name: name,
+                    setting_name: setting_name
+                };
+                if ($(id).is(':checked')) {
+                    //开
+                    $.post(url_open,postdata,function(data){
+                        location.reload()
+                    });
+                } else {
+                    //关
+                    $.post(url_close,postdata,function(data){
+                        location.reload()
+                    });
+                }
+            }
         </script>
     </section>@endsection
