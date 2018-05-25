@@ -363,7 +363,7 @@
 
         $(".batchenable").click(function () {
             $(this).html('上架中...');
-            $("input[type='checkbox']:checked").each(function(i){
+            $("[name=check1]:checkbox:checked").each(function(i){
                 arr[i] = $(this).val();
             });
             $.post(url, {ids: arr, data: 1}
@@ -377,7 +377,7 @@
         });
         $(".batchdisable").click(function () {
             $(this).html('下架中...');
-            $("input[type='checkbox']:checked").each(function(i){
+            $("[name=check1]:checkbox:checked").each(function(i){
                 arr[i] = $(this).val();
             });
             $.post(url, {ids: arr, data: 0}
