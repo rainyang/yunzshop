@@ -64,6 +64,7 @@ class DefaultNoticeController extends BaseController
         \Setting::set($setting_name, $notice);
         echo json_encode([
             'result' => '1',
+            'id' => $notice[$notice_name],
         ]);
     }
 

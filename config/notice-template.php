@@ -433,7 +433,7 @@ return [
         'remark' => '感谢您的支持。',
 
     ],
-    ' ' => [
+    'withdraw_submit' => [
         'template_id_short' => 'OPENTM207574677',
         'title' => '余额提现提交通知',
         'first_color' => '#000000',

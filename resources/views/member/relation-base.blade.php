@@ -148,6 +148,7 @@
             function message_default(name) {
                 var id = "#" + name;
                 var setting_name = "relation_base";
+                var select_name = "select[name='base[" + name + "]']"
                 var url_open = "{!! yzWebUrl('setting.default-notice.index') !!}"
                 var url_close = "{!! yzWebUrl('setting.default-notice.cancel') !!}"
                 var postdata = {
@@ -157,14 +158,30 @@
                 if ($(id).is(':checked')) {
                     //开
                     $.post(url_open,postdata,function(data){
-                        location.reload()
-                    });
+                        if (data) {
+                            $(select_name).val(data.id)
+                            showPopover($(id),"开启成功")
+                        }
+                    }, "json");
                 } else {
                     //关
                     $.post(url_close,postdata,function(data){
-                        location.reload()
-                    });
+                        $(select_name).val('');
+                        showPopover($(id),"关闭成功")
+                    }, "json");
                 }
+            }
+            function showPopover(target, msg) {
+                target.attr("data-original-title", msg);
+                $('[data-toggle="tooltip"]').tooltip();
+                target.tooltip('show');
+                target.focus();
+                //2秒后消失提示框
+                setTimeout(function () {
+                        target.attr("data-original-title", "");
+                        target.tooltip('hide');
+                    }, 2000
+                );
             }
         </script>
     </section>@endsection
