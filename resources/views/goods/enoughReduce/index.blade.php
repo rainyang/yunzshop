@@ -15,13 +15,13 @@
             <el-form ref="form" :rules="rules" :model="form" label-width="17%">
                 <template v-for="(enoughReduce,index) in form.enoughReduce">
 
-                <el-form-item label="满额减">
+                    <el-form-item label="满额减">
 
                         <el-form-item>
                             <el-row :gutter="3">
 
                                 <el-col :span="6">
-                                    <el-form-item v-bind:prop="'enoughReduce.enough'+index">
+                                    <el-form-item v-bind:prop="'enoughReduce.enough-'+index">
                                         <el-input placeholder="金额"
                                                   v-model.number="enoughReduce.enough" size="medium">
                                             <template slot="prepend">满</template>
@@ -32,8 +32,8 @@
 
                                 <el-col :span="6">
 
-                                    <el-form-item v-bind:prop="'enoughReduce.reduce'+index">
-                                        <el-input  placeholder="金额"
+                                    <el-form-item v-bind:prop="'enoughReduce.reduce-'+index">
+                                        <el-input placeholder="金额"
                                                   v-model.number="enoughReduce.reduce" size="medium">
                                             <template slot="prepend">减</template>
                                             <template slot="append">元</template>
@@ -48,13 +48,12 @@
                         </el-form-item>
 
 
-
-                </el-form-item>
+                    </el-form-item>
                 </template>
                 <el-form-item label="">
-                <el-row>
-                    <el-button @click="add">增加满减规则</el-button>
-                </el-row>
+                    <el-row>
+                        <el-button @click="add">增加满减规则</el-button>
+                    </el-row>
                 </el-form-item>
 
                 <el-form-item label="满额包邮">
@@ -64,7 +63,7 @@
                         </el-switch>
                     </el-tooltip>
                     <el-form-item prop="freeFreight.enough">
-                        <el-input  placeholder="金额"
+                        <el-input placeholder="金额"
                                   v-model.number="form.freeFreight.enough" size="medium"
                                   style="width: 27%">
                             <template slot="prepend">满</template>
@@ -127,9 +126,10 @@
             el: '#test-vue',
             delimiters: ['[[', ']]'],
             data() {
+                // 默认数据
                 let temp = JSON.parse('{!! $setting !!}');
-                if(!temp || temp.length == 0){
-                temp = {
+                if (!temp || temp.length === 0) {
+                    temp = {
                         enoughReduce: [],
                         freeFreight: {
                             'open': false,
@@ -141,6 +141,25 @@
 
                     }
                 }
+                //验证规则
+                let amountRules = {
+                    type: 'number',
+                    min: 0,
+                    max: 999999999,
+                    message: '请输入正确金额',
+                    transform(value) {
+                        console.log(value);
+                        return Number(value)
+                    }
+                };
+                let rules = {
+                        'freeFreight.enough': [amountRules],
+                };
+//                 for(enoughReduceIndex in temp.enoughReduce){
+//                     rules['enoughReduce.reduce-'+enoughReduceIndex] = [amountRules];
+//                     rules['enoughReduce.enough-'+enoughReduceIndex] = [amountRules];
+//                 }
+// console.log(rules);
                 return {
                     form: temp,
                     props: {
@@ -152,47 +171,10 @@
                     formLoading: false,
                     centerDialogVisible: false,
                     treeData: [],
-                    rules: {
-                        'freeFreight.enough': [{
-                            type: 'number',
-                            min: 0,
-                            max: 999999999,
-                            message: '请输入正确金额',
-                            transform(value) {
-                                return Number(value)
-                            }
-                        }],
-                        'enoughReduce':{
-                            type:'array',
-                            fields: {
-                                0: {type: "string", required: true},
-                                1: {type: "string", required: true},
-                                2: {type: "string", required: true}
-                            }
-                        }
-                        // 'enoughReduce.reduce': [{
-                        //     type: 'number',
-                        //     min: 0,
-                        //     max: 999999999,
-                        //     message: '请输入正确金额',
-                        //     transform(value) {
-                        //         return Number(value)
-                        //     }
-                        // }],
-                        // 'enoughReduce.enough': [{
-                        //     type: 'number',
-                        //     min: 0,
-                        //     max: 999999999,
-                        //     message: '请输入正确金额',
-                        //     transform(value) {
-                        //         return Number(value)
-                        //     }
-                        //
-                        // }]
-                    }
+                    rules: rules
                 }
             },
-            mounted: function(){
+            mounted: function () {
                 console.log(this.form)
             },
             methods: {
@@ -218,16 +200,16 @@
                         console.log(valid)
                     });
                     this.$http.post("{!! yzWebUrl('enoughReduce.store') !!}", {'setting': this.form}).then(response => {
-                         //console.log(response.data);
+                        //console.log(response.data);
                         // return;
-                        if(response.data.result){
+                        if (response.data.result) {
                             this.$message({
                                 message: response.data.msg,
                                 type: 'success'
                             });
-                        }else{
+                        } else {
                             this.$message({
-                                message:response.data.msg,
+                                message: response.data.msg,
                                 type: 'error'
                             });
                         }
