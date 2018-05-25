@@ -16,7 +16,6 @@ class StoreController extends BaseController
 {
     public function index()
     {
-        throw new AppException();
         $setting = request()->input('setting');
         foreach ($setting as $key => $value) {
             \Setting::set('enoughReduce.' . $key, $value);

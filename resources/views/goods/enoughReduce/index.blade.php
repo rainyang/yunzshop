@@ -21,8 +21,8 @@
                             <el-row :gutter="3">
 
                                 <el-col :span="6">
-                                    <el-form-item prop="enoughReduce.enough">
-                                        <el-input min="0" max="999999999" placeholder="金额"
+                                    <el-form-item v-bind:prop="'enoughReduce.enough'+index">
+                                        <el-input placeholder="金额"
                                                   v-model.number="enoughReduce.enough" size="medium">
                                             <template slot="prepend">满</template>
                                             <template slot="append">元</template>
@@ -32,8 +32,8 @@
 
                                 <el-col :span="6">
 
-                                    <el-form-item prop="enoughReduce.reduce">
-                                        <el-input min="0" max="999999999" placeholder="金额"
+                                    <el-form-item v-bind:prop="'enoughReduce.reduce'+index">
+                                        <el-input  placeholder="金额"
                                                   v-model.number="enoughReduce.reduce" size="medium">
                                             <template slot="prepend">减</template>
                                             <template slot="append">元</template>
@@ -64,7 +64,7 @@
                         </el-switch>
                     </el-tooltip>
                     <el-form-item prop="freeFreight.enough">
-                        <el-input min="0" max="999999999" placeholder="金额"
+                        <el-input  placeholder="金额"
                                   v-model.number="form.freeFreight.enough" size="medium"
                                   style="width: 27%">
                             <template slot="prepend">满</template>
@@ -163,7 +163,12 @@
                             }
                         }],
                         'enoughReduce':{
-                            type:'array'
+                            type:'array',
+                            fields: {
+                                0: {type: "string", required: true},
+                                1: {type: "string", required: true},
+                                2: {type: "string", required: true}
+                            }
                         }
                         // 'enoughReduce.reduce': [{
                         //     type: 'number',
@@ -212,13 +217,21 @@
                     this.$refs.form.validate((valid) => {
                         console.log(valid)
                     });
-                    this.$http.post("{!! yzWebUrl('goods.enough-reduce.store') !!}", {'setting': this.form}).then(response => {
-                        // console.log(response.data);
+                    this.$http.post("{!! yzWebUrl('enoughReduce.store') !!}", {'setting': this.form}).then(response => {
+                         //console.log(response.data);
                         // return;
-                        this.$message({
-                            message: '保存成功',
-                            type: 'success'
-                        });
+                        if(response.data.result){
+                            this.$message({
+                                message: response.data.msg,
+                                type: 'success'
+                            });
+                        }else{
+                            this.$message({
+                                message:response.data.msg,
+                                type: 'error'
+                            });
+                        }
+
                         this.formLoading = false;
                     }, response => {
                         console.log(response);

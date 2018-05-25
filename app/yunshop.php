@@ -33,7 +33,7 @@ class YunShop
     {
         //检测命名空间
         if (!class_exists($namespace)) {
-            throw new NotFoundException(" 不存在类: " . $namespace);
+            throw new NotFoundException(" 路由错误:不存在类: " . $namespace);
         }
         //检测controller继承
         $controller = new $namespace;
@@ -41,7 +41,7 @@ class YunShop
             if(config('app.debug')){
                 throw new NotFoundException($controller.' 没有继承\app\common\components\BaseController: ' . $namespace);
             }
-            throw new NotFoundException(" 不存在控制器: " . $namespace);
+            throw new NotFoundException(" 路由错误:不存在控制器: " . $namespace);
 
         }
 
@@ -54,7 +54,7 @@ class YunShop
 
         //检测方法是否存在并可执行
         if (!method_exists($namespace, $action) || !is_callable([$namespace, $action])) {
-            throw new NotFoundException('操作方法不存在: ' . $action);
+            throw new NotFoundException('路由错误:操作方法不存在: ' . $action);
         }
         $controller->modules = $modules;
         $controller->controller = $controllerName;
