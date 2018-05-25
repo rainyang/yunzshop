@@ -51,7 +51,7 @@ class RegisterController extends ApiController
                 return $this->errorJson($check_code['json']);
             }
 
-            $msg = MemberService::validate($mobile, $password, $confirm_password, $captcha);
+            $msg = MemberService::validate($mobile, $password, $confirm_password);
 
             if ($msg['status'] != 1) {
                 return $this->errorJson($msg['json']);
@@ -61,7 +61,7 @@ class RegisterController extends ApiController
 
             //增加验证码验证
             dd(Captcha::check(Input::get('captcha')));
-            
+
             if ( Captcha::check(Input::get('captcha')) == false) {
                 return $this->errorJson('验证码错误');
             }
