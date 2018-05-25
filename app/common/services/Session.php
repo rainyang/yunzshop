@@ -40,9 +40,21 @@ class Session
      */
     public static function get($name)
     {
+        if(strpos($name,'.')){
+            $array = explode('.',$name);
+            $name = array_shift($array);
+
+            $key = implode('.',$array);
+
+        }
         if (isset($_SESSION[self::PREFIX . $name])) {
             if ($_SESSION[self::PREFIX . $name]['expire'] > time()) {
-                return $_SESSION[self::PREFIX . $name]['data'];
+                if(isset($key)) {
+                    return array_get($_SESSION[self::PREFIX . $name]['data'], $key);
+                }else{
+
+                    return $_SESSION[self::PREFIX . $name]['data'];
+                }
             } else {
                 self::clear($name);
             }
@@ -70,7 +82,16 @@ class Session
     }
     public static function has($name)
     {
+        if(strpos($name,'.')){
+            $array = explode('.',$name);
+            $name = array_shift($array);
+            $key = implode('.',$array);
+        }
+
         if(!isset($_SESSION[self::PREFIX . $name])){
+            return false;
+        }
+        if(isset($key) && !array_has($_SESSION[self::PREFIX . $name]['data'],$key)){
             return false;
         }
         if($_SESSION[self::PREFIX . $name]['expire'] <= time()){
