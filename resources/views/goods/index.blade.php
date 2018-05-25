@@ -366,25 +366,30 @@
             $("input[type='checkbox']:checked").each(function(i){
                 arr[i] = $(this).val();
             });
-            postgoods(this,arr,1)
+            $.post(url, {ids: arr, data: 1}
+                , function (d) {
+                    if (d.result) {
+                        $(".batchenable").html('上架成功');
+                        setTimeout(location.reload(), 3000);
+                    }
+                } , "json"
+            );
         });
         $(".batchdisable").click(function () {
             $(this).html('下架中...');
             $("input[type='checkbox']:checked").each(function(i){
                 arr[i] = $(this).val();
             });
-            postgoods(this,arr,0)
-        });
-        function postgoods(obj,ids,data) {
-            $.post(url, {ids: ids, data: data}
+            $.post(url, {ids: arr, data: 0}
                 , function (d) {
                     if (d.result) {
-                        $(obj).html('下架成功');
+                        $(".batchdisable").html('下架成功');
                         setTimeout(location.reload(), 3000);
                     }
                 } , "json"
             );
-        }
+        });
+
         $(".batchdel").click(function () {
             $(this).html('删除中...');
             $("input[type='checkbox']:checked").each(function(i){
