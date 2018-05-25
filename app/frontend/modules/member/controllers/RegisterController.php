@@ -28,6 +28,7 @@ use app\common\exceptions\AppException;
 use Gregwar\Captcha\CaptchaBuilder;
 use Gregwar\Captcha\PhraseBuilder;
 use Mews\Captcha\Captcha;
+use SuperClosure\Serializer;
 
 
 class RegisterController extends ApiController
@@ -61,7 +62,8 @@ class RegisterController extends ApiController
 
             //增加验证码验证
             if ($serializeObj = Session::get('captcha_img')) {
-                $Captcha = unserialize($serializeObj);
+                $serialize = new Serializer();
+                $Captcha = $serialize->unserialize($serializeObj);
 
                 if ($Captcha->check(Input::get('captcha')) == false) {
                     return $this->errorJson('验证码错误');
