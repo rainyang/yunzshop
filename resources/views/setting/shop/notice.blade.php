@@ -1,8 +1,6 @@
 @extends('layouts.base')
 
 @section('content')
-    <link rel="stylesheet" href="{{static_url('css/honeySwitch.css')}}">
-    <script type="text/javascript" src="{{static_url('js/honeySwitch.js')}}"></script>
 
     <div class="w1200 m0a">
         <div class="rightlist">

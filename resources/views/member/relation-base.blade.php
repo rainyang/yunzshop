@@ -3,8 +3,6 @@
 @section('content')
     @include('layouts.tabs')
     <section class="content">
-        <link rel="stylesheet" href="{{static_url('css/honeySwitch.css')}}">
-        <script type="text/javascript" src="{{static_url('js/honeySwitch.js')}}"></script>
 
         <form id="setform" action="" method="post" class="form-horizontal form">
             <div class='panel panel-default'>

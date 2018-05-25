@@ -1,5 +1,4 @@
-<link rel="stylesheet" href="{{static_url('css/honeySwitch.css')}}">
-<script type="text/javascript" src="{{static_url('js/honeySwitch.js')}}"></script>
+
 @if(YunShop::notice()->getNotSend('withdraw.income_withdraw_title'))
     <div class='panel-body'>
         <div class="form-group">
