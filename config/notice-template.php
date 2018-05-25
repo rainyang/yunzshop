@@ -550,7 +550,7 @@ return [
         'data' => [
             0 => [
                 "keywords" => "keyword1",
-                "value" => "[变动时间]",
+                "value" => "[时间]",
                 "color" => "#000000",
             ],
             1 => [
