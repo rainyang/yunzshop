@@ -211,16 +211,16 @@ class HomePageController extends ApiController
         return $captcha_base64;
     }
 
-    public function captchaOp()
-    {
-        $builder = new CaptchaBuilder();
-        $builder->build(150, 32);
-        $phrase = $builder->getPhrase();
-        //把内容存session 里面
-        Session::set('captcha', $phrase);
-        ob_clean();
-        return response($builder->output())->header('Content-type', 'image/jpeg');
-    }
+//    public function captchaOp()
+//    {
+//        $builder = new CaptchaBuilder();
+//        $builder->build(150, 32);
+//        $phrase = $builder->getPhrase();
+////        把内容存session 里面
+//        Session::set('captcha', $phrase);
+//        ob_clean();
+//        return response($builder->output())->header('Content-type', 'image/jpeg');
+//    }
 
     public function wxapp()
     {
