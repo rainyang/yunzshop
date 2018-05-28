@@ -195,7 +195,7 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
      */
     public function getUsedCoin()
     {
-        // 订单商品 积分抵扣 金额 * (订单商品集合 积分抵扣 金额/订单实际使用 积分抵扣 金额)
+        // 订单商品 积分抵扣 金额 * (订单商品集合 积分抵扣 金额/订单商品集合实际使用 积分抵扣 金额)
         if(!$this->orderDeduction->isChecked()){
             return $this->newCoin();
         }
