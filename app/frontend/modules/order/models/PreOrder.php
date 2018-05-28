@@ -213,6 +213,9 @@ class PreOrder extends Order
         return $attributes;
     }
 
+    /**
+     * @return bool
+     */
     public function push()
     {
         foreach ($this->relations as $models) {
