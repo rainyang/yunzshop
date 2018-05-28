@@ -10,6 +10,7 @@ namespace app\frontend\models;
 
 
 use app\common\exceptions\AppException;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Class MemberCart
@@ -42,7 +43,7 @@ class MemberCart extends \app\common\models\MemberCart
         return $result;
     }
 
-    public function scopeCarts($query)
+    public function scopeCarts(Builder $query)
     {
         $query
             ->uniacid()
@@ -85,12 +86,12 @@ class MemberCart extends \app\common\models\MemberCart
         return static::insert($data);
     }
 
-    /*
+    /**
      * 检测商品是否存在购物车
      *
      * @param array $data ['member_id', 'goods_id', 'option_id']
      *
-     * @return object or false
+     * @return self | false
      * */
     public static function hasGoodsToMemberCart($data)
     {
