@@ -40,7 +40,7 @@
                 <tr>
                     <td style='border:none;text-align:right;'>商品小计：</td>
                     <td style='border:none;text-align:right;;'>
-                        ￥{{number_format( $order['goods_price'] ,2)}}</td>
+                        ￥{{number_format( $order['order_goods_price'] ,2)}}</td>
                 </tr>
                 <tr>
                     <td style='border:none;text-align:right;'>优惠：</td>
@@ -127,6 +127,30 @@
 @endif
 @if (!empty($order['has_one_refund_apply']))
     @include('refund.index')
+@endif
+@if (count($order['discounts']))
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            优惠信息
+        </div>
+        <div class="panel-body table-responsive">
+            <table class="table table-hover">
+                <thead class="navbar-inner">
+                <tr>
+                    <th class="col-md-5 col-lg-3">优惠名称</th>
+                    <th class="col-md-5 col-lg-3">优惠金额</th>
+                </tr>
+                </thead>
+                @foreach ($order['discounts'] as $discount)
+                    <tr>
+                        <td>{{$discount['name']}}</td>
+                        <td>¥{{$discount['amount']}}</td>
+                    </tr>
+
+                @endforeach
+            </table>
+        </div>
+    </div>
 @endif
 @if (count($order['deductions']))
     <div class="panel panel-default">
@@ -236,7 +260,7 @@
                     </td>
                     <td>{{$order_goods['total']}}</td>
                     <td style='color:red;font-weight:bold;'>{{sprintf('%.2f', $order_goods['goods_price']/$order_goods['total'])}}
-                        <br/>{{sprintf('%.2f', $order_goods['price']/$order_goods['total'])}}
+                        <br/>{{sprintf('%.2f', $order_goods['payment_amount']/$order_goods['total'])}}
                     </td>
                     <td>
                         <a href="{!! yzWebUrl($edit_goods, array('id' => $order_goods['goods']['id'])) !!}"

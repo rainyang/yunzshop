@@ -115,15 +115,11 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
      */
     public function getFullReductionAmount()
     {
-        //dd($this->fullReductionAmount);
-        //dd(isset($this->fullReductionAmount));
 
         if (isset($this->fullReductionAmount)) {
-            //echo 1;
             return $this->fullReductionAmount;
         }
         if (!isset($this->orderGoods->sale)) {
-            //echo 2;
             return 0;
         }
         $result = $this->orderGoods->sale->getFullReductionAmount($this->getGoodsPrice());
@@ -139,6 +135,9 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
      */
     private function setFullReductionOrderGoodsDiscount($amount)
     {
+        if(empty($amount)){
+            return;
+        }
         $orderGoodsDiscount = new PreOrderGoodsDiscount([
             'discount_code' => 'fullReduction',
             'amount' => $amount,

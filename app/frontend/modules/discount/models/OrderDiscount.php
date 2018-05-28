@@ -54,14 +54,16 @@ class OrderDiscount
         }
 
         $this->deductionPrice = $this->_getDeductionPrice();
-        // 将抵扣总金额保存在订单优惠信息表中
-        $preOrderDiscount = new PreOrderDiscount([
-            'discount_code' => 'deduction',
-            'amount' => $this->deductionPrice,
-            'name' => '抵扣金额',
+        if($this->deductionPrice){
+            // 将抵扣总金额保存在订单优惠信息表中
+            $preOrderDiscount = new PreOrderDiscount([
+                'discount_code' => 'deduction',
+                'amount' => $this->deductionPrice,
+                'name' => '抵扣金额',
 
-        ]);
-        $preOrderDiscount->setOrder($this->order);
+            ]);
+            $preOrderDiscount->setOrder($this->order);
+        }
 
         return $this->deductionPrice;
     }
