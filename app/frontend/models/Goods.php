@@ -23,6 +23,7 @@ use app\common\models\Coupon;
  * @property string thumb
  * @property float price
  * @property Sale hasOneSale
+ * @property GoodsOption has_option
  */
 class Goods extends \app\common\models\Goods
 {

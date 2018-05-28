@@ -242,6 +242,9 @@ class YunShop
         }
     }
 
+    /**
+     * @return YunApp
+     */
     public static function app()
     {
         if (self::$_app !== null) {
@@ -456,6 +459,10 @@ class YunRequest extends YunComponent
 
 }
 
+/**
+ * Class YunApp
+ * @property int uniacid
+ */
 class YunApp extends YunComponent
 {
     protected $values;

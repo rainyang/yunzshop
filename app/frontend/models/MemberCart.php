@@ -11,6 +11,14 @@ namespace app\frontend\models;
 
 use app\common\exceptions\AppException;
 
+/**
+ * Class MemberCart
+ * @package app\frontend\models
+ * @property Goods goods
+ * @property int option_id
+ * @property int total
+ * @property int goods_id
+ */
 class MemberCart extends \app\common\models\MemberCart
 {
     protected $fillable = [];
