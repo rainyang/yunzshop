@@ -15,6 +15,8 @@ use app\frontend\modules\order\models\PreOrder;
 
 abstract class CouponPrice
 {
+    protected $isSet = false;
+
     /**
      * 优惠券数据库model
      * @var

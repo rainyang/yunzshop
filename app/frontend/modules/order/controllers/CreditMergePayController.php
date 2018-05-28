@@ -54,7 +54,15 @@ class CreditMergePayController extends MergePayController
             \Log::debug('余额支付-会员推广');
             MemberRelation::checkOrderPay($this->orderPay->uid);
         });
-        return $this->successJson('成功', []);
+
+        $trade = \Setting::get('shop.trade');
+        $redirect = '';
+
+        if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
+            $redirect = $trade['redirect_url'];
+        }
+
+        return $this->successJson('成功', ['redirect'=>$redirect]);
     }
 
     protected function getPayParams($orderPay, Collection $orders)

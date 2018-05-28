@@ -85,6 +85,19 @@
                         <span class='help-block'>订单完成后 ，用户在x天内可以发起退款申请，设置0天不允许完成订单退款</span>
                     </div>
                 </div>
+
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">支付后跳转链接</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <div class="input-group ">
+                            <input class="form-control" type="text" data-id="PAL-00010" placeholder="请填写指向的链接 (请以http://开头, 不填则不显示)" value="{{ $set['redirect_url'] }}" name="trade[redirect_url]">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default nav-link" type="button" data-id="PAL-00010">选择链接</button>
+                            </span>
+                        </div>
+                        <span class='help-block'>当用户下单支付后，跳转到指定的页面，默认跳转到商城首页</span>
+                    </div>
+                </div>
                 {{--<div class="form-group">--}}
                     {{--<label class="col-xs-12 col-sm-3 col-md-2 control-label">退款说明</label>--}}
                     {{--<div class="col-sm-9">--}}
@@ -178,5 +191,6 @@
 
 	 </div>     
 </form>
-</div>  
+</div>
+@include('public.admin.mylink')
 @endsection

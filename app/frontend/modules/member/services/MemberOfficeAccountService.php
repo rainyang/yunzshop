@@ -281,7 +281,7 @@ class MemberOfficeAccountService extends MemberService
     {
         $uid = parent::addMemberInfo($uniacid, $userinfo);
 
-        \Log::debug('----mapping_fans----');
+        \Log::debug('----mapping_fans----', $uid);
         //添加mapping_fans表
         $this->addFansMember($uid, $uniacid, $userinfo);
 

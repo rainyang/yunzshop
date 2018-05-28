@@ -173,16 +173,18 @@ class OrderDiscount
         // 优先计算折扣类订单优惠券
         $discountCouponService = (new CouponService($this->order, Coupon::COUPON_DISCOUNT));
         $discountPrice = $discountCouponService->getOrderDiscountPrice();
-        $discountCouponService->activate();
+        //$discountCouponService->activate();
         //dd($discountPrice);
 
         // 满减订单优惠券
         $moneyOffCouponService = (new CouponService($this->order, Coupon::COUPON_MONEY_OFF));
-        $moneyOffPrice = $moneyOffCouponService->getOrderDiscountPrice();
         //dd($moneyOffPrice);
-        $moneyOffCouponService->activate();
+        $moneyOffPrice = $moneyOffCouponService->getOrderDiscountPrice();
+        //$moneyOffCouponService->activate();
 
         $result = $discountPrice + $moneyOffPrice;
+        //exit;
+
         // 将抵扣总金额保存在订单优惠信息表中
         $preOrderDiscount = new PreOrderDiscount([
             'discount_code' => 'coupon',
