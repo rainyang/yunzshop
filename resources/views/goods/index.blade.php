@@ -3,7 +3,6 @@
 @section('content')
 @section('title', trans('商品列表'))
     <div class="w1200 ">
-        <script src="{{static_url('assets/js/bootstrap.min.js')}}" type="text/javascript"></script>
 
         <script type="text/javascript" src="./resource/js/lib/jquery-ui-1.10.3.min.js"></script>
         <link rel="stylesheet" type="text/css" href="{{static_url('css/font-awesome.min.css')}}">
