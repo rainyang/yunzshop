@@ -28,6 +28,9 @@ use app\frontend\modules\orderGoods\models\PreOrderGoods;
  */
 class PreOrderDeduction extends OrderDeduction
 {
+    /**
+     * @return array
+     */
     public function toArray()
     {
         $this->amount = sprintf('%.2f', $this->amount);
@@ -56,6 +59,13 @@ class PreOrderDeduction extends OrderDeduction
      */
     private $useablePoint;
 
+    /**
+     * PreOrderDeduction constructor.
+     * @param array $attributes
+     * @param $deduction
+     * @param $order
+     * @param $virtualCoin
+     */
     public function __construct(array $attributes = [], $deduction, $order, $virtualCoin)
     {
         $this->deduction = $deduction;
@@ -68,11 +78,17 @@ class PreOrderDeduction extends OrderDeduction
         parent::__construct($attributes);
     }
 
+    /**
+     * @param PreOrder $order
+     */
     private function setOrder(PreOrder $order)
     {
         $this->order = $order;
     }
 
+    /**
+     * @return bool
+     */
     private function deductible()
     {
         return $this->getUsablePoint()->getCoin() > 0;
@@ -103,6 +119,9 @@ class PreOrderDeduction extends OrderDeduction
         return app('CoinManager')->make('MemberCoinManager')->make($code, $this->order->getMember());
     }
 
+    /**
+     *
+     */
     private function _init()
     {
         $this->uid = $this->order->uid;
@@ -161,7 +180,7 @@ class PreOrderDeduction extends OrderDeduction
         //$orderVirtualCoin = $orderGoodsVirtualCoin;
 
         // 不能超过订单使用其他抵扣金额后的价格
-        $afterOtherDeductionAmount = min($this->order->price - $this->getOtherDeducitonAmount(),$orderVirtualCoin->getMoney());
+        $afterOtherDeductionAmount = min($this->order->price - $this->getOtherDeductionAmount(),$orderVirtualCoin->getMoney());
         // 订单商品价格计算，不包含运算
         //$afterOtherDeductionAmount = min($this->order->goods_price - $this->getOtherDeducitonAmount(),$orderVirtualCoin->getMoney());
 
@@ -170,9 +189,13 @@ class PreOrderDeduction extends OrderDeduction
 
         return $this->useablePoint = $this->newCoin()->setMoney($amount);
     }
-    private function getOtherDeducitonAmount()
+
+    /**
+     * @return mixed
+     */
+    private function getOtherDeductionAmount()
     {
-        return $this->order->orderDeductions->sum(function ($orderDeduction) {
+        return $this->order->orderDeductions->sum(function (PreOrderDeduction $orderDeduction) {
             if($orderDeduction->isChecked()){
                 return $orderDeduction->getUsablePoint()->getMoney();
             }
@@ -224,6 +247,9 @@ class PreOrderDeduction extends OrderDeduction
         return $this->getDeduction()->getName();
     }
 
+    /**
+     * @return bool
+     */
     public function getCheckedAttribute()
     {
         return $this->isChecked();

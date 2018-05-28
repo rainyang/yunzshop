@@ -191,7 +191,8 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
     }
 
     /**
-     * @return VirtualCoin
+     * @return $this|VirtualCoin
+     * @throws \Exception
      */
     public function getUsedCoin()
     {
@@ -200,17 +201,25 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
             return $this->newCoin();
         }
 
-
         $amount = $this->getUsableCoin()->getMoney() * ($this->getOrderDeduction()->getUsablePoint()->getMoney()/$this->getOrderDeduction()->getOrderGoodsDeductionCollection()->getUsablePoint()->getMoney());
 
         return $this->newCoin()->setMoney($amount);
     }
 
+    /**
+     * @return bool
+     * @throws \Exception
+     */
     public function used()
     {
         return $this->orderDeduction->isChecked() && $this->getUsedCoin()->getCoin() > 0;
     }
 
+    /**
+     * @param array $options
+     * @return bool
+     * @throws \Exception
+     */
     public function save(array $options = [])
     {
         if (!$this->used()) {
