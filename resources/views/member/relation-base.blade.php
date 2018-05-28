@@ -157,7 +157,7 @@
                     //开
                     $.post(url_open,postdata,function(data){
                         if (data) {
-                            $(select_name).val(data.id)
+                            $(select_name).find("option:selected").val(data.id)
                             showPopover($(id),"开启成功")
                         }
                     }, "json");
