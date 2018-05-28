@@ -1836,7 +1836,7 @@ return [
     ],
     'expire' => [
         'template_id_short' => 'OPENTM207574677',
-        'title' => '优惠券过期',
+        'title' => '优惠券过期提醒',
         'first_color' => '#000000',
         'remark_color' => '#000000',
         'first' => '您有一张优惠券即将过期，请及时使用！',
