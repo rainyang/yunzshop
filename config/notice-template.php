@@ -1434,6 +1434,31 @@ return [
         ],
         'remark' => '请继续加油！',
     ],
+    'micro_agent_gold' => [
+        'template_id_short' => 'OPENTM207574677',
+        'title' => '上级店主金币奖励通知',
+        'first_color' => '#000000',
+        'remark_color' => '#000000',
+        'first' => '您有一笔新的上级微店金币奖励！',
+        'data' => [
+            0 => [
+                "keywords" => "keyword1",
+                "value" => "微店分红",
+                "color" => "#000000",
+            ],
+            1 => [
+                "keywords" => "keyword2",
+                "value" => "上级店主金币奖励通知",
+                "color" => "#000000",
+            ],
+            2 => [
+                "keywords" => "keyword3",
+                "value" => "尊敬的[昵称]，尊敬的[昵称]，您于[时间]有一笔上级微店结算了！分红金额为[分红金额]。",
+                "color" => "#000000",
+            ],
+        ],
+        'remark' => '请继续加油！',
+    ],
     'supplier_order_create' => [
         'template_id_short' => 'OPENTM207574677',
         'title' => '供应商订单下单通知(通知供应商)',
