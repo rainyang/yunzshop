@@ -3,6 +3,7 @@
 namespace app\frontend\modules\order\models;
 
 use app\common\exceptions\AppException;
+use app\frontend\models\Member;
 use app\frontend\models\Order;
 use app\frontend\modules\discount\models\OrderDiscount;
 use app\frontend\modules\dispatch\models\OrderDispatch;
@@ -31,7 +32,10 @@ use Illuminate\Support\Facades\Schema;
  * @property int create_time
  * @property int uid
  * @property int uniacid
+ * @property string pre_id
+ * @property string mark
  * @property PreOrderGoodsCollection orderGoods
+ * @property Member belongsToMember
  */
 class PreOrder extends Order
 {
@@ -162,7 +166,7 @@ class PreOrder extends Order
      */
     public function getParams($key = null)
     {
-        $result = collect(json_decode(\Request::input('orders'), true))->where('pre_id', $this->pre_id)->first();
+        $result = collect(json_decode(request()->input('orders'), true))->where('pre_id', $this->pre_id)->first();
         if (isset($key)) {
             return $result[$key];
         }
@@ -296,7 +300,7 @@ class PreOrder extends Order
      */
     protected function getOrderGoodsPrice()
     {
-        $result = $this->orderGoods->sum(function ($aOrderGoods) {
+        $result = $this->orderGoods->sum(function (PreOrderGoods $aOrderGoods) {
             return $aOrderGoods->getPrice();
         });
 
@@ -312,7 +316,7 @@ class PreOrder extends Order
      */
     protected function getGoodsPrice()
     {
-        $result = $this->orderGoods->sum(function ($aOrderGoods) {
+        $result = $this->orderGoods->sum(function (PreOrderGoods $aOrderGoods) {
             return $aOrderGoods->getGoodsPrice();
         });
         return $result;
