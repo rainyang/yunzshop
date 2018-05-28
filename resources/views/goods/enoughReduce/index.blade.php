@@ -13,48 +13,106 @@
         @include('layouts.tabs')
         <div id="test-vue">
             <el-form ref="form" :rules="rules" :model="form" label-width="17%">
-                <template v-for="(enoughReduce,index) in form.enoughReduce">
+                <el-row style="overflow: auto; text-align: center;">
+                    <el-table
+                            :data="form.enoughReduce"
+                            style="margin-bottom: 20px;"
+                    >
+                        <el-table-column
+                                prop="title"
+                                label="标题">
+                        </el-table-column>
+                        <el-table-column
+                                prop="enough"
+                                label="满">
+                        </el-table-column>
+                        <el-table-column
+                                prop="reduce"
+                                label="减">
+                        </el-table-column>
+                        <el-table-column label="操作">
+                            <template scope="scope">
+                                <el-button
+                                        size="small"
+                                        type="danger"
+                                        @click="remove(this)">删除
+                                </el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-row>
+                <el-form-item>
+                    <el-button @click="enoughReduceDialogVisible = true">增加满减规则</el-button>
 
-                    <el-form-item label="满额减">
+                    <el-dialog title="添加满减优惠" :visible.sync="enoughReduceDialogVisible">
+                        <el-form :rules="enoughReduceFormRules" :model="enoughReduceForm">
 
-                        <el-form-item>
-                            <el-row :gutter="3">
-
-                                <el-col :span="6">
-                                    <el-form-item v-bind:prop="'enoughReduce.enough-'+index">
-                                        <el-input placeholder="金额"
-                                                  v-model.number="enoughReduce.enough" size="medium">
-                                            <template slot="prepend">满</template>
-                                            <template slot="append">元</template>
-                                        </el-input>
-                                    </el-form-item>
-                                </el-col>
-
-                                <el-col :span="6">
-
-                                    <el-form-item v-bind:prop="'enoughReduce.reduce-'+index">
-                                        <el-input placeholder="金额"
-                                                  v-model.number="enoughReduce.reduce" size="medium">
-                                            <template slot="prepend">减</template>
-                                            <template slot="append">元</template>
-                                        </el-input>
-                                    </el-form-item>
-                                </el-col>
-
-                                <el-col :span="3">
-                                    <el-button plain size="mini" @click="remove(this)">x</el-button>
-                                </el-col>
-                            </el-row>
-                        </el-form-item>
-
-
-                    </el-form-item>
-                </template>
-                <el-form-item label="">
-                    <el-row>
-                        <el-button @click="add">增加满减规则</el-button>
-                    </el-row>
+                            <el-form-item label="标题" label-width="100px" prop="title">
+                                <el-input placeholder="金额"
+                                          v-model.number="enoughReduceForm.title" size="medium">
+                                </el-input>
+                            </el-form-item>
+                            <el-form-item label="满" label-width="100px" prop="enough">
+                                <el-input placeholder="金额"
+                                          v-model.number="enoughReduceForm.enough" size="medium">
+                                    <template slot="append">元</template>
+                                </el-input>
+                            </el-form-item>
+                            <el-form-item label="减" label-width="100px" prop="reduce">
+                                <el-input placeholder="金额"
+                                          v-model.number="enoughReduceForm.reduce" size="medium">
+                                    <template slot="append">元</template>
+                                </el-input>
+                            </el-form-item>
+                        </el-form>
+                        <div slot="footer" class="dialog-footer">
+                            <el-button @click="dialogFormVisible = false">取 消</el-button>
+                            <el-button type="primary" @click="saveEnoughReduce">确 定</el-button>
+                        </div>
+                    </el-dialog>
                 </el-form-item>
+                {{--<template v-for="(enoughReduce,index) in form.enoughReduce">--}}
+
+                {{--<el-form-item label="满额减">--}}
+
+                {{--<el-form-item>--}}
+                {{--<el-row :gutter="3">--}}
+
+                {{--<el-col :span="6">--}}
+                {{--<el-form-item v-bind:prop="'enoughReduce.enough-'+index">--}}
+                {{--<el-input placeholder="金额"--}}
+                {{--v-model.number="enoughReduce.enough" size="medium">--}}
+                {{--<template slot="prepend">满</template>--}}
+                {{--<template slot="append">元</template>--}}
+                {{--</el-input>--}}
+                {{--</el-form-item>--}}
+                {{--</el-col>--}}
+
+                {{--<el-col :span="6">--}}
+
+                {{--<el-form-item v-bind:prop="'enoughReduce.reduce-'+index">--}}
+                {{--<el-input placeholder="金额"--}}
+                {{--v-model.number="enoughReduce.reduce" size="medium">--}}
+                {{--<template slot="prepend">减</template>--}}
+                {{--<template slot="append">元</template>--}}
+                {{--</el-input>--}}
+                {{--</el-form-item>--}}
+                {{--</el-col>--}}
+
+                {{--<el-col :span="3">--}}
+                {{--<el-button plain size="mini" @click="remove(this)">x</el-button>--}}
+                {{--</el-col>--}}
+                {{--</el-row>--}}
+                {{--</el-form-item>--}}
+
+
+                {{--</el-form-item>--}}
+                {{--</template>--}}
+                {{--<el-form-item label="">--}}
+                {{--<el-row>--}}
+                {{--<el-button @click="add">增加满减规则</el-button>--}}
+                {{--</el-row>--}}
+                {{--</el-form-item>--}}
 
                 <el-form-item label="满额包邮">
 
@@ -116,6 +174,7 @@
                     <el-button>取消</el-button>
                 </el-form-item>
             </el-form>
+
         </div>
 
 
@@ -148,18 +207,13 @@
                     max: 999999999,
                     message: '请输入正确金额',
                     transform(value) {
-                        console.log(value);
                         return Number(value)
                     }
                 };
                 let rules = {
-                        'freeFreight.enough': [amountRules],
+                    'freeFreight.enough': [amountRules],
                 };
-//                 for(enoughReduceIndex in temp.enoughReduce){
-//                     rules['enoughReduce.reduce-'+enoughReduceIndex] = [amountRules];
-//                     rules['enoughReduce.enough-'+enoughReduceIndex] = [amountRules];
-//                 }
-// console.log(rules);
+
                 return {
                     form: temp,
                     props: {
@@ -170,21 +224,35 @@
                     loading: false,
                     formLoading: false,
                     centerDialogVisible: false,
+                    enoughReduceDialogVisible: false,
                     treeData: [],
-                    rules: rules
+                    rules: rules,
+                    enoughReduceFormRules: {
+                        title: [{type: 'string', message: '请输入标题'}],
+                        enough: [amountRules],
+                        reduce: [amountRules],
+                    },
+                    enoughReduceForm: {
+                        title: '',
+                        enough: '',
+                        reduce: '',
+                    }
                 }
             },
             mounted: function () {
                 console.log(this.form)
             },
             methods: {
-                add() {
+                saveEnoughReduce() {
                     this.form.enoughReduce.push(
-                        {
-                            'enough': '',
-                            'reduce': ''
-                        }
+                        this.enoughReduceForm
                     )
+                    this.enoughReduceForm = {
+                        title: '',
+                        enough: '',
+                        reduce: '',
+                    };
+                    this.enoughReduceDialogVisible = false
                 },
                 remove(item) {
                     let i = this.form.enoughReduce.indexOf(item)
