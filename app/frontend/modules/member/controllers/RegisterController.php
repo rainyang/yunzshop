@@ -21,12 +21,9 @@ use app\frontend\modules\member\models\MemberWechatModel;
 use app\frontend\modules\member\services\MemberService;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use iscms\Alisms\SendsmsPusher as Sms;
 use app\common\exceptions\AppException;
-use Gregwar\Captcha\CaptchaBuilder;
-use Gregwar\Captcha\PhraseBuilder;
 use Mews\Captcha\Captcha;
 
 
@@ -42,7 +39,6 @@ class RegisterController extends ApiController
         $password = \YunShop::request()->password;
         $confirm_password = \YunShop::request()->confirm_password;
         $uniacid = \YunShop::app()->uniacid;
-        $captcha = \YunShop::request()->captcha;
 
         if ((\Request::getMethod() == 'POST')) {
             $check_code = MemberService::checkCode();
@@ -61,6 +57,8 @@ class RegisterController extends ApiController
 
             //增加验证码验证
             if ( Captcha::check(Input::get('captcha')) == false) {
+
+
                 return $this->errorJson('验证码错误');
             }
 

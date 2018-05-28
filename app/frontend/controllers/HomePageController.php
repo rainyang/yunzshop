@@ -4,7 +4,6 @@ namespace app\frontend\controllers;
 
 use app\common\components\ApiController;
 use app\common\services\Session;
-use Gregwar\Captcha\CaptchaBuilder;
 use Yunshop\Designer\models\Designer;
 use Yunshop\Designer\models\DesignerMenu;
 use app\frontend\modules\member\models\MemberModel;
@@ -184,20 +183,13 @@ class HomePageController extends ApiController
         //增加小程序回去默认装修数据
         $result['applet'] = self::defaultDesign();
 
-        //增加验证码功能1
+        //增加验证码功能
         $status = Setting::get('shop.sms.status');
         $captcha = self::captchaTest();
         if ($status == 1) {
             $result['captcha'] = $captcha;
             $result['captcha']['status'] = $status;
         }
-        //验证码功能2
-//        $status = \Setting::get('shop.sms.status');
-//        $captcha = self::captchaOp();
-//        if ($status == 1) {
-//            $result['captcha'] = $captcha;
-//            $result['captcha']['status'] = $status;
-//        }
 
         return $this->successJson('ok', $result);
     }
@@ -210,17 +202,6 @@ class HomePageController extends ApiController
 
         return $captcha_base64;
     }
-
-//    public function captchaOp()
-//    {
-//        $builder = new CaptchaBuilder();
-//        $builder->build(150, 32);
-//        $phrase = $builder->getPhrase();
-////        把内容存session 里面
-//        Session::set('captcha', $phrase);
-//        ob_clean();
-//        return response($builder->output())->header('Content-type', 'image/jpeg');
-//    }
 
     public function wxapp()
     {
