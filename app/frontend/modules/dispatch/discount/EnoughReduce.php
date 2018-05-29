@@ -24,6 +24,10 @@ class EnoughReduce extends BaseFreightDiscount
         if (!\Setting::get('enoughReduce.freeFreight.open')) {
             return 0;
         }
+        //只有商城,供应商订单参加
+        if($this->order->plugin_id != 0){
+            return 0;
+        }
         // 不参与包邮地区
         if (in_array($this->order->orderAddress->city_id, \Setting::get('enoughReduce.freeFreight.city_ids'))) {
             return 0;
