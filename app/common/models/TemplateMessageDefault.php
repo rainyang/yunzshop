@@ -17,4 +17,9 @@ class TemplateMessageDefault extends BaseModel
     {
         return self::where('template_id_short',$template_id_short)->first();
     }
+
+    public static function delData($template_id_short)
+    {
+        self::where('template_id_short',$template_id_short)->delete();
+    }
 }
