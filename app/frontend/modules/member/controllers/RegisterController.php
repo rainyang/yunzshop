@@ -56,6 +56,7 @@ class RegisterController extends ApiController
             $member_info = MemberModel::getId($uniacid, $mobile);
 
             //增加验证码验证
+
             $captcha_status = Setting::get('shop.sms.status');
             if ($captcha_status == 1) {
                 if ( Captcha::check(Input::get('captcha')) == false) {
