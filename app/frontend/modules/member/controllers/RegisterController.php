@@ -59,7 +59,7 @@ class RegisterController extends ApiController
 
             $captcha_status = Setting::get('shop.sms.status');
             if ($captcha_status == 1) {
-                if ( Captcha::check(Input::get('captcha')) == false) {
+                if ( app('captcha')->check(Input::get('captcha')) == false) {
                     return $this->errorJson('验证码错误');
                 }
             }
