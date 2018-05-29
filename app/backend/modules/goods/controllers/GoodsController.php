@@ -380,7 +380,9 @@ class GoodsController extends BaseController
         foreach ($ids as $id) {
             $goods = Goods::destroy($id);
         }
-        echo json_encode(["result" => 1]);
+        echo json_encode([
+            "result" => $goods,
+        ]);
     }
 
     /**

@@ -128,10 +128,12 @@
                 <form id="goods-list" action="{!! yzWebUrl($sort_url) !!}" method="post">
                     <div class="panel panel-default">
                         <div class="panel-body table-responsive">
+                            @section('batch_top')
                             <label class="btn btn-success checkall">全选</label>
                             <label class="btn btn-info batchenable">批量上架</label>
                             <label class="btn batchdisable">批量下架</label>
                             <label class="btn btn-danger batchdel">批量删除</label>
+                            @show
                             <table class="table table-hover">
                                 <thead class="navbar-inner">
                                 <tr>
@@ -313,10 +315,12 @@
                                     </tr>
                                 </tbody>
                             </table>
+                                @section('batch_bottom')
                             <label class="btn btn-success checkall">全选</label>
                             <label class="btn btn-info batchenable">批量上架</label>
                             <label class="btn batchdisable">批量下架</label>
                             <label class="btn btn-danger batchdel">批量删除</label>
+                                @show
 
                             {!!$pager!!}
                                     <!--分页-->
