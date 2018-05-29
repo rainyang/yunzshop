@@ -3,8 +3,10 @@
 namespace app\frontend\modules\order\models;
 
 use app\common\exceptions\AppException;
+use app\common\models\DispatchType;
 use app\frontend\models\Member;
 use app\frontend\models\Order;
+use app\frontend\models\OrderAddress;
 use app\frontend\modules\deduction\OrderDeduction;
 use app\frontend\modules\dispatch\models\OrderDispatch;
 use app\frontend\modules\order\Discount;
@@ -35,11 +37,11 @@ use Illuminate\Support\Facades\Schema;
  * @property string order_sn
  * @property int create_time
  * @property int uid
+ * @property OrderAddress orderAddress
  * @property int uniacid
- * @property string pre_id
- * @property string mark
  * @property PreOrderGoodsCollection orderGoods
  * @property Member belongsToMember
+ * @property DispatchType hasOneDispatchType
  */
 class PreOrder extends Order
 {

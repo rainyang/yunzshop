@@ -12,6 +12,18 @@ use app\frontend\models\orderGoods\PreOrderGoodsDiscount;
  */
 class NormalOrderGoodsPrice extends OrderGoodsPrice
 {
+    /**
+     * @var float
+     */
+    private $paymentAmount;
+    /**
+     * @var float
+     */
+    private $price;
+    /**
+     * @var float
+     */
+    private $fullReductionAmount;
 
     /**
      * 获取商品的模型,规格继承时复写这个方法
@@ -37,8 +49,15 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
      */
     public function getPrice()
     {
+        if (isset($this->price)) {
+            return $this->price;
+        }
         // 商品销售价 - 等级优惠金额 - 单品满减优惠金额
-        return max($this->getGoodsPrice() - $this->getVipDiscountAmount() - $this->getFullReductionAmount(), 0);
+        $this->price = $this->getGoodsPrice();
+        $this->price -= $this->getVipDiscountAmount();
+
+        $this->price = max($this->price, 0);
+        return $this->price;
     }
 
     /**
@@ -47,8 +66,19 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
      */
     public function getPaymentAmount()
     {
+        if (isset($this->paymentAmount)) {
+            return $this->paymentAmount;
+        }
+        $this->paymentAmount = $this->getPrice();
 
-        return $this->getPrice() - $this->getDeductionAmount() - $this->getDiscountAmount();
+        $this->paymentAmount -= $this->getSingleEnoughReduceAmount();
+        $this->paymentAmount -= $this->getFullReductionAmount();
+
+        $this->paymentAmount -= $this->getDiscountAmount();
+        $this->paymentAmount -= $this->getDeductionAmount();
+
+        $this->paymentAmount = max($this->paymentAmount, 0);
+        return $this->paymentAmount;
     }
 
     /**
@@ -110,10 +140,18 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
     }
 
     /**
-     * 单品满减
+     * 单品满减 todo
+     */
+    private function getSingleEnoughReduceAmount()
+    {
+
+    }
+
+    /**
+     * 全场满减 todo
      * @return int
      */
-    public function getFullReductionAmount()
+    private function getFullReductionAmount()
     {
 
         if (isset($this->fullReductionAmount)) {
@@ -135,7 +173,7 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
      */
     private function setFullReductionOrderGoodsDiscount($amount)
     {
-        if(empty($amount)){
+        if (empty($amount)) {
             return;
         }
         $orderGoodsDiscount = new PreOrderGoodsDiscount([

@@ -21,13 +21,14 @@ class MoneyOffCouponPrice extends CouponPrice
     protected function getOrderGoodsCollectionPrice()
     {
         //会员价-折扣券优惠金额
-        return $this->coupon->getOrderGoodsInScope()->getFinalPrice() - $this->coupon->getOrderGoodsInScope()->getCouponDiscountPrice();
+        return $this->coupon->getOrderGoodsInScope()->getPaymentAmount();
     }
 
     /**
      * 单件商品当前成交价
-     * @param $orderGoods
+     * @param PreOrderGoods $orderGoods
      * @return mixed
+     * @throws \app\common\exceptions\ShopException
      */
     private function getOrderGoodsPrice(PreOrderGoods $orderGoods)
     {

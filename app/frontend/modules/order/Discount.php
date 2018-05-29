@@ -11,6 +11,7 @@ namespace app\frontend\modules\order;
 use app\frontend\models\order\PreOrderDiscount;
 use app\frontend\modules\order\discount\CouponDiscount;
 use app\frontend\modules\order\discount\EnoughReduce;
+use app\frontend\modules\order\discount\SingleEnoughReduce;
 use app\frontend\modules\order\models\PreOrder;
 use Illuminate\Support\Collection;
 
@@ -33,7 +34,11 @@ class Discount
      * @var EnoughReduce
      */
     private $enoughReduce;
-
+    /**
+     * 单品满减类
+     * @var SingleEnoughReduce
+     */
+    private $singleEnoughReduce;
     public function __construct(PreOrder $order)
     {
         $this->order = $order;
@@ -46,6 +51,7 @@ class Discount
         $order->setRelation('orderDiscounts', $this->orderDiscounts);
         $this->couponDiscount = new CouponDiscount($this->order);
         $this->enoughReduce = new EnoughReduce($this->order);
+        $this->singleEnoughReduce = new SingleEnoughReduce($this->order);
     }
 
 
@@ -57,10 +63,12 @@ class Discount
     public function getAmount()
     {
         if (!isset($this->amount)) {
-            // 优惠券
-            $this->amount = $this->couponDiscount->getAmount();
+            // 单品满减
+            $this->amount += $this->singleEnoughReduce->getAmount();
             // 全场满减
             $this->amount += $this->enoughReduce->getAmount();
+            // 优惠券
+            $this->amount = $this->couponDiscount->getAmount();
             $this->setOrderDiscounts();
         }
         return $this->amount;

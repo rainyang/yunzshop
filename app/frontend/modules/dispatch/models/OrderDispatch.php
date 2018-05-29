@@ -16,8 +16,19 @@ use app\frontend\modules\order\models\PreOrder;
 
 class OrderDispatch
 {
+    /**
+     * @var PreOrder
+     */
     private $order;
+    /**
+     * @var float
+     */
     private $freight;
+
+    /**
+     * OrderDispatch constructor.
+     * @param PreOrder $preOrder
+     */
     public function __construct(PreOrder $preOrder)
     {
         $this->order = $preOrder;
@@ -29,7 +40,7 @@ class OrderDispatch
      */
     public function getFreight()
     {
-        if(!isset($this->freight)){
+        if (!isset($this->freight)) {
             if (!isset($this->order->hasOneDispatchType) || !$this->order->hasOneDispatchType->needSend()) {
                 // 没选配送方式 或者 不需要配送配送
                 return 0;
@@ -44,8 +55,8 @@ class OrderDispatch
             event($event);
             $data = $event->getData();
             $this->freight = array_sum(array_column($data, 'price'));
-            $this->freight = max($this->freight - (new EnoughReduce($this->order))->getAmount(),0);
-            $this->freight = max($this->freight - (new LevelFreeFreight($this->order))->getAmount(),0);
+            $this->freight = max($this->freight - (new EnoughReduce($this->order))->getAmount(), 0);
+            $this->freight = max($this->freight - (new LevelFreeFreight($this->order))->getAmount(), 0);
 
         }
 

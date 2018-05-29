@@ -17,12 +17,12 @@ class DiscountCouponPrice extends CouponPrice
 {
     public function getPrice()
     {
-        return (1 - $this->dbCoupon->discount/10) * $this->coupon->getOrderGoodsInScope()->getFinalPrice();
+        return (1 - $this->dbCoupon->discount/10) * $this->coupon->getOrderGoodsInScope()->getPaymentAmount();
     }
     protected function getOrderGoodsCollectionPrice()
     {
         //会员价-折扣券优惠金额
-        return $this->coupon->getOrderGoodsInScope()->getFinalPrice();
+        return $this->coupon->getOrderGoodsInScope()->getPaymentAmount();
     }
     /**
      * 分配优惠金额 ,折扣商品使用 销售价计算
@@ -41,8 +41,8 @@ class DiscountCouponPrice extends CouponPrice
             $goodsMemberCoupon = new GoodsMemberCoupon();
             //todo 需要按照订单方式修改
 
-            $goodsMemberCoupon->amount = ($orderGoods->getPrice() / $this->coupon->getOrderGoodsInScope()->getFinalPrice()) * $this->getPrice();
-            $goodsMemberCoupon->enough = ($orderGoods->getPrice() / $this->coupon->getOrderGoodsInScope()->getFinalPrice()) * $this->dbCoupon->enough;
+            $goodsMemberCoupon->amount = ($orderGoods->getPrice() / $this->coupon->getOrderGoodsInScope()->getPaymentAmount()) * $this->getPrice();
+            $goodsMemberCoupon->enough = ($orderGoods->getPrice() / $this->coupon->getOrderGoodsInScope()->getPaymentAmount()) * $this->dbCoupon->enough;
             if(!isset($orderGoods->coupons)){
                 $orderGoods->coupons = collect();
             }

@@ -13,6 +13,11 @@ use app\common\models\order\OrderGoodsChangePriceLog;
 use app\common\models\orderGoods\OrderGoodsExpansion;
 use Illuminate\Database\Eloquent\Builder;
 
+/**
+ * Class OrderGoods
+ * @package app\common\models
+ * @property int comment_status
+ */
 class OrderGoods extends BaseModel
 {
     public $table = 'yz_order_goods';

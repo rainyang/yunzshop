@@ -100,15 +100,6 @@ class PreOrderGoods extends OrderGoods
     }
 
     /**
-     * todo 应改为魔术方法
-     * @return mixed
-     */
-    public function getGoodsId()
-    {
-        return $this->goods->id;
-    }
-
-    /**
      * 为订单model提供的方法 ,设置所属的订单model
      * @param PreOrder $order
      */
@@ -303,7 +294,7 @@ class PreOrderGoods extends OrderGoods
     }
 
     /**
-     * 支付金额
+     * 成交价格
      * @return mixed
      * @throws ShopException
      */
@@ -323,7 +314,7 @@ class PreOrderGoods extends OrderGoods
     }
 
     /**
-     * 原始价格
+     * 均摊的支付金额
      * @return float
      * @throws ShopException
      */
@@ -387,10 +378,18 @@ class PreOrderGoods extends OrderGoods
 
     }
 
+    /**
+     * 订单商品抵扣集合
+     * @return OrderGoodsDeductionCollection
+     */
     public function getOrderGoodsDeductions(){
         return $this->orderGoodsDeductions;
     }
 
+    /**
+     * 获取重量
+     * @return mixed
+     */
     public function getWeight(){
         if($this->isOption()){
             return $this->goodsOption->weight;
