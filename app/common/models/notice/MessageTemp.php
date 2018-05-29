@@ -50,6 +50,11 @@ class MessageTemp extends BaseModel
         return self::where('notice_type',$notice_type)->value('id');
     }
 
+    public static function delTempDataByTempId($temp_id)
+    {
+        return self::where('template_id',$temp_id)->delete();
+    }
+
     public function getIsDefaultById($temp_id)
     {
         return self::whereId($temp_id)->where('is_default',1)->first();

@@ -12,6 +12,7 @@ use app\common\components\BaseController;
 use app\common\helpers\Url;
 use app\common\services\notice\WechatApi;
 use app\common\models\TemplateMessageDefault;
+use app\common\models\notice\MessageTemp;
 
 class WechatNoticeController extends BaseController
 {
@@ -57,11 +58,13 @@ class WechatNoticeController extends BaseController
         if (is_array($tmp_id)) {
             foreach ($tmp_id as $id) {
                 $this->WechatApiModel->delTmpByTemplateId($id);
-                TemplateMessageDefault::delData($id);//删除消息模版
+                TemplateMessageDefault::delData($id);//删除微信消息模版
+                MessageTemp::delTempDataByTempId($id);//删除默认消息模版
             }
         } else {
             $this->WechatApiModel->delTmpByTemplateId($tmp_id);
             TemplateMessageDefault::delData($tmp_id);//删除消息模版
+            MessageTemp::delTempDataByTempId($tmp_id);//删除默认消息模版
         }
         return $this->message('删除成功', Url::absoluteWeb('setting.wechat-notice.index'));
     }

@@ -18,8 +18,8 @@ class TemplateMessageDefault extends BaseModel
         return self::where('template_id_short',$template_id_short)->first();
     }
 
-    public static function delData($template_id_short)
+    public static function delData($template_id)
     {
-        self::where('template_id_short',$template_id_short)->delete();
+        return self::where('template_id',$template_id)->delete();
     }
 }
