@@ -18,6 +18,10 @@ class EnoughReduce extends BaseDiscount
      */
     protected function _getAmount()
     {
+        //只有商城,供应商订单参加
+        if($this->order->plugin_id != 0){
+            return 0;
+        }
         // 获取满减设置,按enough倒序
         $settings = collect(\Setting::get('enoughReduce.enoughReduce'));
 
