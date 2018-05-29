@@ -3,6 +3,7 @@
 namespace app\frontend\modules\order\models;
 
 use app\common\exceptions\AppException;
+use app\frontend\models\Member;
 use app\frontend\models\Order;
 use app\frontend\modules\deduction\OrderDeduction;
 use app\frontend\modules\dispatch\models\OrderDispatch;
@@ -35,7 +36,10 @@ use Illuminate\Support\Facades\Schema;
  * @property int create_time
  * @property int uid
  * @property int uniacid
+ * @property string pre_id
+ * @property string mark
  * @property PreOrderGoodsCollection orderGoods
+ * @property Member belongsToMember
  */
 class PreOrder extends Order
 {
@@ -209,6 +213,9 @@ class PreOrder extends Order
         return $attributes;
     }
 
+    /**
+     * @return bool
+     */
     public function push()
     {
         foreach ($this->relations as $models) {

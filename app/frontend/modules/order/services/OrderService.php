@@ -30,6 +30,7 @@ use app\frontend\modules\order\services\behavior\OrderOperation;
 use app\frontend\modules\order\services\behavior\OrderPay;
 use app\frontend\modules\order\services\behavior\OrderReceive;
 use app\frontend\modules\order\services\behavior\OrderSend;
+use app\frontend\modules\orderGoods\models\PreOrderGoodsCollection;
 use app\frontend\modules\shop\services\ShopService;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -86,7 +87,7 @@ class OrderService
     /**
      * 获取订单商品对象数组
      * @param Collection $memberCarts
-     * @return Collection
+     * @return PreOrderGoodsCollection
      * @throws \Exception
      */
     public static function getOrderGoods(Collection $memberCarts)
@@ -110,7 +111,7 @@ class OrderService
             return app('OrderManager')->make('PreOrderGoods', $data);
         });
 
-        return $result;
+        return new PreOrderGoodsCollection($result);
     }
 
 

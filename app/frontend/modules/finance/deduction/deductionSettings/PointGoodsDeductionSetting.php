@@ -31,7 +31,7 @@ class PointGoodsDeductionSetting implements DeductionSettingInterface
 
     public function isEnableDeductDispatchPrice()
     {
-        return false;
+        return true;
     }
 
     public function isDisable()
