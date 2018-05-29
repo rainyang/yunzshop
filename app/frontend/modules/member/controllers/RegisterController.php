@@ -25,7 +25,7 @@ use Illuminate\Support\Str;
 use iscms\Alisms\SendsmsPusher as Sms;
 use app\common\exceptions\AppException;
 use Mews\Captcha\Captcha;
-
+use app\common\facades\Setting;
 
 class RegisterController extends ApiController
 {
@@ -56,8 +56,11 @@ class RegisterController extends ApiController
             $member_info = MemberModel::getId($uniacid, $mobile);
 
             //增加验证码验证
-            if ( Captcha::check(Input::get('captcha')) == false) {
-                return $this->errorJson('验证码错误');
+            $captcha_status = Setting::get('shop.sms.status');
+            if ($captcha_status == 1) {
+                if ( Captcha::check(Input::get('captcha')) == false) {
+                    return $this->errorJson('验证码错误');
+                }
             }
 
             if (!empty($member_info)) {
