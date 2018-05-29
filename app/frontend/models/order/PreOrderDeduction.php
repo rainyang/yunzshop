@@ -201,16 +201,11 @@ class PreOrderDeduction extends OrderDeduction
     }
 
     /**
+     * 获取订单商品占用的抵扣金额
      * @return float|int
      */
     public function getOrderGoodsDeductionAmount()
     {
-//        dd($this->getMaxOrderGoodsDeduction()->getMoney());
-//
-//        dd($this->getMaxDeduction()->getMoney());
-//        exit;
-//        dd($this->getMaxDeduction()->getMoney());
-//        exit;
 
         $amount = ($this->getMaxOrderGoodsDeduction()->getMoney() / $this->getMaxDeduction()->getMoney()) * $this->getUsablePoint()->getMoney();
         return $amount;
@@ -222,11 +217,10 @@ class PreOrderDeduction extends OrderDeduction
      */
     private function getMaxDeduction()
     {
-//        dd($this->getMaxOrderGoodsDeduction()->getMoney());
-//        dd($this->getMaxDispatchPriceDeduction()->getMoney());
-//        exit;
+        $result =  $this->getMaxOrderGoodsDeduction()->plus($this->getMaxDispatchPriceDeduction());
 
-        return $this->getMaxOrderGoodsDeduction()->plus($this->getMaxDispatchPriceDeduction());
+        return $result;
+
     }
 
     /**
@@ -246,10 +240,10 @@ class PreOrderDeduction extends OrderDeduction
     private function getMaxDispatchPriceDeduction()
     {
         $result = $this->newCoin();
-        dd($this->getDeduction()->isEnableDeductDispatchPrice());
 
         //开关
         if ($this->getDeduction()->isEnableDeductDispatchPrice()) {
+
             //订单运费
             $amount = $this->order->getDispatchPrice();
 

@@ -200,23 +200,8 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
         if(!$this->orderDeduction->isChecked()){
             return $this->newCoin();
         }
-//        dd($this->getUsableCoin()->getMoney());
-//        dd($this->getOrderDeduction()->getMaxOrderGoodsDeduction()->getMoney());
-//        dd($this->getOrderDeduction()->getOrderGoodsDeductionAmount());
-//        exit;
-//
-//        dd(($this->getUsableCoin()->getMoney()/$this->getOrderDeduction()->getMaxOrderGoodsDeduction()->getMoney())*$this->getOrderDeduction()->getOrderGoodsDeductionAmount());
-//        exit;
-//        dd($this->getOrderDeduction()->getOrderGoodsDeductionAmount());
-//        exit;
 
         $amount = ($this->getUsableCoin()->getMoney()/$this->getOrderDeduction()->getMaxOrderGoodsDeduction()->getMoney())*$this->getOrderDeduction()->getOrderGoodsDeductionAmount();
-//        dd($amount);
-//        exit;
-
-        //$amount = $this->getUsableCoin()->getMoney() * ($this->getOrderDeduction()->getUsablePoint()->getMoney()/$this->getOrderDeduction()->getOrderGoodsDeductionCollection()->getUsablePoint()->getMoney());
-//        dd($this->getUsableCoin()->getMoney());
-//        exit;
 
         return $this->newCoin()->setMoney($amount);
     }

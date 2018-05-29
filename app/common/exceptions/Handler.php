@@ -68,19 +68,20 @@ class Handler extends ExceptionHandler
             return $this->renderNotFoundException($exception);
 
         }
-        //默认异常
-        if ($this->isHttpException($exception)) {
-            \Log::error('http exception',$exception);
-            return $this->renderHttpException($exception);
-        }
+
         //开发模式异常
         if (config('app.debug')) {
             return $this->renderExceptionWithWhoops($exception);
         }
         //api异常
         if (\YunShop::isApi()) {
-            \Log::error('api exception',$exception);
+            \Log::error('api exception',json_decode(json_encode($exception),true));
             return $this->errorJson($exception->getMessage());
+        }
+        //默认异常
+        if ($this->isHttpException($exception)) {
+            \Log::error('http exception',json_decode(json_encode($exception),true));
+            return $this->renderHttpException($exception);
         }
         return parent::render($request, $exception);
     }

@@ -17,6 +17,7 @@ use app\common\models\MemberShopInfo;
 class OrderDispatch
 {
     private $order;
+    private $amount;
 
     public function __construct(PreOrder $preOrder)
     {
@@ -29,7 +30,11 @@ class OrderDispatch
      */
     public function getDispatchPrice()
     {
+        if(isset($this->amount)){
+            return $this->amount;
+        }
         if (!isset($this->order->hasOneDispatchType) || !$this->order->hasOneDispatchType->needSend()) {
+
             // 没选配送方式 或者 不需要配送配送
             return 0;
         }
@@ -42,15 +47,15 @@ class OrderDispatch
         $event = new OrderDispatchWasCalculated($this->order);
         event($event);
         $data = $event->getData();
-        
 
         $freight = array_sum(array_column($data, 'price'));
 
         $freight_reduction = $this->levelFreeFreight($freight);
 
-        return $result = max(($freight - $freight_reduction), 0);
-        //return $result = array_sum(array_column($data, 'price'));
+        $this->amount = max(($freight - $freight_reduction), 0);
+        return $this->amount;
     }
+
     /**
      * Author: aaa Date: 2018/4/2
      * 会员等级运费优惠

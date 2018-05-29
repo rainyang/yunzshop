@@ -12,6 +12,10 @@ use app\frontend\modules\deduction\DeductionSettingInterface;
 
 class PointShopDeductionSetting implements DeductionSettingInterface
 {
+    public function __construct($goods)
+    {
+    }
+
     public function getWeight()
     {
         return 30;
