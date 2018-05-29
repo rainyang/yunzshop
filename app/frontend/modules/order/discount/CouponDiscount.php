@@ -33,15 +33,7 @@ class CouponDiscount extends BaseDiscount
         //dd($moneyOffPrice);
         //$moneyOffCouponService->activate();
         $result = $discountPrice + $moneyOffPrice;
-        // 将抵扣总金额保存在订单优惠信息表中
-        $preOrderDiscount = new PreOrderDiscount([
-            'discount_code' => 'coupon',
-            'amount' => $result,
-            'name' => '优惠券总金额',
-
-        ]);
-        $preOrderDiscount->setOrder($this->order);
-
+        
         return $result;
     }
 }
