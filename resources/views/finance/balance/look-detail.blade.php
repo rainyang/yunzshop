@@ -20,19 +20,19 @@
                     {{ $detailModel->member->mobile }}
                 </p>
                 <p>
-                    <b>金额: </b><span style='color:red'>{{ $detailModel->change_money }}</span> 元
+                    <b>变动余额: </b><span style='color:red'>{{ $detailModel->change_money }}</span> 元
                 <p>
+                <p>
+                    <b>剩余余额: </b>{{ $detailModel->new_money }}
+                </p>
                 <p>
                     <b>业务类型: </b>{{ $detailModel->type_name }}
                 <p>
                 <p>
-                    <b>余额: </b>{{ $detailModel->new_money }}
+                    <b>变动时间: </b>{{ $detailModel->created_at }}
                 </p>
                 <p>
                     <b>订单编号: </b>{{ $detailModel->serial_number or '' }}
-                </p>
-                <p>
-                    <b>时间: </b>{{ date('Y-m-d H:i:s', $detailModel->created_at) }}
                 </p>
             </div>
         </div>

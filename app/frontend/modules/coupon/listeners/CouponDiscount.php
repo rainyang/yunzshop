@@ -76,15 +76,6 @@ class CouponDiscount
         $event->addMap('coupon', $data);
     }
 
-    //订单生成后销毁优惠券 todo 重复查询了,需要使用计算优惠券价格时获取的优惠券列表
-    public function onOrderCreated(AfterOrderCreatedEvent $event)
-    {
-        $this->event = $event;
-        $orderModel = $this->event->getOrderModel();
-        $couponService = new CouponService($orderModel);
-        $couponService->destroyUsedCoupons();
-    }
-
     /*
      * 监听订单完成事件
      */
