@@ -67,7 +67,7 @@ class MessageTemp extends BaseModel
 
     public static function fetchTempList($kwd)
     {
-        return self::select()->likeTitle($kwd);
+        return self::select()->where('is_default',0)->likeTitle($kwd);
     }
 
     public function scopeLikeTitle($query, $kwd)
