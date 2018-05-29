@@ -196,12 +196,27 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
      */
     public function getUsedCoin()
     {
-        // 订单商品 积分抵扣 金额 * (订单商品集合 积分抵扣 金额/订单商品集合实际使用 积分抵扣 金额)
+        // (订单商品最多可用抵扣的金额 /订单最多可用抵扣的金额) 订单实际抵扣的金额)
         if(!$this->orderDeduction->isChecked()){
             return $this->newCoin();
         }
+//        dd($this->getUsableCoin()->getMoney());
+//        dd($this->getOrderDeduction()->getMaxOrderGoodsDeduction()->getMoney());
+//        dd($this->getOrderDeduction()->getOrderGoodsDeductionAmount());
+//        exit;
+//
+//        dd(($this->getUsableCoin()->getMoney()/$this->getOrderDeduction()->getMaxOrderGoodsDeduction()->getMoney())*$this->getOrderDeduction()->getOrderGoodsDeductionAmount());
+//        exit;
+//        dd($this->getOrderDeduction()->getOrderGoodsDeductionAmount());
+//        exit;
 
-        $amount = $this->getUsableCoin()->getMoney() * ($this->getOrderDeduction()->getUsablePoint()->getMoney()/$this->getOrderDeduction()->getOrderGoodsDeductionCollection()->getUsablePoint()->getMoney());
+        $amount = ($this->getUsableCoin()->getMoney()/$this->getOrderDeduction()->getMaxOrderGoodsDeduction()->getMoney())*$this->getOrderDeduction()->getOrderGoodsDeductionAmount();
+//        dd($amount);
+//        exit;
+
+        //$amount = $this->getUsableCoin()->getMoney() * ($this->getOrderDeduction()->getUsablePoint()->getMoney()/$this->getOrderDeduction()->getOrderGoodsDeductionCollection()->getUsablePoint()->getMoney());
+//        dd($this->getUsableCoin()->getMoney());
+//        exit;
 
         return $this->newCoin()->setMoney($amount);
     }

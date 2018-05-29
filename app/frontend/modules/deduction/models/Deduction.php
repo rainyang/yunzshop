@@ -71,17 +71,22 @@ class Deduction extends BaseModel
         }
 
         if ($this->getCode() != 'love') {
-            if (app('DeductionManager')->make('DeductionSettingManager')->bound($this->getCode())) {
+            if (!app('DeductionManager')->make('DeductionSettingManager')->bound($this->getCode())) {
                 return false;
             }
+
+
             return $this->setting = app('DeductionManager')->make('DeductionSettingManager')->make($this->getCode());
         } else {
+
+
             return $this->setting = app('DeductionManager')->make('DeductionSettingManager')->make($this->getCode())->make('shop');
         }
     }
 
     public function isEnableDeductDispatchPrice()
     {
+
         if (!$this->getSetting()) {
             return false;
         }

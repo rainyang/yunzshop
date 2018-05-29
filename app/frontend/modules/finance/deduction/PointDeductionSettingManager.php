@@ -10,6 +10,7 @@ namespace app\frontend\modules\finance\deduction;
 
 use app\frontend\models\Goods;
 use app\frontend\modules\deduction\DeductionSettingCollection;
+use app\frontend\modules\deduction\DeductionSettingInterface;
 use app\frontend\modules\deduction\DeductionSettingManagerInterface;
 use app\frontend\modules\finance\deduction\deductionSettings\PointGoodsDeductionSetting;
 use app\frontend\modules\finance\deduction\deductionSettings\PointShopDeductionSetting;
@@ -29,7 +30,7 @@ class PointDeductionSettingManager extends Container implements DeductionSetting
          * 积分抵扣商城设置
          */
         $this->bind('shop', function (PointDeductionSettingManager $deductionSettingManager, Goods $goods) {
-            return new PointShopDeductionSetting($goods);
+            return new PointShopDeductionSetting();
         });
     }
 
@@ -44,7 +45,7 @@ class PointDeductionSettingManager extends Container implements DeductionSetting
             $deductionSettingCollection->push($this->make($key, $goods));
         }
         // 按权重排序
-        $deductionSettingCollection = $deductionSettingCollection->sortBy(function ($deductionSetting) {
+        $deductionSettingCollection = $deductionSettingCollection->sortBy(function (DeductionSettingInterface $deductionSetting) {
             return $deductionSetting->getWeight();
         });
 
