@@ -144,7 +144,7 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
      */
     private function getSingleEnoughReduceAmount()
     {
-
+        return 0.0;
     }
 
     /**
@@ -154,17 +154,7 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
     private function getFullReductionAmount()
     {
 
-        if (isset($this->fullReductionAmount)) {
-            return $this->fullReductionAmount;
-        }
-        if (!isset($this->orderGoods->sale)) {
-            return 0;
-        }
-        $result = $this->orderGoods->sale->getFullReductionAmount($this->getGoodsPrice());
-
-        $this->fullReductionAmount = $result;
-        $this->setFullReductionOrderGoodsDiscount($result);
-        return $result;
+        return 0.0;
     }
 
     /**

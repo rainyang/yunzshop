@@ -202,6 +202,7 @@ class PreOrder extends Order
      */
     public function toArray()
     {
+
         $attributes =  parent::toArray();
 
         // 格式化价格字段,将key中带有price,amount的属性,转为保留2位小数的字符串

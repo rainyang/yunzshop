@@ -8,18 +8,43 @@
 
 namespace app\frontend\modules\order\discount;
 
+use app\frontend\modules\orderGoods\models\PreOrderGoods;
+
+/**
+ * 单品满减优惠
+ * Class SingleEnoughReduce
+ * @package app\frontend\modules\order\discount
+ */
 class SingleEnoughReduce extends BaseDiscount
 {
-    protected $code = 'enoughReduce';
-    protected $name = '全场满减优惠';
+    protected $code = 'singleEnoughReduce';
+    protected $name = '单品满减优惠';
     /**
-     * 获取总金额
+     * 订单中订单商品单品满减的总金额
      * @return float
      */
     protected function _getAmount()
     {
         $result = 0;
-        //对订单商品去重 累加getPaymentAmount
+        //对订单商品按goods_id去重 累加单品满减金额
+        $this->order->orderGoods->unique('goods_id')->sum(function (PreOrderGoods $orderGoods) {
+            return $this->totalAmount($orderGoods);
+
+        });
         return $result;
+    }
+
+    /**
+     * 指定订单商品的单品满减金额
+     * @param PreOrderGoods $orderGoods
+     * @return float
+     */
+    private function totalAmount(PreOrderGoods $orderGoods){
+        // 求和订单中指定goods_id的订单商品支付金额
+        $amount =  $this->order->orderGoods->where('goods_id', $orderGoods->goods_id)->sum(function (PreOrderGoods $orderGoods) {
+            return $orderGoods->getPaymentAmount();
+        });
+        // 获取传入order_goods的单品满减金额
+        return $orderGoods->sale->getFullReductionAmount($amount);
     }
 }
