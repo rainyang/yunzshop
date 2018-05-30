@@ -33,7 +33,7 @@ class Filtering extends SearchFiltering
     }
 
     //获取搜索标签组
-    public static function getFilterGroup($search, $parent_id = 0)
+    public static function searchFilterGroup($search, $parent_id = 0)
     {
       return  self::where('parent_id', $parent_id)->where('name', 'LIKE', "%{$search}%")->get();
     }

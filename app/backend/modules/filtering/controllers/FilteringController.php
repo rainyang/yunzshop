@@ -139,7 +139,7 @@ class FilteringController extends BaseController
     {
 
         $keyword = \YunShop::request()->keyword;
-        $filter_group = Filtering::getFilterGroup($keyword);
+        $filter_group = Filtering::searchFilterGroup($keyword);
         return view('filtering.query', [
             'filter_group' => $filter_group->toArray(),
         ])->render();

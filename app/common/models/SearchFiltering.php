@@ -36,4 +36,16 @@ class SearchFiltering extends \app\common\models\BaseModel
         return $query;
 
     }
+
+
+    //获取全部标签
+    public static function getAllFiltering()
+    {
+        $filtering = self::select('id', 'parent_id', 'name')->getFilterGroup()->get()->toArray();
+
+        foreach ($filtering as $key => &$value) {
+            $value['value'] = self::select('id', 'parent_id', 'name')->getFilterGroup($value['id'])->get()->toArray();
+        }
+        return $filtering;
+    }
 }
