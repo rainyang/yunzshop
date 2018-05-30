@@ -13,7 +13,7 @@ use app\frontend\modules\orderGoods\models\PreOrderGoods;
 class OrderGoodsDiscount
 {
     /**
-     * @var PreOrderGoods 
+     * @var PreOrderGoods
      */
     private $orderGoods;
     public function __construct(PreOrderGoods $orderGoods)
