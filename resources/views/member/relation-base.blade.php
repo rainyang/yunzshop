@@ -50,8 +50,8 @@
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">获得推广权限通知</label>
                         <div class="col-sm-8 col-xs-12">
                             <select name='base[member_agent]' class='form-control diy-notice'>
-                                <option value="{{$base['member_agent']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($base['member_agent']))
-                                selected @endif>
+                                <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($base['member_agent'])) value="{{$base['member_agent']}}"
+                                        selected @else value="" @endif>
                                     默认消息模板
                                 </option>
                                 @foreach ($temp_list as $item)
@@ -88,8 +88,8 @@
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">新增下线通知</label>
                         <div class="col-sm-8 col-xs-12">
                             <select name='base[member_new_lower]' class='form-control diy-notice'>
-                                <option value="{{$base['member_new_lower']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($base['member_new_lower']))
-                                selected @endif>
+                                <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($base['member_new_lower'])) value="{{$base['member_new_lower']}}"
+                                        selected @else value="" @endif>
                                     默认消息模板
                                 </option>
                                 @foreach ($temp_list as $item)

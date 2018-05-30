@@ -5,8 +5,8 @@
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现申请通知</label>
             <div class="col-sm-8 col-xs-12">
                 <select name='withdraw[notice][income_withdraw]' class='form-control diy-notice'>
-                    <option value="{{$set['income_withdraw']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['income_withdraw']))
-                    selected @endif >
+                    <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['income_withdraw'])) value="{{$set['income_withdraw']}}"
+                            selected @else value="" @endif>
                         默认消息模版
                     </option>
                     @foreach ($temp_list as $item)
@@ -33,8 +33,8 @@
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现审核通知</label>
             <div class="col-sm-8 col-xs-12">
                 <select name='withdraw[notice][income_withdraw_check]' class='form-control diy-notice'>
-                    <option value="{{$set['income_withdraw_check']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['income_withdraw_check']))
-                    selected @endif >
+                    <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['income_withdraw_check'])) value="{{$set['income_withdraw_check']}}"
+                            selected @else value="" @endif>
                         默认消息模版
                     </option>
                     @foreach ($temp_list as $item)
@@ -61,8 +61,8 @@
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现打款通知</label>
             <div class="col-sm-8 col-xs-12">
                 <select name='withdraw[notice][income_withdraw_pay]' class='form-control diy-notice'>
-                    <option value="{{$set['income_withdraw_pay']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['income_withdraw_pay']))
-                    selected @endif >
+                    <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['income_withdraw_pay'])) value="{{$set['income_withdraw_pay']}}"
+                            selected @else value="" @endif>
                         默认消息模版
                     </option>
                     @foreach ($temp_list as $item)
@@ -89,8 +89,8 @@
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现到账通知</label>
             <div class="col-sm-8 col-xs-12">
                 <select name='withdraw[notice][income_withdraw_arrival]' class='form-control diy-notice'>
-                    <option value="{{$set['income_withdraw_arrival']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['income_withdraw_arrival']))
-                    selected @endif >
+                    <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['income_withdraw_arrival'])) value="{{$set['income_withdraw_arrival']}}"
+                            selected @else value="" @endif>
                         默认消息模版
                     </option>
                     @foreach ($temp_list as $item)

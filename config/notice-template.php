@@ -8,30 +8,25 @@
 
 return [
     'buy_goods_msg' => [
-        'template_id_short' => 'OPENTM204958750',
+        'template_id_short' => 'OPENTM207574677',
         'title' => '购买商品通知[卖家]',
         'first_color' => '#000000',
         'remark_color' => '#000000',
-        'first' => '您有新的订单！',
+        'first' => '您有新一笔订单状态更新！',
         'data' => [
             0 => [
                 "keywords" => "keyword1",
-                "value" => "[商品金额]元",
+                "value" => "订单通知",
                 "color" => "#000000",
             ],
             1 => [
                 "keywords" => "keyword2",
-                "value" => "[商品详情（含规格）]",
+                "value" => "订单编号为：[订单编号]的订单状态更新了",
                 "color" => "#000000",
             ],
             2 => [
                 "keywords" => "keyword3",
-                "value" => "[订单编号]",
-                "color" => "#000000",
-            ],
-            3 => [
-                "keywords" => "keyword4",
-                "value" => "[会员昵称]",
+                "value" => "会员：[会员昵称]购买的商品：[商品名称（含规格）]，商品金额为[商品金额]元，商品数量为[商品数量]，订单状态于[时间]更新为[订单状态]状态。",
                 "color" => "#000000",
             ],
         ],
@@ -47,7 +42,7 @@ return [
         'data' => [
             0 => [
                 "keywords" => "keyword1",
-                "value" => "[商品金额]元",
+                "value" => "[订单金额]元",
                 "color" => "#000000",
             ],
             1 => [
@@ -57,12 +52,12 @@ return [
             ],
             2 => [
                 "keywords" => "keyword3",
-                "value" => "[订单编号]",
+                "value" => "[订单号]",
                 "color" => "#000000",
             ],
             3 => [
                 "keywords" => "keyword4",
-                "value" => "[会员昵称]",
+                "value" => "[粉丝昵称]",
                 "color" => "#000000",
             ],
         ],

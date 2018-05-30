@@ -46,8 +46,8 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">优惠券过期提醒</label>
                             <div class="col-sm-8 col-xs-12">
                                 <select name='coupon[expire]' class='form-control diy-notice'>
-                                    <option value="{{$set['expire']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['expire']))
-                                    selected @endif>
+                                    <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['expire'])) value="{{$set['expire']}}"
+                                            selected @else value="" @endif>
                                         默认消息模板
                                     </option>
                                     @foreach ($temp_list as $item)

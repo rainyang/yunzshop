@@ -55,7 +55,7 @@ class MessageTemp extends BaseModel
         return self::where('template_id',$temp_id)->delete();
     }
 
-    public function getIsDefaultById($temp_id)
+    public static function getIsDefaultById($temp_id)
     {
         return self::whereId($temp_id)->where('is_default',1)->first();
     }

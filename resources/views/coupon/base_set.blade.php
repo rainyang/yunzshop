@@ -71,8 +71,8 @@
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">通知设置：</label>
                         <div class="col-sm-4 col-xs-6">
                             <select name='coupon[coupon_notice]' class='form-control diy-notice'>
-                                <option value="{{$coupon['coupon_notice']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['coupon_notice']))
-                                selected @endif>
+                                <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($coupon['coupon_notice'])) value="{{$coupon['coupon_notice']}}"
+                                        selected @else value="" @endif>
                                     默认消息模板
                                 </option>
                                 @foreach ($temp_list as $item)

@@ -68,8 +68,8 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">积分变动通知</label>
                             <div class="col-sm-8 col-xs-12">
                                 <select name='yz_notice[point_change]' class='form-control diy-notice'>
-                                    <option value="{{$set['point_change']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['point_change']))
-                                    selected
+                                    <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['point_change'])) value="{{$set['point_change']}}"
+                                    selected @else value=""
                                             @endif
                                     >
                                         默认消息模板
@@ -104,9 +104,9 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额变动通知</label>
                             <div class="col-sm-8 col-xs-12">
                                 <select name='yz_notice[balance_change]' class='form-control diy-notice'>
-                                    <option value="{{$set['balance_change']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['balance_change']))
-                                    selected
-                                            @endif;
+                                    <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['balance_change'])) value="{{$set['balance_change']}}"
+                                            selected @else value=""
+                                            @endif
                                     >
                                         默认消息模版
                                     </option>
@@ -138,9 +138,9 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">购买商品通知</label>
                             <div class="col-sm-8 col-xs-12">
                                 <select name='yz_notice[buy_goods_msg]' class='form-control diy-notice'>
-                                    <option value="{{$set['buy_goods_msg']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['buy_goods_msg']))
-                                    selected
-                                            @endif;
+                                    <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['buy_goods_msg'])) value="{{$set['buy_goods_msg']}}"
+                                            selected @else value=""
+                                            @endif
                                     >
                                         默认消息模板
                                     </option>
@@ -165,9 +165,9 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单生成通知[卖家]</label>
                             <div class="col-sm-8 col-xs-12">
                                 <select name='yz_notice[seller_order_create]' class='form-control diy-notice'>
-                                    <option value="{{$set['seller_order_create']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['seller_order_create']))
-                                    selected
-                                            @endif;
+                                    <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['seller_order_create'])) value="{{$set['seller_order_create']}}"
+                                            selected @else value=""
+                                            @endif
                                     >
                                         默认消息模板
                                     </option>
@@ -192,9 +192,9 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单支付通知[卖家]</label>
                             <div class="col-sm-8 col-xs-12">
                                 <select name='yz_notice[seller_order_pay]' class='form-control diy-notice'>
-                                    <option value="{{$set['seller_order_pay']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['seller_order_pay']))
-                                    selected
-                                            @endif;
+                                    <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['seller_order_pay'])) value="{{$set['seller_order_pay']}}"
+                                            selected @else value=""
+                                            @endif
                                     >
                                         默认消息模板
                                     </option>
@@ -220,9 +220,9 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单完成通知[卖家]</label>
                             <div class="col-sm-8 col-xs-12">
                                 <select name='yz_notice[seller_order_finish]' class='form-control diy-notice'>
-                                    <option value="{{$set['seller_order_finish']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['seller_order_finish']))
-                                    selected
-                                            @endif;
+                                    <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['seller_order_finish'])) value="{{$set['seller_order_finish']}}"
+                                            selected @else value=""
+                                            @endif
                                     >
                                         默认消息模板
                                     </option>
@@ -349,9 +349,9 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                             <div class="col-sm-8 col-xs-12">
                                 <select name='yz_notice[other_toggle_temp]' class='form-control diy-notice'>
-                                    <option value="{{$set['other_toggle_temp']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['other_toggle_temp']))
-                                    selected
-                                            @endif;
+                                    <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['other_toggle_temp'])) value="{{$set['other_toggle_temp']}}"
+                                            selected @else value=""
+                                            @endif
                                     >
                                         默认消息模板
                                     </option>
@@ -381,9 +381,9 @@
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单提交成功通知</label>
                                 <div class="col-sm-8 col-xs-12">
                                     <select name='yz_notice[order_submit_success]' class='form-control diy-notice'>
-                                        <option value="{{$set['order_submit_success']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_submit_success']))
-                                        selected
-                                                @endif;
+                                        <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_submit_success'])) value="{{$set['order_submit_success']}}"
+                                                selected @else value=""
+                                                @endif
                                         >
                                             默认消息模板
                                         </option>
@@ -410,9 +410,9 @@
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单取消通知</label>
                                 <div class="col-sm-8 col-xs-12">
                                     <select name='yz_notice[order_cancel]' class='form-control diy-notice'>
-                                        <option value="{{$set['order_cancel']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_cancel']))
-                                        selected
-                                                @endif;
+                                        <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_cancel'])) value="{{$set['order_cancel']}}"
+                                                selected @else value=""
+                                                @endif
                                         >
                                             默认消息模板
                                         </option>
@@ -439,9 +439,9 @@
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单支付成功通知</label>
                                 <div class="col-sm-8 col-xs-12">
                                     <select name='yz_notice[order_pay_success]' class='form-control diy-notice'>
-                                        <option value="{{$set['order_pay_success']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_pay_success']))
-                                        selected
-                                                @endif;
+                                        <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_pay_success'])) value="{{$set['order_pay_success']}}"
+                                                selected @else value=""
+                                                @endif
                                         >
                                             默认消息模板
                                         </option>
@@ -468,9 +468,9 @@
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单发货通知</label>
                                 <div class="col-sm-8 col-xs-12">
                                     <select name='yz_notice[order_send]' class='form-control diy-notice'>
-                                        <option value="{{$set['order_send']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_send']))
-                                        selected
-                                                @endif;
+                                        <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_send'])) value="{{$set['order_send']}}"
+                                                selected @else value=""
+                                                @endif
                                         >
                                             默认消息模板
                                         </option>
@@ -497,9 +497,9 @@
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单确认收货通知</label>
                                 <div class="col-sm-8 col-xs-12">
                                     <select name='yz_notice[order_finish]' class='form-control diy-notice'>
-                                        <option value="{{$set['order_finish']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_finish']))
-                                        selected
-                                                @endif;
+                                        <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_finish'])) value="{{$set['order_finish']}}"
+                                                selected @else value=""
+                                                @endif
                                         >
                                             默认消息模板
                                         </option>
@@ -526,9 +526,9 @@
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款申请通知</label>
                                 <div class="col-sm-8 col-xs-12">
                                     <select name='yz_notice[order_refund_apply]' class='form-control diy-notice'>
-                                        <option value="{{$set['order_refund_apply']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_refund_apply']))
-                                        selected
-                                                @endif;
+                                        <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_refund_apply'])) value="{{$set['order_refund_apply']}}"
+                                                selected @else value=""
+                                                @endif
                                         >
                                             默认消息模板
                                         </option>
@@ -555,9 +555,9 @@
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款成功通知</label>
                                 <div class="col-sm-8 col-xs-12">
                                     <select name='yz_notice[order_refund_success]' class='form-control diy-notice'>
-                                        <option value="{{$set['order_refund_success']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_refund_success']))
-                                        selected
-                                                @endif;
+                                        <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_refund_success'])) value="{{$set['order_refund_success']}}"
+                                                selected @else value=""
+                                                @endif
                                         >
                                             默认消息模板
                                         </option>
@@ -584,9 +584,9 @@
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款申请驳回通知</label>
                                 <div class="col-sm-8 col-xs-12">
                                     <select name='yz_notice[order_refund_reject]' class='form-control diy-notice'>
-                                        <option value="{{$set['order_refund_reject']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_refund_reject']))
-                                        selected
-                                                @endif;
+                                        <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_refund_reject'])) value="{{$set['order_refund_reject']}}"
+                                                selected @else value=""
+                                                @endif
                                         >
                                             默认消息模板
                                         </option>
@@ -613,9 +613,9 @@
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员升级通知</label>
                                 <div class="col-sm-8 col-xs-12">
                                     <select name='yz_notice[customer_upgrade]' class='form-control diy-notice'>
-                                        <option value="{{$set['customer_upgrade']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['customer_upgrade']))
-                                        selected
-                                                @endif;
+                                        <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['customer_upgrade'])) value="{{$set['customer_upgrade']}}"
+                                                selected @else value=""
+                                                @endif
                                         >
                                             默认消息模板
                                         </option>
@@ -642,9 +642,9 @@
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额提现提交通知</label>
                                 <div class="col-sm-8 col-xs-12">
                                     <select name='yz_notice[withdraw_submit]' class='form-control diy-notice'>
-                                        <option value="{{$set['withdraw_submit']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['withdraw_submit']))
-                                        selected
-                                                @endif;
+                                        <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['withdraw_submit'])) value="{{$set['withdraw_submit']}}"
+                                                selected @else value=""
+                                                @endif
                                         >
                                             默认消息模板
                                         </option>
@@ -671,9 +671,9 @@
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额提现成功通知</label>
                                 <div class="col-sm-8 col-xs-12">
                                     <select name='yz_notice[withdraw_success]' class='form-control diy-notice'>
-                                        <option value="{{$set['withdraw_success']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['withdraw_success']))
-                                        selected
-                                                @endif;
+                                        <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['withdraw_success'])) value="{{$set['withdraw_success']}}"
+                                                selected @else value=""
+                                                @endif
                                         >
                                             默认消息模板
                                         </option>
@@ -700,9 +700,9 @@
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额提现失败通知</label>
                                 <div class="col-sm-8 col-xs-12">
                                     <select name='yz_notice[withdraw_fail]' class='form-control diy-notice'>
-                                        <option value="{{$set['withdraw_fail']}}" @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['withdraw_fail']))
-                                        selected
-                                                @endif;
+                                        <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['withdraw_fail'])) value="{{$set['withdraw_fail']}}"
+                                                selected @else value=""
+                                                @endif
                                         >
                                             默认消息模板
                                         </option>
