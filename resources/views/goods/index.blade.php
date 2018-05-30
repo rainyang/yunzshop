@@ -4,7 +4,6 @@
 @section('title', trans('商品列表'))
     <div class="w1200 ">
 
-
         <script type="text/javascript" src="./resource/js/lib/jquery-ui-1.10.3.min.js"></script>
         <link rel="stylesheet" type="text/css" href="{{static_url('css/font-awesome.min.css')}}">
         <link rel="stylesheet" type="text/css" href="{{static_url('yunshop/goods/goods.css')}}"/>
@@ -126,16 +125,19 @@
                         </form>
                     </div>
                 </div>
-
-                <style type="text/css">
-
-                </style>
                 <form id="goods-list" action="{!! yzWebUrl($sort_url) !!}" method="post">
                     <div class="panel panel-default">
                         <div class="panel-body table-responsive">
+                            @section('batch_top')
+                            <label class="btn btn-success checkall">全选</label>
+                            <label class="btn btn-info batchenable">批量上架</label>
+                            <label class="btn batchdisable">批量下架</label>
+                            <label class="btn btn-danger batchdel">批量删除</label>
+                            @show
                             <table class="table table-hover">
                                 <thead class="navbar-inner">
                                 <tr>
+                                    <th width="3%">选择</th>
                                     <th width="6%">ID</th>
                                     <th width="6%">排序</th>
                                     <th width="6%">{{$lang['good']}}</th>
@@ -155,6 +157,7 @@
                                 @foreach($list as $item)
 
                                     <tr>
+                                        <td width="3%"><input type="checkbox" name="check1" value="{{$item['id']}}"></td>
                                         <td width="6%">{{$item['id']}}</td>
                                         <td width="6%">
                                             <input type="text" class="form-control"
@@ -312,11 +315,15 @@
                                     </tr>
                                 </tbody>
                             </table>
-
+                                @section('batch_bottom')
+                            <label class="btn btn-success checkall">全选</label>
+                            <label class="btn btn-info batchenable">批量上架</label>
+                            <label class="btn batchdisable">批量下架</label>
+                            <label class="btn btn-danger batchdel">批量删除</label>
+                                @show
 
                             {!!$pager!!}
                                     <!--分页-->
-
 
                         </div>
                         <div style="margin-left:13px;margin-top:8px">
@@ -335,9 +342,76 @@
         </div>
     </div>
     </div>
+<script>
+    $(function(){
+        $(".checkall").click(function(){
+            //全选
+            if($(this).html() == '全选') {
+                $(this).html('全不选');
+                $('[name=check1]:checkbox').prop('checked',true);
+            } else {
+                $(this).html('全选');
+                $('[name=check1]:checkbox').prop('checked',false);
+            }
+        });
+        $(".checkrev").click(function(){
+            //反选
+            $('[name=check1]:checkbox').each(function(){
+                this.checked=!this.checked;
+            });
+        });
+
+        var arr = new Array();
+        var url = "{!! yzWebUrl('goods.goods.batchSetProperty') !!}"
+
+        $(".batchenable").click(function () {
+            $(this).html('上架中...');
+            $("[name=check1]:checkbox:checked").each(function(i){
+                arr[i] = $(this).val();
+            });
+            $.post(url, {ids: arr, data: 1}
+                , function (d) {
+                    if (d.result) {
+                        $(".batchenable").html('上架成功');
+                        setTimeout(location.reload(), 3000);
+                    }
+                } , "json"
+            );
+        });
+        $(".batchdisable").click(function () {
+            $(this).html('下架中...');
+            $("[name=check1]:checkbox:checked").each(function(i){
+                arr[i] = $(this).val();
+            });
+            $.post(url, {ids: arr, data: 0}
+                , function (d) {
+                    if (d.result) {
+                        $(".batchdisable").html('下架成功');
+                        setTimeout(location.reload(), 3000);
+                    }
+                } , "json"
+            );
+        });
+
+        $(".batchdel").click(function () {
+            $(this).html('删除中...');
+            $("input[type='checkbox']:checked").each(function(i){
+                arr[i] = $(this).val();
+            });
+            $.post("{!! yzWebUrl('goods.goods.batchDestroy') !!}", {ids: arr}
+                , function (d) {
+                    if (d.result) {
+                        $(".batchdel").html('删除成功');
+                        setTimeout(location.reload(), 3000);
+                    }
+                } , "json"
+            );
+        })
+
+    });
+</script>
 
     <script type="text/javascript">
-
         //鼠标划过显示商品链接二维码
         $('.umphp').hover(function () {
                     var url = $(this).attr('data-url');
