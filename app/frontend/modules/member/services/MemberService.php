@@ -370,13 +370,15 @@ class MemberService
         //$mc_mapping_fans_model = McMappingFansModel::getUId($userinfo['openid']);
         $mc_mapping_fans_model = $this->getFansModel($userinfo['openid']);
 
-        if (empty($member_id) && !empty($mc_mapping_fans_model)) {
-            $member_id = $mc_mapping_fans_model->uid;
-        }
+        $this->checkFansUid($mc_mapping_fans_model, $userinfo);
 
         //检查member_id是否一致
         if (!is_null($UnionidInfo) && !is_null($mc_mapping_fans_model)) {
-            $member_id = $this->checkMember($UnionidInfo, $mc_mapping_fans_model);
+            $member_id = $this->checkMember($UnionidInfo, $mc_mapping_fans_model, $userinfo);
+        }
+
+        if (empty($member_id) && !empty($mc_mapping_fans_model)) {
+            $member_id = $mc_mapping_fans_model->uid;
         }
 
         $member_model = Member::getMemberById($member_id);
@@ -425,7 +427,9 @@ class MemberService
                         throw new AppException('用户数据异常, 注册失败');
                     }
 
-                    $this->addSubMemberInfo($uniacid, $member_id);
+                    $this->addSubMemberInfo($uniacid, $member_id, $userinfo['openid']);
+                } else {
+                    $this->updateSubMemberInfo($member_id, $userinfo['openid']);
                 }
 
                 if (empty($UnionidInfo->unionid)) {
@@ -462,12 +466,19 @@ class MemberService
         $userinfo['nickname'] = $this->filteNickname($userinfo);
         //$fans_mode = McMappingFansModel::getUId($userinfo['openid']);
         $fans_mode = $this->getFansModel($userinfo['openid']);
+        
+        $this->checkFansUid($fans_mode, $userinfo);
 
         if ($fans_mode) {
             $member_model = Member::getMemberById($fans_mode->uid);
             $member_shop_info_model = MemberShopInfo::getMemberShopInfo($fans_mode->uid);
 
             $member_id = $fans_mode->uid;
+        }
+
+        if ($yz_member_id = $this->checkYzMember($member_model, $fans_mode, $member_shop_info_model, $userinfo)) {
+            $member_id = $yz_member_id;
+            $member_shop_info_model = true;
         }
 
         if ((!empty($member_model)) && (!empty($fans_mode) && !empty($member_shop_info_model))) {
@@ -499,7 +510,7 @@ class MemberService
                         throw new AppException('用户数据异常, 注册失败');
                     }
 
-                    $this->addSubMemberInfo($uniacid, $member_id);
+                    $this->addSubMemberInfo($uniacid, $member_id, $userinfo['openid']);
                 }
 
                 //生成分销关系链
@@ -591,7 +602,7 @@ class MemberService
      * @param $uniacid
      * @param $member_id
      */
-    public function addSubMemberInfo($uniacid, $member_id)
+    public function addSubMemberInfo($uniacid, $member_id, $openid=0)
     {
         //添加yz_member表
         $default_sub_group_id = MemberGroup::getDefaultGroupId()->first();
@@ -609,7 +620,15 @@ class MemberService
             'level_id' => 0,
             'pay_password' => '',
             'salt' => '',
+            'yz_openid' => $openid,
         ));
+    }
+
+    private function updateSubMemberInfo($uid, $userinfo)
+    {
+        SubMemberModel::updateOpenid(
+            $uid, ['yz_openid' => $userinfo['openid']]
+        );
     }
 
     /**
@@ -755,11 +774,12 @@ class MemberService
         return $member_form;
     }
 
-    public function checkMember($UnionidInfo, $fansInfo)
+    public function checkMember($UnionidInfo, $fansInfo, $userInfo)
     {
         \Log::debug('----unionid---', $UnionidInfo->member_id);
         \Log::debug('----fans----', $fansInfo->uid);
         if ($UnionidInfo->member_id != $fansInfo->uid) {
+            /*
             //小程序
             $minApp = MemberMiniAppModel::where('member_id', $UnionidInfo->member_id)->first();
 
@@ -773,30 +793,91 @@ class MemberService
             if (!is_null($wechatApp)) {
                 MemberWechatModel::updateData($wechatApp->member_id, ['member_id'=>$fansInfo->uid]);
             }
+            */
 
             //删除重复微擎会员
-            $mc_member = Member::getMemberById($UnionidInfo->member_id);
+
+            $mc_member = Member::getMemberById($fansInfo->uid);
 
             if (!is_null($mc_member)) {
                 $mc_member->delete();
             }
 
+            $this->updateFansMember($fansInfo->fanid, $UnionidInfo->member_id, $userInfo);
+
             //删除重复商城会员
+            /*
             $sub_member = MemberShopInfo::getMemberShopInfo($UnionidInfo->member_id);
 
             if (!is_null($sub_member)) {
                 $sub_member->delete();
             }
+            */
 
             //商城unionid
-            MemberUniqueModel::where('unique_id', $UnionidInfo->unique_id)->update(['member_id'=>$fansInfo->uid]);
+            //MemberUniqueModel::where('unique_id', $UnionidInfo->unique_id)->update(['member_id'=>$fansInfo->uid]);
         }
 
-        return $fansInfo->uid;
+        return $UnionidInfo->member_id;
     }
 
     public function updateFansMember($fanid, $member_id, $userinfo)
     {
         //TODO
+    }
+
+    /**
+     * 扫海报关注
+     *
+     * 关注->微擎注册->商城注册
+     *
+     * 接口延迟，商城无法监控微擎行为导致会员注册重复1(fans->uid=0; mc_members=null)
+     *
+     * @param $fansModel
+     * @param $userInfo
+     */
+    private function checkFansUid($fansModel, $userInfo)
+    {
+        if ($fansModel && 0 == $fansModel->uid) {
+            $member_id = SubMemberModel::getMemberId($userInfo['opneid']);
+
+            if (!is_null($member_id)) {
+                $fansModel->uid = $member_id;
+
+                $this->updateFansMember($fansModel->fanid, $member_id, $userInfo);
+            }
+        }
+    }
+
+    /**
+     * 扫海报关注
+     *
+     * 关注->微擎注册->商城注册
+     *
+     * 接口延迟，商城无法监控微擎行为导致会员注册重复2(fans->uid被更新; mc_members存在)
+     *
+     * @param $mc_members
+     * @param $fans
+     * @param $yz_member
+     * @param $userInfo
+     * @return int
+     */
+    private function checkYzMember($mc_members, $fans, $yz_member, $userInfo)
+    {
+        if (!is_null($mc_members) && !is_null($fans) && is_null($yz_member)) {
+            $member_id = SubMemberModel::getMemberId($userInfo['openid']);
+
+            if (!is_null($member_id) && $member_id != 0 && $member_id != $fans->uid) {
+                if (Member::getMemberById($member_id))
+                {
+                    Member::deleted($fans->uid);
+                    $this->updateFansMember($fans->fanid, $member_id, $userInfo);
+                }
+
+                return $member_id;
+            }
+        }
+
+        return 0;
     }
 }

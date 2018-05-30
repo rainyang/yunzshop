@@ -29,7 +29,9 @@ class DiscountCouponPrice extends CouponPrice
      */
     public function setOrderGoodsDiscountPrice()
     {
-
+        if($this->isSet){
+            return;
+        }
         $this->coupon->getOrderGoodsInScope()->map(function($orderGoods){
             /**
              * @var $OrderGoods PreOrderGoods
@@ -46,5 +48,7 @@ class DiscountCouponPrice extends CouponPrice
             }
             $orderGoods->coupons->push($goodsMemberCoupon);
         });
+        $this->isSet = true;
+
     }
 }
