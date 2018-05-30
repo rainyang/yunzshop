@@ -9,7 +9,7 @@ use app\frontend\models\Order;
 use app\frontend\models\OrderAddress;
 use app\frontend\modules\deduction\OrderDeduction;
 use app\frontend\modules\dispatch\models\OrderDispatch;
-use app\frontend\modules\order\Discount;
+use app\frontend\modules\order\OrderDiscount;
 use app\frontend\modules\orderGoods\models\PreOrderGoods;
 use app\frontend\modules\order\services\OrderService;
 use app\frontend\modules\orderGoods\models\PreOrderGoodsCollection;
@@ -52,7 +52,7 @@ class PreOrder extends Order
      */
     protected $orderDispatch;
     /**
-     * @var Discount 优惠类
+     * @var OrderDiscount 优惠类
      */
     protected $discount;
     /**
@@ -74,7 +74,7 @@ class PreOrder extends Order
             $aOrderGoods->setOrder($this);
         });
 
-        $this->discount = new Discount($this);
+        $this->discount = new OrderDiscount($this);
         $this->orderDispatch = new OrderDispatch($this);
         $this->orderDeduction = new OrderDeduction($this);
 
@@ -290,14 +290,17 @@ class PreOrder extends Order
      */
     protected function getPrice()
     {
-        if (!isset($this->price)) {
-            //订单最终价格 = 商品最终价格 - 订单优惠 + 订单运费 - 订单抵扣
-            $this->price = $this->getOrderGoodsPrice();
-            $this->price -= $this->getDiscountAmount();
-            $this->price += $this->getDispatchAmount();
-            $this->price -= $this->getDeductionAmount();
+        if (isset($this->price)) {
+            return $this->price;
         }
-        return $this->price;
+        //订单最终价格 = 商品最终价格 - 订单优惠 + 订单运费 - 订单抵扣
+        $this->price = $this->getOrderGoodsPrice();
+        $this->getDiscountAmount();
+        $this->price += $this->getDispatchAmount();
+        $this->price -= $this->getDeductionAmount();
+        $result = $this->price;
+        unset($this->price);
+        return $result;
     }
 
     /**

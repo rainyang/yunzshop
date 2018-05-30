@@ -9,36 +9,32 @@
 namespace app\frontend\modules\order;
 
 use app\frontend\models\order\PreOrderDiscount;
+use app\frontend\modules\order\discount\BaseDiscount;
 use app\frontend\modules\order\discount\CouponDiscount;
 use app\frontend\modules\order\discount\EnoughReduce;
 use app\frontend\modules\order\discount\SingleEnoughReduce;
 use app\frontend\modules\order\models\PreOrder;
 use Illuminate\Support\Collection;
 
-class Discount
+class OrderDiscount
 {
     public $orderCoupons;
     public $orderDiscounts;
+    /**
+     * @var Collection
+     */
+    private $discounts;
     private $amount;
     /**
      * @var PreOrder
      */
     protected $order;
+
     /**
      * 优惠券类
      * @var CouponDiscount
      */
-    private $couponDiscount;
-    /**
-     * 全场满减类
-     * @var EnoughReduce
-     */
-    private $enoughReduce;
-    /**
-     * 单品满减类
-     * @var SingleEnoughReduce
-     */
-    private $singleEnoughReduce;
+
     public function __construct(PreOrder $order)
     {
         $this->order = $order;
@@ -49,11 +45,22 @@ class Discount
         // 订单优惠使用记录集合
         $this->orderDiscounts = $order->newCollection();
         $order->setRelation('orderDiscounts', $this->orderDiscounts);
-        $this->couponDiscount = new CouponDiscount($this->order);
-        $this->enoughReduce = new EnoughReduce($this->order);
-        $this->singleEnoughReduce = new SingleEnoughReduce($this->order);
+
+        $this->_init();
+
     }
 
+    private function _init()
+    {
+        $this->discounts = collect();
+        //单品满减
+        $this->discounts->put('singleEnoughReduce ', new SingleEnoughReduce($this->order));
+        //全场满减
+        $this->discounts->put('enoughReduce ', new EnoughReduce($this->order));
+        //优惠券
+        $this->discounts->put('couponDiscount ', new CouponDiscount($this->order));
+
+    }
 
     /**
      * 获取订单优惠金额
@@ -63,12 +70,12 @@ class Discount
     public function getAmount()
     {
         if (!isset($this->amount)) {
-            // 单品满减
-            $this->amount += $this->singleEnoughReduce->getAmount();
-            // 全场满减
-            $this->amount += $this->enoughReduce->getAmount();
-            // 优惠券
-            $this->amount = $this->couponDiscount->getAmount();
+            $this->discounts->each(function(BaseDiscount $discount){
+                // todo 暂时想不到其他办法了
+                $this->order->price -= $discount->getAmount();
+                $this->amount+= $discount->getAmount();
+
+            });
             $this->setOrderDiscounts();
         }
         return $this->amount;

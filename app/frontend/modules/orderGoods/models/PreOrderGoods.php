@@ -90,7 +90,6 @@ class PreOrderGoods extends OrderGoods
     {
         $attributes = [
             'price' => $this->getPrice(),
-            'discount_price' => $this->getDiscountAmount(),
             'coupon_price' => $this->getCouponAmount()
         ];
 
@@ -321,17 +320,6 @@ class PreOrderGoods extends OrderGoods
     public function getPaymentAmount()
     {
         return $this->getPriceCalculator()->getPaymentAmount();
-    }
-
-    /**
-     * 优惠金额
-     * @return int
-     * @throws ShopException
-     */
-    public function getDiscountAmount()
-    {
-        return $this->getPriceCalculator()->getDiscountAmount();
-
     }
 
     /**

@@ -20,10 +20,7 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
      * @var float
      */
     private $price;
-    /**
-     * @var float
-     */
-    private $fullReductionAmount;
+
 
     /**
      * 获取商品的模型,规格继承时复写这个方法
@@ -74,11 +71,13 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
         $this->paymentAmount -= $this->getSingleEnoughReduceAmount();
         $this->paymentAmount -= $this->getFullReductionAmount();
 
-        $this->paymentAmount -= $this->getDiscountAmount();
+        $this->paymentAmount -= $this->getCouponAmount();
         $this->paymentAmount -= $this->getDeductionAmount();
 
         $this->paymentAmount = max($this->paymentAmount, 0);
-        return $this->paymentAmount;
+        $result = $this->paymentAmount;
+        unset($this->paymentAmount);
+        return $result;
     }
 
     /**
@@ -88,15 +87,6 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
     public function getDeductionAmount()
     {
         return $this->orderGoods->getOrderGoodsDeductions()->getUsedPoint()->getMoney();
-    }
-
-    /**
-     * 优惠金额(只计算了优惠券的间接优惠金额)
-     * @return int
-     */
-    public function getDiscountAmount()
-    {
-        return $this->getCouponAmount();
     }
 
     /**
