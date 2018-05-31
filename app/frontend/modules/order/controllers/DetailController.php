@@ -15,8 +15,8 @@ use app\common\models\Order;
 use app\common\requests\Request;
 use app\frontend\models\OrderAddress;
 use Yunshop\StoreCashier\common\models\StoreDelivery;
-use app\frontend\modules\order\services\VideoDemandOrderGoodsService;
 use app\common\services\plugin\leasetoy\LeaseToySet;
+use app\common\services\goods\VideoDemandCourseGoods;
 
 class DetailController extends ApiController
 {
@@ -83,11 +83,12 @@ class DetailController extends ApiController
         } else {
 
             //视频点播
-            if (VideoDemandOrderGoodsService::whetherEnabled()) {
-                foreach ($data['has_many_order_goods'] as &$value) {
-                    $value['is_course'] = VideoDemandOrderGoodsService::whetherCourse($value['goods_id']);
-                }
+
+            $videoDemand = new VideoDemandCourseGoods();
+            foreach ($data['has_many_order_goods'] as &$value) {
+                $value['is_course'] = $videoDemand->isCourse($value['goods_id']);
             }
+
             return $this->successJson($msg = 'ok', $data);
         }
 
