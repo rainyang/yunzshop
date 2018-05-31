@@ -24,6 +24,13 @@ class DispatchWidget extends Widget
         }
 
         $dispatch_templates = Dispatch::getAll();
+
+        if ($dispatch->is_plugin == 1) {
+            $dispatch_templates = [
+                $dispatch
+            ];
+        }
+
         return view('goods.widgets.dispatch', [
             'dispatch' => $dispatch,
             'dispatch_templates' => $dispatch_templates
