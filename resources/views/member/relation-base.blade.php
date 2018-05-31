@@ -48,10 +48,11 @@
 
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">获得推广权限通知</label>
-                        <div class="col-sm-9 col-xs-12">
+                        <div class="col-sm-8 col-xs-12">
                             <select name='base[member_agent]' class='form-control diy-notice'>
-                                <option value="" @if(!$base['member_agent']) selected @endif >
-                                    请选择消息模板
+                                <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($base['member_agent'])) value="{{$base['member_agent']}}"
+                                        selected @else value="" @endif>
+                                    默认消息模板
                                 </option>
                                 @foreach ($temp_list as $item)
                                     <option value="{{$item['id']}}"
@@ -61,6 +62,10 @@
                                 @endforeach
                             </select>
                         </div>
+                        <input class="mui-switch mui-switch-animbg" id="member_agent" type="checkbox"
+                               @if(\app\common\models\notice\MessageTemp::getIsDefaultById($base['member_agent']))
+                               checked @endif
+                               onclick="message_default(this.id)"/>
                     </div>
 
                     {{--<div class="form-group">
@@ -81,10 +86,11 @@
 
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">新增下线通知</label>
-                        <div class="col-sm-9 col-xs-12">
+                        <div class="col-sm-8 col-xs-12">
                             <select name='base[member_new_lower]' class='form-control diy-notice'>
-                                <option value="" @if(!$base['member_new_lower']) selected @endif >
-                                    请选择消息模板
+                                <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($base['member_new_lower'])) value="{{$base['member_new_lower']}}"
+                                        selected @else value="" @endif>
+                                    默认消息模板
                                 </option>
                                 @foreach ($temp_list as $item)
                                     <option value="{{$item['id']}}"
@@ -94,6 +100,10 @@
                                 @endforeach
                             </select>
                         </div>
+                        <input class="mui-switch mui-switch-animbg" id="member_new_lower" type="checkbox"
+                               @if(\app\common\models\notice\MessageTemp::getIsDefaultById($base['member_new_lower']))
+                               checked @endif
+                               onclick="message_default(this.id)"/>
                     </div>
                 </div>
 
@@ -130,8 +140,46 @@
         </form>
 
         <script>
-            require(['select2'], function () {
-                $('.diy-notice').select2();
-            })
+            $('.diy-notice').select2();
+        </script>
+        <script>
+            function message_default(name) {
+                var id = "#" + name;
+                var setting_name = "relation_base";
+                var select_name = "select[name='base[" + name + "]']"
+                var url_open = "{!! yzWebUrl('setting.default-notice.index') !!}"
+                var url_close = "{!! yzWebUrl('setting.default-notice.cancel') !!}"
+                var postdata = {
+                    notice_name: name,
+                    setting_name: setting_name
+                };
+                if ($(id).is(':checked')) {
+                    //开
+                    $.post(url_open,postdata,function(data){
+                        if (data) {
+                            $(select_name).find("option:selected").val(data.id)
+                            showPopover($(id),"开启成功")
+                        }
+                    }, "json");
+                } else {
+                    //关
+                    $.post(url_close,postdata,function(data){
+                        $(select_name).val('');
+                        showPopover($(id),"关闭成功")
+                    }, "json");
+                }
+            }
+            function showPopover(target, msg) {
+                target.attr("data-original-title", msg);
+                $('[data-toggle="tooltip"]').tooltip();
+                target.tooltip('show');
+                target.focus();
+                //2秒后消失提示框
+                setTimeout(function () {
+                        target.attr("data-original-title", "");
+                        target.tooltip('hide');
+                    }, 2000
+                );
+            }
         </script>
     </section>@endsection
