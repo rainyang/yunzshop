@@ -54,9 +54,9 @@ class OrderDiscount
     {
         $this->discounts = collect();
         //单品满减
-        $this->discounts->put('singleEnoughReduce ', new SingleEnoughReduce($this->order));
+        //$this->discounts->put('singleEnoughReduce ', new SingleEnoughReduce($this->order));
         //全场满减
-        $this->discounts->put('enoughReduce ', new EnoughReduce($this->order));
+        //$this->discounts->put('enoughReduce ', new EnoughReduce($this->order));
         //优惠券
         $this->discounts->put('couponDiscount ', new CouponDiscount($this->order));
 

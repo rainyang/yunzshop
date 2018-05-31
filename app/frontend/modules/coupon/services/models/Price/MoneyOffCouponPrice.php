@@ -14,12 +14,11 @@ use app\frontend\modules\orderGoods\models\PreOrderGoods;
 
 class MoneyOffCouponPrice extends CouponPrice
 {
-
     /**
      * 优惠券价格
      * @return mixed
      */
-    public function getPrice()
+    protected function _getAmount()
     {
         return min($this->dbCoupon->deduct,$this->getOrderGoodsCollectionPaymentAmount());
     }

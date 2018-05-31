@@ -33,7 +33,7 @@ class CouponDiscount extends BaseDiscount
         //dd($moneyOffPrice);
         //$moneyOffCouponService->activate();
         $result = $discountPrice + $moneyOffPrice;
-        
+
         return $result;
     }
 }

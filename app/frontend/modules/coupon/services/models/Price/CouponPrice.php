@@ -18,7 +18,7 @@ use app\frontend\modules\order\models\PreOrder;
 abstract class CouponPrice
 {
     protected $isSet = false;
-
+    protected $amount;
     /**
      * 优惠券数据库model
      * @var \app\common\models\Coupon
@@ -85,12 +85,17 @@ abstract class CouponPrice
         });
         return $this->getOrderGoodsCollectionPrice() - $enough;
     }
-
+    public function getPrice(){
+        if(!isset($this->amount)){
+            $this->amount = $this->_getAmount();
+        }
+        return $this->amount;
+    }
     /**
      * 订单获取优惠券 金额
      * @return mixed
      */
-    abstract public function getPrice();
+    abstract protected function _getAmount();
     /**
      * 累加所有商品会员价
      * @return int

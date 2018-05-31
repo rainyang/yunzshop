@@ -15,7 +15,7 @@ use app\frontend\modules\orderGoods\models\PreOrderGoods;
 
 class DiscountCouponPrice extends CouponPrice
 {
-    public function getPrice()
+    protected function _getAmount()
     {
         return (1 - $this->dbCoupon->discount/10) * $this->getOrderGoodsCollectionPaymentAmount();
     }
