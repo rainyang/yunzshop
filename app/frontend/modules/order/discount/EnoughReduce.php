@@ -35,11 +35,11 @@ class EnoughReduce extends BaseDiscount
 
         // 订单总价满足金额,则返回优惠金额
         foreach ($settings as $setting) {
-            if ($this->order->price > $setting['enough']) {
+
+            if ($this->order->price >= $setting['enough']) {
                 return $setting['reduce'];
             }
         }
-
         return 0;
     }
 }

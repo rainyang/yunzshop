@@ -74,8 +74,8 @@ class OrderDiscount
                 // todo 暂时想不到其他办法了
                 $this->order->price -= $discount->getAmount();
                 $this->amount+= $discount->getAmount();
-
             });
+
             $this->setOrderDiscounts();
         }
         return $this->amount;

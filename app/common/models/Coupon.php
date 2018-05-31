@@ -16,6 +16,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int id
  * @property int total
  * @property int time_days
+ * @property float discount
+ * @property float enough
+ * @property float deduct
  * @property Carbon time_start
  * @property Carbon time_end
  */

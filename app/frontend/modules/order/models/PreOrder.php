@@ -130,7 +130,10 @@ class PreOrder extends Order
      */
     protected function getDiscountAmount()
     {
-        return $this->discount->getAmount();
+        if(isset($this->discount_price)){
+            return $this->discount_price;
+        }
+        return $this->discount_price = $this->discount->getAmount();
     }
 
     /**
@@ -291,16 +294,18 @@ class PreOrder extends Order
     protected function getPrice()
     {
         if (isset($this->price)) {
+            // 一次计算内避免循环调用,返回计算过程中的价格
             return $this->price;
         }
         //订单最终价格 = 商品最终价格 - 订单优惠 + 订单运费 - 订单抵扣
         $this->price = $this->getOrderGoodsPrice();
+        // todo 为了保证每一项优惠计算之后,立刻修改price ,临时修改成这样.需要想办法重写
         $this->getDiscountAmount();
+
         $this->price += $this->getDispatchAmount();
+
         $this->price -= $this->getDeductionAmount();
-        $result = $this->price;
-        unset($this->price);
-        return $result;
+        return  $this->price;
     }
 
     /**
