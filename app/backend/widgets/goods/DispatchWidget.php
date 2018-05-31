@@ -25,10 +25,13 @@ class DispatchWidget extends Widget
 
         $dispatch_templates = Dispatch::getAll();
 
-        if ($dispatch->is_plugin == 1) {
-            $dispatch_templates = [
-                $dispatch
-            ];
+        if ($dispatch->dispatch_id) {
+            $verify_dispatch = Dispatch::find($dispatch->dispatch_id);
+            if ($verify_dispatch->is_plugin == 1) {
+                $dispatch_templates = [
+                    $verify_dispatch
+                ];
+            }
         }
 
         return view('goods.widgets.dispatch', [
