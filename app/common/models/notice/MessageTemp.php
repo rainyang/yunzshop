@@ -40,6 +40,26 @@ class MessageTemp extends BaseModel
         'data' => 'json'
     ];
 
+    public static function getList()
+    {
+        return self::select('id', 'title')->where('is_default',0)->get();
+    }
+
+    public function getTempIdByNoticeType($notice_type)
+    {
+        return self::where('notice_type',$notice_type)->value('id');
+    }
+
+    public static function delTempDataByTempId($temp_id)
+    {
+        return self::where('template_id',$temp_id)->delete();
+    }
+
+    public static function getIsDefaultById($temp_id)
+    {
+        return self::whereId($temp_id)->where('is_default',1)->first();
+    }
+
     public static function getTempById($temp_id)
     {
         return self::select()->whereId($temp_id);
@@ -47,7 +67,7 @@ class MessageTemp extends BaseModel
 
     public static function fetchTempList($kwd)
     {
-        return self::select()->likeTitle($kwd);
+        return self::select()->where('is_default',0)->likeTitle($kwd);
     }
 
     public function scopeLikeTitle($query, $kwd)
