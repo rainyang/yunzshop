@@ -17,7 +17,7 @@ namespace app\frontend\modules\dispatch\discount;
 class EnoughReduce extends BaseFreightDiscount
 {
     protected $name = '全场运费满额减';
-    protected $code = 'EnoughReduce';
+    protected $code = 'freightEnoughReduce';
 
     protected function _getAmount()
     {

@@ -200,14 +200,6 @@ class PreOrderGoods extends OrderGoods
         $attributes = parent::toArray();
         $attributes['payment_amount'] = $this->getPaymentAmount();
         $attributes['deduction_amount'] = $this->getDeductionAmount();
-        // 格式化价格字段,将key中带有price,amount的属性,转为保留2位小数的字符串
-        $attributes = array_combine(array_keys($attributes), array_map(function ($value, $key) {
-            if (str_contains($key, 'price') || str_contains($key, 'amount')) {
-                $value = sprintf('%.2f', $value);
-            }
-            return $value;
-        }, $attributes, array_keys($attributes)));
-
         return $attributes;
     }
 

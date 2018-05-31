@@ -123,17 +123,16 @@ class PreOrder extends Order
     {
         return $this->belongsToMember;
     }
-
+    public function getDiscount(){
+        return $this->discount;
+    }
     /**
      * 计算订单优惠金额
      * @return number
      */
     protected function getDiscountAmount()
     {
-        if(isset($this->discount_price)){
-            return $this->discount_price;
-        }
-        return $this->discount_price = $this->discount->getAmount();
+        return $this->discount->getAmount();
     }
 
     /**
@@ -205,17 +204,29 @@ class PreOrder extends Order
      */
     public function toArray()
     {
+        $attributes = parent::toArray();
+        $attributes = $this->formatAmountAttributes($attributes);
+        return $attributes;
+    }
 
-        $attributes =  parent::toArray();
-
+    /**
+     * 递归格式化金额字段
+     * @param $attributes
+     * @return array
+     */
+    private function formatAmountAttributes($attributes)
+    {
         // 格式化价格字段,将key中带有price,amount的属性,转为保留2位小数的字符串
         $attributes = array_combine(array_keys($attributes), array_map(function ($value, $key) {
-            if (str_contains($key, 'price') || str_contains($key, 'amount')) {
-                $value = sprintf('%.2f', $value);
+            if(is_array($value)){
+                $value = $this->formatAmountAttributes($value);
+            }else{
+                if (str_contains($key, 'price') || str_contains($key, 'amount')) {
+                    $value = sprintf('%.2f', $value);
+                }
             }
             return $value;
         }, $attributes, array_keys($attributes)));
-
         return $attributes;
     }
 
@@ -305,7 +316,7 @@ class PreOrder extends Order
         $this->price += $this->getDispatchAmount();
 
         $this->price -= $this->getDeductionAmount();
-        return  max($this->price,0);
+        return max($this->price, 0);
     }
 
     /**

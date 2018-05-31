@@ -69,7 +69,7 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
         $this->paymentAmount = $this->getPrice();
 
         $this->paymentAmount -= $this->getSingleEnoughReduceAmount();
-        $this->paymentAmount -= $this->getFullReductionAmount();
+        $this->paymentAmount -= $this->getEnoughReduceAmount();
 
         $this->paymentAmount -= $this->getCouponAmount();
         $this->paymentAmount -= $this->getDeductionAmount();
@@ -130,39 +130,24 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
     }
 
     /**
-     * 单品满减 todo
+     * 单品满减
+     * @return float|int
+     * @throws \app\common\exceptions\ShopException
      */
     private function getSingleEnoughReduceAmount()
     {
-        return 0.0;
+        return $this->singleEnoughReduce->getAmount();
     }
 
     /**
-     * 全场满减 todo
-     * @return int
+     * 全场满减
+     * @return float|int
+     * @throws \app\common\exceptions\ShopException
      */
-    private function getFullReductionAmount()
+    private function getEnoughReduceAmount()
     {
 
-        return 0.0;
-    }
-
-    /**
-     * 定义订单商品的单品满减优惠
-     * @param $amount
-     */
-    private function setFullReductionOrderGoodsDiscount($amount)
-    {
-        if (empty($amount)) {
-            return;
-        }
-        $orderGoodsDiscount = new PreOrderGoodsDiscount([
-            'discount_code' => 'fullReduction',
-            'amount' => $amount,
-            'name' => '单品满额减',
-        ]);
-        $orderGoodsDiscount->setOrderGoods($this->orderGoods);
-
+        return $this->enoughReduce->getAmount();
     }
 
     /**

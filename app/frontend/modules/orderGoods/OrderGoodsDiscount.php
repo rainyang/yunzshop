@@ -6,18 +6,11 @@
  * Time: 下午1:49
  */
 
-namespace app\frontend\modules\orderGoods\price;
+namespace app\frontend\modules\orderGoods;
 
-use app\frontend\modules\orderGoods\models\PreOrderGoods;
+use app\common\models\order\OrderDiscount;
 
-class OrderGoodsDiscount
+class OrderGoodsDiscount extends OrderDiscount
 {
-    /**
-     * @var PreOrderGoods
-     */
-    private $orderGoods;
-    public function __construct(PreOrderGoods $orderGoods)
-    {
-        $this->orderGoods = $orderGoods;
-    }
+
 }

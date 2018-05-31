@@ -27,7 +27,7 @@ class Sale extends \app\common\models\Sale
      * @param float $enough
      * @return float
      */
-    public function getFullReductionAmount($enough)
+    public function getEnoughReductionAmount($enough)
     {
         if ($enough < $this->ed_full) {
             // 未满额

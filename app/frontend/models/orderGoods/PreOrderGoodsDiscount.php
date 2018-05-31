@@ -9,8 +9,9 @@
 namespace app\frontend\models\orderGoods;
 
 use app\frontend\modules\orderGoods\models\PreOrderGoods;
+use app\frontend\modules\orderGoods\OrderGoodsDiscount;
 
-class PreOrderGoodsDiscount extends \app\common\models\orderGoods\OrderGoodsDiscount
+class PreOrderGoodsDiscount extends OrderGoodsDiscount
 {
     public $orderGoods;
 

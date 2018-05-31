@@ -37,7 +37,7 @@ class EnoughReduce extends BaseDiscount
         foreach ($settings as $setting) {
 
             if ($this->order->price >= $setting['enough']) {
-                return $setting['reduce'];
+                return min($setting['reduce'],$this->order->price);
             }
         }
         return 0;

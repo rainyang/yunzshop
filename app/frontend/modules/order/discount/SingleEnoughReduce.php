@@ -25,12 +25,12 @@ class SingleEnoughReduce extends BaseDiscount
      */
     protected function _getAmount()
     {
-        $result = 0;
         //对订单商品按goods_id去重 累加单品满减金额
-        $this->order->orderGoods->unique('goods_id')->sum(function (PreOrderGoods $orderGoods) {
+        $result = $this->order->orderGoods->unique('goods_id')->sum(function (PreOrderGoods $orderGoods) {
             return $this->totalAmount($orderGoods);
 
         });
+
         return $result;
     }
 
@@ -40,11 +40,9 @@ class SingleEnoughReduce extends BaseDiscount
      * @return float
      */
     private function totalAmount(PreOrderGoods $orderGoods){
-        // 求和订单中指定goods_id的订单商品支付金额
-        $amount =  $this->order->orderGoods->where('goods_id', $orderGoods->goods_id)->sum(function (PreOrderGoods $orderGoods) {
-            return $orderGoods->getPaymentAmount();
-        });
-        // 获取传入order_goods的单品满减金额
-        return $orderGoods->sale->getFullReductionAmount($amount);
+        // 求和所属订单中指定goods_id的订单商品支付金额
+        $amount =  $this->order->orderGoods->where('goods_id', $orderGoods->goods_id)->getPaymentAmount();
+        // order_goods的单品满减金额
+        return $orderGoods->sale->getEnoughReductionAmount($amount);
     }
 }

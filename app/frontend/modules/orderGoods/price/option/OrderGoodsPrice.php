@@ -2,9 +2,9 @@
 
 namespace app\frontend\modules\orderGoods\price\option;
 
-use app\frontend\models\Goods;
+use app\frontend\modules\orderGoods\discount\EnoughReduce;
+use app\frontend\modules\orderGoods\discount\SingleEnoughReduce;
 use app\frontend\modules\orderGoods\models\PreOrderGoods;
-use app\frontend\modules\orderGoods\price\OrderGoodsPriceCalculator;
 
 /**
  * Created by PhpStorm.
@@ -25,10 +25,19 @@ abstract class OrderGoodsPrice
      * @var \app\frontend\modules\orderGoods\models\PreOrderGoods
      */
     public $orderGoods;
-
+    /**
+     * @var SingleEnoughReduce
+     */
+    protected $singleEnoughReduce;
+    /**
+     * @var EnoughReduce
+     */
+    protected $enoughReduce;
     public function __construct(PreOrderGoods $preOrderGoods)
     {
         $this->orderGoods = $preOrderGoods;
+        $this->singleEnoughReduce = new SingleEnoughReduce($this->orderGoods);
+        $this->enoughReduce = new EnoughReduce($this->orderGoods);
     }
 
     /**
