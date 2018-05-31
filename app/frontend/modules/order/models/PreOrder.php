@@ -305,7 +305,7 @@ class PreOrder extends Order
         $this->price += $this->getDispatchAmount();
 
         $this->price -= $this->getDeductionAmount();
-        return  $this->price;
+        return  max($this->price,0);
     }
 
     /**
