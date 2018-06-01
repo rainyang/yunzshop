@@ -2,9 +2,26 @@
 
 namespace app\common\models;
 
-use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * Class Coupon
+ * @package app\common\models
+ * @property int coupon_method
+ * @property int use_type
+ * @property int time_limit
+ * @property string name
+ * @property int is_complex
+ * @property int id
+ * @property int total
+ * @property int time_days
+ * @property float discount
+ * @property float enough
+ * @property float deduct
+ * @property Carbon time_start
+ * @property Carbon time_end
+ */
 class  Coupon extends BaseModel
 {
     use SoftDeletes;

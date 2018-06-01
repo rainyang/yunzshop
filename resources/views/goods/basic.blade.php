@@ -202,9 +202,6 @@
 
 @section('js')
     <script>
-require(['select2'],function(){
-    $('#brand').select2();
-})
-
-</script>
+        $('#brand').select2();
+    </script>
  @stop

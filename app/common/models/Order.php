@@ -25,6 +25,7 @@ use app\common\models\order\Remark;
 use app\common\models\refund\RefundApply;
 use app\frontend\modules\order\services\status\StatusFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use app\backend\modules\order\observers\OrderObserver;
 
@@ -33,7 +34,8 @@ use app\backend\modules\order\observers\OrderObserver;
  * @package app\common\models
  * @property int plugin_id
  * @property int id
- * @property int order_id
+ * @property int uid
+ * @property string order_sn
  * @property int price
  * @property int status_name
  * @property int status
@@ -41,6 +43,7 @@ use app\backend\modules\order\observers\OrderObserver;
  * @property int pay_type_id
  * @property int order_pay_id
  * @property int dispatch_type_id
+ * @property Collection orderGoods
  */
 class Order extends BaseModel
 {
@@ -164,6 +167,14 @@ class Order extends BaseModel
     public function orderGoods()
     {
         return $this->hasMany(self::getNearestModel('OrderGoods'), 'order_id', 'id');
+    }
+
+    /**
+     * 关联模型 1对多:订单优惠信息
+     */
+    public function discounts()
+    {
+        return $this->hasMany(app('OrderManager')->make('OrderDiscount'), 'order_id', 'id');
     }
 
     /**

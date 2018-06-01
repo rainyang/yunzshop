@@ -39,4 +39,18 @@ class SubMemberModel extends MemberShopInfo
     {
         self::create($data);
     }
+
+    public static function getMemberId($openid)
+    {
+        return self::uniacid()
+            ->where('yz_openid', $openid)
+            ->value('member_id');
+    }
+
+    public static function updateOpenid($uid, $data)
+    {
+        self::uniacid()
+            ->where('member_id', $uid)
+            ->update($data);
+    }
 }

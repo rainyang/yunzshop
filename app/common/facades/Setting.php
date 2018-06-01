@@ -79,4 +79,13 @@ class Setting extends Facade
     {
         return self::getInstance()->fetchSettings(self::$uniqueAccountId, $group);
     }
+    /**
+     * 获取分组所有值
+     * @param $group
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     */
+    public static function getByGroup($group)
+    {
+        return self::getInstance()->getItems(self::$uniqueAccountId, $group);
+    }
 }

@@ -68,6 +68,12 @@ class WechatController extends PaymentController
 
     public function returnUrl()
     {
+        $trade = \Setting::get('shop.trade');
+
+        if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
+            return redirect($trade['redirect_url'])->send();
+        }
+
         if (\YunShop::request()->outtradeno) {
             $orderPay = OrderPay::where('pay_sn', \YunShop::request()->outtradeno)->first();
             $orders = Order::whereIn('id', $orderPay->order_ids)->get();

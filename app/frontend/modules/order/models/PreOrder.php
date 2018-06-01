@@ -3,9 +3,13 @@
 namespace app\frontend\modules\order\models;
 
 use app\common\exceptions\AppException;
+use app\common\models\DispatchType;
+use app\frontend\models\Member;
 use app\frontend\models\Order;
-use app\frontend\modules\discount\models\OrderDiscount;
+use app\frontend\models\OrderAddress;
+use app\frontend\modules\deduction\OrderDeduction;
 use app\frontend\modules\dispatch\models\OrderDispatch;
+use app\frontend\modules\order\OrderDiscount;
 use app\frontend\modules\orderGoods\models\PreOrderGoods;
 use app\frontend\modules\order\services\OrderService;
 use app\frontend\modules\orderGoods\models\PreOrderGoodsCollection;
@@ -17,9 +21,12 @@ use Illuminate\Support\Facades\Schema;
  * Class preOrder
  * @package app\frontend\modules\order\services\models
  * @property Collection orderDeductions
+ * @property Collection orderDiscounts
  * @property Collection orderCoupons
  * @property Collection orderSettings
  * @property int id
+ * @property string mark
+ * @property string pre_id
  * @property float price
  * @property float goods_price
  * @property float order_goods_price
@@ -30,8 +37,11 @@ use Illuminate\Support\Facades\Schema;
  * @property string order_sn
  * @property int create_time
  * @property int uid
+ * @property OrderAddress orderAddress
  * @property int uniacid
  * @property PreOrderGoodsCollection orderGoods
+ * @property Member belongsToMember
+ * @property DispatchType hasOneDispatchType
  */
 class PreOrder extends Order
 {
@@ -44,7 +54,11 @@ class PreOrder extends Order
     /**
      * @var OrderDiscount 优惠类
      */
-    protected $orderDiscount;
+    protected $discount;
+    /**
+     * @var OrderDeduction 抵扣类
+     */
+    protected $orderDeduction;
 
     public function setOrderGoods(Collection $orderGoods)
     {
@@ -60,8 +74,9 @@ class PreOrder extends Order
             $aOrderGoods->setOrder($this);
         });
 
-        $this->setDispatch();
-        $this->setDiscount();
+        $this->discount = new OrderDiscount($this);
+        $this->orderDispatch = new OrderDispatch($this);
+        $this->orderDeduction = new OrderDeduction($this);
 
     }
 
@@ -74,7 +89,7 @@ class PreOrder extends Order
             $this->mark = request()->input('mark', '');
         }
         parent::__construct($attributes);
-        $this->setRelation('orderSettings',$this->newCollection());
+        $this->setRelation('orderSettings', $this->newCollection());
 
     }
 
@@ -88,16 +103,6 @@ class PreOrder extends Order
              */
             $aOrderGoods->_init();
         });
-    }
-
-    protected function setDiscount()
-    {
-        $this->orderDiscount = new OrderDiscount($this);
-    }
-
-    protected function setDispatch()
-    {
-        $this->orderDispatch = new OrderDispatch($this);
     }
 
     /**
@@ -118,32 +123,35 @@ class PreOrder extends Order
     {
         return $this->belongsToMember;
     }
-
+    public function getDiscount(){
+        return $this->discount;
+    }
     /**
      * 计算订单优惠金额
      * @return number
      */
     protected function getDiscountAmount()
     {
-        return $this->orderDiscount->getDiscountAmount();
+        return $this->discount->getAmount();
     }
 
     /**
      * 获取订单抵扣金额
      * @return number
      */
-    protected function getDeductionPrice()
+    protected function getDeductionAmount()
     {
-        return $this->orderDiscount->getDeductionPrice();
+        return $this->orderDeduction->getAmount();
     }
 
     /**
      * 计算订单运费
      * @return int|number
      */
-    public function getDispatchPrice()
+    public function getDispatchAmount()
     {
-        return $this->orderDispatch->getDispatchPrice();
+
+        return $this->orderDispatch->getFreight();
     }
 
     /**
@@ -162,7 +170,7 @@ class PreOrder extends Order
      */
     public function getParams($key = null)
     {
-        $result = collect(json_decode(\Request::input('orders'), true))->where('pre_id', $this->pre_id)->first();
+        $result = collect(json_decode(request()->input('orders'), true))->where('pre_id', $this->pre_id)->first();
         if (isset($key)) {
             return $result[$key];
         }
@@ -177,8 +185,8 @@ class PreOrder extends Order
             'order_goods_price' => $this->getOrderGoodsPrice(),//订单商品成交价
             'goods_price' => $this->getGoodsPrice(),//订单商品原价
             'discount_price' => $this->getDiscountAmount(),//订单优惠金额
-            'deduction_price' => $this->getDeductionPrice(),//订单抵扣金额
-            'dispatch_price' => $this->getDispatchPrice(),//订单运费
+            'deduction_price' => $this->getDeductionAmount(),//订单抵扣金额
+            'dispatch_price' => $this->getDispatchAmount(),//订单运费
             'goods_total' => $this->getGoodsTotal(),//订单商品总数
             'order_sn' => OrderService::createOrderSN(),//订单编号
             'create_time' => time(),
@@ -196,19 +204,35 @@ class PreOrder extends Order
      */
     public function toArray()
     {
-        $attributes = $this->getAttributes();
+        $attributes = parent::toArray();
+        $attributes = $this->formatAmountAttributes($attributes);
+        return $attributes;
+    }
+
+    /**
+     * 递归格式化金额字段
+     * @param $attributes
+     * @return array
+     */
+    private function formatAmountAttributes($attributes)
+    {
         // 格式化价格字段,将key中带有price,amount的属性,转为保留2位小数的字符串
         $attributes = array_combine(array_keys($attributes), array_map(function ($value, $key) {
-            if (strpos($key, 'price') || strpos($key, 'amount')) {
-                $value = sprintf('%.2f', $value);
+            if(is_array($value)){
+                $value = $this->formatAmountAttributes($value);
+            }else{
+                if (str_contains($key, 'price') || str_contains($key, 'amount')) {
+                    $value = sprintf('%.2f', $value);
+                }
             }
             return $value;
         }, $attributes, array_keys($attributes)));
-        $this->setRawAttributes($attributes);
-
-        return parent::toArray();
+        return $attributes;
     }
 
+    /**
+     * @return bool
+     */
     public function push()
     {
         foreach ($this->relations as $models) {
@@ -237,7 +261,7 @@ class PreOrder extends Order
 
         $result = $this->push();
 
-        if($result === false){
+        if ($result === false) {
 
             throw new AppException('订单相关信息保存失败');
         }
@@ -280,14 +304,19 @@ class PreOrder extends Order
      */
     protected function getPrice()
     {
-        if(isset($this->price)){
+        if (isset($this->price)) {
+            // 一次计算内避免循环调用,返回计算过程中的价格
             return $this->price;
         }
+        //订单最终价格 = 商品最终价格 - 订单优惠 + 订单运费 - 订单抵扣
+        $this->price = $this->getOrderGoodsPrice();
+        // todo 为了保证每一项优惠计算之后,立刻修改price ,临时修改成这样.需要想办法重写
+        $this->getDiscountAmount();
 
-        //订单最终价格 = 商品最终价格 - 订单优惠 - 订单抵扣 + 订单运费
-        $this->price = max($this->getOrderGoodsPrice() - $this->getDiscountAmount() + $this->getDispatchPrice(), 0);
-        $this->price = $this->price - $this->getDeductionPrice();
-        return $this->price;
+        $this->price += $this->getDispatchAmount();
+
+        $this->price -= $this->getDeductionAmount();
+        return max($this->price, 0);
     }
 
     /**
@@ -296,7 +325,7 @@ class PreOrder extends Order
      */
     protected function getOrderGoodsPrice()
     {
-        $result = $this->orderGoods->sum(function ($aOrderGoods) {
+        $result = $this->orderGoods->sum(function (PreOrderGoods $aOrderGoods) {
             return $aOrderGoods->getPrice();
         });
 
@@ -312,14 +341,10 @@ class PreOrder extends Order
      */
     protected function getGoodsPrice()
     {
-        $result = $this->orderGoods->sum(function ($aOrderGoods) {
+        $result = $this->orderGoods->sum(function (PreOrderGoods $aOrderGoods) {
             return $aOrderGoods->getGoodsPrice();
         });
         return $result;
     }
 
-    public function __get($key)
-    {
-        return parent::__get($key); // TODO: Change the autogenerated stub
-    }
 }

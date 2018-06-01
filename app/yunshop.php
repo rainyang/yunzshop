@@ -33,7 +33,7 @@ class YunShop
     {
         //检测命名空间
         if (!class_exists($namespace)) {
-            throw new NotFoundException(" 不存在类: " . $namespace);
+            throw new NotFoundException(" 路由错误:不存在类: " . $namespace);
         }
         //检测controller继承
         $controller = new $namespace;
@@ -41,7 +41,7 @@ class YunShop
             if(config('app.debug')){
                 throw new NotFoundException($controller.' 没有继承\app\common\components\BaseController: ' . $namespace);
             }
-            throw new NotFoundException(" 不存在控制器: " . $namespace);
+            throw new NotFoundException(" 路由错误:不存在控制器: " . $namespace);
 
         }
 
@@ -54,7 +54,7 @@ class YunShop
 
         //检测方法是否存在并可执行
         if (!method_exists($namespace, $action) || !is_callable([$namespace, $action])) {
-            throw new NotFoundException('操作方法不存在: ' . $action);
+            throw new NotFoundException('路由错误:操作方法不存在: ' . $action);
         }
         $controller->modules = $modules;
         $controller->controller = $controllerName;
@@ -269,50 +269,56 @@ class YunShop
      */
     public static function parseRoute($requestRoute)
     {
-        $routes = explode('.', $requestRoute);
+        try {
+            $routes = explode('.', $requestRoute);
 
-        $path = self::getAppPath();
+            $path = self::getAppPath();
 
-        $namespace = self::getAppNamespace();
-        $action = '';
-        $controllerName = '';
-        $currentRoutes = [];
-        $modules = [];
-        if ($routes) {
-            $length = count($routes);
-            $routeFirst = array_first($routes);
-            $countRoute = count($routes);
-            if ($routeFirst === 'plugin' || self::isPlugin()) {
-                if (self::isPlugin()) {
-                    $currentRoutes[] = 'plugin';
-                    $countRoute += 1;
-                } else {
-                    $currentRoutes[] = $routeFirst;
-                    array_shift($routes);
-                }
-                $namespace = 'Yunshop';
-                $pluginName = array_shift($routes);
-                if ($pluginName || plugin($pluginName)) {
-                    $currentRoutes[] = $pluginName;
-                    $namespace .= '\\' . ucfirst(Str::camel($pluginName));
-                    $path = base_path() . '/plugins/' . $pluginName . '/src';
-                    $length = $countRoute;
+            $namespace = self::getAppNamespace();
+            $action = '';
+            $controllerName = '';
+            $currentRoutes = [];
+            $modules = [];
+            if ($routes) {
+                $length = count($routes);
+                $routeFirst = array_first($routes);
+                $countRoute = count($routes);
+                if ($routeFirst === 'plugin' || self::isPlugin()) {
+                    if (self::isPlugin()) {
+                        $currentRoutes[] = 'plugin';
+                        $countRoute += 1;
+                    } else {
+                        $currentRoutes[] = $routeFirst;
+                        array_shift($routes);
+                    }
+                    $namespace = 'Yunshop';
+                    $pluginName = array_shift($routes);
+                    if ($pluginName || plugin($pluginName)) {
+                        $currentRoutes[] = $pluginName;
+                        $namespace .= '\\' . ucfirst(Str::camel($pluginName));
+                        $path = base_path() . '/plugins/' . $pluginName . '/src';
+                        $length = $countRoute;
 
-                    self::findRouteFile($controllerName, $action, $routes, $namespace, $path, $length, $currentRoutes, $requestRoute, true);
+                        self::findRouteFile($controllerName, $action, $routes, $namespace, $path, $length, $currentRoutes, $requestRoute, true);
 
-                    if(!app('plugins')->isEnabled($pluginName)){
-                        throw new NotFoundException("{$pluginName}插件已禁用");
+                        if (!app('plugins')->isEnabled($pluginName)) {
+                            throw new NotFoundException("{$pluginName}插件已禁用");
+
+                        }
+                    } else {
+                        throw new NotFoundException('无此插件');
 
                     }
                 } else {
-                    throw new NotFoundException('无此插件');
+
+                    self::findRouteFile($controllerName, $action, $routes, $namespace, $path, $length, $currentRoutes, $requestRoute, false);
 
                 }
-            } else {
-
-                self::findRouteFile($controllerName, $action, $routes, $namespace, $path, $length, $currentRoutes, $requestRoute, false);
-
             }
+        }catch (Exception $exception){
+//            dd($exception);
+//            exit;
+
         }
         //执行run
         static::run($namespace, $modules, $controllerName, $action, $currentRoutes);
@@ -336,6 +342,7 @@ class YunShop
         foreach ($routes as $k => $r) {
             $ucFirstRoute = ucfirst(Str::camel($r));
             $controllerFile = $path . ($isPlugin ? '/' : '/controllers/') . $ucFirstRoute . 'Controller.php';
+
             if (is_file($controllerFile)) {
                 $namespace .= ($isPlugin ? '' : '\\controllers') . '\\' . $ucFirstRoute . 'Controller';
                 $controllerName = $ucFirstRoute;
@@ -348,7 +355,8 @@ class YunShop
             } else {
 
                 if ($length !== ($isPlugin ? $k + 3 : $k + 1)) {
-
+//dump($controllerFile);
+//dump($path);
                     throw new NotFoundException('路由长度有误:' . $requestRoute);
 
                 }
