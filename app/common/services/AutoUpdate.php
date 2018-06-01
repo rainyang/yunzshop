@@ -900,10 +900,12 @@ class AutoUpdate
     {
         if (!preg_match($_SERVER['HTTP_HOST'], $domain)) {
             if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
-                return 'unknown';
+                return 'known';
             }
 
-            redirect(yzWebFullUrl('update.pirate'))->send();
+            //redirect(yzWebFullUrl('update.pirate'))->send();
         }
+
+        return true;
     }
 }
