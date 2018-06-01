@@ -898,16 +898,12 @@ class AutoUpdate
 
     private function checkDomain($domain)
     {
-        $unknown = false;
-
         if (!preg_match($_SERVER['HTTP_HOST'], $domain)) {
-            $unknown = true;
-        }
+            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+                return 'unknown';
+            }
 
-        if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
-            return 'known';
-        } else {
-         //   redirect(yzWebFullUrl('update.pirate'))->send();
+            redirect(yzWebFullUrl('update.pirate'))->send();
         }
     }
 }
