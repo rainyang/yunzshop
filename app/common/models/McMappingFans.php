@@ -47,6 +47,7 @@ class McMappingFans extends BackendModel
     public static function getAllFans()
     {
         return self::uniacid()
+            ->where('uid', '>', 0)
             ->get();
     }
 

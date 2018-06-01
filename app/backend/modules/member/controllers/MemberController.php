@@ -15,20 +15,17 @@ use app\backend\modules\member\models\MemberGroup;
 use app\backend\modules\member\models\MemberLevel;
 use app\backend\modules\member\models\MemberRecord;
 use app\backend\modules\member\models\MemberShopInfo;
-use app\backend\modules\member\models\MemberUnique;
 use app\backend\modules\member\services\MemberServices;
 use app\common\components\BaseController;
 use app\common\events\member\MemberRelationEvent;
 use app\common\events\member\RegisterByAgent;
 use app\common\helpers\PaginationHelper;
 use app\common\models\AccountWechats;
-use app\common\models\MemberMiniAppModel;
-use app\common\models\MemberWechatModel;
 use app\common\services\ExportService;
 use app\frontend\modules\member\models\MemberUniqueModel;
 use app\frontend\modules\member\models\SubMemberModel;
-use Illuminate\Support\Facades\DB;
 use Yunshop\Commission\models\Agents;
+
 
 
 class MemberController extends BaseController
@@ -589,7 +586,7 @@ class MemberController extends BaseController
 
     public function updateWechatOpenData()
     {
-        $member_info = McMappingFans::getAllFans();
+        $member_info = Member::getMembers()->get(); //McMappingFans::getAllFans();
 
         $member_total = count($member_info);
         $update_total = 0;
@@ -611,13 +608,18 @@ class MemberController extends BaseController
             $upgrade_path = 'logs/' . $time . '_upgrade_member_openid.log';
 
             collect($member_info)->each(function($item) use ($uniacid, $global_token, $path, $upgrade_path, &$update_total) {
-                file_put_contents(storage_path($path), $item->openid . "\r\n", FILE_APPEND);
 
-                $global_userinfo_url = $this->_getInfo($global_token['access_token'], $item->openid);
+                file_put_contents(storage_path($path), $item->hasOneFans->openid . "\r\n", FILE_APPEND);
+
+                $global_userinfo_url = $this->_getInfo($global_token['access_token'], $item->hasOneFans->openid);
 
                 $user_info = \Curl::to($global_userinfo_url)
                     ->asJsonResponse(true)
                     ->get();
+
+                if (isset($user_info['errcode'])) {
+                    return $this->message($user_info['errmsg'], yzWebUrl('member.member.index'));
+                }
 
                 if (isset($user_info['unionid'])) {
                     $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $user_info['unionid'])->first();
@@ -626,11 +628,11 @@ class MemberController extends BaseController
                         MemberUniqueModel::insertData(array(
                             'uniacid' => $uniacid,
                             'unionid' => $user_info['unionid'],
-                            'member_id' => $item->uid,
+                            'member_id' => $item->hasOneFans->uid,
                             'type' => 1
                         ));
 
-                        file_put_contents(storage_path($upgrade_path), $item->openid . "\r\n", FILE_APPEND);
+                        file_put_contents(storage_path($upgrade_path), $item->hasOneFans->openid . "\r\n", FILE_APPEND);
 
                         $update_total++;
                     } else {
