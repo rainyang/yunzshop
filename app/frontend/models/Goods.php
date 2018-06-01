@@ -116,9 +116,9 @@ class Goods extends \app\common\models\Goods
 //        if (!isset($this->hasOneGoodsDispatch)) {
 //            throw new AppException('(ID:' . $this->id . ')商品配送信息数据已损坏');
 //        }
-        if (isset($this->hasOnePrivilege)) {
-            $this->hasOnePrivilege->validate($memberCart);
-        }
+//        if (isset($this->hasOnePrivilege)) {
+//            $this->hasOnePrivilege->validate($memberCart);
+//        }
     }
 
     public function hasOneSale()

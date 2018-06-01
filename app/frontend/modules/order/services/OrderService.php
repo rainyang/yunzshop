@@ -119,8 +119,9 @@ class OrderService
      * 根据购物车记录,获取订单信息
      * @param Collection $memberCarts
      * @param null $member
-     * @return bool|mixed
+     * @return PreOrder|bool|mixed
      * @throws AppException
+     * @throws \Exception
      */
     public static function createOrderByMemberCarts(Collection $memberCarts, $member = null)
     {
@@ -135,7 +136,14 @@ class OrderService
         if ($memberCarts->isEmpty()) {
             return false;
         }
-
+        // 按商品id去重
+        $memberCarts->unique('goods_id')->each(function (MemberCart $memberCart) use($memberCarts) {
+            if (isset($memberCart->hasOnePrivilege)) {
+                // 合并规格商品数量,并校验
+                $total = $memberCart->where('goods_id',$memberCart->goods_id)->sum('total');
+                $memberCart->goods->hasOnePrivilege->validate($total);
+            }
+        });
         $shop = ShopService::getCurrentShopModel();
 
         $orderGoodsArr = OrderService::getOrderGoods($memberCarts);
@@ -422,9 +430,9 @@ class OrderService
         $orders = \app\backend\modules\order\models\Order::waitReceive()->where('send_time', '<', (int)Carbon::now()->addDays(-$days)->timestamp)->normal()->get();
         if (!$orders->isEmpty()) {
             $orders->each(function ($order) {
-                try{
+                try {
                     OrderService::orderReceive(['order_id' => $order->id]);
-                }catch (\Exception $e){
+                } catch (\Exception $e) {
 
                 }
             });

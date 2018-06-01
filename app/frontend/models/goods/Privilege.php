@@ -11,7 +11,6 @@ namespace app\frontend\models\goods;
 use app\common\exceptions\AppException;
 use app\common\models\MemberShopInfo;
 use app\frontend\models\goods;
-use app\frontend\models\MemberCart;
 use app\frontend\modules\goods\models\goods\MemberGroup;
 use app\frontend\models\MemberLevel;
 use app\frontend\modules\member\services\MemberService;
@@ -26,18 +25,17 @@ class Privilege extends \app\common\models\goods\Privilege
     ];
 
     /**
-     * @param MemberCart $memberCart
+     * @param $num
      * @throws AppException
      */
-    public function validate(MemberCart $memberCart)
+    public function validate($num)
     {
         $this->validateTimeLimit();
-        // 将购物车按goods_id去重
-        $this->validateOneBuyLimit($memberCart->total);
-        $this->validateDayBuyLimit($memberCart->total);
-        $this->validateWeekBuyLimit($memberCart->total);
-        $this->validateMonthBuyLimit($memberCart->total);
-        $this->validateTotalBuyLimit($memberCart->total);
+        $this->validateOneBuyLimit($num);
+        $this->validateDayBuyLimit($num);
+        $this->validateWeekBuyLimit($num);
+        $this->validateMonthBuyLimit($num);
+        $this->validateTotalBuyLimit($num);
         $this->validateMemberLevelLimit();
         $this->validateMemberGroupLimit();
     }
