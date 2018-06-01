@@ -9,6 +9,7 @@
 namespace app\frontend\modules\member\controllers;
 
 use app\common\components\ApiController;
+use app\common\facades\Setting;
 use app\common\helpers\Client;
 use app\common\helpers\Url;
 use app\common\models\Member;
@@ -71,5 +72,11 @@ class LoginController extends ApiController
     private function init_login () {
         $weixin_oauth = \Setting::get('shop_app.pay.weixin_oauth');
         return $this->successJson('', ['status'=> 1, 'wetach_login' => $weixin_oauth]);
+    }
+
+    public function phoneSetGet()
+    {
+        $phone_oauth = \Setting::get('shop_app.pay.phone_oauth');
+        return $this->successJson('ok', ['phone_oauth' => $phone_oauth]);
     }
 }
