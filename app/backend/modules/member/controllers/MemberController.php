@@ -25,6 +25,7 @@ use app\common\models\AccountWechats;
 use app\common\models\MemberMiniAppModel;
 use app\common\models\MemberWechatModel;
 use app\common\services\ExportService;
+use app\frontend\modules\member\models\MemberUniqueModel;
 use app\frontend\modules\member\models\SubMemberModel;
 use Illuminate\Support\Facades\DB;
 use Yunshop\Commission\models\Agents;
@@ -590,7 +591,8 @@ class MemberController extends BaseController
     {
         $member_info = McMappingFans::getAllFans();
 
-        $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
+        $uniacid = \YunShop::app()->uniacid;
+        $account = AccountWechats::getAccountByUniacid($uniacid);
         $appId = $account->key;
         $appSecret = $account->secret;
 
@@ -601,12 +603,23 @@ class MemberController extends BaseController
             ->get();
 
         if (!is_null($member_info)) {
-            collect($member_info)->each(function($item) use ($global_token) {
+            collect($member_info)->each(function($item) use ($uniacid, $global_token) {
                 $global_userinfo_url = $this->_getInfo($global_token['access_token'], $item->openid);
 
                 $user_info = \Curl::to($global_userinfo_url)
                     ->asJsonResponse(true)
                     ->get();
+
+                if (isset($user_info['unionid'])) {
+                    $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $user_info['unionid'])->first();
+
+                    if (is_null($UnionidInfo)) {
+                        //TODO ADD
+                    } else {
+                        //TODO UPDATE
+                    }
+
+                }
             });
         }
     }
