@@ -25,9 +25,15 @@ use Illuminate\Support\Facades\Cookie;
 
 class MemberService
 {
-
+    /**
+     * @var \app\frontend\models\Member
+     */
     private static $_current_member;
 
+    /**
+     * @return \app\frontend\models\Member
+     * @throws AppException
+     */
     public static function getCurrentMemberModel(){
         if(isset(self::$_current_member)){
             return self::$_current_member;
@@ -40,8 +46,15 @@ class MemberService
         return self::$_current_member;
     }
 
+    /**
+     * @param $member_id
+     * @throws AppException
+     */
     public static function setCurrentMemberModel($member_id)
     {
+        /**
+         * @var \app\frontend\models\Member $member
+         */
         $member = \app\frontend\models\Member::find($member_id);
         if(!isset($member)){
             throw new AppException('(ID:'.$member_id.')用户不存在');

@@ -18,8 +18,10 @@ use app\common\models\Order;
 use app\common\models\order\OrderGoodsChangePriceLog;
 use app\common\models\OrderGoods;
 use app\common\models\UniAccount;
+use app\frontend\models\Member;
 use \app\frontend\models\MemberCart;
 use app\frontend\modules\member\services\MemberService;
+use app\frontend\modules\memberCart\MemberCartCollection;
 use app\frontend\modules\order\models\PreOrder;
 use app\frontend\modules\order\services\behavior\OrderCancelPay;
 use app\frontend\modules\order\services\behavior\OrderCancelSend;
@@ -123,7 +125,7 @@ class OrderService
      * @throws AppException
      * @throws \Exception
      */
-    public static function createOrderByMemberCarts(Collection $memberCarts, $member = null)
+    public static function createOrderByMemberCarts(Collection $memberCarts, Member $member = null)
     {
         if (!isset($member)) {
             //默认使用当前登录用户下单
@@ -136,17 +138,8 @@ class OrderService
         if ($memberCarts->isEmpty()) {
             return false;
         }
-        // 按商品id去重
-//        dd($memberCarts->unique('goods_id'));
-//        exit;
+        (new MemberCartCollection($memberCarts))->validate();
 
-        $memberCarts->unique('goods_id')->each(function (MemberCart $memberCart) use($memberCarts) {
-            if (isset($memberCart->goods->hasOnePrivilege)) {
-                // 合并规格商品数量,并校验
-                $total = $memberCart->where('goods_id',$memberCart->goods_id)->sum('total');
-                $memberCart->goods->hasOnePrivilege->validate($total);
-            }
-        });
         $shop = ShopService::getCurrentShopModel();
 
         $orderGoodsArr = OrderService::getOrderGoods($memberCarts);

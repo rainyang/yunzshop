@@ -10,6 +10,8 @@ namespace app\frontend\models;
 
 
 use app\common\exceptions\AppException;
+use app\frontend\modules\member\services\MemberService;
+use app\frontend\modules\memberCart\MemberCartCollection;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
@@ -133,7 +135,6 @@ class MemberCart extends \app\common\models\MemberCart
 
     /**
      * 购物车验证
-     * @author shenyang
      * @throws AppException
      */
     public function validate()
@@ -141,9 +142,9 @@ class MemberCart extends \app\common\models\MemberCart
         if (!isset($this->goods)) {
             throw new AppException('(ID:' . $this->goods_id . ')未找到商品或已经删除');
         }
-
+        (new MemberCartCollection(MemberService::getCurrentMemberModel()->memberCarts))->validate();
         //商品基本验证
-        $this->goods->generalValidate($this);
+        $this->goods->generalValidate($this->total);
 
         if ($this->isOption()) {
             $this->goodsOptionValidate();
