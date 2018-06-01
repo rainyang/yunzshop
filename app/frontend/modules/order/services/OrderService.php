@@ -137,8 +137,11 @@ class OrderService
             return false;
         }
         // 按商品id去重
+//        dd($memberCarts->unique('goods_id'));
+//        exit;
+
         $memberCarts->unique('goods_id')->each(function (MemberCart $memberCart) use($memberCarts) {
-            if (isset($memberCart->hasOnePrivilege)) {
+            if (isset($memberCart->goods->hasOnePrivilege)) {
                 // 合并规格商品数量,并校验
                 $total = $memberCart->where('goods_id',$memberCart->goods_id)->sum('total');
                 $memberCart->goods->hasOnePrivilege->validate($total);
