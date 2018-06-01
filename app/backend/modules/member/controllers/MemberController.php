@@ -21,6 +21,7 @@ use app\common\components\BaseController;
 use app\common\events\member\MemberRelationEvent;
 use app\common\events\member\RegisterByAgent;
 use app\common\helpers\PaginationHelper;
+use app\common\models\AccountWechats;
 use app\common\models\MemberMiniAppModel;
 use app\common\models\MemberWechatModel;
 use app\common\services\ExportService;
@@ -583,5 +584,53 @@ class MemberController extends BaseController
         return view('member.record', [
             'records' => $records
         ])->render();
+    }
+
+    public function updateWechatOpenData()
+    {
+        $member_info = McMappingFans::getAllFans();
+
+        $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
+        $appId = $account->key;
+        $appSecret = $account->secret;
+
+        $global_access_token_url = $this->_getAccessToken($appId, $appSecret);
+
+        $global_token = \Curl::to($global_access_token_url)
+            ->asJsonResponse(true)
+            ->get();
+
+        if (!is_null($member_info)) {
+            collect($member_info)->each(function($item) use ($global_token) {
+                $global_userinfo_url = $this->_getInfo($global_token['access_token'], $item->openid);
+
+                $user_info = \Curl::to($global_userinfo_url)
+                    ->asJsonResponse(true)
+                    ->get();
+            });
+        }
+    }
+
+    /**
+     * 获取全局ACCESS TOKEN
+     * @return string
+     */
+    private function _getAccessToken($appId, $appSecret)
+    {
+        return 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=' . $appId . '&secret=' . $appSecret;
+    }
+
+    /**
+     * 获取用户信息
+     *
+     * 是否关注公众号
+     *
+     * @param $accesstoken
+     * @param $openid
+     * @return string
+     */
+    private function _getInfo($accesstoken, $openid)
+    {
+        return 'https://api.weixin.qq.com/cgi-bin/user/info?access_token=' . $accesstoken . '&openid=' . $openid;
     }
 }
