@@ -19,7 +19,7 @@ class WithdrawNoticeWidget extends Widget
     {
         $set = Setting::get('withdraw.notice');
 
-        $temp_list = MessageTemp::select('id', 'title')->get();
+        $temp_list = MessageTemp::getList();
         return view('finance.withdraw.withdraw-notice', [
             'set' => $set,
             'temp_list' => $temp_list,

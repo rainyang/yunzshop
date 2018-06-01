@@ -82,6 +82,10 @@ class UpdateController extends BaseController
 
         $res = $update->checkUpdate();
 
+        if ($res == 'unknown') {
+            $result = ['updated' => -1];
+        }
+
         //Check for a new update
         if ($res === false) {
             $result['msg'] = 'Could not check for updates! See log file for details.';
@@ -136,6 +140,10 @@ class UpdateController extends BaseController
 
         //Check for a new update
         $ret = $update->checkBackUpdate();
+
+        if ($ret == 'unknown') {
+            $result = ['result' => -1];
+        }
 
         if (is_array($ret)) {
             if (1 == $ret['result']) {
@@ -498,9 +506,10 @@ class UpdateController extends BaseController
                 \Setting::set('shop.pay', $pay);
             }
         }
+    }
 
-
-
-
+    public function pirate()
+    {
+        return view('update.pirate', [])->render();
     }
 }

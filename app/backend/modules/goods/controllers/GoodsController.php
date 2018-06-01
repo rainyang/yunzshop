@@ -354,11 +354,35 @@ class GoodsController extends BaseController
         echo json_encode(["data" => $data, "result" => 1]);
     }
 
+    //批量上下架
+    public function batchSetProperty()
+    {
+        $ids = \YunShop::request()->ids;
+        $data = \YunShop::request()->data;
+        foreach ($ids as $id) {
+            $goods = \app\common\models\Goods::find($id);
+            $goods->status = $data;
+            $goods->save();
+        }
+        echo json_encode(["data" => $data, "result" => 1]);
+    }
+
     public function destroy()
     {
         $id = \YunShop::request()->id;
         $goods = Goods::destroy($id);
         return $this->message('商品删除成功', Url::absoluteWeb('goods.goods.index'));
+    }
+
+    public function batchDestroy()
+    {
+        $ids = \YunShop::request()->ids;
+        foreach ($ids as $id) {
+            $goods = Goods::destroy($id);
+        }
+        echo json_encode([
+            "result" => $goods,
+        ]);
     }
 
     /**
