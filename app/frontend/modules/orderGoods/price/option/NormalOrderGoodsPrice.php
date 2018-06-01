@@ -2,8 +2,6 @@
 
 namespace app\frontend\modules\orderGoods\price\option;
 
-use app\frontend\models\orderGoods\PreOrderGoodsDiscount;
-
 /**
  * Created by PhpStorm.
  * User: shenyang
@@ -59,7 +57,7 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
 
     /**
      * 获取订单商品支付金额
-     * @return float
+     * @return float|mixed
      */
     public function getPaymentAmount()
     {
@@ -132,7 +130,6 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
     /**
      * 单品满减
      * @return float|int
-     * @throws \app\common\exceptions\ShopException
      */
     private function getSingleEnoughReduceAmount()
     {
@@ -142,7 +139,6 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
     /**
      * 全场满减
      * @return float|int
-     * @throws \app\common\exceptions\ShopException
      */
     private function getEnoughReduceAmount()
     {

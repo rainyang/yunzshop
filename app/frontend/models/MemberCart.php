@@ -143,7 +143,7 @@ class MemberCart extends \app\common\models\MemberCart
         }
 
         //商品基本验证
-        $this->goods->generalValidate($this->total);
+        $this->goods->generalValidate($this);
 
         if ($this->isOption()) {
             $this->goodsOptionValidate();

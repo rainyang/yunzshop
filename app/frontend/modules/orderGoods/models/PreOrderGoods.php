@@ -71,13 +71,13 @@ class PreOrderGoods extends OrderGoods
         // 订单商品优惠使用记录集合
         $this->setRelation('orderGoodsDeductions', new OrderGoodsDeductionCollection());
         // 将会员等级折扣总金额保存在订单优惠信息表中
-        $preOrderDiscount = new PreOrderGoodsDiscount([
-            'discount_code' => 'vipDiscount',
-            'amount' => $this->getVipDiscountAmount(),
-            'name' => '会员等级折扣',
-
-        ]);
-        $preOrderDiscount->setOrderGoods($this);
+//        $preOrderDiscount = new PreOrderGoodsDiscount([
+//            'discount_code' => 'vipDiscount',
+//            'amount' => $this->getVipDiscountAmount(),
+//            'name' => '会员等级折扣',
+//
+//        ]);
+//        $preOrderDiscount->setOrderGoods($this);
         $attributes = $this->getPreAttributes();
         $this->setRawAttributes($attributes);
     }
@@ -165,6 +165,7 @@ class PreOrderGoods extends OrderGoods
         $this->save();
 
         // 在订单商品保存后,为它的关联模型添加外键,以便保存
+
         foreach ($this->relations as $models) {
             $models = $models instanceof Collection
                 ? $models->all() : [$models];
@@ -185,7 +186,6 @@ class PreOrderGoods extends OrderGoods
             }
 
         }
-
 
         return parent::push();
     }

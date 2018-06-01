@@ -48,6 +48,7 @@ abstract class BaseDiscount
         }
 
         $this->amount = $this->_getAmount();
+
         // 将抵扣总金额保存在订单优惠信息表中
         $preOrderDiscount = new PreOrderDiscount([
             'discount_code' => $this->code,
@@ -55,7 +56,9 @@ abstract class BaseDiscount
             'name' => $this->name,
 
         ]);
+
         $preOrderDiscount->setOrder($this->order);
+
         return $this->amount;
     }
 

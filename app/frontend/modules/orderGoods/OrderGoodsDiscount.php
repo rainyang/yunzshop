@@ -8,9 +8,7 @@
 
 namespace app\frontend\modules\orderGoods;
 
-use app\common\models\order\OrderDiscount;
-
-class OrderGoodsDiscount extends OrderDiscount
+class OrderGoodsDiscount extends \app\common\models\orderGoods\OrderGoodsDiscount
 {
 
 }

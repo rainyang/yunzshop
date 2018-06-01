@@ -49,14 +49,17 @@ abstract class BaseDiscount
         }
 
         $this->amount = $this->_getAmount();
-        // 将抵扣总金额保存在订单优惠信息表中
-        $preOrderGoodsDiscount = new PreOrderGoodsDiscount([
-            'discount_code' => $this->code,
-            'amount' => $this->amount,
-            'name' => $this->name,
-        ]);
-        $preOrderGoodsDiscount->setOrderGoods($this->orderGoods);
-        return $this->amount;
+        if(isset($this->amount)){
+            // 将抵扣总金额保存在订单优惠信息表中
+            $preOrderGoodsDiscount = new PreOrderGoodsDiscount([
+                'discount_code' => $this->code,
+                'amount' => $this->amount ?: 0,
+                'name' => $this->name,
+            ]);
+            $preOrderGoodsDiscount->setOrderGoods($this->orderGoods);
+        }
+
+        return $this->amount ?: 0;
     }
 
     /**

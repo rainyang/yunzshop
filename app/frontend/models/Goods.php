@@ -102,10 +102,10 @@ class Goods extends \app\common\models\Goods
 
     /**
      * 商品数据完整新验证
-     * @param null $num
+     * @param MemberCart $memberCart
      * @throws AppException
      */
-    public function generalValidate($num = null)
+    public function generalValidate(MemberCart $memberCart)
     {
         if (empty($this->status)) {
             throw new AppException('(ID:' . $this->id . ')商品已下架');
@@ -117,7 +117,7 @@ class Goods extends \app\common\models\Goods
 //            throw new AppException('(ID:' . $this->id . ')商品配送信息数据已损坏');
 //        }
         if (isset($this->hasOnePrivilege)) {
-            $this->hasOnePrivilege->validate($num);
+            $this->hasOnePrivilege->validate($memberCart);
         }
     }
 
