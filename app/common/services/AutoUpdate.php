@@ -905,9 +905,9 @@ class AutoUpdate
         }
 
         if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
-            return 'unknown';
+            return 'known';
         } else {
-            redirect(yzWebFullUrl('update.pirate'))->send();
+         //   redirect(yzWebFullUrl('update.pirate'))->send();
         }
     }
 }
