@@ -611,7 +611,7 @@ class MemberController extends BaseController
             $upgrade_path = 'logs/' . $time . '_upgrade_member_openid.log';
 
             collect($member_info)->each(function($item) use ($uniacid, $global_token, $path, $upgrade_path, &$update_total) {
-                file_put_contents(storage_path($path), $item->openid, FILE_APPEND);
+                file_put_contents(storage_path($path), $item->openid . "\r\n", FILE_APPEND);
 
                 $global_userinfo_url = $this->_getInfo($global_token['access_token'], $item->openid);
 
@@ -630,7 +630,7 @@ class MemberController extends BaseController
                             'type' => 1
                         ));
 
-                        file_put_contents(storage_path($upgrade_path), $item->openid, FILE_APPEND);
+                        file_put_contents(storage_path($upgrade_path), $item->openid . "\\r\\n", FILE_APPEND);
 
                         $update_total++;
                     } else {
