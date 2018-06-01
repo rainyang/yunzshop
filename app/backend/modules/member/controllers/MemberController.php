@@ -591,6 +591,9 @@ class MemberController extends BaseController
     {
         $member_info = McMappingFans::getAllFans();
 
+        $member_total = count($member_info);
+        $update_total = 0;
+
         $uniacid = \YunShop::app()->uniacid;
         $account = AccountWechats::getAccountByUniacid($uniacid);
         $appId = $account->key;
@@ -603,7 +606,13 @@ class MemberController extends BaseController
             ->get();
 
         if (!is_null($member_info)) {
-            collect($member_info)->each(function($item) use ($uniacid, $global_token) {
+            $time = time();
+            $path = 'logs/' . $time . '_member_openid.log';
+            $upgrade_path = 'logs/' . $time . '_upgrade_member_openid.log';
+
+            collect($member_info)->each(function($item) use ($uniacid, $global_token, $path, $upgrade_path, &$update_total) {
+                file_put_contents(storage_path($path), $item->openid, FILE_APPEND);
+
                 $global_userinfo_url = $this->_getInfo($global_token['access_token'], $item->openid);
 
                 $user_info = \Curl::to($global_userinfo_url)
@@ -614,7 +623,16 @@ class MemberController extends BaseController
                     $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $user_info['unionid'])->first();
 
                     if (is_null($UnionidInfo)) {
-                        //TODO ADD
+                        MemberUniqueModel::insertData(array(
+                            'uniacid' => $uniacid,
+                            'unionid' => $user_info['unionid'],
+                            'member_id' => $item->uid,
+                            'type' => 1
+                        ));
+
+                        file_put_contents(storage_path($upgrade_path), $item->openid, FILE_APPEND);
+
+                        $update_total++;
                     } else {
                         //TODO UPDATE
                     }
@@ -622,6 +640,8 @@ class MemberController extends BaseController
                 }
             });
         }
+
+        return $this->message('微信开放平台数据同步完成(' . $update_total . '/' . $member_total . ')', yzWebUrl('member.member.index'));
     }
 
     /**
