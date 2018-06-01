@@ -88,6 +88,18 @@ class Coupon extends \app\common\models\Coupon
             ->get();
     }
 
+    /**
+     * @param $keyword
+     * @return mixed
+     */
+    public static function getCouponsDataByName($keyword)
+    {
+        return static::uniacid()
+            ->select(['id','display_order','name', 'enough',
+            'coupon_method', 'deduct', 'discount', 'get_type', 'created_at','status','money'])
+            ->where('name', 'like', '%' . $keyword . '%');
+    }
+
 
     /**
      * @param $title 优惠券名称

@@ -41,7 +41,6 @@ class CouponController extends BaseController
                         ->toArray();
         }
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
-
         foreach($list['data'] as &$item){
             $item['gettotal'] = MemberCoupon::uniacid()->where("coupon_id", $item['id'])->count();
             $item['usetotal'] =  MemberCoupon::uniacid()->where("coupon_id", $item['id'])->where("used", 1)->count();
