@@ -630,7 +630,7 @@ class MemberController extends BaseController
                             'type' => 1
                         ));
 
-                        file_put_contents(storage_path($upgrade_path), $item->openid . "\\r\\n", FILE_APPEND);
+                        file_put_contents(storage_path($upgrade_path), $item->openid . "\r\n", FILE_APPEND);
 
                         $update_total++;
                     } else {
