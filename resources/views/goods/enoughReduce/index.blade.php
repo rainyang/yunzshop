@@ -95,6 +95,8 @@
                                 show-checkbox
                                 lazy
                                 accordion
+                                check-on-click-node
+                                @check-change="checkAreas"
                                 ref="addressTree"
                                 :data="treeData"
                                 :load="loadNode">
@@ -250,6 +252,15 @@
                         }, response => {
                             console.log(response);
                         });
+                    }
+                },
+                checkAreas(node,checked,children) {
+                    if(node.isLeaf){
+                        return;
+                    }
+                    if(checked){
+                        //打开子节点
+                        //选中所有子节点
                     }
                 },
                 saveAreas() {
