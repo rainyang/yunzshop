@@ -263,9 +263,9 @@
 </div>
 <script language="javascript">
 
-    require(['select2'], function () {
-        $('.diy-notice').select2();
-    })
+
+    $('.diy-notice').select2();
+
     $(function () {
         $(":radio[name='withdraw[balance][status]']").click(function () {
             if ($(this).val() == 1) {
