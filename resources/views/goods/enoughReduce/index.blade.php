@@ -95,7 +95,6 @@
                                 show-checkbox
                                 lazy
                                 accordion
-                                check-on-click-node
                                 @check-change="checkAreas"
                                 ref="addressTree"
                                 :data="treeData"
@@ -259,8 +258,7 @@
                         return;
                     }
                     if(checked){
-                        //打开子节点
-                        //选中所有子节点
+                        this.form.freeFreight.province_ids.push(node.id)
                     }
                 },
                 saveAreas() {
