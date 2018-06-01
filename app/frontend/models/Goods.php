@@ -10,9 +10,11 @@ namespace app\frontend\models;
 
 use app\common\exceptions\AppException;
 use app\common\models\GoodsDiscount;
+use app\frontend\models\goods\Privilege;
 use app\frontend\models\goods\Sale;
 use app\frontend\modules\member\services\MemberService;
 use app\common\models\Coupon;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Class Goods
@@ -25,14 +27,17 @@ use app\common\models\Coupon;
  * @property float weight
  * @property Sale hasOneSale
  * @property GoodsOption has_option
+ * @property Privilege hasOnePrivilege
  */
 class Goods extends \app\common\models\Goods
 {
     public $appends = ['vip_price'];
     protected $vipDiscountAmount;
+
     /**
-     * 获取商品最终价格
-     * @return mixed
+     * 获取商品最终价格 todo 废弃方法需删除
+     * @return float|int|mixed
+     * @throws AppException
      */
     public function getFinalPriceAttribute()
     {
@@ -48,6 +53,7 @@ class Goods extends \app\common\models\Goods
      * 缓存等级折金额
      * @param null $price
      * @return int|mixed
+     * @throws AppException
      */
     public function getVipDiscountAmount($price = null){
         if(isset($this->vipDiscountAmount)){
@@ -60,9 +66,9 @@ class Goods extends \app\common\models\Goods
      * 获取等级折扣金额
      * @param null $price
      * @return int|mixed
+     * @throws AppException
      */
     protected function _getVipDiscountAmount($price = null){
-        $result = 0;
 
         if(!isset($price)){
             $price = $this->price;
@@ -83,10 +89,11 @@ class Goods extends \app\common\models\Goods
 
         return $result;
     }
+
     /**
      * 获取商品的会员价格
-     * @author shenyang
-     * @return float
+     * @return float|int|mixed
+     * @throws AppException
      */
     public function getVipPriceAttribute()
     {
@@ -119,7 +126,7 @@ class Goods extends \app\common\models\Goods
         return $this->hasOne(Sale::class);
     }
 
-    public function scopeSearch($query, $filters)
+    public function scopeSearch(Builder $query, $filters)
     {
         $query->uniacid();
 
