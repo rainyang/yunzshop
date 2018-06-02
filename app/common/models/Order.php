@@ -44,6 +44,7 @@ use app\backend\modules\order\observers\OrderObserver;
  * @property int order_pay_id
  * @property int dispatch_type_id
  * @property Collection orderGoods
+ * @property Member belongsToMember
  */
 class Order extends BaseModel
 {

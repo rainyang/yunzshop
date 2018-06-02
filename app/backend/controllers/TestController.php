@@ -10,6 +10,7 @@ namespace app\backend\controllers;
 
 
 use app\common\components\BaseController;
+use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\models\Member;
 use app\common\models\Order;
 use app\common\models\OrderPay;
@@ -28,7 +29,7 @@ class TestController extends BaseController
 {
     public function index()
     {
-        event(new OrderReceive(Order::find(1428)));
+        event(new AfterOrderReceivedEvent(Order::find(1420)));
     }
 
     public function op_database()
