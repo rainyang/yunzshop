@@ -839,7 +839,7 @@ class MemberService
     private function checkFansUid($fansModel, $userInfo)
     {
         if ($fansModel && 0 == $fansModel->uid) {
-            $member_id = SubMemberModel::getMemberId($userInfo['opneid']);
+            $member_id = SubMemberModel::getMemberId($userInfo['openid']);
 
             if (!is_null($member_id)) {
                 $fansModel->uid = $member_id;
