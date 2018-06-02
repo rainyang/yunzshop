@@ -586,86 +586,20 @@ class MemberController extends BaseController
 
     public function updateWechatOpenData()
     {
-        $member_info = Member::getMembers()->get(); //McMappingFans::getAllFans();
-
-        $member_total = count($member_info);
-        $update_total = 0;
-
         $uniacid = \YunShop::app()->uniacid;
-        $account = AccountWechats::getAccountByUniacid($uniacid);
-        $appId = $account->key;
-        $appSecret = $account->secret;
 
-        $global_access_token_url = $this->_getAccessToken($appId, $appSecret);
+        try {
+            $result = \Artisan::call('syn:wechatUnionid' ,['uniacid'=>$uniacid]);
 
-        $global_token = \Curl::to($global_access_token_url)
-            ->asJsonResponse(true)
-            ->get();
+            if (isset($result) && 0 == $result['error']) {
+                return $this->message('微信开放平台数据同步完成(' . $result['upgrade'] . '/' . $result['total'] . ')', yzWebUrl('member.member.index'));
+            }
 
-        if (!is_null($member_info)) {
-            $time = time();
-            $path = 'logs/' . $time . '_member_openid.log';
-            $upgrade_path = 'logs/' . $time . '_upgrade_member_openid.log';
-
-            collect($member_info)->each(function($item) use ($uniacid, $global_token, $path, $upgrade_path, &$update_total) {
-
-                file_put_contents(storage_path($path), $item->hasOneFans->openid . "\r\n", FILE_APPEND);
-
-                $global_userinfo_url = $this->_getInfo($global_token['access_token'], $item->hasOneFans->openid);
-
-                $user_info = \Curl::to($global_userinfo_url)
-                    ->asJsonResponse(true)
-                    ->get();
-
-                if (isset($user_info['errcode'])) {
-                    return $this->message($user_info['errmsg'], yzWebUrl('member.member.index'));
-                }
-
-                if (isset($user_info['unionid'])) {
-                    $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $user_info['unionid'])->first();
-
-                    if (is_null($UnionidInfo)) {
-                        MemberUniqueModel::insertData(array(
-                            'uniacid' => $uniacid,
-                            'unionid' => $user_info['unionid'],
-                            'member_id' => $item->hasOneFans->uid,
-                            'type' => 1
-                        ));
-
-                        file_put_contents(storage_path($upgrade_path), $item->hasOneFans->openid . "\r\n", FILE_APPEND);
-
-                        $update_total++;
-                    } else {
-                        //TODO UPDATE
-                    }
-
-                }
-            });
+            return $this->message($result['msg'], yzWebUrl('member.member.index'), 'error');
+        } catch (\Exception $e) {
+            return $this->message($e->getMessage(), yzWebUrl('member.member.index'), 'error');
         }
-
-        return $this->message('微信开放平台数据同步完成(' . $update_total . '/' . $member_total . ')', yzWebUrl('member.member.index'));
     }
 
-    /**
-     * 获取全局ACCESS TOKEN
-     * @return string
-     */
-    private function _getAccessToken($appId, $appSecret)
-    {
-        return 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=' . $appId . '&secret=' . $appSecret;
-    }
 
-    /**
-     * 获取用户信息
-     *
-     * 是否关注公众号
-     *
-     * @param $accesstoken
-     * @param $openid
-     * @return string
-     */
-    private function _getInfo($accesstoken, $openid)
-    {
-        return 'https://api.weixin.qq.com/cgi-bin/user/info?access_token=' . $accesstoken . '&openid=' . $openid;
-    }
 }
