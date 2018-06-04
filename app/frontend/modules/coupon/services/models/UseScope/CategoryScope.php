@@ -11,9 +11,14 @@ namespace app\frontend\modules\coupon\services\models\UseScope;
 
 use app\common\exceptions\AppException;
 use app\frontend\modules\orderGoods\models\PreOrderGoods;
+use Illuminate\Support\Collection;
 
 class CategoryScope extends CouponUseScope
 {
+    /**
+     * @return Collection
+     * @throws AppException
+     */
     protected function _getOrderGoodsOfUsedCoupon()
     {
         $orderGoods = $this->coupon->getPreOrder()->getOrderGoodsModels()->filter(
