@@ -421,7 +421,7 @@ class AutoUpdate
 
         // Check for latest version
         foreach ($versions as $versionRaw => $updateUrl) {
-            $this->checkDomain($updateUrl->domain);
+           // $this->checkDomain($updateUrl->domain);
 
             $version = new version($versionRaw);
 
@@ -838,7 +838,7 @@ class AutoUpdate
                 ->get();
 
             if (is_array($update)) {
-                return $this->checkDomain($update->domain);
+               // return $this->checkDomain($update->domain);
             }
 
             if ($update === false) {
@@ -898,15 +898,11 @@ class AutoUpdate
 
     private function checkDomain($domain)
     {
-        $unknown = false;
-
         if (!preg_match($_SERVER['HTTP_HOST'], $domain)) {
-            $unknown = true;
-        }
+            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+                return 'unknown';
+            }
 
-        if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
-            return 'unknown';
-        } else {
             redirect(yzWebFullUrl('update.pirate'))->send();
         }
     }
