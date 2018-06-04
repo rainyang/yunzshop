@@ -27,7 +27,7 @@ class LoginController extends ApiController
         if (empty($type) || $type == 'undefined') {
             $type = Client::getType();
         }
-        $type = 8;
+
         //判断是否开启微信登录
         if (\YunShop::request()->show_wechat_login) {
             return $this->init_login();
