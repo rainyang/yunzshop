@@ -10,6 +10,7 @@ namespace app\common\models\notice;
 
 
 use app\common\models\BaseModel;
+use app\common\scopes\UniacidScope;
 use Illuminate\Database\Eloquent\Builder;
 
 class MessageTemp extends BaseModel
@@ -29,9 +30,7 @@ class MessageTemp extends BaseModel
     public static function boot()
     {
         parent::boot();
-        static::addGlobalScope(function (Builder $builder) {
-            $builder->uniacid();
-        });
+        static::addGlobalScope('uniacid', new UniacidScope);
     }
 
 
