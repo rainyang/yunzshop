@@ -63,6 +63,12 @@ abstract class BaseDiscount
     }
 
     /**
+     * @return bool
+     */
+    protected function orderDiscountCalculated(){
+        return $this->orderGoods->order->getDiscount()->getAmountByCode($this->code)->calculated();
+    }
+    /**
      * @return float
      */
     abstract protected function _getAmount();
