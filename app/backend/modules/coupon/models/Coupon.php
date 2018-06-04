@@ -95,8 +95,7 @@ class Coupon extends \app\common\models\Coupon
     public static function getCouponsDataByName($keyword)
     {
         return static::uniacid()
-            ->select(['id','display_order','name', 'enough',
-            'coupon_method', 'deduct', 'discount', 'get_type', 'created_at','status','money'])
+            ->select(['id','display_order','name', 'enough', 'coupon_method', 'deduct', 'discount', 'get_type', 'created_at','status','money' , 'total'])
             ->where('name', 'like', '%' . $keyword . '%');
     }
 
