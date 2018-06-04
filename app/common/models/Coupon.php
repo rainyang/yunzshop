@@ -26,20 +26,18 @@ class  Coupon extends BaseModel
 {
     use SoftDeletes;
 
-    protected $dates = ['deleted_at','time_start','time_end'];
+    protected $dates = ['deleted_at', 'time_start', 'time_end'];
 
     const COUPON_SHOP_USE = 0; //适用范围 - 商城通用
-
     const COUPON_CATEGORY_USE = 1; //适用范围 - 指定分类
-
     const COUPON_GOODS_USE = 2; //适用范围 - 指定商品
+    const COUPON_SUPPLIER_USE = 3; //适用范围 - 指定供应商
+    const COUPON_STORE_USE = 4; //适用范围 - 指定门店
 
     const COUPON_MONEY_OFF = 1; //优惠方式- 立减
-
     const COUPON_DISCOUNT = 2; //优惠方式- 折扣
 
     const COUPON_DATE_TIME_RANGE = 1;//有效期 - 时间范围
-
     const COUPON_SINCE_RECEIVE = 0;//有效期 - 领取后n天
 
 
@@ -65,7 +63,8 @@ class  Coupon extends BaseModel
     }
 
 
-    public static function getMemberCoupon($used = 0) { //todo 这张表没有used这个字段, 应该放在member_coupon表?
+    public static function getMemberCoupon($used = 0)
+    { //todo 这张表没有used这个字段, 应该放在member_coupon表?
         return static::uniacid()->where('used', $used);
     }
 
@@ -82,18 +81,18 @@ class  Coupon extends BaseModel
     public static function getUsageCount($couponId)
     {
         return static::uniacid()
-                    ->select(['id'])
-                    ->where('id', '=', $couponId)
-                    ->withCount(['hasManyMemberCoupon' => function($query){
-                        return $query->where('used', '=', 0);
-                    }]);
+            ->select(['id'])
+            ->where('id', '=', $couponId)
+            ->withCount(['hasManyMemberCoupon' => function ($query) {
+                return $query->where('used', '=', 0);
+            }]);
     }
 
     public static function getCouponById($couponId)
     {
         return static::uniacid()
-                    ->where('id', '=', $couponId)
-                    ->first();
+            ->where('id', '=', $couponId)
+            ->first();
     }
 
     //getter
@@ -105,12 +104,13 @@ class  Coupon extends BaseModel
     }
 
     //获取优惠券优惠方式
-    public static  function getPromotionMethod($couponId) {
+    public static function getPromotionMethod($couponId)
+    {
         $useType = static::uniacid()->where('id', '=', $couponId)->value('coupon_method');
-        switch ($useType){
+        switch ($useType) {
             case self::COUPON_MONEY_OFF:
                 return [
-                    'type' =>  self::COUPON_MONEY_OFF,
+                    'type' => self::COUPON_MONEY_OFF,
                     'mode' => static::uniacid()->where('id', '=', $couponId)->value('deduct'),
                 ];
                 break;
@@ -127,13 +127,15 @@ class  Coupon extends BaseModel
                 break;
         }
     }
+
     //获取优惠券适用期限
-    public static function getTimeLimit ($couponId) {
+    public static function getTimeLimit($couponId)
+    {
         $time_limit = static::uniacid()->where('id', '=', $couponId)->value('time_limit');
-        switch ($time_limit){
+        switch ($time_limit) {
             case self::COUPON_SINCE_RECEIVE:
                 return [
-                    'type' =>  self::COUPON_SINCE_RECEIVE,
+                    'type' => self::COUPON_SINCE_RECEIVE,
                     'time_end' => static::uniacid()->where('id', '=', $couponId)->value('time_days'),
                 ];
                 break;
@@ -152,15 +154,16 @@ class  Coupon extends BaseModel
     }
 
     //获取优惠券的适用范围
-    public static function getApplicableScope($couponId){
+    public static function getApplicableScope($couponId)
+    {
         $useType = static::uniacid()
             ->where('id', '=', $couponId)
             ->value('use_type');
-        switch ($useType){
+        switch ($useType) {
             case self::COUPON_GOODS_USE:
                 $goodIds = self::getApplicalbeGoodIds($couponId);
                 return [
-                    'type' =>  self::COUPON_GOODS_USE,
+                    'type' => self::COUPON_GOODS_USE,
                     'scope' => $goodIds,
                 ];
                 break;
@@ -180,18 +183,20 @@ class  Coupon extends BaseModel
     }
 
     //获取优惠券的适用商品ID
-    public static function getApplicalbeGoodIds($couponId){
+    public static function getApplicalbeGoodIds($couponId)
+    {
         return static::uniacid()
             ->where('id', '=', $couponId)
             ->value('goods_ids');
     }
 
     //获取优惠券的适用商品分类ID
-    public static function getApplicalbeCategoryIds($couponId){
+    public static function getApplicalbeCategoryIds($couponId)
+    {
         return static::uniacid()
             ->where('id', '=', $couponId)
             ->value('category_ids');
     }
-    
+
 
 }

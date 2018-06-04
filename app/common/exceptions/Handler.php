@@ -75,17 +75,21 @@ class Handler extends ExceptionHandler
         }
         //api异常
         if (\YunShop::isApi()) {
-            \Log::error('api exception',json_decode(json_encode($exception),true));
+            $this->logError($exception);
             return $this->errorJson($exception->getMessage());
         }
         //默认异常
         if ($this->isHttpException($exception)) {
-            \Log::error('http exception',json_decode(json_encode($exception),true));
+            $this->logError($exception);
             return $this->renderHttpException($exception);
         }
         return parent::render($request, $exception);
     }
-
+    private function logError($exception){
+        \Log::error('http exception',json_decode(json_encode($exception),true));
+        \Log::info('http parameters',json_encode(request()->input(),256));
+        //发送邮件
+    }
     /**
      * Convert an authentication exception into an unauthenticated response.
      *
