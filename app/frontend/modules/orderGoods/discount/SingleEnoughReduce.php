@@ -26,6 +26,10 @@ class SingleEnoughReduce extends BaseDiscount
      */
     protected function _getAmount()
     {
+        if(!$this->orderDiscountCalculated()){
+            // 确保订单优惠先行计算
+            return null;
+        }
         return ($this->orderGoods->getPaymentAmount() / $this->getOrderGoodsPaymentAmount()) * $this->getAmountInOrder();
     }
 

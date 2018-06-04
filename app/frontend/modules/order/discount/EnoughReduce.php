@@ -24,7 +24,7 @@ class EnoughReduce extends BaseDiscount
         }
         // 获取满减设置,按enough倒序
         $settings = collect(\Setting::get('enoughReduce.enoughReduce'));
-
+//dump($settings);
         if (empty($settings)) {
             return 0;
         }
