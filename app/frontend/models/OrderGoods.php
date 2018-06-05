@@ -12,6 +12,7 @@ namespace app\frontend\models;
  * Class OrderGoods
  * @package app\frontend\models
  * @property GoodsOption goodsOption
+ * @property Goods belongsToGood
  */
 class OrderGoods extends \app\common\models\OrderGoods
 {
