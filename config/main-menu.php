@@ -819,7 +819,44 @@ return [
                 ],
 
             ],
+            'enough_reduce' => [
+                'name'              => '满额优惠',
+                'url'               => 'enoughReduce.index.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-gift',
+                'sort'              => '6',
+                'item'              => 'enough_reduce',
+                'parents'           => ['Goods',],
+                'child'             => [
+                    'filtering_group_index' => [
+                        'name'              => '满额优惠设置',
+                        'url'               => 'enoughReduce.index.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => 'fa-sitemap',
+                        'sort'              => '2',
+                        'item'              => 'enough_reduce_index',
+                        'parents'           => ['Goods'],
+                        'child'             => []
+                    ],
+                    'filtering_group_store' => [
+                        'name'              => '保存满额优惠',
+                        'url'               => 'enoughReduce.store.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => 'fa-sitemap',
+                        'sort'              => '2',
+                        'item'              => 'enough_reduce_store',
+                        'parents'           => ['Goods'],
+                        'child'             => []
+                    ],
+                ],
 
+            ],
         ],
     ],
 

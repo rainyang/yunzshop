@@ -18,8 +18,10 @@ use app\common\models\Order;
 use app\common\models\order\OrderGoodsChangePriceLog;
 use app\common\models\OrderGoods;
 use app\common\models\UniAccount;
+use app\frontend\models\Member;
 use \app\frontend\models\MemberCart;
 use app\frontend\modules\member\services\MemberService;
+use app\frontend\modules\memberCart\MemberCartCollection;
 use app\frontend\modules\order\models\PreOrder;
 use app\frontend\modules\order\services\behavior\OrderCancelPay;
 use app\frontend\modules\order\services\behavior\OrderCancelSend;
@@ -30,6 +32,7 @@ use app\frontend\modules\order\services\behavior\OrderOperation;
 use app\frontend\modules\order\services\behavior\OrderPay;
 use app\frontend\modules\order\services\behavior\OrderReceive;
 use app\frontend\modules\order\services\behavior\OrderSend;
+use app\frontend\modules\orderGoods\models\PreOrderGoodsCollection;
 use app\frontend\modules\shop\services\ShopService;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -86,7 +89,7 @@ class OrderService
     /**
      * 获取订单商品对象数组
      * @param Collection $memberCarts
-     * @return Collection
+     * @return PreOrderGoodsCollection
      * @throws \Exception
      */
     public static function getOrderGoods(Collection $memberCarts)
@@ -110,7 +113,7 @@ class OrderService
             return app('OrderManager')->make('PreOrderGoods', $data);
         });
 
-        return $result;
+        return new PreOrderGoodsCollection($result);
     }
 
 
@@ -118,10 +121,11 @@ class OrderService
      * 根据购物车记录,获取订单信息
      * @param Collection $memberCarts
      * @param null $member
-     * @return bool|mixed
+     * @return PreOrder|bool|mixed
      * @throws AppException
+     * @throws \Exception
      */
-    public static function createOrderByMemberCarts(Collection $memberCarts, $member = null)
+    public static function createOrderByMemberCarts(Collection $memberCarts, Member $member = null)
     {
         if (!isset($member)) {
             //默认使用当前登录用户下单
@@ -134,6 +138,7 @@ class OrderService
         if ($memberCarts->isEmpty()) {
             return false;
         }
+        (new MemberCartCollection($memberCarts))->validate();
 
         $shop = ShopService::getCurrentShopModel();
 
@@ -421,9 +426,9 @@ class OrderService
         $orders = \app\backend\modules\order\models\Order::waitReceive()->where('send_time', '<', (int)Carbon::now()->addDays(-$days)->timestamp)->normal()->get();
         if (!$orders->isEmpty()) {
             $orders->each(function ($order) {
-                try{
+                try {
                     OrderService::orderReceive(['order_id' => $order->id]);
-                }catch (\Exception $e){
+                } catch (\Exception $e) {
 
                 }
             });

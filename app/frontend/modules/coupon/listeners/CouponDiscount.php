@@ -28,11 +28,11 @@ class CouponDiscount
         }
         $orderModel = $event->getOrderModel();
 
-        $orderDeductions = $orderModel->orderDiscount;
+        $orderDiscount = $orderModel->orderDiscount;
 
         $point = 0;
-        if ($orderDeductions) {
-            foreach ($orderDeductions as $key => $deduction) {
+        if ($orderDiscount) {
+            foreach ($orderDiscount as $key => $deduction) {
 
                 if ($deduction['discount_code'] == 'coupon') {
                     $point = $deduction['amount'];
