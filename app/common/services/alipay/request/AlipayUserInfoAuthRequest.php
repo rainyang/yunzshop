@@ -3,27 +3,17 @@
 namespace app\common\services\alipay\request;
 
 /**
- * ALIPAY API: alipay.system.oauth.token request
+ * ALIPAY API: alipay.user.info.auth request
  *
  * @author auto create
- * @since 1.0, 2017-09-25 16:00:34
+ * @since 1.0, 2016-12-13 17:20:12
  */
-class AlipaySystemOauthTokenRequest
+class AlipayUserInfoAuthRequest
 {
 	/** 
-	 * 授权码，用户对应用授权后得到。
+	 * 用户登陆授权
 	 **/
-	private $code;
-	
-	/** 
-	 * 值为authorization_code时，代表用code换取；值为refresh_token时，代表用refresh_token换取
-	 **/
-	private $grantType;
-	
-	/** 
-	 * 刷新令牌，上次换取访问令牌时得到。见出参的refresh_token字段
-	 **/
-	private $refreshToken;
+	private $bizContent;
 
 	private $apiParas = array();
 	private $terminalType;
@@ -35,42 +25,20 @@ class AlipaySystemOauthTokenRequest
     private $needEncrypt=false;
 
 	
-	public function setCode($code)
+	public function setBizContent($bizContent)
 	{
-		$this->code = $code;
-		$this->apiParas["code"] = $code;
+		$this->bizContent = $bizContent;
+		$this->apiParas["biz_content"] = $bizContent;
 	}
 
-	public function getCode()
+	public function getBizContent()
 	{
-		return $this->code;
-	}
-
-	public function setGrantType($grantType)
-	{
-		$this->grantType = $grantType;
-		$this->apiParas["grant_type"] = $grantType;
-	}
-
-	public function getGrantType()
-	{
-		return $this->grantType;
-	}
-
-	public function setRefreshToken($refreshToken)
-	{
-		$this->refreshToken = $refreshToken;
-		$this->apiParas["refresh_token"] = $refreshToken;
-	}
-
-	public function getRefreshToken()
-	{
-		return $this->refreshToken;
+		return $this->bizContent;
 	}
 
 	public function getApiMethodName()
 	{
-		return "alipay.system.oauth.token";
+		return "alipay.user.info.auth";
 	}
 
 	public function setNotifyUrl($notifyUrl)

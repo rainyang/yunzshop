@@ -3,8 +3,9 @@
 namespace app\frontend\modules\member\services;
 
 use app\frontend\modules\member\services\MemberService;
-use app\common\services\alipay\request\AlipayUserUserinfoShareRequest;
 use app\common\services\alipay\request\AlipaySystemOauthTokenRequest;
+use app\common\services\alipay\request\AlipayUserInfoShareRequest;
+// use app\common\services\alipay\request\AlipayUserInfoAuthRequest;
 use app\common\services\alipay\AopClient;
 use app\common\helpers\Url;
 
@@ -15,21 +16,30 @@ class MemberAlipayService
 	
 
 	//沙盒环境参数  
-    private $appid = '2016091400511024';  
-    private $url = "https://openauth.alipaydev.com/oauth2/publicAppAuthorize.htm";  
-    private $alipay_api = "https://openapi.alipaydev.com/gateway.do";  
+    private $appid = '2018060460281631';  
+    private $url = "https://openauth.alipay.com/oauth2/publicAppAuthorize.htm";  
+    private $alipay_api = "https://openapi.alipay.com/gateway.do"; 
+
+    private $aop; 
+
+    public function __construct()
+    {
+    	// parent::__construct();
+
+    	$this->aop = $this->aopClient();
+    }
 
 	public function login()
 	{
 		$uniacid = \YunShop::app()->uniacid;
         $appId = \YunShop::app()->app_id;
         $code = \YunShop::request()->auth_code;
-        $state = \YunShop::request()->state;
 
-		$callback = ($_SERVER['REQUEST_SCHEME'] ? $_SERVER['REQUEST_SCHEME'] : 'http')  . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-
-\Log::debug('支付宝'. $code);
-
+        //回调域名
+		$host = ($_SERVER['REQUEST_SCHEME'] ? $_SERVER['REQUEST_SCHEME'] : 'http')  . '://' . $_SERVER['HTTP_HOST'];
+        $callback = urlencode($host.$_SERVER['PHP_SELF']);
+        //回调地址
+        if($_SERVER['QUERY_STRING']) $callback = $callback.'?'.$_SERVER['QUERY_STRING'];
 
 		if (empty($code)) {
 
@@ -37,47 +47,74 @@ class MemberAlipayService
 
 			redirect($alipay_redirect)->send();
 			exit();
-		} else {
-	
-	        $aop = new AopClient;
-			// $aop->gatewayUrl = "https://openapi.alipay.com/gateway.do";
-			$aop->gatewayUrl = $this->alipay_api;
-			$aop->appId = $this->appid;
-			$aop->rsaPrivateKey = 'MIIEpQIBAAKCAQEAyvx6vd75iLI1KCoc8KaJ9JugOlGNgMo+Wmy2Lo1fKCxSEeZgX99Uz2lt0tynJyMZDymUnjNg426iLHCQ8SfWO1Vr0CliDMNAYc3uUxMehAKklRxbZZktJdU/YwN3iOu0Q1vlC1vfhU/GWBBUevTd+CySudSJQWGXCgn+6SteYtAZOZVGYExaeEPHVNxzYIrNRCQB3Kjn0ec1uvsKtVxRj6bfXFiNRBQHe9AbonBO++v7ty2nVrmeSQWxpuAfgZ5+GcNAo0T4fqtQLVX+HTKXc3QIp5ecnMTQznmUhqT+PezeNRyfjWannrZIuhfdqxZAbdrarCviPn3luK+80vlA9QIDAQABAoIBAQCaWxxLPj+q/zkE7eFL7piBdcaGEnX0NdbslDaFd+OgfPN7wSAQR5gKkTV+X2SMklf/+7KUCqXmzL5t5LuTZqO2QuLVTGLPKbrPpPVSHvvZjtjwuruVqsF2P48QEBbZ+8L8ZejqllaG3X8KgIB9b69LhTmeLkyhd0CP1cIONXh00kdZ6zZIYmczAy+Hm+yxFoxIZm2OcORMMyWRQICWdaSVzHpZAhiiTZWooIhPlVo9NFxH5Z2EzSBFJqF8sJBPWVG/onE4qM85cCd/QaGCwTbXGz8Xt/TXjXsV+koQmkyrbcWWP2/LhY7ZdRcvW+qLu9Tk7JawgClFX9P+/tXhQBIRAoGBAOhrf9UwC7JFXdo3MIAK6PiNdv8js0bIphXCGYRp0fIql5qRYgkL/bzXdyPYgNmv+U19iPWXfWOl6HhL8/QRQ1DphFzT1X1sVnwLjpDvAVC02+yAzBQeKWsgqxCXfwwrxmZuxvsFcHeEgAJIZb4oQwNev3u45YVYM1KpE/lUgoVzAoGBAN+UhHApxtAn/uta4prkr+DXiai4bugAUbKTaEPUX+03O8YMgcH7hcLqQlHjd53NkXFSRRm+2hGSX6koM3bJYTD22xY3uT8aTpPSVkSeLq3ex/6hWDfjv/qBqfDXT7Y/oTE3At4HLydVbg7ccbJ9BMEngnWL/S88QYbM2yCYA8X3AoGAV12JWN7Nlr6Cb/OM9KSlPEEY+QE3c6Ua4VTr+J06gPhHsp9xpYrvX1vy+fN5Q9rlMJ6+q+q9BIcp4oZSdm1Cy5hr2+T4/EOMIubJOWvOJ8NEZBtqGynXUeCezQbViAKwenKrs1IxG4wf/juumxNRVWP5QI2ZIU2tRSYvTurYgUcCgYEAz88JMf+CjSM/q530FagNWVy81JdobjctuF+Of807xA6cfj5NtPGFqF94eQiFu6TAVKX1GDLuGXsFcwKsovIWZh5sEECG7AIVmwvbpzenh3AUT7XDe18ypzIxtGtL6cdGmanZ/miLCXI8M4/uFcphyu5gMcWF9It7FEIAQlFI4I0CgYEAopsbgngmsB4bF/LhAKVHY9fqQy9NkZuXLrzicOBLOgLor4Oyj636ihPx2SAXLd70gM0RTPlzY3BhM48qNdpqwqNVeBwA2MDe2G/4IVma5i3r7M/LbsloIIoOH5Mnd/ll4VUdNP9L79e3fxy2DcrBkc88CEkGPs0LA2N5jeh61b4=';
-			
-			$aop->alipayrsaPublicKey = 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6gQ3AdPxUb0blzLqxPpODaLUCkkKVZUrB9jSAZKc08p2qEpoxoviFf/yaAL2LV85iZIlIFl5e1rhNudI3yiCtG2NNgR0+HZGBa2axvClrU2y5SJ/T4qfRppahnR4HLQcuj9f3fq8WCx70N+Vul2x7NsJip+mYMeGR24dzgLvVXQuHGGI8zfaSs3cI7Xt0frJ+AERcpwB2Wu3nQQMeHGcKfoZWS7jx+holmAoAOGSHLa/w+Ab81TlbkbWBjr6mXhylomzkqHF5ygo6loD6nnmV0CgxVBAFOoSwr/xg823Y6axKTSTSY44W05Vz3maxb5OJQ5MukgHiEECCGsPVXYYVwIDAQAB';
-			$aop->format = "json";
-			$aop->postCharset = "UTF-8";
-			$aop->signType= "RSA2";
-
-			$request = new AlipaySystemOauthTokenRequest ();
-			$request->setGrantType("authorization_code");
-			$request->setCode($code);//这里传入 code
-			// $result = $aop->execute($request);
-			// $responseNode = str_replace(".", "_", $request->getApiMethodName()) . "_response";
-			// $access_token = $result->$responseNode->access_token;
-
-			try {
-				$result = $aop->execute($request);
-				$responseNode = str_replace(".", "_", $request->getApiMethodName()) . "_response";
-				$access_token = $result->$responseNode->access_token;
-				\Log::debug('支付宝'. $access_token);
-
-			} catch (Exception $e) {
-				\Log::debug('支付宝'. print_r($e));
-			}
 		}
-		// //获取用户信息
-		// $request_a = new AlipayUserUserinfoShareRequest ();
-		// $result_a = $aop->execute ($request_a,$access_token); //这里传入获取的access_token
-		// $responseNode_a = str_replace(".", "_", $request_a->getApiMethodName()) . "_response";
+		\Log::debug('支付宝：'. $code);
+     
 
-		// $user_id = $result_a->$responseNode_a->user_id;   //用户唯一id
-		// $headimgurl = $result_a->$responseNode_a->avatar;   //用户头像
-		// $nick_name = $result_a->$responseNode_a->nick_name;    //用户昵称
+		$request = new AlipaySystemOauthTokenRequest();
+		$request->setGrantType("authorization_code");
+		$request->setCode($code);//这里传入 code
+		$result = $this->aop->execute($request);
+		$responseNode = str_replace(".", "_", $request->getApiMethodName()) . "_response";
+		$result = json_decode($result, true);
+		$userInfo = $result[$responseNode];
 
-		// var_dump($result_a);
+		if ($userInfo = $result[$responseNode] ) {
+
+			$user = $this->getUserInfo($userInfo['access_token']);
+			dd($user);
+			/*alipay_system_oauth_token_response" => array:6 [
+    			"access_token" => "authusrB6e094cbc0cd54ed18e69b35e2000aX41"
+    			"alipay_user_id" => "20880051464321899646564260914141"
+    			"expires_in" => 1296000
+    			"re_expires_in" => 2592000
+    			"refresh_token" => "authusrB070ef1be4ccb4c98abd97ca781faaX41"
+    			"user_id" => "2088212325598416
+    		]*/
+
+		} else {
+			/*error_response" => array:4 [
+    			"code" => "40002"
+    			"msg" => "Invalid Arguments"
+    			"sub_code" => "isv.code-invalid"
+    			"sub_msg" => "授权码code无效"
+  			]*/
+			return show_json(-3, '支付宝授权失败code:'.$result['error_response']['code']);
+		}
+
 	}
+
+	private function aopClient()
+	{
+		$aop = new AopClient;
+		$aop->gatewayUrl = $this->alipay_api;
+		$aop->appId = $this->appid;
+		$aop->rsaPrivateKey = 'MIIEpQIBAAKCAQEAyVAeILGJrFsceHzoEygk/bbSGvvNnvnbD28TKNXju0oV9/0uuFFgbUrG+C5nc1hpGxo/CqiaETcA2zG0VlRu7XB3cCnvADs6rrntTWrZdoGR91+lEOXjnBtHv5J8TNqYXvXpyMxfWTgQcZofpzA0g01bXZfQ5DsrSD+yeFpRmCxzB8F2ndcXfuw4A5bn4cuBmpmCGCIx8FG+5x+EUucodx3nuNm+Jh3jp5LXvhK4OfCd03yNoDpQbzXXdPI2WBAE0eMB3Pt0PinOZEIaxL9MS1Y/ZOv+nubzbkVdhRc8sz645xcXFrUf3KdvsOZ3LexFTRTxF+4wcX+AWbuWSecMcQIDAQABAoIBAQCYF2B7oMX7omYzHWMUPgscZ8f6vOyPRANdeLSH8Hh6IjHQxsZKWKi6SXljPWPJAC2AXWbtfY3QnbaW48l0Q5v+5S5HXlcD3LusECoZiDU9VAzcULVbu+MnKHEfaeNhCPF/JNj4bHdI55N80E1Duaai4Im7fxxBofZEQmNqjAoDJZIEBFi5CB7SrPFrUZ6OQ2MnxPauBZab7m/fnc5uG2l0Le4fIKAjl0Obe0jS9258oEdUDmgyyNw8aDIFrUEAsMw0h/YON0AV68Yyjz3cXETqv+z9+FHMxMahgZQmyKNC4GMI3hXJNxVYYtOEBCjQW+oiUxYax7oM/vUJiwNZUNhBAoGBAPK0ihWVK8f98DdAofoTMSFSSSFpTb8BQzCE0xazrprkDYa7UXQJQoL6Q48rc1qZvz5V4XupZGdndTLWROQspZA1CIpvw4CL6Jb0gT1tM+t9wvkDxYH8Q8L8H2sqCWsEBSf/FtuyqxWdfilLkM9w09whioigMfoRbwws8aWuhML5AoGBANRXIjKKP+GvvGmISId0iSF7g/MeMAyIO9Ldd+/BU06GKCKWyHu583hySmVa1pPgxuu0Mh2gpotkySVkuemWyit0od5kt4dsRP2ENdDjfWlcIMn7Lx9fNTQLAkHqUL0igpuwuAOjIj/61tbbQwb9UAfvYJE7RMsiElXs/yYKens5AoGBAMumX8NSYuUyF/FUw1VB61SpZgGqCXl/BrDckv8WkCkZuJvX67Xw2yVp92xXqjhYj9cvWr9X2I7Hidi5YB8Rs264gU0gEKx5ORYJXbR8QDeWVBZ8aqryUK14vqg+Ip7wRZ9U9Qot9k5x0121MXJOmwa4AjU4LhdFr6dIww8hy/aJAoGBALAiHtHBb7/rH+SCEXeaqO1HIWqXDdA3aTg+UPBlco7eJYibfm1zD4xHcYKlWPyNJTP64t9ElSFnVppX9QbX95cYRfTNopcIrimEc4d0TGEK9H/WhX4GYYFr6FF45cQdTi2K5vjNZumfTnomonC3ypzqaTXO7f95oa/4yKRraLGxAoGAH/MKQFVRkf8PotD7xrlkPA/cr9DMijBQWmSMc+bT4QD+F9lnVWtQ5XnPP3xpiU6Po0beg3sLRN20QJ/t7KepNkgBCF7U4VHOLJh2YWxCrJk35dorBV1Ma/ZjsmJE9LAcmELY0UmIKVGXq9kyv2Gh3oM6zwPOabzj4ptHawYFEP4=';
+		
+		$aop->alipayrsaPublicKey = 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2fvYacITAN1BKRLlH3ejxiDWJ+2JZfcGl720BZzJW/7BaZuNUrAH3YJE18py9WcAS49fFlBC238yBEumQ4orNwDx8r5oJWxok1KsLKZSA+/gmssxVTdn9jaVkK1XjyPT+fVlvsl5AyMY2+7If4mSAbIL8ghHNVKtdqrDgLQ6Stz8iSa2/Upn+ZlvO322wqQdWcaj4xPVkzGOcS2J+X8uXZZ6aCzgmRXtLUHNTcXAnevcTSqmWCVeKFFDHQYlAccs2owWsUKgiblMhCT2d2n6QVoaTyWk6pgyNip4IfmH7kGkwJ6ycweD6xIFBRnaileR4tC9hgVWVBjEMhNAOaDeAwIDAQAB';
+		$aop->apiVersion = '1.0';
+		$aop->format = "json";
+		$aop->postCharset = "UTF-8";
+		$aop->signType= "RSA2";
+
+		return $aop;
+	}
+
+	/**
+	* 根据access_token 获取用户信息
+	* @param 
+	* @return 返回用户信息
+	*/
+	protected function getUserInfo($access_token)
+	{
+		$request = new AlipayUserInfoShareRequest();
+		$info = $this->aop->execute ($request,$access_token); //这里传入获取的access_token
+		$responseNode = str_replace(".", "_", $request->getApiMethodName()) . "_response";
+		$json_info = json_decode($info, true);
+
+		return $json_info[$responseNode];
+	}
+
 
 	 /**
      * 构造获取token的url连接
@@ -86,8 +123,8 @@ class MemberAlipayService
      */
     private function __CreateOauthUrlForCode($appId, $callback, $state = 'info')
     {
-        return $this->url."?appid=".$appId."&scope=auth_user&state={$state}&redirect_uri=".urlencode($callback);
-
-        //https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=APPID&scope=SCOPE&redirect_uri=ENCODED_URL
+        //return $this->url."?app_id=".$appId."&scope=auth_userinfo&redirect_uri=".$callback."&state=".$state;
+        return $this->url."?app_id=".$appId."&scope=auth_user&redirect_uri=".$callback."&state=".$state;
     }
+
 }
