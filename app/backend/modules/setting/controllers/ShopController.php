@@ -9,6 +9,7 @@
 namespace app\backend\modules\setting\controllers;
 
 use app\common\components\BaseController;
+use app\common\helpers\Cache;
 use app\common\helpers\Url;
 use app\common\facades\Setting;
 use app\common\models\AccountWechats;
@@ -29,6 +30,10 @@ class ShopController extends BaseController
         $requestModel = \YunShop::request()->shop;
         \Log::debug('data', $requestModel);
         if ($requestModel) {
+            if(Cache::has('shop_setting')){
+                Cache::forget('shop_setting');
+            }
+
             if (Setting::set('shop.shop', $requestModel)) {
                 return $this->message('商城设置成功', Url::absoluteWeb('setting.shop.index'));
             } else {
@@ -50,6 +55,10 @@ class ShopController extends BaseController
         $member = Setting::get('shop.member');
         $requestModel = \YunShop::request()->member;
         if ($requestModel) {
+            if(Cache::has('shop_member')){
+                Cache::forget('shop_member');
+            }
+
             if (Setting::set('shop.member', $requestModel)) {
                 return $this->message('会员设置成功', Url::absoluteWeb('setting.shop.member'));
             } else {

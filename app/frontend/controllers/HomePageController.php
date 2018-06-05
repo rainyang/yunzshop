@@ -37,7 +37,7 @@ class HomePageController extends ApiController
 
         //商城设置, 原来接口在 setting.get
         $key = \YunShop::request()->setting_key ? \YunShop::request()->setting_key : 'shop';
-        // TODO
+
         if(!Cache::has('shop_setting')){
             $setting = Setting::get('shop.' . $key);
 
@@ -70,7 +70,6 @@ class HomePageController extends ApiController
         }
 
         //强制绑定手机号
-        // TODO
         if(!Cache::has('shop_member')){
             $member_set = Setting::get('shop.member');
 
@@ -85,16 +84,7 @@ class HomePageController extends ApiController
 
         if (!is_null($member_set)) {
             if ((1 == $member_set['is_bind_mobile']) && $member_id && $member_id > 0) {
-                // TODO
-                if(!Cache::has('member_info')){
-                    $member_model = Member::getMemberById($member_id);
-
-                    if (!is_null($member_model)) {
-                        Cache::put('member_info',$member_model,4200);
-                    }
-                }else{
-                    $member_model = Cache::get('member_info');
-                }
+                $member_model = Member::getMemberById($member_id);
 
                 if ($member_model && empty($member_model->mobile)) {
                     $is_bind_mobile = 1;
