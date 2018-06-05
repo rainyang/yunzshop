@@ -7,7 +7,16 @@
     @include('layouts.tabs')
     <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" >
         <div class="panel panel-default">
-            <div class='panel-body'>  
+            <div class='panel-body'>
+
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">短信验证码</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <input type="radio" name="sms[status]" value="1" @if ($set['status'] == 1) checked @endif/> 开启
+                        &nbsp;&nbsp;
+                        <input type="radio" name="sms[status]" value="0" @if ($set['status'] == 0) checked @endif/> 关闭
+                    </div>
+                </div>
 
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">短信设置</label>
@@ -31,12 +40,13 @@
                             <input type="text" name="sms[password]" class="form-control" value="{{ $set['password'] }}" />
                         </div>
                     </div>
-                    <div class="form-group">
 
+                    <div class="form-group">
                         <div class="col-sm-12 col-xs-12">
                             <hr>
                         </div>
                     </div>
+
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">国际短信账号</label>
                         <div class="col-sm-9 col-xs-12">

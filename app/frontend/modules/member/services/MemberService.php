@@ -69,11 +69,11 @@ class MemberService
         if ($confirm_password == '') {
             $data = array(
                 'mobile' => $mobile,
-                'password' => $password
+                'password' => $password,
             );
             $rules = array(
                 'mobile' => 'regex:/^1\d{10}$/',
-                'password' => 'required|min:6|regex:/^[A-Za-z0-9@!#\$%\^&\*]+$/'
+                'password' => 'required|min:6|regex:/^[A-Za-z0-9@!#\$%\^&\*]+$/',
             );
             $message = array(
                 'regex'    => ':attribute 格式错误',
@@ -88,12 +88,12 @@ class MemberService
             $data = array(
                 'mobile' => $mobile,
                 'password' => $password,
-                'confirm_password' => $confirm_password
+                'confirm_password' => $confirm_password,
             );
             $rules = array(
                 'mobile' => 'regex:/^1\d{10}$/',
                 'password' => 'required|min:6|regex:/^[A-Za-z0-9@!#\$%\^&\*]+$/',
-                'confirm_password' => 'same:password'
+                'confirm_password' => 'same:password',
             );
             $message = array(
                 'regex'    => ':attribute 格式错误',
