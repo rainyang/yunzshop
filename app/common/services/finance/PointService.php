@@ -239,6 +239,9 @@ class PointService
             case (18):
                 $mode_attribute = self::POINT_MODE_TRANSFER_LOVE_ATTACHED;
                 break;
+            case (19):
+                $mode_attribute = self::POINT_MODE_SIGN_REWARD_ATTACHED;
+                break;
             case (92):
                 $mode_attribute = self::POINT_MODE_RECHARGE_CODE_ATTACHED;
                 break;
