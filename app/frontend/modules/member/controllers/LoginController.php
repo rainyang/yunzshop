@@ -79,9 +79,8 @@ class LoginController extends ApiController
         $phone_oauth = \Setting::get('shop_app.pay.phone_oauth');
 
         if (empty($phone_oauth)) {
-            $phone_oauth = 0;
+            $phone_oauth = '0';
         }
-        dd($phone_oauth);
         return $this->successJson('ok', ['phone_oauth' => $phone_oauth]);
     }
 }
