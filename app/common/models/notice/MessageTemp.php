@@ -96,7 +96,7 @@ class MessageTemp extends BaseModel
         if (!intval($temp_id)) {
             return false;
         }
-        $temp = self::getTempById($temp_id)->first();
+        $temp = self::withoutGlobalScopes('uniacid')->getTempById($temp_id)->first();
         if (!$temp) {
             return false;
         }
