@@ -68,7 +68,6 @@ class ApiController extends BaseController
         if (empty($type) || $type == 'undefined') {
             $type = Client::getType();
         }
-        $type = 8;
         $queryString = ['type'=>$type,'session_id'=>session_id(), 'i'=>\YunShop::app()->uniacid, 'mid'=>$mid];
 
         if (5 == $type || 7 == $type) {

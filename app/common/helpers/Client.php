@@ -196,6 +196,13 @@ class Client
         }
         return true;
     }
+    public static function is_alipay()
+    {
+        if (!empty($_SERVER['HTTP_USER_AGENT']) && strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'alipay') !== false) {
+            return true;
+        }
+        return false;
+    }
 
     /**
      * 获取随机字符串
@@ -227,6 +234,8 @@ class Client
             //app浏览器
         } elseif (self::is_app()) {
             return 7;
+        } elseif (self::is_alipay()) {
+            return 8;
         }
         return 5;
     }

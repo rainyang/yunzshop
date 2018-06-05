@@ -61,6 +61,10 @@ class MemberAlipayService
 
 		if ($userInfo = $result[$responseNode] ) {
 
+			//第一步获取到支付宝用户user_id,判断商城是否已存在这个用户
+
+			//第二步用户已存在则直接登录，不存在则 通过 access_token 获取用户信息添加到支付宝用户表
+
 			$user = $this->getUserInfo($userInfo['access_token']);
 			dd($user);
 			/*alipay_system_oauth_token_response" => array:6 [
@@ -111,6 +115,11 @@ class MemberAlipayService
 		$info = $this->aop->execute ($request,$access_token); //这里传入获取的access_token
 		$responseNode = str_replace(".", "_", $request->getApiMethodName()) . "_response";
 		$json_info = json_decode($info, true);
+
+		if (!empty($json_info['error_response'])) {
+			\Log::debug('支付宝获取用户信息失败code:'.$json_info['error_response']['code']);
+            return show_json(-3, '支付宝授权失败');
+		}
 
 		return $json_info[$responseNode];
 	}
