@@ -21,7 +21,6 @@ class LoginController extends ApiController
     protected $publicAction = ['index', 'phoneSetGet'];
     protected $ignoreAction = ['index', 'phoneSetGet'];
 
-
     public function index()
     {
         $type = \YunShop::request()->type ;
@@ -78,6 +77,9 @@ class LoginController extends ApiController
     public function phoneSetGet()
     {
         $phone_oauth = \Setting::get('shop_app.pay.phone_oauth');
+        if (empty($phone_oauth)) {
+            $phone_oauth = 0;
+        }
         return $this->successJson('ok', ['phone_oauth' => $phone_oauth]);
     }
 }
