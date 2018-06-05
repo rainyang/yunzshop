@@ -38,7 +38,7 @@ class HomePageController extends ApiController
         //商城设置, 原来接口在 setting.get
         $key = \YunShop::request()->setting_key ? \YunShop::request()->setting_key : 'shop';
         // TODO
-        if(!Cache::has('shop_' . $key)){
+        if(!Cache::has('shop_setting')){
             $setting = Setting::get('shop.' . $key);
 
             if (!is_null($setting)) {
