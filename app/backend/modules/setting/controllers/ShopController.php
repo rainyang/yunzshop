@@ -114,6 +114,10 @@ class ShopController extends BaseController
         $requestModel = \YunShop::request()->category;
         if ($requestModel) {
             if (Setting::set('shop.category', $requestModel)) {
+                if(Cache::has('shop_category')){
+                    Cache::forget('shop_category');
+                }
+
                 return $this->message(' 分类层级设置成功', Url::absoluteWeb('setting.shop.category'));
             } else {
                 $this->error('分类层级设置失败');
