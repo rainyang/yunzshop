@@ -294,7 +294,7 @@ class Goods extends BaseModel
     public static function getGoodsByName($keyword)
     {
 
-        return static::uniacid()->select('id', 'title', 'thumb', 'market_price', 'price', 'real_sales', 'sku','plugin_id')
+        return static::uniacid()->select('id', 'title', 'thumb', 'market_price', 'price', 'real_sales', 'sku','plugin_id','stock')
             ->where('title', 'like', '%' . $keyword . '%')
             ->where('status', 1)
             //->where('is_plugin', 0)
