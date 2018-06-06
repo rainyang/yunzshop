@@ -256,17 +256,16 @@ class MergePayController extends ApiController
 
     /**
      * 支付宝支付
-     * @param \Request $request
      * @return \Illuminate\Http\JsonResponse
      * @throws AppException
      */
-    public function alipay(\Request $request)
+    public function alipay()
     {
         if (\Setting::get('shop.pay.alipay') == false) {
             throw new AppException('商城未开启支付宝支付');
         }
-        if ($request->has('uid')) {
-            Session::set('member_id', $request->query('uid'));
+        if (request()->has('uid')) {
+            Session::set('member_id', request()->query('uid'));
         }
         /**
          * @var \app\frontend\models\OrderPay $orderPay
