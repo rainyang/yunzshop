@@ -6,7 +6,6 @@ use app\common\services\Session;
 use app\frontend\modules\member\services\MemberService;
 use app\common\services\alipay\request\AlipaySystemOauthTokenRequest;
 use app\common\services\alipay\request\AlipayUserInfoShareRequest;
-// use app\common\services\alipay\request\AlipayUserInfoAuthRequest;
 use app\common\services\alipay\AopClient;
 use app\common\helpers\Url;
 use app\frontend\modules\member\models\MemberModel;
@@ -25,7 +24,7 @@ class MemberAlipayService extends MemberService
 
     public function __construct()
     {
-    	parent::__construct();
+    	// parent::__construct();
 
     	$this->aop = $this->aopClient();
     }
@@ -44,10 +43,13 @@ class MemberAlipayService extends MemberService
 
 		if (empty($code)) {
 
+            $this->_setClientRequestUrl();
+
 			$alipay_redirect = $this->__CreateOauthUrlForCode($this->aop->appId, $callback);
 			redirect($alipay_redirect)->send();
 			exit();
 		}
+
 		$request = new AlipaySystemOauthTokenRequest();
 		$request->setGrantType("authorization_code");
 		$request->setCode($code);//这里传入 code
@@ -70,27 +72,11 @@ class MemberAlipayService extends MemberService
 			$alipay_user['sex'] = $userInfo['gender'] == 'F' ? 0 : 1;
 			$alipay_user['province'] =  $userInfo['province'];
 			$alipay_user['city'] =  $userInfo['city'];
-
+			$alipay_user['country'] =  '';
 
 			$member_id = $this->memberLogin($alipay_user);
 
             Session::set('member_id', $member_id);
-
-			//添加ims_mc_member表
-            // $member_id = MemberModel::insertGetId(array(
-            //     'uniacid' => $uniacid,
-            //     'groupid' => 0,
-            //     'createtime' => time(),
-            //     'nickname' => $userInfo['nick_name'],
-            //     'avatar' => $userInfo['avatar'],
-            //     'gender' => $userInfo['gender'],
-            //     'nationality' => '',
-            //     'resideprovince' => $userInfo['province'],
-            //     'residecity' => $userInfo['city'],
-            // ));
-            // if (empty($member_id)) {
-            //     return show_json(8, '保存用户信息失败');
-            // }
 
             //添加 yz_member_alipay 表
             $bool = MemberAlipay::insertData($userInfo, ['member_id' =>$member_id, 'uniacid' => $uniacid]);
@@ -115,13 +101,14 @@ class MemberAlipayService extends MemberService
     			"sub_code" => "isv.code-invalid"
     			"sub_msg" => "授权码code无效"
   			]*/
-  			\Log::debug();
   			\Log::debug('支付宝授权失败code:'.$result['error_response']['code']);
 			return show_json(-3, '支付宝授权失败');
 		}
 
-
-		show_json(1, Session::get('member_id'));
+		$redirect_url = $this->_getClientRequestUrl();
+		redirect($redirect_url)->send();
+        exit;
+		//return show_json(1, Session::get('member_id'));
 	}
 
 	private function aopClient()
@@ -169,6 +156,40 @@ class MemberAlipayService extends MemberService
         }
 
         return $model;
+    }
+
+     /**
+     * 设置客户端请求地址
+     *
+     * @return string
+     */
+    private function _setClientRequestUrl()
+    {
+        if (\YunShop::request()->yz_redirect) {
+            $yz_redirect = base64_decode(\YunShop::request()->yz_redirect);
+
+            $redirect_url = $yz_redirect . '&t=' . time();
+           /* if (preg_match('menu', $yz_redirect)) {
+                $redirect_url = preg_replace('/menu/', 'redir_menu', $yz_redirect);
+            } else {
+                $redirect_url = preg_replace('/from=singlemessage/', 'redir_menu', $yz_redirect);
+            }
+            */
+
+            Session::set('client_url', $redirect_url);
+        } else {
+            Session::set('client_url', '');
+        }
+    }
+
+     /**
+     * 获取客户端地址
+     *
+     * @return mixed
+     */
+    private function _getClientRequestUrl()
+    {
+        return Session::get('client_url');
     }
 
 
