@@ -8,7 +8,6 @@
 
 namespace app\backend\controllers;
 
-
 use app\common\components\BaseController;
 use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\models\Member;
@@ -29,9 +28,7 @@ class TestController extends BaseController
 {
     public function index()
     {
-        dd(json_encode(request()->input(),256));
         exit;
-
     }
 
     public function op_database()

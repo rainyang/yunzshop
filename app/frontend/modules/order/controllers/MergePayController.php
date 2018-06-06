@@ -94,22 +94,7 @@ class MergePayController extends ApiController
         $member = $orders->first()->belongsToMember()->select(['credit2'])->first()->toArray();
         // 支付类型
         $buttons = $this->getPayTypeButtons($orders->first());
-        //订单金额为0时只显示‘余额支付’按钮
-        if ($orders->first()->price == 0) {
-            unset($buttons[0]);
-            unset($buttons[1]);
-            unset($buttons[2]);
-            unset($buttons[6]);
-            unset($buttons[7]);
-            unset($buttons[9]);
-            unset($buttons[10]);
-            unset($buttons[12]);
-            unset($buttons[14]);
-        }
-        $type    = \YunShop::request()->type ?:0;
-        if ($type == 2 && !empty($buttons[2])) {
-            unset($buttons[2]);
-        }
+
         // 生成支付记录 记录订单号,支付金额,用户,支付号
         $orderPay = new OrderPay();
         $orderPay->order_ids = explode(',', $request->input('order_ids'));
@@ -129,18 +114,36 @@ class MergePayController extends ApiController
     /**
      * 通过事件获取支付按钮
      * @param $order
+     * @return mixed
      */
-    private function getPayTypeButtons($order)
+    private function getPayTypeButtons(Order $order)
     {
         $order = Order::find($order->id);
         $paymentTypes = app('PaymentManager')->make('OrderPaymentTypeManager')->getOrderPaymentTypes($order);
-        return $paymentTypes->map(function (BasePayment $paymentType) {
+        $result =  $paymentTypes->map(function (BasePayment $paymentType) {
             return [
                 'name' => $paymentType->getName(),
                 'value' => $paymentType->getId(),
                 'need_password' => $paymentType->needPassword(),
             ];
         });
+        //订单金额为0时只显示‘余额支付’按钮
+        if ($order->price == 0) {
+            unset($result[0]);
+            unset($result[1]);
+            unset($result[2]);
+            unset($result[6]);
+            unset($result[7]);
+            unset($result[9]);
+            unset($result[10]);
+            unset($result[12]);
+            unset($result[14]);
+        }
+        $type    = \YunShop::request()->type ?:0;
+        if ($type == 2 && !empty($result[2])) {
+            unset($result[2]);
+        }
+        return $result;
     }
 
     /**

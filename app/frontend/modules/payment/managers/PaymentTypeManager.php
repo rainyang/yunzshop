@@ -17,7 +17,7 @@ use Illuminate\Container\Container;
 use Illuminate\Support\Collection;
 
 /**
- * 订单支付管理者
+ * 支付管理者
  * Class OrderPaymentManager
  * @package app\frontend\modules\payment\managers
  */
@@ -75,8 +75,6 @@ class PaymentTypeManager extends Container
         // 支付方式集合
         collect($this->paymentConfig)->each(function ($payment, $code) {
             // 绑定支付方式对应的设置管理者
-            //dd(app('PaymentManager')->make('OrderPaymentTypeSettingManager'));
-            //exit;
 
             $this->getSettingManager()->singleton($code, function (Container $container) use ($payment) {
                 return $payment['settings'];
@@ -88,8 +86,6 @@ class PaymentTypeManager extends Container
      */
     private function bindPayments()
     {
-
-
         // 支付方式集合
         collect($this->paymentConfig)->each(function ($payment, $code) {
             /**

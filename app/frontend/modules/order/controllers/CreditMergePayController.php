@@ -41,7 +41,7 @@ class CreditMergePayController extends MergePayController
             $this->orderPay->status = 1;
             $this->orderPay->save();
             $this->orders->each(function ($order) {
-                if (!OrderService::orderPay(['order_id' => $order->id, 'order_pay_id' => $this->orderPay->id, 'pay_type_id' => PayFactory::PAY_CREDIT])) {
+                if (!OrderService::orderPay(['order_id' => $order->id, 'order_pay_id' => $this->orderPay->id, 'pay_type_id' => $this->orderPay->pay_type_id])) {
                     throw new AppException('订单状态改变失败,请联系客服');
                 }
             });

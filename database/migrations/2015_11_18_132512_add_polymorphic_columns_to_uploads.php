@@ -12,15 +12,18 @@ class AddPolymorphicColumnsToUploads extends Migration
      */
     public function up()
     {
-        Schema::table('uploads', function (Blueprint $table) {
-            $table->integer('uploadable_id')->nullable();
-            $table->string('uploadable_type')->nullable();
+        if (!Schema::hasTable('uploads')) {
 
-            $table->index([
-                'uploadable_id',
-                'uploadable_type'
-            ],'uploadable_index');
-        });
+            Schema::table('uploads', function (Blueprint $table) {
+                $table->integer('uploadable_id')->nullable();
+                $table->string('uploadable_type')->nullable();
+
+                $table->index([
+                    'uploadable_id',
+                    'uploadable_type'
+                ], 'uploadable_index');
+            });
+        }
     }
 
     /**
@@ -30,12 +33,15 @@ class AddPolymorphicColumnsToUploads extends Migration
      */
     public function down()
     {
-        Schema::table('uploads', function (Blueprint $table) {
-            $table->dropIndex('uploadable_index');
-        });
-        Schema::table('uploads', function (Blueprint $table) {
-            $table->dropColumn('uploadable_id');
-            $table->dropColumn('uploadable_type');
-        });
+        if (Schema::hasTable('uploads')) {
+
+            Schema::table('uploads', function (Blueprint $table) {
+                $table->dropIndex('uploadable_index');
+            });
+            Schema::table('uploads', function (Blueprint $table) {
+                $table->dropColumn('uploadable_id');
+                $table->dropColumn('uploadable_type');
+            });
+        }
     }
 }

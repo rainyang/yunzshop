@@ -23,6 +23,8 @@ use app\frontend\modules\payment\paymentSettings\shop\AnotherPaySetting;
 use app\frontend\modules\payment\paymentSettings\shop\BalanceSetting;
 use app\frontend\modules\payment\paymentSettings\shop\CloudPayAliSetting;
 use app\frontend\modules\payment\paymentSettings\shop\CloudPayWechatSetting;
+use app\frontend\modules\payment\paymentSettings\shop\CODSetting;
+use app\frontend\modules\payment\paymentSettings\shop\RemittanceSetting;
 use app\frontend\modules\payment\paymentSettings\shop\WechatAppPaySetting;
 use app\frontend\modules\payment\paymentSettings\shop\WechatPaySetting;
 use app\frontend\modules\payment\paymentSettings\shop\YunPayAliSetting;
@@ -123,7 +125,21 @@ class PaymentConfig
                         return new YunPayAliSetting($order);
                     }
                 ],
-            ]
+            ],
+            'COD' => [
+                'settings' => [
+                    'shop' => function (OrderPaymentTypeSettingManager $manager, Order $order) {
+                        return new CODSetting($order);
+                    }
+                ],
+            ],
+            'remittance' => [
+                'settings' => [
+                    'shop' => function (OrderPaymentTypeSettingManager $manager, Order $order) {
+                        return new RemittanceSetting($order);
+                    }
+                ],
+            ],
         ];
     }
 }
