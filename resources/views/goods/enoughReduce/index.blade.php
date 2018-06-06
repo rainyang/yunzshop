@@ -12,44 +12,49 @@
     <div class="rightlist">
         @include('layouts.tabs')
         <div id="test-vue">
-            <el-form ref="form" :rules="rules" :model="form" label-width="17%">
-                <template v-for="(enoughReduce,index) in form.enoughReduce">
+            <el-form ref="form" :model="form" label-width="17%">
 
-                    <el-form-item label="满额减">
+                <el-form-item
+                        v-for="(enoughReduce,index) in form.enoughReduce"
+                        :label="'满额减'+(index+1)"
+                        :key="index"
+                >
+                    <el-row :gutter="3">
 
-                        <el-form-item>
-                            <el-row :gutter="3">
+                        <el-col :span="6">
+                            <el-form-item
+                                    v-bind:prop="'enoughReduce['+ index +'].enough'"
+                                    v-bind:rules="rules.amountRulesRequired"
+                            >
+                                <el-input placeholder="金额"
+                                          v-model.number="enoughReduce.enough" size="medium">
+                                    <template slot="prepend">满</template>
+                                    <template slot="append">元</template>
+                                </el-input>
+                            </el-form-item>
+                        </el-col>
 
-                                <el-col :span="6">
-                                    <el-form-item v-bind:prop="'enoughReduce.enough-'+index">
-                                        <el-input placeholder="金额"
-                                                  v-model.number="enoughReduce.enough" size="medium">
-                                            <template slot="prepend">满</template>
-                                            <template slot="append">元</template>
-                                        </el-input>
-                                    </el-form-item>
-                                </el-col>
+                        <el-col :span="6">
 
-                                <el-col :span="6">
+                            <el-form-item
+                                    v-bind:prop="'enoughReduce['+ index +'].reduce'"
+                                    v-bind:rules="rules.amountRulesRequired"
+                            >
+                                <el-input placeholder="金额"
+                                          v-model.number="enoughReduce.reduce" size="medium">
+                                    <template slot="prepend">减</template>
+                                    <template slot="append">元</template>
+                                </el-input>
+                            </el-form-item>
+                        </el-col>
 
-                                    <el-form-item v-bind:prop="'enoughReduce.reduce-'+index">
-                                        <el-input placeholder="金额"
-                                                  v-model.number="enoughReduce.reduce" size="medium">
-                                            <template slot="prepend">减</template>
-                                            <template slot="append">元</template>
-                                        </el-input>
-                                    </el-form-item>
-                                </el-col>
-
-                                <el-col :span="3">
-                                    <el-button plain size="mini" @click="remove(this)">x</el-button>
-                                </el-col>
-                            </el-row>
-                        </el-form-item>
+                        <el-col :span="3">
+                            <el-button plain size="mini" @click="remove(this)">x</el-button>
+                        </el-col>
+                    </el-row>
 
 
-                    </el-form-item>
-                </template>
+                </el-form-item>
                 <el-form-item label="">
                     <el-row>
                         <el-button @click="add">增加满减规则</el-button>
@@ -62,7 +67,8 @@
                         <el-switch v-model="form.freeFreight.open">
                         </el-switch>
                     </el-tooltip>
-                    <el-form-item prop="freeFreight.enough">
+                    <el-form-item prop="freeFreight.enough" v-bind:rules="rules.amountRules"
+                    >
                         <el-input placeholder="金额"
                                   v-model.number="form.freeFreight.enough" size="medium"
                                   style="width: 27%">
@@ -142,25 +148,13 @@
 
                     }
                 }
-                //验证规则
                 let amountRules = {
                     type: 'number',
+                    required:false,
                     min: 0,
                     max: 999999999,
-                    message: '请输入正确金额',
-                    transform(value) {
-                        console.log(value);
-                        return Number(value)
-                    }
+                    message: '请输入正确金额'
                 };
-                let rules = {
-                        'freeFreight.enough': [amountRules],
-                };
-//                 for(enoughReduceIndex in temp.enoughReduce){
-//                     rules['enoughReduce.reduce-'+enoughReduceIndex] = [amountRules];
-//                     rules['enoughReduce.enough-'+enoughReduceIndex] = [amountRules];
-//                 }
-// console.log(rules);
                 return {
                     form: temp,
                     props: {
@@ -172,11 +166,18 @@
                     formLoading: false,
                     centerDialogVisible: false,
                     treeData: [],
-                    rules: rules
+                    rules: {
+                        amountRulesRequired: amountRules,
+                        amountRules:{
+                            ...amountRules,
+                            transform:function(value){
+                                return Number(value);
+                            }
+                        }
+                    }
                 }
             },
             mounted: function () {
-                console.log(this.form)
             },
             methods: {
                 add() {
@@ -198,27 +199,33 @@
                     this.formLoading = true;
 
                     this.$refs.form.validate((valid) => {
-                        console.log(valid)
-                    });
-                    this.$http.post("{!! yzWebUrl('enoughReduce.store') !!}", {'setting': this.form}).then(response => {
-                        //console.log(response.data);
-                        // return;
-                        if (response.data.result) {
-                            this.$message({
-                                message: response.data.msg,
-                                type: 'success'
-                            });
-                        } else {
-                            this.$message({
-                                message: response.data.msg,
-                                type: 'error'
-                            });
-                        }
+                        if(valid){
+                            this.$http.post("{!! yzWebUrl('enoughReduce.store') !!}", {'setting': this.form}).then(response => {
+                                //console.log(response.data);
+                                // return;
+                                if (response.data.result) {
+                                    this.$message({
+                                        message: response.data.msg,
+                                        type: 'success'
+                                    });
+                                } else {
+                                    this.$message({
+                                        message: response.data.msg,
+                                        type: 'error'
+                                    });
+                                }
 
-                        this.formLoading = false;
-                    }, response => {
-                        console.log(response);
+                                this.formLoading = false;
+                            }, response => {
+                                console.log(response);
+                            });
+                        }else{
+                            console.log(valid)
+                            this.formLoading = false;
+                            return false;
+                        }
                     });
+
                 },
                 handleClose(area) {
                     this.form.areas.splice(this.form.areas.indexOf(area), 1);
@@ -253,11 +260,11 @@
                         });
                     }
                 },
-                checkAreas(node,checked,children) {
-                    if(node.isLeaf){
+                checkAreas(node, checked, children) {
+                    if (node.isLeaf) {
                         return;
                     }
-                    if(checked){
+                    if (checked) {
                         this.form.freeFreight.province_ids.push(node.id)
                     }
                 },

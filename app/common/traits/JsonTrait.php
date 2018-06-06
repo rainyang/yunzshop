@@ -8,6 +8,8 @@
 
 namespace app\common\traits;
 
+use Illuminate\Support\Facades\Log;
+
 trait JsonTrait
 {
 

@@ -35,7 +35,7 @@ class GoodsDiscount extends BaseModel
     public function getAmount($price)
     {
 
-        if(isset($this->amount)){
+        if(array_key_exists('amount',$this->attributes)){
             return $this->amount;
         }
         if ($this->enable()) {

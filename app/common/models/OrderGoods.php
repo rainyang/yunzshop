@@ -27,7 +27,8 @@ class OrderGoods extends BaseModel
     protected $guarded = ['id'];
     protected $attributes = [
         'goods_option_id' => 0,
-        'goods_option_title' => ''
+        'goods_option_title' => '',
+        'comment_status' => 0
     ];
     protected $search_fields = ['goods_sn', 'title', 'goods_id'];
 

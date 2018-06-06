@@ -194,6 +194,8 @@ class PreOrder extends Order
             'uniacid' => $this->uniacid,
             'is_virtual' => $this->getGoodsType(),//是否是虚拟商品订单
         );
+
+
         $attributes = array_merge($this->getAttributes(), $attributes);
         return $attributes;
     }
@@ -290,7 +292,7 @@ class PreOrder extends Order
         });
 
         //虚拟
-        if (empty($result->toArray())) {
+        if ($result->isEmpty()) {
             return 1;
         }
         //实体
@@ -304,7 +306,7 @@ class PreOrder extends Order
      */
     protected function getPrice()
     {
-        if (isset($this->price)) {
+        if (array_key_exists('price', $this->attributes)) {
             // 一次计算内避免循环调用,返回计算过程中的价格
             return $this->price;
         }

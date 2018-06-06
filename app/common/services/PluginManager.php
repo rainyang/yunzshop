@@ -5,7 +5,6 @@ namespace app\common\services;
 use app\common\events;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use app\common\events\PluginWasUninstalled;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Contracts\Events\Dispatcher;
 use app\common\repositories\OptionRepository;

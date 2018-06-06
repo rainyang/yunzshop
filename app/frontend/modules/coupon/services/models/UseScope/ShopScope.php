@@ -17,7 +17,6 @@ class ShopScope extends CouponUseScope
 {
     /**
      * @return Collection
-     * @throws AppException
      */
     protected function _getOrderGoodsOfUsedCoupon()
     {
@@ -26,17 +25,8 @@ class ShopScope extends CouponUseScope
                 /**
                  * @var $orderGoods PreOrderGoods
                  */
-//                dd($orderGoods->goods->is_plugin);
-//                exit;
                 return !$orderGoods->goods->is_plugin;
             });
-
-//        dd($orderGoods->goods);
-//        exit;
-        if ($orderGoods->unique('is_plugin')->count() > 1) {
-            throw new AppException('自营商品与第三方商品不能共用一张优惠券');
-        }
-
         return $orderGoods;
     }
 }

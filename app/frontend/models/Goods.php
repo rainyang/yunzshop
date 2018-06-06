@@ -15,6 +15,8 @@ use app\frontend\models\goods\Sale;
 use app\frontend\modules\member\services\MemberService;
 use app\common\models\Coupon;
 use Illuminate\Database\Eloquent\Builder;
+use Yunshop\StoreCashier\common\models\StoreGoods;
+use Yunshop\Supplier\admin\models\SupplierGoods;
 
 /**
  * Class Goods
@@ -25,9 +27,13 @@ use Illuminate\Database\Eloquent\Builder;
  * @property string thumb
  * @property float price
  * @property float weight
+ * @property int is_plugin
+ * @property int plugin_id
  * @property Sale hasOneSale
  * @property GoodsOption has_option
  * @property Privilege hasOnePrivilege
+ * @property SupplierGoods supplierGoods
+ * @property StoreGoods storeGoods
  */
 class Goods extends \app\common\models\Goods
 {

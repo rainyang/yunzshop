@@ -24,6 +24,8 @@ use app\frontend\modules\coupon\services\models\UseScope\CategoryScope;
 use app\frontend\modules\coupon\services\models\UseScope\CouponUseScope;
 use app\frontend\modules\coupon\services\models\UseScope\GoodsScope;
 use app\frontend\modules\coupon\services\models\UseScope\ShopScope;
+use app\frontend\modules\coupon\services\models\UseScope\StoreScope;
+use app\frontend\modules\coupon\services\models\UseScope\SupplierScope;
 use app\frontend\modules\order\models\PreOrder;
 
 class Coupon
@@ -106,6 +108,12 @@ class Coupon
                 break;
             case DbCoupon::COUPON_SHOP_USE:
                 return new ShopScope($this);
+                break;
+            case DbCoupon::COUPON_SUPPLIER_USE:
+                return new SupplierScope($this);
+                break;
+            case DbCoupon::COUPON_STORE_USE:
+                return new StoreScope($this);
                 break;
             default:
 //                if (config('app.debug')) {

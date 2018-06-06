@@ -8,19 +8,21 @@
 
 namespace app\common\providers;
 
-use app\common\exceptions\ShopException;
+use app\common\managers\ModelExpansionManager;
 use app\frontend\modules\coin\CoinManager;
 use app\frontend\modules\deduction\DeductionManager;
 use app\frontend\modules\goods\services\GoodsManager;
 use app\frontend\modules\order\services\OrderManager;
 use app\frontend\modules\payment\managers\PaymentManager;
-use app\frontend\modules\payment\OrderPaymentManager;
 use Illuminate\Support\ServiceProvider;
 
 class ShopProvider extends ServiceProvider
 {
     public function boot()
     {
+        $this->app->singleton('ModelExpansionManager',function(){
+            return new ModelExpansionManager();
+        });
         $this->app->singleton('CoinManager',function(){
             return new CoinManager();
         });
@@ -36,5 +38,6 @@ class ShopProvider extends ServiceProvider
         $this->app->singleton('OrderManager',function(){
             return new OrderManager();
         });
+
     }
 }

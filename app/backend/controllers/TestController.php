@@ -29,9 +29,7 @@ class TestController extends BaseController
 {
     public function index()
     {
-        dd(json_encode(request()->input(),256));
-        exit;
-
+        event(new AfterOrderReceivedEvent(Order::find(1933)));
     }
 
     public function op_database()
