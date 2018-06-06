@@ -150,8 +150,9 @@ class MergePayController extends ApiController
      * 支付
      * @param $payType
      * @param array $payParams
-     * @return \app\common\services\strin5|array|bool|mixed|void
+     * @return \app\common\services\strin5|array|bool|mixed|string|void
      * @throws AppException
+     * @throws \app\common\exceptions\ShopException
      */
     protected function pay($payType, $payParams=[])
     {
@@ -222,16 +223,23 @@ class MergePayController extends ApiController
 
     /**
      * 微信支付
-     * @param \Request $request
      * @return \Illuminate\Http\JsonResponse
      * @throws AppException
+     * @throws \app\common\exceptions\ShopException
      */
-    public function wechatPay(\Request $request)
+    public function wechatPay()
     {
+        $this->validate([
+            'order_pay_id' => 'required|integer'
+        ]);
         if (\Setting::get('shop.pay.weixin') == false) {
             throw new AppException('商城未开启微信支付');
         }
-        $data = $this->pay( PayFactory::PAY_WEACHAT);
+        /**
+         * @var \app\frontend\models\OrderPay $orderPay
+         */
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+        $data = $orderPay->getPayResult(PayFactory::PAY_WEACHAT);
         $data['js'] = json_decode($data['js'], 1);
 
         $trade = \Setting::get('shop.trade');
@@ -260,7 +268,11 @@ class MergePayController extends ApiController
         if ($request->has('uid')) {
             Session::set('member_id', $request->query('uid'));
         }
-        $data = $this->pay( PayFactory::PAY_ALIPAY);
+        /**
+         * @var \app\frontend\models\OrderPay $orderPay
+         */
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+        $data = $orderPay->getPayResult(PayFactory::PAY_ALIPAY);
         return $this->successJson('成功', $data);
     }
 
@@ -275,7 +287,11 @@ class MergePayController extends ApiController
         if (\Setting::get('shop_app.pay.weixin') == false) {
             throw new AppException('商城未开启微信支付');
         }
-        $data = $this->pay( PayFactory::PAY_APP_WEACHAT);
+        /**
+         * @var \app\frontend\models\OrderPay $orderPay
+         */
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+        $data = $orderPay->getPayResult(PayFactory::PAY_APP_WEACHAT);
         return $this->successJson('成功', $data);
     }
 
@@ -293,7 +309,11 @@ class MergePayController extends ApiController
         if ($request->has('uid')) {
             Session::set('member_id', $request->query('uid'));
         }
-        $data['payurl'] = $this->pay( PayFactory::PAY_APP_ALIPAY);
+        /**
+         * @var \app\frontend\models\OrderPay $orderPay
+         */
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+        $data['payurl'] = $orderPay->getPayResult(PayFactory::PAY_APP_ALIPAY);
         $data['isnewalipay'] = \Setting::get('shop_app.pay.newalipay');
         return $this->successJson('成功', $data);
     }
@@ -309,8 +329,11 @@ class MergePayController extends ApiController
         if (\Setting::get('plugin.cloud_pay_set') == false) {
             throw new AppException('商城未开启微信支付');
         }
-
-        $data = $this->pay( PayFactory::PAY_CLOUD_WEACHAT);
+        /**
+         * @var \app\frontend\models\OrderPay $orderPay
+         */
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+        $data= $orderPay->getPayResult(PayFactory::PAY_CLOUD_WEACHAT);
         return $this->successJson('成功', $data);
     }
 
@@ -327,7 +350,11 @@ class MergePayController extends ApiController
             throw new AppException('商城未开启芸支付');
         }
 
-        $data = $this->pay( PayFactory::PAY_YUN_WEACHAT);
+        /**
+         * @var \app\frontend\models\OrderPay $orderPay
+         */
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+        $data= $orderPay->getPayResult(PayFactory::PAY_YUN_WEACHAT);
         return $this->successJson('成功', $data);
     }
 
@@ -343,7 +370,11 @@ class MergePayController extends ApiController
             throw new AppException('商城未开启支付宝支付');
         }
 
-        $data = $this->pay( PayFactory::PAY_CLOUD_ALIPAY, ['pay' => 'cloud_alipay']);
+        /**
+         * @var \app\frontend\models\OrderPay $orderPay
+         */
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+        $data= $orderPay->getPayResult(PayFactory::PAY_CLOUD_ALIPAY,['pay' => 'cloud_alipay']);
         return $this->successJson('成功', $data);
     }
 
@@ -422,7 +453,11 @@ class MergePayController extends ApiController
             throw new AppException('商城未开启芸支付');
         }
 
-        $data = $this->pay( PayFactory::PAY_YUN_WEACHAT, ['pay' => 'alipay']);
+        /**
+         * @var \app\frontend\models\OrderPay $orderPay
+         */
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+        $data= $orderPay->getPayResult(PayFactory::PAY_YUN_WEACHAT,['pay' => 'alipay']);
         return $this->successJson('成功', $data);
     }
 }

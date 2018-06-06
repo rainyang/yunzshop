@@ -8,15 +8,22 @@
 
 namespace app\common\models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Class OrderPay
  * @package app\common\models
  * @property int id
+ * @property int uid
+ * @property int status
+ * @property string pay_sn
+ * @property int pay_type_id
+ * @property Carbon pay_time
+ * @property Carbon refund_time
+ * @property float amount
  * @property array order_ids
  * @property Collection orders
- * @property int status
  */
 class OrderPay extends BaseModel
 {
