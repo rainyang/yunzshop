@@ -156,9 +156,9 @@
         $("#expresscom").val(sel);
     });
 
-        require(['select2'], function () {
+
             $('#express').select2();
-    })
+
 
 </script>
 @endsection('content')

@@ -1,8 +1,8 @@
 <div id="modal-refund" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"
-     style="width:620px;margin:0px auto;">
+     style="width:920px;margin:0px auto;">
     <form class="form-horizontal form" id="form-refund" action="" method="post" enctype="multipart/form-data">
         <input type='hidden' name='refund_id' value='{{$order['has_one_refund_apply']['id']}}'/>
-        <div class="modal-dialog">
+        <div class="modal-dialog" style="width:920px;">
             <div class="modal-content">
                 <div class="modal-header">
                     <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>

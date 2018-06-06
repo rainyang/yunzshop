@@ -28,10 +28,10 @@ class PreOrderGoodsCollection extends Collection
      * 获取销售价
      * @return int
      */
-    public function getFinalPrice()
+    public function getPaymentAmount()
     {
-        return $this->sum(function ($orderGoods) {
-            return $orderGoods->getPrice();
+        return $this->sum(function (PreOrderGoods $orderGoods) {
+            return $orderGoods->getPaymentAmount();
         });
     }
 

@@ -14,10 +14,13 @@ use app\backend\modules\coupon\services\MessageNotice;
 class CouponService
 {
     use DispatchesJobs;
+    /**
+     * @var PreOrder
+     */
     private $order;
     private $orderGoods;
-    private $coupon_method = null;
-
+    private $coupon_method;
+    private $selectedMemberCoupon;
     public function __construct( $order, $coupon_method = null, $orderGoods = [])
     {
 
@@ -28,29 +31,19 @@ class CouponService
 
     /**
      * 获取订单优惠金额
-     * @return int
+     * @return float
      */
     public function getOrderDiscountPrice()
     {
         return $this->getAllValidCoupons()->sum(function ($coupon) {
-            /**
-             * @var $coupon Coupon
-             */
-            //$coupon->activate();
-            return $coupon->getDiscountAmount();
-        });
-    }
-
-    /**
-     * 激活订单优惠券
-     */
-    public function activate()
-    {
-        return $this->getAllValidCoupons()->each(function ($coupon) {
+            if(!$coupon->valid()){
+                return 0;
+            }
             /**
              * @var $coupon Coupon
              */
             $coupon->activate();
+            return $coupon->getDiscountAmount();
         });
     }
 
@@ -60,12 +53,12 @@ class CouponService
      */
     public function getOptionalCoupons()
     {
-        //dd(MemberCouponService::getCurrentMemberCouponCache($this->order->belongsToMember));
-        //dd($this->getMemberCoupon());
+        //用户所有优惠券
         $coupons = $this->getMemberCoupon()->map(function ($memberCoupon) {
             return new Coupon($memberCoupon, $this->order);
         });
-        $result = $coupons->filter(function ($coupon) {
+        //其他优惠组合后可选的优惠券
+        $coupons = $coupons->filter(function ($coupon) {
             /**
              * @var $coupon Coupon
              */
@@ -73,13 +66,25 @@ class CouponService
             if (!$coupon->isOptional()) {
                 return false;
             }
-            $coupon->getMemberCoupon()->valid = $coupon->isChecked() || $coupon->valid();//界面标蓝
-            $coupon->getMemberCoupon()->checked = $coupon->isChecked();//界面选中
+            //商城开启了多张优惠券 并且当前优惠券组合可以继续添加这张
+            $coupon->getMemberCoupon()->valid = (!\Setting::get('coupon.is_singleton')||$this->order->orderCoupons->isEmpty()) && $coupon->valid();//界面标蓝
+            $coupon->getMemberCoupon()->checked = false;//界面选中
 
             return true;
-        });
+        })->values();
+        //已选的优惠券
+        $coupons = collect($this->order->orderCoupons)->map(function($orderCoupon){
+            // 已参与订单价格计算的优惠券
+            $orderCoupon->coupon->getMemberCoupon()->valid = true;
+            $orderCoupon->coupon->getMemberCoupon()->checked = true;
+            return $orderCoupon->coupon;
+        })->merge($coupons);
+        //按member_coupon的id倒序
+        $coupons = $coupons->sortByDesc(function($coupon){
+            return $coupon->getMemberCoupon()->id;
+        })->values();
 
-        return $result;
+        return $coupons;
     }
 
     /**
@@ -87,7 +92,8 @@ class CouponService
      */
     public function destroyUsedCoupons()
     {
-        $this->getSelectedMemberCoupon()->map(function ($memberCoupon) {
+        $this->getSelectedMemberCoupon()->each(function ($memberCoupon) {
+
             return (new Coupon($memberCoupon, $this->order))->destroy();
         });
     }
@@ -135,11 +141,18 @@ class CouponService
      */
     private function getSelectedMemberCoupon()
     {
-        $member_coupon_ids = ArrayHelper::unreliableDataToArray(\Request::input('member_coupon_ids'));
+        if(!isset($this->selectedMemberCoupon)){
+            $member_coupon_ids = ArrayHelper::unreliableDataToArray(\Request::input('member_coupon_ids'));
 
-        return $this->getMemberCoupon()->filter(function ($memberCoupon) use ($member_coupon_ids) {
-            return in_array($memberCoupon->id, $member_coupon_ids);
-        });
+            if(\Setting::get('coupon.is_singleton')){
+                $member_coupon_ids = array_slice($member_coupon_ids,0,1);
+            }
+            $this->selectedMemberCoupon = $this->getMemberCoupon()->filter(function ($memberCoupon) use ($member_coupon_ids) {
+                return in_array($memberCoupon->id, $member_coupon_ids);
+            });
+        }
+
+        return $this->selectedMemberCoupon;
     }
 
     public function sendCoupon()

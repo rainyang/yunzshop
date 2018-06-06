@@ -32,7 +32,7 @@ class CouponController extends BaseController
                 'name' => $i . ":00",
             ];
         }
-        $temp_list = MessageTemp::select('id', 'title')->get();
+        $temp_list = MessageTemp::getList();
         return view('setting.shop.coupon', [
             'set' => $coupon,
             'hourData' => $hourData,

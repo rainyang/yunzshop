@@ -28,11 +28,11 @@ class CouponDiscount
         }
         $orderModel = $event->getOrderModel();
 
-        $orderDeductions = $orderModel->orderDiscount;
+        $orderDiscount = $orderModel->orderDiscount;
 
         $point = 0;
-        if ($orderDeductions) {
-            foreach ($orderDeductions as $key => $deduction) {
+        if ($orderDiscount) {
+            foreach ($orderDiscount as $key => $deduction) {
 
                 if ($deduction['discount_code'] == 'coupon') {
                     $point = $deduction['amount'];
@@ -74,15 +74,6 @@ class CouponDiscount
             return $coupon->getMemberCoupon();
         });
         $event->addMap('coupon', $data);
-    }
-
-    //订单生成后销毁优惠券 todo 重复查询了,需要使用计算优惠券价格时获取的优惠券列表
-    public function onOrderCreated(AfterOrderCreatedEvent $event)
-    {
-        $this->event = $event;
-        $orderModel = $this->event->getOrderModel();
-        $couponService = new CouponService($orderModel);
-        $couponService->destroyUsedCoupons();
     }
 
     /*

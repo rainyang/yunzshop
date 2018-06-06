@@ -27,6 +27,7 @@ use app\frontend\modules\member\services\MemberService;
 use app\frontend\models\OrderListModel;
 use EasyWeChat\Foundation\Application;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Str;
 use Yunshop\Commission\models\Agents;
 use Yunshop\Poster\models\Poster;
@@ -506,6 +507,14 @@ class MemberController extends ApiController
                 return $this->errorJson($msg['json']);
             }
 
+            //增加验证码功能
+            $captcha_status = Setting::get('shop.sms.status');
+            if ($captcha_status == 1) {
+                if (app('captcha')->check(Input::get('captcha')) == false) {
+                    return $this->errorJson('验证码错误');
+                }
+            }
+
             $salt = Str::random(8);
             $member_model->salt = $salt;
             $member_model->mobile = $mobile;
@@ -536,6 +545,14 @@ class MemberController extends ApiController
 
             if ($check_code['status'] != 1) {
                 return $this->errorJson($check_code['json']);
+            }
+
+            //增加验证码功能
+            $captcha_status = Setting::get('shop.sms.status');
+            if ($captcha_status == 1) {
+                if (app('captcha')->check(Input::get('captcha')) == false) {
+                    return $this->errorJson('验证码错误');
+                }
             }
 
             $salt = Str::random(8);
@@ -1062,7 +1079,7 @@ class MemberController extends ApiController
         $data = [];
 
         collect(app('plugins')->getPlugins())->filter(function ($item) use ($filter) {
-            if (1 == $item->getEnabled()) {
+            if (1 == $item->isEnabled()) {
                 $info = $item->toArray();
 
                 if (in_array($info['name'], $filter)) {
@@ -1087,31 +1104,37 @@ class MemberController extends ApiController
             ];
         });
 
-        $credit_setting = Setting::get('plugin.credit');
+        if (app('plugins')->isEnabled('credit')) {
+            $credit_setting = Setting::get('plugin.credit');
 
-        if ($credit_setting && 1 == $credit_setting['is_credit']) {
-            $data[] = [
-                'name' => 'credit',
-                'title' => '信用值'
-            ];
+            if ($credit_setting && 1 == $credit_setting['is_credit']) {
+                $data[] = [
+                    'name' => 'credit',
+                    'title' => '信用值'
+                ];
+            }
         }
 
-        $ranking_setting = Setting::get('plugin.ranking');
+        if (app('plugins')->isEnabled('ranking')) {
+            $ranking_setting = Setting::get('plugin.ranking');
 
-        if ($ranking_setting && 1 == $ranking_setting['is_ranking']) {
-            $data[] = [
-                'name' => 'ranking',
-                'title' => '排行榜'
-            ];
+            if ($ranking_setting && 1 == $ranking_setting['is_ranking']) {
+                $data[] = [
+                    'name' => 'ranking',
+                    'title' => '排行榜'
+                ];
+            }
         }
 
-        $article_setting = Setting::get('plugin.article');
+        if (app('plugins')->isEnabled('article')) {
+            $article_setting = Setting::get('plugin.article');
 
-        if ($article_setting) {
-            $data[] = [
-                'name' => 'article',
-                'title' => $article_setting['center'] ? $article_setting['center'] : '文章中心'
-            ];
+            if ($article_setting) {
+                $data[] = [
+                    'name' => 'article',
+                    'title' => $article_setting['center'] ? $article_setting['center'] : '文章中心'
+                ];
+            }
         }
 
         if (app('plugins')->isEnabled('clock-in')) {
@@ -1128,13 +1151,28 @@ class MemberController extends ApiController
             }
         }
 
-        $video_demand_setting = Setting::get('plugin.video_demand');
+        if (app('plugins')->isEnabled('video_demand')) {
 
-        if ($video_demand_setting && $video_demand_setting['is_video_demand']) {
-            $data[] = [
-                'name' => 'video_demand',
-                'title' => '视频点播'
-            ];
+            $video_demand_setting = Setting::get('plugin.video_demand');
+
+            if ($video_demand_setting && $video_demand_setting['is_video_demand']) {
+                $data[] = [
+                    'name' => 'video_demand',
+                    'title' => '视频点播'
+                ];
+            }
+        }
+
+        if (app('plugins')->isEnabled('help-center')) {
+
+            $help_center_setting = Setting::get('plugin.help_center');
+
+            if ($help_center_setting && 1 == $help_center_setting['status']) {
+                $data[] = [
+                    'name' => 'help_center',
+                    'title' => '帮助中心'
+                ];
+            }
         }
 
         return $this->successJson('ok', $data);
