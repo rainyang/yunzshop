@@ -10,14 +10,13 @@ use app\common\services\alipay\AopClient;
 use app\common\helpers\Url;
 
 
-class MemberAlipayService
+class MemberAlipayService extends MemberService
 {
 	const LOGIN_TYPE = 8;
 	
 
-	//沙盒环境参数  
-    private $appid = '2018060460281631';  
     private $url = "https://openauth.alipay.com/oauth2/publicAppAuthorize.htm";  
+    //支付宝网关
     private $alipay_api = "https://openapi.alipay.com/gateway.do"; 
 
     private $aop; 
@@ -48,9 +47,6 @@ class MemberAlipayService
 			redirect($alipay_redirect)->send();
 			exit();
 		}
-		\Log::debug('支付宝：'. $code);
-     
-
 		$request = new AlipaySystemOauthTokenRequest();
 		$request->setGrantType("authorization_code");
 		$request->setCode($code);//这里传入 code
@@ -83,23 +79,24 @@ class MemberAlipayService
     			"sub_code" => "isv.code-invalid"
     			"sub_msg" => "授权码code无效"
   			]*/
-			return show_json(-3, '支付宝授权失败code:'.$result['error_response']['code']);
+  			\Log::debug('支付宝授权失败code:'.$result['error_response']['code']);
+			return show_json(-3, '支付宝授权失败');
 		}
 
 	}
 
 	private function aopClient()
 	{
+		$alipay_set = \Setting::get('plugin.alipay_onekey_login');
 		$aop = new AopClient;
 		$aop->gatewayUrl = $this->alipay_api;
-		$aop->appId = $this->appid;
-		$aop->rsaPrivateKey = 'MIIEpQIBAAKCAQEAyVAeILGJrFsceHzoEygk/bbSGvvNnvnbD28TKNXju0oV9/0uuFFgbUrG+C5nc1hpGxo/CqiaETcA2zG0VlRu7XB3cCnvADs6rrntTWrZdoGR91+lEOXjnBtHv5J8TNqYXvXpyMxfWTgQcZofpzA0g01bXZfQ5DsrSD+yeFpRmCxzB8F2ndcXfuw4A5bn4cuBmpmCGCIx8FG+5x+EUucodx3nuNm+Jh3jp5LXvhK4OfCd03yNoDpQbzXXdPI2WBAE0eMB3Pt0PinOZEIaxL9MS1Y/ZOv+nubzbkVdhRc8sz645xcXFrUf3KdvsOZ3LexFTRTxF+4wcX+AWbuWSecMcQIDAQABAoIBAQCYF2B7oMX7omYzHWMUPgscZ8f6vOyPRANdeLSH8Hh6IjHQxsZKWKi6SXljPWPJAC2AXWbtfY3QnbaW48l0Q5v+5S5HXlcD3LusECoZiDU9VAzcULVbu+MnKHEfaeNhCPF/JNj4bHdI55N80E1Duaai4Im7fxxBofZEQmNqjAoDJZIEBFi5CB7SrPFrUZ6OQ2MnxPauBZab7m/fnc5uG2l0Le4fIKAjl0Obe0jS9258oEdUDmgyyNw8aDIFrUEAsMw0h/YON0AV68Yyjz3cXETqv+z9+FHMxMahgZQmyKNC4GMI3hXJNxVYYtOEBCjQW+oiUxYax7oM/vUJiwNZUNhBAoGBAPK0ihWVK8f98DdAofoTMSFSSSFpTb8BQzCE0xazrprkDYa7UXQJQoL6Q48rc1qZvz5V4XupZGdndTLWROQspZA1CIpvw4CL6Jb0gT1tM+t9wvkDxYH8Q8L8H2sqCWsEBSf/FtuyqxWdfilLkM9w09whioigMfoRbwws8aWuhML5AoGBANRXIjKKP+GvvGmISId0iSF7g/MeMAyIO9Ldd+/BU06GKCKWyHu583hySmVa1pPgxuu0Mh2gpotkySVkuemWyit0od5kt4dsRP2ENdDjfWlcIMn7Lx9fNTQLAkHqUL0igpuwuAOjIj/61tbbQwb9UAfvYJE7RMsiElXs/yYKens5AoGBAMumX8NSYuUyF/FUw1VB61SpZgGqCXl/BrDckv8WkCkZuJvX67Xw2yVp92xXqjhYj9cvWr9X2I7Hidi5YB8Rs264gU0gEKx5ORYJXbR8QDeWVBZ8aqryUK14vqg+Ip7wRZ9U9Qot9k5x0121MXJOmwa4AjU4LhdFr6dIww8hy/aJAoGBALAiHtHBb7/rH+SCEXeaqO1HIWqXDdA3aTg+UPBlco7eJYibfm1zD4xHcYKlWPyNJTP64t9ElSFnVppX9QbX95cYRfTNopcIrimEc4d0TGEK9H/WhX4GYYFr6FF45cQdTi2K5vjNZumfTnomonC3ypzqaTXO7f95oa/4yKRraLGxAoGAH/MKQFVRkf8PotD7xrlkPA/cr9DMijBQWmSMc+bT4QD+F9lnVWtQ5XnPP3xpiU6Po0beg3sLRN20QJ/t7KepNkgBCF7U4VHOLJh2YWxCrJk35dorBV1Ma/ZjsmJE9LAcmELY0UmIKVGXq9kyv2Gh3oM6zwPOabzj4ptHawYFEP4=';
-		
-		$aop->alipayrsaPublicKey = 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2fvYacITAN1BKRLlH3ejxiDWJ+2JZfcGl720BZzJW/7BaZuNUrAH3YJE18py9WcAS49fFlBC238yBEumQ4orNwDx8r5oJWxok1KsLKZSA+/gmssxVTdn9jaVkK1XjyPT+fVlvsl5AyMY2+7If4mSAbIL8ghHNVKtdqrDgLQ6Stz8iSa2/Upn+ZlvO322wqQdWcaj4xPVkzGOcS2J+X8uXZZ6aCzgmRXtLUHNTcXAnevcTSqmWCVeKFFDHQYlAccs2owWsUKgiblMhCT2d2n6QVoaTyWk6pgyNip4IfmH7kGkwJ6ycweD6xIFBRnaileR4tC9hgVWVBjEMhNAOaDeAwIDAQAB';
+		$aop->appId = $alipay_set['alipay_appid'];
+		$aop->rsaPrivateKey = $alipay_set['private_key'];
+		$aop->alipayrsaPublicKey = $alipay_set['alipay_public_key'];
+		$aop->signType=  $alipay_set['rsa'] == 1 ? 'RSA' : 'RSA2';
 		$aop->apiVersion = '1.0';
 		$aop->format = "json";
 		$aop->postCharset = "UTF-8";
-		$aop->signType= "RSA2";
 
 		return $aop;
 	}
