@@ -277,11 +277,10 @@ class MergePayController extends ApiController
 
     /**
      * 微信app支付
-     * @param \Request $request
      * @return \Illuminate\Http\JsonResponse
      * @throws AppException
      */
-    public function wechatAppPay(\Request $request)
+    public function wechatAppPay()
     {
         if (\Setting::get('shop_app.pay.weixin') == false) {
             throw new AppException('商城未开启微信支付');
