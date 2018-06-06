@@ -336,11 +336,10 @@ class MergePayController extends ApiController
     /**
      * 芸支付
      *
-     * @param \Request $request
      * @return \Illuminate\Http\JsonResponse
      * @throws AppException
      */
-    public function yunPayWechat(\Request $request)
+    public function yunPayWechat()
     {
         if (\Setting::get('plugin.yun_pay_set') == false) {
             throw new AppException('商城未开启芸支付');
