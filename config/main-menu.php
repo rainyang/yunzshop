@@ -740,32 +740,6 @@ return [
                 ],
             ],
 
-            'goods_return' => [
-                'name'              => '退货地址设置',
-                'url'               => 'goods.return-address.index',
-                'url_params'        => '',
-                'permit'            => 1,
-                'menu'              => 1,
-                'icon'              => 'fa-truck',
-                'sort'              => '6',
-                'item'              => 'coupon',
-                'parents'           => ['Goods',],
-                'child'             => [
-                    'goods_return_see' => [
-                        'name'              => '浏览列表',
-                        'url'               => 'goods.return-address.index',
-                        'url_params'        => '',
-                        'permit'            => 1,
-                        'menu'              => 0,
-                        'icon'              => '',
-                        'sort'              => '4',
-                        'item'              => 'goods_return_see',
-                        'parents'           => ['Goods','goods_return']
-                    ],
-
-                    'goods_return_sort' => [
-                        'name'              => '修改排序',
-                        'url'               => 'goods.return-address.sort',
             /**
              * 搜索过滤
              * create 2018/3/26
@@ -870,10 +844,41 @@ return [
                         'parents'           => ['Goods', 'goods_return',],
                     ],
                 ],
-                        'sort'              => '2',
-                        'item'              => 'filtering_del',
-                        'parents'           => ['Goods','search_filtering'],
-                        'child'             => []
+            ],
+
+            'goods_return' => [
+                'name'              => '退货地址设置',
+                'url'               => 'goods.return-address.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-truck',
+                'sort'              => '6',
+                'item'              => 'coupon',
+                'parents'           => ['Goods',],
+                'child'             => [
+                    'goods_return_see' => [
+                        'name'              => '浏览列表',
+                        'url'               => 'goods.return-address.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => '4',
+                        'item'              => 'goods_return_see',
+                        'parents'           => ['Goods','goods_return']
+                    ],
+
+                    'goods_return_sort' => [
+                        'name'              => '修改排序',
+                        'url'               => 'goods.return-address.sort',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => '4',
+                        'item'              => 'goods_return_sort',
+                        'parents'           => ['Goods','goods_return']
                     ],
                 ],
 
