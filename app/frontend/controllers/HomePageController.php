@@ -185,12 +185,13 @@ class HomePageController extends ApiController
 
         //增加验证码功能
         $status = Setting::get('shop.sms.status');
-        $captcha = self::captchaTest();
-        if ($status == 1) {
-            $result['captcha'] = $captcha;
-            $result['captcha']['status'] = $status;
+        if (extension_loaded('fileinfo')) {
+            $captcha = self::captchaTest();
+            if ($status == 1) {
+                $result['captcha'] = $captcha;
+                $result['captcha']['status'] = $status;
+            }
         }
-
         return $this->successJson('ok', $result);
     }
 
