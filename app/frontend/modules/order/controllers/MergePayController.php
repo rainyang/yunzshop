@@ -364,7 +364,7 @@ class MergePayController extends ApiController
      * @return \Illuminate\Http\JsonResponse
      * @throws AppException
      */
-    public function cloudAliPay(\Request $request)
+    public function cloudAliPay()
     {
         if (\Setting::get('plugin.cloud_pay_set') == false) {
             throw new AppException('商城未开启支付宝支付');
