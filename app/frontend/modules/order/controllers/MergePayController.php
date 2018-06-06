@@ -317,11 +317,10 @@ class MergePayController extends ApiController
 
     /**
      * 微信云支付
-     * @param \Request $request
      * @return \Illuminate\Http\JsonResponse
      * @throws AppException
      */
-    public function cloudWechatPay(\Request $request)
+    public function cloudWechatPay()
     {
         if (\Setting::get('plugin.cloud_pay_set') == false) {
             throw new AppException('商城未开启微信支付');
