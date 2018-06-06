@@ -437,11 +437,10 @@ class MergePayController extends ApiController
     /**
      * 支付宝—YZ
      *
-     * @param \Request $request
      * @return \Illuminate\Http\JsonResponse
      * @throws AppException
      */
-    public function yunPayAlipay(\Request $request)
+    public function yunPayAlipay()
     {
         if (\Setting::get('plugin.yun_pay_set') == false) {
             throw new AppException('商城未开启芸支付');
