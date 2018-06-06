@@ -2,6 +2,7 @@
 
 namespace app\frontend\modules\member\services;
 
+use app\common\services\Session;
 use app\frontend\modules\member\services\MemberService;
 use app\common\services\alipay\request\AlipaySystemOauthTokenRequest;
 use app\common\services\alipay\request\AlipayUserInfoShareRequest;
@@ -66,14 +67,15 @@ class MemberAlipayService extends MemberService
 			$alipay_user['openid'] = $userInfo['user_id'];
 			$alipay_user['nickname'] = $userInfo['nick_name'];
 			$alipay_user['headimgurl'] = $userInfo['avatar'];
-			$alipay_user['sex'] = $userInfo['gender'];
+			$alipay_user['sex'] = $userInfo['gender'] == 'F' ? 0 : 1;
 			$alipay_user['province'] =  $userInfo['province'];
 			$alipay_user['city'] =  $userInfo['city'];
 
 
 			$member_id = $this->memberLogin($alipay_user);
 
-			session()->put('member_id',$member_id);
+            Session::set('member_id', $member_id);
+
 			//添加ims_mc_member表
             // $member_id = MemberModel::insertGetId(array(
             //     'uniacid' => $uniacid,
@@ -89,7 +91,6 @@ class MemberAlipayService extends MemberService
             // if (empty($member_id)) {
             //     return show_json(8, '保存用户信息失败');
             // }
-
 
             //添加 yz_member_alipay 表
             $bool = MemberAlipay::insertData($userInfo, ['member_id' =>$member_id, 'uniacid' => $uniacid]);
@@ -120,7 +121,7 @@ class MemberAlipayService extends MemberService
 		}
 
 
-		show_json(1, array('member_id', session('member_id')));
+		show_json(1, Session::get('member_id'));
 	}
 
 	private function aopClient()
