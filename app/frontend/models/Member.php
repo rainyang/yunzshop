@@ -9,11 +9,15 @@
 namespace app\frontend\models;
 
 
-use app\common\models\Coupon;
 use app\common\models\MemberCoupon;
-use app\frontend\models\OrderGoods;
 use app\frontend\repositories\MemberAddressRepository;
+use Illuminate\Database\Eloquent\Collection;
 
+/**
+ * Class Member
+ * @package app\frontend\models
+ * @property Collection memberCarts
+ */
 class Member extends \app\common\models\Member
 {
     /**
@@ -38,10 +42,16 @@ class Member extends \app\common\models\Member
 
     public function orderGoods()
     {
-        return $this->hasMany(OrderGoods::class,'uid','uid');
+        return $this->hasMany(OrderGoods::class, 'uid', 'uid');
     }
+
     public function yzMember()
     {
         return $this->hasOne(self::getNearestModel('MemberShopInfo'), 'member_id', 'uid');
+    }
+
+    public function memberCarts()
+    {
+        return $this->hasMany(app('OrderManager')->make('MemberCart'), 'member_id', 'uid');
     }
 }

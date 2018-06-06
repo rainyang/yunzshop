@@ -24,6 +24,17 @@ class DispatchWidget extends Widget
         }
 
         $dispatch_templates = Dispatch::getAll();
+
+        // edit 2018-06-01 by Yy
+        if ($dispatch->dispatch_id) {
+            $verify_dispatch = Dispatch::find($dispatch->dispatch_id);
+            if ($verify_dispatch->is_plugin == 1) {
+                $dispatch_templates = [
+                    $verify_dispatch
+                ];
+            }
+        }
+
         return view('goods.widgets.dispatch', [
             'dispatch' => $dispatch,
             'dispatch_templates' => $dispatch_templates

@@ -10,7 +10,18 @@ namespace app\frontend\models;
 
 
 use app\common\exceptions\AppException;
+use app\frontend\modules\member\services\MemberService;
+use app\frontend\modules\memberCart\MemberCartCollection;
+use Illuminate\Database\Eloquent\Builder;
 
+/**
+ * Class MemberCart
+ * @package app\frontend\models
+ * @property Goods goods
+ * @property int option_id
+ * @property int total
+ * @property int goods_id
+ */
 class MemberCart extends \app\common\models\MemberCart
 {
     protected $fillable = [];
@@ -34,7 +45,7 @@ class MemberCart extends \app\common\models\MemberCart
         return $result;
     }
 
-    public function scopeCarts($query)
+    public function scopeCarts(Builder $query)
     {
         $query
             ->uniacid()
@@ -77,12 +88,12 @@ class MemberCart extends \app\common\models\MemberCart
         return static::insert($data);
     }
 
-    /*
+    /**
      * 检测商品是否存在购物车
      *
      * @param array $data ['member_id', 'goods_id', 'option_id']
      *
-     * @return object or false
+     * @return self | false
      * */
     public static function hasGoodsToMemberCart($data)
     {
@@ -124,7 +135,6 @@ class MemberCart extends \app\common\models\MemberCart
 
     /**
      * 购物车验证
-     * @author shenyang
      * @throws AppException
      */
     public function validate()
@@ -132,7 +142,7 @@ class MemberCart extends \app\common\models\MemberCart
         if (!isset($this->goods)) {
             throw new AppException('(ID:' . $this->goods_id . ')未找到商品或已经删除');
         }
-
+        (new MemberCartCollection(MemberService::getCurrentMemberModel()->memberCarts))->validate();
         //商品基本验证
         $this->goods->generalValidate($this->total);
 
