@@ -55,55 +55,49 @@ class MemberAlipayService extends MemberService
 		$result = json_decode($result, true);
 		$user = $result[$responseNode];
 
-		if ($user = $result[$responseNode] ) {
+		if ($user = $result[$responseNode]) {
 
 			//第一步获取到支付宝用户user_id,判断商城是否已存在这个用户
-			$uid = MemberAlipay::getUid($user['user_id']);
-			if ($uid) {
-
-
-			} else {
+		
 			//第二步用户已存在则直接登录，不存在则 通过 access_token 获取用户信息添加到支付宝用户表
 
-				$userInfo = $this->getUserInfo($user['access_token']);
+			$userInfo = $this->getUserInfo($user['access_token']);
 
-				$alipay_user['openid'] = $userInfo['user_id'];
-				$alipay_user['nickname'] = $userInfo['nick_name'];
-				$alipay_user['headimgurl'] = $userInfo['avatar'];
-				$alipay_user['sex'] = $userInfo['gender'];
-				$alipay_user['province'] =  $userInfo['province'];
-				$alipay_user['city'] =  $userInfo['city'];
-
-
-				$member_id = $this->memberLogin($alipay_user);
-
-				session()->put('member_id',$member_id);
-				//添加ims_mc_member表
-                // $member_id = MemberModel::insertGetId(array(
-                //     'uniacid' => $uniacid,
-                //     'groupid' => 0,
-                //     'createtime' => time(),
-                //     'nickname' => $userInfo['nick_name'],
-                //     'avatar' => $userInfo['avatar'],
-                //     'gender' => $userInfo['gender'],
-                //     'nationality' => '',
-                //     'resideprovince' => $userInfo['province'],
-                //     'residecity' => $userInfo['city'],
-                // ));
-                // if (empty($member_id)) {
-                //     return show_json(8, '保存用户信息失败');
-                // }
+			$alipay_user['openid'] = $userInfo['user_id'];
+			$alipay_user['nickname'] = $userInfo['nick_name'];
+			$alipay_user['headimgurl'] = $userInfo['avatar'];
+			$alipay_user['sex'] = $userInfo['gender'];
+			$alipay_user['province'] =  $userInfo['province'];
+			$alipay_user['city'] =  $userInfo['city'];
 
 
-                //添加 yz_member_alipay 表
-                $bool = MemberAlipay::insertData($userInfo, ['member_id' =>$member_id, 'uniacid' => $uniacid]);
+			$member_id = $this->memberLogin($alipay_user);
 
-                if (!$bool) {
-                	\Log::debug('支付宝用户信息保存失败 user_id：'.$userInfo['user_id'].'会员uid：'.$member_id);
-                }
+			session()->put('member_id',$member_id);
+			//添加ims_mc_member表
+            // $member_id = MemberModel::insertGetId(array(
+            //     'uniacid' => $uniacid,
+            //     'groupid' => 0,
+            //     'createtime' => time(),
+            //     'nickname' => $userInfo['nick_name'],
+            //     'avatar' => $userInfo['avatar'],
+            //     'gender' => $userInfo['gender'],
+            //     'nationality' => '',
+            //     'resideprovince' => $userInfo['province'],
+            //     'residecity' => $userInfo['city'],
+            // ));
+            // if (empty($member_id)) {
+            //     return show_json(8, '保存用户信息失败');
+            // }
 
 
-			}
+            //添加 yz_member_alipay 表
+            $bool = MemberAlipay::insertData($userInfo, ['member_id' =>$member_id, 'uniacid' => $uniacid]);
+
+            if (!$bool) {
+            	\Log::debug('支付宝用户信息保存失败 user_id：'.$userInfo['user_id'].'会员uid：'.$member_id);
+            }
+
 			/*alipay_system_oauth_token_response" => array:6 [
     			"access_token" => "authusrB6e094cbc0cd54ed18e69b35e2000aX41"
     			"alipay_user_id" => "20880051464321899646564260914141"
@@ -120,12 +114,13 @@ class MemberAlipayService extends MemberService
     			"sub_code" => "isv.code-invalid"
     			"sub_msg" => "授权码code无效"
   			]*/
+  			\Log::debug();
   			\Log::debug('支付宝授权失败code:'.$result['error_response']['code']);
 			return show_json(-3, '支付宝授权失败');
 		}
 
 
-		show_json(1, array('member_id', session('member_id'));
+		show_json(1, array('member_id', session('member_id')));
 	}
 
 	private function aopClient()
@@ -146,7 +141,7 @@ class MemberAlipayService extends MemberService
 
 	/**
 	* 根据access_token 获取用户信息
-	* @param 
+	* @param ))
 	* @return 返回用户信息
 	*/
 	protected function getUserInfo($access_token)
@@ -163,6 +158,17 @@ class MemberAlipayService extends MemberService
 
 		return $json_info[$responseNode];
 	}
+
+	public function getFansModel($user_id)
+    {
+        $model = MemberAlipay::getUid($user_id);
+
+        if (!is_null($model)) {
+            $model->uid = $model->member_id;
+        }
+
+        return $model;
+    }
 
 
 	 /**
