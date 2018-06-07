@@ -8,9 +8,8 @@
 
 namespace app\common\models;
 
-use Illuminate\Database\Eloquent\Model;
 
-class Income extends Model
+class Income extends BaseModel
 {
     public $table = 'yz_member_income';
 
