@@ -102,6 +102,9 @@ class Goods extends BaseModel
         return $this->hasMany('app\common\models\GoodsCategory', 'goods_id', 'id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function hasManyGoodsDiscount()
     {
         return $this->hasMany('app\common\models\GoodsDiscount');
@@ -173,7 +176,7 @@ class Goods extends BaseModel
         return $query->where('is_plugin', 0);
     }
 
-    public function scopeSearch($query, $filters)
+    public function scopeSearch(Builder $query, $filters)
     {
         $query->uniacid();
 
