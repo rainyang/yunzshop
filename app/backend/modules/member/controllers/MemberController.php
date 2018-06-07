@@ -586,16 +586,13 @@ class MemberController extends BaseController
 
     public function updateWechatOpenData()
     {
+        set_time_limit(0);
         $uniacid = \YunShop::app()->uniacid;
 
         try {
-            $result = \Artisan::call('syn:wechatUnionid' ,['uniacid'=>$uniacid]);
+            \Artisan::call('syn:wechatUnionid' ,['uniacid'=>$uniacid]);
 
-            if (isset($result) && 0 == $result['error']) {
-                return $this->message('微信开放平台数据同步完成(' . $result['upgrade'] . '/' . $result['total'] . ')', yzWebUrl('member.member.index'));
-            }
-
-            return $this->message($result['msg'], yzWebUrl('member.member.index'), 'error');
+            return $this->message('微信开放平台数据同步完成', yzWebUrl('member.member.index'), 'error');
         } catch (\Exception $e) {
             return $this->message($e->getMessage(), yzWebUrl('member.member.index'), 'error');
         }
