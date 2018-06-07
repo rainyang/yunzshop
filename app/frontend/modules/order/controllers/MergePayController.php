@@ -77,11 +77,10 @@ class MergePayController extends ApiController
 
     /**
      * 获取支付按钮列表接口
-     * @param \Request $request
      * @return \Illuminate\Http\JsonResponse
      * @throws AppException
      */
-    public function index(\Request $request)
+    public function index()
     {
         // 验证
         $this->validate([
@@ -89,7 +88,7 @@ class MergePayController extends ApiController
             'order_ids' => 'required'
         ]);
         // 订单集合
-        $orders = $this->orders($request->input('order_ids'));
+        $orders = $this->orders(request()->input('order_ids'));
         // 用户余额
         $member = $orders->first()->belongsToMember()->select(['credit2'])->first()->toArray();
         // 支付类型
@@ -97,7 +96,7 @@ class MergePayController extends ApiController
 
         // 生成支付记录 记录订单号,支付金额,用户,支付号
         $orderPay = new OrderPay();
-        $orderPay->order_ids = explode(',', $request->input('order_ids'));
+        $orderPay->order_ids = explode(',', request()->input('order_ids'));
         $orderPay->amount = $orders->sum('price');
         $orderPay->uid = $orders->first()->uid;
         $orderPay->pay_sn = OrderService::createPaySN();
