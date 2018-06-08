@@ -118,9 +118,9 @@ class CouponSendService
             CouponLog::insert($log_data);
             MemberCoupon::insert($data);
         });
-        foreach ($data as $key => $coupon_data) {
+        foreach ($data as $coupon_data) {
             //发送获取优惠券通知
-            MessageNotice::couponNotice($coupon_data[$key]['coupon_id'],$coupon_data[$key]['uid']);
+            MessageNotice::couponNotice($coupon_data['coupon_id'],$coupon_data['uid']);
         }
 
         return true;
