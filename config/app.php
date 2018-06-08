@@ -209,7 +209,7 @@ return [
         Overtrue\LaravelPinyin\ServiceProvider::class,
 
         //验证码
-        Mews\Captcha\CaptchaServiceProvider::class,
+//        Mews\Captcha\CaptchaServiceProvider::class,
     ],
 
     /*
@@ -280,7 +280,7 @@ return [
         //拼音
         'Pinyin' => Overtrue\LaravelPinyin\Facades\Pinyin::class,
         //验证码
-        'Captcha' => Mews\Captcha\Facades\Captcha::class,
+//        'Captcha' => Mews\Captcha\Facades\Captcha::class,
     ],
 
     'pay_type' => [
