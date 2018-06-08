@@ -508,12 +508,12 @@ class MemberController extends ApiController
             }
 
             //增加验证码功能
-            $captcha_status = Setting::get('shop.sms.status');
-            if ($captcha_status == 1) {
-                if (app('captcha')->check(Input::get('captcha')) == false) {
-                    return $this->errorJson('验证码错误');
-                }
-            }
+//            $captcha_status = Setting::get('shop.sms.status');
+//            if ($captcha_status == 1) {
+//                if (app('captcha')->check(Input::get('captcha')) == false) {
+//                    return $this->errorJson('验证码错误');
+//                }
+//            }
 
             $salt = Str::random(8);
             $member_model->salt = $salt;
@@ -548,12 +548,12 @@ class MemberController extends ApiController
             }
 
             //增加验证码功能
-            $captcha_status = Setting::get('shop.sms.status');
-            if ($captcha_status == 1) {
-                if (app('captcha')->check(Input::get('captcha')) == false) {
-                    return $this->errorJson('验证码错误');
-                }
-            }
+//            $captcha_status = Setting::get('shop.sms.status');
+//            if ($captcha_status == 1) {
+//                if (app('captcha')->check(Input::get('captcha')) == false) {
+//                    return $this->errorJson('验证码错误');
+//                }
+//            }
 
             $salt = Str::random(8);
             $member_model->withdraw_mobile = $mobile;
