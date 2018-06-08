@@ -16,7 +16,7 @@ class OnekeyLogin
     public static function alipayPluginMobileState()
     {
       if (app('plugins')->isEnabled('alipay-onekey-login')) {
-          $alipay_set = \Setting::get('plugin.alipay-onekey-login');
+          $alipay_set = \Setting::get('plugin.alipay_onekey_login');
 
           return $alipay_set['bind_mobile'];
       }

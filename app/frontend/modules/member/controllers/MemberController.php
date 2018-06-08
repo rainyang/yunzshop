@@ -33,6 +33,8 @@ use Yunshop\Poster\models\Poster;
 use Yunshop\Poster\services\CreatePosterService;
 use Yunshop\TeamDividend\models\YzMemberModel;
 use Yunshop\AlipayOnekeyLogin\services\SynchronousUserInfo;
+use app\common\services\alipay\OnekeyLogin;
+use  app\common\helpers\Client;
 
 class MemberController extends ApiController
 {
@@ -507,32 +509,48 @@ class MemberController extends ApiController
                 return $this->errorJson($msg['json']);
             }
             //同步信息
-            $old_member = [];
-            if (OnekeyLogin::alipayPluginMobileState()) {
-                $old_member = MemberModel::getId(\YunShop::app()->uniacid, $mobile);
-            }
-            if ($old_member) {
-                $className = SynchronousUserInfo::create(\YunShop::app()->type);
-                if ($className) {
-                    SynchronousUserInfo::updateMember($old_member, $member_model, $className);
+            $bool =  $this->synchro($member_model);
+            if ($bool) {
+                $salt = Str::random(8);
+                $member_model->salt = $salt;
+                $member_model->mobile = $mobile;
+                $member_model->password = md5($password . $salt);
+
+                if ($member_model->save()) {
+                    return $this->successJson('手机号码绑定成功');
+                } else {
+                    return $this->errorJson('手机号码绑定失败');
                 }
-            } else {
-
-            }
-
-            $salt = Str::random(8);
-            $member_model->salt = $salt;
-            $member_model->mobile = $mobile;
-            $member_model->password = md5($password . $salt);
-
-            if ($member_model->save()) {
-                return $this->successJson('手机号码绑定成功');
-            } else {
-                return $this->errorJson('手机号码绑定失败');
             }
         } else {
             return $this->errorJson('手机号或密码格式错误');
         }
+    }
+
+    public function synchro($new_member)
+    {
+        $type = \YunShop::request()->type;
+
+        $old_member = [];
+        if (OnekeyLogin::alipayPluginMobileState()) {
+            $old_member = MemberModel::getId(\YunShop::app()->uniacid, $mobile);
+            
+        }
+        if ($old_member) {
+            $type = empty($type) ? Client::getType() : $type;
+            
+            $className = SynchronousUserInfo::create($type);
+            if ($className) {
+                $className->updateMember($old_member, $new_member);
+
+            } else {
+                return true;
+            }
+        } else {
+            return true;
+        }
+
+        return false;
     }
 
     /**
