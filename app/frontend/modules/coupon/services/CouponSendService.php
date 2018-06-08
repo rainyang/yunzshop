@@ -12,8 +12,10 @@ namespace app\frontend\modules\coupon\services;
 
 use app\common\models\CouponLog;
 use app\common\models\MemberCoupon;
+use app\backend\modules\coupon\services\MessageNotice;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+
 
 class CouponSendService
 {
@@ -116,6 +118,10 @@ class CouponSendService
             CouponLog::insert($log_data);
             MemberCoupon::insert($data);
         });
+        foreach ($data as $key => $coupon_data) {
+            //发送获取优惠券通知
+            MessageNotice::couponNotice($coupon_data[$key]['coupon_id'],$coupon_data[$key]['uid']);
+        }
 
         return true;
     }
