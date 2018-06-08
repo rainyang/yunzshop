@@ -747,9 +747,11 @@
                             if ($(id).is(':checked')) {
                                 //开
                                 $.post(url_open,postdata,function(data){
-                                    if (data) {
+                                    if (data.result == 1) {
                                         $(select_name).find("option:selected").val(data.id)
                                         showPopover($(id),"开启成功")
+                                    } else {
+                                        showPopover($(id),"开启失败，请检查微信模版")
                                     }
                                 }, "json");
                             } else {
