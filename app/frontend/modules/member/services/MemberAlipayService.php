@@ -61,7 +61,6 @@ class MemberAlipayService extends MemberService
 		if ($user = $result[$responseNode]) {
 
 			//第一步获取到支付宝用户user_id,判断商城是否已存在这个用户
-		
 			//第二步用户已存在则直接登录，不存在则 通过 access_token 获取用户信息添加到支付宝用户表
 
 			$userInfo = $this->getUserInfo($user['access_token']);
@@ -116,9 +115,9 @@ class MemberAlipayService extends MemberService
 		$alipay_set = \Setting::get('plugin.alipay_onekey_login');
 		$aop = new AopClient;
 		$aop->gatewayUrl = $this->alipay_api;
-		$aop->appId = $alipay_set['alipay_appid'];
-		$aop->rsaPrivateKey = $alipay_set['private_key'];
-		$aop->alipayrsaPublicKey = $alipay_set['alipay_public_key'];
+		$aop->appId = $alipay_set['app']['alipay_appid'];
+		$aop->rsaPrivateKey = base64_decode($alipay_set['app']['private_key']);
+		$aop->alipayrsaPublicKey = base64_decode($alipay_set['app']['alipay_public_key']);
 		$aop->signType=  $alipay_set['rsa'] == 1 ? 'RSA' : 'RSA2';
 		$aop->apiVersion = '1.0';
 		$aop->format = "json";

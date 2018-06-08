@@ -32,6 +32,7 @@ use Yunshop\Commission\models\Agents;
 use Yunshop\Poster\models\Poster;
 use Yunshop\Poster\services\CreatePosterService;
 use Yunshop\TeamDividend\models\YzMemberModel;
+use Yunshop\AlipayOnekeyLogin\services\SynchronousUserInfo;
 
 class MemberController extends ApiController
 {
@@ -504,6 +505,19 @@ class MemberController extends ApiController
 
             if ($msg['status'] != 1) {
                 return $this->errorJson($msg['json']);
+            }
+            //同步信息
+            $old_member = [];
+            if (OnekeyLogin::alipayPluginMobileState()) {
+                $old_member = MemberModel::getId(\YunShop::app()->uniacid, $mobile);
+            }
+            if ($old_member) {
+                $className = SynchronousUserInfo::create(\YunShop::app()->type);
+                if ($className) {
+                    SynchronousUserInfo::updateMember($old_member, $member_model, $className);
+                }
+            } else {
+
             }
 
             $salt = Str::random(8);
