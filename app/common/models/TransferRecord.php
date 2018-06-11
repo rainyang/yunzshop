@@ -12,6 +12,7 @@ namespace app\common\models;
  * Class TransferRecord
  * @package app\common\models
  * @property string report_url
+ * @property int order_pay_id
  */
 class TransferRecord extends BaseModel
 {

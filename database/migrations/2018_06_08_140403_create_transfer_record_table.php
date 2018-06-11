@@ -17,7 +17,7 @@ class CreateTransferRecordTable extends Migration
             Schema::create('yz_transfer_record', function(Blueprint $table) {
                 $table->integer('id', true);
                 $table->integer('order_pay_id')->index('idx_order_pay_id');
-                $table->integer('report_url');
+                $table->text('report_url');
                 $table->integer('created_at')->nullable();
                 $table->integer('updated_at')->nullable();
                 $table->integer('deleted_at')->nullable();

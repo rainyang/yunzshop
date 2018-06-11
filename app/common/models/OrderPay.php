@@ -36,7 +36,10 @@ class OrderPay extends BaseModel
     protected $casts = ['order_ids' => 'json'];
     protected $dates = ['pay_time', 'refund_time'];
     protected $appends = ['status_name', 'pay_type_name'];
-
+    protected $attributes = [
+        'status' => 0,
+        'pay_type_id' => 0,
+    ];
     const STATUS_UNPAID = 0;
     const STATUS_PAID = 1;
     const STATUS_REFUNDED = 2;

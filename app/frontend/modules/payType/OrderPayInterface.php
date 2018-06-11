@@ -1,5 +1,5 @@
 <?php
-namespace app\frontend\modules\orderPay\payType;
+namespace app\frontend\modules\payType;
 
 /**
  * Created by PhpStorm.

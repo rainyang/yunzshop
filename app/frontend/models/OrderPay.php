@@ -12,8 +12,9 @@ use app\common\exceptions\AppException;
 use app\common\models\PayType;
 use app\common\services\PayFactory;
 use app\frontend\modules\order\services\OrderService;
-use app\frontend\modules\orderPay\payType\BasePayType;
-use app\frontend\modules\orderPay\payType\CreditPay;
+use app\frontend\modules\payType\BasePayType;
+use app\frontend\modules\payType\CreditPay;
+use app\frontend\modules\payType\Remittance;
 use app\frontend\modules\payment\managers\OrderPaymentTypeManager;
 
 class OrderPay extends \app\common\models\OrderPay
@@ -108,22 +109,22 @@ class OrderPay extends \app\common\models\OrderPay
      */
     private function getPayType()
     {
-        if ($this->payType instanceof BasePayType) {
-            return $this->payType;
-        }
-        if ($this->pay_type_id == PayType::CREDIT) {
-            $payType = CreditPay::find($this->pay_type_id);
-        } elseif ($this->pay_type_id == PayType::REMITTANCE) {
-            $payType = CreditPay::find($this->pay_type_id);
+        if (!$this->payType instanceof BasePayType) {
+            if ($this->pay_type_id == PayType::CREDIT) {
+                $payType = CreditPay::find($this->pay_type_id);
+            } elseif ($this->pay_type_id == PayType::REMITTANCE) {
+                $payType = Remittance::find($this->pay_type_id);
 
-        } else {
-            $payType = BasePayType::find($this->pay_type_id);
+            } else {
+                $payType = BasePayType::find($this->pay_type_id);
+            }
+            /**
+             * @var BasePayType $payType
+             */
+            $payType->setOrderPay($this);
+            $this->setRelation('payType', $payType);
         }
-        /**
-         * @var BasePayType $payType
-         */
-        $payType->setOrderPay($this);
-        $this->setRelation('payType', $payType);
+        return $this->payType;
     }
 
 }

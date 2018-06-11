@@ -46,6 +46,7 @@ use app\backend\modules\order\observers\OrderObserver;
  * @property Collection orderGoods
  * @property Member belongsToMember
  * @property OrderPay orderPays
+ * @property PayType hasOnePayType
  */
 class Order extends BaseModel
 {

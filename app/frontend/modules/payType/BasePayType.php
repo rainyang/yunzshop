@@ -6,7 +6,7 @@
  * Time: 下午4:45
  */
 
-namespace app\frontend\modules\orderPay\payType;
+namespace app\frontend\modules\payType;
 
 use app\common\exceptions\AppException;
 use app\common\models\OrderPay;

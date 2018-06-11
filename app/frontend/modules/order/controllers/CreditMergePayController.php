@@ -36,7 +36,6 @@ class CreditMergePayController extends MergePayController
          */
         $orderPay = OrderPay::find(request()->input('order_pay_id'));
         $result = $orderPay->getPayResult(PayFactory::PAY_CREDIT);
-
         if (!$result) {
             throw new AppException('余额扣除失败,请联系客服');
         }
@@ -49,7 +48,6 @@ class CreditMergePayController extends MergePayController
 
         $trade = \Setting::get('shop.trade');
         $redirect = '';
-
         if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
             $redirect = $trade['redirect_url'];
         }

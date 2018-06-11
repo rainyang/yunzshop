@@ -22,6 +22,12 @@ class OrderReceive extends ChangeStatusOperation
     protected $name = '收货';
     protected $time_field = 'finish_time';
     protected $past_tense_class_name = 'OrderReceived';
+
+    /**
+     * @return bool
+     * @throws ShopException
+     * @throws \app\common\exceptions\AppException
+     */
     public function check()
     {
         if(!isset($this->belongsToMember)){

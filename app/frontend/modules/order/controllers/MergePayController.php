@@ -46,11 +46,12 @@ class MergePayController extends ApiController
     {
         // 验证
         $this->validate([
-            //'order_ids' => 'required|string'  //todo, string就会报错,奇怪...
             'order_ids' => 'required'
         ]);
+
         // 订单集合
         $orders = $this->orders(request()->input('order_ids'));
+
         // 用户余额
         $member = $orders->first()->belongsToMember()->select(['credit2'])->first()->toArray();
 
@@ -62,10 +63,7 @@ class MergePayController extends ApiController
         // 支付类型
         $buttons = $this->getPayTypeButtons($orderPay);
 
-
-
         $data = ['order_pay' => $orderPay, 'member' => $member, 'buttons' => $buttons, 'typename' => ''];
-
         return $this->successJson('成功', $data);
     }
 
@@ -77,17 +75,12 @@ class MergePayController extends ApiController
     public function anotherPayOrder()
     {
         $this->validate([
-            //'order_ids' => 'required|string'  //todo, string就会报错,奇怪...
             'order_ids' => 'required',
             'pid' => 'required'
         ]);
 
         // 订单集合
         $orders = $this->orders(request()->input('order_ids'));
-
-        if (is_null($orders)) {
-            return $this->errorJson('订单不存在', '');
-        }
 
         // 生成支付记录 记录订单号,支付金额,用户,支付号
         $orderPay = new PreOrderPay();
@@ -97,16 +90,13 @@ class MergePayController extends ApiController
         // 支付类型
         $buttons = $this->getPayTypeButtons($orderPay);
 
+        // todo bad taste
         $type = \YunShop::request()->type ?: 0;
         $buttons = collect($buttons)->filter(function ($value, $key) use ($type) {
             if ($value['name'] != '找人代付') {
                 return $value;
             }
         });
-
-        if ($type == 2 && !empty($buttons[2])) {
-            unset($buttons[2]);
-        }
 
         $member = Member::getMemberById(request()->input('pid'));
 
@@ -164,30 +154,16 @@ class MergePayController extends ApiController
      */
     private function getPayTypeButtons(\app\frontend\models\OrderPay $orderPay)
     {
+        // 获取可用的支付方式
         $result = $orderPay->getPaymentTypes()->map(function (BasePayment $paymentType) {
-
+            //格式化数据结构
             return [
                 'name' => $paymentType->getName(),
                 'value' => $paymentType->getId(),
                 'need_password' => $paymentType->needPassword(),
             ];
         });
-        //订单金额为0时只显示‘余额支付’按钮
-        if ($order->price == 0) {
-            unset($result[0]);
-            unset($result[1]);
-            unset($result[2]);
-            unset($result[6]);
-            unset($result[7]);
-            unset($result[9]);
-            unset($result[10]);
-            unset($result[12]);
-            unset($result[14]);
-        }
-        $type = \YunShop::request()->type ?: 0;
-        if ($type == 2 && !empty($result[2])) {
-            unset($result[2]);
-        }
+
         return $result;
     }
 

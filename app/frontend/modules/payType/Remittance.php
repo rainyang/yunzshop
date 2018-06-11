@@ -6,8 +6,10 @@
  * Time: 下午3:58
  */
 
-namespace app\frontend\modules\orderPay\payType;
+namespace app\frontend\modules\payType;
 
+
+use app\frontend\modules\payType\remittance\PreTransferRecord;
 
 class Remittance extends BasePayType
 {
@@ -16,5 +18,6 @@ class Remittance extends BasePayType
         $transferRecord = new PreTransferRecord();
         $transferRecord->report_url=$option['report_url'];
         $transferRecord->setOrderPay($this->orderPay);
+        $transferRecord->save();
     }
 }

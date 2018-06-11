@@ -95,8 +95,8 @@ class PaymentTypeManager extends Container
              * 分别绑定支付方式与支付方式设置类. 只定义不实例化,以便于插件在支付方式实例化之前,追加支付方式与支付方式的设置类
              */
             // 绑定支付方式
-            $this->bind($code, function ($manager, OrderPay$orderPay) use ($payment,$code) {
-
+            $this->bind($code, function ($manager, array $params) use ($payment,$code) {
+                list($orderPay,$payType) = $params;
                 /**
                  * @var OrderPaymentTypeSettingManager $settingManager
                  */
@@ -106,9 +106,10 @@ class PaymentTypeManager extends Container
                 $settings = $settingManager->getOrderPaymentSettingCollection($code,$orderPay);
 
                 if (isset($payment['payment']) && $payment['payment'] instanceof \Closure) {
-                    return call_user_func($payment['payment'], $orderPay, $settings);
+
+                    return call_user_func($payment['payment'], $orderPay,$payType, $settings);
                 }
-                return new NormalPayment($orderPay, $settings);
+                return new NormalPayment($orderPay,$payType, $settings);
             });
 
 
@@ -140,7 +141,7 @@ class PaymentTypeManager extends Container
             // 对应的类在容器中注册过
             if ($this->bound($payType->code)) {
 
-                return $this->make($payType->code, $orderPay);
+                return $this->make($payType->code, [$orderPay,$payType]);
             }
             return null;
         });

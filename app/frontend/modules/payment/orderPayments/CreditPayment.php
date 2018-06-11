@@ -14,9 +14,12 @@ use app\frontend\modules\payment\paymentSettings\OrderPaymentSettingCollection;
 
 class CreditPayment extends BasePayment
 {
-
+    public function amountEnough()
+    {
+        return $this->orderPay->amount >= 0;
+    }
     public function canUse()
     {
-        return parent::canUse() && $this->order;
+        return parent::canUse() && $this->orderPay;
     }
 }

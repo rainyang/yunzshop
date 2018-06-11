@@ -6,7 +6,7 @@
  * Time: 下午4:53
  */
 
-namespace app\frontend\modules\orderPay\payType;
+namespace app\frontend\modules\payType;
 
 use app\frontend\modules\finance\models\Balance;
 

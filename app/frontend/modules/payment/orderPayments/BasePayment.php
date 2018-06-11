@@ -32,14 +32,18 @@ abstract class BasePayment
      */
     protected $orderPay;
 
-    function __construct(OrderPay $orderPay, OrderPaymentSettingCollection $orderPaymentSettings)
+    function __construct(OrderPay $orderPay, PayType $payType, OrderPaymentSettingCollection $orderPaymentSettings)
     {
 
         $this->orderPay = $orderPay;
-
-        $this->payType = $orderPay->payType;
+        $this->payType = $payType;
         $this->orderPaymentSettings = $orderPaymentSettings;
 
+    }
+
+    public function amountEnough()
+    {
+        return $this->orderPay->amount > 0;
     }
 
     /**
@@ -48,7 +52,9 @@ abstract class BasePayment
      */
     public function canUse()
     {
-
+        if(!$this->amountEnough()){
+            return false;
+        }
         return $this->orderPaymentSettings->canUse();
     }
 

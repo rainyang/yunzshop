@@ -29,7 +29,6 @@ class PreOrderPay extends OrderPay
     public function store()
     {
         $this->save();
-
         if ($this->id === null) {
             throw new AppException('支付流水记录保存失败');
 

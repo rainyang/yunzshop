@@ -8,16 +8,19 @@
 
 namespace app\frontend\modules\payment;
 
-use app\common\models\Order;
+use app\common\models\PayType;
 use app\frontend\models\OrderPay;
 use app\frontend\modules\payment\managers\OrderPaymentTypeSettingManager;
 use app\frontend\modules\payment\orderPayments\AnotherPayment;
 use app\frontend\modules\payment\orderPayments\AppPayment;
 use app\frontend\modules\payment\orderPayments\CloudAliPayment;
 use app\frontend\modules\payment\orderPayments\CloudPayment;
+use app\frontend\modules\payment\orderPayments\CODPayment;
+use app\frontend\modules\payment\orderPayments\CreditPayment;
 use app\frontend\modules\payment\orderPayments\WebPayment;
 use app\frontend\modules\payment\orderPayments\YunAliPayment;
 use app\frontend\modules\payment\orderPayments\YunPayment;
+use app\frontend\modules\payment\paymentSettings\OrderPaymentSettingCollection;
 use app\frontend\modules\payment\paymentSettings\shop\AlipayAppSetting;
 use app\frontend\modules\payment\paymentSettings\shop\AlipaySetting;
 use app\frontend\modules\payment\paymentSettings\shop\AnotherPaySetting;
@@ -37,6 +40,9 @@ class PaymentConfig
     {
         return [
             'balance' => [
+                'payment' => function (OrderPay $orderPay, PayType $payType, OrderPaymentSettingCollection $settings) {
+                    return new CreditPayment($orderPay, $payType, $settings);
+                },
                 'settings' => [
                     'shop' => function (OrderPaymentTypeSettingManager $manager, OrderPay $orderPay) {
                         return new BalanceSetting($orderPay);
@@ -44,8 +50,8 @@ class PaymentConfig
                 ],
             ],
             'alipay' => [
-                'payment' => function ($payType, $settings) {
-                    return new WebPayment($payType, $settings);
+                'payment' => function (OrderPay $orderPay, PayType $payType, OrderPaymentSettingCollection $settings) {
+                    return new WebPayment($orderPay, $payType, $settings);
                 },
                 'settings' => [
                     'shop' => function (OrderPaymentTypeSettingManager $manager, OrderPay $orderPay) {
@@ -54,8 +60,8 @@ class PaymentConfig
                 ],
             ]
             , 'wechatPay' => [
-                'payment' => function ($payType, $settings) {
-                    return new WebPayment($payType, $settings);
+                'payment' => function (OrderPay $orderPay, PayType $payType, OrderPaymentSettingCollection $settings) {
+                    return new WebPayment($orderPay, $payType, $settings);
                 },
                 'settings' => [
                     'shop' => function (OrderPaymentTypeSettingManager $manager, OrderPay $orderPay) {
@@ -63,8 +69,8 @@ class PaymentConfig
                     }
                 ],
             ], 'alipayApp' => [
-                'payment' => function ($payType, $settings) {
-                    return new AppPayment($payType, $settings);
+                'payment' => function (OrderPay $orderPay, PayType $payType, OrderPaymentSettingCollection $settings) {
+                    return new AppPayment($orderPay, $payType, $settings);
                 },
                 'settings' => [
                     'shop' => function (OrderPaymentTypeSettingManager $manager, OrderPay $orderPay) {
@@ -72,8 +78,8 @@ class PaymentConfig
                     }
                 ],
             ], 'cloudPayWechat' => [
-                'payment' => function ($payType, $settings) {
-                    return new CloudPayment($payType, $settings);
+                'payment' => function (OrderPay $orderPay, PayType $payType, OrderPaymentSettingCollection $settings) {
+                    return new CloudPayment($orderPay, $payType, $settings);
                 },
                 'settings' => [
                     'shop' => function (OrderPaymentTypeSettingManager $manager, OrderPay $orderPay) {
@@ -81,9 +87,9 @@ class PaymentConfig
                     }
                 ],
             ], 'wechatApp' => [
-                'payment' => function ($payType, $settings) {
+                'payment' => function (OrderPay $orderPay, PayType $payType, OrderPaymentSettingCollection $settings) {
 
-                    return new AppPayment($payType, $settings);
+                    return new AppPayment($orderPay, $payType, $settings);
                 },
                 'settings' => [
                     'shop' => function (OrderPaymentTypeSettingManager $manager, OrderPay $orderPay) {
@@ -91,26 +97,26 @@ class PaymentConfig
                     }
                 ],
             ], 'yunPayWechat' => [
-                'payment' => function ($payType, $settings) {
-                    return new YunPayment($payType, $settings);
+                'payment' => function (OrderPay $orderPay, PayType $payType, OrderPaymentSettingCollection $settings) {
+                    return new YunPayment($orderPay, $payType, $settings);
                 },
                 'settings' => [
                     'shop' => function (OrderPaymentTypeSettingManager $manager, OrderPay $orderPay) {
                         return new YunPayWechatSetting($orderPay);
                     }
                 ],
-            ],'cloudPayAlipay' => [
-                'payment' => function ($payType, $settings) {
-                    return new CloudAliPayment($payType, $settings);
+            ], 'cloudPayAlipay' => [
+                'payment' => function (OrderPay $orderPay, PayType $payType, OrderPaymentSettingCollection $settings) {
+                    return new CloudAliPayment($orderPay, $payType, $settings);
                 },
                 'settings' => [
                     'shop' => function (OrderPaymentTypeSettingManager $manager, OrderPay $orderPay) {
                         return new CloudPayAliSetting($orderPay);
                     }
                 ],
-            ],'anotherPay' => [
-                'payment' => function ($payType, $settings) {
-                    return new AnotherPayment($payType, $settings);
+            ], 'anotherPay' => [
+                'payment' => function (OrderPay $orderPay, PayType $payType, OrderPaymentSettingCollection $settings) {
+                    return new AnotherPayment($orderPay, $payType, $settings);
                 },
                 'settings' => [
                     'shop' => function (OrderPaymentTypeSettingManager $manager, OrderPay $orderPay) {
@@ -118,8 +124,8 @@ class PaymentConfig
                     }
                 ],
             ], 'yunPayAlipay' => [
-                'payment' => function ($payType, $settings) {
-                    return new YunAliPayment($payType, $settings);
+                'payment' => function (OrderPay $orderPay, PayType $payType, OrderPaymentSettingCollection $settings) {
+                    return new YunAliPayment($orderPay, $payType, $settings);
                 },
                 'settings' => [
                     'shop' => function (OrderPaymentTypeSettingManager $manager, OrderPay $orderPay) {
@@ -128,6 +134,9 @@ class PaymentConfig
                 ],
             ],
             'COD' => [
+                'payment' => function (OrderPay $orderPay, PayType $payType, OrderPaymentSettingCollection $settings) {
+                    return new CODPayment($orderPay, $payType, $settings);
+                },
                 'settings' => [
                     'shop' => function (OrderPaymentTypeSettingManager $manager, OrderPay $orderPay) {
                         return new CODSetting($orderPay);
