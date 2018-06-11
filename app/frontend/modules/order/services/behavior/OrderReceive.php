@@ -9,11 +9,8 @@
 
 namespace app\frontend\modules\order\services\behavior;
 
-use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\exceptions\ShopException;
-use app\common\models\Member;
 use app\common\models\Order;
-
 
 class OrderReceive extends ChangeStatusOperation
 {
