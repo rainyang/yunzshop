@@ -104,7 +104,7 @@ class AppServiceProvider extends ServiceProvider
             return new Setting();
         });
 
-        App::bind(\Illuminate\Session\Store::class,function(){
+        App::bind('captcha',function(){
             return new Session();
         });
 

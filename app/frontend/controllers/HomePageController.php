@@ -184,25 +184,25 @@ class HomePageController extends ApiController
         $result['applet'] = self::defaultDesign();
 
         //增加验证码功能
-//        $status = Setting::get('shop.sms.status');
-//        if (extension_loaded('fileinfo')) {
-//            $captcha = self::captchaTest();
-//            if ($status == 1) {
-//                $result['captcha'] = $captcha;
-//                $result['captcha']['status'] = $status;
-//            }
-//        }
+        $status = Setting::get('shop.sms.status');
+        if (extension_loaded('fileinfo')) {
+            $captcha = self::captchaTest();
+            if ($status == 1) {
+                $result['captcha'] = $captcha;
+                $result['captcha']['status'] = $status;
+            }
+        }
         return $this->successJson('ok', $result);
     }
 
     //增加验证码功能
-//    public function captchaTest()
-//    {
-//        $captcha = app('captcha');
-//        $captcha_base64 = $captcha->create('default', true);
-//
-//        return $captcha_base64;
-//    }
+    public function captchaTest()
+    {
+        $captcha = app('captcha');
+        $captcha_base64 = $captcha->create('default', true);
+
+        return $captcha_base64;
+    }
 
     public function wxapp()
     {
