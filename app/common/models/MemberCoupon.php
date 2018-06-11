@@ -3,9 +3,18 @@
 namespace app\common\models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\DB;
 
+/**
+ * Class MemberCoupon
+ * @package app\common\models
+ * @property Coupon belongsToCoupon
+ * @property int used
+ * @property int coupon_id
+ * @property Carbon get_time
+ * @property int id
+ */
 class MemberCoupon extends BaseModel
 {
     use SoftDeletes;
@@ -22,13 +31,13 @@ class MemberCoupon extends BaseModel
     protected $guarded = [];
 
     protected $appends = ['time_start', 'time_end'];
+    public $selected;
 
 
-
-
-    /*
-     *  定义字段名
-     * @return array */
+    /**
+     * 定义字段名
+     * @return array
+     */
     public function atributeNames()
     { //todo typo
         return [
@@ -104,19 +113,19 @@ class MemberCoupon extends BaseModel
         return $this->belongsTo('app\common\models\Coupon', 'coupon_id', 'id');
     }
 
-    public function scopeCoupons($order_builder, $params)
+    public function scopeCoupons(Builder $order_builder, $params)
     {
         $order_builder->with([
-                'belongsToCoupon' => function ($query) {
+                'belongsToCoupon' => function (Builder $query) {
                     $query->where('status', 0);
                 }
             ]
         )->where('used', 0);
     }
 
-    public static function getMemberCoupon($MemberModel, $param = [])
+    public static function getMemberCoupon(Member $MemberModel, $param = [])
     {
-        return static::with(['belongsToCoupon' => function ($query) use ($param) {
+        return static::with(['belongsToCoupon' => function (Builder $query) use ($param) {
             if (isset($param['coupon']['coupon_method'])) {
                 //$query->where('coupon_method', $param['coupon']['coupon_method']);
             }

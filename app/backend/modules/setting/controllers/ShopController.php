@@ -212,10 +212,9 @@ class ShopController extends BaseController
         //$new_type = []; //通知方式的数组,数据如何来的待定?
         $requestModel = \YunShop::request()->yz_notice;
 
-        $temp_list = MessageTemp::select('id', 'title')->get();
+        $temp_list = MessageTemp::getList();
 
         if (!empty($requestModel)) {
-
             if (Setting::set('shop.notice', $requestModel)) {
                 return $this->message(' 消息提醒设置成功', Url::absoluteWeb('setting.shop.notice'));
             } else {

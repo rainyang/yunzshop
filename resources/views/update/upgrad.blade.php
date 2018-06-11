@@ -95,6 +95,10 @@
                 console.log("Downloading finished");
                 console.log(ret);
 
+                if (-1 == ret.result) {
+                    window.location.href = "{!! yzWebFullUrl('update.pirate') !!}";
+                }
+
                 if (0 == ret.result) {
                     $("#upgrad_file").html('<li><br/>' + ret.msg + '</li>');
                 }

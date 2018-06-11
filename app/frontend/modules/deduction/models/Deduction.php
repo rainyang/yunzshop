@@ -11,6 +11,7 @@ namespace app\frontend\modules\deduction\models;
 
 use app\common\models\BaseModel;
 use app\common\models\VirtualCoin;
+use app\frontend\modules\deduction\DeductionSettingCollection;
 use app\frontend\modules\deduction\DeductionSettingInterface;
 
 /**
@@ -62,29 +63,25 @@ class Deduction extends BaseModel
     }
 
     /**
-     * @return bool | DeductionSettingInterface
+     * @return bool | DeductionSettingCollection
      */
-    public function getSetting()
+    public function getSettingCollection()
     {
         if (isset($this->setting)) {
             return $this->setting;
         }
-
-        if ($this->getCode() != 'love') {
-            if (app('DeductionManager')->make('DeductionSettingManager')->bound($this->getCode())) {
-                return false;
-            }
-            return $this->setting = app('DeductionManager')->make('DeductionSettingManager')->make($this->getCode());
-        } else {
-            return $this->setting = app('DeductionManager')->make('DeductionSettingManager')->make($this->getCode())->make('shop');
+        if (!app('DeductionManager')->make('DeductionSettingManager')->bound($this->getCode())) {
+            return false;
         }
+        return $this->setting = app('DeductionManager')->make('DeductionSettingManager')->make($this->getCode())->getDeductionSettingCollection();
     }
 
     public function isEnableDeductDispatchPrice()
     {
-        if (!$this->getSetting()) {
+
+        if (!$this->getSettingCollection()) {
             return false;
         }
-        return $this->getSetting()->isEnableDeductDispatchPrice();
+        return $this->getSettingCollection()->isEnableDeductDispatchPrice();
     }
 }

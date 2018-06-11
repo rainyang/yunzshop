@@ -388,7 +388,9 @@ class IncomeWithdrawController extends ApiController
             $array[] = $this->getWithdrawRecordData($income);
         }
 
-        if ($this->withdraw_amounts != $amounts) {
+
+        //使用数学函数比较浮点数，个别服务器比较服点数错误
+        if (bccomp($this->withdraw_amounts, $amounts, 2) != 0) {
             throw new AppException('提现失败：提现金额错误');
         }
         return $array;

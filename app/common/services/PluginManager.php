@@ -286,4 +286,40 @@ class PluginManager
         return $this->app->basePath() . '/plugins';
     }
 
+    public
+    function enTopShow($name,$enable)
+    {
+        if (!$this->getPlugin($name)) {
+            $name = str_replace("_","-",$name);
+        }
+        $enabled = $this->getEnabled();
+
+        $this->setTopShow($enabled[$name]['id'], $enable);
+    }
+
+    public
+    function setTopShow($id,$enabled,$name = null)
+    {
+        if ($id) {
+            return $this->option->editTopShowById($id, $enabled);
+        } else {
+            $pluginData = [
+                'uniacid' => \YunShop::app()->uniacid,
+                'option_name' => $name,
+                'option_value' => 'true',
+                'top_show' => $enabled
+            ];
+            return $this->option->insertPlugin($pluginData);
+        }
+    }
+
+    public
+    function isTopShow($name)
+    {
+        $plugins = (array)$this->option->get();
+        if (!$this->getPlugin($name)) {
+            $name = str_replace("_","-",$name);
+        }
+        return $plugins = $plugins[$name]['top_show'];
+    }
 }
