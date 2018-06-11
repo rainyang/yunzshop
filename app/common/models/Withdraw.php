@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Config;
 
 class Withdraw extends BackendModel
 {
-    public $table = 'yz_withdraw';
+    protected $table = 'yz_withdraw';
 
     protected $guarded = [];
 
