@@ -497,19 +497,19 @@ class MemberController extends ApiController
         $member_model = MemberModel::getMemberById(\YunShop::app()->getMemberId());
 
         if (\YunShop::app()->getMemberId() && \YunShop::app()->getMemberId() > 0) {
-            $check_code = MemberService::checkCode();
+            // $check_code = MemberService::checkCode();
 
-            if ($check_code['status'] != 1) {
-                return $this->errorJson($check_code['json']);
-            }
+            // if ($check_code['status'] != 1) {
+            //     return $this->errorJson($check_code['json']);
+            // }
 
-            $msg = MemberService::validate($mobile, $password, $confirm_password);
+            // $msg = MemberService::validate($mobile, $password, $confirm_password);
 
-            if ($msg['status'] != 1) {
-                return $this->errorJson($msg['json']);
-            }
+            // if ($msg['status'] != 1) {
+            //     return $this->errorJson($msg['json']);
+            // }
             //同步信息
-            $bool =  $this->synchro($member_model);
+            $bool = $this->synchro($member_model);
             if ($bool) {
                 $salt = Str::random(8);
                 $member_model->salt = $salt;
@@ -522,26 +522,28 @@ class MemberController extends ApiController
                     return $this->errorJson('手机号码绑定失败');
                 }
             }
+            return $this->successJson('信息同步成功');
         } else {
             return $this->errorJson('手机号或密码格式错误');
         }
     }
 
+    //会员信息同步
     public function synchro($new_member)
     {
+
         $type = \YunShop::request()->type;
 
         $old_member = [];
         if (OnekeyLogin::alipayPluginMobileState()) {
-            $old_member = MemberModel::getId(\YunShop::app()->uniacid, $mobile);
-            
+            $old_member = MemberModel::getId(\YunShop::app()->uniacid, \YunShop::request()->mobile);
         }
         if ($old_member) {
             $type = empty($type) ? Client::getType() : $type;
-            
             $className = SynchronousUserInfo::create($type);
             if ($className) {
-                $className->updateMember($old_member, $new_member);
+                \Log::debug('new_member:'.$new_member->uid);
+                return $className->updateMember($old_member, $new_member);
 
             } else {
                 return true;
@@ -549,8 +551,6 @@ class MemberController extends ApiController
         } else {
             return true;
         }
-
-        return false;
     }
 
     /**
