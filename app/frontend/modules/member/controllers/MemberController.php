@@ -50,6 +50,8 @@ class MemberController extends ApiController
     {
         $member_id = \YunShop::app()->getMemberId();
 
+        // (new \app\frontend\modules\member\controllers\LogoutController)->index();
+        // exit();
         if (!empty($member_id)) {
             $member_info = MemberModel::getUserInfos($member_id)->first();
 
@@ -539,6 +541,7 @@ class MemberController extends ApiController
             $old_member = MemberModel::getId(\YunShop::app()->uniacid, \YunShop::request()->mobile);
         }
         if ($old_member) {
+            \Log::debug('会员同步type:'. $type);
             $type = empty($type) ? Client::getType() : $type;
             $className = SynchronousUserInfo::create($type);
             if ($className) {

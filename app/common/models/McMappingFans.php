@@ -14,6 +14,10 @@ class McMappingFans extends BackendModel
 {
     public $table = 'mc_mapping_fans';
 
+    protected $primaryKey = 'fanid';
+
+    public $timestamps = false;
+
 //    public function getOauthUserInfo()
 //    {
 //        return mc_oauth_userinfo();
