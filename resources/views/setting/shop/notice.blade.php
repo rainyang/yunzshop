@@ -752,6 +752,7 @@
                                         showPopover($(id),"开启成功")
                                     } else {
                                         showPopover($(id),"开启失败，请检查微信模版")
+                                        $(id).attr("checked",false);
                                     }
                                 }, "json");
                             } else {

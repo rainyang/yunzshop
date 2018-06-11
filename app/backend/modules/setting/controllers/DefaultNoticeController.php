@@ -42,13 +42,13 @@ class DefaultNoticeController extends BaseController
                 }
             }
             $template_data = $this->TemplateModel->getData($template_id_short);
-            if (!$template_data) {
+            if (!$template_data->template_id) {
                 $template_id = $this->WechatApiModel->getTemplateIdByTemplateIdShort($template_id_short);
                 if (empty($template_id)) {
                     echo json_encode([
                         'result' => '0',
                         'msg' => '获取微信模版失败',
-                    ]);
+                    ]);exit();
                 }
                 $this->TemplateModel->template_id_short = $template_id_short;
                 $this->TemplateModel->template_id = $template_id;
