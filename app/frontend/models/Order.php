@@ -5,6 +5,7 @@
  * Date: 2017/4/6
  * Time: 下午4:35
  */
+
 namespace app\frontend\models;
 
 use app\frontend\models\Member;
@@ -33,21 +34,25 @@ class Order extends \app\common\models\Order
         'updated_at',
         'deleted_at'
     ];
-    public function scopeDetail($query){
-        return $query->with(['hasManyOrderGoods'=>function($query){
+
+    public function scopeDetail($query)
+    {
+        return $query->with(['hasManyOrderGoods' => function ($query) {
             return $query->detail();
-        }])->select(['id','uid','order_sn','price','goods_price','create_time','finish_time','pay_time','send_time','cancel_time','dispatch_type_id','pay_type_id','status','refund_id','dispatch_price','deduction_price']);
+        }])->select(['id', 'uid', 'order_sn', 'price', 'goods_price', 'create_time', 'finish_time', 'pay_time', 'send_time', 'cancel_time', 'dispatch_type_id', 'pay_type_id', 'status', 'refund_id', 'dispatch_price', 'deduction_price']);
     }
+
     /**
      * 订单列表
      * @return $this
      */
     public function scopeOrders($query)
     {
-        return $query->with(['hasManyOrderGoods'=>function($query){
-            return $query->select(['order_id','goods_id','goods_price','total','price','thumb','title','goods_option_id','goods_option_title','comment_status']);
-        }],'hasOnePayType')->orderBy('id','desc');
+        return $query->with(['hasManyOrderGoods' => function ($query) {
+            return $query->select(['order_id', 'goods_id', 'goods_price', 'total', 'price', 'thumb', 'title', 'goods_option_id', 'goods_option_title', 'comment_status']);
+        }], 'hasOnePayType')->orderBy('id', 'desc');
     }
+
     public function belongsToMember()
     {
         return $this->belongsTo(app('OrderManager')->make('Member'), 'uid', 'uid');
@@ -83,9 +88,9 @@ class Order extends \app\common\models\Order
             $operator['operator'] = '>';
             $operator['status'] = 0;
         }
-        return self::whereHas('hasManyOrderGoods', function($query) use ($operator){
-                return $query->where('comment_status', $operator['operator'], $operator['status']);
-            })
+        return self::whereHas('hasManyOrderGoods', function ($query) use ($operator) {
+            return $query->where('comment_status', $operator['operator'], $operator['status']);
+        })
             ->with([
                 'hasManyOrderGoods' => self::orderGoodsBuilder($status)
             ])->where('status', 3)->orderBy('id', 'desc')->get();
@@ -100,9 +105,9 @@ class Order extends \app\common\models\Order
     public static function getOrderListByUid($uid)
     {
         return self::select(['*'])
-            ->where('status','>=',1)
-            ->where('status','<=',3)
-            ->with(['hasManyOrderGoods'=>function($query){
+            ->where('status', '>=', 1)
+            ->where('status', '<=', 3)
+            ->with(['hasManyOrderGoods' => function ($query) {
                 return $query->select(['*']);
             }])
             ->get();
@@ -113,8 +118,8 @@ class Order extends \app\common\models\Order
     {
         parent::boot();
 
-        self::addGlobalScope(function(Builder $query){
-            return $query->uid()->where('is_member_deleted',0);
+        self::addGlobalScope(function (Builder $query) {
+            return $query->uid()->where('is_member_deleted', 0);
         });
     }
 }

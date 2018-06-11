@@ -12,14 +12,11 @@ class RemittanceSetting extends BaseSetting
 {
     public function canUse()
     {
-        return 1;
         return \Setting::get('shop.pay.remittance');
     }
 
     public function exist()
     {
-        return 1;
-
         return \Setting::get('shop.pay.remittance') !== null;
     }
 }

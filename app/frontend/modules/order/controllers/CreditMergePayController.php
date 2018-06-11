@@ -9,20 +9,21 @@
 
 namespace app\frontend\modules\order\controllers;
 
-
-use app\backend\modules\member\models\MemberRelation;
 use app\common\events\payment\ChargeComplatedEvent;
 use app\common\exceptions\AppException;
-use app\common\models\finance\Balance;
 use app\common\services\password\PasswordService;
 use app\common\services\PayFactory;
-use app\frontend\modules\order\services\OrderService;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
+use app\frontend\models\OrderPay;
 
 class CreditMergePayController extends MergePayController
 {
-    public function credit2(\Request $request)
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     * @throws \app\common\exceptions\PaymentException
+     * @throws \app\common\exceptions\ShopException
+     */
+    public function credit2()
     {
         if (\Setting::get('shop.pay.credit') == false) {
             throw new AppException('商城未开启余额支付');
@@ -30,30 +31,21 @@ class CreditMergePayController extends MergePayController
         }
         $this->checkPassword(\YunShop::app()->getMemberId());
 
-        DB::transaction(function () {
-            $result = $this->pay(PayFactory::PAY_CREDIT);
+        /**
+         * @var OrderPay $orderPay
+         */
+        $orderPay = OrderPay::find(request()->input('order_pay_id'));
+        $result = $orderPay->getPayResult(PayFactory::PAY_CREDIT);
 
-            if (!$result) {
-                throw new AppException('余额扣除失败,请联系客服');
-            }
-            //todo 临时解决 需要重构
-            $this->orderPay->pay_type_id = PayFactory::PAY_CREDIT;
-            $this->orderPay->status = 1;
-            $this->orderPay->save();
-            $this->orders->each(function ($order) {
-                if (!OrderService::orderPay(['order_id' => $order->id, 'order_pay_id' => $this->orderPay->id, 'pay_type_id' => $this->orderPay->pay_type_id])) {
-                    throw new AppException('订单状态改变失败,请联系客服');
-                }
-            });
+        if (!$result) {
+            throw new AppException('余额扣除失败,请联系客服');
+        }
 
-            event(new ChargeComplatedEvent([
-                'order_pay_id' => $this->orderPay->id
-            ]));
+        $orderPay->pay();
 
-            //会员推广资格
-            \Log::debug('余额支付-会员推广');
-            MemberRelation::checkOrderPay($this->orderPay->uid);
-        });
+        event(new ChargeComplatedEvent([
+            'order_pay_id' => $orderPay->id
+        ]));
 
         $trade = \Setting::get('shop.trade');
         $redirect = '';
@@ -62,35 +54,25 @@ class CreditMergePayController extends MergePayController
             $redirect = $trade['redirect_url'];
         }
 
-        return $this->successJson('成功', ['redirect'=>$redirect]);
+        return $this->successJson('成功', ['redirect' => $redirect]);
     }
 
-    protected function getPayParams($orderPay, Collection $orders)
-    {
-        $result = [
-            'member_id' => $orders->first()->uid,
-            'operator' => Balance::OPERATOR_ORDER_,//订单
-            'operator_id' => $orderPay->id,
-            'remark' => '合并支付(id:' . $orderPay->id . '),余额付款' . $orderPay->amount . '元',
-            'service_type' => Balance::BALANCE_CONSUME,
-            'trade_no' => 0,
-        ];
-
-        return array_merge(parent::getPayParams($orderPay, $orders), $result);
-    }
     /**
      * 校验支付密码
      * @param $uid
      * @return bool
+     * @throws \app\common\exceptions\PaymentException
+     * @throws \app\common\exceptions\ShopException
      */
-    private function checkPassword($uid){
-        if(!\Setting::get('shop.pay.balance_pay_proving')){
+    private function checkPassword($uid)
+    {
+        if (!\Setting::get('shop.pay.balance_pay_proving')) {
             // 未开启
             return true;
         }
         $this->validate([
-            'payment_password' => 'required|string'
+            'payment_password' => 'required'
         ]);
-        return (new PasswordService())->checkMemberPassword($uid,request()->input('payment_password'));
+        return (new PasswordService())->checkMemberPassword($uid, request()->input('payment_password'));
     }
 }

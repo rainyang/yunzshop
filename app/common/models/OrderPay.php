@@ -24,6 +24,9 @@ use Illuminate\Database\Eloquent\Collection;
  * @property float amount
  * @property array order_ids
  * @property Collection orders
+ * @property PayType payType
+ * @property string pay_type_name
+ * @property string status_name
  */
 class OrderPay extends BaseModel
 {
@@ -31,6 +34,12 @@ class OrderPay extends BaseModel
     protected $guarded = ['id'];
     protected $search_fields = ['pay_sn'];
     protected $casts = ['order_ids' => 'json'];
+    protected $dates = ['pay_time', 'refund_time'];
+    protected $appends = ['status_name', 'pay_type_name'];
+
+    const STATUS_UNPAID = 0;
+    const STATUS_PAID = 1;
+    const STATUS_REFUNDED = 2;
 
     /**
      * 根据paysn查询支付方式
@@ -45,8 +54,27 @@ class OrderPay extends BaseModel
             ->value('pay_type_id');
     }
 
+    public function getStatusNameAttribute()
+    {
+        return [
+            self::STATUS_UNPAID => '未支付',
+            self::STATUS_PAID => '已支付',
+            self::STATUS_REFUNDED => '已退款',
+        ][$this->status];
+    }
+
+    public function getPayTypeNameAttribute()
+    {
+        return $this->payType->name;
+    }
+
     public function orders()
     {
-        return $this->belongsToMany(Order::class, (new OrderPayOrder)->getTable());
+        return $this->belongsToMany(Order::class, (new OrderPayOrder)->getTable(), 'order_pay_id', 'order_id');
+    }
+
+    public function payType()
+    {
+        return $this->belongsTo(PayType::class);
     }
 }

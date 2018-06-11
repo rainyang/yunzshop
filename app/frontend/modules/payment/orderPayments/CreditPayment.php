@@ -12,11 +12,11 @@ namespace app\frontend\modules\payment\orderPayments;
 use app\common\models\PayType;
 use app\frontend\modules\payment\paymentSettings\OrderPaymentSettingCollection;
 
-class AppPayment extends BasePayment
+class CreditPayment extends BasePayment
 {
 
     public function canUse()
     {
-        return parent::canUse() && \YunShop::request()->type == 7;
+        return parent::canUse() && $this->order;
     }
 }

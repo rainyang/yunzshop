@@ -50,7 +50,7 @@ class CODController extends ApiController
      */
     private function valid()
     {
-        if (\Setting::get('shop.pay.cod') == false) {
+        if (\Setting::get('shop.pay.COD') == false) {
             throw new AppException('商城未开启货到付款');
         }
     }

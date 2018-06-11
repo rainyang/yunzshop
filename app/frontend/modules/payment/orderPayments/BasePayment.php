@@ -9,6 +9,7 @@
 namespace app\frontend\modules\payment\orderPayments;
 
 use app\common\models\PayType;
+use app\frontend\models\OrderPay;
 use app\frontend\modules\payment\paymentSettings\OrderPaymentSettingCollection;
 
 /**
@@ -26,11 +27,17 @@ abstract class BasePayment
      * @var PayType
      */
     protected $payType;
+    /**
+     * @var OrderPay
+     */
+    protected $orderPay;
 
-    function __construct(PayType $payType, OrderPaymentSettingCollection $orderPaymentSettings)
+    function __construct(OrderPay $orderPay, OrderPaymentSettingCollection $orderPaymentSettings)
     {
 
-        $this->payType = $payType;
+        $this->orderPay = $orderPay;
+
+        $this->payType = $orderPay->payType;
         $this->orderPaymentSettings = $orderPaymentSettings;
 
     }

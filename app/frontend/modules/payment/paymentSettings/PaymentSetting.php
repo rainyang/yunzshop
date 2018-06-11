@@ -8,11 +8,13 @@
 
 namespace app\frontend\modules\payment\paymentSettings;
 
-use app\common\models\Order;
+use app\frontend\models\OrderPay;
 
 abstract class PaymentSetting implements PaymentSettingInterface
 {
-    function __construct()
+    protected $orderPay;
+    public function __construct(OrderPay $orderPay)
     {
+        $this->orderPay = $orderPay;
     }
 }

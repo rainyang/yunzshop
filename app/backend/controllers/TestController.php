@@ -23,11 +23,22 @@ use app\frontend\modules\member\models\SubMemberModel;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\services\behavior\OrderReceive;
 use app\frontend\modules\order\services\OrderService;
+use Yunshop\StoreCashier\common\models\Goods;
 
 class TestController extends BaseController
 {
     public function index()
     {
+        $orders = Order::where('plugin_id',31)->whereBetween('status',[1,2])->get()->each(function($order){
+            $order->is_virtual= 1;
+            $order->dispatch_type_id = 0;
+            $order->save();
+            OrderService::orderSend(['order_id' => $order->id]);
+            $result = OrderService::orderReceive(['order_id' => $order->id]);
+        });
+        dd($orders);
+        exit;
+
         exit;
     }
 

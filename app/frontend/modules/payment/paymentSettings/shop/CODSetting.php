@@ -12,14 +12,12 @@ class CODSetting extends BaseSetting
 {
     public function canUse()
     {
-        return 1;
-        return \Setting::get('shop.pay.cod');
+        return \Setting::get('shop.pay.COD');
     }
 
     public function exist()
     {
-        return 1;
 
-        return \Setting::get('shop.pay.cod') !== null;
+        return \Setting::get('shop.pay.COD') !== null;
     }
 }

@@ -45,6 +45,7 @@ use app\backend\modules\order\observers\OrderObserver;
  * @property int dispatch_type_id
  * @property Collection orderGoods
  * @property Member belongsToMember
+ * @property OrderPay orderPays
  */
 class Order extends BaseModel
 {
@@ -442,6 +443,11 @@ class Order extends BaseModel
     public function orderDiscount()
     {
         return $this->hasMany(OrderDiscount::class, 'order_id', 'id');
+    }
+
+    public function orderPays()
+    {
+        return $this->belongsToMany(OrderPay::class, (new OrderPayOrder())->getTable(),'order_id','order_pay_id');
     }
 
     public function close()

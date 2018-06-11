@@ -57,7 +57,12 @@ class MessageNoticeJob implements  ShouldQueue
             \Log::info('消息通知测试，执行大于两次终止');
             return true;
         }
-        $this->noticeModel->uses($this->templateId)->andData($this->noticeData)->andReceiver($this->openId)->andUrl($this->url)->send();
+        try{
+
+            $this->noticeModel->uses($this->templateId)->andData($this->noticeData)->andReceiver($this->openId)->andUrl($this->url)->send();
+        }catch (\Exception $exception){
+            \Log::error('消息发送错误',$exception->getMessage());
+        }
         return true;
     }
 }
