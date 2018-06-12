@@ -510,9 +510,21 @@ class MemberController extends ApiController
             // if ($msg['status'] != 1) {
             //     return $this->errorJson($msg['json']);
             // }
+
+
             //同步信息
-            $bool = $this->synchro($member_model);
-            if ($bool) {
+            $old_member = [];
+            if (OnekeyLogin::alipayPluginMobileState()) {
+                $old_member = MemberModel::getId(\YunShop::app()->uniacid, $mobile);
+            }
+            if ($old_member) {
+                $bool = $this->synchro($member_model, $old_member);
+                if ($bool) {
+                    return $this->successJson('信息同步成功');
+                } else {
+                    return $this->errorJson('手机号已绑定其他用户');
+                }
+            } else {
                 $salt = Str::random(8);
                 $member_model->salt = $salt;
                 $member_model->mobile = $mobile;
@@ -523,36 +535,30 @@ class MemberController extends ApiController
                 } else {
                     return $this->errorJson('手机号码绑定失败');
                 }
+                
             }
-            return $this->successJson('信息同步成功');
         } else {
             return $this->errorJson('手机号或密码格式错误');
         }
     }
 
     //会员信息同步
-    public function synchro($new_member)
+    public function synchro($new_member, $old_member)
     {
 
         $type = \YunShop::request()->type;
 
-        $old_member = [];
-        if (OnekeyLogin::alipayPluginMobileState()) {
-            $old_member = MemberModel::getId(\YunShop::app()->uniacid, \YunShop::request()->mobile);
-        }
-        if ($old_member) {
-            \Log::debug('会员同步type:'. $type);
-            $type = empty($type) ? Client::getType() : $type;
-            $className = SynchronousUserInfo::create($type);
-            if ($className) {
-                \Log::debug('new_member:'.$new_member->uid);
-                return $className->updateMember($old_member, $new_member);
+        \Log::debug('会员同步type:'. $type);
+        $type = empty($type) ? Client::getType() : $type;
 
-            } else {
-                return true;
-            }
+        $className = SynchronousUserInfo::create($type);
+
+        if ($className) {
+            \Log::debug('new_member:'.$new_member->uid);
+            return $className->updateMember($old_member, $new_member);
+
         } else {
-            return true;
+            return false;
         }
     }
 
