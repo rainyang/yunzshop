@@ -499,17 +499,17 @@ class MemberController extends ApiController
         $member_model = MemberModel::getMemberById(\YunShop::app()->getMemberId());
 
         if (\YunShop::app()->getMemberId() && \YunShop::app()->getMemberId() > 0) {
-            // $check_code = MemberService::checkCode();
+            $check_code = MemberService::checkCode();
 
-            // if ($check_code['status'] != 1) {
-            //     return $this->errorJson($check_code['json']);
-            // }
+            if ($check_code['status'] != 1) {
+                return $this->errorJson($check_code['json']);
+            }
 
-            // $msg = MemberService::validate($mobile, $password, $confirm_password);
+            $msg = MemberService::validate($mobile, $password, $confirm_password);
 
-            // if ($msg['status'] != 1) {
-            //     return $this->errorJson($msg['json']);
-            // }
+            if ($msg['status'] != 1) {
+                return $this->errorJson($msg['json']);
+            }
 
 
             //同步信息
@@ -554,7 +554,6 @@ class MemberController extends ApiController
         $className = SynchronousUserInfo::create($type);
 
         if ($className) {
-            \Log::debug('new_member:'.$new_member->uid);
             return $className->updateMember($old_member, $new_member);
 
         } else {
