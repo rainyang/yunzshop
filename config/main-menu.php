@@ -741,12 +741,13 @@ return [
             ],
 
             /**
-             * 搜索过滤
+             * 搜索过滤 改名为 商品标签
              * create 2018/3/26
+             * update 2018/5/14
              * Author: blank
              */
             'search_filtering' => [
-                'name'              => '搜索过滤',
+                'name'              => '商品标签',
                 'url'               => 'filtering.filtering.index',
                 'url_params'        => '',
                 'permit'            => 1,
@@ -757,7 +758,7 @@ return [
                 'parents'           => ['Goods',],
                 'child'             => [
                     'filtering_group_index' => [
-                        'name'              => '过滤列表',
+                        'name'              => '标签组列表',
                         'url'               => 'filtering.filtering.index',
                         'url_params'        => '',
                         'permit'            => 1,
@@ -769,7 +770,7 @@ return [
                         'child'             => []
                     ],
                     'filtering_value_index' => [
-                        'name'              => '过滤值列表',
+                        'name'              => '标签列表',
                         'url'               => 'filtering.filtering.filter-value',
                         'url_params'        => '',
                         'permit'            => 1,
@@ -781,7 +782,7 @@ return [
                         'child'             => []
                     ],
                     'filtering_create' => [
-                        'name'              => '新增过滤',
+                        'name'              => '新增',
                         'url'               => 'filtering.filtering.create',
                         'url_params'        => '',
                         'permit'            => 1,
@@ -801,7 +802,7 @@ return [
                         'child'             => []
                     ],
                     'filtering_edit' => [
-                        'name'              => '编辑过滤',
+                        'name'              => '编辑',
                         'url'               => 'filtering.filtering.edit',
                         'url_params'        => '',
                         'permit'            => 1,
@@ -821,7 +822,7 @@ return [
                         'child'             => []
                     ],
                     'filtering_del' => [
-                        'name'              => '过滤删除',
+                        'name'              => '删除',
                         'url'               => 'filtering.filtering.del',
                         'url_params'        => '',
                         'permit'            => 1,

@@ -63,6 +63,32 @@ class CategoryController extends BaseController
         return $this->errorJson('未检测到子分类数据!',$list);
     }
 
+    public function searchGoodsCategory()
+    {
+        $set = Setting::get('shop.category');
+        $json_data = [];
+        $list = Category::getCategorys(0)->pluginId()->where('enabled', 1)->get()->toArray();
+        foreach ($list as &$parent) {
+            $parent['son'] = Category::getChildrenCategorys($parent['id'],$set)->get()->toArray();
+            foreach ($parent['son'] as &$value) {
+                $value['thumb'] = replace_yunshop(yz_tomedia($value['thumb']));
+                $value['adv_img'] = replace_yunshop(yz_tomedia($value['adv_img']));
+                if (!is_null($value['has_many_children'])) {
+                    foreach ($value['has_many_children'] as &$has_many_child) {
+                        $has_many_child['thumb'] = replace_yunshop(yz_tomedia($has_many_child['thumb']));
+                        $has_many_child['adv_img'] = replace_yunshop(yz_tomedia($has_many_child['adv_img']));
+                    }
+                } else {
+                    $value['has_many_children'] = [];
+                }
+            }
+            $parent['thumb'] = replace_yunshop(yz_tomedia($parent['thumb']));
+            $parent['adv_img'] = replace_yunshop(yz_tomedia($parent['adv_img']));
+        }
+
+        return $this->successJson('获取子分类数据成功!', $list);
+    }
+
 //    public function getCategorySetting()
 //    {
 //        $set = Setting::get('shop.category');
