@@ -9,21 +9,11 @@
 namespace app\backend\controllers;
 
 use app\common\components\BaseController;
-use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\models\Member;
 use app\common\models\Order;
-use app\common\models\OrderPay;
-use app\common\models\PayOrder;
-use app\common\models\PayType;
 use app\common\services\MessageService;
-use app\common\services\WechatPay;
-use app\frontend\modules\finance\controllers\IncomeController;
-use app\frontend\modules\finance\services\BalanceRechargeResultService;
 use app\frontend\modules\member\models\SubMemberModel;
-use app\frontend\modules\member\services\MemberService;
-use app\frontend\modules\order\services\behavior\OrderReceive;
 use app\frontend\modules\order\services\OrderService;
-use Yunshop\StoreCashier\common\models\Goods;
 
 class TestController extends BaseController
 {
