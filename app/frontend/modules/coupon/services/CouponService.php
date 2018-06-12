@@ -31,7 +31,7 @@ class CouponService
 
     /**
      * 获取订单优惠金额
-     * @return int
+     * @return float
      */
     public function getOrderDiscountPrice()
     {
@@ -201,8 +201,6 @@ class CouponService
                 $coupon_ids[] = $item['coupon_id'];
             }
         }
-        //发送获取优惠券通知
-        MessageNotice::couponNotice($coupon_ids,$this->order->uid);
 
         (new CouponSendService())->sendCouponsToMember($this->order->uid,$coupon_ids,4,$this->order->order_sn);
     }

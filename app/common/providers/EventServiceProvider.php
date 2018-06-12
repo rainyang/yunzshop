@@ -29,13 +29,6 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        \app\common\events\discount\OrderGoodsDiscountWasCalculated::class => [
-            //商品优惠计算
-        ],
-        \app\common\events\discount\OrderDiscountWasCalculated::class => [
-            //订单优惠计算
-            \app\frontend\modules\order\listeners\discount\TestOrderDiscount::class, //立减优惠
-        ],
         \app\common\events\dispatch\OrderDispatchWasCalculated::class => [
             //订单邮费计算
             \app\frontend\modules\dispatch\listeners\prices\UnifyOrderDispatchPrice::class, //统一运费

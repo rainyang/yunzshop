@@ -495,12 +495,7 @@ class GoodsController extends BaseController
 
         if (\YunShop::request()->kw) {
             $goods = \app\common\models\Goods::getGoodsByName(\YunShop::request()->kw);
-            //判断门店和虚拟插件商品
-            foreach ($goods as $key => $item) {
-                if ($item['plugin_id'] == 31 || $item['plugin_id'] == 60) {
-                    unset($goods[$key]);
-                }
-            }
+            
             $goods = set_medias($goods, array('thumb', 'share_icon'));
 
             $goods = collect($goods)->map(function($item) {

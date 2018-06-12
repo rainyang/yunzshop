@@ -4,6 +4,7 @@ namespace app\common\providers;
 
 use app\common\models\AccountWechats;
 use app\common\services\Check;
+use app\common\services\Session;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Setting;
 use Illuminate\Support\ServiceProvider;
@@ -102,5 +103,10 @@ class AppServiceProvider extends ServiceProvider
         {
             return new Setting();
         });
+
+//        App::bind(\Illuminate\Session\Store::class,function(){
+//            return new Session();
+//        });
+
     }
 }

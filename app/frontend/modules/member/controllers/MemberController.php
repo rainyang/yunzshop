@@ -27,6 +27,7 @@ use app\frontend\modules\member\services\MemberService;
 use app\frontend\models\OrderListModel;
 use EasyWeChat\Foundation\Application;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Str;
 use Yunshop\Commission\models\Agents;
 use Yunshop\Poster\models\Poster;
@@ -506,6 +507,14 @@ class MemberController extends ApiController
                 return $this->errorJson($msg['json']);
             }
 
+            //增加验证码功能
+//            $captcha_status = Setting::get('shop.sms.status');
+//            if ($captcha_status == 1) {
+//                if (app('captcha')->check(Input::get('captcha')) == false) {
+//                    return $this->errorJson('验证码错误');
+//                }
+//            }
+
             $salt = Str::random(8);
             $member_model->salt = $salt;
             $member_model->mobile = $mobile;
@@ -537,6 +546,14 @@ class MemberController extends ApiController
             if ($check_code['status'] != 1) {
                 return $this->errorJson($check_code['json']);
             }
+
+            //增加验证码功能
+//            $captcha_status = Setting::get('shop.sms.status');
+//            if ($captcha_status == 1) {
+//                if (app('captcha')->check(Input::get('captcha')) == false) {
+//                    return $this->errorJson('验证码错误');
+//                }
+//            }
 
             $salt = Str::random(8);
             $member_model->withdraw_mobile = $mobile;
