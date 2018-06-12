@@ -65,12 +65,7 @@ class WechatOpen extends Command
 
     private function requestWechatApi($uniacid, $member_info, $global_token)
     {
-        $member_total = 0;
-        $update_total = 0;
-
         if (!is_null($member_info)) {
-            $member_total = count($member_info);
-
             $time = time();
             $path = 'logs/' . $time . '_member_openid.log';
             $upgrade_path = 'logs/' . $time . '_upgrade_member_openid.log';
@@ -111,7 +106,6 @@ class WechatOpen extends Command
                 } catch (\Exception $e) {
                     throw $e;
                 }
-
             });
         }
     }
