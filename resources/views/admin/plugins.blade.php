@@ -18,8 +18,8 @@
         </div>
         <div class='panel panel-default'>
             <div class='panel-body'>
-                <button class="btn btn-success" id="checkall">全选</button>
-                <button class="btn btn-success" id="checkrev">反选</button>
+                <button class="btn btn-success checkall">全选</button>
+                <button class="btn btn-success checkrev">反选</button>
                 <button class="btn btn-success batchenable" type="submit">批量启用</button>
                 <button class="btn btn-danger batchdisable" type="submit">批量禁用</button>
                 <table class="table">
@@ -71,8 +71,8 @@
                     @endforeach
                     </tbody>
                 </table>
-                <button class="btn btn-success" id="checkall">全选</button>
-                <button class="btn btn-success" id="checkrev">反选</button>
+                <button class="btn btn-success checkall">全选</button>
+                <button class="btn btn-success checkrev">反选</button>
                 <button class="btn btn-success batchenable" type="submit">批量启用</button>
                 <button class="btn btn-danger batchdisable" type="submit">批量禁用</button>
             </div>
@@ -80,7 +80,7 @@
 
         <script>
             $(function(){
-                $("#checkall").click(function(){
+                $(".checkall").click(function(){
                     //全选
                     if($(this).html() == '全选') {
                         $(this).html('全不选');
@@ -90,7 +90,7 @@
                         $('[name=check1]:checkbox').prop('checked',false);
                     }
                 });
-                $("#checkrev").click(function(){
+                $(".checkrev").click(function(){
                     //反选
                     $('[name=check1]:checkbox').each(function(){
                         this.checked=!this.checked;

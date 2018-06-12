@@ -3,6 +3,7 @@
 namespace app\frontend\controllers;
 
 use app\common\components\ApiController;
+use app\common\services\Session;
 use Yunshop\Designer\models\Designer;
 use Yunshop\Designer\models\DesignerMenu;
 use app\frontend\modules\member\models\MemberModel;
@@ -182,8 +183,26 @@ class HomePageController extends ApiController
         //增加小程序回去默认装修数据
         $result['applet'] = self::defaultDesign();
 
+        //增加验证码功能
+//        $status = Setting::get('shop.sms.status');
+//        if (extension_loaded('fileinfo')) {
+//            $captcha = self::captchaTest();
+//            if ($status == 1) {
+//                $result['captcha'] = $captcha;
+//                $result['captcha']['status'] = $status;
+//            }
+//        }
         return $this->successJson('ok', $result);
     }
+
+    //增加验证码功能
+//    public function captchaTest()
+//    {
+//        $captcha = app('captcha');
+//        $captcha_base64 = $captcha->create('default', true);
+//
+//        return $captcha_base64;
+//    }
 
     public function wxapp()
     {
@@ -343,6 +362,19 @@ class HomePageController extends ApiController
                 "bordercolor"=>"#bfbfbf"
             ),
             Array(
+                "id"=>"menu_1489731319695",
+                "classt"=>"no",
+                "title"=>"推广",
+                "icon"=>"fa fa-send",
+                "url"=>"/addons/yun_shop/?#/member/extension?i=".$i."&mid=".$mid."&type=".$type,
+                "name"=>"extension",
+                "subMenus"=>[],
+                "textcolor"=>"#666666",
+                "bgcolor"=>"#837aef",
+                "iconcolor"=>"#666666",
+                "bordercolor"=>"#bfbfbf"
+            ),
+            Array(
                 "id"=>"menu_1489735163419",
                 "title"=>"购物车",
                 "icon"=>"fa fa-cart-plus",
@@ -368,7 +400,7 @@ class HomePageController extends ApiController
             ),
         );
 
-        //如果开启了"会员关系链", 则默认菜单里面添加"推广"菜单
+       /* //如果开启了"会员关系链", 则默认菜单里面添加"推广"菜单
         $relation = MemberRelation::getSetInfo()->first();
         if($relation->status == 1){
             $promoteMenu = Array(
@@ -387,7 +419,7 @@ class HomePageController extends ApiController
             $defaultMenu[4] = $defaultMenu[3]; //第 5 个按钮改成"会员中心"
             $defaultMenu[3] = $defaultMenu[2]; //第 4 个按钮改成"购物车"
             $defaultMenu[2] = $promoteMenu; //在第 3 个按钮的位置加入"推广"
-        }
+        }*/
         return $defaultMenu;
 
     }

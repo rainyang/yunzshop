@@ -13,7 +13,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <meta name="_token" content="{{ csrf_token() }}"/>
     <!-- Bootstrap 3.3.6 -->
     <link rel="stylesheet" href="{{static_url('assets/css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{static_url('css/bootstrap-switch.min.css')}}">
     <link rel="stylesheet" href="{{static_url('assets/css/demo.css')}}">
+    <link rel="stylesheet" href="{{static_url('js/dist/select2/select2.css')}}">
+    <link rel="stylesheet" href="{{static_url('css/honeySwitch.css')}}">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{static_url('assets/css/material-dashboard.css?v=1.2.1')}}">
     <link rel="stylesheet" href="{{static_url('yunshop/libs/font-awesome/4.5.0/css/font-awesome.min.css')}}">
@@ -80,10 +83,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="{{static_url('js/jquery-2.2.3.min.js')}}"></script>
     <script type="text/javascript" src="{{static_url('js/general.js')}}"></script>
     <script type="text/javascript" src="{{static_url('js/clipboard.min.js')}}"></script>
+    <script type="text/javascript" src="{{static_url('js/bootstrap-switch.min.js')}}"></script>
+    <script type="text/javascript" src="{{static_url('js/dist/select2/select2.min.js')}}"></script>
+    <script type="text/javascript" src="{{static_url('js/honeySwitch.js')}}"></script>
 
 {{--    <script src="{{static_url('assets/js/bootstrap.min.js')}}" type="text/javascript"></script>--}}
     <script src="{{static_url('assets/js/material.min.js')}}" type="text/javascript"></script>
-    <script src="{{static_url('assets/js/vue.js')}}" type="text/javascript"></script>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://cdn.bootcss.com/vue-resource/1.5.0/vue-resource.js"></script>
+
     <script src="{{static_url('assets/js/perfect-scrollbar.jquery.min.js')}}" type="text/javascript"></script>
     <!-- Library for adding dinamically elements -->
     <script src="{{static_url('assets/js/arrive.min.js')}}" type="text/javascript"></script>

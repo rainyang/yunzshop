@@ -15,7 +15,10 @@ use app\common\models\AccountWechats;
 use app\common\models\notice\MessageTemp;
 use app\common\services\MyLink;
 use app\common\services\Utils;
+use Mews\Captcha\Captcha;
 use Yunshop\Diyform\models\DiyformTypeModel;
+use Gregwar\Captcha\CaptchaBuilder;
+use Gregwar\Captcha\PhraseBuilder;
 
 class ShopController extends BaseController
 {
@@ -155,6 +158,28 @@ class ShopController extends BaseController
         ])->render();
     }
 
+    //验证码测试
+    public static function captchapp()
+    {
+        $phrase = new PhraseBuilder();
+        $code = $phrase->build(4);
+        $builder = new CaptchaBuilder($code, $phrase);
+
+        $builder->setBackgroundColor(150, 150, 150);
+        $builder->setMaxAngle(25);
+        $builder->setMaxBehindLines(0);
+        $builder->setMaxFrontLines(0);
+
+        $builder->build($width = 100, $height = 40, $font = null);
+        $phrase = $builder->getPhrase();
+
+        \Session::flash('code', $phrase);
+
+        header('Cache-Control: no-cache, must-revalidate');
+        header('Content-Type: image/jpeg');
+        $builder->output();
+    }
+
     /**
      * 分享引导设置
      * @return mixed
@@ -187,10 +212,9 @@ class ShopController extends BaseController
         //$new_type = []; //通知方式的数组,数据如何来的待定?
         $requestModel = \YunShop::request()->yz_notice;
 
-        $temp_list = MessageTemp::select('id', 'title')->get();
+        $temp_list = MessageTemp::getList();
 
         if (!empty($requestModel)) {
-
             if (Setting::set('shop.notice', $requestModel)) {
                 return $this->message(' 消息提醒设置成功', Url::absoluteWeb('setting.shop.notice'));
             } else {

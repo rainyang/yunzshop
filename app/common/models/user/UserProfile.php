@@ -131,7 +131,7 @@ class UserProfile extends BaseModel
     {
         return [
             'realname' => 'required|max:10',
-            'mobile' => 'required|regex:/^1[34578]\d{9}$/'
+            'mobile' => 'required|regex:/^1\d{10}$/'
         ];
     }
 

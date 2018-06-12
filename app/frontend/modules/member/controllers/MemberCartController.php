@@ -68,7 +68,9 @@ class MemberCartController extends ApiController
             'total' => request()->input('total'),
             'option_id' => (int)request()->input('option_id', 0),
         );
-
+        /**
+         * @var MemberCart $cartModel
+         */
         $cartModel = app('OrderManager')->make('MemberCart',$data);
 //        dd($cartModel);
         //验证商品是否存在购物车,存在则修改数量

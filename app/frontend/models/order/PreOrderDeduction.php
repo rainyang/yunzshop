@@ -28,6 +28,9 @@ use app\frontend\modules\orderGoods\models\PreOrderGoods;
  */
 class PreOrderDeduction extends OrderDeduction
 {
+    /**
+     * @return array
+     */
     public function toArray()
     {
         $this->amount = sprintf('%.2f', $this->amount);
@@ -56,6 +59,13 @@ class PreOrderDeduction extends OrderDeduction
      */
     private $useablePoint;
 
+    /**
+     * PreOrderDeduction constructor.
+     * @param array $attributes
+     * @param $deduction
+     * @param $order
+     * @param $virtualCoin
+     */
     public function __construct(array $attributes = [], $deduction, $order, $virtualCoin)
     {
         $this->deduction = $deduction;
@@ -68,11 +78,18 @@ class PreOrderDeduction extends OrderDeduction
         parent::__construct($attributes);
     }
 
+    /**
+     * @param PreOrder $order
+     */
     private function setOrder(PreOrder $order)
     {
         $this->order = $order;
     }
 
+    /**
+     * 下单时此抵扣可选
+     * @return bool
+     */
     private function deductible()
     {
         return $this->getUsablePoint()->getCoin() > 0;
@@ -91,6 +108,7 @@ class PreOrderDeduction extends OrderDeduction
 
 
     /**
+     * 下单用户此抵扣对应虚拟币的余额
      * @return MemberCoin
      */
     private function getMemberCoin()
@@ -103,6 +121,9 @@ class PreOrderDeduction extends OrderDeduction
         return app('CoinManager')->make('MemberCoinManager')->make($code, $this->order->getMember());
     }
 
+    /**
+     *
+     */
     private function _init()
     {
         $this->uid = $this->order->uid;
@@ -126,6 +147,7 @@ class PreOrderDeduction extends OrderDeduction
     }
 
     /**
+     * 此抵扣对应的虚拟币
      * @return VirtualCoin
      */
     private function newCoin()
@@ -134,6 +156,7 @@ class PreOrderDeduction extends OrderDeduction
     }
 
     /**
+     * 订单中实际可用的此抵扣
      * @return VirtualCoin
      */
     public function getUsablePoint()
@@ -149,31 +172,28 @@ class PreOrderDeduction extends OrderDeduction
             return $this->useablePoint = $result;
         }
 
-        // 累加所有订单商品的可用虚拟币
-        /**
-         * @var VirtualCoin $virtualCoin
-         */
-
-        $orderGoodsVirtualCoin = $this->getOrderGoodsDeductionCollection()->getUsablePoint();
-
         // 商品可抵扣虚拟币+运费可抵扣虚拟币
-        $orderVirtualCoin = $orderGoodsVirtualCoin->plus($this->getDispatchPriceDeductionPoint());
-        //$orderVirtualCoin = $orderGoodsVirtualCoin;
+        $orderVirtualCoin = $this->getMaxDeduction();
+
 
         // 不能超过订单使用其他抵扣金额后的价格
-        $afterOtherDeductionAmount = min($this->order->price - $this->getOtherDeducitonAmount(),$orderVirtualCoin->getMoney());
-        // 订单商品价格计算，不包含运算
-        //$afterOtherDeductionAmount = min($this->order->goods_price - $this->getOtherDeducitonAmount(),$orderVirtualCoin->getMoney());
+        $afterOtherDeductionAmount = min($this->order->price - $this->getOtherDeductionAmount(), $orderVirtualCoin->getMoney());
 
         // 取(用户可用虚拟币)与(订单抵扣虚拟币)的最小值
         $amount = min($this->getMemberCoin()->getMaxUsableCoin()->getMoney(), $afterOtherDeductionAmount);
 
         return $this->useablePoint = $this->newCoin()->setMoney($amount);
     }
-    private function getOtherDeducitonAmount()
+
+    /**
+     * 订单中已经参与了计算的其他抵扣总金额
+     * todo 修改订单中的获取抵扣金额方法,然后删除这个方法
+     * @return mixed
+     */
+    private function getOtherDeductionAmount()
     {
-        return $this->order->orderDeductions->sum(function ($orderDeduction) {
-            if($orderDeduction->isChecked()){
+        return $this->order->orderDeductions->sum(function (PreOrderDeduction $orderDeduction) {
+            if ($orderDeduction->isChecked()) {
                 return $orderDeduction->getUsablePoint()->getMoney();
             }
             return 0;
@@ -181,17 +201,51 @@ class PreOrderDeduction extends OrderDeduction
     }
 
     /**
-     * 抵扣运费的爱心值
+     * 获取订单商品占用的抵扣金额
+     * @return float|int
+     */
+    public function getOrderGoodsDeductionAmount()
+    {
+
+        $amount = ($this->getMaxOrderGoodsDeduction()->getMoney() / $this->getMaxDeduction()->getMoney()) * $this->getUsablePoint()->getMoney();
+        return $amount;
+    }
+
+    /**
+     * 订单中此抵扣可用最大值
      * @return VirtualCoin
      */
-    public function getDispatchPriceDeductionPoint()
+    private function getMaxDeduction()
+    {
+        $result =  $this->getMaxOrderGoodsDeduction()->plus($this->getMaxDispatchPriceDeduction());
+
+        return $result;
+
+    }
+
+    /**
+     * 最多可抵扣商品金额的虚拟币
+     * 累加所有订单商品的可用虚拟币
+     * @return VirtualCoin
+     */
+    public function getMaxOrderGoodsDeduction()
+    {
+        return $this->getOrderGoodsDeductionCollection()->getUsablePoint();
+    }
+
+    /**
+     * 最多可抵扣运费的虚拟币
+     * @return VirtualCoin
+     */
+    private function getMaxDispatchPriceDeduction()
     {
         $result = $this->newCoin();
 
         //开关
         if ($this->getDeduction()->isEnableDeductDispatchPrice()) {
+
             //订单运费
-            $amount = $this->order->getDispatchPrice();
+            $amount = $this->order->getDispatchAmount();
 
             $result->setMoney($amount);
         }
@@ -224,12 +278,16 @@ class PreOrderDeduction extends OrderDeduction
         return $this->getDeduction()->getName();
     }
 
+    /**
+     * @return bool
+     */
     public function getCheckedAttribute()
     {
         return $this->isChecked();
     }
 
     /**
+     * 选择了此抵扣
      * @return bool
      */
     public function isChecked()
