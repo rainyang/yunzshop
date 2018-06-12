@@ -14,7 +14,7 @@ class UpdateAddressUrbanDistricictStreet extends Migration
     public function up()
     {
 
-        $arr = app\common\services\address\UrbanDistricictAddress::$completion;
+        $arr = \app\common\services\address\UrbanDistricictAddress::$completion;
         
 
         foreach ($arr as $val) {
