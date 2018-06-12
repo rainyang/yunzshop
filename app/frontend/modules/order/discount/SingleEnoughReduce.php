@@ -42,7 +42,9 @@ class SingleEnoughReduce extends BaseDiscount
     private function totalAmount(PreOrderGoods $orderGoods){
         // 求和所属订单中指定goods_id的订单商品支付金额
         $amount =  $this->order->orderGoods->where('goods_id', $orderGoods->goods_id)->getPaymentAmount();
-
+        if(is_null($orderGoods->sale)){
+            return 0;
+        }
         // order_goods的单品满减金额
         return $orderGoods->sale->getEnoughReductionAmount($amount);
     }

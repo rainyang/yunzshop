@@ -66,6 +66,7 @@ class CreateGoodsService
             $this->goods_model->setRawAttributes($goods_data);
             $this->goods_model->widgets = $this->request->widgets;
             $this->goods_model->uniacid = \YunShop::app()->uniacid;
+            $this->goods_model->weight = $this->goods_model->weight ? $this->goods_model->weight : 0;
             $validator = $this->goods_model->validator($this->goods_model->getAttributes());
             if ($validator->fails()) {
                 $this->error = $validator->messages();

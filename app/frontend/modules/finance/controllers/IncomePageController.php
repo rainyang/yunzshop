@@ -36,8 +36,7 @@ class IncomePageController extends ApiController
 
         return $this->successJson('ok', $data);
     }
-
-
+    
     /**
      * 页面信息
      *

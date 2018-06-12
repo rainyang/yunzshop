@@ -13,7 +13,6 @@ use app\common\exceptions\ShopException;
 use app\frontend\models\Goods;
 use app\frontend\models\goods\Sale;
 use app\frontend\models\GoodsOption;
-use app\frontend\models\orderGoods\PreOrderGoodsDiscount;
 use app\frontend\models\OrderGoods;
 use app\frontend\modules\deduction\OrderGoodsDeductionCollection;
 use app\frontend\modules\orderGoods\price\option\NormalOrderGoodsOptionPrice;
