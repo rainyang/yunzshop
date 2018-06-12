@@ -10,5 +10,4 @@ namespace app\frontend\modules\payType;
 interface OrderPayInterface
 {
     function getPayParams($option);
-    function applyPay($option);
 }

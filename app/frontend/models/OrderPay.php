@@ -96,7 +96,6 @@ class OrderPay extends \app\common\models\OrderPay
         $query_str = $this->getPayType()->getPayParams($payParams);
         $pay = PayFactory::create($this->pay_type_id);
         $result = $pay->doPay($query_str, $this->pay_type_id);
-        $this->getPayType()->applyPay($payParams);
         if (!isset($result)) {
             throw new AppException('获取支付参数失败');
         }

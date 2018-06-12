@@ -8,16 +8,15 @@
 
 namespace app\frontend\modules\payType;
 
-
 use app\frontend\modules\payType\remittance\PreTransferRecord;
 
 class Remittance extends BasePayType
 {
-    public function applyPay($option)
-    {
-        $transferRecord = new PreTransferRecord();
-        $transferRecord->report_url=$option['report_url'];
-        $transferRecord->setOrderPay($this->orderPay);
-        $transferRecord->save();
-    }
+//    public function applyPay($option)
+//    {
+//        $transferRecord = new PreTransferRecord();
+//        $transferRecord->report_url=$option['report_url'];
+//        $transferRecord->setOrderPay($this->orderPay);
+//        $transferRecord->save();
+//    }
 }

@@ -32,7 +32,36 @@ class RemittancePay extends Pay
             $pay_order_model->save();
         }
 
-        return true;
+        $payeeInfo = [
+            [   'title'=>'户名',
+                'text'=>'沈阳京东世纪贸易有限公司'
+            ],
+            [   'title'=>'户名',
+                'text'=>'1109142664110801'
+            ],
+            [   'title'=>'开户行',
+                'text'=>'招商银行北京青年路支行'
+            ],
+            [   'title'=>'联行号',
+                'text'=>'3061 0000 5545'
+            ],
+            [   'title'=>'汇款识别码',
+                'text'=>$params['order_no']
+            ],
+            [   'title'=>'支付单号',
+                'text'=>$params['order_no']
+            ],
+
+        ];
+
+        $data = [
+            'pay_sn'=>$params['order_no'],
+            'payee_info'=>$payeeInfo
+        ];
+        dd($data);
+        exit;
+
+        return $data;
 
     }
 

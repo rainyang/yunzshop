@@ -18,9 +18,9 @@ class CreateOrderPayOrder extends Migration
                 $table->integer('id', true);
                 $table->integer('order_id')->index('idx_order_id');
                 $table->integer('order_pay_id')->index('idx_order_pay_id');
-                $table->integer('created_at')->nullable();;
-                $table->integer('updated_at')->nullable();;
-                $table->integer('deleted_at')->nullable();;
+                $table->integer('created_at')->nullable();
+                $table->integer('updated_at')->nullable();
+                $table->integer('deleted_at')->nullable();
             });
         }
         if (Schema::hasTable('yz_order_pay_order') && Schema::hasTable('yz_order_pay')) {

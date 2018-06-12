@@ -399,7 +399,8 @@ class MergePayController extends ApiController
          * @var \app\frontend\models\OrderPay $orderPay
          */
         $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
-        $orderPay->getPayResult(PayType::REMITTANCE,['report_url'=>'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1528436797881&di=7aa92623b7f2f5194cc6502895d0d0cc&imgtype=0&src=http%3A%2F%2Fimg0w.pconline.com.cn%2Fpconline%2F1307%2F18%2Fspcgroup%2Fwidth_640%2Cqua_30%2F3390234_6.png']);
+        $data = $orderPay->getPayResult(PayType::REMITTANCE);
+        // todo data怎么传
         //$orderPay->pay();
         $trade = \Setting::get('shop.trade');
         $redirect = '';
