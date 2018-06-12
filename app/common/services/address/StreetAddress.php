@@ -7,6 +7,7 @@ namespace app\common\services\address;
 */
 class StreetAddress
 {
+    //2018/1/30
     public static $completion = [
         [
             'areaname' => '金门县',    //福建 泉州 金门
