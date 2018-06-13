@@ -14,6 +14,7 @@ namespace app\common\services\Mews\Captcha;
  * @license http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
+use app\common\services\Session;
 use Exception;
 use Illuminate\Config\Repository;
 use Illuminate\Hashing\BcryptHasher as Hasher;
@@ -21,7 +22,6 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
 use Intervention\Image\ImageManager;
-use Illuminate\Session\Store as Session;
 
 /**
  * Class Captcha
@@ -181,7 +181,6 @@ class Captcha
         Filesystem $files,
         Repository $config,
         ImageManager $imageManager,
-        Session $session,
         Hasher $hasher,
         Str $str
     )
@@ -189,7 +188,6 @@ class Captcha
         $this->files = $files;
         $this->config = $config;
         $this->imageManager = $imageManager;
-        $this->session = $session;
         $this->hasher = $hasher;
         $this->str = $str;
         $this->characters = config('captcha.characters','2346789abcdefghjmnpqrtuxyzABCDEFGHJMNPQRTUXYZ');
@@ -311,7 +309,7 @@ class Captcha
         $bag = $this->sensitive ? $bag : $this->str->lower($bag);
 
         $hash = $this->hasher->make($bag);
-        $this->session->put('captcha', [
+        Session::put('captcha', [
             'sensitive' => $this->sensitive,
             'key'       => $hash
         ]);
@@ -427,13 +425,13 @@ class Captcha
 	 */
 	public function check($value)
 	{
-		if ( ! $this->session->has('captcha'))
+		if ( ! Session::has('captcha'))
 		{
 			return false;
 		}
 
-		$key = $this->session->get('captcha.key');
-		$sensitive = $this->session->get('captcha.sensitive');
+		$key = Session::get('captcha.key');
+		$sensitive = Session::get('captcha.sensitive');
 
 		if ( ! $sensitive)
 		{
@@ -441,7 +439,7 @@ class Captcha
 
 		}
 
-		$this->session->remove('captcha');
+		Session::clear('captcha');
 
 		return $this->hasher->check($value, $key);
 	}
