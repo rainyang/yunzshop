@@ -54,7 +54,24 @@ class CreateStatusFlowTable extends Migration
             });
         }
         if (!Schema::hasTable('yz_order_status')) {
-            Schema::create('yz_status_flow_status', function(Blueprint $table) {
+            Schema::create('yz_order_status', function(Blueprint $table) {
+                $table->integer('id', true);
+                $table->integer('order_id');
+                $table->integer('status_id');
+                $table->integer('created_at')->nullable();
+                $table->integer('updated_at')->nullable();
+                $table->integer('deleted_at')->nullable();
+                $table->foreign('order_id')
+                    ->references('id')
+                    ->on('yz_order')
+                    ->onDelete('cascade');
+                $table->foreign('status_id')
+                    ->references('id')
+                    ->on('yz_status')
+                    ->onDelete('cascade');
+            });
+        }if (!Schema::hasTable('yz_order_status_flow')) {
+            Schema::create('yz_order_status_flow', function(Blueprint $table) {
                 $table->integer('id', true);
                 $table->integer('order_id');
                 $table->integer('status_id');
@@ -71,6 +88,10 @@ class CreateStatusFlowTable extends Migration
                     ->onDelete('cascade');
             });
         }
+//        order_status_flow
+//            order_id
+//            status_flow_id
+//            state
     }
 
     /**
@@ -90,6 +111,10 @@ class CreateStatusFlowTable extends Migration
         }
         if (Schema::hasTable('yz_status')) {
             Schema::dropIfExists('yz_status');
+
+        }
+        if (Schema::hasTable('yz_order_status')) {
+            Schema::dropIfExists('yz_order_status');
 
         }
     }
