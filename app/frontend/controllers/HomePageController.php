@@ -2,22 +2,20 @@
 
 namespace app\frontend\controllers;
 
-use app\common\components\ApiController;
-use app\common\helpers\Cache;
-use Yunshop\Designer\models\Designer;
-use Yunshop\Designer\models\DesignerMenu;
-use app\frontend\modules\member\models\MemberModel;
 use app\backend\modules\member\models\MemberRelation;
+use app\common\components\ApiController;
 use app\common\facades\Setting;
-use app\frontend\models\Member;
+use app\common\helpers\Cache;
+use app\common\repositories\OptionRepository;
+use app\common\services\goods\VideoDemandCourseGoods;
 use app\common\services\PluginManager;
+use app\frontend\models\Member;
+use app\frontend\modules\member\models\MemberModel;
+use app\frontend\modules\shop\controllers\IndexController;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
-use app\common\repositories\OptionRepository;
-use app\common\models\AccountWechats;
-use app\common\models\McMappingFans;
-use app\frontend\modules\shop\controllers\IndexController;
-use app\common\services\goods\VideoDemandCourseGoods;
+use Yunshop\Designer\models\Designer;
+use Yunshop\Designer\models\DesignerMenu;
 
 class HomePageController extends ApiController
 {
@@ -243,8 +241,26 @@ class HomePageController extends ApiController
         //增加小程序回去默认装修数据
         $result['applet'] = self::defaultDesign();
 
+        //增加验证码功能
+//        $status = Setting::get('shop.sms.status');
+//        if (extension_loaded('fileinfo')) {
+//            $captcha = self::captchaTest();
+//            if ($status == 1) {
+//                $result['captcha'] = $captcha;
+//                $result['captcha']['status'] = $status;
+//            }
+//        }
         return $this->successJson('ok', $result);
     }
+
+    //增加验证码功能
+//    public function captchaTest()
+//    {
+//        $captcha = app('captcha');
+//        $captcha_base64 = $captcha->create('default', true);
+//
+//        return $captcha_base64;
+//    }
 
     public function wxapp()
     {

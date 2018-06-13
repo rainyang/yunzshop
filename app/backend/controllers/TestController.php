@@ -10,7 +10,10 @@ namespace app\backend\controllers;
 
 
 use app\common\components\BaseController;
+use app\common\events\order\AfterOrderReceivedEvent;
+use app\common\models\Goods;
 use app\common\models\Member;
+use app\common\models\Order;
 use app\common\models\OrderPay;
 use app\common\models\PayOrder;
 use app\common\models\PayType;
@@ -20,52 +23,29 @@ use app\frontend\modules\finance\controllers\IncomeController;
 use app\frontend\modules\finance\services\BalanceRechargeResultService;
 use app\frontend\modules\member\models\SubMemberModel;
 use app\frontend\modules\member\services\MemberService;
+use app\frontend\modules\order\services\behavior\OrderReceive;
 use app\frontend\modules\order\services\OrderService;
+use Yunshop\StoreCashier\common\models\CashierGoods;
 
 class TestController extends BaseController
 {
     public function index()
     {
-        $data = [
-            'total' => [
-                'amounts' => '3033.82',
-                'poundage' => '0',
-                'pay_way' => 'wechat',
-            ],
-            'withdrawal' => [
-                [
-                    'type' => 'Yunshop\ConsumeReturn\common\models\Log',
-                    'key_name' => 'consumeReturn',
-                    'type_name' => "消费返现",
-                    'type_id' => '6920,6965',
-                    "income" => '347.82',
-                    'poundage' => '0.00',
-                    'poundage_rate' => 0,
-                    'servicetax' => '34.78',
-                    'servicetax_rate' => 10,
-                    'can' => 1,
-                    'roll_out_limit' => 0,
-                    'selected' => 1,
-                ],
-                [
-                    'type' => 'Yunshop\FullReturn\common\models\Log',
-                    'key_name' => 'FullReturn',
-                    'type_name' => "满额返现",
-                    'type_id' => '6934,6939,6940,6941,6942,6943,6944,6947,6948,6957,6958,6959,6960,6961,6962',
-                    "income" => '2690.00',
-                    'poundage' => '0.00',
-                    'poundage_rate' => 0,
-                    'servicetax' => '269.00',
-                    'servicetax_rate' => 10,
-                    'can' => 1,
-                    'roll_out_limit' => 0,
-                    'selected' => 1,
-                ],
-            ],
+        if(app('plugins')->isEnabled('store-cashier')){
+            Goods::whereIn('id',CashierGoods::pluck('goods_id'))->update(['plugin_id'=>31]);
+            $orders = Order::where('plugin_id',31)->whereBetween('status',[1,2])->get()->each(function($order){
+                $order->is_virtual= 1;
+                $order->dispatch_type_id = 0;
+                $order->save();
+                OrderService::orderSend(['order_id' => $order->id]);
+                $result = OrderService::orderReceive(['order_id' => $order->id]);
+            });
+            $order = \app\common\models\Goods::where('plugin_id','31')->where('type',1)->update(['type'=>2]);
+            echo 'ok';
+        }
 
-        ];
-        $result = (new IncomeController())->saveWithdraw($data);
-        dd($result);
+
+
     }
 
     public function op_database()

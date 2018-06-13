@@ -25,9 +25,15 @@ use Illuminate\Support\Facades\Cookie;
 
 class MemberService
 {
-
+    /**
+     * @var \app\frontend\models\Member
+     */
     private static $_current_member;
 
+    /**
+     * @return \app\frontend\models\Member
+     * @throws AppException
+     */
     public static function getCurrentMemberModel(){
         if(isset(self::$_current_member)){
             return self::$_current_member;
@@ -40,8 +46,15 @@ class MemberService
         return self::$_current_member;
     }
 
+    /**
+     * @param $member_id
+     * @throws AppException
+     */
     public static function setCurrentMemberModel($member_id)
     {
+        /**
+         * @var \app\frontend\models\Member $member
+         */
         $member = \app\frontend\models\Member::find($member_id);
         if(!isset($member)){
             throw new AppException('(ID:'.$member_id.')用户不存在');
@@ -69,11 +82,11 @@ class MemberService
         if ($confirm_password == '') {
             $data = array(
                 'mobile' => $mobile,
-                'password' => $password
+                'password' => $password,
             );
             $rules = array(
                 'mobile' => 'regex:/^1\d{10}$/',
-                'password' => 'required|min:6|regex:/^[A-Za-z0-9@!#\$%\^&\*]+$/'
+                'password' => 'required|min:6|regex:/^[A-Za-z0-9@!#\$%\^&\*]+$/',
             );
             $message = array(
                 'regex'    => ':attribute 格式错误',
@@ -88,12 +101,12 @@ class MemberService
             $data = array(
                 'mobile' => $mobile,
                 'password' => $password,
-                'confirm_password' => $confirm_password
+                'confirm_password' => $confirm_password,
             );
             $rules = array(
                 'mobile' => 'regex:/^1\d{10}$/',
                 'password' => 'required|min:6|regex:/^[A-Za-z0-9@!#\$%\^&\*]+$/',
-                'confirm_password' => 'same:password'
+                'confirm_password' => 'same:password',
             );
             $message = array(
                 'regex'    => ':attribute 格式错误',
@@ -838,8 +851,8 @@ class MemberService
      */
     private function checkFansUid($fansModel, $userInfo)
     {
-        if ($fansModel && 0 == $fansModel->uid) {
-            $member_id = SubMemberModel::getMemberId($userInfo['opneid']);
+        if ($fansModel && (0 == $fansModel->uid || 1 == $fansModel->uid)) {
+            $member_id = SubMemberModel::getMemberId($userInfo['openid']);
 
             if (!is_null($member_id)) {
                 $fansModel->uid = $member_id;
