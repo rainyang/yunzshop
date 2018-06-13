@@ -26,7 +26,9 @@ class PayTypeController extends BaseController
                 'need_password' => $paymentType->needPassword(),
             ];
         })->each(function($item, $key) use (&$buttons) {
-            $buttons[] = $item;
+            if ($item['value'] != 14) {
+                $buttons[] = $item;
+            }
         });
 
         $data = ['buttons' => $buttons];
