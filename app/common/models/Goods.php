@@ -205,8 +205,15 @@ class Goods extends BaseModel
                     $query->where('brand_id', $value);
                     break;
                 case 'product_attr':
+                    $value = explode(',', rtrim($value, ','));
                     foreach ($value as $attr) {
-                        $query->where($attr, 1);
+                        if ($attr == 'limit_buy') {
+                            $query->whereHas('hasOneGoodsLimitBuy', function ($q) {
+                                $q->where('status', 1);
+                            });
+                        } else {
+                            $query->where($attr, 1);
+                        }
                     }
                     break;
                 case 'status':
