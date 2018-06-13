@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         'app\console\Commands\UpdateVersion',
         'app\console\Commands\RepairWithdraw',
+        'app\console\Commands\WechatOpen',
     ];
 
     /**
