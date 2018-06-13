@@ -102,6 +102,9 @@ class Goods extends BaseModel
         return $this->hasMany('app\common\models\GoodsCategory', 'goods_id', 'id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function hasManyGoodsDiscount()
     {
         return $this->hasMany('app\common\models\GoodsDiscount');
@@ -163,12 +166,17 @@ class Goods extends BaseModel
         return $this->hasOne('app\common\models\goods\GoodsCoupon', 'goods_id', 'id');
     }
 
+    public function hasOneGoodsLimitBuy()
+    {
+        return $this->hasOne('app\common\models\goods\GoodsLimitBuy', 'goods_id', 'id');
+    }
+
     public function scopeIsPlugin($query)
     {
         return $query->where('is_plugin', 0);
     }
 
-    public function scopeSearch($query, $filters)
+    public function scopeSearch(Builder $query, $filters)
     {
         $query->uniacid();
 
@@ -182,6 +190,14 @@ class Goods extends BaseModel
                     $category[] = ['id' => $value * 1];
                     $query->with("")->where('category_id', $category);
                     break;*/
+                //新加过滤搜索
+                case 'filtering':
+                    $scope = explode(',', rtrim($value, ','));
+                    $query->join('yz_goods_filtering', function ($join) use ($scope) {
+                        $join->on('yz_goods_filtering.goods_id', '=', 'yz_goods.id')
+                            ->whereIn('yz_goods_filtering.filtering_id', $scope);
+                    });
+                    break;
                 case 'keyword':
                     $query->where('title', 'LIKE', "%{$value}%");
                     break;
@@ -189,8 +205,15 @@ class Goods extends BaseModel
                     $query->where('brand_id', $value);
                     break;
                 case 'product_attr':
+                    $value = explode(',', rtrim($value, ','));
                     foreach ($value as $attr) {
-                        $query->where($attr, 1);
+                        if ($attr == 'limit_buy') {
+                            $query->whereHas('hasOneGoodsLimitBuy', function ($q) {
+                                $q->where('status', 1);
+                            });
+                        } else {
+                            $query->where($attr, 1);
+                        }
                     }
                     break;
                 case 'status':
@@ -285,6 +308,7 @@ class Goods extends BaseModel
             ->where('title', 'like', '%' . $keyword . '%')
             ->where('status', 1)
             //->where('is_plugin', 0)
+            ->whereNotIn('plugin_id', [20,31,60])//屏蔽门店、码上点餐、第三方插件接口的虚拟商品
             ->get();
     }
 

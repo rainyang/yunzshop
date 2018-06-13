@@ -181,7 +181,7 @@ class MemberRelationController extends BaseController
             }
         }
 
-        $temp_list = MessageTemp::select('id', 'title')->get();
+        $temp_list = MessageTemp::getList();
 
         return view('member.relation-base', [
             'banner'  => tomedia($info['banner']),

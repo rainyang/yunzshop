@@ -19,7 +19,7 @@ class RefundApply extends BaseModel
     protected $fillable = [];
     protected $guarded = ['id'];
 
-    protected $appends = ['refund_type_name', 'status_name', 'button_models', 'is_refunded', 'is_refunding', 'is_refund_fail'];
+    protected $appends = ['refund_type_name', 'status_name', 'button_models', 'is_refunded', 'is_refunding', 'is_refund_fail', 'plugin_id'];
     protected $attributes = [
         'images' => '[]',
         'refund_proof_imgs' => '[]',
@@ -90,11 +90,14 @@ class RefundApply extends BaseModel
             ];
         }
         if ($this->status == self::WAIT_RETURN_GOODS) {
-            $result[] = [
-                'name' => '填写快递',
-                'api' => 'refund.send',
-                'value' => 2
-            ];
+
+            if(!($this->order->plugin_id == 40)) {
+                  $result[] = [
+                    'name' => '填写快递',
+                    'api' => 'refund.send',
+                    'value' => 2
+                ];
+            }
         }
         if ($this->status == self::WAIT_RECEIVE_RESEND_GOODS) {
             $result[] = [
@@ -118,7 +121,6 @@ class RefundApply extends BaseModel
             self::REFUND_TYPE_REFUND_MONEY => '退款',
             self::REFUND_TYPE_RETURN_GOODS => '退货',
             self::REFUND_TYPE_EXCHANGE_GOODS => '换货',
-
         ];
         return $mapping[$this->refund_type];
     }
@@ -171,6 +173,17 @@ class RefundApply extends BaseModel
         return $this->getStatusNameMapping()[$this->status];
     }
 
+    public function getIsPlugin($order_id) {
+        return \app\common\models\Order::where('id',$order_id)->select('is_plugin','plugin_id')->first();
+    }
+
+    public function getSupplierId($order_id) {
+        return \Yunshop\Supplier\common\models\SupplierOrder::where('order_id',$order_id)->value('supplier_id');
+    }
+
+    public function getStoreId($order_id) {
+        return \Yunshop\StoreCashier\common\models\StoreOrder::where('order_id',$order_id)->value('store_id');
+    }
 
     public function getIsRefundedAttribute()
     {
@@ -224,6 +237,14 @@ class RefundApply extends BaseModel
             return false;
         }
         return true;
+    }
+
+    //用于区分插件与商城订单
+    public function getPluginIdAttribute()
+    {
+        if ($this->order) {
+            return $this->order->plugin_id;
+        }
     }
 
     /**

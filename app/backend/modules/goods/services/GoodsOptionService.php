@@ -65,6 +65,8 @@ class GoodsOptionService
             $html .= '<th class="primary" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品编码</div><div class="input-group"><input type="text" class="form-control option_goodssn_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_goodssn\');"></a></span></div></div></th>';
             $html .= '<th class="danger" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品条码</div><div class="input-group"><input type="text" class="form-control option_productsn_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_productsn\');"></a></span></div></div></th>';
             $html .= '<th class="info" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">重量（克）</div><div class="input-group"><input type="text" class="form-control option_weight_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_weight\');"></a></span></div></div></th>';
+            $html .= '<th class="info" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">点击图片上传<br /> 推荐（100*100）</div></div></th>';
+
             $html .= '</tr></thead>';
 
             for ($m = 0; $m < $specs_len; $m++) {
@@ -112,7 +114,8 @@ class GoodsOptionService
                     "market_price" => "",
                     "weight" => "",
                     'virtual' => '',
-                    "red_price" => ''
+                    "red_price" => '',
+                    'thumb' => '',
                 ];
                 foreach ($options as $option) {
                     if ($ids === $option['specs']) {
@@ -128,6 +131,7 @@ class GoodsOptionService
                             "weight" => $option['weight'],
                             'virtual' => $option['virtual'],
                             'red_price' => $option['red_price'],
+                            'thumb' => $option['thumb'],
                             //'option_ladder' => unserialize($o['option_ladders'])
                         ];
                         break;
@@ -152,6 +156,9 @@ class GoodsOptionService
                 $hh .= '<td class="primary"><input name="option_goodssn_' . $ids . '[]" type="text" class="form-control option_goodssn option_goodssn_' . $ids . '" " value="' . $val['goods_sn'] . '"/></td>';
                     $hh .= '<td class="danger"><input name="option_productsn_' . $ids . '[]" type="text" class="form-control option_productsn option_productsn_' . $ids . '" " value="' . $val['product_sn'] . '"/></td>';
                 $hh .= '<td class="info"><input name="option_weight_' . $ids . '[]" type="text" class="form-control option_weight option_weight_' . $ids . '" " value="' . $val['weight'] . '"/></td>';
+
+                $hh .= '<td class="info"><div class="input-group"><input name="option_thumb_'.$ids.'[]" type="hidden" class="option_thumb_'.$ids.'" url="'.tomedia($val['thumb']).'" value="'.tomedia($val['thumb']).'"/><span><button style="display:none" class="btn btn-default" onclick="showImageDialog(this);" type="button">上传图片</button></span></div><div class="input-group" onclick="tu(this)" style="margin-top:.5em;"><img src="'.tomedia($val['thumb']).'" onerror="this.src=\''.static_url('./resource/images/nopic.jpg').'\'; this.title=\'图片未找到.\'" class="img-responsive img-thumbnail" style="width:50px;height:50px"></div></td>';
+
                 $hh .= '</tr>';
 
             }

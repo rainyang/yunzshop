@@ -68,8 +68,10 @@ class EditGoodsService
                 $goods_data['virtual_sales'] = 0;
             }
             $goods_data['has_option'] = $goods_data['has_option'] ? $goods_data['has_option'] : 0;
+            $goods_data['weight'] = $goods_data['weight'] ? $goods_data['weight'] : 0;
             //将数据赋值到model
             $goods_data['thumb'] = tomedia($goods_data['thumb']);
+
 
             if(isset($goods_data['thumb_url'])){
                 $goods_data['thumb_url'] = serialize(
@@ -84,13 +86,13 @@ class EditGoodsService
                 $category_model->delete();
             }
             GoodsService::saveGoodsCategory($this->goods_model, \YunShop::request()->category, Setting::get('shop.category'));
-
+/*
             if (!empty($this->request->widgets['sale']['max_point_deduct'])
                 && !empty($goods_data['price'])
                 && $this->request->widgets['sale']['max_point_deduct'] > $goods_data['price']) {
                 return ['status' => -1, 'msg' => '积分抵扣金额大于商品现价'];
             }
-
+*/
             $this->goods_model->setRawAttributes($goods_data);
             $this->goods_model->widgets = $this->request->widgets;
             //其他字段赋值

@@ -34,6 +34,15 @@ return [
             'title' => '优惠券',
             'class' => 'app\backend\widgets\goods\CouponWidget'
         ],
+        'tb_limitbuy' => [
+            'title' => '限时购',
+            'class' => 'app\backend\widgets\goods\LimitBuyWidget'
+        ],
+        'tab_filtering' => [
+            'title' => '商品标签',
+            'class' => 'app\backend\widgets\goods\FilteringWidget'
+        ],
+
     ],
     'withdraw' => [
         'income' => [

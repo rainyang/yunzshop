@@ -24,7 +24,7 @@ class UnifyOrderDispatchPrice
             return;
         }
         // 统一运费取所有商品统一运费的最大值
-        $price = $event->getOrderModel()->getOrderGoodsModels()->max(function ($orderGoods) {
+        $price = $event->getOrderModel()->getOrderGoodsModels()->unique('goods_id')->max(function ($orderGoods) {
             /**
              * @var $orderGoods OrderGoods
              */

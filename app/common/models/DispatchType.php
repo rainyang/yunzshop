@@ -8,7 +8,11 @@
 
 namespace app\common\models;
 
-
+/**
+ * Class DispatchType
+ * @package app\common\models
+ * @property int need_send
+ */
 class DispatchType extends BaseModel
 {
     public $table = 'yz_dispatch_type';

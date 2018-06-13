@@ -11,6 +11,11 @@ namespace app\common\models;
 
 use app\common\exceptions\ShopException;
 
+/**
+ * Class OrderAddress
+ * @package app\common\models
+ * @property int city_id
+ */
 class OrderAddress extends BaseModel
 {
     public $table = 'yz_order_address';

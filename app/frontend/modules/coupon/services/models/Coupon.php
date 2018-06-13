@@ -147,6 +147,8 @@ class Coupon
      */
     public function getDiscountAmount()
     {
+        $this->setOrderGoodsDiscountPrice();
+
         return $this->price->getPrice();
     }
 
@@ -155,20 +157,25 @@ class Coupon
      */
     public function activate()
     {
+        if ($this->getMemberCoupon()->selected) {
+            return;
+        }
         //记录优惠券被选中了
         $this->getMemberCoupon()->selected = 1;
+        $this->getMemberCoupon()->used = 1;
+        //dump($this->getMemberCoupon());
 
         // todo 订单优惠券使用记录暂时加在这里,优惠券部分需要重构
         $preOrderCoupon = new PreOrderCoupon([
-            'coupon_id'=>$this->memberCoupon->coupon_id,
-            'member_coupon_id'=>$this->memberCoupon->id,
-            'name'=>$this->memberCoupon->belongsToCoupon->name,
-            'amount'=>$this->getDiscountAmount()
-
+            'coupon_id' => $this->memberCoupon->coupon_id,
+            'member_coupon_id' => $this->memberCoupon->id,
+            'name' => $this->memberCoupon->belongsToCoupon->name,
+            'amount' => $this->getDiscountAmount()
         ]);
+        $preOrderCoupon->setRelation('memberCoupon', $this->memberCoupon);
+        $preOrderCoupon->coupon = $this;
         $preOrderCoupon->setOrder($this->order);
 
-        $this->setOrderGoodsDiscountPrice();
     }
 
     /**
@@ -213,6 +220,10 @@ class Coupon
      */
     public function unique()
     {
+        //允许多张使用
+        if ($this->getMemberCoupon()->belongsToCoupon->is_complex) {
+            return true;
+        }
         $memberCoupons = MemberCouponService::getCurrentMemberCouponCache($this->getPreOrder()->belongsToMember);
         //本优惠券与某个选中的优惠券是一张 就返回false
         return !$memberCoupons->contains(function ($memberCoupon) {
@@ -274,14 +285,4 @@ class Coupon
         return true;
     }
 
-    /**
-     * 记录优惠券已使用
-     * @return bool
-     */
-    public function destroy()
-    {
-        $memberCoupon = $this->memberCoupon->fresh();
-        $memberCoupon->used = 1;
-        return $memberCoupon->save();
-    }
 }

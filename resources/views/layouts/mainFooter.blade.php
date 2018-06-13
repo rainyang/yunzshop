@@ -26,6 +26,7 @@
   <script type="text/javascript">
     var checkUrl = "{!! yzWebUrl('update.check') !!}";
     var todoUrl = "{!! yzWebUrl('update.index') !!}";
+    var pirateUrl = "{!! yzWebFullUrl('update.pirate') !!}";
     function check_yun_shop_upgrade() {
       require(['util'], function (util) {
         if (util.cookie.get('check_yun_shop_upgrade')) {
@@ -33,6 +34,10 @@
         }
 
         $.post(checkUrl, function (result) {
+          if (-1 == result.updated) {
+              window.location.href = pirateUrl;
+          }
+
           if (result && result.updated != '0') {
              var html = '<div class="container" id="check_yun_shop_upgrade" style=" position: fixed;margin: auto;bottom: 0px;z-index: 999;">\
               <div class="row">\

@@ -12,11 +12,16 @@ namespace app\common\models;
 use app\backend\modules\goods\observers\SettingObserver;
 use app\common\exceptions\ShopException;
 use app\common\traits\ValidatorTrait;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class BaseModel
  * @package app\common\models
+ * @method static uniacid()
+ * @method static insert()
+ * @method static get()
+ * @method static set()
  */
 class BaseModel extends Model
 {
@@ -30,10 +35,10 @@ class BaseModel extends Model
      * @param $params
      * @return mixed
      */
-    public function scopeSearchLike($query, $params)
+    public function scopeSearchLike(Builder $query, $params)
     {
         $search_fields = $this->search_fields;
-        $query->where(function ($query) use ($params, $search_fields) {
+        $query->where(function (Builder $query) use ($params, $search_fields) {
             foreach ($search_fields as $search_field) {
                 $query->orWhere($search_field, 'like', '%' . $params . '%');
             }
@@ -61,8 +66,8 @@ class BaseModel extends Model
     /**
      * 避免转换时间戳为时间字符串
      *
-     * @param DateTime|int $value
-     * @return DateTime|int
+     * @param \DateTime|int $value
+     * @return \DateTime|int
      */
     public function fromDateTime($value)
     {
@@ -82,15 +87,17 @@ class BaseModel extends Model
 
     /**
      * 从数据库获取的为获取时间戳格式
-     *
-     * @return string
      */
     //public function getDateFormat() {
     //     return 'U';
     // }
 
-    //后台全局筛选统一账号scope
-    public function scopeUniacid($query)
+    /**
+     * 后台全局筛选统一账号scope
+     * @param Builder $query
+     * @return $this|Builder
+     */
+    public function scopeUniacid(Builder $query)
     {
         if(\YunShop::app()->uniacid === null){
             return $query;
@@ -141,7 +148,7 @@ class BaseModel extends Model
      * @param int $pluginId
      * @return mixed
      */
-    public function scopePluginId($query,$pluginId = 0)
+    public function scopePluginId(Builder $query,$pluginId = 0)
     {
         return $query->where('plugin_id', $pluginId);
     }
@@ -149,19 +156,19 @@ class BaseModel extends Model
     /**
      * 用来区分订单属于哪个.当插件需要查询自己的订单时,复写此方法
      * @param $query
-     * @param int $pluginId
+     * @param null $uid
      * @return mixed
      */
-    public function scopeUid($query,$uid = null)
+    public function scopeUid(Builder $query,$uid = null)
     {
         if(!isset($uid)){
             $uid = \YunShop::app()->getMemberId();
         }
         return $query->where('uid', $uid);
     }
-    public function scopeMine($query)
+    public function scopeMine(Builder $query)
     {
-        return $query->whereUid(\YunShop::app()->getMemberId());
+        return $query->where('uid',\YunShop::app()->getMemberId());
     }
     protected static function boot()
     {

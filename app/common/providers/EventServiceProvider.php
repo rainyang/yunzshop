@@ -19,6 +19,7 @@ use app\frontend\modules\member\listeners\MemberLevelValidity;
 use app\frontend\modules\order\listeners\orderListener;
 use app\frontend\modules\coupon\listeners\CouponExpireNotice;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use app\backend\modules\goods\listeners\LimitBuy;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -28,12 +29,8 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        \app\common\events\discount\OrderGoodsDiscountWasCalculated::class => [ //商品优惠计算
-        ],
-        \app\common\events\discount\OrderDiscountWasCalculated::class => [ //订单优惠计算
-            \app\frontend\modules\order\listeners\discount\TestOrderDiscount::class, //立减优惠
-        ],
-        \app\common\events\dispatch\OrderDispatchWasCalculated::class => [ //订单邮费计算
+        \app\common\events\dispatch\OrderDispatchWasCalculated::class => [
+            //订单邮费计算
             \app\frontend\modules\dispatch\listeners\prices\UnifyOrderDispatchPrice::class, //统一运费
             \app\frontend\modules\dispatch\listeners\prices\TemplateOrderDispatchPrice::class, //模板运费
 
@@ -64,7 +61,6 @@ class EventServiceProvider extends ServiceProvider
         SendMessageEvent::class => [
 
         ],
-
     ];
     /**
      * 注册监听着类
@@ -98,6 +94,7 @@ class EventServiceProvider extends ServiceProvider
         CouponExpireNotice::class,
         CouponSend::class,
         MemberLevelValidity::class,
+        LimitBuy::class,
     ];
 
     /**

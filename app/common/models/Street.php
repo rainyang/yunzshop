@@ -17,6 +17,8 @@ class Street extends BaseModel
 
     protected $fillable = [''];
 
+    public $timestamps = false;
+    
 
     public static function getStreetByParentId($parentId)
     {

@@ -22,6 +22,7 @@ class Category extends \app\common\models\Category
     {
         return self::uniacid()
             ->orderBy('id', 'asc')
+            ->where('plugin_id',0)
             ->get();
     }
 
