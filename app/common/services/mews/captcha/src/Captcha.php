@@ -1,6 +1,5 @@
 <?php
-
-namespace app\common\services\Mews\Captcha;
+namespace app\common\services\mews\captcha\src;
 
 /**
  * Laravel 5 Captcha package
