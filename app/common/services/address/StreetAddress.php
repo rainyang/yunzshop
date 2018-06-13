@@ -311,12 +311,10 @@ class StreetAddress
 
 
     //验证街道是否存在
-    // public function verification(array $street)
-    // {
-
-    //     \app\common\models\Street::updateOrCreate($street, $street);
-        
-    //     \app\common\models\Street::firstOrCreate($street);
-        
-    // }
+    public function verification(array $street)
+    {
+        $aaa = \app\common\models\Street::where($str)->first();
+        if (!is_null($aaa)) return;
+        \app\common\models\Street::insert($str);
+    }
 }
