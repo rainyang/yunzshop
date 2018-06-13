@@ -31,15 +31,20 @@ class TestController extends BaseController
 {
     public function index()
     {
-        Goods::whereIn('id',CashierGoods::pluck('goods_id'))->update(['plugin_id'=>31]);
-        $orders = Order::where('plugin_id',31)->whereBetween('status',[1,2])->get()->each(function($order){
-            $order->is_virtual= 1;
-            $order->dispatch_type_id = 0;
-            $order->save();
-            OrderService::orderSend(['order_id' => $order->id]);
-            $result = OrderService::orderReceive(['order_id' => $order->id]);
-        });
-        $order = \app\common\models\Goods::where('plugin_id','31')->where('type',1)->update(['type'=>2]);
+        if(app('plugins')->isEnabled('store-cashier')){
+            Goods::whereIn('id',CashierGoods::pluck('goods_id'))->update(['plugin_id'=>31]);
+            $orders = Order::where('plugin_id',31)->whereBetween('status',[1,2])->get()->each(function($order){
+                $order->is_virtual= 1;
+                $order->dispatch_type_id = 0;
+                $order->save();
+                OrderService::orderSend(['order_id' => $order->id]);
+                $result = OrderService::orderReceive(['order_id' => $order->id]);
+            });
+            $order = \app\common\models\Goods::where('plugin_id','31')->where('type',1)->update(['type'=>2]);
+            echo 'ok';
+        }
+
+
 
     }
 
