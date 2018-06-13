@@ -25,7 +25,6 @@ class Goods extends BaseModel
     public $attributes = ['display_order' => 0];
     protected $mediaFields = ['thumb', 'thumb_url'];
     protected $dates = ['deleted_at'];
-
     public $fillable = [];
 
     protected $guarded = ['widgets'];
@@ -301,6 +300,24 @@ class Goods extends BaseModel
             ->where('title', 'like', '%' . $keyword . '%')
             ->where('status', 1)
             //->where('is_plugin', 0)
+            ->whereNotIn('plugin_id', [20,31,60])//屏蔽门店、码上点餐、第三方插件接口的虚拟商品
+            ->get();
+    }/**
+     * @param $keyword
+     * @return mixed
+     */
+    public static function getGoodsByNameForLimitBuy($keyword)
+    {
+
+        return static::uniacid()->select('id', 'title', 'thumb', 'market_price', 'price', 'real_sales', 'sku','plugin_id','stock')
+            ->where('title', 'like', '%' . $keyword . '%')
+            ->where('status', 1)
+            ->with(['hasOneGoodsLimitBuy' => function ($query) {
+                 return $query->where('status',1)->select('goods_id', 'start_time', 'end_time');
+            }])
+            ->whereHas('hasOneGoodsLimitBuy', function ($query) {
+                return $query->where('status',1);
+            })
             ->whereNotIn('plugin_id', [20,31,60])//屏蔽门店、码上点餐、第三方插件接口的虚拟商品
             ->get();
     }
