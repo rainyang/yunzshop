@@ -116,9 +116,5 @@ class AppServiceProvider extends ServiceProvider
                 $app['Illuminate\Support\Str']
             );
         });
-
-//        App::bind(\Illuminate\Session\Store::class,function(){
-//            return new Session();
-//        });
     }
 }
