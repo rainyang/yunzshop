@@ -39,7 +39,7 @@ return [
             'class' => 'app\backend\widgets\goods\LimitBuyWidget'
         ],
         'tab_filtering' => [
-            'title' => '搜索过滤',
+            'title' => '商品标签',
             'class' => 'app\backend\widgets\goods\FilteringWidget'
         ],
 
