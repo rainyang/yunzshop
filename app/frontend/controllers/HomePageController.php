@@ -117,6 +117,7 @@ class HomePageController extends ApiController
             }
         }
 
+        
         //如果安装了装修插件并开启插件
         if(app('plugins')->isEnabled('designer')){
             //系统信息
