@@ -11,6 +11,7 @@ namespace app\backend\controllers;
 
 use app\common\components\BaseController;
 use app\common\events\order\AfterOrderReceivedEvent;
+use app\common\models\Goods;
 use app\common\models\Member;
 use app\common\models\Order;
 use app\common\models\OrderPay;
@@ -24,13 +25,26 @@ use app\frontend\modules\member\models\SubMemberModel;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\services\behavior\OrderReceive;
 use app\frontend\modules\order\services\OrderService;
+use Yunshop\StoreCashier\common\models\CashierGoods;
 
 class TestController extends BaseController
 {
     public function index()
     {
-        dd(json_encode(request()->input(),256));
-        exit;
+        if(app('plugins')->isEnabled('store-cashier')){
+            Goods::whereIn('id',CashierGoods::pluck('goods_id'))->update(['plugin_id'=>31]);
+            $orders = Order::where('plugin_id',31)->whereBetween('status',[1,2])->get()->each(function($order){
+                $order->is_virtual= 1;
+                $order->dispatch_type_id = 0;
+                $order->save();
+                OrderService::orderSend(['order_id' => $order->id]);
+                $result = OrderService::orderReceive(['order_id' => $order->id]);
+            });
+            $order = \app\common\models\Goods::where('plugin_id','31')->where('type',1)->update(['type'=>2]);
+            echo 'ok';
+        }
+
+
 
     }
 

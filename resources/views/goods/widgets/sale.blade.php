@@ -162,7 +162,7 @@
     <ul id="push_goods_li">
         @if ( $item->is_push == 1 )
             @foreach ($item->push_goods_ids as $pushgoods)
-             <li class="input-group form-group col-sm-3" style="float:left;margin: 10px 100px 30px 0;">
+             <li id="push_goods_{{$pushgoods['id']}}" class="input-group form-group col-sm-3" style="float:left;margin: 10px 100px 30px 0;">
                 <input type="hidden" name="widgets[sale][push_goods_ids][]" value="{{$pushgoods['id']}}">
                 <span class="input-group-addon" style="border-left:1px solid #ccc;">{{$pushgoods['title']}}</span>
                 <span class="input-group-addon" onclick="push_goods_ids_del(this);" style="background: white;cursor:pointer;">X</span>
@@ -237,10 +237,12 @@
     //选择商品
     function select_good(obj) {
 
-        var str = '<li class="input-group form-group col-sm-3" style="float:left;margin: 10px 100px 30px 0;"><input type="hidden" name="widgets[sale][push_goods_ids][]" value="'+ obj.id +'"><span class="input-group-addon" style="border-left:1px solid #ccc;">'+ obj.title +'</span><span class="input-group-addon" onclick="push_goods_ids_del(this);" style="background: white;cursor:pointer;">X</span></li>';
+        if (!($("#push_goods_"+obj.id).length > 0)) {            
+            
+            var str = '<li id="push_goods_'+obj.id+'" class="input-group form-group col-sm-3" style="float:left;margin: 10px 100px 30px 0;"><input type="hidden" name="widgets[sale][push_goods_ids][]" value="'+ obj.id +'"><span class="input-group-addon" style="border-left:1px solid #ccc;">'+ obj.title +'</span><span class="input-group-addon" onclick="push_goods_ids_del(this);" style="background: white;cursor:pointer;">X</span></li>';
 
-        $('#push_goods_li').append(str);
-
+            $('#push_goods_li').append(str);
+        }
         $("#modal-goods-push .close").click();
     }
 </script>
