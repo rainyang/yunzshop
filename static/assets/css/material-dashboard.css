@@ -11395,7 +11395,7 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
 
 .navbar .navbar-minimize {
     float: left;
-    padding: 3px 0 0 15px;
+    padding: 15px 0 0 15px;
 }
 
 .navbar .notification {
