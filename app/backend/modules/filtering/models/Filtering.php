@@ -32,6 +32,18 @@ class Filtering extends SearchFiltering
 
     }
 
+    //获取搜索标签组
+    public static function searchFilterGroup($search, $parent_id = 0)
+    {
+      return  self::where('parent_id', $parent_id)->where('name', 'LIKE', "%{$search}%")->get();
+    }
+
+    public static function categoryLabel($ids, $parent_id = 0)
+    {
+      return self::where('parent_id', $parent_id)->whereIn('id', $ids);
+    }
+
+
       /**
      * @param $id
      * @return mixed
@@ -50,7 +62,7 @@ class Filtering extends SearchFiltering
      */
     public function atributeNames() {
         return [
-            'name' => '过滤名称',
+            'name' => '标签名称',
         ];
     }
 

@@ -105,6 +105,7 @@ class AppServiceProvider extends ServiceProvider
             return new Setting();
         });
 
+<<<<<<< HEAD
         // Bind captcha
         $this->app->bind('captcha', function($app)
         {
@@ -116,5 +117,11 @@ class AppServiceProvider extends ServiceProvider
                 $app['Illuminate\Support\Str']
             );
         });
+=======
+//        App::bind(\Illuminate\Session\Store::class,function(){
+//            return new Session();
+//        });
+
+>>>>>>> cf11ad927faceca844484fc62b07d5a3fa904ff9
     }
 }

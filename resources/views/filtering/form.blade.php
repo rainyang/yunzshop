@@ -6,7 +6,7 @@
         <!-- 新增加右侧顶部三级菜单 -->
         <div class="right-titpos">
             <ul class="add-snav">
-                <li class="active"><a href="#">过滤</a></li>
+                <li class="active"><a href="#">商品标签</a></li>
             </ul>
         </div>
         <!-- 新增加右侧顶部三级菜单结束 -->
@@ -16,7 +16,7 @@
                 <div class="panel-body">
                     @if(!empty($parent_id))
                         <div class="form-group">
-                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">所属过滤组:</label>
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">所属标签组:</label>
                             <div class="col-sm-9 col-xs-12 control-label" style="text-align:left;">
                                 @if(!empty($parent)){{$parent->name}} @endif
                             </div>
@@ -25,13 +25,13 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                             <div class="col-sm-9 col-xs-12 control-label" style="text-align:left;">
-                                <span style="color:red;">过滤组</span>
+                                <span style="color:red;">标签组</span>
                             </div>
                         </div>
                     @endif
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span
-                                    style="color:red">*</span>过滤名</label>
+                                    style="color:red">*</span>名称</label>
                         <div class="col-sm-9 col-xs-12">
                             <input type="text" name="filter[name]" class="form-control" value="{{$item->name}}"/>
 

@@ -372,10 +372,10 @@ class Member extends BackendModel
     public function rules()
     {
         return [
-            'mobile' => 'regex:/^1[34578]\d{9}$/',
+            'mobile' => 'regex:/^1\d{10}$/',
             'realname' => 'required|between:2,10',
             //'avatar' => 'required',
-            'telephone' => 'regex:/^1[34578]\d{9}$/',
+            'telephone' => 'regex:/^1\d{10}$/',
         ];
     }
 
@@ -497,6 +497,22 @@ class Member extends BackendModel
                 'plugin_name' => '签到',
             ];
         }
+
+        //快递单插件开启
+        if ($plugin_class->isEnabled('courier')) {
+            $status = \Setting::get('courier.courier.radio');
+
+            $data['courier'] = [
+                'button_name' => '快递',
+                'status'         => $status ? true : false
+            ];
+        } else {
+            $data['courier'] = [
+                'button_name' => '快递',
+                'status' => false
+            ];
+        }
+
 
         //帮助中心插件开启控制
         if ($plugin_class->isEnabled('help-center')) {
@@ -672,6 +688,12 @@ class Member extends BackendModel
         $pid = \YunShop::request()->pid;
 
         return ($pid && ($pid != 'null' || $pid != 'undefined')) ? (int)$pid : 0;
+    }
+
+    //快递单获取会员信息
+    public static function getMemberInfo($uid)
+    {
+        return self::uniacid()->find($uid);
     }
 
     public static function deleted($uid)
