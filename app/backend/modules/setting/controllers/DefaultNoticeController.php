@@ -43,6 +43,9 @@ class DefaultNoticeController extends BaseController
             }
             $template_data = $this->TemplateModel->getData($template_id_short);
             if (!$template_data->template_id) {
+                if ($template_data) {
+                    $template_data->delete();
+                }
                 $template_id = $this->WechatApiModel->getTemplateIdByTemplateIdShort($template_id_short);
                 if (empty($template_id)) {
                     echo json_encode([
