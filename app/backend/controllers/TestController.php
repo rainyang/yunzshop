@@ -17,19 +17,22 @@ use app\frontend\modules\order\services\OrderService;
 
 class TestController extends BaseController
 {
+    public $transactionActions=['*'];
     public function index()
     {
-        $orders = Order::where('plugin_id',31)->whereBetween('status',[1,2])->get()->each(function($order){
-            $order->is_virtual= 1;
-            $order->dispatch_type_id = 0;
-            $order->save();
-            OrderService::orderSend(['order_id' => $order->id]);
-            $result = OrderService::orderReceive(['order_id' => $order->id]);
-        });
-        dd($orders);
+        $statusFlow = \app\common\models\StatusFlow::create([
+            'name' => '订单汇款支付',
+            'code' => 'orderRemittance',
+            'plugin_id' => 0,
+        ]);
+        $status[] = \app\common\models\Status::create([
+            'name' => '订单汇款支付',
+            'code' => 'orderRemittance.',
+            'plugin_id' => 0,
+        ]);
+        dd($statusFlow);
         exit;
 
-        exit;
     }
 
     public function op_database()

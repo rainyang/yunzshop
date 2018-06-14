@@ -17,7 +17,6 @@ class PointGoodsDeductionSetting implements DeductionSettingInterface
     {
         return 10;
     }
-
     /**
      * @var \app\frontend\models\goods\Sale
      */

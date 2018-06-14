@@ -70,11 +70,13 @@ class CreateStatusFlowTable extends Migration
                     ->on('yz_status')
                     ->onDelete('cascade');
             });
-        }if (!Schema::hasTable('yz_order_status_flow')) {
+        }
+        if (!Schema::hasTable('yz_order_status_flow')) {
             Schema::create('yz_order_status_flow', function(Blueprint $table) {
                 $table->integer('id', true);
                 $table->integer('order_id');
-                $table->integer('status_id');
+                $table->integer('status_flow_id');
+                $table->enum('state',['canceled','processing','completed']);
                 $table->integer('created_at')->nullable();
                 $table->integer('updated_at')->nullable();
                 $table->integer('deleted_at')->nullable();
@@ -82,7 +84,7 @@ class CreateStatusFlowTable extends Migration
                     ->references('id')
                     ->on('yz_order')
                     ->onDelete('cascade');
-                $table->foreign('status_id')
+                $table->foreign('status_flow_id')
                     ->references('id')
                     ->on('yz_status')
                     ->onDelete('cascade');
