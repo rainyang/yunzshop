@@ -9,6 +9,7 @@
 namespace app\frontend\modules\member\controllers;
 
 use app\common\components\ApiController;
+use app\common\facades\Setting;
 use app\common\helpers\Client;
 use app\common\helpers\Url;
 use app\common\models\Member;
@@ -17,8 +18,8 @@ use app\frontend\modules\member\services\factory\MemberFactory;
 class LoginController extends ApiController
 {
     protected $publicController = ['Login'];
-    protected $publicAction = ['index'];
-    protected $ignoreAction = ['index'];
+    protected $publicAction = ['index', 'phoneSetGet'];
+    protected $ignoreAction = ['index', 'phoneSetGet'];
 
     public function index()
     {
@@ -71,5 +72,15 @@ class LoginController extends ApiController
     private function init_login () {
         $weixin_oauth = \Setting::get('shop_app.pay.weixin_oauth');
         return $this->successJson('', ['status'=> 1, 'wetach_login' => $weixin_oauth]);
+    }
+
+    public function phoneSetGet()
+    {
+        $phone_oauth = \Setting::get('shop_app.pay.phone_oauth');
+
+        if (empty($phone_oauth)) {
+            $phone_oauth = '0';
+        }
+        return $this->successJson('ok', ['phone_oauth' => $phone_oauth]);
     }
 }

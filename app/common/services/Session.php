@@ -80,6 +80,7 @@ class Session
     {
         self::clear($name);
     }
+
     public static function has($name)
     {
         if(strpos($name,'.')){
@@ -98,5 +99,10 @@ class Session
             return false;
         }
         return true;
+    }
+
+    public static function flash($key, $value)
+    {
+        self::put($key, $value);
     }
 }
