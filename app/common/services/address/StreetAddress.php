@@ -298,23 +298,53 @@ class StreetAddress
             'parentid' => 330600,
             'level'    => 3,
             'street'   => ['马鞍镇','安昌镇','稽东镇','夏履镇','杨汛桥镇','钱清镇','福全镇','平水镇','王坛镇','兰亭镇','齐贤镇','漓渚镇','城区']
-            //
         ],
 
     ];
 
+    private $street_v2 = [
+        [
+            'areaname' => '光明新区',    //广州省-深圳市-光明新区
+            'parentid' => 440300,
+            'level'    => 3,
+            'street'   => ['光明街道','公明街道','新湖街道','凤凰街道','玉塘街道','马田街道']
+        ],
+        [
+            'areaname' => '坪山新区',    //广州省-深圳市-坪山新区
+            'parentid' => 440300,
+            'level'    => 3,
+            'street'   => ['坪山街道','马峦街道','碧岭街道','石井街道','坑梓街道','龙田街道']
+        ],
+        [
+            'areaname' => '大鹏新区',    //广州省-深圳市-大鹏新区
+            'parentid' => 440300,
+            'level'    => 3,
+            'street'   => ['大鹏街道','南澳街道','葵涌街道']
+        ],
+        [
+            'areaname' => '龙华新区',    //广州省-深圳市-龙华新区
+            'parentid' => 440300,
+            'level'    => 3,
+            'street'   => ['观湖街道','观澜街道','大浪街道','龙华街道','福城街道','民治街道', '测试哈哈哈']
+        ],
+    ];
 
     public function getStreetV1()
     {
         return $this->street_v1;
     }
 
+     public function getStreetV2()
+    {
+        return $this->street_v2;
+    }
 
     //验证街道是否存在
-    public function verification(array $street)
+    public static function verification($street)
     {
-        $aaa = \app\common\models\Street::where($str)->first();
-        if (!is_null($aaa)) return;
-        \app\common\models\Street::insert($str);
+        $aaa = \app\common\models\Street::where($street)->first();
+        if (is_null($aaa)) {
+            \app\common\models\Street::insert($street);
+        }
     }
 }
