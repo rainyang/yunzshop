@@ -208,11 +208,6 @@ return [
         //拼音
         Overtrue\LaravelPinyin\ServiceProvider::class,
 
-<<<<<<< HEAD
-=======
-        //验证码
-//        Mews\Captcha\CaptchaServiceProvider::class,
->>>>>>> cf11ad927faceca844484fc62b07d5a3fa904ff9
     ],
 
     /*
@@ -282,12 +277,6 @@ return [
         'wechat' => Overtrue\LaravelWechat\Facade::class,
         //拼音
         'Pinyin' => Overtrue\LaravelPinyin\Facades\Pinyin::class,
-<<<<<<< HEAD
-
-=======
-        //验证码
-//        'Captcha' => Mews\Captcha\Facades\Captcha::class,
->>>>>>> cf11ad927faceca844484fc62b07d5a3fa904ff9
     ],
 
     'pay_type' => [
