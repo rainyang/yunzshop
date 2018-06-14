@@ -12,6 +12,7 @@ use app\backend\modules\member\models\MemberRelation;
 use app\backend\modules\order\models\Order;
 use app\common\components\ApiController;
 use app\common\facades\Setting;
+use app\common\helpers\Cache;
 use app\common\helpers\ImageHelper;
 use app\common\helpers\Url;
 use app\common\models\AccountWechats;
@@ -473,6 +474,10 @@ class MemberController extends ApiController
             }
 
             if ($member_model->save() && $member_shop_info_model->save()) {
+                if (Cache::has($member_model->uid . '_member_info')) {
+                    Cache::forget($member_model->uid . '_member_info');
+                }
+
                 return $this->successJson('用户资料修改成功');
             } else {
                 return $this->errorJson('更新用户资料失败');
@@ -521,6 +526,10 @@ class MemberController extends ApiController
             $member_model->password = md5($password . $salt);
 
             if ($member_model->save()) {
+                if (Cache::has($member_model->uid . '_member_info')) {
+                    Cache::forget($member_model->uid . '_member_info');
+                }
+
                 return $this->successJson('手机号码绑定成功');
             } else {
                 return $this->errorJson('手机号码绑定失败');
