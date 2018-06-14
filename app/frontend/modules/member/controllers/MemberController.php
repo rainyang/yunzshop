@@ -518,6 +518,11 @@ class MemberController extends ApiController
                 $old_member = MemberModel::getId(\YunShop::app()->uniacid, $mobile);
             }
             if ($old_member) {
+                if ($old_member->uid == $member_model->uid) {
+                    \Log::debug('同步的会员uid相同:'.$old_member->uid);
+                    return $this->errorJson('手机号已绑定其他用户');
+                }
+
                 $bool = $this->synchro($member_model, $old_member);
                 if ($bool) {
                     return $this->successJson('信息同步成功');
