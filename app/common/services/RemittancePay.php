@@ -19,7 +19,7 @@ class RemittancePay extends Pay
     public function doPay($params = [])
     {
         $operation = '银行转账支付 订单号：' . $params['order_no'];
-        $this->log($params['extra']['type'], '货到付款', $params['amount'], $operation, $params['order_no'], Pay::ORDER_STATUS_NON, \YunShop::app()->getMemberId());
+        $this->log($params['extra']['type'], '银行转账支付', $params['amount'], $operation, $params['order_no'], Pay::ORDER_STATUS_NON, \YunShop::app()->getMemberId());
 
         self::payRequestDataLog($params['order_no'], $params['extra']['type'], '银行转账', json_encode($params));
 
@@ -31,7 +31,7 @@ class RemittancePay extends Pay
             $pay_order_model->third_type = '银行转账';
             $pay_order_model->save();
         }
-
+        // todo 从设置中获取
         $payeeInfo = [
             [   'title'=>'户名',
                 'text'=>'沈阳京东世纪贸易有限公司'

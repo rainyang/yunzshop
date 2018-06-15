@@ -13,87 +13,84 @@ class CreateStatusFlowTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('yz_status_flow')) {
-            Schema::create('yz_status_flow', function(Blueprint $table) {
+        if (!Schema::hasTable('yz_flow')) {
+            Schema::create('yz_flow', function (Blueprint $table) {
                 $table->integer('id', true);
-                $table->string('name',255);
-                $table->string('code',100);
-                $table->integer('plugin_id');
+                $table->string('name');
+                $table->string('code');
+                $table->integer('plugin_id')->default(0);;
                 $table->integer('created_at')->nullable();
                 $table->integer('updated_at')->nullable();
                 $table->integer('deleted_at')->nullable();
+            });
+        }
+        if (!Schema::hasTable('yz_state')) {
+            Schema::create('yz_state', function (Blueprint $table) {
+                $table->integer('id', true);
+                $table->string('name');
+                $table->string('code');
+                $table->integer('plugin_id')->default(0);;
+                $table->integer('created_at')->nullable();
+                $table->integer('updated_at')->nullable();
+                $table->integer('deleted_at')->nullable();
+            });
+        }
+        if (!Schema::hasTable('yz_flow_state')) {
+            Schema::create('yz_flow_state', function (Blueprint $table) {
+                $table->integer('id', true);
+                $table->integer('state_id');
+                $table->integer('flow_id');
+                $table->integer('plugin_id')->default(0);;
+
+                $table->integer('created_at')->nullable();
+                $table->integer('updated_at')->nullable();
+                $table->integer('deleted_at')->nullable();
+                $table->foreign('state_id')
+                    ->references('id')
+                    ->on('yz_state')
+                    ->onDelete('cascade');
+                $table->foreign('flow_id')
+                    ->references('id')
+                    ->on('yz_flow')
+                    ->onDelete('cascade');
             });
         }
         if (!Schema::hasTable('yz_status')) {
-            Schema::create('yz_status', function(Blueprint $table) {
+            Schema::create('yz_status', function (Blueprint $table) {
                 $table->integer('id', true);
-                $table->string('name',255);
-                $table->string('code',100);
-                $table->integer('plugin_id');
+                $table->integer('model_id');
+                $table->string('model_type');
+                $table->integer('state_id');
+
                 $table->integer('created_at')->nullable();
                 $table->integer('updated_at')->nullable();
                 $table->integer('deleted_at')->nullable();
+                $table->foreign('state_id')
+                    ->references('id')
+                    ->on('yz_state')
+                    ->onDelete('cascade');
             });
         }
-        if (!Schema::hasTable('yz_status_flow_status')) {
-            Schema::create('yz_status_flow_status', function(Blueprint $table) {
+        if (!Schema::hasTable('yz_process')) {
+            Schema::create('yz_process', function (Blueprint $table) {
                 $table->integer('id', true);
-                $table->integer('status_id');
-                $table->integer('status_flow_id');
+                $table->integer('model_id');
+                $table->string('model_type');
+                $table->integer('flow_id');
+                $table->enum('state', ['processing', 'completed', 'canceled']);
+
                 $table->integer('created_at')->nullable();
                 $table->integer('updated_at')->nullable();
                 $table->integer('deleted_at')->nullable();
-                $table->foreign('status_id')
+
+                $table->foreign('flow_id')
                     ->references('id')
-                    ->on('yz_status')
-                    ->onDelete('cascade');
-                $table->foreign('status_flow_id')
-                    ->references('id')
-                    ->on('yz_status_flow')
+                    ->on('yz_flow')
                     ->onDelete('cascade');
             });
         }
-        if (!Schema::hasTable('yz_order_status')) {
-            Schema::create('yz_order_status', function(Blueprint $table) {
-                $table->integer('id', true);
-                $table->integer('order_id');
-                $table->integer('status_id');
-                $table->integer('created_at')->nullable();
-                $table->integer('updated_at')->nullable();
-                $table->integer('deleted_at')->nullable();
-                $table->foreign('order_id')
-                    ->references('id')
-                    ->on('yz_order')
-                    ->onDelete('cascade');
-                $table->foreign('status_id')
-                    ->references('id')
-                    ->on('yz_status')
-                    ->onDelete('cascade');
-            });
-        }
-        if (!Schema::hasTable('yz_order_status_flow')) {
-            Schema::create('yz_order_status_flow', function(Blueprint $table) {
-                $table->integer('id', true);
-                $table->integer('order_id');
-                $table->integer('status_flow_id');
-                $table->enum('state',['canceled','processing','completed']);
-                $table->integer('created_at')->nullable();
-                $table->integer('updated_at')->nullable();
-                $table->integer('deleted_at')->nullable();
-                $table->foreign('order_id')
-                    ->references('id')
-                    ->on('yz_order')
-                    ->onDelete('cascade');
-                $table->foreign('status_flow_id')
-                    ->references('id')
-                    ->on('yz_status')
-                    ->onDelete('cascade');
-            });
-        }
-//        order_status_flow
-//            order_id
-//            status_flow_id
-//            state
+
+
     }
 
     /**
@@ -103,21 +100,24 @@ class CreateStatusFlowTable extends Migration
      */
     public function down()
     {
-        if (Schema::hasTable('yz_status_flow_status')) {
-            Schema::dropIfExists('yz_status_flow_status');
-
-        }
-        if (Schema::hasTable('yz_status_flow')) {
-            Schema::dropIfExists('yz_status_flow');
-
+        if (Schema::hasTable('yz_process')) {
+            Schema::dropIfExists('yz_process');
         }
         if (Schema::hasTable('yz_status')) {
             Schema::dropIfExists('yz_status');
+        }
+        if (Schema::hasTable('yz_flow_state')) {
+            Schema::dropIfExists('yz_flow_state');
 
         }
-        if (Schema::hasTable('yz_order_status')) {
-            Schema::dropIfExists('yz_order_status');
+        if (Schema::hasTable('yz_state')) {
+            Schema::dropIfExists('yz_state');
 
         }
+        if (Schema::hasTable('yz_flow')) {
+            Schema::dropIfExists('yz_flow');
+
+        }
+
     }
 }

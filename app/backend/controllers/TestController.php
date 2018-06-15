@@ -11,27 +11,58 @@ namespace app\backend\controllers;
 use app\common\components\BaseController;
 use app\common\models\Member;
 use app\common\models\Order;
+use app\common\models\statusFlow\ModelHasFlow;
+use app\common\models\statusFlow\Flow;
 use app\common\services\MessageService;
 use app\frontend\modules\member\models\SubMemberModel;
 use app\frontend\modules\order\services\OrderService;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class TestController extends BaseController
 {
-    public $transactionActions=['*'];
+    //public $transactionActions = ['*'];
+    public function a(){
+        DB::select("delete from ims_migrations where migration = '2018_06_12_140403_create_status_flow_table'");
+        DB::select("delete from ims_migrations where migration = '2018_06_13_140403_add_data_to_status_flow_table'");
+        exit;
+    }
     public function index()
     {
-        $statusFlow = \app\common\models\StatusFlow::create([
-            'name' => '订单汇款支付',
-            'code' => 'orderRemittance',
-            'plugin_id' => 0,
-        ]);
-        $status[] = \app\common\models\Status::create([
-            'name' => '订单汇款支付',
-            'code' => 'orderRemittance.',
-            'plugin_id' => 0,
-        ]);
-        dd($statusFlow);
+
+        if (Schema::hasTable('yz_process')) {
+            Schema::dropIfExists('yz_process');
+        }
+        if (Schema::hasTable('yz_status')) {
+            Schema::dropIfExists('yz_status');
+        }
+        if (Schema::hasTable('yz_flow_state')) {
+            Schema::dropIfExists('yz_flow_state');
+
+        }
+        if (Schema::hasTable('yz_state')) {
+            Schema::dropIfExists('yz_state');
+
+        }
+        if (Schema::hasTable('yz_flow')) {
+            Schema::dropIfExists('yz_flow');
+
+        }
         exit;
+        //$statusFlow = StatusFlow::find(3);
+        $order = Order::first();
+        /**
+         * @var Order $order
+         */
+        dump($order->flow());
+        dump($order->flow()->flow);
+//        if ($order->statusFlows->isEmpty()) {
+//            $order->statusFlows()->save($statusFlow);
+//
+//        }
+//        dump($order->statusFlows);
+//        dump(ModelHasStatusFlow::get());
+
 
     }
 

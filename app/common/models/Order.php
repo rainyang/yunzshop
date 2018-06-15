@@ -23,6 +23,7 @@ use app\common\models\order\Pay;
 use app\common\models\order\Plugin;
 use app\common\models\order\Remark;
 use app\common\models\refund\RefundApply;
+use app\common\traits\HasFlowTrait;
 use app\frontend\modules\order\services\status\StatusFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -50,6 +51,7 @@ use app\backend\modules\order\observers\OrderObserver;
  */
 class Order extends BaseModel
 {
+    use HasFlowTrait;
     public $table = 'yz_order';
     public $setting = null;
     private $StatusService;
@@ -327,8 +329,10 @@ class Order extends BaseModel
      */
     public function getButtonModelsAttribute()
     {
-        $result = $this->getStatusService()->getButtonModels();
+        $baseButton = $this->getStatusService()->getButtonModels();
+        $expandButton = $this->flow()->getButtons();
 // todo 与订单扩展状态获取的button合并
+        $result = array_merge($baseButton,$expandButton);
         return $result;
     }
 

@@ -12,16 +12,14 @@ namespace app\common\models;
 use app\common\models\BaseModel;
 
 /**
- * 阶段
- * Class ModelBelongsStatus
+ * 流程类型与状态类型的关系表
+ * Class FlowTypeHasStatusType
  * @package app\common\models\statusFlow
- * @property Status status
  */
-class Status extends BaseModel
+class FlowState extends BaseModel
 {
-    public $table = 'yz_status';
+    public $table = 'yz_flow_state';
 
     protected $guarded = ['id'];
-
 
 }

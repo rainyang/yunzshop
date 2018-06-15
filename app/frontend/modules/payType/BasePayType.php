@@ -25,6 +25,10 @@ class BasePayType extends PayType implements OrderPayInterface
 
     }
 
+    public function applyPay()
+    {
+    }
+
     /**
      * @param array $option
      * @return array
