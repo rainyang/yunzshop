@@ -498,6 +498,22 @@ class Member extends BackendModel
             ];
         }
 
+        //快递单插件开启
+        if ($plugin_class->isEnabled('courier')) {
+            $status = \Setting::get('courier.courier.radio');
+
+            $data['courier'] = [
+                'button_name' => '快递',
+                'status'         => $status ? true : false
+            ];
+        } else {
+            $data['courier'] = [
+                'button_name' => '快递',
+                'status' => false
+            ];
+        }
+
+
         //帮助中心插件开启控制
         if ($plugin_class->isEnabled('help-center')) {
             //dd(123);
@@ -672,6 +688,12 @@ class Member extends BackendModel
         $pid = \YunShop::request()->pid;
 
         return ($pid && ($pid != 'null' || $pid != 'undefined')) ? (int)$pid : 0;
+    }
+
+    //快递单获取会员信息
+    public static function getMemberInfo($uid)
+    {
+        return self::uniacid()->find($uid);
     }
 
     public static function deleted($uid)

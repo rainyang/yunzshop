@@ -4,6 +4,7 @@ namespace app\common\providers;
 
 use app\common\models\AccountWechats;
 use app\common\services\Check;
+use app\common\services\mews\captcha\src\Captcha;
 use app\common\services\Session;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Setting;
@@ -104,9 +105,16 @@ class AppServiceProvider extends ServiceProvider
             return new Setting();
         });
 
-//        App::bind(\Illuminate\Session\Store::class,function(){
-//            return new Session();
-//        });
-
+        // Bind captcha
+        $this->app->bind('captcha', function($app)
+        {
+            return new Captcha(
+                $app['Illuminate\Filesystem\Filesystem'],
+                $app['Illuminate\Config\Repository'],
+                $app['Intervention\Image\ImageManager'],
+                $app['Illuminate\Hashing\BcryptHasher'],
+                $app['Illuminate\Support\Str']
+            );
+        });
     }
 }
