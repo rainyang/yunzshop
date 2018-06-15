@@ -132,7 +132,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 {{--    <script src="{{static_url('assets/js/material-dashboard.js')}}"></script>--}}
 
     <script src="{{static_url('js/echarts.js')}}" type="text/javascript"></script>
-    <link rel="stylesheet" href="//unpkg.com/iview/dist/styles/iview.css">
+    {{--<link rel="stylesheet" href="//unpkg.com/iview/dist/styles/iview.css">--}}
     <!-- import iView -->
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
