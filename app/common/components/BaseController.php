@@ -114,7 +114,8 @@ class BaseController extends Controller
         session_id($session_id);
 
         load()->classs('wesession'); 
-        \WeSession::start(\YunShop::app()->uniacid, CLIENT_IP, self::COOKIE_EXPIRE);
+        //\WeSession::start(\YunShop::app()->uniacid, CLIENT_IP, self::COOKIE_EXPIRE);
+        WeSession::start(\YunShop::app()->uniacid, CLIENT_IP, self::COOKIE_EXPIRE);
     }
 
     /**
