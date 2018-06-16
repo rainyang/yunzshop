@@ -15,7 +15,7 @@ use app\common\models\BaseModel;
  * 阶段
  * Class ModelBelongsStatus
  * @package app\common\models\statusFlow
- * @property Status status
+ * @property State state
  */
 class Status extends BaseModel
 {
@@ -23,5 +23,7 @@ class Status extends BaseModel
 
     protected $guarded = ['id'];
 
-
+    public function state(){
+        return $this->belongsTo(State::class);
+    }
 }

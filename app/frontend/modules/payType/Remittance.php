@@ -16,18 +16,13 @@ class Remittance extends BasePayType
 {
     public function applyPay()
     {
-ddd
-exit;
         $flow = Flow::where('code',RemittanceFlow::class)->first();
-        dd($this->orderPay->flows());
-        exit;
-
         $this->orderPay->flows()->save($flow);
-        $a = $this->orderPay->flow();
-        dd($a);
-        exit;
 
-        exit;
+
+        $a = $this->orderPay->currentProcess();
+        dump($a);
+
 //        $transferRecord = new PreTransferRecord();
 //        $transferRecord->report_url=$option['report_url'];
 //        $transferRecord->setOrderPay($this->orderPay);

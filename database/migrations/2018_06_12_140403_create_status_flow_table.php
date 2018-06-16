@@ -39,6 +39,7 @@ class CreateStatusFlowTable extends Migration
             Schema::create('yz_flow_state', function (Blueprint $table) {
                 $table->integer('id', true);
                 $table->integer('state_id');
+                $table->integer('order');
                 $table->integer('flow_id');
                 $table->integer('plugin_id')->default(0);;
 

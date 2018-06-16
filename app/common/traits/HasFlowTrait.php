@@ -8,8 +8,8 @@
 
 namespace app\common\traits;
 
-use app\common\models\flow\Flow;
-use app\common\models\flow\Process;
+use app\common\models\Flow;
+use app\common\models\Process;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
@@ -31,7 +31,7 @@ trait HasFlowTrait
             'model',
             (new Process())->getTable(),
             'model_id',
-            'status_flow_id'
+            'flow_id'
         );
     }
     /**

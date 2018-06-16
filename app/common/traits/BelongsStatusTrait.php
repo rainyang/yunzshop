@@ -9,13 +9,15 @@
 namespace app\common\traits;
 
 
-use app\common\models\flow\Status;
-use app\common\models\flow\Process;
-use EasyWeChat\Support\Collection;
+use app\common\models\Status;
+use app\common\models\Process;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Trait HasStatusTrait
  * @package app\common\traits
+ * @property Collection status
  */
 trait BelongsStatusTrait
 {
@@ -29,7 +31,7 @@ trait BelongsStatusTrait
 //        );
 //    }
     /**
-     * @return Collection
+     * @return HasMany
      */
     public function status()
     {

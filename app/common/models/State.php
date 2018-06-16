@@ -9,19 +9,19 @@
 
 namespace app\common\models;
 
-use app\common\models\BaseModel;
 
 /**
  * 状态
  * Class State
  * @package app\common\models\statusFlow
+ * @property int order
  */
 class State extends BaseModel
 {
     public $table = 'yz_state';
 
     protected $guarded = ['id'];
-
+    protected $fillable = ['name','code','plugin_id'];
     /**
      * 包含此状态的流程
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany

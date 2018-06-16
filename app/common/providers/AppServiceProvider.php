@@ -22,7 +22,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
         \Cron::setDisablePreventOverlapping();
 
         //微信接口不输出错误

@@ -8,14 +8,15 @@
 
 namespace app\backend\controllers;
 
+use app\frontend\modules\order\services\OrderService;
 use app\common\components\BaseController;
 use app\common\models\Member;
 use app\common\models\Order;
-use app\common\models\statusFlow\ModelHasFlow;
-use app\common\models\statusFlow\Flow;
+use app\common\models\OrderPay;
+use app\common\models\Flow;
 use app\common\services\MessageService;
 use app\frontend\modules\member\models\SubMemberModel;
-use app\frontend\modules\order\services\OrderService;
+use app\frontend\modules\payType\remittance\RemittanceFlow;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
@@ -27,9 +28,7 @@ class TestController extends BaseController
         DB::select("delete from ims_migrations where migration = '2018_06_13_140403_add_data_to_status_flow_table'");
         exit;
     }
-    public function index()
-    {
-
+    public function b(){
         if (Schema::hasTable('yz_process')) {
             Schema::dropIfExists('yz_process');
         }
@@ -49,19 +48,26 @@ class TestController extends BaseController
 
         }
         exit;
-        //$statusFlow = StatusFlow::find(3);
-        $order = Order::first();
+    }
+    public function index()
+    {
+        dd(OrderPay::get);
+        exit;
+
+        $orderPay = OrderPay::find(1432);
+
         /**
-         * @var Order $order
+         * @var OrderPay $orderPay
          */
-        dump($order->flow());
-        dump($order->flow()->flow);
-//        if ($order->statusFlows->isEmpty()) {
-//            $order->statusFlows()->save($statusFlow);
-//
-//        }
-//        dump($order->statusFlows);
-//        dump(ModelHasStatusFlow::get());
+        $flow = Flow::where('code',RemittanceFlow::class)->first();
+        $orderPay->flows()->save($flow);
+
+        $a = $orderPay->currentProcess();
+        dd($a);
+
+        exit;
+
+
 
 
     }

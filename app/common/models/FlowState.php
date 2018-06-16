@@ -9,7 +9,6 @@
 
 namespace app\common\models;
 
-use app\common\models\BaseModel;
 
 /**
  * 流程类型与状态类型的关系表
@@ -21,5 +20,6 @@ class FlowState extends BaseModel
     public $table = 'yz_flow_state';
 
     protected $guarded = ['id'];
+
 
 }
