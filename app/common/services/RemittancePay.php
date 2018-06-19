@@ -58,8 +58,6 @@ class RemittancePay extends Pay
             'pay_sn'=>$params['order_no'],
             'payee_info'=>$payeeInfo
         ];
-        dd($data);
-        exit;
 
         return $data;
 

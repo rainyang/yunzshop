@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use \app\common\models\Flow;
 use Illuminate\Database\Migrations\Migration;
 
-class AddDataToStatusFlowTable extends Migration
+class AddAuditToStatusFlowTable extends Migration
 {
     /**
      * Run the migrations.
@@ -16,32 +16,28 @@ class AddDataToStatusFlowTable extends Migration
         if (!Schema::hasTable('yz_status')) {
             return;
         }
-        $this->remittance();
+        $this->audit();
     }
 
-    private function remittance()
+    private function audit()
     {
         /**
          * @var Flow $flow
          */
         $flow = \app\common\models\Flow::create([
-            'name' => '汇款支付',
-            'code' => \app\frontend\modules\payType\remittance\RemittanceFlow::class,
+            'name' => '汇款审核',
+            'code' => \app\frontend\modules\payType\remittance\AuditFlow::class,
         ]);
         $flow->pushStates([
             [
-                'code' => 'waitRemittance',
-                'name' => '待汇款',
+                'code' => 'waitAudit',
+                'name' => '待审核',
                 'order' => 0,
 
             ], [
-                'name' => '待收款',
-                'code' => 'waitReceipt',
+                'name' => '已通过',
+                'code' => 'passed',
                 'order' => 10,
-            ], [
-                'name' => '已完成',
-                'code' => 'completed',
-                'order' => 20,
 
             ], [
                 'name' => '已取消',
@@ -49,13 +45,14 @@ class AddDataToStatusFlowTable extends Migration
                 'order' => -1,
 
             ], [
-                'name' => '已关闭',
-                'code' => 'canceled',
+                'name' => '已拒绝',
+                'code' => 'Refused',
                 'order' => -2,
 
             ],
         ]);
     }
+
 
     /**
      * Reverse the migrations.

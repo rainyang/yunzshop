@@ -78,7 +78,7 @@ class OrderPay extends \app\common\models\OrderPay
         });
     }
 
-    private function applyPay()
+    public function applyPay()
     {
         return $this->getPayType()->applyPay();
     }
@@ -96,7 +96,6 @@ class OrderPay extends \app\common\models\OrderPay
             $this->pay_type_id = $payTypeId;
         }
         $this->validate();
-        $this->applyPay();
         // 从丁哥的接口获取统一的支付参数
         $query_str = $this->getPayType()->getPayParams($payParams);
         $pay = PayFactory::create($this->pay_type_id);

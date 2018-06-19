@@ -20,8 +20,6 @@ class DetailController extends BaseController
     {
         $orderPayId = request()->query('order_pay_id');
         $orderPays = OrderPay::with('orders')->find($orderPayId);
-        dump($orderPays);
-        exit;
 
         return view('order.orderPay', [
             'orderPays' => json_encode($orderPays)

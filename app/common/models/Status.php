@@ -26,4 +26,12 @@ class Status extends BaseModel
     public function state(){
         return $this->belongsTo(State::class);
     }
+
+    /**
+     *
+     * @return array
+     */
+    public function getButtons(){
+        return [];
+    }
 }

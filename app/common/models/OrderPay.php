@@ -9,6 +9,7 @@
 namespace app\common\models;
 
 use app\common\traits\HasFlowTrait;
+use app\common\traits\HasProcessTrait;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -31,7 +32,7 @@ use Illuminate\Database\Eloquent\Collection;
  */
 class OrderPay extends BaseModel
 {
-    use HasFlowTrait;
+    use HasFlowTrait,HasProcessTrait;
 
     public $table = 'yz_order_pay';
     protected $guarded = ['id'];

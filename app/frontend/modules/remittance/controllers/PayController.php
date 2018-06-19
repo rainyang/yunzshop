@@ -19,7 +19,7 @@ class PayController extends BaseController
     public function index()
     {
         // todo 支付信息model 与付款流程的支付status相关联
-        $this->next();
+        $this->tonNextState();
         return $this->successJson();
     }
 }

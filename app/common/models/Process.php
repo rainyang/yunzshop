@@ -52,6 +52,7 @@ class Process extends BaseModel
      */
     public function toNextState()
     {
+        // 进程进入下一个状态
         $this->currentStatus()->getNextState();
         $nextState = $this->flow->getNextState($this->currentStatus()->state);
         $this->status()->save($nextState);

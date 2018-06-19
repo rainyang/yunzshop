@@ -2,22 +2,18 @@
 /**
  * Created by PhpStorm.
  * User: shenyang
- * Date: 2018/6/16
- * Time: 上午10:53
+ * Date: 2018/6/18
+ * Time: 下午8:58
  */
 
-namespace app\frontend\modules\process\controllers;
+namespace app\backend\modules\audit;
 
 
-use app\frontend\models\Process;
+use app\backend\models\Process;
+use app\common\components\BaseController;
 
-trait Operate
+class DetailController extends BaseController
 {
-    /**
-     * @var Process
-     */
-    protected $process;
-
     protected function getProcess(){
         if(!isset($this->process)){
             $processId = request()->input('process_id');
@@ -26,9 +22,8 @@ trait Operate
         }
         return $this->process;
     }
-    public function tonNextState()
+    public function index()
     {
-        $data = $this->getProcess()->toNextState();
-        return $data;
+        dd($this->getProcess());
     }
 }

@@ -6,7 +6,7 @@
  * Time: 下午5:31
  */
 
-namespace app\frontend\modules\payType\remittance;
+namespace app\common\models\flow;
 
 use app\common\models\Flow;
 

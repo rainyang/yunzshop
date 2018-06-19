@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Collection;
  * Class Flow
  * @package app\common\models\statusFlow
  * @property Collection flowStates
+ * @property Collection process
  */
 class Flow extends BaseModel
 {
@@ -69,5 +70,10 @@ class Flow extends BaseModel
         }
 
         $this->states()->attach($result);
+    }
+
+    public function process()
+    {
+        $this->hasMany(Process::class);
     }
 }

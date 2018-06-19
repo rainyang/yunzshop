@@ -6,10 +6,10 @@
  * Time: 上午10:53
  */
 
-namespace app\frontend\modules\process\controllers;
+namespace app\backend\modules\process\controllers;
 
 
-use app\frontend\models\Process;
+use app\backend\models\Process;
 
 trait Operate
 {
@@ -26,6 +26,7 @@ trait Operate
         }
         return $this->process;
     }
+
     public function tonNextState()
     {
         $data = $this->getProcess()->toNextState();

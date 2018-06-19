@@ -21,34 +21,6 @@ use Illuminate\Database\Eloquent\Collection;
  */
 trait HasFlowTrait
 {
-    /**
-     * 所有的流程类型
-     * @return mixed
-     */
-    public function flows(){
-        return $this->morphToMany(
-            Flow::class,
-            'model',
-            (new Process())->getTable(),
-            'model_id',
-            'flow_id'
-        );
-    }
-    /**
-     * 所有的流程
-     * @return Collection
-     */
-    public function process()
-    {
-        return $this->hasMany(Process::class, 'model_id', 'id')->where('model_type', self::class);
-    }
 
-    /**
-     * 当前的流程
-     * @return ModelHasFlow
-     */
-    public function currentProcess()
-    {
-        return $this->process->where('state', 'processing')->first();
-    }
+
 }

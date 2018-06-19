@@ -10,6 +10,6 @@ namespace app\frontend\modules\payType\remittance;
 
 use app\common\models\Flow;
 
-class RemittanceFlow extends Flow
+class AuditFlow extends Flow
 {
 }
