@@ -143,14 +143,14 @@ class HomePageController extends ApiController
             }
 
             if ($page) {
-                if (empty($pageId) && Cache::has('desiginer_default_0')) {
-                    $designer = Cache::get('desiginer_default_0');
+                if (empty($pageId) && Cache::has($member_id.'_desiginer_default_0')) {
+                    $designer = Cache::get($member_id.'_desiginer_default_0');
                 } else {
                     $designer = (new \Yunshop\Designer\services\DesignerService())->getPageForHomePage($page->toArray());
                 }
 
-                if (empty($pageId) && !Cache::has('desiginer_default_0')) {
-                    Cache::put('desiginer_default_0', $designer,4200);
+                if (empty($pageId) && !Cache::has($member_id.'_desiginer_default_0')) {
+                    Cache::put($member_id.'_desiginer_default_0', $designer,180);
                 }
 
                 $store_goods = null;
