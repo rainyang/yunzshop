@@ -89,10 +89,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 {{--    <script src="{{static_url('assets/js/bootstrap.min.js')}}" type="text/javascript"></script>--}}
     <script src="{{static_url('assets/js/material.min.js')}}" type="text/javascript"></script>
-    <script src="//vuejs.org/js/vue.min.js"></script>
-    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/element-ui@2.4.1/lib/theme-chalk/index.css"></script>
+
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/element-ui@2.4.1/lib/index.js"></script>
+
     <script src="https://cdn.bootcss.com/vue-resource/1.5.0/vue-resource.js"></script>
     <script src="{{static_url('assets/js/perfect-scrollbar.jquery.min.js')}}" type="text/javascript"></script>
     <!-- Library for adding dinamically elements -->
@@ -132,11 +134,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
 {{--    <script src="{{static_url('assets/js/material-dashboard.js')}}"></script>--}}
 
     <script src="{{static_url('js/echarts.js')}}" type="text/javascript"></script>
-    <link rel="stylesheet" href="//unpkg.com/iview/dist/styles/iview.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/iview@2.14.2/dist/styles/iview.css">
     <!-- import iView -->
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.18.0/dist/axios.min.js"></script>
 
-    <script src="//unpkg.com/iview/dist/iview.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/iview@2.14.2/dist/iview.min.js"></script>
     <script type="text/javascript" src="{{static_url('resource/js/app/util.js?time=3232')}}"></script>
     <script type="text/javascript" src="{{static_url('resource/js/require.js')}}"></script>
 
