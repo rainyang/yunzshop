@@ -37,6 +37,7 @@ class OrderPay extends \app\common\models\OrderPay
      */
     public function pay($payTypeId = null)
     {
+
         if (!is_null($payTypeId)) {
             $this->pay_type_id = $payTypeId;
         }
@@ -65,6 +66,7 @@ class OrderPay extends \app\common\models\OrderPay
         if ($this->status > self::STATUS_UNPAID) {
             throw new AppException('(ID' . $this->id . '),此流水号已支付');
         }
+
         if ($this->orders->isEmpty()) {
             throw new AppException('(ID:' . $this->id . ')未找到对应订单');
         }

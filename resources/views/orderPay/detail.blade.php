@@ -3,7 +3,7 @@
 @section('content')
     <div id="app-order-pay">
         <template>
-            <el-form
+            <el-table
                     :data="list"
                     style="width: 100%"
                     :row-class-name="tableRowClassName">
@@ -12,8 +12,8 @@
                         label="id">
                 </el-table-column>
                 {{--<el-table-column--}}
-                        {{--prop="uid"--}}
-                        {{--label="用户id">--}}
+                {{--prop="uid"--}}
+                {{--label="用户id">--}}
                 {{--</el-table-column>--}}
                 <el-table-column
                         prop="pay_sn"
@@ -44,7 +44,7 @@
                         prop="refund_time"
                         label="退款时间">
                 </el-table-column>
-            </el-form>
+            </el-table>
         </template>
 
     </div>

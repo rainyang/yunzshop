@@ -51,7 +51,8 @@ class TestController extends BaseController
     }
     public function index()
     {
-        dd(\app\frontend\models\OrderPay::find(1432));
+        dump(\app\frontend\models\OrderPay::find(1420));
+        dump(\app\frontend\models\OrderPay::find(1420)->payType);
         exit;
 
         $orderPay = OrderPay::find(1432);

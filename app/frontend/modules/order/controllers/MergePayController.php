@@ -403,6 +403,7 @@ class MergePayController extends ApiController
         $data = $orderPay->getPayResult(PayType::REMITTANCE);
         // todo data怎么传
         $orderPay->applyPay();
+        $orderPay->save();
         $trade = \Setting::get('shop.trade');
         $redirect = '';
 
