@@ -18,6 +18,7 @@ use app\frontend\modules\goods\listeners\GoodsStock;
 use app\frontend\modules\member\listeners\MemberLevelValidity;
 use app\frontend\modules\order\listeners\orderListener;
 use app\frontend\modules\coupon\listeners\CouponExpireNotice;
+use app\frontend\modules\withdraw\listeners\WithdrawApplyListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use app\backend\modules\goods\listeners\LimitBuy;
 
@@ -63,10 +64,16 @@ class EventServiceProvider extends ServiceProvider
         ],
     ];
     /**
-     * 注册监听着类
+     * 注册监听者类
      * @var array
      */
     protected $subscribe = [
+
+        /**
+         * 提现申请监听者类
+         */
+        WithdrawApplyListener::class,
+
         \app\common\listeners\MessageListener::class,
 
         //会员等级升级
