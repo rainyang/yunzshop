@@ -143,14 +143,14 @@ class HomePageController extends ApiController
             }
 
             if ($page) {
-                if (empty($pageId) && Cache::has('desiginer_default_0')) {
-                    $designer = Cache::get('desiginer_default_0');
+                if (empty($pageId) && Cache::has($member_id.'_desiginer_default_0')) {
+                    $designer = Cache::get($member_id.'_desiginer_default_0');
                 } else {
                     $designer = (new \Yunshop\Designer\services\DesignerService())->getPageForHomePage($page->toArray());
                 }
 
-                if (empty($pageId) && !Cache::has('desiginer_default_0')) {
-                    Cache::put('desiginer_default_0', $designer,4200);
+                if (empty($pageId) && !Cache::has($member_id.'_desiginer_default_0')) {
+                    Cache::put($member_id.'_desiginer_default_0', $designer,180);
                 }
 
                 $store_goods = null;
@@ -527,7 +527,7 @@ class HomePageController extends ApiController
         if (!is_null($member_set)) {
             if ((1 == $member_set['is_bind_mobile']) && $member_id && $member_id > 0) {
                 if(Cache::has($member_id . '_member_info')){
-                    $member_model = Cache::has($member_id . '_member_info');
+                    $member_model = Cache::get($member_id . '_member_info');
                 } else {
                     $member_model = Member::getMemberById($member_id);
                 }
