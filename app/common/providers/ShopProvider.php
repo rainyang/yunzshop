@@ -9,6 +9,7 @@
 namespace app\common\providers;
 
 use app\common\exceptions\ShopException;
+use app\common\models\Containers;
 use app\frontend\modules\coin\CoinManager;
 use app\frontend\modules\deduction\DeductionManager;
 use app\frontend\modules\goods\services\GoodsManager;

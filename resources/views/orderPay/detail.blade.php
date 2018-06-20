@@ -1,89 +1,70 @@
 @extends('layouts.base')
-@section('title', '订单支付记录')
+@section('title', '支付记录详情')
 @section('content')
-    <div id="app-order-pay">
-        <template>
-            <el-table
-                    :data="list"
-                    style="width: 100%"
-                    :row-class-name="tableRowClassName">
-                <el-table-column
-                        prop="id"
-                        label="id">
-                </el-table-column>
-                {{--<el-table-column--}}
-                {{--prop="uid"--}}
-                {{--label="用户id">--}}
-                {{--</el-table-column>--}}
-                <el-table-column
-                        prop="pay_sn"
-                        label="支付单号">
-                </el-table-column>
-                <el-table-column
-                        prop="amount"
-                        label="支付金额">
-                </el-table-column>
 
-                <el-table-column
-                        prop="status_name"
-                        label="状态">
-                </el-table-column>
-                <el-table-column
-                        prop="pay_type_name"
-                        label="支付方式">
-                </el-table-column>
-                <el-table-column
-                        prop="created_at"
-                        label="创建时间">
-                </el-table-column>
-                <el-table-column
-                        prop="pay_time"
-                        label="支付时间">
-                </el-table-column>
-                <el-table-column
-                        prop="refund_time"
-                        label="退款时间">
-                </el-table-column>
-            </el-table>
-        </template>
+    <div id="app-order-pay" style="padding-top: 1%">
+        <el-badge :value="1" class="item">
+            <el-popover
+                    placement="right"
+                    width="400"
+                    trigger="click">
+                <el-table :data="form.process">
+                    <el-table-column width="150" property="name" label="标题"></el-table-column>
+                    <el-table-column width="100" property="updated_at" label="更新时间"></el-table-column>
+                    <el-table-column width="100" property="status_name" label="状态"></el-table-column>
+                </el-table>
+                <el-button slot="reference">处理中心</el-button>
+            </el-popover>
+        </el-badge>
+        <el-form ref="form" :model="form" label-width="17%">
+            <el-form-item label="id">
+                [[form.id]]
+            </el-form-item>
+            <el-form-item label="支付单号">
+                [[form.pay_sn]]
+            </el-form-item>
+            <el-form-item label="支付状态">
+                [[form.status_name]]
+            </el-form-item>
+            <el-form-item label="支付方式">
+                [[form.pay_type_name]]
+            </el-form-item>
+
+            <el-form-item label="金额">
+                [[form.amount]]
+            </el-form-item>
+            <el-form-item label="创建时间">
+                [[form.created_at]]
+            </el-form-item>
+            <el-form-item label="支付时间">
+                [[form.pay_time]]
+            </el-form-item>
+            <el-form-item label="退款时间">
+                [[form.refund_time]]
+            </el-form-item>
+        </el-form>
+
 
     </div>
-    <style>
-        .el-table .warning-row {
-            background: oldlace;
-        }
 
-        .el-table .success-row {
-            background: #f0f9eb;
-        }
-    </style>
 @endsection('content')
 @section('js')
     <script>
         var app = new Vue({
             el: '#app-order-pay',
             delimiters: ['[[', ']]'],
-
             data() {
-                let orderPays = JSON.parse('{!! $orderPays !!}');
+                let orderPay = JSON.parse('{!! $orderPay !!}');
 
                 return {
-                    list: orderPays
+                    rules: {},
+                    form: orderPay,
+
                 }
             },
             mounted: function () {
             },
-            methods: {
-                tableRowClassName({row, rowIndex}) {
-                    if (row.status == 1) {
-                        return 'success-row';
-                    }else if(row.status == 2){
-                        return 'warning-row';
-
-                    }
-                    return '';
-                }
-            }
+            methods: {}
         });
     </script>
 @endsection('js')

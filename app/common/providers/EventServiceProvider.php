@@ -12,6 +12,7 @@ use app\common\events\WechatProcessor;
 use app\common\listeners\PayLogListener;
 use app\common\listeners\point\PointListener;
 use app\common\listeners\WechatProcessorListener;
+use app\common\modules\status\listeners\StatusListener;
 use app\frontend\modules\coupon\listeners\CouponSend;
 use app\frontend\modules\finance\listeners\IncomeWithdraw;
 use app\frontend\modules\goods\listeners\GoodsStock;
@@ -61,6 +62,7 @@ class EventServiceProvider extends ServiceProvider
         SendMessageEvent::class => [
 
         ],
+
     ];
     /**
      * 注册监听着类
@@ -95,6 +97,7 @@ class EventServiceProvider extends ServiceProvider
         CouponSend::class,
         MemberLevelValidity::class,
         LimitBuy::class,
+        StatusListener::class,
     ];
 
     /**

@@ -15,6 +15,6 @@ class Next extends ProcessOperation
 {
     protected function handle()
     {
-        $this->process->toNextState();
+        $this->process->toNextStatus();
     }
 }

@@ -14,21 +14,17 @@ use app\frontend\models\Process;
 trait Operate
 {
     /**
-     * @var Process
+     * @return Process
      */
-    protected $process;
+    abstract protected function getProcess();
 
-    protected function getProcess(){
-        if(!isset($this->process)){
-            $processId = request()->input('process_id');
-
-            $this->process = Process::find($processId);
-        }
-        return $this->process;
-    }
-    public function tonNextState()
+    /**
+     * @return \Illuminate\Database\Eloquent\Model
+     * @throws \Exception
+     */
+    public function toNextState()
     {
-        $data = $this->getProcess()->toNextState();
+        $data = $this->getProcess()->toNextStatus();
         return $data;
     }
 }

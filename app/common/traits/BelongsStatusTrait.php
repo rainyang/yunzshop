@@ -9,10 +9,13 @@
 namespace app\common\traits;
 
 
+use app\common\models\State;
 use app\common\models\Status;
 use app\common\models\Process;
+use app\common\modules\status\StatusContainer;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 /**
  * Trait HasStatusTrait
@@ -21,28 +24,48 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 trait BelongsStatusTrait
 {
-//    public function status(){
-//        return $this->morphToMany(
-//            Status::class,
-//            'model_type',
-//            (new ModelBelongsStatus)->getTable(),
-//            'model_id',
-//            'status_id'
-//        );
-//    }
     /**
      * @return HasMany
      */
     public function status()
     {
-        return $this->hasMany(Process::class, 'model_id', 'id')->where('model_type', self::class);
+        return $this->hasMany(Status::class, 'model_id', 'id')->where('model_type', $this->getTable());
     }
+
+    /**
+     * 所有的状态类型
+     * @return MorphToMany
+     */
+    public function states()
+    {
+        return $this->morphToMany(
+            State::class,
+            'model',
+            (new Status())->getTable(),
+            'model_id',
+            'state_id'
+        )->withTimestamps();
+    }
+
+    abstract protected function statusAttribute($nextState);
 
     /**
      * @return Status
      */
     public function currentStatus()
     {
-        return $this->status->where('state', 'processing')->first();
+        // todo 判断存在 不存在删掉递归
+        return $this->status->first();
     }
+
+    /**
+     * 根据实体和state创建status
+     * @param $state
+     */
+    protected function createStatus(State $state)
+    {
+        $this->states()->save($state, $this->statusAttribute($state));
+        $this->currentStatus()->onCreated();
+    }
+
 }

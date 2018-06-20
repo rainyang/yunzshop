@@ -8,9 +8,7 @@
 
 namespace app\frontend\modules\payType;
 
-use app\common\models\Flow;
-use app\frontend\modules\payType\remittance\PreTransferRecord;
-use app\frontend\modules\payType\remittance\RemittanceFlow;
+use app\common\modules\payType\remittance\models\flows\RemittanceFlow;
 
 class Remittance extends BasePayType
 {

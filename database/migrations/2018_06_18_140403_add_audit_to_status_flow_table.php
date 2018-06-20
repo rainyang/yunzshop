@@ -25,8 +25,8 @@ class AddAuditToStatusFlowTable extends Migration
          * @var Flow $flow
          */
         $flow = \app\common\models\Flow::create([
-            'name' => '汇款审核',
-            'code' => \app\frontend\modules\payType\remittance\AuditFlow::class,
+            'name' => '后台审核',
+            'code' => \app\common\modules\audit\flow\models\AuditFlow::class,
         ]);
         $flow->pushStates([
             [
@@ -46,7 +46,7 @@ class AddAuditToStatusFlowTable extends Migration
 
             ], [
                 'name' => '已拒绝',
-                'code' => 'Refused',
+                'code' => 'refused',
                 'order' => -2,
 
             ],

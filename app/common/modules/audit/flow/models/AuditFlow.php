@@ -6,10 +6,10 @@
  * Time: 下午5:31
  */
 
-namespace app\common\models\flow;
+namespace app\common\modules\audit\flow\models;
 
 use app\common\models\Flow;
 
-class RemittanceFlow extends Flow
+class AuditFlow extends Flow
 {
 }

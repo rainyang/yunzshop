@@ -28,7 +28,7 @@ class CreateStatusFlowTable extends Migration
             Schema::create('yz_state', function (Blueprint $table) {
                 $table->integer('id', true);
                 $table->string('name');
-                $table->string('code');
+                $table->string('code')->nullable();
                 $table->integer('plugin_id')->default(0);;
                 $table->integer('created_at')->nullable();
                 $table->integer('updated_at')->nullable();
@@ -61,6 +61,7 @@ class CreateStatusFlowTable extends Migration
                 $table->integer('id', true);
                 $table->integer('model_id');
                 $table->string('model_type');
+                $table->string('code');
                 $table->integer('state_id');
 
                 $table->integer('created_at')->nullable();
@@ -91,7 +92,20 @@ class CreateStatusFlowTable extends Migration
             });
         }
 
-
+        if (!Schema::hasTable('yz_remittance_record')) {
+            Schema::create('yz_remittance_record', function(Blueprint $table) {
+                $table->integer('id', true);
+                $table->integer('process_id');
+                $table->text('report_url');
+                $table->integer('created_at')->nullable();
+                $table->integer('updated_at')->nullable();
+                $table->integer('deleted_at')->nullable();
+                $table->foreign('process_id')
+                    ->references('id')
+                    ->on('yz_process')
+                    ->onDelete('cascade');
+            });
+        }
     }
 
     /**
@@ -101,6 +115,9 @@ class CreateStatusFlowTable extends Migration
      */
     public function down()
     {
+        if (Schema::hasTable('yz_transfer_record')) {
+            Schema::dropIfExists('yz_transfer_record');
+        }
         if (Schema::hasTable('yz_process')) {
             Schema::dropIfExists('yz_process');
         }
@@ -119,6 +136,7 @@ class CreateStatusFlowTable extends Migration
             Schema::dropIfExists('yz_flow');
 
         }
+
 
     }
 }

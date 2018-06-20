@@ -2,15 +2,15 @@
 /**
  * Created by PhpStorm.
  * User: shenyang
- * Date: 2018/6/14
- * Time: 下午5:31
+ * Date: 2018/6/19
+ * Time: 下午7:29
  */
 
-namespace app\common\models\process;
+namespace app\common\modules\audit\process\models;
 
 use app\common\models\Process;
-use Illuminate\Database\Eloquent\Builder;
 
 class AuditProcess extends Process
 {
+
 }

@@ -29,7 +29,7 @@ trait Operate
 
     public function tonNextState()
     {
-        $data = $this->getProcess()->toNextState();
+        $data = $this->getProcess()->toNextStatus();
         return $data;
     }
 }

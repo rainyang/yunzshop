@@ -15,6 +15,8 @@ namespace app\common\models;
  * Class State
  * @package app\common\models\statusFlow
  * @property int order
+ * @property string code
+ * @property string name
  */
 class State extends BaseModel
 {

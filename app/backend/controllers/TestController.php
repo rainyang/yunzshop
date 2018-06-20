@@ -22,13 +22,34 @@ use Illuminate\Support\Facades\Schema;
 
 class TestController extends BaseController
 {
+    public function c()
+    {
+        if (Schema::hasTable('yz_containers')) {
+            Schema::dropIfExists('yz_containers');
+        }
+        if (Schema::hasTable('yz_container_binds')) {
+            Schema::dropIfExists('yz_container_binds');
+        }
+        DB::select("delete from ims_migrations where migration = '2018_06_20_103112_create_manager_table'");
+
+    }
+
     //public $transactionActions = ['*'];
-    public function a(){
+    public function a()
+    {
         DB::select("delete from ims_migrations where migration = '2018_06_12_140403_create_status_flow_table'");
         DB::select("delete from ims_migrations where migration = '2018_06_13_140403_add_data_to_status_flow_table'");
+        DB::select("delete from ims_migrations where migration = '2018_06_18_140403_add_audit_to_status_flow_table'");
+        $this->b();
         exit;
     }
-    public function b(){
+
+    public function b()
+    {
+
+        if (Schema::hasTable('yz_remittance_record')) {
+            Schema::dropIfExists('yz_remittance_record');
+        }
         if (Schema::hasTable('yz_process')) {
             Schema::dropIfExists('yz_process');
         }
@@ -49,6 +70,7 @@ class TestController extends BaseController
         }
         exit;
     }
+
     public function index()
     {
         dump(\app\frontend\models\OrderPay::find(1420));
@@ -60,15 +82,13 @@ class TestController extends BaseController
         /**
          * @var OrderPay $orderPay
          */
-        $flow = Flow::where('code',RemittanceFlow::class)->first();
+        $flow = Flow::where('code', RemittanceFlow::class)->first();
         $orderPay->flows()->save($flow);
 
         $a = $orderPay->currentProcess();
         dd($a);
 
         exit;
-
-
 
 
     }

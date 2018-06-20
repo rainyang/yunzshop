@@ -23,25 +23,36 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 trait HasProcessTrait
 {
     /**
+     * @var Process
+     */
+    protected $currentProcess;
+
+    /**
      * 所有的流程类型
      * @return mixed
      */
-    public function flows(){
+    public function flows()
+    {
         return $this->morphToMany(
             Flow::class,
             'model',
             (new Process())->getTable(),
             'model_id',
             'flow_id'
-        );
+        )->withTimestamps();
     }
+
     /**
      * @param Flow $flow
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return Process
      */
     public function addProcess(Flow $flow)
     {
-        return $this->flows()->save($flow);
+
+        $this->flows()->save($flow);
+        $this->currentProcess()->initStatus();
+
+        return $this->currentProcess();
     }
 
     /**
@@ -49,15 +60,18 @@ trait HasProcessTrait
      */
     public function process()
     {
-        return $this->hasMany(Process::class,'model_id')->where('model_type',self::class);
+        return $this->hasMany(Process::class, 'model_id')->where('model_type', $this->getTable());
     }
 
     /**
      * 当前的流程
-     * @return mixed
+     * @return Process
      */
     public function currentProcess()
     {
-        return $this->process->where('state', 'processing')->first();
+        if (!isset($this->currentProcess)) {
+            $this->currentProcess = $this->process->where('state', 'processing')->first();
+        }
+        return $this->currentProcess;
     }
 }

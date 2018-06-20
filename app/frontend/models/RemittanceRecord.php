@@ -9,6 +9,7 @@
 namespace app\frontend\models;
 
 
-class TransferRecord extends \app\common\models\TransferRecord
+class RemittanceRecord extends \app\common\models\RemittanceRecord
 {
+
 }

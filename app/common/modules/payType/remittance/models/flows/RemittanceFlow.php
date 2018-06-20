@@ -6,10 +6,10 @@
  * Time: 下午5:31
  */
 
-namespace app\frontend\modules\payType\remittance;
+namespace app\common\modules\payType\remittance\models\flows;
 
 use app\common\models\Flow;
 
-class AuditFlow extends Flow
+class RemittanceFlow extends Flow
 {
 }

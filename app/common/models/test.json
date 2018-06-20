@@ -1,0 +1,98 @@
+{
+  "id": 1432,
+  "pay_sn": "PN20180328141535Gp",
+  "status": 0,
+  "pay_type_id": 16,
+  "pay_time": null,
+  "refund_time": null,
+  "order_ids": [
+    "1121"
+  ],
+  "amount": "12.00",
+  "uid": 1,
+  "updated_at": "2018-06-19 10:54:46",
+  "created_at": "2018-03-28 14:15:35",
+  "deleted_at": null,
+  "status_name": "\u672a\u652f\u4ed8",
+  "pay_type_name": "\u8f6c\u8d26",
+  "orders": [
+    {
+      "id": 1121,
+      "uniacid": 3,
+      "uid": 1,
+      "order_sn": "SN20180328141533OE",
+      "price": "12.00",
+      "goods_price": "0.00",
+      "goods_total": 1,
+      "status": 0,
+      "create_time": "2018-03-28 14:15:33",
+      "is_deleted": 0,
+      "is_member_deleted": 0,
+      "finish_time": "1970-01-01 08:00:00",
+      "pay_time": "2018-03-28 15:30:40",
+      "send_time": "1970-01-01 08:00:00",
+      "cancel_time": "1970-01-01 08:00:00",
+      "created_at": 1522217733,
+      "updated_at": 1522222240,
+      "deleted_at": 0,
+      "cancel_pay_time": "1970-01-01 08:00:00",
+      "cancel_send_time": "1970-01-01 08:00:00",
+      "dispatch_type_id": 1,
+      "dispatch_price": "12.00",
+      "discount_price": "0.00",
+      "pay_type_id": 3,
+      "order_goods_price": "0.00",
+      "deduction_price": "0.00",
+      "refund_id": 0,
+      "is_plugin": 0,
+      "change_price": "0.00",
+      "change_dispatch_price": "0.00",
+      "comment_status": 0,
+      "order_pay_id": "1436",
+      "is_virtual": 0,
+      "plugin_id": 0,
+      "mark": "",
+      "status_name": "\u5f85\u4ed8\u6b3e",
+      "pay_type_name": "\u672a\u652f\u4ed8",
+      "pivot": {
+        "order_pay_id": 1432,
+        "order_id": 1121
+      }
+    }
+  ],
+  "process": [
+    {
+      "id": 24,
+      "model_id": 1432,
+      "model_type": "yz_order_pay",
+      "flow_id": 1,
+      "state": "processing",
+      "created_at": "2018-06-19 14:24:26",
+      "updated_at": "2018-06-19 14:24:26",
+      "deleted_at": null,
+      "name": "\u6c47\u6b3e\u652f\u4ed8",
+      "flow": {
+        "id": 1,
+        "name": "\u6c47\u6b3e\u652f\u4ed8",
+        "code": "app\\common\\models\\flow\\RemittanceFlow",
+        "plugin_id": 0,
+        "created_at": "2018-06-15 17:23:32",
+        "updated_at": "2018-06-15 17:23:32",
+        "deleted_at": null
+      }
+    }
+  ],
+  "pay_type": {
+    "id": 16,
+    "name": "\u8f6c\u8d26",
+    "plugin_id": 0,
+    "code": "remittance",
+    "type": 1,
+    "unit": "\u5143",
+    "updated_at": null,
+    "created_at": null,
+    "deleted_at": null,
+    "setting_key": "shop.pay.remittance",
+    "need_password": 0
+  }
+}

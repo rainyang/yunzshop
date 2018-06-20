@@ -32,7 +32,7 @@ use Illuminate\Database\Eloquent\Collection;
  */
 class OrderPay extends BaseModel
 {
-    use HasFlowTrait,HasProcessTrait;
+    use HasProcessTrait;
 
     public $table = 'yz_order_pay';
     protected $guarded = ['id'];

@@ -26,7 +26,7 @@ class AddDataToStatusFlowTable extends Migration
          */
         $flow = \app\common\models\Flow::create([
             'name' => '汇款支付',
-            'code' => \app\frontend\modules\payType\remittance\RemittanceFlow::class,
+            'code' => 'remittance',
         ]);
         $flow->pushStates([
             [
@@ -50,7 +50,7 @@ class AddDataToStatusFlowTable extends Migration
 
             ], [
                 'name' => '已关闭',
-                'code' => 'canceled',
+                'code' => 'closed',
                 'order' => -2,
 
             ],

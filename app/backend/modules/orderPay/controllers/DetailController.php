@@ -19,10 +19,12 @@ class DetailController extends BaseController
     public function index()
     {
         $orderPayId = request()->query('order_pay_id');
-        $orderPays = OrderPay::with('orders')->find($orderPayId);
+        $orderPay = OrderPay::with(['orders','process'])->find($orderPayId);
+//        dd(json_encode($orderPay));
+//        exit;
 
         return view('orderPay.detail', [
-            'orderPays' => json_encode($orderPays)
+            'orderPay' => json_encode($orderPay)
         ])->render();
     }
 }
