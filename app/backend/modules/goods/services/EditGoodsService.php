@@ -79,6 +79,8 @@ class EditGoodsService
                         return tomedia($item);
                     }, $goods_data['thumb_url'])
                 );
+            } else {
+                $goods_data['thumb_url'] = '';
             }
 
             $category_model = GoodsCategory::where("goods_id", $this->goods_model->id)->first();
