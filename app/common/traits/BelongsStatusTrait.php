@@ -11,8 +11,6 @@ namespace app\common\traits;
 
 use app\common\models\State;
 use app\common\models\Status;
-use app\common\models\Process;
-use app\common\modules\status\StatusContainer;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
@@ -47,15 +45,18 @@ trait BelongsStatusTrait
         )->withTimestamps();
     }
 
-    abstract protected function statusAttribute($nextState);
+    protected function statusAttribute($state)
+    {
+        return ['model_id' => $state->id];
+    }
 
     /**
      * @return Status
      */
     public function currentStatus()
     {
-        // todo 判断存在 不存在删掉递归
-        return $this->status->where()->first();
+        // 为了与数据库中状态同步,需要重新取
+        return $this->status()->first();
     }
 
     /**
@@ -64,11 +65,17 @@ trait BelongsStatusTrait
      */
     protected function createStatus(State $state)
     {
+        $status = $this->states()->newPivot($this->statusAttribute($state));
+        dd($status->save());
+        exit;
+
         $this->states()->save($state, $this->statusAttribute($state));
 //        dd($this->currentStatus()->getEventDispatcher()->getListeners('eloquent.created: '.get_class($this->currentStatus())));
 //        exit;
+        // dd($this->status);
+        // exit;
 
-        $this->currentStatus()->fireModelEvent('created');
+        //$this->currentStatus()->fireModelEvent('created');
     }
 
 }

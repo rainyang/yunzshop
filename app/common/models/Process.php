@@ -27,7 +27,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Process extends BaseModel
 {
-    use BelongsStatusTrait, HasProcessTrait, SoftDeletes;
+    use BelongsStatusTrait{
+        statusAttribute as baseStatusAttribute;
+    }
+    use HasProcessTrait, SoftDeletes;
     public $table = 'yz_process';
 
     protected $guarded = ['id'];
@@ -62,7 +65,7 @@ class Process extends BaseModel
      */
     protected function statusAttribute(State $state)
     {
-        return ['code' => $this->flow->code . '.' . $state->code];
+        return array_merge($this->baseStatusAttribute($state),['code' => $this->flow->code . '.' . $state->code]);
     }
 
     /**
