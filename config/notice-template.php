@@ -430,7 +430,7 @@ return [
                 "color" => "#000000",
             ],
             2 => [
-                "keywords" => "keyword2",
+                "keywords" => "keyword3",
                 "value" => "尊敬的[昵称]，您于[时间]新增粉丝[下级昵称]。",
                 "color" => "#000000",
             ],
