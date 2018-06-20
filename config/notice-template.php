@@ -404,7 +404,7 @@ return [
                 "color" => "#000000",
             ],
             2 => [
-                "keywords" => "keyword2",
+                "keywords" => "keyword3",
                 "value" => "尊敬的[昵称]，您于[时间]获得推广资格，赶紧去呼唤小伙伴吧。",
                 "color" => "#000000",
             ],
