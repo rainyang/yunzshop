@@ -16,9 +16,15 @@ class StatusObserver extends BaseObserver
 {
     public function created(Model $status)
     {
+        dd($status);
+        exit;
+
         /**
          * @var Status $status
          */
-        (new StatusContainer())->make($status->code)->onCreated();
+        if((new StatusContainer())->bound($status->code)){
+            (new StatusContainer())->make($status->code)->onCreated();
+        }
+
     }
 }

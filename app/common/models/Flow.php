@@ -55,7 +55,7 @@ class Flow extends BaseModel
      */
     public function getNextState(State $state)
     {
-        return $this->flowStates->where('order', '>', $state->order)->first();
+        return $this->flowStates->where('order', '>', $state->order)->first()->state;
     }
 
     /**

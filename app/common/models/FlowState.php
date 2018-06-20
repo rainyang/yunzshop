@@ -21,5 +21,12 @@ class FlowState extends BaseModel
 
     protected $guarded = ['id'];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function state()
+    {
+        return $this->belongsTo(State::class);
+    }
 
 }

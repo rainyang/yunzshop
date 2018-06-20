@@ -11,6 +11,7 @@ namespace app\common\models;
 
 use app\common\models\BaseModel;
 use app\common\modules\status\StatusContainer;
+use app\common\modules\status\StatusObserver;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -43,11 +44,7 @@ class Status extends BaseModel
     {
         parent::boot();
         // TODO: 来不及解决
-        parent::observe();
-        self::created(function($event,Status $status){
-            if(isset($status->code)){
-                app('StatusContainer')->make($status->code)->onCreated();
-            }
-        });
+        parent::observe(new StatusObserver);
+
     }
 }

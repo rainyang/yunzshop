@@ -55,7 +55,7 @@ trait BelongsStatusTrait
     public function currentStatus()
     {
         // todo 判断存在 不存在删掉递归
-        return $this->status->first();
+        return $this->status->where()->first();
     }
 
     /**
@@ -65,7 +65,10 @@ trait BelongsStatusTrait
     protected function createStatus(State $state)
     {
         $this->states()->save($state, $this->statusAttribute($state));
-        $this->currentStatus()->onCreated();
+//        dd($this->currentStatus()->getEventDispatcher()->getListeners('eloquent.created: '.get_class($this->currentStatus())));
+//        exit;
+
+        $this->currentStatus()->fireModelEvent('created');
     }
 
 }
