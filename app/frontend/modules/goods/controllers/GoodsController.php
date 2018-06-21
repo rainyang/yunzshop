@@ -281,7 +281,9 @@ class GoodsController extends ApiController
         $goodsList = Goods::uniacid()->select('id','id as goods_id', 'title', 'thumb', 'price', 'market_price')
             ->where('status', '1')
             ->where('brand_id', $brand_id)
-            ->orderBy($order_field, $order_by)
+             ->where(function($query) {
+                $query->where("plugin_id", 0)->orWhere('plugin_id', 40);
+            })->orderBy($order_field, $order_by)
             ->paginate(20)->toArray();
 
         if (empty($brand)) {
