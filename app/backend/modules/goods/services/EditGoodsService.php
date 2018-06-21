@@ -82,6 +82,14 @@ class EditGoodsService
                 $goods_data['thumb_url'] = '';
             }
 
+            if(isset($goods_data['thumb_url'])){
+                $goods_data['thumb_url'] = serialize($goods_data['thumb_url']);
+            } else {
+                $goods_data['thumb_url'] = '';
+            }
+
+
+
             $category_model = GoodsCategory::where("goods_id", $this->goods_model->id)->first();
             if (!empty($category_model)) {
                 $category_model->delete();
