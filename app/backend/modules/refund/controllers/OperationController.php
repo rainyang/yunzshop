@@ -74,12 +74,6 @@ class OperationController extends BaseController
         return $this->message('操作成功', '');
     }
 
-    public function close()
-    {
-        $this->refundApply->close();
-        return $this->message('操作成功', '');
-    }
-
     public function resend(\Request $request)
     {
         $resendExpress = new ResendExpress($request->only('express_code', 'express_company_name', 'express_sn'));
