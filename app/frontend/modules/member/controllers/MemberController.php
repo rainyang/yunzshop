@@ -12,6 +12,7 @@ use app\backend\modules\member\models\MemberRelation;
 use app\backend\modules\order\models\Order;
 use app\common\components\ApiController;
 use app\common\facades\Setting;
+use app\common\helpers\Cache;
 use app\common\helpers\ImageHelper;
 use app\common\helpers\Url;
 use app\common\models\AccountWechats;
@@ -473,6 +474,10 @@ class MemberController extends ApiController
             }
 
             if ($member_model->save() && $member_shop_info_model->save()) {
+                if (Cache::has($member_model->uid . '_member_info')) {
+                    Cache::forget($member_model->uid . '_member_info');
+                }
+
                 return $this->successJson('用户资料修改成功');
             } else {
                 return $this->errorJson('更新用户资料失败');
@@ -508,12 +513,12 @@ class MemberController extends ApiController
             }
 
             //增加验证码功能
-//            $captcha_status = Setting::get('shop.sms.status');
-//            if ($captcha_status == 1) {
-//                if (app('captcha')->check(Input::get('captcha')) == false) {
-//                    return $this->errorJson('验证码错误');
-//                }
-//            }
+            $captcha_status = Setting::get('shop.sms.status');
+            if ($captcha_status == 1) {
+                if (app('captcha')->check(Input::get('captcha')) == false) {
+                    return $this->errorJson('验证码错误');
+                }
+            }
 
             $salt = Str::random(8);
             $member_model->salt = $salt;
@@ -521,6 +526,10 @@ class MemberController extends ApiController
             $member_model->password = md5($password . $salt);
 
             if ($member_model->save()) {
+                if (Cache::has($member_model->uid . '_member_info')) {
+                    Cache::forget($member_model->uid . '_member_info');
+                }
+
                 return $this->successJson('手机号码绑定成功');
             } else {
                 return $this->errorJson('手机号码绑定失败');
@@ -548,12 +557,12 @@ class MemberController extends ApiController
             }
 
             //增加验证码功能
-//            $captcha_status = Setting::get('shop.sms.status');
-//            if ($captcha_status == 1) {
-//                if (app('captcha')->check(Input::get('captcha')) == false) {
-//                    return $this->errorJson('验证码错误');
-//                }
-//            }
+            $captcha_status = Setting::get('shop.sms.status');
+            if ($captcha_status == 1) {
+                if (app('captcha')->check(Input::get('captcha')) == false) {
+                    return $this->errorJson('验证码错误');
+                }
+            }
 
             $salt = Str::random(8);
             $member_model->withdraw_mobile = $mobile;
@@ -1171,6 +1180,18 @@ class MemberController extends ApiController
                 $data[] = [
                     'name' => 'help_center',
                     'title' => '帮助中心'
+                ];
+            }
+        }
+
+        if (app('plugins')->isEnabled('courier')) {
+
+            $courier_setting = Setting::get('courier.courier');
+
+            if ($courier_setting && 1 == $courier_setting['radio']) {
+                $data[] = [
+                    'name' => 'courier',
+                    'title' => $courier_setting['name'] ? $courier_setting['name'] : '快递单'
                 ];
             }
         }
