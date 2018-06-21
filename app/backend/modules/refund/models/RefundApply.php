@@ -46,6 +46,12 @@ class RefundApply extends \app\common\models\refund\RefundApply
         return $this->getTypeInstance()->receiveReturnGoods();
     }
 
+    public function close()
+    {
+        return $this->getTypeInstance()->close();
+
+    }
+
     public function resend()
     {
         return $this->getTypeInstance()->resend();
