@@ -34,9 +34,14 @@ class WithdrawAuditListener
         $rebut_ids = $withdrawModel->rebut_ids;
         $invalid_ids = $withdrawModel->invalid_ids;
 
-        Income::uniacid()->whereIn('id', $audit_ids)->update(['pay_status' => Income::PAY_STATUS_WAIT]);
-        Income::uniacid()->whereIn('id', $rebut_ids)->update(['status' => Income::STATUS_INITIAL, 'pay_status' => Income::PAY_STATUS_REJECT]);
-        Income::uniacid()->whereIn('id', $invalid_ids)->update(['pay_status' => Income::PAY_STATUS_INVALID]);
-
+        if (count($audit_ids) > 0) {
+            Income::whereIn('id', $audit_ids)->update(['pay_status' => Income::PAY_STATUS_WAIT]);
+        }
+        if (count($audit_ids) > 0) {
+            Income::whereIn('id', $rebut_ids)->update(['status' => Income::STATUS_INITIAL, 'pay_status' => Income::PAY_STATUS_REJECT]);
+        }
+        if (count($audit_ids) > 0) {
+            Income::whereIn('id', $invalid_ids)->update(['pay_status' => Income::PAY_STATUS_INVALID]);
+        }
     }
 }
