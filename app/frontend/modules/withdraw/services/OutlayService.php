@@ -78,7 +78,11 @@ class OutlayService
     public function getServiceTax()
     {
         $rate = $this->getServiceTaxRate();
-        $amount = $this->getWithdrawAmount();
+
+        $withdraw_amount = $this->getWithdrawAmount();
+        $withdraw_poundage = $this->getPoundage();
+
+        $amount = bcsub($withdraw_amount, $withdraw_poundage, 2);
 
         return $this->calculate($amount, $rate);
     }
