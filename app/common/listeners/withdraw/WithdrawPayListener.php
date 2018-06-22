@@ -32,8 +32,7 @@ class WithdrawPayListener
         $income_ids = explode(',', $withdrawModel->type_id);
 
         if (count($income_ids) > 0) {
-            Income::whereIn('id', $income_ids)->wherePayStatus(Income::PAY_STATUS_WAIT)->update(['pay_status' => Income::PAY_STATUS_FINISH]);
-
+            Income::whereIn('id', $income_ids)->where('pay_status', Income::PAY_STATUS_WAIT)->update(['pay_status' => Income::PAY_STATUS_FINISH]);
         }
     }
 
