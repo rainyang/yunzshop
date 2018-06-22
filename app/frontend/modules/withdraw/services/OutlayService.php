@@ -73,6 +73,8 @@ class OutlayService
 
 
     /**
+     * 劳务税 = （提现金额 - 手续费）* 劳务税比例
+     *
      * @return float
      */
     public function getServiceTax()
@@ -119,6 +121,8 @@ class OutlayService
 
 
     /**
+     * 劳务税 = （提现金额 - 手续费）* 劳务税比例
+     *
      * @return float
      */
     public function getToBalanceServiceTax()
