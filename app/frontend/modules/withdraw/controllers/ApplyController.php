@@ -117,6 +117,7 @@ class ApplyController extends ApiController
             }
             event(new WithdrawAppliedEvent($withdrawModel));
 
+            dd($withdrawModel);
             $amount = bcadd($amount, $withdrawModel->amounts, 2);
         }
         if (bccomp($amount, $this->amount, 2) != 0) {
@@ -190,7 +191,7 @@ class ApplyController extends ApiController
     private function getPostValue()
     {
         $post_data = \YunShop::request()->data;
-        Log::info('收入提现提交数据：', print_r($withdraw_data, true));
+        Log::info('收入提现提交数据：', print_r($post_data, true));
         //$post_data = $this->testData();
 
         if (!$post_data) {
