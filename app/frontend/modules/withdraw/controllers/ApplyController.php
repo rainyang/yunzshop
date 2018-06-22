@@ -117,7 +117,6 @@ class ApplyController extends ApiController
             }
             event(new WithdrawAppliedEvent($withdrawModel));
 
-            dd($withdrawModel);
             $amount = bcadd($amount, $withdrawModel->amounts, 2);
         }
         if (bccomp($amount, $this->amount, 2) != 0) {
