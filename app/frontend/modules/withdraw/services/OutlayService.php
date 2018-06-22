@@ -124,7 +124,11 @@ class OutlayService
     public function getToBalanceServiceTax()
     {
         $rate = $this->getToBalanceServiceTaxRate();
-        $amount = $this->getWithdrawAmount();
+
+        $withdraw_amount = $this->getWithdrawAmount();
+        $withdraw_poundage = $this->getToBalancePoundage();
+
+        $amount = bcsub($withdraw_amount, $withdraw_poundage, 2);
 
         return $this->calculate($amount, $rate);
     }
