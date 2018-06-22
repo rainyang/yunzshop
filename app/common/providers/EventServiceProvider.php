@@ -12,6 +12,8 @@ use app\common\events\WechatProcessor;
 use app\common\listeners\PayLogListener;
 use app\common\listeners\point\PointListener;
 use app\common\listeners\WechatProcessorListener;
+use app\common\listeners\withdraw\WithdrawAuditListener;
+use app\common\listeners\withdraw\WithdrawPayListener;
 use app\frontend\modules\coupon\listeners\CouponSend;
 use app\frontend\modules\finance\listeners\IncomeWithdraw;
 use app\frontend\modules\goods\listeners\GoodsStock;
@@ -70,9 +72,11 @@ class EventServiceProvider extends ServiceProvider
     protected $subscribe = [
 
         /**
-         * 提现申请监听者类
+         * 收入提现监听者类
          */
         WithdrawApplyListener::class,
+        WithdrawAuditListener::class,
+        WithdrawPayListener::class,
 
         \app\common\listeners\MessageListener::class,
 
