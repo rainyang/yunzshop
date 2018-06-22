@@ -25,7 +25,7 @@ class WithdrawPayListener
     /**
      * @param $event WithdrawPayedEvent
      */
-    public function withdrawAudited($event)
+    public function withdrawPayed($event)
     {
         $withdrawModel = $event->getWithdrawModel();
 
