@@ -72,15 +72,15 @@ class EditGoodsService
             //将数据赋值到model
             // $goods_data['thumb'] = tomedia($goods_data['thumb']);
 
-            if(isset($goods_data['thumb_url'])){
-                $goods_data['thumb_url'] = serialize(
-                    array_map(function($item){
-                        return tomedia($item);
-                    }, $goods_data['thumb_url'])
-                );
-            } else {
-                $goods_data['thumb_url'] = '';
-            }
+            // if(isset($goods_data['thumb_url'])){
+            //     $goods_data['thumb_url'] = serialize(
+            //         array_map(function($item){
+            //             return tomedia($item);
+            //         }, $goods_data['thumb_url'])
+            //     );
+            // } else {
+            //     $goods_data['thumb_url'] = '';
+            // }
 
             if(isset($goods_data['thumb_url'])){
                 $goods_data['thumb_url'] = serialize($goods_data['thumb_url']);
