@@ -23,6 +23,7 @@ use app\common\models\order\Pay;
 use app\common\models\order\Plugin;
 use app\common\models\order\Remark;
 use app\common\models\refund\RefundApply;
+use app\common\traits\HasFlowTrait;
 use app\frontend\modules\order\services\status\StatusFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -45,9 +46,12 @@ use app\backend\modules\order\observers\OrderObserver;
  * @property int dispatch_type_id
  * @property Collection orderGoods
  * @property Member belongsToMember
+ * @property OrderPay orderPays
+ * @property PayType hasOnePayType
  */
 class Order extends BaseModel
 {
+    use HasFlowTrait;
     public $table = 'yz_order';
     public $setting = null;
     private $StatusService;
@@ -326,7 +330,6 @@ class Order extends BaseModel
     public function getButtonModelsAttribute()
     {
         $result = $this->getStatusService()->getButtonModels();
-
         return $result;
     }
 
@@ -442,6 +445,11 @@ class Order extends BaseModel
     public function orderDiscount()
     {
         return $this->hasMany(OrderDiscount::class, 'order_id', 'id');
+    }
+
+    public function orderPays()
+    {
+        return $this->belongsToMany(OrderPay::class, (new OrderPayOrder())->getTable(),'order_id','order_pay_id');
     }
 
     public function close()

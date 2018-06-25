@@ -10,6 +10,7 @@ namespace app\frontend\modules\payment\managers;
 
 use app\common\models\Order;
 use app\common\models\PayType;
+use app\frontend\models\OrderPay;
 use app\frontend\modules\payment\orderPayments\BasePayment;
 use app\frontend\modules\payment\PaymentConfig;
 use app\frontend\modules\payment\orderPayments\NormalPayment;
@@ -17,7 +18,7 @@ use Illuminate\Container\Container;
 use Illuminate\Support\Collection;
 
 /**
- * 订单支付管理者
+ * 支付管理者
  * Class OrderPaymentManager
  * @package app\frontend\modules\payment\managers
  */
@@ -75,8 +76,6 @@ class PaymentTypeManager extends Container
         // 支付方式集合
         collect($this->paymentConfig)->each(function ($payment, $code) {
             // 绑定支付方式对应的设置管理者
-            //dd(app('PaymentManager')->make('OrderPaymentTypeSettingManager'));
-            //exit;
 
             $this->getSettingManager()->singleton($code, function (Container $container) use ($payment) {
                 return $payment['settings'];
@@ -88,31 +87,31 @@ class PaymentTypeManager extends Container
      */
     private function bindPayments()
     {
-
-
         // 支付方式集合
+
         collect($this->paymentConfig)->each(function ($payment, $code) {
+
             /**
              * 分别绑定支付方式与支付方式设置类. 只定义不实例化,以便于插件在支付方式实例化之前,追加支付方式与支付方式的设置类
              */
             // 绑定支付方式
-            $this->bind($code, function ($manager, array $parameter) use ($payment) {
+            $this->bind($code, function ($manager, array $params) use ($payment,$code) {
+                list($orderPay,$payType) = $params;
                 /**
                  * @var OrderPaymentTypeSettingManager $settingManager
-                 * @var Order $order
-                 * @var PayType $payType
                  */
-                list($order, $payType) = $parameter;
                 // 从管理者取取到自己对应的设置集合
                 $settingManager = $this->getSettingManager();
 
-                $settings = $settingManager->getOrderPaymentSettingCollection($payType->code,$order);
+                $settings = $settingManager->getOrderPaymentSettingCollection($code,$orderPay);
 
                 if (isset($payment['payment']) && $payment['payment'] instanceof \Closure) {
-                    return call_user_func($payment['payment'], $payType, $settings);
+
+                    return call_user_func($payment['payment'], $orderPay,$payType, $settings);
                 }
-                return new NormalPayment($payType, $settings);
+                return new NormalPayment($orderPay,$payType, $settings);
             });
+
 
         });
     }
@@ -120,10 +119,10 @@ class PaymentTypeManager extends Container
 
     /**
      * 获取订单可用的支付方式
-     * @param $order
-     * @return Collection
+     * @param OrderPay $orderPay
+     * @return Collection|static
      */
-    public function getOrderPaymentTypes($order = null)
+    public function getOrderPaymentTypes(OrderPay $orderPay)
     {
         $this->bindSettings();
         $this->bindPayments();
@@ -138,12 +137,11 @@ class PaymentTypeManager extends Container
         }
 
         // 实例化订单所有支付方式
-        $orderPaymentTypes = $paymentTypes->map(function (PayType $payType) use ($order) {
-
+        $orderPaymentTypes = $paymentTypes->map(function (PayType $payType) use ($orderPay) {
             // 对应的类在容器中注册过
             if ($this->bound($payType->code)) {
 
-                return $this->make($payType->code, [$order, $payType]);
+                return $this->make($payType->code, [$orderPay,$payType]);
             }
             return null;
         });

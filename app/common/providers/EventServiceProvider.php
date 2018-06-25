@@ -12,6 +12,8 @@ use app\common\events\WechatProcessor;
 use app\common\listeners\PayLogListener;
 use app\common\listeners\point\PointListener;
 use app\common\listeners\WechatProcessorListener;
+use app\common\modules\process\events\AfterProcessStatusChangedEvent;
+use app\common\modules\status\StatusContainer;
 use app\frontend\modules\coupon\listeners\CouponSend;
 use app\frontend\modules\finance\listeners\IncomeWithdraw;
 use app\frontend\modules\goods\listeners\GoodsStock;
@@ -61,6 +63,9 @@ class EventServiceProvider extends ServiceProvider
         SendMessageEvent::class => [
 
         ],
+        AfterProcessStatusChangedEvent::class => [
+            StatusContainer::class,
+        ]
     ];
     /**
      * 注册监听着类

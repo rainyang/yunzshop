@@ -1398,8 +1398,30 @@ return [
                                 'menu'              => 0,
                                 'icon'              => 'fa-file-text',
                                 'sort'              => 1,
-                                'item'              => 'order_list_index',
+                                'item'              => 'order_detail',
                                 'parents'           => ['Order', 'order_list'],
+                            ],
+                            'order_pay_list' => [
+                                'name'              => '查看订单支付记录',
+                                'url'               => 'order.orderPay.index',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => 'fa-file-text',
+                                'sort'              => 1,
+                                'item'              => 'order_pay_index',
+                                'parents'           => ['Order', 'order_detail'],
+                            ],
+                            'order_pay_detail' => [
+                                'name'              => '查看订单支付详情',
+                                'url'               => 'orderPay.detail.index',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => 'fa-file-text',
+                                'sort'              => 1,
+                                'item'              => 'order_pay_detail',
+                                'parents'           => ['Order', 'order_detail'],
                             ],
                             'change_order_price_index' => [
                                 'name'              => '修改价格跳转路由',
@@ -2352,7 +2374,18 @@ return [
                     ],
                 ],
             ],
-
+            'remittance_audit'     => [
+                'name'              => '转账审核',
+                'url'               => 'finance.remittance-audit.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-file-text-o',
+                'sort'              => 0,
+                'item'              => 'remittance_audit',
+                'parents'           => ['finance',],
+                'child'             => []
+            ]
 
 
         ],
