@@ -121,8 +121,6 @@ class GoodsPosterController extends ApiController
      */
     public function get_lt()
     {   
-        $this->createShopImage();
-        exit();
 
         set_time_limit(0);
         @ini_set('memory_limit', '256M');
@@ -140,24 +138,18 @@ class GoodsPosterController extends ApiController
 
         $target = $this->roundRadius($target, $image_width, $image_height);
 
+        $target = $this->createShopImage($target);
+
         if ($this->goodsModel->hasOneShare->share_thumb) {
-
-            $goodsThumb = imagecreatefromstring(\Curl::to(yz_tomedia($this->goodsModel->hasOneShare->share_thumb))->get());
-
+            $goodsThumb = $this->goodsModel->hasOneShare->share_thumb;
         } else {
-
-            $goodsThumb = imagecreatefromstring(\Curl::to(yz_tomedia($this->goodsModel->thumb))->get());
+            $goodsThumb = $this->goodsModel->thumb;
         }
-        
         $target = $this->mergeGoodsImage($target, $goodsThumb);
         
         //商品二维码
         $goodsQr =  $this->generateQr();
-
-        // $shopLogo = imagecreatefromstring(\Curl::to(yz_tomedia($this->shopSet['logo']))->get());
-        // $target = $this->mergeLogoImage($target, $shopLogo);
-        // $target = $this->mergeText($target, $this->shopText, $this->shopSet['name']);
-
+        
         if ($this->goodsModel->hasOneShare->share_title) {
             $text = $this->goodsModel->hasOneShare->share_title;
         } else {
@@ -170,9 +162,9 @@ class GoodsPosterController extends ApiController
         $target = $this->mergePriceText($target);
        
 
-        header ( "Content-type: image/png" );
-        imagePng ( $target );
-        exit();
+        // header ( "Content-type: image/png" );
+        // imagePng ( $target );
+        // exit();
 
         imagepng($target, $this->getGoodsPosterPath());
         imagedestroy($target);
@@ -181,29 +173,31 @@ class GoodsPosterController extends ApiController
 
     }
 
-    protected function createShopImage()
+    //商城logo 与 商城名称处理
+    protected function createShopImage($target)
     {
 
         putenv('GDFONTPATH='.IA_ROOT.'/addons/yun_shop/static/fonts');
         $font = "source_han_sans";
-
+        //计算商城名称的宽度
         $testbox = imagettfbbox($this->shopText['size'], 0, $font, $this->shopSet['name']);
-
         $shopTextWidth = $testbox[2] > 500 ? 500 : $testbox[2];
+
 
         $image_width = $shopTextWidth + 50; 
         $image_height = 60; 
-
-        $target = imagecreatetruecolor($image_width, $image_height);
-        $white  = imagecolorallocate($target, 255, 255, 255);
+        $img = imagecreatetruecolor($image_width, $image_height);
+        $white  = imagecolorallocate($img, 255, 255, 255);
         //设置白色背景色
-        imagefill($target,0,0,$white);
+        imagefill($img,0,0,$white);
 
-        $target = $this->mergeLogoImage($target);
-        $target = $this->mergeText($target, $this->shopText, $this->shopSet['name']);
-        header ( "Content-type: image/png" );
-        imagePng ( $target );
-        exit();
+        $img = $this->mergeLogoImage($img);
+        $img = $this->mergeText($img, $this->shopText, $this->shopSet['name']);
+
+        imagecopyresized($target, $img, (600 - $image_width) / 2, 20, 0, 0, $image_width, $image_height, imagesx($img), imagesy($img));
+        imagedestroy($img);
+
+        return $target;
 
     }
 
@@ -225,8 +219,9 @@ class GoodsPosterController extends ApiController
 
      * @return mixed
      */
-    private function mergeGoodsImage($target, $img)
+    private function mergeGoodsImage($target, $thumb)
     {
+        $img = imagecreatefromstring(\Curl::to(yz_tomedia($thumb))->get());
         $width  = imagesx($img);
         $height = imagesy($img);
 
