@@ -464,7 +464,7 @@ class Member extends BackendModel
         if ($plugin_class->isEnabled('coin')) {
             $data['coin'] = [
                 'status' => true,
-                'love_name' => \Yunshop\Coin\Common\Services\SetService::getCoinName(),
+                'coin_name' => \Yunshop\Coin\Common\Services\SetService::getCoinName(),
             ];
         } else {
             $data['love'] = [
