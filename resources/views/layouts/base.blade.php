@@ -89,7 +89,19 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 {{--    <script src="{{static_url('assets/js/bootstrap.min.js')}}" type="text/javascript"></script>--}}
     <script src="{{static_url('assets/js/material.min.js')}}" type="text/javascript"></script>
-    <script src="{{static_url('assets/js/vue.js')}}" type="text/javascript"></script>
+
+    {{--<script src="//vuejs.org/js/vue.min.js"></script>--}}
+    <script src="{{ static_url('yunshop/vue/js/vue.min.js') }}"></script>
+    {{--<script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>--}}
+    <script src="{{ static_url('yunshop/vue/js/vue.js') }}"></script>
+    {{--<script src="https://cdn.bootcss.com/vue-resource/1.5.0/vue-resource.js"></script>--}}
+    <script src="{{ static_url('yunshop/vue/js/vue-resource.js') }}"></script>
+
+    {{--<link href="https://cdn.bootcss.com/element-ui/2.3.1/theme-chalk/index.css" rel="stylesheet">--}}
+    <link href="{{ static_url('yunshop/element-ui/css/element-ui_2.3.1_theme-chalk_index.css') }}" rel="stylesheet">
+    {{--<script src="https://cdn.bootcss.com/element-ui/2.4.0/index.js"></script>--}}
+    <script src="{{ static_url('yunshop/element-ui/js/element-ui_2.4.0_index.js') }}"></script>
+
     <script src="{{static_url('assets/js/perfect-scrollbar.jquery.min.js')}}" type="text/javascript"></script>
     <!-- Library for adding dinamically elements -->
     <script src="{{static_url('assets/js/arrive.min.js')}}" type="text/javascript"></script>
@@ -129,7 +141,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <script src="{{static_url('js/echarts.js')}}" type="text/javascript"></script>
 
-    <script type="text/javascript" src="{{static_url('resource/js/app/util.js')}}"></script>
+    <!-- import iView -->
+    {{--<script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>--}}
+    <script src="{{ static_url('yunshop/axios/js/axios_0.18.0_axios.min.js') }}"></script>
+    {{--<script src="https://cdn.bootcss.com/iview/2.14.0/iview.min.js"></script>--}}
+    <script src="{{ static_url('yunshop/iview/js/iview_2.14.0_iview.min.js') }}"></script>
+    {{--<link href="https://cdn.bootcss.com/iview/2.14.0/styles/iview.css" rel="stylesheet">--}}
+    {{--<link href="{{ static_url('yunshop/iview/css/iview_2.14.0_styles_iview.css') }}" rel="stylesheet">--}}
+
+    <script type="text/javascript" src="{{static_url('resource/js/app/util.js?time=3232')}}"></script>
     <script type="text/javascript" src="{{static_url('resource/js/require.js')}}"></script>
 
     <script type="text/javascript" src="{{static_url('js/app/config.js')}}"></script>

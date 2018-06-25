@@ -13,6 +13,11 @@ use app\common\models\order\OrderGoodsChangePriceLog;
 use app\common\models\orderGoods\OrderGoodsExpansion;
 use Illuminate\Database\Eloquent\Builder;
 
+/**
+ * Class OrderGoods
+ * @package app\common\models
+ * @property int comment_status
+ */
 class OrderGoods extends BaseModel
 {
     public $table = 'yz_order_goods';
@@ -34,13 +39,13 @@ class OrderGoods extends BaseModel
 
     public function goods()
     {
-        //todo ??需调查为什么 $this->goods 调取不到这个函数
+        // ??需调查为什么 $this->goods 调取不到这个函数   因为调动的order_goods没有获取goods_id字段
         return $this->belongsTo(app('GoodsManager')->make('Goods'));
     }
 
     public function scopeOrderGoods(Builder $query)
     {
-        return $query->select(['id', 'order_id', 'goods_id', 'goods_price', 'total', 'goods_option_title', 'price', 'goods_market_price', 'goods_cost_price', 'thumb', 'title', 'goods_sn'])->with('goods', function ($query) {
+        return $query->select(['id', 'order_id', 'goods_id', 'goods_price', 'total', 'goods_option_title', 'price', 'goods_market_price', 'goods_cost_price', 'thumb', 'title', 'goods_sn','payment_amount','deduction_amount'])->with('goods', function ($query) {
             return $query->goods();
         });
     }

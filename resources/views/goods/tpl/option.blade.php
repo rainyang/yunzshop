@@ -1,4 +1,7 @@
 <link href="{{static_url('yunshop/goods/goods.css')}}" media="all" rel="stylesheet" type="text/css"/>
+<style>
+	.table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td{word-wrap:break-word;word-break:break-all;white-space: normal}
+</style>
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否启用{{$lang['shopoption']}}</label>
     <div class="col-sm-9 col-xs-12">

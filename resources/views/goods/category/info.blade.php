@@ -96,7 +96,7 @@
                             </div>
                         </div>
                     @endif
-
+            @include('goods.category.search-group');
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否推荐</label>
                         <div class="col-sm-9 col-xs-12">

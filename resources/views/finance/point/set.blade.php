@@ -58,6 +58,20 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">积分抵扣运费</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <label class="radio-inline">
+                                <input type="radio" name="set[point_freight]" value='1'
+                                       @if ($set['point_freight'] == 1) checked @endif /> 开启
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="set[point_freight]" value='0'
+                                       @if (empty($set['point_freight'])) checked @endif /> 关闭
+                            </label>
+                            <span class='help-block'>开启积分抵扣运费： 积分可用于抵扣运费</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">积分抵扣比例</label>
                         <div class="col-sm-5">
                             <div class='input-group'>

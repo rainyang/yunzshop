@@ -28,7 +28,7 @@ class GoodsScope extends CouponUseScope
                 /**
                  * @var $orderGoods PreOrderGoods
                  */
-                return in_array($orderGoods->getGoodsId(), $this->coupon->getMemberCoupon()->belongsToCoupon->goods_ids);
+                return in_array($orderGoods->goods_id, $this->coupon->getMemberCoupon()->belongsToCoupon->goods_ids);
             });
         if ($orderGoods->unique('is_plugin')->count() > 1) {
             throw new AppException('自营商品与第三方商品不能共用一张优惠券');

@@ -9,10 +9,8 @@
 namespace app\backend\controllers;
 
 use app\common\components\BaseController;
-use app\common\helpers\Url;
 use app\common\services\Check;
 use Illuminate\Support\Facades\DB;
-use Mockery\Exception;
 
 class IndexController extends BaseController
 {
@@ -26,6 +24,18 @@ class IndexController extends BaseController
     public function changeField()
     {
         $sql = 'ALTER TABLE `' . DB::getTablePrefix() . 'mc_members` MODIFY `pay_password` varchar(30) NOT NULL DEFAULT 0';
+
+        try {
+            DB::select($sql);
+            echo '数据已修复';
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
+    }
+
+    public function changeAgeField()
+    {
+        $sql = 'ALTER TABLE `' . DB::getTablePrefix() . 'mc_members` MODIFY `age` tinyint(3) NOT NULL DEFAULT 0';
 
         try {
             DB::select($sql);

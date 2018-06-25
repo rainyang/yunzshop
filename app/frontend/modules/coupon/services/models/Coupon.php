@@ -221,7 +221,7 @@ class Coupon
     public function unique()
     {
         //允许多张使用
-        if($this->getMemberCoupon()->belongsToCoupon->is_complex){
+        if ($this->getMemberCoupon()->belongsToCoupon->is_complex) {
             return true;
         }
         $memberCoupons = MemberCouponService::getCurrentMemberCouponCache($this->getPreOrder()->belongsToMember);
@@ -285,14 +285,4 @@ class Coupon
         return true;
     }
 
-    /**
-     * 记录优惠券已使用
-     * @return bool
-     */
-//    public function destroy()
-//    {
-//        $memberCoupon = $this->memberCoupon->fresh();
-//        $memberCoupon->used = 1;
-//        return $memberCoupon->save();
-//    }
 }

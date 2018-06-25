@@ -186,8 +186,6 @@ class RegisterController extends ApiController
 
         $reset_pwd = \YunShop::request()->reset;
 
-        $type = \YunShop::request()->type;
-
         $state = \YunShop::request()->state ?: '86';
 
         if (empty($mobile)) {
