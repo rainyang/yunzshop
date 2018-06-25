@@ -136,6 +136,11 @@ class PayedService
 
         } catch (\Exception $exception) {
 
+            $this->withdrawModel->status = Withdraw::STATUS_AUDIT;
+            $this->withdrawModel->pay_at = null;
+
+            $this->updateWithdrawModel();
+
             throw new ShopException($exception->getMessage());
 
         } finally {
@@ -143,11 +148,12 @@ class PayedService
         }
     }
 
-
+    
     /**
      * 尝试打款
      *
      * @return bool
+     * @throws ShopException
      */
     private function _tryPayed()
     {
@@ -166,7 +172,7 @@ class PayedService
                 $result = $this->manualWithdrawPay();
                 break;
             default:
-                $result = false;
+                throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：未知打款类型");
         }
         return $result;
     }
