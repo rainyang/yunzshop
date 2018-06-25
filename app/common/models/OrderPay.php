@@ -32,7 +32,10 @@ use app\frontend\modules\payment\managers\OrderPaymentTypeManager;
  * @property float amount
  * @property array order_ids
  * @property Collection orders
+ * @property Collection payOrder
+ * @property Collection all_status
  * @property PayType payType
+ * @property Member member
  * @property string pay_type_name
  * @property string status_name
  */
@@ -67,15 +70,25 @@ class OrderPay extends BaseModel
             ->value('pay_type_id');
     }
 
+    public function member()
+    {
+        return $this->belongsTo(Member::class,'uid');
+    }
+
     public function getStatusNameAttribute()
     {
-        return [
+        return $this->all_status[$this->status];
+    }
+    /**
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAllStatusAttribute(){
+        return collect([
             self::STATUS_UNPAID => '未支付',
             self::STATUS_PAID => '已支付',
             self::STATUS_REFUNDED => '已退款',
-        ][$this->status];
+        ]);
     }
-
     public function getPayTypeNameAttribute()
     {
         return $this->payType->name;
@@ -90,6 +103,7 @@ class OrderPay extends BaseModel
     {
         return $this->belongsTo(PayType::class);
     }
+
     public function getPaymentTypes()
     {
         /**
@@ -154,7 +168,9 @@ class OrderPay extends BaseModel
     {
         return $this->getPayType()->applyPay();
     }
-
+    public function payOrder(){
+        return $this->hasMany(PayOrder::class,'out_order_no','pay_sn');
+    }
     /**
      * 获取支付参数
      * @param int $payTypeId

@@ -1,7 +1,7 @@
 @extends('layouts.base')
 @section('title', '订单支付记录')
 @section('content')
-    <div id="app-order-pay">
+    <div id="app-order-pay" xmlns:v-bind="http://www.w3.org/1999/xhtml">
         <template>
             <el-table
                     :data="list"
@@ -16,8 +16,13 @@
                         {{--label="用户id">--}}
                 {{--</el-table-column>--}}
                 <el-table-column
-                        prop="pay_sn"
                         label="支付单号">
+                    <template slot-scope="scope">
+                        <a v-bind:href="'{{ yzWebUrl('orderPay.detail', array('order_pay_id' => '')) }}'+[[scope.row.id]]"
+                           target="_blank">
+                            [[scope.row.pay_sn]]
+                        </a>
+                    </template>
                 </el-table-column>
                 <el-table-column
                         prop="amount"

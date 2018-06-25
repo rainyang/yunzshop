@@ -16,7 +16,7 @@ use app\common\modules\payType\remittance\models\process\RemittanceAuditProcess;
 class OperationController extends BaseController
 {
     use Operate;
-
+    public $transactionActions = ['*'];
     protected $process;
 
     protected function getProcess()
@@ -25,7 +25,7 @@ class OperationController extends BaseController
             $processId = request()->input('process_id');
 
             $this->process = RemittanceAuditProcess::find($processId);
-            if(!isset($this->process)){
+            if (!isset($this->process)) {
                 throw new AppException("我找到id为{$processId}的审核进程记录");
             }
         }
@@ -46,7 +46,8 @@ class OperationController extends BaseController
      * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
-    public function reject(){
+    public function reject()
+    {
         $this->toClosedState();
         return $this->successJson();
 

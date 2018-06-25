@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int is_pending
  * @property string name
  * @property string code
+ * @property \Illuminate\Support\Collection all_state
  * @property Collection status
  * @property string model_type
  * @property string state_name
@@ -34,7 +35,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Process extends BaseModel
 {
-    use HasProcessTrait, SoftDeletes, CanPendingTrait,BelongsStatusTrait;
+    use HasProcessTrait, SoftDeletes, CanPendingTrait, BelongsStatusTrait;
     public $table = 'yz_process';
 
     protected $guarded = ['id'];
@@ -97,7 +98,8 @@ class Process extends BaseModel
     /**
      * @throws AppException
      */
-    private function operationValidate(){
+    private function operationValidate()
+    {
         // todo 是否可以考虑继续提取一个操作类
         if (isset($this->state) && $this->state != self::STATUS_PROCESSING) {
             throw new AppException("{$this->name}状态为{$this->state_name},无法继续操作");
@@ -107,6 +109,7 @@ class Process extends BaseModel
             throw new AppException("{$this->name}已挂起,无法继续操作");
         }
     }
+
     /**
      * @param State $state
      * @throws AppException
@@ -158,23 +161,44 @@ class Process extends BaseModel
 
     public function getStateNameAttribute()
     {
-        return [
-            self::STATUS_PROCESSING => '处理中',
-            self::STATUS_COMPLETED => '已完成',
-            self::STATUS_CANCELED => '已取消',
-        ][$this->state];
+        return $this->all_state[$this->state];
     }
 
+    /**
+     * @return string
+     */
     public function getStatusNameAttribute()
     {
 
         return $this->currentStatus()->state->name;
     }
-    public function isPending(){
+
+    /**
+     * @return int
+     */
+    public function isPending()
+    {
         return $this->is_pending;
     }
-    public function getCodeAttribute(){
+
+    /**
+     * @return string
+     */
+    public function getCodeAttribute()
+    {
         return $this->flow->code;
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAllStateAttribute()
+    {
+        return collect([
+            self::STATUS_PROCESSING => '处理中',
+            self::STATUS_COMPLETED => '已完成',
+            self::STATUS_CANCELED => '已取消',
+        ]);
     }
 //    public function AfterCompleted(Closure $callback)
 //    {

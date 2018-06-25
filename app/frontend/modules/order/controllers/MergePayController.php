@@ -410,7 +410,7 @@ class MergePayController extends ApiController
         if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
             $redirect = $trade['redirect_url'];
         }
-
-        return $this->successJson('成功', ['redirect' => $redirect]);
+        $data['redirect'] = $redirect;
+        return $this->successJson('成功', $data);
     }
 }

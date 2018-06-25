@@ -33,6 +33,9 @@ class RemittanceRecord extends BaseModel
         return $this->belongsTo(OrderPay::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function member()
     {
         return $this->belongsTo(Member::class, 'uid');

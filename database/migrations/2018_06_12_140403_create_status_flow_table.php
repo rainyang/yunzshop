@@ -107,6 +107,9 @@ class CreateStatusFlowTable extends Migration
                 $table->integer('uid');
                 $table->integer('order_pay_id');
                 $table->text('report_url')->nullable();
+                $table->string('card_no')->nullable();
+                $table->string('bank_name')->nullable();
+                $table->decimal('amount')->nullable();
                 $table->text('note')->nullable();
                 $table->integer('created_at')->nullable();
                 $table->integer('updated_at')->nullable();
@@ -126,8 +129,8 @@ class CreateStatusFlowTable extends Migration
      */
     public function down()
     {
-        if (Schema::hasTable('yz_transfer_record')) {
-            Schema::dropIfExists('yz_transfer_record');
+        if (Schema::hasTable('yz_remittance_record')) {
+            Schema::dropIfExists('yz_remittance_record');
         }
         if (Schema::hasTable('yz_process')) {
             Schema::dropIfExists('yz_process');

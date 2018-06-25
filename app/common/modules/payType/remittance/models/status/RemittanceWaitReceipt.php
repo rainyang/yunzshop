@@ -8,6 +8,8 @@
 
 namespace app\common\modules\payType\remittance\models\status;
 
+use app\common\models\Order;
+use app\common\models\PayType;
 use app\common\modules\payType\remittance\models\flows\RemittanceAuditFlow;
 use app\common\modules\status\StatusObserver;
 use app\frontend\modules\member\services\MemberService;
@@ -29,13 +31,21 @@ class RemittanceWaitReceipt extends StatusObserver
          * @var RemittanceProcess $process
          */
         $process = RemittanceProcess::find($this->status->model_id);
+        $process->orderPay->orders->each(function (Order $order) use($process) {
+            $order->pay_type_id = PayType::REMITTANCE;
+            $order->order_pay_id = $process->orderPay->id;
+            $order->save();
+        });
         // todo 从参数中获取  验证参数是否存在
         $transferRecord = new PreRemittanceRecord(
             [
-                'report_url' => 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1529411390405&di=74639b4b003720118befc445ade004cb&imgtype=0&src=http%3A%2F%2Fatt.bbs.duowan.com%2Fforum%2F201411%2F03%2F2200586dku8uouvv8frvvz.jpg',
-                'note' => '汇款号:112333211,姓名:沈阳',
+                'report_url' => request()->input('report_url',''),
+                'note' => request()->input('note',''),
                 'uid' => MemberService::getCurrentMemberModel()->uid,
-                'order_pay_id' => $process->model_id
+                'order_pay_id' => $process->model_id,
+                'card_no' => request()->input('card_no',''),
+                'amount' => request()->input('amount',0),
+                'bank_name' => request()->input('bank_name',''),
             ]
         );
         $transferRecord->save();

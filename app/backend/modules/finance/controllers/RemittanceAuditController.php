@@ -10,6 +10,7 @@ namespace app\backend\modules\finance\controllers;
 
 
 use app\common\components\BaseController;
+use app\common\models\Process;
 use app\common\modules\payType\remittance\models\flows\RemittanceAuditFlow;
 use app\common\modules\payType\remittance\models\process\RemittanceAuditProcess;
 use Illuminate\Database\Eloquent\Builder;
@@ -26,14 +27,22 @@ class RemittanceAuditController extends BaseController
         /**
          * @var RemittanceAuditFlow $remittanceAuditFlow
          */
+        $searchParams = request()->input('searchParams');
         $remittanceAuditFlow = RemittanceAuditFlow::first();
-        $processList = RemittanceAuditProcess::where('flow_id',$remittanceAuditFlow->id)->with(['member','status','remittanceRecord'=> function (Builder $query) {
+        $processBuilder = RemittanceAuditProcess::where('flow_id', $remittanceAuditFlow->id)->with(['member', 'status', 'remittanceRecord' => function (Builder $query) {
             $query->with('orderPay');
-        }])->get();
-
-        return view('finance.remittance.audits', [
-            'remittanceAudits' => json_encode($processList)
-        ])->render();
+        }]);
+        if(isset($searchParams['state'])){
+            $processBuilder->where('state');
+        }
+        $processList = $processBuilder->get();
+        $allState = (new Process())->all_state;
+        $data = [
+            'remittanceAudits' => $processList,
+            'allState' => $allState,
+            'searchParams' => $searchParams,
+        ];
+        return view('finance.remittance.audits', ['data' => json_encode($data)])->render();
 
     }
 }

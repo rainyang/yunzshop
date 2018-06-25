@@ -35,7 +35,7 @@ trait Operate
         ]);
         if (!isset($this->process)) {
             $this->process = $this->_getProcess();
-            if ($this->process->currentStatus()->state != in_array($this->process->currentStatus()->state->code,$this->beforeStates())) {
+            if ($this->process->currentStatus()->state->code != $this->beforeStates()) {
                 throw new AppException("{$this->process->name}流程处于{$this->process->currentStatus()->name}状态,无法执行{$this->name}操作");
             }
         }

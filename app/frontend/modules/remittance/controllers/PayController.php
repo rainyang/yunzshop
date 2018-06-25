@@ -11,7 +11,9 @@ namespace app\frontend\modules\remittance\controllers;
 
 use app\common\components\BaseController;
 use app\common\exceptions\AppException;
+use app\common\models\Process;
 use app\common\modules\payType\remittance\models\flows\RemittanceFlow;
+use app\frontend\models\OrderPay;
 use app\frontend\modules\payType\remittance\process\RemittanceProcess;
 use app\frontend\modules\process\controllers\Operate;
 
@@ -26,22 +28,32 @@ class PayController extends BaseController
     protected $name = '确认支付';
 
     /**
-     * @return RemittanceProcess
+     * @return Process
      * @throws AppException
      */
     protected function _getProcess()
     {
-        $processId = request()->input('process_id');
-        $process = RemittanceProcess::find($processId);
+        $orderPayId = request()->input('order_pay_id');
+        /**
+         * @var OrderPay $orderPay
+         */
+        $orderPay = OrderPay::find($orderPayId);
+        if (!isset($orderPay)) {
+            throw new AppException("未找到该支付记录(id:{$orderPayId})");
+        }
+        $process = $orderPay->currentProcess();
         if (!isset($process)) {
-            throw new AppException("未找到该流程(id:{$processId})");
+            throw new AppException("未找到该流程(order_pay_id:{$orderPayId})");
         }
         return $process;
     }
 
+    /**
+     * @return string
+     */
     protected function beforeStates()
     {
-        return [RemittanceFlow::STATE_WAIT_REMITTANCE];
+        return RemittanceFlow::STATE_WAIT_REMITTANCE;
     }
 
     /**
@@ -50,6 +62,9 @@ class PayController extends BaseController
      */
     public function index()
     {
+        $this->validate([
+            'report_url' => 'required',
+        ]);
         $this->toNextState();
         return $this->successJson();
     }

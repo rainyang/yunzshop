@@ -329,10 +329,7 @@ class Order extends BaseModel
      */
     public function getButtonModelsAttribute()
     {
-        $baseButton = $this->getStatusService()->getButtonModels();
-        $expandButton = $this->flow()->getButtons();
-// todo 与订单扩展状态获取的button合并
-        $result = array_merge($baseButton,$expandButton);
+        $result = $this->getStatusService()->getButtonModels();
         return $result;
     }
 
