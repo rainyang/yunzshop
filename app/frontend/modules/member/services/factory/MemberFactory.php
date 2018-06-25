@@ -15,6 +15,7 @@ use app\frontend\modules\member\services\MemberAppWechatService;
 use app\frontend\modules\member\services\MemberMiniAppService;
 use app\frontend\modules\member\services\MemberOfficeAccountService;
 use app\frontend\modules\member\services\MemberQQService;
+use app\frontend\modules\member\services\MemberAlipayService;
 
 class MemberFactory
 {
@@ -25,6 +26,7 @@ class MemberFactory
     const LOGIN_MOBILE = 5;
     const LOGIN_QQ = 6;
     const LOGIN_APP_YDB = 7;
+    const LOGIN_ALIPAY = 8;
 
     public static function create($type = null)
     {
@@ -52,6 +54,9 @@ class MemberFactory
                 break;
             case self::LOGIN_APP_YDB:
                 $className = new MemberAppYdbService();
+                break;
+            case self::LOGIN_ALIPAY:
+                $className = new MemberAlipayService();
                 break;
             default:
                 $className = null;
