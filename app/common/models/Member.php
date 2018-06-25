@@ -469,7 +469,7 @@ class Member extends BackendModel
         } else {
             $data['love'] = [
                 'status' => false,
-                'love_name' => '华侨币',
+                'coin_name' => '华侨币',
             ];
         }
 
