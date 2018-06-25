@@ -9,20 +9,17 @@
 
 namespace app\common\models;
 
-use app\common\models\BaseModel;
-use app\common\models\FlowState;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
  * 流程类型
  * Class Flow
  * @package app\common\models\statusFlow
- * @property Collection flowStates
  * @property Collection process
  * @property int id
  * @property string name
  * @property string code
- * @property Collection states
+ * @property Collection all_status
  */
 class Flow extends BaseModel
 {
@@ -32,74 +29,71 @@ class Flow extends BaseModel
 
     /**
      * 包含的状态类型
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function states()
-    {
-        return $this->belongsToMany(State::class, (new FlowState)->getTable(), 'flow_id', 'state_id');
-    }
-
-    /**
-     * 流程状态关联记录
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function flowStates()
+    public function allStatus()
     {
-        return $this->hasMany(FlowState::class, 'flow_id');
+        return $this->hasMany(Status::class,'flow_id');
     }
 
     /**
      * 此状态的下一个状态
-     * @param State $state
+     * @param Status $status
      * @return mixed
      */
-    public function getNextState(State $state)
+    public function getNextStatus(Status $status)
     {
-        $flowState = $this->flowStates->where('state_id',$state->id)->first();
-        return $this->flowStates->where('order', '>', $flowState->order)->first()->state;
+        $flowStatus = $this->all_status->where('status_id',$status->id)->first();
+        return $this->all_status->where('order', '>', $flowStatus->order)->first();
     }
 
-    public function getCloseState()
+    public function getCloseStatus()
     {
-        return $this->flowStates->where('order', FlowState::ORDER_CLOSE)->first()->state;
-
-    }
-
-    public function getCancelState()
-    {
-        return $this->flowStates->where('order', FlowState::ORDER_CANCEL)->first()->state;
+        return $this->all_status->where('order', Status::ORDER_CLOSE)->first();
 
     }
 
+    public function getCancelStatus()
+    {
+        return $this->all_status->where('order', Status::ORDER_CANCEL)->first();
+
+    }
+    /**
+     * 获取初始状态
+     * @return mixed
+     */
+    public function getFirstStatus()
+    {
+        return $this->all_status->sort('order')->first();
+    }
     /**
      * 获取最终状态
      * @return mixed
      */
-    public function getFinalState()
+    public function getFinalStatus()
     {
-        return $this->flowStates->sortByDesc('order')->first()->state;
+        return $this->all_status->sortByDesc('order')->first();
     }
 
     /**
      * 添加一组状态
-     * @param $states
+     * @param $statusCollection
      */
 
-    public function pushStates($states)
+    public function pushManyStatus($statusCollection)
     {
-        $result = [];
-        foreach ($states as $state) {
-            $result[State::create($state)->id] = [
-                'order' => $state['order']
-            ];
-        }
-
-        $this->states()->attach($result);
+        $statusCollection = collect($statusCollection)->map(function ($status) {
+            return new Status($status);
+        });
+        $this->allStatus()->saveMany($statusCollection);
     }
 
-    public function setStates($states)
+    public function setManyStatus($statusCollection)
     {
-        $this->states()->attach($states);
+        $statusCollection = collect($statusCollection)->map(function ($status) {
+            return new Status($status);
+        });
+        $this->allStatus()->saveMany($statusCollection);
 
     }
 

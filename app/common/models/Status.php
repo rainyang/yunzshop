@@ -8,24 +8,19 @@
  */
 
 namespace app\common\models;
-
-use app\common\models\BaseModel;
-use app\common\modules\status\StatusContainer;
 use app\common\modules\status\StatusObserverDispatcher;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+
 /**
- * 阶段
- * Class ModelBelongsStatus
- * @package app\common\models\Status
- * @property State state
- * @property string name
+ * 状态
+ * Class State
+ * @package app\common\models\statusFlow
+ * @property int id
+ * @property int order
  * @property string code
- * @property int model_id
- * @property int state_id
- * @property Model model_type
- * @property string belongsToModel
+ * @property string name
+ * @property Flow flow
  */
 class Status extends BaseModel
 {
@@ -33,38 +28,21 @@ class Status extends BaseModel
     public $table = 'yz_status';
 
     protected $guarded = ['id'];
-    protected $hidden = ['model_type'];
-
+    protected $fillable = ['name','code','order','plugin_id'];
+    const ORDER_CLOSE = -2;
+    const ORDER_CANCEL = -1;
     /**
-     * 所属的实体
+     * 包含此状态的流程
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function belongsToModel(){
-        return $this->belongsTo($this->model_type,'model_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function state()
+    public function flow()
     {
-        return $this->belongsTo(State::class);
-    }
-    public function getNameAttribute(){
-        return $this->state->name;
-    }
-    /**
-     * @return array
-     */
-    public function getButtons()
-    {
-        return [];
+        return $this->belongsTo(Flow::class,'flow_id');
     }
 
     protected static function boot()
     {
         parent::boot();
-        parent::observe(new StatusObserverDispatcher);
-
+        parent::observe(new StatusObserverDispatcher());
     }
 }

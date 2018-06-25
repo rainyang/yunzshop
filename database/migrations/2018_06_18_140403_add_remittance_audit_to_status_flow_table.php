@@ -28,11 +28,11 @@ class AddRemittanceAuditToStatusFlowTable extends Migration
             'name' => '转账审核',
             'code' => 'remittanceAudit',
         ]);
-        $flow->setStates([
-                \app\common\models\State::where('code', 'waitAudit')->value('id') => ['order' => 0],
-                \app\common\models\State::where('code', 'passed')->value('id') => ['order' => 0],
-                \app\common\models\State::where('code', 'canceled')->value('id') => ['order' => -1],
-                \app\common\models\State::where('code', 'refused')->value('id') => ['order' => -2],
+        $flow->setManyStatus([
+                \app\common\models\Status::where('code', 'waitAudit')->value('id') => ['order' => 0],
+                \app\common\models\Status::where('code', 'passed')->value('id') => ['order' => 0],
+                \app\common\models\Status::where('code', 'canceled')->value('id') => ['order' => -1],
+                \app\common\models\Status::where('code', 'refused')->value('id') => ['order' => -2],
             ]
         );
     }

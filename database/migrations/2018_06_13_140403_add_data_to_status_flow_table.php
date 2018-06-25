@@ -28,7 +28,7 @@ class AddDataToStatusFlowTable extends Migration
             'name' => '邮局汇款',
             'code' => 'remittance',
         ]);
-        $flow->pushStates([
+        $flow->pushManyStatus([
             [
                 'code' => 'waitRemittance',
                 'name' => '待汇款',
@@ -62,7 +62,7 @@ class AddDataToStatusFlowTable extends Migration
             'name' => '邮局转账审核',
             'code' => 'remittanceAudit',
         ]);
-        $flow->pushStates([
+        $flow->pushManyStatus([
             [
                 'code' => 'waitAudit',
                 'name' => '待审核',

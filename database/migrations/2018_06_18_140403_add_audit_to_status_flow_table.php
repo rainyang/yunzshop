@@ -28,7 +28,7 @@ class AddAuditToStatusFlowTable extends Migration
             'name' => '后台审核',
             'code' => 'audit',
         ]);
-        $flow->pushStates([
+        $flow->pushManyStatus([
             [
                 'code' => 'waitAudit',
                 'name' => '待审核',
