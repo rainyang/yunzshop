@@ -94,7 +94,7 @@ class WithdrawApplyListener
         $withdrawModel->servicetax_rate = $withdrawOutlayService->getServiceTaxRate();
         $withdrawModel->servicetax = $withdrawOutlayService->getServiceTax();
 
-        if($withdrawModel->withdraw_set['balance_special'] == '1') {
+        if($withdrawModel->withdraw_set['balance_special'] == '1' && $withdrawModel->pay_way == 'balance') {
             $withdrawModel->poundage_rate = $withdrawOutlayService->getToBalancePoundageRate();
             $withdrawModel->poundage = $withdrawOutlayService->getToBalancePoundage();
             $withdrawModel->servicetax_rate = $withdrawOutlayService->getToBalanceServiceTaxRate();
