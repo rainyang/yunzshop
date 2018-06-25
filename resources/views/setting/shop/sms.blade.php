@@ -8,7 +8,7 @@
     <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" >
         <div class="panel panel-default">
             <div class='panel-body'>
-<!--
+
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">短信验证码</label>
                     <div class="col-sm-9 col-xs-12">
@@ -17,7 +17,7 @@
                         <input type="radio" name="sms[status]" value="0" @if ($set['status'] == 0) checked @endif/> 关闭
                     </div>
                 </div>
--->
+
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">短信设置</label>
                     <div class="col-sm-9 col-xs-12">
