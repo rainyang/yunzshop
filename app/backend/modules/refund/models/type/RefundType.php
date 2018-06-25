@@ -58,6 +58,14 @@ abstract class RefundType
         return $this->refundApply->save();
     }
 
+    public function close()
+    {
+        $this->refundApply->status = RefundApply::CLOSE;
+        event(new AfterOrderRefundedEvent($this->refundApply->order));
+        return $this->refundApply->save();
+
+    }
+
     /**
      * todo ???
      * @return bool
