@@ -12,8 +12,12 @@ use app\common\modules\audit\flow\models\AuditFlow;
 
 class RemittanceAuditFlow extends AuditFlow
 {
-    public function process()
+    const CODE = 'remittanceAudit';
+    protected static function boot()
     {
-
+        parent::boot();
+        self::addGlobalScope(function ($query) {
+            $query->where('code',self::CODE);
+        });
     }
 }

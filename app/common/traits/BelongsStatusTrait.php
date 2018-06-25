@@ -27,7 +27,7 @@ trait BelongsStatusTrait
      */
     public function status()
     {
-        return $this->hasMany(Status::class, 'model_id', 'id')->where('model_type', $this->getTable());
+        return $this->hasMany(Status::class, 'model_id', 'id')->where('model_type', $this->getMorphClass());
     }
 
     /**
@@ -47,7 +47,10 @@ trait BelongsStatusTrait
 
     protected function statusAttribute($state)
     {
-        return ['model_id' => $state->id];
+        return ['state_id' => $state->id,
+            'model_id' => $this->id,
+            'model_type' => $this->getMorphClass(),
+            'code' => $this->code.'.'.$state->code];
     }
 
     /**
@@ -65,17 +68,8 @@ trait BelongsStatusTrait
      */
     protected function createStatus(State $state)
     {
-        $status = $this->states()->newPivot($this->statusAttribute($state));
-        dd($status->save());
-        exit;
-
-        $this->states()->save($state, $this->statusAttribute($state));
-//        dd($this->currentStatus()->getEventDispatcher()->getListeners('eloquent.created: '.get_class($this->currentStatus())));
-//        exit;
-        // dd($this->status);
-        // exit;
-
-        //$this->currentStatus()->fireModelEvent('created');
+        $status = new Status($this->statusAttribute($state));
+        $status->save();
     }
 
 }

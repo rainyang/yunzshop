@@ -8,21 +8,21 @@
 
 namespace app\common\modules\payType\remittance\models\process;
 
-use app\common\models\Process;
 use app\common\models\RemittanceRecord;
+use app\common\modules\audit\process\models\AuditProcess;
 
 /**
  * Class RemittanceProcess
  * @package app\common\modules\payType\remittance\models
- * @property RemittanceRecord $transferRecord
+ * @property RemittanceRecord $remittanceRecord
  */
 class RemittanceAuditProcess extends AuditProcess
 {
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function transferRecord()
+    public function remittanceRecord()
     {
-        return $this->hasOne(RemittanceRecord::class,'process_id');
+        return $this->belongsTo(RemittanceRecord::class,'model_id');
     }
 }

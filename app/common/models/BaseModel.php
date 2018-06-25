@@ -180,7 +180,12 @@ class BaseModel extends Model
         }
 
     }
-
+    private function getCommonModelClass($class){
+        if(get_parent_class($class) == self::class){
+            return $class;
+        }
+        return $this->getCommonModelClass(get_parent_class($class));
+    }
     /**
      * Get the class name for polymorphic relations.
      *
@@ -188,7 +193,8 @@ class BaseModel extends Model
      */
     public function getMorphClass()
     {
-        return $this->getTable();
+
+        return $this->getCommonModelClass(parent::getMorphClass());
     }
 
     public function fireModelEvent($event, $halt = true)

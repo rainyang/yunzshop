@@ -19,13 +19,13 @@ use Illuminate\Database\Eloquent\Collection;
  * @package app\common\models\statusFlow
  * @property Collection flowStates
  * @property Collection process
+ * @property int id
  * @property string name
  * @property string code
  * @property Collection states
  */
 class Flow extends BaseModel
 {
-
     public $table = 'yz_flow';
 
     protected $guarded = ['id'];
@@ -55,7 +55,29 @@ class Flow extends BaseModel
      */
     public function getNextState(State $state)
     {
-        return $this->flowStates->where('order', '>', $state->order)->first()->state;
+        $flowState = $this->flowStates->where('state_id',$state->id)->first();
+        return $this->flowStates->where('order', '>', $flowState->order)->first()->state;
+    }
+
+    public function getCloseState()
+    {
+        return $this->flowStates->where('order', FlowState::ORDER_CLOSE)->first()->state;
+
+    }
+
+    public function getCancelState()
+    {
+        return $this->flowStates->where('order', FlowState::ORDER_CANCEL)->first()->state;
+
+    }
+
+    /**
+     * 获取最终状态
+     * @return mixed
+     */
+    public function getFinalState()
+    {
+        return $this->flowStates->sortByDesc('order')->first()->state;
     }
 
     /**
@@ -83,6 +105,6 @@ class Flow extends BaseModel
 
     public function process()
     {
-        return $this->hasMany(Process::class);
+        return $this->hasMany(Process::class, 'flow_id');
     }
 }

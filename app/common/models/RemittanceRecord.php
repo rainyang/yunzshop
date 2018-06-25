@@ -7,6 +7,8 @@
  */
 
 namespace app\common\models;
+
+use app\common\traits\HasProcessTrait;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
@@ -14,17 +16,25 @@ use Illuminate\Database\Eloquent\Collection;
  * @package app\common\models
  * @property string report_url
  * @property int process_id
- * @property Collection process
+ * @property Process process
+ * @property OrderPay orderPay
  */
 class RemittanceRecord extends BaseModel
 {
-    public $table = 'yz_remittance_record';
+    use HasProcessTrait;
+    protected $table = 'yz_remittance_record';
     protected $guarded = ['id'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function process(){
-        return $this->belongsTo(Process::class);
+    public function orderPay()
+    {
+        return $this->belongsTo(OrderPay::class);
+    }
+
+    public function member()
+    {
+        return $this->belongsTo(Member::class, 'uid');
     }
 }

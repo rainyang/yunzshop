@@ -13,6 +13,14 @@ class CreateStatusFlowTable extends Migration
      */
     public function up()
     {
+        if (Schema::hasTable('yz_order_pay')) {
+            Schema::table('yz_order_pay',
+                function (Blueprint $table) {
+                    if (!Schema::hasColumn('yz_order_pay', 'is_pending')) {
+                        $table->tinyInteger('is_pending')->default(0);
+                    }
+                });
+        }
         if (!Schema::hasTable('yz_flow')) {
             Schema::create('yz_flow', function (Blueprint $table) {
                 $table->integer('id', true);
@@ -76,18 +84,19 @@ class CreateStatusFlowTable extends Migration
         if (!Schema::hasTable('yz_process')) {
             Schema::create('yz_process', function (Blueprint $table) {
                 $table->integer('id', true);
+                $table->integer('uid')->nullable();
                 $table->integer('model_id');
                 $table->string('model_type');
                 $table->integer('flow_id');
                 $table->enum('state', ['processing', 'completed', 'canceled']);
-
+                $table->tinyInteger('is_pending')->default(0);
                 $table->integer('created_at')->nullable();
                 $table->integer('updated_at')->nullable();
                 $table->integer('deleted_at')->nullable();
 
                 $table->foreign('flow_id')
                     ->references('id')
-                    ->on('yz_flow')
+                    ->on((new \app\common\models\flow)->getTable())
                     ->onDelete('cascade');
             });
         }
@@ -95,14 +104,16 @@ class CreateStatusFlowTable extends Migration
         if (!Schema::hasTable('yz_remittance_record')) {
             Schema::create('yz_remittance_record', function(Blueprint $table) {
                 $table->integer('id', true);
-                $table->integer('process_id');
-                $table->text('report_url');
+                $table->integer('uid');
+                $table->integer('order_pay_id');
+                $table->text('report_url')->nullable();
+                $table->text('note')->nullable();
                 $table->integer('created_at')->nullable();
                 $table->integer('updated_at')->nullable();
                 $table->integer('deleted_at')->nullable();
-                $table->foreign('process_id')
+                $table->foreign('order_pay_id')
                     ->references('id')
-                    ->on('yz_process')
+                    ->on((new \app\common\models\OrderPay)->getTable())
                     ->onDelete('cascade');
             });
         }

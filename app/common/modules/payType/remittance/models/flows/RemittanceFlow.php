@@ -12,4 +12,5 @@ use app\common\models\Flow;
 
 class RemittanceFlow extends Flow
 {
+    const STATE_WAIT_REMITTANCE = 'waitRemittance';
 }

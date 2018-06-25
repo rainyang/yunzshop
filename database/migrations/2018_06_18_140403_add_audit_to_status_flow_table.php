@@ -26,7 +26,7 @@ class AddAuditToStatusFlowTable extends Migration
          */
         $flow = \app\common\models\Flow::create([
             'name' => '后台审核',
-            'code' => \app\common\modules\audit\flow\models\AuditFlow::class,
+            'code' => 'audit',
         ]);
         $flow->pushStates([
             [

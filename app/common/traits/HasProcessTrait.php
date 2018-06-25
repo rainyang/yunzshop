@@ -8,8 +8,10 @@
 
 namespace app\common\traits;
 
+use app\common\exceptions\AppException;
 use app\common\models\Flow;
 use app\common\models\Process;
+use app\frontend\modules\member\services\MemberService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -44,15 +46,42 @@ trait HasProcessTrait
 
     /**
      * @param Flow $flow
-     * @return Process
+     * @return array
+     */
+    private function processAttribute(Flow $flow)
+    {
+        return ['uid' => \YunShop::app()->getMemberId(),
+            'flow_id' => $flow->id,
+            'model_id' => $this->id,
+            'model_type' => $this->getMorphClass()];
+    }
+
+    /**
+     * @param Flow $flow
+     * @throws \Exception
      */
     public function addProcess(Flow $flow)
     {
+        if ($this->currentProcess()->code == $flow->code && $this->currentProcess()->state == Process::STATUS_PROCESSING) {
+            throw new AppException("已存在未完成的{$this->currentProcess()->name}流程,无法继续添加");
+        }
+        $this->currentProcess = $this->createProcess($flow);
 
-        $this->flows()->save($flow);
-        $this->currentProcess()->initStatus();
+        $this->currentProcess;
+    }
 
-        return $this->currentProcess();
+    /**
+     * @param Flow $flow
+     * @return Process
+     * @throws \Exception
+     */
+    protected function createProcess(Flow $flow)
+    {
+        $process = new Process($this->processAttribute($flow));
+        $process->save();
+        $process->initStatus();
+        return $process;
+
     }
 
     /**
@@ -60,7 +89,7 @@ trait HasProcessTrait
      */
     public function process()
     {
-        return $this->hasMany(Process::class, 'model_id')->where('model_type', $this->getTable());
+        return $this->hasMany(Process::class, 'model_id')->where('model_type', $this->getMorphClass());
     }
 
     /**
@@ -70,6 +99,10 @@ trait HasProcessTrait
     public function currentProcess()
     {
         if (!isset($this->currentProcess)) {
+            if ($this->process->isEmpty()) {
+                return null;
+            }
+
             $this->currentProcess = $this->process->where('state', 'processing')->first();
         }
         return $this->currentProcess;

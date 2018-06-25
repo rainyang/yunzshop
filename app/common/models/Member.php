@@ -55,7 +55,7 @@ class Member extends BackendModel
     protected $search_fields = ['mobile', 'uid', 'nickname', 'realname'];
 
     protected $primaryKey = 'uid';
-
+    protected $appends = ['avatar_image'];
 
     public function bankCard()
     {
@@ -504,7 +504,7 @@ class Member extends BackendModel
 
             $data['courier'] = [
                 'button_name' => '快递',
-                'status'         => $status ? true : false
+                'status' => $status ? true : false
             ];
         } else {
             $data['courier'] = [
@@ -703,4 +703,8 @@ class Member extends BackendModel
             ->delete();
     }
 
+    public function getAvatarImageAttribute()
+    {
+        return $this->avatar ? tomedia($this->avatar) : tomedia(\Setting::get('shop.shop.headimg'));
+    }
 }

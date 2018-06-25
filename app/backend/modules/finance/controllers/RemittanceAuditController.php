@@ -10,20 +10,30 @@ namespace app\backend\modules\finance\controllers;
 
 
 use app\common\components\BaseController;
-use app\common\models\Flow;
 use app\common\modules\payType\remittance\models\flows\RemittanceAuditFlow;
+use app\common\modules\payType\remittance\models\process\RemittanceAuditProcess;
+use Illuminate\Database\Eloquent\Builder;
+
 
 class RemittanceAuditController extends BaseController
 {
+    /**
+     * @return string
+     * @throws \Throwable
+     */
     public function index()
     {
         /**
          * @var RemittanceAuditFlow $remittanceAuditFlow
          */
-        $remittanceAuditFlow = Flow::where('code',RemittanceAuditFlow::class)->first();
-        $processList = $remittanceAuditFlow->process;
-        dd($processList);
-        exit;
+        $remittanceAuditFlow = RemittanceAuditFlow::first();
+        $processList = RemittanceAuditProcess::where('flow_id',$remittanceAuditFlow->id)->with(['member','status','remittanceRecord'=> function (Builder $query) {
+            $query->with('orderPay');
+        }])->get();
+
+        return view('finance.remittance.audits', [
+            'remittanceAudits' => json_encode($processList)
+        ])->render();
 
     }
 }

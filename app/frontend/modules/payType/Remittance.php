@@ -12,19 +12,22 @@ use app\common\modules\payType\remittance\models\flows\RemittanceFlow;
 
 class Remittance extends BasePayType
 {
+    /**
+     * @throws \Exception
+     */
     public function applyPay()
     {
         $flow = RemittanceFlow::first();
-
-        //$this->orderPay->flows()->save($flow);
+        //$this->orderPay->pending();
         $this->orderPay->addProcess($flow);
-
-        $a = $this->orderPay->currentProcess();
-        //dump($a);
-
-//        $transferRecord = new PreTransferRecord();
-//        $transferRecord->report_url=$option['report_url'];
-//        $transferRecord->setOrderPay($this->orderPay);
-//        $transferRecord->save();
+        // 转账流程
+//        $this->orderPay->currentProcess()->AfterCompleted(
+//            function ($process) {
+//                //$this->orderPay->unPending();
+//                // 订单支付
+//                $this->orderPay->pay();
+//            }
+//
+//        );
     }
 }

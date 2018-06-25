@@ -8,6 +8,7 @@
 
 namespace app\backend\controllers;
 
+use app\common\models\Callback;
 use app\frontend\modules\order\services\OrderService;
 use app\common\components\BaseController;
 use app\common\models\Member;
@@ -16,12 +17,25 @@ use app\common\models\OrderPay;
 use app\common\models\Flow;
 use app\common\services\MessageService;
 use app\frontend\modules\member\models\SubMemberModel;
-use app\frontend\modules\payType\remittance\RemittanceFlow;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use SuperClosure\SerializableClosure;
 
 class TestController extends BaseController
 {
+    public function d()
+    {
+        $orderPay = OrderPay::find(7);
+
+        $code = new SerializableClosure(function() use($orderPay){
+            dd($orderPay);
+        });
+        Callback::create(['key'=>'test','code'=>$code->serialize()]);
+
+
+        call_user_func(unserialize(Callback::first()->code));
+    }
+
     public function c()
     {
         if (Schema::hasTable('yz_containers')) {

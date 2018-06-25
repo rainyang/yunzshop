@@ -27,9 +27,20 @@ trait Operate
         return $this->process;
     }
 
-    public function tonNextState()
+    /**
+     * @throws \Exception
+     */
+    public function toNextState()
     {
         $data = $this->getProcess()->toNextStatus();
+        return $data;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function toClosedState(){
+        $data = $this->getProcess()->toCloseState();
         return $data;
     }
 }

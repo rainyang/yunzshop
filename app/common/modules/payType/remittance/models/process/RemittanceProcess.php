@@ -18,11 +18,5 @@ use app\common\models\RemittanceRecord;
  */
 class RemittanceProcess extends Process
 {
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function transferRecord()
-    {
-        return $this->hasOne(RemittanceRecord::class,'process_id');
-    }
+
 }

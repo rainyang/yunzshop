@@ -20,6 +20,8 @@ class FlowState extends BaseModel
     public $table = 'yz_flow_state';
 
     protected $guarded = ['id'];
+    const ORDER_CLOSE = -2;
+    const ORDER_CANCEL = -1;
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

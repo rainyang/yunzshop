@@ -15,8 +15,4 @@ use app\frontend\models\RemittanceRecord;
 class PreRemittanceRecord extends RemittanceRecord
 {
 
-    public function setProcess(Process $process)
-    {
-        $this->process = $process->id;
-    }
 }

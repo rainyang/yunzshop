@@ -9,14 +9,39 @@
 namespace app\frontend\modules\process\controllers;
 
 
+use app\common\exceptions\AppException;
 use app\frontend\models\Process;
 
 trait Operate
 {
     /**
+     * @var Process
+     */
+    protected $process;
+
+    /**
      * @return Process
      */
-    abstract protected function getProcess();
+    abstract protected function _getProcess();
+    abstract protected function beforeStates();
+
+    /**
+     * @return mixed
+     * @throws AppException
+     */
+    protected function getProcess(){
+        $this->validate([
+            'process_id' => 'integer'
+        ]);
+        if (!isset($this->process)) {
+            $this->process = $this->_getProcess();
+            if ($this->process->currentStatus()->state != in_array($this->process->currentStatus()->state->code,$this->beforeStates())) {
+                throw new AppException("{$this->process->name}流程处于{$this->process->currentStatus()->name}状态,无法执行{$this->name}操作");
+            }
+        }
+
+        return $this->process;
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Model

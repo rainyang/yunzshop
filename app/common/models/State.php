@@ -14,6 +14,7 @@ namespace app\common\models;
  * 状态
  * Class State
  * @package app\common\models\statusFlow
+ * @property int id
  * @property int order
  * @property string code
  * @property string name
