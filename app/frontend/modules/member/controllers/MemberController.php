@@ -1160,7 +1160,7 @@ class MemberController extends ApiController
             }
         }
 
-        if (app('plugins')->isEnabled('video_demand')) {
+        if (app('plugins')->isEnabled('video-demand')) {
 
             $video_demand_setting = Setting::get('plugin.video_demand');
 
