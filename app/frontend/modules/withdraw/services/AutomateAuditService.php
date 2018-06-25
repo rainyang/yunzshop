@@ -32,7 +32,7 @@ class AutomateAuditService
     public function __construct(Withdraw $withdrawModel)
     {
         $this->withdrawModel = $withdrawModel;
-        \YunShop::app()->uniacid = $withdrawModel->uniacid;
+        \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $withdrawModel->uniacid;
     }
 
 
