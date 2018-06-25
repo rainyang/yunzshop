@@ -59,6 +59,10 @@ class DataValidatorService
 
         $outlay = bcadd($this->withdrawModel->poundage, $this->withdrawModel->servicetax, 2);
         $result_amount = bcsub($amount, $outlay, 2);
+
+        \Log::info('king_test', print_r($outlay, true));
+        \Log::info('king_test', print_r($result_amount, true));
+        \Log::info('king_test', print_r($this->withdrawModel, true));
         if (bccomp($result_amount, 1, 2) == -1) {
             throw new AppException("{$type_name}扣除手续费、劳务税金额不能小于1元");
         }
