@@ -1089,6 +1089,31 @@ return [
         ],
         'remark' => '请继续加油！',
     ],
+    'award_gratitude' => [
+        'template_id_short' => 'OPENTM207574677',
+        'title' => '获得感恩奖通知',
+        'first_color' => '#000000',
+        'remark_color' => '#000000',
+        'first' => '您获得了一笔感恩奖励！',
+        'data' => [
+            0 => [
+                "keywords" => "keyword1",
+                "value" => "感恩奖",
+                "color" => "#000000",
+            ],
+            1 => [
+                "keywords" => "keyword2",
+                "value" => "获得",
+                "color" => "#000000",
+            ],
+            2 => [
+                "keywords" => "keyword3",
+                "value" => "亲爱的[昵称]，您于[时间]获得一笔感恩奖！订单金额：[订单金额]元，奖励结算金额：[提成结算金额]元，感恩奖金额：[感恩奖金额]元",
+                "color" => "#000000",
+            ],
+        ],
+        'remark' => '请继续加油！',
+    ],
     'shareholder_dividend' => [
         'template_id_short' => 'OPENTM207574677',
         'title' => '股东分红通知',
