@@ -29,10 +29,12 @@ class GoodsPosterController extends ApiController
     // ];
 
     private $shopText = [
-        'left' => 260,
-        'top'  => 65,
-        'type' => 0,
+        'left' => 50,
+        'top'  => 45,
+        'type' => 1,
         'size' => 30,
+        'max_width'=> 500,
+        'br' => true,
     ];
 
     private $goodsText = [
@@ -40,6 +42,8 @@ class GoodsPosterController extends ApiController
         'top' => 800,
         'type' => 1,
         'size' => 24,
+        'max_width'=> 360,
+        'br' => false,
     ];
 
     public function generateGoodsPoster()
@@ -117,7 +121,8 @@ class GoodsPosterController extends ApiController
      */
     public function get_lt()
     {   
-
+        $this->createShopImage();
+        exit();
 
         set_time_limit(0);
         @ini_set('memory_limit', '256M');
@@ -135,7 +140,6 @@ class GoodsPosterController extends ApiController
 
         $target = $this->roundRadius($target, $image_width, $image_height);
 
-        $shopLogo = imagecreatefromstring(\Curl::to(yz_tomedia($this->shopSet['logo']))->get());
         if ($this->goodsModel->hasOneShare->share_thumb) {
 
             $goodsThumb = imagecreatefromstring(\Curl::to(yz_tomedia($this->goodsModel->hasOneShare->share_thumb))->get());
@@ -150,8 +154,9 @@ class GoodsPosterController extends ApiController
         //商品二维码
         $goodsQr =  $this->generateQr();
 
-        $target = $this->mergeLogoImage($target, $shopLogo);
-
+        // $shopLogo = imagecreatefromstring(\Curl::to(yz_tomedia($this->shopSet['logo']))->get());
+        // $target = $this->mergeLogoImage($target, $shopLogo);
+        // $target = $this->mergeText($target, $this->shopText, $this->shopSet['name']);
 
         if ($this->goodsModel->hasOneShare->share_title) {
             $text = $this->goodsModel->hasOneShare->share_title;
@@ -161,19 +166,44 @@ class GoodsPosterController extends ApiController
         $target = $this->mergeQrImage($target, $goodsQr);
         
         $target = $this->mergeText($target, $this->goodsText, $text);
-        $target = $this->mergeText($target, $this->shopText, $this->shopSet['name']);
 
         $target = $this->mergePriceText($target);
        
 
-        // header ( "Content-type: image/png" );
-        // imagePng ( $target );
-        // exit();
+        header ( "Content-type: image/png" );
+        imagePng ( $target );
+        exit();
 
         imagepng($target, $this->getGoodsPosterPath());
         imagedestroy($target);
 
         return $this->getGoodsPosterPath();
+
+    }
+
+    protected function createShopImage()
+    {
+
+        putenv('GDFONTPATH='.IA_ROOT.'/addons/yun_shop/static/fonts');
+        $font = "source_han_sans";
+
+        $testbox = imagettfbbox($this->shopText['size'], 0, $font, $this->shopSet['name']);
+
+        $shopTextWidth = $testbox[2] > 500 ? 500 : $testbox[2];
+
+        $image_width = $shopTextWidth + 50; 
+        $image_height = 60; 
+
+        $target = imagecreatetruecolor($image_width, $image_height);
+        $white  = imagecolorallocate($target, 255, 255, 255);
+        //设置白色背景色
+        imagefill($target,0,0,$white);
+
+        $target = $this->mergeLogoImage($target);
+        $target = $this->mergeText($target, $this->shopText, $this->shopSet['name']);
+        header ( "Content-type: image/png" );
+        imagePng ( $target );
+        exit();
 
     }
 
@@ -192,6 +222,7 @@ class GoodsPosterController extends ApiController
      * 合并商品图片到 $target
      * @param $target
      * @param $img
+
      * @return mixed
      */
     private function mergeGoodsImage($target, $img)
@@ -211,11 +242,12 @@ class GoodsPosterController extends ApiController
      * @param [type] $target [description]
      * @param [type] $img    [description]
      */
-    private function mergeLogoImage($target, $img)
+    private function mergeLogoImage($target)
     {
+        $img = imagecreatefromstring(\Curl::to(yz_tomedia($this->shopSet['logo']))->get());
         $width  = imagesx($img);
         $height = imagesy($img);
-        imagecopyresized($target, $img, 200, 25, 0, 0, 50, 50, $width, $height);
+        imagecopyresized($target, $img, 0, 5, 0, 0, 50, 50, $width, $height);
         imagedestroy($img);
 
         return $target;
@@ -251,7 +283,7 @@ class GoodsPosterController extends ApiController
         // $font="c:/windows/fonts/simhei.ttf";
 
         if ($params['type']) {
-            $text = $this->autowrap($params['size'], 0, $font, $text, 360);
+            $text = $this->autowrap($params['size'], 0, $font, $text, $params['max_width'], $params['br']);
         }
 
         $black = imagecolorallocate($target,  51, 51, 51);//文字颜色
@@ -326,9 +358,10 @@ class GoodsPosterController extends ApiController
      * @param  [string] $fontface [字体类型]
      * @param  [string] $string   [字符串]
      * @param  [int] $width    [预设宽度]
+     * @param  [int] $br    [大于$width是否换行]
      * @return [string]           [处理好的字符串]
      */
-    private function autowrap($fontsize, $angle, $fontface, $string, $width) 
+    private function autowrap($fontsize, $angle, $fontface, $string, $width, $br) 
     {
         $content = "";
         $num = 0;
@@ -342,7 +375,7 @@ class GoodsPosterController extends ApiController
             // 判断拼接后的字符串是否超过预设的宽度
             if (($testbox[2] > $width) && ($content !== "")) {
                 $num += 1;
-                if ($num > 1) {
+                if ($num > 1 || $br) {
                     $content .= '..';
                     // dd($content);
                     return $content;
