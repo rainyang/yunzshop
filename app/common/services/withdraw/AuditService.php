@@ -123,8 +123,11 @@ class AuditService
      */
     private function getActualServiceTax()
     {
-        $amount = $this->audit_amount;
-        $rate = $this->withdrawModel->service_tax_rate;
+        $audit_amount = $this->audit_amount;
+        $poundage = $this->getActualPoundage();
+
+        $amount = bcsub($audit_amount, $poundage, 2);
+        $rate = $this->withdrawModel->servicetax_rate;
 
         return bcdiv(bcmul($amount, $rate, 4), 100, 2);
     }
