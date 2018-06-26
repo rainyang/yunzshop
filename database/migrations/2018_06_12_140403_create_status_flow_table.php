@@ -67,11 +67,11 @@ class CreateStatusFlowTable extends Migration
 
                 $table->foreign('flow_id')
                     ->references('id')
-                    ->on((new \app\common\models\flow)->getTable())
+                    ->on((new \app\common\models\Flow())->getTable())
                     ->onDelete('cascade');
                 $table->foreign('status_id')
                     ->references('id')
-                    ->on((new \app\common\models\status)->getTable())
+                    ->on((new \app\common\models\Status)->getTable())
                     ->onDelete('cascade');
             });
         }
