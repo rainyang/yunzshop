@@ -186,6 +186,7 @@
     </div>
 </div>
 
+
 <!-->
 @section('isputaway')
 <div class="form-group">
@@ -200,8 +201,13 @@
 </div>
 @show
 
-@section('js')
-    <script>
-        $('#brand').select2();
-    </script>
- @stop
+<script type="text/javascript">
+    $('#brand').select2();
+</script>
+{{--@section('js')--}}
+    {{--<script>--}}
+        {{--require(['select2'],function() {--}}
+            {{--$('#brand').select2();--}}
+        {{--})--}}
+    {{--</script>--}}
+ {{--@stop--}}
