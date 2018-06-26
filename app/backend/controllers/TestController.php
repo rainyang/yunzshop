@@ -17,6 +17,7 @@ use app\common\models\OrderPay;
 use app\common\models\Flow;
 use app\common\services\MessageService;
 use app\frontend\modules\member\models\SubMemberModel;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use SuperClosure\SerializableClosure;
@@ -25,15 +26,16 @@ class TestController extends BaseController
 {
     public function d()
     {
-        $orderPay = OrderPay::find(7);
-
-        $code = new SerializableClosure(function() use($orderPay){
-            dd($orderPay);
-        });
-        Callback::create(['key'=>'test','code'=>$code->serialize()]);
-
-
-        call_user_func(unserialize(Callback::first()->code));
+        if (Schema::hasTable('yz_order_pay')) {
+            Schema::table('yz_order_pay', function (Blueprint $table) {
+                if (Schema::hasColumn('yz_order_pay', 'pay_time')) {
+                    $table->integer('pay_time')->nullable()->change();
+                    $table->integer('refund_time')->nullable()->change();
+                }
+            });
+            DB::select('update '.app('db')->getTablePrefix().'yz_order_pay set refund_time = null where refund_time = 0');
+            DB::select('update '.app('db')->getTablePrefix().'yz_order_pay set pay_time = null where pay_time = 0');
+        }
     }
 
     public function c()

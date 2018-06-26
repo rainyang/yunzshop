@@ -392,6 +392,7 @@ class MergePayController extends ApiController
         $this->validate([
             'order_pay_id' => 'required|integer'
         ]);
+
         if (\Setting::get('shop.pay.remittance') == false) {
             throw new AppException('商城未开启转账付款');
         }
