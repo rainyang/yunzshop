@@ -46,12 +46,15 @@ class WaitPay extends Status
     protected function getOtherButtons()
     {
         $result = [];
-        if ($this->order->order_pay_id == PayType::REMITTANCE) {
+
+        if ($this->order->pay_type_id == PayType::REMITTANCE) {
+
             $result[] = [
-                'name' => '取消订单',
-                'api' => 'order.operation.close',
+                'name' => '转账信息',
+                'api' => 'remittance.remittance-record',
                 'value' => static::REMITTANCE_RECORD //todo
             ];
+
         }
         $result[] = [
             'name' => '取消订单',
