@@ -22,8 +22,6 @@ class CreateOrderPayOrder extends Migration
                 $table->integer('updated_at')->nullable();
                 $table->integer('deleted_at')->nullable();
             });
-        }
-        if (Schema::hasTable('yz_order_pay_order') && Schema::hasTable('yz_order_pay')) {
             \app\common\models\OrderPay::get()->each(function(\app\common\models\OrderPay $orderPay){
                 foreach ($orderPay->order_ids as $order_id){
 
@@ -35,6 +33,7 @@ class CreateOrderPayOrder extends Migration
                 }
             });
         }
+
     }
 
     /**

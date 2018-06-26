@@ -30,7 +30,7 @@ class AddRemittanceAuditToStatusFlowTable extends Migration
         ]);
         $flow->setManyStatus([
                 \app\common\models\Status::where('code', 'waitAudit')->value('id') => ['order' => 0],
-                \app\common\models\Status::where('code', 'passed')->value('id') => ['order' => 0],
+                \app\common\models\Status::where('code', 'passed')->value('id') => ['order' => 1],
                 \app\common\models\Status::where('code', 'canceled')->value('id') => ['order' => -1],
                 \app\common\models\Status::where('code', 'refused')->value('id') => ['order' => -2],
             ]
