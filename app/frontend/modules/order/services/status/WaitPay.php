@@ -52,14 +52,14 @@ class WaitPay extends Status
             $result[] = [
                 'name' => '转账信息',
                 'api' => 'remittance.remittance-record',
-                'value' => static::REMITTANCE_RECORD //todo
+                'value' => static::REMITTANCE_RECORD
             ];
 
         }
         $result[] = [
             'name' => '取消订单',
             'api' => 'order.operation.close',
-            'value' => static::CANCEL //todo
+            'value' => static::CANCEL
         ];
         return $result;
     }

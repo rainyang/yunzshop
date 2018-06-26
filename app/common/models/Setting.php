@@ -62,6 +62,9 @@ class Setting extends BaseModel
         $result = $this->setToDatabase($value, $uniqueAccountId, $group, $item, $type);
 
         $cacheKey = 'setting.' . $uniqueAccountId . '.' . $key;
+        if($type == 'array'){
+            $value = unserialize($value);
+        }
 
         Cache::put($cacheKey, $value,Carbon::now()->addSeconds(3600));
         return $result;
