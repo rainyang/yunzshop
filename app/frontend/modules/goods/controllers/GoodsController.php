@@ -74,7 +74,7 @@ class GoodsController extends ApiController
             $goodsModel->hasOneBrand->logo = yz_tomedia($goodsModel->hasOneBrand->logo);
         }
         //商品规格图片处理
-        if ($goodsModel->hasManyOptions->toArray()) {
+        if ($goodsModel->hasManyOptions && $goodsModel->hasManyOptions->toArray()) {
             foreach ($goodsModel->hasManyOptions as &$item) {
                 $item->thumb = replace_yunshop(yz_tomedia($item->thumb));
             }
