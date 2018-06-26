@@ -333,7 +333,7 @@ class MemberCouponController extends ApiController
     public function getCoupon()
     {
         $couponId = \YunShop::request()->get('coupon_id');
-        $memberId = \YunShop::app()->getMemberId();;
+        $memberId = \YunShop::app()->getMemberId();
         if(!$couponId){
             return $this->errorJson('没有提供优惠券ID','');
         }
