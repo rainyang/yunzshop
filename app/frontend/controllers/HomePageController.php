@@ -51,6 +51,7 @@ class HomePageController extends ApiController
     private function getWeChatPageData()
     {
         return [
+            'item' => $this->getPageInfo(),
             'applet' => $this->getApplet(),
             'system' => $this->getSystem(),
             'mailInfo' => $this->getMailInfo(),
@@ -59,49 +60,7 @@ class HomePageController extends ApiController
     }
 
 
-    private function getMailInfo()
-    {
-        $setting = $this->getSetting();
-
-        return [
-            "name" => $setting['name'],
-            "logo" => replace_yunshop(yz_tomedia($setting['logo'])),
-            "agent" => $this->getRelationSetStatus(),
-            "credit" => $setting['credit'],
-            "credit1" => $setting['credit1'],
-            "signimg" => replace_yunshop(yz_tomedia($setting['signimg'])),
-            "diycode" => html_entity_decode($setting['diycode']),
-            "cservice" => $setting['cservice'],
-            "copyright" => $setting['copyright'],
-            "is_bind_mobile" => $this->isBindMobile()
-        ];
-    }
-
-
-    private function getMemberInfo()
-    {
-        //todo 不知道为什么首页获取会员信息、判断逻辑也不明确，暂时不删除，防止出错 YiTian 2018-06-26
-        //用户信息, 原来接口在 member.member.getUserInfo
-        $pageId = \YunShop::request()->page_id ?: 0;
-        $member_id = \YunShop::app()->getMemberId();
-        if (empty($pageId)) {
-            if (!empty($member_id)) {
-                $member_info = MemberModel::getUserInfos($member_id)->first();
-
-                if (!empty($member_info)) {
-                    $member_info = $member_info->toArray();
-                    $data = MemberModel::userData($member_info, $member_info['yz_member']);
-                    $data = MemberModel::addPlugins($data);
-
-                    return $data;
-                }
-            }
-        }
-        return [];
-    }
-
-
-    private function getSystem()
+    private function getPageInfo()
     {
         $i = \YunShop::request()->i;
         $mid = \YunShop::request()->mid;
@@ -227,6 +186,54 @@ class HomePageController extends ApiController
             $result['item']['menustyle'] = self::defaultMenuStyle();
             $result['item']['data'] = ''; //前端需要该字段
         }
+    }
+
+
+    private function getMailInfo()
+    {
+        $setting = $this->getSetting();
+
+        return [
+            "name" => $setting['name'],
+            "logo" => replace_yunshop(yz_tomedia($setting['logo'])),
+            "agent" => $this->getRelationSetStatus(),
+            "credit" => $setting['credit'],
+            "credit1" => $setting['credit1'],
+            "signimg" => replace_yunshop(yz_tomedia($setting['signimg'])),
+            "diycode" => html_entity_decode($setting['diycode']),
+            "cservice" => $setting['cservice'],
+            "copyright" => $setting['copyright'],
+            "is_bind_mobile" => $this->isBindMobile()
+        ];
+    }
+
+
+    private function getMemberInfo()
+    {
+        //todo 不知道为什么首页获取会员信息、判断逻辑也不明确，暂时不删除，防止出错 YiTian 2018-06-26
+        //用户信息, 原来接口在 member.member.getUserInfo
+        $pageId = \YunShop::request()->page_id ?: 0;
+        $member_id = \YunShop::app()->getMemberId();
+        if (empty($pageId)) {
+            if (!empty($member_id)) {
+                $member_info = MemberModel::getUserInfos($member_id)->first();
+
+                if (!empty($member_info)) {
+                    $member_info = $member_info->toArray();
+                    $data = MemberModel::userData($member_info, $member_info['yz_member']);
+                    $data = MemberModel::addPlugins($data);
+
+                    return $data;
+                }
+            }
+        }
+        return [];
+    }
+
+
+    private function getSystem()
+    {
+
     }
 
 
