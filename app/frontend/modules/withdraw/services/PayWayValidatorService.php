@@ -27,7 +27,7 @@ class PayWayValidatorService
             case 'wechat':
                 $this->weChatValidator();
                 break;
-            case 'alpay':
+            case 'alipay':
                 $this->alPayValidator();
                 break;
             case 'manual':
