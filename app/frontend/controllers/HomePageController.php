@@ -33,7 +33,6 @@ class HomePageController extends ApiController
         $result = $this->getWeChatPageData();
 
 
-        dd($result);
 
 
         //增加验证码功能
@@ -65,15 +64,15 @@ class HomePageController extends ApiController
         $setting = $this->getSetting();
 
         return [
-            "name" => "芸众",
+            "name" => $setting['name'],
             "logo" => replace_yunshop(yz_tomedia($setting['logo'])),
             "agent" => $this->getRelationSetStatus(),
-            "credit" => $setting['cservice'],
-            "credit1" => $setting['cservice'],
+            "credit" => $setting['credit'],
+            "credit1" => $setting['credit1'],
             "signimg" => replace_yunshop(yz_tomedia($setting['signimg'])),
             "diycode" => html_entity_decode($setting['diycode']),
             "cservice" => $setting['cservice'],
-            "copyright" => $setting['cservice'],
+            "copyright" => $setting['copyright'],
             "is_bind_mobile" => $this->isBindMobile()
         ];
     }
