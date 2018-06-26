@@ -45,7 +45,7 @@ class Status extends BaseModel
     /**
      * @return string
      */
-    public function getCodeAttribute()
+    public function getFullCodeAttribute()
     {
         return $this->flow->code . '.' . $this->code;
     }

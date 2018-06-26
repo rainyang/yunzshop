@@ -51,7 +51,6 @@ use app\backend\modules\order\observers\OrderObserver;
  */
 class Order extends BaseModel
 {
-    use HasFlowTrait;
     public $table = 'yz_order';
     public $setting = null;
     private $StatusService;

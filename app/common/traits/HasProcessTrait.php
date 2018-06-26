@@ -78,7 +78,6 @@ trait HasProcessTrait
     protected function createProcess(Flow $flow)
     {
         $process = new Process($this->processAttribute($flow));
-        $process->save();
         $process->initStatus();
         return $process;
 

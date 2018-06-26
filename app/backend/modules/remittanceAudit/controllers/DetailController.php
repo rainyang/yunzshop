@@ -29,7 +29,7 @@ class DetailController extends BaseController
         },'member'])->find($processId);
         if(!isset($this->process)){
             if(!isset($this->process)){
-                throw new AppException("我找到id为{$processId}的审核进程记录");
+                throw new AppException("未找到id为{$processId}的审核进程记录");
             }
         }
     }

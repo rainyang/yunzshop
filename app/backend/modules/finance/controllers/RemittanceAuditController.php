@@ -36,7 +36,7 @@ class RemittanceAuditController extends BaseController
             $processBuilder->where('status_id');
         }
         $processList = $processBuilder->get();
-        $allStatus = (new Process())->all_status;
+        $allStatus = $remittanceAuditFlow->allStatus;
         $data = [
             'remittanceAudits' => $processList,
             'allStatus' => $allStatus,

@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Collection;
  * @property int id
  * @property string name
  * @property string code
- * @property Collection all_status
+ * @property Collection allStatus
  */
 class Flow extends BaseModel
 {
@@ -33,7 +33,7 @@ class Flow extends BaseModel
      */
     public function allStatus()
     {
-        return $this->hasMany(Status::class,'flow_id');
+        return $this->hasMany(Status::class);
     }
 
     /**
@@ -43,19 +43,19 @@ class Flow extends BaseModel
      */
     public function getNextStatus(Status $status)
     {
-        $flowStatus = $this->all_status->where('status_id',$status->id)->first();
-        return $this->all_status->where('order', '>', $flowStatus->order)->first();
+        $flowStatus = $this->allStatus->where('status_id',$status->id)->first();
+        return $this->allStatus->where('order', '>', $flowStatus->order)->first();
     }
 
     public function getCloseStatus()
     {
-        return $this->all_status->where('order', Status::ORDER_CLOSE)->first();
+        return $this->allStatus->where('order', Status::ORDER_CLOSE)->first();
 
     }
 
     public function getCancelStatus()
     {
-        return $this->all_status->where('order', Status::ORDER_CANCEL)->first();
+        return $this->allStatus->where('order', Status::ORDER_CANCEL)->first();
 
     }
     /**
@@ -64,7 +64,9 @@ class Flow extends BaseModel
      */
     public function getFirstStatus()
     {
-        return $this->all_status->sort('order')->first();
+
+
+        return $this->allStatus->sort('order')->first();
     }
     /**
      * 获取最终状态
@@ -72,7 +74,7 @@ class Flow extends BaseModel
      */
     public function getFinalStatus()
     {
-        return $this->all_status->sortByDesc('order')->first();
+        return $this->allStatus->sortByDesc('order')->first();
     }
 
     /**

@@ -27,7 +27,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int is_pending
  * @property string name
  * @property string code
- * @property \Illuminate\Support\Collection all_status
+ * @property \Illuminate\Support\Collection allState
  * @property string state
  * @property string model_type
  * @property string status_name
@@ -35,7 +35,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Process extends BaseModel
 {
-    use HasProcessTrait, SoftDeletes, CanPendingTrait;
+    use HasProcessTrait, SoftDeletes;
     public $table = 'yz_process';
 
     protected $guarded = ['id'];
@@ -53,6 +53,14 @@ class Process extends BaseModel
     public function model()
     {
         return $this->belongsTo($this->model_type, 'model_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function status()
+    {
+        return $this->belongsTo(Status::class);
     }
 
     /**
@@ -88,7 +96,7 @@ class Process extends BaseModel
     public function toNextStatus()
     {
         // 流程的下一个情况
-        $nextStatus = $this->flow->getNextStatus($this->currentStatus()->status);
+        $nextStatus = $this->flow->getNextStatus($this->status);
 
         // 根据情况生成新状态
         $this->setStatus($nextStatus);
@@ -121,8 +129,8 @@ class Process extends BaseModel
             // 流程执行完
             $this->status = self::STATUS_COMPLETED;
         }
+        $this->setRelation('status',$status);
         $this->status_id = $status->id;
-        // todo 如何触发原来的事件
         $this->save();
         event(new AfterProcessStatusChangedEvent($this));
 
@@ -162,7 +170,7 @@ class Process extends BaseModel
 
     public function getStateNameAttribute()
     {
-        return $this->all_status[$this->state];
+        return $this->allState[$this->state];
     }
 
     /**

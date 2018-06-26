@@ -14,6 +14,9 @@ use app\common\models\Process;
 
 class AfterProcessStatusChangedEvent extends Event
 {
+    /**
+     * @var Process
+     */
     protected $process;
 
     public function __construct(Process $process)

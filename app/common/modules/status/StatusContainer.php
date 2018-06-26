@@ -18,7 +18,12 @@ use Illuminate\Support\Facades\Event;
 class StatusContainer extends Container
 {
     public function handle(AfterProcessStatusChangedEvent $event){
-        $this->make($event->getProcess()->status->code,$event->getProcess()->status)->handle();
+
+        // todo 为什么没更新
+
+        if($this->bound($event->getProcess()->status->fullCode)){
+            $this->make($event->getProcess()->status->fullCode)->handle($event->getProcess());
+        }
 
     }
     /**
@@ -40,8 +45,8 @@ class StatusContainer extends Container
                 'class' => RemittanceAuditPassed::class,
             ],
         ])->each(function ($item) {
-            $this->bind($item['key'], function (StatusContainer $container, Status $status) use ($item) {
-                return new $item['class']($status);
+            $this->bind($item['key'], function (StatusContainer $container) use ($item) {
+                return new $item['class']();
 
             });
         });

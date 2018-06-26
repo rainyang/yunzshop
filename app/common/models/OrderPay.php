@@ -33,7 +33,7 @@ use app\frontend\modules\payment\managers\OrderPaymentTypeManager;
  * @property array order_ids
  * @property Collection orders
  * @property Collection payOrder
- * @property Collection all_status
+ * @property Collection allStatus
  * @property PayType payType
  * @property Member member
  * @property string pay_type_name
@@ -77,7 +77,7 @@ class OrderPay extends BaseModel
 
     public function getStatusNameAttribute()
     {
-        return $this->all_status[$this->status];
+        return $this->allStatus[$this->status];
     }
     /**
      * @return \Illuminate\Support\Collection
@@ -154,6 +154,7 @@ class OrderPay extends BaseModel
         if ($this->orders->isEmpty()) {
             throw new AppException('(ID:' . $this->id . ')未找到对应订单');
         }
+
         $this->orders->each(function (\app\common\models\Order $order) {
             if ($order->status > Order::WAIT_PAY) {
                 throw new AppException('(ID:' . $order->id . ')订单已付款,请勿重复付款');
@@ -185,7 +186,9 @@ class OrderPay extends BaseModel
         }
         $this->validate();
         // 从丁哥的接口获取统一的支付参数
+
         $query_str = $this->getPayType()->getPayParams($payParams);
+
         $pay = PayFactory::create($this->pay_type_id);
         $result = $pay->doPay($query_str, $this->pay_type_id);
         if (!isset($result)) {

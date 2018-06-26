@@ -30,7 +30,7 @@ class OperationController extends BaseController
 
             $this->process = RemittanceAuditProcess::find($processId);
             if (!isset($this->process)) {
-                throw new AppException("我找到id为{$processId}的审核进程记录");
+                throw new AppException("未找到id为{$processId}的审核进程记录");
             }
         }
         return $this->process;
