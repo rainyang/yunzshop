@@ -44,10 +44,10 @@ class CreateStatusFlowTable extends Migration
                 $table->integer('created_at')->nullable();
                 $table->integer('updated_at')->nullable();
                 $table->integer('deleted_at')->nullable();
-                $table->foreign('flow_id')
-                    ->references('id')
-                    ->on('yz_flow')
-                    ->onDelete('cascade');
+//                $table->foreign('flow_id')
+//                    ->references('id')
+//                    ->on('yz_flow')
+//                    ->onDelete('cascade');
             });
         }
 
@@ -65,14 +65,14 @@ class CreateStatusFlowTable extends Migration
                 $table->integer('updated_at')->nullable();
                 $table->integer('deleted_at')->nullable();
 
-                $table->foreign('flow_id')
-                    ->references('id')
-                    ->on((new \app\common\models\Flow())->getTable())
-                    ->onDelete('cascade');
-                $table->foreign('status_id')
-                    ->references('id')
-                    ->on((new \app\common\models\Status)->getTable())
-                    ->onDelete('cascade');
+//                $table->foreign('flow_id')
+//                    ->references('id')
+//                    ->on((new \app\common\models\Flow())->getTable())
+//                    ->onDelete('cascade');
+//                $table->foreign('status_id')
+//                    ->references('id')
+//                    ->on((new \app\common\models\Status)->getTable())
+//                    ->onDelete('cascade');
             });
         }
 
@@ -89,10 +89,10 @@ class CreateStatusFlowTable extends Migration
                 $table->integer('created_at')->nullable();
                 $table->integer('updated_at')->nullable();
                 $table->integer('deleted_at')->nullable();
-                $table->foreign('order_pay_id')
-                    ->references('id')
-                    ->on((new \app\common\models\OrderPay)->getTable())
-                    ->onDelete('cascade');
+//                $table->foreign('order_pay_id')
+//                    ->references('id')
+//                    ->on((new \app\common\models\OrderPay)->getTable())
+//                    ->onDelete('cascade');
             });
         }
     }
