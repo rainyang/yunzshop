@@ -156,7 +156,7 @@ class BalanceChange extends Credit
             return;
         }
         $template_id = \Setting::get('shop.notice')['balance_change'];
-
+        \Log::info('余额变动通知',$template_id);
         $params = [
             ['name' => '商城名称', 'value' => \Setting::get('shop.shop')['name']],
             ['name' => '昵称', 'value' => $this->memberModel->nickname],

@@ -36,7 +36,8 @@ use Yunshop\Poster\services\CreatePosterService;
 use Yunshop\TeamDividend\models\YzMemberModel;
 use Yunshop\AlipayOnekeyLogin\services\SynchronousUserInfo;
 use app\common\services\alipay\OnekeyLogin;
-use  app\common\helpers\Client;
+use app\common\helpers\Client;
+use app\common\services\plugin\huanxun\HuanxunSet;
 
 class MemberController extends ApiController
 {
@@ -1246,10 +1247,13 @@ class MemberController extends ApiController
     }
 
     public function isOpenHuanxun() {
-        $isOpen = \app\common\services\plugin\huanxun\HuanxunSet::whetherEnabled();
-        if ($isOpen) {
-            return $this->successJson('', $isOpen);
+        $huanxun = \Setting::get('plugin.huanxun_set');
+
+        if (app('plugins')->isEnabled('huanxun')) {
+            if ($huanxun['switch']) {
+                return $this->successJson('', $huanxun['switch']);
+            }
         }
-        return $this->errorJson('', $isOpen);
+        return $this->errorJson('', 0);
     }
 }
