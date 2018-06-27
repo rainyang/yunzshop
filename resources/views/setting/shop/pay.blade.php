@@ -642,6 +642,68 @@
                             </label>
                         </div>
                     </div>
+                    <div id='remittance' @if ( empty($set['remittance'])) style="display:none" @endif>
+                        <div class="form-group">
+                            <div class="form-group">
+
+                                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                                <div class="col-sm-9 col-xs-12">
+                                    <div style="float:left; width:15%; height:30px;">
+                                        <label class='radio-inline' style="padding-left:0px">开户行：</label>
+                                    </div>
+                                    <div style="float:left; width:85%; height:30px;">
+                                        <input type="text" name="pay[remittance_bank]" class="form-control"
+                                               value="{{$set['remittance_bank']}}" autocomplete="off"
+                                               placeholder="开户行">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+
+                                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+
+                                <div class="col-sm-9 col-xs-12">
+                                    <div style="float:left; width:15%; height:30px;">
+                                        <label class='radio-inline' style="padding-left:0px">开户支行：</label>
+                                    </div>
+                                    <div style="float:left; width:85%; height:30px;">
+                                        <input type="text" name="pay[remittance_bank]" class="form-control"
+                                               value="{{$set['remittance_bank']}}" autocomplete="off"
+                                               placeholder="开户行">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+
+                                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                                <div class="col-sm-9 col-xs-12">
+                                    <div style="float:left; width:15%; height:30px;">
+                                        <label class='radio-inline' style="padding-left:0px">开户名：</label>
+                                    </div>
+                                    <div style="float:left; width:85%; height:30px;">
+                                        <input type="text" name="pay[remittance_bank_account_name]" class="form-control"
+                                               value="{{$set['remittance_bank_account_name']}}" autocomplete="off"
+                                               placeholder="开户名">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+
+                                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+
+                                <div class="col-sm-9 col-xs-12">
+                                    <div style="float:left; width:15%; height:30px;">
+                                        <label class='radio-inline' style="padding-left:0px">开户账号：</label>
+                                    </div>
+                                    <div style="float:left; width:85%; height:30px;">
+                                        <input type="text" name="pay[remittance_bank_account]" class="form-control"
+                                               value="{{$set['remittance_bank_account']}}" autocomplete="off"
+                                               placeholder="开户账号">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">货到付款</label>
                         <div class="col-sm-9 col-xs-12">
@@ -740,6 +802,14 @@
                             }
                             else {
                                 $("#another").hide();
+                            }
+                        })
+                        $(":radio[name='pay[remittance]']").click(function () {
+                            if ($(this).val() == 1) {
+                                $("#remittance").show();
+                            }
+                            else {
+                                $("#remittance").hide();
                             }
                         })
                     })

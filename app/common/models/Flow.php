@@ -33,7 +33,7 @@ class Flow extends BaseModel
      */
     public function allStatus()
     {
-        return $this->hasMany(Status::class);
+        return $this->hasMany(Status::class,'flow_id');
     }
 
     /**

@@ -64,6 +64,7 @@ class PayController extends BaseController
     {
         $this->validate([
             'report_url' => 'required',
+            'amount' => 'numeric',
         ]);
         $this->toNextState();
         return $this->successJson();

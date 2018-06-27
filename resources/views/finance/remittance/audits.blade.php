@@ -1,9 +1,12 @@
 @extends('layouts.base')
 @section('title', '转账审核列表')
 @section('content')
+    <div class="right-titpos">
+        <ul class="add-snav">
+            <li class="active"><a href="#">转账审核</a></li>
+        </ul>
+    </div>
     <div id="app-remittance-audits" xmlns:v-bind="http://www.w3.org/1999/xhtml">
-        <ToolBar>
-        </ToolBar>
         <div style="float: right">
             <el-input
                     placeholder="搜索"
@@ -17,10 +20,10 @@
             <el-select v-model="searchParams.status_id" size="small" clearable placeholder="请选择状态"
                        style="width: 120px">
                 <el-option
-                        v-for="(v,k) in all_status"
-                        :key="k"
-                        :label="v"
-                        :value="k">
+                        v-for="v in allStatus"
+                        :key="v.id"
+                        :label="v.name"
+                        :value="v.id">
                 </el-option>
             </el-select>
             <el-button type="success" icon="el-icon-search" size="small" @click="refresh = !refresh"></el-button>
@@ -97,9 +100,10 @@
 
             data() {
                 let data = JSON.parse('{!! $data !!}');
-                console.log(remittanceAudits);
+                console.log(data)
                 return {
                     list: data.remittanceAudits,
+                    allStatus: data.allStatus,
                     searchParams:{
                         ...data.searchParams,
                         "keywords":"",

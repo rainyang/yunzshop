@@ -26,6 +26,7 @@ class TestController extends BaseController
 {
     public function d()
     {
+        echo 1;exit;
         if (Schema::hasTable('yz_order_pay')) {
             Schema::table('yz_order_pay', function (Blueprint $table) {
                 if (Schema::hasColumn('yz_order_pay', 'pay_time')) {

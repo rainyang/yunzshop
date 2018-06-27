@@ -42,6 +42,7 @@ class RemittanceAuditController extends BaseController
             'allStatus' => $allStatus,
             'searchParams' => $searchParams,
         ];
+
         return view('finance.remittance.audits', ['data' => json_encode($data)])->render();
 
     }
