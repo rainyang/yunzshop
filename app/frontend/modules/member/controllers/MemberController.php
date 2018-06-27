@@ -1244,4 +1244,12 @@ class MemberController extends ApiController
 
         return $this->successJson('ok', $data);
     }
+
+    public function isOpenHuanxun() {
+        $isOpen = \app\common\services\plugin\huanxun\HuanxunSet::whetherEnabled();
+        if ($isOpen) {
+            return $this->successJson('', $isOpen);
+        }
+        return $this->errorJson('', $isOpen);
+    }
 }
