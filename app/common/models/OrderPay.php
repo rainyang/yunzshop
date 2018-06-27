@@ -18,6 +18,7 @@ use app\frontend\modules\payType\BasePayType;
 use app\frontend\modules\payType\CreditPay;
 use app\frontend\modules\payType\Remittance;
 use app\frontend\modules\payment\managers\OrderPaymentTypeManager;
+use Illuminate\Support\Facades\App;
 
 /**
  * Class OrderPay
@@ -199,7 +200,8 @@ class OrderPay extends BaseModel
 
     /**
      * 获取支付类型对象
-     * @return BasePayType
+     * @return PayType|BasePayType
+     * @throws AppException
      */
     private function getPayType()
     {
@@ -211,6 +213,9 @@ class OrderPay extends BaseModel
 
             } else {
                 $payType = BasePayType::find($this->pay_type_id);
+            }
+            if(!isset($payType)){
+                throw new AppException("未找到对应支付方式(id:{$this->pay_type_id})");
             }
             /**
              * @var BasePayType $payType

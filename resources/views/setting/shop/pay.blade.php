@@ -667,8 +667,8 @@
                                         <label class='radio-inline' style="padding-left:0px">开户支行：</label>
                                     </div>
                                     <div style="float:left; width:85%; height:30px;">
-                                        <input type="text" name="pay[remittance_bank]" class="form-control"
-                                               value="{{$set['remittance_bank']}}" autocomplete="off"
+                                        <input type="text" name="pay[remittance_sub_bank]" class="form-control"
+                                               value="{{$set['remittance_sub_bank']}}" autocomplete="off"
                                                placeholder="开户行">
                                     </div>
                                 </div>

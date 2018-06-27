@@ -10,7 +10,7 @@ namespace app\common\models;
 
 
 use Carbon\Carbon;
-use Cache;
+use app\common\helpers\Cache;
 
 class Setting extends BaseModel
 {
@@ -33,6 +33,7 @@ class Setting extends BaseModel
     public function getValue($uniqueAccountId, $key, $default = null)
     {
         $cacheKey = 'setting.' . $uniqueAccountId . '.' . $key;
+
         $value = Cache::get($cacheKey);
 
         if ($value == null) {
