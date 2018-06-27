@@ -12,8 +12,8 @@ namespace app\backend\modules\finance\controllers;
 use app\backend\modules\finance\models\Withdraw;
 use app\backend\modules\finance\services\WithdrawService;
 use app\common\components\BaseController;
-use app\common\events\finance\AfterIncomeWithdrawCheckEvent;
-use app\common\events\finance\AfterIncomeWithdrawPayEvent;
+use app\common\events\withdraw\WithdrawAuditedEvent;
+use app\common\events\withdraw\WithdrawPayedEvent;
 use app\common\exceptions\AppException;
 use app\common\models\Income;
 use Illuminate\Support\Facades\DB;
@@ -224,7 +224,7 @@ class WithdrawController extends BaseController
 
             $withdraw->pay_status = 1;
             //审核通知事件
-            event(new AfterIncomeWithdrawPayEvent($withdraw));
+            event(new WithdrawPayedEvent($withdraw));
 
             $updatedData = ['pay_at' => time()];
             Withdraw::updatedWithdrawStatus($withdrawId, $updatedData);
@@ -345,12 +345,13 @@ class WithdrawController extends BaseController
         $this->withdrawModel->actual_amounts = $actual_amounts - $this->getActualPoundage($actual_amounts) - $this->getActualServiceTax($actual_amounts);
 
 
-        event(new AfterIncomeWithdrawCheckEvent($this->withdrawModel));
         $result = $this->withdrawModel->save();
         if ($result !== true) {
             DB::rollBack();
             return ['msg' => '审核失败：记录修改失败!'];
         }
+
+        event(new WithdrawAuditedEvent($this->withdrawModel));
 
         DB::commit();
         return ['msg' => '审核成功!'];
