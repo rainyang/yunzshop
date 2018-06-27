@@ -10,21 +10,24 @@ namespace app\frontend\modules\remittance\controllers;
 
 use app\common\components\ApiController;
 use app\common\exceptions\AppException;
+use app\common\modules\payType\remittance\models\flows\RemittanceAuditFlow;
 use app\frontend\models\Order;
 use app\frontend\models\RemittanceRecord;
+use app\frontend\modules\process\controllers\Operate;
 
-class RemittanceRecordController extends ApiController
+class RemittanceRecordOperationController extends ApiController
 {
+    use Operate;
 
-    protected function _getProcess()
+    protected function beforeStates()
     {
-
+        return RemittanceAuditFlow::STATE_WAIT_AUDIT;
     }
 
     /**
      * @throws AppException
      */
-    public function index()
+    protected function _getProcess()
     {
         $orderId = request()->input('order_id');
         $order = Order::find($orderId);
@@ -38,11 +41,15 @@ class RemittanceRecordController extends ApiController
         if(!isset($remittanceRecord)){
             throw new AppException("未找到order_pay_id为{$order->order_pay_id}的转账记录");
         }
-        $remittanceRecord->status_name = $remittanceRecord->currentProcess()->status_name;
-        return $this->successJson('成功',$remittanceRecord);
-
+        return $remittanceRecord->currentProcess();
     }
-    public function cancel(){
 
+    /**
+     * @throws \Exception
+     */
+    public function cancel()
+    {
+        $this->toCancelState();
+        return $this->successJson();
     }
 }

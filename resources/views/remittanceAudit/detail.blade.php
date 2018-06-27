@@ -18,13 +18,19 @@
                     [[remittanceAudit.member.nickname]]
                 </a>
             </el-form-item>
+            <el-form-item label="审核状态">
+                [[remittanceAudit.status_name]]
+            </el-form-item>
+            <el-form-item label="审核备注">
+                [[remittanceAudit.note]]
+            </el-form-item>
             <el-form-item label="金额">
                 [[remittanceAudit.remittance_record.order_pay.amount]] 元
             </el-form-item>
             <el-form-item label="转账图片">
                 <img v-bind:src="remittanceAudit.remittance_record.report_url">
             </el-form-item>
-            <el-form-item label="备注">
+            <el-form-item label="申请备注">
                 [[remittanceAudit.remittance_record.note]]
             </el-form-item>
             <el-form-item label="申请时间">

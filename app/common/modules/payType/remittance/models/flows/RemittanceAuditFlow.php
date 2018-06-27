@@ -14,6 +14,8 @@ use app\common\models\Flow;
 class RemittanceAuditFlow extends Flow
 {
     const CODE = 'remittanceAudit';
+    const STATE_WAIT_AUDIT = 'waitAudit';
+
     protected static function boot()
     {
         parent::boot();

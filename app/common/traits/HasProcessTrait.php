@@ -62,7 +62,7 @@ trait HasProcessTrait
      */
     public function addProcess(Flow $flow)
     {
-        if ($this->currentProcess()->code == $flow->code && $this->state == Process::STATUS_PROCESSING) {
+        if ($this->currentProcess()->code == $flow->code) {
             throw new AppException("已存在未完成的{$this->currentProcess()->name}流程,无法继续添加");
         }
         $this->currentProcess = $this->createProcess($flow);

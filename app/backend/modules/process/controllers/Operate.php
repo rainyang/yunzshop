@@ -40,7 +40,7 @@ trait Operate
      * @throws \Exception
      */
     public function toClosedState(){
-        $data = $this->getProcess()->toNextStatus();
+        $data = $this->getProcess()->toCloseStatus();
         return $data;
     }
 }

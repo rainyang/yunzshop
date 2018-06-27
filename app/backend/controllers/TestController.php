@@ -9,6 +9,7 @@
 namespace app\backend\controllers;
 
 use app\common\models\Callback;
+use app\common\models\Migration;
 use app\frontend\modules\order\services\OrderService;
 use app\common\components\BaseController;
 use app\common\models\Member;
@@ -17,6 +18,7 @@ use app\common\models\OrderPay;
 use app\common\models\Flow;
 use app\common\services\MessageService;
 use app\frontend\modules\member\models\SubMemberModel;
+use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -54,9 +56,8 @@ class TestController extends BaseController
     //public $transactionActions = ['*'];
     public function a()
     {
-        DB::select("delete from ims_migrations where migration = '2018_06_12_140403_create_status_flow_table'");
-        DB::select("delete from ims_migrations where migration = '2018_06_13_140403_add_data_to_status_flow_table'");
-        DB::select("delete from ims_migrations where migration = '2018_06_18_140403_add_audit_to_status_flow_table'");
+        $id = Migration::where('migration','2018_06_18_140403_add_remittance_audit_to_status_flow_table')->value('id');
+        Migration::where('id','>',$id)->delete();
         $this->b();
         exit;
     }
@@ -72,14 +73,6 @@ class TestController extends BaseController
         }
         if (Schema::hasTable('yz_status')) {
             Schema::dropIfExists('yz_status');
-        }
-        if (Schema::hasTable('yz_flow_state')) {
-            Schema::dropIfExists('yz_flow_state');
-
-        }
-        if (Schema::hasTable('yz_state')) {
-            Schema::dropIfExists('yz_state');
-
         }
         if (Schema::hasTable('yz_flow')) {
             Schema::dropIfExists('yz_flow');

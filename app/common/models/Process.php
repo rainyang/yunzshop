@@ -32,6 +32,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string model_type
  * @property string status_name
  * @property string state_name
+ * @property string note
  */
 class Process extends BaseModel
 {
@@ -127,7 +128,11 @@ class Process extends BaseModel
 
         if ($status->is($this->flow->getFinalStatus())) {
             // 流程执行完
-            $this->status = self::STATUS_COMPLETED;
+            $this->state = self::STATUS_COMPLETED;
+        }
+        if ($status->is($this->flow->getCancelStatus()) || $status->is($this->flow->getCloseStatus())) {
+            // 流程执行完
+            $this->state = self::STATUS_CANCELED;
         }
         $this->setRelation('status',$status);
         $this->status_id = $status->id;
@@ -142,6 +147,7 @@ class Process extends BaseModel
     public function toCloseStatus()
     {
         $closeStatus = $this->flow->getCloseStatus();
+
         $this->setStatus($closeStatus);
 
     }

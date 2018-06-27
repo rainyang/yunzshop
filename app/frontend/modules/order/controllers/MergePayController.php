@@ -139,6 +139,10 @@ class MergePayController extends ApiController
             if ($order->uid != \YunShop::app()->getMemberId() && !Member::getPid()) {
                 throw new AppException('(ID:' . $order->id . ')该订单属于其他用户');
             }
+            // 转账付款审核中
+            if($order->pay_type_id == PayType::REMITTANCE){
+                throw new AppException('(ID:' . $order->id . ')该订单处于转账审核中,请先关闭转账审核申请,再选择其他支付方式');
+            }
         });
         // 订单金额验证
         if ($this->orders->sum('price') < 0) {

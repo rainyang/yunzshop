@@ -9,7 +9,10 @@
 namespace app\common\modules\status;
 
 use app\common\models\Status;
+use app\common\modules\payType\remittance\models\status\RemittanceAuditCanceled;
 use app\common\modules\payType\remittance\models\status\RemittanceAuditPassed;
+use app\common\modules\payType\remittance\models\status\RemittanceAuditRefused;
+use app\common\modules\payType\remittance\models\status\RemittanceAuditRejected;
 use app\common\modules\payType\remittance\models\status\RemittanceWaitReceipt;
 use app\common\modules\process\events\AfterProcessStatusChangedEvent;
 use Illuminate\Container\Container;
@@ -43,6 +46,12 @@ class StatusContainer extends Container
             ],[
                 'key' => 'remittanceAudit.passed',
                 'class' => RemittanceAuditPassed::class,
+            ],[
+                'key' => 'remittanceAudit.refused',
+                'class' => RemittanceAuditRefused::class,
+            ],[
+                'key' => 'remittanceAudit.canceled',
+                'class' => RemittanceAuditCanceled::class,
             ],
         ])->each(function ($item) {
             $this->bind($item['key'], function (StatusContainer $container) use ($item) {

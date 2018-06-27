@@ -26,7 +26,7 @@ trait Operate
     abstract protected function beforeStates();
 
     /**
-     * @return mixed
+     * @return Process
      * @throws AppException
      */
     protected function getProcess(){
@@ -50,6 +50,16 @@ trait Operate
     public function toNextState()
     {
         $data = $this->getProcess()->toNextStatus();
+        return $data;
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Model
+     * @throws \Exception
+     */
+    public function toCancelState()
+    {
+        $data = $this->getProcess()->toCancelStatus();
         return $data;
     }
 }
