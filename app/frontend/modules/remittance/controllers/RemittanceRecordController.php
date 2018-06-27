@@ -39,6 +39,7 @@ class RemittanceRecordController extends ApiController
             throw new AppException("未找到order_pay_id为{$order->order_pay_id}的转账记录");
         }
         $remittanceRecord->status_name = $remittanceRecord->currentProcess()->status_name;
+        $remittanceRecord->audit_note = $remittanceRecord->currentProcess()->note;
         return $this->successJson('成功',$remittanceRecord);
 
     }
