@@ -204,19 +204,20 @@
         <div class='panel-heading'>
             打款信息
         </div>
-        @if($item->status == '1')
-            <div class='panel-body'>
-                审核金额: <span style='color:red'>{{$item->actual_amounts + $item->actual_poundage + $item->actual_servicetax}}</span>元
-                手续费: <span style='color:red'>{{$item->actual_poundage}}</span> 元
-                劳务税:<span style='color:red'>{{$item->actual_servicetax}}</span> 元
-                应打款：<span style='color:red'>{{$item->actual_amounts}}</span>元
-            </div>
-        @elseif($item->status =='0')
+        @if($item->status == '0')
             <div class='panel-body'>
                 审核金额: <span style='color:red'>{{ $item->amounts }}</span> 元
                 预计手续费: <span style='color:red'>{{ $item->poundage }}</span> 元
                 预计劳务税:<span style='color:red'>{{ $item->servicetax }}</span> 元
                 预计应打款：<span style='color:red'>{{ $item->amounts - $item->poundage - $item->servicetax }}</span>元
+            </div>
+
+        @else
+            <div class='panel-body'>
+                审核金额: <span style='color:red'>{{$item->actual_amounts + $item->actual_poundage + $item->actual_servicetax}}</span>元
+                手续费: <span style='color:red'>{{$item->actual_poundage}}</span> 元
+                劳务税:<span style='color:red'>{{$item->actual_servicetax}}</span> 元
+                应打款：<span style='color:red'>{{$item->actual_amounts}}</span>元
             </div>
         @endif
         <div class="form-group col-sm-12">
