@@ -8,7 +8,7 @@
 
 namespace app\common\services\finance;
 
-use app\common\events\finance\AfterIncomeWithdrawArrivalEvent;
+use app\common\events\withdraw\WithdrawPayedEvent;
 use app\common\models\Income;
 use app\common\models\Withdraw as WithdrawModel;
 use Yunshop\Commission\models\Agents;
@@ -42,7 +42,7 @@ class Withdraw
         }
         $withdraw->pay_status = 1;
         //提现打款到账事件
-        event(new AfterIncomeWithdrawArrivalEvent($withdraw));
+        event(new WithdrawPayedEvent($withdraw));
 //        $withdraw = $withdraw->toArray();
         
         $commissionConfigs = \Config::get('income.commission');

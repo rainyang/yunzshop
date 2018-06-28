@@ -18,7 +18,7 @@ class ExportService
     private $page_count;
     public $builder_model;
     private $export_page;
-    private $page_size = 1000;
+    private $page_size = 500;
 
     public function __construct($builder, $export_page = 1)
     {
