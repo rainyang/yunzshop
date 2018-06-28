@@ -467,7 +467,7 @@ class Member extends BackendModel
                 'coin_name' => \Yunshop\Coin\Common\Services\SetService::getCoinName(),
             ];
         } else {
-            $data['love'] = [
+            $data['coin'] = [
                 'status' => false,
                 'coin_name' => '华侨币',
             ];

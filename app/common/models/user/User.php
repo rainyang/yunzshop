@@ -57,6 +57,9 @@ class User extends BaseModel
         if(Schema::hasColumn($this->table, 'welcome_link')){
             $this->attributes = array_merge($this->attributes, ['welcome_link' => '0']);
         }
+        if(Schema::hasColumn($this->table, 'is_bind')){
+            $this->attributes = array_merge($this->attributes, ['is_bind' => '0']);
+        }
 
         return $this->attributes;
     }
