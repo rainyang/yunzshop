@@ -10,16 +10,12 @@ namespace app\frontend\modules\remittance\controllers;
 
 use app\common\components\ApiController;
 use app\common\exceptions\AppException;
+use app\common\models\Process;
 use app\frontend\models\Order;
 use app\frontend\models\RemittanceRecord;
 
 class RemittanceRecordController extends ApiController
 {
-
-    protected function _getProcess()
-    {
-
-    }
 
     /**
      * @throws AppException
@@ -40,10 +36,17 @@ class RemittanceRecordController extends ApiController
         }
         $remittanceRecord->status_name = $remittanceRecord->currentProcess()->status_name;
         $remittanceRecord->audit_note = $remittanceRecord->currentProcess()->note;
+
+        if($remittanceRecord->currentProcess()->state==Process::STATUS_PROCESSING){
+            $remittanceRecord->button_models = [[
+                "name"=>"取消申请",
+                "api"=>"remittance.RemittanceRecordOperation.cancel",
+                "value"=>1
+            ]];
+        }
+
         return $this->successJson('成功',$remittanceRecord);
 
     }
-    public function cancel(){
 
-    }
 }
