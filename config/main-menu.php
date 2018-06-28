@@ -2384,7 +2384,41 @@ return [
                 'sort'              => 0,
                 'item'              => 'remittance_audit',
                 'parents'           => ['finance',],
-                'child'             => []
+                'child'             => [
+                    'remittance_audit_detail'         => [
+                        'name'              => '转账审核详情',
+                        'url'               => 'remittanceAudit.detail.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => 'fa-gear',
+                        'sort'              => 0,
+                        'item'              => 'remittance_audit_detail',
+                        'parents'           => ['finance', 'remittance_audit',],
+                    ],
+                    'remittance_audit_pass'         => [
+                        'name'              => '转账审核通过',
+                        'url'               => 'remittanceAudit.operation.pass',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => 'fa-gear',
+                        'sort'              => 0,
+                        'item'              => 'remittance_audit_pass',
+                        'parents'           => ['finance', 'remittance_audit',],
+                    ],
+                    'remittance_audit_reject'         => [
+                        'name'              => '转账审核拒绝',
+                        'url'               => 'remittanceAudit.detail.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => 'fa-gear',
+                        'sort'              => 0,
+                        'item'              => 'remittanceAudit.operation.reject',
+                        'parents'           => ['finance', 'remittance_audit',],
+                    ],
+                ]
             ]
 
 

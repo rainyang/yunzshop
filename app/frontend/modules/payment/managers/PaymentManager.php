@@ -21,7 +21,7 @@ class PaymentManager extends Container
             return new OrderPaymentTypeManager($manager);
         });
         $this->singleton('OrderPaymentTypeSettingManager',function(PaymentManager $manager){
-            return new OrderPaymentTypeSettingManager($manager);
+            return new OrderPaymentTypeSettingManager();
         });
 
     }
