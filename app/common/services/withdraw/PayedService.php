@@ -171,6 +171,9 @@ class PayedService
             case Withdraw::WITHDRAW_WITH_MANUAL:
                 $result = $this->manualWithdrawPay();
                 break;
+            case Withdraw::WITHDRAW_WITH_HUANXUN:
+                $result = $this->huanxunWithdrawPay();
+                break;
             default:
                 throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：未知打款类型");
         }
@@ -247,6 +250,21 @@ class PayedService
         }
 
         redirect($result)->send();
+    }
+
+
+    private function huanxunWithdrawPay()
+    {
+        $member_id = $this->withdrawModel->member_id;
+        $sn = $this->withdrawModel->withdraw_sn;
+        $amount = $this->withdrawModel->actual_amounts;
+        $remark = '';
+
+        $result = PayFactory::create(17)->doWithdraw($member_id, $sn, $amount, $remark);
+        if ($result['result'] == 10) {
+            return true;
+        }
+        throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：{$result['msg']}");
     }
 
 
