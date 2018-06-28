@@ -28,6 +28,8 @@ class TestController extends BaseController
 {
     public function d()
     {
+        \Log::useDailyFiles(storage_path().'/logs/test/session.log');
+        \Log::debug('1',1);
         echo 1;exit;
         if (Schema::hasTable('yz_order_pay')) {
             Schema::table('yz_order_pay', function (Blueprint $table) {

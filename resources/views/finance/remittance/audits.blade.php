@@ -8,17 +8,9 @@
     </div>
     <div id="app-remittance-audits" xmlns:v-bind="http://www.w3.org/1999/xhtml">
         <div style="float: right">
-            <el-input
-                    placeholder="搜索"
-                    size="small"
-                    style="width: 140px"
-                    v-model="searchParams.keywords"
-                    clearable>
-            </el-input>
 
-
-            <el-select v-model="searchParams.status_id" size="small" clearable placeholder="请选择状态"
-                       style="width: 120px">
+            <el-select v-model="searchParams.status_id" size="small" clearable placeholder="全部"
+                       style="width: 120px" @change="search" v-loading="loading">
                 <el-option
                         v-for="v in allStatus"
                         :key="v.id"
@@ -26,7 +18,6 @@
                         :value="v.id">
                 </el-option>
             </el-select>
-            <el-button type="success" icon="el-icon-search" size="small" @click="refresh = !refresh"></el-button>
         </div>
         <el-table
                 :data="list"
@@ -103,12 +94,18 @@
                 console.log(data)
                 return {
                     list: data.remittanceAudits,
-                    allStatus: data.allStatus,
+                    allStatus: [
+                        {id:null,name:"全部"},
+                        ...data.allStatus
+
+                    ],
+
                     searchParams:{
                         ...data.searchParams,
                         "keywords":"",
                         "status_id":""
-                    }
+                    },
+                    loading:false
                 }
             },
             mounted: function () {
@@ -122,6 +119,17 @@
 
                     }
                     return '';
+                },
+                search(){
+                    this.loading = true;
+
+                    this.$http.post("{!! yzWebUrl('finance.remittance-audit.ajax')!!}",this.searchParams).then(response => {
+                        this.list = response.data.data.remittanceAudits;
+                        this.loading = false;
+                    }, response => {
+                        console.log(response);
+                        this.loading = false;
+                    });
                 }
             }
         });

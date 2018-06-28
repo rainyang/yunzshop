@@ -24,6 +24,12 @@ class RemittanceAuditController extends BaseController
      */
     public function index()
     {
+        return view('finance.remittance.audits', ['data' => json_encode($this->getData())])->render();
+    }
+    public function ajax(){
+        return $this->successJson('成功',$this->getData());
+    }
+    private function getData(){
         /**
          * @var RemittanceAuditFlow $remittanceAuditFlow
          */
@@ -32,8 +38,8 @@ class RemittanceAuditController extends BaseController
         $processBuilder = RemittanceAuditProcess::where('flow_id', $remittanceAuditFlow->id)->with(['member', 'status', 'remittanceRecord' => function (Builder $query) {
             $query->with('orderPay');
         }]);
-        if(isset($searchParams['status_id'])){
-            $processBuilder->where('status_id');
+        if(!is_null(request()->input('status_id'))){
+            $processBuilder->where('status_id',request()->input('status_id'));
         }
         $processList = $processBuilder->get();
         $allStatus = $remittanceAuditFlow->allStatus;
@@ -42,8 +48,6 @@ class RemittanceAuditController extends BaseController
             'allStatus' => $allStatus,
             'searchParams' => $searchParams,
         ];
-
-        return view('finance.remittance.audits', ['data' => json_encode($data)])->render();
-
+        return $data;
     }
 }
