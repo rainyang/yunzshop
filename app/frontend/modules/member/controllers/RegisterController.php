@@ -26,6 +26,7 @@ use iscms\Alisms\SendsmsPusher as Sms;
 use app\common\exceptions\AppException;
 use Mews\Captcha\Captcha;
 use app\common\facades\Setting;
+use app\common\services\alipay\OnekeyLogin;
 
 class RegisterController extends ApiController
 {
@@ -190,11 +191,12 @@ class RegisterController extends ApiController
         if (empty($mobile)) {
             return $this->errorJson('请填入手机号');
         }
+        if (!OnekeyLogin::alipayPluginMobileState()) {
+            $info = MemberModel::getId(\YunShop::app()->uniacid, $mobile);
 
-        $info = MemberModel::getId(\YunShop::app()->uniacid, $mobile);
-
-        if (!empty($info) && empty($reset_pwd)) {
-            return $this->errorJson('该手机号已被注册！不能获取验证码');
+            if (!empty($info) && empty($reset_pwd)) {
+                return $this->errorJson('该手机号已被注册！不能获取验证码');
+            }
         }
         $code = rand(1000, 9999);
 

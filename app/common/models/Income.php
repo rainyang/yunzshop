@@ -8,10 +8,8 @@
 
 namespace app\common\models;
 
-use app\backend\models\BackendModel;
-use app\backend\modules\finance\services\IncomeService;
 
-class Income extends BackendModel
+class Income extends BaseModel
 {
     public $table = 'yz_member_income';
 

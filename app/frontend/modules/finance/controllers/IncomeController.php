@@ -11,18 +11,11 @@ namespace app\frontend\modules\finance\controllers;
 
 use app\common\models\MemberShopInfo;
 use app\common\components\ApiController;
-use app\common\components\BaseController;
-use app\common\events\finance\AfterIncomeWithdrawEvent;
 use app\common\facades\Setting;
 use app\common\models\Income;
 use app\common\services\finance\IncomeService;
-use app\common\services\Pay;
-use app\common\services\PayFactory;
-use app\frontend\modules\finance\models\Withdraw;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Yunshop\Commission\models\CommissionOrder;
 
 class IncomeController extends ApiController
 {
@@ -245,51 +238,6 @@ Log::info($this->getLangTitle($key) ? $this->getLangTitle($key) : $item['title']
         return $this->errorJson('未检测到数据!');
     }
 
-    /**
-     * todo 删除该方法、及该方法关联方法，已经移交 IncomeWithdrawController 处理
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function saveWithdraw()
-    {
-        $config = \Config::get('income');
-        $withdrawData = \YunShop::request()->data;
-        if (!$withdrawData) {
-            return $this->errorJson('未检测到数据!');
-        }
-        if (!$this->getMemberAlipaySet() && $withdrawData['total']['pay_way'] == 'alipay') {
-            return $this->errorJson('您未配置支付宝信息，请先修改个人信息中支付宝信息');
-        }
-        $withdrawTotal = $withdrawData['total'];
-        Log::info("POST - Withdraw Total ", $withdrawTotal);
-        Log::info("POST - Withdraw Data ", $withdrawData);
-        /**
-         * 验证数据
-         */
-        foreach ($withdrawData['withdrawal'] as $item) {
-            $set[$item['key_name']] = \Setting::get('withdraw.' . $item['key_name']);
-
-            $incomes = Income::getIncomes()
-                ->where('member_id', \YunShop::app()->getMemberId())
-                ->where('status', '0')
-                ->whereIn('id', explode(',', $item['type_id']))
-                ->get();
-            $set[$item['key_name']]['roll_out_limit'] = $set[$item['key_name']]['roll_out_limit'] ? $set[$item['key_name']]['roll_out_limit'] : 0;
-
-            Log::info("roll_out_limit:");
-            Log::info($set[$item['key_name']]['roll_out_limit']);
-
-            if (bccomp($incomes->sum('amount'), $set[$item['key_name']]['roll_out_limit'], 2) == -1) {
-                return $this->errorJson('提现失败,' . $item['type_name'] . '未达到提现标准!');
-            }
-
-        }
-        Log::info("提现成功:提现成功");
-        $request = static::setWithdraw($withdrawData);
-        if ($request) {
-            return $this->successJson('提现成功!');
-        }
-        return $this->errorJson('提现失败!');
-    }
 
     /**
      * @param $type
@@ -320,62 +268,10 @@ Log::info($this->getLangTitle($key) ? $this->getLangTitle($key) : $item['title']
     {
         Log::info('setIncome');
         $request = Income::updatedWithdraw($type, $typeId, '1');
-    }
-
-    /**
-     * @param $type
-     * @param $typeId
-     */
-//    public function setCommissionOrder($type, $typeId)
-//    {
-//        Log::info('setCommissionOrder');
-//        $request = CommissionOrder::updatedCommissionOrderWithdraw($type, $typeId, '1');
-//    }
-
-    /**
-     * @param $withdrawData
-     * @param $withdrawTotal
-     * @return mixed
-     */
-    public function setWithdraw($withdrawData)
-    {
-        return DB::transaction(function () use ($withdrawData) {
-            return $this->_setWithdraw($withdrawData);
-        });
 
     }
 
-    public function _setWithdraw($withdrawData)
-    {
-        foreach ($withdrawData['withdrawal'] as $item) {
-            $data[] = [
-                'withdraw_sn' => Pay::setUniacidNo(\YunShop::app()->uniacid),
-                'uniacid' => \YunShop::app()->uniacid,
-                'member_id' => \YunShop::app()->getMemberId(),
-                'type' => $item['type'],
-                'type_name' => $item['type_name'],
-                'type_id' => $item['type_id'],
-                'amounts' => $item['income'],
-                'poundage' => $item['poundage'],
-                'poundage_rate' => $item['poundage_rate'],
-                'actual_amounts' => $item['income'] - $item['poundage'] - $item['servicetax'],
-                'actual_poundage' => $item['poundage'],
-                'servicetax' => $item['servicetax'],
-                'servicetax_rate' => $item['servicetax_rate'],
-                'actual_servicetax' => $item['servicetax'],
-                'pay_way' => $withdrawData['total']['pay_way'],
-                'status' => 0,
-                'created_at' => time(),
-                'updated_at' => time(),
-            ];
-            static::setIncomeAndOrder($item['type'], $item['type_id']);
-        }
-        $withdrawData['total']['member_id'] = \YunShop::app()->getMemberId();
-        $withdrawData['withdrawal'] = $data;
-        event(new AfterIncomeWithdrawEvent($withdrawData));
-        Log::info("Withdraw - data", $data);
-        return Withdraw::insert($data);
-    }
+
 
     public function getIncomeWithdrawMode()
     {
