@@ -65,6 +65,11 @@ class PayFactory
      */
     const PAY_YUN_ALIPAY = 15;
 
+    /**
+     * EUP-支付
+     */
+    const PAY_EUP = 16;
+
    public static function create($type = null)
     {
         $className = null;
