@@ -28,7 +28,7 @@ class OperationController extends BaseController
         if (!isset($this->process)) {
             $processId = request()->input('process_id');
 
-            $this->process = RemittanceAuditProcess::find($processId);
+            $this->process = RemittanceAuditProcess::detail()->find($processId);
             if (!isset($this->process)) {
                 throw new AppException("未找到id为{$processId}的审核进程记录");
             }
@@ -43,7 +43,7 @@ class OperationController extends BaseController
     public function pass()
     {
         $this->toNextState();
-        return $this->successJson();
+        return $this->successJson('成功', ['remittanceAudit' => $this->getProcess()]);
     }
 
     /**
@@ -53,7 +53,7 @@ class OperationController extends BaseController
     public function reject()
     {
         $data = $this->toClosedState();
-        return $this->successJson();
+        return $this->successJson('成功', ['remittanceAudit' => $this->getProcess()]);
 
     }
 }

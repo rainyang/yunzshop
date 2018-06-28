@@ -40,7 +40,7 @@ class RemittanceAuditController extends BaseController
         if(!is_null(request()->input('status_id'))){
             $processBuilder->where('status_id',request()->input('status_id'));
         }
-        $processList = $processBuilder->get();
+        $processList = $processBuilder->orderBy('id','desc')->get();
         $allStatus = $remittanceAuditFlow->allStatus;
         $data = [
             'remittanceAudits' => $processList,

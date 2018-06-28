@@ -42,7 +42,7 @@
             </el-form-item>
         </el-form>
 
-        <el-dialog title="拒绝申请" :visible.sync="dialogRejectVisible">
+        <el-dialog v-loading="rejectLoading" title="拒绝申请" :visible.sync="dialogRejectVisible">
             <el-form :model="auditOperate">
                 <el-form-item label="备注">
                     <el-input
@@ -108,6 +108,7 @@
                     this.rejectLoading=true;
                     this.$http.post("{!! yzWebUrl('remittanceAudit.operation.reject',['process_id'=>'']) !!}"+[[this.remittanceAudit.id]],this.auditOperate).then(response => {
                         if (response.data.result) {
+                            this.remittanceAudit = response.data.data.remittanceAudit;
                             this.$message({
                                 message: response.data.msg,
                                 type: 'success'
@@ -120,7 +121,6 @@
                         }
                         this.rejectLoading=false;
                         this.dialogRejectVisible = false;
-                        this.$message('操作成功');
                     }, response => {
                         this.rejectLoading=false;
                         this.$message.error('操作失败');
@@ -132,6 +132,8 @@
                     this.confirmLoading=true;
                     this.$http.post("{!! yzWebUrl('remittanceAudit.operation.pass',['process_id'=>'']) !!}"+[[this.remittanceAudit.id]]).then(response => {
                         if (response.data.result) {
+                            this.remittanceAudit = response.data.data.remittanceAudit;
+
                             this.$message({
                                 message: response.data.msg,
                                 type: 'success'
@@ -143,7 +145,7 @@
                             });
                         }
                         this.confirmLoading=false;
-                        this.dialogConfirmVisible = false
+                        this.dialogConfirmVisible = false;
                         this.$message('操作成功');
                     }, response => {
                         this.confirmLoading=false;

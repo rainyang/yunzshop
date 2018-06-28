@@ -43,7 +43,7 @@ class RemittanceWaitReceipt
             [
                 'report_url' => request()->input('report_url',''),
                 'note' => request()->input('note',''),
-                'uid' => MemberService::getCurrentMemberModel()->uid,
+                'uid' => $process->orderPay->uid,
                 'order_pay_id' => $process->model_id,
                 'card_no' => request()->input('card_no',''),
                 'amount' => request()->input('amount',0),

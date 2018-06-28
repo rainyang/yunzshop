@@ -10,6 +10,7 @@ namespace app\common\modules\payType\remittance\models\process;
 
 use app\common\models\Process;
 use app\common\models\RemittanceRecord;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Class RemittanceProcess
@@ -24,5 +25,17 @@ class RemittanceAuditProcess extends Process
     public function remittanceRecord()
     {
         return $this->belongsTo(RemittanceRecord::class,'model_id');
+    }
+
+    /**
+     * @param Builder $query
+     * @return Builder
+     */
+
+    public function scopeDetail(Builder $query)
+    {
+        return $query->with(['remittanceRecord'=> function ($query) {
+            $query->with('orderPay');
+        },'member']);
     }
 }

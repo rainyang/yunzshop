@@ -42,6 +42,7 @@
                     prop="member.nickname"
                     label="用户">
                 <template slot-scope="scope">
+
                     <a v-bind:href="'{{ yzWebUrl('member.member.detail', array('id' => '')) }}'+[[scope.row.remittance_record.order_pay.uid]]"
                        target="_blank"><img v-bind:src="scope.row.member.avatar_image"
                                             style='width:30px;height:30px;padding:1px;border:1px solid #ccc'><br/>[[scope.row.member.nickname]]</a>

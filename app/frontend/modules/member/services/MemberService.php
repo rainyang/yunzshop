@@ -57,9 +57,6 @@ class MemberService
          */
         $member = \app\frontend\models\Member::find($member_id);
         if(!isset($member)){
-            dump(debug_backtrace());
-            exit;
-
             throw new AppException('(ID:'.$member_id.')用户不存在');
         }
         self::$_current_member = $member;
