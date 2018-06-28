@@ -23,7 +23,7 @@ class HuanxunPay
 
             $result = [
                 'name' => '环迅快捷支付',
-                'value' => '16',
+                'value' => '18',
                 'need_password' => '0'
 
             ];
