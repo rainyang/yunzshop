@@ -11,6 +11,7 @@ namespace app\payment\controllers;
 
 use app\common\helpers\Url;
 use app\common\models\AccountWechats;
+use app\common\services\Pay;
 use app\payment\PaymentController;
 use Yunshop\YunPay\services\YunPayNotifyService;
 
