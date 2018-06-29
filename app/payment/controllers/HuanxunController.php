@@ -177,6 +177,12 @@ class HuanxunController extends PaymentController
         redirect($url)->send();
     }
 
+    public function returnAccountUrl()
+    {
+        $url = yzAppFullUrl('member');
+        redirect($url)->send();
+    }
+
     public function frontUrl()
     {
         $trade = \Setting::get('shop.trade');
