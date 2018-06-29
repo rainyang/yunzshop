@@ -40,7 +40,8 @@ class HuanxunController extends PaymentController
                 $uniacid = $xmlResult->GateWayRsp->body->Attach;
             }
 
-            if ($xmlResult = simplexml_load_string($_REQUEST, 'SimpleXMLElement', LIBXML_NOCDATA)) {
+            if ($_REQUEST['ipsResponse']) {
+                $xmlResult = simplexml_load_string($_REQUEST['ipsResponse'], 'SimpleXMLElement', LIBXML_NOCDATA);
                 $uniAccount = UniAccount::get();
                 foreach ($uniAccount as $u) {
                     \YunShop::app()->uniacid = $u->uniacid;
@@ -50,7 +51,7 @@ class HuanxunController extends PaymentController
                         $this->set = $set;
                     }
                 }
-                $ipsResult = $this->parseData($_REQUEST);
+                $ipsResult = $this->parseData($_REQUEST['ipsResponse']);
                 if ($ipsResult != 'M000000') {
                     return false;
                 }
