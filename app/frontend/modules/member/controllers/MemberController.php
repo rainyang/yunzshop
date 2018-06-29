@@ -1250,8 +1250,8 @@ class MemberController extends ApiController
         $huanxun = \Setting::get('plugin.huanxun_set');
 
         if (app('plugins')->isEnabled('huanxun')) {
-            if ($huanxun['switch']) {
-                return $this->successJson('', $huanxun['switch']);
+            if ($huanxun['withdrawals_switch']) {
+                return $this->successJson('', $huanxun['withdrawals_switch']);
             }
         }
         return $this->errorJson('', 0);
