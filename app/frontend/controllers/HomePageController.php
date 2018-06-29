@@ -99,11 +99,11 @@ class HomePageController extends ApiController
 
         //装修数据, 原来接口在 plugin.designer.home.index.page
         if(empty($pageId)){ //如果是请求首页的数据
-            if(!Cache::has('desiginer_page_0')) {
+            if(!Cache::has('designer_page_0')) {
                 $page = Designer::getDefaultDesigner();
-                Cache::put('desiginer_page_0', $page, 4200);
+                Cache::put('designer_page_0', $page, 4200);
             } else {
-                $page = Cache::get('desiginer_page_0');
+                $page = Cache::get('designer_page_0');
             }
         } else{
             $page = Designer::getDesignerByPageID($pageId);
@@ -111,11 +111,11 @@ class HomePageController extends ApiController
 
         if ($page) {
 
-            if (Cache::has($member_id.'_desiginer_default_0')) {
-                $designer = Cache::get($member_id.'_desiginer_default_0');
+            if (Cache::has($member_id.'_designer_default')) {
+                $designer = Cache::get($member_id.'_designer_default');
             } else {
                 $designer = (new \Yunshop\Designer\services\DesignerService())->getPageForHomePage($page->toArray());
-                Cache::put($member_id.'_desiginer_default_0', $designer,180);
+                Cache::put($member_id.'_designer_default', $designer,180);
             }
 
             $store_goods = null;
