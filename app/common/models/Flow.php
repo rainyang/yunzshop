@@ -33,7 +33,7 @@ class Flow extends BaseModel
      */
     public function allStatus()
     {
-        return $this->hasMany(Status::class,'flow_id');
+        return $this->hasMany(Status::class,'flow_id')->orderBy('order');
     }
 
     /**
@@ -43,7 +43,7 @@ class Flow extends BaseModel
      */
     public function getNextStatus(Status $status)
     {
-        $flowStatus = $this->allStatus->where('status_id',$status->id)->first();
+        $flowStatus = $this->allStatus->where('id',$status->id)->first();
         return $this->allStatus->where('order', '>', $flowStatus->order)->first();
     }
 

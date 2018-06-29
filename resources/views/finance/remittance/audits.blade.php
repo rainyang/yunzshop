@@ -25,6 +25,12 @@
                 :row-class-name="tableRowClassName">
             <el-table-column
                     align="center"
+                    prop="id"
+                    label="id"
+                    width="100">
+            </el-table-column>
+            <el-table-column
+                    align="center"
                     label="支付单号">
                 <template slot-scope="scope">
                     <a v-bind:href="'{{ yzWebUrl('orderPay.detail', array('order_pay_id' => '')) }}'+[[scope.row.remittance_record.order_pay.id]]"
