@@ -14,10 +14,12 @@ use app\common\models\AccountWechats;
 use app\common\services\Pay;
 use app\payment\PaymentController;
 use Yunshop\YunPay\services\YunPayNotifyService;
+use app\common\models\UniAccount;
 
 class HuanxunController extends PaymentController
 {
     private $attach = [];
+    private $set = [];
 
     public function __construct()
     {
@@ -32,9 +34,28 @@ class HuanxunController extends PaymentController
                 return false;
             }
 
-            $paymentResult = $_REQUEST['paymentResult'];
-            $xmlResult = new \SimpleXMLElement($paymentResult);
-            $uniacid = $xmlResult->GateWayRsp->body->Attach;
+            if ($_REQUEST['paymentResult']) {
+                $paymentResult = $_REQUEST['paymentResult'];
+                $xmlResult = new \SimpleXMLElement($paymentResult);
+                $uniacid = $xmlResult->GateWayRsp->body->Attach;
+            }
+
+            if ($xmlResult = simplexml_load_string($_REQUEST, 'SimpleXMLElement', LIBXML_NOCDATA)) {
+                $uniAccount = UniAccount::get();
+                foreach ($uniAccount as $u) {
+                    \YunShop::app()->uniacid = $u->uniacid;
+                    \Setting::$uniqueAccountId = $u->uniacid;
+                    $set = \Setting::get('plugin.huanxun_set');
+                    if ($set['mchntid'] == $xmlResult->argMerCode) {
+                        $this->set = $set;
+                    }
+                }
+                $ipsResult = $this->parseData($_REQUEST);
+                if ($ipsResult != 'M000000') {
+                    return false;
+                }
+                $uniacid = $ipsResult['remark'];
+            }
 
             \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $uniacid;
 
@@ -179,7 +200,8 @@ class HuanxunController extends PaymentController
 
     public function returnAccountUrl()
     {
-        $url = yzAppFullUrl('member');
+
+        $url = Url::absoluteApp('member', ['i' => \YunShop::app()->uniacid]);
         redirect($url)->send();
     }
 
@@ -269,5 +291,41 @@ class HuanxunController extends PaymentController
         Pay::payAccessLog();
         //保存响应数据
         Pay::payResponseDataLog($orderNo[0], '芸微信支付', json_encode($data));
+    }
+
+    //环迅回调信息验证
+    protected function parseData($message)
+    {
+        $obj = simplexml_load_string($message, 'SimpleXMLElement', LIBXML_NOCDATA);
+        if (($rsp = strval($obj->rspCode)) !== 'M000000') {
+            $msg = (string)$obj->rspMsg;
+            return $result = [
+                "rspCode" => $rsp,
+                "rspMsg" => $msg,
+            ];
+        }
+        $body = simplexml_load_string($this->decrypt($obj->p3DesXmlPara), 'SimpleXMLElement', LIBXML_NOCDATA);;
+        return (array)$body->body;
+    }
+
+    /**
+     * 数据解密
+     * @param $encrypted
+     * @return bool|string
+     */
+    public function decrypt($encrypted)
+    {
+        $set =
+        $encrypted = base64_decode($encrypted);
+        $key = str_pad($this->set['3des_key'], 24, '0');
+        $td = mcrypt_module_open(MCRYPT_3DES, '', MCRYPT_MODE_CBC, '');
+        $iv = $this->set['3des_vector'];
+        $ks = mcrypt_enc_get_key_size($td);
+        @mcrypt_generic_init($td, $key, $iv);
+        $decrypted = mdecrypt_generic($td, $encrypted);
+        mcrypt_generic_deinit($td);
+        mcrypt_module_close($td);
+        $y = $this->pkcs5_unpad($decrypted);
+        return $y;
     }
 }
