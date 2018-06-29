@@ -13,7 +13,6 @@ class NewChangePayTimeToOrderPayTable extends Migration
      */
     public function up()
     {
-        // todo 在dev3上调好
         if (Schema::hasTable('yz_order_pay')) {
             Schema::table('yz_order_pay', function (Blueprint $table) {
                 if (Schema::hasColumn('yz_order_pay', 'pay_time')) {

@@ -28,6 +28,10 @@ class TestController extends BaseController
 {
     public function d()
     {
+        Order::first()->pay_type_id = 16;
+        dd(111);
+        exit;
+
         \Log::useDailyFiles(storage_path().'/logs/test/session.log');
         \Log::debug('1',1);
         echo 1;exit;

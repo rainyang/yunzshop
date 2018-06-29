@@ -66,6 +66,7 @@ class WaitPay extends Status
 
     public function getButtonModels()
     {
+
         $result[] = $this->getNextStatusButton();
         $result = array_merge($result, $this->getOtherButtons());
 

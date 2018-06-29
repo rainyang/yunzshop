@@ -12,6 +12,8 @@ use app\common\events\WechatProcessor;
 use app\common\listeners\PayLogListener;
 use app\common\listeners\point\PointListener;
 use app\common\listeners\WechatProcessorListener;
+use app\common\modules\payType\events\AfterOrderPayTypeChangedEvent;
+use app\common\modules\payType\remittance\listeners\AfterOrderPayTypeChangedListener;
 use app\common\modules\process\events\AfterProcessStatusChangedEvent;
 use app\common\modules\status\StatusContainer;
 use app\common\listeners\withdraw\WithdrawAuditListener;
@@ -55,7 +57,7 @@ class EventServiceProvider extends ServiceProvider
             \app\common\listeners\member\AfterOrderReceivedListener::class
         ],
         AfterOrderPaidEvent::class => [ //支付完成
-            \app\common\listeners\member\AfterOrderPaidListener::class
+            \app\common\listeners\member\AfterOrderPaidListener::class,
         ],
         //微信接口回调触发事件进程
         WechatProcessor::class => [
@@ -68,6 +70,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         AfterProcessStatusChangedEvent::class => [
             StatusContainer::class,
+        ],
+        AfterOrderPayTypeChangedEvent::class=>[
+            AfterOrderPayTypeChangedListener::class
         ]
     ];
     /**
