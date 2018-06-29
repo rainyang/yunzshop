@@ -111,12 +111,17 @@ class HomePageController extends ApiController
 
         if ($page) {
 
-            if (Cache::has($member_id.'_designer_default')) {
-                $designer = Cache::get($member_id.'_designer_default');
+            if (empty($pageId)) {
+                if (Cache::has($member_id.'_designer_default')) {
+                    $designer = Cache::get($member_id.'_designer_default');
+                } else {
+                    $designer = (new \Yunshop\Designer\services\DesignerService())->getPageForHomePage($page->toArray());
+                    Cache::put($member_id.'_designer_default', $designer,180);
+                }
             } else {
                 $designer = (new \Yunshop\Designer\services\DesignerService())->getPageForHomePage($page->toArray());
-                Cache::put($member_id.'_designer_default', $designer,180);
             }
+
 
             $store_goods = null;
             if (app('plugins')->isEnabled('store-cashier')) {
