@@ -57,9 +57,9 @@ class HomePageController extends ApiController
             'memberinfo' => $this->getMemberInfo(), //会员信息 todo 不知道做什么使用
         ];
         if(!app('plugins')->isEnabled('designer')) {
-            $result['default'] =>  self::defaultDesign();
+            $result['default'] =  self::defaultDesign();
         }
-
+        return $result;
     }
 
 
