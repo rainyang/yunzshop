@@ -48,14 +48,18 @@ class HomePageController extends ApiController
 
     private function getWeChatPageData()
     {
-        return [
+        $result = [
             'item' => $this->getPageInfo(),         //装修信息
             'applet' => $this->getApplet(),         //小程序默认装修数据
             'system' => $this->getSystem(),         //系统设置 todo 与 mailInfo 数据重复
-            'default' => self::defaultDesign(),     //店铺装修插件关闭时使用
+            //'default' => self::defaultDesign(),     //店铺装修插件关闭时使用
             'mailInfo' => $this->getMailInfo(),     //系统设置 todo 与 system 数据重复
             'memberinfo' => $this->getMemberInfo(), //会员信息 todo 不知道做什么使用
         ];
+        if(!app('plugins')->isEnabled('designer')) {
+            $result['default'] =>  self::defaultDesign();
+        }
+
     }
 
 
