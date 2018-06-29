@@ -28,7 +28,7 @@ class TestController extends BaseController
 {
     public function d()
     {
-        Order::first()->pay_type_id = 16;
+        Order::find(1432)->pay_type_id = 5;
         dd(111);
         exit;
 

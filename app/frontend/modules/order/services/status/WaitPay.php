@@ -34,8 +34,14 @@ class WaitPay extends Status
         return '待付款';
     }
 
+    /**
+     * @return array
+     */
     protected function getNextStatusButton()
     {
+        if($this->order->isPending()){
+            return [];
+        }
         return [
             'name' => "确认{$this->name}",
             'api' => $this->api,

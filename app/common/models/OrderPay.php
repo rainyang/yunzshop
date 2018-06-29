@@ -71,11 +71,17 @@ class OrderPay extends BaseModel
             ->value('pay_type_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function member()
     {
         return $this->belongsTo(Member::class,'uid');
     }
 
+    /**
+     * @return mixed
+     */
     public function getStatusNameAttribute()
     {
         return $this->allStatus[$this->status];
@@ -90,21 +96,34 @@ class OrderPay extends BaseModel
             self::STATUS_REFUNDED => '已退款',
         ]);
     }
+
+    /**
+     * @return string
+     */
     public function getPayTypeNameAttribute()
     {
         return $this->payType->name;
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function orders()
     {
         return $this->belongsToMany(Order::class, (new OrderPayOrder)->getTable(), 'order_pay_id', 'order_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function payType()
     {
         return $this->belongsTo(PayType::class);
     }
 
+    /**
+     * @return \Illuminate\Support\Collection|static
+     */
     public function getPaymentTypes()
     {
         /**
@@ -166,10 +185,17 @@ class OrderPay extends BaseModel
         });
     }
 
+    /**
+     * @throws AppException
+     */
     public function applyPay()
     {
         return $this->getPayType()->applyPay();
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function payOrder(){
         return $this->hasMany(PayOrder::class,'out_order_no','pay_sn');
     }
@@ -177,7 +203,7 @@ class OrderPay extends BaseModel
      * 获取支付参数
      * @param int $payTypeId
      * @param array $payParams
-     * @return mixed
+     * @return array
      * @throws AppException
      */
     public function getPayResult($payTypeId = null, $payParams = [])

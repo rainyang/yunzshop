@@ -52,7 +52,7 @@ class OperationController extends BaseController
      */
     public function reject()
     {
-        $data = $this->toClosedState();
+        $this->toClosedState();
         return $this->successJson('成功', ['remittanceAudit' => $this->getProcess()]);
 
     }

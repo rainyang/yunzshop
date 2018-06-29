@@ -19,6 +19,8 @@ class RemittanceRecordOperationController extends ApiController
 {
     use Operate;
 
+    public $transactionActions = ['*'];
+
     protected function beforeStates()
     {
         return RemittanceAuditFlow::STATE_WAIT_AUDIT;

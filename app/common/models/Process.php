@@ -10,6 +10,7 @@
 namespace app\common\models;
 
 use app\common\exceptions\AppException;
+use app\common\modules\process\events\AfterProcessStateChangedEvent;
 use app\common\modules\process\events\AfterProcessStatusChangedEvent;
 use app\common\traits\HasProcessTrait;
 use app\common\traits\CanPendingTrait;
@@ -118,6 +119,13 @@ class Process extends BaseModel
         }
     }
 
+    /**
+     * @param $value
+     */
+    public function setStateAttribute($value){
+        $this->attributes['state'] = $value;
+        event(new AfterProcessStateChangedEvent($this));
+    }
     /**
      * @param Status $status
      * @throws AppException

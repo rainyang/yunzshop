@@ -14,7 +14,9 @@ use app\common\listeners\point\PointListener;
 use app\common\listeners\WechatProcessorListener;
 use app\common\modules\payType\events\AfterOrderPayTypeChangedEvent;
 use app\common\modules\payType\remittance\listeners\AfterOrderPayTypeChangedListener;
+use app\common\modules\process\events\AfterProcessStateChangedEvent;
 use app\common\modules\process\events\AfterProcessStatusChangedEvent;
+use app\common\modules\process\StateContainer;
 use app\common\modules\status\StatusContainer;
 use app\common\listeners\withdraw\WithdrawAuditListener;
 use app\common\listeners\withdraw\WithdrawPayListener;
@@ -70,6 +72,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         AfterProcessStatusChangedEvent::class => [
             StatusContainer::class,
+        ],
+        AfterProcessStateChangedEvent::class => [
+            StateContainer::class,
         ],
         AfterOrderPayTypeChangedEvent::class=>[
             AfterOrderPayTypeChangedListener::class

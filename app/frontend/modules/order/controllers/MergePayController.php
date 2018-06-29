@@ -154,7 +154,7 @@ class MergePayController extends ApiController
     /**
      * 通过事件获取支付按钮
      * @param \app\frontend\models\OrderPay $orderPay
-     * @return static
+     * @return Collection
      */
     private function getPayTypeButtons(\app\frontend\models\OrderPay $orderPay)
     {

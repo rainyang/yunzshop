@@ -22,22 +22,19 @@ class AfterOrderPayTypeChangedListener
      */
     public function handle(AfterOrderPayTypeChangedEvent $event)
     {
-
         $order = $event->getOrder();
 
-        if ($order->pay_type_id == PayType::REMITTANCE) {
+
+        if ($order->getOriginal('pay_type_id') == PayType::REMITTANCE) {
 
             if(is_null($order->hasOneOrderPay->currentProcess())){
                 return;
             }
 
-
-            if($order->hasOneOrderPay->currentProcess()->status_id == RemittanceFlow::STATE_WAIT_RECEIPT){
+            if($order->hasOneOrderPay->currentProcess()->status->code == RemittanceFlow::STATE_WAIT_RECEIPT){
                 throw new AppException("订单(id:{$order->id})的转账记录已提交转账审核,请等待处理完成或取消申请后,再尝试其他支付方式");
             }
-            dd(1);
-            exit;
-            exit;
+
         }
     }
 }

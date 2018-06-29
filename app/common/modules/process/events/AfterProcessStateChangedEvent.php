@@ -7,7 +7,7 @@
  */
 namespace app\common\modules\process\events;
 
-class AfterProcessStatusChangedEvent extends ProcessChangedEvent
+class AfterProcessStateChangedEvent extends ProcessChangedEvent
 {
 
 }

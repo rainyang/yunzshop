@@ -10,6 +10,7 @@ namespace app\common\models;
 
 
 use app\backend\modules\order\services\OrderService;
+use app\common\exceptions\AppException;
 use app\common\models\order\Address as OrderAddress;
 use app\common\models\order\Express;
 use app\common\models\order\OrderChangePriceLog;
@@ -41,6 +42,7 @@ use app\backend\modules\order\observers\OrderObserver;
  * @property int pay_type_name
  * @property int pay_type_id
  * @property int order_pay_id
+ * @property int is_pending
  * @property int is_virtual
  * @property int dispatch_type_id
  * @property Collection orderGoods
@@ -314,7 +316,11 @@ class Order extends BaseModel
      */
     public function getStatusNameAttribute()
     {
-        return $this->getStatusService()->getStatusName();
+        $statusName = $this->getStatusService()->getStatusName();
+        if ($this->isPending()) {
+            $statusName .= ' : 锁定';
+        }
+        return $statusName;
     }
 
     /**
@@ -460,7 +466,7 @@ class Order extends BaseModel
 
     public function orderPays()
     {
-        return $this->belongsToMany(OrderPay::class, (new OrderPayOrder())->getTable(),'order_id','order_pay_id');
+        return $this->belongsToMany(OrderPay::class, (new OrderPayOrder())->getTable(), 'order_id', 'order_pay_id');
     }
 
     public function close()
@@ -491,13 +497,30 @@ class Order extends BaseModel
     {
         return $this->hasMany(OrderSetting::class, 'order_id', 'id');
     }
+
     public function setPayTypeIdAttribute($value)
     {
-
-        $this->pay_type_id = $value;
-        if($this->pay_type_id != $this->getOriginal('pay_type_id')){
+        $this->attributes['pay_type_id'] = $value;
+        if ($this->pay_type_id != $this->getOriginal('pay_type_id')) {
             event(new AfterOrderPayTypeChangedEvent($this));
         }
+    }
+
+    /**
+     * @param $value
+     * @throws AppException
+     */
+    public function setStatusAttribute($value)
+    {
+        if ($this->isPending()) {
+            throw new AppException("订单已锁定,无法继续操作");
+        }
+        $this->attributes['status'] = $value;
+    }
+
+    public function isPending()
+    {
+        return $this->is_pending;
     }
 
     public function getSetting($key)
