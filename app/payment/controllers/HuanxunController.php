@@ -52,10 +52,8 @@ class HuanxunController extends PaymentController
                     }
                 }
                 $ipsResult = $this->parseData($_REQUEST['ipsResponse']);
-                if ($ipsResult != 'M000000') {
-                    return false;
-                }
-                $uniacid = $ipsResult['remark'];
+                $customerCode = str_replace($this->set['user_prefix'],'',$ipsResult['customerCode']);
+                $uniacid = \Yunshop\Huanxun\frontend\models\AccountApply::getUniacidByCustomerCode($customerCode)['uniacid'];
             }
 
             \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $uniacid;
@@ -298,13 +296,6 @@ class HuanxunController extends PaymentController
     protected function parseData($message)
     {
         $obj = simplexml_load_string($message, 'SimpleXMLElement', LIBXML_NOCDATA);
-        if (($rsp = strval($obj->rspCode)) !== 'M000000') {
-            $msg = (string)$obj->rspMsg;
-            return $result = [
-                "rspCode" => $rsp,
-                "rspMsg" => $msg,
-            ];
-        }
         $body = simplexml_load_string($this->decrypt($obj->p3DesXmlPara), 'SimpleXMLElement', LIBXML_NOCDATA);;
         return (array)$body->body;
     }
@@ -328,5 +319,17 @@ class HuanxunController extends PaymentController
         mcrypt_module_close($td);
         $y = $this->pkcs5_unpad($decrypted);
         return $y;
+    }
+
+    private function pkcs5_unpad($text)
+    {
+        $pad = ord($text{strlen($text) - 1});
+        if ($pad > strlen($text)) {
+            return false;
+        }
+        if (strspn($text, chr($pad), strlen($text) - $pad) != $pad) {
+            return false;
+        }
+        return substr($text, 0, -1 * $pad);
     }
 }
