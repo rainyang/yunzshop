@@ -147,12 +147,12 @@ class HuanxunController extends PaymentController
         $uniacid = $xmlResult->GateWayRsp->body->Attach;
         $order_no =$xmlResult->GateWayRsp->body->MerBillNo;
 
-        $url = Url::absoluteApp('member/payErr', ['i' => $uniacid]);
+        $url = Url::shopSchemeUrl("?menu#/member/payErr?i={$uniacid}");
 
         if ($this->getSignResult()) { // 验证成功
             \Log::debug('-------验证成功-----');
             if ($status == "Y") {
-                $url = Url::absoluteApp('member/payYes', ['i' => $uniacid]);
+                    $url = Url::shopSchemeUrl("?menu#/member/payYes?i={$uniacid}");
 
                 if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
                     $url  = $trade['redirect_url'];
