@@ -169,7 +169,7 @@ class HuanxunController extends PaymentController
             $message = "验证失败";
         }
 
-        \Log::debug("-----快捷支付{$order_no}----", [$message]);
+        \Log::debug("-----快捷支付{$uniacid}-{$order_no}----", [$message]);
 
         redirect($url)->send();
     }
