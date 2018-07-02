@@ -5,6 +5,7 @@
  * Date: 2018/6/11
  * Time: 下午2:31
  */
+
 namespace app\backend\modules\orderPay\controllers;
 
 use app\backend\modules\order\models\OrderPay;
@@ -22,28 +23,35 @@ class DetailController extends BaseController
     public function index()
     {
         $orderPayId = request()->query('order_pay_id');
-        $orderPay = OrderPay::with(['orders'=> function (Builder $query) {
+        $orderPay = OrderPay::with(['orders' => function (Builder $query) {
             $query->with('orderGoods');
-        },'process','member','payOrder'])->find($orderPayId);
+        }, 'process', 'member', 'payOrder'])->find($orderPayId);
 
 
         return view('orderPay.detail', [
             'orderPay' => json_encode($orderPay)
         ])->render();
     }
-    public function allPayTypes(){
+
+    public function allCashierPayTypes()
+    {
+        new OrderPay(['amount',100]);
+    }
+
+    public function allPayTypes()
+    {
         $orderPayId = request()->query('order_pay_id');
-        $orderPay = OrderPay::with(['orders'=> function (Builder $query) {
+        $orderPay = OrderPay::with(['orders' => function (Builder $query) {
             $query->with('orderGoods');
-        },'process','member','payOrder'])->find($orderPayId);
+        }, 'process', 'member', 'payOrder'])->find($orderPayId);
 
         $orderPay->getAllPaymentTypes()->each(function (BasePayment $paymentType) {
-            if(is_null($paymentType)){
+            if (is_null($paymentType)) {
                 return;
             }
             dump($paymentType->getName());
             $paymentType->getOrderPaymentSettings()->each(function (PaymentSetting $setting) {
-                dump($setting);
+                dump(get_class($setting));
                 dump($setting->canUse());
                 dump($setting->exist());
             });
