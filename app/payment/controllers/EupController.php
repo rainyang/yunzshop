@@ -123,4 +123,9 @@ class EupController extends PaymentController
 
     	return $parameter['Sign'] == $md5_key;
     }
+
+    public function log($data)
+    {
+        \Log::debug('回调了hahaah');
+    }
 }
