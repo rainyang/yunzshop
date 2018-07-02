@@ -98,6 +98,7 @@ class Process extends BaseModel
     public function toNextStatus()
     {
         // 流程的下一个情况
+
         $nextStatus = $this->flow->getNextStatus($this->status);
 
         // 根据情况生成新状态
@@ -144,7 +145,9 @@ class Process extends BaseModel
         }
         $this->setRelation('status',$status);
         $this->status_id = $status->id;
+
         $this->save();
+
         event(new AfterProcessStatusChangedEvent($this));
 
     }

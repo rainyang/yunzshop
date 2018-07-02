@@ -44,7 +44,8 @@ class Flow extends BaseModel
     public function getNextStatus(Status $status)
     {
         $flowStatus = $this->allStatus->where('id',$status->id)->first();
-        return $this->allStatus->where('order', '>', $flowStatus->order)->first();
+
+        return $this->allStatus->where('order', '>=', $flowStatus->order)->sort('order')->first();
     }
 
     public function getCloseStatus()
@@ -64,7 +65,7 @@ class Flow extends BaseModel
      */
     public function getFirstStatus()
     {
-        return $this->allStatus->where('order','>',0)->sort('order')->first();
+        return $this->allStatus->where('order','>=',0)->sort('order')->first();
     }
     /**
      * 获取最终状态
@@ -72,7 +73,7 @@ class Flow extends BaseModel
      */
     public function getFinalStatus()
     {
-        return $this->allStatus->where('order','>',0)->sortByDesc('order')->first();
+        return $this->allStatus->where('order','>=',0)->sortByDesc('order')->first();
     }
 
     /**

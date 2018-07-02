@@ -26,6 +26,7 @@ class StatusContainer extends Container
 
     public function handle(AfterProcessStatusChangedEvent $event)
     {
+
         if ($this->bound($event->getProcess()->code)) {
             $this->make($event->getProcess()->code)->handle($event->getProcess());
         }
