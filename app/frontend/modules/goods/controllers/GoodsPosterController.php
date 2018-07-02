@@ -48,6 +48,7 @@ class GoodsPosterController extends ApiController
 
     public function generateGoodsPoster()
     {
+        $this->HttpAgreement('//gd1.alicdn.com/imgextra/i3/3250045354/TB23_9epNWYBuNjy1zkXXXGGpXa_!!3250045354.jpg');
         $id = intval(\YunShop::request()->id);
 
         $this->mid = \YunShop::app()->getMemberId();
@@ -221,7 +222,8 @@ class GoodsPosterController extends ApiController
      */
     private function mergeGoodsImage($target, $thumb)
     {
-        $img = imagecreatefromstring(\Curl::to(yz_tomedia($thumb))->get());
+        $thumb = $this->HttpAgreement(yz_tomedia($thumb));
+        $img = imagecreatefromstring(\Curl::to($thumb)->get());
         $width  = imagesx($img);
         $height = imagesy($img);
 
@@ -239,7 +241,9 @@ class GoodsPosterController extends ApiController
      */
     private function mergeLogoImage($target)
     {
-        $img = imagecreatefromstring(\Curl::to(yz_tomedia($this->shopSet['logo']))->get());
+        $logo = $this->HttpAgreement(yz_tomedia($this->shopSet['logo']));
+
+        $img = imagecreatefromstring(\Curl::to($logo)->get());
         $width  = imagesx($img);
         $height = imagesy($img);
         imagecopyresized($target, $img, 0, 5, 0, 0, 50, 50, $width, $height);
@@ -382,6 +386,20 @@ class GoodsPosterController extends ApiController
         return $content;
     }
 
-
+    /**
+     * 补全http协议
+     * @param [string] $src 图片地址
+     * @return [string]
+     */
+    protected function HttpAgreement($src)
+    {
+        $t = strtolower($src);
+        if (strexists($t, 'http://') || strexists($t, 'https://')) {
+            return $src;
+        }
+        $src = 'http://'.ltrim($src, '//');
+        
+        return $src;
+    }
 
 }
