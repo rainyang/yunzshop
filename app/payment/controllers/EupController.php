@@ -64,17 +64,49 @@ class EupController extends PaymentController
 	public function refundUrl()
     {
         $parameter = $_GET;
+        $this->log($parameter);
 
-        if (!empty($parameter)) {
-            if ($this->getSignResult($parameter)) {
-                \Log::debug('ok');
-                echo 'hahah';
+        if(!empty($parameter)){
+            if($this->getSignResult($parameter)) {
+                $recharge_log = BalanceRecharge::ofOrderSn($this->attach[1])->withoutGlobalScope('member_id')->first();
+                if ($recharge_log) {
+                    \Log::debug('------EUP验证成功-----');
+                    $data = [
+                        'total_fee'    => floatval($parameter['Amount']),
+                        'out_trade_no' => $this->attach[1],
+                        'trade_no'     => 'uep',
+                        'unit'         => 'yuan',
+                        'pay_type'     => 'EUP支付',
+                        'pay_type_id'  => 16,
+
+                    ];
+                    $this->payResutl($data);
+                    \Log::debug('----EUP结束----');
+                    echo 'ok';
+                } else {
+                    //其他错误
+                \Log::debug('----充值记录不存在----');
+
+                }
             } else {
+                \Log::debug('----签名验证失败----');
                 //签名验证失败
             }
-        } else {
-            echo 'FAIL';
+        }else {
+            // echo 'FAIL';
+            \Log::debug('----参数为空----');
         }
+
+        // if (!empty($parameter)) {
+        //     if ($this->getSignResult($parameter)) {
+        //         \Log::debug('ok');
+        //         echo 'hahah';
+        //     } else {
+        //         //签名验证失败
+        //     }
+        // } else {
+        //     echo 'FAIL';
+        // }
     }
 
 
