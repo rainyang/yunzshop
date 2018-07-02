@@ -31,12 +31,8 @@ class TestController extends BaseController
         /**
          * @var OrderPay $orderPay
          */
-        $orderPay = OrderPay::find(1731);
-        $a = $orderPay ->getPaymentTypes();
-        dd($a);
-        exit;
-
-        exit;
+        DB::select('update '.app('db')->getTablePrefix().'yz_order_pay set refund_time = null where refund_time = 0');
+        DB::select('update '.app('db')->getTablePrefix().'yz_order_pay set pay_time = null where pay_time = 0');
 
         exit;
 
