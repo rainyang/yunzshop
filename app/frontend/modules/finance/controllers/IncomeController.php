@@ -22,6 +22,26 @@ class IncomeController extends ApiController
     protected $pageSize = 20;
 
     /**
+     * 收入提现页面，提现按钮控制，todo 需要修改 2018-06-29
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getIncomeWithdrawMode()
+    {
+        //finance.income.get-income-withdraw-mode
+
+        $incomeWithdrawMode = IncomeService::getIncomeWithdrawMode();
+
+        if ($incomeWithdrawMode) {
+            return $this->successJson('获取数据成功!', $incomeWithdrawMode);
+        }
+
+        return $this->errorJson('未检测到数据!');
+    }
+
+
+
+    /**
      * @return \Illuminate\Http\JsonResponse
      */
     public function getIncomeCount()
@@ -273,18 +293,7 @@ Log::info($this->getLangTitle($key) ? $this->getLangTitle($key) : $item['title']
 
 
 
-    public function getIncomeWithdrawMode()
-    {
-        //finance.income.get-income-withdraw-mode
 
-        $incomeWithdrawMode = IncomeService::getIncomeWithdrawMode();
-
-        if ($incomeWithdrawMode) {
-            return $this->successJson('获取数据成功!', $incomeWithdrawMode);
-        }
-
-        return $this->errorJson('未检测到数据!');
-    }
 
     private function getMemberAlipaySet()
     {
