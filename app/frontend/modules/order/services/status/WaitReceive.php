@@ -39,7 +39,7 @@ class WaitReceive extends Status
     }
     protected function getOtherButtons(){
         $result = [];
-        if (!$this->order->isVirtual()  && !in_array($this->order->dispatch_type_id, [DispatchType::STORE_DELIVERY, DispatchType::SELF_DELIVERY])) {
+        if (!$this->order->isVirtual()  && !in_array($this->order->dispatch_type_id, [DispatchType::SELF_DELIVERY])) {
             $result[] = [
                 'name' => '查看物流', //todo 原来商城的逻辑是, 当有物流单号时, 才显示"查看物流"按钮
                 'api' => 'dispatch.express',
