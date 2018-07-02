@@ -28,8 +28,16 @@ class TestController extends BaseController
 {
     public function d()
     {
-        Order::find(1432)->pay_type_id = 5;
-        dd(111);
+        /**
+         * @var OrderPay $orderPay
+         */
+        $a = \Log::getMonolog();
+        dd($a);
+        exit;
+
+
+        exit;
+
         exit;
 
         \Log::useDailyFiles(storage_path().'/logs/test/session.log');

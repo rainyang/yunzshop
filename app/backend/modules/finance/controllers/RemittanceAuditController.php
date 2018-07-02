@@ -29,6 +29,8 @@ class RemittanceAuditController extends BaseController
         return $this->successJson('成功',$this->getData());
     }
     private function getData(){
+        $pageSize = (int)request()->input('pagesize',20);
+
         /**
          * @var RemittanceAuditFlow $remittanceAuditFlow
          */
@@ -37,10 +39,14 @@ class RemittanceAuditController extends BaseController
         $processBuilder = RemittanceAuditProcess::where('flow_id', $remittanceAuditFlow->id)->with(['member', 'status', 'remittanceRecord' => function (Builder $query) {
             $query->with('orderPay');
         }]);
-        if(!is_null(request()->input('status_id'))){
+        if(!empty(request()->input('status_id'))){
             $processBuilder->where('status_id',request()->input('status_id'));
         }
-        $processList = $processBuilder->orderBy('id','desc')->get();
+        $processList = $processBuilder->orderBy('id','desc')->paginate($pageSize)->toArray();
+        $processList['pagesize'] = $pageSize;
+        //dd($processList);
+        //exit;
+
         $allStatus = $remittanceAuditFlow->allStatus;
         $data = [
             'remittanceAudits' => $processList,

@@ -8,7 +8,7 @@
 
 namespace app\frontend\modules\payment\paymentSettings;
 
-use app\frontend\models\OrderPay;
+use app\common\models\OrderPay;
 
 abstract class PaymentSetting implements PaymentSettingInterface
 {

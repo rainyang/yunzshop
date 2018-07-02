@@ -20,7 +20,7 @@
             </el-select>
         </div>
         <el-table
-                :data="list"
+                :data="data.data"
                 style="width: 100%"
                 :row-class-name="tableRowClassName">
             <el-table-column
@@ -78,6 +78,16 @@
                 </template>
             </el-table-column>
         </el-table>
+        <div style="float: right">
+            <el-pagination
+                    background
+                    layout="prev, pager, next"
+                    :total="data.total"
+                    :page-size="data.pagesize"
+                    @current-change="handleCurrentChange"
+                    v-loading="pageLoading">
+            </el-pagination>
+        </div>
 
     </div>
     <style>
@@ -98,26 +108,28 @@
 
             data() {
                 let data = JSON.parse('{!! $data !!}');
-                console.log(data)
                 return {
-                    list: data.remittanceAudits,
+                    data: data.remittanceAudits,
+
                     allStatus: [
-                        {id:null,name:"全部"},
+                        {id: null, name: "全部"},
                         ...data.allStatus
 
                     ],
 
-                    searchParams:{
+                    searchParams: {
                         ...data.searchParams,
-                        "keywords":"",
-                        "status_id":""
+                        "keywords": "",
+                        "status_id": ""
                     },
-                    loading:false
+                    loading: false,
+                    pageLoading: false
                 }
             },
             mounted: function () {
             },
             methods: {
+
                 tableRowClassName({row, rowIndex}) {
                     if (row.state == 'completed') {
                         return 'success-row';
@@ -127,15 +139,36 @@
                     }
                     return '';
                 },
-                search(){
+                search() {
                     this.loading = true;
 
-                    this.$http.post("{!! yzWebUrl('finance.remittance-audit.ajax')!!}",this.searchParams).then(response => {
-                        this.list = response.data.data.remittanceAudits;
+                    this.$http.post("{!! yzWebUrl('finance.remittance-audit.ajax')!!}", {...this.searchParams}).then(response => {
+                        this.data = response.data.data.remittanceAudits;
                         this.loading = false;
                     }, response => {
                         console.log(response);
                         this.loading = false;
+                    });
+                },
+                handleCurrentChange(val) {
+                    this.pageLoading = true;
+
+                    //this.$Loading.start();
+                    this.$http.post("{!! yzWebUrl('finance.remittance-audit.ajax')!!}", {
+                        ...this.searchParams,
+                        page: val,
+                        pagesize: this.data.pagesize
+                    }).then(response => {
+                        console.log(response);
+                        //this.$Loading.finish();
+                        this.pageLoading = false;
+
+                        this.data = response.data.data.remittanceAudits;
+                    }, response => {
+                        this.pageLoading = false;
+
+                        //this.$Loading.error();
+                        console.log(response);
                     });
                 }
             }
