@@ -45,7 +45,7 @@ class Flow extends BaseModel
     {
         $flowStatus = $this->allStatus->where('id',$status->id)->first();
 
-        return $this->allStatus->where('order', '>=', $flowStatus->order)->sort('order')->first();
+        return $this->allStatus->where('order', '>', $flowStatus->order)->sort('order')->first();
     }
 
     public function getCloseStatus()

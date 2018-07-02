@@ -143,6 +143,7 @@ class Process extends BaseModel
             // 流程执行完
             $this->state = self::STATUS_CANCELED;
         }
+
         $this->setRelation('status',$status);
         $this->status_id = $status->id;
 
