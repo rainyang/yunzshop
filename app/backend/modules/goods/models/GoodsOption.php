@@ -46,7 +46,7 @@ class GoodsOption extends \app\common\models\GoodsOption
                 //'virtual' => $data['type'] == 3 ? $_GPC['option_virtual_' . $ids][0] : 0,
                 'virtual' => 0,
                 "red_price" => $optionPost['option_redprice_' . $ids][0],
-                'thumb' => tomedia($optionPost['option_thumb_' . $ids][0]),
+                'thumb' => $optionPost['option_thumb_' . $ids][0],
             ];
 
 

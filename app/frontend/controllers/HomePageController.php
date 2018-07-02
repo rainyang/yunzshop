@@ -136,7 +136,7 @@ class HomePageController extends ApiController
                 if ($value['temp'] == 'goods') {
                     foreach ($value['data'] as &$info) {
                         $info['is_course'] = 0;
-
+                        $info['thumb'] = replace_yunshop(yz_tomedia($info['thumb']));
                         if ($video_open) {
                             $info['is_course'] = $videoDemand->isCourse($info['goodid']);
                         }
@@ -335,7 +335,6 @@ class HomePageController extends ApiController
         }
         return false;
     }
-
 
     /**
      * 是否需要绑定手机号

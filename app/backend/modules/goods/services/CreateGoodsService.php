@@ -45,14 +45,14 @@ class CreateGoodsService
             if ($this->type == 1) {
                 $goods_data['status'] = 0;
             }
-            $goods_data['thumb'] = tomedia($goods_data['thumb']);
-            if (isset($goods_data['thumb_url'])) {
-                $goods_data['thumb_url'] = serialize(
-                    array_map(function ($item) {
-                        return tomedia($item);
-                    }, $goods_data['thumb_url'])
-                );
-            }
+            // $goods_data['thumb'] = tomedia($goods_data['thumb']);
+            // if (isset($goods_data['thumb_url'])) {
+            //     $goods_data['thumb_url'] = serialize(
+            //         array_map(function ($item) {
+            //             return tomedia($item);
+            //         }, $goods_data['thumb_url'])
+            //     );
+            // }
             if (!$goods_data['virtual_sales']) {
                 $goods_data['virtual_sales'] = 0;
             }
