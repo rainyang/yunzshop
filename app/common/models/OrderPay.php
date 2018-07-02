@@ -133,6 +133,18 @@ class OrderPay extends BaseModel
         $paymentTypes = $orderPaymentTypeManager->getOrderPaymentTypes($this);
         return $paymentTypes;
     }
+    /**
+     * @return \Illuminate\Support\Collection|static
+     */
+    public function getAllPaymentTypes()
+    {
+        /**
+         * @var OrderPaymentTypeManager $orderPaymentTypeManager
+         */
+        $orderPaymentTypeManager = app('PaymentManager')->make('OrderPaymentTypeManager');
+        $paymentTypes = $orderPaymentTypeManager->getAllOrderPaymentTypes($this);
+        return $paymentTypes;
+    }
 
     /**
      * 支付

@@ -31,10 +31,10 @@ class TestController extends BaseController
         /**
          * @var OrderPay $orderPay
          */
-        $a = \Log::getMonolog();
+        $orderPay = OrderPay::find(1731);
+        $a = $orderPay ->getPaymentTypes();
         dd($a);
         exit;
-
 
         exit;
 

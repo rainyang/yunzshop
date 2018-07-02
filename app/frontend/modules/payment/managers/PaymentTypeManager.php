@@ -81,6 +81,7 @@ class PaymentTypeManager extends Container
             });
         });
     }
+
     /**
      * 绑定支付方式类
      */
@@ -94,34 +95,28 @@ class PaymentTypeManager extends Container
              * 分别绑定支付方式与支付方式设置类. 只定义不实例化,以便于插件在支付方式实例化之前,追加支付方式与支付方式的设置类
              */
             // 绑定支付方式
-            $this->bind($code, function ($manager, array $params) use ($payment,$code) {
-                list($orderPay,$payType) = $params;
+            $this->bind($code, function ($manager, array $params) use ($payment, $code) {
+                list($orderPay, $payType) = $params;
                 /**
                  * @var OrderPaymentTypeSettingManager $settingManager
                  */
                 // 从管理者取取到自己对应的设置集合
                 $settingManager = $this->getSettingManager();
 
-                $settings = $settingManager->getOrderPaymentSettingCollection($code,$orderPay);
+                $settings = $settingManager->getOrderPaymentSettingCollection($code, $orderPay);
 
                 if (isset($payment['payment']) && $payment['payment'] instanceof \Closure) {
 
-                    return call_user_func($payment['payment'], $orderPay,$payType, $settings);
+                    return call_user_func($payment['payment'], $orderPay, $payType, $settings);
                 }
-                return new NormalPayment($orderPay,$payType, $settings);
+                return new NormalPayment($orderPay, $payType, $settings);
             });
 
 
         });
     }
 
-
-    /**
-     * 获取订单可用的支付方式
-     * @param OrderPay $orderPay
-     * @return Collection|static
-     */
-    public function getOrderPaymentTypes(OrderPay $orderPay)
+    public function getAllOrderPaymentTypes(OrderPay $orderPay)
     {
         $this->bindSettings();
         $this->bindPayments();
@@ -137,16 +132,28 @@ class PaymentTypeManager extends Container
 
         // 实例化订单所有支付方式
         $orderPaymentTypes = $paymentTypes->map(function (PayType $payType) use ($orderPay) {
+
             // 对应的类在容器中注册过
             if ($this->bound($payType->code)) {
 
-                return $this->make($payType->code, [$orderPay,$payType]);
+                return $this->make($payType->code, [$orderPay, $payType]);
             }
             return null;
         });
 
+        return $orderPaymentTypes;
+
+    }
+
+    /**
+     * 获取订单可用的支付方式
+     * @param OrderPay $orderPay
+     * @return Collection|static
+     */
+    public function getOrderPaymentTypes(OrderPay $orderPay)
+    {
         // 过滤掉无效的
-        $orderPaymentTypes = $orderPaymentTypes->filter(function (BasePayment $paymentType) {
+        $orderPaymentTypes = $this->getAllOrderPaymentTypes($orderPay)->filter(function (BasePayment $paymentType) {
 
             // 可用的
             return isset($paymentType) && $paymentType->canUse();

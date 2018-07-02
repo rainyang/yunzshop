@@ -40,7 +40,9 @@ abstract class BasePayment
         $this->orderPaymentSettings = $orderPaymentSettings;
 
     }
-
+    public function getOrderPaymentSettings(){
+        return $this->orderPaymentSettings;
+    }
     public function amountEnough()
     {
         return $this->orderPay->amount > 0;
