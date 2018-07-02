@@ -63,7 +63,6 @@ class CategoryController extends BaseController
         $requestCategory = \YunShop::request()->category;
 
         if ($requestCategory) {
-            $requestCategory['thumb'] = tomedia($requestCategory['thumb']);
 
             if (isset($requestCategory['filter_ids']) && is_array($requestCategory['filter_ids'])) {
                 $requestCategory['filter_ids'] = implode(',', $requestCategory['filter_ids']);

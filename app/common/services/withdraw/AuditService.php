@@ -74,7 +74,7 @@ class AuditService
 
     private function auditing()
     {
-        $this->withdrawModel->status = Withdraw::STATUS_AUDIT;
+        $this->withdrawModel->status = $this->getAuditStatus();
         $this->withdrawModel->audit_at = time();
         $this->withdrawModel->actual_poundage = $this->getActualPoundage();
         $this->withdrawModel->actual_servicetax = $this->getActualServiceTax();
@@ -83,6 +83,32 @@ class AuditService
         event(new WithdrawAuditingEvent($this->withdrawModel));
 
         $this->audited();
+    }
+
+
+    private function getAuditStatus()
+    {
+        $type_ids_count = count(explode(',', $this->withdrawModel->type_id));
+
+        //$audit_count = count($this->withdrawModel->audit_ids);
+        $rebut_count = count($this->withdrawModel->rebut_ids);
+        $invalid_count = count($this->withdrawModel->invalid_ids);
+
+        //如果全无效
+        if ($invalid_count > 0 && $invalid_count == $type_ids_count) {
+            return Withdraw::STATUS_INVALID;
+        }
+
+        //如果全驳回
+        if ($rebut_count > 0 && $rebut_count == $type_ids_count) {
+            return Withdraw::STATUS_PAY;
+        }
+
+        //如果是无效 + 驳回 [同全驳回，直接完成]
+        if ($invalid_count > 0 && $rebut_count > 0 && ($invalid_count + $rebut_count) == $type_ids_count) {
+            return Withdraw::STATUS_PAY;
+        }
+        return Withdraw::STATUS_AUDIT;
     }
 
 

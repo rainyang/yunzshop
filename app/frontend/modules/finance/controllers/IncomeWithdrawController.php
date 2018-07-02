@@ -82,7 +82,7 @@ class IncomeWithdrawController extends ApiController
             $this->setIncomeSet($income['type']);
 
             //附值手续费、劳务税(收银台不计算手续费、劳务税)
-            if ($income['type'] == 'StoreCashier') {
+            if ($income['type'] == 'StoreCashier' || $income['type'] == 'StoreWithdraw') {
                 $this->poundage_rate = 0;
                 $this->service_tax_rate = 0;
                 $this->special_poundage_rate = 0;
