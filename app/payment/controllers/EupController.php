@@ -17,7 +17,7 @@ class EupController extends PaymentController
         parent::__construct();
 
         if (empty(\YunShop::app()->uniacid)) {
-            $this->attach = explode(':', $_GET['OrderID']);
+            $this->attach = explode('a', $_GET['OrderID']);
 
             \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $this->attach[0];
 
@@ -67,11 +67,8 @@ class EupController extends PaymentController
 
         if (!empty($parameter)) {
             if ($this->getSignResult($parameter)) {
-                if ($_GET['respCode'] == '0000') {
-                    //验证成功，业务逻辑
-                } else {
-                    //其他错误
-                }
+                \Log::debug('ok');
+                echo 'hahah';
             } else {
                 //签名验证失败
             }
