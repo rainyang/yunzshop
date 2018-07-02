@@ -24,6 +24,7 @@ class RemittanceState
          * @var RemittanceProcess $remittanceProcess
          */
         $remittanceProcess = RemittanceProcess::find($process->id);
+
         // 转账流程结束后 解除订单锁定
         if ($process->state != Process::STATUS_PROCESSING) {
             $remittanceProcess->orderPay->orders->each(function (Order $order) {
