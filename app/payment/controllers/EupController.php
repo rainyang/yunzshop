@@ -62,7 +62,7 @@ class EupController extends PaymentController
 	}
 
 	//同步充值通知
-	public function refundUrl()
+	public function returnUrl()
     {
         $parameter = $_GET;
 
@@ -83,6 +83,7 @@ class EupController extends PaymentController
                     $this->payResutl($data);
                     \Log::debug('----EUP结束----');
                     redirect(Url::absoluteApp('member/orderlist/', ['i' => \YunShop::app()->uniacid]))->send();
+
                 } else {
                     //其他错误
                 \Log::debug('----EUP充值记录不存在----');

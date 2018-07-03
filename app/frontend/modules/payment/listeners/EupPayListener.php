@@ -18,12 +18,11 @@ class EupPayListener
      */
     public function onGetPaymentTypes($event)
     {
-        $set = \Setting::get('plugin.eup_pay');
 
-        if (\YunShop::plugin()->get('eup-pay') && !is_null($set)) {
+        if (\YunShop::plugin()->get('eup-pay') && app('plugins')->isEnabled('eup-pay')) {
 
             $result = [
-                'name' => 'EUP支付',
+                'name' => 'EUP',
                 'value' => '16',
                 'need_password' => '0'
 
