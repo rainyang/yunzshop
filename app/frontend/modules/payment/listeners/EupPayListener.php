@@ -10,9 +10,13 @@ namespace app\frontend\modules\payment\listeners;
 use app\common\events\payment\GetOrderPaymentTypeEvent;
 use app\common\events\payment\RechargeComplatedEvent;
 
-class EupPay
+class EupPayListener
 {
-    public function onGetPaymentTypes(GetOrderPaymentTypeEvent $event)
+    /**
+     * @param RechargeComplatedEvent $event
+     * @return null
+     */
+    public function onGetPaymentTypes($event)
     {
         $set = \Setting::get('plugin.eup_pay');
 
@@ -30,13 +34,14 @@ class EupPay
         return null;
     }
 
-    public function subscribe($events)
+
+    /**
+     * @param RechargeComplatedEvent $event
+     */
+    public function subscribe($event)
     {
-        $events->listen(
-            GetOrderPaymentTypeEvent::class,
-            self::class . '@onGetPaymentTypes'
-        );
-        $events->listen(
+
+        $event->listen(
             RechargeComplatedEvent::class,
             self::class . '@onGetPaymentTypes'
         );

@@ -2,11 +2,12 @@
 
 namespace app\payment\controllers;
 
+use app\common\models\AccountWechats;
 use app\payment\PaymentController;
 use app\frontend\modules\finance\models\BalanceRecharge;
-/**
-* 
-*/
+use app\common\services\Pay;
+
+
 class EupController extends PaymentController
 {
 	
@@ -64,7 +65,6 @@ class EupController extends PaymentController
 	public function refundUrl()
     {
         $parameter = $_GET;
-        $this->log($parameter);
 
         if(!empty($parameter)){
             if($this->getSignResult($parameter)) {
@@ -82,31 +82,20 @@ class EupController extends PaymentController
                     ];
                     $this->payResutl($data);
                     \Log::debug('----EUP结束----');
-                    echo 'ok';
+                    redirect(Url::absoluteApp('member/orderlist/', ['i' => \YunShop::app()->uniacid]))->send();
                 } else {
                     //其他错误
-                \Log::debug('----充值记录不存在----');
+                \Log::debug('----EUP充值记录不存在----');
 
                 }
             } else {
-                \Log::debug('----签名验证失败----');
+                \Log::debug('----EUP签名验证失败----');
                 //签名验证失败
             }
         }else {
             // echo 'FAIL';
             \Log::debug('----参数为空----');
         }
-
-        // if (!empty($parameter)) {
-        //     if ($this->getSignResult($parameter)) {
-        //         \Log::debug('ok');
-        //         echo 'hahah';
-        //     } else {
-        //         //签名验证失败
-        //     }
-        // } else {
-        //     echo 'FAIL';
-        // }
     }
 
 
@@ -124,8 +113,16 @@ class EupController extends PaymentController
     	return $parameter['Sign'] == $md5_key;
     }
 
+    /**
+     * 支付日志
+     *
+     * @param $post
+     */
     public function log($data)
     {
-        \Log::debug('回调了hahaah');
+        //访问记录
+        Pay::payAccessLog();
+        //保存响应数据
+        Pay::payResponseDataLog($this->attach[1], 'EUP充值支付', json_encode($data));
     }
 }
