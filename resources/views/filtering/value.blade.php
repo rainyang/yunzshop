@@ -54,7 +54,7 @@
                     </div>
                 </div>
                 <div class='panel-footer'>
-                    <a class='btn btn-info' href="{{yzWebUrl('filtering.filtering.create',['parent_id'=>$parent->id])}}"><i class='fa fa-plus'></i> 添加过滤值</a>
+                    <a class='btn btn-info' href="{{yzWebUrl('filtering.filtering.create',['parent_id'=>$parent->id])}}"><i class='fa fa-plus'></i> 添加标签</a>
 
                 </div>
             </div>

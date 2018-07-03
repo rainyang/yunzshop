@@ -28,7 +28,7 @@ class MessageListener implements ShouldQueue
     }
 
 
-    public function handel($event)
+    public function handle($event)
     {
         /**
          * @var $event MessageEvent

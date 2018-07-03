@@ -8,7 +8,11 @@
 
 namespace app\common\providers;
 
+
 use app\common\managers\ModelExpansionManager;
+
+use app\common\modules\status\StatusContainer;
+
 use app\frontend\modules\coin\CoinManager;
 use app\frontend\modules\deduction\DeductionManager;
 use app\frontend\modules\goods\services\GoodsManager;
@@ -39,5 +43,8 @@ class ShopProvider extends ServiceProvider
             return new OrderManager();
         });
 
+        $this->app->singleton('StatusContainer', function (){
+            return new StatusContainer();
+        });
     }
 }

@@ -37,9 +37,8 @@ class ListController extends ApiController
 
     protected function getData()
     {
-        $pageSize = \YunShop::request()->pagesize;
-        $pageSize = $pageSize ? $pageSize : 20;
-        return $this->getOrder()->paginate($pageSize)->toArray();
+        $pageSize = request()->input('pagesize',20);
+        return $this->getOrder()->where('is_member_deleted',0)->paginate($pageSize)->toArray();
     }
 
     /**

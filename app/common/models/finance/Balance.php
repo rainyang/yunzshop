@@ -241,7 +241,11 @@ class Balance extends BaseModel
         return (new ConstService())->sourceComment();
     }
 
-
+    //2018/5/21 快递单增加余额记录
+    public static function getBalanceById($member_id)
+    {
+        return self::uniacid()->where('member_id', $member_id)->first();
+    }
 
 
 

@@ -10,8 +10,7 @@ namespace app\common\models;
 
 
 use app\backend\modules\order\services\OrderService;
-use app\common\helpers\QrCodeHelper;
-use app\common\helpers\Url;
+use app\common\exceptions\AppException;
 use app\common\models\order\Address as OrderAddress;
 use app\common\models\order\Express;
 use app\common\models\order\OrderChangePriceLog;
@@ -19,10 +18,10 @@ use app\common\models\order\OrderCoupon;
 use app\common\models\order\OrderDeduction;
 use app\common\models\order\OrderDiscount;
 use app\common\models\order\OrderSetting;
-use app\common\models\order\Pay;
 use app\common\models\order\Plugin;
 use app\common\models\order\Remark;
 use app\common\models\refund\RefundApply;
+use app\common\modules\payType\events\AfterOrderPayTypeChangedEvent;
 use app\frontend\modules\order\services\status\StatusFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -42,9 +41,14 @@ use app\backend\modules\order\observers\OrderObserver;
  * @property int pay_type_name
  * @property int pay_type_id
  * @property int order_pay_id
+ * @property int is_pending
+ * @property int is_virtual
  * @property int dispatch_type_id
  * @property Collection orderGoods
  * @property Member belongsToMember
+ * @property Collection orderPays
+ * @property OrderPay hasOneOrderPay
+ * @property PayType hasOnePayType
  */
 class Order extends BaseModel
 {
@@ -163,12 +167,17 @@ class Order extends BaseModel
     /**
      * 关联模型 1对多:订单商品
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @throws \app\common\exceptions\ShopException
      */
     public function hasManyOrderGoods()
     {
         return $this->hasMany(self::getNearestModel('OrderGoods'), 'order_id', 'id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @throws \app\common\exceptions\ShopException
+     */
     public function orderGoods()
     {
         return $this->hasMany(self::getNearestModel('OrderGoods'), 'order_id', 'id');
@@ -176,6 +185,7 @@ class Order extends BaseModel
 
     /**
      * 关联模型 1对多:订单优惠信息
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function discounts()
     {
@@ -184,6 +194,7 @@ class Order extends BaseModel
 
     /**
      * 关联模型 1对多:订单抵扣信息
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function deductions()
     {
@@ -192,6 +203,7 @@ class Order extends BaseModel
 
     /**
      * 关联模型 1对多:订单信息
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function coupons()
     {
@@ -259,7 +271,7 @@ class Order extends BaseModel
      */
     public function hasOneOrderPay()
     {
-        return $this->belongsTo(Pay::class, 'order_pay_id', 'id');
+        return $this->belongsTo(OrderPay::class, 'order_pay_id', 'id');
     }
 
     /**
@@ -298,7 +310,7 @@ class Order extends BaseModel
      */
     public function hasOnePay()
     {
-        return $this->hasOne(Pay::class, 'order_id', 'id');
+        return $this->hasOne(OrderPay::class, 'order_id', 'id');
     }
 
     /**
@@ -307,7 +319,11 @@ class Order extends BaseModel
      */
     public function getStatusNameAttribute()
     {
-        return $this->getStatusService()->getStatusName();
+        $statusName = $this->getStatusService()->getStatusName();
+        if ($this->isPending()) {
+            $statusName .= ' : 锁定';
+        }
+        return $statusName;
     }
 
     /**
@@ -330,7 +346,6 @@ class Order extends BaseModel
     public function getButtonModelsAttribute()
     {
         $result = $this->getStatusService()->getButtonModels();
-
         return $result;
     }
 
@@ -378,6 +393,9 @@ class Order extends BaseModel
         return $query->where('plugin_id', $pluginId);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function orderPlugin()
     {
         return $this->hasMany(Plugin::class);
@@ -402,8 +420,9 @@ class Order extends BaseModel
 
     /**
      * 通过会员ID获取订单信息
-     *
      * @param $member_id
+     * @param $status
+     * @return mixed
      */
     public static function getOrderInfoByMemberId($member_id, $status)
     {
@@ -448,6 +467,11 @@ class Order extends BaseModel
         return $this->hasMany(OrderDiscount::class, 'order_id', 'id');
     }
 
+    public function orderPays()
+    {
+        return $this->belongsToMany(OrderPay::class, (new OrderPayOrder())->getTable(), 'order_id', 'order_pay_id');
+    }
+
     public function close()
     {
         return OrderService::close($this);
@@ -475,6 +499,31 @@ class Order extends BaseModel
     public function orderSettings()
     {
         return $this->hasMany(OrderSetting::class, 'order_id', 'id');
+    }
+
+    public function setPayTypeIdAttribute($value)
+    {
+        $this->attributes['pay_type_id'] = $value;
+        if ($this->pay_type_id != $this->getOriginal('pay_type_id')) {
+            event(new AfterOrderPayTypeChangedEvent($this));
+        }
+    }
+
+    /**
+     * @param $value
+     * @throws AppException
+     */
+    public function setStatusAttribute($value)
+    {
+        if ($this->isPending()) {
+            throw new AppException("订单已锁定,无法继续操作");
+        }
+        $this->attributes['status'] = $value;
+    }
+
+    public function isPending()
+    {
+        return $this->is_pending;
     }
 
     public function getSetting($key)

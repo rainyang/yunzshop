@@ -108,6 +108,12 @@
 .task_reward {
     background-image: url('../img/marketing/task_reward.png');
 }
+.courier {
+    background-image: url('../img/marketing/courier.png');
+}
+.member_return {
+    background-image: url('../img/marketing/member_return.png');
+}
 .app_set {
     background-image: url('../img/tool/app_set.png');
 }
@@ -186,4 +192,7 @@
 }
 .order_meals {
     background-image: url('../img/api/order_meals.png');
+}
+.alipay_onekey_login {
+    background-image: url('../img/tool/alipay_onekey_login.png');
 }

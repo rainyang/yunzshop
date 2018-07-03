@@ -15,11 +15,11 @@ class TemplateMessageDefault extends BaseModel
 
     public function getData($template_id_short)
     {
-        return self::where('template_id_short',$template_id_short)->first();
+        return self::uniacid()->where('template_id_short',$template_id_short)->first();
     }
 
     public static function delData($template_id)
     {
-        return self::where('template_id',$template_id)->delete();
+        return self::uniacid()->where('template_id',$template_id)->delete();
     }
 }

@@ -98,8 +98,10 @@ class MessageService
      */
     private function getConfiguration($uniacid)
     {
-        if (!\YunShop::app()->uniacid) {
+        if ($uniacid) {
             \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $uniacid;
+        } else{
+            \Setting::$uniqueAccountId = \YunShop::app()->uniacid;
         }
 
         $accountWechat = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);

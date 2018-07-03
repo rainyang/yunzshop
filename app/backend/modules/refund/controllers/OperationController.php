@@ -84,6 +84,17 @@ class OperationController extends BaseController
 
     }
 
+    public function close()
+    {
+        $refundApply = $this->refundApply;
+        DB::transaction(function () use ($refundApply) {
+            $refundApply->close();
+            $refundApply->order->close();
+            RefundMessageService::passMessage($refundApply);//通知买家
+        });
+        return $this->message('操作成功', '');
+    }
+
     /**
      * 手动退款
      * @param \Request $request

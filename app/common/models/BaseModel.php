@@ -190,6 +190,7 @@ class BaseModel extends Model
 
     }
 
+
     public function getRelationValue($key)
     {
         // If the key already exists in the relationships array, it just means the
@@ -238,5 +239,21 @@ class BaseModel extends Model
                 $this->expansions->push($expansion);
             });
         }
+}
+    private function getCommonModelClass($class){
+        if(get_parent_class($class) == self::class){
+            return $class;
+        }
+        return $this->getCommonModelClass(get_parent_class($class));
+    }
+    /**
+     * Get the class name for polymorphic relations.
+     *
+     * @return string
+     */
+    public function getMorphClass()
+    {
+        return $this->getCommonModelClass(parent::getMorphClass());
+
     }
 }

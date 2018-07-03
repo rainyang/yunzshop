@@ -15,36 +15,22 @@ use app\frontend\modules\finance\services\BalanceService;
 
 class CreditPay extends Pay
 {
-    public function __construct()
-    {
-    }
 
-        public function doPay($params = [])
+    public function doPay($params = [])
     {
         $operation = '余额订单支付 订单号：' . $params['order_no'];
-        $this->log($params['extra']['type'], '余额', $params['amount'], $operation,$params['order_no'], Pay::ORDER_STATUS_NON, \YunShop::app()->getMemberId());
+        $this->log($params['extra']['type'], '余额', $params['amount'], $operation, $params['order_no'], Pay::ORDER_STATUS_NON, \YunShop::app()->getMemberId());
 
-        self::payRequestDataLog($params['order_no'],$params['extra']['type'], '余额', json_encode($params));
-
-        /*$data = [
-            'money' => $params['amount'],
-            'serial_number' => $params['order_no'],
-            'operator' => $params['operator'],
-            'operator_id' => $params['operator_id'],
-            'remark' => $params['remark'],
-            'service_type' => $params['service_type']
-        ];
-
-        $result = (new BalanceService())->balanceChange($data);*/
+        self::payRequestDataLog($params['order_no'], $params['extra']['type'], '余额', json_encode($params));
 
         //切换新余额接口，原接口废弃
         $data = [
-            'member_id'     => \YunShop::app()->getMemberId(),
-            'remark'        => $params['remark'] ?: '',
-            'relation'      => $params['order_no'],
-            'operator'      => $params['operator'] ?: 0,
-            'operator_id'   => $params['operator_id'] ?: 0,
-            'change_value'  => $params['amount']
+            'member_id' => \YunShop::app()->getMemberId(),
+            'remark' => $params['remark'] ?: '',
+            'relation' => $params['order_no'],
+            'operator' => $params['operator'] ?: 0,
+            'operator_id' => $params['operator_id'] ?: 0,
+            'change_value' => $params['amount']
         ];
         $result = (new BalanceChange())->consume($data);
 

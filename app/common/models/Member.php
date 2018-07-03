@@ -55,7 +55,7 @@ class Member extends BackendModel
     protected $search_fields = ['mobile', 'uid', 'nickname', 'realname'];
 
     protected $primaryKey = 'uid';
-
+    protected $appends = ['avatar_image'];
 
     public function bankCard()
     {
@@ -372,10 +372,10 @@ class Member extends BackendModel
     public function rules()
     {
         return [
-            'mobile' => 'regex:/^1[34578]\d{9}$/',
+            'mobile' => 'regex:/^1\d{10}$/',
             'realname' => 'required|between:2,10',
             //'avatar' => 'required',
-            'telephone' => 'regex:/^1[34578]\d{9}$/',
+            'telephone' => 'regex:/^1\d{10}$/',
         ];
     }
 
@@ -426,14 +426,12 @@ class Member extends BackendModel
     {
         $plugin_class = new PluginManager(app(), new OptionRepository(), new Dispatcher(), new Filesystem());
 
-        // todo 后期需要重构
         if ($plugin_class->isEnabled('supplier')) {
             $data['supplier'] = VerifyButton::button();
         } else {
             $data['supplier'] = '';
         }
 
-        // todo 后期需要重构
         if ($plugin_class->isEnabled('micro')) {
             $micro_set = \Setting::get('plugin.micro');
             if ($micro_set['is_open_miceo'] == 0) {
@@ -445,14 +443,12 @@ class Member extends BackendModel
             $data['micro'] = '';
         }
 
-        // todo 后期需要重构
         if ($plugin_class->isEnabled('gold')) {
             $data['gold'] = MemberCenterService::button(\YunShop::app()->getMemberId());
         } else {
             $data['gold'] = '';
         }
 
-        // todo 后期需要重构
         if ($plugin_class->isEnabled('love')) {
             $data['love'] = [
                 'status' => true,
@@ -462,6 +458,18 @@ class Member extends BackendModel
             $data['love'] = [
                 'status' => false,
                 'love_name' => '爱心值',
+            ];
+        }
+
+        if ($plugin_class->isEnabled('coin')) {
+            $data['coin'] = [
+                'status' => true,
+                'coin_name' => \Yunshop\Coin\Common\Services\SetService::getCoinName(),
+            ];
+        } else {
+            $data['coin'] = [
+                'status' => false,
+                'coin_name' => '华侨币',
             ];
         }
 
@@ -497,6 +505,22 @@ class Member extends BackendModel
                 'plugin_name' => '签到',
             ];
         }
+
+        //快递单插件开启
+        if ($plugin_class->isEnabled('courier')) {
+            $status = \Setting::get('courier.courier.radio');
+
+            $data['courier'] = [
+                'button_name' => '快递',
+                'status' => $status ? true : false
+            ];
+        } else {
+            $data['courier'] = [
+                'button_name' => '快递',
+                'status' => false
+            ];
+        }
+
 
         //帮助中心插件开启控制
         if ($plugin_class->isEnabled('help-center')) {
@@ -674,6 +698,12 @@ class Member extends BackendModel
         return ($pid && ($pid != 'null' || $pid != 'undefined')) ? (int)$pid : 0;
     }
 
+    //快递单获取会员信息
+    public static function getMemberInfo($uid)
+    {
+        return self::uniacid()->find($uid);
+    }
+
     public static function deleted($uid)
     {
         self::uniacid()
@@ -681,4 +711,8 @@ class Member extends BackendModel
             ->delete();
     }
 
+    public function getAvatarImageAttribute()
+    {
+        return $this->avatar ? tomedia($this->avatar) : tomedia(\Setting::get('shop.shop.headimg'));
+    }
 }

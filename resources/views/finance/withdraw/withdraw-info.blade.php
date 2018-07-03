@@ -21,16 +21,16 @@
                 {{$item->hasOneMember->mobile}}
             </p>
             {{--<p><b>分销等级:</b> {{$item->hasOneAgent->agent_level->name}} (--}}
-                {{--@if($set['level']>=1)一级比例: <span style='color:blue'>{{$item->hasOneAgent->agent_level->first_level}}--}}
-                    {{--%</span>--}}
-                {{--@endif--}}
-                {{--@if($set['level']>=2)二级比例: <span style='color:blue'>{{$item->hasOneAgent->agent_level->second_level}}--}}
-                    {{--%</span>--}}
-                {{--@endif--}}
-                {{--@if($set['level']>=3)三级比例: <span style='color:blue'>{{$item->hasOneAgent->agent_level->third_level}}--}}
-                    {{--%</span>--}}
-                {{--@endif--}}
-                 {{--)--}}
+            {{--@if($set['level']>=1)一级比例: <span style='color:blue'>{{$item->hasOneAgent->agent_level->first_level}}--}}
+            {{--%</span>--}}
+            {{--@endif--}}
+            {{--@if($set['level']>=2)二级比例: <span style='color:blue'>{{$item->hasOneAgent->agent_level->second_level}}--}}
+            {{--%</span>--}}
+            {{--@endif--}}
+            {{--@if($set['level']>=3)三级比例: <span style='color:blue'>{{$item->hasOneAgent->agent_level->third_level}}--}}
+            {{--%</span>--}}
+            {{--@endif--}}
+            {{--)--}}
             {{--</p>--}}
             <p>
                 <b>累计收入: </b><span style='color:red'>{{$item->hasOneAgent->commission_total}}</span> 元
@@ -47,25 +47,25 @@
             @if($item->pay_way == 'manual')
                 <p>
                     <b>手动打款方式：</b>
-                @if($item->manual_type == 1 || empty($item->manual_type))
-                    银行卡
+                    @if($item->manual_type == 1 || empty($item->manual_type))
+                        银行卡
                 </p>
-                    <p>
-                        <b>银行卡：</b>{{$item->bankCard->bank_card}}
-                    </p>
-                @elseif($item->manual_type == 2)
-                    微信
+                <p>
+                    <b>银行卡：</b>{{$item->bankCard->bank_card}}
                 </p>
-                    <p>
-                        <b>微信：</b>{{$item->hasOneYzMember->wechat}}
-                    </p>
-                @elseif($item->manual_type == 3)
-                    支付宝
+            @elseif($item->manual_type == 2)
+                微信
                 </p>
-                    <p>
-                        <b>支付宝：</b>{{$item->hasOneYzMember->alipay}}
-                    </p>
-                @endif
+                <p>
+                    <b>微信：</b>{{$item->hasOneYzMember->wechat}}
+                </p>
+            @elseif($item->manual_type == 3)
+                支付宝
+                </p>
+                <p>
+                    <b>支付宝：</b>{{$item->hasOneYzMember->alipay}}
+                </p>
+            @endif
             @endif
             <p>
                 <b>状态: </b>{{$item->status_name}}
@@ -204,14 +204,22 @@
         <div class='panel-heading'>
             打款信息
         </div>
-        <div class='panel-body'>
-            审核金额: <span style='color:red'>{{$item->actual_amounts + $item->actual_poundage + $item->actual_servicetax}}</span> 元
-            手续费: <span style='color:red'>{{$item->actual_poundage}}</span> 元
-            劳务税:<span style='color:red'>{{$item->actual_servicetax}}</span> 元
-            应打款：<span style='color:red'>{{$item->actual_amounts}}</span>元
+        @if($item->status == '0')
+            <div class='panel-body'>
+                审核金额: <span style='color:red'>{{ $item->amounts }}</span> 元
+                预计手续费: <span style='color:red'>{{ $item->poundage }}</span> 元
+                预计劳务税:<span style='color:red'>{{ $item->servicetax }}</span> 元
+                预计应打款：<span style='color:red'>{{ $item->amounts - $item->poundage - $item->servicetax }}</span>元
+            </div>
 
-        </div>
-
+        @else
+            <div class='panel-body'>
+                审核金额: <span style='color:red'>{{$item->actual_amounts + $item->actual_poundage + $item->actual_servicetax}}</span>元
+                手续费: <span style='color:red'>{{$item->actual_poundage}}</span> 元
+                劳务税:<span style='color:red'>{{$item->actual_servicetax}}</span> 元
+                应打款：<span style='color:red'>{{$item->actual_amounts}}</span>元
+            </div>
+        @endif
         <div class="form-group col-sm-12">
             @if($item->status == '0')
                 <input type="submit" name="submit_check" value="提交审核" class="btn btn-primary col-lg-1"
@@ -256,9 +264,9 @@
 </div>
 
 <script language='javascript'>
-   function goBack() {
-       window.location.href="{!! yzWebUrl('finance.withdraw-records') !!}";
-   }
+    function goBack() {
+        window.location.href = "{!! yzWebUrl('finance.withdraw-records') !!}";
+    }
 </script>
 
 @endsection

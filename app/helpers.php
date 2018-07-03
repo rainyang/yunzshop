@@ -229,8 +229,8 @@ if (!function_exists("tomedia")) {
 
 function yz_tomedia($src, $local_path = false)
 {
+    global $_W;
     $setting = \setting_load();
-
     if (empty($src)) {
         return '';
     }
@@ -247,7 +247,7 @@ function yz_tomedia($src, $local_path = false)
         return $src;
     }
 
-    if ($local_path || empty($setting['remote']['type']) || file_exists(base_path('../../') . '/' . YunShop::app()->config['upload']['attachdir'] . '/' . $src)) {
+    if ($local_path || empty($setting['remote']['type']) || file_exists(base_path('../../') . '/' . $_W['config']['upload']['attachdir'] . '/' . $src)) {
         $src = request()->getSchemeAndHttpHost() . '/attachment/' . $src;
     } else {
         if ($setting['remote']['type'] == 1) {
