@@ -12,6 +12,7 @@ class CODSetting extends BaseSetting
 {
     public function canUse()
     {
+
         return \Setting::get('shop.pay.COD');
     }
 

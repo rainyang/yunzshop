@@ -37,7 +37,7 @@ class Setting extends BaseModel
 //        $value = Cache::get($cacheKey);
 //
 //        if ($value == null) {
-//            list($group, $item) = $this->parseKey($key);
+            list($group, $item) = $this->parseKey($key);
 
             $value = array_get($this->getItems($uniqueAccountId, $group), $item, $default);
 
