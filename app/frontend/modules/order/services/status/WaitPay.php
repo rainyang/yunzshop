@@ -39,13 +39,15 @@ class WaitPay extends Status
      */
     protected function getNextStatusButton()
     {
-        if($this->order->isPending()){
+        if ($this->order->isPending()) {
             return [];
         }
         return [
-            'name' => "确认{$this->name}",
-            'api' => $this->api,
-            'value' => $this->value
+            [
+                'name' => "确认{$this->name}",
+                'api' => $this->api,
+                'value' => $this->value
+            ]
         ];
     }
 
@@ -73,7 +75,7 @@ class WaitPay extends Status
     public function getButtonModels()
     {
 
-        $result[] = $this->getNextStatusButton();
+        $result = $this->getNextStatusButton();
         $result = array_merge($result, $this->getOtherButtons());
 
         return $result;
