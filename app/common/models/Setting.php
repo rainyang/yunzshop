@@ -34,15 +34,15 @@ class Setting extends BaseModel
     {
         $cacheKey = 'setting.' . $uniqueAccountId . '.' . $key;
 
-        $value = Cache::get($cacheKey);
-
-        if ($value == null) {
-            list($group, $item) = $this->parseKey($key);
+//        $value = Cache::get($cacheKey);
+//
+//        if ($value == null) {
+//            list($group, $item) = $this->parseKey($key);
 
             $value = array_get($this->getItems($uniqueAccountId, $group), $item, $default);
 
-            Cache::put($cacheKey, $value, Carbon::now()->addSeconds(3600));
-        }
+//            Cache::put($cacheKey, $value, Carbon::now()->addSeconds(3600));
+//        }
         return $value;
 
     }
@@ -64,12 +64,12 @@ class Setting extends BaseModel
 
         $result = $this->setToDatabase($value, $uniqueAccountId, $group, $item, $type);
 
-        $cacheKey = 'setting.' . $uniqueAccountId . '.' . $key;
-        if ($type == 'array') {
-            $value = unserialize($value);
-        }
-
-        Cache::put($cacheKey, $value, Carbon::now()->addSeconds(3600));
+//        $cacheKey = 'setting.' . $uniqueAccountId . '.' . $key;
+//        if ($type == 'array') {
+//            $value = unserialize($value);
+//        }
+//
+//        Cache::put($cacheKey, $value, Carbon::now()->addSeconds(3600));
         return $result;
     }
 
