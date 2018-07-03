@@ -58,6 +58,7 @@ class HomePageController extends ApiController
         ];
 
 
+        // todo 这个逻辑存在问题
         if(app('plugins')->isEnabled('designer')) {
             if (!$this->getDesignerPage()) {
                 $result['default'] =  self::defaultDesign();
