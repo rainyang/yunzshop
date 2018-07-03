@@ -107,7 +107,7 @@ class EupController extends PaymentController
      */
     public function getSignResult($parameter)
     {
-    	$key = $parameter['ShopID'].$attach[1].$parameter['Amount'].'zhijie';
+    	$key = $parameter['ShopID'].$parameter['OrderID'].$parameter['Amount'].'zhijie';
 
     	$md5_key = md5(md5($key));
 
