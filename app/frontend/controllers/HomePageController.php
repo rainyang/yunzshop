@@ -56,9 +56,17 @@ class HomePageController extends ApiController
             'mailInfo' => $this->getMailInfo(),     //系统设置 todo 与 system 数据重复
             'memberinfo' => $this->getMemberInfo(), //会员信息 todo 不知道做什么使用
         ];
-        if(!app('plugins')->isEnabled('designer')) {
+
+
+        if(app('plugins')->isEnabled('designer')) {
+            if (!$this->getDesignerPage()) {
+                $result['default'] =  self::defaultDesign();
+            }
+        } else {
             $result['default'] =  self::defaultDesign();
         }
+
+
         return $result;
     }
 
@@ -97,17 +105,7 @@ class HomePageController extends ApiController
         $pageId = \YunShop::request()->page_id ?:0;
         $member_id = \YunShop::app()->getMemberId();
 
-        //装修数据, 原来接口在 plugin.designer.home.index.page
-        if(empty($pageId)){ //如果是请求首页的数据
-            if(!Cache::has('designer_page_0')) {
-                $page = Designer::getDefaultDesigner();
-                Cache::put('designer_page_0', $page, 4200);
-            } else {
-                $page = Cache::get('designer_page_0');
-            }
-        } else{
-            $page = Designer::getDesignerByPageID($pageId);
-        }
+        $page = $this->getDesignerPage();
 
         if ($page) {
 
@@ -195,6 +193,25 @@ class HomePageController extends ApiController
             $designer = $this->getDefaultPageInfo();
         }
         return $designer;
+    }
+
+
+    private function getDesignerPage()
+    {
+        $pageId = \YunShop::request()->page_id ?:0;
+
+        if(empty($pageId)){ //如果是请求首页的数据
+            if(!Cache::has('designer_page_0')) {
+                $page = Designer::getDefaultDesigner();
+                Cache::put('designer_page_0', $page, 4200);
+            } else {
+                $page = Cache::get('designer_page_0');
+            }
+        } else{
+            $page = Designer::getDesignerByPageID($pageId);
+        }
+
+        return $page;
     }
 
 
