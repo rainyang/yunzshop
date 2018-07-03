@@ -45,7 +45,8 @@ class CartBuyController extends PreOrderController
         if(!isset($memberCarts)){
             $memberCarts = app('OrderManager')->make('MemberCart')->getCartsByIds($cartIds);
         }
-        $memberCarts->each(function ($memberCart){
+        $memberCarts->each(function (MemberCart $memberCart){
+            //dump($memberCart->goods->hasOnePrivilege);
             $memberCart->validate();
         });
         if ($memberCarts->isEmpty()) {
