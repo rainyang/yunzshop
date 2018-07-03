@@ -41,7 +41,7 @@ class Setting extends BaseModel
 
             $value = array_get($this->getItems($uniqueAccountId, $group), $item, $default);
 
-            Cache::put($cacheKey, $value,Carbon::now()->addSeconds(3600));
+            Cache::put($cacheKey, $value, Carbon::now()->addSeconds(3600));
         }
         return $value;
 
@@ -65,11 +65,11 @@ class Setting extends BaseModel
         $result = $this->setToDatabase($value, $uniqueAccountId, $group, $item, $type);
 
         $cacheKey = 'setting.' . $uniqueAccountId . '.' . $key;
-        if($type == 'array'){
+        if ($type == 'array') {
             $value = unserialize($value);
         }
 
-        Cache::put($cacheKey, $value,Carbon::now()->addSeconds(3600));
+        Cache::put($cacheKey, $value, Carbon::now()->addSeconds(3600));
         return $result;
     }
 
@@ -83,8 +83,10 @@ class Setting extends BaseModel
      */
     public function getItems($uniqueAccountId, $group)
     {
+        \Log::debug('setting get',1);
         $items = array();
-        foreach (self::fetchSettings($uniqueAccountId, $group) as $item) {
+        $settings = self::fetchSettings($uniqueAccountId, $group);
+        foreach ($settings as $item) {
             switch (strtolower($item->type)) {
                 case 'string':
                     $items[$item->key] = (string)$item->value;
@@ -135,8 +137,8 @@ class Setting extends BaseModel
         $cacheKey = 'setting.' . $uniqueAccountId . '.' . $group;
         $value = Cache::get($cacheKey);
         if ($value == null) {
-        $value = self::where('group', $group)->where('uniacid', $uniqueAccountId)->get();
-          Cache::put($cacheKey, $value,Carbon::now()->addSeconds(3600));
+            $value = self::where('group', $group)->where('uniacid', $uniqueAccountId)->get();
+            Cache::put($cacheKey, $value, Carbon::now()->addSeconds(3600));
         }
         return $value;
     }

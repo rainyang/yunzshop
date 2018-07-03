@@ -127,7 +127,7 @@ class Cache
     {
         if (Str::contains($key, '.')) {
             $keys = explode('.', $key);
-            $key = array_pop($keys);
+            $key = array_shift($keys);
             $arrayKey = implode('.', $keys);
             return array_get(\Cache::get(self::setUniacid() . $key), $arrayKey, $default);
         }
@@ -175,9 +175,14 @@ class Cache
 
         if (Str::contains($key, '.')) {
             $keys = explode('.', $key);
-            $key = array_pop($keys);
+            $key = array_shift($keys);
             $arrayKey = implode('.', $keys);
-            array_set(\Cache::put(self::setUniacid() . $key,$minutes), $arrayKey,$value);
+
+            $oldData = Cache::get($key);
+            array_set($oldData,$arrayKey,$value);
+
+            \Cache::put(self::setUniacid() . $key,$oldData,$minutes);
+
         }
         \Cache::put(self::setUniacid() . $key, $value, $minutes);
     }

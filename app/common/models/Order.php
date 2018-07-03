@@ -18,7 +18,6 @@ use app\common\models\order\OrderCoupon;
 use app\common\models\order\OrderDeduction;
 use app\common\models\order\OrderDiscount;
 use app\common\models\order\OrderSetting;
-use app\common\models\order\Pay;
 use app\common\models\order\Plugin;
 use app\common\models\order\Remark;
 use app\common\models\refund\RefundApply;
