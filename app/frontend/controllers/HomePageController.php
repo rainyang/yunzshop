@@ -30,7 +30,7 @@ class HomePageController extends ApiController
      */
     public function index()
     {
-        $result = $this->getWeChatPageData();
+        $result = $this->getPageData();
 
 
         //增加验证码功能
@@ -46,7 +46,7 @@ class HomePageController extends ApiController
     }
 
 
-    private function getWeChatPageData()
+    private function getPageData()
     {
         $result = [
             'item' => $this->getPageInfo(),         //装修信息
@@ -56,9 +56,18 @@ class HomePageController extends ApiController
             'mailInfo' => $this->getMailInfo(),     //系统设置 todo 与 system 数据重复
             'memberinfo' => $this->getMemberInfo(), //会员信息 todo 不知道做什么使用
         ];
-        if(!app('plugins')->isEnabled('designer')) {
+
+
+        // todo 这个逻辑存在问题
+        if(app('plugins')->isEnabled('designer')) {
+            if (!$this->getDesignerPage()) {
+                $result['default'] =  self::defaultDesign();
+            }
+        } else {
             $result['default'] =  self::defaultDesign();
         }
+
+
         return $result;
     }
 
@@ -97,17 +106,7 @@ class HomePageController extends ApiController
         $pageId = \YunShop::request()->page_id ?:0;
         $member_id = \YunShop::app()->getMemberId();
 
-        //装修数据, 原来接口在 plugin.designer.home.index.page
-        if(empty($pageId)){ //如果是请求首页的数据
-            if(!Cache::has('designer_page_0')) {
-                $page = Designer::getDefaultDesigner();
-                Cache::put('designer_page_0', $page, 4200);
-            } else {
-                $page = Cache::get('designer_page_0');
-            }
-        } else{
-            $page = Designer::getDesignerByPageID($pageId);
-        }
+        $page = $this->getDesignerPage();
 
         if ($page) {
 
@@ -198,6 +197,25 @@ class HomePageController extends ApiController
     }
 
 
+    private function getDesignerPage()
+    {
+        $pageId = \YunShop::request()->page_id ?:0;
+
+        if(empty($pageId)){ //如果是请求首页的数据
+            if(!Cache::has('designer_page_0')) {
+                $page = Designer::getDefaultDesigner();
+                Cache::put('designer_page_0', $page, 4200);
+            } else {
+                $page = Cache::get('designer_page_0');
+            }
+        } else{
+            $page = Designer::getDesignerByPageID($pageId);
+        }
+
+        return $page;
+    }
+
+
     /**
      * 未开启店铺装修插件 首页默认数据
      *
@@ -211,7 +229,7 @@ class HomePageController extends ApiController
 
         return array(
             'data' => '',//前端需要该字段
-            'menu' => $this->defaultMenu($i, $mid, $type),
+            'menus' => $this->defaultMenu($i, $mid, $type),
             'menustyle' => $this->defaultMenuStyle(),
         );
     }
@@ -384,6 +402,9 @@ class HomePageController extends ApiController
     private function memberBindMobileStatus()
     {
         $member_id = \YunShop::app()->getMemberId();
+        if (!$member_id) {
+            return 1;
+        }
 
         if (Cache::has($member_id . '_member_info')) {
             $member_model = Cache::get($member_id . '_member_info');
