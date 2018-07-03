@@ -2,6 +2,7 @@
 
 namespace app\payment\controllers;
 
+use app\common\helpers\Url;
 use app\common\models\AccountWechats;
 use app\payment\PaymentController;
 use app\frontend\modules\finance\models\BalanceRecharge;
@@ -55,9 +56,10 @@ class EupController extends PaymentController
                 }
             } else {
                 //签名验证失败
+                echo '签名验证失败';
             }
         }else {
-            echo 'FAIL';
+            echo '无参数';
         }
 	}
 
@@ -82,19 +84,16 @@ class EupController extends PaymentController
                     ];
                     $this->payResutl($data);
                     \Log::debug('----EUP结束----');
-                    redirect(Url::absoluteApp('member/orderlist/', ['i' => \YunShop::app()->uniacid]))->send();
-
+                    redirect(Url::absoluteApp('home'))->send();
                 } else {
                     //其他错误
-                \Log::debug('----EUP充值记录不存在----');
-
+                    \Log::debug('----EUP充值记录不存在----');
                 }
             } else {
-                \Log::debug('----EUP签名验证失败----');
                 //签名验证失败
+                \Log::debug('----EUP签名验证失败----');
             }
         }else {
-            // echo 'FAIL';
             \Log::debug('----参数为空----');
         }
     }
