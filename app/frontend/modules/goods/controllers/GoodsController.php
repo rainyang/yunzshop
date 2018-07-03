@@ -73,6 +73,13 @@ class GoodsController extends ApiController
             $goodsModel->hasOneBrand->desc = html_entity_decode($goodsModel->hasOneBrand->desc);
             $goodsModel->hasOneBrand->logo = yz_tomedia($goodsModel->hasOneBrand->logo);
         }
+        //商品规格图片处理
+        if ($goodsModel->hasManyOptions && $goodsModel->hasManyOptions->toArray()) {
+            foreach ($goodsModel->hasManyOptions as &$item) {
+                $item->thumb = replace_yunshop(yz_tomedia($item->thumb));
+            }
+        }
+
 
         if (!$goodsModel) {
             return $this->errorJson('商品不存在.');
@@ -281,7 +288,9 @@ class GoodsController extends ApiController
         $goodsList = Goods::uniacid()->select('id','id as goods_id', 'title', 'thumb', 'price', 'market_price')
             ->where('status', '1')
             ->where('brand_id', $brand_id)
-            ->orderBy($order_field, $order_by)
+             ->where(function($query) {
+                $query->where("plugin_id", 0)->orWhere('plugin_id', 40);
+            })->orderBy($order_field, $order_by)
             ->paginate(20)->toArray();
 
         if (empty($brand)) {

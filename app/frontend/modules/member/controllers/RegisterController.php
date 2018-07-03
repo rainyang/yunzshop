@@ -26,6 +26,7 @@ use iscms\Alisms\SendsmsPusher as Sms;
 use app\common\exceptions\AppException;
 use Mews\Captcha\Captcha;
 use app\common\facades\Setting;
+use app\common\services\alipay\OnekeyLogin;
 
 class RegisterController extends ApiController
 {
@@ -56,12 +57,12 @@ class RegisterController extends ApiController
             $member_info = MemberModel::getId($uniacid, $mobile);
 
             //增加验证码验证
-//            $captcha_status = Setting::get('shop.sms.status');
-//            if ($captcha_status == 1) {
-//                if ( app('captcha')->check(Input::get('captcha')) == false) {
-//                    return $this->errorJson('验证码错误');
-//                }
-//            }
+            $captcha_status = Setting::get('shop.sms.status');
+            if ($captcha_status == 1) {
+                if ( app('captcha')->check(Input::get('captcha')) == false) {
+                    return $this->errorJson('验证码错误');
+                }
+            }
 
             if (!empty($member_info)) {
                 return $this->errorJson('该手机号已被注册');
@@ -190,11 +191,12 @@ class RegisterController extends ApiController
         if (empty($mobile)) {
             return $this->errorJson('请填入手机号');
         }
+        if (!OnekeyLogin::alipayPluginMobileState()) {
+            $info = MemberModel::getId(\YunShop::app()->uniacid, $mobile);
 
-        $info = MemberModel::getId(\YunShop::app()->uniacid, $mobile);
-
-        if (!empty($info) && empty($reset_pwd)) {
-            return $this->errorJson('该手机号已被注册！不能获取验证码');
+            if (!empty($info) && empty($reset_pwd)) {
+                return $this->errorJson('该手机号已被注册！不能获取验证码');
+            }
         }
         $code = rand(1000, 9999);
 
@@ -456,12 +458,12 @@ class RegisterController extends ApiController
             $member_info = MemberModel::getId($uniacid, $mobile);
             
             //增加验证码验证
-//            $captcha_status = Setting::get('shop.sms.status');
-//            if ($captcha_status == 1) {
-//                if ( app('captcha')->check(Input::get('captcha')) == false ) {
-//                    return $this->errorJson('验证码错误');
-//                }
-//            }
+            $captcha_status = Setting::get('shop.sms.status');
+            if ($captcha_status == 1) {
+                if ( app('captcha')->check(Input::get('captcha')) == false ) {
+                    return $this->errorJson('验证码错误');
+                }
+            }
 
             if (empty($member_info)) {
                 return $this->errorJson('该手机号不存在');

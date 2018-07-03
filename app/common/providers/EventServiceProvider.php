@@ -12,12 +12,15 @@ use app\common\events\WechatProcessor;
 use app\common\listeners\PayLogListener;
 use app\common\listeners\point\PointListener;
 use app\common\listeners\WechatProcessorListener;
+use app\common\listeners\withdraw\WithdrawAuditListener;
+use app\common\listeners\withdraw\WithdrawPayListener;
 use app\frontend\modules\coupon\listeners\CouponSend;
 use app\frontend\modules\finance\listeners\IncomeWithdraw;
 use app\frontend\modules\goods\listeners\GoodsStock;
 use app\frontend\modules\member\listeners\MemberLevelValidity;
 use app\frontend\modules\order\listeners\orderListener;
 use app\frontend\modules\coupon\listeners\CouponExpireNotice;
+use app\frontend\modules\withdraw\listeners\WithdrawApplyListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use app\backend\modules\goods\listeners\LimitBuy;
 
@@ -63,10 +66,18 @@ class EventServiceProvider extends ServiceProvider
         ],
     ];
     /**
-     * 注册监听着类
+     * 注册监听者类
      * @var array
      */
     protected $subscribe = [
+
+        /**
+         * 收入提现监听者类
+         */
+        WithdrawApplyListener::class,
+        WithdrawAuditListener::class,
+        WithdrawPayListener::class,
+
         \app\common\listeners\MessageListener::class,
 
         //会员等级升级

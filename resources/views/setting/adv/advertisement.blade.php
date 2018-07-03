@@ -13,7 +13,7 @@
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">广告位一</label>
                         <div class="col-sm-9 col-xs-12">
                             {!! app\common\helpers\ImageHelper::tplFormFieldImage('adv[1][img]',
-                            tomedia($adv->advs['1']['img']))!!}
+                            $adv->advs['1']['img'])!!}
                             <span class="help-block">建议尺寸:186.5 * 180</span>
                         </div>
                     </div>
@@ -28,7 +28,7 @@
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">广告位二</label>
                         <div class="col-sm-9 col-xs-12">
                             {!! app\common\helpers\ImageHelper::tplFormFieldImage('adv[2][img]',
-                            tomedia($adv->advs['2']['img']))!!}
+                            $adv->advs['2']['img'])!!}
                             <span class="help-block">建议尺寸:186.5 * 180</span>
                         </div>
                     </div>
@@ -43,7 +43,7 @@
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">广告位三</label>
                         <div class="col-sm-9 col-xs-12">
                             {!! app\common\helpers\ImageHelper::tplFormFieldImage('adv[3][img]',
-                            tomedia($adv->advs['3']['img']))!!}
+                            $adv->advs['3']['img'])!!}
                             <span class="help-block">建议尺寸:186.5 * 180</span>
                         </div>
                     </div>
@@ -58,7 +58,7 @@
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">广告位四</label>
                         <div class="col-sm-9 col-xs-12">
                             {!! app\common\helpers\ImageHelper::tplFormFieldImage('adv[4][img]',
-                            tomedia($adv->advs['4']['img']))!!}
+                            $adv->advs['4']['img'])!!}
                             <span class="help-block">建议尺寸:92.25 * 90</span>
                         </div>
                     </div>
@@ -72,7 +72,7 @@
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">广告位五</label>
                         <div class="col-sm-9 col-xs-12">
                             {!! app\common\helpers\ImageHelper::tplFormFieldImage('adv[5][img]',
-                            tomedia($adv->advs['5']['img']))!!}
+                            $adv->advs['5']['img'])!!}
                             <span class="help-block">建议尺寸:92.25 * 90</span>
                         </div>
                     </div>
@@ -86,7 +86,7 @@
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">广告位六</label>
                         <div class="col-sm-9 col-xs-12">
                             {!! app\common\helpers\ImageHelper::tplFormFieldImage('adv[6][img]',
-                            tomedia($adv->advs['6']['img']))!!}
+                            $adv->advs['6']['img'])!!}
                             <span class="help-block">建议尺寸:92.25 * 90</span>
                         </div>
                     </div>
@@ -100,7 +100,7 @@
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">广告位七</label>
                         <div class="col-sm-9 col-xs-12">
                             {!! app\common\helpers\ImageHelper::tplFormFieldImage('adv[7][img]',
-                            tomedia($adv->advs['7']['img']))!!}
+                            $adv->advs['7']['img'])!!}
                             <span class="help-block">建议尺寸:92.25 * 90</span>
                         </div>
                     </div>
