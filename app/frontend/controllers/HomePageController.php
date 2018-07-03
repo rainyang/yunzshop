@@ -30,7 +30,7 @@ class HomePageController extends ApiController
      */
     public function index()
     {
-        $result = $this->getWeChatPageData();
+        $result = $this->getPageData();
 
 
         //增加验证码功能
@@ -46,7 +46,7 @@ class HomePageController extends ApiController
     }
 
 
-    private function getWeChatPageData()
+    private function getPageData()
     {
         $result = [
             'item' => $this->getPageInfo(),         //装修信息
@@ -228,7 +228,7 @@ class HomePageController extends ApiController
 
         return array(
             'data' => '',//前端需要该字段
-            'menu' => $this->defaultMenu($i, $mid, $type),
+            'menus' => $this->defaultMenu($i, $mid, $type),
             'menustyle' => $this->defaultMenuStyle(),
         );
     }
