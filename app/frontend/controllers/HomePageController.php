@@ -384,6 +384,9 @@ class HomePageController extends ApiController
     private function memberBindMobileStatus()
     {
         $member_id = \YunShop::app()->getMemberId();
+        if (!$member_id) {
+            return 1;
+        }
 
         if (Cache::has($member_id . '_member_info')) {
             $member_model = Cache::get($member_id . '_member_info');
