@@ -13,6 +13,10 @@ class CODPayment extends BasePayment
 
     public function canUse()
     {
+//        dump('可使用');
+//        dump(parent::canUse());
+//        dump('是实体');
+//        dump(!$this->hasVirtual());
         return parent::canUse() && !$this->hasVirtual();
     }
 

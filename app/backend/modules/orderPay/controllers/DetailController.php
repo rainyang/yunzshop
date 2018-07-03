@@ -38,6 +38,25 @@ class DetailController extends BaseController
         new OrderPay(['amount',100]);
     }
 
+    public function usablePayTypes()
+    {
+        $orderPayId = request()->query('order_pay_id');
+        $orderPay = OrderPay::with(['orders' => function (Builder $query) {
+            $query->with('orderGoods');
+        }, 'process', 'member', 'payOrder'])->find($orderPayId);
+
+        $orderPay->getPaymentTypes()->each(function (BasePayment $paymentType) {
+            if (is_null($paymentType)) {
+                return;
+            }
+            dump($paymentType->getName());
+            $paymentType->getOrderPaymentSettings()->each(function (PaymentSetting $setting) {
+                dump(get_class($setting));
+                dump($setting->canUse());
+                dump($setting->exist());
+            });
+        });
+    }
     public function allPayTypes()
     {
         $orderPayId = request()->query('order_pay_id');
