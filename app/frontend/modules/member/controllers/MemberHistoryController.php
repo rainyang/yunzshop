@@ -29,7 +29,6 @@ class MemberHistoryController extends ApiController
         $memberId = \YunShop::app()->getMemberId();
         $goodsId = \YunShop::request()->goods_id;
         $owner_id = intval(request()->owner_id);
-        echo '<pre>';print_r($owner_id);exit();
         if (!$goodsId) {
             return $this->errorJson('未获取到商品ID，添加失败！');
         }
@@ -40,6 +39,8 @@ class MemberHistoryController extends ApiController
         $historyModel->member_id = $memberId;
         $historyModel->uniacid = \YunShop::app()->uniacid;
         $historyModel->owner_id = $owner_id;
+        echo '<pre>';print_r($historyModel);
+        echo '<pre>';print_r($historyModel->save());exit();
         if ($historyModel->save()) {
             return $this->successJson('更新足迹成功');
         }
