@@ -48,8 +48,6 @@ class StatusFactory
     }
     private function waitPay()
     {
-
-
         if (app('plugins')->isEnabled('store-cashier') && $this->order->plugin_id == Store::PLUGIN_ID){
             //门店订单
             return (new \Yunshop\StoreCashier\common\order\status\WaitPay())->handle($this->order);
