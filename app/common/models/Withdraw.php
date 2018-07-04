@@ -75,6 +75,12 @@ class Withdraw extends BaseModel
 
 
     /**
+     * 提现打款方式：手动打款
+     */
+    const WITHDRAW_WITH_HUANXUN  = 'huanxun';
+
+
+    /**
      * 手动打款方式：手动至银行卡
      */
     const MANUAL_TO_BANK    = 1;

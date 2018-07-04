@@ -65,6 +65,15 @@ class PayFactory
      */
     const PAY_YUN_ALIPAY = 15;
 
+    /**
+     *  环迅支付
+     */
+    const PAY_HUANXUN = 17;
+    /**
+     * 环迅快捷支付
+     */
+    const PAY_Huanxun_Quick = 16;
+
    public static function create($type = null)
     {
         $className = null;
@@ -98,6 +107,10 @@ class PayFactory
                 break;
             case self::PAY_YUN_ALIPAY:
                 $className = new \Yunshop\YunPay\services\YunPayService();
+                break;
+            case self::PAY_HUANXUN:
+            case self::PAY_Huanxun_Quick:
+                $className = new \Yunshop\Huanxun\services\HuanxunPayService();
                 break;
             default:
                 $className = null;
