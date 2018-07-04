@@ -73,7 +73,7 @@ class EupController extends PaymentController
         if(!empty($parameter)){
             if($this->getSignResult($parameter)) {
                 $recharge_log = BalanceRecharge::ofOrderSn($this->attach[1])->withoutGlobalScope('member_id')->first();
-                if ($recharge_log) {
+                if ($recharge_log && $recharge_log->status != 1) {
                     \Log::debug('------EUP验证成功-----');
                     $data = [
                         'total_fee'    => floatval($parameter['Amount']),
@@ -81,13 +81,18 @@ class EupController extends PaymentController
                         'trade_no'     => 'uep',
                         'unit'         => 'yuan',
                         'pay_type'     => 'EUP支付',
-                        'pay_type_id'  => 16,
+                        'pay_type_id'  => 19,
 
                     ];
                     $this->payResutl($data);
                     \Log::debug('----EUP结束----');
-                    redirect(Url::absoluteApp('home'))->send();
+                    redirect(Url::absoluteApp('member', ['i' => \YunShop::app()->uniacid]))->send();
                 } else {
+                    if ($recharge_log && $recharge_log->status == 1) {
+                        \Log::debug('------EUP验证成功-----');
+                        \Log::debug('----EUP结束----');
+                        redirect(Url::absoluteApp('member', ['i' => \YunShop::app()->uniacid]))->send();
+                    }
                     //其他错误
                     \Log::debug('----EUP充值记录不存在----');
                 }
@@ -98,6 +103,7 @@ class EupController extends PaymentController
         }else {
             \Log::debug('----参数为空----');
         }
+        redirect(Url::absoluteApp('home'))->send();
     }
 
 
