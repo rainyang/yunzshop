@@ -49,4 +49,11 @@ class RemittanceRecordController extends ApiController
 
     }
 
+    public function upload()
+    {
+        $path = request()->file('file')->storeAs('remittanceRecord', str_random(10));
+        return $this->successJson('上传成功', [
+            'img'    => request()->getSchemeAndHttpHost().'/addons/yun_shop/storage/app/'.$path
+        ]);
+    }
 }
