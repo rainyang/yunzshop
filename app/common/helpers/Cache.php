@@ -9,7 +9,10 @@
 namespace app\common\helpers;
 
 
-class Cache {
+use Illuminate\Support\Str;
+
+class Cache
+{
 
     public static function setUniacid()
     {
@@ -122,6 +125,12 @@ class Cache {
      */
     public static function get($key, $default = null)
     {
+        if (Str::contains($key, '.')) {
+            $keys = explode('.', $key);
+            $key = array_shift($keys);
+            $arrayKey = implode('.', $keys);
+            return array_get(\Cache::get(self::setUniacid() . $key), $arrayKey, $default);
+        }
         return \Cache::get(self::setUniacid() . $key, $default);
     }
 
@@ -163,6 +172,20 @@ class Cache {
      */
     public static function put($key, $value, $minutes = null)
     {
+        if (Str::contains($key, '.')) {
+
+            $keys = explode('.', $key);
+            $key = array_shift($keys);
+            $arrayKey = implode('.', $keys);
+            $oldData = Cache::get($key);
+            if(!is_array($oldData)){
+                return false;
+            }
+            array_set($oldData,$arrayKey,$value);
+
+            \Cache::put(self::setUniacid() . $key,$oldData,$minutes);
+
+        }
         \Cache::put(self::setUniacid() . $key, $value, $minutes);
     }
 

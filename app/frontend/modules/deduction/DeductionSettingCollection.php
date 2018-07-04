@@ -96,9 +96,7 @@ abstract class DeductionSettingCollection extends Collection
         // todo 按权重排序
 
         $type = '';
-        $hit = '';
         foreach ($this as $deductionSetting){
-            $hit = get_class($deductionSetting);
             /**
              * @var DeductionSettingInterface $deductionSetting
              */

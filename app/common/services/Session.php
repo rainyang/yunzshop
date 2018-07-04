@@ -31,6 +31,7 @@ class Session
         $session_data['expire'] = $expire;
 
         $_SESSION[self::PREFIX . $name] = $session_data;
+        //session_write_close();
     }
 
     /**
