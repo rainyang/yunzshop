@@ -38,7 +38,8 @@ class PayedService
     public function withdrawPay()
     {
         if ($this->withdrawModel->status == Withdraw::STATUS_AUDIT) {
-            return $this->_withdrawPay();
+            $this->_withdrawPay();
+            return true;
         }
         throw new ShopException("提现打款：ID{$this->withdrawModel->id}，不符合打款规则");
     }
@@ -130,7 +131,8 @@ class PayedService
             //dd($result);
             if ($result !== true) {
 
-                //
+                //处理中 返回 false , 提现记录打款中
+                return false;
             }
             return true;
 
@@ -173,6 +175,9 @@ class PayedService
                 break;
             case Withdraw::WITHDRAW_WITH_HUANXUN:
                 $result = $this->huanxunWithdrawPay();
+                break;
+            case "eup_pay":
+                $result = $this->eupWithdrawPay();
                 break;
             default:
                 throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：未知打款类型");
@@ -264,7 +269,26 @@ class PayedService
         if ($result['result'] == 10) {
             return true;
         }
+        if ($result['result'] == 8) {
+            return false;
+        }
         throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：{$result['msg']}");
+    }
+
+
+    private function eupWithdrawPay()
+    {
+        $member_id = $this->withdrawModel->member_id;
+        $sn = $this->withdrawModel->withdraw_sn;
+        $amount = $this->withdrawModel->actual_amounts;
+        $remark = '';
+
+        $result = PayFactory::create(16)->doWithdraw($member_id, $sn, $amount, $remark);
+        if ($result['errno'] == 0) {
+            return true;
+        }
+
+        throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：{$result['message']}");
     }
 
 
