@@ -37,7 +37,7 @@ class EupController extends PaymentController
         if(!empty($parameter)){
             if($this->getSignResult($parameter)) {
             	$recharge_log = BalanceRecharge::ofOrderSn($this->attach[1])->withoutGlobalScope('member_id')->first();
-                if ($recharge_log) {
+                if ($recharge_log && $recharge_log->status != 1) {
                     \Log::debug('------EUP验证成功-----');
                     $data = [
                         'total_fee'    => floatval($parameter['Amount']),
@@ -52,7 +52,9 @@ class EupController extends PaymentController
                     \Log::debug('----EUP结束----');
                     echo 'ok';
                 } else {
-                    //其他错误
+                    if ($recharge_log && $recharge_log->status == 1) {
+                        echo 'ok';
+                    }
                 }
             } else {
                 //签名验证失败

@@ -104,6 +104,9 @@ class PayFactory
             case self::PAY_YUN_ALIPAY:
                 $className = new \Yunshop\YunPay\services\YunPayService();
                 break;
+            case self::PAY_EUP:
+                $className = new \Yunshop\EupPay\services\EupWithdrawService();
+                break;
             default:
                 $className = null;
         }
