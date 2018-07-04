@@ -444,6 +444,11 @@ class Order extends BaseModel
         return $this->hasMany(OrderDiscount::class, 'order_id', 'id');
     }
 
+    public function receive()
+    {
+        return \app\frontend\modules\order\services\OrderService::orderReceive(['order_id' => $this->id]);
+    }
+
     public function close()
     {
         return OrderService::close($this);
