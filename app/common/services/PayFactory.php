@@ -69,6 +69,7 @@ class PayFactory
      *  环迅支付
      */
     const PAY_HUANXUN = 17;
+    /**
      * 环迅快捷支付
      */
     const PAY_Huanxun_Quick = 16;
