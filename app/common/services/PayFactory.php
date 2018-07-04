@@ -32,10 +32,10 @@ class PayFactory
      */
     const PAY_CASH = 4;
 
-    /**
-     * 后台付款
-     */
-    const PAY_BACKEND = 5;
+//    /**
+//     * 后台付款
+//     */
+//    const PAY_BACKEND = 5;
 
     /**
      * 云收银-微信
@@ -65,6 +65,16 @@ class PayFactory
      */
     const PAY_YUN_ALIPAY = 15;
 
+    /**
+     * 转账
+     */
+    const PAY_REMITTANCE = 16;
+
+    /**
+     * 货到付款
+     */
+    const PAY_COD = 17;
+
    public static function create($type = null)
     {
         $className = null;
@@ -78,9 +88,9 @@ class PayFactory
             case self::PAY_CREDIT:
                 $className = new CreditPay();
                 break;
-            case self::PAY_CASH:
-                $className = new CashPay();
-                break;
+//            case self::PAY_CASH:
+//                $className = new CashPay();
+//                break;
             case self::PAY_CLOUD_WEACHAT:
                 $className = new \Yunshop\CloudPay\services\CloudPayService();
                 break;
@@ -98,6 +108,12 @@ class PayFactory
                 break;
             case self::PAY_YUN_ALIPAY:
                 $className = new \Yunshop\YunPay\services\YunPayService();
+                break;
+            case self::PAY_REMITTANCE:
+                $className = new RemittancePay();
+                break;
+            case self::PAY_COD:
+                $className = new CODPay();
                 break;
             default:
                 $className = null;
