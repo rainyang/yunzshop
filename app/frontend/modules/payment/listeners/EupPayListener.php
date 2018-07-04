@@ -23,7 +23,7 @@ class EupPayListener
 
             $result = [
                 'name' => 'EUP',
-                'value' => '16',
+                'value' => '19',
                 'need_password' => '0'
 
             ];
