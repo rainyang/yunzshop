@@ -228,7 +228,7 @@ class PayedService
         $amount = $this->withdrawModel->actual_amounts;
         $remark = '';
 
-        $result = PayFactory::create(1)->doWithdraw($member_id, $sn, $amount, $remark);
+        $result = PayFactory::create(PayFactory::PAY_WEACHAT)->doWithdraw($member_id, $sn, $amount, $remark);
         if ($result['errno'] == 1) {
             throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：{$result['message']}");
         }
@@ -244,7 +244,7 @@ class PayedService
         $amount = $this->withdrawModel->actual_amounts;
         $remark = '';
 
-        $result = PayFactory::create(2)->doWithdraw($member_id, $sn, $amount, $remark);
+        $result = PayFactory::create(PayFactory::PAY_ALIPAY)->doWithdraw($member_id, $sn, $amount, $remark);
 
         if (is_array($result)) {
 
@@ -265,7 +265,7 @@ class PayedService
         $amount = $this->withdrawModel->actual_amounts;
         $remark = '';
 
-        $result = PayFactory::create(17)->doWithdraw($member_id, $sn, $amount, $remark);
+        $result = PayFactory::create(PayFactory::PAY_Huanxun_Quick)->doWithdraw($member_id, $sn, $amount, $remark);
         if ($result['result'] == 10) {
             return true;
         }
@@ -283,7 +283,7 @@ class PayedService
         $amount = $this->withdrawModel->actual_amounts;
         $remark = '';
 
-        $result = PayFactory::create(16)->doWithdraw($member_id, $sn, $amount, $remark);
+        $result = PayFactory::create(PayFactory::PAY_EUP)->doWithdraw($member_id, $sn, $amount, $remark);
         if ($result['errno'] == 0) {
             return true;
         }

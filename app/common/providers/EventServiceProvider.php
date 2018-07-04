@@ -101,6 +101,8 @@ class EventServiceProvider extends ServiceProvider
         \app\frontend\modules\payment\listeners\Cloud_Alipay::class,
         \app\frontend\modules\payment\listeners\Yun_Alipay::class,
         \app\frontend\modules\payment\listeners\HuanxunPay::class,
+        \app\frontend\modules\payment\listeners\EupPayListener::class,
+
         orderListener::class,
         IncomeWithdraw::class,
         CouponExpireNotice::class,
