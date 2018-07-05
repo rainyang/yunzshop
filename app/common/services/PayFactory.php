@@ -115,7 +115,6 @@ class PayFactory
             case self::PAY_YUN_ALIPAY:
                 $className = new \Yunshop\YunPay\services\YunPayService();
                 break;
-            case self::PAY_HUANXUN:
             case self::PAY_Huanxun_Quick:
                 $className = new \Yunshop\Huanxun\services\HuanxunPayService();
                 break;
