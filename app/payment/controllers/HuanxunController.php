@@ -151,9 +151,7 @@ class HuanxunController extends PaymentController
             if ($parameter['tradeState'] == 10) {
                 \Log::debug('------环迅打款成功-----');
                 event(new WithdrawSuccessEvent($parameter['merBillNo']));
-
-            } else {
-                $message = "交易失败";
+                echo 'ipsCheckOk';
             }
         }else {
             echo 'FAIL';
