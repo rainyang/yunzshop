@@ -10,6 +10,7 @@ namespace app\common\models;
 
 use app\common\traits\HasProcessTrait;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use app\common\exceptions\AppException;
 use app\common\services\PayFactory;
@@ -69,6 +70,10 @@ class OrderPay extends BaseModel
         return self::select('pay_type_id')
             ->where('pay_sn', $pay_sn)
             ->value('pay_type_id');
+    }
+    public function scopeOrderPay(Builder $query)
+    {
+        return $query->with('payType');
     }
 
     /**
