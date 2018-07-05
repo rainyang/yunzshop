@@ -57,7 +57,7 @@ class Order extends \app\common\models\Order
             'hasOneRefundApply' => self::refundBuilder(),
             'hasOneOrderRemark',
             'hasOneOrderPay'=> function (Builder $query) {
-                $query->with('PayType');
+                $query->orderPay();
             },
 
         ]);
