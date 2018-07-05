@@ -140,6 +140,25 @@ class HuanxunController extends PaymentController
         }
     }
 
+    public function notifyWithdrawalsUrl()
+    {
+        $parameter = $this->parseData($_REQUEST['ipsResponse']);
+        \Log::debug('------notifyWithdrawalsUrl-----');
+        $this->log($parameter);
+
+        if(!empty($parameter)){
+            if ($parameter['tradeState'] == 10) {
+                \Log::debug('------环迅打款成功-----');
+                $parameter['merBillNo'];
+                echo 'SUCCESS';
+            } else {
+                $message = "交易失败";
+            }
+        }else {
+            echo 'FAIL';
+        }
+    }
+
     public function returnUrl()
     {
         $trade = \Setting::get('shop.trade');
