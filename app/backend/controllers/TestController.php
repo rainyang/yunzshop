@@ -8,8 +8,12 @@
 
 namespace app\backend\controllers;
 
+use app\common\helpers\Url;
 use app\common\models\Callback;
 use app\common\models\Migration;
+use app\common\models\PayOrder;
+use app\common\models\PayRequestDataLog;
+use app\common\models\PayResponseDataLog;
 use app\frontend\modules\order\services\OrderService;
 use app\common\components\BaseController;
 use app\common\models\Member;
@@ -93,22 +97,34 @@ class TestController extends BaseController
 
     public function index()
     {
-        dump(\app\frontend\models\OrderPay::find(1420));
-        dump(\app\frontend\models\OrderPay::find(1420)->payType);
+        dd(Url::shopSchemeUrl('payment/wechat/notifyUrl.php'));
         exit;
 
-        $orderPay = OrderPay::find(1432);
+        $orders = Order::whereIn('order_sn',['SN20180704160239Ps'])->get();;
+        $orders->each(function (Order $order) {
+//            $order->status = 0;
+//            $order->save();
+//            OrderService::ordersPay(['order_pay_id' => 303, 'pay_type_id' => 1]);
+//            exit;
+            //$order->sta
+            dump("订单:{$order->order_sn}");
+            //dump("操作记录");
+            //dump(OrderOperationLog::where('order_id',$order->id)->get()->toArray());
+            $orderPays = OrderPay::where('order_ids','like','%'.$order->id.'%')->get();
+            $orderPays->each(function (OrderPay $orderPay) {
+                dump("支付单:{$orderPay->pay_sn}");
 
-        /**
-         * @var OrderPay $orderPay
-         */
-        $flow = Flow::where('code', RemittanceFlow::class)->first();
-        $orderPay->flows()->save($flow);
+                $payOrders = PayOrder::where('out_order_no',$orderPay->pay_sn)->get();
+                dump("第三方支付请求");
+dump(PayRequestDataLog::where('params' ,'like',"%".$orderPay->pay_sn."%")->get()->toArray());
+                dump("第三方支付结果");
+                PayResponseDataLog::where('out_order_no' ,$orderPay->pay_sn);
+//                dump("本地第三方支付表");
+                dump($payOrders->toArray());
 
-        $a = $orderPay->currentProcess();
-        dd($a);
-
-        exit;
+            });
+            dump('-------');
+        });
 
 
     }

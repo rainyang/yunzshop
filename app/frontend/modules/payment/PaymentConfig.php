@@ -17,6 +17,7 @@ use app\frontend\modules\payment\orderPayments\CloudAliPayment;
 use app\frontend\modules\payment\orderPayments\CloudPayment;
 use app\frontend\modules\payment\orderPayments\CODPayment;
 use app\frontend\modules\payment\orderPayments\CreditPayment;
+use app\frontend\modules\payment\orderPayments\RemittancePayment;
 use app\frontend\modules\payment\orderPayments\WebPayment;
 use app\frontend\modules\payment\orderPayments\YunAliPayment;
 use app\frontend\modules\payment\orderPayments\YunPayment;
@@ -144,6 +145,9 @@ class PaymentConfig
                 ],
             ],
             'remittance' => [
+                'payment' => function (OrderPay $orderPay, PayType $payType, OrderPaymentSettingCollection $settings) {
+                    return new RemittancePayment($orderPay, $payType, $settings);
+                },
                 'settings' => [
                     'shop' => function (OrderPaymentTypeSettingManager $manager, OrderPay $orderPay) {
                         return new RemittanceSetting($orderPay);
