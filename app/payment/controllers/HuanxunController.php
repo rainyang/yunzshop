@@ -9,6 +9,7 @@
 namespace app\payment\controllers;
 
 
+use app\common\events\withdraw\WithdrawSuccessEvent;
 use app\common\helpers\Url;
 use app\common\models\AccountWechats;
 use app\common\services\Pay;
@@ -149,8 +150,8 @@ class HuanxunController extends PaymentController
         if(!empty($parameter)){
             if ($parameter['tradeState'] == 10) {
                 \Log::debug('------环迅打款成功-----');
-                $parameter['merBillNo'];
-                echo 'SUCCESS';
+                event(new WithdrawSuccessEvent($parameter['merBillNo']));
+
             } else {
                 $message = "交易失败";
             }
