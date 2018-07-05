@@ -241,7 +241,7 @@
                     <input type="submit" name="submit_pay" value="打款到支付宝"
                            class="btn btn-primary " style='margin-left:10px;'
                            onclick='return '/>
-                @elseif($item->pay_way == 'hunxun')
+                @elseif($item->pay_way == 'huanxun')
                     <input type="hidden" name="pay_way" value="2">
                     <input type="submit" name="submit_pay" value="打款到银行卡"
                            class="btn btn-primary " style='margin-left:10px;'
