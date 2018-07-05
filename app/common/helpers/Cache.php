@@ -191,8 +191,6 @@ class Cache
                 return \Cache::put(self::setUniacid() . $key,$oldData,$minutes);
             }
             // 不存在时
-            dd($key);
-            exit;
 
         }
         \Cache::put(self::setUniacid() . $key, $value, $minutes);
