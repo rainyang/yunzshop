@@ -83,7 +83,6 @@ class Setting extends BaseModel
      */
     public function getItems($uniqueAccountId, $group)
     {
-        \Log::debug('setting get',1);
         $items = array();
         $settings = self::fetchSettings($uniqueAccountId, $group);
         foreach ($settings as $item) {
@@ -134,13 +133,7 @@ class Setting extends BaseModel
      */
     public function fetchSettings($uniqueAccountId, $group)
     {
-        $cacheKey = 'setting.' . $uniqueAccountId . '.' . $group;
-        $value = Cache::get($cacheKey);
-        if ($value == null) {
-            $value = self::where('group', $group)->where('uniacid', $uniqueAccountId)->get();
-            Cache::put($cacheKey, $value, Carbon::now()->addSeconds(3600));
-        }
-        return $value;
+        return self::where('group', $group)->where('uniacid', $uniqueAccountId)->get();
     }
 
 
