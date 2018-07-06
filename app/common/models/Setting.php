@@ -35,8 +35,9 @@ class Setting extends BaseModel
         $cacheKey = 'setting.' . $uniqueAccountId . '.' . $key;
 
         $value = Cache::get($cacheKey);
-
+        \Log::debug('-----setting get cache------');
         if ($value == null) {
+            \Log::debug('-----setting get db------');
             list($group, $item) = $this->parseKey($key);
 
             $value = array_get($this->getItems($uniqueAccountId, $group), $item, $default);
@@ -70,6 +71,7 @@ class Setting extends BaseModel
         }
 
         Cache::put($cacheKey, $value, Carbon::now()->addSeconds(3600));
+        \Log::debug('-----setting set cache------');
         return $result;
     }
 
