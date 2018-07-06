@@ -86,10 +86,10 @@ class DetailController extends ApiController
             return $this->errorJson($msg = '未找到数据', []);
         } else {
 
-            //视频点播
-
             $videoDemand = new VideoDemandCourseGoods();
             foreach ($data['has_many_order_goods'] as &$value) {
+                $value['thumb'] = yz_tomedia($value['thumb']);
+                //视频点播
                 $value['is_course'] = $videoDemand->isCourse($value['goods_id']);
             }
 
