@@ -348,6 +348,7 @@ class UpdateController extends BaseController
             \Artisan::call('update:version' ,['version'=>$plugins_dir]);
 
             //清理缓存
+            \Log::debug('----Cache Flush----');
             \Cache::flush();
 
             $status = 2;
