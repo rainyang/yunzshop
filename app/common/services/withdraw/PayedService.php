@@ -45,13 +45,19 @@ class PayedService
     }
 
 
+
     /**
      * 确认打款接口
      *
      * @return bool
+     * @throws ShopException
      */
     public function confirmPay()
     {
+        if ($this->withdrawModel->status != Withdraw::STATUS_PAYING) {
+            throw new ShopException('提现记录不符合确认打款规则');
+        }
+
         $this->withdrawModel->pay_at = time();
 
         DB::transaction(function () {
@@ -326,9 +332,6 @@ class PayedService
      */
     private function setWithdrawModel($withdrawModel)
     {
-        if ($withdrawModel->status != Withdraw::STATUS_AUDIT) {
-            throw new ShopException('提现记录未审核');
-        }
         $this->withdrawModel = $withdrawModel;
     }
 
