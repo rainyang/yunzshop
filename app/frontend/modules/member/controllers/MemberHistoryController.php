@@ -21,6 +21,10 @@ class MemberHistoryController extends ApiController
         $memberId = \YunShop::app()->getMemberId();
 
         $historyList = MemberHistory::getMemberHistoryList($memberId);
+
+        foreach ($historyList as &$value) {
+            $value['goods']['thumb'] = yz_tomedia($value['goods']['thumb']);
+        }
         return $this->successJson('获取列表成功', $historyList);
     }
 
