@@ -40,6 +40,9 @@ class ApiController extends BaseController
         if (self::is_alipay() && $type != 8) {
             $type = 8;
         }
+        if ($type == 8 && !(app('plugins')->isEnabled('alipay-onekey-login'))) {
+            $type = Client::getType();
+        }
 
         if (!MemberService::isLogged()) {
             if (($relaton_set->status == 1 && !in_array($this->action,$this->ignoreAction))
