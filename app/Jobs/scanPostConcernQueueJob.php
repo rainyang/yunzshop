@@ -62,6 +62,8 @@ class scanPostConcernQueueJob implements ShouldQueue
 
         $this->from           = $this->postProcessor->message['fromusername'];
         $this->to             = $this->postProcessor->message['eventkey'];
+
+        \Log::debug('------poster processor message----', [$this->postProcessor]);
     }
 
     /**
