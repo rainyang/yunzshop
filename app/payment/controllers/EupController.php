@@ -8,7 +8,6 @@ use app\payment\PaymentController;
 use app\frontend\modules\finance\models\BalanceRecharge;
 use app\common\services\Pay;
 
-
 class EupController extends PaymentController
 {
 	
@@ -32,13 +31,14 @@ class EupController extends PaymentController
 	{
 		$parameter = $_GET;
 
-        $this->log($parameter);
+		\Log::debug('------------EUP异步通知----------------'.$_SERVER['QUERY_STRING']);
 
-        if(!empty($parameter)){
+		if(!empty($parameter)){
             if($this->getSignResult($parameter)) {
             	$recharge_log = BalanceRecharge::ofOrderSn($this->attach[1])->withoutGlobalScope('member_id')->first();
                 if ($recharge_log && $recharge_log->status != 1) {
-                    \Log::debug('------EUP验证成功-----');
+                    $this->log($parameter);
+                    \Log::info('------EUP验证成功-----');
                     $data = [
                         'total_fee'    => floatval($parameter['Amount']),
                         'out_trade_no' => $this->attach[1],
@@ -49,7 +49,7 @@ class EupController extends PaymentController
 
                     ];
                     $this->payResutl($data);
-                    \Log::debug('----EUP结束----');
+                    \Log::info('----EUP结束----');
                     echo 'ok';
                 } else {
                     if ($recharge_log && $recharge_log->status == 1) {
@@ -70,11 +70,13 @@ class EupController extends PaymentController
     {
         $parameter = $_GET;
 
+        $this->log($parameter);
+
         if(!empty($parameter)){
             if($this->getSignResult($parameter)) {
                 $recharge_log = BalanceRecharge::ofOrderSn($this->attach[1])->withoutGlobalScope('member_id')->first();
                 if ($recharge_log && $recharge_log->status != 1) {
-                    \Log::debug('------EUP验证成功-----');
+                    \Log::info('------EUP验证成功-----');
                     $data = [
                         'total_fee'    => floatval($parameter['Amount']),
                         'out_trade_no' => $this->attach[1],
@@ -85,12 +87,11 @@ class EupController extends PaymentController
 
                     ];
                     $this->payResutl($data);
-                    \Log::debug('----EUP结束----');
+                    \Log::info('----EUP结束----');
                     redirect(Url::absoluteApp('member', ['i' => \YunShop::app()->uniacid]))->send();
                 } else {
                     if ($recharge_log && $recharge_log->status == 1) {
-                        \Log::debug('------EUP验证成功-----');
-                        \Log::debug('----EUP结束----');
+                        \Log::debug('--------EUP充值已记录------------');
                         redirect(Url::absoluteApp('member', ['i' => \YunShop::app()->uniacid]))->send();
                     }
                     //其他错误
