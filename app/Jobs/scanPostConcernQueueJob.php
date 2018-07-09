@@ -70,8 +70,6 @@ class scanPostConcernQueueJob implements ShouldQueue
         $this->msg            = $this->postProcessor->message;
         $this->from           = $this->postProcessor->message['fromusername'];
         $this->to             = $this->postProcessor->message['eventkey'];
-
-        \Log::debug('------poster processor message----', [$this->postProcessor]);
     }
 
     /**
@@ -81,34 +79,38 @@ class scanPostConcernQueueJob implements ShouldQueue
      */
     public function handle()
     {
-        \Log::debug('-------scan poster from-----', [$this->from]);
-        \Log::debug('-------scan poster to-------', [$this->to]);
+        //\Log::debug('-------scan poster from-----', [$this->from]);
+        //\Log::debug('-------scan poster to-------', [$this->to]);
 
-        //TODO $from关注者用户是否存在，存在验证上线
+        //$from关注者用户是否存在，存在验证上线
         $from_member_model = MemberShopInfo::getMemberShopInfoByOpenid($this->from);
+
         if (!is_null($from_member_model)) {
-            \Log::debug('--------poster member is not null------');
+            //\Log::debug('--------poster member is not null------');
             $from_member_id = $from_member_model->member_id;
             $from_parent_id = $from_member_model->parent_id;
-            \Log::debug('------poster member id----', [$from_member_id]);
-            \Log::debug('------poster parent id----', [$from_parent_id]);
+            //\Log::debug('------poster from member id----', [$from_member_id]);
+            //\Log::debug('------poster from parent id----', [$from_parent_id]);
 
-            //TODO $to海报用户信息
-            \Log::debug('------poster handle processor message----', [$this->msg]);
+            //$to海报用户信息
             $qrcodeId = $this->getPosterForUser($this->msg);
-            \Log::debug('------poster qrcodeId-----', [$qrcodeId]);
+            //\Log::debug('------poster qrcodeId-----', [$qrcodeId]);
 
             $to_member_id = PosterQrcode::getRecommenderIdByQrcodeId($qrcodeId);
+            //\Log::debug('------poster to_member_id-----', [$to_member_id]);
 
             if (!empty($to_member_id) && 0 == $from_parent_id) {
-                //TODO $from->parent_id 是否为0，是0改为$to->uid
+                //$from->parent_id 是否为0，是0改为$to->uid
                 $from_member_model->parent_id = $to_member_id;
 
-                \Log::debug('------poster modify parent_id----');
+                //\Log::debug('------poster modify parent_id----');
                 $from_member_model->save();
 
-                //TODO 分销-会员关系链
+                //分销-会员关系链
                 Member::createRealtion($from_member_id, $to_member_id);
+
+                //更新分销商
+                \Log::debug('-----from member model-----', [$from_member_model]);
             }
         } else {
             \Log::debug('-----poster member is null by openid-----', [$this->from]);
@@ -117,7 +119,6 @@ class scanPostConcernQueueJob implements ShouldQueue
 
     private function getPosterForUser($msg)
     {
-        \Log::debug('-----poster msg-----', [$msg]);
         $msgEvent = strtolower($msg['event']);
         $msgEventKey = strtolower($msg['eventkey']);
 
