@@ -60,8 +60,8 @@ class scanPostConcernQueueJob implements ShouldQueue
         $this->uniacid        = $uniacid;
         $this->postProcessor  = $postProcessor;
 
-        $this->from           = $this->postProcessor->message->fromusername;
-        $this->to             = $this->postProcessor->message->eventkey;
+        $this->from           = $this->postProcessor->message['fromusername'];
+        $this->to             = $this->postProcessor->message['eventkey'];
     }
 
     /**
