@@ -10,7 +10,7 @@
             <div class='panel-body'>
 
                 <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">短信验证码</label>
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">短信图形验证码</label>
                     <div class="col-sm-9 col-xs-12">
                         <input type="radio" name="sms[status]" value="1" @if ($set['status'] == 1) checked @endif/> 开启
                         &nbsp;&nbsp;
