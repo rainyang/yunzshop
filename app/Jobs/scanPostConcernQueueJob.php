@@ -80,8 +80,8 @@ class scanPostConcernQueueJob implements ShouldQueue
      */
     public function handle()
     {
-        //\Log::debug('-------scan poster from-----', [$this->from]);
-        //\Log::debug('-------scan poster to-------', [$this->to]);
+        \Log::debug('-------scan poster from-----', [$this->from]);
+        \Log::debug('-------scan poster to-------', [$this->to]);
 
         //$from关注者用户是否存在，存在验证上线
         $from_member_model = MemberShopInfo::getMemberShopInfoByOpenid($this->from);
