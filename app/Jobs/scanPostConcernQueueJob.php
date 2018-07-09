@@ -15,6 +15,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Yunshop\Commission\models\Agents;
 use Yunshop\Poster\models\PosterQrcode;
 use Yunshop\Poster\models\Qrcode;
 
@@ -110,7 +111,7 @@ class scanPostConcernQueueJob implements ShouldQueue
                 Member::createRealtion($from_member_id, $to_member_id);
 
                 //更新分销商
-                \Log::debug('-----from member model-----', [$from_member_model]);
+                $this->updateAgent($from_member_id);
             }
         } else {
             \Log::debug('-----poster member is null by openid-----', [$this->from]);
@@ -141,5 +142,18 @@ class scanPostConcernQueueJob implements ShouldQueue
         }
 
         return $qrcode->id;
+    }
+
+    private function updateAgent($from_member_id)
+    {
+        $from_member = MemberShopInfo::getMemberShopInfo($from_member_id);
+        $agent = Agents::getAgentByMemberId($from_member_id)->first();
+
+        if (!is_null($agent) && 0 == $agent->parent_id) {
+            $agent->parent_id = $from_member->parent_id;
+            $agent->parent    = $from_member->relation;
+
+            $agent->save();
+        }
     }
 }
