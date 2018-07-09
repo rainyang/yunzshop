@@ -95,7 +95,7 @@ class scanPostConcernQueueJob implements ShouldQueue
 
             //TODO $to海报用户信息
             \Log::debug('------poster handle processor message----', [$this->msg]);
-            $qrcodeId = $this->getPosterForUser($this->postProcessor->message);
+            $qrcodeId = $this->getPosterForUser($this->msg);
             \Log::debug('------poster qrcodeId-----', [$qrcodeId]);
 
             $to_member_id = PosterQrcode::getRecommenderIdByQrcodeId($qrcodeId);
