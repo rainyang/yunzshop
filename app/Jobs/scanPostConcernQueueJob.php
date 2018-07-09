@@ -149,11 +149,13 @@ class scanPostConcernQueueJob implements ShouldQueue
         $from_member = MemberShopInfo::getMemberShopInfo($from_member_id);
         $agent = Agents::getAgentByMemberId($from_member_id)->first();
 
-        if (!is_null($agent) && 0 == $agent->parent_id) {
+        if (!is_null($agent) && (0 == $agent->parent_id || $agent->parent_id != $from_member->parent_id)) {
             $agent->parent_id = $from_member->parent_id;
             $agent->parent    = $from_member->relation;
 
             $agent->save();
+
+            //\Log::debug('------poster modify agent----');
         }
     }
 }
