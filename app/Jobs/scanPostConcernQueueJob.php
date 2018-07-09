@@ -51,6 +51,13 @@ class scanPostConcernQueueJob implements ShouldQueue
     protected $to;
 
     /**
+     * 海报消息
+     *
+     * @var
+     */
+    protected $msg;
+
+    /**
      * Create a new job instance.
      *
      * @return void
@@ -60,6 +67,7 @@ class scanPostConcernQueueJob implements ShouldQueue
         $this->uniacid        = $uniacid;
         $this->postProcessor  = $postProcessor;
 
+        $this->msg            = $this->postProcessor->message;
         $this->from           = $this->postProcessor->message['fromusername'];
         $this->to             = $this->postProcessor->message['eventkey'];
 
@@ -86,7 +94,7 @@ class scanPostConcernQueueJob implements ShouldQueue
             \Log::debug('------poster parent id----', [$from_parent_id]);
 
             //TODO $to海报用户信息
-            \Log::debug('------poster handle processor message----', [$this->postProcessor]);
+            \Log::debug('------poster handle processor message----', [$this->msg]);
             $qrcodeId = $this->getPosterForUser($this->postProcessor->message);
             \Log::debug('------poster qrcodeId-----', [$qrcodeId]);
 
