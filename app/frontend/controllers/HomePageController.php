@@ -117,7 +117,7 @@ class HomePageController extends ApiController
             }
         }
 
-        
+
         //如果安装了装修插件并开启插件
         if(app('plugins')->isEnabled('designer')){
             //系统信息
@@ -166,7 +166,7 @@ class HomePageController extends ApiController
                     if ($value['temp'] == 'goods') {
                         foreach ($value['data'] as &$info) {
                             $info['is_course'] = 0;
-
+                            $info['img'] = replace_yunshop(yz_tomedia($info['img']));
                             if ($video_open) {
                                 $info['is_course'] = $videoDemand->isCourse($info['goodid']);
                             }

@@ -12,6 +12,6 @@ class YunPayment extends WebPayment
 {
     public function canUse()
     {
-        return $this->orderPaymentSettings->canUse() && \YunShop::plugin()->get('yun-pay');
+        return parent::canUse() && \YunShop::plugin()->get('yun-pay');
     }
 }

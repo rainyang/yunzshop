@@ -98,6 +98,7 @@ class IndexController extends ApiController
         //是否是课程商品
         $videoDemand = new VideoDemandCourseGoods();
         foreach ($goodsList as &$value) {
+            $value->thumb = yz_tomedia($value->thumb);
             $value->is_course = $videoDemand->isCourse($value->goods_id);
 
         }

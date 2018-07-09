@@ -27,6 +27,7 @@ abstract class Status
     const REFUND_INFO = 18;
     const COMMENTED = 19;
     const STORE_PAY = 20;
+    const REMITTANCE_RECORD = 21;
     abstract function getStatusName();
 
     abstract function getButtonModels();
