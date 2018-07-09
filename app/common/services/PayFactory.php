@@ -117,6 +117,7 @@ class PayFactory
                 break;
             case self::PAY_Huanxun_Quick:
                 $className = new \Yunshop\Huanxun\services\HuanxunPayService();
+                break;
             case self::PAY_REMITTANCE:
                 $className = new RemittancePay();
                 break;
