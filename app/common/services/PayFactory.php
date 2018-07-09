@@ -32,10 +32,10 @@ class PayFactory
      */
     const PAY_CASH = 4;
 
-    /**
-     * 后台付款
-     */
-    const PAY_BACKEND = 5;
+//    /**
+//     * 后台付款
+//     */
+//    const PAY_BACKEND = 5;
 
     /**
      * 云收银-微信
@@ -68,6 +68,16 @@ class PayFactory
 
 
     /**
+     * 转账
+     */
+    const PAY_REMITTANCE = 16;
+
+    /**
+     * 货到付款
+     */
+    const PAY_COD = 17;
+
+    /**
      * 环迅快捷支付
      */
     const PAY_Huanxun_Quick = 18;
@@ -94,9 +104,9 @@ class PayFactory
             case self::PAY_CREDIT:
                 $className = new CreditPay();
                 break;
-            case self::PAY_CASH:
-                $className = new CashPay();
-                break;
+//            case self::PAY_CASH:
+//                $className = new CashPay();
+//                break;
             case self::PAY_CLOUD_WEACHAT:
                 $className = new \Yunshop\CloudPay\services\CloudPayService();
                 break;
@@ -120,6 +130,11 @@ class PayFactory
                 break;
             case self::PAY_EUP:
                 $className = new \Yunshop\EupPay\services\EupWithdrawService();
+            case self::PAY_REMITTANCE:
+                $className = new RemittancePay();
+                break;
+            case self::PAY_COD:
+                $className = new CODPay();
                 break;
             default:
                 $className = null;

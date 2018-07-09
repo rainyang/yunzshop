@@ -347,6 +347,10 @@ class UpdateController extends BaseController
             $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
             \Artisan::call('update:version' ,['version'=>$plugins_dir]);
 
+            //清理缓存
+            \Log::debug('----Cache Flush----');
+            \Cache::flush();
+
             $status = 2;
 
             $success = $total;

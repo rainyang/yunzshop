@@ -84,6 +84,9 @@
         <p class="form-control-static">
 
             <span class="label label-info">{{$order['pay_type_name']}}</span>
+            @if(count($order['order_pays']))
+                <a target="_blank" href="{{yzWebUrl('order.orderPay', array('order_id' => $order['id']))}}" class='btn btn-default'>查看支付记录</a>
+                @endif
         </p>
 
     </div>
@@ -304,3 +307,4 @@
         </table>
     </div>
 </div>
+<script></script>
