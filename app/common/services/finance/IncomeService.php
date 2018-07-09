@@ -12,7 +12,7 @@ use app\common\facades\Setting;
 
 class IncomeService
 {
-    private static $pay_way = ['balance','wechat','alipay','manual'];
+    private static $pay_way = ['balance','wechat','alipay','manual', 'huanxun', 'eup_pay'];
 
     public static function getIncomeWithdrawMode()
     {
@@ -43,6 +43,12 @@ class IncomeService
                 break;
             case 'manual':
                 return '提现手动打款';
+                break;
+            case 'huanxun':
+                return '银行卡提现';
+                break;
+            case 'eup_pay':
+                return '提现到EUP';
                 break;
         }
     }

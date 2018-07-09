@@ -17,6 +17,6 @@ class AppPayment extends BasePayment
 
     public function canUse()
     {
-        return $this->orderPaymentSettings->canUse() && \YunShop::request()->type == 7;
+        return parent::canUse() && \YunShop::request()->type == 7;
     }
 }
