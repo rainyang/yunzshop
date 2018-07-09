@@ -434,7 +434,9 @@ class MergePayController extends ApiController
             throw new AppException('商城未开启快捷支付');
         }
 
-        $data = $this->pay( PayFactory::PAY_Huanxun_Quick, ['pay' => 'quick']);
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+        $data = $orderPay->getPayResult(PayFactory::PAY_Huanxun_Quick, ['pay' => 'quick']);
+
         return $this->successJson('成功', $data);
     }
 }
