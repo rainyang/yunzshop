@@ -250,6 +250,11 @@ class GoodsController extends ApiController
         $order_by = (\YunShop::request()->order_by == 'asc') ? 'asc' : 'desc';
 
         $categorys = Category::uniacid()->select("name", "thumb", "id")->where(['id' => $category_id])->first();
+
+        if ($categorys) {
+            $categorys->thumb = yz_tomedia($categorys->thumb);
+        }
+
         $goodsList = Goods::uniacid()->select('yz_goods.id','yz_goods.id as goods_id', 'title', 'thumb', 'price', 'market_price')
             ->join('yz_goods_category', 'yz_goods_category.goods_id', '=', 'yz_goods.id')
             ->where("category_id", $category_id)
@@ -257,11 +262,14 @@ class GoodsController extends ApiController
             ->orderBy($order_field, $order_by)
             ->paginate(20)->toArray();
 
-        $categorys->goods = $goodsList;
 
-        if (empty($categorys)) {
+        if (empty($goodsList)) {
             return $this->errorJson('此分类下没有商品.');
         }
+        $goodsList['data'] = set_medias($goodsList['data'], 'thumb');
+
+        $categorys->goods = $goodsList;
+
         return $this->successJson('成功', $categorys);
     }
 
@@ -285,6 +293,9 @@ class GoodsController extends ApiController
         if (!$brand) {
             return $this->errorJson('没有此品牌.');
         }
+
+        $brand->logo = yz_tomedia($brand->logo);
+
         $goodsList = Goods::uniacid()->select('id','id as goods_id', 'title', 'thumb', 'price', 'market_price')
             ->where('status', '1')
             ->where('brand_id', $brand_id)
@@ -293,9 +304,11 @@ class GoodsController extends ApiController
             })->orderBy($order_field, $order_by)
             ->paginate(20)->toArray();
 
-        if (empty($brand)) {
+        if (empty($goodsList)) {
             return $this->errorJson('此品牌下没有商品.');
         }
+
+        $goodsList['data'] = set_medias($goodsList['data'], 'thumb');
 
         $brand->goods = $goodsList;
 
@@ -310,6 +323,11 @@ class GoodsController extends ApiController
             ->whereStatus('1')
             ->orderBy('id', 'desc')
             ->get();
+
+        if (!$list->isEmpty()) {
+            $list = set_medias($list->toArray(), 'thumb');
+        }
+
         return $this->successJson('获取推荐商品成功', $list);
     }
 

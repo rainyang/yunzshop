@@ -182,7 +182,7 @@ class PayedService
             case Withdraw::WITHDRAW_WITH_HUANXUN:
                 $result = $this->huanxunWithdrawPay();
                 break;
-            case "eup_pay":
+            case Withdraw::WITHDRAW_WITH_EUP_PAY:
                 $result = $this->eupWithdrawPay();
                 break;
             default:
@@ -290,7 +290,7 @@ class PayedService
         $remark = '';
 
         $result = PayFactory::create(PayFactory::PAY_EUP)->doWithdraw($member_id, $sn, $amount, $remark);
-        if ($result['errno'] == 0) {
+        if ($result['errno'] === 0) {
             return true;
         }
 

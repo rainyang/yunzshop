@@ -130,6 +130,7 @@ class PayFactory
                 break;
             case self::PAY_EUP:
                 $className = new \Yunshop\EupPay\services\EupWithdrawService();
+                break;
             case self::PAY_REMITTANCE:
                 $className = new RemittancePay();
                 break;
