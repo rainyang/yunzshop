@@ -20,6 +20,7 @@ use app\common\modules\process\StateContainer;
 use app\common\modules\status\StatusContainer;
 use app\common\listeners\withdraw\WithdrawAuditListener;
 use app\common\listeners\withdraw\WithdrawPayListener;
+use app\common\listeners\withdraw\WithdrawSuccessListener;
 use app\frontend\modules\coupon\listeners\CouponSend;
 use app\frontend\modules\finance\listeners\IncomeWithdraw;
 use app\frontend\modules\goods\listeners\GoodsStock;
@@ -92,6 +93,7 @@ class EventServiceProvider extends ServiceProvider
         WithdrawApplyListener::class,
         WithdrawAuditListener::class,
         WithdrawPayListener::class,
+        WithdrawSuccessListener::class,
 
         \app\common\listeners\MessageListener::class,
 
@@ -115,6 +117,9 @@ class EventServiceProvider extends ServiceProvider
         \app\frontend\modules\payment\listeners\YunPay::class,
         \app\frontend\modules\payment\listeners\Cloud_Alipay::class,
         \app\frontend\modules\payment\listeners\Yun_Alipay::class,
+        \app\frontend\modules\payment\listeners\HuanxunPay::class,
+        \app\frontend\modules\payment\listeners\EupPayListener::class,
+
         orderListener::class,
         IncomeWithdraw::class,
         CouponExpireNotice::class,
