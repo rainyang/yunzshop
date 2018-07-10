@@ -120,7 +120,7 @@ class HuanxunController extends PaymentController
                         'out_trade_no' => $order_no,
                         'trade_no'     => $trade_no,
                         'unit'         => 'yuan',
-                        'pay_type'     => '环迅快捷支付',
+                        'pay_type'     => '电子钱包快捷支付',
                         'pay_type_id'     => 18
 
                     ];
