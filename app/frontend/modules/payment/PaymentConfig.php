@@ -15,6 +15,8 @@ use app\frontend\modules\payment\orderPayments\AnotherPayment;
 use app\frontend\modules\payment\orderPayments\AppPayment;
 use app\frontend\modules\payment\orderPayments\CloudAliPayment;
 use app\frontend\modules\payment\orderPayments\CloudPayment;
+
+use app\frontend\modules\payment\orderPayments\HuanxunPayment;
 use app\frontend\modules\payment\orderPayments\CODPayment;
 use app\frontend\modules\payment\orderPayments\CreditPayment;
 use app\frontend\modules\payment\orderPayments\RemittancePayment;
@@ -28,8 +30,10 @@ use app\frontend\modules\payment\paymentSettings\shop\AnotherPaySetting;
 use app\frontend\modules\payment\paymentSettings\shop\BalanceSetting;
 use app\frontend\modules\payment\paymentSettings\shop\CloudPayAliSetting;
 use app\frontend\modules\payment\paymentSettings\shop\CloudPayWechatSetting;
+use app\frontend\modules\payment\paymentSettings\shop\HuanxunPaySetting;
 use app\frontend\modules\payment\paymentSettings\shop\CODSetting;
 use app\frontend\modules\payment\paymentSettings\shop\RemittanceSetting;
+
 use app\frontend\modules\payment\paymentSettings\shop\WechatAppPaySetting;
 use app\frontend\modules\payment\paymentSettings\shop\WechatPaySetting;
 use app\frontend\modules\payment\paymentSettings\shop\YunPayAliSetting;
@@ -131,6 +135,15 @@ class PaymentConfig
                 'settings' => [
                     'shop' => function (OrderPaymentTypeSettingManager $manager, OrderPay $orderPay) {
                         return new YunPayAliSetting($orderPay);
+                    }
+                ],
+            ], 'huanxunQuick' => [
+                'payment' => function ($payType, $settings) {
+                    return new HuanxunPayment($payType, $settings);
+                },
+                'settings' => [
+                    'shop' => function (OrderPaymentTypeSettingManager $manager, Order $order) {
+                        return new HuanxunPaySetting($order);
                     }
                 ],
             ],
