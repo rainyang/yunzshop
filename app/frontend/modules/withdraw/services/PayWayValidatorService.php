@@ -30,8 +30,14 @@ class PayWayValidatorService
             case 'alipay':
                 $this->alPayValidator();
                 break;
+            case 'huanxun':
+                $this->huanXunValidator();
+                break;
             case 'manual':
                 $this->manualValidator();
+                break;
+            case 'eup_pay':
+                $this->eupPayValidator();
                 break;
             default:
                 throw new AppException('未知提现方式');
@@ -56,6 +62,19 @@ class PayWayValidatorService
             throw new AppException('您未配置支付宝信息，请先修改个人信息中支付宝信息');
         }
     }
+
+
+    private function huanXunValidator()
+    {
+
+    }
+
+
+    private function eupPayValidator()
+    {
+
+    }
+
 
     private function manualValidator()
     {

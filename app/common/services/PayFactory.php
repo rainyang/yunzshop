@@ -60,10 +60,12 @@ class PayFactory
      */
     const PAY_YUN_WEACHAT = 12;
 
+
     /**
      * 支付宝-YZ
      */
     const PAY_YUN_ALIPAY = 15;
+
 
     /**
      * 转账
@@ -79,6 +81,14 @@ class PayFactory
      * 环迅快捷支付
      */
     const PAY_Huanxun_Quick = 18;
+
+
+    /**
+     * EUP-支付
+     */
+    const PAY_EUP = 19;
+
+
 
 
    public static function create($type = null)
@@ -118,6 +128,8 @@ class PayFactory
             case self::PAY_Huanxun_Quick:
                 $className = new \Yunshop\Huanxun\services\HuanxunPayService();
                 break;
+            case self::PAY_EUP:
+                $className = new \Yunshop\EupPay\services\EupWithdrawService();
             case self::PAY_REMITTANCE:
                 $className = new RemittancePay();
                 break;
