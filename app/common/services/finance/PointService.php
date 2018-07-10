@@ -90,6 +90,9 @@ class PointService
     const POINT_MODE_COURIER_REWARD = 20;
     const POINT_MODE_COURIER_REWARD_ATTACHED = '快递单奖励';
 
+    const POINT_MODE_FROZE_AWARD = 21;
+    const POINT_MODE_FROZE_AWARD_ATTACHED = '冻结币充值奖励';
+
     const POINT = 0;
 
     public $point_data;
