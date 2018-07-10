@@ -127,7 +127,7 @@ class Yun_shopModuleProcessor extends WeModuleProcessor
 
             //扫海报事件队列
             $job = (new \app\Jobs\scanPostConcernQueueJob(YunShop::app()->uniacid, $this))
-                ->delay(\Carbon\Carbon::now()->addMinutes(10));
+                ->delay(\Carbon\Carbon::now()->addMinutes(5));
             dispatch($job);
             \Log::debug('------poster queue job start-----');
 
