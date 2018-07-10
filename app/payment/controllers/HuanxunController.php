@@ -27,10 +27,6 @@ class HuanxunController extends PaymentController
         parent::__construct();
 
         if (empty(\YunShop::app()->uniacid)) {
-            $this->attach = explode(':', $_POST['orderNo']);
-
-            \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $this->attach[1];
-
             if(empty($_REQUEST)) {
                 return false;
             }
@@ -58,7 +54,7 @@ class HuanxunController extends PaymentController
             }
 
             \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $uniacid;
-
+\Log::debug('------quick uniacid-----', [$uniacid]);
             AccountWechats::setConfig(AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid));
         }
     }
@@ -117,8 +113,8 @@ class HuanxunController extends PaymentController
                 if ($status == "Y") {
                     $data = [
                         'total_fee'    => floatval($amount),
-                        'out_trade_no' => $order_no,
-                        'trade_no'     => $trade_no,
+                        'out_trade_no' => (string)$order_no,
+                        'trade_no'     => (string)$trade_no,
                         'unit'         => 'yuan',
                         'pay_type'     => '电子钱包快捷支付',
                         'pay_type_id'     => 18
