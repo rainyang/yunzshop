@@ -290,7 +290,7 @@ class PayedService
         $remark = '';
 
         $result = PayFactory::create(PayFactory::PAY_EUP)->doWithdraw($member_id, $sn, $amount, $remark);
-        if ($result['errno'] == 0) {
+        if ($result['errno'] === 0) {
             return true;
         }
 
