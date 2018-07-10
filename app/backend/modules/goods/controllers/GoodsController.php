@@ -71,7 +71,7 @@ class GoodsController extends BaseController
 
     public function index()
     {
-        
+
         //课程商品id集合
         $videoDemand = new VideoDemandCourseGoods();
         $courseGoods_ids = $videoDemand->courseGoodsIds();
@@ -451,7 +451,9 @@ class GoodsController extends BaseController
     {
         $keyword = \YunShop::request()->keyword;
         $goods = Goods::getGoodsByName($keyword);
-        //$goods = set_medias($goods, array('thumb', 'share_icon'));
+        if (!$goods->isEmpty()) {
+            $goods = set_medias($goods->toArray(), array('thumb', 'share_icon'));
+        }
         return view('goods.query', [
             'goods' => $goods
         ])->render();
@@ -495,9 +497,10 @@ class GoodsController extends BaseController
 
         if (\YunShop::request()->kw) {
             $goods = \app\common\models\Goods::getGoodsByName(\YunShop::request()->kw);
-            
-            $goods = set_medias($goods, array('thumb', 'share_icon'));
 
+            if (!$goods->isEmpty()) {
+                $goods = set_medias($goods->toArray(), array('thumb', 'share_icon'));
+            }
             $goods = collect($goods)->map(function($item) {
                 return array_add($item , 'url', yzAppFullUrl('goods/' . $item['id']));
             });
