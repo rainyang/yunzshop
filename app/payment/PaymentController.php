@@ -130,7 +130,6 @@ class PaymentController extends BaseController
                 break;
             case "recharge.succeeded":
                 \Log::debug('支付操作', ['recharge.succeeded']);
-                \Log::debug('-----充值参数----', $data);
                 (new BalanceRechargeResultService())->payResult([
                     'order_sn' => $data['out_trade_no'],
                     'pay_sn' => $data['trade_no']
