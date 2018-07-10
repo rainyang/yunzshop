@@ -182,7 +182,7 @@ class PayedService
             case Withdraw::WITHDRAW_WITH_HUANXUN:
                 $result = $this->huanxunWithdrawPay();
                 break;
-            case "eup_pay":
+            case Withdraw::WITHDRAW_WITH_EUP_PAY:
                 $result = $this->eupWithdrawPay();
                 break;
             default:
