@@ -53,8 +53,8 @@ class HuanxunController extends PaymentController
                 $uniacid = \Yunshop\Huanxun\frontend\models\AccountApply::getUniacidByCustomerCode($customerCode)['uniacid'];
             }
 
-            \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $uniacid;
-\Log::debug('------quick uniacid-----', [$uniacid]);
+            \Setting::$uniqueAccountId = \YunShop::app()->uniacid = intval($uniacid);
+
             AccountWechats::setConfig(AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid));
         }
     }
@@ -110,7 +110,7 @@ class HuanxunController extends PaymentController
 
             if($this->getSignResult()) {
                 \Log::debug('------notify验证成功-----');
-                if ($status == "Y") {
+                if (strval($status) == "Y") {
                     $data = [
                         'total_fee'    => floatval($amount),
                         'out_trade_no' => (string)$order_no,
@@ -124,7 +124,7 @@ class HuanxunController extends PaymentController
                     $this->payResutl($data);
                     \Log::debug('----结束----');
                     echo 'SUCCESS';
-                } elseif ($status == "N") {
+                } elseif (strval($status) == "N") {
                     $message = "交易失败";
                 } else {
                     $message = "交易处理中";
@@ -188,7 +188,7 @@ class HuanxunController extends PaymentController
 
         if ($this->getSignResult()) { // 验证成功
             \Log::debug('-------验证成功-----');
-            if ($status == "Y") {
+            if (strval($status) == "Y") {
                     $url = Url::shopSchemeUrl("?menu#/member/payYes?i={$uniacid}");
 
                 if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
@@ -196,7 +196,7 @@ class HuanxunController extends PaymentController
                 }
 
                 $message = "交易成功";
-            }elseif($status == "N")
+            }elseif(strval($status) == "N")
             {
                 $message = "交易失败";
             }else {
