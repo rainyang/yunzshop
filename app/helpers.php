@@ -290,7 +290,7 @@ if (!function_exists("set_medias")) {
     {
         if (empty($fields)) {
             foreach ($list as &$row) {
-                $row = tomedia($row);
+                $row = yz_tomedia($row);
             }
             return $list;
         }
@@ -301,10 +301,10 @@ if (!function_exists("set_medias")) {
             foreach ($list as $key => &$value) {
                 foreach ($fields as $field) {
                     if (isset($list[$field])) {
-                        $list[$field] = tomedia($list[$field]);
+                        $list[$field] = yz_tomedia($list[$field]);
                     }
                     if (is_array($value) && isset($value[$field])) {
-                        $value[$field] = tomedia($value[$field]);
+                        $value[$field] = yz_tomedia($value[$field]);
                     }
                 }
             }
@@ -312,7 +312,7 @@ if (!function_exists("set_medias")) {
         } else {
             foreach ($fields as $field) {
                 if (isset($list[$field])) {
-                    $list[$field] = tomedia($list[$field]);
+                    $list[$field] = yz_tomedia($list[$field]);
                 }
             }
             return $list;
