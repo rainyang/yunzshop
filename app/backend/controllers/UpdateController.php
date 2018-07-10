@@ -82,7 +82,7 @@ class UpdateController extends BaseController
 
         $res = $update->checkUpdate();
 
-        if ($res == 'unknown') {
+        if ($res === 'unknown') {
             $result = ['updated' => -1];
         }
 

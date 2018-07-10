@@ -29,11 +29,15 @@ class LoginController extends ApiController
             $type = Client::getType();
         }
 
+        if ($type == 8 && !(app('plugins')->isEnabled('alipay-onekey-login'))) {
+            $type = Client::getType();
+        }
+
         //判断是否开启微信登录
         if (\YunShop::request()->show_wechat_login) {
             return $this->init_login();
         }
-      
+
         if (!empty($type)) {
                 $member = MemberFactory::create($type);
 
