@@ -31,7 +31,7 @@ class PointGoodsDeductionSetting implements DeductionSettingInterface
 
     public function isEnableDeductDispatchPrice()
     {
-        return false;
+        return \Setting::get('point.set.point_freight');
     }
 
     public function isDisable()

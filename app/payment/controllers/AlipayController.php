@@ -65,6 +65,11 @@ class AlipayController extends PaymentController
 
     public function returnUrl()
     {
+        $trade = \Setting::get('shop.trade');
+
+        if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
+            return redirect($trade['redirect_url'])->send();
+        }
 
         if ($_GET['sign_type'] == 'MD5') {
             $verify_result = $this->getSignResult();

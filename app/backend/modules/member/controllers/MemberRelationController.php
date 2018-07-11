@@ -13,6 +13,7 @@ use app\backend\modules\member\models\MemberShopInfo;
 use app\common\components\BaseController;
 use app\backend\modules\member\models\MemberRelation as Relation;
 use app\common\facades\Setting;
+use app\common\helpers\Cache;
 use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
 use app\common\models\Goods;
@@ -85,6 +86,8 @@ class MemberRelationController extends BaseController
         } else {
             Relation::create($setData);
         }
+
+        Cache::forget('member_relation');
 
         return $this->message('保存成功', yzWebUrl('member.member-relation.index'));
     }
@@ -181,7 +184,7 @@ class MemberRelationController extends BaseController
             }
         }
 
-        $temp_list = MessageTemp::select('id', 'title')->get();
+        $temp_list = MessageTemp::getList();
 
         return view('member.relation-base', [
             'banner'  => tomedia($info['banner']),

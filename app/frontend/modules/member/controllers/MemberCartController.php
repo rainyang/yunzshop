@@ -4,8 +4,6 @@ namespace app\frontend\modules\member\controllers;
 
 use app\common\components\ApiController;
 use app\common\exceptions\AppException;
-
-
 use \app\frontend\models\MemberCart;
 use app\frontend\modules\member\services\MemberCartService;
 
@@ -29,13 +27,14 @@ class MemberCartController extends ApiController
             //dd($cartList);
             foreach ($cartList as $key => $cart) {
                 $cartList[$key]['option_str'] = '';
+                $cartList[$key]['goods']['thumb'] = yz_tomedia($cart['goods']['thumb']);
                 if (!empty($cart['goods_option'])) {
                     //规格数据替换商品数据
                     if ($cart['goods_option']['title']) {
                         $cartList[$key]['option_str'] = $cart['goods_option']['title'];
                     }
                     if ($cart['goods_option']['thumb']) {
-                        $cartList[$key]['goods']['thumb'] = $cart['goods_option']['thumb'];
+                        $cartList[$key]['goods']['thumb'] = yz_tomedia($cart['goods_option']['thumb']);
                     }
                     if ($cart['goods_option']['market_price']) {
                         $cartList[$key]['goods']['price'] = $cart['goods_option']['product_price'];
@@ -68,7 +67,9 @@ class MemberCartController extends ApiController
             'total' => request()->input('total'),
             'option_id' => (int)request()->input('option_id', 0),
         );
-
+        /**
+         * @var MemberCart $cartModel
+         */
         $cartModel = app('OrderManager')->make('MemberCart',$data);
 //        dd($cartModel);
         //验证商品是否存在购物车,存在则修改数量

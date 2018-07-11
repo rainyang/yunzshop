@@ -7,86 +7,85 @@
  */
 namespace app\frontend\modules\finance\listeners;
 
-use app\common\events\finance\AfterIncomeWithdrawArrivalEvent;
-use app\common\events\finance\AfterIncomeWithdrawCheckEvent;
-use app\common\events\finance\AfterIncomeWithdrawEvent;
-use app\common\events\finance\AfterIncomeWithdrawPayEvent;
+use app\common\events\withdraw\WithdrawAppliedEvent;
+use app\common\events\withdraw\WithdrawAuditedEvent;
+use app\common\events\withdraw\WithdrawPayedEvent;
+use app\common\events\withdraw\WithdrawPayingEvent;
 use app\common\models\Member;
 use app\common\services\finance\MessageService;
-use app\common\services\finance\WithdrawService;
-use Illuminate\Support\Facades\Log;
 
 class IncomeWithdraw
 {
     /**
      * 提现申请
-     * @param AfterIncomeWithdrawEvent $event
+     * @param WithdrawAppliedEvent $event
      */
-    public function withdraw(AfterIncomeWithdrawEvent $event)
+    public function withdraw($event)
     {
-        $data = $event->getData();
-        foreach ($data as $item) {
-            $member = Member::getMemberByUid($item['member_id'])->with('hasOneFans')->first();
-            $noticeData = [
-                'type_name' => $item['type_name'],
-                'amounts' => $item['amounts'],
-                'poundage' => $item['poundage'],
-                'pay_way' => $item['pay_way'],
-            ];
-            MessageService::incomeWithdraw($noticeData,$member);
-        }
+        $withdrawModel = $event->getWithdrawModel();
 
+        $member = Member::getMemberByUid($withdrawModel->member_id)->with('hasOneFans')->first();
+        $noticeData = [
+            'type_name' => $withdrawModel->type_name,
+            'amounts' => $withdrawModel->amounts,
+            'poundage' => $withdrawModel->poundage,
+            'pay_way' => $withdrawModel->pay_way,
+        ];
+        MessageService::incomeWithdraw($noticeData,$member);
     }
 
     /**
      * 提现审核
-     * @param AfterIncomeWithdrawCheckEvent $event
+     * @param WithdrawAuditedEvent $event
      */
-    public function withdrawCheck(AfterIncomeWithdrawCheckEvent $event)
+    public function withdrawCheck($event)
     {
-        $data = $event->getData();
-        $member = Member::getMemberByUid($data->member_id)->with('hasOneFans')->first();
+        $withdrawModel = $event->getWithdrawModel();
+
+        $member = Member::getMemberByUid($withdrawModel->member_id)->with('hasOneFans')->first();
         $noticeData = [
-            'type_name'     => $data->type_name,
-            'amounts'       => $data->amounts,
+            'type_name'     => $withdrawModel->type_name,
+            'amounts'       => $withdrawModel->amounts,
             'status'        => "已审核",
-            'actual_amounts'    => $data->actual_amounts,
-            'actual_poundage'   => $data->actual_poundage,
-            'pay_way'       => $data->pay_way,
+            'actual_amounts'    => $withdrawModel->actual_amounts,
+            'actual_poundage'   => $withdrawModel->actual_poundage,
+            'pay_way'       => $withdrawModel->pay_way,
         ];
         MessageService::withdrawCheck($noticeData,$member);
     }
 
     /**
      * 提现打款支付
-     * @param AfterIncomeWithdrawPayEvent $event
+     * @param WithdrawPayingEvent $event
      */
-    public function withdrawPay(AfterIncomeWithdrawPayEvent $event)
+    public function withdrawPay($event)
     {
-        $data = $event->getData();
-        $member = Member::getMemberByUid($data->member_id)->with('hasOneFans')->first();
+        $withdrawModel = $event->getData();
+
+        $member = Member::getMemberByUid($withdrawModel->member_id)->with('hasOneFans')->first();
         $noticeData = [
-            'type_name' => $data->type_name,
+            'type_name' => $withdrawModel->type_name,
             'pay_status' => "已打款",
-            'actual_amounts' => $data->actual_amounts,
-            'pay_way' => $data->pay_way,
+            'actual_amounts' => $withdrawModel->actual_amounts,
+            'pay_way' => $withdrawModel->pay_way,
         ];
         MessageService::withdrawPay($noticeData,$member);
     }
 
     /**
      * 提心打款到账
-     * @param AfterIncomeWithdrawArrivalEvent $event
+     * @param WithdrawPayedEvent $event
      */
-    public function withdrawArrival(AfterIncomeWithdrawArrivalEvent $event)
+    public function withdrawArrival($event)
     {
-        $data = $event->getData();
-        $member = Member::getMemberByUid($data->member_id)->with('hasOneFans')->first();
+        $withdrawModel = $event->getWithdrawModel();
+
+        $member = Member::getMemberByUid($withdrawModel->member_id)->with('hasOneFans')->first();
         $noticeData = [
-            'type_name' => $data->type_name,
+            'type_name' => $withdrawModel->type_name,
             'pay_status' => "已到账",
-            'actual_amounts' => $data->actual_amounts,
-            'pay_way' => $data->pay_way,
+            'actual_amounts' => $withdrawModel->actual_amounts,
+            'pay_way' => $withdrawModel->pay_way,
         ];
         MessageService::withdrawArrival($noticeData,$member);
     }
@@ -94,19 +93,19 @@ class IncomeWithdraw
     public function subscribe($events)
     {
         $events->listen(
-            AfterIncomeWithdrawEvent::class,
+            WithdrawAppliedEvent::class,
             self::class . '@withdraw'
         );
         $events->listen(
-            AfterIncomeWithdrawCheckEvent::class,
+            WithdrawAuditedEvent::class,
             self::class . '@withdrawCheck'
         );
         $events->listen(
-            AfterIncomeWithdrawPayEvent::class,
+            WithdrawPayingEvent::class,
             self::class . '@withdrawPay'
         );
         $events->listen(
-            AfterIncomeWithdrawArrivalEvent::class,
+            WithdrawPayedEvent::class,
             self::class . '@withdrawArrival'
         );
     }

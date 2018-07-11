@@ -1,9 +1,6 @@
 <?php
 namespace app\common\helpers;
 
-
-use Illuminate\Support\Facades\DB;
-
 class WeSession {
 
     public static $uniacid;
@@ -42,22 +39,32 @@ class WeSession {
 
 
     public function read($sessionid) {
-        $data = DB::table('core_sessions')->whereSid($sessionid)->whereExpiretime(TIMESTAMP)->value('data');
+        $sql = 'SELECT * FROM ' . tablename('core_sessions') . ' WHERE `sid`=:sessid AND `expiretime`>:time';
+        $params = array();
+        $params[':sessid'] = $sessionid;
+        $params[':time'] = TIMESTAMP;
+        $row = pdo_fetch($sql, $params);
 
-        if(empty($data)) {
-            return $data;
+
+        if(is_array($row) && !empty($row['data'])) {
+            return $row['data'];
         }
+
         return false;
     }
 
 
     public function write($sessionid, $data) {
+        if(!is_null($this->read($sessionid)['yunzshop_member_id'])){
+            $data['yunzshop_member_id'] = $this->read($sessionid)['yunzshop_member_id'];
+        }
         $row = array();
         $row['sid'] = $sessionid;
         $row['uniacid'] = WeSession::$uniacid;
         $row['openid'] = WeSession::$openid;
         $row['data'] = $data;
         $row['expiretime'] = TIMESTAMP + WeSession::$expire;
+
         return pdo_insert('core_sessions', $row, true) >= 1;
     }
 
@@ -71,6 +78,8 @@ class WeSession {
 
 
     public function gc($expire) {
-        return DB::table('core_sessions')->where('expiretime','<',TIMESTAMP)->delete() == 1;
+        $sql = 'DELETE FROM ' . tablename('core_sessions') . ' WHERE `expiretime`<:expire';
+
+        return pdo_query($sql, array(':expire' => TIMESTAMP)) == 1;
     }
 }

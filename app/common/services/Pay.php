@@ -190,7 +190,7 @@ abstract class Pay
      */
     private static function getHttpMethod()
     {
-        return $_SERVER['REQUEST_METHOD'];
+        return $_SERVER['REQUEST_METHOD'] ?: "CLI";
     }
 
     /**
@@ -298,6 +298,7 @@ abstract class Pay
      */
     public static function payAccessLog()
     {
+
         PayAccessLog::create([
             'uniacid' => \YunShop::app()->uniacid?:0,
             'member_id' => \YunShop::app()->getMemberId(),
@@ -381,10 +382,10 @@ abstract class Pay
     /**
      * 支付请求数据记录
      *
-     * @param $out_order_no  订单号
-     * @param $type  支付类型
-     * @param $third_type 支付方式
-     * @param $params 请求数据
+     * @param string $out_order_no  订单号
+     * @param int $type  支付类型
+     * @param string $third_type 支付方式
+     * @param array $params 请求数据
      */
     public static function payRequestDataLog($out_order_no, $type, $third_type, $params)
     {

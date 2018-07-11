@@ -42,7 +42,7 @@ return [
     | application. If disabled, a simple generic error page is shown.
     |
     */
-    
+
     'debug' => env('APP_DEBUG', false),
 
     /*
@@ -207,6 +207,7 @@ return [
 
         //拼音
         Overtrue\LaravelPinyin\ServiceProvider::class,
+
     ],
 
     /*

@@ -137,7 +137,7 @@ class BalanceController extends ApiController
         $result = (new BalanceService())->rechargeSet() ? $this->rechargeStart() : '未开启余额充值';
         if ($result === true) {
             $type = intval(\YunShop::request()->pay_type);
-            if ($type == PayFactory::PAY_WEACHAT || $type == PayFactory::PAY_YUN_WEACHAT) {
+            if ($type == PayFactory::PAY_WEACHAT || $type == PayFactory::PAY_YUN_WEACHAT || $type == PayFactory::PAY_Huanxun_Quick) {
                 return  $this->successJson('支付接口对接成功', array_merge(['ordersn' => $this->model->ordersn], $this->payOrder()));
             } else {
                 //app支付宝支付添加新支付配置
@@ -373,6 +373,10 @@ class BalanceController extends ApiController
         );
         if ($this->model->type == PayFactory::PAY_CLOUD_ALIPAY) {
             $array['extra'] = ['type' => 2, 'pay' => 'cloud_alipay'];
+        }
+
+        if ($this->model->type == PayFactory::PAY_Huanxun_Quick) {
+            $array['extra'] = ['type' => 2, 'pay' => 'quick'];
         }
         return $array;
     }

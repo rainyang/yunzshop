@@ -24,6 +24,10 @@ class Privilege extends \app\common\models\goods\Privilege
         'time_end_limit' => 'datetime',
     ];
 
+    /**
+     * @param $num
+     * @throws AppException
+     */
     public function validate($num)
     {
         $this->validateTimeLimit();
@@ -77,15 +81,15 @@ class Privilege extends \app\common\models\goods\Privilege
      */
     public function validateDayBuyLimit($num = 1)
     {
-        $start_time = Carbon::today()->timestamp;
-        $end_time = Carbon::now()->timestamp;
-        $rang = [$start_time,$end_time];
-        $history_num = MemberService::getCurrentMemberModel()
-            ->orderGoods()
-            ->where('goods_id', $this->goods_id)
-            ->whereBetween('created_at',$rang)
-            ->sum('total');
         if ($this->day_buy_limit > 0) {
+            $start_time = Carbon::today()->timestamp;
+            $end_time = Carbon::now()->timestamp;
+            $rang = [$start_time,$end_time];
+            $history_num = MemberService::getCurrentMemberModel()
+                ->orderGoods()
+                ->where('goods_id', $this->goods_id)
+                ->whereBetween('created_at',$rang)
+                ->sum('total');
             if ($history_num + $num > $this->day_buy_limit)
                 throw new AppException('您今天已购买' . $history_num . '件商品(' . $this->goods->title . '),该商品每天最多可购买' . $this->day_buy_limit . '件');
         }
@@ -98,15 +102,15 @@ class Privilege extends \app\common\models\goods\Privilege
      */
     public function validateWeekBuyLimit($num = 1)
     {
-        $start_time = Carbon::now()->startOfWeek()->timestamp;
-        $end_time = Carbon::now()->timestamp;
-        $rang = [$start_time,$end_time];
-        $history_num = MemberService::getCurrentMemberModel()
-            ->orderGoods()
-            ->where('goods_id', $this->goods_id)
-            ->whereBetween('created_at',$rang)
-            ->sum('total');
         if ($this->week_buy_limit > 0) {
+            $start_time = Carbon::now()->startOfWeek()->timestamp;
+            $end_time = Carbon::now()->timestamp;
+            $rang = [$start_time,$end_time];
+            $history_num = MemberService::getCurrentMemberModel()
+                ->orderGoods()
+                ->where('goods_id', $this->goods_id)
+                ->whereBetween('created_at',$rang)
+                ->sum('total');
             if ($history_num + $num > $this->week_buy_limit)
                 throw new AppException('您这周已购买' . $history_num . '件商品(' . $this->goods->title . '),该商品每周最多可购买' . $this->week_buy_limit . '件');
         }
@@ -119,15 +123,15 @@ class Privilege extends \app\common\models\goods\Privilege
      */
     public function validateMonthBuyLimit($num = 1)
     {
-        $start_time = Carbon::now()->startOfMonth()->timestamp;
-        $end_time = Carbon::now()->timestamp;
-        $rang = [$start_time,$end_time];
-        $history_num = MemberService::getCurrentMemberModel()
-            ->orderGoods()
-            ->where('goods_id', $this->goods_id)
-            ->whereBetween('created_at',$rang)
-            ->sum('total');
         if ($this->month_buy_limit > 0) {
+            $start_time = Carbon::now()->startOfMonth()->timestamp;
+            $end_time = Carbon::now()->timestamp;
+            $rang = [$start_time,$end_time];
+            $history_num = MemberService::getCurrentMemberModel()
+                ->orderGoods()
+                ->where('goods_id', $this->goods_id)
+                ->whereBetween('created_at',$rang)
+                ->sum('total');
             if ($history_num + $num > $this->month_buy_limit)
                 throw new AppException('您这个月已购买' . $history_num . '件商品(' . $this->goods->title . '),该商品每月最多可购买' . $this->month_buy_limit . '件');
         }
@@ -140,8 +144,8 @@ class Privilege extends \app\common\models\goods\Privilege
      */
     public function validateTotalBuyLimit($num = 1)
     {
-        $history_num = MemberService::getCurrentMemberModel()->orderGoods()->where('goods_id', $this->goods_id)->sum('total');
         if ($this->total_buy_limit > 0) {
+            $history_num = MemberService::getCurrentMemberModel()->orderGoods()->where('goods_id', $this->goods_id)->sum('total');
             if ($history_num + $num > $this->total_buy_limit)
                 throw new AppException('您已购买' . $history_num . '件商品(' . $this->goods->title . '),最多可购买' . $this->total_buy_limit . '件');
         }

@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Collection;
  * Class DeductionSettingCollection
  * @package app\frontend\modules\deduction
  */
-class DeductionSettingCollection extends Collection
+abstract class DeductionSettingCollection extends Collection
 {
     /**
      * @return float
@@ -74,7 +74,9 @@ class DeductionSettingCollection extends Collection
         // todo 按权重排序
 
         $type = '';
+        $hit = '';
         foreach ($this as $deductionSetting){
+            $hit = get_class($deductionSetting);
             /**
              * @var DeductionSettingInterface $deductionSetting
              */
@@ -86,7 +88,27 @@ class DeductionSettingCollection extends Collection
                 break;
             }
         }
+        //var_dump($hit);
+        return $type;
+    }
 
+    public function isEnableDeductDispatchPrice(){
+        // todo 按权重排序
+
+        $type = '';
+        foreach ($this as $deductionSetting){
+            /**
+             * @var DeductionSettingInterface $deductionSetting
+             */
+            if($deductionSetting->isDisable()){
+                break;
+            }
+            if($deductionSetting->isEnableDeductDispatchPrice() !== false){
+                $type = $deductionSetting->isEnableDeductDispatchPrice();
+                break;
+            }
+        }
+        //var_dump($hit);
         return $type;
     }
 }

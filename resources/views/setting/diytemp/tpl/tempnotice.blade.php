@@ -302,7 +302,7 @@
         });
         kw++;
     }
-    require(['select2'], function () {
-        $('.diy-notice').select2();
-    })
+
+    $('.diy-notice').select2();
+
 </script>

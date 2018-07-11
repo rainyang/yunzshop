@@ -12,6 +12,7 @@ use app\backend\modules\member\models\MemberRelation;
 use app\backend\modules\order\models\Order;
 use app\common\components\ApiController;
 use app\common\facades\Setting;
+use app\common\helpers\Cache;
 use app\common\helpers\ImageHelper;
 use app\common\helpers\Url;
 use app\common\models\AccountWechats;
@@ -27,11 +28,16 @@ use app\frontend\modules\member\services\MemberService;
 use app\frontend\models\OrderListModel;
 use EasyWeChat\Foundation\Application;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Str;
 use Yunshop\Commission\models\Agents;
 use Yunshop\Poster\models\Poster;
 use Yunshop\Poster\services\CreatePosterService;
 use Yunshop\TeamDividend\models\YzMemberModel;
+use Yunshop\AlipayOnekeyLogin\services\SynchronousUserInfo;
+use app\common\services\alipay\OnekeyLogin;
+use app\common\helpers\Client;
+use app\common\services\plugin\huanxun\HuanxunSet;
 
 class MemberController extends ApiController
 {
@@ -47,6 +53,8 @@ class MemberController extends ApiController
     {
         $member_id = \YunShop::app()->getMemberId();
 
+        // (new \app\frontend\modules\member\controllers\LogoutController)->index();
+        // exit();
         if (!empty($member_id)) {
             $member_info = MemberModel::getUserInfos($member_id)->first();
 
@@ -472,6 +480,10 @@ class MemberController extends ApiController
             }
 
             if ($member_model->save() && $member_shop_info_model->save()) {
+                if (Cache::has($member_model->uid . '_member_info')) {
+                    Cache::forget($member_model->uid . '_member_info');
+                }
+
                 return $this->successJson('用户资料修改成功');
             } else {
                 return $this->errorJson('更新用户资料失败');
@@ -505,19 +517,72 @@ class MemberController extends ApiController
             if ($msg['status'] != 1) {
                 return $this->errorJson($msg['json']);
             }
+            //增加验证码功能
+            $captcha_status = Setting::get('shop.sms.status');
+            if ($captcha_status == 1) {
+                if (app('captcha')->check(Input::get('captcha')) == false) {
+                    return $this->errorJson('验证码错误');
+                }
+            }
 
-            $salt = Str::random(8);
-            $member_model->salt = $salt;
-            $member_model->mobile = $mobile;
-            $member_model->password = md5($password . $salt);
+            //同步信息
+            $old_member = [];
+            if (OnekeyLogin::alipayPluginMobileState()) {
+                $old_member = MemberModel::getId(\YunShop::app()->uniacid, $mobile);
+            }
+            if ($old_member) {
+                if ($old_member->uid == $member_model->uid) {
+                    \Log::debug('同步的会员uid相同:'.$old_member->uid);
+                    return $this->errorJson('手机号已绑定其他用户');
+                }
 
-            if ($member_model->save()) {
-                return $this->successJson('手机号码绑定成功');
+                $bool = $this->synchro($member_model, $old_member);
+                if ($bool) {
+                    if (Cache::has($member_model->uid . '_member_info')) {
+                        Cache::forget($member_model->uid . '_member_info');
+                    }
+                    return $this->successJson('信息同步成功');
+                } else {
+                    return $this->errorJson('手机号已绑定其他用户');
+                }
+          
             } else {
-                return $this->errorJson('手机号码绑定失败');
+                $salt = Str::random(8);
+                $member_model->salt = $salt;
+                $member_model->mobile = $mobile;
+                $member_model->password = md5($password . $salt);
+
+                if ($member_model->save()) {
+                    if (Cache::has($member_model->uid . '_member_info')) {
+                        Cache::forget($member_model->uid . '_member_info');
+                    }
+                    return $this->successJson('手机号码绑定成功');
+                } else {
+                    return $this->errorJson('手机号码绑定失败');
+                }
+                
             }
         } else {
             return $this->errorJson('手机号或密码格式错误');
+        }
+    }
+
+    //会员信息同步
+    public function synchro($new_member, $old_member)
+    {
+
+        $type = \YunShop::request()->type;
+
+        \Log::debug('会员同步type:'. $type);
+        $type = empty($type) ? Client::getType() : $type;
+
+        $className = SynchronousUserInfo::create($type);
+
+        if ($className) {
+            return $className->updateMember($old_member, $new_member);
+
+        } else {
+            return false;
         }
     }
 
@@ -536,6 +601,14 @@ class MemberController extends ApiController
 
             if ($check_code['status'] != 1) {
                 return $this->errorJson($check_code['json']);
+            }
+
+            //增加验证码功能
+            $captcha_status = Setting::get('shop.sms.status');
+            if ($captcha_status == 1) {
+                if (app('captcha')->check(Input::get('captcha')) == false) {
+                    return $this->errorJson('验证码错误');
+                }
             }
 
             $salt = Str::random(8);
@@ -1134,7 +1207,7 @@ class MemberController extends ApiController
             }
         }
 
-        if (app('plugins')->isEnabled('video_demand')) {
+        if (app('plugins')->isEnabled('video-demand')) {
 
             $video_demand_setting = Setting::get('plugin.video_demand');
 
@@ -1158,6 +1231,29 @@ class MemberController extends ApiController
             }
         }
 
+        if (app('plugins')->isEnabled('courier')) {
+
+            $courier_setting = Setting::get('courier.courier');
+
+            if ($courier_setting && 1 == $courier_setting['radio']) {
+                $data[] = [
+                    'name' => 'courier',
+                    'title' => $courier_setting['name'] ? $courier_setting['name'] : '快递单'
+                ];
+            }
+        }
+
         return $this->successJson('ok', $data);
+    }
+
+    public function isOpenHuanxun() {
+        $huanxun = \Setting::get('plugin.huanxun_set');
+
+        if (app('plugins')->isEnabled('huanxun')) {
+            if ($huanxun['withdrawals_switch']) {
+                return $this->successJson('', $huanxun['withdrawals_switch']);
+            }
+        }
+        return $this->errorJson('', 0);
     }
 }

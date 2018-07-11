@@ -364,11 +364,11 @@
                 return false;
             }
         }
-        if ($(':input[name="widgets[single_return][return_rate]"]').val() == '') {
-            $('#myTab a[href="#tab_single_return"]').tab('show');
-            Tip.focus(':input[name="widgets[single_return][return_rate]"]', "请输返现比例!");
-            return false;
-        }
+        // if ($(':input[name="widgets[single_return][return_rate]"]').val() == '') {
+        //     $('#myTab a[href="#tab_single_return"]').tab('show');
+        //     Tip.focus(':input[name="widgets[single_return][return_rate]"]', "请输返现比例!");
+        //     return false;
+        // }
         @show
 
         if ($(':input[name="widgets[dispatch][dispatch_price]"]').val() == '') {

@@ -82,7 +82,7 @@ class MemberAddress extends \app\common\models\MemberAddress
     public  function rules()
     {
         return [
-            'mobile'    => 'regex:/^1[34578]{1}\d{9}$/',
+            'mobile'    => 'regex:/^1\d{10}$/',
             'username'  => 'required|max:45',
             'province'  => 'required',
             'city'      => 'required',

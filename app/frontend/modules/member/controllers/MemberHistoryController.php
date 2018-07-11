@@ -21,6 +21,10 @@ class MemberHistoryController extends ApiController
         $memberId = \YunShop::app()->getMemberId();
 
         $historyList = MemberHistory::getMemberHistoryList($memberId);
+
+        foreach ($historyList as &$value) {
+            $value['goods']['thumb'] = yz_tomedia($value['goods']['thumb']);
+        }
         return $this->successJson('获取列表成功', $historyList);
     }
 
@@ -28,6 +32,7 @@ class MemberHistoryController extends ApiController
     {
         $memberId = \YunShop::app()->getMemberId();
         $goodsId = \YunShop::request()->goods_id;
+        $owner_id = intval(request()->owner_id);
         if (!$goodsId) {
             return $this->errorJson('未获取到商品ID，添加失败！');
         }
@@ -37,6 +42,7 @@ class MemberHistoryController extends ApiController
         $historyModel->goods_id = $goodsId;
         $historyModel->member_id = $memberId;
         $historyModel->uniacid = \YunShop::app()->uniacid;
+        $historyModel->owner_id = $owner_id;
         if ($historyModel->save()) {
             return $this->successJson('更新足迹成功');
         }

@@ -56,7 +56,9 @@ class Order extends \app\common\models\Order
             'express',
             'hasOneRefundApply' => self::refundBuilder(),
             'hasOneOrderRemark',
-            'hasOneOrderPay'
+            'hasOneOrderPay'=> function (Builder $query) {
+                $query->orderPay();
+            },
 
         ]);
         return $orders;
@@ -176,7 +178,9 @@ class Order extends \app\common\models\Order
 
     public static function getOrderDetailById($order_id)
     {
-        return self::orders()->with(['deductions','coupons'])->find($order_id);
+        return self::orders()->with(['deductions','coupons','discounts','orderPays'=> function ($query) {
+            $query->with('payType');
+        },'hasOnePayType'])->find($order_id);
     }
 
     public static function boot()

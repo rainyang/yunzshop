@@ -229,8 +229,8 @@ if (!function_exists("tomedia")) {
 
 function yz_tomedia($src, $local_path = false)
 {
+    global $_W;
     $setting = \setting_load();
-
     if (empty($src)) {
         return '';
     }
@@ -247,7 +247,7 @@ function yz_tomedia($src, $local_path = false)
         return $src;
     }
 
-    if ($local_path || empty($setting['remote']['type']) || file_exists(base_path('../../') . '/' . YunShop::app()->config['upload']['attachdir'] . '/' . $src)) {
+    if ($local_path || empty($setting['remote']['type']) || file_exists(base_path('../../') . '/' . $_W['config']['upload']['attachdir'] . '/' . $src)) {
         $src = request()->getSchemeAndHttpHost() . '/attachment/' . $src;
     } else {
         if ($setting['remote']['type'] == 1) {
@@ -290,7 +290,7 @@ if (!function_exists("set_medias")) {
     {
         if (empty($fields)) {
             foreach ($list as &$row) {
-                $row = tomedia($row);
+                $row = yz_tomedia($row);
             }
             return $list;
         }
@@ -301,10 +301,10 @@ if (!function_exists("set_medias")) {
             foreach ($list as $key => &$value) {
                 foreach ($fields as $field) {
                     if (isset($list[$field])) {
-                        $list[$field] = tomedia($list[$field]);
+                        $list[$field] = yz_tomedia($list[$field]);
                     }
                     if (is_array($value) && isset($value[$field])) {
-                        $value[$field] = tomedia($value[$field]);
+                        $value[$field] = yz_tomedia($value[$field]);
                     }
                 }
             }
@@ -312,7 +312,7 @@ if (!function_exists("set_medias")) {
         } else {
             foreach ($fields as $field) {
                 if (isset($list[$field])) {
-                    $list[$field] = tomedia($list[$field]);
+                    $list[$field] = yz_tomedia($list[$field]);
                 }
             }
             return $list;
@@ -801,9 +801,9 @@ if (!function_exists('option')) {
             }
             return;
         }
-        $optionsData = $options->get();
-        return $optionsData[$key]['option_value'];
-//        return $options->get($key, $default, $raw);
+        //$optionsData = $options->get();
+        //return $optionsData[$key]['option_value'];
+        return $options->get($key, $default, $raw)['option_value'];
     }
 }
 if (!function_exists('float_greater')) {

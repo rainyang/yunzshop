@@ -10,6 +10,11 @@ namespace app\frontend\models;
 use app\frontend\models\Member;
 use Illuminate\Database\Eloquent\Builder;
 
+/**
+ * Class Order
+ * @package app\frontend\models
+ * @property Member belongsToMember
+ */
 class Order extends \app\common\models\Order
 {
     protected $appends = ['status_name', 'pay_type_name', 'button_models'];
@@ -109,7 +114,7 @@ class Order extends \app\common\models\Order
         parent::boot();
 
         self::addGlobalScope(function(Builder $query){
-            return $query->uid()->where('is_member_deleted',0);
+            return $query->uid();
         });
     }
 }

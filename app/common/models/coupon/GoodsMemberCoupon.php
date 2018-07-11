@@ -10,5 +10,6 @@ use app\common\models\BaseModel;
  */
 class GoodsMemberCoupon extends BaseModel
 {
-
+    public $amount;
+    public $enough;
 }

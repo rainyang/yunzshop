@@ -68,6 +68,12 @@ class WechatController extends PaymentController
 
     public function returnUrl()
     {
+        $trade = \Setting::get('shop.trade');
+
+        if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
+            return redirect($trade['redirect_url'])->send();
+        }
+
         if (\YunShop::request()->outtradeno) {
             $orderPay = OrderPay::where('pay_sn', \YunShop::request()->outtradeno)->first();
             $orders = Order::whereIn('id', $orderPay->order_ids)->get();
@@ -164,6 +170,9 @@ class WechatController extends PaymentController
     {
         $input = file_get_contents('php://input');
         if (!empty($input) && empty($_POST['out_trade_no'])) {
+            //禁止引用外部xml实体
+            libxml_disable_entity_loader(true);
+
             $obj = simplexml_load_string($input, 'SimpleXMLElement', LIBXML_NOCDATA);
             $data = json_decode(json_encode($obj), true);
             if (empty($data)) {

@@ -10,54 +10,144 @@
 namespace app\common\models;
 
 
-use app\backend\models\BackendModel;
 use Illuminate\Support\Facades\Config;
 
-class Withdraw extends BackendModel
+class Withdraw extends BaseModel
 {
-    public $table = 'yz_withdraw';
-
-    protected $guarded = [];
-
-    protected $appends = ['status_name', 'pay_way_name'];
-
-
-    //审核状态
+    /**
+     * 提现审核状态：无效
+     */
     const STATUS_INVALID    = -1;
 
+
+    /**
+     * 提现审核状态：未审核
+     */
     const STATUS_INITIAL    = 0;
 
+
+    /**
+     * 提现审核状态：待打款
+     */
     const STATUS_AUDIT      = 1;
 
+
+    /**
+     * 提现审核状态：已打款
+     */
     const STATUS_PAY        = 2;
 
+
+    /**
+     * 提现审核状态：已驳回
+     */
     const STATUS_REBUT      = 3;
 
+
+    /**
+     * 提现审核状态：打款中
+     */
     const STATUS_PAYING     = 4;
 
 
-
-
+    /**
+     * 提现打款方式：打款至余额
+     */
     const WITHDRAW_WITH_BALANCE = 'balance';
 
+
+    /**
+     * 提现打款方式：打款至微信
+     */
     const WITHDRAW_WITH_WECHAT  = 'wechat';
 
+
+    /**
+     * 提现打款方式：打款至支付宝
+     */
     const WITHDRAW_WITH_ALIPAY  = 'alipay';
 
+
+    /**
+     * 提现打款方式：手动打款
+     */
     const WITHDRAW_WITH_MANUAL  = 'manual';
 
 
+    /**
+     * 提现打款方式：手动打款
+     */
+    const WITHDRAW_WITH_HUANXUN  = 'huanxun';
 
-    //手动提现位置
+
+    /**
+     * 提现打款方式：手动打款
+     */
+    const WITHDRAW_WITH_EUP_PAY  = 'eup_pay';
+
+
+    /**
+     * 手动打款方式：手动至银行卡
+     */
     const MANUAL_TO_BANK    = 1;
 
+
+    /**
+     * 手动打款方式：手动至微信
+     */
     const MANUAL_TO_WECHAT  = 2;
 
+
+    /**
+     * 手动打款方式：手动至支付宝
+     */
     const MANUAL_TO_ALIPAY  = 3;
 
 
+    /**
+     * 审核通过的收入 ids 集合
+     * 
+     * @var array
+     */
+    public $audit_ids = [];
 
 
+    /**
+     * 审核驳回的收入 ids 集合
+     * 
+     * @var array
+     */
+    public $rebut_ids = [];
+
+
+    /**
+     * 审核无效的收入 ids 集合
+     * 
+     * @var array
+     */
+    public $invalid_ids = [];
+
+
+    /**
+     * 提现打款方式集合
+     *
+     * @var array
+     */
+    public static $payWayComment = [
+        self::WITHDRAW_WITH_BALANCE     => '提现到余额',
+        self::WITHDRAW_WITH_WECHAT      => '提现到微信',
+        self::WITHDRAW_WITH_ALIPAY      => '提现到支付宝',
+        self::WITHDRAW_WITH_MANUAL      => '提现手动打款',
+        self::WITHDRAW_WITH_HUANXUN     => '提现到电子钱包',
+        self::WITHDRAW_WITH_EUP_PAY     => '提现EUP',
+    ];
+
+
+    /**
+     * 提现审核状态集合
+     *
+     * @var array
+     */
     public static $statusComment = [
         self::STATUS_INVALID    => '已无效',
         self::STATUS_INITIAL    => '待审核',
@@ -67,29 +157,40 @@ class Withdraw extends BackendModel
         self::STATUS_PAYING     => '打款中',
     ];
 
-    public static $payWayComment = [
-        self::WITHDRAW_WITH_BALANCE     => '提现到余额',
-        self::WITHDRAW_WITH_WECHAT      => '提现到微信',
-        self::WITHDRAW_WITH_ALIPAY      => '提现到支付宝',
-        self::WITHDRAW_WITH_MANUAL      => '提现手动打款',
-    ];
+
+    /**
+     * 数据表名称
+     * 
+     * @var string
+     */
+    protected $table = 'yz_withdraw';
 
 
+    /**
+     * @var array
+     */
+    protected $guarded = [];
 
-    //后台子类有使用
+
+    /**
+     * @var array
+     */
+    protected $appends = ['status_name', 'pay_way_name'];
+
+
     public function hasOneMember()
     {
         return $this->hasOne('app\common\models\Member', 'uid', 'member_id');
     }
 
-    //商城yz会员
+
     public function hasOneYzMember()
     {
         return $this->hasOne('app\backend\modules\member\models\MemberShopInfo', 'member_id', 'member_id');
 
     }
 
-    //商城银行卡
+
     public function bankCard()
     {
         return $this->hasOne('app\common\models\member\BankCard', 'member_id', 'member_id');
@@ -98,6 +199,7 @@ class Withdraw extends BackendModel
 
     /**
      * 通过 $status 值获取 $status 名称
+     *
      * @param $status
      * @return mixed|string
      */
@@ -107,10 +209,9 @@ class Withdraw extends BackendModel
     }
 
 
-
-
     /**
      * 通过 $pay_way 值获取 $pay_way 名称
+     *
      * @param $pay_way
      * @return mixed|string
      */
@@ -120,10 +221,9 @@ class Withdraw extends BackendModel
     }
 
 
-
-
     /**
      * 通过字段 status 输出 status_name ;
+     *
      * @return string
      */
     public function getStatusNameAttribute()
@@ -132,17 +232,15 @@ class Withdraw extends BackendModel
     }
 
 
-
-
     /**
      * 通过字段 pay_way 输出 pay_way_name ;
+     *
      * @return string
      */
     public function getPayWayNameAttribute()
     {
         return static::getPayWayComment($this->attributes['pay_way']);
     }
-
 
 
     /**
@@ -157,14 +255,10 @@ class Withdraw extends BackendModel
     }
 
 
-
-
     public function scopeOfStatus($query, $status)
     {
         return $query->where('status', $status);
     }
-
-
 
 
     public function scopeOfType($query, $type)
@@ -172,32 +266,10 @@ class Withdraw extends BackendModel
         return $query->where('type', $type);
     }
 
-
-
     public function scopeOfWithdrawSn($query, $withdraw_sn)
     {
         return $query->where('withdraw_sn', $withdraw_sn);
     }
-
-
-
-
-    /**
-     * 获取已开启插件 type 字段集
-     * @return array
-     */
-    public static function getIncomeTypes()
-    {
-        $configs = Config::get('income');
-
-        $types = [];
-        foreach ($configs as $config) {
-            $types[] = $config['class'];
-        }
-        return $types;
-    }
-
-
 
 
     public function atributeNames()
@@ -211,8 +283,6 @@ class Withdraw extends BackendModel
     }
 
 
-
-
     public function rules()
     {
         return  [
@@ -221,6 +291,26 @@ class Withdraw extends BackendModel
             'amounts'       => 'required',
             'pay_way'       => 'required',
         ];
+    }
+
+
+
+    /**
+     * todo 应该剔出本类
+     *
+     * 获取已开启插件 type 字段集
+     *
+     * @return array
+     */
+    public static function getIncomeTypes()
+    {
+        $configs = Config::get('income');
+
+        $types = [];
+        foreach ($configs as $config) {
+            $types[] = $config['class'];
+        }
+        return $types;
     }
 
 

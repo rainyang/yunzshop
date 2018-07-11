@@ -18,8 +18,10 @@ use app\common\models\Order;
 use app\common\models\order\OrderGoodsChangePriceLog;
 use app\common\models\OrderGoods;
 use app\common\models\UniAccount;
+use app\frontend\models\Member;
 use \app\frontend\models\MemberCart;
 use app\frontend\modules\member\services\MemberService;
+use app\frontend\modules\memberCart\MemberCartCollection;
 use app\frontend\modules\order\models\PreOrder;
 use app\frontend\modules\order\services\behavior\OrderCancelPay;
 use app\frontend\modules\order\services\behavior\OrderCancelSend;
@@ -30,6 +32,7 @@ use app\frontend\modules\order\services\behavior\OrderOperation;
 use app\frontend\modules\order\services\behavior\OrderPay;
 use app\frontend\modules\order\services\behavior\OrderReceive;
 use app\frontend\modules\order\services\behavior\OrderSend;
+use app\frontend\modules\orderGoods\models\PreOrderGoodsCollection;
 use app\frontend\modules\shop\services\ShopService;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -86,7 +89,7 @@ class OrderService
     /**
      * 获取订单商品对象数组
      * @param Collection $memberCarts
-     * @return Collection
+     * @return PreOrderGoodsCollection
      * @throws \Exception
      */
     public static function getOrderGoods(Collection $memberCarts)
@@ -110,7 +113,7 @@ class OrderService
             return app('OrderManager')->make('PreOrderGoods', $data);
         });
 
-        return $result;
+        return new PreOrderGoodsCollection($result);
     }
 
 
@@ -118,10 +121,11 @@ class OrderService
      * 根据购物车记录,获取订单信息
      * @param Collection $memberCarts
      * @param null $member
-     * @return bool|mixed
+     * @return PreOrder|bool|mixed
      * @throws AppException
+     * @throws \Exception
      */
-    public static function createOrderByMemberCarts(Collection $memberCarts, $member = null)
+    public static function createOrderByMemberCarts(Collection $memberCarts, Member $member = null)
     {
         if (!isset($member)) {
             //默认使用当前登录用户下单
@@ -134,6 +138,7 @@ class OrderService
         if ($memberCarts->isEmpty()) {
             return false;
         }
+        (new MemberCartCollection($memberCarts))->validate();
 
         $shop = ShopService::getCurrentShopModel();
 
@@ -254,28 +259,25 @@ class OrderService
      */
     public static function ordersPay(array $param)
     {
-        \Log::info('---------订单支付ordersPay--------', $param);
-        $orderPay = \app\common\models\OrderPay::find($param['order_pay_id']);
+        \Log::info('---------订单支付ordersPay(order_pay_id:'.$param['order_pay_id'].')--------', $param);
+        /**
+         * @var \app\frontend\models\OrderPay $orderPay
+         */
+        $orderPay = \app\frontend\models\OrderPay::find($param['order_pay_id']);
         if (!isset($orderPay)) {
             throw new AppException('支付流水记录不存在');
         }
-        $orders = Order::whereIn('id', $orderPay->order_ids)->get();
-        if ($orders->isEmpty()) {
-            throw new AppException('(ID:' . $orderPay->id . ')未找到订单流水号对应订单');
-        }
-        DB::transaction(function () use ($orderPay, $orders, $param) {
-            $orderPay->status = 1;
-            if (isset($param['pay_type_id'])) {
+
+        if (isset($param['pay_type_id'])) {
+            if($orderPay->pay_type_id != $param['pay_type_id']){
                 $orderPay->pay_type_id = $param['pay_type_id'];
+                \Log::error('---------支付回调与与支付请求的订单支付方式不匹配(order_pay_id:'.$orderPay->id.')--------', []);
+
             }
-            $orderPay->save();
-            $orders->each(function ($order) use ($param) {
-                if (!OrderService::orderPay(['order_id' => $order->id, 'order_pay_id' => $param['order_pay_id'], 'pay_type_id' => $param['pay_type_id']])) {
-                    throw new AppException('订单状态改变失败,请联系客服');
-                }
-            });
-        });
-        \Log::info('---------订单支付成功ordersPay--------', []);
+        }
+        $orderPay->pay();
+
+        \Log::info('---------订单支付成功ordersPay(order_pay_id:'.$orderPay->id.')--------', []);
 
     }
 
@@ -283,6 +285,7 @@ class OrderService
      * 后台支付订单
      * @param array $param
      * @return string
+     * @throws AppException
      */
 
     public static function orderPay(array $param)
@@ -295,13 +298,7 @@ class OrderService
             $orderOperation->pay_type_id = $param['pay_type_id'];
         }
         $orderOperation->order_pay_id = (int)$param['order_pay_id'];
-//        if (isset($param['order_pay_id'])) {
-//            if (isset($orderOperation->hasOneOrderPay)) {
-//                if (in_array($param['order_id'], $orderOperation->hasOneOrderPay->order_ids)) {
-//                    $orderOperation->order_pay_id = $param['order_pay_id'];
-//                }
-//            }
-//        }
+
         $result = self::OrderOperate($orderOperation);
         //是虚拟商品或有标识直接完成
         if ($orderOperation->isVirtual() || $orderOperation->mark) {
@@ -421,9 +418,9 @@ class OrderService
         $orders = \app\backend\modules\order\models\Order::waitReceive()->where('send_time', '<', (int)Carbon::now()->addDays(-$days)->timestamp)->normal()->get();
         if (!$orders->isEmpty()) {
             $orders->each(function ($order) {
-                try{
+                try {
                     OrderService::orderReceive(['order_id' => $order->id]);
-                }catch (\Exception $e){
+                } catch (\Exception $e) {
 
                 }
             });

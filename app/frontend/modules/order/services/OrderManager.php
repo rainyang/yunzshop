@@ -11,6 +11,7 @@ namespace app\frontend\modules\order\services;
 use app\backend\modules\order\models\Order;
 use app\common\models\order\OrderCoupon;
 use app\common\models\order\OrderDeduction;
+use app\common\models\order\OrderDiscount;
 use app\frontend\models\MemberCart;
 use app\frontend\modules\orderGoods\models\PreOrderGoods;
 use app\frontend\modules\order\models\PreOrder;
@@ -52,6 +53,9 @@ class OrderManager extends Container
         });
         $this->bind('OrderDeduction', function ($orderManager, $attributes) {
             return new OrderDeduction($attributes);
+        });
+        $this->bind('OrderDiscount', function ($orderManager, $attributes) {
+            return new OrderDiscount($attributes);
         });
         $this->bind('OrderCoupon', function ($orderManager, $attributes) {
             return new OrderCoupon($attributes);

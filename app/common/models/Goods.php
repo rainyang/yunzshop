@@ -102,6 +102,9 @@ class Goods extends BaseModel
         return $this->hasMany('app\common\models\GoodsCategory', 'goods_id', 'id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function hasManyGoodsDiscount()
     {
         return $this->hasMany('app\common\models\GoodsDiscount');
@@ -178,7 +181,7 @@ class Goods extends BaseModel
         return $query->where('is_plugin', 0);
     }
 
-    public function scopeSearch($query, $filters)
+    public function scopeSearch(Builder $query, $filters)
     {
         $query->uniacid();
 
@@ -207,8 +210,15 @@ class Goods extends BaseModel
                     $query->where('brand_id', $value);
                     break;
                 case 'product_attr':
+                    $value = explode(',', rtrim($value, ','));
                     foreach ($value as $attr) {
-                        $query->where($attr, 1);
+                        if ($attr == 'limit_buy') {
+                            $query->whereHas('hasOneGoodsLimitBuy', function ($q) {
+                                $q->where('status', 1);
+                            });
+                        } else {
+                            $query->where($attr, 1);
+                        }
                     }
                     break;
                 case 'status':
@@ -303,6 +313,7 @@ class Goods extends BaseModel
             ->where('title', 'like', '%' . $keyword . '%')
             ->where('status', 1)
             //->where('is_plugin', 0)
+            ->whereNotIn('plugin_id', [20,31,60])//屏蔽门店、码上点餐、第三方插件接口的虚拟商品
             ->get();
     }
 

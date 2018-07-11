@@ -45,18 +45,14 @@ class CreateGoodsService
             if ($this->type == 1) {
                 $goods_data['status'] = 0;
             }
-            $goods_data['thumb'] = tomedia($goods_data['thumb']);
 
             //商品视频地址
-            $goods_data['goods_video'] = tomedia($goods_data['goods_video']);
+            $goods_data['goods_video'] = yz_tomedia($goods_data['goods_video']);
 
             if (isset($goods_data['thumb_url'])) {
-                $goods_data['thumb_url'] = serialize(
-                    array_map(function ($item) {
-                        return tomedia($item);
-                    }, $goods_data['thumb_url'])
-                );
+                $goods_data['thumb_url'] = serialize($goods_data['thumb_url']);
             }
+            
             if (!$goods_data['virtual_sales']) {
                 $goods_data['virtual_sales'] = 0;
             }
@@ -70,6 +66,7 @@ class CreateGoodsService
             $this->goods_model->setRawAttributes($goods_data);
             $this->goods_model->widgets = $this->request->widgets;
             $this->goods_model->uniacid = \YunShop::app()->uniacid;
+            $this->goods_model->weight = $this->goods_model->weight ? $this->goods_model->weight : 0;
             $validator = $this->goods_model->validator($this->goods_model->getAttributes());
             if ($validator->fails()) {
                 $this->error = $validator->messages();

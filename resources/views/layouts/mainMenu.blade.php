@@ -20,7 +20,7 @@
                     </li>--}}
                     @foreach(config(config('app.menu_key','menu')) as $key=>$value)
 
-                        @if(isset($value['menu']) && $value['menu'] == 1 && can($key) && $value['top_show'] == 1)
+                        @if(isset($value['menu']) && $value['menu'] == 1 && can($key) && ($value['top_show'] == 1 || app('plugins')->isTopShow($key)))
 
                             @if(isset($value['child']) && array_child_kv_exists($value['child'],'menu',1))
 
@@ -65,6 +65,7 @@
                                     @if(request()->getHost() != 'test.yunzshop.com' && env('APP_ENV') != 'production')
                                         <li> <a target="_blank" href="{{yzWebUrl('menu.index')}}"><span class="fa fa-align-justify fa-fw"></span>菜单管理</a></li>
                                     @endif
+                                    <li> <a target="_blank" href="{{yzWebUrl('member.member.updateWechatOpenData')}}"><span class="fa fa-cube fa-fw"></span>微信开放平台数据同步</a></li>
                                     <li> <a target="_self" href="{{yzWebUrl('cache.update')}}" onclick="return confirm('确认更新缓存？');return false;"><span class="fa fa-refresh fa-fw"></span>更新缓存</a></li>
                                     <li> <a href="{{yzWebUrl('setting.shop.entry')}}"> <span class="fa fa-camera-retro fa-fw"></span>商城入口 </a>  </li>
                                 </ul>

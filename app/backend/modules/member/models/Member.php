@@ -57,7 +57,7 @@ class Member extends \app\common\models\Member
                         return $query3->select(['uid', 'avatar', 'nickname'])->uniacid();
                     }]);
             }, 'hasOneFans' => function ($query4) {
-                return $query4->select(['uid', 'follow as followed'])->uniacid();
+                return $query4->select(['uid', 'openid', 'follow as followed'])->uniacid();
             }, 'hasOneOrder' => function ($query5) {
                 return $query5->selectRaw('uid, count(uid) as total, sum(price) as sum')
                     ->uniacid()

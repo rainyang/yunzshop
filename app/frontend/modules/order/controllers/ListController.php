@@ -32,14 +32,13 @@ class ListController extends ApiController
      */
     protected function _getOrder()
     {
-        return $this->order = app('OrderManager')->make('Order')->orders()->where('status', '<>', '-1');
+        return $this->order = app('OrderManager')->make('Order')->orders()->where('status', '<>', '-1')->where('plugin_id','<','900');
     }
 
     protected function getData()
     {
-        $pageSize = \YunShop::request()->pagesize;
-        $pageSize = $pageSize ? $pageSize : 20;
-        return $this->getOrder()->paginate($pageSize)->toArray();
+        $pageSize = request()->input('pagesize',20);
+        return $this->getOrder()->where('is_member_deleted',0)->paginate($pageSize)->toArray();
     }
 
     /**
