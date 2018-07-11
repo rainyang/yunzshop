@@ -138,12 +138,12 @@ class PaymentConfig
                     }
                 ],
             ], 'huanxunQuick' => [
-                'payment' => function ($payType, $settings) {
-                    return new HuanxunPayment($payType, $settings);
+                'payment' => function (OrderPay $orderPay, PayType $payType, OrderPaymentSettingCollection $settings) {
+                    return new HuanxunPayment($orderPay, $payType, $settings);
                 },
                 'settings' => [
-                    'shop' => function (OrderPaymentTypeSettingManager $manager, Order $order) {
-                        return new HuanxunPaySetting($order);
+                    'shop' => function (OrderPaymentTypeSettingManager $manager, OrderPay $orderPay) {
+                        return new HuanxunPaySetting($orderPay);
                     }
                 ],
             ],

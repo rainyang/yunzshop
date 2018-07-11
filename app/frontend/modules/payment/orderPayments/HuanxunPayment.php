@@ -13,6 +13,6 @@ class HuanxunPayment extends WebPayment
 {
     public function canUse()
     {
-        return $this->orderPaymentSettings->canUse() && \YunShop::plugin()->get('huanxun');
+        return parent::canUse() && \YunShop::plugin()->get('huanxun');
     }
 }

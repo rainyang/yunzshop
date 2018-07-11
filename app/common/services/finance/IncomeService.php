@@ -45,7 +45,7 @@ class IncomeService
                 return '提现手动打款';
                 break;
             case 'huanxun':
-                return '电子钱包快捷支付';
+                return '提现到电子钱包';
                 break;
             case 'eup_pay':
                 return '提现到EUP';

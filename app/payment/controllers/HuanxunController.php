@@ -27,10 +27,6 @@ class HuanxunController extends PaymentController
         parent::__construct();
 
         if (empty(\YunShop::app()->uniacid)) {
-            $this->attach = explode(':', $_POST['orderNo']);
-
-            \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $this->attach[1];
-
             if(empty($_REQUEST)) {
                 return false;
             }
@@ -57,7 +53,7 @@ class HuanxunController extends PaymentController
                 $uniacid = \Yunshop\Huanxun\frontend\models\AccountApply::getUniacidByCustomerCode($customerCode)['uniacid'];
             }
 
-            \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $uniacid;
+            \Setting::$uniqueAccountId = \YunShop::app()->uniacid = intval($uniacid);
 
             AccountWechats::setConfig(AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid));
         }
@@ -114,21 +110,21 @@ class HuanxunController extends PaymentController
 
             if($this->getSignResult()) {
                 \Log::debug('------notify验证成功-----');
-                if ($status == "Y") {
+                if (strval($status) == "Y") {
                     $data = [
                         'total_fee'    => floatval($amount),
-                        'out_trade_no' => $order_no,
-                        'trade_no'     => $trade_no,
+                        'out_trade_no' => (string)$order_no,
+                        'trade_no'     => (string)$trade_no,
                         'unit'         => 'yuan',
-                        'pay_type'     => '环迅快捷支付',
-                        'pay_type_id'     => 16
+                        'pay_type'     => '电子钱包快捷支付',
+                        'pay_type_id'     => 18
 
                     ];
 
                     $this->payResutl($data);
                     \Log::debug('----结束----');
                     echo 'SUCCESS';
-                } elseif ($status == "N") {
+                } elseif (strval($status) == "N") {
                     $message = "交易失败";
                 } else {
                     $message = "交易处理中";
@@ -188,19 +184,19 @@ class HuanxunController extends PaymentController
         $uniacid = $xmlResult->GateWayRsp->body->Attach;
         $order_no =$xmlResult->GateWayRsp->body->MerBillNo;
 
-        $url = Url::absoluteApp('member/payErr', ['i' => $uniacid]);
+        $url = Url::shopSchemeUrl("?menu#/member/payErr?i={$uniacid}");
 
         if ($this->getSignResult()) { // 验证成功
             \Log::debug('-------验证成功-----');
-            if ($status == "Y") {
-                $url = Url::absoluteApp('member/payYes', ['i' => $uniacid]);
+            if (strval($status) == "Y") {
+                    $url = Url::shopSchemeUrl("?menu#/member/payYes?i={$uniacid}");
 
                 if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
                     $url  = $trade['redirect_url'];
                 }
 
                 $message = "交易成功";
-            }elseif($status == "N")
+            }elseif(strval($status) == "N")
             {
                 $message = "交易失败";
             }else {
@@ -210,7 +206,7 @@ class HuanxunController extends PaymentController
             $message = "验证失败";
         }
 
-        \Log::debug("-----快捷支付{$order_no}----", [$message]);
+        \Log::debug("-----快捷支付{$uniacid}-{$order_no}----", [$message]);
 
         redirect($url)->send();
     }
