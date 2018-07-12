@@ -22,7 +22,7 @@ class HuanxunPay
         if (\YunShop::plugin()->get('huanxun') && !is_null($set) && 1 == $set['quick_switch'] && \YunShop::request()->type != 7) {
 
             $result = [
-                'name' => '电子钱包快捷支付',
+                'name' => '银联快捷支付',
                 'value' => '18',
                 'need_password' => '0'
 
