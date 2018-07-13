@@ -36,7 +36,8 @@ class BalanceService
             'withdraw'          => $this->_withdraw_set['status'] ? 1 : 0,
             'withdrawToWechat'  => $this->withdrawWechat(),
             'withdrawToAlipay'  => $this->withdrawAlipay(),
-            'withdrawToManual'  => $this->withdrawManual()
+            'withdrawToManual'  => $this->withdrawManual(),
+            'withdrawEup'       => $this->withdrawEup()
         );
     }
 
@@ -101,6 +102,14 @@ class BalanceService
         return $this->_withdraw_set['balance_manual'] ? true : false;
     }
 
+    //余额EUP提现
+    public function withdrawEup()
+    {
+        if (app('plugins')->isEnabled('eup-pay')) {
+            return $this->_withdraw_set['eup'] ? true : false;
+        }
+        return false;
+    }
 
     /**
      * 提现满 N元 减免手续费 [注意为 0， 为空则不计算，按正常手续费扣]
