@@ -48,7 +48,7 @@ class BalanceWithdrawController extends BalanceController
             'wechat'        => $this->balanceSet->withdrawWechat(),
             'alipay'        => $this->balanceSet->withdrawAlipay(),
             'manual'        => $this->balanceSet->withdrawManual(),
-            'eup'           => $this->balanceSet->withdrawEup();
+            'eup'           => $this->balanceSet->withdrawEup(),
             'poundage'      => $this->getPagePoundage(),
         ];
 
