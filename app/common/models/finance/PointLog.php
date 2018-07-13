@@ -129,7 +129,7 @@ class PointLog extends BaseModel
                 $mode_attribute = PointService::POINT_MODE_COURIER_REWARD_ATTACHED;
                 break;
             case (21):
-                if (app('plugins')->isEnabled('love')) {
+                if (app('plugins')->isEnabled('froze')) {
                     $froze_name = SetService::getFrozeName();
                     $mode_attribute = $froze_name . '奖励';
                 } else {
