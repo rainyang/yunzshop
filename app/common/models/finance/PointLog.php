@@ -12,6 +12,7 @@ namespace app\common\models\finance;
 use app\backend\modules\member\models\Member;
 use app\common\models\BaseModel;
 use app\common\services\finance\PointService;
+use Yunshop\Froze\Common\Services\SetService;
 
 class PointLog extends BaseModel
 {
@@ -128,7 +129,12 @@ class PointLog extends BaseModel
                 $mode_attribute = PointService::POINT_MODE_COURIER_REWARD_ATTACHED;
                 break;
             case (21):
-                $mode_attribute = PointService::POINT_MODE_FROZE_AWARD_ATTACHED;
+                if (app('plugins')->isEnabled('love')) {
+                    $froze_name = SetService::getFrozeName();
+                    $mode_attribute = $froze_name . '奖励';
+                } else {
+                    $mode_attribute = PointService::POINT_MODE_FROZE_AWARD_ATTACHED;
+                }
                 break;
             case (92):
                 $mode_attribute = PointService::POINT_MODE_RECHARGE_CODE_ATTACHED;
