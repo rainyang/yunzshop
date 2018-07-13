@@ -106,7 +106,7 @@ class BalanceService
     public function withdrawEup()
     {
         if (app('plugins')->isEnabled('eup-pay')) {
-            return $this->_withdraw_set['eup'] ? true : false;
+            return $this->_withdraw_set['eup_pay'] ? true : false;
         }
         return false;
     }

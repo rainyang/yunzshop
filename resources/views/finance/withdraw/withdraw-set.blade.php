@@ -112,13 +112,13 @@
                                         </div>
                                         <div class="switch">
                                             <label class='radio-inline'>
-                                                <input type='radio' name='withdraw[balance][eup]' value='1'
-                                                       @if($set['eup'] == 1) checked @endif />
+                                                <input type='radio' name='withdraw[balance][eup_pay]' value='1'
+                                                       @if($set['eup_pay'] == 1) checked @endif />
                                                 开启
                                             </label>
                                             <label class='radio-inline'>
-                                                <input type='radio' name='withdraw[balance][eup]' value='0'
-                                                       @if($set['eup'] == 0) checked @endif />
+                                                <input type='radio' name='withdraw[balance][eup_pay]' value='0'
+                                                       @if($set['eup_pay'] == 0) checked @endif />
                                                 关闭
                                             </label>
                                         </div>

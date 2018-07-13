@@ -48,7 +48,7 @@ class BalanceWithdrawController extends BalanceController
             'wechat'        => $this->balanceSet->withdrawWechat(),
             'alipay'        => $this->balanceSet->withdrawAlipay(),
             'manual'        => $this->balanceSet->withdrawManual(),
-            'eup'           => $this->balanceSet->withdrawEup(),
+            'eup_pay'           => $this->balanceSet->withdrawEup(),
             'poundage'      => $this->getPagePoundage(),
         ];
 
@@ -110,7 +110,7 @@ class BalanceWithdrawController extends BalanceController
             return $this->errorJson('未开启余额手动提现');
         }
 
-        if ($withdrawType == 'eup' && !$this->balanceSet->withdrawEup()) {
+        if ($withdrawType == 'eup_pay' && !$this->balanceSet->withdrawEup()) {
             return $this->errorJson('未开启余额EUP提现');
         }
 
@@ -297,7 +297,7 @@ class BalanceWithdrawController extends BalanceController
                 return 'manual';
                 break;
             case 4:
-                return 'eup';
+                return 'eup_pay';
                 break;
             default:
                 throw new AppException('未找到提现类型');
