@@ -111,9 +111,9 @@ class WithdrawRecordsController extends BaseController
                 $item->actual_servicetax,
                 $item->actual_amounts,
                 $item->created_at->toDateTimeString(),
-                date("Y-m-d H:i:s", $item->audit_at),
-                date("Y-m-d H:i:s", $item->pay_at),
-                date("Y-m-d H:i:s", $item->arrival_at),
+                $item->audit_at ? date("Y-m-d H:i:s", $item->audit_at) : '',
+                $item->pay_at ? date("Y-m-d H:i:s", $item->pay_at) : '',
+                $item->arrival_at ? date("Y-m-d H:i:s", $item->arrival_at) : '',
             ];
             if ($item->pay_way == 'manual') {
                 switch ($item->manual_type) {
