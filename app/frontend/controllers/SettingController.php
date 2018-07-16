@@ -41,7 +41,7 @@ class SettingController extends BaseController
         }
 
         $setting['logo'] = replace_yunshop(tomedia($setting['logo']));
-
+/*
         $relation = MemberRelation::getSetInfo()->first();
 
         if ($relation) {
@@ -49,7 +49,9 @@ class SettingController extends BaseController
         } else {
             $setting['agent'] = false;
         }
-
+*/
+        $setting['agent'] = true;
+        
         //强制绑定手机号
         $member_set = Setting::get('shop.member');
 
