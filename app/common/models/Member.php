@@ -461,6 +461,18 @@ class Member extends BackendModel
             ];
         }
 
+        if ($plugin_class->isEnabled('froze')) {
+            $data['froze'] = [
+                'status' => true,
+                'froze_name' => \Yunshop\Froze\Common\Services\SetService::getFrozeName(),
+            ];
+        } else {
+            $data['froze'] = [
+                'status' => false,
+                'froze_name' => '冻结币',
+            ];
+        }
+
         if ($plugin_class->isEnabled('coin')) {
             $data['coin'] = [
                 'status' => true,
