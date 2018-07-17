@@ -141,7 +141,7 @@ class PayFactory
                 $className = new CODPay();
                 break;
             case self::WFT_PAY:
-                $className = new \Yunshop\EupPay\services\WftPayService();
+                $className = new \Yunshop\WftPay\services\WftPayService();
                 break;
             default:
                 $className = null;
