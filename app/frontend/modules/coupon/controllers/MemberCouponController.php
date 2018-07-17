@@ -160,10 +160,10 @@ class MemberCouponController extends ApiController
         if($coupons->get()->isEmpty()){
             return $this->errorJson('没有找到记录', []);
         }
-        $coupons = $coupons->get()->toArray();
+        $coupons_data['data'] = $coupons->get()->toArray();
 
         //添加"是否可领取" & "是否已抢光" & "是否已领取"的标识
-        $couponsData = self::getCouponData($coupons, $memberLevel);
+        $couponsData = self::getCouponData($coupons_data, $memberLevel);
 
         return $this->successJson('ok', $couponsData);
     }
