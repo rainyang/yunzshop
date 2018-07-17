@@ -439,4 +439,21 @@ class MergePayController extends ApiController
 
         return $this->successJson('成功', $data);
     }
+
+    /**
+     * 威富通公众号支付
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     */
+    public function wftWechat(\Request $request)
+    {
+
+        if (\Setting::get('plugin.wft_pay') == false) {
+            throw new AppException('商城未开启威富通公众号支付');
+        }
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+        $data = $orderPay->getPayResult(PayFactory::WFT_PAY);
+
+        return $this->successJson('成功', $data);
+    }
 }
