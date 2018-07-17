@@ -163,9 +163,43 @@ class MemberCouponController extends ApiController
         $coupons_data['data'] = $coupons->get()->toArray();
 
         //添加"是否可领取" & "是否已抢光" & "是否已领取"的标识
-        $couponsData = self::getCouponData($coupons_data, $memberLevel);
+        foreach($coupons_data['data'] as $k=>$v){
+            $coupons_data['data'][$k]['coupon_id'] = $coupons_data['data'][$k]['id'];
+            if (($v['total'] != self::NO_LIMIT) && ($v['has_many_member_coupon_count'] >= $v['total'])){
+                $coupons_data['data'][$k]['api_availability'] = self::EXHAUST;
+            } elseif($v['member_got_count'] > 0){
+                $coupons_data['data'][$k]['api_availability'] = self::ALREADY_GOT;
+            } else{
+                $coupons_data['data'][$k]['api_availability'] = self::IS_AVAILABLE;
+            }
 
-        return $this->successJson('ok', $couponsData);
+            //增加属性 - 对于该优惠券,用户可领取的数量
+            if($v['get_max'] != self::NO_LIMIT){
+                $coupons_data['data'][$k]['api_remaining'] = $v['get_max'] - $v['member_got_count'];
+                if ($coupons_data['data'][$k]['api_remaining'] < 0){ //考虑到优惠券设置会变更,比如原来允许领取6张,之后修改为3张,那么可领取张数可能会变成负数
+                    $coupons_data['data'][$k]['api_remaining'] = 0;
+                }
+            } elseif($v['get_max'] == self::NO_LIMIT){
+                $coupons_data['data'][$k]['api_remaining'] = -1;
+            }
+
+            //添加优惠券使用范围描述
+            switch($v['use_type']){
+                case Coupon::COUPON_SHOP_USE:
+                    $coupons_data['data'][$k]['api_limit'] = '商城通用';
+                    break;
+                case Coupon::COUPON_CATEGORY_USE:
+                    $coupons_data['data'][$k]['api_limit'] = '适用于下列分类: ';
+                    $coupons_data['data'][$k]['api_limit'] = implode(',', $v['categorynames']);
+                    break;
+                case Coupon::COUPON_GOODS_USE:
+                    $coupons_data['data'][$k]['api_limit'] = '适用于下列商品: ';
+                    $coupons_data['data'][$k]['api_limit'] = implode(',', $v['goods_names']);
+                    break;
+            }
+        }
+
+        return $this->successJson('ok', $coupons_data);
     }
 
     //添加"是否可领取" & "是否已抢光" & "是否已领取"的标识
