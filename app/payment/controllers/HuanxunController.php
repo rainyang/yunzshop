@@ -116,7 +116,7 @@ class HuanxunController extends PaymentController
                         'out_trade_no' => (string)$order_no,
                         'trade_no'     => (string)$trade_no,
                         'unit'         => 'yuan',
-                        'pay_type'     => '电子钱包快捷支付',
+                        'pay_type'     => '银联快捷支付',
                         'pay_type_id'     => 18
 
                     ];
@@ -183,13 +183,27 @@ class HuanxunController extends PaymentController
         $status = $xmlResult->GateWayRsp->body->Status;
         $uniacid = $xmlResult->GateWayRsp->body->Attach;
         $order_no =$xmlResult->GateWayRsp->body->MerBillNo;
+        $amount   = $xmlResult->GateWayRsp->body->Amount;
+        $trade_no   = $xmlResult->GateWayRsp->body->IpsBillNo;
 
         $url = Url::shopSchemeUrl("?menu#/member/payErr?i={$uniacid}");
 
         if ($this->getSignResult()) { // 验证成功
             \Log::debug('-------验证成功-----');
             if (strval($status) == "Y") {
-                    $url = Url::shopSchemeUrl("?menu#/member/payYes?i={$uniacid}");
+                $data = [
+                    'total_fee'    => floatval($amount),
+                    'out_trade_no' => (string)$order_no,
+                    'trade_no'     => (string)$trade_no,
+                    'unit'         => 'yuan',
+                    'pay_type'     => '银联快捷支付',
+                    'pay_type_id'     => 18
+
+                ];
+
+                $this->payResutl($data);
+
+                $url = Url::shopSchemeUrl("?menu#/member/payYes?i={$uniacid}");
 
                 if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
                     $url  = $trade['redirect_url'];
