@@ -10,7 +10,7 @@ namespace app\common\models;
 
 
 use Carbon\Carbon;
-use Cache;
+use app\common\helpers\Cache;
 
 class Setting extends BaseModel
 {
@@ -25,21 +25,25 @@ class Setting extends BaseModel
     /**
      * 获取统一账号配置与值
      *
-     * @param $uniqueAccountId 统一账号信息
-     * @param $key 键
+     * @param $uniqueAccountId
+     * @param $key
      * @param null $default 默认值
      * @return mixed
      */
     public function getValue($uniqueAccountId, $key, $default = null)
     {
-        //$cacheKey = 'setting.' . $uniqueAccountId . '.' . $key;
-        //$value = Cache::get($cacheKey);
-        //if ($value == null) {
-        list($group, $item) = $this->parseKey($key);
+//        $cacheKey = 'setting.' . $uniqueAccountId . '.' . $key;
+//
+//        $value = Cache::get($cacheKey);
+//        \Log::debug('-----setting get cache------');
+//        if ($value == null) {
+//            \Log::debug('-----setting get db------');
+            list($group, $item) = $this->parseKey($key);
 
-        $value = array_get($this->getItems($uniqueAccountId, $group), $item, $default);
-        //Cache::put($cacheKey, $value,Carbon::now()->addSeconds(3600));
-        //}
+            $value = array_get($this->getItems($uniqueAccountId, $group), $item, $default);
+
+//            Cache::put($cacheKey, $value, Carbon::now()->addSeconds(3600));
+//        }
         return $value;
 
     }
@@ -47,7 +51,7 @@ class Setting extends BaseModel
     /**
      * 设置配置值.
      *
-     * @param $uniqueAccountId 统一公众号
+     * @param $uniqueAccountId
      * @param  string $key 键 使用.隔开 第一位为group
      * @param  mixed $value 值
      *
@@ -59,7 +63,16 @@ class Setting extends BaseModel
 
         $type = $this->getTypeOfValue($value);
 
-        return $this->setToDatabase($value, $uniqueAccountId, $group, $item, $type);
+        $result = $this->setToDatabase($value, $uniqueAccountId, $group, $item, $type);
+
+//        $cacheKey = 'setting.' . $uniqueAccountId . '.' . $key;
+//        if ($type == 'array') {
+//            $value = unserialize($value);
+//        }
+//
+//        Cache::put($cacheKey, $value, Carbon::now()->addSeconds(3600));
+//        \Log::debug('-----setting set cache------');
+        return $result;
     }
 
 
@@ -73,7 +86,8 @@ class Setting extends BaseModel
     public function getItems($uniqueAccountId, $group)
     {
         $items = array();
-        foreach (self::fetchSettings($uniqueAccountId, $group) as $item) {
+        $settings = self::fetchSettings($uniqueAccountId, $group);
+        foreach ($settings as $item) {
             switch (strtolower($item->type)) {
                 case 'string':
                     $items[$item->key] = (string)$item->value;
@@ -121,13 +135,7 @@ class Setting extends BaseModel
      */
     public function fetchSettings($uniqueAccountId, $group)
     {
-        //$cacheKey = 'setting.' . $uniqueAccountId . '.' . $group;
-        //$value = Cache::get($cacheKey);
-        //if ($value == null) {
-        $value = self::where('group', $group)->where('uniacid', $uniqueAccountId)->get();
-        //  Cache::put($cacheKey, $value,Carbon::now()->addSeconds(3600));
-        //}
-        return $value;
+        return self::where('group', $group)->where('uniacid', $uniqueAccountId)->get();
     }
 
 
@@ -183,12 +191,12 @@ class Setting extends BaseModel
 
     /**
      * 格式化并保存配置到数据库
-     *
-     * @param $value 值
-     * @param $uniqueAccountId 统一账号
-     * @param $group 分组
-     * @param $key 键
-     * @param $type 值类型
+     * @param $value
+     * @param $uniqueAccountId
+     * @param $group
+     * @param $key
+     * @param $type
+     * @return static
      */
     protected function setToDatabase($value, $uniqueAccountId, $group, $key, $type)
     {

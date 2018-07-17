@@ -22,9 +22,11 @@ use Setting;
 class ReturnAddressController extends BaseController
 {
     const PLUGINS_ID = 0;
+
     /**
      * 退货地址列表
-     * @return array $item
+     * @return string
+     * @throws \Throwable
      */
     public function index()
     {
@@ -41,7 +43,8 @@ class ReturnAddressController extends BaseController
 
     /**
      * 退货地址添加
-     * @return array $item
+     * @return mixed|string
+     * @throws \Throwable
      */
     public function add()
     {
@@ -102,7 +105,8 @@ class ReturnAddressController extends BaseController
 
     /**
      * 退货地址编辑
-     * @return array $item
+     * @return mixed|string
+     * @throws \Throwable
      */
     public function edit()
     {

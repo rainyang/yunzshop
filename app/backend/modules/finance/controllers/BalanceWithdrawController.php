@@ -160,6 +160,9 @@ class BalanceWithdrawController extends BaseController
             case 'manual':
                 return $this->manualPayment();
                 break;
+            case 'eup_pay':
+                return $this->eupPayment();
+                break;
             default:
                 throw new AppException('未知打款方式！！！');
         }
@@ -220,6 +223,20 @@ class BalanceWithdrawController extends BaseController
         //return $this->paymentSuccess();
     }
 
+    /**
+     * EUP打款
+     * @return array|mixed|void
+     */
+    private function eupPayment()
+    {
+        $result = WithdrawService::eupWithdrawPay($this->withdrawModel);
+
+        if (!empty($result) && $result['errno'] == 1) {
+            return $this->paymentError($result['message']);
+        }
+
+        return $result;
+    }
 
     /**
      * 手动打款

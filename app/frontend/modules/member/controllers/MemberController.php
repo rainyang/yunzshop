@@ -36,7 +36,8 @@ use Yunshop\Poster\services\CreatePosterService;
 use Yunshop\TeamDividend\models\YzMemberModel;
 use Yunshop\AlipayOnekeyLogin\services\SynchronousUserInfo;
 use app\common\services\alipay\OnekeyLogin;
-use  app\common\helpers\Client;
+use app\common\helpers\Client;
+use app\common\services\plugin\huanxun\HuanxunSet;
 
 class MemberController extends ApiController
 {
@@ -67,15 +68,22 @@ class MemberController extends ApiController
                 $data['income'] = MemberModel::getIncomeCount();
 
                 //标识"会员关系链"是否开启(如果没有设置,则默认为未开启),用于前端判断是否显示个人中心的"推广二维码"
+                /*
                 $info = MemberRelation::getSetInfo()->first();
                 if (!empty($info)) {
                     $data['relation_switch'] = $info->status == 1 ? 1 : 0;
                 } else {
                     $data['relation_switch'] = 0;
                 }
+                */
+
+                $data['relation_switch'] = (1 == $member_info['yz_member']['is_agent'] && 2 == $member_info['yz_member']['status'])
+                                              ? 1 : 0;
 
                 //个人中心的推广二维码
-                $data['poster'] = $this->getPoster($member_info['yz_member']['is_agent']);
+                if ($data['relation_switch']) {
+                    $data['poster'] = $this->getPoster($member_info['yz_member']['is_agent']);
+                }
 
                 //文章营销
                 $articleSetting = Setting::get('plugin.article');
@@ -1079,13 +1087,17 @@ class MemberController extends ApiController
     {
         $data = ['switch' => 0];
 
-        $relation = MemberRelation::getSetInfo()->first();
-
+//        $relation = MemberRelation::getSetInfo()->first();
+/*
         if (!is_null($relation) && 1 == $relation->status) {
             $data = [
                 'switch' => 1
             ];
         }
+*/
+        $data = [
+            'switch' => 1
+        ];
 
         return $this->successJson('', $data);
     }
@@ -1243,5 +1255,16 @@ class MemberController extends ApiController
         }
 
         return $this->successJson('ok', $data);
+    }
+
+    public function isOpenHuanxun() {
+        $huanxun = \Setting::get('plugin.huanxun_set');
+
+        if (app('plugins')->isEnabled('huanxun')) {
+            if ($huanxun['withdrawals_switch']) {
+                return $this->successJson('', $huanxun['withdrawals_switch']);
+            }
+        }
+        return $this->errorJson('', 0);
     }
 }

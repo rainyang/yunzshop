@@ -24,11 +24,11 @@ class MessageListener implements ShouldQueue
 
     public function subscribe(Dispatcher $event)
     {
-        $event->listen(MessageEvent::class, MessageListener::class . "@handel");
+        $event->listen(MessageEvent::class, MessageListener::class . "@handle");
     }
 
 
-    public function handel($event)
+    public function handle($event)
     {
         /**
          * @var $event MessageEvent
