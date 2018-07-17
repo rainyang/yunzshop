@@ -140,6 +140,34 @@ class MemberCouponController extends ApiController
         return $this->successJson('ok', $couponsData);
     }
 
+    /**
+     * 提供给店铺装修的"优惠券中心"的数据接口
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function couponsForDesigner()
+    {
+        $uid = \YunShop::app()->getMemberId();
+        $member = MemberShopInfo::getMemberShopInfo($uid);
+        if(empty($member)){
+            return $this->errorJson('没有找到该用户', []);
+        }
+        $memberLevel = $member->level_id;
+
+        $now = strtotime('now');
+        $coupons = Coupon::getCouponsForMember($uid, $memberLevel, null, $now)
+            ->orderBy('display_order','desc')
+            ->orderBy('updated_at','desc');
+        if($coupons->get()->isEmpty()){
+            return $this->errorJson('没有找到记录', []);
+        }
+        $coupons = $coupons->get()->toArray();
+
+        //添加"是否可领取" & "是否已抢光" & "是否已领取"的标识
+        $couponsData = self::getCouponData($coupons, $memberLevel);
+
+        return $this->successJson('ok', $couponsData);
+    }
+
     //添加"是否可领取" & "是否已抢光" & "是否已领取"的标识
     public static function getCouponData($coupons, $memberLevel)
     {
