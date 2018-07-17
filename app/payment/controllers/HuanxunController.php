@@ -14,7 +14,6 @@ use app\common\helpers\Url;
 use app\common\models\AccountWechats;
 use app\common\services\Pay;
 use app\payment\PaymentController;
-use Yunshop\YunPay\services\YunPayNotifyService;
 use app\common\models\UniAccount;
 
 class HuanxunController extends PaymentController
@@ -292,10 +291,6 @@ class HuanxunController extends PaymentController
      */
     public function getSignResult()
     {
-        $pay = \Setting::get('plugin.yun_pay_set');
-
-        $notify = new YunPayNotifyService();
-        $notify->setKey($pay['key']);
         $pay = \Setting::get('plugin.huanxun_set');
 
         $notify = app('Yunshop\Huanxun\services\HuanxunPayNotifyService');
