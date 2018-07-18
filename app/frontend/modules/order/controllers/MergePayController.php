@@ -456,4 +456,21 @@ class MergePayController extends ApiController
 
         return $this->successJson('成功', $data);
     }
+
+    /**
+     * 威富通支付宝支付
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     */
+    public function wftAlipay(\Request $request)
+    {
+
+        if (\Setting::get('plugin.wft_alipay') == false) {
+            throw new AppException('商城未开启威富通公众号支付');
+        }
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+        $data = $orderPay->getPayResult(PayFactory::WFT_ALIPAY);
+
+        return $this->successJson('成功', $data);
+    }
 }

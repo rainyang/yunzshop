@@ -16,6 +16,7 @@ class EupController extends PaymentController
     //原始数据
     private $xml;
 
+    private $key;
 
     private $parameter = [];
 
@@ -37,11 +38,16 @@ class EupController extends PaymentController
         }
     }
 
-    //异步充值通知
+    //微信公众号支付通知
     public function notifyUrl()
     {
         \Log::debug('------------威富通微信异步通知----------------');
+        
         $this->log($this->parameter);
+        
+        $set = \Setting::get('plugin.wft_pay');
+        $this->setKey($set['key']);
+
         if($this->getSignResult()) {
             \Log::info('------威富通微信验证成功-----');
             if ($this->getParameter('status') == 0 && $this->getParameter('result_code') == 0) {
@@ -80,11 +86,52 @@ class EupController extends PaymentController
         }
     }
 
-    //同步充值通知
-    public function returnUrl()
+    //支付宝支付通知
+    public function alipayNotifyUrl()
     {
-    }
+        \Log::debug('------------威富通支付宝异步通知----------------');
+        $this->log($this->parameter);
 
+        $set = \Setting::get('plugin.wft_alipay');
+        $this->setKey($set['key']);
+
+        if($this->getSignResult()) {
+            \Log::info('------威富通支付宝验证成功-----');
+            if ($this->getParameter('status') == 0 && $this->getParameter('result_code') == 0) {
+                $orderPay = OrderPay::where('pay_sn', $this->getParameter('out_trade_no'))->first();
+                $orders = Order::whereIn('id', $orderPay->order_ids)->get();
+                if (!$orders->isEmpty()) {
+                    \Log::info('-------威富通支付宝支付开始----------');
+                    if ($orderPay->status != 1) {
+                        $data = [
+                            'total_fee'    => floatval($this->getParameter('total_fee')),
+                            'out_trade_no' => $this->getParameter('out_trade_no'),
+                            'trade_no'     => 'wft_alipay',
+                            'unit'         => 'fen',
+                            'pay_type'     => '威富通支付宝',
+                            'pay_type_id'  => 21,
+                        ];
+                        $this->payResutl($data);
+                    }
+                    \Log::info('---------威富通支付宝支付结束-------');
+                    echo 'success';
+                    exit();
+                } else {
+                    //订单不存在
+                    echo 'failure';
+                    exit();
+                }
+            } else {
+                //支付失败
+                echo 'failure';
+                exit();
+            }
+        } else {
+            //签名验证失败
+            echo 'failure';
+            exit();
+        }
+    }
 
     /**
      * 签名验证
@@ -113,15 +160,21 @@ class EupController extends PaymentController
         return strtolower(md5($signPars));
     }
 
+     /**
+     *设置密钥
+     */
+    public function setKey($key) {
+        $this->key = $key;
+    }
+
+
     /**
      * @param 获取密钥
      * @return mixed
      */
     public function getKey()
     {
-        $set = \Setting::get('plugin.wft_pay');
-
-        return $set['key'] ?:'';
+        return $this->key;
     }
 
     /**

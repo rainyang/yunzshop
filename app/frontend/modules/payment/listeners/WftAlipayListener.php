@@ -7,18 +7,18 @@ use app\common\events\payment\GetOrderPaymentTypeEvent;
 use app\common\events\payment\RechargeComplatedEvent;
 
 
-class WftPay
+class WftAlipayListener
 {
 
     public function onGetPaymentTypes(GetOrderPaymentTypeEvent $event)
     {
-        $set = \Setting::get('plugin.wft_pay');
+        $set = \Setting::get('plugin.wft_alipay');
 
-        if (\YunShop::plugin()->get('wft-pay') && !is_null($set) && \YunShop::request()->type != 7) {
+        if (\YunShop::plugin()->get('wft-alipay') && !is_null($set) && \YunShop::request()->type != 7) {
 
             $result = [
-                'name' => '微信-WFT',
-                'value' => '20',
+                'name' => '支付宝-WFT',
+                'value' => '21',
                 'need_password' => '0'
 
             ];
