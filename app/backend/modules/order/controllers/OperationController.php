@@ -20,10 +20,13 @@ class OperationController extends BaseController
     protected $order;
     public $transactionActions = ['*'];
 
+    /**
+     * OperationController constructor.
+     */
     public function __construct()
     {
         parent::__construct();
-        $this->param = \Request::input();
+        $this->param = request()->input();
         if (!isset($this->param['order_id'])) {
             return $this->message('order_id不能为空!', '', 'error');
 
@@ -35,54 +38,81 @@ class OperationController extends BaseController
         }
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \app\common\exceptions\AppException
+     */
     public function pay()
     {
         $this->param['pay_type_id'] = PayType::BACKEND;
-        $message = OrderService::orderPay($this->param);
-        return $this->successJson($message);
+        OrderService::orderPay($this->param);
+        return $this->successJson();
 
     }
 
+    /**
+     * @return mixed
+     * @throws \app\common\exceptions\AppException
+     */
     public function cancelPay()
     {
-        $message = OrderService::orderCancelPay($this->param);
-        //return $this->message($message,'', 'error');
+        OrderService::orderCancelPay($this->param);
 
-        return $this->message($message);
+        return $this->message('操作成功');
     }
 
+    /**
+     * @return mixed
+     * @throws \app\common\exceptions\AppException
+     */
     public function send()
     {
-        $message = OrderService::orderSend($this->param);
+        OrderService::orderSend($this->param);
 
-        return $this->message($message);
+        return $this->message('操作成功');
     }
 
+    /**
+     * @return mixed
+     * @throws \app\common\exceptions\AppException
+     */
     public function cancelSend()
     {
-        $message = OrderService::orderCancelSend($this->param);
+        OrderService::orderCancelSend($this->param);
 
-        return $this->message($message);
+        return $this->message('操作成功');
     }
 
+    /**
+     * @return mixed
+     * @throws \app\common\exceptions\AppException
+     */
     public function Receive()
     {
-        $message = OrderService::orderReceive($this->param);
+        OrderService::orderReceive($this->param);
 
-        return $this->message($message);
+        return $this->message('操作成功');
     }
 
+    /**
+     * @return mixed
+     * @throws \app\common\exceptions\AppException
+     */
     public function Close()
     {
-        $message = OrderService::orderClose($this->param);
+        OrderService::orderClose($this->param);
 
-        return $this->message($message);
+        return $this->message('操作成功');
     }
 
+    /**
+     * @return mixed
+     * @throws \app\common\exceptions\AppException
+     */
     public function Delete()
     {
-        $message = OrderService::orderDelete($this->param);
+        OrderService::orderDelete($this->param);
 
-        return $this->message($message);
+        return $this->message('操作成功');
     }
 }

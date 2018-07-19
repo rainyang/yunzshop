@@ -20,14 +20,16 @@ class OrderSend extends ChangeStatusOperation
     protected $time_field = 'send_time';
 
     protected $past_tense_class_name = 'OrderSent';
-    protected function updateTable(){
 
-        if($this->dispatch_type_id == DispatchType::EXPRESS){
+    protected function updateTable()
+    {
+
+        if ($this->dispatch_type_id == DispatchType::EXPRESS) {
             //实体订单
             //dd(123);
             $order_id = request()->input('order_id');
 
-            $db_express_model = Express::where('order_id',$order_id)->first();
+            $db_express_model = Express::where('order_id', $order_id)->first();
 
             !$db_express_model && $db_express_model = new Express();
 
@@ -38,15 +40,5 @@ class OrderSend extends ChangeStatusOperation
             $db_express_model->save();
         }
         parent::updateTable();
-    }
-    public function check()
-    {
-        if(!empty($this->status->refund_id)){
-            if($this->hasOneRefundApply->status >=0){
-                $this->message = "退款中的订单,无法执行{$this->name}操作";
-                return false;
-            }
-        }
-        return parent::check();
     }
 }
