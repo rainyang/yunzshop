@@ -13,7 +13,6 @@ use app\common\traits\TemplateTrait;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller;
-use Validator;
 
 /**
  * controller基类
