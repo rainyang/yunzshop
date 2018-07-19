@@ -100,7 +100,11 @@ class scanPostConcernQueueJob implements ShouldQueue
             $to_member_id = PosterQrcode::getRecommenderIdByQrcodeId($qrcodeId);
             //\Log::debug('------poster to_member_id-----', [$to_member_id]);
 
-            if (!empty($to_member_id) && $from_member_id != $to_member_id && 0 == $from_parent_id) {
+            if (!empty($to_member_id)
+                   && date('Ymd') ==  $from_member_model->created_at->format('Ymd')
+                   && $from_member_id != $to_member_id
+                   && 0 == $from_parent_id
+            ) {
                 //$from->parent_id 是否为0，是0改为$to->uid
                 $from_member_model->parent_id = $to_member_id;
 
