@@ -9,6 +9,8 @@
 namespace app\common\models;
 
 use app\common\traits\HasProcessTrait;
+use app\frontend\modules\order\models\PreOrder;
+use app\frontend\modules\order\OrderCollection;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -58,7 +60,12 @@ class OrderPay extends BaseModel
     const STATUS_UNPAID = 0;
     const STATUS_PAID = 1;
     const STATUS_REFUNDED = 2;
-
+    public static function newVirtual(){
+        $orderPay = new static(['amount' => request()->input('price', 0.01)]);
+        $order = new PreOrder(['is_virtual'=>1]);
+        $orderPay->setRelation('orders',new OrderCollection([$order]));
+        return $orderPay;
+    }
     /**
      * 根据paysn查询支付方式
      *
