@@ -60,8 +60,8 @@ class OrderPay extends BaseModel
     const STATUS_UNPAID = 0;
     const STATUS_PAID = 1;
     const STATUS_REFUNDED = 2;
-    public static function newVirtual(){
-        $orderPay = new static(['amount' => request()->input('price', 0.01)]);
+    public static function newVirtual($amount = 0.01){
+        $orderPay = new static(['amount' => $amount]);
         $order = new PreOrder(['is_virtual'=>1]);
         $orderPay->setRelation('orders',new OrderCollection([$order]));
         return $orderPay;
