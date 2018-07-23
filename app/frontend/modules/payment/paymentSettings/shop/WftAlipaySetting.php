@@ -9,7 +9,7 @@
 namespace app\frontend\modules\payment\paymentSettings\shop;
 
 
-class WftAlipaySetting
+class WftAlipaySetting extends BaseSetting
 {
     public function canUse()
     {
