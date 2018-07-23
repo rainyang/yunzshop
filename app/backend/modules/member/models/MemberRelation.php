@@ -8,20 +8,15 @@
 
 namespace app\backend\modules\member\models;
 
-use app\backend\models\BackendModel;
 use app\backend\modules\order\models\Order;
 use app\common\events\member\MemberRelationEvent;
 use app\common\models\notice\MessageTemp;
 use app\common\services\MessageService;
 use app\frontend\modules\member\models\SubMemberModel;
 
-class MemberRelation extends BackendModel
+class MemberRelation extends \app\common\models\MemberRelation
 {
     static protected $needLog = true;
-
-    public $table = 'yz_member_relation';
-
-    public $timestamps = false;
 
     /**
      * 可以批量赋值的属性
