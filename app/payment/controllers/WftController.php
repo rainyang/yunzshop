@@ -10,7 +10,7 @@ use app\common\services\Pay;
 use app\common\models\Order;
 use app\common\models\OrderPay;
 
-class EupController extends PaymentController
+class WftController extends PaymentController
 {
 
     //原始数据
