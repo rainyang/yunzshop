@@ -108,6 +108,19 @@
                                 <span class="help-block">以上条件达到后，是否需要审核才能发展下线</span>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">我的收入页面</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <label class="radio-inline">
+                                    <input type="radio"  name="setdata[share_page]" value="1" @if($set['share_page'] == 1) checked="checked" @endif/>
+                                    显示
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio"  name="setdata[share_page]" value="0" @if($set['share_page'] == 0) checked="checked" @endif/>
+                                    不显示
+                                </label>
+                            </div>
+                        </div>
                         <div class="form-group"></div>
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
