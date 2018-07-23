@@ -13,6 +13,7 @@ namespace app\common\services\mews\captcha\src;
  * @license http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
+use app\common\helpers\Cache;
 use app\common\services\Session;
 use Exception;
 use Illuminate\Config\Repository;
@@ -308,7 +309,7 @@ class Captcha
         $bag = $this->sensitive ? $bag : $this->str->lower($bag);
 
         $hash = $this->hasher->make($bag);
-        Session::put('captcha', [
+        Cache::put('captcha', [
             'sensitive' => $this->sensitive,
             'key'       => $hash
         ]);
@@ -424,13 +425,13 @@ class Captcha
 	 */
 	public function check($value)
 	{
-		if ( ! Session::has('captcha'))
+		if ( ! Cache::has('captcha'))
 		{
 			return false;
 		}
 
-		$key = Session::get('captcha.key');
-		$sensitive = Session::get('captcha.sensitive');
+		$key = Cache::get('captcha.key');
+		$sensitive = Cache::get('captcha.sensitive');
 
 		if ( ! $sensitive)
 		{
@@ -438,7 +439,7 @@ class Captcha
 
 		}
 
-		Session::clear('captcha');
+		Cache::forget('captcha');
 
 		return $this->hasher->check($value, $key);
 	}
