@@ -10,15 +10,24 @@
 namespace app\frontend\modules\finance\controllers;
 
 
-use app\backend\modules\member\models\MemberRelation;
 use app\common\components\ApiController;
 use app\common\models\Income;
 use app\frontend\models\Member;
+use app\frontend\models\MemberRelation;
 use app\frontend\modules\finance\factories\IncomePageFactory;
 use app\frontend\modules\member\models\MemberModel;
 
 class IncomePageController extends ApiController
 {
+    private $relationSet;
+
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->relationSet = $this->getRelationSet();
+    }
+
     /**
      * 收入页面接口
      *
@@ -30,6 +39,7 @@ class IncomePageController extends ApiController
 
         $data = [
             'info' => $this->getPageInfo(),
+            'parameter' => $this->getParameter(),
             'available' => $available,
             'unavailable' => $unavailable
         ];
@@ -53,6 +63,14 @@ class IncomePageController extends ApiController
             'member_id' => $memberModel->uid,
             'grand_total' => $this->getGrandTotal(),
             'usable_total' => $this->getUsableTotal()
+        ];
+    }
+
+
+    private function getParameter()
+    {
+        return [
+            'share_page' => $this->getSharePageStatus(),
         ];
     }
 
@@ -115,12 +133,25 @@ class IncomePageController extends ApiController
      */
     private function isOpenRelation()
     {
-        $relation = MemberRelation::getSetInfo()->first();
-
-        if (!is_null($relation) && 1 == $relation->status) {
+        if (!is_null($this->relationSet) && 1 == $this->relationSet->status) {
             return true;
         }
         return false;
+    }
+
+
+    private function getSharePageStatus()
+    {
+        if (is_null($this->relationSet) && 1 == $this->relationSet->status) {
+            return true;
+        }
+        return false;
+    }
+
+
+    private function getRelationSet()
+    {
+        return MemberRelation::uniacid()->first();
     }
 
 
