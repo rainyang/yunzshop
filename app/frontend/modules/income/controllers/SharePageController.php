@@ -17,6 +17,7 @@ use app\frontend\models\Income;
 use app\frontend\models\Member;
 use app\frontend\models\MemberRelation;
 use Carbon\Carbon;
+use Yunshop\Poster\models\Qrcode;
 
 class SharePageController extends ApiController
 {
@@ -100,10 +101,23 @@ class SharePageController extends ApiController
 
     private function getShareQrUrl()
     {
+        /*$url = yzAppFullUrl('member', ['mid' => $this->getMemberId()]);
 
-        $url = yzAppFullUrl('member', ['mid' => $this->getMemberId()]);
+        return (new QrCodeHelper($url, 'app/public/qr/share'))->url();*/
 
-         return (new QrCodeHelper($url, 'app/public/qr/share'))->url();
+        if (app('plugins')->isEnabled('poster')) {
+
+            $member_id = $this->getMemberId();
+
+            $qrCodeModel = Qrcode::uniacid()->where('scene_str', 'like', '%' . $member_id)->orderBy('createtime', 'desc')->first();
+            if ($qrCodeModel) {
+                $url = "https://mp.weixin.qq.com/cgi-bin/showqrcode";
+
+                return $url . "?ticket={$qrCodeModel->ticket}";
+            }
+        }
+        return '';
+
     }
 
 
