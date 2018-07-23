@@ -173,4 +173,50 @@ dump(PayRequestDataLog::where('params' ,'like',"%".$orderPay->pay_sn."%")->get()
         }
         return;
     }
+
+    public function fixImage()
+    {
+        $goods = DB::table('yz_goods')->get();
+        $goods_success = 0;
+        $goods_error = 0;
+        foreach ($goods as $item)
+        {
+            if ($item['thumb'] && !preg_match('/^images/', $item['thumb'])) {
+                if (preg_match('/\/images/', $item['thumb'])) {
+                    $thumb = substr($item['thumb'], strpos($item['thumb'], 'images'));
+                    $bool = DB::table('yz_goods')->where('id', $item['id'])->update(['thumb' => $thumb]);
+                    if ($bool) {
+                        $goods_success++;
+                    } else {
+                        $goods_error++;
+                    }
+                }
+            }
+        }
+
+
+        $category = DB::table('yz_category')->get();
+        $category_success = 0;
+        $category_error = 0;
+        foreach ($category as $item)
+        {
+            if ($item['thumb'] && !preg_match('/^images/', $item['thumb'])) {
+                if (preg_match('/\/images/', $item['thumb'])) {
+                    $thumb = substr($item['thumb'], strpos($item['thumb'], 'images'));
+                    $bool = DB::table('yz_category')->where('id', $item['id'])->update(['thumb' => $thumb]);
+                    if ($bool) {
+                        $category_success++;
+                    } else {
+                        $category_error++;
+                    }
+                }
+            }
+        }
+
+
+        echo '商品图片修复成功：'.$goods_success.'个,失败：'.$goods_error.'个';
+        echo '<br />';
+        echo '分类图片修复成功：'.$category_success.'个，失败：'.$category_error.'个';
+
+    }
 }
