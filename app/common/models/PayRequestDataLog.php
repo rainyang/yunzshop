@@ -19,5 +19,5 @@ class PayRequestDataLog extends BackendModel
      *
      * @var array
      */
-    protected $fillable = ['uniacid', 'order_id', 'params', 'type', 'third_type', 'price'];
+    protected $fillable = ['uniacid', 'out_order_no', 'order_id', 'params', 'type', 'third_type', 'price'];
 }

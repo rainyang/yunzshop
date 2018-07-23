@@ -88,7 +88,15 @@ class PayFactory
      */
     const PAY_EUP = 19;
 
+    /**
+     *威富通公众号支付
+     */
+    const WFT_PAY= 20;
 
+    /**
+     *威富通支付宝支付
+     */
+    const WFT_ALIPAY= 21;
 
 
    public static function create($type = null)
@@ -136,6 +144,12 @@ class PayFactory
                 break;
             case self::PAY_COD:
                 $className = new CODPay();
+                break;
+            case self::WFT_PAY:
+                $className = new \Yunshop\WftPay\services\WftPayService();
+                break;
+            case self::WFT_ALIPAY:
+                $className = new \Yunshop\WftAlipay\services\WftAlipayService();
                 break;
             default:
                 $className = null;
