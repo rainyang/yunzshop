@@ -9,7 +9,7 @@
 namespace app\frontend\modules\payment\orderPayments;
 
 
-class WftAlipayPayment
+class WftAlipayPayment extends WebPayment
 {
     public function canUse()
     {
