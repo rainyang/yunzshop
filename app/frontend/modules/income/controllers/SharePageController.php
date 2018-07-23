@@ -15,6 +15,7 @@ use app\common\exceptions\AppException;
 use app\common\helpers\QrCodeHelper;
 use app\frontend\models\Income;
 use app\frontend\models\Member;
+use app\frontend\models\MemberRelation;
 use Carbon\Carbon;
 
 class SharePageController extends ApiController
@@ -22,12 +23,24 @@ class SharePageController extends ApiController
     private $memberModel;
 
 
+    private $relationSet;
+
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->relationSet = $this->getRelationSet();
+    }
+
 
     public function index()
     {
-        $this->memberModel = $this->getMemberModel();
+        if ($this->getSharePageStatus()) {
+            $this->memberModel = $this->getMemberModel();
 
-        return $this->successJson('ok', $this->getResultData());
+            return $this->successJson('ok', $this->getResultData());
+        }
+        return $this->errorJson('我的收入页面未开启');
     }
 
 
@@ -156,6 +169,21 @@ class SharePageController extends ApiController
             throw new AppException('Please login in.');
         }
         return $member_id;
+    }
+
+
+    private function getSharePageStatus()
+    {
+        if (is_null($this->relationSet) || 1 == $this->relationSet->status) {
+            return true;
+        }
+        return false;
+    }
+
+
+    private function getRelationSet()
+    {
+        return MemberRelation::uniacid()->first();
     }
 
 }
