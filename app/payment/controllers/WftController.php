@@ -18,7 +18,7 @@ class WftController extends PaymentController
 
     private $key;
 
-    private $parameter = [];
+    private $parameters = [];
 
     public function __construct()
     {
@@ -28,11 +28,11 @@ class WftController extends PaymentController
 
             $this->xml = file_get_contents('php://input');
 
-            $obj = simplexml_load_string($output, 'SimpleXMLElement', LIBXML_NOCDATA);
+            $obj = simplexml_load_string($this->xml, 'SimpleXMLElement', LIBXML_NOCDATA);
 
-            $this->parameter = json_decode(json_encode($obj));
+            $this->parameters = json_decode(json_encode($obj));
 
-            \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $this->parameter['attach'];
+            \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $this->parameters['attach'];
 
             AccountWechats::setConfig(AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid));
         }
@@ -43,7 +43,7 @@ class WftController extends PaymentController
     {
         \Log::debug('------------威富通微信异步通知----------------');
         
-        $this->log($this->parameter);
+        $this->log($this->parameters);
         
         $set = \Setting::get('plugin.wft_pay');
         $this->setKey($set['key']);
@@ -90,7 +90,7 @@ class WftController extends PaymentController
     public function alipayNotifyUrl()
     {
         \Log::debug('------------威富通支付宝异步通知----------------');
-        $this->log($this->parameter);
+        $this->log($this->parameters);
 
         $set = \Setting::get('plugin.wft_alipay');
         $this->setKey($set['key']);
