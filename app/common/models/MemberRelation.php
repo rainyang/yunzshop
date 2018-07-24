@@ -10,11 +10,9 @@
 namespace app\common\models;
 
 
-use app\backend\modules\order\models\Order;
 use app\common\events\member\MemberRelationEvent;
 use app\common\models\notice\MessageTemp;
 use app\common\services\MessageService;
-use app\frontend\modules\member\models\SubMemberModel;
 
 class MemberRelation extends BaseModel
 {
@@ -138,7 +136,7 @@ class MemberRelation extends BaseModel
      */
     public static function checkOrderGoods($goods_id, $uid)
     {
-        $list = \app\common\models\Order::getOrderListByUid($uid);
+        $list = Order::getOrderListByUid($uid);
 
         if (!empty($list)) {
             $list = $list->toArray();
