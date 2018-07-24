@@ -43,7 +43,7 @@ class WftController extends PaymentController
     {
         \Log::debug('------------威富通微信异步通知----------------');
         
-        $this->log($this->parameters);
+        $this->log($this->parameters, '威富通微信');
         
         $set = \Setting::get('plugin.wft_pay');
         $this->setKey($set['key']);
@@ -90,7 +90,7 @@ class WftController extends PaymentController
     public function alipayNotifyUrl()
     {
         \Log::debug('------------威富通支付宝异步通知----------------');
-        $this->log($this->parameters);
+        $this->log($this->parameters, '威富通支付宝');
 
         $set = \Setting::get('plugin.wft_alipay');
         $this->setKey($set['key']);
@@ -189,11 +189,11 @@ class WftController extends PaymentController
      *
      * @param $post
      */
-    public function log($data)
+    public function log($data, $msg = '威富通支付')
     {
         //访问记录
         Pay::payAccessLog();
         //保存响应数据
-        Pay::payResponseDataLog($this->getParameter('out_trade_no'), '威富通支付', json_encode($data));
+        Pay::payResponseDataLog($this->getParameter('out_trade_no'), $msg, json_encode($data));
     }
 }
