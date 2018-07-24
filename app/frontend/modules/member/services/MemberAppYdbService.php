@@ -152,7 +152,9 @@ class MemberAppYdbService extends MemberService
             $apptoken = Crypt::encrypt($openid);
             $url = Url::absoluteApp('login', ["apptoken" => $apptoken]);
         }
-        redirect($url)->send();
+
+        return show_json(1, ['redirect_url' => $url]);
+        //redirect($url)->send();
         exit();
     }
 
