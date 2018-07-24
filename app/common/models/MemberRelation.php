@@ -60,7 +60,7 @@ class MemberRelation extends BaseModel
             return [];
         }
 
-        $member_info = SubMemberModel::getMemberShopInfo($uid);
+        $member_info = MemberShopInfo::getMemberShopInfo($uid);
 
         if (!empty($member_info)) {
             $data = $member_info->toArray();
@@ -112,7 +112,7 @@ class MemberRelation extends BaseModel
     {
         $info = self::getSetInfo()->first()->toArray();
 
-        $member_info = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId())->first();
+        $member_info = MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId())->first();
 
         if (!empty($member_info)) {
             $data = $member_info->toArray();
@@ -178,7 +178,7 @@ class MemberRelation extends BaseModel
     private function changeChildAgent($mid, MemberShopInfo $model)
     {
         \Log::debug(sprintf('成为下线mid-%d', $mid));
-        $member_info = SubMemberModel::getMemberShopInfo($mid);
+        $member_info = MemberShopInfo::getMemberShopInfo($mid);
 
         if ($member_info && $member_info->is_agent) {
             $model->parent_id = $mid;
@@ -210,7 +210,7 @@ class MemberRelation extends BaseModel
             return;
         }
 
-        $member = SubMemberModel::getMemberShopInfo($model->member_id);
+        $member = MemberShopInfo::getMemberShopInfo($model->member_id);
 
         if (empty($member)) {
             return;
@@ -226,7 +226,7 @@ class MemberRelation extends BaseModel
         $become_check = intval($set->become_check);
 
         if (!empty($mid)) {
-            $parent =  SubMemberModel::getMemberShopInfo($mid);
+            $parent =  MemberShopInfo::getMemberShopInfo($mid);
         } else {
             if ($member->inviter == 0 && $member->parent_id == 0) {
                 if (empty($become_child)) {
@@ -295,7 +295,7 @@ class MemberRelation extends BaseModel
             return;
         }
 
-        $member = SubMemberModel::getMemberShopInfo($uid);
+        $member = MemberShopInfo::getMemberShopInfo($uid);
 
         if (empty($member)) {
             return;
@@ -312,7 +312,7 @@ class MemberRelation extends BaseModel
                 $member->save();
             }
         } else {
-            $parent = SubMemberModel::getMemberShopInfo($member->parent_id);
+            $parent = MemberShopInfo::getMemberShopInfo($member->parent_id);
             \Log::debug(sprintf('会员上线ID进入时2-: %d', $member->parent_id));
             $parent_is_agent = !empty($parent) && $parent->is_agent == 1 && $parent->status == 2;
 
@@ -353,14 +353,14 @@ class MemberRelation extends BaseModel
             return;
         }
 
-        $member = SubMemberModel::getMemberShopInfo($uid);
+        $member = MemberShopInfo::getMemberShopInfo($uid);
         if (empty($member)) {
             return;
         }
         \Log::debug(sprintf('会员上线-%d', $member->parent_id));
         $become_child = intval($set->become_child);
 
-        $parent = SubMemberModel::getMemberShopInfo($member->parent_id);
+        $parent = MemberShopInfo::getMemberShopInfo($member->parent_id);
 
         $parent_is_agent = !empty($parent) && $parent->is_agent == 1 && $parent->status == 2;
 
@@ -421,7 +421,7 @@ class MemberRelation extends BaseModel
                 $parentisagent = true;
 
                 if (!empty($member->parent_id)) {
-                    $parent = SubMemberModel::getMemberShopInfo($member->parent_id);
+                    $parent = MemberShopInfo::getMemberShopInfo($member->parent_id);
                     if (empty($parent) || $parent->is_agent != 1 || $parent->status != 2) {
                         $parentisagent = false;
                     }
@@ -483,7 +483,7 @@ class MemberRelation extends BaseModel
             return;
         }
         \Log::debug('关系链设置');
-        $member = SubMemberModel::getMemberShopInfo($uid);
+        $member = MemberShopInfo::getMemberShopInfo($uid);
 
         if (empty($member)) {
             return;
@@ -523,7 +523,7 @@ class MemberRelation extends BaseModel
                 $parentisagent = true;
 
                 if (!empty($member->parent_id)) {
-                    $parent = SubMemberModel::getMemberShopInfo($member->parent_id);
+                    $parent = MemberShopInfo::getMemberShopInfo($member->parent_id);
                     if (empty($parent) || $parent->is_agent != 1 || $parent->status != 2) {
                         $parentisagent = false;
                     }
