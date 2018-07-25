@@ -181,10 +181,18 @@ dump(PayRequestDataLog::where('params' ,'like',"%".$orderPay->pay_sn."%")->get()
         $goods_error = 0;
         foreach ($goods as $item)
         {
+
             if ($item['thumb'] && !preg_match('/^images/', $item['thumb'])) {
+
+                $src = $item['thumb'];
+                if (strexists($src, '/addons/') || strexists($src, 'yun_shop/') || strexists($src, '/static/')) {
+                    continue;
+                }
+               
                 if (preg_match('/\/images/', $item['thumb'])) {
                     $thumb = substr($item['thumb'], strpos($item['thumb'], 'images'));
                     $bool = DB::table('yz_goods')->where('id', $item['id'])->update(['thumb' => $thumb]);
+
                     if ($bool) {
                         $goods_success++;
                     } else {
@@ -200,6 +208,11 @@ dump(PayRequestDataLog::where('params' ,'like',"%".$orderPay->pay_sn."%")->get()
         $category_error = 0;
         foreach ($category as $item)
         {
+            $src = $item['thumb'];
+            if (strexists($src, 'addons/') || strexists($src, 'yun_shop/') || strexists($src, 'static/')) {
+                continue;
+            }
+
             if ($item['thumb'] && !preg_match('/^images/', $item['thumb'])) {
                 if (preg_match('/\/images/', $item['thumb'])) {
                     $thumb = substr($item['thumb'], strpos($item['thumb'], 'images'));
