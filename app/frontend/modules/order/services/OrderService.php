@@ -197,8 +197,9 @@ class OrderService
         if (!isset($orderOperation)) {
             throw new AppException('未找到该订单');
         }
-        $orderOperation->handle();
-        return $orderOperation->getMessage();
+        DB::transaction(function() use($orderOperation) {
+            $orderOperation->handle();
+        });
     }
 
     /**

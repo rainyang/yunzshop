@@ -20,13 +20,12 @@ class OperationController extends BaseController
     protected $order;
     public $transactionActions = ['*'];
 
-    /**
-     * OperationController constructor.
-     */
-    public function __construct()
+
+    public function preAction()
     {
-        parent::__construct();
+        parent::preAction();
         $this->param = request()->input();
+
         if (!isset($this->param['order_id'])) {
             return $this->message('order_id不能为空!', '', 'error');
 
