@@ -153,8 +153,7 @@ class MemberAppYdbService extends MemberService
             $url = Url::absoluteApp('login_validate', ["apptoken" => $apptoken]);
         }
 
-        return show_json(1, ['redirect_url' => $url]);
-        //redirect($url)->send();
+        redirect($url)->send();
         exit();
     }
 
