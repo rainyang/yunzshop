@@ -10,6 +10,8 @@ namespace app\frontend\modules\payment\managers;
 
 use app\common\models\PayType;
 use app\common\models\OrderPay;
+use app\frontend\modules\order\models\PreOrder;
+use app\frontend\modules\order\OrderCollection;
 use app\frontend\modules\payment\orderPayments\BasePayment;
 use app\frontend\modules\payment\PaymentConfig;
 use app\frontend\modules\payment\orderPayments\NormalPayment;
@@ -150,8 +152,12 @@ class PaymentTypeManager extends Container
      * @param OrderPay $orderPay
      * @return Collection|static
      */
-    public function getOrderPaymentTypes(OrderPay $orderPay)
+    public function getOrderPaymentTypes(OrderPay $orderPay = null)
     {
+        if(!isset($orderPay)){
+            // 虚拟支付单
+            $orderPay = OrderPay::newVirtual();
+        }
         // 过滤掉无效的
         $orderPaymentTypes = $this->getAllOrderPaymentTypes($orderPay)->filter(function (BasePayment $paymentType) {
 

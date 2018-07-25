@@ -494,7 +494,7 @@
                                         <label class='radio-inline' style="padding-left:0px">开发者私钥：</label>
                                     </div>
                                     <div style="float:left;">
-                                        <textarea name="pay[rsa_private_key]" class="form-control rich-text" cols="85"
+                                        <textarea id="rsa_private_key" @if (!empty($set['rsa_private_key'])) style="display: none" @endif name="pay[rsa_private_key]" class="form-control rich-text" cols="85"
                                                   rows="5">{{ $set['rsa_private_key'] }}</textarea>
                                     </div>
                                 </div>
@@ -507,11 +507,19 @@
                                         <label class='radio-inline' style="padding-left:0px">支付宝公钥：</label>
                                     </div>
                                     <div style="float:left;">
-                                        <textarea name="pay[rsa_public_key]" class="form-control rich-text" cols="85"
+                                        <textarea id="rsa_public_key" @if (!empty($set['rsa_public_key'])) style="display: none" @endif name="pay[rsa_public_key]" class="form-control rich-text" cols="85"
                                                   rows="5">{{ $set['rsa_public_key'] }}</textarea>
                                     </div>
                                 </div>
                             </div>
+                            @if(!empty($set['rsa_public_key']) || !empty($set['rsa_private_key']))
+                            <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                                    <div class="col-sm-9 col-xs-12">
+                                        <input type="button" name="btn" class="btn btn-success" value="重新设置公私钥" />
+                                    </div>
+                            </div>
+                            @endif
                         </div>
 
                         <div class="form-group">
@@ -811,6 +819,13 @@
                             else {
                                 $("#remittance").hide();
                             }
+                        })
+                        $(":button[name='btn']").click(function () {
+                            $('#rsa_private_key').val('');
+                            $('#rsa_private_key').show();
+                            $('#rsa_public_key').val('');
+                            $('#rsa_public_key').show();
+                            $(":button[name='btn']").hide();
                         })
                     })
                 </script>
