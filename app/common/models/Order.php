@@ -78,6 +78,37 @@ class Order extends BaseModel
         return ['create_time', 'refund_time', 'operate_time', 'send_time', 'return_time', 'end_time', 'pay_time', 'send_time', 'cancel_time', 'create_time', 'cancel_pay_time', 'cancel_send_time', 'finish_time'] + parent::getDates();
     }
 
+
+    /**
+     * 获取用户消费次数
+     *
+     * @param $uid
+     * @return mixed
+     */
+    public static function getCostTotalNum($uid)
+    {
+        return self::where('status','>=', 1)
+            ->Where('status','<=', 3)
+            ->where('uid', $uid)
+            ->count('id');
+    }
+
+
+    /**
+     * 获取用户消费总额
+     *
+     * @param $uid
+     * @return mixed
+     */
+    public static function getCostTotalPrice($uid)
+    {
+        return self::where('status', '>=', 1)
+            ->where('status', '<=', 3)
+            ->where('uid', $uid)
+            ->sum('price');
+    }
+
+
     /**
      * 订单状态:待付款
      * @param $query
