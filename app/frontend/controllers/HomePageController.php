@@ -188,6 +188,22 @@ class HomePageController extends ApiController
                             }
                         }
                     }
+                    if ($value['temp'] == 'cube') {
+
+                        //如果图片中的链接是商品链接，判断是否是门店商品
+                        foreach ($value['params']['layout'] as $key => $item) {
+                            foreach ($item as $key => &$cube) {
+                                if (strpos($cube['url'], 'addons/yun_shop/?menu#/goods/') !== false) {
+                                    preg_match_all('/.+\/(\d+)\?/', $cube['url'], $matches);
+                                    $goods_id = $matches[1][0];
+                                    $store_id = $store_goods->where('goods_id', $goods_id)->value('store_id');
+                                    if ($store_id) {
+                                        $cube['url'] = yzAppFullUrl("goods/{$goods_id}/o2o/{$store_id}");
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
                 $result['item'] = $designer;
                 $footerMenuType = $designer['footertype']; //底部菜单: 0 - 不显示, 1 - 显示系统默认, 2 - 显示选中的自定义菜单
