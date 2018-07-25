@@ -502,7 +502,16 @@ class GoodsController extends BaseController
                 $goods = set_medias($goods->toArray(), array('thumb', 'share_icon'));
             }
             $goods = collect($goods)->map(function($item) {
-                return array_add($item , 'url', yzAppFullUrl('goods/' . $item['id']));
+
+                $url = yzAppFullUrl('goods/' . $item['id']);
+                if (app('plugins')->isEnabled('store-cashier')) {
+                    $store_goods = new \Yunshop\StoreCashier\common\models\StoreGoods();
+                    $store_id = $store_goods->where('goods_id', $item['id'])->value('store_id');
+                    if ($store_id) {
+                        $url = yzAppFullUrl("goods/{$item['id']}/o2o/{$store_id}");
+                    }
+                }
+                return array_add($item , 'url', $url);
             });
 
             echo json_encode($goods); exit;

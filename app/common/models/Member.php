@@ -3,7 +3,6 @@
 namespace app\common\models;
 
 use app\backend\models\BackendModel;
-use app\backend\modules\member\models\MemberRelation;
 use app\common\events\member\BecomeAgent;
 use app\common\repositories\OptionRepository;
 use app\common\services\PluginManager;

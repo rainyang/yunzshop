@@ -63,33 +63,9 @@ class Order extends \app\common\models\Order
         ]);
         return $orders;
     }
-    /**
-     * 获取用户消费总额
-     *
-     * @param $uid
-     * @return mixed
-     */
-    public static function getCostTotalPrice($uid)
-    {
-        return self::where('status', '>=', 1)
-            ->where('status', '<=', 3)
-            ->where('uid', $uid)
-            ->sum('price');
-    }
 
-    /**
-     * 获取用户消费次数
-     *
-     * @param $uid
-     * @return mixed
-     */
-    public static function getCostTotalNum($uid)
-    {
-        return self::where('status','>=', 1)
-            ->Where('status','<=', 3)
-            ->where('uid', $uid)
-            ->count('id');
-    }
+
+
     private static function refundBuilder()
     {
         return function ($query) {
