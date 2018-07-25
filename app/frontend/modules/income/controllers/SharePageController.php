@@ -101,11 +101,14 @@ class SharePageController extends ApiController
 
     private function getShareQrUrl()
     {
-        /*$url = yzAppFullUrl('member', ['mid' => $this->getMemberId()]);
+        if ($this->memberModel->yzMember->is_agent == 1 && $this->memberModel->yzMember->status == 2) {
 
-        return (new QrCodeHelper($url, 'app/public/qr/share'))->url();*/
+            $url = yzAppFullUrl('member', ['mid' => $this->memberModel->uid]);
+            return (new QrCodeHelper($url, 'app/public/qr/share'))->url();
+        }
+        return "";
 
-        if (app('plugins')->isEnabled('poster')) {
+        /*if (app('plugins')->isEnabled('poster')) {
 
             $member_id = $this->getMemberId();
 
@@ -116,7 +119,7 @@ class SharePageController extends ApiController
                 return $url . "?ticket={$qrCodeModel->ticket}";
             }
         }
-        return '';
+        return '';*/
 
     }
 
