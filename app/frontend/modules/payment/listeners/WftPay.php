@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: dingran
- * Date: 2018/6/28
- * Time: 下午4:03
- */
+
 
 namespace app\frontend\modules\payment\listeners;
 
@@ -12,18 +7,18 @@ use app\common\events\payment\GetOrderPaymentTypeEvent;
 use app\common\events\payment\RechargeComplatedEvent;
 
 
-class HuanxunPay
+class WftPay
 {
 
     public function onGetPaymentTypes(GetOrderPaymentTypeEvent $event)
     {
-        $set = \Setting::get('plugin.huanxun_set');
+        $set = \Setting::get('plugin.wft_pay');
 
-        if (\YunShop::plugin()->get('huanxun') && !is_null($set) && 1 == $set['quick_switch'] && \YunShop::request()->type != 7) {
+        if (\YunShop::plugin()->get('wft-pay') && !is_null($set) && \YunShop::request()->type != 7) {
 
             $result = [
-                'name' => '银联快捷支付',
-                'value' => '18',
+                'name' => '微信-WFT',
+                'value' => '20',
                 'need_password' => '0'
 
             ];

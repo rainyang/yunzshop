@@ -3,7 +3,6 @@
 namespace app\common\models;
 
 use app\backend\models\BackendModel;
-use app\backend\modules\member\models\MemberRelation;
 use app\common\events\member\BecomeAgent;
 use app\common\repositories\OptionRepository;
 use app\common\services\PluginManager;
@@ -458,6 +457,18 @@ class Member extends BackendModel
             $data['love'] = [
                 'status' => false,
                 'love_name' => '爱心值',
+            ];
+        }
+
+        if ($plugin_class->isEnabled('froze')) {
+            $data['froze'] = [
+                'status' => true,
+                'froze_name' => \Yunshop\Froze\Common\Services\SetService::getFrozeName(),
+            ];
+        } else {
+            $data['froze'] = [
+                'status' => false,
+                'froze_name' => '冻结币',
             ];
         }
 

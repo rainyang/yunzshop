@@ -15,7 +15,7 @@ class ReturnAddress extends \app\common\models\goods\ReturnAddress
 
     public static function getOneByDefault()
     {
-        return self::where('is_default', 1)
+        return self::uniacid()->where('is_default', 1)
             ->first();
     }
 
@@ -26,13 +26,14 @@ class ReturnAddress extends \app\common\models\goods\ReturnAddress
      */
     public static function getOne($id)
     {
-        return self::where('id', $id)
+        return self::uniacid()->where('id', $id)
             ->first();
     }
 
     public static function getOneByPluginsId($id = 0, $store_id = 0, $supplier_id = 0)
     {
-        return self::where('plugins_id', $id)
+        return self::uniacid()
+            ->where('plugins_id', $id)
             ->where('store_id', $store_id)
             ->where('supplier_id', $supplier_id)
             ->where('is_default', 1)
