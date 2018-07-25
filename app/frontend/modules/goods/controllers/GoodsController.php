@@ -131,10 +131,7 @@ class GoodsController extends ApiController
             }
             $goodsModel->thumb_url = $thumb_url;
         }
-        if ($goodsModel->goods_video) {
-            array_unshift($thumb_url, yz_tomedia($goodsModel->goods_video));
-            $goodsModel->thumb_url = $thumb_url;
-        }
+        
         foreach ($goodsModel->hasManySpecs as &$spec) {
             $spec['specitem'] = GoodsSpecItem::select('id', 'title', 'specid', 'thumb')->where('specid', $spec['id'])->get();
             foreach ($spec['specitem'] as &$specitem) {

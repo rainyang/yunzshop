@@ -248,7 +248,11 @@ function yz_tomedia($src, $local_path = false)
     }
 
     if ($local_path || empty($setting['remote']['type']) || file_exists(base_path('../../') . '/' . $_W['config']['upload']['attachdir'] . '/' . $src)) {
-        $src = request()->getSchemeAndHttpHost() . '/attachment/' . $src;
+        if (strexists($src, '/attachment/')) {
+            $src = request()->getSchemeAndHttpHost() . $src;
+        } else {
+            $src = request()->getSchemeAndHttpHost() . '/attachment/' . $src;
+        }
     } else {
         if ($setting['remote']['type'] == 1) {
             $attachurl_remote = $setting['remote']['ftp']['url'] . '/';
