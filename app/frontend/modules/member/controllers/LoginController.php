@@ -49,6 +49,11 @@ class LoginController extends ApiController
                             $uniacid = \YunShop::app()->uniacid;
                             $mid = Member::getMid();
                             $url = Url::absoluteApp('member', ['i' => $uniacid, 'mid' => $mid]);
+
+                            if (isset($msg['json']['redirect_url'])) {
+                                $url = $msg['json']['redirect_url'];
+                            }
+
                             return $this->successJson($msg['json'], ['status'=> $msg['status'], 'url' => $url]);
                         } else {
                             if ($msg['status'] == -3) {
