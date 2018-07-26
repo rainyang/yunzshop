@@ -46,7 +46,7 @@ class MemberOfficeAccountService extends MemberService
 
         } else {
             //$callback = ($_SERVER['REQUEST_SCHEME'] ? $_SERVER['REQUEST_SCHEME'] : 'http')  . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-              $callback = Url::absoluteApp('login_validate');
+              $callback = Url::absoluteApp('login_validate', ['mid' => Member::getMid()]);
         }
 
         $state = 'yz-' . session_id();
