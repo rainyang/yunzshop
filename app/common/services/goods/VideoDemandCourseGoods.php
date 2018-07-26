@@ -17,6 +17,8 @@ class VideoDemandCourseGoods extends BaseController
 
     public function __construct()
     {
+        parent::__construct();
+
         $this->videoDemand = Setting::get('plugin.video_demand');
     }
 
