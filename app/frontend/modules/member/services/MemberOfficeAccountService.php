@@ -45,8 +45,8 @@ class MemberOfficeAccountService extends MemberService
 
 
         } else {
-            $callback = ($_SERVER['REQUEST_SCHEME'] ? $_SERVER['REQUEST_SCHEME'] : 'http')  . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-
+            //$callback = ($_SERVER['REQUEST_SCHEME'] ? $_SERVER['REQUEST_SCHEME'] : 'http')  . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+              $callback = Url::absoluteApp('login_validate');
         }
 
         $state = 'yz-' . session_id();
@@ -97,7 +97,8 @@ class MemberOfficeAccountService extends MemberService
         if (\YunShop::request()->scope == 'user_info') {
             return show_json(1, 'user_info_api');
         } else {
-            redirect($redirect_url)->send();
+            return show_json(1, ['redirect_url' => $redirect_url]);
+            //redirect($redirect_url)->send();
             exit;
         }
     }
@@ -223,15 +224,7 @@ class MemberOfficeAccountService extends MemberService
     private function _setClientRequestUrl()
     {
         if (\YunShop::request()->yz_redirect) {
-            $yz_redirect = base64_decode(\YunShop::request()->yz_redirect);
-
-            $redirect_url = $yz_redirect . '&t=' . time();
-           /* if (preg_match('menu', $yz_redirect)) {
-                $redirect_url = preg_replace('/menu/', 'redir_menu', $yz_redirect);
-            } else {
-                $redirect_url = preg_replace('/from=singlemessage/', 'redir_menu', $yz_redirect);
-            }
-            */
+            $redirect_url = base64_decode(\YunShop::request()->yz_redirect);
 
             Session::set('client_url', $redirect_url);
         } else {
