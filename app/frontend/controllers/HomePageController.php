@@ -219,6 +219,14 @@ class HomePageController extends ApiController
                         if(!empty($menustyle->menus) && !empty($menustyle->params)){
                             $result['item']['menus'] = json_decode($menustyle->toArray()['menus'], true);
                             $result['item']['menustyle'] = json_decode($menustyle->toArray()['params'], true);
+                            //判断是否是商城外部链接
+                            foreach ($result['item']['menus'] as $key => $value) {
+                                if (!strexists($value['url'],'addons/yun_shop/')) {
+                                    $result['item']['menus'][$key]['is_shop'] = 1;
+                                } else {
+                                    $result['item']['menus'][$key]['is_shop'] = 0;
+                                }
+                            }
                         } else{
                             $result['item']['menus'] = self::defaultMenu($i, $mid, $type);
                             $result['item']['menustyle'] = self::defaultMenuStyle();
