@@ -73,9 +73,7 @@ class GoodsController extends BaseController
     {
 
         //课程商品id集合
-        $videoDemand = new VideoDemandCourseGoods();
-        $courseGoods_ids = $videoDemand->courseGoodsIds();
-
+        $courseGoods_ids = (new VideoDemandCourseGoods())->courseGoodsIds();
 
         //增加商品属性搜索
         $product_attr_list = [
@@ -511,6 +509,11 @@ class GoodsController extends BaseController
                         $url = yzAppFullUrl("goods/{$item['id']}/o2o/{$store_id}");
                     }
                 }
+                $is_course = (new VideoDemandCourseGoods())->isCourse($item['id']);
+                if ($is_course) {
+                    $url = yzAppFullUrl("member/coursedetail/{$item['id']}");
+                }
+
                 return array_add($item , 'url', $url);
             });
 
