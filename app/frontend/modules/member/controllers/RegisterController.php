@@ -9,6 +9,7 @@
 namespace app\frontend\modules\member\controllers;
 
 use app\common\components\ApiController;
+use app\common\helpers\Client;
 use app\common\helpers\Url;
 use app\common\models\MemberGroup;
 use app\common\models\MemberLevel;
@@ -191,7 +192,13 @@ class RegisterController extends ApiController
         if (empty($mobile)) {
             return $this->errorJson('请填入手机号');
         }
-        if (!OnekeyLogin::alipayPluginMobileState()) {
+
+        $type = \YunShop::request()->type;
+        if (empty($type)) {
+            $type = Client::getType();
+        }
+
+        if (!OnekeyLogin::alipayPluginMobileState() || $type == 5) {
             $info = MemberModel::getId(\YunShop::app()->uniacid, $mobile);
 
             if (!empty($info) && empty($reset_pwd)) {
