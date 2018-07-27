@@ -1271,7 +1271,7 @@ class MemberController extends ApiController
     {
         $member =  \YunShop::app()->getMemberId();
         $data= [
-            'store-cashier' => 0,
+            'store_apply' => 0,
             'supplier'      => 0,
         ];
 
@@ -1282,7 +1282,7 @@ class MemberController extends ApiController
         if (app('plugins')->isEnabled('store-cashier')) {
             $store = \Yunshop\StoreCashier\common\models\Store::getStoreByUid(\YunShop::app()->getMemberId())->first();
             if ($store) {
-                $data['store-cashier'] = 1;
+                $data['store_apply'] = 1;
             }
         }
         if (app('plugins')->isEnabled('supplier')) {
