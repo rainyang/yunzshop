@@ -54,16 +54,15 @@ class PayedService
      */
     public function confirmPay()
     {
-        if ($this->withdrawModel->status != Withdraw::STATUS_PAYING) {
-            throw new ShopException('提现记录不符合确认打款规则');
+        if ($this->withdrawModel->status == Withdraw::STATUS_PAYING || $this->withdrawModel->status == Withdraw::STATUS_AUDIT) {
+
+            $this->withdrawModel->pay_at = time();
+            DB::transaction(function () {
+                $this->_payed();
+            });
+            return true;
         }
-
-        $this->withdrawModel->pay_at = time();
-
-        DB::transaction(function () {
-            $this->_payed();
-        });
-        return true;
+        throw new ShopException('提现记录不符合确认打款规则');
     }
 
 

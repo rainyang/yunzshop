@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  *
  * User: king/QQ：995265288
- * Date: 2018/6/12 下午4:30
+ * Date: 2018/7/27 下午5:01
  * Email: livsyitian@163.com
  */
 
@@ -14,13 +14,15 @@ use app\backend\modules\withdraw\models\Withdraw;
 use app\common\exceptions\ShopException;
 use app\common\services\withdraw\PayedService;
 
-class PayController extends PreController
+class AgainPayController extends PreController
 {
     /**
-     * 提现记录打款接口
+     * 提现记录 打款中重新打款接口
      */
     public function index()
     {
+        $this->withdrawModel->status = 1;
+
         $result = (new PayedService($this->withdrawModel))->withdrawPay();
         if ($result == true) {
             return $this->message('打款成功', yzWebUrl("withdraw.detail.index", ['id' => $this->withdrawModel->id]));
@@ -31,14 +33,8 @@ class PayController extends PreController
 
     public function validatorWithdrawModel($withdrawModel)
     {
-        if ($withdrawModel->status != Withdraw::STATUS_AUDIT) {
+        if ($withdrawModel->status != Withdraw::STATUS_PAYING) {
             throw new ShopException('状态错误，不符合打款规则！');
         }
     }
-
-
-
-
-
-
 }

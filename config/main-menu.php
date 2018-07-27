@@ -2190,7 +2190,7 @@ return [
 
                     'withdraw_records_detail' => [
                         'name'              => '收入提现详情',
-                        'url'               => 'finance.withdraw-detail.index',
+                        'url'               => 'withdraw.detail.index',
                         'url_params'        => "",
                         'permit'            => 1,
                         'menu'              => 0,
