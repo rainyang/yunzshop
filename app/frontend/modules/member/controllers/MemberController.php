@@ -47,7 +47,6 @@ class MemberController extends ApiController
     /**
      * 获取用户信息
      *
-     *
      */
     public function getUserInfo()
     {
@@ -1266,5 +1265,33 @@ class MemberController extends ApiController
             }
         }
         return $this->errorJson('', 0);
+    }
+
+    public function haveApply()
+    {
+        $member =  \YunShop::app()->getMemberId();
+        $data= [
+            'store-cashier' => 0,
+            'supplier'      => 0,
+        ];
+
+        if (empty($member)) {
+            return $this->successJson('', $data);
+        }
+
+        if (app('plugins')->isEnabled('store-cashier')) {
+            $store = \Yunshop\StoreCashier\common\models\Store::getStoreByUid(\YunShop::app()->getMemberId())->first();
+            if ($store) {
+                $data['store-cashier'] = 1;
+            }
+        }
+        if (app('plugins')->isEnabled('supplier')) {
+            $supplier = \Yunshop\Supplier\common\models\Supplier::getSupplierByMemberId($member, 1);
+            if ($supplier) {
+                $data['supplier'] = 1;
+            }
+        }
+
+        return $this->successJson('', $data);
     }
 }
