@@ -10,6 +10,8 @@ namespace app\common\services;
 
 
 
+use app\common\exceptions\AppException;
+
 class PayFactory
 {
     /**
@@ -116,6 +118,10 @@ class PayFactory
 //                $className = new CashPay();
 //                break;
             case self::PAY_CLOUD_WEACHAT:
+                if (!app('plugins')->isEnabled('cloud-pay')) {
+                    throw new AppException('插件未开启');
+                }
+
                 $className = new \Yunshop\CloudPay\services\CloudPayService();
                 break;
             case self::PAY_APP_WEACHAT:
@@ -125,18 +131,38 @@ class PayFactory
                 $className = new AliPay();
                 break;
             case self::PAY_YUN_WEACHAT:
+                if (!app('plugins')->isEnabled('yun-pay')) {
+                    throw new AppException('插件未开启');
+                }
+
                 $className = new \Yunshop\YunPay\services\YunPayService();
                 break;
             case self::PAY_CLOUD_ALIPAY:
+                if (!app('plugins')->isEnabled('cloud-pay')) {
+                    throw new AppException('插件未开启');
+                }
+
                 $className = new \Yunshop\CloudPay\services\CloudPayService();
                 break;
             case self::PAY_YUN_ALIPAY:
+                if (!app('plugins')->isEnabled('yun-pay')) {
+                    throw new AppException('插件未开启');
+                }
+
                 $className = new \Yunshop\YunPay\services\YunPayService();
                 break;
             case self::PAY_Huanxun_Quick:
+                if (!app('plugins')->isEnabled('huanxun')) {
+                    throw new AppException('插件未开启');
+                }
+
                 $className = new \Yunshop\Huanxun\services\HuanxunPayService();
                 break;
             case self::PAY_EUP:
+                if (!app('plugins')->isEnabled('eup-pay')) {
+                    throw new AppException('插件未开启');
+                }
+
                 $className = new \Yunshop\EupPay\services\EupWithdrawService();
                 break;
             case self::PAY_REMITTANCE:
@@ -146,9 +172,17 @@ class PayFactory
                 $className = new CODPay();
                 break;
             case self::WFT_PAY:
+                if (!app('plugins')->isEnabled('wft-pay')) {
+                    throw new AppException('插件未开启');
+                }
+
                 $className = new \Yunshop\WftPay\services\WftPayService();
                 break;
             case self::WFT_ALIPAY:
+                if (!app('plugins')->isEnabled('wft-alipay')) {
+                    throw new AppException('插件未开启');
+                }
+
                 $className = new \Yunshop\WftAlipay\services\WftAlipayService();
                 break;
             default:
