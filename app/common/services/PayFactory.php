@@ -27,11 +27,6 @@ class PayFactory
      */
     const PAY_CREDIT  = 3;
 
-    /**
-     * 货到付款
-     */
-    const PAY_CASH = 4;
-
 //    /**
 //     * 后台付款
 //     */
@@ -46,6 +41,10 @@ class PayFactory
      * 云收银-支付宝
      */
     const PAY_CLOUD_ALIPAY = 7;
+    /**
+     * 现金支付
+     */
+    const PAY_CASH = 8;
     /**
      * APP-微信
      */
