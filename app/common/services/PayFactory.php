@@ -112,9 +112,9 @@ class PayFactory
             case self::PAY_CREDIT:
                 $className = new CreditPay();
                 break;
-//            case self::PAY_CASH:
-//                $className = new CashPay();
-//                break;
+            case self::PAY_CASH:
+                $className = new CashPay();
+                break;
             case self::PAY_CLOUD_WEACHAT:
                 $className = new \Yunshop\CloudPay\services\CloudPayService();
                 break;
