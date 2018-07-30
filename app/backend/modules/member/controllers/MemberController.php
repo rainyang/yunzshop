@@ -573,7 +573,7 @@ class MemberController extends BaseController
                 }
 
                 //更新2、3级会员上线和分销关系
-                dispatch(new ModifyRelationJob($uid, $member_relation, $plugin_commission, \YunShop::app()->uniacid));
+                dispatch(new ModifyRelationJob($uid, $member_relation, $plugin_commission));
 
                 response(['status' => 1])->send();
             } else {

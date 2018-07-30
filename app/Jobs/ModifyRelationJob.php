@@ -46,17 +46,17 @@ class ModifyRelationJob implements ShouldQueue
      */
     private $uniacid;
 
-    public function __construct($uid, $member_relation, $plugin_commission, $uniacid)
+    public function __construct($uid, $member_relation, $plugin_commission)
     {
         $this->uid = $uid;
         $this->member_relation = $member_relation;
         $this->plugin_commission = $plugin_commission;
-        $this->uniacid = $uniacid;
     }
 
     public function handle()
     {
         $level = count($this->member_relation);
+        \Log::debug('-----------relation-----------', $this->member_relation);
 
         if ($level > 1) {
             $first_relation = $this->uid . ',' . $this->member_relation[0] . ',' . $this->member_relation[1];
@@ -82,9 +82,10 @@ class ModifyRelationJob implements ShouldQueue
      */
     private function ChangeFirstMember($uid, $relation, $open_plugin)
     {
+        \Log::debug('----------ChangeFirstMember uid-------', $uid);
         $memberModel = $this->getMemberModel($uid, 1);
-
-        if (!is_null($memberModel)) {
+\Log::debug('----------ChangeFirstMember-------', count($memberModel));
+        if (!$memberModel->isEmpty()) {
             foreach ($memberModel as $key => $model) {
                 $model->relation = $relation;
 
@@ -97,9 +98,10 @@ class ModifyRelationJob implements ShouldQueue
 
     private function ChangeSecondMember($uid, $relation, $open_plugin)
     {
+        \Log::debug('----------ChangeSecondMember uid-------', $uid);
         $memberModel = $this->getMemberModel($uid, 2);
-
-        if (!is_null($memberModel)) {
+        \Log::debug('----------ChangeSecondMember-------', count($memberModel));
+        if (!$memberModel->isEmpty()) {
             foreach ($memberModel as $key => $model) {
                 if ($model->parent_id !== 0) {
                     $model->relation = $model->parent_id . ',' .$relation;
@@ -115,15 +117,14 @@ class ModifyRelationJob implements ShouldQueue
 
     private function getMemberModel($uid, $pos)
     {
-        $memberModel = MemberShopInfo::uniacid()->select(['member_id', 'parent_id', 'relation']);
-        $memberModel->whereRaw('FIND_IN_SET(?,relation) = ?', [$uid, $pos])->get();
+        $memberModel = MemberShopInfo::getSubLevelMember($uid, $pos);
 
         return $memberModel;
     }
 
     private function changeAgentRelation($model)
     {
-        $agents = Agents::uniacid()->where('member_id', $model->member_id)->first();
+        $agents = Agents::getAgentByMemberId($model->member_id)->first();
 
         if (!is_null($agents)) {
             $agents->parent_id = $model->parent_id;
@@ -138,6 +139,6 @@ class ModifyRelationJob implements ShouldQueue
             'parent'   => $model->relation
         ];
 
-        event(new RegisterByAgent($agent_data));
+       // event(new RegisterByAgent($agent_data));
     }
 }
