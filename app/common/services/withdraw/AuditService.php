@@ -88,7 +88,7 @@ class AuditService
 
     private function getAuditStatus()
     {
-        $type_ids_count = count(explode(',', $this->withdrawModel->type_id));
+        $type_ids_count = count(array_filter(explode(',', $this->withdrawModel->type_id)));
 
         //$audit_count = count($this->withdrawModel->audit_ids);
         $rebut_count = count($this->withdrawModel->rebut_ids);
