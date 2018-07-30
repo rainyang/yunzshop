@@ -14,6 +14,7 @@ use app\common\models\Migration;
 use app\common\models\PayOrder;
 use app\common\models\PayRequestDataLog;
 use app\common\models\PayResponseDataLog;
+use app\frontend\modules\deduction\models\Deduction;
 use app\frontend\modules\order\services\OrderService;
 use app\common\components\BaseController;
 use app\common\models\Member;
@@ -30,6 +31,11 @@ use SuperClosure\SerializableClosure;
 
 class TestController extends BaseController
 {
+    public function index()
+    {
+        dd(Deduction::get());
+    }
+
     public function d()
     {
         /**
@@ -95,39 +101,6 @@ class TestController extends BaseController
         exit;
     }
 
-    public function index()
-    {
-        dd(Url::shopSchemeUrl('payment/wechat/notifyUrl.php'));
-        exit;
-
-        $orders = Order::whereIn('order_sn',['SN20180704160239Ps'])->get();;
-        $orders->each(function (Order $order) {
-//            $order->status = 0;
-//            $order->save();
-//            OrderService::ordersPay(['order_pay_id' => 303, 'pay_type_id' => 1]);
-//            exit;
-            //$order->sta
-            dump("订单:{$order->order_sn}");
-            //dump("操作记录");
-            //dump(OrderOperationLog::where('order_id',$order->id)->get()->toArray());
-            $orderPays = OrderPay::where('order_ids','like','%'.$order->id.'%')->get();
-            $orderPays->each(function (OrderPay $orderPay) {
-                dump("支付单:{$orderPay->pay_sn}");
-
-                $payOrders = PayOrder::where('out_order_no',$orderPay->pay_sn)->get();
-                dump("第三方支付请求");
-dump(PayRequestDataLog::where('params' ,'like',"%".$orderPay->pay_sn."%")->get()->toArray());
-                dump("第三方支付结果");
-                PayResponseDataLog::where('out_order_no' ,$orderPay->pay_sn);
-//                dump("本地第三方支付表");
-                dump($payOrders->toArray());
-
-            });
-            dump('-------');
-        });
-
-
-    }
 
     public function op_database()
     {

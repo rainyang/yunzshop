@@ -12,6 +12,7 @@ use app\common\exceptions\AppException;
 use app\common\models\DispatchType;
 use app\common\models\Order;
 use app\common\models\order\Express;
+use app\common\repositories\ExpressCompany;
 use Illuminate\Support\Facades\Validator;
 
 class OrderSend extends ChangeStatusOperation
@@ -34,12 +35,12 @@ class OrderSend extends ChangeStatusOperation
             //实体订单
             $validator = Validator::make(request()->all(), [
                 'express_code' => 'required',
-                'express_company_name' => 'required',
                 'express_sn' => 'required',
             ]);
             if ($validator->fails()) {
                 throw new AppException($validator->errors()->first());
-            }            $order_id = request()->input('order_id');
+            }
+            $order_id = request()->input('order_id');
 
             $db_express_model = Express::where('order_id', $order_id)->first();
 
@@ -47,7 +48,10 @@ class OrderSend extends ChangeStatusOperation
 
             $db_express_model->order_id = $order_id;
             $db_express_model->express_code = request()->input('express_code');
-            $db_express_model->express_company_name = request()->input('express_company_name');
+
+            $db_express_model->express_company_name = request()->input('express_company_name', function (){
+                return array_get((new ExpressCompany())->where('code',request()->input('express_code'))->first(),'express_company_name','');
+            });
             $db_express_model->express_sn = request()->input('express_sn');
             $db_express_model->save();
         }
