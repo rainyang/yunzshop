@@ -8,9 +8,11 @@
 
 namespace app\frontend\modules\order\services\behavior;
 
+use app\common\exceptions\AppException;
 use app\common\models\DispatchType;
 use app\common\models\Order;
 use app\common\models\order\Express;
+use Illuminate\Support\Facades\Validator;
 
 class OrderSend extends ChangeStatusOperation
 {
@@ -21,13 +23,23 @@ class OrderSend extends ChangeStatusOperation
 
     protected $past_tense_class_name = 'OrderSent';
 
+    /**
+     * @return bool|void
+     * @throws AppException
+     */
     protected function updateTable()
     {
 
         if ($this->dispatch_type_id == DispatchType::EXPRESS) {
             //实体订单
-            //dd(123);
-            $order_id = request()->input('order_id');
+            $validator = Validator::make(request()->all(), [
+                'express_code' => 'required',
+                'express_company_name' => 'required',
+                'express_sn' => 'required',
+            ]);
+            if ($validator->fails()) {
+                throw new AppException($validator->errors()->first());
+            }            $order_id = request()->input('order_id');
 
             $db_express_model = Express::where('order_id', $order_id)->first();
 
