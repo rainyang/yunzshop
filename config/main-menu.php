@@ -2260,7 +2260,7 @@ return [
                         'parents'           => ['finance','withdraw_records'],
                     ],
 
-                    'withdraw_status_arrival' => [
+                    /*'withdraw_status_arrival' => [
                         'name'              => '已驳回',
                         'url'               => 'finance.withdraw-records.index',
                         'url_params'        => "&search[status]=3",
@@ -2270,7 +2270,7 @@ return [
                         'sort'              => 0,
                         'item'              => 'withdraw_status_arrival',
                         'parents'           => ['finance','withdraw_records'],
-                    ],
+                    ],*/
 
                     'withdraw_status_invalid' => [
                         'name'              => '无效提现',
