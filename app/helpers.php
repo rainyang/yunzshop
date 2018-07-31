@@ -106,7 +106,7 @@ use Ixudra\Curl\Facades\Curl;
                             var videoType = video.isRemote ? 'iframe' : 'video';
                             editor.execCommand('insertvideo', {
                                 'url' : video.url,
-                                'width' : 300,
+                                'width' : '100%',
                                 'height' : 200
                             }, videoType);
                         }
