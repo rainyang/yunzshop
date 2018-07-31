@@ -563,7 +563,7 @@ class MemberService
         $nickname = preg_replace("#\\\u([0-9a-f]+)#ie","iconv('{$s_format}','UTF-8', pack('H4', '\\1'))",$nickname);
         \Log::debug('post', [$nickname]);
         \Log::debug('json', [json_decode($this->cutNickname($nickname))]);
-        return json_decode($this->cutNickname($nickname));
+        return json_decode(json_encode($this->cutNickname($nickname)));
     }
 
     /**
