@@ -41,7 +41,7 @@ class WithdrawRecordsController extends BaseController
 
         $page = PaginationHelper::show($records->total(), $records->currentPage(), $records->perPage());
 
-        return view('finance.withdraw.records', [
+        return view('withdraw.records', [
             'records' => $records,
             'page' => $page,
             'search' => \YunShop::request()->search,
