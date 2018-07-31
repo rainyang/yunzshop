@@ -344,4 +344,12 @@ class MemberShopInfo extends BaseModel
             ->select (['member_id'])
             ->get();
     }
+
+    public static function getSubLevelMember($uid, $pos)
+    {
+        return self::uniacid()
+            ->select(['member_id', 'parent_id', 'relation'])
+            ->whereRaw('FIND_IN_SET(?,relation) = ?', [$uid, $pos])
+            ->get();
+    }
 }
