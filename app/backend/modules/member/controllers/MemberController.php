@@ -24,6 +24,7 @@ use app\common\models\AccountWechats;
 use app\common\services\ExportService;
 use app\frontend\modules\member\models\MemberUniqueModel;
 use app\frontend\modules\member\models\SubMemberModel;
+use app\Jobs\ModifyRelationJob;
 use Yunshop\Commission\models\Agents;
 
 
@@ -535,7 +536,10 @@ class MemberController extends BaseController
                 }
             }
 
-            if (Member::setMemberRelation($uid, $parent_id)) {
+            $member_relation = Member::setMemberRelation($uid, $parent_id);
+            $plugin_commission = app('plugins')->isEnabled('commission');
+
+            if (isset($member_relation) && $member_relation !== false) {
                 $member = MemberShopInfo::getMemberShopInfo($uid);
 
                 $record = new MemberRecord();
@@ -549,7 +553,7 @@ class MemberController extends BaseController
                 $member->save();
                 $record->save();
 
-                if (app('plugins')->isEnabled('commission')) {
+                if ($plugin_commission) {
                    $agents = Agents::uniacid()->where('member_id', $uid)->first();
 
                    if (!is_null($agents)) {
@@ -558,15 +562,18 @@ class MemberController extends BaseController
 
                        $agents->save();
                    }
+
+                    $agent_data = [
+                        'member_id' => $uid,
+                        'parent_id' => $parent_id,
+                        'parent'   => $member->relation
+                    ];
+
+                    event(new RegisterByAgent($agent_data));
                 }
 
-                $agent_data = [
-                    'member_id' => $uid,
-                    'parent_id' => $parent_id,
-                    'parent'   => $member->relation
-                ];
-
-                event(new RegisterByAgent($agent_data));
+                //更新2、3级会员上线和分销关系
+                dispatch(new ModifyRelationJob($uid, $member_relation, $plugin_commission));
 
                 response(['status' => 1])->send();
             } else {
