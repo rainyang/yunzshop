@@ -10,6 +10,7 @@ namespace app\backend\controllers;
 
 use app\common\helpers\Url;
 use app\common\models\Callback;
+use app\common\models\DispatchType;
 use app\common\models\Migration;
 use app\common\models\PayOrder;
 use app\common\models\PayRequestDataLog;
@@ -33,7 +34,7 @@ class TestController extends BaseController
 {
     public function index()
     {
-        dd(Deduction::get());
+        dd(DispatchType::get());
     }
 
     public function d()

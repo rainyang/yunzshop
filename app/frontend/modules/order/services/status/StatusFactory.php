@@ -24,31 +24,41 @@ class StatusFactory
         $this->order = $order;
     }
 
+    /**
+     * @return Close|Complete|WaitPay|WaitReceive|WaitSend|\Yunshop\StoreCashier\common\order\status\MemberWaitReceive|\Yunshop\StoreCashier\common\order\status\StoreWaitPay|\Yunshop\StoreCashier\common\order\status\VerifierWaitPay|\Yunshop\StoreCashier\common\order\status\VerifierWaitReceive
+     * @throws \app\common\exceptions\AppException
+     */
     public function create()
     {
         $order = $this->order;
         switch ($order->status) {
             case -1:
-                return new Close($order);
+                return new Close($this->order);
                 break;
             case 0:
                 return $this->waitPay();
                 break;
             case 1:
-                return new WaitSend($order);
+                return $this->waitSend();
                 break;
             case 2:
                 return $this->waitReceive();
                 break;
             case 3:
-                return new Complete($order);
+                return new Complete($this->order);
                 break;
 
         }
     }
+
+
+    /**
+     * @return WaitPay|\Yunshop\StoreCashier\common\order\status\StoreWaitPay|\Yunshop\StoreCashier\common\order\status\VerifierWaitPay
+     * @throws \app\common\exceptions\AppException
+     */
     private function waitPay()
     {
-        if (app('plugins')->isEnabled('store-cashier') && $this->order->plugin_id == Store::PLUGIN_ID){
+        if (app('plugins')->isEnabled('store-cashier') && $this->order->plugin_id == Store::PLUGIN_ID) {
             //门店订单
             return (new \Yunshop\StoreCashier\common\order\status\WaitPay())->handle($this->order);
 
@@ -58,11 +68,29 @@ class StatusFactory
         }
 
     }
+
+    /**
+     * @return WaitSend
+     */
+    private function waitSend()
+    {
+        if (app('plugins')->isEnabled('store-cashier') && $this->order->plugin_id == Store::PLUGIN_ID) {
+            //门店订单
+            return (new \Yunshop\StoreCashier\common\order\status\WaitSend())->handle($this->order);
+
+        } else {
+            // 正常订单
+            return new WaitSend($this->order);
+        }
+    }
+
+    /**
+     * @return WaitReceive|\Yunshop\StoreCashier\common\order\status\member\MemberWaitReceive|\Yunshop\StoreCashier\common\order\status\store\StoreWaitPay|\Yunshop\StoreCashier\common\order\status\verifier\VerifierWaitReceive
+     * @throws \app\common\exceptions\AppException
+     */
     private function waitReceive()
     {
-
-
-        if (app('plugins')->isEnabled('store-cashier') && $this->order->plugin_id == Store::PLUGIN_ID){
+        if (app('plugins')->isEnabled('store-cashier') && $this->order->plugin_id == Store::PLUGIN_ID) {
             //门店订单
             return (new \Yunshop\StoreCashier\common\order\status\WaitReceive())->handle($this->order);
 
@@ -70,6 +98,6 @@ class StatusFactory
             // 正常订单
             return new WaitReceive($this->order);
         }
-
     }
+
 }
