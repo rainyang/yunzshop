@@ -560,7 +560,12 @@ class MemberService
         \Log::debug('nickname', [$nickname]);
         $nickname = preg_replace($patten, "", $nickname);
         \Log::debug('pre', [$nickname]);
-        $nickname = preg_replace("#\\\u([0-9a-f]+)#ie","iconv('{$s_format}','UTF-8', pack('H4', '\\1'))",$nickname);
+        $nickname = json_decode(
+                        preg_replace("#\\\u([0-9a-f]+)#ie"
+                                      ,"iconv('{$s_format}','UTF-8', pack('H4', '\\1'))"
+                                      , $nickname
+                        )
+                    );
         \Log::debug('post', [$nickname]);
         \Log::debug('json', [$this->cutNickname($nickname)]);
         return $this->cutNickname($nickname);
