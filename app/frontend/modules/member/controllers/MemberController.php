@@ -1253,6 +1253,27 @@ class MemberController extends ApiController
             }
         }
 
+        if (app('plugins')->isEnabled('store-cashier')) {
+            $store = \Yunshop\StoreCashier\common\models\Store::getStoreByUid(\YunShop::app()->getMemberId())->first();
+            if (!$store) {
+                $data[] = [
+                    'name' => 'store_apply',
+                    'title' => '门店申请'
+                ];
+            }
+        }
+
+        if (app('plugins')->isEnabled('supplier')) {
+            $supplier = \Yunshop\Supplier\common\models\Supplier::getSupplierByMemberId($member, 1);
+            if (!$supplier) {
+                $data[] = [
+                    'name' => 'supplier_apply',
+                    'title' => '供应商申请'
+                ];
+            }
+        }
+
+
         return $this->successJson('ok', $data);
     }
 
@@ -1267,39 +1288,4 @@ class MemberController extends ApiController
         return $this->errorJson('', 0);
     }
 
-    public function haveApply()
-    {
-        $member =  \YunShop::app()->getMemberId();
-        $data= [
-            'store_apply' => 0,
-            'supplier'      => 0,
-        ];
-
-        if (!app('plugins')->isEnabled('store-cashier')) {
-            $data['store_apply'] = 1;
-        }
-
-        if (!app('plugins')->isEnabled('supplier')) {
-            $data['supplier'] = 1;
-        }
-
-        if (empty($member)) {
-            return $this->successJson('', $data);
-        }
-
-        if (app('plugins')->isEnabled('store-cashier')) {
-            $store = \Yunshop\StoreCashier\common\models\Store::getStoreByUid(\YunShop::app()->getMemberId())->first();
-            if ($store) {
-                $data['store_apply'] = 1;
-            }
-        }
-        if (app('plugins')->isEnabled('supplier')) {
-            $supplier = \Yunshop\Supplier\common\models\Supplier::getSupplierByMemberId($member, 1);
-            if ($supplier) {
-                $data['supplier'] = 1;
-            }
-        }
-
-        return $this->successJson('', $data);
-    }
 }
