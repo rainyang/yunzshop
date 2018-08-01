@@ -1275,6 +1275,14 @@ class MemberController extends ApiController
             'supplier'      => 0,
         ];
 
+        if (!app('plugins')->isEnabled('store-cashier')) {
+            $data['store_apply'] = 1;
+        }
+
+        if (!app('plugins')->isEnabled('supplier')) {
+            $data['supplier'] = 1;
+        }
+
         if (empty($member)) {
             return $this->successJson('', $data);
         }
