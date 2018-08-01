@@ -1264,11 +1264,11 @@ class MemberController extends ApiController
         }
 
         if (app('plugins')->isEnabled('supplier')) {
-            $supplier = \Yunshop\Supplier\common\models\Supplier::getSupplierByMemberId($member, 1);
+            $supplier = \Yunshop\Supplier\common\models\Supplier::getSupplierByMemberId(\YunShop::app()->getMemberId(), 1);
             if (!$supplier) {
                 $data[] = [
                     'name' => 'supplier_apply',
-                    'title' => '供应商申请'
+                    'title' => '供应商申请',
                 ];
             }
         }
