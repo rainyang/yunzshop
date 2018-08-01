@@ -33,7 +33,6 @@ class MemberCartService
             $params['total'] = 1;
         }
         $cart = app('OrderManager')->make('MemberCart',$params);
-        $cart->validate();
         return $cart;
     }
 
