@@ -9,7 +9,6 @@
 namespace app\common\services;
 
 
-
 use app\common\exceptions\AppException;
 
 class PayFactory
@@ -22,12 +21,12 @@ class PayFactory
     /**
      * 支付宝
      */
-    const PAY_ALIPAY  = 2;
+    const PAY_ALIPAY = 2;
 
     /**
      * 余额
      */
-    const PAY_CREDIT  = 3;
+    const PAY_CREDIT = 3;
 
 //    /**
 //     * 后台付款
@@ -55,7 +54,10 @@ class PayFactory
      * APP-支付宝
      */
     const PAY_APP_ALIPAY = 10;
-
+    /**
+     * 门店支付
+     */
+    const PAY_STORE = 11;
     /**
      * 微信-YZ
      */
@@ -92,15 +94,15 @@ class PayFactory
     /**
      *威富通公众号支付
      */
-    const WFT_PAY= 20;
+    const WFT_PAY = 20;
 
     /**
      *威富通支付宝支付
      */
-    const WFT_ALIPAY= 21;
+    const WFT_ALIPAY = 21;
 
 
-   public static function create($type = null)
+    public static function create($type = null)
     {
         $className = null;
         switch ($type) {
@@ -128,6 +130,9 @@ class PayFactory
                 break;
             case self::PAY_APP_ALIPAY:
                 $className = new AliPay();
+                break;
+            case self::PAY_STORE:
+                $className = new StorePay();
                 break;
             case self::PAY_YUN_WEACHAT:
                 if (!app('plugins')->isEnabled('yun-pay')) {
@@ -205,7 +210,7 @@ class PayFactory
             case self::PAY_WEACHAT:
             case self::PAY_CREDIT:
                 if (is_bool($result)) {
-                    $result = (array) $result;
+                    $result = (array)$result;
                 }
 
                 $trade = \Setting::get('shop.trade');
