@@ -1507,7 +1507,7 @@ return [
                                 'name'              => '订单备注',
                                 'url'               => 'order.remark.update-remark',
                                 'url_params'        => '',
-                                'permit'            => 1,
+                                'permit'            => 0,
                                 'menu'              => 0,
                                 'icon'              => '',
                                 'sort'              => 1,
