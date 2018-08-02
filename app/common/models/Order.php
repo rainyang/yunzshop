@@ -22,6 +22,7 @@ use app\common\models\order\Plugin;
 use app\common\models\order\Remark;
 use app\common\models\refund\RefundApply;
 use app\common\modules\payType\events\AfterOrderPayTypeChangedEvent;
+
 use app\frontend\modules\order\services\status\StatusFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -87,8 +88,8 @@ class Order extends BaseModel
      */
     public static function getCostTotalNum($uid)
     {
-        return self::where('status','>=', 1)
-            ->Where('status','<=', 3)
+        return self::where('status', '>=', 1)
+            ->Where('status', '<=', 3)
             ->where('uid', $uid)
             ->count('id');
     }
@@ -372,8 +373,15 @@ class Order extends BaseModel
      */
     public function getButtonModelsAttribute()
     {
-        $result = $this->getStatusService()->getButtonModels();
+
+        //$result = $this->getStatusService()->getButtonModels();
+        $result = $this->memberButtons();
         return $result;
+    }
+
+    private function memberButtons()
+    {
+
     }
 
     /**
