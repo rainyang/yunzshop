@@ -352,4 +352,10 @@ class MemberShopInfo extends BaseModel
             ->whereRaw('FIND_IN_SET(?,relation) = ?', [$uid, $pos])
             ->get();
     }
+
+    //新增关联订单表
+    public function hasOneOrder()
+    {
+        return $this->hasOne(Order::class, 'uid', 'member_id');
+    }
 }
