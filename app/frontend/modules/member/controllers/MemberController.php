@@ -1140,7 +1140,9 @@ class MemberController extends ApiController
     public function getEnablePlugins()
     {
         $filter = [
-            'conference', 'store-cashier', 'recharge-code'
+            'conference',
+            //'store-cashier',
+            'recharge-code'
         ];
         $data = [];
 
@@ -1156,17 +1158,26 @@ class MemberController extends ApiController
             $info = $item->toArray();
 
             $name = $info['name'];
+            //todo 门店暂时不传
             if ($info['name'] == "store-cashier") {
 
                 $name = 'store_cashier';
             } elseif ($info['name'] == 'recharge-code') {
                 $name = 'recharge_code';
+                $class = 'icon-member-recharge1';
+                $url = 'rechargeCode';
+            } elseif ($info['name'] == 'conference') {
+                $name = 'conference';
+                $class = 'icon-member-act-signup1';
+                $url = 'conferenceList';
             }
 
 
             $data[] = [
                 'name'  => $name,
-                'title' => $info['title']
+                'title' => $info['title'],
+                'class' => $class,
+                'url'   => $url
             ];
         });
 
@@ -1175,8 +1186,10 @@ class MemberController extends ApiController
 
             if ($credit_setting && 1 == $credit_setting['is_credit']) {
                 $data[] = [
-                    'name' => 'credit',
-                    'title' => '信用值'
+                    'name'  => 'credit',
+                    'title' => '信用值',
+                    'class' => 'icon-member-credit01',
+                    'url'   => 'creditInfo'
                 ];
             }
         }
@@ -1187,7 +1200,9 @@ class MemberController extends ApiController
             if ($ranking_setting && 1 == $ranking_setting['is_ranking']) {
                 $data[] = [
                     'name' => 'ranking',
-                    'title' => '排行榜'
+                    'title' => '排行榜',
+                    'class' => 'icon-member-bank-list1',
+                    'url'   => 'rankingIndex'
                 ];
             }
         }
@@ -1198,7 +1213,10 @@ class MemberController extends ApiController
             if ($article_setting) {
                 $data[] = [
                     'name' => 'article',
-                    'title' => $article_setting['center'] ? $article_setting['center'] : '文章中心'
+                    'title' => $article_setting['center'] ? $article_setting['center'] : '文章中心',
+                    'class' => 'icon-member-collect1',
+                    'url'   => 'notice',
+                    'param' => 0,
                 ];
             }
         }
@@ -1212,7 +1230,9 @@ class MemberController extends ApiController
             if ($clock_in_setting && 1 == $clock_in_setting['is_clock_in']) {
                 $data[] = [
                     'name' => 'clock_in',
-                    'title' => $pluginName
+                    'title' => $pluginName,
+                    'class' => 'icon-member-get-up',
+                    'url'   => 'ClockPunch',
                 ];
             }
         }
@@ -1224,34 +1244,62 @@ class MemberController extends ApiController
             if ($video_demand_setting && $video_demand_setting['is_video_demand']) {
                 $data[] = [
                     'name' => 'video_demand',
-                    'title' => '视频点播'
+                    'title' => '课程中心',
+                    'class' => 'icon-member-course3',
+                    'url'   => 'CourseManage',
                 ];
             }
         }
 
-        if (app('plugins')->isEnabled('help-center')) {
+//        if (app('plugins')->isEnabled('help-center')) {
+//
+//            $help_center_setting = Setting::get('plugin.help_center');
+//
+//            if ($help_center_setting && 1 == $help_center_setting['status']) {
+//                $data[] = [
+//                    'name' => 'help_center',
+//                    'title' => '帮助中心'
+//                ];
+//            }
+//        }
 
-            $help_center_setting = Setting::get('plugin.help_center');
+//        if (app('plugins')->isEnabled('courier')) {
+//
+//            $courier_setting = Setting::get('courier.courier');
+//
+//            if ($courier_setting && 1 == $courier_setting['radio']) {
+//                $data[] = [
+//                    'name' => 'courier',
+//                    'title' => $courier_setting['name'] ? $courier_setting['name'] : '快递单'
+//                ];
+//            }
+//        }
 
-            if ($help_center_setting && 1 == $help_center_setting['status']) {
+        if (app('plugins')->isEnabled('store-cashier')) {
+            $store = \Yunshop\StoreCashier\common\models\Store::getStoreByUid(\YunShop::app()->getMemberId())->first();
+            if (!$store) {
                 $data[] = [
-                    'name' => 'help_center',
-                    'title' => '帮助中心'
+                    'name' => 'store_apply',
+                    'title' => '门店申请',
+                    'class' => 'icon-member-store-apply1',
+                    'url'   => 'storeApply',
+
                 ];
             }
         }
 
-        if (app('plugins')->isEnabled('courier')) {
-
-            $courier_setting = Setting::get('courier.courier');
-
-            if ($courier_setting && 1 == $courier_setting['radio']) {
+        if (app('plugins')->isEnabled('supplier')) {
+            $supplier = \Yunshop\Supplier\common\models\Supplier::getSupplierByMemberId(\YunShop::app()->getMemberId(), 1);
+            if (!$supplier) {
                 $data[] = [
-                    'name' => 'courier',
-                    'title' => $courier_setting['name'] ? $courier_setting['name'] : '快递单'
+                    'name' => 'supplier_apply',
+                    'title' => '供应商申请',
+                    'class' => 'icon-member-apply1',
+                    'url'   => 'supplier',
                 ];
             }
         }
+
 
         return $this->successJson('ok', $data);
     }
@@ -1267,39 +1315,4 @@ class MemberController extends ApiController
         return $this->errorJson('', 0);
     }
 
-    public function haveApply()
-    {
-        $member =  \YunShop::app()->getMemberId();
-        $data= [
-            'store_apply' => 0,
-            'supplier'      => 0,
-        ];
-
-        if (!app('plugins')->isEnabled('store-cashier')) {
-            $data['store_apply'] = 1;
-        }
-
-        if (!app('plugins')->isEnabled('supplier')) {
-            $data['supplier'] = 1;
-        }
-
-        if (empty($member)) {
-            return $this->successJson('', $data);
-        }
-
-        if (app('plugins')->isEnabled('store-cashier')) {
-            $store = \Yunshop\StoreCashier\common\models\Store::getStoreByUid(\YunShop::app()->getMemberId())->first();
-            if ($store) {
-                $data['store_apply'] = 1;
-            }
-        }
-        if (app('plugins')->isEnabled('supplier')) {
-            $supplier = \Yunshop\Supplier\common\models\Supplier::getSupplierByMemberId($member, 1);
-            if ($supplier) {
-                $data['supplier'] = 1;
-            }
-        }
-
-        return $this->successJson('', $data);
-    }
 }
