@@ -10,15 +10,15 @@ namespace app\frontend\models\order\member;
 
 use app\frontend\models\order\OrderOperation;
 
-class Close extends OrderOperation
+class Delete extends OrderOperation
 {
     public function getName()
     {
-        return '取消订单';
+        return '删除订单';
     }
 
     public function getValue()
     {
-        return 9;
+        return 12;
     }
 }

@@ -8,34 +8,23 @@
 
 namespace app\backend\controllers;
 
-use app\common\helpers\Url;
-use app\common\models\Callback;
-use app\common\models\DispatchType;
-use app\common\models\MemberType;
 use app\common\models\Migration;
-use app\common\models\PayOrder;
-use app\common\models\PayRequestDataLog;
-use app\common\models\PayResponseDataLog;
-use app\frontend\modules\deduction\models\Deduction;
-use app\frontend\modules\order\services\OrderService;
 use app\common\components\BaseController;
 use app\common\models\Member;
 use app\common\models\Order;
+use app\common\modules\order\OrderOperationsCollector;
 use app\common\models\OrderPay;
-use app\common\models\Flow;
 use app\common\services\MessageService;
 use app\frontend\modules\member\models\SubMemberModel;
-use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use SuperClosure\SerializableClosure;
 
 class TestController extends BaseController
 {
     public function index()
     {
-        dd(config('shop-foundation.order.member_order_operations'));
+        app('OrderManager')->make(OrderOperationsCollector::class)->getOperations(Order::find(2419));
     }
 
     public function d()

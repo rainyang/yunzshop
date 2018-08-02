@@ -20,4 +20,6 @@ abstract class OrderOperation
     public function enable(){
 
     }
+    abstract public function getName();
+    abstract public function getValue();
 }

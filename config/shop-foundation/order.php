@@ -6,11 +6,19 @@
  * Time: 上午11:23
  */
 
-use app\frontend\models\order\member\Close;
-use app\frontend\models\order\member\Pay;
-
 return array(
     'member_order_operations' => [
-        'waitPay' => [Pay::class, Close::class]
+        'waitPay' => [app\frontend\models\order\member\Pay::class, app\frontend\models\order\member\Close::class],
+        'waitSend' => [\app\frontend\models\order\member\ExpressInfo::class],
+        'waitReceive' => [\app\frontend\models\order\member\Receive::class],
+        'complete' => [\app\frontend\models\order\member\Delete::class],
+    ],
+    'status' => [
+        0 => 'waitPay',
+        1 => 'waitSend',
+        2 => 'waitReceive',
+        3 => 'complete',
+        -1 => 'close',
     ]
+
 );

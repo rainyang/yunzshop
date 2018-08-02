@@ -11,5 +11,13 @@ use app\frontend\models\order\OrderOperation;
 
 class Pay extends OrderOperation
 {
+    public function getName()
+    {
+        return '支付';
+    }
 
+    public function getValue()
+    {
+        return 1;
+    }
 }

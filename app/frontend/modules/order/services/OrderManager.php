@@ -12,6 +12,7 @@ use app\backend\modules\order\models\Order;
 use app\common\models\order\OrderCoupon;
 use app\common\models\order\OrderDeduction;
 use app\common\models\order\OrderDiscount;
+use app\common\modules\order\OrderOperationsCollector;
 use app\frontend\models\MemberCart;
 use app\frontend\modules\orderGoods\models\PreOrderGoods;
 use app\frontend\modules\order\models\PreOrder;
@@ -26,7 +27,9 @@ class OrderManager extends Container
         $this->singleton('OrderService', function ($orderManager) {
             return new OrderService();
         });
-
+        $this->singleton(OrderOperationsCollector::class, function ($orderManager) {
+            return new OrderOperationsCollector();
+        });
 
     }
 

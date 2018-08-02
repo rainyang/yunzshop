@@ -37,7 +37,8 @@ use app\backend\modules\order\observers\OrderObserver;
  * @property int uid
  * @property string order_sn
  * @property int price
- * @property int status_name
+ * @property string statusName
+ * @property string statusCode
  * @property int status
  * @property int pay_type_name
  * @property int pay_type_id
@@ -341,6 +342,11 @@ class Order extends BaseModel
         return $this->hasOne(OrderPay::class, 'order_id', 'id');
     }
 
+    public function getStatusCodeAttribute()
+    {
+        return config('shop-foundation.order.status')[$this->status];
+    }
+
     /**
      * 订单状态汉字
      * @return string
@@ -353,6 +359,7 @@ class Order extends BaseModel
         }
         return $statusName;
     }
+
 
     /**
      * 支付类型汉字
