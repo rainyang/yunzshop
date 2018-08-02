@@ -14,6 +14,7 @@ use app\common\models\Migration;
 use app\common\models\PayOrder;
 use app\common\models\PayRequestDataLog;
 use app\common\models\PayResponseDataLog;
+use app\common\modules\refund\services\RefundService;
 use app\frontend\modules\order\services\OrderService;
 use app\common\components\BaseController;
 use app\common\models\Member;
@@ -97,7 +98,7 @@ class TestController extends BaseController
 
     public function index()
     {
-        dd(Url::shopSchemeUrl('payment/wechat/notifyUrl.php'));
+        dd((new RefundService())->fastRefund(2419));
         exit;
 
         $orders = Order::whereIn('order_sn',['SN20180704160239Ps'])->get();;

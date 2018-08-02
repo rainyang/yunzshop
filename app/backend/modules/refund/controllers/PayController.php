@@ -45,7 +45,7 @@ class PayController extends BaseController
          * @var $this ->refundApply RefundApply
          */
 
-        $result = (new RefundService)->pay($request);
+        $result = (new RefundService)->pay($request['refund_id']);
         if (!$result) {
             throw new ShopException('操作失败');
         }
