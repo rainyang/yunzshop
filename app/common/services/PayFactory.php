@@ -101,6 +101,11 @@ class PayFactory
      */
     const WFT_ALIPAY = 21;
 
+    /**
+     * 环迅微信支付
+     */
+    const PAY_Huanxun_Wx = 22;
+
 
     public static function create($type = null)
     {
@@ -119,6 +124,7 @@ class PayFactory
                 $className = new CashPay();
                 break;
             case self::PAY_CLOUD_WEACHAT:
+            case self::PAY_CLOUD_ALIPAY:
                 if (!app('plugins')->isEnabled('cloud-pay')) {
                     throw new AppException('插件未开启');
                 }
@@ -135,19 +141,6 @@ class PayFactory
                 $className = new StorePay();
                 break;
             case self::PAY_YUN_WEACHAT:
-                if (!app('plugins')->isEnabled('yun-pay')) {
-                    throw new AppException('插件未开启');
-                }
-
-                $className = new \Yunshop\YunPay\services\YunPayService();
-                break;
-            case self::PAY_CLOUD_ALIPAY:
-                if (!app('plugins')->isEnabled('cloud-pay')) {
-                    throw new AppException('插件未开启');
-                }
-
-                $className = new \Yunshop\CloudPay\services\CloudPayService();
-                break;
             case self::PAY_YUN_ALIPAY:
                 if (!app('plugins')->isEnabled('yun-pay')) {
                     throw new AppException('插件未开启');
@@ -156,6 +149,7 @@ class PayFactory
                 $className = new \Yunshop\YunPay\services\YunPayService();
                 break;
             case self::PAY_Huanxun_Quick:
+            case self::PAY_Huanxun_Wx:
                 if (!app('plugins')->isEnabled('huanxun')) {
                     throw new AppException('插件未开启');
                 }
