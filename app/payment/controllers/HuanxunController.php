@@ -79,9 +79,11 @@ class HuanxunController extends PaymentController
 
             $xmlResult = new \SimpleXMLElement($paymentResult);
             $status   = $xmlResult->WxPayRsp->body->Status;
-            $order_no = $xmlResult->WxPayRsp->body->MerBillno;
             $amount   = $xmlResult->WxPayRsp->body->OrdAmt;
             $trade_no   = $xmlResult->WxPayRsp->body->IpsBillno;
+
+            $attach = explode(':', $xmlResult->WxPayRsp->body->MerBillno);
+            $order_no = $attach[0];
 
             if($this->getSignResult('wx')) {
                 if (strval($status) == "Y") {
@@ -184,11 +186,11 @@ class HuanxunController extends PaymentController
 
         $xmlResult = new \SimpleXMLElement($paymentResult);
         $status = $xmlResult->WxPayRsp->body->Status;
-        $order_no =$xmlResult->WxPayRsp->body->MerBillNo;
         $amount   = $xmlResult->WxPayRsp->body->Amount;
         $trade_no   = $xmlResult->WxPayRsp->body->IpsBillNo;
-
+        
         $attach = explode(':', $xmlResult->WxPayRsp->body->MerBillNo);
+        $order_no = $attach[0];
         \Log::debug('---------wx attach-----', $attach);
         if (isset($attach[1])) {
             $uniacid = $attach[1];
