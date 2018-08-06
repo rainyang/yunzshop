@@ -11,26 +11,14 @@ namespace app\backend\modules\withdraw\controllers;
 
 
 use app\backend\modules\withdraw\models\Withdraw;
-use app\common\components\BaseController;
 use app\common\exceptions\ShopException;
 use app\common\services\withdraw\AuditService;
 
-class AuditController extends BaseController
+class AuditController extends PreController
 {
     /**
-     * @var Withdraw
+     * 提现记录审核接口
      */
-    private $withdrawModel;
-
-
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->withdrawModel = $this->getWithdrawModel();
-    }
-
-
     public function index()
     {
         list($audit_ids, $invalid_ids, $rebut_ids) = $this->auditResult();
@@ -42,9 +30,9 @@ class AuditController extends BaseController
         $result = (new AuditService($this->withdrawModel))->withdrawAudit();
 
         if ($result == true) {
-            return $this->message('审核成功', yzWebUrl("finance.withdraw-detail.index", ['id' => $this->withdrawModel->id]));
+            return $this->message('审核成功', yzWebUrl("withdraw.detail.index", ['id' => $this->withdrawModel->id]));
         }
-        return $this->message('审核失败，请刷新重试', yzWebUrl("finance.withdraw-detail.index", ['id' => $this->withdrawModel->id]), 'error');
+        return $this->message('审核失败，请刷新重试', yzWebUrl("withdraw.detail.index", ['id' => $this->withdrawModel->id]), 'error');
     }
 
 
@@ -91,47 +79,10 @@ class AuditController extends BaseController
     }
 
 
-    /**
-     * @param Withdraw $withdrawModel
-     * @throws ShopException
-     */
-    private function validatorWithdrawModel(Withdraw $withdrawModel)
+    public function validatorWithdrawModel($withdrawModel)
     {
-        if (!$withdrawModel) {
-            throw new ShopException('数据不存在或已被删除!');
-        }
         if ($withdrawModel->status != Withdraw::STATUS_INITIAL && $withdrawModel->status != Withdraw::STATUS_INVALID) {
             throw new ShopException('状态错误，不符合审核规则！');
         }
-    }
-
-
-    /**
-     * @return Withdraw
-     * @throws ShopException
-     */
-    private function getWithdrawModel()
-    {
-        $withdraw_id = $this->getPostWithdrawId();
-
-        $withdrawModel = Withdraw::find($withdraw_id);
-
-        $this->validatorWithdrawModel($withdrawModel);
-
-        return $withdrawModel;
-    }
-
-
-    /**
-     * @return int
-     * @throws ShopException
-     */
-    private function getPostWithdrawId()
-    {
-        $withdraw_id = \YunShop::request()->id;
-        if (!$withdraw_id) {
-            throw new ShopException('参数错误');
-        }
-        return $withdraw_id;
     }
 }

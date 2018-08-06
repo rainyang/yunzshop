@@ -162,9 +162,9 @@ class HomePageController extends ApiController
                 $videoDemand = new VideoDemandCourseGoods();
                 $video_open  = $videoDemand->whetherEnabled();
 
-                foreach ($designer['data'] as &$value) {
-                    if ($value['temp'] == 'goods') {
-                        foreach ($value['data'] as &$info) {
+                foreach ($designer['data'] as &$value_one) {
+                    if ($value_one['temp'] == 'goods') {
+                        foreach ($value_one['data'] as &$info) {
                             $info['is_course'] = 0;
                             $info['img'] = replace_yunshop(yz_tomedia($info['img']));
                             if ($video_open) {

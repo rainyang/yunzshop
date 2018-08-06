@@ -1507,7 +1507,7 @@ return [
                                 'name'              => '订单备注',
                                 'url'               => 'order.remark.update-remark',
                                 'url_params'        => '',
-                                'permit'            => 1,
+                                'permit'            => 0,
                                 'menu'              => 0,
                                 'icon'              => '',
                                 'sort'              => 1,
@@ -2190,7 +2190,7 @@ return [
 
                     'withdraw_records_detail' => [
                         'name'              => '收入提现详情',
-                        'url'               => 'finance.withdraw-detail.index',
+                        'url'               => 'withdraw.detail.index',
                         'url_params'        => "",
                         'permit'            => 1,
                         'menu'              => 0,
@@ -2260,7 +2260,7 @@ return [
                         'parents'           => ['finance','withdraw_records'],
                     ],
 
-                    'withdraw_status_arrival' => [
+                    /*'withdraw_status_arrival' => [
                         'name'              => '已驳回',
                         'url'               => 'finance.withdraw-records.index',
                         'url_params'        => "&search[status]=3",
@@ -2270,7 +2270,7 @@ return [
                         'sort'              => 0,
                         'item'              => 'withdraw_status_arrival',
                         'parents'           => ['finance','withdraw_records'],
-                    ],
+                    ],*/
 
                     'withdraw_status_invalid' => [
                         'name'              => '无效提现',
