@@ -11,7 +11,7 @@ class AlipaySetting extends BaseSetting
 {
     public function canUse()
     {
-        return \Setting::get('shop.pay.alipay');
+        return \YunShop::request()->type != 2 && \Setting::get('shop.pay.alipay');
     }
     public function exist()
     {
