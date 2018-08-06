@@ -186,12 +186,12 @@ class HuanxunController extends PaymentController
 
         $xmlResult = new \SimpleXMLElement($paymentResult);
         $status = $xmlResult->WxPayRsp->body->Status;
-        $amount   = $xmlResult->WxPayRsp->body->Amount;
+        $amount   = $xmlResult->WxPayRsp->body->OrdAmt;
         $trade_no   = $xmlResult->WxPayRsp->body->IpsBillNo;
-        
-        $attach = explode(':', $xmlResult->WxPayRsp->body->MerBillNo);
+
+        $attach = explode(':', $xmlResult->WxPayRsp->body->MerBillno);
         $order_no = $attach[0];
-        \Log::debug('---------wx attach-----', $attach);
+
         if (isset($attach[1])) {
             $uniacid = $attach[1];
         }
@@ -212,7 +212,7 @@ class HuanxunController extends PaymentController
 
                 ];
 
-                //$this->payResutl($data);
+                $this->payResutl($data);
 
                 $url = Url::shopSchemeUrl("?menu#/member/payYes?i={$uniacid}");
 
