@@ -24,6 +24,7 @@ use app\common\models\refund\RefundApply;
 use app\common\modules\order\OrderOperationsCollector;
 use app\common\modules\payType\events\AfterOrderPayTypeChangedEvent;
 
+use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\services\status\StatusFactory;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -351,8 +352,15 @@ class Order extends BaseModel
     {
         return app('OrderManager')->setting('status')[$this->status];
     }
+
+    /**
+     * @return array
+     * @throws AppException
+     */
     public function getOperationsSetting(){
-        return app('OrderManager')->setting('member_order_operations')[$this->statusCode] ?: [];
+        if(MemberService::getCurrentMemberModel()->uid == $this->uid){
+            return app('OrderManager')->setting('member_order_operations')[$this->statusCode] ?: [];
+        }
     }
     /**
      * 订单状态汉字

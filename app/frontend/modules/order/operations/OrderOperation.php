@@ -21,7 +21,6 @@ abstract class OrderOperation
     const REFUND = 13; // 申请退款
     const REFUND_INFO = 18; // 已退款/退款中
     const COMMENTED = 19; // 已评价
-    const STORE_PAY = 20; // 确认核销(核销员)
     const REMITTANCE_RECORD = 21; // 转账信息
 
     /**
