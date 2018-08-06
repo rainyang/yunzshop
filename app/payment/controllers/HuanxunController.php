@@ -33,7 +33,17 @@ class HuanxunController extends PaymentController
             if ($_REQUEST['paymentResult']) {
                 $paymentResult = $_REQUEST['paymentResult'];
                 $xmlResult = new \SimpleXMLElement($paymentResult);
-                $uniacid = $xmlResult->GateWayRsp->body->Attach;
+
+                if (isset($xmlResult->GateWayRsp->body->Attach)) {
+                    $uniacid = $xmlResult->GateWayRsp->body->Attach;
+                } else {
+                    $attach = explode(':', $xmlResult->WxPayRsp->body->MerBillno);
+                    \Log::debug('---------wx attach-----', $attach);
+                    if (isset($attach[1])) {
+                        $uniacid = $attach[1];
+                    }
+                }
+
             }
 
             if ($_REQUEST['ipsResponse']) {
@@ -174,10 +184,16 @@ class HuanxunController extends PaymentController
 
         $xmlResult = new \SimpleXMLElement($paymentResult);
         $status = $xmlResult->WxPayRsp->body->Status;
-        $uniacid = $xmlResult->WxPayRsp->body->Attach;
         $order_no =$xmlResult->WxPayRsp->body->MerBillNo;
         $amount   = $xmlResult->WxPayRsp->body->Amount;
         $trade_no   = $xmlResult->WxPayRsp->body->IpsBillNo;
+
+        $attach = explode(':', $xmlResult->WxPayRsp->body->MerBillNo);
+        \Log::debug('---------wx attach-----', $attach);
+        if (isset($attach[1])) {
+            $uniacid = $attach[1];
+        }
+
 
         $url = Url::shopSchemeUrl("?menu#/member/payErr?i={$uniacid}");
 
