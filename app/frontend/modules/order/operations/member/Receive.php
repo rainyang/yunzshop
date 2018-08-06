@@ -5,9 +5,9 @@
  * Date: 2018/8/1
  * Time: 下午6:43
  */
-namespace app\frontend\models\order\member;
+namespace app\frontend\modules\order\operations\member;
 
-use app\frontend\models\order\OrderOperation;
+use app\frontend\modules\order\operations\OrderOperation;
 
 class Receive extends OrderOperation
 {
@@ -18,6 +18,10 @@ class Receive extends OrderOperation
 
     public function getValue()
     {
-        return 5;
+        return static::COMPLETE;
+    }
+    public function enable()
+    {
+        return true;
     }
 }

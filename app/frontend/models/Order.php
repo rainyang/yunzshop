@@ -8,12 +8,16 @@
 namespace app\frontend\models;
 
 use app\frontend\models\Member;
+use app\frontend\modules\refund\models\RefundApply;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Class Order
  * @package app\frontend\models
  * @property Member belongsToMember
+ * @property Carbon finish_time
+ * @property int refund_id
  */
 class Order extends \app\common\models\Order
 {

@@ -8,10 +8,37 @@
 
 return array(
     'member_order_operations' => [
-        'waitPay' => [app\frontend\models\order\member\Pay::class, app\frontend\models\order\member\Close::class],
-        'waitSend' => [\app\frontend\models\order\member\ExpressInfo::class],
-        'waitReceive' => [\app\frontend\models\order\member\Receive::class],
-        'complete' => [\app\frontend\models\order\member\Delete::class],
+        'waitPay' => [
+            \app\frontend\modules\order\operations\member\Pay::class,
+            \app\frontend\modules\order\operations\member\Close::class,
+        ],
+        'waitSend' => [
+            \app\frontend\modules\order\operations\member\ApplyRefund::class,
+            \app\frontend\modules\order\operations\member\Refunding::class,
+            \app\frontend\modules\order\operations\member\Refunded::class,
+
+        ],
+        'waitReceive' => [
+            \app\frontend\modules\order\operations\member\ExpressInfo::class,
+            \app\frontend\modules\order\operations\member\Receive::class,
+            \app\frontend\modules\order\operations\member\ApplyRefund::class,
+            \app\frontend\modules\order\operations\member\Refunding::class,
+            \app\frontend\modules\order\operations\member\Refunded::class,
+        ],
+        'complete' => [
+            \app\frontend\modules\order\operations\member\ExpressInfo::class,
+            \app\frontend\modules\order\operations\member\Delete::class,
+            \app\frontend\modules\order\operations\member\ApplyRefund::class,
+            \app\frontend\modules\order\operations\member\Refunding::class,
+            \app\frontend\modules\order\operations\member\Refunded::class,
+
+        ],
+        'close' => [
+            \app\frontend\modules\order\operations\member\ExpressInfo::class,
+            \app\frontend\modules\order\operations\member\Delete::class,
+            \app\frontend\modules\order\operations\member\Refunded::class,
+        ],
+
     ],
     'status' => [
         0 => 'waitPay',

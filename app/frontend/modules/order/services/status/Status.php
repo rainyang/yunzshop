@@ -17,13 +17,8 @@ abstract class Status
     const EXPRESS = 8; // 查看物流
     const CANCEL = 9; // 取消订单
     const COMMENT = 10; // 评论
-    //const ADD_COMMENT = 11;
     const DELETE = 12; // 删除订单
     const REFUND = 13; // 申请退款
-    //const VERIFY = 14;
-    //const AFTER_SALES = 15;
-    //const IN_REFUND = 16;
-    //const IN_AFTER_SALE = 17;
     const REFUND_INFO = 18; // 已退款/退款中
     const COMMENTED = 19; // 已评价
     const STORE_PAY = 20; // 确认核销(核销员)

@@ -12,6 +12,12 @@ use app\common\models\BaseModel;
 use app\common\models\Order;
 use Illuminate\Database\Eloquent\Builder;
 
+/**
+ * Class RefundApply
+ * @package app\common\models\refund
+ * @property int status
+ * @property Order order
+ */
 class RefundApply extends BaseModel
 {
     protected $table = 'yz_order_refund';
@@ -174,7 +180,7 @@ class RefundApply extends BaseModel
     }
 
     public function getIsPlugin($order_id) {
-        return \app\common\models\Order::where('id',$order_id)->select('is_plugin','plugin_id')->first();
+        return Order::where('id',$order_id)->select('is_plugin','plugin_id')->first();
     }
 
     public function getSupplierId($order_id) {
@@ -253,7 +259,7 @@ class RefundApply extends BaseModel
      */
     public function order()
     {
-        return $this->belongsTo(\app\common\models\Order::class, 'order_id', 'id');
+        return $this->belongsTo(Order::class, 'order_id', 'id');
     }
 
     protected static function boot()

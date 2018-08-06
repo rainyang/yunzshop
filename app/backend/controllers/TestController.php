@@ -24,7 +24,7 @@ class TestController extends BaseController
 {
     public function index()
     {
-        app('OrderManager')->make(OrderOperationsCollector::class)->getOperations(Order::find(2419));
+
     }
 
     public function d()

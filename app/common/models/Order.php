@@ -21,9 +21,11 @@ use app\common\models\order\OrderSetting;
 use app\common\models\order\Plugin;
 use app\common\models\order\Remark;
 use app\common\models\refund\RefundApply;
+use app\common\modules\order\OrderOperationsCollector;
 use app\common\modules\payType\events\AfterOrderPayTypeChangedEvent;
 
 use app\frontend\modules\order\services\status\StatusFactory;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
@@ -46,11 +48,14 @@ use app\backend\modules\order\observers\OrderObserver;
  * @property int is_pending
  * @property int is_virtual
  * @property int dispatch_type_id
+ * @property int refund_id
  * @property Collection orderGoods
  * @property Member belongsToMember
  * @property Collection orderPays
  * @property OrderPay hasOneOrderPay
  * @property PayType hasOnePayType
+ * @property RefundApply hasOneRefundApply
+ * @property Carbon finish_time
  */
 class Order extends BaseModel
 {
@@ -344,9 +349,11 @@ class Order extends BaseModel
 
     public function getStatusCodeAttribute()
     {
-        return config('shop-foundation.order.status')[$this->status];
+        return app('OrderManager')->setting('status')[$this->status];
     }
-
+    public function getOperationsSetting(){
+        return app('OrderManager')->setting('member_order_operations')[$this->statusCode] ?: [];
+    }
     /**
      * 订单状态汉字
      * @return string
@@ -380,15 +387,17 @@ class Order extends BaseModel
      */
     public function getButtonModelsAttribute()
     {
-
-        //$result = $this->getStatusService()->getButtonModels();
         $result = $this->memberButtons();
         return $result;
     }
-
+    public function getOldButtonModelsAttribute()
+    {
+        $result = $this->getStatusService()->getButtonModels();
+        return $result;
+    }
     private function memberButtons()
     {
-
+        return app('OrderManager')->make(OrderOperationsCollector::class)->getOperations($this);
     }
 
     /**
@@ -603,5 +612,55 @@ class Order extends BaseModel
         }
 
         return $result;
+    }
+
+    /**
+     * 已退款
+     * @return bool
+     */
+    public function isRefunded(){
+        // 存在处理中的退款申请
+        if(empty($this->refund_id) || !isset($this->hasOneRefundApply)){
+            return false;
+        }
+        if($this->hasOneRefundApply->isRefunded()){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 退款中
+     * @return bool
+     */
+    public function isRefunding(){
+        // 存在处理中的退款申请
+        if(!empty($this->refund_id) || !isset($this->hasOneRefundApply)){
+            return false;
+        }
+        if($this->hasOneRefundApply->isRefunding()){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 可以退款
+     * @return bool
+     */
+    public function canRefund(){
+        // 完成后不许退款
+        if (\Setting::get('shop.trade.refund_days') === '0') {
+            return false;
+        }
+        // 完成后n天不许退款
+        if ($this->status == self::COMPLETE && $this->finish_time->diffInDays() > \Setting::get('shop.trade.refund_days')) {
+            return false;
+        }
+        // 存在处理中的退款申请
+        if(!empty($this->refund_id) || isset($this->hasOneRefundApply)){
+            return false;
+        }
+        return true;
     }
 }

@@ -5,9 +5,10 @@
  * Date: 2018/8/1
  * Time: 下午6:43
  */
-namespace app\frontend\models\order\member;
 
-use app\frontend\models\order\OrderOperation;
+namespace app\frontend\modules\order\operations\member;
+
+use app\frontend\modules\order\operations\OrderOperation;
 
 class Send extends OrderOperation
 {
@@ -18,6 +19,12 @@ class Send extends OrderOperation
 
     public function getValue()
     {
-        return 9;
+        return ;
+    }
+
+    public function enable()
+    {
+
+        return true;
     }
 }

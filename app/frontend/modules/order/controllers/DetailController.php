@@ -20,6 +20,12 @@ use app\common\services\goods\VideoDemandCourseGoods;
 
 class DetailController extends ApiController
 {
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     * @throws \app\common\exceptions\ShopException
+     */
     public function index(Request $request)
     {
         $this->validate([

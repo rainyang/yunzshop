@@ -5,9 +5,10 @@
  * Date: 2018/8/1
  * Time: 下午6:43
  */
-namespace app\frontend\models\order\member;
+namespace app\frontend\modules\order\operations\member;
 
-use app\frontend\models\order\OrderOperation;
+use app\frontend\modules\order\operations\OrderOperation;
+use app\common\models\DispatchType;
 
 class ExpressInfo extends OrderOperation
 {
@@ -18,6 +19,18 @@ class ExpressInfo extends OrderOperation
 
     public function getValue()
     {
-        return 8;
+        return static::EXPRESS;
+    }
+    public function enable()
+    {
+        // 虚拟
+        if ($this->order->isVirtual()) {
+            return false;
+        }
+        // 门店自提
+        if (in_array($this->order->dispatch_type_id, [DispatchType::SELF_DELIVERY])) {
+            return false;
+        }
+        return true;
     }
 }

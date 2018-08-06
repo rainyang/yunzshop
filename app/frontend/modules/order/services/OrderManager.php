@@ -20,6 +20,7 @@ use Illuminate\Container\Container;
 
 class OrderManager extends Container
 {
+    private $setting;
     public function __construct()
     {
         $this->bindModels();
@@ -30,7 +31,12 @@ class OrderManager extends Container
         $this->singleton(OrderOperationsCollector::class, function ($orderManager) {
             return new OrderOperationsCollector();
         });
+        $this->setting = config('shop-foundation.order');
+    }
 
+    public function setting($key = null)
+    {
+        return array_get($this->setting,$key);
     }
 
     private function bindModels()
@@ -66,8 +72,6 @@ class OrderManager extends Container
         $this->bind('MemberCart', function ($orderManager, $attributes) {
             return new MemberCart($attributes);
         });
-
-
 
 
     }

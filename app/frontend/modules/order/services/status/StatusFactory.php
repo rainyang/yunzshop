@@ -74,19 +74,13 @@ class StatusFactory
      */
     private function waitSend()
     {
-        if (app('plugins')->isEnabled('store-cashier') && $this->order->plugin_id == Store::PLUGIN_ID) {
-            //门店订单
-            return (new \Yunshop\StoreCashier\common\order\status\WaitSend())->handle($this->order);
 
-        } else {
             // 正常订单
             return new WaitSend($this->order);
-        }
     }
 
     /**
-     * @return WaitReceive|\Yunshop\StoreCashier\common\order\status\member\MemberWaitReceive|\Yunshop\StoreCashier\common\order\status\store\StoreWaitPay|\Yunshop\StoreCashier\common\order\status\verifier\VerifierWaitReceive
-     * @throws \app\common\exceptions\AppException
+     * @return WaitReceive|\Yunshop\StoreCashier\common\order\status\MemberWaitReceive|\Yunshop\StoreCashier\common\order\status\VerifierWaitReceive
      */
     private function waitReceive()
     {

@@ -2,29 +2,31 @@
 /**
  * Created by PhpStorm.
  * User: shenyang
- * Date: 2018/8/1
- * Time: 下午6:43
+ * Date: 2018/8/2
+ * Time: 下午5:37
  */
+
 namespace app\frontend\modules\order\operations\member;
 
+
+use app\common\models\PayType;
 use app\frontend\modules\order\operations\OrderOperation;
 
-class Pay extends OrderOperation
+class RemittanceRecord extends OrderOperation
 {
     public function getName()
     {
-        return '支付';
+        return '转账信息';
     }
-
     public function getValue()
     {
-        return static::PAY;
+        return static::REMITTANCE_RECORD;
     }
     public function enable()
     {
-        if($this->order->isPending()){
-            return false;
+        if($this->order->pay_type_id == PayType::REMITTANCE){
+            return true;
         }
-        return true;
+        return false;
     }
 }

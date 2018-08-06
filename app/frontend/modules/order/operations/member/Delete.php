@@ -6,9 +6,9 @@
  * Time: 下午6:43
  */
 
-namespace app\frontend\models\order\member;
+namespace app\frontend\modules\order\operations\member;
 
-use app\frontend\models\order\OrderOperation;
+use app\frontend\modules\order\operations\OrderOperation;
 
 class Delete extends OrderOperation
 {
@@ -19,6 +19,11 @@ class Delete extends OrderOperation
 
     public function getValue()
     {
-        return 12;
+        return static::DELETE;
+    }
+
+    public function enable()
+    {
+        return true;
     }
 }

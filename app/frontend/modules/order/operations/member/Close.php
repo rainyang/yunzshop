@@ -6,9 +6,9 @@
  * Time: 下午6:43
  */
 
-namespace app\frontend\models\order\member;
+namespace app\frontend\modules\order\operations\member;
 
-use app\frontend\models\order\OrderOperation;
+use app\frontend\modules\order\operations\OrderOperation;
 
 class Close extends OrderOperation
 {
@@ -19,6 +19,11 @@ class Close extends OrderOperation
 
     public function getValue()
     {
-        return 9;
+        return static::CANCEL;
+    }
+
+    public function enable()
+    {
+        return true;
     }
 }
