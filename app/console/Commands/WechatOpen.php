@@ -65,7 +65,7 @@ class WechatOpen extends Command
 
     private function requestWechatApi($uniacid, $member_info, $global_token)
     {
-        if (!is_null($member_info)) {
+        if (!is_null($member_info) && !is_null($member_info)) {
             $time = time();
             $path = 'logs/' . $time . '_member_openid.log';
             $upgrade_path = 'logs/' . $time . '_upgrade_member_openid.log';
