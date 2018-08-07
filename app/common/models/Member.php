@@ -3,7 +3,6 @@
 namespace app\common\models;
 
 use app\backend\models\BackendModel;
-use app\backend\modules\member\models\MemberRelation;
 use app\common\events\member\BecomeAgent;
 use app\common\repositories\OptionRepository;
 use app\common\services\PluginManager;
@@ -577,6 +576,8 @@ class Member extends BackendModel
      */
     public static function setMemberRelation($uid, $mid = '')
     {
+        $curr_arr = [];
+
         $model = MemberShopInfo::getMemberShopInfo($uid);
 
         if (empty($mid)) {
@@ -621,8 +622,9 @@ class Member extends BackendModel
         }
 
         $model->relation = $relation_str;
+        $model->save();
 
-        return $model->save();
+        return $curr_arr;
     }
 
     public static function getOpenIdForType($member_id, $type = null)

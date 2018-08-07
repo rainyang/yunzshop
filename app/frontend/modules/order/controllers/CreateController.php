@@ -20,10 +20,8 @@ class CreateController extends PreOrderController
 {
     protected function getMemberCarts()
     {
-        //dd(Request::query('goods'));
         $goods_params = json_decode(request()->input('goods'),true);
         return collect($goods_params)->map(function ($memberCart) {
-            //dd($memberCart);exit;
             return MemberCartService::newMemberCart($memberCart);
         });
     }

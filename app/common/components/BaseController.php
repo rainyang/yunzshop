@@ -100,6 +100,10 @@ class BaseController extends Controller
             $session_id = \YunShop::request()->session_id;
         }
 
+        if (isset($session_id) && isset($_COOKIE[session_name()]) && $session_id != $_COOKIE[session_name()]) {
+            $session_id = $_COOKIE[session_name()];
+        }
+
         if (empty($session_id)) {
             $session_id = $_COOKIE[session_name()];
         }
