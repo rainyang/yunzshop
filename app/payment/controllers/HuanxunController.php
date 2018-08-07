@@ -97,7 +97,7 @@ class HuanxunController extends PaymentController
                         'pay_type_id'     => 22
                     ];
 
-                    $this->payResutl($data);
+                   // $this->payResutl($data);
                     \Log::debug('----结束----');
                     echo 'SUCCESS';
                 } elseif (strval($status) == "N") {
@@ -141,7 +141,7 @@ class HuanxunController extends PaymentController
 
                     ];
 
-                    $this->payResutl($data);
+                   // $this->payResutl($data);
                     \Log::debug('----结束----');
                     echo 'SUCCESS';
                 } elseif (strval($status) == "N") {
