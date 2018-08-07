@@ -506,6 +506,7 @@ class MemberCouponController extends ApiController
                 //按前端要求, 需要返回和 couponsForMember() 方法完全一致的数据
                 $coupon = Coupon::getCouponsForMember($memberId, $member->level_id, $couponId)->get()->toArray();
                 $res = self::getCouponData(['data' => $coupon], $member->level_id);
+                $res['data'][0]['coupon_id'] = $couponId;
                 return $this->successJson('ok', $res['data'][0]);
             }
         }
