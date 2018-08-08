@@ -88,20 +88,20 @@
             Tip.focus("#goodsname", "商品名称不能超过40个字符!");
             return false;
         }
-        if ($(':input[name="category[parentid]"]').val() == 0) {
+        if ($(':input[name="category[parentid][]"]').val() == 0) {
             $('#myTab a[href="#tab_basic"]').tab('show');
-            Tip.focus(':input[name="category[parentid]"]', "请选择一级分类!");
+            Tip.focus(':input[name="category[parentid][]"]', "请选择一级分类!");
             return false;
         }
-        if ($(':input[name="category[childid]"]').val() == 0) {
+        if ($(':input[name="category[childid][]"]').val() == 0) {
             $('#myTab a[href="#tab_basic"]').tab('show');
-            Tip.focus(':input[name="category[childid]"]', "请选择二级分类!");
+            Tip.focus(':input[name="category[childid][]"]', "请选择二级分类!");
             return false;
         }
         @if($shopset['cat_level'] == 3)
-        if ($(':input[name="category[thirdid]"]').val() == 0) {
+        if ($(':input[name="category[thirdid][]"]').val() == 0) {
             $('#myTab a[href="#tab_basic"]').tab('show');
-            Tip.focus(':input[name="category[thirdid]"]', "请选择三级分类!");
+            Tip.focus(':input[name="category[thirdid][]"]', "请选择三级分类!");
             return false;
         }
         @endif
