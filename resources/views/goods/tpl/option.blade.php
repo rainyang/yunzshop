@@ -302,7 +302,8 @@
                 goodssn: "",
                 virtual: virtuals,
                 redprice: "",
-                thumb: ""
+                thumb: "",
+                url: "",
             };
             if ($(".option_id_" + ids).length > 0) {
                 val = {
@@ -317,7 +318,8 @@
                     weight: $(".option_weight_" + ids + ":eq(0)").val(),
                     virtual: virtuals,
                     redprice: $(".option_redprice_" + ids + ":eq(0)").val(),
-                    thumb: $(".option_thumb_" + ids + ":eq(0)").attr('url'),
+                    thumb: $(".option_thumb_" + ids + ":eq(0)").val(),
+                    url: $(".option_thumb_" + ids + ":eq(0)").attr('url'),
                 }
                 // console.log(val);
             }
@@ -341,7 +343,7 @@
             hh += '<td class="danger"><input name="option_productsn_' + ids + '[]" type="text" class="form-control option_productsn option_productsn_' + ids + '" " value="' + (val.productsn == 'undefined' ? '' : val.productsn ) + '"/></td>';
             hh += '<td class="info"><input name="option_weight_' + ids + '[]" type="text" class="form-control option_weight option_weight_' + ids + '" " value="' + (val.weight == 'undefined' ? '' : val.weight ) + '"/></td>';
 
-            hh += '<td class="info"><div class="input-group"><input name="option_thumb_' + ids + '[]"  type="hidden" class="option_thumb_' + ids + '" url="'+(val.thumb == 'undefined' ? '' : val.thumb )+'" value="'+(val.thumb == 'undefined' ? '' : val.thumb )+'"/><span><button style="display:none" class="btn btn-default" onclick="showImageDialog(this);" type="button"></button></span></div><div class="input-group" onclick="tu(this)" style="margin-top:.5em;"><img src="'+(val.thumb == 'undefined' ? '' : val.thumb )+'" onerror="this.src=\'/addons/yun_shop/static/resource/images/nopic.jpg\'; this.title=\'图片未找到.\'" class="img-responsive img-thumbnail" style="width:50px;height:50px"></div></td>';
+            hh += '<td class="info"><div class="input-group"><input name="option_thumb_' + ids + '[]"  type="hidden" class="option_thumb_' + ids + '" url="'+(val.url == 'undefined' ? '' : val.url )+'" value="'+(val.thumb == 'undefined' ? '' : val.thumb )+'"/><span><button style="display:none" class="btn btn-default" onclick="showImageDialog(this);" type="button"></button></span></div><div class="input-group" onclick="tu(this)" style="margin-top:.5em;"><img src="'+(val.url == 'undefined' ? '' : val.url )+'" onerror="this.src=\'/addons/yun_shop/static/resource/images/nopic.jpg\'; this.title=\'图片未找到.\'" class="img-responsive img-thumbnail" style="width:50px;height:50px"></div></td>';
 
             hh += "</tr>";
 

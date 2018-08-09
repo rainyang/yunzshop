@@ -11,9 +11,13 @@ namespace app\backend\modules\finance\controllers;
 
 use app\backend\modules\finance\models\Withdraw;
 use app\backend\modules\finance\services\WithdrawService;
+use app\backend\modules\withdraw\controllers\AgainPayController;
+use app\backend\modules\withdraw\controllers\AuditController;
+use app\backend\modules\withdraw\controllers\ConfirmPayController;
+use app\backend\modules\withdraw\controllers\PayController;
 use app\common\components\BaseController;
-use app\common\events\finance\AfterIncomeWithdrawCheckEvent;
-use app\common\events\finance\AfterIncomeWithdrawPayEvent;
+use app\common\events\withdraw\WithdrawAuditedEvent;
+use app\common\events\withdraw\WithdrawPayedEvent;
 use app\common\exceptions\AppException;
 use app\common\models\Income;
 use Illuminate\Support\Facades\DB;
@@ -28,23 +32,31 @@ class WithdrawController extends BaseController
     {
         $resultData = \YunShop::request();
         if (isset($resultData['submit_check'])) {
-            //提交审核
-            //dd($resultData);
-            $result = $this->submitCheck($resultData['id'], $resultData['audit']);
-            return $this->message($result['msg'], yzWebUrl("finance.withdraw-detail.index", ['id' => $resultData['id']]));
-
+            //审核
+           return (new AuditController())->index();
         } elseif (isset($resultData['submit_pay'])) {
             //打款
-            $result = $this->submitPay($resultData['id'], $resultData['pay_way']);
-            return $this->message($result['msg'], yzWebUrl("finance.withdraw-detail.index", ['id' => $resultData['id']]));
-
+            return (new PayController())->index();
         } elseif (isset($resultData['submit_cancel'])) {
             //重新审核
-            $result = $this->submitCancel($resultData['id'], $resultData['audit']);
-            return $this->message($result['msg'], yzWebUrl("finance.withdraw-detail.index", ['id' => $resultData['id']]));
+            return (new AuditController())->index();
+        } elseif (isset($resultData['confirm_pay'])) {
+            return (new ConfirmPayController())->index();
+            //确认打款
+        } elseif (isset($resultData['again_pay'])) {
+            //重新打款
+            return (new AgainPayController())->index();
         }
+
         return $this->message('提交数据有误，请刷新重试', yzWebUrl("finance.withdraw-detail.index", ['id' => $resultData['id']]));
     }
+
+
+
+    
+
+
+
 
     public function submitCheck($withdrawId, $incomeData)
     {
@@ -224,7 +236,7 @@ class WithdrawController extends BaseController
 
             $withdraw->pay_status = 1;
             //审核通知事件
-            event(new AfterIncomeWithdrawPayEvent($withdraw));
+            event(new WithdrawPayedEvent($withdraw));
 
             $updatedData = ['pay_at' => time()];
             Withdraw::updatedWithdrawStatus($withdrawId, $updatedData);
@@ -345,12 +357,13 @@ class WithdrawController extends BaseController
         $this->withdrawModel->actual_amounts = $actual_amounts - $this->getActualPoundage($actual_amounts) - $this->getActualServiceTax($actual_amounts);
 
 
-        event(new AfterIncomeWithdrawCheckEvent($this->withdrawModel));
         $result = $this->withdrawModel->save();
         if ($result !== true) {
             DB::rollBack();
             return ['msg' => '审核失败：记录修改失败!'];
         }
+
+        event(new WithdrawAuditedEvent($this->withdrawModel));
 
         DB::commit();
         return ['msg' => '审核成功!'];

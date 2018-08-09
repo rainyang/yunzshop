@@ -9,6 +9,7 @@
 namespace app\frontend\modules\member\controllers;
 
 use app\common\components\ApiController;
+use app\common\helpers\Client;
 use app\common\helpers\Url;
 use app\common\models\MemberGroup;
 use app\common\models\MemberLevel;
@@ -26,6 +27,7 @@ use iscms\Alisms\SendsmsPusher as Sms;
 use app\common\exceptions\AppException;
 use Mews\Captcha\Captcha;
 use app\common\facades\Setting;
+use app\common\services\alipay\OnekeyLogin;
 
 class RegisterController extends ApiController
 {
@@ -191,10 +193,17 @@ class RegisterController extends ApiController
             return $this->errorJson('请填入手机号');
         }
 
-        $info = MemberModel::getId(\YunShop::app()->uniacid, $mobile);
+        $type = \YunShop::request()->type;
+        if (empty($type)) {
+            $type = Client::getType();
+        }
 
-        if (!empty($info) && empty($reset_pwd)) {
-            return $this->errorJson('该手机号已被注册！不能获取验证码');
+        if (!OnekeyLogin::alipayPluginMobileState() || $type == 5) {
+            $info = MemberModel::getId(\YunShop::app()->uniacid, $mobile);
+
+            if (!empty($info) && empty($reset_pwd)) {
+                return $this->errorJson('该手机号已被注册！不能获取验证码');
+            }
         }
         $code = rand(1000, 9999);
 

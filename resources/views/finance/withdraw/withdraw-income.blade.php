@@ -106,6 +106,43 @@
     </div>
 </div>
 
+@if(app('plugins')->isEnabled('huanxun'))
+<div class="tab-pane  active">
+    <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现到环迅支付</label>
+        <div class="col-sm-9 col-xs-12">
+            <label class='radio-inline'>
+                <input type='radio' name='withdraw[income][huanxun]' value='1' @if($set['huanxun'] == 1) checked @endif />
+                开启
+            </label>
+            <label class='radio-inline'>
+                <input type='radio' name='withdraw[income][huanxun]' value='0' @if($set['huanxun'] == 0) checked @endif />
+                关闭
+            </label>
+            <span class='help-block'>提现到环迅支付，支持收入提现免审核</span>
+        </div>
+    </div>
+</div>
+@endif
+
+@if(app('plugins')->isEnabled('eup-pay'))
+    <div class="tab-pane  active">
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现到EUP</label>
+            <div class="col-sm-9 col-xs-12">
+                <label class='radio-inline'>
+                    <input type='radio' name='withdraw[income][eup_pay]' value='1' @if($set['eup_pay'] == 1) checked @endif />
+                    开启
+                </label>
+                <label class='radio-inline'>
+                    <input type='radio' name='withdraw[income][eup_pay]' value='0' @if($set['eup_pay'] == 0) checked @endif />
+                    关闭
+                </label>
+            </div>
+        </div>
+    </div>
+@endif
+
 <div class="tab-pane  active">
     <div class="form-group">
         <label class="col-xs-12 col-sm-3 col-md-2 control-label">手动提现</label>
@@ -122,6 +159,7 @@
         </div>
     </div>
 </div>
+
 
 <div id='manual_type' @if(empty($set['manual']))style="display:none"@endif>
     <div class="form-group">
@@ -170,7 +208,7 @@
                 <input type='radio' name='withdraw[income][free_audit]' value='0' @if($set['free_audit'] == 0) checked @endif />
                 关闭
             </label>
-            <span class='help-block'>收入提现自动审核、自动打款（自动打款只支持提现到余额、提现到微信两种方式！）</span>
+            <span class='help-block'>收入提现自动审核、自动打款（自动打款只支持提现到余额、提现到微信、提现到环迅支付三种方式！）</span>
         </div>
     </div>
 </div>

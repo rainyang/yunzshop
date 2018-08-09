@@ -62,10 +62,11 @@ class BaseController extends Controller
 
     /**
      * 后台url参数验证
-     * @param \Request $request
      * @param array $rules
+     * @param \Request|null $request
      * @param array $messages
      * @param array $customAttributes
+     * @throws ShopException
      */
     public function validate(array $rules, \Request $request = null, array $messages = [], array $customAttributes = [])
     {
@@ -99,6 +100,10 @@ class BaseController extends Controller
             $session_id = \YunShop::request()->session_id;
         }
 
+        if (isset($session_id) && isset($_COOKIE[session_name()]) && $session_id != $_COOKIE[session_name()]) {
+            $session_id = $_COOKIE[session_name()];
+        }
+
         if (empty($session_id)) {
             $session_id = $_COOKIE[session_name()];
         }
@@ -113,8 +118,9 @@ class BaseController extends Controller
 
         session_id($session_id);
 
-        load()->classs('wesession'); 
-        \WeSession::start(\YunShop::app()->uniacid, CLIENT_IP, self::COOKIE_EXPIRE);
+        //load()->classs('wesession');
+        //\WeSession::start(\YunShop::app()->uniacid, CLIENT_IP, self::COOKIE_EXPIRE);
+        WeSession::start(\YunShop::app()->uniacid, CLIENT_IP, self::COOKIE_EXPIRE);
     }
 
     /**

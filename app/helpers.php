@@ -106,7 +106,7 @@ use Ixudra\Curl\Facades\Curl;
                             var videoType = video.isRemote ? 'iframe' : 'video';
                             editor.execCommand('insertvideo', {
                                 'url' : video.url,
-                                'width' : 300,
+                                'width' : '100%',
                                 'height' : 200
                             }, videoType);
                         }
@@ -229,14 +229,24 @@ if (!function_exists("tomedia")) {
 
 function yz_tomedia($src, $local_path = false)
 {
+    global $_W;
     $setting = \setting_load();
-
     if (empty($src)) {
         return '';
     }
     if (strexists($src, 'addons/')) {
         return request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/addons/'));
     }
+    //判断是否是本地带域名图片地址
+    $local = strtolower($src);
+    if (strexists($src, '/attachment/')) {
+        if (strexists($local, 'http://') || strexists($local, 'https://') || substr($local, 0, 2) == '//') {
+            return $src;
+        } else {
+            return request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/attachment/'));
+        }
+    }
+
     //如果远程地址中包含本地host也检测是否远程图片
     if (strexists($src, request()->getSchemeAndHttpHost()) && !strexists($src, '/addons/')) {
         $urls = parse_url($src);
@@ -247,7 +257,7 @@ function yz_tomedia($src, $local_path = false)
         return $src;
     }
 
-    if ($local_path || empty($setting['remote']['type']) || file_exists(base_path('../../') . '/' . YunShop::app()->config['upload']['attachdir'] . '/' . $src)) {
+    if ($local_path || empty($setting['remote']['type']) || file_exists(base_path('../../') . '/' . $_W['config']['upload']['attachdir'] . '/' . $src)) {
         $src = request()->getSchemeAndHttpHost() . '/attachment/' . $src;
     } else {
         if ($setting['remote']['type'] == 1) {
@@ -290,7 +300,7 @@ if (!function_exists("set_medias")) {
     {
         if (empty($fields)) {
             foreach ($list as &$row) {
-                $row = tomedia($row);
+                $row = yz_tomedia($row);
             }
             return $list;
         }
@@ -301,10 +311,10 @@ if (!function_exists("set_medias")) {
             foreach ($list as $key => &$value) {
                 foreach ($fields as $field) {
                     if (isset($list[$field])) {
-                        $list[$field] = tomedia($list[$field]);
+                        $list[$field] = yz_tomedia($list[$field]);
                     }
                     if (is_array($value) && isset($value[$field])) {
-                        $value[$field] = tomedia($value[$field]);
+                        $value[$field] = yz_tomedia($value[$field]);
                     }
                 }
             }
@@ -312,7 +322,7 @@ if (!function_exists("set_medias")) {
         } else {
             foreach ($fields as $field) {
                 if (isset($list[$field])) {
-                    $list[$field] = tomedia($list[$field]);
+                    $list[$field] = yz_tomedia($list[$field]);
                 }
             }
             return $list;

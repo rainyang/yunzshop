@@ -134,6 +134,13 @@ class MemberCart extends \app\common\models\MemberCart
     }
 
     /**
+     * @return MemberCartCollection
+     * @throws AppException
+     */
+    protected function getAllMemberCarts(){
+        return (new MemberCartCollection(MemberService::getCurrentMemberModel()->memberCarts));
+    }
+    /**
      * 购物车验证
      * @throws AppException
      */
@@ -142,7 +149,8 @@ class MemberCart extends \app\common\models\MemberCart
         if (!isset($this->goods)) {
             throw new AppException('(ID:' . $this->goods_id . ')未找到商品或已经删除');
         }
-        (new MemberCartCollection(MemberService::getCurrentMemberModel()->memberCarts))->validate();
+
+        //$this->getAllMemberCarts()->validate();
         //商品基本验证
         $this->goods->generalValidate($this->total);
 

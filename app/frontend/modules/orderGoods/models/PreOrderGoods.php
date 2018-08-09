@@ -131,7 +131,7 @@ class PreOrderGoods extends OrderGoods
             'goods_sn' => $this->goods->goods_sn,
             'total' => $this->total,
             'title' => $this->goods->title,
-            'thumb' => $this->goods->thumb,
+            'thumb' => yz_tomedia($this->goods->thumb),
             'goods_price' => $this->getGoodsPrice(),
             'price' => $this->getPrice(),
             'goods_cost_price' => $this->getGoodsCostPrice(),

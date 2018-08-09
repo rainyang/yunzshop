@@ -137,17 +137,19 @@ class BalanceController extends ApiController
         $result = (new BalanceService())->rechargeSet() ? $this->rechargeStart() : '未开启余额充值';
         if ($result === true) {
             $type = intval(\YunShop::request()->pay_type);
-            if ($type == PayFactory::PAY_WEACHAT || $type == PayFactory::PAY_YUN_WEACHAT) {
+            if ($type == PayFactory::PAY_WEACHAT
+                || $type == PayFactory::PAY_YUN_WEACHAT
+                || $type == PayFactory::PAY_Huanxun_Quick
+                || $type == PayFactory::PAY_Huanxun_Wx
+            ) {
                 return  $this->successJson('支付接口对接成功', array_merge(['ordersn' => $this->model->ordersn], $this->payOrder()));
+            }
+            //app支付宝支付添加新支付配置
+            if ($type == PayFactory::PAY_APP_ALIPAY) {
+                $isnewalipay = \Setting::get('shop_app.pay.newalipay');
+                return $this->successJson('支付接口对接成功', ['ordersn' => $this->model->ordersn, 'isnewalipay' => $isnewalipay]);
             } else {
-                //app支付宝支付添加新支付配置
-                if ($type == PayFactory::PAY_APP_ALIPAY) {
-                    $isnewalipay = \Setting::get('shop_app.pay.newalipay');
-                    return $this->successJson('支付接口对接成功', ['ordersn' => $this->model->ordersn, 'isnewalipay' => $isnewalipay]);
-                } else {
-                    return $this->successJson('支付接口对接成功', ['ordersn' => $this->model->ordersn]);
-                }
-
+                return $this->successJson('支付接口对接成功', ['ordersn' => $this->model->ordersn]);
             }
         }
         //app支付宝新旧版值
@@ -373,6 +375,10 @@ class BalanceController extends ApiController
         );
         if ($this->model->type == PayFactory::PAY_CLOUD_ALIPAY) {
             $array['extra'] = ['type' => 2, 'pay' => 'cloud_alipay'];
+        }
+
+        if ($this->model->type == PayFactory::PAY_Huanxun_Quick) {
+            $array['extra'] = ['type' => 2, 'pay' => 'quick'];
         }
         return $array;
     }

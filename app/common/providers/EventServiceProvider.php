@@ -12,12 +12,22 @@ use app\common\events\WechatProcessor;
 use app\common\listeners\PayLogListener;
 use app\common\listeners\point\PointListener;
 use app\common\listeners\WechatProcessorListener;
+use app\common\modules\payType\events\AfterOrderPayTypeChangedEvent;
+use app\common\modules\payType\remittance\listeners\AfterOrderPayTypeChangedListener;
+use app\common\modules\process\events\AfterProcessStateChangedEvent;
+use app\common\modules\process\events\AfterProcessStatusChangedEvent;
+use app\common\modules\process\StateContainer;
+use app\common\modules\status\StatusContainer;
+use app\common\listeners\withdraw\WithdrawAuditListener;
+use app\common\listeners\withdraw\WithdrawPayListener;
+use app\common\listeners\withdraw\WithdrawSuccessListener;
 use app\frontend\modules\coupon\listeners\CouponSend;
 use app\frontend\modules\finance\listeners\IncomeWithdraw;
 use app\frontend\modules\goods\listeners\GoodsStock;
 use app\frontend\modules\member\listeners\MemberLevelValidity;
 use app\frontend\modules\order\listeners\orderListener;
 use app\frontend\modules\coupon\listeners\CouponExpireNotice;
+use app\frontend\modules\withdraw\listeners\WithdrawApplyListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use app\backend\modules\goods\listeners\LimitBuy;
 
@@ -49,9 +59,9 @@ class EventServiceProvider extends ServiceProvider
         AfterOrderReceivedEvent::class => [ //确认收货
             \app\common\listeners\member\AfterOrderReceivedListener::class
         ],
-        AfterOrderPaidEvent::class => [ //支付完成
-            \app\common\listeners\member\AfterOrderPaidListener::class
-        ],
+//        AfterOrderPaidEvent::class => [ //支付完成
+//            \app\common\listeners\member\AfterOrderPaidListener::class,
+//        ],
         //微信接口回调触发事件进程
         WechatProcessor::class => [
             WechatProcessorListener::class//示例监听类
@@ -61,12 +71,30 @@ class EventServiceProvider extends ServiceProvider
         SendMessageEvent::class => [
 
         ],
+        AfterProcessStatusChangedEvent::class => [
+            StatusContainer::class,
+        ],
+        AfterProcessStateChangedEvent::class => [
+            StateContainer::class,
+        ],
+        AfterOrderPayTypeChangedEvent::class=>[
+            AfterOrderPayTypeChangedListener::class
+        ]
     ];
     /**
-     * 注册监听着类
+     * 注册监听者类
      * @var array
      */
     protected $subscribe = [
+
+        /**
+         * 收入提现监听者类
+         */
+        WithdrawApplyListener::class,
+        WithdrawAuditListener::class,
+        WithdrawPayListener::class,
+        WithdrawSuccessListener::class,
+
         \app\common\listeners\MessageListener::class,
 
         //会员等级升级
@@ -89,6 +117,12 @@ class EventServiceProvider extends ServiceProvider
         \app\frontend\modules\payment\listeners\YunPay::class,
         \app\frontend\modules\payment\listeners\Cloud_Alipay::class,
         \app\frontend\modules\payment\listeners\Yun_Alipay::class,
+        \app\frontend\modules\payment\listeners\HuanxunPay::class,
+        \app\frontend\modules\payment\listeners\EupPayListener::class,
+        \app\frontend\modules\payment\listeners\WftPay::class,
+        \app\frontend\modules\payment\listeners\WftAlipayListener::class,
+        \app\frontend\modules\payment\listeners\HuanxunWxPay::class,
+
         orderListener::class,
         IncomeWithdraw::class,
         CouponExpireNotice::class,

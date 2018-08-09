@@ -32,7 +32,6 @@ class MemberAddressController extends ApiController
         $memberId = \YunShop::app()->getMemberId();
 //        dd(get_class($this->memberAddressRepository->makeModel()));
 //        exit;
-
         $addressList = $this->memberAddressRepository->getAddressList($memberId);
         //获取省市ID
         if ($addressList) {
@@ -44,13 +43,21 @@ class MemberAddressController extends ApiController
     }
     public function street(){
         $districtId = \YunShop::request()->get('district_id');
+
+        $default_street[] = [
+            'id'=> 0, 
+            'areaname' => "其他", 
+            'parentid' =>  -1, 
+            'level' => 4
+        ];
         if(\Setting::get('shop.trade.is_street')){
             // 开启街道设置
             $street = Street::getStreetByParentId($districtId);
+
+            $street = !empty($street->toArray()) ? $street : $default_street;
         }else{
             $street = [];
         }
-
         if($street){
             return $this->successJson('获取街道数据成功!', $street);
         }

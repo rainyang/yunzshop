@@ -168,8 +168,9 @@ class Withdraw extends \app\common\models\Withdraw
 
     public function rules()
     {
+
         return [
-            'poundage' => 'numeric|min:1|max:999999999',
+            'poundage'          => 'numeric|min:0|max:999999999|regex:/^\d+(\.\d{1,2})?$/',
             'withdrawmoney'     => 'numeric|min:0|max:999999999',
             'roll_out_limit'    => 'regex:/^[0-9]+(.[0-9]{1,2})?$/',
             'poundage_rate'     => 'regex:/^[\d]{1,2}+(\.[0-9]{1,2})?$/',

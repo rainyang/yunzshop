@@ -3,7 +3,6 @@
 namespace app\common\models;
 
 use app\backend\models\BackendModel;
-use app\backend\modules\member\models\MemberRelation;
 use app\common\events\member\BecomeAgent;
 use app\common\repositories\OptionRepository;
 use app\common\services\PluginManager;
@@ -55,7 +54,7 @@ class Member extends BackendModel
     protected $search_fields = ['mobile', 'uid', 'nickname', 'realname'];
 
     protected $primaryKey = 'uid';
-
+    protected $appends = ['avatar_image'];
 
     public function bankCard()
     {
@@ -426,14 +425,12 @@ class Member extends BackendModel
     {
         $plugin_class = new PluginManager(app(), new OptionRepository(), new Dispatcher(), new Filesystem());
 
-        // todo 后期需要重构
         if ($plugin_class->isEnabled('supplier')) {
             $data['supplier'] = VerifyButton::button();
         } else {
             $data['supplier'] = '';
         }
 
-        // todo 后期需要重构
         if ($plugin_class->isEnabled('micro')) {
             $micro_set = \Setting::get('plugin.micro');
             if ($micro_set['is_open_miceo'] == 0) {
@@ -445,14 +442,12 @@ class Member extends BackendModel
             $data['micro'] = '';
         }
 
-        // todo 后期需要重构
         if ($plugin_class->isEnabled('gold')) {
             $data['gold'] = MemberCenterService::button(\YunShop::app()->getMemberId());
         } else {
             $data['gold'] = '';
         }
 
-        // todo 后期需要重构
         if ($plugin_class->isEnabled('love')) {
             $data['love'] = [
                 'status' => true,
@@ -462,6 +457,30 @@ class Member extends BackendModel
             $data['love'] = [
                 'status' => false,
                 'love_name' => '爱心值',
+            ];
+        }
+
+        if ($plugin_class->isEnabled('froze')) {
+            $data['froze'] = [
+                'status' => true,
+                'froze_name' => \Yunshop\Froze\Common\Services\SetService::getFrozeName(),
+            ];
+        } else {
+            $data['froze'] = [
+                'status' => false,
+                'froze_name' => '冻结币',
+            ];
+        }
+
+        if ($plugin_class->isEnabled('coin')) {
+            $data['coin'] = [
+                'status' => true,
+                'coin_name' => \Yunshop\Coin\Common\Services\SetService::getCoinName(),
+            ];
+        } else {
+            $data['coin'] = [
+                'status' => false,
+                'coin_name' => '华侨币',
             ];
         }
 
@@ -504,7 +523,7 @@ class Member extends BackendModel
 
             $data['courier'] = [
                 'button_name' => '快递',
-                'status'         => $status ? true : false
+                'status' => $status ? true : false
             ];
         } else {
             $data['courier'] = [
@@ -557,6 +576,8 @@ class Member extends BackendModel
      */
     public static function setMemberRelation($uid, $mid = '')
     {
+        $curr_arr = [];
+
         $model = MemberShopInfo::getMemberShopInfo($uid);
 
         if (empty($mid)) {
@@ -601,8 +622,9 @@ class Member extends BackendModel
         }
 
         $model->relation = $relation_str;
+        $model->save();
 
-        return $model->save();
+        return $curr_arr;
     }
 
     public static function getOpenIdForType($member_id, $type = null)
@@ -703,4 +725,8 @@ class Member extends BackendModel
             ->delete();
     }
 
+    public function getAvatarImageAttribute()
+    {
+        return $this->avatar ? tomedia($this->avatar) : tomedia(\Setting::get('shop.shop.headimg'));
+    }
 }

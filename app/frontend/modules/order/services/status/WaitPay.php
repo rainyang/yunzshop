@@ -10,9 +10,13 @@ namespace app\frontend\modules\order\services\status;
 
 
 use app\common\models\Order;
+use app\common\models\PayType;
 
 class WaitPay extends Status
 {
+    /**
+     * @var Order
+     */
     private $order;
     protected $name = '付款';
     protected $value;
@@ -30,26 +34,49 @@ class WaitPay extends Status
         return '待付款';
     }
 
-    protected function getNextStatusButton(){
+    /**
+     * @return array
+     */
+    protected function getNextStatusButton()
+    {
+        if ($this->order->isPending()) {
+            return [];
+        }
         return [
-            'name' => "确认{$this->name}",
-            'api' => $this->api,
-            'value' => $this->value
+            [
+                'name' => "确认{$this->name}",
+                'api' => $this->api,
+                'value' => $this->value
+            ]
         ];
     }
-    protected function getOtherButtons(){
+
+    protected function getOtherButtons()
+    {
         $result = [];
+
+        if ($this->order->pay_type_id == PayType::REMITTANCE) {
+
             $result[] = [
-                'name' => '取消订单',
-                'api' => 'order.operation.close',
-                'value' => static::CANCEL //todo
+                'name' => '转账信息',
+                'api' => 'remittance.remittance-record',
+                'value' => static::REMITTANCE_RECORD
             ];
+
+        }
+        $result[] = [
+            'name' => '取消订单',
+            'api' => 'order.operation.close',
+            'value' => static::CANCEL
+        ];
         return $result;
     }
+
     public function getButtonModels()
     {
-        $result[] = $this->getNextStatusButton();
-        $result = array_merge($result,$this->getOtherButtons());
+
+        $result = $this->getNextStatusButton();
+        $result = array_merge($result, $this->getOtherButtons());
 
         return $result;
     }

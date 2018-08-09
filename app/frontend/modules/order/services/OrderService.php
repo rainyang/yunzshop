@@ -259,28 +259,25 @@ class OrderService
      */
     public static function ordersPay(array $param)
     {
-        \Log::info('---------订单支付ordersPay--------', $param);
-        $orderPay = \app\common\models\OrderPay::find($param['order_pay_id']);
+        \Log::info('---------订单支付ordersPay(order_pay_id:'.$param['order_pay_id'].')--------', $param);
+        /**
+         * @var \app\frontend\models\OrderPay $orderPay
+         */
+        $orderPay = \app\frontend\models\OrderPay::find($param['order_pay_id']);
         if (!isset($orderPay)) {
             throw new AppException('支付流水记录不存在');
         }
-        $orders = Order::whereIn('id', $orderPay->order_ids)->get();
-        if ($orders->isEmpty()) {
-            throw new AppException('(ID:' . $orderPay->id . ')未找到订单流水号对应订单');
-        }
-        DB::transaction(function () use ($orderPay, $orders, $param) {
-            $orderPay->status = 1;
-            if (isset($param['pay_type_id'])) {
+
+        if (isset($param['pay_type_id'])) {
+            if($orderPay->pay_type_id != $param['pay_type_id']){
                 $orderPay->pay_type_id = $param['pay_type_id'];
+                \Log::error("---------支付回调与与支付请求的订单支付方式不匹配(order_pay_id:{$orderPay->id},orderPay->payTypeId:{$orderPay->pay_type_id} != param[pay_type_id]:{$param['pay_type_id']})--------", []);
+
             }
-            $orderPay->save();
-            $orders->each(function ($order) use ($param) {
-                if (!OrderService::orderPay(['order_id' => $order->id, 'order_pay_id' => $param['order_pay_id'], 'pay_type_id' => $param['pay_type_id']])) {
-                    throw new AppException('订单状态改变失败,请联系客服');
-                }
-            });
-        });
-        \Log::info('---------订单支付成功ordersPay--------', []);
+        }
+        $orderPay->pay();
+
+        \Log::info('---------订单支付成功ordersPay(order_pay_id:'.$orderPay->id.')--------', []);
 
     }
 
@@ -288,6 +285,7 @@ class OrderService
      * 后台支付订单
      * @param array $param
      * @return string
+     * @throws AppException
      */
 
     public static function orderPay(array $param)
@@ -300,13 +298,7 @@ class OrderService
             $orderOperation->pay_type_id = $param['pay_type_id'];
         }
         $orderOperation->order_pay_id = (int)$param['order_pay_id'];
-//        if (isset($param['order_pay_id'])) {
-//            if (isset($orderOperation->hasOneOrderPay)) {
-//                if (in_array($param['order_id'], $orderOperation->hasOneOrderPay->order_ids)) {
-//                    $orderOperation->order_pay_id = $param['order_pay_id'];
-//                }
-//            }
-//        }
+
         $result = self::OrderOperate($orderOperation);
         //是虚拟商品或有标识直接完成
         if ($orderOperation->isVirtual() || $orderOperation->mark) {

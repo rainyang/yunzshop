@@ -111,6 +111,18 @@
 .courier {
     background-image: url('../img/marketing/courier.png');
 }
+.member_return {
+    background-image: url('../img/marketing/member_return.png');
+}
+
+.subsidiary {
+    background-image: url('../img/industry/subsidiary.png');
+}
+
+.froze {
+    background-image: url('../img/marketing/froze.png');
+}
+
 .app_set {
     background-image: url('../img/tool/app_set.png');
 }
@@ -147,6 +159,7 @@
 .wanmi_pay {
     background-image: url('../img/tool/wanmi_pay.png');
 }
+
 
 .air {
     background-image: url('../img/recharge/air.png');
@@ -189,4 +202,10 @@
 }
 .order_meals {
     background-image: url('../img/api/order_meals.png');
+}
+.alipay_onekey_login {
+    background-image: url('../img/tool/alipay_onekey_login.png');
+}
+.eup_pay {
+    background-image: url('../img/api/eup_pay.png');
 }

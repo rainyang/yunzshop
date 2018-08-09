@@ -1398,8 +1398,30 @@ return [
                                 'menu'              => 0,
                                 'icon'              => 'fa-file-text',
                                 'sort'              => 1,
-                                'item'              => 'order_list_index',
+                                'item'              => 'order_detail',
                                 'parents'           => ['Order', 'order_list'],
+                            ],
+                            'order_pay_list' => [
+                                'name'              => '查看订单支付记录',
+                                'url'               => 'order.orderPay.index',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => 'fa-file-text',
+                                'sort'              => 1,
+                                'item'              => 'order_pay_index',
+                                'parents'           => ['Order', 'order_detail'],
+                            ],
+                            'order_pay_detail' => [
+                                'name'              => '查看订单支付详情',
+                                'url'               => 'orderPay.detail.index',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => 'fa-file-text',
+                                'sort'              => 1,
+                                'item'              => 'order_pay_detail',
+                                'parents'           => ['Order', 'order_detail'],
                             ],
                             'change_order_price_index' => [
                                 'name'              => '修改价格跳转路由',
@@ -1485,7 +1507,7 @@ return [
                                 'name'              => '订单备注',
                                 'url'               => 'order.remark.update-remark',
                                 'url_params'        => '',
-                                'permit'            => 1,
+                                'permit'            => 0,
                                 'menu'              => 0,
                                 'icon'              => '',
                                 'sort'              => 1,
@@ -2168,7 +2190,7 @@ return [
 
                     'withdraw_records_detail' => [
                         'name'              => '收入提现详情',
-                        'url'               => 'finance.withdraw-detail.index',
+                        'url'               => 'withdraw.detail.index',
                         'url_params'        => "",
                         'permit'            => 1,
                         'menu'              => 0,
@@ -2238,7 +2260,7 @@ return [
                         'parents'           => ['finance','withdraw_records'],
                     ],
 
-                    'withdraw_status_arrival' => [
+                    /*'withdraw_status_arrival' => [
                         'name'              => '已驳回',
                         'url'               => 'finance.withdraw-records.index',
                         'url_params'        => "&search[status]=3",
@@ -2248,7 +2270,7 @@ return [
                         'sort'              => 0,
                         'item'              => 'withdraw_status_arrival',
                         'parents'           => ['finance','withdraw_records'],
-                    ],
+                    ],*/
 
                     'withdraw_status_invalid' => [
                         'name'              => '无效提现',
@@ -2352,7 +2374,52 @@ return [
                     ],
                 ],
             ],
-
+            'remittance_audit'     => [
+                'name'              => '转账审核',
+                'url'               => 'finance.remittance-audit.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-file-text-o',
+                'sort'              => 0,
+                'item'              => 'remittance_audit',
+                'parents'           => ['finance',],
+                'child'             => [
+                    'remittance_audit_detail'         => [
+                        'name'              => '转账审核详情',
+                        'url'               => 'remittanceAudit.detail.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => 'fa-gear',
+                        'sort'              => 0,
+                        'item'              => 'remittance_audit_detail',
+                        'parents'           => ['finance', 'remittance_audit',],
+                    ],
+                    'remittance_audit_pass'         => [
+                        'name'              => '转账审核通过',
+                        'url'               => 'remittanceAudit.operation.pass',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => 'fa-gear',
+                        'sort'              => 0,
+                        'item'              => 'remittance_audit_pass',
+                        'parents'           => ['finance', 'remittance_audit',],
+                    ],
+                    'remittance_audit_reject'         => [
+                        'name'              => '转账审核拒绝',
+                        'url'               => 'remittanceAudit.detail.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => 'fa-gear',
+                        'sort'              => 0,
+                        'item'              => 'remittanceAudit.operation.reject',
+                        'parents'           => ['finance', 'remittance_audit',],
+                    ],
+                ]
+            ]
 
 
         ],
