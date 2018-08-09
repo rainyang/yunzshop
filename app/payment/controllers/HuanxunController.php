@@ -33,7 +33,17 @@ class HuanxunController extends PaymentController
             if ($_REQUEST['paymentResult']) {
                 $paymentResult = $_REQUEST['paymentResult'];
                 $xmlResult = new \SimpleXMLElement($paymentResult);
-                $uniacid = $xmlResult->GateWayRsp->body->Attach;
+
+                if (isset($xmlResult->GateWayRsp->body->Attach)) {
+                    $uniacid = $xmlResult->GateWayRsp->body->Attach;
+                } else {
+                    $attach = explode(':', $xmlResult->WxPayRsp->body->MerBillno);
+                    \Log::debug('---------wx attach-----', $attach);
+                    if (isset($attach[1])) {
+                        $uniacid = $attach[1];
+                    }
+                }
+
             }
 
             if ($_REQUEST['ipsResponse']) {
@@ -65,24 +75,35 @@ class HuanxunController extends PaymentController
         $this->log($parameter);
 
         if(!empty($parameter)){
-            if($this->getSignResult()) {
-                if ($_POST['respCode'] == '0006') {
-                    \Log::debug('------验证成功-----');
-                    $data = [
-                        'total_fee'    => floatval($parameter['transAmt']),
-                        'out_trade_no' => $this->attach[0],
-                        'trade_no'     => $parameter['transactionId'],
-                        'unit'         => 'fen',
-                        'pay_type'     => intval($_POST['productId']) == 112 ? '微信-YZ' : '支付宝-YZ',
-                        'pay_type_id'     => intval($_POST['productId']) == 112 ? 12 : 15
+            $paymentResult = $parameter['paymentResult'];
 
+            $xmlResult = new \SimpleXMLElement($paymentResult);
+            $status   = $xmlResult->WxPayRsp->body->Status;
+            $amount   = $xmlResult->WxPayRsp->body->OrdAmt;
+            $trade_no   = $xmlResult->WxPayRsp->body->IpsBillno;
+
+            $attach = explode(':', $xmlResult->WxPayRsp->body->MerBillno);
+            $order_no = $attach[0];
+
+            if($this->getSignResult('wx')) {
+                if (strval($status) == "Y") {
+                    \Log::debug('------wx验证成功-----');
+                    $data = [
+                        'total_fee'    => floatval($amount),
+                        'out_trade_no' => (string)$order_no,
+                        'trade_no'     => (string)$trade_no,
+                        'unit'         => 'yuan',
+                        'pay_type'     => '微信',
+                        'pay_type_id'     => 22
                     ];
 
-                    $this->payResutl($data);
+                   // $this->payResutl($data);
                     \Log::debug('----结束----');
                     echo 'SUCCESS';
+                } elseif (strval($status) == "N") {
+                    $message = "交易失败";
                 } else {
-                    //其他错误
+                    $message = "交易处理中";
                 }
             } else {
                 //签名验证失败
@@ -120,7 +141,7 @@ class HuanxunController extends PaymentController
 
                     ];
 
-                    $this->payResutl($data);
+                   // $this->payResutl($data);
                     \Log::debug('----结束----');
                     echo 'SUCCESS';
                 } elseif (strval($status) == "N") {
@@ -157,15 +178,62 @@ class HuanxunController extends PaymentController
     {
         $trade = \Setting::get('shop.trade');
 
-        if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
-            return redirect($trade['redirect_url'])->send();
+        if(empty($_REQUEST)) {
+            return false;
         }
 
-        if (0 == $_GET['state'] && $_GET['errorDetail'] == '成功') {
-            redirect(Url::absoluteApp('member/payYes', ['i' => $_GET['attach']]))->send();
-        } else {
-            redirect(Url::absoluteApp('member/payErr', ['i' => $_GET['attach']]))->send();
+        $paymentResult = $_REQUEST['paymentResult'];
+
+        $xmlResult = new \SimpleXMLElement($paymentResult);
+        $status = $xmlResult->WxPayRsp->body->Status;
+        $amount   = $xmlResult->WxPayRsp->body->OrdAmt;
+        $trade_no   = $xmlResult->WxPayRsp->body->IpsBillNo;
+
+        $attach = explode(':', $xmlResult->WxPayRsp->body->MerBillno);
+        $order_no = $attach[0];
+
+        if (isset($attach[1])) {
+            $uniacid = $attach[1];
         }
+
+
+        $url = Url::shopSchemeUrl("?menu#/member/payErr?i={$uniacid}");
+
+        if ($this->getSignResult('wx')) { // 验证成功
+            \Log::debug('-------验证成功wx-----');
+            if (strval($status) == "Y") {
+                $data = [
+                    'total_fee'    => floatval($amount),
+                    'out_trade_no' => (string)$order_no,
+                    'trade_no'     => (string)$trade_no,
+                    'unit'         => 'yuan',
+                    'pay_type'     => '微信',
+                    'pay_type_id'     => 22
+
+                ];
+
+                $this->payResutl($data);
+
+                $url = Url::shopSchemeUrl("?menu#/member/payYes?i={$uniacid}");
+
+                if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
+                    $url  = $trade['redirect_url'];
+                }
+
+                $message = "交易成功";
+            }elseif(strval($status) == "N")
+            {
+                $message = "交易失败";
+            }else {
+                $message = "交易处理中";
+            }
+        } else {
+            $message = "验证失败";
+        }
+
+        \Log::debug("-----wx支付{$uniacid}-{$order_no}----", [$message]);
+
+        redirect($url)->send();
     }
 
     public function returnQuickUrl()
@@ -289,7 +357,7 @@ class HuanxunController extends PaymentController
      *
      * @return bool
      */
-    public function getSignResult()
+    public function getSignResult($type='quick')
     {
         $pay = \Setting::get('plugin.huanxun_set');
 
@@ -298,7 +366,14 @@ class HuanxunController extends PaymentController
         $notify->setCert($pay['cert']);
         $notify->setMerCode($pay['mchntid']);
 
-        return $notify->verifySign();
+        $result = $notify->verifySign();
+
+        if ($type == 'wx') {
+            \Log::debug('----------verifySignWx--------');
+            $result = $notify->verifySignWx();
+        }
+
+        return $result;
     }
 
     /**

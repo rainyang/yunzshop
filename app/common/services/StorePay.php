@@ -9,7 +9,7 @@
 namespace app\common\services;
 
 
-class CashPay extends Pay
+class StorePay extends Pay
 {
     public function __construct()
     {
