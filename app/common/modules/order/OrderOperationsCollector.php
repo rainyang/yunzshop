@@ -34,7 +34,7 @@ class OrderOperationsCollector
         }, $order->getOperationsSetting());
 
         $operations = array_filter($operations);
-        return $operations;
+        return array_values($operations);
     }
     public function getAllOperations(Order $order){
         $operations = array_map(function ($operationName) use($order){

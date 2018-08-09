@@ -361,6 +361,7 @@ class Order extends BaseModel
         if(MemberService::getCurrentMemberModel()->uid == $this->uid){
             return app('OrderManager')->setting('member_order_operations')[$this->statusCode] ?: [];
         }
+        return [];
     }
     /**
      * 订单状态汉字
