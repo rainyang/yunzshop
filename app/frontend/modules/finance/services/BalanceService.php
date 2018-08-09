@@ -111,6 +111,16 @@ class BalanceService
         return false;
     }
 
+
+    //余额EUP提现
+    public function withdrawHuanxun()
+    {
+        if (app('plugins')->isEnabled('huanxun')) {
+            return $this->_withdraw_set['huanxun'] ? true : false;
+        }
+        return false;
+    }
+
     /**
      * 提现满 N元 减免手续费 [注意为 0， 为空则不计算，按正常手续费扣]
      * 2017-09-28
