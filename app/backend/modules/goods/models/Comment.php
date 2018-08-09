@@ -100,7 +100,7 @@ class Comment extends \app\common\models\Comment
      */
     public function goods()
     {
-        return $this->belongsTo('app\backend\modules\goods\models\Goods');
+        return $this->belongsTo(\app\common\models\Goods::class);
     }
 
     /**

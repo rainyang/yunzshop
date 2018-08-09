@@ -155,6 +155,9 @@
                     @elseif($item['pay_way'] == 'eup_pay')
                         <input type="hidden" name="pay_way" value="4">
                         <input type="submit" name="submit_pay" value="EUP提现" class="btn btn-primary " style='margin-left:10px;' onclick='return '/>
+                    @elseif($item['pay_way'] == 'huanxun')
+                        <input type="hidden" name="pay_way" value="4">
+                        <input type="submit" name="submit_pay" value="打款到银行卡" class="btn btn-primary " style='margin-left:10px;' onclick='return '/>
                     @endif
                 @endif
 

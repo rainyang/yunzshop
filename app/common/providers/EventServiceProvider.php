@@ -59,9 +59,9 @@ class EventServiceProvider extends ServiceProvider
         AfterOrderReceivedEvent::class => [ //确认收货
             \app\common\listeners\member\AfterOrderReceivedListener::class
         ],
-        AfterOrderPaidEvent::class => [ //支付完成
-            \app\common\listeners\member\AfterOrderPaidListener::class,
-        ],
+//        AfterOrderPaidEvent::class => [ //支付完成
+//            \app\common\listeners\member\AfterOrderPaidListener::class,
+//        ],
         //微信接口回调触发事件进程
         WechatProcessor::class => [
             WechatProcessorListener::class//示例监听类
@@ -121,6 +121,7 @@ class EventServiceProvider extends ServiceProvider
         \app\frontend\modules\payment\listeners\EupPayListener::class,
         \app\frontend\modules\payment\listeners\WftPay::class,
         \app\frontend\modules\payment\listeners\WftAlipayListener::class,
+        \app\frontend\modules\payment\listeners\HuanxunWxPay::class,
 
         orderListener::class,
         IncomeWithdraw::class,
