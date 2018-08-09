@@ -48,7 +48,8 @@ class BalanceWithdrawController extends BalanceController
             'wechat'        => $this->balanceSet->withdrawWechat(),
             'alipay'        => $this->balanceSet->withdrawAlipay(),
             'manual'        => $this->balanceSet->withdrawManual(),
-            'eup_pay'           => $this->balanceSet->withdrawEup(),
+            'huanxun'       => $this->balanceSet->withdrawHuanxun(),
+            'eup_pay'       => $this->balanceSet->withdrawEup(),
             'poundage'      => $this->getPagePoundage(),
         ];
 
@@ -298,6 +299,9 @@ class BalanceWithdrawController extends BalanceController
                 break;
             case 4:
                 return 'eup_pay';
+                break;
+            case 5:
+                return 'huanxun';
                 break;
             default:
                 throw new AppException('未找到提现类型');
