@@ -55,7 +55,7 @@
             if (count >= 1) {
                 $(this).parents('.tpl-category-container').remove();
             } else {
-                alert('禁止删除');
+                alert('商品分类必选');
             }
         });
     })

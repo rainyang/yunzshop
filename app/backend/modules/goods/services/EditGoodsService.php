@@ -94,7 +94,7 @@ class EditGoodsService
             if (!empty($category_model)) {
                 $category_model->delete();
             }
-            GoodsService::saveGoodsCategory($this->goods_model, \YunShop::request()->category, Setting::get('shop.category'));
+            GoodsService::saveGoodsMultiCategory($this->goods_model, \YunShop::request()->category, Setting::get('shop.category'));
 /*
             if (!empty($this->request->widgets['sale']['max_point_deduct'])
                 && !empty($goods_data['price'])

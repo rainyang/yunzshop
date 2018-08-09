@@ -28,6 +28,10 @@ class GoodsService
 
     public static function saveGoodsMultiCategory($goodsModel, $categorys, $shopset)
     {
+        $categoryModel = new GoodsCategory();
+
+        $categoryModel->delCategory($goodsModel->id);
+
         if (!empty($categorys)) {
             foreach ($categorys['parentid'] as $key => $val) {
                 switch ($shopset['cat_level']) {
