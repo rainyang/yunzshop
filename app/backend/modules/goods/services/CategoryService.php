@@ -286,8 +286,8 @@ if (!defined('TPL_INIT_CATEGORY_THIRD')) {
 			<option value="' . $row['id'] . '"' . (($row['id'] == $thirdid) ? 'selected="selected"' : '') . '>' . $row['name'] . '</option>';
             }
         }
-        $html .= '</select>
-	</div>
+        $html .= '</select></div>';
+        $html .= '<div class="col-sm-3 col-md-3 col-lg-3"><input type="button" value="添加"></div>
 </div>';
         return $html;
     }
@@ -323,7 +323,7 @@ if (!defined('TPL_INIT_CATEGORY_THIRD')) {
 
         $html .=
             '<div class="row row-fix tpl-category-container">
-            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                 <select class="form-control tpl-category-parent" id="' . $name . '_parent" name="' . $name . '[parentid][]" onchange="renderCategory(this,\'' . $name . '\')">
                     <option value="0">请选择一级分类</option>';
         $ops = '';
@@ -334,7 +334,7 @@ if (!defined('TPL_INIT_CATEGORY_THIRD')) {
         $html .= '
                 </select>
             </div>
-            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                 <select class="form-control tpl-category-child" id="' . $name . '_child" name="' . $name . '[childid][]">
                     <option value="0">请选择二级分类</option>';
         if (!empty($parentid) && !empty($children[$parentid])) {
@@ -344,8 +344,8 @@ if (!defined('TPL_INIT_CATEGORY_THIRD')) {
             }
         }
         $html .= '
-                </select>
-            </div>
+                </select></div>';
+        $html .= '<div class="col-sm-4 col-md-4 col-lg-4"><input type="button" value="添加"></div>
         </div>
     ';
         return $html;
