@@ -1251,17 +1251,19 @@ class MemberController extends ApiController
             }
         }
 
-//        if (app('plugins')->isEnabled('help-center')) {
-//
-//            $help_center_setting = Setting::get('plugin.help_center');
-//
-//            if ($help_center_setting && 1 == $help_center_setting['status']) {
-//                $data[] = [
-//                    'name' => 'help_center',
-//                    'title' => '帮助中心'
-//                ];
-//            }
-//        }
+        if (app('plugins')->isEnabled('help-center')) {
+
+            $help_center_setting = Setting::get('plugin.help_center');
+
+            if ($help_center_setting && 1 == $help_center_setting['status']) {
+                $data[] = [
+                    'name' => 'help_center',
+                    'title' => '帮助中心',
+                    'class' => 'icon-member-help',
+                    'url' => 'helpcenter'
+                ];
+            }
+        }
 
         if (app('plugins')->isEnabled('courier')) {
 
@@ -1270,7 +1272,9 @@ class MemberController extends ApiController
             if ($courier_setting && 1 == $courier_setting['radio']) {
                 $data[] = [
                     'name' => 'courier',
-                    'title' => $courier_setting['name'] ? $courier_setting['name'] : '快递单'
+                    'title' => $courier_setting['name'] ? $courier_setting['name'] : '快递单',
+                    'class' => 'icon-member-express',
+                    'url' => 'courier'
                 ];
             }
         }
