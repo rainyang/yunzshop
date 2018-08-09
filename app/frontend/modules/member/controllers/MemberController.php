@@ -1263,17 +1263,17 @@ class MemberController extends ApiController
 //            }
 //        }
 
-//        if (app('plugins')->isEnabled('courier')) {
-//
-//            $courier_setting = Setting::get('courier.courier');
-//
-//            if ($courier_setting && 1 == $courier_setting['radio']) {
-//                $data[] = [
-//                    'name' => 'courier',
-//                    'title' => $courier_setting['name'] ? $courier_setting['name'] : '快递单'
-//                ];
-//            }
-//        }
+        if (app('plugins')->isEnabled('courier')) {
+
+            $courier_setting = Setting::get('courier.courier');
+
+            if ($courier_setting && 1 == $courier_setting['radio']) {
+                $data[] = [
+                    'name' => 'courier',
+                    'title' => $courier_setting['name'] ? $courier_setting['name'] : '快递单'
+                ];
+            }
+        }
 
         if (app('plugins')->isEnabled('store-cashier')) {
             $store = \Yunshop\StoreCashier\common\models\Store::getStoreByUid(\YunShop::app()->getMemberId())->first();
