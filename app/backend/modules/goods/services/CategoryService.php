@@ -218,8 +218,8 @@ if (!defined('TPL_INIT_CATEGORY_THIRD')) {
     function renderCategoryThird(obj, name){
         var index = obj.options[obj.selectedIndex].value;
         require([\'jquery\', \'util\'], function($, u){
-            $selectChild = $(\'#\'+name+\'_child\');
-            $selectThird = $(\'#\'+name+\'_third\');
+            $selectChild = $(obj).parent().siblings().find(\'#\'+name+\'_child\');
+            $selectThird = $(obj).parent().siblings().find(\'#\'+name+\'_third\');
             var html = \'<option value="0">请选择二级分类</option>\';
             var html1 = \'<option value="0">请选择三级分类</option>\';
             if (!window[\'_\'+name] || !window[\'_\'+name][index]) {
@@ -237,7 +237,7 @@ if (!defined('TPL_INIT_CATEGORY_THIRD')) {
     function renderCategoryThird1(obj, name){
 		var index = obj.options[obj.selectedIndex].value;
 		require([\'jquery\', \'util\'], function($, u){
-			$selectChild = $(\'#\'+name+\'_third\');
+			$selectChild = $(obj).parent().siblings().find(\'#\'+name+\'_third\');
 			var html = \'<option value="0">请选择三级分类</option>\';
 			if (!window[\'_\'+name] || !window[\'_\'+name][index]) {
 				$selectChild.html(html);
@@ -287,7 +287,7 @@ if (!defined('TPL_INIT_CATEGORY_THIRD')) {
             }
         }
         $html .= '</select></div>';
-        $html .= '<div class="col-sm-3 col-md-3 col-lg-3"><input type="button" value="添加"></div>
+        $html .= '<div class="col-sm-3 col-md-3 col-lg-3"><input type="button" value="删除" class="btn btn-danger delCategory"></div>
 </div>';
         return $html;
     }
@@ -304,7 +304,7 @@ if (!defined('TPL_INIT_CATEGORY_THIRD')) {
             function renderCategory(obj, name){
                 var index = obj.options[obj.selectedIndex].value;
                 require([\'jquery\', \'util\'], function($, u){
-                    $selectChild = $(\'#\'+name+\'_child\');
+                    $selectChild = $(obj).parent().siblings().find(\'#\'+name+\'_child\');
                     var html = \'<option value="0">请选择二级分类</option>\';
                     if (!window[\'_\'+name] || !window[\'_\'+name][index]) {
                         $selectChild.html(html);
@@ -345,7 +345,7 @@ if (!defined('TPL_INIT_CATEGORY_THIRD')) {
         }
         $html .= '
                 </select></div>';
-        $html .= '<div class="col-sm-4 col-md-4 col-lg-4"><input type="button" value="添加"></div>
+        $html .= '<div class="col-sm-4 col-md-4 col-lg-4"><input type="button" value="删除" class="btn btn-danger delCategory"></div>
         </div>
     ';
         return $html;

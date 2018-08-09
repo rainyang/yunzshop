@@ -300,9 +300,10 @@ class GoodsController extends BaseController
             'html' => $goods_service->optionsHtml,
             'var' => \YunShop::app()->get(),
             'brands' => $goods_service->brands,
-            'catetory_menus' => $goods_service->catetory_menus,
+            'catetory_menus' => implode('', $goods_service->catetory_menus),
             'virtual_types' => [],
-            'shopset' => $this->shopset
+            'shopset' => $this->shopset,
+            'type' => 'edit'
         ])->render();
     }
 

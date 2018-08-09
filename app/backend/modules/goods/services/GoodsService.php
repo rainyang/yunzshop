@@ -32,10 +32,19 @@ class GoodsService
             foreach ($categorys['parentid'] as $key => $val) {
                 switch ($shopset['cat_level']) {
                     case 2:
+
+                        if (0 == $val || 0 == $categorys['childid'][$key]) {
+                            continue;
+                        }
+
                         $category_id = $categorys['childid'][$key];
                         $category_ids = $val . ',' . $categorys['childid'][$key];
                         break;
                     case 3:
+                        if (0 == $val || 0 == $categorys['childid'][$key] || 0 == $categorys['thirdid'][$key]) {
+                            continue;
+                        }
+
                         $category_id = $categorys['thirdid'][$key];
                         $category_ids = $val . ',' . $categorys['childid'][$key] . ',' . $categorys['thirdid'][$key];
                         break;
