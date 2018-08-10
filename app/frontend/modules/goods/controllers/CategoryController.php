@@ -10,6 +10,7 @@
 namespace app\frontend\modules\goods\controllers;
 
 use app\common\components\ApiController;
+use app\common\exceptions\AppException;
 use Illuminate\Support\Facades\Cookie;
 use app\common\components\BaseController;
 use app\common\helpers\PaginationHelper;
@@ -97,4 +98,21 @@ class CategoryController extends BaseController
 //        }
 //        return $this->errorJson('未检测到分类设置数据!',$set);
 //    }
+    /**
+     * 商城快速选购展示分类
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     */
+    public function fastCategory(){
+
+        $list = Category::select('id', 'name', 'thumb', 'adv_img', 'adv_url')->where('level',1)->where('parent_id',0)->get();
+        $list->map(function($category){
+            $category->childrens = Category::select('id', 'name', 'thumb', 'adv_img', 'adv_url')->where('level',2)->where('parent_id',$category->id)->get();
+        });
+
+        if($list->isEmpty()){
+            throw new AppException('未检测到分类数据');
+        }
+        return $this->successJson('获取分类成功!',['list'=>$list->toArray()]);
+    }
 }

@@ -19,12 +19,16 @@ use app\frontend\modules\member\models\SubMemberModel;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Yunshop\Kingtimes\common\models\Provider;
+use Yunshop\Kingtimes\common\models\ProviderCart;
 
 class TestController extends BaseController
 {
     public function index()
     {
-
+//        $list = DB::table('yz_provider')->select()->get();
+        $list = Provider::get();
+dd($list);
     }
 
     public function d()
