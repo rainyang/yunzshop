@@ -37,7 +37,7 @@ class ListController extends BaseController
         }
         return $area->level == 3;
     }
-    private function formatAreas(Collection $areas)
+    protected function formatAreas(Collection $areas)
     {
         if($areas->isEmpty()){
             return $areas;
