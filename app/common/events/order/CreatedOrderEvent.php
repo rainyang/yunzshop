@@ -30,7 +30,7 @@ abstract class CreatedOrderEvent extends Event
         //$order_model = Order::find($order_id);
         $this->orderModel = $order;
         if($order instanceof PreOrder){
-            $this->order = $order->getOrder();
+            $this->order = $order;
         }
     }
     /**

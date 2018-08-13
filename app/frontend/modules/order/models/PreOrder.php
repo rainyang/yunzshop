@@ -62,21 +62,9 @@ class PreOrder extends Order
 
     public function setOrderGoods(Collection $orderGoods)
     {
-        $this->setRelation('orderGoods', new PreOrderGoodsCollection());
+        $this->setRelation('orderGoods', new PreOrderGoodsCollection($orderGoods));
 
-        $orderGoods->each(function ($aOrderGoods) {
-            /**
-             * @var PreOrderGoods $aOrderGoods
-             */
-
-            $this->orderGoods->push($aOrderGoods);
-
-            $aOrderGoods->setOrder($this);
-        });
-
-        $this->discount = new OrderDiscount($this);
-        $this->orderDispatch = new OrderDispatch($this);
-        $this->orderDeduction = new OrderDeduction($this);
+        $this->orderGoods->setOrder($this);
 
     }
 
@@ -89,14 +77,20 @@ class PreOrder extends Order
             $this->mark = request()->input('mark', '');
         }
         parent::__construct($attributes);
-        $this->setRelation('orderSettings', $this->newCollection());
 
     }
 
     public function _init()
     {
+        $this->setRelation('orderSettings', $this->newCollection());
+
+        $this->discount = new OrderDiscount($this);
+        $this->orderDispatch = new OrderDispatch($this);
+        $this->orderDeduction = new OrderDeduction($this);
+
         $attributes = $this->getPreAttributes();
         $this->setRawAttributes($attributes);
+
         $this->orderGoods->each(function ($aOrderGoods) {
             /**
              * @var PreOrderGoods $aOrderGoods
@@ -105,27 +99,11 @@ class PreOrder extends Order
         });
     }
 
-    /**
-     * 对外提供的获取订单商品方法
-     * @return PreOrderGoodsCollection
-     */
-    public function getOrderGoodsModels()
+    public function getDiscount()
     {
-        return $this->orderGoods;
-    }
-
-    public function getOrder()
-    {
-        return $this;
-    }
-
-    public function getMember()
-    {
-        return $this->belongsToMember;
-    }
-    public function getDiscount(){
         return $this->discount;
     }
+
     /**
      * 计算订单优惠金额
      * @return number
@@ -160,7 +138,7 @@ class PreOrder extends Order
      */
     public function getPreIdAttribute()
     {
-        return $this->getOrderGoodsModels()->pluck('goods_id')->sort()->implode('a');
+        return $this->orderGoods->pluck('goods_id')->sort()->implode('a');
     }
 
     /**
@@ -192,7 +170,7 @@ class PreOrder extends Order
             'create_time' => time(),
             'uid' => $this->uid,
             'uniacid' => $this->uniacid,
-            'is_virtual' => $this->getGoodsType(),//是否是虚拟商品订单
+            'is_virtual' => $this->isVirtual(),//是否是虚拟商品订单
         );
         $attributes = array_merge($this->getAttributes(), $attributes);
         return $attributes;
@@ -209,26 +187,6 @@ class PreOrder extends Order
         return $attributes;
     }
 
-    /**
-     * 递归格式化金额字段
-     * @param $attributes
-     * @return array
-     */
-    private function formatAmountAttributes($attributes)
-    {
-        // 格式化价格字段,将key中带有price,amount的属性,转为保留2位小数的字符串
-        $attributes = array_combine(array_keys($attributes), array_map(function ($value, $key) {
-            if(is_array($value)){
-                $value = $this->formatAmountAttributes($value);
-            }else{
-                if (str_contains($key, 'price') || str_contains($key, 'amount')) {
-                    $value = sprintf('%.2f', $value);
-                }
-            }
-            return $value;
-        }, $attributes, array_keys($attributes)));
-        return $attributes;
-    }
 
     /**
      * @return bool
@@ -268,35 +226,36 @@ class PreOrder extends Order
         return $this->id;
     }
 
+
     /**
-     * 统计商品总数
-     * @return int
+     * 统计订单商品是否有虚拟商品
+     * @return bool
      */
-    protected function getGoodsTotal()
+    public function isVirtual()
     {
-        //累加所有商品数量
-        $result = $this->orderGoods->sum(function ($aOrderGoods) {
-            return $aOrderGoods->total;
-        });
-
-        return $result;
+        return $this->orderGoods->hasVirtual();
     }
 
-    //统计订单商品是否有虚拟商品
-    protected function getGoodsType()
+    /**
+     * 递归格式化金额字段
+     * @param $attributes
+     * @return array
+     */
+    private function formatAmountAttributes($attributes)
     {
-        $result = $this->orderGoods->filter(function ($aOrderGoods) {
-            return $aOrderGoods->goods->type == 1;
-        });
-
-        //虚拟
-        if (empty($result->toArray())) {
-            return 1;
-        }
-        //实体
-        return 0;
+        // 格式化价格字段,将key中带有price,amount的属性,转为保留2位小数的字符串
+        $attributes = array_combine(array_keys($attributes), array_map(function ($value, $key) {
+            if (is_array($value)) {
+                $value = $this->formatAmountAttributes($value);
+            } else {
+                if (str_contains($key, 'price') || str_contains($key, 'amount')) {
+                    $value = sprintf('%.2f', $value);
+                }
+            }
+            return $value;
+        }, $attributes, array_keys($attributes)));
+        return $attributes;
     }
-
 
     /**
      * 计算订单成交价格
@@ -320,19 +279,26 @@ class PreOrder extends Order
     }
 
     /**
+     * 统计商品总数
+     * @return int
+     */
+    protected function getGoodsTotal()
+    {
+        //累加所有商品数量
+        $result = $this->orderGoods->sum(function ($aOrderGoods) {
+            return $aOrderGoods->total;
+        });
+
+        return $result;
+    }
+
+    /**
      * 统计订单商品成交金额
      * @return int
      */
     protected function getOrderGoodsPrice()
     {
-        $result = $this->orderGoods->sum(function (PreOrderGoods $aOrderGoods) {
-            return $aOrderGoods->getPrice();
-        });
-
-        //订单属性添加商品价格属性
-        $this->goods_price = $result;
-
-        return $result;
+        return $this->goods_price = $this->orderGoods->getPrice();
     }
 
     /**
@@ -341,10 +307,7 @@ class PreOrder extends Order
      */
     protected function getGoodsPrice()
     {
-        $result = $this->orderGoods->sum(function (PreOrderGoods $aOrderGoods) {
-            return $aOrderGoods->getGoodsPrice();
-        });
-        return $result;
+        return $this->orderGoods->getGoodsPrice();
     }
 
 }

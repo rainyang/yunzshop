@@ -10,6 +10,7 @@ namespace app\frontend\models;
 
 
 use app\common\models\MemberCoupon;
+use app\frontend\modules\member\models\MemberAddress;
 use app\frontend\repositories\MemberAddressRepository;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -17,6 +18,7 @@ use Illuminate\Database\Eloquent\Collection;
  * Class Member
  * @package app\frontend\models
  * @property Collection memberCarts
+ * @property MemberAddress defaultAddress
  */
 class Member extends \app\common\models\Member
 {

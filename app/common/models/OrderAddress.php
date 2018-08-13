@@ -14,7 +14,15 @@ use app\common\exceptions\ShopException;
 /**
  * Class OrderAddress
  * @package app\common\models
+ * @property string address
+ * @property string mobile
+ * @property string realname
+ * @property int order_id
+ * @property int province_id
  * @property int city_id
+ * @property int district_id
+ * @property string note
+ * @property int street_id
  */
 class OrderAddress extends BaseModel
 {

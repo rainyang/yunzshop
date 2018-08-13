@@ -20,7 +20,10 @@ abstract class PreGenerateOrderEvent extends Event
     {
         $this->orderModel = $orderModel;
     }
-    //todo
+
+    /**
+     * @return PreOrder
+     */
     public function getOrderModel(){
         return $this->orderModel;
     }

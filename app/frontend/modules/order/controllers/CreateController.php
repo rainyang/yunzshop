@@ -51,7 +51,7 @@ class CreateController extends PreOrderController
                  * @var $order PreOrder
                  */
                 $order_id = $order->generate();
-                event(new AfterOrderCreatedEvent($order->getOrder()));
+                event(new AfterOrderCreatedEvent($order));
                 return $order_id;
             });
         });
