@@ -102,7 +102,6 @@ class MemberController extends BaseController
         }
 
 
-
         $list = $list->orderBy('uid', 'desc')
             ->paginate($this->pageSize)
             ->toArray();
@@ -116,11 +115,10 @@ class MemberController extends BaseController
 
         $starttime = strtotime('-1 month');
         $endtime = time();
-
-        if (isset($parames['searchtime']) &&  $parames['searchtime'] == 1) {
-            if ($parames['times']['start'] != '请选择' && $parames['times']['end'] != '请选择') {
-                $starttime = strtotime($parames['times']['start']);
-                $endtime = strtotime($parames['times']['end']);
+        if (isset($parames['search']['searchtime']) &&  $parames['search']['searchtime'] == 1) {
+            if ($parames['search']['times']['start'] != '请选择' && $parames['search']['times']['end'] != '请选择') {
+                $starttime = strtotime($parames['search']['times']['start']);
+                $endtime = strtotime($parames['search']['times']['end']);
             }
         }
 
