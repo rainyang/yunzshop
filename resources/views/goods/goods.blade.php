@@ -26,6 +26,38 @@
         $("input[name='back']").click(function () {
             location.href = "{!! yzWebUrl('goods.goods.index') !!}";
         });
+
+        $('.plusCategory').click(function () {
+            appendHtml = $(this).parents().find('.tpl-category-container').html();
+
+            $(this).parents().find('.category-container').append('<div class="row row-fix tpl-category-container">' + appendHtml + '<div>');
+        });
+
+        $('.editCategory').click(function () {
+            appendHtml = $(this).parents().find('.tpl-category-container').html();
+
+            $(this).parents().find('.category-container').append('<div class="row row-fix tpl-category-container">' + appendHtml + '<div>');
+            $('.category-container').children(':last').children().children('select').find("option[value='0']").attr("selected",true)
+            var seconde_category = $('.category-container').children(':last').children().children('select:eq(1)');
+            var third_category = $('.category-container').children(':last').children().children('select:eq(2)');
+
+            if (seconde_category.length > 0) {
+                seconde_category.children(':gt(0)').remove();
+            }
+            if (third_category.length > 0) {
+                third_category.children(':gt(0)').remove();
+            }
+        });
+
+        $(document).on('click', '.delCategory', function () {
+            var count = $(this).parents('.tpl-category-container').siblings('.tpl-category-container').length;
+
+            if (count >= 1) {
+                $(this).parents('.tpl-category-container').remove();
+            } else {
+                alert('商品分类必选');
+            }
+        });
     })
 
     window.optionchanged = false;
@@ -88,20 +120,20 @@
             Tip.focus("#goodsname", "商品名称不能超过40个字符!");
             return false;
         }
-        if ($(':input[name="category[parentid]"]').val() == 0) {
+        if ($(':input[name="category[parentid][]"]').val() == 0) {
             $('#myTab a[href="#tab_basic"]').tab('show');
-            Tip.focus(':input[name="category[parentid]"]', "请选择一级分类!");
+            Tip.focus(':input[name="category[parentid][]"]', "请选择一级分类!");
             return false;
         }
-        if ($(':input[name="category[childid]"]').val() == 0) {
+        if ($(':input[name="category[childid][]"]').val() == 0) {
             $('#myTab a[href="#tab_basic"]').tab('show');
-            Tip.focus(':input[name="category[childid]"]', "请选择二级分类!");
+            Tip.focus(':input[name="category[childid][]"]', "请选择二级分类!");
             return false;
         }
         @if($shopset['cat_level'] == 3)
-        if ($(':input[name="category[thirdid]"]').val() == 0) {
+        if ($(':input[name="category[thirdid][]"]').val() == 0) {
             $('#myTab a[href="#tab_basic"]').tab('show');
-            Tip.focus(':input[name="category[thirdid]"]', "请选择三级分类!");
+            Tip.focus(':input[name="category[thirdid][]"]', "请选择三级分类!");
             return false;
         }
         @endif

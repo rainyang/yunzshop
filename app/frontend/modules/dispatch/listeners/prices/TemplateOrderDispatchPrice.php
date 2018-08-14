@@ -51,7 +51,7 @@ class TemplateOrderDispatchPrice
     private function getPrice()
     {
         //去掉重复的OrderGoods
-        $uniqueOrderGoods = $this->order->getOrderGoodsModels()->unique('goods_id');
+        $uniqueOrderGoods = $this->order->orderGoods->unique('goods_id');
         $dispatch_prices = [];
         $dispatch_ids = $this->getDispatchIds($uniqueOrderGoods);
 

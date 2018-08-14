@@ -95,7 +95,7 @@ class OrderService
     public static function getOrderGoods(Collection $memberCarts)
     {
         if ($memberCarts->isEmpty()) {
-            throw new AppException("(" . $memberCarts->goods_id . ")未找到订单商品");
+            throw new AppException("购物车记录为空");
         }
         $result = $memberCarts->map(function ($memberCart) {
             if (!($memberCart instanceof MemberCart)) {
@@ -142,11 +142,11 @@ class OrderService
 
         $shop = ShopService::getCurrentShopModel();
 
-        $orderGoodsArr = OrderService::getOrderGoods($memberCarts);
+        $orderGoodsCollection = OrderService::getOrderGoods($memberCarts);
         $order = app('OrderManager')->make('PreOrder', ['uid' => $member->uid, 'uniacid' => $shop->uniacid]);
 
         event(new OnPreGenerateOrderCreatingEvent($order));
-        $order->setOrderGoods($orderGoodsArr);
+        $order->setOrderGoods($orderGoodsCollection);
         /**
          * @var PreOrder $order
          */

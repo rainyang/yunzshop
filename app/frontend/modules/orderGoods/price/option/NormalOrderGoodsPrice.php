@@ -8,7 +8,7 @@ namespace app\frontend\modules\orderGoods\price\option;
  * Date: 2017/5/19
  * Time: 下午6:04
  */
-class NormalOrderGoodsPrice extends OrderGoodsPrice
+class NormalOrderGoodsPrice extends BaseOrderGoodsPrice
 {
     /**
      * @var float
@@ -18,25 +18,6 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
      * @var float
      */
     private $price;
-
-
-    /**
-     * 获取商品的模型,规格继承时复写这个方法
-     * @return mixed
-     */
-    protected function goods()
-    {
-        return $this->orderGoods->goods;
-    }
-
-    /**
-     * 商品的原价,为了规格继承时将属性名替换掉
-     * @return mixed
-     */
-    protected function aGoodsPrice()
-    {
-        return $this->goods()->price;
-    }
 
     /**
      * 成交价
@@ -88,15 +69,6 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
     }
 
     /**
-     * 销售价(商品的原销售价)
-     * @return mixed
-     */
-    public function getGoodsPrice()
-    {
-        return $this->aGoodsPrice() * $this->orderGoods->total;
-    }
-
-    /**
      * 优惠券价
      * @return int
      */
@@ -107,24 +79,6 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
         }
 
         return $this->orderGoods->coupons->sum('amount');
-    }
-
-    /**
-     * 成本价
-     * @return mixed
-     */
-    public function getGoodsCostPrice()
-    {
-        return $this->goods()->cost_price * $this->orderGoods->total;
-    }
-
-    /**
-     * 市场价
-     * @return mixed
-     */
-    public function getGoodsMarketPrice()
-    {
-        return $this->goods()->market_price * $this->orderGoods->total;
     }
 
     /**

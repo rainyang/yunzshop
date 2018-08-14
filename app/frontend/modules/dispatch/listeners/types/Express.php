@@ -20,16 +20,22 @@ use app\common\models\OrderAddress;
 use app\common\models\Street;
 use app\frontend\modules\member\models\MemberAddress;
 use app\frontend\repositories\MemberAddressRepository;
+use Illuminate\Events\Dispatcher;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 
 class Express
 {
     use ValidatesRequests;
+    /**
+     * @var OnPreGenerateOrderCreatingEvent
+     */
     private $event;
 
     /**
      * 订单模型刚生成时(未添加订单商品)
      * @param OnPreGenerateOrderCreatingEvent $event
+     * @throws AppException
+     * @throws ShopException
      */
     public function onCreating(OnPreGenerateOrderCreatingEvent $event)
     {
@@ -44,6 +50,8 @@ class Express
     /**
      * 订单保存时
      * @param AfterOrderCreatedEvent $event
+     * @throws AppException
+     * @throws ShopException
      */
     public function onSave(AfterOrderCreatedEvent $event)
     {
@@ -60,6 +68,7 @@ class Express
     /**
      * 显示配送方式
      * @param OnDispatchTypeInfoDisplayEvent $event
+     * @throws AppException
      */
     public function onDisplay(OnDispatchTypeInfoDisplayEvent $event)
     {
@@ -82,14 +91,13 @@ class Express
     /**
      * 获取用户配送地址模型
      * @return MemberAddress
+     * @throws AppException
      */
     private function getMemberAddress()
     {
-        $request = \Request::capture();
-        $address = json_decode($request->input('address', '[]'), true);
+        $address = json_decode(request()->input('address', '[]'), true);
 
         if (count($address)) {
-            //$request->input('address');
             $this->validate([
                 'address.address' => 'required|string',
                 'address.mobile' => 'required|string',
@@ -104,7 +112,7 @@ class Express
             return $memberAddress;
         }
 
-        return $this->event->getOrderModel()->getMember()->defaultAddress;
+        return $this->event->getOrderModel()->belongsToMember->defaultAddress;
     }
 
     /**
@@ -119,6 +127,8 @@ class Express
     /**
      * 获取订单配送地址模型
      * @return OrderAddress
+     * @throws AppException
+     * @throws ShopException
      */
     private function getOrderAddress()
     {
@@ -128,6 +138,7 @@ class Express
 
         $orderAddress->order_id = $this->event->getOrderModel()->id;
         $orderAddress->mobile = $member_address->mobile;
+
         $orderAddress->province_id = Address::where('areaname', $member_address->province)->value('id');
         $orderAddress->city_id = Address::where('areaname', $member_address->city)->where('parentid', $orderAddress->province_id)->value('id');
         $orderAddress->district_id = Address::where('areaname', $member_address->district)->where('parentid', $orderAddress->city_id)->value('id');
@@ -155,6 +166,7 @@ class Express
      * 保存配送信息
      * @return bool
      * @throws AppException
+     * @throws ShopException
      */
     private function saveExpressInfo()
     {
@@ -166,7 +178,7 @@ class Express
         return true;
     }
 
-    public function subscribe($events)
+    public function subscribe(Dispatcher $events)
     {
         $events->listen(
             OnDispatchTypeInfoDisplayEvent::class,

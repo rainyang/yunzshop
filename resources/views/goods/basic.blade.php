@@ -18,12 +18,21 @@
 
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span>*</span>商品分类</label>
-    <div class="col-sm-8 col-xs-12">
+    <div class="col-sm-8 col-xs-12 category-container">
 
         {!!$catetory_menus!!}
 
     </div>
+
 </div>
+
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+        <div class="btn btn-info col-sm-2 col-xs-2 @if (isset($type) && $type == 'edit') editCategory @else plusCategory @endif">
+            添加分类
+        </div>
+</div>
+
 
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">品牌</label>
