@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Class BaseModel
  * @package app\common\models
- * @method static uniacid()
+ * @method uniacid()
  * @method static insert()
  * @method static get()
  * @method static set()
