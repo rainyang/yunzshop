@@ -15,6 +15,7 @@ class CalculationPointService
     public static function calcuationPointByGoods($order_goods_model)
     {
         $point_set = Setting::get('point.set');
+
         $point_data = [];
         //todo 如果等于0  不赠送积分
         if (isset($order_goods_model->hasOneGoods->hasOneSale) && $order_goods_model->hasOneGoods->hasOneSale->point !== '' && intval($order_goods_model->hasOneGoods->hasOneSale->point) === 0) {
