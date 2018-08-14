@@ -15,9 +15,6 @@ class CalculationPointService
     public static function calcuationPointByGoods($order_goods_model)
     {
         $point_set = Setting::get('point.set');
-        file_put_contents(storage_path('logs/yangtest.txt'), print_r('积分设置'.PHP_EOL,1), FILE_APPEND);
-        file_put_contents(storage_path('logs/yangtest.txt'), print_r($point_set.PHP_EOL,1), FILE_APPEND);
-        $order = 
 
         $point_data = [];
         //todo 如果等于0  不赠送积分
