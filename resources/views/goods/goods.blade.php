@@ -27,37 +27,6 @@
             location.href = "{!! yzWebUrl('goods.goods.index') !!}";
         });
 
-        $('.plusCategory').click(function () {
-            appendHtml = $(this).parents().find('.tpl-category-container').html();
-
-            $(this).parents().find('.category-container').append('<div class="row row-fix tpl-category-container">' + appendHtml + '<div>');
-        });
-
-        $('.editCategory').click(function () {
-            appendHtml = $(this).parents().find('.tpl-category-container').html();
-
-            $(this).parents().find('.category-container').append('<div class="row row-fix tpl-category-container">' + appendHtml + '<div>');
-            $('.category-container').children(':last').children().children('select').find("option[value='0']").attr("selected",true)
-            var seconde_category = $('.category-container').children(':last').children().children('select:eq(1)');
-            var third_category = $('.category-container').children(':last').children().children('select:eq(2)');
-
-            if (seconde_category.length > 0) {
-                seconde_category.children(':gt(0)').remove();
-            }
-            if (third_category.length > 0) {
-                third_category.children(':gt(0)').remove();
-            }
-        });
-
-        $(document).on('click', '.delCategory', function () {
-            var count = $(this).parents('.tpl-category-container').siblings('.tpl-category-container').length;
-
-            if (count >= 1) {
-                $(this).parents('.tpl-category-container').remove();
-            } else {
-                alert('商品分类必选');
-            }
-        });
     })
 
     window.optionchanged = false;
