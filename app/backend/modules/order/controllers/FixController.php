@@ -126,4 +126,8 @@ class FixController extends BaseController
         });
 
     }
+
+    public function pay(){
+
+    }
 }

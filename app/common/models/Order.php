@@ -109,6 +109,11 @@ class Order extends BaseModel
     }
 
 
+    public function scopePayFail($query)
+    {
+        return $query->where('refund_id', '0');
+    }
+
     /**
      * 订单状态:待付款
      * @param $query
