@@ -74,6 +74,16 @@
 
             <div class='panel-body'>
 
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款</label>
+                    <div class="col-sm-9">
+                        <div class="">
+                            <label class='radio-inline'><input type='radio' name='trade[refund_status]' value='1' @if (is_null($set['refund_status']) || $set['refund_status'] == 1) checked @endif/> 开启</label>
+                            <label class='radio-inline'><input type='radio' name='trade[refund_status]' value='0' @if (isset($set['refund_status']) && $set['refund_status'] == 0) checked @endif /> 关闭</label>
+                        </div>
+                        <span class='help-block'>开关判断前端退款按钮是否显示</span>
+                    </div>
+                </div>
 
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">完成订单多少天内可申请退款</label>
