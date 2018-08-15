@@ -46,7 +46,6 @@
   "autoload": {
     "classmap": [
       "database"
-      "tests"
     ],
     "psr-4": {
       "app\\": "app/",
