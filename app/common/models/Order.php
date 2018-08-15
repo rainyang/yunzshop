@@ -11,7 +11,6 @@ namespace app\common\models;
 
 use app\backend\modules\order\services\OrderService;
 use app\common\exceptions\AppException;
-use app\common\models\order\Address as OrderAddress;
 use app\common\models\order\Express;
 use app\common\models\order\OrderChangePriceLog;
 use app\common\models\order\OrderCoupon;

@@ -13,7 +13,7 @@ use app\frontend\modules\orderGoods\price\option\NormalOrderGoodsPrice;
 
 trait PreOrderGoodsTrait
 {
-
+    protected $priceCalculator;
     /**
      * 获取生成前的模型属性
      * @return array

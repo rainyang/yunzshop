@@ -32,6 +32,7 @@ use Illuminate\Database\Eloquent\Builder;
 class Goods extends \app\common\models\Goods
 {
     public $appends = ['vip_price'];
+    public $hidden = ['content','description'];
     protected $vipDiscountAmount;
 
     /**

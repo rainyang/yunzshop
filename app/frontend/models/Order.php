@@ -59,7 +59,7 @@ class Order extends \app\common\models\Order
 
     public function belongsToOrderGoods()
     {
-        return $this->belongsTo(self::getNearestModel('OrderGoods'), 'id', 'order_id');
+        return $this->belongsTo(app('OrderManager')->make('OrderGoods'), 'id', 'order_id');
     }
 
     public function orderGoodsBuilder($status)

@@ -111,7 +111,6 @@ class Express
 
             return $memberAddress;
         }
-
         return $this->event->getOrderModel()->belongsToMember->defaultAddress;
     }
 
@@ -134,9 +133,8 @@ class Express
     {
         $member_address = $this->getMemberAddress();
 
-        $orderAddress = new OrderAddress();
+        $orderAddress = app('OrderManager')->make('OrderAddress');
 
-        $orderAddress->order_id = $this->event->getOrderModel()->id;
         $orderAddress->mobile = $member_address->mobile;
 
         $orderAddress->province_id = Address::where('areaname', $member_address->province)->value('id');
