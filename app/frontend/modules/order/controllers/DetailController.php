@@ -13,6 +13,7 @@ use app\common\exceptions\AppException;
 use app\common\facades\Setting;
 use app\common\models\DispatchType;
 use app\common\models\Order;
+use app\common\modules\refund\services\RefundService;
 use app\common\requests\Request;
 use app\frontend\models\OrderAddress;
 use Yunshop\StoreCashier\common\models\StoreDelivery;
@@ -41,10 +42,15 @@ class DetailController extends ApiController
         $data = $order->toArray();
         $backups_button = $data['button_models'];
 
-        $refund_status = Setting::get('shop.trade.refund_status');
-        if($refund_status == 1){
+
+        $refund_status = RefundService::allowRefund();
+        if ($refund_status == true) {
             $data['button_models'] = array_merge($data['button_models'],$order->getStatusService()->getRefundButtons($order));
         }
+//        $refund_status = Setting::get('shop.trade.refund_status');
+//        if($refund_status == 1){
+//            $data['button_models'] = array_merge($data['button_models'],$order->getStatusService()->getRefundButtons($order));
+//        }
         //$this->getStatusService()->
         //todo 配送类型
         if ($order['dispatch_type_id'] == DispatchType::EXPRESS) {

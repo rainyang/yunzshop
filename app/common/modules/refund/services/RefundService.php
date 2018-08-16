@@ -5,6 +5,8 @@ namespace app\common\modules\refund\services;
 use app\backend\modules\refund\models\RefundApply;
 use app\backend\modules\refund\services\RefundOperationService;
 use app\common\exceptions\AdminException;
+use app\common\facades\Setting;
+use app\common\models\finance\Balance;
 use app\common\models\Order;
 use app\common\models\PayType;
 use app\common\services\credit\ConstService;
@@ -156,5 +158,13 @@ class RefundService
             throw new AdminException('芸支付微信退款失败');
         }
         return $result;
+    }
+
+    public static function allowRefund()
+    {
+        $refund_status = Setting::get('shop.trade.refund_status');
+        if($refund_status == 1 || $refund_status == null){
+            return true;
+        }
     }
 }
