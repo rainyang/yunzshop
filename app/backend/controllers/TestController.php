@@ -98,7 +98,7 @@ class TestController extends BaseController
 
     public function index()
     {
-        dd((new RefundService())->fastRefund(2419));
+        OrderService::orderPay(['order_id' => 13457, 'order_pay_id' => 16220, 'pay_type_id' => 1]);
         exit;
 
         $orders = Order::whereIn('order_sn',['SN20180704160239Ps'])->get();;
