@@ -3,6 +3,7 @@ namespace app\backend\modules\coupon\controllers;
 
 use app\common\components\BaseController;
 use app\backend\modules\coupon\models\Coupon;
+use app\common\helpers\Cache;
 use app\common\helpers\PaginationHelper;
 use app\common\models\MemberCoupon;
 use app\common\helpers\Url;
@@ -141,6 +142,10 @@ class CouponController extends BaseController
                 $this->error($validator->messages());
             } else{
                 if($coupon->save()){
+                    //店铺装修清除缓存
+                    if(app('plugins')->isEnabled('designer')) {
+                        Cache::flush();//清除缓存
+                    }
                     //Setting::set('coupon_template_id', \YunShop::request()->template_id); //设置优惠券统一的模板消息ID
                     return $this->message('优惠券修改成功', Url::absoluteWeb('coupon.coupon.index'));
                 } else{
@@ -183,6 +188,10 @@ class CouponController extends BaseController
 
         $res = Coupon::deleteCouponById($coupon_id);
         if ($res) {
+            //店铺装修清除缓存
+            if(app('plugins')->isEnabled('designer')) {
+                Cache::flush();//清除缓存
+            }
             return $this->message('删除优惠券成功', Url::absoluteWeb('coupon.coupon'));
         } else {
             return $this->message('删除优惠券失败', '', 'error');
