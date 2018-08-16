@@ -109,7 +109,7 @@ class GoodsController extends BaseController
 //            ]
 //        );
 
-        $catetory_menus = CategoryService::getCategoryMultiMenu(
+        $catetory_menus = CategoryService::getCategoryMultiMenuSearch(
             [
                 'catlevel' => $this->shopset['cat_level'],
                 'ids'   => isset($categorySearch) ? array_values($categorySearch) : [],
