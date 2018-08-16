@@ -50,6 +50,7 @@ use app\backend\modules\order\observers\OrderObserver;
  * @property int dispatch_type_id
  * @property int refund_id
  * @property Collection orderGoods
+ * @property Collection allStatus
  * @property Member belongsToMember
  * @property Collection orderPays
  * @property OrderPay hasOneOrderPay
@@ -670,5 +671,30 @@ class Order extends BaseModel
             return false;
         }
         return true;
+    }
+
+    public function getAllStatusAttribute(){
+        return collect([
+            [
+                'id'=>self::CLOSE,
+                'name'=>'已关闭',
+            ],[
+                'id'=>self::WAIT_PAY,
+                'name'=>'待支付',
+            ],[
+                'id'=>self::WAIT_SEND,
+                'name'=>'待发货',
+            ],[
+                'id'=>self::WAIT_RECEIVE,
+                'name'=>'待收货',
+            ],[
+                'id'=>self::COMPLETE,
+                'name'=>'已完成',
+            ],[
+                'id'=>self::REFUND,
+                'name'=>'已退款',
+            ],
+
+        ]);
     }
 }
