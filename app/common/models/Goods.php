@@ -227,9 +227,9 @@ class Goods extends BaseModel
                     break;
                 case 'category':
                     if (array_key_exists('parentid', $value) || array_key_exists('childid', $value) || array_key_exists('thirdid', $value)) {
-                        $id = $value['parentid'] ? $value['parentid'] : '';
-                        $id = $value['childid'] ? $value['childid'] : $id;
-                        $id = $value['thirdid'] ? $value['thirdid'] : $id;
+                        $id = $value['parentid'][0] ? $value['parentid'][0] : '';
+                        $id = $value['childid'][0] ? $value['childid'][0] : $id;
+                        $id = $value['thirdid'][0] ? $value['thirdid'][0] : $id;
 
                         $query->select([
                             'yz_goods.*',
