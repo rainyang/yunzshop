@@ -403,7 +403,7 @@ class Order extends BaseModel
         $result = $this->getStatusService()->getButtonModels();
         return $result;
     }
-    private function memberButtons()
+    protected function memberButtons()
     {
         return app('OrderManager')->make(OrderOperationsCollector::class)->getOperations($this);
     }
