@@ -92,6 +92,9 @@ class GoodsController extends BaseController
             });
 
             $categorySearch = array_filter(\YunShop::request()->category, function ($item) {
+                if (is_array($item)) {
+                    return !empty($item[0]);
+                }
                 return !empty($item);
             });
 
@@ -99,14 +102,14 @@ class GoodsController extends BaseController
                 $requestSearch['category'] = $categorySearch;
             }
         }
-        /*$catetory_menus = CategoryService::getCategoryMenu(
-            [
-                'catlevel' => $this->shopset['cat_level'],
-                'ids'   => isset($categorySearch) ? array_values($categorySearch) : [],
-            ]
-        );*/
+//        $catetory_menus = CategoryService::getCategoryMenu(
+//            [
+//                'catlevel' => $this->shopset['cat_level'],
+//                'ids'   => isset($categorySearch) ? array_values($categorySearch) : [],
+//            ]
+//        );
 
-        $catetory_menus = CategoryService::getCategoryMultiMenu(
+        $catetory_menus = CategoryService::getCategoryMultiMenuSearch(
             [
                 'catlevel' => $this->shopset['cat_level'],
                 'ids'   => isset($categorySearch) ? array_values($categorySearch) : [],
