@@ -46,7 +46,7 @@ class GoodsService
                         break;
                     case 3:
                         if (0 == $val || 0 == $categorys['childid'][$key] || 0 == $categorys['thirdid'][$key]) {
-                            continue;
+                            //continue;
                         }
 
                         $category_id = $categorys['thirdid'][$key];

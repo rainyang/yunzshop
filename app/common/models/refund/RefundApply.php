@@ -10,6 +10,7 @@ namespace app\common\models\refund;
 
 use app\common\models\BaseModel;
 use app\common\models\Order;
+use app\frontend\modules\refund\services\RefundService;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
@@ -66,6 +67,20 @@ class RefundApply extends BaseModel
         }
     }
 
+    public static function createByOrder(Order $order)
+    {
+        $refundApply = new static();
+        $refundApply->images = [];
+        $refundApply->content = '订单状态改变失败退款';
+        $refundApply->reason = '订单状态改变失败退款';
+        $refundApply->order_id = $order->id;
+        $refundApply->refund_type = 0;
+        $refundApply->refund_sn = RefundService::createOrderRN();
+        $refundApply->create_time = time();
+        $refundApply->price = $order->price;
+        return $refundApply;
+    }
+
     public function returnExpress()
     {
         return $this->hasOne(ReturnExpress::class, 'refund_id', 'id');
@@ -97,8 +112,8 @@ class RefundApply extends BaseModel
         }
         if ($this->status == self::WAIT_RETURN_GOODS) {
 
-            if(!($this->order->plugin_id == 40)) {
-                  $result[] = [
+            if (!($this->order->plugin_id == 40)) {
+                $result[] = [
                     'name' => '填写快递',
                     'api' => 'refund.send',
                     'value' => 2
@@ -179,16 +194,20 @@ class RefundApply extends BaseModel
         return $this->getStatusNameMapping()[$this->status];
     }
 
-    public function getIsPlugin($order_id) {
-        return Order::where('id',$order_id)->select('is_plugin','plugin_id')->first();
+    public function getIsPlugin($order_id)
+    {
+        return \app\common\models\Order::where('id', $order_id)->select('is_plugin', 'plugin_id')->first();
+
     }
 
-    public function getSupplierId($order_id) {
-        return \Yunshop\Supplier\common\models\SupplierOrder::where('order_id',$order_id)->value('supplier_id');
+    public function getSupplierId($order_id)
+    {
+        return \Yunshop\Supplier\common\models\SupplierOrder::where('order_id', $order_id)->value('supplier_id');
     }
 
-    public function getStoreId($order_id) {
-        return \Yunshop\StoreCashier\common\models\StoreOrder::where('order_id',$order_id)->value('store_id');
+    public function getStoreId($order_id)
+    {
+        return \Yunshop\StoreCashier\common\models\StoreOrder::where('order_id', $order_id)->value('store_id');
     }
 
     public function getIsRefundedAttribute()

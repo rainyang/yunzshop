@@ -16,6 +16,7 @@ use app\common\components\BaseController;
 
 use app\common\helpers\PaginationHelper;
 use app\common\services\ExportService;
+use Illuminate\Support\Facades\DB;
 
 class ListController extends BaseController
 {
@@ -36,7 +37,16 @@ class ListController extends BaseController
         $this->export($this->orderModel);
         return view('order.index', $this->getData())->render();
     }
+    public function payFail(){
+        $orderIds = DB::table('yz_order as o')->join('yz_order_pay_order as opo', 'o.id', '=', 'opo.order_id')
+            ->join('yz_order_pay as op', 'op.id', '=', 'opo.order_pay_id')
+            ->where('o.status',0)
+            ->where('op.status',1)
+            ->pluck('o.id');
+        $this->orderModel->whereIn('id',$orderIds);
+        return view('order.index', $this->getData())->render();
 
+    }
     public function waitPay()
     {
         $this->orderModel->waitPay();

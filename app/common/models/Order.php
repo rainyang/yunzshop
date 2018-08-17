@@ -23,6 +23,7 @@ use app\common\models\refund\RefundApply;
 use app\common\modules\order\OrderOperationsCollector;
 use app\common\modules\payType\events\AfterOrderPayTypeChangedEvent;
 
+use app\common\traits\HasProcessTrait;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\services\status\StatusFactory;
 use Carbon\Carbon;
@@ -60,6 +61,7 @@ use app\backend\modules\order\observers\OrderObserver;
  */
 class Order extends BaseModel
 {
+    use HasProcessTrait;
     public $table = 'yz_order';
     public $setting = null;
     private $StatusService;
@@ -116,6 +118,11 @@ class Order extends BaseModel
             ->sum('price');
     }
 
+
+    public function scopePayFail($query)
+    {
+        return $query->where('refund_id', '0');
+    }
 
     /**
      * 订单状态:待付款
@@ -373,6 +380,7 @@ class Order extends BaseModel
         if ($this->isPending()) {
             $statusName .= ' : 锁定';
         }
+
         return $statusName;
     }
 
