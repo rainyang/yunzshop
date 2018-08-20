@@ -55,6 +55,7 @@ use app\backend\modules\order\observers\OrderObserver;
  * @property Member belongsToMember
  * @property Collection orderPays
  * @property OrderPay hasOneOrderPay
+ * @property OrderAddress address
  * @property PayType hasOnePayType
  * @property RefundApply hasOneRefundApply
  * @property Carbon finish_time
