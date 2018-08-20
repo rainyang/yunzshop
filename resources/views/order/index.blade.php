@@ -229,11 +229,6 @@
                                                 <br/>
 
                                                 {{$order['has_one_dispatch_type']['name']}}
-                                                @if( 0&&$order['addressid']!=0 && $order['statusvalue']>=2)<br/>
-                                                <button type='button' class='btn btn-default btn-sm'
-                                                        onclick='express_find(this,"{{$order['id']}}")'>查看物流
-                                                </button>
-                                                @endif
                                             </td>
                                             <td rowspan="{{count($order['has_many_order_goods'])}}" style='width:18%;'>
                                                 <table class="goods-price">
