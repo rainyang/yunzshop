@@ -96,7 +96,7 @@ class AliPay extends Pay
         }
         $pay_type_id = OrderPay::get_paysn_by_pay_type_id($out_trade_no);
         $pay_type_name = PayType::get_pay_type_name($pay_type_id);
-        $this->refundlog(Pay::PAY_TYPE_REFUND, $pay_type_name, $totalmoney, $op, $out_trade_no, Pay::ORDER_STATUS_NON, 0);
+        $refund_order = $this->refundlog(Pay::PAY_TYPE_REFUND, $pay_type_name, $totalmoney, $op, $out_trade_no, Pay::ORDER_STATUS_NON, 0);
         
         //支付宝交易单号
         $pay_order_model = PayOrder::getPayOrderInfo($out_trade_no)->first();
@@ -111,8 +111,8 @@ class AliPay extends Pay
                 );
                 $result = $this->apprefund($refund_data);
                 if ($result) {
-                    $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_COMPLETE, $result['trade_no']);
-                    $this->payResponseDataLog($out_trade_no, '支付宝退款', json_encode($result));
+                    $this->changeOrderStatus($refund_order, Pay::ORDER_STATUS_COMPLETE, $result['trade_no']);
+                    $this->payResponseDataLog($out_trade_no, '支付宝APP退款', json_encode($result));
                     return true;
                 } else {
                     return false;
