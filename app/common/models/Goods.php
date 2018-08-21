@@ -16,6 +16,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use app\common\models\Coupon;
 
+/**
+ * Class Goods
+ * @package app\common\models
+ * @property string status
+ * @property string status_name
+ * @property string title
+ * @property int id
+ */
 class Goods extends BaseModel
 {
 
@@ -25,7 +33,7 @@ class Goods extends BaseModel
     public $attributes = ['display_order' => 0];
     protected $mediaFields = ['thumb', 'thumb_url'];
     protected $dates = ['deleted_at'];
-
+    protected $appends = ['status_name'];
     public $fillable = [];
 
     protected $guarded = ['widgets'];
@@ -205,7 +213,7 @@ class Goods extends BaseModel
                     $query->where('brand_id', $value);
                     break;
                 case 'product_attr':
-                   // $value = explode(',', rtrim($value, ','));
+                    // $value = explode(',', rtrim($value, ','));
                     foreach ($value as $attr) {
                         if ($attr == 'limit_buy') {
                             $query->whereHas('hasOneGoodsLimitBuy', function ($q) {
@@ -304,11 +312,11 @@ class Goods extends BaseModel
     public static function getGoodsByName($keyword)
     {
 
-        return static::uniacid()->select('id', 'title', 'thumb', 'market_price', 'price', 'real_sales', 'sku','plugin_id')
+        return static::uniacid()->select('id', 'title', 'thumb', 'market_price', 'price', 'real_sales', 'sku', 'plugin_id')
             ->where('title', 'like', '%' . $keyword . '%')
             ->where('status', 1)
             //->where('is_plugin', 0)
-            ->whereNotIn('plugin_id', [20,31,60])//屏蔽门店、码上点餐、第三方插件接口的虚拟商品
+            ->whereNotIn('plugin_id', [20, 31, 60])//屏蔽门店、码上点餐、第三方插件接口的虚拟商品
             ->get();
     }
 
@@ -389,7 +397,7 @@ class Goods extends BaseModel
      */
     public static function getPushGoods($goodsIds)
     {
-        return self::select('id','title','thumb','price')->whereIn('id', $goodsIds)->where('status', 1)->get()->toArray();
+        return self::select('id', 'title', 'thumb', 'price')->whereIn('id', $goodsIds)->where('status', 1)->get()->toArray();
     }
 
     public static function boot()
@@ -407,5 +415,9 @@ class Goods extends BaseModel
 
 
         return $model;
+    }
+    public function getStatusNameAttribute(){
+
+        return [0=>'下架',1=>'上架'][$this->status];
     }
 }

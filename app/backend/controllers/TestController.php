@@ -26,9 +26,9 @@ class TestController extends BaseController
 {
     public function index()
     {
-//        $list = DB::table('yz_provider')->select()->get();
-        $list = Provider::get();
-dd($list);
+
+        $a = \app\common\models\Order::getOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
+        dd($a);
     }
 
     public function d()

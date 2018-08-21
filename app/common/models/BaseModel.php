@@ -18,10 +18,14 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Class BaseModel
  * @package app\common\models
- * @method uniacid()
- * @method static insert()
- * @method static get()
- * @method static set()
+ * @method static BaseModel uniacid()
+ * @method static BaseModel insert()
+ * @method static BaseModel get()
+ * @method static BaseModel set()
+ * @method static BaseModel find(string $id)
+ * @method static BaseModel select(array $files)
+ * @method static BaseModel with($relations)
+
  */
 class BaseModel extends Model
 {
