@@ -26,6 +26,12 @@ class MessageService
      */
     public function push($member_id, $template_id, array $params, $url='', $uniacid='')
     {
+        if ($uniacid) {
+            \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $uniacid;
+        } else{
+            \Setting::$uniqueAccountId = \YunShop::app()->uniacid;
+        }
+        
         if(\Setting::get('shop.notice.toggle') == false){
             return false;
         }
