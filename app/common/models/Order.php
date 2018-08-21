@@ -427,7 +427,9 @@ class Order extends BaseModel
     {
         //$status = [Order::WAIT_PAY, Order::WAIT_SEND, Order::WAIT_RECEIVE, Order::COMPLETE, Order::REFUND];
         $status_counts = $query->select('status', DB::raw('count(*) as total'))
-            ->whereIn('status', $status)->groupBy('status')->get()->makeHidden(['status_name', 'pay_type_name', 'has_one_pay_type', 'button_models'])->toArray();
+            ->whereIn('status', $status)->pluginId()->isPlugin()
+            ->groupBy('status')->get()->makeHidden(['status_name', 'pay_type_name', 'has_one_pay_type', 'button_models'])
+            ->toArray();
         if (in_array(Order::REFUND, $status)) {
             $refund_count = $query->refund()->count();
             $status_counts[] = ['status' => Order::REFUND, 'total' => $refund_count];
