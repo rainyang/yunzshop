@@ -13,6 +13,10 @@ use app\frontend\modules\order\operations\OrderOperation;
 
 class Refunding extends OrderOperation
 {
+    public function getApi()
+    {
+        return 'refund.detail';
+    }
     public function getValue()
     {
         return static::REFUND_INFO;

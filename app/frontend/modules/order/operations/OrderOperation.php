@@ -31,6 +31,7 @@ abstract class OrderOperation
     {
         $this->order = $order;
     }
+    abstract public function getApi();
     abstract public function enable();
 
     /**

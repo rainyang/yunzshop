@@ -16,6 +16,7 @@ class OrderOperationsCollector
     /**
      * @param Order $order
      * @return array
+     * @throws \app\common\exceptions\AppException
      */
     public function getOperations(Order $order)
     {
@@ -29,6 +30,7 @@ class OrderOperationsCollector
             }
             $result['name'] = $operation->getName();
             $result['value'] = $operation->getValue();
+            $result['api'] = $operation->getApi();
 
             return $result;
         }, $order->getOperationsSetting());
@@ -36,6 +38,11 @@ class OrderOperationsCollector
         $operations = array_filter($operations);
         return array_values($operations);
     }
+
+    /**
+     * @param Order $order
+     * @return array
+     */
     public function getAllOperations(Order $order){
         $operations = array_map(function ($operationName) use($order){
             /**

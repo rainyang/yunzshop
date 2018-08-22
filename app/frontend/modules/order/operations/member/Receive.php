@@ -13,6 +13,10 @@ use app\frontend\modules\order\operations\OrderOperation;
 
 class Receive extends OrderOperation
 {
+    public function getApi()
+    {
+        return 'order.operation.receive';
+    }
     public function getName()
     {
         // todo 需要提取到门店插件复写的类中,在容器中判断实例哪个类
