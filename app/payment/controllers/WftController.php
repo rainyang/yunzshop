@@ -30,7 +30,7 @@ class WftController extends PaymentController
 
             $obj = simplexml_load_string($this->xml, 'SimpleXMLElement', LIBXML_NOCDATA);
 
-            $this->parameters = json_decode(json_encode($obj));
+            $this->parameters = json_decode(json_encode($obj), true);
 
             \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $this->parameters['attach'];
 
