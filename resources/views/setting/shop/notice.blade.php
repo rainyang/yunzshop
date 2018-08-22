@@ -50,12 +50,17 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">商城消息提醒</label>
                             <div class="col-sm-9 col-xs-12">
-                                <label class='radio-inline'><input type='radio' name='yz_notice[toggle]' value='1'
-                                                                   @if ($set['toggle'] == 1) checked @endif/> 开启</label>
-                                <label class='radio-inline'><input type='radio' name='yz_notice[toggle]' value='0'
-                                                                   @if (empty($set['toggle'])) checked @endif />
-                                    关闭</label>
-                                <div class="help-block">开启或关闭消息通知</div>
+                                <label class='radio-inline'>
+                                    <input type='radio' name='yz_notice[toggle]' value='1' @if ($set['toggle'] == 1) checked @endif/>
+                                    开启
+                                </label>
+                                <label class='radio-inline'>
+                                    <input type='radio' name='yz_notice[toggle]' value='0' @if (empty($set['toggle'])) checked @endif />
+                                    关闭
+                                </label>
+                                <div class="help-block">
+                                    消息通知开关：控制商城全部消息（包含插件消息）
+                                </div>
                             </div>
                         </div>
                     </div>
