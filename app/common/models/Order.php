@@ -24,6 +24,7 @@ use app\common\models\refund\RefundApply;
 use app\common\modules\order\OrderOperationsCollector;
 use app\common\modules\payType\events\AfterOrderPayTypeChangedEvent;
 
+use app\common\modules\refund\services\RefundService;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\services\status\StatusFactory;
 use Carbon\Carbon;
@@ -118,6 +119,11 @@ class Order extends BaseModel
             ->sum('price');
     }
 
+
+    public function scopePayFail($query)
+    {
+        return $query->where('refund_id', '0');
+    }
 
     /**
      * 订单状态:待付款
@@ -421,7 +427,9 @@ class Order extends BaseModel
     {
         //$status = [Order::WAIT_PAY, Order::WAIT_SEND, Order::WAIT_RECEIVE, Order::COMPLETE, Order::REFUND];
         $status_counts = $query->select('status', DB::raw('count(*) as total'))
-            ->whereIn('status', $status)->groupBy('status')->get()->makeHidden(['status_name', 'pay_type_name', 'has_one_pay_type', 'button_models'])->toArray();
+            ->whereIn('status', $status)->pluginId()->isPlugin()
+            ->groupBy('status')->get()->makeHidden(['status_name', 'pay_type_name', 'has_one_pay_type', 'button_models'])
+            ->toArray();
         if (in_array(Order::REFUND, $status)) {
             $refund_count = $query->refund()->count();
             $status_counts[] = ['status' => Order::REFUND, 'total' => $refund_count];
@@ -660,6 +668,9 @@ class Order extends BaseModel
      * @return bool
      */
     public function canRefund(){
+        if(!RefundService::allowRefund()){
+            return false;
+        }
         // 完成后不许退款
         if (\Setting::get('shop.trade.refund_days') === '0') {
             return false;

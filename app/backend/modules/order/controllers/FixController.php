@@ -2,6 +2,7 @@
 
 namespace app\backend\modules\order\controllers;
 
+use app\backend\modules\order\fix\OrderPayFailRepair;
 use app\common\components\BaseController;
 use app\common\models\Address;
 use app\common\models\Member;
@@ -125,5 +126,14 @@ class FixController extends BaseController
             });
         });
 
+    }
+
+    /**
+     * @throws \app\common\exceptions\AppException
+     */
+    public function payFail(){
+        $a = new OrderPayFailRepair(Order::find(request('order_id')));
+        $a->handle();
+        dd($a->message);
     }
 }

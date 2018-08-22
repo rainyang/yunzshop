@@ -829,8 +829,8 @@ class MemberController extends ApiController
 
         $shopInfo = Setting::get('shop.shop');
         $shopName = $shopInfo['name'] ?: '商城'; //todo 默认值需要更新
-        $shopLogo = $shopInfo['logo'] ? replace_yunshop(tomedia($shopInfo['logo'])) : base_path() . '/static/images/logo.png'; //todo 默认值需要更新
-        $shopImg = $shopInfo['signimg'] ? replace_yunshop(tomedia($shopInfo['signimg'])) : base_path() . '/static/images/photo-mr.jpg'; //todo 默认值需要更新
+        $shopLogo = $shopInfo['logo'] ? replace_yunshop(yz_tomedia($shopInfo['logo'])) : base_path() . '/static/images/logo.png'; //todo 默认值需要更新
+        $shopImg = $shopInfo['signimg'] ? replace_yunshop(yz_tomedia($shopInfo['signimg'])) : base_path() . '/static/images/photo-mr.jpg'; //todo 默认值需要更新
 
         $str_lenght = $logo_width + $font_size_show * mb_strlen($shopName);
 
@@ -1251,29 +1251,32 @@ class MemberController extends ApiController
             }
         }
 
-//        if (app('plugins')->isEnabled('help-center')) {
-//
-//            $help_center_setting = Setting::get('plugin.help_center');
-//
-//            if ($help_center_setting && 1 == $help_center_setting['status']) {
-//                $data[] = [
-//                    'name' => 'help_center',
-//                    'title' => '帮助中心'
-//                ];
-//            }
-//        }
+        if (app('plugins')->isEnabled('help-center')) {
 
-//        if (app('plugins')->isEnabled('courier')) {
-//
-//            $courier_setting = Setting::get('courier.courier');
-//
-//            if ($courier_setting && 1 == $courier_setting['radio']) {
-//                $data[] = [
-//                    'name' => 'courier',
-//                    'title' => $courier_setting['name'] ? $courier_setting['name'] : '快递单'
-//                ];
-//            }
-//        }
+            $help_center_setting = Setting::get('plugin.help_center');
+
+            if ($help_center_setting && 1 == $help_center_setting['status']) {
+                $data[] = [
+                    'name' => 'help_center',
+                    'title' => '帮助中心',
+                    'class' => 'icon-member-help',
+                    'url' => 'helpcenter'
+                ];
+            }
+        }
+
+        if (app('plugins')->isEnabled('courier')) {
+            $courier_setting = Setting::get('courier.courier');
+
+            if ($courier_setting && 1 == $courier_setting['radio']) {
+                $data[] = [
+                    'name' => 'courier',
+                    'title' => $courier_setting['name'] ? $courier_setting['name'] : '快递单',
+                    'class' => 'icon-member-express',
+                    'url' => 'courier'
+                ];
+            }
+        }
 
         if (app('plugins')->isEnabled('store-cashier')) {
             $store = \Yunshop\StoreCashier\common\models\Store::getStoreByUid(\YunShop::app()->getMemberId())->first();

@@ -4,15 +4,14 @@ namespace app\common\modules\refund\services;
 
 use app\backend\modules\refund\models\RefundApply;
 use app\backend\modules\refund\services\RefundOperationService;
-use app\common\events\order\AfterOrderRefundedEvent;
 use app\common\exceptions\AdminException;
+use app\common\facades\Setting;
 use app\common\models\finance\Balance;
+use app\common\models\Order;
 use app\common\models\PayType;
 use app\common\services\credit\ConstService;
 use app\common\services\finance\BalanceChange;
 use app\common\services\PayFactory;
-use app\frontend\modules\finance\services\BalanceService;
-use Illuminate\Support\Facades\DB;
 
 /**
  * Created by PhpStorm.
@@ -23,10 +22,15 @@ use Illuminate\Support\Facades\DB;
 class RefundService
 {
     protected $refundApply;
-
-    public function pay($request)
+    public function fastRefund($order_id){
+        $order = Order::find($order_id);
+        $refundApply = \app\common\models\refund\RefundApply::createByOrder($order);
+        $refundApply->save();
+        return $this->pay($refundApply->id);
+    }
+    public function pay($refund_id)
     {
-        $this->refundApply = RefundApply::find($request->input('refund_id'));
+        $this->refundApply = RefundApply::find($refund_id);
 
         if (!isset($this->refundApply)) {
             throw new AdminException('未找到退款记录');
@@ -154,5 +158,13 @@ class RefundService
             throw new AdminException('芸支付微信退款失败');
         }
         return $result;
+    }
+
+    public static function allowRefund()
+    {
+        $refund_status = Setting::get('shop.trade.refund_status');
+        if($refund_status == 1 || $refund_status == null){
+            return true;
+        }
     }
 }

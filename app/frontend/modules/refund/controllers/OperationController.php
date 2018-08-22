@@ -41,7 +41,7 @@ class OperationController extends ApiController
         /**
          * @var $this ->refundApply RefundApply
          */
-        (new RefundService())->pay($request);
+        (new RefundService())->pay($request['refund_id']);
         return $this->successJson();
 
     }
