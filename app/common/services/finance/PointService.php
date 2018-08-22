@@ -93,6 +93,9 @@ class PointService
     const POINT_MODE_FROZE_AWARD = 21;
     const POINT_MODE_FROZE_AWARD_ATTACHED = '冻结币奖励';
 
+    const POINT_MODE_COMMUNITY_REWARD = 22;
+    const POINT_MODE_COMMUNITY_REWARD_ATTACHED = '圈子签到奖励';
+
     const POINT = 0;
 
     public $point_data;
@@ -250,6 +253,9 @@ class PointService
                 break;
             case (20):
                 $mode_attribute = self::POINT_MODE_COURIER_REWARD_ATTACHED;
+                break;
+            case (22):
+                $mode_attribute = self::POINT_MODE_COMMUNITY_REWARD_ATTACHED;
                 break;
             case (92):
                 $mode_attribute = self::POINT_MODE_RECHARGE_CODE_ATTACHED;
