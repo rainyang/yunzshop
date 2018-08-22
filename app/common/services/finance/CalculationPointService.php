@@ -40,7 +40,7 @@ class CalculationPointService
             } else {
                 $point_data['point'] = $order_goods_model->hasOneGoods->hasOneSale->point * $order_goods_model->total;
             }
-            $point_data['remark'] = '购买商品[' . $order_goods_model->hasOneGoods->title .'(比例:'. $order_goods_model->hasOneGoods->hasOneSale->point .')]赠送[$order_goods->hasOneGoods->hasOneSale->point]积分！';
+            $point_data['remark'] = '购买商品[' . $order_goods_model->hasOneGoods->title .'(比例:'. $order_goods_model->hasOneGoods->hasOneSale->point .')]赠送['.$point_data['point'].']积分！';
         } else if (!empty($point_set['give_point'] && $point_set['give_point'])) {
             if (strexists($point_set['give_point'], '%')) {
                 $point_data['point'] = floatval(str_replace('%', '', $point_set['give_point']) / 100 * $order_goods_model->payment_amount);

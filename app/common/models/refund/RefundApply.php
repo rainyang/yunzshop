@@ -197,7 +197,6 @@ class RefundApply extends BaseModel
     public function getIsPlugin($order_id)
     {
         return \app\common\models\Order::where('id', $order_id)->select('is_plugin', 'plugin_id')->first();
-
     }
 
     public function getSupplierId($order_id)

@@ -22,8 +22,8 @@ use app\common\models\order\Remark;
 use app\common\models\refund\RefundApply;
 use app\common\modules\order\OrderOperationsCollector;
 use app\common\modules\payType\events\AfterOrderPayTypeChangedEvent;
-
 use app\common\traits\HasProcessTrait;
+use app\common\modules\refund\services\RefundService;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\services\status\StatusFactory;
 use Carbon\Carbon;
@@ -55,6 +55,7 @@ use app\backend\modules\order\observers\OrderObserver;
  * @property Member belongsToMember
  * @property Collection orderPays
  * @property OrderPay hasOneOrderPay
+ * @property OrderAddress address
  * @property PayType hasOnePayType
  * @property RefundApply hasOneRefundApply
  * @property Carbon finish_time
@@ -668,6 +669,9 @@ class Order extends BaseModel
      * @return bool
      */
     public function canRefund(){
+        if(!RefundService::allowRefund()){
+            return false;
+        }
         // 完成后不许退款
         if (\Setting::get('shop.trade.refund_days') === '0') {
             return false;
