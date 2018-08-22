@@ -39,7 +39,7 @@ class OrderSend extends ChangeStatusOperation
             !$db_express_model && $db_express_model = new Express();
 
             $db_express_model->order_id = $order_id;
-            $db_express_model->express_code = request()->input('express_code');
+            $db_express_model->express_code = request()->input('express_code','');
 
             $db_express_model->express_company_name = request()->input('express_company_name', function (){
                 return array_get((new ExpressCompany())->where('code',request()->input('express_code'))->first(),'express_company_name','');
