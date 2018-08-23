@@ -1427,7 +1427,7 @@ return [
                                 'name'              => '修改价格跳转路由',
                                 'url'               => 'order.change-order-price.index',
                                 'url_params'        => '',
-                                'permit'            => 0,
+                                'permit'            => 1,
                                 'menu'              => 0,
                                 'icon'              => '',
                                 'sort'              => 1,
