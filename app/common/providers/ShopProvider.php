@@ -8,15 +8,11 @@
 
 namespace app\common\providers;
 
-use app\common\exceptions\ShopException;
-use app\common\models\Containers;
 use app\common\modules\status\StatusContainer;
 use app\frontend\modules\coin\CoinManager;
 use app\frontend\modules\deduction\DeductionManager;
 use app\frontend\modules\goods\services\GoodsManager;
-use app\frontend\modules\order\services\OrderManager;
 use app\frontend\modules\payment\managers\PaymentManager;
-use app\frontend\modules\payment\OrderPaymentManager;
 use Illuminate\Support\ServiceProvider;
 
 class ShopProvider extends ServiceProvider
@@ -35,9 +31,7 @@ class ShopProvider extends ServiceProvider
         $this->app->singleton('GoodsManager',function(){
             return new GoodsManager();
         });
-        $this->app->singleton('OrderManager',function(){
-            return new OrderManager();
-        });
+
         $this->app->singleton('StatusContainer', function (){
             return new StatusContainer();
         });

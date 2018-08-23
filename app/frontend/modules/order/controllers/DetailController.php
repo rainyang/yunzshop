@@ -22,6 +22,12 @@ use app\common\services\goods\VideoDemandCourseGoods;
 
 class DetailController extends ApiController
 {
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     * @throws \app\common\exceptions\ShopException
+     */
     public function index(Request $request)
     {
         $this->validate([
@@ -42,15 +48,6 @@ class DetailController extends ApiController
         $data = $order->toArray();
         $backups_button = $data['button_models'];
 
-
-        $refund_status = RefundService::allowRefund();
-        if ($refund_status == true) {
-            $data['button_models'] = array_merge($data['button_models'],$order->getStatusService()->getRefundButtons($order));
-        }
-//        $refund_status = Setting::get('shop.trade.refund_status');
-//        if($refund_status == 1){
-//            $data['button_models'] = array_merge($data['button_models'],$order->getStatusService()->getRefundButtons($order));
-//        }
         //$this->getStatusService()->
         //todo 配送类型
         if ($order['dispatch_type_id'] == DispatchType::EXPRESS) {

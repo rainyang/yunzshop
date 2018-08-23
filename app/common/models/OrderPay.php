@@ -176,9 +176,7 @@ class OrderPay extends BaseModel
         $this->save();
 
         $this->orders->each(function ($order) {
-            if (!OrderService::orderPay(['order_id' => $order->id, 'order_pay_id' => $this->id, 'pay_type_id' => $this->pay_type_id])) {
-                throw new AppException('订单状态改变失败,请联系客服');
-            }
+            OrderService::orderPay(['order_id' => $order->id, 'order_pay_id' => $this->id, 'pay_type_id' => $this->pay_type_id]);
         });
     }
 
