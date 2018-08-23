@@ -13,6 +13,12 @@ use app\common\models\Order;
 use app\frontend\modules\refund\services\RefundService;
 use Illuminate\Database\Eloquent\Builder;
 
+/**
+ * Class RefundApply
+ * @package app\common\models\refund
+ * @property int status
+ * @property Order order
+ */
 class RefundApply extends BaseModel
 {
     protected $table = 'yz_order_refund';
@@ -271,7 +277,7 @@ class RefundApply extends BaseModel
      */
     public function order()
     {
-        return $this->belongsTo(\app\common\models\Order::class, 'order_id', 'id');
+        return $this->belongsTo(Order::class, 'order_id', 'id');
     }
 
     protected static function boot()

@@ -12,10 +12,21 @@ namespace app\backend\modules\order\controllers;
 use app\backend\modules\member\models\Member;
 use app\backend\modules\order\models\Order;
 use app\common\components\BaseController;
+use app\common\modules\order\OrderOperationsCollector;
 use app\common\services\DivFromService;
 
 class DetailController extends BaseController
 {
+    public function getMemberButtons(){
+
+        $orderStatus = array_keys(app('OrderManager')->setting('status'));
+        $buttons = array_map(function ($orderStatus) {
+            var_dump($orderStatus);
+            $order = Order::where('status',$orderStatus)->orderBy('id','desc')->first();
+            dump($order->buttonModels);
+            dump($order->oldButtonModels);
+        },$orderStatus);
+    }
     public function index(\Request $request)
     {
 
