@@ -10,7 +10,7 @@ namespace app\frontend\modules\order\operations;
 
 use app\frontend\models\Order;
 
-abstract class OrderOperation
+abstract class OrderOperation implements OrderOperationInterface
 {
     const PAY = 1; // 支付
     const COMPLETE = 5; // 确认收货
@@ -31,14 +31,4 @@ abstract class OrderOperation
     {
         $this->order = $order;
     }
-    abstract public function enable();
-
-    /**
-     * @return string
-     */
-    abstract public function getName();
-    /**
-     * @return string
-     */
-    abstract public function getValue();
 }
