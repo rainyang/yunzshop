@@ -1770,7 +1770,7 @@ return [
                                 'name'              => '商家重新发货',
                                 'url'               => 'refund.operation.resend',
                                 'url_params'        => '',
-                                'permit'            => 1,
+                                'permit'            => 0,
                                 'menu'              => 0,
                                 'icon'              => 'fa-circle-o',
                                 'sort'              => '4',
