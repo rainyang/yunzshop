@@ -55,6 +55,11 @@
                     </el-table-column>
                     <el-table-column width="80" property="price" label="金额"></el-table-column>
                     <el-table-column width="80" property="status_name" label="状态"></el-table-column>
+                    <el-table-column width="200" label="操作">
+                        <template slot-scope="scope">
+                            <a target="_blank" v-bind:href="'{{yzWebUrl('order.fix.pay-fail', array('order_id' => ''))}}'+[[scope.row.id]]">修复支付状态</a>
+                        </template>
+                    </el-table-column>
                 </el-table>
             </el-form-item>
             <el-form-item label="支付平台记录">
