@@ -27,9 +27,14 @@ abstract class OrderOperation implements OrderOperationInterface
      * @var Order
      */
     protected $order;
+
     public function __construct(Order $order)
     {
         $this->order = $order;
     }
 
+    public function getType()
+    {
+        return '';
+    }
 }

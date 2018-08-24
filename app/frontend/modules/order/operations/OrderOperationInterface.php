@@ -11,12 +11,19 @@ namespace app\frontend\modules\order\operations;
 
 interface OrderOperationInterface
 {
+    const TYPE_SUCCESS = 'success';
+    const TYPE_WARNING = 'warning';
+    const TYPE_DANGER = 'danger';
+    const TYPE_PRIMARY = 'primary';
+    const TYPE_INFO = 'info';
+
     public function enable();
 
     /**
      * @return string
      */
     public function getName();
+
     /**
      * @return string
      */
@@ -26,5 +33,9 @@ interface OrderOperationInterface
      * @return string
      */
     public function getApi();
+    /**
+     * @return string
+     */
+    public function getType();
 
 }
