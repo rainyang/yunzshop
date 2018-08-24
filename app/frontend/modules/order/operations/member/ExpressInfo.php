@@ -12,6 +12,10 @@ use app\common\models\DispatchType;
 
 class ExpressInfo extends OrderOperation
 {
+    public function getApi()
+    {
+        return 'dispatch.express';
+    }
     public function getName()
     {
         return '物流信息';

@@ -12,6 +12,10 @@ use app\frontend\modules\order\operations\OrderOperation;
 
 class Delete extends OrderOperation
 {
+    public function getApi()
+    {
+        return 'order.operation.delete';
+    }
     public function getName()
     {
         return '删除订单';

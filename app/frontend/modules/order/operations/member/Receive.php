@@ -13,6 +13,14 @@ use app\frontend\modules\order\operations\OrderOperation;
 
 class Receive extends OrderOperation
 {
+    public function getApi()
+    {
+        // todo 需要提取到门店插件复写的类中,在容器中判断实例哪个类
+        if (in_array($this->order->dispatch_type_id, [DispatchType::SELF_DELIVERY, DispatchType::STORE_DELIVERY])) {
+            return 'plugin.store-cashier.frontend.store.orderDetail.qrCodeUrl';
+        }
+        return 'order.operation.receive';
+    }
     public function getName()
     {
         // todo 需要提取到门店插件复写的类中,在容器中判断实例哪个类

@@ -31,4 +31,5 @@ abstract class OrderOperation implements OrderOperationInterface
     {
         $this->order = $order;
     }
+
 }

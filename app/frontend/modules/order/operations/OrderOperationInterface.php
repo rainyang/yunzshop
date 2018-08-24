@@ -21,4 +21,10 @@ interface OrderOperationInterface
      * @return string
      */
     public function getValue();
+
+    /**
+     * @return string
+     */
+    public function getApi();
+
 }

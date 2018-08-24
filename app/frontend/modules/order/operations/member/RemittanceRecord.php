@@ -14,6 +14,10 @@ use app\frontend\modules\order\operations\OrderOperation;
 
 class RemittanceRecord extends OrderOperation
 {
+    public function getApi()
+    {
+        return 'remittance.remittance-record';
+    }
     public function getName()
     {
         return '转账信息';
