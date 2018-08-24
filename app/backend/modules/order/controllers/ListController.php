@@ -108,7 +108,7 @@ class ListController extends BaseController
         }
 
         $list['total_price'] = $this->orderModel->sum('price');
-        $list += $this->orderModel->orderBy('id', 'desc')->paginate(self::PAGE_SIZE)->appends(['button_models'])->toArray();
+        $list += $this->orderModel->orderBy('id', 'desc')->paginate(self::PAGE_SIZE)->toArray();
 
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 

@@ -25,7 +25,6 @@ use Illuminate\Database\Eloquent\Model;
  * @method static BaseModel find(string $id)
  * @method static BaseModel select(array $files)
  * @method static BaseModel with($relations)
-
  */
 class BaseModel extends Model
 {
@@ -184,12 +183,15 @@ class BaseModel extends Model
         }
 
     }
-    private function getCommonModelClass($class){
-        if(get_parent_class($class) == self::class){
+
+    private function getCommonModelClass($class)
+    {
+        if (get_parent_class($class) == self::class) {
             return $class;
         }
         return $this->getCommonModelClass(get_parent_class($class));
     }
+
     /**
      * Get the class name for polymorphic relations.
      *
@@ -198,5 +200,11 @@ class BaseModel extends Model
     public function getMorphClass()
     {
         return $this->getCommonModelClass(parent::getMorphClass());
+    }
+
+    public function pushAppends($appends)
+    {
+        $this->appends = array_merge($this->appends, $appends);
+        return $this;
     }
 }

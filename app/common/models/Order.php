@@ -405,16 +405,6 @@ class Order extends BaseModel
      */
     public function getButtonModelsAttribute()
     {
-        $result = $this->memberButtons();
-        return $result;
-    }
-    public function getOldButtonModelsAttribute()
-    {
-        $result = $this->getStatusService()->getButtonModels();
-        return $result;
-    }
-    protected function memberButtons()
-    {
         return app('OrderManager')->make(OrderOperationsCollector::class)->getOperations($this);
     }
 

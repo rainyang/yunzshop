@@ -16,6 +16,7 @@ class OrderOperationsCollector
     /**
      * @param Order $order
      * @return array
+     * @throws \app\common\exceptions\AppException
      */
     public function getOperations(Order $order)
     {
