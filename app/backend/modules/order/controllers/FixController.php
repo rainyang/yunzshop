@@ -4,6 +4,7 @@ namespace app\backend\modules\order\controllers;
 
 use app\backend\modules\order\fix\OrderPayFailRepair;
 use app\common\components\BaseController;
+use app\common\exceptions\AppException;
 use app\common\models\Address;
 use app\common\models\Member;
 use app\common\models\MemberAddress;
@@ -132,7 +133,11 @@ class FixController extends BaseController
      * @throws \app\common\exceptions\AppException
      */
     public function payFail(){
-        $a = new OrderPayFailRepair(Order::find(request('order_id')));
+        $order = Order::find(request('order_id'));
+        if(!$order){
+            throw new AppException('未找到订单');
+        }
+        $a = new OrderPayFailRepair($order);
         $a->handle();
         dd($a->message);
     }
