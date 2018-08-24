@@ -40,7 +40,7 @@ class ListController extends BaseController
     public function payFail(){
         $orderIds = DB::table('yz_order as o')->join('yz_order_pay_order as opo', 'o.id', '=', 'opo.order_id')
             ->join('yz_order_pay as op', 'op.id', '=', 'opo.order_pay_id')
-            ->where('o.status',0)
+            ->whereIn('o.status',[0,-1])
             ->where('op.status',1)
             ->pluck('o.id');
         $this->orderModel->whereIn('id',$orderIds);

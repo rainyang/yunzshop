@@ -10,6 +10,7 @@ namespace app\common\modules\order;
 
 use app\common\models\Order;
 use app\frontend\modules\order\operations\OrderOperation;
+use app\frontend\modules\order\operations\OrderOperationInterface;
 
 class OrderOperationsCollector
 {
@@ -22,7 +23,7 @@ class OrderOperationsCollector
     {
         $operations = array_map(function ($operationName) use($order){
             /**
-             * @var OrderOperation $operation
+             * @var OrderOperationInterface $operation
              */
             $operation = new $operationName($order);
             if(!$operation->enable()){
@@ -31,6 +32,7 @@ class OrderOperationsCollector
             $result['name'] = $operation->getName();
             $result['value'] = $operation->getValue();
             $result['api'] = $operation->getApi();
+            $result['type'] = $operation->getType();
 
             return $result;
         }, $order->getOperationsSetting());
