@@ -55,9 +55,14 @@ class WeSession {
 
 
     public function write($sessionid, $data) {
-        if(!is_null($this->read($sessionid)['yunzshop_member_id'])){
-            $data['yunzshop_member_id'] = $this->read($sessionid)['yunzshop_member_id'];
+        if (!empty($data) && empty($this->chk_member_id_session($data))) {
+            $read_data = $this->read($sessionid);
+
+            if (!empty($member_data = $this->chk_member_id_session($read_data))) {
+                $data .= $member_data;
+            }
         }
+
         $row = array();
         $row['sid'] = $sessionid;
         $row['uniacid'] = WeSession::$uniacid;
@@ -81,5 +86,25 @@ class WeSession {
         $sql = 'DELETE FROM ' . tablename('core_sessions') . ' WHERE `expiretime`<:expire';
 
         return pdo_query($sql, array(':expire' => TIMESTAMP)) == 1;
+    }
+
+    private function chk_member_id_session($read_data)
+    {
+        $member_data = '';
+
+        if (!empty($read_data)) {
+            preg_match_all('/yunzshop_([\w]+[^|]*|)/', $read_data, $name_matches);
+            preg_match_all('/(a:[\w]+[^}]*})/', $read_data, $value_matches);
+
+            if (!empty($name_matches)) {
+                foreach ($name_matches[0] as $key => $val) {
+                    if ($val == 'yunzshop_member_id') {
+                        $member_data = $val . '|' . $value_matches[0][$key];
+                    }
+                }
+            }
+        }
+
+        return $member_data;
     }
 }
