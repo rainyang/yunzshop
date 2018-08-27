@@ -12,26 +12,44 @@ namespace app\backend\modules\order\controllers;
 use app\backend\modules\member\models\Member;
 use app\backend\modules\order\models\Order;
 use app\common\components\BaseController;
+use app\common\exceptions\AppException;
 use app\common\modules\order\OrderOperationsCollector;
 use app\common\services\DivFromService;
 
 class DetailController extends BaseController
 {
-    public function getMemberButtons(){
+    public function getMemberButtons()
+    {
 
         $orderStatus = array_keys(app('OrderManager')->setting('status'));
         $buttons = array_map(function ($orderStatus) {
             var_dump($orderStatus);
-            $order = Order::where('status',$orderStatus)->orderBy('id','desc')->first();
+            $order = Order::where('status', $orderStatus)->orderBy('id', 'desc')->first();
             dump($order->buttonModels);
             dump($order->oldButtonModels);
-        },$orderStatus);
+        }, $orderStatus);
     }
+
+    /**
+     * @param \Request $request
+     * @return string
+     * @throws AppException
+     * @throws \Throwable
+     */
     public function index(\Request $request)
     {
-
-        $orderId = $request->query('id');
-        $order = Order::getOrderDetailById($orderId);
+        $order = Order::orders()->with(['deductions', 'coupons', 'discounts', 'orderPays' => function ($query) {
+            $query->with('payType');
+        }, 'hasOnePayType']);
+        if (request()->has('id')) {
+            $order = $order->find(request('id'));
+        }
+        if (request()->has('order_sn')) {
+            $order = $order->where('order_sn', request('order_sn'))->first();
+        }
+        if (!$order) {
+            throw new AppException('未找到订单');
+        }
         if (!empty($order->express)) {
             $express = $order->express->getExpress($order->express->express_code, $order->express->express_sn);
 //            dd($express);
