@@ -14,7 +14,7 @@ class CloudPayAliSetting extends BaseSetting
     {
         $set = \Setting::get('plugin.cloud_pay_set');
 
-        return \YunShop::request()->type != 7 && !is_null($set) && 1 == $set['switch'];
+        return \YunShop::request()->type != 7 && !is_null($set) && 1 == $set['switch_alipay'];
     }
     public function exist()
     {
