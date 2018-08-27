@@ -14,6 +14,7 @@ use app\common\services\PayFactory;
 
 class DoublePaymentRepair
 {
+    public $message=[];
     /**
      * @var OrderPay
      */
@@ -33,11 +34,14 @@ class DoublePaymentRepair
      */
     public function handle()
     {
+
         $pay = PayFactory::create($this->orderPay->pay_type_id);
 
         $result = $pay->doRefund($this->orderPay->pay_sn, $this->orderPay->amount, $this->orderPay->amount);
         $this->orderPay->status = OrderPay::STATUS_REFUNDED;
         $this->orderPay->save();
+        $this->message[]="{$this->orderPay->pay_type_id}退款成功";
+        return $this->message;
     }
 
     /**

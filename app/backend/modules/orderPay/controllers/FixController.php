@@ -27,7 +27,7 @@ class FixController extends BaseController
         if(!$orderPay){
             throw new AppException('未找到支付记录'.request('order_pay_id'));
         }
-        (new DoublePaymentRepair($orderPay))->handle();
-        return $this->successJson('成功');
+        $a = (new DoublePaymentRepair($orderPay))->handle();
+        dd($a);
     }
 }
