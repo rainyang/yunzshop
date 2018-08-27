@@ -45,16 +45,16 @@ class CategoryService
         if ($params['catlevel'] == 3) {
             $catetory_menus = CategoryService::tpl_form_field_category_level3_multi(
                 'category', $catetorys['parent'], $catetorys['children'],
-                isset($params['ids'][0][0]) ? $params['ids'][0][0] : 0,
-                isset($params['ids'][1][0]) ? $params['ids'][1][0] : 0,
-                isset($params['ids'][2][0]) ? $params['ids'][2][0] : 0
+                isset($params['ids'][0]) ? $params['ids'][0] : 0,
+                isset($params['ids'][1]) ? $params['ids'][1] : 0,
+                isset($params['ids'][2]) ? $params['ids'][2] : 0
             );
         } else {
             $catetory_menus = CategoryService::tpl_form_field_category_level2_multi(
                 'category', $catetorys['parent'], $catetorys['children'],
-                isset($params['ids'][0][0]) ? $params['ids'][0][0] : 0,
-                isset($params['ids'][1][0]) ? $params['ids'][1][0] : 0,
-                isset($params['ids'][2][0]) ? $params['ids'][2][0] : 0
+                isset($params['ids'][0]) ? $params['ids'][0] : 0,
+                isset($params['ids'][1]) ? $params['ids'][1] : 0,
+                isset($params['ids'][2]) ? $params['ids'][2] : 0
             );
         }
 

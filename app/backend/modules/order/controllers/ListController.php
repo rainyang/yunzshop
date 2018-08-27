@@ -37,13 +37,25 @@ class ListController extends BaseController
         $this->export($this->orderModel);
         return view('order.index', $this->getData())->render();
     }
+    public function callbackFail(){
+        $orderIds = DB::table('yz_order as o')->join('yz_order_pay_order as opo', 'o.id', '=', 'opo.order_id')
+            ->join('yz_order_pay as op', 'op.id', '=', 'opo.order_pay_id')
+            ->join('yz_pay_order as po', 'po.out_order_no', '=', 'op.pay_sn')
+            ->whereIn('o.status',[0,-1])
+            ->where('op.status',0)
+            ->where('po.status',2)
+            ->distinct()->pluck('o.id');
+        $this->orderModel = Order::orders(request('search'))->whereIn('id',$orderIds);
+        return view('order.index', $this->getData())->render();
+
+    }
     public function payFail(){
         $orderIds = DB::table('yz_order as o')->join('yz_order_pay_order as opo', 'o.id', '=', 'opo.order_id')
             ->join('yz_order_pay as op', 'op.id', '=', 'opo.order_pay_id')
-            ->where('o.status',0)
+            ->whereIn('o.status',[0,-1])
             ->where('op.status',1)
             ->pluck('o.id');
-        $this->orderModel->whereIn('id',$orderIds);
+        $this->orderModel = Order::orders(request('search'))->whereIn('id',$orderIds);
         return view('order.index', $this->getData())->render();
 
     }

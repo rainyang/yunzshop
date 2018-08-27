@@ -14,9 +14,11 @@ use Illuminate\Support\Collection;
 /**
  * Class PayOrder
  * @package app\common\models
+ * @property string trade_no
  * @property int status
  * @property Collection all_status
  * @property string status_name
+ * @property OrderPay orderPay
  * @property PayRefundOrder payRefundOrder
  */
 class PayOrder extends BackendModel
@@ -56,6 +58,9 @@ class PayOrder extends BackendModel
             self::STATUS_WAIT_PAID => '待支付',
             self::STATUS_PAID => '已支付',
         ]);
+    }
+    public function orderPay(){
+        return $this->belongsTo(OrderPay::class,'out_order_no','pay_sn');
     }
     public function payRefundOrder(){
         return $this->hasOne(PayRefundOrder::class,'out_order_no','out_order_no');
