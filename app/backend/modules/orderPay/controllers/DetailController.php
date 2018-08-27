@@ -10,6 +10,7 @@ namespace app\backend\modules\orderPay\controllers;
 
 use app\backend\modules\order\models\OrderPay;
 use app\common\components\BaseController;
+use app\common\exceptions\AppException;
 use app\frontend\modules\payment\orderPayments\BasePayment;
 use app\frontend\modules\payment\paymentSettings\PaymentSetting;
 use Illuminate\Database\Eloquent\Builder;
@@ -22,12 +23,19 @@ class DetailController extends BaseController
      */
     public function index()
     {
-        $orderPayId = request()->query('order_pay_id');
         $orderPay = OrderPay::with(['orders' => function (Builder $query) {
             $query->with('orderGoods');
-        }, 'process', 'member', 'payOrder'])->find($orderPayId);
+        }, 'process', 'member', 'payOrder']);
+        if (request()->has('order_pay_id')) {
+            $orderPay = $orderPay->find(request('order_pay_id'));
+        }
 
-
+        if (request()->has('pay_sn')) {
+            $orderPay = $orderPay->where('pay_sn',request('pay_sn'))->first();
+        }
+        if(!$orderPay){
+            throw new AppException('未找到支付记录');
+        }
         return view('orderPay.detail', [
             'orderPay' => json_encode($orderPay)
         ])->render();
@@ -35,7 +43,7 @@ class DetailController extends BaseController
 
     public function allCashierPayTypes()
     {
-        new OrderPay(['amount',100]);
+        new OrderPay(['amount', 100]);
     }
 
     public function usablePayTypes()
@@ -57,6 +65,7 @@ class DetailController extends BaseController
             });
         });
     }
+
     public function allPayTypes()
     {
         $orderPayId = request()->query('order_pay_id');
