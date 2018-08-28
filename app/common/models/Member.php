@@ -576,6 +576,8 @@ class Member extends BackendModel
      */
     public static function setMemberRelation($uid, $mid = '')
     {
+        $curr_arr = [];
+
         $model = MemberShopInfo::getMemberShopInfo($uid);
 
         if (empty($mid)) {
@@ -620,8 +622,9 @@ class Member extends BackendModel
         }
 
         $model->relation = $relation_str;
+        $model->save();
 
-        return $model->save();
+        return $curr_arr;
     }
 
     public static function getOpenIdForType($member_id, $type = null)

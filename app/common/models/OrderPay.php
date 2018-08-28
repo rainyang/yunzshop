@@ -158,6 +158,7 @@ class OrderPay extends BaseModel
         return $paymentTypes;
     }
 
+
     /**
      * 支付
      * @param int $payTypeId
@@ -165,35 +166,32 @@ class OrderPay extends BaseModel
      */
     public function pay($payTypeId = null)
     {
-
         if (!is_null($payTypeId)) {
             $this->pay_type_id = $payTypeId;
         }
-        $this->validate();
+        $this->payValidate();
 
         $this->status = self::STATUS_PAID;
         $this->pay_time = time();
         $this->save();
 
         $this->orders->each(function ($order) {
-            if (!OrderService::orderPay(['order_id' => $order->id, 'order_pay_id' => $this->id, 'pay_type_id' => $this->pay_type_id])) {
-                throw new AppException('订单状态改变失败,请联系客服');
-            }
+            OrderService::orderPay(['order_id' => $order->id, 'order_pay_id' => $this->id, 'pay_type_id' => $this->pay_type_id]);
         });
     }
 
     /**
-     * 校验
+     * 支付校验
      * @throws AppException
      */
-    private function validate()
+    private function payValidate()
     {
         if (is_null($this->pay_type_id)) {
             throw new AppException('请选择支付方式');
         }
-        if ($this->status > self::STATUS_UNPAID) {
-            throw new AppException('(ID' . $this->id . '),此流水号已支付');
-        }
+//        if ($this->status > self::STATUS_UNPAID) {
+//            throw new AppException('(ID' . $this->id . '),此流水号已支付');
+//        }
 
         if ($this->orders->isEmpty()) {
             throw new AppException('(ID:' . $this->id . ')未找到对应订单');
@@ -235,7 +233,7 @@ class OrderPay extends BaseModel
         if (!is_null($payTypeId)) {
             $this->pay_type_id = $payTypeId;
         }
-        $this->validate();
+        $this->payValidate();
         // 从丁哥的接口获取统一的支付参数
 
         $query_str = $this->getPayType()->getPayParams($payParams);

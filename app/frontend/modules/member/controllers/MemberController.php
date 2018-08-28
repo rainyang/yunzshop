@@ -47,7 +47,6 @@ class MemberController extends ApiController
     /**
      * 获取用户信息
      *
-     *
      */
     public function getUserInfo()
     {
@@ -830,8 +829,8 @@ class MemberController extends ApiController
 
         $shopInfo = Setting::get('shop.shop');
         $shopName = $shopInfo['name'] ?: '商城'; //todo 默认值需要更新
-        $shopLogo = $shopInfo['logo'] ? replace_yunshop(tomedia($shopInfo['logo'])) : base_path() . '/static/images/logo.png'; //todo 默认值需要更新
-        $shopImg = $shopInfo['signimg'] ? replace_yunshop(tomedia($shopInfo['signimg'])) : base_path() . '/static/images/photo-mr.jpg'; //todo 默认值需要更新
+        $shopLogo = $shopInfo['logo'] ? replace_yunshop(yz_tomedia($shopInfo['logo'])) : base_path() . '/static/images/logo.png'; //todo 默认值需要更新
+        $shopImg = $shopInfo['signimg'] ? replace_yunshop(yz_tomedia($shopInfo['signimg'])) : base_path() . '/static/images/photo-mr.jpg'; //todo 默认值需要更新
 
         $str_lenght = $logo_width + $font_size_show * mb_strlen($shopName);
 
@@ -1141,7 +1140,9 @@ class MemberController extends ApiController
     public function getEnablePlugins()
     {
         $filter = [
-            'conference', 'store-cashier', 'recharge-code'
+            'conference',
+            //'store-cashier',
+            'recharge-code'
         ];
         $data = [];
 
@@ -1157,17 +1158,26 @@ class MemberController extends ApiController
             $info = $item->toArray();
 
             $name = $info['name'];
+            //todo 门店暂时不传
             if ($info['name'] == "store-cashier") {
 
                 $name = 'store_cashier';
             } elseif ($info['name'] == 'recharge-code') {
                 $name = 'recharge_code';
+                $class = 'icon-member-recharge1';
+                $url = 'rechargeCode';
+            } elseif ($info['name'] == 'conference') {
+                $name = 'conference';
+                $class = 'icon-member-act-signup1';
+                $url = 'conferenceList';
             }
 
 
             $data[] = [
                 'name'  => $name,
-                'title' => $info['title']
+                'title' => $info['title'],
+                'class' => $class,
+                'url'   => $url
             ];
         });
 
@@ -1176,8 +1186,10 @@ class MemberController extends ApiController
 
             if ($credit_setting && 1 == $credit_setting['is_credit']) {
                 $data[] = [
-                    'name' => 'credit',
-                    'title' => '信用值'
+                    'name'  => 'credit',
+                    'title' => '信用值',
+                    'class' => 'icon-member-credit01',
+                    'url'   => 'creditInfo'
                 ];
             }
         }
@@ -1188,7 +1200,9 @@ class MemberController extends ApiController
             if ($ranking_setting && 1 == $ranking_setting['is_ranking']) {
                 $data[] = [
                     'name' => 'ranking',
-                    'title' => '排行榜'
+                    'title' => '排行榜',
+                    'class' => 'icon-member-bank-list1',
+                    'url'   => 'rankingIndex'
                 ];
             }
         }
@@ -1199,7 +1213,10 @@ class MemberController extends ApiController
             if ($article_setting) {
                 $data[] = [
                     'name' => 'article',
-                    'title' => $article_setting['center'] ? $article_setting['center'] : '文章中心'
+                    'title' => $article_setting['center'] ? $article_setting['center'] : '文章中心',
+                    'class' => 'icon-member-collect1',
+                    'url'   => 'notice',
+                    'param' => 0,
                 ];
             }
         }
@@ -1213,7 +1230,9 @@ class MemberController extends ApiController
             if ($clock_in_setting && 1 == $clock_in_setting['is_clock_in']) {
                 $data[] = [
                     'name' => 'clock_in',
-                    'title' => $pluginName
+                    'title' => $pluginName,
+                    'class' => 'icon-member-get-up',
+                    'url'   => 'ClockPunch',
                 ];
             }
         }
@@ -1225,7 +1244,9 @@ class MemberController extends ApiController
             if ($video_demand_setting && $video_demand_setting['is_video_demand']) {
                 $data[] = [
                     'name' => 'video_demand',
-                    'title' => '视频点播'
+                    'title' => '课程中心',
+                    'class' => 'icon-member-course3',
+                    'url'   => 'CourseManage',
                 ];
             }
         }
@@ -1237,22 +1258,51 @@ class MemberController extends ApiController
             if ($help_center_setting && 1 == $help_center_setting['status']) {
                 $data[] = [
                     'name' => 'help_center',
-                    'title' => '帮助中心'
+                    'title' => '帮助中心',
+                    'class' => 'icon-member-help',
+                    'url' => 'helpcenter'
                 ];
             }
         }
 
         if (app('plugins')->isEnabled('courier')) {
-
             $courier_setting = Setting::get('courier.courier');
 
             if ($courier_setting && 1 == $courier_setting['radio']) {
                 $data[] = [
                     'name' => 'courier',
-                    'title' => $courier_setting['name'] ? $courier_setting['name'] : '快递单'
+                    'title' => $courier_setting['name'] ? $courier_setting['name'] : '快递单',
+                    'class' => 'icon-member-express',
+                    'url' => 'courier'
                 ];
             }
         }
+
+        if (app('plugins')->isEnabled('store-cashier')) {
+            $store = \Yunshop\StoreCashier\common\models\Store::getStoreByUid(\YunShop::app()->getMemberId())->first();
+            if (!$store) {
+                $data[] = [
+                    'name' => 'store_apply',
+                    'title' => '门店申请',
+                    'class' => 'icon-member-store-apply1',
+                    'url'   => 'storeApply',
+
+                ];
+            }
+        }
+
+        if (app('plugins')->isEnabled('supplier')) {
+            $supplier = \Yunshop\Supplier\common\models\Supplier::getSupplierByMemberId(\YunShop::app()->getMemberId(), 1);
+            if (!$supplier) {
+                $data[] = [
+                    'name' => 'supplier_apply',
+                    'title' => '供应商申请',
+                    'class' => 'icon-member-apply1',
+                    'url'   => 'supplier',
+                ];
+            }
+        }
+
 
         return $this->successJson('ok', $data);
     }
@@ -1267,4 +1317,5 @@ class MemberController extends ApiController
         }
         return $this->errorJson('', 0);
     }
+
 }

@@ -16,6 +16,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Yunshop\Commission\models\Agents;
+use Yunshop\Poster\models\Poster;
 use Yunshop\Poster\models\PosterQrcode;
 use Yunshop\Poster\models\Qrcode;
 
@@ -99,6 +100,14 @@ class scanPostConcernQueueJob implements ShouldQueue
 
             $to_member_id = PosterQrcode::getRecommenderIdByQrcodeId($qrcodeId);
             //\Log::debug('------poster to_member_id-----', [$to_member_id]);
+
+            $posterId = PosterQrcode::getPosterIdByQrcodeId($qrcodeId);
+            $poster = Poster::getPosterById($posterId);
+
+            if ($poster->auto_sub == 0) {
+                \Log::debug('-------------未开启了海报的"扫码关注成为下线"------------');
+                return;
+            }
 
             if (!empty($to_member_id)
                    && date('Ymd') ==  $from_member_model->created_at->format('Ymd')

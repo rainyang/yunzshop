@@ -1427,7 +1427,7 @@ return [
                                 'name'              => '修改价格跳转路由',
                                 'url'               => 'order.change-order-price.index',
                                 'url_params'        => '',
-                                'permit'            => 0,
+                                'permit'            => 1,
                                 'menu'              => 0,
                                 'icon'              => '',
                                 'sort'              => 1,
@@ -1507,7 +1507,7 @@ return [
                                 'name'              => '订单备注',
                                 'url'               => 'order.remark.update-remark',
                                 'url_params'        => '',
-                                'permit'            => 1,
+                                'permit'            => 0,
                                 'menu'              => 0,
                                 'icon'              => '',
                                 'sort'              => 1,
@@ -1643,6 +1643,56 @@ return [
                         'sort'              => 1,
                         'item'              => 'order_list_cancelled_see',
                         'parents'           => ['Order','order_list_cancelled'],
+                        'child' => [],
+                    ],
+                ],
+            ],
+            'order_list_pay_fail' => [
+                'name'              => '支付异常订单',
+                'url'               => 'order.list.pay-fail',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-bitbucket',
+                'sort'              => '5',
+                'item'              => 'order_list_pay_fail',
+                'parents'           => ['Order'],
+                'child' => [
+                    'order_list_cancelled_see' => [
+                        'name'              => '浏览',
+                        'url'               => 'order.list.pay-fail',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 1,
+                        'item'              => 'order_list_pay_fail_see',
+                        'parents'           => ['Order','order_list_pay_fail'],
+                        'child' => [],
+                    ],
+                ],
+            ],
+            'order_list_callback_fail' => [
+                'name'              => '支付回调异常订单',
+                'url'               => 'order.list.callback-fail',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-bitbucket',
+                'sort'              => '5',
+                'item'              => 'order_list_callback_fail',
+                'parents'           => ['Order'],
+                'child' => [
+                    'order_list_cancelled_see' => [
+                        'name'              => '浏览',
+                        'url'               => 'order.list.callback-fail',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 1,
+                        'item'              => 'order_list_callback_fail_see',
+                        'parents'           => ['Order','order_list_callback_fail'],
                         'child' => [],
                     ],
                 ],
@@ -2190,7 +2240,7 @@ return [
 
                     'withdraw_records_detail' => [
                         'name'              => '收入提现详情',
-                        'url'               => 'finance.withdraw-detail.index',
+                        'url'               => 'withdraw.detail.index',
                         'url_params'        => "",
                         'permit'            => 1,
                         'menu'              => 0,
@@ -2260,7 +2310,7 @@ return [
                         'parents'           => ['finance','withdraw_records'],
                     ],
 
-                    'withdraw_status_arrival' => [
+                    /*'withdraw_status_arrival' => [
                         'name'              => '已驳回',
                         'url'               => 'finance.withdraw-records.index',
                         'url_params'        => "&search[status]=3",
@@ -2270,7 +2320,7 @@ return [
                         'sort'              => 0,
                         'item'              => 'withdraw_status_arrival',
                         'parents'           => ['finance','withdraw_records'],
-                    ],
+                    ],*/
 
                     'withdraw_status_invalid' => [
                         'name'              => '无效提现',

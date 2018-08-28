@@ -32,48 +32,76 @@ class OperationController extends ApiController
         }
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \app\common\exceptions\AppException
+     */
     public function pay()
     {
-        $message = OrderService::orderPay($this->params);
+        OrderService::orderPay($this->params);
 
-        return $this->successJson($message);
+        return $this->successJson();
 
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \app\common\exceptions\AppException
+     */
     public function cancelPay()
     {
-        $message = OrderService::orderCancelPay($this->params);
-        return $this->successJson($message);
+        OrderService::orderCancelPay($this->params);
+        return $this->successJson();
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \app\common\exceptions\AppException
+     */
     public function send()
     {
-        $message = OrderService::orderSend($this->params);
+        OrderService::orderSend($this->params);
 
-        return $this->successJson($message);
+        return $this->successJson();
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \app\common\exceptions\AppException
+     */
     public function cancelSend()
     {
-        $message = OrderService::orderCancelSend($this->params);
-        return $this->successJson($message);
+        OrderService::orderCancelSend($this->params);
+        return $this->successJson();
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \app\common\exceptions\AppException
+     */
     public function Receive()
     {
-        $message = OrderService::orderReceive($this->params);
-        return $this->successJson($message);
+        OrderService::orderReceive($this->params);
+        return $this->successJson();
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \app\common\exceptions\AppException
+     */
     public function Delete()
     {
-        $message = OrderService::orderDelete($this->params);
-        return $this->successJson($message);
+        OrderService::orderDelete($this->params);
+        return $this->successJson();
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \app\common\exceptions\AppException
+     */
     public function Close()
     {
-        $message = OrderService::orderClose($this->params);
-        return $this->successJson($message);
+        OrderService::orderClose($this->params);
+        return $this->successJson();
     }
 }

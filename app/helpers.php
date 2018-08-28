@@ -106,7 +106,7 @@ use Ixudra\Curl\Facades\Curl;
                             var videoType = video.isRemote ? 'iframe' : 'video';
                             editor.execCommand('insertvideo', {
                                 'url' : video.url,
-                                'width' : 300,
+                                'width' : '100%',
                                 'height' : 200
                             }, videoType);
                         }
@@ -237,6 +237,16 @@ function yz_tomedia($src, $local_path = false)
     if (strexists($src, 'addons/')) {
         return request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/addons/'));
     }
+    //判断是否是本地带域名图片地址
+    $local = strtolower($src);
+    if (strexists($src, '/attachment/')) {
+        if (strexists($local, 'http://') || strexists($local, 'https://') || substr($local, 0, 2) == '//') {
+            return $src;
+        } else {
+            return request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/attachment/'));
+        }
+    }
+
     //如果远程地址中包含本地host也检测是否远程图片
     if (strexists($src, request()->getSchemeAndHttpHost()) && !strexists($src, '/addons/')) {
         $urls = parse_url($src);

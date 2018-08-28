@@ -16,6 +16,7 @@ use app\common\components\BaseController;
 
 use app\common\helpers\PaginationHelper;
 use app\common\services\ExportService;
+use Illuminate\Support\Facades\DB;
 
 class ListController extends BaseController
 {
@@ -36,7 +37,28 @@ class ListController extends BaseController
         $this->export($this->orderModel);
         return view('order.index', $this->getData())->render();
     }
+    public function callbackFail(){
+        $orderIds = DB::table('yz_order as o')->join('yz_order_pay_order as opo', 'o.id', '=', 'opo.order_id')
+            ->join('yz_order_pay as op', 'op.id', '=', 'opo.order_pay_id')
+            ->join('yz_pay_order as po', 'po.out_order_no', '=', 'op.pay_sn')
+            ->whereIn('o.status',[0,-1])
+            ->where('op.status',0)
+            ->where('po.status',2)
+            ->distinct()->pluck('o.id');
+        $this->orderModel = Order::orders(request('search'))->whereIn('id',$orderIds);
+        return view('order.index', $this->getData())->render();
 
+    }
+    public function payFail(){
+        $orderIds = DB::table('yz_order as o')->join('yz_order_pay_order as opo', 'o.id', '=', 'opo.order_id')
+            ->join('yz_order_pay as op', 'op.id', '=', 'opo.order_pay_id')
+            ->whereIn('o.status',[0,-1])
+            ->where('op.status',1)
+            ->pluck('o.id');
+        $this->orderModel = Order::orders(request('search'))->whereIn('id',$orderIds);
+        return view('order.index', $this->getData())->render();
+
+    }
     public function waitPay()
     {
         $this->orderModel->waitPay();
@@ -101,11 +123,6 @@ class ListController extends BaseController
         $list += $this->orderModel->orderBy('id', 'desc')->paginate(self::PAGE_SIZE)->appends(['button_models'])->toArray();
 
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
-
-        //dd($list);
-        //exit;
-//        dd($requestSearch);
-//        exit;
 
         $data = [
             'list' => $list,

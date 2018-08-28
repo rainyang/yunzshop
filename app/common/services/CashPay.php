@@ -17,13 +17,10 @@ class CashPay extends Pay
 
     public function doPay($data = [])
     {
-        //pay.php 980
-        //支付单
-        //订单 支付类型
-         // TODO 修改订单状态
+        return true;
     }
 
-    public function doRefund($out_trade_no, $out_refund_no, $totalmoney, $refundmoney)
+    function doRefund($out_trade_no, $totalmoney, $refundmoney)
     {
         // TODO: Implement doRefund() method.
     }

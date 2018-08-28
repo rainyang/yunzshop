@@ -11,7 +11,9 @@ namespace app\backend\modules\finance\controllers;
 
 use app\backend\modules\finance\models\Withdraw;
 use app\backend\modules\finance\services\WithdrawService;
+use app\backend\modules\withdraw\controllers\AgainPayController;
 use app\backend\modules\withdraw\controllers\AuditController;
+use app\backend\modules\withdraw\controllers\ConfirmPayController;
 use app\backend\modules\withdraw\controllers\PayController;
 use app\common\components\BaseController;
 use app\common\events\withdraw\WithdrawAuditedEvent;
@@ -30,14 +32,22 @@ class WithdrawController extends BaseController
     {
         $resultData = \YunShop::request();
         if (isset($resultData['submit_check'])) {
+            //审核
            return (new AuditController())->index();
-
         } elseif (isset($resultData['submit_pay'])) {
-
+            //打款
             return (new PayController())->index();
         } elseif (isset($resultData['submit_cancel'])) {
+            //重新审核
             return (new AuditController())->index();
+        } elseif (isset($resultData['confirm_pay'])) {
+            return (new ConfirmPayController())->index();
+            //确认打款
+        } elseif (isset($resultData['again_pay'])) {
+            //重新打款
+            return (new AgainPayController())->index();
         }
+
         return $this->message('提交数据有误，请刷新重试', yzWebUrl("finance.withdraw-detail.index", ['id' => $resultData['id']]));
     }
 
