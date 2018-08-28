@@ -38,7 +38,7 @@ class Url
      */
     public static function web($route, $params = [])
     {
-        if(empty($route) || self::isHttp($route)){
+        if(self::isHttp($route)){
             return $route;
         }
         $defaultParams = ['c'=>'site','a'=>'entry','m'=>'yun_shop','do'=>rand(1000,9999),'route'=>$route];
