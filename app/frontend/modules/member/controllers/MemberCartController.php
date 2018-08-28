@@ -134,6 +134,39 @@ class MemberCartController extends ApiController
     }
 
     /*
+     * 修改购物车商品数量
+     * */
+    public function updateNumV2()
+    {
+        $cartId = request()->input('id');
+        $num = intval(request()->input('num'));
+
+        if (is_null($cartId)) {
+            $cartId = $this->getMemberCarId();
+        }
+
+        if ($cartId && $num) {
+            $cartModel = app('OrderManager')->make('MemberCart')->find($cartId);
+            if ($cartModel) {
+                $cartModel->total = $num;
+
+                if ($cartModel->total < 1) {
+                    $result = MemberCartService::clearCartByIds([$cartModel->id]);
+                    if ($result) {
+                        return $this->successJson('移除购物车成功。');
+                    }
+                }
+                $cartModel->validate();
+                if ($cartModel->update()) {
+                    return $this->successJson('修改数量成功');
+                }
+            }
+        }
+
+        return $this->errorJson('未获取到数据，请重试！');
+    }
+
+    /*
      * Delete member cart
      **/
     public function destroy()
