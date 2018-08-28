@@ -248,7 +248,8 @@
             @endif
 
             @if($item->status == '1' || $item->status == '4')
-                <input type="submit" name="confirm_pay" value="确认打款" class="btn btn-success " style='margin-left:10px;' onclick='return '/>
+                <input type="submit" name="confirm_pay" value="线下确认打款" class="btn btn-success " style='margin-left:10px;'
+                       onclick="{if (confirm('本打款方式需要线下打款，系统只是完成流程!') == true){return true;}return false}"/>
             @endif
 
             @if($item->status == '-1')
