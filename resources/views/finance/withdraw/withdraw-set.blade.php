@@ -103,6 +103,29 @@
                                     </div>
                                 </div>
                             </div>
+                            @if(app('plugins')->isEnabled('huanxun'))
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                                    <div class="col-sm-9 col-xs-12">
+                                        <div class="alipay">
+                                            <label class='radio-inline'>提现到环迅支付</label>
+                                        </div>
+                                        <div class="switch">
+                                            <label class='radio-inline'>
+                                                <input type='radio' name='withdraw[balance][huanxun]' value='1'
+                                                       @if($set['huanxun'] == 1) checked @endif />
+                                                开启
+                                            </label>
+                                            <label class='radio-inline'>
+                                                <input type='radio' name='withdraw[balance][huanxun]' value='0'
+                                                       @if($set['huanxun'] == 0) checked @endif />
+                                                关闭
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+
                             @if(app('plugins')->isEnabled('eup-pay'))
                                 <div class="form-group">
                                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>

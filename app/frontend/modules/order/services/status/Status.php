@@ -12,22 +12,23 @@ use app\common\models\Order;
 
 abstract class Status
 {
-    const PAY = 1;
-    const COMPLETE = 5;
-    const EXPRESS = 8;
-    const CANCEL = 9;
-    const COMMENT = 10;
-    const ADD_COMMENT = 11;
-    const DELETE = 12;
-    const REFUND = 13;
-    const VERIFY = 14;
-    const AFTER_SALES = 15;
-    const IN_REFUND = 16;
-    const IN_AFTER_SALE = 17;
-    const REFUND_INFO = 18;
-    const COMMENTED = 19;
-    const STORE_PAY = 20;
-    const REMITTANCE_RECORD = 21;
+    const PAY = 1; // 支付
+    const COMPLETE = 5; // 确认收货
+    const EXPRESS = 8; // 查看物流
+    const CANCEL = 9; // 取消订单
+    const COMMENT = 10; // 评论
+    const DELETE = 12; // 删除订单
+    const REFUND = 13; // 申请退款
+    const REFUND_INFO = 18; // 已退款/退款中
+    const COMMENTED = 19; // 已评价
+    const STORE_PAY = 20; // 确认核销(核销员)
+    const REMITTANCE_RECORD = 21; // 转账信息
+    const STORE_MANAGER_PAY = 22;// 店长确认支付
+    const STORE_MANAGER_SEND = 23;// 店长确认发货
+    const STORE_MANAGER_CANCEL_SEND = 24;// 店长取消发货
+    const STORE_MANAGER_COMPLETE = 25;// 店长确认收货
+    const STORE_MANAGER_CLOSE = 26;// 店长关闭订单
+
     abstract function getStatusName();
 
     abstract function getButtonModels();

@@ -28,19 +28,18 @@ class OrderChangePrice extends OrderOperation
      */
     protected function updateTable()
     {
-        //echo($this->toJson());
-        //exit;
         $this->push();
-
         return true;
     }
 
     /**
      * 订单改价操作
+     * @return bool|void
+     * @throws \app\common\exceptions\AppException
      */
-    public function execute()
+    public function handle()
     {
-
+        parent::handle();
         $this->changeOrderGoodsPrice();
         $this->calculateOrderChangePriceLog();
         $this->changePrice();
@@ -59,7 +58,6 @@ class OrderChangePrice extends OrderOperation
 
     /**
      * 订单改价记录
-     * @return OrderChangePrice
      */
     private function calculateOrderChangePriceLog()
     {
@@ -134,11 +132,13 @@ class OrderChangePrice extends OrderOperation
 
         return $this->price + $this->getChangePrice() + $this->getDispatchChangePrice();
     }
+
     private function getChangeDispatchPrice()
     {
         return $this->orderChangePriceLog->change_dispatch_price;
 
     }
+
     /**
      * 更新订单价格
      */

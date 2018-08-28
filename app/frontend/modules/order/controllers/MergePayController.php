@@ -407,7 +407,6 @@ class MergePayController extends ApiController
 
         $data = $orderPay->getPayResult(PayType::REMITTANCE);
 
-        // todo data怎么传
         $orderPay->applyPay();
 
         $orderPay->save();
@@ -470,6 +469,25 @@ class MergePayController extends ApiController
         }
         $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
         $data = $orderPay->getPayResult(PayFactory::WFT_ALIPAY);
+
+        return $this->successJson('成功', $data);
+    }
+
+    /**
+     * 环迅微信支付
+     *
+     * @param \Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     */
+    public function huanxunWx(\Request $request)
+    {
+        if (\Setting::get('plugin.huanxun_set') == false) {
+            throw new AppException('商城未开启快捷支付');
+        }
+
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+        $data = $orderPay->getPayResult(PayFactory::PAY_Huanxun_Wx, ['pay' => 'wx']);
 
         return $this->successJson('成功', $data);
     }
