@@ -56,10 +56,6 @@ class LoginController extends ApiController
 
                             return $this->successJson($msg['json'], ['status'=> $msg['status'], 'url' => $url]);
                         } else {
-                            if ($msg['status'] == -3) {
-                                return view('errors.login',['title'=>$msg['json'], 'content'=>$msg['json']])->render();
-                            }
-
                             return $this->errorJson($msg['json'], ['status'=> $msg['status']]);
                         }
                     } else {
