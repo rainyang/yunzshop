@@ -156,6 +156,9 @@
 .help_center {
      background-image: url('../img/tool/help_center.png');
 }
+.statistics{
+    background-image: url('../img/tool/statistics.png');
+}
 .wanmi_pay {
     background-image: url('../img/tool/wanmi_pay.png');
 }
