@@ -55,7 +55,7 @@ class WeSession {
 
 
     public function write($sessionid, $data) {
-        if (!empty($data) && empty($this->chk_member_id_session($data))) {
+        if (empty($data) || (!empty($data) && empty($this->chk_member_id_session($data)))) {
             $read_data = $this->read($sessionid);
 
             if (!empty($member_data = $this->chk_member_id_session($read_data))) {
