@@ -105,7 +105,7 @@ class BaseModel extends Model
         if (\YunShop::app()->uniacid === null) {
             return $query;
         }
-        return $query->where('uniacid', \YunShop::app()->uniacid);
+        return $query->where($this->getTable().'.uniacid', \YunShop::app()->uniacid);
     }
 
     /**

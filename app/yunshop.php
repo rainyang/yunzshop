@@ -470,6 +470,7 @@ class YunRequest extends YunComponent
 /**
  * Class YunApp
  * @property int uniacid
+ * @property int uid
  */
 class YunApp extends YunComponent
 {
