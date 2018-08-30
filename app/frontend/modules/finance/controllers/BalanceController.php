@@ -123,6 +123,15 @@ class BalanceController extends ApiController
         $event = new RechargeComplatedEvent($data);
         event($event);
         $result = $event->getData();
+
+        $type = \YunShop::request()->type;
+        if ($type == 2) {
+            $button = array_first($result, function($value, $key) {
+                return $value['value'] == 1;
+            });
+            return [$button];
+        }
+
         return $result;
     }
 
