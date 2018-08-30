@@ -10,6 +10,7 @@
 namespace app\common\models;
 
 
+use app\common\events\member\MemberFirstChilderenEvent;
 use app\common\events\member\MemberRelationEvent;
 use app\common\models\notice\MessageTemp;
 use app\common\services\MessageService;
@@ -332,6 +333,8 @@ class MemberRelation extends BaseModel
                 }
             }
         }
+
+        event(new MemberFirstChilderenEvent(['member_id' => $uid]));
     }
 
     /**
