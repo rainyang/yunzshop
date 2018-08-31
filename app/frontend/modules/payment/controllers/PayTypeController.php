@@ -37,15 +37,15 @@ class PayTypeController extends BaseController
              if ($item['value'] != 14 && $item['value'] != 18) {
                  switch ($client_type) {
                      case 1:
-                         return $item;
+                         $buttons[] = $item;
                          break;
                      case 2:
                          if (in_array($item['value'], $filter_minPayType)) {
-                             return $item;
+                             $buttons[] = $item;
                          }
                          break;
                      default:
-                         return $item;
+                         $buttons[] = $item;
                  }
              }
         });
