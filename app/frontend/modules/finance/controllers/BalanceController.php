@@ -145,13 +145,14 @@ class BalanceController extends ApiController
     {
         $result = (new BalanceService())->rechargeSet() ? $this->rechargeStart() : '未开启余额充值';
         if ($result === true) {
+            \Log::info("--------yitian-------", print_r($this->model, true));
             $type = intval(\YunShop::request()->pay_type);
             if ($type == PayFactory::PAY_WEACHAT
                 || $type == PayFactory::PAY_YUN_WEACHAT
                 || $type == PayFactory::PAY_Huanxun_Quick
                 || $type == PayFactory::PAY_Huanxun_Wx
             ) {
-                \Log::info("--------yitian-------", print_r(array_merge(['ordersn' => $this->model->ordersn], $this->payOrder())));
+                \Log::info("--------yitian-------", print_r(array_merge(['ordersn' => $this->model->ordersn], $this->payOrder()), true));
                 return  $this->successJson('支付接口对接成功', array_merge(['ordersn' => $this->model->ordersn], $this->payOrder()));
             }
             //app支付宝支付添加新支付配置
