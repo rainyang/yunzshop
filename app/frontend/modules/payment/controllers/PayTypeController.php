@@ -19,6 +19,7 @@ class PayTypeController extends BaseController
     public function index()
     {
         $buttons = [];
+        $filter_payType = [3, 6, 'cashPay'];
         $orderPay = new OrderPay(['amount' => request()->input('price', 0.01)]);
         // todo 可以将添加订单的方法添加到收银台model中
         $order = new PreOrder(['is_virtual'=>1]);
@@ -31,9 +32,13 @@ class PayTypeController extends BaseController
                 'value' => $paymentType->getId(),
                 'need_password' => $paymentType->needPassword(),
             ];
-        })->each(function($item, $key) use (&$buttons) {
+        })->each(function($item, $key) use (&$buttons, $filter_payType) {
             if ($item['value'] != 14 && $item['value'] != 18) {
-                $buttons[] = $item;
+                if (in_array($item['value'], $filter_payType)) {
+                    $buttons[] = $item;
+                } else {
+                    $buttons[] = $item;
+                }
             }
         });
 
