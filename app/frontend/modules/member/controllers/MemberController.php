@@ -976,6 +976,21 @@ class MemberController extends ApiController
         $uniacid = \YunShop::app()->uniacid;
         $member_id = \YunShop::request()->uid;
         $userInfo = \YunShop::request()->user_info;
+        $ali = array(
+            "code" => "10000",
+            "msg" => "Success",
+            "avatar" => "https://tfs.alipayobjects.com/images/partner/T18wRdXbNuXXXXXXXX",
+            "city" => "广州市",
+            "gender" => "m",
+            "is_certified" => "T",
+            "is_student_certified" => "F",
+            "nick_name" => "小彬",
+            "province" => "广东省",
+            "user_id" => "2088212325598416",
+            "user_status" => "T",
+            "user_type" => "2"
+        );
+
 
         if (!is_array($userInfo)) {
             $userInfo = json_decode($userInfo, true);
