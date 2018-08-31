@@ -151,6 +151,7 @@ class BalanceController extends ApiController
                 || $type == PayFactory::PAY_Huanxun_Quick
                 || $type == PayFactory::PAY_Huanxun_Wx
             ) {
+                \Log::info("--------yitian-------", print_r(array_merge(['ordersn' => $this->model->ordersn], $this->payOrder())));
                 return  $this->successJson('支付接口对接成功', array_merge(['ordersn' => $this->model->ordersn], $this->payOrder()));
             }
             //app支付宝支付添加新支付配置
