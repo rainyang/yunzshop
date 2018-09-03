@@ -51,7 +51,7 @@ class OrderGoods extends \app\common\models\OrderGoods
     public function isFreeShipping()
     {
 
-        if (isset($this->belongsToGood->hasOneSale) && $this->belongsToGood->hasOneSale->isFree($this)) {
+        if (isset($this->goods->hasOneSale) && $this->goods->hasOneSale->isFree($this)) {
             return true;
         }
 

@@ -112,6 +112,14 @@ class Cache
      */
     public static function has($key)
     {
+        if (Str::contains($key, '.')) {
+
+            $keys = explode('.', $key);
+            // 最外层的key
+            $key = array_shift($keys);
+            $arrayKey = implode('.', $keys);
+            return array_has($arrayKey,\Cache::get(self::setUniacid() . $key));
+        }
         return \Cache::has(self::setUniacid() . $key);
     }
 
@@ -133,6 +141,7 @@ class Cache
             // 剩下的key
             $arrayKey = implode('.', $keys);
             // cache中只保存 公众号id_第一层的key
+
             return array_get(\Cache::get(self::setUniacid() . $key), $arrayKey, $default);
         }
         return \Cache::get(self::setUniacid() . $key, $default);
@@ -183,18 +192,23 @@ class Cache
             $key = array_shift($keys);
             $arrayKey = implode('.', $keys);
             // cache中最外层key的值
+
             $oldData = Cache::get($key)?:[];
 
             if(is_array($oldData)){
                 //存在时
                 array_set($oldData,$arrayKey,$value);
+                \Log::debug('-----cache save1 ------'.self::setUniacid() . $key,$oldData);
                 return \Cache::put(self::setUniacid() . $key,$oldData,$minutes);
             }
             // 不存在时
 
         }
+        \Log::debug('-----cache save2 ------'.self::setUniacid() . $key,$oldData);
+
         \Cache::put(self::setUniacid() . $key, $value, $minutes);
     }
+
 
     /**
      * Store multiple items in the cache for a given number of minutes.

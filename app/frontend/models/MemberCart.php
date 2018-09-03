@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Builder;
  * Class MemberCart
  * @package app\frontend\models
  * @property Goods goods
+ * @property GoodsOption goodsOption
  * @property int option_id
  * @property int total
  * @property int goods_id
