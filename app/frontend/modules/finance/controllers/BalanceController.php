@@ -123,6 +123,15 @@ class BalanceController extends ApiController
         $event = new RechargeComplatedEvent($data);
         event($event);
         $result = $event->getData();
+
+        $type = \YunShop::request()->type;
+        if ($type == 2) {
+            $button = array_first($result, function($value, $key) {
+                return $value['value'] == 1;
+            });
+            return [$button];
+        }
+
         return $result;
     }
 
@@ -348,12 +357,13 @@ class BalanceController extends ApiController
     {
         $pay = PayFactory::create($this->model->type);
 
+
         $result = $pay->doPay($this->payData());
         Log::info('++++++++++++++++++', print_r($result, true));
         if ($this->model->type == 1) {
             $result['js'] = json_decode($result['js'], 1);
         }
-        \Log::debug('余额充值 result', $result);
+        \Log::debug('余额充值 result', print_r($result, true));
         return $result;
     }
 
