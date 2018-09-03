@@ -8,6 +8,7 @@
 
 namespace app\backend\controllers;
 
+use app\common\helpers\Cache;
 use app\common\helpers\Url;
 use app\common\models\Callback;
 use app\common\models\Migration;
@@ -27,6 +28,7 @@ use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 use SuperClosure\SerializableClosure;
 
 class TestController extends BaseController
@@ -35,9 +37,6 @@ class TestController extends BaseController
 
     public function index()
     {
-        $amount = sprintf('%012d', 18.9 * 100);
-dd($amount);
-
     }
 
     public function op_database()

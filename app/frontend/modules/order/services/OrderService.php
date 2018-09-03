@@ -32,6 +32,7 @@ use app\frontend\modules\order\services\behavior\OrderOperation;
 use app\frontend\modules\order\services\behavior\OrderPay;
 use app\frontend\modules\order\services\behavior\OrderReceive;
 use app\frontend\modules\order\services\behavior\OrderSend;
+use app\frontend\modules\orderGoods\models\PreOrderGoods;
 use app\frontend\modules\orderGoods\models\PreOrderGoodsCollection;
 use app\frontend\modules\shop\services\ShopService;
 use Carbon\Carbon;
@@ -110,7 +111,13 @@ class OrderService
                 'goods_option_id' => (int)$memberCart->option_id,
                 'total' => (int)$memberCart->total,
             ];
-            return app('OrderManager')->make('PreOrderGoods', $data);
+            $orderGoods =  app('OrderManager')->make('PreOrderGoods', $data);
+            /**
+             * @var PreOrderGoods $orderGoods
+             */
+            $orderGoods->setRelation('goods',$memberCart->goods);
+            $orderGoods->setRelation('goodsOption',$memberCart->goodsOption);
+            return $orderGoods;
         });
 
         return new PreOrderGoodsCollection($result);

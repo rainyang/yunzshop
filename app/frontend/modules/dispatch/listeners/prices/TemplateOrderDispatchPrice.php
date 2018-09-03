@@ -11,6 +11,7 @@ namespace app\frontend\modules\dispatch\listeners\prices;
 use app\backend\modules\goods\models\Dispatch;
 use app\common\events\dispatch\OrderDispatchWasCalculated;
 use app\common\models\goods\GoodsDispatch;
+use app\frontend\models\OrderGoods;
 use app\frontend\modules\order\models\PreOrder;
 use app\frontend\modules\orderGoods\models\PreOrderGoods;
 use app\frontend\modules\orderGoods\models\PreOrderGoodsCollection;
@@ -74,8 +75,10 @@ class TemplateOrderDispatchPrice
     {
         $dispatch_ids = [];
         foreach ($orderGoodsCollection as $aOrderGoods) {
-
-            $goodsDispatch = $aOrderGoods->hasOneGoodsDispatch;
+            /**
+             * @var OrderGoods $aOrderGoods
+             */
+            $goodsDispatch = $aOrderGoods->goods->hasOneGoodsDispatch;
 
             if ($goodsDispatch->dispatch_type == GoodsDispatch::TEMPLATE_TYPE) {
 
@@ -112,13 +115,15 @@ class TemplateOrderDispatchPrice
 
 
         foreach ($orderGoods as $aOrderGoods) {
-
+            /**
+             * @var OrderGoods $aOrderGoods
+             */
             //商品满额、满件减免运费
             if ($aOrderGoods->isFreeShipping()) {
                 continue;
             }
 
-            $dispatchModel = $aOrderGoods->hasOneGoodsDispatch;
+            $dispatchModel = $aOrderGoods->goods->hasOneGoodsDispatch;
 
             //配送模版不存在
             if (!isset($dispatchModel)) {

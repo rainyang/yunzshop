@@ -77,7 +77,7 @@ class PreOrderGoods extends OrderGoods
         $this->setRelation('orderGoodsDiscounts', $this->newCollection());
         // 订单商品优惠使用记录集合
         $this->setRelation('orderGoodsDeductions', new OrderGoodsDeductionCollection());
-
+        
         $attributes = $this->getPreAttributes();
         $this->setRawAttributes($attributes);
     }
@@ -87,6 +87,8 @@ class PreOrderGoods extends OrderGoods
      */
     public function _init()
     {
+        $attributes = $this->getPreAttributes();
+        $this->setRawAttributes($attributes);
         $attributes = [
             'price' => $this->getPrice(),
             'coupon_price' => $this->getCouponAmount()

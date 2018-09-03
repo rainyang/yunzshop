@@ -23,7 +23,10 @@ class GoodsDispatch extends BaseModel
      * @var array
      */
     protected $guarded = ['created_at', 'updated_at'];
-
+public function __construct(array $attributes = [])
+{
+    parent::__construct($attributes);
+}
 
     /**
      * 自定义显示错误信息

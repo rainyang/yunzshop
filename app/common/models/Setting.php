@@ -32,18 +32,19 @@ class Setting extends BaseModel
      */
     public function getValue($uniqueAccountId, $key, $default = null)
     {
-//        $cacheKey = 'setting.' . $uniqueAccountId . '.' . $key;
-//
-//        $value = Cache::get($cacheKey);
-//        \Log::debug('-----setting get cache------');
-//        if ($value == null) {
-//            \Log::debug('-----setting get db------');
+        $cacheKey = 'setting.' . $key;
+        if (Cache::has($cacheKey)) {
+            \Log::debug('-----setting get cache------'.$cacheKey);
+            $value = Cache::get($cacheKey);
+        }
+        else {
+            \Log::debug('-----setting get db------'.$key);
             list($group, $item) = $this->parseKey($key);
 
             $value = array_get($this->getItems($uniqueAccountId, $group), $item, $default);
-
-//            Cache::put($cacheKey, $value, Carbon::now()->addSeconds(3600));
-//        }
+            \Log::debug('-----setting save cache------' . $cacheKey, $value);
+            Cache::put($cacheKey, $value, Carbon::now()->addSeconds(3600));
+        }
         return $value;
 
     }
@@ -65,13 +66,13 @@ class Setting extends BaseModel
 
         $result = $this->setToDatabase($value, $uniqueAccountId, $group, $item, $type);
 
-//        $cacheKey = 'setting.' . $uniqueAccountId . '.' . $key;
-//        if ($type == 'array') {
-//            $value = unserialize($value);
-//        }
-//
-//        Cache::put($cacheKey, $value, Carbon::now()->addSeconds(3600));
-//        \Log::debug('-----setting set cache------');
+        $cacheKey = 'setting.' . $key;
+        if ($type == 'array') {
+            $value = unserialize($value);
+        }
+
+        Cache::put($cacheKey, $value, Carbon::now()->addSeconds(3600));
+        \Log::debug('-----setting set cache------' . $cacheKey, $value);
         return $result;
     }
 

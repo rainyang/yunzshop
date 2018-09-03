@@ -1,0 +1,93 @@
+{
+  "plugin": {
+    "clock_in": null
+  },
+  "sign": {
+    "cumulative": null
+  },
+  "shop": {
+    "name": "赫本时裳",
+    "logo": "images/1/2018/07/f5IC6kPnMZLs3p036LN33ZDS6PSz1U.jpg",
+    "signimg": "images/1/2018/07/SMV5Fn9g9Cgm51SG9c1U6m8BpUH99O.png",
+    "cservice": "",
+    "diycode": "",
+    "copyright": "",
+    "credit": "",
+    "credit1": ""
+  },
+  "": {
+    "shop": {
+      "pay": {
+        "weixin": "1",
+        "weixin_pay": "1",
+        "weixin_appid": "wx0a79e9b17806ebbc",
+        "weixin_secret": "6ec975b94c327364821933204a86ecc2",
+        "weixin_mchid": "1509801041",
+        "weixin_apisecret": "6ec975b94c327364821933204a86ecc2",
+        "weixin_cert": "/data/wwwroot/yunzhong/addons/yun_shop/storage/cert/1_apiclient_cert.pem",
+        "weixin_key": "/data/wwwroot/yunzhong/addons/yun_shop/storage/cert/1_apiclient_key.pem",
+        "weixin_root": "/data/wwwroot/yunzhong/addons/yun_shop/storage/cert/1_rootca.pem",
+        "alipay": "1",
+        "alipay_account": "hbss2018@126.com",
+        "alipay_partner": "2088131980464457",
+        "alipay_secret": "ey2dheizjg5eulyxpppov75k0pnwrro3",
+        "secret": "1",
+        "alipay_withdrawals": "0",
+        "api_version": "1",
+        "alipay_app_id": "",
+        "rsa_private_key": "",
+        "rsa_public_key": "",
+        "alipay_number": "",
+        "alipay_name": "",
+        "credit": "1",
+        "balance_pay_proving": "0",
+        "another": "0",
+        "another_share_title": "",
+        "remittance": "0",
+        "remittance_bank": "",
+        "remittance_sub_bank": "",
+        "remittance_bank_account_name": "",
+        "remittance_bank_account": "",
+        "COD": "0"
+      }
+    }
+  },
+  "alipay": {
+    "pem": "/Users/shenyang/docker-boxs/yz/web/addons/yun_shop/storage/cert/cacert.pem",
+    "partner_id": "2088131980464457",
+    "seller_id": "hbss2018@126.com"
+  },
+  "alipay-mobile": {
+    "sign_type": "RSA",
+    "private_key_path": "/Users/shenyang/docker-boxs/yz/web/addons/yun_shop/storage/cert/private_key.pem",
+    "public_key_path": "/Users/shenyang/docker-boxs/yz/web/addons/yun_shop/storage/cert/public_key.pem",
+    "notify_url": "http://www.yunzong.com/addons/yun_shop/payment/alipay/notifyUrl.php"
+  },
+  "alipay-web": {
+    "key": "ey2dheizjg5eulyxpppov75k0pnwrro3",
+    "sign_type": "MD5",
+    "notify_url": "http://www.yunzong.com/addons/yun_shop/payment/alipay/notifyUrl.php",
+    "return_url": "http://www.yunzong.com/addons/yun_shop/payment/alipay/returnUrl.php"
+  },
+  "enoughReduce": {
+    "enoughReduce": [],
+    "freeFreight": {
+      "open": false
+    }
+  },
+  "coupon": {
+    "is_singleton": null
+  },
+  "point": {
+    "set": {
+      "money": 1,
+      "point_deduct": "1",
+      "money_max": 100,
+      "point_freight": "1"
+    }
+  },
+  "love": {
+    "deduction_exchange": "",
+    "deduction": "0"
+  }
+}
