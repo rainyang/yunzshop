@@ -21,6 +21,7 @@
             </el-form-item>
             <el-form-item label="支付状态">
                 [[form.status_name]]
+                <a target="_blank" v-bind:href="'{{yzWebUrl('orderPay.fix.refund', array('order_pay_id' => ''))}}'+[[form.id]]">原路退款</a>
             </el-form-item>
 
             <el-form-item label="支付流程">

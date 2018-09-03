@@ -109,7 +109,7 @@ class PaymentController extends BaseController
 
         switch ($type) {
             case "charge.succeeded":
-                \Log::debug('支付操作', ['charge.succeeded']);
+                \Log::debug("{$data['out_trade_no']}支付操作", ['charge.succeeded']);
 
                 $orderPay = OrderPay::where('pay_sn', $data['out_trade_no'])->first();
 
@@ -126,6 +126,8 @@ class PaymentController extends BaseController
                         'pay_sn' => $data['trade_no'],
                         'order_pay_id' => $orderPay->id
                     ]));
+                }else{
+                    \Log::debug("金额校验失败","{$orderPay->amount}不等于{$data['total_fee']}");
                 }
                 break;
             case "recharge.succeeded":

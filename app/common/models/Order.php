@@ -659,13 +659,11 @@ class Order extends BaseModel
      * @return bool
      */
     public function canRefund(){
+        //关闭后不许退款
         if(!RefundService::allowRefund()){
             return false;
         }
-        // 完成后不许退款
-        if (\Setting::get('shop.trade.refund_days') === '0') {
-            return false;
-        }
+
         // 完成后n天不许退款
         if ($this->status == self::COMPLETE && $this->finish_time->diffInDays() > \Setting::get('shop.trade.refund_days')) {
             return false;
