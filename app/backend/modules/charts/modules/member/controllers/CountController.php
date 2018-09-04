@@ -41,7 +41,7 @@ class CountController extends BaseController
                 'first_name'    => '会员总数',
                 'second_name'   => '微信授权会员',
                 'third_name'    => '微信授权会员（通过微信授权登录的会员）',
-                'first_value'   => $this->memberService->memberModel->count(),
+                'first_value'   => $this->memberService->memberModel->whereHas('yzMember')->count(),
                 'second_value'  => $this->memberService->getWechatAuthorizeCount(),
                 'third_value'   => $this->proportionMath($this->memberService->getWechatAuthorizeCount())
             ],
@@ -49,7 +49,7 @@ class CountController extends BaseController
                 'first_name'    => '会员总数',
                 'second_name'   => '绑定手机会员',
                 'third_name'    => '绑定手机会员（包含手机号注册和微信绑定手机号的会员）',
-                'first_value'   => $this->memberService->memberModel->count(),
+                'first_value'   => $this->memberService->memberModel->whereHas('yzMember')->count(),
                 'second_value'  => $this->memberService->getHasMobile(),
                 'third_value'   => $this->proportionMath($this->memberService->getHasMobile())
             ],
@@ -57,7 +57,7 @@ class CountController extends BaseController
                 'first_name'    => '会员总数',
                 'second_name'   => '性别：男',
                 'third_name'    => '所占比例',
-                'first_value'   => $this->memberService->memberModel->count(),
+                'first_value'   => $this->memberService->memberModel->whereHas('yzMember')->count(),
                 'second_value'  => $this->memberService->getManSexCount(),
                 'third_value'   => $this->proportionMath($this->memberService->getManSexCount())
             ],
@@ -65,7 +65,7 @@ class CountController extends BaseController
                 'first_name'    => '会员总数',
                 'second_name'   => '性别：女',
                 'third_name'    => '所占比例',
-                'first_value'   => $this->memberService->memberModel->count(),
+                'first_value'   => $this->memberService->memberModel->whereHas('yzMember')->count(),
                 'second_value'  => $this->memberService->getFemaleSexCount(),
                 'third_value'   => $this->proportionMath($this->memberService->getFemaleSexCount())
             ],
@@ -73,7 +73,7 @@ class CountController extends BaseController
                 'first_name'    => '会员总数',
                 'second_name'   => '性别：未知',
                 'third_name'    => '所占比例',
-                'first_value'   => $this->memberService->memberModel->count(),
+                'first_value'   => $this->memberService->memberModel->whereHas('yzMember')->count(),
                 'second_value'  => $this->memberService->getUnknownSex(),
                 'third_value'   => $this->proportionMath($this->memberService->getUnknownSex())
             ]
