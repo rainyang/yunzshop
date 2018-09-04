@@ -118,7 +118,7 @@ class Cache
             // 最外层的key
             $key = array_shift($keys);
             $arrayKey = implode('.', $keys);
-            return array_has($arrayKey,\Cache::get(self::setUniacid() . $key));
+            return array_has(\Cache::get(self::setUniacid() . $key),$arrayKey);
         }
         return \Cache::has(self::setUniacid() . $key);
     }
