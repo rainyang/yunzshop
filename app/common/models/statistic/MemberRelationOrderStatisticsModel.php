@@ -32,7 +32,7 @@ class MemberRelationOrderStatisticsModel extends BaseModel
 
     public static function getMember($search)
     {
-        $model = self::with('hasOneMember');
+        $model = self::uniacid()->with('hasOneMember');
 
         if (!empty($search['member_id'])) {
             $model->whereHas('hasOneMember', function ($q) use($search) {
