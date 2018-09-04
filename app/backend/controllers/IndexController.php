@@ -22,7 +22,7 @@ class IndexController extends BaseController
 
         //会员统计定时任务
         \Event::listen('cron.collectJobs', function () {
-            \Cron::add('Statistics', '0 1 * * * *', function () {
+            \Cron::add('Statistics', '*/10 * * * * *', function () {
                 (new \app\common\services\statistics\TimedTaskService)->handle();
                 return;
             });
