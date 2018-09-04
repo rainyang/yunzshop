@@ -358,4 +358,10 @@ class MemberShopInfo extends BaseModel
     {
         return $this->hasOne(Order::class, 'uid', 'member_id');
     }
+
+    //主表yz_member,从表mc_member
+    public function hasOneMember()
+    {
+        return $this->hasOne(Member::class, 'm_id', 'u_id');
+    }
 }

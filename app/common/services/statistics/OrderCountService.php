@@ -24,7 +24,7 @@ class OrderCountService
             \YunShop::app()->uniacid = $u->uniacid;
             \Setting::$uniqueAccountId = $u->uniacid;
 
-            $memberDoesntHave = MemberShopInfo::select('member_id', 'uniacid', 'parent_id')->whereDoesntHave('hasOneOrder')->get()->toArray();
+            $memberDoesntHave = MemberShopInfo::select('member_id', 'uniacid', 'parent_id')->whereHas('hasOneMember')->whereDoesntHave('hasOneOrder')->get()->toArray();
             $order_count_model = new OrderCountModel();
             $member_count_data = [];
             foreach ($memberDoesntHave as $item) {
