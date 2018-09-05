@@ -678,7 +678,7 @@ class Order extends BaseModel
             return false;
         }
         // 存在处理中的退款申请
-        if(empty($this->refund_id) || isset($this->hasOneRefundApply)){
+        if(!empty($this->refund_id) || isset($this->hasOneRefundApply)){
             return false;
         }
         return true;
