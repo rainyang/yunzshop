@@ -44,6 +44,7 @@ class Setting extends BaseModel
             $value = array_get($this->getItems($uniqueAccountId, $group), $item, $default);
             \Log::debug('-----setting save cache------' . $cacheKey, $value);
             Cache::put($cacheKey, $value, Carbon::now()->addSeconds(3600));
+//            Cache::put($cacheKey, $value, Carbon::now()->addSeconds(2));
         }
         return $value;
 
@@ -72,6 +73,7 @@ class Setting extends BaseModel
         }
 
         Cache::put($cacheKey, $value, Carbon::now()->addSeconds(3600));
+//        Cache::put($cacheKey, $value, Carbon::now()->addSeconds(2));
         \Log::debug('-----setting set cache------' . $cacheKey, $value);
         return $result;
     }
