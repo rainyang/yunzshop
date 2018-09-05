@@ -68,8 +68,7 @@ class OrderCountService
                 ->whereIn('status', $pay_status)
                 ->groupBy('uid')
                 ->get()->toArray();
-
-            dd($memberHasByPay);
+            
             foreach ($memberHasByPay as $key => $item) {
                 $order_pay_data[$key]['member_id'] = $item['uid'];
                 $order_pay_data[$key]['parent_id'] = $item['has_one_member_shop_info']['parent_id'];
