@@ -645,7 +645,7 @@ class Order extends BaseModel
      */
     public function isRefunding(){
         // 存在处理中的退款申请
-        if(!empty($this->refund_id) || !isset($this->hasOneRefundApply)){
+        if(empty($this->refund_id) || !isset($this->hasOneRefundApply)){
             return false;
         }
         if($this->hasOneRefundApply->isRefunding()){

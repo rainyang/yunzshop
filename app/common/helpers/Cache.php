@@ -113,12 +113,11 @@ class Cache
     public static function has($key)
     {
         if (Str::contains($key, '.')) {
-
             $keys = explode('.', $key);
             // 最外层的key
             $key = array_shift($keys);
             $arrayKey = implode('.', $keys);
-            return array_has(\Cache::get(self::setUniacid() . $key),$arrayKey);
+            return array_has(\Cache::get(self::setUniacid() . $key), $arrayKey);
         }
         return \Cache::has(self::setUniacid() . $key);
     }
@@ -193,18 +192,18 @@ class Cache
             $arrayKey = implode('.', $keys);
             // cache中最外层key的值
 
-            $oldData = Cache::get($key)?:[];
+            $oldData = Cache::get($key) ?: [];
 
-            if(is_array($oldData)){
+            if (is_array($oldData)) {
                 //存在时
-                array_set($oldData,$arrayKey,$value);
-                \Log::debug('-----cache save1 ------'.self::setUniacid() . $key,$oldData);
-                return \Cache::put(self::setUniacid() . $key,$oldData,$minutes);
+                array_set($oldData, $arrayKey, $value);
+                \Log::debug('-----cache save1 ------' . self::setUniacid() . $key, $oldData);
+                return \Cache::put(self::setUniacid() . $key, $oldData, $minutes);
             }
             // 不存在时
 
         }
-        \Log::debug('-----cache save2 ------'.self::setUniacid() . $key,$oldData);
+        \Log::debug('-----cache save2 ------' . self::setUniacid() . $key, $oldData);
 
         \Cache::put(self::setUniacid() . $key, $value, $minutes);
     }
