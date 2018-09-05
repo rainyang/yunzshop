@@ -21,10 +21,6 @@ class TimedTaskService
         \Log::info("--会员统计任务--");
         set_time_limit(0);
 
-        if (!app('plugins')->isEnabled('statistics')) {
-            return;
-        }
-
 //        $uniAccount = UniAccount::get();
 
 //        foreach ($uniAccount as $u) {
