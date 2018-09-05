@@ -96,6 +96,23 @@ class PointService
     const POINT_MODE_COMMUNITY_REWARD = 22;
     const POINT_MODE_COMMUNITY_REWARD_ATTACHED = '圈子签到奖励';
 
+    const POINT_MODE_CREATE_ACTIVITY = 23;
+    const POINT_MODE_CREATE_ACTIVITY_ATTACHED = '创建活动';
+
+
+    const POINT_MODE_ACTIVITY_OVERDUE = 24;
+    const POINT_MODE_ACTIVITY_OVERDUE_ATTACHED = '活动失效';
+
+
+    const POINT_MODE_RECEIVE_ACTIVITY = 25;
+    const POINT_MODE_RECEIVE_ACTIVITY_ATTACHED = '领取活动';
+
+
+    const POINT_MODE_RECEIVE_OVERDUE = 26;
+    const POINT_MODE_RECEIVE_OVERDUE_ATTACHED = '领取失效';
+
+
+
     const POINT = 0;
 
     public $point_data;
@@ -256,6 +273,18 @@ class PointService
                 break;
             case (22):
                 $mode_attribute = self::POINT_MODE_COMMUNITY_REWARD_ATTACHED;
+                break;
+            case (23):
+                $mode_attribute = self::POINT_MODE_CREATE_ACTIVITY_ATTACHED;
+                break;
+            case (24):
+                $mode_attribute = self::POINT_MODE_ACTIVITY_OVERDUE_ATTACHED;
+                break;
+            case (25):
+                $mode_attribute = self::POINT_MODE_RECEIVE_ACTIVITY_ATTACHED;
+                break;
+            case (26):
+                $mode_attribute = self::POINT_MODE_RECEIVE_OVERDUE_ATTACHED;
                 break;
             case (92):
                 $mode_attribute = self::POINT_MODE_RECHARGE_CODE_ATTACHED;
