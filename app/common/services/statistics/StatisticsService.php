@@ -37,7 +37,7 @@ class StatisticsService
 
         //抛开model，对象，直接查询
         $member_ids = DB::select('select member_id,parent_id,uniacid from ims_yz_member');
-        $mc_member = DB::select('select uid,uniacid from ims_mc_member');
+        $mc_member = DB::select('select uid,uniacid from ims_mc_members');
         $member_orders = DB::select('select * from ims_yz_order_count');
 
         //用集合查询，减少开关数据库次数

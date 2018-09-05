@@ -362,6 +362,6 @@ class MemberShopInfo extends BaseModel
     //主表yz_member,从表mc_member
     public function hasOneMember()
     {
-        return $this->hasOne(Member::class, 'm_id', 'u_id');
+        return $this->hasOne(Member::class, 'uid', 'm_id');
     }
 }
