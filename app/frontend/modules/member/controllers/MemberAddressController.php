@@ -42,7 +42,7 @@ class MemberAddressController extends ApiController
         return $this->successJson($msg, $addressList);
     }
 
-    //获取下单页要编辑的地址信息
+    //获取下单页要编辑的地址信息 &route=member.member-address.get-one-address
     public function getOneAddress()
     {
         $id = \YunShop::request()->address_id;
@@ -282,7 +282,7 @@ class MemberAddressController extends ApiController
 
             $validator = $addressModel->validator($addressModel->getAttributes());
             if ($validator->fails()) {
-                return $this->errorJson($validator->message());
+                return $this->errorJson($validator->messages());
             }
             if ($addressModel->isdefault) {
 
