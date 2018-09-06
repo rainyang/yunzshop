@@ -290,7 +290,7 @@ class MemberAddressController extends ApiController
                 $this->memberAddressRepository->cancelDefaultAddress(\YunShop::app()->getMemberId());
             }
             if ($addressModel->save()) {
-                return $this->successJson('修改收货地址成功');
+                return $this->successJson('修改收货地址成功', $addressModel);
             } else {
                 return $this->errorJson("写入数据出错，请重试！");
             }
