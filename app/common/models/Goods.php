@@ -11,11 +11,18 @@ namespace app\common\models;
 use app\backend\modules\goods\models\Sale;
 use app\backend\modules\goods\observers\GoodsObserver;
 use app\common\exceptions\AppException;
+use app\common\models\goods\GoodsDispatch;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use app\common\models\Coupon;
 
+/**
+ * Class Goods
+ * @package app\common\models
+ * @property GoodsDiscount hasManyGoodsDiscount
+ * @property GoodsDispatch hasOneGoodsDispatch
+ */
 class Goods extends BaseModel
 {
 
