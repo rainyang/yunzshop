@@ -15,12 +15,20 @@ use Illuminate\Support\Collection;
 
 class CartBuyController extends PreOrderController
 {
+    /**
+     * @return \Illuminate\Http\JsonResponse|void
+     * @throws \app\common\exceptions\ShopException
+     */
     public function index()
     {
         $this->validateParam();
 
         parent::index();
     }
+
+    /**
+     * @throws \app\common\exceptions\ShopException
+     */
     protected function validateParam(){
         $this->validate([
             'cart_ids' => 'required',
