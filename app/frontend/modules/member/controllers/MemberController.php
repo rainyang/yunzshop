@@ -1324,6 +1324,19 @@ class MemberController extends ApiController
             }
         }
 
+        if (app('plugins')->isEnabled('supplier')) {
+            $supplier_setting = Setting::get('plugin.supplier');
+
+            if ($supplier_setting && 1 == $supplier_setting['status']) {
+                $data[] = [
+                    'name' => 'supplier',
+                    'title' => $supplier_setting['name'] ? $supplier_setting['name'] : '供应商',
+                    'class' => 'icon-member-express',
+                    'url' => 'supplier'
+                ];
+            }
+        }
+
         if (app('plugins')->isEnabled('store-cashier')) {
             $store = \Yunshop\StoreCashier\common\models\Store::getStoreByUid(\YunShop::app()->getMemberId())->first();
             if (!$store) {
@@ -1338,6 +1351,7 @@ class MemberController extends ApiController
         }
 
         if (app('plugins')->isEnabled('supplier')) {
+            $supplier_setting = Setting::get('plugin.supplier');
             $supplier = \Yunshop\Supplier\common\models\Supplier::getSupplierByMemberId(\YunShop::app()->getMemberId(), 1);
             if (!$supplier) {
                 $data[] = [
@@ -1345,6 +1359,13 @@ class MemberController extends ApiController
                     'title' => '供应商申请',
                     'class' => 'icon-member-apply1',
                     'url'   => 'supplier',
+                ];
+            }elseif ($supplier_setting && 1 == $supplier_setting['status']) {
+                $data[] = [
+                    'name' => 'supplier',
+                    'title' => $supplier_setting['name'] ? $supplier_setting['name'] : '供应商管理',
+                    'class' => 'icon-member-administration',
+                    'url' => 'supplier_administration'
                 ];
             }
         }
