@@ -35,12 +35,11 @@ class StatusContainer extends Container
 
     public function setBinds()
     {
-        collect(config('shop-foundation.status'))->each(function ($item) {
-            $this->bind($item['key'], function (StatusContainer $container) use ($item) {
-                return new $item['class']();
+        collect(config('shop-foundation.status'))->each(function ($item,$key) {
+            $this->bind($key, function (StatusContainer $container) use ($item) {
+                return new $item();
 
             });
         });
-
     }
 }
