@@ -138,10 +138,23 @@ class PointService
             return;
         }
         $this->point_data = $point_data;
-        $member = Member::getMemberById($point_data['member_id']);
-        $this->member = $member;
+        //$member = Member::getMemberById($point_data['member_id']);
+
+        $this->member = $this->getMemberModel();
         $this->member_point = $this->member->credit1;
     }
+
+
+    private function getMemberModel()
+    {
+        $member_id = $this->point_data['member_id'];
+        $memberModel = self::uniacid()->where('uid', $member_id)->lockForUpdate()->first();
+
+        return $memberModel;
+    }
+
+
+
 
     /**
      * @name 更新会员积分
