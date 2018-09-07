@@ -18,13 +18,22 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Class BaseModel
  * @package app\common\models
- * @method static BaseModel uniacid()
+ * @method static self uniacid()
  * @method static BaseModel insert()
- * @method static BaseModel get()
+ * @method static self get()
  * @method static BaseModel set()
  * @method static BaseModel find(string $id)
+ * @method static self first()
  * @method static BaseModel select(array $files)
+ * @method static BaseModel where()
  * @method static BaseModel with($relations)
+ * @method static self pluginId()
+ * @method static self whereIn()
+ * @method static self whereHas()
+ * @method static array pluck()
+ * @method static int count()
+ * @method static float sum()
+ * @method static self join()
  */
 class BaseModel extends Model
 {

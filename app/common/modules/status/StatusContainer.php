@@ -35,15 +35,7 @@ class StatusContainer extends Container
 
     public function setBinds()
     {
-        collect([
-            [
-                'key' => 'remittance',
-                'class' => RemittanceStatus::class,
-            ], [
-                'key' => 'remittanceAudit',
-                'class' => RemittanceAuditStatus::class,
-            ]
-        ])->each(function ($item) {
+        collect(config('shop-foundation.status'))->each(function ($item) {
             $this->bind($item['key'], function (StatusContainer $container) use ($item) {
                 return new $item['class']();
 

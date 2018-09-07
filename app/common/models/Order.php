@@ -59,6 +59,9 @@ use app\backend\modules\order\observers\OrderObserver;
  * @property PayType hasOnePayType
  * @property RefundApply hasOneRefundApply
  * @property Carbon finish_time
+ * @method static self isPlugin()
+ * @method static self orders(array $searchParam)
+
  */
 class Order extends BaseModel
 {
@@ -377,6 +380,9 @@ class Order extends BaseModel
      */
     public function getStatusNameAttribute()
     {
+        if($this->currentProcess()){
+            return $this->currentProcess()->status_name;
+        }
         $statusName = $this->getStatusService()->getStatusName();
         if ($this->isPending()) {
             $statusName .= ' : 锁定';

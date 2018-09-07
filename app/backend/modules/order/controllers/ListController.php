@@ -25,40 +25,67 @@ class ListController extends BaseController
      */
     const PAGE_SIZE = 10;
     protected $orderModel;
+
     public function __construct()
     {
         parent::__construct();
         $params = \YunShop::request()->get();
-        $this->orderModel = Order::orders($params['search'])->isPlugin()->pluginId();
+        $this->orderModel = $this->getOrder()->orders($params['search']);
     }
 
+    protected function getOrder()
+    {
+        return Order::isPlugin()->pluginId();
+    }
+
+    /**
+     * @return string
+     * @throws \Throwable
+     */
     public function index()
     {
         $this->export($this->orderModel);
         return view('order.index', $this->getData())->render();
     }
-    public function callbackFail(){
+
+    /**
+     * @return string
+     * @throws \Throwable
+     */
+    public function callbackFail()
+    {
         $orderIds = DB::table('yz_order as o')->join('yz_order_pay_order as opo', 'o.id', '=', 'opo.order_id')
             ->join('yz_order_pay as op', 'op.id', '=', 'opo.order_pay_id')
             ->join('yz_pay_order as po', 'po.out_order_no', '=', 'op.pay_sn')
-            ->whereIn('o.status',[0,-1])
-            ->where('op.status',0)
-            ->where('po.status',2)
+            ->whereIn('o.status', [0, -1])
+            ->where('op.status', 0)
+            ->where('po.status', 2)
             ->distinct()->pluck('o.id');
-        $this->orderModel = Order::orders(request('search'))->whereIn('id',$orderIds);
+        $this->orderModel = Order::orders(request('search'))->whereIn('id', $orderIds);
         return view('order.index', $this->getData())->render();
 
     }
-    public function payFail(){
+
+    /**
+     * @return string
+     * @throws \Throwable
+     */
+    public function payFail()
+    {
         $orderIds = DB::table('yz_order as o')->join('yz_order_pay_order as opo', 'o.id', '=', 'opo.order_id')
             ->join('yz_order_pay as op', 'op.id', '=', 'opo.order_pay_id')
-            ->whereIn('o.status',[0,-1])
-            ->where('op.status',1)
+            ->whereIn('o.status', [0, -1])
+            ->where('op.status', 1)
             ->pluck('o.id');
-        $this->orderModel = Order::orders(request('search'))->whereIn('id',$orderIds);
+        $this->orderModel = Order::orders(request('search'))->whereIn('id', $orderIds);
         return view('order.index', $this->getData())->render();
 
     }
+
+    /**
+     * @return string
+     * @throws \Throwable
+     */
     public function waitPay()
     {
         $this->orderModel->waitPay();
@@ -66,6 +93,10 @@ class ListController extends BaseController
         return view('order.index', $this->getData())->render();
     }
 
+    /**
+     * @return string
+     * @throws \Throwable
+     */
     public function waitSend()
     {
 
@@ -74,6 +105,10 @@ class ListController extends BaseController
         return view('order.index', $this->getData())->render();
     }
 
+    /**
+     * @return string
+     * @throws \Throwable
+     */
     public function waitReceive()
     {
         $this->orderModel->waitReceive();
@@ -81,6 +116,10 @@ class ListController extends BaseController
         return view('order.index', $this->getData())->render();
     }
 
+    /**
+     * @return string
+     * @throws \Throwable
+     */
     public function completed()
     {
 
@@ -89,6 +128,10 @@ class ListController extends BaseController
         return view('order.index', $this->getData())->render();
     }
 
+    /**
+     * @return string
+     * @throws \Throwable
+     */
     public function cancelled()
     {
         $this->orderModel->cancelled();
@@ -163,11 +206,11 @@ class ListController extends BaseController
                         $this->getGoods($item, 'cost_price'),
                         $item['status_name'],
                         $item['create_time'],
-                        !empty(strtotime($item['pay_time']))?$item['pay_time']:'',
-                        !empty(strtotime($item['send_time']))?$item['send_time']:'',
-                        !empty(strtotime($item['finish_time']))?$item['finish_time']:'',
+                        !empty(strtotime($item['pay_time'])) ? $item['pay_time'] : '',
+                        !empty(strtotime($item['send_time'])) ? $item['send_time'] : '',
+                        !empty(strtotime($item['finish_time'])) ? $item['finish_time'] : '',
                         $item['express']['express_company_name'],
-                        '['.$item['express']['express_sn'].']',
+                        '[' . $item['express']['express_sn'] . ']',
                         $item['has_one_order_remark']['remark'],
                     ];
                 }
@@ -196,20 +239,20 @@ class ListController extends BaseController
             $res_title = str_replace('=', '，', $res_title);
 
             if ($goods['goods_option_title']) {
-                $res_title .= '['. $goods['goods_option_title'] .']';
+                $res_title .= '[' . $goods['goods_option_title'] . ']';
             }
             $order_goods = OrderGoods::find($goods['id']);
             if ($order_goods->goods_option_id) {
                 $goods_option = GoodsOption::find($order_goods->goods_option_id);
                 if ($goods_option) {
-                    $goods_sn .= '【' . $goods_option->goods_sn.'】';
+                    $goods_sn .= '【' . $goods_option->goods_sn . '】';
                 }
             } else {
-                $goods_sn .= '【' . $goods['goods_sn'].'】';
+                $goods_sn .= '【' . $goods['goods_sn'] . '】';
             }
 
             $goods_title .= '【' . $res_title . '*' . $goods['total'] . '】';
-            $total .= '【' . $goods['total'].'】';
+            $total .= '【' . $goods['total'] . '】';
             $cost_price += $goods['goods_cost_price'];
         }
         $res = [
