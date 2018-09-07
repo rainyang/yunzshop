@@ -148,7 +148,7 @@ class PointService
     private function getMemberModel()
     {
         $member_id = $this->point_data['member_id'];
-        $memberModel = self::uniacid()->where('uid', $member_id)->lockForUpdate()->first();
+        $memberModel = Member::uniacid()->where('uid', $member_id)->lockForUpdate()->first();
 
         return $memberModel;
     }
