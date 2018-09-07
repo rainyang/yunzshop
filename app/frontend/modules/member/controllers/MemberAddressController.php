@@ -41,6 +41,49 @@ class MemberAddressController extends ApiController
         $msg = "获取列表成功";
         return $this->successJson($msg, $addressList);
     }
+
+    //获取下单页要编辑的地址信息 &route=member.member-address.get-one-address
+    public function getOneAddress()
+    {
+        $id = \YunShop::request()->address_id;
+
+        if (empty($id)) {
+            return $this->errorJson('参数为空');
+        }
+
+        $address = $this->memberAddressRepository->getAddressById($id);
+
+        if (empty($address)) {
+            return $this->errorJson('地址不存在');
+        }
+
+        $address = $this->getAddressId($address);
+
+
+        return $this->successJson('信息', $address);
+
+    }
+
+    //通过地址名换取id
+    protected function getAddressId($member_address)
+    {
+        if(\Setting::get('shop.trade.is_street')) {
+            $member_address->province_id = Address::where('areaname',$member_address->province)->value('id');
+            $member_address->city_id = Address::where('areaname',$member_address->city)->value('id');
+            $member_address->district_id = Address::where('areaname',$member_address->district)->value('id');
+            $member_address->street_id = Street::where('parentid', $member_address->district_id)->where('areaname',$member_address->street)->value('id');
+
+        } else{
+            $member_address->province_id = Address::where('areaname',$member_address->province)->value('id');
+            $member_address->city_id = Address::where('areaname',$member_address->city)->value('id');
+            $member_address->district_id = Address::where('areaname',$member_address->district)->value('id');
+        }
+
+        return $member_address;
+    }
+
+
+
     public function street(){
         $districtId = \YunShop::request()->get('district_id');
 
@@ -219,38 +262,36 @@ class MemberAddressController extends ApiController
             return $this->errorJson('请输入详细地址');
         }
 
-        if (\YunShop::request()->address_id) {
-            $requestAddress = array(
-                //'uid' => $requestAddress->uid,
-                //'uniacid' => \YunShop::app()->uniacid,
-                'username'      => \YunShop::request()->username,
-                'mobile'        => \YunShop::request()->mobile,
-                'zipcode'       => '',
-                'isdefault'     => \YunShop::request()->isdefault ?: 0,
-                'province'      => \YunShop::request()->province,
-                'city'          => \YunShop::request()->city,
-                'district'      => \YunShop::request()->district,
-                'address'       => \YunShop::request()->address,
-            );
-            if(\Setting::get('shop.trade.is_street')){
-                $requestAddress['street'] = \YunShop::request()->street;
-            }
-            $addressModel->fill($requestAddress);
+        $requestAddress = array(
+            //'uid' => $requestAddress->uid,
+            //'uniacid' => \YunShop::app()->uniacid,
+            'username'      => \YunShop::request()->username,
+            'mobile'        => \YunShop::request()->mobile,
+            'zipcode'       => '',
+//            'isdefault'     =>  \YunShop::request()->isdefault?1:0,
+            'province'      => \YunShop::request()->province,
+            'city'          => \YunShop::request()->city,
+            'district'      => \YunShop::request()->district,
+            'address'       => \YunShop::request()->address,
+        );
+        if(\Setting::get('shop.trade.is_street')){
+            $requestAddress['street'] = \YunShop::request()->street;
+        }
+        $addressModel->fill($requestAddress);
 
-            $validator = $addressModel->validator($addressModel->getAttributes());
-            if ($validator->fails()) {
-                return $this->errorJson($validator->message());
-            }
-            if ($addressModel->isdefault) {
-
-                //todo member_id 未附值
-                $this->memberAddressRepository->cancelDefaultAddress(\YunShop::app()->getMemberId());
-            }
-            if ($addressModel->save()) {
-                return $this->successJson('修改收货地址成功');
-            } else {
-                return $this->errorJson("写入数据出错，请重试！");
-            }
+        $validator = $addressModel->validator($addressModel->getAttributes());
+        if ($validator->fails()) {
+            return $this->errorJson($validator->messages());
+        }
+        if (empty($addressModel->isdefault) && \YunShop::request()->isdefault) {
+            $addressModel->isdefault = 1;
+            //todo member_id 未附值
+            $this->memberAddressRepository->cancelDefaultAddress(\YunShop::app()->getMemberId());
+        }
+        if ($addressModel->save()) {
+            return $this->successJson('修改收货地址成功', $addressModel->toArray());
+        } else {
+            return $this->errorJson("写入数据出错，请重试！");
         }
 
 
