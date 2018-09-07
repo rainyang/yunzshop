@@ -52,6 +52,19 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="form-group col-xs-12 col-sm-8 col-lg-2">
+                                    <!--		<label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">出售库存</label>-->
+                                    <div class="">
+                                        <select name="search[sell_stock]" class='form-control'>
+                                            <option value="">售中库存</option>
+
+                                            <option value="1"
+                                                    @if($requestSearch['sell_stock'] == '1') selected @endif>{{$lang['yes_stock']}}</option>
+                                            <option value="0"
+                                                    @if($requestSearch['sell_stock'] == '0') selected @endif>{{$lang['no_stock']}}</option>
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="form-group col-xs-12 col-sm-8 col-lg-5">
                                     <!--<label class="col-xs-12 col-sm-3 col-md-2 control-label">商品分类</label>-->
                                     <div class="col-sm-12 col-xs-12">

@@ -57,7 +57,7 @@ class Setting extends BaseModel
      * @param  string $key 键 使用.隔开 第一位为group
      * @param  mixed $value 值
      *
-     * @return void
+     * @return mixed
      */
     public function setValue($uniqueAccountId, $key, $value = null)
     {
