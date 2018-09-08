@@ -33,7 +33,7 @@ class Setting extends BaseModel
     public function getValue($uniqueAccountId, $key, $default = null)
     {
         $cacheKey = 'setting.' . $key;
-        if (Cache::has($cacheKey)) {
+        if (Cache::has($cacheKey) && Cache::get('shop.shop.name')) {
             //\Log::debug('-----setting get cache------'.$cacheKey);
             $value = Cache::get($cacheKey);
         }
