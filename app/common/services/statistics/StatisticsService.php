@@ -37,12 +37,12 @@ class StatisticsService
 
         //抛开model，对象，直接查询
         $member_ids = DB::select('select member_id,parent_id,uniacid from ims_yz_member');
-//        $mc_member = DB::select('select uid,uniacid from ims_mc_members');
+        $mc_member = DB::select('select uid,uniacid from ims_mc_members');
         $member_orders = DB::select('select * from ims_yz_order_count');
 
         //用集合查询，减少开关数据库次数
         $this->member_ids = collect($member_ids);
-//        $mc_member = collect($mc_member);
+        $mc_member = collect($mc_member);
         $this->member_orders = collect($member_orders);
 
         foreach ($member_ids as $member_id) {
@@ -60,9 +60,9 @@ class StatisticsService
             $this->team_order_amount = 0;
 
             //前三级计算
-//            if ($mc_member->where('uid',$member_id['member_id'])->first()) {
+            if ($mc_member->where('uid',$member_id['member_id'])->first()) {
                 $data = $this->threeCount($member_id['member_id']);
-//            }
+            }
             unset($member_id['parent_id']);
             $count_total = array_merge($member_id,$data['member_relation']);
             $count_order_total = array_merge($member_id,$data['member_order']);
