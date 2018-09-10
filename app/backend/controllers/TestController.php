@@ -8,15 +8,6 @@
 
 namespace app\backend\controllers;
 
-use app\common\helpers\Cache;
-use app\common\helpers\Url;
-use app\common\models\Callback;
-use app\common\models\Migration;
-use app\common\models\PayOrder;
-use app\common\models\PayRequestDataLog;
-use app\common\models\PayResponseDataLog;
-use app\common\modules\refund\services\RefundService;
-use app\frontend\modules\order\services\OrderService;
 use app\common\components\BaseController;
 use app\common\models\Member;
 use app\common\models\Order;
@@ -37,6 +28,7 @@ class TestController extends BaseController
 
     public function index()
     {
+        dd(\Setting::get('shop.shop.name'));
     }
 
     public function op_database()
