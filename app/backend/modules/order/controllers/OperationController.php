@@ -9,7 +9,6 @@
 namespace app\backend\modules\order\controllers;
 
 use app\common\components\BaseController;
-use app\common\helpers\Url;
 use app\common\models\Order;
 use app\common\models\PayType;
 use app\frontend\modules\order\services\OrderService;

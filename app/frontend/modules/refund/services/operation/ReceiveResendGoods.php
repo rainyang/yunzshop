@@ -8,8 +8,8 @@
 
 namespace app\frontend\modules\refund\services\operation;
 
-use app\common\models\refund\RefundExpress;
-use \Request;
+use app\frontend\modules\order\services\OrderService;
+
 
 class ReceiveResendGoods extends ChangeStatusOperation
 {
@@ -23,5 +23,15 @@ class ReceiveResendGoods extends ChangeStatusOperation
     protected function updateTable()
     {
         parent::updateTable();
+    }
+
+    /**
+     * @return bool|void
+     * @throws \app\common\exceptions\AppException
+     */
+    public function execute()
+    {
+        parent::execute();
+        OrderService::orderReceive(['order_id',$this->order_id]);
     }
 }

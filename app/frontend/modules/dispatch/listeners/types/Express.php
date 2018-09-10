@@ -39,6 +39,7 @@ class Express
      */
     public function onCreating(OnPreGenerateOrderCreatingEvent $event)
     {
+        //dd(1);
         $this->event = $event;
         if (!$this->needDispatch()) {
             return;
