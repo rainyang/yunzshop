@@ -34,13 +34,13 @@ class UnifyOrderDispatchPrice
                 return 0;
             }
 
-            if(!isset($orderGoods->hasOneGoodsDispatch)){
+            if(!isset($orderGoods->goods->hasOneGoodsDispatch)){
                 // 没有找到商品配送关联模型
                 return 0;
             }
-            if ($orderGoods->hasOneGoodsDispatch->dispatch_type == GoodsDispatch::UNIFY_TYPE) {
+            if ($orderGoods->goods->hasOneGoodsDispatch->dispatch_type == GoodsDispatch::UNIFY_TYPE) {
                 // 商品配送类型为 统一运费
-                return $orderGoods->hasOneGoodsDispatch->dispatch_price;
+                return $orderGoods->goods->hasOneGoodsDispatch->dispatch_price;
             }
             return 0;
         });

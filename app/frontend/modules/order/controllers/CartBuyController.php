@@ -10,6 +10,7 @@ namespace app\frontend\modules\order\controllers;
 
 use app\common\exceptions\AppException;
 use \app\frontend\models\MemberCart;
+use app\frontend\modules\memberCart\MemberCartCollection;
 use Illuminate\Support\Collection;
 
 class CartBuyController extends PreOrderController
@@ -43,12 +44,12 @@ class CartBuyController extends PreOrderController
             throw new AppException('参数格式有误');
         }
         if(!isset($memberCarts)){
-            $memberCarts = app('OrderManager')->make('MemberCart')->getCartsByIds($cartIds);
+            $memberCarts = app('OrderManager')->make('MemberCart')->whereIn('id', $cartIds)->get();
+            $memberCarts = new MemberCartCollection($memberCarts);
+            $memberCarts->loadRelations();
         }
-        $memberCarts->each(function (MemberCart $memberCart){
-            //dump($memberCart->goods->hasOnePrivilege);
-            $memberCart->validate();
-        });
+
+        $memberCarts->validate();
         if ($memberCarts->isEmpty()) {
             throw new AppException('未找到购物车信息');
         }

@@ -13,11 +13,19 @@
         @include('layouts.tabs')
         <div id="test-vue">
             <el-form ref="form" :rules="rules" :model="form" label-width="17%">
+                <el-form-item label="开启满额优惠">
+
+                    <el-tooltip :content="form.open?'已开启':'已关闭'" placement="top">
+                        <el-switch v-model="form.open">
+                        </el-switch>
+                    </el-tooltip>
+                </el-form-item>
                 <template v-for="(enoughReduce,index) in form.enoughReduce">
 
                     <el-form-item label="满额减">
 
                         <el-form-item>
+
                             <el-row :gutter="3">
 
                                 <el-col :span="6">

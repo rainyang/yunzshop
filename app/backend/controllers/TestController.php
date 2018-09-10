@@ -8,14 +8,6 @@
 
 namespace app\backend\controllers;
 
-use app\common\helpers\Url;
-use app\common\models\Callback;
-use app\common\models\Migration;
-use app\common\models\PayOrder;
-use app\common\models\PayRequestDataLog;
-use app\common\models\PayResponseDataLog;
-use app\common\modules\refund\services\RefundService;
-use app\frontend\modules\order\services\OrderService;
 use app\common\components\BaseController;
 use app\common\models\Member;
 use app\common\models\Order;
@@ -27,6 +19,7 @@ use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 use SuperClosure\SerializableClosure;
 
 class TestController extends BaseController
@@ -35,9 +28,7 @@ class TestController extends BaseController
 
     public function index()
     {
-        $amount = sprintf('%012d', 18.9 * 100);
-dd($amount);
-
+        dd(\Setting::get('shop.shop.name'));
     }
 
     public function op_database()

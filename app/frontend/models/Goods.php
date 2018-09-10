@@ -79,7 +79,7 @@ class Goods extends \app\common\models\Goods
          * @var $goodsDiscount GoodsDiscount
          */
 
-        $goodsDiscount = $this->hasManyGoodsDiscount()->where('level_id', $member->yzMember->level_id)->first();
+        $goodsDiscount = $this->hasManyGoodsDiscount->where('level_id', $member->yzMember->level_id)->first();
 
         if (isset($goodsDiscount)) {
             $result = $goodsDiscount->getAmount($price);

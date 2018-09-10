@@ -38,10 +38,10 @@ class SingleEnoughReduce extends BaseDiscount
      */
     private function getAmountInOrder()
     {
-        if(is_null($this->orderGoods->sale)){
+        if(is_null($this->orderGoods->goods->hasOneSale)){
             return 0;
         }
-        return $this->orderGoods->sale->getEnoughReductionAmount($this->getOrderGoodsPaymentAmount());
+        return $this->orderGoods->goods->hasOneSale->getEnoughReductionAmount($this->getOrderGoodsPaymentAmount());
     }
 
     /**

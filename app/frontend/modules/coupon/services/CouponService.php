@@ -210,21 +210,21 @@ class CouponService
         foreach ($goodsCoupon->coupon as $key => $item) {
             if ($item['coupon_several'] > 1) {
                 for ($i = 1; $i <= $item['coupon_several']; $i++) {
-                    $this->addSendCouponQueue($goodsCoupon);
+                    $this->addSendCouponQueue($goodsCoupon, $item['coupon_id']);
                 }
             } else {
-                $this->addSendCouponQueue($goodsCoupon);
+                $this->addSendCouponQueue($goodsCoupon, $item['coupon_id']);
             }
         }
     }
 
-    public function addSendCouponQueue($goodsCoupon)
+    public function addSendCouponQueue($goodsCoupon, $coupon_id)
     {
         $queueData = [
             'uniacid'       => \YunShop::app()->uniacid,
             'goods_id'      => $goodsCoupon->goods_id,
             'uid'           => $this->order->uid,
-            'coupon_id'     => $goodsCoupon->coupon['coupon_id'],
+            'coupon_id'     => $coupon_id,
             'send_num'      => $goodsCoupon->send_num,
             'end_send_num'  => 0,
             'status'        => 0,

@@ -12,7 +12,7 @@ use app\frontend\models\order\PreOrderDeduction;
 use app\frontend\models\order\PreOrderDiscount;
 use app\frontend\modules\deduction\models\Deduction;
 use app\frontend\modules\order\models\PreOrder;
-use EasyWeChat\Support\Collection;
+use Illuminate\Database\Eloquent\Collection;
 
 class OrderDeduction
 {
@@ -21,7 +21,7 @@ class OrderDeduction
      */
     private $order;
     /**
-     * @var \Illuminate\Database\Eloquent\Collection
+     * @var Collection
      */
     private $orderDeductions;
 
@@ -29,7 +29,7 @@ class OrderDeduction
     {
         $this->order = $order;
         // 订单抵扣使用记录集合
-        $this->orderDeductions = $order->newCollection();
+        $this->orderDeductions = new Collection();
         $order->setRelation('orderDeductions', $this->orderDeductions);
     }
 

@@ -11,11 +11,18 @@ namespace app\common\models;
 use app\backend\modules\goods\models\Sale;
 use app\backend\modules\goods\observers\GoodsObserver;
 use app\common\exceptions\AppException;
+use app\common\models\goods\GoodsDispatch;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use app\common\models\Coupon;
 
+/**
+ * Class Goods
+ * @package app\common\models
+ * @property GoodsDiscount hasManyGoodsDiscount
+ * @property GoodsDispatch hasOneGoodsDispatch
+ */
 class Goods extends BaseModel
 {
 
@@ -189,6 +196,14 @@ class Goods extends BaseModel
                     $category[] = ['id' => $value * 1];
                     $query->with("")->where('category_id', $category);
                     break;*/
+                //上架商品库存筛选
+                case 'sell_stock':
+                    if ($value) {
+                        $query->where('status', 1)->where('stock', '>', 0);
+                    } else {
+                        $query->where('status', 1)->where('stock', '=', 0);
+                    }
+                    break;
                 //新加过滤搜索
                 case 'filtering':
                     $scope = explode(',', rtrim($value, ','));
