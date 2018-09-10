@@ -32,6 +32,7 @@ use app\frontend\modules\order\services\behavior\OrderOperation;
 use app\frontend\modules\order\services\behavior\OrderPay;
 use app\frontend\modules\order\services\behavior\OrderReceive;
 use app\frontend\modules\order\services\behavior\OrderSend;
+use app\frontend\modules\orderGoods\models\PreOrderGoods;
 use app\frontend\modules\orderGoods\models\PreOrderGoodsCollection;
 use app\frontend\modules\shop\services\ShopService;
 use Carbon\Carbon;
@@ -110,7 +111,13 @@ class OrderService
                 'goods_option_id' => (int)$memberCart->option_id,
                 'total' => (int)$memberCart->total,
             ];
-            return app('OrderManager')->make('PreOrderGoods', $data);
+            $orderGoods =  app('OrderManager')->make('PreOrderGoods', $data);
+            /**
+             * @var PreOrderGoods $orderGoods
+             */
+            $orderGoods->setRelation('goods',$memberCart->goods);
+            $orderGoods->setRelation('goodsOption',$memberCart->goodsOption);
+            return $orderGoods;
         });
 
         return new PreOrderGoodsCollection($result);
@@ -187,27 +194,26 @@ class OrderService
     }
 
     /**
-     * 订单操作类 todo 以前不了解抛异常机制,所有先check.现在可以移除check
-     * {@inheritdoc}
+     * 订单操作类
+     * @param OrderOperation $orderOperation
+     * @return string
+     * @throws AppException
      */
     private static function OrderOperate(OrderOperation $orderOperation)
     {
         if (!isset($orderOperation)) {
             throw new AppException('未找到该订单');
         }
-
-        DB::transaction(function () use ($orderOperation) {
-            $orderOperation->check();
-            $orderOperation->execute();
-
+        DB::transaction(function() use($orderOperation) {
+            $orderOperation->handle();
         });
-        return $orderOperation->getMessage();
     }
 
     /**
      * 取消付款
      * @param $param
      * @return string
+     * @throws AppException
      */
     public static function orderCancelPay($param)
     {
@@ -220,6 +226,7 @@ class OrderService
      * 取消发货
      * @param $param
      * @return string
+     * @throws AppException
      */
     public static function orderCancelSend($param)
     {
@@ -232,6 +239,7 @@ class OrderService
      * 关闭订单
      * @param $param
      * @return string
+     * @throws AppException
      */
     public static function orderClose($param)
     {
@@ -244,6 +252,7 @@ class OrderService
      * 用户删除(隐藏)订单
      * @param $param
      * @return string
+     * @throws AppException
      */
     public static function orderDelete($param)
     {
@@ -259,7 +268,7 @@ class OrderService
      */
     public static function ordersPay(array $param)
     {
-        \Log::info('---------订单支付ordersPay(order_pay_id:'.$param['order_pay_id'].')--------', $param);
+        \Log::info('---------订单支付ordersPay(order_pay_id:' . $param['order_pay_id'] . ')--------', $param);
         /**
          * @var \app\frontend\models\OrderPay $orderPay
          */
@@ -269,15 +278,15 @@ class OrderService
         }
 
         if (isset($param['pay_type_id'])) {
-            if($orderPay->pay_type_id != $param['pay_type_id']){
+            if ($orderPay->pay_type_id != $param['pay_type_id']) {
                 $orderPay->pay_type_id = $param['pay_type_id'];
-                \Log::error('---------支付回调与与支付请求的订单支付方式不匹配(order_pay_id:'.$orderPay->id.')--------', []);
+                \Log::error("---------支付回调与与支付请求的订单支付方式不匹配(order_pay_id:{$orderPay->id},orderPay->payTypeId:{$orderPay->pay_type_id} != param[pay_type_id]:{$param['pay_type_id']})--------", []);
 
             }
         }
         $orderPay->pay();
 
-        \Log::info('---------订单支付成功ordersPay(order_pay_id:'.$orderPay->id.')--------', []);
+        \Log::info('---------订单支付成功ordersPay(order_pay_id:' . $orderPay->id . ')--------', []);
 
     }
 
@@ -336,6 +345,7 @@ class OrderService
      * 收货
      * @param $param
      * @return string
+     * @throws AppException
      */
     public static function orderReceive($param)
     {
@@ -348,6 +358,7 @@ class OrderService
      * 发货
      * @param $param
      * @return string
+     * @throws AppException
      */
     public static function orderSend($param)
     {

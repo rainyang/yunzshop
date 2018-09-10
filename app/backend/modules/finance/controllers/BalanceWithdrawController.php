@@ -57,15 +57,14 @@ class BalanceWithdrawController extends BaseController
             $result = $this->submitPay();
 
             //BalanceNoticeService::withdrawSuccessNotice($this->withdrawModel);
-
             if (!empty($result) && 0 == $result['errno']) {
                 return $this->message('提现成功', yzWebUrl('finance.balance-withdraw.detail', ['id'=>\YunShop::request()->id]));
             }
 
-            return $this->message('提现失败', yzWebUrl('finance.balance-withdraw.detail', ['id'=>\YunShop::request()->id]));
+            return $this->message('提现失败', yzWebUrl('finance.balance-withdraw.detail', ['id'=>\YunShop::request()->id]), 'error');
         }
 
-        return $this->message('提交数据有误，请刷新重试', yzWebUrl("finance.balance-withdraw.detail", ['id' => $this->getPostId()]));
+        return $this->message('提交数据有误，请刷新重试', yzWebUrl("finance.balance-withdraw.detail", ['id' => $this->getPostId()]),'error');
     }
 
 
@@ -160,6 +159,12 @@ class BalanceWithdrawController extends BaseController
             case 'manual':
                 return $this->manualPayment();
                 break;
+            case 'eup_pay':
+                return $this->eupPayment();
+                break;
+            case 'huanxun':
+                return $this->huanxunPayment();
+                break;
             default:
                 throw new AppException('未知打款方式！！！');
         }
@@ -220,6 +225,32 @@ class BalanceWithdrawController extends BaseController
         //return $this->paymentSuccess();
     }
 
+    /**
+     * EUP打款
+     * @return array|mixed|void
+     */
+    private function eupPayment()
+    {
+        $result = WithdrawService::eupWithdrawPay($this->withdrawModel);
+
+        if (!empty($result) && $result['errno'] == 1) {
+            return $this->paymentError($result['message']);
+        }
+
+        return $result;
+    }
+
+    private function huanxunPayment()
+    {
+        $result = WithdrawService::huanxunPayment($this->withdrawModel);
+
+        if ($result['result'] == 10 || $result['result'] == 8) {
+            return ['errno' => 0, 'message' => '打款成功'];
+        }
+        $result['errno'] = 1;
+
+        return $result;
+    }
 
     /**
      * 手动打款

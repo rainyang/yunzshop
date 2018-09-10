@@ -75,6 +75,18 @@ class Withdraw extends BaseModel
 
 
     /**
+     * 提现打款方式：打款到环迅
+     */
+    const WITHDRAW_WITH_HUANXUN  = 'huanxun';
+
+
+    /**
+     * 提现打款方式：打款到EUP
+     */
+    const WITHDRAW_WITH_EUP_PAY  = 'eup_pay';
+
+
+    /**
      * 手动打款方式：手动至银行卡
      */
     const MANUAL_TO_BANK    = 1;
@@ -126,6 +138,8 @@ class Withdraw extends BaseModel
         self::WITHDRAW_WITH_WECHAT      => '提现到微信',
         self::WITHDRAW_WITH_ALIPAY      => '提现到支付宝',
         self::WITHDRAW_WITH_MANUAL      => '提现手动打款',
+        self::WITHDRAW_WITH_HUANXUN     => '提现到银行卡',
+        self::WITHDRAW_WITH_EUP_PAY     => '提现EUP',
     ];
 
 

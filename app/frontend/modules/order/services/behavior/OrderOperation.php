@@ -12,17 +12,13 @@ namespace app\frontend\modules\order\services\behavior;
 use app\common\exceptions\AppException;
 use app\common\models\Order;
 
-
 abstract class OrderOperation extends Order
 {
     /**
      * @var Order
      */
     protected $order;
-    /**
-     * @var string 默认返回信息
-     */
-    protected $message = '成功';
+
     /**
      * @var array 合法前置状态
      */
@@ -32,18 +28,11 @@ abstract class OrderOperation extends Order
      * @var string 类名的过去式
      */
     protected $past_tense_class_name;
+
     /**
      * @var string 操作名
      */
     protected $name;
-
-    /**
-     * @return string 获取消息
-     */
-    public function getMessage()
-    {
-        return $this->message;
-    }
 
     /**
      * 获取不带命名空间的类名
@@ -77,19 +66,11 @@ abstract class OrderOperation extends Order
      * @return bool
      * @throws AppException
      */
-    public function check()
+    private function check()
     {
 
         $Event = $this->getBeforeEvent();
         event($Event);
-        if ($Event->hasOpinion()) {
-            //如果插件终止操作
-            if ($Event->getOpinion()->result == false) {
-                //抛出终止原因
-                throw new AppException($Event->getOpinion()->message);
-            }
-
-        }
 
         if ($this->refund_id > 0) {
             if ($this->hasOneRefundApply->isRefunding()) {
@@ -105,18 +86,15 @@ abstract class OrderOperation extends Order
     }
 
     /**
-     * 执行订单操作
-     * @return mixed
+     * @throws AppException
      */
-    abstract public function execute();
+    public function handle(){
+        $this->check();
+    }
 
-    /**
-     *
-     */
     protected function _fireEvent()
     {
         $event_name = '\app\common\events\order\After' . $this->_getPastTense() . 'Event';
         event(new $event_name($this));
-        return;
     }
 }

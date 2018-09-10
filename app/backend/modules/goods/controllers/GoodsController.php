@@ -54,6 +54,8 @@ class GoodsController extends BaseController
             "soldout" => "下架",
             "good" => "商品",
             "price" => "价格",
+            'yes_stock' => '出售中',
+            'no_stock' => '售馨',
             "repertory" => "库存",
             "copyshop" => "复制商品",
             "isputaway" => "是否上架",
@@ -71,11 +73,9 @@ class GoodsController extends BaseController
 
     public function index()
     {
-        
-        //课程商品id集合
-        $videoDemand = new VideoDemandCourseGoods();
-        $courseGoods_ids = $videoDemand->courseGoodsIds();
 
+        //课程商品id集合
+        $courseGoods_ids = (new VideoDemandCourseGoods())->courseGoodsIds();
 
         //增加商品属性搜索
         $product_attr_list = [
@@ -94,6 +94,9 @@ class GoodsController extends BaseController
             });
 
             $categorySearch = array_filter(\YunShop::request()->category, function ($item) {
+                if (is_array($item)) {
+                    return !empty($item[0]);
+                }
                 return !empty($item);
             });
 
@@ -101,7 +104,14 @@ class GoodsController extends BaseController
                 $requestSearch['category'] = $categorySearch;
             }
         }
-        $catetory_menus = CategoryService::getCategoryMenu(
+//        $catetory_menus = CategoryService::getCategoryMenu(
+//            [
+//                'catlevel' => $this->shopset['cat_level'],
+//                'ids'   => isset($categorySearch) ? array_values($categorySearch) : [],
+//            ]
+//        );
+
+        $catetory_menus = CategoryService::getCategoryMultiMenuSearch(
             [
                 'catlevel' => $this->shopset['cat_level'],
                 'ids'   => isset($categorySearch) ? array_values($categorySearch) : [],
@@ -295,9 +305,10 @@ class GoodsController extends BaseController
             'html' => $goods_service->optionsHtml,
             'var' => \YunShop::app()->get(),
             'brands' => $goods_service->brands,
-            'catetory_menus' => $goods_service->catetory_menus,
+            'catetory_menus' => implode('', $goods_service->catetory_menus),
             'virtual_types' => [],
-            'shopset' => $this->shopset
+            'shopset' => $this->shopset,
+            'type' => 'edit'
         ])->render();
     }
 
@@ -451,7 +462,9 @@ class GoodsController extends BaseController
     {
         $keyword = \YunShop::request()->keyword;
         $goods = Goods::getGoodsByName($keyword);
-        //$goods = set_medias($goods, array('thumb', 'share_icon'));
+        if (!$goods->isEmpty()) {
+            $goods = set_medias($goods->toArray(), array('thumb', 'share_icon'));
+        }
         return view('goods.query', [
             'goods' => $goods
         ])->render();
@@ -495,11 +508,26 @@ class GoodsController extends BaseController
 
         if (\YunShop::request()->kw) {
             $goods = \app\common\models\Goods::getGoodsByName(\YunShop::request()->kw);
-            
-            $goods = set_medias($goods, array('thumb', 'share_icon'));
 
+            if (!$goods->isEmpty()) {
+                $goods = set_medias($goods->toArray(), array('thumb', 'share_icon'));
+            }
             $goods = collect($goods)->map(function($item) {
-                return array_add($item , 'url', yzAppFullUrl('goods/' . $item['id']));
+
+                $url = yzAppFullUrl('goods/' . $item['id']);
+                if (app('plugins')->isEnabled('store-cashier')) {
+                    $store_goods = new \Yunshop\StoreCashier\common\models\StoreGoods();
+                    $store_id = $store_goods->where('goods_id', $item['id'])->value('store_id');
+                    if ($store_id) {
+                        $url = yzAppFullUrl("goods/{$item['id']}/o2o/{$store_id}");
+                    }
+                }
+                $is_course = (new VideoDemandCourseGoods())->isCourse($item['id']);
+                if ($is_course) {
+                    $url = yzAppFullUrl("member/coursedetail/{$item['id']}");
+                }
+
+                return array_add($item , 'url', $url);
             });
 
             echo json_encode($goods); exit;

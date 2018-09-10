@@ -62,6 +62,13 @@ return [
             'visibility' => 'public',
         ],
 
+        'image' => [
+            'driver' => 'local',
+            'root' => base_path('../../attachment/image'),
+            'url' => env('APP_URL').'image',
+            'visibility' => 'public',
+        ],
+
         'cert' => [
             'driver' => 'local',
             'root' => storage_path('cert'),
@@ -85,12 +92,14 @@ return [
             'root' => storage_path('app/public/banner'),
             'url' => env('APP_URL').'/storage/public/banner',
             'visibility' => 'public',
+        ],
 
         //淘宝CSV实例
         'taobaoCSV' => [
             'driver' => 'local',
             'root'=> base_path('plugins/goods-assistant/storage/examples'),
             'url' => env('APP_URL').'plugins/goods-assistant/storage/examples',
+            'visibility' => 'public',
         ],
 
         //淘宝CSV上传
@@ -98,7 +107,7 @@ return [
             'driver' => 'local',
             'root'=> base_path('plugins/goods-assistant/storage/upload'),
             'url' => env('APP_URL').'plugins/goods-assistant/storage/upload',
-
+            'visibility' => 'public',
         ],
 
         's3' => [
@@ -108,9 +117,5 @@ return [
             'region' => env('AWS_REGION'),
             'bucket' => env('AWS_BUCKET'),
         ],
-
-
     ],
-
-],
 ];

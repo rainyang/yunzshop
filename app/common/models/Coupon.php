@@ -58,7 +58,11 @@ class  Coupon extends BaseModel
     public function getSurplusAttribute()
     {
         $issued = MemberCoupon::getCouponBycouponId($this->id)->count('id');
-        $this->Surplus = $this->total - $issued;
+        if ($this->total == -1) {
+            $this->Surplus = 999999;
+        } else {
+            $this->Surplus = $this->total - $issued;
+        }
         return $this->Surplus;
     }
 

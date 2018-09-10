@@ -127,6 +127,14 @@
                         <option value='wechat' @if($search['pay_way']=='wechat') selected @endif >提现到微信</option>
                         <option value='alipay' @if($search['pay_way']=='alipay') selected @endif >提现到支付宝</option>
                         <option value='balance' @if($search['pay_way']=='balance') selected @endif >提现到余额</option>
+
+                        @if(app('plugins')->isEnabled('eup_pay'))
+                            <option value='eup_pay' @if($search['pay_way']=='eup_pay') selected @endif >提现到EUP</option>
+                        @endif
+                        @if(app('plugins')->isEnabled('huanxun'))
+                            <option value='huanxun' @if($search['pay_way']=='huanxun') selected @endif >提现到银行卡</option>
+                        @endif
+                        
                         <option value='manual' @if($search['pay_way']=='manual') selected @endif >提现到手动打款</option>
                     </select>
                 </div>
@@ -215,10 +223,10 @@
                     <td>
                         @if($row->type == 'balance')
                             <a class='btn btn-default'
-                               href="{{yzWebUrl('finance.balance-withdraw.detail', ['id' => $row->id])}}" title='详情'>详情</a>
+                               href="{{yzWebUrl('finance.balance-withdraw.detail', ['id' => $row->id])}}" target = "_blank">详情</a>
                         @else
                             <a class='btn btn-default'
-                               href="{{yzWebUrl('finance.withdraw-detail.index', ['id' => $row->id])}}" title='详情'>详情</a>
+                               href="{{yzWebUrl('withdraw.detail.index', ['id' => $row->id])}}" target = "_blank">详情</a>
                         @endif
                     </td>
                 </tr>

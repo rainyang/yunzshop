@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Builder;
  * Class MemberCart
  * @package app\frontend\models
  * @property Goods goods
+ * @property GoodsOption goodsOption
  * @property int option_id
  * @property int total
  * @property int goods_id
@@ -150,7 +151,7 @@ class MemberCart extends \app\common\models\MemberCart
             throw new AppException('(ID:' . $this->goods_id . ')未找到商品或已经删除');
         }
 
-        $this->getAllMemberCarts()->validate();
+        //$this->getAllMemberCarts()->validate();
         //商品基本验证
         $this->goods->generalValidate($this->total);
 

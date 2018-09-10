@@ -162,11 +162,11 @@ class HomePageController extends ApiController
                 $videoDemand = new VideoDemandCourseGoods();
                 $video_open  = $videoDemand->whetherEnabled();
 
-                foreach ($designer['data'] as &$value) {
-                    if ($value['temp'] == 'goods') {
-                        foreach ($value['data'] as &$info) {
+                foreach ($designer['data'] as &$value_one) {
+                    if ($value_one['temp'] == 'goods') {
+                        foreach ($value_one['data'] as &$info) {
                             $info['is_course'] = 0;
-
+                            $info['img'] = replace_yunshop(yz_tomedia($info['img']));
                             if ($video_open) {
                                 $info['is_course'] = $videoDemand->isCourse($info['goodid']);
                             }
@@ -219,6 +219,14 @@ class HomePageController extends ApiController
                         if(!empty($menustyle->menus) && !empty($menustyle->params)){
                             $result['item']['menus'] = json_decode($menustyle->toArray()['menus'], true);
                             $result['item']['menustyle'] = json_decode($menustyle->toArray()['params'], true);
+                            //判断是否是商城外部链接
+                            foreach ($result['item']['menus'] as $key => $value) {
+                                if (!strexists($value['url'],'addons/yun_shop/')) {
+                                    $result['item']['menus'][$key]['is_shop'] = 1;
+                                } else {
+                                    $result['item']['menus'][$key]['is_shop'] = 0;
+                                }
+                            }
                         } else{
                             $result['item']['menus'] = self::defaultMenu($i, $mid, $type);
                             $result['item']['menustyle'] = self::defaultMenuStyle();
@@ -245,8 +253,8 @@ class HomePageController extends ApiController
         //增加验证码功能
         $status = Setting::get('shop.sms.status');
         if (extension_loaded('fileinfo')) {
-            $captcha = self::captchaTest();
             if ($status == 1) {
+                $captcha = self::captchaTest();
                 $result['captcha'] = $captcha;
                 $result['captcha']['status'] = $status;
             }
@@ -454,13 +462,14 @@ class HomePageController extends ApiController
         );
 
         //如果开启了"会员关系链", 则默认菜单里面添加"推广"菜单
+        /*
         if(Cache::has('member_relation')){
             $relation = Cache::get('member_relation');
         } else {
             $relation = MemberRelation::getSetInfo()->first();
         }
-
-        if($relation->status == 1){
+        */
+        //if($relation->status == 1){
             $promoteMenu = Array(
                 "id"=>"menu_1489731319695",
                 "classt"=>"no",
@@ -477,7 +486,7 @@ class HomePageController extends ApiController
             $defaultMenu[4] = $defaultMenu[3]; //第 5 个按钮改成"会员中心"
             $defaultMenu[3] = $defaultMenu[2]; //第 4 个按钮改成"购物车"
             $defaultMenu[2] = $promoteMenu; //在第 3 个按钮的位置加入"推广"
-        }
+        //}
 
 
         return $defaultMenu;

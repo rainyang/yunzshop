@@ -1,6 +1,12 @@
 <?php
 include dirname(dirname(dirname(__DIR__))) . '/data/config.php';
 
+$db_conn_name = env('DB_CONNECTION', 'mysql');
+
+if ($config['db']['slave_status']) {
+    $db_conn_name = 'mysql_slave';
+}
+
 return [
 
     /**
@@ -19,7 +25,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'mysql'),
+    'default' => $db_conn_name,
 
     /*
     |--------------------------------------------------------------------------
@@ -72,6 +78,32 @@ return [
             'prefix' => '',
             'schema' => 'public',
             'sslmode' => 'prefer',
+        ],
+
+        'mysql_slave' => [
+            'driver' => 'mysql',
+            'write' => [
+                'host' =>env('DB_HOST', $config['db']['master']['host']),
+            ],
+            'read' => [
+                [
+                    'host'      => $config['db']['slave'][1]['host'],
+                    'username'  => $config['db']['slave'][1]['username'],
+                    'password'  => $config['db']['slave'][1]['password'],
+                    'port'      => $config['db']['slave'][1]['port'],
+                ]
+            ],
+            'port' => env('DB_PORT', $config['db']['master']['port']),
+            'database' => env('DB_DATABASE', $config['db']['master']['database']),
+            'username' => env('DB_USERNAME', $config['db']['master']['username']),
+            'password' => env('DB_PASSWORD', $config['db']['master']['password']),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => env('DB_PREFIX',$config['db']['master']['tablepre']),
+            'strict' => true,
+            'engine' => null,
+            'loggingQueries'=>true,
+
         ],
 
     ],

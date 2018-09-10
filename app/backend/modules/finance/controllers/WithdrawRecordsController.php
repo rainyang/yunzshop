@@ -41,7 +41,7 @@ class WithdrawRecordsController extends BaseController
 
         $page = PaginationHelper::show($records->total(), $records->currentPage(), $records->perPage());
 
-        return view('finance.withdraw.records', [
+        return view('withdraw.records', [
             'records' => $records,
             'page' => $page,
             'search' => \YunShop::request()->search,
@@ -72,7 +72,16 @@ class WithdrawRecordsController extends BaseController
             '收入类型',
             '提现方式',
             '申请金额',
+
+            '手续费',
+            '劳务税',
+            '应打款金额',
+
             '申请时间',
+            '审核时间',
+            '打款时间',
+            '到账时间',
+
 
             '打款至',
 
@@ -88,6 +97,7 @@ class WithdrawRecordsController extends BaseController
             '银行卡信息',
             '开户人姓名'
         ];
+
         foreach ($export_model->builder_model as $key => $item)
         {
             $export_data[$key + 1] = [
@@ -97,7 +107,13 @@ class WithdrawRecordsController extends BaseController
                 $item->type_name,
                 $item->pay_way_name,
                 $item->amounts,
+                $item->actual_poundage,
+                $item->actual_servicetax,
+                $item->actual_amounts,
                 $item->created_at->toDateTimeString(),
+                $item->audit_at ? date("Y-m-d H:i:s", $item->audit_at) : '',
+                $item->pay_at ? date("Y-m-d H:i:s", $item->pay_at) : '',
+                $item->arrival_at ? date("Y-m-d H:i:s", $item->arrival_at) : '',
             ];
             if ($item->pay_way == 'manual') {
                 switch ($item->manual_type) {

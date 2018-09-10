@@ -407,7 +407,6 @@ class MergePayController extends ApiController
 
         $data = $orderPay->getPayResult(PayType::REMITTANCE);
 
-        // todo data怎么传
         $orderPay->applyPay();
 
         $orderPay->save();
@@ -418,6 +417,78 @@ class MergePayController extends ApiController
             $redirect = $trade['redirect_url'];
         }
         $data['redirect'] = $redirect;
+        return $this->successJson('成功', $data);
+    }
+
+    /**
+     * 环迅快捷支付
+     *
+     * @param \Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     */
+    public function huanxunQuick(\Request $request)
+    {
+        if (\Setting::get('plugin.huanxun_set') == false) {
+            throw new AppException('商城未开启快捷支付');
+        }
+
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+        $data = $orderPay->getPayResult(PayFactory::PAY_Huanxun_Quick, ['pay' => 'quick']);
+
+        return $this->successJson('成功', $data);
+    }
+
+    /**
+     * 威富通公众号支付
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     */
+    public function wftWechat(\Request $request)
+    {
+
+        if (\Setting::get('plugin.wft_pay') == false) {
+            throw new AppException('商城未开启威富通公众号支付');
+        }
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+        $data = $orderPay->getPayResult(PayFactory::WFT_PAY);
+
+        return $this->successJson('成功', $data);
+    }
+
+    /**
+     * 威富通支付宝支付
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     */
+    public function wftAlipay(\Request $request)
+    {
+
+        if (\Setting::get('plugin.wft_alipay') == false) {
+            throw new AppException('商城未开启威富通公众号支付');
+        }
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+        $data = $orderPay->getPayResult(PayFactory::WFT_ALIPAY);
+
+        return $this->successJson('成功', $data);
+    }
+
+    /**
+     * 环迅微信支付
+     *
+     * @param \Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     */
+    public function huanxunWx(\Request $request)
+    {
+        if (\Setting::get('plugin.huanxun_set') == false) {
+            throw new AppException('商城未开启快捷支付');
+        }
+
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+        $data = $orderPay->getPayResult(PayFactory::PAY_Huanxun_Wx, ['pay' => 'wx']);
+
         return $this->successJson('成功', $data);
     }
 }

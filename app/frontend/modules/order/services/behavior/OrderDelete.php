@@ -18,8 +18,13 @@ class OrderDelete extends OrderOperation
     protected $name = '删除';
     protected $past_tense_class_name = 'OrderDeleted';
 
-    public function execute()
+    /**
+     * @return bool
+     * @throws \app\common\exceptions\AppException
+     */
+    public function handle()
     {
+        parent::handle();
         $this->is_member_deleted = 1;
         return $this->save();
     }

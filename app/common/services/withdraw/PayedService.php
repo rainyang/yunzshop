@@ -38,25 +38,31 @@ class PayedService
     public function withdrawPay()
     {
         if ($this->withdrawModel->status == Withdraw::STATUS_AUDIT) {
-            return $this->_withdrawPay();
+            $this->_withdrawPay();
+            return true;
         }
         throw new ShopException("提现打款：ID{$this->withdrawModel->id}，不符合打款规则");
     }
+
 
 
     /**
      * 确认打款接口
      *
      * @return bool
+     * @throws ShopException
      */
     public function confirmPay()
     {
-        $this->withdrawModel->pay_at = time();
+        if ($this->withdrawModel->status == Withdraw::STATUS_PAYING || $this->withdrawModel->status == Withdraw::STATUS_AUDIT) {
 
-        DB::transaction(function () {
-            $this->_payed();
-        });
-        return true;
+            $this->withdrawModel->pay_at = time();
+            DB::transaction(function () {
+                $this->_payed();
+            });
+            return true;
+        }
+        throw new ShopException('提现记录不符合确认打款规则');
     }
 
 
@@ -130,7 +136,8 @@ class PayedService
             //dd($result);
             if ($result !== true) {
 
-                //
+                //处理中 返回 false , 提现记录打款中
+                return false;
             }
             return true;
 
@@ -170,6 +177,12 @@ class PayedService
                 break;
             case Withdraw::WITHDRAW_WITH_MANUAL:
                 $result = $this->manualWithdrawPay();
+                break;
+            case Withdraw::WITHDRAW_WITH_HUANXUN:
+                $result = $this->huanxunWithdrawPay();
+                break;
+            case Withdraw::WITHDRAW_WITH_EUP_PAY:
+                $result = $this->eupWithdrawPay();
                 break;
             default:
                 throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：未知打款类型");
@@ -220,7 +233,7 @@ class PayedService
         $amount = $this->withdrawModel->actual_amounts;
         $remark = '';
 
-        $result = PayFactory::create(1)->doWithdraw($member_id, $sn, $amount, $remark);
+        $result = PayFactory::create(PayFactory::PAY_WEACHAT)->doWithdraw($member_id, $sn, $amount, $remark);
         if ($result['errno'] == 1) {
             throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：{$result['message']}");
         }
@@ -236,7 +249,7 @@ class PayedService
         $amount = $this->withdrawModel->actual_amounts;
         $remark = '';
 
-        $result = PayFactory::create(2)->doWithdraw($member_id, $sn, $amount, $remark);
+        $result = PayFactory::create(PayFactory::PAY_ALIPAY)->doWithdraw($member_id, $sn, $amount, $remark);
 
         if (is_array($result)) {
 
@@ -247,6 +260,40 @@ class PayedService
         }
 
         redirect($result)->send();
+    }
+
+
+    private function huanxunWithdrawPay()
+    {
+        $member_id = $this->withdrawModel->member_id;
+        $sn = $this->withdrawModel->withdraw_sn;
+        $amount = $this->withdrawModel->actual_amounts;
+        $remark = '';
+
+        $result = PayFactory::create(PayFactory::PAY_Huanxun_Quick)->doWithdraw($member_id, $sn, $amount, $remark);
+        if ($result['result'] == 10) {
+            return true;
+        }
+        if ($result['result'] == 8) {
+            return false;
+        }
+        throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：{$result['msg']}");
+    }
+
+
+    private function eupWithdrawPay()
+    {
+        $member_id = $this->withdrawModel->member_id;
+        $sn = $this->withdrawModel->withdraw_sn;
+        $amount = $this->withdrawModel->actual_amounts;
+        $remark = '';
+
+        $result = PayFactory::create(PayFactory::PAY_EUP)->doWithdraw($member_id, $sn, $amount, $remark);
+        if ($result['errno'] === 0) {
+            return true;
+        }
+
+        throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：{$result['message']}");
     }
 
 
@@ -284,9 +331,6 @@ class PayedService
      */
     private function setWithdrawModel($withdrawModel)
     {
-        if ($withdrawModel->status != Withdraw::STATUS_AUDIT) {
-            throw new ShopException('提现记录未审核');
-        }
         $this->withdrawModel = $withdrawModel;
     }
 

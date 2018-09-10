@@ -77,8 +77,7 @@ class PreOrderGoods extends OrderGoods
 //
 //        ]);
 //        $preOrderDiscount->setOrderGoods($this);
-        $attributes = $this->getPreAttributes();
-        $this->setRawAttributes($attributes);
+
     }
 
     /**
@@ -87,6 +86,8 @@ class PreOrderGoods extends OrderGoods
      */
     public function _init()
     {
+        $attributes = $this->getPreAttributes();
+        $this->setRawAttributes($attributes);
         $attributes = [
             'price' => $this->getPrice(),
             'coupon_price' => $this->getCouponAmount()
@@ -131,7 +132,7 @@ class PreOrderGoods extends OrderGoods
             'goods_sn' => $this->goods->goods_sn,
             'total' => $this->total,
             'title' => $this->goods->title,
-            'thumb' => $this->goods->thumb,
+            'thumb' => yz_tomedia($this->goods->thumb),
             'goods_price' => $this->getGoodsPrice(),
             'price' => $this->getPrice(),
             'goods_cost_price' => $this->getGoodsCostPrice(),

@@ -45,14 +45,10 @@ class CreateGoodsService
             if ($this->type == 1) {
                 $goods_data['status'] = 0;
             }
-            // $goods_data['thumb'] = tomedia($goods_data['thumb']);
-            // if (isset($goods_data['thumb_url'])) {
-            //     $goods_data['thumb_url'] = serialize(
-            //         array_map(function ($item) {
-            //             return tomedia($item);
-            //         }, $goods_data['thumb_url'])
-            //     );
-            // }
+            if (isset($goods_data['thumb_url'])) {
+                $goods_data['thumb_url'] = serialize($goods_data['thumb_url']);
+            }
+            
             if (!$goods_data['virtual_sales']) {
                 $goods_data['virtual_sales'] = 0;
             }
@@ -72,7 +68,7 @@ class CreateGoodsService
                 $this->error = $validator->messages();
             } else {
                 if ($this->goods_model->save()) {
-                    GoodsService::saveGoodsCategory($this->goods_model, $this->request->category, Setting::get('shop.category'));
+                    GoodsService::saveGoodsMultiCategory($this->goods_model, $this->request->category, Setting::get('shop.category'));
                     GoodsParam::saveParam($this->request, $this->goods_model->id, \YunShop::app()->uniacid);
                     GoodsSpec::saveSpec($this->request, $this->goods_model->id, \YunShop::app()->uniacid);
                     GoodsOption::saveOption($this->request, $this->goods_model->id, GoodsSpec::$spec_items, \YunShop::app()->uniacid);
@@ -83,6 +79,6 @@ class CreateGoodsService
             }
         }
 
-        $this->catetory_menus = CategoryService::getCategoryMenu(['catlevel' => Setting::get('shop.category')['cat_level']]);
+        $this->catetory_menus = CategoryService::getCategoryMultiMenu(['catlevel' => Setting::get('shop.category')['cat_level']]);
     }
 }

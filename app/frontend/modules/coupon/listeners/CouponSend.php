@@ -56,9 +56,7 @@ class CouponSend
         foreach ($couponSendQueues as $couponSendQueue) {
             $updatedData = [];
             $coupon = $couponSendQueue->hasOneCoupon;
-            $surplusNums['coupon_id_' . $coupon->id] = isset($surplusNums['coupon_id_' . $coupon->id])
-                ? $surplusNums['coupon_id_' . $coupon->id]
-                : $coupon->surplus;
+            $surplusNums['coupon_id_' . $coupon->id] = isset($surplusNums['coupon_id_' . $coupon->id]) ? $surplusNums['coupon_id_' . $coupon->id] : $coupon->surplus;
 
             if ($surplusNums['coupon_id_' . $coupon->id] <= 0) {
                 continue;

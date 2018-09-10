@@ -79,8 +79,8 @@
                     </li>
                     <li>
                         <p>积分页面</p>
-                        {!! QrCode::size(200)->generate(yzAppFullUrl('member/integral')) !!}
-                        <h5><a href="javascript:;" data-clipboard-text="{!! yzAppFullUrl('member/integral') !!}" data-url="{!! yzAppFullUrl('member/integral') !!}" class="js-clip" title="复制链接">复制链接</a></h5>
+                        {!! QrCode::size(200)->generate(yzAppFullUrl('member/integral_v2')) !!}
+                        <h5><a href="javascript:;" data-clipboard-text="{!! yzAppFullUrl('member/integral_v2') !!}" data-url="{!! yzAppFullUrl('member/integral_v2') !!}" class="js-clip" title="复制链接">复制链接</a></h5>
                     </li>
                     <li>
                         <p>积分明细</p>

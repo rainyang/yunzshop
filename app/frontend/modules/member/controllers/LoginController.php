@@ -13,7 +13,9 @@ use app\common\facades\Setting;
 use app\common\helpers\Client;
 use app\common\helpers\Url;
 use app\common\models\Member;
+use app\common\services\Session;
 use app\frontend\modules\member\services\factory\MemberFactory;
+use app\frontend\modules\member\services\MemberService;
 
 class LoginController extends ApiController
 {
@@ -24,16 +26,33 @@ class LoginController extends ApiController
     public function index()
     {
         $type = \YunShop::request()->type ;
+        $uniacid = \YunShop::app()->uniacid;
+        $mid = Member::getMid();
 
         if (empty($type) || $type == 'undefined') {
             $type = Client::getType();
         }
 
+        if ($type == 8 && !(app('plugins')->isEnabled('alipay-onekey-login'))) {
+            $type = Client::getType();
+        }
+
+        if (1 == $type && MemberService::isLogged()) {
+            $url = Url::absoluteApp('home', ['i' => $uniacid, 'mid' => $mid]);
+
+            if (Session::get('client_url')) {
+                $url = Session::get('client_url');
+            }
+
+            return $this->successJson('ok', ['status'=> 1, 'url' => $url]);
+        }
+
+
         //判断是否开启微信登录
         if (\YunShop::request()->show_wechat_login) {
             return $this->init_login();
         }
-      
+
         if (!empty($type)) {
                 $member = MemberFactory::create($type);
 
@@ -42,15 +61,14 @@ class LoginController extends ApiController
 
                     if (!empty($msg)) {
                         if ($msg['status'] == 1) {
-                            $uniacid = \YunShop::app()->uniacid;
-                            $mid = Member::getMid();
                             $url = Url::absoluteApp('member', ['i' => $uniacid, 'mid' => $mid]);
-                            return $this->successJson($msg['json'], ['status'=> $msg['status'], 'url' => $url]);
-                        } else {
-                            if ($msg['status'] == -3) {
-                                return view('errors.login',['title'=>$msg['json'], 'content'=>$msg['json']])->render();
+
+                            if (isset($msg['json']['redirect_url'])) {
+                                $url = $msg['json']['redirect_url'];
                             }
 
+                            return $this->successJson($msg['json'], ['status'=> $msg['status'], 'url' => $url]);
+                        } else {
                             return $this->errorJson($msg['json'], ['status'=> $msg['status']]);
                         }
                     } else {

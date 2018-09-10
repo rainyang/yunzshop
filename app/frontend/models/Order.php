@@ -8,12 +8,16 @@
 namespace app\frontend\models;
 
 use app\frontend\models\Member;
+use app\frontend\modules\refund\models\RefundApply;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Class Order
  * @package app\frontend\models
  * @property Member belongsToMember
+ * @property Carbon finish_time
+ * @property int refund_id
  */
 class Order extends \app\common\models\Order
 {
@@ -46,7 +50,7 @@ class Order extends \app\common\models\Order
     {
         return $query->with(['hasManyOrderGoods'=>function($query){
             return $query->select(['order_id','goods_id','goods_price','total','price','thumb','title','goods_option_id','goods_option_title','comment_status']);
-        }],'hasOnePayType')->orderBy('id','desc');
+        }],'hasOnePayType')->orderBy('yz_order.id','desc');
     }
     public function belongsToMember()
     {
@@ -117,4 +121,5 @@ class Order extends \app\common\models\Order
             return $query->uid();
         });
     }
+
 }

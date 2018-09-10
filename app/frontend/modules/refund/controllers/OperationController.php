@@ -39,7 +39,7 @@ class OperationController extends ApiController
 
     /**
      * @return \Illuminate\Http\JsonResponse
-     * @throws AdminException
+     * @throws \app\common\exceptions\AppException
      * @throws \app\common\exceptions\ShopException
      */
     public function complete()
@@ -47,12 +47,19 @@ class OperationController extends ApiController
         $this->validate([
             'refund_id' => 'required|filled|integer',
         ]);
+
         RefundOperationService::refundComplete();
+
         return $this->successJson();
 
     }
 
-    public function cancel(\Request $request)
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \app\common\exceptions\AppException
+     * @throws \app\common\exceptions\ShopException
+     */
+    public function cancel()
     {
         $this->validate([
             'refund_id' => 'required|filled|integer',

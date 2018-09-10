@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Builder;
  * Class OrderGoods
  * @package app\common\models
  * @property int comment_status
+ * @property Goods goods
  */
 class OrderGoods extends BaseModel
 {
@@ -39,7 +40,6 @@ class OrderGoods extends BaseModel
 
     public function goods()
     {
-        // ??需调查为什么 $this->goods 调取不到这个函数   因为调动的order_goods没有获取goods_id字段
         return $this->belongsTo(app('GoodsManager')->make('Goods'));
     }
 

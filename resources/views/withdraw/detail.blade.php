@@ -229,35 +229,33 @@
             @if($item->status == '1')
 
                 @if($item->pay_way == 'balance')
-                    <input type="hidden" name="pay_way" value="3">
-                    <input type="submit" name="submit_pay" value="打款到余额" class="btn btn-primary col-lg-1"
-                           style='margin-left:10px;' onclick='return '/>
+                    <input type="submit" name="submit_pay" value="打款到余额" class="btn btn-primary col-lg-1" style='margin-left:10px;' onclick='return '/>
                 @elseif($item->pay_way == 'wechat')
-                    <input type="hidden" name="pay_way" value="1">
-                    <input type="submit" name="submit_pay" value="打款到微信钱包" class="btn btn-primary col-lg-1"
-                           style='margin-left:10px;' onclick='return '/>
+                    <input type="submit" name="submit_pay" value="打款到微信钱包" class="btn btn-primary col-lg-1" style='margin-left:10px;' onclick='return '/>
                 @elseif($item->pay_way == 'alipay')
-                    <input type="hidden" name="pay_way" value="2">
-                    <input type="submit" name="submit_pay" value="打款到支付宝"
-                           class="btn btn-primary " style='margin-left:10px;'
-                           onclick='return '/>
+                    <input type="submit" name="submit_pay" value="打款到支付宝" class="btn btn-primary " style='margin-left:10px;' onclick='return '/>
+                @elseif($item->pay_way == 'huanxun')
+                    <input type="submit" name="submit_pay" value="打款到银行卡" class="btn btn-primary " style='margin-left:10px;' onclick='return '/>
+                @elseif($item->pay_way == 'eup_pay')
+                    <input type="submit" name="submit_pay" value="EUP打款" class="btn btn-primary " style='margin-left:10px;' onclick='return '/>
                 @elseif($item->pay_way == 'manual')
-                    <input type="hidden" name="pay_way" value="4">
-                    <input type="submit" name="submit_pay" value="手动打款"
-                           class="btn btn-primary " style='margin-left:10px;'
-                           onclick='return '/>
-
+                    <input type="submit" name="submit_pay" value="手动打款" class="btn btn-primary " style='margin-left:10px;' onclick='return '/>
                 @endif
             @endif
 
-            @if($item->status == '-1')
-                <input type="submit" name="submit_cancel" value="重新审核" class="btn btn-default "
-                       onclick='return '/>
+            @if($item->status == '4')
+                <input type="submit" name="again_pay" value="重新打款" class="btn btn-warning " style='margin-left:10px;' onclick='return '/>
             @endif
 
+            @if($item->status == '1' || $item->status == '4')
+                <input type="submit" name="confirm_pay" value="线下确认打款" class="btn btn-success " style='margin-left:10px;'
+                       onclick="{if (confirm('本打款方式需要线下打款，系统只是完成流程!') == true){return true;}return false}"/>
+            @endif
 
-            <input type="button" class="btn btn-default" name="submit" onclick="goBack()" value="返回"
-                   style='margin-left:10px;'/>
+            @if($item->status == '-1')
+                <input type="submit" name="submit_cancel" value="重新审核" class="btn btn-default " onclick='return '/>
+            @endif
+            <input type="button" class="btn btn-default" name="submit" onclick="goBack()" value="返回列表" style='margin-left:10px;'/>
         </div>
     </form>
 
