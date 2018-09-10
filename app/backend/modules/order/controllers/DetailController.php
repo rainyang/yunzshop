@@ -18,7 +18,6 @@ class DetailController extends BaseController
 {
     public function index(\Request $request)
     {
-        Debugbar::info($request);
         $orderId = $request->query('id');
         $order = Order::getOrderDetailById($orderId);
         if (!empty($order->express)) {
