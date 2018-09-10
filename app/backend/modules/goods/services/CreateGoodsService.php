@@ -13,6 +13,8 @@ use app\backend\modules\goods\models\Goods;
 use app\backend\modules\goods\models\Brand;
 use app\backend\modules\goods\models\GoodsSpec;
 use app\backend\modules\goods\models\GoodsOption;
+use FFMpeg\Coordinate\TimeCode;
+use FFMpeg\FFMpeg;
 use Setting;
 
 class CreateGoodsService
@@ -45,9 +47,34 @@ class CreateGoodsService
             if ($this->type == 1) {
                 $goods_data['status'] = 0;
             }
-
             //商品视频地址
             $goods_data['goods_video'] = yz_tomedia($goods_data['goods_video']);
+
+
+            if ($goods_data['goods_video']) {
+//                $ffmpeg = FFMpeg::create(array(
+//                    'ffmpeg.binaries'  => 'C:\Users\Administrator\ffmpeg\bin\ffmpeg.exe',
+//                    'ffprobe.binaries' => 'C:\Users\Administrator\ffmpeg\bin\ffprobe.exe',
+//                    'timeout'          => 3600, // The timeout for the underlying process
+//                    'ffmpeg.threads'   => 12,   // The number of threads that FFMpeg should use
+//                ), null);
+//                $ffmpeg = FFMpeg::create();
+//                $video = $ffmpeg->open($goods_data['goods_video']);
+//
+//                $path = storage_path('app/public/goods/video/');
+//                if (!is_dir($path)) {
+//                    load()->func('file');
+//                    mkdirs($path);
+//                }
+//
+//                $frame = $video->frame(TimeCode::fromSeconds(3));
+//
+//                $file = $path.'/asasa.png';
+//
+//                $frame->save($file);
+
+            }
+
 
             if (isset($goods_data['thumb_url'])) {
                 $goods_data['thumb_url'] = serialize($goods_data['thumb_url']);
