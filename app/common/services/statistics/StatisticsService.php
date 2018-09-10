@@ -62,14 +62,15 @@ class StatisticsService
             //前三级计算
             if ($mc_member->where('uid',$member_id['member_id'])->first()) {
                 $data = $this->threeCount($member_id['member_id']);
-            }
-            unset($member_id['parent_id']);
-            $count_total = array_merge($member_id,$data['member_relation']);
-            $count_order_total = array_merge($member_id,$data['member_order']);
 
-            //判断数据库是否有数据，分别进行更新或插入
-            $member_relation_model->updateOrCreate(['member_id' => $member_id['member_id']],$count_total);
-            $member_orders_model->updateOrCreate(['member_id' => $member_id['member_id']],$count_order_total);
+                unset($member_id['parent_id']);
+                $count_total = array_merge($member_id, $data['member_relation']);
+                $count_order_total = array_merge($member_id, $data['member_order']);
+
+                //判断数据库是否有数据，分别进行更新或插入
+                $member_relation_model->updateOrCreate(['member_id' => $member_id['member_id']], $count_total);
+                $member_orders_model->updateOrCreate(['member_id' => $member_id['member_id']], $count_order_total);
+            }
 
         }
         return true;
