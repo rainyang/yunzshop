@@ -4,6 +4,7 @@ namespace app\frontend\modules\refund\services;
 
 use app\common\exceptions\AppException;
 use app\frontend\modules\refund\services\operation\ExchangeComplete;
+use app\frontend\modules\refund\services\operation\ReceiveResendGoods;
 use app\frontend\modules\refund\services\operation\RefundCancel;
 use app\frontend\modules\refund\services\operation\RefundSend;
 
@@ -68,7 +69,7 @@ class RefundOperationService
     public static function refundComplete()
     {
         //todo 需要与后台操作统一
-        $refundComplete = RefundComplete::find(request()->input('refund_id'));
+        $refundComplete = ReceiveResendGoods::find(request()->input('refund_id'));
         if (!$refundComplete) {
             throw new AppException('售后申请记录不存在');
         }

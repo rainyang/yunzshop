@@ -13,6 +13,7 @@ use app\common\models\Member;
 use app\common\models\Order;
 use app\common\models\OrderPay;
 use app\common\models\Flow;
+use app\common\models\Setting;
 use app\common\services\MessageService;
 use app\frontend\modules\member\models\SubMemberModel;
 use Illuminate\Database\Migrations\Migrator;
@@ -28,7 +29,9 @@ class TestController extends BaseController
 
     public function index()
     {
-        dd(\Setting::get('shop.shop.name'));
+        dump(\Setting::get('shop'));
+        $a = new Setting();
+        dump($a->getItems(2, 'shop'));
     }
 
     public function op_database()
