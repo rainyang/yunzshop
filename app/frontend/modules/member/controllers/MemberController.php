@@ -1364,8 +1364,8 @@ class MemberController extends ApiController
                 $data[] = [
                     'name' => 'supplier',
                     'title' => $supplier_setting['name'] ? $supplier_setting['name'] : '供应商管理',
-                    'class' => 'icon-member-administration',
-                    'url' => 'supplier_administration'
+                    'class' => 'icon-member-supplier',
+                    'url' => 'SupplierCenter'
                 ];
             }
         }
