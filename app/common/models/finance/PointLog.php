@@ -136,6 +136,18 @@ class PointLog extends BaseModel
                     $mode_attribute = PointService::POINT_MODE_FROZE_AWARD_ATTACHED;
                 }
                 break;
+            case (23):
+                $mode_attribute = PointService::POINT_MODE_CREATE_ACTIVITY_ATTACHED;
+                break;
+            case (24):
+                $mode_attribute = PointService::POINT_MODE_ACTIVITY_OVERDUE_ATTACHED;
+                break;
+            case (25):
+                $mode_attribute = PointService::POINT_MODE_RECEIVE_ACTIVITY_ATTACHED;
+                break;
+            case (26):
+                $mode_attribute = PointService::POINT_MODE_RECEIVE_OVERDUE_ATTACHED;
+                break;
             case (92):
                 $mode_attribute = PointService::POINT_MODE_RECHARGE_CODE_ATTACHED;
                 break;
