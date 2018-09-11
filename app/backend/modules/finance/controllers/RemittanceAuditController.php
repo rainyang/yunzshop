@@ -36,7 +36,7 @@ class RemittanceAuditController extends BaseController
          */
         $searchParams = request()->input('searchParams');
         $remittanceAuditFlow = RemittanceAuditFlow::first();
-        $processBuilder = RemittanceAuditProcess::where('flow_id', $remittanceAuditFlow->id)->with(['member', 'status', 'remittanceRecord' => function (Builder $query) {
+        $processBuilder = RemittanceAuditProcess::where('flow_id', $remittanceAuditFlow->id)->uniacid()->with(['member', 'status', 'remittanceRecord' => function (Builder $query) {
             $query->with('orderPay');
         }]);
         if(!empty(request()->input('status_id'))){

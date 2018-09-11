@@ -53,7 +53,9 @@ trait HasProcessTrait
         return ['uid' => \YunShop::app()->getMemberId(),
             'flow_id' => $flow->id,
             'model_id' => $this->id,
-            'model_type' => $this->getMorphClass()];
+            'model_type' => $this->getMorphClass(),
+            'uniacid' => \YunShop::app()->uniacid
+        ];
     }
 
     /**
