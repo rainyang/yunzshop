@@ -19,15 +19,6 @@ class IndexController extends BaseController
         strpos(request()->getBaseUrl(),'/web/index.php') === 0 && Check::setKey();
         //redirect(Url::absoluteWeb('goods.goods.index'))->send();
 
-
-        //会员统计定时任务
-        \Event::listen('cron.collectJobs', function () {
-            \Cron::add('Statistics', '*/10 * * * * *', function () {
-                (new \app\common\services\statistics\TimedTaskService)->handle();
-                return;
-            });
-        });
-
         return view('index',[])->render();
     }
 
