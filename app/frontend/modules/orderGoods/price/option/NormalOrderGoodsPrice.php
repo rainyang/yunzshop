@@ -14,6 +14,7 @@ class NormalOrderGoodsPrice extends BaseOrderGoodsPrice
      * @var float
      */
     private $paymentAmount;
+    private $deductionAmount;
     /**
      * @var float
      */
@@ -65,7 +66,10 @@ class NormalOrderGoodsPrice extends BaseOrderGoodsPrice
      */
     public function getDeductionAmount()
     {
-        return $this->orderGoods->getOrderGoodsDeductions()->getUsedPoint()->getMoney();
+        if(!isset($this->deductionAmount)){
+            $this->deductionAmount = $this->orderGoods->getOrderGoodsDeductions()->getUsedPoint()->getMoney();
+        }
+        return $this->deductionAmount;
     }
 
     /**
