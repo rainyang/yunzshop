@@ -61,8 +61,8 @@ class StatisticsService
 
             //前三级计算
             if ($mc_member->where('uid',$member_id['member_id'])->first()) {
-                $this->team_order_quantity += $this->member_orders->where('member_id',$member_id)->first()->total_complete_quantity;
-                $this->team_order_amount += $this->member_orders->where('member_id',$member_id)->first()->total_complete_amount;
+                $this->team_order_quantity += $this->member_orders->where('member_id',$member_id['member_id'])->sum('total_complete_quantity');
+                $this->team_order_amount += $this->member_orders->where('member_id',$member_id['member_id'])->sum('total_complete_amount');
                 $data = $this->threeCount($member_id['member_id']);
 
                 unset($member_id['parent_id']);
