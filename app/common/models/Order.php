@@ -549,7 +549,6 @@ class Order extends BaseModel
 
     public function close()
     {
-        dump(debug_backtrace(0));
         return OrderService::close($this);
     }
 
