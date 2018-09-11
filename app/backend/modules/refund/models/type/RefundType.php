@@ -10,6 +10,7 @@ namespace app\backend\modules\refund\models\type;
 
 use app\backend\modules\refund\models\RefundApply;
 use app\common\events\order\AfterOrderRefundedEvent;
+use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\exceptions\AdminException;
 
 abstract class RefundType
@@ -54,10 +55,13 @@ abstract class RefundType
 
         $this->refundApply->status = RefundApply::CONSENSUS;
         event(new AfterOrderRefundedEvent($this->refundApply->order));
-
         return $this->refundApply->save();
     }
 
+    /**
+     * 换货完成(关闭订单)
+     * @return bool
+     */
     public function close()
     {
         $this->refundApply->status = RefundApply::CLOSE;
