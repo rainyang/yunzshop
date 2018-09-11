@@ -61,6 +61,8 @@ class StatisticsService
 
             //前三级计算
             if ($mc_member->where('uid',$member_id['member_id'])->first()) {
+                $this->team_order_quantity += $this->member_orders->where('member_id',$member_id)->sum('total_complete_quantity');
+                $this->team_order_amount += $this->member_orders->where('member_id',$member_id)->sum('total_complete_amount');
                 $data = $this->threeCount($member_id['member_id']);
 
                 unset($member_id['parent_id']);
@@ -92,24 +94,24 @@ class StatisticsService
 
         //一级下线
         $first_total = count($member_ids);
-
+        $this->first_order_quantity += $this->member_orders->where('parent_id',$member_id)->sum('total_complete_quantity');
+        $this->first_order_amount += $this->member_orders->where('parent_id',$member_id)->sum('total_complete_amount');
         //二级下线
         if ($level == 2) {
             $this->second_total += count($member_ids);//计算二级总数
-            $this->first_order_quantity += $this->member_orders->where('parent_id',$member_id)->sum('total_complete_quantity');
-            $this->first_order_amount += $this->member_orders->where('parent_id',$member_id)->sum('total_complete_amount');
+            $this->second_order_quantity += $this->member_orders->where('parent_id',$member_id)->sum('total_complete_quantity');
+            $this->second_order_amount += $this->member_orders->where('parent_id',$member_id)->sum('total_complete_amount');
         }
 
         //三级下线
         if ($level == 3) {
             $this->third_total += count($member_ids);//计算三级总数
-            $this->second_order_quantity += $this->member_orders->where('parent_id',$member_id)->sum('total_complete_quantity');
-            $this->second_order_amount += $this->member_orders->where('parent_id',$member_id)->sum('total_complete_amount');
+            $this->third_order_quantity += $this->member_orders->where('parent_id',$member_id)->sum('total_complete_quantity');
+            $this->third_order_amount += $this->member_orders->where('parent_id',$member_id)->sum('total_complete_amount');
 
             //三级后执行独立递归
             foreach ($member_ids as $member_id) {
-                $this->third_order_quantity += $this->member_orders->where('parent_id',$member_id)->sum('total_complete_quantity');
-                $this->third_order_amount += $this->member_orders->where('parent_id',$member_id)->sum('total_complete_amount');
+
                 $this->count($member_id['member_id']);
             }
         } else {
