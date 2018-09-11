@@ -68,7 +68,7 @@ class OperationController extends BaseController
         return $this->message('操作成功', '');
     }
 
-    public function receiveReturnGoods(\Request $request)
+    public function receiveReturnGoods()
     {
         $this->refundApply->receiveReturnGoods();
         return $this->message('操作成功', '');
@@ -89,7 +89,6 @@ class OperationController extends BaseController
         $refundApply = $this->refundApply;
         DB::transaction(function () use ($refundApply) {
             $refundApply->close();
-            $refundApply->order->close();
             RefundMessageService::passMessage($refundApply);//通知买家
         });
         return $this->message('操作成功', '');

@@ -10,13 +10,22 @@ namespace app\frontend\modules\refund\controllers;
 
 
 use app\common\components\ApiController;
+use app\common\exceptions\AdminException;
 use app\common\modules\refund\services\RefundService;
+use app\frontend\modules\refund\models\RefundApply;
+use app\frontend\modules\refund\services\RefundMessageService;
 use app\frontend\modules\refund\services\RefundOperationService;
 
 class OperationController extends ApiController
 {
     public $transactionActions = ['*'];
-    public function send(\Request $request)
+
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \app\common\exceptions\AppException
+     * @throws \app\common\exceptions\ShopException
+     */
+    public function send()
     {
         $this->validate([
             'refund_id' => 'required|filled|integer',
@@ -29,24 +38,28 @@ class OperationController extends ApiController
     }
 
     /**
-     * 确认收货
-     * @param \Request $request
-     * @return mixed
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \app\common\exceptions\AppException
+     * @throws \app\common\exceptions\ShopException
      */
-    public function complete(\Request $request)
+    public function complete()
     {
         $this->validate([
-            'refund_id' => 'required'
+            'refund_id' => 'required|filled|integer',
         ]);
-        /**
-         * @var $this ->refundApply RefundApply
-         */
-        (new RefundService())->pay($request['refund_id']);
+
+        RefundOperationService::refundComplete();
+
         return $this->successJson();
 
     }
 
-    public function cancel(\Request $request)
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \app\common\exceptions\AppException
+     * @throws \app\common\exceptions\ShopException
+     */
+    public function cancel()
     {
         $this->validate([
             'refund_id' => 'required|filled|integer',

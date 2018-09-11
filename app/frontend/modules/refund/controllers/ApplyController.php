@@ -63,6 +63,7 @@ class ApplyController extends ApiController
 
     public function store(Request $request)
     {
+
         $this->validate([
             'reason' => 'required|string',
             'content' => 'sometimes|string',
