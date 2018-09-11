@@ -18,58 +18,37 @@ use app\common\models\notice\MessageTemp;
 class DefaultNoticeController extends BaseController
 {
     private $WechatApiModel;
-    private $TemplateModel;
+    private $TemplateDefaultModel;
+    private $wechat_list;
+    private $MessageTempModel;
 
+    /**
+     * DefaultNoticeController constructor.
+     * @throws \app\common\exceptions\ShopException
+     */
     public function __construct() {
         $this->WechatApiModel = new WechatApi();
-        $this->TemplateModel = new TemplateMessageDefault();
+        $this->MessageTempModel = new MessageTemp();
+        $this->TemplateDefaultModel = new TemplateMessageDefault();
+        $this->wechat_list = collect($this->WechatApiModel->getTmpList()['template_list']);//获取微信模版列表并转化为集合
     }
 
     public function index() {
-        $notice_name = \YunShop::request()->notice_name;
-        $setting_name = \YunShop::request()->setting_name;
-        $notice = \Setting::get($setting_name);
-        $temp_model = new MessageTemp();
-        $tem_id = $temp_model->getTempIdByNoticeType($notice_name);
-        if ($tem_id){
-            $notice[$notice_name] = (string)$tem_id;
+        $notice_name = request()->notice_name;
+        $setting_name = request()->setting_name;
+
+        $notice = \Setting::get($setting_name);//获取设置信息
+
+        $message_template = $this->MessageTempModel->getTempIdByNoticeType($notice_name);//获取消息通知模版
+        $has_template_id = $this->wechat_list->where('template_id',$message_template->template_id)->first();//查询是否存在template_id,不存在则新建
+
+        if ($has_template_id){
+            $notice[$notice_name] = (string)$message_template->id;
         } else {
-            foreach(\Config::get('notice-template') as $key => $item) {
-                if ($key == $notice_name) {
-                    $template_id_short = $item['template_id_short'];
-                    unset($item['template_id_short']);
-                    $template_default_data1 = $item;
-                }
+            if ($message_template) {
+                $message_template->delete();
             }
-            $template_data = $this->TemplateModel->getData($template_id_short);
-            if (!$template_data->template_id) {
-                if ($template_data) {
-                    $template_data->delete();
-                }
-                $template_id = $this->WechatApiModel->getTemplateIdByTemplateIdShort($template_id_short);
-                if (empty($template_id)) {
-                    echo json_encode([
-                        'result' => '0',
-                        'msg' => '获取微信模版失败',
-                    ]);exit();
-                }
-                $this->TemplateModel->template_id_short = $template_id_short;
-                $this->TemplateModel->template_id = $template_id;
-                $this->TemplateModel->uniacid = \YunShop::app()->uniacid;
-                $this->TemplateModel->save();
-                $template_data['template_id'] = $template_id;
-            }
-            $template_default_data2 = [
-                'uniacid' => \YunShop::app()->uniacid,
-                'template_id' => $template_data['template_id'],
-                'is_default' => 1,
-                'notice_type' => $notice_name,
-            ];
-            $template_default_data = array_merge($template_default_data1, $template_default_data2);
-
-            $ret = $temp_model::create($template_default_data);
-            $notice[$notice_name] = (string)$ret->id;
-
+            $notice[$notice_name] = $this->createDefaultMessageTemp($notice_name);
         }
         \Setting::set($setting_name, $notice);
         echo json_encode([
@@ -93,8 +72,8 @@ class DefaultNoticeController extends BaseController
     {
         $notice_name = \YunShop::request()->notice_name;
         $setting_name = \YunShop::request()->setting_name;
-        $temp_model = new MessageTemp();
-        $tem_id = $temp_model->getTempIdByNoticeType($notice_name);
+        $this->MessageTempModel = new MessageTemp();
+        $tem_id = $this->MessageTempModel->getTempIdByNoticeType($notice_name);
         if ($tem_id){
             $item = (string)$tem_id;
         } else {
@@ -102,27 +81,27 @@ class DefaultNoticeController extends BaseController
                 if ($key == $notice_name) {
                     $template_id_short = $item['template_id_short'];
                     unset($item['template_id_short']);
-                    $template_default_data1 = $item;
+                    $template_default_data_1 = $item;
                 }
             }
-            $template_data = $this->TemplateModel->getData($template_id_short);
+            $template_data = $this->TemplateDefaultModel->getData($template_id_short);
             if (!$template_data) {
                 $template_id = $this->WechatApiModel->getTemplateIdByTemplateIdShort($template_id_short);
-                $this->TemplateModel->template_id_short = $template_id_short;
-                $this->TemplateModel->template_id = $template_id;
-                $this->TemplateModel->uniacid = \YunShop::app()->uniacid;
-                $this->TemplateModel->save();
+                $this->TemplateDefaultModel->template_id_short = $template_id_short;
+                $this->TemplateDefaultModel->template_id = $template_id;
+                $this->TemplateDefaultModel->uniacid = \YunShop::app()->uniacid;
+                $this->TemplateDefaultModel->save();
                 $template_data['template_id'] = $template_id;
             }
-            $template_default_data2 = [
+            $template_default_data_2 = [
                 'uniacid' => \YunShop::app()->uniacid,
                 'template_id' => $template_data['template_id'],
                 'is_default' => 1,
                 'notice_type' => $notice_name,
             ];
-            $template_default_data = array_merge($template_default_data1, $template_default_data2);
+            $template_default_data = array_merge($template_default_data_1, $template_default_data_2);
 
-            $ret = $temp_model::create($template_default_data);
+            $ret = $this->MessageTempModel->create($template_default_data);
             $item = $ret->id;
 
         }
@@ -148,6 +127,49 @@ class DefaultNoticeController extends BaseController
         echo json_encode([
             'result' => '1',
         ]);
+    }
+
+    public function createDefaultMessageTemp($notice_name)
+    {
+        $template_id_short = '';
+        $template_default_data_1 = [];
+        foreach(\Config::get('notice-template') as $key => $item) {
+            if ($key == $notice_name) {
+                $template_id_short = $item['template_id_short'];
+                unset($item['template_id_short']);
+                $template_default_data_1 = $item;
+                break;
+            }
+        }
+        $template_data = $this->TemplateDefaultModel->getData($template_id_short);
+        $has_template = $this->wechat_list->where('template_id',$template_data->template_id)->first();
+        if (!$has_template || !$template_data->template_id) {
+            if ($template_data) {
+                $template_data->delete();
+            }
+            $template_id = $this->WechatApiModel->getTemplateIdByTemplateIdShort($template_id_short);
+            if (empty($template_id)) {
+                echo json_encode([
+                    'result' => '0',
+                    'msg' => '获取微信模版失败',
+                ]);exit();
+            }
+            $this->TemplateDefaultModel->template_id_short = $template_id_short;
+            $this->TemplateDefaultModel->template_id = $template_id;
+            $this->TemplateDefaultModel->uniacid = \YunShop::app()->uniacid;
+            $this->TemplateDefaultModel->save();
+            $template_data['template_id'] = $template_id;
+        }
+        $template_default_data_2 = [
+            'uniacid' => \YunShop::app()->uniacid,
+            'template_id' => $template_data['template_id'],
+            'is_default' => 1,
+            'notice_type' => $notice_name,
+        ];
+        $template_default_data = array_merge($template_default_data_1, $template_default_data_2);
+
+        $ret = $this->MessageTempModel->create($template_default_data);
+        return (string)$ret->id;
     }
 
 }
