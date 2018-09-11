@@ -72,38 +72,17 @@ class DefaultNoticeController extends BaseController
     {
         $notice_name = \YunShop::request()->notice_name;
         $setting_name = \YunShop::request()->setting_name;
-        $this->MessageTempModel = new MessageTemp();
-        $tem_id = $this->MessageTempModel->getTempIdByNoticeType($notice_name);
-        if ($tem_id){
-            $item = (string)$tem_id;
+
+        $message_template = $this->MessageTempModel->getTempIdByNoticeType($notice_name);//获取消息通知模版
+        $has_template_id = $this->wechat_list->where('template_id',$message_template->template_id)->first();//查询是否存在template_id,不存在则新建
+
+        if ($has_template_id){
+            $item = (string)$message_template->template_id;
         } else {
-            foreach(\Config::get('notice-template') as $key => $item) {
-                if ($key == $notice_name) {
-                    $template_id_short = $item['template_id_short'];
-                    unset($item['template_id_short']);
-                    $template_default_data_1 = $item;
-                }
+            if ($message_template) {
+                $message_template->delete();
             }
-            $template_data = $this->TemplateDefaultModel->getData($template_id_short);
-            if (!$template_data) {
-                $template_id = $this->WechatApiModel->getTemplateIdByTemplateIdShort($template_id_short);
-                $this->TemplateDefaultModel->template_id_short = $template_id_short;
-                $this->TemplateDefaultModel->template_id = $template_id;
-                $this->TemplateDefaultModel->uniacid = \YunShop::app()->uniacid;
-                $this->TemplateDefaultModel->save();
-                $template_data['template_id'] = $template_id;
-            }
-            $template_default_data_2 = [
-                'uniacid' => \YunShop::app()->uniacid,
-                'template_id' => $template_data['template_id'],
-                'is_default' => 1,
-                'notice_type' => $notice_name,
-            ];
-            $template_default_data = array_merge($template_default_data_1, $template_default_data_2);
-
-            $ret = $this->MessageTempModel->create($template_default_data);
-            $item = $ret->id;
-
+            $item = $this->createDefaultMessageTemp($notice_name);
         }
         \Setting::set($setting_name, $item);
         $setting = explode('.',$setting_name);
@@ -129,7 +108,7 @@ class DefaultNoticeController extends BaseController
         ]);
     }
 
-    public function createDefaultMessageTemp($notice_name)
+    protected function createDefaultMessageTemp($notice_name)
     {
         $template_id_short = '';
         $template_default_data_1 = [];
