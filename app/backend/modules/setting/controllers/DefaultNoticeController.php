@@ -42,7 +42,7 @@ class DefaultNoticeController extends BaseController
         $message_template = $this->MessageTempModel->getTempIdByNoticeType($notice_name);//获取消息通知模版
         $has_template_id = $this->wechat_list->where('template_id',$message_template->template_id)->first();//查询是否存在template_id,不存在则新建
 
-        if ($has_template_id){
+        if ($has_template_id) {
             $notice[$notice_name] = (string)$message_template->id;
         } else {
             if ($message_template) {
@@ -122,7 +122,7 @@ class DefaultNoticeController extends BaseController
         }
         $template_data = $this->TemplateDefaultModel->getData($template_id_short);
         $has_template = $this->wechat_list->where('template_id',$template_data->template_id)->first();
-        if (!$has_template || !$template_data->template_id) {
+        if (empty($has_template) || empty($template_data->template_id)) {
             if ($template_data) {
                 $template_data->delete();
             }
