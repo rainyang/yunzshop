@@ -36,7 +36,7 @@ class StatisticsService
         $member_orders_model = new MemberRelationOrderStatisticsModel();
 
         //抛开model，对象，直接查询
-        $member_ids = DB::select('select member_id,parent_id,uniacid from ims_yz_member');
+        $member_ids = DB::select('select member_id,parent_id,uniacid from ims_yz_member where deleted_at IS NULL ');
         $mc_member = DB::select('select uid,uniacid from ims_mc_members');
         $member_orders = DB::select('select * from ims_yz_order_count');
 
