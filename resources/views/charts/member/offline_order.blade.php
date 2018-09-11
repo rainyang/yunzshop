@@ -81,7 +81,7 @@
                             <td>{{ $item->first_order_quantity }}</td>
                             <td>{{ $item->first_order_amount }}</td>
                             <td>{{ $item->second_order_quantity }}</td>
-                            <td>{{ $item->second__order_amount }}</td>
+                            <td>{{ $item->second_order_amount }}</td>
                             <td>{{ $item->third_order_quantity }}</td>
                             <td>{{ $item->third_order_amount }}</td>
                             <td>{{ $item->team_order_quantity }}</td>
