@@ -15,7 +15,7 @@ class AddIndexToYzSettingTable extends Migration
     {
         if (Schema::hasTable('yz_setting')) {
             Schema::table('yz_setting', function (Blueprint $table) {
-                $idx = \Illuminate\Support\Facades\DB::select('show index from ims_yz_setting where key_name="idx_group_uniacid"');
+                $idx = \Illuminate\Support\Facades\DB::select('show index from ' . app('db')->getTablePrefix() . 'yz_setting where key_name="idx_group_uniacid"');
 
                 if (!$idx) {
                     $table->index(['group', 'uniacid'], 'idx_group_uniacid');
