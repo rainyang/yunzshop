@@ -55,7 +55,7 @@ class GoodsController extends BaseController
             "good" => "商品",
             "price" => "价格",
             'yes_stock' => '出售中',
-            'no_stock' => '售馨',
+            'no_stock' => '售罄',
             "repertory" => "库存",
             "copyshop" => "复制商品",
             "isputaway" => "是否上架",

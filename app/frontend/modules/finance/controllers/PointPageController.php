@@ -25,6 +25,7 @@ class PointPageController extends ApiController
         if ($this->memberModel) {
             $result['credit1'] = $this->memberModel->credit1;
             $result['transfer'] = $this->getTransferStatus();
+            $result['activity'] = $this->getActivityStatus();
 
             return $this->successJson('ok',$result);
         }
@@ -34,6 +35,11 @@ class PointPageController extends ApiController
     private function getTransferStatus()
     {
         return Setting::get('point.set.point_transfer') ? true : false;
+    }
+
+    private function getActivityStatus()
+    {
+        return app('plugins')->isEnabled('point-activity');
     }
 
     private function getMemberInfo()

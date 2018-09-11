@@ -14,6 +14,12 @@ use app\common\exceptions\AdminException;
  * Date: 2017/4/21
  * Time: 下午2:24
  */
+
+/**
+ * Class RefundApply
+ * @package app\backend\modules\refund\models
+ * @property Order order
+ */
 class RefundApply extends \app\common\models\refund\RefundApply
 {
     static protected $needLog = true;
