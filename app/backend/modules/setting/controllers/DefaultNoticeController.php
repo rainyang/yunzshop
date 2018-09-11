@@ -120,7 +120,9 @@ class DefaultNoticeController extends BaseController
         $template_data = $this->TemplateDefaultModel->getData($template_id_short);
         $has_template = $this->wechat_list->where('template_id',$template_data->template_id)->first();
         if (empty($has_template) || empty($template_data->template_id)) {
-
+            if ($template_data) {
+                $template_data->delete();
+            }
             $template_id = $this->WechatApiModel->getTemplateIdByTemplateIdShort($template_id_short);
             if (empty($template_id)) {
                 echo json_encode([
@@ -128,10 +130,11 @@ class DefaultNoticeController extends BaseController
                     'msg' => '获取微信模版失败',
                 ]);exit();
             }
-            $template_data->template_id_short = $template_id_short;
-            $template_data->template_id = $template_id;
-            $template_data->uniacid = \YunShop::app()->uniacid;
-            $template_data->save();
+            
+            $this->TemplateDefaultModel->template_id_short = $template_id_short;
+            $this->TemplateDefaultModel->template_id = $template_id;
+            $this->TemplateDefaultModel->uniacid = \YunShop::app()->uniacid;
+            $this->TemplateDefaultModel->save();
             $template_data['template_id'] = $template_id;
         }
         $template_default_data_2 = [
