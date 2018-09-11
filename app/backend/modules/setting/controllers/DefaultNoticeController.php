@@ -45,9 +45,6 @@ class DefaultNoticeController extends BaseController
         if ($has_template_id) {
             $notice[$notice_name] = (string)$message_template->id;
         } else {
-            if ($message_template) {
-                $message_template->delete();
-            }
             $notice[$notice_name] = $this->createDefaultMessageTemp($notice_name);
         }
         \Setting::set($setting_name, $notice);
@@ -147,7 +144,7 @@ class DefaultNoticeController extends BaseController
         ];
         $template_default_data = array_merge($template_default_data_1, $template_default_data_2);
 
-        $ret = $this->MessageTempModel->create($template_default_data);
+        $ret = $this->MessageTempModel->updateOrCreate(['notice_type' => $notice_name], $template_default_data);
         return (string)$ret->id;
     }
 

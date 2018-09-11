@@ -19,6 +19,7 @@ class MessageTemp extends BaseModel
 
 
     protected $guarded = [''];
+    protected $fillable = [];
 
 
     public $timestamps = true;
