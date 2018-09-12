@@ -167,13 +167,14 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-
         /*
          * Application Service Providers...
          */
         app\common\providers\AppServiceProvider::class,
         // 商城管理
         app\common\providers\ShopProvider::class,
+        // 订单服务提供者
+        \app\common\modules\order\providers\OrderServiceProvider::class,
         app\common\providers\PluginServiceProvider::class,
         // app\common\providers\BroadcastServiceProvider::class,
         app\common\providers\EventServiceProvider::class,

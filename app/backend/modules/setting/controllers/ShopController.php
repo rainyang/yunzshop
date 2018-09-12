@@ -14,6 +14,7 @@ use app\common\helpers\Url;
 use app\common\facades\Setting;
 use app\common\models\AccountWechats;
 use app\common\models\notice\MessageTemp;
+use app\common\modules\refund\services\RefundService;
 use app\common\services\MyLink;
 use app\common\services\Utils;
 use Mews\Captcha\Captcha;
@@ -248,6 +249,7 @@ class ShopController extends BaseController
     {
         $trade = Setting::get('shop.trade');
         $requestModel = \YunShop::request()->trade;
+        $refund_status = RefundService::allowRefund();
         if ($requestModel) {
             if (Setting::set('shop.trade', $requestModel)) {
                 return $this->message(' 交易设置成功', Url::absoluteWeb('setting.shop.trade'));
@@ -257,6 +259,7 @@ class ShopController extends BaseController
         }
         return view('setting.shop.trade', [
             'set' => $trade,
+            'refund_status' => $refund_status,
         ])->render();
     }
 

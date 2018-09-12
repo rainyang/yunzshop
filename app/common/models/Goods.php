@@ -11,11 +11,18 @@ namespace app\common\models;
 use app\backend\modules\goods\models\Sale;
 use app\backend\modules\goods\observers\GoodsObserver;
 use app\common\exceptions\AppException;
+use app\common\models\goods\GoodsDispatch;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use app\common\models\Coupon;
 
+/**
+ * Class Goods
+ * @package app\common\models
+ * @property GoodsDiscount hasManyGoodsDiscount
+ * @property GoodsDispatch hasOneGoodsDispatch
+ */
 class Goods extends BaseModel
 {
 
@@ -25,7 +32,6 @@ class Goods extends BaseModel
     public $attributes = ['display_order' => 0];
     protected $mediaFields = ['thumb', 'thumb_url'];
     protected $dates = ['deleted_at'];
-
     public $fillable = [];
 
     protected $guarded = ['widgets'];
@@ -200,6 +206,14 @@ class Goods extends BaseModel
                     $category[] = ['id' => $value * 1];
                     $query->with("")->where('category_id', $category);
                     break;*/
+                //上架商品库存筛选
+                case 'sell_stock':
+                    if ($value) {
+                        $query->where('status', 1)->where('stock', '>', 0);
+                    } else {
+                        $query->where('status', 1)->where('stock', '=', 0);
+                    }
+                    break;
                 //新加过滤搜索
                 case 'filtering':
                     $scope = explode(',', rtrim($value, ','));
@@ -237,9 +251,9 @@ class Goods extends BaseModel
                     break;
                 case 'category':
                     if (array_key_exists('parentid', $value) || array_key_exists('childid', $value) || array_key_exists('thirdid', $value)) {
-                        $id = $value['parentid'] ? $value['parentid'] : '';
-                        $id = $value['childid'] ? $value['childid'] : $id;
-                        $id = $value['thirdid'] ? $value['thirdid'] : $id;
+                        $id = $value['parentid'][0] ? $value['parentid'][0] : '';
+                        $id = $value['childid'][0] ? $value['childid'][0] : $id;
+                        $id = $value['thirdid'][0] ? $value['thirdid'][0] : $id;
 
                         $query->select([
                             'yz_goods.*',
@@ -314,10 +328,30 @@ class Goods extends BaseModel
     public static function getGoodsByName($keyword)
     {
 
-        return static::uniacid()->select('id', 'title', 'thumb', 'market_price', 'price', 'real_sales', 'sku','plugin_id')
+        return static::uniacid()->select('id', 'title', 'thumb', 'market_price', 'price', 'real_sales', 'sku','plugin_id','stock')
             ->where('title', 'like', '%' . $keyword . '%')
             ->where('status', 1)
             //->where('is_plugin', 0)
+            ->whereNotIn('plugin_id', [20,31,60])//屏蔽门店、码上点餐、第三方插件接口的虚拟商品
+            ->get();
+    }
+
+    /**
+     * @param $keyword
+     * @return mixed
+     */
+    public static function getGoodsByNameForLimitBuy($keyword)
+    {
+
+        return static::uniacid()->select('id', 'title', 'thumb', 'market_price', 'price', 'real_sales', 'sku','plugin_id','stock')
+            ->where('title', 'like', '%' . $keyword . '%')
+            ->where('status', 1)
+            ->with(['hasOneGoodsLimitBuy' => function ($query) {
+                 return $query->where('status',1)->select('goods_id', 'start_time', 'end_time');
+            }])
+            ->whereHas('hasOneGoodsLimitBuy', function ($query) {
+                return $query->where('status',1);
+            })
             ->whereNotIn('plugin_id', [20,31,60])//屏蔽门店、码上点餐、第三方插件接口的虚拟商品
             ->get();
     }

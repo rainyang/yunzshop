@@ -72,7 +72,7 @@ class CreateGoodsService
                 $this->error = $validator->messages();
             } else {
                 if ($this->goods_model->save()) {
-                    GoodsService::saveGoodsCategory($this->goods_model, $this->request->category, Setting::get('shop.category'));
+                    GoodsService::saveGoodsMultiCategory($this->goods_model, $this->request->category, Setting::get('shop.category'));
                     GoodsParam::saveParam($this->request, $this->goods_model->id, \YunShop::app()->uniacid);
                     GoodsSpec::saveSpec($this->request, $this->goods_model->id, \YunShop::app()->uniacid);
                     GoodsOption::saveOption($this->request, $this->goods_model->id, GoodsSpec::$spec_items, \YunShop::app()->uniacid);
@@ -83,6 +83,6 @@ class CreateGoodsService
             }
         }
 
-        $this->catetory_menus = CategoryService::getCategoryMenu(['catlevel' => Setting::get('shop.category')['cat_level']]);
+        $this->catetory_menus = CategoryService::getCategoryMultiMenu(['catlevel' => Setting::get('shop.category')['cat_level']]);
     }
 }

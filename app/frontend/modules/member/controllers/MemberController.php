@@ -30,6 +30,7 @@ use EasyWeChat\Foundation\Application;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Str;
+use Yunshop\AlipayOnekeyLogin\models\MemberAlipay;
 use Yunshop\Commission\models\Agents;
 use Yunshop\Poster\models\Poster;
 use Yunshop\Poster\services\CreatePosterService;
@@ -41,8 +42,8 @@ use app\common\services\plugin\huanxun\HuanxunSet;
 
 class MemberController extends ApiController
 {
-    protected $publicAction = ['guideFollow', 'wxJsSdkConfig', 'memberFromHXQModule'];
-    protected $ignoreAction = ['guideFollow', 'wxJsSdkConfig', 'memberFromHXQModule'];
+    protected $publicAction = ['guideFollow', 'wxJsSdkConfig', 'memberFromHXQModule', 'dsAlipayUserModule'];
+    protected $ignoreAction = ['guideFollow', 'wxJsSdkConfig', 'memberFromHXQModule', 'dsAlipayUserModule'];
 
     /**
      * 获取用户信息
@@ -829,8 +830,8 @@ class MemberController extends ApiController
 
         $shopInfo = Setting::get('shop.shop');
         $shopName = $shopInfo['name'] ?: '商城'; //todo 默认值需要更新
-        $shopLogo = $shopInfo['logo'] ? replace_yunshop(tomedia($shopInfo['logo'])) : base_path() . '/static/images/logo.png'; //todo 默认值需要更新
-        $shopImg = $shopInfo['signimg'] ? replace_yunshop(tomedia($shopInfo['signimg'])) : base_path() . '/static/images/photo-mr.jpg'; //todo 默认值需要更新
+        $shopLogo = $shopInfo['logo'] ? replace_yunshop(yz_tomedia($shopInfo['logo'])) : base_path() . '/static/images/logo.png'; //todo 默认值需要更新
+        $shopImg = $shopInfo['signimg'] ? replace_yunshop(yz_tomedia($shopInfo['signimg'])) : base_path() . '/static/images/photo-mr.jpg'; //todo 默认值需要更新
 
         $str_lenght = $logo_width + $font_size_show * mb_strlen($shopName);
 
@@ -965,6 +966,51 @@ class MemberController extends ApiController
 
         return json_encode(['status' => 0, 'result' => 'uid为空']);
     }
+
+    /**
+     * 同步模块支付宝用户
+     * @return string
+     */
+    public function dsAlipayUserModule()
+    {
+        $uniacid = \YunShop::app()->uniacid;
+        $member_id = \YunShop::request()->uid;
+        $userInfo = \YunShop::request()->user_info;
+
+        if (!is_array($userInfo)) {
+            $userInfo = json_decode($userInfo, true);
+        }
+
+        if (!empty($member_id)) {
+
+            if (app('plugins')->isEnabled('alipay-onekey-login') && $userInfo) {
+                $bool = MemberAlipay::insertData($userInfo, ['member_id' =>$member_id, 'uniacid' => $uniacid]);
+                if (!$bool) {
+                    return json_encode(['status' => 0, 'result' => '支付宝用户信息保存失败']);
+                }
+            } else {
+                return json_encode(['status' => 0, 'result' => '未开启插件或未接受到支付宝用户信息']);
+            }
+
+            $member_shop_info_model = MemberShopInfo::getMemberShopInfo($member_id);
+
+            if (is_null($member_shop_info_model)) {
+                (new MemberService)->addSubMemberInfo($uniacid, (int)$member_id);
+            }
+
+            $mid = \YunShop::request()->mid ?: 0;
+
+            Member::createRealtion($member_id, $mid);
+
+            \Log::debug('------HXQModule---------' . $member_id);
+            \Log::debug('------HXQModule---------' . $mid);
+
+            return json_encode(['status' => 1, 'result' => 'ok']);
+        }
+
+        return json_encode(['status' => 0, 'result' => 'uid为空']);
+    }
+
 
     public function getCustomField()
     {
@@ -1251,29 +1297,32 @@ class MemberController extends ApiController
             }
         }
 
-//        if (app('plugins')->isEnabled('help-center')) {
-//
-//            $help_center_setting = Setting::get('plugin.help_center');
-//
-//            if ($help_center_setting && 1 == $help_center_setting['status']) {
-//                $data[] = [
-//                    'name' => 'help_center',
-//                    'title' => '帮助中心'
-//                ];
-//            }
-//        }
+        if (app('plugins')->isEnabled('help-center')) {
 
-//        if (app('plugins')->isEnabled('courier')) {
-//
-//            $courier_setting = Setting::get('courier.courier');
-//
-//            if ($courier_setting && 1 == $courier_setting['radio']) {
-//                $data[] = [
-//                    'name' => 'courier',
-//                    'title' => $courier_setting['name'] ? $courier_setting['name'] : '快递单'
-//                ];
-//            }
-//        }
+            $help_center_setting = Setting::get('plugin.help_center');
+
+            if ($help_center_setting && 1 == $help_center_setting['status']) {
+                $data[] = [
+                    'name' => 'help_center',
+                    'title' => '帮助中心',
+                    'class' => 'icon-member-help',
+                    'url' => 'helpcenter'
+                ];
+            }
+        }
+
+        if (app('plugins')->isEnabled('courier')) {
+            $courier_setting = Setting::get('courier.courier');
+
+            if ($courier_setting && 1 == $courier_setting['radio']) {
+                $data[] = [
+                    'name' => 'courier',
+                    'title' => $courier_setting['name'] ? $courier_setting['name'] : '快递单',
+                    'class' => 'icon-member-express',
+                    'url' => 'courier'
+                ];
+            }
+        }
 
         if (app('plugins')->isEnabled('store-cashier')) {
             $store = \Yunshop\StoreCashier\common\models\Store::getStoreByUid(\YunShop::app()->getMemberId())->first();

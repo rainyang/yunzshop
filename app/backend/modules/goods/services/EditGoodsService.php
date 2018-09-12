@@ -96,7 +96,7 @@ class EditGoodsService
             if (!empty($category_model)) {
                 $category_model->delete();
             }
-            GoodsService::saveGoodsCategory($this->goods_model, \YunShop::request()->category, Setting::get('shop.category'));
+            GoodsService::saveGoodsMultiCategory($this->goods_model, \YunShop::request()->category, Setting::get('shop.category'));
 /*
             if (!empty($this->request->widgets['sale']['max_point_deduct'])
                 && !empty($goods_data['price'])
@@ -132,7 +132,7 @@ class EditGoodsService
 
         if (isset($this->goods_model->hasManyGoodsCategory[0])){
             foreach($goods_categorys = $this->goods_model->hasManyGoodsCategory->toArray() as $goods_category){
-                $this->catetory_menus = CategoryService::getCategoryMenu(['catlevel' => Setting::get('shop.category')['cat_level'], 'ids' => explode(",", $goods_category['category_ids'])]);
+                $this->catetory_menus[] = CategoryService::getCategoryMultiMenu(['catlevel' => Setting::get('shop.category')['cat_level'], 'ids' => explode(",", $goods_category['category_ids'])]);
             }
         }
     }

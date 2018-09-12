@@ -57,6 +57,9 @@
     background-image: url('../img/industry/store_cashier.png');
 }
 
+.point_activity {
+    background-image: url('../img/marketing/point_activity.png');
+}
 .gold {
     background-image: url('../img/marketing/gold.png');
 }
@@ -155,6 +158,9 @@
 }
 .help_center {
      background-image: url('../img/tool/help_center.png');
+}
+.statistics{
+    background-image: url('../img/tool/statistics.png');
 }
 .wanmi_pay {
     background-image: url('../img/tool/wanmi_pay.png');

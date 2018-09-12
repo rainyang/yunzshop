@@ -16,6 +16,7 @@ use app\common\components\BaseController;
 
 use app\common\helpers\PaginationHelper;
 use app\common\services\ExportService;
+use Illuminate\Support\Facades\DB;
 
 class ListController extends BaseController
 {
@@ -36,7 +37,28 @@ class ListController extends BaseController
         $this->export($this->orderModel);
         return view('order.index', $this->getData())->render();
     }
+    public function callbackFail(){
+        $orderIds = DB::table('yz_order as o')->join('yz_order_pay_order as opo', 'o.id', '=', 'opo.order_id')
+            ->join('yz_order_pay as op', 'op.id', '=', 'opo.order_pay_id')
+            ->join('yz_pay_order as po', 'po.out_order_no', '=', 'op.pay_sn')
+            ->whereIn('o.status',[0,-1])
+            ->where('op.status',0)
+            ->where('po.status',2)
+            ->distinct()->pluck('o.id');
+        $this->orderModel = Order::orders(request('search'))->whereIn('id',$orderIds);
+        return view('order.index', $this->getData())->render();
 
+    }
+    public function payFail(){
+        $orderIds = DB::table('yz_order as o')->join('yz_order_pay_order as opo', 'o.id', '=', 'opo.order_id')
+            ->join('yz_order_pay as op', 'op.id', '=', 'opo.order_pay_id')
+            ->whereIn('o.status',[0,-1])
+            ->where('op.status',1)
+            ->pluck('o.id');
+        $this->orderModel = Order::orders(request('search'))->whereIn('id',$orderIds);
+        return view('order.index', $this->getData())->render();
+
+    }
     public function waitPay()
     {
         $this->orderModel->waitPay();
@@ -102,11 +124,6 @@ class ListController extends BaseController
 
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
-        //dd($list);
-        //exit;
-//        dd($requestSearch);
-//        exit;
-
         $data = [
             'list' => $list,
             'total_price' => $list['total_price'],
@@ -124,22 +141,33 @@ class ListController extends BaseController
     {
         if (\YunShop::request()->export == 1) {
             $export_page = request()->export_page ? request()->export_page : 1;
+            $orders = $orders->with(['discounts']);
             $export_model = new ExportService($orders, $export_page);
             if (!$export_model->builder_model->isEmpty()) {
                 $file_name = date('Ymdhis', time()) . '订单导出';//返现记录导出
                 $export_data[0] = $this->getColumns();
                 foreach ($export_model->builder_model->toArray() as $key => $item) {
+
+                    $address = explode(' ', $item['address']['address']);
+
                     $export_data[$key + 1] = [
                         $item['order_sn'],
                         $item['has_one_order_pay']['pay_sn'],
                         $this->getNickname($item['belongs_to_member']['nickname']),
                         $item['address']['realname'],
                         $item['address']['mobile'],
+                        !empty($address[0])?$address[0]:'',
+                        !empty($address[1])?$address[1]:'',
+                        !empty($address[2])?$address[2]:'',
                         $item['address']['address'],
                         $this->getGoods($item, 'goods_title'),
                         $this->getGoods($item, 'goods_sn'),
                         $this->getGoods($item, 'total'),
                         $item['pay_type_name'],
+                        $this->getExportDiscount($item, 'deduction'),
+                        $this->getExportDiscount($item, 'coupon'),
+                        $this->getExportDiscount($item, 'enoughReduce'),
+                        $this->getExportDiscount($item, 'singleEnoughReduce'),
                         $item['goods_price'],
                         $item['dispatch_price'],
                         $item['price'],
@@ -161,7 +189,26 @@ class ListController extends BaseController
 
     private function getColumns()
     {
-        return ["订单编号", "支付单号", "粉丝昵称", "会员姓名", "联系电话", "收货地址", "商品名称", "商品编码", "商品数量", "支付方式", "商品小计", "运费", "应收款", "成本价", "状态", "下单时间", "付款时间", "发货时间", "完成时间", "快递公司", "快递单号", "订单备注"];
+        return ["订单编号", "支付单号", "粉丝昵称", "会员姓名", "联系电话", '省', '市', '区', "收货地址", "商品名称", "商品编码", "商品数量", "支付方式", '抵扣金额', '优惠券优惠', '全场满减优惠', '单品满减优惠', "商品小计", "运费", "应收款", "成本价", "状态", "下单时间", "付款时间", "发货时间", "完成时间", "快递公司", "快递单号", "订单备注"];
+    }
+
+    protected function getExportDiscount($order, $key)
+    {
+        $export_discount = [
+            'deduction' => 0,    //抵扣金额
+            'coupon'    => 0,    //优惠券优惠
+            'enoughReduce' => 0,  //全场满减优惠
+            'singleEnoughReduce' => 0,    //单品满减优惠
+        ];
+
+        foreach ($order['discounts'] as $discount) {
+
+            if ($discount['discount_code'] == $key) {
+                $export_discount[$key] = $discount['amount'];
+            }
+        }
+
+        return $export_discount[$key];
     }
 
     private function getGoods($order, $key)

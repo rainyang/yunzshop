@@ -8,6 +8,7 @@
 
 namespace app\common\services\finance;
 
+use app\common\models\Order;
 use Setting;
 
 class CalculationPointService
@@ -15,6 +16,13 @@ class CalculationPointService
     public static function calcuationPointByGoods($order_goods_model)
     {
         $point_set = Setting::get('point.set');
+
+        $order = Order::find($order_goods_model->order_id);
+        $order_set = $order->orderSettings->where('key', 'point')->first();
+        if ($order_set && $order_set->value['set']['give_point']) {
+            $point_set['give_point'] = $order_set->value['set']['give_point'] . '%';
+        }
+
         $point_data = [];
         //todo 如果等于0  不赠送积分
         if (isset($order_goods_model->hasOneGoods->hasOneSale) && $order_goods_model->hasOneGoods->hasOneSale->point !== '' && intval($order_goods_model->hasOneGoods->hasOneSale->point) === 0) {
@@ -30,7 +38,7 @@ class CalculationPointService
             } else {
                 $point_data['point'] = $order_goods_model->hasOneGoods->hasOneSale->point * $order_goods_model->total;
             }
-            $point_data['remark'] = '购买商品[' . $order_goods_model->hasOneGoods->title .'(比例:'. $order_goods_model->hasOneGoods->hasOneSale->point .')]赠送[$order_goods->hasOneGoods->hasOneSale->point]积分！';
+            $point_data['remark'] = '购买商品[' . $order_goods_model->hasOneGoods->title .'(比例:'. $order_goods_model->hasOneGoods->hasOneSale->point .')]赠送['.$point_data['point'].']积分！';
         } else if (!empty($point_set['give_point'] && $point_set['give_point'])) {
             if (strexists($point_set['give_point'], '%')) {
                 $point_data['point'] = floatval(str_replace('%', '', $point_set['give_point']) / 100 * $order_goods_model->payment_amount);

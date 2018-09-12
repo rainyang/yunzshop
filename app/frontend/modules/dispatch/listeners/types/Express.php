@@ -172,10 +172,10 @@ class Express
             OnDispatchTypeInfoDisplayEvent::class,
             Express::class . '@onDisplay'
         );
-        $events->listen(
-            AfterOrderCreatedEvent::class,
-            Express::class . '@onSave'
-        );
+//        $events->listen(
+//            AfterOrderCreatedEvent::class,
+//            Express::class . '@onSave'
+//        );
         $events->listen(
             OnPreGenerateOrderCreatingEvent::class,
             Express::class . '@onCreating'

@@ -24,7 +24,7 @@ class DetailController extends BaseController
     {
         parent::__construct();
         $processId = request()->input('id');
-        $this->process = RemittanceAuditProcess::detail()->find($processId);
+        $this->process = RemittanceAuditProcess::uniacid()->detail()->find($processId);
         if(!isset($this->process)){
             if(!isset($this->process)){
                 throw new AppException("未找到id为{$processId}的审核进程记录");
