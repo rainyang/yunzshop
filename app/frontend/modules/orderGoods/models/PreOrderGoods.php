@@ -363,6 +363,7 @@ class PreOrderGoods extends OrderGoods
      * @return OrderGoodsDeductionCollection
      */
     public function getOrderGoodsDeductions(){
+        //dump($this->orderGoodsDeductions);
         return $this->orderGoodsDeductions;
     }
 
