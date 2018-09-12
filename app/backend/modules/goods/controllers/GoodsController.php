@@ -71,7 +71,6 @@ class GoodsController extends BaseController
 
     public function index()
     {
-
         //课程商品id集合
         $courseGoods_ids = (new VideoDemandCourseGoods())->courseGoodsIds();
 

@@ -32,7 +32,7 @@
     "overtrue/laravel-pinyin": "~3.0",
     "bosnadev/repositories": "0.*",
     "gregwar/captcha": "^1.1",
-    "mews/captcha": "^2.2",
+    "mews/captcha": "^2.",
     "php-ffmpeg/php-ffmpeg": "^0.12.0"
   },
   "require-dev": {
