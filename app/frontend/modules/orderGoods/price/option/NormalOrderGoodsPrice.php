@@ -14,6 +14,9 @@ class NormalOrderGoodsPrice extends BaseOrderGoodsPrice
      * @var float
      */
     private $paymentAmount;
+    /**
+     * @var float
+     */
     private $deductionAmount;
     /**
      * @var float
@@ -70,6 +73,15 @@ class NormalOrderGoodsPrice extends BaseOrderGoodsPrice
             $this->deductionAmount = $this->orderGoods->getOrderGoodsDeductions()->getUsedPoint()->getMoney();
         }
         return $this->deductionAmount;
+    }
+
+    /**
+     * 销售价(商品的原销售价)
+     * @return mixed
+     */
+    public function getGoodsPrice()
+    {
+        return $this->aGoodsPrice() * $this->orderGoods->total;
     }
 
     /**

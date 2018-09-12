@@ -45,7 +45,7 @@ class User extends BaseModel
         if(Schema::hasColumn($this->table, 'owner_uid')){ //用于兼容新版微擎新增的字段
             $this->attributes = array_merge($this->attributes, ['owner_uid' => '0']);
         }
-        if(Schema::hasColumn($this->table, 'founder_groupid')){ //用于兼容新版微擎新增的字段
+        if(Schema::hasColumn($this->table, 'founder_groupid')){
             $this->attributes = array_merge($this->attributes, ['founder_groupid' => '0']);
         }
         if(Schema::hasColumn($this->table, 'register_type')){
@@ -60,6 +60,23 @@ class User extends BaseModel
         if(Schema::hasColumn($this->table, 'is_bind')){
             $this->attributes = array_merge($this->attributes, ['is_bind' => '0']);
         }
+
+        if(Schema::hasColumn($this->table, 'schoolid')){
+            $this->attributes = array_merge($this->attributes, ['schoolid' => '0']);
+        }
+        if(Schema::hasColumn($this->table, 'credit1')){
+            $this->attributes = array_merge($this->attributes, ['credit1' => '0']);
+        }
+        if(Schema::hasColumn($this->table, 'credit2')){
+            $this->attributes = array_merge($this->attributes, ['credit2' => '0']);
+        }
+        if(Schema::hasColumn($this->table, 'agentid')){
+            $this->attributes = array_merge($this->attributes, ['agentid' => '0']);
+        }
+        if(Schema::hasColumn($this->table, 'uniacid')){
+            $this->attributes = array_merge($this->attributes, ['uniacid' => '0']);
+        }
+
 
         return $this->attributes;
     }
