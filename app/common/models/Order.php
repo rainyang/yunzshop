@@ -638,6 +638,12 @@ class Order extends BaseModel
         return $result;
     }
 
+    //关联商城订单表
+    public function hasOneMemberShopInfo()
+    {
+        return $this->hasOne(MemberShopInfo::class, 'member_id', 'uid');
+
+    }
     /**
      * 已退款
      * @return bool

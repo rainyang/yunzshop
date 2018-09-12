@@ -60,27 +60,27 @@ class CountService
 
     public function getManSexCount()
     {
-        return $this->memberModel->manSex()->count();
+        return $this->memberModel->whereHas('yzMember')->manSex()->count();
     }
 
     public function getFemaleSexCount()
     {
-        return $this->memberModel->femaleSex()->count();
+        return $this->memberModel->whereHas('yzMember')->femaleSex()->count();
     }
 
     public function getUnknownSex()
     {
-        return $this->memberModel->UnknownSex()->count();
+        return $this->memberModel->whereHas('yzMember')->UnknownSex()->count();
     }
 
     public function getHasMobile()
     {
-        return $this->memberModel->hasMobile()->count();
+        return $this->memberModel->whereHas('yzMember')->hasMobile()->count();
     }
 
     public function getWechatAuthorizeCount()
     {
-        return $this->memberModel->whereHas('hasOneFans')->count();
+        return $this->memberModel->whereHas('yzMember')->whereHas('hasOneFans')->count();
     }
 
 
