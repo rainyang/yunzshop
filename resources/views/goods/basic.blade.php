@@ -108,9 +108,16 @@
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">首图视频</label>
     <div class="col-sm-9  col-md-6 col-xs-12">
 
-        {!! tpl_form_field_video('goods[goods_video]',$goods['goods_video']) !!}
+        {!! tpl_form_field_video('widgets[video][goods_video]',$goods->hasOneGoodsVideo->goods_video) !!}
             <span class="help-block">设置后商品详情首图默认显示视频，建议时长9-30秒</span>
            
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">视频封面</label>
+    <div class="col-sm-9 col-xs-12 col-md-6 detail-logo">
+        {!! app\common\helpers\ImageHelper::tplFormFieldImage('widgets[video][video_image]', $goods->hasOneGoodsVideo->video_image) !!}
+        <span class="help-block">不填默认商品主图</span>
     </div>
 </div>
 

@@ -176,6 +176,11 @@ class Goods extends BaseModel
         return $this->hasOne('app\common\models\goods\GoodsService', 'goods_id', 'id');
     }
 
+    public function hasOneGoodsVideo()
+    {
+        return $this->hasOne('app\common\models\goods\GoodsVideo', 'goods_id', 'id');
+    }
+
     public function scopeIsPlugin($query)
     {
         return $query->where('is_plugin', 0);

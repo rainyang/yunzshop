@@ -81,6 +81,17 @@ class GoodsController extends ApiController
         }
 
 
+        //商品视频处理
+        if (!is_null($goodsModel->hasOneGoodsVideo) && $goodsModel->hasOneGoodsVideo->goods_video) {
+            $goodsModel->goods_video = $goodsModel->hasOneGoodsVideo->goods_video;
+
+            $goodsModel->video_image = $goodsModel->hasOneGoodsVideo->video_image?yz_tomedia($goodsModel->hasOneGoodsVideo->video_image):yz_tomedia($goodsModel->thumb);
+        } else {
+            $goodsModel->goods_video = '';
+            $goodsModel->video_image = '';
+        }
+
+
         if (!$goodsModel) {
             return $this->errorJson('商品不存在.');
         }

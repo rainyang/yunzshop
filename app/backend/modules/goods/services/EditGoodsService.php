@@ -70,7 +70,7 @@ class EditGoodsService
             $goods_data['has_option'] = $goods_data['has_option'] ? $goods_data['has_option'] : 0;
             $goods_data['weight'] = $goods_data['weight'] ? $goods_data['weight'] : 0;
             //商品视频地址
-            $goods_data['goods_video'] = yz_tomedia($goods_data['goods_video']);
+            $goods_data['goods_video'] = '';
             
             // $goods_data['thumb'] = tomedia($goods_data['thumb']);
 

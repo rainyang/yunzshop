@@ -46,8 +46,8 @@ class CreateGoodsService
                 $goods_data['status'] = 0;
             }
 
-            //商品视频地址
-            $goods_data['goods_video'] = yz_tomedia($goods_data['goods_video']);
+//            //商品视频地址
+//            $goods_data['goods_video'] = yz_tomedia($goods_data['goods_video']);
 
             if (isset($goods_data['thumb_url'])) {
                 $goods_data['thumb_url'] = serialize($goods_data['thumb_url']);
