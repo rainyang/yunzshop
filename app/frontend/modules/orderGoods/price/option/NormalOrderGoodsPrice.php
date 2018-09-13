@@ -18,7 +18,7 @@ class NormalOrderGoodsPrice extends BaseOrderGoodsPrice
      * @var float
      */
     private $deductionAmount;
-    private $deductionKey;
+    private $deductionCount;
     /**
      * @var float
      */
@@ -71,8 +71,8 @@ class NormalOrderGoodsPrice extends BaseOrderGoodsPrice
     public function getDeductionAmount()
     {
 
-        if($this->deductionKey != $this->orderGoods->getOrderGoodsDeductions()->toJson()){
-            $this->deductionKey = $this->orderGoods->getOrderGoodsDeductions()->toJson();
+        if ($this->deductionCount != $this->orderGoods->getOrderGoodsDeductions()->count()) {
+            $this->deductionCount = $this->orderGoods->getOrderGoodsDeductions()->count();
             $this->deductionAmount = $this->orderGoods->getOrderGoodsDeductions()->getUsedPoint()->getMoney();
 
         }

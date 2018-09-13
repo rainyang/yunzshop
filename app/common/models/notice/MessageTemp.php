@@ -19,6 +19,7 @@ class MessageTemp extends BaseModel
 
 
     protected $guarded = [''];
+    protected $fillable = [];
 
 
     public $timestamps = true;
@@ -46,7 +47,7 @@ class MessageTemp extends BaseModel
 
     public function getTempIdByNoticeType($notice_type)
     {
-        return self::where('notice_type',$notice_type)->value('id');
+        return self::where('notice_type',$notice_type)->first();
     }
 
     public static function delTempDataByTempId($temp_id)
