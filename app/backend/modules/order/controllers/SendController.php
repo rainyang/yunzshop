@@ -26,7 +26,7 @@ class SendController extends BaseController
          */
         $order = Order::find(request('order_id'));
         if (!$order) {
-            throw new AppException('为找到订单');
+            throw new AppException('未找到订单');
         }
         $expressCompanies = (new ExpressCompany())->all();
         return $this->successJson('成功', ['express_companies' => $expressCompanies, 'address' => $order->address]);
