@@ -72,7 +72,7 @@ class Setting extends BaseModel
         }
 
         Cache::put($cacheKey, $value, Carbon::now()->addSeconds(3600));
-        \Log::debug('-----setting set cache------' . $cacheKey, $value);
+        //\Log::debug('-----setting set cache------' . $cacheKey, $value);
         return $result;
     }
 

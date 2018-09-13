@@ -28,7 +28,7 @@ class MemberCartService
 
     public static function newMemberCart($params)
     {
-        if (!isset($params['total'])) {
+        if (!isset($params['total']) || $params['total']<= 0) {
             // 数量默认1
             $params['total'] = 1;
         }

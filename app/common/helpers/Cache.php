@@ -198,13 +198,13 @@ class Cache
             if(is_array($oldData)){
                 //存在时
                 array_set($oldData,$arrayKey,$value);
-                \Log::debug('-----cache save1 ------'.self::setUniacid() . $key,$oldData);
+                //\Log::debug('-----cache save1 ------'.self::setUniacid() . $key,$oldData);
                 return \Cache::put(self::setUniacid() . $key,$oldData,$minutes);
             }
             // 不存在时
 
         }
-        \Log::debug('-----cache save2 ------'.self::setUniacid() . $key,$oldData);
+        //\Log::debug('-----cache save2 ------'.self::setUniacid() . $key,$oldData);
 
         \Cache::put(self::setUniacid() . $key, $value, $minutes);
     }
