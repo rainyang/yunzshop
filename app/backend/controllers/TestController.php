@@ -27,10 +27,12 @@ class TestController extends BaseController
 {
     public function index()
     {
-        dd(1);
-        dump(\Setting::get('shop'));
-        $a = new Setting();
-        dump($a->getItems(2, 'shop'));
+        $order = \Yunshop\Kingtimes\common\models\Order::find(6);
+        /**
+         * @var \Yunshop\Kingtimes\common\models\Order $order
+         */
+        $order->agentDistributors()->attach(1, ['uid' => $order->uid, 'uniacid' => $order->uniacid]);
+
     }
 
     public function op_database()
