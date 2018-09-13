@@ -15,14 +15,17 @@ use app\backend\modules\member\models\MemberGroup;
 use app\backend\modules\member\models\MemberLevel;
 use app\backend\modules\member\models\MemberRecord;
 use app\backend\modules\member\models\MemberShopInfo;
+use app\backend\modules\member\models\MemberUnique;
 use app\backend\modules\member\services\MemberServices;
 use app\common\components\BaseController;
 use app\common\events\member\MemberRelationEvent;
 use app\common\events\member\RegisterByAgent;
 use app\common\helpers\PaginationHelper;
 use app\common\models\AccountWechats;
+use app\common\models\MemberAlipay;
+use app\common\models\MemberMiniAppModel;
+use app\common\models\MemberWechatModel;
 use app\common\services\ExportService;
-use app\frontend\modules\member\models\MemberUniqueModel;
 use app\frontend\modules\member\models\SubMemberModel;
 use app\Jobs\ModifyRelationJob;
 use Yunshop\Commission\models\Agents;
@@ -350,19 +353,26 @@ class MemberController extends BaseController
                         MemberMiniAppModel::deleteMemberInfoById($uniqueModel->member_id);
                         //app会员表
                         MemberWechatModel::deleteMemberInfoById($uniqueModel->member_id);
+
+                        //删除微擎mc_mapping_fans 表数据
+                        McMappingFans::deleteMemberInfoById($uniqueModel->member_id);
                     }
                 }
-
-                MemberUnique::deleteMemberInfoById($uid, $member->hasOneFans->unionid);
-            } else {
-                MemberUnique::deleteMemberInfoById($uid);
             }
+
+            MemberUnique::deleteMemberInfoById($uid);
+
+            //删除支付宝会员表
+            MemberAlipay::deleteMemberInfoById($uid);
 
             //小程序会员表
             MemberMiniAppModel::deleteMemberInfoById($uid);
 
             //app会员表
             MemberWechatModel::deleteMemberInfoById($uid);
+
+            //删除微擎mc_mapping_fans 表数据
+            McMappingFans::deleteMemberInfoById($uid);
 
             return true;
         });
