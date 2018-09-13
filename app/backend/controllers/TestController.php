@@ -25,10 +25,9 @@ use SuperClosure\SerializableClosure;
 
 class TestController extends BaseController
 {
-
-
     public function index()
     {
+        dd(1);
         dump(\Setting::get('shop'));
         $a = new Setting();
         dump($a->getItems(2, 'shop'));
