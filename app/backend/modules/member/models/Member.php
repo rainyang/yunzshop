@@ -12,6 +12,17 @@ class Member extends \app\common\models\Member
 {
     static protected $needLog = true;
 
+    /**
+     * 删除会员信息
+     *
+     * @param $id
+     */
+    public static function deleteMemberInfoById($id)
+    {
+        return self::uniacid()
+            ->where('uid', $id)
+            ->delete();
+    }
 
     public function address()
     {

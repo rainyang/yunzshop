@@ -356,6 +356,8 @@ class MemberController extends BaseController
 
                         //删除微擎mc_mapping_fans 表数据
                         McMappingFans::deleteMemberInfoById($uniqueModel->member_id);
+
+                        Member::deleteMemberInfoById($uniqueModel->member_id);
                     }
                 }
             }
@@ -373,6 +375,8 @@ class MemberController extends BaseController
 
             //删除微擎mc_mapping_fans 表数据
             McMappingFans::deleteMemberInfoById($uid);
+
+            Member::deleteMemberInfoById($uid);
 
             return true;
         });
