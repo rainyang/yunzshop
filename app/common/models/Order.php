@@ -37,6 +37,7 @@ use app\backend\modules\order\observers\OrderObserver;
  * Class Order
  * @package app\common\models
  * @property int plugin_id
+ * @property int uniacid
  * @property int id
  * @property int uid
  * @property string order_sn

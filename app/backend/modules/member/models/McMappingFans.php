@@ -13,4 +13,15 @@ class McMappingFans extends \app\common\models\McMappingFans
 {
     static protected $needLog = true;
 
+    /**
+     * 删除会员信息
+     *
+     * @param $id
+     */
+    public static function deleteMemberInfoById($id)
+    {
+        return self::uniacid()
+            ->where('uid', $id)
+            ->delete();
+    }
 }
