@@ -142,7 +142,7 @@ class User extends BaseModel
     public function scopeRecords($query)
     {
         return $query->whereHas('uniAccount', function($query){
-            return $query->uniacid();
+            return $query->uniacid()->where('role', '!=', 'clerk');
         })
         ->with(['userProfile' => function($profile) {
             return $profile->select('uid', 'realname', 'mobile');
@@ -198,6 +198,9 @@ class User extends BaseModel
             ->with(['permissions' => function($userPermission) {
                 return $userPermission->select('permission', 'item_id');
             }])
+            ->whereHas('uniAccount', function($query){
+                return $query->uniacid()->where('role', '!=', 'clerk');
+            })
             ->first();
     }
 
