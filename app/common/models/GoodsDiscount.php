@@ -23,6 +23,11 @@ class GoodsDiscount extends BaseModel
     const MONEY_OFF = 1;//立减
     const DISCOUNT = 2;//折扣
     public $amount;
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+    }
+
     /**
      * 开启商品独立优惠
      * @return bool
