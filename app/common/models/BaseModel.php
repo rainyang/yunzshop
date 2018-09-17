@@ -11,7 +11,9 @@ namespace app\common\models;
 
 use app\backend\modules\goods\observers\SettingObserver;
 use app\common\exceptions\ShopException;
+use app\common\helpers\Cache;
 use app\common\traits\ValidatorTrait;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -114,7 +116,7 @@ class BaseModel extends Model
         if (\YunShop::app()->uniacid === null) {
             return $query;
         }
-        return $query->where($this->getTable().'.uniacid', \YunShop::app()->uniacid);
+        return $query->where($this->getTable() . '.uniacid', \YunShop::app()->uniacid);
     }
 
     /**
@@ -215,5 +217,32 @@ class BaseModel extends Model
     {
         $this->appends = array_merge($this->appends, $appends);
         return $this;
+    }
+
+    /**
+     * @return mixed
+     * @throws \Exception
+     */
+    public function columns()
+    {
+        $cacheKey = 'model_' . $this->getTable() . '_columns';
+
+        if (!\Cache::has($cacheKey)) {
+            $columns = \Illuminate\Support\Facades\Schema::getColumnListing($this->getTable());
+            cache([$cacheKey => $columns], Carbon::now()->addSeconds(3600));
+        }
+
+        return cache($cacheKey);
+
+    }
+
+    /**
+     * @param $column
+     * @return bool
+     * @throws \Exception
+     */
+    public function hasColumn($column)
+    {
+        return in_array($column, $this->columns());
     }
 }

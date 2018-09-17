@@ -9,6 +9,8 @@
 namespace app\backend\controllers;
 
 use app\common\components\BaseController;
+use app\common\helpers\Cache;
+use app\common\helpers\SettingCache;
 use app\common\models\Member;
 use app\common\models\Order;
 use app\common\models\OrderPay;
@@ -27,11 +29,7 @@ class TestController extends BaseController
 {
     public function index()
     {
-        $order = \Yunshop\Kingtimes\common\models\Order::find(6);
-        /**
-         * @var \Yunshop\Kingtimes\common\models\Order $order
-         */
-        $order->agentDistributors()->attach(1, ['uid' => $order->uid, 'uniacid' => $order->uniacid]);
+        dd((new Order())->columns());
 
     }
 
