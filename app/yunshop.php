@@ -207,16 +207,16 @@ class YunShop
     }
 
     /**
-     * @name 验证是否商城操作员
-     * @author
+     * 验证是否商城操作员
      * @return bool
+     * @throws Exception
      */
     public static function isRole()
     {
         global $_W;
         $plugin_class = new PluginManager(app(), new OptionRepository(), new Dispatcher(), new Filesystem());
         if ($plugin_class->isEnabled('supplier')) {
-            if (Schema::hasColumn('yz_supplier', 'uid')) {
+            if ((new \Yunshop\Supplier\common\models\Supplier)->hasColumn('uid')) {
                 $res = \Illuminate\Support\Facades\DB::table('yz_supplier')->where('uid', $_W['uid'])->first();
                 //$res = \Yunshop\Supplier\common\models\Supplier::getSupplierByUid($_W['uid'])->first();
                 if ($res) {
