@@ -126,11 +126,11 @@ class User extends BaseModel
      */
     public function scopeNoOperator($query)
     {
-        if (Schema::hasTable('yz_supplier')) {
+        /*if (Schema::hasTable('yz_supplier')) {
             $ids = DB::table('yz_supplier')->select('uid')->get();
 
             return $query->whereNotIn('uid',$ids);
-        }
+        }*/
         return $query;
     }
 
