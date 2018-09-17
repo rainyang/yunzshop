@@ -28,6 +28,7 @@ use app\common\models\MemberWechatModel;
 use app\common\services\ExportService;
 use app\frontend\modules\member\models\SubMemberModel;
 use app\Jobs\ModifyRelationJob;
+use Illuminate\Support\Facades\DB;
 use Yunshop\Commission\models\Agents;
 
 
