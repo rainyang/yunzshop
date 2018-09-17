@@ -18,7 +18,7 @@ class AddIndexToYzSettingTable extends Migration
                 $idx = \Illuminate\Support\Facades\DB::select('show index from ' . app('db')->getTablePrefix() . 'yz_setting where key_name="idx_group_uniacid"');
 
                 if (!$idx) {
-                    $table->index(['group', 'uniacid'], 'idx_group_uniacid');
+                    \Illuminate\Support\Facades\DB::statement('alter table ' . app('db')->getTablePrefix() . 'yz_setting add index `idx_group_uniacid`(`group`, `uniacid`)');
                 }
             });
         }
