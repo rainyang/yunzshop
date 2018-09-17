@@ -9,6 +9,8 @@
 namespace app\backend\controllers;
 
 use app\common\components\BaseController;
+use app\common\helpers\Cache;
+use app\common\helpers\SettingCache;
 use app\common\models\Member;
 use app\common\models\Order;
 use app\common\models\OrderPay;

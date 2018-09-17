@@ -11,6 +11,7 @@ namespace app\frontend\modules\order\controllers;
 use app\common\events\order\CreatingOrder;
 use app\common\exceptions\AppException;
 use app\frontend\modules\member\services\MemberCartService;
+use app\frontend\modules\memberCart\MemberCartCollection;
 use Illuminate\Support\Facades\DB;
 use Request;
 use app\common\events\order\AfterOrderCreatedEvent;
@@ -20,28 +21,36 @@ class CreateController extends PreOrderController
 {
     protected function getMemberCarts()
     {
-        $goods_params = json_decode(request()->input('goods'),true);
-        return collect($goods_params)->map(function ($memberCart) {
+        $goods_params = json_decode(request()->input('goods'), true);
+
+        $memberCarts = collect($goods_params)->map(function ($memberCart) {
             return MemberCartService::newMemberCart($memberCart);
         });
+
+        $memberCarts = new MemberCartCollection($memberCarts);
+        $memberCarts->loadRelations();
+        return $memberCarts;
     }
-    protected function validateParam(){
+
+    protected function validateParam()
+    {
 
     }
+
     public function index(Request $request)
     {
-        \Log::info('用户下单',request()->input());
+        \Log::info('用户下单', request()->input());
         $this->validateParam();
         //订单组
         $orders = collect();
         $shopOrder = $this->getShopOrder($this->getMemberCarts());
-        if($shopOrder){
+        if ($shopOrder) {
 
             $orders->push($shopOrder);
         }
         $orders = $orders->merge($this->getPluginOrders()[0]);
 
-        if($orders->isEmpty()){
+        if ($orders->isEmpty()) {
             throw new AppException('未找到订单商品');
         }
         //生成订单,触发事件

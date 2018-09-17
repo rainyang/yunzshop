@@ -8,6 +8,7 @@
 
 namespace app\common\providers;
 
+use app\common\helpers\SettingCache;
 use app\common\modules\status\StatusContainer;
 use app\frontend\modules\coin\CoinManager;
 use app\frontend\modules\deduction\DeductionManager;
@@ -19,6 +20,9 @@ class ShopProvider extends ServiceProvider
 {
     public function boot()
     {
+        $this->app->singleton('SettingCache',function(){
+            return new SettingCache();
+        });
         $this->app->singleton('CoinManager',function(){
             return new CoinManager();
         });

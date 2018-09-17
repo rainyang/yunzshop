@@ -10,6 +10,7 @@ namespace app\frontend\modules\orderGoods\models;
 
 use app\common\exceptions\AppException;
 use app\common\exceptions\ShopException;
+use app\common\models\BaseModel;
 use app\frontend\models\Goods;
 use app\frontend\models\goods\Sale;
 use app\frontend\models\GoodsOption;
@@ -112,7 +113,6 @@ class PreOrderGoods extends OrderGoods
 
 
     /**
-     * 复写的push
      * @return bool
      * @throws AppException
      * @throws ShopException
@@ -129,15 +129,15 @@ class PreOrderGoods extends OrderGoods
 
             foreach (array_filter($models) as $model) {
                 /**
-                 * @var Model $model
+                 * @var BaseModel $model
                  */
                 // 添加 order_goods_id 外键
-                if (!isset($model->order_goods_id) && \Schema::hasColumn($model->getTable(), 'order_goods_id')) {
+                if (!isset($model->order_goods_id) && $model->hasColumn('order_goods_id')) {
                     $model->order_goods_id = $this->id;
                 }
                 // 添加 order_id 外键
 
-                if (!isset($model->order_id) && \Schema::hasColumn($model->getTable(), 'order_id')) {
+                if (!isset($model->order_id) && $model->hasColumn('order_id')) {
                     $model->order_id = $this->order_id;
                 }
             }

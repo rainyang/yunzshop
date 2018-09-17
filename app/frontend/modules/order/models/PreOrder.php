@@ -3,6 +3,7 @@
 namespace app\frontend\modules\order\models;
 
 use app\common\exceptions\AppException;
+use app\common\models\BaseModel;
 use app\common\models\DispatchType;
 use app\frontend\models\Member;
 use app\frontend\models\Order;
@@ -189,15 +190,18 @@ class PreOrder extends Order
 
     /**
      * @return bool
+     * @throws \Exception
      */
     public function push()
     {
         foreach ($this->relations as $models) {
             $models = $models instanceof Collection
                 ? $models->all() : [$models];
-
+            /**
+             * @var BaseModel $model
+             */
             foreach (array_filter($models) as $model) {
-                if (!isset($model->order_id) && Schema::hasColumn($model->getTable(), 'order_id')) {
+                if (!isset($model->order_id) && $model->hasColumn('order_id')) {
                     $model->order_id = $this->id;
                 }
             }
