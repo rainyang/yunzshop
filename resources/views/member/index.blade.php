@@ -327,6 +327,7 @@
                                                     <a href="{{yzWebUrl('member.member-address.index', ['member_id' => $row['uid']])}}"
                                                        title='收货地址管理'><i class='fa fa-truck'></i>收货地址管理</a>
                                                 </li>
+                                                <li><a href="{{yzWebUrl('member.member.delete', ['id'=>$row['uid']])}}" title='删除会员'><i class='fa fa-delicious'></i>删除（危险）</a></li>
                                             </ul>
                                         </div>
                                     </td>
