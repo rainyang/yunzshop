@@ -29,11 +29,7 @@ class TestController extends BaseController
 {
     public function index()
     {
-        $order = \Yunshop\Kingtimes\common\models\Order::find(6);
-        /**
-         * @var \Yunshop\Kingtimes\common\models\Order $order
-         */
-        $order->agentDistributors()->attach(1, ['uid' => $order->uid, 'uniacid' => $order->uniacid]);
+        dd((new Order())->columns());
 
     }
 

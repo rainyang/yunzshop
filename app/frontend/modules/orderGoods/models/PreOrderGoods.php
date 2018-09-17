@@ -116,6 +116,7 @@ class PreOrderGoods extends OrderGoods
      * @return bool
      * @throws AppException
      * @throws ShopException
+     * @throws \Exception
      */
     public function push()
     {

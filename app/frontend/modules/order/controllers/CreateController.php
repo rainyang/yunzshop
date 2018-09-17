@@ -61,13 +61,17 @@ class CreateController extends PreOrderController
                  */
                 $order_id = $order->generate();
                 event(new AfterOrderCreatedEvent($order));
+                dd('完成');
+
                 return $order_id;
             });
         });
 
         return $this->successJson('成功', ['order_ids' => $order_ids->implode(',')]);
     }
-    private function getPluginOrders(){
+
+    private function getPluginOrders()
+    {
         $event = new CreatingOrder($this->getMemberCarts());
         event($event);
         return $event->getData();
