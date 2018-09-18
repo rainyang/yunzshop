@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static insert()
  * @method static get()
  * @method static set()
+ * @method static exclude()
  */
 class BaseModel extends Model
 {
@@ -228,4 +229,18 @@ class BaseModel extends Model
         return in_array($column, $this->columns());
     }
 
+    /**
+     * @param BaseModel $query
+     * @param array $excludeFields
+     * @return mixed
+     * @throws \Exception
+     */
+    public function scopeExclude(self $query, $excludeFields)
+    {
+        if (!is_array($excludeFields)) {
+            $excludeFields = explode(',', $excludeFields);
+        }
+        $fields = array_diff($this->columns(), $excludeFields) ?: [];
+        return $query->select($fields);
+    }
 }
