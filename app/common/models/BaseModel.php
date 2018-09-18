@@ -241,7 +241,6 @@ class BaseModel extends Model
             $excludeFields = explode(',', $excludeFields);
         }
         $fields = array_diff($this->columns(), $excludeFields) ?: [];
-        dd($fields);
         return $query->select($fields);
     }
 }
