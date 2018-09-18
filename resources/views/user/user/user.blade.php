@@ -74,28 +74,28 @@
                 </thead>
                 <tbody>
                 @foreach($userList->items() as $key => $user)
-                <tr>
-                    <td>{{ $user->username }}</td>
-                    <td>{{ $user->userRole->role->name or "无" }}</td>
-                    <td>{{ $user->userProfile->realname or '' }}</td>
-                    <td>{{ $user->userProfile->mobile or '' }}</td>
-                    <td>
-                        @if($user->status == 2)
-                        <span class='label label-success'>启用</span>
-                        @elseif($user->status == 1)
-                        <span class='label label-danger'>禁用</span>
-                        @endif
-                    </td>
-                    <td>
-                        <a class='btn btn-default' href="{{ yzWebUrl('user.user.update', array('id' => $user->uid)) }}">
-                            <i class="fa fa-edit"></i>
-                        </a>
-                        <a class='btn btn-default'  href="{{ yzWebUrl('user.user.destroy',array('id' => $user->uid)) }}" onclick="return confirm('确认删除此操作员吗？'); return false;">
-                            <i class="fa fa-remove"></i>
-                        </a>
+                    <tr>
+                        <td>{{ $user->username }}</td>
+                        <td>{{ $user->userRole->role->name or "无" }}</td>
+                        <td>{{ $user->userProfile->realname or '' }}</td>
+                        <td>{{ $user->userProfile->mobile or '' }}</td>
+                        <td>
+                            @if($user->status == 2)
+                                <span class='label label-success'>启用</span>
+                            @elseif($user->status == 1)
+                                <span class='label label-danger'>禁用</span>
+                            @endif
+                        </td>
+                        <td>
+                            <a class='btn btn-default' href="{{ yzWebUrl('user.user.update', array('id' => $user->uid)) }}">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                            <a class='btn btn-default'  href="{{ yzWebUrl('user.user.destroy',array('id' => $user->uid)) }}" onclick="return confirm('确认删除此操作员吗？'); return false;">
+                                <i class="fa fa-remove"></i>
+                            </a>
 
-                    </td>
-                </tr>
+                        </td>
+                    </tr>
                 @endforeach
 
                 </tbody>
