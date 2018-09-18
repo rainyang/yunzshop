@@ -71,6 +71,10 @@ class Order extends BaseModel
     protected $guarded = ['id'];
     protected $appends = ['status_name', 'pay_type_name'];
     protected $search_fields = ['id', 'order_sn'];
+    protected $attributes = [
+        'plugin_id' => 0,
+        'is_virtual' => 0,
+    ];
     static protected $needLog = true;
 
     //protected $attributes = ['discount_price'=>0];

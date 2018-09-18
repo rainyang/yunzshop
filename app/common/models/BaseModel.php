@@ -11,7 +11,6 @@ namespace app\common\models;
 
 use app\backend\modules\goods\observers\SettingObserver;
 use app\common\exceptions\ShopException;
-use app\common\helpers\Cache;
 use app\common\traits\ValidatorTrait;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -31,6 +30,13 @@ class BaseModel extends Model
     use ValidatorTrait;
     protected $search_fields;
     static protected $needLog = false;
+    protected $expansions;
+
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+    }
 
     /**
      * 模糊查找
@@ -187,6 +193,7 @@ class BaseModel extends Model
     private function getCommonModelClass($class)
     {
         if (get_parent_class($class) == self::class) {
+
             return $class;
         }
         return $this->getCommonModelClass(get_parent_class($class));
@@ -200,6 +207,7 @@ class BaseModel extends Model
     public function getMorphClass()
     {
         return $this->getCommonModelClass(parent::getMorphClass());
+
     }
 
     /**
@@ -242,5 +250,54 @@ class BaseModel extends Model
         }
         $fields = array_diff($this->columns(), $excludeFields) ?: [];
         return $query->select($fields);
+    }
+    public function getRelationValue($key)
+    {
+        // If the key already exists in the relationships array, it just means the
+        // relationship has already been loaded, so we'll just return it out of
+        // here because there is no need to query within the relations twice.
+        if ($this->relationLoaded($key)) {
+            return $this->relations[$key];
+        }
+
+        // If the "attribute" exists as a method on the model, we will just assume
+        // it is a relationship and will load and return results from the query
+        // and hydrate the relationship's value on the "relationships" array.
+        if (method_exists($this, $key)) {
+            return $this->getRelationshipFromMethod($key);
+        }
+
+        return $this->getRelationshipFromExpansions($key, static::class);
+    }
+
+    private function getRelationshipFromExpansions($key, $class)
+    {
+        $this->loadExpansions($class);
+        if (isset($this->expansions)) {
+            foreach ($this->expansions as $expansion) {
+                /**
+                 * @var GoodsExpansion $expansion
+                 */
+                if (method_exists($expansion, $key)) {
+                    return $expansion->getRelationshipFromExpansion($key, $this);
+                }
+            }
+        }
+        // 递归到此类为止避免死循环
+        if (get_parent_class($class) !== self::class) {
+            return $this->getRelationshipFromExpansions($key, get_parent_class($class));
+        }
+    }
+
+    private function loadExpansions($className)
+    {
+        if (app()->bound('ModelExpansionManager') && app('ModelExpansionManager')->has($className)) {
+            $this->expansions = collect();
+
+            app('ModelExpansionManager')->get($className)->each(function ($expansion) {
+
+                $this->expansions->push($expansion);
+            });
+        }
     }
 }
