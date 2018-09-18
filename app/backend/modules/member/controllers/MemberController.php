@@ -211,7 +211,7 @@ class MemberController extends BaseController
             exit;
         }
 
-        $member = Member::getMemberInfoById($uid);
+        $member = Member::getMemberInfoBlackById($uid);
 
         if (!empty($member)) {
             $member = $member->toArray();
