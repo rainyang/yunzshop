@@ -39,7 +39,7 @@ class CartBuyController extends PreOrderController
         if (!is_array($_GET['cart_ids'])) {
             $cartIds = explode(',', $_GET['cart_ids']);
         }
-
+        $cartIds = array_slice($cartIds,0,50);
         if (!count($cartIds)) {
             throw new AppException('参数格式有误');
         }

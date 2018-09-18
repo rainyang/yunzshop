@@ -30,7 +30,9 @@ class MemberCartCollection extends Collection
         });
     }
     public function loadRelations(){
-        $this->load(['goods','goods.hasOnePrivilege','goods.hasOneOptions','goods.hasManyGoodsDiscount','goods.hasOneGoodsDispatch','goods.hasOneSale','goodsOption']);
+        $this->load(['goods'=> function ($query) {
+            $query->exclude('content,description');
+        },'goods.hasOnePrivilege','goods.hasOneOptions','goods.hasManyGoodsDiscount','goods.hasOneGoodsDispatch','goods.hasOneSale','goodsOption']);
         $this->each(function (MemberCart $memberCart) {
             if(isset($memberCart->goodsOption)){
                 $memberCart->goodsOption->setRelation('goods',$memberCart->goods);
