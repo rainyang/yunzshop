@@ -21,14 +21,12 @@ use Illuminate\Database\Eloquent\Model;
  * Class BaseModel
  * @package app\common\models
  * @method static self uniacid()
- * @method static BaseModel insert()
  * @method static self get()
- * @method static BaseModel set()
- * @method static BaseModel find(string $id)
+ * @method static self find(string $id)
  * @method static self first()
- * @method static BaseModel select(array $files)
- * @method static BaseModel where()
- * @method static BaseModel with($relations)
+ * @method static self select(array $files)
+ * @method static self where()
+ * @method static self with($relations)
  * @method static self pluginId()
  * @method static self whereIn()
  * @method static self whereHas()
@@ -36,6 +34,9 @@ use Illuminate\Database\Eloquent\Model;
  * @method static int count()
  * @method static float sum()
  * @method static self join()
+ * @method static self insert()
+ * @method static self set()
+ * @method static self exclude()
  */
 class BaseModel extends Model
 {
@@ -247,4 +248,18 @@ class BaseModel extends Model
         return in_array($column, $this->columns());
     }
 
+    /**
+     * @param BaseModel $query
+     * @param array $excludeFields
+     * @return mixed
+     * @throws \Exception
+     */
+    public function scopeExclude(self $query, $excludeFields)
+    {
+        if (!is_array($excludeFields)) {
+            $excludeFields = explode(',', $excludeFields);
+        }
+        $fields = array_diff($this->columns(), $excludeFields) ?: [];
+        return $query->select($fields);
+    }
 }
