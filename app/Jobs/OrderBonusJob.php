@@ -39,14 +39,6 @@ class OrderBonusJob implements  ShouldQueue
 
     public function handle()
     {
-        // yz_order_bonus   id order_id table_name code amount
-        // $tableName = yz_commission_order
-        // $code = commission
-        // $foreignKey = yz_commission_order.ordertable_id
-        // $localKey = yz_order.id
-        // $amountColumn = yz_commission_order.commission
-        // 查询 $tableName 下 $foreignKey=$orderModel->$localKey $amountColumn 的 sum
-
         // 验证表是否存在
         $exists_table = Schema::hasTable($this->tableName);
         if (!$exists_table) {
@@ -70,6 +62,7 @@ class OrderBonusJob implements  ShouldQueue
             'code'          => $this->code,
             'amount'        => $sum
         ]);
+        // 验证并修改门店订单表
         $this->updateAmount($sum);
     }
 
@@ -80,10 +73,12 @@ class OrderBonusJob implements  ShouldQueue
         if (!$exists_store) {
             return;
         }
+        // 验证门店订单
         $store_order = $this->getStoreOrder();
         if (!$store_order) {
             return;
         }
+        // 验证提成金额
         $res_amount = 0;
         if ($store_order['amount'] - $sum > 0) {
             $res_amount = $store_order['amount'] - $sum;
@@ -91,6 +86,7 @@ class OrderBonusJob implements  ShouldQueue
         if ($res_amount == 0) {
             return;
         }
+        // 修改表
         DB::table('yz_plugin_store_order')
             ->where('order_id', 2306)
             ->update(['amount' => $res_amount]);
@@ -98,6 +94,7 @@ class OrderBonusJob implements  ShouldQueue
 
     private function getStoreOrder()
     {
+        // 门店订单
         $store_order = DB::table('yz_plugin_store_order')->select()
             ->where('order_id', $this->orderModel->id)
             ->first();
