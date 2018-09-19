@@ -70,5 +70,37 @@ class OrderBonusJob implements  ShouldQueue
             'code'          => $this->code,
             'amount'        => $sum
         ]);
+        $this->updateAmount($sum);
+    }
+
+    private function updateAmount($sum)
+    {
+        // 验证表是否存在
+        $exists_store = Schema::hasTable('yz_plugin_store_order');
+        if (!$exists_store) {
+            return;
+        }
+        $store_order = $this->getStoreOrder();
+        if (!$store_order) {
+            return;
+        }
+        $res_amount = 0;
+        if ($store_order['amount'] - $sum > 0) {
+            $res_amount = $store_order['amount'] - $sum;
+        }
+        if ($res_amount == 0) {
+            return;
+        }
+        DB::table('yz_plugin_store_order')
+            ->where('order_id', 2306)
+            ->update(['amount' => $res_amount]);
+    }
+
+    private function getStoreOrder()
+    {
+        $store_order = DB::table('yz_plugin_store_order')->select()
+            ->where('order_id', $this->orderModel->id)
+            ->first();
+        return $store_order;
     }
 }
