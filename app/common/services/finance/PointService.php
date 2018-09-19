@@ -138,7 +138,7 @@ class PointService
             return;
         }
         $this->point_data = $point_data;
-        $this->point_data['point'] = bcadd($this->point_data['point'], 0, 2);
+        $this->point_data['point'] = round($this->point_data['point'], 2);
         //$member = Member::getMemberById($point_data['member_id']);
 
         $this->member = $this->getMemberModel();
@@ -214,13 +214,11 @@ class PointService
     public function getAfterPoint()
     {
         $this->point_data['before_point'] = $this->member_point;
-
-        $this->member_point = bcadd($this->member_point, $this->point_data['point'], 2);
-
+        $this->member_point += $this->point_data['point'];
         if ($this->member_point < PointService::POINT) {
             $this->member_point = PointService::POINT;
         }
-        $this->point_data['after_point'] = $this->member_point;
+        $this->point_data['after_point'] = round($this->member_point, 2);
     }
 
     public function getModeAttribute($mode)
