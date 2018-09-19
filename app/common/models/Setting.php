@@ -41,11 +41,10 @@ class Setting extends BaseModel
             //\Log::debug('-----setting save cache------' . $cacheKey, $value);
             if (!array_has($settingGroupItems, $groupKey)) {
                 // 如果数据库中不存在记录,需要在缓存中添加这个key,避免重复查库
-                yz_array_set($settingGroupItems,$groupKey,null);
+                yz_array_set($settingGroupItems, $groupKey, null);
 
             }
             $value = array_get($settingGroupItems, $groupKey, $default);
-
             app('SettingCache')->put($group, $settingGroupItems, Carbon::now()->addSeconds(3600));
         }
         return $value;
@@ -68,12 +67,12 @@ class Setting extends BaseModel
         $type = $this->getTypeOfValue($value);
 
         $result = $this->setToDatabase($value, $uniqueAccountId, $group, $item, $type);
-
         if ($type == 'array') {
             $value = unserialize($value);
         }
 
         app('SettingCache')->put($key, $value, Carbon::now()->addSeconds(3600));
+
         //\Log::debug('-----setting set cache------' . $cacheKey, $value);
         return $result;
     }
