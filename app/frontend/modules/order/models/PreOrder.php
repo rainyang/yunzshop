@@ -2,6 +2,7 @@
 
 namespace app\frontend\modules\order\models;
 
+use app\common\events\order\AfterPreOrderLoadOrderGoodsEvent;
 use app\common\exceptions\AppException;
 use app\common\models\BaseModel;
 use app\common\models\DispatchType;
@@ -60,7 +61,7 @@ class PreOrder extends Order
      * @var OrderDeduction 抵扣类
      */
     protected $orderDeduction;
-
+protected $attributes = ['id'=>null];
     public function setOrderGoods(Collection $orderGoods)
     {
         $this->setRelation('orderGoods', new PreOrderGoodsCollection());
@@ -74,7 +75,7 @@ class PreOrder extends Order
 
             $aOrderGoods->setOrder($this);
         });
-
+        event(new AfterPreOrderLoadOrderGoodsEvent($this));
         $this->discount = new OrderDiscount($this);
         $this->orderDispatch = new OrderDispatch($this);
         $this->orderDeduction = new OrderDeduction($this);
@@ -161,7 +162,8 @@ class PreOrder extends Order
      */
     public function getPreIdAttribute()
     {
-        return $this->getOrderGoodsModels()->pluck('goods_id')->sort()->implode('a');
+        dd(md5($this->getOrderGoodsModels()->pluck('goods_id')->toJson()));
+        return md5($this->getOrderGoodsModels()->pluck('goods_id')->toJson());
     }
 
     /**

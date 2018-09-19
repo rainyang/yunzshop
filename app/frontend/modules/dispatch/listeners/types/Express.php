@@ -99,6 +99,11 @@ class Express
                 'address.district' => 'required|string',
             ], ['address' => $address]
             );
+            if(!isset($address['province_id'])){
+                $address['province_id'] = Address::where('areaname', $address['province'])->value('id');
+                $address['city_id'] = Address::where('areaname', $address['city'])->where('parentid', $address['province_id'])->value('id');
+                $address['district_id'] =  Address::where('areaname', $address['district'])->where('parentid', $address['city_id'])->value('id');
+            }
             $memberAddress = app(MemberAddressRepository::class)->fill($address);
 
             return $memberAddress;
@@ -129,7 +134,7 @@ class Express
         $orderAddress->order_id = $this->event->getOrderModel()->id;
 
         $orderAddress->mobile = $member_address->mobile;
-        $orderAddress->province_id = $member_address->province_id ?: Address::where('areaname', $member_address->province)->value('id');
+        $orderAddress->province_id = $member_address->province_id;
         $orderAddress->city_id = $member_address->city_id ?: Address::where('areaname', $member_address->city)->where('parentid', $orderAddress->province_id)->value('id');
         $orderAddress->district_id = $member_address->district_id ?: Address::where('areaname', $member_address->district)->where('parentid', $orderAddress->city_id)->value('id');
         $orderAddress->address = implode(' ', [$member_address->province, $member_address->city, $member_address->district, $member_address->address]);

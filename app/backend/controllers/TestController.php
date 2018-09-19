@@ -17,6 +17,7 @@ use app\common\models\OrderPay;
 use app\common\models\Flow;
 use app\common\models\Setting;
 use app\common\services\MessageService;
+use app\frontend\models\Goods;
 use app\frontend\modules\member\models\SubMemberModel;
 use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Database\Schema\Blueprint;
@@ -24,6 +25,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use SuperClosure\SerializableClosure;
+use Yunshop\Love\Frontend\Models\Expansions\GoodsExpansions;
 
 class TestController extends BaseController
 {
@@ -31,9 +33,8 @@ class TestController extends BaseController
 
     public function index()
     {
-        dump(\Setting::get('shop'));
-        $a = new Setting();
-        dump($a->getItems(2, 'shop'));
+
+        dd(Goods::find(71)->goodsLove);
     }
 
     public function op_database()

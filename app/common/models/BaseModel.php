@@ -30,7 +30,6 @@ class BaseModel extends Model
     use ValidatorTrait;
     protected $search_fields;
     static protected $needLog = false;
-    protected $expansions;
 
     public function __construct(array $attributes = [])
     {
@@ -253,6 +252,7 @@ class BaseModel extends Model
     }
     public function getRelationValue($key)
     {
+
         // If the key already exists in the relationships array, it just means the
         // relationship has already been loaded, so we'll just return it out of
         // here because there is no need to query within the relations twice.
@@ -273,11 +273,13 @@ class BaseModel extends Model
     private function getRelationshipFromExpansions($key, $class)
     {
         $this->loadExpansions($class);
+
         if (isset($this->expansions)) {
             foreach ($this->expansions as $expansion) {
                 /**
                  * @var GoodsExpansion $expansion
                  */
+
                 if (method_exists($expansion, $key)) {
                     return $expansion->getRelationshipFromExpansion($key, $this);
                 }
@@ -291,6 +293,7 @@ class BaseModel extends Model
 
     private function loadExpansions($className)
     {
+
         if (app()->bound('ModelExpansionManager') && app('ModelExpansionManager')->has($className)) {
             $this->expansions = collect();
 
@@ -299,5 +302,33 @@ class BaseModel extends Model
                 $this->expansions->push($expansion);
             });
         }
+    }
+    public function __call($method, $parameters){
+        if ($this->hasExpansionsMethod($method)) {
+            return $this->expansionsMethod($method);
+        }
+        return parent::__call($method, $parameters);
+    }
+    protected static $expansions;
+
+    private function getExpansions(){
+        return static::$expansions[static::class];
+    }
+
+    private function expansionsMethod($method){
+        foreach ( $this->getExpansions() as $expansion) {
+            if (method_exists($expansion, $method)) {
+                return $expansion->getRelationshipFromExpansion($method, $this);
+            }
+        }
+        return false;
+    }
+    private function hasExpansionsMethod($method){
+        foreach ( $this->getExpansions() as $expansion) {
+            if (method_exists($expansion, $method)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
