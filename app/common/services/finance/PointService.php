@@ -138,6 +138,7 @@ class PointService
             return;
         }
         $this->point_data = $point_data;
+        $this->point_data['point'] = bcadd($this->point_data['point'], 0, 2);
         //$member = Member::getMemberById($point_data['member_id']);
 
         $this->member = $this->getMemberModel();
@@ -198,7 +199,7 @@ class PointService
             ['name' => '商城名称', 'value' => \Setting::get('shop.shop')['name']],
             ['name' => '昵称', 'value' => $this->member['nickname']],
             ['name' => '时间', 'value' => date('Y-m-d H:i', time())],
-            ['name' => '积分变动金额', 'value' => bcadd($this->point_data['point'],0,2)],
+            ['name' => '积分变动金额', 'value' => $this->point_data['point']],
             ['name' => '积分变动类型', 'value' => $this->getModeAttribute($this->point_data['point_mode'])],
             ['name' => '变动后积分数值', 'value' => $this->point_data['after_point']]
         ];
