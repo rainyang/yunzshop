@@ -214,8 +214,7 @@ class YunShop
     public static function isRole()
     {
         global $_W;
-        $plugin_class = new PluginManager(app(), new OptionRepository(), new Dispatcher(), new Filesystem());
-        if ($plugin_class->isEnabled('supplier')) {
+        if (app('plugins')->isEnabled('supplier')) {
             if ((new \Yunshop\Supplier\common\models\Supplier)->hasColumn('uid')) {
                 $res = \Illuminate\Support\Facades\DB::table('yz_supplier')->where('uid', $_W['uid'])->first();
                 //$res = \Yunshop\Supplier\common\models\Supplier::getSupplierByUid($_W['uid'])->first();
@@ -583,9 +582,8 @@ class YunPlugin
     public function get($key = null)
     {
         if (isset($key)) {
-            $plugin_class = new PluginManager(app(), new OptionRepository(), new Dispatcher(), new Filesystem());
 
-            if ($plugin_class->isEnabled($key)) {
+            if (app('plugins')->isEnabled($key)) {
                 return true;
             }
         }
