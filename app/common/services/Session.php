@@ -22,7 +22,7 @@ class Session
      * @param Mixed $data session data
      * @param Int $time 超时时间(秒)
      */
-    public static function set($name, $data, $time = 10 * 24 * 3600)
+    public static function set($name, $data, $time = 864000)
     {
         $expire = time() + $time;
 
@@ -72,7 +72,7 @@ class Session
         unset($_SESSION[self::PREFIX . $name]);
     }
 
-    public static function put($name, $data, $time = 10 * 24 * 3600)
+    public static function put($name, $data, $time = 864000)
     {
         self::set($name, $data, $time);
     }
