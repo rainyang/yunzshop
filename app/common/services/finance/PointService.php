@@ -213,7 +213,9 @@ class PointService
     public function getAfterPoint()
     {
         $this->point_data['before_point'] = $this->member_point;
-        $this->member_point += $this->point_data['point'];
+
+        $this->member_point = bcadd($this->member_point, $this->point_data['point'], 2);
+
         if ($this->member_point < PointService::POINT) {
             $this->member_point = PointService::POINT;
         }

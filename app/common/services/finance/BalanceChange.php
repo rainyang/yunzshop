@@ -66,11 +66,12 @@ class BalanceChange extends Credit
 
 
     /**
-     * @return string
+     * @return bool
+     * @throws AppException
      */
     public function validatorData()
     {
-        $this->new_value = $this->memberModel->credit2 + $this->change_value;
+        $this->new_value = bcadd($this->memberModel->credit2, $this->change_value, 2);
         if ($this->new_value < 0) {
             throw new AppException('余额不足');
         }
