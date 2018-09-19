@@ -52,11 +52,13 @@ class OrderBonusJob implements  ShouldQueue
         if (!$exists_table) {
             return;
         }
-        // 分红总和
-        $sum = DB::table($this->tableName)
+        $build = DB::table($this->tableName)
             ->select()
-            ->where($this->foreignKey, $this->orderModel[$this->localKey])
-            ->sum($this->amountColumn);
+            ->where($this->foreignKey, $this->orderModel[$this->localKey]);
+        // 分红记录IDs
+        $ids = $build->pluck('id');
+        // 分红总和
+        $sum = $build->sum($this->amountColumn);
         if ($sum == 0) {
             return;
         }
@@ -64,6 +66,7 @@ class OrderBonusJob implements  ShouldQueue
         OrderPluginBonus::addRow([
             'order_id'      => $this->orderModel->id,
             'table_name'    => $this->tableName,
+            'ids'           => $ids,
             'code'          => $this->code,
             'amount'        => $sum
         ]);
