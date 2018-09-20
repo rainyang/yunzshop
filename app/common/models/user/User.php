@@ -77,6 +77,14 @@ class User extends BaseModel
             $this->attributes = array_merge($this->attributes, ['uniacid' => '0']);
         }
 
+        if(Schema::hasColumn($this->table, 'token')){
+            $this->attributes = array_merge($this->attributes, ['token' => '']);
+        }
+
+        if(Schema::hasColumn($this->table, 'registration_id')){
+            $this->attributes = array_merge($this->attributes, ['registration_id' => '']);
+        }
+
 
         return $this->attributes;
     }
