@@ -8,6 +8,7 @@
 namespace app\Jobs;
 
 
+use app\common\events\order\CreatedOrderPluginBonusEvent;
 use app\common\models\order\OrderPluginBonus;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
@@ -55,49 +56,13 @@ class OrderBonusJob implements  ShouldQueue
             return;
         }
         // 存入订单插件分红记录表
-        OrderPluginBonus::addRow([
+        $model = OrderPluginBonus::addRow([
             'order_id'      => $this->orderModel->id,
             'table_name'    => $this->tableName,
             'ids'           => $ids,
             'code'          => $this->code,
             'amount'        => $sum
         ]);
-        // 验证并修改门店订单表
-        $this->updateAmount($sum);
-    }
-
-    private function updateAmount($sum)
-    {
-        // 验证表是否存在
-        $exists_store = Schema::hasTable('yz_plugin_store_order');
-        if (!$exists_store) {
-            return;
-        }
-        // 验证门店订单
-        $store_order = $this->getStoreOrder();
-        if (!$store_order) {
-            return;
-        }
-        // 验证提成金额
-        $res_amount = 0;
-        if ($store_order['amount'] - $sum > 0) {
-            $res_amount = $store_order['amount'] - $sum;
-        }
-        if ($res_amount == 0) {
-            return;
-        }
-        // 修改表
-        DB::table('yz_plugin_store_order')
-            ->where('order_id', 2306)
-            ->update(['amount' => $res_amount]);
-    }
-
-    private function getStoreOrder()
-    {
-        // 门店订单
-        $store_order = DB::table('yz_plugin_store_order')->select()
-            ->where('order_id', $this->orderModel->id)
-            ->first();
-        return $store_order;
+        event(new CreatedOrderPluginBonusEvent($model));
     }
 }

@@ -28,6 +28,7 @@ class OrderPluginBonus extends BaseModel
         $model = new self();
         $model->fill($row);
         $model->save();
+        return $model;
     }
 
     public static function getInfoByOrderId($order_id)
