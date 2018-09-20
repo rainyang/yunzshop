@@ -45,8 +45,8 @@ class MemberOfficeAccountService extends MemberService
 
 
         } else {
-            //$callback = ($_SERVER['REQUEST_SCHEME'] ? $_SERVER['REQUEST_SCHEME'] : 'http')  . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-              $callback = Url::absoluteApp('login_validate', ['mid' => Member::getMid()]);
+            $callback = ($_SERVER['REQUEST_SCHEME'] ? $_SERVER['REQUEST_SCHEME'] : 'http')  . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+              //$callback = Url::absoluteApp('login_validate', ['mid' => Member::getMid()]);
         }
 
         $state = 'yz-' . session_id();
@@ -97,8 +97,8 @@ class MemberOfficeAccountService extends MemberService
         if (\YunShop::request()->scope == 'user_info') {
             return show_json(1, 'user_info_api');
         } else {
-            return show_json(1, ['redirect_url' => $redirect_url]);
-            //redirect($redirect_url)->send();
+            //return show_json(1, ['redirect_url' => $redirect_url]);
+            redirect($redirect_url)->send();
             exit;
         }
     }
