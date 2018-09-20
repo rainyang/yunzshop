@@ -12,15 +12,15 @@ use app\common\events\Event;
 
 abstract class OrderPluginBonusEvent extends Event
 {
-    protected $pluginBonusModel;
+    protected $data;
 
     public function __construct($pluginBonusModel)
     {
-        $this->pluginBonusModel = $pluginBonusModel;
+        $this->data = $pluginBonusModel;
     }
 
     public function getData()
     {
-        return $this->pluginBonusModel;
+        return $this->data;
     }
 }
