@@ -74,7 +74,7 @@ class DefaultNoticeController extends BaseController
         $has_template_id = $this->wechat_list->where('template_id',$message_template->template_id)->first();//查询是否存在template_id,不存在则新建
 
         if ($has_template_id){
-            $item = (string)$message_template->template_id;
+            $item = (string)$message_template->id;
         } else {
             if ($message_template) {
                 $message_template->delete();
