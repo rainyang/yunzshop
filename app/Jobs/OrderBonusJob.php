@@ -63,6 +63,8 @@ class OrderBonusJob implements  ShouldQueue
             'code'          => $this->code,
             'amount'        => $sum
         ]);
-        event(new CreatedOrderPluginBonusEvent($model));
+        // 暂时不用, 门店利润 在 门店订单结算时重新计算, 各个插件产生分红的事件监听不同.
+        // 如果后期插件统一事件产生分红,再启用此事件
+        //event(new CreatedOrderPluginBonusEvent($model));
     }
 }
