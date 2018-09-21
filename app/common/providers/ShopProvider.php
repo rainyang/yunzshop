@@ -12,6 +12,7 @@ use app\common\helpers\SettingCache;
 
 use app\common\managers\ModelExpansionManager;
 
+use app\common\models\BaseModel;
 use app\common\modules\status\StatusContainer;
 
 use app\frontend\modules\coin\CoinManager;
@@ -25,6 +26,7 @@ class ShopProvider extends ServiceProvider
 {
     public function boot()
     {
+        BaseModel::setExpansions(config('shop-foundation.model-expansions'));
 
         $this->app->singleton('SettingCache',function() {
             return new SettingCache();

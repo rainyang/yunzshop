@@ -12,9 +12,10 @@ namespace app\common\models;
 use app\backend\modules\goods\observers\SettingObserver;
 use app\common\exceptions\ShopException;
 use app\common\traits\ValidatorTrait;
+use app\framework\Database\Eloquent\Builder;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 /**
  * Class BaseModel
@@ -30,12 +31,6 @@ class BaseModel extends Model
     use ValidatorTrait;
     protected $search_fields;
     static protected $needLog = false;
-
-    public function __construct(array $attributes = [])
-    {
-        parent::__construct($attributes);
-
-    }
 
     /**
      * 模糊查找
@@ -250,6 +245,7 @@ class BaseModel extends Model
         $fields = array_diff($this->columns(), $excludeFields) ?: [];
         return $query->select($fields);
     }
+
     public function getRelationValue($key)
     {
 
@@ -270,18 +266,42 @@ class BaseModel extends Model
         return $this->getRelationshipFromExpansions($key, static::class);
     }
 
+    /**
+     * 从模型扩展中获取关联模型
+     * @param $method
+     * @param $class
+     * @return mixed
+     */
+    public function expansionMethod($method,$class){
+        if (isset(static::$expansions)) {
+
+            foreach ($this->getExpansions() as $expansion) {
+
+                if (method_exists($expansion, $method)) {
+
+                    return (new $expansion)->$method($this);
+                }
+            }
+        }
+        // 递归到此类为止避免死循环
+        if (get_parent_class($class) !== self::class) {
+            return $this->getRelationshipFromExpansions($method, get_parent_class($class));
+        }
+    }
+
+    /**
+     * 从模型扩展中载入
+     * @param $key
+     * @param $class
+     * @return mixed
+     */
     private function getRelationshipFromExpansions($key, $class)
     {
-        $this->loadExpansions($class);
 
-        if (isset($this->expansions)) {
-            foreach ($this->expansions as $expansion) {
-                /**
-                 * @var GoodsExpansion $expansion
-                 */
-
+        if (isset(static::$expansions)) {
+            foreach ($this->getExpansions() as $expansion) {
                 if (method_exists($expansion, $key)) {
-                    return $expansion->getRelationshipFromExpansion($key, $this);
+                    return (new $expansion)->getRelationshipFromExpansion($key, $this);
                 }
             }
         }
@@ -291,44 +311,36 @@ class BaseModel extends Model
         }
     }
 
-    private function loadExpansions($className)
-    {
-
-        if (app()->bound('ModelExpansionManager') && app('ModelExpansionManager')->has($className)) {
-            $this->expansions = collect();
-
-            app('ModelExpansionManager')->get($className)->each(function ($expansion) {
-
-                $this->expansions->push($expansion);
-            });
-        }
-    }
-    public function __call($method, $parameters){
-        if ($this->hasExpansionsMethod($method)) {
-            return $this->expansionsMethod($method);
-        }
-        return parent::__call($method, $parameters);
-    }
+    /**
+     * 模型扩展
+     * @var Collection
+     */
     protected static $expansions;
 
-    private function getExpansions(){
+    /**
+     * 设置扩展
+     * @param $expansions
+     */
+    public static function setExpansions($expansions)
+    {
+        static::$expansions = $expansions;
+    }
+
+    /**
+     * 获取扩展设置
+     * @return mixed
+     */
+    private function getExpansions()
+    {
         return static::$expansions[static::class];
     }
 
-    private function expansionsMethod($method){
-        foreach ( $this->getExpansions() as $expansion) {
-            if (method_exists($expansion, $method)) {
-                return $expansion->getRelationshipFromExpansion($method, $this);
-            }
-        }
-        return false;
-    }
-    private function hasExpansionsMethod($method){
-        foreach ( $this->getExpansions() as $expansion) {
-            if (method_exists($expansion, $method)) {
-                return true;
-            }
-        }
-        return false;
+    /**
+     * @param \Illuminate\Database\Query\Builder $query
+     * @return Builder|\Illuminate\Database\Eloquent\Builder|static
+     */
+    public function newEloquentBuilder($query)
+    {
+        return new Builder($query);
     }
 }

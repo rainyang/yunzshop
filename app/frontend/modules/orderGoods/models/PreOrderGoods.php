@@ -47,7 +47,7 @@ use Illuminate\Support\Collection;
  */
 class PreOrderGoods extends OrderGoods
 {
-    protected $hidden = ['goods', 'sale','belongsToGood','hasOneGoodsDispatch'];
+    protected $hidden = ['goods', 'sale', 'belongsToGood', 'hasOneGoodsDispatch'];
     /**
      * @var PreOrder
      */
@@ -94,7 +94,7 @@ class PreOrderGoods extends OrderGoods
             'coupon_price' => $this->getCouponAmount()
         ];
 
-        $attributes = array_merge($this->getAttributes(),$attributes);
+        $attributes = array_merge($this->getAttributes(), $attributes);
         $this->setRawAttributes($attributes);
 
     }
@@ -198,8 +198,8 @@ class PreOrderGoods extends OrderGoods
     public function toArray()
     {
         $attributes = parent::toArray();
-        $attributes['payment_amount'] = $this->getPaymentAmount();
-        $attributes['deduction_amount'] = $this->getDeductionAmount();
+        //$attributes['payment_amount'] = $this->getPaymentAmount();
+        //$attributes['deduction_amount'] = $this->getDeductionAmount();
         return $attributes;
     }
 
@@ -224,16 +224,20 @@ class PreOrderGoods extends OrderGoods
     }
 
     /**
-     * @param string $key
      * @return mixed
      * @throws ShopException
      */
+    public function getGoodsPriceAttribute()
+    {
+        return $this->getGoodsPrice();
+    }
+
+    /**
+     * @param string $key
+     * @return mixed
+     */
     public function __get($key)
     {
-        // 为了与生成后的订单商品模型一致,方便外部调用
-        if ($key == 'goods_price') {
-            return $this->getGoodsPrice();
-        }
         return parent::__get($key);
     }
 
@@ -362,7 +366,8 @@ class PreOrderGoods extends OrderGoods
      * 订单商品抵扣集合
      * @return OrderGoodsDeductionCollection
      */
-    public function getOrderGoodsDeductions(){
+    public function getOrderGoodsDeductions()
+    {
         //dump($this->orderGoodsDeductions);
         return $this->orderGoodsDeductions;
     }
@@ -371,8 +376,9 @@ class PreOrderGoods extends OrderGoods
      * 获取重量
      * @return mixed
      */
-    public function getWeight(){
-        if($this->isOption()){
+    public function getWeight()
+    {
+        if ($this->isOption()) {
             return $this->goodsOption->weight;
         }
         return $this->goods->weight;

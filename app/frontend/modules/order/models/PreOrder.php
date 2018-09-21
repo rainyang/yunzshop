@@ -61,18 +61,13 @@ class PreOrder extends Order
      * @var OrderDeduction 抵扣类
      */
     protected $orderDeduction;
-protected $attributes = ['id'=>null];
-    public function setOrderGoods(Collection $orderGoods)
+    protected $attributes = ['id' => null];
+
+    public function setOrderGoods(PreOrderGoodsCollection $orderGoods)
     {
-        $this->setRelation('orderGoods', new PreOrderGoodsCollection());
+        $this->setRelation('orderGoods', $orderGoods);
 
-        $orderGoods->each(function ($aOrderGoods) {
-            /**
-             * @var PreOrderGoods $aOrderGoods
-             */
-
-            $this->orderGoods->push($aOrderGoods);
-
+        $orderGoods->each(function (PreOrderGoods $aOrderGoods) {
             $aOrderGoods->setOrder($this);
         });
         event(new AfterPreOrderLoadOrderGoodsEvent($this));
@@ -116,18 +111,16 @@ protected $attributes = ['id'=>null];
         return $this->orderGoods;
     }
 
-    public function getOrder()
-    {
-        return $this;
-    }
-
     public function getMember()
     {
         return $this->belongsToMember;
     }
-    public function getDiscount(){
+
+    public function getDiscount()
+    {
         return $this->discount;
     }
+
     /**
      * 计算订单优惠金额
      * @return number
@@ -162,7 +155,6 @@ protected $attributes = ['id'=>null];
      */
     public function getPreIdAttribute()
     {
-        dd(md5($this->getOrderGoodsModels()->pluck('goods_id')->toJson()));
         return md5($this->getOrderGoodsModels()->pluck('goods_id')->toJson());
     }
 
@@ -223,9 +215,9 @@ protected $attributes = ['id'=>null];
     {
         // 格式化价格字段,将key中带有price,amount的属性,转为保留2位小数的字符串
         $attributes = array_combine(array_keys($attributes), array_map(function ($value, $key) {
-            if(is_array($value)){
+            if (is_array($value)) {
                 $value = $this->formatAmountAttributes($value);
-            }else{
+            } else {
                 if (str_contains($key, 'price') || str_contains($key, 'amount')) {
                     $value = sprintf('%.2f', $value);
                 }
@@ -235,6 +227,33 @@ protected $attributes = ['id'=>null];
         return $attributes;
     }
 
+    /**
+     * 保存一种关联模型集合
+     * @param $relation
+     */
+    private function saveManyRelations($relation)
+    {
+        $attributeItems = $this->$relation->map(function (BaseModel $relation) {
+            $relation->updateTimestamps();
+            return $relation->getAttributes();
+        });
+        $this->$relation->first()->insert($attributeItems->toArray());
+
+    }
+
+    /**
+     * 保存关联模型集合
+     * @param array $relations
+     */
+    private function insertRelations($relations = [])
+    {
+        foreach ($relations as $relation) {
+            if ($this->$relation->isNotEmpty()) {
+                $this->saveManyRelations($relation);
+            }
+        }
+    }
+    private $batchSaveRelations = ['orderGoods','orderSettings','orderCoupons','orderDiscounts','orderDeductions'];
     /**
      * @return bool
      * @throws \Exception
@@ -253,8 +272,22 @@ protected $attributes = ['id'=>null];
                 }
             }
         }
+        $this->insertRelations($this->batchSaveRelations);
 
-        return parent::push();
+        $relations = array_except($this->relations,$this->batchSaveRelations);
+
+        foreach ($relations as $models) {
+            $models = $models instanceof Collection
+                ? $models->all() : [$models];
+
+            foreach (array_filter($models) as $model) {
+                if (! $model->push()) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
 
@@ -316,14 +349,17 @@ protected $attributes = ['id'=>null];
             // 一次计算内避免循环调用,返回计算过程中的价格
             return $this->price;
         }
+
         //订单最终价格 = 商品最终价格 - 订单优惠 + 订单运费 - 订单抵扣
         $this->price = $this->getOrderGoodsPrice();
+
         // todo 为了保证每一项优惠计算之后,立刻修改price ,临时修改成这样.需要想办法重写
         $this->getDiscountAmount();
 
         $this->price += $this->getDispatchAmount();
 
         $this->price -= $this->getDeductionAmount();
+
         return max($this->price, 0);
     }
 

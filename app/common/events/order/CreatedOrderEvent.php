@@ -27,18 +27,14 @@ abstract class CreatedOrderEvent extends Event
      */
     public function __construct($order)
     {
-        //$order_model = Order::find($order_id);
-        $this->orderModel = $order;
-        if($order instanceof PreOrder){
-            $this->order = $order->getOrder();
-        }
+        $this->order = $order;
     }
     /**
      * (监听者)获取订单model
      * @return Order
      */
     public function getOrderModel(){
-        return $this->orderModel;
+        return $this->order;
     }
 
     /**

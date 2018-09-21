@@ -125,7 +125,6 @@ class Cache
      */
     public static function get($key, $default = null)
     {
-        \Log::debug('-----cache get2 ------'.self::setUniacid() . $key,\Cache::get(self::setUniacid() . $key, $default));
         return \Cache::get(self::setUniacid() . $key, $default);
     }
 
@@ -167,7 +166,6 @@ class Cache
      */
     public static function put($key, $value, $minutes = null)
     {
-        \Log::debug('-----cache save2 ------'.self::setUniacid() . $key,$value);
 
         \Cache::put(self::setUniacid() . $key, $value, $minutes);
     }
