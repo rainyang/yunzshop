@@ -8,6 +8,7 @@
 
 namespace app\frontend\modules\order\controllers;
 
+use app\common\events\order\AfterOrderCreatedImmediatelyEvent;
 use app\common\events\order\CreatingOrder;
 use app\common\exceptions\AppException;
 use app\frontend\modules\member\services\MemberCartService;
@@ -76,6 +77,8 @@ class CreateController extends PreOrderController
                  * @var $order PreOrder
                  */
                 $order_id = $order->generate();
+                event(new AfterOrderCreatedImmediatelyEvent($order));
+
                 $this->dispatch(new OrderCreatedEventQueueJob($order));
 
                 return $order_id;
