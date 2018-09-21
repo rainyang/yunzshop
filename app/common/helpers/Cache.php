@@ -166,7 +166,6 @@ class Cache
      */
     public static function put($key, $value, $minutes = null)
     {
-
         \Cache::put(self::setUniacid() . $key, $value, $minutes);
     }
 
