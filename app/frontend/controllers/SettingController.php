@@ -158,6 +158,10 @@ class SettingController extends BaseController
 
         $langData = Setting::get('shop.lang.' . $lang, $data);
 
+        if (is_null($langData)) {
+            $langData = [];
+        }
+
         return $this->successJson('获取商城语言设置成功', $langData);
     }
 
