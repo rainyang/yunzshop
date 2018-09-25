@@ -223,8 +223,17 @@ class MemberOfficeAccountService extends MemberService
      */
     private function _setClientRequestUrl()
     {
+        $pattern = '/(&t=([\d]+[^&]*))/';
+        $t = time();
+
         if (\YunShop::request()->yz_redirect) {
-            $redirect_url = base64_decode(\YunShop::request()->yz_redirect);
+            $yz_redirect = base64_decode(\YunShop::request()->yz_redirect);
+
+            if (preg_match($pattern, $yz_redirect)) {
+                $redirect_url = preg_replace($pattern, "&t={$t}", $yz_redirect);
+            } else {
+                $redirect_url = $yz_redirect . '&t=' . time();
+            }
 
             Session::set('client_url', $redirect_url);
         } else {
