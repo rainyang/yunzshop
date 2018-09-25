@@ -48,7 +48,8 @@ use Illuminate\Support\Collection;
 class PreOrderGoods extends OrderGoods
 {
     use PreOrderGoodsTrait;
-    protected $hidden = ['goods', 'sale','belongsToGood','hasOneGoodsDispatch'];
+
+    protected $hidden = ['goods', 'sale', 'belongsToGood', 'hasOneGoodsDispatch'];
     /**
      * @var PreOrder
      */
@@ -95,7 +96,7 @@ class PreOrderGoods extends OrderGoods
             'coupon_price' => $this->getCouponAmount()
         ];
 
-        $attributes = array_merge($this->getAttributes(),$attributes);
+        $attributes = array_merge($this->getAttributes(), $attributes);
         $this->setRawAttributes($attributes);
 
     }
@@ -155,8 +156,8 @@ class PreOrderGoods extends OrderGoods
     public function toArray()
     {
         $attributes = parent::toArray();
-        $attributes['payment_amount'] = $this->getPaymentAmount();
-        $attributes['deduction_amount'] = $this->getDeductionAmount();
+        //$attributes['payment_amount'] = $this->getPaymentAmount();
+        //$attributes['deduction_amount'] = $this->getDeductionAmount();
         return $attributes;
     }
 
@@ -181,15 +182,19 @@ class PreOrderGoods extends OrderGoods
     }
 
     /**
+     * @return mixed
+     */
+    public function getGoodsPriceAttribute()
+    {
+        return $this->getGoodsPrice();
+    }
+
+    /**
      * @param string $key
      * @return mixed
      */
     public function __get($key)
     {
-        // 为了与生成后的订单商品模型一致,方便外部调用
-        if ($key == 'goods_price') {
-            return $this->getGoodsPrice();
-        }
         return parent::__get($key);
     }
 
@@ -266,6 +271,5 @@ class PreOrderGoods extends OrderGoods
         return $this->getPriceCalculator()->getCouponAmount();
 
     }
-
 
 }

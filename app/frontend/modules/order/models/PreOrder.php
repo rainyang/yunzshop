@@ -2,6 +2,7 @@
 
 namespace app\frontend\modules\order\models;
 
+use app\common\events\order\AfterPreOrderLoadOrderGoodsEvent;
 use app\common\exceptions\AppException;
 use app\common\models\BaseModel;
 use app\common\models\DispatchType;
@@ -61,12 +62,15 @@ class PreOrder extends Order
      * @var OrderDeduction 抵扣类
      */
     protected $orderDeduction;
+    protected $attributes = ['id' => null];
 
-    public function setOrderGoods(Collection $orderGoods)
+    public function setOrderGoods(PreOrderGoodsCollection $orderGoods)
     {
-        $this->setRelation('orderGoods', new PreOrderGoodsCollection($orderGoods));
+        $this->setRelation('orderGoods', $orderGoods);
 
         $this->orderGoods->setOrder($this);
+
+        event(new AfterPreOrderLoadOrderGoodsEvent($this));
 
     }
 
@@ -141,7 +145,7 @@ class PreOrder extends Order
      */
     public function getPreIdAttribute()
     {
-        return $this->orderGoods->pluck('goods_id')->sort()->implode('a');
+        return md5($this->orderGoods->pluck('goods_id')->toJson());
     }
 
     /**
@@ -184,10 +188,39 @@ class PreOrder extends Order
             'uniacid' => $this->uniacid,
             'is_virtual' => $this->isVirtual(),//是否是虚拟商品订单
         );
+
+
         $attributes = array_merge($this->getAttributes(), $attributes);
         return $attributes;
     }
 
+    /**
+     * 保存一种关联模型集合
+     * @param $relation
+     */
+    private function saveManyRelations($relation)
+    {
+        $attributeItems = $this->$relation->map(function (BaseModel $relation) {
+            $relation->updateTimestamps();
+            return $relation->getAttributes();
+        });
+        $this->$relation->first()->insert($attributeItems->toArray());
+
+    }
+
+    /**
+     * 保存关联模型集合
+     * @param array $relations
+     */
+    private function insertRelations($relations = [])
+    {
+        foreach ($relations as $relation) {
+            if ($this->$relation->isNotEmpty()) {
+                $this->saveManyRelations($relation);
+            }
+        }
+    }
+    private $batchSaveRelations = ['orderGoods','orderSettings','orderCoupons','orderDiscounts','orderDeductions'];
     /**
      * @return bool
      * @throws \Exception
@@ -206,8 +239,22 @@ class PreOrder extends Order
                 }
             }
         }
+        $this->insertRelations($this->batchSaveRelations);
 
-        return parent::push();
+        $relations = array_except($this->relations,$this->batchSaveRelations);
+
+        foreach ($relations as $models) {
+            $models = $models instanceof Collection
+                ? $models->all() : [$models];
+
+            foreach (array_filter($models) as $model) {
+                if (! $model->push()) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
 
@@ -226,18 +273,21 @@ class PreOrder extends Order
      */
     protected function getPrice()
     {
-        if (isset($this->price)) {
+        if (array_key_exists('price', $this->attributes)) {
             // 一次计算内避免循环调用,返回计算过程中的价格
             return $this->price;
         }
+
         //订单最终价格 = 商品最终价格 - 订单优惠 + 订单运费 - 订单抵扣
         $this->price = $this->getOrderGoodsPrice();
+
         // todo 为了保证每一项优惠计算之后,立刻修改price ,临时修改成这样.需要想办法重写
         $this->getDiscountAmount();
 
         $this->price += $this->getDispatchAmount();
 
         $this->price -= $this->getDeductionAmount();
+
         return max($this->price, 0);
     }
 

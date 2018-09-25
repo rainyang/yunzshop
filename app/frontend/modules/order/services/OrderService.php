@@ -145,7 +145,7 @@ class OrderService
         if ($memberCarts->isEmpty()) {
             return false;
         }
-        (new MemberCartCollection($memberCarts))->validate();
+        $memberCarts->validate();
 
         $shop = ShopService::getCurrentShopModel();
 

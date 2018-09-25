@@ -11,11 +11,11 @@ namespace app\common\models;
 
 use app\backend\modules\goods\observers\SettingObserver;
 use app\common\exceptions\ShopException;
-use app\common\helpers\Cache;
 use app\common\traits\ValidatorTrait;
+use app\framework\Database\Eloquent\Builder;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 /**
  * Class BaseModel
@@ -199,6 +199,7 @@ class BaseModel extends Model
     private function getCommonModelClass($class)
     {
         if (get_parent_class($class) == self::class) {
+
             return $class;
         }
         return $this->getCommonModelClass(get_parent_class($class));
@@ -212,6 +213,7 @@ class BaseModel extends Model
     public function getMorphClass()
     {
         return $this->getCommonModelClass(parent::getMorphClass());
+
     }
 
 
@@ -261,5 +263,103 @@ class BaseModel extends Model
         }
         $fields = array_diff($this->columns(), $excludeFields) ?: [];
         return $query->select($fields);
+    }
+
+    public function getRelationValue($key)
+    {
+
+        // If the key already exists in the relationships array, it just means the
+        // relationship has already been loaded, so we'll just return it out of
+        // here because there is no need to query within the relations twice.
+        if ($this->relationLoaded($key)) {
+            return $this->relations[$key];
+        }
+
+        // If the "attribute" exists as a method on the model, we will just assume
+        // it is a relationship and will load and return results from the query
+        // and hydrate the relationship's value on the "relationships" array.
+        if (method_exists($this, $key)) {
+            return $this->getRelationshipFromMethod($key);
+        }
+
+        return $this->getRelationshipFromExpansions($key, static::class);
+    }
+
+    /**
+     * 从模型扩展中获取关联模型
+     * @param $method
+     * @param $class
+     * @return mixed
+     */
+    public function expansionMethod($method,$class){
+        if (isset(static::$expansions)) {
+
+            foreach ($this->getExpansions() as $expansion) {
+
+                if (method_exists($expansion, $method)) {
+
+                    return (new $expansion)->$method($this);
+                }
+            }
+        }
+        // 递归到此类为止避免死循环
+        if (get_parent_class($class) !== self::class) {
+            return $this->getRelationshipFromExpansions($method, get_parent_class($class));
+        }
+    }
+
+    /**
+     * 从模型扩展中载入
+     * @param $key
+     * @param $class
+     * @return mixed
+     */
+    private function getRelationshipFromExpansions($key, $class)
+    {
+
+        if (isset(static::$expansions)) {
+            foreach ($this->getExpansions() as $expansion) {
+                if (method_exists($expansion, $key)) {
+                    return (new $expansion)->getRelationshipFromExpansion($key, $this);
+                }
+            }
+        }
+        // 递归到此类为止避免死循环
+        if (get_parent_class($class) !== self::class) {
+            return $this->getRelationshipFromExpansions($key, get_parent_class($class));
+        }
+    }
+
+    /**
+     * 模型扩展
+     * @var Collection
+     */
+    protected static $expansions;
+
+    /**
+     * 设置扩展
+     * @param $expansions
+     */
+    public static function setExpansions($expansions)
+    {
+        static::$expansions = $expansions;
+    }
+
+    /**
+     * 获取扩展设置
+     * @return mixed
+     */
+    private function getExpansions()
+    {
+        return static::$expansions[static::class];
+    }
+
+    /**
+     * @param \Illuminate\Database\Query\Builder $query
+     * @return Builder|\Illuminate\Database\Eloquent\Builder|static
+     */
+    public function newEloquentBuilder($query)
+    {
+        return new Builder($query);
     }
 }

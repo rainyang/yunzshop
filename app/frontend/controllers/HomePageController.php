@@ -335,8 +335,7 @@ class HomePageController extends ApiController
         }
 
         //插件信息, 原来接口在 plugins.get-plugin-data
-        $plugins = new PluginManager(app(),new OptionRepository(),new Dispatcher(),new Filesystem());
-        $enableds = $plugins->getEnabledPlugins()->toArray();
+        $enableds = app('plugins')->getEnabledPlugins()->toArray();
 
         //如果安装了装修插件并开启插件
         if(array_key_exists('designer', $enableds)){

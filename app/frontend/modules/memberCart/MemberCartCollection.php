@@ -8,8 +8,8 @@
 
 namespace app\frontend\modules\memberCart;
 
+use app\framework\Database\Eloquent\Collection;
 use app\frontend\models\MemberCart;
-use Illuminate\Database\Eloquent\Collection;
 
 class MemberCartCollection extends Collection
 {
@@ -30,7 +30,10 @@ class MemberCartCollection extends Collection
         });
     }
     public function loadRelations(){
-        $this->load(['goods','goods.hasOnePrivilege','goods.hasOneOptions','goods.hasManyGoodsDiscount','goods.hasOneGoodsDispatch','goods.hasOneSale','goodsOption']);
+        $this->expansionLoad(['goods'=> function ($query) {
+            $query->exclude('content,description');
+        },'goods.hasOnePrivilege','goods.hasOneOptions','goods.hasManyGoodsDiscount','goods.hasOneGoodsDispatch','goods.hasOneSale','goodsOption','goods.goodsLove']);
+        //,'goods.areaDividendGoods','goods.supplierGoods'
         $this->each(function (MemberCart $memberCart) {
             if(isset($memberCart->goodsOption)){
                 $memberCart->goodsOption->setRelation('goods',$memberCart->goods);

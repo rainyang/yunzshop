@@ -1,7 +1,7 @@
 <?php
 namespace app\frontend\modules\goods\listeners;
 
-use app\common\events\order\AfterOrderCreatedEvent;
+use app\common\events\order\AfterOrderCreatedImmediatelyEvent;
 use app\common\events\order\AfterOrderPaidEvent;
 use app\common\models\OrderGoods;
 use app\frontend\models\goods;
@@ -15,7 +15,7 @@ use app\frontend\models\GoodsOption;
  */
 class GoodsStock
 {
-    public function onOrderCreated(AfterOrderCreatedEvent $event){
+    public function onOrderCreated(AfterOrderCreatedImmediatelyEvent $event){
 
         $order = $event->getOrderModel();
         $order->hasManyOrderGoods->map(function ($orderGoods){
@@ -63,7 +63,7 @@ class GoodsStock
     public function subscribe($events)
     {
         $events->listen(
-            AfterOrderCreatedEvent::class,
+            AfterOrderCreatedImmediatelyEvent::class,
             self::class . '@onOrderCreated'
         );
         $events->listen(

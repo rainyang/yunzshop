@@ -8,7 +8,8 @@
 
 namespace app\frontend\modules\orderGoods\models;
 
-use Illuminate\Database\Eloquent\Collection;
+
+use app\framework\Database\Eloquent\Collection;
 
 class PreOrderGoodsCollection extends Collection
 {
