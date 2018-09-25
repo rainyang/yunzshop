@@ -17,7 +17,6 @@ class Statistics
 
     public function subscribe()
     {
-        return;
         \Event::listen('cron.collectJobs', function () {
             \Cron::add('Statistics', '0 1 * * * *', function () {
                 (new \app\common\services\statistics\TimedTaskService())->handle();

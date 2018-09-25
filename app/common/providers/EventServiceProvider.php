@@ -3,7 +3,7 @@
 namespace app\common\providers;
 
 
-use app\backend\modules\charts\listeners\Statistics;
+//use app\backend\modules\charts\listeners\Statistics;
 use app\common\events\message\SendMessageEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\events\order\AfterOrderPaidEvent;
@@ -130,7 +130,7 @@ class EventServiceProvider extends ServiceProvider
         CouponSend::class,
         MemberLevelValidity::class,
         LimitBuy::class,
-        Statistics::class,
+//        Statistics::class,
     ];
 
     /**
