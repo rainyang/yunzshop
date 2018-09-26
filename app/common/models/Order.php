@@ -70,7 +70,6 @@ class Order extends BaseModel
     public $table = 'yz_order';
     public $setting = null;
     private $StatusService;
-    protected $fillable = [];
     protected $guarded = ['id'];
     protected $appends = ['status_name', 'pay_type_name'];
     protected $search_fields = ['id', 'order_sn'];

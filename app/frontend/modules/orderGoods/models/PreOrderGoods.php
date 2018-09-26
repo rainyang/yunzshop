@@ -68,27 +68,19 @@ class PreOrderGoods extends OrderGoods
         $this->uid = $order->uid;
         $this->uniacid = $order->uniacid;
     }
-    /**
-     * PreOrderGoods constructor.
-     * @param array $attributes
-     */
-    public function __construct(array $attributes = [])
-    {
-        parent::__construct($attributes);
-        // 订单商品优惠使用记录集合
-        $this->setRelation('orderGoodsDiscounts', $this->newCollection());
-        // 订单商品优惠使用记录集合
-        $this->setRelation('orderGoodsDeductions', new OrderGoodsDeductionCollection());
-        
-        $attributes = $this->getPreAttributes();
-        $this->setRawAttributes($attributes);
-    }
 
     /**
      * 初始化属性,计算金额和价格,由于优惠金额的计算依赖于订单的优惠金额计算,所以需要在订单类计算完优惠金额之后,再执行这个方法
      */
     public function _init()
     {
+        // 订单商品优惠使用记录集合
+        $this->setRelation('orderGoodsDiscounts', $this->newCollection());
+        // 订单商品优惠使用记录集合
+        $this->setRelation('orderGoodsDeductions', new OrderGoodsDeductionCollection());
+
+        $attributes = $this->getPreAttributes();
+        $this->setRawAttributes($attributes);
         $attributes = $this->getPreAttributes();
         $this->setRawAttributes($attributes);
         $attributes = [

@@ -117,6 +117,7 @@ class Express
 
             return $memberAddress;
         }
+
         return $this->event->getOrderModel()->belongsToMember->defaultAddress;
     }
 
@@ -142,14 +143,16 @@ class Express
         $orderAddress = app('OrderManager')->make('OrderAddress');
 
         $orderAddress->mobile = $member_address->mobile;
-        $orderAddress->province_id = $member_address->province_id;
+        $orderAddress->province_id = $member_address->province_id ?: Address::where('areaname', $member_address->province)->where('parentid', 0)->value('id');
         $orderAddress->city_id = $member_address->city_id ?: Address::where('areaname', $member_address->city)->where('parentid', $orderAddress->province_id)->value('id');
         $orderAddress->district_id = $member_address->district_id ?: Address::where('areaname', $member_address->district)->where('parentid', $orderAddress->city_id)->value('id');
 
         $orderAddress->address = implode(' ', [$member_address->province, $member_address->city, $member_address->district, $member_address->address]);
 
         if (isset($member_address->street)) {
+
             $orderAddress->street_id = Street::where('areaname', $member_address->street)->where('parentid', $orderAddress->district_id)->value('id');
+
             if(!isset($orderAddress->street_id)){
                 throw new ShopException('收货地址有误请重新保存收货地址');
             }

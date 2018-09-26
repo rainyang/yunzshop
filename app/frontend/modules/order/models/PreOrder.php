@@ -74,8 +74,7 @@ class PreOrder extends Order
 
     }
 
-
-    public function __construct(array $attributes = [])
+    public function _init()
     {
         $this->dispatch_type_id = request()->input('dispatch_type_id', 0);
 
@@ -83,12 +82,6 @@ class PreOrder extends Order
         if (request()->input('mark') !== 'undefined') {
             $this->mark = request()->input('mark', '');
         }
-        parent::__construct($attributes);
-
-    }
-
-    public function _init()
-    {
         $this->setRelation('orderSettings', $this->newCollection());
 
         $this->discount = new OrderDiscount($this);

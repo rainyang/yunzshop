@@ -53,6 +53,9 @@ class OrderGoods extends BaseModel
 
     public function getButtonsAttribute()
     {
+        if($this->uid != \YunShop::app()->getMemberId()){
+            return [];
+        }
         if ($this->comment_status == 0) {
             $result[] = [
                 'name' => '评价',
