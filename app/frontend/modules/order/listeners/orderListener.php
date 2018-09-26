@@ -104,6 +104,28 @@ class orderListener
                         // todo 使用队列执行
                     });
                 }
+
+                // 收银台订单检测 自动收货
+                \Log::info("--收银台订单自动完成start--");
+                \Cron::add("CashireOrderReceive{$u->uniacid}", '*/1 * * * * *', function () {
+                    $start_time = time() - (60 * 60 * 24);
+                    $end_time = time();
+                    //遍历执行收货
+                    $orders = \app\backend\modules\order\models\Order::waitReceive()
+                        ->where('plugin_id', 31)
+                        ->whereBetween('pay_time', [$start_time, $end_time])
+                        ->normal()
+                        ->get();
+                    if (!$orders->isEmpty()) {
+                        $orders->each(function ($order) {
+                            try {
+                                OrderService::orderReceive(['order_id' => $order->id]);
+                            } catch (\Exception $e) {
+
+                            }
+                        });
+                    }
+                });
             }
         });
     }
