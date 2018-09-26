@@ -140,7 +140,7 @@ class Order extends BaseModel
     public function scopeWaitPay($query)
     {
         //AND o.status = 0 and o.paytype<>3
-        return $query->where(['status' => self::WAIT_PAY]);
+        return $query->where([$this->getTable().'.status' => self::WAIT_PAY]);
     }
 
     public function scopeNormal($query)
@@ -156,7 +156,7 @@ class Order extends BaseModel
     public function scopeWaitSend($query)
     {
         //AND ( o.status = 1 or (o.status=0 and o.paytype=3) )
-        return $query->where(['status' => self::WAIT_SEND]);
+        return $query->where([$this->getTable().'.status' => self::WAIT_SEND]);
     }
 
     /**
@@ -166,7 +166,7 @@ class Order extends BaseModel
      */
     public function scopeWaitReceive($query)
     {
-        return $query->where(['status' => self::WAIT_RECEIVE]);
+        return $query->where([$this->getTable().'.status' => self::WAIT_RECEIVE]);
     }
 
     /**
@@ -176,7 +176,7 @@ class Order extends BaseModel
      */
     public function scopeCompleted($query)
     {
-        return $query->where(['status' => self::COMPLETE]);
+        return $query->where([$this->getTable().'.status' => self::COMPLETE]);
     }
 
     /**

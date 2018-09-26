@@ -179,7 +179,7 @@ class BaseModel extends Model
         if (!isset($uid)) {
             $uid = \YunShop::app()->getMemberId();
         }
-        return $query->where('uid', $uid);
+        return $query->where($this->getTable().'.uid', $uid);
     }
 
     public function scopeMine(Builder $query)
