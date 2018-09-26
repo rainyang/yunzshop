@@ -58,6 +58,15 @@ class PreOrderGoods extends OrderGoods
      * @var Collection
      */
     public $coupons;
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+        // 订单商品优惠使用记录集合
+        $this->setRelation('orderGoodsDiscounts', $this->newCollection());
+        // 订单商品优惠使用记录集合
+        $this->setRelation('orderGoodsDeductions', new OrderGoodsDeductionCollection());
+    }
+
     /**
      * 为订单model提供的方法 ,设置所属的订单model
      * @param PreOrder $order
@@ -74,10 +83,7 @@ class PreOrderGoods extends OrderGoods
      */
     public function _init()
     {
-        // 订单商品优惠使用记录集合
-        $this->setRelation('orderGoodsDiscounts', $this->newCollection());
-        // 订单商品优惠使用记录集合
-        $this->setRelation('orderGoodsDeductions', new OrderGoodsDeductionCollection());
+
 
         $attributes = $this->getPreAttributes();
         $this->setRawAttributes($attributes);
