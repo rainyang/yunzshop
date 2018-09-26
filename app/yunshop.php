@@ -38,8 +38,8 @@ class YunShop
         //检测controller继承
         $controller = new $namespace;
         if (!$controller instanceof \app\common\components\BaseController) {
-            if(config('app.debug')){
-                throw new NotFoundException($controller.' 没有继承\app\common\components\BaseController: ' . $namespace);
+            if (config('app.debug')) {
+                throw new NotFoundException($controller . ' 没有继承\app\common\components\BaseController: ' . $namespace);
             }
             throw new NotFoundException(" 路由错误:不存在控制器: " . $namespace);
 
@@ -82,7 +82,7 @@ class YunShop
             $item = Menu::getCurrentItemByRoute($controller->route, $menuList);
             //dd($controller->route);
             self::$currentItems = array_merge(Menu::getCurrentMenuParents($item, $menuList), [$item]);
- //dd(self::$currentItems);
+            //dd(self::$currentItems);
             Config::set('currentMenuItem', $item);
             //dd($item);exit;
             //检测权限
@@ -207,21 +207,19 @@ class YunShop
     }
 
     /**
-     * 验证是否商城操作员
-     * @return bool
-     * @throws Exception
+     * @name 验证是否商城操作员
+     * @author
+     * @return array|bool|null|stdClass
      */
     public static function isRole()
     {
         global $_W;
         if (app('plugins')->isEnabled('supplier')) {
-            if ((new \Yunshop\Supplier\common\models\Supplier)->hasColumn('uid')) {
-                $res = \Illuminate\Support\Facades\DB::table('yz_supplier')->where('uid', $_W['uid'])->first();
-                //$res = \Yunshop\Supplier\common\models\Supplier::getSupplierByUid($_W['uid'])->first();
-                if ($res) {
-                    return $res;
-                }
+            $res = \Illuminate\Support\Facades\DB::table('yz_supplier')->where('uid', $_W['uid'])->first();
+            if (!$res) {
+                return false;
             }
+            return $res;
         }
         return false;
     }
@@ -314,7 +312,7 @@ class YunShop
 
                 }
             }
-        }catch (Exception $exception){
+        } catch (Exception $exception) {
 //            dd($exception);
 //            exit;
 
@@ -556,7 +554,7 @@ class YunApp extends YunComponent
             }
             //return false;
         }
-        
+
         if (Session::get('member_id')) {
             return Session::get('member_id');
         } else {
