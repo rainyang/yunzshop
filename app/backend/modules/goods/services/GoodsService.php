@@ -95,7 +95,7 @@ class GoodsService
                         }
 
                         $category_id = $categorys['thirdid'];
-                        $category_ids =$categorys['childid'] . ',' . $categorys['thirdid'];
+                        $category_ids = $categorys['parentid'] . ',' .$categorys['childid'] . ',' . $categorys['thirdid'];
                         break;
                     default:
                         $category_id = $categorys['childid'];
