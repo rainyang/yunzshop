@@ -3,7 +3,6 @@
 namespace app\frontend\modules\order\models;
 
 use app\common\events\order\AfterPreOrderLoadOrderGoodsEvent;
-use app\common\exceptions\AppException;
 use app\common\models\BaseModel;
 use app\common\models\DispatchType;
 use app\frontend\models\Member;
@@ -16,7 +15,6 @@ use app\frontend\modules\orderGoods\models\PreOrderGoods;
 use app\frontend\modules\order\services\OrderService;
 use app\frontend\modules\orderGoods\models\PreOrderGoodsCollection;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Schema;
 
 /**
  * 订单生成类
@@ -64,6 +62,17 @@ class PreOrder extends Order
     protected $orderDeduction;
     protected $attributes = ['id' => null];
 
+    public function __construct(array $attributes = [])
+    {
+        $this->dispatch_type_id = request()->input('dispatch_type_id', 0);
+
+        //临时处理，无扩展性
+        if (request()->input('mark') !== 'undefined') {
+            $this->mark = request()->input('mark', '');
+        }
+        parent::__construct($attributes);
+    }
+
     public function setOrderGoods(PreOrderGoodsCollection $orderGoods)
     {
         $this->setRelation('orderGoods', $orderGoods);
@@ -76,12 +85,7 @@ class PreOrder extends Order
 
     public function _init()
     {
-        $this->dispatch_type_id = request()->input('dispatch_type_id', 0);
 
-        //临时处理，无扩展性
-        if (request()->input('mark') !== 'undefined') {
-            $this->mark = request()->input('mark', '');
-        }
         $this->setRelation('orderSettings', $this->newCollection());
 
         $this->discount = new OrderDiscount($this);
@@ -155,6 +159,7 @@ class PreOrder extends Order
 
         return $result;
     }
+
     /**
      * 显示订单数据
      * @return array
@@ -165,6 +170,7 @@ class PreOrder extends Order
         $attributes = $this->formatAmountAttributes($attributes);
         return $attributes;
     }
+
     public function getPreAttributes()
     {
         $attributes = array(
@@ -213,7 +219,9 @@ class PreOrder extends Order
             }
         }
     }
-    private $batchSaveRelations = ['orderGoods','orderSettings','orderCoupons','orderDiscounts','orderDeductions'];
+
+    private $batchSaveRelations = ['orderGoods', 'orderSettings', 'orderCoupons', 'orderDiscounts', 'orderDeductions'];
+
     /**
      * @return bool
      * @throws \Exception
@@ -234,14 +242,14 @@ class PreOrder extends Order
         }
         $this->insertRelations($this->batchSaveRelations);
 
-        $relations = array_except($this->relations,$this->batchSaveRelations);
+        $relations = array_except($this->relations, $this->batchSaveRelations);
 
         foreach ($relations as $models) {
             $models = $models instanceof Collection
                 ? $models->all() : [$models];
 
             foreach (array_filter($models) as $model) {
-                if (! $model->push()) {
+                if (!$model->push()) {
                     return false;
                 }
             }
@@ -283,7 +291,6 @@ class PreOrder extends Order
 
         return max($this->price, 0);
     }
-
 
 
 }
