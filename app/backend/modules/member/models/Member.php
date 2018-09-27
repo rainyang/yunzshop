@@ -8,6 +8,8 @@
 
 namespace app\backend\modules\member\models;
 
+use app\common\models\member\MemberDel;
+
 class Member extends \app\common\models\Member
 {
     static protected $needLog = true;
@@ -22,6 +24,41 @@ class Member extends \app\common\models\Member
         return self::uniacid()
             ->where('uid', $id)
             ->delete();
+    }
+
+    /**
+     * 更新删除会员信息
+     *
+     * @param $id
+     */
+    public static function UpdateDeleteMemberInfoById($id)
+    {
+        $member_model = Member::find($id);
+        MemberDel::insertData($member_model);
+        $member_model->email = '';
+        $member_model->createtime = 0;
+        $member_model->nickname = '';
+        $member_model->avatar = '';
+        $member_model->mobile = '';
+        $member_model->email = '';
+        $member_model->gender = 0;
+        $member_model->nationality = '';
+        $member_model->resideprovince = '';
+        $member_model->residecity = '';
+        $member_model->salt = '';
+        $member_model->password = '';
+        $member_model->credit1 = 0;
+        $member_model->credit2 = 0;
+        $member_model->credit3 = 0;
+        $member_model->credit4 = 0;
+        $member_model->credit5 = 0;
+        $member_model->credit6 = 0;
+
+        if ($member_model->save()) {
+            return $member_model->uid;
+        } else {
+            return false;
+        }
     }
 
     public function address()

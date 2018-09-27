@@ -17,7 +17,7 @@ class CreateYzMemberDelLogTable extends Migration
             Schema::create('yz_member_del_log', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('uniacid')->nullable()->default(0)->index('idx_uniacid');
-                $table->integer('member)id')->default(0)->index('del_uid');
+                $table->integer('member_id')->default(0)->index('del_uid');
                 $table->tinyInteger('type')->default(0);
                 $table->text('value', 65535);
                 $table->integer('created_at')->nullable();
