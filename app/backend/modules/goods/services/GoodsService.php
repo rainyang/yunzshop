@@ -87,7 +87,7 @@ class GoodsService
                         }
 
                         $category_id = $categorys['childid'];
-                        $category_ids = $categorys['childid'];
+                        $category_ids =  $categorys['parentid'] . ',' .$categorys['childid'];
                         break;
                     case 3:
                         if (0 == $categorys['childid'] || 0 == $categorys['thirdid']) {
