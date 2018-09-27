@@ -15,16 +15,20 @@ use app\backend\modules\member\models\MemberGroup;
 use app\backend\modules\member\models\MemberLevel;
 use app\backend\modules\member\models\MemberRecord;
 use app\backend\modules\member\models\MemberShopInfo;
+use app\backend\modules\member\models\MemberUnique;
 use app\backend\modules\member\services\MemberServices;
 use app\common\components\BaseController;
 use app\common\events\member\MemberRelationEvent;
 use app\common\events\member\RegisterByAgent;
 use app\common\helpers\PaginationHelper;
 use app\common\models\AccountWechats;
+use app\common\models\MemberAlipay;
+use app\common\models\MemberMiniAppModel;
+use app\common\models\MemberWechatModel;
 use app\common\services\ExportService;
-use app\frontend\modules\member\models\MemberUniqueModel;
 use app\frontend\modules\member\models\SubMemberModel;
 use app\Jobs\ModifyRelationJob;
+use Illuminate\Support\Facades\DB;
 use Yunshop\Commission\models\Agents;
 
 
@@ -207,7 +211,7 @@ class MemberController extends BaseController
             exit;
         }
 
-        $member = Member::getMemberInfoById($uid);
+        $member = Member::getMemberInfoBlackById($uid);
 
         if (!empty($member)) {
             $member = $member->toArray();
@@ -320,59 +324,70 @@ class MemberController extends BaseController
      * 删除
      *
      */
-//    public function delete()
-//    {
-//        $del = false;
-//        $uid = \YunShop::request()->id ? intval(\YunShop::request()->id) : 0;
-//
-//        if ($uid == 0 || !is_int($uid)) {
-//            return $this->message('参数错误', '', 'error');
-//        }
-//
-//        $member = Member::getMemberBaseInfoById($uid);
-//
-//        if (empty($member)) {
-//            return $this->message('用户不存在', '', 'error');
-//        }
-//
-//        $del = DB::transaction(function () use ($uid, $member) {
-//            //商城会员表
-//            MemberShopInfo::deleteMemberInfoById($uid);
-//
-//            //unionid关联表
-//            if (isset($member->hasOneFans->unionid) && !empty($member->hasOneFans->unionid)) {
-//                $uniqueModel = MemberUnique::getMemberInfoById($member->hasOneFans->unionid)->first();
-//
-//                if (!is_null($uniqueModel)) {
-//                    if ($uniqueModel->member_id != $uid) {
-//                        MemberShopInfo::deleteMemberInfoById($uniqueModel->member_id);
-//                        //小程序会员表
-//                        MemberMiniAppModel::deleteMemberInfoById($uniqueModel->member_id);
-//                        //app会员表
-//                        MemberWechatModel::deleteMemberInfoById($uniqueModel->member_id);
-//                    }
-//                }
-//
-//                MemberUnique::deleteMemberInfoById($uid, $member->hasOneFans->unionid);
-//            } else {
-//                MemberUnique::deleteMemberInfoById($uid);
-//            }
-//
-//            //小程序会员表
-//            MemberMiniAppModel::deleteMemberInfoById($uid);
-//
-//            //app会员表
-//            MemberWechatModel::deleteMemberInfoById($uid);
-//
-//            return true;
-//        });
-//
-//        if ($del) {
-//            return $this->message('用户删除成功', yzWebUrl('member.member.index'));
-//        }
-//
-//        return $this->message('用户删除失败', yzWebUrl('member.member.index'), 'error');
-//    }
+    public function delete()
+    {
+        $del = false;
+        $uid = \YunShop::request()->id ? intval(\YunShop::request()->id) : 0;
+
+        if ($uid == 0 || !is_int($uid)) {
+            return $this->message('参数错误', '', 'error');
+        }
+
+        $member = Member::getMemberBaseInfoById($uid);
+
+        if (empty($member)) {
+            return $this->message('用户不存在', '', 'error');
+        }
+
+        $del = DB::transaction(function () use ($uid, $member) {
+            //商城会员表
+            MemberShopInfo::deleteMemberInfoById($uid);
+
+            //unionid关联表
+            if (isset($member->hasOneFans->unionid) && !empty($member->hasOneFans->unionid)) {
+                $uniqueModel = MemberUnique::getMemberInfoById($member->hasOneFans->unionid)->first();
+
+                if (!is_null($uniqueModel)) {
+                    if ($uniqueModel->member_id != $uid) {
+                        MemberShopInfo::deleteMemberInfoById($uniqueModel->member_id);
+                        //小程序会员表
+                        MemberMiniAppModel::deleteMemberInfoById($uniqueModel->member_id);
+                        //app会员表
+                        MemberWechatModel::deleteMemberInfoById($uniqueModel->member_id);
+
+                        //删除微擎mc_mapping_fans 表数据
+                        McMappingFans::deleteMemberInfoById($uniqueModel->member_id);
+
+                        Member::deleteMemberInfoById($uniqueModel->member_id);
+                    }
+                }
+            }
+
+            MemberUnique::deleteMemberInfoById($uid);
+
+            //删除支付宝会员表
+            MemberAlipay::deleteMemberInfoById($uid);
+
+            //小程序会员表
+            MemberMiniAppModel::deleteMemberInfoById($uid);
+
+            //app会员表
+            MemberWechatModel::deleteMemberInfoById($uid);
+
+            //删除微擎mc_mapping_fans 表数据
+            McMappingFans::deleteMemberInfoById($uid);
+
+            Member::deleteMemberInfoById($uid);
+
+            return true;
+        });
+
+        if ($del) {
+            return $this->message('用户删除成功', yzWebUrl('member.member.index'));
+        }
+
+        return $this->message('用户删除失败', yzWebUrl('member.member.index'), 'error');
+    }
 
     /**
      * 设置黑名单

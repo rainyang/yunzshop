@@ -25,7 +25,7 @@ class BaseController extends Controller
 {
     use DispatchesJobs, MessageTrait, ValidatesRequests, TemplateTrait, PermissionTrait, JsonTrait;
 
-    const COOKIE_EXPIRE = 10 * 24 * 3600;
+    const COOKIE_EXPIRE = 864000;
 
     /**
      * controller中执行报错需要回滚的action数组
@@ -93,12 +93,19 @@ class BaseController extends Controller
             unset($pieces);
         }
 
-        if (empty($session_id) && \YunShop::request()->session_id &&
-            \YunShop::request()->session_id != 'undefined'
+        if (empty($session_id) && \YunShop::request()->session_id
+              && \YunShop::request()->session_id != 'undefined' && \YunShop::request()->session_id != 'null'
         ) {
             $session_id = \YunShop::request()->session_id;
+            session_id($session_id);
+            setcookie(session_name(), $session_id);
         }
 
+        if (isset($_COOKIE[session_name()])) {
+            $session_id = $_COOKIE[session_name()];
+            session_id($session_id);
+        }
+        /*
         if (isset($session_id) && isset($_COOKIE[session_name()]) && $session_id != $_COOKIE[session_name()]) {
             $session_id = $_COOKIE[session_name()];
         }
@@ -115,7 +122,7 @@ class BaseController extends Controller
             setcookie(session_name(), $session_id);
         }
 
-        session_id($session_id);
+        */
 
         //load()->classs('wesession');
         //\WeSession::start(\YunShop::app()->uniacid, CLIENT_IP, self::COOKIE_EXPIRE);

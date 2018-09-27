@@ -44,7 +44,8 @@ class LoginController extends ApiController
                 $url = Session::get('client_url');
             }
 
-            return $this->successJson('ok', ['status'=> 1, 'url' => $url]);
+            //return $this->successJson('ok', ['status'=> 1, 'url' => $url]);
+            redirect($url)->send();
         }
 
 

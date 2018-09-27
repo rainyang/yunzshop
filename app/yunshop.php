@@ -209,20 +209,19 @@ class YunShop
     /**
      * @name 验证是否商城操作员
      * @author
-     * @return bool
+     * @return array|bool|null|stdClass
      */
     public static function isRole()
     {
         global $_W;
         $plugin_class = new PluginManager(app(), new OptionRepository(), new Dispatcher(), new Filesystem());
         if ($plugin_class->isEnabled('supplier')) {
-            if (Schema::hasColumn('yz_supplier', 'uid')) {
-                $res = \Illuminate\Support\Facades\DB::table('yz_supplier')->where('uid', $_W['uid'])->first();
-                //$res = \Yunshop\Supplier\common\models\Supplier::getSupplierByUid($_W['uid'])->first();
-                if ($res) {
-                    return $res;
-                }
+
+            $res = \Illuminate\Support\Facades\DB::table('yz_supplier')->where('uid', $_W['uid'])->first();
+            if (!$res) {
+                return false;
             }
+            return $res;
         }
         return false;
     }

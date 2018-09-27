@@ -3,6 +3,8 @@
 namespace app\frontend\modules\refund\services;
 
 use app\common\exceptions\AppException;
+use app\frontend\modules\refund\services\operation\ExchangeComplete;
+use app\frontend\modules\refund\services\operation\ReceiveResendGoods;
 use app\frontend\modules\refund\services\operation\RefundCancel;
 use app\frontend\modules\refund\services\operation\RefundSend;
 
@@ -14,10 +16,14 @@ use app\frontend\modules\refund\services\operation\RefundSend;
  */
 class RefundOperationService
 {
+    /**
+     * @return mixed
+     * @throws AppException
+     */
     public static function refundSend()
     {
         //todo 需要与后台操作统一
-        $refundSend = RefundSend::find(\Request::input('refund_id'));
+        $refundSend = RefundSend::find(request()->input('refund_id'));
         if (!$refundSend) {
             throw new AppException('售后申请记录不存在');
         }
@@ -26,6 +32,24 @@ class RefundOperationService
 
     }
 
+    /**
+     * @return mixed
+     * @throws AppException
+     */
+    public static function exchangeComplete(){
+    //todo 需要与后台操作统一
+        $exchangeComplete = ExchangeComplete::find(request()->input('refund_id'));
+        if (!$exchangeComplete) {
+            throw new AppException('售后申请记录不存在');
+        }
+        $exchangeComplete->enable();
+        return $exchangeComplete->execute();
+    }
+
+    /**
+     * @return mixed
+     * @throws AppException
+     */
     public static function refundCancel()
     {
         //todo 需要与后台操作统一
@@ -38,10 +62,14 @@ class RefundOperationService
 
     }
 
+    /**
+     * @return mixed
+     * @throws AppException
+     */
     public static function refundComplete()
     {
         //todo 需要与后台操作统一
-        $refundComplete = RefundComplete::find(request()->input('refund_id'));
+        $refundComplete = ReceiveResendGoods::find(request()->input('refund_id'));
         if (!$refundComplete) {
             throw new AppException('售后申请记录不存在');
         }

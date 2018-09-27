@@ -867,3 +867,22 @@ if (!function_exists('createNo')) {
         return $prefix . date('YmdHis') . \app\common\helpers\Client::random($length, $numeric);
     }
 }
+if(!function_exists('yz_array_set')){
+    function yz_array_set(&$array, $key, $value){
+        $keys = explode('.', $key);
+        while (count($keys) > 1) {
+            $key = array_shift($keys);
+
+            // If the key doesn't exist at this depth, we will just create an empty array
+            // to hold the next value, allowing us to create the arrays to hold final
+            // values at the correct depth. Then we'll keep digging into the array.
+            if (!isset($array[$key]) || !is_array($array[$key])) {
+                $array[$key] = [];
+            }
+            $array = &$array[$key];
+        }
+        $array[array_shift($keys)] = $value;
+
+        return $array;
+    }
+}

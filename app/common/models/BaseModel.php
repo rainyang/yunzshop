@@ -11,7 +11,9 @@ namespace app\common\models;
 
 use app\backend\modules\goods\observers\SettingObserver;
 use app\common\exceptions\ShopException;
+use app\common\helpers\Cache;
 use app\common\traits\ValidatorTrait;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -22,6 +24,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static insert()
  * @method static get()
  * @method static set()
+ * @method static exclude()
  */
 class BaseModel extends Model
 {
@@ -180,12 +183,15 @@ class BaseModel extends Model
         }
 
     }
-    private function getCommonModelClass($class){
-        if(get_parent_class($class) == self::class){
+
+    private function getCommonModelClass($class)
+    {
+        if (get_parent_class($class) == self::class) {
             return $class;
         }
         return $this->getCommonModelClass(get_parent_class($class));
     }
+
     /**
      * Get the class name for polymorphic relations.
      *
@@ -194,5 +200,47 @@ class BaseModel extends Model
     public function getMorphClass()
     {
         return $this->getCommonModelClass(parent::getMorphClass());
+    }
+
+    /**
+     * @return mixed
+     * @throws \Exception
+     */
+    public function columns()
+    {
+        $cacheKey = 'model_' . $this->getTable() . '_columns';
+
+        if (!\Cache::has($cacheKey)) {
+            $columns = \Illuminate\Support\Facades\Schema::getColumnListing($this->getTable());
+            cache([$cacheKey => $columns], Carbon::now()->addSeconds(3600));
+        }
+
+        return cache($cacheKey);
+
+    }
+
+    /**
+     * @param $column
+     * @return bool
+     * @throws \Exception
+     */
+    public function hasColumn($column)
+    {
+        return in_array($column, $this->columns());
+    }
+
+    /**
+     * @param BaseModel $query
+     * @param array $excludeFields
+     * @return mixed
+     * @throws \Exception
+     */
+    public function scopeExclude(self $query, $excludeFields)
+    {
+        if (!is_array($excludeFields)) {
+            $excludeFields = explode(',', $excludeFields);
+        }
+        $fields = array_diff($this->columns(), $excludeFields) ?: [];
+        return $query->select($fields);
     }
 }

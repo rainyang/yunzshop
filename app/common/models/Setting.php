@@ -8,9 +8,7 @@
 
 namespace app\common\models;
 
-
 use Carbon\Carbon;
-use app\common\helpers\Cache;
 
 class Setting extends BaseModel
 {
@@ -32,18 +30,23 @@ class Setting extends BaseModel
      */
     public function getValue($uniqueAccountId, $key, $default = null)
     {
-        $cacheKey = 'setting.' . $key;
-        if (Cache::has($cacheKey) && Cache::get('shop.shop.name')) {
+        if (app('SettingCache')->has($key)) {
             //\Log::debug('-----setting get cache------'.$cacheKey);
-            $value = Cache::get($cacheKey);
-        }
-        else {
+            $value = app('SettingCache')->get($key);
+        } else {
             //\Log::debug('-----setting get db------'.$key);
-            list($group, $item) = $this->parseKey($key);
+            list($group, $groupKey) = $this->parseKey($key);
 
-            $value = array_get($this->getItems($uniqueAccountId, $group), $item, $default);
+            $settingGroupItems = $this->getItems($uniqueAccountId, $group);
             //\Log::debug('-----setting save cache------' . $cacheKey, $value);
-            Cache::put($cacheKey, $value, Carbon::now()->addSeconds(3600));
+            if (!array_has($settingGroupItems, $groupKey)) {
+                // 如果数据库中不存在记录,需要在缓存中添加这个key,避免重复查库
+                yz_array_set($settingGroupItems,$groupKey,null);
+
+            }
+            $value = array_get($settingGroupItems, $groupKey, $default);
+
+            app('SettingCache')->put($group, $settingGroupItems, Carbon::now()->addSeconds(3600));
         }
         return $value;
 
@@ -66,13 +69,12 @@ class Setting extends BaseModel
 
         $result = $this->setToDatabase($value, $uniqueAccountId, $group, $item, $type);
 
-        $cacheKey = 'setting.' . $key;
         if ($type == 'array') {
             $value = unserialize($value);
         }
 
-        Cache::put($cacheKey, $value, Carbon::now()->addSeconds(3600));
-        \Log::debug('-----setting set cache------' . $cacheKey, $value);
+        app('SettingCache')->put($key, $value, Carbon::now()->addSeconds(3600));
+        //\Log::debug('-----setting set cache------' . $cacheKey, $value);
         return $result;
     }
 
