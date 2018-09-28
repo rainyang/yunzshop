@@ -95,6 +95,7 @@
             }
         }).fail(function (message) {
             console.log('fail:', message)
+            location.href = '{!! yzWebUrl('member.member.updateWechatOpenData', ['status' => 0]) !!}';
         }).always(function () {
             $('.loadEffect').hide();
         });
