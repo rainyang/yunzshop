@@ -22,7 +22,6 @@ use app\common\events\member\MemberRelationEvent;
 use app\common\events\member\RegisterByAgent;
 use app\common\helpers\PaginationHelper;
 use app\common\models\AccountWechats;
-use app\common\models\member\MemberDel;
 use app\common\models\MemberAlipay;
 use app\common\models\MemberMiniAppModel;
 use app\common\models\MemberWechatModel;
@@ -345,9 +344,6 @@ class MemberController extends BaseController
         $del = DB::transaction(function () use ($uid, $member) {
             //商城会员表
             //MemberShopInfo::deleteMemberInfoById($uid);
-
-            //记录删除的会员
-            MemberDel::insertData($member);
 
             //unionid关联表
             if (isset($member->hasOneFans->unionid) && !empty($member->hasOneFans->unionid)) {
