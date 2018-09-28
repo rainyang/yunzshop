@@ -327,6 +327,7 @@ class MemberController extends BaseController
     public function delete()
     {
         $del = false;
+
         $uid = \YunShop::request()->id ? intval(\YunShop::request()->id) : 0;
 
         if ($uid == 0 || !is_int($uid)) {
@@ -339,9 +340,10 @@ class MemberController extends BaseController
             return $this->message('用户不存在', '', 'error');
         }
 
+
         $del = DB::transaction(function () use ($uid, $member) {
             //商城会员表
-            MemberShopInfo::deleteMemberInfoById($uid);
+            //MemberShopInfo::deleteMemberInfoById($uid);
 
             //unionid关联表
             if (isset($member->hasOneFans->unionid) && !empty($member->hasOneFans->unionid)) {
@@ -349,7 +351,8 @@ class MemberController extends BaseController
 
                 if (!is_null($uniqueModel)) {
                     if ($uniqueModel->member_id != $uid) {
-                        MemberShopInfo::deleteMemberInfoById($uniqueModel->member_id);
+                        //删除会员
+                        Member::UpdateDeleteMemberInfoById($uniqueModel->member_id);
                         //小程序会员表
                         MemberMiniAppModel::deleteMemberInfoById($uniqueModel->member_id);
                         //app会员表
@@ -358,15 +361,17 @@ class MemberController extends BaseController
                         //删除微擎mc_mapping_fans 表数据
                         McMappingFans::deleteMemberInfoById($uniqueModel->member_id);
 
-                        Member::deleteMemberInfoById($uniqueModel->member_id);
+                        //Member::deleteMemberInfoById($uniqueModel->member_id);
                     }
                 }
             }
 
             MemberUnique::deleteMemberInfoById($uid);
 
-            //删除支付宝会员表
-            MemberAlipay::deleteMemberInfoById($uid);
+            if (app('plugins')->isEnabled('alipay-onekey-login')) {
+                //删除支付宝会员表
+                MemberAlipay::deleteMemberInfoById($uid);
+            }
 
             //小程序会员表
             MemberMiniAppModel::deleteMemberInfoById($uid);
@@ -377,7 +382,8 @@ class MemberController extends BaseController
             //删除微擎mc_mapping_fans 表数据
             McMappingFans::deleteMemberInfoById($uid);
 
-            Member::deleteMemberInfoById($uid);
+            //删除会员
+            Member::UpdateDeleteMemberInfoById($uid);
 
             return true;
         });
