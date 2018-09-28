@@ -126,17 +126,17 @@ class OrderService
 
     /**
      * 根据购物车记录,获取订单信息
-     * @param Collection $memberCarts
-     * @param null $member
+     * @param MemberCartCollection $memberCarts
+     * @param Member|null $member
      * @return PreOrder|bool|mixed
      * @throws AppException
      * @throws \Exception
      */
-    public static function createOrderByMemberCarts(Collection $memberCarts, Member $member = null)
+    public static function createOrderByMemberCarts(MemberCartCollection $memberCarts, Member $member = null)
     {
         if (!isset($member)) {
             //默认使用当前登录用户下单
-            $member = MemberService::getCurrentMemberModel();
+            $member = Member::current();
         }
         if (!isset($member)) {
             throw new AppException('用户登录状态过期');

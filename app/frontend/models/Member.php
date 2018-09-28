@@ -11,6 +11,7 @@ namespace app\frontend\models;
 
 use app\common\models\MemberCoupon;
 use app\frontend\modules\member\models\MemberAddress;
+use app\frontend\modules\member\services\MemberService;
 use app\frontend\repositories\MemberAddressRepository;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -22,6 +23,18 @@ use Illuminate\Database\Eloquent\Collection;
  */
 class Member extends \app\common\models\Member
 {
+    static $current;
+    /**
+     * @return self
+     * @throws \app\common\exceptions\AppException
+     */
+    public static function current()
+    {
+        if (!isset(static::$current)) {
+            static::$current = self::find(MemberService::getCurrentMemberModel()->uid);
+        }
+        return static::$current;
+    }
     /**
      * 会员－会员优惠券1:多关系
      * @param null $backType

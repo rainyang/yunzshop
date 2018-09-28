@@ -4,6 +4,7 @@ namespace app\frontend\modules\member\controllers;
 
 use app\common\components\ApiController;
 use app\common\exceptions\AppException;
+use app\frontend\models\Member;
 use \app\frontend\models\MemberCart;
 use app\frontend\modules\member\services\MemberCartService;
 use app\frontend\modules\member\services\MemberService;
@@ -22,7 +23,7 @@ class MemberCartController extends ApiController
      */
     public function index()
     {
-        $cartList = app('OrderManager')->make('MemberCart')->carts()->where('member_id', MemberService::getCurrentMemberModel()->uid)
+        $cartList = app('OrderManager')->make('MemberCart')->carts()->where('member_id', Member::current()->uid)
             ->pluginId()
             ->orderBy('created_at', 'desc')
             ->get()

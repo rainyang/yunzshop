@@ -370,12 +370,8 @@ class Order extends BaseModel
 
     /**
      * @return array
-     * @throws AppException
      */
     public function getOperationsSetting(){
-        if(MemberService::getCurrentMemberModel()->uid == $this->uid){
-            return app('OrderManager')->setting('member_order_operations')[$this->statusCode] ?: [];
-        }
         return [];
     }
     /**

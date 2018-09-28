@@ -29,7 +29,7 @@ class TestController extends BaseController
 {
     public function index()
     {
-        dd((new Order())->columns());
+     dd(get_class(app('config')));
 
     }
 

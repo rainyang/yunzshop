@@ -21,12 +21,12 @@ class OrderOperationsCollector
      */
     public function getOperations(Order $order)
     {
-        $operations = array_map(function ($operationName) use($order){
+        $operations = array_map(function ($operationName) use ($order) {
             /**
              * @var OrderOperationInterface $operation
              */
             $operation = new $operationName($order);
-            if(!$operation->enable()){
+            if (!$operation->enable()) {
                 return null;
             }
             $result['name'] = $operation->getName();
@@ -38,15 +38,16 @@ class OrderOperationsCollector
         }, $order->getOperationsSetting());
 
         $operations = array_filter($operations);
-        return array_values($operations);
+        return array_values($operations) ?: [];
     }
 
     /**
      * @param Order $order
      * @return array
      */
-    public function getAllOperations(Order $order){
-        $operations = array_map(function ($operationName) use($order){
+    public function getAllOperations(Order $order)
+    {
+        $operations = array_map(function ($operationName) use ($order) {
             /**
              * @var OrderOperation $operation
              */

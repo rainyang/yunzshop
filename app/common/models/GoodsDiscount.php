@@ -8,7 +8,6 @@
 
 namespace app\common\models;
 
-use app\frontend\modules\member\services\MemberService;
 
 /**
  * Class GoodsDiscount
@@ -38,6 +37,11 @@ class GoodsDiscount extends BaseModel
         return $this->discount_method != 0 && $this->discount_value != 0;
     }
 
+    /**
+     * @param $price
+     * @return int|mixed
+     * @throws \app\common\exceptions\AppException
+     */
     public function getAmount($price)
     {
 
@@ -52,9 +56,14 @@ class GoodsDiscount extends BaseModel
         return $this->amount;
     }
 
+    /**
+     * @param $price
+     * @return int
+     * @throws \app\common\exceptions\AppException
+     */
     public function getGlobalDiscountAmount($price)
     {
-        $member = MemberService::getCurrentMemberModel();
+        $member = \app\frontend\models\Member::current();
         if (!isset($member->yzMember->level)) {
             return 0;
         }
