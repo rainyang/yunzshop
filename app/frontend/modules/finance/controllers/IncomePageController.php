@@ -142,7 +142,7 @@ class IncomePageController extends ApiController
 
     private function getSharePageStatus()
     {
-        if (is_null($this->relationSet) || 1 == $this->relationSet->status) {
+        if (!is_null($this->relationSet) && 1 == $this->relationSet->share_page) {
             return true;
         }
         return false;
