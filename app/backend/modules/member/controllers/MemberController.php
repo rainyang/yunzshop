@@ -368,8 +368,10 @@ class MemberController extends BaseController
 
             MemberUnique::deleteMemberInfoById($uid);
 
-            //删除支付宝会员表
-            MemberAlipay::deleteMemberInfoById($uid);
+            if (app('plugins')->isEnabled('alipay-onekey-login')) {
+                //删除支付宝会员表
+                MemberAlipay::deleteMemberInfoById($uid);
+            }
 
             //小程序会员表
             MemberMiniAppModel::deleteMemberInfoById($uid);
