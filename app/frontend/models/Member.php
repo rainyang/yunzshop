@@ -25,7 +25,7 @@ class Member extends \app\common\models\Member
 {
     static $current;
     /**
-     * @return self
+     * @return static
      * @throws \app\common\exceptions\AppException
      */
     public static function current()

@@ -41,16 +41,6 @@ class Goods extends \app\common\models\Goods
     public $hidden = ['content','description'];
     protected $vipDiscountAmount;
 
-    /**
-     * 获取商品最终价格 todo 废弃方法需删除
-     * @return float|int|mixed
-     * @throws AppException
-     */
-    public function getFinalPriceAttribute()
-    {
-        // 商品价格 - 等级折扣金额
-        return $this->price - $this->getVipDiscountAmount();
-    }
     public function hasOneOptions()
     {
         return $this->hasOne(GoodsOption::class);
