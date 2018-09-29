@@ -29,14 +29,18 @@ class MemberCartCollection extends Collection
             $memberCart->validate();
         });
     }
-    public function loadRelations(){
-        $this->expansionLoad(['goods'=> function ($query) {
+
+    public function loadRelations()
+    {
+        $with = ['goods' => function ($query) {
             $query->exclude('content,description');
-        },'goods.hasOnePrivilege','goods.hasOneOptions','goods.hasManyGoodsDiscount','goods.hasOneGoodsDispatch','goods.hasOneSale','goodsOption']);
-        //,'goods.areaDividendGoods','goods.supplierGoods'
+        }, 'goods.hasOnePrivilege', 'goods.hasOneOptions', 'goods.hasManyGoodsDiscount', 'goods.hasOneGoodsDispatch', 'goods.hasOneSale', 'goodsOption'];
+        $with = array_merge($with, config('shop-foundation.member-cart.with'));
+        
+        $this->expansionLoad($with);
         $this->each(function (MemberCart $memberCart) {
-            if(isset($memberCart->goodsOption)){
-                $memberCart->goodsOption->setRelation('goods',$memberCart->goods);
+            if (isset($memberCart->goodsOption)) {
+                $memberCart->goodsOption->setRelation('goods', $memberCart->goods);
             }
         });
         return $this;

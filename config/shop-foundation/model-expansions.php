@@ -7,8 +7,8 @@
  */
 return array(
     \app\frontend\models\Goods::class=>[
-        //\Yunshop\Love\Frontend\Models\Expansions\GoodsExpansions::class,
-        //\Yunshop\AreaDividend\models\expansions\GoodsExpansions::class,
-        //\Yunshop\Supplier\common\models\expansions\GoodsExpansions::class
+        \Yunshop\Love\Frontend\Models\Expansions\GoodsExpansions::class,
+        \Yunshop\AreaDividend\models\expansions\GoodsExpansions::class,
+        \Yunshop\Supplier\common\models\expansions\GoodsExpansions::class
     ]
 );
