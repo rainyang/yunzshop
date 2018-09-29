@@ -8,12 +8,10 @@
 
 namespace app\frontend\modules\order\services\behavior;
 
-use app\common\exceptions\AppException;
 use app\common\models\DispatchType;
 use app\common\models\Order;
 use app\common\models\order\Express;
 use app\common\repositories\ExpressCompany;
-use Illuminate\Support\Facades\Validator;
 
 class OrderSend extends ChangeStatusOperation
 {
@@ -49,4 +47,5 @@ class OrderSend extends ChangeStatusOperation
         }
         parent::updateTable();
     }
+
 }

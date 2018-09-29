@@ -3,6 +3,7 @@ namespace app\frontend\modules\goods\listeners;
 
 use app\common\events\order\AfterOrderCreatedImmediatelyEvent;
 use app\common\events\order\AfterOrderPaidEvent;
+use app\common\events\order\AfterOrderPaidImmediatelyEvent;
 use app\common\models\OrderGoods;
 use app\frontend\models\goods;
 use app\frontend\models\GoodsOption;
@@ -26,7 +27,7 @@ class GoodsStock
             $this->reduceStock($orderGoods);
         });
     }
-    public function onOrderPaid(AfterOrderPaidEvent $event){
+    public function onOrderPaid(AfterOrderPaidImmediatelyEvent $event){
 
         $order = $event->getOrderModel();
         $order->hasManyOrderGoods->map(function ($orderGoods){
@@ -67,7 +68,7 @@ class GoodsStock
             self::class . '@onOrderCreated'
         );
         $events->listen(
-            AfterOrderPaidEvent::class,
+            AfterOrderPaidImmediatelyEvent::class,
             self::class . '@onOrderPaid'
         );
     }

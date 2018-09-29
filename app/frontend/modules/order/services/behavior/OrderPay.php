@@ -9,13 +9,23 @@
 
 namespace app\frontend\modules\order\services\behavior;
 
+use app\common\events\order\AfterOrderPaidImmediatelyEvent;
 use app\common\models\Order;
+use app\Jobs\OrderPaidEventQueueJob;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 
 class OrderPay extends ChangeStatusOperation
 {
+    use DispatchesJobs;
     protected $statusBeforeChange = [ORDER::WAIT_PAY];
     protected $statusAfterChanged = ORDER::WAIT_SEND;
     protected $name = '支付';
     protected $time_field = 'pay_time';
     protected $past_tense_class_name = 'OrderPaid';
+
+    protected function _fireEvent()
+    {
+        event(new AfterOrderPaidImmediatelyEvent($this));
+        $this->dispatch(new OrderPaidEventQueueJob($this));
+    }
 }

@@ -36,7 +36,7 @@ class MemberCartCollection extends Collection
             $query->exclude('content,description');
         }, 'goods.hasOnePrivilege', 'goods.hasOneOptions', 'goods.hasManyGoodsDiscount', 'goods.hasOneGoodsDispatch', 'goods.hasOneSale', 'goodsOption'];
         $with = array_merge($with, config('shop-foundation.member-cart.with'));
-        
+
         $this->expansionLoad($with);
         $this->each(function (MemberCart $memberCart) {
             if (isset($memberCart->goodsOption)) {
