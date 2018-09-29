@@ -198,4 +198,13 @@ EOF;
     {
         return preg_replace('/132132/', '132', $avatar);
     }
+
+    public static function iosWechatAvatar($avatar)
+    {
+        $osType = Client::osType();
+        if ($osType == Client::OS_TYPE_IOS) {
+            return preg_replace("/^http:/i","https:", $avatar);
+        }
+        return $avatar;
+    }
 }
