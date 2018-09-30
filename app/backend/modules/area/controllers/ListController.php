@@ -51,4 +51,19 @@ class ListController extends BaseController
         return $areas;
 
     }
+    public function init(){
+        list($provinceId,$cityId,$districtId,$street_id) = explode(',',request('area_ids'));
+        $province = Area::where('parentid',0)->get();
+        $cities = Area::where('parentid',$provinceId)->get();
+        $districts = Area::where('parentid',$cityId)->get();
+        $streets = Street::where('parentid',$districtId)->get();
+
+
+        $province = $this->formatAreas($province);
+        $province->where('id',$provinceId)->first()->children = $cities;
+        $cities->where('id',$cityId)->first()->children = $districts;
+        $districts->where('id',$districtId)->first()->children = $streets;
+
+        return $this->successJson('成功', $province);
+    }
 }
