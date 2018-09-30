@@ -97,6 +97,10 @@ class MemberController extends ApiController
                 //修复微信头像地址
                 $data['avatar'] = ImageHelper::fix_wechatAvatar($data['avatar']);
 
+                //IOS时，把微信头像url改为https前缀
+                $data['avatar'] = ImageHelper::iosWechatAvatar($data['avatar']);
+
+
                 return $this->successJson('', $data);
             } else {
                 return $this->errorJson('[' . $member_id . ']用户不存在');
