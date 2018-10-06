@@ -100,7 +100,14 @@
             <table class='table' style='float:left;margin-bottom:0;table-layout: fixed;line-height: 40px;height: 40px'>
                 <tr class='trhead'>
                     <td colspan='8' style="text-align: left;">
-                        订单数: <span id="total">{{$total}}</span>
+                        <p>数量: <span id="total">{{$total}}</span>&nbsp;&nbsp;&nbsp;订单总金额: <span id="total">{{$total}}元</span>&nbsp;&nbsp;&nbsp;订单成本总额: <span id="total">{{$total}}</span></p>
+                        <p>分销佣金: <span id="total">{{$total}}元</span>&nbsp;&nbsp;&nbsp;经销商提成: <span id="total">{{$total}}元</span>&nbsp;&nbsp;&nbsp;区域分红: <span id="total">{{$total}}元</span>&nbsp;&nbsp;&nbsp;微店分红: <span id="total">{{$total}}元</span></p>
+                        <p>招商员分红: <span id="total">{{$total}}元</span>&nbsp;&nbsp;&nbsp;招商中心分红: <span id="total">{{$total}}元</span>&nbsp;&nbsp;&nbsp;积分奖励: <span id="total">{{$total}}</span>&nbsp;&nbsp;&nbsp;爱心值奖励: <span id="total">{{$total}}</span></p>
+                        <p>预计总利润: <span id="total">{{$total}}元</span></p>
+                        <p>1、订单成本：平台订单为商品成本+运费，供应商、门店订单为供应商、门店结算金额；</p>
+                        <p>2、分销佣金、经销商提成、区域分红、微店分红、招商员分红、招商中心分红为该订单在这种方式的总分红金额求和。</p>
+                        <p>3、预计收益=订单金额-订单成本-分销佣金-经销商提成-区域分红-微店分红-招商员分红-招商中心分红</p>
+                        <p>4、状态：未完成为已支付但未完成的订单，已完成订单完成的状态，已退款的时候更新状态。</p>
                     </td>
                 </tr>
             </table>
@@ -128,12 +135,18 @@
                             <tr style="height: 40px; text-align: center">
                                 <td>{{date('Y-m-d H:i',$row['created_at'])}}<br>{{ $row['order_sn'] }}</td>
                                 <td style="word-wrap:break-word; white-space: pre-wrap">{{$row['address']['address']}}</td>
-                                <td >{{$row['belongs_to_member']['nickname']}}<br>{{ $row['belongs_to_member']['nickname'] }}</td>
-                                <td>{{$row['created_at']}}</td>
+                                <td >{{$row['belongs_to_member']['nickname']}}<br>{{ $row['belongs_to_recommender']['recommender'] ? $row['belongs_to_recommender']['recommender']['nickname'] : '总店'}}</td>
+                                <td>@if($row['is_plugin'] == 1)供应商：{{$row['has_one_supplier']['supplier']['username']}}
+                                    @elseif($row['plugin_id'] == 31)门店：{{ $row['has_one_cashier']['cashier']['store_name'] }}
+                                    @elseif($row['plugin_id'] == 32)门店：{{ $row['has_one_store']['store']['store_name'] }}
+                                    @else 平台自营
+                                    @endif</td>
                                 <td>{{$row['price']}}<br>{{ $row['has_one_order_goods']['total_cost_price'] }}</td>
-                                <td>{{$row['recommend_name']}}</td>
-                                <td>{{$row['goods_price']}}</td>
-                                <td>{{$row['price']}}</td>
+                                <td>{{$row['has_one_commission']['total_price'] ?: 0}}<br>{{ $row['has_one_team_dividend']['total_price'] ?: 0 }}</td>
+                                <td>{{$row['has_one_area_dividend']['total_price'] ?: 0}}<br>{{ $row['has_one_micro_shop']['total_price'] ?: 0 }}</td>
+                                <td>{{$row['has_one_merchant']['total_price'] ?: 0}}<br>{{ $row['has_one_merchant_center']['total_price'] ?: 0 }}</td>
+                                <td>{{$row['has_one_point']['total_point'] ?: 0}}<br>{{ $row['has_one_love']['total_love'] ?: 0 }}</td>
+                                <td>{{$row['has_one_commission']['total_price'] + $row['has_one_team_dividend']['total_price'] + $row['has_one_area_dividend']['total_price'] + $row['has_one_micro_shop']['total_price'] + $row['has_one_merchant']['total_price'] + $row['has_one_merchant_center']['total_price']}}</td>
                                 <td>
                                     @if($row['status'] == '3')
                                         已完成
@@ -141,8 +154,6 @@
                                         未完成
                                     @endif
                                 </td>
-                                <td>{{$row['price']}}</td>
-                                <td>{{$row['price']}}</td>
                             </tr>
                         @endforeach
                         </tbody>

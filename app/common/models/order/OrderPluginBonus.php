@@ -31,6 +31,19 @@ class OrderPluginBonus extends BaseModel
         return $model;
     }
 
+    public static function updateRow($row)
+    {
+        $model = self::where('order_id', $row['order_id'])->where('code',$row['code']);
+        $model->update($row);
+        return $model;
+    }
+
+    public static function updateStatus($order_id)
+    {
+        $model = self::where('order_id', $order_id)->updata(['status', 1]);
+        return $model;
+    }
+
     public static function getInfoByOrderId($order_id)
     {
         return self::select()->where('order_id', $order_id);

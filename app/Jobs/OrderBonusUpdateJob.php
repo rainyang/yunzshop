@@ -17,26 +17,26 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class OrderBonusJob implements  ShouldQueue
+class OrderBonusUpdateJob implements  ShouldQueue
 {
     use InteractsWithQueue, Queueable, SerializesModels;
 
     protected $tableName;
     protected $code;
     protected $foreignKey;
-    protected $localKey;
+//    protected $localKey;
     protected $amountColumn;
-    protected $orderModel;
+    protected $orderId;
     protected $condition;
 
-    public function __construct($tableName, $code, $foreignKey, $localKey, $amountColumn, $orderModel, $condition = null)
+    public function __construct($tableName, $code, $foreignKey, $amountColumn, $orderId, $condition = null)
     {
         $this->tableName = $tableName;
         $this->code = $code;
         $this->foreignKey = $foreignKey;
-        $this->localKey = $localKey;
+//        $this->localKey = $localKey;
         $this->amountColumn = $amountColumn;
-        $this->orderModel = $orderModel;
+        $this->orderId = $orderId;
         $this->condition = $condition;
     }
 
@@ -49,9 +49,8 @@ class OrderBonusJob implements  ShouldQueue
         }
         $build = DB::table($this->tableName)
             ->select()
-            ->where($this->foreignKey, $this->orderModel[$this->localKey]);
+            ->where($this->foreignKey, $this->orderId);
 
-        //分红条件
         if ($this->condition) {
             $build = $build->where($this->condition);
         }
@@ -63,13 +62,11 @@ class OrderBonusJob implements  ShouldQueue
             return;
         }
         // 存入订单插件分红记录表
-        $model = OrderPluginBonus::addRow([
-            'order_id'      => $this->orderModel->id,
-            'table_name'    => $this->tableName,
+        $model = OrderPluginBonus::updateRow([
+            'order_id'      => $this->orderId,
             'ids'           => $ids,
             'code'          => $this->code,
-            'amount'        => $sum,
-            'status'        => 0
+            'amount'        => $sum
         ]);
         // 暂时不用, 门店利润 在 门店订单结算时重新计算, 各个插件产生分红的事件监听不同.
         // 如果后期插件统一事件产生分红,再启用此事件
