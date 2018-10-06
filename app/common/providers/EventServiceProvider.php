@@ -10,6 +10,7 @@ use app\common\events\order\AfterOrderPaidEvent;
 use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\events\PayLog;
 use app\common\events\WechatProcessor;
+use app\common\listeners\charts\OrderBonusListeners;
 use app\common\listeners\PayLogListener;
 use app\common\listeners\point\PointListener;
 use app\common\listeners\WechatProcessorListener;
@@ -131,6 +132,7 @@ class EventServiceProvider extends ServiceProvider
         MemberLevelValidity::class,
         LimitBuy::class,
 //        Statistics::class,
+        OrderBonusListeners::class,
     ];
 
     /**
