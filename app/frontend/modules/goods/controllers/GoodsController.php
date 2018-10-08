@@ -167,7 +167,6 @@ class GoodsController extends ApiController
         $lease_switch = LeaseToyGoods::whetherEnabled();
 
         $this->goods_lease_set($goodsModel, $lease_switch);
-
         //return $this->successJson($goodsModel);
         return $this->successJson('成功', $goodsModel);
     }
