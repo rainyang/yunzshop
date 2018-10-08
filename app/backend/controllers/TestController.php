@@ -28,8 +28,7 @@ use SuperClosure\SerializableClosure;
 class TestController extends BaseController
 {
     public function index()
-    {
-     dd(get_class(app('config')));
+    {dd(1111);
 
     }
 

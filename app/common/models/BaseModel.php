@@ -26,6 +26,7 @@ use Illuminate\Support\Collection;
  * @method static self first()
  * @method static self select($fields)
  * @method static self where(...$where)
+ * @method static self orWhere(...$where)
  * @method static self with($with)
  * @method static self pluginId()
  * @method static self whereIn(...$where)

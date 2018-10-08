@@ -9,6 +9,7 @@
 namespace app\frontend\models;
 
 
+use app\common\exceptions\AppException;
 use app\common\models\MemberCoupon;
 use app\frontend\modules\member\models\MemberAddress;
 use app\frontend\modules\member\services\MemberService;
@@ -24,14 +25,18 @@ use Illuminate\Database\Eloquent\Collection;
 class Member extends \app\common\models\Member
 {
     static $current;
+
     /**
-     * @return static
-     * @throws \app\common\exceptions\AppException
+     * @return mixed
+     * @throws AppException
      */
     public static function current()
     {
         if (!isset(static::$current)) {
-            static::$current = self::find(MemberService::getCurrentMemberModel()->uid);
+            static::$current = self::find(\YunShop::app()->getMemberId());
+            if(!static::$current){
+                throw new AppException('请登录');
+            }
         }
         return static::$current;
     }
