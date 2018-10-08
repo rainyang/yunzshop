@@ -1367,7 +1367,7 @@ class MemberController extends ApiController
             $provider = Provider::select(['id', 'uid'])->where('uid', \YunShop::app()->getMemberId())->first();
             $distributor = Distributor::select(['id', 'uid'])->where('uid', \YunShop::app()->getMemberId())->first();
             if (!$provider || ($provider && $provider->status == 0)) {
-                echo '<pre>';print_r(1);exit();
+                echo '<pre>';print_r(1);
                 $data[] = [
                     'name' => 'provider_apply',
                     'title' => '补货商申请',
@@ -1376,7 +1376,7 @@ class MemberController extends ApiController
                 ];
             }
             if ($provider && $provider->status == 1) {
-                echo '<pre>';print_r(2);exit();
+                echo '<pre>';print_r(2);
                 $data[] = [
                     'name' => 'provider_center',
                     'title' => '补货商中心',
@@ -1385,7 +1385,7 @@ class MemberController extends ApiController
                 ];
             }
             if (!$distributor || ($distributor && $distributor->status == 0)) {
-                echo '<pre>';print_r(3);exit();
+                echo '<pre>';print_r(3);
                 $data[] = [
                     'name' => 'distributor_apply',
                     'title' => '配送站申请',
@@ -1394,7 +1394,7 @@ class MemberController extends ApiController
                 ];
             }
             if ($distributor && $distributor->status == 1) {
-                echo '<pre>';print_r(4);exit();
+                echo '<pre>';print_r(4);
                 $data[] = [
                     'name' => 'distributor_center',
                     'title' => '配送站中心',
