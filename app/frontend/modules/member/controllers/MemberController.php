@@ -1364,13 +1364,9 @@ class MemberController extends ApiController
         }
 
         if (app('plugins')->isEnabled('kingtimes')) {
-            $provider = Provider::select(['id', 'uid'])->where('uid', \YunShop::app()->getMemberId())->first();
+            $provider = Provider::select(['id', 'uid', 'status'])->where('uid', \YunShop::app()->getMemberId())->first();
             $distributor = Distributor::select(['id', 'uid'])->where('uid', \YunShop::app()->getMemberId())->first();
-            echo '<pre>';print_r($provider->status);
-            dd($provider);
-            exit;
             if ($provider && $provider->status == 1) {
-                echo '<pre>';print_r(1);
                 $data[] = [
                     'name' => 'provider_center',
                     'title' => '补货商中心',
@@ -1378,7 +1374,6 @@ class MemberController extends ApiController
                     'url'   => 'ReplenishmentApply',
                 ];
             } else {
-                echo '<pre>';print_r(2);
                 $data[] = [
                     'name' => 'provider_apply',
                     'title' => '补货商申请',
@@ -1387,7 +1382,6 @@ class MemberController extends ApiController
                 ];
             }
             if ($distributor && $distributor->status == 1) {
-                echo '<pre>';print_r(3);
                 $data[] = [
                     'name' => 'distributor_center',
                     'title' => '配送站中心',
@@ -1395,7 +1389,6 @@ class MemberController extends ApiController
                     'url'   => 'DeliveryTerminalApply',
                 ];
             } else {
-                echo '<pre>';print_r(4);
                 $data[] = [
                     'name' => 'distributor_apply',
                     'title' => '配送站申请',
@@ -1403,7 +1396,6 @@ class MemberController extends ApiController
                     'url'   => 'DeliveryTerminalApply',
                 ];
             }
-            echo '<pre>';print_r(5);exit();
         }
 
 
