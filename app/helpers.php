@@ -234,18 +234,29 @@ function yz_tomedia($src, $local_path = false)
     if (empty($src)) {
         return '';
     }
+    $os = \app\common\helpers\Client::osType();
+
     if (strexists($src, 'addons/')) {
+        if ($os == \app\common\helpers\Client::OS_TYPE_IOS) {
+            $url_dz =  request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/addons/'));
+            return 'https:' . substr($url_dz, strpos($url_dz, '//'));
+        }
         return request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/addons/'));
     }
     //判断是否是本地带域名图片地址
     $local = strtolower($src);
     if (strexists($src, '/attachment/')) {
+        if ($os == \app\common\helpers\Client::OS_TYPE_IOS) {
+            $url_dz =  request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/attachment/'));
+            return 'https:' . substr($url_dz, strpos($url_dz, '//'));
+        }
         if (strexists($local, 'http://') || strexists($local, 'https://') || substr($local, 0, 2) == '//') {
             return $src;
         } else {
             return request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/attachment/'));
         }
     }
+
 
     //如果远程地址中包含本地host也检测是否远程图片
     if (strexists($src, request()->getSchemeAndHttpHost()) && !strexists($src, '/addons/')) {
