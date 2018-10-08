@@ -222,6 +222,8 @@
                             </thead>
                             <tbody>
                             @foreach($list['data'] as $row)
+                                @if (isset($row['has_one_del']))
+                                @else
                                 <tr>
                                     <td style="text-align: center;">   {{$row['uid']}}</td>
 
@@ -327,12 +329,14 @@
                                                     <a href="{{yzWebUrl('member.member-address.index', ['member_id' => $row['uid']])}}"
                                                        title='收货地址管理'><i class='fa fa-truck'></i>收货地址管理</a>
                                                 </li>
-                                                <li><a href="{{yzWebUrl('member.member.delete', ['id'=>$row['uid']])}}" title='删除会员'><i class='fa fa-delicious'></i>删除（危险）</a></li>
+                                                <li><a href="{{yzWebUrl('member.member.delete', ['id'=>$row['uid']])}}"
+                                                       onclick="return confirm('确认删除该用户吗？此操作是不可逆的');return false;" title='删除会员'><i class='fa fa-delicious'></i>删除（危险）</a></li>
                                             </ul>
                                         </div>
                                     </td>
                                     </td>
                                 </tr>
+                                @endif
                             @endforeach
                             </tbody>
                         </table>

@@ -685,10 +685,20 @@ class Order extends BaseModel
             return false;
         }
 
-        // 完成后n天不许退款
-        if ($this->status == self::COMPLETE && $this->finish_time->diffInDays() > \Setting::get('shop.trade.refund_days')) {
-            return false;
+        if ($this->status == self::COMPLETE) {
+            // 完成后n天不许退款
+            if ($this->finish_time->diffInDays() > \Setting::get('shop.trade.refund_days')) {
+                return false;
+            }
+
+            // 完成后不许退款
+            if (\Setting::get('shop.trade.refund_days') === '0') {
+                return false;
+            }
+
         }
+
+
         // 存在处理中的退款申请
         if(!empty($this->refund_id) || isset($this->hasOneRefundApply)){
             return false;

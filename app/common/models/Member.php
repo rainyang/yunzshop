@@ -67,6 +67,12 @@ class Member extends BackendModel
         return $this->hasOne('app\common\models\finance\PointLoveSet', 'member_id', 'uid');
     }
 
+    //关联会员删除表 yz_member_del_log
+    public function hasOneDel()
+    {
+        return $this->hasOne('app\common\models\member\MemberDel', 'member_id', 'uid');
+    }
+
 
     public function defaultAddress()
     {
