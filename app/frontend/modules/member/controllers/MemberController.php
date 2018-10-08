@@ -1366,6 +1366,9 @@ class MemberController extends ApiController
         if (app('plugins')->isEnabled('kingtimes')) {
             $provider = Provider::select(['id', 'uid'])->where('uid', \YunShop::app()->getMemberId())->first();
             $distributor = Distributor::select(['id', 'uid'])->where('uid', \YunShop::app()->getMemberId())->first();
+            dd($provider);
+            dd($distributor);
+            exit;
             if (!$provider || ($provider && $provider->status == 0)) {
                 $data[] = [
                     'name' => 'provider_apply',
