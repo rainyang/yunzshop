@@ -42,7 +42,11 @@
                                                 </option>
                                                 <option value="order_goods"
                                                         @if( array_get($requestSearch,'ambiguous.field','')=='order_goods')  selected="selected"@endif>
-                                                    商品名称/ID
+                                                    商品名称
+                                                </option>
+                                                <option value="order_goods"
+                                                        @if( array_get($requestSearch,'ambiguous.field','')=='goods_id')  selected="selected"@endif>
+                                                    商品ID
                                                 </option>
                                                 <option value="dispatch"
                                                         @if( array_get($requestSearch,'ambiguous.field','')=='dispatch')  selected="selected"@endif>

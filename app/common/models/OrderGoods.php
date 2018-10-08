@@ -31,7 +31,7 @@ class OrderGoods extends BaseModel
         'goods_option_title' => '',
         'comment_status' => 0
     ];
-    protected $search_fields = ['goods_sn', 'title', 'goods_id'];
+    protected $search_fields = ['title'];
 
     //public function
     public function hasOneGoods()
