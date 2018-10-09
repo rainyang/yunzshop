@@ -27,9 +27,10 @@ class OrderBonusJob implements  ShouldQueue
     protected $localKey;
     protected $amountColumn;
     protected $orderModel;
+    protected $totalDividend;
     protected $condition;
 
-    public function __construct($tableName, $code, $foreignKey, $localKey, $amountColumn, $orderModel, $condition = null)
+    public function __construct($tableName, $code, $foreignKey, $localKey, $amountColumn, $orderModel, $totalDividend, $condition = null)
     {
         $this->tableName = $tableName;
         $this->code = $code;
@@ -37,6 +38,7 @@ class OrderBonusJob implements  ShouldQueue
         $this->localKey = $localKey;
         $this->amountColumn = $amountColumn;
         $this->orderModel = $orderModel;
+        $this->totalDividend = $totalDividend;
         $this->condition = $condition;
     }
 
@@ -62,6 +64,7 @@ class OrderBonusJob implements  ShouldQueue
         if ($sum == 0) {
             return;
         }
+        $undivided = $this->totalDividend - $sum;
         // 存入订单插件分红记录表
         $model = OrderPluginBonus::addRow([
             'order_id'      => $this->orderModel->id,
@@ -69,6 +72,7 @@ class OrderBonusJob implements  ShouldQueue
             'ids'           => $ids,
             'code'          => $this->code,
             'amount'        => $sum,
+            'undivided'     => $undivided,
             'status'        => 0
         ]);
         // 暂时不用, 门店利润 在 门店订单结算时重新计算, 各个插件产生分红的事件监听不同.
