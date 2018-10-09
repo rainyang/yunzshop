@@ -83,7 +83,7 @@ class WechatOpen extends Command
 
                     if (isset($user_info['errcode'])) {
                         \Log::debug('----error---');
-                        $this->printLog($error_path, $item->hasOneFans->openid);
+                        $this->printLog($error_path, $item->yzMember->member_id);
                         return ['error' => 1, 'msg' => $user_info['errmsg']];
                     }
 
