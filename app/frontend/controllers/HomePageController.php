@@ -30,7 +30,7 @@ class HomePageController extends ApiController
         $i = \YunShop::request()->i;
         $mid = \YunShop::request()->mid;
         $type = \YunShop::request()->type;
-        $pageId = \YunShop::request()->page_id ?:0;
+        $pageId = (int)\YunShop::request()->page_id ?:0;
         $member_id = \YunShop::app()->getMemberId();
 
         //商城设置, 原来接口在 setting.get
