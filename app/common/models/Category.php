@@ -42,7 +42,8 @@ class Category extends BaseModel
     {
         return self::uniacid()
             ->where('parent_id', $parentId)
-            ->orderBy('display_order', 'asc');
+            ->orderBy('display_order', 'asc')
+            ->orderBy('id', 'asc');
     }
 
     /**
