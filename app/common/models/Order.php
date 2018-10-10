@@ -366,12 +366,14 @@ class Order extends BaseModel
      * @return array
      * @throws AppException
      */
-    public function getOperationsSetting(){
-        if(MemberService::getCurrentMemberModel()->uid == $this->uid){
+    public function getOperationsSetting()
+    {
+        if (MemberService::getCurrentMemberModel()->uid == $this->uid) {
             return app('OrderManager')->setting('member_order_operations')[$this->statusCode] ?: [];
         }
         return [];
     }
+
     /**
      * 订单状态汉字
      * @return string
@@ -408,11 +410,13 @@ class Order extends BaseModel
         $result = $this->memberButtons();
         return $result;
     }
+
     public function getOldButtonModelsAttribute()
     {
         $result = $this->getStatusService()->getButtonModels();
         return $result;
     }
+
     private function memberButtons()
     {
         return app('OrderManager')->make(OrderOperationsCollector::class)->getOperations($this);
@@ -428,7 +432,7 @@ class Order extends BaseModel
     {
         //$status = [Order::WAIT_PAY, Order::WAIT_SEND, Order::WAIT_RECEIVE, Order::COMPLETE, Order::REFUND];
         $status_counts = $query->select('status', DB::raw('count(*) as total'))
-            ->whereIn('status', $status)->where('plugin_id','<',900)
+            ->whereIn('status', $status)->where('plugin_id', '<', 900)
             ->groupBy('status')->get()->makeHidden(['status_name', 'pay_type_name', 'has_one_pay_type', 'button_models'])
             ->toArray();
         if (in_array(Order::REFUND, $status)) {
@@ -645,16 +649,18 @@ class Order extends BaseModel
         return $this->hasOne(MemberShopInfo::class, 'member_id', 'uid');
 
     }
+
     /**
      * 已退款
      * @return bool
      */
-    public function isRefunded(){
+    public function isRefunded()
+    {
         // 存在处理中的退款申请
-        if(empty($this->refund_id) || !isset($this->hasOneRefundApply)){
+        if (empty($this->refund_id) || !isset($this->hasOneRefundApply)) {
             return false;
         }
-        if($this->hasOneRefundApply->isRefunded()){
+        if ($this->hasOneRefundApply->isRefunded()) {
             return true;
         }
         return false;
@@ -664,12 +670,13 @@ class Order extends BaseModel
      * 退款中
      * @return bool
      */
-    public function isRefunding(){
+    public function isRefunding()
+    {
         // 存在处理中的退款申请
-        if(empty($this->refund_id) || !isset($this->hasOneRefundApply)){
+        if (empty($this->refund_id) || !isset($this->hasOneRefundApply)) {
             return false;
         }
-        if($this->hasOneRefundApply->isRefunding()){
+        if ($this->hasOneRefundApply->isRefunding()) {
             return true;
         }
         return false;
@@ -679,9 +686,10 @@ class Order extends BaseModel
      * 可以退款
      * @return bool
      */
-    public function canRefund(){
+    public function canRefund()
+    {
         //关闭后不许退款
-        if(!RefundService::allowRefund()){
+        if (!RefundService::allowRefund()) {
             return false;
         }
 
@@ -700,34 +708,43 @@ class Order extends BaseModel
 
 
         // 存在处理中的退款申请
-        if(!empty($this->refund_id) || isset($this->hasOneRefundApply)){
+        if (!empty($this->refund_id) || isset($this->hasOneRefundApply)) {
             return false;
         }
         return true;
     }
 
-    public function getAllStatusAttribute(){
+    public function getAllStatusAttribute()
+    {
         return collect([
             [
-                'id'=>self::CLOSE,
-                'name'=>'已关闭',
-            ],[
-                'id'=>self::WAIT_PAY,
-                'name'=>'待支付',
-            ],[
-                'id'=>self::WAIT_SEND,
-                'name'=>'待发货',
-            ],[
-                'id'=>self::WAIT_RECEIVE,
-                'name'=>'待收货',
-            ],[
-                'id'=>self::COMPLETE,
-                'name'=>'已完成',
-            ],[
-                'id'=>self::REFUND,
-                'name'=>'已退款',
+                'id' => self::CLOSE,
+                'name' => '已关闭',
+            ], [
+                'id' => self::WAIT_PAY,
+                'name' => '待支付',
+            ], [
+                'id' => self::WAIT_SEND,
+                'name' => '待发货',
+            ], [
+                'id' => self::WAIT_RECEIVE,
+                'name' => '待收货',
+            ], [
+                'id' => self::COMPLETE,
+                'name' => '已完成',
+            ], [
+                'id' => self::REFUND,
+                'name' => '已退款',
             ],
 
         ]);
     }
+
+    public function stockEnough()
+    {
+        $this->orderGoods->each(function (OrderGoods $orderGoods) {
+            $orderGoods->stockEnough();
+        });
+    }
+
 }
