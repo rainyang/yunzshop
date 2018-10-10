@@ -70,7 +70,7 @@ class orderListener
         $events->listen(AfterOrderSentEvent::class, self::class . '@onSent');
         $events->listen(AfterOrderReceivedEvent::class, self::class . '@onReceived');
         $events->listen(AfterOrderPaidEvent::class, \app\common\listeners\member\AfterOrderPaidListener::class.'@handle',1);
-        $events->listen(AfterOrderReceivedEvent::class, \app\common\listeners\member\AfterOrderPaidListener::class.'@handle',1);
+        $events->listen(AfterOrderReceivedEvent::class, \app\common\listeners\member\AfterOrderReceivedListener::class.'@handle',1);
 
         // 订单自动任务
         $events->listen('cron.collectJobs', function () {
