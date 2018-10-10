@@ -259,6 +259,23 @@ class HomePageController extends ApiController
                 $result['captcha']['status'] = $status;
             }
         }
+        $withdraw_status = Setting::get('shop.shop.withdraw_status');
+        if (isset($withdraw_status) && $withdraw_status == 0) {
+            $withdraw_status = 0;
+        }else{
+            $withdraw_status = 1;
+        }
+
+        $spread_status = Setting::get('shop.shop.spread_status');
+        if (isset($spread_status) && $spread_status == 0) {
+            $spread_status = 0;
+        }else{
+            $spread_status = 1;
+        }
+
+        $result['$withdraw_status'] = $withdraw_status;
+        $result['$spread_status'] = $spread_status;
+
         return $this->successJson('ok', $result);
     }
 
