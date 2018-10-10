@@ -30,7 +30,7 @@ class OrderBonusJob implements  ShouldQueue
     protected $totalDividend;
     protected $condition;
 
-    public function __construct($tableName, $code, $foreignKey, $localKey, $amountColumn, $orderModel, $totalDividend, $condition = null)
+    public function __construct($tableName, $code, $foreignKey, $localKey, $amountColumn, $orderModel, $totalDividend = 0, $condition = null)
     {
         $this->tableName = $tableName;
         $this->code = $code;
@@ -64,7 +64,12 @@ class OrderBonusJob implements  ShouldQueue
         if ($sum == 0) {
             return;
         }
-        $undivided = $this->totalDividend - $sum;
+
+        $undivided = 0;
+        if ($this->totalDividend) {
+            $undivided = $this->totalDividend - $sum;
+        }
+
         // 存入订单插件分红记录表
         $model = OrderPluginBonus::addRow([
             'order_id'      => $this->orderModel->id,
