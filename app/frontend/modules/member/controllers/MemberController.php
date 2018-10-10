@@ -32,6 +32,8 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Str;
 use Yunshop\AlipayOnekeyLogin\models\MemberAlipay;
 use Yunshop\Commission\models\Agents;
+use Yunshop\Kingtimes\common\models\Distributor;
+use Yunshop\Kingtimes\common\models\Provider;
 use Yunshop\Poster\models\Poster;
 use Yunshop\Poster\services\CreatePosterService;
 use Yunshop\TeamDividend\models\YzMemberModel;
@@ -96,6 +98,10 @@ class MemberController extends ApiController
 
                 //修复微信头像地址
                 $data['avatar'] = ImageHelper::fix_wechatAvatar($data['avatar']);
+
+                //IOS时，把微信头像url改为https前缀
+                $data['avatar'] = ImageHelper::iosWechatAvatar($data['avatar']);
+
 
                 return $this->successJson('', $data);
             } else {
@@ -1323,7 +1329,7 @@ class MemberController extends ApiController
                 ];
             }
         }
-
+        
         if (app('plugins')->isEnabled('store-cashier')) {
             $store = \Yunshop\StoreCashier\common\models\Store::getStoreByUid(\YunShop::app()->getMemberId())->first();
             if (!$store) {
@@ -1338,6 +1344,7 @@ class MemberController extends ApiController
         }
 
         if (app('plugins')->isEnabled('supplier')) {
+            $supplier_setting = Setting::get('plugin.supplier');
             $supplier = \Yunshop\Supplier\common\models\Supplier::getSupplierByMemberId(\YunShop::app()->getMemberId(), 1);
             if (!$supplier) {
                 $data[] = [
@@ -1345,6 +1352,48 @@ class MemberController extends ApiController
                     'title' => '供应商申请',
                     'class' => 'icon-member-apply1',
                     'url'   => 'supplier',
+                ];
+            }elseif ($supplier_setting && 1 == $supplier_setting['status']) {
+                $data[] = [
+                    'name' => 'supplier',
+                    'title' => $supplier_setting['name'] ? $supplier_setting['name'] : '供应商管理',
+                    'class' => 'icon-member-supplier',
+                    'url' => 'SupplierCenter'
+                ];
+            }
+        }
+
+        if (app('plugins')->isEnabled('kingtimes')) {
+            $provider = Provider::select(['id', 'uid', 'status'])->where('uid', \YunShop::app()->getMemberId())->first();
+            $distributor = Distributor::select(['id', 'uid', 'status'])->where('uid', \YunShop::app()->getMemberId())->first();
+            if ($provider && $provider->status == 1) {
+                $data[] = [
+                    'name' => 'provider_center',
+                    'title' => '补货商中心',
+                    'class' => 'icon-member-replenishment',
+                    'url'   => 'ReplenishmentApply',
+                ];
+            } else {
+                $data[] = [
+                    'name' => 'provider_apply',
+                    'title' => '补货商申请',
+                    'class' => 'icon-member-replenishment',
+                    'url'   => 'ReplenishmentApply',
+                ];
+            }
+            if ($distributor && $distributor->status == 1) {
+                $data[] = [
+                    'name' => 'distributor_center',
+                    'title' => '配送站中心',
+                    'class' => 'icon-member-express-list',
+                    'url'   => 'DeliveryTerminalApply',
+                ];
+            } else {
+                $data[] = [
+                    'name' => 'distributor_apply',
+                    'title' => '配送站申请',
+                    'class' => 'icon-member-express-list',
+                    'url'   => 'DeliveryTerminalApply',
                 ];
             }
         }

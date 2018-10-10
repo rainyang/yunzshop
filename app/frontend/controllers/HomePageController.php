@@ -209,11 +209,11 @@ class HomePageController extends ApiController
                     break;
                 case 2:
                     if(!empty($footerMenuId)){
-                        if(!Cache::has('menustyle')){
+                        if(!Cache::has("designer_menu_{$footerMenuId}")){
                             $menustyle = DesignerMenu::getMenuById($footerMenuId);
-                            Cache::put('menustyle',$menustyle,4200);
+                            Cache::put("designer_menu_{$footerMenuId}", $menustyle,4200);
                         }else{
-                            $menustyle = Cache::get('menustyle');
+                            $menustyle = Cache::get("designer_menu_{$footerMenuId}");
                         }
 
                         if(!empty($menustyle->menus) && !empty($menustyle->params)){
