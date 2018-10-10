@@ -259,22 +259,6 @@ class HomePageController extends ApiController
                 $result['captcha']['status'] = $status;
             }
         }
-        $withdraw_status = Setting::get('shop.shop.withdraw_status');
-        if (isset($withdraw_status) && $withdraw_status == 0) {
-            $withdraw_status = 0;
-        }else{
-            $withdraw_status = 1;
-        }
-
-        $spread_status = Setting::get('shop.shop.spread_status');
-        if (isset($spread_status) && $spread_status == 0) {
-            $spread_status = 0;
-        }else{
-            $spread_status = 1;
-        }
-
-        $result['$withdraw_status'] = $withdraw_status;
-        $result['$spread_status'] = $spread_status;
 
         return $this->successJson('ok', $result);
     }
@@ -500,11 +484,14 @@ class HomePageController extends ApiController
                 "iconcolor"=>"#666666",
                 "bordercolor"=>"#bfbfbf"
             );
+
+        if (\YunShop::request()->type == 7) {
+            unset($promoteMenu);
+        }
             $defaultMenu[4] = $defaultMenu[3]; //第 5 个按钮改成"会员中心"
             $defaultMenu[3] = $defaultMenu[2]; //第 4 个按钮改成"购物车"
             $defaultMenu[2] = $promoteMenu; //在第 3 个按钮的位置加入"推广"
         //}
-
 
         return $defaultMenu;
 

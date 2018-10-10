@@ -112,8 +112,8 @@
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">推广</label>
                     <div class="col-sm-9 col-xs-12">
-                        <label class='radio-inline'><input type='radio' name='shop[spread_status]' value='1' @if (is_null($set['spread_status']) || $set['spread_status'] == 1) checked @endif/> 开启</label>
-                        <label class='radio-inline'><input type='radio' name='shop[spread_status]' value='0' @if (isset($set['spread_status']) && $set['spread_status'] == 0) checked @endif /> 关闭</label>
+                        <label class='radio-inline'><input type='radio' name='shop[switch]' value='1' @if (is_null($set['switch']) || $set['switch'] == 1) checked @endif/> 开启</label>
+                        <label class='radio-inline'><input type='radio' name='shop[switch]' value='0' @if (isset($set['switch']) && $set['switch'] == 0) checked @endif /> 关闭</label>
                         <span class='help-block'>是否开启会员首页推广按钮</span>
                     </div>
                 </div>
