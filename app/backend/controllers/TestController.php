@@ -28,8 +28,8 @@ use SuperClosure\SerializableClosure;
 class TestController extends BaseController
 {
     public function index()
-    {dd(1111);
-
+    {
+        dd(\Setting::get('plugin.kingtimes.dispatch_bonus_ratio'));
     }
 
     public function op_database()

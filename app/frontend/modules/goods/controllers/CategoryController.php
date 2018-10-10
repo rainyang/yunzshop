@@ -105,7 +105,7 @@ class CategoryController extends BaseController
      */
     public function fastCategory(){
 
-        $list = Category::select('id', 'name', 'thumb', 'adv_img', 'adv_url')->where('level',1)->where('parent_id',0)->get();
+        $list = Category::select('id', 'name', 'thumb', 'adv_img', 'adv_url')->uniacid()->where('level',1)->where('parent_id',0)->get();
         $list->map(function($category){
             $category->childrens = Category::select('id', 'name', 'thumb', 'adv_img', 'adv_url')->where('level',2)->where('parent_id',$category->id)->get();
         });
