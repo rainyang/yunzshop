@@ -73,34 +73,34 @@ class WechatOpen extends Command
 
             collect($member_info)->map(function($item) use ($uniacid, $global_token, $path, $upgrade_path, $error_path) {
                 try {
-                    $this->printLog($path, $item->hasOneFans->openid);
+                    if (!is_null($item->hasOneFans)) {
+                        $UnionidInfo = MemberUniqueModel::getUnionidInfoByMemberId($item->hasOneFans->uid)->first();
+                        $this->printLog($path, $item->hasOneFans->openid);
 
-                    $global_userinfo_url = $this->_getInfo($global_token['access_token'], $item->hasOneFans->openid);
+                        if (is_null($UnionidInfo) && !empty($item->hasOneFans->openid)) {
+                            \Log::debug('----start---', [$item->yzMember->member_id]);
+                            $global_userinfo_url = $this->_getInfo($global_token['access_token'], $item->hasOneFans->openid);
 
-                    $user_info = \Curl::to($global_userinfo_url)
-                        ->asJsonResponse(true)
-                        ->get();
+                            $user_info = \Curl::to($global_userinfo_url)
+                                ->asJsonResponse(true)
+                                ->get();
 
-                    if (isset($user_info['errcode'])) {
-                        \Log::debug('----error---');
-                        $this->printLog($error_path, $item->yzMember->member_id);
-                        return ['error' => 1, 'msg' => $user_info['errmsg']];
-                    }
+                            if (isset($user_info['errcode'])) {
+                                \Log::debug('----error---', [$item->yzMember->member_id]);
+                                $this->printLog($error_path, $item->yzMember->member_id . '-' . $user_info['errmsg']);
+                                return ['error' => 1, 'msg' => $user_info['errmsg']];
+                            }
 
-                    if (isset($user_info['unionid'])) {
-                        $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $user_info['unionid'])->first();
-
-                        if (is_null($UnionidInfo)) {
-                            MemberUniqueModel::insertData(array(
-                                'uniacid' => $uniacid,
-                                'unionid' => $user_info['unionid'],
-                                'member_id' => $item->hasOneFans->uid,
-                                'type' => 1
-                            ));
-
-                            $this->printLog($upgrade_path, $item->hasOneFans->openid);
-                        } else {
-                            //TODO UPDATE
+                            if (isset($user_info['unionid'])) {
+                                MemberUniqueModel::insertData(array(
+                                    'uniacid' => $uniacid,
+                                    'unionid' => $user_info['unionid'],
+                                    'member_id' => $item->hasOneFans->uid,
+                                    'type' => 1
+                                ));
+                                \Log::debug('----insert---', [$item->yzMember->member_id]);
+                                $this->printLog($upgrade_path, $item->hasOneFans->openid);
+                            }
                         }
                     }
                 } catch (\Exception $e) {
