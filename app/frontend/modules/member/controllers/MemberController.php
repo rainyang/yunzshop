@@ -100,7 +100,14 @@ class MemberController extends ApiController
                 //IOS时，把微信头像url改为https前缀
                 $data['avatar'] = ImageHelper::iosWechatAvatar($data['avatar']);
 
+                $withdraw_status = Setting::get('shop_app.pay.withdraw_status');
+                if (isset($withdraw_status) && $withdraw_status == 0) {
+                    $withdraw_status = 0;
+                }else{
+                    $withdraw_status = 1;
+                }
 
+                $data['withdraw_status'] = $withdraw_status;
                 return $this->successJson('', $data);
             } else {
                 return $this->errorJson('[' . $member_id . ']用户不存在');
@@ -1144,8 +1151,15 @@ class MemberController extends ApiController
             ];
         }
 */
+        $switch = Setting::get('shop_app.pay.switch');
+        if (isset($switch) && $switch == 0) {
+            $switch = 0;
+        }else{
+            $switch = 1;
+        }
+
         $data = [
-            'switch' => 1
+            'switch' => $switch
         ];
 
         return $this->successJson('', $data);

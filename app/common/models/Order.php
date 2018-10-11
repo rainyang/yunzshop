@@ -743,7 +743,10 @@ class Order extends BaseModel
     public function stockEnough()
     {
         $this->orderGoods->each(function (OrderGoods $orderGoods) {
-            $orderGoods->stockEnough();
+            // 付款后扣库存
+            if($orderGoods->goods->reduce_stock_method == 1){
+                $orderGoods->stockEnough();
+            }
         });
     }
 

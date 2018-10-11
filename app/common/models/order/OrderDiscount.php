@@ -15,4 +15,10 @@ class OrderDiscount extends BaseModel
     public $table = 'yz_order_discount';
     protected $fillable = [];
     protected $guarded = ['id'];
+
+    public function save(array $options = [])
+    {
+        $this->amount = (float)$this->amount;
+        return parent::save($options);
+    }
 }
