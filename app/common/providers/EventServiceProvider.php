@@ -57,9 +57,9 @@ class EventServiceProvider extends ServiceProvider
             \app\common\listeners\member\AfterOrderCreatedListener::class,
             \app\frontend\modules\member\listeners\Order::class, //清空购物车
         ],
-        AfterOrderReceivedEvent::class => [ //确认收货
+        /*AfterOrderReceivedEvent::class => [ //确认收货
             \app\common\listeners\member\AfterOrderReceivedListener::class
-        ],
+        ],*/
 //        AfterOrderPaidEvent::class => [ //支付完成
 //            \app\common\listeners\member\AfterOrderPaidListener::class,
 //        ],
