@@ -134,7 +134,7 @@ class Express
         $orderAddress->district_id = $member_address->district_id ?: Address::where('areaname', $member_address->district)->where('parentid', $orderAddress->city_id)->value('id');
         $orderAddress->address = implode(' ', [$member_address->province, $member_address->city, $member_address->district, $member_address->address]);
 
-        if (isset($member_address->street)) {
+        if (isset($member_address->street) && $member_address->street != '其他') {
             $orderAddress->street_id = Street::where('areaname', $member_address->street)->where('parentid', $orderAddress->district_id)->value('id');
             if(!isset($orderAddress->street_id)){
                 throw new ShopException('收货地址有误请重新保存收货地址');
@@ -142,6 +142,9 @@ class Express
             $orderAddress->street = $member_address->street;
             $orderAddress->address = implode(' ', [$member_address->province, $member_address->city, $member_address->district, $orderAddress->street, $member_address->address]);
 
+        } elseif (isset($member_address->street) && $member_address->street != '其他') {
+            $orderAddress->street = $member_address->street;
+            $orderAddress->address = implode(' ', [$member_address->province, $member_address->city, $member_address->district, $orderAddress->street, $member_address->address]);
         }
 
         $orderAddress->realname = $member_address->username;
