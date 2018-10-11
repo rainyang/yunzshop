@@ -9,27 +9,18 @@
 namespace app\backend\controllers;
 
 use app\common\components\BaseController;
-use app\common\helpers\Cache;
-use app\common\helpers\SettingCache;
 use app\common\models\Member;
-use app\common\models\Order;
-use app\common\models\OrderPay;
-use app\common\models\Flow;
-use app\common\models\Setting;
 use app\common\services\MessageService;
 use app\frontend\modules\member\models\SubMemberModel;
-use Illuminate\Database\Migrations\Migrator;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Str;
-use SuperClosure\SerializableClosure;
+use Yunshop\Kingtimes\common\models\OrderDistributor;
 
 class TestController extends BaseController
 {
     public function index()
     {
-        dd(\Setting::get('plugin.kingtimes.dispatch_bonus_ratio'));
+        $orderDistributors = OrderDistributor::where('expiration_time', '<=', time())->get();
+        dd($orderDistributors);
     }
 
     public function op_database()

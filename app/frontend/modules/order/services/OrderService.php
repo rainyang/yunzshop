@@ -28,6 +28,7 @@ use app\frontend\modules\order\services\behavior\OrderCancelSend;
 use app\frontend\modules\order\services\behavior\OrderChangePrice;
 use app\frontend\modules\order\services\behavior\OrderClose;
 use app\frontend\modules\order\services\behavior\OrderDelete;
+use app\frontend\modules\order\services\behavior\OrderForceClose;
 use app\frontend\modules\order\services\behavior\OrderOperation;
 use app\frontend\modules\order\services\behavior\OrderPay;
 use app\frontend\modules\order\services\behavior\OrderReceive;
@@ -247,7 +248,18 @@ class OrderService
 
         return self::OrderOperate($orderOperation);
     }
+    /**
+     * 强制关闭订单
+     * @param $param
+     * @return string
+     * @throws AppException
+     */
+    public static function orderForceClose($param)
+    {
+        $orderOperation = OrderForceClose::find($param['order_id']);
 
+        return self::OrderOperate($orderOperation);
+    }
     /**
      * 用户删除(隐藏)订单
      * @param $param
@@ -320,23 +332,6 @@ class OrderService
             // 不需要发货的物品直接改为待收货
             self::orderSend(['order_id' => $orderOperation->id]);
         }
-
-        // //视频点播商品 改为虚拟商品
-        // if (app('plugins')->isEnabled('video-demand')) {
-        //     $goods_id = $orderOperation->hasManyOrderGoods[0]->goods_id;
-
-        //     if ($goods_id) {
-        //         $course = \Yunshop\VideoDemand\models\CourseGoodsModel::checkCourse($goods_id, 1)->first();
-
-        //         if (!is_null($course)) {
-        //             $orderOperation->dispatch_type_id = 0;
-        //             $orderOperation->save();
-
-        //             self::orderSend(['order_id' => $orderOperation->id]);
-        //             $result = self::orderReceive(['order_id' => $orderOperation->id]);
-        //         }
-        //     }
-        // }
 
         return $result;
     }

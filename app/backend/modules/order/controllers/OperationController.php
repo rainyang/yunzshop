@@ -16,6 +16,9 @@ use app\frontend\modules\order\services\OrderService;
 class OperationController extends BaseController
 {
     protected $param;
+    /**
+     * @var Order
+     */
     protected $order;
     public $transactionActions = ['*'];
 
@@ -42,8 +45,7 @@ class OperationController extends BaseController
      */
     public function pay()
     {
-        $this->param['pay_type_id'] = PayType::BACKEND;
-        OrderService::orderPay($this->param);
+        $this->order->backendPay();
         return $this->successJson();
 
     }

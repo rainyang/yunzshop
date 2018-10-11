@@ -273,4 +273,16 @@ class OrderPay extends BaseModel
         }
         return $this->payType;
     }
+
+    /**
+     * 快速退款
+     * @throws AppException
+     */
+    public function fastRefund(){
+        $pay = PayFactory::create($this->pay_type_id);
+
+        $result = $pay->doRefund($this->pay_sn, $this->amount, $this->amount);
+        $this->status = OrderPay::STATUS_REFUNDED;
+        $this->save();
+    }
 }
