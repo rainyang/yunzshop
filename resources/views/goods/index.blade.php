@@ -352,7 +352,7 @@
                         </div>
                         <div style="margin-left:13px;margin-top:8px">
                             @section('add_goods')
-                            <a class='btn btn-success ' href="{{yzWebUrl('goods.goods.create')}}"><i
+                            <a class='btn btn-success ' href="@if($add_url){{yzWebUrl($add_url)}}@else{{yzWebUrl('goods.goods.create')}}@endif"><i
                                         class='fa fa-plus'></i> 发布{{$lang['good']}}</a>
                             @show
                             @section('sub_sort')
