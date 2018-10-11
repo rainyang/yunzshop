@@ -259,6 +259,7 @@ class HomePageController extends ApiController
                 $result['captcha']['status'] = $status;
             }
         }
+
         return $this->successJson('ok', $result);
     }
 
@@ -483,11 +484,19 @@ class HomePageController extends ApiController
                 "iconcolor"=>"#666666",
                 "bordercolor"=>"#bfbfbf"
             );
+        $extension_status = Setting::get('shop_app.pay.extension_status');
+        if (isset($extension_status) && $extension_status == 0) {
+            $extension_status = 0;
+        }else{
+            $extension_status = 1;
+        }
+        if ($type == 7 && $extension_status == 1) {
+            unset($promoteMenu);
+        }else{
             $defaultMenu[4] = $defaultMenu[3]; //第 5 个按钮改成"会员中心"
             $defaultMenu[3] = $defaultMenu[2]; //第 4 个按钮改成"购物车"
             $defaultMenu[2] = $promoteMenu; //在第 3 个按钮的位置加入"推广"
-        //}
-
+        }
 
         return $defaultMenu;
 
