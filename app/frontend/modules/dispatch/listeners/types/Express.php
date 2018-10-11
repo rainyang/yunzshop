@@ -149,8 +149,8 @@ class Express
 
         $orderAddress->address = implode(' ', [$member_address->province, $member_address->city, $member_address->district, $member_address->address]);
 
-        if (isset($member_address->street)) {
 
+        if (isset($member_address->street) && $member_address->street != '其他') {
             $orderAddress->street_id = Street::where('areaname', $member_address->street)->where('parentid', $orderAddress->district_id)->value('id');
 
             if(!isset($orderAddress->street_id)){
@@ -159,6 +159,9 @@ class Express
             $orderAddress->street = $member_address->street;
             $orderAddress->address = implode(' ', [$member_address->province, $member_address->city, $member_address->district, $orderAddress->street, $member_address->address]);
 
+        } elseif (isset($member_address->street) && $member_address->street != '其他') {
+            $orderAddress->street = $member_address->street;
+            $orderAddress->address = implode(' ', [$member_address->province, $member_address->city, $member_address->district, $orderAddress->street, $member_address->address]);
         }
         $orderAddress->realname = $member_address->realname ?: $member_address->username;
         $orderAddress->province = $member_address->province;
