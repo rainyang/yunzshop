@@ -485,7 +485,7 @@ class HomePageController extends ApiController
                 "bordercolor"=>"#bfbfbf"
             );
 
-        if (\YunShop::request()->type == 7) {
+        if ($type == 7) {
             unset($promoteMenu);
         }
             $defaultMenu[4] = $defaultMenu[3]; //第 5 个按钮改成"会员中心"
