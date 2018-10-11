@@ -487,11 +487,11 @@ class HomePageController extends ApiController
 
         if ($type == 7) {
             unset($promoteMenu);
-        }
+        }else{
             $defaultMenu[4] = $defaultMenu[3]; //第 5 个按钮改成"会员中心"
             $defaultMenu[3] = $defaultMenu[2]; //第 4 个按钮改成"购物车"
             $defaultMenu[2] = $promoteMenu; //在第 3 个按钮的位置加入"推广"
-        //}
+        }
 
         return $defaultMenu;
 
