@@ -2656,6 +2656,19 @@ return [
                 'child'         => []
             ],
 
+            'transaction_amount_charts'     => [
+                'name'          => '交易额统计',
+                'url'           => 'charts.order.transaction-amount.count',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts',],
+                'child'         => []
+            ],
+
         ],
     ],
 
