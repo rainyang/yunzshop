@@ -512,7 +512,7 @@ class GoodsController extends BaseController
             if (!$goods->isEmpty()) {
                 $goods = set_medias($goods->toArray(), array('thumb', 'share_icon'));
             }
-            $goods = collect($goods)->map(function($item) {
+            /*$goods = collect($goods)->map(function($item) {
 
                 $url = yzAppFullUrl('goods/' . $item['id']);
                 if (app('plugins')->isEnabled('store-cashier')) {
@@ -528,7 +528,7 @@ class GoodsController extends BaseController
                 }
 
                 return array_add($item , 'url', $url);
-            });
+            });*/
 
             echo json_encode($goods); exit;
         }
