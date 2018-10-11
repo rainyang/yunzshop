@@ -484,8 +484,13 @@ class HomePageController extends ApiController
                 "iconcolor"=>"#666666",
                 "bordercolor"=>"#bfbfbf"
             );
-
-        if ($type == 7) {
+        $extension_status = Setting::get('shop_app.pay.extension_status');
+        if (isset($extension_status) && $extension_status == 0) {
+            $extension_status = 0;
+        }else{
+            $extension_status = 1;
+        }
+        if ($type == 7 && $extension_status == 1) {
             unset($promoteMenu);
         }else{
             $defaultMenu[4] = $defaultMenu[3]; //第 5 个按钮改成"会员中心"
