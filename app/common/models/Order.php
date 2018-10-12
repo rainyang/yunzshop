@@ -70,6 +70,8 @@ use app\backend\modules\order\observers\OrderObserver;
  * @property RefundApply hasOneRefundApply
  * @property Carbon finish_time
  * @property OrderCreatedJob orderCreatedJob
+ * @property OrderPaidJob orderPaidJob
+ * @property OrderReceivedJob orderReceivedJob
  * @method static self isPlugin()
  * @method static self orders(array $searchParam)
  */
