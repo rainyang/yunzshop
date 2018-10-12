@@ -215,7 +215,8 @@ class BalanceRecharge extends BaseModel
             'new_money' => '计算后金额',
             'type'      => '充值类型',
             'ordersn'   => '充值订单号',
-            'status'    => '状态'
+            'status'    => '状态',
+            'remark'    => '备注信息'
         ];
     }
 
@@ -233,7 +234,8 @@ class BalanceRecharge extends BaseModel
             'new_money' => 'numeric',
             'type'      => 'required',
             'ordersn'   => 'required',
-            'status'    => 'required'
+            'status'    => 'required',
+            'remark'    => 'max:50'
         ];
     }
 

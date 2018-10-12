@@ -340,18 +340,17 @@ class BalanceController extends ApiController
             'new_money' => $change_money + $this->memberInfo->credit2,
             'ordersn' => BalanceRecharge::createOrderSn('RV','ordersn'),
             'type' => intval(\YunShop::request()->pay_type),
-            'status' => BalanceRecharge::PAY_STATUS_ERROR
+            'status' => BalanceRecharge::PAY_STATUS_ERROR,
+            'remark' => '会员前端充值'
         );
     }
-
 
 
     /**
      * 会员余额充值支付接口
      *
-     * @param $data
-     * @return array|string|
-     * @Author yitian
+     * @return \app\common\services\strin5|array|bool|mixed|string
+     * @throws AppException
      */
     private function payOrder()
     {

@@ -39,7 +39,7 @@ class RechargeController extends BaseController
         if (\YunShop::request()->num) {
             $result = $this->rechargeStart();
             if ($result === true) {
-                return $this->message('余额充值成功', Url::absoluteWeb('finance.balance-recharge.index',array('member_id' => $this->memberModel->uid)), 'success');
+                return $this->message('余额充值成功', Url::absoluteWeb('balance.recharge.index',array('member_id' => $this->memberModel->uid)), 'success');
             }
             $this->error($result);
         }
@@ -116,6 +116,7 @@ class RechargeController extends BaseController
             'type'          => BalanceRechargeRecords::PAY_TYPE_SHOP,
             'ordersn'       => BalanceRechargeRecords::createOrderSn('RV','ordersn'),
             'status'        => BalanceRechargeRecords::PAY_STATUS_ERROR,
+            'remark'        => $this->getPostRemark()
         );
     }
 
@@ -162,6 +163,14 @@ class RechargeController extends BaseController
     private function getPostNum()
     {
         return trim(\YunShop::request()->num);
+    }
+
+    /**
+     * @return string
+     */
+    private function getPostRemark()
+    {
+        return trim(\YunShop::request()->remark);
     }
 
     /**
