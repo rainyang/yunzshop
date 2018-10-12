@@ -162,11 +162,12 @@ class PluginSettleController extends ApiController
     protected function getShopAdv($income_data)
     {
 
-
+        $adv = collect([]);
         return [
             'status' => 1,
             'income_data' => $income_data,
-            'adv'    => [],
+            'adv_thumb' => $adv->thumb ? yz_tomedia($adv->thumb) : '',
+            'adv_url'   => $adv->adv_url ? $adv->adv_url : '',
             'type'   => 'shop',
         ];
     }
