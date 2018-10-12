@@ -265,7 +265,7 @@ function yz_tomedia($src, $local_path = false)
     }
     $t = strtolower($src);
     if (strexists($t, 'http://') || strexists($t, 'https://') || substr($t, 0, 2) == '//') {
-        return $src;
+        return 'https:' . substr($src, strpos($src, '//'));
     }
 
     if ($local_path || empty($setting['remote']['type']) || file_exists(base_path('../../') . '/' . $_W['config']['upload']['attachdir'] . '/' . $src)) {
