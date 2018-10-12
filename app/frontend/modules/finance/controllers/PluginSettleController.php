@@ -11,6 +11,7 @@ namespace app\frontend\modules\finance\controllers;
 use app\common\components\ApiController;
 use app\common\exceptions\AppException;
 use app\frontend\modules\finance\services\PluginSettleService;
+use Yunshop\StoreCashier\common\services\AdvertisementService;
 
 class PluginSettleController extends ApiController
 {
@@ -21,15 +22,17 @@ class PluginSettleController extends ApiController
         foreach ($config as $key => $value) {
             $list[] = $this->available($key, $value);
         }
+        $list = array_filter($list);
+        sort($list);
         if ($list) {
             return $this->successJson('获取数据成功', $list);
         }
-
         return $this->errorJson('未开启手动结算');
     }
 
     protected function available($key, $value)
     {
+        $arr = [];
         switch ($key) {
             case 'merchant':
                 if (\Setting::get('plugin.merchant.settlement_model')) {
@@ -93,6 +96,8 @@ class PluginSettleController extends ApiController
         $function = 'getNotSettleInfo';
         if(class_exists($class) && method_exists($class,$function) && is_callable([$class,$function])){
            $result = $class::$function(['member_id' => $member_id])->paginate(15);
+        } else {
+            throw new AppException('不存在的类');
         }
 
         if ($result->isEmpty()) {
@@ -104,6 +109,7 @@ class PluginSettleController extends ApiController
             throw new AppException('数据处理出错');
         }
         $data = [
+            'type'   => $type,
             'total'   => $result->total(),
             'perPage' => $result->perPage(),
             'data'    => $data_processing->sameFormat($result),
@@ -111,6 +117,60 @@ class PluginSettleController extends ApiController
 
         return $this->successJson('获取数据成功', $data);
     }
+
+    public function incomeReceive()
+    {
+        $id = intval(\YunShop::request()->id);
+        $type = \YunShop::request()->plugin_type;
+
+
+        if (empty($type) || empty($id)) {
+            throw new AppException('参数错误');
+        }
+
+        $plugin_income = \Config::get('income.'.$type);
+
+        $class = array_get($plugin_income,'class');
+        $function = 'getNotSettleInfo';
+
+        if(class_exists($class) && method_exists($class,$function) && is_callable([$class,$function])){
+            $result = $class::$function(['id' => $id])->first();
+        } else {
+            throw new AppException('不存在的类');
+        }
+        if (empty($result)) {
+            throw new AppException('记录不存在');
+        }
+        //修改为已结算，加入收入
+        $data_processing = PluginSettleService::create($type);
+        $income_data = $data_processing->getAdvFormat($result);
+
+        if (app('plugins')->isEnabled('store-cashier')) {
+
+            $info = AdvertisementService::getStoreAdv($income_data);
+
+            if ($info['status'] == 1) {
+                $info['income_data'] = $income_data;
+                return $this->successJson('成功', $info);
+            }
+        }
+
+        return $this->successJson('成功', $this->getShopAdv($income_data));
+
+    }
+
+    protected function getShopAdv($income_data)
+    {
+
+
+        return [
+            'status' => 1,
+            'income_data' => $income_data,
+            'adv'    => [],
+            'type'   => 'shop',
+        ];
+    }
+
 
     //招商分红
     public function pluginMerchant()
