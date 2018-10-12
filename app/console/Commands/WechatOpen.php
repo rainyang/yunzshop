@@ -75,7 +75,7 @@ class WechatOpen extends Command
                 try {
                     if (!is_null($item->hasOneFans)) {
                         $UnionidInfo = MemberUniqueModel::getUnionidInfoByMemberId($item->hasOneFans->uid)->first();
-                        $this->printLog($path, $item->hasOneFans->openid);
+                        $this->printLog($path, $item->hasOneFans->openid . '-' . $item->hasOneFans->uid);
 
                         if (is_null($UnionidInfo) && !empty($item->hasOneFans->openid)) {
                             \Log::debug('----start---', [$item->yzMember->member_id]);
@@ -99,7 +99,7 @@ class WechatOpen extends Command
                                     'type' => 1
                                 ));
                                 \Log::debug('----insert---', [$item->yzMember->member_id]);
-                                $this->printLog($upgrade_path, $item->hasOneFans->openid);
+                                $this->printLog($upgrade_path, $item->hasOneFans->openid . '-' . $item->yzMember->member_id);
                             }
                         }
                     }
