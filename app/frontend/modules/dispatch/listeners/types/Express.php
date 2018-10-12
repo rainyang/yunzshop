@@ -49,24 +49,6 @@ class Express
     }
 
     /**
-     * 订单保存时
-     * @param AfterOrderCreatedEvent $event
-     * @throws AppException
-     * @throws ShopException
-     */
-    public function onSave(AfterOrderCreatedEvent $event)
-    {
-        $this->event = $event;
-        if (!$this->needDispatch()) {
-            return;
-        }
-        //保存信息
-        $this->saveExpressInfo();
-
-        return;
-    }
-
-    /**
      * 显示配送方式
      * @param OnDispatchTypeInfoDisplayEvent $event
      * @throws AppException
@@ -193,10 +175,7 @@ class Express
             OnDispatchTypeInfoDisplayEvent::class,
             Express::class . '@onDisplay'
         );
-//        $events->listen(
-//            AfterOrderCreatedEvent::class,
-//            Express::class . '@onSave'
-//        );
+
         $events->listen(
             OnPreGenerateOrderCreatingEvent::class,
             Express::class . '@onCreating'

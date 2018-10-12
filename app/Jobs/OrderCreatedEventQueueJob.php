@@ -15,6 +15,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\DB;
 
 class OrderCreatedEventQueueJob implements ShouldQueue
 {
@@ -40,6 +41,8 @@ class OrderCreatedEventQueueJob implements ShouldQueue
      */
     public function handle()
     {
-        event(new AfterOrderCreatedEvent($this->order));
+        DB::transaction(function () {
+            event(new AfterOrderCreatedEvent($this->order));
+        });
     }
 }

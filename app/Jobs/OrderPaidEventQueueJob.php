@@ -39,6 +39,9 @@ class OrderPaidEventQueueJob implements ShouldQueue
      */
     public function handle()
     {
-        event(new AfterOrderPaidEvent($this->order));
+        DB::transaction(function () {
+
+            event(new AfterOrderPaidEvent($this->order));
+        });
     }
 }

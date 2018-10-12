@@ -39,6 +39,9 @@ class OrderReceivedEventQueueJob implements ShouldQueue
      */
     public function handle()
     {
-        event(new AfterOrderReceivedEvent($this->order));
+        DB::transaction(function () {
+
+            event(new AfterOrderReceivedEvent($this->order));
+        });
     }
 }
