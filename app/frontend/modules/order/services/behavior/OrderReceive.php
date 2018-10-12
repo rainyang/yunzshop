@@ -25,7 +25,6 @@ class OrderReceive extends ChangeStatusOperation
 
     protected function _fireEvent()
     {
-        event(new AfterOrderReceivedImmediatelyEvent($this));
-        $this->dispatch(new OrderReceivedEventQueueJob($this));
+        $this->fireReceivedEvent();
     }
 }

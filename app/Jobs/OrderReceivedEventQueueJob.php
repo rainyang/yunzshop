@@ -9,11 +9,13 @@
 namespace app\Jobs;
 
 use app\common\events\order\AfterOrderReceivedEvent;
+use app\common\facades\Setting;
 use app\common\models\Order;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\DB;
 
 class OrderReceivedEventQueueJob implements ShouldQueue
 {
@@ -40,8 +42,11 @@ class OrderReceivedEventQueueJob implements ShouldQueue
     public function handle()
     {
         DB::transaction(function () {
-
+            \YunShop::app()->uniacid = $this->order->uniacid;
+            Setting::$uniqueAccountId = $this->order->uniacid;
             event(new AfterOrderReceivedEvent($this->order));
+            $this->order->orderReceivedJob->status = 'finished';
+            $this->order->orderReceivedJob->save();
         });
     }
 }

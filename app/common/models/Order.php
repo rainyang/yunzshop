@@ -9,6 +9,9 @@
 namespace app\common\models;
 
 
+use app\common\events\order\AfterOrderCreatedImmediatelyEvent;
+use app\common\events\order\AfterOrderPaidImmediatelyEvent;
+use app\common\events\order\AfterOrderReceivedImmediatelyEvent;
 use app\frontend\modules\order\services\OrderService;
 use app\common\exceptions\AppException;
 use app\common\models\order\Express;
@@ -28,9 +31,13 @@ use app\common\modules\refund\services\RefundService;
 use app\frontend\modules\order\OrderCollection;
 use app\frontend\modules\order\services\status\StatusFactory;
 use app\frontend\modules\orderPay\models\PreOrderPay;
+use app\Jobs\OrderCreatedEventQueueJob;
+use app\Jobs\OrderPaidEventQueueJob;
+use app\Jobs\OrderReceivedEventQueueJob;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\DB;
 use app\backend\modules\order\observers\OrderObserver;
 
@@ -62,12 +69,14 @@ use app\backend\modules\order\observers\OrderObserver;
  * @property PayType hasOnePayType
  * @property RefundApply hasOneRefundApply
  * @property Carbon finish_time
+ * @property OrderCreatedJob orderCreatedJob
  * @method static self isPlugin()
  * @method static self orders(array $searchParam)
  */
 class Order extends BaseModel
 {
-    use HasProcessTrait;
+    use HasProcessTrait, DispatchesJobs;
+
     public $table = 'yz_order';
     public $setting = null;
     private $StatusService;
@@ -767,6 +776,51 @@ class Order extends BaseModel
     public function refund()
     {
         $this->hasOneOrderPay->fastRefund();
-        OrderService::orderForceClose(['order_id'=>$this->id]);
+        OrderService::orderForceClose(['order_id' => $this->id]);
+    }
+
+    public function fireCreatedEvent()
+    {
+        event(new AfterOrderCreatedImmediatelyEvent($this));
+
+        $this->dispatch(new OrderCreatedEventQueueJob($this));
+        OrderCreatedJob::create([
+            'order_id' => $this->id,
+        ]);
+    }
+
+    public function firePaidEvent()
+    {
+        event(new AfterOrderPaidImmediatelyEvent($this));
+
+        $this->dispatch(new OrderPaidEventQueueJob($this));
+        OrderPaidJob::create([
+            'order_id' => $this->id,
+        ]);
+    }
+
+    public function fireReceivedEvent()
+    {
+        event(new AfterOrderReceivedImmediatelyEvent($this));
+
+        $this->dispatch(new OrderReceivedEventQueueJob($this));
+        OrderReceivedJob::create([
+            'order_id' => $this->id,
+        ]);
+    }
+
+    public function orderCreatedJob()
+    {
+        return $this->hasOne(OrderCreatedJob::class, 'order_id');
+    }
+
+    public function orderPaidJob()
+    {
+        return $this->hasOne(OrderPaidJob::class, 'order_id');
+    }
+
+    public function orderReceivedJob()
+    {
+        return $this->hasOne(OrderReceivedJob::class, 'order_id');
     }
 }

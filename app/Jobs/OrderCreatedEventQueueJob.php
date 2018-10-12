@@ -10,6 +10,8 @@ namespace app\Jobs;
 
 
 use app\common\events\order\AfterOrderCreatedEvent;
+use app\common\facades\Setting;
+use app\common\models\Order;
 use app\frontend\modules\order\models\PreOrder;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Bus\Queueable;
@@ -26,10 +28,10 @@ class OrderCreatedEventQueueJob implements ShouldQueue
     protected $order;
 
     /**
-     * AdminOperationLogQueueJob constructor.
-     * @param PreOrder $order
+     * OrderCreatedEventQueueJob constructor.
+     * @param Order $order
      */
-    public function __construct(PreOrder $order)
+    public function __construct(Order $order)
     {
         $this->order = $order;
     }
@@ -42,7 +44,12 @@ class OrderCreatedEventQueueJob implements ShouldQueue
     public function handle()
     {
         DB::transaction(function () {
+            \YunShop::app()->uniacid = $this->order->uniacid;
+            Setting::$uniqueAccountId = $this->order->uniacid;
             event(new AfterOrderCreatedEvent($this->order));
+            $this->order->orderCreatedJob->status = 'finished';
+            $this->order->orderCreatedJob->save();
         });
     }
+
 }

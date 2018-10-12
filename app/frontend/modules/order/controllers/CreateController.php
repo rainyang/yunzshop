@@ -20,7 +20,6 @@ use app\frontend\modules\order\models\PreOrder;
 
 class CreateController extends PreOrderController
 {
-    use DispatchesJobs;
 
     private $memberCarts;
     protected function _getMemberCarts(){
@@ -77,11 +76,7 @@ class CreateController extends PreOrderController
                  * @var $order PreOrder
                  */
                 $order_id = $order->generate();
-
-                event(new AfterOrderCreatedImmediatelyEvent($order));
-
-                $this->dispatch(new OrderCreatedEventQueueJob($order));
-
+                $order->fireCreatedEvent();
                 return $order_id;
             });
         });

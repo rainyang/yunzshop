@@ -9,18 +9,20 @@
 namespace app\backend\controllers;
 
 use app\common\components\BaseController;
+use app\common\events\order\AfterOrderPaidEvent;
 use app\common\models\Member;
+use app\common\models\Order;
 use app\common\services\MessageService;
 use app\frontend\modules\member\models\SubMemberModel;
 use Illuminate\Support\Facades\DB;
 use Yunshop\Kingtimes\common\models\OrderDistributor;
+use Illuminate\Contracts\Bus\Dispatcher;
 
 class TestController extends BaseController
 {
     public function index()
     {
-        $orderDistributors = OrderDistributor::where('expiration_time', '<=', time())->get();
-        dd($orderDistributors);
+        dd(get_class(app(Dispatcher::class)));
     }
 
     public function op_database()

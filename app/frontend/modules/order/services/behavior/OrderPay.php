@@ -25,7 +25,6 @@ class OrderPay extends ChangeStatusOperation
 
     protected function _fireEvent()
     {
-        event(new AfterOrderPaidImmediatelyEvent($this));
-        $this->dispatch(new OrderPaidEventQueueJob($this));
+        $this->firePaidEvent();
     }
 }
