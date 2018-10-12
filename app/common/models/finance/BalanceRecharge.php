@@ -10,6 +10,7 @@ namespace app\common\models\finance;
 
 
 use app\common\models\BaseModel;
+use app\common\scopes\UniacidScope;
 use app\common\traits\CreateOrderSnTrait;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -21,17 +22,14 @@ class BalanceRecharge extends BaseModel
 {
     use CreateOrderSnTrait;
 
-    public $table = 'yz_balance_recharge';
+    protected $table = 'yz_balance_recharge';
 
     protected $guarded = [''];
 
-    //设置全局作用域
     public static function boot()
     {
         parent::boot();
-        static::addGlobalScope('uniacid',function (Builder $builder) {
-            return $builder->uniacid();
-        });
+        static::addGlobalScope('uniacid', new UniacidScope);
     }
 
     /**
