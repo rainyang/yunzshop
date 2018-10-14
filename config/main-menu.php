@@ -2669,6 +2669,79 @@ return [
                 'child'         => []
             ],
 
+            'store_charts'     => [
+                'name'          => '商家收入统计',
+                'url'           => 'charts.order.transaction-amount.count',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts',],
+                'child'         => []
+            ],
+            'shop_charts'     => [
+                'name'          => '平台收益统计',
+                'url'           => 'charts.order.transaction-amount.count',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts',],
+                'child'         => []
+            ],
+            'member_dividend_charts'     => [
+                'name'          => '会员分润统计',
+                'url'           => 'charts.order.transaction-amount.count',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts',],
+                'child'         => []
+            ],
+            'point_charts'     => [
+                'name'          => '积分数据统计',
+                'url'           => 'charts.finance.point.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts',],
+                'child'         => []
+            ],
+            'money_charts'     => [
+                'name'          => '余额数据统计',
+                'url'           => 'charts.finance.balance.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts',],
+                'child'         => []
+            ],
+            'coupon_charts'     => [
+                'name'          => '赠送优惠券统计',
+                'url'           => 'charts.finance.coupon.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts',],
+                'child'         => []
+            ],
+
         ],
     ],
 

@@ -60,7 +60,7 @@
         </div>
         <div class="row">
             <div class="col-md-12 text-center status-content">
-                <h4 class="col-md-1 status-title">待支付订单</h4>
+                <h4 class="col-md-2 status-title">待支付订单</h4>
                 <div class="panel panel-default col-md-2">
                     <div class="panel-heading ">商城</div>
                     <div class="panel-body panel-body-change">
@@ -88,7 +88,7 @@
             </div>
 
             <div class="col-md-12 text-center status-content">
-                <h4 class="col-md-1 status-title">待发货订单</h4>
+                <h4 class="col-md-2 status-title">待发货订单</h4>
                 <div class="panel panel-default col-md-2">
                     <div class="panel-heading">商城</div>
                     <div class="panel-body panel-body-change">
@@ -109,7 +109,7 @@
                 </div>
             </div>
             <div class="col-md-12 text-center status-content">
-                <h4 class="col-md-1 status-title">待收货订单</h4>
+                <h4 class="col-md-2 status-title">待收货订单</h4>
                 <div class="panel panel-default col-md-2">
                     <div class="panel-heading">商城</div>
                     <div class="panel-body panel-body-change">
@@ -130,7 +130,7 @@
                 </div>
             </div>
             <div class="col-md-12 text-center status-content">
-                <h4 class="col-md-1 status-title">已完成订单</h4>
+                <h4 class="col-md-2 status-title">已完成订单</h4>
                 <div class="panel panel-default col-md-2">
                     <div class="panel-heading">商城</div>
                     <div class="panel-body panel-body-change">
