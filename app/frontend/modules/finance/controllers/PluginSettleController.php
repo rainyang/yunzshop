@@ -8,6 +8,7 @@
 
 namespace app\frontend\modules\finance\controllers;
 
+use app\backend\modules\finance\models\Advertisement;
 use app\common\components\ApiController;
 use app\common\exceptions\AppException;
 use app\frontend\modules\finance\services\PluginSettleService;
@@ -162,7 +163,8 @@ class PluginSettleController extends ApiController
     protected function getShopAdv($income_data)
     {
 
-        $adv = collect([]);
+        $adv = Advertisement::getOneData()->first();
+
         return [
             'status' => 1,
             'income_data' => $income_data,
