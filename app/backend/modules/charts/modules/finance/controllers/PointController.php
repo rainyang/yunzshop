@@ -16,44 +16,52 @@ use Illuminate\Support\Facades\DB;
 class PointController extends ChartsController
 {
     protected $time = array();
+    protected $pointLog;
+
     /**
      * @return string
+     * @throws \Throwable
      */
     public function index()
     {
         $searchTime = [];
+        $allPointData = [];
+        $pointUseData = [];
+        $pointUsedData = [];
+        $pointGivenData = [];
         $search = \YunShop::request()->search;
         if ($search['is_time'] && $search['time']) {
-            $searchTime['start'] = strtotime($search['time']['start']);
-            $searchTime['end'] = strtotime($search['time']['end']);
+            $searchTime = strtotime($search['time']['start']);
         }
-        $pointLog = new PointLog();
-        $pointUsedCount = $pointLog->getUsedCount($searchTime);
-        $pointUseCount = $pointLog->getUseCount($searchTime);
-        $pointGivenCount = $pointLog->getGivenCount($searchTime);
+        $pointTime = $this->getPointTime($searchTime);
+
+        foreach ($this->time as $key => $time) {
+            $allPointData[$key] = PointLog::uniacid()->selectRaw('sum(if(point_income_type=1,point,0)) as givenPoint, sum(point) as usePoint, sum(if(point_income_type=-1,point,0))*-1 as usedPoint')->where('created_at','<=', strtotime($time))->first()->toArray() ;
+            $pointGivenData[$key] = $allPointData[$key]['givenPoint'];
+            $pointUseData[$key] = $allPointData[$key]['usePoint'];
+            $pointUsedData[$key] = $allPointData[$key]['usedPoint'];
+            $allPointData[$key]['date'] = $time;
+        }
         return view('charts.finance.point',[
             'search' => $search,
-            'pointGivenCount' => $pointGivenCount,
-            'pointUseCount' => $pointUseCount,
-            'pointUsedCount' => $pointUsedCount * -1,
-            'pointTime' => json_encode($this->getPointTime($searchTime)),
-            'pointUseData' => json_encode($this->getPointUseData($searchTime)),
-            'pointUsedData' => json_encode($this->getPointUsedData($searchTime)),
-            'pointGivenData' => json_encode($this->getPointGivenData($searchTime)),
-            'AllPointData' => $this->getAllPointData($searchTime),
+            'pointGivenCount' => $allPointData[6]['givenPoint'],
+            'pointUseCount' => $allPointData[6]['usePoint'],
+            'pointUsedCount' => $allPointData[6]['usedPoint'],
+            'pointTime' => json_encode($pointTime),
+            'pointUseData' => json_encode($pointUseData),
+            'pointUsedData' => json_encode($pointUsedData),
+            'pointGivenData' => json_encode($pointGivenData),
+            'AllPointData' => $allPointData,
         ])->render();
     }
 
-    public function getPointTime($searchTime)
+    public function getPointTime($searchTime = null)
     {
+        $count = 6;
         if ($searchTime) {
-            $day1 = Carbon::createFromTimestamp($searchTime['start']);
-            $day2 = Carbon::createFromTimestamp($searchTime['end']);
-            $count = $day1->diffInDays($day2, false);
-
             while($count >= 0)
             {
-                $this->time[] = Carbon::createFromTimestamp($searchTime['end'])->subDay($count)->startOfDay()->format('Y-m-d');
+                $this->time[] = Carbon::createFromTimestamp($searchTime)->subDay($count)->startOfDay()->format('Y-m-d');
                 $count--;
             }
         } else {
@@ -68,101 +76,6 @@ class PointController extends ChartsController
             ];
         }
         return $this->time;
-    }
-
-    public function getPointUseData($searchTime = null)
-    {
-        $data = [];
-        if (!$searchTime) {
-            $searchTime['start'] = Carbon::now()->subDay(6)->startOfDay()->timestamp;
-            $searchTime['end'] = Carbon::tomorrow()->startOfDay()->timestamp;
-        }
-        $pointData = DB::select("select FROM_UNIXTIME(created_at,'%Y-%m-%d')as date,sum(point) as pointSum FROM ims_yz_point_log where created_at>=". $searchTime['start']. " and created_at<=" . $searchTime['end'] . " GROUP BY date;");
-        foreach ($this->time as $key => $time) {
-            foreach ($pointData as $point) {
-                if ($time == $point['date']) {
-                    $data[$key] = $point['pointSum'];
-                }
-            }
-            $data[$key] = $data[$key] ?: 0;
-        }
-
-//        $data = [
-//            $pointData[0]['pointSum'],
-//            $pointData[1]['pointSum'],
-//            $pointData[2]['pointSum'],
-//            $pointData[3]['pointSum'],
-//            $pointData[4]['pointSum'],
-//            $pointData[5]['pointSum'],
-//            $pointData[6]['pointSum'],
-//        ];
-        return $data;
-    }
-    public function getPointUsedData($searchTime = null)
-    {
-        $data = [];
-        if (!$searchTime) {
-            $searchTime['start'] = Carbon::now()->subDay(6)->startOfDay()->timestamp;
-            $searchTime['end'] = Carbon::tomorrow()->startOfDay()->timestamp;
-        }
-        $pointData = DB::select("select FROM_UNIXTIME(created_at,'%Y-%m-%d')as date,sum(point) as pointSum FROM ims_yz_point_log where point_income_type=-1 AND created_at>=". $searchTime['start']. " and created_at<=" . $searchTime['end'] . " GROUP BY date;");
-
-        foreach ($this->time as $key => $time) {
-            foreach ($pointData as $point) {
-                if ($time == $point['date']) {
-                    $data[$key] = $point['pointSum'];
-                }
-            }
-            $data[$key] = $data[$key] ?: 0;
-        }
-//        $data = [
-//            $pointData[0]['pointSum'],
-//            $pointData[1]['pointSum'],
-//            $pointData[2]['pointSum'],
-//            $pointData[3]['pointSum'],
-//            $pointData[4]['pointSum'],
-//            $pointData[5]['pointSum'],
-//            $pointData[6]['pointSum'],
-//        ];
-        return $data;
-    }
-    public function getPointGivenData($searchTime = null)
-    {
-        $data = [];
-        if (!$searchTime) {
-            $searchTime['start'] = Carbon::now()->subDay(6)->startOfDay()->timestamp;
-            $searchTime['end'] = Carbon::tomorrow()->startOfDay()->timestamp;
-        }
-        $pointData = DB::select("select FROM_UNIXTIME(created_at,'%Y-%m-%d')as date,sum(point) as pointSum FROM ims_yz_point_log where point_income_type=-1 and created_at>=". $searchTime['start']. " and created_at<=" . $searchTime['end'] . " GROUP BY date;");
-//        $data = [
-//            $pointData[0]['pointSum'],
-//            $pointData[1]['pointSum'],
-//            $pointData[2]['pointSum'],
-//            $pointData[3]['pointSum'],
-//            $pointData[4]['pointSum'],
-//            $pointData[5]['pointSum'],
-//            $pointData[6]['pointSum'],
-//        ];
-        foreach ($this->time as $key => $time) {
-            foreach ($pointData as $point) {
-                if ($time == $point['date']) {
-                    $data[$key] = $point['pointSum'];
-                }
-            }
-            $data[$key] = $data[$key] ?: 0;
-        }
-        return $data;
-    }
-
-    public function getAllPointData($searchTime = null)
-    {
-        if (!$searchTime) {
-            $searchTime['start'] = Carbon::now()->subDay(6)->startOfDay()->timestamp;
-            $searchTime['end'] = Carbon::tomorrow()->subDay(6)->startOfDay()->timestamp;
-        }
-        $pointData = DB::select("select FROM_UNIXTIME(created_at,'%Y-%m-%d')as date,sum(point) as pointUes, sum(if(point_income_type=-1, point,0)) as pointUsed, sum(if(point_income_type=1, point,0)) as pointGiven FROM ims_yz_point_log where created_at>=". $searchTime['start']. " and created_at<=" . $searchTime['end'] . " GROUP BY date;");
-
-        return $pointData;
     }
 
 }

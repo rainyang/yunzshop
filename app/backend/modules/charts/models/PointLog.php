@@ -19,9 +19,9 @@ class PointLog extends \app\common\models\finance\PointLog
     public function getUsedCount($searchTime)
     {
         if ($searchTime) {
-            return self::uniacid()->where('point_income_type', -1)->whereBetween('created_at', [$searchTime['start'], $searchTime['end']])->sum('point');
+            return self::uniacid()->where('point_income_type', -1)->where('created_at', '<=', $searchTime)->sum('point') * -1;
         }
-        return self::uniacid()->where('point_income_type', -1)->sum('point');
+        return self::uniacid()->where('point_income_type', -1)->sum('point') * -1;
     }
 
     /**
@@ -31,7 +31,7 @@ class PointLog extends \app\common\models\finance\PointLog
     public function getUseCount($searchTime)
     {
         if ($searchTime) {
-            return self::uniacid()->whereBetween('created_at', [$searchTime['start'], $searchTime['end']])->sum('point');
+            return self::uniacid()->where('created_at', '<=', $searchTime)->sum('point');
         }
         return self::uniacid()->sum('point');
     }
@@ -43,7 +43,7 @@ class PointLog extends \app\common\models\finance\PointLog
     public function getGivenCount($searchTime)
     {
         if ($searchTime) {
-            return self::uniacid()->where('point_income_type', 1)->whereBetween('created_at', [$searchTime['start'], $searchTime['end']])->sum('point');
+            return self::uniacid()->where('point_income_type', 1)->where('created_at', '<=', $searchTime)->sum('point');
         }
         return self::uniacid()->where('point_income_type', 1)->sum('point');
     }

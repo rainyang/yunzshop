@@ -16,47 +16,60 @@ use Illuminate\Support\Facades\DB;
 class BalanceController extends ChartsController
 {
     protected $time = array();
+    protected $balanceLog;
+
     /**
      * @return string
+     * @throws \Throwable
      */
     public function index()
     {
         $searchTime = [];
+        $allBalanceData = [];
+        $balanceUseData = [];
+        $balanceUsedData = [];
+        $balanceWithdrawData = [];
+        $balanceGivenData = [];
         $search = \YunShop::request()->search;
         if ($search['is_time'] && $search['time']) {
-            $searchTime['start'] = strtotime($search['time']['start']);
-            $searchTime['end'] = strtotime($search['time']['end']);
+            $searchTime = strtotime($search['time']['start']);
         }
-        $balanceLog = new Balance();
-        $balanceUsedCount = $balanceLog->getUsedCount($searchTime);
-        $balanceUseCount = $balanceLog->getUseCount($searchTime);
-        $balanceWithdrawCount = $balanceLog->getWithdrawCount($searchTime);
-        $balanceGivenCount = $balanceLog->getGivenCount($searchTime);
+        $balanceTime = $this->getBalanceTime($searchTime);
+
+        foreach ($this->time as $key => $time) {
+            $allBalanceData[$key] = Balance::uniacid()
+                ->selectRaw('sum(if(service_type in (5,7),change_money,0)) as givenBalance, sum(change_money) as useBalance, sum(if(type=2,change_money,0))*-1 as usedBalance, sum(if(service_type=6,change_money,0))*-1 as withdrawBalance')
+                ->where('created_at','<=', strtotime($time))
+                ->first()
+                ->toArray();
+            $balanceGivenData[$key] = $allBalanceData[$key]['givenBalance'];
+            $balanceUseData[$key] = $allBalanceData[$key]['useBalance'];
+            $balanceWithdrawData[$key] = $allBalanceData[$key]['withdrawBalance'];
+            $balanceUsedData[$key] = $allBalanceData[$key]['usedBalance'];
+            $allBalanceData[$key]['date'] = $time;
+        }
         return view('charts.finance.balance',[
             'search' => $search,
-            'balanceGivenCount' => $balanceGivenCount,
-            'balanceUseCount' => $balanceUseCount,
-            'balanceWithdrawCount' => $balanceWithdrawCount * -1,
-            'balanceUsedCount' => $balanceUsedCount * -1,
-            'balanceTime' => json_encode($this->getBalanceTime($searchTime)),
-            'balanceUseData' => json_encode($this->getBalanceUseData($searchTime)),
-            'balanceWithdrawData' => json_encode($this->getBalanceWithdrawData($searchTime)),
-            'balanceUsedData' => json_encode($this->getBalanceUsedData($searchTime)),
-            'balanceGivenData' => json_encode($this->getBalanceGivenData($searchTime)),
-            'AllBalanceData' => $this->getAllBalanceData($searchTime),
+            'balanceGivenCount' => $allBalanceData[6]['givenBalance'],
+            'balanceUseCount' => $allBalanceData[6]['useBalance'],
+            'balanceWithdrawCount' => $allBalanceData[6]['withdrawBalance'],
+            'balanceUsedCount' => $allBalanceData[6]['usedBalance'],
+            'balanceTime' => json_encode($balanceTime),
+            'balanceUseData' => json_encode($balanceUseData),
+            'balanceUsedData' => json_encode($balanceUsedData),
+            'balanceWithdrawData' => json_encode($balanceWithdrawData),
+            'balanceGivenData' => json_encode($balanceGivenData),
+            'AllBalanceData' => $allBalanceData,
         ])->render();
     }
 
-    public function getBalanceTime($searchTime)
+    public function getBalanceTime($searchTime = null)
     {
+        $count = 6;
         if ($searchTime) {
-            $day1 = Carbon::createFromTimestamp($searchTime['start']);
-            $day2 = Carbon::createFromTimestamp($searchTime['end']);
-            $count = $day1->diffInDays($day2, false);
-
             while($count >= 0)
             {
-                $this->time[] = Carbon::createFromTimestamp($searchTime['end'])->subDay($count)->startOfDay()->format('Y-m-d');
+                $this->time[] = Carbon::createFromTimestamp($searchTime)->subDay($count)->startOfDay()->format('Y-m-d');
                 $count--;
             }
         } else {
@@ -71,128 +84,6 @@ class BalanceController extends ChartsController
             ];
         }
         return $this->time;
-    }
-
-    public function getBalanceUseData($searchTime = null)
-    {
-        $data = [];
-        if (!$searchTime) {
-            $searchTime['start'] = Carbon::now()->subDay(6)->startOfDay()->timestamp;
-            $searchTime['end'] = Carbon::tomorrow()->startOfDay()->timestamp;
-        }
-        $balanceData = DB::select("select FROM_UNIXTIME(created_at,'%Y-%m-%d')as date,sum(change_money) as balanceSum FROM ims_yz_balance where created_at>=". $searchTime['start']. " and created_at<=" . $searchTime['end'] . " GROUP BY date;");
-        foreach ($this->time as $key => $time) {
-            foreach ($balanceData as $balance) {
-                if ($time == $balance['date']) {
-                    $data[$key] = $balance['balanceSum'];
-                }
-            }
-            $data[$key] = $data[$key] ?: 0;
-        }
-
-//        $data = [
-//            $balanceData[0]['balanceSum'],
-//            $balanceData[1]['balanceSum'],
-//            $balanceData[2]['balanceSum'],
-//            $balanceData[3]['balanceSum'],
-//            $balanceData[4]['balanceSum'],
-//            $balanceData[5]['balanceSum'],
-//            $balanceData[6]['balanceSum'],
-//        ];
-        return $data;
-    }
-    public function getBalanceUsedData($searchTime = null)
-    {
-        $data = [];
-        if (!$searchTime) {
-            $searchTime['start'] = Carbon::now()->subDay(6)->startOfDay()->timestamp;
-            $searchTime['end'] = Carbon::tomorrow()->startOfDay()->timestamp;
-        }
-        $balanceData = DB::select("select FROM_UNIXTIME(created_at,'%Y-%m-%d')as date,sum(change_money)*-1 as balanceSum FROM ims_yz_balance where type=2 AND created_at>=". $searchTime['start']. " and created_at<=" . $searchTime['end'] . " GROUP BY date;");
-
-        foreach ($this->time as $key => $time) {
-            foreach ($balanceData as $balance) {
-                if ($time == $balance['date']) {
-                    $data[$key] = $balance['balanceSum'];
-                }
-            }
-            $data[$key] = $data[$key] ?: 0;
-        }
-//        $data = [
-//            $balanceData[0]['balanceSum'],
-//            $balanceData[1]['balanceSum'],
-//            $balanceData[2]['balanceSum'],
-//            $balanceData[3]['balanceSum'],
-//            $balanceData[4]['balanceSum'],
-//            $balanceData[5]['balanceSum'],
-//            $balanceData[6]['balanceSum'],
-//        ];
-        return $data;
-    }
-    public function getBalanceWithdrawData($searchTime = null)
-    {
-        $data = [];
-        if (!$searchTime) {
-            $searchTime['start'] = Carbon::now()->subDay(6)->startOfDay()->timestamp;
-            $searchTime['end'] = Carbon::tomorrow()->startOfDay()->timestamp;
-        }
-        $balanceData = DB::select("select FROM_UNIXTIME(created_at,'%Y-%m-%d')as date,sum(change_money)*-1 as balanceSum FROM ims_yz_balance where service_type=2 and created_at>=". $searchTime['start']. " and created_at<=" . $searchTime['end'] . " GROUP BY date;");
-//        $data = [
-//            $balanceData[0]['balanceSum'],
-//            $balanceData[1]['balanceSum'],
-//            $balanceData[2]['balanceSum'],
-//            $balanceData[3]['balanceSum'],
-//            $balanceData[4]['balanceSum'],
-//            $balanceData[5]['balanceSum'],
-//            $balanceData[6]['balanceSum'],
-//        ];
-        foreach ($this->time as $key => $time) {
-            foreach ($balanceData as $balance) {
-                if ($time == $balance['date']) {
-                    $data[$key] = $balance['balanceSum'];
-                }
-            }
-            $data[$key] = $data[$key] ?: 0;
-        }
-        return $data;
-    }
-    public function getBalanceGivenData($searchTime = null)
-    {
-        $data = [];
-        if (!$searchTime) {
-            $searchTime['start'] = Carbon::now()->subDay(6)->startOfDay()->timestamp;
-            $searchTime['end'] = Carbon::tomorrow()->startOfDay()->timestamp;
-        }
-        $balanceData = DB::select("select FROM_UNIXTIME(created_at,'%Y-%m-%d')as date,sum(change_money) as balanceSum FROM ims_yz_balance where service_type IN (5,7) and created_at>=". $searchTime['start']. " and created_at<=" . $searchTime['end'] . " GROUP BY date;");
-//        $data = [
-//            $balanceData[0]['balanceSum'],
-//            $balanceData[1]['balanceSum'],
-//            $balanceData[2]['balanceSum'],
-//            $balanceData[3]['balanceSum'],
-//            $balanceData[4]['balanceSum'],
-//            $balanceData[5]['balanceSum'],
-//            $balanceData[6]['balanceSum'],
-//        ];
-        foreach ($this->time as $key => $time) {
-            foreach ($balanceData as $balance) {
-                if ($time == $balance['date']) {
-                    $data[$key] = $balance['balanceSum'];
-                }
-            }
-            $data[$key] = $data[$key] ?: 0;
-        }
-        return $data;
-    }
-
-    public function getAllBalanceData($searchTime = null)
-    {
-        if (!$searchTime) {
-            $searchTime['start'] = Carbon::now()->subDay(6)->startOfDay()->timestamp;
-            $searchTime['end'] = Carbon::tomorrow()->subDay(6)->startOfDay()->timestamp;
-        }
-        $balanceData = DB::select("select FROM_UNIXTIME(created_at,'%Y-%m-%d')as date,sum(change_money) as balanceUes, sum(if(type=-1, change_money,0))*-1 as balanceUsed, sum(if(service_type=2, change_money,0))*1 as balanceWithdraw, sum(if(service_type IN (5,7), change_money,0)) as balanceGiven FROM ims_yz_balance where created_at>=". $searchTime['start']. " and created_at<=" . $searchTime['end'] . " GROUP BY date;");
-
-        return $balanceData;
     }
 
 }

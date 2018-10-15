@@ -7,11 +7,10 @@
     .status-content{ margin: 20px 0;}
     .panel-heading{ border: 0 !important; font-size: 1.2em !important;}
     .panel-body-change{  font-size: 1.5em !important;}
+    .daterangepicker .right .calendar-date, .daterangepicker ul, .daterangepicker label, .daterangepicker_end_input{display:none;}
+    [name=daterangepicker_start]{width:164px !important;}
 </style>
 <div class="w1200 m0a">
-    {{--<script type="text/javascript" src="{{static_url('js/dist/jquery.gcjs.js')}}"></script>--}}
-    {{--<script type="text/javascript" src="{{static_url('js/dist/jquery.form.js')}}"></script>--}}
-    {{--<script type="text/javascript" src="{{static_url('js/dist/tooltipbox.js')}}"></script>--}}
 
     <div class="rightlist">
     @include('layouts.tabs')
@@ -27,12 +26,12 @@
                                         <input type="checkbox" name="search[is_time]" value="1"
                                                @if($search['is_time'] == '1')checked="checked"@endif>
                                     </span>
-                                    {!!app\common\helpers\DateRange::tplFormFieldDateRange('search[time]', [
+                                    {!!app\common\helpers\DateRange::tplFormFieldDate('search[time]', [
                                                                             'starttime'=>$search['time']['start'] ?: date('Y-m-d H:i:s'),
                                                                             'endtime'=>$search['time']['end'] ?: date('Y-m-d H:i:s'),
                                                                             'start'=>0,
                                                                             'end'=>0
-                                                                            ], true)!!}
+                                                                            ])!!}
                                 </div>
                             </div>
                             <div class="form-group col-xs-12 col-sm-4">
@@ -90,10 +89,10 @@
                             {{ $item['date'] }}
                         </td>
                         <td>
-                            {{ $item['couponGiven'] }}
+                            {{ $item['givenCoupon'] }}
                         </td>
                         <td>
-                            {{ $item['couponUsed'] }}
+                            {{ $item['usedCoupon'] }}
                         </td>
                     </tr>
                 @endforeach
