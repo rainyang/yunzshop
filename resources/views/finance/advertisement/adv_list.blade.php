@@ -40,7 +40,7 @@
 
 <div class='panel panel-default'>
     <div class='panel-heading'>
-        门店广告列表
+        广告列表
         {{--总数：{{$list->total()}}个--}}
     </div>
     <div class=''>
