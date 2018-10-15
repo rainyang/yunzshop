@@ -1152,7 +1152,7 @@ class MemberController extends ApiController
         }
 */
         $switch = Setting::get('shop_app.pay.switch');
-        if (isset($switch) && $switch == 0) {
+        if (isset($switch) && $switch == 0 && \YunShop::request()->type == 7) {
             $switch = 0;
         }else{
             $switch = 1;
