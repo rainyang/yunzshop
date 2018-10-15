@@ -17,7 +17,7 @@ class CreateImsYzOrderCreatedJobTable extends Migration
 
             Schema::create('yz_order_created_job', function (Blueprint $table) {
                 $table->increments('id');
-                $table->enum('status', ['waiting', 'completed', 'canceled']);
+                $table->enum('status', ['waiting','finished','failed']);
                 $table->integer('order_id')->nullable();
                 $table->integer('created_at')->nullable();
                 $table->integer('updated_at')->nullable();
