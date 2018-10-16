@@ -3,19 +3,12 @@ namespace app\frontend\modules\goods\controllers;
 
 use app\backend\modules\goods\models\Brand;
 use app\common\components\ApiController;
-use app\common\components\BaseController;
-use app\common\exceptions\AppException;
-use app\common\helpers\PaginationHelper;
 use app\common\models\Category;
 use app\common\models\Goods;
-use app\common\models\GoodsCategory;
 use app\common\models\GoodsSpecItem;
-use app\frontend\modules\goods\services\GoodsService;
-use Illuminate\Support\Facades\DB;
 use app\common\services\goods\SaleGoods;
 use app\common\services\goods\VideoDemandCourseGoods;
 use app\common\models\MemberShopInfo;
-use app\frontend\modules\goods\services\GoodsDiscountService;
 use Yunshop\Love\Common\Models\GoodsLove;
 use app\frontend\modules\coupon\models\Coupon;
 use app\frontend\modules\coupon\controllers\MemberCouponController;
@@ -389,7 +382,7 @@ class GoodsController extends ApiController
      */
     public function getGoodsSale($goodsModel)
     {
-
+        //todo 需要重构商品详情获取逻辑 2018-10-16 ：：LiBaoJia
         $set = \Setting::get('point.set');
 
         $shopSet = \Setting::get('shop.shop');
@@ -504,6 +497,20 @@ class GoodsController extends ApiController
             }
 
         }
+        $exist_commission = app('plugins')->isEnabled('commission');
+        if ($exist_commission) {
+
+            $commission_set = \Setting::get('plugin.commission');;
+            if ($commission_set['is_commission'] && $commission_set['goods_detail']) {
+
+                $data['commission_show'] = 1;
+                $data['commission_show_level'] = $commission_set['goods_detail_level'] ?: 1;
+                $data['first_commission'] = 0;
+                $data['second_commission'] = 0;
+                $data['third_commission'] = 0;
+            }
+        }
+        dd($data);
         return $data;
     }
 
