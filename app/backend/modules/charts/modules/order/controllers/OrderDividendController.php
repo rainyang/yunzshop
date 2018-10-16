@@ -31,13 +31,13 @@ class OrderDividendController extends ChartsController
 
         $list['total_price'] = $orderModel->sum('price');
         $list += $orderModel->orderBy('id', 'desc')->paginate(self::PAGE_SIZE)->appends(['button_models'])->toArray();
-dd($list);
+//dd($list);
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
         return view('charts.order.order_dividend', [
-            'list' => $list,
-            'pager' => $pager,
-            'search' => $requestSearch,
-        ])->render();
+        'list' => $list,
+        'pager' => $pager,
+        'search' => $requestSearch,
+    ])->render();
     }
 
 }

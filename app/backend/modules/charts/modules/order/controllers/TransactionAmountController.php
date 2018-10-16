@@ -28,6 +28,7 @@ class TransactionAmountController extends ChartsController
         $uniacid = \YunShop::app()->uniacid;
         $orderData = DB::select('select sum(if(plugin_id=31,price,0)) as cashier, sum(if(plugin_id=32,price,0)) as store, sum(if(is_plugin=1,price,0)) as supplier, sum(if(is_plugin=0 && plugin_id=0,price,0)) as shop, status from ims_yz_order where uniacid='.$uniacid. ' GROUP BY status');
         $totalOrder = DB::select('select sum(if(plugin_id=31,price,0)) as cashier, sum(if(plugin_id=32,price,0)) as store, sum(if(is_plugin=1,price,0)) as supplier, sum(if(is_plugin=0 && plugin_id=0,price,0)) as shop from ims_yz_order where uniacid='.$uniacid);
+
         foreach ($orderData as $order)
         {
             switch ($order['status']) {

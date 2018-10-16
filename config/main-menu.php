@@ -2669,9 +2669,9 @@ return [
                 'child'         => []
             ],
 
-            'store_charts'     => [
+            'merchant_income_charts'     => [
                 'name'          => '商家收入统计',
-                'url'           => 'charts.order.transaction-amount.count',
+                'url'           => 'charts.merchant.supplier-income.index',
                 'url_params'    => '',
                 'permit'        => 1,
                 'menu'          => 1,
@@ -2679,7 +2679,44 @@ return [
                 'sort'          => 0,
                 'item'          => 'order_ranking_charts',
                 'parents'       => ['charts',],
-                'child'         => []
+                'child'         => [
+                    'supplier_charts'     => [
+                        'name'          => '供应商收入排行',
+                        'url'           => 'charts.merchant.supplier-income.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_offline_count_charts',
+                        'parents'       => ['charts','merchant_income_charts'],
+
+                    ],
+                    'store_charts'     => [
+                        'name'          => '门店收入排行',
+                        'url'           => 'charts.merchant.store-income.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_offline_order_charts',
+                        'parents'       => ['charts','merchant_income_charts'],
+
+                    ],
+                    'cashier_charts'     => [
+                        'name'          => '收银台收入排行',
+                        'url'           => 'charts.merchant.cashier-income.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_offline_order_charts',
+                        'parents'       => ['charts','merchant_income_charts'],
+
+                    ],
+                ]
             ],
             'shop_charts'     => [
                 'name'          => '平台收益统计',
