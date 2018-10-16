@@ -33,8 +33,8 @@
                                                @if($search['is_time'] == '1')checked="checked"@endif>
                                     </span>
                                     {!!app\common\helpers\DateRange::tplFormFieldDateRange('search[time]', [
-                                                                            'starttime'=>$search['time']['start'],
-                                                                            'endtime'=>$search['time']['end'],
+                                                                            'starttime'=>$search['time']['start'] ?: date('Y-m-d H:i:s'),
+                                                                            'endtime'=>$search['time']['end'] ?: date('Y-m-d H:i:s'),
                                                                             'start'=>0,
                                                                             'end'=>0
                                                                             ], true)!!}
