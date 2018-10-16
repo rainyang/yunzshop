@@ -42,6 +42,7 @@ class PluginSettleController extends ApiController
                         'type'  => $value['type'],
                         'amount'=>  $value['class']::getNotSettleAmount(\YunShop::app()->getMemberId()),
                         'api'   => 'finance.plugin-settle.plugin-merchant',
+                        'icon'  => 'income_d.png',
                     ];
                 }
                 break;
@@ -52,6 +53,7 @@ class PluginSettleController extends ApiController
                         'type'  => $value['type'],
                         'amount'=>  $value['class']::getNotSettleAmount(\YunShop::app()->getMemberId()),
                         'api'   => 'finance.plugin-settle.plugin-commission',
+                        'icon'  => 'income_a.png',
                     ];
                 }
                 break;
@@ -62,6 +64,7 @@ class PluginSettleController extends ApiController
                         'type'  => $value['type'],
                         'amount'=>  $value['class']::getNotSettleAmount(\YunShop::app()->getMemberId()),
                         'api'   => 'finance.plugin-settle.plugin-area-dividend',
+                        'icon'  => 'income_c.png',
                     ];
                 }
                 break;
@@ -72,6 +75,7 @@ class PluginSettleController extends ApiController
                         'type'  => $value['type'],
                         'amount'=>  $value['class']::getNotSettleAmount(\YunShop::app()->getMemberId()),
                         'api'   => 'finance.plugin-settle.plugin-team-dividend',
+                        'icon'  => 'income_b.png',
                     ];
                 }
                 break;
