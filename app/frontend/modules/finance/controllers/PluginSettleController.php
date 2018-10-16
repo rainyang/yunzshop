@@ -100,7 +100,7 @@ class PluginSettleController extends ApiController
         $class = array_get($plugin_income,'class');
         $function = 'getNotSettleInfo';
         if(class_exists($class) && method_exists($class,$function) && is_callable([$class,$function])){
-           $result = $class::$function(['member_id' => $member_id])->paginate(15);
+           $result = $class::$function(['member_id' => $member_id])->paginate(20);
         } else {
             throw new AppException('不存在的类');
         }
@@ -116,7 +116,8 @@ class PluginSettleController extends ApiController
         $data = [
             'type'   => $type,
             'total'   => $result->total(),
-            'perPage' => $result->perPage(),
+            'per_page' => $result->perPage(),
+            'last_page' => $result->lastPage(),
             'data'    => $data_processing->sameFormat($result),
         ];
 
