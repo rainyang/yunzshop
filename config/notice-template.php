@@ -1914,5 +1914,30 @@ return [
         ],
         'remark' => '请及时使用哦！',
     ],
+    'member_withdraw' => [
+        'template_id_short' => 'OPENTM207574677',
+        'title' => '会员提现提醒通知！',
+        'first_color' => '#000000',
+        'remark_color' => '#000000',
+        'first' => '您有新一笔的待处理会员收入提现！',
+        'data' => [
+            0 => [
+                "keywords" => "keyword1",
+                "value" => "会员提现",
+                "color" => "#000000",
+            ],
+            1 => [
+                "keywords" => "keyword2",
+                "value" => "提现",
+                "color" => "#000000",
+            ],
+            2 => [
+                "keywords" => "keyword3",
+                "value" => "[粉丝昵称]于[申请时间]申请了一笔提现\r\n提现金额：[提现金额]\r\n提现类型：[提现类型]\r\n提现方式：[提现方式]",
+                "color" => "#000000",
+            ],
+        ],
+        'remark' => '请尽快处理这笔会员提现记录！！',
+    ],
 
 ];

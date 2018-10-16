@@ -18,6 +18,7 @@ use app\frontend\modules\withdraw\models\Income;
 use app\frontend\modules\withdraw\services\PayWayValidatorService;
 use app\frontend\modules\withdraw\services\OutlayService;
 use app\frontend\modules\withdraw\services\DataValidatorService;
+use app\frontend\modules\withdraw\services\WithdrawMessageService;
 use app\Jobs\WithdrawFreeAuditJob;
 use Illuminate\Contracts\Events\Dispatcher;
 
@@ -62,13 +63,26 @@ class WithdrawApplyListener
             static::class . "@withdrawApplied",
             999
         );
+
+
+
+        /**
+         * 提现申请后，免审核任务
+         */
+        $dispatcher->listen(
+            WithdrawAppliedEvent::class,
+            static::class . "@withdrawMessage",
+            999
+        );
     }
+
 
 
     /**
      * 提现申请，验证打款方式
      *
-     * @param $event WithdrawApplyingEvent
+     * @param $event
+     * @throws AppException
      */
     public function validatorPayWay($event)
     {
@@ -82,6 +96,7 @@ class WithdrawApplyListener
      * 提现申请，验证相关数据
      *
      * @param WithdrawApplyingEvent $event
+     * @throws AppException
      */
     public function withdrawApply($event)
     {
@@ -130,7 +145,6 @@ class WithdrawApplyListener
      * 提现申请后，免审核任务
      *
      * @param $event WithdrawApplyingEvent
-     * @throws AppException
      */
     public function withdrawApplied($event)
     {
@@ -146,5 +160,17 @@ class WithdrawApplyListener
                 dispatch($job);
             }
         }
+    }
+
+    /**
+     * 提现申请后，消息通知
+     *
+     * @param $event WithdrawApplyingEvent
+     */
+    public function withdrawMessage($event)
+    {
+        $withdrawModel = $event->getWithdrawModel();
+        (new WithdrawMessageService())->withdraw($withdrawModel);
+
     }
 }
