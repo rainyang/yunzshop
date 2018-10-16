@@ -30,7 +30,7 @@ class HomePageController extends ApiController
         $i = \YunShop::request()->i;
         $mid = \YunShop::request()->mid;
         $type = \YunShop::request()->type;
-        $pageId = \YunShop::request()->page_id ?:0;
+        $pageId = (int)\YunShop::request()->page_id ?:0;
         $member_id = \YunShop::app()->getMemberId();
 
         //商城设置, 原来接口在 setting.get
@@ -122,38 +122,38 @@ class HomePageController extends ApiController
         if(app('plugins')->isEnabled('designer')){
             //系统信息
             // TODO
-            if(!Cache::has('desiginer_system')){
+            if(!Cache::has('designer_system')){
                 $result['system'] = (new \Yunshop\Designer\services\DesignerService())->getSystemInfo();
 
-                Cache::put('desiginer_system',$result['system'],4200);
+                Cache::put('designer_system',$result['system'],4200);
             }else{
-                $result['system'] = Cache::get('desiginer_system');
+                $result['system'] = Cache::get('designer_system');
             }
 
             //装修数据, 原来接口在 plugin.designer.home.index.page
             if(empty($pageId)){ //如果是请求首页的数据
-                if(!Cache::has('desiginer_page_0')) {
+                if(!Cache::has('designer_page_0')) {
                     $page = Designer::getDefaultDesigner();
-                    Cache::put('desiginer_page_0', $page, 4200);
+                    Cache::put('designer_page_0', $page, 4200);
                 } else {
-                    $page = Cache::get('desiginer_page_0');
+                    $page = Cache::get('designer_page_0');
                 }
             } else{
                 $page = Designer::getDesignerByPageID($pageId);
             }
 
             if ($page) {
-                if (empty($pageId) && Cache::has($member_id.'_desiginer_default_0')) {
-                    $designer = Cache::get($member_id.'_desiginer_default_0');
+                if (empty($pageId) && Cache::has($member_id.'_designer_default_0')) {
+                    $designer = Cache::get($member_id.'_designer_default_0');
                 } else {
                     $designer = (new \Yunshop\Designer\services\DesignerService())->getPageForHomePage($page->toArray());
                 }
 
-                if (empty($pageId) && !Cache::has($member_id.'_desiginer_default_0')) {
-                    Cache::put($member_id.'_desiginer_default_0', $designer,180);
+                if (empty($pageId) && !Cache::has($member_id.'_designer_default_0')) {
+                    Cache::put($member_id.'_designer_default_0', $designer,180);
                 }
 
-                $store_goods = null;
+                /*$store_goods = null;
                 if (app('plugins')->isEnabled('store-cashier')) {
                     $store_goods = new \Yunshop\StoreCashier\common\models\StoreGoods();
                 }
@@ -188,7 +188,7 @@ class HomePageController extends ApiController
                             }
                         }
                     }
-                }
+                }*/
                 $result['item'] = $designer;
                 $footerMenuType = $designer['footertype']; //底部菜单: 0 - 不显示, 1 - 显示系统默认, 2 - 显示选中的自定义菜单
                 $footerMenuId = $designer['footermenu'];
@@ -259,6 +259,7 @@ class HomePageController extends ApiController
                 $result['captcha']['status'] = $status;
             }
         }
+
         return $this->successJson('ok', $result);
     }
 
@@ -483,11 +484,19 @@ class HomePageController extends ApiController
                 "iconcolor"=>"#666666",
                 "bordercolor"=>"#bfbfbf"
             );
+        $extension_status = Setting::get('shop_app.pay.extension_status');
+        if (isset($extension_status) && $extension_status == 0) {
+            $extension_status = 0;
+        }else{
+            $extension_status = 1;
+        }
+        if ($type == 7 && $extension_status == 0) {
+            unset($promoteMenu);
+        }else{
             $defaultMenu[4] = $defaultMenu[3]; //第 5 个按钮改成"会员中心"
             $defaultMenu[3] = $defaultMenu[2]; //第 4 个按钮改成"购物车"
             $defaultMenu[2] = $promoteMenu; //在第 3 个按钮的位置加入"推广"
-        //}
-
+        }
 
         return $defaultMenu;
 
