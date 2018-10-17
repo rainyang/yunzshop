@@ -36,10 +36,25 @@ class OrderBonusContentJob implements  ShouldQueue
 
     public function handle()
     {
-       $this->address();
-       $this->buyName();
-       $this->referrerName();
-       $this->shopName();
+        $this->orderSn();
+        $this->address();
+        $this->buyName();
+        $this->referrerName();
+        $this->shopName();
+    }
+
+    public function OrderSn()
+    {
+        $model = OrderPluginBonus::addRow([
+            'order_id'      => $this->orderModel->id,
+            'uniacid'      => $this->orderModel->uniacid,
+            'table_name'    => 'yz_order',
+            'ids'           => 0,
+            'code'          => 'order_sn',
+            'amount'        => 0,
+            'content'       => $this->orderModel->order_sn,
+            'status'        => 0,
+        ]);
     }
 
     public function address()
@@ -66,7 +81,7 @@ class OrderBonusContentJob implements  ShouldQueue
 
     public function buyName()
     {
-        $build = DB::table('mc_member')
+        $build = DB::table('mc_members')
             ->select()
             ->where('uid', $this->orderModel->uid);
         $ids = $build->pluck('id');
@@ -90,16 +105,17 @@ class OrderBonusContentJob implements  ShouldQueue
     {
         $referrerTable = DB::table('yz_member')
             ->select()
-            ->where('member_id', $this->orderModel->uid);
+            ->where('member_id', 1);
         $parent_id = $referrerTable->first()['parent_id'];
-
-        $build = DB::table('mc_member')
-            ->select()
-            ->where('uid', $parent_id);
-        $ids = $build->pluck('id');
-        $content = $build->first()['nickname'];
-        if (empty($content)) {
-            return;
+        if ($parent_id) {
+            $build = DB::table('mc_members')
+                ->select()
+                ->where('uid', $parent_id);
+            $ids = $build->pluck('id');
+            $content = $build->first()['nickname'];
+        } else {
+            $content = '总店';
+            $ids = 0;
         }
         $model = OrderPluginBonus::addRow([
             'order_id'      => $this->orderModel->id,
@@ -145,7 +161,7 @@ class OrderBonusContentJob implements  ShouldQueue
             $cashier_id = $cashierTable->first()['cashier_id'];
             $build = DB::table('yz_store')
                 ->select()
-                ->where('cashier', $cashier_id);
+                ->where('cashier_id', $cashier_id);
             $ids = $build->pluck('id');
             $content = $build->first()['store_name'];
             if (empty($content)) {
