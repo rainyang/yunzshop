@@ -388,13 +388,18 @@ class Order extends BaseModel
         return [];
     }
 
+    public function isClose()
+    {
+        return $this->status == self::CLOSE;
+    }
+
     /**
      * 订单状态汉字
      * @return string
      */
     public function getStatusNameAttribute()
     {
-        if ($this->currentProcess()) {
+        if (!$this->isClose() && $this->currentProcess()) {
             return $this->currentProcess()->status_name;
         }
         $statusName = $this->getStatusService()->getStatusName();

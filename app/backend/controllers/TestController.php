@@ -10,19 +10,27 @@ namespace app\backend\controllers;
 
 use app\common\components\BaseController;
 use app\common\models\Member;
+use app\common\models\Order;
 use app\common\repositories\ExpressCompany;
 use app\common\services\MessageService;
 use app\frontend\modules\member\models\SubMemberModel;
 use Illuminate\Support\Facades\DB;
+use Yunshop\Kingtimes\common\models\CompeteOrderDistributor;
+use Yunshop\Kingtimes\common\models\OrderDistributor;
 
 class TestController extends BaseController
 {
     public function index()
     {
         //dd(collect([['a' => 1, 'b' => 2], ['a'=> 2, 'b' => 3]])->where('a', 1));
+        $orderDistributors = CompeteOrderDistributor::where('expiration_time', '<=', time())->get();
+        dd($orderDistributors);
+        $orderDistributors->each(function (OrderDistributor $orderDistributor) {
 
-        $a = ExpressCompany::create();
-        dd($a->where('value', 'shunfeng'));
+            if ($orderDistributor->order->status == Order::WAIT_SEND) {
+                dd(1);
+            }
+        });
     }
 
     public function op_database()
