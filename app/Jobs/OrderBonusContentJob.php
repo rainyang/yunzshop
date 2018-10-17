@@ -84,7 +84,7 @@ class OrderBonusContentJob implements  ShouldQueue
         $build = DB::table('mc_members')
             ->select()
             ->where('uid', $this->orderModel->uid);
-        $ids = $build->pluck('id');
+        $ids = $build->pluck('uid');
         $content = $build->first()['nickname'];
         if (empty($content)) {
             return;
@@ -111,7 +111,7 @@ class OrderBonusContentJob implements  ShouldQueue
             $build = DB::table('mc_members')
                 ->select()
                 ->where('uid', $parent_id);
-            $ids = $build->pluck('id');
+            $ids = $build->pluck('uid');
             $content = $build->first()['nickname'];
         } else {
             $content = '总店';
