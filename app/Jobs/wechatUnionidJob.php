@@ -72,7 +72,7 @@ class wechatUnionidJob implements ShouldQueue
 
                 try {
                     if (!is_null($item)) {
-                        $UnionidInfo = MemberUniqueModel::getUnionidInfoByMemberId($item['uid'])->first();
+                        $UnionidInfo = MemberUniqueModel::getUnionidInfoByMemberId($uniacid, $item['uid'])->first();
                         \Log::debug('------queuqe coll member_id-----', $item['uid']);
                         $this->printLog($path, $item['openid'] . '-' . $item['uid']);
                         \Log::debug('------queuqe coll UnionidInfo-----', $UnionidInfo);
@@ -109,10 +109,13 @@ class wechatUnionidJob implements ShouldQueue
             });
 
             if (Cache::has('queque_wechat_page')) {
+                \Log::debug('----queque cache1----');
                 $page = Cache::get('queque_wechat_page');
                 $page++;
+                \Log::debug('----queque cache1 page----', $page);
                 Cache::put('queque_wechat_page', $page, 30);
             } else {
+                \Log::debug('----queque cache2----');
                 Cache::put('queque_wechat_page', 1, 30);
             }
         }
