@@ -21,6 +21,7 @@ class OrderOperationsCollector
      */
     public function getOperations(Order $order)
     {
+        $operationsSettings = $order->getOperationsSetting();
         $operations = array_map(function ($operationName) use ($order) {
             /**
              * @var OrderOperationInterface $operation
@@ -35,7 +36,7 @@ class OrderOperationsCollector
             $result['type'] = $operation->getType();
 
             return $result;
-        }, $order->getOperationsSetting());
+        }, $operationsSettings);
 
         $operations = array_filter($operations);
         return array_values($operations) ?: [];

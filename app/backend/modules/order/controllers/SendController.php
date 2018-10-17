@@ -28,7 +28,7 @@ class SendController extends BaseController
         if (!$order) {
             throw new AppException('未找到订单');
         }
-        $expressCompanies = (new ExpressCompany())->all();
+        $expressCompanies = ExpressCompany::create()->all();
         return $this->successJson('成功', ['express_companies' => $expressCompanies, 'address' => $order->address]);
     }
 }

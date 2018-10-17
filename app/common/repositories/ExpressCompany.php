@@ -12,13 +12,12 @@ use Illuminate\Database\Eloquent\Collection;
 
 class ExpressCompany extends Collection
 {
-    public function __construct($items = [])
+    static public function create()
     {
-        $file = implode([app()->path(),'..','static','source','expresscom.json'],DIRECTORY_SEPARATOR);
+        $file = implode([app()->path(), '..', 'static', 'source', 'expresscom.json'], DIRECTORY_SEPARATOR);
         $json = file_get_contents($file);
 
-        $items = json_decode($json,true);
-        parent::__construct($items);
+        $items = json_decode($json, true);
+        return new static($items);
     }
-
 }

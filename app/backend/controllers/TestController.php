@@ -9,20 +9,20 @@
 namespace app\backend\controllers;
 
 use app\common\components\BaseController;
-use app\common\events\order\AfterOrderPaidEvent;
 use app\common\models\Member;
-use app\common\models\Order;
+use app\common\repositories\ExpressCompany;
 use app\common\services\MessageService;
 use app\frontend\modules\member\models\SubMemberModel;
 use Illuminate\Support\Facades\DB;
-use Yunshop\Kingtimes\common\models\OrderDistributor;
-use Illuminate\Contracts\Bus\Dispatcher;
 
 class TestController extends BaseController
 {
     public function index()
     {
-        dd(get_class(app(Dispatcher::class)));
+        //dd(collect([['a' => 1, 'b' => 2], ['a'=> 2, 'b' => 3]])->where('a', 1));
+
+        $a = ExpressCompany::create();
+        dd($a->where('value', 'shunfeng'));
     }
 
     public function op_database()
@@ -75,8 +75,7 @@ class TestController extends BaseController
         $goods = DB::table('yz_goods')->get();
         $goods_success = 0;
         $goods_error = 0;
-        foreach ($goods as $item)
-        {
+        foreach ($goods as $item) {
 
             if ($item['thumb'] && !preg_match('/^images/', $item['thumb'])) {
 
@@ -84,7 +83,7 @@ class TestController extends BaseController
                 if (strexists($src, '/addons/') || strexists($src, 'yun_shop/') || strexists($src, '/static/')) {
                     continue;
                 }
-               
+
                 if (preg_match('/\/images/', $item['thumb'])) {
                     $thumb = substr($item['thumb'], strpos($item['thumb'], 'images'));
                     $bool = DB::table('yz_goods')->where('id', $item['id'])->update(['thumb' => $thumb]);
@@ -102,8 +101,7 @@ class TestController extends BaseController
         $category = DB::table('yz_category')->get();
         $category_success = 0;
         $category_error = 0;
-        foreach ($category as $item)
-        {
+        foreach ($category as $item) {
             $src = $item['thumb'];
             if (strexists($src, 'addons/') || strexists($src, 'yun_shop/') || strexists($src, 'static/')) {
                 continue;
@@ -123,9 +121,9 @@ class TestController extends BaseController
         }
 
 
-        echo '商品图片修复成功：'.$goods_success.'个,失败：'.$goods_error.'个';
+        echo '商品图片修复成功：' . $goods_success . '个,失败：' . $goods_error . '个';
         echo '<br />';
-        echo '分类图片修复成功：'.$category_success.'个，失败：'.$category_error.'个';
+        echo '分类图片修复成功：' . $category_success . '个，失败：' . $category_error . '个';
 
     }
 }
