@@ -613,32 +613,30 @@ class MemberController extends BaseController
 
     public function updateWechatOpenData()
     {
-        $pageSize = 20000;
-
-        $member_info = Member::getQueueAllMembersInfo(\YunShop::app()->uniacid);
-
-        $total       = $member_info->count();
-        $total_page  = ceil($total/$pageSize);
-        \Log::debug('------total-----', $total);
-        \Log::debug('------total_page-----', $total_page);
-
-        Cache::put('queque_wechat_total', $total_page);
-
-        for ($curr_page = 1; $curr_page <= $total_page; $curr_page++) {
-            \Log::debug('------curr_page-----', $curr_page);
-            $offset      = ($curr_page - 1) * $pageSize;
-            $member_info = Member::getQueueAllMembersInfo(\YunShop::app()->uniacid, $pageSize, $offset)->get();
-            \Log::debug('------member_count-----', $member_info->count());
-
-            $job = (new \app\Jobs\wechatUnionidJob(\YunShop::app()->uniacid, $member_info));
-            dispatch($job);
-        }
-
-
-
         $status = \YunShop::request()->status;
 
-        if (!is_null($status)) {
+        if (is_null($status)) {
+            $pageSize = 20000;
+
+            $member_info = Member::getQueueAllMembersInfo(\YunShop::app()->uniacid);
+
+            $total       = $member_info->count();
+            $total_page  = ceil($total/$pageSize);
+            \Log::debug('------total-----', $total);
+            \Log::debug('------total_page-----', $total_page);
+
+            Cache::put('queque_wechat_total', $total_page);
+
+            for ($curr_page = 1; $curr_page <= $total_page; $curr_page++) {
+                \Log::debug('------curr_page-----', $curr_page);
+                $offset      = ($curr_page - 1) * $pageSize;
+                $member_info = Member::getQueueAllMembersInfo(\YunShop::app()->uniacid, $pageSize, $offset)->get();
+                \Log::debug('------member_count-----', $member_info->count());
+
+                $job = (new \app\Jobs\wechatUnionidJob(\YunShop::app()->uniacid, $member_info));
+                dispatch($job);
+            }
+        } else {
             switch ($status) {
                 case 0:
                     return $this->message('微信开放平台数据同步失败', yzWebUrl('member.member.index'), 'error');
