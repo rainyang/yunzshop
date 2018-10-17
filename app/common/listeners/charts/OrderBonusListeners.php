@@ -8,7 +8,7 @@
 namespace app\common\listeners\charts;
 
 use app\common\events\order\AfterOrderReceivedEvent;
-use app\common\listeners\member\AfterOrderPaidListener;
+use app\common\events\order\AfterOrderPaidEvent;
 use app\Jobs\OrderBonusContentJob;
 use app\Jobs\OrderBonusStatusJob;
 use app\Jobs\OrderBonusUpdateJob;
@@ -24,7 +24,7 @@ class OrderBonusListeners
     {
         //支付之后 统计订单详情
         $events->listen(
-            AfterOrderPaidListener::class,
+            AfterOrderPaidEvent::class,
             OrderBonusListeners::class . '@addBonus'
         );
 
@@ -43,7 +43,7 @@ class OrderBonusListeners
 //        );
     }
 
-    public function addBonus(AfterOrderPaidListener $event)
+    public function addBonus(AfterOrderPaidEvent $event)
     {
         $this->orderModel = Order::find($event->getOrderModel()->id);
         $this->dispatch(new OrderBonusContentJob($this->orderModel));

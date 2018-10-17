@@ -2727,7 +2727,7 @@ return [
                 'icon'          => 'fa-bar-chart-o',
                 'sort'          => 0,
                 'item'          => 'order_ranking_charts',
-                'parents'       => ['charts',],
+                'parents'       => ['charts'],
                 'child'         => []
             ],
             'shop_income_charts'     => [

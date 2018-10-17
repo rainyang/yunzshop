@@ -1,7 +1,7 @@
 @extends('layouts.base')
 
 @section('content')
-@section('title', trans('订单分润'))
+@section('title', trans('订单收益统计'))
 
 <link href="{{static_url('yunshop/css/order.css')}}" media="all" rel="stylesheet" type="text/css"/>
 <div class="w1200 m0a">
