@@ -450,11 +450,9 @@ class Member extends \app\common\models\Member
                    ->where('mc_members.uniacid', $uniacid);
 
         if ($limit > 0) {
-            $result->offset($offset)->limit($limit);
+            $result = $result->offset($offset)->limit($limit)->orderBy('mc_members.uid', 'desc');
         }
-
-        $result->orderBy('mc_members.uid', 'desc');
-
+        
         return $result;
     }
 }
