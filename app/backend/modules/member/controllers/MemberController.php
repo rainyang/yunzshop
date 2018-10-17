@@ -613,7 +613,7 @@ class MemberController extends BaseController
     public function updateWechatOpenData()
     {
         $pageSize = 20000;
-        $pageSize = 10;
+        $pageSize = 2;
 
         $member_info = Member::getQueueAllMembersInfo(\YunShop::app()->uniacid);
 

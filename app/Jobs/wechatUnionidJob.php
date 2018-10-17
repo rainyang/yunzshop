@@ -34,7 +34,7 @@ class wechatUnionidJob implements ShouldQueue
     public function handle()
     {
         \Log::debug('-----queque uniacid-----', $this->uniacid);
-        \Log::debug('---------queque testing1111111------', $this->member_info);
+       // \Log::debug('---------queque testing1111111------', $this->member_info);
         return $this->synRun($this->uniacid, $this->member_info);
     }
 
