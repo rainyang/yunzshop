@@ -660,7 +660,8 @@ class MemberController extends BaseController
 
         $total = Cache::get('queque_wechat_total');
         $page  = Cache::get('queque_wechat_page');
-
+\Log::debug('--------ajax total-------', $total);
+        \Log::debug('--------ajax page-------', $page);
         if ($total == $page) {
             return json_encode(['status' => 1]);
         } else {
