@@ -111,9 +111,9 @@ class wechatUnionidJob implements ShouldQueue
             if (Cache::has('queque_wechat_page')) {
                 $page = Cache::get('queque_wechat_page');
                 $page++;
-                Cache::put('queque_wechat_page', $page);
+                Cache::put('queque_wechat_page', $page, 30);
             } else {
-                Cache::put('queque_wechat_page', 1);
+                Cache::put('queque_wechat_page', 1, 30);
             }
         }
     }

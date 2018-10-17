@@ -625,7 +625,7 @@ class MemberController extends BaseController
             \Log::debug('------total-----', $total);
             \Log::debug('------total_page-----', $total_page);
 
-            Cache::put('queque_wechat_total', $total_page);
+            Cache::put('queque_wechat_total', $total_page, 30);
 
             for ($curr_page = 1; $curr_page <= $total_page; $curr_page++) {
                 \Log::debug('------curr_page-----', $curr_page);
