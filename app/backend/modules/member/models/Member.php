@@ -452,7 +452,7 @@ class Member extends \app\common\models\Member
         if ($limit > 0) {
             $result = $result->offset($offset)->limit($limit)->orderBy('mc_members.uid', 'desc');
         }
-        
+
         return $result;
     }
 }

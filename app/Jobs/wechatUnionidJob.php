@@ -34,14 +34,14 @@ class wechatUnionidJob implements ShouldQueue
     public function handle()
     {
         \Log::debug('-----queque uniacid-----', $this->uniacid);
-       // \Log::debug('---------queque testing1111111------', $this->member_info);
+        \Log::debug('---------queque testing1111111------', $this->member_info);
         return $this->synRun($this->uniacid, $this->member_info);
     }
 
     public function synRun($uniacid, $member_info)
     {
         //$member_info = Member::getQueueAllMembersInfo($uniacid);
-//\Log::debug('------member count-----', [$member_info->count()]);
+
         \Log::debug('---------queque testing22222------', $member_info);
         $account = AccountWechats::getAccountByUniacid($uniacid);
         $appId = $account->key;

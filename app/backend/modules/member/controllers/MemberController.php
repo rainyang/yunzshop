@@ -621,8 +621,7 @@ class MemberController extends BaseController
         $total_page  = ceil($total/$pageSize);
         \Log::debug('------total-----', $total);
         \Log::debug('------total_page-----', $total_page);
-dd($total);
-        $total_page = 1;
+
         for ($curr_page = 1; $curr_page <= $total_page; $curr_page++) {
             \Log::debug('------curr_page-----', $curr_page);
             $offset      = ($curr_page - 1) * $pageSize;
