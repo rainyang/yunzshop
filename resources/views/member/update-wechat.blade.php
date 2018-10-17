@@ -79,27 +79,35 @@
     </div>
 
     <script>
+        var loop = true;
+        var _that = this;
+
         setInterval(function () {
-            $.ajax({
-                url: '{!! yzWebUrl('member.member.updateWechatData') !!}',
-                type: 'POST',
-                dataType: 'json',
-                beforeSend: function () {
-                    $('.loadEffect').show();
-                }
-            }).done(function (json) {
-                console.log(json.status);
-                if (json.status == 0) {
+            if (_that.loop) {
+                $.ajax({
+                    url: '{!! yzWebUrl('member.member.updateWechatData') !!}',
+                    type: 'POST',
+                    dataType: 'json',
+                    beforeSend: function () {
+                        $('.loadEffect').show();
+                    }
+                }).done(function (json) {
+                    console.log(json.status);
+
+                    if (json.status == 1) {
+                        _that.loop = false;
+                    }
+
+                }).fail(function (message) {
+                    console.log('fail:', message)
                     location.href = '{!! yzWebUrl('member.member.updateWechatOpenData', ['status' => 0]) !!}';
-                } else {
-                    location.href = '{!! yzWebUrl('member.member.updateWechatOpenData', ['status' => 1]) !!}';
-                }
-            }).fail(function (message) {
-                console.log('fail:', message)
-                location.href = '{!! yzWebUrl('member.member.updateWechatOpenData', ['status' => 0]) !!}';
-            }).always(function () {
-                $('.loadEffect').hide();
-            });
+                }).always(function () {
+                    $('.loadEffect').hide();
+                });
+            } else {
+                location.href = '{!! yzWebUrl('member.member.updateWechatOpenData', ['status' => 1]) !!}';
+            }
+
         }, 1000);
     </script>
 @endsection
