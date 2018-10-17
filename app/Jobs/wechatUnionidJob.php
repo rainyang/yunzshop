@@ -29,13 +29,13 @@ class wechatUnionidJob implements ShouldQueue
     {
         $this->uniacid = $uniacid;
         $this->member_info = $member_info->toArray();
-        \Log::debug('---------queque testing333333------', $this->member_info);
+      //  \Log::debug('---------queque testing333333------', $this->member_info);
     }
 
     public function handle()
     {
         \Log::debug('-----queque uniacid-----', $this->uniacid);
-        \Log::debug('---------queque testing1111111------', $this->member_info);
+    //    \Log::debug('---------queque testing1111111------', $this->member_info);
         return $this->synRun($this->uniacid, $this->member_info);
     }
 
@@ -43,7 +43,7 @@ class wechatUnionidJob implements ShouldQueue
     {
         //$member_info = Member::getQueueAllMembersInfo($uniacid);
 
-        \Log::debug('---------queque testing22222------', $member_info);
+    //    \Log::debug('---------queque testing22222------', $member_info);
         $account = AccountWechats::getAccountByUniacid($uniacid);
         $appId = $account->key;
         $appSecret = $account->secret;
