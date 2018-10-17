@@ -139,4 +139,25 @@ class TestController extends BaseController
         echo '分类图片修复成功：'.$category_success.'个，失败：'.$category_error.'个';
 
     }
+
+    public function tt()
+    {
+        $pageSize = 10000;
+
+        $member_info = \app\backend\modules\member\models\Member::getQueueAllMembersInfo(5);
+      //  echo $member_info->count();exit;
+        $total       = $member_info->count();
+        $total_page  = ceil($total/$pageSize);
+        $curr_page   = 17;
+        $offset      = ($curr_page-1) * $pageSize;
+
+        $member_info = \app\backend\modules\member\models\Member::getQueueAllMembersInfo(5, $pageSize, $offset)->get();
+
+
+        collect($member_info)->map(function ($item, $key) {
+            dd($item->openid);
+        });
+
+
+    }
 }
