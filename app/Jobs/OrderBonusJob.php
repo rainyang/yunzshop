@@ -73,6 +73,7 @@ class OrderBonusJob implements  ShouldQueue
         // 存入订单插件分红记录表
         $model = OrderPluginBonus::addRow([
             'order_id'      => $this->orderModel->id,
+            'uniacid'      => $this->orderModel->uniacid,
             'table_name'    => $this->tableName,
             'ids'           => $ids,
             'code'          => $this->code,

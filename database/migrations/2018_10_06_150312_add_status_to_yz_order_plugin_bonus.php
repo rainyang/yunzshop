@@ -24,6 +24,9 @@ class AddStatusToYzOrderPluginBonus extends Migration
                 if (!Schema::hasColumn('yz_order_plugin_bonus', 'undivided')) {
                     $table->decimal('undivided',14)->default(0.00);
                 }
+                if (!Schema::hasColumn('yz_order_plugin_bonus', 'uniacid')) {
+                    $table->integer('uniacid')->default(0);
+                }
             });
         }
     }

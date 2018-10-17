@@ -54,6 +54,7 @@ class OrderBonusContentJob implements  ShouldQueue
         }
         $model = OrderPluginBonus::addRow([
             'order_id'      => $this->orderModel->id,
+            'uniacid'      => $this->orderModel->uniacid,
             'table_name'    => 'yz_order_address',
             'ids'           => $ids,
             'code'          => 'address',
@@ -75,6 +76,7 @@ class OrderBonusContentJob implements  ShouldQueue
         }
         $model = OrderPluginBonus::addRow([
             'order_id'      => $this->orderModel->id,
+            'uniacid'      => $this->orderModel->uniacid,
             'table_name'    => 'mc_member',
             'ids'           => $ids,
             'code'          => 'buy_name',
@@ -101,6 +103,7 @@ class OrderBonusContentJob implements  ShouldQueue
         }
         $model = OrderPluginBonus::addRow([
             'order_id'      => $this->orderModel->id,
+            'uniacid'      => $this->orderModel->uniacid,
             'table_name'    => 'mc_member',
             'ids'           => $ids,
             'code'          => 'referrer_name',
@@ -127,6 +130,7 @@ class OrderBonusContentJob implements  ShouldQueue
             }
             $model = OrderPluginBonus::addRow([
                 'order_id'      => $this->orderModel->id,
+                'uniacid'      => $this->orderModel->uniacid,
                 'table_name'    => 'yz_supplier',
                 'ids'           => $ids,
                 'code'          => 'shop_name',
@@ -149,6 +153,7 @@ class OrderBonusContentJob implements  ShouldQueue
             }
             $model = OrderPluginBonus::addRow([
                 'order_id'      => $this->orderModel->id,
+                'uniacid'      => $this->orderModel->uniacid,
                 'table_name'    => 'yz_store',
                 'ids'           => $ids,
                 'code'          => 'shop_name',
@@ -171,6 +176,7 @@ class OrderBonusContentJob implements  ShouldQueue
             }
             $model = OrderPluginBonus::addRow([
                 'order_id'      => $this->orderModel->id,
+                'uniacid'      => $this->orderModel->uniacid,
                 'table_name'    => 'yz_store',
                 'ids'           => $ids,
                 'code'          => 'shop_name',
@@ -181,6 +187,7 @@ class OrderBonusContentJob implements  ShouldQueue
         } else {
             $model = OrderPluginBonus::addRow([
                 'order_id'      => $this->orderModel->id,
+                'uniacid'      => $this->orderModel->uniacid,
                 'table_name'    => 'yz_shop',
                 'ids'           => 0,
                 'code'          => 'shop_name',
