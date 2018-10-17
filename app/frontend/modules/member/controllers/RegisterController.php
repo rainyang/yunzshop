@@ -494,4 +494,13 @@ class RegisterController extends ApiController
             return $this->errorJson('手机号或密码格式错误');
         }
     }
+
+    public function getInviteCode()
+    {
+        $data = [
+          'status' => 1
+        ];
+
+        return $this->successJson('ok', $data);
+    }
 }

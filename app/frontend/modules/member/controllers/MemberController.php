@@ -108,6 +108,8 @@ class MemberController extends ApiController
                 }
 
                 $data['withdraw_status'] = $withdraw_status;
+
+                $data['inviteCode'] = 'C1234';
                 return $this->successJson('', $data);
             } else {
                 return $this->errorJson('[' . $member_id . ']用户不存在');
