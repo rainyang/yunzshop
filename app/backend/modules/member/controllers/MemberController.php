@@ -20,6 +20,7 @@ use app\backend\modules\member\services\MemberServices;
 use app\common\components\BaseController;
 use app\common\events\member\MemberRelationEvent;
 use app\common\events\member\RegisterByAgent;
+use app\common\helpers\Cache;
 use app\common\helpers\PaginationHelper;
 use app\common\models\AccountWechats;
 use app\common\models\MemberAlipay;
@@ -613,7 +614,6 @@ class MemberController extends BaseController
     public function updateWechatOpenData()
     {
         $pageSize = 20000;
-        $pageSize = 2;
 
         $member_info = Member::getQueueAllMembersInfo(\YunShop::app()->uniacid);
 
@@ -621,6 +621,8 @@ class MemberController extends BaseController
         $total_page  = ceil($total/$pageSize);
         \Log::debug('------total-----', $total);
         \Log::debug('------total_page-----', $total_page);
+
+        Cache::put('queque_wechat_total', $total_page);
 
         for ($curr_page = 1; $curr_page <= $total_page; $curr_page++) {
             \Log::debug('------curr_page-----', $curr_page);
@@ -634,7 +636,7 @@ class MemberController extends BaseController
 
 
 
-        /*$status = \YunShop::request()->status;
+        $status = \YunShop::request()->status;
 
         if (!is_null($status)) {
             switch ($status) {
@@ -648,7 +650,7 @@ class MemberController extends BaseController
             }
         }
 
-        return view('member.update-wechat', [])->render();*/
+        return view('member.update-wechat', [])->render();
     }
 
     public function updateWechatData()
@@ -656,12 +658,22 @@ class MemberController extends BaseController
         set_time_limit(0);
         $uniacid = \YunShop::app()->uniacid;
 
-        try {
+        $total = Cache::get('queque_wechat_total');
+        $page  = Cache::get('queque_wechat_page');
+
+        if ($total == $page) {
+            return json_encode(['status' => 1]);
+        } else {
+            return json_encode(['status' => 0]);
+        }
+
+        /*ry {
             \Artisan::call('syn:wechatUnionid' ,['uniacid'=>$uniacid]);
+
 
             return json_encode(['status' => 1]);
         } catch (\Exception $e) {
             return json_encode(['status' => 0]);
-        }
+        }*/
     }
 }

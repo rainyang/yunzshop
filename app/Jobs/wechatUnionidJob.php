@@ -10,6 +10,7 @@ namespace app\Jobs;
 
 
 use app\backend\modules\member\models\Member;
+use app\common\helpers\Cache;
 use app\common\models\AccountWechats;
 use app\frontend\modules\member\models\MemberUniqueModel;
 use Illuminate\Bus\Queueable;
@@ -106,6 +107,14 @@ class wechatUnionidJob implements ShouldQueue
                     throw $e;
                 }
             });
+
+            if (Cache::has('queque_wechat_page')) {
+                $page = Cache::get('queque_wechat_page');
+                $page++;
+                Cache::put('queque_wechat_page', $page);
+            } else {
+                Cache::put('queque_wechat_page', 1);
+            }
         }
     }
 

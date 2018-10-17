@@ -16,6 +16,7 @@ class Cache
 
     public static function setUniacid()
     {
+        \Log::debug('---------cache uniacid--------', \YunShop::app()->uniacid);
         return \YunShop::app()->uniacid . '_';
     }
 
