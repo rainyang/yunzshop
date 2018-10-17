@@ -108,6 +108,8 @@ class wechatUnionidJob implements ShouldQueue
                 }
             });
 
+            Cache::setUniacid($uniacid);
+            
             if (Cache::has('queque_wechat_page')) {
                 \Log::debug('----queque cache1----');
                 $page = Cache::get('queque_wechat_page');
