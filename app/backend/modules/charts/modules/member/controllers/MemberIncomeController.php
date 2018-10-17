@@ -9,7 +9,13 @@
 namespace app\backend\modules\charts\modules\member\controllers;
 
 
-class MemberIncomeController
-{
+use app\common\components\BaseController;
 
+class MemberIncomeController extends BaseController
+{
+    public function index()
+    {
+
+        dd(1);
+    }
 }

@@ -6,9 +6,14 @@
  * Time: 11:52
  */
 
-namespace app\backend\modules\charts\modules\merchant\controllers;
+namespace app\backend\modules\charts\modules\income\controllers;
 
-class ShopIncomeStatisticsController
+use app\common\components\BaseController;
+
+class ShopIncomeStatisticsController extends BaseController
 {
+    public function index()
+    {
 
+    }
 }
