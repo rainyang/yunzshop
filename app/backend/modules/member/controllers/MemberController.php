@@ -615,13 +615,22 @@ class MemberController extends BaseController
     {
         $status = \YunShop::request()->status;
 
+        if (Cache::has('queque_wechat_total')) {
+            Cache::forget('queque_wechat_total');
+        }
+
+        if (Cache::has('queque_wechat_page')) {
+            Cache::forget('queque_wechat_page');
+        }
+
         if (is_null($status)) {
-            $pageSize = 20000;
+            $pageSize = 1000;
 
             $member_info = Member::getQueueAllMembersInfo(\YunShop::app()->uniacid);
 
             $total       = $member_info->count();
             $total_page  = ceil($total/$pageSize);
+
             \Log::debug('------total-----', $total);
             \Log::debug('------total_page-----', $total_page);
 
@@ -653,9 +662,6 @@ class MemberController extends BaseController
 
     public function updateWechatData()
     {
-        set_time_limit(0);
-        $uniacid = \YunShop::app()->uniacid;
-
         $total = Cache::get('queque_wechat_total');
         $page  = Cache::get('queque_wechat_page');
 \Log::debug('--------ajax total-------', $total);

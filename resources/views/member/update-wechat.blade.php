@@ -82,7 +82,9 @@
         var loop = true;
         var _that = this;
 
-        setInterval(function () {
+        var query = setInterval(function () {
+            console.log('---------loop--------' + _that.loop);
+
             if (_that.loop) {
                 $.ajax({
                     url: '{!! yzWebUrl('member.member.updateWechatData') !!}',
@@ -102,9 +104,11 @@
                     console.log('fail:', message)
                     location.href = '{!! yzWebUrl('member.member.updateWechatOpenData', ['status' => 0]) !!}';
                 }).always(function () {
-                    $('.loadEffect').hide();
+                   // $('.loadEffect').hide();
                 });
             } else {
+                clearInterval(query);
+
                 location.href = '{!! yzWebUrl('member.member.updateWechatOpenData', ['status' => 1]) !!}';
             }
 
