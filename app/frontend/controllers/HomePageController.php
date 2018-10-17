@@ -489,7 +489,7 @@ class HomePageController extends ApiController
         }else{
             $extension_status = 1;
         }
-        if ($type == 7 && $extension_status == 1) {
+        if ($type == 7 && $extension_status == 0) {
             unset($promoteMenu);
         }else{
             $defaultMenu[4] = $defaultMenu[3]; //第 5 个按钮改成"会员中心"
