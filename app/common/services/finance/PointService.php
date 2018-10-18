@@ -178,6 +178,7 @@ class PointService
 
     public function addLog()
     {
+        echo '<pre>';print_r($this->point_data);exit();
         $this->point_data['uniacid'] = \YunShop::app()->uniacid;
         $point_model = PointLog::create($this->point_data);
         if (!isset($point_model)) {
@@ -214,7 +215,6 @@ class PointService
     public function getAfterPoint()
     {
         $this->point_data['before_point'] = $this->member_point;
-        echo '<pre>';print_r($this->point_data['before_point']);exit();
         $this->member_point += $this->point_data['point'];
         if ($this->member_point < PointService::POINT) {
             $this->member_point = PointService::POINT;
