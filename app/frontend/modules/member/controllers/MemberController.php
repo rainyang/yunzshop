@@ -1380,13 +1380,15 @@ class MemberController extends ApiController
         if (app('plugins')->isEnabled('kingtimes')) {
             $provider = Provider::select(['id', 'uid', 'status'])->where('uid', \YunShop::app()->getMemberId())->first();
             $distributor = Distributor::select(['id', 'uid', 'status'])->where('uid', \YunShop::app()->getMemberId())->first();
-            if ($provider && $provider->status == 1) {
-                $data[] = [
-                    'name' => 'provider_center',
-                    'title' => '补货商中心',
-                    'class' => 'icon-member-replenishment',
-                    'url'   => 'ReplenishmentApply',
-                ];
+            if ($provider) {
+                if ($provider->status == 1) {
+                    $data[] = [
+                        'name' => 'provider_center',
+                        'title' => '补货商中心',
+                        'class' => 'icon-member-replenishment',
+                        'url'   => 'ReplenishmentApply',
+                    ];
+                }
             } else {
                 $data[] = [
                     'name' => 'provider_apply',
@@ -1395,13 +1397,15 @@ class MemberController extends ApiController
                     'url'   => 'ReplenishmentApply',
                 ];
             }
-            if ($distributor && $distributor->status == 1) {
-                $data[] = [
-                    'name' => 'distributor_center',
-                    'title' => '配送站中心',
-                    'class' => 'icon-member-express-list',
-                    'url'   => 'DeliveryTerminalApply',
-                ];
+            if ($distributor) {
+                if ($distributor->status == 1) {
+                    $data[] = [
+                        'name' => 'distributor_center',
+                        'title' => '配送站中心',
+                        'class' => 'icon-member-express-list',
+                        'url'   => 'DeliveryTerminalApply',
+                    ];
+                }
             } else {
                 $data[] = [
                     'name' => 'distributor_apply',
