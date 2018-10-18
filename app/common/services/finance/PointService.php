@@ -179,7 +179,7 @@ class PointService
     public function addLog()
     {
         $this->point_data['uniacid'] = \YunShop::app()->uniacid;
-        file_put_contents(storage_path('logs/YY1020.txt'), print_r(date('Ymd His')."999".PHP_EOL,1), FILE_APPEND);
+        file_put_contents(storage_path('logs/YY1020.txt'), print_r($this->point_data,1), FILE_APPEND);
         $point_model = PointLog::create($this->point_data);
         if (!isset($point_model)) {
             return false;
