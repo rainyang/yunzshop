@@ -36,7 +36,6 @@ class OrderBonusContentJob implements  ShouldQueue
 
     public function handle()
     {
-        $this->orderSn();
         $this->address();
         $this->buyName();
         $this->referrerName();
@@ -136,22 +135,12 @@ class OrderBonusContentJob implements  ShouldQueue
                 ->where('id', $supplier_id);
             $ids = $build->pluck('id');
             $content = $build->first()['username'];
+
             if (empty($content)) {
-                return;
+                $content = '供应商';
             }
-            $model = OrderPluginBonus::addRow([
-                'order_id'      => $this->orderModel->id,
-                'uniacid'      => $this->orderModel->uniacid,
-                'table_name'    => 'yz_supplier',
-                'ids'           => $ids,
-                'code'          => 'shop_name',
-                'amount'        => 0,
-                'content'       => $content,
-                'status'        => 0,
-                'price'         => $this->orderModel->price,
-                'member_id'     => $this->orderModel->uid,
-                'order_sn'      => $this->orderModel->order_sn,
-            ]);
+            $tableName = 'yz_supplier';
+
         } elseif ($this->orderModel->plugin_id == 31) {
             $cashierTable = DB::table('yz_plugin_cashier_order')
                 ->select()
@@ -163,21 +152,10 @@ class OrderBonusContentJob implements  ShouldQueue
             $ids = $build->pluck('id');
             $content = $build->first()['store_name'];
             if (empty($content)) {
-                return;
+                $content = '收银台';
             }
-            $model = OrderPluginBonus::addRow([
-                'order_id'      => $this->orderModel->id,
-                'uniacid'      => $this->orderModel->uniacid,
-                'table_name'    => 'yz_store',
-                'ids'           => $ids,
-                'code'          => 'shop_name',
-                'amount'        => 0,
-                'content'       => $content,
-                'status'        => 0,
-                'price'         => $this->orderModel->price,
-                'member_id'     => $this->orderModel->uid,
-                'order_sn'      => $this->orderModel->order_sn,
-            ]);
+            $tableName = 'yz_store';
+
         } elseif ($this->orderModel->plugin_id == 32) {
             $storeTable = DB::table('yz_plugin_store_order')
                 ->select()
@@ -191,33 +169,25 @@ class OrderBonusContentJob implements  ShouldQueue
             if (empty($content)) {
                 return;
             }
-            $model = OrderPluginBonus::addRow([
-                'order_id'      => $this->orderModel->id,
-                'uniacid'      => $this->orderModel->uniacid,
-                'table_name'    => 'yz_store',
-                'ids'           => $ids,
-                'code'          => 'shop_name',
-                'amount'        => 0,
-                'content'       => $content,
-                'status'        => 0,
-                'price'         => $this->orderModel->price,
-                'member_id'     => $this->orderModel->uid,
-                'order_sn'      => $this->orderModel->order_sn,
-            ]);
+            $tableName = 'yz_store';
+
         } else {
-            $model = OrderPluginBonus::addRow([
-                'order_id'      => $this->orderModel->id,
-                'uniacid'      => $this->orderModel->uniacid,
-                'table_name'    => 'yz_shop',
-                'ids'           => 0,
-                'code'          => 'shop_name',
-                'amount'        => 0,
-                'content'       => '平台自营',
-                'status'        => 0,
-                'price'         => $this->orderModel->price,
-                'member_id'     => $this->orderModel->uid,
-                'order_sn'      => $this->orderModel->order_sn,
-            ]);
+            $content = '平台自营';
+            $ids = 0;
+            $tableName = 'yz_shop';
         }
+        $model = OrderPluginBonus::addRow([
+            'order_id'      => $this->orderModel->id,
+            'uniacid'       => $this->orderModel->uniacid,
+            'table_name'    => $tableName,
+            'ids'           => $ids,
+            'code'          => 'shop_name',
+            'amount'        => 0,
+            'content'       => $content,
+            'status'        => 0,
+            'price'         => $this->orderModel->price,
+            'member_id'     => $this->orderModel->uid,
+            'order_sn'      => $this->orderModel->order_sn,
+        ]);
     }
 }
