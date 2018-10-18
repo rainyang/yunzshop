@@ -517,13 +517,15 @@ class MemberController extends ApiController
      */
     public function bindMobile()
     {
-        $mobile = \YunShop::request()->mobile;
-        $password = \YunShop::request()->password;
+        $mobile           = \YunShop::request()->mobile;
+        $password         = \YunShop::request()->password;
         $confirm_password = \YunShop::request()->password;
+        $uid              = \YunShop::app()->getMemberId();
 
-        $member_model = MemberModel::getMemberById(\YunShop::app()->getMemberId());
 
-        if (\YunShop::app()->getMemberId() && \YunShop::app()->getMemberId() > 0) {
+        $member_model = MemberModel::getMemberById($uid);
+
+        if (\YunShop::app()->getMemberId() && $uid > 0) {
             $check_code = MemberService::checkCode();
 
             if ($check_code['status'] != 1) {
@@ -571,6 +573,12 @@ class MemberController extends ApiController
                 $member_model->password = md5($password . $salt);
 
                 if ($member_model->save()) {
+                    //邀请码
+                    $parent_id = \app\common\models\Member::getMemberIdForInviteCode();
+                    if (!is_null($parent_id)) {
+                        MemberShopInfo::change_relation($uid, $parent_id);
+                    }
+
                     if (Cache::has($member_model->uid . '_member_info')) {
                         Cache::forget($member_model->uid . '_member_info');
                     }

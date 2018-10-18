@@ -544,60 +544,20 @@ class MemberController extends BaseController
         $parent_id = \YunShop::request()->parent;
         $uid       = \YunShop::request()->member;
 
-        if (is_numeric($parent_id)) {
-            if (!empty($parent_id)) {
-                $parent =  SubMemberModel::getMemberShopInfo($parent_id);
+        $msg = MemberShopInfo::change_relation($uid, $parent_id);
 
-                $parent_is_agent = !empty($parent) && $parent->is_agent == 1 && $parent->status == 2;
-
-                if (!$parent_is_agent) {
-                    return $this->message('上线没有推广权限', yzWebUrl('member.member.detail'), 'warning');
-                }
-            }
-
-            $member_relation = Member::setMemberRelation($uid, $parent_id);
-            $plugin_commission = app('plugins')->isEnabled('commission');
-
-            if (isset($member_relation) && $member_relation !== false) {
-                $member = MemberShopInfo::getMemberShopInfo($uid);
-
-                $record = new MemberRecord();
-                $record->uniacid   = \YunShop::app()->uniacid;
-                $record->uid       = $uid;
-                $record->parent_id = $member->parent_id;
-
-                $member->parent_id = $parent_id;
-                $member->inviter = 1;
-
-                $member->save();
-                $record->save();
-
-                if ($plugin_commission) {
-                   $agents = Agents::uniacid()->where('member_id', $uid)->first();
-
-                   if (!is_null($agents)) {
-                       $agents->parent_id = $parent_id;
-                       $agents->parent    = $member->relation;
-
-                       $agents->save();
-                   }
-
-                    $agent_data = [
-                        'member_id' => $uid,
-                        'parent_id' => $parent_id,
-                        'parent'   => $member->relation
-                    ];
-
-                    event(new RegisterByAgent($agent_data));
-                }
-
-                //更新2、3级会员上线和分销关系
-                dispatch(new ModifyRelationJob($uid, $member_relation, $plugin_commission));
-
-                response(['status' => 1])->send();
-            } else {
+        switch ($msg['status']) {
+            case -1:
+                return $this->message('上线没有推广权限', yzWebUrl('member.member.detail'), 'warning');
+                break;
+            case 0:
                 response(['status' => 0])->send();
-            }
+                break;
+            case 1:
+                response(['status' => 1])->send();
+                break;
+            default:
+                response(['status' => 0])->send();
         }
     }
 
