@@ -149,10 +149,7 @@ class PointService
     private function getMemberModel()
     {
         $member_id = $this->point_data['member_id'];
-        echo '<pre>';print_r($member_id);
         $memberModel = Member::uniacid()->where('uid', $member_id)->lockForUpdate()->first();
-        dd($memberModel);
-        exit;
 
         return $memberModel;
     }
@@ -217,6 +214,7 @@ class PointService
     public function getAfterPoint()
     {
         $this->point_data['before_point'] = $this->member_point;
+        echo '<pre>';print_r($this->point_data['before_point']);exit();
         $this->member_point += $this->point_data['point'];
         if ($this->member_point < PointService::POINT) {
             $this->member_point = PointService::POINT;
