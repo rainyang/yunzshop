@@ -14,6 +14,7 @@ use app\common\models\Order;
 use app\common\repositories\ExpressCompany;
 use app\common\services\MessageService;
 use app\frontend\modules\member\models\SubMemberModel;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Yunshop\Kingtimes\common\models\CompeteOrderDistributor;
 use Yunshop\Kingtimes\common\models\OrderDistributor;
@@ -22,15 +23,7 @@ class TestController extends BaseController
 {
     public function index()
     {
-        //dd(collect([['a' => 1, 'b' => 2], ['a'=> 2, 'b' => 3]])->where('a', 1));
-        $orderDistributors = CompeteOrderDistributor::where('expiration_time', '<=', time())->get();
-        dd($orderDistributors);
-        $orderDistributors->each(function (OrderDistributor $orderDistributor) {
-
-            if ($orderDistributor->order->status == Order::WAIT_SEND) {
-                dd(1);
-            }
-        });
+        dd(__NAMESPACE__);
     }
 
     public function op_database()
