@@ -27,6 +27,15 @@ class AddStatusToYzOrderPluginBonus extends Migration
                 if (!Schema::hasColumn('yz_order_plugin_bonus', 'uniacid')) {
                     $table->integer('uniacid')->default(0);
                 }
+                if (!Schema::hasColumn('yz_order_plugin_bonus', 'uniacid')) {
+                    $table->string('order_sn')->nullable();
+                }
+                if (!Schema::hasColumn('yz_order_plugin_bonus', 'uniacid')) {
+                    $table->decimal('price',14)->default(0.00);
+                }
+                if (!Schema::hasColumn('yz_order_plugin_bonus', 'uniacid')) {
+                    $table->integer('member_id')->default(0);
+                }
             });
         }
     }

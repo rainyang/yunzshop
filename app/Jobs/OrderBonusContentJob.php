@@ -43,20 +43,6 @@ class OrderBonusContentJob implements  ShouldQueue
         $this->shopName();
     }
 
-    public function OrderSn()
-    {
-        $model = OrderPluginBonus::addRow([
-            'order_id'      => $this->orderModel->id,
-            'uniacid'      => $this->orderModel->uniacid,
-            'table_name'    => 'yz_order',
-            'ids'           => 0,
-            'code'          => 'order_sn',
-            'amount'        => 0,
-            'content'       => $this->orderModel->order_sn,
-            'status'        => 0,
-        ]);
-    }
-
     public function address()
     {
         $build = DB::table('yz_order_address')
@@ -76,6 +62,9 @@ class OrderBonusContentJob implements  ShouldQueue
             'amount'        => 0,
             'content'       => $content,
             'status'        => 0,
+            'price'         => $this->orderModel->price,
+            'member_id'     => $this->orderModel->uid,
+            'order_sn'      => $this->orderModel->order_sn,
         ]);
     }
 
@@ -98,6 +87,9 @@ class OrderBonusContentJob implements  ShouldQueue
             'amount'        => 0,
             'content'       => $content,
             'status'        => 0,
+            'price'         => $this->orderModel->price,
+            'member_id'     => $this->orderModel->uid,
+            'order_sn'      => $this->orderModel->order_sn,
         ]);
     }
 
@@ -126,6 +118,9 @@ class OrderBonusContentJob implements  ShouldQueue
             'amount'        => 0,
             'content'       => $content,
             'status'        => 0,
+            'price'         => $this->orderModel->price,
+            'member_id'     => $this->orderModel->uid,
+            'order_sn'      => $this->orderModel->order_sn,
         ]);
     }
 
@@ -153,6 +148,9 @@ class OrderBonusContentJob implements  ShouldQueue
                 'amount'        => 0,
                 'content'       => $content,
                 'status'        => 0,
+                'price'         => $this->orderModel->price,
+                'member_id'     => $this->orderModel->uid,
+                'order_sn'      => $this->orderModel->order_sn,
             ]);
         } elseif ($this->orderModel->plugin_id == 31) {
             $cashierTable = DB::table('yz_plugin_cashier_order')
@@ -176,6 +174,9 @@ class OrderBonusContentJob implements  ShouldQueue
                 'amount'        => 0,
                 'content'       => $content,
                 'status'        => 0,
+                'price'         => $this->orderModel->price,
+                'member_id'     => $this->orderModel->uid,
+                'order_sn'      => $this->orderModel->order_sn,
             ]);
         } elseif ($this->orderModel->plugin_id == 32) {
             $storeTable = DB::table('yz_plugin_store_order')
@@ -199,6 +200,9 @@ class OrderBonusContentJob implements  ShouldQueue
                 'amount'        => 0,
                 'content'       => $content,
                 'status'        => 0,
+                'price'         => $this->orderModel->price,
+                'member_id'     => $this->orderModel->uid,
+                'order_sn'      => $this->orderModel->order_sn,
             ]);
         } else {
             $model = OrderPluginBonus::addRow([
@@ -210,6 +214,9 @@ class OrderBonusContentJob implements  ShouldQueue
                 'amount'        => 0,
                 'content'       => '平台自营',
                 'status'        => 0,
+                'price'         => $this->orderModel->price,
+                'member_id'     => $this->orderModel->uid,
+                'order_sn'      => $this->orderModel->order_sn,
             ]);
         }
     }
