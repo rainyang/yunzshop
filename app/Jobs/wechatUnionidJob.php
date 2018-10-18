@@ -29,13 +29,11 @@ class wechatUnionidJob implements ShouldQueue
     {
         $this->uniacid = $uniacid;
         $this->member_info = $member_info->toArray();
-      //  \Log::debug('---------queque testing333333------', $this->member_info);
     }
 
     public function handle()
     {
         \Log::debug('-----queque uniacid-----', $this->uniacid);
-    //    \Log::debug('---------queque testing1111111------', $this->member_info);
         return $this->synRun($this->uniacid, $this->member_info);
     }
 
@@ -43,18 +41,16 @@ class wechatUnionidJob implements ShouldQueue
     {
         //$member_info = Member::getQueueAllMembersInfo($uniacid);
 
-    //    \Log::debug('---------queque testing22222------', $member_info);
         $account = AccountWechats::getAccountByUniacid($uniacid);
         $appId = $account->key;
         $appSecret = $account->secret;
-        \Log::debug('------member appId-----', [$appId]);
-        \Log::debug('------member appSecret-----', [$appSecret]);
+
         $global_access_token_url = $this->_getAccessToken($appId, $appSecret);
 
         $global_token = \Curl::to($global_access_token_url)
             ->asJsonResponse(true)
             ->get();
-        \Log::debug('------member global_token-----', [$global_token]);
+
         return $this->requestWechatApi($uniacid, $member_info, $global_token);
     }
 
@@ -73,10 +69,8 @@ class wechatUnionidJob implements ShouldQueue
                 try {
                     if (!is_null($item)) {
                         $UnionidInfo = MemberUniqueModel::getUnionidInfoByMemberId($uniacid, $item['uid'])->first();
-                        \Log::debug('------queuqe coll member_id-----', $item['uid']);
                         $this->printLog($path, $item['openid'] . '-' . $item['uid']);
-                        \Log::debug('------queuqe coll UnionidInfo-----', $UnionidInfo);
-                        \Log::debug('------queuqe coll openid-----', $item['openid']);
+
                         if (is_null($UnionidInfo) && !empty($item['openid'])) {
                             \Log::debug('----start---', [$item['uid']]);
                             $global_userinfo_url = $this->_getInfo($global_token['access_token'], $item['openid']);

@@ -18,8 +18,6 @@ class Cache
     public static function setUniacid($uniacid = 0)
     {
         self::$i = $uniacid ?: \YunShop::app()->uniacid;
-
-        \Log::debug('---------cache set uniacid--------', self::$i);
     }
 
     public static function getUniacid()
@@ -28,7 +26,6 @@ class Cache
             self::setUniacid();
         }
 
-        \Log::debug('---------cache get uniacid--------', self::$i);
         return self::$i;
     }
 
