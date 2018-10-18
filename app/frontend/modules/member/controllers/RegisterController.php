@@ -497,8 +497,10 @@ class RegisterController extends ApiController
 
     public function getInviteCode()
     {
+        $is_invite = intval(Setting::get('shop.member.is_invite'));
+
         $data = [
-          'status' => 1
+          'status' => $is_invite
         ];
 
         return $this->successJson('ok', $data);
