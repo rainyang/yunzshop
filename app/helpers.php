@@ -265,14 +265,11 @@ function yz_tomedia($src, $local_path = false)
     }
     $t = strtolower($src);
     if (strexists($t, 'http://') || strexists($t, 'https://') || substr($t, 0, 2) == '//') {
-        return $src;
+        return 'https:' . substr($src, strpos($src, '//'));
     }
 
     if ($local_path || empty($setting['remote']['type']) || file_exists(base_path('../../') . '/' . $_W['config']['upload']['attachdir'] . '/' . $src)) {
         $src = request()->getSchemeAndHttpHost() . '/attachment/' . $src;
-        if ($os == \app\common\helpers\Client::OS_TYPE_IOS) {
-            return 'https:' . substr($src, strpos($src, '//'));
-        }
     } else {
         if ($setting['remote']['type'] == 1) {
             $attachurl_remote = $setting['remote']['ftp']['url'] . '/';
@@ -286,6 +283,9 @@ function yz_tomedia($src, $local_path = false)
 
         $src = $attachurl_remote . $src;
     }
+    
+    $src = 'https:' . substr($src, strpos($src, '//'));
+
     return $src;
 }
 
