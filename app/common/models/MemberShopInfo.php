@@ -364,4 +364,18 @@ class MemberShopInfo extends BaseModel
     {
         return $this->hasOne(Member::class, 'uid', 'm_id');
     }
+
+    public static function chkInviteCode($code)
+    {
+        return self::select('member_id')->where('invite_code', $code)
+            ->uniacid()
+            ->count();
+    }
+
+    public static function updateInviteCode($member_id, $data)
+    {
+        return self::uniacid()
+            ->where('member_id', $member_id)
+            ->update($data);
+    }
 }

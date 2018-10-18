@@ -19,6 +19,7 @@ use app\common\models\Setting;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use app\common\models\Order;
 use Yunshop\Commission\models\AgentLevel;
+use Yunshop\Love\Common\Models\MemberShop;
 use Yunshop\Merchant\common\models\MerchantLevel;
 use Yunshop\Micro\common\models\MicroShopLevel;
 use Yunshop\TeamDividend\models\TeamDividendLevelModel;
@@ -993,5 +994,54 @@ class MemberModel extends Member
         $set = $lang[$lang['lang']];
 
         return $set[$filed];
+    }
+
+    /**
+     * 获取邀请码
+     *
+     * @param $member_id
+     * @return string
+     */
+    public static function getInviteCode($member_id)
+    {
+        $memberInfo = MemberShopInfo::getMemberShopInfo($member_id);
+
+        if (is_null($memberInfo->invite_code) || empty($memberInfo->invite_code)) {
+            $invite_code = self::generateInviteCode();
+        }
+
+        return (!is_null($memberInfo->invite_code) && !empty($memberInfo->invite_code)) ?: $invite_code;
+    }
+
+    /**
+     * 生成邀请码
+     *
+     * @return string
+     */
+    public static function generateInviteCode()
+    {
+        $code = '';
+
+        if (self::chkInviteCode($code)) {
+            return '';
+        }
+
+        //TODO UPDATE
+
+        return $code;
+    }
+
+    /**
+     * 验证邀请码
+     *
+     * @param $code
+     */
+    public static function chkInviteCode($code)
+    {
+        if (MemberShop::chkInviteCode($code)) {
+            return true;
+        }
+
+        return false;
     }
 }

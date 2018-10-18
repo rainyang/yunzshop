@@ -52,6 +52,11 @@ class MemberController extends ApiController
     public function getUserInfo()
     {
         $member_id = \YunShop::app()->getMemberId();
+        $v         = request('v');
+
+        if (!is_null($v)) {
+            $data['inviteCode'] = MemberModel::getInviteCode($member_id);exit;
+        }
 
         // (new \app\frontend\modules\member\controllers\LogoutController)->index();
         // exit();
@@ -109,7 +114,10 @@ class MemberController extends ApiController
 
                 $data['withdraw_status'] = $withdraw_status;
 
-                $data['inviteCode'] = 'C1234';
+                if (!is_null($v)) {
+                    $data['inviteCode'] = MemberModel::getInviteCode($member_id);
+                }
+
                 return $this->successJson('', $data);
             } else {
                 return $this->errorJson('[' . $member_id . ']用户不存在');
