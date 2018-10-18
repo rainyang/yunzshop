@@ -1,55 +1,45 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: dingran
+ * Date: 2018/10/16
+ * Time: 上午10:24
+ */
 
-namespace app\Console\Commands;
+namespace app\Jobs;
 
 
 use app\backend\modules\member\models\Member;
+use app\common\helpers\Cache;
 use app\common\models\AccountWechats;
 use app\frontend\modules\member\models\MemberUniqueModel;
-use Illuminate\Console\Command;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
-class WechatOpen extends Command
+class wechatUnionidJob implements ShouldQueue
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'syn:wechatUnionid {uniacid}';
+    use InteractsWithQueue, Queueable, SerializesModels;
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = '微信开发平台同步Unionid';
+    private $uniacid;
+    private $member_info;
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    public function __construct($uniacid, $member_info)
     {
-        parent::__construct();
+        $this->uniacid = $uniacid;
+        $this->member_info = $member_info->toArray();
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
     public function handle()
     {
-        $uniacid = $this->argument('uniacid');
-
-        return $this->synRun($uniacid);
+        \Log::debug('-----queque uniacid-----', $this->uniacid);
+        return $this->synRun($this->uniacid, $this->member_info);
     }
 
-
-    private function synRun($uniacid)
+    public function synRun($uniacid, $member_info)
     {
-        $member_info = Member::getQueueAllMembersInfo($uniacid);
+        //$member_info = Member::getQueueAllMembersInfo($uniacid);
 
         $account = AccountWechats::getAccountByUniacid($uniacid);
         $appId = $account->key;
@@ -67,30 +57,31 @@ class WechatOpen extends Command
     private function requestWechatApi($uniacid, $member_info, $global_token)
     {
         if (!is_null($member_info)) {
+            \Log::debug('------queque member_info-------');
             $time = time();
             $path = 'logs/' . $time . '_member_openid.log';
             $upgrade_path = 'logs/' . $time . '_upgrade_member_openid.log';
             $error_path = 'logs/' . $time . '_error_member_openid.log';
 
             collect($member_info)->map(function($item) use ($uniacid, $global_token, $path, $upgrade_path, $error_path) {
+                \Log::debug('------queuqe coll-----', $item);
+
                 try {
-                    $item = $item->first();
+                    if (!is_null($item)) {
+                        $UnionidInfo = MemberUniqueModel::getUnionidInfoByMemberId($uniacid, $item['uid'])->first();
+                        $this->printLog($path, $item['openid'] . '-' . $item['uid']);
 
-                    if (!is_null($item->hasOneFans)) {
-                        $UnionidInfo = MemberUniqueModel::getUnionidInfoByMemberId($item->hasOneFans->uid)->first();
-                        $this->printLog($path, $item->hasOneFans->openid . '-' . $item->hasOneFans->uid);
-
-                        if (is_null($UnionidInfo) && !empty($item->hasOneFans->openid)) {
-                            \Log::debug('----start---', [$item->yzMember->member_id]);
-                            $global_userinfo_url = $this->_getInfo($global_token['access_token'], $item->hasOneFans->openid);
+                        if (is_null($UnionidInfo) && !empty($item['openid'])) {
+                            \Log::debug('----start---', [$item['uid']]);
+                            $global_userinfo_url = $this->_getInfo($global_token['access_token'], $item['openid']);
 
                             $user_info = \Curl::to($global_userinfo_url)
                                 ->asJsonResponse(true)
                                 ->get();
 
                             if (isset($user_info['errcode'])) {
-                                \Log::debug('----error---', [$item->yzMember->member_id]);
-                                $this->printLog($error_path, $item->yzMember->member_id . '-' . $user_info['errmsg']);
+                                \Log::debug('----error---', [$item['uid']]);
+                                $this->printLog($error_path, $item['uid'] . '-' . $user_info['errmsg']);
                                 return ['error' => 1, 'msg' => $user_info['errmsg']];
                             }
 
@@ -98,11 +89,11 @@ class WechatOpen extends Command
                                 MemberUniqueModel::insertData(array(
                                     'uniacid' => $uniacid,
                                     'unionid' => $user_info['unionid'],
-                                    'member_id' => $item->hasOneFans->uid,
+                                    'member_id' => $item['uid'],
                                     'type' => 1
                                 ));
-                                \Log::debug('----insert---', [$item->yzMember->member_id]);
-                                $this->printLog($upgrade_path, $item->hasOneFans->openid . '-' . $item->yzMember->member_id);
+                                \Log::debug('----insert---', [$item['uid']]);
+                                $this->printLog($upgrade_path, $item['openid'] . '-' . $item['uid']);
                             }
                         }
                     }
@@ -110,6 +101,19 @@ class WechatOpen extends Command
                     throw $e;
                 }
             });
+
+            Cache::setUniacid($uniacid);
+
+            if (Cache::has('queque_wechat_page')) {
+                \Log::debug('----queque cache1----');
+                $page = Cache::get('queque_wechat_page');
+                $page++;
+                \Log::debug('----queque cache1 page----', $page);
+                Cache::put('queque_wechat_page', $page, 30);
+            } else {
+                \Log::debug('----queque cache2----');
+                Cache::put('queque_wechat_page', 1, 30);
+            }
         }
     }
 
