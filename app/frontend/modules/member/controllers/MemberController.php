@@ -54,12 +54,6 @@ class MemberController extends ApiController
         $member_id = \YunShop::app()->getMemberId();
         $v         = request('v');
 
-        if (!is_null($v)) {
-            $data['inviteCode'] = MemberModel::getInviteCode($member_id);exit;
-        }
-
-        // (new \app\frontend\modules\member\controllers\LogoutController)->index();
-        // exit();
         if (!empty($member_id)) {
             $member_info = MemberModel::getUserInfos($member_id)->first();
 
@@ -71,16 +65,6 @@ class MemberController extends ApiController
                 $data = MemberModel::addPlugins($data);
 
                 $data['income'] = MemberModel::getIncomeCount();
-
-                //标识"会员关系链"是否开启(如果没有设置,则默认为未开启),用于前端判断是否显示个人中心的"推广二维码"
-                /*
-                $info = MemberRelation::getSetInfo()->first();
-                if (!empty($info)) {
-                    $data['relation_switch'] = $info->status == 1 ? 1 : 0;
-                } else {
-                    $data['relation_switch'] = 0;
-                }
-                */
 
                 $data['relation_switch'] = (1 == $member_info['yz_member']['is_agent'] && 2 == $member_info['yz_member']['status'])
                                               ? 1 : 0;
@@ -115,7 +99,13 @@ class MemberController extends ApiController
                 $data['withdraw_status'] = $withdraw_status;
 
                 if (!is_null($v)) {
-                    $data['inviteCode'] = MemberModel::getInviteCode($member_id);
+                    if (is_null($member_info['yz_member']['invite_code']) || empty($member_info['yz_member']['invite_code'])) {
+                        $data['inviteCode'] = MemberModel::getInviteCode($member_id);
+                    } else {
+                        $data['inviteCode'] = $member_info['yz_member']['invite_code'];
+                    }
+                } else {
+                    $data['inviteCode'] = 0;
                 }
 
                 return $this->successJson('', $data);

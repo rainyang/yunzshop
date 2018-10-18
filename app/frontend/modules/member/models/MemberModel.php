@@ -19,7 +19,6 @@ use app\common\models\Setting;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use app\common\models\Order;
 use Yunshop\Commission\models\AgentLevel;
-use Yunshop\Love\Common\Models\MemberShop;
 use Yunshop\Merchant\common\models\MerchantLevel;
 use Yunshop\Micro\common\models\MicroShopLevel;
 use Yunshop\TeamDividend\models\TeamDividendLevelModel;
@@ -1002,15 +1001,19 @@ class MemberModel extends Member
      * @param $member_id
      * @return string
      */
-    public static function getInviteCode($member_id)
+    public static function getInviteCode()
     {
-        $memberInfo = MemberShopInfo::getMemberShopInfo($member_id);
+        $invite_code = self::generateInviteCode();
 
-        if (is_null($memberInfo->invite_code) || empty($memberInfo->invite_code)) {
-            $invite_code = self::generateInviteCode();
+        if (self::chkInviteCode($invite_code)) {
+            MemberShopInfo::updateInviteCode(\YunShop::app()->getMemberId(), $invite_code);
+
+            return $invite_code;
+        } else {
+            while(true) {
+                self::getInviteCode();
+            }
         }
-
-        return (!is_null($memberInfo->invite_code) && !empty($memberInfo->invite_code)) ?: $invite_code;
     }
 
     /**
@@ -1020,13 +1023,20 @@ class MemberModel extends Member
      */
     public static function generateInviteCode()
     {
+        $str = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $rand = $str[rand(0,25)]
+            .strtoupper(dechex(date('m')))
+            .date('d').substr(time(),-5)
+            .substr(microtime(),2,5)
+            .sprintf('%02d',rand(0,99));
         $code = '';
 
-        if (self::chkInviteCode($code)) {
-            return '';
-        }
-
-        //TODO UPDATE
+        for($f = 0;  $f < 8; $f++) {
+            $a = md5( $rand, true );
+            $s = '0123456789ABCDEFGHIJKLMNOPQRSTUV';
+            $g = ord( $a[ $f ] );
+            $code .= $s[ ( $g ^ ord( $a[ $f + 8 ] ) ) - $g & 0x1F ];
+        };
 
         return $code;
     }
@@ -1038,7 +1048,7 @@ class MemberModel extends Member
      */
     public static function chkInviteCode($code)
     {
-        if (MemberShop::chkInviteCode($code)) {
+        if (!MemberShopInfo::chkInviteCode($code)) {
             return true;
         }
 

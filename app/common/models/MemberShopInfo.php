@@ -372,10 +372,10 @@ class MemberShopInfo extends BaseModel
             ->count();
     }
 
-    public static function updateInviteCode($member_id, $data)
+    public static function updateInviteCode($member_id, $code)
     {
         return self::uniacid()
             ->where('member_id', $member_id)
-            ->update($data);
+            ->update(['invite_code' => $code]);
     }
 }
