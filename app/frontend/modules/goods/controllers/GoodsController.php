@@ -9,6 +9,7 @@ use app\common\models\GoodsSpecItem;
 use app\common\services\goods\SaleGoods;
 use app\common\services\goods\VideoDemandCourseGoods;
 use app\common\models\MemberShopInfo;
+use Yunshop\Commission\Common\Services\GoodsDetailService;
 use Yunshop\Love\Common\Models\GoodsLove;
 use app\frontend\modules\coupon\models\Coupon;
 use app\frontend\modules\coupon\controllers\MemberCouponController;
@@ -499,18 +500,9 @@ class GoodsController extends ApiController
         }
         $exist_commission = app('plugins')->isEnabled('commission');
         if ($exist_commission) {
-
-            $commission_set = \Setting::get('plugin.commission');;
-            if ($commission_set['is_commission'] && $commission_set['goods_detail']) {
-
-                $data['commission_show'] = 1;
-                $data['commission_show_level'] = $commission_set['goods_detail_level'] ?: 1;
-                $data['first_commission'] = 0;
-                $data['second_commission'] = 0;
-                $data['third_commission'] = 0;
-            }
+            $commission_data = (new GoodsDetailService($goodsModel))->getGoodsDetailData();
+            $data = array_merge($data, $commission_data);
         }
-        dd($data);
         return $data;
     }
 
