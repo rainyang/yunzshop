@@ -76,6 +76,15 @@ class OperationController extends BaseController
      * @return mixed
      * @throws \app\common\exceptions\AppException
      */
+    public function fClose(){
+        $this->order->refund();
+        return $this->message('强制退款成功');
+
+    }
+    /**
+     * @return mixed
+     * @throws \app\common\exceptions\AppException
+     */
     public function cancelSend()
     {
         OrderService::orderCancelSend($this->param);

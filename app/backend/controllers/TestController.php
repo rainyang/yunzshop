@@ -23,7 +23,7 @@ class TestController extends BaseController
 {
     public function index()
     {
-        dd(__NAMESPACE__);
+
     }
 
     public function op_database()
