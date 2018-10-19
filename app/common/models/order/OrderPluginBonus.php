@@ -66,17 +66,17 @@ class OrderPluginBonus extends BaseModel
         return $this->hasMany(OrderGoods::class,'order_id','order_id');
     }
 
-    public function hasManyCashierOrder()
+    public function hasOneCashierOrder()
     {
         return $this->hasOne(CashierOrder::class,'order_id','order_id');
     }
 
-    public function hasManyStoreOrder()
+    public function hasOneStoreOrder()
     {
         return $this->hasOne(StoreOrder::class,'order_id','order_id');
     }
 
-    public function hasManySupplierOrder()
+    public function hasOneSupplierOrder()
     {
         return $this->hasOne(SupplierOrder::class,'order_id','order_id');
     }
