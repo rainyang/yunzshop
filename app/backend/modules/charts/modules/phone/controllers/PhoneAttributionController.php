@@ -15,9 +15,14 @@ use app\common\components\BaseController;
 class PhoneAttributionController extends BaseController
 {
 
+    public function index()
+    {
+        $member = $this->getPhone();
+    }
+
     public function getPhone()
     {
-        $member_model = Member::getMember()->get();
-        dd($member_model);
+        $member_model = Member::getMember()->get()->toArray();
+        return $member_model;
     }
 }
