@@ -2,7 +2,6 @@
 namespace app\frontend\modules\goods\listeners;
 
 use app\common\events\order\AfterOrderCreatedImmediatelyEvent;
-use app\common\events\order\AfterOrderPaidEvent;
 use app\common\events\order\AfterOrderPaidImmediatelyEvent;
 use app\common\models\OrderGoods;
 use app\frontend\models\goods;
@@ -28,7 +27,6 @@ class GoodsStock
         });
     }
     public function onOrderPaid(AfterOrderPaidImmediatelyEvent $event){
-
         $order = $event->getOrderModel();
         $order->hasManyOrderGoods->map(function ($orderGoods){
             if(!in_array($orderGoods->belongsToGood->reduce_stock_method,[1,2])){
@@ -46,6 +44,7 @@ class GoodsStock
             /**
              * @var $goods_option GoodsOption
              */
+            \Log::info("订单{$orderGoods->order_id}商品:{$orderGoods->goods_option_id}库存{$goods_option->stock}减{$orderGoods->total}");
             $goods_option->reduceStock($orderGoods->total);
             $orderGoods->hasOneGoods->addSales($orderGoods->total);
             $orderGoods->hasOneGoods->save();
@@ -55,7 +54,7 @@ class GoodsStock
          * @var $goods Goods
          */
         $goods = $orderGoods->hasOneGoods;
-
+        \Log::info("订单{$orderGoods->order_id}商品:{$orderGoods->goods_id}库存{$goods->stock}减{$orderGoods->total}");
         $goods->reduceStock($orderGoods->total);
         $goods->addSales($orderGoods->total);
 

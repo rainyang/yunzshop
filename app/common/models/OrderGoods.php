@@ -8,6 +8,7 @@
 
 namespace app\common\models;
 
+use app\common\exceptions\AppException;
 use app\common\models\goods\GoodsDispatch;
 use app\common\models\order\OrderGoodsChangePriceLog;
 use app\common\models\orderGoods\OrderGoodsExpansion;
@@ -17,7 +18,10 @@ use Illuminate\Database\Eloquent\Builder;
  * Class OrderGoods
  * @package app\common\models
  * @property int comment_status
+ * @property int total
+ * @property int goods_id
  * @property Goods goods
+ * @property GoodsOption goodsOption
  */
 class OrderGoods extends BaseModel
 {
@@ -112,6 +116,25 @@ class OrderGoods extends BaseModel
     public function isOption()
     {
         return !empty($this->goods_option_id);
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function stockEnough()
+    {
+        if($this->isOption()){
+            // 规格
+            if (!$this->goodsOption->stockEnough($this->total)) {
+                throw new AppException('(ID:' . $this->goods_id . ')商品库存不足');
+            }
+        }else{
+            // 普通商品
+            if (!$this->goods->stockEnough($this->total)) {
+                throw new AppException('(ID:' . $this->goods_id . ')商品库存不足');
+            }
+        }
+
     }
 
     public function Expansion()

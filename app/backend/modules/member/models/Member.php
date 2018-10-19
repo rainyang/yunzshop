@@ -441,4 +441,18 @@ class Member extends \app\common\models\Member
 
         return $query;
     }
+
+    public static function getQueueAllMembersInfo($uniacid, $limit = 0, $offset = 0)
+    {
+        $result = self::select(['mc_members.uid', 'mc_mapping_fans.openid'])
+                   ->join('yz_member', 'mc_members.uid', '=', 'yz_member.member_id')
+                   ->join('mc_mapping_fans', 'mc_members.uid', '=', 'mc_mapping_fans.uid')
+                   ->where('mc_members.uniacid', $uniacid);
+
+        if ($limit > 0) {
+            $result = $result->offset($offset)->limit($limit)->orderBy('mc_members.uid', 'desc');
+        }
+
+        return $result;
+    }
 }

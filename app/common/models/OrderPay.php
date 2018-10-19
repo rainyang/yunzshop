@@ -60,12 +60,15 @@ class OrderPay extends BaseModel
     const STATUS_UNPAID = 0;
     const STATUS_PAID = 1;
     const STATUS_REFUNDED = 2;
-    public static function newVirtual($amount = 0.01){
+
+    public static function newVirtual($amount = 0.01)
+    {
         $orderPay = new static(['amount' => $amount]);
-        $order = new PreOrder(['is_virtual'=>1]);
-        $orderPay->setRelation('orders',new OrderCollection([$order]));
+        $order = new PreOrder(['is_virtual' => 1]);
+        $orderPay->setRelation('orders', new OrderCollection([$order]));
         return $orderPay;
     }
+
     /**
      * 根据paysn查询支付方式
      *
@@ -78,6 +81,7 @@ class OrderPay extends BaseModel
             ->where('pay_sn', $pay_sn)
             ->value('pay_type_id');
     }
+
     public function scopeOrderPay(Builder $query)
     {
         return $query->with('payType');
@@ -88,7 +92,7 @@ class OrderPay extends BaseModel
      */
     public function member()
     {
-        return $this->belongsTo(Member::class,'uid');
+        return $this->belongsTo(Member::class, 'uid');
     }
 
     /**
@@ -98,10 +102,12 @@ class OrderPay extends BaseModel
     {
         return $this->allStatus[$this->status];
     }
+
     /**
      * @return \Illuminate\Support\Collection
      */
-    public function getAllStatusAttribute(){
+    public function getAllStatusAttribute()
+    {
         return collect([
             self::STATUS_UNPAID => '未支付',
             self::STATUS_PAID => '已支付',
@@ -145,6 +151,7 @@ class OrderPay extends BaseModel
         $paymentTypes = $orderPaymentTypeManager->getOrderPaymentTypes($this);
         return $paymentTypes;
     }
+
     /**
      * @return \Illuminate\Support\Collection|static
      */
@@ -178,6 +185,11 @@ class OrderPay extends BaseModel
         $this->orders->each(function ($order) {
             OrderService::orderPay(['order_id' => $order->id, 'order_pay_id' => $this->id, 'pay_type_id' => $this->pay_type_id]);
         });
+    }
+
+    public function applyValidate()
+    {
+        // 校验库存
     }
 
     /**
@@ -218,9 +230,11 @@ class OrderPay extends BaseModel
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function payOrder(){
-        return $this->hasMany(PayOrder::class,'out_order_no','pay_sn');
+    public function payOrder()
+    {
+        return $this->hasMany(PayOrder::class, 'out_order_no', 'pay_sn');
     }
+
     /**
      * 获取支付参数
      * @param int $payTypeId
@@ -262,7 +276,7 @@ class OrderPay extends BaseModel
             } else {
                 $payType = BasePayType::find($this->pay_type_id);
             }
-            if(!isset($payType)){
+            if (!isset($payType)) {
                 throw new AppException("未找到对应支付方式(id:{$this->pay_type_id})");
             }
             /**

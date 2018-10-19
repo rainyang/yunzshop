@@ -136,6 +136,7 @@ class Order extends \app\common\models\Order
                     $query->searchLike($params['ambiguous']['string']);
                 });
             }
+
             //商品id
             if ($params['ambiguous']['field'] == 'goods_id') {
                 $order_builder->whereHas('hasManyOrderGoods', function ($query) use ($params) {

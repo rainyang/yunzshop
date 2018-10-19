@@ -724,9 +724,8 @@ class Order extends BaseModel
 
         }
 
-
         // 存在处理中的退款申请
-        if (empty($this->refund_id) || isset($this->hasOneRefundApply)) {
+        if (!empty($this->refund_id) || isset($this->hasOneRefundApply)) {
             return false;
         }
         return true;
@@ -830,4 +829,16 @@ class Order extends BaseModel
     {
         return $this->hasOne(OrderReceivedJob::class, 'order_id');
     }
+
+    public function stockEnough()
+    {
+        $this->orderGoods->each(function (OrderGoods $orderGoods) {
+            // 付款后扣库存
+            if($orderGoods->goods->reduce_stock_method == 1){
+                $orderGoods->stockEnough();
+            }
+        });
+    }
+
+
 }

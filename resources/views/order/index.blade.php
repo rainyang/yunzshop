@@ -44,7 +44,7 @@
                                                         @if( array_get($requestSearch,'ambiguous.field','')=='order_goods')  selected="selected"@endif>
                                                     商品名称
                                                 </option>
-                                                <option value="order_goods"
+                                                <option value="goods_id"
                                                         @if( array_get($requestSearch,'ambiguous.field','')=='goods_id')  selected="selected"@endif>
                                                     商品ID
                                                 </option>
