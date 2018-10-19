@@ -15,7 +15,7 @@ class AddUniqueToYzMemberIncome extends Migration
     {
         if (Schema::hasTable('yz_member_income')) {
             Schema::table('yz_member_income', function (Blueprint $table) {
-                $table->unique(['member_id','incometable_id','amount','type_name'], 'replace_into');
+                $table->unique(['member_id','incometable_id','amount','type_name'], 'unique_replace_into');
             });
         }
     }
