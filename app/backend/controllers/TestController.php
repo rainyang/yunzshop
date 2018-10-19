@@ -17,6 +17,7 @@ use app\common\models\OrderPay;
 use app\common\models\Flow;
 use app\common\models\Setting;
 use app\common\services\MessageService;
+use app\common\services\PhoneAttributionService;
 use app\frontend\modules\member\models\SubMemberModel;
 use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Database\Schema\Blueprint;
@@ -138,5 +139,13 @@ class TestController extends BaseController
         echo '<br />';
         echo '分类图片修复成功：'.$category_success.'个，失败：'.$category_error.'个';
 
+    }
+
+    public function getPhone()
+    {
+        $url = PhoneAttributionService::getPhoneApi(18520632247);
+        $json= file_get_contents($url);
+        $array = json_decode($json);
+        dd($array->data);
     }
 }
