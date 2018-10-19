@@ -82,6 +82,7 @@ class IncomePageController extends ApiController
     /**
      * 收入信息
      * @return array
+     * @throws \app\common\exceptions\AppException
      */
     private function getIncomeInfo()
     {
