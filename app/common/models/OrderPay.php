@@ -296,7 +296,7 @@ class OrderPay extends BaseModel
         $pay = PayFactory::create($this->pay_type_id);
 
         $result = $pay->doRefund($this->pay_sn, $this->amount, $this->amount);
-        dump($result);
+        
         $this->status = OrderPay::STATUS_REFUNDED;
         $this->save();
     }
