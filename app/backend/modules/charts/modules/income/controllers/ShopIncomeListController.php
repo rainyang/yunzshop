@@ -12,9 +12,20 @@ use app\common\models\order\OrderPluginBonus;
 
 class ShopIncomeListController extends BaseController
 {
+    /**
+     * @return string
+     * @throws \Throwable
+     */
     public function index()
     {
-        OrderPluginBonus::getInfoAttribute();
+        $pageSize = 10;
+        $list = OrderPluginBonus::uniacid()
+            ->whereRaw('sum(undividend) as undividend')
+            ->with(['hasManyOrderGoods', 'hasOneStoreOrder', 'hasOneSupplierOrder', 'hasOneCashierOrder'])
+            ->groupBy('order_id')
+            ->paginate($pageSize);
+
+        $pager = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
         return view('charts.income.shop_income_list',[
 
         ])->render();

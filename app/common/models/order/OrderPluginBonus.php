@@ -9,7 +9,11 @@ namespace app\common\models\order;
 
 
 use app\common\models\BaseModel;
+use app\common\models\OrderGoods;
 use Illuminate\Support\Facades\DB;
+use Yunshop\StoreCashier\common\models\CashierOrder;
+use Yunshop\StoreCashier\common\models\StoreOrder;
+use Yunshop\Supplier\common\models\SupplierOrder;
 
 class OrderPluginBonus extends BaseModel
 {
@@ -55,5 +59,25 @@ class OrderPluginBonus extends BaseModel
             ->whereIn('id', $this->ids)
             ->get();
         return $info;
+    }
+
+    public function hasManyOrderGoods()
+    {
+        return $this->hasMany(OrderGoods::class,'order_id','order_id');
+    }
+
+    public function hasManyCashierOrder()
+    {
+        return $this->hasOne(CashierOrder::class,'order_id','order_id');
+    }
+
+    public function hasManyStoreOrder()
+    {
+        return $this->hasOne(StoreOrder::class,'order_id','order_id');
+    }
+
+    public function hasManySupplierOrder()
+    {
+        return $this->hasOne(SupplierOrder::class,'order_id','order_id');
     }
 }
