@@ -732,7 +732,11 @@ class Member extends BackendModel
     public function getMemberIdForInviteCode()
     {
         if ($invite_code = self::hasInviteCode()) {
-            return MemberShopInfo::getMemberIdForInviteCode($invite_code);
+            $ids = MemberShopInfo::getMemberIdForInviteCode($invite_code);
+
+            if (!is_null($ids)) {
+                return $ids[0];
+            }
         }
 
         return null;

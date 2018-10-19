@@ -11,6 +11,7 @@ namespace app\frontend\modules\member\controllers;
 use app\common\components\ApiController;
 use app\common\helpers\Client;
 use app\common\helpers\Url;
+use app\common\models\Member;
 use app\common\models\MemberGroup;
 use app\common\models\MemberLevel;
 use app\common\models\MemberShopInfo;
@@ -112,7 +113,10 @@ class RegisterController extends ApiController
                 'group_id' => $default_subgroup_id,
                 'level_id' => 0,
             );
-            SubMemberModel::insertData($sub_data);
+            if (SubMemberModel::insertData($sub_data)) {
+                //生成分销关系链
+                Member::createRealtion($member_id);
+            }
 
             $cookieid = "__cookie_yun_shop_userid_{$uniacid}";
             Cookie::queue($cookieid, $member_id);
