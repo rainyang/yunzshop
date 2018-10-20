@@ -21,7 +21,7 @@ class UpdateController extends BaseController
     public function index()
     {
         $list = [];
-        
+
         //删除非法文件
         $this->deleteFile();
         //执行迁移文件
@@ -546,6 +546,6 @@ class UpdateController extends BaseController
             }
         }
 
-        \Artisan::call('migrate',['--force' => true]);
+       // \Artisan::call('migrate',['--force' => true]);
     }
 }
