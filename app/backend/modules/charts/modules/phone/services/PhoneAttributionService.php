@@ -15,8 +15,12 @@ class PhoneAttributionService
     {
         $member = $this->getPhone();
         foreach ($member as $item) {
-
+            if (!empty($item['mobile'])) {
+                $data[] = $this->getPhoneApi($item['mobile']);
+            }
         }
+
+        return json_decode($data);
     }
 
     public function getPhone()
@@ -27,7 +31,7 @@ class PhoneAttributionService
         return $member_phone;
     }
 
-    public static function getPhoneApi($mobile)
+    public function getPhoneApi($mobile)
     {
 //        $url = "https://cx.shouji.360.cn/phonearea.php?number=18520632247";  //360接口
 //        $url = "https://www.iteblog.com/api/mobile.php?mobile=18519101034";  //ITEBLOG接口
