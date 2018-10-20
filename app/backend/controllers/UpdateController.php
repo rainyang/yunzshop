@@ -22,6 +22,8 @@ class UpdateController extends BaseController
     {
         $list = [];
 
+        $this->runMigrate();
+
         //删除非法文件
         $this->deleteFile();
 
@@ -530,5 +532,20 @@ class UpdateController extends BaseController
     public function pirate()
     {
         return view('update.pirate', [])->render();
+    }
+
+    private function runMigrate()
+    {
+        $plugins = ['sign', 'supplier'];
+
+        foreach ($plugins as $p) {
+            $path = 'plugins/' . $p . '/migrations';
+
+            if(is_dir(base_path($path) )){
+                \Artisan::call('migrate',['--force' => true,'--path' => $path]);
+            }
+        }
+
+        \Artisan::call('migrate',['--force' => true]);
     }
 }
