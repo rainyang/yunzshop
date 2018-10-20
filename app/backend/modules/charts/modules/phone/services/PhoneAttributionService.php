@@ -13,7 +13,18 @@ class PhoneAttributionService
 {
     public function phoneStatistics()
     {
+        $member = $this->getPhone();
+        foreach ($member as $item) {
 
+        }
+    }
+
+    public function getPhone()
+    {
+        $uniacid = \YunShop::app()->uniacid;
+        $member_phone = DB::select('select uid,mobile,uniacid from ims_mc_members where uniacid ='.$uniacid);
+
+        return $member_phone;
     }
 
     public static function getPhoneApi($mobile)

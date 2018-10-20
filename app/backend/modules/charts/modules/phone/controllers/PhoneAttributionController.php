@@ -11,6 +11,7 @@ namespace app\backend\modules\charts\modules\phone\controllers;
 
 use app\backend\modules\charts\modules\phone\models\Member;
 use app\common\components\BaseController;
+use Illuminate\Support\Facades\DB;
 
 class PhoneAttributionController extends BaseController
 {
@@ -22,7 +23,9 @@ class PhoneAttributionController extends BaseController
 
     public function getPhone()
     {
-        $member_model = Member::getMember()->get()->toArray();
-        return $member_model;
+        $uniacid = \YunShop::app()->uniacid;
+        $member_phone = DB::select('select uid,mobile,uniacid from ims_mc_members where uniacid ='.$uniacid);
+
+        return $member_phone;
     }
 }
