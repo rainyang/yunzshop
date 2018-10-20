@@ -14,9 +14,13 @@ use app\common\services\PayFactory;
 
 class BalanceRechargeRecords extends BalanceRecharge
 {
-
     protected $appends = ['type_name'];
 
+    /**
+     * Payment translation set.
+     *
+     * @var array
+     */
     private static $typeComment = [
         self::PAY_TYPE_SHOP         => "后台充值",
         PayFactory::PAY_WEACHAT     => "微信支付",
@@ -25,16 +29,30 @@ class BalanceRechargeRecords extends BalanceRecharge
         PayFactory::PAY_APP_ALIPAY  => "APP-支付宝",
     ];
 
-
+    /**
+     * Gets the value of the additional field type_name.
+     *
+     * @return string
+     */
     public function getTypeNameAttribute()
     {
         return static::getTypeNameComment($this->attributes['type']);
     }
 
+    /**
+     * Gets the value of the additional field type_name.
+     *
+     * @param $attributes
+     * @return string
+     */
     public function getTypeNameComment($attributes)
     {
         return isset(static::$typeComment[$attributes]) ? static::$typeComment[$attributes] : "其他支付";
     }
+
+
+    //todo 以下代码未检查
+
 
     public function scopeRecords($query)
     {

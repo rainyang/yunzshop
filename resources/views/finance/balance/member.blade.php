@@ -104,7 +104,7 @@
                                     <label class="label label-danger">余额：{{ $list->credit2 }}</label>
                                 </td>
                                 <td  style="overflow:visible;">
-                                    <a class='btn btn-default' href="{{ yzWebUrl('finance.balance.recharge', array('member_id' => $list->uid)) }}" style="margin-bottom: 2px">充值余额</a>
+                                    <a class='btn btn-default' href="{{ yzWebUrl('balance.recharge.index', array('member_id' => $list->uid)) }}" style="margin-bottom: 2px">充值余额</a>
                                 </td>
                             </tr>
                             @endforeach

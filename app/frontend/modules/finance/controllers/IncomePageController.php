@@ -11,6 +11,7 @@ namespace app\frontend\modules\finance\controllers;
 
 
 use app\common\components\ApiController;
+use app\common\helpers\ImageHelper;
 use app\common\models\Income;
 use app\frontend\models\Member;
 use app\frontend\models\MemberRelation;
@@ -57,8 +58,11 @@ class IncomePageController extends ApiController
         $member_id = \YunShop::app()->getMemberId();
 
         $memberModel = Member::select('nickname', 'avatar', 'uid')->whereUid($member_id)->first();
+
+        //IOS时，把微信头像url改为https前缀
+        $avatar = ImageHelper::iosWechatAvatar($memberModel->avatar);
         return [
-            'avatar' => $memberModel->avatar,
+            'avatar' => $avatar,
             'nickname' => $memberModel->nickname,
             'member_id' => $memberModel->uid,
             'grand_total' => $this->getGrandTotal(),
