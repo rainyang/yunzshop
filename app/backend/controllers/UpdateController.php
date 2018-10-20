@@ -21,11 +21,11 @@ class UpdateController extends BaseController
     public function index()
     {
         $list = [];
-
-        $this->runMigrate();
-
+        
         //删除非法文件
         $this->deleteFile();
+        //执行迁移文件
+        $this->runMigrate();
 
         $key = Setting::get('shop.key')['key'];
         $secret = Setting::get('shop.key')['secret'];
