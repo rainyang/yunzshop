@@ -13,7 +13,7 @@ class UpdateBalanceWithdrawSuccessNotice extends Migration
      */
     public function up()
     {
-       \app\common\models\notice\MessageTemp::withoutGlobalScope('uniacid')->where('notice_type', 'withdraw_success')->get();
+       \app\common\models\notice\MessageTemp::withoutGlobalScope('uniacid')->where('notice_type', 'withdraw_success')->delete();
     }
 
     /**
