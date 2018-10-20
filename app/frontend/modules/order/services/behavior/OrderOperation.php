@@ -69,8 +69,8 @@ abstract class OrderOperation extends Order
     private function check()
     {
 
-        $Event = $this->getBeforeEvent();
-        event($Event);
+        $event = $this->getBeforeEvent();
+        event($event);
 
         if ($this->refund_id > 0) {
             if ($this->hasOneRefundApply->isRefunding()) {
