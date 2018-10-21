@@ -393,7 +393,8 @@ class Member extends BackendModel
     public static function createRealtion($member_id, $upperMemberId = NULL)
     {
         $model = MemberShopInfo::getMemberShopInfo($member_id);
-        $mid   = !is_null(self::getMemberIdForInviteCode()) ?: self::getMid();
+        $code_mid = self::getMemberIdForInviteCode();
+        $mid   = !is_null($code_mid) ? $code_mid : self::getMid();
 
         if ($upperMemberId) {
             event(new BecomeAgent($upperMemberId, $model));

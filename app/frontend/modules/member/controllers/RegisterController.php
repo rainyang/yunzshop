@@ -113,10 +113,11 @@ class RegisterController extends ApiController
                 'group_id' => $default_subgroup_id,
                 'level_id' => 0,
             );
-            if (SubMemberModel::insertData($sub_data)) {
-                //生成分销关系链
-                Member::createRealtion($member_id);
-            }
+
+            SubMemberModel::insertData($sub_data);
+            //生成分销关系链
+            Member::createRealtion($member_id);
+
 
             $cookieid = "__cookie_yun_shop_userid_{$uniacid}";
             Cookie::queue($cookieid, $member_id);
