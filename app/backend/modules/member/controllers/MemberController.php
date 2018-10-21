@@ -20,6 +20,7 @@ use app\backend\modules\member\services\MemberServices;
 use app\common\components\BaseController;
 use app\common\events\member\MemberRelationEvent;
 use app\common\events\member\RegisterByAgent;
+use app\common\helpers\Cache;
 use app\common\helpers\PaginationHelper;
 use app\common\models\AccountWechats;
 use app\common\models\MemberAlipay;
@@ -574,7 +575,37 @@ class MemberController extends BaseController
     {
         $status = \YunShop::request()->status;
 
-        if (!is_null($status)) {
+        if (Cache::has('queque_wechat_total')) {
+            Cache::forget('queque_wechat_total');
+        }
+
+        if (Cache::has('queque_wechat_page')) {
+            Cache::forget('queque_wechat_page');
+        }
+
+        if (is_null($status)) {
+            $pageSize = 1000;
+
+            $member_info = Member::getQueueAllMembersInfo(\YunShop::app()->uniacid);
+
+            $total       = $member_info->count();
+            $total_page  = ceil($total/$pageSize);
+
+            \Log::debug('------total-----', $total);
+            \Log::debug('------total_page-----', $total_page);
+
+            Cache::put('queque_wechat_total', $total_page, 30);
+
+            for ($curr_page = 1; $curr_page <= $total_page; $curr_page++) {
+                \Log::debug('------curr_page-----', $curr_page);
+                $offset      = ($curr_page - 1) * $pageSize;
+                $member_info = Member::getQueueAllMembersInfo(\YunShop::app()->uniacid, $pageSize, $offset)->get();
+                \Log::debug('------member_count-----', $member_info->count());
+
+                $job = (new \app\Jobs\wechatUnionidJob(\YunShop::app()->uniacid, $member_info));
+                dispatch($job);
+            }
+        } else {
             switch ($status) {
                 case 0:
                     return $this->message('微信开放平台数据同步失败', yzWebUrl('member.member.index'), 'error');
@@ -591,15 +622,23 @@ class MemberController extends BaseController
 
     public function updateWechatData()
     {
-        set_time_limit(0);
-        $uniacid = \YunShop::app()->uniacid;
+        $total = Cache::get('queque_wechat_total');
+        $page  = Cache::get('queque_wechat_page');
+\Log::debug('--------ajax total-------', $total);
+        \Log::debug('--------ajax page-------', $page);
+        if ($total == $page) {
+            return json_encode(['status' => 1]);
+        } else {
+            return json_encode(['status' => 0]);
+        }
 
-        try {
+        /*ry {
             \Artisan::call('syn:wechatUnionid' ,['uniacid'=>$uniacid]);
+
 
             return json_encode(['status' => 1]);
         } catch (\Exception $e) {
             return json_encode(['status' => 0]);
-        }
+        }*/
     }
 }
