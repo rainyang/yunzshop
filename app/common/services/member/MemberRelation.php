@@ -18,7 +18,6 @@ class MemberRelation
     public function createParentOfMember()
     {
         $pageSize = 1000;
-        $pageSize = 1;
         $member_info = Member::getQueueAllMembersInfo(\YunShop::app()->uniacid);
 
         $total       = $member_info->count();
@@ -28,7 +27,6 @@ class MemberRelation
         \Log::debug('------total_page-----', $total_page);
 
         //Cache::put('queque_wechat_total', $total_page, 30);
-        $total_page = 1;
         /*$member_model = new Member();
         $childMemberModel = new ChildenOfMember();*/
 

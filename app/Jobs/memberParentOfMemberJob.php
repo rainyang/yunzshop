@@ -44,11 +44,9 @@ class memberParentOfMemberJob implements ShouldQueue
 
        /* \Log::debug('--------queue member_model -----', get_class($this->memberModel));
         \Log::debug('--------queue childMemberModel -----', get_class($this->childMemberModel));*/
-        \Log::debug('--------queue cccccc -----');
+        \Log::debug('--------queue synRun -----');
         foreach ($memberInfo as $key => $val) {
-            \Log::debug('--------queue 22222-----');
-            $data = $memberModel->getDescendants($uniacid, 65)->toArray();
-            \Log::debug('--------queue 3333-----');
+            $data = $memberModel->getDescendants($uniacid, $val['uid'])->toArray();
 
             if (!empty($data)) {
                 foreach ($data as $k => $v) {
@@ -56,7 +54,8 @@ class memberParentOfMemberJob implements ShouldQueue
                         'uniacid'   => $uniacid,
                         'child_id'  => $k,
                         'level'     => $v['depth'] + 1,
-                        'member_id' => $val['uid']
+                        'member_id' => $val['uid'],
+                        'created_at' => time()
                     ];
                 }
 
