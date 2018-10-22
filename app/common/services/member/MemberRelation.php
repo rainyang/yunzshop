@@ -18,7 +18,7 @@ class MemberRelation
     public function createParentOfMember()
     {
         $pageSize = 1000;
-        $member_info = Member::getQueueAllMembersInfo(\YunShop::app()->uniacid);
+        $member_info = Member::getAllMembersInfosByQueue(\YunShop::app()->uniacid);
 
         $total       = $member_info->count();
         $total_page  = ceil($total/$pageSize);
@@ -33,7 +33,7 @@ class MemberRelation
         for ($curr_page = 1; $curr_page <= $total_page; $curr_page++) {
             \Log::debug('------curr_page-----', $curr_page);
             $offset      = ($curr_page - 1) * $pageSize;
-            $member_info = Member::getQueueAllMembersInfo(\YunShop::app()->uniacid, $pageSize, $offset)->get();
+            $member_info = Member::getAllMembersInfosByQueue(\YunShop::app()->uniacid, $pageSize, $offset)->get();
             \Log::debug('------member_count-----', $member_info->count());
 
             //$job = (new \app\Jobs\memberParentOfMemberJob(\YunShop::app()->uniacid, $member_model, $childMemberModel, $member_info));

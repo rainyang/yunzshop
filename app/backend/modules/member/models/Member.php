@@ -459,6 +459,19 @@ class Member extends \app\common\models\Member
         return $result;
     }
 
+    public static function getAllMembersInfosByQueue($uniacid, $limit = 0, $offset = 0)
+    {
+        $result = self::select(['mc_members.uid', 'mc_members.uniacid'])
+            ->join('yz_member', 'mc_members.uid', '=', 'yz_member.member_id')
+            ->where('mc_members.uniacid', $uniacid);
+
+        if ($limit > 0) {
+            $result = $result->offset($offset)->limit($limit)->orderBy('mc_members.uid', 'desc');
+        }
+
+        return $result;
+    }
+
     /**
      * 获取待处理的原始节点数据
      *
