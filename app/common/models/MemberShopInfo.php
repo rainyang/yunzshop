@@ -10,12 +10,13 @@ namespace app\common\models;
 
 
 use app\backend\models\BackendModel;
+use app\common\traits\MemberTreeTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MemberShopInfo extends BaseModel
 {
-    use SoftDeletes;
+    use MemberTreeTrait, SoftDeletes;
 
     protected $table = 'yz_member';
 
@@ -362,6 +363,18 @@ class MemberShopInfo extends BaseModel
     //主表yz_member,从表mc_member
     public function hasOneMember()
     {
-        return $this->hasOne(Member::class, 'uid', 'm_id');
+        return $this->hasOne(Member::class, 'uid', 'member_id');
+    }
+
+    /**
+     * 获取待处理的原始节点数据
+     *
+     * 必须实现
+     *
+     * return \Illuminate\Support\Collection
+     */
+    public function getTreeAllNodes()
+    {
+        return self::select(['member_id', 'parent_id'])->limit(1000)->get();
     }
 }

@@ -16,6 +16,7 @@ use app\common\models\Order;
 use app\common\models\OrderPay;
 use app\common\models\Flow;
 use app\common\models\Setting;
+use app\common\services\member\MemberRelation;
 use app\common\services\MessageService;
 use app\frontend\modules\member\models\SubMemberModel;
 use Illuminate\Database\Migrations\Migrator;
@@ -138,5 +139,12 @@ class TestController extends BaseController
         echo '<br />';
         echo '分类图片修复成功：'.$category_success.'个，失败：'.$category_error.'个';
 
+    }
+
+    public function tt()
+    {
+        $member_relation = new MemberRelation();
+
+        $member_relation->createParentOfMember();
     }
 }

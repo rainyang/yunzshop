@@ -29,7 +29,7 @@ class MenuController extends BaseController
         /*if(request()->getHost() != 'test.yunzshop.com' && env('APP_ENV') != 'production') {*/
             $menu = new Menu();
             $menuList = $menu->getDescendants(0);
-
+dd($menuList->toArray());
             return view('menu.index', [
                 'menuList' => $menuList
             ])->render();
