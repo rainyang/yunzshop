@@ -251,22 +251,9 @@ class PreOrder extends Order
             }
         }
         $this->insertRelations($this->batchSaveRelations);
-        return parent::push();
-    }
-
-
-    /**
-     * 订单插入数据库,触发订单生成事件
-     * @return int
-     * @throws \Exception
-     */
-    public function generate()
-    {
-        $this->save();
-
-        $this->push();
 
         $relations = array_except($this->relations, $this->batchSaveRelations);
+
         foreach ($relations as $models) {
             $models = $models instanceof Collection
                 ? $models->all() : [$models];
