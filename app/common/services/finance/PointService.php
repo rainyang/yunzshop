@@ -156,11 +156,11 @@ class PointService
     }
 
 
-
-
     /**
-     * @name 更新会员积分
-     * @return
+     * Update member credit1.
+     *
+     * @return PointLog|bool
+     * @throws ShopException
      */
 
     public function changePoint()

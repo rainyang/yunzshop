@@ -2376,7 +2376,7 @@ return [
                     ],
                     'point_recharge'             => [
                         'name'              => '积分充值',
-                        'url'               => 'finance.point-recharge.index',
+                        'url'               => 'point.recharge.index',
                         'url_params'        => '',
                         'permit'            => 1,
                         'menu'              => 0,
