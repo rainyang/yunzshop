@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MemberShopInfo extends BaseModel
 {
-    use MemberTreeTrait, SoftDeletes;
+    use SoftDeletes;
 
     protected $table = 'yz_member';
 
@@ -364,17 +364,5 @@ class MemberShopInfo extends BaseModel
     public function hasOneMember()
     {
         return $this->hasOne(Member::class, 'uid', 'member_id');
-    }
-
-    /**
-     * 获取待处理的原始节点数据
-     *
-     * 必须实现
-     *
-     * return \Illuminate\Support\Collection
-     */
-    public function getTreeAllNodes()
-    {
-        return self::select(['member_id', 'parent_id'])->limit(1000)->get();
     }
 }

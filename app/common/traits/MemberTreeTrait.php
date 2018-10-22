@@ -131,15 +131,16 @@ trait MemberTreeTrait
      *
      * @return mixed
      */
-    final protected function getAllNodes()
+    final protected function getAllNodes($uniacid)
     {
         if ($this->_allNodes) {
+            \Log::debug('-----_allNodes count----', $this->_allNodes->count());
             return $this->_allNodes;
         }
         if (!method_exists($this, 'getTreeAllNodes')) {
             throw new BadMethodCallException('Method [getTreeAllNodes] does not exist.');
         }
-        $data = $this->getTreeAllNodes(); // 由use的class来实现
+        $data = $this->getTreeAllNodes($uniacid); // 由use的class来实现
         if (!$data instanceof ArrayAccess) {
             throw new InvalidArgumentException('tree data must be a collection');
         }
@@ -168,9 +169,9 @@ trait MemberTreeTrait
      *
      * @return array
      */
-    public function getSubLevel($parentId)
+    public function getSubLevel($uniacid, $parentId)
     {
-        $data = $this->getAllNodes();
+        $data = $this->getAllNodes($uniacid);
 
         $childList = collect([]);
         foreach ($data as $val) {
@@ -190,15 +191,15 @@ trait MemberTreeTrait
      *
      * @return \Illuminate\Support\Collection
      */
-    public function getDescendants($parentId, $depth = 0, $adds = '')
+    public function getDescendants($uniacid, $parentId, $depth = 0, $adds = '')
     {
         static $array;
         if (!$array instanceof ArrayAccess || $depth == 0) {
             $array = collect([]);
         }
         $number = 1;
-        $child = $this->getSubLevel($parentId);
-        dd($child);
+        $child = $this->getSubLevel($uniacid, $parentId);
+
         if ($child) {
             $nextDepth = $depth + 1;
             $total = $child->count();
@@ -214,7 +215,7 @@ trait MemberTreeTrait
                 $val->spacer = $adds ? ($adds . $j) : '';
                 $val->depth = $depth;
                 $array->put($val->{$this->getTreeNodeIdName()}, $val);
-                $this->getDescendants(
+                $this->getDescendants($uniacid,
                     $val->{$this->getTreeNodeIdName()},
                     $nextDepth,
                     $adds . $k . $this->getTreeSpacer()

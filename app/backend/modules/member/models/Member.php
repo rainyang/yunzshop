@@ -9,9 +9,12 @@
 namespace app\backend\modules\member\models;
 
 use app\common\models\member\MemberDel;
+use app\common\traits\MemberTreeTrait;
 
 class Member extends \app\common\models\Member
 {
+    use MemberTreeTrait;
+
     static protected $needLog = true;
 
     /**
@@ -454,5 +457,20 @@ class Member extends \app\common\models\Member
         }
 
         return $result;
+    }
+
+    /**
+     * 获取待处理的原始节点数据
+     *
+     * 必须实现
+     *
+     * return \Illuminate\Support\Collection
+     */
+    public function getTreeAllNodes($uniacid)
+    {
+        return self::select(['yz_member.member_id', 'yz_member.parent_id'])
+            ->join('yz_member', 'mc_members.uid', '=', 'yz_member.member_id')
+            ->where('mc_members.uniacid', $uniacid)
+            ->get();
     }
 }
