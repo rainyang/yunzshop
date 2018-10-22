@@ -24,6 +24,8 @@ class UpdateController extends BaseController
 
         //删除非法文件
         $this->deleteFile();
+        //执行迁移文件
+        $this->runMigrate();
 
         $key = Setting::get('shop.key')['key'];
         $secret = Setting::get('shop.key')['secret'];
@@ -530,5 +532,20 @@ class UpdateController extends BaseController
     public function pirate()
     {
         return view('update.pirate', [])->render();
+    }
+
+    private function runMigrate()
+    {
+        $plugins = ['sign', 'supplier'];
+
+        foreach ($plugins as $p) {
+            $path = 'plugins/' . $p . '/migrations';
+
+            if(is_dir(base_path($path) )){
+                \Artisan::call('migrate',['--force' => true,'--path' => $path]);
+            }
+        }
+
+       // \Artisan::call('migrate',['--force' => true]);
     }
 }

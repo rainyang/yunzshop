@@ -14,6 +14,8 @@ use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\shop\controllers\IndexController;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
+use Yunshop\Designer\Common\Services\IndexPageService;
+use Yunshop\Designer\Common\Services\OtherPageService;
 use Yunshop\Designer\models\Designer;
 use Yunshop\Designer\models\DesignerMenu;
 
@@ -130,8 +132,15 @@ class HomePageController extends ApiController
                 $result['system'] = Cache::get('designer_system');
             }
 
+            $page_id = $pageId;
+            if ($page_id){
+                $page = (new OtherPageService())->getOtherPage($page_id);
+            } else {
+                $page = (new IndexPageService())->getIndexPage();
+            }
+
             //装修数据, 原来接口在 plugin.designer.home.index.page
-            if(empty($pageId)){ //如果是请求首页的数据
+            /*if(empty($pageId)){ //如果是请求首页的数据
                 if(!Cache::has('designer_page_0')) {
                     $page = Designer::getDefaultDesigner();
                     Cache::put('designer_page_0', $page, 4200);
@@ -140,7 +149,7 @@ class HomePageController extends ApiController
                 }
             } else{
                 $page = Designer::getDesignerByPageID($pageId);
-            }
+            }*/
 
             if ($page) {
                 if (empty($pageId) && Cache::has($member_id.'_designer_default_0')) {

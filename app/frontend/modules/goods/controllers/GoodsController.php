@@ -3,19 +3,13 @@ namespace app\frontend\modules\goods\controllers;
 
 use app\backend\modules\goods\models\Brand;
 use app\common\components\ApiController;
-use app\common\components\BaseController;
-use app\common\exceptions\AppException;
-use app\common\helpers\PaginationHelper;
 use app\common\models\Category;
 use app\common\models\Goods;
-use app\common\models\GoodsCategory;
 use app\common\models\GoodsSpecItem;
-use app\frontend\modules\goods\services\GoodsService;
-use Illuminate\Support\Facades\DB;
 use app\common\services\goods\SaleGoods;
 use app\common\services\goods\VideoDemandCourseGoods;
 use app\common\models\MemberShopInfo;
-use app\frontend\modules\goods\services\GoodsDiscountService;
+use Yunshop\Commission\Common\Services\GoodsDetailService;
 use Yunshop\Love\Common\Models\GoodsLove;
 use app\frontend\modules\coupon\models\Coupon;
 use app\frontend\modules\coupon\controllers\MemberCouponController;
@@ -144,12 +138,15 @@ class GoodsController extends ApiController
                 if ($row_res) {
                     $goodsModel->$key_name = $row_res;
                     //供应商在售商品总数
-                    $supplier_goods_id = $row['class']::getGoodsIdsBySid($row_res->id);
-                    $supplier_goods_count = Goods::select('*', 'yz_goods.id as goods_id')
-                        ->whereIn('id', $supplier_goods_id)
-                        ->where('status', 1)
-                        ->get()->count('id');
-                    $goodsModel->supplier_goods_count = $supplier_goods_count;
+                    $class = new $row['class']();
+                    if(method_exists($class,'getGoodsIdsBySid')){
+                        $supplier_goods_id = $row['class']::getGoodsIdsBySid($row_res->id);
+                        $supplier_goods_count = Goods::select('*', 'yz_goods.id as goods_id')
+                            ->whereIn('id', $supplier_goods_id)
+                            ->where('status', 1)
+                            ->get()->count('id');
+                        $goodsModel->supplier_goods_count = $supplier_goods_count;
+                    }
                 }
             }
         }
@@ -182,7 +179,6 @@ class GoodsController extends ApiController
         $lease_switch = LeaseToyGoods::whetherEnabled();
 
         $this->goods_lease_set($goodsModel, $lease_switch);
-
         //return $this->successJson($goodsModel);
         return $this->successJson('成功', $goodsModel);
     }
@@ -404,7 +400,7 @@ class GoodsController extends ApiController
      */
     public function getGoodsSale($goodsModel)
     {
-
+        //todo 需要重构商品详情获取逻辑 2018-10-16 ：：LiBaoJia
         $set = \Setting::get('point.set');
 
         $shopSet = \Setting::get('shop.shop');
@@ -518,6 +514,11 @@ class GoodsController extends ApiController
                 $data['sale_count'] += 1;
             }
 
+        }
+        $exist_commission = app('plugins')->isEnabled('commission');
+        if ($exist_commission) {
+            $commission_data = (new GoodsDetailService($goodsModel))->getGoodsDetailData();
+            $data = array_merge($data, $commission_data);
         }
         return $data;
     }
