@@ -29,8 +29,8 @@ class MemberRelation
 
         //Cache::put('queque_wechat_total', $total_page, 30);
         $total_page = 1;
-        $member_model = new Member();
-        $childMemberModel = new ChildenOfMember();
+        /*$member_model = new Member();
+        $childMemberModel = new ChildenOfMember();*/
 
         for ($curr_page = 1; $curr_page <= $total_page; $curr_page++) {
             \Log::debug('------curr_page-----', $curr_page);
@@ -38,8 +38,8 @@ class MemberRelation
             $member_info = Member::getQueueAllMembersInfo(\YunShop::app()->uniacid, $pageSize, $offset)->get();
             \Log::debug('------member_count-----', $member_info->count());
 
-            $job = (new \app\Jobs\memberParentOfMemberJob(\YunShop::app()->uniacid, $member_model, $childMemberModel, $member_info));
-            //$job = (new \app\Jobs\memberParentOfMemberJob(\YunShop::app()->uniacid, $member_info));
+            //$job = (new \app\Jobs\memberParentOfMemberJob(\YunShop::app()->uniacid, $member_model, $childMemberModel, $member_info));
+            $job = (new \app\Jobs\memberParentOfMemberJob(\YunShop::app()->uniacid, $member_info));
             dispatch($job);
         }
     }

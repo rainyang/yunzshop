@@ -25,19 +25,11 @@ class memberParentOfMemberJob implements ShouldQueue
     public  $memberModel;
     public  $childMemberModel;
 
-    public function __construct($uniacid, Member $memberModel, ChildenOfMember $childMemberModel, $member_info)
+    public function __construct($uniacid, $member_info)
     {
         $this->uniacid = $uniacid;
         $this->member_info = $member_info->toArray();
-        $this->memberModel = $memberModel;
-        $this->childMemberModel = $childMemberModel;
     }
-
-    /*public function __construct($uniacid, $member_info)
-    {
-        $this->uniacid = $uniacid;
-        $this->member_info = $member_info->toArray();
-    }*/
 
     public function handle()
     {
@@ -47,15 +39,15 @@ class memberParentOfMemberJob implements ShouldQueue
 
     public function synRun($uniacid, $memberInfo)
     {
-        /*$member_model = new Member();
-        $childMemberModel = new ChildenOfMember();*/
+        $memberModel = new Member();
+        $childMemberModel = new ChildenOfMember();
 
-        \Log::debug('--------queue member_model -----', get_class($this->memberModel));
-        \Log::debug('--------queue childMemberModel -----', get_class($this->childMemberModel));
+       /* \Log::debug('--------queue member_model -----', get_class($this->memberModel));
+        \Log::debug('--------queue childMemberModel -----', get_class($this->childMemberModel));*/
         \Log::debug('--------queue cccccc -----');
-        foreach ($memberInfo as $key => $val) {exit;
+        foreach ($memberInfo as $key => $val) {
             \Log::debug('--------queue 22222-----');
-            $data = $this->memberModel->getDescendants($uniacid, 65)->toArray();
+            $data = $memberModel->getDescendants($uniacid, 65)->toArray();
             \Log::debug('--------queue 3333-----');
 
             if (!empty($data)) {
@@ -68,7 +60,7 @@ class memberParentOfMemberJob implements ShouldQueue
                     ];
                 }
 
-                $this->childMemberModel->createData($attr);
+                $childMemberModel->createData($attr);
             }
         }
 
