@@ -39,15 +39,11 @@ class IncomePageController extends ApiController
     {
         list($available, $unavailable) = $this->getIncomeInfo();
 
-        //领取收益 开关是否显示
-        $plugin_settle_show = PluginSettleService::doesIsShow();
-
         $data = [
             'info' => $this->getPageInfo(),
             'parameter' => $this->getParameter(),
             'available' => $available,
             'unavailable' => $unavailable,
-            'plugin_settle_show' => $plugin_settle_show,
         ];
 
         return $this->successJson('ok', $data);
@@ -80,6 +76,7 @@ class IncomePageController extends ApiController
     {
         return [
             'share_page' => $this->getSharePageStatus(),
+            'plugin_settle_show' => PluginSettleService::doesIsShow(),  //领取收益 开关是否显示
         ];
     }
 
