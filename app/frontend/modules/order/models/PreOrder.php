@@ -7,15 +7,14 @@ use app\common\models\BaseModel;
 use app\common\models\DispatchType;
 use app\frontend\models\Member;
 use app\frontend\models\Order;
-use app\frontend\models\OrderAddress;
 use app\frontend\modules\deduction\OrderDeduction;
 use app\frontend\modules\dispatch\models\OrderDispatch;
+use app\frontend\modules\dispatch\models\PreOrderAddress;
 use app\frontend\modules\order\OrderDiscount;
 use app\frontend\modules\orderGoods\models\PreOrderGoods;
 use app\frontend\modules\order\services\OrderService;
 use app\frontend\modules\orderGoods\models\PreOrderGoodsCollection;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Schema;
 
 /**
  * 订单生成类
@@ -38,7 +37,7 @@ use Illuminate\Support\Facades\Schema;
  * @property string order_sn
  * @property int create_time
  * @property int uid
- * @property OrderAddress orderAddress
+ * @property PreOrderAddress orderAddress
  * @property int uniacid
  * @property PreOrderGoodsCollection orderGoods
  * @property Member belongsToMember
@@ -81,15 +80,23 @@ class PreOrder extends Order
 
     }
 
+    /**
+     * PreOrder constructor.
+     * @param array $attributes
+     * @throws \app\common\exceptions\ShopException
+     */
     public function __construct(array $attributes = [])
     {
         $this->dispatch_type_id = request()->input('dispatch_type_id', 0);
+        parent::__construct($attributes);
 
+        $orderAddress = new PreOrderAddress();
+        $orderAddress->setOrder($this);
         //临时处理，无扩展性
         if (request()->input('mark') !== 'undefined') {
             $this->mark = request()->input('mark', '');
         }
-        parent::__construct($attributes);
+
         $this->setRelation('orderSettings', $this->newCollection());
 
     }
@@ -256,8 +263,9 @@ class PreOrder extends Order
 
     /**
      * 订单插入数据库,触发订单生成事件
-     * @return mixed
+     * @return int
      * @throws AppException
+     * @throws \Exception
      */
     public function generate()
     {
