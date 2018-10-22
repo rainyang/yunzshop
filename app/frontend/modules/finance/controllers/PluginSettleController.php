@@ -106,7 +106,7 @@ class PluginSettleController extends ApiController
         }
 
         if ($result->isEmpty()) {
-            return $this->errorJson('暂无数据', ['code' => 0]);
+            return $this->errorJson('暂无数据', []);
         }
         $data_processing = PluginSettleService::create($type);
 
