@@ -39,9 +39,9 @@ class memberParentOfMemberJob implements ShouldQueue
 
     public function handle()
     {
-        $this->member_info = Member::getAllMembersInfosByQueue($this->uniacid);
+        $this->member_info = Member::getAllMembersInfosByQueue($this->uniacid)->toArray();
         \Log::debug('-----queue uniacid-----', $this->uniacid);
-        \Log::debug('-----queue member count-----', $this->member_info->count());
+        \Log::debug('-----queue member count-----', count($this->member_info));
         return $this->synRun($this->uniacid, $this->member_info);
     }
 
