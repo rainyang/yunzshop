@@ -7,6 +7,12 @@
             @include('layouts.tabs')
             <div class="panel panel-default">
                 <div class="panel-body">
+                    <div class='alert alert-info'>
+                        <p>1.按照供应商/门店/收银台完成订单金额进行排序；</p>
+                        <p>2.未提现收入：供应商/门店/收银台可提现金额</p>
+                        <p>3.提现中收入：处于待审核、待打款、打款中的提现记录</p>
+                        <p>4.已打款收入：已成功提现打款到账的收入</p>
+                    </div>
                     <form action="" method="post" class="form-horizontal" role="form" id="form1">
 
                         <div class="form-group col-sm-6 col-lg-6 col-xs-12">

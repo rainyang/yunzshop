@@ -22,15 +22,6 @@
                 <div class="card">
                     <div class="card-content">
                         <form action="" method="post" class="form-horizontal" role="form" id="form1">
-                            <div class="form-group col-xs-12 col-sm-2">
-                                <input type="text" class="form-control"  name="search[member_id]" value="{{$search['member']?$search['member']:''}}" placeholder="会员ID"/>
-                            </div>
-                            <div class="form-group col-xs-12 col-sm-2">
-                                <input type="text" class="form-control"  name="search[order_sn]" value="{{$search['member']?$search['member']:''}}" placeholder="订单号查询"/>
-                            </div>
-                            <div class="form-group col-xs-12 col-sm-2">
-                                <input type="text" class="form-control"  name="search[member]" value="{{$search['member']?$search['member']:''}}" placeholder="会员昵称/姓名/手机"/>
-                            </div>
                             <div class='form-group col-xs-12 col-sm-6'>
                                 <div class="input-group">
                                     <span class="input-group-addon">
@@ -60,11 +51,8 @@
                     <table class='table order-title table-hover table-striped'>
                         <thead>
                         <tr>
-                            <th class="col-md-4 text-center" style="white-space: pre-wrap;">订单号</th>
-                            <th class="col-md-2 text-center" style="white-space: pre-wrap;">购买者</th>
+                            <th class="col-md-4 text-center" style="white-space: pre-wrap;">日期</th>
                             <th class="col-md-2 text-center">订单金额</th>
-                            <th class="col-md-4 text-center">订单类型</th>
-                            <th class="col-md-4 text-center">商家</th>
                             <th class="col-md-2 text-center">未被分润</th>
                             <th class="col-md-2 text-center">商城收益</th>
                             <th class="col-md-2 text-center">供应商收益</th>
@@ -75,27 +63,8 @@
                         <tbody>
                         @foreach($list as $row)
                             <tr style="height: 40px; text-align: center">
-                                {{--{{ dd($row) }}--}}
-                                <td>{{ $row['order_sn'] }}</td>
-                                <td>
-                                    @if(!empty($row['thumb_url']))
-                                        <img src='{{ $row['thumb_url'] }}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
-                                    @endif
-                                    @if(empty($row['buy_name']))
-                                        未更新
-                                    @else
-                                        {{ $row['buy_name'] }}
-                                    @endif
-                                </td>
+                                <td>{{ $row['date'] }}</td>
                                 <td>{{ $row['price'] }}</td>
-                                <td>
-                                    @if($row['has_one_supplier_order'])供应商
-                                    @elseif($row['has_one_store_order'])门店
-                                    @elseif($row['has_one_cashier_order'])收银台
-                                    @else商城
-                                    @endif
-                                </td>
-                                <td>{{ $row['shop_name'] }}</td>
                                 <td>{{ $row['undividend'] }}</td>
                                 <td>{{ sprintf("%01.2f",$row->price - $row->hasOneOrderGoods->cost_price ?: '0.00') }}</td>
                                 <td>{{ $row->hasOneSupplierOrder->supplier_profit ?: '0.00' }}</td>

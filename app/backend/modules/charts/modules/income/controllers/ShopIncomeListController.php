@@ -20,18 +20,28 @@ class ShopIncomeListController extends BaseController
     public function index()
     {
         $pageSize = 10;
-        $list = OrderPluginBonus::uniacid()
-            ->selectRaw('sum(undividend) as undividend,order_id')
+        $search = \YunShop::request()->search;
+        $list = OrderPluginBonus::search($search)
+            ->selectRaw('sum(undividend) as undividend, order_id, max(if(code like "order_sn",content,0)) as order_sn')
+            ->selectRaw('max(price) as price, order_id, max(if(code like "shop_name",content,0)) as shop_name')
+            ->selectRaw('max(if(code like "buy_name",content,0)) as buy_name')
             ->groupBy('order_id')
-            ->with(['hasManyOrderGoods', 'hasOneStoreOrder', 'hasOneSupplierOrder', 'hasOneCashierOrder'])
-            ->get();
-//            ->toArray();
-//            ->paginate($pageSize);
-        dd($list);
+            ->with([
+                'hasOneOrderGoods' => function($q) {
+                    $q->selectRaw('sum(goods_cost_price) as cost_price, order_id')->groupBy('order_id');
+                },
+                'hasOneStoreOrder',
+                'hasOneSupplierOrder',
+                'hasOneCashierOrder',
+            ])
+            ->orderBy('order_id', 'desc')
+            ->paginate($pageSize);
 
         $pager = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
         return view('charts.income.shop_income_list',[
-
+            'list' => $list,
+            'pager' => $pager,
+            'search' => $search,
         ])->render();
     }
 
