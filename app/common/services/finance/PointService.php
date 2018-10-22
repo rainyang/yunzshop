@@ -11,6 +11,7 @@ namespace app\common\services\finance;
 
 use app\backend\modules\member\models\Member;
 use app\common\events\MessageEvent;
+use app\common\exceptions\ShopException;
 use app\common\models\finance\PointLog;
 use app\common\models\notice\MessageTemp;
 use app\common\services\MessageService;
@@ -216,7 +217,8 @@ class PointService
         $this->point_data['before_point'] = $this->member_point;
         $this->member_point += $this->point_data['point'];
         if ($this->member_point < PointService::POINT) {
-            $this->member_point = PointService::POINT;
+            throw new ShopException('积分不足!!!');
+            //$this->member_point = PointService::POINT;
         }
         $this->point_data['after_point'] = round($this->member_point, 2);
     }

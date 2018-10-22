@@ -9,6 +9,7 @@
 namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
+use app\common\events\order\BeforeOrderPayEvent;
 use app\common\events\payment\GetOrderPaymentTypeEvent;
 use app\common\exceptions\AppException;
 use app\common\models\Order;
@@ -126,27 +127,6 @@ class MergePayController extends ApiController
 
         if ($this->orders->count() != count($orderIds)) {
             throw new AppException('(ID:' . implode(',', $orderIds) . ')未找到订单');
-        }
-        $this->orders->each(function ($order) {
-            if ($order->status > Order::WAIT_PAY) {
-                throw new AppException('(ID:' . $order->id . ')订单已付款,请勿重复付款');
-            }
-            if ($order->status == Order::CLOSE) {
-                throw new AppException('(ID:' . $order->id . ')订单已关闭,无法付款');
-            }
-
-            //找人代付
-            if ($order->uid != \YunShop::app()->getMemberId() && !Member::getPid()) {
-                throw new AppException('(ID:' . $order->id . ')该订单属于其他用户');
-            }
-            // 转账付款审核中
-            if($order->pay_type_id == PayType::REMITTANCE){
-                throw new AppException('(ID:' . $order->id . ')该订单处于转账审核中,请先关闭转账审核申请,再选择其他支付方式');
-            }
-        });
-        // 订单金额验证
-        if ($this->orders->sum('price') < 0) {
-            throw new AppException('(' . $this->orders->sum('price') . ')订单金额有误');
         }
         return $this->orders;
     }

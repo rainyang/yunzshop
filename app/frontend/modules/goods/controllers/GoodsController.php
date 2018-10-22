@@ -20,7 +20,7 @@ use Yunshop\Love\Common\Models\GoodsLove;
 use app\frontend\modules\coupon\models\Coupon;
 use app\frontend\modules\coupon\controllers\MemberCouponController;
 use app\common\services\goods\LeaseToyGoods;
-
+use Yunshop\Supplier\common\models\SupplierGoods;
 
 
 /**
@@ -143,9 +143,27 @@ class GoodsController extends ApiController
                 $row_res = $row['class']::$row['function']($id, true);
                 if ($row_res) {
                     $goodsModel->$key_name = $row_res;
+                    //供应商在售商品总数
+                    $class = new $row['class']();
+                    if(method_exists($class,'getGoodsIdsBySid')){
+                        $supplier_goods_id = $row['class']::getGoodsIdsBySid($row_res->id);
+                        $supplier_goods_count = Goods::select('*', 'yz_goods.id as goods_id')
+                            ->whereIn('id', $supplier_goods_id)
+                            ->where('status', 1)
+                            ->get()->count('id');
+                        $goodsModel->supplier_goods_count = $supplier_goods_count;
+                    }
                 }
             }
         }
+
+        //供应商在售商品总数
+        /*$supplier_goods_id = SupplierGoods::getGoodsIdsBySid($goodsModel->supplier->id);
+        $supplier_goods_count = Goods::select('*', 'yz_goods.id as goods_id')
+            ->whereIn('id', $supplier_goods_id)
+            ->where('status', 1)
+            ->get()->count('id');
+        $goodsModel->supplier_goods_count = $supplier_goods_count;*/
 
         if($goodsModel->hasOneShare){
             $goodsModel->hasOneShare->share_thumb = yz_tomedia($goodsModel->hasOneShare->share_thumb);
@@ -167,7 +185,6 @@ class GoodsController extends ApiController
         $lease_switch = LeaseToyGoods::whetherEnabled();
 
         $this->goods_lease_set($goodsModel, $lease_switch);
-
         //return $this->successJson($goodsModel);
         return $this->successJson('成功', $goodsModel);
     }

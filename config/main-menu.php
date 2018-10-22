@@ -2015,7 +2015,7 @@ return [
 
                     'finance_balance_member_recharge'  => [
                         'name'              => '余额充值',
-                        'url'               => 'finance.balance.recharge',
+                        'url'               => 'balance.recharge.index',
                         'url_params'        => '',
                         'permit'            => 1,
                         'menu'              => 0,

@@ -24,6 +24,8 @@ class UpdateController extends BaseController
 
         //删除非法文件
         $this->deleteFile();
+        //执行迁移文件
+        $this->runMigrate();
 
         $key = Setting::get('shop.key')['key'];
         $secret = Setting::get('shop.key')['secret'];
@@ -461,6 +463,13 @@ class UpdateController extends BaseController
 
         $files = [
             [
+                'path' => base_path('database/migrations'),
+                'ext'  => ['php'],
+                'file' => [
+                    base_path('database/migrations/2018_10_18_150312_add_unique_to_yz_member_income.php')
+                ]
+            ],
+            [
                 'path' => storage_path('cert'),
                 'ext' => ['pem']
             ]
@@ -471,10 +480,18 @@ class UpdateController extends BaseController
 
             if (!empty($scan_file)) {
                 foreach ($scan_file as $item) {
-                    $file_info = pathinfo($item);
+                    if (!empty($rows['file'])) {
+                        foreach ($rows['file'] as $val) {
+                            if ($val == $item) {
+                                @unlink($item);
+                            }
+                        }
+                    } else {
+                        $file_info = pathinfo($item);
 
-                    if (!in_array($file_info['extension'], $rows['ext'])) {
-                        @unlink($item);
+                        if (!in_array($file_info['extension'], $rows['ext'])) {
+                            @unlink($item);
+                        }
                     }
                 }
             }
@@ -515,5 +532,20 @@ class UpdateController extends BaseController
     public function pirate()
     {
         return view('update.pirate', [])->render();
+    }
+
+    private function runMigrate()
+    {
+        $plugins = ['sign', 'supplier'];
+
+        foreach ($plugins as $p) {
+            $path = 'plugins/' . $p . '/migrations';
+
+            if(is_dir(base_path($path) )){
+                \Artisan::call('migrate',['--force' => true,'--path' => $path]);
+            }
+        }
+
+       // \Artisan::call('migrate',['--force' => true]);
     }
 }

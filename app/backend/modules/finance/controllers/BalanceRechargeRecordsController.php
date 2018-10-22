@@ -39,7 +39,7 @@ class BalanceRechargeRecordsController extends BaseController
         return view('finance.balance.rechargeRecord', [
             'shopSet'       => Setting::get('shop.member'),
             'recordList'    => $recordList,
-            'pager'         => $pager,
+            'page'          => $pager,
             'memberGroup'   => MemberGroup::getMemberGroupList(),
             'memberLevel'   => MemberLevel::getMemberLevelList(),
             'search'        => $search
