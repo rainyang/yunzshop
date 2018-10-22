@@ -2744,7 +2744,7 @@ return [
             ],
             'member_income_charts'     => [
                 'name'          => '会员收入统计',
-                'url'           => 'charts.member.member-income.index',
+                'url'           => 'charts.income.member-income.index',
                 'url_params'    => '',
                 'permit'        => 1,
                 'menu'          => 1,
