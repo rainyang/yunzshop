@@ -144,12 +144,15 @@ class GoodsController extends ApiController
                 if ($row_res) {
                     $goodsModel->$key_name = $row_res;
                     //供应商在售商品总数
-                    $supplier_goods_id = $row['class']::getGoodsIdsBySid($row_res->id);
-                    $supplier_goods_count = Goods::select('*', 'yz_goods.id as goods_id')
-                        ->whereIn('id', $supplier_goods_id)
-                        ->where('status', 1)
-                        ->get()->count('id');
-                    $goodsModel->supplier_goods_count = $supplier_goods_count;
+                    $class = new $row['class']();
+                    if(method_exists($class,'getGoodsIdsBySid')){
+                        $supplier_goods_id = $row['class']::getGoodsIdsBySid($row_res->id);
+                        $supplier_goods_count = Goods::select('*', 'yz_goods.id as goods_id')
+                            ->whereIn('id', $supplier_goods_id)
+                            ->where('status', 1)
+                            ->get()->count('id');
+                        $goodsModel->supplier_goods_count = $supplier_goods_count;
+                    }
                 }
             }
         }
@@ -182,7 +185,6 @@ class GoodsController extends ApiController
         $lease_switch = LeaseToyGoods::whetherEnabled();
 
         $this->goods_lease_set($goodsModel, $lease_switch);
-
         //return $this->successJson($goodsModel);
         return $this->successJson('成功', $goodsModel);
     }
