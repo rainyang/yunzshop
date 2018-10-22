@@ -6,27 +6,28 @@
  * Time: 17:59
  */
 
-namespace app\backend\modules\charts\modules\phone\service;
+namespace app\backend\modules\charts\modules\phone\services;
 
+
+use Illuminate\Support\Facades\DB;
 
 class PhoneAttributionService
 {
     public function phoneStatistics()
     {
         $member = $this->getPhone();
-        foreach ($member as $item) {
-            if (!empty($item['mobile'])) {
-                $data[] = $this->getPhoneApi($item['mobile']);
-            }
+        foreach ($member as $k => $item) {
+                $data[$k] = $this->getPhoneApi($item['mobile']);
+                $phone[] = file_get_contents($data[$k]);
         }
-
-        return json_decode($data);
+dd($phone);
+        return json_decode($phone);
     }
 
     public function getPhone()
     {
         $uniacid = \YunShop::app()->uniacid;
-        $member_phone = DB::select('select uid,mobile,uniacid from ims_mc_members where uniacid ='.$uniacid);
+        $member_phone = DB::select("select uid,mobile,uniacid from ims_mc_members where uniacid =$uniacid and mobile != ''");
 
         return $member_phone;
     }

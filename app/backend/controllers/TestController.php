@@ -8,6 +8,7 @@
 
 namespace app\backend\controllers;
 
+use app\backend\modules\charts\modules\phone\services\PhoneAttributionService;
 use app\common\components\BaseController;
 use app\common\helpers\Cache;
 use app\common\helpers\SettingCache;
@@ -17,7 +18,6 @@ use app\common\models\OrderPay;
 use app\common\models\Flow;
 use app\common\models\Setting;
 use app\common\services\MessageService;
-use app\common\services\PhoneAttributionService;
 use app\frontend\modules\member\models\SubMemberModel;
 use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Database\Schema\Blueprint;
@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use SuperClosure\SerializableClosure;
+
 
 class TestController extends BaseController
 {
@@ -143,9 +144,10 @@ class TestController extends BaseController
 
     public function getPhone()
     {
-        $url = PhoneAttributionService::getPhoneApi(18520632247);
-        $json= file_get_contents($url);
-        $array = json_decode($json);
-        dd($array->data);
+        $phone = (new PhoneAttributionService())->phoneStatistics();
+        foreach ($phone as $item) {
+            $data[] = $item;
+        }
+        dd($data);
     }
 }
