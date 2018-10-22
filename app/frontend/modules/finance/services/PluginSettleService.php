@@ -33,4 +33,49 @@ class PluginSettleService
         return $class;
     }
 
+    public static function doesIsShow()
+    {
+        $config = \Config::get('income');
+        foreach ($config as $key => $value) {
+            $bool = self::doesIsShowAvailable($key);
+
+            if ($bool) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static function  doesIsShowAvailable($key)
+    {
+        $bool = false;
+        switch ($key) {
+            case 'merchant':
+                if (\Setting::get('plugin.merchant.settlement_model')) {
+                    $bool = true;
+                }
+                break;
+            case 'commission':
+                if (\Setting::get('plugin.commission.settlement_model')) {
+                    $bool = true;
+                }
+                break;
+            case 'areaDividend':
+                if (\Setting::get('plugin.area_dividend.settlement_model')) {
+                    $bool = true;
+                }
+                break;
+            case 'teamDividend':
+                if (\Setting::get('plugin.team_dividend.settlement_model')) {
+                    $bool = true;
+                }
+                break;
+            default:
+                $bool = false;
+        }
+
+        return $bool;
+    }
+
 }

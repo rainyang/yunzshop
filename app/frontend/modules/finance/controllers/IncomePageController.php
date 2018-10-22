@@ -16,6 +16,7 @@ use app\common\models\Income;
 use app\frontend\models\Member;
 use app\frontend\models\MemberRelation;
 use app\frontend\modules\finance\factories\IncomePageFactory;
+use app\frontend\modules\finance\services\PluginSettleService;
 use app\frontend\modules\member\models\MemberModel;
 
 class IncomePageController extends ApiController
@@ -38,11 +39,15 @@ class IncomePageController extends ApiController
     {
         list($available, $unavailable) = $this->getIncomeInfo();
 
+        //领取收益 开关是否显示
+        $plugin_settle_show = PluginSettleService::doesIsShow();
+
         $data = [
             'info' => $this->getPageInfo(),
             'parameter' => $this->getParameter(),
             'available' => $available,
-            'unavailable' => $unavailable
+            'unavailable' => $unavailable,
+            'plugin_settle_show' => $plugin_settle_show,
         ];
 
         return $this->successJson('ok', $data);
