@@ -210,7 +210,9 @@ class PointService
     }
 
     /**
-     * @name 获取变化之后的积分
+     * 获取变化之后的积分
+     *
+     * @throws ShopException
      */
     public function getAfterPoint()
     {
