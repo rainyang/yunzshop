@@ -3,13 +3,14 @@
 namespace app\frontend\modules\order\models;
 
 use app\common\events\order\AfterPreOrderLoadOrderGoodsEvent;
+use app\common\exceptions\AppException;
 use app\common\models\BaseModel;
 use app\common\models\DispatchType;
 use app\frontend\models\Member;
 use app\frontend\models\Order;
-use app\frontend\models\OrderAddress;
 use app\frontend\modules\deduction\OrderDeduction;
 use app\frontend\modules\dispatch\models\OrderDispatch;
+use app\frontend\modules\dispatch\models\PreOrderAddress;
 use app\frontend\modules\order\OrderDiscount;
 use app\frontend\modules\orderGoods\models\PreOrderGoods;
 use app\frontend\modules\order\services\OrderService;
@@ -37,7 +38,7 @@ use Illuminate\Support\Collection;
  * @property string order_sn
  * @property int create_time
  * @property int uid
- * @property OrderAddress orderAddress
+ * @property PreOrderAddress orderAddress
  * @property int uniacid
  * @property PreOrderGoodsCollection orderGoods
  * @property Member belongsToMember
@@ -62,15 +63,23 @@ class PreOrder extends Order
     protected $orderDeduction;
     protected $attributes = ['id' => null];
 
+    /**
+     * PreOrder constructor.
+     * @param array $attributes
+     * @throws \app\common\exceptions\ShopException
+     */
     public function __construct(array $attributes = [])
     {
         $this->dispatch_type_id = request()->input('dispatch_type_id', 0);
+        parent::__construct($attributes);
 
+        $orderAddress = new PreOrderAddress();
+        $orderAddress->setOrder($this);
         //临时处理，无扩展性
         if (request()->input('mark') !== 'undefined') {
             $this->mark = request()->input('mark', '');
         }
-        parent::__construct($attributes);
+
     }
 
     public function setOrderGoods(PreOrderGoodsCollection $orderGoods)
@@ -80,6 +89,7 @@ class PreOrder extends Order
         $this->orderGoods->setOrder($this);
 
         event(new AfterPreOrderLoadOrderGoodsEvent($this));
+
 
     }
 
@@ -241,9 +251,22 @@ class PreOrder extends Order
             }
         }
         $this->insertRelations($this->batchSaveRelations);
+        return parent::push();
+    }
+
+
+    /**
+     * 订单插入数据库,触发订单生成事件
+     * @return int
+     * @throws \Exception
+     */
+    public function generate()
+    {
+        $this->save();
+
+        $this->push();
 
         $relations = array_except($this->relations, $this->batchSaveRelations);
-
         foreach ($relations as $models) {
             $models = $models instanceof Collection
                 ? $models->all() : [$models];

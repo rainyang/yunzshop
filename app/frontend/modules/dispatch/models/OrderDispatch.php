@@ -62,5 +62,4 @@ class OrderDispatch
 
         return $this->freight;
     }
-
 }

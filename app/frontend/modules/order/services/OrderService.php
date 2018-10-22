@@ -10,14 +10,11 @@
 namespace app\frontend\modules\order\services;
 
 use app\common\events\discount\OnDiscountInfoDisplayEvent;
-use app\common\events\dispatch\OnDispatchTypeInfoDisplayEvent;
 use app\common\events\order\OnPreGenerateOrderCreatingEvent;
 use app\common\exceptions\AppException;
 use app\common\models\Order;
 
 use app\common\models\order\OrderGoodsChangePriceLog;
-use app\common\models\OrderGoods;
-use app\common\models\UniAccount;
 use app\frontend\models\Member;
 use \app\frontend\models\MemberCart;
 use app\frontend\modules\member\services\MemberService;
@@ -44,16 +41,17 @@ class OrderService
 {
     /**
      * 获取订单信息组
-     * @param Order $order
+     * @param PreOrder $order
      * @return Collection
+     * @throws AppException
      */
-    public static function getOrderData(Order $order)
+    public static function getOrderData(PreOrder $order)
     {
         $result = collect();
         // todo 这里为什么要toArray
         $result->put('order', $order->toArray());
         $result->put('discount', self::getDiscountEventData($order));
-        $result->put('dispatch', self::getDispatchEventData($order));
+        $result->put('dispatch', ['default_member_address'=>$order->orderAddress->getMemberAddress()]);
 
         if (!$result->has('supplier')) {
             $result->put('supplier', ['username' => array_get(\Setting::get('shop'), 'name', '自营'), 'id' => 0]);
@@ -74,18 +72,6 @@ class OrderService
         event($event);
 
         return collect($event->getMap());
-    }
-
-    /**
-     * 获取配送信息
-     * @param $order_model
-     * @return array
-     */
-    public static function getDispatchEventData($order_model)
-    {
-        $Event = new OnDispatchTypeInfoDisplayEvent($order_model);
-        event($Event);
-        return $Event->getMap();
     }
 
     /**
