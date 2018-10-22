@@ -296,7 +296,7 @@ class BaseModel extends Model
     public function expansionMethod($method,$class){
         if (isset(static::$expansions)) {
 
-            foreach ($this->getExpansions() as $expansion) {
+            foreach ($this->getExpansions($class) as $expansion) {
 
                 if (method_exists($expansion, $method)) {
 
@@ -318,9 +318,8 @@ class BaseModel extends Model
      */
     private function getRelationshipFromExpansions($key, $class)
     {
-
         if (isset(static::$expansions)) {
-            foreach ($this->getExpansions() as $expansion) {
+            foreach ($this->getExpansions($class) as $expansion) {
                 if (method_exists($expansion, $key)) {
                     return (new $expansion)->getRelationshipFromExpansion($key, $this);
                 }
@@ -351,9 +350,9 @@ class BaseModel extends Model
      * 获取扩展设置
      * @return mixed
      */
-    private function getExpansions()
+    private function getExpansions($class)
     {
-        return static::$expansions[static::class];
+        return static::$expansions[$class];
     }
 
     /**

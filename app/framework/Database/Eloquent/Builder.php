@@ -61,7 +61,8 @@ class Builder extends \Illuminate\Database\Eloquent\Builder
                 if(method_exists($this->getModel(),$name)){
                     return $this->getModel()->$name();
                 }else{
-                    return $this->getModel()->expansionMethod($name,get_class($this->getModel()));
+                    $model = $this->getModel()->expansionMethod($name,get_class($this->getModel()));
+                    return $model;
                 }
             } catch (BadMethodCallException $e) {
                 throw RelationNotFoundException::make($this->getModel(), $name);
