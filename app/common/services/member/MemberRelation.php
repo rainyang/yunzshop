@@ -16,14 +16,13 @@ class MemberRelation
 {
     public function createParentOfMember()
     {
-//        $memberInfo = new MemberShopInfo();
-//
-//        $data = $memberInfo->getTreeAllNodes();
-//
-//        $data = $memberInfo->getDescendants(65);
-//
-//        dd($data);
+        /*        $memberInfo = new Member();
 
+                //$data = $memberInfo->getTreeAllNodes($uniacid);
+                //\Log::debug('--------queue data count-----', $data->cout());
+                $data = $memberInfo->getDescendants(5, 65);
+
+        dd($data);*/
 
         $pageSize = 1000;
         $pageSize = 10;

@@ -38,8 +38,10 @@ class memberParentOfMemberJob implements ShouldQueue
     {
         $memberInfo = new Member();
 
-        $data = $memberInfo->getTreeAllNodes($uniacid);
-        \Log::debug('--------queue data count-----', $data->cout());
-        //$data = $memberInfo->getDescendants($uniacid, 65);
+        //$data = $memberInfo->getTreeAllNodes($uniacid);
+        //\Log::debug('--------queue data count-----', $data->cout());
+        $data = $memberInfo->getDescendants($uniacid, 65);
+
+\Log::debug('------queue data-----', $data);
     }
 }
