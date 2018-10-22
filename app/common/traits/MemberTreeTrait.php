@@ -134,7 +134,6 @@ trait MemberTreeTrait
     final protected function getAllNodes($uniacid)
     {
         if ($this->_allNodes) {
-            \Log::debug('-----_allNodes count----', $this->_allNodes->count());
             return $this->_allNodes;
         }
         if (!method_exists($this, 'getTreeAllNodes')) {

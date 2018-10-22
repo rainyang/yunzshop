@@ -447,7 +447,7 @@ class Member extends \app\common\models\Member
 
     public static function getQueueAllMembersInfo($uniacid, $limit = 0, $offset = 0)
     {
-        $result = self::select(['mc_members.uid', 'mc_mapping_fans.openid'])
+        $result = self::select(['mc_members.uid', 'mc_mapping_fans.openid', 'mc_members.uniacid'])
                    ->join('yz_member', 'mc_members.uid', '=', 'yz_member.member_id')
                    ->join('mc_mapping_fans', 'mc_members.uid', '=', 'mc_mapping_fans.uid')
                    ->where('mc_members.uniacid', $uniacid);
@@ -471,6 +471,7 @@ class Member extends \app\common\models\Member
         return self::select(['yz_member.member_id', 'yz_member.parent_id'])
             ->join('yz_member', 'mc_members.uid', '=', 'yz_member.member_id')
             ->where('mc_members.uniacid', $uniacid)
+            ->limit(500)
             ->get();
     }
 }

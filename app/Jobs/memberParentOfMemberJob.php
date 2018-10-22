@@ -10,6 +10,7 @@ namespace app\Jobs;
 
 
 use app\backend\modules\member\models\Member;
+use app\common\models\member\ChildenOfMember;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -21,12 +22,22 @@ class memberParentOfMemberJob implements ShouldQueue
 
     private $uniacid;
     private $member_info;
+    public  $memberModel;
+    public  $childMemberModel;
 
-    public function __construct($uniacid, $member_info)
+    public function __construct($uniacid, Member $memberModel, ChildenOfMember $childMemberModel, $member_info)
     {
         $this->uniacid = $uniacid;
         $this->member_info = $member_info->toArray();
+        $this->memberModel = $memberModel;
+        $this->childMemberModel = $childMemberModel;
     }
+
+    /*public function __construct($uniacid, $member_info)
+    {
+        $this->uniacid = $uniacid;
+        $this->member_info = $member_info->toArray();
+    }*/
 
     public function handle()
     {
@@ -36,12 +47,30 @@ class memberParentOfMemberJob implements ShouldQueue
 
     public function synRun($uniacid, $memberInfo)
     {
-        $memberInfo = new Member();
+        /*$member_model = new Member();
+        $childMemberModel = new ChildenOfMember();*/
 
-        //$data = $memberInfo->getTreeAllNodes($uniacid);
-        //\Log::debug('--------queue data count-----', $data->cout());
-        $data = $memberInfo->getDescendants($uniacid, 65);
+        \Log::debug('--------queue member_model -----', get_class($this->memberModel));
+        \Log::debug('--------queue childMemberModel -----', get_class($this->childMemberModel));
+        \Log::debug('--------queue cccccc -----');
+        foreach ($memberInfo as $key => $val) {exit;
+            \Log::debug('--------queue 22222-----');
+            $data = $this->memberModel->getDescendants($uniacid, 65)->toArray();
+            \Log::debug('--------queue 3333-----');
 
-\Log::debug('------queue data-----', $data);
+            if (!empty($data)) {
+                foreach ($data as $k => $v) {
+                    $attr[] = [
+                        'uniacid'   => $uniacid,
+                        'child_id'  => $k,
+                        'level'     => $v['depth'] + 1,
+                        'member_id' => $val['uid']
+                    ];
+                }
+
+                $this->childMemberModel->createData($attr);
+            }
+        }
+
     }
 }
