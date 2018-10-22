@@ -171,7 +171,7 @@ trait MemberTreeTrait
     public function getSubLevel($uniacid, $parentId)
     {
         $data = $this->getAllNodes($uniacid);
-
+\Log::debug('-----all nodes----', $data);
         $childList = collect([]);
         foreach ($data as $val) {
             if ($val->{$this->getTreeNodeParentIdName()} == $parentId) {
@@ -198,7 +198,7 @@ trait MemberTreeTrait
         }
         $number = 1;
         $child = $this->getSubLevel($uniacid, $parentId);
-
+\Log::debug('------child----', $child);
         if ($child) {
             $nextDepth = $depth + 1;
             $total = $child->count();
