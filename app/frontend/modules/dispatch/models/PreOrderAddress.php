@@ -116,7 +116,7 @@ class PreOrderAddress extends OrderAddress
             return $memberAddress;
         }
 
-        return $this->order->getMember()->defaultAddress;
+        return $this->order->belongsToMember->defaultAddress;
     }
 
     /**

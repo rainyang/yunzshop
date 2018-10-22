@@ -306,7 +306,7 @@ class BaseModel extends Model
         }
         // 递归到此类为止避免死循环
         if (get_parent_class($class) !== self::class) {
-            return $this->getRelationshipFromExpansions($method, get_parent_class($class));
+            return $this->expansionMethod($method, get_parent_class($class));
         }
     }
 

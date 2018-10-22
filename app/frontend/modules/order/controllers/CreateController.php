@@ -8,13 +8,10 @@
 
 namespace app\frontend\modules\order\controllers;
 
-use app\common\events\order\AfterOrderCreatedImmediatelyEvent;
 use app\common\events\order\CreatingOrder;
 use app\common\exceptions\AppException;
 use app\frontend\modules\member\services\MemberCartService;
 use app\frontend\modules\memberCart\MemberCartCollection;
-use app\Jobs\OrderCreatedEventQueueJob;
-use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\DB;
 use app\frontend\modules\order\models\PreOrder;
 

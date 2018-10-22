@@ -38,7 +38,6 @@ class Builder extends \Illuminate\Database\Eloquent\Builder
         // add our eager constraints. Then we will merge the wheres that were on the
         // query back to it in order that any where conditions might be specified.
         $relation = $this->expansionGetRelation($name);
-
         $relation->addEagerConstraints($models);
 
         $constraints($relation);
@@ -59,11 +58,12 @@ class Builder extends \Illuminate\Database\Eloquent\Builder
         $relation = Relation::noConstraints(function () use ($name) {
             try {
                 if(method_exists($this->getModel(),$name)){
-                    return $this->getModel()->$name();
+                    $model = $this->getModel()->$name();
                 }else{
                     $model = $this->getModel()->expansionMethod($name,get_class($this->getModel()));
-                    return $model;
                 }
+                return $model;
+
             } catch (BadMethodCallException $e) {
                 throw RelationNotFoundException::make($this->getModel(), $name);
             }
