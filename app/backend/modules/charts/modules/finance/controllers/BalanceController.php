@@ -48,6 +48,7 @@ class BalanceController extends ChartsController
             $balanceUsedData[$key] = $allBalanceData[$key]['usedBalance'];
             $allBalanceData[$key]['date'] = $time;
         }
+        arsort($allBalanceData);
         return view('charts.finance.balance',[
             'search' => $search,
             'balanceGivenCount' => $allBalanceData[6]['givenBalance'],

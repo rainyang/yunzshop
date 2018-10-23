@@ -71,6 +71,7 @@ class CashierIncomeController extends BaseController
         foreach($orderAndUnwithdraw as $key=>$vo){
             $list[] = array_merge($vo, $withdraws[$key]);
         }
+        array_multisort(array_column($list,'price'),SORT_DESC,$list);
         $totalAmount = collect($list);
         $unWithdrawTotal = $totalAmount->sum('un_withdraw');
         $priceTotal = $totalAmount->sum('price');

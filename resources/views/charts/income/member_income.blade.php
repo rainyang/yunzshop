@@ -60,23 +60,31 @@
                     <table class='table order-title table-hover table-striped'>
                         <thead>
                         <tr>
-                            <th class="col-md-4 text-center" style="white-space: pre-wrap;">订单号</th>
-                            <th class="col-md-2 text-center" style="white-space: pre-wrap;">购买者</th>
-                            <th class="col-md-2 text-center">订单金额</th>
-                            <th class="col-md-4 text-center">订单类型</th>
-                            <th class="col-md-4 text-center">商家</th>
-                            <th class="col-md-2 text-center">未被分润</th>
-                            <th class="col-md-2 text-center">商城收益</th>
-                            <th class="col-md-2 text-center">供应商收益</th>
-                            <th class="col-md-2 text-center">门店收益</th>
-                            <th class="col-md-2 text-center">收银台收益</th>
+                            <th class="col-md-2 text-center" style='width:80px;'>排行</th>
+                            <th class="col-md-2 text-center" style="white-space: pre-wrap;">会员</th>
+                            <th class="col-md-2 text-center">累计收入</th>
+                            <th class="col-md-2 text-center">未提现收入</th>
+                            <th class="col-md-2 text-center">已提现收入</th>
+                            <th class="col-md-2 text-center">扣除手续费</th>
+                            <th class="col-md-2 text-center">分销佣金</th>
+                            <th class="col-md-2 text-center">经销商提成</th>
+                            <th class="col-md-2 text-center">股东分红</th>
+                            <th class="col-md-2 text-center">区域分红</th>
+                            <th class="col-md-2 text-center">招商分红</th>
+                            <th class="col-md-2 text-center">收入明细</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($list as $row)
+                        @foreach($list as $key => $row)
+
                             <tr style="height: 40px; text-align: center">
-                                {{--{{ dd($row) }}--}}
-                                <td>{{ $row['order_sn'] }}</td>
+                                <td>
+                                    @if($key <= 2)
+                                        <labe class='label label-danger' style='padding:8px;'>&nbsp;{{ $key + 1 }}&nbsp;</labe>
+                                    @else
+                                        <labe class='label label-default'  style='padding:8px;'>&nbsp;{{ $key + 1 }}&nbsp;</labe>
+                                    @endif
+                                </td>
                                 <td>
                                     @if(!empty($row['thumb_url']))
                                         <img src='{{ $row['thumb_url'] }}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
@@ -87,16 +95,14 @@
                                         {{ $row['buy_name'] }}
                                     @endif
                                 </td>
-                                <td>{{ $row['price'] }}</td>
-                                <td>
-                                    @if($row['has_one_supplier_order'])供应商
-                                    @elseif($row['has_one_store_order'])门店
-                                    @elseif($row['has_one_cashier_order'])收银台
-                                    @else商城
-                                    @endif
-                                </td>
-                                <td>{{ $row['shop_name'] }}</td>
-                                <td>{{ $row['undividend'] }}</td>
+                                <td>{{ $row['total_amount'] ?: '0.00' }}</td>
+                                <td>{{ $row['unwithdraw'] ?: '0.00' }}</td>
+                                <td>{{ $row['withdraw'] ?: '0.00' }}</td>
+                                <td>{{ $row->hasOneWithdraw->total_poundage ?: '0.00' }}</td>
+                                <td>{{ $row['commission_dividend'] ?: '0.00' }}</td>
+                                <td>{{ $row['team_dividend'] ?: '0.00' }}</td>
+                                <td>{{ $row['shareholder_dividend'] ?: '0.00' }}</td>
+                                <td>{{ $row['area_dividend'] ?: '0.00' }}</td>
                                 <td>{{ sprintf("%01.2f",$row->price - $row->hasOneOrderGoods->cost_price ?: '0.00') }}</td>
                                 <td>{{ $row->hasOneSupplierOrder->supplier_profit ?: '0.00' }}</td>
                                 <td>{{ $row->hasOneStoreOrder->amount ?: '0.00' }}</td>

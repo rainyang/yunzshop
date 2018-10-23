@@ -50,6 +50,7 @@ class CouponController extends ChartsController
             $couponUsedData[$key] = $allCouponData[$key]['usedCoupon'];
             $allCouponData[$key]['date'] = $time;
         }
+        arsort($allCouponData);
         return view('charts.finance.coupon',[
             'search' => $search,
             'couponGivenCount' => $allCouponData[6]['givenCoupon'],

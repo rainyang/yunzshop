@@ -30,18 +30,18 @@ class MemberIncomeController extends BaseController
             ->selectRaw('sum(if(incometable_type like "%AreaDividend", amount, 0)) as area_dividend')
             ->selectRaw('sum(if(incometable_type like "%CommissionOrder", amount, 0)) as commission_dividend')
             ->selectRaw('sum(if(incometable_type like "%MerchantBonusLog", amount, 0)) as merchant_dividend')
-            ->selectRaw('sum(if(incometable_type like "%AreaDividend", amount, 0)) as area_dividend')
-            ->selectRaw('sum(if(incometable_type like "%AreaDividend", amount, 0)) as area_dividend')
+            ->selectRaw('sum(if(incometable_type like "%ShareholderDividendModel", amount, 0)) as shareholder_dividend')
+            ->selectRaw('sum(if(incometable_type like "%TeamDividend%", amount, 0)) as team_dividend')
             ->with([
                 'hasOneWithdraw' => function($q) {
-                    $q->selectRaw('sum(poundage) as totalPoundage, member_id')->groupBy('member_id');
+                    $q->selectRaw('sum(poundage) as total_poundage, member_id')->groupBy('member_id');
                 }
             ])
             ->groupBy('member_id')
-            ->orderBy('totalAmount', 'desc')
-            ->get();
-//            ->paginate();
-        dd($list->toArray());
+            ->orderBy('total_amount', 'desc')
+//            ->get();
+            ->paginate();
+//        dd($list->toArray());
 
         $page = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
         return view('charts.income.member_income',[

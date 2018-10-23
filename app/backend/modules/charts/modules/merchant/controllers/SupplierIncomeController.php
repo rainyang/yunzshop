@@ -77,6 +77,7 @@ class SupplierIncomeController extends BaseController
         $priceTotal = $totalAmount->sum('price');
         $withdrawingTotal = $totalAmount->sum('withdrawing');
         $withdrawTotal = $totalAmount->sum('withdraw');
+        array_multisort(array_column($list,'price'),SORT_DESC,$list);
 //        SupplierOrderJoinOrder::IsPlugin()->where('uniacid', 3)->status(3)->whereHas('beLongsToSupplierOrder', function ($query) {
 //            $query->where('supplier_id', 1);
 //        });
