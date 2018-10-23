@@ -15,6 +15,8 @@ use app\frontend\models\goods\Sale;
 use app\frontend\modules\member\services\MemberService;
 use app\common\models\Coupon;
 use Illuminate\Database\Eloquent\Builder;
+use Yunshop\StoreCashier\common\models\StoreGoods;
+use Yunshop\Supplier\admin\models\SupplierGoods;
 
 /**
  * Class Goods
@@ -25,25 +27,20 @@ use Illuminate\Database\Eloquent\Builder;
  * @property string thumb
  * @property float price
  * @property float weight
+ * @property int is_plugin
+ * @property int plugin_id
  * @property Sale hasOneSale
  * @property GoodsOption has_option
  * @property Privilege hasOnePrivilege
+ * @property SupplierGoods supplierGoods
+ * @property StoreGoods storeGoods
  */
 class Goods extends \app\common\models\Goods
 {
     public $appends = ['vip_price'];
+    public $hidden = ['content','description'];
     protected $vipDiscountAmount;
 
-    /**
-     * 获取商品最终价格 todo 废弃方法需删除
-     * @return float|int|mixed
-     * @throws AppException
-     */
-    public function getFinalPriceAttribute()
-    {
-        // 商品价格 - 等级折扣金额
-        return $this->price - $this->getVipDiscountAmount();
-    }
     public function hasOneOptions()
     {
         return $this->hasOne(GoodsOption::class);
@@ -73,13 +70,12 @@ class Goods extends \app\common\models\Goods
         if(!isset($price)){
             $price = $this->price;
         }
-        $member = MemberService::getCurrentMemberModel();
         /**
          *会员等级折扣
          * @var $goodsDiscount GoodsDiscount
          */
 
-        $goodsDiscount = $this->hasManyGoodsDiscount->where('level_id', $member->yzMember->level_id)->first();
+        $goodsDiscount = $this->hasManyGoodsDiscount->where('level_id', Member::current()->yzMember->level_id)->first();
 
         if (isset($goodsDiscount)) {
             $result = $goodsDiscount->getAmount($price);

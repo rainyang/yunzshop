@@ -13,9 +13,13 @@ use app\common\models\VirtualCoin;
 
 class InvalidVirtualCoin extends VirtualCoin
 {
+    public $code = 'invalid';
+    public $name = '无';
+
+
     protected function _getCode()
     {
-        return 'invalid';
+        return $this->code;
     }
 
     protected function _getExchangeRate()
@@ -25,6 +29,6 @@ class InvalidVirtualCoin extends VirtualCoin
 
     protected function _getName()
     {
-        return '无';
+        return $this->name;
     }
 }

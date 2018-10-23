@@ -994,4 +994,64 @@ class MemberModel extends Member
 
         return $set[$filed];
     }
+
+    /**
+     * 获取邀请码
+     *
+     * @param $member_id
+     * @return string
+     */
+    public static function getInviteCode()
+    {
+        $invite_code = self::generateInviteCode();
+
+        if (self::chkInviteCode($invite_code)) {
+            MemberShopInfo::updateInviteCode(\YunShop::app()->getMemberId(), $invite_code);
+
+            return $invite_code;
+        } else {
+            while(true) {
+                self::getInviteCode();
+            }
+        }
+    }
+
+    /**
+     * 生成邀请码
+     *
+     * @return string
+     */
+    public static function generateInviteCode()
+    {
+        $str = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $rand = $str[rand(0,25)]
+            .strtoupper(dechex(date('m')))
+            .date('d').substr(time(),-5)
+            .substr(microtime(),2,5)
+            .sprintf('%02d',rand(0,99));
+        $code = '';
+
+        for($f = 0;  $f < 8; $f++) {
+            $a = md5( $rand, true );
+            $s = '0123456789ABCDEFGHIJKLMNOPQRSTUV';
+            $g = ord( $a[ $f ] );
+            $code .= $s[ ( $g ^ ord( $a[ $f + 8 ] ) ) - $g & 0x1F ];
+        };
+
+        return $code;
+    }
+
+    /**
+     * 验证邀请码
+     *
+     * @param $code
+     */
+    public static function chkInviteCode($code)
+    {
+        if (!MemberShopInfo::chkInviteCode($code)) {
+            return true;
+        }
+
+        return false;
+    }
 }

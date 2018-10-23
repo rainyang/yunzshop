@@ -9,9 +9,13 @@
 namespace app\common\services;
 
 use app\backend\modules\member\models\MemberRelation;
+use app\common\models\finance\Balance;
 use app\common\models\PayOrder;
 use app\common\services\finance\BalanceChange;
 use app\frontend\modules\finance\services\BalanceService;
+use app\common\models\OrderPay;
+use app\common\models\PayType;
+use app\common\services\credit\ConstService;
 
 class CreditPay extends Pay
 {
@@ -52,9 +56,42 @@ class CreditPay extends Pay
 
     }
 
-    public function doRefund($out_trade_no, $totalmoney, $refundmoney)
+    public function doRefund($out_trade_no, $totalmoney, $refundmoney = "0")
     {
-        // TODO: Implement doRefund() method.
+
+        $pay_uid = OrderPay::select('uid')
+        ->where('pay_sn', $out_trade_no)
+        ->value('uid');
+
+        $return_rd = $this->createOrderRD();
+
+        $data = [
+            'member_id' => $pay_uid,
+            'remark'  => '余额订单退款 订单号:('.$out_trade_no.')退款单号：('. $return_rd.')退款总金额：' . $totalmoney,
+            'source' => ConstService::SOURCE_CANCEL_CONSUME,
+            'relation' => $return_rd,
+            'operator' => ConstService::OPERATOR_ORDER,
+            'operator_id' => $pay_uid,
+            'change_value' => $totalmoney
+        ];
+        $result = (new BalanceChange())->cancelConsume($data);
+    }
+
+
+    /**
+     * 生成唯一单号
+     * @return string
+     */
+    public function createOrderRD()
+    {
+        $ordersn = createNo('RD', true);
+        while (1) {
+            if (!Balance::ofOrderSn($ordersn)->first()) {
+                break;
+            }
+            $ordersn = createNo('RD', true);
+        }
+        return $ordersn;
     }
 
     public function doWithdraw($member_id, $out_trade_no, $money, $desc, $type)

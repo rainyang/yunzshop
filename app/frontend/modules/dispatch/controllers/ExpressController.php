@@ -14,15 +14,16 @@ use app\common\models\Order;
  */
 class ExpressController extends ApiController
 {
+    protected $order;
+
+
     /**
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      * @throws AppException
      */
-    public function index(Request $request)
+    public function index()
     {
-        $order_id = $request->query('order_id');
-        $order = Order::find($order_id);
+        $order = $this->getOrder();
         if (!isset($order)) {
             throw new AppException('未找到订单');
         }
@@ -39,6 +40,18 @@ class ExpressController extends ApiController
         $data['status_name'] = $express['status_name'];
         return $this->successJson('成功', $data);
     }
+    protected function _getOrder($order_id){
+        return Order::find($order_id);
 
+    }
+    private function getOrder()
+    {
+        if (!isset($this->order)) {
+            $order_id = request('order_id');
+            $this->order = $this->_getOrder($order_id);
+
+        }
+        return $this->order;
+    }
 
 }

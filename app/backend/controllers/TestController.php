@@ -9,31 +9,21 @@
 namespace app\backend\controllers;
 
 use app\common\components\BaseController;
-use app\common\helpers\Cache;
-use app\common\helpers\SettingCache;
 use app\common\models\Member;
 use app\common\models\Order;
-use app\common\models\OrderPay;
-use app\common\models\Flow;
-use app\common\models\Setting;
+use app\common\repositories\ExpressCompany;
 use app\common\services\MessageService;
 use app\frontend\modules\member\models\SubMemberModel;
-use Illuminate\Database\Migrations\Migrator;
-use Illuminate\Database\Schema\Blueprint;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Str;
-use SuperClosure\SerializableClosure;
+use Yunshop\Kingtimes\common\models\CompeteOrderDistributor;
+use Yunshop\Kingtimes\common\models\OrderDistributor;
 
 class TestController extends BaseController
 {
-
-
     public function index()
     {
-        dump(\Setting::get('shop'));
-        $a = new Setting();
-        dump($a->getItems(2, 'shop'));
+
     }
 
     public function op_database()
@@ -86,8 +76,7 @@ class TestController extends BaseController
         $goods = DB::table('yz_goods')->get();
         $goods_success = 0;
         $goods_error = 0;
-        foreach ($goods as $item)
-        {
+        foreach ($goods as $item) {
 
             if ($item['thumb'] && !preg_match('/^images/', $item['thumb'])) {
 
@@ -95,7 +84,7 @@ class TestController extends BaseController
                 if (strexists($src, '/addons/') || strexists($src, 'yun_shop/') || strexists($src, '/static/')) {
                     continue;
                 }
-               
+
                 if (preg_match('/\/images/', $item['thumb'])) {
                     $thumb = substr($item['thumb'], strpos($item['thumb'], 'images'));
                     $bool = DB::table('yz_goods')->where('id', $item['id'])->update(['thumb' => $thumb]);
@@ -113,8 +102,7 @@ class TestController extends BaseController
         $category = DB::table('yz_category')->get();
         $category_success = 0;
         $category_error = 0;
-        foreach ($category as $item)
-        {
+        foreach ($category as $item) {
             $src = $item['thumb'];
             if (strexists($src, 'addons/') || strexists($src, 'yun_shop/') || strexists($src, 'static/')) {
                 continue;
@@ -134,9 +122,9 @@ class TestController extends BaseController
         }
 
 
-        echo '商品图片修复成功：'.$goods_success.'个,失败：'.$goods_error.'个';
+        echo '商品图片修复成功：' . $goods_success . '个,失败：' . $goods_error . '个';
         echo '<br />';
-        echo '分类图片修复成功：'.$category_success.'个，失败：'.$category_error.'个';
+        echo '分类图片修复成功：' . $category_success . '个，失败：' . $category_error . '个';
 
     }
 }

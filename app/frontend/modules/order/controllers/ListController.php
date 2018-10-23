@@ -9,6 +9,9 @@ use app\frontend\models\OrderListModel;
 
 class ListController extends ApiController
 {
+    /**
+     * @var Order
+     */
     protected $order;
 
     public function __construct()
@@ -17,7 +20,7 @@ class ListController extends ApiController
     }
 
     /**
-     * @return mixed
+     * @return Order
      */
     protected function getOrder()
     {
@@ -32,13 +35,13 @@ class ListController extends ApiController
      */
     protected function _getOrder()
     {
-        return $this->order = app('OrderManager')->make('Order')->orders()->where('status', '<>', '-1')->where('plugin_id','<','900')->with('hasOnePayType');
+        return $this->order = app('OrderManager')->make('Order')->orders()->where(app('OrderManager')->make('Order')->getTable().'.status', '<>', '-1')->where('plugin_id','<','900')->with('hasOnePayType');
     }
 
     protected function getData()
     {
         $pageSize = request()->input('pagesize',20);
-        return $this->getOrder()->where('is_member_deleted',0)->paginate($pageSize)->toArray();
+        return $this->getOrder()->where(app('OrderManager')->make('Order')->getTable().'.is_member_deleted',0)->paginate($pageSize)->toArray();
     }
 
     /**
