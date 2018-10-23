@@ -183,6 +183,26 @@ trait MemberTreeTrait
     }
 
     /**
+     * 获取父级（仅一级）.
+     *
+     * @param mixed $parentId
+     *
+     * @return array
+     */
+    public function getParentLevel($uniacid, $subId)
+    {
+        $data = $this->getAllNodes($uniacid);
+        \Log::debug('-----all nodes----', $data->count());
+        $parentList = collect([]);
+        foreach ($data as $val) {
+            if ($val->{$this->getTreeNodeIdName()} == $subId && $val->{$this->getTreeNodeParentIdName()} > 0) {
+                $parentList->put($val->{$this->getTreeNodeParentIdName()}, $val);
+            }
+        }
+        return $parentList;
+    }
+
+    /**
      * 获取指定节点的所有后代.
      *
      * @param mixed $parentId
@@ -217,6 +237,41 @@ trait MemberTreeTrait
                 $array->put($val->{$this->getTreeNodeIdName()}, $val);
                 $this->getDescendants($uniacid,
                     $val->{$this->getTreeNodeIdName()},
+                    $nextDepth,
+                    $adds . $k . $this->getTreeSpacer()
+                );
+                ++$number;
+            }
+        }
+        return $array;
+    }
+
+    public function getNodeParents($uniacid, $subId, $depth = 0, $adds = '')
+    {
+        static $array;
+        if (!$array instanceof ArrayAccess || $depth == 0) {
+            $array = collect([]);
+        }
+        $number = 1;
+        $parent = $this->getParentLevel($uniacid, $subId);
+        \Log::debug('------parent----', $parent->count());
+        if ($parent) {
+            $nextDepth = $depth + 1;
+            $total = $parent->count();
+            foreach ($parent as $val) {
+                $j = $k = '';
+                if ($number == $total) {
+                    $j .= $this->getTreeLastIcon();
+                    $k = $this->getTreeSpacer();
+                } else {
+                    $j .= $this->getTreeMiddleIcon();
+                    $k = $adds ? $this->getTreeFirstIcon() : '';
+                }
+                $val->spacer = $adds ? ($adds . $j) : '';
+                $val->depth = $depth;
+                $array->put($val->{$this->getTreeNodeParentIdName()}, $val);
+                $this->getNodeParents($uniacid,
+                    $val->{$this->getTreeNodeParentIdName()},
                     $nextDepth,
                     $adds . $k . $this->getTreeSpacer()
                 );

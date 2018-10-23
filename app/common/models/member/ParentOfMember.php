@@ -9,7 +9,18 @@
 namespace app\common\models\member;
 
 
-class ParentOfMember
-{
+use app\common\models\BaseModel;
+use Illuminate\Support\Facades\DB;
 
+class ParentOfMember extends BaseModel
+{
+    public $table = 'yz_member_parent';
+    protected $guarded = [];
+
+    public function CreateData($data)
+    {
+        \Log::debug('----------insert data-----');
+        $rs = DB::table($this->getTable())->insert($data);
+        return $rs;
+    }
 }

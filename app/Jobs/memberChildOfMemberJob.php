@@ -2,21 +2,21 @@
 /**
  * Created by PhpStorm.
  * User: dingran
- * Date: 2018/10/22
- * Time: 下午3:50
+ * Date: 2018/10/24
+ * Time: 上午6:32
  */
 
 namespace app\Jobs;
 
 
 use app\backend\modules\member\models\Member;
-use app\common\models\member\ParentOfMember;
+use app\common\models\member\ChildenOfMember;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class memberParentOfMemberJob implements ShouldQueue
+class memberChildOfMemberJob implements ShouldQueue
 {
     use InteractsWithQueue, Queueable, SerializesModels;
 
@@ -25,32 +25,24 @@ class memberParentOfMemberJob implements ShouldQueue
     public  $memberModel;
     public  $childMemberModel;
 
-    /*public function __construct($uniacid, $member_info)
-    {
-        $this->uniacid = $uniacid;
-        $this->member_info = $member_info->toArray();
-    }*/
-
     public $timeout = 3000;
 
     public function __construct($uniacid)
     {
         $this->uniacid = $uniacid;
-        //$this->member_info = $member_info->toArray();
     }
 
     public function handle()
     {
-        $this->member_info = '';//Member::getAllMembersInfosByQueue($this->uniacid)->get()->toArray();
         \Log::debug('-----queue uniacid-----', $this->uniacid);
-        \Log::debug('-----queue member count-----', count($this->member_info));
-        return $this->synRun($this->uniacid, $this->member_info);
+
+        return $this->synRun($this->uniacid);
     }
 
-    public function synRun($uniacid, $memberInfo)
+    public function synRun($uniacid)
     {
         $memberModel = new Member();
-        $parentMemberModle = new ParentOfMember();
+        $childMemberModel = new ChildenOfMember();
 
         $memberInfo = $memberModel->getTreeAllNodes($uniacid);
 
@@ -59,14 +51,11 @@ class memberParentOfMemberJob implements ShouldQueue
             return;
         }
 
-        //$memberInfo = $memberInfo;
-
         $memberModel->_allNodes = collect([]);
         foreach ($memberInfo as $item) {
             $memberModel->_allNodes->put($item->member_id, $item);
         }
-       /* \Log::debug('--------queue member_model -----', get_class($this->memberModel));
-        \Log::debug('--------queue childMemberModel -----', get_class($this->childMemberModel));*/
+
         \Log::debug('--------queue synRun -----');
 
         foreach ($memberInfo as $key => $val) {
@@ -82,14 +71,14 @@ class memberParentOfMemberJob implements ShouldQueue
                 foreach ($data as $k => $v) {
                     $attr[] = [
                         'uniacid'   => $uniacid,
-                        'parent_id'  => $k,
+                        'child_id'  => $k,
                         'level'     => $v['depth'] + 1,
                         'member_id' => $val->member_id,
                         'created_at' => time()
                     ];
                 }
 
-                $parentMemberModle->createData($attr);
+                $childMemberModel->createData($attr);
             }
         }
 

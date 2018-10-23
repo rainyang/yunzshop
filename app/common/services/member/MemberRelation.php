@@ -45,4 +45,11 @@ class MemberRelation
             dispatch($job);
         }*/
     }
+
+    public function createChildOfMember()
+    {
+        \Log::debug('------queue start-----');
+        $job = (new \app\Jobs\memberChildOfMemberJob(\YunShop::app()->uniacid));
+        dispatch($job);
+    }
 }
