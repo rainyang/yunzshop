@@ -9,7 +9,6 @@
 namespace app\backend\modules\order\controllers;
 
 use app\common\components\BaseController;
-use app\common\helpers\Url;
 use app\common\models\Order;
 use app\common\models\PayType;
 use app\frontend\modules\order\services\OrderService;
@@ -17,6 +16,9 @@ use app\frontend\modules\order\services\OrderService;
 class OperationController extends BaseController
 {
     protected $param;
+    /**
+     * @var Order
+     */
     protected $order;
     public $transactionActions = ['*'];
 
@@ -43,8 +45,7 @@ class OperationController extends BaseController
      */
     public function pay()
     {
-        $this->param['pay_type_id'] = PayType::BACKEND;
-        OrderService::orderPay($this->param);
+        $this->order->backendPay();
         return $this->successJson();
 
     }
@@ -71,6 +72,15 @@ class OperationController extends BaseController
         return $this->message('操作成功');
     }
 
+    /**
+     * @return mixed
+     * @throws \app\common\exceptions\AppException
+     */
+    public function fClose(){
+        $this->order->refund();
+        return $this->message('强制退款成功');
+
+    }
     /**
      * @return mixed
      * @throws \app\common\exceptions\AppException

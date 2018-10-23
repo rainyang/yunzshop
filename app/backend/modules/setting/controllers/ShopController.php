@@ -302,6 +302,20 @@ class ShopController extends BaseController
                 $requestModel = array_merge($requestModel, $updatefile['data']);
             }
 
+            if (isset($requestModel['weixin_version']) && $requestModel['weixin_version'] == 1) {
+                if (!empty($requestModel['new_weixin_cert']) && !empty($requestModel['new_weixin_key'])) {
+                    $updatefile_v2 = $this->updateFileV2(['weixin_cert' => $requestModel['new_weixin_cert'], 'weixin_key' => $requestModel['new_weixin_key']]);
+
+
+                    if ($updatefile_v2['status'] == 0) {
+                        return $this->message('文件保存失败1', Url::absoluteWeb('setting.shop.pay'), 'warning');
+                    }
+
+                    $requestModel = array_merge($requestModel, $updatefile_v2['data']);
+                }
+            }
+
+
             if (isset($pay['secret']) && 1 == $pay['secret']) {
                 Utils::dataEncrypt($requestModel);
             }
@@ -397,7 +411,7 @@ class ShopController extends BaseController
         ])->render();
     }
 
-    private function updateFile ($file)
+    private function updateFile($file)
     {
         $data = [];
 
@@ -414,6 +428,30 @@ class ShopController extends BaseController
                     $data[$key] = storage_path('cert/' . $uniacid . "_" . $update['file']);
                 }
             }
+        }
+
+        if (!empty($data)) {
+            return ['status' => 1, 'data' => $data];
+        }
+
+        return null;
+    }
+
+    private function updateFileV2($file_data)
+    {
+        $data = [];
+        $uniacid = \YunShop::app()->uniacid;
+        $file_suffix = '.pem';
+        foreach ($file_data as $key => $value) {
+            $file_name = $uniacid."_".$key.$file_suffix;
+            $bool = \Storage::disk('cert')->put($file_name, $value);
+
+            if ($bool) {
+                $data[$key] = storage_path('cert/' . $file_name);
+            } else {
+                return ['status' => 0];
+            }
+
         }
 
         if (!empty($data)) {

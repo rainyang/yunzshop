@@ -11,6 +11,14 @@ namespace app\common\models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class Area
+ * @package app\common\models
+ * @property int id
+ * @property int level
+ * @property int parentid
+ * @property string areaname
+ */
 class Area   extends Model
 {
     public $table = 'yz_address';
@@ -85,5 +93,13 @@ class Area   extends Model
         return $validator;
     }
 
+    /**
+     * 是叶节点
+     * @return bool
+     */
+    public function isLeaf(){
+        // 区县并且没开启街道
+        return $this->level == 3 && !\Setting::get('shop.trade.is_street');
+    }
 
 }

@@ -104,7 +104,6 @@ class EventServiceProvider extends ServiceProvider
         \app\common\listeners\balance\BalanceListener::class,
 
 
-        \app\frontend\modules\dispatch\listeners\types\Express::class,
         \app\frontend\modules\coupon\listeners\CouponDiscount::class,
         PointListener::class,
         GoodsStock::class,

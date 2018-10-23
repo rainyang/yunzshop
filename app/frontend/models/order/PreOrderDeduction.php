@@ -118,7 +118,7 @@ class PreOrderDeduction extends OrderDeduction
         }
         $code = $this->getCode();
 
-        return app('CoinManager')->make('MemberCoinManager')->make($code, $this->order->getMember());
+        return app('CoinManager')->make('MemberCoinManager')->make($code, $this->order->belongsToMember);
     }
 
     /**

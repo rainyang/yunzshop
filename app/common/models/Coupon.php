@@ -12,8 +12,16 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int use_type
  * @property int time_limit
  * @property string name
+ * @property string suppliernames
+ * @property array supplierids
+ * @property int getsupplier
+ * @property string storenames
+ * @property array storeids
+ * @property int getstore
  * @property int is_complex
+ * @property array goods_ids
  * @property int id
+ * @property int plugin_id
  * @property int total
  * @property int time_days
  * @property float discount
@@ -50,6 +58,8 @@ class  Coupon extends BaseModel
         'category_ids' => 'json',
         'goods_names' => 'json',
         'categorynames' => 'json',
+        'supplierids' => 'json',
+        'storeids' => 'json',
     ];
     public $Surplus;
     protected $appends = ['surplus'];

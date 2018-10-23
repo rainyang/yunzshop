@@ -14,6 +14,7 @@ use app\common\models\order\OrderDeduction;
 use app\common\models\order\OrderDiscount;
 use app\common\modules\order\OrderOperationsCollector;
 use app\frontend\models\MemberCart;
+use app\frontend\models\OrderAddress;
 use app\frontend\modules\orderGoods\models\PreOrderGoods;
 use app\frontend\modules\order\models\PreOrder;
 use Illuminate\Container\Container;
@@ -72,7 +73,9 @@ class OrderManager extends Container
         $this->bind('MemberCart', function ($orderManager, $attributes) {
             return new MemberCart($attributes);
         });
-
+        $this->bind('OrderAddress', function ($orderManager, $attributes) {
+            return new OrderAddress($attributes);
+        });
 
     }
 }

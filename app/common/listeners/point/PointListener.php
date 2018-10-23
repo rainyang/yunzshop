@@ -10,7 +10,7 @@
 namespace app\common\listeners\point;
 
 use app\common\events\order\AfterOrderCanceledEvent;
-use app\common\events\order\AfterOrderCreatedEvent;
+use app\common\events\order\AfterOrderCreatedImmediatelyEvent;
 use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\models\Order;
 use app\common\models\UniAccount;
@@ -96,7 +96,7 @@ class PointListener
 
         //下单之后 扣除积分抵扣使用的积分
         $events->listen(
-            AfterOrderCreatedEvent::class,
+            AfterOrderCreatedImmediatelyEvent::class,
             AfterOrderDeductiblePointService::class . '@deductiblePoint'
         );
 

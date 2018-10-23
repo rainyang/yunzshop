@@ -47,7 +47,7 @@ class DetailController extends ApiController
 
         $data = $order->toArray();
         $backups_button = $data['button_models'];
-
+//dd($backups_button);
         //$this->getStatusService()->
         //todo 配送类型
         if ($order['dispatch_type_id'] == DispatchType::EXPRESS) {

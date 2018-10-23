@@ -33,9 +33,10 @@ class AddFieldUniacidToYzProcess extends Migration
                     foreach ($records as $key => $record) {
 
                         $memberModel = \app\common\models\Member::whereUid($record->uid)->first();
-
-                        $record->uniacid = $memberModel->uniacid;
-                        $record->save();
+                        if($memberModel){
+                            $record->uniacid = $memberModel->uniacid;
+                            $record->save();
+                        }
                     }
                 }
             });
