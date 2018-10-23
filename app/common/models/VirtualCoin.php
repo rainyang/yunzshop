@@ -12,12 +12,12 @@ namespace app\common\models;
 abstract class VirtualCoin extends BaseModel
 {
     protected $table = 'yz_virtual_coin';
-
     protected $attributes = [
         'amountOfCoin' => 0,
         'amountOfMoney' => 0,
     ];
-
+    public $name;
+    public $code;
     protected $exchange_rate;
 
     function __construct($attribute = [])

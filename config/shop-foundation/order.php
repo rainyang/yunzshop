@@ -11,6 +11,7 @@ return array(
         'waitPay' => [
             \app\frontend\modules\order\operations\member\Pay::class,
             \app\frontend\modules\order\operations\member\Close::class,
+
         ],
         'waitSend' => [
             \app\frontend\modules\order\operations\member\ApplyRefund::class,

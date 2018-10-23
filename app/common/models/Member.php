@@ -429,7 +429,7 @@ class Member extends BackendModel
      */
     public static function addPlugins(&$data = [])
     {
-        $plugin_class = new PluginManager(app(), new OptionRepository(), new Dispatcher(), new Filesystem());
+        $plugin_class = app('plugins');
 
         if ($plugin_class->isEnabled('supplier')) {
             $data['supplier'] = VerifyButton::button();

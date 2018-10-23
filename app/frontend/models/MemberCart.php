@@ -139,7 +139,7 @@ class MemberCart extends \app\common\models\MemberCart
      * @throws AppException
      */
     protected function getAllMemberCarts(){
-        return (new MemberCartCollection(MemberService::getCurrentMemberModel()->memberCarts));
+        return (new MemberCartCollection(Member::current()->memberCarts));
     }
     /**
      * 购物车验证
