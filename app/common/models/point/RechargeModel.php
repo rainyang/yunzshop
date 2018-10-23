@@ -40,6 +40,12 @@ class RechargeModel extends BaseModel
     const STATUS_SUCCESS = 1;
 
 
+    public function member()
+    {
+        return $this->hasOne('app\common\models\Member', 'uid', 'member_id');
+    }
+
+
     public static function boot()
     {
         parent::boot();
