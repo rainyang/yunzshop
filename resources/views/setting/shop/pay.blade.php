@@ -232,7 +232,7 @@
                                 </div>
                             </div>
                         </div>
-
+                    </div>
                     <!-- 借用微信支付设置 _start -->
                 <!--
             <div class="form-group">
