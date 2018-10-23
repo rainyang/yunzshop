@@ -26,9 +26,6 @@
                                 <input type="text" class="form-control"  name="search[member_id]" value="{{$search['member']?$search['member']:''}}" placeholder="会员ID"/>
                             </div>
                             <div class="form-group col-xs-12 col-sm-2">
-                                <input type="text" class="form-control"  name="search[order_sn]" value="{{$search['member']?$search['member']:''}}" placeholder="订单号查询"/>
-                            </div>
-                            <div class="form-group col-xs-12 col-sm-2">
                                 <input type="text" class="form-control"  name="search[member]" value="{{$search['member']?$search['member']:''}}" placeholder="会员昵称/姓名/手机"/>
                             </div>
                             <div class='form-group col-xs-12 col-sm-6'>
@@ -58,8 +55,8 @@
             <table class='table' style='float:left;margin-bottom:0;table-layout: fixed;line-height: 40px;height: 40px'>
                 <tr class='trhead'>
                     <td colspan='8' style="text-align: left;">
-                        累计收入: <span id="total">{{ $supplierTotal }}元</span>&nbsp;&nbsp;&nbsp;未提现收入: <span id="total">{{ $unWithdrawTotal }}元</span>&nbsp;&nbsp;&nbsp;已提现收入: <span id="total">{{ $withdrawTotal }}元</span><br>
-                        分销佣金:元，经销商提成:元，区域分红：元，股东分红：元，招商分红：元
+                        累计收入: <span id="total">{{ $total['total_amount'] }}元</span>&nbsp;&nbsp;&nbsp;未提现收入: <span id="total">{{ $total['unwithdraw'] }}元</span>&nbsp;&nbsp;&nbsp;已提现收入: <span id="total">{{ $total['withdraw'] }}元</span>&nbsp;&nbsp;&nbsp;扣除手续费: <span id="total">{{ $totalPoundage['total_poundage'] }}元</span><br>
+                        分销佣金:{{$total['commission_dividend']}}元，经销商提成:{{$total['team_dividend']}}元，区域分红：{{$total['area_dividend']}}元，股东分红：{{$total['shareholder_dividend']}}元，招商分红：{{$total['merchant_dividend']}}元
                     </td>
                 </tr>
             </table>

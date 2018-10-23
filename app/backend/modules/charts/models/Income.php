@@ -16,6 +16,23 @@ class Income extends \app\common\models\Income
 
     public function scopeSearch($query,$search)
     {
+        $query->uniacid();
+        if ($search['member_id']) {
+            $query->whereHas('hasOneMember',function ($q) use($search) {
+                $q->whereUid($search['member_id']);
+            });
+        }
+        if ($search['member']) {
+            $query->whereHas('hasOneMember',function ($q) use($search) {
+                $q->searchLike($search['member']);
+            });
+        }
+        if ($search['is_time']) {
+            $searchTime = [strtotime($search['time']['start']),strtotime($search['time']['end'])];
+            $query->whereBetween('created_at', $searchTime);
+        }
+
+        return $query;
 
     }
 

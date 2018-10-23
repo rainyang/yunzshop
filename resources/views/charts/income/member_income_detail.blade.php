@@ -61,34 +61,92 @@
                     <br>
 
                     <form action="{{yzWebUrl("finance.withdraw.dealt",['id'=>$item->id])}}" method='post' class='form-horizontal'>
-                        <div class='panel-body'>
-                            <table class="table table-bordered table-striped table-hover">
-                                <thead>
-                                <tr >
-                                    <th style="font-size: 16px !important;font-weight:bold;">收入类型</th>
-                                    <th style="font-size: 16px !important;font-weight:bold;">收入总金额</th>
-                                    <th style="font-size: 16px !important;font-weight:bold;">已提现金额</th>
-                                    <th style="font-size: 16px !important;font-weight:bold;">未提现金额</th>
-                                </tr>
-                                </thead>
-                                <tbody style="font-size: 16px;">
-                                @foreach($item as $k=>$row)
-                                    <tr>
-                                        <td>{{$row['type_name']}}</td>
-                                        <td>{{$row['income']}}</td>
-                                        <td>{{$row['withdraw']}}</td>
-                                        <td>{{$row['no_withdraw']}}</td>
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
-                        </div>
 
-                        <div class="form-group col-sm-12">
-                            <input type="button" class="btn btn-default" name="submit" onclick="goBack()" value="返回"
-                                   style='margin-left:10px;'/>
-                        </div>
                     </form>
+                    <div class='panel-body'>
+                        <table class="table table-striped table-hover">
+                            <thead>
+                            <tr >
+                                <th class="col-sm-2">收入时间</th>
+                                <th class="col-sm-2">收入类型</th>
+                                <th class="col-sm-2">收入金额</th>
+                                <th class="col-sm-2">收入状态</th>
+                                <th class="col-sm-2">收入详情</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($item as $k=>$row)
+                                <tr>
+                                    <td>{{$row->created_at}}</td>
+                                    <td>{{$row['type_name']}}</td>
+                                    <td>{{$row['amount']}}</td>
+                                    <td>{{$row['status'] ? '已提现' : '未提现'}}</td>
+                                    <td>
+                                        <a href="javascript:;" data-toggle="modal" data-target="#modal-refund{{$k}}">
+                                            详情
+                                        </a>
+                                    </td>
+                                </tr>
+
+                                <div id="modal-refund{{$k}}" class="modal fade" tabindex="-1" role="dialog"
+                                     style="width:600px;margin:0px auto;">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×
+                                                </button>
+                                                <h3>收入信息</h3>
+
+                                                @foreach(json_decode($row['detail'],true) as $data)
+                                                    <div class="form-group">{{$data['title']}}</div>
+                                                    @foreach($data['data'] as $value)
+                                                        @if(!isset($value['title']))
+                                                            @foreach($value as $v)
+                                                                <div class="modal-body" style="background: #eee">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">{{$v['title']}}</label>
+                                                                        <div class="col-xs-12 col-sm-9 col-md-8 col-lg-8">
+                                                                            {{$v['value']}}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            @endforeach
+                                                        @else
+                                                            <div class="modal-body" style="background: #eee">
+                                                                <div class="form-group">
+                                                                    <label class="col-xs-10 col-sm-3 col-md-3 control-label">{{$value['title']}}</label>
+                                                                    <div class="col-xs-12 col-sm-9 col-md-8 col-lg-8">
+                                                                        @if($value['title'] === '订单号')
+                                                                            {{$value['value']}}
+                                                                            <a target="_blank"
+                                                                               href="{{yzWebUrl('order.list',['search'=>['ambiguous'=>['field'=>'order','string'=>$value['value']]]])}}">订单详情</a>
+                                                                        @else
+                                                                            {{$value['value']}}
+                                                                        @endif
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @endif
+
+                                                    @endforeach
+                                                @endforeach
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+                    @include('order.modals')
+                    <div id="pager">{!! $pager !!}</div>
+                    <div class="form-group col-sm-12">
+                        <input type="button" class="btn btn-default" name="submit" onclick="goBack()" value="返回"
+                               style='margin-left:10px;'/>
+                    </div>
+
 
                 </div>
             </form>
@@ -98,7 +156,7 @@
 
     <script language='javascript'>
         function goBack() {
-            window.location.href="{!! yzWebUrl('member.member.index') !!}";
+            window.location.href="{!! yzWebUrl('charts.income.member_income.index') !!}";
         }
     </script>
 @endsection

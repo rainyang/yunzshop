@@ -23,11 +23,10 @@ class MemberIncomeController extends BaseController
      */
     public function index()
     {
-        $search = \Yunshop::request();
+        $search = \Yunshop::request()->search;
 
-        $list = Income::uniacid()
-            ->search($search)
-            ->selectRaw('sum(amount) as total_amount, sum(if(status=4,amount,0)) as withdraw, sum(if(status<4,amount,0)) as unwithdraw, member_id')
+        $list = Income::search($search)
+            ->selectRaw('sum(amount) as total_amount, sum(if(status=1,amount,0)) as withdraw, sum(if(status=0,amount,0)) as unwithdraw, member_id')
             ->selectRaw('sum(if(incometable_type like "%AreaDividend", amount, 0)) as area_dividend')
             ->selectRaw('sum(if(incometable_type like "%CommissionOrder", amount, 0)) as commission_dividend')
             ->selectRaw('sum(if(incometable_type like "%MerchantBonusLog", amount, 0)) as merchant_dividend')
@@ -44,11 +43,22 @@ class MemberIncomeController extends BaseController
             ->paginate(10);
 //            ->get();
 //        dd($list->toArray());
+        $total = Income::search($search)
+            ->selectRaw('sum(amount) as total_amount, sum(if(status=1,amount,0)) as withdraw, sum(if(status=0,amount,0)) as unwithdraw, member_id')
+            ->selectRaw('sum(if(incometable_type like "%AreaDividend", amount, 0)) as area_dividend')
+            ->selectRaw('sum(if(incometable_type like "%CommissionOrder", amount, 0)) as commission_dividend')
+            ->selectRaw('sum(if(incometable_type like "%MerchantBonusLog", amount, 0)) as merchant_dividend')
+            ->selectRaw('sum(if(incometable_type like "%ShareholderDividendModel", amount, 0)) as shareholder_dividend')
+            ->selectRaw('sum(if(incometable_type like "%TeamDividend%", amount, 0)) as team_dividend')
+            ->first()->toArray();
+        $totalPoundage = \app\common\models\Withdraw::uniacid()->selectRaw('sum(poundage) as total_poundage')->first();
 
-        $page = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
+        $pager = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
         return view('charts.income.member_income',[
             'list' => $list,
-            'pager' => $page,
+            'pager' => $pager,
+            'total' => $total,
+            'totalPoundage' => $totalPoundage
         ])->render();
     }
 
@@ -66,25 +76,18 @@ class MemberIncomeController extends BaseController
             exit;
         }
 
-        $member = Member::getMemberInfoById($uid);
+        $member = Member::whereUid($uid)->first()->toArray();
 
-        if (!empty($member)) {
-            $member = $member->toArray();
-
-            if (1 == $member['yz_member']['is_agent'] && 2 == $member['yz_member']['status']) {
-                $member['agent'] = 1;
-            } else {
-                $member['agent'] = 0;
-            }
-
-            $myform = json_decode($member['yz_member']['member_form']);
+        if (empty($member)) {
+            return $this->message('会员不存在');
         }
 
-
         //检测收入数据
-        $incomeModel = Income::getIncomes()->where('member_id', $uid)->get();
-        $config = \Config::get('income');
-        unset($config['balance']);
+        $incomeModel = Income::getIncomes()->where('member_id', $uid);
+//        dd($incomeModel);
+//        $config = \Config::get('income');
+//        unset($config['balance']);
+        $incomeData = $incomeModel->paginate(10);
         $incomeAll = [
             'title' => '推广收入',
             'type' => 'total',
@@ -93,50 +96,30 @@ class MemberIncomeController extends BaseController
             'withdraw' => $incomeModel->where('status', 1)->sum('amount'),
             'no_withdraw' => $incomeModel->where('status', 0)->sum('amount')
         ];
-        foreach ($config as $key => $item) {
+//        $incomeData = $incomeModel->orderBy('id', 'desc')->paginate(10);
 
-            $typeModel = $incomeModel->where('incometable_type', $item['class']);
-            $incomeData[$key] = [
-                'title' => $item['title'],
-                'ico' => $item['ico'],
-                'type' => $item['type'],
-                'type_name' => $item['title'],
-                'income' => $typeModel->sum('amount'),
-                'withdraw' => $typeModel->where('status', 1)->sum('amount'),
-                'no_withdraw' => $typeModel->where('status', 0)->sum('amount')
-            ];
-            if ($item['agent_class']) {
-                $agentModel = $item['agent_class']::$item['agent_name'](\YunShop::app()->getMemberId());
-
-                if ($item['agent_status']) {
-                    $agentModel = $agentModel->where('status', 1);
-                }
-
-                //推广中心显示
-                if (!$agentModel) {
-                    $incomeData[$key]['can'] = false;
-                } else {
-                    $agent = $agentModel->first();
-                    if ($agent) {
-                        $incomeData[$key]['can'] = true;
-                    } else {
-                        $incomeData[$key]['can'] = false;
-                    }
-                }
-            } else {
-                $incomeData[$key]['can'] = true;
-            }
-
-        }
+        $pager = PaginationHelper::show($incomeData->total(), $incomeData->currentPage(), $incomeData->perPage());
+//
+//        $incomeData = [];
+//        foreach ($config as $key => $item) {
+//
+//            $typeModel = $incomeModel->where('incometable_type', $item['class']);
+//            $incomeData[$key] = [
+//                'title' => $item['title'],
+//                'ico' => $item['ico'],
+//                'type' => $item['type'],
+//                'type_name' => $item['title'],
+//                'income' => $typeModel->sum('amount'),
+//                'withdraw' => $typeModel->where('status', 1)->sum('amount'),
+//                'no_withdraw' => $typeModel->where('status', 0)->sum('amount')
+//            ];
+//        }
 
         return view('charts.income.member_income_detail', [
             'member' => $member,
-//            'levels' => $levels,
-//            'groups' => $groups,
             'incomeAll' => $incomeAll,
-            'myform' => $myform,
-//            'parent_name' => $parent_name,
-            'item' => $incomeData
+            'item' => $incomeData,
+            'pager' => $pager
         ])->render();
     }
 }
