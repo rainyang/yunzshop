@@ -176,15 +176,30 @@
                         </div>--}}
 
                         <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">邀请码</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <label class="radio radio-inline">
+                                    <input type="radio" name="member[is_invite]" value="0"
+                                           @if (empty($set['is_invite'])) checked @endif/> 关闭
+                                </label>
+                                <label class="radio radio-inline">
+                                    <input type="radio" name="member[is_invite]" value="1"
+                                           @if ($set['is_invite'] == 1) checked @endif/> 开启
+                                </label>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">自定义字段</label>
                             <div class="col-sm-9 col-xs-12">
                                 <label class="radio radio-inline">
                                     <input type="radio" name="member[is_custom]" value="0"
-                                           @if (empty($set['is_custom'])) checked @endif/> 禁用
+                                           @if (empty($set['is_custom'])) checked @endif/> 关闭
                                 </label>
                                 <label class="radio radio-inline">
                                     <input type="radio" name="member[is_custom]" value="1"
-                                           @if ($set['is_custom'] == 1) checked @endif/> 启用
+                                           @if ($set['is_custom'] == 1) checked @endif/> 开启
                                 </label>
                                 <span class="help-block"></span>
                             </div>
