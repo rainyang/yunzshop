@@ -11,6 +11,7 @@ namespace app\frontend\modules\member\controllers;
 use app\common\components\ApiController;
 use app\common\helpers\Client;
 use app\common\helpers\Url;
+use app\common\models\Member;
 use app\common\models\MemberGroup;
 use app\common\models\MemberLevel;
 use app\common\models\MemberShopInfo;
@@ -32,8 +33,8 @@ use app\common\services\alipay\OnekeyLogin;
 class RegisterController extends ApiController
 {
     protected $publicController = ['Register'];
-    protected $publicAction = ['index', 'sendCode', 'sendCodeV2', 'checkCode', 'sendSms', 'changePassword'];
-    protected $ignoreAction = ['index', 'sendCode', 'sendCodeV2', 'checkCode', 'sendSms', 'changePassword'];
+    protected $publicAction = ['index', 'sendCode', 'sendCodeV2', 'checkCode', 'sendSms', 'changePassword', 'getInviteCode'];
+    protected $ignoreAction = ['index', 'sendCode', 'sendCodeV2', 'checkCode', 'sendSms', 'changePassword', 'getInviteCode'];
 
     public function index()
     {
@@ -112,7 +113,11 @@ class RegisterController extends ApiController
                 'group_id' => $default_subgroup_id,
                 'level_id' => 0,
             );
+
             SubMemberModel::insertData($sub_data);
+            //生成分销关系链
+            Member::createRealtion($member_id);
+
 
             $cookieid = "__cookie_yun_shop_userid_{$uniacid}";
             Cookie::queue($cookieid, $member_id);
@@ -493,5 +498,16 @@ class RegisterController extends ApiController
         } else {
             return $this->errorJson('手机号或密码格式错误');
         }
+    }
+
+    public function getInviteCode()
+    {
+        $is_invite = intval(\Setting::get('shop.member.is_invite'));
+
+        $data = [
+          'status' => $is_invite
+        ];
+
+        return $this->successJson('ok', $data);
     }
 }
