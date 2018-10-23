@@ -3,7 +3,11 @@
 @section('content')
 
 <link href="{{static_url('yunshop/css/member.css')}}" media="all" rel="stylesheet" type="text/css"/>
-
+<style>
+    .radio-inline {
+        padding-top: 4px !important;
+    }
+</style>
     <div class="w1200 m0a">
         <div class="rightlist">
 
@@ -75,6 +79,21 @@
                                 </div>
                             </div>
                         </div>
+
+                        @if ($self_buy)
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                            <div class="col-sm-6">
+                                <div class='input-group' >
+                                    <div class='input-group-addon'  ><label class="radio-inline" ><input type="radio"  name="setdata[become]" value="5" @if($set['become'] ==5) checked="checked"
+                                                    @endif /> 自购销售佣金累计达到</label></div>
+                                    <input type='text' class='form-control' name='setdata[become_selfmoney]' value="{{$set['become_selfmoney']}}" />
+                                    <div class='input-group-addon' style="border:0">元</div>
+                                </div>
+                                <span class="help-block">该条件只针对销售佣金插件使用</span>
+                            </div>
+                        </div>
+                        @endif
                         <!-- END -->
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>

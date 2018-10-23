@@ -49,9 +49,12 @@ class MemberRelationController extends BaseController
         } else {
             $goods = [];
         }
+
+        $self_buy = 1; //TODO 销售佣金插件是否开启
         return view('member.relation', [
             'set' => $relation,
-            'goods' => $goods
+            'goods' => $goods,
+            'self_buy' => $self_buy
         ])->render();
     }
 
@@ -75,6 +78,10 @@ class MemberRelationController extends BaseController
 
         if (empty($setData['become_goods_id'])) {
             $setData['become_goods_id'] = 0;
+        }
+
+        if (empty($setData['become_selfmoney'])) {
+            $setData['become_selfmoney'] = 0;
         }
 
         $relation = Relation::getSetInfo()->first();
