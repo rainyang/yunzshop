@@ -1398,8 +1398,8 @@ return [
                                 'menu'              => 0,
                                 'icon'              => 'fa-file-text',
                                 'sort'              => 1,
-                                'item'              => 'order_detail',
-                                'parents'           => ['Order', 'order_list'],
+                                'item'              => 'order_list_index',
+                                'parents'           => ['Order', 'order_list','order_handel'],
                             ],
                             'order_pay_list' => [
                                 'name'              => '查看订单支付记录',
@@ -1719,17 +1719,17 @@ return [
                         'item'              => 'refund_order_handel',
                         'parents'           => ['Order', 'refund_list_refund'],
                         'child'             => [
-                            'refund_detail_index' => [
-                                'name'              => '查看详情',
-                                'url'               => 'order.detail.index',
-                                'url_params'        => '',
-                                'permit'            => 1,
-                                'menu'              => 0,
-                                'icon'              => 'fa-file-text',
-                                'sort'              => 1,
-                                'item'              => 'order_list_index',
-                                'parents'           => ['Order', 'refund_list_refund'],
-                            ],
+//                            'refund_detail_index' => [
+//                                'name'              => '查看详情',
+//                                'url'               => 'order.detail.index',
+//                                'url_params'        => '',
+//                                'permit'            => 1,
+//                                'menu'              => 0,
+//                                'icon'              => 'fa-file-text',
+//                                'sort'              => 1,
+//                                'item'              => 'order_list_index',
+//                                'parents'           => ['Order', 'refund_list_refund'],
+//                            ],
 
                             'refund_operation_reject' => [
                                 'name'              => '驳回申请',
@@ -2469,7 +2469,50 @@ return [
                         'parents'           => ['finance', 'remittance_audit',],
                     ],
                 ]
-            ]
+            ],
+            'profit_advertisement' => [
+                'name' => '收益广告',
+                'permit' => 1,
+                'menu' => 1,
+                'icon' => 'fa-image',
+                'sort' => 0,
+                'item' => 'profit_advertisement',
+                'url' => 'finance.advertisement.index',
+                'url_params' => '',
+                'parents' => ['finance','profit_advertisement'],
+                'child' => [
+                    'profit_advertisement_advertisement_add' => [
+                        'name' => '添加广告',
+                        'permit' => 1,
+                        'menu' => '',
+                        'icon' => '',
+                        'url' => 'finance.advertisement.add',
+                        'url_params' => '',
+                        'parents' => ['finance', 'profit_advertisement'],
+                        'child' => []
+                    ],
+                    'profit_advertisement_advertisement_edit' => [
+                        'name' => '编辑广告',
+                        'permit' => 1,
+                        'menu' => '',
+                        'icon' => '',
+                        'url' => 'finance.advertisement.edit',
+                        'url_params' => '',
+                        'parents' => ['finance', 'profit_advertisement'],
+                        'child' => []
+                    ],
+                    'profit_advertisement_advertisement_del' => [
+                        'name' => '删除广告',
+                        'permit' => 1,
+                        'menu' => '',
+                        'icon' => '',
+                        'url' => 'finance.advertisement.del',
+                        'url_params' => '',
+                        'parents' => ['finance', 'profit_advertisement'],
+                        'child' => []
+                    ],
+                ]
+            ],
 
 
         ],
