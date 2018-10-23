@@ -9,13 +9,13 @@
 namespace app\backend\modules\charts\modules\phone\models;
 
 
-use Illuminate\Database\Eloquent\Builder;
+use app\common\models\BaseModel;
 
-class Member extends \app\common\models\Member
+class Member extends BaseModel
 {
+    protected $table = 'yz_member_phone';
+    protected $guarded = [''];
+    protected $fillable = [''];
 
-    public static function getMember()
-    {
-        return self::uniacid()->select('uid','mobile','nickname');
-    }
+    public $timestamps = true;
 }

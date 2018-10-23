@@ -18,10 +18,18 @@ class PhoneAttributionService
         $member = $this->getPhone();
         foreach ($member as $k => $item) {
                 $data[$k] = $this->getPhoneApi($item['mobile']);
-                $phone[] = file_get_contents($data[$k]);
+                $phone[$k]['uid'] = $item['uid'];
+                $phone[$k]['phone'] = json_decode(file_get_contents($data[$k]));
         }
-dd($phone);
-        return json_decode($phone);
+
+        foreach ($phone as $k => $item) {
+            $result[$k]['uid'] = $item['uid'];
+            $result[$k]['province'] = $item['phone']->data->province;
+            $result[$k]['city'] = $item['phone']->data->city;
+            $result[$k]['sp'] = $item['phone']->data->sp;
+        }
+//        dd($result);
+        return $result;
     }
 
     public function getPhone()

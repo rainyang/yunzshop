@@ -145,8 +145,9 @@ class TestController extends BaseController
     public function getPhone()
     {
         $phone = (new PhoneAttributionService())->phoneStatistics();
+
         foreach ($phone as $item) {
-            $data[] = $item;
+            $data[] = json_decode($item);
         }
         dd($data);
     }
