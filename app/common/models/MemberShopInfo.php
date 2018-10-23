@@ -10,8 +10,13 @@ namespace app\common\models;
 
 
 use app\backend\models\BackendModel;
+use app\backend\modules\member\models\MemberRecord;
+use app\common\events\member\RegisterByAgent;
+use app\frontend\modules\member\models\SubMemberModel;
+use app\Jobs\ModifyRelationJob;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Yunshop\Commission\models\Agents;
 
 class MemberShopInfo extends BaseModel
 {
@@ -363,5 +368,85 @@ class MemberShopInfo extends BaseModel
     public function hasOneMember()
     {
         return $this->hasOne(Member::class, 'uid', 'm_id');
+    }
+
+    public static function chkInviteCode($code)
+    {
+        return self::select('member_id')->where('invite_code', $code)
+            ->uniacid()
+            ->count();
+    }
+
+    public static function updateInviteCode($member_id, $code)
+    {
+        return self::uniacid()
+            ->where('member_id', $member_id)
+            ->update(['invite_code' => $code]);
+    }
+
+    public static function getMemberIdForInviteCode($code)
+    {
+        return self::uniacid()
+            ->where('invite_code', $code)
+            ->pluck('member_id');
+    }
+
+    public static function change_relation($uid, $parent_id)
+    {
+        if (is_numeric($parent_id)) {
+            if (!empty($parent_id)) {
+                $parent = SubMemberModel::getMemberShopInfo($parent_id);
+
+                $parent_is_agent = !empty($parent) && $parent->is_agent == 1 && $parent->status == 2;
+
+                if (!$parent_is_agent) {
+                    return ['status', -1];
+                }
+            }
+
+            $member_relation = Member::setMemberRelation($uid, $parent_id);
+            $plugin_commission = app('plugins')->isEnabled('commission');
+
+            if (isset($member_relation) && $member_relation !== false) {
+                $member = MemberShopInfo::getMemberShopInfo($uid);
+
+                $record = new MemberRecord();
+                $record->uniacid = \YunShop::app()->uniacid;
+                $record->uid = $uid;
+                $record->parent_id = $member->parent_id;
+
+                $member->parent_id = $parent_id;
+                $member->inviter = 1;
+
+                $member->save();
+                $record->save();
+
+                if ($plugin_commission) {
+                    $agents = Agents::uniacid()->where('member_id', $uid)->first();
+
+                    if (!is_null($agents)) {
+                        $agents->parent_id = $parent_id;
+                        $agents->parent = $member->relation;
+
+                        $agents->save();
+                    }
+
+                    $agent_data = [
+                        'member_id' => $uid,
+                        'parent_id' => $parent_id,
+                        'parent' => $member->relation
+                    ];
+
+                    event(new RegisterByAgent($agent_data));
+                }
+
+                //更新2、3级会员上线和分销关系
+                dispatch(new ModifyRelationJob($uid, $member_relation, $plugin_commission));
+
+                return ['status' => 1];
+            } else {
+                return ['status' => 0];
+            }
+        }
     }
 }

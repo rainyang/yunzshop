@@ -15,6 +15,15 @@ class OrderGoods extends \app\common\models\OrderGoods
 {
     static protected $needLog = true;
 
+    protected $appends = [
+        'goods_thumb', 'buttons'
+    ];
+
+    public function getGoodsThumbAttribute()
+    {
+        return yz_tomedia($this->goods->thumb);
+    }
+
     public function goods()
     {
         return $this->hasOne(Goods::class, 'id', 'goods_id');

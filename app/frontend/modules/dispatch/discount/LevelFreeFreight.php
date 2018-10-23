@@ -15,7 +15,7 @@ use app\frontend\models\MemberShopInfo;
  * Class EnoughReduce
  * @package app\frontend\modules\dispatch\discount
  */
-class LevelFreeFreight extends BaseFreightDiscount
+class  LevelFreeFreight extends BaseFreightDiscount
 {
     protected $name = '会员等级运费优惠';
     protected $code = 'LevelFreeFreight';

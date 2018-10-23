@@ -22,14 +22,6 @@ use app\frontend\modules\member\services\MemberService;
  */
 class GoodsOption extends \app\common\models\GoodsOption
 {
-    /**
-     * 获取商品规格最终价格
-     * @return mixed
-     */
-    public function getFinalPriceAttribute()
-    {
-        return $this->product_price - $this->getVipDiscountAmount();
-    }
     public function getVipDiscountAmount(){
         return $this->goods->getVipDiscountAmount($this->product_price);
     }
