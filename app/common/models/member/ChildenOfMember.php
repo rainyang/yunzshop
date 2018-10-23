@@ -10,6 +10,7 @@ namespace app\common\models\member;
 
 
 use app\common\models\BaseModel;
+use Illuminate\Support\Facades\DB;
 
 class ChildenOfMember extends BaseModel
 {
@@ -19,7 +20,7 @@ class ChildenOfMember extends BaseModel
     public function CreateData($data)
     {
         \Log::debug('----------insert data-----');
-        $rs = \DB::table($this->getTable())->insert($data);
+        $rs = DB::table($this->getTable())->insert($data);
         return $rs;
     }
 }

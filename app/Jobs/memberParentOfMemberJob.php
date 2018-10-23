@@ -70,6 +70,8 @@ class memberParentOfMemberJob implements ShouldQueue
         \Log::debug('--------queue synRun -----');
 
         foreach ($memberInfo as $key => $val) {
+            $attr = [];
+
             \Log::debug('--------foreach start------', $val->member_id);
             $data = $memberModel->getDescendants($uniacid, $val->member_id);
             \Log::debug('--------foreach data------', $data->count());

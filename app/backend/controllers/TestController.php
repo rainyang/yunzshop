@@ -12,6 +12,7 @@ use app\common\components\BaseController;
 use app\common\helpers\Cache;
 use app\common\helpers\SettingCache;
 use app\common\models\Member;
+use app\common\models\member\ChildenOfMember;
 use app\common\models\Order;
 use app\common\models\OrderPay;
 use app\common\models\Flow;
@@ -144,10 +145,63 @@ class TestController extends BaseController
     public function tt()
     {
 
-
+       //$this->synRun(5, '');exit;
 
         $member_relation = new MemberRelation();
 
         $member_relation->createParentOfMember();
+    }
+
+    public function synRun($uniacid, $memberInfo)
+    {
+        $memberModel = new \app\backend\modules\member\models\Member();
+        $childMemberModel = new ChildenOfMember();
+
+        $memberInfo = $memberModel->getTreeAllNodes($uniacid);
+
+        if ($memberInfo->isEmpty()) {
+            \Log::debug('----is empty-----');
+            return;
+        }
+
+        //$memberInfo = $memberInfo;
+
+        $memberModel->_allNodes = collect([]);
+        foreach ($memberInfo as $item) {
+            $memberModel->_allNodes->put($item->member_id, $item);
+        }
+        /* \Log::debug('--------queue member_model -----', get_class($this->memberModel));
+         \Log::debug('--------queue childMemberModel -----', get_class($this->childMemberModel));*/
+        \Log::debug('--------queue synRun -----');
+dd($memberInfo);
+        foreach ($memberInfo as $key => $val) {
+            $attr = [];
+            echo '-------' . $key . '--------' . $val->member_id . '<BR>';
+                \Log::debug('--------foreach start------', $val->member_id);
+                $data = $memberModel->getDescendants($uniacid, $val->member_id);
+                \Log::debug('--------foreach data------', $data->count());
+
+                if (!$data->isEmpty()) {
+                    \Log::debug('--------insert init------');
+                    $data = $data->toArray();
+                    echo '<pre>';print_r($data);
+                    foreach ($data as $k => $v) {
+                        $attr[] = [
+                            'uniacid'   => $uniacid,
+                            'child_id'  => $k,
+                            'level'     => $v['depth'] + 1,
+                            'member_id' => $val->member_id,
+                            'created_at' => time()
+                        ];
+                    }
+
+                    $childMemberModel->createData($attr);
+                }
+
+
+        }
+
+        echo 'end';
+
     }
 }
