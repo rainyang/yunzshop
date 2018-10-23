@@ -35,7 +35,8 @@ class MemberIncomeController extends BaseController
             ->with([
                 'hasOneWithdraw' => function($q) {
                     $q->selectRaw('sum(poundage) as total_poundage, member_id')->groupBy('member_id');
-                }
+                },
+                'hasOneMember',
             ])
             ->groupBy('member_id')
             ->orderBy('total_amount', 'desc')

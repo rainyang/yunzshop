@@ -86,13 +86,13 @@
                                     @endif
                                 </td>
                                 <td>
-                                    @if(!empty($row['thumb_url']))
-                                        <img src='{{ $row['thumb_url'] }}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
+                                    @if(!empty($row->hasOneMember->thumb_url))
+                                        <img src='{{ $row->hasOneMember->thumb_url }}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
                                     @endif
-                                    @if(empty($row['buy_name']))
+                                    @if(empty($row->hasOneMember->nickname))
                                         未更新
                                     @else
-                                        {{ $row['buy_name'] }}
+                                        {{ $row->hasOneMember->nickname }}
                                     @endif
                                 </td>
                                 <td>{{ $row['total_amount'] ?: '0.00' }}</td>
@@ -103,10 +103,8 @@
                                 <td>{{ $row['team_dividend'] ?: '0.00' }}</td>
                                 <td>{{ $row['shareholder_dividend'] ?: '0.00' }}</td>
                                 <td>{{ $row['area_dividend'] ?: '0.00' }}</td>
-                                <td>{{ sprintf("%01.2f",$row->price - $row->hasOneOrderGoods->cost_price ?: '0.00') }}</td>
-                                <td>{{ $row->hasOneSupplierOrder->supplier_profit ?: '0.00' }}</td>
-                                <td>{{ $row->hasOneStoreOrder->amount ?: '0.00' }}</td>
-                                <td>{{ $row->hasOneCashierOrder->amount ?: '0.00' }}</td>
+                                <td>{{ $row['merchant_dividend'] ?: '0.00' }}</td>
+                                <td><a href="" class="bottom bottom-info">收入详情</a></td>
                             </tr>
                         @endforeach
                         </tbody>

@@ -24,4 +24,9 @@ class Income extends \app\common\models\Income
         return $this->hasOne(Withdraw::class, 'member_id', 'member_id');
     }
 
+    public function hasOneMember()
+    {
+        return $this->hasOne(\app\common\models\Member::class, 'uid', 'member_id');
+    }
+
 }
