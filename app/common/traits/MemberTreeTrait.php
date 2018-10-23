@@ -62,7 +62,7 @@ use InvalidArgumentException;
  */
 trait MemberTreeTrait
 {
-    private $_allNodes = null;
+    public $_allNodes = null;
 
     protected $treeNodeIdName = 'member_id';
     protected $treeNodeParentIdName = 'parent_id';
@@ -134,6 +134,7 @@ trait MemberTreeTrait
     final protected function getAllNodes($uniacid)
     {
         if ($this->_allNodes) {
+            \Log::debug('------allnodes----');
             return $this->_allNodes;
         }
         if (!method_exists($this, 'getTreeAllNodes')) {
@@ -171,7 +172,7 @@ trait MemberTreeTrait
     public function getSubLevel($uniacid, $parentId)
     {
         $data = $this->getAllNodes($uniacid);
-\Log::debug('-----all nodes----', $data);
+\Log::debug('-----all nodes----', $data->count());
         $childList = collect([]);
         foreach ($data as $val) {
             if ($val->{$this->getTreeNodeParentIdName()} == $parentId) {
@@ -198,7 +199,7 @@ trait MemberTreeTrait
         }
         $number = 1;
         $child = $this->getSubLevel($uniacid, $parentId);
-\Log::debug('------child----', $child);
+\Log::debug('------child----', $child->count());
         if ($child) {
             $nextDepth = $depth + 1;
             $total = $child->count();

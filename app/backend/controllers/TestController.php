@@ -143,6 +143,9 @@ class TestController extends BaseController
 
     public function tt()
     {
+
+
+
         $member_relation = new MemberRelation();
 
         $member_relation->createParentOfMember();

@@ -31,6 +31,8 @@ class memberParentOfMemberJob implements ShouldQueue
         $this->member_info = $member_info->toArray();
     }*/
 
+    public $timeout = 300;
+
     public function __construct($uniacid)
     {
         $this->uniacid = $uniacid;
@@ -39,7 +41,7 @@ class memberParentOfMemberJob implements ShouldQueue
 
     public function handle()
     {
-        $this->member_info = Member::getAllMembersInfosByQueue($this->uniacid)->get()->toArray();
+        $this->member_info = '';//Member::getAllMembersInfosByQueue($this->uniacid)->get()->toArray();
         \Log::debug('-----queue uniacid-----', $this->uniacid);
         \Log::debug('-----queue member count-----', count($this->member_info));
         return $this->synRun($this->uniacid, $this->member_info);
@@ -50,13 +52,28 @@ class memberParentOfMemberJob implements ShouldQueue
         $memberModel = new Member();
         $childMemberModel = new ChildenOfMember();
 
+        $memberInfo = $memberModel->getTreeAllNodes($uniacid);
+
+        if ($memberInfo->isEmpty()) {
+            \Log::debug('----is empty-----');
+            return;
+        }
+
+        //$memberInfo = $memberInfo;
+
+        $memberModel->_allNodes = collect([]);
+        foreach ($memberInfo as $item) {
+            $memberModel->_allNodes->put($item->member_id, $item);
+        }
        /* \Log::debug('--------queue member_model -----', get_class($this->memberModel));
         \Log::debug('--------queue childMemberModel -----', get_class($this->childMemberModel));*/
         \Log::debug('--------queue synRun -----');
+
         foreach ($memberInfo as $key => $val) {
-            \Log::debug('--------foreach start------', $val['uid']);
-            $data = $memberModel->getDescendants($uniacid, $val['uid']);
+            \Log::debug('--------foreach start------', $val->member_id);
+            $data = $memberModel->getDescendants($uniacid, $val->member_id);
             \Log::debug('--------foreach data------', $data->count());
+
             if (!$data->isEmpty()) {
                 \Log::debug('--------insert init------');
                 $data = $data->toArray();
@@ -65,7 +82,7 @@ class memberParentOfMemberJob implements ShouldQueue
                         'uniacid'   => $uniacid,
                         'child_id'  => $k,
                         'level'     => $v['depth'] + 1,
-                        'member_id' => $val['uid'],
+                        'member_id' => $val->member_id,
                         'created_at' => time()
                     ];
                 }
