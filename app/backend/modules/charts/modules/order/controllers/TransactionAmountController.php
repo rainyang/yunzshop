@@ -26,9 +26,16 @@ class TransactionAmountController extends ChartsController
         $waitReceiveOrder = 0.00;
         $completedOrder = 0.00;
         $uniacid = \YunShop::app()->uniacid;
-        $orderData = DB::select('select sum(if(plugin_id=31,price,0)) as cashier, sum(if(plugin_id=32,price,0)) as store, sum(if(is_plugin=1,price,0)) as supplier, sum(if(is_plugin=0 && plugin_id=0,price,0)) as shop, status from ims_yz_order where uniacid='.$uniacid. ' GROUP BY status');
-        $totalOrder = DB::select('select sum(if(plugin_id=31,price,0)) as cashier, sum(if(plugin_id=32,price,0)) as store, sum(if(is_plugin=1,price,0)) as supplier, sum(if(is_plugin=0 && plugin_id=0,price,0)) as shop from ims_yz_order where uniacid='.$uniacid);
-
+        $search = \YunShop::request()->search;
+        if ($search['is_time']) {
+            $searchTime['start'] = strtotime($search['time']['start']);
+            $searchTime['end'] = strtotime($search['time']['end']);
+            $orderData = DB::select('select sum(if(plugin_id=31,price,0)) as cashier, sum(if(plugin_id=32,price,0)) as store, sum(if(is_plugin=1,price,0)) as supplier, sum(if(is_plugin=0 && plugin_id=0,price,0)) as shop, status from ims_yz_order where uniacid='.$uniacid. ' and created_at >= '.$searchTime['start'].' and created_at <= '.$searchTime['end'].' GROUP BY status');
+            $totalOrder = DB::select('select sum(if(plugin_id=31,price,0)) as cashier, sum(if(plugin_id=32,price,0)) as store, sum(if(is_plugin=1,price,0)) as supplier, sum(if(is_plugin=0 && plugin_id=0,price,0)) as shop from ims_yz_order where uniacid='.$uniacid . ' and created_at >= '.$searchTime['start'].' and created_at <= '.$searchTime['end']);
+        } else {
+            $orderData = DB::select('select sum(if(plugin_id=31,price,0)) as cashier, sum(if(plugin_id=32,price,0)) as store, sum(if(is_plugin=1,price,0)) as supplier, sum(if(is_plugin=0 && plugin_id=0,price,0)) as shop, status from ims_yz_order where uniacid='.$uniacid. ' GROUP BY status');
+            $totalOrder = DB::select('select sum(if(plugin_id=31,price,0)) as cashier, sum(if(plugin_id=32,price,0)) as store, sum(if(is_plugin=1,price,0)) as supplier, sum(if(is_plugin=0 && plugin_id=0,price,0)) as shop from ims_yz_order where uniacid='.$uniacid);
+        }
         foreach ($orderData as $order)
         {
             switch ($order['status']) {
@@ -82,6 +89,7 @@ class TransactionAmountController extends ChartsController
             'waitReceiveOrder' => $waitReceiveOrder,
             'completedOrder' => $completedOrder,
             'totalOrder' => $totalOrder[0],
+            'search' => $search,
         ])->render();
     }
 }

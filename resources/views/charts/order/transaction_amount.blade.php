@@ -64,25 +64,25 @@
                 <div class="panel panel-default col-md-2">
                     <div class="panel-heading ">商城</div>
                     <div class="panel-body panel-body-change">
-                        {{ $waitPayOrder['shop'] }}元
+                        {{ $waitPayOrder['shop'] ?: '0.00' }}元
                     </div>
                 </div>
                 <div class="panel panel-default col-md-2">
                     <div class="panel-heading">供应商</div>
                     <div class="panel-body panel-body-change">
-                        {{ $waitPayOrder['supplier'] }}元
+                        {{ $waitPayOrder['supplier'] ?: '0.00' }}元
                     </div>
                 </div>
                 <div class="panel panel-default col-md-2">
                     <div class="panel-heading">门店</div>
                     <div class="panel-body panel-body-change">
-                        {{ $waitPayOrder['store'] }}元
+                        {{ $waitPayOrder['store'] ?: '0.00' }}元
                     </div>
                 </div>
                 <div class="panel panel-default col-md-2">
                     <div class="panel-heading">收银台</div>
                     <div class="panel-body panel-body-change">
-                        {{ $waitPayOrder['cashier'] }}元
+                        {{ $waitPayOrder['cashier'] ?: '0.00' }}元
                     </div>
                 </div>
             </div>
@@ -92,19 +92,19 @@
                 <div class="panel panel-default col-md-2">
                     <div class="panel-heading">商城</div>
                     <div class="panel-body panel-body-change">
-                        {{ $waitSendOrder['shop'] }}元
+                        {{ $waitSendOrder['shop'] ?: '0.00' }}元
                     </div>
                 </div>
                 <div class="panel panel-default col-md-2">
                     <div class="panel-heading">供应商</div>
                     <div class="panel-body panel-body-change">
-                        {{ $waitSendOrder['supplier'] }}元
+                        {{ $waitSendOrder['supplier'] ?: '0.00' }}元
                     </div>
                 </div>
                 <div class="panel panel-default col-md-2">
                     <div class="panel-heading">门店</div>
                     <div class="panel-body panel-body-change">
-                        {{ $waitSendOrder['store'] }}元
+                        {{ $waitSendOrder['store'] ?: '0.00' }}元
                     </div>
                 </div>
             </div>
@@ -113,19 +113,19 @@
                 <div class="panel panel-default col-md-2">
                     <div class="panel-heading">商城</div>
                     <div class="panel-body panel-body-change">
-                        {{ $waitReceiveOrder['shop'] }}元
+                        {{ $waitReceiveOrder['shop'] ?: '0.00' }}元
                     </div>
                 </div>
                 <div class="panel panel-default col-md-2">
                     <div class="panel-heading">供应商</div>
                     <div class="panel-body panel-body-change">
-                        {{ $waitReceiveOrder['supplier'] }}元
+                        {{ $waitReceiveOrder['supplier'] ?: '0.00' }}元
                     </div>
                 </div>
                 <div class="panel panel-default col-md-2">
                     <div class="panel-heading">门店</div>
                     <div class="panel-body panel-body-change">
-                        {{ $waitReceiveOrder['store'] }}元
+                        {{ $waitReceiveOrder['store'] ?: '0.00' }}元
                     </div>
                 </div>
             </div>
@@ -134,25 +134,25 @@
                 <div class="panel panel-default col-md-2">
                     <div class="panel-heading">商城</div>
                     <div class="panel-body panel-body-change">
-                        {{ $completedOrder['shop'] }}元
+                        {{ $completedOrder['shop'] ?: '0.00' }}元
                     </div>
                 </div>
                 <div class="panel panel-default col-md-2">
                     <div class="panel-heading">供应商</div>
                     <div class="panel-body panel-body-change">
-                        {{ $completedOrder['supplier'] }}元
+                        {{ $completedOrder['supplier'] ?: '0.00' }}元
                     </div>
                 </div>
                 <div class="panel panel-default col-md-2">
                     <div class="panel-heading">门店</div>
                     <div class="panel-body panel-body-change">
-                        {{ $completedOrder['store'] }}元
+                        {{ $completedOrder['store'] ?: '0.00' }}元
                     </div>
                 </div>
                 <div class="panel panel-default col-md-2">
                     <div class="panel-heading">收银台</div>
                     <div class="panel-body panel-body-change">
-                        {{ $completedOrder['cashier'] }}元
+                        {{ $completedOrder['cashier'] ?: '0.00' }}元
                     </div>
                 </div>
             </div>
