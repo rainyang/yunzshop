@@ -7,7 +7,7 @@
             <!-- 新增加右侧顶部三级菜单 -->
             <div class="right-titpos">
                 <ul class="add-snav">
-                    <li class="active"><a href="{{yzWebUrl('member.member.index')}}">会员管理</a></li>
+                    <li class="active"><a href="{{yzWebUrl('charts.income.member-income.index')}}">会员收入统计</a></li>
                     <li><a href="#">&nbsp;<i class="fa fa-angle-double-right"></i> &nbsp;收入详情</a></li>
                 </ul>
             </div>
@@ -57,15 +57,6 @@
                             </div>
                         </div>
 
-                        {{--<p>--}}
-                        {{--<b>累计收入: </b><span style='color:red'>{{$incomeAll['income']}}</span> 元--}}
-                        {{--</p>--}}
-                        {{--<p>--}}
-                        {{--<b> </b><span style='color:green'>{{$incomeAll['withdraw']}}</span> 元--}}
-                        {{--</p>--}}
-                        {{--<p>--}}
-                        {{--<b>未提现: </b><span style='color:red'>{{$incomeAll['no_withdraw']}}</span> 元--}}
-                        {{--</p>--}}
                     </div>
                     <br>
 

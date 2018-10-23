@@ -9,6 +9,7 @@
 namespace app\backend\modules\charts\modules\income\controllers;
 
 
+use app\backend\modules\member\models\Member;
 use app\common\components\BaseController;
 use app\backend\modules\finance\models\Withdraw;
 use app\common\helpers\PaginationHelper;
@@ -40,14 +41,14 @@ class MemberIncomeController extends BaseController
             ])
             ->groupBy('member_id')
             ->orderBy('total_amount', 'desc')
+            ->paginate(10);
 //            ->get();
-            ->paginate();
 //        dd($list->toArray());
 
         $page = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
         return view('charts.income.member_income',[
             'list' => $list,
-            'page' => $page,
+            'pager' => $page,
         ])->render();
     }
 
@@ -57,8 +58,8 @@ class MemberIncomeController extends BaseController
      */
     public function detail()
     {
-        $groups = MemberGroup::getMemberGroupList();
-        $levels = MemberLevel::getMemberLevelList();
+//        $groups = MemberGroup::getMemberGroupList();
+//        $levels = MemberLevel::getMemberLevelList();
         $uid = \YunShop::request()->id ? intval(\YunShop::request()->id) : 0;
         if ($uid == 0 || !is_int($uid)) {
             $this->message('参数错误', '', 'error');
@@ -128,10 +129,10 @@ class MemberIncomeController extends BaseController
 
         }
 
-        return view('member.income', [
+        return view('charts.income.member_income_detail', [
             'member' => $member,
-            'levels' => $levels,
-            'groups' => $groups,
+//            'levels' => $levels,
+//            'groups' => $groups,
             'incomeAll' => $incomeAll,
             'myform' => $myform,
 //            'parent_name' => $parent_name,

@@ -2795,7 +2795,19 @@ return [
                 'sort'          => 0,
                 'item'          => 'order_ranking_charts',
                 'parents'       => ['charts',],
-                'child'         => []
+                'child'         => [
+                    'member_income_charts_detail' => [
+                        'name' => '会员收入详情',
+                        'url' => 'charts.income.member-income.detail',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => 'fa-bar-chart-o',
+                        'sort'          => 0,
+                        'item'          => 'order_ranking_charts',
+                        'parents'       => ['charts','member_income_charts'],
+                    ]
+                ]
             ],
             'point_charts'     => [
                 'name'          => '积分数据统计',

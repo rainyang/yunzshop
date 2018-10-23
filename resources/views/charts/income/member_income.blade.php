@@ -55,6 +55,16 @@
         </div>
 
         <div class="panel panel-default">
+            <table class='table' style='float:left;margin-bottom:0;table-layout: fixed;line-height: 40px;height: 40px'>
+                <tr class='trhead'>
+                    <td colspan='8' style="text-align: left;">
+                        累计收入: <span id="total">{{ $supplierTotal }}元</span>&nbsp;&nbsp;&nbsp;未提现收入: <span id="total">{{ $unWithdrawTotal }}元</span>&nbsp;&nbsp;&nbsp;已提现收入: <span id="total">{{ $withdrawTotal }}元</span><br>
+                        分销佣金:元，经销商提成:元，区域分红：元，股东分红：元，招商分红：元
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="panel panel-default">
             <div class=" order-info">
                 <div class="table-responsive">
                     <table class='table order-title table-hover table-striped'>
@@ -86,8 +96,8 @@
                                     @endif
                                 </td>
                                 <td>
-                                    @if(!empty($row->hasOneMember->thumb_url))
-                                        <img src='{{ $row->hasOneMember->thumb_url }}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
+                                    @if(!empty($row->hasOneMember->avatar))
+                                        <img src='{{ $row->hasOneMember->avatar }}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
                                     @endif
                                     @if(empty($row->hasOneMember->nickname))
                                         未更新
@@ -104,7 +114,9 @@
                                 <td>{{ $row['shareholder_dividend'] ?: '0.00' }}</td>
                                 <td>{{ $row['area_dividend'] ?: '0.00' }}</td>
                                 <td>{{ $row['merchant_dividend'] ?: '0.00' }}</td>
-                                <td><a href="" class="bottom bottom-info">收入详情</a></td>
+                                <td>
+                                    <a href="{!!  yzWebFullUrl('charts.income.member-income.detail',['id' => $row['member_id']]) !!}" class="btn btn-primary">收入详情</a>
+                                </td>
                             </tr>
                         @endforeach
                         </tbody>
