@@ -13,23 +13,30 @@ use app\common\exceptions\AppException;
 use app\frontend\modules\member\services\MemberCartService;
 use app\frontend\modules\memberCart\MemberCartCollection;
 use Illuminate\Support\Facades\DB;
-use Request;
-use app\common\events\order\AfterOrderCreatedEvent;
 use app\frontend\modules\order\models\PreOrder;
 
 class CreateController extends PreOrderController
 {
-    protected function getMemberCarts()
-    {
+
+    private $memberCarts;
+    protected function _getMemberCarts(){
         $goods_params = json_decode(request()->input('goods'), true);
 
         $memberCarts = collect($goods_params)->map(function ($memberCart) {
             return MemberCartService::newMemberCart($memberCart);
         });
-
-        $memberCarts = new MemberCartCollection($memberCarts);
-        $memberCarts->loadRelations();
         return $memberCarts;
+    }
+    protected function getMemberCarts()
+    {
+        if(!isset($this->memberCarts)){
+
+            $memberCarts = new MemberCartCollection($this->_getMemberCarts());
+            $memberCarts->loadRelations();
+            $this->memberCarts = $memberCarts;
+        }
+
+        return $this->memberCarts;
     }
 
     protected function validateParam()
@@ -37,12 +44,18 @@ class CreateController extends PreOrderController
 
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     */
     public function index(Request $request)
     {
         \Log::info('用户下单', request()->input());
         $this->validateParam();
         //订单组
         $orders = collect();
+
         $shopOrder = $this->getShopOrder($this->getMemberCarts());
         if ($shopOrder) {
 
@@ -60,14 +73,16 @@ class CreateController extends PreOrderController
                  * @var $order PreOrder
                  */
                 $order_id = $order->generate();
-                event(new AfterOrderCreatedEvent($order->getOrder()));
+                $order->fireCreatedEvent();
                 return $order_id;
             });
         });
 
         return $this->successJson('成功', ['order_ids' => $order_ids->implode(',')]);
     }
-    private function getPluginOrders(){
+
+    private function getPluginOrders()
+    {
         $event = new CreatingOrder($this->getMemberCarts());
         event($event);
         return $event->getData();

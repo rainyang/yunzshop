@@ -28,10 +28,10 @@ class PayFactory
      */
     const PAY_CREDIT = 3;
 
-//    /**
-//     * 后台付款
-//     */
-//    const PAY_BACKEND = 5;
+    /**
+     * 后台付款
+     */
+    const PAY_BACKEND = 5;
 
     /**
      * 云收银-微信
@@ -119,6 +119,10 @@ class PayFactory
                 break;
             case self::PAY_CREDIT:
                 $className = new CreditPay();
+                break;
+
+            case self::PAY_BACKEND:
+                $className = new BackendPay();
                 break;
             case self::PAY_CASH:
                 $className = new CashPay();

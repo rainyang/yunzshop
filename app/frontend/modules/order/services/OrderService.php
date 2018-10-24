@@ -10,14 +10,11 @@
 namespace app\frontend\modules\order\services;
 
 use app\common\events\discount\OnDiscountInfoDisplayEvent;
-use app\common\events\dispatch\OnDispatchTypeInfoDisplayEvent;
 use app\common\events\order\OnPreGenerateOrderCreatingEvent;
 use app\common\exceptions\AppException;
 use app\common\models\Order;
 
 use app\common\models\order\OrderGoodsChangePriceLog;
-use app\common\models\OrderGoods;
-use app\common\models\UniAccount;
 use app\frontend\models\Member;
 use \app\frontend\models\MemberCart;
 use app\frontend\modules\member\services\MemberService;
@@ -28,6 +25,7 @@ use app\frontend\modules\order\services\behavior\OrderCancelSend;
 use app\frontend\modules\order\services\behavior\OrderChangePrice;
 use app\frontend\modules\order\services\behavior\OrderClose;
 use app\frontend\modules\order\services\behavior\OrderDelete;
+use app\frontend\modules\order\services\behavior\OrderForceClose;
 use app\frontend\modules\order\services\behavior\OrderOperation;
 use app\frontend\modules\order\services\behavior\OrderPay;
 use app\frontend\modules\order\services\behavior\OrderReceive;
@@ -43,16 +41,17 @@ class OrderService
 {
     /**
      * 获取订单信息组
-     * @param Order $order
+     * @param PreOrder $order
      * @return Collection
+     * @throws AppException
      */
-    public static function getOrderData(Order $order)
+    public static function getOrderData(PreOrder $order)
     {
         $result = collect();
         // todo 这里为什么要toArray
         $result->put('order', $order->toArray());
         $result->put('discount', self::getDiscountEventData($order));
-        $result->put('dispatch', self::getDispatchEventData($order));
+        $result->put('dispatch', ['default_member_address'=>$order->orderAddress->getMemberAddress()]);
 
         if (!$result->has('supplier')) {
             $result->put('supplier', ['username' => array_get(\Setting::get('shop'), 'name', '自营'), 'id' => 0]);
@@ -76,18 +75,6 @@ class OrderService
     }
 
     /**
-     * 获取配送信息
-     * @param $order_model
-     * @return array
-     */
-    public static function getDispatchEventData($order_model)
-    {
-        $Event = new OnDispatchTypeInfoDisplayEvent($order_model);
-        event($Event);
-        return $Event->getMap();
-    }
-
-    /**
      * 获取订单商品对象数组
      * @param Collection $memberCarts
      * @return PreOrderGoodsCollection
@@ -96,7 +83,7 @@ class OrderService
     public static function getOrderGoods(Collection $memberCarts)
     {
         if ($memberCarts->isEmpty()) {
-            throw new AppException("(" . $memberCarts->goods_id . ")未找到订单商品");
+            throw new AppException("购物车记录为空");
         }
         $result = $memberCarts->map(function ($memberCart) {
             if (!($memberCart instanceof MemberCart)) {
@@ -126,17 +113,17 @@ class OrderService
 
     /**
      * 根据购物车记录,获取订单信息
-     * @param Collection $memberCarts
-     * @param null $member
+     * @param MemberCartCollection $memberCarts
+     * @param Member|null $member
      * @return PreOrder|bool|mixed
      * @throws AppException
      * @throws \Exception
      */
-    public static function createOrderByMemberCarts(Collection $memberCarts, Member $member = null)
+    public static function createOrderByMemberCarts(MemberCartCollection $memberCarts, Member $member = null)
     {
         if (!isset($member)) {
             //默认使用当前登录用户下单
-            $member = MemberService::getCurrentMemberModel();
+            $member = Member::current();
         }
         if (!isset($member)) {
             throw new AppException('用户登录状态过期');
@@ -145,15 +132,15 @@ class OrderService
         if ($memberCarts->isEmpty()) {
             return false;
         }
-        (new MemberCartCollection($memberCarts))->validate();
+        $memberCarts->validate();
 
         $shop = ShopService::getCurrentShopModel();
 
-        $orderGoodsArr = OrderService::getOrderGoods($memberCarts);
+        $orderGoodsCollection = OrderService::getOrderGoods($memberCarts);
         $order = app('OrderManager')->make('PreOrder', ['uid' => $member->uid, 'uniacid' => $shop->uniacid]);
 
         event(new OnPreGenerateOrderCreatingEvent($order));
-        $order->setOrderGoods($orderGoodsArr);
+        $order->setOrderGoods($orderGoodsCollection);
         /**
          * @var PreOrder $order
          */
@@ -247,7 +234,18 @@ class OrderService
 
         return self::OrderOperate($orderOperation);
     }
+    /**
+     * 强制关闭订单
+     * @param $param
+     * @return string
+     * @throws AppException
+     */
+    public static function orderForceClose($param)
+    {
+        $orderOperation = OrderForceClose::find($param['order_id']);
 
+        return self::OrderOperate($orderOperation);
+    }
     /**
      * 用户删除(隐藏)订单
      * @param $param
@@ -320,23 +318,6 @@ class OrderService
             // 不需要发货的物品直接改为待收货
             self::orderSend(['order_id' => $orderOperation->id]);
         }
-
-        // //视频点播商品 改为虚拟商品
-        // if (app('plugins')->isEnabled('video-demand')) {
-        //     $goods_id = $orderOperation->hasManyOrderGoods[0]->goods_id;
-
-        //     if ($goods_id) {
-        //         $course = \Yunshop\VideoDemand\models\CourseGoodsModel::checkCourse($goods_id, 1)->first();
-
-        //         if (!is_null($course)) {
-        //             $orderOperation->dispatch_type_id = 0;
-        //             $orderOperation->save();
-
-        //             self::orderSend(['order_id' => $orderOperation->id]);
-        //             $result = self::orderReceive(['order_id' => $orderOperation->id]);
-        //         }
-        //     }
-        // }
 
         return $result;
     }

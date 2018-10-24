@@ -15,12 +15,20 @@ use Illuminate\Support\Collection;
 
 class CartBuyController extends PreOrderController
 {
+    /**
+     * @return \Illuminate\Http\JsonResponse|void
+     * @throws \app\common\exceptions\ShopException
+     */
     public function index()
     {
         $this->validateParam();
 
         parent::index();
     }
+
+    /**
+     * @throws \app\common\exceptions\ShopException
+     */
     protected function validateParam(){
         $this->validate([
             'cart_ids' => 'required',
@@ -39,7 +47,7 @@ class CartBuyController extends PreOrderController
         if (!is_array($_GET['cart_ids'])) {
             $cartIds = explode(',', $_GET['cart_ids']);
         }
-
+        $cartIds = array_slice($cartIds,0,50);
         if (!count($cartIds)) {
             throw new AppException('参数格式有误');
         }

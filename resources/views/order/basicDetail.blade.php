@@ -248,9 +248,9 @@
                 <th class="col-md-5 col-lg-1">ID</th>
                 <th class="col-md-5 col-lg-3">商品标题</th>
                 <th class="col-md-5 col-lg-3">商品规格</th>
-                <th class="col-md-5 col-lg-2">现价/原价/成本价</th>
+                <th class="col-md-5 col-lg-3">现价/原价/成本价</th>
                 <th class="col-md-5 col-lg-1">购买数量</th>
-                <th class="col-md-5 col-lg-1" style="color:red;">折扣前<br/>折扣后</th>
+                {{--<th class="col-md-5 col-lg-1" style="color:red;">折扣前<br/>折扣后</th>--}}
                 <th class="col-md-5 col-lg-1">操作</th>
             </tr>
             </thead>
@@ -267,9 +267,9 @@
                         /{{$order_goods['goods_cost_price']}}元
                     </td>
                     <td>{{$order_goods['total']}}</td>
-                    <td style='color:red;font-weight:bold;'>{{sprintf('%.2f', $order_goods['goods_price']/$order_goods['total'])}}
-                        <br/>{{sprintf('%.2f', $order_goods['payment_amount']/$order_goods['total'])}}
-                    </td>
+                    {{--<td style='color:red;font-weight:bold;'>{{sprintf('%.2f', $order_goods['goods_price']/$order_goods['total'])}}--}}
+                        {{--<br/>{{sprintf('%.2f', $order_goods['payment_amount']/$order_goods['total'])}}--}}
+                    {{--</td>--}}
                     <td>
                         <a href="{!! yzWebUrl($edit_goods, array('id' => $order_goods['goods']['id'])) !!}"
                            class="btn btn-default btn-sm" title="编辑"><i
