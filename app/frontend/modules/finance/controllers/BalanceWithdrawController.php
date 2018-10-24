@@ -165,6 +165,7 @@ class BalanceWithdrawController extends BalanceController
         if ($result === true) {
             DB::commit();
             BalanceNoticeService::withdrawSubmitNotice($this->withdrawModel);
+            //提现通知管理员
             (new WithdrawMessageService())->withdraw($this->withdrawModel);
             return $this->successJson('提现申请成功');
 
