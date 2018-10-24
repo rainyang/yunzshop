@@ -63,6 +63,7 @@ use app\backend\modules\order\observers\OrderObserver;
  * @property Collection orderGoods
  * @property Collection allStatus
  * @property Member belongsToMember
+ * @property OrderDiscount discount
  * @property Collection orderPays
  * @property OrderPay hasOneOrderPay
  * @property OrderAddress address
@@ -549,12 +550,18 @@ class Order extends BaseModel
     {
         return $this->hasMany(OrderDeduction::class, 'order_id', 'id');
     }
-
+    public function orderDeductions()
+    {
+        return $this->hasMany(OrderDeduction::class, 'order_id', 'id');
+    }
     public function orderCoupon()
     {
         return $this->hasMany(OrderCoupon::class, 'order_id', 'id');
     }
-
+    public function orderDiscounts()
+    {
+        return $this->hasMany(OrderDiscount::class, 'order_id', 'id');
+    }
     public function orderDiscount()
     {
         return $this->hasMany(OrderDiscount::class, 'order_id', 'id');
