@@ -22,7 +22,7 @@ class AddStatusToYzOrderPluginBonus extends Migration
                     $table->tinyInteger('status')->default(0);
                 }
                 if (!Schema::hasColumn('yz_order_plugin_bonus', 'undividend')) {
-                    $table->decimal('undivided',14)->default(0.00);
+                    $table->decimal('undividend',14)->default(0.00);
                 }
                 if (!Schema::hasColumn('yz_order_plugin_bonus', 'uniacid')) {
                     $table->integer('uniacid')->default(0);
