@@ -123,7 +123,7 @@
             trigger: 'axis'
         },
         legend: {
-            data:['可使用积分','已消耗积分','已赠送积分']
+            data:['已消耗积分','可使用积分','已赠送积分']
         },
         grid: {
             left: '3%',
@@ -146,16 +146,16 @@
         },
         series: [
             {
-                name:'可使用积分',
-                type:'line',
-                stack: '总量',
-                data:{!! $pointUseData !!}
-            },
-            {
                 name:'已消耗积分',
                 type:'line',
                 stack: '总量',
                 data:{!! $pointUsedData !!}
+            },
+            {
+                name:'可使用积分',
+                type:'line',
+                stack: '总量',
+                data:{!! $pointUseData !!}
             },
             {
                 name:'已赠送积分',

@@ -2686,18 +2686,18 @@ return [
                 ]
             ],
 
-            'order_dividend_charts'     => [
-                'name'          => '订单分润',
-                'url'           => 'charts.order.order-dividend.count',
-                'url_params'    => '',
-                'permit'        => 1,
-                'menu'          => 1,
-                'icon'          => 'fa-bar-chart-o',
-                'sort'          => 0,
-                'item'          => 'order_ranking_charts',
-                'parents'       => ['charts',],
-                'child'         => []
-            ],
+//            'order_dividend_charts'     => [
+//                'name'          => '订单分润',
+//                'url'           => 'charts.order.order-dividend.count',
+//                'url_params'    => '',
+//                'permit'        => 1,
+//                'menu'          => 1,
+//                'icon'          => 'fa-bar-chart-o',
+//                'sort'          => 0,
+//                'item'          => 'order_ranking_charts',
+//                'parents'       => ['charts',],
+//                'child'         => []
+//            ],
 
             'transaction_amount_charts'     => [
                 'name'          => '交易额统计',
