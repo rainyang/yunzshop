@@ -67,7 +67,7 @@ class WithdrawApplyListener
 
 
         /**
-         * 提现申请后，免审核任务
+         * 提现申请后，消息通知管理员
          */
         $dispatcher->listen(
             WithdrawAppliedEvent::class,
@@ -165,7 +165,7 @@ class WithdrawApplyListener
     /**
      * 提现申请后，消息通知
      *
-     * @param $event WithdrawApplyingEvent
+     * @param $event WithdrawAppliedEvent
      */
     public function withdrawMessage($event)
     {
