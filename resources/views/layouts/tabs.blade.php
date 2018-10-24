@@ -7,7 +7,7 @@
                 @if(isset($value['child']) && array_child_kv_exists($value['child'],'menu',1))
 
 
-                    <li>
+                    <li @if(YunShop::request()->route == $value['url']) class="active" @endif>
                         <a href="{{isset($value['url']) ? yzWebFullUrl($value['url']):''}}{{$value['url_params'] or ''}}">
                             {{$value['name']}}
                         </a>
@@ -15,7 +15,7 @@
 
 
                 @elseif($value['menu'] == 1)
-                    <li>
+                    <li @if(YunShop::request()->route == $value['url']) class="active" @endif>
                         <a href="{{isset($value['url']) ? yzWebFullUrl($value['url']):''}}{{$value['url_params'] or ''}}">
                             {{$value['name']}}
                         </a>

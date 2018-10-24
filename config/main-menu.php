@@ -2374,15 +2374,28 @@ return [
                         'item'              => 'point_member',
                         'parents'           => ['finance', 'finance_point',],
                     ],
+
                     'point_recharge'             => [
                         'name'              => '积分充值',
-                        'url'               => 'finance.point-recharge.index',
+                        'url'               => 'point.recharge.index',
                         'url_params'        => '',
                         'permit'            => 1,
                         'menu'              => 0,
                         'icon'              => '',
                         'sort'              => 0,
                         'item'              => 'point_recharge',
+                        'parents'           => ['finance', 'finance_point',],
+                    ],
+
+                    'point_recharge_records'=> [
+                        'name'              => '充值记录',
+                        'url'               => 'point.recharge-records.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => 'fa-file-text-o',
+                        'sort'              => 0,
+                        'item'              => 'point_recharge_records',
                         'parents'           => ['finance', 'finance_point',],
                     ],
 
