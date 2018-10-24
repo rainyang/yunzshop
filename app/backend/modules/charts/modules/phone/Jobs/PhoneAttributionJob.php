@@ -6,9 +6,10 @@
  * Time: 17:49
  */
 
-namespace app\Jobs;
+namespace app\backend\modules\charts\modules\phone\Jobs;
 
 
+use app\backend\modules\charts\modules\phone\services\PhoneAttributionService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -29,6 +30,10 @@ class PhoneAttributionJob implements ShouldQueue
      */
     public function handle()
     {
+        $phone = (new PhoneAttributionService())->phoneStatistics();
+        $phoneModel = new PhoneAttribution();
+        foreach ($phone as $item) {
 
+        }
     }
 }

@@ -18,14 +18,7 @@ class PhoneAttributionController extends BaseController
 
     public function index()
     {
-        $member = $this->getPhone();
+
     }
 
-    public function getPhone()
-    {
-        $uniacid = \YunShop::app()->uniacid;
-        $member_phone = DB::select('select uid,mobile,uniacid from ims_mc_members where uniacid ='.$uniacid);
-
-        return $member_phone;
-    }
 }

@@ -9,27 +9,41 @@
 namespace app\backend\modules\charts\modules\phone\services;
 
 
+use app\backend\modules\charts\modules\phone\models\PhoneAttribution;
+use app\common\models\UniAccount;
 use Illuminate\Support\Facades\DB;
 
 class PhoneAttributionService
 {
     public function phoneStatistics()
     {
-        $member = $this->getPhone();
-        foreach ($member as $k => $item) {
-                $data[$k] = $this->getPhoneApi($item['mobile']);
-                $phone[$k]['uid'] = $item['uid'];
-                $phone[$k]['phone'] = json_decode(file_get_contents($data[$k]));
-        }
+        $uniAccount = UniAccount::get();
+        foreach ($uniAccount as $u) {
+            \YunShop::app()->uniacid = $u->uniacid;
+            \Setting::$uniqueAccountId = $u->uniacid;
 
-        foreach ($phone as $k => $item) {
-            $result[$k]['uid'] = $item['uid'];
-            $result[$k]['province'] = $item['phone']->data->province;
-            $result[$k]['city'] = $item['phone']->data->city;
-            $result[$k]['sp'] = $item['phone']->data->sp;
+            $member = $this->getPhone();
+            foreach ($member as $k => $item) {
+                    $data[$k] = $this->getPhoneApi($item['mobile']);
+                    $phone[$k]['uid'] = $item['uid'];
+                    $phone[$k]['uniacid'] = $item['uniacid'];
+                    $phone[$k]['phone'] = json_decode(file_get_contents($data[$k]));
+            }
+
+            foreach ($phone as $k => $item) {
+                $result[$k]['uid'] = $item['uid'];
+                $result[$k]['uniacid'] = $item['uniacid'];
+                $result[$k]['province'] = $item['phone']->data->province;
+                $result[$k]['city'] = $item['phone']->data->city;
+                $result[$k]['sp'] = $item['phone']->data->sp;
+            }
+    //        dd($result);
+            $phoneModel = new PhoneAttribution();
+            foreach ($result as $item) {
+                $phoneModel->fill($item);
+                $phoneModel->save();
+            }
         }
-//        dd($result);
-        return $result;
     }
 
     public function getPhone()

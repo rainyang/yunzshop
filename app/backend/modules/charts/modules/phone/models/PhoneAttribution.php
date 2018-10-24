@@ -11,9 +11,9 @@ namespace app\backend\modules\charts\modules\phone\models;
 
 use app\common\models\BaseModel;
 
-class Member extends BaseModel
+class PhoneAttribution extends BaseModel
 {
-    protected $table = 'yz_member_phone';
+    protected $table = 'yz_phone_attribution';
     protected $guarded = [''];
     protected $fillable = [''];
 
