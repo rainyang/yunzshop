@@ -16,16 +16,22 @@ abstract class VirtualCoin extends BaseModel
         'amountOfCoin' => 0,
         'amountOfMoney' => 0,
     ];
-    public $name;
-    public $code;
+    protected $_name;
+    protected $code;
+    protected $appends = ['name'];
     protected $exchange_rate;
 
     function __construct($attribute = [])
     {
         parent::__construct($attribute);
         $this->exchange_rate = $this->getExchangeRate();
-        $this->name = $this->getName();
+        $this->_name = $this->getName();
         $this->code = $this->getCode();
+    }
+
+    public function getNameAttribute()
+    {
+        return $this->getName();
     }
 
     public function getCode()
@@ -35,7 +41,7 @@ abstract class VirtualCoin extends BaseModel
 
     public function getName()
     {
-        return isset($this->name) ? $this->name : $this->name = $this->_getName();
+        return isset($this->_name) ? $this->_name : $this->_name = $this->_getName();
     }
 
     public function getExchangeRate()

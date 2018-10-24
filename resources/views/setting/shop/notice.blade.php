@@ -340,7 +340,7 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员提现管理员通知</label>
                             <div class="col-sm-8 col-xs-12">
                                 <select name='yz_notice[member_withdraw]' class='form-control diy-notice'>
-                                    <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['member_withdraw'])) value="{{$set['seller_order_finish']}}"
+                                    <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['member_withdraw'])) value="{{$set['member_withdraw']}}"
                                             selected @else value=""
                                             @endif
                                     >

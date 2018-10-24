@@ -181,7 +181,7 @@ class BaseModel extends Model
         if (!isset($uid)) {
             $uid = \YunShop::app()->getMemberId();
         }
-        return $query->where($this->getTable().'.uid', $uid);
+        return $query->where($this->getTable() . '.uid', $uid);
     }
 
     public function scopeMine(Builder $query)
@@ -293,7 +293,8 @@ class BaseModel extends Model
      * @param $class
      * @return mixed
      */
-    public function expansionMethod($method,$class){
+    public function expansionMethod($method, $class)
+    {
         if (isset(static::$expansions)) {
 
             foreach ($this->getExpansions($class) as $expansion) {
@@ -363,4 +364,14 @@ class BaseModel extends Model
     {
         return new Builder($query);
     }
+
+    public function beforeSaving()
+    {
+        return true;
+    }
+    public function afterSaving()
+    {
+        return true;
+    }
+
 }
