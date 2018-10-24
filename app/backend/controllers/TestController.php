@@ -132,7 +132,6 @@ class TestController extends BaseController
 
     public function getPhone()
     {
-        $phone = (new PhoneAttributionService())->phoneStatistics();
-        dd($phone);
+        (new PhoneAttributionService())->phoneStatistics();
     }
 }

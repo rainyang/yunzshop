@@ -22,8 +22,10 @@ class PhoneAttributionService
             \YunShop::app()->uniacid = $u->uniacid;
             \Setting::$uniqueAccountId = $u->uniacid;
 
-            $member = $this->getPhone();
-            foreach ($member as $k => $item) {
+            $uniacid = \YunShop::app()->uniacid;
+            $member_phone = DB::select("select uid,mobile,uniacid from ims_mc_members where uniacid =$uniacid and mobile != ''");
+
+            foreach ($member_phone as $k => $item) {
                     $data[$k] = $this->getPhoneApi($item['mobile']);
                     $phone[$k]['uid'] = $item['uid'];
                     $phone[$k]['uniacid'] = $item['uniacid'];
@@ -37,21 +39,19 @@ class PhoneAttributionService
                 $result[$k]['city'] = $item['phone']->data->city;
                 $result[$k]['sp'] = $item['phone']->data->sp;
             }
-    //        dd($result);
+
             $phoneModel = new PhoneAttribution();
-            foreach ($result as $item) {
-                $phoneModel->fill($item);
-                $phoneModel->save();
+            $phoneData = [];
+            foreach ($result as $k => $item) {
+                $phoneData['uid']= $item['uid'];
+                $phoneData['uniacid']= $item['uniacid'];
+                $phoneData['province']= $item['province'];
+                $phoneData['city']= $item['city'];
+                $phoneData['sp']= $item['sp'];
+
+                $phoneModel->updateOrCreate(['uid' => $item['uid']], $phoneData);
             }
         }
-    }
-
-    public function getPhone()
-    {
-        $uniacid = \YunShop::app()->uniacid;
-        $member_phone = DB::select("select uid,mobile,uniacid from ims_mc_members where uniacid =$uniacid and mobile != ''");
-
-        return $member_phone;
     }
 
     public function getPhoneApi($mobile)

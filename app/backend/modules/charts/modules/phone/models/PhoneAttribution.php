@@ -15,7 +15,7 @@ class PhoneAttribution extends BaseModel
 {
     protected $table = 'yz_phone_attribution';
     protected $guarded = [''];
-    protected $fillable = [''];
+    protected $fillable = [];
 
     public $timestamps = true;
 }

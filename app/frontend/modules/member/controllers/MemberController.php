@@ -8,6 +8,7 @@
 
 namespace app\frontend\modules\member\controllers;
 
+use app\backend\modules\charts\modules\phone\models\PhoneAttribution;
 use app\backend\modules\member\models\MemberRelation;
 use app\backend\modules\order\models\Order;
 use app\common\components\ApiController;
@@ -546,6 +547,18 @@ class MemberController extends ApiController
                     return $this->errorJson('验证码错误');
                 }
             }
+
+            //手机归属地查询插入
+            $phoneData = file_get_contents((new PhoneAttributionService())->getPhoneApi($mobile));
+            $phoneArray = json_decode($phoneData);
+            $phone['uid'] = $uid;
+            $phone['uniacid'] = \YunShop::app()->uniacid;
+            $phone['province'] = $phoneArray->data->province;
+            $phone['city'] = $phoneArray->data->city;
+            $phone['sp'] = $phoneArray->data->sp;
+
+            $phoneModel = new PhoneAttribution();
+            $phoneModel->updateOrCreate(['uid' => $uid], $phone);
 
             //同步信息
             $old_member = [];
