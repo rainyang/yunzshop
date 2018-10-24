@@ -131,7 +131,7 @@
             trigger: 'axis'
         },
         legend: {
-            data:['已提现余额','已赠送余额','已消耗余额','可使用余额']
+            data:['可使用余额','已消耗余额','已提现余额','已赠送余额']
         },
         grid: {
             left: '3%',
@@ -154,28 +154,28 @@
         },
         series: [
             {
+                name:'可使用余额',
+                type:'line',
+                stack: '总量4',
+                data:{!! $balanceUseData !!}
+            },
+            {
+                name:'已消耗余额',
+                type:'line',
+                stack: '总量3',
+                data:{!! $balanceUsedData !!}
+            },
+            {
                 name:'已提现余额',
                 type:'line',
-                stack: '总量',
+                stack: '总量1',
                 data:{!! $balanceWithdrawData !!}
             },
             {
                 name:'已赠送余额',
                 type:'line',
-                stack: '总量',
+                stack: '总量2',
                 data:{!! $balanceGivenData !!}
-            },
-            {
-                name:'已消耗余额',
-                type:'line',
-                stack: '总量',
-                data:{!! $balanceUsedData !!}
-            },
-            {
-                name:'可使用余额',
-                type:'line',
-                stack: '总量',
-                data:{!! $balanceUseData !!}
             },
         ]
     };

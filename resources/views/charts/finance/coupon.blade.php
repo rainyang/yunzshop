@@ -118,7 +118,7 @@
             trigger: 'axis'
         },
         legend: {
-            data:['已消耗优惠券','已赠送优惠券']
+            data:['已赠送优惠券','已消耗优惠券']
         },
         grid: {
             left: '3%',
@@ -140,20 +140,19 @@
             type: 'value'
         },
         series: [
-
-            {
-                name:'已消耗优惠券',
-                type:'line',
-                stack: '总量',
-                data:{!! $couponUsedData !!}
-                // data:[1000,2000,3333,4444,5555,6666,7777]
-            },
             {
                 name:'已赠送优惠券',
                 type:'line',
-                stack: '总量',
+                stack: '总量2',
                 data:{!! $couponGivenData !!}
                 // data:['1','2','3','4','5','6','7']
+            },
+            {
+                name:'已消耗优惠券',
+                type:'line',
+                stack: '总量1',
+                data:{!! $couponUsedData !!}
+                // data:[1000,2000,3333,4444,5555,6666,7777]
             },
         ]
     };
