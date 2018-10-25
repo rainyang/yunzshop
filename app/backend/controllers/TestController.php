@@ -23,7 +23,7 @@ class TestController extends BaseController
 {
     public function index()
     {
-
+dd(1);
     }
 
     public function op_database()
