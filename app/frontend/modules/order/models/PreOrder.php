@@ -283,6 +283,9 @@ class PreOrder extends Order
      */
     public function isVirtual()
     {
+        if($this->is_virtual == 1){
+            return true;
+        }
         return $this->orderGoods->hasVirtual();
     }
 

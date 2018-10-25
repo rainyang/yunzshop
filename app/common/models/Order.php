@@ -771,7 +771,7 @@ class Order extends BaseModel
     public function backendPay()
     {
         // 生成支付记录 记录订单号,支付金额,用户,支付号
-        $orderPay = new PreOrderPay();
+        $orderPay = new PreOrderPay(['pay_type_id' => PayType::BACKEND]);
         // 添加关联订单
         $orders = new OrderCollection([$this]);
         $orderPay->setOrders($orders);
@@ -796,7 +796,7 @@ class Order extends BaseModel
     {
         event(new AfterOrderCreatedImmediatelyEvent($this));
 
-        $this->dispatch(new OrderCreatedEventQueueJob($this));
+        $this->dispatch(new OrderCreatedEventQueueJob($this->id));
         OrderCreatedJob::create([
             'order_id' => $this->id,
         ]);
@@ -806,7 +806,7 @@ class Order extends BaseModel
     {
         event(new AfterOrderPaidImmediatelyEvent($this));
 
-        $this->dispatch(new OrderPaidEventQueueJob($this));
+        $this->dispatch(new OrderPaidEventQueueJob($this->id));
         OrderPaidJob::create([
             'order_id' => $this->id,
         ]);
@@ -816,7 +816,7 @@ class Order extends BaseModel
     {
         event(new AfterOrderReceivedImmediatelyEvent($this));
 
-        $this->dispatch(new OrderReceivedEventQueueJob($this));
+        $this->dispatch(new OrderReceivedEventQueueJob($this->id));
         OrderReceivedJob::create([
             'order_id' => $this->id,
         ]);
