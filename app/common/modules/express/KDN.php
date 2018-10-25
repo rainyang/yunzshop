@@ -25,10 +25,11 @@ class KDN
 
     public function getTraces($comCode, $expressSn, $orderSn = '')
     {
+
         $requestData = json_encode(
             [
                 'OrderCode' => $orderSn,
-                'ShipperCode' => $this->mappingCom($comCode),
+                'ShipperCode' => $comCode,
                 'LogisticCode' => $expressSn,
             ]
         );
@@ -41,6 +42,7 @@ class KDN
         );
 
         $datas['DataSign'] = $this->encrypt($requestData);
+
         $response = Curl::to($this->reqURL)->withData($datas)
             ->asJsonResponse(true)->get();
 
@@ -60,28 +62,6 @@ class KDN
         }
         $result['state'] = $response['State'];
         return $result;
-    }
-
-    private function mappingCom($comCode)
-    {
-        $companies = [
-            'shunfeng' => 'SF',
-            'huitongkuaidi' => 'HTKY',
-            'zhongtong' => 'ZTO',
-            'shentong' => 'STO',
-            'yuantong' => 'YTO',
-            'yunda' => 'YD',
-            'youzhengguonei' => 'YZPY',
-            'ems' => 'EMS',
-            'tiantian' => 'HHTT',
-            'youshuwuliu' => 'UC',
-            'debangwuliu' => 'DBL',
-            'zhaijisong' => 'ZJS',
-            'tnt' => 'TNT',
-            'ups' => 'UPS',
-            'fedex' => 'FEDEX',
-        ];
-        return array_get($companies, $comCode, strtoupper($comCode));
     }
 
     private function encrypt($data)
