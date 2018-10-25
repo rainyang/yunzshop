@@ -42,8 +42,6 @@ class SettingObserver extends \app\common\observers\BaseObserver
         $log->before = collect($model->getDirty())->map(function($value,$key) use ($model){
             return $model->getOriginal($key);
         });
-        $log->before_identify = md5(json_encode($model->getOriginal()));
-        $log->after_identify = md5(json_encode($model->getAttributes()));
 
         $log->save();
 

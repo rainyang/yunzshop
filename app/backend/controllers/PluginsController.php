@@ -96,8 +96,7 @@ class PluginsController extends BaseController
 
     public function getPluginData()
     {
-        $plugins = new PluginManager(app(),new OptionRepository(),new Dispatcher(),new Filesystem());
-        $installed = $plugins->getPlugins();
+        $installed = app('plugins')->getPlugins();
         return view('admin.plugins',[
             'installed' => $installed
         ]);
@@ -113,30 +112,29 @@ class PluginsController extends BaseController
 //        $recharge['name'] = '生活充值';
 //        $api['name'] = '接口类';
 
-        $pluginsModel = new PluginManager(app(),new OptionRepository(),new Dispatcher(),new Filesystem());
         $plugins = Config::get('plugins_menu');//全部插件
         foreach ($plugins as $key => $plugin) {
             $type = $plugin['type'];
             switch ($type) {
                 case 'dividend'://分润类
                     $dividend[$key] = $plugin;
-                    $dividend[$key]['description'] = $pluginsModel->getPlugin($key)->description;
+                    $dividend[$key]['description'] = app('plugins')->getPlugin($key)->description;
                 break;
                 case 'industry'://行业类
                     $industry[$key] = $plugin;
-                    $industry[$key]['description'] = $pluginsModel->getPlugin($key)->description;
+                    $industry[$key]['description'] = app('plugins')->getPlugin($key)->description;
                 break;
                 case 'marketing'://营销类
                     $marketing[$key] = $plugin;
-                    $marketing[$key]['description'] = $pluginsModel->getPlugin($key)->description;
+                    $marketing[$key]['description'] = app('plugins')->getPlugin($key)->description;
                 break;
                 case 'tool'://工具类
                     $tool[$key] = $plugin;
-                    $tool[$key]['description'] = $pluginsModel->getPlugin($key)->description;
+                    $tool[$key]['description'] = app('plugins')->getPlugin($key)->description;
                 break;
                 case 'recharge'://生活充值类
                     $recharge[$key] = $plugin;
-                    $recharge[$key]['description'] = $pluginsModel->getPlugin($key)->description;
+                    $recharge[$key]['description'] = app('plugins')->getPlugin($key)->description;
                 break;
                 case 'api'://接口类
                     $api[$key] = $plugin;

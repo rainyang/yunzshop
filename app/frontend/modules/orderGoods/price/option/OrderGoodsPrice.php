@@ -33,7 +33,7 @@ abstract class OrderGoodsPrice
      * @var EnoughReduce
      */
     protected $enoughReduce;
-    public function __construct(PreOrderGoods $preOrderGoods)
+    public function __construct($preOrderGoods)
     {
         $this->orderGoods = $preOrderGoods;
         $this->singleEnoughReduce = new SingleEnoughReduce($this->orderGoods);

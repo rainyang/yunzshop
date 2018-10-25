@@ -9,9 +9,11 @@
 namespace app\common\models;
 
 
-use app\backend\modules\order\services\OrderService;
+use app\common\events\order\AfterOrderCreatedImmediatelyEvent;
+use app\common\events\order\AfterOrderPaidImmediatelyEvent;
+use app\common\events\order\AfterOrderReceivedImmediatelyEvent;
+use app\frontend\modules\order\services\OrderService;
 use app\common\exceptions\AppException;
-use app\common\models\order\Address as OrderAddress;
 use app\common\models\order\Express;
 use app\common\models\order\OrderChangePriceLog;
 use app\common\models\order\OrderCoupon;
@@ -23,13 +25,19 @@ use app\common\models\order\Remark;
 use app\common\models\refund\RefundApply;
 use app\common\modules\order\OrderOperationsCollector;
 use app\common\modules\payType\events\AfterOrderPayTypeChangedEvent;
-
+use app\common\services\PayFactory;
+use app\common\traits\HasProcessTrait;
 use app\common\modules\refund\services\RefundService;
-use app\frontend\modules\member\services\MemberService;
+use app\frontend\modules\order\OrderCollection;
 use app\frontend\modules\order\services\status\StatusFactory;
+use app\frontend\modules\orderPay\models\PreOrderPay;
+use app\Jobs\OrderCreatedEventQueueJob;
+use app\Jobs\OrderPaidEventQueueJob;
+use app\Jobs\OrderReceivedEventQueueJob;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\DB;
 use app\backend\modules\order\observers\OrderObserver;
 
@@ -55,22 +63,33 @@ use app\backend\modules\order\observers\OrderObserver;
  * @property Collection orderGoods
  * @property Collection allStatus
  * @property Member belongsToMember
+ * @property OrderDiscount discount
  * @property Collection orderPays
  * @property OrderPay hasOneOrderPay
  * @property OrderAddress address
  * @property PayType hasOnePayType
  * @property RefundApply hasOneRefundApply
  * @property Carbon finish_time
+ * @property OrderCreatedJob orderCreatedJob
+ * @property OrderPaidJob orderPaidJob
+ * @property OrderReceivedJob orderReceivedJob
+ * @method static self isPlugin()
+ * @method static self orders(array $searchParam)
  */
 class Order extends BaseModel
 {
+    use HasProcessTrait, DispatchesJobs;
+
     public $table = 'yz_order';
     public $setting = null;
     private $StatusService;
-    protected $fillable = [];
     protected $guarded = ['id'];
     protected $appends = ['status_name', 'pay_type_name'];
     protected $search_fields = ['id', 'order_sn'];
+    protected $attributes = [
+        'plugin_id' => 0,
+        'is_virtual' => 0,
+    ];
     static protected $needLog = true;
 
     //protected $attributes = ['discount_price'=>0];
@@ -134,7 +153,7 @@ class Order extends BaseModel
     public function scopeWaitPay($query)
     {
         //AND o.status = 0 and o.paytype<>3
-        return $query->where(['status' => self::WAIT_PAY]);
+        return $query->where([$this->getTable() . '.status' => self::WAIT_PAY]);
     }
 
     public function scopeNormal($query)
@@ -150,7 +169,7 @@ class Order extends BaseModel
     public function scopeWaitSend($query)
     {
         //AND ( o.status = 1 or (o.status=0 and o.paytype=3) )
-        return $query->where(['status' => self::WAIT_SEND]);
+        return $query->where([$this->getTable() . '.status' => self::WAIT_SEND]);
     }
 
     /**
@@ -160,7 +179,7 @@ class Order extends BaseModel
      */
     public function scopeWaitReceive($query)
     {
-        return $query->where(['status' => self::WAIT_RECEIVE]);
+        return $query->where([$this->getTable() . '.status' => self::WAIT_RECEIVE]);
     }
 
     /**
@@ -170,7 +189,7 @@ class Order extends BaseModel
      */
     public function scopeCompleted($query)
     {
-        return $query->where(['status' => self::COMPLETE]);
+        return $query->where([$this->getTable() . '.status' => self::COMPLETE]);
     }
 
     /**
@@ -364,14 +383,15 @@ class Order extends BaseModel
 
     /**
      * @return array
-     * @throws AppException
      */
     public function getOperationsSetting()
     {
-        if (MemberService::getCurrentMemberModel()->uid == $this->uid) {
-            return app('OrderManager')->setting('member_order_operations')[$this->statusCode] ?: [];
-        }
         return [];
+    }
+
+    public function isClose()
+    {
+        return $this->status == self::CLOSE;
     }
 
     /**
@@ -380,10 +400,14 @@ class Order extends BaseModel
      */
     public function getStatusNameAttribute()
     {
+        if (!$this->isClose() && $this->currentProcess()) {
+            return $this->currentProcess()->status_name;
+        }
         $statusName = $this->getStatusService()->getStatusName();
         if ($this->isPending()) {
             $statusName .= ' : 锁定';
         }
+
         return $statusName;
     }
 
@@ -408,12 +432,7 @@ class Order extends BaseModel
     public function getButtonModelsAttribute()
     {
         $result = $this->memberButtons();
-        return $result;
-    }
 
-    public function getOldButtonModelsAttribute()
-    {
-        $result = $this->getStatusService()->getButtonModels();
         return $result;
     }
 
@@ -531,12 +550,18 @@ class Order extends BaseModel
     {
         return $this->hasMany(OrderDeduction::class, 'order_id', 'id');
     }
-
+    public function orderDeductions()
+    {
+        return $this->hasMany(OrderDeduction::class, 'order_id', 'id');
+    }
     public function orderCoupon()
     {
         return $this->hasMany(OrderCoupon::class, 'order_id', 'id');
     }
-
+    public function orderDiscounts()
+    {
+        return $this->hasMany(OrderDiscount::class, 'order_id', 'id');
+    }
     public function orderDiscount()
     {
         return $this->hasMany(OrderDiscount::class, 'order_id', 'id');
@@ -706,7 +731,6 @@ class Order extends BaseModel
 
         }
 
-
         // 存在处理中的退款申请
         if (!empty($this->refund_id) || isset($this->hasOneRefundApply)) {
             return false;
@@ -740,6 +764,79 @@ class Order extends BaseModel
         ]);
     }
 
+    /**
+     * 后台支付
+     * @throws AppException
+     */
+    public function backendPay()
+    {
+        // 生成支付记录 记录订单号,支付金额,用户,支付号
+        $orderPay = new PreOrderPay();
+        // 添加关联订单
+        $orders = new OrderCollection([$this]);
+        $orderPay->setOrders($orders);
+        $orderPay->store();
+        // 获取支付信息
+        $orderPay->getPayResult(PayFactory::PAY_BACKEND);
+        // 保存支付状态
+        $orderPay->pay();
+    }
+
+    /**
+     * 系统退款
+     * @throws AppException
+     */
+    public function refund()
+    {
+        $this->hasOneOrderPay->fastRefund();
+        OrderService::orderForceClose(['order_id' => $this->id]);
+    }
+
+    public function fireCreatedEvent()
+    {
+        event(new AfterOrderCreatedImmediatelyEvent($this));
+
+        $this->dispatch(new OrderCreatedEventQueueJob($this));
+        OrderCreatedJob::create([
+            'order_id' => $this->id,
+        ]);
+    }
+
+    public function firePaidEvent()
+    {
+        event(new AfterOrderPaidImmediatelyEvent($this));
+
+        $this->dispatch(new OrderPaidEventQueueJob($this));
+        OrderPaidJob::create([
+            'order_id' => $this->id,
+        ]);
+    }
+
+    public function fireReceivedEvent()
+    {
+        event(new AfterOrderReceivedImmediatelyEvent($this));
+
+        $this->dispatch(new OrderReceivedEventQueueJob($this));
+        OrderReceivedJob::create([
+            'order_id' => $this->id,
+        ]);
+    }
+
+    public function orderCreatedJob()
+    {
+        return $this->hasOne(OrderCreatedJob::class, 'order_id');
+    }
+
+    public function orderPaidJob()
+    {
+        return $this->hasOne(OrderPaidJob::class, 'order_id');
+    }
+
+    public function orderReceivedJob()
+    {
+        return $this->hasOne(OrderReceivedJob::class, 'order_id');
+    }
+
     public function stockEnough()
     {
         $this->orderGoods->each(function (OrderGoods $orderGoods) {
@@ -749,5 +846,6 @@ class Order extends BaseModel
             }
         });
     }
+
 
 }

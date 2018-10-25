@@ -10,6 +10,7 @@ use app\common\events\order\AfterOrderPaidEvent;
 use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\events\PayLog;
 use app\common\events\WechatProcessor;
+use app\common\listeners\charts\OrderBonusListeners;
 use app\common\listeners\PayLogListener;
 use app\common\listeners\point\PointListener;
 use app\common\listeners\WechatProcessorListener;
@@ -103,7 +104,6 @@ class EventServiceProvider extends ServiceProvider
         \app\common\listeners\balance\BalanceListener::class,
 
 
-        \app\frontend\modules\dispatch\listeners\types\Express::class,
         \app\frontend\modules\coupon\listeners\CouponDiscount::class,
         PointListener::class,
         GoodsStock::class,
@@ -131,6 +131,7 @@ class EventServiceProvider extends ServiceProvider
         MemberLevelValidity::class,
         LimitBuy::class,
 //        Statistics::class,
+        OrderBonusListeners::class,
     ];
 
     /**

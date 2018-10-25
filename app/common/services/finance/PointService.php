@@ -156,11 +156,11 @@ class PointService
     }
 
 
-
-
     /**
-     * @name 更新会员积分
-     * @return
+     * Update member credit1.
+     *
+     * @return PointLog|bool
+     * @throws ShopException
      */
 
     public function changePoint()
@@ -210,7 +210,9 @@ class PointService
     }
 
     /**
-     * @name 获取变化之后的积分
+     * 获取变化之后的积分
+     *
+     * @throws ShopException
      */
     public function getAfterPoint()
     {

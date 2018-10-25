@@ -149,7 +149,7 @@ class IncomePageFactory
         $type = $this->_income->getTypeValue();
         $member_id = \YunShop::app()->getMemberId();
 
-        return Income::where('incometable_type', $type)->whereStatus(0)->whereMember_id($member_id)->sum('amount');
+        return Income::where('incometable_type', $type)->whereMember_id($member_id)->sum('amount');
     }
 
 
