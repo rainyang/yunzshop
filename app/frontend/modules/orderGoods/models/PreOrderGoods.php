@@ -136,7 +136,7 @@ class PreOrderGoods extends OrderGoods
         }
         $this->push();
     }
-   
+
     public function save(array $options = [])
     {
         if(isset($this->id)){

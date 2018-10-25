@@ -56,7 +56,7 @@ class PreOrderAddress extends OrderAddress
      * @return OrderAddress
      * @throws ShopException
      */
-    private function getOrderAddress()
+    protected function getOrderAddress()
     {
         $member_address = $this->getMemberAddress();
 
