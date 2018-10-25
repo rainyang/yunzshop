@@ -140,6 +140,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 {{--    <script src="{{static_url('assets/js/material-dashboard.js')}}"></script>--}}
 
     <script src="{{static_url('js/echarts.js')}}" type="text/javascript"></script>
+    <script src="{{static_url('js/china.js')}}" type="text/javascript"></script>
 
     <!-- import iView -->
     {{--<script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>--}}

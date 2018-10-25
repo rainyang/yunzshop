@@ -17,10 +17,11 @@ class PhoneAttributionController extends BaseController
 
     public function index()
     {
-        $phone_data = DB::select("select province,count(id) from ims_yz_phone_attribution group BY province");
-//        dd($phone_data);
+        $phone_data = DB::select("select province,count(id) as num from ims_yz_phone_attribution group BY province");
+
         return view('charts.phone.phone_attribution',[
-            'phone_data' => $phone_data
+            'phone_data' => $phone_data,
+            'phone_map_data' => json_encode($phone_data,256),
         ]);
     }
 
