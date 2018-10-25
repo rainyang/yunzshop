@@ -104,7 +104,7 @@
                                     <label class="label label-danger">积分：{{ $list->credit1 }}</label>
                                 </td>
                                 <td style="overflow:visible;">
-                                    <a class='btn btn-default' href="{{ yzWebUrl('finance.point-recharge', array('id' => $list->uid)) }}" style="margin-bottom: 2px">充值积分</a><br>
+                                    <a class='btn btn-default' href="{{ yzWebUrl('point.recharge.index', array('id' => $list->uid)) }}" style="margin-bottom: 2px">充值积分</a><br>
                                 @if($transfer_love)
                                     <a class='btn btn-default' href="{{ yzWebUrl('finance.point-love.index', array('member_id' => $list->uid)) }}" style="margin-bottom: 2px">转出设置</a>
                                 @else

@@ -11,5 +11,4 @@ namespace app\backend\modules\finance\models;
 
 class PointLog extends \app\common\models\finance\PointLog
 {
-
 }
