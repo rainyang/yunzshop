@@ -3080,6 +3080,17 @@ return [
                         'item'              => 'setting_shop_protocol',
                         'parents'           => ['system', 'Setting',],
                     ],
+                    'express_info' => [
+                        'name'              => '物流查询',
+                        'url'               => 'setting.shop.express-info',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => 'fa-bell-o',
+                        'sort'              => '7',
+                        'item'              => 'setting_shop_protocol',
+                        'parents'           => ['system', 'Setting',],
+                    ],
                 ],
             ],
 
