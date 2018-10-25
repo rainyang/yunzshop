@@ -1,7 +1,9 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
 
 class CreateImsYzPointRechargeTable extends Migration {
 
@@ -28,7 +30,7 @@ class CreateImsYzPointRechargeTable extends Migration {
 
             $records = \app\common\models\finance\PointLog::where('point_mode', 5)->get();
             foreach ($records as $key => $record) {
-                DB::table('yz_point_recharge')->insert(
+                \Illuminate\Support\Facades\DB::table('yz_point_recharge')->insert(
                     [
                         'uniacid' => $record->uniacid,
                         'member_id' => $record->member_id,
