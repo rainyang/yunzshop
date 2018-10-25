@@ -63,6 +63,7 @@ use app\backend\modules\order\observers\OrderObserver;
  * @property Collection orderGoods
  * @property Collection allStatus
  * @property Member belongsToMember
+ * @property OrderDiscount discount
  * @property Collection orderPays
  * @property OrderPay hasOneOrderPay
  * @property OrderAddress address
@@ -549,12 +550,18 @@ class Order extends BaseModel
     {
         return $this->hasMany(OrderDeduction::class, 'order_id', 'id');
     }
-
+    public function orderDeductions()
+    {
+        return $this->hasMany(OrderDeduction::class, 'order_id', 'id');
+    }
     public function orderCoupon()
     {
         return $this->hasMany(OrderCoupon::class, 'order_id', 'id');
     }
-
+    public function orderDiscounts()
+    {
+        return $this->hasMany(OrderDiscount::class, 'order_id', 'id');
+    }
     public function orderDiscount()
     {
         return $this->hasMany(OrderDiscount::class, 'order_id', 'id');
@@ -789,7 +796,7 @@ class Order extends BaseModel
     {
         event(new AfterOrderCreatedImmediatelyEvent($this));
 
-        $this->dispatch(new OrderCreatedEventQueueJob($this));
+        $this->dispatch(new OrderCreatedEventQueueJob($this->id));
         OrderCreatedJob::create([
             'order_id' => $this->id,
         ]);
@@ -799,7 +806,7 @@ class Order extends BaseModel
     {
         event(new AfterOrderPaidImmediatelyEvent($this));
 
-        $this->dispatch(new OrderPaidEventQueueJob($this));
+        $this->dispatch(new OrderPaidEventQueueJob($this->id));
         OrderPaidJob::create([
             'order_id' => $this->id,
         ]);
@@ -809,7 +816,7 @@ class Order extends BaseModel
     {
         event(new AfterOrderReceivedImmediatelyEvent($this));
 
-        $this->dispatch(new OrderReceivedEventQueueJob($this));
+        $this->dispatch(new OrderReceivedEventQueueJob($this->id));
         OrderReceivedJob::create([
             'order_id' => $this->id,
         ]);

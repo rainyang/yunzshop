@@ -51,7 +51,7 @@ class OrderService
         // todo 这里为什么要toArray
         $result->put('order', $order->toArray());
         $result->put('discount', self::getDiscountEventData($order));
-        $result->put('dispatch', ['default_member_address'=>$order->orderAddress->getMemberAddress()]);
+        $result->put('dispatch', self::getDispatchData($order));
 
         if (!$result->has('supplier')) {
             $result->put('supplier', ['username' => array_get(\Setting::get('shop'), 'name', '自营'), 'id' => 0]);
@@ -61,6 +61,18 @@ class OrderService
         return $result;
     }
 
+    /**
+     * @param PreOrder $order
+     * @return array
+     * @throws AppException
+     */
+    private static function getDispatchData(PreOrder $order)
+    {
+        if(!$order->needSend()){
+            return [];
+        }
+        return ['default_member_address'=>$order->orderAddress->getMemberAddress()];
+    }
     /**
      * 获取优惠信息
      * @param $orderModel
@@ -132,6 +144,7 @@ class OrderService
         if ($memberCarts->isEmpty()) {
             return false;
         }
+
         $memberCarts->validate();
 
         $shop = ShopService::getCurrentShopModel();

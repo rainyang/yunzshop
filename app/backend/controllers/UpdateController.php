@@ -342,7 +342,8 @@ class UpdateController extends BaseController
                 }
             }
 
-            //$filesystem->deleteDirectory(storage_path('app/auto-update/shop'));
+            //更新队列
+            \Artisan::call('queue:restart');
 
             //更新完执行数据表
             \Log::debug('----CLI----');

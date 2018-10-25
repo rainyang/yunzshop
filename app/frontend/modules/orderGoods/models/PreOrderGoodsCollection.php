@@ -69,7 +69,7 @@ class PreOrderGoodsCollection extends Collection
     public function hasVirtual(){
         return $this->contains(function ($aOrderGoods) {
             // 包含虚拟商品
-            return $aOrderGoods->goods->type == 0;
+            return $aOrderGoods->goods->type == 2;
         });
     }
 }

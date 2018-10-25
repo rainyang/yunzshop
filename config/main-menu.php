@@ -2374,15 +2374,28 @@ return [
                         'item'              => 'point_member',
                         'parents'           => ['finance', 'finance_point',],
                     ],
+
                     'point_recharge'             => [
                         'name'              => '积分充值',
-                        'url'               => 'finance.point-recharge.index',
+                        'url'               => 'point.recharge.index',
                         'url_params'        => '',
                         'permit'            => 1,
                         'menu'              => 0,
                         'icon'              => '',
                         'sort'              => 0,
                         'item'              => 'point_recharge',
+                        'parents'           => ['finance', 'finance_point',],
+                    ],
+
+                    'point_recharge_records'=> [
+                        'name'              => '充值记录',
+                        'url'               => 'point.recharge-records.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => 'fa-file-text-o',
+                        'sort'              => 0,
+                        'item'              => 'point_recharge_records',
                         'parents'           => ['finance', 'finance_point',],
                     ],
 
@@ -2684,6 +2697,166 @@ return [
 
 
                 ]
+            ],
+
+//            'order_dividend_charts'     => [
+//                'name'          => '订单分润',
+//                'url'           => 'charts.order.order-dividend.count',
+//                'url_params'    => '',
+//                'permit'        => 1,
+//                'menu'          => 1,
+//                'icon'          => 'fa-bar-chart-o',
+//                'sort'          => 0,
+//                'item'          => 'order_ranking_charts',
+//                'parents'       => ['charts',],
+//                'child'         => []
+//            ],
+
+            'transaction_amount_charts'     => [
+                'name'          => '交易额统计',
+                'url'           => 'charts.order.transaction-amount.count',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts',],
+                'child'         => []
+            ],
+
+            'merchant_income_charts'     => [
+                'name'          => '商家收入统计',
+                'url'           => 'charts.merchant.supplier-income.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts',],
+                'child'         => [
+                    'supplier_charts'     => [
+                        'name'          => '供应商收入排行',
+                        'url'           => 'charts.merchant.supplier-income.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_offline_count_charts',
+                        'parents'       => ['charts','merchant_income_charts'],
+
+                    ],
+                    'store_charts'     => [
+                        'name'          => '门店收入排行',
+                        'url'           => 'charts.merchant.store-income.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_offline_order_charts',
+                        'parents'       => ['charts','merchant_income_charts'],
+
+                    ],
+                    'cashier_charts'     => [
+                        'name'          => '收银台收入排行',
+                        'url'           => 'charts.merchant.cashier-income.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_offline_order_charts',
+                        'parents'       => ['charts','merchant_income_charts'],
+
+                    ],
+                ]
+            ],
+            'shop_income_list'     => [
+                'name'          => '平台收益列表',
+                'url'           => 'charts.income.shop-income-list.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts'],
+                'child'         => []
+            ],
+            'shop_income_charts'     => [
+                'name'          => '平台收益统计',
+                'url'           => 'charts.income.shop-income-statistics.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts',],
+                'child'         => []
+            ],
+            'member_income_charts'     => [
+                'name'          => '会员收入统计',
+                'url'           => 'charts.income.member-income.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts',],
+                'child'         => [
+                    'member_income_charts_detail' => [
+                        'name' => '会员收入详情',
+                        'url' => 'charts.income.member-income.detail',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => 'fa-bar-chart-o',
+                        'sort'          => 0,
+                        'item'          => 'order_ranking_charts',
+                        'parents'       => ['charts','member_income_charts'],
+                    ]
+                ]
+            ],
+            'point_charts'     => [
+                'name'          => '积分数据统计',
+                'url'           => 'charts.finance.point.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts',],
+                'child'         => []
+            ],
+            'money_charts'     => [
+                'name'          => '余额数据统计',
+                'url'           => 'charts.finance.balance.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts',],
+                'child'         => []
+            ],
+            'coupon_charts'     => [
+                'name'          => '赠送优惠券统计',
+                'url'           => 'charts.finance.coupon.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts',],
+                'child'         => []
             ],
 
         ],

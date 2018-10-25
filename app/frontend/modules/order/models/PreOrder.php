@@ -211,10 +211,18 @@ class PreOrder extends Order
     {
         $attributeItems = $this->$relation->map(function (BaseModel $relation) {
             $relation->updateTimestamps();
+            $relation->beforeSaving();
             return $relation->getAttributes();
         });
         $this->$relation->first()->insert($attributeItems->toArray());
-
+        /**
+         * @var Collection $ids
+         */
+        $ids = $this->$relation()->pluck('id');
+        $this->$relation->each(function (BaseModel $item) use($ids) {
+            $item->id = $ids->shift();
+            $item->afterSaving();
+        });
     }
 
     /**
@@ -275,6 +283,9 @@ class PreOrder extends Order
      */
     public function isVirtual()
     {
+        if($this->is_virtual == 1){
+            return true;
+        }
         return $this->orderGoods->hasVirtual();
     }
 

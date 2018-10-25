@@ -333,6 +333,102 @@
 
                     </div>
                     <div class='panel-heading'>
+                        提现通知
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员提现管理员通知</label>
+                            <div class="col-sm-8 col-xs-12">
+                                <select name='yz_notice[member_withdraw]' class='form-control diy-notice'>
+                                    <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['member_withdraw'])) value="{{$set['member_withdraw']}}"
+                                            selected @else value=""
+                                            @endif
+                                    >
+                                        默认消息模板
+                                    </option>
+                                    @foreach ($temp_list as $item)
+                                        <option value="{{$item['id']}}"
+                                                @if($set['member_withdraw'] == $item['id'])
+                                                selected
+                                                @endif>{{$item['title']}}</option>
+                                    @endforeach
+                                </select>
+                                <div class="help-block">通知公众平台模板消息编号: OPENTM207574677</div>
+                            </div>
+                            <div class="col-sm-2 col-xs-6">
+                                <input class="mui-switch mui-switch-animbg" id="member_withdraw" type="checkbox"
+                                       @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['member_withdraw']))
+                                       checked
+                                       @endif
+                                       onclick="message_default(this.id)"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                            <div class="col-sm-6 col-xs-12">
+                                <div class='input-group'>
+                                    <input type="text" id='withdraw-user' name="withdraw_user" maxlength="30"
+                                           value="@foreach ($set['withdraw_user'] as $saler) {{ $saler['nickname'] }} @endforeach"
+                                           class="form-control" readonly/>
+                                    <div class='input-group-btn'>
+                                        <button class="btn btn-default" type="button"
+                                                onclick="popwin = $('#modal-module-menus').modal();">选择通知人
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="input-group multi-img-details" id='withdraw_user_container'>
+                                    @foreach ($set['withdraw_user'] as $saler)
+                                        <div class="multi-item saler-item" openid='{{ $saler['openid'] }}'>
+                                            <img class="img-responsive img-thumbnail" src='{{ $saler['avatar'] }}'
+                                                 onerror="this.src='{{static_url('resource/images/nopic.jpg')}}'; this.title='图片未找到.'">
+                                            <div class='img-nickname'>{{ $saler['nickname'] }}</div>
+                                            <input type="hidden" value="{{ $saler['openid'] }}"
+                                                   name="yz_notice[withdraw_user][{{ $saler['uid'] }}][openid]">
+                                            <input type="hidden" value="{{ $saler['uid'] }}"
+                                                   name="yz_notice[withdraw_user][{{ $saler['uid'] }}][uid]">
+                                            <input type="hidden" value="{{ $saler['nickname'] }}"
+                                                   name="yz_notice[withdraw_user][{{ $saler['uid'] }}][nickname]">
+                                            <input type="hidden" value="{{ $saler['avatar'] }}"
+                                                   name="yz_notice[withdraw_user][{{ $saler['uid'] }}][avatar]">
+                                            <em onclick="remove_member(this)" class="close">×</em>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                <span class='help-block'>订单生成后商家通知，可以指定多个人，如果不填写则不通知</span>
+                                <div id="modal-module-menus" class="modal fade" tabindex="-1">
+                                    <div class="modal-dialog" style='width: 920px;'>
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button aria-hidden="true" data-dismiss="modal" class="close"
+                                                        type="button">×
+                                                </button>
+                                                <h3>选择通知人</h3></div>
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" name="keyword" value=""
+                                                               id="search-kwd" placeholder="请输入粉丝昵称/姓名/手机号"/>
+                                                        <span class='input-group-btn'><button type="button"
+                                                                                              class="btn btn-default"
+                                                                                              onclick="search_members();">
+                                                                搜索
+                                                            </button></span>
+                                                    </div>
+                                                </div>
+                                                <div id="module-menus" style="padding-top:5px;"></div>
+                                            </div>
+                                            <div class="modal-footer"><a href="#" class="btn btn-default"
+                                                                         data-dismiss="modal" aria-hidden="true">关闭</a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='panel-heading'>
                         关系通知
                     </div>
                     <div class='panel-body'>
@@ -820,6 +916,47 @@
                                 nickname += " " + $(this).find('.img-nickname').html() + "; ";
                             });
                             $('#salers').val(nickname);
+                        }
+                    </script>
+                    <script language='javascript'>
+                        function search_members() {
+                            if ($.trim($('#search-kwd').val()) == '') {
+                                Tip.focus('#search-kwd', '请输入关键词');
+                                return;
+                            }
+                            $("#module-menus").html("正在搜索....");
+                            $.get("{!! yzWebUrl('member.member.get-search-member') !!}", {
+                                keyword: $.trim($('#search-kwd').val())
+                            }, function (dat) {
+                                $('#module-menus').html(dat);
+                            });
+                        }
+                        function select_member(o) {
+                            if ($('.multi-item[openid="' + o.has_one_fans.openid + '"]').length > 0) {
+                                return;
+                            }
+                            var html = '<div class="multi-item" openid="' + o.has_one_fans.openid + '">';
+                            html += '<img class="img-responsive img-thumbnail" src="' + o.avatar + '" onerror="this.src=\'{{static_url('resource/images/nopic.jpg')}}\'; this.title=\'图片未找到.\'">';
+                            html += '<div class="img-nickname">' + o.nickname + '</div>';
+                            html += '<input type="hidden" value="' + o.has_one_fans.openid + '" name="yz_notice[withdraw_user][' + o.uid + '][openid]">';
+                            html += '<input type="hidden" value="' + o.nickname + '" name="yz_notice[withdraw_user][' + o.uid + '][nickname]">';
+                            html += '<input type="hidden" value="' + o.avatar + '" name="yz_notice[withdraw_user][' + o.uid + '][avatar]">';
+                            html += '<input type="hidden" value="' + o.uid + '" name="yz_notice[withdraw_user][' + o.uid + '][uid]">';
+                            html += '<em onclick="remove_member(this)"  class="close">×</em>';
+                            html += '</div>';
+                            $("#withdraw_user_container").append(html);
+                            refresh_members();
+                        }
+                        function remove_member(obj) {
+                            $(obj).parent().remove();
+                            refresh_members();
+                        }
+                        function refresh_members() {
+                            var nickname = "";
+                            $('.multi-item').each(function () {
+                                nickname += " " + $(this).find('.img-nickname').html() + "; ";
+                            });
+                            $('#withdraw-user').val(nickname);
                         }
                     </script>
                     <script type="text/javascript">

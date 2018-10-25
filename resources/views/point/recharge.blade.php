@@ -1,7 +1,6 @@
 @extends('layouts.base')
-
+@section('title', '会员充值')
 @section('content')
-
     <div class="rightlist">
         <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data">
 
@@ -42,13 +41,18 @@
                             <input type="text" name="point" class="form-control" value=""/>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">备注信息</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <textarea name="remark" rows="5" class="form-control"></textarea>
+                        </div>
+                    </div>
 
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                         <div class="col-sm-9 col-xs-12">
                             <input type="hidden" name="uid" value="{{ $memberInfo['uid'] }}"/>
-                            <input name="submit" type="submit" value="充 值" class="btn btn-success span2"
-                                   onclick="return confirm('确认充值？');return false;">
+                            <input name="submit" type="submit" value="充 值" class="btn btn-success span2" onclick="return confirm('确认充值？');return false;">
                         </div>
                     </div>
 
@@ -57,5 +61,4 @@
 
         </form>
     </div>
-
 @endsection

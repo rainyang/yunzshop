@@ -18,11 +18,14 @@ use app\common\services\finance\CalculationPointService;
 use app\common\services\finance\PointRollbackService;
 use app\common\services\finance\PointService;
 use app\frontend\modules\finance\services\AfterOrderDeductiblePointService;
+use app\Jobs\OrderBonusJob;
 use app\Jobs\PointToLoveJob;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 use Setting;
 
 class PointListener
 {
+    use DispatchesJobs;
     private $pointSet;
     private $orderModel;
 
@@ -32,6 +35,9 @@ class PointListener
         $this->pointSet = $this->orderModel->getSetting('point.set');
         $this->byGoodsGivePoint();
         $this->orderGivePoint();
+
+        // 订单插件分红记录
+        $this->dispatch(new OrderBonusJob('yz_point_log', 'point', 'order_id', 'id', 'point', $this->orderModel));
     }
 
     private function getPointDataByGoods($order_goods_model)
