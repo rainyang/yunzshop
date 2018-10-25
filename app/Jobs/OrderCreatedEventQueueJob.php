@@ -29,11 +29,11 @@ class OrderCreatedEventQueueJob implements ShouldQueue
 
     /**
      * OrderCreatedEventQueueJob constructor.
-     * @param Order $order
+     * @param $orderId
      */
-    public function __construct(Order $order)
+    public function __construct($orderId)
     {
-        $this->order = $order;
+        $this->order = Order::find($orderId);
     }
 
     /**
@@ -44,6 +44,7 @@ class OrderCreatedEventQueueJob implements ShouldQueue
     public function handle()
     {
         DB::transaction(function () {
+
             \YunShop::app()->uniacid = $this->order->uniacid;
             Setting::$uniqueAccountId = $this->order->uniacid;
             event(new AfterOrderCreatedEvent($this->order));
