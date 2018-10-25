@@ -796,7 +796,7 @@ class Order extends BaseModel
     {
         event(new AfterOrderCreatedImmediatelyEvent($this));
 
-        $this->dispatch(new OrderCreatedEventQueueJob($this->fresh()));
+        $this->dispatch(new OrderCreatedEventQueueJob($this->id));
         OrderCreatedJob::create([
             'order_id' => $this->id,
         ]);
@@ -806,7 +806,7 @@ class Order extends BaseModel
     {
         event(new AfterOrderPaidImmediatelyEvent($this));
 
-        $this->dispatch(new OrderPaidEventQueueJob($this->fresh()));
+        $this->dispatch(new OrderPaidEventQueueJob($this->id));
         OrderPaidJob::create([
             'order_id' => $this->id,
         ]);
@@ -816,7 +816,7 @@ class Order extends BaseModel
     {
         event(new AfterOrderReceivedImmediatelyEvent($this));
 
-        $this->dispatch(new OrderReceivedEventQueueJob($this->fresh()));
+        $this->dispatch(new OrderReceivedEventQueueJob($this->id));
         OrderReceivedJob::create([
             'order_id' => $this->id,
         ]);

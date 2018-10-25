@@ -26,12 +26,12 @@ class OrderReceivedEventQueueJob implements ShouldQueue
     protected $order;
 
     /**
-     * AdminOperationLogQueueJob constructor.
-     * @param Order $order
+     * OrderReceivedEventQueueJob constructor.
+     * @param $orderId
      */
-    public function __construct(Order $order)
+    public function __construct($orderId)
     {
-        $this->order = $order;
+        $this->order = Order::find($orderId);
     }
 
     /**
