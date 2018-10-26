@@ -296,8 +296,6 @@ return [
 
     'express' => [
         'KDN' => [
-            'eBusinessID'=>'1318155',
-            'appKey'=>'e08c44ae-90ea-481b-902a-c1b747be0eda',
             'reqURL'=>'http://api.kdniao.cc/Ebusiness/EbusinessOrderHandle.aspx'
         ]
     ]

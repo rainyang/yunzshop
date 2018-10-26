@@ -51,8 +51,9 @@ class DetailController extends BaseController
             throw new AppException('未找到订单');
         }
         if (!empty($order->express)) {
+
             $express = $order->express->getExpress($order->express->express_code, $order->express->express_sn);
-//            dd($express);
+            //dd($express);
 //            exit;
             $dispatch['express_sn'] = $order->express->express_sn;
             $dispatch['company_name'] = $order->express->express_company_name;
