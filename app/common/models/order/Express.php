@@ -72,13 +72,9 @@ class Express extends BaseModel
     private function expressStatusName($key)
     {
         $state_name_map = [
-            0 => '在途',
-            1 => '揽件',
-            2 => '疑难',
+            2 => '在途中',
             3 => '签收',
-            4 => '退签',
-            5 => '派件',
-            6 => '退回',
+            4 => '问题件',
         ];
         return $state_name_map[$key];
     }
