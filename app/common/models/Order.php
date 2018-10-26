@@ -579,7 +579,7 @@ class Order extends BaseModel
 
     public function close()
     {
-        return OrderService::close($this);
+        return \app\backend\modules\order\services\OrderService::close($this);
     }
 
     /**

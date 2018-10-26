@@ -9,6 +9,7 @@
 namespace app\backend\controllers;
 
 use app\common\components\BaseController;
+use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\models\Member;
 use app\common\models\member\ChildenOfMember;
 use app\common\models\member\ParentOfMember;
@@ -22,6 +23,7 @@ use app\common\repositories\ExpressCompany;
 use app\common\services\MessageService;
 use app\frontend\modules\member\models\SubMemberModel;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Yunshop\Commission\Listener\OrderCreatedListener;
 use Yunshop\Kingtimes\common\models\CompeteOrderDistributor;
@@ -31,8 +33,9 @@ class TestController extends BaseController
 {
     public function index()
     {
-       $a =  Order::find(2080)->address();
-       dd($a);
+        $a = Artisan::call('queue:retry');
+
+        dd($a);
     }
 
     public function op_database()
