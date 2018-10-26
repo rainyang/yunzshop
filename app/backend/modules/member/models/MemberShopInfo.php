@@ -42,11 +42,23 @@ class MemberShopInfo extends \app\common\models\MemberShopInfo
     }
 
     /**
+     * 清空会员表 的 yz_openid
+     *
+     * @param $id
+     */
+    public static function  deleteMemberInfoOpenid($id)
+    {
+        return self::uniacid()
+            ->where('member_id', $id)
+            ->update(['yz_openid' => '0']);
+    }
+
+    /**
      * 删除会员信息
      *
      * @param $id
      */
-    public static function  deleteMemberInfoById($id)
+    public static function  deleteMemberInfo($id)
     {
         return self::uniacid()
             ->where('member_id', $id)
