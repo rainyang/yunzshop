@@ -4,6 +4,7 @@ namespace app\frontend\modules\coupon\services;
 
 use app\common\helpers\ArrayHelper;
 use app\common\models\goods\GoodsCoupon;
+use app\framework\Log\Log;
 use app\frontend\modules\coupon\services\models\Coupon;
 use app\frontend\modules\order\models\PreOrder;
 use app\Jobs\addGoodsCouponQueueJob;
@@ -64,6 +65,7 @@ class CouponService
              */
             //不可选
             if (!$coupon->isOptional()) {
+                debug_log()->coupon("优惠券{$coupon->getMemberCoupon()->id}",'不可选');
                 return false;
             }
             //商城开启了多张优惠券 并且当前优惠券组合可以继续添加这张
@@ -125,12 +127,13 @@ class CouponService
     {
         $coupon_method = $this->coupon_method;
         $result = MemberCouponService::getCurrentMemberCouponCache($this->order->belongsToMember);
+
         if (isset($coupon_method)) {// 折扣/立减
             $result = $result->filter(function ($memberCoupon) use ($coupon_method) {
                 return $memberCoupon->belongsToCoupon->coupon_method == $coupon_method;
             });
         }
-        //dd($result->toArray());exit;
+
         return $result;
 
     }

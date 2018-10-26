@@ -24,8 +24,8 @@ class TestController extends BaseController
 {
     public function index()
     {
-       $a =  Order::find(2080)->address();
-       dd($a);
+        $a = ExpressCompany::create()->all();
+        dump($a);
     }
 
     public function op_database()

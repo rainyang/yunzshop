@@ -900,3 +900,16 @@ if(!function_exists('yz_array_set')){
         return $array;
     }
 }
+if (!function_exists('debug_log')) {
+    /**
+     * @param $title
+     * @param $content
+     * @return \app\framework\Log\Log|bool
+     */
+    function debug_log(){
+        if(!isset($_GET['test'])){
+            return false;
+        }
+        return app('Log.debug');
+    }
+}
