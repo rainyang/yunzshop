@@ -21,8 +21,6 @@ class OperationLog extends BaseModel
     //protected $appends = [''];
 
     protected $attributes = [
-        'plugin_id' => 0,
-        'is_virtual' => 0,
     ];
 
 }

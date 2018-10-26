@@ -17,13 +17,16 @@ class CreateYzOperationLogTable extends Migration
             Schema::create('yz_operation_log', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('uniacid')->default(0)->index('idx_uniacid');
-                $table->integer('user_id')->default(0)->comment('操作人');
+                $table->integer('user_id')->default(0)->comment('操作人id');
+                $table->string('user_name', 120)->default('')->comment('操作人');
                 $table->string('modules', 100)->default('')->comment('模块');
                 $table->string('type', 100)->default('')->comment('模块类别');
                 $table->string('ip', 135)->default('')->comment('操作人IP');
                 $table->string('old_content', 255)->default('')->comment('修改前内容');
                 $table->string('new_content', 255)->default('')->comment('修改后内容');
                 $table->string('field', 255)->default('')->comment('修改的字段');
+                $table->string('method', 100)->default('')->comment('请求方式');
+                $table->text('input')->default('')->comment('请求参数');
                 $table->string('extend', 255)->default('');
                 $table->integer('created_at')->nullable();
                 $table->integer('updated_at')->nullable();
