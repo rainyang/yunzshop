@@ -10,6 +10,7 @@ namespace app\frontend\modules\finance\services;
 
 use app\backend\modules\member\models\Member;
 use app\common\models\Order;
+use Illuminate\Support\Facades\Log;
 
 class CalculationPointService
 {
@@ -35,7 +36,10 @@ class CalculationPointService
         $this->verifyMemberPoint($member_id);
         //计算积分
         $this->calculationPoint();
+
         $this->point_money = floor($this->point * $this->point_set['money'] * 100) / 100;
+        Log::info("订单{$this->order->id}:用户积分使用{$this->point_money}");
+
     }
 
     /**
@@ -45,6 +49,7 @@ class CalculationPointService
      */
     private function verifyPointSet()
     {
+        Log::info("订单{$this->order->id}:订单积分设置");
         if ($this->order->getSetting('point.set.point_deduct') == 0) {
             return false;
         }
@@ -59,6 +64,7 @@ class CalculationPointService
      */
     private function verifyMemberPoint($member_id)
     {
+        Log::info("订单{$this->order->id}:用户积分验证");
         if (Member::getMemberInfoById($member_id)['credit1'] <= 0) {
             return false;
         }
