@@ -40,7 +40,7 @@ class OrderDeduction
          * @var Collection $deductions
          */
         $deductions = Deduction::whereEnable(1)->get();
-
+        debug_log()->deduction('开启的抵扣类型',$deductions->pluck('code')->toJson());
         if ($deductions->isEmpty()) {
             return 0;
         }

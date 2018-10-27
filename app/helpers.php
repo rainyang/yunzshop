@@ -907,9 +907,6 @@ if (!function_exists('debug_log')) {
      * @return \app\framework\Log\Log|bool
      */
     function debug_log(){
-        if(!isset($_GET['test'])){
-            return false;
-        }
         return app('Log.debug');
     }
 }
