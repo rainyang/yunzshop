@@ -10,9 +10,9 @@ namespace app\frontend\modules\finance\services;
 
 
 use app\common\events\order\AfterOrderCreatedEvent;
+use app\common\facades\Setting;
 use app\common\models\Order;
 use app\common\services\finance\PointService;
-use Setting;
 
 class AfterOrderDeductiblePointService
 {
@@ -50,6 +50,7 @@ class AfterOrderDeductiblePointService
     private function isDeductible()
     {
         $deduction_ids = $this->preGenerateOrder->getParams('deduction_ids');
+
         if (!self::isChecked($deduction_ids)) {
             return false;
         }
