@@ -11,6 +11,7 @@ namespace app\backend\controllers;
 
 use app\common\components\BaseController;
 use app\common\models\Order;
+use Illuminate\Support\Facades\DB;
 use Yunshop\Commission\models\CommissionOrder;
 
 class FixController extends BaseController
@@ -45,5 +46,79 @@ class FixController extends BaseController
         }
 
         echo "分销订单未结算总数：{$waitCommissionOrder->count()}，已完成订单数：{$handle}, 执行成功数：{$success}";
+    }
+
+    public function fixTeam()
+    {
+        $search_date = strtotime('2018-10-25 12:00:00');
+        $error = [];
+        $tmp      = [];
+        $pos      = [];
+
+        $res = DB::table('yz_team_dividend as t')
+            ->select(['t.id' , 'o.id as orderid', 'o.uid', 't.order_sn', 't.member_id', 't.status'])
+            ->join('yz_order as o', 'o.order_sn', '=', 't.order_sn')
+            ->where('t.created_at', '>', $search_date)
+            ->orderBy('t.id', 'asc')
+            ->get();
+
+        if (!$res->isEmpty()) {
+            foreach ($res as $key => $rows) {
+                if (!$tmp[$rows['orderid']]) {
+                    // $pos = [$rows->member_id => $key];
+
+                    $tmp[$rows['orderid']] = [
+                        'id'    => $rows['id'],
+                        'order_id' => $rows['orderid'],
+                        'uid' => $rows['uid'],
+                        'order_sn' => $rows['order_sn'],
+                        'parent_id' => $rows['member_id'],
+                        'status' => $rows['status'],
+                    ];
+
+                    file_put_contents(storage_path('logs/team_fix.log'), print_r($tmp, 1), FILE_APPEND);
+                } else {
+//                    $k = $pos[$rows->member_id];
+//                    $tmp[$k]['member_id'][] = $rows->member_id;
+                }
+            }
+        }
+
+        //订单会员->关系链 不匹配
+        foreach ($tmp as $k => $v) {
+            $total = DB::table('yz_member')
+                ->where('member_id', '=', $v['uid'])
+                ->where('parent_id', '=', $v['parent_id'])
+                ->count();
+
+            if (0 == $total) {
+                $error[] = $v;
+
+                file_put_contents(storage_path('logs/team_fix_error.log'), print_r($v, 1), FILE_APPEND);
+            }
+        }
+
+        collect($error)->each(function ($item) {
+            if (0 == $item['status']) {
+                $model = Order::find($item['order_id'])->first();
+
+                DB::transaction(function () use ($item, $model) {
+                    DB::table('yz_team_dividend')
+                        ->where('order_sn', '=', $item['order_sn'])
+                        ->delete();
+
+                    DB::table('yz_order_plugin_bonus')
+                        ->where('order_id', '=', $item['order_id'])
+                        ->where('table_name', '=', 'yz_team_dividend')
+                        ->delete();
+
+                    (new \Yunshop\TeamDividend\Listener\OrderCreatedListener)->fixOrder($model);
+
+                    file_put_contents(storage_path('logs/team_fix_del.log'), print_r($item, 1), FILE_APPEND);
+                });
+            }
+        });
+
+        echo '数据修复ok';
     }
 }
