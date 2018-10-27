@@ -63,25 +63,6 @@ class PreOrder extends Order
     protected $orderDeduction;
     protected $attributes = ['id' => null];
 
-    /**
-     * PreOrder constructor.
-     * @param array $attributes
-     * @throws \app\common\exceptions\ShopException
-     */
-    public function __construct(array $attributes = [])
-    {
-        $this->dispatch_type_id = request()->input('dispatch_type_id', 0);
-        parent::__construct($attributes);
-
-        $orderAddress = new PreOrderAddress();
-        $orderAddress->setOrder($this);
-        //临时处理，无扩展性
-        if (request()->input('mark') !== 'undefined') {
-            $this->mark = request()->input('mark', '');
-        }
-
-    }
-
     public function setOrderGoods(PreOrderGoodsCollection $orderGoods)
     {
         $this->setRelation('orderGoods', $orderGoods);
@@ -93,7 +74,19 @@ class PreOrder extends Order
 
     }
 
-    public function _init()
+    public function beforeCreating()
+    {
+        $this->dispatch_type_id = request()->input('dispatch_type_id', 0);
+        $orderAddress = app('OrderManager')->make('PreOrderAddress');
+
+        $orderAddress->setOrder($this);
+        //临时处理，无扩展性
+        if (request()->input('mark') !== 'undefined') {
+            $this->mark = request()->input('mark', '');
+        }
+    }
+
+    public function afterCreating()
     {
 
         $this->setRelation('orderSettings', $this->newCollection());
@@ -219,7 +212,7 @@ class PreOrder extends Order
          * @var Collection $ids
          */
         $ids = $this->$relation()->pluck('id');
-        $this->$relation->each(function (BaseModel $item) use($ids) {
+        $this->$relation->each(function (BaseModel $item) use ($ids) {
             $item->id = $ids->shift();
             $item->afterSaving();
         });
@@ -283,7 +276,7 @@ class PreOrder extends Order
      */
     public function isVirtual()
     {
-        if($this->is_virtual == 1){
+        if ($this->is_virtual == 1) {
             return true;
         }
         return $this->orderGoods->hasVirtual();
