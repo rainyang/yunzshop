@@ -100,7 +100,7 @@ class FixController extends BaseController
 
         collect($error)->each(function ($item) {
             if (0 == $item['status']) {
-                $model = Order::find($item['order_id'])->first();
+                $model = Order::find($item['order_id']);
 
                 DB::transaction(function () use ($item, $model) {
                     DB::table('yz_team_dividend')
@@ -115,6 +115,76 @@ class FixController extends BaseController
                     (new \Yunshop\TeamDividend\Listener\OrderCreatedListener)->fixOrder($model);
 
                     file_put_contents(storage_path('logs/team_fix_del.log'), print_r($item, 1), FILE_APPEND);
+                });
+            }
+        });
+
+        echo '数据修复ok';
+    }
+
+    public function fixArea()
+    {
+        $search_date = strtotime('2018-10-25 12:00:00');
+        $error = [];
+        $tmp      = [];
+
+        $res = DB::table('yz_area_dividend as t')
+            ->select(['t.id' , 'o.id as orderid', 'o.uid', 't.order_sn', 't.member_id', 't.status'])
+            ->join('yz_order as o', 'o.order_sn', '=', 't.order_sn')
+            ->where('t.created_at', '>', $search_date)
+            ->orderBy('t.id', 'asc')
+            ->get();
+
+        if (!$res->isEmpty()) {
+            foreach ($res as $key => $rows) {
+                if (!$tmp[$rows['orderid']]) {
+                    // $pos = [$rows->member_id => $key];
+
+                    $tmp[$rows['orderid']] = [
+                        'id'    => $rows['id'],
+                        'order_id' => $rows['orderid'],
+                        'uid' => $rows['uid'],
+                        'order_sn' => $rows['order_sn'],
+                        'parent_id' => $rows['member_id'],
+                        'status' => $rows['status'],
+                    ];
+
+                    file_put_contents(storage_path('logs/area_fix.log'), print_r($tmp, 1), FILE_APPEND);
+                }
+            }
+        }
+
+//        //订单会员->关系链 不匹配
+//        foreach ($tmp as $k => $v) {
+//            $total = DB::table('yz_member')
+//                ->where('member_id', '=', $v['uid'])
+//                ->where('parent_id', '=', $v['parent_id'])
+//                ->count();
+//
+//            if (0 == $total) {
+//                $error[] = $v;
+//
+//                file_put_contents(storage_path('logs/area_fix_error.log'), print_r($v, 1), FILE_APPEND);
+//            }
+//        }
+
+        collect($tmp)->each(function ($item) {
+            if (0 == $item['status']) {
+                $model = Order::find($item['order_id']);
+
+                DB::transaction(function () use ($item, $model) {
+                    DB::table('yz_area_dividend')
+                        ->where('order_sn', '=', $item['order_sn'])
+                        ->delete();
+
+                    DB::table('yz_order_plugin_bonus')
+                        ->where('order_id', '=', $item['order_id'])
+                        ->where('table_name', '=', 'yz_area_dividend')
+                        ->delete();
+
+                    (new \Yunshop\AreaDividend\Listener\OrderCreatedListener)->fixOrder($model);
+
+                    file_put_contents(storage_path('logs/area_fix_del.log'), print_r($item, 1), FILE_APPEND);
                 });
             }
         });
