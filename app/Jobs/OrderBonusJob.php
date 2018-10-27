@@ -78,7 +78,7 @@ class OrderBonusJob implements  ShouldQueue
             'ids'           => $ids,
             'code'          => $this->code,
             'amount'        => $sum,
-            'undivided'     => $undivided,
+            'undividend'    => $undivided,
             'status'        => 0,
             'price'         => $this->orderModel->price,
             'member_id'     => $this->orderModel->uid,
