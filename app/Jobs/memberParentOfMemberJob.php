@@ -73,7 +73,7 @@ class memberParentOfMemberJob implements ShouldQueue
             $attr = [];
 
             \Log::debug('--------foreach start------', $val->member_id);
-            $data = $memberModel->getDescendants($uniacid, $val->member_id);
+            $data = $memberModel->getNodeParents($uniacid, $val->member_id);
             \Log::debug('--------foreach data------', $data->count());
 
             if (!$data->isEmpty()) {

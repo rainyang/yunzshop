@@ -150,6 +150,16 @@ class TestController extends BaseController
         $member_relation->createParentOfMember();
     }
 
+    public function pp()
+    {
+
+        //$this->synRun(5, '');exit;
+
+        $member_relation = new MemberRelation();
+
+        $member_relation->createChildOfMember();
+    }
+
     public function synRun($uniacid, $memberInfo)
     {
         $memberModel = new \app\backend\modules\member\models\Member();
@@ -215,5 +225,28 @@ class TestController extends BaseController
 
         echo 'end';
 
+    }
+
+    public function wf()
+    {
+        $uniacid = \YunShop::app()->uniacid;
+        //团队总人数
+        $team_member = DB::select('select child_id from ims_yz_member_children where uniacid='.$uniacid.' and member_id=1');
+        $team_member_count = DB::select('select count(child_id) as c from ims_yz_member_children where uniacid='.$uniacid.' and member_id=1');
+        $team_all = $team_member_count[0]['c'];
+
+        foreach ($team_member as $item) {
+            $order_money[] = DB::select("select sum(price) as price from ims_yz_order where status in (1,2,3) and uid=".$item['child_id']);
+        }
+        //团队订单总金额
+        $team_money_total = 0;
+        foreach ($order_money as $k => $item) {
+            $team_money_total+= $item[0]['price'];
+        }
+
+        return $this->successJson('ok', [
+            'team_all' => $team_all,
+            'team_money_total' => $team_money_total
+        ]);
     }
 }
