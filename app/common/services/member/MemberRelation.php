@@ -11,10 +11,20 @@ namespace app\common\services\member;
 
 use app\backend\modules\member\models\Member;
 use app\common\models\member\ChildenOfMember;
+use app\common\models\member\ParentOfMember;
 use app\common\models\MemberShopInfo;
 
 class MemberRelation
 {
+    public $parent;
+    public $child;
+
+    public function __construct()
+    {
+        $this->parent = new ParentOfMember();
+        $this->child  = new ChildenOfMember();
+    }
+
     public function createParentOfMember()
     {
         \Log::debug('------queue parent start-----');
@@ -51,5 +61,10 @@ class MemberRelation
         \Log::debug('------queue child start-----');
         $job = (new \app\Jobs\memberChildOfMemberJob(\YunShop::app()->uniacid));
         dispatch($job);
+    }
+
+    public function getMemberByDepth($uid, $depth)
+    {
+        return $this->child->getMemberByDepth($uid, $depth);
     }
 }

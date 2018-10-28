@@ -23,4 +23,13 @@ class ChildenOfMember extends BaseModel
         $rs = DB::table($this->getTable())->insert($data);
         return $rs;
     }
+
+    public function getMemberByDepth($uid, $depth)
+    {
+        return self::uniacid()
+            ->where('member_id', $uid)
+            ->where('level', $depth)
+            ->orderBy('level')
+            ->get();
+    }
 }

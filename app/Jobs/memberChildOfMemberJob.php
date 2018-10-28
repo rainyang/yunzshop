@@ -41,8 +41,9 @@ class memberChildOfMemberJob implements ShouldQueue
 
     public function synRun($uniacid)
     {
-        $memberModel = new Member();
         $childMemberModel = new ChildenOfMember();
+        $memberModel = new Member();
+        $memberModel->_allNodes = collect([]);
 
         $memberInfo = $memberModel->getTreeAllNodes($uniacid);
 
@@ -51,7 +52,7 @@ class memberChildOfMemberJob implements ShouldQueue
             return;
         }
 
-        $memberModel->_allNodes = collect([]);
+
         foreach ($memberInfo as $item) {
             $memberModel->_allNodes->put($item->member_id, $item);
         }

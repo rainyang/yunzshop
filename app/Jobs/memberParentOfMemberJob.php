@@ -31,7 +31,7 @@ class memberParentOfMemberJob implements ShouldQueue
         $this->member_info = $member_info->toArray();
     }*/
 
-    public $timeout = 3000;
+    public $timeout = 3600;
 
     public function __construct($uniacid)
     {
