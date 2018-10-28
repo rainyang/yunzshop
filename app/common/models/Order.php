@@ -272,7 +272,10 @@ class Order extends BaseModel
     {
         return $this->hasMany(app('OrderManager')->make('OrderCoupon'), 'order_id', 'id');
     }
-
+    public function orderCoupons()
+    {
+        return $this->hasMany(app('OrderManager')->make('OrderCoupon'), 'order_id', 'id');
+    }
     /**
      * 关联模型 1对多:改价记录
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
