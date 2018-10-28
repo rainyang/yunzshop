@@ -172,8 +172,8 @@ trait MemberTreeTrait
     public function getSubLevel($uniacid, $parentId)
     {
         $data = $this->getAllNodes($uniacid);
-\Log::debug('-----all nodes----', $data->count());
         $childList = collect([]);
+
         foreach ($data as $val) {
             if ($val->{$this->getTreeNodeParentIdName()} == $parentId) {
                 $childList->put($val->{$this->getTreeNodeIdName()}, $val);
@@ -192,13 +192,21 @@ trait MemberTreeTrait
     public function getParentLevel($uniacid, $subId)
     {
         $data = $this->getAllNodes($uniacid);
-        \Log::debug('-----all nodes----', $data->count());
         $parentList = collect([]);
-        foreach ($data as $val) {
+
+        if (!empty($data[$subId]) && $data[$subId]['parent_id'] > 0) {
+            $parentList->put($subId, $data[$subId]);
+        }
+
+        /*foreach ($data as $val) {
+            if ($val->{$this->getTreeNodeIdName()} == $subId && 0 == $val->{$this->getTreeNodeParentIdName()}) {
+                return $parentList;
+            }
+
             if ($val->{$this->getTreeNodeIdName()} == $subId && $val->{$this->getTreeNodeParentIdName()} > 0) {
                 $parentList->put($val->{$this->getTreeNodeParentIdName()}, $val);
             }
-        }
+        }*/
         return $parentList;
     }
 
@@ -254,6 +262,7 @@ trait MemberTreeTrait
         }
         $number = 1;
         $parent = $this->getParentLevel($uniacid, $subId);
+
         \Log::debug('------parent----', $parent->count());
         if ($parent) {
             $nextDepth = $depth + 1;

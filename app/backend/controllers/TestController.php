@@ -143,7 +143,7 @@ class TestController extends BaseController
     public function tt()
     {
 
-       //$this->synRun(5, '');exit;
+       $this->synRun(5, '');exit;
 
         $member_relation = new MemberRelation();
 
@@ -169,6 +169,8 @@ class TestController extends BaseController
         foreach ($memberInfo as $item) {
             $memberModel->_allNodes->put($item->member_id, $item);
         }
+
+        //dd($memberModel->_allNodes);
         /* \Log::debug('--------queue member_model -----', get_class($this->memberModel));
          \Log::debug('--------queue childMemberModel -----', get_class($this->childMemberModel));*/
         \Log::debug('--------queue synRun -----');
@@ -185,7 +187,7 @@ class TestController extends BaseController
                 if (!$data->isEmpty()) {
                     \Log::debug('--------insert init------');
                     $data = $data->toArray();
-                    echo '<pre>';print_r($data);
+
                     /*foreach ($data as $k => $v) {
                         $attr[] = [
                             'uniacid'   => $uniacid,
