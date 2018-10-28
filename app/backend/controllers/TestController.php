@@ -12,6 +12,7 @@ use app\common\components\BaseController;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\models\Member;
 use app\common\models\member\ChildenOfMember;
+use app\common\models\member\ChildrenOfMember;
 use app\common\models\member\ParentOfMember;
 use app\common\models\Order;
 
@@ -153,7 +154,7 @@ class TestController extends BaseController
     public function synRun($uniacid, $memberInfo)
     {
         $memberModel = new \app\backend\modules\member\models\Member();
-        $childMemberModel = new ChildenOfMember();
+        $childMemberModel = new ChildrenOfMember();
         $parentMemberModle = new ParentOfMember();
 
         $memberInfo = $memberModel->getTreeAllNodes($uniacid);

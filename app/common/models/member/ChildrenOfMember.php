@@ -12,7 +12,7 @@ namespace app\common\models\member;
 use app\common\models\BaseModel;
 use Illuminate\Support\Facades\DB;
 
-class ChildenOfMember extends BaseModel
+class ChildrenOfMember extends BaseModel
 {
     public $table = 'yz_member_children';
     protected $guarded = [];
