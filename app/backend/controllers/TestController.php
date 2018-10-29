@@ -11,7 +11,6 @@ namespace app\backend\controllers;
 use app\common\components\BaseController;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\models\Member;
-use app\common\models\member\ChildenOfMember;
 use app\common\models\member\ChildrenOfMember;
 use app\common\models\member\ParentOfMember;
 use app\common\models\Order;

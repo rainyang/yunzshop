@@ -9,6 +9,7 @@
 namespace app\common\services\member;
 
 
+use app\backend\modules\member\models\Member;
 use app\common\models\member\ChildrenOfMember;
 use app\common\models\member\ParentOfMember;
 use Illuminate\Support\Facades\DB;
@@ -45,7 +46,7 @@ class MemberRelation
 
         //Cache::put('queque_wechat_total', $total_page, 30);
         /*$member_model = new Member();
-        $childMemberModel = new ChildenOfMember();*/
+        $childMemberModel = new ChildrenOfMember();*/
 
         /*for ($curr_page = 1; $curr_page <= $total_page; $curr_page++) {
             \Log::debug('------curr_page-----', $curr_page);

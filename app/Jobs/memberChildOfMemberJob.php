@@ -10,7 +10,6 @@ namespace app\Jobs;
 
 
 use app\backend\modules\member\models\Member;
-use app\common\models\member\ChildenOfMember;
 use app\common\models\member\ChildrenOfMember;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;

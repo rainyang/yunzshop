@@ -89,6 +89,12 @@ class MemberRelation extends BaseModel
                 case 4:
                     $isAgent = self::checkOrderGoods($info['become_goods_id'], $uid);
                     break;
+                case 5:
+                    $sales_money = \Yunshop\SalesCommission\models\SalesCommission::sumDividendAmountByUid($uid);
+                    if ($sales_money >= $info['become_salesdividend']) {
+                        $isAgent = true;
+                    }
+                    break;
                 default:
                     $isAgent = false;
             }
@@ -465,6 +471,45 @@ class MemberRelation extends BaseModel
                     }
                 }
             }
+
+            if ($set->become == 5) {
+                $parentisagent = true;
+                if (!empty($member->parent_id)) {
+                    $parent = MemberShopInfo::getMemberShopInfo($member->parent_id);
+                    if (empty($parent) || $parent->is_agent != 1 || $parent->status != 2) {
+                        $parentisagent = false;
+                    }
+                }
+
+                if ($parentisagent) {
+                    $can = false;
+
+                    $sales_money = \Yunshop\SalesCommission\models\SalesCommission::sumDividendAmountByUid($uid);
+                    if ($sales_money >= $set->become_salesdividend) {
+                        $can = true;
+                    }
+
+                    if ($can) {
+                        $member->is_agent = 1;
+
+                        if ($become_check == 0) {
+                            $member->status = 2;
+                            $member->agent_time = time();
+
+                            if ($member->inviter == 0) {
+                                $member->inviter = 1;
+                                $member->parent_id = 0;
+                            }
+                        } else {
+                            $member->status = 1;
+                        }
+
+                        if ($member->save()) {
+                            self::setRelationInfo($member);
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -544,6 +589,45 @@ class MemberRelation extends BaseModel
                         $moneycount = Order::getCostTotalPrice($member->member_id);
 
                         $can = $moneycount >= floatval($set->become_moneycount);
+                    }
+
+                    if ($can) {
+                        $member->is_agent = 1;
+
+                        if ($become_check == 0) {
+                            $member->status = 2;
+                            $member->agent_time = time();
+
+                            if ($member->inviter == 0) {
+                                $member->inviter = 1;
+                                $member->parent_id = 0;
+                            }
+                        } else {
+                            $member->status = 1;
+                        }
+
+                        if ($member->save()) {
+                            self::setRelationInfo($member);
+                        }
+                    }
+                }
+            }
+
+            if ($set->become == 5) {
+                $parentisagent = true;
+                if (!empty($member->parent_id)) {
+                    $parent = MemberShopInfo::getMemberShopInfo($member->parent_id);
+                    if (empty($parent) || $parent->is_agent != 1 || $parent->status != 2) {
+                        $parentisagent = false;
+                    }
+                }
+
+                if ($parentisagent) {
+                    $can = false;
+
+                    $sales_money = \Yunshop\SalesCommission\models\SalesCommission::sumDividendAmountByUid($uid);
+                    if ($sales_money >= $set->become_salesdividend) {
+                        $can = true;
                     }
 
                     if ($can) {
