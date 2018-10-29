@@ -9,6 +9,7 @@
 namespace app\backend\controllers;
 
 use app\common\components\BaseController;
+use app\common\events\member\MemberRelationEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\models\Member;
 use app\common\models\member\ChildrenOfMember;
@@ -302,22 +303,32 @@ class TestController extends BaseController
         dd($order_2_all);
     }
 
+
     public function qw()
     {
         //团队所有会员
         $uniacid = \YunShop::app()->uniacid;
-        $team_member = DB::select('select child_id from ims_yz_member_children where uniacid='.$uniacid.' and member_id=1');
+        $team_member = DB::select('select child_id from ims_yz_member_children where uniacid=' . $uniacid . ' and member_id=1');
 
         foreach ($team_member as $item) {
-            $order_total[] = DB::select("select count(id) as total from ims_yz_order where status in (1,2,3) and uid=".$item['child_id']);
+            $order_total[] = DB::select("select count(id) as total from ims_yz_order where status in (1,2,3) and uid=" . $item['child_id']);
         }
 
         //团队订单总数
         $team__total = 0;
         foreach ($order_total as $k => $item) {
-            $team__total+= $item[0]['total'];
+            $team__total += $item[0]['total'];
         }
 
         dd($team__total);
+    }
+
+    public function mr()
+    {
+        $uid = 163757;
+        $member = Member::getMemberByUid($uid)->first();
+
+        event(new MemberRelationEvent($member));
+
     }
 }
