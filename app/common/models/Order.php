@@ -266,7 +266,7 @@ class Order extends BaseModel
 
     /**
      * 关联模型 1对多:订单信息
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\E请填写正确的收货信息请填写正确的收货信息loquent\Relations\HasMany
      */
     public function coupons()
     {
