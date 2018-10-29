@@ -91,7 +91,7 @@ class MemberRelation extends BaseModel
                     break;
                 case 5:
                     $sales_money = \Yunshop\SalesCommission\models\SalesCommission::sumDividendAmountByUid($uid);
-                    if ($sales_money >= $info['become_salesdividend']) {
+                    if ($sales_money >= $info['become_selfmoney']) {
                         $isAgent = true;
                     }
                     break;
@@ -485,7 +485,7 @@ class MemberRelation extends BaseModel
                     $can = false;
 
                     $sales_money = \Yunshop\SalesCommission\models\SalesCommission::sumDividendAmountByUid($uid);
-                    if ($sales_money >= $set->become_salesdividend) {
+                    if ($sales_money >= $set->become_selfmoney) {
                         $can = true;
                     }
 
@@ -626,7 +626,7 @@ class MemberRelation extends BaseModel
                     $can = false;
 
                     $sales_money = \Yunshop\SalesCommission\models\SalesCommission::sumDividendAmountByUid($uid);
-                    if ($sales_money >= $set->become_salesdividend) {
+                    if ($sales_money >= $set->become_selfmoney) {
                         $can = true;
                     }
 
