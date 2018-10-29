@@ -9,10 +9,9 @@
 namespace app\common\services\member;
 
 
-use app\backend\modules\member\models\Member;
-use app\common\models\member\ChildenOfMember;
+use app\common\models\member\ChildrenOfMember;
 use app\common\models\member\ParentOfMember;
-use app\common\models\MemberShopInfo;
+use Illuminate\Support\Facades\DB;
 
 class MemberRelation
 {
@@ -22,9 +21,13 @@ class MemberRelation
     public function __construct()
     {
         $this->parent = new ParentOfMember();
-        $this->child  = new ChildenOfMember();
+        $this->child  = new ChildrenOfMember();
     }
 
+    /**
+     * 批量统计会员父级
+     *
+     */
     public function createParentOfMember()
     {
         \Log::debug('------queue parent start-----');
@@ -56,6 +59,10 @@ class MemberRelation
         }*/
     }
 
+    /**
+     * 批量统计会员子级
+     *
+     */
     public function createChildOfMember()
     {
         \Log::debug('------queue child start-----');
@@ -63,8 +70,46 @@ class MemberRelation
         dispatch($job);
     }
 
+    /**
+     * 获取会员指定层级的子级
+     *
+     * @param $uid
+     * @param $depth
+     * @return mixed
+     */
     public function getMemberByDepth($uid, $depth)
     {
         return $this->child->getMemberByDepth($uid, $depth);
+    }
+
+    /**
+     * 添加会员关系
+     *
+     */
+    public function addMemberOfRelation($uid, $parent_id)
+    {
+        DB::transaction(function() use ($uid, $parent_id) {
+            $this->parent->addNewParentData($uid, $parent_id);
+
+            $this->child->addNewChildData($this->parent, $uid, $parent_id);
+        });
+    }
+
+    public function delMemberOfRelation($uid)
+    {
+        DB::transaction(function() use ($uid) {
+            $this->parent->delMemberOfRelation($uid);
+
+            $this->child->delMemberOfRelation($this->parent, $uid);
+        });
+    }
+
+    public function changeMemberOfRelation($uid, $o_parent_id, $n_parent_id)
+    {
+        DB::transaction(function() use ($uid, $o_parent_id, $n_parent_id) {
+            $this->delMemberOfRelation($uid, $o_parent_id);
+
+            $this->addMemberOfRelation($uid, $n_parent_id);
+        });
     }
 }
