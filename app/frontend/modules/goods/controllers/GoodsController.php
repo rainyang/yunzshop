@@ -519,6 +519,7 @@ class GoodsController extends ApiController
             $commission_data = (new GoodsDetailService($goodsModel))->getGoodsDetailData();
             if ($commission_data['commission_show'] == 1) {
                 $data['sale_count'] += 1;
+                $data['first_strip_key'] = 'commission_show';
             }
             $data = array_merge($data, $commission_data);
         }
