@@ -11,7 +11,7 @@ namespace app\backend\controllers;
 use app\common\components\BaseController;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\models\Member;
-use app\common\models\member\ChildenOfMember;
+use app\common\models\member\ChildrenOfMember;
 use app\common\models\member\ParentOfMember;
 use app\common\models\Order;
 
@@ -143,7 +143,7 @@ class TestController extends BaseController
     public function tt()
     {
 
-       //$this->synRun(5, '');exit;
+       $this->synRun(5, '');exit;
 
         $member_relation = new MemberRelation();
 
@@ -163,7 +163,7 @@ class TestController extends BaseController
     public function synRun($uniacid, $memberInfo)
     {
         $memberModel = new \app\backend\modules\member\models\Member();
-        $childMemberModel = new ChildenOfMember();
+        $childMemberModel = new ChildrenOfMember();
         $parentMemberModle = new ParentOfMember();
 
         $memberInfo = $memberModel->getTreeAllNodes($uniacid);
@@ -179,6 +179,8 @@ class TestController extends BaseController
         foreach ($memberInfo as $item) {
             $memberModel->_allNodes->put($item->member_id, $item);
         }
+
+        //dd($memberModel->_allNodes);
         /* \Log::debug('--------queue member_model -----', get_class($this->memberModel));
          \Log::debug('--------queue childMemberModel -----', get_class($this->childMemberModel));*/
         \Log::debug('--------queue synRun -----');
@@ -195,7 +197,7 @@ class TestController extends BaseController
                 if (!$data->isEmpty()) {
                     \Log::debug('--------insert init------');
                     $data = $data->toArray();
-                    echo '<pre>';print_r($data);
+
                     /*foreach ($data as $k => $v) {
                         $attr[] = [
                             'uniacid'   => $uniacid,

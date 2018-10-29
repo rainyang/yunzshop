@@ -31,7 +31,7 @@ class memberParentOfMemberJob implements ShouldQueue
         $this->member_info = $member_info->toArray();
     }*/
 
-    public $timeout = 3000;
+    public $timeout = 3600;
 
     public function __construct($uniacid)
     {
@@ -49,8 +49,9 @@ class memberParentOfMemberJob implements ShouldQueue
 
     public function synRun($uniacid, $memberInfo)
     {
-        $memberModel = new Member();
         $parentMemberModle = new ParentOfMember();
+        $memberModel = new Member();
+        $memberModel->_allNodes = collect([]);
 
         $memberInfo = $memberModel->getTreeAllNodes($uniacid);
 
@@ -59,9 +60,6 @@ class memberParentOfMemberJob implements ShouldQueue
             return;
         }
 
-        //$memberInfo = $memberInfo;
-
-        $memberModel->_allNodes = collect([]);
         foreach ($memberInfo as $item) {
             $memberModel->_allNodes->put($item->member_id, $item);
         }
@@ -79,6 +77,7 @@ class memberParentOfMemberJob implements ShouldQueue
             if (!$data->isEmpty()) {
                 \Log::debug('--------insert init------');
                 $data = $data->toArray();
+
                 foreach ($data as $k => $v) {
                     $attr[] = [
                         'uniacid'   => $uniacid,

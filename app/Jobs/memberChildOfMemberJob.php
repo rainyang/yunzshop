@@ -10,7 +10,7 @@ namespace app\Jobs;
 
 
 use app\backend\modules\member\models\Member;
-use app\common\models\member\ChildenOfMember;
+use app\common\models\member\ChildrenOfMember;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -41,8 +41,9 @@ class memberChildOfMemberJob implements ShouldQueue
 
     public function synRun($uniacid)
     {
+        $childMemberModel = new ChildrenOfMember();
         $memberModel = new Member();
-        $childMemberModel = new ChildenOfMember();
+        $memberModel->_allNodes = collect([]);
 
         $memberInfo = $memberModel->getTreeAllNodes($uniacid);
 
@@ -51,7 +52,7 @@ class memberChildOfMemberJob implements ShouldQueue
             return;
         }
 
-        $memberModel->_allNodes = collect([]);
+
         foreach ($memberInfo as $item) {
             $memberModel->_allNodes->put($item->member_id, $item);
         }

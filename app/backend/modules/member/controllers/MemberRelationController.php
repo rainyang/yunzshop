@@ -25,8 +25,8 @@ class MemberRelationController extends BaseController
 
     /**
      * 列表
-     *
      * @return string
+     * @throws \Throwable
      */
     public function index()
     {
@@ -50,11 +50,10 @@ class MemberRelationController extends BaseController
             $goods = [];
         }
 
-        $self_buy = 1; //TODO 销售佣金插件是否开启
+
         return view('member.relation', [
             'set' => $relation,
             'goods' => $goods,
-            'self_buy' => $self_buy
         ])->render();
     }
 
