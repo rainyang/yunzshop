@@ -89,11 +89,11 @@ class MemberRelation
      */
     public function addMemberOfRelation($uid, $parent_id)
     {
-        DB::transaction(function() use ($uid, $parent_id) {
-            $this->parent->addNewParentData($uid, $parent_id);
+       // DB::transaction(function() use ($uid, $parent_id) {
+         //   $this->parent->addNewParentData($uid, $parent_id);
 
             $this->child->addNewChildData($this->parent, $uid, $parent_id);
-        });
+       // });
     }
 
     /**

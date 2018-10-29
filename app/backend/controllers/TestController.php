@@ -9,6 +9,7 @@
 namespace app\backend\controllers;
 
 use app\common\components\BaseController;
+use app\common\events\member\MemberRelationEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\models\Member;
 use app\common\models\member\ChildrenOfMember;
@@ -287,5 +288,13 @@ class TestController extends BaseController
 
         $level_3_member = DB::select('select member_id,count(1) as total from ims_yz_member_children where uniacid='.$uniacid.' and level=3 group by member_id,level');
 
+    }
+
+    public function mr()
+    {
+        $uid = 163757;
+        $member = Member::getMemberByUid($uid)->first();
+
+        event(new MemberRelationEvent($member));
     }
 }

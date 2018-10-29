@@ -16,11 +16,20 @@ class ParentOfMember extends BaseModel
 {
     public $table = 'yz_member_parent';
     protected $guarded = [];
+    private $uniacid = 0;
+
+    public function __construct(array $attributes = [])
+    {
+        $this->uniacid = \YunShop::app()->uniacid;
+
+        parent::__construct($attributes);
+    }
 
     public function CreateData($data)
     {
         \Log::debug('----------insert data-----');
         $rs = DB::table($this->getTable())->insert($data);
+
         return $rs;
     }
 
@@ -54,9 +63,11 @@ class ParentOfMember extends BaseModel
         if (!empty($parents)) {
             foreach ($parents as $key => $val) {
                 $attr[] = [
+                    'uniacid'   => $this->uniacid,
                     'parent_id' => $val['parent_id'],
                     'level'     => $val['level'],
-                    'member_id' => $uid
+                    'member_id' => $uid,
+                    'created_at' => time()
                 ];
 
                 ++$depth;
@@ -65,9 +76,11 @@ class ParentOfMember extends BaseModel
 
 
         $attr[] = [
+            'uniacid'   => $this->uniacid,
             'parent_id' => $parent_id,
             'level'     => $depth,
-            'member_id' => $uid
+            'member_id' => $uid,
+            'created_at' => time()
         ];
 
         $this->CreateData($attr);

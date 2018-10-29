@@ -16,6 +16,14 @@ class ChildrenOfMember extends BaseModel
 {
     public $table = 'yz_member_children';
     protected $guarded = [];
+    private $uniacid = 0;
+
+    public function __construct(array $attributes = [])
+    {
+        $this->uniacid = \YunShop::app()->uniacid;
+
+        parent::__construct($attributes);
+    }
 
     public function CreateData($data)
     {
@@ -45,6 +53,7 @@ class ChildrenOfMember extends BaseModel
         $parents = $parentObj->getParentOfMember($parent_id);
         $parents_ids = [];
         $attr        = [];
+        $exists      = [];
 
         if (!empty($parents)) {
             foreach ($parents as $val) {
@@ -56,18 +65,40 @@ class ChildrenOfMember extends BaseModel
 
         $item = $this->countSubChildOfMember($parents_ids);
 
-        foreach ($item as $rows) {
-            $attr[] = [
-                'child_id' => $uid,
-                'level'    => ++$rows['user_count'],
-                'member_id' => $rows['member_id']
-            ];
+        //统计不为0的子级
+        if (!empty($item)) {
+            foreach ($item as $rows) {
+                if (in_array($rows['member_id'], $parents_ids)) {
+                    $exists[] = $rows['member_id'];
+
+                    $attr[] = [
+                        'uniacid'  => $this->uniacid,
+                        'child_id' => $uid,
+                        'level'    => ++$rows['user_count'],
+                        'member_id' => $rows['member_id'],
+                        'created_at' => time()
+                    ];
+                }
+            }
+        }
+
+        //统计为空的子级
+        foreach ($parents_ids as $ids) {
+            if (!in_array($ids, $exists)) {
+                $attr[] = [
+                    'uniacid'  => $this->uniacid,
+                    'child_id' => $uid,
+                    'level'    => 1,
+                    'member_id' => $ids,
+                    'created_at' => time()
+                ];
+            }
         }
 
         $this->CreateData($attr);
     }
 
-    public function countSubChildOfMember($uid)
+    public function countSubChildOfMember(array $uid)
     {
         return self::uniacid()
             ->select(DB::raw('count(1) as user_count, member_id'))
