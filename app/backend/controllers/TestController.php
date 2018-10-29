@@ -258,7 +258,7 @@ class TestController extends BaseController
         $level_1_member = DB::select('select member_id,level,count(1) as total from ims_yz_member_children where uniacid='.$uniacid.' and level in (1,2,3) group by member_id,level');
         $level_1_member = collect($level_1_member);
         $result = [];
-        dd($level_1_member);
+//        dd($level_1_member);
         foreach ($level_1_member as $val) {
             if (!isset($result[$val['member_id']])) {
                  $result[$val['member_id']] = [
@@ -282,10 +282,23 @@ class TestController extends BaseController
             }
         }
 
-//dd($result);
-        $level_2_member = DB::select('select member_id,count(1) as total from ims_yz_member_children where uniacid='.$uniacid.' and level=2 group by member_id,level');
 
-        $level_3_member = DB::select('select member_id,count(1) as total from ims_yz_member_children where uniacid='.$uniacid.' and level=3 group by member_id,level');
+    }
 
+    public function qe()
+    {
+        $uniacid = \YunShop::app()->uniacid;
+        $member_1 = DB::select('select uniacid,child_id,level from ims_yz_member_children where level =1'.' and uniacid ='.$uniacid .' order by child_id');
+
+        foreach ($member_1 as $k => $item) {
+            $order_1_all[] = DB::select('select uid,sum(price) as money,count(id) as total from ims_yz_order where uid='.$item['child_id']);
+        }
+//        dd($order_1_all);
+        $member_2 = DB::select('select uniacid,child_id,level from ims_yz_member_children where level =2'.' and uniacid ='.$uniacid .' order by child_id');
+
+        foreach ($member_2 as $k => $item) {
+            $order_2_all[] = DB::select('select uid,sum(price) as money,count(id) as total from ims_yz_order where uid='.$item['child_id']);
+        }
+        dd($order_2_all);
     }
 }
