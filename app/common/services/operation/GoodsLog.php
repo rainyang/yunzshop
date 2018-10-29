@@ -34,12 +34,17 @@ class GoodsLog extends OperationBase
              'title'        => '商品标题',
              'price'        => '现价',
              'market_price' => '原价',
-             'cost_price'   => '成本',
-             'type'         => [1=> '实体', 2=>' 虚拟'],
-             'is_recommand' => [0=>'取消推荐', 1=>'推荐'],
-             'is_new'       => [0=>'取消新品', 1=>'新品'],
-             'is_hot'       => [0=>'取消热卖', 1=>'热卖'],
-             'is_discount'  => [0=>'取消促销', 1=>'促销'],
+             'cost_price'   => '成本价',
+             'type'         => ['field_name' => '商品类型',1=> '实体', 2=>' 虚拟'],
+             'is_recommand' => ['field_name' => '商品属性',0=>'取消推荐', 1=>'推荐'],
+             'is_new'       => ['field_name' => '商品属性',0=>'取消新品', 1=>'新品'],
+             'is_hot'       => ['field_name' => '商品属性',0=>'取消热卖', 1=>'热卖'],
+             'is_discount'  => ['field_name' => '商品属性',0=>'取消促销', 1=>'促销'],
+             'weight'       => '商品重量',
+             'stock'        => '商品库存',
+             'virtual_sales'=> '商品虚拟销量',
+             'reduce_stock_method' => ['field_name' => '减库存方式',0=>'拍下减库存',1=>'付款减库存',2=>'永不减库存'],
+             'status'       => ['field_name' => '上下架',0=>'下架',1=>'上架'],
          ];
      }
 

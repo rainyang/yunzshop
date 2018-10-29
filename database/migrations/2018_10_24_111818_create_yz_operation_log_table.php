@@ -24,9 +24,9 @@ class CreateYzOperationLogTable extends Migration
                 $table->string('ip', 135)->default('')->comment('操作人IP');
                 $table->string('old_content', 255)->default('')->comment('修改前内容');
                 $table->string('new_content', 255)->default('')->comment('修改后内容');
+                $table->string('field_name', 255)->default('')->comment('字段名称');
                 $table->string('field', 255)->default('')->comment('修改的字段');
                 $table->string('method', 100)->default('')->comment('请求方式');
-                $table->text('input')->default('')->comment('请求参数');
                 $table->string('extend', 255)->default('');
                 $table->integer('created_at')->nullable();
                 $table->integer('updated_at')->nullable();

@@ -30,7 +30,9 @@ abstract class OperationBase
 
     protected function setDefault()
     {
+
         $this->logs['user_id'] = $this->uid;
+        $this->logs['user_name'] = $this->uid;
         $this->logs['uniacid'] = \YunShop::app()->uniacid;
         $this->logs['method']  = request()->method();
         $this->logs['ip']      = $_SERVER['REMOTE_ADDR'];
@@ -63,10 +65,11 @@ abstract class OperationBase
 
                 $this->setLog('field', $key);
                 if (is_string($value)) {
-
+                    $this->setLog('field_name', $value);
                     $this->setLog('old_content', $modify_fields[$key]['old_content']);
                     $this->setLog('new_content', $modify_fields[$key]['new_content']);
                 } elseif (is_array($value)) {
+                    $this->setLog('field_name', $value[$modify_fields[$key]['field_name']]);
                     $old_content = $value[$modify_fields[$key]['old_content']];
                     $new_content = $value[$modify_fields[$key]['new_content']];
                     $this->setLog('old_content', $old_content);
