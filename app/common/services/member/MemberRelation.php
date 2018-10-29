@@ -96,6 +96,13 @@ class MemberRelation
         });
     }
 
+    /**
+     * 删除会员关系
+     *
+     * @param $uid
+     * @throws \Exception
+     * @throws \Throwable
+     */
     public function delMemberOfRelation($uid)
     {
         DB::transaction(function() use ($uid) {
@@ -105,6 +112,15 @@ class MemberRelation
         });
     }
 
+    /**
+     * 修改会员关系
+     *
+     * @param $uid
+     * @param $o_parent_id
+     * @param $n_parent_id
+     * @throws \Exception
+     * @throws \Throwable
+     */
     public function changeMemberOfRelation($uid, $o_parent_id, $n_parent_id)
     {
         DB::transaction(function() use ($uid, $o_parent_id, $n_parent_id) {
