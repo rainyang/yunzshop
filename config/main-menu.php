@@ -3200,6 +3200,18 @@ return [
                     ],
                 ],
             ],
+            'operation_log' => [
+                'name'              => '操作日志',
+                'url'               => 'setting.lang.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-list-ul',
+                'sort'              => '6',
+                'item'              => 'operation_log',
+                'parents'           => ['system',],
+            ],
+
         ],
     ],
 ];

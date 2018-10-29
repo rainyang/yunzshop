@@ -4,6 +4,7 @@ namespace app\common\services\operation;
 
 use app\common\models\BaseModel;
 use app\common\models\OperationLog;
+use app\common\models\user\User;
 
 abstract class OperationBase
 {
@@ -30,15 +31,17 @@ abstract class OperationBase
 
     protected function setDefault()
     {
-
+        $user_model = User::where('uid', $this->uid)->first();
+        if ($user_model) {
+            $this->logs['user_name'] = $user_model->username;
+        }
         $this->logs['user_id'] = $this->uid;
-        $this->logs['user_name'] = $this->uid;
         $this->logs['uniacid'] = \YunShop::app()->uniacid;
         $this->logs['method']  = request()->method();
         $this->logs['ip']      = $_SERVER['REMOTE_ADDR'];
-        //$this->logs['input']   = json_encode(request()->all(), JSON_UNESCAPED_UNICODE); //todo 数据过大，可考虑附表
         $this->logs['modules'] = $this->modules;
         $this->logs['type'] = $this->type;
+        //$this->logs['input']   = json_encode(request()->all(), JSON_UNESCAPED_UNICODE); //todo 数据过大，可考虑附表
     }
 
     protected function log($model, $type)
