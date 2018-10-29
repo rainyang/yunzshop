@@ -8,12 +8,10 @@
 
 namespace app\frontend\modules\order\services\behavior;
 
-use app\common\exceptions\AppException;
 use app\common\models\DispatchType;
 use app\common\models\Order;
 use app\common\models\order\Express;
 use app\common\repositories\ExpressCompany;
-use Illuminate\Support\Facades\Validator;
 
 class OrderSend extends ChangeStatusOperation
 {
@@ -42,12 +40,12 @@ class OrderSend extends ChangeStatusOperation
             $db_express_model->express_code = request()->input('express_code','');
 
             $db_express_model->express_company_name = request()->input('express_company_name', function (){
-                return array_get((new ExpressCompany())->where('code',request()->input('express_code',''))->first(),'express_company_name','');
+                return array_get(ExpressCompany::create()->where('value',request()->input('express_code',''))->first(),'name','');
             });
             $db_express_model->express_sn = request()->input('express_sn','');
-
             $db_express_model->save();
         }
         parent::updateTable();
     }
+
 }

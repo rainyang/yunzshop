@@ -54,9 +54,8 @@ class MemberController extends ApiController
     public function getUserInfo()
     {
         $member_id = \YunShop::app()->getMemberId();
+        $v         = request('v');
 
-        // (new \app\frontend\modules\member\controllers\LogoutController)->index();
-        // exit();
         if (!empty($member_id)) {
             $member_info = MemberModel::getUserInfos($member_id)->first();
 
@@ -68,16 +67,6 @@ class MemberController extends ApiController
                 $data = MemberModel::addPlugins($data);
 
                 $data['income'] = MemberModel::getIncomeCount();
-
-                //标识"会员关系链"是否开启(如果没有设置,则默认为未开启),用于前端判断是否显示个人中心的"推广二维码"
-                /*
-                $info = MemberRelation::getSetInfo()->first();
-                if (!empty($info)) {
-                    $data['relation_switch'] = $info->status == 1 ? 1 : 0;
-                } else {
-                    $data['relation_switch'] = 0;
-                }
-                */
 
                 $data['relation_switch'] = (1 == $member_info['yz_member']['is_agent'] && 2 == $member_info['yz_member']['status'])
                                               ? 1 : 0;
@@ -110,6 +99,17 @@ class MemberController extends ApiController
                 }
 
                 $data['withdraw_status'] = $withdraw_status;
+
+                if (!is_null($v)) {
+                    if (is_null($member_info['yz_member']['invite_code']) || empty($member_info['yz_member']['invite_code'])) {
+                        $data['inviteCode'] = MemberModel::getInviteCode($member_id);
+                    } else {
+                        $data['inviteCode'] = $member_info['yz_member']['invite_code'];
+                    }
+                } else {
+                    $data['inviteCode'] = 0;
+                }
+
                 return $this->successJson('', $data);
             } else {
                 return $this->errorJson('[' . $member_id . ']用户不存在');
@@ -519,13 +519,15 @@ class MemberController extends ApiController
      */
     public function bindMobile()
     {
-        $mobile = \YunShop::request()->mobile;
-        $password = \YunShop::request()->password;
+        $mobile           = \YunShop::request()->mobile;
+        $password         = \YunShop::request()->password;
         $confirm_password = \YunShop::request()->password;
+        $uid              = \YunShop::app()->getMemberId();
 
-        $member_model = MemberModel::getMemberById(\YunShop::app()->getMemberId());
 
-        if (\YunShop::app()->getMemberId() && \YunShop::app()->getMemberId() > 0) {
+        $member_model = MemberModel::getMemberById($uid);
+
+        if (\YunShop::app()->getMemberId() && $uid > 0) {
             $check_code = MemberService::checkCode();
 
             if ($check_code['status'] != 1) {
@@ -573,6 +575,12 @@ class MemberController extends ApiController
                 $member_model->password = md5($password . $salt);
 
                 if ($member_model->save()) {
+                    //邀请码
+                    $parent_id = \app\common\models\Member::getMemberIdForInviteCode();
+                    if (!is_null($parent_id)) {
+                        MemberShopInfo::change_relation($uid, $parent_id);
+                    }
+
                     if (Cache::has($member_model->uid . '_member_info')) {
                         Cache::forget($member_model->uid . '_member_info');
                     }
@@ -1378,9 +1386,18 @@ class MemberController extends ApiController
         }
 
         if (app('plugins')->isEnabled('kingtimes')) {
-            $provider = Provider::select(['id', 'uid'])->where('uid', \YunShop::app()->getMemberId())->first();
-            $distributor = Distributor::select(['id', 'uid'])->where('uid', \YunShop::app()->getMemberId())->first();
-            if (!$provider || ($provider && $provider->status == 0)) {
+            $provider = Provider::select(['id', 'uid', 'status'])->where('uid', \YunShop::app()->getMemberId())->first();
+            $distributor = Distributor::select(['id', 'uid', 'status'])->where('uid', \YunShop::app()->getMemberId())->first();
+            if ($provider) {
+                if ($provider->status == 1) {
+                    $data[] = [
+                        'name' => 'provider_center',
+                        'title' => '补货商中心',
+                        'class' => 'icon-member-replenishment',
+                        'url'   => 'ReplenishmentApply',
+                    ];
+                }
+            } else {
                 $data[] = [
                     'name' => 'provider_apply',
                     'title' => '补货商申请',
@@ -1388,26 +1405,19 @@ class MemberController extends ApiController
                     'url'   => 'ReplenishmentApply',
                 ];
             }
-            if ($provider && $provider->status == 1) {
-                $data[] = [
-                    'name' => 'provider_center',
-                    'title' => '补货商中心',
-                    'class' => 'icon-member-replenishment',
-                    'url'   => 'ReplenishmentApply',
-                ];
-            }
-            if (!$distributor || ($distributor && $distributor->status == 0)) {
+            if ($distributor) {
+                if ($distributor->status == 1) {
+                    $data[] = [
+                        'name' => 'distributor_center',
+                        'title' => '配送站中心',
+                        'class' => 'icon-member-express-list',
+                        'url'   => 'DeliveryTerminalApply',
+                    ];
+                }
+            } else {
                 $data[] = [
                     'name' => 'distributor_apply',
                     'title' => '配送站申请',
-                    'class' => 'icon-member-express-list',
-                    'url'   => 'DeliveryTerminalApply',
-                ];
-            }
-            if ($distributor && $distributor->status == 1) {
-                $data[] = [
-                    'name' => 'distributor_center',
-                    'title' => '配送站中心',
                     'class' => 'icon-member-express-list',
                     'url'   => 'DeliveryTerminalApply',
                 ];

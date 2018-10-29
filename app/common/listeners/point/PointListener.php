@@ -10,7 +10,7 @@
 namespace app\common\listeners\point;
 
 use app\common\events\order\AfterOrderCanceledEvent;
-use app\common\events\order\AfterOrderCreatedEvent;
+use app\common\events\order\AfterOrderCreatedImmediatelyEvent;
 use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\models\Order;
 use app\common\models\UniAccount;
@@ -18,11 +18,14 @@ use app\common\services\finance\CalculationPointService;
 use app\common\services\finance\PointRollbackService;
 use app\common\services\finance\PointService;
 use app\frontend\modules\finance\services\AfterOrderDeductiblePointService;
+use app\Jobs\OrderBonusJob;
 use app\Jobs\PointToLoveJob;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 use Setting;
 
 class PointListener
 {
+    use DispatchesJobs;
     private $pointSet;
     private $orderModel;
 
@@ -32,6 +35,9 @@ class PointListener
         $this->pointSet = $this->orderModel->getSetting('point.set');
         $this->byGoodsGivePoint();
         $this->orderGivePoint();
+
+        // 订单插件分红记录
+        $this->dispatch(new OrderBonusJob('yz_point_log', 'point', 'order_id', 'id', 'point', $this->orderModel));
     }
 
     private function getPointDataByGoods($order_goods_model)
@@ -90,7 +96,7 @@ class PointListener
 
         //下单之后 扣除积分抵扣使用的积分
         $events->listen(
-            AfterOrderCreatedEvent::class,
+            AfterOrderCreatedImmediatelyEvent::class,
             AfterOrderDeductiblePointService::class . '@deductiblePoint'
         );
 

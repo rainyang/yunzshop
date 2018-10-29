@@ -9,6 +9,7 @@
 namespace app\frontend\modules\order\controllers;
 
 use app\frontend\modules\member\services\MemberCartService;
+use app\frontend\modules\memberCart\MemberCartCollection;
 use Request;
 use app\frontend\modules\order\services\OrderService;
 
@@ -22,7 +23,7 @@ class GoodsBuyController extends PreOrderController
             'option_id' => request()->input('option_id'),
         ];
 
-        $result = collect();
+        $result = new MemberCartCollection();
         $result->push(MemberCartService::newMemberCart($goods_params));
         return $result;
     }

@@ -47,7 +47,9 @@ use Illuminate\Support\Collection;
  */
 class PreOrderGoods extends OrderGoods
 {
-    protected $hidden = ['goods', 'sale','belongsToGood','hasOneGoodsDispatch'];
+    use PreOrderGoodsTrait;
+
+    protected $hidden = ['goods', 'sale', 'belongsToGood', 'hasOneGoodsDispatch'];
     /**
      * @var PreOrder
      */
@@ -57,46 +59,13 @@ class PreOrderGoods extends OrderGoods
      */
     public $coupons;
 
-    /**
-     * PreOrderGoods constructor.
-     * @param array $attributes
-     * @throws ShopException
-     */
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
-        $this->setPriceCalculator();
         // 订单商品优惠使用记录集合
         $this->setRelation('orderGoodsDiscounts', $this->newCollection());
         // 订单商品优惠使用记录集合
         $this->setRelation('orderGoodsDeductions', new OrderGoodsDeductionCollection());
-        // 将会员等级折扣总金额保存在订单优惠信息表中
-//        $preOrderDiscount = new PreOrderGoodsDiscount([
-//            'discount_code' => 'vipDiscount',
-//            'amount' => $this->getVipDiscountAmount(),
-//            'name' => '会员等级折扣',
-//
-//        ]);
-//        $preOrderDiscount->setOrderGoods($this);
-
-    }
-
-    /**
-     * 初始化属性,计算金额和价格,由于优惠金额的计算依赖于订单的优惠金额计算,所以需要在订单类计算完优惠金额之后,再执行这个方法
-     * @throws ShopException
-     */
-    public function _init()
-    {
-        $attributes = $this->getPreAttributes();
-        $this->setRawAttributes($attributes);
-        $attributes = [
-            'price' => $this->getPrice(),
-            'coupon_price' => $this->getCouponAmount()
-        ];
-
-        $attributes = array_merge($this->getAttributes(),$attributes);
-        $this->setRawAttributes($attributes);
-
     }
 
     /**
@@ -110,11 +79,31 @@ class PreOrderGoods extends OrderGoods
         $this->uniacid = $order->uniacid;
     }
 
+    /**
+     * 初始化属性,计算金额和价格,由于优惠金额的计算依赖于订单的优惠金额计算,所以需要在订单类计算完优惠金额之后,再执行这个方法
+     */
+    public function _init()
+    {
+
+
+        $attributes = $this->getPreAttributes();
+        $this->setRawAttributes($attributes);
+        $attributes = $this->getPreAttributes();
+        $this->setRawAttributes($attributes);
+        $attributes = [
+            'price' => $this->getPrice(),
+            'coupon_price' => $this->getCouponAmount()
+        ];
+
+        $attributes = array_merge($this->getAttributes(), $attributes);
+        $this->setRawAttributes($attributes);
+
+    }
+
 
     /**
      * 与生成后的 OrderGoods 对象一致,方便外部调用
      * @return mixed
-     * @throws ShopException
      */
     public function getPriceAttribute()
     {
@@ -122,50 +111,9 @@ class PreOrderGoods extends OrderGoods
     }
 
     /**
-     * 获取生成前的模型属性
-     * @return array
-     * @throws ShopException
+     * @throws \Exception
      */
-    public function getPreAttributes()
-    {
-        $attributes = array(
-            'goods_id' => $this->goods->id,
-            'goods_sn' => $this->goods->goods_sn,
-            'total' => $this->total,
-            'title' => $this->goods->title,
-            'thumb' => yz_tomedia($this->goods->thumb),
-            'goods_price' => $this->getGoodsPrice(),
-            'price' => $this->getPrice(),
-            'goods_cost_price' => $this->getGoodsCostPrice(),
-            'goods_market_price' => $this->getGoodsMarketPrice(),
-
-
-        );
-
-        if ($this->isOption()) {
-
-            $attributes += [
-                'goods_option_id' => $this->goodsOption->id,
-                'goods_option_title' => $this->goodsOption->title,
-            ];
-        }
-
-        $attributes = array_merge($this->getAttributes(), $attributes);
-
-        return $attributes;
-    }
-
-    /**
-     * @return bool
-     * @throws AppException
-     * @throws ShopException
-     */
-    public function push()
-    {
-        $this->save();
-
-        // 在订单商品保存后,为它的关联模型添加外键,以便保存
-
+    public function afterSaving(){
         foreach ($this->relations as $models) {
             $models = $models instanceof Collection
                 ? $models->all() : [$models];
@@ -186,56 +134,31 @@ class PreOrderGoods extends OrderGoods
             }
 
         }
-
-        return parent::push();
+        $this->push();
     }
 
-    /**
-     * 显示商品数据
-     * @return array
-     * @throws ShopException
-     */
-    public function toArray()
-    {
-        $attributes = parent::toArray();
-        $attributes['payment_amount'] = $this->getPaymentAmount();
-        $attributes['deduction_amount'] = $this->getDeductionAmount();
-        return $attributes;
-    }
-
-    /**
-     * 订单商品插入数据库
-     * @param array $options
-     * @return bool
-     * @throws AppException
-     * @throws ShopException
-     */
     public function save(array $options = [])
     {
-        if (!isset($this->order)) {
-
-            throw new AppException('订单信息不存在');
+        if(isset($this->id)){
+            return true;
         }
-        $this->order_id = $this->order->id;
+        return parent::save($options); // TODO: Change the autogenerated stub
+    }
+
+    public function beforeSaving()
+    {
         $this->deduction_amount = $this->getDeductionAmount();
         $this->payment_amount = $this->getPaymentAmount();
-
-        return parent::save($options);
     }
 
     /**
-     * @param string $key
      * @return mixed
-     * @throws ShopException
      */
-    public function __get($key)
+    public function getGoodsPriceAttribute()
     {
-        // 为了与生成后的订单商品模型一致,方便外部调用
-        if ($key == 'goods_price') {
-            return $this->getGoodsPrice();
-        }
-        return parent::__get($key);
+        return $this->getGoodsPrice();
     }
+
 
     /**
      * @var NormalOrderGoodsPrice
@@ -246,27 +169,25 @@ class PreOrderGoods extends OrderGoods
     /**
      * 设置价格计算者
      */
-    public function setPriceCalculator()
+    public function _getPriceCalculator()
     {
         if ($this->isOption()) {
-            $this->priceCalculator = new NormalOrderGoodsOptionPrice($this);
+            $priceCalculator = new NormalOrderGoodsOptionPrice($this);
 
         } else {
-            $this->priceCalculator = new NormalOrderGoodsPrice($this);
-
+            $priceCalculator = new NormalOrderGoodsPrice($this);
         }
-
+        return $priceCalculator;
     }
 
     /**
      * 获取价格计算者
      * @return NormalOrderGoodsPrice
-     * @throws ShopException
      */
     protected function getPriceCalculator()
     {
         if (!isset($this->priceCalculator)) {
-            throw new ShopException('订单商品计算实例不存在');
+            $this->priceCalculator = $this->_getPriceCalculator();
         }
         return $this->priceCalculator;
     }
@@ -274,7 +195,6 @@ class PreOrderGoods extends OrderGoods
     /**
      * 获取vip优惠金额
      * @return mixed
-     * @throws ShopException
      */
     protected function getVipDiscountAmount()
     {
@@ -284,30 +204,10 @@ class PreOrderGoods extends OrderGoods
 
     }
 
-    /**
-     * 成交价格
-     * @return mixed
-     * @throws ShopException
-     */
-    public function getPrice()
-    {
-        return $this->getPriceCalculator()->getPrice();
-    }
-
-    /**
-     * 原始价格
-     * @return mixed
-     * @throws ShopException
-     */
-    public function getGoodsPrice()
-    {
-        return $this->getPriceCalculator()->getGoodsPrice();
-    }
 
     /**
      * 均摊的支付金额
      * @return float
-     * @throws ShopException
      */
     public function getPaymentAmount()
     {
@@ -317,7 +217,6 @@ class PreOrderGoods extends OrderGoods
     /**
      * 抵扣金额
      * @return float
-     * @throws ShopException
      */
     public function getDeductionAmount()
     {
@@ -328,7 +227,6 @@ class PreOrderGoods extends OrderGoods
     /**
      * 优惠券金额
      * @return int
-     * @throws ShopException
      */
     public function getCouponAmount()
     {
@@ -336,45 +234,4 @@ class PreOrderGoods extends OrderGoods
 
     }
 
-    /**
-     * 获取利润
-     * @return mixed
-     * @throws ShopException
-     */
-    public function getGoodsCostPrice()
-    {
-        return $this->getPriceCalculator()->getGoodsCostPrice();
-
-    }
-
-    /**
-     * 市场价
-     * @return mixed
-     * @throws ShopException
-     */
-    public function getGoodsMarketPrice()
-    {
-        return $this->getPriceCalculator()->getGoodsMarketPrice();
-
-    }
-
-    /**
-     * 订单商品抵扣集合
-     * @return OrderGoodsDeductionCollection
-     */
-    public function getOrderGoodsDeductions(){
-        //dump($this->orderGoodsDeductions);
-        return $this->orderGoodsDeductions;
-    }
-
-    /**
-     * 获取重量
-     * @return mixed
-     */
-    public function getWeight(){
-        if($this->isOption()){
-            return $this->goodsOption->weight;
-        }
-        return $this->goods->weight;
-    }
 }

@@ -393,29 +393,18 @@ class Member extends BackendModel
     public static function createRealtion($member_id, $upperMemberId = NULL)
     {
         $model = MemberShopInfo::getMemberShopInfo($member_id);
+        $code_mid = self::getMemberIdForInviteCode();
+        $mid   = !is_null($code_mid) ? $code_mid : self::getMid();
 
         if ($upperMemberId) {
             event(new BecomeAgent($upperMemberId, $model));
         } else {
-            event(new BecomeAgent(self::getMid(), $model));
+            event(new BecomeAgent($mid, $model));
         }
     }
 
     public static function getMid()
     {
-        /*
-          if (\YunShop::request()->mid) {
-              \Log::debug(sprintf('前端获取mid-%d', \YunShop::request()->mid));
-              return \YunShop::request()->mid;
-          } elseif (Session::get('client_url') && strpos(Session::get('client_url'), 'mid')) {
-              preg_match('/.+mid=(\d+).+/', Session::get('client_url'), $matches);
-              \Log::debug('截取mid', $matches[1]);
-              if (isset($matches) && !empty($matches[1])) {
-                  return $matches[1];
-              }
-          }
-          */
-
         $mid = \YunShop::request()->mid;
 
         return ($mid && ($mid != 'null' || $mid != 'undefined')) ? (int)$mid : 0;
@@ -429,7 +418,7 @@ class Member extends BackendModel
      */
     public static function addPlugins(&$data = [])
     {
-        $plugin_class = new PluginManager(app(), new OptionRepository(), new Dispatcher(), new Filesystem());
+        $plugin_class = app('plugins');
 
         if ($plugin_class->isEnabled('supplier')) {
             $data['supplier'] = VerifyButton::button();
@@ -734,5 +723,35 @@ class Member extends BackendModel
     public function getAvatarImageAttribute()
     {
         return $this->avatar ? tomedia($this->avatar) : tomedia(\Setting::get('shop.shop.headimg'));
+    }
+
+    /**
+     * 邀请码会员
+     *
+     * @return null
+     */
+    public function getMemberIdForInviteCode()
+    {
+        if ($invite_code = self::hasInviteCode()) {
+            $ids = MemberShopInfo::getMemberIdForInviteCode($invite_code);
+
+            if (!is_null($ids)) {
+                return $ids[0];
+            }
+        }
+
+        return null;
+    }
+
+    public static function hasInviteCode()
+    {
+        $is_invite = intval(\Setting::get('shop.member.is_invite'));
+        $invite_code = \YunShop::request()->invite_code;
+
+        if ($is_invite && isset($invite_code) && !empty($invite_code)) {
+            return $invite_code;
+        }
+
+        return null;
     }
 }

@@ -38,8 +38,8 @@ class YunShop
         //检测controller继承
         $controller = new $namespace;
         if (!$controller instanceof \app\common\components\BaseController) {
-            if(config('app.debug')){
-                throw new NotFoundException($controller.' 没有继承\app\common\components\BaseController: ' . $namespace);
+            if (config('app.debug')) {
+                throw new NotFoundException($controller . ' 没有继承\app\common\components\BaseController: ' . $namespace);
             }
             throw new NotFoundException(" 路由错误:不存在控制器: " . $namespace);
 
@@ -82,7 +82,7 @@ class YunShop
             $item = Menu::getCurrentItemByRoute($controller->route, $menuList);
             //dd($controller->route);
             self::$currentItems = array_merge(Menu::getCurrentMenuParents($item, $menuList), [$item]);
- //dd(self::$currentItems);
+            //dd(self::$currentItems);
             Config::set('currentMenuItem', $item);
             //dd($item);exit;
             //检测权限
@@ -214,9 +214,7 @@ class YunShop
     public static function isRole()
     {
         global $_W;
-        $plugin_class = new PluginManager(app(), new OptionRepository(), new Dispatcher(), new Filesystem());
-        if ($plugin_class->isEnabled('supplier')) {
-
+        if (app('plugins')->isEnabled('supplier')) {
             $res = \Illuminate\Support\Facades\DB::table('yz_supplier')->where('uid', $_W['uid'])->first();
             if (!$res) {
                 return false;
@@ -314,7 +312,7 @@ class YunShop
 
                 }
             }
-        }catch (Exception $exception){
+        } catch (Exception $exception) {
 //            dd($exception);
 //            exit;
 
@@ -469,6 +467,7 @@ class YunRequest extends YunComponent
 /**
  * Class YunApp
  * @property int uniacid
+ * @property int uid
  */
 class YunApp extends YunComponent
 {
@@ -555,7 +554,7 @@ class YunApp extends YunComponent
             }
             //return false;
         }
-        
+
         if (Session::get('member_id')) {
             return Session::get('member_id');
         } else {
@@ -582,9 +581,8 @@ class YunPlugin
     public function get($key = null)
     {
         if (isset($key)) {
-            $plugin_class = new PluginManager(app(), new OptionRepository(), new Dispatcher(), new Filesystem());
 
-            if ($plugin_class->isEnabled($key)) {
+            if (app('plugins')->isEnabled($key)) {
                 return true;
             }
         }

@@ -4,8 +4,10 @@ namespace app\frontend\modules\member\controllers;
 
 use app\common\components\ApiController;
 use app\common\exceptions\AppException;
+use app\frontend\models\Member;
 use \app\frontend\models\MemberCart;
 use app\frontend\modules\member\services\MemberCartService;
+use app\frontend\modules\member\services\MemberService;
 
 /**
  * Created by PhpStorm.
@@ -15,39 +17,39 @@ use app\frontend\modules\member\services\MemberCartService;
  */
 class MemberCartController extends ApiController
 {
-    //购物车列表
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     */
     public function index()
     {
-        $memberId = \YunShop::app()->getMemberId();
-        if ($memberId) {
-            $cartList = app('OrderManager')->make('MemberCart')->carts()->where('member_id', $memberId)
-                ->orderBy('created_at', 'desc')
-                ->get()
-                ->toArray();
-            //dd($cartList);
-            foreach ($cartList as $key => $cart) {
-                $cartList[$key]['option_str'] = '';
-                $cartList[$key]['goods']['thumb'] = yz_tomedia($cart['goods']['thumb']);
-                if (!empty($cart['goods_option'])) {
-                    //规格数据替换商品数据
-                    if ($cart['goods_option']['title']) {
-                        $cartList[$key]['option_str'] = $cart['goods_option']['title'];
-                    }
-                    if ($cart['goods_option']['thumb']) {
-                        $cartList[$key]['goods']['thumb'] = yz_tomedia($cart['goods_option']['thumb']);
-                    }
-                    if ($cart['goods_option']['market_price']) {
-                        $cartList[$key]['goods']['price'] = $cart['goods_option']['product_price'];
-                    }
-                    if ($cart['goods_option']['market_price']) {
-                        $cartList[$key]['goods']['market_price'] = $cart['goods_option']['market_price'];
-                    }
+        $cartList = app('OrderManager')->make('MemberCart')->carts()->where('member_id', Member::current()->uid)
+            ->pluginId()
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->toArray();
+        //dd($cartList);
+        foreach ($cartList as $key => $cart) {
+            $cartList[$key]['option_str'] = '';
+            $cartList[$key]['goods']['thumb'] = yz_tomedia($cart['goods']['thumb']);
+            if (!empty($cart['goods_option'])) {
+                //规格数据替换商品数据
+                if ($cart['goods_option']['title']) {
+                    $cartList[$key]['option_str'] = $cart['goods_option']['title'];
                 }
-                //unset ($cartList[$key]['goods_option']);
+                if ($cart['goods_option']['thumb']) {
+                    $cartList[$key]['goods']['thumb'] = yz_tomedia($cart['goods_option']['thumb']);
+                }
+                if ($cart['goods_option']['market_price']) {
+                    $cartList[$key]['goods']['price'] = $cart['goods_option']['product_price'];
+                }
+                if ($cart['goods_option']['market_price']) {
+                    $cartList[$key]['goods']['market_price'] = $cart['goods_option']['market_price'];
+                }
             }
-            return $this->successJson('获取列表成功', $cartList);
+            //unset ($cartList[$key]['goods_option']);
         }
-        return $this->errorJson('未获取到会员ID');
+        return $this->successJson('获取列表成功', $cartList);
     }
 
     /**
@@ -70,7 +72,7 @@ class MemberCartController extends ApiController
         /**
          * @var MemberCart $cartModel
          */
-        $cartModel = app('OrderManager')->make('MemberCart',$data);
+        $cartModel = app('OrderManager')->make('MemberCart', $data);
 //        dd($cartModel);
         //验证商品是否存在购物车,存在则修改数量
         $hasGoodsModel = app('OrderManager')->make('MemberCart')->hasGoodsToMemberCart($data);
@@ -82,7 +84,7 @@ class MemberCartController extends ApiController
             $hasGoodsModel->validate();
 
             if ($hasGoodsModel->update()) {
-                return $this->successJson('添加购物车成功',['cart_id' => $cart_id]);
+                return $this->successJson('添加购物车成功', ['cart_id' => $cart_id]);
             }
             return $this->errorJson('数据更新失败，请重试！');
         }
@@ -118,7 +120,7 @@ class MemberCartController extends ApiController
                 $cartModel->total = $cartModel->total + $num;
 
                 if ($cartModel->total < 1) {
-                     $result = MemberCartService::clearCartByIds([$cartModel->id]);
+                    $result = MemberCartService::clearCartByIds([$cartModel->id]);
                     if ($result) {
                         return $this->successJson('移除购物车成功。');
                     }
