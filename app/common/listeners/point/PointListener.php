@@ -94,12 +94,6 @@ class PointListener
             PointListener::class . '@changePoint'
         );
 
-        //下单之后 扣除积分抵扣使用的积分
-        $events->listen(
-            AfterOrderCreatedImmediatelyEvent::class,
-            AfterOrderDeductiblePointService::class . '@deductiblePoint'
-        );
-
         //订单关闭 积分抵扣回滚
         $events->listen(
             AfterOrderCanceledEvent::class,
