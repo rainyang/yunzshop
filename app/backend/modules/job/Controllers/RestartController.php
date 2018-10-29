@@ -6,7 +6,7 @@
  * Time: 下午6:16
  */
 
-namespace app\backend\modules\job\Controllers;
+namespace app\backend\modules\job\controllers;
 
 use app\common\components\BaseController;
 
@@ -16,7 +16,7 @@ class RestartController extends BaseController
     public function index()
     {
         $client = new XMLRPC_Client( "http://localhost:9001/RPC2" );
-        $response = $client->call( 'mark.getUserMark', array(1, "{{username}}", "{{password}}") );
+        $response = $client->call( 'mark.getUserMark');
         dd($response);
     }
 }
