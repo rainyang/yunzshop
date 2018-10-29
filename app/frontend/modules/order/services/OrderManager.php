@@ -15,6 +15,7 @@ use app\common\models\order\OrderDiscount;
 use app\common\modules\order\OrderOperationsCollector;
 use app\frontend\models\MemberCart;
 use app\frontend\models\OrderAddress;
+use app\frontend\modules\dispatch\models\PreOrderAddress;
 use app\frontend\modules\orderGoods\models\PreOrderGoods;
 use app\frontend\modules\order\models\PreOrder;
 use Illuminate\Container\Container;
@@ -48,6 +49,9 @@ class OrderManager extends Container
         });
         $this->bind('PreOrder', function ($orderManager, $attributes) {
             return new PreOrder($attributes);
+        });
+        $this->bind('PreOrderAddress', function ($orderManager, $attributes) {
+            return new PreOrderAddress($attributes);
         });
         // 订单model
         $this->bind('Order', function ($orderManager, $attributes) {
