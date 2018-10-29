@@ -208,9 +208,16 @@ class PreOrder extends Order
     {
         $attributeItems = $this->$relation->map(function (BaseModel $relation) {
             $relation->updateTimestamps();
-            $relation->beforeSaving();
+
+            $beforeSaving = $relation->beforeSaving();
+            if($beforeSaving === false){
+                return [];
+            }
             return $relation->getAttributes();
         });
+
+        $attributeItems = $attributeItems->filter();
+
         $this->$relation->first()->insert($attributeItems->toArray());
         /**
          * @var Collection $ids
