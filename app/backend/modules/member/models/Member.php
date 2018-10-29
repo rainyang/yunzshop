@@ -9,9 +9,12 @@
 namespace app\backend\modules\member\models;
 
 use app\common\models\member\MemberDel;
+use app\common\traits\MemberTreeTrait;
 
 class Member extends \app\common\models\Member
 {
+    use MemberTreeTrait;
+
     static protected $needLog = true;
 
     /**
@@ -444,7 +447,7 @@ class Member extends \app\common\models\Member
 
     public static function getQueueAllMembersInfo($uniacid, $limit = 0, $offset = 0)
     {
-        $result = self::select(['mc_members.uid', 'mc_mapping_fans.openid'])
+        $result = self::select(['mc_members.uid', 'mc_mapping_fans.openid', 'mc_members.uniacid'])
                    ->join('yz_member', 'mc_members.uid', '=', 'yz_member.member_id')
                    ->join('mc_mapping_fans', 'mc_members.uid', '=', 'mc_mapping_fans.uid')
                    ->where('mc_members.uniacid', $uniacid);
@@ -454,5 +457,33 @@ class Member extends \app\common\models\Member
         }
 
         return $result;
+    }
+
+    public static function getAllMembersInfosByQueue($uniacid, $limit = 0, $offset = 0)
+    {
+        $result = self::select(['mc_members.uid', 'mc_members.uniacid'])
+            ->join('yz_member', 'mc_members.uid', '=', 'yz_member.member_id')
+            ->where('mc_members.uniacid', $uniacid);
+
+        if ($limit > 0) {
+            $result = $result->offset($offset)->limit($limit)->orderBy('mc_members.uid', 'asc');
+        }
+
+        return $result;
+    }
+
+    /**
+     * 获取待处理的原始节点数据
+     *
+     * 必须实现
+     *
+     * return \Illuminate\Support\Collection
+     */
+    public function getTreeAllNodes($uniacid)
+    {
+        return self::select(['yz_member.member_id', 'yz_member.parent_id'])
+            ->join('yz_member', 'mc_members.uid', '=', 'yz_member.member_id')
+            ->where('mc_members.uniacid', $uniacid)
+            ->get();
     }
 }
