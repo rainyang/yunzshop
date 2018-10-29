@@ -87,7 +87,7 @@
                                 <div class='input-group' >
                                     <div class='input-group-addon'  ><label class="radio-inline" ><input type="radio"  name="setdata[become]" value="5" @if($set['become'] ==5) checked="checked"
                                                     @endif /> 自购销售佣金累计达到</label></div>
-                                    <input type='text' class='form-control' name='setdata[become_salesdividend]' value="{{$set['become_salesdividend']}}" />
+                                    <input type='text' class='form-control' name='setdata[become_selfmoney]' value="{{$set['become_selfmoney']}}" />
                                     <div class='input-group-addon' style="border:0">元</div>
                                 </div>
                                 <span class="help-block">该条件只针对销售佣金插件使用</span>
