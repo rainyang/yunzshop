@@ -24,22 +24,19 @@ class OperationLogController extends BaseController
                 return $item !== '';// && $item !== 0;
             });
 
-            $categorySearch = array_filter(\YunShop::request()->category, function ($item) {
-                if (is_array($item)) {
-                    return !empty($item[0]);
-                }
-                return !empty($item);
-            });
-
-            if ($categorySearch) {
-                $requestSearch['category'] = $categorySearch;
-            }
         }
 
 
-        $list = OperationLog::Search($requestSearch)->pluginId()->orderBy('display_order', 'desc')->orderBy('yz_goods.id', 'desc')->paginate(20);
+
+        $list = OperationLog::Search($requestSearch)->paginate(20);
 
         $pager = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
+
+        return view('setting.operation.log', [
+            'list' => $list,
+            'pager' => $pager,
+            'search' => $requestSearch,
+        ])->render();
 
     }
 }

@@ -3202,7 +3202,7 @@ return [
             ],
             'operation_log' => [
                 'name'              => '操作日志',
-                'url'               => 'setting.lang.index',
+                'url'               => 'setting.operation-log.index',
                 'url_params'        => '',
                 'permit'            => 1,
                 'menu'              => 1,

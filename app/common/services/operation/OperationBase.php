@@ -72,7 +72,7 @@ abstract class OperationBase
                     $this->setLog('old_content', $modify_fields[$key]['old_content']);
                     $this->setLog('new_content', $modify_fields[$key]['new_content']);
                 } elseif (is_array($value)) {
-                    $this->setLog('field_name', $value[$modify_fields[$key]['field_name']]);
+                    $this->setLog('field_name', $value['field_name']);
                     $old_content = $value[$modify_fields[$key]['old_content']];
                     $new_content = $value[$modify_fields[$key]['new_content']];
                     $this->setLog('old_content', $old_content);

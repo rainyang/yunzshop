@@ -8,6 +8,7 @@
 
 namespace app\common\models;
 
+use app\framework\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class OperationLog extends BaseModel
@@ -23,4 +24,23 @@ class OperationLog extends BaseModel
     protected $attributes = [
     ];
 
+    public function scopeSearch(Builder $query, $search)
+    {
+        $model = $query->uniacid();
+
+        if ($search['user_name']) {
+            $model->where('user_name', 'like', '%' . $search['user_name'] . '%');
+        }
+
+        if ($search['is_time']) {
+                if ($search['time']['start'] != '请选择' && $search['time']['end'] != '请选择') {
+                    $range = [strtotime($search['time']['start']), strtotime($search['time']['end'])];
+                    $model->whereBetween('created_at', $range);
+                }
+        }
+
+
+        return $model;
+
+    }
 }
