@@ -249,4 +249,41 @@ class TestController extends BaseController
             'team_money_total' => $team_money_total
         ]);
     }
+
+    public function ww()
+    {
+        $uniacid = \YunShop::app()->uniacid;
+        $level_1_member = DB::select('select member_id,level,count(1) as total from ims_yz_member_children where uniacid='.$uniacid.' and level in (1,2,3) group by member_id,level');
+        $level_1_member = collect($level_1_member);
+        $result = [];
+        dd($level_1_member);
+        foreach ($level_1_member as $val) {
+            if (!isset($result[$val['member_id']])) {
+                 $result[$val['member_id']] = [
+                     'member_id' => $val['member_id'],
+                     'first_total' => $val['total'],
+                     'second_total' => 0,
+                     'third_total' => 0,
+                     'team_total'  => $val['total']
+                 ];
+            } else {
+                switch ($val['level']) {
+                    case 2:
+                        $result[$val['member_id']]['second_total'] = $val['total'];
+                        break;
+                    case 3:
+                        $result[$val['member_id']]['third_total'] = $val['total'];
+                        break;
+                }
+
+                $result[$val['member_id']]['team_total'] += $val['total'];
+            }
+        }
+
+//dd($result);
+        $level_2_member = DB::select('select member_id,count(1) as total from ims_yz_member_children where uniacid='.$uniacid.' and level=2 group by member_id,level');
+
+        $level_3_member = DB::select('select member_id,count(1) as total from ims_yz_member_children where uniacid='.$uniacid.' and level=3 group by member_id,level');
+
+    }
 }
