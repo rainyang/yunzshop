@@ -32,8 +32,6 @@ class OrderBonusJob implements  ShouldQueue
 
     public function __construct($tableName, $code, $foreignKey, $localKey, $amountColumn, $orderModel, $totalDividend = 0, $condition = null)
     {
-        file_put_contents(storage_path('logs/ppp.txt'), print_r(date('Ymd His')."table_name[{$tableName}]".PHP_EOL,1), FILE_APPEND);
-        file_put_contents(storage_path('logs/ppp.txt'), print_r(date('Ymd His')."code[{$code}]".PHP_EOL,1), FILE_APPEND);
         $this->tableName = $tableName;
         $this->code = $code;
         $this->foreignKey = $foreignKey;
