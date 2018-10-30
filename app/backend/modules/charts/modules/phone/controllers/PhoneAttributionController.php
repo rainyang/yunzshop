@@ -17,7 +17,8 @@ class PhoneAttributionController extends BaseController
 
     public function index()
     {
-        $phone_data = DB::select("select province,count(id) as num from ims_yz_phone_attribution group BY province");
+        $uniacid = \YunShop::app()->uniacid;
+        $phone_data = DB::select('select province,count(id) as num from ims_yz_phone_attribution where uniacid='.$uniacid.' group BY province');
 
         return view('charts.phone.phone_attribution',[
             'phone_data' => $phone_data,
