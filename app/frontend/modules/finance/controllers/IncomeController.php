@@ -132,6 +132,15 @@ class IncomeController extends ApiController
         if ($detailModel) {
             if ($detailModel->first()->detail != '') {
                 $data = $detailModel->first()->detail;
+
+                //TODO 防止数据库json未转义缺少斜杆 后期修改 时间段在2018年10月18号到10月30号出现乱码问题，原因：经销商和分销存入数据库未转义
+                $pattern1 = '/\\\u[\d|\w]{4}/';
+                preg_match($pattern1, $data, $exists);
+                if (empty($exists)) {
+                    $pattern2 = '/(u[\d|\w]{4})/';
+                    $data = preg_replace($pattern2, '\\\$1', $data);
+                }
+
                 return '{"result":1,"msg":"成功","data":' . $data . '}';
             }
             return '{"result":1,"msg":"成功","data":""}';
