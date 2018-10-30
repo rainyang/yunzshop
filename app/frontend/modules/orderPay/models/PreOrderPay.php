@@ -50,7 +50,7 @@ class PreOrderPay extends OrderPay
             }
 
             //找人代付
-            if ($order->uid != \YunShop::app()->getMemberId() && !Member::getPid()) {
+            if ($order->uid != \YunShop::app()->getMemberId() && !Member::getPid() && $this->pay_type_id =! PayType::BACKEND) {
                 throw new AppException('(ID:' . $order->id . ')该订单属于其他用户');
             }
             // 转账付款审核中

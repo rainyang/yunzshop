@@ -8,6 +8,7 @@
 
 namespace app\common\providers;
 
+use app\common\facades\Setting;
 use app\common\helpers\SettingCache;
 use app\common\modules\express\KDN;
 use app\common\managers\ModelExpansionManager;
@@ -54,7 +55,7 @@ class ShopProvider extends ServiceProvider
             return new StatusContainer();
         });
         $this->app->singleton('express', function (){
-            return new KDN(config('app.express.KDN.eBusinessID'),config('app.express.KDN.appKey'),config('app.express.KDN.reqURL'));
+            return new KDN(Setting::get('shop.express_info.KDN.eBusinessID'),Setting::get('shop.express_info.KDN.appKey'),config('app.express.KDN.reqURL'));
         });
     }
 }

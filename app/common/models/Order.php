@@ -266,13 +266,16 @@ class Order extends BaseModel
 
     /**
      * 关联模型 1对多:订单信息
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\E请填写正确的收货信息请填写正确的收货信息loquent\Relations\HasMany
      */
     public function coupons()
     {
         return $this->hasMany(app('OrderManager')->make('OrderCoupon'), 'order_id', 'id');
     }
-
+    public function orderCoupons()
+    {
+        return $this->hasMany(app('OrderManager')->make('OrderCoupon'), 'order_id', 'id');
+    }
     /**
      * 关联模型 1对多:改价记录
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -579,7 +582,7 @@ class Order extends BaseModel
 
     public function close()
     {
-        return OrderService::close($this);
+        return \app\backend\modules\order\services\OrderService::close($this);
     }
 
     /**
@@ -771,7 +774,7 @@ class Order extends BaseModel
     public function backendPay()
     {
         // 生成支付记录 记录订单号,支付金额,用户,支付号
-        $orderPay = new PreOrderPay();
+        $orderPay = new PreOrderPay(['pay_type_id' => PayType::BACKEND]);
         // 添加关联订单
         $orders = new OrderCollection([$this]);
         $orderPay->setOrders($orders);
