@@ -106,9 +106,9 @@ class MemberRelation
     public function delMemberOfRelation($uid)
     {
         DB::transaction(function() use ($uid) {
-            $this->parent->delMemberOfRelation($uid);
-
             $this->child->delMemberOfRelation($this->parent, $uid);
+
+            $this->parent->delMemberOfRelation($uid);
         });
     }
 

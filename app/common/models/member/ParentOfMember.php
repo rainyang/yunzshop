@@ -47,7 +47,7 @@ class ParentOfMember extends BaseModel
             ->pluck('member_id');
     }
 
-    public function delRelation($member_ids)
+    public function delRelation(array $member_ids)
     {
         return self::uniacid()
             ->whereIn('member_id', $member_ids)
@@ -60,21 +60,6 @@ class ParentOfMember extends BaseModel
         $depth = 1;
         $parents = $this->getParentOfMember($parent_id);
 
-        if (!empty($parents)) {
-            foreach ($parents as $key => $val) {
-                $attr[] = [
-                    'uniacid'   => $this->uniacid,
-                    'parent_id' => $val['parent_id'],
-                    'level'     => $val['level'],
-                    'member_id' => $uid,
-                    'created_at' => time()
-                ];
-
-                ++$depth;
-            }
-        }
-
-
         $attr[] = [
             'uniacid'   => $this->uniacid,
             'parent_id' => $parent_id,
@@ -83,6 +68,18 @@ class ParentOfMember extends BaseModel
             'created_at' => time()
         ];
 
+        if (!empty($parents)) {
+            foreach ($parents as $key => $val) {
+                $attr[] = [
+                    'uniacid'   => $this->uniacid,
+                    'parent_id' => $val['parent_id'],
+                    'level'     => ++$val['level'],
+                    'member_id' => $uid,
+                    'created_at' => time()
+                ];
+            }
+        }
+
         $this->CreateData($attr);
     }
 
@@ -90,8 +87,11 @@ class ParentOfMember extends BaseModel
     {
         $member_ids = $this->getMemberIdByParent($uid);
 
-        $this->delRelation($member_ids);
-        $this->delRelation($uid);
+        if (!$member_ids->isEmpty()) {
+            $this->delRelation($member_ids);
+        }
+
+        $this->delRelation([$uid]);
 
     }
 }

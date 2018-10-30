@@ -55,26 +55,28 @@ class ChildrenOfMember extends BaseModel
         $attr        = [];
         $exists      = [];
 
+        $parents_ids[] = $parent_id;
+
         if (!empty($parents)) {
             foreach ($parents as $val) {
                 $parents_ids[] = $val['parent_id'];
             }
         }
 
-        $parents_ids[] = $parent_id;
-
         $item = $this->countSubChildOfMember($parents_ids);
 
         //统计不为0的子级
         if (!empty($item)) {
-            foreach ($item as $rows) {
+            $parent_total = count($parents_ids);
+
+            foreach ($item as $key => $rows) {
                 if (in_array($rows['member_id'], $parents_ids)) {
                     $exists[] = $rows['member_id'];
 
                     $attr[] = [
                         'uniacid'  => $this->uniacid,
                         'child_id' => $uid,
-                        'level'    => ++$rows['user_count'],
+                        'level'    => $parent_total - $key,
                         'member_id' => $rows['member_id'],
                         'created_at' => time()
                     ];
@@ -127,12 +129,17 @@ class ChildrenOfMember extends BaseModel
         $parents = $parentObj->getParentOfMember($uid);
         $childs  = $this->getChildOfMember($uid);
 
-        foreach ($childs as $val) {
-            $this->delRelation($val['member_id']);
+        if (!$childs->isEmpty()) {
+            foreach ($childs as $val) {
+                $this->delRelation($val['member_id']);
+            }
         }
 
-        foreach ($parents as $val) {
-            $this->delRelationOfParentByMemberId($val['member_id'], $uid);
+        if (!$parents->isEmpty()) {
+            foreach ($parents as $val) {
+                $this->delRelationOfParentByMemberId($val['parent_id'], $val['member_id']);
+            }
         }
+
     }
 }
