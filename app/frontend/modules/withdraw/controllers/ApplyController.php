@@ -129,6 +129,7 @@ class ApplyController extends ApiController
     /**
      * @param $withdraw_item
      * @return array
+     * @throws AppException
      */
     private function getWithdrawData($withdraw_item)
     {
