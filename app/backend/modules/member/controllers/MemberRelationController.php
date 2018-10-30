@@ -25,8 +25,8 @@ class MemberRelationController extends BaseController
 
     /**
      * 列表
-     *
      * @return string
+     * @throws \Throwable
      */
     public function index()
     {
@@ -49,9 +49,11 @@ class MemberRelationController extends BaseController
         } else {
             $goods = [];
         }
+
+
         return view('member.relation', [
             'set' => $relation,
-            'goods' => $goods
+            'goods' => $goods,
         ])->render();
     }
 
@@ -75,6 +77,10 @@ class MemberRelationController extends BaseController
 
         if (empty($setData['become_goods_id'])) {
             $setData['become_goods_id'] = 0;
+        }
+
+        if (empty($setData['become_selfmoney'])) {
+            $setData['become_selfmoney'] = 0;
         }
 
         $relation = Relation::getSetInfo()->first();
