@@ -4,6 +4,7 @@ namespace app\common\providers;
 
 
 //use app\backend\modules\charts\listeners\Statistics;
+use app\common\events\member\MemberRelationEvent;
 use app\common\events\message\SendMessageEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\events\order\AfterOrderCreatedImmediatelyEvent;
@@ -12,6 +13,7 @@ use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\events\PayLog;
 use app\common\events\WechatProcessor;
 use app\common\listeners\charts\OrderBonusListeners;
+use app\common\listeners\member\MemberRelationEventListener;
 use app\common\listeners\PayLogListener;
 use app\common\listeners\point\PointListener;
 use app\common\listeners\WechatProcessorListener;
@@ -85,6 +87,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         AfterOrderPayTypeChangedEvent::class=>[
             AfterOrderPayTypeChangedListener::class
+        ],
+        MemberRelationEvent::class=>[
+            MemberRelationEventListener::class
         ]
     ];
     /**
