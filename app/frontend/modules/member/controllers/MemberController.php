@@ -506,7 +506,7 @@ class MemberController extends ApiController
                 }
 
                 PhoneAttribution::getMemberByID(\YunShop::app()->getMemberId())->delete();
-                
+
 
                 return $this->successJson('用户资料修改成功');
             } else {
