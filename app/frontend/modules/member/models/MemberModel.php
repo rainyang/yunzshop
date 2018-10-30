@@ -16,6 +16,7 @@ use app\common\helpers\Url;
 use app\common\models\Member;
 use app\common\models\MemberShopInfo;
 use app\common\models\Setting;
+use Illuminate\Support\Facades\DB;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use app\common\models\Order;
 use Yunshop\Commission\models\AgentLevel;
