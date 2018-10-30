@@ -133,7 +133,7 @@ class IncomeController extends ApiController
             if ($detailModel->first()->detail != '') {
                 $data = $detailModel->first()->detail;
 
-                //TODO 防止数据库json未转义缺少斜杆 先这样执行，后期修改
+                //TODO 防止数据库json未转义缺少斜杆 后期修改 时间段在2018年10月18号到10月30号出现乱码问题，原因：经销商和分销存入数据库未转义
                 $pattern1 = '/\\\u[\d|\w]{4}/';
                 $json = '';
                 preg_match($pattern1, $data, $exists);
