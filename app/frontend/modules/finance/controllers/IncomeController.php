@@ -132,7 +132,17 @@ class IncomeController extends ApiController
         if ($detailModel) {
             if ($detailModel->first()->detail != '') {
                 $data = $detailModel->first()->detail;
-                return '{"result":1,"msg":"成功","data":' . $data . '}';
+
+                //TODO 防止数据库json未转义缺少斜杆 先这样执行，后期修改
+                $pattern1 = '/\\\u[\d|\w]{4}/';
+                $json = '';
+                preg_match($pattern1, $data, $exists);
+                if (empty($exists)) {
+                    $pattern2 = '/(u[\d|\w]{4})/';
+                    $json = preg_replace($pattern2, '\\\$1', $data);
+                }
+
+                return '{"result":1,"msg":"成功","data":' . $json . '}';
             }
             return '{"result":1,"msg":"成功","data":""}';
         }
