@@ -94,4 +94,13 @@ class ParentOfMember extends BaseModel
         $this->delRelation([$uid]);
 
     }
+
+    public function hasRelationOfParent($uid, $parent_id, $depth)
+    {
+        return self::uniacid()
+            ->where('member_id', $uid)
+            ->where('parent_id', $parent_id)
+            ->where('level', $depth)
+            ->count();
+    }
 }

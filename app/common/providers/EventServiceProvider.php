@@ -14,6 +14,7 @@ use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\events\PayLog;
 use app\common\events\WechatProcessor;
 use app\common\listeners\charts\OrderBonusListeners;
+use app\common\listeners\member\MemberCreateRelationEventListener;
 use app\common\listeners\member\MemberRelationEventListener;
 use app\common\listeners\PayLogListener;
 use app\common\listeners\point\PointListener;
@@ -90,7 +91,7 @@ class EventServiceProvider extends ServiceProvider
             AfterOrderPayTypeChangedListener::class
         ],
         MemberCreateRelationEvent::class=>[
-            MemberRelationEventListener::class
+            MemberCreateRelationEventListener::class
         ]
     ];
     /**

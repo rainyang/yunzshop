@@ -129,4 +129,9 @@ class MemberRelation
             $this->addMemberOfRelation($uid, $n_parent_id);
         });
     }
+
+    public function hasRelationOfParent($uid, $parent_id, $depth)
+    {
+        return $this->parent->hasRelationOfParent($uid, $parent_id, $depth);
+    }
 }

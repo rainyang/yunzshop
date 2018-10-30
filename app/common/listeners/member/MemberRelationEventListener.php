@@ -16,11 +16,11 @@ class MemberRelationEventListener
 {
     public function handle(MemberRelationEvent $event)
     {
-        $yzMemberModel = $event->getMemberModel()->yzMember;
+        /*$yzMemberModel = $event->getMemberModel()->yzMember;
         $member_id = $yzMemberModel->member_id;
         $parent_id = $yzMemberModel->parent_id;
         \Log::info('会员关系' . $yzMemberModel->member_id);
 
-        (new MemberRelation())->addMemberOfRelation($member_id, $parent_id);
+        (new MemberRelation())->addMemberOfRelation($member_id, $parent_id);*/
     }
 }
