@@ -89,9 +89,9 @@
                                 </td>
                                 <td>{{ $row['price'] }}</td>
                                 <td>
-                                    @if($row['has_one_supplier_order'])供应商
-                                    @elseif($row['has_one_store_order'])门店
-                                    @elseif($row['has_one_cashier_order'])收银台
+                                    @if($row->hasOneSupplierOrder)供应商
+                                    @elseif($row->hasOneStoreOrder)门店
+                                    @elseif($row->hasOneCashierOrder)收银台
                                     @else商城
                                     @endif
                                 </td>

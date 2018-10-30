@@ -25,8 +25,7 @@ class ShopIncomeStatisticsController extends BaseController
         $pageSize = 10;
         $search = \YunShop::request()->search;
         $list = OrderPluginBonus::search($search)
-            ->selectRaw('sum(undividend) as undividend, order_id, FROM_UNIXTIME(created_at,"%Y-%m-%d")as date')
-            ->selectRaw('max(price) as price, order_id, max(if(code like "shop_name",content,0)) as shop_name')
+            ->selectRaw('sum(undividend) as undividend, FROM_UNIXTIME(created_at,"%Y-%m-%d")as date, sum(price) as price')
             ->groupBy(DB::raw("FROM_UNIXTIME(UNIX_TIMESTAMP(created_at),'%Y-%m-%d')"))
             ->with([
                 'hasOneOrderGoods' => function($q) {
@@ -36,8 +35,10 @@ class ShopIncomeStatisticsController extends BaseController
                 'hasOneSupplierOrder',
                 'hasOneCashierOrder',
             ])
-            ->orderBy('order_id', 'desc')
-            ->paginate($pageSize);
+//            ->orderBy('order_id', 'desc')
+            ->get()->toArray();
+//            ->paginate($pageSize);
+        dd($list);
 
 
 

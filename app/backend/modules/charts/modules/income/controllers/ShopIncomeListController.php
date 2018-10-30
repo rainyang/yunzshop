@@ -22,7 +22,7 @@ class ShopIncomeListController extends BaseController
         $pageSize = 10;
         $search = \YunShop::request()->search;
         $list = OrderPluginBonus::search($search)
-            ->selectRaw('sum(undividend) as undividend, order_id, max(if(code like "order_sn",content,0)) as order_sn')
+            ->selectRaw('sum(undividend) as undividend, order_id, max(order_sn) as order_sn')
             ->selectRaw('max(price) as price, order_id, max(if(code like "shop_name",content,0)) as shop_name')
             ->selectRaw('max(if(code like "buy_name",content,0)) as buy_name')
             ->groupBy('order_id')
