@@ -18,4 +18,9 @@ class PhoneAttribution extends BaseModel
     protected $fillable = [];
 
     public $timestamps = true;
+
+    public static function getMemberByID($uid)
+    {
+        return self::uniacid()->where('uid', $uid)->first();
+    }
 }

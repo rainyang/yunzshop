@@ -505,6 +505,9 @@ class MemberController extends ApiController
                     Cache::forget($member_model->uid . '_member_info');
                 }
 
+                PhoneAttribution::getMemberByID(\YunShop::app()->getMemberId())->delete();
+                
+
                 return $this->successJson('用户资料修改成功');
             } else {
                 return $this->errorJson('更新用户资料失败');
