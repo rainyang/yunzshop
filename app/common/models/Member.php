@@ -395,12 +395,9 @@ class Member extends BackendModel
         $model = MemberShopInfo::getMemberShopInfo($member_id);
         $code_mid = self::getMemberIdForInviteCode();
         $mid   = !is_null($code_mid) ? $code_mid : self::getMid();
+        $mid   = !is_null($upperMemberId) ?: $mid;
 
-        if ($upperMemberId) {
-            event(new BecomeAgent($upperMemberId, $model));
-        } else {
-            event(new BecomeAgent($mid, $model));
-        }
+        event(new BecomeAgent($mid, $model));
     }
 
     public static function getMid()

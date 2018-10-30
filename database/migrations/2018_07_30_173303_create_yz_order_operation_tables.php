@@ -36,6 +36,8 @@ class CreateYzOrderOperationTables extends Migration
                 $table->integer('deleted_at')->nullable();
             });
         }
+
+        
         \Illuminate\Support\Facades\DB::select('INSERT INTO `'.app('db')->getTablePrefix().'yz_order_status` (`id`, `name`, `code`, `sort`, `created_at`, `updated_at`, `deleted_at`)
 VALUES
 	(1, \'待付款\', \'waitPay\', 0, NULL, NULL, NULL),

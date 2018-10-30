@@ -4,6 +4,7 @@ namespace app\common\providers;
 
 
 //use app\backend\modules\charts\listeners\Statistics;
+use app\common\events\member\MemberCreateRelationEvent;
 use app\common\events\member\MemberRelationEvent;
 use app\common\events\message\SendMessageEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
@@ -88,7 +89,7 @@ class EventServiceProvider extends ServiceProvider
         AfterOrderPayTypeChangedEvent::class=>[
             AfterOrderPayTypeChangedListener::class
         ],
-        MemberRelationEvent::class=>[
+        MemberCreateRelationEvent::class=>[
             MemberRelationEventListener::class
         ]
     ];
