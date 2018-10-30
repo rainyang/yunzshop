@@ -11,6 +11,7 @@ namespace app\backend\modules\withdraw\controllers;
 
 
 use app\backend\models\Withdraw;
+use app\common\exceptions\ShopException;
 use app\common\services\withdraw\PayedService;
 
 class ConfirmPayController extends PreController
