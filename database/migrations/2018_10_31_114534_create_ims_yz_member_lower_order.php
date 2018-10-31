@@ -14,8 +14,8 @@ class CreateImsYzMemberLowerOrder extends Migration
     public function up()
     {
         //
-        if (!Schema::hasTable('ims_yz_member_lower_order')) {
-            Schema::create('ims_yz_member_lower_order', function (Blueprint $table) {
+        if (!Schema::hasTable('yz_member_lower_order')) {
+            Schema::create('yz_member_lower_order', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('uid')->default(0);
                 $table->integer('uniacid')->default(0);
@@ -39,6 +39,6 @@ class CreateImsYzMemberLowerOrder extends Migration
     public function down()
     {
         //
-        Schema::drop('ims_yz_member_lower_order');
+        Schema::drop('yz_member_lower_order');
     }
 }
