@@ -145,7 +145,7 @@ class TestController extends BaseController
     public function tt()
     {
 
-       $this->synRun(5, '');exit;
+//       $this->synRun(5, '');exit;
 
         $member_relation = new MemberRelation();
 
