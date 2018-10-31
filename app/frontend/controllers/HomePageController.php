@@ -267,6 +267,11 @@ class HomePageController extends ApiController
             $result['item']['menus'] = self::defaultMenu($i, $mid, $type);
             $result['item']['menustyle'] = self::defaultMenuStyle();
             $result['item']['data'] = ''; //前端需要该字段
+            $result['item']['topmenu'] = [
+                'menus' => [],
+                'params' => [],
+                'isshow' => false
+            ];
         }
 
         //增加小程序回去默认装修数据
