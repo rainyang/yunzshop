@@ -262,7 +262,6 @@ class PreOrder extends Order
                 }
             }
         }
-        $this->insertRelations($this->batchSaveRelations);
 
         $relations = array_except($this->relations, $this->batchSaveRelations);
 
@@ -276,6 +275,8 @@ class PreOrder extends Order
                 }
             }
         }
+        
+        $this->insertRelations($this->batchSaveRelations);
 
         return true;
     }
@@ -290,6 +291,7 @@ class PreOrder extends Order
         if ($this->is_virtual == 1) {
             return true;
         }
+
         return $this->orderGoods->hasVirtual();
     }
 
