@@ -1,11 +1,11 @@
 @extends('layouts.base')
-
+<script src="{{static_url('js/echarts.js')}}" type="text/javascript"></script>
+<script src="{{static_url('js/china.js')}}" type="text/javascript"></script>
 @section('content')
 @section('title', trans('手机归属地统计'))
 
 <link href="{{static_url('yunshop/css/order.css')}}" media="all" rel="stylesheet" type="text/css"/>
-<script src="{{static_url('js/echarts.js')}}" type="text/javascript"></script>
-<script src="{{static_url('js/china.js')}}" type="text/javascript"></script>
+
 <div class="w1200 m0a">
     <script type="text/javascript" src="{{static_url('js/dist/jquery.gcjs.js')}}"></script>
     <script type="text/javascript" src="{{static_url('js/dist/jquery.form.js')}}"></script>
@@ -138,5 +138,6 @@
         </div>
     </div>
 </div>
+
 <script type="text/javascript" src="{{static_url('js/area/cascade_street.js')}}"></script>
 @endsection
