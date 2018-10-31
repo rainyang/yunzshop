@@ -197,7 +197,7 @@
                     </div>
                 @endforeach
             </div>
-            <span class='help-block'>订单生成后商家通知，可以指定多个人，如果不填写则不通知</span>
+            <span class='help-block'>会员收入提现商家通知，可以指定多人，如果不填写则不通知</span>
             <div id="modal-module-menus-w" class="modal fade" tabindex="-1">
                 <div class="modal-dialog" style='width: 920px;'>
                     <div class="modal-content">
