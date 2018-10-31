@@ -102,20 +102,22 @@ class FixController extends BaseController
             if (0 == $item['status']) {
                 $model = Order::find($item['order_id']);
 
-                DB::transaction(function () use ($item, $model) {
-                    DB::table('yz_team_dividend')
-                        ->where('order_sn', '=', $item['order_sn'])
-                        ->delete();
+                if (!is_null($model)) {
+                    DB::transaction(function () use ($item, $model) {
+                        DB::table('yz_team_dividend')
+                            ->where('order_sn', '=', $item['order_sn'])
+                            ->delete();
 
-                    DB::table('yz_order_plugin_bonus')
-                        ->where('order_id', '=', $item['order_id'])
-                        ->where('table_name', '=', 'yz_team_dividend')
-                        ->delete();
+                        DB::table('yz_order_plugin_bonus')
+                            ->where('order_id', '=', $item['order_id'])
+                            ->where('table_name', '=', 'yz_team_dividend')
+                            ->delete();
 
-                    (new \Yunshop\TeamDividend\Listener\OrderCreatedListener)->fixOrder($model);
+                        (new \Yunshop\TeamDividend\Listener\OrderCreatedListener)->fixOrder($model);
 
-                    file_put_contents(storage_path('logs/team_fix_del.log'), print_r($item, 1), FILE_APPEND);
-                });
+                        file_put_contents(storage_path('logs/team_fix_del.log'), print_r($item, 1), FILE_APPEND);
+                    });
+                }
             }
         });
 

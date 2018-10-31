@@ -23,7 +23,7 @@ class WithdrawMessageService extends MessageService
      */
     public function withdraw($withdrawModel)
     {
-        $temp_id = \Setting::get('shop.notice')['member_withdraw'];
+        $temp_id = \Setting::get('withdraw.notice')['member_withdraw'];
         if (!$temp_id) {
             return;
         }
@@ -49,14 +49,14 @@ class WithdrawMessageService extends MessageService
 
     private function sendToShops()
     {
-        if (empty(\Setting::get('shop.notice.withdraw_user'))) {
+        if (empty(\Setting::get('withdraw.notice.withdraw_user'))) {
             return;
         }
         if (empty($this->templateId)) {
             return;
         }
         //客服发送消息通知
-        foreach (\Setting::get('shop.notice.withdraw_user') as $withdraw_user) {
+        foreach (\Setting::get('withdraw.notice.withdraw_user') as $withdraw_user) {
             $this->notice($this->templateId, $this->msg, $withdraw_user['uid']);
         }
     }
