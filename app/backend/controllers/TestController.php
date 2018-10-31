@@ -207,8 +207,8 @@ class TestController extends BaseController
             $attr = [];
             echo '-------' . $key . '--------' . $val->member_id . '<BR>';
                 \Log::debug('--------foreach start------', $val->member_id);
-                $data = $memberModel->getNodeParents($uniacid, $val->member_id);
-                //$data = $memberModel->getDescendants($uniacid, $val->member_id);
+                //$data = $memberModel->getNodeParents($uniacid, $val->member_id);
+                $data = $memberModel->getDescendants($uniacid, $val->member_id);
 
                 \Log::debug('--------foreach data------', $data->count());
 
@@ -216,7 +216,7 @@ class TestController extends BaseController
                     \Log::debug('--------insert init------');
                     $data = $data->toArray();
 
-                    /*foreach ($data as $k => $v) {
+                   foreach ($data as $k => $v) {
                         $attr[] = [
                             'uniacid'   => $uniacid,
                             'child_id'  => $k,
@@ -226,7 +226,8 @@ class TestController extends BaseController
                         ];
                     }
 
-                    $childMemberModel->createData($attr);*/
+                    $childMemberModel->createData($attr);
+                   /*
                     foreach ($data as $k => $v) {
                         $attr[] = [
                             'uniacid'   => $uniacid,
@@ -237,7 +238,7 @@ class TestController extends BaseController
                         ];
                     }
 
-                    $parentMemberModle->createData($attr);
+                    $parentMemberModle->createData($attr);*/
                 }
 
 
