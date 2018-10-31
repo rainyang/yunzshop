@@ -218,9 +218,19 @@ class HomePageController extends ApiController
                 $result['default'] = self::defaultDesign();
                 $result['item']['data'] = ''; //前端需要该字段
                 $footerMenuType = 1;
+                $result['item']['topmenu'] = [
+                    'menus' => [],
+                    'params' => [],
+                    'isshow' => false
+                ];
             } else{ //如果是请求预览装修的数据
                 $result['item']['data'] = ''; //前端需要该字段
                 $footerMenuType = 0;
+                $result['item']['topmenu'] = [
+                    'menus' => [],
+                    'params' => [],
+                    'isshow' => false
+                ];
             }
 
             //自定义菜单, 原来接口在  plugin.designer.home.index.menu
