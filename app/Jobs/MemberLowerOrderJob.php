@@ -9,12 +9,13 @@
 namespace app\Jobs;
 
 
+use app\backend\modules\charts\modules\member\services\LowerOrderService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class MemberLower implements ShouldQueue
+class MemberLowerOrderJob implements ShouldQueue
 {
     use InteractsWithQueue, Queueable, SerializesModels;
 
@@ -29,6 +30,6 @@ class MemberLower implements ShouldQueue
      */
     public function handle()
     {
-        ()
+        (new LowerOrderService())->memberOrder();
     }
 }

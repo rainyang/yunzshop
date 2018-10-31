@@ -11,9 +11,11 @@ namespace app\backend\modules\charts\modules\member\services;
 
 use app\backend\modules\charts\modules\member\models\MemberLowerCount;
 use app\common\models\UniAccount;
+use app\Jobs\MemberLowerJob;
+use app\Jobs\MemberLowerOrderJob;
 use Illuminate\Support\Facades\DB;
 
-class LoverCountService
+class LowerCountService
 {
     public function memberCount()
     {
@@ -55,7 +57,7 @@ class LoverCountService
             foreach ($result as $item) {
                 $memberModel->updateOrCreate(['uid' => $item['uid']], $item);
             }
-
         }
+        dispatch(new MemberLowerOrderJob());
     }
 }
