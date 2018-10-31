@@ -9,8 +9,8 @@
 
 namespace app\backend\modules\charts\modules\member\controllers;
 
+use app\backend\modules\charts\modules\member\models\MemberLowerOrder;
 use app\common\helpers\PaginationHelper;
-use app\common\models\statistic\MemberRelationOrderStatisticsModel;
 
 class OfflineOrderController extends OfflineCountController
 {
@@ -19,7 +19,8 @@ class OfflineOrderController extends OfflineCountController
         $pageSize = 10;
         $search = \YunShop::request()->search;
 
-        $list = MemberRelationOrderStatisticsModel::getMember($search)->orderBy('team_order_quantity', 'desc')->paginate($pageSize);
+        $list = MemberLowerOrder::getMember($search)->orderBy('id', 'desc')->paginate($pageSize);
+
         $page = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
         return view('charts.member.offline_order', [
             'page' => $page,

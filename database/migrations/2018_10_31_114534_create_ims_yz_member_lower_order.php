@@ -25,6 +25,8 @@ class CreateImsYzMemberLowerOrder extends Migration
                 $table->integer('second_order_amount')->default(0)->comment('二级下线订单金额');
                 $table->integer('third_order_quantity')->default(0)->comment('三级下线订单数');
                 $table->integer('third_order_amount')->default(0)->comment('三级下线订单金额');
+                $table->integer('team_order_quantity')->default(0)->comment('团队下线订单数');
+                $table->integer('team_order_amount')->default(0)->comment('团队下线订单金额');
                 $table->integer('created_at')->nullable();
                 $table->integer('updated_at')->nullable();
             });

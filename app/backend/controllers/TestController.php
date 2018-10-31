@@ -230,5 +230,9 @@ class TestController extends BaseController
         echo 'end';
 
     }
-    
+
+    public function order()
+    {
+        (new LowerOrderService())->memberOrder();
+    }
 }

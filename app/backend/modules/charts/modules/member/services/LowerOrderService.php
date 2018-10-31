@@ -34,6 +34,8 @@ class LowerOrderService
                 $result[$item['member_id']]['second_order_amount'] = 0;
                 $result[$item['member_id']]['third_order_quantity'] = 0;
                 $result[$item['member_id']]['third_order_amount'] = 0;
+                $result[$item['member_id']]['team_order_quantity'] = $result[$item['member_id']]['first_order_quantity'];
+                $result[$item['member_id']]['team_order_amount'] = $result[$item['member_id']]['first_order_amount'];
             }
 //dd($result);
             $member_2 = DB::select('select member_id, group_concat(child_id) as child,level from ims_yz_member_children where level =2' . ' and uniacid =' . $uniacid . ' group by member_id');
@@ -42,6 +44,8 @@ class LowerOrderService
                 $result[$item['member_id']]['uniacid'] = $uniacid;
                 $result[$item['member_id']]['second_order_quantity'] = DB::select('select count(id) as total from ims_yz_order where uid in (' . $item['child'] . ')')[0]['total'] ?: 0;
                 $result[$item['member_id']]['second_order_amount'] = intval(DB::select('select sum(price) as money from ims_yz_order where uid in (' . $item['child'] . ')')[0]['money']) ?: 0;
+                $result[$item['member_id']]['team_order_quantity'] = $result[$item['member_id']]['first_order_quantity']+$result[$item['member_id']]['second_order_quantity'];
+                $result[$item['member_id']]['team_order_amount'] = $result[$item['member_id']]['first_order_amount']+$result[$item['member_id']]['second_order_amount'];
             }
             $member_3 = DB::select('select member_id, group_concat(child_id) as child,level from ims_yz_member_children where level =3' . ' and uniacid =' . $uniacid . ' group by member_id');
             foreach ($member_3 as $k => $item) {
@@ -49,6 +53,8 @@ class LowerOrderService
                 $result[$item['member_id']]['uniacid'] = $uniacid;
                 $result[$item['member_id']]['third_order_quantity'] = DB::select('select count(id) as total from ims_yz_order where uid in (' . $item['child'] . ')')[0]['total'] ?: 0;
                 $result[$item['member_id']]['third_order_amount'] = intval(DB::select('select sum(price) as money from ims_yz_order where uid in (' . $item['child'] . ')')[0]['money']) ?: 0;
+                $result[$item['member_id']]['team_order_quantity'] = $result[$item['member_id']]['first_order_quantity']+$result[$item['member_id']]['second_order_quantity']+$result[$item['member_id']]['third_order_quantity'];
+                $result[$item['member_id']]['team_order_amount'] = $result[$item['member_id']]['first_order_amount']+$result[$item['member_id']]['second_order_amount']+$result[$item['member_id']]['third_order_amount'];
             }
 //        dd($result);
             $memberModel = new MemberLowerOrder();
