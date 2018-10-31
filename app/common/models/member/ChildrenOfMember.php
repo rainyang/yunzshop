@@ -17,6 +17,7 @@ class ChildrenOfMember extends BaseModel
     public $table = 'yz_member_children';
     protected $guarded = [];
     private $uniacid = 0;
+    private $childrens = [];
 
     public function __construct(array $attributes = [])
     {
@@ -65,6 +66,9 @@ class ChildrenOfMember extends BaseModel
 
         $item = $this->countSubChildOfMember($parents_ids);
 
+
+        //$parents_ids = array_flip($parents_ids);
+
         //统计不为0的子级
         if (!empty($item)) {
             $parent_total = count($parents_ids);
@@ -85,7 +89,7 @@ class ChildrenOfMember extends BaseModel
         }
 
         //统计为空的子级
-        foreach ($parents_ids as $ids) {
+        foreach ($parents_ids as $key => $ids) {
             if (!in_array($ids, $exists)) {
                 $attr[] = [
                     'uniacid'  => $this->uniacid,
@@ -97,6 +101,7 @@ class ChildrenOfMember extends BaseModel
             }
         }
 
+        //ksort($attr);
         $this->CreateData($attr);
     }
 
@@ -113,7 +118,7 @@ class ChildrenOfMember extends BaseModel
     {
         return self::uniacid()
             ->where('member_id', $parent_id)
-            ->whereAnd('child_id', $uid)
+            ->where('child_id', $uid)
             ->delete();
     }
 
@@ -141,5 +146,23 @@ class ChildrenOfMember extends BaseModel
             }
         }
 
+    }
+
+    public function getChildrensOfMember($uid)
+    {
+        return self::uniacid()
+            ->where('member_id', $uid)
+            ->get();
+    }
+
+    public function getChildrens($uid)
+    {
+        $childrens = $this->getChildOfMember($uid);
+
+        if (!is_null($childrens)) {
+            foreach ($childrens as $val) {
+                $this->childrens[] = $val['child_id'];
+            }
+        }
     }
 }

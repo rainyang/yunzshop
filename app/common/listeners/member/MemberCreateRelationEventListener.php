@@ -18,18 +18,20 @@ class MemberCreateRelationEventListener
     {
         $member_id = $event->getUid();
         $parent_id = $event->getParentId();
-        \Log::info('创建会员关系');
 
-        $member_relation = new MemberRelation();
+        if (intval($member_id) > 0 && intval($parent_id) > 0) {
+            \Log::info('创建会员关系');
+            $member_relation = new MemberRelation();
 
-        $relation = $member_relation->hasRelationOfParent($member_id, $parent_id, 1);
+            $relation = $member_relation->hasRelationOfParent($member_id, 1);
 
-        if (empty($relation)) {
-            $member_relation->addMemberOfRelation($member_id, $parent_id);
-        }
+            if (empty($relation)) {
+                $member_relation->addMemberOfRelation($member_id, $parent_id);
+            }
 
-        if (!empty($relation) && $parent_id != $relation->parent_id) {
-            $member_relation->changeMemberOfRelation($member_id, $parent_id);
+            if (!empty($relation) && $parent_id != $relation->parent_id) {
+                $member_relation->changeMemberOfRelation($member_id, $relation->parent_id, $parent_id);
+            }
         }
     }
 }

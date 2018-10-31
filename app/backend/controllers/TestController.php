@@ -9,6 +9,7 @@
 namespace app\backend\controllers;
 
 use app\common\components\BaseController;
+use app\common\events\member\MemberCreateRelationEvent;
 use app\common\events\member\MemberRelationEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\models\Member;
@@ -341,13 +342,13 @@ class TestController extends BaseController
 
     public function mr()
     {
-        $uid = 163757;
+        $uid = 163758;
         $o_parent_id = 2414;
-        $n_parent_id = 85;
+        $n_parent_id = 66;
 //        $member = Member::getMemberByUid($uid)->first();
 //
 //        event(new MemberRelationEvent($member));
-
+        event(new MemberCreateRelationEvent($uid, $n_parent_id));exit;
         (new MemberRelation())->changeMemberOfRelation($uid, $o_parent_id, $n_parent_id);
         //(new MemberRelation())->parent->addNewParentData($uid, $n_parent_id);
 

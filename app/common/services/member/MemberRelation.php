@@ -130,8 +130,8 @@ class MemberRelation
         });
     }
 
-    public function hasRelationOfParent($uid, $parent_id, $depth)
+    public function hasRelationOfParent($uid, $depth)
     {
-        return $this->parent->hasRelationOfParent($uid, $parent_id, $depth);
+        return $this->parent->hasRelationOfParent($uid, $depth);
     }
 }

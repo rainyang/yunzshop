@@ -17,6 +17,7 @@ class ParentOfMember extends BaseModel
     public $table = 'yz_member_parent';
     protected $guarded = [];
     private $uniacid = 0;
+    private $parents = [];
 
     public function __construct(array $attributes = [])
     {
@@ -95,12 +96,29 @@ class ParentOfMember extends BaseModel
 
     }
 
-    public function hasRelationOfParent($uid, $parent_id, $depth)
+    public function hasRelationOfParent($uid, $depth)
     {
         return self::uniacid()
             ->where('member_id', $uid)
-            ->where('parent_id', $parent_id)
             ->where('level', $depth)
             ->count();
+    }
+
+    public function getParentsOfMember($uid)
+    {
+        return self::uniacid()
+            ->where('member_id', $uid)
+            ->get();
+    }
+
+    public function getParents($uid)
+    {
+        $parents = $this->getParentsOfMember($uid);
+
+        if (!is_null($parents)) {
+            foreach ($parents as $val) {
+                $this->parents[] = $val['parent_id'];
+            }
+        }
     }
 }
