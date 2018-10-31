@@ -1,7 +1,7 @@
 @extends('layouts.base')
 @section('title', '会员统计')
 @section('content')
-
+    <script src="{{static_url('js/echarts.js')}}" type="text/javascript"></script>
     <div class="rightlist">
 
         @include('layouts.tabs')
