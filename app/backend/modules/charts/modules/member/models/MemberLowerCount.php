@@ -13,7 +13,7 @@ use app\common\models\BaseModel;
 
 class MemberLowerCount extends BaseModel
 {
-    public $table = 'ims_yz_member_lower_count';
+    public $table = 'yz_member_lower_count';
     public $timestamps = true;
 
     protected $fillable = [];

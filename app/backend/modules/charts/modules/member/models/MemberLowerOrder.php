@@ -13,7 +13,7 @@ use app\common\models\BaseModel;
 
 class MemberLowerOrder extends BaseModel
 {
-    public $table = 'ims_yz_member_lower_order';
+    public $table = 'yz_member_lower_order';
     public $timestamps = true;
 
     protected $fillable = [];
