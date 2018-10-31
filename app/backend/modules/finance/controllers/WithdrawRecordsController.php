@@ -32,8 +32,9 @@ class WithdrawRecordsController extends BaseController
 
 
     /**
-     * 提现记录
-     * @return string
+     * 提现记录接口
+     *
+     * @throws \Throwable
      */
     public function index()
     {
@@ -107,8 +108,8 @@ class WithdrawRecordsController extends BaseController
                 $item->type_name,
                 $item->pay_way_name,
                 $item->amounts,
-                $item->actual_poundage,
-                $item->actual_servicetax,
+                $this->getEstimatePoundage($item),//$item->actual_poundage,
+                $this->getEstimateServiceTax($item),//$item->actual_servicetax,
                 $item->actual_amounts,
                 $item->created_at->toDateTimeString(),
                 $item->audit_at ? date("Y-m-d H:i:s", $item->audit_at) : '',
@@ -164,6 +165,24 @@ class WithdrawRecordsController extends BaseController
             ];
         }
         return ['','','','','','','','',''];
+    }
+
+    private function getEstimatePoundage($item)
+    {
+        if (!(float)$item->actual_poundage > 0 || is_null($item->actual_poundage)) {
+            return bcdiv(bcmul($item->amounts, $item->poundage_rate, 4), 100, 2);
+        }
+        return $item->actual_poundage;
+    }
+
+    private function getEstimateServiceTax($item)
+    {
+        if (!(float)$item->actual_servicetax > 0 || is_null($item->actual_servicetax)) {
+            $poundage = $this->getEstimatePoundage($item);
+            $amount = bcsub($item->amounts, $poundage, 2);
+            return bcdiv(bcmul($amount, $item->servicetax_rate, 4), 100, 2);
+        }
+        return $item->actual_servicetax;
     }
 
 

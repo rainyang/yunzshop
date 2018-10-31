@@ -24,6 +24,7 @@ class WithdrawSuccessListener
 
     /**
      * @param $event WithdrawSuccessEvent
+     * @throws \app\common\exceptions\ShopException
      */
     public function withdrawSuccess($event)
     {
