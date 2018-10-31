@@ -201,7 +201,16 @@ class HomePageController extends ApiController
                 $result['item'] = $designer;
 
                 //顶部菜单 todo 加快进度开发，暂时未优化模型，装修数据、顶部菜单、底部导航等应该在一次模型中从数据库获取、编译 Y181031
-                $result['item']['top_menu'] = (new PageTopMenuService())->getTopMenu($designer['pageinfo']['params']['top_menu_id']);
+                if ($designer['pageinfo']['params']['top_menu'] && $designer['pageinfo']['params']['top_menu_id']) {
+                    $result['item']['top_menu'] = (new PageTopMenuService())->getTopMenu($designer['pageinfo']['params']['top_menu_id']);
+                } else {
+                    $result['item']['top_menu'] = [
+                        'menus' => [],
+                        'params' => [],
+                        'is_show' => false
+                    ];
+                }
+
 
                 $footerMenuType = $designer['footertype']; //底部菜单: 0 - 不显示, 1 - 显示系统默认, 2 - 显示选中的自定义菜单
                 $footerMenuId = $designer['footermenu'];
