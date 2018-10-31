@@ -8,6 +8,7 @@
 
 namespace app\backend\controllers;
 
+use app\backend\modules\charts\models\OrderIncomeEveryday;
 use app\common\components\BaseController;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\models\Member;
@@ -15,6 +16,7 @@ use app\common\models\member\ChildrenOfMember;
 use app\common\models\member\ParentOfMember;
 use app\common\models\Order;
 
+use app\common\models\OrderGoods;
 use app\common\models\OrderPay;
 use app\common\models\Flow;
 use app\common\models\Setting;
@@ -28,14 +30,53 @@ use Illuminate\Support\Facades\DB;
 use Yunshop\Commission\Listener\OrderCreatedListener;
 use Yunshop\Kingtimes\common\models\CompeteOrderDistributor;
 use Yunshop\Kingtimes\common\models\OrderDistributor;
+use Yunshop\StoreCashier\common\models\CashierOrder;
+use Yunshop\StoreCashier\common\models\StoreOrder;
+use Yunshop\Supplier\common\models\SupplierOrder;
 
 class TestController extends BaseController
 {
+    public $orderId;
+    /**
+     * @return bool
+     */
     public function index()
     {
-        $a = Artisan::call('queue:retry');
+        $this->orderId = 739;
+        $incomeData = [];
+        $incomeData['day_time'] = Carbon::today()->getTimestamp();
+        $orderIncome = OrderIncomeEveryday::uniacid()->where('day_time', $incomeData['day_time'])->first();
 
-        dd($a);
+        $orderModel = Order::find($this->orderId);
+
+        $incomeData['amount'] = $orderModel->price;
+
+        $incomeData['shop'] = $orderModel->price - OrderGoods::uniacid()->where('order_id', $this->orderId)->sum('goods_cost_price');
+        if (!empty($orderModel->is_plugin)) {
+            $incomeData['supplier'] = SupplierOrder::where('order_id', $this->orderId)->first()->supplier_profit;
+        }
+        if ($orderModel->plugin_id == 31) {
+            $incomeData['cashier'] = CashierOrder::where('order_id', $this->orderId)->first()->amount;
+        }
+        if ($orderModel->plugin_id == 32) {
+            $incomeData['store'] = StoreOrder::where('order_id', $this->orderId)->first()->amount;
+        }
+
+        if ($orderIncome) {
+            $orderIncome->amount += $incomeData['amount'];
+            $orderIncome->shop += $incomeData['shop'];
+            $orderIncome->supplier += $incomeData['supplier'];
+            $orderIncome->cashier += $incomeData['cashier'];
+            $orderIncome->store += $incomeData['store'];
+            $orderIncome->save();
+            return true;
+        }
+        $incomeData['uniacid'] = $orderModel->uniacid;
+        OrderIncomeEveryday::create($incomeData);
+        return true;
+//        $a = Artisan::call('queue:retry');
+//
+//        dd($a);
     }
 
     public function op_database()

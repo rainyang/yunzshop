@@ -61,20 +61,26 @@ class ShopIncomeStatisticsController extends BaseController
         $search = \YunShop::request()->search;
         $list = Order::uniacid()
             ->where('status', 3)
-            ->selectRaw('FROM_UNIXTIME(created_at,"%Y-%m-%d")as date, id')
-            ->groupBy(DB::raw("FROM_UNIXTIME(UNIX_TIMESTAMP(create_time),'%Y-%m-%d')"))
-//            ->with([
-//                'hasManyOrderGoods' => function($q) {
-//                    $q->selectRaw('sum(goods_cost_price) as cost_price, order_id')->groupBy('order_id');
-//                },
-//                'hasManyStoreOrder',
-//                'hasManySupplierOrder',
-//                'hasManyCashierOrder',
-//                'hasManyOrderPluginBonus'
-//            ])
+            ->selectRaw('FROM_UNIXTIME(created_at,"%Y-%m-%d")as date, sum(price) as price')
+            ->groupBy(DB::raw("FROM_UNIXTIME(created_at,'%Y-%m-%d')"))
+            ->with([
+                'hasManyOrderGoods' => function($q) {
+                    $q->selectRaw('sum(goods_cost_price) as cost_price, order_id')->groupBy(DB::raw("FROM_UNIXTIME(created_at,'%Y-%m-%d')"));
+                },
+                'hasManyStoreOrder',
+                'hasManySupplierOrder',
+                'hasManyCashierOrder',
+                'hasManyOrderPluginBonus'
+            ])
+            ->orderBy("date","desc")->take(10)
 //            ->orderBy('order_id', 'desc')
             ->get()->toArray();
 //            ->paginate($pageSize);
+//        $list = DB::table('yz_order as o')
+//            ->where('o.status', 3)
+//            ->selectRaw('FROM_UNIXTIME(created_at,"%Y-%m-%d") as date, sum(price) as price')
+//            ->join('yz_order_goods as og', 'date', '=', 'og.FROM_UNIXTIME(o.created_at,"%Y-%m-%d")')
+//            ->get();
         dd($list);
 
 
