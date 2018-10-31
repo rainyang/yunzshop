@@ -78,7 +78,7 @@
                                         x: 'left',
                                         y: 'center',
                                         splitList: [
-                                            {start: 500, end:600},{start: 400, end: 500},
+                                            {start: 500},{start: 400, end: 500},
                                             {start: 300, end: 400},{start: 200, end: 300},
                                             {start: 100, end: 200},{start: 0, end: 100},
                                         ],
@@ -127,7 +127,7 @@
                         <tbody>
                         @foreach($phone_data as $row)
                         <tr>
-                            <td>{{ $row['province'] }}</td>
+                            <td>{{ $row['province']?:未知 }}</td>
                             <td>{{ $row['num'] }}</td>
                         </tr>
                         @endforeach
