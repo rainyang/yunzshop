@@ -19,7 +19,7 @@ class MemberLowerListener
     public function subscribe()
     {
         \Event::listen('cron.collectJobs', function () {
-            \Cron::add('MemberLower', '0/10 * * * * *', function () {
+            \Cron::add('MemberLower', '0 1 * * * *', function () {
                 (new TimedTaskService())->handle();
                 return;
             });
