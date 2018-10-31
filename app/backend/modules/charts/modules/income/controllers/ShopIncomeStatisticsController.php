@@ -61,17 +61,17 @@ class ShopIncomeStatisticsController extends BaseController
         $search = \YunShop::request()->search;
         $list = Order::uniacid()
             ->where('status', 3)
-            ->selectRaw('FROM_UNIXTIME(created_at,"%Y-%m-%d")as date, sum(price) as price')
-            ->groupBy(DB::raw("FROM_UNIXTIME(UNIX_TIMESTAMP(created_at),'%Y-%m-%d')"))
-            ->with([
-                'hasOneOrderGoods' => function($q) {
-                    $q->selectRaw('sum(goods_cost_price) as cost_price, order_id')->groupBy('order_id');
-                },
-                'hasManyStoreOrder',
-                'hasManySupplierOrder',
-                'hasManyCashierOrder',
-                'hasManyOrderPluginBonus'
-            ])
+            ->selectRaw('FROM_UNIXTIME(created_at,"%Y-%m-%d")as date, id')
+            ->groupBy(DB::raw("FROM_UNIXTIME(UNIX_TIMESTAMP(create_time),'%Y-%m-%d')"))
+//            ->with([
+//                'hasManyOrderGoods' => function($q) {
+//                    $q->selectRaw('sum(goods_cost_price) as cost_price, order_id')->groupBy('order_id');
+//                },
+//                'hasManyStoreOrder',
+//                'hasManySupplierOrder',
+//                'hasManyCashierOrder',
+//                'hasManyOrderPluginBonus'
+//            ])
 //            ->orderBy('order_id', 'desc')
             ->get()->toArray();
 //            ->paginate($pageSize);

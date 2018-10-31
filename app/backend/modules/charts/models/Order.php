@@ -200,9 +200,9 @@ class Order extends \app\common\models\Order
         return $this->hasMany(StoreOrder::class,'order_id','id');
     }
 
-    public function hasOneSupplierOrder()
+    public function hasManySupplierOrder()
     {
-        return $this->hasOne(SupplierOrder::class,'order_id','id');
+        return $this->hasMany(SupplierOrder::class,'order_id','id');
     }
 
     public function hasManyOrderPluginBonus()

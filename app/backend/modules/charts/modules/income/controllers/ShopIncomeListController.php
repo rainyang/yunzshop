@@ -19,6 +19,9 @@ class ShopIncomeListController extends BaseController
      */
     public function index()
     {
+        if (!(app('plugins')->isEnabled('supplier') && app('plugins')->isEnabled('store-cashier'))) {
+            return $this->message('供应商或门店插件未开启');
+        }
         $pageSize = 10;
         $search = \YunShop::request()->search;
         $list = OrderPluginBonus::search($search)
