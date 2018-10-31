@@ -291,6 +291,7 @@ class PreOrder extends Order
         if ($this->is_virtual == 1) {
             return true;
         }
+
         return $this->orderGoods->hasVirtual();
     }
 
