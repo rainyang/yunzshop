@@ -48,6 +48,14 @@ class ParentOfMember extends BaseModel
             ->pluck('member_id');
     }
 
+    public function delRelationOfParentByMemberId($parent_id, $uid)
+    {
+        return self::uniacid()
+            ->where('member_id', $uid)
+            ->where('parent_id', $parent_id)
+            ->delete();
+    }
+
     public function delRelation(array $member_ids)
     {
         return self::uniacid()
@@ -84,16 +92,34 @@ class ParentOfMember extends BaseModel
         $this->CreateData($attr);
     }
 
-    public function delMemberOfRelation($uid)
+    public function delMemberOfRelation(ChildrenOfMember $childObj, $uid)
     {
+        $parents = $this->getParentOfMember($uid);
+        $childs = $childObj->getChildOfMember($uid);
+
+        //删除重新分配节点本身在父表中原父级的记录
+        if (!$parents->isEmpty()) {
+            foreach ($parents as $val) {
+                $this->delRelationOfParentByMemberId($val['parent_id'], $val['member_id']);
+            }
+        }
+
+        //删除重新分配节点的子级在父表中原父级的记录
+        if (!$childs->isEmpty()) {
+            foreach ($parents as $val) {
+                foreach ($childs as $rows) {
+                    $this->delRelationOfParentByMemberId($val['parent_id'], $rows['child_id']);
+                }
+            }
+        }
+
+        //可优化
+        //删除子节点本身
         $member_ids = $this->getMemberIdByParent($uid);
 
         if (!$member_ids->isEmpty()) {
             $this->delRelation($member_ids);
         }
-
-        $this->delRelation([$uid]);
-
     }
 
     public function hasRelationOfParent($uid, $depth)
@@ -101,7 +127,7 @@ class ParentOfMember extends BaseModel
         return self::uniacid()
             ->where('member_id', $uid)
             ->where('level', $depth)
-            ->count();
+            ->get();
     }
 
     public function getParentsOfMember($uid)

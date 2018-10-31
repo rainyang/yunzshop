@@ -23,15 +23,7 @@ class MemberCreateRelationEventListener
             \Log::info('创建会员关系');
             $member_relation = new MemberRelation();
 
-            $relation = $member_relation->hasRelationOfParent($member_id, 1);
-
-            if (empty($relation)) {
-                $member_relation->addMemberOfRelation($member_id, $parent_id);
-            }
-
-            if (!empty($relation) && $parent_id != $relation->parent_id) {
-                $member_relation->changeMemberOfRelation($member_id, $relation->parent_id, $parent_id);
-            }
+            $member_relation->build($member_id, $parent_id);
         }
     }
 }

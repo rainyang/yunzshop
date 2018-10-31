@@ -343,14 +343,31 @@ class TestController extends BaseController
 
     public function mr()
     {
-        $uid = 163758;
-        $o_parent_id = 2414;
-        $n_parent_id = 66;
+       /* $a = [1,2,3,4,5];
+
+
+        foreach ($a as $val) {
+            $b = array_shift($a);
+        }
+
+
+        dd($b, $a);
+
+        exit;*/
+
+        $uid = 163764;
+        $o_parent_id = 163762;
+        $n_parent_id = 163768;
+
+        $member_relation = new MemberRelation();
+
+        $member_relation->build($uid, $n_parent_id);
+
 //        $member = Member::getMemberByUid($uid)->first();
 //
 //        event(new MemberRelationEvent($member));
-        event(new MemberCreateRelationEvent($uid, $n_parent_id));exit;
-        (new MemberRelation())->changeMemberOfRelation($uid, $o_parent_id, $n_parent_id);
+ //       event(new MemberCreateRelationEvent($uid, $n_parent_id));exit;
+//        (new MemberRelation())->changeMemberOfRelation($uid, $o_parent_id, $n_parent_id);
         //(new MemberRelation())->parent->addNewParentData($uid, $n_parent_id);
 
     }
