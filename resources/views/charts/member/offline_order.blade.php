@@ -79,11 +79,11 @@
                                 @endif
                             </td>
                             <td>{{ $item->first_order_quantity }}</td>
-                            <td>{{ $item->first_order_amount }}</td>
+                            <td>{{ number_format(($item->first_order_amount), 2) }}</td>
                             <td>{{ $item->second_order_quantity }}</td>
-                            <td>{{ $item->second_order_amount }}</td>
+                            <td>{{ number_format(($item->second_order_amount), 2) }}</td>
                             <td>{{ $item->third_order_quantity }}</td>
-                            <td>{{ $item->third_order_amount }}</td>
+                            <td>{{ number_format(($item->third_order_amount), 2) }}</td>
                             <td>{{ $item->team_order_quantity }}</td>
                             <td>{{ number_format(($item->team_order_amount), 2) }}</td>
                         </tr>

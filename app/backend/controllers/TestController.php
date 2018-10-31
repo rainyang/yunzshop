@@ -235,4 +235,9 @@ class TestController extends BaseController
     {
         (new LowerOrderService())->memberOrder();
     }
+
+    public function count()
+    {
+        (new LowerCountService())->memberCount();
+    }
 }
