@@ -30,6 +30,6 @@ class OrderBonusStatusJob implements  ShouldQueue
 
     public function handle()
     {
-        OrderPluginBonus::updateRow($this->orderId);
+        OrderPluginBonus::updateStatus($this->orderId);
     }
 }
