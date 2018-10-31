@@ -202,12 +202,12 @@ class HomePageController extends ApiController
 
                 //顶部菜单 todo 加快进度开发，暂时未优化模型，装修数据、顶部菜单、底部导航等应该在一次模型中从数据库获取、编译 Y181031
                 if ($designer['pageinfo']['params']['top_menu'] && $designer['pageinfo']['params']['top_menu_id']) {
-                    $result['item']['top_menu'] = (new PageTopMenuService())->getTopMenu($designer['pageinfo']['params']['top_menu_id']);
+                    $result['item']['topmenu'] = (new PageTopMenuService())->getTopMenu($designer['pageinfo']['params']['top_menu_id']);
                 } else {
-                    $result['item']['top_menu'] = [
+                    $result['item']['topmenu'] = [
                         'menus' => [],
                         'params' => [],
-                        'is_show' => false
+                        'isshow' => false
                     ];
                 }
 
