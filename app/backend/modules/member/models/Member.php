@@ -484,7 +484,6 @@ class Member extends \app\common\models\Member
         return self::select(['yz_member.member_id', 'yz_member.parent_id'])
             ->join('yz_member', 'mc_members.uid', '=', 'yz_member.member_id')
             ->where('mc_members.uniacid', $uniacid)
-            ->where('member_id', '>', 163760)
             ->get();
     }
 }
