@@ -8,7 +8,7 @@
 
 namespace app\backend\controllers;
 
-use app\backend\modules\charts\models\OrderIncomeEveryday;
+use app\backend\modules\charts\models\OrderIncomeCount;
 use app\common\components\BaseController;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\models\Member;
@@ -45,7 +45,7 @@ class TestController extends BaseController
         $this->orderId = 739;
         $incomeData = [];
         $incomeData['day_time'] = Carbon::today()->getTimestamp();
-        $orderIncome = OrderIncomeEveryday::uniacid()->where('day_time', $incomeData['day_time'])->first();
+        $orderIncome = OrderIncomeCount::uniacid()->where('day_time', $incomeData['day_time'])->first();
 
         $orderModel = Order::find($this->orderId);
 
@@ -72,7 +72,7 @@ class TestController extends BaseController
             return true;
         }
         $incomeData['uniacid'] = $orderModel->uniacid;
-        OrderIncomeEveryday::create($incomeData);
+        OrderIncomeCount::create($incomeData);
         return true;
 //        $a = Artisan::call('queue:retry');
 //

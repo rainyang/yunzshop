@@ -11,9 +11,8 @@ namespace app\backend\modules\charts\models;
 
 use app\common\models\BaseModel;
 
-class OrderIncomeEveryday extends BaseModel
+class OrderIncomeCount extends BaseModel
 {
-    public $table = 'yz_order_income_everyday';
+    public $table = 'yz_order_income_count';
     protected $guarded = [''];
-
 }

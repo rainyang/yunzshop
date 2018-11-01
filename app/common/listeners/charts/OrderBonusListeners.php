@@ -7,8 +7,11 @@
  */
 namespace app\common\listeners\charts;
 
+use app\common\events\order\AfterOrderCanceledEvent;
 use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\events\order\AfterOrderPaidEvent;
+use app\common\events\order\AfterOrderCreatedEvent;
+use app\common\models\order\OrderPluginBonus;
 use app\Jobs\OrderBonusContentJob;
 use app\Jobs\OrderBonusStatusJob;
 use app\Jobs\OrderBonusUpdateJob;
@@ -22,6 +25,11 @@ class OrderBonusListeners
 
     public function subscribe($events)
     {
+        //下单
+        $events->listen(
+            AfterOrderCreatedEvent::class,
+            OrderPluginBonus::class. '@addCount'
+        );
         //支付之后 统计订单详情
         $events->listen(
             AfterOrderPaidEvent::class,
@@ -32,6 +40,12 @@ class OrderBonusListeners
         $events->listen(
             AfterOrderReceivedEvent::class,
             OrderBonusListeners::class . '@updateBonus'
+        );
+
+        //订单取消、退款
+        $events->listen(
+            AfterOrderCanceledEvent::class,
+            OrderPluginBonus::class. '@updateBonus'
         );
 
 
@@ -53,5 +67,11 @@ class OrderBonusListeners
     public function updateBonus(AfterOrderReceivedEvent $event)
     {
         $this->dispatch(new OrderBonusStatusJob($event->getOrderModel()->id));
+    }
+
+    public function addCount(AfterOrderCanceledEvent $event)
+    {
+        $orderModel = Order::find($event->getOrderModel()->id);
+        $this->dispatch(new OrderBonusContentJob($orderModel));
     }
 }

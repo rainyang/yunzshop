@@ -8,7 +8,7 @@
 namespace app\Jobs;
 
 
-use app\backend\modules\charts\models\OrderIncomeEveryday;
+use app\backend\modules\charts\models\OrderIncomeCount;
 use app\common\events\order\CreatedOrderPluginBonusEvent;
 use app\common\models\Order;
 use app\common\models\order\OrderPluginBonus;
@@ -41,7 +41,7 @@ class OrderBonusStatusJob implements  ShouldQueue
 
         $incomeData = [];
         $incomeData['day_time'] = date('Y-m-d');
-        $orderIncome = OrderIncomeEveryday::uniacid()->where('day_time', $incomeData['day_time'])->first();
+        $orderIncome = OrderIncomeCount::uniacid()->where('day_time', $incomeData['day_time'])->first();
 
         $orderModel = Order::find($this->orderId);
 
@@ -71,7 +71,7 @@ class OrderBonusStatusJob implements  ShouldQueue
             return true;
         }
         $incomeData['uniacid'] = $orderModel->uniacid;
-        OrderIncomeEveryday::create($incomeData);
+        OrderIncomeCount::create($incomeData);
 
     }
 }
