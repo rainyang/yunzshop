@@ -14,7 +14,7 @@ class AddSelfmoneyToYzMemberRelation extends Migration
     public function up()
     {
         if (Schema::hasTable('yz_member_relation')) {
-            if (!Schema::hasColumn('yz_member_relation', 'become_slefmoney')) {
+            if (!Schema::hasColumn('yz_member_relation', 'become_selfmoney')) {
                 Schema::table('yz_member_relation', function (Blueprint $table) {
                     $table->decimal('become_selfmoney', 15, 2)->default('0.00');
                 });
