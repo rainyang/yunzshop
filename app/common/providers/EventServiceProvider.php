@@ -4,6 +4,7 @@ namespace app\common\providers;
 
 
 //use app\backend\modules\charts\listeners\Statistics;
+use app\backend\modules\charts\modules\phone\listeners\PhoneAttribution;
 use app\common\events\message\SendMessageEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\events\order\AfterOrderCreatedImmediatelyEvent;
@@ -135,6 +136,7 @@ class EventServiceProvider extends ServiceProvider
         MemberLevelValidity::class,
         LimitBuy::class,
 //        Statistics::class,
+        PhoneAttribution::class,
         OrderBonusListeners::class,
     ];
 
