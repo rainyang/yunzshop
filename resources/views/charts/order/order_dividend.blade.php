@@ -92,10 +92,10 @@
                 <tr class='trhead'>
                     <td colspan='8' style="text-align: left;">
                         <div id="statistics" @if($search['statistics'] != 1) hidden="hidden" @endif>
-                            <p>数量: <span id="total">{{$total}}</span>&nbsp;&nbsp;&nbsp;订单总金额: <span id="total">{{$total}}元</span>&nbsp;&nbsp;&nbsp;订单成本总额: <span id="total">{{$total}}</span></p>
-                            <p>分销佣金: <span id="total">{{$total}}元</span>&nbsp;&nbsp;&nbsp;经销商提成: <span id="total">{{$total}}元</span>&nbsp;&nbsp;&nbsp;区域分红: <span id="total">{{$total}}元</span>&nbsp;&nbsp;&nbsp;微店分红: <span id="total">{{$total}}元</span></p>
-                            <p>招商员分红: <span id="total">{{$total}}元</span>&nbsp;&nbsp;&nbsp;招商中心分红: <span id="total">{{$total}}元</span>&nbsp;&nbsp;&nbsp;积分奖励: <span id="total">{{$total}}</span>&nbsp;&nbsp;&nbsp;爱心值奖励: <span id="total">{{$total}}</span></p>
-                            <p>预计总利润: <span id="total">{{$total}}元</span></p>
+                            <p>数量: <span id="total">{{ $total['count'] }}</span>&nbsp;&nbsp;&nbsp;订单总金额: <span id="total">{{ $total['price'] }}元</span>&nbsp;&nbsp;&nbsp;订单成本总额: <span id="total">{{ $total['cost_price'] + $total['dispatch_price'] }}</span></p>
+                            <p>分销佣金: <span id="total">{{ $total['commission'] }}元</span>&nbsp;&nbsp;&nbsp;经销商提成: <span id="total">{{ $total['team_dividend'] }}元</span>&nbsp;&nbsp;&nbsp;区域分红: <span id="total">{{ $total['area_dividend'] }}元</span>&nbsp;&nbsp;&nbsp;微店分红: <span id="total">{{ $total['micro_shop'] }}元</span></p>
+                            <p>招商员分红: <span id="total">{{ $total['merchant'] }}元</span>&nbsp;&nbsp;&nbsp;招商中心分红: <span id="total">{{ $total['merchant_center'] }}元</span>&nbsp;&nbsp;&nbsp;积分奖励: <span id="total">{{ $total['point'] }}</span>&nbsp;&nbsp;&nbsp;爱心值奖励: <span id="total">{{ $total['love'] }}</span></p>
+                            <p>预计总利润: <span id="total">{{ $total['commission'] + $total['team_dividend'] + $total['merchant'] + $total['merchant_center'] + $total['micro_shop'] }}元</span></p>
                         </div>
                         <p>1、订单成本：平台订单为商品成本+运费，供应商、门店订单为供应商、门店结算金额；</p>
                         <p>2、分销佣金、经销商提成、区域分红、微店分红、招商员分红、招商中心分红为该订单在这种方式的总分红金额求和。</p>

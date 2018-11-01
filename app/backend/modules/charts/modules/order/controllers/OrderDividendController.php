@@ -30,8 +30,15 @@ class OrderDividendController extends ChartsController
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
         if ($search['statistics']) {
-            $total = $list['total'];
-            $commission_total = OrderIncomeCount::uniacid()->search($search)->sum('price');
+
+            $total = OrderIncomeCount::uniacid()->search($search)
+                ->seleceRaw('sum(price) as price, sum(cost_price) as cost_price')
+                ->seleceRaw('sum(commission) as commission, sum(dispatch_price) as dispatch_price')
+                ->seleceRaw('sum(team_dividend) as team_dividend, sum(area_dividend) as area_dividend')
+                ->seleceRaw('sum(micro_shop) as micro_shop, sum(merchant) as merchant')
+                ->seleceRaw('sum(merchant_center) as merchant_center, sum(love) as love')
+                ->seleceRaw('sum(point) as point')->get()->toArray();
+            $total['count'] = $list['total'];
         }
 
         if(!$search['time']){
@@ -43,7 +50,6 @@ class OrderDividendController extends ChartsController
             'pager' => $pager,
             'search' => $search,
             'total' => $total,
-            'commission_total' => $commission_total,
         ])->render();
     }
 
