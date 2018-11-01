@@ -1,7 +1,7 @@
 <?php
 namespace app\common\helpers;
 
-class WeSession {
+class WeSession implements \SessionHandlerInterface{
 
     public static $uniacid;
 
@@ -28,7 +28,7 @@ class WeSession {
     }
 
     public static function setHandler($type = 'mysql') {
-        $classname = "WeSession{$type}";
+        $classname = "app\common\helpers\WeSession{$type}";
         if (class_exists($classname)) {
             $sess = new $classname;
         }
@@ -147,6 +147,10 @@ class WeSessionMemcache extends WeSession {
 }
 
 class WeSessionRedis extends WeSessionMemcache {
+    public function __construct()
+    {
+    }
+
     public function open($save_path, $session_name) {
         $this->session_name = $session_name;
 
