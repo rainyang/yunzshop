@@ -97,7 +97,7 @@
                                 </td>
                                 <td>{{ $row['shop_name'] }}</td>
                                 <td>{{ $row['undividend'] }}</td>
-                                <td>{{ sprintf("%01.2f",$row->price - $row->hasOneOrderGoods->cost_price ?: '0.00') }}</td>
+                                <td>{{ sprintf("%01.2f",($row->price - $row->hasOneOrderGoods->cost_price) > 0 ? $row->price - $row->hasOneOrderGoods->cost_price : '0.00') }}</td>
                                 <td>{{ $row->hasOneSupplierOrder->supplier_profit ?: '0.00' }}</td>
                                 <td>{{ $row->hasOneStoreOrder->amount ?: '0.00' }}</td>
                                 <td>{{ $row->hasOneCashierOrder->amount ?: '0.00' }}</td>

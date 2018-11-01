@@ -2786,18 +2786,18 @@ return [
                 'parents'       => ['charts'],
                 'child'         => []
             ],
-            'shop_income_charts'     => [
-                'name'          => '平台收益统计',
-                'url'           => 'charts.income.shop-income-statistics.index',
-                'url_params'    => '',
-                'permit'        => 1,
-                'menu'          => 1,
-                'icon'          => 'fa-bar-chart-o',
-                'sort'          => 0,
-                'item'          => 'order_ranking_charts',
-                'parents'       => ['charts',],
-                'child'         => []
-            ],
+//            'shop_income_charts'     => [
+//                'name'          => '平台收益统计',
+//                'url'           => 'charts.income.shop-income-statistics.index',
+//                'url_params'    => '',
+//                'permit'        => 1,
+//                'menu'          => 1,
+//                'icon'          => 'fa-bar-chart-o',
+//                'sort'          => 0,
+//                'item'          => 'order_ranking_charts',
+//                'parents'       => ['charts',],
+//                'child'         => []
+//            ],
             'member_income_charts'     => [
                 'name'          => '会员收入统计',
                 'url'           => 'charts.income.member-income.index',
