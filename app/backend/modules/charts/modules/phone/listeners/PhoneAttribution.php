@@ -24,7 +24,7 @@ class PhoneAttribution
     public function subscribe()
     {
         \Event::listen('cron.collectJobs', function () {
-            \Cron::add('Phone-attribution', '* 1  * * * *', function() {
+            \Cron::add('Phone-attribution', '0 1 * * * *', function() {
                 $this->handle();
                 return;
             });
