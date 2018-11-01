@@ -35,7 +35,7 @@
                                     {name: '上海',value: 0 },{name: '重庆',value: 0 },
                                     {name: '河北',value: 0 },{name: '河南',value: 0 },
                                     {name: '云南',value: 0 },{name: '辽宁',value: 0 },
-                                    {name: '黑龙江',value: 3 },{name: '湖南',value: 0 },
+                                    {name: '黑龙江',value: 0 },{name: '湖南',value: 0 },
                                     {name: '安徽',value: 0 },{name: '山东',value: 0 },
                                     {name: '新疆',value: 0 },{name: '江苏',value: 0 },
                                     {name: '浙江',value: 0 },{name: '江西',value: 0 },
