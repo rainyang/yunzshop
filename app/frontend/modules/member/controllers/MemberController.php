@@ -101,10 +101,14 @@ class MemberController extends ApiController
                 $data['withdraw_status'] = $withdraw_status;
 
                 if (!is_null($v)) {
+                    $set = \Setting::get('shop.member');
+
+                    $data['inviteCode']['status'] = $set['is_invite'] ?: 0;
+
                     if (is_null($member_info['yz_member']['invite_code']) || empty($member_info['yz_member']['invite_code'])) {
-                        $data['inviteCode'] = MemberModel::getInviteCode($member_id);
+                        $data['inviteCode']['code'] = MemberModel::getInviteCode($member_id);
                     } else {
-                        $data['inviteCode'] = $member_info['yz_member']['invite_code'];
+                        $data['inviteCode']['code'] = $member_info['yz_member']['invite_code'];
                     }
                 } else {
                     $data['inviteCode'] = 0;
