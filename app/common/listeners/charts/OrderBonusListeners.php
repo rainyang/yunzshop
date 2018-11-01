@@ -30,10 +30,8 @@ class OrderBonusListeners
     public function subscribe($events)
     {
         //下单
-        $events->listen(
-            AfterOrderCreatedEvent::class,
-            OrderBonusListeners::class. '@addCount'
-        );
+        $events->listen(AfterOrderCreatedEvent::class, OrderBonusListeners::class. '@addCount',2);
+
         //支付之后 统计订单详情
 //        $events->listen(
 //            AfterOrderPaidEvent::class,
@@ -41,30 +39,14 @@ class OrderBonusListeners
 //        );
 
         //收货之后 更改订单状态
-        $events->listen(
-            AfterOrderReceivedEvent::class,
-            OrderBonusListeners::class . '@updateBonus'
-        );
+        $events->listen(AfterOrderReceivedEvent::class, OrderBonusListeners::class . '@updateBonus');
 
         //订单取消
-        $events->listen(
-            AfterOrderCanceledEvent::class,
-            OrderBonusListeners::class. '@cancel'
-        );
+        $events->listen(AfterOrderCanceledEvent::class, OrderBonusListeners::class. '@cancel');
 
         //订单退款
-        $events->listen(
-            AfterOrderRefundedEvent::class,
-            OrderBonusListeners::class. '@refunded'
-        );
+        $events->listen(AfterOrderRefundedEvent::class, OrderBonusListeners::class. '@refunded');
 
-
-
-        //订单关闭 分红插入回滚
-//        $events->listen(
-//            AfterOrderCanceledEvent::class,
-//            OrderBonusListeners::class . '@orderCancel'
-//        );
     }
 
 //    public function addBonus(AfterOrderPaidEvent $event)
@@ -80,7 +62,7 @@ class OrderBonusListeners
         $this->dispatch(new OrderCountIncomeJob($event->getOrderModel()->id));
     }
 
-    public function addCount(AfterOrderCanceledEvent $event)
+    public function addCount(AfterOrderCreatedEvent $event)
     {
         $orderModel = Order::find($event->getOrderModel()->id);
         $this->dispatch(new OrderCountContentJob($orderModel));

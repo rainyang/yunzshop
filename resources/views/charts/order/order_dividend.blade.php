@@ -21,24 +21,24 @@
                         <h4 class="card-title">订单分润</h4>
                         <form action="" method="post" class="form-horizontal" role="form" id="form1">
                             <div class="form-group col-xs-12 col-sm-4">
-                                <input type="text" class="form-control"  name="search[member]" value="{{$search['member']?$search['member']:''}}" placeholder="订单号查询"/>
+                                <input type="text" class="form-control"  name="search[order_sn]" value="{{$search['order_sn']?$search['order_sn']:''}}" placeholder="订单号查询"/>
                             </div>
                             <div class="form-group col-xs-12 col-sm-4">
-                                <input type="text" class="form-control"  name="search[member]" value="{{$search['member']?$search['member']:''}}" placeholder="店铺名称查询"/>
+                                <input type="text" class="form-control"  name="search[shop_name]" value="{{$search['shop_name']?$search['shop_name']:''}}" placeholder="店铺名称查询"/>
                             </div>
                             <div class="form-group col-xs-12 col-sm-4" style="padding-bottom: 15px">
-                                <input type="hidden" id="province_id" value="{{ $address->province_id?:0 }}"/>
-                                <input type="hidden" id="city_id" value="{{ $address->city_id?:0 }}"/>
-                                <input type="hidden" id="district_id" value="{{ $address->district_id?:0 }}"/>
-                                <input type="hidden" id="street_id" value="{{ $address->street_id?:0 }}"/>
-                                {!! app\common\helpers\AddressHelper::tplLinkedAddress(['address[province_id]','address[city_id]','address[district_id]','address[street_id]'], [])!!}
+                                <input type="hidden" id="search[province_id]" value="{{ $search['province_id']?:0 }}"/>
+                                <input type="hidden" id="search[city_id]" value="{{ $search['city_id']?:0 }}"/>
+                                <input type="hidden" id="search[district_id]" value="{{ $search['district_id']?:0 }}"/>
+                                <input type="hidden" id="search[street_id]" value="{{ $search['street_id']?:0 }}"/>
+                                {!! app\common\helpers\AddressHelper::tplLinkedAddress(['search[province_id]','search[city_id]','search[district_id]','search[street_id]'], [])!!}
                             </div>
                             {{--<br><br><br>--}}
                             <div class="form-group col-xs-12 col-sm-3">
                                 <input type="text" class="form-control"  name="search[member]" value="{{$search['member']?$search['member']:''}}" placeholder="购买者：会员ID/昵称/姓名/手机"/>
                             </div>
                             <div class="form-group col-xs-12 col-sm-3">
-                                <input type="text" class="form-control"  name="search[recommend_name]" value="{{$search['recommend_name']?$search['recommend_name']:''}}" placeholder="推荐者：会员ID/昵称/姓名/手机"/>
+                                <input type="text" class="form-control"  name="search[recommend]" value="{{$search['recommend']?$search['recommend']:''}}" placeholder="推荐者：会员ID/昵称/姓名/手机"/>
                             </div>
                             <div class='form-group col-xs-12 col-sm-3'>
                                 <select name="search[status]" class="form-control">
@@ -46,7 +46,7 @@
                                             @if($search['status'] == '')  selected="selected"@endif>
                                         订单状态
                                     </option>
-                                    <option value="1"
+                                    <option value="0"
                                             @if($search['status'] == '1')  selected="selected"@endif>
                                         未完成
                                     </option>
@@ -57,19 +57,10 @@
                                 </select>
                             </div>
                             <div class='form-group col-xs-12 col-sm-3'>
-                                <select name="search[status]" class="form-control">
-                                    <option value=""
-                                            @if($search['status'] == '')  selected="selected"@endif>
-                                        是否统计
-                                    </option>
-                                    <option value="1"
-                                            @if($search['status'] == '1')  selected="selected"@endif>
-                                        是
-                                    </option>
-                                    <option value="3"
-                                            @if($search['status'] == '3')  selected="selected"@endif>
-                                        否
-                                    </option>
+                                <select name="search[statistics]" class="form-control">
+                                    <option value="">是否统计</option>
+                                    <option value="1" @if($search['statistics'] == '1') selected @endif>是</option>
+                                    <option value="0" @if($search['statistics'] == '0') selected @endif>否</option>
                                 </select>
                             </div>
                             <div class='form-group col-xs-12 col-sm-6'>
@@ -79,8 +70,8 @@
                                                @if($search['is_time'] == '1')checked="checked"@endif>
                                     </span>
                                     {!!app\common\helpers\DateRange::tplFormFieldDateRange('search[time]', [
-                                                                            'starttime'=>$search['time']['start'],
-                                                                            'endtime'=>$search['time']['end'],
+                                                                            'starttime'=>$search['time']['start'] ?: date('Y-m-d H:i:s'),
+                                                                            'endtime'=>$search['time']['end'] ?: date('Y-m-d H:i:s'),
                                                                             'start'=>0,
                                                                             'end'=>0
                                                                             ], true)!!}
@@ -100,10 +91,12 @@
             <table class='table' style='float:left;margin-bottom:0;table-layout: fixed;line-height: 40px;height: 40px'>
                 <tr class='trhead'>
                     <td colspan='8' style="text-align: left;">
-                        <p>数量: <span id="total">{{$total}}</span>&nbsp;&nbsp;&nbsp;订单总金额: <span id="total">{{$total}}元</span>&nbsp;&nbsp;&nbsp;订单成本总额: <span id="total">{{$total}}</span></p>
-                        <p>分销佣金: <span id="total">{{$total}}元</span>&nbsp;&nbsp;&nbsp;经销商提成: <span id="total">{{$total}}元</span>&nbsp;&nbsp;&nbsp;区域分红: <span id="total">{{$total}}元</span>&nbsp;&nbsp;&nbsp;微店分红: <span id="total">{{$total}}元</span></p>
-                        <p>招商员分红: <span id="total">{{$total}}元</span>&nbsp;&nbsp;&nbsp;招商中心分红: <span id="total">{{$total}}元</span>&nbsp;&nbsp;&nbsp;积分奖励: <span id="total">{{$total}}</span>&nbsp;&nbsp;&nbsp;爱心值奖励: <span id="total">{{$total}}</span></p>
-                        <p>预计总利润: <span id="total">{{$total}}元</span></p>
+                        <div id="statistics" @if($search['statistics'] != 1) hidden="hidden" @endif>
+                            <p>数量: <span id="total">{{$total}}</span>&nbsp;&nbsp;&nbsp;订单总金额: <span id="total">{{$total}}元</span>&nbsp;&nbsp;&nbsp;订单成本总额: <span id="total">{{$total}}</span></p>
+                            <p>分销佣金: <span id="total">{{$total}}元</span>&nbsp;&nbsp;&nbsp;经销商提成: <span id="total">{{$total}}元</span>&nbsp;&nbsp;&nbsp;区域分红: <span id="total">{{$total}}元</span>&nbsp;&nbsp;&nbsp;微店分红: <span id="total">{{$total}}元</span></p>
+                            <p>招商员分红: <span id="total">{{$total}}元</span>&nbsp;&nbsp;&nbsp;招商中心分红: <span id="total">{{$total}}元</span>&nbsp;&nbsp;&nbsp;积分奖励: <span id="total">{{$total}}</span>&nbsp;&nbsp;&nbsp;爱心值奖励: <span id="total">{{$total}}</span></p>
+                            <p>预计总利润: <span id="total">{{$total}}元</span></p>
+                        </div>
                         <p>1、订单成本：平台订单为商品成本+运费，供应商、门店订单为供应商、门店结算金额；</p>
                         <p>2、分销佣金、经销商提成、区域分红、微店分红、招商员分红、招商中心分红为该订单在这种方式的总分红金额求和。</p>
                         <p>3、预计收益=订单金额-订单成本-分销佣金-经销商提成-区域分红-微店分红-招商员分红-招商中心分红</p>
@@ -122,7 +115,7 @@
                             <th class="col-md-2 text-center" style="white-space: pre-wrap;">购买者<br>推荐者</th>
                             <th class="col-md-4 text-center">店铺</th>
                             <th class="col-md-2 text-center">订单金额<br>订单成本</th>
-                            <th class="col-md-2 text-center">分销拥挤<br>经销商提成</th>
+                            <th class="col-md-2 text-center">分销佣金<br>经销商提成</th>
                             <th class="col-md-2 text-center">区域分红<br>微店分红</th>
                             <th class="col-md-3 text-center">招商员分红<br>招商中心分红</th>
                             <th class="col-md-2 text-center">积分奖励<br>爱心值奖励</th>
@@ -131,25 +124,29 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($list['data'] as $row)
+                        @foreach($list as $row)
                             <tr style="height: 40px; text-align: center">
-                                <td>{{date('Y-m-d H:i',$row['created_at'])}}<br>{{ $row['order_sn'] }}</td>
-                                <td style="word-wrap:break-word; white-space: pre-wrap">{{$row['address']['address']}}</td>
-                                <td >{{$row['belongs_to_member']['nickname']}}<br>{{ $row['belongs_to_recommender']['recommender'] ? $row['belongs_to_recommender']['recommender']['nickname'] : '总店'}}</td>
-                                <td>@if($row['is_plugin'] == 1)供应商：{{$row['has_one_supplier']['supplier']['username']}}
-                                    @elseif($row['plugin_id'] == 31)门店：{{ $row['has_one_cashier']['cashier']['store_name'] }}
-                                    @elseif($row['plugin_id'] == 32)门店：{{ $row['has_one_store']['store']['store_name'] }}
-                                    @else 平台自营
+                                <td>{{$row['created_at']}}<br>{{ $row['order_sn'] }}</td>
+                                <td style="word-wrap:break-word; white-space: pre-wrap">{{$row['address']}}</td>
+                                <td >{{$row['buy_name']}}<br>{{ $row['parent_name']}}</td>
+                                <td>@if($row['plugin_id'] == 1)供应商：{{$row['shop_name']}}
+                                    @elseif($row['plugin_id'] == 31)门店：{{ $row['shop_name'] }}
+                                    @elseif($row['plugin_id'] == 32)门店：{{ $row['shop_name'] }}
+                                    @else {{ $row['shop_name'] }}
                                     @endif</td>
-                                <td>{{$row['price']}}<br>{{ $row['has_one_order_goods']['total_cost_price'] }}</td>
-                                <td>{{$row['has_one_commission']['total_price'] ?: 0}}<br>{{ $row['has_one_team_dividend']['total_price'] ?: 0 }}</td>
-                                <td>{{$row['has_one_area_dividend']['total_price'] ?: 0}}<br>{{ $row['has_one_micro_shop']['total_price'] ?: 0 }}</td>
-                                <td>{{$row['has_one_merchant']['total_price'] ?: 0}}<br>{{ $row['has_one_merchant_center']['total_price'] ?: 0 }}</td>
-                                <td>{{$row['has_one_point']['total_point'] ?: 0}}<br>{{ $row['has_one_love']['total_love'] ?: 0 }}</td>
-                                <td>{{$row['has_one_commission']['total_price'] + $row['has_one_team_dividend']['total_price'] + $row['has_one_area_dividend']['total_price'] + $row['has_one_micro_shop']['total_price'] + $row['has_one_merchant']['total_price'] + $row['has_one_merchant_center']['total_price']}}</td>
+                                <td>{{$row['price']}}<br>{{ $row['cost_price'] + $row['dispatch_price'] }}</td>
+                                <td>{{$row['commission'] ?: 0}}<br>{{ $row['team_dividend'] ?: 0 }}</td>
+                                <td>{{$row['area_dividend'] ?: 0}}<br>{{ $row['micro_shop'] ?: 0 }}</td>
+                                <td>{{$row['merchant'] ?: 0}}<br>{{ $row['merchant_center'] ?: 0 }}</td>
+                                <td>{{$row['point'] ?: 0}}<br>{{ $row['love'] ?: 0 }}</td>
+                                <td>{{$row['commission'] + $row['team_dividend']+ $row['area_dividend']+ $row['micro_shop'] + $row['merchant'] + $row['merchant_center']}}</td>
                                 <td>
                                     @if($row['status'] == '3')
                                         已完成
+                                    @elseif($row['status'] == '-1')
+                                        已取消
+                                    @elseif($row['status'] == '-2')
+                                        已退款
                                     @else
                                         未完成
                                     @endif
