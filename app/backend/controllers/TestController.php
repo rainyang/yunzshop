@@ -8,15 +8,16 @@
 
 namespace app\backend\controllers;
 
+
 use app\backend\modules\charts\modules\member\services\LowerCountService;
 use app\backend\modules\charts\modules\member\services\LowerOrderService;
+use app\backend\modules\charts\modules\phone\services\PhoneAttributionService;
 use app\common\components\BaseController;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\models\Member;
 use app\common\models\member\ChildrenOfMember;
 use app\common\models\member\ParentOfMember;
 use app\common\models\Order;
-
 use app\common\models\OrderPay;
 use app\common\models\Flow;
 use app\common\models\Setting;
@@ -30,6 +31,7 @@ use Illuminate\Support\Facades\DB;
 use Yunshop\Commission\Listener\OrderCreatedListener;
 use Yunshop\Kingtimes\common\models\CompeteOrderDistributor;
 use Yunshop\Kingtimes\common\models\OrderDistributor;
+
 
 class TestController extends BaseController
 {
@@ -140,6 +142,12 @@ class TestController extends BaseController
         echo '<br />';
         echo '分类图片修复成功：' . $category_success . '个，失败：' . $category_error . '个';
 
+    }
+
+
+    public function getPhone()
+    {
+        (new PhoneAttributionService())->phoneStatistics();
     }
 
     public function tt()
