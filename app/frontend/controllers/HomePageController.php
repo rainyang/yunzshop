@@ -16,6 +16,7 @@ use Illuminate\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
 use Yunshop\Designer\Common\Services\IndexPageService;
 use Yunshop\Designer\Common\Services\OtherPageService;
+use Yunshop\Designer\Common\Services\PageTopMenuService;
 use Yunshop\Designer\models\Designer;
 use Yunshop\Designer\models\DesignerMenu;
 
@@ -161,7 +162,6 @@ class HomePageController extends ApiController
                 if (empty($pageId) && !Cache::has($member_id.'_designer_default_0')) {
                     Cache::put($member_id.'_designer_default_0', $designer,180);
                 }
-
                 /*$store_goods = null;
                 if (app('plugins')->isEnabled('store-cashier')) {
                     $store_goods = new \Yunshop\StoreCashier\common\models\StoreGoods();
@@ -199,15 +199,38 @@ class HomePageController extends ApiController
                     }
                 }*/
                 $result['item'] = $designer;
+
+                //顶部菜单 todo 加快进度开发，暂时未优化模型，装修数据、顶部菜单、底部导航等应该在一次模型中从数据库获取、编译 Y181031
+                if ($designer['pageinfo']['params']['top_menu'] && $designer['pageinfo']['params']['top_menu_id']) {
+                    $result['item']['topmenu'] = (new PageTopMenuService())->getTopMenu($designer['pageinfo']['params']['top_menu_id']);
+                } else {
+                    $result['item']['topmenu'] = [
+                        'menus' => [],
+                        'params' => [],
+                        'isshow' => false
+                    ];
+                }
+
+
                 $footerMenuType = $designer['footertype']; //底部菜单: 0 - 不显示, 1 - 显示系统默认, 2 - 显示选中的自定义菜单
                 $footerMenuId = $designer['footermenu'];
             } elseif(empty($pageId)){ //如果是请求首页的数据, 提供默认值
                 $result['default'] = self::defaultDesign();
                 $result['item']['data'] = ''; //前端需要该字段
                 $footerMenuType = 1;
+                $result['item']['topmenu'] = [
+                    'menus' => [],
+                    'params' => [],
+                    'isshow' => false
+                ];
             } else{ //如果是请求预览装修的数据
                 $result['item']['data'] = ''; //前端需要该字段
                 $footerMenuType = 0;
+                $result['item']['topmenu'] = [
+                    'menus' => [],
+                    'params' => [],
+                    'isshow' => false
+                ];
             }
 
             //自定义菜单, 原来接口在  plugin.designer.home.index.menu
@@ -254,6 +277,11 @@ class HomePageController extends ApiController
             $result['item']['menus'] = self::defaultMenu($i, $mid, $type);
             $result['item']['menustyle'] = self::defaultMenuStyle();
             $result['item']['data'] = ''; //前端需要该字段
+            $result['item']['topmenu'] = [
+                'menus' => [],
+                'params' => [],
+                'isshow' => false
+            ];
         }
 
         //增加小程序回去默认装修数据
