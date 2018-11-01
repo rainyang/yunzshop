@@ -17,7 +17,7 @@ class OrderStatisticsService
 {
     public function orderStatistics()
     {
-        $uniAccount = UniAccount::uniacid();
+        $uniAccount = UniAccount::get();
         foreach ($uniAccount as $u) {
             \YunShop::app()->uniacid = $u->uniacid;
             \Setting::$uniqueAccountId = $u->uniacid;
@@ -48,5 +48,6 @@ class OrderStatisticsService
                 $memberModel->updateOrcreate(['uid' => $item['uid']], $item);
             }
         }
+
     }
 }
