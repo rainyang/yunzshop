@@ -43,7 +43,7 @@
                                     {name: '甘肃',value: 0 },{name: '山西',value: 0 },
                                     {name: '内蒙古',value: 0 },{name: '陕西',value: 0 },
                                     {name: '吉林',value: 0 },{name: '福建',value: 0 },
-                                    {name: '贵州',value: 0 },{name: '广东',value: 9 },
+                                    {name: '贵州',value: 0 },{name: '广东',value: 0 },
                                     {name: '青海',value: 0 },{name: '西藏',value: 0 },
                                     {name: '四川',value: 0 },{name: '宁夏',value: 0 },
                                     {name: '海南',value: 0 },{name: '台湾',value: 0 },
