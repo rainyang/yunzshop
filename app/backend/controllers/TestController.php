@@ -42,6 +42,17 @@ class TestController extends BaseController
      */
     public function index()
     {
+
+        $undivided = 1;
+        $sum = 100;
+        $field = str_replace('-','_','team-dividend');
+        $order_income = OrderIncomeCount::where('order_id', 984)->first();
+        $order_income->$field = $sum;
+        $order_income->undividend += $undivided;
+        $order_income->save();
+
+        dd($order_income);
+        $test = DB::table('yz_order_goods')->select()->where('order_id', 5)->sum('goods_cost_price');
         $this->orderId = 739;
         $incomeData = [];
         $incomeData['day_time'] = Carbon::today()->getTimestamp();

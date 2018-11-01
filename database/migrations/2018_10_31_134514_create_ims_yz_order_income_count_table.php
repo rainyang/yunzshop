@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 
-class CreateImsYzOrderIncomeEverydayTable extends Migration {
+class CreateImsYzOrderIncomeCountTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -19,12 +19,12 @@ class CreateImsYzOrderIncomeEverydayTable extends Migration {
                 $table->integer('id', true);
                 $table->integer('uniacid')->nullable();
                 $table->integer('uid')->comment('购买者id');
-                $table->integer('parent_id')->comment('推荐者id');
                 $table->string('buy_name')->nullable()->comment('购买者昵称');
+                $table->integer('parent_id')->comment('推荐者id');
                 $table->string('parent_name')->nullable()->comment('推荐者昵称');
                 $table->string('shop_name')->nullable()->comment('商家名称');
-                $table->string('shop_type')->nullable()->comment('商家类型');
                 $table->string('order_sn')->nullable()->comment('订单号');
+                $table->string('order_id')->nullable()->comment('订单号');
                 $table->decimal('price', 14)->nullable()->comment('订单金额');
                 $table->decimal('cost_price', 14)->nullable()->comment('订单成本价');
                 $table->decimal('dispatch_price', 14)->nullable()->comment('订单运费');

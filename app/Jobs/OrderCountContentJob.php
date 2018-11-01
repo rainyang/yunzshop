@@ -7,9 +7,8 @@
 
 namespace app\Jobs;
 
-
-use app\common\events\order\CreatedOrderPluginBonusEvent;
-use app\common\models\order\OrderPluginBonus;
+use app\backend\modules\charts\models\OrderIncomeCount;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -21,50 +20,55 @@ class OrderCountContentJob implements  ShouldQueue
 {
     use InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $tableName;
-    protected $code;
-    protected $foreignKey;
-    protected $localKey;
-    protected $contentColumn;
     protected $orderModel;
-    protected $condition;
+    protected $countModel;
 
     public function __construct($orderModel)
     {
         $this->orderModel = $orderModel;
+
     }
 
     public function handle()
     {
-        $this->address();
-        $this->buyName();
-        $this->referrerName();
-        $this->shopName();
+        $data = [
+            'uniacid' => $this->orderModel->uniacid,
+            'price' => $this->orderModel->uniacid,
+            'uid' => $this->orderModel->uid,
+            'order_sn' => $this->orderModel->order_sn,
+            'order_id' => $this->orderModel->id,
+            'status' => $this->orderModel->status,
+            'plugin_id' => $this->orderModel->plugin_id,
+            'dispatch_price' => $this->orderModel->dispatch_price,
+            'day_time' => Carbon::today()->getTimestamp(),
+        ];
+        if ($this->orderModel->is_plugin) {
+            $data['plugin_id'] = 1;
+        }
+        $data['address'] = $this->address();
+        $data['buy_name'] = $this->buyName();
+        $data['shop_name'] = $this->shopName();
+        $data['parent_id'] = $this->referrerName()['parent_id'];
+        $data['parent_name'] = $this->referrerName()['nickname'];
+        $data['cost_price'] = $this->costPrice();
+
+        OrderIncomeCount::create($data);
+        return true;
     }
+
+
 
     public function address()
     {
         $build = DB::table('yz_order_address')
             ->select()
             ->where('order_id', $this->orderModel->id);
-        $ids = $build->pluck('id');
         $content = $build->first()['address'];
         if (empty($content)) {
-            return;
+            return '';
         }
-        $model = OrderPluginBonus::addRow([
-            'order_id'      => $this->orderModel->id,
-            'uniacid'      => $this->orderModel->uniacid,
-            'table_name'    => 'yz_order_address',
-            'ids'           => $ids,
-            'code'          => 'address',
-            'amount'        => 0,
-            'content'       => $content,
-            'status'        => 0,
-            'price'         => $this->orderModel->price,
-            'member_id'     => $this->orderModel->uid,
-            'order_sn'      => $this->orderModel->order_sn,
-        ]);
+
+        return $content;
     }
 
     public function buyName()
@@ -72,55 +76,31 @@ class OrderCountContentJob implements  ShouldQueue
         $build = DB::table('mc_members')
             ->select()
             ->where('uid', $this->orderModel->uid);
-        $ids = $build->pluck('uid');
         $content = $build->first()['nickname'];
         if (empty($content)) {
-            return;
+            return '';
         }
-        $model = OrderPluginBonus::addRow([
-            'order_id'      => $this->orderModel->id,
-            'uniacid'      => $this->orderModel->uniacid,
-            'table_name'    => 'mc_member',
-            'ids'           => $ids,
-            'code'          => 'buy_name',
-            'amount'        => 0,
-            'content'       => $content,
-            'status'        => 0,
-            'price'         => $this->orderModel->price,
-            'member_id'     => $this->orderModel->uid,
-            'order_sn'      => $this->orderModel->order_sn,
-        ]);
+        return $content;
     }
 
     public function referrerName()
     {
         $referrerTable = DB::table('yz_member')
             ->select()
-            ->where('member_id', 1);
+            ->where('member_id', $this->orderModel->uid);
         $parent_id = $referrerTable->first()['parent_id'];
         if ($parent_id) {
             $build = DB::table('mc_members')
                 ->select()
                 ->where('uid', $parent_id);
-            $ids = $build->pluck('uid');
-            $content = $build->first()['nickname'];
+            $content['nickname'] = $build->first()['nickname'];
+            $content['parent_id'] = $parent_id;
         } else {
-            $content = '总店';
-            $ids = 0;
+            $content['nickname'] = '总店';
+            $content['parent_id'] = 0;
         }
-        $model = OrderPluginBonus::addRow([
-            'order_id'      => $this->orderModel->id,
-            'uniacid'      => $this->orderModel->uniacid,
-            'table_name'    => 'mc_member',
-            'ids'           => $ids,
-            'code'          => 'referrer_name',
-            'amount'        => 0,
-            'content'       => $content,
-            'status'        => 0,
-            'price'         => $this->orderModel->price,
-            'member_id'     => $this->orderModel->uid,
-            'order_sn'      => $this->orderModel->order_sn,
-        ]);
+
+        return $content;
     }
 
     public function shopName()
@@ -133,13 +113,10 @@ class OrderCountContentJob implements  ShouldQueue
             $build = DB::table('yz_supplier')
                 ->select()
                 ->where('id', $supplier_id);
-            $ids = $build->pluck('id');
             $content = $build->first()['username'];
-
             if (empty($content)) {
                 $content = '供应商';
             }
-            $tableName = 'yz_supplier';
 
         } elseif ($this->orderModel->plugin_id == 31) {
             $cashierTable = DB::table('yz_plugin_cashier_order')
@@ -149,12 +126,10 @@ class OrderCountContentJob implements  ShouldQueue
             $build = DB::table('yz_store')
                 ->select()
                 ->where('cashier_id', $cashier_id);
-            $ids = $build->pluck('id');
             $content = $build->first()['store_name'];
             if (empty($content)) {
                 $content = '收银台';
             }
-            $tableName = 'yz_store';
 
         } elseif ($this->orderModel->plugin_id == 32) {
             $storeTable = DB::table('yz_plugin_store_order')
@@ -164,30 +139,23 @@ class OrderCountContentJob implements  ShouldQueue
             $build = DB::table('yz_store')
                 ->select()
                 ->where('id', $store_id);
-            $ids = $build->pluck('id');
             $content = $build->first()['store_name'];
             if (empty($content)) {
-                return;
+                return '门店';
             }
-            $tableName = 'yz_store';
 
         } else {
             $content = '平台自营';
-            $ids = 0;
-            $tableName = 'yz_shop';
         }
-        $model = OrderPluginBonus::addRow([
-            'order_id'      => $this->orderModel->id,
-            'uniacid'       => $this->orderModel->uniacid,
-            'table_name'    => $tableName,
-            'ids'           => $ids,
-            'code'          => 'shop_name',
-            'amount'        => 0,
-            'content'       => $content,
-            'status'        => 0,
-            'price'         => $this->orderModel->price,
-            'member_id'     => $this->orderModel->uid,
-            'order_sn'      => $this->orderModel->order_sn,
-        ]);
+        return $content;
+    }
+
+    public function costPrice()
+    {
+        $build = DB::table('yz_order_goods')
+            ->select()
+            ->where('order_id', $this->orderModel->id)
+            ->sum('goods_cost_price');
+        return $build;
     }
 }

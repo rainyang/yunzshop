@@ -24,19 +24,21 @@ use Yunshop\StoreCashier\common\models\CashierOrder;
 use Yunshop\StoreCashier\common\models\StoreOrder;
 use Yunshop\Supplier\common\models\SupplierOrder;
 
-class OrderBonusStatusJob implements  ShouldQueue
+class OrderCountStatusJob implements  ShouldQueue
 {
     use InteractsWithQueue, Queueable, SerializesModels;
 
     protected $orderId;
+    protected $status;
 
-    public function __construct($orderId)
+    public function __construct($orderId, $status)
     {
         $this->orderId = $orderId;
+        $this->status = $status;
     }
 
     public function handle()
     {
-        OrderPluginBonus::updateStatus($this->orderId);
+        OrderIncomeCount::where('order_id', $this->orderId)->update(['status' => $this->status]);
     }
 }
