@@ -29,7 +29,8 @@ class GoodsObserver extends \app\common\observers\BaseObserver
         if (in_array(false, $result)) {
             return false;
         }
-        if ($model->isDirty()) {
+
+        if (!empty($model->id) && $model->isDirty()) {
             (new \app\common\services\operation\GoodsLog($model, 'update'));
         }
     }

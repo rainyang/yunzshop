@@ -8,12 +8,14 @@
 
 namespace app\common\services\operation;
 
+use app\common\models\OperationLog;
+
 class GoodsLog extends OperationBase
 {
 
     public $modules = 'goods';
 
-    public $type = 'edit';
+    public $type = 'update';
 
 
     public $modify_fields;
@@ -50,11 +52,11 @@ class GoodsLog extends OperationBase
 
     /**
      * 获取模型修改了哪些字段
-     * @param object array
      * @return array
      */
-    protected function modifyField($model)
+    protected function modifyField()
     {
+        $model = $this->model;
 
         foreach ($this->recordField() as $key => $item) {
 
@@ -64,6 +66,21 @@ class GoodsLog extends OperationBase
                  $this->modify_fields[$key]['new_content'] = $model->{$key};
             }
         }
+
+        return $this->modify_fields;
+    }
+
+    protected function createLog()
+    {
+        $model = $this->model;
+
+        $this->setLog('type', 'create');
+        $this->setLog('field', 'id');
+        $this->setLog('field_name', '商品ID');
+        $this->setLog('old_content', $model->id);
+        $this->setLog('new_content', $model->id);
+
+        OperationLog::create($this->logs);
     }
 
 }

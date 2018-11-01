@@ -28,6 +28,8 @@ class CreateYzOperationLogTable extends Migration
                 $table->string('field', 255)->default('')->comment('修改的字段');
                 $table->string('method', 100)->default('')->comment('请求方式');
                 $table->string('extend', 255)->default('');
+                $table->text('input')->default('');
+                $table->tinyInteger('status')->default(0)->comment('0:记录成功|1：记录失败');
                 $table->integer('created_at')->nullable();
                 $table->integer('updated_at')->nullable();
                 $table->integer('deleted_at')->nullable();
