@@ -33,7 +33,7 @@ class OrderCountContentJob implements  ShouldQueue
     {
         $data = [
             'uniacid' => $this->orderModel->uniacid,
-            'price' => $this->orderModel->uniacid,
+            'price' => $this->orderModel->price,
             'uid' => $this->orderModel->uid,
             'order_sn' => $this->orderModel->order_sn,
             'order_id' => $this->orderModel->id,
