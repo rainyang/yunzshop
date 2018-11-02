@@ -361,6 +361,21 @@ class MemberService
     }
 
     /**
+     * 检查邀请码
+     *
+     * @return array
+     */
+    public static function inviteCode()
+    {
+        $invite_code = \YunShop::request()->invite_code;
+        $status = \Setting::get('shop.member');
+        if ($status['is_invite']==1 && empty($invite_code)) {
+            return show_json('0', '请输入邀请码');
+        }
+        return show_json('1');
+    }
+
+    /**
      * 公众号开放平台授权登陆
      *
      * @param $uniacid
