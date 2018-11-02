@@ -73,7 +73,7 @@ class OrderIncomeCount extends BaseModel
 
     public function hasOneMember()
     {
-        return $this->hasOne('app\common\models\Member', 'uid', 'member_id');
+        return $this->hasOne('app\common\models\Member', 'uid', 'uid');
     }
 
     public function hasOneRecommend()

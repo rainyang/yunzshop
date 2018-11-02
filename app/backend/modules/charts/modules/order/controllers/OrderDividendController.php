@@ -32,12 +32,12 @@ class OrderDividendController extends ChartsController
         if ($search['statistics']) {
 
             $total = OrderIncomeCount::uniacid()->search($search)
-                ->seleceRaw('sum(price) as price, sum(cost_price) as cost_price')
-                ->seleceRaw('sum(commission) as commission, sum(dispatch_price) as dispatch_price')
-                ->seleceRaw('sum(team_dividend) as team_dividend, sum(area_dividend) as area_dividend')
-                ->seleceRaw('sum(micro_shop) as micro_shop, sum(merchant) as merchant')
-                ->seleceRaw('sum(merchant_center) as merchant_center, sum(love) as love')
-                ->seleceRaw('sum(point) as point')->get()->toArray();
+                ->selectRaw('sum(price) as price, sum(cost_price) as cost_price')
+                ->selectRaw('sum(commission) as commission, sum(dispatch_price) as dispatch_price')
+                ->selectRaw('sum(team_dividend) as team_dividend, sum(area_dividend) as area_dividend')
+                ->selectRaw('sum(micro_shop) as micro_shop, sum(merchant) as merchant')
+                ->selectRaw('sum(merchant_center) as merchant_center, sum(love) as love')
+                ->selectRaw('sum(point) as point')->get()->toArray();
             $total['count'] = $list['total'];
         }
 

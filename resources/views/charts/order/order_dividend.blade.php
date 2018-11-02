@@ -27,10 +27,10 @@
                                 <input type="text" class="form-control"  name="search[shop_name]" value="{{$search['shop_name']?$search['shop_name']:''}}" placeholder="店铺名称查询"/>
                             </div>
                             <div class="form-group col-xs-12 col-sm-4" style="padding-bottom: 15px">
-                                <input type="hidden" id="search[province_id]" value="{{ $search['province_id']?:0 }}"/>
-                                <input type="hidden" id="search[city_id]" value="{{ $search['city_id']?:0 }}"/>
-                                <input type="hidden" id="search[district_id]" value="{{ $search['district_id']?:0 }}"/>
-                                <input type="hidden" id="search[street_id]" value="{{ $search['street_id']?:0 }}"/>
+                                <input type="hidden" id="province_id" value="{{ $search['province_id']?:0 }}"/>
+                                <input type="hidden" id="city_id" value="{{ $search['city_id']?:0 }}"/>
+                                <input type="hidden" id="district_id" value="{{ $search['district_id']?:0 }}"/>
+                                <input type="hidden" id="street_id" value="{{ $search['street_id']?:0 }}"/>
                                 {!! app\common\helpers\AddressHelper::tplLinkedAddress(['search[province_id]','search[city_id]','search[district_id]','search[street_id]'], [])!!}
                             </div>
                             {{--<br><br><br>--}}
@@ -42,17 +42,20 @@
                             </div>
                             <div class='form-group col-xs-12 col-sm-3'>
                                 <select name="search[status]" class="form-control">
-                                    <option value=""
-                                            @if($search['status'] == '')  selected="selected"@endif>
+                                    <option value="" >
                                         订单状态
                                     </option>
                                     <option value="0"
-                                            @if($search['status'] == '1')  selected="selected"@endif>
+                                            @if($search['status'] == '0')  selected="selected"@endif>
                                         未完成
                                     </option>
                                     <option value="3"
                                             @if($search['status'] == '3')  selected="selected"@endif>
                                         已完成
+                                    </option>
+                                    <option value="-2"
+                                            @if($search['status'] == '-2')  selected="selected"@endif>
+                                        已退款
                                     </option>
                                 </select>
                             </div>
