@@ -14,7 +14,7 @@ class RemakePayType extends Migration
     public function up()
     {
         if (Schema::hasTable('yz_pay_type')) {
-            \Illuminate\Support\Facades\DB::select('TRUNCATE TABLE `'.app('db')->getTablePrefix().'yz_pay_type`');
+            \Illuminate\Support\Facades\DB::update('TRUNCATE TABLE `'.app('db')->getTablePrefix().'yz_pay_type`');
             Schema::table('yz_pay_type',
                 function (Blueprint $table) {
                     if (!Schema::hasColumn('yz_pay_type', 'setting_key')) {
@@ -25,7 +25,7 @@ class RemakePayType extends Migration
                     }
                 });
         }
-        \Illuminate\Support\Facades\DB::select('INSERT INTO `'.app('db')->getTablePrefix().'yz_pay_type` (`id`, `name`, `code`, `setting_key`, `type`, `plugin_id`, `unit`, `updated_at`, `created_at`, `deleted_at`, `need_password`)
+        \Illuminate\Support\Facades\DB::insert('INSERT INTO `'.app('db')->getTablePrefix().'yz_pay_type` (`id`, `name`, `code`, `setting_key`, `type`, `plugin_id`, `unit`, `updated_at`, `created_at`, `deleted_at`, `need_password`)
 VALUES
 	(1, \'微信\', \'wechatPay\', \'shop.pay.weixin\', 2, 0, \'元\', 1505785687, NULL, NULL, 0),
 	(2, \'支付宝\', \'alipay\', \'shop.pay.alipay\', 2, 0, \'元\', 1505785687, NULL, NULL, 0),
@@ -41,7 +41,7 @@ VALUES
 	(0, \'未支付\', \'unPay\', \'\', 0, 0, \'\', 1505785687, NULL, NULL, 0);
 
 ');
-        \Illuminate\Support\Facades\DB::select('UPDATE `'.app('db')->getTablePrefix().'yz_pay_type` SET `id`=0 WHERE `code` = \'unPay\'');
+        \Illuminate\Support\Facades\DB::update('UPDATE `'.app('db')->getTablePrefix().'yz_pay_type` SET `id`=0 WHERE `code` = \'unPay\'');
 
     }
 
