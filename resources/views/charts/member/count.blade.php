@@ -1,4 +1,5 @@
 @extends('layouts.base')
+<script src="{{static_url('js/echarts.js')}}" type="text/javascript"></script>
 @section('title', '会员统计')
 @section('content')
 

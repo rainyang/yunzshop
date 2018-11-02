@@ -8,6 +8,8 @@
 
 namespace app\frontend\modules\member\controllers;
 
+use app\backend\modules\charts\modules\phone\models\PhoneAttribution;
+use app\backend\modules\charts\modules\phone\services\PhoneAttributionService;
 use app\common\components\ApiController;
 use app\common\helpers\Client;
 use app\common\helpers\Url;
@@ -104,6 +106,18 @@ class RegisterController extends ApiController
 
             $memberModel = MemberModel::create($data);
             $member_id = $memberModel->uid;
+
+            //手机归属地查询插入
+            $phoneData = file_get_contents((new PhoneAttributionService())->getPhoneApi($mobile));
+            $phoneArray = json_decode($phoneData);
+            $phone['uid'] = $member_id;
+            $phone['uniacid'] = $uniacid;
+            $phone['province'] = $phoneArray->data->province;
+            $phone['city'] = $phoneArray->data->city;
+            $phone['sp'] = $phoneArray->data->sp;
+
+            $phoneModel = new PhoneAttribution();
+            $phoneModel->updateOrCreate(['uid' => $member_id], $phone);
 
             //添加yz_member表
             $default_sub_group_id = MemberGroup::getDefaultGroupId()->first();
