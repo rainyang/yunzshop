@@ -27,18 +27,17 @@ class OrderDividendController extends ChartsController
         $pageSize = 20;
         $search = \YunShop::request()->get('search');
         $list = OrderIncomeCount::uniacid()->search($search)->orderBy('id','desc')->paginate($pageSize);
-        $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
+        $pager = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
 
         if ($search['statistics']) {
-
             $total = OrderIncomeCount::uniacid()->search($search)
                 ->selectRaw('sum(price) as price, sum(cost_price) as cost_price')
                 ->selectRaw('sum(commission) as commission, sum(dispatch_price) as dispatch_price')
                 ->selectRaw('sum(team_dividend) as team_dividend, sum(area_dividend) as area_dividend')
                 ->selectRaw('sum(micro_shop) as micro_shop, sum(merchant) as merchant')
                 ->selectRaw('sum(merchant_center) as merchant_center, sum(love) as love')
-                ->selectRaw('sum(point) as point')->get()->toArray();
-            $total['count'] = $list['total'];
+                ->selectRaw('sum(point) as point')->first()->toArray();
+            $total['count'] = $list->total();
         }
 
         if(!$search['time']){

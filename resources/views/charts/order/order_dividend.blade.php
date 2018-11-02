@@ -95,14 +95,14 @@
                 <tr class='trhead'>
                     <td colspan='8' style="text-align: left;">
                         <div id="statistics" @if($search['statistics'] != 1) hidden="hidden" @endif>
-                            <p>数量: <span id="total">{{ $total['count'] }}</span>&nbsp;&nbsp;&nbsp;订单总金额: <span id="total">{{ $total['price'] }}元</span>&nbsp;&nbsp;&nbsp;订单成本总额: <span id="total">{{ sprintf("%.2f",$total['cost_price'] + $total['dispatch_price']) }}</span></p>
-                            <p>分销佣金: <span id="total">{{ $total['commission'] }}元</span>&nbsp;&nbsp;&nbsp;经销商提成: <span id="total">{{ $total['team_dividend'] }}元</span>&nbsp;&nbsp;&nbsp;区域分红: <span id="total">{{ $total['area_dividend'] }}元</span>&nbsp;&nbsp;&nbsp;微店分红: <span id="total">{{ $total['micro_shop'] }}元</span></p>
-                            <p>招商员分红: <span id="total">{{ $total['merchant'] }}元</span>&nbsp;&nbsp;&nbsp;招商中心分红: <span id="total">{{ $total['merchant_center'] }}元</span>&nbsp;&nbsp;&nbsp;积分奖励: <span id="total">{{ $total['point'] }}</span>&nbsp;&nbsp;&nbsp;爱心值奖励: <span id="total">{{ $total['love'] }}</span></p>
-                            <p>预计总利润: <span id="total">{{ sprintf("%.2f",$total['commission'] + $total['team_dividend'] + $total['merchant'] + $total['merchant_center'] + $total['micro_shop']) }}元</span></p>
+                            <p>数量: <span id="total">{{ $total['count'] ?: '0' }}</span>&nbsp;&nbsp;&nbsp;订单总金额: <span id="total">{{ $total['price'] ?: '0.00' }}元</span>&nbsp;&nbsp;&nbsp;订单成本总额: <span id="total">{{ sprintf("%.2f",$total['cost_price'] + $total['dispatch_price']) }}</span></p>
+                            <p>分销佣金: <span id="total">{{ $total['commission'] ?: '0.00' }}元</span>&nbsp;&nbsp;&nbsp;经销商提成: <span id="total">{{ $total['team_dividend'] ?: '0.00' }}元</span>&nbsp;&nbsp;&nbsp;区域分红: <span id="total">{{ $total['area_dividend'] ?: '0.00' }}元</span>&nbsp;&nbsp;&nbsp;微店分红: <span id="total">{{ $total['micro_shop'] ?: '0.00' }}元</span></p>
+                            <p>招商员分红: <span id="total">{{ $total['merchant'] ?: '0.00' }}元</span>&nbsp;&nbsp;&nbsp;招商中心分红: <span id="total">{{ $total['merchant_center'] ?: '0.00' }}元</span>&nbsp;&nbsp;&nbsp;积分奖励: <span id="total">{{ $total['point'] ?: '0.00' }}</span>&nbsp;&nbsp;&nbsp;爱心值奖励: <span id="total">{{ $total['love'] ?: '0.00' }}</span></p>
+                            <p>预计总利润: <span id="total">{{ sprintf("%.2f",$total['price'] - ($total['cost_price'] + $total['dispatch_price'] + $total['commission'] + $total['team_dividend'] + $total['merchant'] + $total['merchant_center'] + $total['micro_shop'] + $total['area_dividend'])) }}元</span></p>
                         </div>
                         <p>1、订单成本：平台订单为商品成本+运费，供应商、门店订单为供应商、门店结算金额；</p>
                         <p>2、分销佣金、经销商提成、区域分红、微店分红、招商员分红、招商中心分红为该订单在这种方式的总分红金额求和。</p>
-                        <p>3、预计收益=订单金额-订单成本-分销佣金-经销商提成-区域分红-微店分红-招商员分红-招商中心分红</p>
+                        <p>3、预计利润=订单金额-订单成本-分销佣金-经销商提成-区域分红-微店分红-招商员分红-招商中心分红</p>
                         <p>4、状态：未完成为已支付但未完成的订单，已完成订单完成的状态，已退款的时候更新状态。</p>
                     </td>
                 </tr>
@@ -142,7 +142,7 @@
                                 <td>{{$row['area_dividend'] ?: '0.00'}}<br>{{ $row['micro_shop'] ?: '0.00' }}</td>
                                 <td>{{$row['merchant'] ?: '0.00'}}<br>{{ $row['merchant_center'] ?: '0.00' }}</td>
                                 <td>{{$row['point'] ?: '0.00'}}<br>{{ $row['love'] ?: '0.00' }}</td>
-                                <td>{{sprintf("%.2f",$row['commission'] + $row['team_dividend']+ $row['area_dividend']+ $row['micro_shop'] + $row['merchant'] + $row['merchant_center'])}}</td>
+                                <td>{{sprintf("%.2f",$row['price'] - ($row['cost_price'] + $row['dispatch_price'] + $row['commission'] + $row['team_dividend']+ $row['area_dividend']+ $row['micro_shop'] + $row['merchant'] + $row['merchant_center']))}}</td>
                                 <td>
                                     @if($row['status'] == '3')
                                         已完成

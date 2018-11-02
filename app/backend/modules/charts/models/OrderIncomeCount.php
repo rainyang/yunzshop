@@ -38,7 +38,7 @@ class OrderIncomeCount extends BaseModel
             });
         }
 
-        if ($search['status']) {
+        if ($search['status'] != '') {
             $query->where('status', $search['status']);
         }
 
