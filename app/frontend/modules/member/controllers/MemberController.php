@@ -103,10 +103,14 @@ class MemberController extends ApiController
                 $data['withdraw_status'] = $withdraw_status;
 
                 if (!is_null($v)) {
+                    $set = \Setting::get('shop.member');
+
+                    $data['inviteCode']['status'] = $set['is_invite'] ?: 0;
+
                     if (is_null($member_info['yz_member']['invite_code']) || empty($member_info['yz_member']['invite_code'])) {
-                        $data['inviteCode'] = MemberModel::getInviteCode($member_id);
+                        $data['inviteCode']['code'] = MemberModel::getInviteCode($member_id);
                     } else {
-                        $data['inviteCode'] = $member_info['yz_member']['invite_code'];
+                        $data['inviteCode']['code'] = $member_info['yz_member']['invite_code'];
                     }
                 } else {
                     $data['inviteCode'] = 0;
@@ -505,7 +509,12 @@ class MemberController extends ApiController
                 if (Cache::has($member_model->uid . '_member_info')) {
                     Cache::forget($member_model->uid . '_member_info');
                 }
-                PhoneAttribution::getMemberByID(\YunShop::app()->getMemberId())->delete();
+
+                $phoneModel = PhoneAttribution::getMemberByID(\YunShop::app()->getMemberId());
+                if (!is_null($phoneModel)) {
+                    $phoneModel->delete();
+                }
+
                 //手机归属地查询插入
                 $phoneData = file_get_contents((new PhoneAttributionService())->getPhoneApi($member_model->mobile));
                 $phoneArray = json_decode($phoneData);
