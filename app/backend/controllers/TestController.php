@@ -8,9 +8,11 @@
 
 namespace app\backend\controllers;
 
+use app\backend\models\Withdraw;
 use app\backend\modules\charts\models\OrderIncomeCount;
 use app\common\components\BaseController;
 use app\common\events\order\AfterOrderCreatedEvent;
+use app\common\models\Income;
 use app\common\models\Member;
 use app\common\models\member\ChildrenOfMember;
 use app\common\models\member\ParentOfMember;
@@ -42,52 +44,8 @@ class TestController extends BaseController
      */
     public function index()
     {
-
-        $undivided = 1;
-        $sum = 100;
-        $field = str_replace('-','_','team-dividend');
-        $order_income = OrderIncomeCount::where('order_id', 984)->first();
-        $order_income->$field = $sum;
-        $order_income->undividend += $undivided;
-        $order_income->save();
-
-        dd($order_income);
-        $test = DB::table('yz_order_goods')->select()->where('order_id', 5)->sum('goods_cost_price');
-        $this->orderId = 739;
-        $incomeData = [];
-        $incomeData['day_time'] = Carbon::today()->getTimestamp();
-        $orderIncome = OrderIncomeCount::uniacid()->where('day_time', $incomeData['day_time'])->first();
-
-        $orderModel = Order::find($this->orderId);
-
-        $incomeData['amount'] = $orderModel->price;
-
-        $incomeData['shop'] = $orderModel->price - OrderGoods::uniacid()->where('order_id', $this->orderId)->sum('goods_cost_price');
-        if (!empty($orderModel->is_plugin)) {
-            $incomeData['supplier'] = SupplierOrder::where('order_id', $this->orderId)->first()->supplier_profit;
-        }
-        if ($orderModel->plugin_id == 31) {
-            $incomeData['cashier'] = CashierOrder::where('order_id', $this->orderId)->first()->amount;
-        }
-        if ($orderModel->plugin_id == 32) {
-            $incomeData['store'] = StoreOrder::where('order_id', $this->orderId)->first()->amount;
-        }
-
-        if ($orderIncome) {
-            $orderIncome->amount += $incomeData['amount'];
-            $orderIncome->shop += $incomeData['shop'];
-            $orderIncome->supplier += $incomeData['supplier'];
-            $orderIncome->cashier += $incomeData['cashier'];
-            $orderIncome->store += $incomeData['store'];
-            $orderIncome->save();
-            return true;
-        }
-        $incomeData['uniacid'] = $orderModel->uniacid;
-        OrderIncomeCount::create($incomeData);
-        return true;
-//        $a = Artisan::call('queue:retry');
-//
-//        dd($a);
+        $a = Artisan::call('queue:retry');
+        dd($a);
     }
 
     public function op_database()
@@ -200,6 +158,23 @@ class TestController extends BaseController
         $member_relation = new MemberRelation();
 
         $member_relation->createParentOfMember();
+    }
+
+    public function fixIncome()
+    {
+        $count = 0;
+        $income = Income::whereBetween('created_at', [1539792000,1540915200])->get();
+        foreach ($income as $value) {
+            $pattern1 = '/\\\u[\d|\w]{4}/';
+            preg_match($pattern1, $value->detail, $exists);
+            if (empty($exists)) {
+                $pattern2 = '/(u[\d|\w]{4})/';
+                $value->detail = preg_replace($pattern2, '\\\$1', $value->detail);
+                $value->save();
+                $count++;
+            }
+        }
+        echo "修复了{$count}条";
     }
 
     public function pp()
