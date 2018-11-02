@@ -72,6 +72,7 @@ class OrderBonusJob implements  ShouldQueue
         if ($this->totalDividend) {
             $undividend = $this->totalDividend - $sum;
         }
+        \Log::info($this->code.'分红插入表');
 
         // 存入订单插件分红记录表
         $model = OrderPluginBonus::addRow([
@@ -87,6 +88,7 @@ class OrderBonusJob implements  ShouldQueue
             'member_id'     => $this->orderModel->uid,
             'order_sn'      => $this->orderModel->order_sn,
         ]);
+
 
         if ($model) {
             $this->addCount($sum, $undividend);
