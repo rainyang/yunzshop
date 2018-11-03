@@ -17,6 +17,7 @@ use app\Jobs\ModifyRelationJob;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Yunshop\Commission\models\Agents;
+use Yunshop\TeamDividend\models\TeamDividendAgencyModel;
 
 class MemberShopInfo extends BaseModel
 {
@@ -404,8 +405,9 @@ class MemberShopInfo extends BaseModel
                 }
             }
 
-            $member_relation = Member::setMemberRelation($uid, $parent_id);
+            $member_relation   = Member::setMemberRelation($uid, $parent_id);
             $plugin_commission = app('plugins')->isEnabled('commission');
+            $plugin_team       = app('plugins')->isEnabled('team_dividend');
 
             if (isset($member_relation) && $member_relation !== false) {
                 $member = MemberShopInfo::getMemberShopInfo($uid);
@@ -420,6 +422,17 @@ class MemberShopInfo extends BaseModel
 
                 $member->save();
                 $record->save();
+
+                if ($plugin_team) {
+                    $team = TeamDividendAgencyModel::getAgentByUidId($uid)->first();
+
+                    if (!is_null($team)) {
+                        $team->parent_id = $parent_id;
+                        $team->relation = $member->relation;
+
+                        $team->save();
+                    }
+                }
 
                 if ($plugin_commission) {
                     $agents = Agents::uniacid()->where('member_id', $uid)->first();
