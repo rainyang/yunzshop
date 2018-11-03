@@ -36,35 +36,54 @@ abstract class OperationBase
 
         $this->setDefault();
 
+        $this->modifyDefault();
+
         $this->log($type);
     }
 
+
+    /**
+     * 修改一下特殊默认参数
+    */
+    protected function modifyDefault()
+    {
+
+    }
+
+    /**
+     * 设置默认保存公共参数
+    */
     protected function setDefault()
     {
-        $user_model = User::where('uid', $this->uid)->first();
-        if ($user_model) {
-            $this->logs['user_name'] = $user_model->username;
-        }
+        //$user_name = User::where('uid', $this->uid)->value('username');  //todo 由于查询users表太慢，不存操作人
+//        if ($user_name) {
+//            $this->logs['user_name'] = $user_name;
+//        }
         $this->logs['user_id'] = $this->uid;
         $this->logs['uniacid'] = \YunShop::app()->uniacid;
-        $this->logs['method']  = request()->method();
         $this->logs['ip']      = $_SERVER['REMOTE_ADDR'];
         $this->logs['modules'] = $this->modules;
         $this->logs['type'] = $this->type;
-        //$this->logs['input']   = json_encode(request()->all(), JSON_UNESCAPED_UNICODE); //todo 数据过大，可考虑附表
+        //$this->logs['input']   = json_encode(request()->all(), JSON_UNESCAPED_UNICODE); //todo 数据过大不存，可考虑附表
     }
 
     protected function log($type)
     {
 
-        $this->modifyField();
         if ($type == 'create') {
             $this->createLog();
         } elseif ($type == 'update') {
             $this->updateLog();
+        } elseif ($type == 'special') {
+            $this->special();
+            OperationLog::create($this->logs);
         }
     }
 
+    protected function special()
+    {
+
+    }
 
     protected function updateLog()
     {
@@ -74,8 +93,7 @@ abstract class OperationBase
 
         //没有修改的值，不记录
         if (empty($modify_fields)) {
-            OperationLog::create($this->logs);
-            return true;
+            return;
         }
 
         foreach ($fields as $key => $value) {
@@ -85,15 +103,17 @@ abstract class OperationBase
                 $this->setLog('field', $key);
                 if (is_string($value)) {
                     $this->setLog('field_name', $value);
-                    $this->setLog('old_content', $modify_fields[$key]['old_content']);
-                    $this->setLog('new_content', $modify_fields[$key]['new_content']);
+                    $old_content = $this->dealWith($modify_fields[$key]['old_content']);
+                    $new_content = $this->dealWith($modify_fields[$key]['new_content']);
+
                 } elseif (is_array($value)) {
                     $this->setLog('field_name', $value['field_name']);
                     $old_content = $value[$modify_fields[$key]['old_content']];
                     $new_content = $value[$modify_fields[$key]['new_content']];
-                    $this->setLog('old_content', $old_content);
-                    $this->setLog('new_content', $new_content);
+
                 }
+                $this->setLog('old_content', $old_content);
+                $this->setLog('new_content', $new_content);
                 OperationLog::create($this->logs);
             }
 
@@ -113,7 +133,7 @@ abstract class OperationBase
             $this->setLog('status', 1);
             $this->setLog('input', json_encode($this->model, JSON_UNESCAPED_UNICODE));
             OperationLog::create($this->logs);
-            return true;
+            return;
         }
 
         foreach ($fields as $key => $value) {
@@ -123,20 +143,28 @@ abstract class OperationBase
                 $this->setLog('field', $key);
                 if (is_string($value)) {
                     $this->setLog('field_name', $value);
-                    $this->setLog('old_content', $modify_fields[$key]['old_content']);
-                    $this->setLog('new_content', $modify_fields[$key]['new_content']);
+                    $old_content = $this->dealWith($modify_fields[$key]['old_content']);
+                    $new_content = $this->dealWith($modify_fields[$key]['new_content']);
                 } elseif (is_array($value)) {
                     $this->setLog('field_name', $value['field_name']);
                     $old_content = $value[$modify_fields[$key]['old_content']];
                     $new_content = $value[$modify_fields[$key]['new_content']];
-                    $this->setLog('old_content', $old_content);
-                    $this->setLog('new_content', $new_content);
                 }
+                $this->setLog('old_content', $old_content);
+                $this->setLog('new_content', $new_content);
                 OperationLog::create($this->logs);
             }
 
         }
 
+    }
+
+    protected function dealWith($data)
+    {
+        if (is_array($data)) {
+            return $data[$data['key']];
+        }
+        return $data;
     }
 
     /**
@@ -163,7 +191,7 @@ abstract class OperationBase
      */
     public function setLog($log, $logValue)
     {
-        $this->logs[$log] = $logValue;
+        $this->logs[$log] = $logValue?:'';
     }
 
     /**
@@ -171,7 +199,7 @@ abstract class OperationBase
      * @param $log
      * @return string
      */
-    public function getParameter($log)
+    public function getLog($log)
     {
         return isset($this->logs[$log])?$this->logs[$log] : '';
     }

@@ -14,8 +14,13 @@ class SaleObserver extends \app\common\observers\BaseObserver
     public function saving(Model $model)
     {
 
-        if (!empty($model->id) && $model->isDirty()) {
-            //(new \app\common\services\operation\GoodsLog($model, 'update'));
-        }
+//        if (!empty($model->id) &&$model->isDirty()) {
+//            (new \app\common\services\operation\SaleLog($model, 'update'));
+//        }
+    }
+
+    public function updating(Model $model)
+    {
+        (new \app\common\services\operation\SaleLog($model, 'update'));
     }
 }

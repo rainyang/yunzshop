@@ -307,6 +307,7 @@ class MemberController extends BaseController
         if ($validator->fails()) {
             $this->error($validator->messages());
         } else {
+//            (new \app\common\services\operation\ShopMemberLog($shopInfoModel, 'update'));
             if ($shopInfoModel->save()) {
 
                 if ($parame->data['agent']) {
@@ -414,6 +415,7 @@ class MemberController extends BaseController
         );
 
         if (MemberShopInfo::setMemberBlack($uid, $data)) {
+            (new \app\common\services\operation\MemberBankCardLog(['uid'=> $uid, 'is_black' => \YunShop::request()->black], 'special'));
             return $this->message('黑名单设置成功', yzWebUrl('member.member.index'));
         } else {
             return $this->message('黑名单设置失败', yzWebUrl('member.member.index'), 'error');

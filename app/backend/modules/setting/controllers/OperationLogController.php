@@ -28,7 +28,7 @@ class OperationLogController extends BaseController
 
 
 
-        $list = OperationLog::Search($requestSearch)->paginate(20);
+        $list = OperationLog::Search($requestSearch)->orderBy('id', 'decs')->paginate(20);
 
         $pager = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
 

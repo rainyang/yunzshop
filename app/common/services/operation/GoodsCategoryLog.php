@@ -16,6 +16,13 @@ class GoodsCategoryLog extends OperationBase
 
     public $type = 'update';
 
+
+    protected function modifyDefault()
+    {
+        $this->setLog('mark', $this->model->goods_id);
+    }
+
+
     /**
      * 获取模型需要记录的字段
      * @return mixed

@@ -25,6 +25,11 @@ class GoodsLog extends OperationBase
         parent::__construct($model, $type);
     }
 
+    protected function modifyDefault()
+    {
+        $this->setLog('mark', $this->model->id);
+    }
+
 
     /**
      * 获取模型需要记录的字段

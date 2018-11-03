@@ -81,7 +81,7 @@ class MemberRelationController extends BaseController
 
         if (!empty($relation)) {
             $relation->setRawAttributes($setData);
-
+            (new \app\common\services\operation\RelationLog($relation, 'update'));
             $relation->save();
         } else {
             Relation::create($setData);

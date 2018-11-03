@@ -13,9 +13,6 @@ class GoodsCategoryObserver extends \app\common\observers\BaseObserver
 {
     public function saving(Model $model)
     {
-
-        if (is_null($model->id)) {
-            (new \app\common\services\operation\GoodsCategoryLog($model, 'create'));
-        }
+        (new \app\common\services\operation\GoodsCategoryLog($model, 'create'));
     }
 }
