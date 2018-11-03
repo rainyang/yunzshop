@@ -16,7 +16,7 @@ class ExpressListController extends ApiController
 {
     public function index()
     {
-        $expressCompanies = (new ExpressCompany)->all();
+        $expressCompanies = ExpressCompany::create()->all();
         return $this->successJson('成功', ['express_companies' => $expressCompanies]);
     }
 }
