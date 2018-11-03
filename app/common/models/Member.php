@@ -395,7 +395,7 @@ class Member extends BackendModel
         $model = MemberShopInfo::getMemberShopInfo($member_id);
         $code_mid = self::getMemberIdForInviteCode();
         $mid   = !is_null($code_mid) ? $code_mid : self::getMid();
-        $mid   = !is_null($upperMemberId) ?: $mid;
+        $mid   = !is_null($upperMemberId) ? $upperMemberId : $mid;
 
         event(new BecomeAgent($mid, $model));
     }
@@ -744,8 +744,9 @@ class Member extends BackendModel
     {
         $is_invite = intval(\Setting::get('shop.member.is_invite'));
         $invite_code = \YunShop::request()->invite_code;
+        $member      = MemberShopInfo::where('invite_code', $invite_code)->count();
 
-        if ($is_invite && isset($invite_code) && !empty($invite_code)) {
+        if ($is_invite && isset($invite_code) && !empty($member)) {
             return $invite_code;
         }
 
