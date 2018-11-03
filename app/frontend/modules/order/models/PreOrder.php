@@ -63,23 +63,10 @@ class PreOrder extends Order
     protected $orderDeduction;
     protected $attributes = ['id' => null];
 
-    /**
-     * PreOrder constructor.
-     * @param array $attributes
-     * @throws \app\common\exceptions\ShopException
-     */
     public function __construct(array $attributes = [])
     {
-        $this->dispatch_type_id = request()->input('dispatch_type_id', 0);
         parent::__construct($attributes);
-
-        $orderAddress = new PreOrderAddress();
-        $orderAddress->setOrder($this);
-        //临时处理，无扩展性
-        if (request()->input('mark') !== 'undefined') {
-            $this->mark = request()->input('mark', '');
-        }
-
+        $this->setRelation('orderSettings', $this->newCollection());
     }
 
     public function setOrderGoods(PreOrderGoodsCollection $orderGoods)
@@ -93,10 +80,24 @@ class PreOrder extends Order
 
     }
 
-    public function _init()
+    public function beforeCreating()
     {
 
-        $this->setRelation('orderSettings', $this->newCollection());
+        $this->dispatch_type_id = request()->input('dispatch_type_id', 0);
+        $orderAddress = app('OrderManager')->make('PreOrderAddress');
+
+        $orderAddress->setOrder($this);
+        //临时处理，无扩展性
+        if (request()->input('mark') !== 'undefined') {
+            $this->mark = request()->input('mark', '');
+        }
+
+
+    }
+
+    public function afterCreating()
+    {
+
 
         $this->discount = new OrderDiscount($this);
         $this->orderDispatch = new OrderDispatch($this);
@@ -111,6 +112,7 @@ class PreOrder extends Order
              */
             $aOrderGoods->_init();
         });
+
     }
 
     public function getDiscount()
@@ -211,10 +213,25 @@ class PreOrder extends Order
     {
         $attributeItems = $this->$relation->map(function (BaseModel $relation) {
             $relation->updateTimestamps();
+
+            $beforeSaving = $relation->beforeSaving();
+            if ($beforeSaving === false) {
+                return [];
+            }
             return $relation->getAttributes();
         });
-        $this->$relation->first()->insert($attributeItems->toArray());
 
+        $attributeItems = $attributeItems->filter();
+
+        $this->$relation->first()->insert($attributeItems->toArray());
+        /**
+         * @var Collection $ids
+         */
+        $ids = $this->$relation()->pluck('id');
+        $this->$relation->each(function (BaseModel $item) use ($ids) {
+            $item->id = $ids->shift();
+            $item->afterSaving();
+        });
     }
 
     /**
@@ -250,7 +267,6 @@ class PreOrder extends Order
                 }
             }
         }
-        $this->insertRelations($this->batchSaveRelations);
 
         $relations = array_except($this->relations, $this->batchSaveRelations);
 
@@ -265,6 +281,8 @@ class PreOrder extends Order
             }
         }
 
+        $this->insertRelations($this->batchSaveRelations);
+
         return true;
     }
 
@@ -275,6 +293,10 @@ class PreOrder extends Order
      */
     public function isVirtual()
     {
+        if ($this->is_virtual == 1) {
+            return true;
+        }
+
         return $this->orderGoods->hasVirtual();
     }
 

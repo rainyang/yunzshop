@@ -21,6 +21,10 @@ use app\common\models\Income;
  */
 class MemberIncomeController extends BaseController
 {
+    /**
+     * @return string
+     * @throws \Throwable
+     */
     public function index()
     {
         $groups = MemberGroup::getMemberGroupList();
@@ -171,7 +175,7 @@ class MemberIncomeController extends BaseController
             'member' => $member,
             'levels' => $levels,
             'groups' => $groups,
-            'incomeAll'    => $incomeAll,
+            'incomeAll' => $incomeAll,
             'myform' => $myform,
 //            'parent_name' => $parent_name,
             'item' => $incomeData

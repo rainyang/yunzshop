@@ -20,6 +20,7 @@ use app\frontend\models\MemberShopInfo;
 use app\frontend\modules\finance\models\Withdraw;
 use app\frontend\modules\finance\models\WithdrawSetLog;
 use app\frontend\modules\finance\services\WithdrawManualService;
+use app\frontend\modules\withdraw\services\WithdrawMessageService;
 use Illuminate\Support\Facades\DB;
 
 class BalanceWithdrawController extends BalanceController
@@ -164,6 +165,8 @@ class BalanceWithdrawController extends BalanceController
         if ($result === true) {
             DB::commit();
             BalanceNoticeService::withdrawSubmitNotice($this->withdrawModel);
+            //提现通知管理员
+            (new WithdrawMessageService())->withdraw($this->withdrawModel);
             return $this->successJson('提现申请成功');
 
         }

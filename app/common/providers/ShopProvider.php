@@ -8,13 +8,12 @@
 
 namespace app\common\providers;
 
+use app\common\facades\Setting;
 use app\common\helpers\SettingCache;
-
+use app\common\modules\express\KDN;
 use app\common\managers\ModelExpansionManager;
-
 use app\common\models\BaseModel;
 use app\common\modules\status\StatusContainer;
-
 use app\frontend\modules\coin\CoinManager;
 use app\frontend\modules\deduction\DeductionManager;
 use app\frontend\modules\goods\services\GoodsManager;
@@ -54,6 +53,9 @@ class ShopProvider extends ServiceProvider
 
         $this->app->singleton('StatusContainer', function (){
             return new StatusContainer();
+        });
+        $this->app->singleton('express', function (){
+            return new KDN(Setting::get('shop.express_info.KDN.eBusinessID'),Setting::get('shop.express_info.KDN.appKey'),config('app.express.KDN.reqURL'));
         });
     }
 }

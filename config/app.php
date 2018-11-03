@@ -17,7 +17,7 @@ return [
     /**
      * 微擎模块名
      */
-    'module_name'=>'yun_shop',
+    'module_name' => 'yun_shop',
 
     /*
     |--------------------------------------------------------------------------
@@ -259,16 +259,16 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         'Setting' => app\common\facades\Setting::class,//设置
-        'Option'    => app\common\facades\Option::class,
-        'Utils'     => app\common\services\Utils::class,
+        'Option' => app\common\facades\Option::class,
+        'Utils' => app\common\services\Utils::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,//Excel 组件
 
         //表单生成
-        'Form'     => Collective\Html\FormFacade::class,
-        'HTML'     => Collective\Html\HtmlFacade::class,
+        'Form' => Collective\Html\FormFacade::class,
+        'HTML' => Collective\Html\HtmlFacade::class,
         'BootForm' => Watson\BootstrapForm\Facades\BootstrapForm::class,
-         //表单生成end
-        'Curl'          => Ixudra\Curl\Facades\Curl::class,
+        //表单生成end
+        'Curl' => Ixudra\Curl\Facades\Curl::class,
 
         'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
         //php短信发送
@@ -281,18 +281,22 @@ return [
     ],
 
     'pay_type' => [
-         1 => '微信',
-         2 => '支付宝',
-         3 => '余额'
+        1 => '微信',
+        2 => '支付宝',
+        3 => '余额'
     ],
     //'menu_key'=>'menu',
-    'menu'  => [
-        'main_menu'     => 'main-menu',
-        'plugins_menu'  => 'plugins_menu',
-        'founder_menu'  => 'founder-menu',
+    'menu' => [
+        'main_menu' => 'main-menu',
+        'plugins_menu' => 'plugins_menu',
+        'founder_menu' => 'founder-menu',
         //兼容旧插件使用
-        'old_plugin_menu'   => 'menu'
+        'old_plugin_menu' => 'menu'
     ],
 
-
+    'express' => [
+        'KDN' => [
+            'reqURL'=>'http://api.kdniao.cc/Ebusiness/EbusinessOrderHandle.aspx'
+        ]
+    ]
 ];

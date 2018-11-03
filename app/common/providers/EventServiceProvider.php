@@ -4,12 +4,15 @@ namespace app\common\providers;
 
 
 //use app\backend\modules\charts\listeners\Statistics;
+use app\backend\modules\charts\modules\phone\listeners\PhoneAttribution;
 use app\common\events\message\SendMessageEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
+use app\common\events\order\AfterOrderCreatedImmediatelyEvent;
 use app\common\events\order\AfterOrderPaidEvent;
 use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\events\PayLog;
 use app\common\events\WechatProcessor;
+use app\common\listeners\charts\OrderBonusListeners;
 use app\common\listeners\PayLogListener;
 use app\common\listeners\point\PointListener;
 use app\common\listeners\WechatProcessorListener;
@@ -55,7 +58,10 @@ class EventServiceProvider extends ServiceProvider
         ],
         AfterOrderCreatedEvent::class => [ //下单成功后调用会员成为下线事件
             \app\common\listeners\member\AfterOrderCreatedListener::class,
+        ],
+        AfterOrderCreatedImmediatelyEvent::class => [
             \app\frontend\modules\member\listeners\Order::class, //清空购物车
+
         ],
         /*AfterOrderReceivedEvent::class => [ //确认收货
             \app\common\listeners\member\AfterOrderReceivedListener::class
@@ -130,6 +136,8 @@ class EventServiceProvider extends ServiceProvider
         MemberLevelValidity::class,
         LimitBuy::class,
 //        Statistics::class,
+        PhoneAttribution::class,
+        OrderBonusListeners::class,
     ];
 
     /**

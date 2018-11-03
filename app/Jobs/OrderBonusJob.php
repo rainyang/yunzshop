@@ -27,15 +27,21 @@ class OrderBonusJob implements  ShouldQueue
     protected $localKey;
     protected $amountColumn;
     protected $orderModel;
+    protected $totalDividend;
+    protected $condition;
 
-    public function __construct($tableName, $code, $foreignKey, $localKey, $amountColumn, $orderModel)
+    public function __construct($tableName, $code, $foreignKey, $localKey, $amountColumn, $orderModel, $totalDividend = 0, $condition = null)
     {
+        file_put_contents(storage_path('logs/YYY.txt'), print_r(date('Ymd His')."table_name[{$tableName}]".PHP_EOL,1), FILE_APPEND);
+        file_put_contents(storage_path('logs/YYY.txt'), print_r(date('Ymd His')."code[{$code}]".PHP_EOL,1), FILE_APPEND);
         $this->tableName = $tableName;
         $this->code = $code;
         $this->foreignKey = $foreignKey;
         $this->localKey = $localKey;
         $this->amountColumn = $amountColumn;
         $this->orderModel = $orderModel;
+        $this->totalDividend = $totalDividend;
+        $this->condition = $condition;
     }
 
     public function handle()
@@ -48,6 +54,11 @@ class OrderBonusJob implements  ShouldQueue
         $build = DB::table($this->tableName)
             ->select()
             ->where($this->foreignKey, $this->orderModel[$this->localKey]);
+
+        //分红条件
+        if ($this->condition) {
+            $build = $build->where($this->condition);
+        }
         // 分红记录IDs
         $ids = $build->pluck('id');
         // 分红总和
@@ -55,13 +66,25 @@ class OrderBonusJob implements  ShouldQueue
         if ($sum == 0) {
             return;
         }
+
+        $undivided = 0;
+        if ($this->totalDividend) {
+            $undivided = $this->totalDividend - $sum;
+        }
+
         // 存入订单插件分红记录表
         $model = OrderPluginBonus::addRow([
             'order_id'      => $this->orderModel->id,
+            'uniacid'       => $this->orderModel->uniacid,
             'table_name'    => $this->tableName,
             'ids'           => $ids,
             'code'          => $this->code,
-            'amount'        => $sum
+            'amount'        => $sum,
+            'undividend'    => $undivided,
+            'status'        => 0,
+            'price'         => $this->orderModel->price,
+            'member_id'     => $this->orderModel->uid,
+            'order_sn'      => $this->orderModel->order_sn,
         ]);
         // 暂时不用, 门店利润 在 门店订单结算时重新计算, 各个插件产生分红的事件监听不同.
         // 如果后期插件统一事件产生分红,再启用此事件

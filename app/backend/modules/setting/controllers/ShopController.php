@@ -477,4 +477,21 @@ class ShopController extends BaseController
             \Setting::set('shop.share', $requestModel);
         }
     }
+    /**
+     * 设置物流查询
+     */
+    public function expressInfo() {
+        $share = Setting::get('shop.express_info');
+        $requestModel = \YunShop::request()->express_info;
+        if ($requestModel) {
+            if (Setting::set('shop.express_info', $requestModel)) {
+                return $this->message(' 物流查询信息设置成功', Url::absoluteWeb('setting.shop.express-info'));
+            } else {
+                $this->error('物流查询信息设置失败');
+            }
+        }
+        return view('setting.shop.express_info', [
+            'set' => $share,
+        ])->render();
+    }
 }

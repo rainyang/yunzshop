@@ -400,7 +400,6 @@ class GoodsController extends ApiController
      */
     public function getGoodsSale($goodsModel)
     {
-        //todo 需要重构商品详情获取逻辑 2018-10-16 ：：LiBaoJia
         $set = \Setting::get('point.set');
 
         $shopSet = \Setting::get('shop.shop');
@@ -518,6 +517,10 @@ class GoodsController extends ApiController
         $exist_commission = app('plugins')->isEnabled('commission');
         if ($exist_commission) {
             $commission_data = (new GoodsDetailService($goodsModel))->getGoodsDetailData();
+            if ($commission_data['commission_show'] == 1) {
+                $data['sale_count'] += 1;
+                $data['first_strip_key'] = 'commission_show';
+            }
             $data = array_merge($data, $commission_data);
         }
         return $data;
