@@ -14,6 +14,7 @@ use Illuminate\Filesystem\Filesystem;
 use Yunshop\AreaDividend\models\AreaDividendAgent;
 use Yunshop\Commission\models\Agents;
 use Yunshop\Gold\frontend\services\MemberCenterService;
+use Yunshop\Love\Common\Models\MemberShop;
 use Yunshop\Love\Common\Services\SetService;
 use Yunshop\Merchant\common\models\Merchant;
 use Yunshop\Micro\common\models\MicroShop;
@@ -747,8 +748,9 @@ class Member extends BackendModel
     {
         $is_invite = intval(\Setting::get('shop.member.is_invite'));
         $invite_code = \YunShop::request()->invite_code;
+        $member      = MemberShopInfo::where('invite_code', $invite_code)->count();
 
-        if ($is_invite && isset($invite_code) && !empty($invite_code)) {
+        if ($is_invite && isset($invite_code) && !empty($member)) {
             return $invite_code;
         }
 
