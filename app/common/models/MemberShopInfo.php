@@ -407,7 +407,7 @@ class MemberShopInfo extends BaseModel
 
             $member_relation   = Member::setMemberRelation($uid, $parent_id);
             $plugin_commission = app('plugins')->isEnabled('commission');
-            $plugin_team       = app('plugins')->isEnabled('team_dividend');
+            $plugin_team       = app('plugins')->isEnabled('team-dividend');
 
             if (isset($member_relation) && $member_relation !== false) {
                 $member = MemberShopInfo::getMemberShopInfo($uid);
