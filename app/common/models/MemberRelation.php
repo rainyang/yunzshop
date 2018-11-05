@@ -447,12 +447,12 @@ class MemberRelation extends BaseModel
                     if ($parentisagent) {
                         $can = false;
 
-                        if ($set->become == '2') {
+                        if ($become_term[2]) {
                             $ordercount = Order::getCostTotalNum($member->member_id);
                             \Log::debug('用户：'. $ordercount);
                             \Log::debug('系统：'. intval($set->become_ordercount));
                             $can = $ordercount >= intval($set->become_ordercount);
-                        } else if ($set->become == '3') {
+                        } else if ($become_term[3]) {
                             $moneycount = Order::getCostTotalPrice($member->member_id);
 
                             $can = $moneycount >= floatval($set->become_moneycount);
@@ -542,14 +542,13 @@ class MemberRelation extends BaseModel
                     if ($parentisagent) {
                         $can = false;
 
-                        if ($set->become == '2') {
+                        if ($become_term[2]) {
                             $ordercount = Order::getCostTotalNum($member->member_id);
                             \Log::debug('用户：'. $ordercount);
                             \Log::debug('系统：'. intval($set->become_ordercount));
                             $can = $ordercount >= intval($set->become_ordercount);
-                        } else if ($set->become == '3') {
+                        } else if ($become_term[3]) {
                             $moneycount = Order::getCostTotalPrice($member->member_id);
-
                             $can = $moneycount >= floatval($set->become_moneycount);
                         }
 
@@ -671,12 +670,12 @@ class MemberRelation extends BaseModel
                     if ($parentisagent) {
                         $can = false;
 
-                        if ($set->become == '2') {
+                        if ($become_term[2]) {
                             $ordercount = Order::getCostTotalNum($member->member_id);
                             \Log::debug('用户：'. $ordercount);
                             \Log::debug('系统：'. intval($set->become_ordercount));
                             $can = $ordercount >= intval($set->become_ordercount);
-                        } else if ($set->become == '3') {
+                        } else if ($become_term[3]) {
                             $moneycount = Order::getCostTotalPrice($member->member_id);
 
                             $can = $moneycount >= floatval($set->become_moneycount);
@@ -766,14 +765,13 @@ class MemberRelation extends BaseModel
                     if ($parentisagent) {
                         $can = false;
 
-                        if ($set->become == '2') {
+                        if ($become_term[2]) {
                             $ordercount = Order::getCostTotalNum($member->member_id);
                             \Log::debug('用户：'. $ordercount);
                             \Log::debug('系统：'. intval($set->become_ordercount));
                             $can = $ordercount >= intval($set->become_ordercount);
-                        } else if ($set->become == '3') {
+                        } else if ($become_term[3]) {
                             $moneycount = Order::getCostTotalPrice($member->member_id);
-
                             $can = $moneycount >= floatval($set->become_moneycount);
                         }
 
