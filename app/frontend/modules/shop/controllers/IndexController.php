@@ -97,6 +97,9 @@ class IndexController extends ApiController
                 ->orderBy("display_order", 'desc')
                 ->orderBy("id", 'desc')
                 ->get();
+            foreach ($goodsList as &$value) {
+                $value->thumb = yz_tomedia($value->thumb);
+            }
             Cache::put('YZ_Index_goodsList',$goodsList,4200);
 
         } else {
