@@ -74,6 +74,7 @@ class RegisterController extends ApiController
                 }
             }
 
+
             if (!empty($member_info)) {
                 return $this->errorJson('该手机号已被注册');
             }

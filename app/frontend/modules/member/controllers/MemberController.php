@@ -59,6 +59,8 @@ class MemberController extends ApiController
         $v         = request('v');
 
         if (!empty($member_id)) {
+
+
             $member_info = MemberModel::getUserInfos($member_id)->first();
 
             if (!empty($member_info)) {
@@ -106,6 +108,9 @@ class MemberController extends ApiController
                     $set = \Setting::get('shop.member');
 
                     $data['inviteCode']['status'] = $set['is_invite'] ?: 0;
+
+                    $data['inviteCode']['required'] =$set['required'] ?: 0;
+
 
                     if (is_null($member_info['yz_member']['invite_code']) || empty($member_info['yz_member']['invite_code'])) {
                         $data['inviteCode']['code'] = MemberModel::getInviteCode($member_id);

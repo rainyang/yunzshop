@@ -370,24 +370,33 @@ class MemberService
         $invite_code = \YunShop::request()->invite_code;
 
         $status = \Setting::get('shop.member');
+        $data['status']=0;
         if ($status['is_invite']==1) {//判断邀请码是否开启 1开启 0关闭
 
             if ($status['required']==1 && empty($invite_code)){ //判断邀请码是否必填，1必填 0可选填 判断邀请码是否为空
-                return show_json('0', '请输入邀请码');
+                $data['status']=1;
+                $data['required']=0;
+                return show_json($data, '请输入邀请码');
             }
             else if ($status['required']==1 && !empty($invite_code)){  //判断邀请码是否必填，1必填 0可选填 判断邀请码是否为空
                 $data=MemberShopInfo:: getInviteCode($invite_code);  //查询邀请码是否存在
                 if($data){
+                    $data['status']=1;
+                    $data['required']=1;
                     return show_json('1');
                 }else{
+                    $data['status']=1;
+                    $data['required']=0;
                     return show_json('0', '邀请码无效');
                 }
             }else  if ($status['required']== 0){
+                $data['status']=1;
+                $data['required']=1;
                 return show_json('1');
             }
 
         }else {
-            return show_json('0');
+            return show_json($data);
         }
 
 
