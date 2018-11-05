@@ -379,4 +379,17 @@ class TestController extends BaseController
         //(new MemberRelation())->parent->addNewParentData($uid, $n_parent_id);
 
     }
+
+    public function v()
+    {
+        $curr_month = date('Ym', time());
+
+        $pre_month_1 = date('n', strtotime('-1 month'));
+
+        $pre_month_2 = date('n', strtotime('-2 month'));
+
+        $pre_month_3 = date('n', strtotime('-3 month'));
+
+        dd($curr_month, $pre_month_1, $pre_month_2, $pre_month_3);
+    }
 }
