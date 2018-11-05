@@ -8,6 +8,7 @@
 
 namespace app\backend\controllers;
 
+use app\backend\modules\charts\modules\order\services\OrderStatisticsService;
 use app\backend\modules\charts\modules\phone\services\PhoneAttributionService;
 use app\common\components\BaseController;
 use app\common\events\member\MemberCreateRelationEvent;
@@ -391,5 +392,6 @@ class TestController extends BaseController
         $pre_month_3 = date('n', strtotime('-3 month'));
 
         dd($curr_month, $pre_month_1, $pre_month_2, $pre_month_3);
+        (new OrderStatisticsService())->orderStatistics();
     }
 }
