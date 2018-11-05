@@ -42,7 +42,7 @@ class WapAlipay extends AliPay
                 // 跳转到支付页面。
                 $result = app('alipay.wap2')->pageExecute(json_encode($content));
 
-                \Log::info('-------test2-------', print_r($result,true));
+
 
                 //dd(123);
                 return $result;

@@ -137,7 +137,8 @@ class SdkPayment
 
 
         $result = $aopClient->pageExecute($request);
-        echo $result;
+        \Log::info('-------test2-------', print_r($result,true));
+        return $result;
     }
 
     public function setAppId($app_id)
