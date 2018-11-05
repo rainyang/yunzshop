@@ -109,7 +109,7 @@ class MemberController extends ApiController
 
                     $data['inviteCode']['status'] = $set['is_invite'] ?: 0;
 
-                    $data['inviteCode']['required'] =$set['required'] ?: 0;
+//                    $data['inviteCode']['required'] =$set['required'] ?: 0;
 
 
                     if (is_null($member_info['yz_member']['invite_code']) || empty($member_info['yz_member']['invite_code'])) {
