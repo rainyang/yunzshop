@@ -746,7 +746,12 @@ class Member extends BackendModel
     public static function hasInviteCode()
     {
         $is_invite = intval(\Setting::get('shop.member.is_invite'));
+        $required  = intval(\Setting::get('shop.member.required'));
         $invite_code = \YunShop::request()->invite_code;
+
+        if ($is_invite && $required && empty($invite_code)) {
+            return null;
+        }
 
         if ($is_invite && isset($invite_code) && !empty($invite_code)) {
             return $invite_code;
