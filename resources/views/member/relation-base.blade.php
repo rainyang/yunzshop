@@ -113,17 +113,58 @@
 
                 <div class='panel-body'>
                     <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员中心显示推荐人</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <label class="radio radio-inline">
+                                <input type="radio" name="base[is_referrer]" value="0"
+                                       @if (empty($base['is_referrer'])) checked @endif/> 否
+                            </label>
+                            <label class="radio radio-inline">
+                                <input type="radio" name="base[is_referrer]" value="1"
+                                       @if ($base['is_referrer'] == 1) checked @endif/> 是
+                            </label>
+                            <span class="help-block">会员中心显示推荐人</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">显示关系等级</label>
                         <div class="col-sm-9 col-xs-12">
                             <label class="checkbox-inline">
-                                <input type="checkbox"  name="base[relation_level][]" value="1" @if (in_array(1, $relation_level)) checked @endif >1级</input>
+                                <input type="checkbox"  name="base[relation_level][]" value="1" @if (in_array(1, $relation_level)) checked @endif />1级
+                                <input type="text"  name="base[relation_level][name1]" value="{{ $relation_level['name1'] }}" placeholder="自定义名称"/>
                             </label>
+                        </div>
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                        <div class="col-sm-9 col-xs-12">
                             <label class="checkbox-inline">
-                                <input type="checkbox"  name="base[relation_level][]" value="2" @if (in_array(2, $relation_level)) checked @endif >2级</input>
+                                <input type="checkbox"  name="base[relation_level][]" value="2" @if (in_array(2, $relation_level)) checked @endif />2级
+                                <input type="text"  name="base[relation_level][name2]" value="{{ $relation_level['name2'] }}" placeholder="自定义名称"/>
                             </label>
+                        </div>
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                        <div class="col-sm-9 col-xs-12">
                             <label class="checkbox-inline">
-                                <input type="checkbox"  name="base[relation_level][]"  value="3" @if (in_array(3, $relation_level)) checked @endif >3级</input>
+                                <input type="checkbox"  name="base[relation_level][]"  value="3" @if (in_array(3, $relation_level)) checked @endif />3级
+                                <input type="text"  name="base[relation_level][name3]" value="{{ $relation_level['name3'] }}" placeholder="自定义名称"/>
                             </label>
+                        </div>
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">显示按钮</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <label class="checkbox-inline">
+                                <input type="checkbox"  name="base[relation_level][wechat]"  value="1" @if ($relation_level['wechat'] == 1) checked @endif />微信
+                            </label>
+                        </div>
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                        <div class="col-sm-9 col-xs-12">
+                            <label class="checkbox-inline">
+                                <input type="checkbox"  name="base[relation_level][phone]"  value="1" @if ($relation_level['phone'] == 1) checked @endif />手机
+                            </label>
+                        </div>
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                        <div class="col-sm-9 col-xs-12">
+                            <br>
+                            <label>勾选后,页面将显示下级微信、手机号,如果个人资料中没有填写微信和绑定手机号,将不显示图标!</label>
                         </div>
                     </div>
 
@@ -136,6 +177,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </form>
 

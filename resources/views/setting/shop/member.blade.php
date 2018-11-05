@@ -153,7 +153,7 @@
                                 <span class="help-block">进入商城是否强制绑定手机号</span>
                             </div>
                         </div>
-                        <div class="form-group">
+                        {{--<div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员中心显示推荐人</label>
                             <div class="col-sm-9 col-xs-12">
                                 <label class="radio radio-inline">
@@ -166,7 +166,7 @@
                                 </label>
                                 <span class="help-block">会员中心显示推荐人</span>
                             </div>
-                        </div>
+                        </div>--}}
                         {{--<div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">绑定手机</label>
                             <div class="col-sm-9 col-xs-12">

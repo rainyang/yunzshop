@@ -16,6 +16,7 @@ use app\common\helpers\Url;
 use app\common\models\Member;
 use app\common\models\MemberShopInfo;
 use app\common\models\Setting;
+use Illuminate\Support\Facades\DB;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use app\common\models\Order;
 use Yunshop\Commission\models\AgentLevel;
@@ -190,8 +191,8 @@ class MemberModel extends Member
 
     public static function getMyAllAgentsInfoBySearch($uid, $level, $keyword, $role_level)
     {
-        $commission = self::langFiled('commission');
-        $commission_filed = $commission['agent'] ?: '分销商';
+//        $commission = self::langFiled('commission');
+//        $commission_filed = $commission['agent'] ?: '分销商';
 
         $result = self::uniacid()
             ->whereHas('yzMember', function($query) use ($uid, $level){
@@ -202,59 +203,62 @@ class MemberModel extends Member
                 }
             });
 
-            if (!empty($keyword)) {
-                switch ($keyword) {
-                    case $commission_filed:
-                        $result = $result->whereHas('hasOneAgent', function($query) use ($role_level) {
-                            if (!empty($role_level)) {
-                                $query->where('agent_level_id', $role_level);
-                            }
-                        });
-                        break;
-                    case '经销商':
-                        $result = $result->whereHas('hasOneTeamDividend', function ($query) use ($role_level) {
-                            if (!empty($role_level)) {
-                                $query->where('level', $role_level);
-                            }
-                        });
-                        break;
-                    case '区域代理':
-                        $result = $result->whereHas('hasOneAreaDividend', function ($query) use ($role_level) {
-                            if (!empty($role_level)) {
-                                $query->where('agent_level', $role_level);
-                            }
-                        });
-                        break;
-                    case '招商员':
-                        $result = $result->whereHas('hasOneMerchant');
-                        break;
-                    case '招商中心':
-                        $result = $result->whereHas('hasOneMerchantCenter', function ($query) use ($role_level) {
-                            if (!empty($role_level)) {
-                                $query->where('level_id', $role_level);
-                            }
-                        });
-                        break;
-                    case '微店店主':
-                        $result = $result->whereHas('hasOneMicro', function ($query) use ($role_level) {
-                            if (!empty($role_level)) {
-                                $query->where('level_id', $role_level);
-                            }
-                        });
-                        break;
-                    case '供应商':
-                        $result = $result->whereHas('hasOneSupplier');
-                        break;
-                }
-            }
+//            if (!empty($keyword)) {
+//                switch ($keyword) {
+//                    case $commission_filed:
+//                        $result = $result->whereHas('hasOneAgent', function($query) use ($role_level) {
+//                            if (!empty($role_level)) {
+//                                $query->where('agent_level_id', $role_level);
+//                            }
+//                        });
+//                        break;
+//                    case '经销商':
+//                        $result = $result->whereHas('hasOneTeamDividend', function ($query) use ($role_level) {
+//                            if (!empty($role_level)) {
+//                                $query->where('level', $role_level);
+//                            }
+//                        });
+//                        break;
+//                    case '区域代理':
+//                        $result = $result->whereHas('hasOneAreaDividend', function ($query) use ($role_level) {
+//                            if (!empty($role_level)) {
+//                                $query->where('agent_level', $role_level);
+//                            }
+//                        });
+//                        break;
+//                    case '招商员':
+//                        $result = $result->whereHas('hasOneMerchant');
+//                        break;
+//                    case '招商中心':
+//                        $result = $result->whereHas('hasOneMerchantCenter', function ($query) use ($role_level) {
+//                            if (!empty($role_level)) {
+//                                $query->where('level_id', $role_level);
+//                            }
+//                        });
+//                        break;
+//                    case '微店店主':
+//                        $result = $result->whereHas('hasOneMicro', function ($query) use ($role_level) {
+//                            if (!empty($role_level)) {
+//                                $query->where('level_id', $role_level);
+//                            }
+//                        });
+//                        break;
+//                    case '供应商':
+//                        $result = $result->whereHas('hasOneSupplier');
+//                        break;
+//                }
+//            }
 
+//        $result =  $result->with(['yzMember' => function ($query) {
+//            return $query->select('member_id', 'is_agent', 'status', 'wechat');
+//        }, 'hasOneOrder' => function ($query) {
+//            return $query->selectRaw('uid, count(uid) as total, sum(price) as sum')
+//                ->uniacid()
+//                ->where('status', 3)
+//                ->groupBy('uid');
+//        }]);
         $result =  $result->with(['yzMember' => function ($query) {
-            return $query->select('member_id', 'is_agent', 'status');
-        }, 'hasOneOrder' => function ($query) {
-            return $query->selectRaw('uid, count(uid) as total, sum(price) as sum')
-                ->uniacid()
-                ->where('status', 3)
-                ->groupBy('uid');
+            return $query->select('member_id', 'is_agent', 'status', 'wechat');
         }]);
 
 
@@ -404,10 +408,11 @@ class MemberModel extends Member
      */
     public static function getMyReferral_v2()
     {
-        $member_info     = self::getMyReferrerInfo(\YunShop::app()->getMemberId())->first();
+        $member_id = 1;
+        $member_info     = self::getMyReferrerInfo($member_id)->first();
 
         $set = \Setting::get('shop.member');
-      
+        $memberSet = \Setting::get('relation_base');
         $data = [];
 
         if (!empty($member_info)) {
@@ -432,7 +437,7 @@ class MemberModel extends Member
                         'avatar' => $info['avatar'],
                         'nickname' => $info['nickname'],
                         'level' => $info['yz_member']['level']['level_name'],
-                        'is_show' => $set['is_referrer'],
+                        'is_show' => $memberSet['is_referrer']?:0,
                         'role'   => $member_role
                     ];
                 } else {
@@ -441,7 +446,7 @@ class MemberModel extends Member
                         'avatar' => $avatar,
                         'nickname' => '总店',
                         'level' => '',
-                        'is_show' => $set['is_referrer'],
+                        'is_show' => $memberSet['is_referrer']?:0,
                         'role'   => $member_role
                     ];
                 }
@@ -451,10 +456,36 @@ class MemberModel extends Member
                     'avatar' => $avatar,
                     'nickname' => '暂无',
                     'level' => '',
-                    'is_show' => $set['is_referrer'],
+                    'is_show' => $memberSet['is_referrer']?:0,
                     'role'   => $member_role
                 ];
             }
+
+            //团队1级会员
+            $childMember1 = DB::select('select child_id from ims_yz_member_children where member_id='.$member_id.' and level=1');
+            $child_total = 0;
+            foreach ($childMember1 as $item) {
+                $childOrder[] = intval(DB::select('select sum(price) as money from    ims_yz_order where uid='.$item['child_id'])[0]['money']);
+                $child_total++;
+            }
+            $data['child_order_money'] = 0;
+            $data['child_total'] = $child_total;
+            foreach ($childOrder as $item) {
+                $data['child_order_money'] += $item;
+            }
+            //团队全部会员
+            $childMemberTeam = DB::select('select child_id from ims_yz_member_children where member_id='.$member_id);
+            $child_team_total = 0;
+            foreach ($childMemberTeam as $item) {
+                $childTeamOrder[] = intval(DB::select('select sum(price) as money from ims_yz_order where uid='.$item['child_id'])[0]['money']);
+                $child_team_total++;
+            }
+            $data['team_order_money'] = 0;
+            $data['team_total'] = $child_team_total;
+            foreach ($childTeamOrder as $k => $value) {
+                $data['team_order_money'] += $value;
+            }
+//        dd($data);
         }
 
         return $data;
@@ -782,29 +813,30 @@ class MemberModel extends Member
 
     public static function fetchAgentInfo($agent_info)
     {
+//        dd($agent_info);
         if (empty($agent_info)) {
             return [];
         }
 
         return collect($agent_info)->map(function($item) {
             $is_agent          = 0;
-            $order_price       = 0;
-            $agent_total       = 0;
-            $agent_order_price = 0;
+//            $order_price       = 0;
+//            $agent_total       = 0;
+//            $agent_order_price = 0;
 
-            $role              = self::convertRoleText($item);
-            $role_type         = self::setRoleLevel($item);
+//            $role              = self::convertRoleText($item);
+//            $role_type         = self::setRoleLevel($item);
 
             //下线的下线1级
-            $child_agent = MemberModel::getMyAllAgentsInfo($item->uid, 1)->get();
+//            $child_agent = MemberModel::getMyAllAgentsInfo($item->uid, 1)->get();
 
-            if (!is_null($child_agent)) {
-                $agent_total = count($child_agent);
-
-                foreach ($child_agent as $rows) {
-                    $agent_order_price += $rows->hasOneOrder->sum;
-                }
-            }
+//            if (!is_null($child_agent)) {
+//                $agent_total = count($child_agent);
+//
+//                foreach ($child_agent as $rows) {
+//                    $agent_order_price += $rows->hasOneOrder->sum;
+//                }
+//            }
 
             if (!is_null($item->yzMember)) {
                 if (1 == $item->yzMember->is_agent && 2 == $item->yzMember->status) {
@@ -812,8 +844,29 @@ class MemberModel extends Member
                 }
             }
 
-            if (!is_null($item->hasOneOrder)) {
-                $order_price = $item->hasOneOrder->sum;
+//            if (!is_null($item->hasOneOrder)) {
+//                $order_price = $item->hasOneOrder->sum;
+//            }
+
+            //团队1级会员
+            $childMember1 = DB::select('select child_id from ims_yz_member_children where member_id='.$item->uid.' and level=1');
+            foreach ($childMember1 as $value) {
+                $childOrder[] = DB::select('select sum(price) as money,count(id) as total from ims_yz_order where uid='.$value['child_id']);
+            }
+            $result['child_order_money'] = 0;
+            foreach ($childOrder as $value) {
+                $result['child_order_money'] += intval($value[0]['money']);
+                $result['child_order_total'] += $value[0]['total'];
+            }
+            //团队全部会员
+            $childMemberTeam = DB::select('select child_id from ims_yz_member_children where member_id='.$item->uid);
+            foreach ($childMemberTeam as $value) {
+                $childTeamOrder[] = DB::select('select sum(price) as money,count(id) as total from ims_yz_order where uid='.$value['child_id']);
+            }
+            $result['team_order_money'] = 0;
+            foreach ($childTeamOrder as $k => $value) {
+                $result['team_order_money'] += intval($value[0]['money']);
+                $result['team_order_total'] += $value[0]['total'];
             }
 
             return [
@@ -821,11 +874,18 @@ class MemberModel extends Member
                 'is_agent' => $is_agent,
                 'nickname' => $item->nickname,
                 'avatar'   => $item->avatar,
-                'order_price' => $order_price,
-                'agent_total' => $agent_total,
-                'agent_order_price' => $agent_order_price,
-                'role' => $role,
-                'role_type' => $role_type
+//                'order_price' => $order_price,
+//                'agent_total' => $agent_total,
+//                'agent_order_price' => $agent_order_price,
+//                'role' => $role,
+//                'role_type' => $role_type,
+                'createtime' => $item->createtime,
+                'mobile' => $item->mobile?:0,
+                'wechat' => $item->yzMember->wechat?:0,
+                'child_order_money' => $result['child_order_money']?:0,
+                'child_order_total' => $result['child_order_total']?:0,
+                'team_order_money' => $result['team_order_money']?:0,
+                'team_order_total' => $result['team_order_total']?:0,
             ];
         });
     }

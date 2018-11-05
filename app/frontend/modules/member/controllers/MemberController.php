@@ -13,6 +13,7 @@ use app\backend\modules\charts\modules\phone\services\PhoneAttributionService;
 use app\backend\modules\member\models\MemberRelation;
 use app\backend\modules\order\models\Order;
 use app\common\components\ApiController;
+use app\common\components\BaseController;
 use app\common\facades\Setting;
 use app\common\helpers\Cache;
 use app\common\helpers\ImageHelper;
@@ -44,7 +45,7 @@ use app\common\services\alipay\OnekeyLogin;
 use app\common\helpers\Client;
 use app\common\services\plugin\huanxun\HuanxunSet;
 
-class MemberController extends ApiController
+class MemberController extends BaseController
 {
     protected $publicAction = ['guideFollow', 'wxJsSdkConfig', 'memberFromHXQModule', 'dsAlipayUserModule'];
     protected $ignoreAction = ['guideFollow', 'wxJsSdkConfig', 'memberFromHXQModule', 'dsAlipayUserModule'];
