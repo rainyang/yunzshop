@@ -509,7 +509,12 @@ class MemberController extends ApiController
                 if (Cache::has($member_model->uid . '_member_info')) {
                     Cache::forget($member_model->uid . '_member_info');
                 }
-                PhoneAttribution::getMemberByID(\YunShop::app()->getMemberId())->delete();
+
+                $phoneModel = PhoneAttribution::getMemberByID(\YunShop::app()->getMemberId());
+                if (!is_null($phoneModel)) {
+                    $phoneModel->delete();
+                }
+
                 //手机归属地查询插入
                 $phoneData = file_get_contents((new PhoneAttributionService())->getPhoneApi($member_model->mobile));
                 $phoneArray = json_decode($phoneData);
