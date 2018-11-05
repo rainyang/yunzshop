@@ -75,6 +75,7 @@
             <tr>
                 <th style='width:4%;text-align: center;'>日志ID</th>
                 <th style='width:4%;text-align: center;'>操作人</th>
+                <th style='width:4%;text-align: center;'>模块ID</th>
                 <th style='width:6%;text-align: center;'>模块</th>
                 <th style='width:8%;text-align: center;'>类别</th>
                 <th style='width:10%;text-align: center;'>名称</th>
@@ -90,6 +91,9 @@
                     <td style="text-align: center;">{{$row->id}}</td>
                     <td style="text-align: center;">
                         {{$row->user_name}}
+                    </td>
+                    <td style="text-align: center;">
+                        {{$row->mark}}
                     </td>
                     <td style="text-align: center;">
                         {{$row->modules_name}}
