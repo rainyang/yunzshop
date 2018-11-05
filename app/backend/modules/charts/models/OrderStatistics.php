@@ -1,38 +1,41 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: yunzhong
- * Date: 2018/7/31
- * Time: 10:07
+ * User: Administrator
+ * Date: 2018/11/1
+ * Time: 18:46
  */
 
-namespace app\common\models\statistic;
+namespace app\backend\modules\charts\models;
+
 
 use app\common\models\BaseModel;
-use app\common\models\Member;
 
-class OrderCountModel extends BaseModel
+class OrderStatistics extends BaseModel
 {
-    public $table = 'yz_order_count';
-    public $guarded = [];
+    protected $table = 'yz_order_statistics';
+    protected $guarded = [''];
+    protected $fillable = [];
 
-    public function hasOneMember()
+    public $timestamps = true;
+
+    public function belongsToMember()
     {
-        return $this->hasOne(Member::class, 'uid', 'member_id');
+        return $this->belongsTo(\app\common\models\Member::class, 'uid', 'uid');
     }
 
     public static function getMember($search)
     {
-        $model = self::uniacid()->with('hasOneMember');
+        $model = self::with('belongsToMember');
 
         if (!empty($search['member_id'])) {
-            $model->whereHas('hasOneMember', function ($q) use($search) {
+            $model->whereHas('belongsToMember', function ($q) use($search) {
                 $q->where('uid', $search['member_id']);
             });
         }
 
         if (!empty($search['member_info'])) {
-            $model->whereHas('hasOneMember', function ($q) use($search) {
+            $model->whereHas('belongsToMember', function ($q) use($search) {
                 $q->where('nickname', 'like' , '%' . $search['member_info'] . '%')
                     ->orWhere('realname', 'like' , '%' . $search['member_info'] . '%')
                     ->orWhere('mobile', 'like' , '%' . $search['member_info'] . '%');
