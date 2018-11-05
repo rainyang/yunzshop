@@ -46,12 +46,12 @@
                             <div class="col-sm-9 col-xs-12">
                                 <label class="radio-inline">
                                     <input type="radio" name="setdata[become]" value="2"
-                                           @if($set['is_with'] == 0)
+                                           @if($set['become'] == 2)
                                            checked="checked" @endif />
                                     或</label>
                                 <label class="radio-inline">
                                     <input type="radio" name="setdata[become]" value="3"
-                                           @if($set['is_with'] == 1)
+                                           @if($set['become'] == 3)
                                            checked="checked" @endif />
                                     与</label>
                                 <span class='help-block'><b>[或]</b>满足以下任意条件都可以升级<br><b>[与]</b>满足以下所有条件才可以升级</span>
