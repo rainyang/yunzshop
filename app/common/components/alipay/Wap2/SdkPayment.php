@@ -54,7 +54,7 @@ class SdkPayment
      *
      * @var string
      */
-    private $charset = 'GBK';
+    private $charset = 'UTF-8';
 
     /**
      * Request Must
