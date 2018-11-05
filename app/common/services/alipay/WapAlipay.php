@@ -44,7 +44,8 @@ class WapAlipay extends AliPay
 
                 \Log::info('-------test2-------', print_r($result,true));
 
-                dd(123);
+                //dd(123);
+                return $result;
             }
         }
 
