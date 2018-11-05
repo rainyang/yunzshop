@@ -28,15 +28,23 @@ class WapAlipay extends AliPay
             $isnewalipay = \Setting::get('shop_app.pay.newalipay');
             if ($isnewalipay == 1) {
                 \Log::info('-------test-------', print_r($data,true));
-//                $alipay = app('alipay.wap2');
-//
-//                $alipay->setOutTradeNo($data['order_no']);
-//                $alipay->setTotalFee($data['amount']);
-//                $alipay->setSubject($data['subject']);
-//                $alipay->setBody($data['body']);
-//
-//                // 跳转到支付页面。
-//                return $alipay->getPayLink();
+
+                $content = [
+                    'body' => $data['order_no'],
+
+                    'subject' => $data['subject'],
+                    'out_trade_no' => $data['order_no'],
+                    //'timeout_express' => '',
+                    'total_amount' => $data['amount'],
+                    'product_code' => 'QUICK_WAP_WAY',
+                ];
+
+                // 跳转到支付页面。
+                $result = app('alipay.wap2')->pageExecute(json_encode($content));
+
+                \Log::info('-------test2-------', print_r($result,true));
+
+                dd(123);
             }
         }
 
