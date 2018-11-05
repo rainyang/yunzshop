@@ -14,7 +14,7 @@ class UpdateTextYzPayType extends Migration
     public function up()
     {
         if (Schema::hasTable('yz_pay_type')) {
-            \Illuminate\Support\Facades\DB::select('UPDATE `'.app('db')->getTablePrefix().'yz_pay_type'.'` SET `name` = "微信-YZ" 
+            \Illuminate\Support\Facades\DB::update('UPDATE `'.app('db')->getTablePrefix().'yz_pay_type'.'` SET `name` = "微信-YZ" 
 WHERE `id` = 12');
         }
     }

@@ -63,6 +63,12 @@ class PreOrder extends Order
     protected $orderDeduction;
     protected $attributes = ['id' => null];
 
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+        $this->setRelation('orderSettings', $this->newCollection());
+    }
+
     public function setOrderGoods(PreOrderGoodsCollection $orderGoods)
     {
         $this->setRelation('orderGoods', $orderGoods);
@@ -76,7 +82,6 @@ class PreOrder extends Order
 
     public function beforeCreating()
     {
-        $this->setRelation('orderSettings', $this->newCollection());
 
         $this->dispatch_type_id = request()->input('dispatch_type_id', 0);
         $orderAddress = app('OrderManager')->make('PreOrderAddress');
@@ -210,7 +215,7 @@ class PreOrder extends Order
             $relation->updateTimestamps();
 
             $beforeSaving = $relation->beforeSaving();
-            if($beforeSaving === false){
+            if ($beforeSaving === false) {
                 return [];
             }
             return $relation->getAttributes();
@@ -275,7 +280,7 @@ class PreOrder extends Order
                 }
             }
         }
-        
+
         $this->insertRelations($this->batchSaveRelations);
 
         return true;

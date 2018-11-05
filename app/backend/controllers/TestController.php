@@ -8,6 +8,8 @@
 
 namespace app\backend\controllers;
 
+use app\backend\modules\charts\modules\order\services\OrderStatisticsService;
+use app\backend\modules\charts\modules\phone\services\PhoneAttributionService;
 use app\common\components\BaseController;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\models\Member;
@@ -28,6 +30,7 @@ use Illuminate\Support\Facades\DB;
 use Yunshop\Commission\Listener\OrderCreatedListener;
 use Yunshop\Kingtimes\common\models\CompeteOrderDistributor;
 use Yunshop\Kingtimes\common\models\OrderDistributor;
+
 
 class TestController extends BaseController
 {
@@ -140,6 +143,12 @@ class TestController extends BaseController
 
     }
 
+
+    public function getPhone()
+    {
+        (new PhoneAttributionService())->phoneStatistics();
+    }
+
     public function tt()
     {
 
@@ -231,61 +240,6 @@ class TestController extends BaseController
 
     public function wf()
     {
-        $uniacid = \YunShop::app()->uniacid;
-        //团队总人数
-        $team_member = DB::select('select child_id from ims_yz_member_children where uniacid='.$uniacid.' and member_id=1');
-        $team_member_count = DB::select('select count(child_id) as c from ims_yz_member_children where uniacid='.$uniacid.' and member_id=1');
-        $team_all = $team_member_count[0]['c'];
-
-        foreach ($team_member as $item) {
-            $order_money[] = DB::select("select sum(price) as price from ims_yz_order where status in (1,2,3) and uid=".$item['child_id']);
-        }
-        //团队订单总金额
-        $team_money_total = 0;
-        foreach ($order_money as $k => $item) {
-            $team_money_total+= $item[0]['price'];
-        }
-
-        return $this->successJson('ok', [
-            'team_all' => $team_all,
-            'team_money_total' => $team_money_total
-        ]);
-    }
-
-    public function ww()
-    {
-        $uniacid = \YunShop::app()->uniacid;
-        $level_1_member = DB::select('select member_id,level,count(1) as total from ims_yz_member_children where uniacid='.$uniacid.' and level in (1,2,3) group by member_id,level');
-        $level_1_member = collect($level_1_member);
-        $result = [];
-        dd($level_1_member);
-        foreach ($level_1_member as $val) {
-            if (!isset($result[$val['member_id']])) {
-                 $result[$val['member_id']] = [
-                     'member_id' => $val['member_id'],
-                     'first_total' => $val['total'],
-                     'second_total' => 0,
-                     'third_total' => 0,
-                     'team_total'  => $val['total']
-                 ];
-            } else {
-                switch ($val['level']) {
-                    case 2:
-                        $result[$val['member_id']]['second_total'] = $val['total'];
-                        break;
-                    case 3:
-                        $result[$val['member_id']]['third_total'] = $val['total'];
-                        break;
-                }
-
-                $result[$val['member_id']]['team_total'] += $val['total'];
-            }
-        }
-
-//dd($result);
-        $level_2_member = DB::select('select member_id,count(1) as total from ims_yz_member_children where uniacid='.$uniacid.' and level=2 group by member_id,level');
-
-        $level_3_member = DB::select('select member_id,count(1) as total from ims_yz_member_children where uniacid='.$uniacid.' and level=3 group by member_id,level');
-
+        (new OrderStatisticsService())->orderStatistics();
     }
 }

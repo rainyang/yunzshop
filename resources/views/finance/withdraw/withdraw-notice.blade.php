@@ -186,13 +186,13 @@
                              onerror="this.src='{{static_url('resource/images/nopic.jpg')}}'; this.title='图片未找到.'">
                         <div class='img-nickname'>{{ $saler['nickname'] }}</div>
                         <input type="hidden" value="{{ $saler['openid'] }}"
-                               name="yz_notice[withdraw_user][{{ $saler['uid'] }}][openid]">
+                               name="withdraw[notice][withdraw_user][{{ $saler['uid'] }}][openid]">
                         <input type="hidden" value="{{ $saler['uid'] }}"
-                               name="yz_notice[withdraw_user][{{ $saler['uid'] }}][uid]">
+                               name="withdraw[notice][withdraw_user][{{ $saler['uid'] }}][uid]">
                         <input type="hidden" value="{{ $saler['nickname'] }}"
-                               name="yz_notice[withdraw_user][{{ $saler['uid'] }}][nickname]">
+                               name="withdraw[notice][withdraw_user][{{ $saler['uid'] }}][nickname]">
                         <input type="hidden" value="{{ $saler['avatar'] }}"
-                               name="yz_notice[withdraw_user][{{ $saler['uid'] }}][avatar]">
+                               name="withdraw[notice][withdraw_user][{{ $saler['uid'] }}][avatar]">
                         <em onclick="remove_member_w(this)" class="close">×</em>
                     </div>
                 @endforeach
