@@ -55,10 +55,10 @@ abstract class OperationBase
     */
     protected function setDefault()
     {
-        //$user_name = User::where('uid', $this->uid)->value('username');  //todo 由于查询users表太慢，不存操作人
-//        if ($user_name) {
-//            $this->logs['user_name'] = $user_name;
-//        }
+        $user_name = User::where('uid', $this->uid)->value('username');  //todo 由于查询users表太慢，不存操作人
+        if ($user_name) {
+            $this->logs['user_name'] = $user_name;
+        }
         $this->logs['user_id'] = $this->uid;
         $this->logs['uniacid'] = \YunShop::app()->uniacid;
         $this->logs['ip']      = $_SERVER['REMOTE_ADDR'];
