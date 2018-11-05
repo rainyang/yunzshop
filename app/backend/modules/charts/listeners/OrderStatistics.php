@@ -9,17 +9,18 @@
 namespace app\backend\modules\charts\listeners;
 
 
+use app\backend\modules\charts\modules\order\services\TimedTaskService;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
-class Statistics
+class OrderStatistics
 {
     use DispatchesJobs;
 
     public function subscribe()
     {
         \Event::listen('cron.collectJobs', function () {
-            \Cron::add('Statistics', '0 1 * * * *', function () {
-                (new \app\common\services\statistics\TimedTaskService())->handle();
+            \Cron::add('OrderStatistics', '*/10 * * * * *', function () {
+                (new TimedTaskService())->handle();
                 return;
             });
         });
