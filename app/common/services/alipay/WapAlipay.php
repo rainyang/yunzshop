@@ -22,6 +22,24 @@ class WapAlipay extends AliPay
 
     public function doPay($data = [])
     {
+        $type = \YunShop::request()->type;
+
+        if ($type == 7) {
+            $isnewalipay = \Setting::get('shop_app.pay.newalipay');
+            if ($isnewalipay == 1) {
+                \Log::info('-------test-------', print_r($data,true));
+//                $alipay = app('alipay.wap2');
+//
+//                $alipay->setOutTradeNo($data['order_no']);
+//                $alipay->setTotalFee($data['amount']);
+//                $alipay->setSubject($data['subject']);
+//                $alipay->setBody($data['body']);
+//
+//                // 跳转到支付页面。
+//                return $alipay->getPayLink();
+            }
+        }
+
         // 创建支付单。
         $alipay = app('alipay.wap');
 
