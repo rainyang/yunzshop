@@ -69,7 +69,7 @@
     <div class='panel-heading'>
         总数：{{$list->total()}}个
     </div>
-    <div class=''>
+    <div class='panel-body table-responsive'>
         <table class="table table-" style="table-layout:fixed;">
             <thead>
             <tr>
@@ -120,7 +120,35 @@
 
         {!! $pager !!}
     </div>
+    <div style="margin-left:13px;margin-top:8px">
+            <button class='btn btn-success' onclick="del()"><i class='fa fa-delicious'></i> 删除</button>
+        {!! app\common\helpers\DateRange::tplFormFieldDateRange('del[time]', ['starttime'=> 0,
+               'endtime'=> 0,
+               'start'=>0,
+               'end'=>0
+               ], true) !!}
+    </div>
 </div>
-
 <div style="width:100%;height:150px;"></div>
+<script>
+    function del() {
+        if (confirm('是否确认删除?')) {
+            var start = $(':input[name="del[time][start]"]').val();
+            var end = $(':input[name="del[time][end]"]').val();
+
+            $.get("{!! yzWebUrl('setting.operation-log.del') !!}",{'start':start,'end':end}, function(json){
+                if (json.result == 1) {
+                    alert('删除成功');
+                    location.href = location.href;
+                } else {
+                    console.log(json.msg, json);
+                    alert(json.msg);
+                }
+
+            },'json');
+        }
+    }
+
+</script>
+
 @endsection

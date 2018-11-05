@@ -44,6 +44,12 @@ class OperationLog extends BaseModel
 
     }
 
+    static public function del($start, $end)
+    {
+        $range = [strtotime($start), strtotime($end)];
+        return static::whereBetween('created_at', $range);
+    }
+
     public function getModulesNameAttribute()
     {
         switch ($this->modules) {
