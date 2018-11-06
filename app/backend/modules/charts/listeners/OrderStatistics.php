@@ -19,7 +19,7 @@ class OrderStatistics
     public function subscribe()
     {
         \Event::listen('cron.collectJobs', function () {
-            \Cron::add('OrderStatistics', '1 * * * *', function () {
+            \Cron::add('OrderStatistics', '0 1 * * * *', function () {
                 (new TimedTaskService())->handle();
                 return;
             });
