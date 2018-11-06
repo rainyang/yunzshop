@@ -8,6 +8,7 @@
 namespace app\Jobs;
 
 
+use app\backend\modules\charts\models\OrderIncomeCount;
 use app\common\events\order\CreatedOrderPluginBonusEvent;
 use app\common\models\order\OrderPluginBonus;
 use Illuminate\Bus\Queueable;
@@ -65,10 +66,11 @@ class OrderBonusJob implements  ShouldQueue
             return;
         }
 
-        $undivided = 0;
+        $undividend = 0;
         if ($this->totalDividend) {
-            $undivided = $this->totalDividend - $sum;
+            $undividend = $this->totalDividend - $sum;
         }
+        \Log::info($this->code.'分红插入表');
 
         // 存入订单插件分红记录表
         $model = OrderPluginBonus::addRow([
@@ -78,14 +80,29 @@ class OrderBonusJob implements  ShouldQueue
             'ids'           => $ids,
             'code'          => $this->code,
             'amount'        => $sum,
-            'undividend'    => $undivided,
+            'undividend'    => $undividend,
             'status'        => 0,
             'price'         => $this->orderModel->price,
             'member_id'     => $this->orderModel->uid,
             'order_sn'      => $this->orderModel->order_sn,
         ]);
+
+
+        if ($model) {
+            $this->addCount($sum, $undividend);
+        }
+
         // 暂时不用, 门店利润 在 门店订单结算时重新计算, 各个插件产生分红的事件监听不同.
         // 如果后期插件统一事件产生分红,再启用此事件
         //event(new CreatedOrderPluginBonusEvent($model));
+    }
+
+    public function addCount($sum, $undividend)
+    {
+        $field = str_replace('-','_',$this->code);
+        $order_income = OrderIncomeCount::where('order_id', $this->orderModel->id)->first();
+        $order_income->$field = $sum;
+        $order_income->undividend += $undividend;
+        $order_income->save();
     }
 }

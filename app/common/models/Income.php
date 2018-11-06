@@ -9,6 +9,16 @@
 namespace app\common\models;
 
 
+use Illuminate\Support\Facades\Log;
+use Yunshop\TeamDividend\models\ErrorTeamDividend;
+
+/**
+ * Class Income
+ * @package app\common\models
+ * @property int status
+ * @property string incometable_type
+ * @property BaseModel dividend
+ */
 class Income extends BaseModel
 {
     public $table = 'yz_member_income';
@@ -17,48 +27,50 @@ class Income extends BaseModel
     protected $guarded = [];
 
     protected $appends = ['status_name', 'pay_status_name'];
-
-
+    /**
+     * @var Withdraw withdraw
+     */
+    private $withdraw;
     /**
      * 提现状态：未提现
      */
-    const STATUS_INITIAL    = 0;
+    const STATUS_INITIAL = 0;
 
 
     /**
      * 提现状态：已提现
      */
-    const STATUS_WITHDRAW   = 1;
+    const STATUS_WITHDRAW = 1;
 
 
     /**
      * 打款状态：无效
      */
-    const PAY_STATUS_INVALID    = -1;
+    const PAY_STATUS_INVALID = -1;
 
 
     /**
      * 打款状态：未审核
      */
-    const PAY_STATUS_INITIAL    = 0;
+    const PAY_STATUS_INITIAL = 0;
 
 
     /**
      * 打款状态：未打款
      */
-    const PAY_STATUS_WAIT       = 1;
+    const PAY_STATUS_WAIT = 1;
 
 
     /**
      * 打款状态：已打款
      */
-    const PAY_STATUS_FINISH     = 2;
+    const PAY_STATUS_FINISH = 2;
 
 
     /**
      * 打款状态：已驳回
      */
-    const PAY_STATUS_REJECT     = 3;
+    const PAY_STATUS_REJECT = 3;
 
 
     /**
@@ -67,8 +79,8 @@ class Income extends BaseModel
      * @var array
      */
     public static $statusComment = [
-        self::STATUS_INITIAL    => '未提现',
-        self::STATUS_WITHDRAW   => '已提现',
+        self::STATUS_INITIAL => '未提现',
+        self::STATUS_WITHDRAW => '已提现',
     ];
 
 
@@ -78,11 +90,11 @@ class Income extends BaseModel
      * @var array
      */
     public static $payStatusComment = [
-        self::PAY_STATUS_INVALID    => '无效',
-        self::PAY_STATUS_INITIAL    => '未审核',
-        self::PAY_STATUS_WAIT       => '未打款',
-        self::PAY_STATUS_FINISH     => '已打款',
-        self::PAY_STATUS_REJECT     => '已驳回',
+        self::PAY_STATUS_INVALID => '无效',
+        self::PAY_STATUS_INITIAL => '未审核',
+        self::PAY_STATUS_WAIT => '未打款',
+        self::PAY_STATUS_FINISH => '已打款',
+        self::PAY_STATUS_REJECT => '已驳回',
     ];
 
 
@@ -284,5 +296,15 @@ class Income extends BaseModel
         return $model;
     }
 
+    /**
+     * @return Withdraw
+     */
+    public function withdraw()
+    {
+        if (!isset($this->withdraw)) {
+            $this->withdraw = Withdraw::where('type_id', 'like', "%{$this->id}%")->where('type', $this->incometable_type)->first();
+        }
 
+        return $this->withdraw;
+    }
 }

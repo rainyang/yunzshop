@@ -8,17 +8,21 @@
 
 namespace app\backend\controllers;
 
+use app\backend\models\Withdraw;
+use app\backend\modules\charts\models\OrderIncomeCount;
 use app\backend\modules\charts\modules\order\services\OrderStatisticsService;
 use app\backend\modules\charts\modules\phone\services\PhoneAttributionService;
 use app\common\components\BaseController;
 use app\common\events\member\MemberCreateRelationEvent;
 use app\common\events\member\MemberRelationEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
+use app\common\models\Income;
 use app\common\models\Member;
 use app\common\models\member\ChildrenOfMember;
 use app\common\models\member\ParentOfMember;
 use app\common\models\Order;
 
+use app\common\models\OrderGoods;
 use app\common\models\OrderPay;
 use app\common\models\Flow;
 use app\common\models\Setting;
@@ -30,33 +34,22 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Yunshop\Commission\Listener\OrderCreatedListener;
-use Yunshop\Kingtimes\common\models\CompeteOrderDistributor;
-use Yunshop\Kingtimes\common\models\OrderDistributor;
+use Yunshop\StoreCashier\common\models\CashierOrder;
+use Yunshop\StoreCashier\common\models\StoreOrder;
+use Yunshop\Supplier\common\models\SupplierOrder;
 
 
 class TestController extends BaseController
 {
+    public $orderId;
+    /**
+     * @return bool
+     */
     public function index()
     {
-
-        $member_relation = new MemberRelation();
-
-        $relation = $member_relation->hasRelationOfParent(66, 5, 1);
-
-        dd($relation);
-
-        $text = '{"commission":{"title":"u5206u9500","data":{"0":{"title":"u5206u9500u4f63u91d1","value":"0.01u5143"},"2":{"title":"u4f63u91d1u6bd4u4f8b","value":"0.15%"},"3":{"title":"u7ed3u7b97u5929u6570","value":"0u5929"},"4":{"title":"u4f63u91d1u65b9u5f0f","value":"+u5546u54c1u72ecu7acbu4f63u91d1"},"5":{"title":"u5206u4f63u65f6u95f4","value":"2018-10-24 09:15:31"},"6":{"title":"u7ed3u7b97u65f6u95f4","value":"2018-10-24 09:20:04"}}},"order":{"title":"u8ba2u5355","data":[{"title":"u8ba2u5355u53f7","value":"SN201810 24091508a8"},{"title":"u72b6u6001","value":"u4ea4u6613u5b8cu6210"}]},"goods":{"title":"u5546u54c1","data":[[{"title":"u540du79f0","value":"u8700u9999u98ceu7fd4u8c46u82b1u6ce1u998du5e97"},{"title":"u91d1u989d","value":"4.00u5143"}]]}}';
-
-        $pattern1 = '/\\\u[\d|\w]{4}/';
-        preg_match($pattern1, $text, $exists);
-
-        if (empty($exists)) {
-            $pattern2 = '/(u[\d|\w]{4})/';
-
-            $json = preg_replace($pattern2, '\\\$1', $text);
-        }
-
-        echo $json;
+        $a = Artisan::call('queue:retry');
+        
+        dd($a);
     }
 
     public function op_database()
@@ -175,6 +168,23 @@ class TestController extends BaseController
         $member_relation = new MemberRelation();
 
         $member_relation->createParentOfMember();
+    }
+
+    public function fixIncome()
+    {
+        $count = 0;
+        $income = Income::whereBetween('created_at', [1539792000,1540915200])->get();
+        foreach ($income as $value) {
+            $pattern1 = '/\\\u[\d|\w]{4}/';
+            preg_match($pattern1, $value->detail, $exists);
+            if (empty($exists)) {
+                $pattern2 = '/(u[\d|\w]{4})/';
+                $value->detail = preg_replace($pattern2, '\\\$1', $value->detail);
+                $value->save();
+                $count++;
+            }
+        }
+        echo "修复了{$count}条";
     }
 
     public function pp()

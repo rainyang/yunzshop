@@ -28,6 +28,7 @@ class Handler extends ExceptionHandler
         \Illuminate\Session\TokenMismatchException::class,
         \Illuminate\Validation\ValidationException::class,
         \EasyWeChat\Core\Exceptions\HttpException::class,
+        NotFoundException::class,
     ];
 
     /**
