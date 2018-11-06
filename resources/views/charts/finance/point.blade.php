@@ -2,6 +2,7 @@
 <script src="{{static_url('js/echarts.js')}}" type="text/javascript"></script>
 @section('title', trans('积分数据统计'))
 @section('content')
+
 <link href="{{static_url('yunshop/css/order.css')}}" media="all" rel="stylesheet" type="text/css"/>
 <style>
     .point-count{ margin-bottom:20px !important;line-height: 40px;height: 40px;}
