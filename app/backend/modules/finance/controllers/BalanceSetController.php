@@ -40,9 +40,9 @@ class BalanceSetController extends BaseController
     public function store()
     {
         $request_data = $this->getPostValue();
-
         //dd($request_data);
         if (Setting::set('finance.balance', $request_data)) {
+            (new \app\common\services\operation\BalanceSetLog(['old'=>$this->balance_set,'new'=>$request_data], 'update'));
             return $this->message('余额基础设置保存成功', Url::absoluteWeb('finance.balance-set.see'),'success');
         }
 

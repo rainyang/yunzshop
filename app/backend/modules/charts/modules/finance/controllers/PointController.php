@@ -42,7 +42,7 @@ class PointController extends ChartsController
             $pointUsedData[$key] = $allPointData[$key]['usedPoint'];
             $allPointData[$key]['date'] = $time;
         }
-        arsort($allPointData);
+        krsort($allPointData);
         return view('charts.finance.point',[
             'search' => $search,
             'pointGivenCount' => $allPointData[6]['givenPoint'],
