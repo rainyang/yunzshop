@@ -179,11 +179,11 @@ class MemberLevelController extends ApiController
         $info['is_open'] = 0;
 
         //判断是否显示等级页
-        if ($this->settinglevel['display_page'] && ($this->settinglevel['level_type'] == 2))
+        if ($this->settinglevel['display_page'])
         {
             $info['is_open'] = 1;
         }
-
+        $info['level_type'] = $this->settinglevel['level_type']?:'0';
         return $this->successJson('是否开启', $info);
 
     }
