@@ -91,7 +91,7 @@ class MemberRelation extends BaseModel
                     break;
                 case 5:
                     $sales_money = \Yunshop\SalesCommission\models\SalesCommission::sumDividendAmountByUid($uid);
-                    if ($sales_money >= $info['become_salesdividend']) {
+                    if ($sales_money >= $info['become_selfmoney']) {
                         $isAgent = true;
                     }
                     break;
@@ -402,53 +402,48 @@ class MemberRelation extends BaseModel
         $isagent = $member->is_agent == 1 && $member->status == 2;
 
         if (!$isagent && empty($set->become_order)) {
-            if (intval($set->become) == 4 && !empty($set->become_goods_id)) {
-                $result = self::checkOrderGoods($set->become_goods_id, $uid);
+            $become_term = unserialize($set->become_term);
+            //或
+            if ($set->become == 2) {
+                //判断商品
+                if ($become_term[4] == 4 && !empty($set->become_goods_id)) {
+                    $result = self::checkOrderGoods($set->become_goods_id, $uid);
 
-                if ($result) {
-                    $member->is_agent = 1;
+                    if ($result) {
+                        $member->is_agent = 1;
 
-                    if ($become_check == 0) {
-                        $member->status = 2;
-                        $member->agent_time = time();
+                        if ($become_check == 0) {
+                            $member->status = 2;
+                            $member->agent_time = time();
 
-                        if ($member->inviter == 0) {
-                            $member->inviter = 1;
-                            $member->parent_id = 0;
+                            if ($member->inviter == 0) {
+                                $member->inviter = 1;
+                                $member->parent_id = 0;
+                            }
+                        } else {
+                            $member->status = 1;
                         }
-                    } else {
-                        $member->status = 1;
-                    }
 
-                    if ($member->save()) {
-                        self::setRelationInfo($member);
+                        if ($member->save()) {
+                            self::setRelationInfo($member);
+                            return;
+                        }
                     }
                 }
-            }
 
-            if ($set->become == 2 || $set->become == 3) {
-                $parentisagent = true;
-
+                //判断是否有上级，上级是否是推广员，上级是否有推广权限
                 if (!empty($member->parent_id)) {
                     $parent = MemberShopInfo::getMemberShopInfo($member->parent_id);
                     if (empty($parent) || $parent->is_agent != 1 || $parent->status != 2) {
-                        $parentisagent = false;
+                        return;
                     }
                 }
-
-                if ($parentisagent) {
-                    $can = false;
-
-                    if ($set->become == '2') {
-                        $ordercount = Order::getCostTotalNum($member->member_id);
-                        \Log::debug('用户：'. $ordercount);
-                        \Log::debug('系统：'. intval($set->become_ordercount));
-                        $can = $ordercount >= intval($set->become_ordercount);
-                    } else if ($set->become == '3') {
-                        $moneycount = Order::getCostTotalPrice($member->member_id);
-
-                        $can = $moneycount >= floatval($set->become_moneycount);
-                    }
+                //消费达多少次
+                if ($become_term[2] == 2) {
+                    $ordercount = Order::getCostTotalNum($member->member_id);
+                    \Log::debug('用户：'. $ordercount);
+                    \Log::debug('系统：'. intval($set->become_ordercount));
+                    $can = $ordercount >= intval($set->become_ordercount);
 
                     if ($can) {
                         $member->is_agent = 1;
@@ -467,25 +462,42 @@ class MemberRelation extends BaseModel
 
                         if ($member->save()) {
                             self::setRelationInfo($member);
+                            return;
                         }
                     }
                 }
-            }
+                //消费达多少钱
+                if ($become_term[3] == 3) {
 
-            if ($set->become == 5) {
-                $parentisagent = true;
-                if (!empty($member->parent_id)) {
-                    $parent = MemberShopInfo::getMemberShopInfo($member->parent_id);
-                    if (empty($parent) || $parent->is_agent != 1 || $parent->status != 2) {
-                        $parentisagent = false;
+                    $moneycount = Order::getCostTotalPrice($member->member_id);
+                    $can = $moneycount >= floatval($set->become_moneycount);
+                    if ($can) {
+                        $member->is_agent = 1;
+
+                        if ($become_check == 0) {
+                            $member->status = 2;
+                            $member->agent_time = time();
+
+                            if ($member->inviter == 0) {
+                                $member->inviter = 1;
+                                $member->parent_id = 0;
+                            }
+                        } else {
+                            $member->status = 1;
+                        }
+
+                        if ($member->save()) {
+                            self::setRelationInfo($member);
+                            return;
+                        }
                     }
                 }
-
-                if ($parentisagent) {
+                //销售佣金
+                if ($become_term[5] == 5) {
                     $can = false;
 
                     $sales_money = \Yunshop\SalesCommission\models\SalesCommission::sumDividendAmountByUid($uid);
-                    if ($sales_money >= $set->become_salesdividend) {
+                    if ($sales_money >= $set->become_selfmoney) {
                         $can = true;
                     }
 
@@ -506,8 +518,83 @@ class MemberRelation extends BaseModel
 
                         if ($member->save()) {
                             self::setRelationInfo($member);
+                            return;
                         }
                     }
+                }
+            }
+            //与
+            if ($set->become == 3) {
+
+                //判断商品
+                if ($become_term[4] == 4 && !empty($set->become_goods_id)) {
+                    $result = self::checkOrderGoods($set->become_goods_id, $uid);
+
+                    if (!$result) {
+                        return;
+                    }
+                }
+
+                //判断是否有上级，上级是否是推广员，上级是否有推广权限
+                if (!empty($member->parent_id)) {
+                    $parent = MemberShopInfo::getMemberShopInfo($member->parent_id);
+                    if (empty($parent) || $parent->is_agent != 1 || $parent->status != 2) {
+                        return;
+                    }
+                }
+
+                //判断消费达多少次
+                if ($become_term[2] == 2) {
+                    $ordercount = Order::getCostTotalNum($member->member_id);
+                    \Log::debug('用户：'. $ordercount);
+                    \Log::debug('系统：'. intval($set->become_ordercount));
+                    $can = $ordercount >= intval($set->become_ordercount);
+
+                    if (!$can) {
+                        return;
+                    }
+                }
+
+                //消费达多少元
+                if ($become_term[3] == 3) {
+                    $moneycount = Order::getCostTotalPrice($member->member_id);
+                    $can = $moneycount >= floatval($set->become_moneycount);
+
+                    if (!$can) {
+                        return;
+                    }
+                }
+
+                //销售佣金
+                if ($become_term[5] == 5) {
+                    $can = false;
+
+                    $sales_money = \Yunshop\SalesCommission\models\SalesCommission::sumDividendAmountByUid($uid);
+                    if ($sales_money >= $set->become_selfmoney) {
+                        $can = true;
+                    }
+                    if (!$can) {
+                        return;
+                    }
+                }
+
+                //以上条件全部满足则升级
+                $member->is_agent = 1;
+
+                if ($become_check == 0) {
+                    $member->status = 2;
+                    $member->agent_time = time();
+
+                    if ($member->inviter == 0) {
+                        $member->inviter = 1;
+                        $member->parent_id = 0;
+                    }
+                } else {
+                    $member->status = 1;
+                }
+
+                if ($member->save()) {
+                    self::setRelationInfo($member);
                 }
             }
         }
@@ -540,56 +627,48 @@ class MemberRelation extends BaseModel
         $isagent = $member->is_agent == 1 && $member->status == 2;
 
         if (!$isagent && $set->become_order == 1) {
-            //购买指定商品
-            if (intval($set->become) == 4 && !empty($set->become_goods_id)) {
-                $result = self::checkOrderGoods($set->become_goods_id, $uid);
+            $become_term = unserialize($set->become_term);
+            //或
+            if ($set->become == 2) {
+                //判断商品
+                if ($become_term[4] == 4 && !empty($set->become_goods_id)) {
+                    $result = self::checkOrderGoods($set->become_goods_id, $uid);
 
-                if ($result) {
-                    $member->is_agent = 1;
+                    if ($result) {
+                        $member->is_agent = 1;
 
-                    if ($become_check == 0) {
-                        $member->status = 2;
-                        $member->agent_time = time();
+                        if ($become_check == 0) {
+                            $member->status = 2;
+                            $member->agent_time = time();
 
-                        if ($member->inviter == 0) {
-                            $member->inviter = 1;
-                            $member->parent_id = 0;
+                            if ($member->inviter == 0) {
+                                $member->inviter = 1;
+                                $member->parent_id = 0;
+                            }
+                        } else {
+                            $member->status = 1;
                         }
-                    } else {
-                        $member->status = 1;
-                    }
 
-                    if ($member->save()) {
-                        self::setRelationInfo($member);
+                        if ($member->save()) {
+                            self::setRelationInfo($member);
+                            return;
+                        }
                     }
                 }
-            }
 
-            \Log::debug('条件完成后');
-            //消费
-            if ($set->become == 2 || $set->become == 3) {
-                $parentisagent = true;
-
+                //判断是否有上级，上级是否是推广员，上级是否有推广权限
                 if (!empty($member->parent_id)) {
                     $parent = MemberShopInfo::getMemberShopInfo($member->parent_id);
                     if (empty($parent) || $parent->is_agent != 1 || $parent->status != 2) {
-                        $parentisagent = false;
+                        return;
                     }
                 }
-
-                if ($parentisagent) {
-                    $can = false;
-
-                    if ($set->become == '2') {
-                        $ordercount = Order::getCostTotalNum($member->member_id);
-                        \Log::debug('系统：' . intval($set->become_ordercount));
-                        \Log::debug('会员：' . $ordercount);
-                        $can = $ordercount >= intval($set->become_ordercount);
-                    } else if ($set->become == '3') {
-                        $moneycount = Order::getCostTotalPrice($member->member_id);
-
-                        $can = $moneycount >= floatval($set->become_moneycount);
-                    }
+                //消费达多少次
+                if ($become_term[2] == 2) {
+                    $ordercount = Order::getCostTotalNum($member->member_id);
+                    \Log::debug('用户：'. $ordercount);
+                    \Log::debug('系统：'. intval($set->become_ordercount));
+                    $can = $ordercount >= intval($set->become_ordercount);
 
                     if ($can) {
                         $member->is_agent = 1;
@@ -608,25 +687,42 @@ class MemberRelation extends BaseModel
 
                         if ($member->save()) {
                             self::setRelationInfo($member);
+                            return;
                         }
                     }
                 }
-            }
+                //消费达多少钱
+                if ($become_term[3] == 3) {
 
-            if ($set->become == 5) {
-                $parentisagent = true;
-                if (!empty($member->parent_id)) {
-                    $parent = MemberShopInfo::getMemberShopInfo($member->parent_id);
-                    if (empty($parent) || $parent->is_agent != 1 || $parent->status != 2) {
-                        $parentisagent = false;
+                    $moneycount = Order::getCostTotalPrice($member->member_id);
+                    $can = $moneycount >= floatval($set->become_moneycount);
+                    if ($can) {
+                        $member->is_agent = 1;
+
+                        if ($become_check == 0) {
+                            $member->status = 2;
+                            $member->agent_time = time();
+
+                            if ($member->inviter == 0) {
+                                $member->inviter = 1;
+                                $member->parent_id = 0;
+                            }
+                        } else {
+                            $member->status = 1;
+                        }
+
+                        if ($member->save()) {
+                            self::setRelationInfo($member);
+                            return;
+                        }
                     }
                 }
-
-                if ($parentisagent) {
+                //销售佣金
+                if ($become_term[5] == 5) {
                     $can = false;
 
                     $sales_money = \Yunshop\SalesCommission\models\SalesCommission::sumDividendAmountByUid($uid);
-                    if ($sales_money >= $set->become_salesdividend) {
+                    if ($sales_money >= $set->become_selfmoney) {
                         $can = true;
                     }
 
@@ -647,8 +743,83 @@ class MemberRelation extends BaseModel
 
                         if ($member->save()) {
                             self::setRelationInfo($member);
+                            return;
                         }
                     }
+                }
+            }
+            //与
+            if ($set->become == 3) {
+
+                //判断商品
+                if ($become_term[4] == 4 && !empty($set->become_goods_id)) {
+                    $result = self::checkOrderGoods($set->become_goods_id, $uid);
+
+                    if (!$result) {
+                        return;
+                    }
+                }
+
+                //判断是否有上级，上级是否是推广员，上级是否有推广权限
+                if (!empty($member->parent_id)) {
+                    $parent = MemberShopInfo::getMemberShopInfo($member->parent_id);
+                    if (empty($parent) || $parent->is_agent != 1 || $parent->status != 2) {
+                        return;
+                    }
+                }
+
+                //判断消费达多少次
+                if ($become_term[2] == 2) {
+                    $ordercount = Order::getCostTotalNum($member->member_id);
+                    \Log::debug('用户：'. $ordercount);
+                    \Log::debug('系统：'. intval($set->become_ordercount));
+                    $can = $ordercount >= intval($set->become_ordercount);
+
+                    if (!$can) {
+                        return;
+                    }
+                }
+
+                //消费达多少元
+                if ($become_term[3] == 3) {
+                    $moneycount = Order::getCostTotalPrice($member->member_id);
+                    $can = $moneycount >= floatval($set->become_moneycount);
+
+                    if (!$can) {
+                        return;
+                    }
+                }
+
+                //销售佣金
+                if ($become_term[5] == 5) {
+                    $can = false;
+
+                    $sales_money = \Yunshop\SalesCommission\models\SalesCommission::sumDividendAmountByUid($uid);
+                    if ($sales_money >= $set->become_selfmoney) {
+                        $can = true;
+                    }
+                    if (!$can) {
+                        return;
+                    }
+                }
+
+                //以上条件全部满足则升级
+                $member->is_agent = 1;
+
+                if ($become_check == 0) {
+                    $member->status = 2;
+                    $member->agent_time = time();
+
+                    if ($member->inviter == 0) {
+                        $member->inviter = 1;
+                        $member->parent_id = 0;
+                    }
+                } else {
+                    $member->status = 1;
+                }
+
+                if ($member->save()) {
+                    self::setRelationInfo($member);
                 }
             }
         }

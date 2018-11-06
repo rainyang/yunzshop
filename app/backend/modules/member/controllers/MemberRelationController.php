@@ -30,11 +30,14 @@ class MemberRelationController extends BaseController
      */
     public function index()
     {
-
         $relation = Relation::getSetInfo()->first();
 
         if (!empty($relation)) {
             $relation = $relation->toArray();
+        }
+
+        if (!empty($relation['become_term'])) {
+            $relation['become_term'] = unserialize($relation['become_term']);
         }
 
         if (!empty($relation['become_goods_id'])) {
@@ -69,6 +72,10 @@ class MemberRelationController extends BaseController
 
         if (empty($setData['become_ordercount'])) {
             $setData['become_ordercount'] = 0;
+        }
+
+        if (!empty($setData['become_term'])) {
+            $setData['become_term'] = serialize($setData['become_term']);
         }
 
         if (empty($setData['become_moneycount'])) {
