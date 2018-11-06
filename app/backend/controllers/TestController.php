@@ -15,6 +15,7 @@ use app\backend\modules\charts\modules\phone\services\PhoneAttributionService;
 use app\common\components\BaseController;
 use app\common\events\member\MemberCreateRelationEvent;
 use app\common\events\member\MemberRelationEvent;
+use app\common\events\order\AfterOrderCanceledEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\models\Income;
 use app\common\models\Member;
@@ -41,14 +42,23 @@ use Yunshop\Supplier\common\models\SupplierOrder;
 
 class TestController extends BaseController
 {
+    public $transactionActions = ['t'];
+
+    public function t()
+    {
+
+        event(new AfterOrderCanceledEvent(Order::cancelled()->first()));
+    }
+
     public $orderId;
+
     /**
      * @return bool
      */
     public function index()
     {
         $a = Artisan::call('queue:retry');
-        
+
         dd($a);
     }
 
@@ -163,7 +173,8 @@ class TestController extends BaseController
     public function tt()
     {
 
-       $this->synRun(5, '');exit;
+        $this->synRun(5, '');
+        exit;
 
         $member_relation = new MemberRelation();
 
@@ -173,7 +184,7 @@ class TestController extends BaseController
     public function fixIncome()
     {
         $count = 0;
-        $income = Income::whereBetween('created_at', [1539792000,1540915200])->get();
+        $income = Income::whereBetween('created_at', [1539792000, 1540915200])->get();
         foreach ($income as $value) {
             $pattern1 = '/\\\u[\d|\w]{4}/';
             preg_match($pattern1, $value->detail, $exists);
@@ -225,40 +236,40 @@ class TestController extends BaseController
         foreach ($memberInfo as $key => $val) {
             $attr = [];
             echo '-------' . $key . '--------' . $val->member_id . '<BR>';
-                \Log::debug('--------foreach start------', $val->member_id);
-                //$data = $memberModel->getNodeParents($uniacid, $val->member_id);
-                $data = $memberModel->getDescendants($uniacid, $val->member_id);
+            \Log::debug('--------foreach start------', $val->member_id);
+            //$data = $memberModel->getNodeParents($uniacid, $val->member_id);
+            $data = $memberModel->getDescendants($uniacid, $val->member_id);
 
-                \Log::debug('--------foreach data------', $data->count());
+            \Log::debug('--------foreach data------', $data->count());
 
-                if (!$data->isEmpty()) {
-                    \Log::debug('--------insert init------');
-                    $data = $data->toArray();
+            if (!$data->isEmpty()) {
+                \Log::debug('--------insert init------');
+                $data = $data->toArray();
 
-                   foreach ($data as $k => $v) {
-                        $attr[] = [
-                            'uniacid'   => $uniacid,
-                            'child_id'  => $k,
-                            'level'     => $v['depth'] + 1,
-                            'member_id' => $val->member_id,
-                            'created_at' => time()
-                        ];
-                    }
-
-                    $childMemberModel->createData($attr);
-                   /*
-                    foreach ($data as $k => $v) {
-                        $attr[] = [
-                            'uniacid'   => $uniacid,
-                            'parent_id'  => $k,
-                            'level'     => $v['depth'] + 1,
-                            'member_id' => $val->member_id,
-                            'created_at' => time()
-                        ];
-                    }
-
-                    $parentMemberModle->createData($attr);*/
+                foreach ($data as $k => $v) {
+                    $attr[] = [
+                        'uniacid' => $uniacid,
+                        'child_id' => $k,
+                        'level' => $v['depth'] + 1,
+                        'member_id' => $val->member_id,
+                        'created_at' => time()
+                    ];
                 }
+
+                $childMemberModel->createData($attr);
+                /*
+                 foreach ($data as $k => $v) {
+                     $attr[] = [
+                         'uniacid'   => $uniacid,
+                         'parent_id'  => $k,
+                         'level'     => $v['depth'] + 1,
+                         'member_id' => $val->member_id,
+                         'created_at' => time()
+                     ];
+                 }
+
+                 $parentMemberModle->createData($attr);*/
+            }
 
 
         }
@@ -271,17 +282,17 @@ class TestController extends BaseController
     {
         $uniacid = \YunShop::app()->uniacid;
         //团队总人数
-        $team_member = DB::select('select child_id from ims_yz_member_children where uniacid='.$uniacid.' and member_id=1');
-        $team_member_count = DB::select('select count(child_id) as c from ims_yz_member_children where uniacid='.$uniacid.' and member_id=1');
+        $team_member = DB::select('select child_id from ims_yz_member_children where uniacid=' . $uniacid . ' and member_id=1');
+        $team_member_count = DB::select('select count(child_id) as c from ims_yz_member_children where uniacid=' . $uniacid . ' and member_id=1');
         $team_all = $team_member_count[0]['c'];
 
         foreach ($team_member as $item) {
-            $order_money[] = DB::select("select sum(price) as price from ims_yz_order where status in (1,2,3) and uid=".$item['child_id']);
+            $order_money[] = DB::select("select sum(price) as price from ims_yz_order where status in (1,2,3) and uid=" . $item['child_id']);
         }
         //团队订单总金额
         $team_money_total = 0;
         foreach ($order_money as $k => $item) {
-            $team_money_total+= $item[0]['price'];
+            $team_money_total += $item[0]['price'];
         }
 
         return $this->successJson('ok', [
@@ -293,19 +304,19 @@ class TestController extends BaseController
     public function ww()
     {
         $uniacid = \YunShop::app()->uniacid;
-        $level_1_member = DB::select('select member_id,level,count(1) as total from ims_yz_member_children where uniacid='.$uniacid.' and level in (1,2,3) group by member_id,level');
+        $level_1_member = DB::select('select member_id,level,count(1) as total from ims_yz_member_children where uniacid=' . $uniacid . ' and level in (1,2,3) group by member_id,level');
         $level_1_member = collect($level_1_member);
         $result = [];
 //        dd($level_1_member);
         foreach ($level_1_member as $val) {
             if (!isset($result[$val['member_id']])) {
-                 $result[$val['member_id']] = [
-                     'member_id' => $val['member_id'],
-                     'first_total' => $val['total'],
-                     'second_total' => 0,
-                     'third_total' => 0,
-                     'team_total'  => $val['total']
-                 ];
+                $result[$val['member_id']] = [
+                    'member_id' => $val['member_id'],
+                    'first_total' => $val['total'],
+                    'second_total' => 0,
+                    'third_total' => 0,
+                    'team_total' => $val['total']
+                ];
             } else {
                 switch ($val['level']) {
                     case 2:
@@ -326,16 +337,16 @@ class TestController extends BaseController
     public function qe()
     {
         $uniacid = \YunShop::app()->uniacid;
-        $member_1 = DB::select('select uniacid,child_id,level from ims_yz_member_children where level =1'.' and uniacid ='.$uniacid .' order by child_id');
+        $member_1 = DB::select('select uniacid,child_id,level from ims_yz_member_children where level =1' . ' and uniacid =' . $uniacid . ' order by child_id');
 
         foreach ($member_1 as $k => $item) {
-            $order_1_all[] = DB::select('select uid,sum(price) as money,count(id) as total from ims_yz_order where uid='.$item['child_id']);
+            $order_1_all[] = DB::select('select uid,sum(price) as money,count(id) as total from ims_yz_order where uid=' . $item['child_id']);
         }
 //        dd($order_1_all);
-        $member_2 = DB::select('select uniacid,child_id,level from ims_yz_member_children where level =2'.' and uniacid ='.$uniacid .' order by child_id');
+        $member_2 = DB::select('select uniacid,child_id,level from ims_yz_member_children where level =2' . ' and uniacid =' . $uniacid . ' order by child_id');
 
         foreach ($member_2 as $k => $item) {
-            $order_2_all[] = DB::select('select uid,sum(price) as money,count(id) as total from ims_yz_order where uid='.$item['child_id']);
+            $order_2_all[] = DB::select('select uid,sum(price) as money,count(id) as total from ims_yz_order where uid=' . $item['child_id']);
         }
         dd($order_2_all);
     }
@@ -362,17 +373,17 @@ class TestController extends BaseController
 
     public function mr()
     {
-       /* $a = [1,2,3,4,5];
+        /* $a = [1,2,3,4,5];
 
 
-        foreach ($a as $val) {
-            $b = array_shift($a);
-        }
+         foreach ($a as $val) {
+             $b = array_shift($a);
+         }
 
 
-        dd($b, $a);
+         dd($b, $a);
 
-        exit;*/
+         exit;*/
 
         $uid = 163764;
         $o_parent_id = 163762;
@@ -385,7 +396,7 @@ class TestController extends BaseController
 //        $member = Member::getMemberByUid($uid)->first();
 //
 //        event(new MemberRelationEvent($member));
- //       event(new MemberCreateRelationEvent($uid, $n_parent_id));exit;
+        //       event(new MemberCreateRelationEvent($uid, $n_parent_id));exit;
 //        (new MemberRelation())->changeMemberOfRelation($uid, $o_parent_id, $n_parent_id);
         //(new MemberRelation())->parent->addNewParentData($uid, $n_parent_id);
 

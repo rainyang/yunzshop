@@ -2,8 +2,8 @@
 
 namespace app\frontend\modules\order\services\message;
 
+use app\common\models\Order;
 use app\common\services\MessageService;
-use app\common\services\wechat\Notice;
 
 /**
  * Created by PhpStorm.
