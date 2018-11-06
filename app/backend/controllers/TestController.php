@@ -8,6 +8,7 @@
 
 namespace app\backend\controllers;
 
+use app\backend\modules\charts\modules\order\services\OrderStatisticsService;
 use app\backend\modules\charts\modules\phone\services\PhoneAttributionService;
 use app\common\components\BaseController;
 use app\common\events\order\AfterOrderCreatedEvent;
@@ -237,4 +238,8 @@ class TestController extends BaseController
 
     }
 
+    public function wf()
+    {
+        (new OrderStatisticsService())->orderStatistics();
+    }
 }
