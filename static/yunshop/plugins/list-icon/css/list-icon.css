@@ -40,6 +40,12 @@
 .shareholder_dividend {
     background-image: url('../img/dividend/shareholder_dividend.png');
 }
+.sales_commission {
+    background-image: url('../img/dividend/sales_commission.png');
+}
+.mryt {
+    background-image: url('../img/dividend/mryt.png');
+}
 
 .supplier {
     background-image: url('../img/industry/supplier.png');
@@ -116,6 +122,9 @@
 }
 .member_return {
     background-image: url('../img/marketing/member_return.png');
+}
+.share_chain {
+    background-image: url('../img/marketing/share_chain.png');
 }
 
 .subsidiary {

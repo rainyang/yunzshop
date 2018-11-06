@@ -40,7 +40,7 @@ class BalanceNoticeService
         }
 
         $params = [
-            ['name' => '时间', 'value' => $withdrawModel->created_at->toDateTimeString()],
+            ['name' => '时间', 'value' => $withdrawModel->pay_at->toDateTimeString()],
             ['name' => '金额', 'value' => $withdrawModel->amounts],
             ['name' => '手续费', 'value' => $withdrawModel->actual_poundage],
         ];

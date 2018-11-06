@@ -2,12 +2,12 @@
 @section('title', '会员关系')
 @section('content')
 
-<link href="{{static_url('yunshop/css/member.css')}}" media="all" rel="stylesheet" type="text/css"/>
-<style>
-    .radio-inline {
-        padding-top: 4px !important;
-    }
-</style>
+    <link href="{{static_url('yunshop/css/member.css')}}" media="all" rel="stylesheet" type="text/css"/>
+    <style>
+        .radio-inline {
+            padding-top: 4px !important;
+        }
+    </style>
     <div class="w1200 m0a">
         <div class="rightlist">
 
@@ -21,7 +21,7 @@
                             <div class="col-sm-9 col-xs-12">
                                 <label class="radio-inline"><input type="radio"  name="setdata[status]" value="1" @if($set['status'] ==1)
                                     checked="checked"
- @endif/> 开启</label>
+                                            @endif/> 开启</label>
                                 <label class="radio-inline"><input type="radio"  name="setdata[status]" value="0" @if($set['status'] ==0)
                                     checked="checked"
                                             @endif/> 关闭</label>
@@ -31,7 +31,7 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">获得发展下线权利条件</label>
                             <div class="col-sm-9 col-xs-12">
                                 <label class="radio-inline"><input type="radio"  name="setdata[become]" value="0" @if($set['become'] ==0) checked="checked"
-                                    @endif/> 无条件</label>
+                                            @endif/> 无条件</label>
                             </div>
                         </div>
                         <div class="form-group">
@@ -43,10 +43,29 @@
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                            <div class="col-sm-9 col-xs-12">
+                                <label class="radio-inline">
+                                    <input type="radio" name="setdata[become]" value="2"
+                                           @if($set['become'] == 2)
+                                           checked="checked" @endif />
+                                    或</label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="setdata[become]" value="3"
+                                           @if($set['become'] == 3)
+                                           checked="checked" @endif />
+                                    与</label>
+                                <span class='help-block'><b>[或]</b>满足以下任意条件都可以升级<br><b>[与]</b>满足以下所有条件才可以升级</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                             <div class="col-sm-6">
                                 <div class='input-group become' >
-                                    <div class='input-group-addon become' ><label class="radio-inline" ><input type="radio"  name="setdata[become]" value="2" @if($set['become'] ==2) checked="checked"
-                                                    @endif /> 消费达到</label></div>
+                                    <div class='input-group-addon become' >
+                                        <label class="radio-inline" >
+                                            <input type="checkbox"  name="setdata[become_term][2]" value="2" @if($set['become_term'][2]) checked="checked"@endif /> 消费达到
+                                        </label>
+                                    </div>
                                     <input type='text' class='form-control' name='setdata[become_ordercount]' value="{{$set['become_ordercount']}}" />
                                     <div class='input-group-addon' style="border:0" >次</div>
                                 </div>
@@ -56,8 +75,11 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                             <div class="col-sm-6">
                                 <div class='input-group' >
-                                    <div class='input-group-addon'  ><label class="radio-inline" ><input type="radio"  name="setdata[become]" value="3" @if($set['become'] ==3) checked="checked"
-                                                    @endif /> 消费达到</label></div>
+                                    <div class='input-group-addon'  >
+                                        <label class="radio-inline" >
+                                            <input type="checkbox"  name="setdata[become_term][3]" value="3" @if($set['become_term'][3]) checked="checked"@endif /> 消费达到
+                                        </label>
+                                    </div>
                                     <input type='text' class='form-control' name='setdata[become_moneycount]' value="{{$set['become_moneycount']}}" />
                                     <div class='input-group-addon' style="border:0">元</div>
                                 </div>
@@ -69,10 +91,13 @@
                             <div class="col-sm-6">
                                 <input type='hidden' class='form-control' id='goods_id' name='setdata[become_goods_id]' value="{{$set['become_goods_id']}}" />
                                 <div class='input-group' >
-                                    <div class='input-group-addon'  ><label class="radio-inline" ><input type="radio"  name="setdata[become]" value="4" @if($set['become'] ==4) checked="checked"
-                                                    @endif /> 购买商品</label></div>
+                                    <div class='input-group-addon'  >
+                                        <label class="radio-inline" ><input type="checkbox"  name="setdata[become_term][4]" value="4" @if($set['become_term'][4]) checked="checked"
+                                                    @endif /> 购买商品
+                                        </label>
+                                    </div>
                                     <input type='text' class='form-control' id='goods' value="@if(!empty($goods))[{{$goods['id']}}]{{$goods['title']}}
-@endif" readonly />
+                                    @endif" readonly />
                                     <div class="input-group-btn">
                                         <button type="button" onclick="$('#modal-goods').modal()" class="btn btn-default" >选择商品</button>
                                     </div>
@@ -81,20 +106,23 @@
                         </div>
 
                         @if (app('plugins')->isEnabled('sales-commission'))
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-                            <div class="col-sm-6">
-                                <div class='input-group' >
-                                    <div class='input-group-addon'  ><label class="radio-inline" ><input type="radio"  name="setdata[become]" value="5" @if($set['become'] ==5) checked="checked"
-                                                    @endif /> 自购销售佣金累计达到</label></div>
-                                    <input type='text' class='form-control' name='setdata[become_salesdividend]' value="{{$set['become_salesdividend']}}" />
-                                    <div class='input-group-addon' style="border:0">元</div>
+                            <div class="form-group">
+                                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                                <div class="col-sm-6">
+                                    <div class='input-group' >
+                                        <div class='input-group-addon'  >
+                                            <label class="radio-inline" >
+                                                <input type="checkbox"  name="setdata[become_term][5]" value="5" @if($set['become_term'][5]) checked="checked"@endif /> 自购销售佣金累计达到
+                                            </label>
+                                        </div>
+                                        <input type='text' class='form-control' name='setdata[become_selfmoney]' value="{{$set['become_selfmoney']}}" />
+                                        <div class='input-group-addon' style="border:0">元</div>
+                                    </div>
+                                    <span class="help-block">该条件只针对销售佣金插件使用</span>
                                 </div>
-                                <span class="help-block">该条件只针对销售佣金插件使用</span>
                             </div>
-                        </div>
-                        @endif
-                        <!-- END -->
+                    @endif
+                    <!-- END -->
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                             <div class="col-sm-9 col-xs-12">
@@ -109,7 +137,7 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">成为下线条件</label>
                             <div class="col-sm-9 col-xs-12">
                                 <label class="radio-inline"><input type="radio"  name="setdata[become_child]" value="0" @if($set['become_child'] ==0) checked="checked"
-                                    @endif/> 首次点击分享链接</label>
+                                            @endif/> 首次点击分享链接</label>
                                 <label class="radio-inline"><input type="radio"  name="setdata[become_child]" value="1" @if($set['become_child'] ==1) checked="checked"
                                             @endif /> 首次下单</label>
                                 <label class="radio-inline"><input type="radio"  name="setdata[become_child]" value="2" @if($set['become_child'] ==2) checked="checked"
@@ -121,7 +149,7 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">发展下线是否需要审核</label>
                             <div class="col-sm-9 col-xs-12">
                                 <label class="radio-inline"><input type="radio"  name="setdata[become_check]" value="1" @if($set['become_check'] ==1) checked="checked"
-                                    @endif/> 需要</label>
+                                            @endif/> 需要</label>
                                 <label class="radio-inline"><input type="radio"  name="setdata[become_check]" value="0" @if($set['become_check'] ==0) checked="checked"
                                             @endif /> 不需要</label>
                                 <span class="help-block">以上条件达到后，是否需要审核才能发展下线</span>

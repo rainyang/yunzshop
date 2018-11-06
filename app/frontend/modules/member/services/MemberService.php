@@ -369,6 +369,7 @@ class MemberService
     {
         $invite_code = \YunShop::request()->invite_code;
 
+
         $status = \Setting::get('shop.member');
         $data['status']=0;
         if ($status['is_invite']==1) {//判断邀请码是否开启 1开启 0关闭
@@ -400,6 +401,12 @@ class MemberService
         }
 
 
+
+        $status = \Setting::get('shop.member');
+        if ($status['is_invite']==1 && empty($invite_code)) {
+            return show_json('0', '请输入邀请码');
+        }
+        return show_json('1');
     }
 
     /**

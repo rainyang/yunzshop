@@ -86,4 +86,12 @@ class MemberShopInfo extends \app\common\models\MemberShopInfo
                 return $query->select('id','level','level_name')->uniacid();
             }])->first();
     }
+
+    public static function getParentOfMember(array $uid)
+    {
+        return self::uniacid()
+            ->select(['member_id', 'parent_id'])
+            ->whereIN('member_id', $uid)
+            ->get();
+    }
 }

@@ -2701,6 +2701,7 @@ return [
             'member_phone_attribution'     => [
                 'name'          => '手机归属地统计',
                 'url'           => 'charts.phone.phone-attribution.index',
+
                 'url_params'    => '',
                 'permit'        => 1,
                 'menu'          => 1,
@@ -2711,20 +2712,18 @@ return [
                 'child'         => []
             ],
 
-
-
-//            'order_dividend_charts'     => [
-//                'name'          => '订单分润',
-//                'url'           => 'charts.order.order-dividend.count',
-//                'url_params'    => '',
-//                'permit'        => 1,
-//                'menu'          => 1,
-//                'icon'          => 'fa-bar-chart-o',
-//                'sort'          => 0,
-//                'item'          => 'order_ranking_charts',
-//                'parents'       => ['charts',],
-//                'child'         => []
-//            ],
+            'order_dividend_charts'     => [
+                'name'          => '订单分润',
+                'url'           => 'charts.order.order-dividend.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts',],
+                'child'         => []
+            ],
 
             'transaction_amount_charts'     => [
                 'name'          => '交易额统计',
@@ -2800,18 +2799,18 @@ return [
                 'parents'       => ['charts'],
                 'child'         => []
             ],
-            'shop_income_charts'     => [
-                'name'          => '平台收益统计',
-                'url'           => 'charts.income.shop-income-statistics.index',
-                'url_params'    => '',
-                'permit'        => 1,
-                'menu'          => 1,
-                'icon'          => 'fa-bar-chart-o',
-                'sort'          => 0,
-                'item'          => 'order_ranking_charts',
-                'parents'       => ['charts',],
-                'child'         => []
-            ],
+//            'shop_income_charts'     => [
+//                'name'          => '平台收益统计',
+//                'url'           => 'charts.income.shop-income-statistics.index',
+//                'url_params'    => '',
+//                'permit'        => 1,
+//                'menu'          => 1,
+//                'icon'          => 'fa-bar-chart-o',
+//                'sort'          => 0,
+//                'item'          => 'order_ranking_charts',
+//                'parents'       => ['charts',],
+//                'child'         => []
+//            ],
             'member_income_charts'     => [
                 'name'          => '会员收入统计',
                 'url'           => 'charts.income.member-income.index',
@@ -3398,6 +3397,18 @@ return [
                     ],
                 ],
             ],
+            'operation_log' => [
+                'name'              => '操作日志',
+                'url'               => 'setting.operation-log.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-list-ul',
+                'sort'              => '6',
+                'item'              => 'operation_log',
+                'parents'           => ['system',],
+            ],
+
         ],
     ],
 ];
