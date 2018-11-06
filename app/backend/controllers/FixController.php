@@ -198,7 +198,7 @@ class FixController extends BaseController
     public function fixIncome()
     {
         $count = 0;
-        $income = Income::whereBetween('created_at', [1539792000,1540915200])->get();
+        $income = Income::whereBetween('created_at', [1539792000,1541433600])->get();
         foreach ($income as $value) {
             $pattern1 = '/\\\u[\d|\w]{4}/';
             preg_match($pattern1, $value->detail, $exists);

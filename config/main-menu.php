@@ -2695,8 +2695,21 @@ return [
 
                     ],
 
-
                 ]
+            ],
+
+            'member_phone_attribution'     => [
+                'name'          => '手机归属地统计',
+                'url'           => 'charts.phone.phone-attribution.index',
+
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts',],
+                'child'         => []
             ],
 
             'order_dividend_charts'     => [
