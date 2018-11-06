@@ -20,8 +20,12 @@ use Illuminate\Support\Collection;
 /**
  * Class BaseModel
  * @package app\common\models
+ * @property int id
+ * @property int created_at
+ * @property int updated_at
+ * @property int deleted_at
  * @method static self uniacid()
- * @method static self get()
+ * @method static Collection get()
  * @method static self find(string $id)
  * @method static self first()
  * @method static self select($fields)
@@ -369,9 +373,9 @@ class BaseModel extends Model
     {
         return true;
     }
+
     public function afterSaving()
     {
         return true;
     }
-
 }
