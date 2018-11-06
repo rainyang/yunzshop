@@ -10,6 +10,7 @@ namespace app\common\models\goods;
 
 
 use app\common\models\BaseModel;
+use app\backend\modules\goods\observers\DiscountObserver;
 
 class Discount extends BaseModel
 {
@@ -48,5 +49,12 @@ class Discount extends BaseModel
 //            'level_id' => 'integer',
 //            'discount_value' => 'numeric'
         ];
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+        //注册观察者
+        static::observe(new DiscountObserver);
     }
 }

@@ -8,6 +8,8 @@
 
 namespace app\common\models;
 
+use app\backend\modules\goods\observers\SaleObserver;
+
 class Sale extends BaseModel
 {
     public $table = 'yz_goods_sale';
@@ -23,12 +25,19 @@ class Sale extends BaseModel
         'point' => '',
         'bonus' => 0
     ];
-public function __construct(array $attributes = [])
-{
-    parent::__construct($attributes);
-}
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+    }
 
     protected $guarded = [''];
 
     protected $fillable = [''];
+
+    public static function boot()
+    {
+        parent::boot();
+        //注册观察者
+        static::observe(new SaleObserver);
+    }
 }
