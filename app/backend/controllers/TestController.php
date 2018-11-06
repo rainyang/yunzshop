@@ -47,7 +47,6 @@ class TestController extends BaseController
      */
     public function index()
     {
-
         $member_relation = new MemberRelation();
 
         $relation = $member_relation->hasRelationOfParent(66, 5, 1);
@@ -68,6 +67,7 @@ class TestController extends BaseController
         echo $json;
 
         $a = Artisan::call('queue:retry');
+        
         dd($a);
     }
 

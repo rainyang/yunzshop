@@ -173,6 +173,7 @@ class GoodsController extends BaseController
         if (isset($goods_service->error)) {
             $this->error($goods_service->error);
         }
+
         if ($result['status'] == 1) {
             return $this->message('商品创建成功', Url::absoluteWeb('goods.goods.index'));
         } else if ($result['status'] == -1) {
