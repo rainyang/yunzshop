@@ -8,15 +8,19 @@
 
 namespace app\backend\controllers;
 
+use app\backend\models\Withdraw;
+use app\backend\modules\charts\models\OrderIncomeCount;
 use app\backend\modules\charts\modules\order\services\OrderStatisticsService;
 use app\backend\modules\charts\modules\phone\services\PhoneAttributionService;
 use app\common\components\BaseController;
 use app\common\events\order\AfterOrderCreatedEvent;
+use app\common\models\Income;
 use app\common\models\Member;
 use app\common\models\member\ChildrenOfMember;
 use app\common\models\member\ParentOfMember;
 use app\common\models\Order;
 
+use app\common\models\OrderGoods;
 use app\common\models\OrderPay;
 use app\common\models\Flow;
 use app\common\models\Setting;
@@ -28,16 +32,20 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Yunshop\Commission\Listener\OrderCreatedListener;
-use Yunshop\Kingtimes\common\models\CompeteOrderDistributor;
-use Yunshop\Kingtimes\common\models\OrderDistributor;
+use Yunshop\StoreCashier\common\models\CashierOrder;
+use Yunshop\StoreCashier\common\models\StoreOrder;
+use Yunshop\Supplier\common\models\SupplierOrder;
 
 
 class TestController extends BaseController
 {
+    public $orderId;
+    /**
+     * @return bool
+     */
     public function index()
     {
         $a = Artisan::call('queue:retry');
-
         dd($a);
     }
 
@@ -157,6 +165,23 @@ class TestController extends BaseController
         $member_relation = new MemberRelation();
 
         $member_relation->createParentOfMember();
+    }
+
+    public function fixIncome()
+    {
+        $count = 0;
+        $income = Income::whereBetween('created_at', [1539792000,1540915200])->get();
+        foreach ($income as $value) {
+            $pattern1 = '/\\\u[\d|\w]{4}/';
+            preg_match($pattern1, $value->detail, $exists);
+            if (empty($exists)) {
+                $pattern2 = '/(u[\d|\w]{4})/';
+                $value->detail = preg_replace($pattern2, '\\\$1', $value->detail);
+                $value->save();
+                $count++;
+            }
+        }
+        echo "修复了{$count}条";
     }
 
     public function pp()
