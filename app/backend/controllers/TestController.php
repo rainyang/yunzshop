@@ -11,34 +11,27 @@ namespace app\backend\controllers;
 use app\backend\modules\charts\modules\order\services\OrderStatisticsService;
 use app\backend\modules\charts\modules\phone\services\PhoneAttributionService;
 use app\common\components\BaseController;
-use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\models\Member;
 use app\common\models\member\ChildrenOfMember;
 use app\common\models\member\ParentOfMember;
-use app\common\models\Order;
-
-use app\common\models\OrderPay;
-use app\common\models\Flow;
-use app\common\models\Setting;
 use app\common\services\member\MemberRelation;
-use app\common\repositories\ExpressCompany;
 use app\common\services\MessageService;
 use app\frontend\modules\member\models\SubMemberModel;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Artisan;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
-use Yunshop\Commission\Listener\OrderCreatedListener;
-use Yunshop\Kingtimes\common\models\CompeteOrderDistributor;
-use Yunshop\Kingtimes\common\models\OrderDistributor;
+use Illuminate\Support\Facades\Schema;
 
 
 class TestController extends BaseController
 {
     public function index()
     {
-        $a = Artisan::call('queue:retry');
 
-        dd($a);
+        Schema::table('yz_order_goods', function (Blueprint $table) {
+            dd(get_class($table));
+            $table->index('order_id');
+            $table->index('goods_id');
+        });
     }
 
     public function op_database()
@@ -152,7 +145,8 @@ class TestController extends BaseController
     public function tt()
     {
 
-       $this->synRun(5, '');exit;
+        $this->synRun(5, '');
+        exit;
 
         $member_relation = new MemberRelation();
 
@@ -197,39 +191,39 @@ class TestController extends BaseController
         foreach ($memberInfo as $key => $val) {
             $attr = [];
             echo '-------' . $key . '--------' . $val->member_id . '<BR>';
-                \Log::debug('--------foreach start------', $val->member_id);
-                $data = $memberModel->getNodeParents($uniacid, $val->member_id);
-                //$data = $memberModel->getDescendants($uniacid, $val->member_id);
+            \Log::debug('--------foreach start------', $val->member_id);
+            $data = $memberModel->getNodeParents($uniacid, $val->member_id);
+            //$data = $memberModel->getDescendants($uniacid, $val->member_id);
 
-                \Log::debug('--------foreach data------', $data->count());
+            \Log::debug('--------foreach data------', $data->count());
 
-                if (!$data->isEmpty()) {
-                    \Log::debug('--------insert init------');
-                    $data = $data->toArray();
+            if (!$data->isEmpty()) {
+                \Log::debug('--------insert init------');
+                $data = $data->toArray();
 
-                    /*foreach ($data as $k => $v) {
-                        $attr[] = [
-                            'uniacid'   => $uniacid,
-                            'child_id'  => $k,
-                            'level'     => $v['depth'] + 1,
-                            'member_id' => $val->member_id,
-                            'created_at' => time()
-                        ];
-                    }
-
-                    $childMemberModel->createData($attr);*/
-                    foreach ($data as $k => $v) {
-                        $attr[] = [
-                            'uniacid'   => $uniacid,
-                            'parent_id'  => $k,
-                            'level'     => $v['depth'] + 1,
-                            'member_id' => $val->member_id,
-                            'created_at' => time()
-                        ];
-                    }
-
-                    $parentMemberModle->createData($attr);
+                /*foreach ($data as $k => $v) {
+                    $attr[] = [
+                        'uniacid'   => $uniacid,
+                        'child_id'  => $k,
+                        'level'     => $v['depth'] + 1,
+                        'member_id' => $val->member_id,
+                        'created_at' => time()
+                    ];
                 }
+
+                $childMemberModel->createData($attr);*/
+                foreach ($data as $k => $v) {
+                    $attr[] = [
+                        'uniacid' => $uniacid,
+                        'parent_id' => $k,
+                        'level' => $v['depth'] + 1,
+                        'member_id' => $val->member_id,
+                        'created_at' => time()
+                    ];
+                }
+
+                $parentMemberModle->createData($attr);
+            }
 
 
         }
