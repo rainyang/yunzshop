@@ -10,6 +10,7 @@
 namespace app\common\models;
 
 
+use app\common\events\member\MemberCreateRelationEvent;
 use app\common\events\member\MemberFirstChilderenEvent;
 use app\common\events\member\MemberRelationEvent;
 use app\common\models\notice\MessageTemp;
@@ -262,6 +263,8 @@ class MemberRelation extends BaseModel
                 }
 
                 $model->save();
+
+                event(new MemberCreateRelationEvent($model->member_id, $mid));
             }
         }
 
@@ -333,6 +336,7 @@ class MemberRelation extends BaseModel
 
                         $member->save();
 
+                        event(new MemberCreateRelationEvent($member->member_id, $member->parent_id));
                         //message notice
                         self::sendAgentNotify($member->member_id, $parent->member_id);
                     }
@@ -390,6 +394,8 @@ class MemberRelation extends BaseModel
                         $member->inviter = 1;
 
                         $member->save();
+
+                        event(new MemberCreateRelationEvent($member->member_id, $member->parent_id));
 
                         //message notice
                         self::sendAgentNotify($member->member_id, $parent->member_id);

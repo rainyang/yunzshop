@@ -68,6 +68,7 @@ class MemberRelationController extends BaseController
     public function save()
     {
         $setData = \YunShop::request()->setdata;
+//        dd($setData);
         $setData['uniacid'] = \YunShop::app()->uniacid;
 
         if (empty($setData['become_ordercount'])) {
