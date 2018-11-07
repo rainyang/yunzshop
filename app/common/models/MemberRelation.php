@@ -597,6 +597,7 @@ class MemberRelation extends BaseModel
                     }
                 } else {
                     $member->status = 1;
+                    $member->agent_time = time();
                 }
 
                 if ($member->save()) {
@@ -653,6 +654,7 @@ class MemberRelation extends BaseModel
                             }
                         } else {
                             $member->status = 1;
+                            $member->agent_time = time();
                         }
 
                         if ($member->save()) {
@@ -689,6 +691,7 @@ class MemberRelation extends BaseModel
                             }
                         } else {
                             $member->status = 1;
+                            $member->agent_time = time();
                         }
 
                         if ($member->save()) {
@@ -715,6 +718,7 @@ class MemberRelation extends BaseModel
                             }
                         } else {
                             $member->status = 1;
+                            $member->agent_time = time();
                         }
 
                         if ($member->save()) {
@@ -745,6 +749,7 @@ class MemberRelation extends BaseModel
                             }
                         } else {
                             $member->status = 1;
+                            $member->agent_time = time();
                         }
 
                         if ($member->save()) {
