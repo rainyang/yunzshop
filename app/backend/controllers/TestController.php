@@ -34,6 +34,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Yunshop\Commission\Listener\OrderCreatedListener;
+use Yunshop\Mryt\models\MrytLevelModel;
 use Yunshop\StoreCashier\common\models\CashierOrder;
 use Yunshop\StoreCashier\common\models\StoreOrder;
 use Yunshop\Supplier\common\models\SupplierOrder;
@@ -412,6 +413,9 @@ class TestController extends BaseController
 
     public function v()
     {
+        $level = MrytLevelModel::getList()->get();
+        dd($level);
+
         $curr_month = date('Ym', time());
 
         $pre_month_1 = date('n', strtotime('-1 month'));
