@@ -487,11 +487,11 @@ class GoodsController extends ApiController
             $data['key'] = 'love';
             $data['type'] = 'array';
             if ($love_goods['deduction']) {
-                $data['value'][] = '最高抵扣'.$love_goods['deduction_proportion'].'%'.$data['name'];
+                $data['value'][] = '最高抵扣'.$love_goods['deduction_proportion'].$data['name'];
             }
 
             if ($love_goods['award']) {
-                $data['value'][] = '购买赠送'.$love_goods['award_proportion'].'%'.$data['name'];
+                $data['value'][] = '购买赠送'.$love_goods['award_proportion'].$data['name'];
             }
 
             if (!empty($data['value'])) {
@@ -509,13 +509,13 @@ class GoodsController extends ApiController
                 $data['key'] = 'commission';
                 $data['type'] = 'array';
 
-                if (!empty($commission_data['first_commission'])) {
+                if (!empty($commission_data['first_commission']) && ($commission_data['commission_show_level'] > 0)) {
                     $data['value'][] = '一级佣金'.$commission_data['first_commission'].'元';
                 }
-                if (!empty($commission_data['second_commission'])) {
+                if (!empty($commission_data['second_commission']) && ($commission_data['commission_show_level'] > 1)) {
                     $data['value'][] = '二级佣金'.$commission_data['second_commission'].'元';
                 }
-                if (!empty($commission_data['third_commission'])) {
+                if (!empty($commission_data['third_commission']) && ($commission_data['commission_show_level'] > 2)) {
                     $data['value'][] = '三级佣金'.$commission_data['third_commission'].'元';
                 }
                 array_push($sale, $data);
