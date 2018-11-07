@@ -371,10 +371,10 @@ class RegisterController extends ApiController
         $captcha_status = Setting::get('shop.sms.status');
         if ($captcha_status == 1) {
             if ( app('captcha')->check(Input::get('captcha')) == false) {
-                return $this->errorJson('验证码错误');
+                return $this->errorJson('图形验证码错误');
             }
         }
-        
+
         //互亿无线
         if ($sms['type'] == 1) {
             if ($state != '86') {
