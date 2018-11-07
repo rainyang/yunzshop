@@ -23,6 +23,23 @@ class ChangeBecomeGoodsIdToYzMemberRelation extends Migration
                 }
             });
 
+            $member = \app\common\models\MemberRelation::get();
+            foreach ($member as $value) {
+                if (!empty($value->become_goods_id)) {
+                    $goods = \app\common\models\Goods::find($value->become_goods_id);
+                    if ($goods) {
+                        $value->become_goods = serialize([
+                            $value->become_goods_id => [
+                                'title' => $goods->title,
+                                'thumb' => $goods->thumb,
+                                'goods_id' => $goods->id
+                            ]
+                        ]);
+                        $value->save();
+                    }
+                }
+            }
+
         }
     }
 

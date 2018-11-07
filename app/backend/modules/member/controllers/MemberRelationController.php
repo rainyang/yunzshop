@@ -53,9 +53,9 @@ class MemberRelationController extends BaseController
         } else {
             $goods = [];
         }
-        if (!empty($relation['become_goods_id'])) {
-            $relation['become_goods_id'] = explode(',',$relation['become_goods_id']);
-        }
+//        if (!empty($relation['become_goods_id'])) {
+//            $relation['become_goods_id'] = explode(',',$relation['become_goods_id']);
+//        }
 
         return view('member.relation', [
             'set' => $relation,
