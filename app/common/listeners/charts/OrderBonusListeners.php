@@ -30,7 +30,7 @@ class OrderBonusListeners
     public function subscribe($events)
     {
         //下单
-        $events->listen(AfterOrderCreatedEvent::class, OrderBonusListeners::class. '@addCount',2);
+        $events->listen(AfterOrderCreatedEvent::class, OrderBonusListeners::class. '@addCount',999);
 
         //支付之后 统计订单详情
 //        $events->listen(

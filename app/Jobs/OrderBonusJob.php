@@ -101,6 +101,12 @@ class OrderBonusJob implements  ShouldQueue
     {
         $field = str_replace('-','_',$this->code);
         $order_income = OrderIncomeCount::where('order_id', $this->orderModel->id)->first();
+        if (!$order_income) {
+            $job = new OrderCountAddJob($this->code, $sum, $undividend, $this->orderModel->id);
+            $job = $job->delay(60);
+            dispatch($job);
+            return true;
+        }
         $order_income->$field = $sum;
         $order_income->undividend += $undividend;
         $order_income->save();
