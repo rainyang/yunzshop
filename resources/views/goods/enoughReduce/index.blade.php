@@ -20,7 +20,7 @@
                         </el-switch>
                     </el-tooltip> -->
                     <input type="radio" name='switch' value='open'>开启
-                    <input type="radio" name='switch' value='close' checked >关闭
+                    <input type="radio" name='switch' value='close' style='margin-left:16px' checked >关闭
                 </el-form-item>
                 <template v-for="(enoughReduce,index) in form.enoughReduce">
 
@@ -72,8 +72,8 @@
                         <el-switch v-model="form.freeFreight.open">
                         </el-switch>
                     </el-tooltip> -->
-                    <input type="radio" name='freeSwitch' value='open' style='padding-left:100px'>开启
-                    <input type="radio" name='freeSwitch' value='close' checked >关闭
+                    <input type="radio" name='freeSwitch' value='open'>开启
+                    <input type="radio" name='freeSwitch' value='close' style='margin-left:16px' checked >关闭
                     <div>开启满包邮,订单总金额超过多少可以包邮</div>
                     <el-form-item prop="freeFreight.enough">
                         <el-input placeholder="金额"
