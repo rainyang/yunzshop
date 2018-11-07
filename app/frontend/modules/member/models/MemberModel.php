@@ -408,7 +408,7 @@ class MemberModel extends Member
      */
     public static function getMyReferral_v2()
     {
-        $member_id = 1;
+        $member_id = \YunShop::app()->getMemberId();
         $member_info     = self::getMyReferrerInfo($member_id)->first();
 
         $set = \Setting::get('shop.member');
