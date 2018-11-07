@@ -20,7 +20,7 @@ class AddBecomeTermToYzMemberRelation extends Migration
                 });
                 $member = \app\common\models\MemberRelation::get();
                 foreach ($member as $value) {
-                    if ($value->become) {
+                    if ($value->become > 1) {
                         $value->become_term = serialize([$value->become => $value->become]);
                         $value->become = 2;
                         $value->save();
