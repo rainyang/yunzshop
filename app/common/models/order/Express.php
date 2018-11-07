@@ -33,7 +33,6 @@ class Express extends BaseModel
 
     public function getExpress($express = null, $express_sn = null)
     {
-//        print_r($express);exit;
         if (!isset($express)) {
             $express = $this->express_code;
         }
@@ -43,14 +42,12 @@ class Express extends BaseModel
 //        $result = $this->kD100($express,$express_sn);
         $result = app('express')->getTraces($express, $express_sn);
 
-
         if (empty($result)) {
             return array();
         }
 
         $result['status_name'] = $this->expressStatusName($result['state']);
-//        print_r($result);
-//        exit;
+
         return $result;
     }
 
