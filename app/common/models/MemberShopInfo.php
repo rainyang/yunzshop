@@ -12,11 +12,13 @@ namespace app\common\models;
 use app\backend\models\BackendModel;
 use app\backend\modules\member\models\MemberRecord;
 use app\common\events\member\RegisterByAgent;
+use app\common\observers\member\MemberObserver;
 use app\frontend\modules\member\models\SubMemberModel;
 use app\Jobs\ModifyRelationJob;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Yunshop\Commission\models\Agents;
+use Yunshop\TeamDividend\models\TeamDividendAgencyModel;
 
 class MemberShopInfo extends BaseModel
 {
@@ -41,11 +43,6 @@ class MemberShopInfo extends BaseModel
     //private $team_offline;
 
 
-
-
-
-
-
     /**
      * todo common 中的 model 不应该使用全局作用域 2018-03-02
      * 设置全局作用域
@@ -53,6 +50,9 @@ class MemberShopInfo extends BaseModel
     public static function boot()
     {
         parent::boot();
+
+        static::observe(new MemberObserver());
+
         static::addGlobalScope('uniacid',function (Builder $builder) {
             return $builder->uniacid();
         });
@@ -367,7 +367,7 @@ class MemberShopInfo extends BaseModel
     //主表yz_member,从表mc_member
     public function hasOneMember()
     {
-        return $this->hasOne(Member::class, 'uid', 'm_id');
+        return $this->hasOne(Member::class, 'uid', 'member_id');
     }
 
     public static function chkInviteCode($code)
@@ -404,8 +404,9 @@ class MemberShopInfo extends BaseModel
                 }
             }
 
-            $member_relation = Member::setMemberRelation($uid, $parent_id);
+            $member_relation   = Member::setMemberRelation($uid, $parent_id);
             $plugin_commission = app('plugins')->isEnabled('commission');
+            $plugin_team       = app('plugins')->isEnabled('team-dividend');
 
             if (isset($member_relation) && $member_relation !== false) {
                 $member = MemberShopInfo::getMemberShopInfo($uid);
@@ -420,6 +421,17 @@ class MemberShopInfo extends BaseModel
 
                 $member->save();
                 $record->save();
+
+                if ($plugin_team) {
+                    $team = TeamDividendAgencyModel::getAgentByUidId($uid)->first();
+
+                    if (!is_null($team)) {
+                        $team->parent_id = $parent_id;
+                        $team->relation = $member->relation;
+
+                        $team->save();
+                    }
+                }
 
                 if ($plugin_commission) {
                     $agents = Agents::uniacid()->where('member_id', $uid)->first();
@@ -447,6 +459,23 @@ class MemberShopInfo extends BaseModel
             } else {
                 return ['status' => 0];
             }
+        }
+    }
+
+    /**
+     * 查询会员邀请码
+     *
+     * @return mixed
+     */
+    public function getInviteCode($inviteCode)
+    {
+        $data = self::select('member_id')->where('invite_code', $inviteCode)
+            ->uniacid()
+            ->count();
+        if($data>0){
+            return true;
+        }else{
+            return false;
         }
     }
 }

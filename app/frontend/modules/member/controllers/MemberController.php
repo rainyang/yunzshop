@@ -8,6 +8,8 @@
 
 namespace app\frontend\modules\member\controllers;
 
+use app\backend\modules\charts\modules\phone\models\PhoneAttribution;
+use app\backend\modules\charts\modules\phone\services\PhoneAttributionService;
 use app\backend\modules\member\models\MemberRelation;
 use app\backend\modules\order\models\Order;
 use app\common\components\ApiController;
@@ -57,6 +59,8 @@ class MemberController extends ApiController
         $v         = request('v');
 
         if (!empty($member_id)) {
+
+
             $member_info = MemberModel::getUserInfos($member_id)->first();
 
             if (!empty($member_info)) {
@@ -101,10 +105,17 @@ class MemberController extends ApiController
                 $data['withdraw_status'] = $withdraw_status;
 
                 if (!is_null($v)) {
+                    $set = \Setting::get('shop.member');
+
+                    $data['inviteCode']['status'] = $set['is_invite'] ?: 0;
+
+//                    $data['inviteCode']['required'] =$set['required'] ?: 0;
+
+
                     if (is_null($member_info['yz_member']['invite_code']) || empty($member_info['yz_member']['invite_code'])) {
-                        $data['inviteCode'] = MemberModel::getInviteCode($member_id);
+                        $data['inviteCode']['code'] = MemberModel::getInviteCode($member_id);
                     } else {
-                        $data['inviteCode'] = $member_info['yz_member']['invite_code'];
+                        $data['inviteCode']['code'] = $member_info['yz_member']['invite_code'];
                     }
                 } else {
                     $data['inviteCode'] = 0;
@@ -504,6 +515,23 @@ class MemberController extends ApiController
                     Cache::forget($member_model->uid . '_member_info');
                 }
 
+                $phoneModel = PhoneAttribution::getMemberByID(\YunShop::app()->getMemberId());
+                if (!is_null($phoneModel)) {
+                    $phoneModel->delete();
+                }
+
+                //手机归属地查询插入
+                $phoneData = file_get_contents((new PhoneAttributionService())->getPhoneApi($member_model->mobile));
+                $phoneArray = json_decode($phoneData);
+                $phone['uid'] = \YunShop::app()->getMemberId();
+                $phone['uniacid'] = \YunShop::app()->uniacid;
+                $phone['province'] = $phoneArray->data->province;
+                $phone['city'] = $phoneArray->data->city;
+                $phone['sp'] = $phoneArray->data->sp;
+
+                $phoneModel = new PhoneAttribution();
+                $phoneModel->updateOrCreate(['uid' => \YunShop::app()->getMemberId()], $phone);
+
                 return $this->successJson('用户资料修改成功');
             } else {
                 return $this->errorJson('更新用户资料失败');
@@ -534,6 +562,13 @@ class MemberController extends ApiController
                 return $this->errorJson($check_code['json']);
             }
 
+            $invitecode = MemberService::inviteCode();
+
+            if ($check_code['status'] != 1) {
+                return $this->errorJson($invitecode['json']);
+            }
+
+
             $msg = MemberService::validate($mobile, $password, $confirm_password);
 
             if ($msg['status'] != 1) {
@@ -546,6 +581,18 @@ class MemberController extends ApiController
                     return $this->errorJson('验证码错误');
                 }
             }
+
+            //手机归属地查询插入
+            $phoneData = file_get_contents((new PhoneAttributionService())->getPhoneApi($mobile));
+            $phoneArray = json_decode($phoneData);
+            $phone['uid'] = $uid;
+            $phone['uniacid'] = \YunShop::app()->uniacid;
+            $phone['province'] = $phoneArray->data->province;
+            $phone['city'] = $phoneArray->data->city;
+            $phone['sp'] = $phoneArray->data->sp;
+
+            $phoneModel = new PhoneAttribution();
+            $phoneModel->updateOrCreate(['uid' => $uid], $phone);
 
             //同步信息
             $old_member = [];

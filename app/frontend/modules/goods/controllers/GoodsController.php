@@ -132,7 +132,7 @@ class GoodsController extends ApiController
             }
         }
         // todo 商品详情挂件
-        if (\Config::get('goods_detail')) {
+        /*if (\Config::get('goods_detail')) {
             foreach (\Config::get('goods_detail') as $key_name => $row) {
                 $row_res = $row['class']::$row['function']($id, true);
                 if ($row_res) {
@@ -149,15 +149,17 @@ class GoodsController extends ApiController
                     }
                 }
             }
-        }
+        }*/
 
         //供应商在售商品总数
-        /*$supplier_goods_id = SupplierGoods::getGoodsIdsBySid($goodsModel->supplier->id);
+        if (app('plugins')->isEnabled('supplier')) {
+        $supplier_goods_id = SupplierGoods::getGoodsIdsBySid($goodsModel->supplier->id);
         $supplier_goods_count = Goods::select('*', 'yz_goods.id as goods_id')
             ->whereIn('id', $supplier_goods_id)
             ->where('status', 1)
-            ->get()->count('id');
-        $goodsModel->supplier_goods_count = $supplier_goods_count;*/
+            ->count();
+        $goodsModel->supplier_goods_count = $supplier_goods_count;
+        }
 
         if($goodsModel->hasOneShare){
             $goodsModel->hasOneShare->share_thumb = yz_tomedia($goodsModel->hasOneShare->share_thumb);
@@ -400,7 +402,6 @@ class GoodsController extends ApiController
      */
     public function getGoodsSale($goodsModel)
     {
-        //todo 需要重构商品详情获取逻辑 2018-10-16 ：：LiBaoJia
         $set = \Setting::get('point.set');
 
         $shopSet = \Setting::get('shop.shop');
@@ -518,6 +519,10 @@ class GoodsController extends ApiController
         $exist_commission = app('plugins')->isEnabled('commission');
         if ($exist_commission) {
             $commission_data = (new GoodsDetailService($goodsModel))->getGoodsDetailData();
+            if ($commission_data['commission_show'] == 1) {
+                $data['sale_count'] += 1;
+                $data['first_strip_key'] = 'commission_show';
+            }
             $data = array_merge($data, $commission_data);
         }
         return $data;

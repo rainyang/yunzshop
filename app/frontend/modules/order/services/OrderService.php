@@ -151,13 +151,14 @@ class OrderService
 
         $orderGoodsCollection = OrderService::getOrderGoods($memberCarts);
         $order = app('OrderManager')->make('PreOrder', ['uid' => $member->uid, 'uniacid' => $shop->uniacid]);
+        $order->beforeCreating();
 
         event(new OnPreGenerateOrderCreatingEvent($order));
         $order->setOrderGoods($orderGoodsCollection);
         /**
          * @var PreOrder $order
          */
-        $order->_init();
+        $order->afterCreating();
         return $order;
     }
 

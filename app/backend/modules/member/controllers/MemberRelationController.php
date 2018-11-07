@@ -25,16 +25,19 @@ class MemberRelationController extends BaseController
 
     /**
      * 列表
-     *
      * @return string
+     * @throws \Throwable
      */
     public function index()
     {
-
         $relation = Relation::getSetInfo()->first();
 
         if (!empty($relation)) {
             $relation = $relation->toArray();
+        }
+
+        if (!empty($relation['become_term'])) {
+            $relation['become_term'] = unserialize($relation['become_term']);
         }
 
         if (!empty($relation['become_goods_id'])) {
@@ -49,9 +52,11 @@ class MemberRelationController extends BaseController
         } else {
             $goods = [];
         }
+
+
         return view('member.relation', [
             'set' => $relation,
-            'goods' => $goods
+            'goods' => $goods,
         ])->render();
     }
 
@@ -63,10 +68,15 @@ class MemberRelationController extends BaseController
     public function save()
     {
         $setData = \YunShop::request()->setdata;
+//        dd($setData);
         $setData['uniacid'] = \YunShop::app()->uniacid;
 
         if (empty($setData['become_ordercount'])) {
             $setData['become_ordercount'] = 0;
+        }
+
+        if (!empty($setData['become_term'])) {
+            $setData['become_term'] = serialize($setData['become_term']);
         }
 
         if (empty($setData['become_moneycount'])) {
@@ -77,11 +87,15 @@ class MemberRelationController extends BaseController
             $setData['become_goods_id'] = 0;
         }
 
+        if (empty($setData['become_selfmoney'])) {
+            $setData['become_selfmoney'] = 0;
+        }
+
         $relation = Relation::getSetInfo()->first();
 
         if (!empty($relation)) {
             $relation->setRawAttributes($setData);
-
+            (new \app\common\services\operation\RelationLog($relation, 'update'));
             $relation->save();
         } else {
             Relation::create($setData);

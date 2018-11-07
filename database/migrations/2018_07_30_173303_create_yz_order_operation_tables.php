@@ -36,7 +36,10 @@ class CreateYzOrderOperationTables extends Migration
                 $table->integer('deleted_at')->nullable();
             });
         }
-        \Illuminate\Support\Facades\DB::select('INSERT INTO `'.app('db')->getTablePrefix().'yz_order_status` (`id`, `name`, `code`, `sort`, `created_at`, `updated_at`, `deleted_at`)
+
+        $sql = 'SELECT count(1) FROM ' . app('db')->getTablePrefix() . 'yz_order_status';
+        if (!\Illuminate\Support\Facades\DB::select($sql)) {
+            \Illuminate\Support\Facades\DB::insert('INSERT INTO `'.app('db')->getTablePrefix().'yz_order_status` (`id`, `name`, `code`, `sort`, `created_at`, `updated_at`, `deleted_at`)
 VALUES
 	(1, \'待付款\', \'waitPay\', 0, NULL, NULL, NULL),
 	(2, \'待发货\', \'waitSend\', 0, NULL, NULL, NULL),
@@ -44,6 +47,7 @@ VALUES
 	(4, \'已完成\', \'complete\', 0, NULL, NULL, NULL),
 	(5, \'已关闭\', \'close\', 0, NULL, NULL, NULL);
 ');
+        }
 
     }
 

@@ -8,6 +8,8 @@
 
 namespace app\frontend\modules\member\controllers;
 
+use app\backend\modules\charts\modules\phone\models\PhoneAttribution;
+use app\backend\modules\charts\modules\phone\services\PhoneAttributionService;
 use app\common\components\ApiController;
 use app\common\helpers\Client;
 use app\common\helpers\Url;
@@ -50,6 +52,22 @@ class RegisterController extends ApiController
                 return $this->errorJson($check_code['json']);
             }
 
+<<<<<<< HEAD
+            $invitecode = MemberService::inviteCode();
+
+            if ($invitecode['status'] != 1) {
+                return $this->errorJson($invitecode['json']);
+            }
+
+=======
+            $invite_code = MemberService::inviteCode();
+
+            if ($invite_code['status'] != 1) {
+                return $this->errorJson($invite_code['json']);
+            }
+
+
+>>>>>>> a3015baabff0ae2836b9540fc928a301dee28c54
             $msg = MemberService::validate($mobile, $password, $confirm_password);
 
             if ($msg['status'] != 1) {
@@ -65,6 +83,7 @@ class RegisterController extends ApiController
                     return $this->errorJson('验证码错误');
                 }
             }
+
 
             if (!empty($member_info)) {
                 return $this->errorJson('该手机号已被注册');
@@ -97,6 +116,18 @@ class RegisterController extends ApiController
 
             $memberModel = MemberModel::create($data);
             $member_id = $memberModel->uid;
+
+            //手机归属地查询插入
+            $phoneData = file_get_contents((new PhoneAttributionService())->getPhoneApi($mobile));
+            $phoneArray = json_decode($phoneData);
+            $phone['uid'] = $member_id;
+            $phone['uniacid'] = $uniacid;
+            $phone['province'] = $phoneArray->data->province;
+            $phone['city'] = $phoneArray->data->city;
+            $phone['sp'] = $phoneArray->data->sp;
+
+            $phoneModel = new PhoneAttribution();
+            $phoneModel->updateOrCreate(['uid' => $member_id], $phone);
 
             //添加yz_member表
             $default_sub_group_id = MemberGroup::getDefaultGroupId()->first();
@@ -503,9 +534,11 @@ class RegisterController extends ApiController
     public function getInviteCode()
     {
         $is_invite = intval(\Setting::get('shop.member.is_invite'));
+        $required =intval(\Setting::get('shop.member.required'));
 
         $data = [
-          'status' => $is_invite
+          'status' => $is_invite,
+            'required' => $required
         ];
 
         return $this->successJson('ok', $data);

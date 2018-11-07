@@ -1,6 +1,8 @@
 @extends('layouts.base')
+<script src="{{static_url('js/echarts.js')}}" type="text/javascript"></script>
 @section('title', trans('余额数据统计'))
 @section('content')
+
 <link href="{{static_url('yunshop/css/order.css')}}" media="all" rel="stylesheet" type="text/css"/>
 <style>
     .balance-count{ margin-bottom:20px !important;line-height: 40px;height: 40px;}
@@ -65,6 +67,7 @@
                 </tr>
             </table>
         </div>
+
         <div class="panel panel-default">
             <table class='table' style='float:left;margin-bottom:0;table-layout: fixed;line-height: 40px;height: 40px'>
                 <tr class='trhead'>

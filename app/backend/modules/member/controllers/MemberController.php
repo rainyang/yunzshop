@@ -307,6 +307,7 @@ class MemberController extends BaseController
         if ($validator->fails()) {
             $this->error($validator->messages());
         } else {
+//            (new \app\common\services\operation\ShopMemberLog($shopInfoModel, 'update'));
             if ($shopInfoModel->save()) {
 
                 if ($parame->data['agent']) {
@@ -362,6 +363,8 @@ class MemberController extends BaseController
                         //删除微擎mc_mapping_fans 表数据
                         McMappingFans::deleteMemberInfoById($uniqueModel->member_id);
 
+                        //清空 yz_member 关联
+                        MemberShopInfo::deleteMemberInfoOpenid($uniqueModel->member_id);
                         //Member::deleteMemberInfoById($uniqueModel->member_id);
                     }
                 }
@@ -382,6 +385,9 @@ class MemberController extends BaseController
 
             //删除微擎mc_mapping_fans 表数据
             McMappingFans::deleteMemberInfoById($uid);
+
+            //清空 yz_member 关联
+            MemberShopInfo::deleteMemberInfoOpenid($uid);
 
             //删除会员
             Member::UpdateDeleteMemberInfoById($uid);
@@ -414,6 +420,7 @@ class MemberController extends BaseController
         );
 
         if (MemberShopInfo::setMemberBlack($uid, $data)) {
+            (new \app\common\services\operation\MemberBankCardLog(['uid'=> $uid, 'is_black' => \YunShop::request()->black], 'special'));
             return $this->message('黑名单设置成功', yzWebUrl('member.member.index'));
         } else {
             return $this->message('黑名单设置失败', yzWebUrl('member.member.index'), 'error');
