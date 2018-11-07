@@ -266,7 +266,7 @@ class TestController extends BaseController
         echo 'end';
 
     }
-    
+
     public function mr()
     {
        /* $a = [1,2,3,4,5];
