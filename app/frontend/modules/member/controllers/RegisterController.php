@@ -46,35 +46,6 @@ class RegisterController extends ApiController
         $uniacid = \YunShop::app()->uniacid;
 
         if ((\Request::getMethod() == 'POST')) {
-            $check_code = MemberService::checkCode();
-
-            if ($check_code['status'] != 1) {
-                return $this->errorJson($check_code['json']);
-            }
-
-
-            $invitecode = MemberService::inviteCode();
-
-            if ($invitecode['status'] != 1) {
-                return $this->errorJson($invitecode['json']);
-            }
-
-
-//            $invite_code = MemberService::inviteCode();
-//
-//            if ($invite_code['status'] != 1) {
-//                return $this->errorJson($invite_code['json']);
-//            }
-
-
-
-            $msg = MemberService::validate($mobile, $password, $confirm_password);
-
-            if ($msg['status'] != 1) {
-                return $this->errorJson($msg['json']);
-            }
-
-            $member_info = MemberModel::getId($uniacid, $mobile);
 
             //增加验证码验证
             $captcha_status = Setting::get('shop.sms.status');
@@ -84,6 +55,31 @@ class RegisterController extends ApiController
                 }
             }
 
+            $check_code = MemberService::checkCode();
+
+            if ($check_code['status'] != 1) {
+                return $this->errorJson($check_code['json']);
+            }
+
+            $invitecode = MemberService::inviteCode();
+
+            if ($invitecode['status'] != 1) {
+                return $this->errorJson($invitecode['json']);
+            }
+
+//            $invite_code = MemberService::inviteCode();
+//
+//            if ($invite_code['status'] != 1) {
+//                return $this->errorJson($invite_code['json']);
+//            }
+
+            $msg = MemberService::validate($mobile, $password, $confirm_password);
+
+            if ($msg['status'] != 1) {
+                return $this->errorJson($msg['json']);
+            }
+
+            $member_info = MemberModel::getId($uniacid, $mobile);
 
             if (!empty($member_info)) {
                 return $this->errorJson('该手机号已被注册');
