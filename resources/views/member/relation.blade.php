@@ -106,10 +106,11 @@
                                         <button type="button" onclick="$('#modal-goods').modal()" class="btn btn-default" >选择商品</button>
                                     </div>
                                 </div>
+                                <span class="help-block">可指定多件商品，只需购买其中一件就可以成为推广员</span>
                                 <div class="input-group multi-img-details" id='goods_id'>
                                     @foreach ($goods as $goods_id => $good)
                                         <div class="multi-item saler-item" openid="{{ $goods_id }}">
-                                            <img class="img-responsive img-thumbnail" src='{{ $good['thumb'] }}'
+                                            <img class="img-responsive img-thumbnail" src='{{ tomedia($good['thumb']) }}'
                                                  onerror="this.src='{{static_url('resource/images/nopic.jpg')}}'; this.title='图片未找到.'">
                                             <div class='img-nickname'>{{ $good['title'] }}</div>
                                             <input type="hidden" value="{{ $goods_id }}"
@@ -124,6 +125,7 @@
                                         </div>
                                     @endforeach
                                 </div>
+
                             </div>
                         </div>
 

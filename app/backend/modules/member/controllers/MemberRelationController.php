@@ -121,6 +121,9 @@ class MemberRelationController extends BaseController
 
         if (!empty($goods_model)) {
             $data = $goods_model->toArray();
+            foreach ($data as &$good) {
+                $good['thumb'] = tomedia($good['thumb']);
+            }
         } else {
             $data = [];
         }
