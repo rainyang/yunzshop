@@ -46,15 +46,6 @@ class RegisterController extends ApiController
         $uniacid = \YunShop::app()->uniacid;
 
         if ((\Request::getMethod() == 'POST')) {
-
-            //增加验证码验证
-            $captcha_status = Setting::get('shop.sms.status');
-            if ($captcha_status == 1) {
-                if ( app('captcha')->check(Input::get('captcha')) == false) {
-                    return $this->errorJson('验证码错误');
-                }
-            }
-
             $check_code = MemberService::checkCode();
 
             if ($check_code['status'] != 1) {
@@ -293,6 +284,14 @@ class RegisterController extends ApiController
     public function sendSms($mobile, $code, $templateType = 'reg')
     {
         $sms = \Setting::get('shop.sms');
+
+        //增加验证码验证
+        $captcha_status = Setting::get('shop.sms.status');
+        if ($captcha_status == 1) {
+            if ( app('captcha')->check(Input::get('captcha')) == false) {
+                return $this->errorJson('验证码错误');
+            }
+        }
 
         //互亿无线
         if ($sms['type'] == 1) {
