@@ -47,6 +47,7 @@ class DetailController extends BaseController
         if (request()->has('order_sn')) {
             $order = $order->where('order_sn', request('order_sn'))->first();
         }
+
         if (!$order) {
             throw new AppException('未找到订单');
         }
