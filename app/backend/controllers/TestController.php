@@ -8,15 +8,21 @@
 
 namespace app\backend\controllers;
 
+use app\backend\models\Withdraw;
+use app\backend\modules\charts\models\OrderIncomeCount;
 use app\backend\modules\charts\modules\order\services\OrderStatisticsService;
 use app\backend\modules\charts\modules\phone\services\PhoneAttributionService;
 use app\common\components\BaseController;
+use app\common\events\member\MemberCreateRelationEvent;
+use app\common\events\member\MemberRelationEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
+use app\common\models\Income;
 use app\common\models\Member;
 use app\common\models\member\ChildrenOfMember;
 use app\common\models\member\ParentOfMember;
 use app\common\models\Order;
 
+use app\common\models\OrderGoods;
 use app\common\models\OrderPay;
 use app\common\models\Flow;
 use app\common\models\Setting;
@@ -28,16 +34,21 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Yunshop\Commission\Listener\OrderCreatedListener;
-use Yunshop\Kingtimes\common\models\CompeteOrderDistributor;
-use Yunshop\Kingtimes\common\models\OrderDistributor;
+use Yunshop\StoreCashier\common\models\CashierOrder;
+use Yunshop\StoreCashier\common\models\StoreOrder;
+use Yunshop\Supplier\common\models\SupplierOrder;
 
 
 class TestController extends BaseController
 {
+    public $orderId;
+    /**
+     * @return bool
+     */
     public function index()
     {
         $a = Artisan::call('queue:retry');
-
+        
         dd($a);
     }
 
@@ -159,6 +170,23 @@ class TestController extends BaseController
         $member_relation->createParentOfMember();
     }
 
+    public function fixIncome()
+    {
+        $count = 0;
+        $income = Income::whereBetween('created_at', [1539792000,1540915200])->get();
+        foreach ($income as $value) {
+            $pattern1 = '/\\\u[\d|\w]{4}/';
+            preg_match($pattern1, $value->detail, $exists);
+            if (empty($exists)) {
+                $pattern2 = '/(u[\d|\w]{4})/';
+                $value->detail = preg_replace($pattern2, '\\\$1', $value->detail);
+                $value->save();
+                $count++;
+            }
+        }
+        echo "修复了{$count}条";
+    }
+
     public function pp()
     {
 
@@ -198,8 +226,8 @@ class TestController extends BaseController
             $attr = [];
             echo '-------' . $key . '--------' . $val->member_id . '<BR>';
                 \Log::debug('--------foreach start------', $val->member_id);
-                $data = $memberModel->getNodeParents($uniacid, $val->member_id);
-                //$data = $memberModel->getDescendants($uniacid, $val->member_id);
+                //$data = $memberModel->getNodeParents($uniacid, $val->member_id);
+                $data = $memberModel->getDescendants($uniacid, $val->member_id);
 
                 \Log::debug('--------foreach data------', $data->count());
 
@@ -207,7 +235,7 @@ class TestController extends BaseController
                     \Log::debug('--------insert init------');
                     $data = $data->toArray();
 
-                    /*foreach ($data as $k => $v) {
+                   foreach ($data as $k => $v) {
                         $attr[] = [
                             'uniacid'   => $uniacid,
                             'child_id'  => $k,
@@ -217,7 +245,8 @@ class TestController extends BaseController
                         ];
                     }
 
-                    $childMemberModel->createData($attr);*/
+                    $childMemberModel->createData($attr);
+                   /*
                     foreach ($data as $k => $v) {
                         $attr[] = [
                             'uniacid'   => $uniacid,
@@ -228,7 +257,7 @@ class TestController extends BaseController
                         ];
                     }
 
-                    $parentMemberModle->createData($attr);
+                    $parentMemberModle->createData($attr);*/
                 }
 
 
@@ -238,4 +267,49 @@ class TestController extends BaseController
 
     }
     
+    public function mr()
+    {
+       /* $a = [1,2,3,4,5];
+
+
+        foreach ($a as $val) {
+            $b = array_shift($a);
+        }
+
+
+        dd($b, $a);
+
+        exit;*/
+
+        $uid = 163764;
+        $o_parent_id = 163762;
+        $n_parent_id = 163768;
+
+        $member_relation = new MemberRelation();
+
+        $member_relation->build($uid, $n_parent_id);
+
+//        $member = Member::getMemberByUid($uid)->first();
+//
+//        event(new MemberRelationEvent($member));
+ //       event(new MemberCreateRelationEvent($uid, $n_parent_id));exit;
+//        (new MemberRelation())->changeMemberOfRelation($uid, $o_parent_id, $n_parent_id);
+        //(new MemberRelation())->parent->addNewParentData($uid, $n_parent_id);
+
+    }
+
+    public function v()
+    {
+        $curr_month = date('Ym', time());
+
+        $pre_month_1 = date('n', strtotime('-1 month'));
+
+        $pre_month_2 = date('n', strtotime('-2 month'));
+
+        $pre_month_3 = date('n', strtotime('-3 month'));
+
+        dd($curr_month, $pre_month_1, $pre_month_2, $pre_month_3);
+        (new OrderStatisticsService())->orderStatistics();
+    }
+
 }

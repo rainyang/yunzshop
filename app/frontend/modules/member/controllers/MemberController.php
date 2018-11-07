@@ -60,6 +60,8 @@ class MemberController extends BaseController
         $v         = request('v');
 
         if (!empty($member_id)) {
+
+
             $member_info = MemberModel::getUserInfos($member_id)->first();
 
             if (!empty($member_info)) {
@@ -107,6 +109,9 @@ class MemberController extends BaseController
                     $set = \Setting::get('shop.member');
 
                     $data['inviteCode']['status'] = $set['is_invite'] ?: 0;
+
+//                    $data['inviteCode']['required'] =$set['required'] ?: 0;
+
 
                     if (is_null($member_info['yz_member']['invite_code']) || empty($member_info['yz_member']['invite_code'])) {
                         $data['inviteCode']['code'] = MemberModel::getInviteCode($member_id);
@@ -557,6 +562,13 @@ class MemberController extends BaseController
             if ($check_code['status'] != 1) {
                 return $this->errorJson($check_code['json']);
             }
+
+            $invitecode = MemberService::inviteCode();
+
+            if ($check_code['status'] != 1) {
+                return $this->errorJson($invitecode['json']);
+            }
+
 
             $msg = MemberService::validate($mobile, $password, $confirm_password);
 

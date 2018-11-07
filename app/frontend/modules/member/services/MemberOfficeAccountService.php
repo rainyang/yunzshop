@@ -77,7 +77,7 @@ class MemberOfficeAccountService extends MemberService
             $userinfo = $this->getUserInfo($appId, $appSecret, $token);
 
             if (is_array($userinfo) && !empty($userinfo['errcode'])) {
-                \Log::debug('微信登陆授权失败');
+                \Log::debug('微信登陆授权失败-'. $userinfo['errcode']);
                 return show_json(-3, '微信登陆授权失败');
             }
 

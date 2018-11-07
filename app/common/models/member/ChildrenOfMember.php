@@ -16,6 +16,15 @@ class ChildrenOfMember extends BaseModel
 {
     public $table = 'yz_member_children';
     protected $guarded = [];
+    private $uniacid = 0;
+    private $childrens = [];
+
+    public function __construct(array $attributes = [])
+    {
+        $this->uniacid = \YunShop::app()->uniacid;
+
+        parent::__construct($attributes);
+    }
 
     public function CreateData($data)
     {
@@ -37,6 +46,7 @@ class ChildrenOfMember extends BaseModel
     {
         return self::uniacid()
             ->where('member_id', $uid)
+            ->orderBy('level')
             ->get();
     }
 
@@ -44,30 +54,74 @@ class ChildrenOfMember extends BaseModel
     {
         $parents = $parentObj->getParentOfMember($parent_id);
         $parents_ids = [];
-        $attr        = [];
-
-        if (!empty($parents)) {
-            foreach ($parents as $val) {
-                $parents_ids[] = $val['parent_id'];
-            }
-        }
+        $attr = [];
 
         $parents_ids[] = $parent_id;
 
-        $item = $this->countSubChildOfMember($parents_ids);
+        if (!empty($parents)) {
+            foreach ($parents as $val) {
+                $parents_ids[$val['level']] = $val['parent_id'];
+            }
+        }
+//dd($parents_ids);
+        $parent_total = count($parents_ids);
 
-        foreach ($item as $rows) {
+        foreach ($parents_ids as $key => $ids) {
             $attr[] = [
+                'uniacid' => $this->uniacid,
                 'child_id' => $uid,
-                'level'    => ++$rows['user_count'],
-                'member_id' => $rows['member_id']
+                'level' => ++$key,
+                'member_id' => $ids,
+                'created_at' => time()
             ];
+
+           // dd($attr);
+        }
+//dd($attr);
+        /*$item = $this->countSubChildOfMember($parents_ids);
+
+
+
+
+        //$parents_ids = array_flip($parents_ids);
+
+        //统计不为0的子级
+        if (!empty($item)) {
+            $parent_total = count($parents_ids);
+
+            foreach ($item as $key => $rows) {
+                if (in_array($rows['member_id'], $parents_ids)) {
+                    $exists[] = $rows['member_id'];
+
+                    $attr[] = [
+                        'uniacid' => $this->uniacid,
+                        'child_id' => $uid,
+                        'level' => $parent_total - $key,
+                        'member_id' => $rows['member_id'],
+                        'created_at' => time()
+                    ];
+                }
+            }
         }
 
+        //统计为空的子级
+        foreach ($parents_ids as $key => $ids) {
+            if (!in_array($ids, $exists)) {
+                $attr[] = [
+                    'uniacid' => $this->uniacid,
+                    'child_id' => $uid,
+                    'level' => 1,
+                    'member_id' => $ids,
+                    'created_at' => time()
+                ];
+            }
+        }*/
+
+        //ksort($attr);
         $this->CreateData($attr);
     }
 
-    public function countSubChildOfMember($uid)
+    public function countSubChildOfMember(array $uid)
     {
         return self::uniacid()
             ->select(DB::raw('count(1) as user_count, member_id'))
@@ -80,7 +134,7 @@ class ChildrenOfMember extends BaseModel
     {
         return self::uniacid()
             ->where('member_id', $parent_id)
-            ->whereAnd('child_id', $uid)
+            ->where('child_id', $uid)
             ->delete();
     }
 
@@ -94,14 +148,48 @@ class ChildrenOfMember extends BaseModel
     public function delMemberOfRelation(ParentOfMember $parentObj, $uid)
     {
         $parents = $parentObj->getParentOfMember($uid);
-        $childs  = $this->getChildOfMember($uid);
+        $childs = $this->getChildOfMember($uid);
 
-        foreach ($childs as $val) {
-            $this->delRelation($val['member_id']);
+        //删除重新分配节点本身在子表中原父级的记录
+        if (!$parents->isEmpty()) {
+            foreach ($parents as $val) {
+                $this->delRelationOfParentByMemberId($val['parent_id'], $val['member_id']);
+            }
         }
 
-        foreach ($parents as $val) {
-            $this->delRelationOfParentByMemberId($val['member_id'], $uid);
+        //删除重新分配节点的子级在子表中原父级的记录
+        if (!$childs->isEmpty()) {
+            foreach ($childs as $val) {
+                foreach ($parents as $rows) {
+                    $this->delRelationOfParentByMemberId($rows['parent_id'], $val['child_id']);
+                }
+            }
+        }
+
+        //可优化
+        //删除子节点本身
+        if (!$childs->isEmpty()) {
+            foreach ($childs as $val) {
+                $this->delRelation($val['member_id']);
+            }
+        }
+    }
+
+    public function getChildrensOfMember($uid)
+    {
+        return self::uniacid()
+            ->where('member_id', $uid)
+            ->get();
+    }
+
+    public function getChildrens($uid)
+    {
+        $childrens = $this->getChildOfMember($uid);
+
+        if (!is_null($childrens)) {
+            foreach ($childrens as $val) {
+                $this->childrens[] = $val['child_id'];
+            }
         }
     }
 }

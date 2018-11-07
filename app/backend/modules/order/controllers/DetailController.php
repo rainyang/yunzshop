@@ -52,8 +52,10 @@ class DetailController extends BaseController
         }
         if (!empty($order->express)) {
 
+//            print_r($order->express->express_sn);
+//            exit;
             $express = $order->express->getExpress($order->express->express_code, $order->express->express_sn);
-            //dd($express);
+//            dd($order->express->express_code);
 //            exit;
             $dispatch['express_sn'] = $order->express->express_sn;
             $dispatch['company_name'] = $order->express->express_company_name;
