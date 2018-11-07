@@ -20,7 +20,6 @@ class DetailController extends BaseController
 {
     public function getMemberButtons()
     {
-
         $orderStatus = array_keys(app('OrderManager')->setting('status'));
         $buttons = array_map(function ($orderStatus) {
             var_dump($orderStatus);
