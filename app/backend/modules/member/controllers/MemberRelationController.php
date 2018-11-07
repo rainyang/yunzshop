@@ -39,20 +39,23 @@ class MemberRelationController extends BaseController
         if (!empty($relation['become_term'])) {
             $relation['become_term'] = unserialize($relation['become_term']);
         }
+        if (!empty($relation['become_goods'])) {
+            $goods = unserialize($relation['become_goods']);
 
-        if (!empty($relation['become_goods_id'])) {
-            $goods = Goods::getGoodsById($relation['become_goods_id']);
-
-            if (!empty($goods)) {
-                $goods = $goods->toArray();
-            } else {
-                $goods = [];
-            }
+//            $goods = Goods::getGoodsById($relation['become_goods_id']);
+//
+//            if (!empty($goods)) {
+//                $goods = $goods->toArray();
+//            } else {
+//                $goods = [];
+//            }
 
         } else {
             $goods = [];
         }
-
+        if (!empty($relation['become_goods_id'])) {
+            $relation['become_goods_id'] = explode(',',$relation['become_goods_id']);
+        }
 
         return view('member.relation', [
             'set' => $relation,
@@ -68,7 +71,6 @@ class MemberRelationController extends BaseController
     public function save()
     {
         $setData = \YunShop::request()->setdata;
-//        dd($setData);
         $setData['uniacid'] = \YunShop::app()->uniacid;
 
         if (empty($setData['become_ordercount'])) {
@@ -83,9 +85,9 @@ class MemberRelationController extends BaseController
             $setData['become_moneycount'] = 0;
         }
 
-        if (empty($setData['become_goods_id'])) {
-            $setData['become_goods_id'] = 0;
-        }
+        $setData['become_goods_id'] = !empty($setData['become_goods_id']) ? implode(',',$setData['become_goods_id']) : 0;
+
+        $setData['become_goods'] = !empty($setData['become_goods']) ? serialize($setData['become_goods']) : 0;
 
         if (empty($setData['become_selfmoney'])) {
             $setData['become_selfmoney'] = 0;
@@ -113,7 +115,7 @@ class MemberRelationController extends BaseController
      */
     public function query()
     {
-        $kwd                = trim(\YunShop::request()->keyword);
+        $kwd = trim(\YunShop::request()->keyword);
 
         $goods_model= Goods::getGoodsByName($kwd);
 
