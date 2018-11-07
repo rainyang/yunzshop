@@ -52,6 +52,14 @@ class RegisterController extends ApiController
                 return $this->errorJson($check_code['json']);
             }
 
+<<<<<<< HEAD
+            $invitecode = MemberService::inviteCode();
+
+            if ($invitecode['status'] != 1) {
+                return $this->errorJson($invitecode['json']);
+            }
+
+=======
             $invite_code = MemberService::inviteCode();
 
             if ($invite_code['status'] != 1) {
@@ -59,6 +67,7 @@ class RegisterController extends ApiController
             }
 
 
+>>>>>>> a3015baabff0ae2836b9540fc928a301dee28c54
             $msg = MemberService::validate($mobile, $password, $confirm_password);
 
             if ($msg['status'] != 1) {
@@ -74,6 +83,7 @@ class RegisterController extends ApiController
                     return $this->errorJson('验证码错误');
                 }
             }
+
 
             if (!empty($member_info)) {
                 return $this->errorJson('该手机号已被注册');
@@ -524,9 +534,11 @@ class RegisterController extends ApiController
     public function getInviteCode()
     {
         $is_invite = intval(\Setting::get('shop.member.is_invite'));
+        $required =intval(\Setting::get('shop.member.required'));
 
         $data = [
-          'status' => $is_invite
+          'status' => $is_invite,
+            'required' => $required
         ];
 
         return $this->successJson('ok', $data);
