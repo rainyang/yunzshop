@@ -427,7 +427,7 @@ class MemberModel extends Member
             $builder = self::getUserInfos($member_info['yz_member']['parent_id']);
             $referrer_info = self::getMemberRole($builder)->first();
 
-            $member_role = self::convertRoleText($referrer_info);
+//            $member_role = self::convertRoleText($referrer_info);
 
             if ($member_info['yz_member']['inviter'] == 1) {
                 if (!empty($referrer_info)) {
@@ -438,7 +438,7 @@ class MemberModel extends Member
                         'nickname' => $info['nickname'],
                         'level' => $info['yz_member']['level']['level_name'],
                         'is_show' => $memberSet['is_referrer']?:0,
-                        'role'   => $member_role
+//                        'role'   => $member_role
                     ];
                 } else {
                     $data = [
@@ -447,7 +447,7 @@ class MemberModel extends Member
                         'nickname' => '总店',
                         'level' => '',
                         'is_show' => $memberSet['is_referrer']?:0,
-                        'role'   => $member_role
+//                        'role'   => $member_role
                     ];
                 }
             } else {
@@ -457,7 +457,7 @@ class MemberModel extends Member
                     'nickname' => '暂无',
                     'level' => '',
                     'is_show' => $memberSet['is_referrer']?:0,
-                    'role'   => $member_role
+//                    'role'   => $member_role
                 ];
             }
 
