@@ -409,7 +409,7 @@ class MemberModel extends Member
     public static function getMyReferral_v2()
     {
         $member_id = \YunShop::app()->getMemberId();
-        $member_info     = self::getMyReferrerInfo($member_id)->first();
+        $member_info = self::getMyReferrerInfo($member_id)->first();
 
         $set = \Setting::get('shop.member');
         $memberSet = \Setting::get('relation_base');
@@ -465,7 +465,7 @@ class MemberModel extends Member
             $childMember1 = DB::select('select child_id from ims_yz_member_children where member_id='.$member_id.' and level=1');
             $child_total = 0;
             foreach ($childMember1 as $item) {
-                $childOrder[] = intval(DB::select('select sum(price) as money from    ims_yz_order where uid='.$item['child_id'])[0]['money']);
+                $childOrder[] = intval(DB::select('select sum(price) as money from ims_yz_order where uid='.$item['child_id'])[0]['money']);
                 $child_total++;
             }
             $data['child_order_money'] = 0;
