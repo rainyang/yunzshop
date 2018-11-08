@@ -141,7 +141,6 @@ class RefundService
             'operator_id' => $refundApply->uid,
             'change_value' => $refundApply->price
         ];
-
         $result = (new BalanceChange())->cancelConsume($data);
 
 
