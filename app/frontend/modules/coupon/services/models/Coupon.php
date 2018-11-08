@@ -267,22 +267,22 @@ class Coupon
         }
         //满足范围
         if (!$this->useScope->valid()) {
-            debug_log("优惠券{$this->getMemberCoupon()->id}",'不满足范围');
+            debug_log()->coupon("优惠券{$this->getMemberCoupon()->id}",'不满足范围');
             return false;
         }
         //满足额度
         if (!$this->price->isOptional()) {
-            debug_log("优惠券{$this->getMemberCoupon()->id}",'不满足额度');
+            debug_log()->coupon("优惠券{$this->getMemberCoupon()->id}",'不满足额度');
             return false;
         }
         //满足时限
         if (!$this->timeLimit->valid()) {
-            debug_log("优惠券{$this->getMemberCoupon()->id}",'不满足时限');
+            debug_log()->coupon("优惠券{$this->getMemberCoupon()->id}",'不满足时限');
             return false;
         }
         //未使用
         if ($this->getMemberCoupon()->used) {
-            debug_log("优惠券{$this->getMemberCoupon()->id}",'已使用');
+            debug_log()->coupon("优惠券{$this->getMemberCoupon()->id}",'已使用');
             return false;
         }
 

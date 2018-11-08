@@ -26,7 +26,7 @@ class Log
             return true;
         }
 
-        if(is_array($_GET['debug_log']) && in_array($key,json_decode($_GET['debug_log'],true))){
+        if(is_array(json_decode($_GET['debug_log'])) && in_array($key,json_decode($_GET['debug_log'],true))){
             return true;
         }
         return false;

@@ -90,17 +90,6 @@ class CouponService
     }
 
     /**
-     * 记录使用过的优惠券
-     */
-    public function destroyUsedCoupons()
-    {
-        $this->getSelectedMemberCoupon()->each(function ($memberCoupon) {
-
-            return (new Coupon($memberCoupon, $this->order))->destroy();
-        });
-    }
-
-    /**
      * 获取所有选中并有效的优惠券
      * @return Collection
      */

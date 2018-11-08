@@ -31,6 +31,7 @@ class OrderGoodsDeductionCollection extends Collection
             }
             return $orderGoodsDeduction->getUsableCoin()->plus($result);
         });
+
         return $result;
     }
 
