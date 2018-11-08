@@ -365,6 +365,7 @@ class RegisterController extends ApiController
 
     public function sendSmsV2($mobile, $code, $state, $templateType = 'reg')
     {
+        \Log::debug('-------captcha-------', Input::get('captcha'));
         $sms = \Setting::get('shop.sms');
 
         //增加验证码验证
