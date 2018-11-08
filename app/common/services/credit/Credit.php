@@ -168,8 +168,7 @@ abstract class Credit
         $this->data = $data;
         $this->type = ConstService::TYPE_INCOME;
         $this->change_value = $this->data['change_value'];
-        print_r($this->result());
-        exit;
+
         return $this->result();
     }
 
