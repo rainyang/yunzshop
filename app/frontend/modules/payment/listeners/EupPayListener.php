@@ -16,7 +16,7 @@ class EupPayListener
      * @param RechargeComplatedEvent $event
      * @return null
      */
-    public function onGetPaymentTypes(GetOrderPaymentTypeEvent $event)
+    public function onGetPaymentTypes(RechargeComplatedEvent $event)
     {
 
         if (\YunShop::plugin()->get('eup-pay') && app('plugins')->isEnabled('eup-pay')) {
@@ -39,10 +39,10 @@ class EupPayListener
      */
     public function subscribe($events)
     {
-        $events->listen(
-            GetOrderPaymentTypeEvent::class,
-            self::class . '@onGetPaymentTypes'
-        );
+//        $events->listen(
+//            GetOrderPaymentTypeEvent::class,
+//            self::class . '@onGetPaymentTypes'
+//        );
 
         $events->listen(
             RechargeComplatedEvent::class,

@@ -17,7 +17,7 @@ class PldPayListener
      * @param RechargeComplatedEvent $event
      * @return null
      */
-    public function onGetPaymentTypes(GetOrderPaymentTypeEvent $event)
+    public function onGetPaymentTypes(RechargeComplatedEvent $event)
     {
 
         if (\YunShop::plugin()->get('pld-pay') && app('plugins')->isEnabled('pld-pay')) {
@@ -40,10 +40,10 @@ class PldPayListener
      */
     public function subscribe($events)
     {
-        $events->listen(
-            GetOrderPaymentTypeEvent::class,
-            self::class . '@onGetPaymentTypes'
-        );
+//        $events->listen(
+//            GetOrderPaymentTypeEvent::class,
+//            self::class . '@onGetPaymentTypes'
+//        );
         $events->listen(
             RechargeComplatedEvent::class,
             self::class . '@onGetPaymentTypes'
