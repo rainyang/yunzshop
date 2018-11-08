@@ -1,8 +1,9 @@
 <?php
 /**
- * Author: 芸众商城 www.yunzshop.com
- * Date: 2017/11/7
- * Time: 下午4:07
+ * Created by PhpStorm.
+ * User: Administrator
+ * Date: 2018/11/7
+ * Time: 8:57
  */
 
 namespace app\frontend\modules\payment\listeners;
@@ -10,7 +11,7 @@ namespace app\frontend\modules\payment\listeners;
 use app\common\events\payment\GetOrderPaymentTypeEvent;
 use app\common\events\payment\RechargeComplatedEvent;
 
-class EupPayListener
+class PldPayListener
 {
     /**
      * @param RechargeComplatedEvent $event
@@ -19,11 +20,11 @@ class EupPayListener
     public function onGetPaymentTypes(RechargeComplatedEvent $event)
     {
 
-        if (\YunShop::plugin()->get('eup-pay') && app('plugins')->isEnabled('eup-pay')) {
+        if (\YunShop::plugin()->get('pld-pay') && app('plugins')->isEnabled('pld-pay')) {
 
             $result = [
-                'name' => 'EUP',
-                'value' => '19',
+                'name' => 'PLD',
+                'value' => '23',
                 'need_password' => '0'
 
             ];
@@ -43,7 +44,6 @@ class EupPayListener
 //            GetOrderPaymentTypeEvent::class,
 //            self::class . '@onGetPaymentTypes'
 //        );
-
         $events->listen(
             RechargeComplatedEvent::class,
             self::class . '@onGetPaymentTypes'
