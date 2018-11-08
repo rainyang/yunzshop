@@ -47,7 +47,7 @@ class CreateImsYzOrderIncomeCountTable extends Migration {
                 $table->integer('created_at')->nullable();
                 $table->integer('updated_at')->nullable();
                 $table->integer('deleted_at')->nullable();
-                $table->index(['uniacid', 'uid', 'order_id', 'order_sn', 'status', 'day_time', 'parent_id'], 'idx_order');
+                $table->index(['uniacid', 'uid', 'order_id', 'order_sn', 'status', 'day_time'], 'idx_order');
             });
         }
 	}
