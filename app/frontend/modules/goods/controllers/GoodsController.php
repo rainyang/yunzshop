@@ -94,8 +94,8 @@ class GoodsController extends ApiController
         //商品营销 todo 优化新的
         $goodsModel->goods_sale = $this->getGoodsSaleV2($goodsModel);
 
-        //商品营销
-        $goodsModel->goods_sale = $this->getGoodsSale($goodsModel);
+//        //商品营销
+//        $goodsModel->goods_sale = $this->getGoodsSale($goodsModel);
         //商品会员优惠
         $goodsModel->member_discount = $this->getDiscount($goodsModel, $member);
         $goodsModel->availability = $this->couponsMemberLj();
