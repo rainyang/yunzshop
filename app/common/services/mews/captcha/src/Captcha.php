@@ -425,7 +425,7 @@ class Captcha
 	 */
 	public function check($value)
 	{
-		if ( ! Session::has('captcha'))
+		if ( ! Session::get('captcha'))
 		{
 			return false;
 		}
