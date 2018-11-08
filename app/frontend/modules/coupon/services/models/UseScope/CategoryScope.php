@@ -18,6 +18,10 @@ class CategoryScope extends CouponUseScope
     {
         $orderGoods = $this->coupon->getPreOrder()->orderGoods->filter(
             function ($orderGoods) {
+                // todo 排除掉供应商商品 ,临时解决
+                if($orderGoods->belongsToGood->is_plugin){
+                    return false;
+                }
                 /**
                  * @var $orderGoods PreOrderGoods
                  */

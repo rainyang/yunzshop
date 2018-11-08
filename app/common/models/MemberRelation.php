@@ -413,7 +413,13 @@ class MemberRelation extends BaseModel
             if ($set->become == 2) {
                 //判断商品
                 if ($become_term[4] == 4 && !empty($set->become_goods_id)) {
-                    $result = self::checkOrderGoods($set->become_goods_id, $uid);
+                    $goods_id = explode(',',$set->become_goods_id);
+                    foreach ($goods_id as $id) {
+                        $result = self::checkOrderGoods($id, $uid);
+                        if ($result) {
+                            break;
+                        }
+                    }
 
                     if ($result) {
                         $member->is_agent = 1;

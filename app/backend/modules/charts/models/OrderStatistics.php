@@ -26,7 +26,7 @@ class OrderStatistics extends BaseModel
 
     public static function getMember($search)
     {
-        $model = self::with('belongsToMember');
+        $model = self::uniacid()->with('belongsToMember');
 
         if (!empty($search['member_id'])) {
             $model->whereHas('belongsToMember', function ($q) use($search) {

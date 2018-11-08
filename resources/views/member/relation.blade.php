@@ -4,9 +4,13 @@
 
     <link href="{{static_url('yunshop/css/member.css')}}" media="all" rel="stylesheet" type="text/css"/>
     <style>
-        .radio-inline {
-            padding-top: 4px !important;
-        }
+        .radio-inline {padding-top: 4px !important;}
+    </style>
+    <style type='text/css'>
+        .multi-item {height: 110px;}
+        .img-thumbnail {width: 100px;height: 100px}
+        .img-nickname {position: absolute;bottom: 0px;line-height: 25px;height: 25px;color: #fff;text-align: center;width: 90px;bottom: 55px;background: rgba(0, 0, 0, 0.8);left: 5px;}
+        .multi-img-details {padding: 5px;}
     </style>
     <div class="w1200 m0a">
         <div class="rightlist">
@@ -89,19 +93,39 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                             <div class="col-sm-6">
-                                <input type='hidden' class='form-control' id='goods_id' name='setdata[become_goods_id]' value="{{$set['become_goods_id']}}" />
+                                {{--<input type='hidden' class='form-control' id='goods_id' name='setdata[become_goods_id]' value="{{$set['become_goods_id']}}" />--}}
                                 <div class='input-group' >
                                     <div class='input-group-addon'  >
                                         <label class="radio-inline" ><input type="checkbox"  name="setdata[become_term][4]" value="4" @if($set['become_term'][4]) checked="checked"
                                                     @endif /> 购买商品
                                         </label>
                                     </div>
-                                    <input type='text' class='form-control' id='goods' value="@if(!empty($goods))[{{$goods['id']}}]{{$goods['title']}}
+                                    <input type='text' class='form-control' id='goods' value="@if(!empty($goods))@foreach($goods as $good){{$good['title']}};@endforeach
                                     @endif" readonly />
                                     <div class="input-group-btn">
                                         <button type="button" onclick="$('#modal-goods').modal()" class="btn btn-default" >选择商品</button>
                                     </div>
                                 </div>
+                                <span class="help-block">可指定多件商品，只需购买其中一件就可以成为推广员</span>
+                                <div class="input-group multi-img-details" id='goods_id'>
+                                    @foreach ($goods as $goods_id => $good)
+                                        <div class="multi-item saler-item" openid="{{ $goods_id }}">
+                                            <img class="img-responsive img-thumbnail" src='{{ tomedia($good['thumb']) }}'
+                                                 onerror="this.src='{{static_url('resource/images/nopic.jpg')}}'; this.title='图片未找到.'">
+                                            <div class='img-nickname'>{{ $good['title'] }}</div>
+                                            <input type="hidden" value="{{ $goods_id }}"
+                                                   name="setdata[become_goods_id][{{ $goods_id }}]">
+                                            <input type="hidden" value="{{ $goods_id }}"
+                                                   name="setdata[become_goods][{{ $goods_id }}][goods_id]">
+                                            <input type="hidden" value="{{ $good['title'] }}"
+                                                   name="setdata[become_goods][{{ $goods_id }}][title]">
+                                            <input type="hidden" value="{{ $good['thumb'] }}"
+                                                   name="setdata[become_goods][{{ $goods_id }}][thumb]">
+                                            <em onclick="remove_member(this)" class="close">×</em>
+                                        </div>
+                                    @endforeach
+                                </div>
+
                             </div>
                         </div>
 
@@ -213,10 +237,36 @@
             });
         }
         function select_good(o) {
-            $("#goods_id").val(o.id);
-            $("#goods").val( "[" + o.id + "]" + o.title);
-            $("#modal-goods .close").click();
+            // var html = "<input type='hidden' class='form-control' name='setdata[become_goods_id]["+ o.id+"]' value='' />"
+            var html = '<div class="multi-item" openid="' + o.id + '">';
+            html += '<img class="img-responsive img-thumbnail" src="' + o.thumb + '" onerror="this.src=\'{{static_url('resource/images/nopic.jpg')}}\'; this.title=\'图片未找到.\'">';
+            html += '<div class="img-nickname">' + o.title + '</div>';
+            html += '<input type="hidden" value="' + o.title + '" name="setdata[become_goods][' + o.id + '][title]">';
+            html += '<input type="hidden" value="' + o.thumb + '" name="setdata[become_goods][' + o.id + '][thumb]">';
+            html += '<input type="hidden" value="' + o.id + '" name="setdata[become_goods][' + o.id + '][goods_id]">';
+            html += '<input type="hidden" value="' + o.id + '" name="setdata[become_goods_id][' + o.id + ']">';
+            html += '<em onclick="remove_member(this)"  class="close">×</em>';
+            html += '</div>';
+            // $("#goods_id").val(o.id);
+            // var data = $("#goods").val();
+            // $("#goods").val(data+ o.title);
+            $("#goods_id").append(html);
+            refresh_members();
         }
+
+        function remove_member(obj) {
+            $(obj).parent().remove();
+            refresh_members();
+        }
+        function refresh_members() {
+            var nickname = "";
+            $('.multi-item').each(function () {
+                nickname += " " + $(this).find('.img-nickname').html() + "; ";
+            });
+            $('#goods').val(nickname);
+        }
+
+
         function formcheck(){
             var become_child =$(":radio[name='setdata[become_child]']:checked").val();
             if( become_child=='1'  || become_child=='2' ){
