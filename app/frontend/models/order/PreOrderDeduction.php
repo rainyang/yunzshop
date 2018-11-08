@@ -164,10 +164,13 @@ class PreOrderDeduction extends OrderDeduction
         if (isset($this->useablePoint)) {
             return $this->useablePoint;
         }
+        debug_log()->deduction('订单抵扣',"{$this->getName()}计算可用金额");
+
         $result = $this->newCoin();
 
         // 购买者不存在虚拟币记录
         if (!$this->getMemberCoin()) {
+            debug_log()->deduction('订单抵扣',"{$this->getName()}用户没有对应虚拟币");
 
             return $this->useablePoint = $result;
         }
@@ -217,6 +220,8 @@ class PreOrderDeduction extends OrderDeduction
      */
     private function getMaxDeduction()
     {
+        debug_log()->deduction('订单抵扣',"{$this->getName()}计算最大抵扣");
+
         $result =  $this->getMaxOrderGoodsDeduction()->plus($this->getMaxDispatchPriceDeduction());
 
         return $result;
@@ -230,6 +235,8 @@ class PreOrderDeduction extends OrderDeduction
      */
     public function getMaxOrderGoodsDeduction()
     {
+        debug_log()->deduction('订单抵扣',"{$this->getName()}获取订单商品抵扣集合的可用积分");
+
         return $this->getOrderGoodsDeductionCollection()->getUsablePoint();
     }
 

@@ -21,7 +21,7 @@ class OrderGoodsDeductionCollection extends Collection
      */
     public function getUsablePoint()
     {
-        $result =  $this->reduce(function ($result, $orderGoodsDeduction) {
+        $result =  $this->reduce(function ($result, PreOrderGoodsDeduction $orderGoodsDeduction) {
             /**
              * @var PreOrderGoodsDeduction $orderGoodsDeduction
              */

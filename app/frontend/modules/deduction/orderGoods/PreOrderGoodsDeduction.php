@@ -159,19 +159,21 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
      */
     private function getOrderGoodsDeductionAmount()
     {
-        // 从商品抵扣中获取到类型
-        switch ($this->getGoodsDeduction()->getDeductionAmountCalculationType()) {
-            case 'FixedAmount':
-                $this->orderGoodsDeductionAmount = new FixedAmount($this->orderGoods, $this->getGoodsDeduction());
-                debug_log()->deduction("商品{$this->orderGoods->goods_id}{$this->getDeduction()->getName()}", "使用固定金额");
-                break;
-            case 'GoodsPriceProportion':
-                $this->orderGoodsDeductionAmount = new GoodsPriceProportion($this->orderGoods, $this->getGoodsDeduction());
-                debug_log()->deduction("商品{$this->orderGoods->goods_id}{$this->getDeduction()->getName()}", "使用固定比例");
-                break;
-            default:
-                $this->orderGoodsDeductionAmount = new Invalid($this->orderGoods, $this->getGoodsDeduction());
-                break;
+        if(!isset($this->orderGoodsDeductionAmount)){
+            // 从商品抵扣中获取到类型
+            switch ($this->getGoodsDeduction()->getDeductionAmountCalculationType()) {
+                case 'FixedAmount':
+                    $this->orderGoodsDeductionAmount = new FixedAmount($this->orderGoods, $this->getGoodsDeduction());
+                    debug_log()->deduction("商品{$this->orderGoods->goods_id}{$this->getDeduction()->getName()}", "使用固定金额");
+                    break;
+                case 'GoodsPriceProportion':
+                    $this->orderGoodsDeductionAmount = new GoodsPriceProportion($this->orderGoods, $this->getGoodsDeduction());
+                    debug_log()->deduction("商品{$this->orderGoods->goods_id}{$this->getDeduction()->getName()}", "使用固定比例");
+                    break;
+                default:
+                    $this->orderGoodsDeductionAmount = new Invalid($this->orderGoods, $this->getGoodsDeduction());
+                    break;
+            }
         }
         return $this->orderGoodsDeductionAmount;
     }
