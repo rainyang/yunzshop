@@ -45,6 +45,10 @@ class memberChildOfMemberJob implements ShouldQueue
         $memberModel = new Member();
         $memberModel->_allNodes = collect([]);
 
+
+        \Log::debug('--------------清空表数据------------');
+        $childMemberModel->DeletedData();
+
         $memberInfo = $memberModel->getTreeAllNodes($uniacid);
 
         if ($memberInfo->isEmpty()) {
@@ -61,6 +65,8 @@ class memberChildOfMemberJob implements ShouldQueue
 
         foreach ($memberInfo as $key => $val) {
             $attr = [];
+
+            $memberModel->filter = [];
 
             \Log::debug('--------foreach start------', $val->member_id);
             $data = $memberModel->getDescendants($uniacid, $val->member_id);

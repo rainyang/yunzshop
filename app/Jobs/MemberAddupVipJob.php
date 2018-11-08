@@ -34,15 +34,14 @@ class MemberAddupVipJob implements ShouldQueue
         $this->uid = $uid;
         $this->uniacid = $uniacid;
         $this->curr_date = date('Ym', time());
-
-
-        $this->MrytMemberAddUpVipModel = new MrytMemberAddUpVipModel();
-        $this->parentMemberModel = new ParentOfMember();
     }
 
     public function handle()
     {
         $insert_ids = [];
+
+        $this->MrytMemberAddUpVipModel = new MrytMemberAddUpVipModel();
+        $this->parentMemberModel = new ParentOfMember();
 
          //查询uid所有父类id
         $parent = $this->parentMemberModel->getParentOfMember($this->uid);
