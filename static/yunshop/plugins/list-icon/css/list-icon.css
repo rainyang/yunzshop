@@ -40,7 +40,8 @@
 .shareholder_dividend {
     background-image: url('../img/dividend/shareholder_dividend.png');
 }
-.sales_commission {
+
+.sales-commission {
     background-image: url('../img/dividend/sales_commission.png');
 }
 .mryt {
@@ -227,4 +228,7 @@
 }
 .eup_pay {
     background-image: url('../img/api/eup_pay.png');
+}
+.pld_pay {
+    background-image: url('../img/api/pld_pay.png');
 }

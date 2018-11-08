@@ -62,6 +62,7 @@ class SettingCache
         $setting = $this->getSetting();
         yz_array_set($setting, $key, $value);
         \Cache::put(Setting::$uniqueAccountId . '_setting', $setting, $minutes);
+
         $this->loadSettingFromCache(Setting::$uniqueAccountId);
 
     }

@@ -75,6 +75,7 @@ use app\backend\modules\order\observers\OrderObserver;
  * @property OrderReceivedJob orderReceivedJob
  * @method static self isPlugin()
  * @method static self orders(array $searchParam)
+ * @method static self cancelled()
  */
 class Order extends BaseModel
 {
