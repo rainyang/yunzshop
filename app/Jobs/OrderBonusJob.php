@@ -33,8 +33,6 @@ class OrderBonusJob implements  ShouldQueue
 
     public function __construct($tableName, $code, $foreignKey, $localKey, $amountColumn, $orderModel, $totalDividend = 0, $condition = null)
     {
-        file_put_contents(storage_path('logs/YYY.txt'), print_r(date('Ymd His')."table_name[{$tableName}]".PHP_EOL,1), FILE_APPEND);
-        file_put_contents(storage_path('logs/YYY.txt'), print_r(date('Ymd His')."code[{$code}]".PHP_EOL,1), FILE_APPEND);
         $this->tableName = $tableName;
         $this->code = $code;
         $this->foreignKey = $foreignKey;
@@ -103,6 +101,12 @@ class OrderBonusJob implements  ShouldQueue
     {
         $field = str_replace('-','_',$this->code);
         $order_income = OrderIncomeCount::where('order_id', $this->orderModel->id)->first();
+        if (!$order_income) {
+            $job = new OrderCountAddJob($this->code, $sum, $undividend, $this->orderModel->id);
+            $job = $job->delay(60);
+            dispatch($job);
+            return true;
+        }
         $order_income->$field = $sum;
         $order_income->undividend += $undividend;
         $order_income->save();
