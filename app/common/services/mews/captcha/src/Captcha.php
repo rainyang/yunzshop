@@ -312,7 +312,7 @@ class Captcha
         Session::put('captcha', [
             'sensitive' => $this->sensitive,
             'key'       => $hash
-        ], 5);
+        ]);
 
         return [
         	'value'     => $bag,
