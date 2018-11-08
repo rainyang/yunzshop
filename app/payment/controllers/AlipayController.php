@@ -25,7 +25,10 @@ use app\common\models\OrderGoods;
 
 class AlipayController extends PaymentController
 {
-    private $sign_type = ['MD5' => '支付宝', 'RSA' => '支付宝APP'];
+    private $sign_type = ['MD5' => '支付宝', 'RSA' => '支付宝APP', 'RSA2' => '新支付宝APP'];
+
+    private $total_fee = ['MD5' => 'total_fee', 'RSA' => 'total_fee', 'RSA2' => 'total_amount'];
+
     private $pay_type_id = 2;
 
     public function notifyUrl()
@@ -44,8 +47,9 @@ class AlipayController extends PaymentController
 
         if ($verify_result) {
             if ($_POST['trade_status'] == 'TRADE_SUCCESS') {
+                $total_key = $this->total_fee[$_POST['sign_type']];
                 $data = [
-                    'total_fee' => $_POST['total_fee'],
+                    'total_fee' => $_POST[$total_key],
                     'out_trade_no' => $_POST['out_trade_no'],
                     'trade_no' => $_POST['trade_no'],
                     'unit' => 'yuan',
@@ -85,9 +89,20 @@ class AlipayController extends PaymentController
             }
         } else {
             //定义app支付类型，验证app回调信息
-            $out_trade_no = $this->substr_var($_GET['out_trade_no']);
+            if (isset($_GET['alipayresult']) && !empty($_GET['alipayresult'])) {
+                $alipayresult = json_decode($_GET['alipayresult'], true);
+                $out_trade_no =$alipayresult['alipay_trade_app_pay_response']['out_trade_no'];
+                \Log::debug('====================新支付宝APP======================:', $alipayresult['alipay_trade_app_pay_response']);
+            } else {
+                $out_trade_no = $this->substr_var($_GET['out_trade_no']);
+            }
             if ($out_trade_no) {
                 $orderPay = OrderPay::where('pay_sn', $out_trade_no)->first();
+
+                if (!is_null($orderPay)) {
+                    \YunShop::app()->uniacid = $orderPay->uniacid;
+                }
+
                 $orders = Order::whereIn('id', $orderPay->order_ids)->get();
                 if (is_null($orderPay)) {
                     redirect(Url::absoluteApp('home'))->send();
