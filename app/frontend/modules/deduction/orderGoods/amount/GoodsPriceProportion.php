@@ -17,7 +17,7 @@ class GoodsPriceProportion extends OrderGoodsDeductionAmount
 {
     public function getAmount()
     {
-        $result = $this->getGoodsDeduction()->getPriceProportion() * $this->orderGoods->getPaymentAmount() / 100;
+        $result = $this->getGoodsDeduction()->getPriceProportion() * $this->orderGoods->price / 100;
 
         return max($result,0);
     }

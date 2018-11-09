@@ -59,9 +59,9 @@ class OrderDeduction
 
         // 遍历抵扣集合, 实例化订单抵扣类 ,向其传入订单模型和抵扣模型 返回订单抵扣集合
         $orderDeductions = $deductions->map(function (Deduction $deduction) {
-
+            debug_log()->deduction('开始实例化订单抵扣',"{$deduction->getName()}");
             $orderDeduction = new PreOrderDeduction([], $deduction, $this->order);
-            debug_log()->deduction('实例化订单抵扣',"{$deduction->getName()}");
+            debug_log()->deduction('完成实例化订单抵扣',"{$deduction->getName()}");
 
             return $orderDeduction;
         });

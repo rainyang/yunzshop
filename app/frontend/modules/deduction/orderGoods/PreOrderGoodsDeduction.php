@@ -52,6 +52,11 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
      */
     private $usablePoint;
     /**
+     * 已用的虚拟币
+     * @var VirtualCoin
+     */
+    private $usedPoint;
+    /**
      * 订单抵扣模型
      * @var PreOrderDeduction
      */
@@ -66,6 +71,7 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
 
     public function __construct(array $attributes = [], $orderGoods, $orderDeduction, $deduction)
     {
+
         parent::__construct($attributes);
 
         $this->deduction = $deduction;
@@ -77,6 +83,7 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
 
         $this->code = $this->getCode();
         $this->name = $this->getName();
+        debug_log()->deduction("订单抵扣", "{$this->getDeduction()->getName()} 订单商品抵扣对象实例化");
 
     }
 
@@ -159,7 +166,7 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
      */
     private function getOrderGoodsDeductionAmount()
     {
-        if(!isset($this->orderGoodsDeductionAmount)){
+        if (!isset($this->orderGoodsDeductionAmount)) {
             // 从商品抵扣中获取到类型
             switch ($this->getGoodsDeduction()->getDeductionAmountCalculationType()) {
                 case 'FixedAmount':
@@ -217,9 +224,8 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
      * @return $this|VirtualCoin
      * @throws \Exception
      */
-    public function getUsedCoin()
+    public function _getUsedCoin()
     {
-        debug_log()->deduction('订单抵扣',"{$this->getName()} 订单商品计算已抵扣的虚拟币");
         // (订单商品最多可用抵扣的金额 /订单最多可用抵扣的金额) 订单实际抵扣的金额)
         if (!$this->orderDeduction->isChecked()) {
             return $this->newCoin();
@@ -230,6 +236,19 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
         return $this->newCoin()->setMoney($amount);
     }
 
+    /**
+     * @return VirtualCoin|PreOrderGoodsDeduction
+     * @throws \Exception
+     */
+    public function getUsedCoin()
+    {
+        debug_log()->deduction('订单抵扣', "{$this->getName()} 订单商品计算已抵扣的虚拟币");
+        if (isset($this->usedPoint)) {
+            return $this->usedPoint;
+        }
+        return $this->usedPoint = $this->_getUsedCoin();
+
+    }
     /**
      * @return bool
      * @throws \Exception
@@ -249,9 +268,9 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
         if (!$this->used()) {
             return true;
         }
-
-        $this->used_amount = $this->usable_amount;
-        $this->used_coin = $this->used_coin;
+        // 确保魔术属性最少执行一次
+        $this->usable_amount;
+        $this->used_coin;
         return parent::save($options);
     }
 }
