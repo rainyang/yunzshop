@@ -556,7 +556,7 @@ class Member extends BackendModel
             return $incomeModel->sum('amount');
         }
 
-        return 0;
+        return number_format(0, 2);
     }
 
     /**
