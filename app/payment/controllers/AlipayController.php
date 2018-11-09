@@ -25,7 +25,7 @@ use app\common\models\OrderGoods;
 
 class AlipayController extends PaymentController
 {
-    private $sign_type = ['MD5' => '支付宝', 'RSA' => '支付宝APP', 'RSA2' => '新支付宝APP'];
+    private $sign_type = ['MD5' => '支付宝', 'RSA' => '支付宝APP', 'RSA2' => '支付宝APP2.0'];
 
     private $total_fee = ['MD5' => 'total_fee', 'RSA' => 'total_fee', 'RSA2' => 'total_amount'];
 
@@ -47,10 +47,16 @@ class AlipayController extends PaymentController
 
         if ($verify_result) {
             if ($_POST['trade_status'] == 'TRADE_SUCCESS') {
+                if ($_POST['sign_type'] == 'RSA2') {
+                    $out_trade_no = substr($_POST['out_trade_no'], strpos($_POST['out_trade_no'], 'PN'));
+                } else {
+                    $out_trade_no = $_POST['out_trade_no'];
+                }
+
                 $total_key = $this->total_fee[$_POST['sign_type']];
                 $data = [
                     'total_fee' => $_POST[$total_key],
-                    'out_trade_no' => $_POST['out_trade_no'],
+                    'out_trade_no' => $out_trade_no,
                     'trade_no' => $_POST['trade_no'],
                     'unit' => 'yuan',
                     'pay_type' => $this->sign_type[$_POST['sign_type']],
@@ -91,17 +97,19 @@ class AlipayController extends PaymentController
             //定义app支付类型，验证app回调信息
             if (isset($_GET['alipayresult']) && !empty($_GET['alipayresult'])) {
                 $alipayresult = json_decode($_GET['alipayresult'], true);
-                $out_trade_no =$alipayresult['alipay_trade_app_pay_response']['out_trade_no'];
-                \Log::debug('====================新支付宝APP======================:', $alipayresult['alipay_trade_app_pay_response']);
+                if (strpos($alipayresult['alipay_trade_app_pay_response']['out_trade_no'], '_') !== false) {
+                    $data = explode('_', $alipayresult['alipay_trade_app_pay_response']['out_trade_no']);
+                    $out_trade_no = $data[1];
+                    \YunShop::app()->uniacid = $data[0];
+                } else {
+                    $out_trade_no = $alipayresult['alipay_trade_app_pay_response']['out_trade_no'];
+                }
+                \Log::debug('====================支付宝APP支付2.0======================:', $alipayresult['alipay_trade_app_pay_response']);
             } else {
                 $out_trade_no = $this->substr_var($_GET['out_trade_no']);
             }
             if ($out_trade_no) {
                 $orderPay = OrderPay::where('pay_sn', $out_trade_no)->first();
-
-                if (!is_null($orderPay)) {
-                    \YunShop::app()->uniacid = $orderPay->uniacid;
-                }
 
                 $orders = Order::whereIn('id', $orderPay->order_ids)->get();
                 if (is_null($orderPay)) {
