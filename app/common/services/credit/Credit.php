@@ -201,8 +201,6 @@ abstract class Credit
     protected function _result()
     {
         $this->memberModel = $this->getMemberModel();
-        print_r($this->memberModel);
-        exit;
         if (!$this->memberModel) {
             throw new ShopException("未获取到会员数据");
         }

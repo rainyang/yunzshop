@@ -10,6 +10,7 @@ namespace app\backend\modules\order\models;
 
 use app\backend\modules\order\services\OrderService;
 use Illuminate\Database\Eloquent\Builder;
+use \Illuminate\Support\Facades\DB;
 
 /**
  * Class Order
@@ -96,6 +97,7 @@ class Order extends \app\common\models\Order
 
     public function scopeSearch($order_builder, $params)
     {
+//        print_r($params['ambiguous']['field']);exit;
         if (array_get($params, 'ambiguous.field', '') && array_get($params, 'ambiguous.string', '')) {
             //订单.支付单号
             if ($params['ambiguous']['field'] == 'order') {
@@ -170,6 +172,23 @@ class Order extends \app\common\models\Order
         return self::orders()->with(['deductions','coupons','discounts','orderPays'=> function ($query) {
             $query->with('payType');
         },'hasOnePayType'])->find($order_id);
+    }
+
+    /**
+     * @param $keyWord
+     *
+     */
+    public static function getOrderByName($keyWord)
+    {
+
+        return \Illuminate\Support\Facades\DB::select('select title,goods_id,thumb from '.app('db')->getTablePrefix().'yz_order_goods where title like '."'%" .$keyWord ."%'");
+
+//        return self::uniacid()
+//            ->whereHas('OrderGoods', function ($query)use ($keyWord) {
+//                $query->searchLike($keyWord);
+//            })
+//            ->with('OrderGoods')
+//            ->get();
     }
 
 }

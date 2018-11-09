@@ -93,4 +93,19 @@ class DetailController extends BaseController
 
         return $result;
     }
+
+    /**
+     * 获取商品名称
+     * @return html
+     */
+    public function getSearchOrder()
+    {
+        $keyword = \YunShop::request()->keyword;
+        $order = Order::getOrderByName($keyword);
+        $order = set_medias($order, array('thumb', 'share_icon'));
+//        dd($order);
+        return view('order.query', [
+            'order' => $order,
+        ])->render();
+    }
 }
