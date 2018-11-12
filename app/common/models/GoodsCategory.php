@@ -9,6 +9,8 @@
 namespace app\common\models;
 
 use app\common\models\BaseModel;
+use Illuminate\Database\Eloquent\Builder;
+use app\backend\modules\goods\observers\GoodsCategoryObserver;
 
 class GoodsCategory extends BaseModel
 {
@@ -27,5 +29,11 @@ class GoodsCategory extends BaseModel
             ->delete();
     }
 
+    public static function boot()
+    {
+        parent::boot();
+        //注册观察者
+        static::observe(new GoodsCategoryObserver);
+    }
 
 }

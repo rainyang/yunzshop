@@ -19,6 +19,7 @@ class BaseObserver {
 
     public function updating(Model $model) {}
 
+
     public function updated(Model $model) {}
 
     public function creating(Model $model) {}

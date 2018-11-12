@@ -10,12 +10,23 @@ namespace app\backend\controllers;
 
 
 use app\common\components\BaseController;
+use app\common\models\Income;
 use app\common\models\Order;
 use Illuminate\Support\Facades\DB;
 use Yunshop\Commission\models\CommissionOrder;
 
 class FixController extends BaseController
 {
+    public function errorDividendData(){
+
+        $a = DB::table('yz_team_dividend')->select(['yz_team_dividend.uniacid as tuniacid','mc_members.uniacid as uniacid','yz_team_dividend.id' , 'yz_order.id as orderid', 'yz_order.uid', 'yz_team_dividend.order_sn', 'yz_team_dividend.member_id', 'yz_team_dividend.status'])
+            ->join('yz_order', 'yz_order.order_sn', '=', 'yz_team_dividend.order_sn')
+            ->join('mc_members', 'mc_members.uid', '=', 'yz_team_dividend.member_id')
+            ->where(DB::raw('ims_mc_members.uniacid != ims_yz_team_dividend.uniacid'))
+            ->orderBy('yz_team_dividend.id', 'asc')
+            ->get();
+        dump($a);
+    }
     public function handleCommissionOrder()
     {
 
@@ -192,5 +203,22 @@ class FixController extends BaseController
         });
 
         echo '数据修复ok';
+    }
+
+    public function fixIncome()
+    {
+        $count = 0;
+        $income = Income::whereBetween('created_at', [1539792000,1541433600])->get();
+        foreach ($income as $value) {
+            $pattern1 = '/\\\u[\d|\w]{4}/';
+            preg_match($pattern1, $value->detail, $exists);
+            if (empty($exists)) {
+                $pattern2 = '/(u[\d|\w]{4})/';
+                $value->detail = preg_replace($pattern2, '\\\$1', $value->detail);
+                $value->save();
+                $count++;
+            }
+        }
+        echo "修复了{$count}条";
     }
 }

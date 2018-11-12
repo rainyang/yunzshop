@@ -324,6 +324,14 @@ class UpdateController extends BaseController
                 file_put_contents($tmpdir . "/file.txt", json_encode($upgrade));
             }
         } else {
+            //更新队列
+            \Artisan::call('queue:restart');
+
+            //更新完执行数据表
+            \Log::debug('----CLI----');
+            $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
+            \Artisan::call('update:version' ,['version'=>$plugins_dir]);
+
             //覆盖
             foreach ($files as $f) {
                 $path = $f['path'];
@@ -341,15 +349,7 @@ class UpdateController extends BaseController
                     @unlink(storage_path('app/auto-update/shop') . '/' . $path);
                 }
             }
-
-            //更新队列
-            \Artisan::call('queue:restart');
-
-            //更新完执行数据表
-            \Log::debug('----CLI----');
-            $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
-            \Artisan::call('update:version' ,['version'=>$plugins_dir]);
-
+            
             //清理缓存
             \Log::debug('----Cache Flush----');
             \Cache::flush();
