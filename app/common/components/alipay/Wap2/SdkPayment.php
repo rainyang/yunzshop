@@ -127,6 +127,8 @@ class SdkPayment
         $aopClient->rsaPrivateKey = $this->rsaPrivateKey; //'请填写开发者私钥去头去尾去回车，一行字符串';
         $aopClient->alipayrsaPublicKey = $this->alipayrsaPublicKey; //'请填写支付宝公钥，一行字符串';
         $aopClient->apiVersion = $this->version;
+        $aopClient->notify_url = $this->notify_url;
+        $aopClient->return_url = $this->return_url;
         $aopClient->postCharset = $this->charset;
         $aopClient->format = $this->format;
         $aopClient->signType = $this->sign_type;
@@ -136,7 +138,7 @@ class SdkPayment
         $request->setBizContent($data);
 
 
-        $result = $aopClient->pageExecute($request);
+        $result = $aopClient->pageExecute($request, 'GET');
         \Log::info('-------test2-------', print_r($result,true));
         return $result;
     }

@@ -90,7 +90,8 @@ class AlipayServiceProvider extends ServiceProvider
             $alipay->setAppId($app_id);
             $alipay->setRsaPrivateKey($rsaPrivateKey);
             $alipay->setAlipayrsaPublicKey($alipayrsaPublicKey);
-
+            $alipay->setNotifyUrl(Setting::get('alipay-web.notify_url'));
+            $alipay->setReturnUrl(Setting::get('alipay-web.return_url'));
             return $alipay;
         });
 	}
