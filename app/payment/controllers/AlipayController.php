@@ -109,11 +109,11 @@ class AlipayController extends PaymentController
                     $out_trade_no = $alipayresult['alipay_trade_app_pay_response']['out_trade_no'];
                 }
                 \Log::debug('====================支付宝APP支付2.0======================:', $alipayresult['alipay_trade_app_pay_response']);
-            } elseif ($this->is_json($_GET)) {
-                $data = json_decode($_GET, true);
-                \Log::debug('====================商城支付宝APP支付2.0======================:', $data);
-                $out_trade_no = $data['out_trade_no'];
-                \YunShop::app()->uniacid =  \YunShop::app()->uniacid?:$data['passback_params'];
+            } elseif (strpos($_GET['out_trade_no'], '_') !== false) {
+                $data = explode('_', $_GET['out_trade_no']);
+                $out_trade_no = $data[1];
+                \YunShop::app()->uniacid = $data[0];
+                \Log::debug('=============商城支付宝APP支付2.0===========:', $data);
             } else {
                 $out_trade_no = $this->substr_var($_GET['out_trade_no']);
             }
