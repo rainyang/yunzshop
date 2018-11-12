@@ -130,35 +130,4 @@ class TransactionAmountController extends ChartsController
 
     }
 
-    /**
-     * 导出Excel
-     */
-    public function export1()
-    {
-        $search = request()->search;
-        $builder = PluginOrder::getOrderAllDate($search);
-        $export_page = request()->export_page ? request()->export_page : 1;
-        $export_model = new ExportService($builder, $export_page);
-        $file_name = date('Ymdhis', time()) . '啦啦外卖导出';
-        $export_data[0] = ['ID', '订单编号', '下单时间', '购买者', '推荐者', '订单状态', '订单金额', '实付金额'];
-        foreach ($export_model->builder_model as $key => $item) {
-            if ($item->status == 3) {
-                $item->status = '已完成';
-            } else {
-                $item->status = '未完成';
-            }
-            $export_data[$key + 1] = [
-                $item->id,
-                $item->order_sn,
-                $item->created_at,
-                $item->buyer_name,
-                $item->recommend_name,
-                $item->status,
-                $item->price,
-                $item->goods_price,
-            ];
-        }
-        $export_model->export($file_name, $export_data, 'Yunshop\We7Wmall::admin.orders');
-        return true;
-    }
 }

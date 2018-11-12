@@ -58,6 +58,8 @@ class TestController extends BaseController
      */
     public function index()
     {
+        $a = Carbon::createFromTimestamp(1503488629)->diffInDays(Carbon::createFromTimestamp(1504069595), true);
+        dd($a);
         $member_relation = new MemberRelation();
 
         $relation = $member_relation->hasRelationOfParent(66, 5, 1);
