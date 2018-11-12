@@ -80,7 +80,6 @@ class AlipayController extends PaymentController
     public function returnUrl()
     {
         $trade = \Setting::get('shop.trade');
-
         if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
             return redirect($trade['redirect_url'])->send();
         }
@@ -99,6 +98,7 @@ class AlipayController extends PaymentController
             }
         } else {
             //定义app支付类型，验证app回调信息
+            //验证是否是芸打包支付宝APP2.0支付
             if (isset($_GET['alipayresult']) && !empty($_GET['alipayresult'])) {
                 $alipayresult = json_decode($_GET['alipayresult'], true);
                 if (strpos($alipayresult['alipay_trade_app_pay_response']['out_trade_no'], '_') !== false) {
@@ -109,6 +109,11 @@ class AlipayController extends PaymentController
                     $out_trade_no = $alipayresult['alipay_trade_app_pay_response']['out_trade_no'];
                 }
                 \Log::debug('====================支付宝APP支付2.0======================:', $alipayresult['alipay_trade_app_pay_response']);
+            } elseif ($this->is_json($_GET)) {
+                $data = json_decode($_GET, true);
+                \Log::debug('====================商城支付宝APP支付2.0======================:', $data);
+                $out_trade_no = $data['out_trade_no'];
+                \YunShop::app()->uniacid =  \YunShop::app()->uniacid?:$data['passback_params'];
             } else {
                 $out_trade_no = $this->substr_var($_GET['out_trade_no']);
             }
@@ -128,6 +133,12 @@ class AlipayController extends PaymentController
                 redirect(Url::absoluteApp('home'))->send();
             }
         }
+    }
+
+    //判断返回的数据是否是json格式
+    protected function is_json($string) {
+        json_decode($string);
+        return (json_last_error() == JSON_ERROR_NONE);
     }
 
     public function refundNotifyUrl()

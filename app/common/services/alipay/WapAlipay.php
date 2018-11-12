@@ -31,7 +31,7 @@ class WapAlipay extends AliPay
                 'body' => $uniacid,
                 'subject' => $data['subject'],
                 'out_trade_no' => $data['order_no'],
-                //'timeout_express' => '',
+                'passback_params' => urlencode(\YunShop::app()->uniacid),
                 'total_amount' => $data['amount'],
                 'product_code' => 'QUICK_WAP_WAY',
             ];
