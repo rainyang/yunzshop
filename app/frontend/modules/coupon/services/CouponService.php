@@ -58,6 +58,7 @@ class CouponService
         $coupons = $this->getMemberCoupon()->map(function ($memberCoupon) {
             return new Coupon($memberCoupon, $this->order);
         });
+
         //其他优惠组合后可选的优惠券
         $coupons = $coupons->filter(function ($coupon) {
             /**
@@ -74,6 +75,7 @@ class CouponService
 
             return true;
         })->values();
+
         //已选的优惠券
         $coupons = collect($this->order->orderCoupons)->map(function($orderCoupon){
             // 已参与订单价格计算的优惠券
@@ -81,6 +83,7 @@ class CouponService
             $orderCoupon->coupon->getMemberCoupon()->checked = true;
             return $orderCoupon->coupon;
         })->merge($coupons);
+
         //按member_coupon的id倒序
         $coupons = $coupons->sortByDesc(function($coupon){
             return $coupon->getMemberCoupon()->id;

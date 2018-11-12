@@ -25,12 +25,11 @@ class ShopScope extends CouponUseScope
                 /**
                  * @var $orderGoods PreOrderGoods
                  */
-                debug_log()->coupon("优惠券{$this->coupon->getMemberCoupon()->id}","优惠券范围为自营,商品id{$orderGoods->goods_id}是供应商商品");
-
                 return !$orderGoods->goods->is_plugin;
             });
 
         if ($orderGoods->unique('is_plugin')->count() > 1) {
+            debug_log()->coupon("优惠券{$this->coupon->getMemberCoupon()->id}","优惠券范围为自营,商品id{$orderGoods->goods_id}是供应商商品");
             throw new AppException('自营商品与第三方商品不能共用一张优惠券');
         }
 

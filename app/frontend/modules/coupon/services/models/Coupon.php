@@ -230,6 +230,8 @@ class Coupon
 
             if ($memberCoupon->selected == true) {
                 //本优惠券与选中的优惠券是一张
+                debug_log()->coupon("优惠券{$this->getMemberCoupon()->id}",'同一单不能使用多张此类型优惠券');
+
                 return $memberCoupon->coupon_id == $this->getMemberCoupon()->coupon_id;
             }
             return false;
