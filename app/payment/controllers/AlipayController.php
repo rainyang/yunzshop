@@ -48,7 +48,11 @@ class AlipayController extends PaymentController
         if ($verify_result) {
             if ($_POST['trade_status'] == 'TRADE_SUCCESS') {
                 if ($_POST['sign_type'] == 'RSA2') {
-                    $out_trade_no = substr($_POST['out_trade_no'], strpos($_POST['out_trade_no'], 'PN'));
+                    if (strpos($_POST['out_trade_no'], '_') !== false) {
+                        $out_trade_no = substr($_POST['out_trade_no'], strpos($_POST['out_trade_no'], 'PN'));
+                    } else {
+                        $out_trade_no = $_POST['out_trade_no'];
+                    }
                 } else {
                     $out_trade_no = $_POST['out_trade_no'];
                 }

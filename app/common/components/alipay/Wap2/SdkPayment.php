@@ -96,7 +96,7 @@ class SdkPayment
      *
      * @var string
      */
-    private $format;
+    private $format = 'JSON';
 
     /**
      * Request No
