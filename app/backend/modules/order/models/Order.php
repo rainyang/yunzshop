@@ -142,6 +142,9 @@ class Order extends \app\common\models\Order
 
             //商品id
             if ($params['ambiguous']['field'] == 'goods_id') {
+//                print_r($order_builder->whereHas('hasManyOrderGoods', function ($query) use ($params) {
+//                    $query->where('goods_id',$params['ambiguous']['string']);
+//                })->toSql());exit;
                 $order_builder->whereHas('hasManyOrderGoods', function ($query) use ($params) {
                     $query->where('goods_id',$params['ambiguous']['string']);
                 });

@@ -162,6 +162,7 @@ class ListController extends BaseController
             });
         }
 
+
         $list['total_price'] = $this->orderModel->sum('price');
         $list += $this->orderModel->orderBy('id', 'desc')->paginate(self::PAGE_SIZE)->toArray();
 
@@ -199,9 +200,9 @@ class ListController extends BaseController
                         $this->getNickname($item['belongs_to_member']['nickname']),
                         $item['address']['realname'],
                         $item['address']['mobile'],
-                        !empty($address[0])?$address[0]:'',
-                        !empty($address[1])?$address[1]:'',
-                        !empty($address[2])?$address[2]:'',
+                        !empty($address[0]) ? $address[0] : '',
+                        !empty($address[1]) ? $address[1] : '',
+                        !empty($address[2]) ? $address[2] : '',
                         $item['address']['address'],
                         $this->getGoods($item, 'goods_title'),
                         $this->getGoods($item, 'goods_sn'),
@@ -239,7 +240,7 @@ class ListController extends BaseController
     {
         $export_discount = [
             'deduction' => 0,    //抵扣金额
-            'coupon'    => 0,    //优惠券优惠
+            'coupon' => 0,    //优惠券优惠
             'enoughReduce' => 0,  //全场满减优惠
             'singleEnoughReduce' => 0,    //单品满减优惠
         ];

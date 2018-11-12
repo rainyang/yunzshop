@@ -13,6 +13,7 @@ use app\backend\modules\member\models\Member;
 use app\backend\modules\order\models\Order;
 use app\common\components\BaseController;
 use app\common\exceptions\AppException;
+use app\common\models\Goods;
 use app\common\modules\order\OrderOperationsCollector;
 use app\common\services\DivFromService;
 
@@ -94,18 +95,5 @@ class DetailController extends BaseController
         return $result;
     }
 
-    /**
-     * 获取商品名称
-     * @return html
-     */
-    public function getSearchOrder()
-    {
-        $keyword = \YunShop::request()->keyword;
-        $order = Order::getOrderByName($keyword);
-        $order = set_medias($order, array('thumb', 'share_icon'));
-//        dd($order);
-        return view('order.query', [
-            'order' => $order,
-        ])->render();
-    }
+
 }

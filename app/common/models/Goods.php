@@ -452,4 +452,16 @@ class Goods extends BaseModel
 
         return [0=>'下架',1=>'上架'][$this->status];
     }
+
+    /**
+     * 获取商品名称
+     * @return html
+     */
+    public static function getSearchOrder()
+    {
+        $keyword = \YunShop::request()->keyword;
+        return Goods::select(['id','title', 'thumb', 'plugin_id'])->pluginId()->where('title', 'like', '%'.$keyword.'%')->get();
+    }
+
+
 }
