@@ -66,10 +66,13 @@
                         <h4>已消耗优惠券</h4>
                         <p style="font-size: 1.2em">{{ $couponUsedCount }}</p>
                     </td>
+                    <td>
+                        <h4>已过期优惠券</h4>
+                        <p style="font-size: 1.2em">{{ $couponExpiredCount }}</p>
+                    </td>
                 </tr>
             </table>
         </div>
-        <input name="">
         <div class="panel panel-default">
             <table class='table' style='float:left;margin-bottom:0;table-layout: fixed;line-height: 40px;height: 40px'>
                 <tr class='trhead'>
@@ -93,10 +96,11 @@
                         <th >时间</th>
                         <th >已赠送优惠券</th>
                         <th >已消耗优惠券</th>
+                        <th >已过期优惠券</th>
                     </tr>
                 </thead>
                 <tbody>
-                @foreach($AllCouponData as $key => $item)
+                @foreach($allCouponLogData as $key => $item)
                     <tr>
                         <td>
                             {{ $item['date'] }}
@@ -106,6 +110,9 @@
                         </td>
                         <td>
                             {{ $item['usedCoupon'] }}
+                        </td>
+                        <td>
+                            {{ $item['expiredCoupon'] }}
                         </td>
                     </tr>
                 @endforeach
@@ -130,7 +137,7 @@
             trigger: 'axis'
         },
         legend: {
-            data:['已赠送优惠券','已消耗优惠券']
+            data:['已赠送优惠券','已消耗优惠券','已过期优惠券']
         },
         grid: {
             left: '3%',
@@ -157,14 +164,18 @@
                 type:'line',
                 stack: '总量2',
                 data:{!! $couponGivenData !!}
-                // data:['1','2','3','4','5','6','7']
             },
             {
                 name:'已消耗优惠券',
                 type:'line',
                 stack: '总量1',
                 data:{!! $couponUsedData !!}
-                // data:[1000,2000,3333,4444,5555,6666,7777]
+            },
+            {
+                name:'已过期优惠券',
+                type:'line',
+                stack: '总量3',
+                data:{!! $couponExpiredData !!}
             },
         ]
     };

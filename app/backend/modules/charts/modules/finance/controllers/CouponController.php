@@ -5,6 +5,7 @@ namespace app\backend\modules\charts\modules\finance\controllers;
 use app\backend\modules\charts\controllers\ChartsController;
 use app\backend\modules\charts\models\CouponLog;
 use app\common\models\Coupon;
+use app\common\services\ExportService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -35,6 +36,7 @@ class CouponController extends ChartsController
         $allCouponLogData = [];
         $couponUsedData = [];
         $couponGivenData = [];
+        $couponExpiredData = [];
         $search = \YunShop::request()->search;
         if ($search['is_time'] && $search['time']) {
             $searchTime['start'] = strtotime($search['time']['start']);
@@ -50,13 +52,14 @@ class CouponController extends ChartsController
                 ->toArray();
             $allCouponData[$key] = Coupon::uniacid()
                 ->selectRaw('count(id) as expiredCoupon')
-                ->where('get_time','<=', strtotime($time))
+                ->where('created_at','<=', strtotime($time))
                 ->first()
-                ->toArray(); 
+                ->toArray();
             $couponGivenData[$key] = $allCouponLogData[$key]['givenCoupon'];
             $couponUsedData[$key] = $allCouponLogData[$key]['usedCoupon'];
             $couponExpiredData[$key] = $allCouponData[$key]['expiredCoupon'];
             $allCouponLogData[$key]['date'] = $time;
+            $allCouponLogData[$key]['expiredCoupon'] = $allCouponData[$key]['expiredCoupon'];;
         }
         $end = count($allCouponLogData) -1;
         krsort($allCouponLogData);
@@ -64,9 +67,11 @@ class CouponController extends ChartsController
             'search' => $search,
             'couponGivenCount' => $allCouponLogData[$end]['givenCoupon'],
             'couponUsedCount' => $allCouponLogData[$end]['usedCoupon'],
+            'couponExpiredCount' => $allCouponLogData[$end]['expiredCoupon'],
             'couponTime' => json_encode($couponTime),
             'couponUsedData' => json_encode($couponUsedData),
             'couponGivenData' => json_encode($couponGivenData),
+            'couponExpiredData' => json_encode($couponExpiredData),
             'allCouponLogData' => $allCouponLogData,
         ])->render();
     }
@@ -100,7 +105,7 @@ class CouponController extends ChartsController
     public function export()
     {
         $searchTime = [];
-        $allPointData = [];
+        $allCouponData = [];
         $search = \YunShop::request()->search;
         if ($search['is_time'] && $search['time']) {
             $searchTime['start'] = strtotime($search['time']['start']);
@@ -110,26 +115,32 @@ class CouponController extends ChartsController
             $searchTime['end'] = Carbon::now()->startOfDay()->timestamp;
         }
 
-        $this->getPointTime($searchTime);
+        $this->getCouponTime($searchTime);
 
-        $builder = PointLog::uniacid()->selectRaw('sum(if(point_income_type=1 && point_mode!=5,point,0)) as givenPoint, sum(point) as usePoint, sum(if(point_mode=6,point,0)) as usedPoint, sum(if(point_mode=5,point,0)) as recharge')
-            ->groupBy(DB::raw("FROM_UNIXTIME(created_at,'%Y-%m-%d')"));
+        $builder = CouponLog::uniacid()
+            ->selectRaw('count(id) as givenCoupon, sum(used) as usedCoupon')
+            ->groupBy(DB::raw("FROM_UNIXTIME(get_time,'%Y-%m-%d')"));
 
         $export_page = request()->export_page ? request()->export_page : 1;
         $export_model = new ExportService($builder, $export_page);
         $file_name = date('Ymdhis', time()) . '积分统计导出';
-        $export_data[0] = ['时间', '可使用积分', '已消耗积分', '已赠送积分', '充值积分'];
+        $export_data[0] = ['时间', '已赠送优惠券','已消耗优惠券','已过期优惠券'];
         foreach ($this->time as $key => $time) {
-            $allPointData[$key] = PointLog::uniacid()->selectRaw('sum(if(point_income_type=1 && point_mode!=5,point,0)) as givenPoint, sum(point) as usePoint, sum(if(point_mode=6,point,0)) as usedPoint, sum(if(point_mode=5,point,0)) as recharge')
+            $allCouponLogData[$key] = CouponLog::uniacid()
+                ->selectRaw('count(id) as givenCoupon, sum(used) as usedCoupon')
+                ->where('get_time','<=', strtotime($time))
+                ->first()
+                ->toArray();
+            $allCouponData[$key] = Coupon::uniacid()
+                ->selectRaw('count(id) as expiredCoupon')
                 ->where('created_at','<=', strtotime($time))
                 ->first()
                 ->toArray();
             $export_data[$key + 1] = [
                 $time,
-                $allPointData[$key]['usePoint'],
-                ($allPointData[$key]['usedPoint'] * -1),
-                $allPointData[$key]['givenPoint'],
-                $allPointData[$key]['recharge'],
+                $allCouponLogData[$key]['givenCoupon'],
+                $allCouponLogData[$key]['usedCoupon'],
+                $allCouponData[$key]['expiredCoupon'],
             ];
         }
 
