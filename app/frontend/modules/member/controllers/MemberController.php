@@ -567,7 +567,7 @@ class MemberController extends ApiController
             if ($check_code['status'] != 1) {
                 return $this->errorJson($invitecode['json']);
             }
-            
+
             $msg = MemberService::validate($mobile, $password, $confirm_password);
 
             if ($msg['status'] != 1) {
