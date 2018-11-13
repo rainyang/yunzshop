@@ -67,6 +67,28 @@ class AlipayServiceProvider extends ServiceProvider
 
 			return $alipay;
 		});
+
+        $this->app->bind('alipay.wap2', function ($app)
+        {
+            $set = \Setting::get('shop_app.pay');
+
+
+            $alipay = new Wap2\SdkPayment();
+
+            //$sign = '';
+            $app_id = $set['alipay_appid'];
+            //$sign_type = '';
+            $rsaPrivateKey = $set['alipay_sign_private'];
+            $alipayrsaPublicKey = $set['alipay_sign_public'];
+
+            //$alipay->setSign($sign);
+            $alipay->setAppId($app_id);
+            //$alipay->setSignType($sign_type);
+            $alipay->setRsaPrivateKey($rsaPrivateKey);
+            $alipay->setAlipayrsaPublicKey($alipayrsaPublicKey);
+
+            return $alipay;
+        });
 	}
 
 	/**

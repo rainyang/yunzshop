@@ -553,10 +553,11 @@ class Member extends BackendModel
         $incomeModel = Income::getIncomes()->where('member_id', \YunShop::app()->getMemberId())->get();
 
         if ($incomeModel) {
-            return $incomeModel->sum('amount');
+            $amount = $incomeModel->sum('amount');
+            return number_format($amount, 2);
         }
 
-        return 0;
+        return number_format(0, 2);
     }
 
     /**

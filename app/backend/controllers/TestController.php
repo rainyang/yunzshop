@@ -15,6 +15,7 @@ use app\backend\modules\charts\modules\phone\services\PhoneAttributionService;
 use app\common\components\BaseController;
 use app\common\events\member\MemberCreateRelationEvent;
 use app\common\events\member\MemberRelationEvent;
+use app\common\events\order\AfterOrderCanceledEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\models\Income;
 use app\common\models\Member;
@@ -42,7 +43,16 @@ use Yunshop\Supplier\common\models\SupplierOrder;
 
 class TestController extends BaseController
 {
+    public $transactionActions = ['t'];
+
+    public function t()
+    {
+
+        event(new AfterOrderCanceledEvent(Order::cancelled()->first()));
+    }
+
     public $orderId;
+
     /**
      * @return bool
      */
@@ -68,7 +78,7 @@ class TestController extends BaseController
         echo $json;
 
         $a = Artisan::call('queue:retry');
-        
+
         dd($a);
     }
 
@@ -183,7 +193,8 @@ class TestController extends BaseController
     public function tt()
     {
 
-       $this->synRun(5, '');exit;
+        $this->synRun(5, '');
+        exit;
 
         $member_relation = new MemberRelation();
 
@@ -193,7 +204,7 @@ class TestController extends BaseController
     public function fixIncome()
     {
         $count = 0;
-        $income = Income::whereBetween('created_at', [1539792000,1540915200])->get();
+        $income = Income::whereBetween('created_at', [1539792000, 1540915200])->get();
         foreach ($income as $value) {
             $pattern1 = '/\\\u[\d|\w]{4}/';
             preg_match($pattern1, $value->detail, $exists);
@@ -245,40 +256,40 @@ class TestController extends BaseController
         foreach ($memberInfo as $key => $val) {
             $attr = [];
             echo '-------' . $key . '--------' . $val->member_id . '<BR>';
-                \Log::debug('--------foreach start------', $val->member_id);
-                //$data = $memberModel->getNodeParents($uniacid, $val->member_id);
-                $data = $memberModel->getDescendants($uniacid, $val->member_id);
+            \Log::debug('--------foreach start------', $val->member_id);
+            //$data = $memberModel->getNodeParents($uniacid, $val->member_id);
+            $data = $memberModel->getDescendants($uniacid, $val->member_id);
 
-                \Log::debug('--------foreach data------', $data->count());
+            \Log::debug('--------foreach data------', $data->count());
 
-                if (!$data->isEmpty()) {
-                    \Log::debug('--------insert init------');
-                    $data = $data->toArray();
+            if (!$data->isEmpty()) {
+                \Log::debug('--------insert init------');
+                $data = $data->toArray();
 
-                   foreach ($data as $k => $v) {
-                        $attr[] = [
-                            'uniacid'   => $uniacid,
-                            'child_id'  => $k,
-                            'level'     => $v['depth'] + 1,
-                            'member_id' => $val->member_id,
-                            'created_at' => time()
-                        ];
-                    }
-
-                    $childMemberModel->createData($attr);
-                   /*
-                    foreach ($data as $k => $v) {
-                        $attr[] = [
-                            'uniacid'   => $uniacid,
-                            'parent_id'  => $k,
-                            'level'     => $v['depth'] + 1,
-                            'member_id' => $val->member_id,
-                            'created_at' => time()
-                        ];
-                    }
-
-                    $parentMemberModle->createData($attr);*/
+                foreach ($data as $k => $v) {
+                    $attr[] = [
+                        'uniacid' => $uniacid,
+                        'child_id' => $k,
+                        'level' => $v['depth'] + 1,
+                        'member_id' => $val->member_id,
+                        'created_at' => time()
+                    ];
                 }
+
+                $childMemberModel->createData($attr);
+                /*
+                 foreach ($data as $k => $v) {
+                     $attr[] = [
+                         'uniacid'   => $uniacid,
+                         'parent_id'  => $k,
+                         'level'     => $v['depth'] + 1,
+                         'member_id' => $val->member_id,
+                         'created_at' => time()
+                     ];
+                 }
+
+                 $parentMemberModle->createData($attr);*/
+            }
 
 
         }
@@ -289,17 +300,17 @@ class TestController extends BaseController
 
     public function mr()
     {
-       /* $a = [1,2,3,4,5];
+        /* $a = [1,2,3,4,5];
 
 
-        foreach ($a as $val) {
-            $b = array_shift($a);
-        }
+         foreach ($a as $val) {
+             $b = array_shift($a);
+         }
 
 
-        dd($b, $a);
+         dd($b, $a);
 
-        exit;*/
+         exit;*/
 
         $uid = 163764;
         $o_parent_id = 163762;
@@ -312,27 +323,10 @@ class TestController extends BaseController
 //        $member = Member::getMemberByUid($uid)->first();
 //
 //        event(new MemberRelationEvent($member));
- //       event(new MemberCreateRelationEvent($uid, $n_parent_id));exit;
+        //       event(new MemberCreateRelationEvent($uid, $n_parent_id));exit;
 //        (new MemberRelation())->changeMemberOfRelation($uid, $o_parent_id, $n_parent_id);
         //(new MemberRelation())->parent->addNewParentData($uid, $n_parent_id);
 
-    }
-
-    public function v()
-    {
-        $level = MrytLevelModel::getList()->get();
-        dd($level);
-
-        $curr_month = date('Ym', time());
-
-        $pre_month_1 = date('n', strtotime('-1 month'));
-
-        $pre_month_2 = date('n', strtotime('-2 month'));
-
-        $pre_month_3 = date('n', strtotime('-3 month'));
-
-        dd($curr_month, $pre_month_1, $pre_month_2, $pre_month_3);
-        (new OrderStatisticsService())->orderStatistics();
     }
 
 }
