@@ -19,8 +19,8 @@
                         <el-switch v-model="form.open">
                         </el-switch>
                     </el-tooltip> -->
-                        <input type="radio" name='switch' v-model="form.open" value='open'  {{ form.open ? 'checked' : '' }} >开启
-                        <input type="radio" name='switch' value='close' v-model="form.open" style='margin-left:16px' {{ form.open ? '' : 'checked' }} checked>关闭
+                        <input type="radio" name='switch' v-model="form.open" value='1'  {{ form.open ? 'checked' : '' }} >开启
+                        <input type="radio" name='switch' value='0' v-model="form.open" style='margin-left:16px' {{ form.open ? '' : 'checked' }}{{form.open == "" ? checked :''}}>关闭
 
                 </el-form-item>
                 <template v-for="(enoughReduce,index) in form.enoughReduce">
@@ -73,8 +73,8 @@
                         <el-switch v-model="form.freeFreight.open">
                         </el-switch>
                     </el-tooltip> -->
-                    <input type="radio" name='freeSwitch' v-model="form.freeFreight.open" value='open'  {{ form.freeFreight.open ? 'checked' : ''}}>开启
-                    <input type="radio" name='freeSwitch' value='close' v-model="form.freeFreight.open"  style='margin-left:16px'  {{ form.freeFreight.open ? '' : 'checked'}}  checked>关闭
+                    <input type="radio" name='freeSwitch' v-model="form.freeFreight.open" value='1'  {{ form.freeFreight.open ? 'checked' : ''}}>开启
+                    <input type="radio" name='freeSwitch' value='0' v-model="form.freeFreight.open"  style='margin-left:16px'  {{ form.freeFreight.open ? '' : 'checked'}}  checked>关闭
                     <div>开启满包邮,订单总金额超过多少可以包邮</div>
                     <el-form-item prop="freeFreight.enough">
                         <el-input placeholder="金额"
