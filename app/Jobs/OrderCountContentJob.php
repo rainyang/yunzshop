@@ -156,6 +156,21 @@ class OrderCountContentJob implements  ShouldQueue
             ->select()
             ->where('order_id', $this->orderModel->id)
             ->sum('goods_cost_price');
-        return $build;
+        if ($this->orderModel->plugin_id == 31) {
+            $order = DB::table('yz_plugin_store_order')
+                ->select()
+                ->where('order_id', $this->orderModel->id)
+                ->first();
+            $cost_price = $build - $order['amount'];
+        } else if ($this->orderModel->plugin_id == 32) {
+            $order = DB::table('yz_plugin_cashier_order')
+                ->select()
+                ->where('order_id', $this->orderModel->id)
+                ->first();
+            $cost_price = $build - $order['amount'];
+        } else {
+            $cost_price = $build;
+        }
+        return $cost_price;
     }
 }
