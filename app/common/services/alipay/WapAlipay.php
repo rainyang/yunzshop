@@ -22,32 +22,26 @@ class WapAlipay extends AliPay
 
     public function doPay($data = [])
     {
-        $type = \YunShop::request()->type;
 
-        if ($type == 7) {
-            $isnewalipay = \Setting::get('shop_app.pay.newalipay');
-            if ($isnewalipay == 1) {
-                \Log::info('-------test-------', print_r($data,true));
+        $isnewalipay = \Setting::get('shop.pay.alipay_pay_api');
+        if (isset($isnewalipay) && $isnewalipay == 1) {
+            \Log::info('-------test-------', print_r($data,true));
+            $uniacid = substr($data['body'], strrpos($data['body'], ':')+1);
+            $content = [
+                'body' => $uniacid,
+                'subject' => $data['subject'],
+                'out_trade_no' => \YunShop::app()->uniacid.'_'.$data['order_no'],
+                'total_amount' => $data['amount'],
+                'product_code' => 'QUICK_WAP_WAY',
+            ];
 
-                $content = [
-                    'body' => $data['order_no'],
+            // 跳转到支付页面。
+            $result = app('alipay.wap2')->pageExecute(json_encode($content));
 
-                    'subject' => $data['subject'],
-                    'out_trade_no' => $data['order_no'],
-                    //'timeout_express' => '',
-                    'total_amount' => $data['amount'],
-                    'product_code' => 'QUICK_WAP_WAY',
-                ];
-
-                // 跳转到支付页面。
-                $result = app('alipay.wap2')->pageExecute(json_encode($content));
-
-
-
-                //dd(123);
-                return $result;
-            }
+            return $result;
         }
+
+
 
         // 创建支付单。
         $alipay = app('alipay.wap');

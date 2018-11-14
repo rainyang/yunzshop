@@ -40,12 +40,12 @@ class OrderDeduction
          * @var Collection $deductions
          */
         $deductions = Deduction::whereEnable(1)->get();
-
+        debug_log()->deduction('开启的抵扣类型',$deductions->pluck('code')->toJson());
         if ($deductions->isEmpty()) {
             return 0;
         }
         // 过滤调无效的
-        $deductions = $deductions->filter(function ($deduction) {
+        $deductions = $deductions->filter(function (Deduction $deduction) {
             /**
              * @var Deduction $deduction
              */
@@ -58,19 +58,22 @@ class OrderDeduction
         });
 
         // 遍历抵扣集合, 实例化订单抵扣类 ,向其传入订单模型和抵扣模型 返回订单抵扣集合
-        $orderDeductions = $deductions->map(function ($deduction) {
-
+        $orderDeductions = $deductions->map(function (Deduction $deduction) {
+            debug_log()->deduction('开始实例化订单抵扣',"{$deduction->getName()}");
             $orderDeduction = new PreOrderDeduction([], $deduction, $this->order);
+            debug_log()->deduction('完成实例化订单抵扣',"{$deduction->getName()}");
 
             return $orderDeduction;
         });
 
         // 求和订单抵扣集合中所有已选中的可用金额
-        $result = $orderDeductions->sum(function ($orderDeduction) {
+        $result = $orderDeductions->sum(function (PreOrderDeduction $orderDeduction) {
             /**
              * @var PreOrderDeduction $orderDeduction
              */
             if ($orderDeduction->isChecked()) {
+                debug_log()->deduction('订单抵扣',"{$orderDeduction->getName()}获取可用金额");
+
                 return $orderDeduction->getUsablePoint()->getMoney();
             }
             return 0;

@@ -10,6 +10,7 @@ namespace app\backend\modules\member\models;
 
 use app\common\models\member\MemberDel;
 use app\common\traits\MemberTreeTrait;
+use Illuminate\Support\Facades\DB;
 
 class Member extends \app\common\models\Member
 {
@@ -330,7 +331,9 @@ class Member extends \app\common\models\Member
             return $query5->selectRaw('uid, count(uid) as total, sum(price) as sum')
                 ->uniacid()
                 ->groupBy('uid');
-        }, 'hasOneDel']);
+        }]);
+
+        $result->leftJoin('yz_member_del_log', 'mc_members.uid', '=', 'yz_member_del_log.member_id')->whereNull('yz_member_del_log.member_id');
 
 
         return $result;
