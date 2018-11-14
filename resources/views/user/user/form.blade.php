@@ -96,7 +96,6 @@
 
     </div>
 </form>
-
 <script>
      $('#userRole').on('change', function(){
         var checkBoxs=$("input[type='checkbox']")

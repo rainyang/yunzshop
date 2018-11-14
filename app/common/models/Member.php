@@ -553,10 +553,11 @@ class Member extends BackendModel
         $incomeModel = Income::getIncomes()->where('member_id', \YunShop::app()->getMemberId())->get();
 
         if ($incomeModel) {
-            return $incomeModel->sum('amount');
+            $amount = $incomeModel->sum('amount');
+            return number_format($amount, 2);
         }
 
-        return 0;
+        return number_format(0, 2);
     }
 
     /**
@@ -719,7 +720,7 @@ class Member extends BackendModel
 
     public function getAvatarImageAttribute()
     {
-        return $this->avatar ? tomedia($this->avatar) : tomedia(\Setting::get('shop.shop.headimg'));
+        return $this->avatar ? yz_tomedia($this->avatar) : yz_tomedia(\Setting::get('shop.member.headimg'));
     }
 
     /**

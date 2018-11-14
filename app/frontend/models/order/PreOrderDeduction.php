@@ -127,8 +127,6 @@ class PreOrderDeduction extends OrderDeduction
     private function _init()
     {
         $this->uid = $this->order->uid;
-
-
         $this->coin = $this->getUsablePoint()->getCoin();
         $this->amount = $this->getUsablePoint()->getMoney();
         $this->code = $this->getCode();
@@ -164,23 +162,27 @@ class PreOrderDeduction extends OrderDeduction
         if (isset($this->useablePoint)) {
             return $this->useablePoint;
         }
+        debug_log()->deduction('开始订单抵扣',"{$this->getName()} 计算可用金额");
+
         $result = $this->newCoin();
 
         // 购买者不存在虚拟币记录
         if (!$this->getMemberCoin()) {
+            debug_log()->deduction('订单抵扣',"{$this->getName()} 用户没有对应虚拟币");
 
             return $this->useablePoint = $result;
         }
 
-        // 商品可抵扣虚拟币+运费可抵扣虚拟币
-        $orderVirtualCoin = $this->getMaxDeduction();
 
 
-        // 不能超过订单使用其他抵扣金额后的价格
-        $afterOtherDeductionAmount = min($this->order->price - $this->getOtherDeductionAmount(), $orderVirtualCoin->getMoney());
+
+        // 商品金额抵扣 不能超过订单除去运费后 使用其他抵扣金额后的价格
+        $deductionAmount = min($this->order->price - $this->order->getDispatchAmount() - $this->getOtherDeductionAmount(), $this->getMaxDeduction()->getMoney());
+        // 抵扣金额 = 商品抵扣金额 + 运费抵扣金额
+        $deductionAmount += $this->getMaxDispatchPriceDeduction()->getMoney();
 
         // 取(用户可用虚拟币)与(订单抵扣虚拟币)的最小值
-        $amount = min($this->getMemberCoin()->getMaxUsableCoin()->getMoney(), $afterOtherDeductionAmount);
+        $amount = min($this->getMemberCoin()->getMaxUsableCoin()->getMoney(), $deductionAmount);
 
         return $this->useablePoint = $this->newCoin()->setMoney($amount);
     }
@@ -192,6 +194,8 @@ class PreOrderDeduction extends OrderDeduction
      */
     private function getOtherDeductionAmount()
     {
+        debug_log()->deduction('订单抵扣',"{$this->getName()} 计算其他抵扣金额");
+
         return $this->order->orderDeductions->sum(function (PreOrderDeduction $orderDeduction) {
             if ($orderDeduction->isChecked()) {
                 return $orderDeduction->getUsablePoint()->getMoney();
@@ -217,7 +221,9 @@ class PreOrderDeduction extends OrderDeduction
      */
     private function getMaxDeduction()
     {
-        $result =  $this->getMaxOrderGoodsDeduction()->plus($this->getMaxDispatchPriceDeduction());
+        debug_log()->deduction('订单抵扣',"{$this->getName()} 计算最大抵扣");
+
+        $result =  $this->getMaxOrderGoodsDeduction();
 
         return $result;
 
