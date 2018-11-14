@@ -70,23 +70,28 @@ class AlipayServiceProvider extends ServiceProvider
 
         $this->app->bind('alipay.wap2', function ($app)
         {
-            $set = \Setting::get('shop_app.pay');
-
-
             $alipay = new Wap2\SdkPayment();
 
-            //$sign = '';
-            $app_id = $set['alipay_appid'];
-            //$sign_type = '';
-            $rsaPrivateKey = $set['alipay_sign_private'];
-            $alipayrsaPublicKey = $set['alipay_sign_public'];
+//            $set = \Setting::get('shop_app.pay');
+//            //$sign = '';
+//            $app_id = $set['alipay_appid'];
+//            //$sign_type = '';
+//            $rsaPrivateKey = $set['alipay_sign_private'];
+//            $alipayrsaPublicKey = $set['alipay_sign_public'];
+
+            $set = \Setting::get('shop.pay');
+            $app_id = decrypt($set['alipay_app_id']);
+            $rsaPrivateKey = decrypt($set['rsa_private_key']);
+            $alipayrsaPublicKey =decrypt($set['rsa_public_key']);
+
 
             //$alipay->setSign($sign);
-            $alipay->setAppId($app_id);
             //$alipay->setSignType($sign_type);
+            $alipay->setAppId($app_id);
             $alipay->setRsaPrivateKey($rsaPrivateKey);
             $alipay->setAlipayrsaPublicKey($alipayrsaPublicKey);
-
+            $alipay->setNotifyUrl(Setting::get('alipay-web.notify_url'));
+            $alipay->setReturnUrl(Setting::get('alipay-web.return_url'));
             return $alipay;
         });
 	}
