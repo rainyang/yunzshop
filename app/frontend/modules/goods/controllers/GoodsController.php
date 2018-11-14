@@ -515,7 +515,7 @@ class GoodsController extends ApiController
         }
 
         return [
-            'total' => count($sale),
+            'sale_count' => count($sale),
             'first_strip_key' =>  $sale ? $sale[rand(0, (count($sale)-1))] : [],
             'sale' => $sale,
         ];
