@@ -429,6 +429,7 @@ class AutoUpdate
                 $this->_log->info(sprintf('Could not parse version "%s" from update server "%s"', $versionRaw, $updateFile));
                 continue;
             }
+
             if (version::gt($version, $this->_currentVersion)) {
                 if (version::gt($version, $this->_latestVersion))
                     $this->_latestVersion = $version;
@@ -499,6 +500,19 @@ class AutoUpdate
     protected function _downloadUpdate($updateUrl, $updateFile)
     {
         $this->_log->info(sprintf('Downloading update "%s" to "%s"', $updateUrl, $updateFile));
+
+        //获取文件夹数据
+        $checkUpdateFileUurl = $updateUrl . '/check';
+
+        $files = Curl::to($checkUpdateFileUurl)
+            ->withHeader(
+                "Authorization: Basic " . base64_encode("{$this->_username}:{$this->_password}")
+            )
+            ->get();
+
+dd($files);
+
+        //递归下载
 
         return Curl::to($updateUrl)
             ->withHeader(

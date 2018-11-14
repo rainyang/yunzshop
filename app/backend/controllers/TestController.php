@@ -438,4 +438,11 @@ class TestController extends BaseController
         dd($curr_month, $pre_month_1, $pre_month_2, $pre_month_3);
         (new OrderStatisticsService())->orderStatistics();
     }
+
+    public function ff()
+    {
+        $f = '2.1.328.zip';
+
+        dd(pathinfo($f));
+    }
 }
