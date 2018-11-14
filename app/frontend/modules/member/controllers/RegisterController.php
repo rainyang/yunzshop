@@ -533,11 +533,17 @@ class RegisterController extends ApiController
 
     public function getInviteCode()
     {
+        $close = \YunShop::request()->close;
         $is_invite = intval(\Setting::get('shop.member.is_invite'));
         $required =intval(\Setting::get('shop.member.required'));
 
+        if (isset($close) && 1 == $close) {
+            $is_invite = 0;
+            $required = 0;
+        }
+
         $data = [
-          'status' => $is_invite,
+            'status' => $is_invite,
             'required' => $required
         ];
 
