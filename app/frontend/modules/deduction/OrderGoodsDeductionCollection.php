@@ -21,7 +21,8 @@ class OrderGoodsDeductionCollection extends Collection
      */
     public function getUsablePoint()
     {
-        $result =  $this->reduce(function ($result, $orderGoodsDeduction) {
+        debug_log()->deduction('订单抵扣',"开始订单商品集合计算所有可用的虚拟币");
+        $result =  $this->reduce(function ($result, PreOrderGoodsDeduction $orderGoodsDeduction) {
             /**
              * @var PreOrderGoodsDeduction $orderGoodsDeduction
              */
@@ -31,15 +32,19 @@ class OrderGoodsDeductionCollection extends Collection
             }
             return $orderGoodsDeduction->getUsableCoin()->plus($result);
         });
+        debug_log()->deduction('订单抵扣',"完成订单商品集合计算所有可用的虚拟币");
+
         return $result;
     }
 
     /**
-     * 订单商品抵扣集合中 已使用的积分
+     * 订单商品抵扣集合中 已使用的抵扣
      * @return VirtualCoin
      */
     public function getUsedPoint()
     {
+        debug_log()->deduction('订单抵扣',"开始订单商品集合计算所有已用的虚拟币");
+
         $result = $this->reduce(function ($result, $orderGoodsDeduction) {
             /**
              * @var PreOrderGoodsDeduction $orderGoodsDeduction
@@ -51,6 +56,7 @@ class OrderGoodsDeductionCollection extends Collection
             return $result->plus($orderGoodsDeduction->getUsedCoin());
 
         },new InvalidVirtualCoin());
+        debug_log()->deduction('订单抵扣',"完成订单商品集合计算所有已用的虚拟币");
 
         return $result?:new InvalidVirtualCoin();
     }
