@@ -96,7 +96,36 @@
 
     </div>
 </form>
-
+<script>
+     $('#userRole').on('change', function(){
+        var checkBoxs=$("input[type='checkbox']")
+        //清空所有的选中项
+        checkBoxs.each(function(){
+            this.checked=false;
+            this.disabled = false;
+        })
+        var id=this.value;
+        $.ajax({
+        type:'get',
+        url:'http://www.wq.com/web/index.php?c=site&a=entry&m=yun_shop&do=6980&route=role.permission.index',
+        data:{role_id:id},
+        success:function(res){
+            console.log(res)
+            if(res.result==1){
+              var arr=res.data;
+            //   console.log(checkBoxs.length)
+              checkBoxs.each(function(){
+                  var valueRole=this.value;
+                  if(arr.indexOf(valueRole)>-1){
+                      this.checked=true;
+                      this.disabled = true;
+                  }
+              })
+            }
+        }
+    })
+});
+</script>
 
 
 @endsection
