@@ -244,7 +244,7 @@ class RegisterController extends ApiController
         if (!MemberService::smsSendLimit(\YunShop::app()->uniacid, $mobile)) {
             return $this->errorJson('发送短信数量达到今日上限');
         } else {
-            $this->sendSmsV2($mobile, $code, $state, $sms_type);
+            $this->sendSmsV2($mobile, $code, $state, 'reg', $sms_type);
         }
     }
 
