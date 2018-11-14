@@ -8,10 +8,12 @@
 
 namespace app\backend\modules\charts\modules\income\controllers;
 
+use app\backend\modules\charts\models\OrderIncomeCount;
 use app\common\components\BaseController;
 use app\common\helpers\PaginationHelper;
 use app\backend\modules\charts\models\Order;
 use app\common\models\order\OrderPluginBonus;
+use app\common\services\ExportService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Yunshop\StoreCashier\common\models\CashierOrder;
@@ -29,84 +31,55 @@ class ShopIncomeStatisticsController extends BaseController
 
         $pageSize = 10;
         $search = \YunShop::request()->search;
-        $list = Order::search($search)
-            ->selectRaw('sum(undividend) as undividend, FROM_UNIXTIME(created_at,"%Y-%m-%d")as date, sum(price) as price')
-            ->groupBy(DB::raw("FROM_UNIXTIME(UNIX_TIMESTAMP(created_at),'%Y-%m-%d')"))
-            ->with([
-                'hasOneOrderGoods' => function($q) {
-                    $q->selectRaw('sum(goods_cost_price) as cost_price, order_id')->groupBy('order_id');
-                },
-                'hasOneStoreOrder',
-                'hasOneSupplierOrder',
-                'hasOneCashierOrder',
-            ])
-//            ->orderBy('order_id', 'desc')
-            ->get()->toArray();
-//            ->paginate($pageSize);
-        dd($list);
-
-
-
-        $pager = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
-        return view('charts.income.shop_income_statistics',[
-            'list' => $list,
-            'pager' => $pager,
-            'search' => $search,
-        ])->render();
-    }
-
-    public function statistics()
-    {
-        $pageSize = 10;
-        $search = \YunShop::request()->search;
-        $list = Order::uniacid()
+        $list = OrderIncomeCount::search($search)
             ->where('status', 3)
-            ->selectRaw('FROM_UNIXTIME(created_at,"%Y-%m-%d")as date, sum(price) as price')
-            ->groupBy(DB::raw("FROM_UNIXTIME(created_at,'%Y-%m-%d')"))
-            ->with([
-                'hasManyOrderGoods' => function($q) {
-                    $q->selectRaw('sum(goods_cost_price) as cost_price, order_id')->groupBy(DB::raw("FROM_UNIXTIME(created_at,'%Y-%m-%d')"));
-                },
-                'hasManyStoreOrder',
-                'hasManySupplierOrder',
-                'hasManyCashierOrder',
-                'hasManyOrderPluginBonus'
-            ])
-            ->orderBy("date","desc")->take(10)
-//            ->orderBy('order_id', 'desc')
-            ->get()->toArray();
-//            ->paginate($pageSize);
-//        $list = DB::table('yz_order as o')
-//            ->where('o.status', 3)
-//            ->selectRaw('FROM_UNIXTIME(created_at,"%Y-%m-%d") as date, sum(price) as price')
-//            ->join('yz_order_goods as og', 'date', '=', 'og.FROM_UNIXTIME(o.created_at,"%Y-%m-%d")')
-//            ->get();
-        dd($list);
+            ->selectRaw('day_time, sum(undividend) as undividend, sum(price) as price, sum(cost_price) as cost_price')
+            ->selectRaw('sum(store) as store, sum(cashier) as cashier, sum(supplier) as supplier')
+            ->groupBy('day_time')
+            ->orderBy('day_time', 'desc')
+            ->paginate($pageSize);
 
-
+        $total = OrderIncomeCount::search($search)
+            ->where('status', 3)
+            ->selectRaw('sum(undividend) as undividend, sum(price) as price, sum(cost_price) as cost_price')
+            ->selectRaw('sum(store) as store, sum(cashier) as cashier, sum(supplier) as supplier')
+            ->first();
 
         $pager = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
         return view('charts.income.shop_income_statistics',[
             'list' => $list,
             'pager' => $pager,
             'search' => $search,
+            'total' => $total,
         ])->render();
     }
 
-    /**
-     *
-     */
-    public function count()
+    public function export()
     {
-        $date_start = Carbon::now()->yesterday()->startOfDay()->getTimestamp();
-
-        $date_end = Carbon::now()->yesterday()->endOfDay()->getTimestamp();
-
-        $shopOrder = Order::uniacid()->whereIn('finish_at', [$date_start, $date_end])->where('status',3)->sum('price');
-        $storeOrder = storeOrder::uniacid()->whereIn('created_at', [$date_start, $date_end])->where('has_settlement', 1)->sum('amount');
-        $supplierOrder = cashierOrder::uniacid()->whereIn('created_at', [$date_start, $date_end])->where('has_settlement', 1)->sum('amount');
-        $supplierOrder = supplierOrder::uniacid()->whereIn('created_at', [$date_start, $date_end])->sum('supplier_profit');
-        $undividend = OrderPluginBonus::uniacid()->whereIn('created_at', [$date_start, $date_end])->where('status', 1)->sum('undividend');
-        dd($date_end);
+        $search = \YunShop::request()->search;
+        $builder = OrderIncomeCount::search($search)
+            ->where('status', 3)
+            ->selectRaw('day_time, sum(undividend) as undividend, sum(price) as price, sum(cost_price) as cost_price')
+            ->selectRaw('sum(store) as store, sum(cashier) as cashier, sum(supplier) as supplier')
+            ->groupBy('day_time')
+            ->orderBy('day_time', 'desc');
+        $export_page = request()->export_page ? request()->export_page : 1;
+        $export_model = new ExportService($builder, $export_page);
+        $file_name = date('Ymdhis', time()) . '订单收益列表导出';
+        $export_data[0] = ['日期','订单金额','未被分润','商城收益','供应商收益','门店收益','收银台收益','总收益'];
+        foreach ($export_model->builder_model as $key => $item) {
+            $export_data[$key+1] = [
+                date('Y-m-d', $item->day_time),
+                $item->price ?: '0.00',
+                $item->undividend,
+                sprintf("%01.2f",($item->price - $item->cost_price) > 0 ? $item->price - $item->cost_price : '0.00'),
+                $item->supplier ?: '0.00',
+                $item->store ?: '0.00',
+                $item->cashier ?: '0.00',
+                sprintf("%01.2f",$item->price - $item->cost_price + $item->supplier + $item->store + $item->cashier) ?: '0.00'
+            ];
+        }
+        $export_model->export($file_name, $export_data, 'charts.income.shop-income-statistics.index');
+        return true;
     }
 }
