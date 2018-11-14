@@ -225,6 +225,8 @@ class RegisterController extends ApiController
 
         $state = \YunShop::request()->state ?: '86';
 
+        $sms_type = \YunShop::request()->sms_type;
+
         if (empty($mobile)) {
             return $this->errorJson('请填入手机号');
         }
@@ -252,7 +254,7 @@ class RegisterController extends ApiController
         if (!MemberService::smsSendLimit(\YunShop::app()->uniacid, $mobile)) {
             return $this->errorJson('发送短信数量达到今日上限');
         } else {
-            $this->sendSmsV2($mobile, $code, $state);
+            $this->sendSmsV2($mobile, $code, $state, $sms_type);
         }
     }
 
@@ -368,7 +370,7 @@ class RegisterController extends ApiController
         }
     }
 
-    public function sendSmsV2($mobile, $code, $state, $templateType = 'reg', $type)
+    public function sendSmsV2($mobile, $code, $state, $templateType = 'reg', $sms_type)
     {
         $sms = \Setting::get('shop.sms');
 
@@ -420,7 +422,7 @@ class RegisterController extends ApiController
             $sms = new Sms($top_client);
 
             //$type为1是注册，else 找回密码
-            if (!is_null($type) && $type == 1) {
+            if (!is_null($sms_type) && $sms_type == 1) {
                 $issendsms = $sms->send($mobile, $name, $content, $templateCode);
             }else{
                 $issendsms = $sms->send($mobile, $name, $content, $templateCodeForget);
@@ -436,7 +438,7 @@ class RegisterController extends ApiController
             $aly_sms = new AliyunSMS(trim($sms['aly_appkey']), trim($sms['aly_secret']));
 
             //$type为1是注册，else 找回密码
-            if (!is_null($type) && $type == 1) {
+            if (!is_null($sms_type) && $sms_type == 1) {
                 $response = $aly_sms->sendSms(
                     $sms['aly_signname'], // 短信签名
                     $sms['aly_templateCode'], // 注册短信模板编号
