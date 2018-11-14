@@ -720,7 +720,7 @@ class Member extends BackendModel
 
     public function getAvatarImageAttribute()
     {
-        return $this->avatar ? tomedia($this->avatar) : tomedia(\Setting::get('shop.shop.headimg'));
+        return $this->avatar ? yz_tomedia($this->avatar) : yz_tomedia(\Setting::get('shop.member.headimg'));
     }
 
     /**
