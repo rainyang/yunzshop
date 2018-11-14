@@ -48,7 +48,11 @@ class AlipayController extends PaymentController
         if ($verify_result) {
             if ($_POST['trade_status'] == 'TRADE_SUCCESS') {
                 if ($_POST['sign_type'] == 'RSA2') {
-                    $out_trade_no = substr($_POST['out_trade_no'], strpos($_POST['out_trade_no'], 'PN'));
+                    if (strpos($_POST['out_trade_no'], '_') !== false) {
+                        $out_trade_no = substr($_POST['out_trade_no'], strpos($_POST['out_trade_no'], 'PN'));
+                    } else {
+                        $out_trade_no = $_POST['out_trade_no'];
+                    }
                 } else {
                     $out_trade_no = $_POST['out_trade_no'];
                 }
@@ -76,7 +80,6 @@ class AlipayController extends PaymentController
     public function returnUrl()
     {
         $trade = \Setting::get('shop.trade');
-
         if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
             return redirect($trade['redirect_url'])->send();
         }
@@ -95,6 +98,7 @@ class AlipayController extends PaymentController
             }
         } else {
             //定义app支付类型，验证app回调信息
+            //验证是否是芸打包支付宝APP2.0支付
             if (isset($_GET['alipayresult']) && !empty($_GET['alipayresult'])) {
                 $alipayresult = json_decode($_GET['alipayresult'], true);
                 if (strpos($alipayresult['alipay_trade_app_pay_response']['out_trade_no'], '_') !== false) {
@@ -105,6 +109,11 @@ class AlipayController extends PaymentController
                     $out_trade_no = $alipayresult['alipay_trade_app_pay_response']['out_trade_no'];
                 }
                 \Log::debug('====================支付宝APP支付2.0======================:', $alipayresult['alipay_trade_app_pay_response']);
+            } elseif (strpos($_GET['out_trade_no'], '_') !== false) {
+                $data = explode('_', $_GET['out_trade_no']);
+                $out_trade_no = $data[1];
+                \YunShop::app()->uniacid = $data[0];
+                \Log::debug('=============商城支付宝APP支付2.0===========:', $data);
             } else {
                 $out_trade_no = $this->substr_var($_GET['out_trade_no']);
             }
@@ -124,6 +133,12 @@ class AlipayController extends PaymentController
                 redirect(Url::absoluteApp('home'))->send();
             }
         }
+    }
+
+    //判断返回的数据是否是json格式
+    protected function is_json($string) {
+        json_decode($string);
+        return (json_last_error() == JSON_ERROR_NONE);
     }
 
     public function refundNotifyUrl()

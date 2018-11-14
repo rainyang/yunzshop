@@ -400,6 +400,21 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                             <div class="col-sm-9 col-xs-12">
+                                <label class='radio-inline'>
+                                    <input type='radio' name='pay[alipay_pay_api]' value='0'
+                                           @if ( empty($set['alipay_pay_api']) || $set['alipay_pay_api'] == 0) checked @endif/>
+                                    旧接口
+                                </label>
+                                <label class='radio-inline'>
+                                    <input type='radio' name='pay[alipay_pay_api]' value='1'
+                                           @if ( $set['alipay_pay_api'] == 1) checked @endif />
+                                    新接口
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                            <div class="col-sm-9 col-xs-12">
                                 <div style="float:left; width:15%; height:30px;">
                                     <label class='radio-inline' style="padding-left:0px">收款支付宝账号：</label>
                                 </div>
@@ -409,7 +424,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                             <div class="col-sm-9 col-xs-12">
@@ -422,7 +436,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                             <div class="col-sm-9 col-xs-12">
@@ -525,12 +538,90 @@
                             </div>
                         </div>
 
-                        <div id="new_open_alipay"
-                             @if ( empty($set['api_version']) || $set['api_version'] == 1) style="display: none" @endif>
+                        {{--<div id="new_open_alipay"--}}
+                             {{--@if ( empty($set['api_version']) || $set['api_version'] == 1) style="display: none" @endif>--}}
+                            {{--<div class="form-group">--}}
+                                {{--<label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>--}}
+                                {{--<div class="col-sm-9 col-xs-12">--}}
+                                    {{--<div style="float:left; width:15%; height:30px;">--}}
+                                        {{--<label class='radio-inline' style="padding-left:0px">应用ID：</label>--}}
+                                    {{--</div>--}}
+                                    {{--<div style="float:left; width:85%; height:30px;">--}}
+                                        {{--<input class="col-sm-6" type="text" name="pay[alipay_app_id]"--}}
+                                               {{--value="{{ $set['alipay_app_id'] }}"/>--}}
+                                    {{--</div>--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
+
+                            {{--<div class="form-group">--}}
+                                {{--<label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>--}}
+                                {{--<div class="col-sm-9 col-xs-12">--}}
+                                    {{--<div style="float:left; width:15%; height:30px;">--}}
+                                        {{--<label class='radio-inline' style="padding-left:0px">开发者私钥：</label>--}}
+                                    {{--</div>--}}
+                                    {{--<div style="float:left;">--}}
+                                        {{--<textarea id="rsa_private_key" @if (!empty($set['rsa_private_key'])) style="display: none" @endif name="pay[rsa_private_key]" class="form-control rich-text" cols="85"--}}
+                                                  {{--rows="5">{{ $set['rsa_private_key'] }}</textarea>--}}
+                                    {{--</div>--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
+
+                            {{--<div class="form-group">--}}
+                                {{--<label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>--}}
+                                {{--<div class="col-sm-9 col-xs-12">--}}
+                                    {{--<div style="float:left; width:15%; height:30px;">--}}
+                                        {{--<label class='radio-inline' style="padding-left:0px">支付宝公钥：</label>--}}
+                                    {{--</div>--}}
+                                    {{--<div style="float:left;">--}}
+                                        {{--<textarea id="rsa_public_key" @if (!empty($set['rsa_public_key'])) style="display: none" @endif name="pay[rsa_public_key]" class="form-control rich-text" cols="85"--}}
+                                                  {{--rows="5">{{ $set['rsa_public_key'] }}</textarea>--}}
+                                    {{--</div>--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
+                            {{--@if(!empty($set['rsa_public_key']) || !empty($set['rsa_private_key']))--}}
+                            {{--<div class="form-group">--}}
+                                    {{--<label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>--}}
+                                    {{--<div class="col-sm-9 col-xs-12">--}}
+                                        {{--<input type="button" name="rsa_alipay_key" class="btn btn-success" value="重新设置公私钥" />--}}
+                                    {{--</div>--}}
+                            {{--</div>--}}
+                            {{--@endif--}}
+                        {{--</div>--}}
+                        <div id="old_open_alipay">
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                                 <div class="col-sm-9 col-xs-12">
                                     <div style="float:left; width:15%; height:30px;">
+                                        <label class='radio-inline' style="padding-left:0px">付款账号：</label>
+                                    </div>
+                                    <div style="float:left; width:85%; height:30px;">
+                                        <input class="col-sm-6" type="text" name="pay[alipay_number]"
+                                               value="{{ $set['alipay_number'] }}"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                                <div class="col-sm-9 col-xs-12">
+                                    <div style="float:left; width:15%; height:30px;">
+                                        <label class='radio-inline' style="padding-left:0px">付款账户名：</label>
+                                    </div>
+                                    <div style="float:left; width:85%; height:30px;">
+                                        <input class="col-sm-6" type="text" name="pay[alipay_name]"
+                                               value="{{ $set['alipay_name'] }}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">支付宝新接口统一配置</label>
+                        <div class="form-group"><div class="col-sm-9 col-xs-12">支付宝支付新接口与支付宝提现新接口的配置</div></div>
+                        <div id="alipay_public_api" @if ( empty($set['alipay_withdrawals']) && empty($set['alipay'])) style="display:none" @endif>
+                            <div class="form-group">
+                                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                                <div class="col-sm-9 col-xs-12">
+                                    <div style="float:left; width:15%;height:30px;">
                                         <label class='radio-inline' style="padding-left:0px">应用ID：</label>
                                     </div>
                                     <div style="float:left; width:85%; height:30px;">
@@ -539,7 +630,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                                 <div class="col-sm-9 col-xs-12">
@@ -566,39 +656,13 @@
                                 </div>
                             </div>
                             @if(!empty($set['rsa_public_key']) || !empty($set['rsa_private_key']))
-                            <div class="form-group">
+                                <div class="form-group">
                                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                                     <div class="col-sm-9 col-xs-12">
                                         <input type="button" name="rsa_alipay_key" class="btn btn-success" value="重新设置公私钥" />
                                     </div>
-                            </div>
+                                </div>
                             @endif
-                        </div>
-                        <div id="old_open_alipay" @if ( isset($set['api_version']) && $set['api_version'] == 2) style="display: none" @endif>>
-                            <div class="form-group">
-                                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-                                <div class="col-sm-9 col-xs-12">
-                                    <div style="float:left; width:15%; height:30px;">
-                                        <label class='radio-inline' style="padding-left:0px">付款账号：</label>
-                                    </div>
-                                    <div style="float:left; width:85%; height:30px;">
-                                        <input class="col-sm-6" type="text" name="pay[alipay_number]"
-                                               value="{{ $set['alipay_number'] }}"/>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-                                <div class="col-sm-9 col-xs-12">
-                                    <div style="float:left; width:15%; height:30px;">
-                                        <label class='radio-inline' style="padding-left:0px">付款账户名：</label>
-                                    </div>
-                                    <div style="float:left; width:85%; height:30px;">
-                                        <input class="col-sm-6" type="text" name="pay[alipay_name]"
-                                               value="{{ $set['alipay_name'] }}"/>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
 
@@ -832,6 +896,8 @@
                         $(":radio[name='pay[alipay]']").click(function () {
                             if ($(this).val() == 1) {
                                 $("#alipay_block").show();
+                                //新接口
+                                $("#alipay_public_api").show();
                             }
                             else {
                                 $("#alipay_block").hide();
@@ -849,6 +915,9 @@
                         $(":radio[name='pay[alipay_withdrawals]']").click(function () {
                             if ($(this).val() == 1) {
                                 $("#alipay_withdrawals").show();
+
+                                //新接口
+                                $("#alipay_public_api").show();
                             }
                             else {
                                 $("#alipay_withdrawals").hide();
@@ -863,16 +932,16 @@
                             }
                         })
                         //支付宝公私钥
-                        $(":radio[name='pay[api_version]']").click(function () {
-                            if ($(this).val() == 2) {
-                                $("#new_open_alipay").show();
-                                $("#old_open_alipay").hide();
-                            }
-                            else {
-                                $("#new_open_alipay").hide();
-                                $("#old_open_alipay").show();
-                            }
-                        })
+                        // $(":radio[name='pay[api_version]']").click(function () {
+                        //     if ($(this).val() == 2) {
+                        //         $("#new_open_alipay").show();
+                        //         $("#old_open_alipay").hide();
+                        //     }
+                        //     else {
+                        //         $("#new_open_alipay").hide();
+                        //         $("#old_open_alipay").show();
+                        //     }
+                        // })
                         $(":radio[name='pay[another]']").click(function () {
                             if ($(this).val() == 1) {
                                 $("#another").show();
