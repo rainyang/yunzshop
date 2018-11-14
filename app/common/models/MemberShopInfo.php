@@ -472,7 +472,8 @@ class MemberShopInfo extends BaseModel
         $data = self::select('member_id')->where('invite_code', $inviteCode)
             ->uniacid()
             ->count();
-        if($data>0){
+
+        if($data > 0){
             return true;
         }else{
             return false;
