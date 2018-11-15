@@ -8,6 +8,9 @@
 
 namespace app\backend\controllers;
 
+
+use app\backend\modules\charts\modules\member\services\LowerCountService;
+use app\backend\modules\charts\modules\member\services\LowerOrderService;
 use app\backend\models\Withdraw;
 use app\backend\modules\charts\models\OrderIncomeCount;
 use app\backend\modules\charts\modules\order\services\OrderStatisticsService;
@@ -22,7 +25,6 @@ use app\common\models\Member;
 use app\common\models\member\ChildrenOfMember;
 use app\common\models\member\ParentOfMember;
 use app\common\models\Order;
-
 use app\common\models\OrderGoods;
 use app\common\models\OrderPay;
 use app\common\models\Flow;
@@ -192,10 +194,6 @@ class TestController extends BaseController
 
     public function tt()
     {
-
-        $this->synRun(5, '');
-        exit;
-
         $member_relation = new MemberRelation();
 
         $member_relation->createParentOfMember();
@@ -298,144 +296,4 @@ class TestController extends BaseController
 
     }
 
-    public function wf()
-    {
-        $uniacid = \YunShop::app()->uniacid;
-        //团队总人数
-        $team_member = DB::select('select child_id from ims_yz_member_children where uniacid=' . $uniacid . ' and member_id=1');
-        $team_member_count = DB::select('select count(child_id) as c from ims_yz_member_children where uniacid=' . $uniacid . ' and member_id=1');
-        $team_all = $team_member_count[0]['c'];
-
-        foreach ($team_member as $item) {
-            $order_money[] = DB::select("select sum(price) as price from ims_yz_order where status in (1,2,3) and uid=" . $item['child_id']);
-        }
-        //团队订单总金额
-        $team_money_total = 0;
-        foreach ($order_money as $k => $item) {
-            $team_money_total += $item[0]['price'];
-        }
-
-        return $this->successJson('ok', [
-            'team_all' => $team_all,
-            'team_money_total' => $team_money_total
-        ]);
-    }
-
-    public function ww()
-    {
-        $uniacid = \YunShop::app()->uniacid;
-        $level_1_member = DB::select('select member_id,level,count(1) as total from ims_yz_member_children where uniacid=' . $uniacid . ' and level in (1,2,3) group by member_id,level');
-        $level_1_member = collect($level_1_member);
-        $result = [];
-//        dd($level_1_member);
-        foreach ($level_1_member as $val) {
-            if (!isset($result[$val['member_id']])) {
-                $result[$val['member_id']] = [
-                    'member_id' => $val['member_id'],
-                    'first_total' => $val['total'],
-                    'second_total' => 0,
-                    'third_total' => 0,
-                    'team_total' => $val['total']
-                ];
-            } else {
-                switch ($val['level']) {
-                    case 2:
-                        $result[$val['member_id']]['second_total'] = $val['total'];
-                        break;
-                    case 3:
-                        $result[$val['member_id']]['third_total'] = $val['total'];
-                        break;
-                }
-
-                $result[$val['member_id']]['team_total'] += $val['total'];
-            }
-        }
-
-
-    }
-
-    public function qe()
-    {
-        $uniacid = \YunShop::app()->uniacid;
-        $member_1 = DB::select('select uniacid,child_id,level from ims_yz_member_children where level =1' . ' and uniacid =' . $uniacid . ' order by child_id');
-
-        foreach ($member_1 as $k => $item) {
-            $order_1_all[] = DB::select('select uid,sum(price) as money,count(id) as total from ims_yz_order where uid=' . $item['child_id']);
-        }
-//        dd($order_1_all);
-        $member_2 = DB::select('select uniacid,child_id,level from ims_yz_member_children where level =2' . ' and uniacid =' . $uniacid . ' order by child_id');
-
-        foreach ($member_2 as $k => $item) {
-            $order_2_all[] = DB::select('select uid,sum(price) as money,count(id) as total from ims_yz_order where uid=' . $item['child_id']);
-        }
-        dd($order_2_all);
-    }
-
-
-    public function qw()
-    {
-        //团队所有会员
-        $uniacid = \YunShop::app()->uniacid;
-        $team_member = DB::select('select child_id from ims_yz_member_children where uniacid=' . $uniacid . ' and member_id=1');
-
-        foreach ($team_member as $item) {
-            $order_total[] = DB::select("select count(id) as total from ims_yz_order where status in (1,2,3) and uid=" . $item['child_id']);
-        }
-
-        //团队订单总数
-        $team__total = 0;
-        foreach ($order_total as $k => $item) {
-            $team__total += $item[0]['total'];
-        }
-
-        dd($team__total);
-    }
-
-    public function mr()
-    {
-        /* $a = [1,2,3,4,5];
-
-
-         foreach ($a as $val) {
-             $b = array_shift($a);
-         }
-
-
-         dd($b, $a);
-
-         exit;*/
-
-        $uid = 163764;
-        $o_parent_id = 163762;
-        $n_parent_id = 163768;
-
-        $member_relation = new MemberRelation();
-
-        $member_relation->build($uid, $n_parent_id);
-
-//        $member = Member::getMemberByUid($uid)->first();
-//
-//        event(new MemberRelationEvent($member));
-        //       event(new MemberCreateRelationEvent($uid, $n_parent_id));exit;
-//        (new MemberRelation())->changeMemberOfRelation($uid, $o_parent_id, $n_parent_id);
-        //(new MemberRelation())->parent->addNewParentData($uid, $n_parent_id);
-
-    }
-
-    public function v()
-    {
-        $level = MrytLevelModel::getList()->get();
-        dd($level);
-
-        $curr_month = date('Ym', time());
-
-        $pre_month_1 = date('n', strtotime('-1 month'));
-
-        $pre_month_2 = date('n', strtotime('-2 month'));
-
-        $pre_month_3 = date('n', strtotime('-3 month'));
-
-        dd($curr_month, $pre_month_1, $pre_month_2, $pre_month_3);
-        (new OrderStatisticsService())->orderStatistics();
-    }
 }
