@@ -254,7 +254,7 @@ class MemberOfficeAccountService extends MemberService
         $url = Session::get('client_url') ?: $this->_getFrontJumpUrl();
 
         if ($url === false || $url == '') {
-            $url = Url::absoluteApp('home');
+            $url = Url::absoluteApp('home') . '&t=' . time();
         }
 
         return $url;
