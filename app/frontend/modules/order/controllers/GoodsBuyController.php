@@ -36,7 +36,6 @@ class GoodsBuyController extends PreOrderController
     public function index()
     {
         $this->validateParam();
-        dd((new Trade())->toArray());
         return parent::index();
     }
 }
