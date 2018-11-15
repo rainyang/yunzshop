@@ -58,12 +58,6 @@ class RegisterController extends ApiController
                 return $this->errorJson($invitecode['json']);
             }
 
-//            $invite_code = MemberService::inviteCode();
-//
-//            if ($invite_code['status'] != 1) {
-//                return $this->errorJson($invite_code['json']);
-//            }
-
             $msg = MemberService::validate($mobile, $password, $confirm_password);
 
             if ($msg['status'] != 1) {
@@ -528,11 +522,17 @@ class RegisterController extends ApiController
 
     public function getInviteCode()
     {
+        $close = \YunShop::request()->close;
         $is_invite = intval(\Setting::get('shop.member.is_invite'));
         $required =intval(\Setting::get('shop.member.required'));
 
+        if (isset($close) && 1 == $close) {
+            $is_invite = 0;
+            $required = 0;
+        }
+
         $data = [
-          'status' => $is_invite,
+            'status' => $is_invite,
             'required' => $required
         ];
 
