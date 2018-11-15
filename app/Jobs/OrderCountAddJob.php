@@ -40,6 +40,9 @@ class OrderCountAddJob implements ShouldQueue
         $field = str_replace('-','_',$this->code);
         $order_income = OrderIncomeCount::where('order_id', $this->goods_id)->first();
         if ($order_income) {
+            if ($order_income->$field > 0) {
+                return true;
+            }
             $order_income->$field = $this->sum;
             $order_income->undividend += $this->undividend;
             $order_income->save();
