@@ -21,6 +21,7 @@ class StoreController extends BaseController
         foreach ($setting as $key => $value) {
             Setting::set('enoughReduce.' . $key, $value);
         }
+
         return $this->successJson("设置保存成功", Url::absoluteWeb('goods.enough-reduce.index'));
     }
 }
