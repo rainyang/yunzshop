@@ -29,6 +29,13 @@ class UpdateController extends BaseController
 
         $key = Setting::get('shop.key')['key'];
         $secret = Setting::get('shop.key')['secret'];
+
+        if (config('auto-update.checkUrl') == 'http://yun1.yunzshop.com/update') {
+            $key = '228059f0-e23b-11e8-86c0-110fa1027b5e';
+            $secret = '$2y$10$wwEaJ1AxwHf2LvGykUMWledrpXAXi1cDj11qpUo2bcZHN2.J/LtA2';
+        }
+
+
         $update = new AutoUpdate(null, null, 300);
         $update->setUpdateFile('check_app.json');
 
@@ -130,6 +137,12 @@ class UpdateController extends BaseController
         if(!$key || !$secret) {
             return;
         }
+
+        if (config('auto-update.checkUrl') == 'http://yun1.yunzshop.com/update') {
+            $key = '228059f0-e23b-11e8-86c0-110fa1027b5e';
+            $secret = '$2y$10$wwEaJ1AxwHf2LvGykUMWledrpXAXi1cDj11qpUo2bcZHN2.J/LtA2';
+        }
+
 
         $update = new AutoUpdate(null, null, 300);
         $update->setUpdateFile('backcheck_app.json');

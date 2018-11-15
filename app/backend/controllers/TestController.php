@@ -32,6 +32,7 @@ use app\common\repositories\ExpressCompany;
 use app\common\services\MessageService;
 use app\frontend\modules\member\models\SubMemberModel;
 use Carbon\Carbon;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Yunshop\Commission\Listener\OrderCreatedListener;
@@ -441,8 +442,10 @@ class TestController extends BaseController
 
     public function ff()
     {
-        $f = '2.1.328.zip';
+        $updateFile = storage_path('app/auto-update/temp') . '/1.z01';
 
-        dd(pathinfo($f));
+        $zip = zip_open($updateFile);
+
+        dd($zip);
     }
 }

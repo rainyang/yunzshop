@@ -441,6 +441,7 @@ class AutoUpdate
                 ];
             }
         }
+
         // Sort versions to install
         usort($this->_updates, function ($a, $b) {
             return version::compare($a['version'], $b['version']);
@@ -502,17 +503,46 @@ class AutoUpdate
         $this->_log->info(sprintf('Downloading update "%s" to "%s"', $updateUrl, $updateFile));
 
         //获取文件夹数据
-        $checkUpdateFileUurl = $updateUrl . '/check';
+//        $checkUpdateFileUurl = $updateUrl . '/check';
+//
+//        $files = Curl::to($checkUpdateFileUurl)
+//            ->withHeader(
+//                "Authorization: Basic " . base64_encode("{$this->_username}:{$this->_password}")
+//            )
+//            ->asJsonResponse(true)
+//            ->get();
+//
+//        /*if (!is_null($files) && !empty($files['result'])) {
+//            foreach ($files['result'] as $item) {
+//                $updateUrl .= '/download/' . $item;
+//                $updateFile = $this->_tempDir . $item;
+//
+//                Curl::to($updateUrl)
+//                    ->withHeader(
+//                        "Authorization: Basic " . base64_encode("{$this->_username}:{$this->_password}")
+//                    )
+//                    ->withContentType('application/zip, application/octet-stream')
+//                    ->withOption('FOLLOWLOCATION',true)
+//                    ->withOption('TIMEOUT',100)
+//                    ->download($updateFile);
+//            }
+//        }*/
+//        echo $files['result'][1];
+//        $item = $files['result'][1];
+//        $updateUrl .= '/download/' . $item;
+//        $updateFile = $this->_tempDir . $item;
+//
+//        return Curl::to($updateUrl)
+//            ->withHeader(
+//                "Authorization: Basic " . base64_encode("{$this->_username}:{$this->_password}")
+//            )
+//            ->withContentType('application/zip, application/octet-stream')
+//            ->withOption('FOLLOWLOCATION',true)
+//            ->withOption('TIMEOUT',100)
+//            ->download($updateFile);
+//echo 'okok';
+//return true;
 
-        $files = Curl::to($checkUpdateFileUurl)
-            ->withHeader(
-                "Authorization: Basic " . base64_encode("{$this->_username}:{$this->_password}")
-            )
-            ->get();
-
-dd($files);
-
-        //递归下载
 
         return Curl::to($updateUrl)
             ->withHeader(
