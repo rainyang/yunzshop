@@ -47,10 +47,10 @@ class OrderCountContentJob implements  ShouldQueue
         }
         $data['address'] = $this->address();
         $data['buy_name'] = $this->buyName();
-        $data['shop_name'] = $this->shopName();
-        $parent = $this->referrerName()['parent_id'];
+        $parent = $this->referrerName();
         $data['parent_id'] = $parent['parent_id'];
         $data['parent_name'] = $parent['nickname'];
+        $data['shop_name'] = $this->shopName();
         $data['cost_price'] = $this->costPrice();
 
         OrderIncomeCount::create($data);
