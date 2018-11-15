@@ -41,7 +41,7 @@
                                                     用户姓名/ID/昵称/手机号
                                                 </option>
                                                 <option value="goods_id"{{--order_goods--}}
-                                                        @if( array_get($requestSearch,'ambiguous.field','')=='order_goods')  selected="selected"@endif>
+                                                        @if( array_get($requestSearch,'ambiguous.field','')=='goods_id')  selected="selected"@endif>
                                                     商品名称/ID
                                                 </option>
                                                 {{--<option value="goods_id"--}}
@@ -54,19 +54,17 @@
                                                 </option>
                                             </select>
                                         </div>
-                                        <div class="form-group  col-md-2 col-sm-6">
+                                        <div class='form-group col-sm-4 col-lg-4 col-xs-12'>
 
                                             <input class="form-control" name="search[ambiguous][string]" type="text"
                                                    value="{{array_get($requestSearch,'ambiguous.string','')}}"
                                                    placeholder="订单号/支付单号" id="string">
+                                        </div>
 
                                             <div class="form-group notice" id="goods_name">
-                                                <div class="col-sm-4">
-                                                    <input type='hidden' id='noticeopenid' name='search[order][goods_id]' value="{{$search['order']['goods_id']}}" />
-                                                    {{--<input type="hidden" name="shop_order_search[ambiguous][string]" value="" id="string">--}}
-                                                    {{--<input type="hidden" name="shop_order_search[ambiguous][field]" value="goods_id">--}}
+                                                <div class="col-sm-4 col-lg-4 col-xs-12" style="position:relative;top:-15px;">
                                                     <div class='input-group'>
-                                                        <input type="text" name="order" maxlength="30" value="" id="saler" class="form-control" readonly />
+                                                        <input type="text" name="search[ambiguous][name]" maxlength="30" value="{{array_get($requestSearch,'ambiguous.name','')}}" id="saler" class="form-control" readonly />
                                                         <div class='input-group-btn'>
                                                             <button class="btn btn-default" type="button" onclick="popwin = $('#modal-module-menus-notice').modal();">选择商品</button>
                                                             <button class="btn btn-danger" type="button" onclick="$('#noticeopenid').val('');$('#saler').val('');$('#saleravatar').hide()">清除选择</button>
@@ -94,7 +92,7 @@
                                             </div>
 
 
-                                        </div>
+
                                         <div class="form-group form-group col-sm-8 col-lg-2 col-xs-12">
 
                                             <select name="search[pay_type]" class="form-control">
@@ -392,6 +390,7 @@
         function select_good (o) {
             console.log(o.id)
             $('input[name="search[ambiguous][string]"]').val(o.id);
+            $('input[name="search[ambiguous][name]"]').val(o.title);
             $("#saleravatar").show();
             $("#saleravatar").find('img').attr('src', o.thumb);
             $("#saler").val(o.title);
