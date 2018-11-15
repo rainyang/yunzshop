@@ -43,6 +43,7 @@ use Illuminate\Support\Collection;
  * @method static self insert()
  * @method static self set()
  * @method static self exclude($fields)
+ * @method static self getModel()
  */
 class BaseModel extends Model
 {
