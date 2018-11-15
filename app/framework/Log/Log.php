@@ -48,7 +48,13 @@ class Log
         }
         file_put_contents($this->getFileName('deduction'), "{$key}:{$value}" . PHP_EOL, FILE_APPEND);
     }
-
+    public function freight($key, $value)
+    {
+        if (!$this->enable('freight')) {
+            return;
+        }
+        file_put_contents($this->getFileName('freight'), "{$key}:{$value}" . PHP_EOL, FILE_APPEND);
+    }
     private function getFileName($name)
     {
 
