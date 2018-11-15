@@ -32,6 +32,8 @@ class ReceiveResendGoods extends ChangeStatusOperation
     public function execute()
     {
         parent::execute();
-        OrderService::orderReceive(['order_id'=>$this->order_id]);
+        if($this->status == 2){
+            OrderService::orderReceive(['order_id'=>$this->order_id]);
+        }
     }
 }
