@@ -54,15 +54,15 @@
                                                 </option>
                                             </select>
                                         </div>
-                                        <div class='form-group col-sm-4 col-lg-4 col-xs-12'>
+                                        <div class='form-group col-sm-4 col-lg-3 col-xs-12'>
 
                                             <input class="form-control" name="search[ambiguous][string]" type="text"
                                                    value="{{array_get($requestSearch,'ambiguous.string','')}}"
                                                    placeholder="订单号/支付单号" id="string">
-                                        </div>
+
 
                                             <div class="form-group notice" id="goods_name">
-                                                <div class="col-sm-4 col-lg-4 col-xs-12" style="position:relative;top:-15px;">
+                                                <div >
                                                     <div class='input-group'>
                                                         <input type="text" name="search[ambiguous][name]" maxlength="30" value="{{array_get($requestSearch,'ambiguous.name','')}}" id="saler" class="form-control" readonly />
                                                         <div class='input-group-btn'>
@@ -91,7 +91,7 @@
                                                 </div>
                                             </div>
 
-
+                                        </div>
 
                                         <div class="form-group form-group col-sm-8 col-lg-2 col-xs-12">
 
@@ -120,7 +120,7 @@
                                         </div>
                                         <div class="form-group col-sm-8 col-lg-5 col-xs-12">
 
-                                            <select name="search[time_range][field]" class="form-control form-time">
+                                            <select name="search[time_range][field]" class="form-control form-time" >
                                                 <option value=""
                                                         @if( array_get($requestSearch,'time_range.field',''))selected="selected"@endif >
                                                     操作时间
