@@ -553,6 +553,7 @@ class MemberController extends ApiController
         $password         = \YunShop::request()->password;
         $confirm_password = \YunShop::request()->password;
         $uid              = \YunShop::app()->getMemberId();
+        $close_invitecode = \YunShop::request()->close;
 
 
         $member_model = MemberModel::getMemberById($uid);
@@ -564,12 +565,14 @@ class MemberController extends ApiController
                 return $this->errorJson($check_code['json']);
             }
 
-            $invitecode = MemberService::inviteCode();
 
-            if ($check_code['status'] != 1) {
-                return $this->errorJson($invitecode['json']);
+            if (!empty($close_invitecode)) {
+                $invitecode = MemberService::inviteCode();
+
+                if ($invitecode['status'] != 1) {
+                    return $this->errorJson($invitecode['json']);
+                }
             }
-
 
             $msg = MemberService::validate($mobile, $password, $confirm_password);
 
