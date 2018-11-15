@@ -285,7 +285,7 @@ class HomePageController extends ApiController
         }
 
         //增加小程序回去默认装修数据
-        $result['applet'] = self::defaultDesign();
+        //$result['applet'] = self::defaultDesign();
 
         //增加验证码功能
         $status = Setting::get('shop.sms.status');

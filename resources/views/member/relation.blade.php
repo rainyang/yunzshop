@@ -2,12 +2,16 @@
 @section('title', '会员关系')
 @section('content')
 
-<link href="{{static_url('yunshop/css/member.css')}}" media="all" rel="stylesheet" type="text/css"/>
-<style>
-    .radio-inline {
-        padding-top: 4px !important;
-    }
-</style>
+    <link href="{{static_url('yunshop/css/member.css')}}" media="all" rel="stylesheet" type="text/css"/>
+    <style>
+        .radio-inline {padding-top: 4px !important;}
+    </style>
+    <style type='text/css'>
+        .multi-item {height: 110px;}
+        .img-thumbnail {width: 100px;height: 100px}
+        .img-nickname {position: absolute;bottom: 0px;line-height: 25px;height: 25px;color: #fff;text-align: center;width: 90px;bottom: 55px;background: rgba(0, 0, 0, 0.8);left: 5px;}
+        .multi-img-details {padding: 5px;}
+    </style>
     <div class="w1200 m0a">
         <div class="rightlist">
 
@@ -21,7 +25,7 @@
                             <div class="col-sm-9 col-xs-12">
                                 <label class="radio-inline"><input type="radio"  name="setdata[status]" value="1" @if($set['status'] ==1)
                                     checked="checked"
- @endif/> 开启</label>
+                                            @endif/> 开启</label>
                                 <label class="radio-inline"><input type="radio"  name="setdata[status]" value="0" @if($set['status'] ==0)
                                     checked="checked"
                                             @endif/> 关闭</label>
@@ -31,7 +35,7 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">获得发展下线权利条件</label>
                             <div class="col-sm-9 col-xs-12">
                                 <label class="radio-inline"><input type="radio"  name="setdata[become]" value="0" @if($set['become'] ==0) checked="checked"
-                                    @endif/> 无条件</label>
+                                            @endif/> 无条件</label>
                             </div>
                         </div>
                         <div class="form-group">
@@ -43,10 +47,29 @@
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                            <div class="col-sm-9 col-xs-12">
+                                <label class="radio-inline">
+                                    <input type="radio" name="setdata[become]" value="2"
+                                           @if($set['become'] == 2)
+                                           checked="checked" @endif />
+                                    或</label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="setdata[become]" value="3"
+                                           @if($set['become'] == 3)
+                                           checked="checked" @endif />
+                                    与</label>
+                                <span class='help-block'><b>[或]</b>满足以下任意条件都可以升级<br><b>[与]</b>满足以下所有条件才可以升级</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                             <div class="col-sm-6">
                                 <div class='input-group become' >
-                                    <div class='input-group-addon become' ><label class="radio-inline" ><input type="radio"  name="setdata[become]" value="2" @if($set['become'] ==2) checked="checked"
-                                                    @endif /> 消费达到</label></div>
+                                    <div class='input-group-addon become' >
+                                        <label class="radio-inline" >
+                                            <input type="checkbox"  name="setdata[become_term][2]" value="2" @if($set['become_term'][2]) checked="checked"@endif /> 消费达到
+                                        </label>
+                                    </div>
                                     <input type='text' class='form-control' name='setdata[become_ordercount]' value="{{$set['become_ordercount']}}" />
                                     <div class='input-group-addon' style="border:0" >次</div>
                                 </div>
@@ -56,8 +79,11 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                             <div class="col-sm-6">
                                 <div class='input-group' >
-                                    <div class='input-group-addon'  ><label class="radio-inline" ><input type="radio"  name="setdata[become]" value="3" @if($set['become'] ==3) checked="checked"
-                                                    @endif /> 消费达到</label></div>
+                                    <div class='input-group-addon'  >
+                                        <label class="radio-inline" >
+                                            <input type="checkbox"  name="setdata[become_term][3]" value="3" @if($set['become_term'][3]) checked="checked"@endif /> 消费达到
+                                        </label>
+                                    </div>
                                     <input type='text' class='form-control' name='setdata[become_moneycount]' value="{{$set['become_moneycount']}}" />
                                     <div class='input-group-addon' style="border:0">元</div>
                                 </div>
@@ -67,34 +93,60 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                             <div class="col-sm-6">
-                                <input type='hidden' class='form-control' id='goods_id' name='setdata[become_goods_id]' value="{{$set['become_goods_id']}}" />
+                                {{--<input type='hidden' class='form-control' id='goods_id' name='setdata[become_goods_id]' value="{{$set['become_goods_id']}}" />--}}
                                 <div class='input-group' >
-                                    <div class='input-group-addon'  ><label class="radio-inline" ><input type="radio"  name="setdata[become]" value="4" @if($set['become'] ==4) checked="checked"
-                                                    @endif /> 购买商品</label></div>
-                                    <input type='text' class='form-control' id='goods' value="@if(!empty($goods))[{{$goods['id']}}]{{$goods['title']}}
-@endif" readonly />
+                                    <div class='input-group-addon'  >
+                                        <label class="radio-inline" ><input type="checkbox"  name="setdata[become_term][4]" value="4" @if($set['become_term'][4]) checked="checked"
+                                                    @endif /> 购买商品
+                                        </label>
+                                    </div>
+                                    <input type='text' class='form-control' id='goods' value="@if(!empty($goods))@foreach($goods as $good){{$good['title']}};@endforeach
+                                    @endif" readonly />
                                     <div class="input-group-btn">
                                         <button type="button" onclick="$('#modal-goods').modal()" class="btn btn-default" >选择商品</button>
                                     </div>
                                 </div>
+                                <span class="help-block">可指定多件商品，只需购买其中一件就可以成为推广员</span>
+                                <div class="input-group multi-img-details" id='goods_id'>
+                                    @foreach ($goods as $goods_id => $good)
+                                        <div class="multi-item saler-item" openid="{{ $goods_id }}">
+                                            <img class="img-responsive img-thumbnail" src='{{ tomedia($good['thumb']) }}'
+                                                 onerror="this.src='{{static_url('resource/images/nopic.jpg')}}'; this.title='图片未找到.'">
+                                            <div class='img-nickname'>{{ $good['title'] }}</div>
+                                            <input type="hidden" value="{{ $goods_id }}"
+                                                   name="setdata[become_goods_id][{{ $goods_id }}]">
+                                            <input type="hidden" value="{{ $goods_id }}"
+                                                   name="setdata[become_goods][{{ $goods_id }}][goods_id]">
+                                            <input type="hidden" value="{{ $good['title'] }}"
+                                                   name="setdata[become_goods][{{ $goods_id }}][title]">
+                                            <input type="hidden" value="{{ $good['thumb'] }}"
+                                                   name="setdata[become_goods][{{ $goods_id }}][thumb]">
+                                            <em onclick="remove_member(this)" class="close">×</em>
+                                        </div>
+                                    @endforeach
+                                </div>
+
                             </div>
                         </div>
 
                         @if (app('plugins')->isEnabled('sales-commission'))
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-                            <div class="col-sm-6">
-                                <div class='input-group' >
-                                    <div class='input-group-addon'  ><label class="radio-inline" ><input type="radio"  name="setdata[become]" value="5" @if($set['become'] ==5) checked="checked"
-                                                    @endif /> 自购销售佣金累计达到</label></div>
-                                    <input type='text' class='form-control' name='setdata[become_salesdividend]' value="{{$set['become_salesdividend']}}" />
-                                    <div class='input-group-addon' style="border:0">元</div>
+                            <div class="form-group">
+                                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                                <div class="col-sm-6">
+                                    <div class='input-group' >
+                                        <div class='input-group-addon'  >
+                                            <label class="radio-inline" >
+                                                <input type="checkbox"  name="setdata[become_term][5]" value="5" @if($set['become_term'][5]) checked="checked"@endif /> 自购销售佣金累计达到
+                                            </label>
+                                        </div>
+                                        <input type='text' class='form-control' name='setdata[become_selfmoney]' value="{{$set['become_selfmoney']}}" />
+                                        <div class='input-group-addon' style="border:0">元</div>
+                                    </div>
+                                    <span class="help-block">该条件只针对销售佣金插件使用</span>
                                 </div>
-                                <span class="help-block">该条件只针对销售佣金插件使用</span>
                             </div>
-                        </div>
-                        @endif
-                        <!-- END -->
+                    @endif
+                    <!-- END -->
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                             <div class="col-sm-9 col-xs-12">
@@ -109,7 +161,7 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">成为下线条件</label>
                             <div class="col-sm-9 col-xs-12">
                                 <label class="radio-inline"><input type="radio"  name="setdata[become_child]" value="0" @if($set['become_child'] ==0) checked="checked"
-                                    @endif/> 首次点击分享链接</label>
+                                            @endif/> 首次点击分享链接</label>
                                 <label class="radio-inline"><input type="radio"  name="setdata[become_child]" value="1" @if($set['become_child'] ==1) checked="checked"
                                             @endif /> 首次下单</label>
                                 <label class="radio-inline"><input type="radio"  name="setdata[become_child]" value="2" @if($set['become_child'] ==2) checked="checked"
@@ -121,7 +173,7 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">发展下线是否需要审核</label>
                             <div class="col-sm-9 col-xs-12">
                                 <label class="radio-inline"><input type="radio"  name="setdata[become_check]" value="1" @if($set['become_check'] ==1) checked="checked"
-                                    @endif/> 需要</label>
+                                            @endif/> 需要</label>
                                 <label class="radio-inline"><input type="radio"  name="setdata[become_check]" value="0" @if($set['become_check'] ==0) checked="checked"
                                             @endif /> 不需要</label>
                                 <span class="help-block">以上条件达到后，是否需要审核才能发展下线</span>
@@ -185,10 +237,36 @@
             });
         }
         function select_good(o) {
-            $("#goods_id").val(o.id);
-            $("#goods").val( "[" + o.id + "]" + o.title);
-            $("#modal-goods .close").click();
+            // var html = "<input type='hidden' class='form-control' name='setdata[become_goods_id]["+ o.id+"]' value='' />"
+            var html = '<div class="multi-item" openid="' + o.id + '">';
+            html += '<img class="img-responsive img-thumbnail" src="' + o.thumb + '" onerror="this.src=\'{{static_url('resource/images/nopic.jpg')}}\'; this.title=\'图片未找到.\'">';
+            html += '<div class="img-nickname">' + o.title + '</div>';
+            html += '<input type="hidden" value="' + o.title + '" name="setdata[become_goods][' + o.id + '][title]">';
+            html += '<input type="hidden" value="' + o.thumb + '" name="setdata[become_goods][' + o.id + '][thumb]">';
+            html += '<input type="hidden" value="' + o.id + '" name="setdata[become_goods][' + o.id + '][goods_id]">';
+            html += '<input type="hidden" value="' + o.id + '" name="setdata[become_goods_id][' + o.id + ']">';
+            html += '<em onclick="remove_member(this)"  class="close">×</em>';
+            html += '</div>';
+            // $("#goods_id").val(o.id);
+            // var data = $("#goods").val();
+            // $("#goods").val(data+ o.title);
+            $("#goods_id").append(html);
+            refresh_members();
         }
+
+        function remove_member(obj) {
+            $(obj).parent().remove();
+            refresh_members();
+        }
+        function refresh_members() {
+            var nickname = "";
+            $('.multi-item').each(function () {
+                nickname += " " + $(this).find('.img-nickname').html() + "; ";
+            });
+            $('#goods').val(nickname);
+        }
+
+
         function formcheck(){
             var become_child =$(":radio[name='setdata[become_child]']:checked").val();
             if( become_child=='1'  || become_child=='2' ){

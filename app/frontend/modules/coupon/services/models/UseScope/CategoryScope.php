@@ -18,11 +18,16 @@ class CategoryScope extends CouponUseScope
     {
         $orderGoods = $this->coupon->getPreOrder()->orderGoods->filter(
             function ($orderGoods) {
+                // todo 排除掉供应商商品 ,临时解决
+                if($orderGoods->belongsToGood->is_plugin){
+                    return false;
+                }
                 /**
                  * @var $orderGoods PreOrderGoods
                  */
                 //订单商品所属的所有分类id
                 $orderGoodsCategoryIds = explode(',',data_get($orderGoods->belongsToGood->belongsToCategorys->first(),'category_ids',''));
+                debug_log()->coupon("优惠券{$this->coupon->getMemberCoupon()->id}","商品品类{$orderGoodsCategoryIds},优惠券支持品类{$this->coupon->getMemberCoupon()->belongsToCoupon->category_ids}");
 
                 //优惠券的分类id数组 与 订单商品的所属分类 的分类数组 有交集
                 return collect($this->coupon->getMemberCoupon()->belongsToCoupon->category_ids)

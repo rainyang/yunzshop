@@ -47,6 +47,8 @@ class MemberOfficeAccountService extends MemberService
         } else {
             $callback = ($_SERVER['REQUEST_SCHEME'] ? $_SERVER['REQUEST_SCHEME'] : 'http')  . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
               //$callback = Url::absoluteApp('login_validate', ['mid' => Member::getMid()]);
+
+            \Log::debug('---------callback--------', [$callback]);
         }
 
         $state = 'yz-' . session_id();
@@ -77,7 +79,7 @@ class MemberOfficeAccountService extends MemberService
             $userinfo = $this->getUserInfo($appId, $appSecret, $token);
 
             if (is_array($userinfo) && !empty($userinfo['errcode'])) {
-                \Log::debug('微信登陆授权失败');
+                \Log::debug('微信登陆授权失败-'. $userinfo['errcode']);
                 return show_json(-3, '微信登陆授权失败');
             }
 
@@ -98,6 +100,7 @@ class MemberOfficeAccountService extends MemberService
             return show_json(1, 'user_info_api');
         } else {
             //return show_json(1, ['redirect_url' => $redirect_url]);
+            \Log::debug('------------redirect_url----------', [$redirect_url]);
             redirect($redirect_url)->send();
             exit;
         }
@@ -234,7 +237,7 @@ class MemberOfficeAccountService extends MemberService
             } else {
                 $redirect_url = $yz_redirect . '&t=' . time();
             }
-
+\Log::debug('-----------------client_url----------------', [$redirect_url]);
             Session::set('client_url', $redirect_url);
         } else {
             Session::set('client_url', '');

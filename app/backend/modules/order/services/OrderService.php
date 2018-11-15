@@ -19,7 +19,7 @@ class OrderService
     {
 
         $order->status = Order::CLOSE;
-
+        $order->cancel_time = time();
         $result = $order->save();
         event(new AfterOrderCanceledEvent($order));
         return $result;

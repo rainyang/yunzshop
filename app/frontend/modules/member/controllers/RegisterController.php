@@ -51,6 +51,12 @@ class RegisterController extends ApiController
             if ($check_code['status'] != 1) {
                 return $this->errorJson($check_code['json']);
             }
+            
+            $invitecode = MemberService::inviteCode();
+
+            if ($invitecode['status'] != 1) {
+                return $this->errorJson($invitecode['json']);
+            }
 
             $msg = MemberService::validate($mobile, $password, $confirm_password);
 
@@ -67,6 +73,7 @@ class RegisterController extends ApiController
                     return $this->errorJson('验证码错误');
                 }
             }
+
 
             if (!empty($member_info)) {
                 return $this->errorJson('该手机号已被注册');
@@ -516,10 +523,18 @@ class RegisterController extends ApiController
 
     public function getInviteCode()
     {
+        $close = \YunShop::request()->close;
         $is_invite = intval(\Setting::get('shop.member.is_invite'));
+        $required =intval(\Setting::get('shop.member.required'));
+
+        if (isset($close) && 1 == $close) {
+            $is_invite = 0;
+            $required = 0;
+        }
 
         $data = [
-          'status' => $is_invite
+            'status' => $is_invite,
+            'required' => $required
         ];
 
         return $this->successJson('ok', $data);

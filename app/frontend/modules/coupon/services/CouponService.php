@@ -4,6 +4,7 @@ namespace app\frontend\modules\coupon\services;
 
 use app\common\helpers\ArrayHelper;
 use app\common\models\goods\GoodsCoupon;
+use app\framework\Log\Log;
 use app\frontend\modules\coupon\services\models\Coupon;
 use app\frontend\modules\order\models\PreOrder;
 use app\Jobs\addGoodsCouponQueueJob;
@@ -57,6 +58,7 @@ class CouponService
         $coupons = $this->getMemberCoupon()->map(function ($memberCoupon) {
             return new Coupon($memberCoupon, $this->order);
         });
+
         //其他优惠组合后可选的优惠券
         $coupons = $coupons->filter(function ($coupon) {
             /**
@@ -64,6 +66,7 @@ class CouponService
              */
             //不可选
             if (!$coupon->isOptional()) {
+                debug_log()->coupon("优惠券{$coupon->getMemberCoupon()->id}",'不可选');
                 return false;
             }
             //商城开启了多张优惠券 并且当前优惠券组合可以继续添加这张
@@ -72,6 +75,7 @@ class CouponService
 
             return true;
         })->values();
+
         //已选的优惠券
         $coupons = collect($this->order->orderCoupons)->map(function($orderCoupon){
             // 已参与订单价格计算的优惠券
@@ -79,23 +83,13 @@ class CouponService
             $orderCoupon->coupon->getMemberCoupon()->checked = true;
             return $orderCoupon->coupon;
         })->merge($coupons);
+
         //按member_coupon的id倒序
         $coupons = $coupons->sortByDesc(function($coupon){
             return $coupon->getMemberCoupon()->id;
         })->values();
 
         return $coupons;
-    }
-
-    /**
-     * 记录使用过的优惠券
-     */
-    public function destroyUsedCoupons()
-    {
-        $this->getSelectedMemberCoupon()->each(function ($memberCoupon) {
-
-            return (new Coupon($memberCoupon, $this->order))->destroy();
-        });
     }
 
     /**
@@ -125,12 +119,13 @@ class CouponService
     {
         $coupon_method = $this->coupon_method;
         $result = MemberCouponService::getCurrentMemberCouponCache($this->order->belongsToMember);
+
         if (isset($coupon_method)) {// 折扣/立减
             $result = $result->filter(function ($memberCoupon) use ($coupon_method) {
                 return $memberCoupon->belongsToCoupon->coupon_method == $coupon_method;
             });
         }
-        //dd($result->toArray());exit;
+
         return $result;
 
     }

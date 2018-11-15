@@ -59,6 +59,8 @@ class MemberController extends ApiController
         $v         = request('v');
 
         if (!empty($member_id)) {
+
+
             $member_info = MemberModel::getUserInfos($member_id)->first();
 
             if (!empty($member_info)) {
@@ -87,6 +89,8 @@ class MemberController extends ApiController
                 //自定义表单
                 $data['myform'] = (new MemberService())->memberInfoAttrStatus();
 
+                $data['avatar'] =  $data['avatar'] ? yz_tomedia($data['avatar']) : yz_tomedia(\Setting::get('shop.member.headimg'));
+
                 //修复微信头像地址
                 $data['avatar'] = ImageHelper::fix_wechatAvatar($data['avatar']);
 
@@ -103,10 +107,17 @@ class MemberController extends ApiController
                 $data['withdraw_status'] = $withdraw_status;
 
                 if (!is_null($v)) {
+                    $set = \Setting::get('shop.member');
+
+                    $data['inviteCode']['status'] = $set['is_invite'] ?: 0;
+
+//                    $data['inviteCode']['required'] =$set['required'] ?: 0;
+
+
                     if (is_null($member_info['yz_member']['invite_code']) || empty($member_info['yz_member']['invite_code'])) {
-                        $data['inviteCode'] = MemberModel::getInviteCode($member_id);
+                        $data['inviteCode']['code'] = MemberModel::getInviteCode($member_id);
                     } else {
-                        $data['inviteCode'] = $member_info['yz_member']['invite_code'];
+                        $data['inviteCode']['code'] = $member_info['yz_member']['invite_code'];
                     }
                 } else {
                     $data['inviteCode'] = 0;
@@ -505,7 +516,12 @@ class MemberController extends ApiController
                 if (Cache::has($member_model->uid . '_member_info')) {
                     Cache::forget($member_model->uid . '_member_info');
                 }
-                PhoneAttribution::getMemberByID(\YunShop::app()->getMemberId())->delete();
+
+                $phoneModel = PhoneAttribution::getMemberByID(\YunShop::app()->getMemberId());
+                if (!is_null($phoneModel)) {
+                    $phoneModel->delete();
+                }
+
                 //手机归属地查询插入
                 $phoneData = file_get_contents((new PhoneAttributionService())->getPhoneApi($member_model->mobile));
                 $phoneArray = json_decode($phoneData);
@@ -537,6 +553,7 @@ class MemberController extends ApiController
         $password         = \YunShop::request()->password;
         $confirm_password = \YunShop::request()->password;
         $uid              = \YunShop::app()->getMemberId();
+        $close_invitecode = \YunShop::request()->close;
 
 
         $member_model = MemberModel::getMemberById($uid);
@@ -546,6 +563,15 @@ class MemberController extends ApiController
 
             if ($check_code['status'] != 1) {
                 return $this->errorJson($check_code['json']);
+            }
+
+
+            if (!empty($close_invitecode)) {
+                $invitecode = MemberService::inviteCode();
+
+                if ($invitecode['status'] != 1) {
+                    return $this->errorJson($invitecode['json']);
+                }
             }
 
             $msg = MemberService::validate($mobile, $password, $confirm_password);
