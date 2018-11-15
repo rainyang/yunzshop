@@ -58,6 +58,7 @@ class TestController extends BaseController
      */
     public function index()
     {
+        dd(\app\common\facades\Setting::get('enoughReduce.freeFreight.open'));
         $member_relation = new MemberRelation();
 
         $relation = $member_relation->hasRelationOfParent(66, 5, 1);
