@@ -23,6 +23,7 @@ abstract class PreOrderController extends ApiController
      */
     protected function getData(){
         $order_data = $this->getOrderData();
+
         $total_price = $order_data->sum('order.price');
         $total_goods_price = $order_data->sum('order.order_goods_price');
         $total_dispatch_price = $order_data->sum('order.dispatch_price');
@@ -42,7 +43,7 @@ abstract class PreOrderController extends ApiController
             $order_data['discount']->forget('coupon');
             return $order_data->forget('dispatch');
         });
-
+        
         $data += [
             'order_data' => $order_data,
             'total_goods_price' => sprintf('%.2f',$total_goods_price),

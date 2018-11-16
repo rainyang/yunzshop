@@ -24,6 +24,9 @@ class ListController extends BaseController
      * 页码
      */
     const PAGE_SIZE = 10;
+    /**
+     * @var Order
+     */
     protected $orderModel;
 
     public function __construct()
@@ -48,69 +51,7 @@ class ListController extends BaseController
         return view('order.index', $this->getData())->render();
     }
 
-    /**
-     * @return string
-     * @throws \Throwable
-     */
-    public function pointFix()
-    {
-        $this->orderModel->select($this->orderModel->getModel()->getTable().'.*')->
-        where('create_time', '>', strtotime("2018-10-25"))->join('yz_order_deduction', function ($query) {
-            $query->on('yz_order_deduction.order_id', 'yz_order.id')
-                ->on('yz_order_deduction.amount', '>', 'yz_order.deduction_price')
-                ->where('yz_order_deduction.amount', '>', 0)->where('code','point');
 
-        })->where('status', -1);
-        return view('order.index', $this->getData())->render();
-    }
-
-    /**
-     * @return string
-     * @throws \Throwable
-     */
-    public function callbackFail()
-    {
-        $orderIds = DB::table('yz_order as o')->join('yz_order_pay_order as opo', 'o.id', '=', 'opo.order_id')
-            ->join('yz_order_pay as op', 'op.id', '=', 'opo.order_pay_id')
-            ->join('yz_pay_order as po', 'po.out_order_no', '=', 'op.pay_sn')
-            ->whereIn('o.status', [0, -1])
-            ->where('op.status', 0)
-            ->where('po.status', 2)
-            ->distinct()->pluck('o.id');
-        $this->orderModel = Order::orders(request('search'))->whereIn('id', $orderIds);
-        return view('order.index', $this->getData())->render();
-
-    }
-    /**
-     * @return string
-     * @throws \Throwable
-     */
-    public function pointFix()
-    {
-        $this->orderModel->select($this->orderModel->getModel()->getTable().'.*')->
-        where('create_time', '>', strtotime("2018-10-25"))->join('yz_order_deduction', function ($query) {
-            $query->on('yz_order_deduction.order_id', 'yz_order.id')
-                ->on('yz_order_deduction.amount', '>', 'yz_order.deduction_price')
-                ->where('yz_order_deduction.amount', '>', 0)->where('code','point');
-
-        })->where('status', -1);
-        return view('order.index', $this->getData())->render();
-    }
-    /**
-     * @return string
-     * @throws \Throwable
-     */
-    public function payFail()
-    {
-        $orderIds = DB::table('yz_order as o')->join('yz_order_pay_order as opo', 'o.id', '=', 'opo.order_id')
-            ->join('yz_order_pay as op', 'op.id', '=', 'opo.order_pay_id')
-            ->whereIn('o.status', [0, -1])
-            ->where('op.status', 1)
-            ->pluck('o.id');
-        $this->orderModel = Order::orders(request('search'))->whereIn('id', $orderIds);
-        return view('order.index', $this->getData())->render();
-
-    }
 
     /**
      * @return string
@@ -193,7 +134,7 @@ class ListController extends BaseController
         }
 
         $list['total_price'] = $this->orderModel->sum('price');
-        $list += $this->orderModel->orderBy($this->orderModel->getModel()->getTable().'.id', 'desc')->paginate(self::PAGE_SIZE)->toArray();
+        $list += $this->orderModel->orderBy($this->orderModel->getModel()->getTable() . '.id', 'desc')->paginate(self::PAGE_SIZE)->toArray();
 
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
