@@ -52,6 +52,11 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
      */
     private $usablePoint;
     /**
+     * 已用的虚拟币
+     * @var VirtualCoin
+     */
+    private $usedPoint;
+    /**
      * 订单抵扣模型
      * @var PreOrderDeduction
      */
@@ -62,8 +67,11 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
      */
     private $orderGoodsDeductionAmount;
 
+    protected $appends = ['usable_amount', 'usable_coin'];
+
     public function __construct(array $attributes = [], $orderGoods, $orderDeduction, $deduction)
     {
+
         parent::__construct($attributes);
 
         $this->deduction = $deduction;
@@ -75,10 +83,24 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
 
         $this->code = $this->getCode();
         $this->name = $this->getName();
+        debug_log()->deduction("订单抵扣", "{$this->getDeduction()->getName()} 订单商品抵扣对象实例化");
 
-        $this->usable_amount = $this->getUsableCoin()->getMoney();
-        $this->usable_coin = $this->getUsableCoin()->getCoin();
+    }
 
+    public function getUsableAmountAttribute()
+    {
+        if (!isset($this->usable_amount)) {
+            $this->usable_amount = $this->getUsableCoin()->getMoney();
+        }
+        return $this->usable_amount;
+    }
+
+    public function getUsableCoinAttribute()
+    {
+        if (!isset($this->usable_coin)) {
+            $this->usable_coin = $this->getUsableCoin()->getCoin();
+        }
+        return $this->usable_coin;
     }
 
     /**
@@ -144,17 +166,21 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
      */
     private function getOrderGoodsDeductionAmount()
     {
-        // 从商品抵扣中获取到类型
-        switch ($this->getGoodsDeduction()->getDeductionAmountCalculationType()) {
-            case 'FixedAmount':
-                $this->orderGoodsDeductionAmount = new FixedAmount($this->orderGoods, $this->getGoodsDeduction());
-                break;
-            case 'GoodsPriceProportion':
-                $this->orderGoodsDeductionAmount = new GoodsPriceProportion($this->orderGoods, $this->getGoodsDeduction());
-                break;
-            default:
-                $this->orderGoodsDeductionAmount = new Invalid($this->orderGoods, $this->getGoodsDeduction());
-                break;
+        if (!isset($this->orderGoodsDeductionAmount)) {
+            // 从商品抵扣中获取到类型
+            switch ($this->getGoodsDeduction()->getDeductionAmountCalculationType()) {
+                case 'FixedAmount':
+                    $this->orderGoodsDeductionAmount = new FixedAmount($this->orderGoods, $this->getGoodsDeduction());
+                    debug_log()->deduction("订单抵扣", "{$this->getDeduction()->getName()} 商品{$this->orderGoods->goods_id}使用固定金额");
+                    break;
+                case 'GoodsPriceProportion':
+                    $this->orderGoodsDeductionAmount = new GoodsPriceProportion($this->orderGoods, $this->getGoodsDeduction());
+                    debug_log()->deduction("订单抵扣", "{$this->getDeduction()->getName()} 商品{$this->orderGoods->goods_id}使用固定比例");
+                    break;
+                default:
+                    $this->orderGoodsDeductionAmount = new Invalid($this->orderGoods, $this->getGoodsDeduction());
+                    break;
+            }
         }
         return $this->orderGoodsDeductionAmount;
     }
@@ -179,6 +205,8 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
 
     private function _getUsableCoin()
     {
+        debug_log()->deduction("订单抵扣", "{$this->getDeduction()->getName()} 商品{$this->orderGoods->goods_id}可抵扣{$this->newCoin()->getMoney()}元");
+
         if (!$this->getGoodsDeduction() || !$this->getGoodsDeduction()->deductible($this->orderGoods->goods)) {
             // 购买商品不存在抵扣记录
             return $this->newCoin();
@@ -186,7 +214,9 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
 
         $amount = $this->getOrderGoodsDeductionAmount()->getAmount();
 
-        $coin =   $this->newCoin()->setMoney($amount);
+        $coin = $this->newCoin()->setMoney($amount);
+
+
         return $coin;
     }
 
@@ -194,18 +224,31 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
      * @return $this|VirtualCoin
      * @throws \Exception
      */
-    public function getUsedCoin()
+    public function _getUsedCoin()
     {
         // (订单商品最多可用抵扣的金额 /订单最多可用抵扣的金额) 订单实际抵扣的金额)
-        if(!$this->orderDeduction->isChecked()){
+        if (!$this->orderDeduction->isChecked()) {
             return $this->newCoin();
         }
 
-        $amount = ($this->getUsableCoin()->getMoney()/$this->getOrderDeduction()->getMaxOrderGoodsDeduction()->getMoney())*$this->getOrderDeduction()->getOrderGoodsDeductionAmount();
+        $amount = ($this->getUsableCoin()->getMoney() / $this->getOrderDeduction()->getMaxOrderGoodsDeduction()->getMoney()) * $this->getOrderDeduction()->getOrderGoodsDeductionAmount();
 
         return $this->newCoin()->setMoney($amount);
     }
 
+    /**
+     * @return VirtualCoin|PreOrderGoodsDeduction
+     * @throws \Exception
+     */
+    public function getUsedCoin()
+    {
+        debug_log()->deduction('订单抵扣', "{$this->getName()} 订单商品计算已抵扣的虚拟币");
+        if (isset($this->usedPoint)) {
+            return $this->usedPoint;
+        }
+        return $this->usedPoint = $this->_getUsedCoin();
+
+    }
     /**
      * @return bool
      * @throws \Exception
@@ -225,9 +268,9 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
         if (!$this->used()) {
             return true;
         }
-
-        $this->used_amount = $this->getUsedCoin()->getMoney();
-        $this->used_coin = $this->getUsedCoin()->getCoin();
+        // 确保魔术属性最少执行一次
+        $this->usable_amount;
+        $this->used_coin;
         return parent::save($options);
     }
 }

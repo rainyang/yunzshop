@@ -8,6 +8,9 @@
 
 namespace app\backend\controllers;
 
+
+use app\backend\modules\charts\modules\member\services\LowerCountService;
+use app\backend\modules\charts\modules\member\services\LowerOrderService;
 use app\backend\models\Withdraw;
 use app\backend\modules\charts\models\OrderIncomeCount;
 use app\backend\modules\charts\modules\order\services\OrderStatisticsService;
@@ -22,7 +25,6 @@ use app\common\models\Member;
 use app\common\models\member\ChildrenOfMember;
 use app\common\models\member\ParentOfMember;
 use app\common\models\Order;
-
 use app\common\models\OrderGoods;
 use app\common\models\OrderPay;
 use app\common\models\Flow;
@@ -58,6 +60,7 @@ class TestController extends BaseController
      */
     public function index()
     {
+        dd(\app\common\facades\Setting::get('enoughReduce.open'));
         $member_relation = new MemberRelation();
 
         $relation = $member_relation->hasRelationOfParent(66, 5, 1);
@@ -183,19 +186,9 @@ class TestController extends BaseController
         echo '分类图片修复成功：' . $category_success . '个，失败：' . $category_error . '个';
 
     }
-
-
-    public function getPhone()
-    {
-        (new PhoneAttributionService())->phoneStatistics();
-    }
-
+    
     public function tt()
     {
-
-        $this->synRun(5, '');
-        exit;
-
         $member_relation = new MemberRelation();
 
         $member_relation->createParentOfMember();
@@ -287,46 +280,10 @@ class TestController extends BaseController
                          'created_at' => time()
                      ];
                  }
-
                  $parentMemberModle->createData($attr);*/
             }
-
-
         }
-
         echo 'end';
-
-    }
-
-    public function mr()
-    {
-        /* $a = [1,2,3,4,5];
-
-
-         foreach ($a as $val) {
-             $b = array_shift($a);
-         }
-
-
-         dd($b, $a);
-
-         exit;*/
-
-        $uid = 163764;
-        $o_parent_id = 163762;
-        $n_parent_id = 163768;
-
-        $member_relation = new MemberRelation();
-
-        $member_relation->build($uid, $n_parent_id);
-
-//        $member = Member::getMemberByUid($uid)->first();
-//
-//        event(new MemberRelationEvent($member));
-        //       event(new MemberCreateRelationEvent($uid, $n_parent_id));exit;
-//        (new MemberRelation())->changeMemberOfRelation($uid, $o_parent_id, $n_parent_id);
-        //(new MemberRelation())->parent->addNewParentData($uid, $n_parent_id);
-
     }
 
 }
