@@ -10,15 +10,18 @@ namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
 use app\common\events\order\ShowPreGenerateOrder;
+use app\framework\Database\Eloquent\Collection;
 use app\frontend\modules\member\services\MemberCartService;
 use app\frontend\modules\order\services\OrderService;
 use Request;
 
 abstract class PreOrderController extends ApiController
 {
-
-    public function index()
-    {
+    /**
+     * @throws \Exception
+     * @throws \app\common\exceptions\AppException
+     */
+    protected function getData(){
         $order_data = $this->getOrderData();
         var_dump($order_data->first()['order']['order_deductions']);
         exit;
@@ -28,6 +31,7 @@ abstract class PreOrderController extends ApiController
         $total_discount_price = $order_data->sum('order.discount_price');
         $total_deduction_price = $order_data->sum('order.deduction_price');
         // todo 下面的代码需要重构
+        $data = [];
         //将订单中的优惠券 合并摊平到数组外层
         $data['discount']['coupon'] = $order_data->map(function ($order_data) {
             return $order_data['discount']['coupon'];
@@ -35,7 +39,8 @@ abstract class PreOrderController extends ApiController
         //将订单中的收获地址 拿到外层
         $data['dispatch'] = $order_data[0]['dispatch'];
         //删掉内层的数据
-        $order_data->map(function ($order_data) {
+
+        $order_data->map(function (Collection $order_data) {
             $order_data['discount']->forget('coupon');
             return $order_data->forget('dispatch');
         });
@@ -48,16 +53,19 @@ abstract class PreOrderController extends ApiController
             'total_deduction_price' => sprintf('%.2f',$total_deduction_price),
             'total_price' => sprintf('%.2f',$total_price),
         ];
-
-        //dd($data);
-        //exit;
-        return $this->successJson('成功', $data);
+        return $data;
+    }
+    public function index()
+    {
+        return $this->successJson('成功', $this->getData());
 
     }
 
     /**
      * 获取订单数据组
      * @return \Illuminate\Support\Collection|static
+     * @throws \Exception
+     * @throws \app\common\exceptions\AppException
      */
     protected function getOrderData()
     {
@@ -73,6 +81,13 @@ abstract class PreOrderController extends ApiController
 
         return $order_data;
     }
+
+    /**
+     * @param $memberCarts
+     * @return \app\frontend\modules\order\models\PreOrder|bool|mixed
+     * @throws \Exception
+     * @throws \app\common\exceptions\AppException
+     */
     protected function getShopOrder($memberCarts){
         return OrderService::createOrderByMemberCarts(MemberCartService::filterShopMemberCart($memberCarts));
 

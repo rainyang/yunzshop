@@ -52,6 +52,22 @@ class ListController extends BaseController
      * @return string
      * @throws \Throwable
      */
+    public function pointFix()
+    {
+        $this->orderModel->select($this->orderModel->getModel()->getTable().'.*')->
+        where('create_time', '>', strtotime("2018-10-25"))->join('yz_order_deduction', function ($query) {
+            $query->on('yz_order_deduction.order_id', 'yz_order.id')
+                ->on('yz_order_deduction.amount', '>', 'yz_order.deduction_price')
+                ->where('yz_order_deduction.amount', '>', 0)->where('code','point');
+
+        })->where('status', -1);
+        return view('order.index', $this->getData())->render();
+    }
+
+    /**
+     * @return string
+     * @throws \Throwable
+     */
     public function callbackFail()
     {
         $orderIds = DB::table('yz_order as o')->join('yz_order_pay_order as opo', 'o.id', '=', 'opo.order_id')
@@ -177,7 +193,7 @@ class ListController extends BaseController
         }
 
         $list['total_price'] = $this->orderModel->sum('price');
-        $list += $this->orderModel->orderBy('id', 'desc')->paginate(self::PAGE_SIZE)->toArray();
+        $list += $this->orderModel->orderBy($this->orderModel->getModel()->getTable().'.id', 'desc')->paginate(self::PAGE_SIZE)->toArray();
 
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
@@ -187,7 +203,7 @@ class ListController extends BaseController
             'pager' => $pager,
             'requestSearch' => $requestSearch,
             'var' => \YunShop::app()->get(),
-            'url' => \Request::query('route'),
+            'url' => request('route'),
             'include_ops' => 'order.ops',
             'detail_url' => 'order.detail'
         ];
@@ -213,9 +229,9 @@ class ListController extends BaseController
                         $this->getNickname($item['belongs_to_member']['nickname']),
                         $item['address']['realname'],
                         $item['address']['mobile'],
-                        !empty($address[0])?$address[0]:'',
-                        !empty($address[1])?$address[1]:'',
-                        !empty($address[2])?$address[2]:'',
+                        !empty($address[0]) ? $address[0] : '',
+                        !empty($address[1]) ? $address[1] : '',
+                        !empty($address[2]) ? $address[2] : '',
                         $item['address']['address'],
                         $this->getGoods($item, 'goods_title'),
                         $this->getGoods($item, 'goods_sn'),
@@ -253,7 +269,7 @@ class ListController extends BaseController
     {
         $export_discount = [
             'deduction' => 0,    //抵扣金额
-            'coupon'    => 0,    //优惠券优惠
+            'coupon' => 0,    //优惠券优惠
             'enoughReduce' => 0,  //全场满减优惠
             'singleEnoughReduce' => 0,    //单品满减优惠
         ];

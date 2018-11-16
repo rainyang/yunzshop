@@ -45,6 +45,7 @@ use app\framework\Database\Eloquent\Collection;
  * @method static self exclude($fields)
  * @method static self orderBy(...$field)
  * @method static self whereRaw(...$field)
+ * @method static self getModel()
  */
 class BaseModel extends Model
 {
