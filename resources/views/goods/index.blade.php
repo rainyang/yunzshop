@@ -103,7 +103,7 @@
                                         @foreach($product_attr_list as $product_attr_key => $product_attr_name)
                                             <label for="{$product_attr_key}">
                                                 <input type="checkbox"
-                                                       @if(@in_array($product_attr_key, $product_attr)) checked="checked"
+                                                       @if(@in_array($product_attr_key, $requestSearch['product_attr'])) checked="checked"
                                                        @endif name="search[product_attr][]"
                                                        value="{{$product_attr_key}}" id="{{$product_attr_key}}"/>
                                                 {{$product_attr_name}}
