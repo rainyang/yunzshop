@@ -18,6 +18,7 @@ class StoreController extends BaseController
     public function index()
     {
         $setting = request()->input('setting');
+
         foreach ($setting as $key => $value) {
             Setting::set('enoughReduce.' . $key, $value);
         }
