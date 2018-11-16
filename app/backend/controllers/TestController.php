@@ -186,7 +186,7 @@ class TestController extends BaseController
         echo '分类图片修复成功：' . $category_success . '个，失败：' . $category_error . '个';
 
     }
-    
+
     public function tt()
     {
         $member_relation = new MemberRelation();
