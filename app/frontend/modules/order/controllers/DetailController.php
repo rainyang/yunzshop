@@ -47,12 +47,10 @@ class DetailController extends ApiController
 
         $data = $order->toArray();
         $backups_button = $data['button_models'];
-//dd($backups_button);
-        //$this->getStatusService()->
-        //todo 配送类型
-        if ($order['dispatch_type_id'] == DispatchType::EXPRESS) {
-            $data['address_info'] = OrderAddress::select('address', 'mobile', 'realname')->where('order_id', $order['id'])->first();
-        }
+
+
+        $data['address_info'] = OrderAddress::select('address', 'mobile', 'realname')->where('order_id', $order['id'])->first()?:[];
+
         if(app('plugins')->isEnabled('store-cashier')){
 
             //加入门店ID，订单跳转商品详情需要

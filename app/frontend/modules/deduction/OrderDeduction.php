@@ -29,7 +29,7 @@ class OrderDeduction
     {
         $this->order = $order;
         // 订单抵扣使用记录集合
-        $this->orderDeductions = new Collection();
+        $this->orderDeductions = new OrderDeductionCollection();
         $order->setRelation('orderDeductions', $this->orderDeductions);
     }
 
@@ -39,7 +39,7 @@ class OrderDeduction
          * 商城开启的抵扣
          * @var Collection $deductions
          */
-        $deductions = Deduction::whereEnable(1)->get();
+        $deductions = Deduction::where('enable',1)->get();
         debug_log()->deduction('开启的抵扣类型',$deductions->pluck('code')->toJson());
         if ($deductions->isEmpty()) {
             return 0;
@@ -51,7 +51,7 @@ class OrderDeduction
              */
             return $deduction->valid();
         });
-        // todo 按照用户勾选顺序排序
+        // 按照用户勾选顺序排序
         $sort = array_flip($this->order->getParams('deduction_ids'));
         $deductions = $deductions->sortBy(function ($deduction) use ($sort) {
             return array_get($sort, $deduction->code, 999);
@@ -84,7 +84,6 @@ class OrderDeduction
     }
 
     /**
-     * todo
      * 获取订单抵扣金额
      * @return float
      */
