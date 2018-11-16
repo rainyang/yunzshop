@@ -15,7 +15,8 @@ class OrderDeductionCollection extends Collection
     public function push($value)
     {
         parent::push($value);
-        asort($this->items);
+        sort($this->items);
         return $this;
     }
+
 }
