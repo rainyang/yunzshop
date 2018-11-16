@@ -91,8 +91,11 @@ class GoodsController extends ApiController
             return $this->errorJson('商品已下架.');
         }
 
-        //商品营销
-        $goodsModel->goods_sale = $this->getGoodsSale($goodsModel);
+        //商品营销 todo 优化新的
+        $goodsModel->goods_sale = $this->getGoodsSaleV2($goodsModel);
+
+//        //商品营销
+//        $goodsModel->goods_sale = $this->getGoodsSale($goodsModel);
         //商品会员优惠
         $goodsModel->member_discount = $this->getDiscount($goodsModel, $member);
         $goodsModel->availability = $this->couponsMemberLj();
@@ -384,6 +387,138 @@ class GoodsController extends ApiController
         }
 
         return $data['discount_value'] !== null ? $data : [];
+    }
+
+
+    public function getGoodsSaleV2($goodsModel)
+    {
+        $sale = [];
+        //商城积分设置
+        $set = \Setting::get('point.set');
+
+        //获取商城设置: 判断 积分、余额 是否有自定义名称
+        $shopSet = \Setting::get('shop.shop');
+
+        if ($goodsModel->hasOneSale->ed_num || $goodsModel->hasOneSale->ed_money) {
+            $data['name'] = '包邮';
+            $data['key'] = 'ed_num';
+            $data['type'] = 'array';
+            if ($goodsModel->hasOneSale->ed_num) {
+                $data['value'][] = '本商品满'.$goodsModel->hasOneSale->ed_num.'件包邮';
+            }
+
+            if ($goodsModel->hasOneSale->ed_money) {
+                $data['value'][] = '本商品满￥'.$goodsModel->hasOneSale->ed_money.'包邮';
+
+            }
+            array_push($sale, $data);
+            $data = [];
+        }
+
+        if (ceil($goodsModel->hasOneSale->ed_full) && ceil($goodsModel->hasOneSale->ed_reduction)) {
+            $data['name'] = '满减';
+            $data['key'] = 'ed_full';
+            $data['type'] = 'string';
+            $data['value'] = '本商品满￥'. $goodsModel->hasOneSale->ed_full.'立减￥'.$goodsModel->hasOneSale->ed_reduction;
+            array_push($sale, $data);
+            $data = [];
+        }
+
+        if ($goodsModel->hasOneSale->award_balance) {
+            $data['name'] = $shopSet['credit']?:'余额';
+            $data['key'] = 'award_balance';
+            $data['type'] = 'string';
+            $data['value'] = '购买赠送'.$goodsModel->hasOneSale->award_balance.$data['name'];
+            array_push($sale, $data);
+            $data = [];
+        }
+
+        $data['name'] = $shopSet['credit1']?:'积分';
+        $data['key']  = 'point';
+        $data['type'] = 'array';
+        if ($goodsModel->hasOneSale->point !== '0') {
+            $point = $set['give_point'] ? $set['give_point'] : 0;
+            if ($goodsModel->hasOneSale->point) {
+                $point = $goodsModel->hasOneSale->point;
+            }
+            if (!empty($point)) {
+                $data['value'][] = '购买赠送'.$point.$data['name'];
+            }
+
+        }
+        if ($set['point_deduct'] && $goodsModel->hasOneSale->max_point_deduct !== '0') {
+            $max_point_deduct = $set['money_max'] ? $set['money_max'].'%' : 0;
+            if ($goodsModel->hasOneSale->max_point_deduct) {
+                $max_point_deduct = $goodsModel->hasOneSale->max_point_deduct;
+            }
+            if (!empty($max_point_deduct)) {
+                $data['value'][] = '最高抵扣'.$max_point_deduct.$data['name'];
+            }
+        }
+        if (!empty($data['value'])) {
+            array_push($sale, $data);
+        }
+        $data = [];
+
+
+        if ($goodsModel->hasOneGoodsCoupon->is_give) {
+            $data['name'] = '购买返券';
+            $data['key']  = 'coupon';
+            $data['type'] = 'string';
+            $data['value'] = $goodsModel->hasOneGoodsCoupon->send_type ? '商品订单完成返优惠券' : '每月一号返优惠券';
+            array_push($sale, $data);
+            $data = [];
+        }
+
+        //爱心值
+        $exist_love = app('plugins')->isEnabled('love');
+        if ($exist_love) {
+            $love_goods = $this->getLoveSet($goodsModel);
+            $data['name'] = $love_goods['name'];
+            $data['key'] = 'love';
+            $data['type'] = 'array';
+            if ($love_goods['deduction']) {
+                $data['value'][] = '最高抵扣'.$love_goods['deduction_proportion'].$data['name'];
+            }
+
+            if ($love_goods['award']) {
+                $data['value'][] = '购买赠送'.$love_goods['award_proportion'].$data['name'];
+            }
+
+            if (!empty($data['value'])) {
+                array_push($sale, $data);
+            }
+            $data = [];
+        }
+
+        //佣金
+        $exist_commission = app('plugins')->isEnabled('commission');
+        if ($exist_commission) {
+            $commission_data = (new GoodsDetailService($goodsModel))->getGoodsDetailData();
+            if ($commission_data['commission_show'] == 1) {
+                $data['name'] = '佣金';
+                $data['key'] = 'commission';
+                $data['type'] = 'array';
+
+                if (!empty($commission_data['first_commission']) && ($commission_data['commission_show_level'] > 0)) {
+                    $data['value'][] = '一级佣金'.$commission_data['first_commission'].'元';
+                }
+                if (!empty($commission_data['second_commission']) && ($commission_data['commission_show_level'] > 1)) {
+                    $data['value'][] = '二级佣金'.$commission_data['second_commission'].'元';
+                }
+                if (!empty($commission_data['third_commission']) && ($commission_data['commission_show_level'] > 2)) {
+                    $data['value'][] = '三级佣金'.$commission_data['third_commission'].'元';
+                }
+                array_push($sale, $data);
+                $data = [];
+            }
+        }
+
+        return [
+            'sale_count' => count($sale),
+            'first_strip_key' =>  $sale ? $sale[rand(0, (count($sale)-1))] : [],
+            'sale' => $sale,
+        ];
     }
 
     /**

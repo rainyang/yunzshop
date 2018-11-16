@@ -8,6 +8,8 @@
 
 namespace app\frontend\modules\order\discount;
 
+use app\common\facades\Setting;
+
 class EnoughReduce extends BaseDiscount
 {
     protected $code = 'enoughReduce';
@@ -18,12 +20,16 @@ class EnoughReduce extends BaseDiscount
      */
     protected function _getAmount()
     {
+
+        if(!Setting::get('enoughReduce.open')){
+            return 0;
+        }
         //只有商城,供应商订单参加
         if($this->order->plugin_id != 0){
             return 0;
         }
         // 获取满减设置,按enough倒序
-        $settings = collect(\Setting::get('enoughReduce.enoughReduce'));
+        $settings = collect(Setting::get('enoughReduce.enoughReduce'));
 //dump($settings);
         if (empty($settings)) {
             return 0;

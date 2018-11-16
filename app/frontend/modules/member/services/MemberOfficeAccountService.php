@@ -47,6 +47,8 @@ class MemberOfficeAccountService extends MemberService
         } else {
             $callback = ($_SERVER['REQUEST_SCHEME'] ? $_SERVER['REQUEST_SCHEME'] : 'http')  . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
               //$callback = Url::absoluteApp('login_validate', ['mid' => Member::getMid()]);
+
+            \Log::debug('---------callback--------', [$callback]);
         }
 
         $state = 'yz-' . session_id();
@@ -98,6 +100,7 @@ class MemberOfficeAccountService extends MemberService
             return show_json(1, 'user_info_api');
         } else {
             //return show_json(1, ['redirect_url' => $redirect_url]);
+            \Log::debug('------------redirect_url----------', [$redirect_url]);
             redirect($redirect_url)->send();
             exit;
         }
@@ -234,7 +237,7 @@ class MemberOfficeAccountService extends MemberService
             } else {
                 $redirect_url = $yz_redirect . '&t=' . time();
             }
-
+\Log::debug('-----------------client_url----------------', [$redirect_url]);
             Session::set('client_url', $redirect_url);
         } else {
             Session::set('client_url', '');
@@ -248,7 +251,34 @@ class MemberOfficeAccountService extends MemberService
      */
     private function _getClientRequestUrl()
     {
-        return Session::get('client_url');
+        $url = Session::get('client_url') ?: $this->_getFrontJumpUrl();
+
+        if ($url === false || $url == '') {
+            $url = Url::absoluteApp('home') . '&t=' . time();
+        }
+
+        return $url;
+    }
+
+    private function _getFrontJumpUrl()
+    {
+        $redirect_url = '';
+        $pattern = '/(&t=([\d]+[^&]*))/';
+        $t = time();
+
+        if (\YunShop::request()->yz_redirect) {
+            $yz_redirect = base64_decode(\YunShop::request()->yz_redirect);
+
+            if (preg_match($pattern, $yz_redirect)) {
+                $redirect_url = preg_replace($pattern, "&t={$t}", $yz_redirect);
+            } else {
+                $redirect_url = $yz_redirect;
+            }
+        }
+
+        \Log::debug('-----------------front_url----------------', [$redirect_url]);
+
+        return $redirect_url;
     }
 
     /**

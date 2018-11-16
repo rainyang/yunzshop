@@ -230,6 +230,8 @@ class Coupon
 
             if ($memberCoupon->selected == true) {
                 //本优惠券与选中的优惠券是一张
+                debug_log()->coupon("优惠券{$this->getMemberCoupon()->id}",'同一单不能使用多张此类型优惠券');
+
                 return $memberCoupon->coupon_id == $this->getMemberCoupon()->coupon_id;
             }
             return false;
@@ -267,18 +269,22 @@ class Coupon
         }
         //满足范围
         if (!$this->useScope->valid()) {
+            debug_log()->coupon("优惠券{$this->getMemberCoupon()->id}",'不满足范围');
             return false;
         }
         //满足额度
         if (!$this->price->isOptional()) {
+            debug_log()->coupon("优惠券{$this->getMemberCoupon()->id}",'不满足额度');
             return false;
         }
         //满足时限
         if (!$this->timeLimit->valid()) {
+            debug_log()->coupon("优惠券{$this->getMemberCoupon()->id}",'不满足时限');
             return false;
         }
         //未使用
         if ($this->getMemberCoupon()->used) {
+            debug_log()->coupon("优惠券{$this->getMemberCoupon()->id}",'已使用');
             return false;
         }
 
