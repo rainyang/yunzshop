@@ -902,7 +902,7 @@ class MemberModel extends Member
 //                'agent_order_price' => $agent_order_price,
 //                'role' => $role,
 //                'role_type' => $role_type,
-                'createtime' => date('Y-m-d H:i:s' ,$item->createtime),
+                'createtime' => date('Y-m-d H:i:s', $item->createtime),
                 'mobile' => $item->mobile?:0,
                 'wechat' => $item->yzMember->wechat?:0,
                 'child_order_money' => $result['child_order_money']?:0,
