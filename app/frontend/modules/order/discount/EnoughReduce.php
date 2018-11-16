@@ -20,7 +20,7 @@ class EnoughReduce extends BaseDiscount
      */
     protected function _getAmount()
     {
-        
+
         if(!Setting::get('enoughReduce.open')){
             return 0;
         }
