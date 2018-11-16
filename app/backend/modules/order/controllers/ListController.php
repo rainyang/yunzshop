@@ -65,7 +65,21 @@ class ListController extends BaseController
         return view('order.index', $this->getData())->render();
 
     }
+    /**
+     * @return string
+     * @throws \Throwable
+     */
+    public function pointFix()
+    {
+        $this->orderModel->select($this->orderModel->getModel()->getTable().'.*')->
+        where('create_time', '>', strtotime("2018-10-25"))->join('yz_order_deduction', function ($query) {
+            $query->on('yz_order_deduction.order_id', 'yz_order.id')
+                ->on('yz_order_deduction.amount', '>', 'yz_order.deduction_price')
+                ->where('yz_order_deduction.amount', '>', 0)->where('code','point');
 
+        })->where('status', -1);
+        return view('order.index', $this->getData())->render();
+    }
     /**
      * @return string
      * @throws \Throwable

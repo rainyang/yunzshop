@@ -15,7 +15,7 @@ use app\common\traits\ValidatorTrait;
 use app\framework\Database\Eloquent\Builder;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
+use app\framework\Database\Eloquent\Collection;
 
 /**
  * Class BaseModel
@@ -28,7 +28,7 @@ use Illuminate\Support\Collection;
  * @method static Collection get()
  * @method static self find(string $id)
  * @method static self first()
- * @method static self select($fields)
+ * @method static self select(...$fields)
  * @method static self where(...$where)
  * @method static self orWhere(...$where)
  * @method static self whereBetween(array $where)
@@ -43,6 +43,8 @@ use Illuminate\Support\Collection;
  * @method static self insert()
  * @method static self set()
  * @method static self exclude($fields)
+ * @method static self orderBy(...$field)
+ * @method static self whereRaw(...$field)
  */
 class BaseModel extends Model
 {
