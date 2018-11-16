@@ -60,6 +60,7 @@ class TestController extends BaseController
      */
     public function index()
     {
+        dd(Order::find(2686)->orderReceivedJob->status);
         dd(\app\common\facades\Setting::get('enoughReduce.open'));
         $member_relation = new MemberRelation();
 
