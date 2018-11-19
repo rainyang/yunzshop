@@ -51,7 +51,7 @@ class RegisterController extends ApiController
             if ($check_code['status'] != 1) {
                 return $this->errorJson($check_code['json']);
             }
-            
+
             $invitecode = MemberService::inviteCode();
 
             if ($invitecode['status'] != 1) {
@@ -65,15 +65,6 @@ class RegisterController extends ApiController
             }
 
             $member_info = MemberModel::getId($uniacid, $mobile);
-
-            //增加验证码验证
-            $captcha_status = Setting::get('shop.sms.status');
-            if ($captcha_status == 1) {
-                if ( app('captcha')->check(Input::get('captcha')) == false) {
-                    return $this->errorJson('验证码错误');
-                }
-            }
-
 
             if (!empty($member_info)) {
                 return $this->errorJson('该手机号已被注册');
@@ -288,6 +279,14 @@ class RegisterController extends ApiController
     {
         $sms = \Setting::get('shop.sms');
 
+        //增加验证码验证
+        $captcha_status = Setting::get('shop.sms.status');
+        if ($captcha_status == 1) {
+            if ( app('captcha')->check(Input::get('captcha')) == false) {
+                return $this->errorJson('验证码错误');
+            }
+        }
+
         //互亿无线
         if ($sms['type'] == 1) {
             $issendsms = MemberService::send_sms(trim($sms['account']), trim($sms['password']), $mobile, $code);
@@ -361,6 +360,14 @@ class RegisterController extends ApiController
     public function sendSmsV2($mobile, $code, $state, $templateType = 'reg')
     {
         $sms = \Setting::get('shop.sms');
+
+        //增加验证码验证
+        $captcha_status = Setting::get('shop.sms.status');
+        if ($captcha_status == 1) {
+            if ( app('captcha')->check(Input::get('captcha')) == false) {
+                return $this->errorJson('图形验证码错误');
+            }
+        }
 
         //互亿无线
         if ($sms['type'] == 1) {
@@ -489,14 +496,6 @@ class RegisterController extends ApiController
             }
 
             $member_info = MemberModel::getId($uniacid, $mobile);
-            
-            //增加验证码验证
-            $captcha_status = Setting::get('shop.sms.status');
-            if ($captcha_status == 1) {
-                if ( app('captcha')->check(Input::get('captcha')) == false ) {
-                    return $this->errorJson('验证码错误');
-                }
-            }
 
             if (empty($member_info)) {
                 return $this->errorJson('该手机号不存在');
