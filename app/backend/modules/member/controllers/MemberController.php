@@ -487,7 +487,7 @@ class MemberController extends BaseController
             return $this->message('会员不存在','', 'error');
         }
 
-        $list = MemberParent::getParentByMemberId($request)->orderBy('level','asc')->paginate($this->pageSize)->toArray();
+        $list = MemberParent::parent($request)->orderBy('level','asc')->paginate($this->pageSize)->toArray();
 
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $this->pageSize);
 

@@ -87,6 +87,7 @@
                         <tr>
                             <th style='width:5%;'>会员ID</th>
                             <th style='width:8%;'>推荐层级</th>
+                            <th style='width:8%;'>经销商等级</th>
                             <th style='width:10%;text-align: center;'>粉丝</th>
                             <th style='width:12%;'>姓名</th>
                             <th style='width:12%;'>手机号码</th>
@@ -100,6 +101,7 @@
                         <tr>
                             <td>{{$row['parent_id']}}</td>
                             <td>{{ $row['level'] }}级上级</td>
+                            <td>{{ $row['has_one_team_dividend']['has_one_level']['level_name'] }}</td>
                             <td  style="text-align: center;">
                                 @if(!empty($row['has_one_member']['avatar']))
                                     @if(!empty($row['has_one_member']['avatar']))
