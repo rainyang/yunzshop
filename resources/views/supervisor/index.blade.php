@@ -41,7 +41,11 @@
 
         <el-card class="box-card">
             <div slot="header" class="clearfix">
-                <span>队列管理</span>
+                <span>队列管理
+                    <el-tag v-if="state == 1" type="success">运行中</el-tag>
+                    <el-tag v-else-if="state == 2"><i style="" class="el-icon-loading"></i>加载中...</el-tag>
+                    <el-tag v-else type="danger">未运行</el-tag>
+                </span>
                 <span style="float: right;">
                 <el-button size="small" v-if="stopAllState" disabled type="info"><i style="" class="el-icon-loading"></i>停止进程中...</el-button>
                 <el-button size="small" v-else @click="stopAll" type="info">停止所有进程<i style="" class="el-icon-caret-right el-icon--right"></i></el-button>
@@ -51,7 +55,7 @@
                 <el-button size="small" @click="restart" type="primary">重启队列<i style="" class="el-icon-caret-right el-icon--right"></i></el-button>
                 </span>
             </div>
-            <div v-for="supervisor in list"  class="text item">
+            <div v-for="(supervisor, index) in list" class="text item">
                 <span style="width:30%">${ supervisor.name }</span>
                 <span style="width:30%">
                     <el-button round v-if="supervisor.statename == 'RUNNING'" type="text" size="small">已启动<i style="" class="el-icon-circle-check-outline el-icon--right"></i></el-button>
@@ -60,7 +64,8 @@
                 <span style="width:30%; float:right">
                     <el-button @click="stop(supervisor)" v-if="supervisor.statename == 'RUNNING'" type="info" size="small">停止<i style="" class="el-icon-close el-icon--right"></i></el-button>
                     <el-button @click="start(supervisor)" v-else type="success" size="small">启动<i style="" class="el-icon-caret-right el-icon--right"></i></el-button>
-                    <el-button @click="showlog(supervisor)" type="info" size="small">日志<i style="" class="el-icon-search el-icon--right"></i></el-button>
+                    <el-button v-if="!supervisor.cstate" @click="showlog(supervisor, index)" type="info" size="small">日志<i style="" class="el-icon-search el-icon--right"></i></el-button>
+                    <el-button v-else disabled type="primary" size="small"><i style="" class="el-icon-loading"></i>加载中...</el-button>
                 </span>
             </div>
         </el-card>
@@ -109,7 +114,9 @@
                                 console.log('response:', response.data);
                                 if (response.data.process.errno == 0) {
                                     that.list = response.data.process.val;
-                                    that.state = response.data.state.statecode;
+                                    that.state = response.data.state.val.statecode;
+                                    console.log('that.state:', that.state);
+
                                 } else {
                                     that.$message.error('错了哦,' + response.data.errstr);
                                 }
@@ -211,8 +218,9 @@
                             });
                 },
 
-                showlog (process) {
+                showlog (process, index) {
                     var that = this;
+                    that.list[index].cstate = true;
                     let url = "{!! yzWebUrl("supervisord.supervisord.showlog") !!}"+"&process="+process.group + ":" + process.name;
                     console.log(url);
                     axios.get(url)
@@ -221,7 +229,10 @@
                                 if (response.data.errno == 0) {
                                     that.log = response.data.val;
                                     that.currentProcess = process;
+                                    that.list[index].cstate = false;
+
                                 } else {
+                                    that.list[index].cstate = false;
                                     that.$message.error('错了哦,' + response.data.errstr);
                                 }
                                 //that.$Message.success('提交成功啦');
