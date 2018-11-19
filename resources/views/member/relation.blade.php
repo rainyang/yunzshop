@@ -275,6 +275,11 @@
                     return false;
                 }
             }
+            var become = $(":radio[name='setdata[become]']").is(':checked');
+            if (!become) {
+                alert('获得发展下线权利条件不能为空')   ;
+                return false;
+            }
             return true;
         }
         function credit_avoid_audit() {
