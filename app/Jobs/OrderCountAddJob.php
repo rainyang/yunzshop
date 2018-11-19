@@ -26,13 +26,15 @@ class OrderCountAddJob implements ShouldQueue
     public $sum;
     public $undividend;
     public $goods_id;
+    public $count;
 
-    public function __construct($code, $sum, $undividend, $goods_id)
+    public function __construct($code, $sum, $undividend, $goods_id, $count = 0)
     {
         $this->code = $code;
         $this->sum = $sum;
         $this->undividend = $undividend;
         $this->goods_id = $goods_id;
+        $this->count = $count + 1;
     }
 
     public function handle()
@@ -40,13 +42,20 @@ class OrderCountAddJob implements ShouldQueue
         $field = str_replace('-','_',$this->code);
         $order_income = OrderIncomeCount::where('order_id', $this->goods_id)->first();
         if ($order_income) {
+            if ($order_income->$field > 0) {
+                return true;
+            }
             $order_income->$field = $this->sum;
             $order_income->undividend += $this->undividend;
             $order_income->save();
 
         } else {
+            //执行5次后放弃队列
+            if ($this->count > 5) {
+                return true;
+            }
             //一分钟后继续查询
-            $job = new OrderCountAddJob($this->code, $this->sum, $this->undividend, $this->goods_id);
+            $job = new OrderCountAddJob($this->code, $this->sum, $this->undividend, $this->goods_id, $this->count);
             $job = $job->delay(60);
             dispatch($job);
             return true;

@@ -29,8 +29,9 @@
                                                                         ])!!}
                             </div>
                         </div>
-                        <div class="form-group col-sm-1 col-lg-1 col-xs-12">
-                            <input type="submit" class="btn btn-block btn-success" value="搜索">
+                        <div class="form-group col-xs-12 col-sm-4">
+                            <button class="btn btn-success" type="submit" id="search"><i class="fa fa-search"></i> 搜索</button>
+                            <button type="submit" name="export" value="1" id="export" class="btn btn-default">导出 Excel</button>
                         </div>
                     </form>
                 </div>
@@ -90,4 +91,12 @@
             </div>
         </div>
     </div>
+    <script>
+        $(function () {
+            $('#export').click(function () {
+                $('#form1').attr('action', '{!! yzWebUrl('charts.merchant.cashier-income.export') !!}');
+                $('#form1').submit();
+            });
+        });
+    </script>
 @endsection
