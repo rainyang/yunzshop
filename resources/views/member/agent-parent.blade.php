@@ -29,7 +29,7 @@
 
                     <div class="panel-body">
                         <form action="" method="post" class="form-horizontal" role="form" id="form1">
-                            <input type="hidden" name="route" value="member.member.agent" id="route" />
+                            <input type="hidden" name="route" value="member.member.agent-parent" id="route" />
                             <input type="hidden" name="id" value="{{$request->id}}" />
 
                             <div class="form-group col-xs-12 col-sm-6 col-md-2">
@@ -69,28 +69,10 @@
                                     </select>
                                 </div>
                             </div>
-                            <div  class="form-group col-xs-12 col-sm-6 col-md-2">
-                                <div class="">
-                                    <select name='isblack' class='form-control'>
-                                        <option value=''>黑名单状态</option>
-                                        <option value='0'
-                                           @if($request->isblack == '0')
-                                           selected
-                                           @endif
-                                        >否</option>
-                                        <option value='1'
-                                           @if($request->isblack == '1')
-                                           selected
-                                           @endif
-                                        >是</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                            <div class="form-group col-xs-12 col-sm-6 col-md-2 ">
                                 <label class=" control-label"></label>
-                                <div class="col-sm-3 pull-right" style="margin-right:30px;"><button class="btn btn-success">
-                                        <i class="fa fa-search"></i> 搜索</button>
-                                </div>
+                                <button class="btn btn-success"><i class="fa fa-search"></i> 搜索</button>
+                                <button type="button" name="export" value="1" id="export" class="btn btn-default">导出 Excel</button>
                             </div>
                         </form>
                     </div>
@@ -176,5 +158,14 @@
             </div>
         </div>
     </div>
+    <script language='javascript'>
+        $(function () {
+            $('#export').click(function () {
+                $('#route').val("member.member.agent-parent-export");
+                $('#form1').submit();
+                $('#route').val("member.member.agent-parent");
+            });
+        });
+    </script>
 
 @endsection

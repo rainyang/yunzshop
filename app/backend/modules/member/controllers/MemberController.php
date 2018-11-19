@@ -487,7 +487,7 @@ class MemberController extends BaseController
             return $this->message('会员不存在','', 'error');
         }
 
-        $list = MemberParent::getParentByMemberId($request->id)->orderBy('level','asc')->paginate($this->pageSize)->toArray();
+        $list = MemberParent::getParentByMemberId($request)->orderBy('level','asc')->paginate($this->pageSize)->toArray();
 
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $this->pageSize);
 
@@ -498,6 +498,14 @@ class MemberController extends BaseController
             'total' => $list['total'],
             'request' => $request
         ])->render();
+    }
+
+    /**
+     * 推广上线导出
+     */
+    public function agentParentExport()
+    {
+
     }
 
     /**
