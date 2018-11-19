@@ -27,12 +27,12 @@ class PoundageController extends BaseController
         $search = \YunShop::request()->search;
         $list = Withdraw::search($search)
             ->where('status', 2)
-            ->selectRaw("FROM_UNIXTIME(created_at,'%Y-%m-%d') as date, sum(poundage) as poundage, sum(servicetax) as servicetax")
+            ->selectRaw("FROM_UNIXTIME(created_at,'%Y-%m-%d') as date, sum(actual_poundage) as poundage, sum(actual_servicetax) as servicetax")
             ->groupBy(DB::raw("FROM_UNIXTIME(created_at,'%Y-%m-%d')"))
             ->orderBy('created_at','decs')
             ->paginate(10);
         $pager = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
-        $total = Withdraw::search($search)->where('status', 2)->selectRaw("sum(poundage) as poundage, sum(servicetax) as servicetax")->first();
+        $total = Withdraw::search($search)->where('status', 2)->selectRaw("sum(actual_poundage) as poundage, sum(actual_servicetax) as servicetax")->first();
         return view('charts.income.poundage',[
             'list' => $list,
             'pager' => $pager,
@@ -66,7 +66,7 @@ class PoundageController extends BaseController
         $search = \YunShop::request()->search;
         $builder = Withdraw::search($search)
             ->where('status', 2)
-            ->selectRaw("FROM_UNIXTIME(created_at,'%Y-%m-%d') as date, sum(poundage) as poundage, sum(servicetax) as servicetax")
+            ->selectRaw("FROM_UNIXTIME(created_at,'%Y-%m-%d') as date, sum(actual_poundage) as poundage, sum(actual_servicetax) as servicetax")
             ->groupBy(DB::raw("FROM_UNIXTIME(created_at,'%Y-%m-%d')"))
             ->orderBy('created_at','decs');
         $export_page = request()->export_page ? request()->export_page : 1;

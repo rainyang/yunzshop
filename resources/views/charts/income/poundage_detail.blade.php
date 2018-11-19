@@ -56,8 +56,8 @@
                         @foreach($list as $key => $row)
                             <tr style="height: 40px; text-align: center">
                                 <td>{{ $row['type_name']}}</td>
-                                <td>{{ $row['poundage'] ?: '0.00' }}</td>
-                                <td>{{ $row['servicetax'] ?: '0.00' }}</td>
+                                <td>{{ $row['actual_poundage'] ?: '0.00' }}</td>
+                                <td>{{ $row['actual_servicetax'] ?: '0.00' }}</td>
                                 <td>{{ sprintf("%01.2f",($row['poundage'] + $row['servicetax'])) ?: '0.00' }}</td>
                             </tr>
                         @endforeach
