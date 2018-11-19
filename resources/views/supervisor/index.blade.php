@@ -52,9 +52,10 @@
                 <el-button  size="small" v-if="startAllState" disabled type="success"><i style="" class="el-icon-loading"></i>启动进程中...</el-button>
                 <el-button size="small" v-else  @click="startAll" type="success">启动所有进程<i style="" class="el-icon-caret-right el-icon--right"></i></el-button>
                 <el-button size="small" v-if="restartState" disabled type="primary"><i style="" class="el-icon-loading"></i>重启队列中...</el-button>
-                <el-button size="small" @click="restart" type="primary">重启队列<i style="" class="el-icon-caret-right el-icon--right"></i></el-button>
+                <el-button size="small" v-else @click="restart" type="primary">重启队列<i style="" class="el-icon-caret-right el-icon--right"></i></el-button>
                 </span>
             </div>
+            <div v-if="state == 99">进程未启动,请在服务器控制台执行systemctl start supervisord命令启动</div>
             <div v-for="(supervisor, index) in list" class="text item">
                 <span style="width:30%">${ supervisor.name }</span>
                 <span style="width:30%">
@@ -117,6 +118,9 @@
                                     that.state = response.data.state.val.statecode;
                                     console.log('that.state:', that.state);
 
+                                } else if (response.data.process.errno == 5) {
+                                    that.$message.error('进程未启动,请在服务器控制台执行systemctl start supervisord命令启动');
+                                    that.state = 99;
                                 } else {
                                     that.$message.error('错了哦,' + response.data.errstr);
                                 }
@@ -190,23 +194,33 @@
 
                 restart () {
                     var that = this;
-                    this.restartState = true;
+                    this.$confirm('确认重启队列?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                        }).then(() => {
+                            //todo
+                        that.restartState = true;
 
-                    let url = "{!! yzWebUrl("supervisord.supervisord.restart") !!}";
-                    console.log(url);
-                    axios.get(url)
+                        let url = "{!! yzWebUrl("supervisord.supervisord.restart") !!}";
+                        console.log(url);
+                        axios.get(url)
                             .then(function (response) {
                                 console.log('response:', response.data);
                                 if (response.data.errno == 0) {
-                                    that.$message({
-                                        message: '已重启队列',
-                                        type: 'success'
-                                    });
+                                    setTimeout(function(){
+                                        that.$message({
+                                            message: '已重启队列',
+                                            type: 'success'
+                                        });
 
-                                    that.processlist();
-                                    that.restartState = true;
+                                        that.processlist();
+                                        that.processlist();
+                                        that.restartState = false;
+                                    }, 2000);
+
                                 } else {
-                                    that.restartState = true;
+                                    that.restartState = false;
                                     that.$message.error('错了哦,' + response.data.errstr);
                                 }
                                 //that.$Message.success('提交成功啦');
@@ -216,6 +230,14 @@
                                 console.log('error:', error);
                                 //that.$Message.error('提交失败啦');
                             });
+                        }).catch(() => {
+                                this.$message({
+                                type: 'info',
+                                message: '已取消删除'
+                            });
+                        });
+                    return;
+
                 },
 
                 showlog (process, index) {
@@ -262,7 +284,7 @@
                                         message: '日志已清除',
                                         type: 'success'
                                     });
-                                    //that.processlist();
+                                    that.reloadLog();
                                 } else {
                                     that.$message.error('错了哦,' + response.data.errstr);
                                 }
