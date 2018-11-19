@@ -206,6 +206,8 @@ class RegisterController extends ApiController
 
         $state = \YunShop::request()->state ?: '86';
 
+        $sms_type = \YunShop::request()->sms_type;
+
         if (empty($mobile)) {
             return $this->errorJson('请填入手机号');
         }
@@ -233,7 +235,7 @@ class RegisterController extends ApiController
         if (!MemberService::smsSendLimit(\YunShop::app()->uniacid, $mobile)) {
             return $this->errorJson('发送短信数量达到今日上限');
         } else {
-            $this->sendSmsV2($mobile, $code, $state);
+            $this->sendSmsV2($mobile, $code, $state, 'reg', $sms_type);
         }
     }
 
@@ -357,7 +359,7 @@ class RegisterController extends ApiController
         }
     }
 
-    public function sendSmsV2($mobile, $code, $state, $templateType = 'reg')
+    public function sendSmsV2($mobile, $code, $state, $templateType = 'reg', $sms_type)
     {
         $sms = \Setting::get('shop.sms');
 
@@ -408,14 +410,20 @@ class RegisterController extends ApiController
             $top_client = new \iscms\AlismsSdk\TopClient(trim($sms['appkey']), trim($sms['secret']));
             $name = trim($sms['signname']);
             $templateCode = trim($sms['templateCode']);
-
+            $templateCodeForget = trim($sms['templateCodeForget']);
             config([
                 'alisms.KEY' => trim($sms['appkey']),
                 'alisms.SECRETKEY' => trim($sms['secret'])
             ]);
 
             $sms = new Sms($top_client);
-            $issendsms = $sms->send($mobile, $name, $content, $templateCode);
+
+            //$type为1是注册，else 找回密码
+            if (!is_null($sms_type) && $sms_type == 1) {
+                $issendsms = $sms->send($mobile, $name, $content, $templateCode);
+            }else{
+                $issendsms = $sms->send($mobile, $name, $content, $templateCodeForget);
+            }
 
             if (isset($issendsms->result->success)) {
                 MemberService::udpateSmsSendTotal(\YunShop::app()->uniacid, $mobile);
@@ -426,14 +434,26 @@ class RegisterController extends ApiController
         } elseif ($sms['type'] == 3) {
             $aly_sms = new AliyunSMS(trim($sms['aly_appkey']), trim($sms['aly_secret']));
 
-            $response = $aly_sms->sendSms(
-                $sms['aly_signname'], // 短信签名
-                $sms['aly_templateCode'], // 短信模板编号
-                $mobile, // 短信接收者
-                Array(  // 短信模板中字段的值
-                    "number" => $code
-                )
-            );
+            //$type为1是注册，else 找回密码
+            if (!is_null($sms_type) && $sms_type == 1) {
+                $response = $aly_sms->sendSms(
+                    $sms['aly_signname'], // 短信签名
+                    $sms['aly_templateCode'], // 注册短信模板编号
+                    $mobile, // 短信接收者
+                    Array(  // 短信模板中字段的值
+                        "number" => $code
+                    )
+                );
+            }else{
+                $response = $aly_sms->sendSms(
+                    $sms['aly_signname'], // 短信签名
+                    $sms['aly_templateCodeForget'], // 找回密码短信模板编号
+                    $mobile, // 短信接收者
+                    Array(  // 短信模板中字段的值
+                        "number" => $code
+                    )
+                );
+            }
 
             if ($response->Code == 'OK' && $response->Message == 'OK') {
                 return $this->successJson();
