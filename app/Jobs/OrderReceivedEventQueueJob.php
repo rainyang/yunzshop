@@ -44,6 +44,9 @@ class OrderReceivedEventQueueJob implements ShouldQueue
         DB::transaction(function () {
             \YunShop::app()->uniacid = $this->order->uniacid;
             Setting::$uniqueAccountId = $this->order->uniacid;
+            if($this->order->orderReceivedJob->status == 'finished'){
+                return;
+            }
             event(new AfterOrderReceivedEvent($this->order));
             $this->order->orderReceivedJob->status = 'finished';
             $this->order->orderReceivedJob->save();

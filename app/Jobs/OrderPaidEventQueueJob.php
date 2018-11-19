@@ -44,6 +44,9 @@ class OrderPaidEventQueueJob implements ShouldQueue
         DB::transaction(function () {
             \YunShop::app()->uniacid = $this->order->uniacid;
             Setting::$uniqueAccountId = $this->order->uniacid;
+            if($this->order->orderPaidJob->status == 'finished'){
+                return;
+            }
             event(new AfterOrderPaidEvent($this->order));
             $this->order->orderPaidJob->status = 'finished';
             $this->order->orderPaidJob->save();

@@ -1,6 +1,7 @@
 #!/usr/bin/env php
 <?php
-
+$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+include_once __DIR__ . '/../../framework/bootstrap.inc.php';
 /*
 |--------------------------------------------------------------------------
 | Register The Auto Loader

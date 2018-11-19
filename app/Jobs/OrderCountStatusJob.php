@@ -40,6 +40,9 @@ class OrderCountStatusJob implements  ShouldQueue
     public function handle()
     {
         $order = OrderIncomeCount::where('order_id', $this->orderId)->first();
+        if(!$order){
+            return;
+        }
         if ($order->status == -2) {
             return true;
         }
