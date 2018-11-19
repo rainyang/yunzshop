@@ -313,6 +313,7 @@
                                                 <li><a href="{{yzWebUrl('point.recharge.index',['id'=>$row['uid']])}}" title='充值积分'><i class='fa fa-credit-card'></i> 充值积分</a></li>
                                                 <li><a href="{{yzWebUrl('balance.recharge.index', ['member_id'=>$row['uid']])}}" title='充值余额'><i class='fa fa-money'></i> 充值余额 </a></li>
                                                 <li><a href="{{yzWebUrl('member.member.agent', ['id'=>$row['uid']])}}" title='我的下线'><i class='fa fa-exchange'></i> 推广下线 </a></li>
+                                                <li><a href="{{yzWebUrl('member.member.agent-parent', ['id'=>$row['uid']])}}" title='我的上线'><i class='fa fa-exchange'></i> 推广上线 </a></li>
                                                 @if($row['yz_member']['is_black']==1)
                                                     <li><a href="{{yzWebUrl('member.member.black', ['id' => $row['uid'],'black'=>0])}}" title='取消黑名单'><i class='fa fa-minus-square'></i> 取消黑名单</a></li>
                                                 @else

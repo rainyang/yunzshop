@@ -17,6 +17,7 @@ use app\backend\modules\member\models\MemberRecord;
 use app\backend\modules\member\models\MemberShopInfo;
 use app\backend\modules\member\models\MemberUnique;
 use app\backend\modules\member\services\MemberServices;
+use app\backend\modules\member\models\MemberParent;
 use app\common\components\BaseController;
 use app\common\events\member\MemberRelationEvent;
 use app\common\events\member\RegisterByAgent;
@@ -464,6 +465,33 @@ class MemberController extends BaseController
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $this->pageSize);
 
         return view('member.agent', [
+            'member' => $member_info,
+            'list'  => $list,
+            'pager' => $pager,
+            'total' => $list['total'],
+            'request' => $request
+        ])->render();
+    }
+
+    /**
+     * 推广上线
+     * @throws \Throwable
+     */
+    public function agentParent()
+    {
+        $request = \YunShop::request();
+
+        $member_info = Member::getUserInfos($request->id)->first();
+
+        if (empty($member_info)) {
+            return $this->message('会员不存在','', 'error');
+        }
+
+        $list = MemberParent::getParentByMemberId($request->id)->orderBy('level','asc')->paginate($this->pageSize)->toArray();
+
+        $pager = PaginationHelper::show($list['total'], $list['current_page'], $this->pageSize);
+
+        return view('member.agent-parent', [
             'member' => $member_info,
             'list'  => $list,
             'pager' => $pager,
