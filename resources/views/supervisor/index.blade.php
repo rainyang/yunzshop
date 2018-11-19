@@ -103,6 +103,7 @@
                 stopAllState: false,
                 startAllState: false,
                 restartState: false,
+                logIndex:'',
             },
 
             methods: {
@@ -240,7 +241,7 @@
 
                 },
 
-                showlog (process, index) {
+                showlog (process, index=0) {
                     var that = this;
                     that.list[index].cstate = true;
                     let url = "{!! yzWebUrl("supervisord.supervisord.showlog") !!}"+"&process="+process.group + ":" + process.name;
