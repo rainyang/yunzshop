@@ -4,6 +4,8 @@ namespace app\common\providers;
 
 
 
+//use app\backend\modules\charts\listeners\Statistics;
+use app\backend\modules\charts\modules\member\listeners\MemberLowerListener;
 use app\backend\modules\charts\listeners\OrderStatistics;
 use app\backend\modules\charts\modules\phone\listeners\PhoneAttribution;
 use app\backend\modules\goods\listeners\LimitBuy;
@@ -149,7 +151,7 @@ class EventServiceProvider extends ServiceProvider
         OrderStatistics::class,
         PhoneAttribution::class,
         OrderBonusListeners::class,
-
+        MemberLowerListener::class,
     ];
 
     /**
