@@ -76,6 +76,7 @@ class TestController extends BaseController
 
         if (empty($exists)) {
             $pattern2 = '/(u[\d|\w]{4})/';
+        }
 
     }
 
