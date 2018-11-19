@@ -55,7 +55,7 @@
                 <el-button size="small" v-else @click="restart" type="primary">重启队列<i style="" class="el-icon-caret-right el-icon--right"></i></el-button>
                 </span>
             </div>
-            <div v-if="state == 99">进程未启动,请在服务器控制台执行systemctl start supervisord命令启动</div>
+            <div v-if="state == 99">队列服务未启动,请在服务器控制台执行systemctl start supervisord命令启动,或联系客服处理.</div>
             <div v-for="(supervisor, index) in list" class="text item">
                 <span style="width:30%">${ supervisor.name }</span>
                 <span style="width:30%">
@@ -135,10 +135,15 @@
                 },
                 stopAll () {
                     var that = this;
-                    this.stopAllState = true;
-                    let url = "{!! yzWebUrl("supervisord.supervisord.stopAll") !!}";
-                    console.log(url);
-                    axios.get(url)
+                    this.$confirm('确定要重启所有进程?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                        }).then(() => {
+                            that.stopAllState = true;
+                            let url = "{!! yzWebUrl("supervisord.supervisord.stopAll") !!}";
+                            console.log(url);
+                            axios.get(url)
                             .then(function (response) {
                                 console.log('response:', response.data);
                                 if (response.data.errno == 0) {
@@ -160,6 +165,15 @@
                                 console.log('error:', error);
                                 //that.$Message.error('提交失败啦');
                             });
+
+                        }).catch(() => {
+                            this.$message({
+                            type: 'info',
+                            message: '已取消'
+                        });
+                    });
+
+
                 },
 
                 startAll () {
