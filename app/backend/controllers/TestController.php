@@ -9,6 +9,7 @@
 namespace app\backend\controllers;
 
 
+use app\backend\modules\charts\models\OrderStatistics;
 use app\backend\modules\charts\modules\member\services\LowerCountService;
 use app\backend\modules\charts\modules\member\services\LowerOrderService;
 use app\backend\models\Withdraw;
@@ -33,6 +34,7 @@ use app\common\models\Setting;
 use app\common\services\member\MemberRelation;
 use app\common\repositories\ExpressCompany;
 use app\common\services\MessageService;
+use app\framework\Database\Eloquent\Collection;
 use app\frontend\modules\member\models\SubMemberModel;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
@@ -292,4 +294,35 @@ class TestController extends BaseController
 
     }
 
+    public function wf()
+    {
+        //全部
+        $order_all_count = collect(DB::table('yz_order')->select('uid','uniacid', DB::raw('count(1) as total_quantity'))->groupBy('uid')->get()->toArray());
+        $order_all_money = collect(DB::table('yz_order')->select('uid','uniacid', DB::raw('sum(price) as total_amount'))->groupBy('uid')->get()->toArray());
+        //已支付
+        $order_pay_count = collect(DB::table('yz_order')->select('uid','uniacid', DB::raw('count(1) as total_pay_quantity'))->whereIn('status', [1,2,3])->groupBy('uid')->get()->toArray());
+        $order_pay_money = collect(DB::table('yz_order')->select('uid','uniacid', DB::raw('sum(price) as total_pay_amount'))->whereIn('status', [1,2,3])->groupBy('uid')->get()->toArray());
+        //已完成
+        $order_complete_count = collect(DB::table('yz_order')->select('uid','uniacid', DB::raw('count(1) as total_complete_quantity'))->where('status', 3)->groupBy('uid')->get()->toArray());
+        $order_complete_money = collect(DB::table('yz_order')->select('uid','uniacid', DB::raw('sum(price) as total_complete_amount'))->where('status', 3)->groupBy('uid')->get()->toArray());
+        $result = $order_all_count->map(function(Collection $order) use($order_all_money,$order_pay_count,$order_pay_money,$order_complete_count,$order_complete_money){
+            $order =  $this->mergeOrderData($order,$order_all_money);
+            $order =  $this->mergeOrderData($order,$order_pay_count);
+            $order =  $this->mergeOrderData($order,$order_pay_money);
+            $order =  $this->mergeOrderData($order,$order_complete_count);
+            $order =  $this->mergeOrderData($order,$order_complete_money);
+            return $order;
+        });
+        dd($result);
+        foreach ($result as $item) {
+            OrderStatistics::updateOrCreate(['uid' => $item['uid']], $item);
+        }
+    }
+    private function mergeOrderData($order,$mergeOrders){
+        $data = $mergeOrders->where('uid',$order['uid'])->first();
+        if($data){
+            $order = collect($order)->merge($data);
+        }
+        return $order;
+    }
 }
