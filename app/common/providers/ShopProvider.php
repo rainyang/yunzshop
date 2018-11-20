@@ -33,7 +33,7 @@ class ShopProvider extends ServiceProvider
             return new SettingCache();
         });
         $this->app->singleton('supervisor',function() {
-            return new Supervisor('https://127.0.0.1', 9001);
+            return new Supervisor('http://127.0.0.1', 9001);
         });
         $this->app->singleton('ModelExpansionManager',function(){
             return new ModelExpansionManager();
