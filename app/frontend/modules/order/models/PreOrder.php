@@ -9,6 +9,7 @@ use app\common\models\DispatchType;
 use app\frontend\models\Member;
 use app\frontend\models\Order;
 use app\frontend\modules\deduction\OrderDeduction;
+use app\frontend\modules\deduction\OrderDeductionCollection;
 use app\frontend\modules\dispatch\models\OrderDispatch;
 use app\frontend\modules\dispatch\models\PreOrderAddress;
 use app\frontend\modules\order\OrderDiscount;
@@ -21,7 +22,7 @@ use Illuminate\Support\Collection;
  * 订单生成类
  * Class preOrder
  * @package app\frontend\modules\order\services\models
- * @property Collection orderDeductions
+ * @property OrderDeductionCollection orderDeductions
  * @property Collection orderDiscounts
  * @property Collection orderCoupons
  * @property Collection orderSettings

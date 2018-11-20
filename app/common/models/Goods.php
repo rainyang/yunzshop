@@ -12,6 +12,7 @@ use app\backend\modules\goods\models\Sale;
 use app\backend\modules\goods\observers\GoodsObserver;
 use app\common\exceptions\AppException;
 use app\common\models\goods\GoodsDispatch;
+use app\framework\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
@@ -24,6 +25,14 @@ use app\common\models\Coupon;
  * @property string status_name
  * @property string title
  * @property int id
+ * @property int stock
+ * @property float max_price
+ * @property float min_price
+ * @property string thumb
+ * @property string thumb_url
+ * @property int buyNum
+ * @property Collection hasManySpecs
+ * @property Collection hasManyOptions
  * @property GoodsDiscount hasManyGoodsDiscount
  * @property GoodsDispatch hasOneGoodsDispatch
  */
@@ -188,7 +197,7 @@ class Goods extends BaseModel
         return $query->where('is_plugin', 0);
     }
 
-    public function scopeSearch(Builder $query, $filters)
+    public function scopeSearch(BaseModel $query, $filters)
     {
         $query->uniacid();
 
@@ -225,8 +234,7 @@ class Goods extends BaseModel
                     $query->where('brand_id', $value);
                     break;
                 case 'product_attr':
-                    $value = explode(',', rtrim($value, ','));
-
+                    //$value = explode(',', rtrim($value, ','));
                     foreach ($value as $attr) {
                         if ($attr == 'limit_buy') {
                             $query->whereHas('hasOneGoodsLimitBuy', function ($q) {
@@ -251,7 +259,6 @@ class Goods extends BaseModel
                         $id = $value['parentid'][0] ? $value['parentid'][0] : '';
                         $id = $value['childid'][0] ? $value['childid'][0] : $id;
                         $id = $value['thirdid'][0] ? $value['thirdid'][0] : $id;
-
                         $query->select([
                             'yz_goods.*',
                             'yz_goods_category.id as goods_category_id',

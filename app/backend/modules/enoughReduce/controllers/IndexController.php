@@ -17,14 +17,6 @@ class IndexController extends BaseController
     {
         $setting = \Setting::getByGroup('enoughReduce');
 
-        if( empty($setting['open']) || is_null($setting['open']) ){//判断是否有默认值
-            $setting['open']=0;
-        }
-
-        if( empty($setting['freeFreight']['open']) || is_null($setting['freeFreight']['open']) ){
-            $setting['freeFreight']['open']=0;
-        }
-
         return view('goods.enoughReduce.index', [
             'setting' => json_encode($setting),
         ])->render();

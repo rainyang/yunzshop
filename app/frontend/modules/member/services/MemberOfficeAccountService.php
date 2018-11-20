@@ -251,7 +251,34 @@ class MemberOfficeAccountService extends MemberService
      */
     private function _getClientRequestUrl()
     {
-        return Session::get('client_url');
+        $url = Session::get('client_url') ?: $this->_getFrontJumpUrl();
+
+        if ($url === false || $url == '') {
+            $url = Url::absoluteApp('home') . '&t=' . time();
+        }
+
+        return $url;
+    }
+
+    private function _getFrontJumpUrl()
+    {
+        $redirect_url = '';
+        $pattern = '/(&t=([\d]+[^&]*))/';
+        $t = time();
+
+        if (\YunShop::request()->yz_redirect) {
+            $yz_redirect = base64_decode(\YunShop::request()->yz_redirect);
+
+            if (preg_match($pattern, $yz_redirect)) {
+                $redirect_url = preg_replace($pattern, "&t={$t}", $yz_redirect);
+            } else {
+                $redirect_url = $yz_redirect;
+            }
+        }
+
+        \Log::debug('-----------------front_url----------------', [$redirect_url]);
+
+        return $redirect_url;
     }
 
     /**
