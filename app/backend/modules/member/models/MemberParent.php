@@ -43,6 +43,8 @@ class MemberParent extends \app\common\models\member\MemberParent
         return $query;
 
     }
+
+
     public static function getParentByMemberId($request)
     {
         $query = self::where('member_id', $request->id)->with([

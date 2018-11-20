@@ -11,6 +11,7 @@ namespace app\backend\modules\member\controllers;
 
 use app\backend\modules\member\models\McMappingFans;
 use app\backend\modules\member\models\Member;
+use app\backend\modules\member\models\MemberChildren;
 use app\backend\modules\member\models\MemberGroup;
 use app\backend\modules\member\models\MemberLevel;
 use app\backend\modules\member\models\MemberRecord;
@@ -448,7 +449,7 @@ class MemberController extends BaseController
      *
      * @return mixed
      */
-    public function agent()
+    public function agentOld()
     {
         $request = \YunShop::request();
 
@@ -471,6 +472,47 @@ class MemberController extends BaseController
             'total' => $list['total'],
             'request' => $request
         ])->render();
+    }
+
+    /**
+     * 推广下线
+     *
+     * @return mixed
+     */
+    public function agent()
+    {
+        $request = \YunShop::request();
+
+        $member_info = Member::getUserInfos($request->id)->first();
+
+        if (empty($member_info)) {
+            return $this->message('会员不存在','', 'error');
+        }
+
+        $list = MemberChildren::children($request)
+            ->paginate($this->pageSize)
+            ->toArray();
+
+        $level_total = MemberChildren::where('member_id', $request->id)
+            ->selectRaw('count(child_id) as total, level, member_id')
+            ->groupBy('level')
+            ->get();
+
+        $pager = PaginationHelper::show($list['total'], $list['current_page'], $this->pageSize);
+
+        return view('member.agent', [
+            'member' => $member_info,
+            'list'  => $list,
+            'pager' => $pager,
+            'total' => $list['total'],
+            'request' => $request,
+            'level_total' => $level_total,
+        ])->render();
+    }
+
+    public function agentExport()
+    {
+        
     }
 
     /**
