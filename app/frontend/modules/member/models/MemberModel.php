@@ -462,10 +462,10 @@ class MemberModel extends Member
             }
 
             //团队1级会员
-            $childMember1 = DB::select('select child_id from ims_yz_member_children where member_id='.$member_id.' and level=1');
+            $childMember1 = DB::table('yz_member_children')->select('child_id')->where('member_id', $member_id)->where('level', 1)->get()->toArray();
             $child_total = 0;
             foreach ($childMember1 as $item) {
-                $childOrder[] = intval(DB::select('select sum(price) as money from ims_yz_order where uid='.$item['child_id'])[0]['money']);
+                $childOrder[] = intval(DB::table('yz_order')->select(DB::raw('sum(price) as money'))->where('uid', $item['child_id'])->get()->toArray()[0]['money']);
                 $child_total++;
             }
             $data['child_order_money'] = 0;
@@ -474,10 +474,10 @@ class MemberModel extends Member
                 $data['child_order_money'] += $item;
             }
             //团队全部会员
-            $childMemberTeam = DB::select('select child_id from ims_yz_member_children where member_id='.$member_id);
+            $childMemberTeam = DB::table('yz_member_children')->select('child_id')->where('member_id', $member_id)->get()->toArray();
             $child_team_total = 0;
             foreach ($childMemberTeam as $item) {
-                $childTeamOrder[] = intval(DB::select('select sum(price) as money from ims_yz_order where uid='.$item['child_id'])[0]['money']);
+                $childTeamOrder[] = intval(DB::table('yz_order')->select(DB::raw('sum(price) as money'))->where('uid', $item['child_id'])->get()->toArray()[0]['money']);
                 $child_team_total++;
             }
             $data['team_order_money'] = 0;
@@ -641,10 +641,10 @@ class MemberModel extends Member
 
         //团队所有会员
         $uniacid = \YunShop::app()->uniacid;
-        $team_member = DB::select('select child_id from ims_yz_member_children where uniacid='.$uniacid.' and member_id='.\YunShop::app()->getMemberId());
+        $team_member = DB::table('yz_member_children')->select('child_id')->where('member_id', \YunShop::app()->getMemberId())->get()->toArray();
 
         foreach ($team_member as $item) {
-            $order_total[] = DB::select("select count(id) as total from ims_yz_order where status in (1,2,3) and uid=".$item['child_id']);
+            $order_total[] = DB::table('yz_order')->select(DB::raw('count(id) as total'))->whereIn('status', [1,2,3])->where('uid', $item['child_id'])->get()->toArray();
         }
 
         //团队订单总数
@@ -872,9 +872,9 @@ class MemberModel extends Member
 //            }
 
             //团队1级会员
-            $childMember1 = DB::select('select child_id from ims_yz_member_children where member_id='.$item->uid.' and level=1');
+            $childMember1 = DB::table('yz_member_children')->select('child_id')->where('member_id', $item->uid)->where('level', 1)->get()->toArray();
             foreach ($childMember1 as $value) {
-                $childOrder[] = DB::select('select sum(price) as money,count(id) as total from ims_yz_order where uid='.$value['child_id']);
+                $childOrder[] = DB::table('yz_order')->select(DB::raw('sum(price) as money,count(id) as total'))->where('uid', $value['child_id'])->get()->toArray();
             }
             $result['child_order_money'] = 0;
             foreach ($childOrder as $value) {
@@ -882,9 +882,9 @@ class MemberModel extends Member
                 $result['child_order_total'] += $value[0]['total'];
             }
             //团队全部会员
-            $childMemberTeam = DB::select('select child_id from ims_yz_member_children where member_id='.$item->uid);
+            $childMemberTeam = DB::table('yz_member_children')->select('child_id')->where('member_id', $item->uid)->get()->toArray();
             foreach ($childMemberTeam as $value) {
-                $childTeamOrder[] = DB::select('select sum(price) as money,count(id) as total from ims_yz_order where uid='.$value['child_id']);
+                $childTeamOrder[] = DB::table('yz_order')->select(DB::raw('sum(price) as money,count(id) as total'))->where('uid', $value['child_id'])->get()->toArray();
             }
             $result['team_order_money'] = 0;
             foreach ($childTeamOrder as $k => $value) {
