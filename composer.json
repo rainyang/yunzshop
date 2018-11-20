@@ -32,7 +32,9 @@
     "overtrue/laravel-pinyin": "~3.0",
     "bosnadev/repositories": "0.*",
     "gregwar/captcha": "^1.1",
-    "mews/captcha": "^2.2"
+    "mews/captcha": "^2.2",
+    "phpxmlrpc/phpxmlrpc": "4.0",
+    "indigophp/supervisor": "^3.0"
   },
   "require-dev": {
     "filp/whoops": "^2.1",
