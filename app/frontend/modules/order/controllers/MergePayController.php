@@ -240,7 +240,9 @@ class MergePayController extends ApiController
          * @var \app\frontend\models\OrderPay $orderPay
          */
         $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+
         $data['payurl'] = $orderPay->getPayResult(PayFactory::PAY_APP_ALIPAY);
+        $data['order_sn'] = \YunShop::app()->uniacid.'_'.$orderPay->pay_sn;
         $data['isnewalipay'] = \Setting::get('shop_app.pay.newalipay');
         return $this->successJson('成功', $data);
     }

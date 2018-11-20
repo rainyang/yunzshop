@@ -2701,6 +2701,7 @@ return [
             'member_phone_attribution'     => [
                 'name'          => '手机归属地统计',
                 'url'           => 'charts.phone.phone-attribution.index',
+
                 'url_params'    => '',
                 'permit'        => 1,
                 'menu'          => 1,
@@ -2711,20 +2712,18 @@ return [
                 'child'         => []
             ],
 
-
-
-//            'order_dividend_charts'     => [
-//                'name'          => '订单分润',
-//                'url'           => 'charts.order.order-dividend.count',
-//                'url_params'    => '',
-//                'permit'        => 1,
-//                'menu'          => 1,
-//                'icon'          => 'fa-bar-chart-o',
-//                'sort'          => 0,
-//                'item'          => 'order_ranking_charts',
-//                'parents'       => ['charts',],
-//                'child'         => []
-//            ],
+            'order_dividend_charts'     => [
+                'name'          => '订单分润',
+                'url'           => 'charts.order.order-dividend.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts',],
+                'child'         => []
+            ],
 
             'transaction_amount_charts'     => [
                 'name'          => '交易额统计',
@@ -2835,6 +2834,30 @@ return [
                         'parents'       => ['charts','member_income_charts'],
                     ]
                 ]
+            ],
+            'poundage_income_charts' => [
+                'name'          => '手续费/劳务税汇总',
+                'url'           => 'charts.income.poundage.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts'],
+                'child'         => [
+                    'poundage_income_charts' => [
+                        'name' => '手续费明细',
+                        'url' => 'charts.income.poundage.detail',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => 'fa-bar-chart-o',
+                        'sort'          => 0,
+                        'item'          => 'order_ranking_charts',
+                        'parents'       => ['charts','poundage_income_charts'],
+                    ]
+                ],
             ],
             'point_charts'     => [
                 'name'          => '积分数据统计',
@@ -3398,6 +3421,18 @@ return [
                     ],
                 ],
             ],
+            'operation_log' => [
+                'name'              => '操作日志',
+                'url'               => 'setting.operation-log.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-list-ul',
+                'sort'              => '6',
+                'item'              => 'operation_log',
+                'parents'           => ['system',],
+            ],
+
         ],
     ],
 ];

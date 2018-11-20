@@ -34,6 +34,7 @@ class IncomePageController extends ApiController
      * 收入页面接口
      *
      * @return \Illuminate\Http\JsonResponse
+     * @throws \app\common\exceptions\AppException
      */
     public function index()
     {

@@ -38,11 +38,25 @@
                             </div>
                             <div class="form-group col-xs-12 col-sm-4">
                                 <button class="btn btn-success" id="search"><i class="fa fa-search"></i> 搜索</button>
+                                <button type="submit" name="export" value="1" id="export" class="btn btn-default">导出 Excel</button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="panel panel-default">
+            <table class='table'>
+                <tr class='trhead'>
+                    <td colspan='8' style="text-align: left;">
+                        平台收益总汇总: <span id="total">{{ sprintf("%01.2f", $total->price - $total->cost_price + $total->supplier + $total->store + $total->cashier) }}元</span>&nbsp;&nbsp;&nbsp;
+                        未被分润总汇总: <span id="total">{{ $total['undividend'] }}元</span>&nbsp;&nbsp;&nbsp;
+                        商城收益总汇总: <span id="total">{{ sprintf("%01.2f", $total['price'] - $total['cost_price']) }}元</span>&nbsp;&nbsp;&nbsp;供应商收益总汇总: <span id="total">{{ $total['supplier'] }}元</span>&nbsp;&nbsp;&nbsp;
+                        门店收益总汇总: <span id="total">{{ $total['store'] }}元</span>&nbsp;&nbsp;&nbsp;收银台收益总汇总: <span id="total">{{ $total['cashier'] }}元</span>
+                    </td>
+                </tr>
+            </table>
         </div>
 
         <div class="panel panel-default">
@@ -58,18 +72,20 @@
                             <th class="col-md-2 text-center">供应商收益</th>
                             <th class="col-md-2 text-center">门店收益</th>
                             <th class="col-md-2 text-center">收银台收益</th>
+                            <th class="col-md-2 text-center">总收益</th>
                         </tr>
                         </thead>
                         <tbody>
                         @foreach($list as $row)
                             <tr style="height: 40px; text-align: center">
-                                <td>{{ $row['date'] }}</td>
+                                <td>{{ date('Y-m-d',$row['day_time']) }}</td>
                                 <td>{{ $row['price'] }}</td>
                                 <td>{{ $row['undividend'] }}</td>
-                                <td>{{ sprintf("%01.2f",$row->price - $row->hasOneOrderGoods->cost_price ?: '0.00') }}</td>
-                                <td>{{ $row->hasOneSupplierOrder->supplier_profit ?: '0.00' }}</td>
-                                <td>{{ $row->hasOneStoreOrder->amount ?: '0.00' }}</td>
-                                <td>{{ $row->hasOneCashierOrder->amount ?: '0.00' }}</td>
+                                <td>{{ sprintf("%01.2f",$row->price - $row->cost_price ?: '0.00') }}</td>
+                                <td>{{ $row->supplier ?: '0.00' }}</td>
+                                <td>{{ $row->store ?: '0.00' }}</td>
+                                <td>{{ $row->cashier ?: '0.00' }}</td>
+                                <td>{{ sprintf("%01.2f",$row->price - $row->cost_price + $row->supplier + $row->store + $row->cashier) ?: '0.00' }}</td>
                             </tr>
                         @endforeach
                         </tbody>
@@ -81,4 +97,12 @@
         </div>
     </div>
 </div>
+<script>
+    $(function () {
+        $('#export').click(function () {
+            $('#form1').attr('action', '{!! yzWebUrl('charts.income.shop-income-statistics.export') !!}');
+            $('#form1').submit();
+        });
+    });
+</script>
 @endsection

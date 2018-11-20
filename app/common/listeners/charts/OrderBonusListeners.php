@@ -7,11 +7,19 @@
  */
 namespace app\common\listeners\charts;
 
+use app\common\events\order\AfterOrderCanceledEvent;
+use app\common\events\order\AfterOrderCreatedImmediatelyEvent;
 use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\events\order\AfterOrderPaidEvent;
+use app\common\events\order\AfterOrderCreatedEvent;
+use app\common\events\order\AfterOrderRefundedEvent;
+use app\common\models\order\OrderPluginBonus;
 use app\Jobs\OrderBonusContentJob;
 use app\Jobs\OrderBonusStatusJob;
 use app\Jobs\OrderBonusUpdateJob;
+use app\Jobs\OrderCountContentJob;
+use app\Jobs\OrderCountIncomeJob;
+use app\Jobs\OrderCountStatusJob;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use app\common\models\Order;
 
@@ -22,36 +30,53 @@ class OrderBonusListeners
 
     public function subscribe($events)
     {
-        //支付之后 统计订单详情
-        $events->listen(
-            AfterOrderPaidEvent::class,
-            OrderBonusListeners::class . '@addBonus'
-        );
+        //下单
+//        $events->listen(AfterOrderCreatedImmediatelyEvent::class, OrderBonusListeners::class. '@addCount');
+        $events->listen(AfterOrderCreatedEvent::class, OrderBonusListeners::class. '@addCount');
+
+        //todo 支付之后 统计订单详情
+        //$events->listen(AfterOrderPaidEvent::class, OrderBonusListeners::class . '@addBonus');
 
         //收货之后 更改订单状态
-        $events->listen(
-            AfterOrderReceivedEvent::class,
-            OrderBonusListeners::class . '@updateBonus'
-        );
+        $events->listen(AfterOrderReceivedEvent::class, OrderBonusListeners::class . '@updateBonus');
 
+        //订单取消
+        $events->listen(AfterOrderCanceledEvent::class, OrderBonusListeners::class. '@cancel');
 
+        //订单退款
+        $events->listen(AfterOrderRefundedEvent::class, OrderBonusListeners::class. '@refunded');
 
-        //订单关闭 分红插入回滚
-//        $events->listen(
-//            AfterOrderCanceledEvent::class,
-//            OrderBonusListeners::class . '@orderCancel'
-//        );
     }
 
-    public function addBonus(AfterOrderPaidEvent $event)
+    //todo 订单支付后
+//    public function addBonus(AfterOrderPaidEvent $event)
+//    {
+//        $this->orderModel = Order::find($event->getOrderModel()->id);
+//        $this->dispatch(new OrderBonusContentJob($this->orderModel));
+//    }
+
+
+    public function addCount(AfterOrderCreatedImmediatelyEvent $event)
     {
-        $this->orderModel = Order::find($event->getOrderModel()->id);
-        $this->dispatch(new OrderBonusContentJob($this->orderModel));
+        $orderModel = Order::find($event->getOrderModel()->id);
+//        $this->dispatch(new OrderCountContentJob($orderModel));
+        $this->dispatch((new OrderCountContentJob($orderModel))->delay(10));
     }
-
 
     public function updateBonus(AfterOrderReceivedEvent $event)
     {
         $this->dispatch(new OrderBonusStatusJob($event->getOrderModel()->id));
+        $this->dispatch(new OrderCountIncomeJob($event->getOrderModel()->id));
     }
+
+    public function cancel(AfterOrderCanceledEvent $event)
+    {
+        $this->dispatch(new OrderCountStatusJob($event->getOrderModel()->id, -1));
+    }
+
+    public function refunded(AfterOrderRefundedEvent $event)
+    {
+        $this->dispatch(new OrderCountStatusJob($event->getOrderModel()->id, -2));
+    }
+
 }

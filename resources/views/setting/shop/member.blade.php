@@ -191,6 +191,21 @@
                         </div>
 
                         <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">邀请码是否必填</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <label class="radio radio-inline">
+                                    <input type="radio" name="member[required]" value="0"
+                                           @if (empty($set['required'])) checked @endif/> 关闭
+                                </label>
+                                <label class="radio radio-inline">
+                                    <input type="radio" name="member[required]" value="1"
+                                           @if ($set['required'] == 1) checked @endif/> 开启
+                                </label>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">自定义字段</label>
                             <div class="col-sm-9 col-xs-12">
                                 <label class="radio radio-inline">

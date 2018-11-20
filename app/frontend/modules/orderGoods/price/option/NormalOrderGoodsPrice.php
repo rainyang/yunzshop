@@ -73,6 +73,7 @@ class NormalOrderGoodsPrice extends BaseOrderGoodsPrice
 
         if ($this->deductionCount != $this->orderGoods->getOrderGoodsDeductions()->count()) {
             $this->deductionCount = $this->orderGoods->getOrderGoodsDeductions()->count();
+            debug_log()->deduction('订单抵扣',"订单商品计算所有已用的抵扣金额");
             $this->deductionAmount = $this->orderGoods->getOrderGoodsDeductions()->getUsedPoint()->getMoney();
 
         }

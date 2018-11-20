@@ -72,6 +72,8 @@ trait MemberTreeTrait
     protected $treeMiddleIcon = '&nbsp;├─ ';
     protected $treeLastIcon = '&nbsp;└─ ';
 
+    public    $filter       = [];
+
     /**
      * 数据主ID名.
      *
@@ -176,6 +178,8 @@ trait MemberTreeTrait
 
         foreach ($data as $val) {
             if ($val->{$this->getTreeNodeParentIdName()} == $parentId) {
+
+                \Log::debug('------add----', [$parentId, $val->member_id]);
                 $childList->put($val->{$this->getTreeNodeIdName()}, $val);
             }
         }
@@ -225,12 +229,23 @@ trait MemberTreeTrait
         if (!$array instanceof ArrayAccess || $depth == 0) {
             $array = collect([]);
         }
+
+        if (in_array($parentId, $this->filter)) {
+            \Log::debug('--------------parentId 已存在----------', [$parentId]);
+            \Log::debug('-------------array----------', $array);
+            return $array;
+        }
+        \Log::debug('---------------查询下级---------------', $parentId);
+        \Log::debug('---------------层级-------------------', $depth);
+        $this->filter[] = $parentId;
+
         $number = 1;
         $child = $this->getSubLevel($uniacid, $parentId);
 \Log::debug('------child----', $child->count());
         if ($child) {
             $nextDepth = $depth + 1;
             $total = $child->count();
+
             foreach ($child as $val) {
                 $j = $k = '';
                 if ($number == $total) {

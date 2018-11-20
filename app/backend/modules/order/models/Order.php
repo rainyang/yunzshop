@@ -60,6 +60,7 @@ class Order extends \app\common\models\Order
             'hasOnePayType',
             'address',
             'express',
+            'process',
             'hasOneRefundApply' => self::refundBuilder(),
             'hasOneOrderRemark',
             'hasOneOrderPay'=> function (Builder $query) {

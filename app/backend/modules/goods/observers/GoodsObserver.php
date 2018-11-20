@@ -50,6 +50,9 @@ class GoodsObserver extends \app\common\observers\BaseObserver
 
     public function updated(Model $model)
     {
+
+        (new \app\common\services\operation\GoodsLog($model, 'update'));
+
         $this->pluginObserver('observer.goods', $model, 'updated');
     }
 

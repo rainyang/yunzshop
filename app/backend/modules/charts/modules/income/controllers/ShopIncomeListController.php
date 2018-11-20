@@ -7,9 +7,11 @@
  */
 namespace app\backend\modules\charts\modules\income\controllers;
 
+use app\backend\modules\charts\models\OrderIncomeCount;
 use app\common\components\BaseController;
 use app\common\helpers\PaginationHelper;
 use app\common\models\order\OrderPluginBonus;
+use app\common\services\ExportService;
 
 class ShopIncomeListController extends BaseController
 {
@@ -19,22 +21,15 @@ class ShopIncomeListController extends BaseController
      */
     public function index()
     {
+        if (!app('plugins')->isEnabled('supplier') && !app('plugins')->isEnabled('store-cashier')) {
+            return $this->message('未开启供应商，门店插件，暂不能统计');
+        }
         $pageSize = 10;
         $search = \YunShop::request()->search;
-        $list = OrderPluginBonus::search($search)
-            ->selectRaw('sum(undividend) as undividend, order_id, max(if(code like "order_sn",content,0)) as order_sn')
-            ->selectRaw('max(price) as price, order_id, max(if(code like "shop_name",content,0)) as shop_name')
-            ->selectRaw('max(if(code like "buy_name",content,0)) as buy_name')
-            ->groupBy('order_id')
-            ->with([
-                'hasOneOrderGoods' => function($q) {
-                    $q->selectRaw('sum(goods_cost_price) as cost_price, order_id')->groupBy('order_id');
-                },
-                'hasOneStoreOrder',
-                'hasOneSupplierOrder',
-                'hasOneCashierOrder',
-            ])
-            ->orderBy('order_id', 'desc')
+        $list = OrderIncomeCount::search($search)
+            ->where('status', 3)
+            ->select(['order_sn', 'buy_name', 'price', 'shop_name', 'plugin_id', 'undividend', 'cost_price', 'supplier', 'store', 'cashier'])
+            ->orderBy('id', 'desc')
             ->paginate($pageSize);
 
         $pager = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
@@ -43,6 +38,45 @@ class ShopIncomeListController extends BaseController
             'pager' => $pager,
             'search' => $search,
         ])->render();
+    }
+
+    public function export()
+    {
+        $search = \YunShop::request()->search;
+        $builder = OrderIncomeCount::search($search)
+            ->where('status', 3)
+            ->select(['order_sn', 'buy_name', 'price', 'shop_name', 'plugin_id', 'undividend', 'cost_price', 'supplier', 'store', 'cashier'])
+            ->orderBy('id', 'desc');
+        $export_page = request()->export_page ? request()->export_page : 1;
+        $export_model = new ExportService($builder, $export_page);
+        $file_name = date('Ymdhis', time()) . '订单收益统计导出';
+        $export_data[0] = ['订单号', '购买者','订单金额','订单类型','商家','未被分润','商城收益','供应商收益','门店收益','收银台收益'];
+        foreach ($export_model->builder_model as $key => $item) {
+
+            if ($item->plugin_id == 1) {
+                $type_name = '供应商';
+            } elseif ($item->plugin == 31) {
+                $type_name = '门店';
+            } elseif ($item->plugin == 32) {
+                $type_name = '收银台';
+            } else {
+                $type_name = '商城';
+            }
+            $export_data[$key+1] = [
+                $item->order_sn,
+                $item->buy_name ?: '未更新',
+                $item->price ?: '0.00',
+                $type_name,
+                $item->shop_name,
+                $item->undividend,
+                sprintf("%01.2f",($item->price - $item->cost_price) > 0 ? $item->price - $item->cost_price : '0.00'),
+                $item->supplier ?: '0.00',
+                $item->store ?: '0.00',
+                $item->cashier ?: '0.00',
+            ];
+        }
+        $export_model->export($file_name, $export_data, 'charts.income.shop-income-list.index');
+        return true;
     }
 
 }

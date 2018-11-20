@@ -28,6 +28,7 @@ class GoodsScope extends CouponUseScope
                 /**
                  * @var $orderGoods PreOrderGoods
                  */
+                debug_log()->coupon("优惠券{$this->coupon->getMemberCoupon()->id}","商品id{$orderGoods->goods_id},优惠券支持品商品id{$this->coupon->getMemberCoupon()->belongsToCoupon->goods_ids}");
                 return in_array($orderGoods->goods_id, $this->coupon->getMemberCoupon()->belongsToCoupon->goods_ids);
             });
         if ($orderGoods->unique('is_plugin')->count() > 1) {

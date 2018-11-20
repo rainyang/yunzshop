@@ -142,14 +142,17 @@ class IncomePageFactory
     /**
      * 收入模型累计收入值
      *
-     * @return mixed
+     * @return float
      */
     private function getValue()
     {
-        $type = $this->_income->getTypeValue();
-        $member_id = \YunShop::app()->getMemberId();
-
-        return Income::where('incometable_type', $type)->whereMember_id($member_id)->sum('amount');
+        $value = $this->_income->getTypeValue();
+        if (is_numeric($value)) {
+            return $value;
+        } else {
+            $member_id = \YunShop::app()->getMemberId();
+            return Income::where('incometable_type', $value)->whereMember_id($member_id)->sum('amount');
+        }
     }
 
 

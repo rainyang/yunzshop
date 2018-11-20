@@ -35,6 +35,7 @@ class CreateGoodsService
     {
         $goods_data = $this->request->goods;
 
+
         $this->params = new GoodsParam();
         $this->goods_model = new Goods();
         $this->brands = Brand::getBrands()->get();
@@ -68,6 +69,7 @@ class CreateGoodsService
                 $this->error = $validator->messages();
             } else {
                 if ($this->goods_model->save()) {
+                    (new \app\common\services\operation\GoodsLog($this->goods_model, 'create'));
                     GoodsService::saveGoodsMultiCategory($this->goods_model, $this->request->category, Setting::get('shop.category'));
                     GoodsParam::saveParam($this->request, $this->goods_model->id, \YunShop::app()->uniacid);
                     GoodsSpec::saveSpec($this->request, $this->goods_model->id, \YunShop::app()->uniacid);

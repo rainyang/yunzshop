@@ -25,7 +25,6 @@ class KDN
 
     public function getTraces($comCode, $expressSn, $orderSn = '')
     {
-
         $requestData = json_encode(
             [
                 'OrderCode' => $orderSn,

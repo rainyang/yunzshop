@@ -1,7 +1,7 @@
 <?php
 namespace app\common\helpers;
 
-class WeSession {
+class WeSession implements \SessionHandlerInterface{
 
     public static $uniacid;
 
@@ -11,11 +11,30 @@ class WeSession {
 
 
     public static function start($uniacid, $openid, $expire = 3600) {
-        if (empty($GLOBALS['_W']['config']['setting']['memcache']['session']) || empty($GLOBALS['_W']['config']['setting']['memcache']['server'])) {
-            WeSession::$uniacid = $uniacid;
-            WeSession::$openid = $openid;
-            WeSession::$expire = $expire;
-            $sess = new WeSession();
+        WeSession::$uniacid = $uniacid;
+        WeSession::$openid = $openid;
+        WeSession::$expire = $expire;
+
+        $cache_setting = $GLOBALS['_W']['config']['setting'];
+        if (extension_loaded('memcache') && !empty($cache_setting['memcache']['server']) && !empty($cache_setting['memcache']['session'])) {
+            self::setHandler('memcache');
+        } elseif (extension_loaded('redis') && !empty($cache_setting['redis']['server']) && !empty($cache_setting['redis']['session'])) {
+            self::setHandler('redis');
+        } else {
+            self::setHandler('mysql');
+        }
+        register_shutdown_function('session_write_close');
+        session_start();
+    }
+
+    public static function setHandler($type = 'mysql') {
+        $classname = "app\common\helpers\WeSession{$type}";
+        if (class_exists($classname)) {
+            $sess = new $classname;
+        }
+        if (version_compare(PHP_VERSION, '5.5') >= 0) {
+            session_set_save_handler($sess, true);
+        } else {
             session_set_save_handler(
                 array(&$sess, 'open'),
                 array(&$sess, 'close'),
@@ -24,12 +43,11 @@ class WeSession {
                 array(&$sess, 'destroy'),
                 array(&$sess, 'gc')
             );
-            register_shutdown_function('session_write_close');
         }
-        session_start();
+        return true;
     }
 
-    public function open() {
+    public function open($save_path, $session_name) {
         return true;
     }
 
@@ -37,6 +55,122 @@ class WeSession {
         return true;
     }
 
+
+    public function read($sessionid) {
+        return '';
+    }
+
+
+    public function write($sessionid, $data) {
+        return true;
+    }
+
+
+    public function destroy($sessionid) {
+        return true;
+    }
+
+
+    public function gc($expire) {
+        return true;
+    }
+
+}
+
+class WeSessionMemcache extends WeSession {
+    protected $session_name;
+
+    protected function key($sessionid) {
+        return $this->session_name . ':' . $sessionid;
+    }
+
+    public function open($save_path, $session_name) {
+        $this->session_name = $session_name;
+
+        if (cache_type() != 'memcache') {
+            trigger_error('Memcache 扩展不可用或是服务未开启，请将 \$config[\'setting\'][\'memcache\'][\'session\'] 设置为0 ');
+            return false;
+        }
+        return true;
+    }
+
+    public function read($sessionid) {
+        $row = cache_read($this->key($sessionid));
+        if ($row['expiretime'] < TIMESTAMP) {
+            return '';
+        }
+        if(is_array($row) && !empty($row['data'])) {
+            return $row['data'];
+        }
+        return '';
+    }
+
+    public function write($sessionid, $data) {
+        if (empty($data) || (!empty($data) && empty($this->chk_member_id_session($data)))) {
+            $read_data = $this->read($sessionid);
+
+            if (!empty($member_data = $this->chk_member_id_session($read_data))) {
+                $data .= $member_data;
+            }
+        }
+
+        $row = array();
+        $row['data'] = $data;
+        $row['expiretime'] = TIMESTAMP + WeSession::$expire;
+
+        return cache_write($this->key($sessionid), $row);
+    }
+
+    public function destroy($sessionid) {
+        return cache_write($this->key($sessionid), '');
+    }
+
+    public function chk_member_id_session($read_data)
+    {
+        $member_data = '';
+
+        if (!empty($read_data)) {
+            preg_match_all('/yunzshop_([\w]+[^|]*|)/', $read_data, $name_matches);
+            preg_match_all('/(a:[\w]+[^}]*})/', $read_data, $value_matches);
+
+            if (!empty($name_matches)) {
+                foreach ($name_matches[0] as $key => $val) {
+                    if ($val == 'yunzshop_member_id') {
+                        $member_data = $val . '|' . $value_matches[0][$key];
+                    }
+                }
+            }
+        }
+
+        return $member_data;
+    }
+}
+
+class WeSessionRedis extends WeSessionMemcache {
+    public function __construct()
+    {
+    }
+
+    public function open($save_path, $session_name) {
+        $this->session_name = $session_name;
+
+        if (cache_type() != 'redis') {
+            trigger_error('Redis 扩展不可用或是服务未开启，请将 \$config[\'setting\'][\'redis\'][\'session\'] 设置为0 ');
+            return false;
+        }
+        return true;
+    }
+}
+
+class WeSessionMysql extends WeSession {
+    public function open($save_path, $session_name) {
+        $tablename = str_replace('`', "'", tablename('core_sessions'));
+        $status = pdo_fetch("SHOW TABLE STATUS LIKE {$tablename}");
+        if (strexists($status['Comment'], 'crashed')) {
+            pdo_run("REPAIR TABLE " . tablename('core_sessions'));
+        }
+        return true;
+    }
 
     public function read($sessionid) {
         $sql = 'SELECT * FROM ' . tablename('core_sessions') . ' WHERE `sid`=:sessid AND `expiretime`>:time';

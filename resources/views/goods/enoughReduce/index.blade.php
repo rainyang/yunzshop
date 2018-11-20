@@ -14,11 +14,8 @@
         <div id="test-vue">
             <el-form ref="form" :rules="rules" :model="form" label-width="17%">
                 <el-form-item label="开启满额优惠">
-
-                    <el-tooltip :content="form.open?'已开启':'已关闭'" placement="top">
-                        <el-switch v-model="form.open">
-                        </el-switch>
-                    </el-tooltip>
+                    <el-radio v-model.bool="form.open" :label=true>开启</el-radio>
+                    <el-radio v-model.bool="form.open" :label=false>关闭</el-radio>
                 </el-form-item>
                 <template v-for="(enoughReduce,index) in form.enoughReduce">
 
@@ -66,10 +63,9 @@
 
                 <el-form-item label="满额包邮">
 
-                    <el-tooltip :content="form.open?'已开启':'已关闭'" placement="top">
-                        <el-switch v-model="form.freeFreight.open">
-                        </el-switch>
-                    </el-tooltip>
+                    <el-radio v-model.bool="form.freeFreight.open" :label=true>开启</el-radio>
+                    <el-radio v-model.bool="form.freeFreight.open" :label=false>关闭</el-radio>
+                    <div>开启满包邮,订单总金额超过多少可以包邮</div>
                     <el-form-item prop="freeFreight.enough">
                         <el-input placeholder="金额"
                                   v-model.number="form.freeFreight.enough" size="medium"
@@ -93,7 +89,6 @@
                             title="请选择地区"
                             :visible.sync="centerDialogVisible"
                             center>
-
                         <el-tree
                                 v-loading="loading"
                                 :props="props"

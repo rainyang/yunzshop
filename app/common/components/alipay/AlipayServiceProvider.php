@@ -3,6 +3,7 @@ namespace app\common\components\alipay;
 
 use Illuminate\Support\ServiceProvider;
 use Setting;
+use app\common\helpers\Url;
 
 class AlipayServiceProvider extends ServiceProvider
 {
@@ -67,6 +68,33 @@ class AlipayServiceProvider extends ServiceProvider
 
 			return $alipay;
 		});
+
+        $this->app->bind('alipay.wap2', function ($app)
+        {
+            $alipay = new Wap2\SdkPayment();
+
+//            $set = \Setting::get('shop_app.pay');
+//            //$sign = '';
+//            $app_id = $set['alipay_appid'];
+//            //$sign_type = '';
+//            $rsaPrivateKey = $set['alipay_sign_private'];
+//            $alipayrsaPublicKey = $set['alipay_sign_public'];
+
+            $set = \Setting::get('shop.pay');
+            $app_id = decrypt($set['alipay_app_id']);
+            $rsaPrivateKey = decrypt($set['rsa_private_key']);
+            $alipayrsaPublicKey =decrypt($set['rsa_public_key']);
+
+
+            //$alipay->setSign($sign);
+            //$alipay->setSignType($sign_type);
+            $alipay->setAppId($app_id);
+            $alipay->setRsaPrivateKey($rsaPrivateKey);
+            $alipay->setAlipayrsaPublicKey($alipayrsaPublicKey);
+            $alipay->setNotifyUrl(Url::shopSchemeUrl('payment/alipay/newNotifyUrl.php'));
+            $alipay->setReturnUrl(Setting::get('alipay-web.return_url'));
+            return $alipay;
+        });
 	}
 
 	/**

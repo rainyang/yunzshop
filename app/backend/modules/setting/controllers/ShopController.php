@@ -319,8 +319,8 @@ class ShopController extends BaseController
             if (isset($pay['secret']) && 1 == $pay['secret']) {
                 Utils::dataEncrypt($requestModel);
             }
-
             if (Setting::set('shop.pay', $requestModel)) {
+                (new \app\common\services\operation\ShopPayLog(['old' => $pay, 'new' => $requestModel], 'update'));
                 $this->setAlipayParams($requestModel);
                 return $this->message('支付方式设置成功', Url::absoluteWeb('setting.shop.pay'));
             } else {

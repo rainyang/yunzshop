@@ -9,7 +9,11 @@
 namespace app\backend\modules\charts\models;
 
 use app\common\models\MemberShopInfo;
+use app\common\models\order\OrderPluginBonus;
 use Illuminate\Support\Facades\DB;
+use Yunshop\StoreCashier\common\models\CashierOrder;
+use Yunshop\StoreCashier\common\models\StoreOrder;
+use Yunshop\Supplier\common\models\SupplierOrder;
 
 class Order extends \app\common\models\Order
 
@@ -20,11 +24,6 @@ class Order extends \app\common\models\Order
         $builder = Order::exportOrders($search);
         $orders = $builder->get()->toArray();
         return $orders;
-    }
-
-    public function hasOneOrderGoods()
-    {
-        return $this->hasOne(OrderGoods::class, 'order_id', 'id');
     }
 
     public function scopeExportOrders($query, $search)
@@ -182,5 +181,32 @@ class Order extends \app\common\models\Order
 //        static::addGlobalScope(function (Builder $builder) {
 //            $builder->isPlugin();
 //        });
+    }
+
+
+
+    public function hasManyOrderGoods()
+    {
+        return $this->hasMany(OrderGoods::class, 'order_id', 'id');
+    }
+
+    public function hasManyCashierOrder()
+    {
+        return $this->hasMany(CashierOrder::class,'order_id','id');
+    }
+
+    public function hasManyStoreOrder()
+    {
+        return $this->hasMany(StoreOrder::class,'order_id','id');
+    }
+
+    public function hasManySupplierOrder()
+    {
+        return $this->hasMany(SupplierOrder::class,'order_id','id');
+    }
+
+    public function hasManyOrderPluginBonus()
+    {
+        return $this->hasMany(OrderPluginBonus::class, 'order_id', 'id');
     }
 }
