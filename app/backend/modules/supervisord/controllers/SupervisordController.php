@@ -21,7 +21,8 @@ class SupervisordController extends BaseController
 
     public function __construct()
     {
-        $this->supervisor = new Supervisor('dev4.yunzshop.com', 9001);
+        $this->supervisor = app('supervisor');
+        //$this->supervisor = new Supervisor('dev4.yunzshop.com', 9001);
         //$this->supervisor = new Supervisor(\Request::server('HTTP_HOST'), 9001);
         $this->supervisor->setTimeout(5000);  // microseconds
     }

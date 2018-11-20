@@ -8,6 +8,7 @@
 
 namespace app\common\providers;
 
+use app\backend\modules\supervisord\services\Supervisor;
 use app\common\facades\Setting;
 use app\common\helpers\SettingCache;
 use app\common\modules\express\KDN;
@@ -30,6 +31,9 @@ class ShopProvider extends ServiceProvider
 
         $this->app->singleton('SettingCache',function() {
             return new SettingCache();
+        });
+        $this->app->singleton('supervisor',function() {
+            return new Supervisor('https://127.0.0.1', 9001);
         });
         $this->app->singleton('ModelExpansionManager',function(){
             return new ModelExpansionManager();

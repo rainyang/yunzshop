@@ -80,7 +80,17 @@ return [
             ],
         ],
     ],
-
+    'supervisor'      => [
+        'name'              => '队列管理',
+        'url'               => 'supervisord.supervisord',
+        'url_params'        => '',
+        'permit'            => 1,
+        'menu'              => 1,
+        'icon'              => 'fa-history',
+        'sort'              => '5',
+        'item'              => 'supervisor',
+        'parents'           => ['system',],
+    ],
     'shop_upgrade'      => [
         'name'              => '系统升级',
         'url'               => 'update.index',
