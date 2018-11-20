@@ -22,32 +22,35 @@ class OrderStatisticsService
             \YunShop::app()->uniacid = $u->uniacid;
             \Setting::$uniqueAccountId = $u->uniacid;
 
-            $uniacid = \YunShop::app()->uniacid;
-            $yzModel = DB::select('select member_id from ims_yz_member where uniacid=' . $uniacid . ' order by member_id');
-
-            foreach ($yzModel as $k => $item) {
-                $result[$item['member_id']]['uid'] = $item['member_id'];
-                $result[$item['member_id']]['uniacid'] = $uniacid;
-                $result[$item['member_id']]['total_quantity'] = DB::select('select count(id) as total from ims_yz_order where uid=' . $item['member_id'])[0]['total'] ?: 0;
-                $result[$item['member_id']]['total_amount'] = DB::select('select sum(price) as money from ims_yz_order where uid=' . $item['member_id'])[0]['money'] ?: 0;
-            }
-
-            foreach ($yzModel as $item) {
-                $result[$item['member_id']]['total_pay_quantity'] = DB::select('select count(id) as total from ims_yz_order where uid=' . $item['member_id'] . ' and status in (1,2,3)')[0]['total'] ?: 0;
-                $result[$item['member_id']]['total_pay_amount'] = DB::select('select sum(price) as money from ims_yz_order where uid=' . $item['member_id'] . ' and status in (1,2,3)')[0]['money'] ?: 0;
-            }
-
-            foreach ($yzModel as $item) {
-                $result[$item['member_id']]['total_complete_quantity'] = DB::select('select count(id) as total from ims_yz_order where uid=' . $item['member_id'] . ' and status=3')[0]['total'] ?: 0;
-                $result[$item['member_id']]['total_complete_amount'] = DB::select('select sum(price) as money from ims_yz_order where uid=' . $item['member_id'] . ' and status=3')[0]['money'] ?: 0;
-            }
-
-//            dd($result);
-            $memberModel = new OrderStatistics();
+            //全部
+            $order_all_count = collect(DB::table('yz_order')->select('uid','uniacid', DB::raw('count(1) as total_quantity'))->groupBy('uid')->get()->toArray());
+            $order_all_money = collect(DB::table('yz_order')->select('uid','uniacid', DB::raw('sum(price) as total_amount'))->groupBy('uid')->get()->toArray());
+            //已支付
+            $order_pay_count = collect(DB::table('yz_order')->select('uid','uniacid', DB::raw('count(1) as total_pay_quantity'))->whereIn('status', [1,2,3])->groupBy('uid')->get()->toArray());
+            $order_pay_money = collect(DB::table('yz_order')->select('uid','uniacid', DB::raw('sum(price) as total_pay_amount'))->whereIn('status', [1,2,3])->groupBy('uid')->get()->toArray());
+            //已完成
+            $order_complete_count = collect(DB::table('yz_order')->select('uid','uniacid', DB::raw('count(1) as total_complete_quantity'))->where('status', 3)->groupBy('uid')->get()->toArray());
+            $order_complete_money = collect(DB::table('yz_order')->select('uid','uniacid', DB::raw('sum(price) as total_complete_amount'))->where('status', 3)->groupBy('uid')->get()->toArray());
+            $result = $order_all_count->map(function(Collection $order) use($order_all_money,$order_pay_count,$order_pay_money,$order_complete_count,$order_complete_money){
+                $order =  $this->mergeOrderData($order,$order_all_money);
+                $order =  $this->mergeOrderData($order,$order_pay_count);
+                $order =  $this->mergeOrderData($order,$order_pay_money);
+                $order =  $this->mergeOrderData($order,$order_complete_count);
+                $order =  $this->mergeOrderData($order,$order_complete_money);
+                return $order;
+            });
+//        dd($result);
             foreach ($result as $item) {
-                $memberModel->updateOrcreate(['uid' => $item['uid']], $item);
+                OrderStatistics::updateOrCreate(['uid' => $item['uid']], $item);
             }
         }
+    }
 
+    private function mergeOrderData($order,$mergeOrders){
+        $data = $mergeOrders->where('uid',$order['uid'])->first();
+        if($data){
+            $order = collect($order)->merge($data);
+        }
+        return $order;
     }
 }
