@@ -40,6 +40,8 @@ class OrderCountContentJob implements  ShouldQueue
             'status' => $this->orderModel->status,
             'plugin_id' => $this->orderModel->plugin_id,
             'dispatch_price' => $this->orderModel->dispatch_price,
+//            'shop_name' => $this->orderModel->shop_name,
+//            'cost_price' => $this->orderModel->cost_amount,
             'day_time' => Carbon::today()->getTimestamp(),
         ];
         if ($this->orderModel->is_plugin) {
@@ -47,9 +49,12 @@ class OrderCountContentJob implements  ShouldQueue
         }
         $data['address'] = $this->address();
         $data['buy_name'] = $this->buyName();
+        $parent = $this->referrerName();
+        $data['parent_id'] = $parent['parent_id'];
+        $data['parent_name'] = $parent['nickname'];
+
+        //todo 记录订单商家和订单成本
         $data['shop_name'] = $this->shopName();
-        $data['parent_id'] = $this->referrerName()['parent_id'];
-        $data['parent_name'] = $this->referrerName()['nickname'];
         $data['cost_price'] = $this->costPrice();
 
         OrderIncomeCount::create($data);
@@ -156,6 +161,23 @@ class OrderCountContentJob implements  ShouldQueue
             ->select()
             ->where('order_id', $this->orderModel->id)
             ->sum('goods_cost_price');
-        return $build;
+        if ($this->orderModel->plugin_id == 32) {
+
+            $order = DB::table('yz_plugin_store_order')
+                ->select()
+                ->where('order_id', $this->orderModel->id)
+                ->first();
+            $cost_price = $order['amount'];
+        } else if ($this->orderModel->plugin_id == 31) {
+
+            $order = DB::table('yz_plugin_cashier_order')
+                ->select()
+                ->where('order_id', $this->orderModel->id)
+                ->first();
+            $cost_price = $order['amount'];
+        } else {
+            $cost_price = $build;
+        }
+        return $cost_price;
     }
 }

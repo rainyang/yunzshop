@@ -1,7 +1,7 @@
 @extends('layouts.base')
 
 @section('content')
-@section('title', trans('订单收益统计'))
+@section('title', trans('手续费统计'))
 
 <link href="{{static_url('yunshop/css/order.css')}}" media="all" rel="stylesheet" type="text/css"/>
 <div class="w1200 m0a">
@@ -13,12 +13,6 @@
         <!-- 新增加右侧顶部三级菜单 -->
         <div class="panel panel-default">
             <div class="panel-body">
-                <div class='alert alert-info'>
-                    <p>1、未分润金额：按照分润插件设置条件计算的分润金额 -订单实际分润金额</p>
-                    <p>2、商城收益：分成平台订单，供应商订单，门店订单和收银台订单</p>
-                    <p>平台&供应商订单：商城收益=订单实付金额-商品成本价</p>
-                    <p>门店&收银台订单：商城收益=订单实付金额*平台提成比例</p>
-                </div>
                 <div class="card">
                     <div class="card-content">
                         <form action="" method="post" class="form-horizontal" role="form" id="form1">
@@ -47,45 +41,38 @@
         </div>
 
         <div class="panel panel-default">
-            <table class='table'>
+            <table class='table' style='float:left;margin-bottom:0;table-layout: fixed;line-height: 40px;height: 40px'>
                 <tr class='trhead'>
                     <td colspan='8' style="text-align: left;">
-                        平台收益总汇总: <span id="total">{{ sprintf("%01.2f", $total->price - $total->cost_price + $total->supplier + $total->store + $total->cashier) }}元</span>&nbsp;&nbsp;&nbsp;
-                        未被分润总汇总: <span id="total">{{ $total['undividend'] }}元</span>&nbsp;&nbsp;&nbsp;
-                        商城收益总汇总: <span id="total">{{ sprintf("%01.2f", $total['price'] - $total['cost_price']) }}元</span>&nbsp;&nbsp;&nbsp;供应商收益总汇总: <span id="total">{{ $total['supplier'] }}元</span>&nbsp;&nbsp;&nbsp;
-                        门店收益总汇总: <span id="total">{{ $total['store'] }}元</span>&nbsp;&nbsp;&nbsp;收银台收益总汇总: <span id="total">{{ $total['cashier'] }}元</span>
+                        累计手续费: <span id="total">{{ $total['poundage'] }}元</span>&nbsp;&nbsp;&nbsp;累计劳务税: <span id="total">{{ $total['servicetax'] }}元</span>
                     </td>
                 </tr>
             </table>
         </div>
-
         <div class="panel panel-default">
             <div class=" order-info">
                 <div class="table-responsive">
                     <table class='table order-title table-hover table-striped'>
                         <thead>
                         <tr>
-                            <th class="col-md-4 text-center" style="white-space: pre-wrap;">日期</th>
-                            <th class="col-md-2 text-center">订单金额</th>
-                            <th class="col-md-2 text-center">未被分润</th>
-                            <th class="col-md-2 text-center">商城收益</th>
-                            <th class="col-md-2 text-center">供应商收益</th>
-                            <th class="col-md-2 text-center">门店收益</th>
-                            <th class="col-md-2 text-center">收银台收益</th>
-                            <th class="col-md-2 text-center">总收益</th>
+                            <th class="col-md-2 text-center" style='width:80px;'>日期</th>
+                            <th class="col-md-2 text-center" style="white-space: pre-wrap;">手续费</th>
+                            <th class="col-md-2 text-center">劳务税</th>
+                            <th class="col-md-2 text-center">总计</th>
+                            <th class="col-md-2 text-center">查看明细</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($list as $row)
+                        @foreach($list as $key => $row)
+
                             <tr style="height: 40px; text-align: center">
-                                <td>{{ date('Y-m-d',$row['day_time']) }}</td>
-                                <td>{{ $row['price'] }}</td>
-                                <td>{{ $row['undividend'] }}</td>
-                                <td>{{ sprintf("%01.2f",$row->price - $row->cost_price ?: '0.00') }}</td>
-                                <td>{{ $row->supplier ?: '0.00' }}</td>
-                                <td>{{ $row->store ?: '0.00' }}</td>
-                                <td>{{ $row->cashier ?: '0.00' }}</td>
-                                <td>{{ sprintf("%01.2f",$row->price - $row->cost_price + $row->supplier + $row->store + $row->cashier) ?: '0.00' }}</td>
+                                <td>{{ $row['date'] }}</td>
+                                <td>{{ $row['poundage'] ?: '0.00' }}</td>
+                                <td>{{ $row['servicetax'] ?: '0.00' }}</td>
+                                <td>{{ sprintf("%01.2f",($row['poundage'] + $row['servicetax'])) ?: '0.00' }}</td>
+                                <td>
+                                    <a href="{!!  yzWebFullUrl('charts.income.poundage.detail',['date' => $row['date']]) !!}" class="btn btn-primary">收入详情</a>
+                                </td>
                             </tr>
                         @endforeach
                         </tbody>
@@ -100,7 +87,7 @@
 <script>
     $(function () {
         $('#export').click(function () {
-            $('#form1').attr('action', '{!! yzWebUrl('charts.income.shop-income-statistics.export') !!}');
+            $('#form1').attr('action', '{!! yzWebUrl('charts.income.poundage.export') !!}');
             $('#form1').submit();
         });
     });
