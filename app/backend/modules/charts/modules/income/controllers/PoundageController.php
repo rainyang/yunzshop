@@ -51,7 +51,7 @@ class PoundageController extends BaseController
         $search = \YunShop::request()->search;
         $start_time = strtotime($date);
         $end_time = Carbon::createFromTimestamp($start_time)->addDay()->timestamp - 1;
-        $list = Withdraw::search($search)->where('status', 2)->whereBetween('created_at', [$start_time, $end_time])->paginate(10);
+        $list = Withdraw::search($search)->where('status', 2)->whereRaw('(actual_poundage + actual_servicetax) > 0')->whereBetween('created_at', [$start_time, $end_time])->paginate(10);
         $pager = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
         return view('charts.income.poundage_detail',[
             'types' => Withdraw::getTypes(),
