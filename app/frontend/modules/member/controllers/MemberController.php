@@ -569,7 +569,6 @@ class MemberController extends BaseController
 
             if (!empty($close_invitecode)) {
                 $invitecode = MemberService::inviteCode();
-
                 if ($invitecode['status'] != 1) {
                     return $this->errorJson($invitecode['json']);
                 }
@@ -579,13 +578,6 @@ class MemberController extends BaseController
 
             if ($msg['status'] != 1) {
                 return $this->errorJson($msg['json']);
-            }
-            //增加验证码功能
-            $captcha_status = Setting::get('shop.sms.status');
-            if ($captcha_status == 1) {
-                if (app('captcha')->check(Input::get('captcha')) == false) {
-                    return $this->errorJson('验证码错误');
-                }
             }
 
             //手机归属地查询插入
@@ -682,14 +674,6 @@ class MemberController extends BaseController
 
             if ($check_code['status'] != 1) {
                 return $this->errorJson($check_code['json']);
-            }
-
-            //增加验证码功能
-            $captcha_status = Setting::get('shop.sms.status');
-            if ($captcha_status == 1) {
-                if (app('captcha')->check(Input::get('captcha')) == false) {
-                    return $this->errorJson('验证码错误');
-                }
             }
 
             $salt = Str::random(8);

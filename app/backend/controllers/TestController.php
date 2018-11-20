@@ -20,6 +20,7 @@ use app\common\events\member\MemberCreateRelationEvent;
 use app\common\events\member\MemberRelationEvent;
 use app\common\events\order\AfterOrderCanceledEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
+use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\models\Income;
 use app\common\models\Member;
 use app\common\models\member\ChildrenOfMember;
@@ -45,12 +46,12 @@ use Yunshop\Supplier\common\models\SupplierOrder;
 
 class TestController extends BaseController
 {
-    public $transactionActions = ['t'];
+    public $transactionActions = ['*'];
 
     public function t()
     {
 
-        event(new AfterOrderCanceledEvent(Order::cancelled()->first()));
+
     }
 
     public $orderId;
@@ -60,7 +61,8 @@ class TestController extends BaseController
      */
     public function index()
     {
-        dd(\app\common\facades\Setting::get('enoughReduce.open'));
+        $a = Carbon::createFromTimestamp(1503488629)->diffInDays(Carbon::createFromTimestamp(1504069595), true);
+        dd($a);
         $member_relation = new MemberRelation();
 
         $relation = $member_relation->hasRelationOfParent(66, 5, 1);
@@ -74,15 +76,8 @@ class TestController extends BaseController
 
         if (empty($exists)) {
             $pattern2 = '/(u[\d|\w]{4})/';
-
-            $json = preg_replace($pattern2, '\\\$1', $text);
         }
 
-        echo $json;
-
-        $a = Artisan::call('queue:retry');
-
-        dd($a);
     }
 
     public function op_database()

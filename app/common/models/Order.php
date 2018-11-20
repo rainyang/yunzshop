@@ -60,6 +60,12 @@ use app\backend\modules\order\observers\OrderObserver;
  * @property int is_virtual
  * @property int dispatch_type_id
  * @property int refund_id
+ * @property float deduction_price
+ * @property float order_goods_price
+ * @property float discount_price
+ * @property float dispatch_price
+ * @property float change_price
+ * @property float change_dispatch_price
  * @property Collection orderGoods
  * @property Collection allStatus
  * @property Member belongsToMember
