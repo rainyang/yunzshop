@@ -21,7 +21,7 @@ class Handler extends ExceptionHandler
      */
     protected $dontReport = [
         \Illuminate\Auth\AuthenticationException::class,
-        AppException::class,
+        ShopException::class,
         \Illuminate\Auth\Access\AuthorizationException::class,
         \Symfony\Component\HttpKernel\Exception\HttpException::class,
         \Illuminate\Database\Eloquent\ModelNotFoundException::class,
@@ -35,12 +35,18 @@ class Handler extends ExceptionHandler
      * Report or log an exception.
      *
      * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
-     *
-     * @param  \Exception $exception
-     * @return void
+     * @param Exception $exception
+     * @throws Exception
      */
     public function report(Exception $exception)
     {
+        // 记录错误日志
+        if(!app()->runningInConsole()){
+            \Log::info('http parameters',json_encode(request()->input(),256));
+        }
+
+        \Log::error('exception', $exception);
+        // 发送邮件
         parent::report($exception);
     }
 
@@ -77,21 +83,15 @@ class Handler extends ExceptionHandler
         }
         //api异常
         if (\YunShop::isApi()) {
-            $this->logError($exception);
             return $this->errorJson($exception->getMessage());
         }
         //默认异常
         if ($this->isHttpException($exception)) {
-            $this->logError($exception);
             return $this->renderHttpException($exception);
         }
         return parent::render($request, $exception);
     }
-    private function logError($exception){
-        \Log::error('http exception',json_decode(json_encode($exception),true));
-        \Log::info('http parameters',json_encode(request()->input(),256));
-        //发送邮件
-    }
+
     /**
      * Convert an authentication exception into an unauthenticated response.
      *
@@ -111,7 +111,6 @@ class Handler extends ExceptionHandler
     protected function renderShopException(ShopException $exception)
     {
         if (\Yunshop::isApi() || request()->ajax()) {
-            \Log::error('api exception', $exception);
             return $this->errorJson($exception->getMessage(), ['code' => $exception->getCode()]);
         }
         $redirect = $exception->redirect ?: '';
