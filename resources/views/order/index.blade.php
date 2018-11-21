@@ -178,9 +178,7 @@
                                         @if( $order['has_one_refund_apply'] == \app\common\models\refund\RefundApply::WAIT_RECEIVE_RETURN_GOODS)
                                             <label class='label label-primary'>客户已经寄出快递</label>@endif
 
-                                        {{--@yield('shop_name')
-                                        @section('shop_name','')--}}
-                                        <label class="label label-info">总店</label>
+                                        <label class="label label-info">{{$order['shop_name']}}</label>
 
                                         @if(!empty($order['has_one_refund_apply']))
                                             <label class="label label-danger">{{$order['has_one_refund_apply']['refund_type_name']}}

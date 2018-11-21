@@ -13,6 +13,9 @@ use app\frontend\models\MemberCart;
 
 class MemberCartCollection extends Collection
 {
+    /**
+     * 验证商品有效性
+     */
     public function validate()
     {
 
@@ -30,6 +33,10 @@ class MemberCartCollection extends Collection
         });
     }
 
+    /**
+     * 载入管理模型
+     * @return $this
+     */
     public function loadRelations()
     {
         $with = ['goods' => function ($query) {
@@ -45,4 +52,11 @@ class MemberCartCollection extends Collection
         return $this;
     }
 
+    /**
+     * 按插件分类
+     */
+    public function sortByPlugin()
+    {
+
+    }
 }

@@ -53,9 +53,9 @@ class OrderService
         $result->put('discount', self::getDiscountEventData($order));
         $result->put('dispatch', self::getDispatchData($order));
 
-        if (!$result->has('supplier')) {
-            $result->put('supplier', ['username' => array_get(\Setting::get('shop'), 'name', '自营'), 'id' => 0]);
-        }
+//        if (!$result->has('supplier')) {
+//            $result->put('supplier', ['username' => array_get(\Setting::get('shop'), 'name', '自营'), 'id' => 0]);
+//        }
 
 
         return $result;

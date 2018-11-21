@@ -200,13 +200,16 @@ class PreOrder extends Order
             'uniacid' => $this->uniacid,
             'is_virtual' => $this->isVirtual(),//是否是虚拟商品订单
             'note' => request('note'),//是否是虚拟商品订单
+            'shop_name' => $this->getShopName(),//是否是虚拟商品订单
         );
 
 
         $attributes = array_merge($this->getAttributes(), $attributes);
         return $attributes;
     }
-
+    protected function getShopName(){
+        return '平台自营';
+    }
     /**
      * 保存一种关联模型集合
      * @param $relation

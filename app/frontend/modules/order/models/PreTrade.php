@@ -10,8 +10,9 @@ namespace app\frontend\modules\order\models;
 
 use app\common\models\BaseModel;
 
-class Trade extends BaseModel
+class PreTrade extends BaseModel
 {
+
     public function toArray()
     {
         $attributes = array_merge($this->getAttributes(), $this->getPreAttributes());
@@ -23,4 +24,5 @@ class Trade extends BaseModel
     public function getPreAttributes()
     {
     }
+
 }
