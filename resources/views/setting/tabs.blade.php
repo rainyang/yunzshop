@@ -8,6 +8,7 @@
 <li><a href="{php echo $this->createWebUrl('sysset',array('op'=>'trade'))}">交易设置</a></li>
 <li><a href="{php echo $this->createWebUrl('sysset',array('op'=>'pay'))}">支付方式</a></li>
 <li><a href="{php echo $this->createPluginWebUrl('perm/setting')}">权限设置</a></li>
+<li><a href="{php echo $this->createWebUrl('setting.shop.index')}">队列管理</a></li>
 <li><a href="{php echo $this->createWebUrl('upgrade',array('op'=>'display'))}">系统升级</a></li>
 </ul> 
 </div>
