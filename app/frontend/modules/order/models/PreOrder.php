@@ -6,6 +6,7 @@ use app\common\events\order\AfterPreOrderLoadOrderGoodsEvent;
 use app\common\exceptions\AppException;
 use app\common\models\BaseModel;
 use app\common\models\DispatchType;
+use app\common\models\order\Note;
 use app\frontend\models\Member;
 use app\frontend\models\Order;
 use app\frontend\modules\deduction\OrderDeduction;
@@ -92,7 +93,6 @@ class PreOrder extends Order
         if (request()->input('mark') !== 'undefined') {
             $this->mark = request()->input('mark', '');
         }
-
 
     }
 
@@ -199,6 +199,7 @@ class PreOrder extends Order
             'uid' => $this->uid,
             'uniacid' => $this->uniacid,
             'is_virtual' => $this->isVirtual(),//是否是虚拟商品订单
+            'note' => request('note'),//是否是虚拟商品订单
         );
 
 

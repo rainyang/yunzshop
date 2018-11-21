@@ -45,7 +45,7 @@ class TestController extends BaseController
      */
     public function index()
     {
-        dd(app()->environment());
+        dd((array)'ab');
     }
 
     public function op_database()
