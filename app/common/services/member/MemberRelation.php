@@ -24,17 +24,10 @@ class MemberRelation
     public $map_parent = [];
     public $map_parent_total = 0;
 
-    public function __construct($uid, $parent_id)
+    public function __construct()
     {
         $this->parent = new ParentOfMember();
         $this->child  = new ChildrenOfMember();
-
-        $this->_init($uid, $parent_id);
-    }
-
-    private function _init($uid, $parent_id)
-    {
-
     }
 
     /**
