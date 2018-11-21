@@ -68,21 +68,27 @@ class ChildrenOfMember extends BaseModel
                 $parents_ids[$val['level']] = $val['parent_id'];
             }
         }
-//dd($parents_ids);
+
         $parent_total = count($parents_ids);
 
         foreach ($parents_ids as $key => $ids) {
-            $attr[] = [
-                'uniacid' => $this->uniacid,
-                'child_id' => $uid,
-                'level' => ++$key,
-                'member_id' => $ids,
-                'created_at' => time()
-            ];
+            $level = ++$key;
+            $child_exists = $this->hasChildOfMember($ids, $uid, $level);
 
-           // dd($attr);
+            if (!$child_exists) {
+                \Log::debug('------children level------', [$level]);
+
+                $attr[] = [
+                    'uniacid' => $this->uniacid,
+                    'child_id' => $uid,
+                    'level' => $level,
+                    'member_id' => $ids,
+                    'created_at' => time()
+                ];
+            }
+            // dd($attr);
         }
-//dd($attr);
+
         /*$item = $this->countSubChildOfMember($parents_ids);
 
 

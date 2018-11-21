@@ -78,23 +78,38 @@ class ParentOfMember extends BaseModel
         $depth = 1;
         $parents = $this->getParentOfMember($parent_id);
 
-        $attr[] = [
-            'uniacid'   => $this->uniacid,
-            'parent_id' => $parent_id,
-            'level'     => $depth,
-            'member_id' => $uid,
-            'created_at' => time()
-        ];
+        $default_exists = $this->hasParentOfMember($uid, $parent_id, $depth);
+
+        if (!$default_exists) {
+            \Log::debug('------parent level------', [$depth]);
+
+            $attr[] = [
+                'uniacid'   => $this->uniacid,
+                'parent_id' => $parent_id,
+                'level'     => $depth,
+                'member_id' => $uid,
+                'created_at' => time()
+            ];
+        }
+
 
         if (!empty($parents)) {
             foreach ($parents as $key => $val) {
-                $attr[] = [
-                    'uniacid'   => $this->uniacid,
-                    'parent_id' => $val['parent_id'],
-                    'level'     => ++$val['level'],
-                    'member_id' => $uid,
-                    'created_at' => time()
-                ];
+                $level = ++$val['level'];
+                $parent_exists = $this->hasParentOfMember($uid, $val['parent_id'], $level);
+
+                if (!$parent_exists) {
+                    \Log::debug('------parent level------', [$level]);
+
+                    $attr[] = [
+                        'uniacid'   => $this->uniacid,
+                        'parent_id' => $val['parent_id'],
+                        'level'     => $level,
+                        'member_id' => $uid,
+                        'created_at' => time()
+                    ];
+                }
+
             }
         }
 
