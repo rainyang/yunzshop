@@ -359,6 +359,7 @@
                     $("#string").hide();
                     $("#goods_name").show();
                 }else {
+                    $('input[name="search[ambiguous][string]"]').val("");
                     $("#goods_name").hide();
                     $("#string").show();
                 }
