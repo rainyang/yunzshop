@@ -25,6 +25,9 @@ class CreateImsYzGoodsPrivilegeTable extends Migration {
                 $table->integer('time_begin_limit')->nullable();
                 $table->integer('time_end_limit')->nullable();
                 $table->boolean('enable_time_limit');
+                $table->integer('created_at')->nullable();
+                $table->integer('updated_at')->nullable();
+                $table->integer('deleted_at')->nullable();
             });
         }
 	}

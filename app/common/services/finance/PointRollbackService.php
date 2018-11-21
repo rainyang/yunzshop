@@ -34,8 +34,8 @@ class PointRollbackService
         $point = 0;
         if ($orderDeductions) {
             foreach ($orderDeductions as $key => $deduction) {
-                if ($deduction['deduction_id'] == 1) {
-                    $point = $deduction['qty'];
+                if ($deduction['code'] == 'point') {
+                    $point = $deduction['coin'];
                     break;
                 }
             }

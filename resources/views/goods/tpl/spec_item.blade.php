@@ -23,7 +23,9 @@
                     </div>
 
 	<div>
+		{{--
 		{!! app\common\helpers\ImageHelper::tplFormFieldImage('spec_item_thumb_'.$spec['id']."[]",$specitem['thumb']) !!}
+		--}}
 	</div>
 </div>
 

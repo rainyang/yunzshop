@@ -42,7 +42,8 @@ class Category extends BaseModel
     {
         return self::uniacid()
             ->where('parent_id', $parentId)
-            ->orderBy('display_order', 'asc');
+            ->orderBy('display_order', 'asc')
+            ->orderBy('id', 'asc');
     }
 
     /**
@@ -93,5 +94,8 @@ class Category extends BaseModel
         return $this->hasMany('app\common\models\GoodsCategory', 'category_id', 'id');
     }
 
-
+    public function scopePluginId($query)
+    {
+        return $query->where('plugin_id', 0);
+    }
 }

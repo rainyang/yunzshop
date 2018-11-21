@@ -125,6 +125,18 @@ class Yun_shopModuleProcessor extends WeModuleProcessor
                 $request = Illuminate\Http\Request::capture()
             );
 
+            //扫海报事件队列
+            $msg = $this->message;
+            $msgType = strtolower($msg['msgtype']);
+            $msgEvent = strtolower($msg['event']);
+
+            if ($msgType == 'event' && ($msgEvent == 'scan' || $msgEvent == 'subscribe')) {
+                $job = (new \app\Jobs\scanPostConcernQueueJob(YunShop::app()->uniacid, $this))
+                    ->delay(\Carbon\Carbon::now()->addMinutes(5));
+                dispatch($job);
+                \Log::debug('------poster queue job start-----');
+            }
+
             //微信接口事件
             $response = '';
             event(new \app\common\events\WechatProcessor($this,$plugin,$response));

@@ -3,6 +3,7 @@
 @section('content')
 
 <div class="w1200 m0a">
+    @include('layouts.tabs')
     <form action="" method="post" class="form-horizontal" role="form" id="form1">
         <input type="hidden" name="c" value="site" />
         <input type="hidden" name="a" value="entry" />
@@ -95,9 +96,15 @@
                         </td>
                         <td>
                             @if($row['getfrom'] == 1)
-                            <label class="label label-danger">领取</label>
+                                <label class="label label-danger">领取</label>
+                            @elseif($row['getfrom'] == 4)
+                                <label class="label label-success">购物赠送</label>
+                            @elseif($row['getfrom'] == 5)
+                                <label class="label label-success">会员转赠</label>
+                            @elseif($row['getfrom'] == 6)
+                                <label class="label label-success">签到奖励</label>
                             @elseif($row['getfrom'] == 0)
-                            <label class="label label-warning">发放</label>
+                                <label class="label label-warning">发放</label>
                             @endif
                         </td>
                         <td>

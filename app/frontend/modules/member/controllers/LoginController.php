@@ -9,28 +9,51 @@
 namespace app\frontend\modules\member\controllers;
 
 use app\common\components\ApiController;
+use app\common\facades\Setting;
 use app\common\helpers\Client;
+use app\common\helpers\Url;
+use app\common\models\Member;
+use app\common\services\Session;
 use app\frontend\modules\member\services\factory\MemberFactory;
+use app\frontend\modules\member\services\MemberService;
 
 class LoginController extends ApiController
 {
     protected $publicController = ['Login'];
-    protected $publicAction = ['index'];
-    protected $ignoreAction = ['index'];
+    protected $publicAction = ['index', 'phoneSetGet'];
+    protected $ignoreAction = ['index', 'phoneSetGet'];
 
     public function index()
     {
         $type = \YunShop::request()->type ;
+        $uniacid = \YunShop::app()->uniacid;
+        $mid = Member::getMid();
 
         if (empty($type) || $type == 'undefined') {
             $type = Client::getType();
         }
 
+        if ($type == 8 && !(app('plugins')->isEnabled('alipay-onekey-login'))) {
+            $type = Client::getType();
+        }
+
+        if (1 == $type && MemberService::isLogged()) {
+            $url = Url::absoluteApp('home', ['i' => $uniacid, 'mid' => $mid]);
+
+            if (Session::get('client_url')) {
+                $url = Session::get('client_url');
+            }
+
+            //return $this->successJson('ok', ['status'=> 1, 'url' => $url]);
+            redirect($url)->send();
+        }
+
+
         //判断是否开启微信登录
         if (\YunShop::request()->show_wechat_login) {
-            $this->init_login();
+            return $this->init_login();
         }
-        
+
         if (!empty($type)) {
                 $member = MemberFactory::create($type);
 
@@ -39,7 +62,13 @@ class LoginController extends ApiController
 
                     if (!empty($msg)) {
                         if ($msg['status'] == 1) {
-                            return $this->successJson($msg['json'], ['status'=> $msg['status'], 'return_url' => $_COOKIE['__cookie_client_url']?:'']);
+                            $url = Url::absoluteApp('member', ['i' => $uniacid, 'mid' => $mid]);
+
+                            if (isset($msg['json']['redirect_url'])) {
+                                $url = $msg['json']['redirect_url'];
+                            }
+
+                            return $this->successJson($msg['json'], ['status'=> $msg['status'], 'url' => $url]);
                         } else {
                             return $this->errorJson($msg['json'], ['status'=> $msg['status']]);
                         }
@@ -62,5 +91,15 @@ class LoginController extends ApiController
     private function init_login () {
         $weixin_oauth = \Setting::get('shop_app.pay.weixin_oauth');
         return $this->successJson('', ['status'=> 1, 'wetach_login' => $weixin_oauth]);
+    }
+
+    public function phoneSetGet()
+    {
+        $phone_oauth = \Setting::get('shop_app.pay.phone_oauth');
+
+        if (empty($phone_oauth)) {
+            $phone_oauth = '0';
+        }
+        return $this->successJson('ok', ['phone_oauth' => $phone_oauth]);
     }
 }

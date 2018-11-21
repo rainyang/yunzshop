@@ -12,6 +12,7 @@ namespace app\common\models\finance;
 use app\backend\modules\member\models\Member;
 use app\common\models\BaseModel;
 use app\common\services\finance\PointService;
+use Yunshop\Froze\Common\Services\SetService;
 
 class PointLog extends BaseModel
 {
@@ -107,10 +108,54 @@ class PointLog extends BaseModel
                 $mode_attribute = PointService::POINT_MODE_TRANSFER_ATTACHED;
                 break;
             case (14):
-                $mode_attribute = PointService::OINT_MODE_RECIPIENT_ATTACHED;
+                $mode_attribute = PointService::POINT_MODE_RECIPIENT_ATTACHED;
                 break;
             case (15):
                 $mode_attribute = PointService::POINT_MODE_ROLLBACK_ATTACHED;
+                break;
+            case (16):
+                $mode_attribute = PointService::POINT_MODE_COUPON_DEDUCTION_AWARD_ATTACHED;
+                break;
+            case (17):
+                $mode_attribute = PointService::POINT_MODE_TASK_REWARD_ATTACHED;
+                break;
+            case (18):
+                $mode_attribute = PointService::POINT_MODE_TRANSFER_LOVE_ATTACHED;
+                break;
+            case (19):
+                $mode_attribute = PointService::POINT_MODE_SIGN_REWARD_ATTACHED;
+                break;
+            case (20):
+                $mode_attribute = PointService::POINT_MODE_COURIER_REWARD_ATTACHED;
+                break;
+            case (21):
+                if (app('plugins')->isEnabled('froze')) {
+                    $froze_name = SetService::getFrozeName();
+                    $mode_attribute = $froze_name . '奖励';
+                } else {
+                    $mode_attribute = PointService::POINT_MODE_FROZE_AWARD_ATTACHED;
+                }
+                break;
+            case (23):
+                $mode_attribute = PointService::POINT_MODE_CREATE_ACTIVITY_ATTACHED;
+                break;
+            case (24):
+                $mode_attribute = PointService::POINT_MODE_ACTIVITY_OVERDUE_ATTACHED;
+                break;
+            case (25):
+                $mode_attribute = PointService::POINT_MODE_RECEIVE_ACTIVITY_ATTACHED;
+                break;
+            case (26):
+                $mode_attribute = PointService::POINT_MODE_RECEIVE_OVERDUE_ATTACHED;
+                break;
+            case (92):
+                $mode_attribute = PointService::POINT_MODE_RECHARGE_CODE_ATTACHED;
+                break;
+            case (93):
+                $mode_attribute = PointService::POINT_MODE_STORE_ATTACHED;
+                break;
+            case (22):
+                $mode_attribute = PointService::POINT_MODE_COMMUNITY_REWARD_ATTACHED;
                 break;
         }
         return $mode_attribute;

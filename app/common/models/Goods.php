@@ -11,11 +11,31 @@ namespace app\common\models;
 use app\backend\modules\goods\models\Sale;
 use app\backend\modules\goods\observers\GoodsObserver;
 use app\common\exceptions\AppException;
+use app\common\models\goods\GoodsDispatch;
+use app\framework\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use app\common\models\Coupon;
 
+/**
+ * Class Goods
+ * @package app\common\models
+ * @property string status
+ * @property string status_name
+ * @property string title
+ * @property int id
+ * @property int stock
+ * @property float max_price
+ * @property float min_price
+ * @property string thumb
+ * @property string thumb_url
+ * @property int buyNum
+ * @property Collection hasManySpecs
+ * @property Collection hasManyOptions
+ * @property GoodsDiscount hasManyGoodsDiscount
+ * @property GoodsDispatch hasOneGoodsDispatch
+ */
 class Goods extends BaseModel
 {
 
@@ -25,6 +45,7 @@ class Goods extends BaseModel
     public $attributes = ['display_order' => 0];
     protected $mediaFields = ['thumb', 'thumb_url'];
     protected $dates = ['deleted_at'];
+    protected $appends = ['status_name'];
 
     public $fillable = [];
 
@@ -33,6 +54,9 @@ class Goods extends BaseModel
     public $widgets = [];
 
     protected $search_fields = ['title'];
+
+    static protected $needLog = true;
+
     /**
      * 实物
      */
@@ -99,6 +123,9 @@ class Goods extends BaseModel
         return $this->hasMany('app\common\models\GoodsCategory', 'goods_id', 'id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function hasManyGoodsDiscount()
     {
         return $this->hasMany('app\common\models\GoodsDiscount');
@@ -129,9 +156,15 @@ class Goods extends BaseModel
         return $this->hasOne('app\common\models\goods\GoodsDispatch');
     }
 
+    //该条关联可能出错了不是一对一关系 是一对多
     public function hasOneDiscount()
     {
         return $this->hasOne('app\common\models\goods\Discount');
+    }
+
+    public function hasManyDiscount()
+    {
+        return $this->hasMany('app\common\models\goods\Discount');
     }
 
     public function hasManyGoodsCategory()
@@ -149,12 +182,22 @@ class Goods extends BaseModel
         return $this->hasOne(app('GoodsManager')->make('GoodsSale'), 'goods_id', 'id');
     }
 
+    public function hasOneGoodsCoupon()
+    {
+        return $this->hasOne('app\common\models\goods\GoodsCoupon', 'goods_id', 'id');
+    }
+
+    public function hasOneGoodsLimitBuy()
+    {
+        return $this->hasOne('app\common\models\goods\GoodsLimitBuy', 'goods_id', 'id');
+    }
+
     public function scopeIsPlugin($query)
     {
         return $query->where('is_plugin', 0);
     }
 
-    public function scopeSearch($query, $filters)
+    public function scopeSearch(BaseModel $query, $filters)
     {
         $query->uniacid();
 
@@ -168,6 +211,22 @@ class Goods extends BaseModel
                     $category[] = ['id' => $value * 1];
                     $query->with("")->where('category_id', $category);
                     break;*/
+                //上架商品库存筛选
+                case 'sell_stock':
+                    if ($value) {
+                        $query->where('status', 1)->where('stock', '>', 0);
+                    } else {
+                        $query->where('status', 1)->where('stock', '=', 0);
+                    }
+                    break;
+                //新加过滤搜索
+                case 'filtering':
+                    $scope = explode(',', rtrim($value, ','));
+                    $query->join('yz_goods_filtering', function ($join) use ($scope) {
+                        $join->on('yz_goods_filtering.goods_id', '=', 'yz_goods.id')
+                            ->whereIn('yz_goods_filtering.filtering_id', $scope);
+                    });
+                    break;
                 case 'keyword':
                     $query->where('title', 'LIKE', "%{$value}%");
                     break;
@@ -175,8 +234,15 @@ class Goods extends BaseModel
                     $query->where('brand_id', $value);
                     break;
                 case 'product_attr':
+                    //$value = explode(',', rtrim($value, ','));
                     foreach ($value as $attr) {
-                        $query->where($attr, 1);
+                        if ($attr == 'limit_buy') {
+                            $query->whereHas('hasOneGoodsLimitBuy', function ($q) {
+                                $q->where('status', 1);
+                            });
+                        } else {
+                            $query->where($attr, 1);
+                        }
                     }
                     break;
                 case 'status':
@@ -189,19 +255,18 @@ class Goods extends BaseModel
                     $query->where('price', '<', $value);
                     break;
                 case 'category':
-                    if(array_key_exists('parentid', $value) || array_key_exists('childid', $value) || array_key_exists('thirdid', $value)){
-                        $id = $value['parentid'] ? $value['parentid'] : '';
-                        $id = $value['childid'] ? $value['childid'] : $id;
-                        $id = $value['thirdid'] ? $value['thirdid'] : $id;
-
+                    if (array_key_exists('parentid', $value) || array_key_exists('childid', $value) || array_key_exists('thirdid', $value)) {
+                        $id = $value['parentid'][0] ? $value['parentid'][0] : '';
+                        $id = $value['childid'][0] ? $value['childid'][0] : $id;
+                        $id = $value['thirdid'][0] ? $value['thirdid'][0] : $id;
                         $query->select([
                             'yz_goods.*',
                             'yz_goods_category.id as goods_category_id',
                             'yz_goods_category.goods_id as goods_id',
                             'yz_goods_category.category_id as category_id',
                             'yz_goods_category.category_ids as category_ids'
-                            ])->join('yz_goods_category', 'yz_goods_category.goods_id', '=', 'yz_goods.id')->whereRaw('FIND_IN_SET(?,category_ids)', [$id]);
-                    } elseif(strpos($value, ',')){
+                        ])->join('yz_goods_category', 'yz_goods_category.goods_id', '=', 'yz_goods.id')->whereRaw('FIND_IN_SET(?,category_ids)', [$id]);
+                    } elseif (strpos($value, ',')) {
                         $scope = explode(',', $value);
                         $query->select([
                             'yz_goods.*',
@@ -209,18 +274,18 @@ class Goods extends BaseModel
                             'yz_goods_category.goods_id as goods_id',
                             'yz_goods_category.category_id as category_id',
                             'yz_goods_category.category_ids as category_ids'
-                        ])->join('yz_goods_category', function($join) use ($scope){
+                        ])->join('yz_goods_category', function ($join) use ($scope) {
                             $join->on('yz_goods_category.goods_id', '=', 'yz_goods.id')
                                 ->whereIn('yz_goods_category.category_id', $scope);
                         });
-                    } else{
+                    } else {
                         $query->select([
                             'yz_goods.*',
                             'yz_goods_category.id as goods_category_id',
                             'yz_goods_category.goods_id as goods_id',
                             'yz_goods_category.category_id as category_id',
                             'yz_goods_category.category_ids as category_ids'
-                        ])->join('yz_goods_category', function($join) use ($value){
+                        ])->join('yz_goods_category', function ($join) use ($value) {
                             $join->on('yz_goods_category.goods_id', '=', 'yz_goods.id')
                                 ->whereRaw('FIND_IN_SET(?,category_ids)', [$value]);
 //                                ->where('yz_goods_category.category_id', $value);
@@ -229,22 +294,22 @@ class Goods extends BaseModel
                     break;
                 case 'couponid': //搜索指定优惠券适用的商品
                     $res = Coupon::getApplicableScope($value);
-                    switch ($res['type']){
+                    switch ($res['type']) {
                         case Coupon::COUPON_GOODS_USE: //优惠券适用于指定商品
-                            if(is_array($res['scope'])){
+                            if (is_array($res['scope'])) {
                                 $query->whereIn('id', $res['scope']);
-                            } else{
+                            } else {
                                 $query->where('id', $res['scope']);
                             }
                             break;
                         case Coupon::COUPON_CATEGORY_USE: //优惠券适用于指定商品分类
-                            if(is_array($res['scope'])){
-                                $query->join('yz_goods_category', function($join) use ($res){
+                            if (is_array($res['scope'])) {
+                                $query->join('yz_goods_category', function ($join) use ($res) {
                                     $join->on('yz_goods_category.goods_id', '=', 'yz_goods.id')
-                                            ->whereIn('yz_goods_category.category_id', $res['scope']);
+                                        ->whereIn('yz_goods_category.category_id', $res['scope']);
                                 });
-                            } else{
-                                $query->join('yz_goods_category', function($join) use ($res){
+                            } else {
+                                $query->join('yz_goods_category', function ($join) use ($res) {
                                     $join->on('yz_goods_category.goods_id', '=', 'yz_goods.id')
                                         ->where('yz_goods_category.category_id', $res['scope']);
                                 });
@@ -266,11 +331,31 @@ class Goods extends BaseModel
      */
     public static function getGoodsByName($keyword)
     {
-
-        return static::uniacid()->select('id', 'title', 'thumb','market_price','price','real_sales','sku')
+        return static::uniacid()->select('id', 'title', 'thumb', 'market_price', 'price', 'real_sales', 'sku','plugin_id','stock')
             ->where('title', 'like', '%' . $keyword . '%')
             ->where('status', 1)
             //->where('is_plugin', 0)
+            ->whereNotIn('plugin_id', [20, 31, 60])//屏蔽门店、码上点餐、第三方插件接口的虚拟商品
+            ->get();
+    }
+
+    /**
+     * @param $keyword
+     * @return mixed
+     */
+    public static function getGoodsByNameForLimitBuy($keyword)
+    {
+
+        return static::uniacid()->select('id', 'title', 'thumb', 'market_price', 'price', 'real_sales', 'sku','plugin_id','stock')
+            ->where('title', 'like', '%' . $keyword . '%')
+            ->where('status', 1)
+            ->with(['hasOneGoodsLimitBuy' => function ($query) {
+                 return $query->where('status',1)->select('goods_id', 'start_time', 'end_time');
+            }])
+            ->whereHas('hasOneGoodsLimitBuy', function ($query) {
+                return $query->where('status',1);
+            })
+            ->whereNotIn('plugin_id', [20,31,60])//屏蔽门店、码上点餐、第三方插件接口的虚拟商品
             ->get();
     }
 
@@ -294,7 +379,7 @@ class Goods extends BaseModel
     public function reduceStock($num)
     {
         if ($this->reduce_stock_method != 2) {
-            if(!$this->stockEnough($num)){
+            if (!$this->stockEnough($num)) {
                 throw new AppException('下单失败,商品:' . $this->title . ' 库存不足');
 
             }
@@ -344,6 +429,16 @@ class Goods extends BaseModel
         return $this->type == self::REAL_GOODS;
     }
 
+    /**
+     * 推广商品
+     * @param  [array] $goodsIds [商品id组]
+     * @return [array]           [推广的商品数据]
+     */
+    public static function getPushGoods($goodsIds)
+    {
+        return self::select('id', 'title', 'thumb', 'price')->whereIn('id', $goodsIds)->where('status', 1)->get()->toArray();
+    }
+
     public static function boot()
     {
         parent::boot();
@@ -351,5 +446,17 @@ class Goods extends BaseModel
         static::addGlobalScope(function (Builder $builder) {
             $builder->uniacid();
         });
+    }
+
+    public static function getGoodsByIdAll($goodsId)
+    {
+        $model = static::where('id', $goodsId);
+
+
+        return $model;
+    }
+    public function getStatusNameAttribute(){
+
+        return [0=>'下架',1=>'上架'][$this->status];
     }
 }

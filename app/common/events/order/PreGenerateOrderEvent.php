@@ -10,18 +10,21 @@ namespace app\common\events\order;
 
 
 use app\common\events\Event;
-use app\frontend\modules\order\models\PreGeneratedOrder;
+use app\frontend\modules\order\models\PreOrder;
 
 abstract class PreGenerateOrderEvent extends Event
 {
-    private $orderModel;
+    private $preOrder;
 
-    public function __construct(PreGeneratedOrder $orderModel)
+    public function __construct(PreOrder $orderModel)
     {
-        $this->orderModel = $orderModel;
+        $this->preOrder = $orderModel;
     }
-    //todo
+
+    /**
+     * @return PreOrder
+     */
     public function getOrderModel(){
-        return $this->orderModel;
+        return $this->preOrder;
     }
 }

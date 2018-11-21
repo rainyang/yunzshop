@@ -60,7 +60,15 @@ class Dispatch extends BaseModel
             'display_order' => '排序',
             'is_default' => '是否默认',
             'enabled' => '是否显示',
-            'calculate_type' => '计算方式'
+            'calculate_type' => '计算方式',
+            'first_weight' => '首重',
+            'first_weight_price' => '首费',
+            'another_weight' => '续重',
+            'another_weight_price' => '续费',
+            'first_piece' => '首件',
+            'first_piece_price' => '运费',
+            'another_piece' => '续件',
+            'another_piece_price' => '续费'
         ];
     }
 
@@ -73,7 +81,16 @@ class Dispatch extends BaseModel
             'display_order' => '',
             'is_default' => 'digits_between:0,1',
             'enabled' => 'integer',
-            'calculate_type' => 'digits_between:0,1'
+            'calculate_type' => 'digits_between:0,1',
+
+            'first_weight' => 'required',
+            'first_weight_price' => 'required',
+            'another_weight' => 'required',
+            'another_weight_price' => 'required',
+            'first_piece' => 'required',
+            'first_piece_price' => 'required',
+            'another_piece' => 'required',
+            'another_piece_price' => 'required'
         ];
     }
 

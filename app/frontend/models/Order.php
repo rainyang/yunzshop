@@ -7,9 +7,16 @@
  */
 namespace app\frontend\models;
 
-use app\frontend\models\Member;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 
+/**
+ * Class Order
+ * @package app\frontend\models
+ * @property Member belongsToMember
+ * @property Carbon finish_time
+ * @property int refund_id
+ */
 class Order extends \app\common\models\Order
 {
     protected $appends = ['status_name', 'pay_type_name', 'button_models'];
@@ -41,7 +48,7 @@ class Order extends \app\common\models\Order
     {
         return $query->with(['hasManyOrderGoods'=>function($query){
             return $query->select(['order_id','goods_id','goods_price','total','price','thumb','title','goods_option_id','goods_option_title','comment_status']);
-        }],'hasOnePayType')->orderBy('id','desc');
+        }],'hasOnePayType')->orderBy('yz_order.id','desc');
     }
     public function belongsToMember()
     {
@@ -50,7 +57,7 @@ class Order extends \app\common\models\Order
 
     public function belongsToOrderGoods()
     {
-        return $this->belongsTo(self::getNearestModel('OrderGoods'), 'id', 'order_id');
+        return $this->belongsTo(app('OrderManager')->make('OrderGoods'), 'id', 'order_id');
     }
 
     public function orderGoodsBuilder($status)
@@ -109,7 +116,19 @@ class Order extends \app\common\models\Order
         parent::boot();
 
         self::addGlobalScope(function(Builder $query){
-            return $query->uid()->where('is_member_deleted',0);
+            return $query->uid();
         });
+    }
+
+    /**
+     * @return array
+     * @throws \app\common\exceptions\AppException
+     */
+    public function getOperationsSetting()
+    {
+        if (Member::current()->uid == $this->uid) {
+            return app('OrderManager')->setting('member_order_operations')[$this->statusCode] ?: [];
+        }
+        return [];
     }
 }

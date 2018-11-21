@@ -17,7 +17,7 @@ class GoodsManager extends Container
 {
     public function __construct()
     {
-        $this->bind('Goods', function ($orderManager, $attributes = []) {
+        $this->bind('Goods', function ($goodsManager, $attributes = []) {
             if(\YunShop::isApi()){
                 //前台
                 return new Goods($attributes);
@@ -28,7 +28,7 @@ class GoodsManager extends Container
             }
         });
 
-        $this->bind('GoodsOption', function ($orderManager, $attributes = []) {
+        $this->bind('GoodsOption', function ($goodsManager, $attributes = []) {
             if(\YunShop::isApi()){
                 //前台
                 return new GoodsOption($attributes);
@@ -37,7 +37,7 @@ class GoodsManager extends Container
                 return new \app\backend\modules\goods\models\GoodsOption($attributes);
             }
         });
-        $this->bind('GoodsSale', function ($orderManager, $attributes = []) {
+        $this->bind('GoodsSale', function ($goodsManager, $attributes = []) {
             if(\YunShop::isApi()){
                 //前台
                 return new Sale($attributes);

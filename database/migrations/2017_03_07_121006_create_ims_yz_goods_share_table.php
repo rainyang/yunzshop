@@ -22,6 +22,9 @@ class CreateImsYzGoodsShareTable extends Migration {
                 $table->string('share_title', 50)->nullable()->default('');
                 $table->string('share_thumb')->nullable()->default('');
                 $table->string('share_desc')->nullable()->default('');
+                $table->integer('created_at');
+                $table->integer('updated_at');
+                $table->integer('deleted_at')->nullable();
             });
         }
 	}

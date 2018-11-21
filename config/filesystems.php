@@ -62,15 +62,51 @@ return [
             'visibility' => 'public',
         ],
 
+        'image' => [
+            'driver' => 'local',
+            'root' => base_path('../../attachment/image'),
+            'url' => env('APP_URL').'image',
+            'visibility' => 'public',
+        ],
+
         'cert' => [
             'driver' => 'local',
             'root' => storage_path('cert'),
+        ],
+
+        // 批量发货上传excel文件保存路径
+        'orderexcel' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/orderexcel'),
         ],
 
         'upload' => [
             'driver' => 'local',
             'root' => storage_path('app/public/avatar'),
             'url' => env('APP_URL').'/storage/public/avatar',
+            'visibility' => 'public',
+        ],
+
+        'banner' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/banner'),
+            'url' => env('APP_URL').'/storage/public/banner',
+            'visibility' => 'public',
+        ],
+
+        //淘宝CSV实例
+        'taobaoCSV' => [
+            'driver' => 'local',
+            'root'=> base_path('plugins/goods-assistant/storage/examples'),
+            'url' => env('APP_URL').'plugins/goods-assistant/storage/examples',
+            'visibility' => 'public',
+        ],
+
+        //淘宝CSV上传
+        'taobaoCSVupload' => [
+            'driver' => 'local',
+            'root'=> base_path('plugins/goods-assistant/storage/upload'),
+            'url' => env('APP_URL').'plugins/goods-assistant/storage/upload',
             'visibility' => 'public',
         ],
 
@@ -81,7 +117,5 @@ return [
             'region' => env('AWS_REGION'),
             'bucket' => env('AWS_BUCKET'),
         ],
-
     ],
-
 ];

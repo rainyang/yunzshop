@@ -13,8 +13,12 @@ class Kernel extends ConsoleKernel
      *
      * @var array
      */
+
     protected $commands = [
-        'app\console\Commands\UpdateVersion'
+        'app\console\Commands\UpdateVersion',
+        'app\console\Commands\RepairWithdraw',
+        'app\console\Commands\Test',
+        'app\console\Commands\WechatOpen',
     ];
 
     /**

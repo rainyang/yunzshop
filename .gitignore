@@ -21,3 +21,4 @@ vendor/
 /index.html
 /index.php
 /storage/framework/cache/data
+/xhprof/

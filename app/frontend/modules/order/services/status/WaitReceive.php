@@ -9,36 +9,50 @@
 namespace app\frontend\modules\order\services\status;
 
 
+use app\common\models\DispatchType;
 use app\common\models\Order;
 
 class WaitReceive extends Status
 {
-    private $order;
+    protected $name = '收货';
+    protected $api = 'order.operation.receive';
+    protected $value;
+    protected $order;
+
     public function __construct(Order $order)
     {
         $this->order = $order;
+        $this->value = static::COMPLETE;
     }
 
     public function getStatusName()
     {
-        return '待收货';
+        return "待{$this->name}";
     }
 
-    public function getButtonModels()
-    {
-        $result[] = [
-            'name' => '确认收货',
-            'api' => 'order.operation.receive',
-            'value' => static::COMPLETE //todo
+    protected function getNextStatusButton(){
+        return [
+            'name' => "确认{$this->name}",
+            'api' => $this->api,
+            'value' => $this->value
         ];
-        if (!$this->order->isVirtual()) {
+    }
+    protected function getOtherButtons(){
+        $result = [];
+        if (!$this->order->isVirtual()  && !in_array($this->order->dispatch_type_id, [DispatchType::SELF_DELIVERY])) {
             $result[] = [
                 'name' => '查看物流', //todo 原来商城的逻辑是, 当有物流单号时, 才显示"查看物流"按钮
                 'api' => 'dispatch.express',
                 'value' => static::EXPRESS
             ];
         }
-        //$result = array_merge($result,self::getRefundButtons($this->order));
+        return $result;
+    }
+    public function getButtonModels()
+    {
+        $result[] = $this->getNextStatusButton();
+        $result = array_merge($result,$this->getOtherButtons());
+
         return $result;
     }
 }

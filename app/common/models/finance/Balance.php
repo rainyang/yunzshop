@@ -61,7 +61,8 @@ class Balance extends BaseModel
      */
     public static function getBalanceComment($balance)
     {
-        return isset(static::$balanceComment[$balance]) ? static::$balanceComment[$balance]: '';
+        $balanceComment = static::getSourceComment();
+        return isset($balanceComment[$balance]) ? $balanceComment[$balance]: '';
     }
 
     /**
@@ -235,6 +236,16 @@ class Balance extends BaseModel
     }
 
 
+    public static function getSourceComment()
+    {
+        return (new ConstService())->sourceComment();
+    }
+
+    //2018/5/21 快递单增加余额记录
+    public static function getBalanceById($member_id)
+    {
+        return self::uniacid()->where('member_id', $member_id)->first();
+    }
 
 
 
@@ -278,7 +289,8 @@ class Balance extends BaseModel
 
     const BALANCE_CANCEL_CONSUME    = 10; //消费取消回滚
 
-    public static $balanceComment = [
+    //删除 2017-12-04
+   /* public static $balanceComment = [
         self::BALANCE_RECHARGE      => '余额充值',
         self::BALANCE_CONSUME       => '余额消费',
         self::BALANCE_TRANSFER      => '余额转让',
@@ -289,7 +301,7 @@ class Balance extends BaseModel
         self::BALANCE_CANCEL_DEDUCTION      => '抵扣取消回滚',
         self::BALANCE_CANCEL_AWARD          => '奖励取消回滚',
         self::BALANCE_CANCEL_CONSUME        => '消费取消回滚'
-    ];
+    ];*/
 
     public static $type_name = [
         self::TYPE_INCOME       => '收入',

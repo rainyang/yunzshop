@@ -20,19 +20,19 @@
                     {{ $detailModel->member->mobile }}
                 </p>
                 <p>
-                    <b>金额: </b><span style='color:red'>{{ $detailModel->change_money }}</span> 元
+                    <b>变动余额: </b><span style='color:red'>{{ $detailModel->change_money }}</span> 元
                 <p>
+                <p>
+                    <b>剩余余额: </b>{{ $detailModel->new_money }}
+                </p>
                 <p>
                     <b>业务类型: </b>{{ $detailModel->type_name }}
                 <p>
                 <p>
-                    <b>余额: </b>{{ $detailModel->new_money }}
+                    <b>变动时间: </b>{{ $detailModel->created_at }}
                 </p>
                 <p>
                     <b>订单编号: </b>{{ $detailModel->serial_number or '' }}
-                </p>
-                <p>
-                    <b>时间: </b>{{ date('Y-m-d H:i:s', $detailModel->created_at) }}
                 </p>
             </div>
         </div>
@@ -71,10 +71,16 @@
 
 
             <div class="form-group col-sm-12">
-                <input type="button" class="btn btn-default" name="submit" onclick="history.go(-1)" value="返回" style='margin-left:10px;'/>
+                <input type="button" class="btn btn-default" name="submit" onclick="goBack()" value="返回" style='margin-left:10px;'/>
             </div>
         </form>
 
     </div>
+
+    <script language='javascript'>
+        function goBack() {
+            window.location.href = "{!! yzWebUrl('finance.balance-records.index') !!}";
+        }
+    </script>
 
 @endsection

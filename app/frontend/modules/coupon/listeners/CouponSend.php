@@ -9,6 +9,7 @@ use app\Jobs\addSendCouponJob;
 use app\Jobs\addSendCouponLogJob;
 use app\Jobs\updateCouponQueueJob;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use app\backend\modules\coupon\services\MessageNotice;
 
 /**
  * Author: 芸众商城 www.yunzshop.com
@@ -55,14 +56,14 @@ class CouponSend
         foreach ($couponSendQueues as $couponSendQueue) {
             $updatedData = [];
             $coupon = $couponSendQueue->hasOneCoupon;
-            $surplusNums['coupon_id_' . $coupon->id] = isset($surplusNums['coupon_id_' . $coupon->id])
-                ? $surplusNums['coupon_id_' . $coupon->id]
-                : $coupon->surplus;
+            $surplusNums['coupon_id_' . $coupon->id] = isset($surplusNums['coupon_id_' . $coupon->id]) ? $surplusNums['coupon_id_' . $coupon->id] : $coupon->surplus;
 
             if ($surplusNums['coupon_id_' . $coupon->id] <= 0) {
                 continue;
             }
-            $this->sendCouponForMeber($couponSendQueue);//发放优惠券到会员
+            $this->sendCouponForMember($couponSendQueue);//发放优惠券到会员
+            //发送获取通知
+            MessageNotice::couponNotice($couponSendQueue->coupon_id,$couponSendQueue->uid);
             $this->sendCouponLog($couponSendQueue);//发放优惠券LOG
 
             $condition = [
@@ -78,7 +79,7 @@ class CouponSend
         }
     }
 
-    public function sendCouponForMeber($couponSendQueue)
+    public function sendCouponForMember($couponSendQueue)
     {
         $data = [
             'uniacid' => $couponSendQueue->uniacid,

@@ -27,6 +27,8 @@ class Handler extends ExceptionHandler
         \Illuminate\Database\Eloquent\ModelNotFoundException::class,
         \Illuminate\Session\TokenMismatchException::class,
         \Illuminate\Validation\ValidationException::class,
+        \EasyWeChat\Core\Exceptions\HttpException::class,
+        NotFoundException::class,
     ];
 
     /**
@@ -47,7 +49,7 @@ class Handler extends ExceptionHandler
      *
      * @param  \Illuminate\Http\Request $request
      * @param  \Exception $exception
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response|\Symfony\Component\HttpFoundation\Response
      */
     public function render($request, Exception $exception)
     {
@@ -68,23 +70,28 @@ class Handler extends ExceptionHandler
             return $this->renderNotFoundException($exception);
 
         }
-        //默认异常
-        if ($this->isHttpException($exception)) {
-            \Log::error('http exception',$exception);
-            return $this->renderHttpException($exception);
-        }
+
         //开发模式异常
         if (config('app.debug')) {
             return $this->renderExceptionWithWhoops($exception);
         }
         //api异常
         if (\YunShop::isApi()) {
-            \Log::error('api exception',$exception);
+            $this->logError($exception);
             return $this->errorJson($exception->getMessage());
+        }
+        //默认异常
+        if ($this->isHttpException($exception)) {
+            $this->logError($exception);
+            return $this->renderHttpException($exception);
         }
         return parent::render($request, $exception);
     }
-
+    private function logError($exception){
+        \Log::error('http exception',json_decode(json_encode($exception),true));
+        \Log::info('http parameters',json_encode(request()->input(),256));
+        //发送邮件
+    }
     /**
      * Convert an authentication exception into an unauthenticated response.
      *
@@ -101,13 +108,14 @@ class Handler extends ExceptionHandler
         return redirect()->guest('login');
     }
 
-    protected function renderShopException(Exception $exception)
+    protected function renderShopException(ShopException $exception)
     {
-        if (\Yunshop::isApi()) {
-            \Log::error('api exception',$exception);
-            return $this->errorJson($exception->getMessage(),['code'=>$exception->getCode()]);
+        if (\Yunshop::isApi() || request()->ajax()) {
+            \Log::error('api exception', $exception);
+            return $this->errorJson($exception->getMessage(), ['code' => $exception->getCode()]);
         }
-        exit($this->message($exception->getMessage(), '', 'error'));
+        $redirect = $exception->redirect ?: '';
+        exit($this->message($exception->getMessage(), $redirect, 'error'));
     }
 
     /**
@@ -130,11 +138,11 @@ class Handler extends ExceptionHandler
 
     protected function renderNotFoundException(NotFoundException $exception)
     {
-        if(\Yunshop::isPHPUnit()){
+        if (\Yunshop::isPHPUnit()) {
 
-            exit( $exception->getMessage());
+            exit($exception->getMessage());
         }
-        if (\Yunshop::isApi()) {
+        if (\Yunshop::isApi() || request()->ajax()) {
             return $this->errorJson($exception->getMessage());
         }
 

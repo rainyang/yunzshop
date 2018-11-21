@@ -11,7 +11,7 @@ use Ixudra\Curl\Facades\Curl;
     {
         $s = '';
         if (!defined('TPL_INIT_UEDITOR')) {
-            $s .= '<script type="text/javascript" src="../addons/yun_shop/app/common/components/ueditor/ueditor.config.js"></script><script type="text/javascript" src="../addons/yun_shop/app/common/components/ueditor/ueditor.all.min.js"></script><script type="text/javascript" src="../addons/yun_shop/app/common/components/ueditor/lang/zh-cn/zh-cn.js"></script>';
+            $s .= '<script type="text/javascript" src="../addons/yun_shop/app/common/components/ueditor/ueditor.config.js"></script><script type="text/javascript" src="../addons/yun_shop/app/common/components/ueditor/ueditor.all.min.js"></script><script type="text/javascript" src="../addons/yun_shop/app/common/components/ueditor/lang/zh-cn/zh-cn.js"></script><link href="/web/resource/components/webuploader/webuploader.css" rel="stylesheet"><link href="/web/resource/components/webuploader/style.css" rel="stylesheet">';
         }
         $options['height'] = empty($options['height']) ? 200 : $options['height'];
         $s .= !empty($id) ? "<textarea id=\"{$id}\" name=\"{$id}\" type=\"text/plain\" style=\"height:{$options['height']}px;\">{$value}</textarea>" : '';
@@ -20,7 +20,7 @@ use Ixudra\Curl\Facades\Curl;
 			var ueditoroption = {
 				'autoClearinitialContent' : false,
 				'toolbars' : [['fullscreen', 'source', 'preview', '|', 'bold', 'italic', 'underline', 'strikethrough', 'forecolor', 'backcolor', '|',
-					'justifyleft', 'justifycenter', 'justifyright', '|', 'insertorderedlist', 'insertunorderedlist', 'blockquote', 'emotion', 'insertvideo',
+					'justifyleft', 'justifycenter', 'justifyright', '|', 'insertorderedlist', 'insertunorderedlist', 'blockquote', 'emotion',
 					'link', 'removeformat', '|', 'rowspacingtop', 'rowspacingbottom', 'lineheight','indent', 'paragraph', 'fontsize', '|',
 					'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol',
 					'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', '|', 'anchor', 'map', 'print', 'drafts']],
@@ -94,6 +94,47 @@ use Ixudra\Curl\Facades\Curl;
 				});
 				return btn;
 			}, 19);
+			UE.registerUI('myinsertvideo',function(editor,uiName){
+    editor.registerCommand(uiName, {
+        execCommand:function(){
+            require(['../addons/yun_shop/static/js/fileUploader.min.js'],
+                function(uploader){
+                    uploader.show(function(video){
+                        if (!video) {
+                            return;
+                        } else {
+                            var videoType = video.isRemote ? 'iframe' : 'video';
+                            editor.execCommand('insertvideo', {
+                                'url' : video.url,
+                                'width' : '100%',
+                                'height' : 200
+                            }, videoType);
+                        }
+                    }, {type:'video'});
+                }
+            );
+        }
+    });
+    var btn = new UE.ui.Button({
+        name: '插入视频',
+        title: '插入视频',
+        cssRules :'background-position: -320px -20px',
+        onclick:function () {
+            editor.execCommand(uiName);
+        }
+    });
+    editor.addListener('selectionchange', function () {
+        var state = editor.queryCommandState(uiName);
+        if (state == -1) {
+            btn.setDisabled(true);
+            btn.setChecked(false);
+        } else {
+            btn.setDisabled(false);
+            btn.setChecked(state);
+        }
+    });
+    return btn;
+}, 20);
 			".(!empty($id) ? "
 				$(function(){
 					var ue = UE.getEditor('{$id}', ueditoroption);
@@ -186,6 +227,68 @@ if (!function_exists("tomedia")) {
     }
 }
 
+function yz_tomedia($src, $local_path = false)
+{
+    global $_W;
+    $setting = \setting_load();
+    if (empty($src)) {
+        return '';
+    }
+    $os = \app\common\helpers\Client::osType();
+
+    if (strexists($src, 'addons/')) {
+        if ($os == \app\common\helpers\Client::OS_TYPE_IOS) {
+            $url_dz =  request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/addons/'));
+            return 'https:' . substr($url_dz, strpos($url_dz, '//'));
+        }
+        return request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/addons/'));
+    }
+    //判断是否是本地带域名图片地址
+    $local = strtolower($src);
+    if (strexists($src, '/attachment/')) {
+        if ($os == \app\common\helpers\Client::OS_TYPE_IOS) {
+            $url_dz =  request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/attachment/'));
+            return 'https:' . substr($url_dz, strpos($url_dz, '//'));
+        }
+        if (strexists($local, 'http://') || strexists($local, 'https://') || substr($local, 0, 2) == '//') {
+            return $src;
+        } else {
+            return request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/attachment/'));
+        }
+    }
+
+
+    //如果远程地址中包含本地host也检测是否远程图片
+    if (strexists($src, request()->getSchemeAndHttpHost()) && !strexists($src, '/addons/')) {
+        $urls = parse_url($src);
+        $src = $t = substr($urls['path'], strpos($urls['path'], 'images'));
+    }
+    $t = strtolower($src);
+    if (strexists($t, 'http://') || strexists($t, 'https://') || substr($t, 0, 2) == '//') {
+        return 'https:' . substr($src, strpos($src, '//'));
+    }
+
+    if ($local_path || empty($setting['remote']['type']) || file_exists(base_path('../../') . '/' . $_W['config']['upload']['attachdir'] . '/' . $src)) {
+        $src = request()->getSchemeAndHttpHost() . '/attachment/' . $src;
+    } else {
+        if ($setting['remote']['type'] == 1) {
+            $attachurl_remote = $setting['remote']['ftp']['url'] . '/';
+        } elseif ($setting['remote']['type'] == 2) {
+            $attachurl_remote = $setting['remote']['alioss']['url'].'/';
+        } elseif ($setting['remote']['type'] == 3) {
+            $attachurl_remote = $setting['remote']['qiniu']['url'].'/';
+        } elseif ($setting['remote']['type'] == 4) {
+            $attachurl_remote = $setting['remote']['cos']['url'].'/';
+        }
+
+        $src = $attachurl_remote . $src;
+    }
+    
+    $src = 'https:' . substr($src, strpos($src, '//'));
+
+    return $src;
+}
+
 if (!function_exists("replace_yunshop")) {
     function replace_yunshop($url)
     {
@@ -211,7 +314,7 @@ if (!function_exists("set_medias")) {
     {
         if (empty($fields)) {
             foreach ($list as &$row) {
-                $row = tomedia($row);
+                $row = yz_tomedia($row);
             }
             return $list;
         }
@@ -222,10 +325,10 @@ if (!function_exists("set_medias")) {
             foreach ($list as $key => &$value) {
                 foreach ($fields as $field) {
                     if (isset($list[$field])) {
-                        $list[$field] = tomedia($list[$field]);
+                        $list[$field] = yz_tomedia($list[$field]);
                     }
                     if (is_array($value) && isset($value[$field])) {
-                        $value[$field] = tomedia($value[$field]);
+                        $value[$field] = yz_tomedia($value[$field]);
                     }
                 }
             }
@@ -233,7 +336,7 @@ if (!function_exists("set_medias")) {
         } else {
             foreach ($fields as $field) {
                 if (isset($list[$field])) {
-                    $list[$field] = tomedia($list[$field]);
+                    $list[$field] = yz_tomedia($list[$field]);
                 }
             }
             return $list;
@@ -487,6 +590,13 @@ if (!function_exists('yzAppFullUrl')) {
     }
 }
 
+if (!function_exists('yzDiyFullUrl')) {
+    function yzDiyFullUrl($route, $params = [])
+    {
+        return Url::absoluteDiyApp($route, $params);
+    }
+}
+
 if (!function_exists('yzUrl')) {
     function yzUrl($route, $params = [])
     {
@@ -715,9 +825,9 @@ if (!function_exists('option')) {
             }
             return;
         }
-        $optionsData = $options->get();
-        return $optionsData[$key]['option_value'];
-//        return $options->get($key, $default, $raw);
+        //$optionsData = $options->get();
+        //return $optionsData[$key]['option_value'];
+        return $options->get($key, $default, $raw)['option_value'];
     }
 }
 if (!function_exists('float_greater')) {
@@ -740,6 +850,23 @@ if (!function_exists('float_equal')) {
 
 }
 
+if (!function_exists('sdd')) {
+    function sdd()
+    {
+        global $testDd;
+        $testDd = !$testDd;
+    }
+}
+if (!function_exists('tdd')) {
+    function tdd()
+    {
+        global $testDd;
+        if($testDd){
+            dd(func_get_args());
+        }
+    }
+
+}
   /*
    * 生成一个随机订单号：如果需要唯一性，请自己验证重复调用
    *
@@ -752,5 +879,34 @@ if (!function_exists('createNo')) {
     function createNo($prefix, $length = 6, $numeric = FALSE)
     {
         return $prefix . date('YmdHis') . \app\common\helpers\Client::random($length, $numeric);
+    }
+}
+if(!function_exists('yz_array_set')){
+    function yz_array_set(&$array, $key, $value){
+        $keys = explode('.', $key);
+        while (count($keys) > 1) {
+            $key = array_shift($keys);
+
+            // If the key doesn't exist at this depth, we will just create an empty array
+            // to hold the next value, allowing us to create the arrays to hold final
+            // values at the correct depth. Then we'll keep digging into the array.
+            if (!isset($array[$key]) || !is_array($array[$key])) {
+                $array[$key] = [];
+            }
+            $array = &$array[$key];
+        }
+        $array[array_shift($keys)] = $value;
+
+        return $array;
+    }
+}
+if (!function_exists('debug_log')) {
+    /**
+     * @param $title
+     * @param $content
+     * @return \app\framework\Log\Log|bool
+     */
+    function debug_log(){
+        return app('Log.debug');
     }
 }

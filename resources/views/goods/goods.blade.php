@@ -26,6 +26,7 @@
         $("input[name='back']").click(function () {
             location.href = "{!! yzWebUrl('goods.goods.index') !!}";
         });
+
     })
 
     window.optionchanged = false;
@@ -50,6 +51,34 @@
         var numerictype = /^(0|[1-9]\d*)$/; //整数验证
         var thumb = /\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/;
         var datetime = /(\d{2}|\d{4})(?:\-)?([0]{1}\d{1}|[1]{1}[0-2]{1})(?:\-)?([0-2]{1}\d{1}|[3]{1}[0-1]{1})(?:\s)?([0-1]{1}\d{1}|[2]{1}[0-3]{1})(?::)?([0-5]{1}\d{1})(?::)?([0-5]{1}\d{1})/;
+        
+        /*
+        *update date 2017/12/20 16:44
+        *添加排序的验证
+        */
+        if (!numerictype.test($(':input[name="goods[display_order]"]').val())) {
+            $('#myTab a[href="#tab_basic"]').tab('show');
+            Tip.focus("#displayorder", "排序必须是整数!");
+            return false;
+        }
+
+        if ($(':input[name="widgets[video_demand][is_course]"]:checked').val() == 1) {
+            
+            if ($(':input[name="widgets[video_demand][lecturer_id]"]').val() == '') {
+                alert('课程讲师不能为空');
+                $('#myTab a[href="#tab_video_demand"]').tab('show');
+                Tip.focus(':input[name="widgets[video_demand][lecturer_id]"]', "课程讲师不能为空");
+                return false;
+            }
+
+            if ($(':input[name="widgets[video_demand][chapter][chapter_id][]"]').length <= 0) {
+                alert('课程章节不能为空');
+                $('#myTab a[href="#tab_video_demand"]').tab('show');
+                Tip.focus('#chapter_button', "课程章节不能为空");
+                return false;
+            }
+        }
+
         if ($(':input[name="goods[title]"]').val() == '') {
             $('#myTab a[href="#tab_basic"]').tab('show');
             Tip.focus("#goodsname", "请输入商品名称!");
@@ -60,20 +89,20 @@
             Tip.focus("#goodsname", "商品名称不能超过40个字符!");
             return false;
         }
-        if ($(':input[name="category[parentid]"]').val() == 0) {
+        if ($(':input[name="category[parentid][]"]').val() == 0) {
             $('#myTab a[href="#tab_basic"]').tab('show');
-            Tip.focus(':input[name="category[parentid]"]', "请选择一级分类!");
+            Tip.focus(':input[name="category[parentid][]"]', "请选择一级分类!");
             return false;
         }
-        if ($(':input[name="category[childid]"]').val() == 0) {
+        if ($(':input[name="category[childid][]"]').val() == 0) {
             $('#myTab a[href="#tab_basic"]').tab('show');
-            Tip.focus(':input[name="category[childid]"]', "请选择二级分类!");
+            Tip.focus(':input[name="category[childid][]"]', "请选择二级分类!");
             return false;
         }
         @if($shopset['cat_level'] == 3)
-        if ($(':input[name="category[thirdid]"]').val() == 0) {
+        if ($(':input[name="category[thirdid][]"]').val() == 0) {
             $('#myTab a[href="#tab_basic"]').tab('show');
-            Tip.focus(':input[name="category[thirdid]"]', "请选择三级分类!");
+            Tip.focus(':input[name="category[thirdid][]"]', "请选择三级分类!");
             return false;
         }
         @endif
@@ -207,17 +236,26 @@
                 return false;
             }
         }
-        /*if ($(':input[name="widgets[sale][point]"]').val() == '') {
-         $('#myTab a[href="#tab_sale"]').tab('show');
-         Tip.focus(':input[name="widgets[sale][point]"]', "请输入赠送积分!");
-         return false;
-         } else {
-         if (!numerictype.test($(':input[name="widgets[sale][point]"]').val())) {
-         $('#myTab a[href="#tab_sale"]').tab('show');
-         Tip.focus(':input[name="widgets[sale][point]"]', '赠送积分格式错误,只能为非负整数.');
-         return false;
+/*
+        if ($.trim($(':input[name="widgets[sale][max_point_deduct]"]').val()) != ''
+                    && parseInt($(':input[name="widgets[sale][max_point_deduct]"]').val()) != 0
+                    && $.trim($(':input[name="goods[price]"]').val()) != ''
+                    && parseFloat($(':input[name="widgets[sale][max_point_deduct]"]').val())
+                           > parseFloat($(':input[name="goods[price]"]').val())) {
+            $('#myTab a[href="#tab_sale"]').tab('show');
+            Tip.focus(':input[name="widgets[sale][max_point_deduct]"]', "积分抵扣金额不能大于商品现价!");
+            return false;
+        }
+*/
+        if ($(':input[name="widgets[sale][point]"]').val() != '') {
+            if (!$(':input[name="widgets[sale][point]"]').val().match('\%')) {
+                if (!numerictype.test($(':input[name="widgets[sale][point]"]').val())) {
+                    $('#myTab a[href="#tab_sale"]').tab('show');
+                    Tip.focus(':input[name="widgets[sale][point]"]', '赠送积分格式错误,只能为非负整数.');
+                    return false;
+                }
+            }
          }
-         }*/
         /*if ($(':input[name="widgets[sale][bonus]"]').val() == '') {
             $('#myTab a[href="#tab_sale"]').tab('show');
             Tip.focus(':input[name="widgets[sale][bonus]"]', "请输入红包金额!");
@@ -260,6 +298,42 @@
             }
         }
 
+        if ($(':input[name="widgets[privilege][day_buy_limit]"]').val() == '') {
+            $('#myTab a[href="#tab_privilege"]').tab('show');
+            Tip.focus(':input[name="widgets[privilege][day_buy_limit]"]', "请输入会员每天限购数量!");
+            return false;
+        } else {
+            if (!numerictype.test($(':input[name="widgets[privilege][day_buy_limit]"]').val())) {
+                $('#myTab a[href="#tab_privilege"]').tab('show');
+                Tip.focus(':input[name="widgets[privilege][day_buy_limit]"]', '会员每天限购数量格式错误,只能为非负整数.');
+                return false;
+            }
+        }
+
+        if ($(':input[name="widgets[privilege][week_buy_limit]"]').val() == '') {
+            $('#myTab a[href="#tab_privilege"]').tab('show');
+            Tip.focus(':input[name="widgets[privilege][week_buy_limit]"]', "请输入会员每周限购数量!");
+            return false;
+        } else {
+            if (!numerictype.test($(':input[name="widgets[privilege][week_buy_limit]"]').val())) {
+                $('#myTab a[href="#tab_privilege"]').tab('show');
+                Tip.focus(':input[name="widgets[privilege][week_buy_limit]"]', '会员每周限购数量格式错误,只能为非负整数.');
+                return false;
+            }
+        }
+
+        if ($(':input[name="widgets[privilege][month_buy_limit]"]').val() == '') {
+            $('#myTab a[href="#tab_privilege"]').tab('show');
+            Tip.focus(':input[name="widgets[privilege][month_buy_limit]"]', "请输入会员每月限购总数!");
+            return false;
+        } else {
+            if (!numerictype.test($(':input[name="widgets[privilege][month_buy_limit]"]').val())) {
+                $('#myTab a[href="#tab_privilege"]').tab('show');
+                Tip.focus(':input[name="widgets[privilege][month_buy_limit]"]', '会员每月限购总数格式错误,只能为非负整数.');
+                return false;
+            }
+        }
+
         /*if ($(':input[name="widgets[privilege][time_begin_limit]"]').val() == '') {
          $('#myTab a[href="#tab_privilege"]').tab('show');
          Tip.focus(':input[name="widgets[privilege][time_begin_limit]"]', "请输入限购起始时间!");
@@ -291,11 +365,11 @@
                 return false;
             }
         }
-        if ($(':input[name="widgets[single_return][return_rate]"]').val() == '') {
-            $('#myTab a[href="#tab_single_return"]').tab('show');
-            Tip.focus(':input[name="widgets[single_return][return_rate]"]', "请输返现比例!");
-            return false;
-        }
+        // if ($(':input[name="widgets[single_return][return_rate]"]').val() == '') {
+        //     $('#myTab a[href="#tab_single_return"]').tab('show');
+        //     Tip.focus(':input[name="widgets[single_return][return_rate]"]', "请输返现比例!");
+        //     return false;
+        // }
         @show
 
         if ($(':input[name="widgets[dispatch][dispatch_price]"]').val() == '') {
@@ -568,10 +642,10 @@
 
 
 <link rel="stylesheet" type="text/css" href="{{static_url('css/font-awesome.min.css')}}">
-<link href="{{static_url('yunshop/goods/goods.css')}}" media="all" rel="stylesheet" type="text/css"/>
+{{--<link href="{{static_url('yunshop/goods/goods.css')}}" media="all" rel="stylesheet" type="text/css"/>--}}
 <div class="right-titpos">
     <ul class="add-snav">
-        <li class="active"><a href="#">商品编辑</a></li>
+        <li class="active"><a href="#"><i class="fa fa-circle-o" style="color: #33b5d2;"></i>商品编辑</a></li>
     </ul>
 </div>
 {{--<div class="main rightlist">--}}

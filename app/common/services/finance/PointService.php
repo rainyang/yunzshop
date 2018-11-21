@@ -10,7 +10,10 @@ namespace app\common\services\finance;
 
 
 use app\backend\modules\member\models\Member;
+use app\common\events\MessageEvent;
+use app\common\exceptions\ShopException;
 use app\common\models\finance\PointLog;
+use app\common\models\notice\MessageTemp;
 use app\common\services\MessageService;
 use EasyWeChat\Foundation\Application;
 use EasyWeChat\Message\News;
@@ -51,6 +54,9 @@ class PointService
     const POINT_MODE_CASHIER = 9; //收银台奖励
     const POINT_MODE_CASHIER_ATTACHED = '收银台奖励';
 
+    const POINT_MODE_STORE = 93; //收银台奖励
+    const POINT_MODE_STORE_ATTACHED = '门店奖励';
+
     const POINT_MODE_RECHARGE = 11; //话费充值奖励
     const POINT_MODE_RECHARGE_ATTACHED = '话费充值奖励';
 
@@ -61,10 +67,51 @@ class PointService
     const POINT_MODE_TRANSFER_ATTACHED = '转让-转出';
 
     const POINT_MODE_RECIPIENT = 14; //转让
-    const OINT_MODE_RECIPIENT_ATTACHED = '转让-转入';
+    const POINT_MODE_RECIPIENT_ATTACHED = '转让-转入';
 
     const POINT_MODE_ROLLBACK = 15; //回滚
     const POINT_MODE_ROLLBACK_ATTACHED = '积分返还';
+
+    const POINT_MODE_COUPON_DEDUCTION_AWARD = 16;
+    const POINT_MODE_COUPON_DEDUCTION_AWARD_ATTACHED = '优惠券抵扣奖励';
+
+    const POINT_MODE_TRANSFER_LOVE = 18;
+    const POINT_MODE_TRANSFER_LOVE_ATTACHED = '自动转出';
+
+    const POINT_MODE_RECHARGE_CODE = 92;
+    const POINT_MODE_RECHARGE_CODE_ATTACHED = '充值码充值积分';
+
+
+    const POINT_MODE_TASK_REWARD = 17;
+    const POINT_MODE_TASK_REWARD_ATTACHED = '任务奖励';
+
+    const POINT_MODE_SIGN_REWARD = 19;
+    const POINT_MODE_SIGN_REWARD_ATTACHED = '签到奖励';
+
+    const POINT_MODE_COURIER_REWARD = 20;
+    const POINT_MODE_COURIER_REWARD_ATTACHED = '快递单奖励';
+
+    const POINT_MODE_FROZE_AWARD = 21;
+    const POINT_MODE_FROZE_AWARD_ATTACHED = '冻结币奖励';
+
+    const POINT_MODE_COMMUNITY_REWARD = 22;
+    const POINT_MODE_COMMUNITY_REWARD_ATTACHED = '圈子签到奖励';
+
+    const POINT_MODE_CREATE_ACTIVITY = 23;
+    const POINT_MODE_CREATE_ACTIVITY_ATTACHED = '创建活动';
+
+
+    const POINT_MODE_ACTIVITY_OVERDUE = 24;
+    const POINT_MODE_ACTIVITY_OVERDUE_ATTACHED = '活动失效';
+
+
+    const POINT_MODE_RECEIVE_ACTIVITY = 25;
+    const POINT_MODE_RECEIVE_ACTIVITY_ATTACHED = '领取活动';
+
+
+    const POINT_MODE_RECEIVE_OVERDUE = 26;
+    const POINT_MODE_RECEIVE_OVERDUE_ATTACHED = '领取失效';
+
 
 
     const POINT = 0;
@@ -92,15 +139,30 @@ class PointService
             return;
         }
         $this->point_data = $point_data;
-        $member = Member::getMemberById($point_data['member_id']);
-        $this->member = $member;
-        $this->member_point = $member['credit1'];
+        $this->point_data['point'] = round($this->point_data['point'], 2);
+        //$member = Member::getMemberById($point_data['member_id']);
+
+        $this->member = $this->getMemberModel();
+        $this->member_point = $this->member->credit1;
     }
 
+
+    private function getMemberModel()
+    {
+        $member_id = $this->point_data['member_id'];
+        $memberModel = Member::uniacid()->where('uid', $member_id)->lockForUpdate()->first();
+
+        return $memberModel;
+    }
+
+
     /**
-     * @name 更新会员积分
-     * @return PointLog point_model
+     * Update member credit1.
+     *
+     * @return PointLog|bool
+     * @throws ShopException
      */
+
     public function changePoint()
     {
         $point = floor($this->point_data['point'] * 100) / 100;
@@ -108,7 +170,7 @@ class PointService
             $point = floor(abs($this->point_data['point']) * 100) / 100;
         }
         if ($point < 0.01) {
-            return;
+            return false;
         }
         $this->getAfterPoint();
         Member::updateMemberInfoById(['credit1' => $this->member_point], $this->point_data['member_id']);
@@ -128,36 +190,39 @@ class PointService
 
     public function messageNotice()
     {
-        $this->point_data['point_mode'] = $this->getModeAttribute($this->point_data['point_mode']);
-        $noticeMember = Member::getMemberByUid($this->member->uid)->with('hasOneFans')->first();
-        if (!$noticeMember->hasOneFans->openid) {
+
+        if ($this->point_data['point'] == 0) {
             return;
         }
-        /*$nickname = @iconv("utf-8", "gbk", $this->member['nickname']);
-        $nickname = @iconv("gbk", "utf-8", $nickname);*/
-        $msg = [
-            "first" => '您好',
-            "keyword1" => '积分变动通知',
-            "keyword2" => '尊敬的[' . $this->member['nickname'] . ']，您于[' . date('Y-m-d H:i', time()) . ']发生积分变动，变动数值为[' . $this->point_data['point'] . ']，类型[' . $this->point_data['point_mode'] . ']，您目前积分余值为[' . $this->point_data['after_point'] . ']',
-            "remark" => "",
+        $template_id = \Setting::get('shop.notice')['point_change'];
+
+        $params = [
+            ['name' => '商城名称', 'value' => \Setting::get('shop.shop')['name']],
+            ['name' => '昵称', 'value' => $this->member['nickname']],
+            ['name' => '时间', 'value' => date('Y-m-d H:i', time())],
+            ['name' => '积分变动金额', 'value' => $this->point_data['point']],
+            ['name' => '积分变动类型', 'value' => $this->getModeAttribute($this->point_data['point_mode'])],
+            ['name' => '变动后积分数值', 'value' => $this->point_data['after_point']]
         ];
-        if (!isset(\Setting::get('shop.notice')['task']) || !\Setting::get('shop.notice')['task']) {
-            return;
-        }
-        MessageService::notice(\Setting::get('shop.notice')['task'], $msg, $this->member->uid);
+
+        event(new MessageEvent($this->member->uid, $template_id, $params, $url=''));
+
     }
 
     /**
-     * @name 获取变化之后的积分
+     * 获取变化之后的积分
+     *
+     * @throws ShopException
      */
     public function getAfterPoint()
     {
         $this->point_data['before_point'] = $this->member_point;
         $this->member_point += $this->point_data['point'];
         if ($this->member_point < PointService::POINT) {
-            $this->member_point = PointService::POINT;
+            throw new ShopException('积分不足!!!');
+            //$this->member_point = PointService::POINT;
         }
-        $this->point_data['after_point'] = $this->member_point;
+        $this->point_data['after_point'] = round($this->member_point, 2);
     }
 
     public function getModeAttribute($mode)
@@ -198,17 +263,54 @@ class PointService
                 $mode_attribute = self::POINT_MODE_RECHARGE_ATTACHED;
                 break;
             case (12):
-                $mode_attribute = self::POINT_MODE_FLOW_ATTACHED;
+                $mode_attribute = self::POINT_MODE_FlOW_ATTACHED;
                 break;
             case (13):
                 $mode_attribute = self::POINT_MODE_TRANSFER_ATTACHED;
                 break;
             case (14):
-                $mode_attribute = self::OINT_MODE_RECIPIENT_ATTACHED;
+                $mode_attribute = self::POINT_MODE_RECIPIENT_ATTACHED;
                 break;
             case (15):
                 $mode_attribute = self::POINT_MODE_ROLLBACK_ATTACHED;
                 break;
+            case (16):
+                $mode_attribute = self::POINT_MODE_COUPON_DEDUCTION_AWARD_ATTACHED;
+                break;
+            case (17):
+                $mode_attribute = self::POINT_MODE_TASK_REWARD_ATTACHED;
+                break;
+            case (18):
+                $mode_attribute = self::POINT_MODE_TRANSFER_LOVE_ATTACHED;
+                break;
+            case (19):
+                $mode_attribute = self::POINT_MODE_SIGN_REWARD_ATTACHED;
+                break;
+            case (20):
+                $mode_attribute = self::POINT_MODE_COURIER_REWARD_ATTACHED;
+                break;
+            case (22):
+                $mode_attribute = self::POINT_MODE_COMMUNITY_REWARD_ATTACHED;
+                break;
+            case (23):
+                $mode_attribute = self::POINT_MODE_CREATE_ACTIVITY_ATTACHED;
+                break;
+            case (24):
+                $mode_attribute = self::POINT_MODE_ACTIVITY_OVERDUE_ATTACHED;
+                break;
+            case (25):
+                $mode_attribute = self::POINT_MODE_RECEIVE_ACTIVITY_ATTACHED;
+                break;
+            case (26):
+                $mode_attribute = self::POINT_MODE_RECEIVE_OVERDUE_ATTACHED;
+                break;
+            case (92):
+                $mode_attribute = self::POINT_MODE_RECHARGE_CODE_ATTACHED;
+                break;
+            case (93):
+                $mode_attribute = self::POINT_MODE_STORE_ATTACHED;
+                break;
+
         }
         return $mode_attribute;
     }

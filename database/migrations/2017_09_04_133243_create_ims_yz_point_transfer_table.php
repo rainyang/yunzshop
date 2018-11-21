@@ -36,7 +36,7 @@ class CreateImsYzPointTransferTable extends Migration {
 	public function down()
 	{
         if (\Schema::hasTable('yz_point_transfer')) {
-            Schema::drop('ims_yz_point_transfer');
+            Schema::drop('yz_point_transfer');
         }
 	}
 

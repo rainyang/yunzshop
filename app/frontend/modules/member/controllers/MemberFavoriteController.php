@@ -20,6 +20,11 @@ class MemberFavoriteController extends ApiController
         $memberId = \YunShop::app()->getMemberId();
         $favoriteList = MemberFavorite::getFavoriteList($memberId);
 
+        if (!empty($favoriteList)) {
+            foreach ($favoriteList as &$item) {
+                $item['goods']['thumb'] = replace_yunshop(yz_tomedia($item['goods']['thumb']));
+            }
+        }
         return $this->successJson('成功', $favoriteList);
     }
 

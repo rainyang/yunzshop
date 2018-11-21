@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Input;
 use app\common\helpers\Url;
 use Setting;
 use Illuminate\Support\Facades\DB;
+use app\backend\modules\filtering\models\Filtering;
 
 /**
  * Created by PhpStorm.
@@ -29,7 +30,7 @@ class CategoryController extends BaseController
         $parent_id = \YunShop::request()->parent_id ? \YunShop::request()->parent_id : '0';
         $parent = Category::getCategory($parent_id);
 
-        $list = Category::getCategorys($parent_id)->paginate($pageSize)->toArray();
+        $list = Category::getCategorys($parent_id)->pluginId()->paginate($pageSize)->toArray();
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
         return view('goods.category.list', [
             'list' => $list['data'],
@@ -45,6 +46,7 @@ class CategoryController extends BaseController
     public function addCategory()
     {
 
+        // sleep(5);
         $level = \YunShop::request()->level ? \YunShop::request()->level : '1';
         $parent_id = \YunShop::request()->parent_id ? \YunShop::request()->parent_id : '0';
 
@@ -59,7 +61,12 @@ class CategoryController extends BaseController
         }
         
         $requestCategory = \YunShop::request()->category;
+
         if ($requestCategory) {
+
+            if (isset($requestCategory['filter_ids']) && is_array($requestCategory['filter_ids'])) {
+                $requestCategory['filter_ids'] = implode(',', $requestCategory['filter_ids']);
+            } 
             //将数据赋值到model
             $categoryModel->fill($requestCategory);
             //其他字段赋值
@@ -83,7 +90,8 @@ class CategoryController extends BaseController
         return view('goods.category.info', [
             'item' => $categoryModel,
             'parent' => $parent,
-            'level' => $level
+            'level' => $level,
+            'label_group' => [],
         ])->render();
     }
     
@@ -98,8 +106,17 @@ class CategoryController extends BaseController
         }
         $url = Url::absoluteWeb('goods.category.index',['parent_id'=>$categoryModel->parent_id]);
 
+        if (isset($categoryModel->filter_ids)) {
+            $filter_ids = explode(',', $categoryModel->filter_ids);
+            $label_group = Filtering::categoryLabel($filter_ids)->get();
+        }
+
         $requestCategory = \YunShop::request()->category;
         if($requestCategory) {
+
+            if (isset($requestCategory['filter_ids']) && is_array($requestCategory['filter_ids'])) {
+                $requestCategory['filter_ids'] = implode(',', $requestCategory['filter_ids']);
+            }
             //将数据赋值到model
             $categoryModel->fill($requestCategory);
             //字段检测
@@ -119,7 +136,8 @@ class CategoryController extends BaseController
         
         return view('goods.category.info', [
             'item' => $categoryModel,
-            'level' => $categoryModel->level
+            'level' => $categoryModel->level,
+            'label_group' => $label_group,
         ])->render();
     }
 

@@ -8,12 +8,12 @@
 namespace app\common\services\finance;
 
 
+use app\common\events\MessageEvent;
 use app\common\exceptions\AppException;
 use app\common\models\finance\Balance;
 use app\common\models\Member;
 use app\common\services\credit\ConstService;
 use app\common\services\credit\Credit;
-use app\common\services\MessageService as Message;
 
 class BalanceChange extends Credit
 {
@@ -28,7 +28,7 @@ class BalanceChange extends Credit
      */
     public function getMemberModel()
     {
-        return $this->memberModel = Member::select('uid', 'avatar', 'nickname', 'realname', 'credit2')->where('uid', $this->data['member_id'])->first() ?: false;
+        return $this->memberModel = Member::select('uid', 'avatar', 'nickname', 'realname', 'credit2')->where('uid', $this->data['member_id'])->lockForUpdate()->first() ?: false;
     }
 
     /**
@@ -57,7 +57,7 @@ class BalanceChange extends Credit
         $this->memberModel->credit2 = $this->new_value;
 
         if ($this->memberModel->save()) {
-            $this->notice();
+            $this->sendMessage();
             return true;
         }
         return '写入会员余额失败';
@@ -66,11 +66,12 @@ class BalanceChange extends Credit
 
 
     /**
-     * @return string
+     * @return bool
+     * @throws AppException
      */
     public function validatorData()
     {
-        $this->new_value = $this->memberModel->credit2 + $this->change_value;
+        $this->new_value = bcadd($this->memberModel->credit2, $this->change_value, 2);
         if ($this->new_value < 0) {
             throw new AppException('余额不足');
         }
@@ -150,25 +151,23 @@ class BalanceChange extends Credit
     /**
      * 余额变动消息通知
      */
-    private function notice()
+    private function sendMessage()
     {
-        $noticeMember = Member::getMemberByUid($this->memberModel->uid)->with('hasOneFans')->first();
-        if (!$noticeMember->hasOneFans->openid) {
+        if ($this->change_value == 0) {
             return;
         }
-        $template_id = \Setting::get('shop.notice')['task'];
-        if (!$template_id) {
-            return;
-        }
-        $msg = [
-            "first" => '您好',
-            "keyword1" => '余额变动通知',
-            "keyword2" => "尊敬的" . $this->memberModel->nickname . "，您于" . date('Y-m-d H:i', time()) . "发生余额变动，变动金额为" .  $this->change_value . "元，类型" . (new ConstService(''))->sourceComment()[$this->source] . "，您当前余额为" . $this->new_value . "元",
-            "remark" => "",
+        $template_id = \Setting::get('shop.notice')['balance_change'];
+        \Log::info('余额变动通知',$template_id);
+        $params = [
+            ['name' => '商城名称', 'value' => \Setting::get('shop.shop')['name']],
+            ['name' => '昵称', 'value' => $this->memberModel->nickname],
+            ['name' => '时间', 'value' => date('Y-m-d H:i', time())],
+            ['name' => '余额变动金额', 'value' => $this->change_value],
+            ['name' => '余额变动类型', 'value' => (new ConstService(''))->sourceComment()[$this->source]],
+            ['name' => '变动后余额数值', 'value' => $this->new_value]
         ];
-        if ($noticeMember->hasOneFans->follow) {
-            Message::notice($template_id, $msg, $noticeMember->uid);
-        }
+
+        event(new MessageEvent($this->memberModel->uid, $template_id, $params, $url=''));
     }
 
 

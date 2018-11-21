@@ -11,142 +11,66 @@ namespace app\backend\modules\finance\controllers;
 
 use app\backend\modules\finance\models\Withdraw;
 use app\backend\modules\finance\services\WithdrawService;
+use app\backend\modules\withdraw\controllers\AgainPayController;
+use app\backend\modules\withdraw\controllers\AuditController;
+use app\backend\modules\withdraw\controllers\AuditedRebutController;
+use app\backend\modules\withdraw\controllers\ConfirmPayController;
+use app\backend\modules\withdraw\controllers\PayController;
 use app\common\components\BaseController;
-use app\common\events\finance\AfterIncomeWithdrawCheckEvent;
-use app\common\events\finance\AfterIncomeWithdrawPayEvent;
-use app\common\facades\Setting;
-use app\common\helpers\PaginationHelper;
-use app\common\helpers\Url;
+use app\common\events\withdraw\WithdrawAuditedEvent;
+use app\common\events\withdraw\WithdrawPayedEvent;
+use app\common\exceptions\AppException;
 use app\common\models\Income;
-use app\common\services\ExportService;
-use app\common\services\finance\BalanceSet;
-use app\common\services\MessageService;
-use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class WithdrawController extends BaseController
 {
-    public function set()
-    {
-        $set = Setting::get('withdraw.balance');
-        $resultModel = \YunShop::request()->withdraw;
-        if ($resultModel) {
-            $validator = null;
-            foreach ($resultModel as $key => $item) {
-                $validator = (new Withdraw())->validator($item);
-                if ($validator->fails()) {
-                    $this->error($validator->messages());
-                    break;
-                }
-            }
-            if ($validator && !$validator->fails()) {
-                foreach ($resultModel as $key => $item) {
-                    Setting::set('withdraw.' . $key, $item);
+    private $withdrawModel;
 
-                }
-                return $this->message('设置保存成功', Url::absoluteWeb('finance.withdraw.set'));
-            }
-        }
-
-        return view('finance.withdraw.withdraw-set', [
-            'set' => $set
-        ])->render();
-    }
-
-    public function index()
-    {
-        $pageSize = 10;
-
-        $starttime = strtotime('-1 month');
-        $endtime = time();
-
-        $requestSearch = \YunShop::request()->search;
-        if ($requestSearch) {
-
-            if ($requestSearch['searchtime']) {
-                if ($requestSearch['times']['start'] != '请选择' && $requestSearch['times']['end'] != '请选择') {
-                    $requestSearch['times']['start'] = strtotime($requestSearch['times']['start']);
-                    $requestSearch['times']['end'] = strtotime($requestSearch['times']['end']);
-                    $starttime = strtotime($requestSearch['times']['start']);
-                    $endtime = strtotime($requestSearch['times']['end']);
-                } else {
-                    $requestSearch['times'] = '';
-                }
-            } else {
-                $requestSearch['times'] = '';
-            }
-            $requestSearch = array_filter($requestSearch, function ($item) {
-                return $item !== '';// && $item !== 0;
-            });
-        }
-        $configs = Config::get('income');
-        foreach ($configs as $config) {
-            $type[] = $config['class'];
-        }
-        $list = Withdraw::getWithdrawList($requestSearch)
-            ->whereIn('type', $type)
-            ->orderBy('created_at', 'desc')
-            ->paginate($pageSize);
-
-        $pager = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
-        $incomeConfug = Config::get('income');
-        if (!$requestSearch['searchtime']) {
-            $requestSearch['times']['start'] = time();
-            $requestSearch['times']['end'] = time();
-        }
-//        echo '<pre>'; print_r(yzWebUrl('finance.withdraw.index&search',['search[status]'=>$requestSearch['status']])); exit;
-        return view('finance.withdraw.withdraw-list', [
-            'list' => $list,
-            'pager' => $pager,
-            'search' => $requestSearch,
-            'starttime' => $starttime,
-            'endtime' => $endtime,
-            'types' => $incomeConfug,
-        ])->render();
-    }
-
-
-    public function info()
-    {
-        $set = Setting::get('plugin.commission');
-        $id = intval(\YunShop::request()->id);
-        $withdrawModel = Withdraw::getWithdrawById($id)->first();
-        if (!$withdrawModel) {
-            return $this->message('数据不存在或已被删除!', '', error);
-        }
-        return view('finance.withdraw.withdraw-info', [
-            'item' => $withdrawModel,
-            'set' => $set,
-        ])->render();
-    }
 
     public function dealt()
     {
         $resultData = \YunShop::request();
         if (isset($resultData['submit_check'])) {
-            //提交审核
-            //dd($resultData);
-            $result = $this->submitCheck($resultData['id'], $resultData['audit']);
-            return $this->message($result['msg'], yzWebUrl("finance.withdraw.info", ['id' => $resultData['id']]));
-
+            //审核
+           return (new AuditController())->index();
         } elseif (isset($resultData['submit_pay'])) {
             //打款
-            $result = $this->submitPay($resultData['id'], $resultData['pay_way']);
-            return $this->message($result['msg'], yzWebUrl("finance.withdraw.info", ['id' => $resultData['id']]));
-
+            return (new PayController())->index();
         } elseif (isset($resultData['submit_cancel'])) {
             //重新审核
-            $result = $this->submitCancel($resultData['id'], $resultData['audit']);
-            return $this->message($result['msg'], yzWebUrl("finance.withdraw.info", ['id' => $resultData['id']]));
-
+            return (new AuditController())->index();
+        } elseif (isset($resultData['confirm_pay'])) {
+            return (new ConfirmPayController())->index();
+            //确认打款
+        } elseif (isset($resultData['again_pay'])) {
+            //重新打款
+            return (new AgainPayController())->index();
+        } elseif (isset($resultData['audited_rebut'])) {
+            //审核后驳回
+            return (new AuditedRebutController())->index();
         }
 
+        return $this->message('提交数据有误，请刷新重试', yzWebUrl("finance.withdraw-detail.index", ['id' => $resultData['id']]));
     }
+
+
+
+    
+
+
+
 
     public function submitCheck($withdrawId, $incomeData)
     {
-        $incomeSet = \Setting::get('withdraw.income');
-        $withdraw = Withdraw::getWithdrawById($withdrawId)->first();
+        $this->withdrawModel = $this->getWithdrawModel($withdrawId);
+
+        if ($this->withdrawModel->status != Withdraw::STATUS_INITIAL) {
+            return ['msg' => '审核失败,数据不符合提现规则!'];
+        }
+        return $this->examine();
+        /*$withdraw = Withdraw::getWithdrawById($withdrawId)->first();
         if ($withdraw->status != '0') {
             return ['msg' => '审核失败,数据不符合提现规则!'];
         }
@@ -188,12 +112,18 @@ class WithdrawController extends BaseController
             event(new AfterIncomeWithdrawCheckEvent($noticeData));
             return ['msg' => '审核成功!'];
         }
-        return ['msg' => '审核失败!'];
+        return ['msg' => '审核失败!'];*/
     }
 
     public function submitCancel($withdrawId, $incomeData)
     {
-        $withdraw = Withdraw::getWithdrawById($withdrawId)->first();
+        $this->withdrawModel = $this->getWithdrawModel($withdrawId);
+
+        if ($this->withdrawModel->status != Withdraw::STATUS_INVALID) {
+            return ['msg' => '重审核失败,数据不符合提现规则!'];
+        }
+        return $this->examine();
+        /*$withdraw = Withdraw::getWithdrawById($withdrawId)->first();
         if ($withdraw->status != '-1') {
             return ['msg' => '审核失败,数据不符合提现规则!'];
         }
@@ -236,8 +166,9 @@ class WithdrawController extends BaseController
             event(new AfterIncomeWithdrawCheckEvent($noticeData));
             return ['msg' => '审核成功!'];
         }
-        return ['msg' => '审核失败!'];
+        return ['msg' => '审核失败!'];*/
     }
+
 
 
     public function submitPay($withdrawId, $payWay)
@@ -280,6 +211,9 @@ class WithdrawController extends BaseController
             //余额打款
 
             $resultPay = WithdrawService::balanceWithdrawPay($withdraw, $remark);
+            if (is_bool($resultPay)) {
+                $resultPay = ['errno' => 0, 'message' => '余额打款成功'];
+            }
             Log::info('MemberId:' . $withdraw->member_id . ', ' . $remark . "打款到余额中!");
 
         } elseif ($payWay == '2') {
@@ -297,22 +231,22 @@ class WithdrawController extends BaseController
 
         } elseif ($payWay == '4') {
             //手动打款
-            $resultPay = true;
+            $resultPay = ['errno' => 0, 'message' => '手动打款成功'];
             Log::info('MemberId:' . $withdraw->member_id . ', ' . $remark . "手动打款!");
 
         }
 
-        if ($resultPay && $payWay != '2') {
+        if (!empty($resultPay) && 0 == $resultPay['errno']) {
 
             $withdraw->pay_status = 1;
             //审核通知事件
-            event(new AfterIncomeWithdrawPayEvent($withdraw));
+            event(new WithdrawPayedEvent($withdraw));
 
             $updatedData = ['pay_at' => time()];
             Withdraw::updatedWithdrawStatus($withdrawId, $updatedData);
             $result = WithdrawService::otherWithdrawSuccess($withdrawId);
             return ['msg' => '提现打款成功!'];
-        } elseif ($resultPay && $payWay == '2') {
+        } elseif ($payWay == '2') {
             //修改提现记录状态
             $updatedData = [
                 'status' => 4,
@@ -323,63 +257,9 @@ class WithdrawController extends BaseController
         }
     }
 
-    public function export()
-    {
 
-        $requestSearch = \YunShop::request()->search;
-        if ($requestSearch) {
-            if ($requestSearch['searchtime']) {
-                if ($requestSearch['times']['start'] != '请选择' && $requestSearch['times']['end'] != '请选择') {
-                    $requestSearch['times']['start'] = strtotime($requestSearch['times']['start']);
-                    $requestSearch['times']['end'] = strtotime($requestSearch['times']['end']);
-                    $starttime = strtotime($requestSearch['times']['start']);
-                    $endtime = strtotime($requestSearch['times']['end']);
-                } else {
-                    $requestSearch['times'] = '';
-                }
-            } else {
-                $requestSearch['times'] = '';
-            }
-            $requestSearch = array_filter($requestSearch, function ($item) {
-                return $item !== '';// && $item !== 0;
-            });
-        }
-        $configs = Config::get('income');
-        foreach ($configs as $config) {
-            $type[] = $config['class'];
-        }
-        $list = Withdraw::getWithdrawList($requestSearch)
-            ->whereIn('type', $type);
 
-        $export_page = request()->export_page ? request()->export_page : 1;
-        $export_model = new ExportService($list, $export_page);
 
-        $file_name = date('Ymdhis', time()) . '提现记录导出';
-
-        $export_data[0] = [
-            '提现编号',
-            '粉丝',
-            '姓名、手机',
-            '收入类型',
-            '提现方式',
-            '申请金额',
-            '申请时间',
-        ];
-        foreach ($export_model->builder_model as $key => $item)
-        {
-            $export_data[$key + 1] = [
-                $item->withdraw_sn,
-                $item->hasOneMember->nickname,
-                $item->hasOneMember->realname.'/'.$item->hasOneMember->mobile,
-                $item->type_name,
-                $item->pay_way_name,
-                $item->amounts,
-                $item->created_at->toDateTimeString(),
-            ];
-        }
-        $export_model->export($file_name, $export_data, \Request::query('route'));
-
-    }
 
     public function batchAlipay()
     {
@@ -389,4 +269,144 @@ class WithdrawController extends BaseController
 
         $result = $this->submitPay($ids, 2);
     }
+
+    public function getAllWithdraw()
+    {
+        $type = request('type');
+
+        $res = Withdraw::getAllWithdraw($type);
+
+        return json_encode($res);
+    }
+
+    public function updateWidthdrawOrderStatus()
+    {
+        $ids = \YunShop::request()->ids;
+        $status = 0;
+
+        if (empty($ids)) {
+            return json_encode(['status' => $status]);
+        }
+
+        $withdrawId = explode(',', $ids);
+
+        if (Withdraw::updateWidthdrawOrderStatus($withdrawId)) {
+            $status = 1;
+        }
+
+        return json_encode(['status' => $status]);
+    }
+
+
+
+    private function examine()
+    {
+        $audit_data = \YunShop::request()->audit;
+
+        $audit_count = count($audit_data);
+
+        $actual_amounts = 0;
+
+        $adopt_count    = 0;
+        $invalid_count  = 0;
+        $reject_count   = 0;
+
+        DB::beginTransaction();
+        foreach ($audit_data as $income_id => $status) {
+
+            //通过
+            if ($status == Withdraw::STATUS_AUDIT) {
+                $adopt_count += 1;
+                $actual_amounts += Income::uniacid()->where('id', $income_id)->sum('amount');
+                Income::where('id',$income_id)->update(['pay_status' => Income::PAY_STATUS_WAIT]);
+            }
+
+            //无效
+            if ($status == Withdraw::STATUS_INVALID) {
+                $invalid_count += 1;
+                Income::where('id',$income_id)->update(['pay_status' => Income::PAY_STATUS_INVALID]);
+            }
+
+            //驳回
+            if ($status == Withdraw::STATUS_REBUT) {
+                $reject_count += 1;
+                Income::where('id',$income_id)->update(['status' => Income::STATUS_INITIAL, 'pay_status' => Income::PAY_STATUS_REJECT]);
+            }
+        }
+
+        $this->withdrawModel->status = Withdraw::STATUS_AUDIT;
+
+        //如果全无效
+        if ($invalid_count > 0 && $invalid_count == $audit_count) {
+            $this->withdrawModel->status = Withdraw::STATUS_INVALID;
+        }
+
+        //如果全驳回
+        if ($reject_count > 0 && $reject_count == $audit_count) {
+            $this->withdrawModel->status = Withdraw::STATUS_PAY;
+            $this->withdrawModel->pay_at = $this->withdrawModel->arrival_at = time();
+        }
+
+        //如果是无效 + 驳回 [同全驳回，直接完成]
+        if ($invalid_count > 0 && $reject_count > 0 && ($invalid_count + $reject_count) == $audit_count) {
+            $this->withdrawModel->status = Withdraw::STATUS_PAY;
+            $this->withdrawModel->pay_at = $this->withdrawModel->arrival_at = time();
+        }
+
+
+        $this->withdrawModel->audit_at = time();
+
+        $this->withdrawModel->actual_poundage = $this->getActualPoundage($actual_amounts);
+        $this->withdrawModel->actual_servicetax = $this->getActualServiceTax($actual_amounts);
+        $this->withdrawModel->actual_amounts = $actual_amounts - $this->getActualPoundage($actual_amounts) - $this->getActualServiceTax($actual_amounts);
+
+
+        $result = $this->withdrawModel->save();
+        if ($result !== true) {
+            DB::rollBack();
+            return ['msg' => '审核失败：记录修改失败!'];
+        }
+
+        event(new WithdrawAuditedEvent($this->withdrawModel));
+
+        DB::commit();
+        return ['msg' => '审核成功!'];
+    }
+
+
+    /**
+     * 手续费
+     * @return string
+     */
+    private function getActualPoundage($amount)
+    {
+        return bcdiv(bcmul($amount,$this->withdrawModel->poundage_rate,4),100,2);
+    }
+
+
+
+    /**
+     * 劳务税
+     * @return string
+     */
+    private function getActualServiceTax($amount)
+    {
+        $amount =$amount - $this->getActualPoundage($amount);
+
+        return bcdiv(bcmul($amount,$this->withdrawModel->servicetax_rate,4),100,2);
+    }
+
+
+
+
+    private function getWithdrawModel($withdraw_id)
+    {
+        $_model = Withdraw::find($withdraw_id);
+        if (!$_model) {
+            throw new AppException('数据不存在或已被删除!');
+        }
+        return $_model;
+    }
+
+
 }

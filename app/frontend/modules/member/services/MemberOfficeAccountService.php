@@ -46,7 +46,9 @@ class MemberOfficeAccountService extends MemberService
 
         } else {
             $callback = ($_SERVER['REQUEST_SCHEME'] ? $_SERVER['REQUEST_SCHEME'] : 'http')  . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+              //$callback = Url::absoluteApp('login_validate', ['mid' => Member::getMid()]);
 
+            \Log::debug('---------callback--------', [$callback]);
         }
 
         $state = 'yz-' . session_id();
@@ -58,7 +60,7 @@ class MemberOfficeAccountService extends MemberService
                 $authurl = $this->_getAuthUrl($appId, $callback, $state);
             }
         } else {
-            $authurl = $this->_getAuthBaseUrl($appId, $callback, $state);
+            $authurl = $this->_getAuthUrl($appId, $callback, $state);
         }
 
         $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
@@ -77,8 +79,8 @@ class MemberOfficeAccountService extends MemberService
             $userinfo = $this->getUserInfo($appId, $appSecret, $token);
 
             if (is_array($userinfo) && !empty($userinfo['errcode'])) {
-                \Log::debug('微信登陆授权失败');
-                return show_json('-3', '微信登陆授权失败');
+                \Log::debug('微信登陆授权失败-'. $userinfo['errcode']);
+                return show_json(-3, '微信登陆授权失败');
             }
 
             //Login
@@ -97,6 +99,8 @@ class MemberOfficeAccountService extends MemberService
         if (\YunShop::request()->scope == 'user_info') {
             return show_json(1, 'user_info_api');
         } else {
+            //return show_json(1, ['redirect_url' => $redirect_url]);
+            \Log::debug('------------redirect_url----------', [$redirect_url]);
             redirect($redirect_url)->send();
             exit;
         }
@@ -124,7 +128,7 @@ class MemberOfficeAccountService extends MemberService
             ->asJsonResponse(true)
             ->get();
 
-        if (0 == $user_info['subscribe']) {
+        if (0 == $user_info['subscribe']) { //未关注拉取不到用户信息
             $userinfo_url = $this->_getUserInfoUrl($token['access_token'], $token['openid']);
 
             $user_info = \Curl::to($userinfo_url)
@@ -222,8 +226,19 @@ class MemberOfficeAccountService extends MemberService
      */
     private function _setClientRequestUrl()
     {
+        $pattern = '/(&t=([\d]+[^&]*))/';
+        $t = time();
+
         if (\YunShop::request()->yz_redirect) {
-            Session::set('client_url', base64_decode(\YunShop::request()->yz_redirect));
+            $yz_redirect = base64_decode(\YunShop::request()->yz_redirect);
+
+            if (preg_match($pattern, $yz_redirect)) {
+                $redirect_url = preg_replace($pattern, "&t={$t}", $yz_redirect);
+            } else {
+                $redirect_url = $yz_redirect . '&t=' . time();
+            }
+\Log::debug('-----------------client_url----------------', [$redirect_url]);
+            Session::set('client_url', $redirect_url);
         } else {
             Session::set('client_url', '');
         }
@@ -236,7 +251,34 @@ class MemberOfficeAccountService extends MemberService
      */
     private function _getClientRequestUrl()
     {
-        return Session::get('client_url');
+        $url = Session::get('client_url') ?: $this->_getFrontJumpUrl();
+
+        if ($url === false || $url == '') {
+            $url = Url::absoluteApp('home') . '&t=' . time();
+        }
+
+        return $url;
+    }
+
+    private function _getFrontJumpUrl()
+    {
+        $redirect_url = '';
+        $pattern = '/(&t=([\d]+[^&]*))/';
+        $t = time();
+
+        if (\YunShop::request()->yz_redirect) {
+            $yz_redirect = base64_decode(\YunShop::request()->yz_redirect);
+
+            if (preg_match($pattern, $yz_redirect)) {
+                $redirect_url = preg_replace($pattern, "&t={$t}", $yz_redirect);
+            } else {
+                $redirect_url = $yz_redirect;
+            }
+        }
+
+        \Log::debug('-----------------front_url----------------', [$redirect_url]);
+
+        return $redirect_url;
     }
 
     /**
@@ -258,7 +300,7 @@ class MemberOfficeAccountService extends MemberService
         parent::updateMemberInfo($member_id, $userinfo);
 
         $record = array(
-            'openid' => $userinfo['openid'],
+            //'openid' => $userinfo['openid'],
             'nickname' => stripslashes($userinfo['nickname']),
             'follow' => isset($userinfo['subscribe'])?:0,
             'tag' => base64_encode(serialize($userinfo))
@@ -271,6 +313,7 @@ class MemberOfficeAccountService extends MemberService
     {
         $uid = parent::addMemberInfo($uniacid, $userinfo);
 
+        \Log::debug('----mapping_fans----', $uid);
         //添加mapping_fans表
         $this->addFansMember($uid, $uniacid, $userinfo);
 
@@ -289,7 +332,7 @@ class MemberOfficeAccountService extends MemberService
 
     public function getFansModel($openid)
     {
-        return McMappingFansModel::getUId($openid);
+        return McMappingFansModel::getFansData($openid);
     }
 
     /**
@@ -307,5 +350,32 @@ class MemberOfficeAccountService extends MemberService
             'member_id' => $member_id,
             'type' => self::LOGIN_TYPE
         ));
+    }
+
+    public function updateFansMember($fanid, $member_id, $userinfo)
+    {
+        $record = array(
+            //'openid' => $userinfo['openid'],
+            'uid'       => $member_id,
+            'nickname' => stripslashes($userinfo['nickname']),
+            'follow' => isset($userinfo['subscribe'])?:0,
+            'tag' => base64_encode(serialize($userinfo))
+        );
+
+        McMappingFansModel::updateDataById($fanid, $record);
+    }
+
+    /**
+     * 添加会员主表信息
+     *
+     * @param $uniacid
+     * @param $userinfo
+     * @return mixed
+     */
+    public function addMcMemberInfo($uniacid, $userinfo)
+    {
+        $uid = parent::addMemberInfo($uniacid, $userinfo);
+
+        return $uid;
     }
 }

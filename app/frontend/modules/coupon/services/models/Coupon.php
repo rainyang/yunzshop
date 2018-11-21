@@ -24,7 +24,7 @@ use app\frontend\modules\coupon\services\models\UseScope\CategoryScope;
 use app\frontend\modules\coupon\services\models\UseScope\CouponUseScope;
 use app\frontend\modules\coupon\services\models\UseScope\GoodsScope;
 use app\frontend\modules\coupon\services\models\UseScope\ShopScope;
-use app\frontend\modules\order\models\PreGeneratedOrder;
+use app\frontend\modules\order\models\PreOrder;
 
 class Coupon
 {
@@ -42,26 +42,26 @@ class Coupon
     private $timeLimit;
 
     /**
-     * @var PreGeneratedOrder
+     * @var PreOrder
      */
-    private $preGeneratedOrder;
+    private $order;
     /**
      * @var \app\common\models\MemberCoupon
      */
     private $memberCoupon;
 
-    public function __construct(MemberCoupon $memberCoupon, PreGeneratedOrder $preGeneratedOrder)
+    public function __construct(MemberCoupon $memberCoupon, PreOrder $order)
     {
         $this->memberCoupon = $memberCoupon;
-        $this->preGeneratedOrder = $preGeneratedOrder;
+        $this->order = $order;
         $this->price = $this->getPriceInstance();
         $this->useScope = $this->getUseScopeInstance();
         $this->timeLimit = $this->getTimeLimitInstance();
     }
 
-    public function getPreGeneratedOrder()
+    public function getPreOrder()
     {
-        return $this->preGeneratedOrder;
+        return $this->order;
     }
 
     public function getMemberCoupon()
@@ -147,6 +147,8 @@ class Coupon
      */
     public function getDiscountAmount()
     {
+        $this->setOrderGoodsDiscountPrice();
+
         return $this->price->getPrice();
     }
 
@@ -155,20 +157,25 @@ class Coupon
      */
     public function activate()
     {
+        if ($this->getMemberCoupon()->selected) {
+            return;
+        }
         //记录优惠券被选中了
         $this->getMemberCoupon()->selected = 1;
+        $this->getMemberCoupon()->used = 1;
+        //dump($this->getMemberCoupon());
 
         // todo 订单优惠券使用记录暂时加在这里,优惠券部分需要重构
         $preOrderCoupon = new PreOrderCoupon([
-            'coupon_id'=>$this->memberCoupon->coupon_id,
-            'member_coupon_id'=>$this->memberCoupon->id,
-            'name'=>$this->memberCoupon->belongsToCoupon->name,
-            'amount'=>$this->getDiscountAmount()
-
+            'coupon_id' => $this->memberCoupon->coupon_id,
+            'member_coupon_id' => $this->memberCoupon->id,
+            'name' => $this->memberCoupon->belongsToCoupon->name,
+            'amount' => $this->getDiscountAmount()
         ]);
-        $preOrderCoupon->setOrder($this->preGeneratedOrder);
+        $preOrderCoupon->setRelation('memberCoupon', $this->memberCoupon);
+        $preOrderCoupon->coupon = $this;
+        $preOrderCoupon->setOrder($this->order);
 
-        $this->setOrderGoodsDiscountPrice();
     }
 
     /**
@@ -213,12 +220,18 @@ class Coupon
      */
     public function unique()
     {
-        $memberCoupons = MemberCouponService::getCurrentMemberCouponCache($this->getPreGeneratedOrder()->belongsToMember);
+        //允许多张使用
+        if ($this->getMemberCoupon()->belongsToCoupon->is_complex) {
+            return true;
+        }
+        $memberCoupons = MemberCouponService::getCurrentMemberCouponCache($this->getPreOrder()->belongsToMember);
         //本优惠券与某个选中的优惠券是一张 就返回false
         return !$memberCoupons->contains(function ($memberCoupon) {
 
             if ($memberCoupon->selected == true) {
                 //本优惠券与选中的优惠券是一张
+                debug_log()->coupon("优惠券{$this->getMemberCoupon()->id}",'同一单不能使用多张此类型优惠券');
+
                 return $memberCoupon->coupon_id == $this->getMemberCoupon()->coupon_id;
             }
             return false;
@@ -256,32 +269,26 @@ class Coupon
         }
         //满足范围
         if (!$this->useScope->valid()) {
+            debug_log()->coupon("优惠券{$this->getMemberCoupon()->id}",'不满足范围');
             return false;
         }
         //满足额度
         if (!$this->price->isOptional()) {
+            debug_log()->coupon("优惠券{$this->getMemberCoupon()->id}",'不满足额度');
             return false;
         }
         //满足时限
         if (!$this->timeLimit->valid()) {
+            debug_log()->coupon("优惠券{$this->getMemberCoupon()->id}",'不满足时限');
             return false;
         }
         //未使用
         if ($this->getMemberCoupon()->used) {
+            debug_log()->coupon("优惠券{$this->getMemberCoupon()->id}",'已使用');
             return false;
         }
 
         return true;
     }
 
-    /**
-     * 记录优惠券已使用
-     * @return bool
-     */
-    public function destroy()
-    {
-        $memberCoupon = $this->memberCoupon->fresh();
-        $memberCoupon->used = 1;
-        return $memberCoupon->save();
-    }
 }

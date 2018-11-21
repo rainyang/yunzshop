@@ -2,12 +2,17 @@
 
 namespace app\backend\modules\order\controllers;
 
+use app\backend\modules\order\fix\OrderPayFailRepair;
 use app\common\components\BaseController;
+use app\common\exceptions\AppException;
+use app\common\models\Address;
+use app\common\models\Member;
+use app\common\models\MemberAddress;
 use app\common\models\Order;
+use app\common\models\OrderAddress;
 use app\common\models\OrderGoods;
 use app\common\models\OrderPay;
 use app\common\models\PayOrder;
-use app\common\services\TestContract;
 
 /**
  * Created by PhpStorm.
@@ -17,16 +22,44 @@ use app\common\services\TestContract;
  */
 class FixController extends BaseController
 {
-    public function fixOrderPayId(){
+    public function fixOrderAddress()
+    {
+        $orders = Order::where(
+            [
+                'plugin_id' => 0,
+                'is_virtual' => 0,
+            ]
+        )->where('id', [534])->get();
+        $orders->each(function($order){
 
-        $r = Order::where('pay_time','>',0)->where(function ($query){
-            return $query->wherePayTypeId(0)->orWhere('order_pay_id',0);
+            $memberAddress = $order->belongsToMember->defaultAddress;
+            $result['address'] = implode(' ', [$memberAddress->province, $memberAddress->city, $memberAddress->district, $memberAddress->address]);
+            $result['mobile'] = $memberAddress->mobile;
+            $result['address'] = implode(' ', [$memberAddress->province, $memberAddress->city, $memberAddress->district, $memberAddress->address]);
+            $result['realname'] = $memberAddress->username;
+            $result['order_id'] = $order->id;
+
+            list($result['province_id'], $result['city_id'], $result['district_id']) = Address::whereIn('areaname', [$memberAddress->province, $memberAddress->city, $memberAddress->district])->pluck('id');
+
+            $orderAddress = new OrderAddress($result);
+            $orderAddress->save();
+            $order->dispatch_type_id = 1;
+            $order->save();
+        });
+
+    }
+
+    public function fixOrderPayId()
+    {
+
+        $r = Order::where('pay_time', '>', 0)->where(function ($query) {
+            return $query->wherePayTypeId(0)->orWhere('order_pay_id', 0);
         })->get();
-        $r->each(function($order){
+        $r->each(function ($order) {
 
-            $orderPay = OrderPay::where(['order_ids'=>'["'.$order->id.'"]'])->first();
+            $orderPay = OrderPay::where(['order_ids' => '["' . $order->id . '"]'])->orderBy('id', 'desc')->first();
 
-            if(isset($orderPay)){
+            if (isset($orderPay)) {
                 $order->pay_type_id = $orderPay->pay_type_id;
                 $order->order_pay_id = $orderPay->id;
                 $order->save();
@@ -37,6 +70,7 @@ class FixController extends BaseController
         exit;
 
     }
+
     public function time()
     {
         Order::whereIn('status', [0, 1, 2, 3])->where('create_time', 0)->update(['create_time' => time()]);
@@ -93,5 +127,18 @@ class FixController extends BaseController
             });
         });
 
+    }
+
+    /**
+     * @throws \app\common\exceptions\AppException
+     */
+    public function payFail(){
+        $order = Order::find(request('order_id'));
+        if(!$order){
+            throw new AppException('未找到订单');
+        }
+        $a = new OrderPayFailRepair($order);
+        $a->handle();
+        dd($a->message);
     }
 }

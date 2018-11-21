@@ -9,7 +9,6 @@
 namespace app\backend\modules\order\observers;
 
 use app\common\observers\BaseObserver;
-use app\frontend\modules\order\services\OrderService;
 use Illuminate\Database\Eloquent\Model;
 
 class OrderObserver extends BaseObserver
@@ -21,5 +20,10 @@ class OrderObserver extends BaseObserver
     public function saved(Model $model)
     {
         $this->pluginObserver('observer.order',$model,'saved', 1);
+    }
+
+    public function updating(Model $model)
+    {
+        (new \app\common\services\operation\OrderLog($model, 'update'));
     }
 }

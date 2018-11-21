@@ -18,7 +18,7 @@ class RefundSend extends ChangeStatusOperation
     protected $name = '发货';
     protected $timeField = 'send_time';
 
-    protected $past_tense_class_name = 'OrderSent';
+    protected $past_tense_class_name = '';
 
     protected function updateTable()
     {

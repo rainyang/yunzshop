@@ -11,9 +11,14 @@ namespace app\backend\modules\order\models;
 use app\backend\modules\order\services\OrderService;
 use Illuminate\Database\Eloquent\Builder;
 
+/**
+ * Class Order
+ * @package app\backend\modules\order\models
+ * @method static self exportOrders($search)
+ * @method static self search($search)
+ */
 class Order extends \app\common\models\Order
 {
-    static protected $needLog = true;
     //订单导出订单数据
     public static function getExportOrders($search)
     {
@@ -27,7 +32,7 @@ class Order extends \app\common\models\Order
         return $this->hasMany(OrderGoods::class, 'order_id', 'id');
     }
 
-    public function scopeExportOrders($query, $search)
+    public function scopeExportOrders(Order $query, $search)
     {
         $order_builder = $query->search($search);
 
@@ -44,7 +49,7 @@ class Order extends \app\common\models\Order
         return $orders;
     }
 
-    public function scopeOrders($order_builder, $search)
+    public function scopeOrders(Order $order_builder, $search)
     {
         $order_builder->search($search);
 
@@ -55,40 +60,19 @@ class Order extends \app\common\models\Order
             'hasOnePayType',
             'address',
             'express',
+            'process',
             'hasOneRefundApply' => self::refundBuilder(),
             'hasOneOrderRemark',
-            'hasOneOrderPay'
+            'hasOneOrderPay'=> function (Builder $query) {
+                $query->orderPay();
+            },
 
         ]);
         return $orders;
     }
-    /**
-     * 获取用户消费总额
-     *
-     * @param $uid
-     * @return mixed
-     */
-    public static function getCostTotalPrice($uid)
-    {
-        return self::where('status', '>=', 1)
-            ->where('status', '<=', 3)
-            ->where('uid', $uid)
-            ->sum('price');
-    }
 
-    /**
-     * 获取用户消费次数
-     *
-     * @param $uid
-     * @return mixed
-     */
-    public static function getCostTotalNum($uid)
-    {
-        return self::where('status','>=', 1)
-            ->Where('status','<=', 3)
-            ->where('uid', $uid)
-            ->count('id');
-    }
+
+
     private static function refundBuilder()
     {
         return function ($query) {
@@ -153,6 +137,20 @@ class Order extends \app\common\models\Order
                     $query->searchLike($params['ambiguous']['string']);
                 });
             }
+
+            //商品id
+            if ($params['ambiguous']['field'] == 'goods_id') {
+                $order_builder->whereHas('hasManyOrderGoods', function ($query) use ($params) {
+                    $query->where('goods_id',$params['ambiguous']['string']);
+                });
+            }
+            //快递单号
+            if ($params['ambiguous']['field'] == 'dispatch') {
+                $order_builder->whereHas('express', function ($query) use ($params) {
+                    $query->searchLike($params['ambiguous']['string']);
+                });
+            }
+
         }
         //支付方式
         if (array_get($params, 'pay_type', '')) {
@@ -169,15 +167,9 @@ class Order extends \app\common\models\Order
 
     public static function getOrderDetailById($order_id)
     {
-        return self::orders()->find($order_id);
+        return self::orders()->with(['deductions','coupons','discounts','orderPays'=> function ($query) {
+            $query->with('payType');
+        },'hasOnePayType'])->find($order_id);
     }
 
-    public static function boot()
-    {
-        parent::boot();
-
-//        static::addGlobalScope(function (Builder $builder) {
-//            $builder->isPlugin();
-//        });
-    }
 }

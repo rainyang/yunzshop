@@ -2,52 +2,82 @@
 
 namespace app\frontend\modules\orderGoods\price\option;
 
-use app\frontend\models\orderGoods\PreOrderGoodsDiscount;
-
 /**
  * Created by PhpStorm.
  * User: shenyang
  * Date: 2017/5/19
  * Time: 下午6:04
  */
-class NormalOrderGoodsPrice extends OrderGoodsPrice
+class NormalOrderGoodsPrice extends BaseOrderGoodsPrice
 {
-
     /**
-     * 获取商品的模型,规格继承时复写这个方法
-     * @return mixed
+     * @var float
      */
-    protected function goods()
-    {
-        return $this->orderGoods->goods;
-    }
-
+    private $paymentAmount;
     /**
-     * 商品的原价,为了规格继承时将属性名替换掉
-     * @return mixed
+     * @var float
      */
-    protected function aGoodsPrice()
-    {
-        return $this->goods()->price;
-    }
+    private $deductionAmount;
+    private $deductionCount;
+    /**
+     * @var float
+     */
+    private $price;
 
     /**
-     * 成交价(计算了间接优惠,原本为了方便分销分红等插件使用,但现在这个价格是动态设置的需要实时计算,所以没意义了)
+     * 成交价
      * @return mixed
      */
     public function getPrice()
     {
-        // 商品销售价 - 等级优惠金额  - 单品满减优惠金额
-        return max($this->getGoodsPrice() - $this->getVipDiscountAmount() - $this->getFullReductionAmount(),0);
+        if (isset($this->price)) {
+            return $this->price;
+        }
+        // 商品销售价 - 等级优惠金额 - 单品满减优惠金额
+        $this->price = $this->getGoodsPrice();
+        $this->price -= $this->getVipDiscountAmount();
+
+        $this->price = max($this->price, 0);
+        return $this->price;
     }
 
     /**
-     * 优惠金额(只计算了优惠券的间接优惠金额)
-     * @return int
+     * 获取订单商品支付金额
+     * @return float|mixed
      */
-    public function getDiscountAmount()
+    public function getPaymentAmount()
     {
-        return $this->getCouponAmount();
+        if (isset($this->paymentAmount)) {
+            return $this->paymentAmount;
+        }
+        $this->paymentAmount = $this->getPrice();
+
+        $this->paymentAmount -= $this->getSingleEnoughReduceAmount();
+        $this->paymentAmount -= $this->getEnoughReduceAmount();
+
+        $this->paymentAmount -= $this->getCouponAmount();
+        $this->paymentAmount -= $this->getDeductionAmount();
+
+        $this->paymentAmount = max($this->paymentAmount, 0);
+        $result = $this->paymentAmount;
+        unset($this->paymentAmount);
+        return $result;
+    }
+
+    /**
+     * 获取订单商品抵扣金额
+     * @return float
+     */
+    public function getDeductionAmount()
+    {
+
+        if ($this->deductionCount != $this->orderGoods->getOrderGoodsDeductions()->count()) {
+            $this->deductionCount = $this->orderGoods->getOrderGoodsDeductions()->count();
+            debug_log()->deduction('订单抵扣',"订单商品计算所有已用的抵扣金额");
+            $this->deductionAmount = $this->orderGoods->getOrderGoodsDeductions()->getUsedPoint()->getMoney();
+
+        }
+        return $this->deductionAmount;
     }
 
     /**
@@ -73,60 +103,22 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
     }
 
     /**
-     * 成本价
-     * @return mixed
-     */
-    public function getGoodsCostPrice()
-    {
-        return $this->goods()->cost_price * $this->orderGoods->total;
-    }
-
-    /**
-     * 市场价
-     * @return mixed
-     */
-    public function getGoodsMarketPrice()
-    {
-        return $this->goods()->market_price * $this->orderGoods->total;
-    }
-
-    /**
      * 单品满减
-     * @return int
+     * @return float|int
      */
-    public function getFullReductionAmount()
+    private function getSingleEnoughReduceAmount()
     {
-        //dd($this->fullReductionAmount);
-        //dd(isset($this->fullReductionAmount));
-
-        if (isset($this->fullReductionAmount)) {
-            //echo 1;
-            return $this->fullReductionAmount;
-        }
-        if (!isset($this->orderGoods->sale)) {
-            //echo 2;
-            return 0;
-        }
-        $result = $this->orderGoods->sale->getFullReductionAmount($this->getGoodsPrice());
-
-        $this->fullReductionAmount = $result;
-        $this->setFullReductionOrderGoodsDiscount($result);
-        return $result;
+        return $this->singleEnoughReduce->getAmount();
     }
 
     /**
-     * 定义订单商品的单品满减优惠
-     * @param $amount
+     * 全场满减
+     * @return float|int
      */
-    private function setFullReductionOrderGoodsDiscount($amount)
+    private function getEnoughReduceAmount()
     {
-        $orderGoodsDiscount = new PreOrderGoodsDiscount([
-            'discount_code' => 'fullReduction',
-            'amount' => $amount,
-            'name' => '单品满额减',
-        ]);
-        $orderGoodsDiscount->setOrderGoods($this->orderGoods);
 
+        return $this->enoughReduce->getAmount();
     }
 
     /**

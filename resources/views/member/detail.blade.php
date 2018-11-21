@@ -90,6 +90,21 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现手机</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <div class='form-control-static'>{{$member['yz_member']['withdraw_mobile']}}</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">微信号</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <input type="text" name="data[wechat]" class="form-control"
+                                       value="{{$member['yz_member']['wechat']}}"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">支付宝姓名</label>
                             <div class="col-sm-9 col-xs-12">
                                 <input type="text" name="data[alipayname]" class="form-control"
@@ -123,8 +138,7 @@
                                 <div class='input-group'>
                                     <div class=' input-group-addon'>{{$member['credit1']}}</div>
                                     <div class='input-group-btn'>
-                                        <a class='btn btn-success'
-                                           href="{{yzWebUrl('finance.point-recharge',['id'=>$member['uid']])}}">充值</a>
+                                        <a class='btn btn-success' href="{{yzWebUrl('point.recharge.index',['id'=>$member['uid']])}}">充值</a>
                                     </div>
                                 </div>
                             </div>
@@ -134,8 +148,8 @@
                             <div class="col-sm-3">
                                 <div class='input-group'>
                                     <div class=' input-group-addon'>{{$member['credit2']}}</div>
-                                    <div class='input-group-btn'><a class='btn btn-success'
-                                                                    href="{{yzWebUrl('finance.balance.recharge', ['member_id'=>$member['uid']])}}">充值</a>
+                                    <div class='input-group-btn'>
+                                        <a class='btn btn-success' href="{{yzWebUrl('balance.recharge.index', ['member_id'=>$member['uid']])}}">充值</a>
                                     </div>
                                 </div>
                             </div>
@@ -195,6 +209,21 @@
                                             @endif>否</label>
                             </div>
                         </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员上线</label>
+                            <div class="col-sm-5">
+                                <div class='input-group'>
+                                    <input type="hidden" id="parent_id" name="data[parent_id]" value="{{$member['yz_member']['parent_id']}}">
+                                    <div class=' input-group-addon' id="parent_info">[{{$member['yz_member']['parent_id']}}]{{$parent_name}}</div>
+                                    <div class='input-group-btn'><a class='btn btn-success'
+                                                                    href="javascript:;" id="change_relation">修改</a>
+                                    </div>
+                                    <span class="help-block">&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:;" id="members_record">修改记录</a></span>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">黑名单</label>
                             <div class="col-sm-9 col-xs-12">
@@ -242,4 +271,120 @@
             </form>
         </div>
     </div>
+
+    <div class="form-group">
+        <div class="col-sm-9">
+            <div id="modal-module-menus-members" class="modal fade" tabindex="-1">
+                <div class="modal-dialog" style='width: 920px;'>
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button aria-hidden="true" data-dismiss="modal"
+                                    class="close" type="button">
+                                ×
+                            </button>
+                            <h3>选择会员</h3></div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="input-group">
+                                    <input type="text" class="form-control"
+                                           name="keyword" value=""
+                                           id="search-kwd-members"
+                                           placeholder="请输入会员ID"/>
+                                    <span class='input-group-btn'>
+                                                            <button type="button" class="btn btn-default"
+                                                                    onclick="search_members();">搜索
+                                                            </button></span>
+                                </div>
+                            </div>
+                            <div id="module-menus-members"
+                                 style="padding-top:5px;"></div>
+                        </div>
+                        <div class="modal-footer"><a href="#"
+                                                     class="btn btn-default"
+                                                     data-dismiss="modal"
+                                                     aria-hidden="true">关闭</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-9">
+            <div id="modal-module-members-record" class="modal fade" tabindex="-1">
+                <div class="modal-dialog" style='width: 920px;'>
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button aria-hidden="true" data-dismiss="modal"
+                                    class="close" type="button">
+                                ×
+                            </button>
+                            <h3>修改记录</h3></div>
+                        <div class="modal-body">
+                            <div id="module-members-record"
+                                 style="padding-top:5px;"></div>
+                        </div>
+                        <div class="modal-footer"><a href="#"
+                                                     class="btn btn-default"
+                                                     data-dismiss="modal"
+                                                     aria-hidden="true">关闭</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(function () {
+            $('#change_relation').click(function () {
+                $('#modal-module-menus-members').modal();
+            });
+
+            $('#members_record').click(function() {
+                $('#modal-module-members-record').modal();
+
+                $.get('{!! yzWebUrl('member.member.member_record') !!}', {
+                    member: '{{$member['yz_member']['member_id']}}'
+                    }, function (dat) {
+                        $('#module-members-record').html(dat);
+                    }
+                );
+            });
+        });
+
+        function search_members() {
+            if ($.trim($('#search-kwd-members').val()) == '') {
+                Tip.focus('#search-kwd-members', '请输入关键词');
+                return;
+            }
+            $("#module-menus-members").html("正在搜索....");
+            $.get('{!! yzWebUrl('member.member.search_member') !!}', {
+                    parent: $.trim($('#search-kwd-members').val()),
+                }, function (dat) {
+                    if (dat != '') {
+                        $('#module-menus-members').html(dat);
+                    } else {
+                        $("#modal-module-menus-members .close").click();
+                    }
+                }
+            );
+        }
+
+        function select_member(o) {
+            $.get('{!! yzWebUrl('member.member.change_relation') !!}', {
+                    parent: $.trim(o.uid),
+                    member: '{{$member['yz_member']['member_id']}}'
+                }, function (dat) {
+                    if (1 == dat.status) {
+                        $("#parent_info").html("[" + o.uid + "]" + o.nickname);
+                        $('#parent_id').val(o.uid);
+                    }
+
+                    $("#modal-module-menus-members .close").click();
+                }
+            );
+        }
+    </script>
 @endsection

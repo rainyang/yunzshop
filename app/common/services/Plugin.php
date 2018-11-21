@@ -277,4 +277,9 @@ class Plugin implements Arrayable, ArrayAccess
             'path'          => $this->path
         ], $this->packageInfo);
     }
+
+    public function getEnabled()
+    {
+        return $this->enabled;
+    }
 }

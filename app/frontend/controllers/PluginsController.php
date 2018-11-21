@@ -20,8 +20,7 @@ class PluginsController extends BaseController
 
     public function getPluginData()
     {
-        $plugins = new PluginManager(app(),new OptionRepository(),new Dispatcher(),new Filesystem());
-        $enableds = $plugins->getEnabledPlugins()->toArray();
+        $enableds = app('plugins')->getEnabledPlugins()->toArray();
 
         foreach ($enableds as &$enabled) {
             unset($enabled['path']);

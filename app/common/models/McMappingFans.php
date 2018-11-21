@@ -14,6 +14,10 @@ class McMappingFans extends BackendModel
 {
     public $table = 'mc_mapping_fans';
 
+    protected $primaryKey = 'fanid';
+
+    public $timestamps = false;
+
 //    public function getOauthUserInfo()
 //    {
 //        return mc_oauth_userinfo();
@@ -42,6 +46,13 @@ class McMappingFans extends BackendModel
         return self::uniacid()
             ->where('uid', $memberId)
             ->first();
+    }
+
+    public static function getAllFans()
+    {
+        return self::uniacid()
+            ->where('uid', '>', 0)
+            ->get();
     }
 
 }

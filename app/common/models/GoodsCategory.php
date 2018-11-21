@@ -9,6 +9,8 @@
 namespace app\common\models;
 
 use app\common\models\BaseModel;
+use Illuminate\Database\Eloquent\Builder;
+use app\backend\modules\goods\observers\GoodsCategoryObserver;
 
 class GoodsCategory extends BaseModel
 {
@@ -21,6 +23,17 @@ class GoodsCategory extends BaseModel
         return $this->hasOne('app\common\models\Goods','id','goods_id');
     }
 
+    public function delCategory($goods_id)
+    {
+        return $this->where(['goods_id' => $goods_id])
+            ->delete();
+    }
 
+    public static function boot()
+    {
+        parent::boot();
+        //注册观察者
+        static::observe(new GoodsCategoryObserver);
+    }
 
 }

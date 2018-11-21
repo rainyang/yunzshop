@@ -9,6 +9,8 @@
 		<li class="active"><a href="#">交易设置</a></li>
 	</ul>
 </div>
+
+@include('layouts.tabs')
 <!-- 新增加右侧顶部三级菜单结束 -->
     <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" >
         <div class="panel panel-default">
@@ -72,6 +74,16 @@
 
             <div class='panel-body'>
 
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款</label>
+                    <div class="col-sm-9">
+                        <div class="">
+                            <label class='radio-inline'><input type='radio' name='trade[refund_status]' value='1' @if ($refund_status == true) checked @endif/> 开启</label>
+                            <label class='radio-inline'><input type='radio' name='trade[refund_status]' value='0' @if ($refund_status != true) checked @endif /> 关闭</label>
+                        </div>
+                        <span class='help-block'>开关判断前端退款按钮是否显示</span>
+                    </div>
+                </div>
 
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">完成订单多少天内可申请退款</label>
@@ -81,6 +93,19 @@
                             <div class="input-group-addon">天</div>
                         </div>
                         <span class='help-block'>订单完成后 ，用户在x天内可以发起退款申请，设置0天不允许完成订单退款</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">支付后跳转链接</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <div class="input-group ">
+                            <input class="form-control" type="text" data-id="PAL-00010" placeholder="请填写指向的链接 (请以http://开头, 不填则不显示)" value="{{ $set['redirect_url'] }}" name="trade[redirect_url]">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default nav-link" type="button" data-id="PAL-00010">选择链接</button>
+                            </span>
+                        </div>
+                        <span class='help-block'>当用户下单支付后，跳转到指定的页面，默认跳转到商城首页</span>
                     </div>
                 </div>
                 {{--<div class="form-group">--}}
@@ -176,5 +201,6 @@
 
 	 </div>     
 </form>
-</div>  
+</div>
+@include('public.admin.mylink')
 @endsection

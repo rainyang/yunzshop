@@ -8,7 +8,7 @@
  ****************************************************************/
 
 return [
-    'plugins'       => [
+    'founder_plugins'       => [
         'name'          => '插件管理',
         'url'           => 'plugins.get-plugin-data',
         'url_params'    => '',
@@ -80,7 +80,17 @@ return [
             ],
         ],
     ],
-
+    'supervisor'      => [
+        'name'              => '队列管理',
+        'url'               => 'supervisord.supervisord',
+        'url_params'        => '',
+        'permit'            => 1,
+        'menu'              => 1,
+        'icon'              => 'fa-history',
+        'sort'              => '5',
+        'item'              => 'supervisor',
+        'parents'           => ['system',],
+    ],
     'shop_upgrade'      => [
         'name'              => '系统升级',
         'url'               => 'update.index',

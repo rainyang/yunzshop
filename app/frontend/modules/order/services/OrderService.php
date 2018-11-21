@@ -10,24 +10,28 @@
 namespace app\frontend\modules\order\services;
 
 use app\common\events\discount\OnDiscountInfoDisplayEvent;
-use app\common\events\dispatch\OnDispatchTypeInfoDisplayEvent;
 use app\common\events\order\OnPreGenerateOrderCreatingEvent;
 use app\common\exceptions\AppException;
 use app\common\models\Order;
 
 use app\common\models\order\OrderGoodsChangePriceLog;
+use app\frontend\models\Member;
 use \app\frontend\models\MemberCart;
 use app\frontend\modules\member\services\MemberService;
-use app\frontend\modules\order\models\PreGeneratedOrder;
+use app\frontend\modules\memberCart\MemberCartCollection;
+use app\frontend\modules\order\models\PreOrder;
 use app\frontend\modules\order\services\behavior\OrderCancelPay;
 use app\frontend\modules\order\services\behavior\OrderCancelSend;
 use app\frontend\modules\order\services\behavior\OrderChangePrice;
 use app\frontend\modules\order\services\behavior\OrderClose;
 use app\frontend\modules\order\services\behavior\OrderDelete;
+use app\frontend\modules\order\services\behavior\OrderForceClose;
 use app\frontend\modules\order\services\behavior\OrderOperation;
 use app\frontend\modules\order\services\behavior\OrderPay;
 use app\frontend\modules\order\services\behavior\OrderReceive;
 use app\frontend\modules\order\services\behavior\OrderSend;
+use app\frontend\modules\orderGoods\models\PreOrderGoods;
+use app\frontend\modules\orderGoods\models\PreOrderGoodsCollection;
 use app\frontend\modules\shop\services\ShopService;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -37,16 +41,17 @@ class OrderService
 {
     /**
      * 获取订单信息组
-     * @param Order $order
+     * @param PreOrder $order
      * @return Collection
+     * @throws AppException
      */
-    public static function getOrderData(Order $order)
+    public static function getOrderData(PreOrder $order)
     {
         $result = collect();
         // todo 这里为什么要toArray
         $result->put('order', $order->toArray());
         $result->put('discount', self::getDiscountEventData($order));
-        $result->put('dispatch', self::getDispatchEventData($order));
+        $result->put('dispatch', self::getDispatchData($order));
 
         if (!$result->has('supplier')) {
             $result->put('supplier', ['username' => array_get(\Setting::get('shop'), 'name', '自营'), 'id' => 0]);
@@ -56,6 +61,18 @@ class OrderService
         return $result;
     }
 
+    /**
+     * @param PreOrder $order
+     * @return array
+     * @throws AppException
+     */
+    private static function getDispatchData(PreOrder $order)
+    {
+        if(!$order->needSend()){
+            return [];
+        }
+        return ['default_member_address'=>$order->orderAddress->getMemberAddress()];
+    }
     /**
      * 获取优惠信息
      * @param $orderModel
@@ -70,27 +87,15 @@ class OrderService
     }
 
     /**
-     * 获取配送信息
-     * @param $order_model
-     * @return array
-     */
-    public static function getDispatchEventData($order_model)
-    {
-        $Event = new OnDispatchTypeInfoDisplayEvent($order_model);
-        event($Event);
-        return $Event->getMap();
-    }
-
-    /**
      * 获取订单商品对象数组
      * @param Collection $memberCarts
-     * @return Collection
+     * @return PreOrderGoodsCollection
      * @throws \Exception
      */
     public static function getOrderGoods(Collection $memberCarts)
     {
         if ($memberCarts->isEmpty()) {
-            throw new AppException("(" . $memberCarts->goods_id . ")未找到订单商品");
+            throw new AppException("购物车记录为空");
         }
         $result = $memberCarts->map(function ($memberCart) {
             if (!($memberCart instanceof MemberCart)) {
@@ -105,25 +110,32 @@ class OrderService
                 'goods_option_id' => (int)$memberCart->option_id,
                 'total' => (int)$memberCart->total,
             ];
-            return app('OrderManager')->make('PreGeneratedOrderGoods', $data);
+            $orderGoods =  app('OrderManager')->make('PreOrderGoods', $data);
+            /**
+             * @var PreOrderGoods $orderGoods
+             */
+            $orderGoods->setRelation('goods',$memberCart->goods);
+            $orderGoods->setRelation('goodsOption',$memberCart->goodsOption);
+            return $orderGoods;
         });
 
-        return $result;
+        return new PreOrderGoodsCollection($result);
     }
 
 
     /**
      * 根据购物车记录,获取订单信息
-     * @param Collection $memberCarts
-     * @param null $member
-     * @return bool|mixed
+     * @param MemberCartCollection $memberCarts
+     * @param Member|null $member
+     * @return PreOrder|bool|mixed
      * @throws AppException
+     * @throws \Exception
      */
-    public static function createOrderByMemberCarts(Collection $memberCarts, $member = null)
+    public static function createOrderByMemberCarts(MemberCartCollection $memberCarts, Member $member = null)
     {
         if (!isset($member)) {
             //默认使用当前登录用户下单
-            $member = MemberService::getCurrentMemberModel();
+            $member = Member::current();
         }
         if (!isset($member)) {
             throw new AppException('用户登录状态过期');
@@ -133,17 +145,20 @@ class OrderService
             return false;
         }
 
+        $memberCarts->validate();
+
         $shop = ShopService::getCurrentShopModel();
 
-        $orderGoodsArr = OrderService::getOrderGoods($memberCarts);
-        $order = app('OrderManager')->make('PreGeneratedOrder', ['uid' => $member->uid, 'uniacid' => $shop->uniacid]);
+        $orderGoodsCollection = OrderService::getOrderGoods($memberCarts);
+        $order = app('OrderManager')->make('PreOrder', ['uid' => $member->uid, 'uniacid' => $shop->uniacid]);
+        $order->beforeCreating();
 
         event(new OnPreGenerateOrderCreatingEvent($order));
-        $order->setOrderGoods($orderGoodsArr);
+        $order->setOrderGoods($orderGoodsCollection);
         /**
-         * @var PreGeneratedOrder $order
+         * @var PreOrder $order
          */
-        $order->_init();
+        $order->afterCreating();
         return $order;
     }
 
@@ -180,27 +195,26 @@ class OrderService
     }
 
     /**
-     * 订单操作类 todo 以前不了解抛异常机制,所有先check.现在可以移除check
-     * {@inheritdoc}
+     * 订单操作类
+     * @param OrderOperation $orderOperation
+     * @return string
+     * @throws AppException
      */
     private static function OrderOperate(OrderOperation $orderOperation)
     {
         if (!isset($orderOperation)) {
             throw new AppException('未找到该订单');
         }
-
-        DB::transaction(function () use ($orderOperation) {
-            $orderOperation->check();
-            $orderOperation->execute();
-
+        DB::transaction(function() use($orderOperation) {
+            $orderOperation->handle();
         });
-        return $orderOperation->getMessage();
     }
 
     /**
      * 取消付款
      * @param $param
      * @return string
+     * @throws AppException
      */
     public static function orderCancelPay($param)
     {
@@ -213,6 +227,7 @@ class OrderService
      * 取消发货
      * @param $param
      * @return string
+     * @throws AppException
      */
     public static function orderCancelSend($param)
     {
@@ -225,6 +240,7 @@ class OrderService
      * 关闭订单
      * @param $param
      * @return string
+     * @throws AppException
      */
     public static function orderClose($param)
     {
@@ -232,11 +248,23 @@ class OrderService
 
         return self::OrderOperate($orderOperation);
     }
+    /**
+     * 强制关闭订单
+     * @param $param
+     * @return string
+     * @throws AppException
+     */
+    public static function orderForceClose($param)
+    {
+        $orderOperation = OrderForceClose::find($param['order_id']);
 
+        return self::OrderOperate($orderOperation);
+    }
     /**
      * 用户删除(隐藏)订单
      * @param $param
      * @return string
+     * @throws AppException
      */
     public static function orderDelete($param)
     {
@@ -252,49 +280,59 @@ class OrderService
      */
     public static function ordersPay(array $param)
     {
-        $orderPay = \app\common\models\OrderPay::find($param['order_pay_id']);
+        \Log::info('---------订单支付ordersPay(order_pay_id:' . $param['order_pay_id'] . ')--------', $param);
+        /**
+         * @var \app\frontend\models\OrderPay $orderPay
+         */
+        $orderPay = \app\frontend\models\OrderPay::find($param['order_pay_id']);
         if (!isset($orderPay)) {
             throw new AppException('支付流水记录不存在');
         }
-        $orders = Order::whereIn('id', $orderPay->order_ids)->get();
-        if ($orders->isEmpty()) {
-            throw new AppException('(ID:' . $orderPay->id . ')未找到订单流水号对应订单');
-        }
-        DB::transaction(function () use ($orderPay, $orders, $param) {
-            $orderPay->status = 1;
-            if(isset($param['pay_type_id'])){
+
+        if (isset($param['pay_type_id'])) {
+            if ($orderPay->pay_type_id != $param['pay_type_id']) {
                 $orderPay->pay_type_id = $param['pay_type_id'];
+                \Log::error("---------支付回调与与支付请求的订单支付方式不匹配(order_pay_id:{$orderPay->id},orderPay->payTypeId:{$orderPay->pay_type_id} != param[pay_type_id]:{$param['pay_type_id']})--------", []);
+
             }
-            $orderPay->save();
-            $orders->each(function ($order) use ($param) {
-                if (!OrderService::orderPay(['order_id' => $order->id,'order_pay_id'=>$param['order_pay_id'],'pay_type_id' => $param['pay_type_id']])) {
-                    throw new AppException('订单状态改变失败,请联系客服');
-                }
-            });
-        });
+        }
+        $orderPay->pay();
+
+        \Log::info('---------订单支付成功ordersPay(order_pay_id:' . $orderPay->id . ')--------', []);
+
     }
 
     /**
      * 后台支付订单
      * @param array $param
      * @return string
+     * @throws AppException
      */
 
     public static function orderPay(array $param)
     {
+        /**
+         * @var OrderOperation $orderOperation
+         */
         $orderOperation = OrderPay::find($param['order_id']);
         if (isset($param['pay_type_id'])) {
             $orderOperation->pay_type_id = $param['pay_type_id'];
         }
+        $orderOperation->order_pay_id = (int)$param['order_pay_id'];
 
-        if (isset($param['order_pay_id'])) {
-            $orderOperation->order_pay_id = $param['order_pay_id'];
-        }
         $result = self::OrderOperate($orderOperation);
-        if ($orderOperation->isVirtual()) {
+        //是虚拟商品或有标识直接完成
+        if ($orderOperation->isVirtual() || $orderOperation->mark) {
+            // 虚拟物品付款后直接完成
+            $orderOperation->dispatch_type_id = 0;
+            $orderOperation->save();
             self::orderSend(['order_id' => $orderOperation->id]);
             $result = self::orderReceive(['order_id' => $orderOperation->id]);
+        } elseif (isset($orderOperation->hasOneDispatchType) && !$orderOperation->hasOneDispatchType->needSend()) {
+            // 不需要发货的物品直接改为待收货
+            self::orderSend(['order_id' => $orderOperation->id]);
         }
+
         return $result;
     }
 
@@ -302,6 +340,7 @@ class OrderService
      * 收货
      * @param $param
      * @return string
+     * @throws AppException
      */
     public static function orderReceive($param)
     {
@@ -314,6 +353,7 @@ class OrderService
      * 发货
      * @param $param
      * @return string
+     * @throws AppException
      */
     public static function orderSend($param)
     {
@@ -372,17 +412,23 @@ class OrderService
      * 自动收货
      * {@inheritdoc}
      */
-    public static function autoReceive()
+    public static function autoReceive($uniacid)
     {
+        \YunShop::app()->uniacid = $uniacid;
+        \Setting::$uniqueAccountId = $uniacid;
         $days = (int)\Setting::get('shop.trade.receive');
+
         if (!$days) {
             return;
         }
         $orders = \app\backend\modules\order\models\Order::waitReceive()->where('send_time', '<', (int)Carbon::now()->addDays(-$days)->timestamp)->normal()->get();
         if (!$orders->isEmpty()) {
             $orders->each(function ($order) {
-                //dd($order->send_time);
-                OrderService::orderReceive(['order_id' => $order->id]);
+                try {
+                    OrderService::orderReceive(['order_id' => $order->id]);
+                } catch (\Exception $e) {
+
+                }
             });
         }
     }
@@ -391,8 +437,10 @@ class OrderService
      * 自动关闭订单
      * {@inheritdoc}
      */
-    public static function autoClose()
+    public static function autoClose($uniacid)
     {
+        \YunShop::app()->uniacid = $uniacid;
+        \Setting::$uniqueAccountId = $uniacid;
         $days = (int)\Setting::get('shop.trade.close_order_days');
         if (!$days) {
             return;

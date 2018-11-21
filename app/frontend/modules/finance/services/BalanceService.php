@@ -34,8 +34,10 @@ class BalanceService
             'recharge'          => $this->_recharge_set['recharge'] ? 1 : 0,
             'transfer'          => $this->_recharge_set['transfer'] ? 1 : 0,
             'withdraw'          => $this->_withdraw_set['status'] ? 1 : 0,
-            'withdrawToWechat'  => $this->_withdraw_set['wechat'] ? true : false,
-            'withdrawToAlipay'  => $this->_withdraw_set['alipay'] ? true : false
+            'withdrawToWechat'  => $this->withdrawWechat(),
+            'withdrawToAlipay'  => $this->withdrawAlipay(),
+            'withdrawToManual'  => $this->withdrawManual(),
+            'withdrawEup'       => $this->withdrawEup()
         );
     }
 
@@ -73,13 +75,13 @@ class BalanceService
     //余额提现限额设置
     public function withdrawAstrict()
     {
-        return $this->_withdraw_set['withdrawmoney'];
+        return $this->_withdraw_set['withdrawmoney'] ?: '0';
     }
 
     //余额提现手续费
     public function withdrawPoundage()
     {
-        return $this->_withdraw_set['poundage'] ?: 0;
+        return $this->_withdraw_set['poundage'] ?: '0';
     }
 
     //余额提现到微信
@@ -92,6 +94,77 @@ class BalanceService
     public function withdrawAlipay()
     {
         return $this->_withdraw_set['alipay'] ? true : false;
+    }
+
+    //余额手动提现
+    public function withdrawManual()
+    {
+        return $this->_withdraw_set['balance_manual'] ? true : false;
+    }
+
+    //余额EUP提现
+    public function withdrawEup()
+    {
+        if (app('plugins')->isEnabled('eup-pay')) {
+            return $this->_withdraw_set['eup_pay'] ? true : false;
+        }
+        return false;
+    }
+
+
+    //余额EUP提现
+    public function withdrawHuanxun()
+    {
+        if (app('plugins')->isEnabled('huanxun')) {
+            return $this->_withdraw_set['huanxun'] ? true : false;
+        }
+        return false;
+    }
+
+    /**
+     * 提现满 N元 减免手续费 [注意为 0， 为空则不计算，按正常手续费扣]
+     * 2017-09-28
+     * @return string
+     */
+    public function withdrawPoundageFullCut()
+    {
+        return $this->_withdraw_set['poundage_full_cut'] ?: '0';
+    }
+
+
+    /**
+     * 增加提现手续费类型，1固定金额，0（默认）手续费比例
+     * 2017-09-28
+     * @return int
+     */
+    public function withdrawPoundageType()
+    {
+        return $this->_withdraw_set['poundage_type'] ? 1 : 0;
+    }
+
+    public function rechargeActivityStatus()
+    {
+        return $this->_recharge_set['recharge_activity'] ? true : false;
+    }
+
+    public function rechargeActivityStartTime()
+    {
+        return $this->_recharge_set['recharge_activity_start'] ?: 0;
+    }
+
+    public function rechargeActivityEndTime()
+    {
+        return $this->_recharge_set['recharge_activity_end'] ?: 0;
+    }
+
+    public function rechargeActivityCount()
+    {
+        return $this->_recharge_set['recharge_activity_count'] ?: 1;
+    }
+
+    public function rechargeActivityFetter()
+    {
+        return $this->_recharge_set['recharge_activity_fetter'];
     }
 
 

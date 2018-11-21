@@ -33,15 +33,15 @@ class YunShop
     {
         //检测命名空间
         if (!class_exists($namespace)) {
-            throw new NotFoundException(" 不存在类: " . $namespace);
+            throw new NotFoundException(" 路由错误:不存在类: " . $namespace);
         }
         //检测controller继承
         $controller = new $namespace;
         if (!$controller instanceof \app\common\components\BaseController) {
-            if(config('app.debug')){
-                throw new NotFoundException($controller.' 没有继承\app\common\components\BaseController: ' . $namespace);
+            if (config('app.debug')) {
+                throw new NotFoundException($controller . ' 没有继承\app\common\components\BaseController: ' . $namespace);
             }
-            throw new NotFoundException(" 不存在控制器: " . $namespace);
+            throw new NotFoundException(" 路由错误:不存在控制器: " . $namespace);
 
         }
 
@@ -54,7 +54,7 @@ class YunShop
 
         //检测方法是否存在并可执行
         if (!method_exists($namespace, $action) || !is_callable([$namespace, $action])) {
-            throw new NotFoundException('操作方法不存在: ' . $action);
+            throw new NotFoundException('路由错误:操作方法不存在: ' . $action);
         }
         $controller->modules = $modules;
         $controller->controller = $controllerName;
@@ -75,18 +75,22 @@ class YunShop
             //兼容旧插件使用
             $menuList = array_merge($menuList, (array)Config::get($menu_array['old_plugin_menu']));
 
-            if (PermissionService::isFounder()) {
-                $menuList['system']['child'] = array_merge($menuList['system']['child'], (array)Config::get($menu_array['founder_menu']));
-            }
+            $menuList['system']['child'] = array_merge($menuList['system']['child'], (array)Config::get($menu_array['founder_menu']));
 
             Config::set('menu', $menuList);
 
             $item = Menu::getCurrentItemByRoute($controller->route, $menuList);
+            //dd($controller->route);
             self::$currentItems = array_merge(Menu::getCurrentMenuParents($item, $menuList), [$item]);
+            //dd(self::$currentItems);
+            Config::set('currentMenuItem', $item);
+            //dd($item);exit;
             //检测权限
             if (!PermissionService::can($item)) {
-                //throw new NotFoundException('Sorry,无权限');
-                throw new \app\common\exceptions\AppException('Sorry,您没有操作无权限，请联系管理员！');
+                //throw new \app\common\exceptions\ShopException('Sorry,您没有操作无权限，请联系管理员!');
+                $exception = new \app\common\exceptions\ShopException('Sorry,您没有操作无权限，请联系管理员!');
+                $exception->setRedirect(yzWebUrl('index.index'));
+                throw $exception;
             }
         }
 
@@ -108,6 +112,15 @@ class YunShop
         exit($content);
     }
 
+    public static function isShowSecondMenu()
+    {
+        $menu_list = (array)Config::get('menu');
+
+        if (count(self::$currentItems) >= 1) {
+            return isset($menu_list[self::$currentItems[0]]['left_second_show']) ? $menu_list[self::$currentItems[0]]['left_second_show'] : false;
+        }
+        return false;
+    }
 
     /**
      * Configures an object with the initial property values.
@@ -196,19 +209,17 @@ class YunShop
     /**
      * @name 验证是否商城操作员
      * @author
-     * @return bool
+     * @return array|bool|null|stdClass
      */
     public static function isRole()
     {
         global $_W;
-        $plugin_class = new PluginManager(app(), new OptionRepository(), new Dispatcher(), new Filesystem());
-        if ($plugin_class->isEnabled('supplier')) {
-            if (Schema::hasColumn('yz_supplier', 'uid')) {
-                $res = \Yunshop\Supplier\common\models\Supplier::getSupplierByUid($_W['uid'])->first();
-                if ($res) {
-                    return $res;
-                }
+        if (app('plugins')->isEnabled('supplier')) {
+            $res = \Illuminate\Support\Facades\DB::table('yz_supplier')->where('uid', $_W['uid'])->first();
+            if (!$res) {
+                return false;
             }
+            return $res;
         }
         return false;
     }
@@ -228,6 +239,9 @@ class YunShop
         }
     }
 
+    /**
+     * @return YunApp
+     */
     public static function app()
     {
         if (self::$_app !== null) {
@@ -252,50 +266,56 @@ class YunShop
      */
     public static function parseRoute($requestRoute)
     {
-        $routes = explode('.', $requestRoute);
+        try {
+            $routes = explode('.', $requestRoute);
 
-        $path = self::getAppPath();
+            $path = self::getAppPath();
 
-        $namespace = self::getAppNamespace();
-        $action = '';
-        $controllerName = '';
-        $currentRoutes = [];
-        $modules = [];
-        if ($routes) {
-            $length = count($routes);
-            $routeFirst = array_first($routes);
-            $countRoute = count($routes);
-            if ($routeFirst === 'plugin' || self::isPlugin()) {
-                if (self::isPlugin()) {
-                    $currentRoutes[] = 'plugin';
-                    $countRoute += 1;
-                } else {
-                    $currentRoutes[] = $routeFirst;
-                    array_shift($routes);
-                }
-                $namespace = 'Yunshop';
-                $pluginName = array_shift($routes);
-                if ($pluginName || plugin($pluginName)) {
-                    $currentRoutes[] = $pluginName;
-                    $namespace .= '\\' . ucfirst(Str::camel($pluginName));
-                    $path = base_path() . '/plugins/' . $pluginName . '/src';
-                    $length = $countRoute;
+            $namespace = self::getAppNamespace();
+            $action = '';
+            $controllerName = '';
+            $currentRoutes = [];
+            $modules = [];
+            if ($routes) {
+                $length = count($routes);
+                $routeFirst = array_first($routes);
+                $countRoute = count($routes);
+                if ($routeFirst === 'plugin' || self::isPlugin()) {
+                    if (self::isPlugin()) {
+                        $currentRoutes[] = 'plugin';
+                        $countRoute += 1;
+                    } else {
+                        $currentRoutes[] = $routeFirst;
+                        array_shift($routes);
+                    }
+                    $namespace = 'Yunshop';
+                    $pluginName = array_shift($routes);
+                    if ($pluginName || plugin($pluginName)) {
+                        $currentRoutes[] = $pluginName;
+                        $namespace .= '\\' . ucfirst(Str::camel($pluginName));
+                        $path = base_path() . '/plugins/' . $pluginName . '/src';
+                        $length = $countRoute;
 
-                    self::findRouteFile($controllerName, $action, $routes, $namespace, $path, $length, $currentRoutes, $requestRoute, true);
+                        self::findRouteFile($controllerName, $action, $routes, $namespace, $path, $length, $currentRoutes, $requestRoute, true);
 
-                    if(!app('plugins')->isEnabled($pluginName)){
-                        throw new NotFoundException("{$pluginName}插件已禁用");
+                        if (!app('plugins')->isEnabled($pluginName)) {
+                            throw new NotFoundException("{$pluginName}插件已禁用");
+
+                        }
+                    } else {
+                        throw new NotFoundException('无此插件');
 
                     }
                 } else {
-                    throw new NotFoundException('无此插件');
+
+                    self::findRouteFile($controllerName, $action, $routes, $namespace, $path, $length, $currentRoutes, $requestRoute, false);
 
                 }
-            } else {
-
-                self::findRouteFile($controllerName, $action, $routes, $namespace, $path, $length, $currentRoutes, $requestRoute, false);
-
             }
+        } catch (Exception $exception) {
+//            dd($exception);
+//            exit;
+
         }
         //执行run
         static::run($namespace, $modules, $controllerName, $action, $currentRoutes);
@@ -319,6 +339,7 @@ class YunShop
         foreach ($routes as $k => $r) {
             $ucFirstRoute = ucfirst(Str::camel($r));
             $controllerFile = $path . ($isPlugin ? '/' : '/controllers/') . $ucFirstRoute . 'Controller.php';
+
             if (is_file($controllerFile)) {
                 $namespace .= ($isPlugin ? '' : '\\controllers') . '\\' . $ucFirstRoute . 'Controller';
                 $controllerName = $ucFirstRoute;
@@ -331,7 +352,8 @@ class YunShop
             } else {
 
                 if ($length !== ($isPlugin ? $k + 3 : $k + 1)) {
-
+//dump($controllerFile);
+//dump($path);
                     throw new NotFoundException('路由长度有误:' . $requestRoute);
 
                 }
@@ -442,6 +464,11 @@ class YunRequest extends YunComponent
 
 }
 
+/**
+ * Class YunApp
+ * @property int uniacid
+ * @property int uid
+ */
 class YunApp extends YunComponent
 {
     protected $values;
@@ -457,11 +484,12 @@ class YunApp extends YunComponent
 
     public function getW()
     {
+        $account = \app\common\models\AccountWechats::getAccountByUniacid(request()->get('i'));
         return [
             'uniacid' => request()->get('i'),
             'weid' => request()->get('i'),
             'acid' => request()->get('i'),
-            'account' => \app\common\models\AccountWechats::getAccountByUniacid(request()->get('i')) ? \app\common\models\AccountWechats::getAccountByUniacid(request()->get('i'))->toArray() : ''
+            'account' => $account ? $account->toArray() : '',
         ];
     }
 
@@ -526,7 +554,7 @@ class YunApp extends YunComponent
             }
             //return false;
         }
-        
+
         if (Session::get('member_id')) {
             return Session::get('member_id');
         } else {
@@ -553,9 +581,8 @@ class YunPlugin
     public function get($key = null)
     {
         if (isset($key)) {
-            $plugin_class = new PluginManager(app(), new OptionRepository(), new Dispatcher(), new Filesystem());
 
-            if ($plugin_class->isEnabled($key)) {
+            if (app('plugins')->isEnabled($key)) {
                 return true;
             }
         }

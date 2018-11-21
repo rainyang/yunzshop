@@ -28,12 +28,11 @@ class MemberCartService
 
     public static function newMemberCart($params)
     {
-        if (!isset($params['total'])) {
+        if (!isset($params['total']) || $params['total']<= 0) {
             // 数量默认1
             $params['total'] = 1;
         }
-        $cart = new MemberCart($params);
-        $cart->validate();
+        $cart = app('OrderManager')->make('MemberCart',$params);
         return $cart;
     }
 

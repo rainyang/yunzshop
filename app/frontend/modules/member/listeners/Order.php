@@ -8,15 +8,20 @@
 
 namespace app\frontend\modules\member\listeners;
 
-
-use app\frontend\modules\member\services\MemberCartService;
+use app\common\events\order\AfterOrderCreatedImmediatelyEvent;
 
 class Order
 {
-    public function handle($event){
-        $cart_ids =\Request::input('cart_ids');
-        @$cart_ids = json_decode($cart_ids);
+    public function handle(AfterOrderCreatedImmediatelyEvent $event){
+        $order = $event->getOrder();
+        $goods_ids = $order->orderGoods->pluck('goods_id');
+        $goods_option_ids = $order->orderGoods->pluck('goods_option_id');
 
-        MemberCartService::clearCartByIds($cart_ids);
+        //过滤空值
+        $goods_option_ids = array_filter($goods_option_ids);
+
+        app('OrderManager')->make('MemberCart')->uniacid()->whereIn('goods_id', $goods_ids)->delete();
+        app('OrderManager')->make('MemberCart')->uniacid()->whereIn('option_id', $goods_option_ids)->delete();
+
     }
 }

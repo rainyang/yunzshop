@@ -38,7 +38,7 @@
                             <span id="goodsthumb" class='help-block'
                                   @if(empty($goods)) style="display:none" @endif ><img
                                         style="width:100px;height:100px;border:1px solid #ccc;padding:1px"
-                                        src="@if(isset($goods['thumb'])) {{tomedia($goods['thumb']) }} @endif"/></span>
+                                        src="@if(isset($goods['thumb'])) {{yz_tomedia($goods['thumb']) }} @endif"/></span>
 
                             <div id="modal-module-menus-goods" class="modal fade" tabindex="-1">
                                 <div class="modal-dialog" style='width: 920px;'>

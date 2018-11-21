@@ -89,7 +89,6 @@
                 <ul class="add-snav">
                     <li class="active"><a href="#">订单管理 &nbsp; <i class="fa fa-angle-double-right"></i> &nbsp; 订单详情</a>
                     </li>
-
                 </ul>
             </div>
             <!-- 新增加右侧顶部三级菜单结束 -->
@@ -99,7 +98,7 @@
                 <input type="hidden" name="token" value="{{$var['token']}}"/>
                 <input type="hidden" name="dispatchid" value="{{$dispatch['id']}}"/>
                 <div class="panel panel-default">
-                    <div class="top">
+                    {{--<div class="top">
                         <ul class="add-shopnav" id="myTab">
                             <li class="active"><a href="#tab_basic">基本信息</a></li>
 
@@ -108,7 +107,7 @@
                             @endforeach
 
                         </ul>
-                    </div>
+                    </div>--}}
                     <div class="info">
                         <div class="panel-body">
                             <div class="tab-content">

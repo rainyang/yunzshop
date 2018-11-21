@@ -11,6 +11,7 @@ namespace app\common\services\finance;
 
 
 use app\common\models\Member;
+use app\common\models\notice\MessageTemp;
 use app\common\services\MessageService;
 use Illuminate\Database\Eloquent\Model;
 
@@ -18,98 +19,59 @@ class BalanceNoticeService
 {
     public static function withdrawSubmitNotice(Model $withdrawModel)
     {
-        $msg       = array(
-            'first' => array(
-                'value' => "提现申请已经成功提交!",
-                "color" => "#4a5077"
-            ),
-            'money' => array(
-                'title' => '提现金额',
-                'value' => '￥' . $withdrawModel->amounts . '元(手续费' .$withdrawModel->actual_poundage. '元)',
-                "color" => "#4a5077"
-            ),
-            'timet' => array(
-                'title' => '提现时间',
-                'value' => $withdrawModel->created_at->toDateTimeString(),
-                "color" => "#4a5077"
-            ),
-            'remark' => array(
-                'value' => "\r\n请等待我们的审核并打款！",
-                "color" => "#4a5077"
-            )
-        );
         $template_id = \Setting::get('shop.notice.withdraw_submit');
-        static::notice($template_id,$msg,$withdrawModel->member_id);
+        if (!$template_id) {
+            return null;
+        }
+
+        $params = [
+            ['name' => '时间', 'value' => $withdrawModel->created_at->toDateTimeString()],
+            ['name' => '金额', 'value' => $withdrawModel->amounts],
+            ['name' => '手续费', 'value' => $withdrawModel->actual_poundage],
+        ];
+        static::notice($template_id,$params,$withdrawModel->member_id);
     }
 
     public static function withdrawSuccessNotice(Model $withdrawModel)
     {
-        $msg       = array(
-            'first' => array(
-                'value' => "恭喜您成功提现!",
-                "color" => "#4a5077"
-            ),
-            'money' => array(
-                'title' => '提现金额',
-                'value' => '￥' . $withdrawModel->amounts . '元(手续费' .$withdrawModel->actual_poundage. '元)',
-                "color" => "#4a5077"
-            ),
-            'timet' => array(
-                'title' => '提现时间',
-                'value' => date('Y-m-d H:i:s', $withdrawModel->arrival_at),
-                "color" => "#4a5077"
-            ),
-            'remark' => array(
-                'value' => "\r\n感谢您的支持！",
-                "color" => "#4a5077"
-            )
-        );
         $template_id = \Setting::get('shop.notice.withdraw_success');
-        static::notice($template_id,$msg,$withdrawModel->member_id);
+        if (!$template_id) {
+            return null;
+        }
+
+        $params = [
+            ['name' => '时间', 'value' => date('Y-m-d H:i:s', $withdrawModel->pay_at)],
+            ['name' => '金额', 'value' => $withdrawModel->amounts],
+            ['name' => '手续费', 'value' => $withdrawModel->actual_poundage],
+        ];
+        static::notice($template_id,$params,$withdrawModel->member_id);
     }
 
     public static function withdrawFailureNotice(Model $withdrawModel)
     {
-        $msg       = array(
-            'first' => array(
-                'value' => "抱歉，提现申请审核失败!",
-                "color" => "#4a5077"
-            ),
-            'money' => array(
-                'title' => '审核金额',
-                'value' => '￥' . $withdrawModel->amounts . '元(手续费' .$withdrawModel->actual_poundage. '元)',
-                "color" => "#4a5077"
-            ),
-            'time' => array(
-                'title' => '提现时间',
-                'value' => date('Y-m-d H:i:s', $withdrawModel->audit_at),
-                "color" => "#4a5077"
-            ),
-            'remark' => array(
-                'value' => "\r\n有疑问请联系客服，谢谢您的支持！",
-                "color" => "#4a5077"
-            )
-        );
         $template_id = \Setting::get('shop.notice.withdraw_fail');
-        static::notice($template_id,$msg,$withdrawModel->member_id);
+        if (!$template_id) {
+            return null;
+        }
+
+        $params = [
+            ['name' => '时间', 'value' => date('Y-m-d H:i:s', $withdrawModel->audit_at)],
+            ['name' => '金额', 'value' => $withdrawModel->amounts],
+            ['name' => '手续费', 'value' => $withdrawModel->actual_poundage],
+        ];
+        static::notice($template_id,$params,$withdrawModel->member_id);
     }
 
-    public static function notice($templateId,$msg,$memberId)
+    public static function notice($templateId,$params,$memberId)
     {
         if (!$templateId) {
-            return ;
+            return;
         }
-        if (!$memberId) {
-            return ;
+        $msg = MessageTemp::getSendMsg($templateId, $params);
+        if (!$msg) {
+            return;
         }
-        $memberModel = Member::ofUid($memberId)->with('hasOneFans')->first();
-        if (!$memberModel) {
-            return ;
-        }
-        if (isset($memberModel->hasOneFans) && !empty($memberModel->hasOneFans->openid) && $memberModel->hasOneFans->follow) {
-            MessageService::notice($templateId,$msg,$memberModel->uid);
-        }
-
+        MessageService::notice(MessageTemp::$template_id, $msg, $memberId);
     }
 
 

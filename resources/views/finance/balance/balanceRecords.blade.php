@@ -15,7 +15,11 @@
             <div class="panel-heading">筛选</div>
 
             <div class="panel-body">
-                <form action="" method="post" class="form-horizontal" role="form" id="form1">
+                <form action="" method="get" class="form-horizontal" role="form" id="form1">
+                    <input type="hidden" name="c" value="site" />
+                    <input type="hidden" name="a" value="entry" />
+                    <input type="hidden" name="m" value="yun_shop" />
+                    <input type="hidden" name="do" value="5201" />
                     <input type="hidden" name="route" value="finance.balance-records.index" id="route" />
                     <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2 ">
                         <div class="">

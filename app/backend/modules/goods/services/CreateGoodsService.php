@@ -35,31 +35,42 @@ class CreateGoodsService
     {
         $goods_data = $this->request->goods;
 
+
         $this->params = new GoodsParam();
         $this->goods_model = new Goods();
         $this->brands = Brand::getBrands()->get();
 
         if ($goods_data) {
+            // dd($this->request);
+
             if ($this->type == 1) {
                 $goods_data['status'] = 0;
             }
-            $goods_data['thumb'] = tomedia($goods_data['thumb']);
             if (isset($goods_data['thumb_url'])) {
-                $goods_data['thumb_url'] = serialize(
-                    array_map(function ($item) {
-                        return tomedia($item);
-                    }, $goods_data['thumb_url'])
-                );
+                $goods_data['thumb_url'] = serialize($goods_data['thumb_url']);
             }
+            
+            if (!$goods_data['virtual_sales']) {
+                $goods_data['virtual_sales'] = 0;
+            }
+
+            if (!empty($this->request->widgets['sale']['max_point_deduct'])
+                && !empty($goods_data['price'])
+                && $this->request->widgets['sale']['max_point_deduct'] > $goods_data['price']) {
+                return ['status' => -1, 'msg' => '积分抵扣金额大于商品现价'];
+            }
+
             $this->goods_model->setRawAttributes($goods_data);
             $this->goods_model->widgets = $this->request->widgets;
             $this->goods_model->uniacid = \YunShop::app()->uniacid;
+            $this->goods_model->weight = $this->goods_model->weight ? $this->goods_model->weight : 0;
             $validator = $this->goods_model->validator($this->goods_model->getAttributes());
             if ($validator->fails()) {
                 $this->error = $validator->messages();
             } else {
                 if ($this->goods_model->save()) {
-                    GoodsService::saveGoodsCategory($this->goods_model, $this->request->category, Setting::get('shop.category'));
+                    (new \app\common\services\operation\GoodsLog($this->goods_model, 'create'));
+                    GoodsService::saveGoodsMultiCategory($this->goods_model, $this->request->category, Setting::get('shop.category'));
                     GoodsParam::saveParam($this->request, $this->goods_model->id, \YunShop::app()->uniacid);
                     GoodsSpec::saveSpec($this->request, $this->goods_model->id, \YunShop::app()->uniacid);
                     GoodsOption::saveOption($this->request, $this->goods_model->id, GoodsSpec::$spec_items, \YunShop::app()->uniacid);
@@ -70,6 +81,6 @@ class CreateGoodsService
             }
         }
 
-        $this->catetory_menus = CategoryService::getCategoryMenu(['catlevel' => Setting::get('shop.category')['cat_level']]);
+        $this->catetory_menus = CategoryService::getCategoryMultiMenu(['catlevel' => Setting::get('shop.category')['cat_level']]);
     }
 }

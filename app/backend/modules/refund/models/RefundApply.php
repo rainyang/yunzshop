@@ -14,6 +14,12 @@ use app\common\exceptions\AdminException;
  * Date: 2017/4/21
  * Time: 下午2:24
  */
+
+/**
+ * Class RefundApply
+ * @package app\backend\modules\refund\models
+ * @property Order order
+ */
 class RefundApply extends \app\common\models\refund\RefundApply
 {
     static protected $needLog = true;
@@ -44,6 +50,12 @@ class RefundApply extends \app\common\models\refund\RefundApply
     {
         //todo 补充当退款类型实例请求 收货请求时的提示
         return $this->getTypeInstance()->receiveReturnGoods();
+    }
+
+    public function close()
+    {
+        return $this->getTypeInstance()->close();
+
     }
 
     public function resend()

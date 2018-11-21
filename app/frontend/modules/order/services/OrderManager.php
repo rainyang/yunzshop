@@ -11,13 +11,18 @@ namespace app\frontend\modules\order\services;
 use app\backend\modules\order\models\Order;
 use app\common\models\order\OrderCoupon;
 use app\common\models\order\OrderDeduction;
+use app\common\models\order\OrderDiscount;
+use app\common\modules\order\OrderOperationsCollector;
 use app\frontend\models\MemberCart;
-use app\frontend\modules\orderGoods\models\PreGeneratedOrderGoods;
-use app\frontend\modules\order\models\PreGeneratedOrder;
+use app\frontend\models\OrderAddress;
+use app\frontend\modules\dispatch\models\PreOrderAddress;
+use app\frontend\modules\orderGoods\models\PreOrderGoods;
+use app\frontend\modules\order\models\PreOrder;
 use Illuminate\Container\Container;
 
 class OrderManager extends Container
 {
+    private $setting;
     public function __construct()
     {
         $this->bindModels();
@@ -25,17 +30,28 @@ class OrderManager extends Container
         $this->singleton('OrderService', function ($orderManager) {
             return new OrderService();
         });
+        $this->singleton(OrderOperationsCollector::class, function ($orderManager) {
+            return new OrderOperationsCollector();
+        });
+        $this->setting = config('shop-foundation.order');
+    }
 
-
+    public function setting($key = null)
+    {
+        return array_get($this->setting,$key);
     }
 
     private function bindModels()
     {
-        $this->bind('PreGeneratedOrderGoods', function ($orderManager, $attributes) {
-            return new PreGeneratedOrderGoods($attributes);
+
+        $this->bind('PreOrderGoods', function ($orderManager, $attributes) {
+            return new PreOrderGoods($attributes);
         });
-        $this->bind('PreGeneratedOrder', function ($orderManager, $attributes) {
-            return new PreGeneratedOrder($attributes);
+        $this->bind('PreOrder', function ($orderManager, $attributes) {
+            return new PreOrder($attributes);
+        });
+        $this->bind('PreOrderAddress', function ($orderManager, $attributes) {
+            return new PreOrderAddress($attributes);
         });
         // 订单model
         $this->bind('Order', function ($orderManager, $attributes) {
@@ -52,11 +68,18 @@ class OrderManager extends Container
         $this->bind('OrderDeduction', function ($orderManager, $attributes) {
             return new OrderDeduction($attributes);
         });
+        $this->bind('OrderDiscount', function ($orderManager, $attributes) {
+            return new OrderDiscount($attributes);
+        });
         $this->bind('OrderCoupon', function ($orderManager, $attributes) {
             return new OrderCoupon($attributes);
         });
         $this->bind('MemberCart', function ($orderManager, $attributes) {
             return new MemberCart($attributes);
         });
+        $this->bind('OrderAddress', function ($orderManager, $attributes) {
+            return new OrderAddress($attributes);
+        });
+
     }
 }

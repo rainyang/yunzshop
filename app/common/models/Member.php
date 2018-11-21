@@ -1,22 +1,28 @@
 <?php
+
 namespace app\common\models;
 
 use app\backend\models\BackendModel;
-use app\backend\modules\member\models\MemberRelation;
 use app\common\events\member\BecomeAgent;
-use app\common\services\Session;
-
 use app\common\repositories\OptionRepository;
 use app\common\services\PluginManager;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\MemberWechatModel;
+use app\frontend\repositories\MemberAddressRepository;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
+use Yunshop\AreaDividend\models\AreaDividendAgent;
+use Yunshop\Commission\models\Agents;
 use Yunshop\Gold\frontend\services\MemberCenterService;
+use Yunshop\Love\Common\Models\MemberShop;
 use Yunshop\Love\Common\Services\SetService;
+use Yunshop\Merchant\common\models\Merchant;
+use Yunshop\Micro\common\models\MicroShop;
 use Yunshop\Micro\common\services\MicroShop\GetButtonService;
 use Yunshop\StoreCashier\common\models\Store;
+use Yunshop\Supplier\admin\models\Supplier;
 use Yunshop\Supplier\common\services\VerifyButton;
+use Yunshop\TeamDividend\models\TeamDividendAgencyModel;
 
 /**
  * Created by PhpStorm.
@@ -24,9 +30,19 @@ use Yunshop\Supplier\common\services\VerifyButton;
  * Date: 21/02/2017
  * Time: 12:58
  */
+
+/**
+ * Class Member
+ * @package app\common\models
+ * @property int uid
+ * @property float credit1
+ */
 class Member extends BackendModel
 {
     public $table = 'mc_members';
+
+    public $timestamps = false;
+
 
     protected $guarded = ['credit1', 'credit2', 'credit3', 'credit4', 'credit5'];
 
@@ -39,8 +55,30 @@ class Member extends BackendModel
     protected $search_fields = ['mobile', 'uid', 'nickname', 'realname'];
 
     protected $primaryKey = 'uid';
+    protected $appends = ['avatar_image'];
 
-    public $timestamps = false;
+    public function bankCard()
+    {
+        return $this->hasOne('app\common\models\member\BankCard', 'member_id', 'uid');
+    }
+
+
+    public function pointLove()
+    {
+        return $this->hasOne('app\common\models\finance\PointLoveSet', 'member_id', 'uid');
+    }
+
+    //关联会员删除表 yz_member_del_log
+    public function hasOneDel()
+    {
+        return $this->hasOne('app\common\models\member\MemberDel', 'member_id', 'uid');
+    }
+
+
+    public function defaultAddress()
+    {
+        return $this->hasOne(app(MemberAddressRepository::class)->model(), 'uid', 'uid')->where('isdefault', 1);
+    }
 
     /**
      * 主从表1:1
@@ -62,6 +100,7 @@ class Member extends BackendModel
         return $this->hasOne('app\common\models\McMappingFans', 'uid', 'uid');
     }
 
+
     /**
      * 会员－订单1:1关系 todo 会员和订单不是一对多关系吗?
      *
@@ -71,6 +110,7 @@ class Member extends BackendModel
     {
         return $this->hasOne('app\common\models\Order', 'uid', 'uid');
     }
+
     /**
      * 会员－会员优惠券1:多关系
      *
@@ -81,20 +121,104 @@ class Member extends BackendModel
         return $this->hasOne(MemberCoupon::class, 'uid', 'uid');
     }
 
-    public function scopeOfUid($query,$uid)
+    /**
+     * 角色
+     *
+     * 会员-分销商
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function hasOneAgent()
     {
-        return $query->where('uid',$uid);
+        return $this->hasOne(Agents::class, 'member_id', 'uid');
     }
 
-    public function scopeSearchYzMember($query,$search)
+    /**
+     * 角色
+     *
+     * 会员-经销商
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function hasOneTeamDividend()
     {
-        return $query->whereHas('yzMember',function($query)use($search) {
+        return $this->hasOne(TeamDividendAgencyModel::class, 'uid', 'uid');
+    }
+
+    /**
+     * 角色
+     *
+     * 会员-区域代理
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function hasOneAreaDividend()
+    {
+        return $this->hasOne(AreaDividendAgent::class, 'member_id', 'uid');
+    }
+
+    /**
+     * 角色
+     *
+     * 会员-招商员
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function hasOneMerchant()
+    {
+        return $this->hasOne(Merchant::class, 'member_id', 'uid');
+    }
+
+    /**
+     * 角色
+     *
+     * 会员-招商中心
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function hasOneMerchantCenter()
+    {
+        return $this->hasOne(Merchant::class, 'member_id', 'uid');
+    }
+
+    /**
+     * 角色
+     *
+     * 会员-微店店主
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function hasOneMicro()
+    {
+        return $this->hasOne(MicroShop::class, 'member_id', 'uid');
+    }
+
+    /**
+     * 角色
+     *
+     * 会员-供应商
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function hasOneSupplier()
+    {
+        return $this->hasOne(Supplier::class, 'member_id', 'uid');
+    }
+
+    public function scopeOfUid($query, $uid)
+    {
+        return $query->where('uid', $uid);
+    }
+
+    public function scopeSearchYzMember($query, $search)
+    {
+        return $query->whereHas('yzMember', function ($query) use ($search) {
             return $query->search($search);
         });
     }
 
 
-    public function scopeSearch($query,$search)
+    public function scopeSearch($query, $search)
     {
         if ($search['member_id']) {
             $query->ofUid($search['member_id']);
@@ -119,7 +243,7 @@ class Member extends BackendModel
         return self::select(['*'])
             ->uniacid()
             ->where('uid', $member_id)
-            ->whereHas('yzMember', function($query) use($member_id) {
+            ->whereHas('yzMember', function ($query) use ($member_id) {
                 $query->where('member_id', $member_id)->whereNull('deleted_at');
             })
             ->with([
@@ -157,8 +281,8 @@ class Member extends BackendModel
     public static function getMembersId()
     {
         return static::uniacid()
-                    ->select (['uid'])
-                    ->get();
+            ->select(['uid'])
+            ->get();
     }
 
     /**
@@ -170,14 +294,16 @@ class Member extends BackendModel
     public static function getMemberById($member_id)
     {
         return self::uniacid()
-                ->where('uid', $member_id)
-                ->first();
+            ->where('uid', $member_id)
+            ->first();
     }
+
     public static function getMemberByUid($member_id)
     {
         return self::uniacid()
             ->where('uid', $member_id);
     }
+
     /**
      * 添加评论默认名称
      * @return mixed
@@ -202,7 +328,8 @@ class Member extends BackendModel
             ->first();
     }
 
-    public static function getOpenId($member_id){
+    public static function getOpenId($member_id)
+    {
         $data = self::getUserInfos($member_id)->first();
         if ($data) {
             $info = $data->toArray();
@@ -251,10 +378,10 @@ class Member extends BackendModel
     public function rules()
     {
         return [
-            'mobile' => 'regex:/^1[34578]\d{9}$/',
+            'mobile' => 'regex:/^1\d{10}$/',
             'realname' => 'required|between:2,10',
             //'avatar' => 'required',
-            'telephone' => 'regex:/^1[34578]\d{9}$/',
+            'telephone' => 'regex:/^1\d{10}$/',
         ];
     }
 
@@ -267,30 +394,18 @@ class Member extends BackendModel
     public static function createRealtion($member_id, $upperMemberId = NULL)
     {
         $model = MemberShopInfo::getMemberShopInfo($member_id);
+        $code_mid = self::getMemberIdForInviteCode();
+        $mid   = !is_null($code_mid) ? $code_mid : self::getMid();
+        $mid   = !is_null($upperMemberId) ? $upperMemberId : $mid;
 
-        if ($upperMemberId) {
-            event(new BecomeAgent($upperMemberId, $model));
-        } else {
-            event(new BecomeAgent(\YunShop::request()->mid, $model));
-        }
+        event(new BecomeAgent($mid, $model));
     }
 
     public static function getMid()
     {
-      /*
-        if (\YunShop::request()->mid) {
-            \Log::debug(sprintf('前端获取mid-%d', \YunShop::request()->mid));
-            return \YunShop::request()->mid;
-        } elseif (Session::get('client_url') && strpos(Session::get('client_url'), 'mid')) {
-            preg_match('/.+mid=(\d+).+/', Session::get('client_url'), $matches);
-            \Log::debug('截取mid', $matches[1]);
-            if (isset($matches) && !empty($matches[1])) {
-                return $matches[1];
-            }
-        }
-        */
+        $mid = \YunShop::request()->mid;
 
-        return \YunShop::request()->mid?:0;
+        return ($mid && ($mid != 'null' || $mid != 'undefined')) ? (int)$mid : 0;
     }
 
     /**
@@ -301,16 +416,14 @@ class Member extends BackendModel
      */
     public static function addPlugins(&$data = [])
     {
-        $plugin_class = new PluginManager(app(),new OptionRepository(),new Dispatcher(),new Filesystem());
+        $plugin_class = app('plugins');
 
-        // todo 后期需要重构
         if ($plugin_class->isEnabled('supplier')) {
             $data['supplier'] = VerifyButton::button();
         } else {
             $data['supplier'] = '';
         }
 
-        // todo 后期需要重构
         if ($plugin_class->isEnabled('micro')) {
             $micro_set = \Setting::get('plugin.micro');
             if ($micro_set['is_open_miceo'] == 0) {
@@ -322,32 +435,54 @@ class Member extends BackendModel
             $data['micro'] = '';
         }
 
-        // todo 后期需要重构
         if ($plugin_class->isEnabled('gold')) {
             $data['gold'] = MemberCenterService::button(\YunShop::app()->getMemberId());
         } else {
             $data['gold'] = '';
         }
 
-        // todo 后期需要重构
         if ($plugin_class->isEnabled('love')) {
             $data['love'] = [
-                'status'  => true,
-                'love_name'=> SetService::getLoveName(),
+                'status' => true,
+                'love_name' => SetService::getLoveName(),
             ];
         } else {
             $data['love'] = [
-                'status'    => false,
-                'love_name' => '0',
+                'status' => false,
+                'love_name' => '爱心值',
+            ];
+        }
+
+        if ($plugin_class->isEnabled('froze')) {
+            $data['froze'] = [
+                'status' => true,
+                'froze_name' => \Yunshop\Froze\Common\Services\SetService::getFrozeName(),
+            ];
+        } else {
+            $data['froze'] = [
+                'status' => false,
+                'froze_name' => '冻结币',
+            ];
+        }
+
+        if ($plugin_class->isEnabled('coin')) {
+            $data['coin'] = [
+                'status' => true,
+                'coin_name' => \Yunshop\Coin\Common\Services\SetService::getCoinName(),
+            ];
+        } else {
+            $data['coin'] = [
+                'status' => false,
+                'coin_name' => '华侨币',
             ];
         }
 
         if ($plugin_class->isEnabled('store-cashier')) {
             $store = Store::getStoreByUid(\YunShop::app()->getMemberId())->first();
-            if ($store) {
+            if ($store && $store->hasOneCashier->hasOneCashierGoods->is_open == 1) {
                 $data['cashier'] = [
                     'button_name' => '收银台',
-                    'api'         => 'plugin.store-cashier.frontend.cashier.center.index'
+                    'api' => 'plugin.store-cashier.frontend.cashier.center.index'
                 ];
             }
         } else {
@@ -357,16 +492,54 @@ class Member extends BackendModel
         if ($plugin_class->isEnabled('elive')) {
             $data['elive'] = [
                 'button_name' => '生活缴费',
-                'status'         => true
+                'status' => true
             ];
         } else {
             $data['elive'] = ['status' => false];
         }
 
-        //获取插件会员中心链接挂件
-        $plugins = \Config::get('member_center.plugins');
-        if (is_array($plugins)) {
-            $data = array_merge($data,$plugins);
+        if ($plugin_class->isEnabled('sign')) {
+            $data['sign'] = [
+                'status' => true,
+                'plugin_name' => trans('Yunshop\Sign::sign.plugin_name'),
+            ];
+        } else {
+            $data['sign'] = [
+                'status' => false,
+                'plugin_name' => '签到',
+            ];
+        }
+
+        //快递单插件开启
+        if ($plugin_class->isEnabled('courier')) {
+            $status = \Setting::get('courier.courier.radio');
+
+            $data['courier'] = [
+                'button_name' => '快递',
+                'status' => $status ? true : false
+            ];
+        } else {
+            $data['courier'] = [
+                'button_name' => '快递',
+                'status' => false
+            ];
+        }
+
+
+        //帮助中心插件开启控制
+        if ($plugin_class->isEnabled('help-center')) {
+            //dd(123);
+            $status = \Setting::get('help-center.status');
+
+            $data['help_center'] = [
+                'button_name' => '帮助中心',
+                'status' => $status ? true : false
+            ];
+        } else {
+            $data['help_center'] = [
+                'button_name' => '帮助中心',
+                'status' => false
+            ];
         }
 
         return $data;
@@ -381,23 +554,28 @@ class Member extends BackendModel
         $incomeModel = Income::getIncomes()->where('member_id', \YunShop::app()->getMemberId())->get();
 
         if ($incomeModel) {
-            return $incomeModel->sum('amount');
+            $amount = $incomeModel->sum('amount');
+            return number_format($amount, 2);
         }
 
-        return 0;
+        return number_format(0, 2);
     }
 
     /**
      * 会员3级关系链
      *
      * @param $uid
+     * @param string $mid
+     * @return bool
      */
-    public static function setMemberRelation($uid, $mid='')
+    public static function setMemberRelation($uid, $mid = '')
     {
+        $curr_arr = [];
+
         $model = MemberShopInfo::getMemberShopInfo($uid);
 
         if (empty($mid)) {
-            $mid   = 0;
+            $mid = 0;
         }
 
         //生成关系3级关系链
@@ -421,15 +599,30 @@ class Member extends BackendModel
                 }
             }
         } else {
-            $relation_str = '0,';
+            $relation_str = '0';
+        }
+
+        if ($relation_str != '0') {
+            $curr_arr = explode(',', rtrim($relation_str, ','));
+            $res_arr = array_unique($curr_arr);
+
+            if (count($res_arr) != count($curr_arr)) {
+                return false;
+            }
+
+            if (in_array($uid, $curr_arr)) {
+                return false;
+            }
         }
 
         $model->relation = $relation_str;
-
         $model->save();
+
+        return $curr_arr;
     }
 
-    public static function getOpenIdForType($member_id, $type = null){
+    public static function getOpenIdForType($member_id, $type = null)
+    {
         switch ($type) {
             case 2:
                 $mini_app = MemberMiniAppModel::getFansById($member_id);
@@ -447,12 +640,128 @@ class Member extends BackendModel
                 return $fans->openid;
         }
     }
+
     /**
      * 判断用户是否关注
+     *
      * @return bool
      */
     public function isFollow()
     {
         return isset($this->hasOneFans) && $this->hasOneFans->follow && !empty($this->hasOneFans->openid);
+    }
+
+    public function getMemberRole($builder)
+    {
+        $result = $builder;
+
+        if (app('plugins')->isEnabled('commission')) {
+            $result = $result->with([
+                'hasOneAgent'
+            ]);
+        }
+
+        if (app('plugins')->isEnabled('team-dividend')) {
+            $result = $result->with([
+                'hasOneTeamDividend'
+            ]);
+        }
+
+        if (app('plugins')->isEnabled('area-dividend')) {
+            $result = $result->with([
+                'hasOneAreaDividend' => function ($query) {
+                    return $query->where('status', 1);
+                }
+            ]);
+        }
+
+        if (app('plugins')->isEnabled('merchant')) {
+            $result = $result->with([
+                'hasOneMerchant',
+                'hasOneMerchantCenter'
+            ]);
+        }
+
+        if (app('plugins')->isEnabled('micro')) {
+            $result = $result->with([
+                'hasOneMicro'
+            ]);
+        }
+
+        if (app('plugins')->isEnabled('supplier')) {
+            $result = $result->with([
+                'hasOneSupplier' => function ($query) {
+                    return $query->where('status', 1);
+                }
+            ]);
+        }
+
+        return $result;
+    }
+
+    public static function getPid()
+    {
+        $pid = \YunShop::request()->pid;
+
+        return ($pid && ($pid != 'null' || $pid != 'undefined')) ? (int)$pid : 0;
+    }
+
+    //快递单获取会员信息
+    public static function getMemberInfo($uid)
+    {
+        return self::uniacid()->find($uid);
+    }
+
+    public static function deleted($uid)
+    {
+        self::uniacid()
+            ->where('uid', $uid)
+            ->delete();
+    }
+
+    public function getAvatarImageAttribute()
+    {
+        return $this->avatar ? yz_tomedia($this->avatar) : yz_tomedia(\Setting::get('shop.member.headimg'));
+    }
+
+    /**
+     * 邀请码会员
+     *
+     * @return null
+     */
+    public function getMemberIdForInviteCode()
+    {
+        if ($invite_code = self::hasInviteCode()) {
+            $ids = MemberShopInfo::getMemberIdForInviteCode($invite_code);
+
+            if (!is_null($ids)) {
+                return $ids[0];
+            }
+        }
+
+        return null;
+    }
+
+    public static function hasInviteCode()
+    {
+        $is_invite = intval(\Setting::get('shop.member.is_invite'));
+        $required = intval(\Setting::get('shop.member.required'));
+        $invite_code = \YunShop::request()->invite_code;
+
+        $member = MemberShopInfo::where('invite_code', $invite_code)->count();
+
+        if ($is_invite && $required && empty($invite_code)) {
+            return null;
+
+        }
+
+        if ($is_invite && isset($invite_code) && !empty($invite_code)) {
+
+            if ($is_invite && isset($invite_code) && !empty($member)) {
+                return $invite_code;
+            }
+
+            return null;
+        }
     }
 }

@@ -8,7 +8,15 @@
 
 namespace app\common\models;
 
-
+/**
+ * Class PayType
+ * @package app\common\models
+ * @property string code
+ * @property string setting_key
+ * @property string name
+ * @property int need_password
+ * @property int id
+ */
 class PayType extends BaseModel
 {
     public $table = 'yz_pay_type';
@@ -23,7 +31,13 @@ class PayType extends BaseModel
     const CASH_PAY = 8;//现金支付
     const WechatApp = 9;//现金支付
     const AlipayApp = 10;//现金支付
-
+    const STORE_PAY = 11;//门店
+    const PAY_YUN_WECHAT = 12;//微信-YZ
+    const WANMI_Pay = 13;//快捷
+    const ANOTHER_Pay = 14;//找人代付
+    const PAY_YUN_ALIPAY = 15;//支付宝-YZ
+    const REMITTANCE = 16;//转账
+    const COD = 17;//货到付款
 
     /**
      * 查询所有分类类型
@@ -33,5 +47,38 @@ class PayType extends BaseModel
     public static function get_pay_type_name($id)
     {
         return self::select('name')->where('id', $id)->value('name');
+    }
+
+    public static function fetchPayName()
+    {
+        return self::select('name')
+            ->groupBy('name')
+            ->get();
+    }
+
+    public static function fetchPayType($name)
+    {
+        return self::where('name', $name)
+            ->get();
+    }
+
+    public static function payTypeColl()
+    {
+        $coll = [];
+        $pay_names = PayType::fetchPayName();
+
+        if (!$pay_names->isEmpty()) {
+            foreach ($pay_names as $item) {
+                $pay_types = PayType::fetchPayType($item->name);
+
+                if (!$pay_types->isEmpty()) {
+                    foreach ($pay_types as $rows) {
+                        $coll[$item->name][] = $rows->id;
+                    }
+                }
+            }
+        }
+
+        return $coll;
     }
 }

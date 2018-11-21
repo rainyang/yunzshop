@@ -10,6 +10,7 @@
 namespace app\frontend\modules\goods\controllers;
 
 use app\common\components\ApiController;
+use app\common\exceptions\AppException;
 use Illuminate\Support\Facades\Cookie;
 use app\common\components\BaseController;
 use app\common\helpers\PaginationHelper;
@@ -29,10 +30,10 @@ class CategoryController extends BaseController
         $set = Setting::get('shop.category');
         $pageSize = 100;
         $parent_id = \YunShop::request()->parent_id ? \YunShop::request()->parent_id : '0';
-        $list = Category::getCategorys($parent_id)->where('enabled', 1)->paginate($pageSize)->toArray();
+        $list = Category::getCategorys($parent_id)->pluginId()->where('enabled', 1)->paginate($pageSize)->toArray();
         foreach ($list['data'] as &$item) {
-            $item['thumb'] = replace_yunshop(tomedia($item['thumb']));
-            $item['adv_img'] = replace_yunshop(tomedia($item['adv_img']));
+            $item['thumb'] = replace_yunshop(yz_tomedia($item['thumb']));
+            $item['adv_img'] = replace_yunshop(yz_tomedia($item['adv_img']));
         }
 
         if($list['data']){
@@ -48,19 +49,45 @@ class CategoryController extends BaseController
         $parent_id = intval(\YunShop::request()->parent_id);
         $list = Category::getChildrenCategorys($parent_id,$set)->paginate($pageSize)->toArray();
         foreach ($list['data'] as &$item) {
-            $item['thumb'] = replace_yunshop(tomedia($item['thumb']));
-            $item['adv_img'] = replace_yunshop(tomedia($item['adv_img']));
+            $item['thumb'] = replace_yunshop(yz_tomedia($item['thumb']));
+            $item['adv_img'] = replace_yunshop(yz_tomedia($item['adv_img']));
             foreach ($item['has_many_children'] as &$has_many_child) {
-                $has_many_child['thumb'] = replace_yunshop(tomedia($has_many_child['thumb']));
-                $has_many_child['adv_img'] = replace_yunshop(tomedia($has_many_child['adv_img']));
+                $has_many_child['thumb'] = replace_yunshop(yz_tomedia($has_many_child['thumb']));
+                $has_many_child['adv_img'] = replace_yunshop(yz_tomedia($has_many_child['adv_img']));
             }
         }
-        $set['cat_adv_img'] = replace_yunshop(tomedia($set['cat_adv_img']));
+        $set['cat_adv_img'] = replace_yunshop(yz_tomedia($set['cat_adv_img']));
         $list['set'] = $set;
         if($list){
             return $this->successJson('获取子分类数据成功!', $list);
         }
         return $this->errorJson('未检测到子分类数据!',$list);
+    }
+
+    public function searchGoodsCategory()
+    {
+        $set = Setting::get('shop.category');
+        $json_data = [];
+        $list = Category::getCategorys(0)->pluginId()->where('enabled', 1)->get()->toArray();
+        foreach ($list as &$parent) {
+            $parent['son'] = Category::getChildrenCategorys($parent['id'],$set)->get()->toArray();
+            foreach ($parent['son'] as &$value) {
+                $value['thumb'] = replace_yunshop(yz_tomedia($value['thumb']));
+                $value['adv_img'] = replace_yunshop(yz_tomedia($value['adv_img']));
+                if (!is_null($value['has_many_children'])) {
+                    foreach ($value['has_many_children'] as &$has_many_child) {
+                        $has_many_child['thumb'] = replace_yunshop(yz_tomedia($has_many_child['thumb']));
+                        $has_many_child['adv_img'] = replace_yunshop(yz_tomedia($has_many_child['adv_img']));
+                    }
+                } else {
+                    $value['has_many_children'] = [];
+                }
+            }
+            $parent['thumb'] = replace_yunshop(yz_tomedia($parent['thumb']));
+            $parent['adv_img'] = replace_yunshop(yz_tomedia($parent['adv_img']));
+        }
+
+        return $this->successJson('获取子分类数据成功!', $list);
     }
 
 //    public function getCategorySetting()
@@ -71,4 +98,21 @@ class CategoryController extends BaseController
 //        }
 //        return $this->errorJson('未检测到分类设置数据!',$set);
 //    }
+    /**
+     * 商城快速选购展示分类
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     */
+    public function fastCategory(){
+
+        $list = Category::select('id', 'name', 'thumb', 'adv_img', 'adv_url')->uniacid()->where('level',1)->where('parent_id',0)->get();
+        $list->map(function($category){
+            $category->childrens = Category::select('id', 'name', 'thumb', 'adv_img', 'adv_url')->where('level',2)->where('parent_id',$category->id)->get();
+        });
+
+        if($list->isEmpty()){
+            throw new AppException('未检测到分类数据');
+        }
+        return $this->successJson('获取分类成功!',['list'=>$list->toArray()]);
+    }
 }

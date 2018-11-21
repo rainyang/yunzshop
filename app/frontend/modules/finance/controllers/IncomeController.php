@@ -11,30 +11,45 @@ namespace app\frontend\modules\finance\controllers;
 
 use app\common\models\MemberShopInfo;
 use app\common\components\ApiController;
-use app\common\components\BaseController;
-use app\common\events\finance\AfterIncomeWithdrawEvent;
 use app\common\facades\Setting;
 use app\common\models\Income;
 use app\common\services\finance\IncomeService;
-use app\common\services\Pay;
-use app\common\services\PayFactory;
-use app\frontend\modules\finance\models\Withdraw;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Yunshop\Commission\models\CommissionOrder;
 
 class IncomeController extends ApiController
 {
     protected $pageSize = 20;
+
+    /**
+     * 收入提现页面，提现按钮控制，todo 需要修改 2018-06-29
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getIncomeWithdrawMode()
+    {
+        //finance.income.get-income-withdraw-mode
+
+        $incomeWithdrawMode = IncomeService::getIncomeWithdrawMode();
+
+        if ($incomeWithdrawMode) {
+            return $this->successJson('获取数据成功!', $incomeWithdrawMode);
+        }
+
+        return $this->errorJson('未检测到数据!');
+    }
+
+
+
     /**
      * @return \Illuminate\Http\JsonResponse
      */
     public function getIncomeCount()
     {
+        //todo 为了获取一个数据重复调用此方法，效率地下，需要重构 2018-01-05-YITIAN
         $status = \YunShop::request()->status;
         $incomeModel = Income::getIncomes()->where('member_id', \YunShop::app()->getMemberId())->get();
-        if ($status >= '0') {
+        if ($status !== null && $status >= '0') {
             $incomeModel = $incomeModel->where('status', $status);
         }
         $config = \Config::get('plugin');
@@ -117,6 +132,15 @@ class IncomeController extends ApiController
         if ($detailModel) {
             if ($detailModel->first()->detail != '') {
                 $data = $detailModel->first()->detail;
+
+                //TODO 防止数据库json未转义缺少斜杆 后期修改 时间段在2018年10月18号到10月30号出现乱码问题，原因：经销商和分销存入数据库未转义
+                $pattern1 = '/\\\u[\d|\w]{4}/';
+                preg_match($pattern1, $data, $exists);
+                if (empty($exists)) {
+                    $pattern2 = '/(u[\d|\w]{4})/';
+                    $data = preg_replace($pattern2, '\\\$1', $data);
+                }
+
                 return '{"result":1,"msg":"成功","data":' . $data . '}';
             }
             return '{"result":1,"msg":"成功","data":""}';
@@ -124,18 +148,43 @@ class IncomeController extends ApiController
         return $this->errorJson('未检测到数据!');
     }
 
+    public function getLangTitle($data)
+    {
+        $lang = Setting::get('shop.lang');
+        $langData = $lang[$lang['lang']];
+        $titleType = '';
+        foreach ($langData as $key => $item) {
+            $names = explode('_', $key);
+            foreach ($names as $k => $name) {
+                if ($k == 0) {
+                    $titleType = $name;
+                } else {
+                    $titleType .= ucwords($name);
+                }
+            }
+
+            if ($data == $titleType) {
+                return $item[$key];
+            }
+        }
+
+    }
+
+
     /**
      * @return \Illuminate\Http\JsonResponse
      */
     public function getSearchType()
     {
+
+
         $configs = \Config::get('income');
         foreach ($configs as $key => $config) {
             if ($config['type'] == 'balance') {
                 continue;
             }
             $searchType[] = [
-                'title' => $config['title'],
+                'title' => $this->getLangTitle($key) ? $this->getLangTitle($key) : $config['title'],
                 'type' => $config['type']
             ];
         }
@@ -152,7 +201,7 @@ class IncomeController extends ApiController
     {
         $incomeSet = \Setting::get('withdraw.income');
         $config = \Config::get('income');
-
+        Log::info('获取提现数据');
         foreach ($config as $key => $item) {
             if ($item['type'] == 'balance') {
                 continue;
@@ -175,7 +224,7 @@ class IncomeController extends ApiController
                 $servicetax = ($amount - $poundage) / 100 * $incomeSet['servicetax_rate'];
                 $servicetax = sprintf("%.2f", $servicetax);
             }
-
+Log::info($this->getLangTitle($key) ? $this->getLangTitle($key) : $item['title']);
             if (($amount > 0) && (bccomp($amount, $set[$key]['roll_out_limit'], 2) != -1)) {
                 $type_id = '';
                 foreach ($incomeModel->get() as $ids) {
@@ -184,7 +233,7 @@ class IncomeController extends ApiController
                 $incomeData[] = [
                     'type' => $item['class'],
                     'key_name' => $item['type'],
-                    'type_name' => $item['title'],
+                    'type_name' => $this->getLangTitle($key) ? $this->getLangTitle($key) : $item['title'],
                     'type_id' => rtrim($type_id, ','),
                     'income' => $incomeModel->sum('amount'),
                     'poundage' => $poundage,
@@ -199,7 +248,7 @@ class IncomeController extends ApiController
                 $incomeData[] = [
                     'type' => $item['class'],
                     'key_name' => $item['type'],
-                    'type_name' => $item['title'],
+                    'type_name' => $this->getLangTitle($key) ? $this->getLangTitle($key) : $item['title'],
                     'type_id' => '',
                     'income' => $incomeModel->sum('amount'),
                     'poundage' => $poundage,
@@ -218,50 +267,6 @@ class IncomeController extends ApiController
         return $this->errorJson('未检测到数据!');
     }
 
-    /**
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function saveWithdraw()
-    {
-        $config = \Config::get('income');
-        $withdrawData = \YunShop::request()->data;
-        if (!$withdrawData) {
-            return $this->errorJson('未检测到数据!');
-        }
-        if (!$this->getMemberAlipaySet() && $withdrawData['total']['pay_way'] == 'alipay') {
-            return $this->errorJson('您未配置支付宝信息，请先修改个人信息中支付宝信息');
-        }
-        $withdrawTotal = $withdrawData['total'];
-        Log::info("POST - Withdraw Total ", $withdrawTotal);
-        Log::info("POST - Withdraw Data ", $withdrawData);
-        /**
-         * 验证数据
-         */
-        foreach ($withdrawData['withdrawal'] as $item) {
-            $set[$item['key_name']] = \Setting::get('withdraw.' . $item['key_name']);
-
-            $incomes = Income::getIncomes()
-                ->where('member_id', \YunShop::app()->getMemberId())
-                ->where('status', '0')
-                ->whereIn('id', explode(',', $item['type_id']))
-                ->get();
-            $set[$item['key_name']]['roll_out_limit'] = $set[$item['key_name']]['roll_out_limit'] ? $set[$item['key_name']]['roll_out_limit'] : 0;
-
-            Log::info("roll_out_limit:");
-            Log::info($set[$item['key_name']]['roll_out_limit']);
-
-            if (bccomp($incomes->sum('amount'), $set[$item['key_name']]['roll_out_limit'], 2) == -1) {
-                return $this->errorJson('提现失败,' . $item['type_name'] . '未达到提现标准!');
-            }
-
-        }
-        Log::info("提现成功:提现成功");
-        $request = static::setWithdraw($withdrawData);
-        if ($request) {
-            return $this->successJson('提现成功!');
-        }
-        return $this->errorJson('提现失败!');
-    }
 
     /**
      * @param $type
@@ -292,79 +297,16 @@ class IncomeController extends ApiController
     {
         Log::info('setIncome');
         $request = Income::updatedWithdraw($type, $typeId, '1');
-    }
-
-    /**
-     * @param $type
-     * @param $typeId
-     */
-//    public function setCommissionOrder($type, $typeId)
-//    {
-//        Log::info('setCommissionOrder');
-//        $request = CommissionOrder::updatedCommissionOrderWithdraw($type, $typeId, '1');
-//    }
-
-    /**
-     * @param $withdrawData
-     * @param $withdrawTotal
-     * @return mixed
-     */
-    public function setWithdraw($withdrawData)
-    {
-        return DB::transaction(function () use ($withdrawData) {
-            return $this->_setWithdraw($withdrawData);
-        });
 
     }
 
-    public function _setWithdraw($withdrawData)
-    {
-        foreach ($withdrawData['withdrawal'] as $item) {
-            $data[] = [
-                'withdraw_sn' => Pay::setUniacidNo(\YunShop::app()->uniacid),
-                'uniacid' => \YunShop::app()->uniacid,
-                'member_id' => \YunShop::app()->getMemberId(),
-                'type' => $item['type'],
-                'type_name' => $item['type_name'],
-                'type_id' => $item['type_id'],
-                'amounts' => $item['income'],
-                'poundage' => $item['poundage'],
-                'poundage_rate' => $item['poundage_rate'],
-                'actual_amounts' => $item['income'] - $item['poundage'] - $item['servicetax'],
-                'actual_poundage' => $item['poundage'],
-                'servicetax' => $item['servicetax'],
-                'servicetax_rate' => $item['servicetax_rate'],
-                'actual_servicetax' => $item['servicetax'],
-                'pay_way' => $withdrawData['total']['pay_way'],
-                'status' => 0,
-                'created_at' => time(),
-                'updated_at' => time(),
-            ];
-            static::setIncomeAndOrder($item['type'], $item['type_id']);
-        }
-        $withdrawData['total']['member_id'] = \YunShop::app()->getMemberId();
-        $withdrawData['withdrawal'] = $data;
-        event(new AfterIncomeWithdrawEvent($withdrawData));
-        Log::info("Withdraw - data", $data);
-        return Withdraw::insert($data);
-    }
 
-    public function getIncomeWithdrawMode()
-    {
-        //finance.income.get-income-withdraw-mode
 
-        $incomeWithdrawMode = IncomeService::getIncomeWithdrawMode();
 
-        if ($incomeWithdrawMode) {
-            return $this->successJson('获取数据成功!', $incomeWithdrawMode);
-        }
-
-        return $this->errorJson('未检测到数据!');
-    }
 
     private function getMemberAlipaySet()
     {
-        $array = MemberShopInfo::select('alipay','alipayname')->where('member_id',\YunShop::app()->getMemberId())->first();
+        $array = MemberShopInfo::select('alipay', 'alipayname')->where('member_id', \YunShop::app()->getMemberId())->first();
         if ($array && $array['alipay'] && $array['alipayname']) {
             return true;
         }

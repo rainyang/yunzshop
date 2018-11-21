@@ -3,6 +3,7 @@
 @section('content')
 
 <div class="w1200 m0a">
+    @include('layouts.tabs')
     <form action="" method="post" class="form-horizontal" role="form" id="form1">
         <input type="hidden" name="c" value="site" />
         <input type="hidden" name="a" value="entry" />
@@ -71,11 +72,11 @@
                         <th width="4%">ID</th>
                         <th width="6%">排序</th>
                         <th width="16%">优惠券名称</th>
-                        <th width="16%">使用条件/优惠</th>
+                        <th width="12%">使用条件/优惠</th>
                         <th width="10%">已使用/已发出/剩余数量</th>
                         <th width="10%">领取中心</th>
                         <th width="15%">创建时间</th>
-                        <th width="18%">操作</th>
+                        <th width="22%">操作</th>
                     </tr>
                 </thead>
                 <tbody>

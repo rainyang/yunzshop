@@ -9,43 +9,32 @@
 namespace app\common\services;
 
 use app\backend\modules\member\models\MemberRelation;
+use app\common\models\finance\Balance;
 use app\common\models\PayOrder;
 use app\common\services\finance\BalanceChange;
 use app\frontend\modules\finance\services\BalanceService;
+use app\common\models\OrderPay;
+use app\common\models\PayType;
+use app\common\services\credit\ConstService;
 
 class CreditPay extends Pay
 {
-    public function __construct()
-    {
-    }
 
-        public function doPay($params = [])
+    public function doPay($params = [])
     {
         $operation = '余额订单支付 订单号：' . $params['order_no'];
-        $this->log($params['extra']['type'], '余额', $params['amount'], $operation,$params['order_no'], Pay::ORDER_STATUS_NON, \YunShop::app()->getMemberId());
+        $this->log($params['extra']['type'], '余额', $params['amount'], $operation, $params['order_no'], Pay::ORDER_STATUS_NON, \YunShop::app()->getMemberId());
 
-        self::payRequestDataLog($params['order_no'],$params['extra']['type'], '余额', json_encode($params));
-
-        /*$data = [
-            'money' => $params['amount'],
-            'serial_number' => $params['order_no'],
-            'operator' => $params['operator'],
-            'operator_id' => $params['operator_id'],
-            'remark' => $params['remark'],
-            'service_type' => $params['service_type']
-        ];
-
-        $result = (new BalanceService())->balanceChange($data);*/
+        self::payRequestDataLog($params['order_no'], $params['extra']['type'], '余额', json_encode($params));
 
         //切换新余额接口，原接口废弃
         $data = [
-            'member_id'     => \YunShop::app()->getMemberId(),
-            'remark'        => $params['remark'],
-            'source'        => $params['service_type'],
-            'relation'      => $params['order_no'],
-            'operator'      => $params['operator'],
-            'operator_id'   => $params['operator_id'],
-            'change_value'  => $params['amount']
+            'member_id' => \YunShop::app()->getMemberId(),
+            'remark' => $params['remark'] ?: '',
+            'relation' => $params['order_no'],
+            'operator' => $params['operator'] ?: 0,
+            'operator_id' => $params['operator_id'] ?: 0,
+            'change_value' => $params['amount']
         ];
         $result = (new BalanceChange())->consume($data);
 
@@ -67,9 +56,42 @@ class CreditPay extends Pay
 
     }
 
-    public function doRefund($out_trade_no, $totalmoney, $refundmoney)
+    public function doRefund($out_trade_no, $totalmoney, $refundmoney = "0")
     {
-        // TODO: Implement doRefund() method.
+
+        $pay_uid = OrderPay::select('uid')
+        ->where('pay_sn', $out_trade_no)
+        ->value('uid');
+
+        $return_rd = $this->createOrderRD();
+
+        $data = [
+            'member_id' => $pay_uid,
+            'remark'  => '余额订单退款 订单号:('.$out_trade_no.')退款单号：('. $return_rd.')退款总金额：' . $totalmoney,
+            'source' => ConstService::SOURCE_CANCEL_CONSUME,
+            'relation' => $return_rd,
+            'operator' => ConstService::OPERATOR_ORDER,
+            'operator_id' => $pay_uid,
+            'change_value' => $totalmoney
+        ];
+        $result = (new BalanceChange())->cancelConsume($data);
+    }
+
+
+    /**
+     * 生成唯一单号
+     * @return string
+     */
+    public function createOrderRD()
+    {
+        $ordersn = createNo('RD', true);
+        while (1) {
+            if (!Balance::ofOrderSn($ordersn)->first()) {
+                break;
+            }
+            $ordersn = createNo('RD', true);
+        }
+        return $ordersn;
     }
 
     public function doWithdraw($member_id, $out_trade_no, $money, $desc, $type)

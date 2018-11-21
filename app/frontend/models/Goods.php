@@ -9,24 +9,40 @@
 namespace app\frontend\models;
 
 use app\common\exceptions\AppException;
+use app\common\models\BaseModel;
 use app\common\models\GoodsDiscount;
+use app\frontend\models\goods\Privilege;
 use app\frontend\models\goods\Sale;
 use app\frontend\modules\member\services\MemberService;
 use app\common\models\Coupon;
+use Illuminate\Database\Eloquent\Builder;
+use Yunshop\StoreCashier\common\models\StoreGoods;
+use Yunshop\Supplier\admin\models\SupplierGoods;
 
+/**
+ * Class Goods
+ * @package app\frontend\models
+ * @property int id
+ * @property string goods_sn
+ * @property string title
+ * @property string thumb
+ * @property float price
+ * @property float weight
+ * @property int is_plugin
+ * @property int plugin_id
+ * @property Sale hasOneSale
+ * @property GoodsOption has_option
+ * @property Privilege hasOnePrivilege
+ * @property SupplierGoods supplierGoods
+ * @property StoreGoods storeGoods
+ * @method static self search(array $search)
+ */
 class Goods extends \app\common\models\Goods
 {
     public $appends = ['vip_price'];
+    public $hidden = ['content','description'];
     protected $vipDiscountAmount;
-    /**
-     * 获取商品最终价格
-     * @return mixed
-     */
-    public function getFinalPriceAttribute()
-    {
-        // 商品价格 - 等级折扣金额
-        return $this->price - $this->getVipDiscountAmount();
-    }
+
     public function hasOneOptions()
     {
         return $this->hasOne(GoodsOption::class);
@@ -36,6 +52,7 @@ class Goods extends \app\common\models\Goods
      * 缓存等级折金额
      * @param null $price
      * @return int|mixed
+     * @throws AppException
      */
     public function getVipDiscountAmount($price = null){
         if(isset($this->vipDiscountAmount)){
@@ -48,29 +65,33 @@ class Goods extends \app\common\models\Goods
      * 获取等级折扣金额
      * @param null $price
      * @return int|mixed
+     * @throws AppException
      */
     protected function _getVipDiscountAmount($price = null){
-        $result = 0;
 
         if(!isset($price)){
             $price = $this->price;
         }
-        $member = MemberService::getCurrentMemberModel();
         /**
          *会员等级折扣
          * @var $goodsDiscount GoodsDiscount
          */
-        $goodsDiscount = $this->hasManyGoodsDiscount()->where('level_id', $member->yzMember->level_id)->first();
+
+        $goodsDiscount = $this->hasManyGoodsDiscount->where('level_id', Member::current()->yzMember->level_id)->first();
+
         if (isset($goodsDiscount)) {
             $result = $goodsDiscount->getAmount($price);
+        }else{
+            $result = (new GoodsDiscount())->getAmount($price);
         }
 
         return $result;
     }
+
     /**
      * 获取商品的会员价格
-     * @author shenyang
-     * @return float
+     * @return float|int|mixed
+     * @throws AppException
      */
     public function getVipPriceAttribute()
     {
@@ -79,10 +100,10 @@ class Goods extends \app\common\models\Goods
 
     /**
      * 商品数据完整新验证
-     * @param null $num
+     * @param int $total
      * @throws AppException
      */
-    public function generalValidate($num = null)
+    public function generalValidate($total)
     {
         if (empty($this->status)) {
             throw new AppException('(ID:' . $this->id . ')商品已下架');
@@ -94,7 +115,7 @@ class Goods extends \app\common\models\Goods
 //            throw new AppException('(ID:' . $this->id . ')商品配送信息数据已损坏');
 //        }
         if (isset($this->hasOnePrivilege)) {
-            $this->hasOnePrivilege->validate($num);
+            $this->hasOnePrivilege->validate($total);
         }
     }
 
@@ -103,7 +124,7 @@ class Goods extends \app\common\models\Goods
         return $this->hasOne(Sale::class);
     }
 
-    public function scopeSearch($query, $filters)
+    public function scopeSearch(BaseModel $query, $filters)
     {
         $query->uniacid();
 
@@ -129,7 +150,7 @@ class Goods extends \app\common\models\Goods
                     }
                     break;
                 case 'status':
-                    $query->where(status, $value);
+                    $query->where('status', $value);
                     break;
                 case 'min_price':
                     $query->where('price', '>', $value);

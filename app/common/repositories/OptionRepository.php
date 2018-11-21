@@ -46,7 +46,7 @@ class OptionRepository extends Repository
      * @param  raw $raw return raw value without convertion
      * @return mixed
      */
-    public function get($key, $default = null, $raw = false)
+    public function get($key = null, $default = null, $raw = false)
     {
         if (!$this->has($key) && Arr::has(config('options'), $key)) {
             $this->set($key, config("options.$key"));
@@ -202,6 +202,11 @@ class OptionRepository extends Repository
     public function editEnabledById($id, $enabled)
     {
         return DB::table('yz_options')->where('id', $id)->update(['enabled' => $enabled]);
+    }
+
+    public function editTopShowById($id, $enabled)
+    {
+        return DB::table('yz_options')->where('uniacid', \YunShop::app()->uniacid)->where('id', $id)->update(['top_show' => $enabled]);
     }
 
     public function insertPlugin($pluginData)

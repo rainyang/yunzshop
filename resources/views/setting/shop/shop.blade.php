@@ -28,19 +28,13 @@
             return true;
 
         }
+
     </script>
 
 <div class="w1200 m0a">
 <div class="rightlist">
-    <div class="right-titpos">
-        <ul class="add-snav">
-            <li class="active"><a href="#">商城设置</a></li>
-        </ul>
-    </div>
 
-<!-- 新增加右侧顶部三级菜单 -->
-    @include('setting.shop.tabs')
-<!-- 新增加右侧顶部三级菜单结束 -->
+    @include('layouts.tabs')
     <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" id="shopform" >
         <div class="panel panel-default">
             <div class='panel-body'>
@@ -74,11 +68,10 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">美恰客服</label>
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">客服链接</label>
                     <div class="col-sm-9 col-xs-12">
                         <input type="text" name="shop[cservice]" class="form-control" value="{{ $set['cservice']}}" />
-                        <span class='help-block'>请到 <a href='https://meiqia.com/' target='_blank'>美恰</a> 获取聊天连接地址<br>如:https://eco-api.meiqia.com/dist/standalone.html?eid=9669
-
+                        <span class='help-block'>支持任何客服系统的聊天链接，例如QQ、企点、53客服、百度商桥等
                     </div>
                 </div>
                  <div class="form-group">
@@ -98,14 +91,14 @@
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额字样</label>
                     <div class="col-sm-9 col-xs-12">
                         <input type="text" name="shop[credit]" class="form-control" value="{{ $set['credit']}}" />
-                        <span class='help-block'>商城内余额字样的自定义功能</span>
+                        <span class='help-block'>会员中心页面余额字样的自定义功能</span>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">积分字样</label>
                     <div class="col-sm-9 col-xs-12">
                         <input type="text" name="shop[credit1]" class="form-control" value="{{ $set['credit1']}}" />
-                        <span class='help-block'>商城内积分字样的自定义功能</span>
+                        <span class='help-block'>会员中心页面积分字样的自定义功能</span>
                     </div>
                 </div>
 

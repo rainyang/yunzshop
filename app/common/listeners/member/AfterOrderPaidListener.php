@@ -15,8 +15,9 @@ class AfterOrderPaidListener
 {
     public function handle(AfterOrderPaidEvent $event)
     {
-        \Log::debug('AfterOrderPaidEvent');
         $model = $event->getOrderModel();
+
+        \Log::debug('AfterOrderPaidEvent'.$model->id);
 
         \Log::debug('推广资格-' . $model->uid);
         MemberRelation::checkOrderPay($model->uid);

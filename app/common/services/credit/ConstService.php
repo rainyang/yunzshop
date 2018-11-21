@@ -52,13 +52,15 @@ class ConstService
 
     const SOURCE_RECHARGE_MINUS    = 11; //后台扣除
 
+    const SOURCE_RECHARGE_CODE    = 92; //充值码充值
+
 
     protected static $title = '余额';
 
 
 
 
-    public function __construct($title)
+    public function __construct($title = '')
     {
         static::$title              = $title ?: static::$title;
     }
@@ -77,7 +79,8 @@ class ConstService
             self::SOURCE_CANCEL_DEDUCTION      => '抵扣取消',
             self::SOURCE_CANCEL_AWARD          => '奖励取消',
             self::SOURCE_CANCEL_CONSUME        => '消费取消',
-            self::SOURCE_RECHARGE_MINUS        => '后台扣除'
+            self::SOURCE_RECHARGE_MINUS        => '后台扣除',
+            self::SOURCE_RECHARGE_CODE         => '充值码充值'
         ];
     }
 

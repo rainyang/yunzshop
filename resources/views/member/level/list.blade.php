@@ -31,7 +31,7 @@
                                 <td>
                                     @if(empty($shopSet['level_type']))
                                         @if($list->order_money > 0)
-                                            完成订单金额满{{ $list->order_money }}元
+                                            订单金额满{{ $list->order_money }}元
                                         @else
                                             不自动升级
                                         @endif
@@ -39,7 +39,7 @@
 
                                     @if($shopSet['level_type'] == 1)
                                         @if($list->order_count > 0)
-                                            完成订单数量满{{ $list->order_count }}个
+                                            订单数量满{{ $list->order_count }}个
                                         @else
                                             不自动升级
                                         @endif

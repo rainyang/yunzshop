@@ -44,7 +44,22 @@ class UpdateVersion extends Command
 
     public function runMigrate()
     {
+        //更新商城数据表
         \Artisan::call('migrate',['--force' => true]);
+
+        //更新插件数据表
+        $plugins = $this->argument('version');
+        \Log::debug('---plugins---', $plugins);
+        if (!is_null($plugins)) {
+            foreach ($plugins as $p) {
+                $path = 'plugins/' . $p . '/migrations';
+
+                if(is_dir(base_path($path) )){
+                    \Artisan::call('migrate',['--force' => true,'--path' => $path]);
+                }
+            }
+        }
+
         //更新数据表
         $versionMigration = 'database/migrations/' . $username = $this->argument('version');
         if(is_dir(base_path($versionMigration) )){

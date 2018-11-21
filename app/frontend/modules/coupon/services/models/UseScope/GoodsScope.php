@@ -3,8 +3,8 @@
 namespace app\frontend\modules\coupon\services\models\UseScope;
 
 use app\common\exceptions\AppException;
-use app\frontend\modules\orderGoods\models\PreGeneratedOrderGoods;
-use app\frontend\modules\orderGoods\models\PreGeneratedOrderGoodsGroup;
+use app\frontend\modules\orderGoods\models\PreOrderGoods;
+use app\frontend\modules\orderGoods\models\PreOrderGoodsCollection;
 use Illuminate\Support\Collection;
 
 /**
@@ -23,12 +23,13 @@ class GoodsScope extends CouponUseScope
      */
     protected function _getOrderGoodsOfUsedCoupon()
     {
-        $orderGoods = $this->coupon->getPreGeneratedOrder()->getOrderGoodsModels()->filter(
+        $orderGoods = $this->coupon->getPreOrder()->orderGoods->filter(
             function ($orderGoods) {
                 /**
-                 * @var $orderGoods PreGeneratedOrderGoods
+                 * @var $orderGoods PreOrderGoods
                  */
-                return in_array($orderGoods->getGoodsId(), $this->coupon->getMemberCoupon()->belongsToCoupon->goods_ids);
+                debug_log()->coupon("优惠券{$this->coupon->getMemberCoupon()->id}","商品id{$orderGoods->goods_id},优惠券支持品商品id{$this->coupon->getMemberCoupon()->belongsToCoupon->goods_ids}");
+                return in_array($orderGoods->goods_id, $this->coupon->getMemberCoupon()->belongsToCoupon->goods_ids);
             });
         if ($orderGoods->unique('is_plugin')->count() > 1) {
             throw new AppException('自营商品与第三方商品不能共用一张优惠券');

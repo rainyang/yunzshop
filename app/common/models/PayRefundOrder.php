@@ -10,6 +10,11 @@ namespace app\common\models;
 
 use app\backend\models\BackendModel;
 
+/**
+ * Class PayRefundOrder
+ * @package app\common\models
+ * @property int status
+ */
 class PayRefundOrder extends BackendModel
 {
     public $table = 'yz_pay_refund_order';

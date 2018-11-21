@@ -23,7 +23,7 @@
                     <!--div class='form-control-static'>{$item['rolename']}</div-->
                 </div>
             </div>
-            <div class="form-group">1
+            <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">状态</label>
                 <div class="col-sm-9 col-xs-12">
                     <label class='radio-inline'>

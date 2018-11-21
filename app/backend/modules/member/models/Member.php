@@ -8,9 +8,67 @@
 
 namespace app\backend\modules\member\models;
 
+use app\common\models\member\MemberDel;
+use app\common\traits\MemberTreeTrait;
+use Illuminate\Support\Facades\DB;
+
 class Member extends \app\common\models\Member
 {
+    use MemberTreeTrait;
+
     static protected $needLog = true;
+
+    /**
+     * 删除会员信息
+     *
+     * @param $id
+     */
+    public static function deleteMemberInfoById($id)
+    {
+        return self::uniacid()
+            ->where('uid', $id)
+            ->delete();
+    }
+
+    /**
+     * 更新删除会员信息
+     *
+     * @param $id
+     */
+    public static function UpdateDeleteMemberInfoById($id)
+    {
+        $member_model = Member::find($id);
+        MemberDel::insertData($member_model);
+        $member_model->email = '';
+        $member_model->createtime = 0;
+        $member_model->nickname = '';
+        $member_model->avatar = '';
+        $member_model->mobile = '';
+        $member_model->email = '';
+        $member_model->gender = 0;
+        $member_model->nationality = '';
+        $member_model->resideprovince = '';
+        $member_model->residecity = '';
+        $member_model->salt = '';
+        $member_model->password = '';
+        $member_model->credit1 = 0;
+        $member_model->credit2 = 0;
+        $member_model->credit3 = 0;
+        $member_model->credit4 = 0;
+        $member_model->credit5 = 0;
+        $member_model->credit6 = 0;
+
+        if ($member_model->save()) {
+            return $member_model->uid;
+        } else {
+            return false;
+        }
+    }
+
+    public function address()
+    {
+        return $this->hasMany('app\backend\modules\member\models\MemberAddress', 'uid', 'uid');
+    }
 
     /**
      * @param $keyWord
@@ -20,6 +78,9 @@ class Member extends \app\common\models\Member
     {
         return self::uniacid()
             ->searchLike($keyWord)
+            ->whereHas('yzMember', function ($query) {
+                $query->whereNull('deleted_at');
+            })
             ->with('yzMember')
             ->with('hasOneFans')
             ->get();
@@ -48,7 +109,7 @@ class Member extends \app\common\models\Member
                         return $query3->select(['uid', 'avatar', 'nickname'])->uniacid();
                     }]);
             }, 'hasOneFans' => function ($query4) {
-                return $query4->select(['uid', 'follow as followed'])->uniacid();
+                return $query4->select(['uid', 'openid', 'follow as followed'])->uniacid();
             }, 'hasOneOrder' => function ($query5) {
                 return $query5->selectRaw('uid, count(uid) as total, sum(price) as sum')
                     ->uniacid()
@@ -74,7 +135,7 @@ class Member extends \app\common\models\Member
                 $query->whereNull('deleted_at');
             })
             ->with(['yzMember' => function ($query) {
-                return $query->select(['member_id', 'parent_id', 'is_agent', 'group_id', 'level_id', 'is_black', 'alipayname', 'alipay', 'content', 'status', 'custom_value', 'validity', 'member_form'])->where('is_black', 0)
+                return $query->select(['member_id', 'parent_id', 'is_agent', 'group_id', 'level_id', 'is_black', 'alipayname', 'alipay', 'content', 'status', 'custom_value', 'validity', 'member_form', 'withdraw_mobile','wechat'])->where('is_black', 0)
                     ->with(['group' => function ($query1) {
                         return $query1->select(['id', 'group_name']);
                     }, 'level' => function ($query2) {
@@ -89,6 +150,72 @@ class Member extends \app\common\models\Member
                     ->uniacid()
                     ->where('status', 3)
                     ->groupBy('uid');
+            }
+            ])
+            ->first();
+    }
+
+    /**
+     * 获取会员信息（不判断黑名单）
+     * @param $id
+     * @return mixed
+     */
+    public static function getMemberInfoBlackById($id)
+    {
+        return self::select(['uid', 'avatar', 'nickname', 'realname', 'mobile', 'createtime',
+            'credit1', 'credit2'])
+            ->uniacid()
+            ->where('uid', $id)
+            ->whereHas('yzMember', function ($query) {
+                $query->whereNull('deleted_at');
+            })
+            ->with(['yzMember' => function ($query) {
+                return $query->select(['member_id', 'parent_id', 'is_agent', 'group_id', 'level_id', 'is_black', 'alipayname', 'alipay', 'content', 'status', 'custom_value', 'validity', 'member_form', 'withdraw_mobile','wechat'])
+                    ->with(['group' => function ($query1) {
+                        return $query1->select(['id', 'group_name']);
+                    }, 'level' => function ($query2) {
+                        return $query2->select(['id', 'level', 'level_name']);
+                    }, 'agent' => function ($query3) {
+                        return $query3->select(['uid', 'avatar', 'nickname']);
+                    }]);
+            }, 'hasOneFans' => function ($query2) {
+                return $query2->select(['uid', 'follow as followed']);
+            }, 'hasOneOrder' => function ($query5) {
+                return $query5->selectRaw('uid, count(uid) as total, sum(price) as sum')
+                    ->uniacid()
+                    ->where('status', 3)
+                    ->groupBy('uid');
+            }
+            ])
+            ->first();
+    }
+
+    /**
+     * 获取会员基本信息
+     *
+     * @param $id
+     * @return mixed
+     */
+    public static function getMemberBaseInfoById($id)
+    {
+        return self::select(['uid', 'avatar', 'nickname', 'realname', 'mobile', 'createtime',
+            'credit1', 'credit2'])
+            ->uniacid()
+            ->where('uid', $id)
+            ->whereHas('yzMember', function ($query) {
+                $query->whereNull('deleted_at');
+            })
+            ->with(['yzMember' => function ($query) {
+                return $query->select(['member_id', 'parent_id', 'is_agent', 'group_id', 'level_id', 'is_black', 'alipayname', 'alipay', 'content', 'status', 'custom_value', 'validity', 'member_form', 'withdraw_mobile','wechat'])->where('is_black', 0)
+                    ->with(['group' => function ($query1) {
+                        return $query1->select(['id', 'group_name']);
+                    }, 'level' => function ($query2) {
+                        return $query2->select(['id', 'level', 'level_name']);
+                    }, 'agent' => function ($query3) {
+                        return $query3->select(['uid', 'avatar', 'nickname']);
+                    }]);
+            }, 'hasOneFans' => function ($query2) {
+                return $query2->select(['uid', 'follow as followed', 'unionid']);
             }
             ])
             ->first();
@@ -175,11 +302,11 @@ class Member extends \app\common\models\Member
         }
 
         //余额区间搜索
-        if ($parame['min_credit2']) {
-            $result = $result->where($credit, '>', $parame['min_credit2']);
+        if ($parame['search']['min_credit2']) {
+            $result = $result->where($credit, '>', $parame['search']['min_credit2']);
         }
-        if ($parame['max_credit2']) {
-            $result = $result->where($credit, '<', $parame['max_credit2']);
+        if ($parame['search']['max_credit2']) {
+            $result = $result->where($credit, '<', $parame['search']['max_credit2']);
         }
 
         if ($parame['search']['followed'] != '') {
@@ -190,7 +317,7 @@ class Member extends \app\common\models\Member
 
 
         $result = $result->with(['yzMember' => function ($query) {
-            return $query->select(['member_id', 'parent_id', 'inviter', 'is_agent', 'group_id', 'level_id', 'is_black'])
+            return $query->select(['member_id', 'parent_id', 'inviter', 'is_agent', 'group_id', 'level_id', 'is_black', 'withdraw_mobile'])
                 ->with(['group' => function ($query1) {
                     return $query1->select(['id', 'group_name'])->uniacid();
                 }, 'level' => function ($query2) {
@@ -205,6 +332,9 @@ class Member extends \app\common\models\Member
                 ->uniacid()
                 ->groupBy('uid');
         }]);
+
+        $result->leftJoin('yz_member_del_log', 'mc_members.uid', '=', 'yz_member_del_log.member_id')->whereNull('yz_member_del_log.member_id');
+
 
         return $result;
     }
@@ -283,7 +413,7 @@ class Member extends \app\common\models\Member
         }
 
         $query->whereHas('yzMember', function ($query) use ($request) {
-            $query->where('parent_id', $request->id);
+            $query->where('parent_id', $request->id)->where('inviter', 1);
 
             if ($request->aid) {
                 $query->where('member_id', $request->aid);
@@ -316,5 +446,47 @@ class Member extends \app\common\models\Member
             ->orderBy('uid', 'desc');
 
         return $query;
+    }
+
+    public static function getQueueAllMembersInfo($uniacid, $limit = 0, $offset = 0)
+    {
+        $result = self::select(['mc_members.uid', 'mc_mapping_fans.openid', 'mc_members.uniacid'])
+                   ->join('yz_member', 'mc_members.uid', '=', 'yz_member.member_id')
+                   ->join('mc_mapping_fans', 'mc_members.uid', '=', 'mc_mapping_fans.uid')
+                   ->where('mc_members.uniacid', $uniacid);
+
+        if ($limit > 0) {
+            $result = $result->offset($offset)->limit($limit)->orderBy('mc_members.uid', 'desc');
+        }
+
+        return $result;
+    }
+
+    public static function getAllMembersInfosByQueue($uniacid, $limit = 0, $offset = 0)
+    {
+        $result = self::select(['mc_members.uid', 'mc_members.uniacid'])
+            ->join('yz_member', 'mc_members.uid', '=', 'yz_member.member_id')
+            ->where('mc_members.uniacid', $uniacid);
+
+        if ($limit > 0) {
+            $result = $result->offset($offset)->limit($limit)->orderBy('mc_members.uid', 'asc');
+        }
+
+        return $result;
+    }
+
+    /**
+     * 获取待处理的原始节点数据
+     *
+     * 必须实现
+     *
+     * return \Illuminate\Support\Collection
+     */
+    public function getTreeAllNodes($uniacid)
+    {
+        return self::select(['yz_member.member_id', 'yz_member.parent_id'])
+            ->join('yz_member', 'mc_members.uid', '=', 'yz_member.member_id')
+            ->where('mc_members.uniacid', $uniacid)
+            ->get();
     }
 }

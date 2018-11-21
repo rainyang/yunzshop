@@ -1,5 +1,5 @@
 <!-- 供货商end -->
-<link href="{{static_url('yunshop/goods/goods.css')}}" media="all" rel="stylesheet" type="text/css"/>
+{{--<link href="{{static_url('yunshop/goods/goods.css')}}" media="all" rel="stylesheet" type="text/css"/>--}}
 
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">排序</label>
@@ -18,12 +18,21 @@
 
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span>*</span>商品分类</label>
-    <div class="col-sm-8 col-xs-12">
+    <div class="col-sm-8 col-xs-12 category-container">
 
         {!!$catetory_menus!!}
 
     </div>
+
 </div>
+
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+        <div class="btn btn-info col-sm-2 col-xs-2 @if (isset($type) && $type == 'edit') editCategory @else plusCategory @endif">
+            添加分类
+        </div>
+</div>
+
 
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">品牌</label>
@@ -79,7 +88,7 @@
 
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span >*</span>{{$lang['mainimg']}}</label>
-    <div class="col-sm-9 col-xs-12 detail-logo">
+    <div class="col-sm-9 col-xs-12 col-md-6 detail-logo">
         {!! app\common\helpers\ImageHelper::tplFormFieldImage('goods[thumb]', $goods['thumb']) !!}
         <span class="help-block">建议尺寸: 640 * 640 ，或正方型图片 </span>
         @if (!empty($goods['thumb']))
@@ -91,7 +100,7 @@
 </div>
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">其他图片</label>
-    <div class="col-sm-9 col-xs-12">
+    <div class="col-sm-9  col-md-6 col-xs-12">
 
         {!! app\common\helpers\ImageHelper::tplFormFieldMultiImage('goods[thumb_url]',$goods['thumb_url']) !!}
             <span class="help-block">建议尺寸: 640 * 640 ，或正方型图片 </span>
@@ -143,8 +152,8 @@
 
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">重量</label>
-    <div class="col-sm-6 col-xs-12">
-        <div class="input-group">
+    <div class="col-sm-6  col-xs-12">
+        <div class="input-group col-md-3">
             <input type="text" name="goods[weight]" id="weight" class="form-control" value="{{$goods['weight']?$goods['weight']:0}}" />
             <span class="input-group-addon">克</span>
         </div>
@@ -155,11 +164,22 @@
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span >*</span>库存</label>
     <div class="col-sm-6 col-xs-12">
-        <div class="input-group form-group col-sm-3">
+        <div class="input-group  col-md-3 form-group col-sm-3">
             <input type="text" name="goods[stock]" id="total" class="form-control" value="{{$goods['stock']}}" />
             <span class="input-group-addon">件</span>
         </div>
         <span class="help-block">商品的剩余数量, 如启用多规格或为虚拟卡密产品，则此处设置无效，请移至“商品规格”或“虚拟物品插件”中设置</span>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span >*</span>虚拟销量</label>
+    <div class="col-sm-6 col-xs-12">
+        <div class="input-group  col-md-3 form-group col-sm-3">
+            <input type="text" onkeyup="value=value.replace(/[^\d]/g,'')" name="goods[virtual_sales]" id="total" class="form-control" value="{{$goods['virtual_sales']}}" />
+            <span class="input-group-addon">件</span>
+        </div>
+        <span class="help-block">前端真实销量 = 虚拟销量 + 真实销量</span>
     </div>
 </div>
 
@@ -175,6 +195,7 @@
     </div>
 </div>
 
+
 <!-->
 @section('isputaway')
 <div class="form-group">
@@ -189,11 +210,45 @@
 </div>
 @show
 
-@section('js')
-    <script>
-require(['select2'],function(){
+<script type="text/javascript">
     $('#brand').select2();
-})
 
+    $('.plusCategory').click(function () {
+        appendHtml = $(this).parents().find('.tpl-category-container').html();
+
+        $(this).parents().find('.category-container').append('<div class="row row-fix tpl-category-container">' + appendHtml + '<div>');
+    });
+
+    $('.editCategory').click(function () {
+        appendHtml = $(this).parents().find('.tpl-category-container').html();
+
+        $(this).parents().find('.category-container').append('<div class="row row-fix tpl-category-container">' + appendHtml + '<div>');
+        $('.category-container').children(':last').children().children('select').find("option[value='0']").attr("selected",true)
+        var seconde_category = $('.category-container').children(':last').children().children('select:eq(1)');
+        var third_category = $('.category-container').children(':last').children().children('select:eq(2)');
+
+        if (seconde_category.length > 0) {
+            seconde_category.children(':gt(0)').remove();
+        }
+        if (third_category.length > 0) {
+            third_category.children(':gt(0)').remove();
+        }
+    });
+
+    $(document).on('click', '.delCategory', function () {
+        var count = $(this).parents('.tpl-category-container').siblings('.tpl-category-container').length;
+
+        if (count >= 1) {
+            $(this).parents('.tpl-category-container').remove();
+        } else {
+            alert('商品分类必选');
+        }
+    });
 </script>
- @stop
+{{--@section('js')--}}
+    {{--<script>--}}
+        {{--require(['select2'],function() {--}}
+            {{--$('#brand').select2();--}}
+        {{--})--}}
+    {{--</script>--}}
+ {{--@stop--}}

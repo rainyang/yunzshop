@@ -15,18 +15,25 @@ use app\common\models\MemberGroup;
 use app\common\models\MemberShopInfo;
 use app\common\services\Session;
 use app\frontend\models\McGroupsModel;
-use app\frontend\modules\member\models\McMappingFansModel;
+use app\frontend\modules\member\models\MemberMiniAppModel;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\MemberUniqueModel;
+use app\frontend\modules\member\models\MemberWechatModel;
 use app\frontend\modules\member\models\smsSendLimitModel;
 use app\frontend\modules\member\models\SubMemberModel;
 use Illuminate\Support\Facades\Cookie;
 
 class MemberService
 {
-
+    /**
+     * @var \app\frontend\models\Member
+     */
     private static $_current_member;
 
+    /**
+     * @return \app\frontend\models\Member
+     * @throws AppException
+     */
     public static function getCurrentMemberModel(){
         if(isset(self::$_current_member)){
             return self::$_current_member;
@@ -39,8 +46,15 @@ class MemberService
         return self::$_current_member;
     }
 
+    /**
+     * @param $member_id
+     * @throws AppException
+     */
     public static function setCurrentMemberModel($member_id)
     {
+        /**
+         * @var \app\frontend\models\Member $member
+         */
         $member = \app\frontend\models\Member::find($member_id);
         if(!isset($member)){
             throw new AppException('(ID:'.$member_id.')用户不存在');
@@ -68,11 +82,11 @@ class MemberService
         if ($confirm_password == '') {
             $data = array(
                 'mobile' => $mobile,
-                'password' => $password
+                'password' => $password,
             );
             $rules = array(
-                'mobile' => 'regex:/^1[34578]\d{9}$/',
-                'password' => 'required|min:6|regex:/^[A-Za-z0-9@!#\$%\^&\*]+$/'
+                'mobile' => 'regex:/^1\d{10}$/',
+                'password' => 'required|min:6|regex:/^[A-Za-z0-9@!#\$%\^&\*]+$/',
             );
             $message = array(
                 'regex'    => ':attribute 格式错误',
@@ -87,12 +101,12 @@ class MemberService
             $data = array(
                 'mobile' => $mobile,
                 'password' => $password,
-                'confirm_password' => $confirm_password
+                'confirm_password' => $confirm_password,
             );
             $rules = array(
-                'mobile' => 'regex:/^1[34578]\d{9}$/',
+                'mobile' => 'regex:/^1\d{10}$/',
                 'password' => 'required|min:6|regex:/^[A-Za-z0-9@!#\$%\^&\*]+$/',
-                'confirm_password' => 'same:password'
+                'confirm_password' => 'same:password',
             );
             $message = array(
                 'regex'    => ':attribute 格式错误',
@@ -240,7 +254,7 @@ class MemberService
             $content = "您的验证码是：" . $code . "。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
 
         } elseif ($type == 'verify') {
-            $verify_set = $sms = Setting::get('shop.sms');
+            $verify_set = $sms = \Setting::get('shop.sms');
             $allset = iunserializer($verify_set['plugins']);
             if (is_array($allset) && !empty($allset['verify']['code_template'])) {
                 $content = sprintf($allset['verify']['code_template'], $code, $title, $total, $name, $mobile, $tel);
@@ -252,6 +266,44 @@ class MemberService
         }
 
         $smsrs = file_get_contents('http://106.ihuyi.cn/webservice/sms.php?method=Submit&account=' . $account . '&password=' . $pwd . '&mobile=' . $mobile . '&content=' . urldecode($content));
+        return xml_to_array($smsrs);
+    }
+
+    public static function send_smsV2($account, $pwd, $mobile, $code, $state='86', $type = 'check', $name, $title, $total, $tel)
+    {
+        if ($type == 'check') {
+            //$content = "您的验证码是：" . $code . "。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
+            $content = "您的验证码是：" . $code . "。请不要把验证码泄露给其他人。";
+
+        } elseif ($type == 'verify') {
+            $verify_set = $sms = \Setting::get('shop.sms');
+            $allset = iunserializer($verify_set['plugins']);
+            if (is_array($allset) && !empty($allset['verify']['code_template'])) {
+                $content = sprintf($allset['verify']['code_template'], $code, $title, $total, $name, $mobile, $tel);
+            } else {
+                $content = "提醒您，您的核销码为：" . $code . "，订购的票型是：" . $title . "，数量：" . $total . "张，购票人：" . $name . "，电话：" . $mobile . "，门店电话：" . $tel . "。请妥善保管，验票使用！";
+
+            }
+        }
+
+        if ($state == '86') {
+            $url = 'http://106.ihuyi.cn/webservice/sms.php?method=Submit';
+
+            $smsrs = file_get_contents($url .'&account=' . $account . '&password=' . $pwd . '&mobile=' . $mobile . '&content=' . rawurlencode($content));
+        } else {
+            $url = 'http://api.isms.ihuyi.com/webservice/isms.php?method=Submit';
+            $mobile = $state . ' ' . $mobile;
+
+            $data = array(
+                'account' => $account,
+                'password' => $pwd,
+                'mobile' => $mobile,
+                'content' => $content,
+            );
+            $query = http_build_query($data);
+            $smsrs = file_get_contents($url.'&'.$query);
+        }
+
         return xml_to_array($smsrs);
     }
 
@@ -309,6 +361,34 @@ class MemberService
     }
 
     /**
+     * 检查邀请码
+     *
+     * @return array
+     */
+    public static function inviteCode()
+    {
+        $invite_code = \YunShop::request()->invite_code;
+
+        $status = \Setting::get('shop.member');
+
+        if ($status['is_invite'] == 1) {//判断邀请码是否开启 1开启 0关闭
+
+            if ($status['required'] == 1 && empty($invite_code)){ //判断邀请码是否必填，1必填 0可选填 判断邀请码是否为空
+                return show_json('0', '请输入邀请码');
+            }
+            elseif ($status['required'] == 1 && !empty($invite_code)){  //判断邀请码是否必填，1必填 0可选填 判断邀请码是否为空
+                $data = MemberShopInfo:: getInviteCode($invite_code);  //查询邀请码是否存在
+
+                if(!$data){
+                    return show_json('0', '邀请码无效');
+                }
+            }
+        }
+
+        return show_json('1');
+    }
+
+    /**
      * 公众号开放平台授权登陆
      *
      * @param $uniacid
@@ -317,6 +397,8 @@ class MemberService
      */
     public function unionidLogin($uniacid, $userinfo, $upperMemberId = null, $loginType = null)
     {
+        \Log::debug('----userinfo2----', $userinfo);
+
         $member_id = 0;
         $userinfo['nickname'] = $this->filteNickname($userinfo);
 
@@ -328,6 +410,13 @@ class MemberService
 
         //$mc_mapping_fans_model = McMappingFansModel::getUId($userinfo['openid']);
         $mc_mapping_fans_model = $this->getFansModel($userinfo['openid']);
+
+        $this->checkFansUid($mc_mapping_fans_model, $userinfo);
+
+        //检查member_id是否一致
+        if (!is_null($UnionidInfo) && !is_null($mc_mapping_fans_model)) {
+            $member_id = $this->checkMember($UnionidInfo, $mc_mapping_fans_model, $userinfo);
+        }
 
         if (empty($member_id) && !empty($mc_mapping_fans_model)) {
             $member_id = $mc_mapping_fans_model->uid;
@@ -355,37 +444,49 @@ class MemberService
         } else {
             \Log::debug('添加新会员');
 
-            if (empty($member_model) && empty($mc_mapping_fans_model)) {
-                $member_id = $this->addMemberInfo($uniacid, $userinfo);
+            //DB::transaction(function () use (&$member_id, $member_model, $mc_mapping_fans_model, $member_shop_info_model, $uniacid, $userinfo, $UnionidInfo, $upperMemberId) {
+                if (empty($member_model) && empty($mc_mapping_fans_model)) {
+                    $member_id = $this->addMemberInfo($uniacid, $userinfo);
 
-                if ($member_id === false) {
-                    return show_json(8, '保存用户信息失败');
+                    if ($member_id === false) {
+                        return show_json(8, '保存用户信息失败');
+                    }
+                } elseif (empty($member_model) && 0 == $mc_mapping_fans_model->uid) {
+                    $member_id = $this->addMcMemberInfo($uniacid, $userinfo);
+                    $this->updateFansMember($mc_mapping_fans_model->fanid, $member_id, $userinfo);
+                } elseif ($mc_mapping_fans_model->uid) {
+                    $member_id = $mc_mapping_fans_model->uid;
+
+                    $this->updateMemberInfo($member_id, $userinfo);
+                } else {
+                    $this->addFansMember($member_id, $uniacid, $userinfo);
                 }
-            } elseif ($mc_mapping_fans_model->uid) {
-                $member_id = $mc_mapping_fans_model->uid;
 
-                $this->updateMemberInfo($member_id, $userinfo);
-            } else {
-                $this->addFansMember($member_id, $uniacid, $userinfo);
-            }
+                if (empty($member_shop_info_model)) {
+                    if (0 == $member_id) {
+                        \Log::debug(sprintf('----用户数据异常---%s-%s', $userinfo['openid'],$userinfo['nickname']));
+                        throw new AppException('用户数据异常, 注册失败');
+                    }
 
-            if (empty($member_shop_info_model)) {
-                $this->addSubMemberInfo($uniacid, $member_id);
-            }
+                    $this->addSubMemberInfo($uniacid, $member_id, $userinfo['openid']);
+                } else {
+                    $this->updateSubMemberInfo($member_id, $userinfo['openid']);
+                }
 
-            if (empty($UnionidInfo->unionid)) {
-                //添加ims_yz_member_unique表
-                $this->addMemberUnionid($uniacid, $member_id, $userinfo['unionid']);
-            }
+                if (empty($UnionidInfo->unionid)) {
+                    //添加ims_yz_member_unique表
+                    $this->addMemberUnionid($uniacid, $member_id, $userinfo['unionid']);
+                }
 
-            //生成分销关系链
-            if ($upperMemberId) {
-                \Log::debug(sprintf('----海报生成分销关系链----%d', $upperMemberId));
-                Member::createRealtion($member_id, $upperMemberId);
-            } else {
-                \Log::debug(sprintf('----生成分销关系链----%d', $upperMemberId));
-                Member::createRealtion($member_id);
-            }
+                //生成分销关系链
+                if ($upperMemberId) {
+                    \Log::debug(sprintf('----海报生成分销关系链----%d', $upperMemberId));
+                    Member::createRealtion($member_id, $upperMemberId);
+                } else {
+                    \Log::debug(sprintf('----生成分销关系链----%d-%d', $upperMemberId, $member_id));
+                    Member::createRealtion($member_id);
+                }
+            //});
         }
 
         return $member_id;
@@ -400,16 +501,25 @@ class MemberService
      */
     public function openidLogin($uniacid, $userinfo, $upperMemberId = NULL)
     {
+        \Log::debug('----userinfo1----', $userinfo);
+
         $member_id = 0;
         $userinfo['nickname'] = $this->filteNickname($userinfo);
         //$fans_mode = McMappingFansModel::getUId($userinfo['openid']);
         $fans_mode = $this->getFansModel($userinfo['openid']);
+        
+        $this->checkFansUid($fans_mode, $userinfo);
 
         if ($fans_mode) {
             $member_model = Member::getMemberById($fans_mode->uid);
             $member_shop_info_model = MemberShopInfo::getMemberShopInfo($fans_mode->uid);
 
             $member_id = $fans_mode->uid;
+        }
+
+        if ($yz_member_id = $this->checkYzMember($member_model, $fans_mode, $member_shop_info_model, $userinfo)) {
+            $member_id = $yz_member_id;
+            $member_shop_info_model = true;
         }
 
         if ((!empty($member_model)) && (!empty($fans_mode) && !empty($member_shop_info_model))) {
@@ -419,28 +529,40 @@ class MemberService
         } else {
             \Log::debug('添加新会员');
 
-            if (empty($member_model) && empty($fans_mode)) {
-                $member_id = $this->addMemberInfo($uniacid, $userinfo);
+            //DB::transaction(function () use (&$member_id, $uniacid, $userinfo, $member_model, $fans_mode, $member_shop_info_model, $upperMemberId){
+                if (empty($member_model) && empty($fans_mode)) {
+                    $member_id = $this->addMemberInfo($uniacid, $userinfo);
 
-                if ($member_id === false) {
-                    return show_json(8, '保存用户信息失败');
+                    if ($member_id === false) {
+                        return show_json(8, '保存用户信息失败');
+                    }
+                } elseif (empty($member_model) && 0 == $fans_mode->uid) {
+                    $member_id = $this->addMcMemberInfo($uniacid, $userinfo);
+                    $this->updateFansMember($fans_mode->fanid, $member_id, $userinfo);
+                } elseif ($fans_mode->uid) {
+                    $member_id = $fans_mode->uid;
+
+                    $this->updateMemberInfo($member_id, $userinfo);
                 }
-            } elseif ($fans_mode->uid) {
-                $member_id = $fans_mode->uid;
 
-                $this->updateMemberInfo($member_id, $userinfo);
-            }
+                if (empty($member_shop_info_model)) {
+                    if (0 == $member_id) {
+                        \Log::debug(sprintf('----用户数据异常---%s-%s', $userinfo['openid'],$userinfo['nickname']));
+                        throw new AppException('用户数据异常, 注册失败');
+                    }
 
-            if (empty($member_shop_info_model)) {
-                $this->addSubMemberInfo($uniacid, $member_id);
-            }
+                    $this->addSubMemberInfo($uniacid, $member_id, $userinfo['openid']);
+                }
 
-            //生成分销关系链
-            if ($upperMemberId) {
-                Member::createRealtion($member_id, $upperMemberId);
-            } else {
-                Member::createRealtion($member_id);
-            }
+                //生成分销关系链
+                if ($upperMemberId) {
+                    \Log::debug(sprintf('----海报生成分销关系链----%d', $upperMemberId));
+                    Member::createRealtion($member_id, $upperMemberId);
+                } else {
+                    \Log::debug(sprintf('----生成分销关系链----%d-%d', $upperMemberId, $member_id));
+                    Member::createRealtion($member_id);
+                }
+            //});
         }
 
         return $member_id;
@@ -466,10 +588,15 @@ class MemberService
         \Log::debug('nickname', [$nickname]);
         $nickname = preg_replace($patten, "", $nickname);
         \Log::debug('pre', [$nickname]);
-        $nickname = preg_replace("#\\\u([0-9a-f]+)#ie","iconv('{$s_format}','UTF-8', pack('H4', '\\1'))",$nickname);
+        $nickname = json_decode(
+                        preg_replace("#\\\u([0-9a-f]+)#ie"
+                                      ,"iconv('{$s_format}','UTF-8', pack('H4', '\\1'))"
+                                      , $nickname
+                        )
+                    );
         \Log::debug('post', [$nickname]);
-        \Log::debug('json', [json_decode($this->cutNickname($nickname))]);
-        return json_decode($this->cutNickname($nickname));
+        \Log::debug('json', [$this->cutNickname($nickname)]);
+        return $this->cutNickname($nickname);
     }
 
     /**
@@ -496,13 +623,14 @@ class MemberService
      */
     public function addMemberInfo($uniacid, $userinfo)
     {
+        \Log::debug('---addMemberInfo---');
         //添加mc_members表
         $default_group = McGroupsModel::getDefaultGroupId();
         $uid = MemberModel::insertData($userinfo, array(
             'uniacid' => $uniacid,
             'groupid' => $default_group->groupid
         ));
-        \Log::debug('add mapping fans');
+
         //添加mapping_fans表
         /*McMappingFansModel::insertData($userinfo, array(
             'uid' => $uid,
@@ -520,7 +648,7 @@ class MemberService
      * @param $uniacid
      * @param $member_id
      */
-    public function addSubMemberInfo($uniacid, $member_id)
+    public function addSubMemberInfo($uniacid, $member_id, $openid=0)
     {
         //添加yz_member表
         $default_sub_group_id = MemberGroup::getDefaultGroupId()->first();
@@ -536,7 +664,17 @@ class MemberService
             'uniacid' => $uniacid,
             'group_id' => $default_subgroup_id,
             'level_id' => 0,
+            'pay_password' => '',
+            'salt' => '',
+            'yz_openid' => $openid,
         ));
+    }
+
+    private function updateSubMemberInfo($uid, $userinfo)
+    {
+        SubMemberModel::updateOpenid(
+            $uid, ['yz_openid' => $userinfo['openid']]
+        );
     }
 
     /**
@@ -680,5 +818,112 @@ class MemberService
         \Setting::set('shop.form', json_encode($set));
 
         return $member_form;
+    }
+
+    public function checkMember($UnionidInfo, $fansInfo, $userInfo)
+    {
+        \Log::debug('----unionid---', $UnionidInfo->member_id);
+        \Log::debug('----fans----', $fansInfo->uid);
+        if ($UnionidInfo->member_id != $fansInfo->uid) {
+            /*
+            //小程序
+            $minApp = MemberMiniAppModel::where('member_id', $UnionidInfo->member_id)->first();
+
+            if (!is_null($minApp)) {
+                MemberMiniAppModel::updateData($minApp->member_id, ['member_id'=>$fansInfo->uid]);
+            }
+
+            //wechat app
+            $wechatApp = MemberWechatModel::where('member_id', $UnionidInfo->member_id)->first();
+
+            if (!is_null($wechatApp)) {
+                MemberWechatModel::updateData($wechatApp->member_id, ['member_id'=>$fansInfo->uid]);
+            }
+            */
+
+            //删除重复微擎会员
+
+            $mc_member = Member::getMemberById($fansInfo->uid);
+
+            if (!is_null($mc_member)) {
+                $mc_member->delete();
+            }
+
+            $this->updateFansMember($fansInfo->fanid, $UnionidInfo->member_id, $userInfo);
+
+            //删除重复商城会员
+            /*
+            $sub_member = MemberShopInfo::getMemberShopInfo($UnionidInfo->member_id);
+
+            if (!is_null($sub_member)) {
+                $sub_member->delete();
+            }
+            */
+
+            //商城unionid
+            //MemberUniqueModel::where('unique_id', $UnionidInfo->unique_id)->update(['member_id'=>$fansInfo->uid]);
+        }
+
+        return $UnionidInfo->member_id;
+    }
+
+    public function updateFansMember($fanid, $member_id, $userinfo)
+    {
+        //TODO
+    }
+
+    /**
+     * 扫海报关注
+     *
+     * 关注->微擎注册->商城注册
+     *
+     * 接口延迟，商城无法监控微擎行为导致会员注册重复1(fans->uid=0; mc_members=null)
+     *
+     * @param $fansModel
+     * @param $userInfo
+     */
+    private function checkFansUid($fansModel, $userInfo)
+    {
+        if ($fansModel && (0 == $fansModel->uid || 1 == $fansModel->uid)) {
+            $member_id = SubMemberModel::getMemberId($userInfo['openid']);
+
+            if (!is_null($member_id)) {
+                $fansModel->uid = $member_id;
+
+                $this->updateFansMember($fansModel->fanid, $member_id, $userInfo);
+            }
+        }
+    }
+
+    /**
+     * 扫海报关注
+     *
+     * 关注->微擎注册->商城注册
+     *
+     * 接口延迟，商城无法监控微擎行为导致会员注册重复2(fans->uid被更新; mc_members存在)
+     *
+     * @param $mc_members
+     * @param $fans
+     * @param $yz_member
+     * @param $userInfo
+     * @return int
+     */
+    private function checkYzMember($mc_members, $fans, $yz_member, $userInfo)
+    {
+        if (!is_null($mc_members) && !is_null($fans) && is_null($yz_member)) {
+            $member_id = SubMemberModel::getMemberId($userInfo['openid']);
+
+            if (!is_null($member_id) && $member_id != 0 && $member_id != $fans->uid) {
+                if (Member::getMemberById($member_id))
+                {
+                    Member::deleted($fans->uid);
+                    $this->updateFansMember($fans->fanid, $member_id, $userInfo);
+                }
+
+                return $member_id;
+            }
+        }
+
+        return 0;
     }
 }

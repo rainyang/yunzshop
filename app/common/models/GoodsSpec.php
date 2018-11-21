@@ -17,5 +17,8 @@ class GoodsSpec extends \app\common\models\BaseModel
 
     //public $timestamps = false;
 
-    
+    public function hasManySpecsItem()
+    {
+        return $this->hasMany('app\common\models\GoodsSpecItem','specid','id');
+    }
 }

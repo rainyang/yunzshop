@@ -45,14 +45,14 @@
                                         <div class="col-sm-9 col-xs-12">
                                             <div class='input-group'>
                                                 @if(empty($shopSet['level_type']))
-                                                    <span class='input-group-addon'>完成订单金额满</span>
+                                                    <span class='input-group-addon'>订单金额满</span>
                                                     <input type="text" name="level[order_money]" class="form-control"
                                                            value="{{ $levelModel->order_money }}"/>
                                                     <span class='input-group-addon'>元</span>
                                                 @endif
 
                                                 @if($shopSet['level_type'] == 1)
-                                                    <span class='input-group-addon'>完成订单数量满</span>
+                                                    <span class='input-group-addon'>订单数量满</span>
                                                     <input type="text" name="level[order_count]" class="form-control"
                                                            value="{{ $levelModel->order_count }}"/>
                                                     <span class='input-group-addon'>个</span>
@@ -103,7 +103,40 @@
                                         </div>
                                     </div>
 
-                                    <div class="form-group"></div>
+                                    <div class="form-group">
+                                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">运费减免</label>
+                                        <div class="col-sm-9 col-xs-12 form-inline">
+                                            <div class='input-group col-sm-3'>
+
+                                                <input type="text" name="level[freight_reduction]" class="form-control"
+                                                       value="{{ $levelModel->freight_reduction }}"/>
+                                                <span class='input-group-addon'>%</span>
+                                            </div>
+                                            <span class='help-block'>快递运费减免优惠%</span>
+                                        </div>
+                                    </div>
+                                    {{--
+                                    <div class="form-group">
+                                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员权益细则</label>
+                                        <div class="col-sm-9 col-xs-12">
+                                            {!! yz_tpl_ueditor('level[interests_rules]', $levelModel->interests_rules) !!}
+
+                                        </div>
+                                    </div>
+                                    --}}
+                                    <script type="text/javascript">
+                                      require(['bootstrap'], function ($) {
+                                        $(document).scroll(function () {
+                                          var toptype = $("#edui1_toolbarbox").css('position');
+                                          if (toptype == "fixed") {
+                                            $("#edui1_toolbarbox").addClass('top_menu');
+                                          }
+                                          else {
+                                            $("#edui1_toolbarbox").removeClass('top_menu');
+                                          }
+                                        });
+                                      });
+                                    </script>
                                     <div class="form-group">
                                         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                                         <div class="col-sm-9 col-xs-12">

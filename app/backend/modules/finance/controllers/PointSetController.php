@@ -33,9 +33,13 @@ class PointSetController extends BaseController
             $point_data = $this->verifySetData($point_data);
             $result = (new PointService())->verifyPointData($point_data);
             if ($result) {
+                (new \app\common\services\operation\PointSetLog(['old'=>$set,'new'=>$point_data], 'update'));
                 return $this->message($result, Url::absoluteWeb('finance.point-set'));
             }
         }
+
+        $love_name = Setting::get('love.name');
+        $set['love_name'] = $love_name ? $love_name : '爱心值';
 
         return view('finance.point.set', [
             'set' => $set

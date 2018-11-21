@@ -29,7 +29,9 @@ class MemberLevelValidity
 
             $this->memberSet = Setting::get('shop.member');
             $this->setLog = Setting::get('plugin.member_log');
-
+            if (!$this->memberSet['term']) {
+                continue;
+            }
             $this->setReduceLevelValidity();
 
             $this->setExpire();
@@ -44,13 +46,13 @@ class MemberLevelValidity
             return;
         }
 
-        //设置当前返现日期
+        //设置当前执行日期
         $this->setLog['current_d'] = date('d');
         Setting::set('plugin.member_log', $this->setLog);
 
         MemberShopInfo::uniacid()
-            ->where('validity','>','0')
-            ->update(['validity'=>\DB::raw('`validity` - 1')]);
+            ->where('validity', '>', '0')
+            ->update(['validity' => \DB::raw('`validity` - 1')]);
     }
 
     public function setExpire()
@@ -59,9 +61,9 @@ class MemberLevelValidity
             return;
         }
         MemberShopInfo::uniacid()
-            ->where('level_id','!=','0')
-            ->where('validity',0)
-            ->update(['level_id'=>0]);
+            ->where('level_id', '!=', '0')
+            ->where('validity', 0)
+            ->update(['level_id' => 0]);
     }
 
     public function subscribe()

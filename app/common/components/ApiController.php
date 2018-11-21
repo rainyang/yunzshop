@@ -35,7 +35,14 @@ class ApiController extends BaseController
         $relaton_set = MemberRelation::getSetInfo()->first();
 
         $type  = \YunShop::request()->type;
-        $mid   = \YunShop::request()->mid ? \YunShop::request()->mid : 0;
+        $mid   = Member::getMid();
+
+        if (self::is_alipay() && $type != 8) {
+            $type = 8;
+        }
+        if ($type == 8 && !(app('plugins')->isEnabled('alipay-onekey-login'))) {
+            $type = Client::getType();
+        }
 
         if (!MemberService::isLogged()) {
             if (($relaton_set->status == 1 && !in_array($this->action,$this->ignoreAction))
@@ -58,19 +65,22 @@ class ApiController extends BaseController
                 return $this->errorJson('黑名单用户，请联系管理员', ['login_status' => -1]);
             }
 
-            $mid = Member::getMid();
-
             //发展下线
             Member::chkAgent(\YunShop::app()->getMemberId(), $mid);
         }
     }
-
+    public static function is_alipay()
+    {
+        if (!empty($_SERVER['HTTP_USER_AGENT']) && strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'alipay') !== false && (app('plugins')->isEnabled('alipay-onekey-login'))) {
+            return true;
+        }
+        return false;
+    }
     private function jumpUrl($type, $mid)
     {
         if (empty($type) || $type == 'undefined') {
             $type = Client::getType();
         }
-
         $queryString = ['type'=>$type,'session_id'=>session_id(), 'i'=>\YunShop::app()->uniacid, 'mid'=>$mid];
 
         if (5 == $type || 7 == $type) {

@@ -38,11 +38,28 @@
                             <span class="help-block">建议尺寸: 100*100，或正方型图片 </span>
                         </div>
                     </div>
-
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否推荐</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <label class='radio-inline'>
+                                <input type='radio' name='brand[is_recommend]' value='1'
+                                       @if($brandModel->is_recommend==1) checked @endif
+                                /> 是
+                            </label>
+                            <label class='radio-inline'>
+                                <input type='radio' name='brand[is_recommend]' value='0'
+                                       @if($brandModel->is_recommend==0) checked @endif
+                                /> 否
+                            </label>
+                        </div>
+                    </div>
+                   
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">品牌描述</label>
                         <div class="col-sm-9 col-xs-12">
-                            <textarea name="brand[desc]" class="form-control" cols="70">{{$brandModel->desc}}</textarea>
+                            <!-- <textarea name="brand[desc]" class="form-control" cols="70">{{$brandModel->desc}}</textarea> -->
+                            {!! yz_tpl_ueditor('brand[desc]', $brandModel->desc) !!}
+
                         </div>
                     </div>
 

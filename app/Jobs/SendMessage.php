@@ -11,16 +11,20 @@ use Illuminate\Support\Facades\Log;
 class SendMessage implements ShouldQueue
 {
     use InteractsWithQueue, Queueable, SerializesModels;
-    protected $data = null;
+    protected $class = null;
+    protected $func = null;
+    protected $condition = null;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($data)
+    public function __construct($class, $func, $condition)
     {
-        $this->data = $data;
+        $this->class = $class;
+        $this->func = $func;
+        $this->condition = $condition;
     }
 
     /**
@@ -28,9 +32,10 @@ class SendMessage implements ShouldQueue
      *
      * @return void
      */
-    public function handle($i)
+    public function handle()
     {
-        Log::info("队列**********:".$i);
+        $builder = call_user_func_array([$this->class, $this->func], $this->condition);
+        dd($builder);
         //file_put_contents("")
     }
 }

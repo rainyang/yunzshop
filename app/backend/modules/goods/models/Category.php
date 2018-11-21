@@ -22,6 +22,7 @@ class Category extends \app\common\models\Category
     {
         return self::uniacid()
             ->orderBy('id', 'asc')
+            ->where('plugin_id',0)
             ->get();
     }
 
@@ -102,6 +103,7 @@ class Category extends \app\common\models\Category
     {
         return [
             'name' => '分类名称',
+            'display_order' => '排序',
         ];
     }
 
@@ -116,7 +118,9 @@ class Category extends \app\common\models\Category
             'name' => ['required',  $rule->ignore($this->id)
                 ->where('uniacid', \YunShop::app()->uniacid)
                 ->where('parent_id', $this->parent_id)
+                ->where('plugin_id', 0)
                 ->where('deleted_at', null)],
+            'display_order' => ['required','integer'],
         ];
     }
 
@@ -155,5 +159,44 @@ class Category extends \app\common\models\Category
                 ->first();
         }
         return $res;
+    }
+
+    /**
+     * 一级菜单
+     *
+     * @return mixed
+     */
+    public function getCategoryFirstLevel()
+    {
+        return self::uniacid()
+            ->where('level', 1)
+            ->orderBy('id', 'asc')
+            ->get();
+    }
+
+    /**
+     * 二级菜单
+     *
+     * @return mixed
+     */
+    public function getCategorySecondLevel()
+    {
+        return self::uniacid()
+            ->where('level', 2)
+            ->orderBy('id', 'asc')
+            ->get();
+    }
+
+    /**
+     * 三级菜单
+     *
+     * @return mixed
+     */
+    public function getCategoryThirdLevel()
+    {
+        return self::uniacid()
+            ->where('level', 3)
+            ->orderBy('id', 'asc')
+            ->get();
     }
 }

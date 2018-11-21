@@ -7,12 +7,16 @@
  */
 
 namespace app\common\events\order;
+
 use app\common\events\Event;
+use app\common\models\Order;
 
 
 class OrderCreatedEvent extends Event
 {
-
+    /**
+     * @var Order
+     */
     private $_order_model;
 
     /**
@@ -20,18 +24,28 @@ class OrderCreatedEvent extends Event
      *
      * @return void
      */
-    public function __construct($order_model)
+    public function __construct(Order $order_model)
     {
         $this->_order_model = $order_model;
     }
 
     /**
+     * @return Order
+     */
+    public function getOrder()
+    {
+        return $this->_order_model;;
+}
+
+    /**
      * (监听者)获取订单model
      * @return mixed
      */
-    public function getOrderModel(){
+    public function getOrderModel()
+    {
         return $this->_order_model;
     }
+
     /**
      * Get the channels the event should be broadcast on.
      *

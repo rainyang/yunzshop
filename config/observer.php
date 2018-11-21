@@ -36,6 +36,22 @@ return [
             'function_validator'=>'relationValidator',
             'function_save'=>'relationSave'
         ],
+        'div_from'=>[
+            'class'=>'app\backend\modules\goods\models\DivFrom',
+            'function_validator'=>'relationValidator',
+            'function_save'=>'relationSave'
+        ],
+        'filtering'=>[
+            'class'=>'app\backend\modules\goods\models\GoodsFiltering',
+            'function_validator'=>'relationValidator',
+            'function_save'=>'relationSave'
+        ],
+        'limitbuy'=>[
+            'class'=>'app\backend\modules\goods\models\LimitBuy',
+            'function_validator'=>'relationValidator',
+            'function_save'=>'relationSave'
+        ],
+
     ],
     'order' => [
         //订单操作记录

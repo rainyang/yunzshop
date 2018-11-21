@@ -2,6 +2,7 @@
 namespace app\frontend\modules\coupon\controllers;
 
 use app\common\components\ApiController;
+use app\common\facades\Setting;
 use app\frontend\modules\coupon\models\Coupon;
 use app\frontend\modules\coupon\models\MemberCoupon;
 use app\common\models\MemberShopInfo;
@@ -9,6 +10,7 @@ use app\common\models\CouponLog;
 use app\common\models\McMappingFans;
 use app\common\models\AccountWechats;
 use EasyWeChat\Foundation\Application;
+use app\backend\modules\coupon\services\MessageNotice;
 
 
 class MemberCouponController extends ApiController
@@ -27,6 +29,40 @@ class MemberCouponController extends ApiController
 
     const TEMPLATEID = 'OPENTM200605630'; //成功发放优惠券时, 发送的模板消息的 ID
 //    const TEMPLATEID = 'tqsXWjFgDGrlUmiOy0ci6VmVtjYxR7s-4BWtJX6jgeQ'; //临时调试用
+
+
+
+    public function couponsOfMemberByStatusV2()
+    {
+        $status = \YunShop::request()->get('status_request');
+        $uid = \YunShop::app()->getMemberId();
+
+        $now = strtotime('now');
+        $coupons = [];
+        switch ($status) {
+            case self::NOT_USED:
+                $coupons = self::getAvailableCoupons($uid, $now);
+                break;
+            case self::OVERDUE:
+                $coupons = self::getOverdueCoupons($uid, $now);
+                break;
+            case self::IS_USED:
+                $coupons = self::getUsedCoupons($uid);
+                break;
+        }
+
+        $data = [
+            'set' => [
+                'transfer' => Setting::get('coupon.transfer') ? true : false,
+            ],
+            'data' => $coupons,
+        ];
+
+
+        return $this->successJson('ok', $data);
+    }
+
+
 
     /**
      * 获取用户所拥有的优惠券的数据接口
@@ -102,6 +138,68 @@ class MemberCouponController extends ApiController
         $couponsData = self::getCouponData($coupons, $memberLevel);
 
         return $this->successJson('ok', $couponsData);
+    }
+
+    /**
+     * 提供给店铺装修的"优惠券中心"的数据接口
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function couponsForDesigner()
+    {
+        $uid = \YunShop::app()->getMemberId();
+        $member = MemberShopInfo::getMemberShopInfo($uid);
+        if(empty($member)){
+            return $this->errorJson('没有找到该用户', []);
+        }
+        $memberLevel = $member->level_id;
+
+        $now = strtotime('now');
+        $coupons = Coupon::getCouponsForMember($uid, $memberLevel, null, $now)
+            ->orderBy('display_order','desc')
+            ->orderBy('updated_at','desc');
+        if($coupons->get()->isEmpty()){
+            return $this->errorJson('没有找到记录', []);
+        }
+        $coupons_data['data'] = $coupons->get()->toArray();
+
+        //添加"是否可领取" & "是否已抢光" & "是否已领取"的标识
+        foreach($coupons_data['data'] as $k=>$v){
+            $coupons_data['data'][$k]['coupon_id'] = $coupons_data['data'][$k]['id'];
+            if (($v['total'] != self::NO_LIMIT) && ($v['has_many_member_coupon_count'] >= $v['total'])){
+                $coupons_data['data'][$k]['api_availability'] = self::EXHAUST;
+            } elseif($v['member_got_count'] > 0){
+                $coupons_data['data'][$k]['api_availability'] = self::ALREADY_GOT;
+            } else{
+                $coupons_data['data'][$k]['api_availability'] = self::IS_AVAILABLE;
+            }
+
+            //增加属性 - 对于该优惠券,用户可领取的数量
+            if($v['get_max'] != self::NO_LIMIT){
+                $coupons_data['data'][$k]['api_remaining'] = $v['get_max'] - $v['member_got_count'];
+                if ($coupons_data['data'][$k]['api_remaining'] < 0){ //考虑到优惠券设置会变更,比如原来允许领取6张,之后修改为3张,那么可领取张数可能会变成负数
+                    $coupons_data['data'][$k]['api_remaining'] = 0;
+                }
+            } elseif($v['get_max'] == self::NO_LIMIT){
+                $coupons_data['data'][$k]['api_remaining'] = -1;
+            }
+
+            //添加优惠券使用范围描述
+            switch($v['use_type']){
+                case Coupon::COUPON_SHOP_USE:
+                    $coupons_data['data'][$k]['api_limit'] = '商城通用';
+                    break;
+                case Coupon::COUPON_CATEGORY_USE:
+                    $coupons_data['data'][$k]['api_limit'] = '适用于下列分类: ';
+                    $coupons_data['data'][$k]['api_limit'] = implode(',', $v['categorynames']);
+                    break;
+                case Coupon::COUPON_GOODS_USE:
+                    $coupons_data['data'][$k]['api_limit'] = '适用于下列商品: ';
+                    $coupons_data['data'][$k]['api_limit'] = implode(',', $v['goods_names']);
+                    break;
+            }
+        }
+
+        return $this->successJson('ok', $coupons_data);
     }
 
     //添加"是否可领取" & "是否已抢光" & "是否已领取"的标识
@@ -297,7 +395,7 @@ class MemberCouponController extends ApiController
     public function getCoupon()
     {
         $couponId = \YunShop::request()->get('coupon_id');
-        $memberId = \YunShop::app()->getMemberId();;
+        $memberId = \YunShop::app()->getMemberId();
         if(!$couponId){
             return $this->errorJson('没有提供优惠券ID','');
         }
@@ -360,6 +458,10 @@ class MemberCouponController extends ApiController
                 $mappingFans = McMappingFans::getFansById($memberId);
                 $openid = $mappingFans->openid;
                 $nickname = $mappingFans->nickname;
+
+                //发送获取通知
+                MessageNotice::couponNotice($couponModel->id,$memberId);
+
                 if(!empty($openid) && !empty($couponModel->resp_title)){ //如果没有设置标题, 或者该用户没有openid,则不发送通知
 
                     //可读的有效期
@@ -404,6 +506,7 @@ class MemberCouponController extends ApiController
                 //按前端要求, 需要返回和 couponsForMember() 方法完全一致的数据
                 $coupon = Coupon::getCouponsForMember($memberId, $member->level_id, $couponId)->get()->toArray();
                 $res = self::getCouponData(['data' => $coupon], $member->level_id);
+                $res['data'][0]['coupon_id'] = $res['data'][0]['id'];
                 return $this->successJson('ok', $res['data'][0]);
             }
         }

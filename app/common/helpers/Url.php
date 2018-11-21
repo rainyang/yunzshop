@@ -14,6 +14,16 @@ class Url
         if(empty($uri) || self::isHttp($uri)){
             return $uri;
         }
+        //$domain = request()->getSchemeAndHttpHost();
+        $module = request()->get('m','yun_shop');
+        return '/addons/' . $module . (strpos($uri,'/') === 0 ? '':'/') . $uri;
+    }
+
+    public static function shopSchemeUrl($uri)
+    {
+        if(empty($uri) || self::isHttp($uri)){
+            return $uri;
+        }
         $domain = request()->getSchemeAndHttpHost();
         $module = request()->get('m','yun_shop');
         return $domain . '/addons/' . $module . (strpos($uri,'/') === 0 ? '':'/') . $uri;
@@ -28,7 +38,7 @@ class Url
      */
     public static function web($route, $params = [])
     {
-        if(empty($route) || self::isHttp($route)){
+        if(self::isHttp($route)){
             return $route;
         }
         $defaultParams = ['c'=>'site','a'=>'entry','m'=>'yun_shop','do'=>rand(1000,9999),'route'=>$route];
@@ -57,6 +67,21 @@ class Url
         }
         $module = request()->get('m','yun_shop');
         return   '/addons/' . $module . '/?menu#'.$route .  ($params ? '?'.http_build_query($params) : '');
+    }
+
+    public static function appDiy($route, $params = [])
+    {
+        if(empty($route) || self::isHttp($route)){
+            return $route;
+        }
+        if(strpos($route, '/') !== 0){
+            $route = '/' . $route;
+        }
+        if(!isset($params['i'])){
+            $params['i'] = \YunShop::app()->uniacid;
+        }
+        $module = request()->get('m','yun_shop');
+        return   '/addons/' . $module . '/?menu#'.$route .  ($params ? '/'. $params['page_id'] . '/?i=' . $params['i'] : '');
     }
 
     /**
@@ -128,6 +153,15 @@ class Url
         }
         empty($domain) && $domain = request()->getSchemeAndHttpHost();
         return $domain . self::app($route,$params);
+    }
+
+    public static function absoluteDiyApp($route, $params = [], $domain = '')
+    {
+        if(empty($route) || self::isHttp($route)){
+            return $route;
+        }
+        empty($domain) && $domain = request()->getSchemeAndHttpHost();
+        return $domain . self::appDiy($route,$params);
     }
 
     /**

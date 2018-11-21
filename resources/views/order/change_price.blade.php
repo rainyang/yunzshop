@@ -93,19 +93,52 @@
     </form>
 </div>
 <script>
+
+    var order_price = 0;
+    var dispatch_price = 0;
+
+    mc_init();
+
+
+    function mc_init() {
+
+        order_price = parseFloat($('#changeprice-orderprice').val());
+        dispatch_price = parseFloat($('#changeprice-dispatchprice').val());
+        $('input', $('#ajaxModal')).blur(function () {
+            if(judgeSign($(this).val())){
+                mc_calc();
+            }
+        });
+
+    }
+
+    function judgeSign(num) {
+        var reg = new RegExp("^-?[0-9]*.?[0-9]*$");
+        if ( reg.test(num) ) {
+            var absVal = Math.abs(num);
+            return num==absVal?'是正数':'是负数';
+        }
+        else {
+            return -1;
+        }
+    }
+
     function mc_check(){
         var can = true;
         var lastprice = 0;
-        $('.changeprice').each(function () {
+        $('.changeprice_orderprice').each(function () {
             if( $.trim( $(this).val())==''){
-                return true;
+                alert('请输入改价金额!');
+                can = false;
+                return can;
             }
             var p = 0;
-            if ( !$.isNumber($(this).val())) {
+            console.log(judgeSign($(this).val()));
+            if (judgeSign($(this).val()) == -1) {
                 $(this).select();
                 alert('请输入数字!');
-                can =false;
-                return false;
+                can = false;
+                return can;
             }
             var val  = parseFloat( $(this).val() );
             if(val<=0 && Math.abs(val) > parseFloat( $(this).parent().prev().html())) {
@@ -130,7 +163,7 @@
     function mc_calc() {
 
         var change_dispatchprice = parseFloat($('#changeprice_dispatchprice').val());
-        if(!$.isNumber($('#changeprice_dispatchprice').val())){
+        if(!judgeSign($('#changeprice_dispatchprice').val())){
             change_dispatchprice = dispatch_price;
         }
         var dprice = change_dispatchprice;

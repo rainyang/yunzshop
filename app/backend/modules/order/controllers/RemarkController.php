@@ -32,6 +32,7 @@ class RemarkController extends BaseController
             }
             //dd($db_remark_model);
             $db_remark_model->remark = \YunShop::request()->remark;
+            (new \app\common\services\operation\OrderLog($db_remark_model, 'special'));
             $db_remark_model->save();
             show_json(1);
         }

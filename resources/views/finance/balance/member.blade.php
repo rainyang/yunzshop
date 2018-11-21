@@ -4,11 +4,11 @@
 <link href="{{static_url('yunshop/balance/balance.css')}}" media="all" rel="stylesheet" type="text/css"/>
         <div id="member-blade" class="rightlist">
             <!-- 新增加右侧顶部三级菜单 -->
-            <div class="right-titpos">
+            {{--<div class="right-titpos">
                 <ul class="add-snav">
                     <li class="active"><a href="#">余额管理</a></li>
                 </ul>
-            </div>
+            </div>--}}
             <!-- 新增加右侧顶部三级菜单结束 -->
             <div class="panel panel-info">
                 <div class="panel-heading">筛选</div>
@@ -104,7 +104,7 @@
                                     <label class="label label-danger">余额：{{ $list->credit2 }}</label>
                                 </td>
                                 <td  style="overflow:visible;">
-                                    <a class='btn btn-default' href="{{ yzWebUrl('finance.balance.recharge', array('member_id' => $list->uid)) }}" style="margin-bottom: 2px">充值余额</a>
+                                    <a class='btn btn-default' href="{{ yzWebUrl('balance.recharge.index', array('member_id' => $list->uid)) }}" style="margin-bottom: 2px">充值余额</a>
                                 </td>
                             </tr>
                             @endforeach

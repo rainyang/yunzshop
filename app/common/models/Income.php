@@ -8,60 +8,177 @@
 
 namespace app\common\models;
 
-use app\backend\models\BackendModel;
-use app\backend\modules\finance\services\IncomeService;
 
-class Income extends BackendModel
+use Illuminate\Support\Facades\Log;
+use Yunshop\TeamDividend\models\ErrorTeamDividend;
+
+/**
+ * Class Income
+ * @package app\common\models
+ * @property int status
+ * @property string incometable_type
+ * @property BaseModel dividend
+ */
+class Income extends BaseModel
 {
     public $table = 'yz_member_income';
 
-    public $timestamps = true;
-
-    public $widgets = [];
-
-    public $attributes = [];
 
     protected $guarded = [];
 
-    public $StatusService;
-
-    public $PayStatusService;
-
     protected $appends = ['status_name', 'pay_status_name'];
+    /**
+     * @var Withdraw withdraw
+     */
+    private $withdraw;
+    /**
+     * 提现状态：未提现
+     */
+    const STATUS_INITIAL = 0;
+
 
     /**
-     * @return mixed
+     * 提现状态：已提现
      */
-    public function getStatusService()
-    {
-        if (!isset($this->StatusService)) {
+    const STATUS_WITHDRAW = 1;
 
-            $this->StatusService = IncomeService::createStatusService($this);
-        }
-        return $this->StatusService;
+
+    /**
+     * 打款状态：无效
+     */
+    const PAY_STATUS_INVALID = -1;
+
+
+    /**
+     * 打款状态：未审核
+     */
+    const PAY_STATUS_INITIAL = 0;
+
+
+    /**
+     * 打款状态：未打款
+     */
+    const PAY_STATUS_WAIT = 1;
+
+
+    /**
+     * 打款状态：已打款
+     */
+    const PAY_STATUS_FINISH = 2;
+
+
+    /**
+     * 打款状态：已驳回
+     */
+    const PAY_STATUS_REJECT = 3;
+
+
+    /**
+     * 提现状态名称集合
+     *
+     * @var array
+     */
+    public static $statusComment = [
+        self::STATUS_INITIAL => '未提现',
+        self::STATUS_WITHDRAW => '已提现',
+    ];
+
+
+    /**
+     * 打款状态名称集合
+     *
+     * @var array
+     */
+    public static $payStatusComment = [
+        self::PAY_STATUS_INVALID => '无效',
+        self::PAY_STATUS_INITIAL => '未审核',
+        self::PAY_STATUS_WAIT => '未打款',
+        self::PAY_STATUS_FINISH => '已打款',
+        self::PAY_STATUS_REJECT => '已驳回',
+    ];
+
+
+    /**
+     * 通过 $status 值获取 $status 名称
+     *
+     * @param $status
+     * @return mixed|string
+     */
+    public static function getStatusComment($status)
+    {
+        return isset(static::$statusComment[$status]) ? static::$statusComment[$status] : '';
     }
 
+
     /**
-     * @return mixed
+     * 通过 $pay_way 值获取 $pay_status 名称
+     *
+     * @param $pay_status
+     * @return mixed|string
+     */
+    public static function getPayWayComment($pay_status)
+    {
+        return isset(static::$payStatusComment[$pay_status]) ? static::$payStatusComment[$pay_status] : '';
+    }
+
+
+    /**
+     * 通过字段 status 输出 status_name ;
+     *
+     * @return string
      */
     public function getStatusNameAttribute()
     {
-        return $this->getStatusService();
+        return static::getStatusComment($this->attributes['status']);
     }
 
-    public function getPayStatusService()
-    {
-        if (!isset($this->PayStatusService)) {
 
-            $this->PayStatusService = IncomeService::createPayStatusService($this);
-        }
-        return $this->PayStatusService;
-    }
-
+    /**
+     * 通过字段 pay_status 输出 pay_status_name ;
+     *
+     * @return string
+     */
     public function getPayStatusNameAttribute()
     {
-        return $this->getPayStatusService();
+        return static::getPayWayComment($this->attributes['pay_status']);
     }
+
+
+    /**
+     * 可提现收入检索条件
+     *
+     * @param $query
+     * @return mixed
+     */
+    public function scopeCanWithdraw($query)
+    {
+        return $query->where('status', static::STATUS_INITIAL);
+    }
+
+
+    /**
+     * 关联会员数据表
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function member()
+    {
+        return $this->belongsTo('app\common\models\Member');
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //todo 以下代码未检查 yitian :: 2017-11-14
 
     /**
      * @param $id
@@ -179,5 +296,15 @@ class Income extends BackendModel
         return $model;
     }
 
+    /**
+     * @return Withdraw
+     */
+    public function withdraw()
+    {
+        if (!isset($this->withdraw)) {
+            $this->withdraw = Withdraw::where('type_id', 'like', "%{$this->id}%")->where('type', $this->incometable_type)->first();
+        }
 
+        return $this->withdraw;
+    }
 }

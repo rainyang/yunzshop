@@ -29,14 +29,8 @@
     </script>
     <div class="w1200 m0a">
         <div class="rightlist">
-            <!-- 新增加右侧顶部三级菜单 -->
-            <div class="right-titpos">
-                <ul class="add-snav">
-                    <li class="active"><a href="#">商城设置</a></li>
-                </ul>
-            </div>
-        @include('setting.shop.tabs')
-        <!-- 新增加右侧顶部三级菜单结束 -->
+
+        @include('layouts.tabs')
 
             <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data">
                 <div class="panel panel-default">
@@ -69,34 +63,64 @@
                                 </div>
                             </div>
                         </div>--}}
+
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员等级权益页面是否显示</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <label class='radio-inline'><input type='radio' name='member[display_page]' value='0'
+                                                                   @if ($set['display_page'] == 0) checked @endif />否</label>
+                                <label class='radio-inline'><input type='radio' name='member[display_page]' value='1'
+                                                                   @if ($set['display_page'] == 1) checked @endif/> 是</label>
+                            <!-- <span class="help-block">后台会员等级权益页面是否显示设置为是， 前端会员中心等级按钮形式则可以点击进入</span> -->
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员等级升级依据</label>
                             <div class="col-sm-9 col-xs-12">
                                 <label class="radio radio-inline">
                                     <input type="radio" name="member[level_type]" value="0"
-                                           @if (empty($set['level_type'])) checked @endif/> 已完成的订单金额
+                                           @if (empty($set['level_type'])) checked @endif/> 订单金额
                                 </label>
                                 <label class="radio radio-inline">
                                     <input type="radio" name="member[level_type]" value="1"
-                                           @if ($set['level_type'] == 1) checked @endif/> 已完成的订单数量
+                                           @if ($set['level_type'] == 1) checked @endif/> 订单数量
                                 </label>
                                 <label class="radio radio-inline">
                                     <input type="radio" name="member[level_type]" value="2"
                                            @if ($set['level_type'] == 2) checked @endif/> 购买指定商品
                                 </label>
+                            </div>
+                        </div>
 
-                                <span class="help-block">默认为完成订单金额</span>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                            <div class="col-sm-9 col-xs-12">
+                                <label class="radio radio-inline">
+                                    <input type="radio" name="member[level_after]" value="1"
+                                           @if ($set['level_after']) checked @endif/>
+                                    付款后
+                                </label>
+                                <label class="radio radio-inline">
+                                    <input type="radio" name="member[level_after]" value="0"
+                                           @if (empty($set['level_after'])) checked @endif/>
+                                    完成后
+                                </label>
+                                <span class="help-block">
+                                    如果选择付款后，只要用户下单付款满足升级依据，即可升级；如果选择完成后，则表示需要订单完成状态才能升级
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员等级时间限制</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <label class='radio-inline'><input type='radio' name='member[term]' value='0'
+                                                                   @if ($set['term'] == 0) checked @endif /> 关闭</label>
+                                <label class='radio-inline'><input type='radio' name='member[term]' value='1'
+                                                                   @if ($set['term'] == 1) checked @endif/> 开启</label>
                             </div>
                         </div>
                     <!--
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员等级时间限制</label>
-                    <div class="col-sm-9 col-xs-12">
-                        <label class='radio-inline'><input type='radio' name='member[term]' value='0' @if ($set['term'] == 0) checked @endif /> 关闭</label>
-                        <label class='radio-inline'><input type='radio' name='member[term]' value='1' @if ($set['term'] == 1) checked @endif/> 开启</label>
-                    </div>
-                </div>
-
                 <div class="form-group"  >
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员等级到期时间</label>
                     <div class="col-sm-8">
@@ -152,15 +176,45 @@
                         </div>--}}
 
                         <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">邀请码</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <label class="radio radio-inline">
+                                    <input type="radio" name="member[is_invite]" value="0"
+                                           @if (empty($set['is_invite'])) checked @endif/> 关闭
+                                </label>
+                                <label class="radio radio-inline">
+                                    <input type="radio" name="member[is_invite]" value="1"
+                                           @if ($set['is_invite'] == 1) checked @endif/> 开启
+                                </label>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">邀请码是否必填</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <label class="radio radio-inline">
+                                    <input type="radio" name="member[required]" value="0"
+                                           @if (empty($set['required'])) checked @endif/> 关闭
+                                </label>
+                                <label class="radio radio-inline">
+                                    <input type="radio" name="member[required]" value="1"
+                                           @if ($set['required'] == 1) checked @endif/> 开启
+                                </label>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">自定义字段</label>
                             <div class="col-sm-9 col-xs-12">
                                 <label class="radio radio-inline">
                                     <input type="radio" name="member[is_custom]" value="0"
-                                           @if (empty($set['is_custom'])) checked @endif/> 禁用
+                                           @if (empty($set['is_custom'])) checked @endif/> 关闭
                                 </label>
                                 <label class="radio radio-inline">
                                     <input type="radio" name="member[is_custom]" value="1"
-                                           @if ($set['is_custom'] == 1) checked @endif/> 启用
+                                           @if ($set['is_custom'] == 1) checked @endif/> 开启
                                 </label>
                                 <span class="help-block"></span>
                             </div>
@@ -174,6 +228,26 @@
                                 <span class="help-block"></span>
                             </div>
                         </div>
+
+
+                        @if($is_diyform)
+                            <div class="form-group">
+                                <label class="col-xs-12 col-sm-3 col-md-2 control-label">自定义表单</label>
+                                <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                                    <select class="form-control tpl-category-parent" id="level" name="member[form_id]">
+                                        <option value="0">选择表单</option>
+                                        @foreach($diyForm as $form)
+                                            <option value="{{$form->id}}"
+                                                    @if($set['form_id']==$form->id)
+                                                    selected
+                                                    @endif
+                                            >[ID:{{$form->id}}]{{$form->title}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        @endif
+
 
                         <div class="form-group"></div>
                         <div class="form-group">

@@ -9,35 +9,110 @@
 namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
+use app\common\events\order\BeforeOrderPayEvent;
 use app\common\events\payment\GetOrderPaymentTypeEvent;
 use app\common\exceptions\AppException;
 use app\common\models\Order;
 use app\common\models\OrderPay;
+use app\common\models\PayType;
 use app\common\services\password\PasswordService;
 use app\common\services\PayFactory;
 use app\common\services\Session;
+use app\frontend\models\Member;
+use app\frontend\modules\order\OrderCollection;
 use app\frontend\modules\order\services\OrderService;
+use app\frontend\modules\orderPay\models\PreOrderPay;
+use app\frontend\modules\payment\orderPayments\BasePayment;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class MergePayController extends ApiController
 {
-    public $transactionActions = ['wechatPay', 'alipay'];
+    public $transactionActions = ['*'];
     /**
-     * @var Collection
+     * @var OrderCollection
      */
-    protected $orders;
-    protected $orderPay;//todo 临时解决,后续需要重构
+    private $orders;
     protected $publicAction = ['alipay'];
     protected $ignoreAction = ['alipay'];
+
+
+    /**
+     * 获取支付按钮列表接口
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     * @throws \app\common\exceptions\ShopException
+     */
+    public function index()
+    {
+        // 验证
+        $this->validate([
+            'order_ids' => 'required'
+        ]);
+
+        // 订单集合
+        $orders = $this->orders(request()->input('order_ids'));
+
+        // 用户余额
+        $member = $orders->first()->belongsToMember()->select(['credit2'])->first()->toArray();
+
+        // 生成支付记录 记录订单号,支付金额,用户,支付号
+        $orderPay = new PreOrderPay();
+        $orderPay->setOrders($orders);
+        $orderPay->store();
+
+        // 支付类型
+        $buttons = $this->getPayTypeButtons($orderPay);
+
+        $data = ['order_pay' => $orderPay, 'member' => $member, 'buttons' => $buttons, 'typename' => ''];
+        return $this->successJson('成功', $data);
+    }
+
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     * @throws \app\common\exceptions\ShopException
+     */
+    public function anotherPayOrder()
+    {
+        $this->validate([
+            'order_ids' => 'required',
+            'pid' => 'required'
+        ]);
+
+        // 订单集合
+        $orders = $this->orders(request()->input('order_ids'));
+
+        // 生成支付记录 记录订单号,支付金额,用户,支付号
+        $orderPay = new PreOrderPay();
+        $orderPay->setOrders($orders);
+        $orderPay->store();
+
+        // 支付类型
+        $buttons = $this->getPayTypeButtons($orderPay);
+
+        // todo bad taste
+        $type = \YunShop::request()->type ?: 0;
+        $buttons = collect($buttons)->filter(function ($value, $key) use ($type) {
+            if ($value['name'] != '找人代付') {
+                return $value;
+            }
+        });
+
+        $member = Member::getMemberById(request()->input('pid'));
+
+        $data = ['order_pay' => $orderPay, 'member' => $member, 'buttons' => $buttons, 'typename' => ''];
+
+        return $this->successJson('成功', $data);
+    }
 
     /**
      * 支付的时候,生成支付记录的时候,通过订单ids获取订单集合
      * @param $orderIds
-     * @return Collection
+     * @return OrderCollection
      * @throws AppException
      */
-    protected function orders($orderIds)
+    private function orders($orderIds)
     {
         if (!is_array($orderIds)) {
             $orderIds = explode(',', $orderIds);
@@ -48,216 +123,354 @@ class MergePayController extends ApiController
             }
         });
 
-        $this->orders = Order::select(['status', 'id', 'order_sn', 'price', 'uid'])->whereIn('id', $orderIds)->get();
+        $this->orders = OrderCollection::make(Order::select(['status', 'id', 'order_sn', 'price', 'uid'])->whereIn('id', $orderIds)->get());
 
         if ($this->orders->count() != count($orderIds)) {
             throw new AppException('(ID:' . implode(',', $orderIds) . ')未找到订单');
-        }
-        $this->orders->each(function ($order) {
-            if ($order->status > Order::WAIT_PAY) {
-                throw new AppException('(ID:' . $order->id . ')订单已付款,请勿重复付款');
-            }
-            if ($order->status == Order::CLOSE) {
-                throw new AppException('(ID:' . $order->id . ')订单已关闭,无法付款');
-            }
-            if ($order->uid != \YunShop::app()->getMemberId()) {
-                throw new AppException('(ID:' . $order->id . ')该订单属于其他用户');
-            }
-        });
-        // 订单金额验证
-        if ($this->orders->sum('price') < 0) {
-            throw new AppException('(' . $this->orders->sum('price') . ')订单金额有误');
         }
         return $this->orders;
     }
 
     /**
-     * 获取支付按钮列表接口
-     * @param \Request $request
-     * @return \Illuminate\Http\JsonResponse
-     * @throws AppException
-     */
-    public function index(\Request $request)
-    {
-        // 验证
-        $this->validate([
-            'order_ids' => 'required|string'
-        ]);
-        // 订单集合
-        $orders = $this->orders($request->input('order_ids'));
-        // 用户余额
-        $member = $orders->first()->belongsToMember()->select(['credit2'])->first()->toArray();
-        // 支付类型
-        $buttons = $this->getPayTypeButtons();
-        // 生成支付记录 记录订单号,支付金额,用户,支付号
-        $orderPay = new OrderPay();
-        $orderPay->order_ids = explode(',', $request->input('order_ids'));
-        $orderPay->amount = $orders->sum('price');
-        $orderPay->uid = $orders->first()->uid;
-        $orderPay->pay_sn = OrderService::createPaySN();
-        $orderPayId = $orderPay->save();
-        if (!$orderPayId) {
-            throw new AppException('支付流水记录保存失败');
-        }
-
-        $data = ['order_pay' => $orderPay, 'member' => $member, 'buttons' => $buttons, 'typename' => '支付'];
-
-        return $this->successJson('成功', $data);
-    }
-
-    /**
      * 通过事件获取支付按钮
-     * @return array
+     * @param \app\frontend\models\OrderPay $orderPay
+     * @return Collection
      */
-    private function getPayTypeButtons()
+    private function getPayTypeButtons(\app\frontend\models\OrderPay $orderPay)
     {
-        $event = new GetOrderPaymentTypeEvent($this->orders);
-        event($event);
-        $result = $event->getData();
-        return $result ? $result : [];
-    }
+        // 获取可用的支付方式
+        $result = $orderPay->getPaymentTypes()->map(function (BasePayment $paymentType) {
+            //格式化数据结构
+            return [
+                'name' => $paymentType->getName(),
+                'value' => $paymentType->getId(),
+                'need_password' => $paymentType->needPassword(),
+            ];
+        });
 
-    /**
-     * 支付
-     * @param $payType
-     * @return \app\common\services\strin5|array|bool|mixed|void
-     * @throws AppException
-     */
-    protected function pay($payType)
-    {
-        $this->validate([
-            'order_pay_id' => 'required|integer'
-        ]);
-        // 支付记录
-        $this->orderPay = $orderPay = OrderPay::find(request()->input('order_pay_id'));
-        if (!isset($orderPay)) {
-            throw new AppException('(ID' . request()->input('order_pay_id') . ')支付流水记录不存在');
-        }
-        if ($orderPay->status > 0) {
-            throw new AppException('(ID' . request()->input('order_pay_id') . '),此流水号已支付');
-        }
-        // 订单集合
-        $orders = $this->orders($orderPay->order_ids);
-        // 验证支付密码
-        return $this->getPayResult($payType,$orderPay,$orders);
-    }
-
-    /**
-     * 支付结果
-     * @param $payType
-     * @param $orderPay
-     * @param $orders
-     * @return \app\common\services\strin5|array|bool|mixed|void
-     * @throws AppException
-     */
-    protected function getPayResult($payType,$orderPay,$orders){
-        $query_str = $this->getPayParams($orderPay, $orders);
-        $pay = PayFactory::create($payType);
-        //如果支付模块常量改变 数据会受影响
-        $result = $pay->doPay($query_str, $payType);
-        if (!isset($result)) {
-            throw new AppException('获取支付参数失败');
-        }
         return $result;
     }
 
     /**
-     * 拼写支付参数
-     * @param $orderPay
-     * @param Collection $orders
-     * @return array
-     */
-    protected function getPayParams($orderPay, Collection $orders)
-    {
-        return [
-            'order_no' => $orderPay->pay_sn,
-            'amount' => $orderPay->amount,
-            'subject' => $orders->first()->hasManyOrderGoods[0]->title ?: '芸众商品',
-            'body' => ($orders->first()->hasManyOrderGoods[0]->title ?: '芸众商品') . ':' . \YunShop::app()->uniacid,
-            'extra' => ['type' => 1]
-        ];
-    }
-
-    /**
      * 微信支付
-     * @param \Request $request
      * @return \Illuminate\Http\JsonResponse
      * @throws AppException
+     * @throws \app\common\exceptions\ShopException
      */
-    public function wechatPay(\Request $request)
+    public function wechatPay()
     {
+        $this->validate([
+            'order_pay_id' => 'required|integer'
+        ]);
         if (\Setting::get('shop.pay.weixin') == false) {
             throw new AppException('商城未开启微信支付');
         }
-        $data = $this->pay( PayFactory::PAY_WEACHAT);
+        /**
+         * @var \app\frontend\models\OrderPay $orderPay
+         */
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+        $data = $orderPay->getPayResult(PayFactory::PAY_WEACHAT);
         $data['js'] = json_decode($data['js'], 1);
+
+        $trade = \Setting::get('shop.trade');
+        $redirect = '';
+
+        if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
+            $redirect = $trade['redirect_url'];
+        }
+
+        $data['redirect'] = $redirect;
+
         return $this->successJson('成功', $data);
     }
 
     /**
      * 支付宝支付
-     * @param \Request $request
      * @return \Illuminate\Http\JsonResponse
      * @throws AppException
      */
-    public function alipay(\Request $request)
+    public function alipay()
     {
         if (\Setting::get('shop.pay.alipay') == false) {
             throw new AppException('商城未开启支付宝支付');
         }
-        if ($request->has('uid')) {
-            Session::set('member_id', $request->query('uid'));
+        if (request()->has('uid')) {
+            Session::set('member_id', request()->query('uid'));
         }
-        $data = $this->pay( PayFactory::PAY_ALIPAY);
+        /**
+         * @var \app\frontend\models\OrderPay $orderPay
+         */
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+        $data = $orderPay->getPayResult(PayFactory::PAY_ALIPAY);
         return $this->successJson('成功', $data);
     }
 
     /**
      * 微信app支付
-     * @param \Request $request
      * @return \Illuminate\Http\JsonResponse
      * @throws AppException
      */
-    public function wechatAppPay(\Request $request)
+    public function wechatAppPay()
     {
         if (\Setting::get('shop_app.pay.weixin') == false) {
             throw new AppException('商城未开启微信支付');
         }
-        $data = $this->pay( PayFactory::PAY_APP_WEACHAT);
+        /**
+         * @var \app\frontend\models\OrderPay $orderPay
+         */
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+        $data = $orderPay->getPayResult(PayFactory::PAY_APP_WEACHAT);
         return $this->successJson('成功', $data);
     }
 
     /**
      * 支付宝app支付
-     * @param \Request $request
      * @return \Illuminate\Http\JsonResponse
      * @throws AppException
      */
-    public function alipayAppRay(\Request $request)
+    public function alipayAppRay()
     {
         if (\Setting::get('shop_app.pay.alipay') == false) {
             throw new AppException('商城未开启支付宝支付');
         }
-        if ($request->has('uid')) {
-            Session::set('member_id', $request->query('uid'));
+        if (request()->has('uid')) {
+            Session::set('member_id', request()->query('uid'));
         }
-        $data = $this->pay( PayFactory::PAY_APP_ALIPAY);
+        /**
+         * @var \app\frontend\models\OrderPay $orderPay
+         */
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+
+        $data['payurl'] = $orderPay->getPayResult(PayFactory::PAY_APP_ALIPAY);
+        $data['order_sn'] = \YunShop::app()->uniacid.'_'.$orderPay->pay_sn;
+        $data['isnewalipay'] = \Setting::get('shop_app.pay.newalipay');
         return $this->successJson('成功', $data);
     }
 
     /**
      * 微信云支付
-     * @param \Request $request
      * @return \Illuminate\Http\JsonResponse
      * @throws AppException
      */
-    public function cloudWechatPay(\Request $request)
+    public function cloudWechatPay()
+    {
+        if (\Setting::get('plugin.cloud_pay_set') == false) {
+            throw new AppException('商城未开启微信支付');
+        }
+        /**
+         * @var \app\frontend\models\OrderPay $orderPay
+         */
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+        $data = $orderPay->getPayResult(PayFactory::PAY_CLOUD_WEACHAT);
+        return $this->successJson('成功', $data);
+    }
+
+    /**
+     * 芸支付
+     *
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     */
+    public function yunPayWechat()
+    {
+        if (\Setting::get('plugin.yun_pay_set') == false) {
+            throw new AppException('商城未开启芸支付');
+        }
+
+        /**
+         * @var \app\frontend\models\OrderPay $orderPay
+         */
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+        $data = $orderPay->getPayResult(PayFactory::PAY_YUN_WEACHAT);
+        return $this->successJson('成功', $data);
+    }
+
+    /**
+     * 支付宝云支付
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     */
+    public function cloudAliPay()
     {
         if (\Setting::get('plugin.cloud_pay_set') == false) {
             throw new AppException('商城未开启支付宝支付');
         }
 
-        $data = $this->pay( PayFactory::PAY_CLOUD_WEACHAT);
+        /**
+         * @var \app\frontend\models\OrderPay $orderPay
+         */
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+        $data = $orderPay->getPayResult(PayFactory::PAY_CLOUD_ALIPAY, ['pay' => 'cloud_alipay']);
+        return $this->successJson('成功', $data);
+    }
+
+    /**
+     * 找人代付
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     */
+    public function anotherPay()
+    {
+        if (\Setting::get('another_pay_set') == false) {
+            throw new AppException('商城未开启支付宝支付');
+        }
+
+        return $this->successJson('成功', []);
+    }
+
+
+    /**
+     * 支付宝—YZ
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     */
+    public function yunPayAlipay()
+    {
+        if (\Setting::get('plugin.yun_pay_set') == false) {
+            throw new AppException('商城未开启芸支付');
+        }
+        /**
+         * @var \app\frontend\models\OrderPay $orderPay
+         */
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+        $data = $orderPay->getPayResult(PayFactory::PAY_YUN_WEACHAT, ['pay' => 'alipay']);
+        return $this->successJson('成功', $data);
+    }
+
+    /**
+     * 货到付款
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     * @throws \app\common\exceptions\ShopException
+     */
+    public function COD()
+    {
+        $this->validate([
+            'order_pay_id' => 'required|integer'
+        ]);
+        if (\Setting::get('shop.pay.COD') == false) {
+            throw new AppException('商城未开启货到付款');
+        }
+        /**
+         * @var \app\frontend\models\OrderPay $orderPay
+         */
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+        $orderPay->getPayResult(PayFactory::PAY_COD);
+        $orderPay->pay();
+        $trade = \Setting::get('shop.trade');
+        $redirect = '';
+
+        if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
+            $redirect = $trade['redirect_url'];
+        }
+
+        return $this->successJson('成功', ['redirect' => $redirect]);
+    }
+
+    /**
+     * 货到付款
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     * @throws \app\common\exceptions\ShopException
+     */
+    public function remittance()
+    {
+        $this->validate([
+            'order_pay_id' => 'required|integer'
+        ]);
+
+        if (\Setting::get('shop.pay.remittance') == false) {
+            throw new AppException('商城未开启转账付款');
+        }
+        /**
+         * @var \app\frontend\models\OrderPay $orderPay
+         */
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+
+        $data = $orderPay->getPayResult(PayType::REMITTANCE);
+
+        $orderPay->applyPay();
+
+        $orderPay->save();
+        $trade = \Setting::get('shop.trade');
+        $redirect = '';
+
+        if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
+            $redirect = $trade['redirect_url'];
+        }
+        $data['redirect'] = $redirect;
+        return $this->successJson('成功', $data);
+    }
+
+    /**
+     * 环迅快捷支付
+     *
+     * @param \Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     */
+    public function huanxunQuick(\Request $request)
+    {
+        if (\Setting::get('plugin.huanxun_set') == false) {
+            throw new AppException('商城未开启快捷支付');
+        }
+
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+        $data = $orderPay->getPayResult(PayFactory::PAY_Huanxun_Quick, ['pay' => 'quick']);
+
+        return $this->successJson('成功', $data);
+    }
+
+    /**
+     * 威富通公众号支付
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     */
+    public function wftWechat(\Request $request)
+    {
+
+        if (\Setting::get('plugin.wft_pay') == false) {
+            throw new AppException('商城未开启威富通公众号支付');
+        }
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+        $data = $orderPay->getPayResult(PayFactory::WFT_PAY);
+
+        return $this->successJson('成功', $data);
+    }
+
+    /**
+     * 威富通支付宝支付
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     */
+    public function wftAlipay(\Request $request)
+    {
+
+        if (\Setting::get('plugin.wft_alipay') == false) {
+            throw new AppException('商城未开启威富通公众号支付');
+        }
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+        $data = $orderPay->getPayResult(PayFactory::WFT_ALIPAY);
+
+        return $this->successJson('成功', $data);
+    }
+
+    /**
+     * 环迅微信支付
+     *
+     * @param \Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     */
+    public function huanxunWx(\Request $request)
+    {
+        if (\Setting::get('plugin.huanxun_set') == false) {
+            throw new AppException('商城未开启快捷支付');
+        }
+
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+        $data = $orderPay->getPayResult(PayFactory::PAY_Huanxun_Wx, ['pay' => 'wx']);
+
         return $this->successJson('成功', $data);
     }
 }

@@ -30,12 +30,13 @@ abstract class ChangeStatusOperation extends OrderOperation
 
     /**
      * 执行订单操作
-     * @return mixed
+     * @return bool|void
+     * @throws \app\common\exceptions\AppException
      */
-    public function execute()
+    public function handle()
     {
-        $result = $this->updateTable();
+        parent::handle();
+        $this->updateTable();
         $this->_fireEvent();
-        return $result;
     }
 }

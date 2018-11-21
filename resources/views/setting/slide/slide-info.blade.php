@@ -8,7 +8,9 @@
                 <li class="active"><a href="#">幻灯片</a></li>
             </ul>
         </div>
-        <!-- 新增加右侧顶部三级菜单结束 -->
+
+
+        @include('layouts.tabs')
         <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data">
             {{--@if(isset($slideModel->id) && !empty($slideModel->id))--}}
             <input type="hidden" name="id" class="form-control" value="{{$slideModel->id}}"/>

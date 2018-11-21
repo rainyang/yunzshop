@@ -12,6 +12,8 @@ use app\common\models\Member;
 use app\common\models\Coupon;
 use app\common\models\CouponLog;
 use app\backend\modules\coupon\services\Message;
+use app\common\models\MemberShopInfo;
+use app\backend\modules\coupon\services\MessageNotice;
 
 
 class SendCouponController extends BaseController
@@ -81,13 +83,14 @@ class SendCouponController extends BaseController
                     }
                     break;
                 case self::TO_ALL_MEMBERS:
-                    $res = Member::getMembersId();
+//                    $res = Member::getMembersId();
+                    $res = MemberShopInfo::getYzMembersId();
                     if (!$res) {
                         $members = '';
                     } else {
                         $members = $res->toArray();
                     }
-                    $memberIds = array_column($members, 'uid');
+                    $memberIds = array_column($members, 'member_id');
                     break;
                 default:
                     $memberIds = '';
@@ -122,6 +125,12 @@ class SendCouponController extends BaseController
                 ];
                 $res = $this->sendCoupon($couponModel, $memberIds, $sendTotal, $responseData);
                 if ($res) {
+
+                    //发送获取通知
+                    foreach ($memberIds as $memberId) {
+                        MessageNotice::couponNotice($couponModel->id,$memberId);
+                    }
+
                     return $this->message('手动发送优惠券成功');
                 } else {
                     return $this->message('有部分优惠券未能发送, 请检查数据库', '', 'error');
@@ -169,6 +178,7 @@ class SendCouponController extends BaseController
                 //写入log
                 if ($res) { //发放优惠券成功
                     $log = '手动发放优惠券成功: 管理员( ID 为 ' . $this->adminId . ' )成功发放 ' . $sendTotal . ' 张优惠券( ID为 ' . $couponModel->id . ' )给用户( Member ID 为 ' . $memberId . ' )';
+
                 } else { //发放优惠券失败
                     $log = '手动发放优惠券失败: 管理员( ID 为 ' . $this->adminId . ' )发放优惠券( ID为 ' . $couponModel->id . ' )给用户( Member ID 为 ' . $memberId . ' )时失败!';
                     $this->failedSend[] = $log; //失败时, 记录 todo 最后需要展示出来

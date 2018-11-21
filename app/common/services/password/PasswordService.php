@@ -31,7 +31,7 @@ class PasswordService
             // 商城关闭支付密码
             throw (new PaymentException())->settingClose();
         }
-        if (!isset($memberModel->pay_password)) {
+        if (!isset($memberModel->pay_password) || empty($memberModel->pay_password)) {
             // 用户未设置
             throw (new PaymentException())->notSet();
         }

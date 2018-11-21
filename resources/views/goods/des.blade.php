@@ -1,4 +1,4 @@
-<link rel="stylesheet" type="text/css" href="{{static_url('yunshop/goods/goods.css')}}"/>
+{{--<link rel="stylesheet" type="text/css" href="{{static_url('yunshop/goods/goods.css')}}"/>--}}
 
 
 <div class="form-group">

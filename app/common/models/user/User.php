@@ -27,7 +27,7 @@ class User extends BaseModel
 
     public $attributes = [
         'groupid' => 0 ,
-        'type' => 0,
+        'type' => 1,
         'remark' => '',
         'endtime' => 0
     ];
@@ -45,18 +45,47 @@ class User extends BaseModel
         if(Schema::hasColumn($this->table, 'owner_uid')){ //用于兼容新版微擎新增的字段
             $this->attributes = array_merge($this->attributes, ['owner_uid' => '0']);
         }
-        if(Schema::hasColumn($this->table, 'founder_groupid')){ //用于兼容新版微擎新增的字段
+        if(Schema::hasColumn($this->table, 'founder_groupid')){
             $this->attributes = array_merge($this->attributes, ['founder_groupid' => '0']);
         }
-        if(Schema::hasColumn($this->table, 'credit1')){ //用于兼容新版微擎新增的字段
+        if(Schema::hasColumn($this->table, 'register_type')){
+            $this->attributes = array_merge($this->attributes, ['register_type' => '0']);
+        }
+        if(Schema::hasColumn($this->table, 'openid')){
+            $this->attributes = array_merge($this->attributes, ['openid' => '']);
+        }
+        if(Schema::hasColumn($this->table, 'welcome_link')){
+            $this->attributes = array_merge($this->attributes, ['welcome_link' => '0']);
+        }
+        if(Schema::hasColumn($this->table, 'is_bind')){
+            $this->attributes = array_merge($this->attributes, ['is_bind' => '0']);
+        }
+
+        if(Schema::hasColumn($this->table, 'schoolid')){
+            $this->attributes = array_merge($this->attributes, ['schoolid' => '0']);
+        }
+        if(Schema::hasColumn($this->table, 'credit1')){
             $this->attributes = array_merge($this->attributes, ['credit1' => '0']);
         }
-        if(Schema::hasColumn($this->table, 'credit2')){ //用于兼容新版微擎新增的字段
+        if(Schema::hasColumn($this->table, 'credit2')){
             $this->attributes = array_merge($this->attributes, ['credit2' => '0']);
         }
-        if(Schema::hasColumn($this->table, 'ucuserid')){ //用于兼容新版微擎新增的字段
-            $this->attributes = array_merge($this->attributes, ['ucuserid' => '0']);
+        if(Schema::hasColumn($this->table, 'agentid')){
+            $this->attributes = array_merge($this->attributes, ['agentid' => '0']);
         }
+        if(Schema::hasColumn($this->table, 'uniacid')){
+            $this->attributes = array_merge($this->attributes, ['uniacid' => '0']);
+        }
+
+        if(Schema::hasColumn($this->table, 'token')){
+            $this->attributes = array_merge($this->attributes, ['token' => '']);
+        }
+
+        if(Schema::hasColumn($this->table, 'registration_id')){
+            $this->attributes = array_merge($this->attributes, ['registration_id' => '']);
+        }
+
+
         return $this->attributes;
     }
 
@@ -105,11 +134,11 @@ class User extends BaseModel
      */
     public function scopeNoOperator($query)
     {
-        if (Schema::hasTable('yz_supplier')) {
+        /*if (Schema::hasTable('yz_supplier')) {
             $ids = DB::table('yz_supplier')->select('uid')->get();
 
             return $query->whereNotIn('uid',$ids);
-        }
+        }*/
         return $query;
     }
 
@@ -121,7 +150,7 @@ class User extends BaseModel
     public function scopeRecords($query)
     {
         return $query->whereHas('uniAccount', function($query){
-            return $query->uniacid();
+            return $query->uniacid()->where('role', '!=', 'clerk');
         })
         ->with(['userProfile' => function($profile) {
             return $profile->select('uid', 'realname', 'mobile');
@@ -177,6 +206,9 @@ class User extends BaseModel
             ->with(['permissions' => function($userPermission) {
                 return $userPermission->select('permission', 'item_id');
             }])
+            ->whereHas('uniAccount', function($query){
+                return $query->uniacid()->where('role', '!=', 'clerk');
+            })
             ->first();
     }
 

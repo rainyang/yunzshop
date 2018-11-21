@@ -22,8 +22,8 @@ class LogoutController extends BaseController
         Cookie::unqueue($cookieid);
         Cookie::unqueue('member_mobile');
 
-        Session::clear('member_id');
-
+        //Session::clear('member_id');
+        session_destroy();
         return $this->successJson('退出成功');
     }
 }

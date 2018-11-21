@@ -13,6 +13,7 @@ namespace app\common\models;
 class MemberAddress extends BaseModel
 {
     protected $table = 'mc_member_address';
+    protected $guarded = ['street'];
 
     public $timestamps = false;
 

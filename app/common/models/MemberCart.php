@@ -10,6 +10,11 @@ namespace app\common\models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * Class MemberCart
+ * @package app\common\models
+ * @property int plugin_id
+ */
 class MemberCart extends BaseModel
 {
     use SoftDeletes;

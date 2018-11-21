@@ -10,9 +10,20 @@ namespace app\common\models\order;
 
 use app\common\models\BaseModel;
 
+/**
+ * Class OrderDiscount
+ * @property int uid
+ * @package app\common\models\order
+ */
 class OrderDiscount extends BaseModel
 {
     public $table = 'yz_order_discount';
     protected $fillable = [];
     protected $guarded = ['id'];
+
+    public function save(array $options = [])
+    {
+        $this->amount = (float)$this->amount;
+        return parent::save($options);
+    }
 }

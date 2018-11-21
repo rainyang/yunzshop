@@ -28,21 +28,23 @@ class PermissionService
      */
     public static function can($item)
     {
-        /*
-        if(!$item){
+        /*if(!$item){
             return false;
-        }
-        */
+        }*/
         if (\Yunshop::isPHPUnit()) {
             return true;
         }
         if (self::isFounder()) {
             return true;
+        //todo 临时增加创始人私有管理插件权限
+        } elseif (in_array($item,static::founderPermission())) {
+            return false;
         }
+
         if (self::isOwner()) {
             return true;
         }
-        if (static::isManager()) {
+        if (self::isManager()) {
             return true;
         }
         if (self::checkNoPermission($item) === true) {
@@ -69,6 +71,12 @@ class PermissionService
             return true;
         }
         return false;
+    }
+
+
+    public static function founderPermission()
+    {
+        return ['founder_plugins','plugins_enable','plugins_disable','plugins_manage','plugins_delete','plugins_update','shop_upgrade'];
     }
 
     /**

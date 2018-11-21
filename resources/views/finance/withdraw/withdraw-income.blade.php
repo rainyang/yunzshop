@@ -10,7 +10,7 @@
                 <input type='radio' name='withdraw[income][balance]' value='0' @if($set['balance'] == 0) checked @endif />
                 关闭
             </label>
-            <span class='help-block'>可开启独立手续费设置，独立手续费：提现到余额的收入，计算比例按照独立手续费中的比例计算【优先级高于插件独立设置】</span>
+            <span class='help-block'>可开启独立手续费设置，独立手续费：提现到余额的收入(不含收银台)，计算比例按照独立手续费中的比例计算【优先级高于插件独立设置】</span>
         </div>
     </div>
 </div>
@@ -106,6 +106,43 @@
     </div>
 </div>
 
+@if(app('plugins')->isEnabled('huanxun'))
+<div class="tab-pane  active">
+    <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现到环迅支付</label>
+        <div class="col-sm-9 col-xs-12">
+            <label class='radio-inline'>
+                <input type='radio' name='withdraw[income][huanxun]' value='1' @if($set['huanxun'] == 1) checked @endif />
+                开启
+            </label>
+            <label class='radio-inline'>
+                <input type='radio' name='withdraw[income][huanxun]' value='0' @if($set['huanxun'] == 0) checked @endif />
+                关闭
+            </label>
+            <span class='help-block'>提现到环迅支付，支持收入提现免审核</span>
+        </div>
+    </div>
+</div>
+@endif
+
+@if(app('plugins')->isEnabled('eup-pay'))
+    <div class="tab-pane  active">
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现到EUP</label>
+            <div class="col-sm-9 col-xs-12">
+                <label class='radio-inline'>
+                    <input type='radio' name='withdraw[income][eup_pay]' value='1' @if($set['eup_pay'] == 1) checked @endif />
+                    开启
+                </label>
+                <label class='radio-inline'>
+                    <input type='radio' name='withdraw[income][eup_pay]' value='0' @if($set['eup_pay'] == 0) checked @endif />
+                    关闭
+                </label>
+            </div>
+        </div>
+    </div>
+@endif
+
 <div class="tab-pane  active">
     <div class="form-group">
         <label class="col-xs-12 col-sm-3 col-md-2 control-label">手动提现</label>
@@ -118,6 +155,30 @@
                 <input type='radio' name='withdraw[income][manual]' value='0' @if($set['manual'] == 0) checked @endif />
                 关闭
             </label>
+            <span class='help-block'>手动提现包含 银行卡、微信号、支付宝等三种类型，会员需要完善对应资料才可以提现</span>
+        </div>
+    </div>
+</div>
+
+
+<div id='manual_type' @if(empty($set['manual']))style="display:none"@endif>
+    <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+        <div class="col-sm-9 col-xs-12">
+            <div class="switch">
+                <label class='radio-inline'>
+                    <input type='radio' name='withdraw[income][manual_type]' value='1' @if($set['manual_type'] == 1 || $set['balance_special'] == 1 || empty($set['manual_type'])) checked @endif />
+                    银行卡
+                </label>
+                <label class='radio-inline'>
+                    <input type='radio' name='withdraw[income][manual_type]' value='2' @if($set['manual_type'] == 2) checked @endif />
+                    微信
+                </label>
+                <label class='radio-inline'>
+                    <input type='radio' name='withdraw[income][manual_type]' value='3' @if($set['manual_type'] == 3) checked @endif />
+                    支付宝
+                </label>
+            </div>
         </div>
     </div>
 </div>
@@ -147,7 +208,7 @@
                 <input type='radio' name='withdraw[income][free_audit]' value='0' @if($set['free_audit'] == 0) checked @endif />
                 关闭
             </label>
-            <span class='help-block'>收入提现自动审核、自动打款（自动打款只支持提现到余额、提现到微信两种方式！）</span>
+            <span class='help-block'>收入提现自动审核、自动打款（自动打款只支持提现到余额、提现到微信、提现到环迅支付三种方式！）</span>
         </div>
     </div>
 </div>
@@ -172,6 +233,14 @@
             }
             else {
                 $("#balance_special").hide();
+            }
+        });
+        $(":radio[name='withdraw[income][manual]']").click(function () {
+            if ($(this).val() == 1) {
+                $("#manual_type").show();
+            }
+            else {
+                $("#manual_type").hide();
             }
         });
     })

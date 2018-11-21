@@ -3,7 +3,14 @@
 namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
-use app\common\services\password\PasswordService;
+use app\common\models\Address;
+use app\common\models\Order;
+use app\common\models\Setting;
+use app\common\modules\address\services\AddressService;
+use app\common\repositories\MemberAddressRepository;
+use app\frontend\models\Member;
+use app\frontend\modules\payment\orderPayments\BasePayment;
+use Yunshop\StoreCashier\common\models\Store;
 
 /**
  * Created by PhpStorm.
@@ -17,22 +24,14 @@ class TestController extends ApiController
 
     public function index()
     {
-        dd((new PasswordService())->checkMemberPassword(213,'sgl918'));
-
+        $a = app('MemberAddressRepository');
+        dd($a);
         exit;
 
-        //(new MessageService(\app\frontend\models\Order::completed()->first()))->received();
-    }
+        $paymentTypes = app('PaymentManager')->make('OrderPaymentTypeManager')->getOrderPaymentTypes();
+        dd($paymentTypes);
+        exit;
 
-    public function index1()
-    {
-        // 最简单的单例
-        $result = app()->share(function ($var) {
-            return $var + 1;
-        });
-        dd($result(100));
-
-        dd($result(3));
     }
 
 }

@@ -3,12 +3,14 @@
 namespace app\payment;
 
 use app\common\components\BaseController;
+use app\common\events\payment\ChargeComplatedEvent;
 use app\common\events\payment\RechargeComplatedEvent;
 use app\common\models\AccountWechats;
 use app\common\models\OrderPay;
 use app\common\models\PayOrder;
 use app\frontend\modules\finance\services\BalanceRechargeResultService;
 use app\frontend\modules\order\services\OrderService;
+use Yunshop\ClockIn\models\ClockPayLogModel;
 use Yunshop\Gold\frontend\services\RechargeService;
 
 /**
@@ -62,12 +64,9 @@ class PaymentController extends BaseController
         $body = !empty($_REQUEST['body']) ? $_REQUEST['body'] : '';
         //区分app支付获取
         if ($_REQUEST['sign_type'] == 'MD5') {
-            $splits = explode(':', $body);
-
-            $uniacid = $splits[1];
+            $uniacid = substr($body, strrpos($body, ':')+1);
         } else {
             $uniacid = $this->substr_var($_REQUEST['body']);
-            $uniacid;
         }
         \Log::debug('body获取unicid', $uniacid);
         if (!empty($uniacid)) {
@@ -110,7 +109,7 @@ class PaymentController extends BaseController
 
         switch ($type) {
             case "charge.succeeded":
-                \Log::debug('支付操作', ['charge.succeeded']);
+                \Log::debug("{$data['out_trade_no']}支付操作", ['charge.succeeded']);
 
                 $orderPay = OrderPay::where('pay_sn', $data['out_trade_no'])->first();
 
@@ -121,6 +120,14 @@ class PaymentController extends BaseController
                 if (bccomp($orderPay->amount, $data['total_fee'], 2) == 0) {
                     \Log::debug('更新订单状态');
                     OrderService::ordersPay(['order_pay_id' => $orderPay->id, 'pay_type_id' => $data['pay_type_id']]);
+
+                    event(new ChargeComplatedEvent([
+                        'order_sn' => $data['out_trade_no'],
+                        'pay_sn' => $data['trade_no'],
+                        'order_pay_id' => $orderPay->id
+                    ]));
+                }else{
+                    \Log::debug("金额校验失败","{$orderPay->amount}不等于{$data['total_fee']}");
                 }
                 break;
             case "recharge.succeeded":
@@ -150,6 +157,32 @@ class PaymentController extends BaseController
                     'pay_sn' => $data['trade_no']
                 ]));
                 break;
+            case "card_charge.succeeded":
+                \Log::debug('打卡支付操作', ['card_charge.succeeded']);
+
+                $orderPay = ClockPayLogModel::where('order_sn', $data['out_trade_no'])->first();
+
+                if ($data['unit'] == 'fen') {
+                    $orderPay->amount = $orderPay->amount * 100;
+                }
+
+                if (bccomp($orderPay->amount, $data['total_fee'], 2) == 0) {
+                    \Log::debug('更新订单状态');
+                    event(new ChargeComplatedEvent([
+                        'order_sn' => $data['out_trade_no'],
+                        'pay_sn' => $data['trade_no']
+                    ]));
+                }
+                break;
+            case "dashang_charge.succeeded":
+                \Log::debug('打赏支付操作', ['dashang_charge.succeeded']);
+                event(new ChargeComplatedEvent([
+                    'order_sn' => $data['out_trade_no'],
+                    'pay_sn' => '',
+                    'unit' => $data['unit'],
+                    'total_fee' => $data['total_fee']
+                ]));
+                break;
         }
     }
 
@@ -166,10 +199,14 @@ class PaymentController extends BaseController
 
             if ('PN' == strtoupper($tag)) {
                 return 'charge.succeeded';
-            } elseif ('RV' == strtoupper($tag)) {
+            } elseif ('RV' == strtoupper($tag) || "RF" == strtoupper($tag)) {
                 return 'recharge.succeeded';
             } elseif ('RG' == strtoupper($tag)) {
                 return 'gold_recharge.succeeded';
+            } elseif ('CI' == strtoupper($tag)) {
+                return 'card_charge.succeeded';
+            } elseif ('DS' == strtoupper($tag)) {
+                return 'dashang_charge.succeeded';
             }
         }
 

@@ -3,17 +3,20 @@
 @section('content')
 <div class="w1200 m0a">
 <div class="rightlist">
-<!-- 新增加右侧顶部三级菜单 -->
-    <div class="right-titpos">
-        <ul class="add-snav">
-            <li class="active"><a href="#">商城设置</a></li>
-        </ul>
-    </div>
-    @include('setting.shop.tabs')
-<!-- 新增加右侧顶部三级菜单结束 -->
+
+    @include('layouts.tabs')
     <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" >
         <div class="panel panel-default">
-            <div class='panel-body'>  
+            <div class='panel-body'>
+
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">短信图形验证码</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <input type="radio" name="sms[status]" value="1" @if ($set['status'] == 1) checked @endif/> 开启
+                        &nbsp;&nbsp;
+                        <input type="radio" name="sms[status]" value="0" @if ($set['status'] == 0) checked @endif/> 关闭
+                    </div>
+                </div>
 
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">短信设置</label>
@@ -26,15 +29,34 @@
 
                 <div id="sms1" @if ($set['type'] == 2 || $set['type'] == 3) class="hide" @endif>
                     <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">短信账号</label>
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">国内短信账号</label>
                         <div class="col-sm-9 col-xs-12">
                             <input type="text" name="sms[account]" class="form-control" value="{{ $set['account'] }}" />
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">短信密码</label>
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">国内短信密码</label>
                         <div class="col-sm-9 col-xs-12">
                             <input type="text" name="sms[password]" class="form-control" value="{{ $set['password'] }}" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12 col-xs-12">
+                            <hr>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">国际短信账号</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <input type="text" name="sms[account2]" class="form-control" value="{{ $set['account2'] }}" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">国际短信密码</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <input type="text" name="sms[password2]" class="form-control" value="{{ $set['password2'] }}" />
                         </div>
                     </div>
                 </div>
@@ -98,7 +120,7 @@
                     </div>
                 </div>
 
-                <div id="sms3" @if ($set['type'] == 1 || $set['type'] == 2) class="hide" @endif>
+                <div id="sms3" @if ($set['type'] == 1 || $set['type'] == 2 || !$set['type']) class="hide" @endif>
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                         <div class="col-sm-9 col-xs-12 alert alert-info">

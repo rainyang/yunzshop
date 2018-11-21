@@ -18,4 +18,10 @@ class ExchangeGoods extends ReturnGoods
         $this->refundApply->status = RefundApply::WAIT_RECEIVE_RESEND_GOODS;
         return $this->refundApply->save();
     }
+    public function close()
+    {
+        $this->refundApply->status = RefundApply::CLOSE;
+        return $this->refundApply->save();
+
+    }
 }

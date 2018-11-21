@@ -12,16 +12,17 @@ namespace app\frontend\models;
 use app\common\models\GoodsDiscount;
 use app\frontend\modules\member\services\MemberService;
 
+/**
+ * Class GoodsOption
+ * @package app\frontend\models
+ * @property int id
+ * @property int goods_id
+ * @property string title
+ * @property float weight
+ * @property Goods goods
+ */
 class GoodsOption extends \app\common\models\GoodsOption
 {
-    /**
-     * 获取商品规格最终价格
-     * @return mixed
-     */
-    public function getFinalPriceAttribute()
-    {
-        return $this->product_price - $this->getVipDiscountAmount();
-    }
     public function getVipDiscountAmount(){
         return $this->goods->getVipDiscountAmount($this->product_price);
     }

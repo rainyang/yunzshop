@@ -6,7 +6,7 @@
 
 
         <input type='hidden' id='uid' name='widgets[notice][uid]' value="{{ $uid }}"/>
-        <div class='input-group'>
+        <div class='input-group col-md-6'>
             <input type="text" name="saler" maxlength="30"
                    value="@if (!empty($saler)) {{ $saler['nickname'] }} / {{ $saler['realname'] }} / {{ $saler['mobile'] }} @endif"
                    id="saler" class="form-control" readonly/>
@@ -14,7 +14,7 @@
                 <button class="btn btn-default" type="button"
                         onclick="popwin = $('#modal-module-menus-notice').modal();">选择通知人
                 </button>
-                <button class="btn btn-danger" type="button"
+                <button class="btn btn-danger" style="height:34px" type="button"
                         onclick="$('#uid').val('');$('#saler').val('');$('#saleravatar').hide()">清除选择
                 </button>
             </div>
@@ -22,7 +22,7 @@
         <span id="saleravatar" class='help-block' @if (empty($saler)) style="display:none" @endif >
             <img style=""
                     src="@if (!empty($saler)) {{ $saler->avatar }} @endif"/></span>
-        <span class="help-block">单品下单通知，可制定某个用户，通知商品下单备货通知,如果商品为同一商家，建议使用系统统一设置</span>
+        <span class="help-block">单品下单通知，可指定某个用户，通知商品下单备货通知,如果商品为同一商家，建议使用系统统一设置</span>
 
         <div id="modal-module-menus-notice" class="modal fade" tabindex="-1">
             <div class="modal-dialog" >
@@ -58,16 +58,16 @@
 
 
         <label class="checkbox-inline">
-            <input type="checkbox" value="0" name='widgets[notice][type][]'
-                   @if (in_array(0, $noticetype)) checked @endif /> 下单通知
-        </label>
-        <label class="checkbox-inline">
             <input type="checkbox" value="1" name='widgets[notice][type][]'
-                   @if (in_array(1, $noticetype)) checked @endif /> 付款通知
+                   @if (in_array(1, $noticetype)) checked @endif /> 下单通知
         </label>
         <label class="checkbox-inline">
             <input type="checkbox" value="2" name='widgets[notice][type][]'
-                   @if (in_array(2, $noticetype)) checked @endif /> 买家收货通知
+                   @if (in_array(2, $noticetype)) checked @endif /> 付款通知
+        </label>
+        <label class="checkbox-inline">
+            <input type="checkbox" value="3" name='widgets[notice][type][]'
+                   @if (in_array(3, $noticetype)) checked @endif /> 买家收货通知
         </label>
         <div class="help-block">通知商家方式</div>
 

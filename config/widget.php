@@ -2,6 +2,10 @@
 
 return [
     'goods' => [
+        'div_from' => [
+            'title' => '表单',
+            'class' => 'app\backend\widgets\goods\DivFromWidget'
+        ],
         'tab_sale' => [
             'title' => '营销',
             'class' => 'app\backend\widgets\goods\SaleWidget',
@@ -30,6 +34,15 @@ return [
             'title' => '优惠券',
             'class' => 'app\backend\widgets\goods\CouponWidget'
         ],
+        'tb_limitbuy' => [
+            'title' => '限时购',
+            'class' => 'app\backend\widgets\goods\LimitBuyWidget'
+        ],
+        'tab_filtering' => [
+            'title' => '商品标签',
+            'class' => 'app\backend\widgets\goods\FilteringWidget'
+        ],
+
     ],
     'withdraw' => [
         'income' => [

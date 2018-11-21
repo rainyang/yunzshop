@@ -15,6 +15,7 @@ use app\common\models\OrderPay;
 use app\common\services\Pay;
 use app\payment\PaymentController;
 use EasyWeChat\Foundation\Application;
+use app\common\models\OrderGoods;
 
 
 class WechatController extends PaymentController
@@ -64,14 +65,22 @@ class WechatController extends PaymentController
         }
     }
 
+
     public function returnUrl()
     {
+        $trade = \Setting::get('shop.trade');
+
+        if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
+            return redirect($trade['redirect_url'])->send();
+        }
+
         if (\YunShop::request()->outtradeno) {
             $orderPay = OrderPay::where('pay_sn', \YunShop::request()->outtradeno)->first();
             $orders = Order::whereIn('id', $orderPay->order_ids)->get();
             if (is_null($orderPay)) {
                 redirect(Url::absoluteApp('home'))->send();
             }
+
             if ($orders->count() > 1) {
                 redirect(Url::absoluteApp('member/orderlist/', ['i' => \YunShop::app()->uniacid]))->send();
             } else {
@@ -107,7 +116,7 @@ class WechatController extends PaymentController
                 }
 
                 break;
-            case 'APP':
+            case 'APP' :
                 $pay = \Setting::get('shop_app.pay');
                 break;
         }
@@ -116,7 +125,15 @@ class WechatController extends PaymentController
         $payment = $app->payment;
         $notify = $payment->getNotify();
 
-        return $notify->isValid();
+        //老版本-无参数
+        $valid = $notify->isValid();
+
+        if (!$valid) {
+            //新版本-有参数
+            $valid = $notify->isValid($pay['weixin_apisecret']);
+        }
+
+        return $valid;
     }
 
     /**
@@ -153,6 +170,9 @@ class WechatController extends PaymentController
     {
         $input = file_get_contents('php://input');
         if (!empty($input) && empty($_POST['out_trade_no'])) {
+            //禁止引用外部xml实体
+            libxml_disable_entity_loader(true);
+
             $obj = simplexml_load_string($input, 'SimpleXMLElement', LIBXML_NOCDATA);
             $data = json_decode(json_encode($obj), true);
             if (empty($data)) {

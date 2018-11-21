@@ -9,43 +9,57 @@
 namespace app\frontend\modules\dispatch\models;
 
 use app\common\events\dispatch\OrderDispatchWasCalculated;
-use app\frontend\modules\order\models\PreGeneratedOrder;
-use app\frontend\modules\order\services\OrderService;
+use app\frontend\modules\dispatch\discount\EnoughReduce;
+use app\frontend\modules\dispatch\discount\LevelFreeFreight;
+use app\frontend\modules\order\models\PreOrder;
+
 
 class OrderDispatch
 {
-    private $preGeneratedOrder;
+    /**
+     * @var PreOrder
+     */
+    private $order;
+    /**
+     * @var float
+     */
+    private $freight;
 
-    public function __construct(PreGeneratedOrder $preGeneratedOrder)
+    /**
+     * OrderDispatch constructor.
+     * @param PreOrder $preOrder
+     */
+    public function __construct(PreOrder $preOrder)
     {
-        $this->preGeneratedOrder = $preGeneratedOrder;
+        $this->order = $preOrder;
     }
 
     /**
      * 订单运费
      * @return float|int
      */
-    public function getDispatchPrice()
+    public function getFreight()
     {
-        if ($this->preGeneratedOrder->is_virtual) {
-            return 0;
+        if (!isset($this->freight)) {
+            if (!isset($this->order->hasOneDispatchType) || !$this->order->hasOneDispatchType->needSend()) {
+                // 没选配送方式 或者 不需要配送配送
+                return 0;
+            }
+
+            //临时解决，是柜子的不算运费
+            if (!empty($this->order->mark)) {
+                return 0;
+            }
+
+            $event = new OrderDispatchWasCalculated($this->order);
+            event($event);
+            $data = $event->getData();
+            $this->freight = array_sum(array_column($data, 'price'));
+            $this->freight = max($this->freight - (new EnoughReduce($this->order))->getAmount(), 0);
+            $this->freight = max($this->freight - (new LevelFreeFreight($this->order))->getAmount(), 0);
+
         }
-        $event = new OrderDispatchWasCalculated($this->preGeneratedOrder);
-        event($event);
-        $data = $event->getData();
-        return $result = array_sum(array_column($data, 'price'));
+
+        return $this->freight;
     }
-
-
-
-    /**
-     * 获取配送类型
-     * @return mixed
-     */
-    public function getDispatchTypeId()
-    {
-        $dispatchTypeId = array_get(\YunShop::request()->get('address'), 'dispatch_type_id', 0);
-        return $dispatchTypeId;
-    }
-
 }

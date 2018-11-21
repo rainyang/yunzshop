@@ -13,9 +13,11 @@ use app\backend\modules\member\models\MemberShopInfo;
 use app\common\components\BaseController;
 use app\backend\modules\member\models\MemberRelation as Relation;
 use app\common\facades\Setting;
+use app\common\helpers\Cache;
 use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
 use app\common\models\Goods;
+use app\common\models\notice\MessageTemp;
 
 class MemberRelationController extends BaseController
 {
@@ -23,33 +25,41 @@ class MemberRelationController extends BaseController
 
     /**
      * 列表
-     *
      * @return string
+     * @throws \Throwable
      */
     public function index()
     {
-
         $relation = Relation::getSetInfo()->first();
 
         if (!empty($relation)) {
             $relation = $relation->toArray();
         }
 
-        if (!empty($relation['become_goods_id'])) {
-            $goods = Goods::getGoodsById($relation['become_goods_id']);
+        if (!empty($relation['become_term'])) {
+            $relation['become_term'] = unserialize($relation['become_term']);
+        }
+        if (!empty($relation['become_goods'])) {
+            $goods = unserialize($relation['become_goods']);
 
-            if (!empty($goods)) {
-                $goods = $goods->toArray();
-            } else {
-                $goods = [];
-            }
+//            $goods = Goods::getGoodsById($relation['become_goods_id']);
+//
+//            if (!empty($goods)) {
+//                $goods = $goods->toArray();
+//            } else {
+//                $goods = [];
+//            }
 
         } else {
             $goods = [];
         }
+//        if (!empty($relation['become_goods_id'])) {
+//            $relation['become_goods_id'] = explode(',',$relation['become_goods_id']);
+//        }
+
         return view('member.relation', [
             'set' => $relation,
-            'goods' => $goods
+            'goods' => $goods,
         ])->render();
     }
 
@@ -67,23 +77,33 @@ class MemberRelationController extends BaseController
             $setData['become_ordercount'] = 0;
         }
 
+        if (!empty($setData['become_term'])) {
+            $setData['become_term'] = serialize($setData['become_term']);
+        }
+
         if (empty($setData['become_moneycount'])) {
             $setData['become_moneycount'] = 0;
         }
 
-        if (empty($setData['become_goods_id'])) {
-            $setData['become_goods_id'] = 0;
+        $setData['become_goods_id'] = !empty($setData['become_goods_id']) ? implode(',',$setData['become_goods_id']) : 0;
+
+        $setData['become_goods'] = !empty($setData['become_goods']) ? serialize($setData['become_goods']) : 0;
+
+        if (empty($setData['become_selfmoney'])) {
+            $setData['become_selfmoney'] = 0;
         }
 
         $relation = Relation::getSetInfo()->first();
 
         if (!empty($relation)) {
             $relation->setRawAttributes($setData);
-
+            (new \app\common\services\operation\RelationLog($relation, 'update'));
             $relation->save();
         } else {
             Relation::create($setData);
         }
+
+        Cache::forget('member_relation');
 
         return $this->message('保存成功', yzWebUrl('member.member-relation.index'));
     }
@@ -95,12 +115,15 @@ class MemberRelationController extends BaseController
      */
     public function query()
     {
-        $kwd                = trim(\YunShop::request()->keyword);
+        $kwd = trim(\YunShop::request()->keyword);
 
         $goods_model= Goods::getGoodsByName($kwd);
 
         if (!empty($goods_model)) {
             $data = $goods_model->toArray();
+            foreach ($data as &$good) {
+                $good['thumb'] = tomedia($good['thumb']);
+            }
         } else {
             $data = [];
         }
@@ -180,10 +203,14 @@ class MemberRelationController extends BaseController
             }
         }
 
+        $temp_list = MessageTemp::getList();
+
         return view('member.relation-base', [
             'banner'  => tomedia($info['banner']),
             'content' => $info['content'],
-            'base'      => $info
+            'base'      => $info,
+            'temp_list' => $temp_list,
+            'relation_level' => $info['relation_level']
         ])->render();
     }
 

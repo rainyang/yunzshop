@@ -2,6 +2,7 @@
 namespace app\backend\modules\finance\services;
 
 use app\backend\modules\finance\services\BalanceService;
+use app\common\exceptions\AppException;
 use app\common\services\credit\ConstService;
 use app\common\services\finance\BalanceChange;
 use app\common\services\finance\Withdraw;
@@ -73,9 +74,20 @@ class WithdrawService extends Withdraw
             $result = PayFactory::create(2)->doWithdraw($withdraw->member_id, $withdraw->withdraw_sn, $withdraw->actual_amounts, $remark);
         }
 
-        if ($result['errno'] == 1) {
-            return $result['message'];
+        if (is_array($result)) {
+            return $result;
         }
+
         redirect($result)->send();
+    }
+
+    public static function eupWithdrawPay($withdraw)
+    {
+        return  PayFactory::create(PayFactory::PAY_EUP)->doWithdraw($withdraw->member_id, $withdraw->withdraw_sn, $withdraw->actual_amounts);
+    }
+
+    public static function huanxunPayment($withdraw)
+    {
+        return  PayFactory::create(PayFactory::PAY_Huanxun_Quick)->doWithdraw($withdraw->member_id, $withdraw->withdraw_sn, $withdraw->actual_amounts);
     }
 }

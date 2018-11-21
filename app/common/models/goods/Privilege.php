@@ -22,6 +22,9 @@ class Privilege extends BaseModel
         'buy_groups' => '',
         'once_buy_limit' => 0,
         'total_buy_limit' => 0,
+        'day_buy_limit' => 0,
+        'week_buy_limit' => 0,
+        'month_buy_limit' => 0,
         'time_begin_limit' => 0,
         'time_end_limit' => 0,
         'enable_time_limit' => 0
@@ -62,6 +65,9 @@ class Privilege extends BaseModel
             'buy_groups' => '会员购买分组',
             'once_buy_limit' => '单次购买限制',
             'total_buy_limit' => '总购买限制',
+            'day_buy_limit' => '每天购买限制',
+            'week_buy_limit' => '每周购买限制',
+            'month_buy_limit' => '每月购买限制',
             'time_begin_limit' => '限时起始时间',
             'time_end_limit' => '限时结束时间',
         ];
@@ -77,6 +83,9 @@ class Privilege extends BaseModel
             'buy_groups' => '',
             'once_buy_limit' => 'numeric',
             'total_buy_limit' => 'numeric',
+            'day_buy_limit' => 'numeric',
+            'week_buy_limit' => 'numeric',
+            'month_buy_limit' => 'numeric',
             'time_begin_limit' => '',
             'time_end_limit' => '',
         ];

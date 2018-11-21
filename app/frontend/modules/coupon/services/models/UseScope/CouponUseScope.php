@@ -10,7 +10,7 @@ namespace app\frontend\modules\coupon\services\models\UseScope;
 
 
 use app\frontend\modules\coupon\services\models\Coupon;
-use app\frontend\modules\orderGoods\models\PreGeneratedOrderGoodsGroup;
+use app\frontend\modules\orderGoods\models\PreOrderGoodsCollection;
 
 abstract class CouponUseScope
 {
@@ -20,7 +20,7 @@ abstract class CouponUseScope
         if($this->getOrderGoodsOfUsedCoupon()->isNotEmpty()){
 
             //todo 此处有bug ,如果调用处提前结束了判断条件,会导致 orderGoodsGroup属性获取失败
-            $this->setOrderGoodsGroup();
+            $this->setOrderGoodsCollection();
             return true;
         }
 
@@ -41,7 +41,7 @@ abstract class CouponUseScope
      */
     protected $coupon;
     /**
-     * @var PreGeneratedOrderGoodsGroup
+     * @var PreOrderGoodsCollection
      */
     protected $orderGoodsGroup;
     public function __construct(Coupon $coupon)
@@ -55,10 +55,10 @@ abstract class CouponUseScope
     /**
      * 将订单商品装入 订单商品组对象
      */
-    protected function setOrderGoodsGroup()
+    protected function setOrderGoodsCollection()
     {
         //dd($this->getOrderGoodsOfUsedCoupon());
-        $this->orderGoodsGroup = new PreGeneratedOrderGoodsGroup($this->getOrderGoodsOfUsedCoupon());
+        $this->orderGoodsGroup = new PreOrderGoodsCollection($this->getOrderGoodsOfUsedCoupon());
     }
     abstract protected function _getOrderGoodsOfUsedCoupon();
 }

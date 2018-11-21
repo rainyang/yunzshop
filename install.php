@@ -628,6 +628,9 @@ CREATE TABLE ". tablename('yz_goods_privilege')." (
   `buy_groups` text COLLATE utf8mb4_unicode_ci,
   `once_buy_limit` int(11) DEFAULT '0',
   `total_buy_limit` int(11) DEFAULT '0',
+  `day_buy_limit` int(11) DEFAULT '0',
+  `week_buy_limit` int(11) DEFAULT '0',
+  `month_buy_limit` int(11) DEFAULT '0',
   `time_begin_limit` int(11) DEFAULT NULL,
   `time_end_limit` int(11) DEFAULT NULL,
   `enable_time_limit` tinyint(1) NOT NULL,
@@ -3993,7 +3996,7 @@ INSERT INTO ". tablename('yz_address')." (`id`, `areaname`, `parentid`, `level`)
 (431102, '零陵区', 431100, 3),
 (431103, '冷水滩区', 431100, 3),
 (431121, '祁阳县', 431100, 3);
-INSERT INTO `ims_yz_address` (`id`, `areaname`, `parentid`, `level`) VALUES
+INSERT INTO ".tablename('yz_address')." (`id`, `areaname`, `parentid`, `level`) VALUES
 (431122, '东安县', 431100, 3),
 (431123, '双牌县', 431100, 3),
 (431124, '道县', 431100, 3),
@@ -5868,7 +5871,7 @@ INSERT INTO `ims_yz_address` (`id`, `areaname`, `parentid`, `level`) VALUES
 (441901127, '望牛墩镇', 441900, 3),
 (441901128, '中堂镇', 441900, 3),
 (441901129, '高埗镇', 441900, 3);
-INSERT INTO `ims_yz_address` (`id`, `areaname`, `parentid`, `level`) VALUES
+INSERT INTO ".tablename('yz_address')." (`id`, `areaname`, `parentid`, `level`) VALUES
 (441901401, '松山湖管委会', 441900, 3),
 (441901402, '虎门港管委会', 441900, 3),
 (441901403, '东莞生态园', 441900, 3),

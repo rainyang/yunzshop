@@ -9,6 +9,7 @@
 namespace app\backend\modules\finance\controllers;
 
 
+use app\backend\modules\balance\controllers\RechargeController;
 use app\backend\modules\finance\services\BalanceService;
 use app\backend\modules\member\models\Member;
 use app\backend\modules\member\models\MemberGroup;
@@ -34,76 +35,12 @@ use app\common\services\finance\BalanceChange;
 class BalanceController extends BaseController
 {
 
-    private $_memebr_model;
+    private $_member_model;
 
     private $_recharge_model;
-    /**
-     * 余额基础设置页面[完成]
-     *
-     * @return mixed|string
-     * @Author yitian */
-    public function index()
-    {
-        $balance = Setting::get('finance.balance');
-        $requestModel = \YunShop::request()->balance;
-        if ($requestModel) {
-            $requestModel['sale'] = $this->rechargeSale($requestModel);
 
 
-            if (!empty($requestModel['sale'])) {
-                $validator = null;
-                foreach ($requestModel['sale'] as $key => $item) {
-                    $validator = (new BackendBalanceRecharge())->validator($item);
-                    if ($validator->fails()) {
-                        $this->error($validator->messages());
-                        break;
-                    }
-                }
-                if ($validator && !$validator->fails()) {
-                    //echo '<pre>'; print_r(12); exit;
-                    unset($requestModel['enough']);
-                    unset($requestModel['give']);
-                    if (Setting::set('finance.balance', $requestModel)) {
-                        return $this->message('余额基础设置保存成功', Url::absoluteWeb('finance.balance.index'),'success');
-                    }
-                    $this->error('余额基础设置保存失败！！');
-                }
-            } else {
-                if (Setting::set('finance.balance', $requestModel)) {
-                    return $this->message('余额基础设置保存成功', Url::absoluteWeb('finance.balance.index'),'success');
-                }
-                $this->error('余额基础设置保存失败！！');
-            }
-        }
-        return view('finance.balance.index', [
-            'balance' => $balance,
-        ])->render();
-    }
 
-    // todo 方法废弃，可以删除，已经转移到 BalanceRecordsController.php
-    public function balanceDetail()
-    {
-
-        $pageSize = 20;
-        $search = \YunShop::request()->search;
-        if ($search) {
-            $detailList = \app\common\models\finance\Balance::getSearchPageList($pageSize,$search);
-        } else {
-            $detailList = \app\common\models\finance\Balance::getPageList($pageSize);
-        }
-        //echo '<pre>'; print_r($detailList); exit;
-
-        $page = PaginationHelper::show($detailList->total(), $detailList->currentPage(), $detailList->perPage());
-
-
-        return view('finance.balance.balanceRecords', [
-            'pageList'      => $detailList,
-            'page'         => $page,
-            'search'        => $search,
-            'shopSet'       => Setting::get('shop.member'),
-            'serviceType'   => \app\common\models\finance\Balance::$balanceComment
-        ])->render();
-    }
 
     /**
      * 查看余额明细详情
@@ -154,8 +91,8 @@ class BalanceController extends BaseController
      * @Author yitian */
     public function rechargeRecord()
     {
-        //todo 需要重新编写此处逻辑，（如果搜素会导致二次查库，影响效率  YITIAN）
-        $pageSize = 10;
+        return (new BalanceRechargeRecordsController())->index();
+        /*$pageSize = 10;
         $recordList = BalanceRecharge::getPageList($pageSize);
         if ($search = \YunShop::request()->search) {
             $recordList = BalanceRecharge::getSearchPageList($pageSize, $search);
@@ -171,7 +108,7 @@ class BalanceController extends BaseController
             'memberGroup'   => MemberGroup::getMemberGroupList(),
             'memberLevel'   => MemberLevel::getMemberLevelList(),
             'search'        => $search
-        ])->render();
+        ])->render();*/
     }
 
 
@@ -186,7 +123,7 @@ class BalanceController extends BaseController
         $search = \YunShop::request()->search;
         $memberList = Member::getMembers()->paginate($pageSize);
         if ($search) {
-            $memberList = Member::searchMembers($search)->paginate($pageSize);
+            $memberList = Member::searchMembers(['search' => $search])->paginate($pageSize);
         }
         $pager = PaginationHelper::show($memberList->total(), $memberList->currentPage(), $memberList->perPage());
 
@@ -207,14 +144,15 @@ class BalanceController extends BaseController
      * @Author yitian */
     public function recharge()
     {
-        $memberInfo =$this->getMemberInfo();
-        if (!$this->_memebr_model) {
+        return (new RechargeController())->index();
+        /*$memberInfo =$this->getMemberInfo();
+        if (!$this->_member_model) {
             return $this->message('未获取到会员信息', Url::absoluteWeb('finance.balance.member'), 'error');
         }
-        if ($this->_memebr_model && \YunShop::request()->num) {
+        if ($this->_member_model && \YunShop::request()->num) {
             $result = $this->rechargeStart();
             if ($result === true) {
-                return $this->message('余额充值成功', Url::absoluteWeb('finance.balance.recharge',array('member_id' => $this->_memebr_model->uid)), 'success');
+                return $this->message('余额充值成功', Url::absoluteWeb('finance.balance.recharge',array('member_id' => $this->_member_model->uid)), 'success');
             }
             $this->error($result);
         }
@@ -223,7 +161,7 @@ class BalanceController extends BaseController
         return view('finance.balance.recharge', [
             'rechargeMenu'  => $this->getRechargeMenu(),
             'memberInfo'    => $memberInfo,
-        ])->render();
+        ])->render();*/
     }
 
     private function rechargeStart()
@@ -264,7 +202,7 @@ class BalanceController extends BaseController
 
     private function getMemberInfo()
     {
-        return $this->_memebr_model = Member::getMemberInfoById(\YunShop::request()->member_id) ?: false;
+        return $this->_member_model = Member::getMemberInfoById(\YunShop::request()->member_id) ?: false;
     }
 
     //充值记录数据
@@ -274,7 +212,7 @@ class BalanceController extends BaseController
         return array(
             'uniacid'       => \YunShop::app()->uniacid,
             'member_id'     => \YunShop::request()->member_id,
-            'old_money'     => $this->_memebr_model->credit2,
+            'old_money'     => $this->_member_model->credit2,
             'money'         => $rechargeMoney,
             'new_money'     => $this->getNewMoney(),
             'type'          => BalanceRecharge::PAY_TYPE_SHOP,
@@ -286,7 +224,7 @@ class BalanceController extends BaseController
     //获取计算后的余额值
     private function getNewMoney()
     {
-        $newMoney = $this->_memebr_model->credit2 + trim(\YunShop::request()->num);
+        $newMoney = $this->_member_model->credit2 + trim(\YunShop::request()->num);
         return $newMoney > 0 ? $newMoney : 0;
     }
 

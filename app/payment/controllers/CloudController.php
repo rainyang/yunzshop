@@ -55,8 +55,38 @@ class CloudController extends PaymentController
         }
     }
 
+    public function notifyAliPayUrl()
+    {
+        $this->log($_GET);
+
+        if ($this->getSignResult() && '00' == $_GET['respcd'] && $_GET['errorDetail'] == "SUCCESS") {
+            \Log::debug('------验证成功-----');
+            $data = [
+                'total_fee'    => floatval($_GET['txamt']),
+                'out_trade_no' => $_GET['orderNum'],
+                'trade_no'     => $_GET['channelOrderNum'],
+                'unit'         => 'fen',
+                'pay_type'     => '云支付宝支付',
+                'pay_type_id'     => 7
+
+            ];
+
+            $this->payResutl($data);
+            \Log::debug('----结束----');
+            echo "success";
+        } else {
+            echo "fail";
+        }
+    }
+
     public function returnUrl()
     {
+        $trade = \Setting::get('shop.trade');
+
+        if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
+            return redirect($trade['redirect_url'])->send();
+        }
+
         if (0 == $_GET['state'] && $_GET['errorDetail'] == '成功') {
             redirect(Url::absoluteApp('member/payYes', ['i' => $_GET['attach']]))->send();
         } else {
@@ -66,6 +96,12 @@ class CloudController extends PaymentController
 
     public function frontUrl()
     {
+        $trade = \Setting::get('shop.trade');
+
+        if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
+            return redirect($trade['redirect_url'])->send();
+        }
+
         if (0 == $_GET['state'] && $_GET['errorDetail'] == '成功') {
             redirect(Url::absoluteApp('member', ['i' => $_GET['attach']]))->send();
         } else {

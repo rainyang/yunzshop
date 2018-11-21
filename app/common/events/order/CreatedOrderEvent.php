@@ -11,32 +11,36 @@ namespace app\common\events\order;
 
 use app\common\events\Event;
 use app\common\models\Order;
-use app\frontend\modules\order\models\PreGeneratedOrder;
+use app\frontend\modules\order\models\PreOrder;
 
 abstract class CreatedOrderEvent extends Event
 {
     protected $orderModel;
-    protected $order;
     /**
-     * todo 需要重写,订单生成后与订单操作 使用的order对象冲突
-     * AfterOrderReceivedEvent constructor.
-     * @param Order $order_model
+     * @var Order
+     */
+    protected $order;
+
+    /**
+     * CreatedOrderEvent constructor.
+     * @param Order $order
      */
     public function __construct($order)
     {
-        //$order_model = Order::find($order_id);
-        $this->orderModel = $order;
-        if($order instanceof PreGeneratedOrder){
-            $this->order = $order->getOrder();
-        }
+
+        $this->order = $order;
     }
     /**
      * (监听者)获取订单model
-     * @return mixed
+     * @return Order
      */
     public function getOrderModel(){
-        return $this->orderModel;
+        return $this->order;
     }
+
+    /**
+     * @return Order
+     */
     public function getOrder(){
         return $this->order;
     }

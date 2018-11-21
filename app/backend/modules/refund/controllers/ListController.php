@@ -57,7 +57,7 @@ class ListController extends \app\backend\modules\order\controllers\ListControll
         $this->export($this->orderModel->refunded());
         return view('order.index', $this->getData())->render();
     }
-    public function refund()
+    public function index()
     {
         $this->orderModel->whereHas('hasOneRefundApply',function ($query){
             return $query->refunding();

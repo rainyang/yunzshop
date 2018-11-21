@@ -2,14 +2,75 @@
 
 /**
  * Created by PhpStorm.
- * Author: 芸众商城 www.yunzshop.com
- * Date: 2017/3/31
- * Time: 下午3:05
+ *
+ * User: king/QQ：995265288
+ * Date: 2018/1/30 上午10:08
+ * Email: livsyitian@163.com
  */
 namespace app\backend\modules\finance\models;
 
+
 class Withdraw extends \app\common\models\Withdraw
 {
+
+    public function scopeRecords($query)
+    {
+        $query->with(['hasOneMember' => function ($query) {
+            return $query->select('uid', 'mobile', 'realname', 'nickname', 'avatar');
+        }]);
+
+        return parent::scopeRecords($query);
+    }
+
+
+
+    public function scopeSearch($query, $search)
+    {
+        if (isset($search['status']) && $search['status'] != "") {
+            $query->ofStatus($search['status']);
+        }
+
+        if($search['withdraw_sn']) {
+            $query->ofWithdrawSn($search['withdraw_sn']);
+        }
+
+        if($search['type']) {
+            $query->ofType($search['type']);
+        }
+
+        if($search['pay_way']) {
+            $query->where('pay_way', $search['pay_way']);
+        }
+
+        if($search['searchtime']){
+            $range = [strtotime($search['time']['start']),  strtotime($search['time']['end'])];
+            $query->whereBetween('created_at', $range);
+        }
+
+        if($search['member']) {
+            $query->whereHas('hasOneMember', function($query)use($search){
+                return $query->searchLike($search['member']);
+            });
+        }
+
+        return $query;
+    }
+
+    public static function getTypes()
+    {
+        $configs = \Config::get('income');
+        
+        return $configs;
+    }
+
+
+
+
+
+
+
+
+
     protected $appends = ['type_data'];
 
     public static function getWithdrawList($search = [])
@@ -46,10 +107,70 @@ class Withdraw extends \app\common\models\Withdraw
         return $Model;
     }
 
+    public static function getAllWithdraw($type)
+    {
+        $ids = '';
+        $total = 0;
+
+        $data = self::getWithdrawListForType($type)->get();
+
+        if (!is_null($data)) {
+            foreach ($data as $rows) {
+                $ids .= $rows->id . ',';
+            }
+        }
+
+        $ids = rtrim($ids, ',');
+        $total = count($data);
+
+        if ($total == 0 && $ids == '') {
+            $status = 0;
+            $msg    = '暂无数据';
+        } elseif ($total != count(explode(',', $ids))) {
+            $status = -1;
+            $msg     = '数据不符';
+        } else {
+            $status = 1;
+            $msg    = 'ok';
+        }
+
+        return ['status' => $status, 'totals' => $total, 'ids' => $ids, 'msg' => $msg];
+    }
+
+    public static function getWithdrawListForType($type, $limit=800, $status=1)
+    {
+        $Model = self::uniacid();
+
+        switch ($type) {
+            case 1:
+                $Model->whereIn('type', ['balance']);
+                break;
+            case 2:
+                $Model->whereNotIn('type', ['balance']);
+                break;
+        }
+
+        $Model->where('status', $status)
+            ->where('pay_way', 'alipay')
+            ->limit($limit)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return $Model;
+    }
+
+    public static function updateWidthdrawOrderStatus($withdrawId)
+    {
+        return self::uniacid()
+            ->whereIn('id', $withdrawId)
+            ->update(['status' => 4]);
+    }
+
     public function rules()
     {
+
         return [
-            'poundage'          => 'numeric|min:1|max:100',
+            'poundage'          => 'numeric|min:0|max:999999999|regex:/^\d+(\.\d{1,2})?$/',
             'withdrawmoney'     => 'numeric|min:0|max:999999999',
             'roll_out_limit'    => 'regex:/^[0-9]+(.[0-9]{1,2})?$/',
             'poundage_rate'     => 'regex:/^[\d]{1,2}+(\.[0-9]{1,2})?$/',
@@ -61,8 +182,8 @@ class Withdraw extends \app\common\models\Withdraw
         return [
             'poundage'          => "提现手续费",
             'withdrawmoney'     => "提现限制金额",
-            'roll_out_limit'    => "佣金提现额度",
-            'poundage_rate'     => "佣金提现手续费"
+            'roll_out_limit'    => "提现额度",
+            'poundage_rate'     => "提现手续费"
         ];
     }
 

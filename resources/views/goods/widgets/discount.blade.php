@@ -24,6 +24,7 @@
         </div>
     </div>
 </div>
+
 <div id="ismember">
     {{--<div class="form-group">
         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
@@ -50,13 +51,14 @@
         <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
             <div class="col-sm-6 col-xs-6">
-                <div class='input-group'>
+                <div class='input-group col-md-6'>
                     <div class='input-group-addon'>{{  $level['level_name'] }}</div>
 
                     <input type='text' name='widgets[discount][discount_value][{{$level["id"] }}]'
                            class="form-control discounts_value"
                            value="@if (!empty($discountValue)){{ $discountValue[$level["id"]] }}@endif"/>
-                    <div class='input-group-addon waytxt'>折</div>
+                    <div class='input-group-addon waytxt'> @if ( !empty($discount) && $discount[0]['discount_method'] == 1)
+                            折 @else 元 @endif</div>
                 </div>
             </div>
         </div>

@@ -47,6 +47,7 @@ class DispatchController extends BaseController
 
         $requestDispatch = \YunShop::request()->dispatch;
         $random = 1;
+
         if ($requestDispatch) {
 
             $requestDispatch = DispatchService::getDispatch($requestDispatch);
@@ -67,10 +68,12 @@ class DispatchController extends BaseController
                         $defaultModel->save();
                     }
                 }
+
+                //dd($dispatchModel);
                 //数据保存
                 if ($dispatchModel->save()) {
                     //显示信息并跳转
-                    return $this->message('配送模板创建成功', '');
+                    return $this->message('配送模板创建成功', Url::absoluteWeb('goods.dispatch.edit',['id' => $dispatchModel->id]));
                 } else {
                     $this->error('配送模板创建失败');
                 }
@@ -136,6 +139,8 @@ class DispatchController extends BaseController
                 }
             }
         }
+
+        //dd($dispatchModel);
         return view('goods.dispatch.info', [
             'dispatch' => $dispatchModel,
             'parents' => $areas->toArray(),

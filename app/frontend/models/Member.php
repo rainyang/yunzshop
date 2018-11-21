@@ -9,13 +9,37 @@
 namespace app\frontend\models;
 
 
-use app\common\models\Coupon;
+use app\common\exceptions\AppException;
 use app\common\models\MemberCoupon;
 use app\frontend\modules\member\models\MemberAddress;
-use app\frontend\models\OrderGoods;
+use app\frontend\modules\member\services\MemberService;
+use app\frontend\repositories\MemberAddressRepository;
+use Illuminate\Database\Eloquent\Collection;
 
+/**
+ * Class Member
+ * @package app\frontend\models
+ * @property Collection memberCarts
+ * @property MemberAddress defaultAddress
+ */
 class Member extends \app\common\models\Member
 {
+    static $current;
+
+    /**
+     * @return mixed
+     * @throws AppException
+     */
+    public static function current()
+    {
+        if (!isset(static::$current)) {
+            static::$current = self::find(\YunShop::app()->getMemberId());
+            if(!static::$current){
+                throw new AppException('请登录');
+            }
+        }
+        return static::$current;
+    }
     /**
      * 会员－会员优惠券1:多关系
      * @param null $backType
@@ -33,15 +57,21 @@ class Member extends \app\common\models\Member
 
     public function defaultAddress()
     {
-        return $this->hasOne(MemberAddress::class, 'uid', 'uid')->where('isdefault', 1);
+        return $this->hasOne(app(MemberAddressRepository::class)->model(), 'uid', 'uid')->where('isdefault', 1);
     }
 
     public function orderGoods()
     {
-        return $this->hasMany(OrderGoods::class,'uid','uid');
+        return $this->hasMany(OrderGoods::class, 'uid', 'uid');
     }
+
     public function yzMember()
     {
         return $this->hasOne(self::getNearestModel('MemberShopInfo'), 'member_id', 'uid');
+    }
+
+    public function memberCarts()
+    {
+        return $this->hasMany(app('OrderManager')->make('MemberCart'), 'member_id', 'uid');
     }
 }

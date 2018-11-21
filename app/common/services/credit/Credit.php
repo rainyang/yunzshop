@@ -9,6 +9,9 @@
 namespace app\common\services\credit;
 
 
+use app\common\exceptions\ShopException;
+use Illuminate\Support\Facades\DB;
+
 abstract class Credit
 {
     protected $data =[];
@@ -159,7 +162,7 @@ abstract class Credit
     //加法
     protected function addition($data)
     {
-        if (!$data['change_value'] || $data['change_value'] <= 0) {
+        if (!isset($data['change_value']) || $data['change_value'] < 0) {
             return '变动值必须是正数';
         }
         $this->data = $data;
@@ -172,7 +175,7 @@ abstract class Credit
     //减法
     protected function subtraction($data)
     {
-        if (!$data['change_value'] || $data['change_value'] < 0) {
+        if (!isset($data['change_value']) || $data['change_value'] < 0) {
             return '变动值必须是正数';
         }
         $this->data = $data;
@@ -185,17 +188,37 @@ abstract class Credit
 
     protected function result()
     {
+
+        DB::transaction(function () {
+            $this->_result();
+        });
+
+        return true;
+    }
+
+
+    //todo 应该改为私有
+    protected function _result()
+    {
         $this->memberModel = $this->getMemberModel();
         if (!$this->memberModel) {
-            return '未获取到会员数据';
+            throw new ShopException("未获取到会员数据");
         }
         $validator = $this->validatorData();
         if (!($validator === true)) {
-            return $validator;
+            throw new ShopException("$validator");
         }
 
         $result = $this->recordSave();
-        return $result === true ? $this->updateMemberCredit() : $result;
+        if (!$result) {
+            throw new ShopException("数据写入错误：CREDIT_RECORD");
+        }
+
+        $result = $this->updateMemberCredit();
+        if (!$result) {
+            throw new ShopException("数据写入错误：CREDIT_UPDATE");
+        }
+        return true;
     }
 
 

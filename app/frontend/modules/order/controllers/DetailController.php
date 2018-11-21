@@ -10,13 +10,24 @@ namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
 use app\common\exceptions\AppException;
+use app\common\facades\Setting;
+use app\common\models\DispatchType;
+use app\common\models\Order;
+use app\common\modules\refund\services\RefundService;
 use app\common\requests\Request;
-use app\frontend\models\Order;
 use app\frontend\models\OrderAddress;
-
+use Yunshop\StoreCashier\common\models\StoreDelivery;
+use app\common\services\plugin\leasetoy\LeaseToySet;
+use app\common\services\goods\VideoDemandCourseGoods;
 
 class DetailController extends ApiController
 {
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     * @throws \app\common\exceptions\ShopException
+     */
     public function index(Request $request)
     {
         $this->validate([
@@ -29,17 +40,65 @@ class DetailController extends ApiController
 //        if ($order->uid != \YunShop::app()->getMemberId()) {
 //            throw new AppException('(ID:' . $order->id . ')该订单属于其他用户');
 //        }
-        $data = $order->toArray();
-        $data['button_models'] = array_merge($data['button_models'],$order->getStatusService()->getRefundButtons($order));
 
-        //$this->getStatusService()->
-        //todo 配送类型
-        if ($order['dispatch_type_id'] == 1) {
-            $data['address_info'] = OrderAddress::select('address', 'mobile', 'realname')->where('order_id', $order['id'])->first();
+        if (is_null($order)) {
+            throw new AppException('该订单查询失败');
         }
+
+        $data = $order->toArray();
+        $backups_button = $data['button_models'];
+
+
+        $data['address_info'] = OrderAddress::select('address', 'mobile', 'realname')->where('order_id', $order['id'])->first()?:[];
+
+        if(app('plugins')->isEnabled('store-cashier')){
+
+            //加入门店ID，订单跳转商品详情需要
+            $store_id = \Yunshop\StoreCashier\store\models\StoreGoods::select()->byGoodsId($order->hasManyOrderGoods[0]->goods_id)->first()->store_id;
+            $data['has_many_order_goods']['0']['store_id'] = $store_id;
+
+            //临时解决
+            $storeObj = \Yunshop\StoreCashier\common\models\Store::getStoreByCashierId($order->hasManyOrderGoods[0]->goods_id)->first();
+            if ($storeObj) {
+                $data['button_models'] = $backups_button;
+            }
+
+            if ($order['dispatch_type_id'] == DispatchType::SELF_DELIVERY) {
+                $data['address_info'] = \Yunshop\StoreCashier\common\models\SelfDelivery::where('order_id', $order['id'])->first();
+            }elseif($order['dispatch_type_id'] == DispatchType::STORE_DELIVERY){
+                $data['address_info'] = \Yunshop\StoreCashier\common\models\StoreDelivery::where('order_id', $order['id'])->first();
+            }
+        }
+
+
+        //租赁插件
+        $lease_enabled = LeaseToySet::whetherEnabled();
+        if ($lease_enabled && $order->plugin_id == 40) {
+            $lease_toy = \Yunshop\LeaseToy\services\LeaseOrderDetail::detailInfo($order);
+            foreach ($data['has_many_order_goods'] as &$goods) {
+                $goods['lease_toy_goods'] = \Yunshop\LeaseToy\services\LeaseOrderDetail::LeaseOrderGoodsDetail($goods['id']);
+            }
+
+            if ($order->status > 2) {
+                $data['button_models'] = array_merge($backups_button, $lease_toy['button']);
+            } elseif ($order->status == 2) {
+                $data['button_models'] = $backups_button;
+            }
+            $data['lease_toy'] = $lease_toy['data'];
+
+        }
+        //todo 临时解决
         if (!$order) {
             return $this->errorJson($msg = '未找到数据', []);
         } else {
+
+            $videoDemand = new VideoDemandCourseGoods();
+            foreach ($data['has_many_order_goods'] as &$value) {
+                $value['thumb'] = yz_tomedia($value['thumb']);
+                //视频点播
+                $value['is_course'] = $videoDemand->isCourse($value['goods_id']);
+            }
+
             return $this->successJson($msg = 'ok', $data);
         }
 

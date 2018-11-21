@@ -27,6 +27,7 @@ class orderListener
     {
         $order = Order::find($event->getOrderModel()->id);
         (new MessageService($order))->created();
+
         (new OtherMessageService($order))->created();
     }
 
@@ -68,21 +69,25 @@ class orderListener
         $events->listen(AfterOrderCanceledEvent::class, self::class . '@onCanceled');
         $events->listen(AfterOrderSentEvent::class, self::class . '@onSent');
         $events->listen(AfterOrderReceivedEvent::class, self::class . '@onReceived');
+        $events->listen(AfterOrderPaidEvent::class, \app\common\listeners\member\AfterOrderPaidListener::class.'@handle',1);
+        $events->listen(AfterOrderReceivedEvent::class, \app\common\listeners\member\AfterOrderReceivedListener::class.'@handle',1);
 
         // 订单自动任务
         $events->listen('cron.collectJobs', function () {
             $uniAccount = UniAccount::get();
             foreach ($uniAccount as $u) {
                 \YunShop::app()->uniacid = $u->uniacid;
-                \Setting::$uniqueAccountId = $u->uniacid;
+                \Setting::$uniqueAccountId = $uniacid= $u->uniacid;
+
                 // 订单自动收货执行间隔时间 默认60分钟
                 $receive_min = (int)\Setting::get('shop.trade.receive_time') ?: 60;
+
                 if ((int)\Setting::get('shop.trade.receive')) {
                     // 开启自动收货时
                     \Log::info("--订单自动完成start--");
-                    \Cron::add("OrderReceive{$u->uniacid}", '*/' . $receive_min . ' * * * * *', function () {
+                    \Cron::add("OrderReceive{$u->uniacid}", '*/' . $receive_min . ' * * * * *', function () use($uniacid) {
                         // 所有超时未收货的订单,遍历执行收货
-                        OrderService::autoReceive();
+                        OrderService::autoReceive($uniacid);
                         // todo 使用队列执行
                     });
                 }
@@ -94,14 +99,35 @@ class orderListener
                 if ((int)\Setting::get('shop.trade.close_order_days')) {
                     // 开启自动关闭时
                     \Log::info("--订单自动关闭start--");
-                    \Cron::add("OrderClose{$u->uniacid}", '*/' . $close_min . ' * * * * *', function () {
+                    \Cron::add("OrderClose{$u->uniacid}", '*/' . $close_min . ' * * * * *', function () use($uniacid) {
                         // 所有超时付款的订单,遍历执行关闭
-                        OrderService::autoClose();
+                        OrderService::autoClose($uniacid);
                         // todo 使用队列执行
                     });
                 }
-            }
 
+                // 收银台订单检测 自动收货
+//                \Log::info("--收银台订单自动完成start--");
+//                \Cron::add("CashireOrderReceive{$u->uniacid}", '*/1 * * * * *', function () {
+//                    $start_time = time() - (60 * 60 * 24);
+//                    $end_time = time();
+//                    //遍历执行收货
+//                    $orders = \app\backend\modules\order\models\Order::waitReceive()
+//                        ->where('plugin_id', 31)
+//                        ->whereBetween('pay_time', [$start_time, $end_time])
+//                        ->normal()
+//                        ->get();
+//                    if (!$orders->isEmpty()) {
+//                        $orders->each(function ($order) {
+//                            try {
+//                                OrderService::orderReceive(['order_id' => $order->id]);
+//                            } catch (\Exception $e) {
+//
+//                            }
+//                        });
+//                    }
+//                });
+            }
         });
     }
 }

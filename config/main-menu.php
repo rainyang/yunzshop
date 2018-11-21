@@ -9,383 +9,54 @@
 
 return [
     'index'  => [
-        'name' => '控制面板',
-        'url' => 'index.index',         // url 可以填写http 也可以直接写路由
-        'urlParams' => '',              //如果是url填写的是路由则启用参数否则不启用
-        'permit' => 0,                  //如果不设置则不会做权限检测
-        'menu' => 0,                    //如果不设置则不显示菜单，子菜单也将不显示
-        'icon' => '',                   //菜单图标
-        'parents' => [],                //
-        'child' => [],
-    ],
+        'name'              => '商城',
+        'url'               => 'index.index',
+        'urlParams'         => '',
+        'permit'            => 0,
+        'menu'              => 1,
+        'icon'              => 'fa-home',
+        'top_show'          => 0,
+        'left_first_show'   => 0,
+        'left_second_show'  => 0,
+        'parents'           => [],
+        'item'              => 'index',
+        'child'             => [
 
-
-    'system' => [
-        'name'          => '系统管理',
-        'url'           => '',
-        'url_params'    => '',
-        'permit'        => 1,
-        'menu'          => 1,
-        'icon'          => 'fa-cogs',
-        'sort'          => 1,
-        'item'          => 'system',
-        'parents'       => [],
-        'child'         => [
-
-            'shop'          => [
-                'name'          => '商城入口',
-                'url'           => 'setting.shop.entry',
-                'url_params'    => '',
-                'permit'        => 1,
-                'menu'          => 1,
-                'icon'          => 'fa-hand-o-right',
-                'sort'          => 0,
-                'item'          => 'shop',
-                'parents'       => ['system',],
+            'index'         => [
+                'name'          => '选择图标',
+                'url'           => 'frame.icon.index',
+                'urlParams'     => '',
+                'permit'        => 0,
+                'menu'          => 0,
+                'icon'          => '',
+                'parents'       => [],
             ],
 
-            'Setting' => [
-                'id' => '2',
-                'name' => '商城设置',
-                'url' => 'setting.shop.shop',
-                'url_params' => '',
-                'permit' => 1,
-                'menu' => 1,
-                'icon' => 'fa-cog',
-                'parent_id' => 1,
-                'sort' => 0,
-                'item' => 'Setting',
-                'parents' => ['system'],
-                'child' => [
-
-                    'setting_shop'  => [
-                        'name'          => '基础设置',
-                        'url'           => 'setting.shop.index',
-                        'url_params'    => '',
-                        'permit'        => 1,
-                        'menu'          => 1,
-                        'icon'          => 'fa-sliders',
-                        'sort'          => 0,
-                        'item'          => 'setting_shop',
-                        'parents'       => ['system', 'Setting'],
-                    ],
-
-                    'setting_member' => [
-                        'name'          => '会员设置',
-                        'url'           => 'setting.shop.member',
-                        'url_params'    => '',
-                        'permit'        => 1,
-                        'menu'          => 0,
-                        'icon'          => '',
-                        'sort'          => '3',
-                        'item'          => 'setting_member',
-                        'parents'       => ['system', 'Setting', 'setting_shop'],
-                    ],
-
-                    'setting_category' => [
-                        'name'          => '分类层级',
-                        'url'           => 'setting.shop.category',
-                        'url_params'    => '',
-                        'permit'        => 1,
-                        'menu'          => 0,
-                        'icon'          => '',
-                        'sort'          => '4',
-                        'item'          => 'setting_category',
-                        'parents'       => ['system', 'Setting', 'setting_shop',],
-                    ],
-
-                    'setting_contact' => [
-                        'name'          => '联系方式',
-                        'url'           => 'setting.shop.contact',
-                        'url_params'    => '',
-                        'permit'        => 1,
-                        'menu'          => 0,
-                        'icon'          => '',
-                        'sort'          => '5',
-                        'item'          => 'setting_contact',
-                        'parents'       => ['system', 'Setting', 'setting_shop'],
-                    ],
-
-                    'setting_sms'   => [
-                        'name'          => '短信设置',
-                        'url'           => 'setting.shop.sms',
-                        'url_params'    => '',
-                        'permit'        => 1,
-                        'menu'          => 0,
-                        'icon'          => '',
-                        'sort'          => '6',
-                        'item'          => 'setting_sms',
-                        'parents'       => ['system', 'Setting', 'setting_shop'],
-                    ],
-
-                    'setting_coupon'   => [
-                        'name'          => '优惠卷',
-                        'url'           => 'setting.coupon.index',
-                        'url_params'    => '',
-                        'permit'        => 1,
-                        'menu'          => 0,
-                        'icon'          => '',
-                        'sort'          => '6',
-                        'item'          => 'setting_coupon',
-                        'parents'       => ['system', 'Setting', 'setting_shop'],
-                    ],
-
-                    'setting_slide' => [
-                        'name'          => '幻灯片',
-                        'url'           => 'setting.slide.index',
-                        'url_params'    => '',
-                        'permit'        => 1,
-                        'menu'          => 0,
-                        'icon'          => '',
-                        'sort'          => '7',
-                        'item'          => 'setting_slide',
-                        'parents'       => ['system', 'Setting', 'setting_shop'],
-                        'child'         => [
-
-                            'setting_slide_index' => [
-                                'name'          => '浏览列表',
-                                'url'           => 'setting.slide.index',
-                                'url_params'    => '',
-                                'permit'        => 1,
-                                'menu'          => 0,
-                                'icon'          => '',
-                                'sort'          => '6',
-                                'item'          => 'setting_slide_index',
-                                'parents'       => ['system', 'Setting', 'setting_shop', 'setting_slide'],
-                            ],
-
-                            'setting_slide_create' => [
-                                'name'          => '创建幻灯片',
-                                'url'           => 'setting.slide.create',
-                                'url_params'    => '',
-                                'permit'        => 1,
-                                'menu'          => 0,
-                                'icon'          => '',
-                                'sort'          => '6',
-                                'item'          => 'setting_slide_create',
-                                'parents'       => ['system', 'Setting', 'setting_shop', 'setting_slide'],
-                            ],
-
-                            'setting_slide_edit' => [
-                                'name'          => '编辑幻灯片',
-                                'url'           => 'setting.slide.edit',
-                                'url_params'    => '',
-                                'permit'        => 1,
-                                'menu'          => 0,
-                                'icon'          => '',
-                                'sort'          => '6',
-                                'item'          => 'setting_slide_edit',
-                                'parents'       => ['system', 'Setting', 'setting_shop', 'setting_slide'],
-                            ],
-
-                            'setting_slide_deleted' => [
-                                'name'          => '删除幻灯片',
-                                'url'           => 'setting.slide.deleted',
-                                'url_params'    => '',
-                                'permit'        => 1,
-                                'menu'          => 0,
-                                'icon'          => '',
-                                'sort'          => '6',
-                                'item'          => 'setting_slide_deleted',
-                                'parents'       => ['system', 'Setting', 'setting_shop', 'setting_slide'],
-                            ],
-                        ],
-                    ],
-
-                    'setting_shop_trade' => [
-                        'name'              => '交易设置',
-                        'url'               => 'setting.shop.trade',
-                        'url_params'        => '',
-                        'permit'            => 1,
-                        'menu'              => 1,
-                        'icon'              => 'fa-compress',
-                        'sort'              => '3',
-                        'item'              => 'setting_shop_trade',
-                        'parents'           => ['system', 'Setting',],
-                    ],
-
-                    'setting_shop_pay'  => [
-                        'name'              => '支付方式',
-                        'url'               => 'setting.shop.pay',
-                        'url_params'        => '',
-                        'permit'            => 1,
-                        'menu'              => 1,
-                        'icon'              => 'fa-facebook-square',
-                        'sort'              => '3',
-                        'item'              => 'setting_shop_pay',
-                        'parents'           => ['system', 'Setting',],
-                    ],
-
-                    'setting_shop_share' => [
-                        'name'              => '分享引导',
-                        'url'               => 'setting.shop.share',
-                        'url_params'        => '',
-                        'permit'            => 1,
-                        'menu'              => 1,
-                        'icon'              => 'fa-link',
-                        'sort'              => '5',
-                        'item'              => 'setting_shop_share',
-                        'parents'           => ['system', 'Setting',],
-                    ],
-
-                    'setting_shop_notice' => [
-                        'name'              => '消息提醒',
-                        'url'               => 'setting.shop.notice',
-                        'url_params'        => '',
-                        'permit'            => 1,
-                        'menu'              => 1,
-                        'icon'              => 'fa-bell-o',
-                        'sort'              => '6',
-                        'item'              => 'setting_shop_notice',
-                        'parents'           => ['system', 'Setting',],
-                    ],
-                ],
-            ],
-
-            'shop'          => [
-                'name'          => '商城入口',
-                'url'           => 'setting.shop.entry',
-                'url_params'    => '',
-                'permit'        => 1,
-                'menu'          => 1,
-                'icon'          => 'fa-hand-o-right',
-                'sort'          => 0,
-                'item'          => 'shop',
-                'parents'       => ['system',],
-            ],
-
-            'role'          => [
-                'name'          => '角色管理',
-                'url'           => 'user.role.index',
-                'url_params'    => '',
-                'permit'        => 1,
-                'menu'          => 1,
-                'icon'          => 'fa-gamepad',
-                'sort'          => 0,
-                'item'          => 'role',
-                'parents'       => ['system',],
-                'child'         => [
-
-                    'role_see'          => [
-                        'name'              => '浏览角色',
-                        'url'               => 'user.role.index',
-                        'url_params'        => '',
-                        'permit'            => 1,
-                        'menu'              => 0,
-                        'icon'              => '',
-                        'sort'              => 0,
-                        'item'              => 'role_see',
-                        'parents'           => ['system', 'role',],
-                    ],
-
-                    'role_store'        => [
-                        'name'              => '添加角色',
-                        'url'               => 'user.role.store',
-                        'url_params'        => '',
-                        'permit'            => 1,
-                        'menu'              => 0,
-                        'icon'              => '',
-                        'sort'              => 0,
-                        'item'              => 'role_store',
-                        'parents'           => ['system', 'role',],
-                    ],
-
-                    'role_update'       => [
-                        'name'              => '修改角色',
-                        'url'               => 'user.role.update',
-                        'url_params'        => '',
-                        'permit'            => 1,
-                        'menu'              => 0,
-                        'icon'              => '',
-                        'sort'              => 0,
-                        'item'              => 'role_update',
-                        'parents'           => ['system', 'role',],
-                    ],
-
-                    'role_destroy'          => [
-                        'name'              => '删除角色',
-                        'url'               => 'user.role.destory',
-                        'url_params'        => '',
-                        'permit'            => 1,
-                        'menu'              => 0,
-                        'icon'              => '',
-                        'sort'              => 0,
-                        'item'              => 'role_destroy',
-                        'parents'           => ['system', 'role'],
-                    ],
-                ],
-            ],
-
-            'user'          => [
-                'name'          => '操作员',
-                'url'           => 'user.user.index',
-                'url_params'    => '',
-                'permit'        => 1,
-                'menu'          => 1,
-                'icon'          => 'fa-list-ul',
-                'sort'          => 0,
-                'item'          => 'user',
-                'parents'       => ['system',],
-                'child'         => [
-
-                    'user_see'      => [
-                        'name'          => '浏览操作员',
-                        'url'           => 'user.user.index',
-                        'url_params'    => '',
-                        'permit'        => 1,
-                        'menu'          => 0,
-                        'icon'          => '',
-                        'sort'          => 0,
-                        'item'          => 'user_see',
-                        'parents'       => ['system', 'user',],
-                    ],
-
-                    'user_store'    => [
-                        'name'          => '添加操作员',
-                        'url'           => 'user.user.store',
-                        'url_params'    => '',
-                        'permit'        => 1,
-                        'menu'          => 0,
-                        'icon'          => '',
-                        'sort'          => 0,
-                        'item'          => 'user_store',
-                        'parents'       => ['system', 'user',],
-                    ],
-
-                    'user_update'   => [
-                        'name'          => '修改操作员',
-                        'url'           => 'user.user.update',
-                        'url_params'    => '',
-                        'permit'        => 1,
-                        'menu'          => 0,
-                        'icon'          => '',
-                        'sort'          => 0,
-                        'item'          => 'user_update',
-                        'parents'       => ['system', 'user',],
-                    ],
-
-                    'user_destroy'  => [
-                        'name'          => '删除操作员',
-                        'url'           => 'user.user.destroy',
-                        'url_params'    => '',
-                        'permit'        => 1,
-                        'menu'          => 0,
-                        'icon'          => 'fa-remove',
-                        'sort'          => 0,
-                        'item'          => 'user_destroy',
-                        'parents'       => ['system', 'user',],
-                    ],
-                ],
+            'address_get_address' => [
+                'name'              => '白名单（选择地址）',
+                'url'               => 'address.get-address',
+                'url_params'        => '',
+                'permit'            => 0,
+                'menu'              => 0,
+                'icon'              => '',
+                'sort'              => 0,
+                'item'              => 'address_get_address',
+                'parents'           => ['index'],
             ],
         ],
     ],
 
+
+
     'Goods'  => [
-        'name'          => '商品管理',
-        'url'           => '',
+        'name'          => '商品',
+        'url'           => 'goods.goods.index',
         'url_params'    => '',
         'permit'        => 1,
         'menu'          => 1,
+        'top_show'    => 0,
+        'left_first_show'   => 1,
+        'left_second_show'   => 1,
         'icon'          => 'fa-archive',
         'sort'          => '2',
         'item'          => 'Goods',
@@ -454,7 +125,7 @@ return [
                     ],
 
                     'coupon_coupon_get_search_coupons' => [
-                        'name'              => '白名单（选择优惠卷）',
+                        'name'              => '白名单（选择优惠券）',
                         'url'               => 'coupon.coupon.get-search-coupons',
                         'url_params'        => '',
                         'permit'            => 0,
@@ -464,7 +135,7 @@ return [
                         'item'              => 'coupon_coupon_get_search_coupons',
                         'parents'           => ['Goods', 'goods_no_permission',],
                     ],
-                    //优惠卷白名单
+                    //优惠券白名单
                     'coupon_no_permission'  => [
                         'name'              => '白名单（指定商品）',
                         'url'               => 'coupon.coupon.add-param',
@@ -474,7 +145,7 @@ return [
                         'icon'              => '',
                         'sort'              => '2',
                         'item'              => 'coupon_no_permission',
-                        'parents'           => ['Goods', 'coupon',],
+                        'parents'           => ['Goods', 'goods_no_permission',],
                     ],
 
                     'goods_category_get_search_category'  => [
@@ -498,11 +169,48 @@ return [
                         'icon'                  => '',
                         'sort'                  => 0,
                         'item'                  => 'comment_no_permission',
-                        'parents'               => ['Goods', 'comment',],
+                        'parents'               => ['Goods', 'goods_no_permission',],
                     ],
+                    'goods_goods_my_ling_goods'  => [
+                        'name'                  => '白名单（搜索商品）',
+                        'url'                   => 'goods.goods.getMyLinkGoods',
+                        'url_params'            => '',
+                        'permit'                => 0,
+                        'menu'                  => 0,
+                        'icon'                  => '',
+                        'sort'                  => 0,
+                        'item'                  => 'goods_goods_my_ling_goods',
+                        'parents'               => ['Goods', 'goods_no_permission',],
+                    ],
+                    'member_member_level_search_goods'  => [
+                        'name'                  => '白名单（搜索商品）',
+                        'url'                   => 'member.member-level.searchGoods',
+                        'url_params'            => '',
+                        'permit'                => 0,
+                        'menu'                  => 0,
+                        'icon'                  => '',
+                        'sort'                  => 0,
+                        'item'                  => 'member_member_level_search_goods',
+                        'parents'               => ['Goods', 'goods_no_permission',],
+                    ],
+
                 ],
             ],
+            'add_goods'   => [
+                'name'          => '发布商品',
+                'url'           => 'goods.goods.create',
+                'url_params'    => '',
+                'permit'        => 1,
+                'style'         => 'pulish',
+                'menu'          => 1,
+                'icon'          => 'fa-cubes',
+                'sort'          => 0,
+                'item'          => 'goods_goods',
+                'parents'       => ['Goods',],
+                'child'         => [
 
+                ],
+            ],
             'goods_goods'   => [
                 'name'          => '商品列表',
                 'url'           => 'goods.goods.index',
@@ -526,7 +234,6 @@ return [
                         'item'          => 'goods_goods_see',
                         'parents'       => ['Goods', 'goods_goods'],
                     ],
-
                     'goods_goods_display_order' => [
                         'name'          => '修改排序',
                         'url'           => 'goods.goods.displayorder',
@@ -596,6 +303,43 @@ return [
                         'sort'          => 0,
                         'item'          => 'goods_goods_change',
                         'parents'       => ['Goods', 'goods_goods',],
+                    ],
+                ],
+            ],
+
+            'goods_div_from'=> [
+                'name'              => '商品表单',
+                'url'               => 'from.div-from.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-file-excel-o',
+                'sort'              => '2',
+                'item'              => 'goods_div_from',
+                'parents'           => ['Goods',],
+                'child'             => [
+
+                    'goods_div_from_see'=> [
+                        'name'              => '查看内容',
+                        'url'               => 'from.div-from.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => '2',
+                        'item'              => 'goods_div_from_see',
+                        'parents'           => ['Goods','goods_div_from'],
+                    ],
+                    'goods_div_from_store'=> [
+                        'name'              => '编辑修改',
+                        'url'               => 'from.div-from.store',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => '2',
+                        'item'              => 'goods_div_from_store',
+                        'parents'           => ['Goods','goods_div_from'],
                     ],
                 ],
             ],
@@ -821,6 +565,19 @@ return [
                         'parents'               => ['Goods', 'comment',],
                     ],
 
+
+                    'goods_comment_updated'   => [
+                        'name'                  => '修改评价',
+                        'url'                   => 'goods.comment.updated',
+                        'url_params'            => '',
+                        'permit'                => 1,
+                        'menu'                  => 0,
+                        'icon'                  => '',
+                        'sort'                  => 0,
+                        'item'                  => 'goods_comment_updated',
+                        'parents'               => ['Goods','comment',],
+                    ],
+
                     'goods_comment_reply'   => [
                         'name'                  => '回复评价',
                         'url'                   => 'goods.comment.reply',
@@ -830,6 +587,18 @@ return [
                         'icon'                  => '',
                         'sort'                  => 0,
                         'item'                  => 'goods_comment_reply',
+                        'parents'               => ['Goods','comment',],
+                    ],
+
+                    'goods_comment_update'   => [
+                        'name'                  => '修改评价',
+                        'url'                   => 'goods.comment.update',
+                        'url_params'            => '',
+                        'permit'                => 1,
+                        'menu'                  => 0,
+                        'icon'                  => '',
+                        'sort'                  => 0,
+                        'item'                  => 'goods_comment_update',
                         'parents'               => ['Goods','comment',],
                     ],
 
@@ -849,7 +618,7 @@ return [
 
             'coupon'    => [
                 'name'              => '优惠券管理',
-                'url'               => '',
+                'url'               => 'coupon.coupon.index',
                 'url_params'        => '',
                 'permit'            => 1,
                 'menu'              => 1,
@@ -859,12 +628,50 @@ return [
                 'parents'           => ['Goods',],
                 'child'             => [
 
+                    'coupon_coupon_set' => [
+                        'name'              => '优惠券设置',
+                        'url'               => 'coupon.base-set.see',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => 'fa-ticket',
+                        'sort'              => '2',
+                        'item'              => 'coupon_coupon_set',
+                        'parents'           => ['Goods', 'coupon', 'coupon_coupon_set'],
+                        'child'             => [
+
+                            'coupon_coupon_set_see' => [
+                                'name'              => '查看设置',
+                                'url'               => 'coupon.base-set.see',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => 'fa-ticket',
+                                'sort'              => '2',
+                                'item'              => 'coupon_coupon_set_see',
+                                'parents'           => ['Goods', 'coupon',],
+                            ],
+
+                            'coupon_coupon_set_store' => [
+                                'name'              => '保存设置',
+                                'url'               => 'coupon.base-set.store',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => 'fa-ticket',
+                                'sort'              => '2',
+                                'item'              => 'coupon_coupon_set_store',
+                                'parents'           => ['Goods', 'coupon', 'coupon_coupon_set'],
+                            ],
+                        ],
+                    ],
+
                     'coupon_coupon_create' => [
                         'name'              => '创建优惠券',
                         'url'               => 'coupon.coupon.create',
                         'url_params'        => '',
                         'permit'            => 1,
-                        'menu'              => 1,
+                        'menu'              => 0,
                         'icon'              => 'fa-ticket',
                         'sort'              => '2',
                         'item'              => 'coupon_coupon_create',
@@ -932,20 +739,218 @@ return [
                     ],
                 ],
             ],
+
+            /**
+             * 搜索过滤 改名为 商品标签
+             * create 2018/3/26
+             * update 2018/5/14
+             * Author: blank
+             */
+            'search_filtering' => [
+                'name'              => '商品标签',
+                'url'               => 'filtering.filtering.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-sitemap',
+                'sort'              => '6',
+                'item'              => 'search_filtering',
+                'parents'           => ['Goods',],
+                'child'             => [
+                    'filtering_group_index' => [
+                        'name'              => '标签组列表',
+                        'url'               => 'filtering.filtering.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => 'fa-sitemap',
+                        'sort'              => '2',
+                        'item'              => 'filtering_group_index',
+                        'parents'           => ['Goods','search_filtering'],
+                        'child'             => []
+                    ],
+                    'filtering_value_index' => [
+                        'name'              => '标签列表',
+                        'url'               => 'filtering.filtering.filter-value',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => '',
+                        'sort'              => '2',
+                        'item'              => 'filtering_value_index',
+                        'parents'           => ['Goods','search_filtering'],
+                        'child'             => []
+                    ],
+                    'filtering_create' => [
+                        'name'              => '新增',
+                        'url'               => 'filtering.filtering.create',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => '4',
+                        'item'              => 'goods_return_sort',
+                        'parents'           => ['Goods','goods_return']
+                    ],
+
+                    'goods_return_add_one' => [
+                        'name'              => '添加模板',
+                        'url'               => 'goods.return-address.add',
+                        'sort'              => '2',
+                        'item'              => 'filtering_create',
+                        'parents'           => ['Goods','search_filtering'],
+                        'child'             => []
+                    ],
+                    'filtering_edit' => [
+                        'name'              => '编辑',
+                        'url'               => 'filtering.filtering.edit',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'goods_return_add_one',
+                        'parents'           => ['Goods', 'goods_return',],
+                    ],
+
+                    'goods_return_alter' => [
+                        'name'              => '修改模板',
+                        'url'               => 'goods.return-address.edit',
+                        'sort'              => '2',
+                        'item'              => 'filtering_edit',
+                        'parents'           => ['Goods','search_filtering'],
+                        'child'             => []
+                    ],
+                    'filtering_del' => [
+                        'name'              => '删除',
+                        'url'               => 'filtering.filtering.del',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'goods_return_alter',
+                        'parents'           => ['Goods', 'goods_return',],
+                    ],
+
+                    'goods_return_delete' => [
+                        'name'              => '删除模板',
+                        'url'               => 'goods.return-address.delete',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'goods_return_delete',
+                        'parents'           => ['Goods', 'goods_return',],
+                    ],
+                ],
+            ],
+
+            'goods_return' => [
+                'name'              => '退货地址设置',
+                'url'               => 'goods.return-address.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-truck',
+                'sort'              => '6',
+                'item'              => 'coupon',
+                'parents'           => ['Goods',],
+                'child'             => [
+                    'goods_return_see' => [
+                        'name'              => '浏览列表',
+                        'url'               => 'goods.return-address.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => '4',
+                        'item'              => 'goods_return_see',
+                        'parents'           => ['Goods','goods_return']
+                    ],
+
+                    'goods_return_sort' => [
+                        'name'              => '修改排序',
+                        'url'               => 'goods.return-address.sort',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => '4',
+                        'item'              => 'goods_return_sort',
+                        'parents'           => ['Goods','goods_return']
+                    ],
+                ],
+
+            ],
+            'enough_reduce' => [
+                'name'              => '满额优惠',
+                'url'               => 'enoughReduce.index.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-gift',
+                'sort'              => '6',
+                'item'              => 'enough_reduce',
+                'parents'           => ['Goods',],
+                'child'             => [
+                    'filtering_group_index' => [
+                        'name'              => '满额优惠设置',
+                        'url'               => 'enoughReduce.index.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => 'fa-sitemap',
+                        'sort'              => '2',
+                        'item'              => 'enough_reduce_index',
+                        'parents'           => ['Goods'],
+                        'child'             => []
+                    ],
+                    'filtering_group_store' => [
+                        'name'              => '保存满额优惠',
+                        'url'               => 'enoughReduce.store.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => 'fa-sitemap',
+                        'sort'              => '2',
+                        'item'              => 'enough_reduce_store',
+                        'parents'           => ['Goods'],
+                        'child'             => []
+                    ],
+                ],
+
+            ],
         ],
     ],
 
     'Member' => [
-        'name'          => '会员管理',
-        'url'           => '',
+        'name'          => '会员',
+        'url'           => 'member.member',
         'url_params'    => '',
         'permit'        => 1,
         'menu'          => 1,
+        'top_show'    => 0,
+        'left_first_show'   => 1,
+        'left_second_show'   => 1,
         'icon'          => 'fa-users',
         'sort'          => '3',
         'item'          => 'Member',
         'parents'       => [],
         'child'         => [
+
+            'member_search'     => [
+                'name'          => '搜索会员',
+                'url'           => 'member.member.search_member',
+                'url_params'    => '',
+                'permit'        => 0,
+                'menu'          => 0,
+                'icon'          => '',
+                'sort'          => 0,
+                'item'          => 'member_search',
+                'parents'       => ['Member',],
+            ],
 
             'member_all'    => [
                 'name'          => '全部会员',
@@ -956,7 +961,7 @@ return [
                 'icon'          => 'fa-users',
                 'sort'          => 0,
                 'item'          => 'member_all',
-                'parents'       => ['Member',],
+                'parents'       => ['Member'],
                 'child'         => [
 
                     'member_see'     => [
@@ -984,7 +989,7 @@ return [
                     ],
 
                     'member_detail'     => [
-                        'name'          => '查看会员详情',
+                        'name'          => '查看详情',
                         'url'           => 'member.member.detail',
                         'url_params'    => '',
                         'permit'        => 1,
@@ -995,8 +1000,20 @@ return [
                         'parents'       => ['Member', 'member_all',],
                     ],
 
+                    'member_income'     => [
+                        'name'          => '收入详情',
+                        'url'           => 'member.member-income.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_income',
+                        'parents'       => ['Member', 'member_all',],
+                    ],
+
                     'member_detail_update'     => [
-                        'name'          => '修改会员信息',
+                        'name'          => '修改信息',
                         'url'           => 'member.member.update',
                         'url_params'    => '',
                         'permit'        => 1,
@@ -1007,6 +1024,17 @@ return [
                         'parents'       => ['Member', 'member_all',],
                     ],
 
+                    'member_change_relation' => [
+                        'name'          => '修改关系',
+                        'url'           => 'member.member.change_relation',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_change_relation',
+                        'parents'       => ['Member', 'member_all',],
+                    ],
 
                     'member_member_agent' => [
                         'name'          => '推广下线',
@@ -1041,6 +1069,29 @@ return [
                         'icon'          => '',
                         'sort'          => 0,
                         'item'          => 'member_member_delete',
+                        'parents'       => ['Member', 'member_all',],
+                    ],
+
+                    'member_bank_card' => [
+                        'name'          => '银行卡管理',
+                        'url'           => 'member.bank-card.edit',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_bank_card',
+                        'parents'       => ['Member', 'member_all',],
+                    ],
+                    'member_member_address' => [
+                        'name'          => '收货地址',
+                        'url'           => 'member.member-address.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_member_address',
                         'parents'       => ['Member', 'member_all',],
                     ],
                 ],
@@ -1184,116 +1235,105 @@ return [
 
             ],
 
-            'member_relation' => [
-                'name'          => '会员关系',
-                'url'           => '',
+
+
+            'user_relation' => [
+                'name'          => '关系设置',
+                'url'           => 'member.member-relation.index',
                 'url_params'    => '',
                 'permit'        => 1,
                 'menu'          => 1,
-                'icon'          => 'fa-crosshairs',
+                'icon'          => 'fa-sliders',
                 'sort'          => 0,
-                'item'          => 'member_relation',
+                'item'          => 'user_relation',
                 'parents'       => ['Member',],
                 'child'         => [
 
-                    'user_relation' => [
-                        'name'          => '会员关系设置',
-                        'url'           => 'member.member-relation.index',
+                    'user_no_permission' => [
+                        'name'          => '搜索商品',
+                        'url'           => 'member.member-relation.query',
                         'url_params'    => '',
-                        'permit'        => 1,
-                        'menu'          => 1,
-                        'icon'          => 'fa-sliders',
+                        'permit'        => 0,
+                        'menu'          => 0,
+                        'icon'          => '',
                         'sort'          => 0,
-                        'item'          => 'user_relation',
-                        'parents'       => ['Member', 'member_relation',],
-                        'child'         => [
-
-                            'user_no_permission' => [
-                                'name'          => '搜索商品',
-                                'url'           => 'member.member-relation.query',
-                                'url_params'    => '',
-                                'permit'        => 0,
-                                'menu'          => 0,
-                                'icon'          => '',
-                                'sort'          => 0,
-                                'item'          => 'user_no_permission',
-                                'parents'       => ['Member', 'member_relation', 'user_relation'],
-                            ],
-
-                            'user_relation_see' => [
-                                'name'          => '查看设置',
-                                'url'           => 'member.member-relation.save',
-                                'url_params'    => '',
-                                'permit'        => 1,
-                                'menu'          => 0,
-                                'icon'          => '',
-                                'sort'          => 0,
-                                'item'          => 'user_relation_see',
-                                'parents'       => ['Member', 'member_relation', 'user_relation'],
-                            ],
-
-                            'user_relation_save' => [
-                                'name'          => '保存设置',
-                                'url'           => 'member.member-relation.save',
-                                'url_params'    => '',
-                                'permit'        => 1,
-                                'menu'          => 0,
-                                'icon'          => '',
-                                'sort'          => 0,
-                                'item'          => 'user_relation_save',
-                                'parents' => ['Member', 'member_relation', 'user_relation'],
-                            ],
-                        ],
+                        'item'          => 'user_no_permission',
+                        'parents'       => ['Member', 'user_relation'],
                     ],
 
-                    'member_agent_apply'   => [
-                        'name'          => '资格申请',
-                        'url'           => 'member.member-relation.apply',
+                    'user_relation_see' => [
+                        'name'          => '查看修改',
+                        'url'           => 'member.member-relation.save',
                         'url_params'    => '',
                         'permit'        => 1,
-                        'menu'          => 1,
-                        'icon'          => 'fa-sliders',
+                        'menu'          => 0,
+                        'icon'          => '',
                         'sort'          => 0,
-                        'item'          => 'member_agent_apply',
-                        'parents'       => ['Member', 'member_relation',],
-                        'child'         => [
+                        'item'          => 'user_relation_see',
+                        'parents'       => ['Member', 'user_relation'],
+                    ],
+                ],
+            ],
 
-                            'agent_apply_chkApply' => [
-                                'name'              => '审核',
-                                'url'               => 'member.member-relation.chkApply',
-                                'url_params'        => '',
-                                'permit'            => 1,
-                                'menu'              => 0,
-                                'icon'              => 'fa-sliders',
-                                'sort'              => 0,
-                                'item'              => 'agent_apply_chkApplye',
-                                'parents'           => ['Member', 'member_relation', 'agent_apply'],
-                            ],
+            'member_agent_apply'   => [
+                'name'          => '资格申请',
+                'url'           => 'member.member-relation.apply',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-sliders',
+                'sort'          => 0,
+                'item'          => 'member_agent_apply',
+                'parents'       => ['Member', 'member_relation',],
+                'child'         => [
 
-                            'agent_apply_export' => [
-                                'name'              => '导出申请',
-                                'url'               => 'member.member-relation.export',
-                                'url_params'        => '',
-                                'permit'            => 1,
-                                'menu'              => 0,
-                                'icon'              => 'fa-sliders',
-                                'sort'              => 0,
-                                'item'              => 'agent_apply_export',
-                                'parents'           => ['Member', 'member_relation', 'agent_apply'],
-                            ]
-                        ],
+                    'agent_apply_chkApply' => [
+                        'name'              => '资格审核',
+                        'url'               => 'member.member-relation.chkApply',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => 'fa-sliders',
+                        'sort'              => 0,
+                        'item'              => 'agent_apply_chkApplye',
+                        'parents'           => ['Member', 'member_relation', 'agent_apply'],
                     ],
 
-                    'relation_base'     => [
-                        'name'          => '基础设置',
+                    'agent_apply_export' => [
+                        'name'              => '导出申请',
+                        'url'               => 'member.member-relation.export',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => 'fa-sliders',
+                        'sort'              => 0,
+                        'item'              => 'agent_apply_export',
+                        'parents'           => ['Member', 'member_relation', 'agent_apply'],
+                    ]
+                ],
+            ],
+            'relation_base'     => [
+                'name'          => '会员设置',
+                'url'           => 'member.member-relation.base',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-circle-o',
+                'sort'          => 0,
+                'item'          => 'relation_base',
+                'parents'       => ['Member',],
+                'child'         => [
+
+                    'relation_base_save'     => [
+                        'name'          => '查看修改',
                         'url'           => 'member.member-relation.base',
                         'url_params'    => '',
                         'permit'        => 1,
-                        'menu'          => 1,
+                        'menu'          => 0,
                         'icon'          => 'fa-circle-o',
                         'sort'          => 0,
                         'item'          => 'relation_base',
-                        'parents'       => ['Member', 'member_relation',],
+                        'parents'       => ['Member', 'relation_base',],
                     ],
                 ],
             ],
@@ -1301,11 +1341,14 @@ return [
     ],
 
     'Order'  => [
-        'name'          => '订单管理',
-        'url'           => 'order.list',
+        'name'          => '订单',
+        'url'           => 'order.list.index',
         'url_params'    => '',
         'permit'        => 1,
         'menu'          => 1,
+        'top_show'    => 0,
+        'left_first_show'   => 1,
+        'left_second_show'   => 1,
         'icon'          => 'fa-shopping-cart',
         'sort'          => '4',
         'item'          => 'Order',
@@ -1356,13 +1399,35 @@ return [
                                 'icon'              => 'fa-file-text',
                                 'sort'              => 1,
                                 'item'              => 'order_list_index',
-                                'parents'           => ['Order', 'order_list'],
+                                'parents'           => ['Order', 'order_list','order_handel'],
+                            ],
+                            'order_pay_list' => [
+                                'name'              => '查看订单支付记录',
+                                'url'               => 'order.orderPay.index',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => 'fa-file-text',
+                                'sort'              => 1,
+                                'item'              => 'order_pay_index',
+                                'parents'           => ['Order', 'order_detail'],
+                            ],
+                            'order_pay_detail' => [
+                                'name'              => '查看订单支付详情',
+                                'url'               => 'orderPay.detail.index',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => 'fa-file-text',
+                                'sort'              => 1,
+                                'item'              => 'order_pay_detail',
+                                'parents'           => ['Order', 'order_detail'],
                             ],
                             'change_order_price_index' => [
                                 'name'              => '修改价格跳转路由',
                                 'url'               => 'order.change-order-price.index',
                                 'url_params'        => '',
-                                'permit'            => 0,
+                                'permit'            => 1,
                                 'menu'              => 0,
                                 'icon'              => '',
                                 'sort'              => 1,
@@ -1435,6 +1500,18 @@ return [
                                 'icon'              => '',
                                 'sort'              => 1,
                                 'item'              => 'order_operation_close',
+                                'parents'           => ['Order', 'order_list'],
+                            ],
+
+                            'order_operation_remark' => [
+                                'name'              => '订单备注',
+                                'url'               => 'order.remark.update-remark',
+                                'url_params'        => '',
+                                'permit'            => 0,
+                                'menu'              => 0,
+                                'icon'              => '',
+                                'sort'              => 1,
+                                'item'              => 'order_operation_remark',
                                 'parents'           => ['Order', 'order_list'],
                             ],
                         ],
@@ -1541,6 +1618,7 @@ return [
                         'item'              => 'order_list_completed_see',
                         'parents'           => ['Order','order_list_completed'],
                         'child' => [],
+
                     ],
                 ],
             ],
@@ -1569,9 +1647,59 @@ return [
                     ],
                 ],
             ],
+            'order_list_pay_fail' => [
+                'name'              => '支付异常订单',
+                'url'               => 'order.list.pay-fail',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-bitbucket',
+                'sort'              => '5',
+                'item'              => 'order_list_pay_fail',
+                'parents'           => ['Order'],
+                'child' => [
+                    'order_list_cancelled_see' => [
+                        'name'              => '浏览',
+                        'url'               => 'order.list.pay-fail',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 1,
+                        'item'              => 'order_list_pay_fail_see',
+                        'parents'           => ['Order','order_list_pay_fail'],
+                        'child' => [],
+                    ],
+                ],
+            ],
+            'order_list_callback_fail' => [
+                'name'              => '支付回调异常订单',
+                'url'               => 'order.list.callback-fail',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-bitbucket',
+                'sort'              => '5',
+                'item'              => 'order_list_callback_fail',
+                'parents'           => ['Order'],
+                'child' => [
+                    'order_list_cancelled_see' => [
+                        'name'              => '浏览',
+                        'url'               => 'order.list.callback-fail',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 1,
+                        'item'              => 'order_list_callback_fail_see',
+                        'parents'           => ['Order','order_list_callback_fail'],
+                        'child' => [],
+                    ],
+                ],
+            ],
             'refund_list_refund' => [
                 'name'              => '退换货订单',
-                'url'               => 'refund.list',
+                'url'               => 'refund.list.index',
                 'url_params'        => '',
                 'permit'            => 1,
                 'menu'              => 1,
@@ -1591,17 +1719,17 @@ return [
                         'item'              => 'refund_order_handel',
                         'parents'           => ['Order', 'refund_list_refund'],
                         'child'             => [
-                            'refund_detail_index' => [
-                                'name'              => '查看详情',
-                                'url'               => 'order.detail.index',
-                                'url_params'        => '',
-                                'permit'            => 1,
-                                'menu'              => 0,
-                                'icon'              => 'fa-file-text',
-                                'sort'              => 1,
-                                'item'              => 'order_list_index',
-                                'parents'           => ['Order', 'refund_list_refund'],
-                            ],
+//                            'refund_detail_index' => [
+//                                'name'              => '查看详情',
+//                                'url'               => 'order.detail.index',
+//                                'url_params'        => '',
+//                                'permit'            => 1,
+//                                'menu'              => 0,
+//                                'icon'              => 'fa-file-text',
+//                                'sort'              => 1,
+//                                'item'              => 'order_list_index',
+//                                'parents'           => ['Order', 'refund_list_refund'],
+//                            ],
 
                             'refund_operation_reject' => [
                                 'name'              => '驳回申请',
@@ -1766,15 +1894,58 @@ return [
                     ],
                 ],
             ],
+
+            'order_batch_send' => [
+                'name'              => '批量发货',
+                'url'               => 'order.batch-send.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-send',
+                'sort'              => '8',
+                'item'              => 'order_batch_send',
+                'parents'           => ['Order'],
+                'child' => [
+
+                    'order_batch_send_get_example' => [
+                        'name'              => '下载模版',
+                        'url'               => 'order.batch-send.get-example',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'item'              => 'order_batch_send_get_example',
+                        'parents'           => ['Order','order_batch_send'],
+                        'child' => [],
+                    ],
+                ],
+            ],
         ],
     ],
 
+    'plugins'  => [
+        'name' => '应用',
+        'url' => 'plugins.get-plugin-list',
+        'urlParams' => '',
+        'permit' => 1,
+        'menu' => 1,
+        'icon' => 'fa-cubes',
+        'top_show'    => 0,
+        'left_first_show'   => 1,
+        'left_second_show'   => 0,
+        'parents' => [],
+        'item' => 'plugins',
+    ],
+
     'finance'=> [
-        'name'              => '财务管理',
-        'url'               => '',
+        'name'              => '财务',
+        'url'               => 'finance.balance-set.see',
         'url_params'        => '',
         'permit'            => 1,
         'menu'              => 1,
+        'top_show'        => 0,
+        'left_first_show'       => 1,
+        'left_second_show'   => 1,
         'icon'              => 'fa-rmb',
         'parent_id'         => 0,
         'sort'              => '5',
@@ -1782,321 +1953,395 @@ return [
         'parents'           => [],
         'child'             => [
 
-            'balance'           => [
-                'name'              => '余额管理',
-                'url'               => 'balance',
+            'finance_balance_set'       => [
+                'name'              => '余额设置',
+                'url'               => 'finance.balance-set.see',
                 'url_params'        => '',
                 'permit'            => 1,
                 'menu'              => 1,
-                'icon'              => 'fa-list-alt',
+                'icon'              => 'fa-gear',
                 'sort'              => 0,
-                'item'              => 'balance',
-                'parents'           => ['finance',],
-                'child'             => [
-
-                    'balance_set'       => [
-                        'name'              => '基础设置',
-                        'url'               => 'finance.balance.index',
-                        'url_params'        => '',
-                        'permit'            => 1,
-                        'menu'              => 1,
-                        'icon'              => 'fa-gear',
-                        'sort'              => 0,
-                        'item'              => 'balance_set',
-                        'parents'           => ['finance', 'balance'],
-                    ],
-
-                    'finance_balance_member'    => [
-                        'name'              => '会员余额',
-                        'url'               => 'finance.balance.member',
-                        'url_params'        => '',
-                        'permit'            => 1,
-                        'menu'              => 1,
-                        'icon'              => 'fa-book',
-                        'sort'              => 0,
-                        'item'              => 'finance_balance_member',
-                        'parents'           => ['finance', 'balance'],
-                        'child'             => [
-
-                            'finance_balance_member_see'  => [
-                                'name'              => '浏览记录',
-                                'url'               => 'finance.balance.member',
-                                'url_params'        => '',
-                                'permit'            => 1,
-                                'menu'              => 0,
-                                'icon'              => '',
-                                'sort'              => 0,
-                                'item'              => 'finance_balance_member_see',
-                                'parents'           => ['finance', 'balance', 'finance_balance_member'],
-                            ],
-
-                            'finance_balance_member_recharge'  => [
-                                'name'              => '余额充值',
-                                'url'               => 'finance.balance.recharge',
-                                'url_params'        => '',
-                                'permit'            => 1,
-                                'menu'              => 0,
-                                'icon'              => '',
-                                'sort'              => 0,
-                                'item'              => 'finance_balance_member_recharge',
-                                'parents'           => ['finance', 'balance', 'finance_balance_member'],
-                            ],
-                        ],
-                    ],
-
-                    'finance_balance_rechargeRecord' => [
-                        'name'              => '充值记录',
-                        'url'               => 'finance.balance.rechargeRecord',
-                        'url_params'        => '',
-                        'permit'            => 1,
-                        'menu'              => 1,
-                        'icon'              => 'fa-download',
-                        'sort'              => 0,
-                        'item'              => 'finance_balance_rechargeRecord',
-                        'parents'           => ['finance', 'balance',],
-                    ],
-
-                    'finance_balance_tansferRecord' => [
-                        'name'              => '转让记录',
-                        'url'               => 'finance.balance.transferRecord',
-                        'url_params'        => '',
-                        'permit'            => 1,
-                        'menu'              => 1,
-                        'icon'              => 'fa-external-link',
-                        'sort'              => 0,
-                        'item'              => 'finance_balance_tansferRecord',
-                        'parents'           => ['finance', 'balance'],
-                    ],
-
-                    'finance_balance_records' => [
-                        'name'              => '余额明细',
-                        'url'               => 'finance.balance-records.index',
-                        'url_params'        => '',
-                        'permit'            => 1,
-                        'menu'              => 1,
-                        'icon'              => 'fa-file-text-o',
-                        'sort'              => 0,
-                        'item'              => 'finance_balance_balanceDetail',
-                        'parents'           => ['finance', 'balance'],
-                        'child'             => [
-
-                            'finance_balance_records_see'  => [
-                                'name'              => '浏览记录',
-                                'url'               => 'finance.balance-records.index',
-                                'url_params'        => '',
-                                'permit'            => 1,
-                                'menu'              => 0,
-                                'icon'              => '',
-                                'sort'              => 0,
-                                'item'              => 'finance_balance_records_see',
-                                'parents'           => ['finance', 'balance', 'finance_balance_records'],
-                            ],
-
-                            'finance_balance_records_export'  => [
-                                'name'              => '导出 EXCEL',
-                                'url'               => 'finance.balance-records.export',
-                                'url_params'        => '',
-                                'permit'            => 1,
-                                'menu'              => 0,
-                                'icon'              => '',
-                                'sort'              => 0,
-                                'item'              => 'finance_balance_records_export',
-                                'parents'           => ['finance', 'balance', 'finance_balance_records'],
-                            ],
-
-                            'finance_balance_records_detail'  => [
-                                'name'              => '明细详情',
-                                'url'               => 'finance.balance.lookBalanceDetail',
-                                'url_params'        => '',
-                                'permit'            => 1,
-                                'menu'              => 0,
-                                'icon'              => '',
-                                'sort'              => 0,
-                                'item'              => 'finance_balance_records_detail',
-                                'parents'           => ['finance', 'balance', 'finance_balance_records'],
-                            ],
-                        ],
-                    ],
-                ],
-
-            ],
-            'withdraw'          => [
-                'name'              => '提现管理',
-                'url'               => '',
-                'url_params'        => '',
-                'permit'            => 0,
-                'menu'              => 1,
-                'icon'              => 'fa-money',
-                'sort'              => 0,
-                'item'              => 'withdraw',
+                'item'              => 'finance_balance_set',
                 'parents'           => ['finance'],
                 'child'             => [
 
-                    'withdraw_set'  => [
-                        'name'              => '提现设置',
-                        'url'               => 'finance.withdraw.set',
+                    'finance_balance_set_see' => [
+                        'name'              => '查看设置',
+                        'url'               => 'finance.balance-set.see',
                         'url_params'        => '',
                         'permit'            => 1,
-                        'menu'              => 1,
+                        'menu'              => 0,
                         'icon'              => 'fa-gear',
-                        'sort'              => 0,
-                        'item'              => 'withdraw_set',
-                        'parents'           => ['finance','withdraw'],
-                        'child'             => [
-                            'withdraw_set'      => [
-                                'name'              => '编辑保存',
-                                'url'               => 'finance.withdraw.set',
-                                'url_params'        => '',
-                                'permit'            => 1,
-                                'menu'              => 0,
-                                'icon'              => '',
-                                'sort'              => '0',
-                                'item'              => 'withdraw_set',
-                                'parents'           => ['finance','withdraw','withdraw_set'],
-                            ],
-                        ],
+                        'item'              => 'finance_balance_set_see',
+                        'parents'           => ['finance', 'finance_balance_set'],
                     ],
 
-                    'withdraw_records'  => [
-                        'name'              => '提现记录',
-                        'url'               => 'finance.withdraw',
+                    'finance_balance_set_store' => [
+                        'name'              => '修改设置',
+                        'url'               => 'finance.balance-set.store',
                         'url_params'        => '',
                         'permit'            => 1,
-                        'menu'              => 1,
-                        'icon'              => 'fa-pencil',
-                        'sort'              => 0,
-                        'item'              => 'withdraw_records',
-                        'parents'           => ['finance','withdraw'],
-                        'child'             => [
-
-                            'withdraw_records_see' => [
-                                'name'              => '浏览记录',
-                                'url'               => 'finance.withdraw.index',
-                                'url_params'        => "",
-                                'permit'            => 1,
-                                'menu'              => 0,
-                                'icon'              => '',
-                                'sort'              => 0,
-                                'item'              => 'withdraw_records_see',
-                                'parents'           => ['finance','withdraw','withdraw_records'],
-                            ],
-
-                            'withdraw_records_balance_detail' => [
-                                'name'              => '余额提现详情',
-                                'url'               => 'finance.balance-withdraw.detail',
-                                'url_params'        => "",
-                                'permit'            => 1,
-                                'menu'              => 0,
-                                'icon'              => '',
-                                'sort'              => 0,
-                                'item'              => 'withdraw_records_balance_detail',
-                                'parents'           => ['finance','withdraw','withdraw_records'],
-                            ],
-                            'withdraw_records_balance_examine' => [
-                                'name'              => '余额审核打款',
-                                'url'               => 'finance.balance-withdraw.examine',
-                                'url_params'        => "",
-                                'permit'            => 1,
-                                'menu'              => 0,
-                                'icon'              => '',
-                                'sort'              => 0,
-                                'item'              => 'withdraw_records_balance_examine',
-                                'parents'           => ['finance','withdraw','withdraw_records'],
-                            ],
-
-                            'withdraw_records_detail' => [
-                                'name'              => '收入提现详情',
-                                'url'               => 'finance.withdraw.info',
-                                'url_params'        => "",
-                                'permit'            => 1,
-                                'menu'              => 0,
-                                'icon'              => '',
-                                'sort'              => 0,
-                                'item'              => 'withdraw_records_detail',
-                                'parents'           => ['finance','withdraw','withdraw_records'],
-                            ],
-
-                            'withdraw_records_examine' => [
-                                'name'              => '收入审核打款',
-                                'url'               => 'finance.withdraw.dealt',
-                                'url_params'        => "",
-                                'permit'            => 1,
-                                'menu'              => 0,
-                                'icon'              => '',
-                                'sort'              => 0,
-                                'item'              => 'withdraw_records_examine',
-                                'parents'           => ['finance','withdraw','withdraw_records'],
-                            ],
-
-                            'withdraw_status_wait_audit' => [
-                                'name'              => '待审核提现',
-                                'url'               => 'finance.withdraw.index',
-                                'url_params'        => "&search[status]=0",
-                                'permit'            => 0,
-                                'menu'              => 1,
-                                'icon'              => 'fa-clock-o',
-                                'sort'              => 0,
-                                'item'              => 'withdraw_status_wait_audit',
-                                'parents'           => ['finance','withdraw','withdraw_records'],
-                            ],
-
-                            'withdraw_status_wait_pay' => [
-                                'name'              => '待打款提现',
-                                'url'               => 'finance.withdraw',
-                                'url_params'        => "&search[status]=1",
-                                'permit'            => 0,
-                                'menu'              => 1,
-                                'icon'              => 'fa-inbox',
-                                'sort'              => 0,
-                                'item'              => 'withdraw_status_wait_pay',
-                                'parents'           => ['finance','withdraw','withdraw_records'],
-                            ],
-
-                            'withdraw_status_pay' => [
-                                'name'              => '已打款提现',
-                                'url'               => 'finance.withdraw',
-                                'url_params'        => "&search[status]=2",
-                                'permit'            => 0,
-                                'menu'              => 1,
-                                'icon'              => 'fa-check-circle-o',
-                                'sort'              => 0,
-                                'item'              => 'withdraw_status_pay',
-                                'parents'           => ['finance','withdraw','withdraw_records'],
-                            ],
-
-                            'withdraw_status_arrival' => [
-                                'name'              => '已到账提现',
-                                'url'               => 'finance.withdraw',
-                                'url_params'        => "&search[status]=3",
-                                'permit'            => 0,
-                                'menu'              => 1,
-                                'icon'              => 'fa-stack-overflow',
-                                'sort'              => 0,
-                                'item'              => 'withdraw_status_arrival',
-                                'parents'           => ['finance','withdraw','withdraw_records'],
-                            ],
-
-                            'withdraw_status_invalid' => [
-                                'name'              => '无效提现',
-                                'url'               => 'finance.withdraw',
-                                'url_params'        => "&search[status]=-1",
-                                'permit'            => 0,
-                                'menu'              => 1,
-                                'icon'              => 'fa-times-circle',
-                                'sort'              => 0,
-                                'item'              => 'withdraw_status_invalid',
-                                'parents'           => ['finance','withdraw','withdraw_records'],
-                            ],
-
-
-                        ],
+                        'menu'              => 0,
+                        'icon'              => 'fa-gear',
+                        'item'              => 'finance_balance_set_see',
+                        'parents'           => ['finance', 'finance_balance_set'],
                     ],
                 ],
             ],
 
+            'finance_balance_member'    => [
+                'name'              => '会员余额',
+                'url'               => 'finance.balance.member',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-book',
+                'sort'              => 0,
+                'item'              => 'finance_balance_member',
+                'parents'           => ['finance', 'balance'],
+                'child'             => [
+
+                    'finance_balance_member_see'  => [
+                        'name'              => '浏览记录',
+                        'url'               => 'finance.balance.member',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'finance_balance_member_see',
+                        'parents'           => ['finance', 'balance', 'finance_balance_member'],
+                    ],
+
+                    'finance_balance_member_recharge'  => [
+                        'name'              => '余额充值',
+                        'url'               => 'balance.recharge.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'finance_balance_member_recharge',
+                        'parents'           => ['finance', 'balance', 'finance_balance_member'],
+                    ],
+                ],
+            ],
+
+            'finance_balance_rechargeRecord' => [
+                'name'              => '充值记录',
+                'url'               => 'finance.balance-recharge-records.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-download',
+                'sort'              => 0,
+                'item'              => 'finance_balance_rechargeRecord',
+                'parents'           => ['finance', 'balance',],
+            ],
+
+            //茶余饭后独立开发充值满额统计
+            /*'finance_balance_recharge_statistics' => [
+                'name'              => '满额统计',
+                'url'               => 'finance.balanceRechargeStatistics.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-download',
+                'sort'              => 0,
+                'item'              => 'finance_balance_recharge_statistics',
+                'parents'           => ['finance', 'balance',],
+            ],*/
+
+
+            'finance_balance_tansferRecord' => [
+                'name'              => '转让记录',
+                'url'               => 'finance.balance.transferRecord',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-external-link',
+                'sort'              => 0,
+                'item'              => 'finance_balance_tansferRecord',
+                'parents'           => ['finance', 'balance'],
+            ],
+
+            'finance_balance_records' => [
+                'name'              => '余额明细',
+                'url'               => 'finance.balance-records.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-file-text-o',
+                'sort'              => 0,
+                'item'              => 'finance_balance_balanceDetail',
+                'parents'           => ['finance', 'balance'],
+                'child'             => [
+
+                    'finance_balance_records_see'  => [
+                        'name'              => '浏览记录',
+                        'url'               => 'finance.balance-records.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'finance_balance_records_see',
+                        'parents'           => ['finance', 'balance', 'finance_balance_records'],
+                    ],
+
+                    'finance_balance_records_export'  => [
+                        'name'              => '导出 EXCEL',
+                        'url'               => 'finance.balance-records.export',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'finance_balance_records_export',
+                        'parents'           => ['finance', 'balance', 'finance_balance_records'],
+                    ],
+
+                    'finance_balance_records_detail'  => [
+                        'name'              => '明细详情',
+                        'url'               => 'finance.balance.lookBalanceDetail',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'finance_balance_records_detail',
+                        'parents'           => ['finance', 'balance', 'finance_balance_records'],
+                    ],
+                ],
+
+
+            ],
+
+            //todo 待开发
+          /*  'member_income'  => [
+                'name'              => '会员收入',
+                'url'               => 'income.member-income.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-book',
+                'sort'              => 0,
+                'item'              => 'member_income',
+                'parents'           => ['finance'],
+            ],*/
+
+            'income_records'  => [
+                'name'              => '收入明细',
+                'url'               => 'income.income-records.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-file-text-o',
+                'sort'              => 0,
+                'item'              => 'income_records',
+                'parents'           => ['finance'],
+            ],
+
+            'withdraw_set'  => [
+                'name'              => '提现设置',
+                'url'               => 'finance.withdraw-set.see',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-gear',
+                'sort'              => 0,
+                'item'              => 'withdraw_set',
+                'parents'           => ['finance','withdraw'],
+                'child'             => [
+                    'withdraw_set_see'      => [
+                        'name'              => '编辑保存',
+                        'url'               => 'finance.withdraw-set.see',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => '0',
+                        'item'              => 'withdraw_set_see',
+                        'parents'           => ['finance','withdraw','withdraw_set'],
+                    ],
+                ],
+            ],
+
+            'withdraw_statistics'  => [
+                'name'              => '提现统计',
+                'url'               => 'finance.withdraw-statistics.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-line-chart',
+                'sort'              => 0,
+                'item'              => 'withdraw_statistics',
+                'parents'           => ['finance','withdraw'],
+            ],
+
+            'withdraw_records'  => [
+                'name'              => '提现记录',
+                'url'               => 'finance.withdraw-records',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-pencil',
+                'sort'              => 0,
+                'item'              => 'withdraw_records',
+                'parents'           => ['finance','withdraw'],
+                'child'             => [
+
+                    'withdraw_records_see' => [
+                        'name'              => '全部记录',
+                        'url'               => 'finance.withdraw-records.index',
+                        'url_params'        => "",
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'withdraw_records_see',
+                        'parents'           => ['finance','withdraw_records'],
+                    ],
+
+                    'withdraw_records_export' => [
+                        'name'              => '记录导出',
+                        'url'               => 'finance.withdraw-records.export',
+                        'url_params'        => "",
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'withdraw_records_export',
+                        'parents'           => ['finance','withdraw_records'],
+                    ],
+
+                    'withdraw_records_balance_detail' => [
+                        'name'              => '余额提现详情',
+                        'url'               => 'finance.balance-withdraw.detail',
+                        'url_params'        => "",
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'withdraw_records_balance_detail',
+                        'parents'           => ['finance','withdraw_records'],
+                    ],
+                    'withdraw_records_balance_examine' => [
+                        'name'              => '余额审核打款',
+                        'url'               => 'finance.balance-withdraw.examine',
+                        'url_params'        => "",
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'withdraw_records_balance_examine',
+                        'parents'           => ['finance','withdraw_records'],
+                    ],
+
+                    'withdraw_records_detail' => [
+                        'name'              => '收入提现详情',
+                        'url'               => 'withdraw.detail.index',
+                        'url_params'        => "",
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'withdraw_records_detail',
+                        'parents'           => ['finance','withdraw_records'],
+                    ],
+
+                    'withdraw_records_examine' => [
+                        'name'              => '收入审核打款',
+                        'url'               => 'finance.withdraw.dealt',
+                        'url_params'        => "",
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'withdraw_records_examine',
+                        'parents'           => ['finance','withdraw_records'],
+                    ],
+
+                    'withdraw_status_wait_audit' => [
+                        'name'              => '待审核',
+                        'url'               => 'finance.withdraw-records.index',
+                        'url_params'        => "&search[status]=0",
+                        'permit'            => 0,
+                        'menu'              => 1,
+                        'icon'              => 'fa-clock-o',
+                        'sort'              => 0,
+                        'item'              => 'withdraw_status_wait_audit',
+                        'parents'           => ['finance','withdraw_records'],
+                    ],
+
+                    'withdraw_status_wait_pay' => [
+                        'name'              => '待打款',
+                        'url'               => 'finance.withdraw-records.index',
+                        'url_params'        => "&search[status]=1",
+                        'permit'            => 0,
+                        'menu'              => 1,
+                        'icon'              => 'fa-inbox',
+                        'sort'              => 0,
+                        'item'              => 'withdraw_status_wait_pay',
+                        'parents'           => ['finance','withdraw_records'],
+                    ],
+
+                    'withdraw_status_paying' => [
+                        'name'              => '打款中',
+                        'url'               => 'finance.withdraw-records.index',
+                        'url_params'        => "&search[status]=4",
+                        'permit'            => 0,
+                        'menu'              => 1,
+                        'icon'              => 'fa-check-circle-o',
+                        'sort'              => 0,
+                        'item'              => 'withdraw_status_paying',
+                        'parents'           => ['finance','withdraw_records'],
+                    ],
+
+                    'withdraw_status_pay' => [
+                        'name'              => '已打款',
+                        'url'               => 'finance.withdraw-records.index',
+                        'url_params'        => "&search[status]=2",
+                        'permit'            => 0,
+                        'menu'              => 1,
+                        'icon'              => 'fa-check-circle-o',
+                        'sort'              => 0,
+                        'item'              => 'withdraw_status_pay',
+                        'parents'           => ['finance','withdraw_records'],
+                    ],
+
+                    /*'withdraw_status_arrival' => [
+                        'name'              => '已驳回',
+                        'url'               => 'finance.withdraw-records.index',
+                        'url_params'        => "&search[status]=3",
+                        'permit'            => 0,
+                        'menu'              => 1,
+                        'icon'              => 'fa-stack-overflow',
+                        'sort'              => 0,
+                        'item'              => 'withdraw_status_arrival',
+                        'parents'           => ['finance','withdraw_records'],
+                    ],*/
+
+                    'withdraw_status_invalid' => [
+                        'name'              => '无效提现',
+                        'url'               => 'finance.withdraw-records.index',
+                        'url_params'        => "&search[status]=-1",
+                        'permit'            => 0,
+                        'menu'              => 1,
+                        'icon'              => 'fa-times-circle',
+                        'sort'              => 0,
+                        'item'              => 'withdraw_status_invalid',
+                        'parents'           => ['finance','withdraw_records'],
+                    ],
+
+
+                ],
+            ],
+
+
             'finance_point'     => [
                 'name'              => '积分管理',
-                'url'               => '',
+                'url'               => 'finance.point-member.index',
                 'url_params'        => '',
                 'permit'            => 1,
                 'menu'              => 1,
@@ -2129,15 +2374,28 @@ return [
                         'item'              => 'point_member',
                         'parents'           => ['finance', 'finance_point',],
                     ],
+
                     'point_recharge'             => [
                         'name'              => '积分充值',
-                        'url'               => 'finance.point-recharge.index',
+                        'url'               => 'point.recharge.index',
                         'url_params'        => '',
                         'permit'            => 1,
                         'menu'              => 0,
                         'icon'              => '',
                         'sort'              => 0,
                         'item'              => 'point_recharge',
+                        'parents'           => ['finance', 'finance_point',],
+                    ],
+
+                    'point_recharge_records'=> [
+                        'name'              => '充值记录',
+                        'url'               => 'point.recharge-records.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => 'fa-file-text-o',
+                        'sort'              => 0,
+                        'item'              => 'point_recharge_records',
                         'parents'           => ['finance', 'finance_point',],
                     ],
 
@@ -2152,15 +2410,1030 @@ return [
                         'item'              => 'point_log',
                         'parents'           => ['finance', 'finance_point',],
                     ],
+
+
+                    'point_love_see'             => [
+                        'name'              => '查看转出设置',
+                        'url'               => 'finance.point-love.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'point_love_see',
+                        'parents'           => ['finance', 'finance_point',],
+                    ],
+
+                    'point_love_update'             => [
+                        'name'              => '修改转出设置',
+                        'url'               => 'finance.point-love.update',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'point_love_update',
+                        'parents'           => ['finance', 'finance_point',],
+                    ],
                 ],
             ],
-
+            'remittance_audit'     => [
+                'name'              => '转账审核',
+                'url'               => 'finance.remittance-audit.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-file-text-o',
+                'sort'              => 0,
+                'item'              => 'remittance_audit',
+                'parents'           => ['finance',],
+                'child'             => [
+                    'remittance_audit_detail'         => [
+                        'name'              => '转账审核详情',
+                        'url'               => 'remittanceAudit.detail.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => 'fa-gear',
+                        'sort'              => 0,
+                        'item'              => 'remittance_audit_detail',
+                        'parents'           => ['finance', 'remittance_audit',],
+                    ],
+                    'remittance_audit_pass'         => [
+                        'name'              => '转账审核通过',
+                        'url'               => 'remittanceAudit.operation.pass',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => 'fa-gear',
+                        'sort'              => 0,
+                        'item'              => 'remittance_audit_pass',
+                        'parents'           => ['finance', 'remittance_audit',],
+                    ],
+                    'remittance_audit_reject'         => [
+                        'name'              => '转账审核拒绝',
+                        'url'               => 'remittanceAudit.detail.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => 'fa-gear',
+                        'sort'              => 0,
+                        'item'              => 'remittanceAudit.operation.reject',
+                        'parents'           => ['finance', 'remittance_audit',],
+                    ],
+                ]
+            ],
+            'profit_advertisement' => [
+                'name' => '收益广告',
+                'permit' => 1,
+                'menu' => 1,
+                'icon' => 'fa-image',
+                'sort' => 0,
+                'item' => 'profit_advertisement',
+                'url' => 'finance.advertisement.index',
+                'url_params' => '',
+                'parents' => ['finance','profit_advertisement'],
+                'child' => [
+                    'profit_advertisement_advertisement_add' => [
+                        'name' => '添加广告',
+                        'permit' => 1,
+                        'menu' => '',
+                        'icon' => '',
+                        'url' => 'finance.advertisement.add',
+                        'url_params' => '',
+                        'parents' => ['finance', 'profit_advertisement'],
+                        'child' => []
+                    ],
+                    'profit_advertisement_advertisement_edit' => [
+                        'name' => '编辑广告',
+                        'permit' => 1,
+                        'menu' => '',
+                        'icon' => '',
+                        'url' => 'finance.advertisement.edit',
+                        'url_params' => '',
+                        'parents' => ['finance', 'profit_advertisement'],
+                        'child' => []
+                    ],
+                    'profit_advertisement_advertisement_del' => [
+                        'name' => '删除广告',
+                        'permit' => 1,
+                        'menu' => '',
+                        'icon' => '',
+                        'url' => 'finance.advertisement.del',
+                        'url_params' => '',
+                        'parents' => ['finance', 'profit_advertisement'],
+                        'child' => []
+                    ],
+                ]
+            ],
 
 
         ],
 
     ],
 
+    'charts' => [
+        'name'          => '统计',
+        'url'           => 'charts.member.count.index',
+        'url_params'    => '',
+        'permit'        => 1,
+        'menu'          => 1,
+        'icon'          => 'fa-bar-chart-o',
+        'sort'          => 1,
+        'top_show'      => 0,               //顶部导航是否显示
+        'left_first_show'   => 1,           //左侧一级导航是否显示
+        'left_second_show'  => 1,           //左侧二级导航是否显示
+        'item'          => 'system',
+        'parents'       => [],
+        'child'         => [
 
+            'member_count_charts'     => [
+                'name'          => '会员数据统计',
+                'url'           => 'charts.member.count.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'member_count_charts',
+                'parents'       => ['charts',],
+
+            ],
+
+            'member_offline_charts'     => [
+                'name'          => '会员关系统计',
+                'url'           => 'charts.member.offline-count.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'member_offline_charts',
+                'parents'       => ['charts',],
+                'child'         => [
+
+
+
+                    'member_offline_count_charts'     => [
+                        'name'          => '下线人数排行',
+                        'url'           => 'charts.member.offline-count.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_offline_count_charts',
+                        'parents'       => ['charts','member_offline_charts'],
+
+                    ],
+
+                    'member_offline_order_charts'     => [
+                        'name'          => '下线订单排行',
+                        'url'           => 'charts.member.offline-order.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_offline_order_charts',
+                        'parents'       => ['charts','member_offline_charts'],
+
+                    ],
+                ]
+
+            ],
+
+            /* 'goods_sales_count_charts'     => [
+                 'name'          => '商品数据统计',
+                 'url'           => 'charts.goods.sales-count.index',
+                 'url_params'    => '',
+                 'permit'        => 1,
+                 'menu'          => 1,
+                 'icon'          => 'fa-bar-chart-o',
+                 'sort'          => 0,
+                 'item'          => 'goods_charts',
+                 'parents'       => ['charts',],
+             ],
+
+             'order_total_charts'=> [
+                 'name'          => '订单数据统计',
+                 'url'           => 'charts.order.today-trends.index',
+                 'url_params'    => '',
+                 'permit'        => 1,
+                 'menu'          => 1,
+                 'icon'          => 'fa-bar-chart-o',
+                 'sort'          => 0,
+                 'item'          => 'order_total_charts',
+                 'parents'       => ['charts',],
+                 'child'         => [
+
+                     'today_order_total_charts'     => [
+                         'name'          => '今日订单统计',
+                         'url'           => 'charts.order.today-trends.index',
+                         'url_params'    => '',
+                         'permit'        => 1,
+                         'menu'          => 1,
+                         'icon'          => '',
+                         'sort'          => 0,
+                         'item'          => 'today_order_total_charts',
+                         'parents'       => ['charts','order_total_charts'],
+
+                     ],
+
+                     'all_order_total_charts'     => [
+                         'name'          => '全部订单统计',
+                         'url'           => 'charts.order.order-trends.index',
+                         'url_params'    => '',
+                         'permit'        => 1,
+                         'menu'          => 1,
+                         'icon'          => '',
+                         'sort'          => 0,
+                         'item'          => 'all_order_total_charts',
+                         'parents'       => ['charts','order_total_charts'],
+
+                     ],
+
+
+                 ]
+             ],*/
+
+            'order_ranking_charts'     => [
+                'name'          => '会员订单排行',
+                'url'           => 'charts.order.order-ranking.count',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts',],
+                'child'         => [
+
+                    'order_count_ranking_charts'     => [
+                        'name'          => '订单数量排行',
+                        'url'           => 'charts.order.order-ranking.count',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'order_count_ranking_charts',
+                        'parents'       => ['charts','order_ranking_charts'],
+
+                    ],
+
+                    'order_money_ranking_charts'     => [
+                        'name'          => '订单金额排行',
+                        'url'           => 'charts.order.order-ranking.money',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'order_money_ranking_charts',
+                        'parents'       => ['charts','order_ranking_charts'],
+
+                    ],
+
+                ]
+            ],
+
+            'member_phone_attribution'     => [
+                'name'          => '手机归属地统计',
+                'url'           => 'charts.phone.phone-attribution.index',
+
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts',],
+                'child'         => []
+            ],
+
+            'order_dividend_charts'     => [
+                'name'          => '订单分润',
+                'url'           => 'charts.order.order-dividend.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts',],
+                'child'         => []
+            ],
+
+            'transaction_amount_charts'     => [
+                'name'          => '交易额统计',
+                'url'           => 'charts.order.transaction-amount.count',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts',],
+                'child'         => []
+            ],
+
+            'merchant_income_charts'     => [
+                'name'          => '商家收入统计',
+                'url'           => 'charts.merchant.supplier-income.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts',],
+                'child'         => [
+                    'supplier_charts'     => [
+                        'name'          => '供应商收入排行',
+                        'url'           => 'charts.merchant.supplier-income.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_offline_count_charts',
+                        'parents'       => ['charts','merchant_income_charts'],
+
+                    ],
+                    'store_charts'     => [
+                        'name'          => '门店收入排行',
+                        'url'           => 'charts.merchant.store-income.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_offline_order_charts',
+                        'parents'       => ['charts','merchant_income_charts'],
+
+                    ],
+                    'cashier_charts'     => [
+                        'name'          => '收银台收入排行',
+                        'url'           => 'charts.merchant.cashier-income.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_offline_order_charts',
+                        'parents'       => ['charts','merchant_income_charts'],
+
+                    ],
+                ]
+            ],
+            'shop_income_list'     => [
+                'name'          => '平台收益列表',
+                'url'           => 'charts.income.shop-income-list.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts'],
+                'child'         => []
+            ],
+            'shop_income_charts'     => [
+                'name'          => '平台收益统计',
+                'url'           => 'charts.income.shop-income-statistics.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts',],
+                'child'         => []
+            ],
+            'member_income_charts'     => [
+                'name'          => '会员收入统计',
+                'url'           => 'charts.income.member-income.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts',],
+                'child'         => [
+                    'member_income_charts_detail' => [
+                        'name' => '会员收入详情',
+                        'url' => 'charts.income.member-income.detail',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => 'fa-bar-chart-o',
+                        'sort'          => 0,
+                        'item'          => 'order_ranking_charts',
+                        'parents'       => ['charts','member_income_charts'],
+                    ]
+                ]
+            ],
+            'poundage_income_charts' => [
+                'name'          => '手续费/劳务税汇总',
+                'url'           => 'charts.income.poundage.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts'],
+                'child'         => [
+                    'poundage_income_charts' => [
+                        'name' => '手续费明细',
+                        'url' => 'charts.income.poundage.detail',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => 'fa-bar-chart-o',
+                        'sort'          => 0,
+                        'item'          => 'order_ranking_charts',
+                        'parents'       => ['charts','poundage_income_charts'],
+                    ]
+                ],
+            ],
+            'point_charts'     => [
+                'name'          => '积分数据统计',
+                'url'           => 'charts.finance.point.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts',],
+                'child'         => []
+            ],
+            'money_charts'     => [
+                'name'          => '余额数据统计',
+                'url'           => 'charts.finance.balance.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts',],
+                'child'         => []
+            ],
+            'coupon_charts'     => [
+                'name'          => '赠送优惠券统计',
+                'url'           => 'charts.finance.coupon.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts',],
+                'child'         => []
+            ],
+
+        ],
+    ],
+
+    'system' => [
+        'name'          => '系统',
+        'url'           => 'setting.shop.entry',
+        'url_params'    => '',
+        'permit'        => 1,
+        'menu'          => 1,
+        'icon'          => 'fa-cogs',
+        'sort'          => 1,
+        'top_show'      => 0,               //顶部导航是否显示
+        'left_first_show'   => 1,               //左侧导航是否显示
+        'left_second_show'   => 1,
+        'item'          => 'system',
+        'parents'       => [],
+        'child'         => [
+
+            'shop'          => [
+                'name'          => '商城入口',
+                'url'           => 'setting.shop.entry',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-hand-o-right',
+                'sort'          => 0,
+                'item'          => 'shop',
+                'parents'       => ['system',],
+            ],
+
+            'Setting' => [
+                'name' => '商城设置',
+                'url' => 'setting.shop.index',
+                'url_params' => '',
+                'permit' => 1,
+                'top_show'      => 1,               //顶部导航是否显示
+                'left_first_show'   => 1,           //左侧一级导航是否显示
+                'left_second_show'  => 1,           //左侧二级导航是否显示
+                'menu' => 1,
+                'icon' => 'fa-cog',
+                'sort' => 0,
+                'item' => 'Setting',
+                'parents' => ['system'],
+                'child' => [
+
+                    'setting_shop'  => [
+                        'name'          => '设置',
+                        'url'           => 'setting.shop.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => 'fa-sliders',
+                        'sort'          => 0,
+                        'item'          => 'setting_shop',
+                        'parents'       => ['system', 'Setting'],
+                    ],
+
+                    'setting_member' => [
+                        'name'          => '会员',
+                        'url'           => 'setting.shop.member',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => '3',
+                        'item'          => 'setting_member',
+                        'parents'       => ['system', 'Setting', 'setting_shop'],
+                    ],
+
+                    'setting_category' => [
+                        'name'          => '分类',
+                        'url'           => 'setting.shop.category',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => '4',
+                        'item'          => 'setting_category',
+                        'parents'       => ['system', 'Setting', 'setting_shop',],
+                    ],
+
+                    'setting_contact' => [
+                        'name'          => '联系方式',
+                        'url'           => 'setting.shop.contact',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => '5',
+                        'item'          => 'setting_contact',
+                        'parents'       => ['system', 'Setting', 'setting_shop'],
+                    ],
+
+                    'setting_sms'   => [
+                        'name'          => '短信',
+                        'url'           => 'setting.shop.sms',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => '6',
+                        'item'          => 'setting_sms',
+                        'parents'       => ['system', 'Setting', 'setting_shop'],
+                    ],
+
+                    'setting_coupon'   => [
+                        'name'          => '优惠券',
+                        'url'           => 'setting.coupon.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => '6',
+                        'item'          => 'setting_coupon',
+                        'parents'       => ['system', 'Setting', 'setting_shop'],
+                    ],
+
+                    'setting_shop_share' => [
+                        'name'              => '分享',
+                        'url'               => 'setting.shop.share',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => 'fa-link',
+                        'sort'              => '5',
+                        'item'              => 'setting_shop_share',
+                        'parents'           => ['system', 'Setting',],
+                    ],
+
+                    'setting_shop_slide' => [
+                        'name'              => '幻灯片',
+                        'url'               => 'setting.slide.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => 'fa-bell-o',
+                        'sort'              => '6',
+                        'item'              => 'setting_shop_slide',
+                        'parents'           => ['system', 'Setting',],
+                        'child' => [
+
+                            'setting_shop_slide_index' => [
+                                'name'              => '浏览列表',
+                                'url'               => 'setting.slide.index',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => '',
+                                'item'              => 'setting_shop_slide_index',
+                                'parents'           => ['system', 'Setting','setting_shop_slide'],
+                            ],
+
+                            'setting_shop_slide_add' => [
+                                'name'              => '添加幻灯片',
+                                'url'               => 'setting.slide.create',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => '',
+                                'item'              => 'setting_shop_slide_add',
+                                'parents'           => ['system', 'Setting','setting_shop_slide'],
+                            ],
+
+                            'setting_shop_slide_edit' => [
+                                'name'              => '修改幻灯片',
+                                'url'               => 'setting.slide.edit',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => '',
+                                'item'              => 'setting_shop_slide_edit',
+                                'parents'           => ['system', 'Setting','setting_shop_slide'],
+                            ],
+
+                            'setting_shop_slide_deleted' => [
+                                'name'              => '删除幻灯片',
+                                'url'               => 'setting.slide.deleted',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => '',
+                                'item'              => 'setting_shop_slide_deleted',
+                                'parents'           => ['system', 'Setting','setting_shop_slide'],
+                            ],
+                        ]
+                    ],
+                    'setting_shop_adv' => [
+                        'name'              => '广告位',
+                        'url'               => 'setting.shop-advs.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => 'fa-bell-o',
+                        'sort'              => '7',
+                        'item'              => 'setting_shop_adv',
+                        'parents'           => ['system', 'Setting',],
+                    ],
+
+                    'setting_shop_form' => [
+                        'name'              => '会员资料表单',
+                        'url'               => 'setting.form.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => 'fa-bell-o',
+                        'sort'              => '7',
+                        'item'              => 'setting_shop_form',
+                        'parents'           => ['system', 'Setting',],
+                    ],
+
+                    'setting_shop_protocol' => [
+                        'name'              => '注册协议',
+                        'url'               => 'setting.shop.protocol',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => 'fa-bell-o',
+                        'sort'              => '7',
+                        'item'              => 'setting_shop_protocol',
+                        'parents'           => ['system', 'Setting',],
+                    ],
+                    'express_info' => [
+                        'name'              => '物流查询',
+                        'url'               => 'setting.shop.express-info',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => 'fa-bell-o',
+                        'sort'              => '7',
+                        'item'              => 'setting_shop_protocol',
+                        'parents'           => ['system', 'Setting',],
+                    ],
+                ],
+            ],
+
+            'setting_shop_trade' => [
+                'name'          => '交易设置',
+                'url'           => 'setting.shop.trade',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-compress',
+                'sort'          => '7',
+                'item'          => 'setting_shop_trade',
+                'parents'       => ['system'],
+
+            ],
+
+
+            'setting_shop_pay'  => [
+                'name'              => '支付方式',
+                'url'               => 'setting.shop.pay',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-facebook-square',
+                'sort'              => '3',
+                'item'              => 'setting_shop_pay',
+                'parents'           => ['system',],
+            ],
+
+            'setting_shop_notice' => [
+                'name'              => '消息提醒',
+                'url'               => 'setting.shop.notice',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-bell-o',
+                'sort'              => '6',
+                'item'              => 'setting_shop_notice',
+                'parents'           => ['system',],
+            ],
+
+            'setting_wechat_notice' => [
+                'name'              => '微信模板管理',
+                'url'               => 'setting.wechat-notice.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-wechat',
+                'sort'              => '6',
+                'item'              => 'setting_wechat_notice',
+                'parents'           => ['system', 'Setting',],
+                'child'         => [
+
+                    'setting_wechat_notice_see'  => [
+                        'name'              => '查看',
+                        'url'               => 'setting.wechat-notice.see',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'item'              => 'setting_wechat_notice_see',
+                        'parents'           => ['system','setting_wechat_notice'],
+                    ],
+
+                    'setting_wechat_notice_del'  => [
+                        'name'              => '删除',
+                        'url'               => 'setting.wechat-notice.del',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'item'              => 'setting_wechat_notice_del',
+                        'parents'           => ['system','setting_wechat_notice'],
+                    ],
+
+                    'setting_wechat_notice_add'  => [
+                        'name'              => '添加模版',
+                        'url'               => 'setting.wechat-notice.addTmp',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'item'              => 'setting_wechat_notice_add',
+                        'parents'           => ['system','setting_wechat_notice'],
+                    ],
+                ]
+            ],
+
+            'setting_diy_temp' => [
+                'name'              => '自定义模板管理',
+                'url'               => 'setting.diy-temp.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-bars',
+                'sort'              => '6',
+                'item'              => 'setting_diy_temp',
+                'parents'           => ['system', 'Setting',],
+                'child'         => [
+
+                    'setting_diy_temp_choose'  => [
+                        'name'              => '选择模版（白名单）',
+                        'url'               => 'setting.wechat-notice.returnJson',
+                        'url_params'        => '',
+                        'permit'            => 0,
+                        'menu'              => 0,
+                        'item'              => 'setting_diy_temp_choose',
+                        'parents'           => ['system','setting_diy_temp'],
+                    ],
+
+
+                    'setting_diy_temp_choose2'  => [
+                        'name'              => '选择模版（白名单）',
+                        'url'               => 'setting.diy-temp.tpl',
+                        'url_params'        => '',
+                        'permit'            => 0,
+                        'menu'              => 0,
+                        'item'              => 'setting_diy_temp_choose2',
+                        'parents'           => ['system','setting_diy_temp'],
+                    ],
+
+                    'setting_diy_temp_index'  => [
+                        'name'              => '浏览列表',
+                        'url'               => 'setting.diy-temp.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'item'              => 'setting_diy_temp_index',
+                        'parents'           => ['system','setting_diy_temp'],
+                    ],
+                    'setting_diy_temp_add'  => [
+                        'name'              => '添加模版',
+                        'url'               => 'setting.diy-temp.add',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'item'              => 'setting_diy_temp_add',
+                        'parents'           => ['system','setting_diy_temp'],
+                    ],
+                    'setting_diy_temp_edit'  => [
+                        'name'              => '修改模版',
+                        'url'               => 'setting.diy-temp.edit',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'item'              => 'setting_diy_temp_edit',
+                        'parents'           => ['system','setting_diy_temp'],
+                    ],
+                    'setting_diy_temp_delete'  => [
+                        'name'              => '删除模版',
+                        'url'               => 'setting.diy-temp.del',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'item'              => 'setting_diy_temp_delete',
+                        'parents'           => ['system','setting_diy_temp'],
+                    ],
+                ]
+            ],
+
+            'setting_shop_lang' => [
+                'name'              => '语言设置',
+                'url'               => 'setting.lang.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-bell-o',
+                'sort'              => '6',
+                'item'              => 'setting_shop_lang',
+                'parents'           => ['system',],
+            ],
+
+            'role'          => [
+                'name'          => '角色管理',
+                'url'           => 'user.role.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-gamepad',
+                'sort'          => 0,
+                'item'          => 'role',
+                'parents'       => ['system',],
+                'child'         => [
+
+                    'role_see'          => [
+                        'name'              => '浏览角色',
+                        'url'               => 'user.role.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'role_see',
+                        'parents'           => ['system', 'role',],
+                    ],
+
+                    'role_store'        => [
+                        'name'              => '添加角色',
+                        'url'               => 'user.role.store',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'role_store',
+                        'parents'           => ['system', 'role',],
+                    ],
+
+                    'role_update'       => [
+                        'name'              => '修改角色',
+                        'url'               => 'user.role.update',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'role_update',
+                        'parents'           => ['system', 'role',],
+                    ],
+
+                    'role_destroy'          => [
+                        'name'              => '删除角色',
+                        'url'               => 'user.role.destory',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'role_destroy',
+                        'parents'           => ['system', 'role'],
+                    ],
+                ],
+            ],
+
+            'user'          => [
+                'name'          => '操作员',
+                'url'           => 'user.user.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-list-ul',
+                'sort'          => 0,
+                'item'          => 'user',
+                'parents'       => ['system',],
+                'child'         => [
+
+                    'user_see'      => [
+                        'name'          => '浏览操作员',
+                        'url'           => 'user.user.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'user_see',
+                        'parents'       => ['system', 'user',],
+                    ],
+
+
+                    'user_store'    => [
+                        'name'          => '添加操作员',
+                        'url'           => 'user.user.store',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'user_store',
+                        'parents'       => ['system', 'user',],
+                    ],
+
+                    'user_update'   => [
+                        'name'          => '修改操作员',
+                        'url'           => 'user.user.update',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'user_update',
+                        'parents'       => ['system', 'user',],
+                    ],
+
+                    'user_destroy'  => [
+                        'name'          => '删除操作员',
+                        'url'           => 'user.user.destroy',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => 'fa-remove',
+                        'sort'          => 0,
+                        'item'          => 'user_destroy',
+                        'parents'       => ['system', 'user',],
+                    ],
+                ],
+            ],
+            'operation_log' => [
+                'name'              => '操作日志',
+                'url'               => 'setting.operation-log.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-list-ul',
+                'sort'              => '6',
+                'item'              => 'operation_log',
+                'parents'           => ['system',],
+            ],
+
+        ],
+    ],
 ];
 

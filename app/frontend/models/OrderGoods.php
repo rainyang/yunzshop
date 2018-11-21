@@ -8,7 +8,14 @@
 
 namespace app\frontend\models;
 
+use app\frontend\models\goods\Sale;
 
+/**
+ * Class OrderGoods
+ * @package app\frontend\models
+ * @property GoodsOption goodsOption
+ * @property Goods belongsToGood
+ */
 class OrderGoods extends \app\common\models\OrderGoods
 {
 
@@ -19,7 +26,7 @@ class OrderGoods extends \app\common\models\OrderGoods
 
     public function sale()
     {
-        return $this->hasOne($this->getNearestModel('goods\Sale'), 'goods_id', 'goods_id');
+        return $this->hasOne(Sale::class, 'goods_id', 'goods_id');
     }
 
     public function getButtonsAttribute()
@@ -44,7 +51,7 @@ class OrderGoods extends \app\common\models\OrderGoods
     public function isFreeShipping()
     {
 
-        if (isset($this->belongsToGood->hasOneSale) && $this->belongsToGood->hasOneSale->isFree($this)) {
+        if (isset($this->goods->hasOneSale) && $this->goods->hasOneSale->isFree($this)) {
             return true;
         }
 

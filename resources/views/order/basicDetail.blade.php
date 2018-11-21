@@ -40,7 +40,22 @@
                 <tr>
                     <td style='border:none;text-align:right;'>商品小计：</td>
                     <td style='border:none;text-align:right;;'>
-                        ￥{{number_format( $order['goods_price'] ,2)}}</td>
+                        ￥{{number_format( $order['order_goods_price'] ,2)}}</td>
+                </tr>
+                <tr>
+                    <td style='border:none;text-align:right;'>优惠：</td>
+                    <td style='border:none;text-align:right;'>
+                        ￥{{number_format( $order['discount_price'] ,2)}}</td>
+                </tr>
+                <tr>
+                    <td style='border:none;text-align:right;'>抵扣：</td>
+                    <td style='border:none;text-align:right;'>
+                        - ￥{{number_format( $order['deduction_price'] ,2)}}</td>
+                </tr>
+                <tr>
+                    <td style='border:none;text-align:right;'>运费：</td>
+                    <td style='border:none;text-align:right;'>
+                        ￥{{number_format( $order['dispatch_price'] ,2)}}</td>
                 </tr>
                 <tr>
                     <td style='border:none;text-align:right;'>应收款：</td>
@@ -69,6 +84,9 @@
         <p class="form-control-static">
 
             <span class="label label-info">{{$order['pay_type_name']}}</span>
+            @if(count($order['order_pays']))
+                <a target="_blank" href="{{yzWebUrl('order.orderPay', array('order_id' => $order['id']))}}" class='btn btn-default'>查看支付记录</a>
+                @endif
         </p>
 
     </div>
@@ -118,6 +136,30 @@
 @if (!empty($order['has_one_refund_apply']))
     @include('refund.index')
 @endif
+@if (count($order['discounts']))
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            优惠信息
+        </div>
+        <div class="panel-body table-responsive">
+            <table class="table table-hover">
+                <thead class="navbar-inner">
+                <tr>
+                    <th class="col-md-5 col-lg-3">优惠名称</th>
+                    <th class="col-md-5 col-lg-3">优惠金额</th>
+                </tr>
+                </thead>
+                @foreach ($order['discounts'] as $discount)
+                    <tr>
+                        <td>{{$discount['name']}}</td>
+                        <td>¥{{$discount['amount']}}</td>
+                    </tr>
+
+                @endforeach
+            </table>
+        </div>
+    </div>
+@endif
 @if (count($order['deductions']))
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -135,7 +177,7 @@
                 @foreach ($order['deductions'] as $deduction)
                     <tr>
                         <td>{{$deduction['name']}}</td>
-                        <td>{{$deduction['qty']}}</td>
+                        <td>{{$deduction['coin']}}</td>
                         <td>¥{{$deduction['amount']}}</td>
                     </tr>
 
@@ -168,6 +210,32 @@
         </div>
     </div>
 @endif
+@if($div_from['status'])
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            个人表单信息
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">真实姓名 :</label>
+                <div class="col-sm-9 col-xs-12">
+                    <p class="form-control-static">
+                        {{ $div_from['member_name'] }}
+                    </p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">身份证 :</label>
+                <div class="col-sm-9 col-xs-12">
+                    <p class="form-control-static">
+                        {{ $div_from['member_card'] }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+@endif
+
 
 <div class="panel panel-default">
     <div class="panel-heading">
@@ -180,10 +248,9 @@
                 <th class="col-md-5 col-lg-1">ID</th>
                 <th class="col-md-5 col-lg-3">商品标题</th>
                 <th class="col-md-5 col-lg-3">商品规格</th>
-                <th class="col-md-5 col-lg-2">商品编号</th>
-                <th class="col-md-5 col-lg-2">现价/原价/成本价</th>
+                <th class="col-md-5 col-lg-3">现价/原价/成本价</th>
                 <th class="col-md-5 col-lg-1">购买数量</th>
-                <th class="col-md-5 col-lg-2" style="color:red;">折扣前<br/>折扣后</th>
+                {{--<th class="col-md-5 col-lg-1" style="color:red;">折扣前<br/>折扣后</th>--}}
                 <th class="col-md-5 col-lg-1">操作</th>
             </tr>
             </thead>
@@ -192,20 +259,19 @@
                 <tr>
                     <td>{{$order_goods['goods_id']}}</td>
                     <td>
-                        <a href="{{yzWebUrl('goods.goods.edit', array('id' => $order_goods['goods_id']))}}">{{$order_goods['title']}}</a>
+                        <a href="{{yzWebUrl($edit_goods, array('id' => $order_goods['goods_id']))}}">{{$order_goods['title']}}</a>
                     </td>
                     <td>{{$order_goods['goods_option_title']}}</td>
-                    <td>{{$order_goods['goods_sn']}}</td>
                     <td>{{$order_goods['goods_price']}}
-                        /{{$order_goods['goods']['market_price']}}
-                        /{{$order_goods['goods']['cost_price']}}元
+                        /{{$order_goods['goods_market_price']}}
+                        /{{$order_goods['goods_cost_price']}}元
                     </td>
                     <td>{{$order_goods['total']}}</td>
-                    <td style='color:red;font-weight:bold;'>{{$order['goods_price']}}
-                        <br/>{{$order['price']}}
-                    </td>
+                    {{--<td style='color:red;font-weight:bold;'>{{sprintf('%.2f', $order_goods['goods_price']/$order_goods['total'])}}--}}
+                        {{--<br/>{{sprintf('%.2f', $order_goods['payment_amount']/$order_goods['total'])}}--}}
+                    {{--</td>--}}
                     <td>
-                        <a href="{!! yzWebUrl('goods.goods.edit', array('id' => $order_goods['goods']['id'])) !!}"
+                        <a href="{!! yzWebUrl($edit_goods, array('id' => $order_goods['goods']['id'])) !!}"
                            class="btn btn-default btn-sm" title="编辑"><i
                                     class="fa fa-edit"></i></a>&nbsp;&nbsp;
                     </td>
@@ -214,13 +280,13 @@
                     <td colspan="8">
                         @if ($order_goods['goods']['status'] == 1)
                             <label data="1"
-                                   class="label label-default text-default label-info text-pinfo">上架</label>
+                                   class="label label-default  label-info">上架</label>
                         @else
                             <label data="1"
-                                   class="label label-default text-default label-info text-pinfo">下架</label>
+                                   class="label label-default label-info ">下架</label>
                         @endif
                         <label data="1"
-                               class="label label-default text-default label-info text-pinfo">
+                               class="label label-default label-info">
                             @if ($order_goods['goods']['type'] == 1)
                                 实体商品
                             @else
@@ -241,3 +307,4 @@
         </table>
     </div>
 </div>
+<script></script>

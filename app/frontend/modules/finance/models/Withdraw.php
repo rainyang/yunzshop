@@ -1,6 +1,7 @@
 <?php
 namespace app\frontend\modules\finance\models;
 use app\common\models\Income;
+use app\common\traits\CreateOrderSnTrait;
 use Illuminate\Support\Facades\Config;
 
 /**
@@ -12,6 +13,9 @@ use Illuminate\Support\Facades\Config;
 
 class Withdraw extends \app\common\models\Withdraw
 {
+    use CreateOrderSnTrait;
+
+
     public $Incomes;
     protected $appends = ['incomes'];
 

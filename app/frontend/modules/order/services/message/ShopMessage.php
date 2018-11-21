@@ -2,6 +2,9 @@
 
 namespace app\frontend\modules\order\services\message;
 
+use app\common\models\Notice;
+use app\common\models\notice\MessageTemp;
+
 /**
  * Created by PhpStorm.
  * User: shenyang
@@ -10,6 +13,15 @@ namespace app\frontend\modules\order\services\message;
  */
 class ShopMessage extends Message
 {
+    protected $goods_title;
+
+    public function __construct($order)
+    {
+        parent::__construct($order);
+        $this->goods_title = $this->order->hasManyOrderGoods()->first()->title;
+        $this->goods_title .= $this->order->hasManyOrderGoods()->first()->goods_option_title ? '['.$this->order->hasManyOrderGoods()->first()->goods_option_title.']': '';
+    }
+
     private function sendToShops()
     {
         if (empty(\Setting::get('shop.notice.salers'))) {
@@ -24,104 +36,142 @@ class ShopMessage extends Message
         }
     }
 
+    private function transfer($temp_id, $params)
+    {
+        $this->msg = MessageTemp::getSendMsg($temp_id, $params);
+        if (!$this->msg) {
+            return;
+        }
+        $this->templateId = MessageTemp::$template_id;
+        $this->sendToShops();
+    }
+
     public function created()
     {
-        $this->templateId = \Setting::get('shop.notice.new');
-
-        $remark = "\r\n订单下单成功,请到后台查看!";
-        $orderpricestr = ' 订单总金额: ' . $this->order['price'] . '(包含运费:' . $this->order['dispatch_price'] . ')';
-
-        $this->msg = array(
-            'first' => array(
-                'value' => (string)"订单下单通知!",
-                "color" => "#4a5077"
-            ),
-            'keyword1' => array(
-                //todo
-                'value' => (string)$this->order['create_time']->toDateTimeString(),
-                "color" => "#4a5077"
-            ),
-            'keyword2' => array(
-                'value' => (string)$this->order->hasManyOrderGoods()->first()->title . $orderpricestr,
-                "color" => "#4a5077"
-            ),
-            'keyword3' => array(
-                'value' => (string)$this->order->order_sn,
-                "color" => "#4a5077"
-            ),
-
-            'remark' => array(
-                'value' => (string)$remark,
-                "color" => "#4a5077"
-            )
-        );
-        //$this->sendToShops();
-        $this->msg['remark']['value'] = "\r\n订单下单成功";
-
-        $this->sendToShops();
-
+        $temp_id = \Setting::get('shop.notice')['seller_order_create'];
+        if (!$temp_id) {
+            return;
+        }
+        $params = [
+            ['name' => '商城名称', 'value' => \Setting::get('shop.shop')['name']],
+            ['name' => '粉丝昵称', 'value' => $this->order->belongsToMember->nickname],
+            ['name' => '订单号', 'value' => $this->order->order_sn],
+            ['name' => '下单时间', 'value' => $this->order['create_time']->toDateTimeString()],
+            ['name' => '订单金额', 'value' => $this->order['price']],
+            ['name' => '运费', 'value' => $this->order['dispatch_price']],
+            ['name' => '商品详情（含规格）', 'value' => $this->goods_title],
+        ];
+        $this->transfer($temp_id, $params);
     }
 
     public function paid()
     {
-
-        $this->templateId = \Setting::get('shop.notice.task');
-
-        $remark = "\r\n订单已经支付，请及时备货，谢谢!";
-        $orderpricestr = "\r\n订单总价: " . $this->order['price'] . '(包含运费:' . $this->order['dispatch_price'] . ')';
-
-        $this->msg = array(
-            'first' => array(
-                'value' => (string)"订单支付通知!",
-                "color" => "#4a5077"
-            ),
-            'keyword1' => array(
-                'value' => (string)'订单支付通知!',
-                "color" => "#4a5077"
-            ),
-            'keyword2' => array(
-                'value' => (string)$this->order->hasManyOrderGoods()->first()->title . $orderpricestr .
-                    "\r\n订单号: " . (string)$this->order['order_sn'],
-                "color" => "#4a5077"
-            ),
-            'remark' => array(
-                'value' => (string)$remark,
-                "color" => "#4a5077"
-            )
-        );
-        $this->sendToShops();
-
+        $temp_id = \Setting::get('shop.notice')['seller_order_pay'];
+        if (!$temp_id) {
+            return;
+        }
+        $address = $this->order['address'];
+        $params = [
+            ['name' => '粉丝昵称', 'value' => $this->order->belongsToMember->nickname],
+            ['name' => '订单号', 'value' => $this->order->order_sn],
+            ['name' => '下单时间', 'value' => $this->order['create_time']->toDateTimeString()],
+            ['name' => '支付时间', 'value' => $this->order['pay_time']->toDateTimeString()],
+            ['name' => '支付方式', 'value' => $this->order->pay_type_name],
+            ['name' => '订单金额', 'value' => $this->order['price']],
+            ['name' => '运费', 'value' => $this->order['dispatch_price']],
+            ['name' => '商品详情（含规格）', 'value' => $this->goods_title],
+            ['name' => '收件人姓名', 'value' => $address['realname']],
+            ['name' => '收件人电话', 'value' => $address['mobile']],
+            ['name' => '收件人地址', 'value' => $address['province'] . ' ' . $address['city'] . ' ' . $address['area'] . ' ' . $address['address']],
+        ];
+        $this->transfer($temp_id, $params);
     }
 
     public function received()
     {
-        $this->templateId = \Setting::get('shop.notice.task');
+        $temp_id = \Setting::get('shop.notice')['seller_order_finish'];
+        if (!$temp_id) {
+            return;
+        }
+        $address = $this->order['address'];
+        $params = [
+            ['name' => '粉丝昵称', 'value' => $this->order->belongsToMember->nickname],
+            ['name' => '订单号', 'value' => $this->order->order_sn],
+            ['name' => '确认收货时间', 'value' => $this->order['finish_time']->toDateTimeString()],
+            ['name' => '运费', 'value' => $this->order['dispatch_price']],
+            ['name' => '商品详情（含规格）', 'value' => $this->goods_title],
+            ['name' => '收件人姓名', 'value' => $address['realname']],
+            ['name' => '收件人电话', 'value' => $address['mobile']],
+            ['name' => '收件人地址', 'value' => $address['province'] . ' ' . $address['city'] . ' ' . $address['area'] . ' ' . $address['address']],
+        ];
+        $this->transfer($temp_id, $params);
+    }
 
-        $remark = "\r\n订单已完成,请到后台查看!";
-        $orderpricestr = '订单总价: ' . $this->order['price'] . '(包含运费:' . $this->order['dispatch_price'] . ')';
+    /**
+     * @name 购买商品发送通知
+     * @author
+     * @param $status
+     */
+    public function goodsBuy($status)
+    {
+        $order_goods = $this->order->hasManyOrderGoods()->get();
+        foreach ($order_goods as $goods) {
+            $goods_notice = Notice::select()->where('goods_id', $goods->goods_id)->whereType($status)->first();
+            if (!$goods_notice) {
+                continue;
+            }
+            $temp_id = \Setting::get('shop.notice')['buy_goods_msg'];
+            if (!$temp_id) {
+                continue;
+            }
+            $params = [
+                ['name' => '会员昵称', 'value' => $this->order->belongsToMember->nickname],
+                ['name' => '订单编号', 'value' => $this->order->order_sn],
+                ['name' => '商品名称（含规格）', 'value' => $this->getGoodsTitle($goods)],
+                ['name' => '商品金额', 'value' => $goods->price],
+                ['name' => '商品数量', 'value' => $goods->total],
+                ['name' => '订单状态', 'value' => $this->order->status_name],
+                ['name' => '时间', 'value' => $this->getOrderTime($status)],
+            ];
+            $msg = MessageTemp::getSendMsg($temp_id, $params);
+            if (!$msg) {
+                continue;
+            }
+            $template_id = MessageTemp::$template_id;
+            $this->notice($template_id, $msg, $goods_notice->uid);
+        }
+    }
 
-        $this->msg = array(
-            'first' => array(
-                'value' => (string)"订单完成通知!",
-                "color" => "#4a5077"
-            ),
-            'keyword1' => array(
-                'value' => (string)'订单完成通知!',
-                "color" => "#4a5077"
-            ),
-            'keyword2' => array(
-                'value' => (string)$this->order->hasManyOrderGoods()->first()->title
-                    . "\r\n" . $orderpricestr .
-                    "\r\n订单号: " . (string)$this->order['order_sn'],
-                "\r\n完成时间: " . (string)$this->order['finish_time']->toDateTimeString(),
-                "color" => "#4a5077"
-            ),
-            'remark' => array(
-                'value' => (string)$remark,
-                "color" => "#4a5077"
-            )
-        );
-        $this->sendToShops();
+    /**
+     * @name 获取订单操作时间
+     * @author
+     * @param $status
+     * @return mixed
+     */
+    private function getOrderTime($status)
+    {
+        if ($status == 1) {
+            $order_time = $this->order['create_time']->toDateTimeString();
+        } else if ($status == 2) {
+            $order_time = $this->order['pay_time']->toDateTimeString();
+        } else if ($status == 3) {
+            $order_time = $this->order['finish_time']->toDateTimeString();
+        }
+        return $order_time;
+    }
 
+    /**
+     * @name 获取商品名
+     * @author
+     * @param $goods
+     * @return string
+     */
+    private function getGoodsTitle($goods)
+    {
+        $goods_title = $goods->title;
+        if ($goods->goods_option_title) {
+            $goods_title .= '[' . $goods->goods_option_title . ']';
+        }
+        return $goods_title;
     }
 }

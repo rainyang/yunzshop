@@ -14,7 +14,7 @@ class UpdateFieldContentToYzGoods extends Migration
     public function up()
     {
         if (\Schema::hasTable('yz_goods')) {
-            \Illuminate\Support\Facades\DB::statement('ALTER TABLE `ims_yz_goods` CHANGE `content` `content` LONGTEXT');
+            \Illuminate\Support\Facades\DB::statement('ALTER TABLE `'.app('db')->getTablePrefix().'yz_goods` CHANGE `content` `content` LONGTEXT');
         }
     }
 

@@ -9,6 +9,7 @@
 namespace app\frontend\modules\order\services\status;
 
 
+use app\common\models\DispatchType;
 use app\common\models\Order;
 
 class Complete extends Status
@@ -32,9 +33,10 @@ class Complete extends Status
             'api' => 'order.operation.delete',
             'value' => static::DELETE
         ];
-        if (!$this->order->isVirtual()) {
+
+        if (!$this->order->isVirtual() && !in_array($this->order->dispatch_type_id, [DispatchType::SELF_DELIVERY])) {
             $result[] = [
-                'name' => '查看物流', //todo 原来商城的逻辑是, 当有物流单号时, 才显示"查看物流"按钮
+                'name' => '查看物流', // todo 原来商城的逻辑是, 当有物流单号时, 才显示"查看物流"按钮
                 'api' => 'dispatch.express',
                 'value' => static::EXPRESS
             ];

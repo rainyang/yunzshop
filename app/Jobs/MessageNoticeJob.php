@@ -7,7 +7,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class MessageNoticeJob implements ShouldQueue
+class MessageNoticeJob implements  ShouldQueue
 {
 
     use InteractsWithQueue, Queueable, SerializesModels;
@@ -35,7 +35,7 @@ class MessageNoticeJob implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @return void
+     *
      */
     public function __construct($noticeModel, $templateId, $noticeData, $openId, $url)
     {
@@ -49,10 +49,15 @@ class MessageNoticeJob implements ShouldQueue
     /**
      * Execute the job.
      *
-     * @return void
+     * @return bool
      */
     public function handle()
     {
+        if ($this->attempts() > 2) {
+            \Log::info('消息通知测试，执行大于两次终止');
+            return true;
+        }
         $this->noticeModel->uses($this->templateId)->andData($this->noticeData)->andReceiver($this->openId)->andUrl($this->url)->send();
+        return true;
     }
 }

@@ -8,10 +8,13 @@
 
 namespace app\frontend\modules\member\controllers;
 
+use app\backend\modules\charts\modules\phone\models\PhoneAttribution;
+use app\backend\modules\charts\modules\phone\services\PhoneAttributionService;
 use app\backend\modules\member\models\MemberRelation;
 use app\backend\modules\order\models\Order;
 use app\common\components\ApiController;
 use app\common\facades\Setting;
+use app\common\helpers\Cache;
 use app\common\helpers\ImageHelper;
 use app\common\helpers\Url;
 use app\common\models\AccountWechats;
@@ -26,26 +29,38 @@ use app\frontend\modules\member\models\SubMemberModel;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\models\OrderListModel;
 use EasyWeChat\Foundation\Application;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Str;
+use Yunshop\AlipayOnekeyLogin\models\MemberAlipay;
+use Yunshop\Commission\models\Agents;
+use Yunshop\Kingtimes\common\models\Distributor;
+use Yunshop\Kingtimes\common\models\Provider;
 use Yunshop\Poster\models\Poster;
 use Yunshop\Poster\services\CreatePosterService;
 use Yunshop\TeamDividend\models\YzMemberModel;
+use Yunshop\AlipayOnekeyLogin\services\SynchronousUserInfo;
+use app\common\services\alipay\OnekeyLogin;
+use app\common\helpers\Client;
+use app\common\services\plugin\huanxun\HuanxunSet;
 
 class MemberController extends ApiController
 {
-    protected $publicAction = ['guideFollow', 'wxJsSdkConfig', 'memberFromHXQModule'];
-    protected $ignoreAction = ['guideFollow', 'wxJsSdkConfig', 'memberFromHXQModule'];
+    protected $publicAction = ['guideFollow', 'wxJsSdkConfig', 'memberFromHXQModule', 'dsAlipayUserModule'];
+    protected $ignoreAction = ['guideFollow', 'wxJsSdkConfig', 'memberFromHXQModule', 'dsAlipayUserModule'];
 
     /**
      * 获取用户信息
-     *
      *
      */
     public function getUserInfo()
     {
         $member_id = \YunShop::app()->getMemberId();
+        $v         = request('v');
 
         if (!empty($member_id)) {
+
+
             $member_info = MemberModel::getUserInfos($member_id)->first();
 
             if (!empty($member_info)) {
@@ -57,16 +72,13 @@ class MemberController extends ApiController
 
                 $data['income'] = MemberModel::getIncomeCount();
 
-                //标识"会员关系链"是否开启(如果没有设置,则默认为未开启),用于前端判断是否显示个人中心的"推广二维码"
-                $info = MemberRelation::getSetInfo()->first();
-                if (!empty($info)) {
-                    $data['relation_switch'] = $info->status == 1 ? 1 : 0;
-                } else {
-                    $data['relation_switch'] = 0;
-                }
+                $data['relation_switch'] = (1 == $member_info['yz_member']['is_agent'] && 2 == $member_info['yz_member']['status'])
+                                              ? 1 : 0;
 
                 //个人中心的推广二维码
-                $data['poster'] = $this->getPoster($member_info['yz_member']['is_agent']);
+                if ($data['relation_switch']) {
+                    $data['poster'] = $this->getPoster($member_info['yz_member']['is_agent']);
+                }
 
                 //文章营销
                 $articleSetting = Setting::get('plugin.article');
@@ -76,6 +88,40 @@ class MemberController extends ApiController
 
                 //自定义表单
                 $data['myform'] = (new MemberService())->memberInfoAttrStatus();
+
+                $data['avatar'] =  $data['avatar'] ? yz_tomedia($data['avatar']) : yz_tomedia(\Setting::get('shop.member.headimg'));
+
+                //修复微信头像地址
+                $data['avatar'] = ImageHelper::fix_wechatAvatar($data['avatar']);
+
+                //IOS时，把微信头像url改为https前缀
+                $data['avatar'] = ImageHelper::iosWechatAvatar($data['avatar']);
+
+                $withdraw_status = Setting::get('shop_app.pay.withdraw_status');
+                if (isset($withdraw_status) && $withdraw_status == 0) {
+                    $withdraw_status = 0;
+                }else{
+                    $withdraw_status = 1;
+                }
+
+                $data['withdraw_status'] = $withdraw_status;
+
+                if (!is_null($v)) {
+                    $set = \Setting::get('shop.member');
+
+                    $data['inviteCode']['status'] = $set['is_invite'] ?: 0;
+
+//                    $data['inviteCode']['required'] =$set['required'] ?: 0;
+
+
+                    if (is_null($member_info['yz_member']['invite_code']) || empty($member_info['yz_member']['invite_code'])) {
+                        $data['inviteCode']['code'] = MemberModel::getInviteCode($member_id);
+                    } else {
+                        $data['inviteCode']['code'] = $member_info['yz_member']['invite_code'];
+                    }
+                } else {
+                    $data['inviteCode'] = 0;
+                }
 
                 return $this->successJson('', $data);
             } else {
@@ -116,7 +162,7 @@ class MemberController extends ApiController
             case 0:
             case 1:
                 $apply_qualification = 1;
-                $mid = \YunShop::request()->mid ? \YunShop::request()->mid : 0;
+                $mid = \app\common\models\Member::getMid();
                 $parent_name = '';
 
                 if (empty($mid)) {
@@ -282,6 +328,22 @@ class MemberController extends ApiController
     }
 
     /**
+     * 我的推荐人v2
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getMyReferral_v2()
+    {
+        $data = MemberModel::getMyReferral_v2();
+
+        if (!empty($data)) {
+            return $this->successJson('', $data);
+        } else {
+            return $this->errorJson('会员不存在');
+        }
+    }
+
+    /**
      * 我推荐的人
      *
      * @return \Illuminate\Http\JsonResponse
@@ -295,6 +357,30 @@ class MemberController extends ApiController
         } else {
             return $this->errorJson('会员不存在');
         }
+    }
+
+    /**
+     * 我推荐的人 v2 基本信息
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getMyAgent_v2()
+    {
+        $data = MemberModel::getMyAgent_v2();
+
+        return $this->successJson('', $data);
+    }
+
+    /**
+     * 我推荐的人 v2 数据
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getMyAgentData_v2()
+    {
+        $data = MemberModel::getMyAgentData_v2();
+
+        return $this->successJson('', $data);
     }
 
     /**
@@ -393,6 +479,7 @@ class MemberController extends ApiController
             'city' => isset($data['city']) ? $data['city'] : 0,
             'area' => isset($data['area']) ? $data['area'] : 0,
             'address' => isset($data['address']) ? $data['address'] : '',
+            'wechat' => isset($data['wx']) ? $data['wx'] : '',
         ];
 
         if (\YunShop::app()->getMemberId() && \YunShop::app()->getMemberId() > 0) {
@@ -426,6 +513,27 @@ class MemberController extends ApiController
             }
 
             if ($member_model->save() && $member_shop_info_model->save()) {
+                if (Cache::has($member_model->uid . '_member_info')) {
+                    Cache::forget($member_model->uid . '_member_info');
+                }
+
+                $phoneModel = PhoneAttribution::getMemberByID(\YunShop::app()->getMemberId());
+                if (!is_null($phoneModel)) {
+                    $phoneModel->delete();
+                }
+
+                //手机归属地查询插入
+                $phoneData = file_get_contents((new PhoneAttributionService())->getPhoneApi($member_model->mobile));
+                $phoneArray = json_decode($phoneData);
+                $phone['uid'] = \YunShop::app()->getMemberId();
+                $phone['uniacid'] = \YunShop::app()->uniacid;
+                $phone['province'] = $phoneArray->data->province;
+                $phone['city'] = $phoneArray->data->city;
+                $phone['sp'] = $phoneArray->data->sp;
+
+                $phoneModel = new PhoneAttribution();
+                $phoneModel->updateOrCreate(['uid' => \YunShop::app()->getMemberId()], $phone);
+
                 return $this->successJson('用户资料修改成功');
             } else {
                 return $this->errorJson('更新用户资料失败');
@@ -441,17 +549,28 @@ class MemberController extends ApiController
      */
     public function bindMobile()
     {
-        $mobile = \YunShop::request()->mobile;
-        $password = \YunShop::request()->password;
+        $mobile           = \YunShop::request()->mobile;
+        $password         = \YunShop::request()->password;
         $confirm_password = \YunShop::request()->password;
+        $uid              = \YunShop::app()->getMemberId();
+        $close_invitecode = \YunShop::request()->close;
 
-        $member_model = MemberModel::getMemberById(\YunShop::app()->getMemberId());
 
-        if (\YunShop::app()->getMemberId() && \YunShop::app()->getMemberId() > 0) {
+        $member_model = MemberModel::getMemberById($uid);
+
+        if (\YunShop::app()->getMemberId() && $uid > 0) {
             $check_code = MemberService::checkCode();
 
             if ($check_code['status'] != 1) {
                 return $this->errorJson($check_code['json']);
+            }
+
+
+            if (!empty($close_invitecode)) {
+                $invitecode = MemberService::inviteCode();
+                if ($invitecode['status'] != 1) {
+                    return $this->errorJson($invitecode['json']);
+                }
             }
 
             $msg = MemberService::validate($mobile, $password, $confirm_password);
@@ -460,10 +579,104 @@ class MemberController extends ApiController
                 return $this->errorJson($msg['json']);
             }
 
+            //手机归属地查询插入
+            $phoneData = file_get_contents((new PhoneAttributionService())->getPhoneApi($mobile));
+            $phoneArray = json_decode($phoneData);
+            $phone['uid'] = $uid;
+            $phone['uniacid'] = \YunShop::app()->uniacid;
+            $phone['province'] = $phoneArray->data->province;
+            $phone['city'] = $phoneArray->data->city;
+            $phone['sp'] = $phoneArray->data->sp;
+
+            $phoneModel = new PhoneAttribution();
+            $phoneModel->updateOrCreate(['uid' => $uid], $phone);
+
+            //同步信息
+            $old_member = [];
+            if (OnekeyLogin::alipayPluginMobileState()) {
+                $old_member = MemberModel::getId(\YunShop::app()->uniacid, $mobile);
+            }
+            if ($old_member) {
+                if ($old_member->uid == $member_model->uid) {
+                    \Log::debug('同步的会员uid相同:'.$old_member->uid);
+                    return $this->errorJson('手机号已绑定其他用户');
+                }
+
+                $bool = $this->synchro($member_model, $old_member);
+                if ($bool) {
+                    if (Cache::has($member_model->uid . '_member_info')) {
+                        Cache::forget($member_model->uid . '_member_info');
+                    }
+                    return $this->successJson('信息同步成功');
+                } else {
+                    return $this->errorJson('手机号已绑定其他用户');
+                }
+          
+            } else {
+                $salt = Str::random(8);
+                $member_model->salt = $salt;
+                $member_model->mobile = $mobile;
+                $member_model->password = md5($password . $salt);
+
+                if ($member_model->save()) {
+                    //邀请码
+                    $parent_id = \app\common\models\Member::getMemberIdForInviteCode();
+                    if (!is_null($parent_id)) {
+                        MemberShopInfo::change_relation($uid, $parent_id);
+                    }
+
+                    if (Cache::has($member_model->uid . '_member_info')) {
+                        Cache::forget($member_model->uid . '_member_info');
+                    }
+                    return $this->successJson('手机号码绑定成功');
+                } else {
+                    return $this->errorJson('手机号码绑定失败');
+                }
+                
+            }
+        } else {
+            return $this->errorJson('手机号或密码格式错误');
+        }
+    }
+
+    //会员信息同步
+    public function synchro($new_member, $old_member)
+    {
+
+        $type = \YunShop::request()->type;
+
+        \Log::debug('会员同步type:'. $type);
+        $type = empty($type) ? Client::getType() : $type;
+
+        $className = SynchronousUserInfo::create($type);
+
+        if ($className) {
+            return $className->updateMember($old_member, $new_member);
+
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 绑定提现手机号
+     *
+     */
+    public function bindWithdrawMobile()
+    {
+        $mobile = \YunShop::request()->mobile;
+
+        $member_model = MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId());
+
+        if (\YunShop::app()->getMemberId() && \YunShop::app()->getMemberId() > 0) {
+            $check_code = MemberService::checkCode();
+
+            if ($check_code['status'] != 1) {
+                return $this->errorJson($check_code['json']);
+            }
+
             $salt = Str::random(8);
-            $member_model->salt = $salt;
-            $member_model->mobile = $mobile;
-            $member_model->password = md5($password . $salt);
+            $member_model->withdraw_mobile = $mobile;
 
             if ($member_model->save()) {
                 return $this->successJson('手机号码绑定成功');
@@ -506,7 +719,7 @@ class MemberController extends ApiController
         $js = $app->js;
         $js->setUrl($url);
 
-        $config = $js->config(array('onMenuShareTimeline', 'onMenuShareAppMessage', 'showOptionMenu'));
+        $config = $js->config(array('onMenuShareTimeline', 'onMenuShareAppMessage', 'showOptionMenu', 'scanQRCode'));
         $config = json_decode($config, 1);
 
         $info = [];
@@ -523,14 +736,12 @@ class MemberController extends ApiController
 
         if ($share) {
             if ($share['icon']) {
-                $share['icon'] = replace_yunshop(tomedia($share['icon']));
+                $share['icon'] = replace_yunshop(yz_tomedia($share['icon']));
             }
-        } else {
-            $share = [];
         }
 
         $shop = \Setting::get('shop');
-        $shop['logo'] = replace_yunshop(tomedia($shop['logo']));
+        $shop['icon'] = replace_yunshop(yz_tomedia($shop['logo']));
 
         if (!is_null(\Config('customer_service'))) {
             $class = array_get(\Config('customer_service'), 'class');
@@ -539,6 +750,14 @@ class MemberController extends ApiController
             if ($ret) {
                 $shop['cservice'] = $ret;
             }
+        }
+
+        if (is_null($share) && is_null($shop)) {
+            $share = [
+                'title' => '商家分享',
+                'icon'  => '#',
+                'desc'  => '商家分享'
+            ];
         }
 
         $data = [
@@ -589,7 +808,7 @@ class MemberController extends ApiController
 
         if ($info) {
             return $this->successJson('', [
-                'banner' => replace_yunshop(tomedia($info['banner']))
+                'banner' => replace_yunshop(yz_tomedia($info['banner']))
             ]);
         }
 
@@ -605,7 +824,7 @@ class MemberController extends ApiController
 
         $set = \Setting::get('shop.share');
         $fans_model = McMappingFans::getFansById($member_id);
-        $mid = \YunShop::request()->mid ? \YunShop::request()->mid : 0;
+        $mid = \app\common\models\Member::getMid();
 
         if (!empty($set['follow_url']) && $fans_model->follow === 0) {
 
@@ -668,8 +887,8 @@ class MemberController extends ApiController
 
         $shopInfo = Setting::get('shop.shop');
         $shopName = $shopInfo['name'] ?: '商城'; //todo 默认值需要更新
-        $shopLogo = $shopInfo['logo'] ? replace_yunshop(tomedia($shopInfo['logo'])) : base_path() . '/static/images/logo.png'; //todo 默认值需要更新
-        $shopImg = $shopInfo['signimg'] ? replace_yunshop(tomedia($shopInfo['signimg'])) : base_path() . '/static/images/photo-mr.jpg'; //todo 默认值需要更新
+        $shopLogo = $shopInfo['logo'] ? replace_yunshop(yz_tomedia($shopInfo['logo'])) : base_path() . '/static/images/logo.png'; //todo 默认值需要更新
+        $shopImg = $shopInfo['signimg'] ? replace_yunshop(yz_tomedia($shopInfo['signimg'])) : base_path() . '/static/images/photo-mr.jpg'; //todo 默认值需要更新
 
         $str_lenght = $logo_width + $font_size_show * mb_strlen($shopName);
 
@@ -690,10 +909,10 @@ class MemberController extends ApiController
             $white = imagecolorallocate($targetImg, 255, 255, 255);
             imagefill($targetImg, 0, 0, $white);
 
-            $imgSource = imagecreatefromstring(file_get_contents($shopImg));
-            $logoSource = imagecreatefromstring(file_get_contents($shopLogo));
+            $imgSource = imagecreatefromstring(\Curl::to($shopImg)->get());
+            $logoSource = imagecreatefromstring(\Curl::to($shopLogo)->get());
             $qrcode = MemberModel::getAgentQR();
-            $qrSource = imagecreatefromstring(file_get_contents($qrcode));
+            $qrSource = imagecreatefromstring(\Curl::to($qrcode)->get());
             $fingerPrintImg = imagecreatefromstring(file_get_contents(base_path() . '/static/app/images/ewm.png'));
             $mergeData = [
                 'dst_left' => $space,
@@ -805,6 +1024,51 @@ class MemberController extends ApiController
         return json_encode(['status' => 0, 'result' => 'uid为空']);
     }
 
+    /**
+     * 同步模块支付宝用户
+     * @return string
+     */
+    public function dsAlipayUserModule()
+    {
+        $uniacid = \YunShop::app()->uniacid;
+        $member_id = \YunShop::request()->uid;
+        $userInfo = \YunShop::request()->user_info;
+
+        if (!is_array($userInfo)) {
+            $userInfo = json_decode($userInfo, true);
+        }
+
+        if (!empty($member_id)) {
+
+            if (app('plugins')->isEnabled('alipay-onekey-login') && $userInfo) {
+                $bool = MemberAlipay::insertData($userInfo, ['member_id' =>$member_id, 'uniacid' => $uniacid]);
+                if (!$bool) {
+                    return json_encode(['status' => 0, 'result' => '支付宝用户信息保存失败']);
+                }
+            } else {
+                return json_encode(['status' => 0, 'result' => '未开启插件或未接受到支付宝用户信息']);
+            }
+
+            $member_shop_info_model = MemberShopInfo::getMemberShopInfo($member_id);
+
+            if (is_null($member_shop_info_model)) {
+                (new MemberService)->addSubMemberInfo($uniacid, (int)$member_id);
+            }
+
+            $mid = \YunShop::request()->mid ?: 0;
+
+            Member::createRealtion($member_id, $mid);
+
+            \Log::debug('------HXQModule---------' . $member_id);
+            \Log::debug('------HXQModule---------' . $mid);
+
+            return json_encode(['status' => 1, 'result' => 'ok']);
+        }
+
+        return json_encode(['status' => 0, 'result' => 'uid为空']);
+    }
+
+
     public function getCustomField()
     {
         // member.member.get-custom-field
@@ -813,6 +1077,7 @@ class MemberController extends ApiController
             'is_custom' => $member['is_custom'],
             'custom_title' => $member['custom_title'],
             'is_validity' => $member['level_type'] == 2 ? true : false,
+            'term' => $member['term'] ? $member['term'] : 0,
         ];
         return $this->successJson('获取自定义字段成功！', $data);
     }
@@ -838,9 +1103,9 @@ class MemberController extends ApiController
         $trade = \Setting::get('shop.trade');
 
         if ($trade['is_bind'] && \YunShop::app()->getMemberId() && \YunShop::app()->getMemberId() > 0) {
-            $member_model = Member::getMemberById(\YunShop::app()->getMemberId());
+            $member_model = MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId());
 
-            if ($member_model && $member_model->mobile) {
+            if ($member_model && $member_model->withdraw_mobile) {
                 $is_bind_mobile = 0;
             } else {
                 $is_bind_mobile = 1;
@@ -850,6 +1115,364 @@ class MemberController extends ApiController
         }
 
         return $this->successJson('', ['is_bind_mobile' => $is_bind_mobile]);
+    }
+
+    /**
+     * 修复关系链
+     *
+     * 历史遗留问题
+     */
+    public function fixRelation()
+    {
+        set_time_limit(0);
+        //获取修改数据
+        $members = MemberShopInfo::uniacid()
+            ->where('parent_id', '!=', 0)
+            ->where('is_agent', 1)
+            ->where('status', 2)
+            ->where('relation', '')
+            ->orWhereNull('relation')
+            ->orWhere('relation', '0,')
+            ->whereNull('deleted_at')
+            ->get();
+
+        if (!$members->isEmpty()) {
+            foreach ($members as $member) {
+                //yz_members
+                if ($member->is_agent == 1 && $member->status == 2) {
+                    Member::setMemberRelation($member->member_id,$member->parent_id);
+                }
+            }
+        }
+
+        echo 'yz_member修复完毕<BR>';
+
+        //yz_agents
+        //获取修改数据
+        $agents = Agents::uniacid()
+            ->where('parent_id', '!=', 0)
+            ->whereNull('deleted_at')
+            ->where('parent', '')
+            ->orWhereNull('parent')
+            ->orWhere('parent', '0,')
+            ->get();
+
+        foreach ($agents as $agent) {
+            $rows = DB::table('yz_member')
+                ->select()
+                ->where('uniacid', $agent->uniacid)
+                ->where('member_id', $agent->member_id)
+                ->where('parent_id', $agent->parent_id)
+                ->where('is_agent', 1)
+                ->where('status', 2)
+                ->whereNull('deleted_at')
+                ->first();
+
+            if (!empty($rows)) {
+                $agent->parent = $rows['relation'];
+
+                $agent->save();
+            }
+        }
+
+        echo 'yz_agents修复完毕';
+    }
+
+    public function memberRelationFilter()
+    {
+        $data = MemberModel::filterMemberRoleAndLevel();
+
+        return $this->successJson('', $data);
+    }
+
+    public function isOpenRelation()
+    {
+        $data = ['switch' => 0];
+
+//        $relation = MemberRelation::getSetInfo()->first();
+/*
+        if (!is_null($relation) && 1 == $relation->status) {
+            $data = [
+                'switch' => 1
+            ];
+        }
+*/
+        $switch = Setting::get('shop_app.pay.switch');
+        if (isset($switch) && $switch == 0 && \YunShop::request()->type == 7) {
+            $switch = 0;
+        }else{
+            $switch = 1;
+        }
+
+        $data = [
+            'switch' => $switch
+        ];
+
+        return $this->successJson('', $data);
+    }
+
+    public function anotherShare()
+    {
+        $order_ids = \YunShop::request()->order_ids;
+        $mid   = \YunShop::app()->getMemberId();
+
+        if (empty($order_ids)) {
+            return $this->errorJson('参数错误', '');
+        }
+
+        if (empty($mid)) {
+            return $this->errorJson('用户未登陆', '');
+        }
+
+        $title = Setting::get('shop.pay.another_share_title');
+        $url   = yzAppFullUrl('/member/payanotherdetail', ['pid'=>$mid, 'order_ids'=>$order_ids]);
+
+        $order_goods = Order::find($order_ids)->hasManyOrderGoods;
+
+        if (is_null($order_goods)) {
+            return $this->errorJson('订单商品不存在', '');
+        }
+
+        if (empty($title)) {
+            $title = '土豪大大，跪求代付';
+        }
+
+        $data = [
+            'title' => $title,
+            'url' => $url,
+            'content' => $order_goods[0]->title,
+            'img' => replace_yunshop(yz_tomedia($order_goods[0]->thumb))
+        ];
+
+        return $this->successJson('', $data);
+    }
+
+    public function getEnablePlugins()
+    {
+        $filter = [
+            'conference',
+            //'store-cashier',
+            'recharge-code'
+        ];
+        $data = [];
+
+        collect(app('plugins')->getPlugins())->filter(function ($item) use ($filter) {
+            if (1 == $item->isEnabled()) {
+                $info = $item->toArray();
+
+                if (in_array($info['name'], $filter)) {
+                    return $item;
+                }
+            }
+        })->each(function ($item) use (&$data) {
+            $info = $item->toArray();
+
+            $name = $info['name'];
+            //todo 门店暂时不传
+            if ($info['name'] == "store-cashier") {
+
+                $name = 'store_cashier';
+            } elseif ($info['name'] == 'recharge-code') {
+                $name = 'recharge_code';
+                $class = 'icon-member-recharge1';
+                $url = 'rechargeCode';
+            } elseif ($info['name'] == 'conference') {
+                $name = 'conference';
+                $class = 'icon-member-act-signup1';
+                $url = 'conferenceList';
+            }
+
+
+            $data[] = [
+                'name'  => $name,
+                'title' => $info['title'],
+                'class' => $class,
+                'url'   => $url
+            ];
+        });
+
+        if (app('plugins')->isEnabled('credit')) {
+            $credit_setting = Setting::get('plugin.credit');
+
+            if ($credit_setting && 1 == $credit_setting['is_credit']) {
+                $data[] = [
+                    'name'  => 'credit',
+                    'title' => '信用值',
+                    'class' => 'icon-member-credit01',
+                    'url'   => 'creditInfo'
+                ];
+            }
+        }
+
+        if (app('plugins')->isEnabled('ranking')) {
+            $ranking_setting = Setting::get('plugin.ranking');
+
+            if ($ranking_setting && 1 == $ranking_setting['is_ranking']) {
+                $data[] = [
+                    'name' => 'ranking',
+                    'title' => '排行榜',
+                    'class' => 'icon-member-bank-list1',
+                    'url'   => 'rankingIndex'
+                ];
+            }
+        }
+
+        if (app('plugins')->isEnabled('article')) {
+            $article_setting = Setting::get('plugin.article');
+
+            if ($article_setting) {
+                $data[] = [
+                    'name' => 'article',
+                    'title' => $article_setting['center'] ? $article_setting['center'] : '文章中心',
+                    'class' => 'icon-member-collect1',
+                    'url'   => 'notice',
+                    'param' => 0,
+                ];
+            }
+        }
+
+        if (app('plugins')->isEnabled('clock-in')) {
+            $clockInService = new \Yunshop\ClockIn\services\ClockInService();
+            $pluginName = $clockInService->get('plugin_name');
+
+            $clock_in_setting = Setting::get('plugin.clock_in');
+
+            if ($clock_in_setting && 1 == $clock_in_setting['is_clock_in']) {
+                $data[] = [
+                    'name' => 'clock_in',
+                    'title' => $pluginName,
+                    'class' => 'icon-member-get-up',
+                    'url'   => 'ClockPunch',
+                ];
+            }
+        }
+
+        if (app('plugins')->isEnabled('video-demand')) {
+
+            $video_demand_setting = Setting::get('plugin.video_demand');
+
+            if ($video_demand_setting && $video_demand_setting['is_video_demand']) {
+                $data[] = [
+                    'name' => 'video_demand',
+                    'title' => '课程中心',
+                    'class' => 'icon-member-course3',
+                    'url'   => 'CourseManage',
+                ];
+            }
+        }
+
+        if (app('plugins')->isEnabled('help-center')) {
+
+            $help_center_setting = Setting::get('plugin.help_center');
+
+            if ($help_center_setting && 1 == $help_center_setting['status']) {
+                $data[] = [
+                    'name' => 'help_center',
+                    'title' => '帮助中心',
+                    'class' => 'icon-member-help',
+                    'url' => 'helpcenter'
+                ];
+            }
+        }
+
+        if (app('plugins')->isEnabled('courier')) {
+            $courier_setting = Setting::get('courier.courier');
+
+            if ($courier_setting && 1 == $courier_setting['radio']) {
+                $data[] = [
+                    'name' => 'courier',
+                    'title' => $courier_setting['name'] ? $courier_setting['name'] : '快递单',
+                    'class' => 'icon-member-express',
+                    'url' => 'courier'
+                ];
+            }
+        }
+        
+        if (app('plugins')->isEnabled('store-cashier')) {
+            $store = \Yunshop\StoreCashier\common\models\Store::getStoreByUid(\YunShop::app()->getMemberId())->first();
+            if (!$store) {
+                $data[] = [
+                    'name' => 'store_apply',
+                    'title' => '门店申请',
+                    'class' => 'icon-member-store-apply1',
+                    'url'   => 'storeApply',
+
+                ];
+            }
+        }
+
+        if (app('plugins')->isEnabled('supplier')) {
+            $supplier_setting = Setting::get('plugin.supplier');
+            $supplier = \Yunshop\Supplier\common\models\Supplier::getSupplierByMemberId(\YunShop::app()->getMemberId(), 1);
+            if (!$supplier) {
+                $data[] = [
+                    'name' => 'supplier_apply',
+                    'title' => '供应商申请',
+                    'class' => 'icon-member-apply1',
+                    'url'   => 'supplier',
+                ];
+            }elseif ($supplier_setting && 1 == $supplier_setting['status']) {
+                $data[] = [
+                    'name' => 'supplier',
+                    'title' => $supplier_setting['name'] ? $supplier_setting['name'] : '供应商管理',
+                    'class' => 'icon-member-supplier',
+                    'url' => 'SupplierCenter'
+                ];
+            }
+        }
+
+        if (app('plugins')->isEnabled('kingtimes')) {
+            $provider = Provider::select(['id', 'uid', 'status'])->where('uid', \YunShop::app()->getMemberId())->first();
+            $distributor = Distributor::select(['id', 'uid', 'status'])->where('uid', \YunShop::app()->getMemberId())->first();
+            if ($provider) {
+                if ($provider->status == 1) {
+                    $data[] = [
+                        'name' => 'provider_center',
+                        'title' => '补货商中心',
+                        'class' => 'icon-member-replenishment',
+                        'url'   => 'ReplenishmentApply',
+                    ];
+                }
+            } else {
+                $data[] = [
+                    'name' => 'provider_apply',
+                    'title' => '补货商申请',
+                    'class' => 'icon-member-replenishment',
+                    'url'   => 'ReplenishmentApply',
+                ];
+            }
+            if ($distributor) {
+                if ($distributor->status == 1) {
+                    $data[] = [
+                        'name' => 'distributor_center',
+                        'title' => '配送站中心',
+                        'class' => 'icon-member-express-list',
+                        'url'   => 'DeliveryTerminalApply',
+                    ];
+                }
+            } else {
+                $data[] = [
+                    'name' => 'distributor_apply',
+                    'title' => '配送站申请',
+                    'class' => 'icon-member-express-list',
+                    'url'   => 'DeliveryTerminalApply',
+                ];
+            }
+        }
+
+
+        return $this->successJson('ok', $data);
+    }
+
+    public function isOpenHuanxun() {
+        $huanxun = \Setting::get('plugin.huanxun_set');
+
+        if (app('plugins')->isEnabled('huanxun')) {
+            if ($huanxun['withdrawals_switch']) {
+                return $this->successJson('', $huanxun['withdrawals_switch']);
+            }
+        }
+        return $this->errorJson('', 0);
     }
 
 }

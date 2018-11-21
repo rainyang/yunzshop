@@ -45,6 +45,20 @@
         </div>
     </div>
 </div>
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">使用方式</label>
+    <div class="col-sm-9 col-xs-12">
+        <label class='radio-inline'>
+            <input type="radio" name="coupon[is_complex]" value="0" @if($coupon['is_complex']!=='' && $coupon['is_complex']==0) checked @endif/>单张使用
+        </label>
+        <label class='radio-inline'>
+            <input type="radio" name="coupon[is_complex]" value="1" @if($coupon['is_complex']==1) checked @endif/>多张一起使用
+        </label>
+        <span class='help-block'>如选择单张使用，则一笔订单只能使用一张该类型的优惠券；
+选择多张一起使用，则满足使用的金额就可以， 比如我有300-50优惠券3张，下单金额满900元，可以用三张，下单金额满600元可以用2张，下单金额满300元可以用一张</span>
+    </div>
+</div>
+
 @include('coupon.consume')
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">适用范围</label>

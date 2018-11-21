@@ -3,6 +3,7 @@ namespace app\backend\modules\coupon\controllers;
 
 use app\common\components\BaseController;
 use app\backend\modules\coupon\models\Coupon;
+use app\common\helpers\Cache;
 use app\common\helpers\PaginationHelper;
 use app\common\models\MemberCoupon;
 use app\common\helpers\Url;
@@ -41,7 +42,6 @@ class CouponController extends BaseController
                         ->toArray();
         }
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
-
         foreach($list['data'] as &$item){
             $item['gettotal'] = MemberCoupon::uniacid()->where("coupon_id", $item['id'])->count();
             $item['usetotal'] =  MemberCoupon::uniacid()->where("coupon_id", $item['id'])->where("used", 1)->count();
@@ -73,7 +73,7 @@ class CouponController extends BaseController
         $memberLevels = MemberLevel::getMemberLevelList();
 
         //获取优惠券统一的模板消息 ID (因为是统一的,所以写在 setting)
-        $template_id = Setting::get('coupon_template_id');
+        //$template_id = Setting::get('coupon_template_id');
 
         //表单验证
         if($_POST){
@@ -83,7 +83,7 @@ class CouponController extends BaseController
             if($validator->fails()){
                 $this->error($validator->messages());
             } elseif($coupon->save()) {
-                Setting::set('coupon_template_id', \YunShop::request()->template_id); //设置优惠券统一的模板消息ID
+                //Setting::set('coupon_template_id', \YunShop::request()->template_id); //设置优惠券统一的模板消息ID
                 return $this->message('优惠券创建成功', Url::absoluteWeb('coupon.coupon.index'));
             } else{
                 $this->error('优惠券创建失败');
@@ -95,7 +95,7 @@ class CouponController extends BaseController
             'memberlevels' => $memberLevels,
             'timestart' => strtotime(\YunShop::request()->time['start']),
             'timeend' => strtotime(\YunShop::request()->time['end']),
-            'template_id' => $template_id,
+            //'template_id' => $template_id,
         ])->render();
     }
 
@@ -111,12 +111,14 @@ class CouponController extends BaseController
         $memberLevels = MemberLevel::getMemberLevelList();
 
         //获取优惠券统一的模板消息 ID (因为是统一的,所以写在 setting)
-        $template_id = Setting::get('coupon_template_id');
+        //$template_id = Setting::get('coupon_template_id');
 
         $coupon = Coupon::getCouponById($coupon_id);
         if(!empty($coupon->goods_ids)){
             $coupon->goods_ids = array_filter(array_unique($coupon->goods_ids)); //去重,去空值
-            $coupon->goods_names = Goods::getGoodNameByGoodIds($coupon->goods_ids); //因为商品名称可能修改,所以必须以商品表为准 //todo category_names和goods_names是不可靠的, 考虑删除这2个字段
+            if (!empty($coupon->goods_ids)) {
+                $coupon->goods_names = Goods::getGoodNameByGoodIds($coupon->goods_ids); //因为商品名称可能修改,所以必须以商品表为准 //todo category_names和goods_names是不可靠的, 考虑删除这2个字段
+            }
         }
         if(!empty($coupon->category_ids)){
             $coupon->category_ids = array_filter(array_unique($coupon->category_ids)); //去重,去空值
@@ -140,7 +142,11 @@ class CouponController extends BaseController
                 $this->error($validator->messages());
             } else{
                 if($coupon->save()){
-                    Setting::set('coupon_template_id', \YunShop::request()->template_id); //设置优惠券统一的模板消息ID
+                    //店铺装修清除缓存
+                    if(app('plugins')->isEnabled('designer')) {
+                        Cache::flush();//清除缓存
+                    }
+                    //Setting::set('coupon_template_id', \YunShop::request()->template_id); //设置优惠券统一的模板消息ID
                     return $this->message('优惠券修改成功', Url::absoluteWeb('coupon.coupon.index'));
                 } else{
                     $this->error('优惠券修改失败');
@@ -158,7 +164,7 @@ class CouponController extends BaseController
             'memberlevels' => $memberLevels,
             'timestart' => $coupon->time_start->timestamp,
             'timeend' => $coupon->time_end->timestamp,
-            'template_id' => $template_id,
+            //'template_id' => $template_id,
         ])->render();
     }
 
@@ -182,6 +188,10 @@ class CouponController extends BaseController
 
         $res = Coupon::deleteCouponById($coupon_id);
         if ($res) {
+            //店铺装修清除缓存
+            if(app('plugins')->isEnabled('designer')) {
+                Cache::flush();//清除缓存
+            }
             return $this->message('删除优惠券成功', Url::absoluteWeb('coupon.coupon'));
         } else {
             return $this->message('删除优惠券失败', '', 'error');
@@ -201,7 +211,16 @@ class CouponController extends BaseController
             'coupons' => $coupons
         ])->render();
     }
-
+    /**
+     * 获取搜索优惠券
+     * @return html
+     */
+    public function getVueSearchCoupons()
+    {
+        $keyword = \YunShop::request()->keyword;
+        $coupons = Coupon::getCouponsByName($keyword);
+        echo  json_encode($coupons);
+    }
     //用于"适用范围"添加商品或者分类
     public function addParam()
     {
