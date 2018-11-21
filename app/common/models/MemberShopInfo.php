@@ -424,6 +424,8 @@ class MemberShopInfo extends BaseModel
                 $member->save();
                 $record->save();
 
+                event(new MemberCreateRelationEvent($uid, $parent_id));
+
                 if ($plugin_team) {
                     $team = TeamDividendAgencyModel::getAgentByUidId($uid)->first();
 
@@ -453,7 +455,7 @@ class MemberShopInfo extends BaseModel
 
                     event(new RegisterByAgent($agent_data));
                 }
-                event(new MemberCreateRelationEvent($uid, $parent_id));
+
                 //更新2、3级会员上线和分销关系
                 dispatch(new ModifyRelationJob($uid, $member_relation, $plugin_commission));
 

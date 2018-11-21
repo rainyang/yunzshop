@@ -203,17 +203,21 @@ class MemberRelation
     {
         $parent_relation = $this->hasRelationOfParent($member_id, 1);
         $child_relation = $this->hasRelationOfChild($member_id);
-//dd($child_relation);
+
         $this->map_relaton[] = [$parent_id, $member_id];
 
-        if (!$parent_relation->isEmpty() && !$child_relation->isEmpty()) {
+        if ($parent_relation->isEmpty()) {
+            $this->addMemberOfRelation($member_id, $parent_id);
+        }
+
+        if (!$parent_relation->isEmpty() && $parent_id != $parent_relation[0]->parent_id) {
             foreach ($child_relation as $rows) {
                 //  dd($rows->child);
                 $ids[] = $rows['child_id'];
             }
-//dd($ids);
+
             $memberInfo = MemberShopInfo::getParentOfMember($ids);
-//dd($ids, $memberInfo);
+
             foreach ($memberInfo as $val) {
                 $this->map_relaton[] = [$val['parent_id'], $val['member_id']];
             }
@@ -226,13 +230,7 @@ class MemberRelation
             }
 
             ksort($this->map_parent);
-        }
-//dd($this->map_relaton);
-        if ($parent_relation->isEmpty() && $child_relation->isEmpty()) {
-            $this->addMemberOfRelation($member_id, $parent_id);
-        }
 
-        if (!$parent_relation->isEmpty() && $parent_id != $parent_relation[0]->parent_id) {
             $this->changeMemberOfRelation($member_id, $parent_relation[0]->parent_id, $parent_id);
         }
     }
