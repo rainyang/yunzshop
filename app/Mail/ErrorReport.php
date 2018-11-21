@@ -10,15 +10,16 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 class ErrorReport extends Mailable
 {
     use Queueable, SerializesModels;
+    private $data = '';
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($title,$data)
     {
-        //
+        $this->data = $data;
     }
 
     /**
@@ -28,6 +29,6 @@ class ErrorReport extends Mailable
      */
     public function build()
     {
-        return $this->view('view.name');
+        return $this->view('emails.errorReport',['data'=>$this->data]);
     }
 }

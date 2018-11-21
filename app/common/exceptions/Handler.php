@@ -9,6 +9,7 @@ use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class Handler extends ExceptionHandler
 {
@@ -42,11 +43,14 @@ class Handler extends ExceptionHandler
     {
         // 记录错误日志
         if(!app()->runningInConsole()){
-            \Log::info('http parameters',json_encode(request()->input(),256));
+            \Log::error('http parameters',request()->input());
         }
 
-        \Log::error('exception', $exception);
-        // 发送邮件
+        \Log::error($exception);
+        // 生产环境发送邮件
+//        if(app()->environment() == 'production'){
+//            Mail::to('shenyang@yunzshop.com')->send(new \App\Mail\ErrorReport('错误',$exception));
+//        }
         parent::report($exception);
     }
 
