@@ -641,7 +641,7 @@ class MemberRelation extends BaseModel
 
         if (!$isagent && $set->become_order == 1) {
             $become_term = unserialize($set->become_term);
-            //添加默认值，防止程序出错
+            //如果设置为空时添加默认值，防止程序出错
             if (empty($set->become) && !empty($become_term)) {
                 $set->become = 2;
             }
