@@ -641,6 +641,11 @@ class MemberRelation extends BaseModel
 
         if (!$isagent && $set->become_order == 1) {
             $become_term = unserialize($set->become_term);
+            //添加默认值，防止程序出错
+            if (empty($set->become) && !empty($become_term)) {
+                $set->become = 2;
+            }
+
             //或
             if ($set->become == 2) {
                 //判断商品
