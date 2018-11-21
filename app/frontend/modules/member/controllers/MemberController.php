@@ -572,9 +572,12 @@ class MemberController extends ApiController
                     return $this->errorJson($invitecode['json']);
                 }
 
+                file_put_contents(storage_path("logs/" . date('Y-m-d') . "_invitecode.log"), print_r(\YunShop::app()->getMemberId() . '-'. \YunShop::request()->invite_code . '-bind' . PHP_EOL, 1), FILE_APPEND);
+
                 //邀请码
                 $parent_id = \app\common\models\Member::getMemberIdForInviteCode();
                 if (!is_null($parent_id)) {
+                    file_put_contents(storage_path("logs/" . date('Y-m-d') . "_invitecode.log"), print_r(\YunShop::app()->getMemberId() . '-'. \YunShop::request()->invite_code . '-'. $parent_id . '-bind' . PHP_EOL, 1), FILE_APPEND);
                     MemberShopInfo::change_relation($uid, $parent_id);
                 }
             }
