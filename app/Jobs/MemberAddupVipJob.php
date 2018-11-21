@@ -61,9 +61,9 @@ class MemberAddupVipJob implements ShouldQueue
                     $ExistsIds [] = $item->uid;
                 }
 
-                foreach ($mryt_vvip_ids as $id) {
-                    if (!in_array($id, $ExistsIds)) {
-                        $noExistsIds[] = $id;
+                foreach ($mryt_vvip_ids as $rows) {
+                    if (!in_array($rows->uid, $ExistsIds)) {
+                        $noExistsIds[] = $rows;
                     }
                 }
 
@@ -82,7 +82,7 @@ class MemberAddupVipJob implements ShouldQueue
         foreach ($no_exists_ids as $ids) {
             $attr[] = [
                 'uniacid' => $this->uniacid,
-                'uid'     => $ids,
+                'uid'     => $ids->uid,
                 'nums'    => 1,
                 'curr_date' => $this->curr_date,
                 'created_at' => time(),

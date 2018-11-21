@@ -63,6 +63,15 @@ class ParentOfMember extends BaseModel
             ->delete();
     }
 
+    public function hasParentOfMember($uid, $parent, $level)
+    {
+        return self::uniacid()
+            ->where('member_id', $uid)
+            ->where('parent_id', $parent)
+            ->where('level', $level)
+            ->count();
+    }
+
     public function addNewParentData($uid, $parent_id)
     {
         $attr = [];
@@ -146,5 +155,47 @@ class ParentOfMember extends BaseModel
                 $this->parents[] = $val['parent_id'];
             }
         }
+    }
+
+    public function fixParentData($uid, $parent_id)
+    {
+        $attr = [];
+        $depth = 1;
+        $parents = $this->getParentOfMember($parent_id);
+
+        $default_exists = $this->hasParentOfMember($uid, $parent_id, $depth);
+
+        if (!$default_exists) {
+            echo '------parent level------' . $depth . '<BR>';
+            $attr[] = [
+                'uniacid'   => $this->uniacid,
+                'parent_id' => $parent_id,
+                'level'     => $depth,
+                'member_id' => $uid,
+                'created_at' => time()
+            ];
+        }
+
+
+        if (!empty($parents)) {
+            foreach ($parents as $key => $val) {
+                $level = ++$val['level'];
+                $parent_exists = $this->hasParentOfMember($uid, $val['parent_id'], $level);
+
+                if (!$parent_exists) {
+                    echo '------parent level------' . $level . '<BR>';
+                    $attr[] = [
+                        'uniacid'   => $this->uniacid,
+                        'parent_id' => $val['parent_id'],
+                        'level'     => $level,
+                        'member_id' => $uid,
+                        'created_at' => time()
+                    ];
+                }
+
+            }
+        }
+
+        $this->CreateData($attr);
     }
 }

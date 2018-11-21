@@ -197,4 +197,50 @@ class ChildrenOfMember extends BaseModel
             }
         }
     }
+
+    public function hasChildOfMember($parent, $uid, $level)
+    {
+        return self::uniacid()
+            ->where('child_id', $uid)
+            ->where('member_id', $parent)
+            ->where('level', $level)
+            ->count();
+    }
+
+    public function fixChildData(ParentOfMember $parentObj, $uid, $parent_id)
+    {
+        $parents = $parentObj->getParentOfMember($parent_id);
+        $parents_ids = [];
+        $attr = [];
+
+        $parents_ids[] = $parent_id;
+
+        if (!empty($parents)) {
+            foreach ($parents as $val) {
+                $parents_ids[$val['level']] = $val['parent_id'];
+            }
+        }
+
+        $parent_total = count($parents_ids);
+
+        foreach ($parents_ids as $key => $ids) {
+            $level = ++$key;
+            $child_exists = $this->hasChildOfMember($ids, $uid, $level);
+
+            if (!$child_exists) {
+                echo '------children level------' . $level . '<BR>';
+                $attr[] = [
+                    'uniacid' => $this->uniacid,
+                    'child_id' => $uid,
+                    'level' => $level,
+                    'member_id' => $ids,
+                    'created_at' => time()
+                ];
+            }
+            // dd($attr);
+        }
+
+        $this->CreateData($attr);
+    }
+
 }

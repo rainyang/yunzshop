@@ -11,6 +11,7 @@ namespace app\common\models;
 
 use app\backend\models\BackendModel;
 use app\backend\modules\member\models\MemberRecord;
+use app\common\events\member\MemberChangeRelationEvent;
 use app\common\events\member\MemberCreateRelationEvent;
 use app\common\events\member\RegisterByAgent;
 use app\common\observers\member\MemberObserver;
