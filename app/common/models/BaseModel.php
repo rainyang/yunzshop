@@ -30,13 +30,15 @@ use app\framework\Database\Eloquent\Collection;
  * @method static self first()
  * @method static self select(...$fields)
  * @method static self where(...$where)
+ * @method static self whereNot(...$where)
  * @method static self orWhere(...$where)
  * @method static self whereBetween(array $where)
  * @method static self with($with)
  * @method static self pluginId()
  * @method static self whereIn(...$where)
+ * @method static self whereNotIn(...$where)
  * @method static self whereHas(...$where)
- * @method static self pluck($field)
+ * @method static Collection pluck($field)
  * @method static int count()
  * @method static float sum()
  * @method static self join(...$join)
@@ -46,6 +48,7 @@ use app\framework\Database\Eloquent\Collection;
  * @method static self orderBy(...$field)
  * @method static self whereRaw(...$field)
  * @method static self getModel()
+ * @method static string value($fields)
  */
 class BaseModel extends Model
 {

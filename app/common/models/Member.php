@@ -4,17 +4,12 @@ namespace app\common\models;
 
 use app\backend\models\BackendModel;
 use app\common\events\member\BecomeAgent;
-use app\common\repositories\OptionRepository;
-use app\common\services\PluginManager;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\MemberWechatModel;
 use app\frontend\repositories\MemberAddressRepository;
-use Illuminate\Events\Dispatcher;
-use Illuminate\Filesystem\Filesystem;
 use Yunshop\AreaDividend\models\AreaDividendAgent;
 use Yunshop\Commission\models\Agents;
 use Yunshop\Gold\frontend\services\MemberCenterService;
-use Yunshop\Love\Common\Models\MemberShop;
 use Yunshop\Love\Common\Services\SetService;
 use Yunshop\Merchant\common\models\Merchant;
 use Yunshop\Micro\common\models\MicroShop;
@@ -36,6 +31,7 @@ use Yunshop\TeamDividend\models\TeamDividendAgencyModel;
  * @package app\common\models
  * @property int uid
  * @property float credit1
+ * @property \app\backend\modules\member\models\MemberShopInfo yzMember
  */
 class Member extends BackendModel
 {
@@ -763,5 +759,13 @@ class Member extends BackendModel
 
             return null;
         }
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function orderGoods()
+    {
+        return $this->hasMany(OrderGoods::class, 'uid', 'uid');
     }
 }

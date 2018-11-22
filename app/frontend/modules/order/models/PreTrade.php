@@ -8,21 +8,7 @@
 
 namespace app\frontend\modules\order\models;
 
-use app\common\models\BaseModel;
-
-class PreTrade extends BaseModel
+class PreTrade extends \app\common\modules\order\models\PreTrade
 {
-
-    public function toArray()
-    {
-        $attributes = array_merge($this->getAttributes(), $this->getPreAttributes());
-
-        $this->setAppends($attributes);
-        return parent::toArray();
-    }
-
-    public function getPreAttributes()
-    {
-    }
 
 }
