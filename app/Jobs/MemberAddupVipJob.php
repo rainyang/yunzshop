@@ -38,10 +38,14 @@ class MemberAddupVipJob implements ShouldQueue
 
     public function handle()
     {
-        $insert_ids = [];
+        \Log::debug('---------add up vip------');
+        $insert_ids  = [];
+        $uids        = [];
+        $ExistsIds   = [];
+        $noExistsIds = [];
 
-        $this->MrytMemberAddUpVipModel = new MrytMemberAddUpVipModel();
-        $this->parentMemberModel = new ParentOfMember();
+        $this->MrytMemberAddUpVipModel = new MrytMemberAddUpVipModel($this->uniacid);
+        $this->parentMemberModel = new ParentOfMember($this->uniacid);
 
          //查询uid所有父类id
         $parent = $this->parentMemberModel->getParentOfMember($this->uid);
@@ -52,27 +56,33 @@ class MemberAddupVipJob implements ShouldQueue
             }
 
             //mrytVVIP会员
-            $mryt_vvip_ids = MrytMemberModel::getMemberInfosWithLevel($insert_ids);
+            $mryt_vvip_ids = MrytMemberModel::getMemberInfosWithLevel($insert_ids, $this->uniacid);
 
-            $exists_parent = $this->MrytMemberAddUpVipModel->QueryCurrentMonthRecord($mryt_vvip_ids, $this->curr_date);
-
-            if (!$exists_parent->isEmpty()) {
-                foreach ($exists_parent as $item) {
-                    $ExistsIds [] = $item->uid;
-                }
-
+            if (!is_null($mryt_vvip_ids)) {
                 foreach ($mryt_vvip_ids as $rows) {
-                    if (!in_array($rows->uid, $ExistsIds)) {
-                        $noExistsIds[] = $rows;
-                    }
+                    $uids[] = $rows->uid;
                 }
 
-                DB::transaction(function () use ($ExistsIds, $noExistsIds) {
-                    $this->UpdateDate($ExistsIds);
-                    $this->InsertDate($noExistsIds);
-                });
-            } else {
-                $this->InsertDate($mryt_vvip_ids);
+                $exists_parent = $this->MrytMemberAddUpVipModel->QueryCurrentMonthRecord($uids, $this->curr_date);
+
+                if (!$exists_parent->isEmpty()) {
+                    foreach ($exists_parent as $item) {
+                        $ExistsIds [] = $item->uid;
+                    }
+
+                    foreach ($mryt_vvip_ids as $rows) {
+                        if (!in_array($rows->uid, $ExistsIds)) {
+                            $noExistsIds[] = $rows;
+                        }
+                    }
+
+                    DB::transaction(function () use ($ExistsIds, $noExistsIds) {
+                        $this->UpdateDate($ExistsIds, $this->curr_date);
+                        $this->InsertDate($noExistsIds);
+                    });
+                } else {
+                    $this->InsertDate($mryt_vvip_ids);
+                }
             }
         }
     }
