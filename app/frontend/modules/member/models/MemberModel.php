@@ -581,11 +581,11 @@ class MemberModel extends Member
             if ($is_show) {
                 $builder = MemberModel::getMyAllAgentsInfo(\YunShop::app()->getMemberId(), $i);
 
-                $order = $builder->get()->map(function ($order) {
-                    return $order->hasOneOrder->total;
-                });
-
-                $order_total += $order->sum();
+//                $order = $builder->get()->map(function ($order) {
+//                    return $order->hasOneOrder->total;
+//                });
+//
+//                $order_total += $order->sum();
 
                 $agent_info = self::getMemberRole($builder)->get();
 
