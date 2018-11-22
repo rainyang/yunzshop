@@ -9,8 +9,8 @@
     .status-content{ margin: 20px 0;}
     .panel-heading{ border: 0 !important; font-size: 1.2em !important;}
     .panel-body-change{  font-size: 1.5em !important;}
-    .daterangepicker .right .calendar-date, .daterangepicker ul, .daterangepicker label, .daterangepicker_end_input{display:none;}
-    [name=daterangepicker_start]{width:164px !important;}
+    /*.daterangepicker .right .calendar-date, .daterangepicker ul, .daterangepicker label, .daterangepicker_end_input{display:none;}*/
+    /*[name=daterangepicker_start]{width:164px !important;}*/
 </style>
 <div class="w1200 m0a">
 
@@ -28,7 +28,7 @@
                                         <input type="checkbox" name="search[is_time]" value="1"
                                                @if($search['is_time'] == '1')checked="checked"@endif>
                                     </span>
-                                    {!!app\common\helpers\DateRange::tplFormFieldDate('search[time]', [
+                                    {!!app\common\helpers\DateRange::tplFormFieldDateRange('search[time]', [
                                                                             'starttime'=>$search['time']['start'] ?: date('Y-m-d H:i:s'),
                                                                             'endtime'=>$search['time']['end'] ?: date('Y-m-d H:i:s'),
                                                                             'start'=>0,
@@ -38,11 +38,22 @@
                             </div>
                             <div class="form-group col-xs-12 col-sm-4">
                                 <button class="btn btn-success" id="search"><i class="fa fa-search"></i> 搜索</button>
+                                <button type="submit" name="export" value="1" id="export" class="btn btn-default">导出 Excel</button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="panel panel-default">
+            <table class='table point-count'>
+                <tr class='trhead'>
+                    <td colspan='8' style="text-align: left;">
+                        积分统计：可使用积分（当前积分剩余总积分），已消耗积分汇总（只统计已抵扣部分），获赠积分汇总（只统计签到、购买、买单及活动营销插件获得的部分），后台积分汇总
+                    </td>
+                </tr>
+            </table>
         </div>
 
         <div class="panel panel-default">
@@ -54,11 +65,15 @@
                     </td>
                     <td>
                         <h4>已消耗积分</h4>
-                        <p style="font-size: 1.2em">{{ $pointUsedCount }}</p>
+                        <p style="font-size: 1.2em">{{ $pointUsedCount * -1 }}</p>
                     </td>
                     <td>
                         <h4>已赠送积分</h4>
                         <p style="font-size: 1.2em">{{ $pointGivenCount }}</p>
+                    </td>
+                    <td>
+                        <h4>充值积分</h4>
+                        <p style="font-size: 1.2em">{{ $pointRechargeCount }}</p>
                     </td>
                 </tr>
             </table>
@@ -87,10 +102,11 @@
                         <th >可使用积分</th>
                         <th >已消耗积分</th>
                         <th >已赠送积分</th>
+                        <th >充值积分</th>
                     </tr>
                 </thead>
                 <tbody>
-                @foreach($AllPointData as $key => $item)
+                @foreach($allPointData as $key => $item)
                     <tr>
                         <td>
                             {{ $item['date'] }}
@@ -103,6 +119,9 @@
                         </td>
                         <td>
                             {{ $item['givenPoint'] }}
+                        </td>
+                        <td>
+                            {{ $item['recharge'] }}
                         </td>
                     </tr>
                 @endforeach
@@ -125,7 +144,7 @@
             trigger: 'axis'
         },
         legend: {
-            data:['可使用积分','已消耗积分','已赠送积分']
+            data:['可使用积分','已消耗积分','已赠送积分','充值积分']
         },
         grid: {
             left: '3%',
@@ -166,8 +185,22 @@
                 stack: '总量3',
                 data:{!! $pointGivenData !!}
             },
+            {
+                name:'充值积分',
+                type:'line',
+                stack: '总量4',
+                data:{!! $pointRechargeData !!}
+            },
         ]
     };
     pointChart.setOption(option, true);
+</script>
+<script>
+    $(function () {
+        $('#export').click(function () {
+            $('#form1').attr('action', '{!! yzWebUrl('charts.finance.point.export') !!}');
+            $('#form1').submit();
+        });
+    });
 </script>
 @endsection

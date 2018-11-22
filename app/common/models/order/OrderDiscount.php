@@ -10,6 +10,11 @@ namespace app\common\models\order;
 
 use app\common\models\BaseModel;
 
+/**
+ * Class OrderDiscount
+ * @property int uid
+ * @package app\common\models\order
+ */
 class OrderDiscount extends BaseModel
 {
     public $table = 'yz_order_discount';

@@ -9,6 +9,7 @@
 namespace app\frontend\models;
 
 use app\common\exceptions\AppException;
+use app\common\models\BaseModel;
 use app\common\models\GoodsDiscount;
 use app\frontend\models\goods\Privilege;
 use app\frontend\models\goods\Sale;
@@ -34,6 +35,7 @@ use Yunshop\Supplier\admin\models\SupplierGoods;
  * @property Privilege hasOnePrivilege
  * @property SupplierGoods supplierGoods
  * @property StoreGoods storeGoods
+ * @method static self search(array $search)
  */
 class Goods extends \app\common\models\Goods
 {
@@ -122,7 +124,7 @@ class Goods extends \app\common\models\Goods
         return $this->hasOne(Sale::class);
     }
 
-    public function scopeSearch(Builder $query, $filters)
+    public function scopeSearch(BaseModel $query, $filters)
     {
         $query->uniacid();
 
@@ -148,7 +150,7 @@ class Goods extends \app\common\models\Goods
                     }
                     break;
                 case 'status':
-                    $query->where(status, $value);
+                    $query->where('status', $value);
                     break;
                 case 'min_price':
                     $query->where('price', '>', $value);

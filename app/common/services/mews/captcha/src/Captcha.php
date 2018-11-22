@@ -309,10 +309,10 @@ class Captcha
         $bag = $this->sensitive ? $bag : $this->str->lower($bag);
 
         $hash = $this->hasher->make($bag);
-        Cache::put('captcha', [
+        Session::put('captcha', [
             'sensitive' => $this->sensitive,
             'key'       => $hash
-        ], 1);
+        ]);
 
         return [
         	'value'     => $bag,
@@ -425,13 +425,13 @@ class Captcha
 	 */
 	public function check($value)
 	{
-		if ( ! Cache::has('captcha'))
+		if ( ! Session::get('captcha'))
 		{
 			return false;
 		}
 
-		$key = Cache::get('captcha.key');
-		$sensitive = Cache::get('captcha.sensitive');
+		$key = Session::get('captcha.key');
+		$sensitive = Session::get('captcha.sensitive');
 
 		if ( ! $sensitive)
 		{
@@ -439,7 +439,7 @@ class Captcha
 
 		}
 
-		Cache::forget('captcha');
+		Session::clear('captcha');
 
 		return $this->hasher->check($value, $key);
 	}

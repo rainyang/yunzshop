@@ -117,15 +117,6 @@ class PreOrderAddress extends OrderAddress
     }
 
     /**
-     * 需要配送
-     * @return bool
-     */
-    private function needDispatch()
-    {
-        return $this->order->needSend();
-    }
-
-    /**
      * 校验参数
      * @param $request
      * @param array $rules

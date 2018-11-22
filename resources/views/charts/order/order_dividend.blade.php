@@ -133,7 +133,7 @@
                                 <td style="word-wrap:break-word; white-space: pre-wrap">{{$row['address']}}</td>
                                 <td >{{$row['buy_name']}}<br>{{ $row['parent_name']}}</td>
                                 <td>@if($row['plugin_id'] == 1)供应商：{{$row['shop_name']}}
-                                    @elseif($row['plugin_id'] == 31)门店：{{ $row['shop_name'] }}
+                                    @elseif($row['plugin_id'] == 31)收银台：{{ $row['shop_name'] }}
                                     @elseif($row['plugin_id'] == 32)门店：{{ $row['shop_name'] }}
                                     @else {{ $row['shop_name'] }}
                                     @endif</td>

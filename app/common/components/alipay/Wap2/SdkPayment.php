@@ -96,7 +96,7 @@ class SdkPayment
      *
      * @var string
      */
-    private $format;
+    private $format = 'JSON';
 
     /**
      * Request No
@@ -134,9 +134,10 @@ class SdkPayment
         $request = new AlipayTradeWapPayRequest();
 
         $request->setBizContent($data);
+        $request->setNotifyUrl($this->notify_url);
+        $request->setReturnUrl($this->return_url);
 
-
-        $result = $aopClient->pageExecute($request);
+        $result = $aopClient->pageExecute($request, 'GET');
         \Log::info('-------test2-------', print_r($result,true));
         return $result;
     }

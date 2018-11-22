@@ -20,7 +20,7 @@
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">角色</label>
                 <div class="col-xs-12 col-sm-8 col-lg-9">
-                    <select name="widgets[role_id]" class='form-control'>
+                    <select name="widgets[role_id]" class='form-control' id='userRole'>
                         <option value=""  selected>点击选择角色</option>
                         @foreach($roleList as $role)
                         <option value="{{  $role['id'] }}" @if($role['id'] == $user->userRole->role_id) selected @endif >{{ $role['name'] }}</option>
@@ -107,7 +107,7 @@
         var id=this.value;
         $.ajax({
         type:'get',
-        url:'http://www.wq.com/web/index.php?c=site&a=entry&m=yun_shop&do=6980&route=role.permission.index',
+        url:"{!!yzWebUrl('role.permission.index')!!}",
         data:{role_id:id},
         success:function(res){
             console.log(res)
@@ -126,6 +126,5 @@
     })
 });
 </script>
-
 
 @endsection

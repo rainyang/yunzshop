@@ -222,8 +222,6 @@
                             </thead>
                             <tbody>
                             @foreach($list['data'] as $row)
-                                @if (isset($row['has_one_del']))
-                                @else
                                 <tr>
                                     <td style="text-align: center;">   {{$row['uid']}}</td>
 
@@ -336,7 +334,6 @@
                                     </td>
                                     </td>
                                 </tr>
-                                @endif
                             @endforeach
                             </tbody>
                         </table>

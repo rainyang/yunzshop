@@ -2,8 +2,10 @@
 
 namespace app\Console\Commands;
 
+use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\facades\Setting;
 use app\common\models\Income;
+use app\common\models\Order;
 use app\common\models\Withdraw;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
@@ -38,8 +40,8 @@ class Test extends Command
      */
     public function handle()
     {
-       Setting::$uniqueAccountId = 2;
-       dump(Setting::get('shop.shop.name'));
+
+        dump(1);
     }
 
 }

@@ -11,6 +11,7 @@ namespace app\common\models;
 
 use app\backend\models\BackendModel;
 use app\backend\modules\member\models\MemberRecord;
+use app\common\events\member\MemberCreateRelationEvent;
 use app\common\events\member\RegisterByAgent;
 use app\common\observers\member\MemberObserver;
 use app\frontend\modules\member\models\SubMemberModel;
@@ -451,7 +452,7 @@ class MemberShopInfo extends BaseModel
 
                     event(new RegisterByAgent($agent_data));
                 }
-
+                event(new MemberCreateRelationEvent($uid, $parent_id));
                 //更新2、3级会员上线和分销关系
                 dispatch(new ModifyRelationJob($uid, $member_relation, $plugin_commission));
 
@@ -472,7 +473,8 @@ class MemberShopInfo extends BaseModel
         $data = self::select('member_id')->where('invite_code', $inviteCode)
             ->uniacid()
             ->count();
-        if($data>0){
+
+        if($data > 0){
             return true;
         }else{
             return false;

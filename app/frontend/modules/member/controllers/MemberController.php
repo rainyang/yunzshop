@@ -89,6 +89,8 @@ class MemberController extends ApiController
                 //自定义表单
                 $data['myform'] = (new MemberService())->memberInfoAttrStatus();
 
+                $data['avatar'] =  $data['avatar'] ? yz_tomedia($data['avatar']) : yz_tomedia(\Setting::get('shop.member.headimg'));
+
                 //修复微信头像地址
                 $data['avatar'] = ImageHelper::fix_wechatAvatar($data['avatar']);
 
@@ -551,6 +553,7 @@ class MemberController extends ApiController
         $password         = \YunShop::request()->password;
         $confirm_password = \YunShop::request()->password;
         $uid              = \YunShop::app()->getMemberId();
+        $close_invitecode = \YunShop::request()->close;
 
 
         $member_model = MemberModel::getMemberById($uid);
@@ -562,24 +565,18 @@ class MemberController extends ApiController
                 return $this->errorJson($check_code['json']);
             }
 
-            $invitecode = MemberService::inviteCode();
 
-            if ($check_code['status'] != 1) {
-                return $this->errorJson($invitecode['json']);
+            if (!empty($close_invitecode)) {
+                $invitecode = MemberService::inviteCode();
+                if ($invitecode['status'] != 1) {
+                    return $this->errorJson($invitecode['json']);
+                }
             }
-
 
             $msg = MemberService::validate($mobile, $password, $confirm_password);
 
             if ($msg['status'] != 1) {
                 return $this->errorJson($msg['json']);
-            }
-            //增加验证码功能
-            $captcha_status = Setting::get('shop.sms.status');
-            if ($captcha_status == 1) {
-                if (app('captcha')->check(Input::get('captcha')) == false) {
-                    return $this->errorJson('验证码错误');
-                }
             }
 
             //手机归属地查询插入
@@ -676,14 +673,6 @@ class MemberController extends ApiController
 
             if ($check_code['status'] != 1) {
                 return $this->errorJson($check_code['json']);
-            }
-
-            //增加验证码功能
-            $captcha_status = Setting::get('shop.sms.status');
-            if ($captcha_status == 1) {
-                if (app('captcha')->check(Input::get('captcha')) == false) {
-                    return $this->errorJson('验证码错误');
-                }
             }
 
             $salt = Str::random(8);

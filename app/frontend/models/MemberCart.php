@@ -169,6 +169,7 @@ class MemberCart extends \app\common\models\MemberCart
      */
     public function goodsValidate()
     {
+
         if (!$this->goods->stockEnough($this->total)) {
             throw new AppException('(ID:' . $this->goods_id . ')商品库存不足');
         }

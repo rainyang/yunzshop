@@ -16,7 +16,6 @@ class IndexController extends BaseController
     public function index()
     {
         $setting = \Setting::getByGroup('enoughReduce');
-//        dd($setting);exit;
 
         return view('goods.enoughReduce.index', [
             'setting' => json_encode($setting),

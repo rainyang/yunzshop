@@ -8,6 +8,7 @@
 namespace app\common\listeners\charts;
 
 use app\common\events\order\AfterOrderCanceledEvent;
+use app\common\events\order\AfterOrderCreatedImmediatelyEvent;
 use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\events\order\AfterOrderPaidEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
@@ -30,13 +31,11 @@ class OrderBonusListeners
     public function subscribe($events)
     {
         //下单
-        $events->listen(AfterOrderCreatedEvent::class, OrderBonusListeners::class. '@addCount',999);
+//        $events->listen(AfterOrderCreatedImmediatelyEvent::class, OrderBonusListeners::class. '@addCount');
+        $events->listen(AfterOrderCreatedEvent::class, OrderBonusListeners::class. '@addCount');
 
-        //支付之后 统计订单详情
-//        $events->listen(
-//            AfterOrderPaidEvent::class,
-//            OrderBonusListeners::class . '@addBonus'
-//        );
+        //todo 支付之后 统计订单详情
+        //$events->listen(AfterOrderPaidEvent::class, OrderBonusListeners::class . '@addBonus');
 
         //收货之后 更改订单状态
         $events->listen(AfterOrderReceivedEvent::class, OrderBonusListeners::class . '@updateBonus');
@@ -49,6 +48,7 @@ class OrderBonusListeners
 
     }
 
+    //todo 订单支付后
 //    public function addBonus(AfterOrderPaidEvent $event)
 //    {
 //        $this->orderModel = Order::find($event->getOrderModel()->id);
@@ -56,16 +56,17 @@ class OrderBonusListeners
 //    }
 
 
+    public function addCount(AfterOrderCreatedImmediatelyEvent $event)
+    {
+        $orderModel = Order::find($event->getOrderModel()->id);
+//        $this->dispatch(new OrderCountContentJob($orderModel));
+        $this->dispatch((new OrderCountContentJob($orderModel))->delay(10));
+    }
+
     public function updateBonus(AfterOrderReceivedEvent $event)
     {
         $this->dispatch(new OrderBonusStatusJob($event->getOrderModel()->id));
         $this->dispatch(new OrderCountIncomeJob($event->getOrderModel()->id));
-    }
-
-    public function addCount(AfterOrderCreatedEvent $event)
-    {
-        $orderModel = Order::find($event->getOrderModel()->id);
-        $this->dispatch(new OrderCountContentJob($orderModel));
     }
 
     public function cancel(AfterOrderCanceledEvent $event)

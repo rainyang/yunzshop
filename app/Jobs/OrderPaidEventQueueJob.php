@@ -16,6 +16,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class OrderPaidEventQueueJob implements ShouldQueue
 {
@@ -24,6 +25,7 @@ class OrderPaidEventQueueJob implements ShouldQueue
      * @var Order
      */
     protected $order;
+    protected $orderId;
 
     /**
      * OrderPaidEventQueueJob constructor.
@@ -31,6 +33,7 @@ class OrderPaidEventQueueJob implements ShouldQueue
      */
     public function __construct($orderId)
     {
+        $this->orderId = $orderId;
         $this->order = Order::find($orderId);
     }
 
@@ -44,6 +47,13 @@ class OrderPaidEventQueueJob implements ShouldQueue
         DB::transaction(function () {
             \YunShop::app()->uniacid = $this->order->uniacid;
             Setting::$uniqueAccountId = $this->order->uniacid;
+            if(!$this->order->orderPaidJob){
+                Log::error('订单付款事件触发失败',"{$this->orderId}未找到orderPaidJob记录");
+                return;
+            }
+            if($this->order->orderPaidJob->status == 'finished'){
+                return;
+            }
             event(new AfterOrderPaidEvent($this->order));
             $this->order->orderPaidJob->status = 'finished';
             $this->order->orderPaidJob->save();
