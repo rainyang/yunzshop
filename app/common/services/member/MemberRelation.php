@@ -178,7 +178,9 @@ class MemberRelation
         DB::transaction(function() use ($uid, $o_parent_id, $n_parent_id) {
             $this->delMemberOfRelation($uid, $n_parent_id);
 
-            $this->reAddMemberOfRelation($uid, $n_parent_id, $o_parent_id);
+            if ($n_parent_id) {
+                $this->reAddMemberOfRelation($uid, $n_parent_id, $o_parent_id);
+            }
         });
     }
 
