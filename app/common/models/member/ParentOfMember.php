@@ -116,7 +116,7 @@ class ParentOfMember extends BaseModel
         $this->CreateData($attr);
     }
 
-    public function delMemberOfRelation(ChildrenOfMember $childObj, $uid)
+    public function delMemberOfRelation(ChildrenOfMember $childObj, $uid, $n_parent_id)
     {
         $parents = $this->getParentOfMember($uid);
         $childs = $childObj->getChildOfMember($uid);
@@ -138,11 +138,13 @@ class ParentOfMember extends BaseModel
         }
 
         //可优化
-        //删除子节点本身
-        $member_ids = $this->getMemberIdByParent($uid);
+        if ($n_parent_id > 0) {
+            //删除重新分配节点的所有子级(新节点中层级已改变)
+            $member_ids = $this->getMemberIdByParent($uid);
 
-        if (!$member_ids->isEmpty()) {
-            $this->delRelation($member_ids);
+            if (!$member_ids->isEmpty()) {
+                $this->delRelation($member_ids);
+            }
         }
     }
 

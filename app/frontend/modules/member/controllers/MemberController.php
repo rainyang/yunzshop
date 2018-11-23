@@ -565,7 +565,8 @@ class MemberController extends ApiController
                 return $this->errorJson($check_code['json']);
             }
 
-            if (!empty($close_invitecode)) {
+            if (empty($close_invitecode)) {
+
                 $invitecode = MemberService::inviteCode();
 
                 if ($invitecode['status'] != 1) {

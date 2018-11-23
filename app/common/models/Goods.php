@@ -234,6 +234,10 @@ class Goods extends BaseModel
                     $query->where('brand_id', $value);
                     break;
                 case 'product_attr':
+                    //前端传参是 string 类型，后端传参是 array 类型
+                    if (!is_array($value)) {
+                        $value = explode(',', rtrim($value, ','));
+                    }
                     //$value = explode(',', rtrim($value, ','));
                     foreach ($value as $attr) {
                         if ($attr == 'limit_buy') {

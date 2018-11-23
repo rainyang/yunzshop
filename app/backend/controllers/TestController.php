@@ -292,4 +292,33 @@ class TestController extends BaseController
 
     }
 
+    public function cmr()
+    {
+        $member_relation = new MemberRelation();
+
+        $a = [
+            [65, 79],
+            [75, 79],
+            [37, 65],
+            [66, 65],
+            [84, 75],
+            [13, 37],
+            [13090, 66],
+            [24122, 66],
+            [24132, 66],
+            [91, 84],
+            [9231, 84],
+            [9571, 84]
+        ];
+
+        $a = [
+            [37, 0]
+        ];
+
+        foreach ($a as $item) {
+            $member_relation->build($item[0], $item[1]);
+        }
+        echo 'ok';
+    }
+
 }

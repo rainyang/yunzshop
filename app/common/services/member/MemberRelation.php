@@ -108,12 +108,12 @@ class MemberRelation
      * @throws \Exception
      * @throws \Throwable
      */
-    public function delMemberOfRelation($uid)
+    public function delMemberOfRelation($uid, $n_parent_id)
     {
-        DB::transaction(function() use ($uid) {
-            $this->child->delMemberOfRelation($this->parent, $uid);
+        DB::transaction(function() use ($uid, $n_parent_id) {
+            $this->child->delMemberOfRelation($this->parent, $uid, $n_parent_id);
 
-            $this->parent->delMemberOfRelation($this->child, $uid);
+            $this->parent->delMemberOfRelation($this->child, $uid, $n_parent_id);
         });
     }
 
@@ -158,7 +158,7 @@ class MemberRelation
                     //       dd($child_attr);
                 }
             }
-    //        dd($child_attr);
+
             $this->child->CreateData($child_attr);
             $this->parent->CreateData($parent_attr);
         });
@@ -176,9 +176,9 @@ class MemberRelation
     public function changeMemberOfRelation($uid, $o_parent_id, $n_parent_id)
     {
         DB::transaction(function() use ($uid, $o_parent_id, $n_parent_id) {
-            $this->delMemberOfRelation($uid, $o_parent_id);
+            $this->delMemberOfRelation($uid, $n_parent_id);
 
-            $this->reAddMemberOfRelation($uid, $n_parent_id);
+            $this->reAddMemberOfRelation($uid, $n_parent_id, $o_parent_id);
         });
     }
 
@@ -215,15 +215,19 @@ class MemberRelation
                 $this->map_relaton[] = [$val['parent_id'], $val['member_id']];
             }
 
-            $parentInfo = $this->parent->getParentsOfMember($parent_id);
-            $parentTotal = count($parentInfo);
+            //修改上级非总店
+            if ($parent_id > 0) {
+                $parentInfo = $this->parent->getParentsOfMember($parent_id);
+                $parentTotal = count($parentInfo);
 
-            foreach ($parentInfo as $rows) {
-                $this->map_parent[$parentTotal - $rows['level']] =$rows['parent_id'];
+                foreach ($parentInfo as $rows) {
+                    $this->map_parent[$parentTotal - $rows['level']] = $rows['parent_id'];
+                }
+
+                ksort($this->map_parent);
             }
 
-            ksort($this->map_parent);
-
+            file_put_contents(storage_path("logs/" . date('Y-m-d') . "_changerelation.log"), print_r($member_id . '-'. $parent_relation[0]->parent_id . '-'. $parent_id . PHP_EOL, 1), FILE_APPEND);
             $this->changeMemberOfRelation($member_id, $parent_relation[0]->parent_id, $parent_id);
         }
     }
