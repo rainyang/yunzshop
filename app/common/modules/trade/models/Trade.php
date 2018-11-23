@@ -9,59 +9,47 @@
 namespace app\common\modules\trade\models;
 
 use app\common\models\BaseModel;
-use app\common\models\MemberCart;
 use app\common\modules\memberCart\MemberCartCollection;
 use app\common\modules\order\OrderCollection;
-use Illuminate\Support\Collection;
 
 /**
  * Class Trade
  * @package app\common\modules\trade\models
- * @property OrderCollection orders
+ * @property OrderCollection order_data
+ * @property TradeDiscount discount
+ * @property float total_deduction_price
+ * @property float total_discount_price
+ * @property float total_dispatch_price
+ * @property float total_goods_price
+ * @property float total_price
  */
 class Trade extends BaseModel
 {
-//    /**
-//     * @var MemberCartCollection
-//     */
-//    private $memberCarts;
 
     public function init(MemberCartCollection $memberCartCollection)
     {
 
-        $this->setRelation('orders', $this->getOrderCollection($memberCartCollection));
+        $this->setRelation('order_data', $this->getOrderCollection($memberCartCollection));
+        $this->setRelation('discount', $this->getDiscount());
         $this->initAttribute();
 
-//        //将订单中的优惠券 合并摊平到数组外层
-//        $data['discount']['coupon'] =
-//            //将订单中的收获地址 拿到外层
 //        $data['dispatch'] = $orders[0]['dispatch'];
-//        //删掉内层的数据
-//
-//        $orders->map(function (Collection $order_data) {
-//            $order_data->discount->forget('coupon');
-//            return $order_data->forget('dispatch');
-//        });
 
     }
 
-    public function initAttribute()
+    private function initAttribute()
     {
         $attributes = [
-            'totalPrice' => $this->orders->sum('price'),
-            'totalGoodsPrice' => $this->orders->sum('order_goods_price'),
-            'totalDispatchPrice' => $this->orders->sum('dispatch_price'),
-            'totalDiscountPrice' => $this->orders->sum('discount_price'),
-            'totalDeductionPrice' => $this->orders->sum('deduction_price'),
+            'total_price' => $this->order_data->sum('price'),
+            'total_goods_price' => $this->order_data->sum('order_goods_price'),
+            'total_dispatch_price' => $this->order_data->sum('dispatch_price'),
+            'total_discount_price' => $this->order_data->sum('discount_price'),
+            'total_deduction_price' => $this->order_data->sum('deduction_price'),
         ];
-//        $this->discount->coupon = $this->orders->map(function ($order) {
-//            dd($order);
-//            return $order['discount']['coupon'];
-//        })->collapse();
-//        dd($this->discount->coupon);
 
         $attributes = array_merge($this->getAttributes(), $attributes);
-        return $attributes;
+        $this->setRawAttributes($attributes);
+        return $this;
     }
 
     /**
@@ -75,7 +63,7 @@ class Trade extends BaseModel
         return $attributes;
     }
 
-    public function getOrderCollection(MemberCartCollection $memberCartCollection)
+    private function getOrderCollection(MemberCartCollection $memberCartCollection)
     {
         // 按插件分组
         $groups = $memberCartCollection->groupByPlugin();
@@ -85,5 +73,15 @@ class Trade extends BaseModel
             return $memberCartCollection->getOrder();
         });
         return new OrderCollection($orderCollection->all());
+    }
+
+    /**
+     * @return TradeDiscount
+     */
+    private function getDiscount()
+    {
+        $tradeDiscount = new TradeDiscount();
+        $tradeDiscount->init($this);
+        return $tradeDiscount;
     }
 }

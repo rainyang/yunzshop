@@ -5,6 +5,7 @@ namespace app\frontend\modules\order\models;
 use app\common\models\BaseModel;
 use app\common\models\DispatchType;
 use app\common\models\Member;
+use app\common\requests\Request;
 use app\frontend\models\Order;
 use app\frontend\modules\deduction\OrderDeduction;
 use app\frontend\modules\deduction\OrderDeductionCollection;
@@ -60,6 +61,10 @@ class PreOrder extends Order
      * @var OrderDeduction 抵扣类
      */
     protected $orderDeduction;
+    /**
+     * @var Request
+     */
+    protected $request;
     protected $attributes = ['id' => null];
 
 
@@ -70,13 +75,15 @@ class PreOrder extends Order
     }
 
     /**
-     * 初始化
-     * @param PreOrderGoodsCollection $orderGoods
      * @param Member $member
+     * @param PreOrderGoodsCollection $orderGoods
+     * @param Request|null $request
      * @return $this
      */
-    public function init(Member $member,PreOrderGoodsCollection $orderGoods)
+    public function init(Member $member, PreOrderGoodsCollection $orderGoods, Request $request = null)
     {
+        $this->request = $request;
+        
         $this->setRelation('belongsToMember', $member);
         $this->beforeCreating();
 
@@ -86,31 +93,31 @@ class PreOrder extends Order
          */
         $this->afterCreating();
         return $this;
-        $couponService = new CouponService($orderModel);
-        $coupons = $couponService->getOptionalCoupons();
-
-        $data = $coupons->map(function ($coupon) {
-            /**
-             * @var $coupon Coupon
-             */
-            $coupon->getMemberCoupon()->belongsToCoupon->setDateFormat('Y-m-d');
-            return $coupon->getMemberCoupon();
-        });
     }
 
+    /**
+     * 获取request对象
+     * @return Request
+     */
+    public function getRequest(){
+        if(!isset($this->request)){
+            $this->request = request();
+        }
+        return $this->request;
+    }
     /**
      * 依赖对象传入之前
      */
     public function beforeCreating()
     {
 
-        $this->dispatch_type_id = request()->input('dispatch_type_id', 0);
+        $this->dispatch_type_id = $this->getRequest()->input('dispatch_type_id', 0);
         $orderAddress = app('OrderManager')->make('PreOrderAddress');
 
         $orderAddress->setOrder($this);
         //临时处理，无扩展性
-        if (request()->input('mark') !== 'undefined') {
-            $this->mark = request()->input('mark', '');
+        if ($this->getRequest()->input('mark') !== 'undefined') {
+            $this->mark = $this->getRequest()->input('mark', '');
         }
 
     }
@@ -136,7 +143,7 @@ class PreOrder extends Order
         $this->orderDispatch = new OrderDispatch($this);
         $this->orderDeduction = new OrderDeduction($this);
 
-        $attributes = $this->getPreAttributes();
+        $attributes = $this->intAttributes();
         $this->setRawAttributes($attributes);
 
         $this->orderGoods->each(function ($aOrderGoods) {
@@ -170,10 +177,10 @@ class PreOrder extends Order
     }
 
     /**
-     * 获取属性
+     * 初始化属性
      * @return array
      */
-    public function getPreAttributes()
+    protected function intAttributes()
     {
         $attributes = array(
             'price' => $this->getPrice(),//订单最终支付价格
@@ -185,10 +192,10 @@ class PreOrder extends Order
             'goods_total' => $this->getGoodsTotal(),//订单商品总数
             'order_sn' => OrderService::createOrderSN(),//订单编号
             'create_time' => time(),
-            'uid' => $this->uid,
+            'uid' => $this->belongsToMember->uid,
             'uniacid' => $this->getUniacid(),
             'is_virtual' => $this->isVirtual(),//是否是虚拟商品订单
-            'note' => request('note'),//是否是虚拟商品订单
+            'note' => $this->getRequest()->input('note',''),//是否是虚拟商品订单
             'shop_name' => $this->getShopName(),//是否是虚拟商品订单
         );
 
@@ -204,7 +211,7 @@ class PreOrder extends Order
      */
     public function getParams($key = null)
     {
-        $result = collect(json_decode(request()->input('orders'), true))->where('pre_id', $this->pre_id)->first();
+        $result = collect(json_decode($this->getRequest()->input('orders'), true))->where('pre_id', $this->pre_id)->first();
         if (isset($key)) {
             return $result[$key];
         }
@@ -373,7 +380,7 @@ class PreOrder extends Order
             return $relation->getAttributes();
         });
 
-        $attributeItems = $attributeItems->filter();
+        $attributeItems = collect($attributeItems)->filter();
 
         $this->$relation->first()->insert($attributeItems->toArray());
         /**
