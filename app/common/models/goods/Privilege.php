@@ -227,11 +227,11 @@ class Privilege extends BaseModel
         if ($this->month_buy_limit > 0) {
             $start_time = Carbon::now()->startOfMonth()->timestamp;
             $end_time = Carbon::now()->timestamp;
-            $rang = [$start_time,$end_time];
+            $range = [$start_time,$end_time];
             $history_num = $member
                 ->orderGoods()
                 ->where('goods_id', $this->goods_id)
-                ->whereBetween('created_at',$rang)
+                ->whereBetween('created_at',$range)
                 ->sum('total');
             if ($history_num + $num > $this->month_buy_limit)
                 throw new AppException('您这个月已购买' . $history_num . '件商品(' . $this->goods->title . '),该商品每月最多可购买' . $this->month_buy_limit . '件');

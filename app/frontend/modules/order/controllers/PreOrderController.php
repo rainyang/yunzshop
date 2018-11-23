@@ -11,6 +11,7 @@ namespace app\frontend\modules\order\controllers;
 use app\common\components\ApiController;
 use app\common\events\order\ShowPreGenerateOrder;
 use app\framework\Database\Eloquent\Collection;
+use app\frontend\models\Member;
 use app\frontend\modules\member\services\MemberCartService;
 use app\frontend\modules\order\services\OrderService;
 use Request;
@@ -21,7 +22,8 @@ abstract class PreOrderController extends ApiController
      * @throws \Exception
      * @throws \app\common\exceptions\AppException
      */
-    protected function getData(){
+    protected function getData()
+    {
         $order_data = $this->getOrderData();
         $total_price = $order_data->sum('order.price');
         $total_goods_price = $order_data->sum('order.order_goods_price');
@@ -45,17 +47,25 @@ abstract class PreOrderController extends ApiController
 
         $data += [
             'order_data' => $order_data,
-            'total_goods_price' => sprintf('%.2f',$total_goods_price),
-            'total_dispatch_price' => sprintf('%.2f',$total_dispatch_price),
-            'total_discount_price' => sprintf('%.2f',$total_discount_price),
-            'total_deduction_price' => sprintf('%.2f',$total_deduction_price),
-            'total_price' => sprintf('%.2f',$total_price),
+            'total_goods_price' => sprintf('%.2f', $total_goods_price),
+            'total_dispatch_price' => sprintf('%.2f', $total_dispatch_price),
+            'total_discount_price' => sprintf('%.2f', $total_discount_price),
+            'total_deduction_price' => sprintf('%.2f', $total_deduction_price),
+            'total_price' => sprintf('%.2f', $total_price),
         ];
         return $data;
     }
+
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     * @throws \app\common\exceptions\AppException
+     */
     public function index()
     {
-        return $this->successJson('成功', $this->getData());
+        $trade = Member::current()->getMemberCartCollection()->getTrade();
+
+        return $this->successJson('成功', $trade);
 
     }
 
@@ -86,17 +96,17 @@ abstract class PreOrderController extends ApiController
      * @throws \Exception
      * @throws \app\common\exceptions\AppException
      */
-    protected function getShopOrder($memberCarts){
+    protected function getShopOrder($memberCarts)
+    {
         return OrderService::createOrderByMemberCarts(MemberCartService::filterShopMemberCart($memberCarts));
 
     }
+
     /**
      * 获取全部购物车记录
      * @return mixed
      */
     abstract protected function getMemberCarts();
-
-
 
 
     /**

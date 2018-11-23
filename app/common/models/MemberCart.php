@@ -17,9 +17,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int plugin_id
  * @property int option_id
  * @property int total
+ * @property int member_id
  * @property int goods_id
  * @property Goods goods
  * @property GoodsOption goodsOption
+ * @property Member member
  */
 class MemberCart extends BaseModel
 {
@@ -49,7 +51,8 @@ class MemberCart extends BaseModel
 
         //$this->getAllMemberCarts()->validate();
         //商品基本验证
-        $this->goods->generalValidate($this->total);
+
+        $this->goods->generalValidate($this->member,$this->total);
 
         if ($this->isOption()) {
             $this->goodsOptionValidate();
@@ -87,4 +90,10 @@ class MemberCart extends BaseModel
             throw new AppException('(ID:' . $this->goods_id . ')商品库存不足');
         }
     }
+
+    public function member()
+    {
+        return $this->belongsTo(Member::class,'member_id','uid');
+    }
+
 }

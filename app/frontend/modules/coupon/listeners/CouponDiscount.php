@@ -54,28 +54,6 @@ class CouponDiscount
 
     }
 
-    /**
-     * @param OnDiscountInfoDisplayEvent $event
-     * 监听订单显示优惠券选项事件
-     */
-    public function onDisplay(OnDiscountInfoDisplayEvent $event)
-    {
-        $this->event = $event;
-        $orderModel = $this->event->getOrderModel();
-
-        $couponService = new CouponService($orderModel);
-        $coupons = $couponService->getOptionalCoupons();
-
-        $data = $coupons->map(function ($coupon) {
-            /**
-             * @var $coupon Coupon
-             */
-            $coupon->getMemberCoupon()->belongsToCoupon->setDateFormat('Y-m-d');
-            return $coupon->getMemberCoupon();
-        });
-        $event->addMap('coupon', $data);
-    }
-
     /*
      * 监听订单完成事件
      */
@@ -94,10 +72,6 @@ class CouponDiscount
      */
     public function subscribe($events)
     {
-        $events->listen(
-            OnDiscountInfoDisplayEvent::class,
-            CouponDiscount::class . '@onDisplay'
-        );
         $events->listen(
             AfterOrderCreatedEvent::class,
             CouponDiscount::class . '@onOrderCreated'

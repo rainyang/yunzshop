@@ -33,7 +33,6 @@ class MemberCoupon extends BaseModel
     protected $appends = ['time_start', 'time_end'];
     public $selected;
 
-
     /**
      * 定义字段名
      * @return array
@@ -140,9 +139,4 @@ class MemberCoupon extends BaseModel
         return $model;
     }
 
-    public static function getCouponBycouponId($couponId)
-    {
-        return self::uniacid()
-            ->where('coupon_id',$couponId);
-    }
 }

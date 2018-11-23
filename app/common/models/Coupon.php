@@ -61,26 +61,6 @@ class  Coupon extends BaseModel
         'supplierids' => 'json',
         'storeids' => 'json',
     ];
-    public $Surplus;
-    protected $appends = ['surplus'];
-
-
-    public function getSurplusAttribute()
-    {
-        $issued = MemberCoupon::getCouponBycouponId($this->id)->count('id');
-        if ($this->total == -1) {
-            $this->Surplus = 999999;
-        } else {
-            $this->Surplus = $this->total - $issued;
-        }
-        return $this->Surplus;
-    }
-
-
-    public static function getMemberCoupon($used = 0)
-    { //todo 这张表没有used这个字段, 应该放在member_coupon表?
-        return static::uniacid()->where('used', $used);
-    }
 
     public function hasManyMemberCoupon()
     {

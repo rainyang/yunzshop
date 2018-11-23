@@ -27,7 +27,7 @@ class Member extends \app\common\models\Member
     static $current;
 
     /**
-     * @return mixed
+     * @return self
      * @throws AppException
      */
     public static function current()
@@ -72,6 +72,6 @@ class Member extends \app\common\models\Member
 
     public function memberCarts()
     {
-        return $this->hasMany(app('OrderManager')->make('MemberCart'), 'member_id', 'uid');
+        return $this->hasMany(app('OrderManager')->make('MemberCart'), 'member_id', 'uid')->with('member');
     }
 }

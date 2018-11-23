@@ -13,6 +13,7 @@ use app\common\models\order\OrderCoupon;
 use app\common\models\order\OrderDeduction;
 use app\common\models\order\OrderDiscount;
 use app\common\modules\order\OrderOperationsCollector;
+use app\common\modules\trade\models\Trade;
 use app\frontend\models\MemberCart;
 use app\frontend\models\OrderAddress;
 use app\frontend\modules\dispatch\models\PreOrderAddress;
@@ -80,6 +81,9 @@ class OrderManager extends Container
         $this->bind('OrderAddress', function ($orderManager, $attributes) {
             return new OrderAddress($attributes);
         });
+        $this->bind(Trade::class, function ($orderManager, $attributes) {
+            return new Trade($attributes);
 
+        });
     }
 }

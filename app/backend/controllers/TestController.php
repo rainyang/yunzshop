@@ -21,6 +21,9 @@ use app\common\models\Income;
 use app\common\models\Member;
 use app\common\models\member\ChildrenOfMember;
 use app\common\models\member\ParentOfMember;
+use app\common\models\Order;
+use app\common\models\PayRequestDataLog;
+use app\common\models\PayResponseDataLog;
 use app\common\services\member\MemberRelation;
 use app\common\services\MessageService;
 use app\frontend\modules\member\models\SubMemberModel;
@@ -45,7 +48,12 @@ class TestController extends BaseController
      */
     public function index()
     {
-        dd((array)'ab');
+        dd(Order::find(20100));
+        $a = PayRequestDataLog::where('out_order_no','PN20181123081037RR')->first();
+        dump($a);
+        $b = PayResponseDataLog::where('out_order_no','PN20181123081037RR')->first();
+        dump($b);
+
     }
 
     public function op_database()

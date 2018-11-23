@@ -5,26 +5,41 @@
  * Date: 2018/11/22
  * Time: 11:58 AM
  */
+
 namespace app\common\modules\memberCart;
 
+use app\common\exceptions\AppException;
+use app\common\models\BaseModel;
+use app\common\models\Member;
 use app\common\models\MemberCart;
+use app\common\modules\trade\models\Trade;
 use app\framework\Database\Eloquent\Collection;
+use app\frontend\modules\order\models\PreOrder;
+use app\frontend\modules\order\services\OrderService;
 
 class MemberCartCollection extends Collection
 {
     /**
+     * @var [MemberCart]
+     */
+    protected $items;
+
+    /**
      * 验证商品有效性
+     * @throws AppException
      */
     public function validate()
     {
-
+        if ($this->unique('member_id')->count() != 1) {
+            throw new AppException("操作无效,购物车记录属于{$this->unique('member_id')->count()}个用户");
+        }
         $this->unique('goods_id')->each(function (MemberCart $memberCart) {
 
             if (isset($memberCart->goods->hasOnePrivilege)) {
                 // 合并规格商品数量,并校验
                 $total = $this->where('goods_id', $memberCart->goods_id)->sum('total');
 
-                $memberCart->goods->hasOnePrivilege->validate($total);
+                $memberCart->goods->hasOnePrivilege->validate($memberCart->member, $total);
             }
         });
         $this->each(function (Membercart $memberCart) {
@@ -38,7 +53,7 @@ class MemberCartCollection extends Collection
      */
     public function loadRelations()
     {
-        $with = ['goods' => function ($query) {
+        $with = ['goods' => function (BaseModel $query) {
             $query->exclude('content,description');
         }, 'goods.hasOnePrivilege', 'goods.hasOneOptions', 'goods.hasManyGoodsDiscount', 'goods.hasOneGoodsDispatch', 'goods.hasOneSale', 'goodsOption'];
         $with = array_merge($with, config('shop-foundation.member-cart.with'));
@@ -52,10 +67,89 @@ class MemberCartCollection extends Collection
     }
 
     /**
-     * 按插件分组
+     * 将购物车集合按插件分组
+     * @return static
      */
     public function groupByPlugin()
     {
-        return $this->groupBy('goods.plugin_id');
+        $groups = $this->groupBy('goods.plugin_id');
+        $groups->map(function (MemberCartCollection $memberCartCollection) {
+            // todo 找到相应的购物车集合类 并返回
+            return $memberCartCollection;
+        });
+        return $groups;
+    }
+
+    /**
+     * 获取交易对象
+     */
+    public function getTrade()
+    {
+        $trade = app(Trade::class);
+        /**
+         * @var Trade $trade
+         */
+        $trade->init($this);
+        return $trade;
+    }
+
+    /**
+     * 根据自身创建订单,当member已经实例化时传入member避免重复查询
+     * @param Member $member
+     * @return PreOrder|bool|mixed
+     * @throws AppException
+     * @throws \Exception
+     */
+    public function getOrder(Member $member = null)
+    {
+        if ($this->isEmpty()) {
+            return false;
+        }
+        if (!isset($member)) {
+            $member = $this->getMember();
+        }
+        if ($member->uid != $this->getUid()) {
+            throw new AppException("用户({$member->uid})与购物车所属用户({$this->getUid()})不符");
+        }
+        $this->validate();
+
+
+        $orderGoodsCollection = OrderService::getOrderGoods($this);
+        /**
+         * @var PreOrder $order
+         */
+        $order = app('OrderManager')->make('PreOrder');
+        $order->init($member,$orderGoodsCollection);
+
+        return $order;
+    }
+
+    /**
+     * 所属uid
+     * @return mixed
+     */
+    public function getUid()
+    {
+        return $this->first()->member_id;
+    }
+
+    /**
+     * 所属用户对象
+     * @return Member
+     */
+    public function getMember()
+    {
+        return $this->first()->member;
+    }
+
+    /**
+     * 第一个调购物车记录
+     * @param callable|null $callback
+     * @param null $default
+     * @return MemberCart
+     */
+    public function first(callable $callback = null, $default = null)
+    {
+        return parent::first($callback, $default);
     }
 }

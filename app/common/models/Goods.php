@@ -486,12 +486,14 @@ class Goods extends BaseModel
 
         return [0=>'下架',1=>'上架'][$this->status];
     }
+
     /**
-     * 商品数据完整新验证
-     * @param int $total
+     * 商品购买验证
+     * @param Member $member
+     * @param $total
      * @throws AppException
      */
-    public function generalValidate($total)
+    public function generalValidate(Member $member,$total)
     {
         if (empty($this->status)) {
             throw new AppException('(ID:' . $this->id . ')商品已下架');
@@ -503,7 +505,7 @@ class Goods extends BaseModel
 //            throw new AppException('(ID:' . $this->id . ')商品配送信息数据已损坏');
 //        }
         if (isset($this->hasOnePrivilege)) {
-            $this->hasOnePrivilege->validate($total);
+            $this->hasOnePrivilege->validate($member,$total);
         }
     }
 }

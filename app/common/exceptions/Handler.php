@@ -4,6 +4,7 @@ namespace app\common\exceptions;
 
 use app\common\traits\JsonTrait;
 use app\common\traits\MessageTrait;
+use app\framework\Support\Facades\Log;
 use EasyWeChat\Core\Exceptions\HttpException;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
@@ -42,11 +43,15 @@ class Handler extends ExceptionHandler
     public function report(Exception $exception)
     {
         // 记录错误日志
-        if(!app()->runningInConsole()){
-            \Log::error('http parameters',request()->input());
-        }
+        try {
+            if (!app()->runningInConsole()) {
+                Log::error('http parameters', request()->input());
+            }
 
-        \Log::error($exception);
+            Log::error($exception);
+        }catch (Exception $e){
+            dd($e);
+        }
         // 生产环境发送邮件
 //        if(app()->environment() == 'production'){
 //            Mail::to('shenyang@yunzshop.com')->send(new \App\Mail\ErrorReport('错误',$exception));

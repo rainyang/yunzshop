@@ -54,7 +54,6 @@ class ShopProvider extends ServiceProvider
         $this->app->singleton('GoodsManager',function(){
             return new GoodsManager();
         });
-
         $this->app->singleton('OrderManager',function(){
             return new OrderManager();
         });
@@ -65,14 +64,6 @@ class ShopProvider extends ServiceProvider
         $this->app->singleton('express', function (){
             return new KDN(Setting::get('shop.express_info.KDN.eBusinessID'),Setting::get('shop.express_info.KDN.appKey'),config('app.express.KDN.reqURL'));
         });
-        $this->app->singleton('Log.trace', function (){
-            return new TraceLog();
-        });
-        $this->app->singleton('Log.debug', function (){
-            return new DebugLog();
-        });
-        $this->app->singleton('Log.error', function (){
-            return new ErrorLog();
-        });
+
     }
 }

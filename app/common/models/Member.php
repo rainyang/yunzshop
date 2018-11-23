@@ -4,9 +4,12 @@ namespace app\common\models;
 
 use app\backend\models\BackendModel;
 use app\common\events\member\BecomeAgent;
+use app\common\modules\memberCart\MemberCartCollection;
+use app\framework\Database\Eloquent\Collection;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\MemberWechatModel;
 use app\frontend\repositories\MemberAddressRepository;
+use Carbon\Carbon;
 use Yunshop\AreaDividend\models\AreaDividendAgent;
 use Yunshop\Commission\models\Agents;
 use Yunshop\Gold\frontend\services\MemberCenterService;
@@ -30,7 +33,59 @@ use Yunshop\TeamDividend\models\TeamDividendAgencyModel;
  * Class Member
  * @package app\common\models
  * @property int uid
+ * @property int uniacid
+ * @property string mobile
+ * @property string email
+ * @property string password
+ * @property string salt
+ * @property int groupid
  * @property float credit1
+ * @property float credit2
+ * @property float credit3
+ * @property float credit4
+ * @property float credit5
+ * @property float credit6
+ * @property Carbon createtime
+ * @property string realname
+ * @property string nickname
+ * @property string avatar
+ * @property string qq
+ * @property int vip
+ * @property int gender
+ * @property int birthyear
+ * @property int birthmonth
+ * @property int birthday
+ * @property string constellation
+ * @property string zodiac
+ * @property string telephone
+ * @property string idcard
+ * @property string studentid
+ * @property string grade
+ * @property string address
+ * @property string zipcode
+ * @property string nationality
+ * @property string resideprovince
+ * @property string residecity
+ * @property string residedist
+ * @property string graduateschool
+ * @property string company
+ * @property string education
+ * @property string occupation
+ * @property string position
+ * @property string revenue
+ * @property string affectivestatus
+ * @property string lookingfor
+ * @property string bloodtype
+ * @property string height
+ * @property string weight
+ * @property string alipay
+ * @property string msn
+ * @property string taobao
+ * @property string site
+ * @property string bio
+ * @property string interest
+ * @property string pay_password
+ * @property Collection memberCarts
  * @property \app\backend\modules\member\models\MemberShopInfo yzMember
  */
 class Member extends BackendModel
@@ -391,8 +446,8 @@ class Member extends BackendModel
     {
         $model = MemberShopInfo::getMemberShopInfo($member_id);
         $code_mid = self::getMemberIdForInviteCode();
-        $mid   = !is_null($code_mid) ? $code_mid : self::getMid();
-        $mid   = !is_null($upperMemberId) ? $upperMemberId : $mid;
+        $mid = !is_null($code_mid) ? $code_mid : self::getMid();
+        $mid = !is_null($upperMemberId) ? $upperMemberId : $mid;
 
         event(new BecomeAgent($mid, $model));
     }
@@ -762,10 +817,30 @@ class Member extends BackendModel
     }
 
     /**
+     * 购物车记录
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function memberCarts()
+    {
+        return $this->hasMany(MemberCart::class,'uid','member_id');
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function orderGoods()
     {
         return $this->hasMany(OrderGoods::class, 'uid', 'uid');
+    }
+
+    /**
+     * @return MemberCartCollection|mixed
+     */
+    public function getMemberCartCollection()
+    {
+        if (!isset($this->memberCartCollection)) {
+            $this->memberCartCollection = new MemberCartCollection($this->memberCarts->all());
+        }
+        return $this->memberCartCollection;
     }
 }
