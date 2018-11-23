@@ -71,15 +71,14 @@ class AdvertisementController extends BaseController
 
         $requestData = \Yunshop::request()->adv;
         if ($requestData) {
+
             //数据保存
             $adv_model->setRawAttributes($requestData);
-
             $validator = $adv_model->validator($adv_model->getAttributes());
 
             if ($validator->fails()) {
                 $this->error($validator->messages());
             } else {
-                $adv_model->status = 0;
                 if ($adv_model->save()) {
                     //显示信息并跳转
                     return $this->message('修改成功', Url::absoluteWeb('finance.advertisement.index'));
