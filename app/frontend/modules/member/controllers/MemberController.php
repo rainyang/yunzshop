@@ -565,11 +565,18 @@ class MemberController extends ApiController
                 return $this->errorJson($check_code['json']);
             }
 
-
-            if (!empty($close_invitecode)) {
+            if (empty($close_invitecode)) {
                 $invitecode = MemberService::inviteCode();
+
                 if ($invitecode['status'] != 1) {
                     return $this->errorJson($invitecode['json']);
+                }
+
+                //邀请码-关系
+                $parent_id = \app\common\models\Member::getMemberIdForInviteCode();
+
+                if (!is_null($parent_id)) {
+                    MemberShopInfo::change_relation($uid, $parent_id);
                 }
             }
 
@@ -619,12 +626,6 @@ class MemberController extends ApiController
                 $member_model->password = md5($password . $salt);
 
                 if ($member_model->save()) {
-                    //邀请码
-                    $parent_id = \app\common\models\Member::getMemberIdForInviteCode();
-                    if (!is_null($parent_id)) {
-                        MemberShopInfo::change_relation($uid, $parent_id);
-                    }
-
                     if (Cache::has($member_model->uid . '_member_info')) {
                         Cache::forget($member_model->uid . '_member_info');
                     }
