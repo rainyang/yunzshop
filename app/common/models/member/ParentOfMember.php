@@ -150,10 +150,8 @@ class ParentOfMember extends BaseModel
 
     public function hasRelationOfParent($uid, $depth)
     {
-        return self::uniacid()
-            ->where('member_id', $uid)
-            ->where('level', $depth)
-            ->get();
+        return $this->getRelationOfParent($uid, $depth);
+
     }
 
     public function getParentsOfMember($uid)
@@ -214,5 +212,13 @@ class ParentOfMember extends BaseModel
         }
 
         $this->CreateData($attr);
+    }
+
+    public function getRelationOfParent($uid, $depth)
+    {
+        return self::uniacid()
+            ->where('member_id', $uid)
+            ->where('level', $depth)
+            ->get();
     }
 }

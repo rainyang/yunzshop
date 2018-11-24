@@ -47,6 +47,11 @@ class ChildrenOfMember extends BaseModel
             ->get();
     }
 
+    public function hasRelationOfChild($uid)
+    {
+        return $this->getChildOfMember($uid);
+    }
+
     public function getChildOfMember($uid)
     {
         return self::uniacid()

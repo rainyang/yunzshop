@@ -308,11 +308,12 @@ class TestController extends BaseController
             [24132, 66],
             [91, 84],
             [9231, 84],
-            [9571, 84]
+            [9571, 84],
+            [89, 65]
         ];
 
         $a = [
-            [37, 0]
+            [65, 0]
         ];
 
         foreach ($a as $item) {

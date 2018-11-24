@@ -12,6 +12,7 @@ namespace app\common\services\member;
 use app\backend\modules\member\models\Member;
 use app\backend\modules\member\models\MemberShopInfo;
 use app\common\events\member\MemberRelationEvent;
+use app\common\exceptions\ShopException;
 use app\common\models\member\ChildrenOfMember;
 use app\common\models\member\ParentOfMember;
 use Illuminate\Support\Facades\DB;
@@ -125,7 +126,11 @@ class MemberRelation
      */
     public function reAddMemberOfRelation($uid, $n_parent_id)
     {
-        DB::transaction(function() use ($uid) {
+        foreach ($this->map_relaton as $reData) {
+            $this->addMemberOfRelation($reData[1], $reData[0]);
+        }
+
+        /*DB::transaction(function() use ($uid) {
             //$reData = array_shift($this->map_relaton);
 
             $this->map_parent_total = count($this->map_parent);
@@ -161,7 +166,7 @@ class MemberRelation
 
             $this->child->CreateData($child_attr);
             $this->parent->CreateData($parent_attr);
-        });
+        });*/
     }
 
     /**
@@ -191,30 +196,39 @@ class MemberRelation
 
     public function hasRelationOfChild($uid)
     {
-        return $this->child->getChildOfMember($uid);
+        return $this->child->hasRelationOfChild($uid);
     }
 
     public function build($member_id, $parent_id)
     {
         $parent_relation = $this->hasRelationOfParent($member_id, 1);
-        $child_relation = $this->hasRelationOfChild($member_id);
-
-        $this->map_relaton[] = [$parent_id, $member_id];
 
         if ($parent_relation->isEmpty()) {
             $this->addMemberOfRelation($member_id, $parent_id);
         }
 
         if (!$parent_relation->isEmpty() && $parent_id != $parent_relation[0]->parent_id) {
+            $child_relation = $this->hasRelationOfChild($member_id);
+            $this->map_relaton[] = [$parent_id, $member_id];
+
             foreach ($child_relation as $rows) {
-                //  dd($rows->child);
                 $ids[] = $rows['child_id'];
             }
 
             $memberInfo = MemberShopInfo::getParentOfMember($ids);
 
-            foreach ($memberInfo as $val) {
-                $this->map_relaton[] = [$val['parent_id'], $val['member_id']];
+            if (count($ids) != count($memberInfo)) {
+               throw new ShopException('关系链修改-数据异常');
+            }
+
+            foreach ($ids as $rows) {
+                foreach ($memberInfo as $val) {
+                    if ($rows == $val['member_id']) {
+                        $this->map_relaton[] = [$val['parent_id'], $val['member_id']];
+
+                        break;
+                    }
+                }
             }
 
             //修改上级非总店
