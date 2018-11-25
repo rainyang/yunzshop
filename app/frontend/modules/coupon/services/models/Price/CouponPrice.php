@@ -52,9 +52,11 @@ abstract class CouponPrice
     public function valid()
     {
         // 商品价格中未使用优惠的金额 不小于 满减额度
-        if (!float_lesser($this->getOrderGoodsCollectionUnusedEnoughMoney(), $this->dbCoupon->enough)) {
+        $unusedEnoughMoney = $this->getOrderGoodsCollectionUnusedEnoughMoney();
+        if (!float_lesser($unusedEnoughMoney, $this->dbCoupon->enough)) {
             return true;
         }
+        debug_log()->coupon("优惠券{$this->dbCoupon->id}","不满足额度({$unusedEnoughMoney}<{$this->dbCoupon->enough})");
         return false;
     }
 
@@ -64,10 +66,13 @@ abstract class CouponPrice
      */
     public function isOptional()
     {
+        $orderGoodsCollectionPrice = $this->getOrderGoodsCollectionPrice();
         // 商品价格 不小于 满减额度
-        if (!float_lesser($this->getOrderGoodsCollectionPrice(), $this->dbCoupon->enough)) {
+        if (!float_lesser($orderGoodsCollectionPrice, $this->dbCoupon->enough)) {
             return true;
         }
+        debug_log()->coupon("优惠券{$this->dbCoupon->id}","不满足额度({$orderGoodsCollectionPrice}<{$this->dbCoupon->enough})");
+
         return false;
     }
 

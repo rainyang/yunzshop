@@ -19,11 +19,15 @@ class DateTimeRange extends TimeLimit
         }
         if($this->dbCoupon->time_start->greaterThan(Carbon::now())){
             //未开始
+            debug_log()->coupon("优惠券{$this->dbCoupon->id}",'未开始:'.$this->dbCoupon->time_start);
+
             return false;
         }
 
         if($this->dbCoupon->time_end->lessThan(Carbon::now())){
             //已结束
+            debug_log()->coupon("优惠券{$this->dbCoupon->id}",'已结束:'.$this->dbCoupon->time_end);
+
             return false;
         }
         return true;
