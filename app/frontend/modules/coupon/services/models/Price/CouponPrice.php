@@ -56,7 +56,7 @@ abstract class CouponPrice
         if (!float_lesser($unusedEnoughMoney, $this->dbCoupon->enough)) {
             return true;
         }
-        debug_log()->coupon("优惠券{$this->dbCoupon->id}","不满足额度({$unusedEnoughMoney}<{$this->dbCoupon->enough})");
+        trace_log()->coupon("优惠券{$this->dbCoupon->id}","不满足额度({$unusedEnoughMoney}<{$this->dbCoupon->enough})");
         return false;
     }
 
@@ -71,7 +71,7 @@ abstract class CouponPrice
         if (!float_lesser($orderGoodsCollectionPrice, $this->dbCoupon->enough)) {
             return true;
         }
-        debug_log()->coupon("优惠券{$this->dbCoupon->id}","不满足额度({$orderGoodsCollectionPrice}<{$this->dbCoupon->enough})");
+        trace_log()->coupon("优惠券{$this->dbCoupon->id}","不满足额度({$orderGoodsCollectionPrice}<{$this->dbCoupon->enough})");
 
         return false;
     }
