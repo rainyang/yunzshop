@@ -512,7 +512,35 @@ class MemberController extends BaseController
 
     public function agentExport()
     {
-        
+        $file_name = date('Ymdhis', time()) . '会员下级导出';
+        $export_data = ['ID', '昵称', '真实姓名', '电话'];
+        $member_id = request()->member_id;
+        $child = MemberParent::where('parent_id', $member_id)->get();
+        foreach ($child as $key => $item) {
+            $member = $item->haoOneChild;
+            $export_data[$key + 1] = [
+                $member->uid,
+                $member->nickname,
+                $member->realname,
+                $member->mobile,
+            ];
+        }
+        \Excel::create($file_name, function ($excel) use ($export_data) {
+            // Set the title
+            $excel->setTitle('Office 2005 XLSX Document');
+
+            // Chain the setters
+            $excel->setCreator('芸众商城')
+                ->setLastModifiedBy("芸众商城")
+                ->setSubject("Office 2005 XLSX Test Document")
+                ->setDescription("Test document for Office 2005 XLSX, generated using PHP classes.")
+                ->setKeywords("office 2005 openxml php")
+                ->setCategory("report file");
+
+            $excel->sheet('info', function ($sheet) use ($export_data) {
+                $sheet->rows($export_data);
+            });
+        })->export('xls');
     }
 
     /**
@@ -547,7 +575,37 @@ class MemberController extends BaseController
      */
     public function agentParentExport()
     {
+        $file_name = date('Ymdhis', time()) . '会员下级导出';
+        $export_data = [];
+        $member_id = request()->member_id;
 
+        $child = MemberParent::where('member_id', $member_id)->get();
+        foreach ($child as $key => $item) {
+            $member = $item->haoOneMember;
+            $export_data[$key + 1] = [
+                $member->uid,
+                $member->nickname,
+                $member->realname,
+                $member->mobile,
+            ];
+        }
+
+        \Excel::create($file_name, function ($excel) use ($export_data) {
+            // Set the title
+            $excel->setTitle('Office 2005 XLSX Document');
+
+            // Chain the setters
+            $excel->setCreator('芸众商城')
+                ->setLastModifiedBy("芸众商城")
+                ->setSubject("Office 2005 XLSX Test Document")
+                ->setDescription("Test document for Office 2005 XLSX, generated using PHP classes.")
+                ->setKeywords("office 2005 openxml php")
+                ->setCategory("report file");
+
+            $excel->sheet('info', function ($sheet) use ($export_data) {
+                $sheet->rows($export_data);
+            });
+        })->export('xls');
     }
 
     /**

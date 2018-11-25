@@ -78,6 +78,11 @@ class MemberParent extends \app\common\models\member\MemberParent
         return $this->hasOne('app\common\models\Member', 'uid', 'parent_id');
     }
 
+    public function hasOneChild()
+    {
+        return $this->hasOne('app\common\models\Member', 'uid', 'member_id');
+    }
+
     public function hasOneFans()
     {
         return $this->hasOne('app\common\models\McMappingFans', 'uid', 'parent_id');
