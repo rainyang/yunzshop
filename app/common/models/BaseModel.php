@@ -46,6 +46,7 @@ use app\framework\Database\Eloquent\Collection;
  * @method static self orderBy(...$field)
  * @method static self whereRaw(...$field)
  * @method static self getModel()
+ * @method static self groupBy(...$field)
  */
 class BaseModel extends Model
 {
