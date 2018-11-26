@@ -31,9 +31,8 @@ class Trade extends BaseModel
 
         $this->setRelation('order_data', $this->getOrderCollection($memberCartCollection));
         $this->setRelation('discount', $this->getDiscount());
+        $this->setRelation('dispatch', $this->getDispatch());
         $this->initAttribute();
-
-//        $data['dispatch'] = $orders[0]['dispatch'];
 
     }
 
@@ -68,9 +67,9 @@ class Trade extends BaseModel
         // 按插件分组
         $groups = $memberCartCollection->groupByPlugin();
         // 分组下单
-        $orderCollection = $groups->map(function (MemberCartCollection $memberCartCollection) {
+        $orderCollection = $groups->map(function (MemberCartCollection $memberCartCollection,$plugin_id) {
 
-            return $memberCartCollection->getOrder();
+            return $memberCartCollection->getOrder($plugin_id);
         });
         return new OrderCollection($orderCollection->all());
     }
@@ -83,5 +82,10 @@ class Trade extends BaseModel
         $tradeDiscount = new TradeDiscount();
         $tradeDiscount->init($this);
         return $tradeDiscount;
+    }
+    private function getDispatch(){
+        $tradeDispatch = new TradeDispatch();
+        $tradeDispatch->init($this);
+        return $tradeDispatch;
     }
 }

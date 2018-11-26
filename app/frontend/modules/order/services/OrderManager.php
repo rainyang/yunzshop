@@ -24,6 +24,7 @@ use Illuminate\Container\Container;
 class OrderManager extends Container
 {
     private $setting;
+
     public function __construct()
     {
         $this->bindModels();
@@ -39,7 +40,7 @@ class OrderManager extends Container
 
     public function setting($key = null)
     {
-        return array_get($this->setting,$key);
+        return array_get($this->setting, $key);
     }
 
     private function bindModels()
@@ -85,5 +86,10 @@ class OrderManager extends Container
             return new Trade($attributes);
 
         });
+    }
+
+    public function getPreOrder()
+    {
+
     }
 }

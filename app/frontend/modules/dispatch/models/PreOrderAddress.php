@@ -21,7 +21,6 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 
 class PreOrderAddress extends OrderAddress
 {
-    use ValidatesRequests;
 
     /**
      * @var PreOrder
@@ -95,11 +94,11 @@ class PreOrderAddress extends OrderAddress
      */
     public function getMemberAddress()
     {
-        $address = json_decode(request()->capture()->input('address', '[]'), true);
+        $address = json_decode($this->order->getRequest()->input('address', '[]'), true);
 
         if (count($address)) {
             //$request->input('address');
-            $this->validate([
+            $this->validate($this->order->getRequest(),[
                 'address.address' => 'required|string',
                 'address.mobile' => 'required|string',
                 'address.username' => 'required|string',
@@ -114,23 +113,5 @@ class PreOrderAddress extends OrderAddress
         }
 
         return $this->order->belongsToMember->defaultAddress;
-    }
-
-    /**
-     * 校验参数
-     * @param $request
-     * @param array $rules
-     * @param array $messages
-     * @param array $customAttributes
-     * @throws AppException
-     */
-    private function validate($request, array $rules, array $messages = [], array $customAttributes = [])
-    {
-
-        $validator = $this->getValidationFactory()->make($request, $rules, $messages, $customAttributes);
-        //$validator->errors();
-        if ($validator->fails()) {
-            throw new AppException($validator->errors()->first());
-        }
     }
 }

@@ -74,7 +74,6 @@ class MemberCartCollection extends Collection
     {
         $groups = $this->groupBy('goods.plugin_id');
         $groups->map(function (MemberCartCollection $memberCartCollection) {
-            // todo 找到相应的购物车集合类 并返回
             return $memberCartCollection;
         });
         return $groups;
@@ -94,13 +93,14 @@ class MemberCartCollection extends Collection
     }
 
     /**
-     * 根据自身创建订单,当member已经实例化时传入member避免重复查询
-     * @param Member $member
-     * @return PreOrder|bool|mixed
+     * 根据自身创建plugin_id对应类型的订单,当member已经实例化时传入member避免重复查询
+     * @param Member|null $member
+     * @param int $plugin_id
+     * @return PreOrder|bool
      * @throws AppException
      * @throws \Exception
      */
-    public function getOrder(Member $member = null)
+    public function getOrder($plugin_id = 0, Member $member = null)
     {
         if ($this->isEmpty()) {
             return false;
@@ -118,8 +118,8 @@ class MemberCartCollection extends Collection
         /**
          * @var PreOrder $order
          */
-        $order = app('OrderManager')->make('PreOrder');
-        $order->init($member,$orderGoodsCollection);
+        $order = app('OrderManager')->getPreOrder($plugin_id);
+        $order->init($member, $orderGoodsCollection);
 
         return $order;
     }

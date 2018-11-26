@@ -8,12 +8,10 @@
 
 namespace app\frontend\modules\coupon\listeners;
 
-use app\common\events\discount\OnDiscountInfoDisplayEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\facades\Setting;
 use app\common\services\finance\PointService;
-use app\frontend\modules\coupon\services\models\Coupon;
 use app\frontend\modules\coupon\services\CouponService;
 
 class CouponDiscount

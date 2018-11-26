@@ -32,6 +32,7 @@ class MemberCoupon extends BaseModel
 
     protected $appends = ['time_start', 'time_end'];
     public $selected;
+    protected $hidden = ['uniacid','get_type','send_uid','order_sn','back','back_time','deleted_at'];
 
     /**
      * 定义字段名

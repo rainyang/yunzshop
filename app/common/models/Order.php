@@ -9,7 +9,6 @@
 namespace app\common\models;
 
 
-use app\common\models\order\Address as OrderAddress;
 use app\common\events\order\AfterOrderCreatedImmediatelyEvent;
 use app\common\events\order\AfterOrderPaidImmediatelyEvent;
 use app\common\events\order\AfterOrderReceivedImmediatelyEvent;
@@ -73,13 +72,14 @@ use app\backend\modules\order\observers\OrderObserver;
  * @property OrderDiscount discount
  * @property Collection orderPays
  * @property OrderPay hasOneOrderPay
- * @property OrderAddress address
  * @property PayType hasOnePayType
  * @property RefundApply hasOneRefundApply
  * @property Carbon finish_time
  * @property OrderCreatedJob orderCreatedJob
  * @property OrderPaidJob orderPaidJob
  * @property OrderReceivedJob orderReceivedJob
+ * @property Address address
+ * @property Address orderAddress
  * @method static self isPlugin()
  * @method static self orders(array $searchParam)
  * @method static self cancelled()
@@ -274,7 +274,7 @@ class Order extends BaseModel
 
     /**
      * 关联模型 1对多:订单信息
-     * @return \Illuminate\Database\E请填写正确的收货信息请填写正确的收货信息loquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function coupons()
     {
@@ -377,7 +377,10 @@ class Order extends BaseModel
     {
         return $this->hasOne(OrderAddress::class, 'order_id', 'id');
     }
-
+    public function orderAddress()
+    {
+        return $this->hasOne(OrderAddress::class, 'order_id', 'id');
+    }
     /**
      * 关联模型 1对1:订单支付信息
      * @return \Illuminate\Database\Eloquent\Relations\HasOne

@@ -10,12 +10,14 @@ namespace app\common\models;
 
 
 use app\backend\modules\goods\observers\SettingObserver;
+use app\common\exceptions\AppException;
 use app\common\exceptions\ShopException;
 use app\common\traits\ValidatorTrait;
 use app\framework\Database\Eloquent\Builder;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use app\framework\Database\Eloquent\Collection;
+use Illuminate\Foundation\Validation\ValidatesRequests;
 
 /**
  * Class BaseModel
@@ -53,6 +55,8 @@ use app\framework\Database\Eloquent\Collection;
 class BaseModel extends Model
 {
     use ValidatorTrait;
+    use ValidatesRequests;
+
     protected $search_fields;
     static protected $needLog = false;
 
@@ -404,5 +408,22 @@ class BaseModel extends Model
             return $value;
         }, $attributes, array_keys($attributes)));
         return $attributes;
+    }
+    /**
+     * 校验参数
+     * @param $request
+     * @param array $rules
+     * @param array $messages
+     * @param array $customAttributes
+     * @throws AppException
+     */
+    public function validate($request, array $rules, array $messages = [], array $customAttributes = [])
+    {
+        $validator = $this->getValidationFactory()->make($request, $rules, $messages, $customAttributes);
+        //$validator->errors();
+
+        if ($validator->fails()) {
+            throw new AppException($validator->errors()->first());
+        }
     }
 }

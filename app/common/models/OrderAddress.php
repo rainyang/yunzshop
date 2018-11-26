@@ -9,8 +9,6 @@
 namespace app\common\models;
 
 
-use app\common\exceptions\ShopException;
-
 /**
  * Class OrderAddress
  * @package app\common\models
