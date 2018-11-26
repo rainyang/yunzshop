@@ -9,6 +9,7 @@ use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class Handler extends ExceptionHandler
 {
@@ -21,7 +22,7 @@ class Handler extends ExceptionHandler
      */
     protected $dontReport = [
         \Illuminate\Auth\AuthenticationException::class,
-        AppException::class,
+        ShopException::class,
         \Illuminate\Auth\Access\AuthorizationException::class,
         \Symfony\Component\HttpKernel\Exception\HttpException::class,
         \Illuminate\Database\Eloquent\ModelNotFoundException::class,
@@ -35,12 +36,21 @@ class Handler extends ExceptionHandler
      * Report or log an exception.
      *
      * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
-     *
-     * @param  \Exception $exception
-     * @return void
+     * @param Exception $exception
+     * @throws Exception
      */
     public function report(Exception $exception)
     {
+        // 记录错误日志
+        if(!app()->runningInConsole()){
+            \Log::error('http parameters',request()->input());
+        }
+
+        \Log::error($exception);
+        // 生产环境发送邮件
+//        if(app()->environment() == 'production'){
+//            Mail::to('shenyang@yunzshop.com')->send(new \App\Mail\ErrorReport('错误',$exception));
+//        }
         parent::report($exception);
     }
 
@@ -77,21 +87,15 @@ class Handler extends ExceptionHandler
         }
         //api异常
         if (\YunShop::isApi()) {
-            $this->logError($exception);
             return $this->errorJson($exception->getMessage());
         }
         //默认异常
         if ($this->isHttpException($exception)) {
-            $this->logError($exception);
             return $this->renderHttpException($exception);
         }
         return parent::render($request, $exception);
     }
-    private function logError($exception){
-        \Log::error('http exception',json_decode(json_encode($exception),true));
-        \Log::info('http parameters',json_encode(request()->input(),256));
-        //发送邮件
-    }
+
     /**
      * Convert an authentication exception into an unauthenticated response.
      *
@@ -111,7 +115,6 @@ class Handler extends ExceptionHandler
     protected function renderShopException(ShopException $exception)
     {
         if (\Yunshop::isApi() || request()->ajax()) {
-            \Log::error('api exception', $exception);
             return $this->errorJson($exception->getMessage(), ['code' => $exception->getCode()]);
         }
         $redirect = $exception->redirect ?: '';

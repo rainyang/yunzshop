@@ -8,7 +8,7 @@
 
 namespace app\framework\Log;
 
-class Log
+class TraceLog
 {
     private $enable = false;
 
