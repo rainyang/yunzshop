@@ -9,6 +9,7 @@
 namespace app\common\models;
 
 
+use app\common\models\order\Address as OrderAddress;
 use app\common\events\order\AfterOrderCreatedImmediatelyEvent;
 use app\common\events\order\AfterOrderPaidImmediatelyEvent;
 use app\common\events\order\AfterOrderReceivedImmediatelyEvent;

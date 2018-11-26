@@ -427,6 +427,7 @@ class MemberRelation extends BaseModel
                         if ($become_check == 0) {
                             $member->status = 2;
                             $member->agent_time = time();
+                            $member->apply_time = time();
 
                             if ($member->inviter == 0) {
                                 $member->inviter = 1;
@@ -434,6 +435,8 @@ class MemberRelation extends BaseModel
                             }
                         } else {
                             $member->status = 1;
+                            $member->agent_time = time();
+                            $member->apply_time = time();
                         }
 
                         if ($member->save()) {
@@ -463,6 +466,7 @@ class MemberRelation extends BaseModel
                         if ($become_check == 0) {
                             $member->status = 2;
                             $member->agent_time = time();
+                            $member->apply_time = time();
 
                             if ($member->inviter == 0) {
                                 $member->inviter = 1;
@@ -470,6 +474,8 @@ class MemberRelation extends BaseModel
                             }
                         } else {
                             $member->status = 1;
+                            $member->agent_time = time();
+                            $member->apply_time = time();
                         }
 
                         if ($member->save()) {
@@ -489,6 +495,7 @@ class MemberRelation extends BaseModel
                         if ($become_check == 0) {
                             $member->status = 2;
                             $member->agent_time = time();
+                            $member->apply_time = time();
 
                             if ($member->inviter == 0) {
                                 $member->inviter = 1;
@@ -496,6 +503,8 @@ class MemberRelation extends BaseModel
                             }
                         } else {
                             $member->status = 1;
+                            $member->agent_time = time();
+                            $member->apply_time = time();
                         }
 
                         if ($member->save()) {
@@ -519,6 +528,7 @@ class MemberRelation extends BaseModel
                         if ($become_check == 0) {
                             $member->status = 2;
                             $member->agent_time = time();
+                            $member->apply_time = time();
 
                             if ($member->inviter == 0) {
                                 $member->inviter = 1;
@@ -526,6 +536,8 @@ class MemberRelation extends BaseModel
                             }
                         } else {
                             $member->status = 1;
+                            $member->agent_time = time();
+                            $member->apply_time = time();
                         }
 
                         if ($member->save()) {
@@ -596,6 +608,7 @@ class MemberRelation extends BaseModel
                 if ($become_check == 0) {
                     $member->status = 2;
                     $member->agent_time = time();
+                    $member->apply_time = time();
 
                     if ($member->inviter == 0) {
                         $member->inviter = 1;
@@ -604,6 +617,7 @@ class MemberRelation extends BaseModel
                 } else {
                     $member->status = 1;
                     $member->agent_time = time();
+                    $member->apply_time = time();
                 }
 
                 if ($member->save()) {
@@ -641,6 +655,11 @@ class MemberRelation extends BaseModel
 
         if (!$isagent && $set->become_order == 1) {
             $become_term = unserialize($set->become_term);
+            //如果设置为空时添加默认值，防止程序出错
+            if (empty($set->become) && !empty($become_term)) {
+                $set->become = 2;
+            }
+
             //或
             if ($set->become == 2) {
                 //判断商品
@@ -653,6 +672,7 @@ class MemberRelation extends BaseModel
                         if ($become_check == 0) {
                             $member->status = 2;
                             $member->agent_time = time();
+                            $member->apply_time = time();
 
                             if ($member->inviter == 0) {
                                 $member->inviter = 1;
@@ -661,6 +681,7 @@ class MemberRelation extends BaseModel
                         } else {
                             $member->status = 1;
                             $member->agent_time = time();
+                            $member->apply_time = time();
                         }
 
                         if ($member->save()) {
@@ -690,6 +711,7 @@ class MemberRelation extends BaseModel
                         if ($become_check == 0) {
                             $member->status = 2;
                             $member->agent_time = time();
+                            $member->apply_time = time();
 
                             if ($member->inviter == 0) {
                                 $member->inviter = 1;
@@ -698,6 +720,7 @@ class MemberRelation extends BaseModel
                         } else {
                             $member->status = 1;
                             $member->agent_time = time();
+                            $member->apply_time = time();
                         }
 
                         if ($member->save()) {
@@ -717,6 +740,7 @@ class MemberRelation extends BaseModel
                         if ($become_check == 0) {
                             $member->status = 2;
                             $member->agent_time = time();
+                            $member->apply_time = time();
 
                             if ($member->inviter == 0) {
                                 $member->inviter = 1;
@@ -725,6 +749,7 @@ class MemberRelation extends BaseModel
                         } else {
                             $member->status = 1;
                             $member->agent_time = time();
+                            $member->apply_time = time();
                         }
 
                         if ($member->save()) {
@@ -748,6 +773,7 @@ class MemberRelation extends BaseModel
                         if ($become_check == 0) {
                             $member->status = 2;
                             $member->agent_time = time();
+                            $member->apply_time = time();
 
                             if ($member->inviter == 0) {
                                 $member->inviter = 1;
@@ -756,6 +782,7 @@ class MemberRelation extends BaseModel
                         } else {
                             $member->status = 1;
                             $member->agent_time = time();
+                            $member->apply_time = time();
                         }
 
                         if ($member->save()) {
@@ -826,6 +853,7 @@ class MemberRelation extends BaseModel
                 if ($become_check == 0) {
                     $member->status = 2;
                     $member->agent_time = time();
+                    $member->apply_time = time();
 
                     if ($member->inviter == 0) {
                         $member->inviter = 1;
@@ -833,6 +861,8 @@ class MemberRelation extends BaseModel
                     }
                 } else {
                     $member->status = 1;
+                    $member->agent_time = time();
+                    $member->apply_time = time();
                 }
 
                 if ($member->save()) {
