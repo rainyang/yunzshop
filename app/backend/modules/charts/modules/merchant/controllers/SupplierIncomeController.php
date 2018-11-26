@@ -22,6 +22,7 @@ class SupplierIncomeController extends BaseController
      */
     public function index()
     {
+        $prefix = app('db')->getTablePrefix();
         $searchTime = [];
         $search = \YunShop::request()->search;
         if ($search['is_time'] && $search['time']) {
@@ -40,7 +41,7 @@ class SupplierIncomeController extends BaseController
                 })
 
                 ->where('s.uniacid', $uniacid)
-                ->selectRaw('ims_s.id,max(username) as name, sum(if(apply_status=0,supplier_profit,0)) as un_withdraw, sum(price) as price')
+                ->selectRaw(''.$prefix.'s.id,max(username) as name, sum(if(apply_status=0,supplier_profit,0)) as un_withdraw, sum(price) as price')
                 ->groupBy('s.id')
                 ->get();
             $withdraws = DB::table('yz_supplier as s')
@@ -48,7 +49,7 @@ class SupplierIncomeController extends BaseController
                     $join->on('s.id','sw.supplier_id')->where('sw.created_at','>=' ,$searchTime[0])->where('sw.created_at','<=',$searchTime[1]);
                 })
                 ->where('s.uniacid', $uniacid)
-                ->selectRaw('ims_s.id, sum(if(ims_sw.status in (1,2),ims_sw.money,0)) as withdrawing, sum(if(ims_sw.status=3,ims_sw.money,0)) as withdraw')
+                ->selectRaw(''.$prefix.'s.id, sum(if('.$prefix.'sw.status in (1,2),'.$prefix.'sw.money,0)) as withdrawing, sum(if('.$prefix.'sw.status=3,'.$prefix.'sw.money,0)) as withdraw')
                 ->groupBy('s.id')
                 ->get();
         } else {
@@ -59,13 +60,13 @@ class SupplierIncomeController extends BaseController
                 })
 
                 ->where('s.uniacid', $uniacid)
-                ->selectRaw('ims_s.id,max(username) as name, sum(if(apply_status=0,supplier_profit,0)) as un_withdraw, sum(price) as price')
+                ->selectRaw(''.$prefix.'s.id,max(username) as name, sum(if(apply_status=0,supplier_profit,0)) as un_withdraw, sum(price) as price')
                 ->groupBy('s.id')
                 ->get();
             $withdraws = DB::table('yz_supplier as s')
                 ->leftJoin('yz_supplier_withdraw as sw','s.id','sw.supplier_id')
                 ->where('s.uniacid', $uniacid)
-                ->selectRaw('ims_s.id, sum(if(ims_sw.status in (1,2),ims_sw.money,0)) as withdrawing, sum(if(ims_sw.status=3,ims_sw.money,0)) as withdraw')
+                ->selectRaw(''.$prefix.'s.id, sum(if('.$prefix.'sw.status in (1,2),'.$prefix.'sw.money,0)) as withdrawing, sum(if('.$prefix.'sw.status=3,'.$prefix.'sw.money,0)) as withdraw')
                 ->groupBy('s.id')
                 ->get();
         }
@@ -112,6 +113,7 @@ class SupplierIncomeController extends BaseController
 
     public function export()
     {
+        $prefix = app('db')->getTablePrefix();
         $searchTime = [];
         $search = \YunShop::request()->search;
         if ($search['is_time'] && $search['time']) {
@@ -130,7 +132,7 @@ class SupplierIncomeController extends BaseController
                 })
 
                 ->where('s.uniacid', $uniacid)
-                ->selectRaw('ims_s.id,max(username) as name, sum(if(apply_status=0,supplier_profit,0)) as un_withdraw, sum(price) as price')
+                ->selectRaw(''.$prefix.'s.id,max(username) as name, sum(if(apply_status=0,supplier_profit,0)) as un_withdraw, sum(price) as price')
                 ->groupBy('s.id')
                 ->get();
             $withdraws = DB::table('yz_supplier as s')
@@ -138,7 +140,7 @@ class SupplierIncomeController extends BaseController
                     $join->on('s.id','sw.supplier_id')->where('sw.created_at','>=' ,$searchTime[0])->where('sw.created_at','<=',$searchTime[1]);
                 })
                 ->where('s.uniacid', $uniacid)
-                ->selectRaw('ims_s.id, sum(if(ims_sw.status in (1,2),ims_sw.money,0)) as withdrawing, sum(if(ims_sw.status=3,ims_sw.money,0)) as withdraw')
+                ->selectRaw(''.$prefix.'s.id, sum(if('.$prefix.'sw.status in (1,2),'.$prefix.'sw.money,0)) as withdrawing, sum(if('.$prefix.'sw.status=3,'.$prefix.'sw.money,0)) as withdraw')
                 ->groupBy('s.id')
                 ->get();
         } else {
@@ -149,13 +151,13 @@ class SupplierIncomeController extends BaseController
                 })
 
                 ->where('s.uniacid', $uniacid)
-                ->selectRaw('ims_s.id,max(username) as name, sum(if(apply_status=0,supplier_profit,0)) as un_withdraw, sum(price) as price')
+                ->selectRaw(''.$prefix.'s.id,max(username) as name, sum(if(apply_status=0,supplier_profit,0)) as un_withdraw, sum(price) as price')
                 ->groupBy('s.id')
                 ->get();
             $withdraws = DB::table('yz_supplier as s')
                 ->leftJoin('yz_supplier_withdraw as sw','s.id','sw.supplier_id')
                 ->where('s.uniacid', $uniacid)
-                ->selectRaw('ims_s.id, sum(if(ims_sw.status in (1,2),ims_sw.money,0)) as withdrawing, sum(if(ims_sw.status=3,ims_sw.money,0)) as withdraw')
+                ->selectRaw(''.$prefix.'s.id, sum(if('.$prefix.'sw.status in (1,2),'.$prefix.'sw.money,0)) as withdrawing, sum(if('.$prefix.'sw.status=3,'.$prefix.'sw.money,0)) as withdraw')
                 ->groupBy('s.id')
                 ->get();
         }
