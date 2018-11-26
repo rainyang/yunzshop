@@ -29,11 +29,7 @@ use InvalidArgumentException;
  *      // 自定义属性（可选）
  *      protected $treeNodeIdName = 'id';
  *      protected $treeNodeParentIdName = 'parent_id';
- *      protected $treeNodeDisplayName = 'name';
- *      protected $treeSpacer = '&nbsp;&nbsp;&nbsp;';
- *      protected $treeFirstIcon = '&nbsp;&nbsp;&nbsp;│ ';
- *      protected $treeMiddleIcon = '&nbsp;&nbsp;&nbsp;├─ ';
- *      protected $treeLastIcon = '&nbsp;&nbsp;&nbsp;└─ ';
+
  * /**
  *  * 获取待处理的原始节点数据
  *  *
@@ -66,11 +62,6 @@ trait MemberTreeTrait
 
     protected $treeNodeIdName = 'member_id';
     protected $treeNodeParentIdName = 'parent_id';
-    protected $treeNodeDisplayName = 'name';
-    protected $treeSpacer = '&nbsp;';
-    protected $treeFirstIcon = '&nbsp;│ ';
-    protected $treeMiddleIcon = '&nbsp;├─ ';
-    protected $treeLastIcon = '&nbsp;└─ ';
 
     public    $filter       = [];
 
@@ -85,16 +76,6 @@ trait MemberTreeTrait
     }
 
     /**
-     * 数据名称显示字段.
-     *
-     * @return string
-     */
-    protected function getTreeNodeDisplayName()
-    {
-        return property_exists($this, 'treeNodeDisplayName') ? $this->treeNodeDisplayName : 'name';
-    }
-
-    /**
      * 数据父ID名.
      *
      * @return string
@@ -103,29 +84,6 @@ trait MemberTreeTrait
     {
         return property_exists($this, 'treeNodeParentIdName') ? $this->treeNodeParentIdName
             : 'parent_id';
-    }
-
-    protected function getTreeSpacer()
-    {
-        return property_exists($this, 'treeSpacer') ? $this->treeSpacer : '   ';
-    }
-
-    protected function getTreeFirstIcon()
-    {
-        return property_exists($this, 'treeFirstIcon') ? $this->treeFirstIcon
-            : '   │ ';
-    }
-
-    protected function getTreeMiddleIcon()
-    {
-        return property_exists($this, 'treeMiddleIcon') ? $this->treeMiddleIcon
-            : '   ├─ ';
-    }
-
-    protected function getTreeLastIcon()
-    {
-        return property_exists($this, 'treeLastIcon') ? $this->treeLastIcon
-            : '   └─ ';
     }
 
     /**
@@ -202,15 +160,6 @@ trait MemberTreeTrait
             $parentList->put($subId, $data[$subId]);
         }
 
-        /*foreach ($data as $val) {
-            if ($val->{$this->getTreeNodeIdName()} == $subId && 0 == $val->{$this->getTreeNodeParentIdName()}) {
-                return $parentList;
-            }
-
-            if ($val->{$this->getTreeNodeIdName()} == $subId && $val->{$this->getTreeNodeParentIdName()} > 0) {
-                $parentList->put($val->{$this->getTreeNodeParentIdName()}, $val);
-            }
-        }*/
         return $parentList;
     }
 
@@ -244,24 +193,14 @@ trait MemberTreeTrait
 \Log::debug('------child----', $child->count());
         if ($child) {
             $nextDepth = $depth + 1;
-            $total = $child->count();
 
             foreach ($child as $val) {
-                $j = $k = '';
-                if ($number == $total) {
-                    $j .= $this->getTreeLastIcon();
-                    $k = $this->getTreeSpacer();
-                } else {
-                    $j .= $this->getTreeMiddleIcon();
-                    $k = $adds ? $this->getTreeFirstIcon() : '';
-                }
-                $val->spacer = $adds ? ($adds . $j) : '';
                 $val->depth = $depth;
                 $array->put($val->{$this->getTreeNodeIdName()}, $val);
+
                 $this->getDescendants($uniacid,
                     $val->{$this->getTreeNodeIdName()},
-                    $nextDepth,
-                    $adds . $k . $this->getTreeSpacer()
+                    $nextDepth
                 );
                 ++$number;
             }
@@ -269,62 +208,34 @@ trait MemberTreeTrait
         return $array;
     }
 
-    public function getNodeParents($uniacid, $subId, $depth = 0, $adds = '')
+    public function getNodeParents($uniacid, $subId, $depth = 0)
     {
         static $array;
+
         if (!$array instanceof ArrayAccess || $depth == 0) {
             $array = collect([]);
         }
+
         $number = 1;
         $parent = $this->getParentLevel($uniacid, $subId);
 
-        \Log::debug('------parent----', $parent->count());
+        //\Log::debug('------parent----', $parent->count());
         if ($parent) {
             $nextDepth = $depth + 1;
-            $total = $parent->count();
+
             foreach ($parent as $val) {
-                $j = $k = '';
-                if ($number == $total) {
-                    $j .= $this->getTreeLastIcon();
-                    $k = $this->getTreeSpacer();
-                } else {
-                    $j .= $this->getTreeMiddleIcon();
-                    $k = $adds ? $this->getTreeFirstIcon() : '';
-                }
-                $val->spacer = $adds ? ($adds . $j) : '';
                 $val->depth = $depth;
+
                 $array->put($val->{$this->getTreeNodeParentIdName()}, $val);
+
                 $this->getNodeParents($uniacid,
                     $val->{$this->getTreeNodeParentIdName()},
-                    $nextDepth,
-                    $adds . $k . $this->getTreeSpacer()
+                    $nextDepth
                 );
                 ++$number;
             }
         }
         return $array;
-    }
-
-    /**
-     * 格式化为下拉选择数据
-     * @param $parentId
-     * @param int $depth
-     * @param string $adds
-     * @return array
-     */
-    public function toSelectArray($parentId, $depth = 0, $adds = '')
-    {
-
-        $treeList = [];
-        $allTrees = $this->getDescendants($parentId, $depth, $adds);
-        if ($allTrees) {
-            foreach ($allTrees as $value) {
-                $id = $value->{$this->getTreeNodeIdName()};
-                $treeList[$id] = $value->spacer . $value->{$this->getTreeNodeDisplayName()};
-            }
-        }
-
-        return $treeList;
     }
 
     /**
