@@ -154,6 +154,10 @@ class GoodsController extends ApiController
                 }
             }
         }
+        //默认供应商店铺名称
+        if ($goodsModel->supplier->store_name == 'null') {
+            $goodsModel->supplier->store_name = $goodsModel->supplier->user_name;
+        }
 
         if($goodsModel->hasOneShare){
             $goodsModel->hasOneShare->share_thumb = yz_tomedia($goodsModel->hasOneShare->share_thumb);
