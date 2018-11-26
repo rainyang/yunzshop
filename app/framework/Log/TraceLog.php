@@ -58,6 +58,6 @@ class TraceLog
     private function getFileName($name)
     {
 
-        return storage_path("logs/debug/{$name}.log");
+        return storage_path("logs/trace/{$name}.log");
     }
 }
