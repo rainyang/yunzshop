@@ -97,7 +97,7 @@ class HuanxunController extends PaymentController
                         'pay_type_id'     => 22
                     ];
 
-                   // $this->payResutl($data);
+                    $this->payResutl($data);
                     \Log::debug('----结束----');
                     echo 'SUCCESS';
                 } elseif (strval($status) == "N") {
@@ -212,12 +212,12 @@ class HuanxunController extends PaymentController
 
                 ];
 
-                $this->payResutl($data);
+                //$this->payResutl($data);
 
-                $url = Url::shopSchemeUrl("?menu#/member/payYes?i={$uniacid}");
+                $url = str_replace('https','http', Url::shopSchemeUrl("?menu#/member/payYes?i={$uniacid}"));
 
                 if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
-                    $url  = $trade['redirect_url'];
+                    $url  = str_replace('https','http', $trade['redirect_url']);
                 }
 
                 $message = "交易成功";

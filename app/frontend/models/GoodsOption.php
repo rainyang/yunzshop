@@ -19,6 +19,7 @@ use app\frontend\modules\member\services\MemberService;
  * @property int goods_id
  * @property string title
  * @property float weight
+ * @property Goods goods
  */
 class GoodsOption extends \app\common\models\GoodsOption
 {

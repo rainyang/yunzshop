@@ -14,6 +14,7 @@ use Illuminate\Filesystem\Filesystem;
 use Yunshop\AreaDividend\models\AreaDividendAgent;
 use Yunshop\Commission\models\Agents;
 use Yunshop\Gold\frontend\services\MemberCenterService;
+use Yunshop\Love\Common\Models\MemberShop;
 use Yunshop\Love\Common\Services\SetService;
 use Yunshop\Merchant\common\models\Merchant;
 use Yunshop\Micro\common\models\MicroShop;
@@ -553,10 +554,11 @@ class Member extends BackendModel
         $incomeModel = Income::getIncomes()->where('member_id', \YunShop::app()->getMemberId())->get();
 
         if ($incomeModel) {
-            return $incomeModel->sum('amount');
+            $amount = $incomeModel->sum('amount');
+            return number_format($amount, 2);
         }
 
-        return 0;
+        return number_format(0, 2);
     }
 
     /**
@@ -719,7 +721,7 @@ class Member extends BackendModel
 
     public function getAvatarImageAttribute()
     {
-        return $this->avatar ? tomedia($this->avatar) : tomedia(\Setting::get('shop.shop.headimg'));
+        return $this->avatar ? yz_tomedia($this->avatar) : yz_tomedia(\Setting::get('shop.member.headimg'));
     }
 
     /**
@@ -745,11 +747,12 @@ class Member extends BackendModel
         $is_invite = intval(\Setting::get('shop.member.is_invite'));
         $required = intval(\Setting::get('shop.member.required'));
         $invite_code = \YunShop::request()->invite_code;
-        $member = MemberShopInfo::where('invite_code', $invite_code)->count();
 
+        $member = MemberShopInfo::where('invite_code', $invite_code)->count();
 
         if ($is_invite && $required && empty($invite_code)) {
             return null;
+
         }
 
         if ($is_invite && isset($invite_code) && !empty($invite_code)) {

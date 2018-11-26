@@ -1814,56 +1814,7 @@ return [
         ],
         'remark' => '您可再次申请或者联系客服哦！',
     ],
-    'change_temp_id' => [
-        'template_id_short' => 'OPENTM207574677',
-        'title' => '爱心值变动通知',
-        'first_color' => '#000000',
-        'remark_color' => '#000000',
-        'first' => '您账户发生了一笔变动，请注意查看！',
-        'data' => [
-            0 => [
-                "keywords" => "keyword1",
-                "value" => "[变动值类型]",
-                "color" => "#000000",
-            ],
-            1 => [
-                "keywords" => "keyword2",
-                "value" => "[业务类型]",
-                "color" => "#000000",
-            ],
-            2 => [
-                "keywords" => "keyword3",
-                "value" => "尊敬的[昵称]，您于[时间]发生一笔爱心值变动，变动类型为[变动值类型]，变动数值为[变动数量]，变动后爱心值余值为[当前剩余值]。",
-                "color" => "#000000",
-            ],
-        ],
-        'remark' => '感谢您的支持！',
-    ],
-    'activation_temp_id' => [
-        'template_id_short' => 'OPENTM207574677',
-        'title' => '爱心值激活通知',
-        'first_color' => '#000000',
-        'remark_color' => '#000000',
-        'first' => '您成功激活了爱心值！',
-        'data' => [
-            0 => [
-                "keywords" => "keyword1",
-                "value" => "爱心值激活",
-                "color" => "#000000",
-            ],
-            1 => [
-                "keywords" => "keyword2",
-                "value" => "激活成功",
-                "color" => "#000000",
-            ],
-            2 => [
-                "keywords" => "keyword3",
-                "value" => "尊敬的[昵称]，您于[时间]激活了一笔爱心值，激活数值为[激活值]",
-                "color" => "#000000",
-            ],
-        ],
-        'remark' => '感谢您的支持！',
-    ],
+
     'expire' => [
         'template_id_short' => 'OPENTM207574677',
         'title' => '优惠券过期提醒',

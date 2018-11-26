@@ -52,15 +52,22 @@ class RegisterController extends ApiController
                 return $this->errorJson($check_code['json']);
             }
 
+<<<<<<< HEAD
 
             $invite_code = MemberService::inviteCode();
+=======
+            $invitecode = MemberService::inviteCode();
+>>>>>>> 374c5e30e6c3b4c3548a591f6e29b8e29724dc48
 
             if ($invite_code['status'] != 1) {
                 return $this->errorJson($invite_code['json']);
             }
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 374c5e30e6c3b4c3548a591f6e29b8e29724dc48
             $msg = MemberService::validate($mobile, $password, $confirm_password);
 
             if ($msg['status'] != 1) {
@@ -68,15 +75,6 @@ class RegisterController extends ApiController
             }
 
             $member_info = MemberModel::getId($uniacid, $mobile);
-
-            //增加验证码验证
-            $captcha_status = Setting::get('shop.sms.status');
-            if ($captcha_status == 1) {
-                if ( app('captcha')->check(Input::get('captcha')) == false) {
-                    return $this->errorJson('验证码错误');
-                }
-            }
-
 
             if (!empty($member_info)) {
                 return $this->errorJson('该手机号已被注册');
@@ -218,6 +216,8 @@ class RegisterController extends ApiController
 
         $state = \YunShop::request()->state ?: '86';
 
+        $sms_type = \YunShop::request()->sms_type;
+
         if (empty($mobile)) {
             return $this->errorJson('请填入手机号');
         }
@@ -245,7 +245,7 @@ class RegisterController extends ApiController
         if (!MemberService::smsSendLimit(\YunShop::app()->uniacid, $mobile)) {
             return $this->errorJson('发送短信数量达到今日上限');
         } else {
-            $this->sendSmsV2($mobile, $code, $state);
+            $this->sendSmsV2($mobile, $code, $state, 'reg', $sms_type);
         }
     }
 
@@ -290,6 +290,14 @@ class RegisterController extends ApiController
     public function sendSms($mobile, $code, $templateType = 'reg')
     {
         $sms = \Setting::get('shop.sms');
+
+        //增加验证码验证
+        $captcha_status = Setting::get('shop.sms.status');
+        if ($captcha_status == 1) {
+            if ( app('captcha')->check(Input::get('captcha')) == false) {
+                return $this->errorJson('验证码错误');
+            }
+        }
 
         //互亿无线
         if ($sms['type'] == 1) {
@@ -361,9 +369,17 @@ class RegisterController extends ApiController
         }
     }
 
-    public function sendSmsV2($mobile, $code, $state, $templateType = 'reg')
+    public function sendSmsV2($mobile, $code, $state, $templateType = 'reg', $sms_type)
     {
         $sms = \Setting::get('shop.sms');
+
+        //增加验证码验证
+        $captcha_status = Setting::get('shop.sms.status');
+        if ($captcha_status == 1) {
+            if ( app('captcha')->check(Input::get('captcha')) == false) {
+                return $this->errorJson('图形验证码错误');
+            }
+        }
 
         //互亿无线
         if ($sms['type'] == 1) {
@@ -404,14 +420,20 @@ class RegisterController extends ApiController
             $top_client = new \iscms\AlismsSdk\TopClient(trim($sms['appkey']), trim($sms['secret']));
             $name = trim($sms['signname']);
             $templateCode = trim($sms['templateCode']);
-
+            $templateCodeForget = trim($sms['templateCodeForget']);
             config([
                 'alisms.KEY' => trim($sms['appkey']),
                 'alisms.SECRETKEY' => trim($sms['secret'])
             ]);
 
             $sms = new Sms($top_client);
-            $issendsms = $sms->send($mobile, $name, $content, $templateCode);
+
+            //$type为1是注册，else 找回密码
+            if (!is_null($sms_type) && $sms_type == 1) {
+                $issendsms = $sms->send($mobile, $name, $content, $templateCode);
+            }else{
+                $issendsms = $sms->send($mobile, $name, $content, $templateCodeForget);
+            }
 
             if (isset($issendsms->result->success)) {
                 MemberService::udpateSmsSendTotal(\YunShop::app()->uniacid, $mobile);
@@ -422,14 +444,26 @@ class RegisterController extends ApiController
         } elseif ($sms['type'] == 3) {
             $aly_sms = new AliyunSMS(trim($sms['aly_appkey']), trim($sms['aly_secret']));
 
-            $response = $aly_sms->sendSms(
-                $sms['aly_signname'], // 短信签名
-                $sms['aly_templateCode'], // 短信模板编号
-                $mobile, // 短信接收者
-                Array(  // 短信模板中字段的值
-                    "number" => $code
-                )
-            );
+            //$type为1是注册，else 找回密码
+            if (!is_null($sms_type) && $sms_type == 1) {
+                $response = $aly_sms->sendSms(
+                    $sms['aly_signname'], // 短信签名
+                    $sms['aly_templateCode'], // 注册短信模板编号
+                    $mobile, // 短信接收者
+                    Array(  // 短信模板中字段的值
+                        "number" => $code
+                    )
+                );
+            }else{
+                $response = $aly_sms->sendSms(
+                    $sms['aly_signname'], // 短信签名
+                    $sms['aly_templateCodeForget'], // 找回密码短信模板编号
+                    $mobile, // 短信接收者
+                    Array(  // 短信模板中字段的值
+                        "number" => $code
+                    )
+                );
+            }
 
             if ($response->Code == 'OK' && $response->Message == 'OK') {
                 return $this->successJson();
@@ -492,14 +526,6 @@ class RegisterController extends ApiController
             }
 
             $member_info = MemberModel::getId($uniacid, $mobile);
-            
-            //增加验证码验证
-            $captcha_status = Setting::get('shop.sms.status');
-            if ($captcha_status == 1) {
-                if ( app('captcha')->check(Input::get('captcha')) == false ) {
-                    return $this->errorJson('验证码错误');
-                }
-            }
 
             if (empty($member_info)) {
                 return $this->errorJson('该手机号不存在');
@@ -526,11 +552,17 @@ class RegisterController extends ApiController
 
     public function getInviteCode()
     {
+        $close = \YunShop::request()->close;
         $is_invite = intval(\Setting::get('shop.member.is_invite'));
         $required =intval(\Setting::get('shop.member.required'));
 
+        if (isset($close) && 1 == $close) {
+            $is_invite = 0;
+            $required = 0;
+        }
+
         $data = [
-          'status' => $is_invite,
+            'status' => $is_invite,
             'required' => $required
         ];
 

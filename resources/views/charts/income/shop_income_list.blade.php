@@ -47,6 +47,7 @@
                             </div>
                             <div class="form-group col-xs-12 col-sm-4">
                                 <button class="btn btn-success" id="search"><i class="fa fa-search"></i> 搜索</button>
+                                <button type="submit" name="export" value="1" id="export" class="btn btn-default">导出 Excel</button>
                             </div>
                         </form>
                     </div>
@@ -75,12 +76,8 @@
                         <tbody>
                         @foreach($list as $row)
                             <tr style="height: 40px; text-align: center">
-                                {{--{{ dd($row) }}--}}
                                 <td>{{ $row['order_sn'] }}</td>
                                 <td>
-                                    @if(!empty($row['thumb_url']))
-                                        <img src='{{ $row['thumb_url'] }}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
-                                    @endif
                                     @if(empty($row['buy_name']))
                                         未更新
                                     @else
@@ -89,18 +86,18 @@
                                 </td>
                                 <td>{{ $row['price'] }}</td>
                                 <td>
-                                    @if($row->hasOneSupplierOrder)供应商
-                                    @elseif($row->hasOneStoreOrder)门店
-                                    @elseif($row->hasOneCashierOrder)收银台
+                                    @if($row->plugin_id == 1)供应商
+                                    @elseif($row->plugin_id == 32)门店
+                                    @elseif($row->plugin_id == 31)收银台
                                     @else商城
                                     @endif
                                 </td>
                                 <td>{{ $row['shop_name'] }}</td>
                                 <td>{{ $row['undividend'] }}</td>
-                                <td>{{ sprintf("%01.2f",($row->price - $row->hasOneOrderGoods->cost_price) > 0 ? $row->price - $row->hasOneOrderGoods->cost_price : '0.00') }}</td>
-                                <td>{{ $row->hasOneSupplierOrder->supplier_profit ?: '0.00' }}</td>
-                                <td>{{ $row->hasOneStoreOrder->amount ?: '0.00' }}</td>
-                                <td>{{ $row->hasOneCashierOrder->amount ?: '0.00' }}</td>
+                                <td>{{ sprintf("%01.2f",($row->price - $row->cost_price) > 0 ? $row->price - $row->cost_price : '0.00') }}</td>
+                                <td>{{ $row->supplier ?: '0.00' }}</td>
+                                <td>{{ $row->store ?: '0.00' }}</td>
+                                <td>{{ $row->cashier ?: '0.00' }}</td>
                             </tr>
                         @endforeach
                         </tbody>
@@ -112,4 +109,12 @@
         </div>
     </div>
 </div>
+<script>
+    $(function () {
+        $('#export').click(function () {
+            $('#form1').attr('action', '{!! yzWebUrl('charts.income.shop-income-list.export') !!}');
+            $('#form1').submit();
+        });
+    });
+</script>
 @endsection

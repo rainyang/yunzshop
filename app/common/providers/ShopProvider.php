@@ -8,12 +8,14 @@
 
 namespace app\common\providers;
 
+use app\backend\modules\supervisord\services\Supervisor;
 use app\common\facades\Setting;
 use app\common\helpers\SettingCache;
 use app\common\modules\express\KDN;
 use app\common\managers\ModelExpansionManager;
 use app\common\models\BaseModel;
 use app\common\modules\status\StatusContainer;
+use app\framework\Log\Log;
 use app\frontend\modules\coin\CoinManager;
 use app\frontend\modules\deduction\DeductionManager;
 use app\frontend\modules\goods\services\GoodsManager;
@@ -29,6 +31,9 @@ class ShopProvider extends ServiceProvider
 
         $this->app->singleton('SettingCache',function() {
             return new SettingCache();
+        });
+        $this->app->singleton('supervisor',function() {
+            return new Supervisor('http://127.0.0.1', 9001);
         });
         $this->app->singleton('ModelExpansionManager',function(){
             return new ModelExpansionManager();
@@ -56,6 +61,9 @@ class ShopProvider extends ServiceProvider
         });
         $this->app->singleton('express', function (){
             return new KDN(Setting::get('shop.express_info.KDN.eBusinessID'),Setting::get('shop.express_info.KDN.appKey'),config('app.express.KDN.reqURL'));
+        });
+        $this->app->singleton('Log.debug', function (){
+            return new Log();
         });
     }
 }
