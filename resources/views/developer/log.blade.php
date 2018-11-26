@@ -73,7 +73,7 @@
   <div class="row">
     <div class="col sidebar mb-3">
       <h1><i class="fa fa-calendar" aria-hidden="true"></i> 日志浏览器</h1>
-      <p class="text-muted"><i>by Rap2h</i></p>
+
       <div class="list-group div-scroll">
         @foreach($folders as $folder)
           <div class="list-group-item">
