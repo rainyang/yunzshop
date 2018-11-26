@@ -26,22 +26,18 @@ class memberParentOfMemberJob implements ShouldQueue
     public  $memberModel;
     public  $childMemberModel;
 
-    /*public function __construct($uniacid, $member_info)
+    public function __construct($uniacid, $member_info)
     {
         $this->uniacid = $uniacid;
-        $this->member_info = $member_info->toArray();
-    }*/
-
-    public function __construct($uniacid)
-    {
-        $this->uniacid = $uniacid;
+        $this->member_info = $member_info;
     }
+
 
     public function handle()
     {
         \Log::debug('-----queue uniacid-----', $this->uniacid);
         \Log::debug('-----queue member count-----', count($this->member_info));
-        return $this->synRun($this->uniacid, $this->member_info);
+        return $this->synRun($this->uniacid);
     }
 
     public function synRun($uniacid)
@@ -52,7 +48,7 @@ class memberParentOfMemberJob implements ShouldQueue
         $memberModel->_allNodes = collect([]);
 
         \Log::debug('--------------清空表数据------------');
-        $parentMemberModle->DeletedData();
+        //$parentMemberModle->DeletedData();
 
         $memberInfo = $memberModel->getTreeAllNodes($uniacid);
 
@@ -67,7 +63,7 @@ class memberParentOfMemberJob implements ShouldQueue
 
         \Log::debug('--------queue synRun -----');
 
-        foreach ($memberInfo as $key => $val) {
+        foreach ($this->memberInfo as $key => $val) {
             $attr = [];
             $child_attr = [];
 

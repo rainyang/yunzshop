@@ -464,7 +464,7 @@ class Member extends \app\common\models\Member
 
     public static function getAllMembersInfosByQueue($uniacid, $limit = 0, $offset = 0)
     {
-        $result = self::select(['mc_members.uid', 'mc_members.uniacid'])
+        $result = self::select(['yz_member.member_id', 'yz_member.parent_id'])
             ->join('yz_member', 'mc_members.uid', '=', 'yz_member.member_id')
             ->where('mc_members.uniacid', $uniacid);
 

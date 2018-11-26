@@ -44,7 +44,7 @@ class memberChildOfMemberJob implements ShouldQueue
 
 
         \Log::debug('--------------清空表数据------------');
-        $childMemberModel->DeletedData();
+        //$childMemberModel->DeletedData();
 
         $memberInfo = $memberModel->getTreeAllNodes($uniacid);
 
