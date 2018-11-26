@@ -47,8 +47,6 @@ class Express extends BaseModel
         }
 
         $result['status_name'] = $this->expressStatusName($express['state']);
-        $result['tel'] = $this->getTelByName($this->express_company_name);
-
 
         return $result;
     }
