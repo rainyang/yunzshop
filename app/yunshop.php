@@ -37,13 +37,13 @@ class YunShop
         }
         //检测controller继承
         $controller = new $namespace;
-//        if (!$controller instanceof \app\common\components\BaseController) {
-//            if (config('app.debug')) {
-//                throw new NotFoundException($controller . ' 没有继承\app\common\components\BaseController: ' . $namespace);
-//            }
-//            throw new NotFoundException(" 路由错误:不存在控制器: " . $namespace);
-//
-//        }
+        if (!$controller instanceof \app\common\components\BaseController) {
+            if (config('app.debug')) {
+                throw new NotFoundException($controller . ' 没有继承\app\common\components\BaseController: ' . $namespace);
+            }
+            throw new NotFoundException(" 路由错误:不存在控制器: " . $namespace);
+
+        }
 
         //设置默认方法
         if (empty($action)) {
@@ -95,9 +95,7 @@ class YunShop
         }
 
         //执行方法
-        if(method_exists($controller,'preAction')){
-            $controller->preAction();
-        }
+        $controller->preAction();
 
         if (method_exists($controller, 'needTransaction') && $controller->needTransaction($action)) {
             // action设置了需要回滚
@@ -111,7 +109,7 @@ class YunShop
                 Illuminate\Http\Request::capture()
             );
         }
-        return $content;
+        exit($content);
     }
 
     public static function isShowSecondMenu()
@@ -320,7 +318,7 @@ class YunShop
 
         }
         //执行run
-        return static::run($namespace, $modules, $controllerName, $action, $currentRoutes);
+        static::run($namespace, $modules, $controllerName, $action, $currentRoutes);
 
     }
 
@@ -550,7 +548,8 @@ class YunApp extends YunComponent
      */
     public function getMemberId()
     {
-        if (config('app.debug')) {
+        if (1||config('app.debug')) {
+            //dump($_GET);
             if (isset($_GET['test_uid'])) {
                 return $_GET['test_uid'];
             }
