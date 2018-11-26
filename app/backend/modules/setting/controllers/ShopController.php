@@ -481,9 +481,9 @@ class ShopController extends BaseController
      * 设置物流查询
      */
     public function expressInfo() {
-        $share = Setting::get('shop.express_info');//快递鸟1002状态为免费，8001状态为收费
-        $requestModel = \YunShop::request()->express_info;
+        $set = Setting::get('shop.express_info');//快递鸟1002状态为免费，8001状态为收费
 
+        $requestModel = \YunShop::request()->express_info;
         if ($requestModel) {
             if (Setting::set('shop.express_info', $requestModel)) {
                 return $this->message(' 物流查询信息设置成功', Url::absoluteWeb('setting.shop.express-info'));
@@ -492,7 +492,7 @@ class ShopController extends BaseController
             }
         }
         return view('setting.shop.express_info', [
-            'set' => $share,
+            'set' => $set,
         ])->render();
     }
 }

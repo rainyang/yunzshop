@@ -25,8 +25,8 @@ class KDN
 
     public function getTraces($comCode, $expressSn, $orderSn = '')
     {
-        $express_api=\YunShop::request()->express_info;
-//        dd($express_api['KDN']['express_api']);//快递鸟1002状态为免费，8001状态为收费
+       //快递鸟1002状态为免费，8001状态为收费
+        $express_api = \Setting::get('shop.express_info');
 
         $requestData = json_encode(
             [

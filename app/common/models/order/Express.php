@@ -34,7 +34,6 @@ class Express extends BaseModel
     public function getExpress($express = null, $express_sn = null)
     {
 
-
         if (!isset($express_sn)) {
             $express_sn = $this->express_sn;
         }
@@ -44,10 +43,7 @@ class Express extends BaseModel
         if (empty($result)) {
             return array();
         }
-
-
         $result['status_name'] = $this->expressStatusName($result['state']);
-
 
         return $result;
     }
