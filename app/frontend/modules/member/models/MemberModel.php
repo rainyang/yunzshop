@@ -887,9 +887,10 @@ class MemberModel extends Member
                 $childTeamOrder[] = DB::table('yz_order')->select(DB::raw('sum(price) as money,count(id) as total'))->where('uid', $value['child_id'])->get()->toArray();
             }
             $result['team_order_money'] = 0;
+            $result['team_total'] = 0;
             foreach ($childTeamOrder as $k => $value) {
                 $result['team_order_money'] += intval($value[0]['money']);
-                $result['team_order_total'] += $value[0]['total'];
+                $result['team_total']++;
             }
 
             return [
@@ -908,7 +909,7 @@ class MemberModel extends Member
                 'child_order_money' => $result['child_order_money']?:0,
                 'child_order_total' => $result['child_order_total']?:0,
                 'team_order_money' => $result['team_order_money']?:0,
-                'team_order_total' => $result['team_order_total']?:0,
+                'team_total' => $result['team_total']?:0,
             ];
         });
     }
