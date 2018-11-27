@@ -41,12 +41,16 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $exception)
     {
-        // 记录错误日志
-        if(!app()->runningInConsole()){
-            \Log::error('http parameters',request()->input());
+        try{
+            // 记录错误日志
+            if(!app()->runningInConsole()){
+                \Log::error('http parameters',request()->input());
+            }
+            \Log::error($exception);
+        }catch (Exception $ex){
+            dump($ex);
         }
 
-        \Log::error($exception);
         // 生产环境发送邮件
 //        if(app()->environment() == 'production'){
 //            Mail::to('shenyang@yunzshop.com')->send(new \App\Mail\ErrorReport('错误',$exception));
