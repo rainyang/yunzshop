@@ -88,8 +88,10 @@ class OrderManager extends Container
         });
     }
 
-    public function getPreOrder()
+    public function getPreOrder($pluginId = 0)
     {
-
+        if(isset($pluginId)){
+            return
+        }
     }
 }
