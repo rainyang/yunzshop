@@ -33,7 +33,7 @@ use app\frontend\modules\member\models\SubMemberModel;
 use app\Jobs\ModifyRelationJob;
 use Illuminate\Support\Facades\DB;
 use Yunshop\Commission\models\Agents;
-
+use Yunshop\TeamDividend\models\TeamDividendLevelModel;
 
 
 class MemberController extends BaseController
@@ -489,12 +489,12 @@ class MemberController extends BaseController
             return $this->message('会员不存在','', 'error');
         }
 
-        $list = MemberChildren::children($request)
+        $list = MemberParent::children($request)
             ->paginate($this->pageSize)
             ->toArray();
 
-        $level_total = MemberChildren::where('member_id', $request->id)
-            ->selectRaw('count(child_id) as total, level, member_id')
+        $level_total = MemberParent::where('parent_id', $request->id)
+            ->selectRaw('count(member_id) as total, level, max(parent_id) as parent_id')
             ->groupBy('level')
             ->get();
 
@@ -514,10 +514,10 @@ class MemberController extends BaseController
     {
         $file_name = date('Ymdhis', time()) . '会员下级导出';
         $export_data = ['ID', '昵称', '真实姓名', '电话'];
-        $member_id = request()->member_id;
-        $child = MemberParent::where('parent_id', $member_id)->get();
+        $member_id = request()->id;
+        $child = MemberParent::where('parent_id', $member_id)->with('hasOneChildMember')->get();
         foreach ($child as $key => $item) {
-            $member = $item->haoOneChild;
+            $member = $item->hasOneChildMember;
             $export_data[$key + 1] = [
                 $member->uid,
                 $member->nickname,
@@ -542,6 +542,8 @@ class MemberController extends BaseController
             });
         })->export('xls');
     }
+
+
 
     /**
      * 推广上线
@@ -606,6 +608,74 @@ class MemberController extends BaseController
                 $sheet->rows($export_data);
             });
         })->export('xls');
+    }
+
+    public function firstAgentExport()
+    {
+        $export_data = [];
+        $file_name = date('Ymdhis', time()) . '会员直推上级导出';
+
+        $member_id = request()->id;
+        $team_list = TeamDividendLevelModel::getList()->get();
+
+        foreach ($team_list as $level) {
+            $export_data[0][] = $level->level_name;
+            $levelId[] = $level->id;
+        }
+        array_push($export_data[0], '会员ID', '会员', '姓名/手机号码');
+
+        $child = MemberParent::where('member_id', $member_id)
+            ->where('level', 1)
+            ->with(['hasManyParent' => function($q) {
+                $q->orderBy('level','asc');
+            }])
+            ->get();
+
+        foreach ($child as $key => $item) {
+
+            $level = $this->getLevel($item, $levelId);
+
+            $export_data[$key + 1] = $level;
+
+            array_push($export_data[$key + 1],
+                $item->member_id,
+                $item->hasOneMember->nickname,
+                $item->hasOneMember->realname . '/' . $item->hasOneMember->mobile);
+        }
+
+        \Excel::create($file_name, function ($excel) use ($export_data) {
+            // Set the title
+            $excel->setTitle('Office 2005 XLSX Document');
+
+            // Chain the setters
+            $excel->setCreator('芸众商城')
+                ->setLastModifiedBy("芸众商城")
+                ->setSubject("Office 2005 XLSX Test Document")
+                ->setDescription("Test document for Office 2005 XLSX, generated using PHP classes.")
+                ->setKeywords("office 2005 openxml php")
+                ->setCategory("report file");
+
+            $excel->sheet('info', function ($sheet) use ($export_data) {
+                $sheet->rows($export_data);
+            });
+        })->export('xls');
+    }
+
+    public function getLevel($member, $levelId)
+    {
+        $data = [];
+//        $num = count($member->hasManyParentTeam);
+        foreach ($levelId as $k => $value) {
+            foreach ($member->hasManyParent as $key => $parent) {
+                if ($parent->hasOneTeamDividend->hasOneLevel->id == $value) {
+                    $data[$k] = $parent->hasOneMember->nickname;
+                    break;
+                }
+            }
+            $data[$k] = $data[$k] ?: '';
+        }
+
+        return $data;
     }
 
     /**

@@ -64,15 +64,16 @@
                                                 @if($request->followed=='0')
                                                 selected
                                                 @endif
-                                        >取消关注
+                                        >未关注
                                         </option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group col-xs-12 col-sm-6 col-md-2 ">
-                                <label class=" control-label"></label>
+                            <div class="form-group col-xs-12 col-sm-6 col-md-6 ">
+                                <label class="control-label"></label>
                                 <button class="btn btn-success"><i class="fa fa-search"></i> 搜索</button>
                                 <button type="button" name="export" value="1" id="export" class="btn btn-default">导出 Excel</button>
+                                <button type="button" name="export" value="2" id="export-a" class="btn btn-default">导出 直推上级Excel</button>
                             </div>
                         </form>
                     </div>
@@ -121,7 +122,7 @@
 
                             <td>{{date('Y-m-d H:i',$row['has_one_member']['createtime'])}}</td>
                             <td class="text-center">
-                                @if(empty($row['has_one_fans']['followed']))
+                                @if(empty($row['has_one_fans']['follow']))
                                     @if(empty($row['has_one_fans']['uid']))
                                         <label class='label label-default'>未关注</label>
                                     @else
@@ -136,18 +137,18 @@
                                 <div class="btn-group btn-group-sm" >
                                     <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="javascript:;">操作 <span class="caret"></span></a>
                                     <ul class="dropdown-menu dropdown-menu-left" role="menu" style='z-index: 9999'>
-                                        <li><a href="{{yzWebUrl('member.member.detail', ['id' => $row['uid']])}}" title="会员详情"><i class='fa fa-edit'></i> 会员详情</a></li>
-                                        <li><a  href="{{yzWebUrl('order.list', ['search[ambiguous][field]' => 'member','search[ambiguous][string]'=>'uid:'.$row['uid']])}}" target="_blank" title='会员订单'><i class='fa fa-list'></i> 会员订单</a></li>
-                                        <li><a href="{{yzWebUrl('finance.point-recharge',['id'=>$row['uid']])}}" title='充值积分'><i class='fa fa-credit-card'></i> 充值积分</a></li>
-                                        <li><a href="{{yzWebUrl('finance.balance.recharge', ['id'=>$row['uid']])}}" title='充值余额'><i class='fa fa-money'></i> 充值余额 </a></li>
-                                        <li><a href="{{yzWebUrl('member.member.agent', ['id'=>$row['uid']])}}" title='我的下线'><i class='fa fa-exchange'></i> 推广下线 </a></li>
-                                        <li><a href="{{yzWebUrl('member.member.agentParent', ['id'=>$row['uid']])}}" title='我的上线'><i class='fa fa-exchange'></i> 我的上线 </a></li>
+                                        <li><a href="{{yzWebUrl('member.member.detail', ['id' => $row['parent_id']])}}" title="会员详情"><i class='fa fa-edit'></i> 会员详情</a></li>
+                                        <li><a  href="{{yzWebUrl('order.list', ['search[ambiguous][field]' => 'member','search[ambiguous][string]'=>'uid:'.$row['parent_id']])}}" target="_blank" title='会员订单'><i class='fa fa-list'></i> 会员订单</a></li>
+                                        <li><a href="{{yzWebUrl('finance.point-recharge',['id'=>$row['parent_id']])}}" title='充值积分'><i class='fa fa-credit-card'></i> 充值积分</a></li>
+                                        <li><a href="{{yzWebUrl('finance.balance.recharge', ['id'=>$row['parent_id']])}}" title='充值余额'><i class='fa fa-money'></i> 充值余额 </a></li>
+                                        <li><a href="{{yzWebUrl('member.member.agent', ['id'=>$row['parent_id']])}}" title='我的下线'><i class='fa fa-exchange'></i> 推广下线 </a></li>
+                                        <li><a href="{{yzWebUrl('member.member.agentParent', ['id'=>$row['parent_id']])}}" title='我的上线'><i class='fa fa-exchange'></i> 我的上线 </a></li>
                                         @if($row['yz_member']['is_black']==1)
-                                            <li><a href="{{yzWebUrl('member.member.black', ['id' => $row['uid'],'black'=>0])}}" title='取消黑名单'><i class='fa fa-minus-square'></i> 取消黑名单</a></li>
+                                            <li><a href="{{yzWebUrl('member.member.black', ['id' => $row['parent_id'],'black'=>0])}}" title='取消黑名单'><i class='fa fa-minus-square'></i> 取消黑名单</a></li>
                                         @else
-                                            <li><a href="{{yzWebUrl('member.member.black', ['id' => $row['uid'],'black'=>1])}}" title='设置黑名单'><i class='fa fa-minus-circle'></i> 设置黑名单</a></li>
+                                            <li><a href="{{yzWebUrl('member.member.black', ['id' => $row['parent_id'],'black'=>1])}}" title='设置黑名单'><i class='fa fa-minus-circle'></i> 设置黑名单</a></li>
                                         @endif
-                                        <li><a  href="{{yzWebUrl('member.member.delete', ['id' => $row['uid']])}}" title='删除会员' onclick="return confirm('确定要删除该会员吗？');"><i class='fa fa-remove'></i> 删除会员</a></li>
+                                        <li><a  href="{{yzWebUrl('member.member.delete', ['id' => $row['parent_id']])}}" title='删除会员' onclick="return confirm('确定要删除该会员吗？');"><i class='fa fa-remove'></i> 删除会员</a></li>
                                     </ul>
                                 </div>
                             </td>
@@ -164,6 +165,12 @@
         $(function () {
             $('#export').click(function () {
                 $('#route').val("member.member.agent-parent-export");
+                $('#form1').submit();
+                $('#route').val("member.member.agent-parent");
+            });
+
+            $('#export-a').click(function () {
+                $('#route').val("member.member.first-agent-export");
                 $('#form1').submit();
                 $('#route').val("member.member.agent-parent");
             });
