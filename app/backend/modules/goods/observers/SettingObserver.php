@@ -42,6 +42,8 @@ class SettingObserver extends \app\common\observers\BaseObserver
         $log->before = collect($model->getDirty())->map(function($value,$key) use ($model){
             return $model->getOriginal($key);
         });
+        $log->created_at = time();
+        $log->updated_at = time();
 
         $log->save();
 
