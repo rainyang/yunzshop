@@ -25,18 +25,20 @@ class memberParentOfMemberJob implements ShouldQueue
     private $member_info;
     public  $memberModel;
     public  $childMemberModel;
+    public  $pageSize;
+    public  $offset;
 
-    public function __construct($uniacid, $member_info)
+    public function __construct($uniacid, $pageSize, $offset)
     {
         $this->uniacid = $uniacid;
-        $this->member_info = $member_info;
+        $this->pageSize = $pageSize;
+        $this->offset   = $offset;
     }
-
 
     public function handle()
     {
         \Log::debug('-----queue uniacid-----', $this->uniacid);
-        \Log::debug('-----queue member count-----', count($this->member_info));
+
         return $this->synRun($this->uniacid);
     }
 
@@ -61,9 +63,16 @@ class memberParentOfMemberJob implements ShouldQueue
             $memberModel->_allNodes->put($item->member_id, $item);
         }
 
+        $this->member_info = Member::getAllMembersInfosByQueue($uniacid, $this->pageSize, $this->offset)->distinct()->get();
+        \Log::debug('------queue member count-----', $this->member_info->count());
+
+        if (!$this->member_info->isEmpty()) {
+            \Log::debug('-----queue member empty-----');
+        }
+
         \Log::debug('--------queue synRun -----');
 
-        foreach ($this->memberInfo as $key => $val) {
+        foreach ($this->member_info as $key => $val) {
             $attr = [];
             $child_attr = [];
 
@@ -91,7 +100,7 @@ class memberParentOfMemberJob implements ShouldQueue
                             'created_at' => time()
                         ];
                     } else {
-                        file_put_contents(storage_path("logs/" . date('Y-m-d') . "_batchparent.log"), print_r([$val->member_id, $v], 1), FILE_APPEND);
+                        file_put_contents(storage_path("logs/" . date('Y-m-d') . "_batchparent.log"), print_r([$val->member_id, $v, 'insert'], 1), FILE_APPEND);
                     }
                 }
 

@@ -193,11 +193,17 @@ class TestController extends BaseController
     public function pp()
     {
 
-        $this->synRun(5);exit;
+        $member_info = Member::getAllMembersInfosByQueue(\YunShop::app()->uniacid);
 
-        $member_relation = new MemberRelation();
+        $total       = $member_info->distinct()->count();
 
-        $member_relation->createChildOfMember();
+        dd($total);
+
+        $this->chkSynRun(10);exit;
+
+        /*$member_relation = new MemberRelation();
+
+        $member_relation->createChildOfMember();*/
     }
 
     public function synRun($uniacid)
@@ -228,7 +234,7 @@ dd(1);
             $child_attr = [];
 echo $val->member_id . '<BR>';
             \Log::debug('--------foreach start------', $val->member_id);
-            $data = $memberModel->getNodeParents($uniacid, $val->member_id);
+            $data = $memberModel->chktNodeParents($uniacid, $val->member_id);
             \Log::debug('--------foreach data------', $data->count());
 
             if (!$data->isEmpty()) {
@@ -350,6 +356,68 @@ echo '<pre>'; print_r($attr);
             $member_relation->build($item[0], $item[1]);
         }
         echo 'ok';
+    }
+
+    public function chkSynRun($uniacid)
+    {
+        $parentMemberModle = new ParentOfMember();
+        $childMemberModel = new ChildrenOfMember();
+        $memberModel = new Member();
+        $memberModel->_allNodes = collect([]);
+
+        $memberInfo = $memberModel->getTreeAllNodes($uniacid);
+
+        if ($memberInfo->isEmpty()) {
+            \Log::debug('----is empty-----');
+            return;
+        }
+
+        foreach ($memberInfo as $item) {
+            $memberModel->_allNodes->put($item->member_id, $item);
+        }
+
+        \Log::debug('--------queue synRun -----');
+        $member_id = 1487;
+        //foreach ($memberInfo as $key => $val) {
+            $attr = [];
+            $child_attr = [];
+            echo $member_id . '<BR>';
+            \Log::debug('--------foreach start------', $member_id);
+            $data = $memberModel->chkNodeParents($uniacid, $member_id);
+            \Log::debug('--------foreach data------', $data->count());
+echo 'end';exit;
+            if (!$data->isEmpty()) {
+                \Log::debug('--------insert init------');
+
+                foreach ($data as $k => $v) {
+                    $attr[] = [
+                        'uniacid'   => $uniacid,
+                        'parent_id'  => $k,
+                        'level'     => $v['depth'] + 1,
+                        'member_id' => $member_id,
+                        'created_at' => time()
+                    ];
+
+                    $child_attr[] = [
+                        'uniacid'   => $uniacid,
+                        'parent_id'  => $member_id,
+                        'level'     => $v['depth'] + 1,
+                        'member_id' => $k,
+                        'created_at' => time()
+                    ];
+                }
+
+                echo '<pre>';print_r($attr);
+                echo '<BR>';
+                echo '<pre>';print_r($child_attr);
+                echo '--------<BR>';
+                //$parentMemberModle->createData($attr);
+                //$childMemberModel->createData($child_attr);
+            }
+        //}
+
+        echo 'end';
+
     }
 
 }

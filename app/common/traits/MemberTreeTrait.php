@@ -156,8 +156,10 @@ trait MemberTreeTrait
         $data = $this->getAllNodes($uniacid);
         $parentList = collect([]);
 
-        if (!empty($data[$subId]) && $data[$subId]['parent_id'] > 0) {
+        if (!empty($data[$subId]) && $subId != $data[$subId]['parent_id'] && $data[$subId]['parent_id'] > 0) {
             $parentList->put($subId, $data[$subId]);
+        } else {
+            file_put_contents(storage_path("logs/" . date('Y-m-d') . "_batchparent.log"), print_r([$subId, $data[$subId]['parent_id'], 'repetition'], 1), FILE_APPEND);
         }
 
         return $parentList;
@@ -308,6 +310,55 @@ trait MemberTreeTrait
             $this->getAncestors($parent->{$this->getTreeNodeIdName()}, $nextDepth);
         }
         return $array;
+    }
+
+    public function chkNodeParents($uniacid, $subId, $depth = 0)
+    {
+        static $array;
+
+        if (!$array instanceof ArrayAccess || $depth == 0) {
+            $array = collect([]);
+        }
+
+        $number = 1;
+        $parent = $this->chkParentLevel($uniacid, $subId);
+
+        //\Log::debug('------parent----', $parent->count());
+        if ($parent) {
+            $nextDepth = $depth + 1;
+
+            foreach ($parent as $val) {
+                $val->depth = $depth;
+
+                $array->put($val->{$this->getTreeNodeParentIdName()}, $val);
+
+                $this->chkNodeParents($uniacid,
+                    $val->{$this->getTreeNodeParentIdName()},
+                    $nextDepth
+                );
+                ++$number;
+            }
+        }
+        return $array;
+    }
+
+    public function chkParentLevel($uniacid, $subId)
+    {
+        $data = $this->getAllNodes($uniacid);
+        $parentList = collect([]);
+
+        if (!empty($data[$subId]) && $data[$subId]['parent_id'] > 0) {
+
+            echo '-------put data--------'; print_r([$subId, $data[$subId]['parent_id']]);
+
+            if ($data[$subId]['parent_id'] == 1487) {
+                echo '-------重复------';exit;
+            }
+
+            $parentList->put($subId, $data[$subId]);
+        }
+
+        return $parentList;
     }
 
 }

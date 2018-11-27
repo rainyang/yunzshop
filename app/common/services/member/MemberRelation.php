@@ -42,9 +42,9 @@ class MemberRelation
         dispatch($job);*/
 
         $pageSize = 100;
-        $member_info = Member::getAllMembersInfosByQueue(\YunShop::app()->uniacid);
+        $member_info = Member::getAllMembersInfosByQueue(\YunShop::app()->uniacid)->distinct()->get();
 
-        $total       = $member_info->count();
+        $total       = count($member_info);
         $total_page  = ceil($total/$pageSize);
 
         \Log::debug('------total-----', $total);
@@ -53,10 +53,8 @@ class MemberRelation
         for ($curr_page = 1; $curr_page <= $total_page; $curr_page++) {
             \Log::debug('------curr_page-----', $curr_page);
             $offset      = ($curr_page - 1) * $pageSize;
-            $member_info = Member::getAllMembersInfosByQueue(\YunShop::app()->uniacid, $pageSize, $offset)->get();
-            \Log::debug('------member_count-----', $member_info->count());
 
-            $job = (new \app\Jobs\memberParentOfMemberJob(\YunShop::app()->uniacid, $member_info));
+            $job = (new \app\Jobs\memberParentOfMemberJob(\YunShop::app()->uniacid, $pageSize, $offset));
             dispatch($job);
         }
     }

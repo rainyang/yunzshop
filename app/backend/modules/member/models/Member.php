@@ -466,7 +466,8 @@ class Member extends \app\common\models\Member
     {
         $result = self::select(['yz_member.member_id', 'yz_member.parent_id'])
             ->join('yz_member', 'mc_members.uid', '=', 'yz_member.member_id')
-            ->where('mc_members.uniacid', $uniacid);
+            ->where('mc_members.uniacid', $uniacid)
+            ->whereNull('yz_member.deleted_at');
 
         if ($limit > 0) {
             $result = $result->offset($offset)->limit($limit)->orderBy('mc_members.uid', 'asc');
@@ -487,6 +488,8 @@ class Member extends \app\common\models\Member
         return self::select(['yz_member.member_id', 'yz_member.parent_id'])
             ->join('yz_member', 'mc_members.uid', '=', 'yz_member.member_id')
             ->where('mc_members.uniacid', $uniacid)
+            ->whereNull('yz_member.deleted_at')
+            ->distinct()
             ->get();
     }
 }
