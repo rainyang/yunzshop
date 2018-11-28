@@ -577,13 +577,13 @@ class MemberController extends BaseController
      */
     public function agentParentExport()
     {
-        $file_name = date('Ymdhis', time()) . '会员下级导出';
-        $export_data = [];
-        $member_id = request()->member_id;
+        $file_name = date('Ymdhis', time()) . '会员上级导出';
+        $export_data = ['ID', '昵称', '真实姓名', '电话'];
+        $member_id = request()->id;
 
-        $child = MemberParent::where('member_id', $member_id)->get();
+        $child = MemberParent::where('member_id', $member_id)->with(['hasOneMember'])->get();
         foreach ($child as $key => $item) {
-            $member = $item->haoOneMember;
+            $member = $item->hasOneMember;
             $export_data[$key + 1] = [
                 $member->uid,
                 $member->nickname,
@@ -668,7 +668,7 @@ class MemberController extends BaseController
         foreach ($levelId as $k => $value) {
             foreach ($member->hasManyParent as $key => $parent) {
                 if ($parent->hasOneTeamDividend->hasOneLevel->id == $value) {
-                    $data[$k] = $parent->hasOneMember->nickname.'/'.$parent->hasOneMember->realname.' '.$parent->hasOneMember->mobile;
+                    $data[$k] = $parent->hasOneMember->nickname.' '.$parent->hasOneMember->realname.' '.$parent->hasOneMember->mobile;
                     break;
                 }
             }
