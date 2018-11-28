@@ -668,7 +668,7 @@ class MemberController extends BaseController
         foreach ($levelId as $k => $value) {
             foreach ($member->hasManyParent as $key => $parent) {
                 if ($parent->hasOneTeamDividend->hasOneLevel->id == $value) {
-                    $data[$k] = $parent->hasOneMember->nickname;
+                    $data[$k] = $parent->hasOneMember->nickname.'/'.$parent->hasOneMember->realname.' '.$parent->hasOneMember->mobile;
                     break;
                 }
             }
