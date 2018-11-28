@@ -25,6 +25,7 @@ class OrderDiscount
     public $orderCoupons;
     public $orderDiscounts;
 
+
     public function __construct(PreGeneratedOrder $order)
     {
         $this->order = $order;
