@@ -54,9 +54,10 @@ class OrderPaidEventQueueJob implements ShouldQueue
             if($this->order->orderPaidJob->status == 'finished'){
                 return;
             }
-            event(new AfterOrderPaidEvent($this->order));
             $this->order->orderPaidJob->status = 'finished';
             $this->order->orderPaidJob->save();
+            event(new AfterOrderPaidEvent($this->order));
+
         });
     }
 }
