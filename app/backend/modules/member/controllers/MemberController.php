@@ -513,7 +513,7 @@ class MemberController extends BaseController
     public function agentExport()
     {
         $file_name = date('Ymdhis', time()) . '会员下级导出';
-        $export_data = ['ID', '昵称', '真实姓名', '电话'];
+        $export_data[0] = ['ID', '昵称', '真实姓名', '电话'];
         $member_id = request()->id;
         $child = MemberParent::where('parent_id', $member_id)->with('hasOneChildMember')->get();
         foreach ($child as $key => $item) {
