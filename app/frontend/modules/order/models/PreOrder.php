@@ -5,6 +5,7 @@ namespace app\frontend\modules\order\models;
 use app\common\models\BaseModel;
 use app\common\models\DispatchType;
 use app\common\models\Member;
+use app\common\modules\orderGoods\OrderGoodsCollection;
 use app\common\requests\Request;
 use app\frontend\models\Order;
 use app\frontend\modules\deduction\OrderDeduction;
@@ -76,17 +77,15 @@ class PreOrder extends Order
 
     /**
      * @param Member $member
-     * @param PreOrderGoodsCollection $orderGoods
+     * @param OrderGoodsCollection $orderGoods
      * @param Request|null $request
      * @return $this
      */
-    public function init(Member $member, PreOrderGoodsCollection $orderGoods, Request $request = null)
+    public function init(Member $member, OrderGoodsCollection $orderGoods, Request $request = null)
     {
         $this->request = $request;
-        
-        $this->setRelation('belongsToMember', $member);
+        $this->setMember($member);
         $this->beforeCreating();
-
         $this->setOrderGoods($orderGoods);
         /**
          * @var PreOrder $order
@@ -95,6 +94,14 @@ class PreOrder extends Order
         return $this;
     }
 
+    /**
+     * @param $member
+     */
+    private function setMember($member){
+        $this->setRelation('belongsToMember', $member);
+        $this->uid = $this->belongsToMember->uid;
+        $this->uniacid = $this->getUniacid();
+    }
     /**
      * 获取request对象
      * @return Request
@@ -124,9 +131,9 @@ class PreOrder extends Order
 
     /**
      * 载入订单商品集合
-     * @param PreOrderGoodsCollection $orderGoods
+     * @param OrderGoodsCollection $orderGoods
      */
-    public function setOrderGoods(PreOrderGoodsCollection $orderGoods)
+    public function setOrderGoods(OrderGoodsCollection $orderGoods)
     {
         $this->setRelation('orderGoods', $orderGoods);
 
@@ -192,8 +199,6 @@ class PreOrder extends Order
             'goods_total' => $this->getGoodsTotal(),//订单商品总数
             'order_sn' => OrderService::createOrderSN(),//订单编号
             'create_time' => time(),
-            'uid' => $this->belongsToMember->uid,
-            'uniacid' => $this->getUniacid(),
             'is_virtual' => $this->isVirtual(),//是否是虚拟商品订单
             'note' => $this->getRequest()->input('note',''),//是否是虚拟商品订单
             'shop_name' => $this->getShopName(),//是否是虚拟商品订单

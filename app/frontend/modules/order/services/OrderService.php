@@ -9,15 +9,12 @@
 
 namespace app\frontend\modules\order\services;
 
-use app\common\events\order\OnPreGenerateOrderCreatingEvent;
 use app\common\exceptions\AppException;
 use app\common\models\Order;
 
 use app\common\models\order\OrderGoodsChangePriceLog;
-use app\frontend\models\Member;
+use app\common\modules\orderGoods\OrderGoodsCollection;
 use \app\frontend\models\MemberCart;
-use app\frontend\modules\memberCart\MemberCartCollection;
-use app\frontend\modules\order\models\PreOrder;
 use app\frontend\modules\order\services\behavior\OrderCancelPay;
 use app\frontend\modules\order\services\behavior\OrderCancelSend;
 use app\frontend\modules\order\services\behavior\OrderChangePrice;
@@ -29,8 +26,6 @@ use app\frontend\modules\order\services\behavior\OrderPay;
 use app\frontend\modules\order\services\behavior\OrderReceive;
 use app\frontend\modules\order\services\behavior\OrderSend;
 use app\frontend\modules\orderGoods\models\PreOrderGoods;
-use app\frontend\modules\orderGoods\models\PreOrderGoodsCollection;
-use app\frontend\modules\shop\services\ShopService;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -42,7 +37,7 @@ class OrderService
     /**
      * 获取订单商品对象数组
      * @param Collection $memberCarts
-     * @return PreOrderGoodsCollection
+     * @return OrderGoodsCollection
      * @throws \Exception
      */
     public static function getOrderGoods(Collection $memberCarts)
@@ -72,7 +67,7 @@ class OrderService
             return $orderGoods;
         });
 
-        return new PreOrderGoodsCollection($result);
+        return new OrderGoodsCollection($result);
     }
 
     /**

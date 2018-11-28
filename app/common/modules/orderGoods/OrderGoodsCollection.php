@@ -6,8 +6,9 @@
  * Time: 3:52 PM
  */
 
-namespace app\common\modules\orderGoods\models;
+namespace app\common\modules\orderGoods;
 
+use app\common\modules\orderGoods\models\PreOrderGoods;
 use app\framework\Database\Eloquent\Collection;
 
 class OrderGoodsCollection extends Collection

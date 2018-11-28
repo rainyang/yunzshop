@@ -8,10 +8,9 @@
 
 namespace app\frontend\modules\orderGoods\models;
 
+use app\common\modules\orderGoods\OrderGoodsCollection;
 
-use app\framework\Database\Eloquent\Collection;
-
-class PreOrderGoodsCollection extends Collection
+class PreOrderGoodsCollection extends OrderGoodsCollection
 {
 
 }

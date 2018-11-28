@@ -11,10 +11,14 @@ use app\common\helpers\Url;
  * @property string $name
  * @property string $description
  * @property string $title
- * @property array  $author
+ * @property array $author
  */
 class Plugin implements Arrayable, ArrayAccess
 {
+    /**
+     * @var PluginApplication
+     */
+    protected $pluginApp;
     /**
      * The full directory of this plugin.
      *
@@ -119,6 +123,13 @@ class Plugin implements Arrayable, ArrayAccess
         return $this;
     }
 
+    public function getId()
+    {
+        return array_first(config('shop-foundation.plugin'), function ($v) {
+            return $v['name'] == $this->name;
+        });
+    }
+
     /**
      * @return bool
      */
@@ -158,7 +169,7 @@ class Plugin implements Arrayable, ArrayAccess
 
     public function getViewPathByFileName($filename)
     {
-        return $this->path."/views/$filename";
+        return $this->path . "/views/$filename";
     }
 
     public function getConfigView()
@@ -222,7 +233,7 @@ class Plugin implements Arrayable, ArrayAccess
     /**
      * Determine if the given option option exists.
      *
-     * @param  string  $key
+     * @param  string $key
      * @return bool
      */
     public function offsetExists($key)
@@ -233,7 +244,7 @@ class Plugin implements Arrayable, ArrayAccess
     /**
      * Get a option option.
      *
-     * @param  string  $key
+     * @param  string $key
      * @return mixed
      */
     public function offsetGet($key)
@@ -243,10 +254,9 @@ class Plugin implements Arrayable, ArrayAccess
 
     /**
      * Set a option option.
-     *
-     * @param  string  $key
-     * @param  mixed  $value
-     * @return void
+     * @param mixed $key
+     * @param mixed $value
+     * @return array
      */
     public function offsetSet($key, $value)
     {
@@ -256,7 +266,7 @@ class Plugin implements Arrayable, ArrayAccess
     /**
      * Unset a option option.
      *
-     * @param  string  $key
+     * @param  string $key
      * @return void
      */
     public function offsetUnset($key)
@@ -271,15 +281,32 @@ class Plugin implements Arrayable, ArrayAccess
      */
     public function toArray()
     {
-        return (array) array_merge([
-            'name'          => $this->name,
-            'version'       => $this->getVersion(),
-            'path'          => $this->path
+        return (array)array_merge([
+            'name' => $this->name,
+            'version' => $this->getVersion(),
+            'path' => $this->path
         ], $this->packageInfo);
     }
 
     public function getEnabled()
     {
         return $this->enabled;
+    }
+
+    public function app()
+    {
+        if (!isset($this->pluginApp)) {
+
+            $pluginApplicationClass = $this->namespace . '\\' . 'PluginApplication';
+
+            if (class_exists($pluginApplicationClass)) {
+                $this->pluginApp = new $pluginApplicationClass($this);
+            } else {
+
+                $this->pluginApp = new PluginApplication($this);
+            }
+            $this->pluginApp->init();
+        }
+        return $this->pluginApp;
     }
 }

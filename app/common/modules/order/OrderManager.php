@@ -6,13 +6,12 @@
  * Time: 下午3:11
  */
 
-namespace app\frontend\modules\order\services;
+namespace app\common\modules\order;
 
 use app\backend\modules\order\models\Order;
 use app\common\models\order\OrderCoupon;
 use app\common\models\order\OrderDeduction;
 use app\common\models\order\OrderDiscount;
-use app\common\modules\order\OrderOperationsCollector;
 use app\common\modules\trade\models\Trade;
 use app\frontend\models\MemberCart;
 use app\frontend\models\OrderAddress;
@@ -28,10 +27,7 @@ class OrderManager extends Container
     public function __construct()
     {
         $this->bindModels();
-        // 订单service
-        $this->singleton('OrderService', function ($orderManager) {
-            return new OrderService();
-        });
+
         $this->singleton(OrderOperationsCollector::class, function ($orderManager) {
             return new OrderOperationsCollector();
         });
@@ -86,12 +82,5 @@ class OrderManager extends Container
             return new Trade($attributes);
 
         });
-    }
-
-    public function getPreOrder($pluginId = 0)
-    {
-        if(isset($pluginId)){
-            return
-        }
     }
 }

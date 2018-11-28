@@ -13,6 +13,7 @@ use app\common\models\BaseModel;
 use app\common\models\Member;
 use app\common\models\MemberCart;
 use app\common\modules\trade\models\Trade;
+use app\common\services\Plugin;
 use app\framework\Database\Eloquent\Collection;
 use app\frontend\modules\order\models\PreOrder;
 use app\frontend\modules\order\services\OrderService;
@@ -95,12 +96,12 @@ class MemberCartCollection extends Collection
     /**
      * 根据自身创建plugin_id对应类型的订单,当member已经实例化时传入member避免重复查询
      * @param Member|null $member
-     * @param int $plugin_id
+     * @param Plugin|null $plugin
      * @return PreOrder|bool
      * @throws AppException
      * @throws \Exception
      */
-    public function getOrder($plugin_id = 0, Member $member = null)
+    public function getOrder(Plugin $plugin = null, Member $member = null)
     {
         if ($this->isEmpty()) {
             return false;
@@ -118,7 +119,10 @@ class MemberCartCollection extends Collection
         /**
          * @var PreOrder $order
          */
-        $order = app('OrderManager')->getPreOrder($plugin_id);
+        $app = $plugin && $plugin->app()->bound('OrderManager') ? $plugin->app() : app();
+
+        $order = $app->make('OrderManager')->make('PreOrder');
+
         $order->init($member, $orderGoodsCollection);
 
         return $order;
@@ -151,5 +155,10 @@ class MemberCartCollection extends Collection
     public function first(callable $callback = null, $default = null)
     {
         return parent::first($callback, $default);
+    }
+
+    public function getPlugin()
+    {
+        return $this->first()->goods->getPlugin();
     }
 }

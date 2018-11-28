@@ -15,14 +15,10 @@ use app\common\modules\express\KDN;
 use app\common\managers\ModelExpansionManager;
 use app\common\models\BaseModel;
 use app\common\modules\status\StatusContainer;
-use app\framework\Log\DebugLog;
-use app\framework\Log\ErrorLog;
-use app\framework\Log\Log;
-use app\framework\Log\TraceLog;
 use app\frontend\modules\coin\CoinManager;
 use app\frontend\modules\deduction\DeductionManager;
 use app\frontend\modules\goods\services\GoodsManager;
-use app\frontend\modules\order\services\OrderManager;
+use app\common\modules\order\OrderManager;
 use app\frontend\modules\payment\managers\PaymentManager;
 use Illuminate\Support\ServiceProvider;
 

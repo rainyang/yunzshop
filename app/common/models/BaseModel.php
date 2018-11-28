@@ -426,4 +426,10 @@ class BaseModel extends Model
             throw new AppException($validator->errors()->first());
         }
     }
+    public function getPlugin(){
+        if(isset($this->plugin_id) && $this->plugin_id > 0){
+            return app('plugins')->findPlugin($this->plugin_id);
+        }
+        return null;
+    }
 }

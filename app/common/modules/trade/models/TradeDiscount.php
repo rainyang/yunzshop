@@ -28,7 +28,7 @@ class TradeDiscount extends BaseModel
 
     private function getCoupons()
     {
-        return $this->trade->order_data->getMemberCoupons();
+        return $this->trade->orders->getMemberCoupons();
 
     }
 
