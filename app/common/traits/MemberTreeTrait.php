@@ -9,6 +9,7 @@
 namespace app\common\traits;
 
 
+use app\common\services\member\MemberRelation;
 use ArrayAccess;
 use BadMethodCallException;
 use Illuminate\Support\Collection;
@@ -221,7 +222,6 @@ trait MemberTreeTrait
         $number = 1;
         $parent = $this->getParentLevel($uniacid, $subId);
 
-        //\Log::debug('------parent----', $parent->count());
         if ($parent) {
             $nextDepth = $depth + 1;
 
@@ -320,26 +320,31 @@ trait MemberTreeTrait
             $array = collect([]);
         }
 
-        $number = 1;
-        $parent = $this->chkParentLevel($uniacid, $subId);
+        if (!in_array($subId, $this->filter)) {
+            $this->filter[] = $subId;
 
-        //\Log::debug('------parent----', $parent->count());
-        if ($parent) {
-            $nextDepth = $depth + 1;
+            $number = 1;
+            $parent = $this->chkParentLevel($uniacid, $subId);
 
-            foreach ($parent as $val) {
-                $val->depth = $depth;
+            if ($parent) {
+                $nextDepth = $depth + 1;
 
-                $array->put($val->{$this->getTreeNodeParentIdName()}, $val);
+                foreach ($parent as $val) {
+                    $val->depth = $depth;
 
-                $this->chkNodeParents($uniacid,
-                    $val->{$this->getTreeNodeParentIdName()},
-                    $nextDepth
-                );
-                ++$number;
+                    $array->put($val->{$this->getTreeNodeParentIdName()}, $val);
+
+                    $this->chkNodeParents($uniacid,
+                        $val->{$this->getTreeNodeParentIdName()},
+                        $nextDepth
+                    );
+                    ++$number;
+                }
             }
+        } else {
+            \Log::debug('---------重复上级------', [$subId, $array]);
+            file_put_contents(storage_path("logs/parenterror.log"), print_r($subId . ',', 1), FILE_APPEND);
         }
-        return $array;
     }
 
     public function chkParentLevel($uniacid, $subId)
@@ -347,14 +352,7 @@ trait MemberTreeTrait
         $data = $this->getAllNodes($uniacid);
         $parentList = collect([]);
 
-        if (!empty($data[$subId]) && $data[$subId]['parent_id'] > 0) {
-
-            echo '-------put data--------'; print_r([$subId, $data[$subId]['parent_id']]);
-
-            if ($data[$subId]['parent_id'] == 1487) {
-                echo '-------重复------';exit;
-            }
-
+        if (!empty($data[$subId]) && $subId != $data[$subId]['parent_id'] && $data[$subId]['parent_id'] > 0) {
             $parentList->put($subId, $data[$subId]);
         }
 

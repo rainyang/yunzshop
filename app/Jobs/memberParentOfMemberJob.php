@@ -49,7 +49,7 @@ class memberParentOfMemberJob implements ShouldQueue
         $memberModel = new Member();
         $memberModel->_allNodes = collect([]);
 
-        \Log::debug('--------------清空表数据------------');
+        //\Log::debug('--------------清空表数据------------');
         //$parentMemberModle->DeletedData();
 
         $memberInfo = $memberModel->getTreeAllNodes($uniacid);

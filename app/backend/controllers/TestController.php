@@ -365,12 +365,15 @@ echo '<pre>'; print_r($attr);
         echo 'ok';
     }
 
-    public function chkSynRun($uniacid)
+    public function chkSynRun()
     {
-        $parentMemberModle = new ParentOfMember();
-        $childMemberModel = new ChildrenOfMember();
-        $memberModel = new Member();
-        $memberModel->_allNodes = collect([]);
+        //$uniacid = \YunShop::app()->uniacid;
+
+        (new Member())->chkRelationData();
+
+
+
+        /*$memberModel->_allNodes = collect([]);
 
         $memberInfo = $memberModel->getTreeAllNodes($uniacid);
 
@@ -384,46 +387,14 @@ echo '<pre>'; print_r($attr);
         }
 
         \Log::debug('--------queue synRun -----');
-        $member_id = 1487;
-        //foreach ($memberInfo as $key => $val) {
-            $attr = [];
-            $child_attr = [];
-            echo $member_id . '<BR>';
-            \Log::debug('--------foreach start------', $member_id);
-            $data = $memberModel->chkNodeParents($uniacid, $member_id);
-            \Log::debug('--------foreach data------', $data->count());
-echo 'end';exit;
-            if (!$data->isEmpty()) {
-                \Log::debug('--------insert init------');
 
-                foreach ($data as $k => $v) {
-                    $attr[] = [
-                        'uniacid'   => $uniacid,
-                        'parent_id'  => $k,
-                        'level'     => $v['depth'] + 1,
-                        'member_id' => $member_id,
-                        'created_at' => time()
-                    ];
+        foreach ($memberInfo as $key => $val) {
+            \Log::debug('--------foreach start------', $val->member_id);
+            $memberModel->chkNodeParents($uniacid, $val->member_id);
 
-                    $child_attr[] = [
-                        'uniacid'   => $uniacid,
-                        'parent_id'  => $member_id,
-                        'level'     => $v['depth'] + 1,
-                        'member_id' => $k,
-                        'created_at' => time()
-                    ];
-                }
+        }
 
-                echo '<pre>';print_r($attr);
-                echo '<BR>';
-                echo '<pre>';print_r($child_attr);
-                echo '--------<BR>';
-                //$parentMemberModle->createData($attr);
-                //$childMemberModel->createData($child_attr);
-            }
-        //}
-
-        echo 'end';
+        echo 'end';*/
 
     }
 

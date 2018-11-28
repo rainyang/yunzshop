@@ -476,6 +476,19 @@ class Member extends \app\common\models\Member
         return $result;
     }
 
+    public function chkRelationByMemberIdAndParentId()
+    {
+        return self::select(['member_id', 'parent_id'])
+            ->uniacid()
+            ->join('yz_member', function ($join) {
+                $join->on('member_id', '=', 'uid')
+                     ->on('member_id', '=', 'parent_id')
+                     ->whereNull('deleted_at');
+            })
+            ->distinct()
+            ->get();
+    }
+
     /**
      * 获取待处理的原始节点数据
      *
@@ -485,11 +498,65 @@ class Member extends \app\common\models\Member
      */
     public function getTreeAllNodes($uniacid)
     {
-        return self::select(['yz_member.member_id', 'yz_member.parent_id'])
-            ->join('yz_member', 'mc_members.uid', '=', 'yz_member.member_id')
+        return self::select(['member_id', 'parent_id'])
+            ->join('yz_member', function ($join) {
+                $join->on('uid', '=', 'member_id')
+                     ->whereNull('deleted_at');
+            })
             ->where('mc_members.uniacid', $uniacid)
-            ->whereNull('yz_member.deleted_at')
             ->distinct()
             ->get();
+    }
+
+    public function chkRelationData()
+    {
+        $uniacid = \YunShop::app()->uniacid;
+
+        $this->_allNodes = collect([]);
+        $error = [];
+
+        $m_relation = $this->chkRelationByMemberIdAndParentId();
+
+        if (!is_null($m_relation)) {
+            foreach ($m_relation as $m) {
+                $error[] = $m->parent_id;
+            }
+        }
+
+        if (!empty($error)) {
+            dd($error);
+        }
+
+        $memberInfo = $this->getTreeAllNodes($uniacid);
+
+        if ($memberInfo->isEmpty()) {
+            \Log::debug('----is empty-----');
+            return;
+        }
+
+        foreach ($memberInfo as $item) {
+            $this->_allNodes->put($item->member_id, $item);
+        }
+
+        \Log::debug('--------queue synRun -----');
+
+        foreach ($memberInfo as $key => $val) {
+            $this->filter = [];
+
+            \Log::debug('--------foreach start------', $val->member_id);
+            $this->chkNodeParents($uniacid, $val->member_id);
+        }
+
+        if (file_exists(storage_path("logs/parenterror.log"))) {
+            $error = file_get_contents(storage_path("logs/parenterror.log"));
+
+            $error = array_unique(explode(',', $error));
+
+            foreach ($error as $val) {
+                if (!empty($val)) {
+                    echo $val;
+                }
+            }
+        }
     }
 }
