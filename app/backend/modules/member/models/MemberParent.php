@@ -20,8 +20,8 @@ class MemberParent extends \app\common\models\member\MemberParent
             'hasOneFans'
         ]);
         if (app('plugins')->isEnabled('team-dividend')) {
-            $query->with(['hasOneTeamDividend', function($q) {
-                $q->with('hasOneLevel');
+            $query->with(['hasOneTeamDividend' => function($q) {
+                $q->with(['hasOneLevel']);
             }]);
         }
 

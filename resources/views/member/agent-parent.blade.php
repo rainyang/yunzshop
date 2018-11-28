@@ -102,7 +102,7 @@
                         <tr>
                             <td>{{$row['parent_id']}}</td>
                             <td>{{ $row['level'] }}级上级</td>
-                            <td>{{ $row['has_one_team_dividend']['has_one_level']['level_name'] }}</td>
+                            <td>{{ $row['has_one_team_dividend']['has_one_level']['level_name'] ?: '不是经销商' }}</td>
                             <td  style="text-align: center;">
                                 @if(!empty($row['has_one_member']['avatar']))
                                     @if(!empty($row['has_one_member']['avatar']))
