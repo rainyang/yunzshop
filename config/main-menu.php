@@ -1048,6 +1048,18 @@ return [
                         'parents'       => ['Member', 'member_all',],
                     ],
 
+                    'member_member_agent_parent' => [
+                        'name'          => '推广上线',
+                        'url'           => 'member.member.agent-parent',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_member_agent',
+                        'parents'       => ['Member', 'member_all',],
+                    ],
+
                     'member_member_black' => [
                         'name'          => '加入黑名单',
                         'url'           => 'member.member.black',
