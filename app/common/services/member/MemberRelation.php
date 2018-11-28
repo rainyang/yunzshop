@@ -11,7 +11,6 @@ namespace app\common\services\member;
 
 use app\backend\modules\member\models\Member;
 use app\backend\modules\member\models\MemberShopInfo;
-use app\common\events\member\MemberRelationEvent;
 use app\common\exceptions\ShopException;
 use app\common\models\member\ChildrenOfMember;
 use app\common\models\member\ParentOfMember;
@@ -238,68 +237,6 @@ class MemberRelation
 
             file_put_contents(storage_path("logs/" . date('Y-m-d') . "_changerelation.log"), print_r($member_id . '-'. $parent_relation[0]->parent_id . '-'. $parent_id . PHP_EOL, 1), FILE_APPEND);
             $this->changeMemberOfRelation($member_id, $parent_relation[0]->parent_id, $parent_id);
-        }
-    }
-
-
-    public function createBuild($member_id, $parent_id)
-    {
-        $parent_relation = $this->hasRelationOfParent($member_id, 1);
-        $child_relation = $this->hasRelationOfChild($member_id);
-//dd($child_relation);
-
-        if ($parent_relation->isEmpty() && $child_relation->isEmpty()) {
-            $this->addMemberOfRelation($member_id, $parent_id);
-        }
-    }
-
-    public function changeBuild($member_id, $parent_id)
-    {
-        $parent_relation = $this->hasRelationOfParent($member_id, 1);
-        $child_relation = $this->hasRelationOfChild($member_id);
-//dd($child_relation);
-
-        if ($parent_id > 0) {
-            $this->map_relaton[] = [$parent_id, $member_id];
-
-            if (!$child_relation->isEmpty()) {
-                foreach ($child_relation as $rows) {
-                    //  dd($rows->child);
-                    $ids[] = $rows['child_id'];
-                }
-//dd($ids);
-                $memberInfo = MemberShopInfo::getParentOfMember($ids);
-//dd($ids, $memberInfo);
-                foreach ($memberInfo as $val) {
-                    $this->map_relaton[] = [$val['parent_id'], $val['member_id']];
-                }
-
-                $parentInfo = $this->parent->getParentsOfMember($parent_id);
-
-                if (!is_null($parentInfo)) {
-                    $parentTotal = count($parentInfo);
-
-                    foreach ($parentInfo as $rows) {
-                        $this->map_parent[$parentTotal - $rows['level']] = $rows['parent_id'];
-                    }
-                }
-
-                ksort($this->map_parent);
-            }
-//dd($this->map_relaton);
-
-            if (!$parent_relation->isEmpty()) {
-                $o_parent_id = $parent_relation[0]->parent_id;
-            } else {
-                $o_parent_id = 0;
-            }
-
-
-            if ($parent_id != $o_parent_id) {
-                $this->changeMemberOfRelation($member_id, $o_parent_id, $parent_id);
-            }
-        } else {
-
         }
     }
 
