@@ -122,6 +122,20 @@ class Member extends BackendModel
     }
 
     /**
+     * 公众号会员
+     *
+     * @return mixed
+     */
+
+    public function getMemberId($memberIds){
+          return self::select(['uid'])
+            ->uniacid()
+            ->whereIn('uid', $memberIds)->get()->map(function ($value) {
+                  return $value;
+              })->toArray();;
+    }
+
+    /**
      * 角色
      *
      * 会员-分销商
