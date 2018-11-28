@@ -116,7 +116,7 @@ class PluginManager
     public function findPlugin($id)
     {
         return $this->getPlugins()->first(function (Plugin $plugin) use ($id) {
-            if(is_null($plugin->getId())){
+            if ('' === $plugin->getId()) {
                 return false;
             }
             return $plugin->getId() == $id;

@@ -860,6 +860,4 @@ class Order extends BaseModel
             }
         });
     }
-
-
 }

@@ -125,9 +125,17 @@ class Plugin implements Arrayable, ArrayAccess
 
     public function getId()
     {
-        return array_first(config('shop-foundation.plugin'), function ($v) {
-            return $v['name'] == $this->name;
-        });
+        if(!isset($this->id)){
+            $idConfig =  array_first(config('shop-foundation.plugin'), function ($v) {
+                return $v['name'] == $this->name;
+            });
+            if($idConfig){
+                return $idConfig['id'];
+            }else{
+                return '';
+            }
+        }
+        return $this->id;
     }
 
     /**
