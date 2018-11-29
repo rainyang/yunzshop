@@ -141,7 +141,8 @@
                                         <li><a  href="{{yzWebUrl('order.list', ['search[ambiguous][field]' => 'member','search[ambiguous][string]'=>'uid:'.$row['parent_id']])}}" target="_blank" title='会员订单'><i class='fa fa-list'></i> 会员订单</a></li>
                                         <li><a href="{{yzWebUrl('finance.point-recharge',['id'=>$row['parent_id']])}}" title='充值积分'><i class='fa fa-credit-card'></i> 充值积分</a></li>
                                         <li><a href="{{yzWebUrl('finance.balance.recharge', ['id'=>$row['parent_id']])}}" title='充值余额'><i class='fa fa-money'></i> 充值余额 </a></li>
-                                        <li><a href="{{yzWebUrl('member.member.agent', ['id'=>$row['parent_id']])}}" title='我的下线'><i class='fa fa-exchange'></i> 推广下线 </a></li>
+                                        <li><a href="{{yzWebUrl('member.member.agent-old', ['id'=>$row['parent_id']])}}" title='我的下线'><i class='fa fa-exchange'></i> 推广下线 </a></li>
+                                        <li><a href="{{yzWebUrl('member.member.agent', ['id'=>$row['parent_id']])}}" title='团队下线'><i class='fa fa-exchange'></i> 团队下线 </a></li>
                                         <li><a href="{{yzWebUrl('member.member.agentParent', ['id'=>$row['parent_id']])}}" title='我的上线'><i class='fa fa-exchange'></i> 我的上线 </a></li>
                                         @if($row['yz_member']['is_black']==1)
                                             <li><a href="{{yzWebUrl('member.member.black', ['id' => $row['parent_id'],'black'=>0])}}" title='取消黑名单'><i class='fa fa-minus-square'></i> 取消黑名单</a></li>

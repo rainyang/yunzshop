@@ -1036,8 +1036,20 @@ return [
                         'parents'       => ['Member', 'member_all',],
                     ],
 
-                    'member_member_agent' => [
+                    'member_member_agent_old' => [
                         'name'          => '推广下线',
+                        'url'           => 'member.member.agent-old',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_member_agent',
+                        'parents'       => ['Member', 'member_all',],
+                    ],
+
+                    'member_member_agent' => [
+                        'name'          => '团队下线',
                         'url'           => 'member.member.agent',
                         'url_params'    => '',
                         'permit'        => 1,

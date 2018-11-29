@@ -465,7 +465,7 @@ class MemberController extends BaseController
 
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $this->pageSize);
 
-        return view('member.agent', [
+        return view('member.agent-old', [
             'member' => $member_info,
             'list'  => $list,
             'pager' => $pager,
