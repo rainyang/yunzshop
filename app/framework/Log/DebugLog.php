@@ -10,7 +10,7 @@ namespace app\framework\Log;
 
 class DebugLog extends BaseLog
 {
-    protected $logDir = 'logs/debug.log';
+    protected $logDir = 'logs/debug/debug.log';
     public function add($message, array $content = [])
     {
         $this->log->debug($message, $content);

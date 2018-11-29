@@ -566,16 +566,19 @@ class MemberController extends ApiController
             }
 
             if (empty($close_invitecode)) {
+
                 $invitecode = MemberService::inviteCode();
 
                 if ($invitecode['status'] != 1) {
                     return $this->errorJson($invitecode['json']);
                 }
 
-                //邀请码-关系
-                $parent_id = \app\common\models\Member::getMemberIdForInviteCode();
+                file_put_contents(storage_path("logs/" . date('Y-m-d') . "_invitecode.log"), print_r(\YunShop::app()->getMemberId() . '-'. \YunShop::request()->invite_code . '-bind' . PHP_EOL, 1), FILE_APPEND);
 
+                //邀请码
+                $parent_id = \app\common\models\Member::getMemberIdForInviteCode();
                 if (!is_null($parent_id)) {
+                    file_put_contents(storage_path("logs/" . date('Y-m-d') . "_invitecode.log"), print_r(\YunShop::app()->getMemberId() . '-'. \YunShop::request()->invite_code . '-'. $parent_id . '-bind' . PHP_EOL, 1), FILE_APPEND);
                     MemberShopInfo::change_relation($uid, $parent_id);
                 }
             }

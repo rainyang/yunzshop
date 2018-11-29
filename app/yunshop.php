@@ -548,7 +548,8 @@ class YunApp extends YunComponent
      */
     public function getMemberId()
     {
-        if (config('app.debug')) {
+        if (1||config('app.debug')) {
+            //dump($_GET);
             if (isset($_GET['test_uid'])) {
                 return $_GET['test_uid'];
             }

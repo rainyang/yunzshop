@@ -9,41 +9,17 @@
 namespace app\backend\controllers;
 
 
-use app\backend\modules\charts\models\OrderStatistics;
-use app\backend\modules\charts\modules\member\services\LowerCountService;
-use app\backend\modules\charts\modules\member\services\LowerOrderService;
-use app\backend\models\Withdraw;
-use app\backend\modules\charts\models\OrderIncomeCount;
-use app\backend\modules\charts\modules\order\services\OrderStatisticsService;
 use app\backend\modules\charts\modules\phone\services\PhoneAttributionService;
+use app\backend\modules\member\models\Member;
 use app\common\components\BaseController;
-use app\common\events\member\MemberCreateRelationEvent;
-use app\common\events\member\MemberRelationEvent;
-use app\common\events\order\AfterOrderCanceledEvent;
-use app\common\events\order\AfterOrderCreatedEvent;
-use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\models\Income;
-use app\common\models\Member;
 use app\common\models\member\ChildrenOfMember;
 use app\common\models\member\ParentOfMember;
-use app\common\models\Order;
-use app\common\models\OrderGoods;
-use app\common\models\OrderPay;
-use app\common\models\Flow;
-use app\common\models\Setting;
 use app\common\services\member\MemberRelation;
-use app\common\repositories\ExpressCompany;
 use app\common\services\MessageService;
-use app\framework\Database\Eloquent\Collection;
 use app\frontend\modules\member\models\SubMemberModel;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
-use Yunshop\Commission\Listener\OrderCreatedListener;
-use Yunshop\Mryt\models\MrytLevelModel;
-use Yunshop\StoreCashier\common\models\CashierOrder;
-use Yunshop\StoreCashier\common\models\StoreOrder;
-use Yunshop\Supplier\common\models\SupplierOrder;
 
 
 class TestController extends BaseController
@@ -64,7 +40,6 @@ class TestController extends BaseController
     public function index()
     {
         $a = Carbon::createFromTimestamp(1503488629)->diffInDays(Carbon::createFromTimestamp(1504069595), true);
-        dd($a);
         $member_relation = new MemberRelation();
 
         $relation = $member_relation->hasRelationOfParent(66, 5, 1);
@@ -217,18 +192,92 @@ class TestController extends BaseController
     public function pp()
     {
 
-        //$this->synRun(5, '');exit;
+        $member_info = Member::getAllMembersInfosByQueue(\YunShop::app()->uniacid);
 
-        $member_relation = new MemberRelation();
+        $total       = $member_info->distinct()->count();
 
-        $member_relation->createChildOfMember();
+        dd($total);
+
+        $this->chkSynRun(10);exit;
+
+        /*$member_relation = new MemberRelation();
+
+        $member_relation->createChildOfMember();*/
     }
 
-    public function synRun($uniacid, $memberInfo)
+    public function synRun($uniacid)
     {
-        $memberModel = new \app\backend\modules\member\models\Member();
-        $childMemberModel = new ChildrenOfMember();
         $parentMemberModle = new ParentOfMember();
+        $childMemberModel = new ChildrenOfMember();
+        $memberModel = new Member();
+        $memberModel->_allNodes = collect([]);
+
+        \Log::debug('--------------清空表数据------------');
+        //$parentMemberModle->DeletedData();
+
+        $memberInfo = $memberModel->getTreeAllNodes($uniacid);
+dd($memberInfo);
+        if ($memberInfo->isEmpty()) {
+            \Log::debug('----is empty-----');
+            return;
+        }
+
+        foreach ($memberInfo as $item) {
+            $memberModel->_allNodes->put($item->member_id, $item);
+        }
+
+        \Log::debug('--------queue synRun -----');
+dd(1);
+        foreach ($memberInfo as $key => $val) {
+            $attr = [];
+            $child_attr = [];
+echo $val->member_id . '<BR>';
+            \Log::debug('--------foreach start------', $val->member_id);
+            $data = $memberModel->chktNodeParents($uniacid, $val->member_id);
+            \Log::debug('--------foreach data------', $data->count());
+
+            if (!$data->isEmpty()) {
+                \Log::debug('--------insert init------');
+
+                foreach ($data as $k => $v) {
+                    $attr[] = [
+                        'uniacid'   => $uniacid,
+                        'parent_id'  => $k,
+                        'level'     => $v['depth'] + 1,
+                        'member_id' => $val->member_id,
+                        'created_at' => time()
+                    ];
+
+                    $child_attr[] = [
+                        'uniacid'   => $uniacid,
+                        'parent_id'  => $val->member_id,
+                        'level'     => $v['depth'] + 1,
+                        'member_id' => $k,
+                        'created_at' => time()
+                    ];
+                }
+
+echo '<pre>';print_r($attr);
+echo '<BR>';
+echo '<pre>';print_r($child_attr);
+echo '--------<BR>';
+                //$parentMemberModle->createData($attr);
+                //$childMemberModel->createData($child_attr);
+            }
+        }
+
+        echo 'end';
+
+    }
+
+    public function synRun2($uniacid)
+    {
+        $childMemberModel = new ChildrenOfMember();
+        $memberModel = new Member();
+        $memberModel->_allNodes = collect([]);
+
+        \Log::debug('--------------清空表数据------------');
+        $childMemberModel->DeletedData();
 
         $memberInfo = $memberModel->getTreeAllNodes($uniacid);
 
@@ -237,60 +286,107 @@ class TestController extends BaseController
             return;
         }
 
-        //$memberInfo = $memberInfo;
-
-        $memberModel->_allNodes = collect([]);
         foreach ($memberInfo as $item) {
             $memberModel->_allNodes->put($item->member_id, $item);
         }
 
-        //dd($memberModel->_allNodes);
-        /* \Log::debug('--------queue member_model -----', get_class($this->memberModel));
-         \Log::debug('--------queue childMemberModel -----', get_class($this->childMemberModel));*/
         \Log::debug('--------queue synRun -----');
 
         foreach ($memberInfo as $key => $val) {
             $attr = [];
-            echo '-------' . $key . '--------' . $val->member_id . '<BR>';
+
+            $memberModel->filter = [];
+echo '<pre>';print_r($val->member_id);
             \Log::debug('--------foreach start------', $val->member_id);
-            //$data = $memberModel->getNodeParents($uniacid, $val->member_id);
             $data = $memberModel->getDescendants($uniacid, $val->member_id);
+
 
             \Log::debug('--------foreach data------', $data->count());
 
             if (!$data->isEmpty()) {
                 \Log::debug('--------insert init------');
                 $data = $data->toArray();
-
                 foreach ($data as $k => $v) {
-                    $attr[] = [
-                        'uniacid' => $uniacid,
-                        'child_id' => $k,
-                        'level' => $v['depth'] + 1,
-                        'member_id' => $val->member_id,
-                        'created_at' => time()
-                    ];
+                    if ($k != $val->member_id) {
+                        $attr[] = [
+                            'uniacid'   => $uniacid,
+                            'child_id'  => $k,
+                            'level'     => $v['depth'] + 1,
+                            'member_id' => $val->member_id,
+                            'created_at' => time()
+                        ];
+                    } else {
+                        $e = [$k,$v];
+                    }
                 }
-
-                $childMemberModel->createData($attr);
-                /*
-                 foreach ($data as $k => $v) {
-                     $attr[] = [
-                         'uniacid'   => $uniacid,
-                         'parent_id'  => $k,
-                         'level'     => $v['depth'] + 1,
-                         'member_id' => $val->member_id,
-                         'created_at' => time()
-                     ];
-                 }
-
-                 $parentMemberModle->createData($attr);*/
+echo '<pre>'; print_r($attr);
+              //  $childMemberModel->createData($attr);
             }
-
-
         }
 
         echo 'end';
+    }
+
+    public function cmr()
+    {
+        $member_relation = new MemberRelation();
+
+        $a = [
+            [65, 79],
+            [75, 79],
+            [37, 65],
+            [66, 65],
+            [84, 75],
+            [13, 37],
+            [13090, 66],
+            [24122, 66],
+            [24132, 66],
+            [91, 84],
+            [9231, 84],
+            [9571, 84],
+            [89, 65]
+        ];
+
+        $aa = [
+            [66, 0]
+        ];
+
+        foreach ($a as $item) {
+            $member_relation->build($item[0], $item[1]);
+        }
+        echo 'ok';
+    }
+
+    public function chkSynRun()
+    {
+        //$uniacid = \YunShop::app()->uniacid;
+
+        (new Member())->chkRelationData();
+
+
+
+        /*$memberModel->_allNodes = collect([]);
+
+        $memberInfo = $memberModel->getTreeAllNodes($uniacid);
+
+        if ($memberInfo->isEmpty()) {
+            \Log::debug('----is empty-----');
+            return;
+        }
+
+        foreach ($memberInfo as $item) {
+            $memberModel->_allNodes->put($item->member_id, $item);
+        }
+
+        \Log::debug('--------queue synRun -----');
+
+        foreach ($memberInfo as $key => $val) {
+            \Log::debug('--------foreach start------', $val->member_id);
+            $memberModel->chkNodeParents($uniacid, $val->member_id);
+
+        }
+
+        echo 'end';*/
 
     }
 

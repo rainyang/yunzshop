@@ -19,6 +19,7 @@ class OrderIncomeCount extends BaseModel
 
     public function scopeSearch($query, $search)
     {
+        $query->uniacid();
         if ($search['order_sn']) {
             $query->where('order_sn', $search['order_sn']);
         }
