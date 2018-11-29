@@ -85,33 +85,41 @@ class PreOrder extends Order
     {
         $this->request = $request;
         $this->setMember($member);
+
         $this->beforeCreating();
         $this->setOrderGoods($orderGoods);
         /**
          * @var PreOrder $order
          */
         $this->afterCreating();
+
+        $this->intAttributes();
+        $this->initOrderGoods();
         return $this;
     }
 
     /**
      * @param $member
      */
-    private function setMember($member){
+    private function setMember($member)
+    {
         $this->setRelation('belongsToMember', $member);
         $this->uid = $this->belongsToMember->uid;
         $this->uniacid = $this->getUniacid();
     }
+
     /**
      * 获取request对象
      * @return Request
      */
-    public function getRequest(){
-        if(!isset($this->request)){
+    public function getRequest()
+    {
+        if (!isset($this->request)) {
             $this->request = request();
         }
         return $this->request;
     }
+
     /**
      * 依赖对象传入之前
      */
@@ -150,16 +158,20 @@ class PreOrder extends Order
         $this->orderDispatch = new OrderDispatch($this);
         $this->orderDeduction = new OrderDeduction($this);
 
-        $attributes = $this->intAttributes();
-        $this->setRawAttributes($attributes);
 
+    }
+
+    /**
+     * 初始化订单商品
+     */
+    public function initOrderGoods()
+    {
         $this->orderGoods->each(function ($aOrderGoods) {
             /**
              * @var PreOrderGoods $aOrderGoods
              */
             $aOrderGoods->_init();
         });
-
     }
 
     /**
@@ -185,7 +197,6 @@ class PreOrder extends Order
 
     /**
      * 初始化属性
-     * @return array
      */
     protected function intAttributes()
     {
@@ -193,20 +204,22 @@ class PreOrder extends Order
             'price' => $this->getPrice(),//订单最终支付价格
             'order_goods_price' => $this->getOrderGoodsPrice(),//订单商品成交价
             'goods_price' => $this->getGoodsPrice(),//订单商品原价
+            'cost_amount' => $this->getGoodsPrice(),//订单商品原价
             'discount_price' => $this->getDiscountAmount(),//订单优惠金额
             'deduction_price' => $this->getDeductionAmount(),//订单抵扣金额
             'dispatch_price' => $this->getDispatchAmount(),//订单运费
+            'is_virtual' => $this->isVirtual(),//是否是虚拟商品订单
             'goods_total' => $this->getGoodsTotal(),//订单商品总数
             'order_sn' => OrderService::createOrderSN(),//订单编号
             'create_time' => time(),
-            'is_virtual' => $this->isVirtual(),//是否是虚拟商品订单
-            'note' => $this->getRequest()->input('note',''),//是否是虚拟商品订单
+            'note' => $this->getRequest()->input('note', ''),//是否是虚拟商品订单
             'shop_name' => $this->getShopName(),//是否是虚拟商品订单
         );
 
 
         $attributes = array_merge($this->getAttributes(), $attributes);
-        return $attributes;
+        $this->setRawAttributes($attributes);
+
     }
 
     /**
@@ -285,14 +298,22 @@ class PreOrder extends Order
         return $this->orderDispatch->getFreight();
     }
 
+    /**
+     * 公众号
+     * @return int
+     */
     private function getUniacid()
     {
         return $this->belongsToMember->uniacid;
     }
 
+    /**
+     * 店铺名
+     * @return string
+     */
     protected function getShopName()
     {
-        return '平台自营';
+        return \Setting::get('shop.shop.name') ?: '平台自营';
     }
 
     /**

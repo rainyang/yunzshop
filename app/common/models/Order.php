@@ -44,7 +44,6 @@ use app\backend\modules\order\observers\OrderObserver;
 /**
  * Class Order
  * @package app\common\models
- * @property int plugin_id
  * @property int uniacid
  * @property int id
  * @property int uid
@@ -66,6 +65,9 @@ use app\backend\modules\order\observers\OrderObserver;
  * @property float dispatch_price
  * @property float change_price
  * @property float change_dispatch_price
+ * @property int plugin_id
+ * @property int is_plugin
+
  * @property Collection orderGoods
  * @property Collection allStatus
  * @property Member belongsToMember
