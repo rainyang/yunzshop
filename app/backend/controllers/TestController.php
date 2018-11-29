@@ -9,6 +9,7 @@
 namespace app\backend\controllers;
 
 
+use app\backend\modules\charts\models\OrderStatistics;
 use app\backend\modules\charts\modules\member\services\LowerCountService;
 use app\backend\modules\charts\modules\member\services\LowerOrderService;
 use app\backend\models\Withdraw;
@@ -33,6 +34,7 @@ use app\common\models\Setting;
 use app\common\services\member\MemberRelation;
 use app\common\repositories\ExpressCompany;
 use app\common\services\MessageService;
+use app\framework\Database\Eloquent\Collection;
 use app\frontend\modules\member\models\SubMemberModel;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;

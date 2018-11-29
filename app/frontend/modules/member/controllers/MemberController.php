@@ -475,9 +475,9 @@ class MemberController extends ApiController
             'province_name' => isset($data['province_name']) ? $data['province_name'] : '',
             'city_name' => isset($data['city_name']) ? $data['city_name'] : '',
             'area_name' => isset($data['area_name']) ? $data['area_name'] : '',
-            'province' => isset($data['province']) ? $data['province'] : 0,
-            'city' => isset($data['city']) ? $data['city'] : 0,
-            'area' => isset($data['area']) ? $data['area'] : 0,
+            'province' => isset($data['province']) ? intval($data['province']) : 0,
+            'city' => isset($data['city']) ? intval($data['city']) : 0,
+            'area' => isset($data['area']) ? intval($data['area']) : 0,
             'address' => isset($data['address']) ? $data['address'] : '',
             'wechat' => isset($data['wx']) ? $data['wx'] : '',
         ];
