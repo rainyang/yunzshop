@@ -208,7 +208,8 @@ return [
 
         //拼音
         Overtrue\LaravelPinyin\ServiceProvider::class,
-
+        // 日志浏览
+        Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class,
     ],
 
     /*

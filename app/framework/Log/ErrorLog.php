@@ -10,7 +10,7 @@ namespace app\framework\Log;
 
 class ErrorLog extends BaseLog
 {
-    protected $logDir = 'logs/error.log';
+    protected $logDir = 'logs/error/error.log';
     public function add($message, array $content = [])
     {
         $this->log->error($message, $content);
