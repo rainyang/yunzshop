@@ -395,6 +395,11 @@ class Member extends BackendModel
     {
         $model = MemberShopInfo::getMemberShopInfo($member_id);
         $code_mid = self::getMemberIdForInviteCode();
+
+        if (!is_null($code_mid)) {
+            file_put_contents(storage_path("logs/" . date('Y-m-d') . "_invitecode.log"), print_r($member_id . '-'. \YunShop::request()->invite_code . '-' . $code_mid . '-reg' . PHP_EOL, 1), FILE_APPEND);
+        }
+
         $mid   = !is_null($code_mid) ? $code_mid : self::getMid();
         $mid   = !is_null($upperMemberId) ? $upperMemberId : $mid;
 
