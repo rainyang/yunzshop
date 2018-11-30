@@ -22,6 +22,7 @@ use app\common\models\Area;
 use app\common\models\Goods;
 use app\common\models\McMappingFans;
 use app\common\models\MemberShopInfo;
+use app\common\services\popularize\PortType;
 use app\common\services\Session;
 use app\frontend\models\Member;
 use app\frontend\modules\member\models\MemberModel;
@@ -1204,6 +1205,9 @@ class MemberController extends ApiController
         }else{
             $switch = 1;
         }
+
+        //是否显示我的推广
+        $switch = PortType::popularizeShow(\YunShop::request()->type);
 
         $data = [
             'switch' => $switch

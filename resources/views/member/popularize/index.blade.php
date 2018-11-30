@@ -20,9 +20,18 @@
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                     <div class="col-sm-9 col-xs-12">
                         @foreach($plugin_page as $item )
-                            <label class="checkbox-inline" style="margin-left: 15px;margin-bottom: 10px">
-                                <input type="checkbox"  name="set[vue_route][]" value="{{$item['url']}}" @if (in_array($item['url'], $info['vue_route'])) checked @endif >{{$item['title']}}</input>
-                            </label>
+                            @if ($item['status'] == 1)
+                                <label class="checkbox-inline" style="margin-left: 15px;margin-bottom: 10px">
+                                    <input type="checkbox"  name="{{$item['mark']}}" onclick="cli(this)" @if (in_array($item['url'][0], $info['vue_route'])) checked @endif >{{$item['title']}}</input>
+                                    @foreach($item['url'] as $value)
+                                        <input type="checkbox"  name="set[vue_route][]" style="display: none" value="{{$value}}" @if (in_array($value, $info['vue_route'])) checked @endif >
+                                    @endforeach
+                                </label>
+                            @else
+                                <label class="checkbox-inline" style="margin-left: 15px;margin-bottom: 10px">
+                                    <input type="checkbox"  name="set[vue_route][]" value="{{$item['url']}}" @if (in_array($item['url'], $info['vue_route'])) checked @endif >{{$item['title']}}</input>
+                                </label>
+                            @endif
                         @endforeach
                     </div>
 
@@ -64,9 +73,18 @@
 </div>
 </div>
 <script>
-    var obj = '{!! $ha !!}';
-    var a = JSON.parse(obj);
-    console.log(obj);
-    console.log(a);
+   function cli(obj) {
+       if ($(obj).prop("checked")) {
+           $(obj).parent().children(':checkbox').each(function(){
+               $(this).prop('checked', true);
+           });
+       } else  {
+           $(obj).parent().children(':checkbox').each(function(){
+               $(this).prop('checked', false);
+           });
+       }
+
+   }
+
 </script>
 @endsection
