@@ -60,9 +60,9 @@ class OrderDividendController extends ChartsController
 
         $file_name = date('YmdHis', time()).'订单分润导出';
         $export_data[0] = ['时间', '订单号', '订单区域', '购买者', '推荐者' , '店铺', '订单金额', '订单成本', '分销佣金' , '经销商提成', '区域分红', '微店分红', '招商员分红' , '招商中心分红', '积分奖励', '爱心值奖励', '预计利润', '状态'];
-        $export_page = request()->export_page ? request()->export_page : 1;
+//        $export_page = request()->export_page ? request()->export_page : 1;
 
-        $export_model = new ExportService($list, $export_page);
+//        $export_model = new ExportService($list, $export_page);
         foreach ($list->get() as $key => $item) {
             if ($item->plugin_id == 32) {
                 $merchant = '门店:'.$item->shop_name;
@@ -105,8 +105,24 @@ class OrderDividendController extends ChartsController
                 $status
             ];
         }
+        \Excel::create($file_name, function ($excel) use ($export_data) {
+            // Set the title
+            $excel->setTitle('Office 2005 XLSX Document');
 
-        $export_model->export($file_name, $export_data, 'charts.order.order-dividend.count');
+            // Chain the setters
+            $excel->setCreator('芸众商城')
+                ->setLastModifiedBy("芸众商城")
+                ->setSubject("Office 2005 XLSX Test Document")
+                ->setDescription("Test document for Office 2005 XLSX, generated using PHP classes.")
+                ->setKeywords("office 2005 openxml php")
+                ->setCategory("report file");
+
+            $excel->sheet('info', function ($sheet) use ($export_data) {
+                $sheet->rows($export_data);
+            });
+        })->export('xls');
+
+//        $export_model->export($file_name, $export_data, 'charts.order.order-dividend.count');
         return true;
     }
 
