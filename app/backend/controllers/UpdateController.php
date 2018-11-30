@@ -327,10 +327,12 @@ class UpdateController extends BaseController
             //更新队列
             \Artisan::call('queue:restart');
 
-            //更新完执行数据表
-            \Log::debug('----CLI----');
+            //更新完执行数据表 新部署不执行
+            \Log::debug('----CLI PRE----');
             $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
-            \Artisan::call('update:version' ,['version'=>$plugins_dir]);
+            if (!empty($plugins_dir)) {
+                \Artisan::call('update:version' ,['version'=>$plugins_dir]);
+            }
 
             //覆盖
             foreach ($files as $f) {
@@ -353,6 +355,12 @@ class UpdateController extends BaseController
             //清理缓存
             \Log::debug('----Cache Flush----');
             \Cache::flush();
+
+            \Log::debug('----CLI POST----');
+            $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
+            if (!empty($plugins_dir)) {
+                \Artisan::call('update:version' ,['version'=>$plugins_dir]);
+            }
 
             $status = 2;
 
