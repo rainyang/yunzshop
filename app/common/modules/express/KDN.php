@@ -35,7 +35,9 @@ class KDN
                 'LogisticCode' => $expressSn,
             ]
         );
-
+        if(empty($express_api['KDN']['express_api'])){//判断如果快递鸟状态为空，默认赋值为1002免费状态
+            $express_api['KDN']['express_api']=1002;
+        }
         $datas = array(
             'EBusinessID' => $this->eBusinessID,
             'RequestType' => $express_api['KDN']['express_api'],//'1002',//快递鸟1002状态为免费，8001状态为收费
