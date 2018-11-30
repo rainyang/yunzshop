@@ -293,8 +293,5 @@ class TestController extends BaseController
 
     }
 
-    public function  kdn(){
-        KDN::getTraces();
-    }
 
 }
