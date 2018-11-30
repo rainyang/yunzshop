@@ -462,6 +462,7 @@ class UpdateController extends BaseController
     {
         $filesystem = app(Filesystem::class);
 
+        //file-删除指定文件，file-空 删除目录下所有文件
         $files = [
             [
                 'path' => base_path('database/migrations'),
@@ -473,6 +474,13 @@ class UpdateController extends BaseController
             [
                 'path' => storage_path('cert'),
                 'ext' => ['pem']
+            ],
+            [
+                'path' => base_path('plugins/store-cashier/migrations'),
+                'ext'  => ['php'],
+                'file' => [
+                    base_path('plugins/store-cashier/migrations/2018_11_26_174034_fix_address_store.php')
+                ]
             ]
         ];
 
