@@ -729,7 +729,7 @@ class MemberModel extends Member
         $member_info['copyright'] = $shop['copyright'] ? $shop['copyright'] : '';
         $member_info['credit'] = [
             //增加是否显示余额值
-            'is_show' => Setting::get('shop.member.show_balance') ? 0 : 1,
+            'is_show' => \Setting::get('shop.member.show_balance') ? 0 : 1,
             'text' => !empty($shop['credit']) ? $shop['credit'] : '余额',
             'data' => $member_info['credit2']
         ];
@@ -739,15 +739,15 @@ class MemberModel extends Member
         ];
 
         //增加是否显示爱心值值
-        $member_info['love'] = [
-            'is_show' => Setting::get('love.member_center_show') ? 1 : 0,
+        $member_info['love_show'] = [
+            'is_show' => \Setting::get('love.member_center_show') ? 1 : 0,
             'text' => '爱心值',
             'data' => '0.00'
         ];
         if (app('plugins')->isEnabled('love')) {
             $memberLove = MemberLove::where('member_id', \YunShop::app()->getMemberId())->first();
-            $member_info['love']['text'] = LOVE_NAME;
-            $member_info['love']['data'] = $memberLove->usable ?: '0.00';
+            $member_info['love_show']['text'] = LOVE_NAME;
+            $member_info['love_show']['data'] = $memberLove->usable ?: '0.00';
         }
 
 
