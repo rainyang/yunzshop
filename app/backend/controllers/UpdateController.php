@@ -553,7 +553,7 @@ class UpdateController extends BaseController
 
     private function runMigrate()
     {
-        $plugins = ['sign', 'supplier'];
+        $plugins = ['sign', 'supplier', 'team-dividend', 'store-cashier', 'commission'];
 
         foreach ($plugins as $p) {
             $path = 'plugins/' . $p . '/migrations';
