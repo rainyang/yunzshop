@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\DB;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use app\common\models\Order;
 use Yunshop\Commission\models\AgentLevel;
+use Yunshop\Love\Common\Models\MemberLove;
 use Yunshop\Merchant\common\models\MerchantLevel;
 use Yunshop\Micro\common\models\MicroShopLevel;
 use Yunshop\TeamDividend\models\TeamDividendLevelModel;
@@ -727,13 +728,27 @@ class MemberModel extends Member
         $shop = \Setting::get('shop.shop');
         $member_info['copyright'] = $shop['copyright'] ? $shop['copyright'] : '';
         $member_info['credit'] = [
+            //增加是否显示余额值
+            'is_show' => \Setting::get('shop.member.show_balance') ? 0 : 1,
             'text' => !empty($shop['credit']) ? $shop['credit'] : '余额',
             'data' => $member_info['credit2']
-            ];
+        ];
         $member_info['integral'] = [
             'text' => !empty($shop['credit1']) ? $shop['credit1'] : '积分',
             'data' => $member_info['credit1']
-            ];
+        ];
+
+        //增加是否显示爱心值值
+        $member_info['love_show'] = [
+            'is_show' => \Setting::get('love.member_center_show') ? 1 : 0,
+            'text' => '爱心值',
+            'data' => '0.00'
+        ];
+        if (app('plugins')->isEnabled('love')) {
+            $memberLove = MemberLove::where('member_id', \YunShop::app()->getMemberId())->first();
+            $member_info['love_show']['text'] = LOVE_NAME;
+            $member_info['love_show']['data'] = $memberLove->usable ?: '0.00';
+        }
 
 
         return $member_info;
