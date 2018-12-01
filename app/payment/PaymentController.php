@@ -199,7 +199,7 @@ class PaymentController extends BaseController
 
             if ('PN' == strtoupper($tag)) {
                 return 'charge.succeeded';
-            } elseif ('RV' == strtoupper($tag) || "RF" == strtoupper($tag)) {
+            } elseif ('RV' == strtoupper($tag) || "RF" == strtoupper($tag) || "RL" == strtoupper($tag)) {
                 return 'recharge.succeeded';
             } elseif ('RG' == strtoupper($tag)) {
                 return 'gold_recharge.succeeded';
