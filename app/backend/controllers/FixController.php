@@ -246,21 +246,17 @@ class FixController extends BaseController
         $m->fixAward($parent_id);
     }
 
-    public function cmr()
+    public function changeField()
     {
-        $m = new MemberRelationEventListener();
+        $sql1 = 'ALTER TABLE `' . DB::getTablePrefix() . 'users_permission` MODIFY `modules` text NULL';
+        $sql2 = 'ALTER TABLE `' . DB::getTablePrefix() . 'users_permission` MODIFY `templates` text NULL';
 
-        $parent_id = 6080;
-
-        $m->cloneRelation($parent_id);
-    }
-
-    public function cma()
-    {
-        $m = new MemberRelationEventListener();
-
-        $parent_id = 6080;
-
-        $m->cloneAward($parent_id);
+        try {
+            DB::select($sql1);
+            DB::select($sql2);
+            echo '数据已修复';
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
     }
 }
