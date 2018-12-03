@@ -212,7 +212,7 @@ if (typeof define === "function") {
 json;
 
         $path = 'static'.DIRECTORY_SEPARATOR.'yunshop'.DIRECTORY_SEPARATOR.'js'.DIRECTORY_SEPARATOR.'popularize'.DIRECTORY_SEPARATOR;
-        $absolute_file = $path.'popularize.js';
+        $absolute_file = $path.'popularize_'.\YunShop::app()->uniacid.'.js';
 
         // 生成目录
         if (!is_dir(base_path($path))) {
