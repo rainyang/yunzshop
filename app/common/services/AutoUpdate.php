@@ -972,40 +972,72 @@ class AutoUpdate
                 $this->_log->info(sprintf('Latest update already downloaded to "%s"', $updateFile));
             }
 
-            //TODO MD5文件是否存在 文件总数和md5校验
+            //下载文件MD5校验
+            if (file_exists($this->_tempDir . 'md5.txt')) {
+                $error = [];
+                $md5 = file_get_contents($this->_tempDir . 'md5.txt');
+                $segment = explode("\r\n", $md5);
 
-            // Install update
-            $yZip = new YZip();
-            $yZip->unzip($this->_tempDir, $this->_tempDir);
+                foreach ($segment as $item) {
+                    $rows = explode(':', $item);
+                    $file_md5[$rows[0]] = $rows[1];
+                }
 
-            $result = $this->_install_v2($updateFile, $simulateInstall, $update['version']);
+                $allfiles = app(Filesystem::class)->allFiles($this->_tempDir);
 
-            if ($result === true) {
-                $this->runOnEachUpdateFinishCallbacks($update['version']);
-                if ($deleteDownload) {
-                    $this->_log->debug(sprintf('Trying to delete update file "%s" after successfull update', $updateFile));
-                    if (@$this->deldir($this->_tempDir)) {
-                        $this->_log->info(sprintf('Update file "%s" deleted after successfull update', $updateFile));
-                    } else {
-                        $this->_log->error(sprintf('Could not delete update file "%s" after successfull update!', $updateFile));
-                        return self::ERROR_DELETE_TEMP_UPDATE;
+                if (empty($allfiles)) {
+                    return '更新文件不存在';
+                }
+
+                foreach ($allfiles as $file) {
+                    $soure_file[$file->getFilename()] = md5_file($file->getRealPath());
+                }
+
+                foreach ($file_md5 as $k => $v) {
+                    if (!is_null($v) && !empty($soure_file[$k]) && $v != $soure_file[$k]) {
+                        $error[] = $k;
                     }
+                }
+
+                if (empty($error)) {
+                    // Install update
+                    $yZip = new YZip();
+                    $yZip->unzip($this->_tempDir, $this->_tempDir);
+
+                    $result = $this->_install_v2($updateFile, $simulateInstall, $update['version']);
+
+                    if ($result === true) {
+                        $this->runOnEachUpdateFinishCallbacks($update['version']);
+                        if ($deleteDownload) {
+                            $this->_log->debug(sprintf('Trying to delete update file "%s" after successfull update', $updateFile));
+                            if (@$this->deldir($this->_tempDir)) {
+                                $this->_log->info(sprintf('Update file "%s" deleted after successfull update', $updateFile));
+                            } else {
+                                $this->_log->error(sprintf('Could not delete update file "%s" after successfull update!', $updateFile));
+                                return self::ERROR_DELETE_TEMP_UPDATE;
+                            }
+                        }
+                    } else {
+                        if ($deleteDownload) {
+                            $this->_log->debug(sprintf('Trying to delete update file "%s" after failed update', $updateFile));
+                            if (@$this->deldir($this->_tempDir)) {
+                                $this->_log->info(sprintf('Update file "%s" deleted after failed update', $updateFile));
+                            } else {
+                                $this->_log->error(sprintf('Could not delete update file "%s" after failed update!', $updateFile));
+                            }
+                        }
+                        return $result;
+                    }
+
+                    $this->runOnAllUpdateFinishCallbacks($this->getVersionsToUpdate());
+                    return true;
+                } else {
+                    return '下载文件校验失败';
                 }
             } else {
-                if ($deleteDownload) {
-                    $this->_log->debug(sprintf('Trying to delete update file "%s" after failed update', $updateFile));
-                    if (@$this->deldir($this->_tempDir)) {
-                        $this->_log->info(sprintf('Update file "%s" deleted after failed update', $updateFile));
-                    } else {
-                        $this->_log->error(sprintf('Could not delete update file "%s" after failed update!', $updateFile));
-                    }
-                }
-                return $result;
+                return '校验文件不存在';
             }
         }
-
-        $this->runOnAllUpdateFinishCallbacks($this->getVersionsToUpdate());
-        return true;
     }
     /**
      * Add slash at the end of the path.
