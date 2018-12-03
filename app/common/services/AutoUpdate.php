@@ -502,48 +502,6 @@ class AutoUpdate
     {
         $this->_log->info(sprintf('Downloading update "%s" to "%s"', $updateUrl, $updateFile));
 
-        //获取文件夹数据
-//        $checkUpdateFileUurl = $updateUrl . '/check';
-//
-//        $files = Curl::to($checkUpdateFileUurl)
-//            ->withHeader(
-//                "Authorization: Basic " . base64_encode("{$this->_username}:{$this->_password}")
-//            )
-//            ->asJsonResponse(true)
-//            ->get();
-//
-//        /*if (!is_null($files) && !empty($files['result'])) {
-//            foreach ($files['result'] as $item) {
-//                $updateUrl .= '/download/' . $item;
-//                $updateFile = $this->_tempDir . $item;
-//
-//                Curl::to($updateUrl)
-//                    ->withHeader(
-//                        "Authorization: Basic " . base64_encode("{$this->_username}:{$this->_password}")
-//                    )
-//                    ->withContentType('application/zip, application/octet-stream')
-//                    ->withOption('FOLLOWLOCATION',true)
-//                    ->withOption('TIMEOUT',100)
-//                    ->download($updateFile);
-//            }
-//        }*/
-//        echo $files['result'][1];
-//        $item = $files['result'][1];
-//        $updateUrl .= '/download/' . $item;
-//        $updateFile = $this->_tempDir . $item;
-//
-//        return Curl::to($updateUrl)
-//            ->withHeader(
-//                "Authorization: Basic " . base64_encode("{$this->_username}:{$this->_password}")
-//            )
-//            ->withContentType('application/zip, application/octet-stream')
-//            ->withOption('FOLLOWLOCATION',true)
-//            ->withOption('TIMEOUT',100)
-//            ->download($updateFile);
-//echo 'okok';
-//return true;
-
-
         return Curl::to($updateUrl)
             ->withHeader(
                 "Authorization: Basic " . base64_encode("{$this->_username}:{$this->_password}")
@@ -552,6 +510,62 @@ class AutoUpdate
             ->withOption('FOLLOWLOCATION',true)
             ->withOption('TIMEOUT',100)
             ->download($updateFile);
+    }
+
+    protected function _downloadUpdate1($updateUrl, $updateFile)
+    {
+        $this->_log->info(sprintf('Downloading update "%s" to "%s"', $updateUrl, $updateFile));
+
+        //获取文件夹数据
+        $checkUpdateFileUurl = $updateUrl . '/check';
+
+        $files = Curl::to($checkUpdateFileUurl)
+            ->withHeader(
+                "Authorization: Basic " . base64_encode("{$this->_username}:{$this->_password}")
+            )
+            ->asJsonResponse(true)
+            ->get();
+
+        if (!is_null($files) && !empty($files['result'])) {
+            foreach ($files['result'] as $item) {
+                $updateUrl .= '/download/' . $item;
+                $updateFile = $this->_tempDir . $item;
+
+                Curl::to($updateUrl)
+                    ->withHeader(
+                        "Authorization: Basic " . base64_encode("{$this->_username}:{$this->_password}")
+                    )
+                    ->withContentType('application/zip, application/octet-stream')
+                    ->withOption('FOLLOWLOCATION',true)
+                    ->withOption('TIMEOUT',100)
+                    ->download($updateFile);
+            }
+        }
+ /*//       echo $files['result'][1];
+        $item = $files['result'][1];
+        $updateUrl .= '/download/' . $item;
+        $updateFile = $this->_tempDir . $item;
+//dd($updateUrl,$updateFile);
+         Curl::to($updateUrl)
+            ->withHeader(
+                "Authorization: Basic " . base64_encode("{$this->_username}:{$this->_password}")
+            )
+            ->withContentType('application/zip, application/octet-stream')
+            ->withOption('FOLLOWLOCATION',true)
+            ->withOption('TIMEOUT',100)
+            ->download($updateFile);*/
+dd('okok');
+
+
+
+        /*return Curl::to($updateUrl)
+            ->withHeader(
+                "Authorization: Basic " . base64_encode("{$this->_username}:{$this->_password}")
+            )
+            ->withContentType('application/zip, application/octet-stream')
+            ->withOption('FOLLOWLOCATION',true)
+            ->withOption('TIMEOUT',100)
+            ->download($updateFile);*/
     }
     /**
      * Simulate update process.
@@ -786,7 +800,7 @@ class AutoUpdate
                 $this->_log->debug(sprintf('Latest update downloaded to "%s"', $updateFile));
             } else {
                 $this->_log->info(sprintf('Latest update already downloaded to "%s"', $updateFile));
-            }
+            }dd(1);
             // Install update
             $result = $this->_install($updateFile, $simulateInstall, $update['version']);
             if ($result === true) {
