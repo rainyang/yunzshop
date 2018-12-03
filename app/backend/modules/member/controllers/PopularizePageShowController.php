@@ -22,7 +22,6 @@ class PopularizePageShowController extends BaseController
         $info = Setting::get("popularize.wechat");
         if (\Request::isMethod('post')) {
             $set = request()->input('set');
-
             if (Setting::set("popularize.wechat", $set)) {
                 $this->toJson();
                 return $this->message('保存成功', Url::absoluteWeb('member.popularize-page-show.wechat-set'));
@@ -30,7 +29,6 @@ class PopularizePageShowController extends BaseController
                 throw new ShopException('保存失败');
             }
         }
-
         return view('member.popularize.index',[
             'info' => $info,
             'plugin_page' => $this->getData(),
@@ -137,17 +135,40 @@ class PopularizePageShowController extends BaseController
 
         $config = $this->getIncomePageConfig();
 
+        $plugins = $this->getPlugins();
+
         foreach ($config as $key => $item) {
 
             $incomeFactory = new PopularizePageShowFactory(new $item['class'], $lang_set);
-            $array[] = [
-                'url' => $incomeFactory->getAppUrl(),
-                'title' => $incomeFactory->getTitle(),
-            ];
+
+
+            if ($plugins[$incomeFactory->getMark()]) {
+                $array[] = [
+                    'url' => $plugins[$incomeFactory->getMark()],
+                    'title' => $incomeFactory->getTitle(),
+                    'mark'  => $incomeFactory->getMark(),
+                    'status' => 1,
+                ];
+            } else {
+                $array[] = [
+                    'url' => $incomeFactory->getAppUrl(),
+                    'title' => $incomeFactory->getTitle(),
+                    'mark'  => $incomeFactory->getMark(),
+                    'status' => 0,
+                ];
+            }
+
 
         }
 
         return $array;
+    }
+
+    protected function getPlugins()
+    {
+        return [
+            'area_dividend' => ['regionalAgencyCenter','applyRegionalAgency'],
+        ];
     }
 
     /**
@@ -156,10 +177,49 @@ class PopularizePageShowController extends BaseController
     protected function toJson()
     {
         $all_set =  Setting::getByGroup("popularize");
+        $data = [
+            'wechat' => [
+                'vue_route' => !empty($all_set['wechat']['vue_route'])?$all_set['wechat']['vue_route']:[],
+                'url' => !empty($all_set['wechat']['callback_url'])?$all_set['wechat']['callback_url']:'',
+            ],
+            'mini' => [
+                'vue_route' => !empty($all_set['mini']['vue_route'])?$all_set['mini']['vue_route']:[],
+                'url' => !empty($all_set['mini']['callback_url'])?$all_set['mini']['callback_url']:'',
+            ],
+            'wap' => [
+                'vue_route' => !empty($all_set['wap']['vue_route'])?$all_set['wap']['vue_route']:[],
+                'url' => !empty($all_set['wap']['callback_url'])?$all_set['wap']['callback_url']:'',
+            ],
+            'app' => [
+                'vue_route' => !empty($all_set['app']['vue_route'])?$all_set['app']['vue_route']:[],
+                'url' => !empty($all_set['app']['callback_url'])?$all_set['app']['callback_url']:'',
+            ],
+            'alipay' => [
+                'vue_route' => !empty($all_set['alipay']['vue_route'])?$all_set['alipay']['vue_route']:[],
+                'url' => !empty($all_set['alipay']['callback_url'])?$all_set['alipay']['callback_url']:'',
+            ],
+        ];
+        $string =  json_encode($data);
+        $sj = date('Y-m-d H:i:s', time());
+        $json_str =<<<json
+//update $sj
+let popularize = {$string};
+if (typeof define === "function") {
+    define(popularize)
+} else {
+    window.\$popularize = popularize;
+}
+json;
 
-        $string = json_encode($all_set);
+        $path = 'static'.DIRECTORY_SEPARATOR.'yunshop'.DIRECTORY_SEPARATOR.'js'.DIRECTORY_SEPARATOR.'popularize'.DIRECTORY_SEPARATOR;
+        $absolute_file = $path.'popularize.js';
 
-        return $string;
+        // 生成目录
+        if (!is_dir(base_path($path))) {
+            mkdir(base_path($path), 0777);
+        }
+
+        return file_put_contents(base_path($absolute_file), $json_str);
     }
 
     /**

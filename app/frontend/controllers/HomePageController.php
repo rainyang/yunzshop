@@ -9,6 +9,7 @@ use app\common\helpers\Cache;
 use app\common\repositories\OptionRepository;
 use app\common\services\goods\VideoDemandCourseGoods;
 use app\common\services\PluginManager;
+use app\common\services\popularize\PortType;
 use app\frontend\models\Member;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\shop\controllers\IndexController;
@@ -529,9 +530,12 @@ class HomePageController extends ApiController
         if ($type == 7 && $extension_status == 0) {
             unset($promoteMenu);
         }else{
-            $defaultMenu[4] = $defaultMenu[3]; //第 5 个按钮改成"会员中心"
-            $defaultMenu[3] = $defaultMenu[2]; //第 4 个按钮改成"购物车"
-            $defaultMenu[2] = $promoteMenu; //在第 3 个按钮的位置加入"推广"
+            //是否显示推广按钮
+            if (PortType::popularizeShow($type)) {
+                $defaultMenu[4] = $defaultMenu[3]; //第 5 个按钮改成"会员中心"
+                $defaultMenu[3] = $defaultMenu[2]; //第 4 个按钮改成"购物车"
+                $defaultMenu[2] = $promoteMenu; //在第 3 个按钮的位置加入"推广"
+            }
         }
 
         return $defaultMenu;

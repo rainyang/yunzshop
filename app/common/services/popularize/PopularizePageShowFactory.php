@@ -50,6 +50,11 @@ class PopularizePageShowFactory
     }
 
 
+    public function getMark()
+    {
+        return $this->_income->getMark();
+    }
+
     /**
      * 收入模型是否显示
      *
