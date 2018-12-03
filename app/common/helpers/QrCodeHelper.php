@@ -17,6 +17,12 @@ class QrCodeHelper
     private $url;
     private $fileName;
 
+    /**
+     * QrCodeHelper constructor.
+     * @param $url
+     * @param $patch
+     * @throws ShopException
+     */
     function __construct($url, $patch)
     {
         $this->patch = $patch;
@@ -24,11 +30,20 @@ class QrCodeHelper
         $this->fileName = $this->getFileName();
     }
 
-    public function url()
+    public function filePath()
     {
-        return request()->getSchemeAndHttpHost() . "/addons/yun_shop" . \Storage::url($this->patch."/{$this->fileName}.png");
+        return "$this->patch/{$this->fileName}.png";
     }
 
+    public function url()
+    {
+        return request()->getSchemeAndHttpHost() . "/addons/yun_shop" . \Storage::url($this->patch . "/{$this->fileName}.png");
+    }
+
+    /**
+     * @return string
+     * @throws ShopException
+     */
     private function getFileName()
     {
 
