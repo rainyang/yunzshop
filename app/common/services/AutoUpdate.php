@@ -512,23 +512,25 @@ class AutoUpdate
             ->download($updateFile);
     }
 
-    protected function _downloadUpdate1($updateUrl, $updateFile)
+    protected function _downloadUpdate_v2($updateUrl, $updateFile)
     {
         $this->_log->info(sprintf('Downloading update "%s" to "%s"', $updateUrl, $updateFile));
 
         //获取文件夹数据
-        $checkUpdateFileUurl = $updateUrl . '/check';
-
+        $checkUpdateFileUurl = $updateUrl . '/check/1';
+//dd($checkUpdateFileUurl);
         $files = Curl::to($checkUpdateFileUurl)
             ->withHeader(
                 "Authorization: Basic " . base64_encode("{$this->_username}:{$this->_password}")
             )
             ->asJsonResponse(true)
             ->get();
-
+//dd($files);
         if (!is_null($files) && !empty($files['result'])) {
+            $downloadUrl = $updateUrl . '/download/';
+
             foreach ($files['result'] as $item) {
-                $updateUrl .= '/download/' . $item;
+                $updateUrl =  $downloadUrl . $item;
                 $updateFile = $this->_tempDir . $item;
 
                 Curl::to($updateUrl)
@@ -539,33 +541,11 @@ class AutoUpdate
                     ->withOption('FOLLOWLOCATION',true)
                     ->withOption('TIMEOUT',100)
                     ->download($updateFile);
+
             }
         }
- /*//       echo $files['result'][1];
-        $item = $files['result'][1];
-        $updateUrl .= '/download/' . $item;
-        $updateFile = $this->_tempDir . $item;
-//dd($updateUrl,$updateFile);
-         Curl::to($updateUrl)
-            ->withHeader(
-                "Authorization: Basic " . base64_encode("{$this->_username}:{$this->_password}")
-            )
-            ->withContentType('application/zip, application/octet-stream')
-            ->withOption('FOLLOWLOCATION',true)
-            ->withOption('TIMEOUT',100)
-            ->download($updateFile);*/
-dd('okok');
 
-
-
-        /*return Curl::to($updateUrl)
-            ->withHeader(
-                "Authorization: Basic " . base64_encode("{$this->_username}:{$this->_password}")
-            )
-            ->withContentType('application/zip, application/octet-stream')
-            ->withOption('FOLLOWLOCATION',true)
-            ->withOption('TIMEOUT',100)
-            ->download($updateFile);*/
+        return true;
     }
     /**
      * Simulate update process.
@@ -661,6 +641,109 @@ dd('okok');
         $this->_simulationResults = $files;
         return $simulateSuccess;
     }
+
+    protected function _simulateInstall_v2($updateFile, $version)
+    {
+        $this->_log->notice('[SIMULATE] Install new version');
+        clearstatcache();
+
+        // Check if zip file could be opened
+        $dir = $this->_tempDir . $version;
+
+        if (!is_dir($dir)) {
+            $this->_log->error(sprintf('Could not open dir "%s", error: %d', $version, $dir));
+            return false;
+        }
+
+        $files = [];
+        $simulateSuccess = true;
+
+        if (is_dir($dir)) {
+            $allfiles = app(Filesystem::class)->allFiles($dir);
+
+            foreach ($allfiles as $key => $rows) {
+                $filename = $rows->getRelativePathname();
+                $foldername = $this->_installDir . dirname($filename);
+                $absoluteFilename = $this->_installDir . $filename;
+
+                $files[$key] = [
+                    'filename'          => $filename,
+                    'foldername'        => $foldername,
+                    'absolute_filename' => $absoluteFilename,
+                ];
+
+                $this->_log->debug(sprintf('[SIMULATE] Updating file "%s"', $filename));
+
+                // Check if parent directory is writable
+                if (!is_dir($foldername)) {
+                    $this->_log->debug(sprintf('[SIMULATE] Create directory "%s"', $foldername));
+                    $files[$key]['parent_folder_exists'] = false;
+                    $parent = dirname($foldername);
+
+                    if(!is_dir($parent)){
+                        if (!mkdir($parent, $this->dirPermissions, true)) {
+                            $files[$key]['parent_folder_writable'] = false;
+                            $simulateSuccess = false;
+                            $this->_log->error(sprintf('Directory "%s" has to be writeable!', $parent));
+                        }
+                    }
+
+                    if (!is_writable($parent)) {
+                        $files[$key]['parent_folder_writable'] = false;
+                        $simulateSuccess = false;
+                        $this->_log->warning(sprintf('[SIMULATE] Directory "%s" has to be writeable!', $parent));
+                    } else {
+                        $files[$key]['parent_folder_writable'] = true;
+                    }
+                }
+
+                // Skip if entry is a directory
+                if (substr($filename, -1, 1) == DIRECTORY_SEPARATOR || substr($filename, -1, 1) == '.')
+                    continue;
+
+                // Read file contents from archive
+                $contents = file_get_contents($rows->getPathname());
+                if ($contents === false) {
+                    $files[$key]['extractable'] = false;
+                    $simulateSuccess = false;
+                    $this->_log->warning(sprintf('[SIMULATE] Coud not read contents of file "%s" from zip file!', $filename));
+                }
+                // Write to file
+                if (file_exists($absoluteFilename)) {
+                    $files[$key]['file_exists'] = true;
+                    if (!is_writable($absoluteFilename)) {
+                        $files[$key]['file_writable'] = false;
+                        $simulateSuccess = false;
+                        $this->_log->warning(sprintf('[SIMULATE] Could not overwrite "%s"!', $absoluteFilename));
+                    }
+                } else {
+                    $files[$key]['file_exists'] = false;
+                    if (is_dir($foldername)) {
+                        if (!is_writable($foldername)) {
+                            $files[$key]['file_writable'] = false;
+                            $simulateSuccess = false;
+                            $this->_log->warning(sprintf('[SIMULATE] The file "%s" could not be created!', $absoluteFilename));
+                        } else {
+                            $files[$key]['file_writable'] = true;
+                        }
+                    } else {
+                        $files[$key]['file_writable'] = true;
+                        $this->_log->debug(sprintf('[SIMULATE] The file "%s" could be created', $absoluteFilename));
+                    }
+                }
+                if ($filename == $this->updateScriptName) {
+                    $this->_log->debug(sprintf('[SIMULATE] Update script "%s" found', $absoluteFilename));
+                    $files[$key]['update_script'] = true;
+                } else {
+                    $files[$key]['update_script'] = false;
+                }
+
+            }
+        }
+
+        $this->_simulationResults = $files;
+        return $simulateSuccess;
+    }
     /**
      * Install update.
      *
@@ -747,6 +830,93 @@ dd('okok');
         $this->_log->notice(sprintf('Update "%s" successfully installed', $version));
         return true;
     }
+
+    protected function _install_v2($updateFile, $simulateInstall, $version)
+    {
+        $this->_log->notice(sprintf('Trying to install update "%s"', $updateFile));
+        // Check if install should be simulated
+        if ($simulateInstall && !$this->_simulateInstall_v2($updateFile, $version)) {
+            $this->_log->critical('Simulation of update process failed!');
+            return self::ERROR_SIMULATE;
+        }
+
+        clearstatcache();
+        // Check if zip file could be opened
+        $dir = $this->_tempDir . $version;
+
+        if (is_dir($dir)) {
+            $allfiles = app(Filesystem::class)->allFiles($dir);
+
+            foreach ($allfiles as $rows) {
+                $filename = $rows->getRelativePathname();
+                $foldername = $this->_installDir . dirname($filename);
+                $absoluteFilename = $this->_installDir . $filename;
+
+                $this->_log->debug(sprintf('Updating file "%s"', $filename));
+                if (!is_dir($foldername)) {
+                    if (!mkdir($foldername, $this->dirPermissions, true)) {
+                        $this->_log->error(sprintf('Directory "%s" has to be writeable!', $foldername));
+                        return false;
+                    }
+                }
+
+                // Skip if entry is a directory
+                if (substr($filename, -1, 1) == '/' || substr($filename, -1, 1) == '\\' || substr($filename, -1, 1) == '.')
+                    continue;
+
+                // Read file contents from archive
+                $contents = file_get_contents($rows->getPathname());
+                if ($contents === false) {
+                    $this->_log->error(sprintf('Coud not read zip entry "%s"', $filename));
+                    continue;
+                }
+
+                // Write to file
+                if (file_exists($absoluteFilename)) {
+                    if (!is_writable($absoluteFilename)) {
+                        $this->_log->error('Could not overwrite "%s"!', $absoluteFilename);
+                        return false;
+                    }
+                } else {
+                    if (!touch($absoluteFilename)) {
+                        $this->_log->error(sprintf('[SIMULATE] The file "%s" could not be created!', $absoluteFilename));
+                        return false;
+                    }
+
+                    $this->_log->debug(sprintf('File "%s" created', $absoluteFilename));
+                }
+
+                $updateHandle = @fopen($absoluteFilename, 'w');
+
+                if (!$updateHandle) {
+                    $this->_log->error(sprintf('Could not open file "%s"!', $absoluteFilename));
+                    return false;
+                }
+
+                if (!empty($contents) && !fwrite($updateHandle, $contents)) {
+                    $this->_log->error(sprintf('Could not write to file "%s"!', $absoluteFilename));
+                    return false;
+                }
+
+                fclose($updateHandle);
+
+                //If file is a update script, include
+                if ($filename == $this->updateScriptName) {
+                    $this->_log->debug(sprintf('Try to include update script "%s"', $absoluteFilename));
+                    require($absoluteFilename);
+                    $this->_log->info(sprintf('Update script "%s" included!', $absoluteFilename));
+                    if (!unlink($absoluteFilename)) {
+                        $this->_log->warning(sprintf('Could not delete update script "%s"!', $absoluteFilename));
+                    }
+                }
+            }
+        }
+
+        // TODO
+        $this->_log->notice(sprintf('Update "%s" successfully installed', $version));
+        return true;
+    }
+
     /**
      * Update to the latest version
      *
@@ -793,21 +963,28 @@ dd('okok');
             $updateFile = $this->_tempDir . $update['version'] . '.zip';
             // Download update
             if (!is_file($updateFile)) {
-                if (!$this->_downloadUpdate($update['url'], $updateFile)) {
+                if (!$this->_downloadUpdate_v2($update['url'], $updateFile)) {
                     $this->_log->critical(sprintf('Failed to download update from "%s" to "%s"!', $update['url'], $updateFile));
                     return self::ERROR_DOWNLOAD_UPDATE;
                 }
                 $this->_log->debug(sprintf('Latest update downloaded to "%s"', $updateFile));
             } else {
                 $this->_log->info(sprintf('Latest update already downloaded to "%s"', $updateFile));
-            }dd(1);
+            }
+
+            //TODO MD5文件是否存在 文件总数和md5校验
+
             // Install update
-            $result = $this->_install($updateFile, $simulateInstall, $update['version']);
+            $yZip = new YZip();
+            $yZip->unzip($this->_tempDir, $this->_tempDir);
+
+            $result = $this->_install_v2($updateFile, $simulateInstall, $update['version']);
+
             if ($result === true) {
                 $this->runOnEachUpdateFinishCallbacks($update['version']);
                 if ($deleteDownload) {
                     $this->_log->debug(sprintf('Trying to delete update file "%s" after successfull update', $updateFile));
-                    if (@unlink($updateFile)) {
+                    if (@$this->deldir($this->_tempDir)) {
                         $this->_log->info(sprintf('Update file "%s" deleted after successfull update', $updateFile));
                     } else {
                         $this->_log->error(sprintf('Could not delete update file "%s" after successfull update!', $updateFile));
@@ -817,7 +994,7 @@ dd('okok');
             } else {
                 if ($deleteDownload) {
                     $this->_log->debug(sprintf('Trying to delete update file "%s" after failed update', $updateFile));
-                    if (@unlink($updateFile)) {
+                    if (@$this->deldir($this->_tempDir)) {
                         $this->_log->info(sprintf('Update file "%s" deleted after failed update', $updateFile));
                     } else {
                         $this->_log->error(sprintf('Could not delete update file "%s" after failed update!', $updateFile));
@@ -826,6 +1003,7 @@ dd('okok');
                 return $result;
             }
         }
+
         $this->runOnAllUpdateFinishCallbacks($this->getVersionsToUpdate());
         return true;
     }
@@ -962,6 +1140,32 @@ dd('okok');
             }
 
             redirect(yzWebFullUrl('update.pirate'))->send();
+        }
+    }
+
+    private function deldir($dir)
+    {
+        //先删除目录下的文件：
+        $dh = opendir($dir);
+        while ($file = readdir($dh)) {
+            if ($file != "." && $file != "..") {
+                $fullpath = $dir . "/" . $file;
+                if (!is_dir($fullpath)) {
+                    unlink($fullpath);
+                } else {
+                    $this->deldir($fullpath);
+                }
+            }
+        }
+
+        closedir($dh);
+
+        //删除当前文件夹：
+        if (rmdir($dir)) {
+            return true;
+        } else {
+            return false;
+
         }
     }
 }
