@@ -65,13 +65,13 @@
                             </td>
                             <td>{{ $item->member_id }}</td>
                             <td>
-                                @if(!empty($item->hasOneMember->avatar))
-                                    <img src='{{ $item->hasOneMember->avatar }}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
+                                @if(!empty($item->belongsToMember->avatar))
+                                    <img src='{{ $item->belongsToMember->avatar }}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
                                 @endif
-                                @if(empty($item->hasOneMember->nickname))
+                                @if(empty($item->belongsToMember->nickname))
                                     未更新
                                 @else
-                                    {{ $item->hasOneMember->nickname }}
+                                    {{ $item->belongsToMember->nickname }}
                                 @endif
                             </td>
                             <td>{{ $item->first_total }}</td>

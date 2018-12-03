@@ -41,7 +41,7 @@ class MemberMiniAppService extends MemberService
             'js_code' => $para['code'],
             'grant_type' => 'authorization_code',
         );
-
+\Log::debug('------------mini data--------', $data);
         $url = 'https://api.weixin.qq.com/sns/jscode2session';
 
         $user_info = \Curl::to($url)
@@ -57,13 +57,13 @@ class MemberMiniAppService extends MemberService
             $pc = new \WXBizDataCrypt($min_set['key'], $user_info['session_key']);
             $errCode = $pc->decryptData($json_data['encryptedData'], $json_data['iv'], $data);
         }
-
+\Log::debug('-------------errcode-------', [$errCode]);
         if ($errCode == 0) {
             $json_user = json_decode($data, true);
         } else {
             return show_json(0,'登录认证失败');
         }
-
+\Log::debug('-----------mini json_user------------', $json_user);
         if (!empty($json_user)) {
             if (isset($json_user['unionId'])) {
                 $json_user['unionid']     = $json_user['unionId'];

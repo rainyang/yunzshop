@@ -93,6 +93,12 @@ class BaseController extends Controller
             unset($pieces);
         }
 
+        if (isset($_COOKIE[session_name()])) {
+            $session_id_1 = $_COOKIE[session_name()];
+            session_id($session_id_1);
+        }
+
+
         if (empty($session_id) && \YunShop::request()->session_id
               && \YunShop::request()->session_id != 'undefined' && \YunShop::request()->session_id != 'null'
         ) {
@@ -101,10 +107,7 @@ class BaseController extends Controller
             setcookie(session_name(), $session_id);
         }
 
-        if (isset($_COOKIE[session_name()])) {
-            $session_id = $_COOKIE[session_name()];
-            session_id($session_id);
-        }
+
         /*
         if (isset($session_id) && isset($_COOKIE[session_name()]) && $session_id != $_COOKIE[session_name()]) {
             $session_id = $_COOKIE[session_name()];

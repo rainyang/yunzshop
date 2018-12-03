@@ -42,6 +42,7 @@
                             </div>
                             <div class="form-group col-xs-12 col-sm-4">
                                 <button class="btn btn-success" id="search"><i class="fa fa-search"></i> 搜索</button>
+                                <button type="submit" name="export" value="1" id="export" class="btn btn-default">导出 Excel</button>
                             </div>
                         </form>
                     </div>
@@ -53,7 +54,7 @@
             <table class='table' style='float:left;margin-bottom:0;table-layout: fixed;line-height: 40px;height: 40px'>
                 <tr class='trhead'>
                     <td colspan='8' style="text-align: left;">
-                        总交易额统计&nbsp;&nbsp;&nbsp;商城: <span id="total">{{ $totalOrder['shop'] }}元</span>&nbsp;&nbsp;&nbsp;供应商: <span id="total">{{ $totalOrder['supplier'] }}元</span>&nbsp;&nbsp;&nbsp;门店: <span id="total">{{ $totalOrder['store'] }}元</span>&nbsp;&nbsp;&nbsp;收银台: <span id="total">{{ $totalOrder['cashier'] }}元</span>
+                        总交易额统计&nbsp;&nbsp;&nbsp;商城: <span id="total">{{ $totalOrder['shop'] }}元</span>&nbsp;&nbsp;&nbsp;供应商: <span id="total">{{ $totalOrder['supplier'] }}元</span>&nbsp;&nbsp;&nbsp;门店: <span id="total">{{ $totalOrder['store'] }}元</span>&nbsp;&nbsp;&nbsp;收银台: <span id="total">{{ $totalOrder['cashier'] }}元</span>&nbsp;&nbsp;&nbsp;总汇总: <span id="total">{{ $totalOrder['cashier'] + $totalOrder['shop'] + $totalOrder['supplier'] + $totalOrder['store'] }}元</span>
                     </td>
                 </tr>
             </table>
@@ -159,4 +160,13 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(function () {
+        $('#export').click(function () {
+            $('#form1').attr('action', '{!! yzWebUrl('charts.order.transaction-amount.export') !!}');
+            $('#form1').submit();
+        });
+    });
+</script>
 @endsection

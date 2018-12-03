@@ -46,7 +46,7 @@ class OptionRepository extends Repository
      * @param  raw $raw return raw value without convertion
      * @return mixed
      */
-    public function get($key, $default = null, $raw = false)
+    public function get($key = null, $default = null, $raw = false)
     {
         if (!$this->has($key) && Arr::has(config('options'), $key)) {
             $this->set($key, config("options.$key"));

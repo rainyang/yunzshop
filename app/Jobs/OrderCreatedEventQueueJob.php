@@ -47,9 +47,15 @@ class OrderCreatedEventQueueJob implements ShouldQueue
 
             \YunShop::app()->uniacid = $this->order->uniacid;
             Setting::$uniqueAccountId = $this->order->uniacid;
-            event(new AfterOrderCreatedEvent($this->order));
+            if($this->order->orderCreatedJob->status == 'finished'){
+                return;
+            }
             $this->order->orderCreatedJob->status = 'finished';
             $this->order->orderCreatedJob->save();
+            $event = new AfterOrderCreatedEvent($this->order);
+            event($event);
+
+
         });
     }
 

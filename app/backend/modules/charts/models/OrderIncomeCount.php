@@ -19,6 +19,7 @@ class OrderIncomeCount extends BaseModel
 
     public function scopeSearch($query, $search)
     {
+        $query->uniacid();
         if ($search['order_sn']) {
             $query->where('order_sn', $search['order_sn']);
         }
@@ -36,6 +37,10 @@ class OrderIncomeCount extends BaseModel
             $query->whereHas('hasOneRecommend', function ($q) use ($search) {
                 $q->searchLike($search['member']);
             });
+        }
+
+        if ($search['member_id']) {
+            $query->where('uid', $search['member_id']);
         }
 
         if ($search['status'] != '') {

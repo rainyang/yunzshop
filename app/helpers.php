@@ -900,3 +900,20 @@ if(!function_exists('yz_array_set')){
         return $array;
     }
 }
+if (!function_exists('trace_log')) {
+    /**
+     * @return \Illuminate\Foundation\Application|mixed
+     */
+    function trace_log(){
+        return app('Log.trace');
+    }
+}
+
+if (!function_exists('debug_log')) {
+    /**
+     * @return \Illuminate\Foundation\Application|mixed
+     */
+    function debug_log(){
+        return app('Log.debug');
+    }
+}

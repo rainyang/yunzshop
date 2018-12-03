@@ -89,6 +89,8 @@ class MemberController extends ApiController
                 //自定义表单
                 $data['myform'] = (new MemberService())->memberInfoAttrStatus();
 
+                $data['avatar'] =  $data['avatar'] ? yz_tomedia($data['avatar']) : yz_tomedia(\Setting::get('shop.member.headimg'));
+
                 //修复微信头像地址
                 $data['avatar'] = ImageHelper::fix_wechatAvatar($data['avatar']);
 
@@ -473,9 +475,9 @@ class MemberController extends ApiController
             'province_name' => isset($data['province_name']) ? $data['province_name'] : '',
             'city_name' => isset($data['city_name']) ? $data['city_name'] : '',
             'area_name' => isset($data['area_name']) ? $data['area_name'] : '',
-            'province' => isset($data['province']) ? $data['province'] : 0,
-            'city' => isset($data['city']) ? $data['city'] : 0,
-            'area' => isset($data['area']) ? $data['area'] : 0,
+            'province' => isset($data['province']) ? intval($data['province']) : 0,
+            'city' => isset($data['city']) ? intval($data['city']) : 0,
+            'area' => isset($data['area']) ? intval($data['area']) : 0,
             'address' => isset($data['address']) ? $data['address'] : '',
             'wechat' => isset($data['wx']) ? $data['wx'] : '',
         ];
@@ -551,6 +553,7 @@ class MemberController extends ApiController
         $password         = \YunShop::request()->password;
         $confirm_password = \YunShop::request()->password;
         $uid              = \YunShop::app()->getMemberId();
+        $close_invitecode = \YunShop::request()->close;
 
 
         $member_model = MemberModel::getMemberById($uid);
@@ -562,24 +565,28 @@ class MemberController extends ApiController
                 return $this->errorJson($check_code['json']);
             }
 
-            $invitecode = MemberService::inviteCode();
+            if (empty($close_invitecode)) {
 
-            if ($check_code['status'] != 1) {
-                return $this->errorJson($invitecode['json']);
+                $invitecode = MemberService::inviteCode();
+
+                if ($invitecode['status'] != 1) {
+                    return $this->errorJson($invitecode['json']);
+                }
+
+                file_put_contents(storage_path("logs/" . date('Y-m-d') . "_invitecode.log"), print_r(\YunShop::app()->getMemberId() . '-'. \YunShop::request()->invite_code . '-bind' . PHP_EOL, 1), FILE_APPEND);
+
+                //邀请码
+                $parent_id = \app\common\models\Member::getMemberIdForInviteCode();
+                if (!is_null($parent_id)) {
+                    file_put_contents(storage_path("logs/" . date('Y-m-d') . "_invitecode.log"), print_r(\YunShop::app()->getMemberId() . '-'. \YunShop::request()->invite_code . '-'. $parent_id . '-bind' . PHP_EOL, 1), FILE_APPEND);
+                    MemberShopInfo::change_relation($uid, $parent_id);
+                }
             }
-
 
             $msg = MemberService::validate($mobile, $password, $confirm_password);
 
             if ($msg['status'] != 1) {
                 return $this->errorJson($msg['json']);
-            }
-            //增加验证码功能
-            $captcha_status = Setting::get('shop.sms.status');
-            if ($captcha_status == 1) {
-                if (app('captcha')->check(Input::get('captcha')) == false) {
-                    return $this->errorJson('验证码错误');
-                }
             }
 
             //手机归属地查询插入
@@ -622,12 +629,6 @@ class MemberController extends ApiController
                 $member_model->password = md5($password . $salt);
 
                 if ($member_model->save()) {
-                    //邀请码
-                    $parent_id = \app\common\models\Member::getMemberIdForInviteCode();
-                    if (!is_null($parent_id)) {
-                        MemberShopInfo::change_relation($uid, $parent_id);
-                    }
-
                     if (Cache::has($member_model->uid . '_member_info')) {
                         Cache::forget($member_model->uid . '_member_info');
                     }
@@ -676,14 +677,6 @@ class MemberController extends ApiController
 
             if ($check_code['status'] != 1) {
                 return $this->errorJson($check_code['json']);
-            }
-
-            //增加验证码功能
-            $captcha_status = Setting::get('shop.sms.status');
-            if ($captcha_status == 1) {
-                if (app('captcha')->check(Input::get('captcha')) == false) {
-                    return $this->errorJson('验证码错误');
-                }
             }
 
             $salt = Str::random(8);

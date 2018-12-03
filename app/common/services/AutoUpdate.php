@@ -1124,8 +1124,10 @@ class AutoUpdate
         }
 
         if ($all_dir = $filesystem->directories(base_path($path))) {
-            foreach ($all_dir as $dir) {
-                $dirs[] = substr($dir, strrpos($dir, DIRECTORY_SEPARATOR)+1);
+            if (!is_null($all_dir)) {
+                foreach ($all_dir as $dir) {
+                    $dirs[] = substr($dir, strrpos($dir, DIRECTORY_SEPARATOR)+1);
+                }
             }
         }
 
