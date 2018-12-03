@@ -178,9 +178,34 @@ class PopularizePageShowController extends BaseController
     {
         $all_set =  Setting::getByGroup("popularize");
 
-        $string = json_encode($all_set);
+        $data = [
+            'wechat' => !empty($all_set['wechat']['vue_route'])?$all_set['wechat']['vue_route']:[],
+            'mini' => !empty($all_set['mini']['vue_route'])?$all_set['mini']['vue_route']:[],
+            'wap' => !empty($all_set['wap']['vue_route'])?$all_set['wap']['vue_route']:[],
+            'app' => !empty($all_set['app']['vue_route'])?$all_set['app']['vue_route']:[],
+            'alipay' => !empty($all_set['alipay']['vue_route'])?$all_set['alipay']['vue_route']:[],
+        ];
+        $string =  json_encode($data);
+        $sj = date('Y-m-d H:i:s', time());
+        $json_str =<<<json
+//update $sj
+let popularize = {$string};
+if (typeof define === "function") {
+    define(popularize)
+} else {
+    window.\$popularize = popularize;
+}
+json;
 
-        return $string;
+        $path = 'static'.DIRECTORY_SEPARATOR.'yunshop'.DIRECTORY_SEPARATOR.'js'.DIRECTORY_SEPARATOR.'popularize'.DIRECTORY_SEPARATOR;
+        $absolute_file = $path.'popularize.js';
+
+        // 生成目录
+        if (!is_dir(base_path($path))) {
+            mkdir(base_path($path), 0777);
+        }
+
+        return file_put_contents(base_path($absolute_file), $json_str);
     }
 
     /**
