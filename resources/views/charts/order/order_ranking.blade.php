@@ -65,7 +65,7 @@
                                     <labe class='label label-default'  style='padding:8px;'>&nbsp;{{ $key + 1 }}&nbsp;</labe>
                                 @endif
                             </td>
-                            <td>{{ $item->member_id }}</td>
+                            <td>{{ $item->uid }}</td>
                             <td>
                                 @if(!empty($item->belongsToMember->avatar))
                                     <img src='{{ $item->belongsToMember->avatar }}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
