@@ -14,7 +14,9 @@ use app\common\models\Income;
 use app\common\models\Order;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\DB;
+use Yunshop\Commission\models\Commission;
 use Yunshop\Commission\models\CommissionOrder;
+use Yunshop\Commission\services\CommissionOrderService;
 use Yunshop\Mryt\job\UpgradeByRegisterJob;
 use Yunshop\Mryt\listeners\MemberRelationEventListener;
 use Yunshop\Mryt\services\UpgradeService;
@@ -41,15 +43,14 @@ class FixController extends BaseController
 
         $waitCommissionOrder = CommissionOrder::uniacid()->whereStatus(0)->get();
 
-
-
+        $status = \Setting::get('plugin.commission')['settlement_event'] ? 1 : 3;
         if (!$waitCommissionOrder->isEmpty()) {
 
             foreach ($waitCommissionOrder as $key => $commissionOrder) {
 
                 $orderModel = Order::uniacid()->whereId($commissionOrder->ordertable_id)->first();
 
-                if ($orderModel->status == 3) {
+                if ($orderModel->status >= $status) {
 
                     $handle += 1;
                     $commissionOrder->status = 1;
@@ -259,4 +260,74 @@ class FixController extends BaseController
             echo $e->getMessage();
         }
     }
+
+    public function handleTeamOrder()
+    {
+        $handle = 0;
+        $success = 0;
+        $status = \Setting::get('plugin.team_dividend')['settlement_event'] ? 1 : 3;
+
+        $waitTeamOrder = \Yunshop\TeamDividend\models\TeamDividendModel::uniacid()->whereStatus(0)->get();
+
+        if (!$waitTeamOrder->isEmpty()) {
+
+            foreach ($waitTeamOrder as $key => $teamOrder) {
+
+                $orderModel = \app\common\models\Order::uniacid()->where('order_sn',$teamOrder->order_sn)->first();
+
+
+                if ($orderModel->status >= $status) {
+                    $handle += 1;
+                    $teamOrder->recrive_at = strtotime($orderModel->pay_time);
+
+                    if ($teamOrder->save()) {
+                        $success += 1;
+                    }
+                }
+                unset($orderModel);
+            }
+        }
+
+        echo "经销商订单未结算总数：{$waitTeamOrder->count()}，已完成订单数：{$handle}, 执行成功数：{$success}";
+    }
+
+    public function fixCommissionAmount()
+    {
+        $CommissionOrder = CommissionOrder::uniacid()->whereNull('commission_amount')->get();
+        $set = \Setting::get('plugin.commission');
+        $count = 0;
+        foreach ($CommissionOrder as $commission) {
+            $orderModel = Order::find($commission->ordertable_id);
+            $orderGoods = $orderModel->hasManyOrderGoods;
+            $commissionAmount = 0;
+            $formula = '';
+            foreach ($orderGoods as $key => $og) {
+
+                //获取商品分销设置信息
+                $commissionGoods = Commission::getGoodsById($og->goods_id)->first();
+                if (!$commissionGoods->is_commission) {
+                    continue;
+                }
+
+                if ($commissionGoods) {
+                    if ($commissionGoods['has_commission'] == '1') {
+                        //商品独立佣金
+                        $commissionAmount += $og['payment_amount']; //分佣计算金额
+                        $formula .= "+商品独立佣金";//分佣计算方式
+                    } else {
+                        $countAmount = CommissionOrderService::getCountAmount($orderModel, $og, '', $set);
+                        $commissionAmount += $countAmount['amount'];
+                        $formula = $countAmount['method'];
+                    }
+                }
+            }
+            $commission->commission_amount = $commissionAmount;
+            $commission->formula = $formula;
+
+            $commission->save();
+            $count++;
+        }
+        echo '修改了'.$count.'条信息';
+    }
+
 }
