@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\DB;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use app\common\models\Order;
 use Yunshop\Commission\models\AgentLevel;
+use Yunshop\Love\Common\Models\MemberLove;
 use Yunshop\Merchant\common\models\MerchantLevel;
 use Yunshop\Micro\common\models\MicroShopLevel;
 use Yunshop\TeamDividend\models\TeamDividendLevelModel;
@@ -550,7 +551,7 @@ class MemberModel extends Member
         ];
 
         $total = 0;
-        $order_total = 0;
+//        $order_total = 0;
         $relation_base = \Setting::get('relation_base');
 
         if (!is_null($relation_base['relation_level'])) {
@@ -581,11 +582,11 @@ class MemberModel extends Member
             if ($is_show) {
                 $builder = MemberModel::getMyAllAgentsInfo(\YunShop::app()->getMemberId(), $i);
 
-                $order = $builder->get()->map(function ($order) {
-                    return $order->hasOneOrder->total;
-                });
-
-                $order_total += $order->sum();
+//                $order = $builder->get()->map(function ($order) {
+//                    return $order->hasOneOrder->total;
+//                });
+//
+//                $order_total += $order->sum();
 
                 $agent_info = self::getMemberRole($builder)->get();
 
@@ -610,21 +611,21 @@ class MemberModel extends Member
         }
 
         //团队所有会员
-        $uniacid = \YunShop::app()->uniacid;
-        $team_member = DB::select('select child_id from ims_yz_member_children where uniacid='.$uniacid.' and member_id='.\YunShop::app()->getMemberId());
-
-        foreach ($team_member as $item) {
-            $order_total[] = DB::select("select count(id) as total from ims_yz_order where status in (1,2,3) and uid=".$item['child_id']);
-        }
+//        $uniacid = \YunShop::app()->uniacid;
+//        $team_member = DB::table('yz_member_children')->select('child_id')->where('member_id', \YunShop::app()->getMemberId())->get()->toArray();
+//
+//        foreach ($team_member as $item) {
+//            $order_total[] = DB::table('yz_order')->select(DB::raw('count(id) as total'))->whereIn('status', [1,2,3])->where('uid', $item['child_id']);
+//        }
 
         //团队订单总数
-        $team_order_total = 0;
-        foreach ($order_total as $k => $item) {
-            $team_order_total+= $item[0]['total'];
-        }
+//        $team_order_total = 0;
+//        foreach ($order_total as $k => $item) {
+//            $team_order_total+= $item[0]['total'];
+//        }
 
         $data['total'] = $total;
-        $data['order_total'] = $team_order_total;
+//        $data['order_total'] = $team_order_total;
 
         return $data;
     }
@@ -727,13 +728,27 @@ class MemberModel extends Member
         $shop = \Setting::get('shop.shop');
         $member_info['copyright'] = $shop['copyright'] ? $shop['copyright'] : '';
         $member_info['credit'] = [
+            //增加是否显示余额值
+            'is_show' => \Setting::get('shop.member.show_balance') ? 0 : 1,
             'text' => !empty($shop['credit']) ? $shop['credit'] : '余额',
             'data' => $member_info['credit2']
-            ];
+        ];
         $member_info['integral'] = [
             'text' => !empty($shop['credit1']) ? $shop['credit1'] : '积分',
             'data' => $member_info['credit1']
-            ];
+        ];
+
+        //增加是否显示爱心值值
+        $member_info['love_show'] = [
+            'is_show' => \Setting::get('love.member_center_show') ? 1 : 0,
+            'text' => '爱心值',
+            'data' => '0.00'
+        ];
+        if (app('plugins')->isEnabled('love')) {
+            $memberLove = MemberLove::where('member_id', \YunShop::app()->getMemberId())->first();
+            $member_info['love_show']['text'] = LOVE_NAME;
+            $member_info['love_show']['data'] = $memberLove->usable ?: '0.00';
+        }
 
 
         return $member_info;

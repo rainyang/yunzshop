@@ -11,6 +11,7 @@ namespace app\common\models;
 
 use app\backend\models\BackendModel;
 use app\backend\modules\member\models\MemberRecord;
+use app\common\events\member\MemberChangeRelationEvent;
 use app\common\events\member\MemberCreateRelationEvent;
 use app\common\events\member\RegisterByAgent;
 use app\common\observers\member\MemberObserver;
@@ -423,6 +424,8 @@ class MemberShopInfo extends BaseModel
                 $member->save();
                 $record->save();
 
+                event(new MemberCreateRelationEvent($uid, $parent_id));
+
                 if ($plugin_team) {
                     $team = TeamDividendAgencyModel::getAgentByUidId($uid)->first();
 
@@ -452,7 +455,7 @@ class MemberShopInfo extends BaseModel
 
                     event(new RegisterByAgent($agent_data));
                 }
-                event(new MemberCreateRelationEvent($uid, $parent_id));
+
                 //更新2、3级会员上线和分销关系
                 dispatch(new ModifyRelationJob($uid, $member_relation, $plugin_commission));
 

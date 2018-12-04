@@ -40,7 +40,13 @@ class Advertisement extends BaseModel
 
     public static function getOneData()
     {
-        return self::uniacid()->select()->orderBy('sort_by', 'desc');
+        return self::uniacid()->Status()->select()->orderBy('sort_by', 'desc');
+    }
+
+
+    public function scopeStatus($query, $status = 1)
+    {
+        return $query->where('status', $status);
     }
 
     public function rules()

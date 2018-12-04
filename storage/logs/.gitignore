@@ -1,2 +1,5 @@
 *
+trace/
+error/
+debug/
 !.gitignore
