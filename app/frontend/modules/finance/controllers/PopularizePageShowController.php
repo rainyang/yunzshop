@@ -13,6 +13,10 @@ use app\common\components\ApiController;
 
 class PopularizePageShowController extends ApiController
 {
+
+    protected $publicAction = ['index',];
+    protected $ignoreAction = ['index',];
+
     public function index()
     {
         $all_set =  \Setting::getByGroup("popularize");
