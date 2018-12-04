@@ -134,7 +134,7 @@ class ListController extends BaseController
         }
 
         $list['total_price'] = $this->orderModel->sum('price');
-        $list += $this->orderModel->orderBy($this->orderModel->getModel()->getTable() . '.id', 'desc')->orderBy($this->orderModel->getModel()->getTable() . '.uid', 'desc')->paginate(self::PAGE_SIZE)->toArray();
+        $list += $this->orderModel->orderBy($this->orderModel->getModel()->getTable() . '.uid', 'desc')->orderBy($this->orderModel->getModel()->getTable() . '.id', 'desc')->paginate(self::PAGE_SIZE)->toArray();
 
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
