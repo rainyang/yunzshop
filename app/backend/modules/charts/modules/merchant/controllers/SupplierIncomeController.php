@@ -113,6 +113,9 @@ class SupplierIncomeController extends BaseController
 
     public function export()
     {
+        if (!app('plugins')->isEnabled('supplier')) {
+            return $this->message('没有开启供应商插件');
+        }
         $prefix = app('db')->getTablePrefix();
         $searchTime = [];
         $search = \YunShop::request()->search;
