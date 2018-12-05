@@ -52,12 +52,22 @@ class RegisterController extends ApiController
                 return $this->errorJson($check_code['json']);
             }
 
-            $invitecode = MemberService::inviteCode();
+<<<<<<< HEAD
 
-            if ($invitecode['status'] != 1) {
-                return $this->errorJson($invitecode['json']);
+            $invite_code = MemberService::inviteCode();
+=======
+            $invitecode = MemberService::inviteCode();
+>>>>>>> 374c5e30e6c3b4c3548a591f6e29b8e29724dc48
+
+            if ($invite_code['status'] != 1) {
+                return $this->errorJson($invite_code['json']);
             }
 
+<<<<<<< HEAD
+
+
+=======
+>>>>>>> 374c5e30e6c3b4c3548a591f6e29b8e29724dc48
             $msg = MemberService::validate($mobile, $password, $confirm_password);
 
             if ($msg['status'] != 1) {

@@ -30,11 +30,13 @@ class RefundService
     }
     public function pay($refund_id)
     {
+
         $this->refundApply = RefundApply::find($refund_id);
 dd($this->refundApply->order->pay_type_id);
         if (!isset($this->refundApply)) {
             throw new AdminException('未找到退款记录');
         }
+
         switch ($this->refundApply->order->pay_type_id) {
             case PayType::WECHAT_PAY:
                 $result = $this->wechat();
@@ -67,6 +69,8 @@ dd($this->refundApply->order->pay_type_id);
                 $result = false;
                 break;
         }
+        print_r($result);
+        exit;
         return $result;
     }
 

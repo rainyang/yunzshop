@@ -1361,6 +1361,19 @@ return [
                     ],
                 ],
             ],
+            'relation_export'     => [
+                'name'          => '关系链升级',
+                'url'           => 'member.member.exportRelation',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 0,
+                'icon'          => 'fa-circle-o',
+                'sort'          => 0,
+                'item'          => 'relation_base',
+                'parents'       => ['Member',],
+                'child'         => [
+                ],
+            ],
         ],
     ],
 

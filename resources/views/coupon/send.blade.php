@@ -46,7 +46,7 @@
             <div class="form-group choose choose_1">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label" >会员ID</label>
                 <div class="col-sm-9 col-xs-12">
-                    <textarea name="send_memberid" class="form-control" style="height:250px;" placeholder="请用&quot;半角逗号&quot;隔开会员ID, 比如 1,2,3" id="value_1"></textarea>
+                    <textarea name="send_memberid" class="form-control" style="height:250px;" placeholder="请用&quot;半角逗号&quot;隔开会员ID, 比如 1,2,3,注意不能有空格" id="value_1"></textarea>
                 </div>
             </div>
             <div class="form-group choose choose_2" style='display: none' >

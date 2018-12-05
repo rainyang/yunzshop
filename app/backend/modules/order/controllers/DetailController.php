@@ -13,6 +13,7 @@ use app\backend\modules\member\models\Member;
 use app\backend\modules\order\models\Order;
 use app\common\components\BaseController;
 use app\common\exceptions\AppException;
+use app\common\models\Goods;
 use app\common\modules\order\OrderOperationsCollector;
 use app\common\services\DivFromService;
 
@@ -75,6 +76,7 @@ class DetailController extends BaseController
         if (request()->has('order_sn')) {
             $order = $order->where('order_sn', request('order_sn'))->first();
         }
+
         if (!$order) {
             throw new AppException('未找到订单');
         }
@@ -119,4 +121,6 @@ class DetailController extends BaseController
 
         return $result;
     }
+
+
 }

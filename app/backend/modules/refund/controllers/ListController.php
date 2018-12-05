@@ -53,6 +53,8 @@ class ListController extends \app\backend\modules\order\controllers\ListControll
 
     public function refunded()
     {
+        echo  1;
+        exit;
         $this->orderModel->refunded();
         $this->export($this->orderModel->refunded());
         return view('order.index', $this->getData())->render();
