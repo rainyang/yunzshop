@@ -176,7 +176,11 @@ class PopularizePageShowController extends BaseController
      */
     protected function toJson()
     {
+        //放弃使用这个方法，原因无法匹配多个公众号
+        return ;
+
         $all_set =  Setting::getByGroup("popularize");
+
         $data = [
             'wechat' => [
                 'vue_route' => !empty($all_set['wechat']['vue_route'])?$all_set['wechat']['vue_route']:[],

@@ -104,7 +104,8 @@ class MemberController extends ApiController
                 }else{
                     $withdraw_status = 1;
                 }
-
+                //是否显示我的推广
+                $withdraw_status = PortType::popularizeShow(\YunShop::request()->type);
                 $data['withdraw_status'] = $withdraw_status;
 
                 if (!is_null($v)) {
