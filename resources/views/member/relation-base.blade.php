@@ -127,6 +127,20 @@
                         </div>
                     </div>
 
+                </div>
+
+                <div class='panel-heading'>
+                    {{trans('关系链升级')}}
+                </div>
+
+                <div class='panel-body'>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">导入会员</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <a href="{{yzWebUrl('member.member.exportRelation')}}"><input type="button" value="导入"></a>
+                        </div>
+                    </div>
+
                     <div class="form-group"></div>
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
