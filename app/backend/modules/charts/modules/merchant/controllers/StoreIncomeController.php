@@ -91,9 +91,6 @@ class StoreIncomeController extends BaseController
 
     public function export()
     {
-        if (!app('plugins')->isEnabled('store-cashier')) {
-            return $this->message('没有开启门店插件');
-        }
         $prefix = app('db')->getTablePrefix();
         $searchTime = [];
         $search = \YunShop::request()->search;
