@@ -133,6 +133,7 @@ class ListController extends BaseController
             });
         }
 
+
         $list['total_price'] = $this->orderModel->sum('price');
         $list += $this->orderModel->orderBy($this->orderModel->getModel()->getTable() . '.id', 'desc')->paginate(self::PAGE_SIZE)->toArray();
 

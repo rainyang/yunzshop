@@ -538,4 +538,13 @@ class GoodsController extends BaseController
             echo json_encode($goods); exit;
         }
     }
+
+    public  function SearchOrder(){//获取商品名称
+        $keyword = request()->keyword;
+        $goods= Goods::getSearchOrder($keyword);
+        return view('goods.query', [
+            'goods' => $goods->toArray(),
+        ])->render();
+    }
+
 }
