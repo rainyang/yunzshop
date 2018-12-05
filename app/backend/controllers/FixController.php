@@ -12,11 +12,17 @@ namespace app\backend\controllers;
 use app\common\components\BaseController;
 use app\common\models\Income;
 use app\common\models\Order;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\DB;
 use Yunshop\Commission\models\CommissionOrder;
+use Yunshop\Mryt\job\UpgradeByRegisterJob;
+use Yunshop\Mryt\listeners\MemberRelationEventListener;
+use Yunshop\Mryt\services\UpgradeService;
 
 class FixController extends BaseController
 {
+    use DispatchesJobs;
+
     public function errorDividendData(){
 
         $a = DB::table('yz_team_dividend')->select(['yz_team_dividend.uniacid as tuniacid','mc_members.uniacid as uniacid','yz_team_dividend.id' , 'yz_order.id as orderid', 'yz_order.uid', 'yz_team_dividend.order_sn', 'yz_team_dividend.member_id', 'yz_team_dividend.status'])
@@ -220,5 +226,37 @@ class FixController extends BaseController
             }
         }
         echo "修复了{$count}条";
+    }
+
+    public function mr()
+    {
+        $m = new MemberRelationEventListener();
+
+        $parent_id = 6080;
+
+        $m->fixRelation($parent_id);
+    }
+
+    public function ma()
+    {
+        $m = new MemberRelationEventListener();
+
+        $parent_id = 6080;
+
+        $m->fixAward($parent_id);
+    }
+
+    public function changeField()
+    {
+        $sql1 = 'ALTER TABLE `' . DB::getTablePrefix() . 'users_permission` MODIFY `modules` text NULL';
+        $sql2 = 'ALTER TABLE `' . DB::getTablePrefix() . 'users_permission` MODIFY `templates` text NULL';
+
+        try {
+            DB::select($sql1);
+            DB::select($sql2);
+            echo '数据已修复';
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
     }
 }

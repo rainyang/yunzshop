@@ -50,9 +50,12 @@ class OrderCreatedEventQueueJob implements ShouldQueue
             if($this->order->orderCreatedJob->status == 'finished'){
                 return;
             }
-            event(new AfterOrderCreatedEvent($this->order));
             $this->order->orderCreatedJob->status = 'finished';
             $this->order->orderCreatedJob->save();
+            $event = new AfterOrderCreatedEvent($this->order);
+            event($event);
+
+
         });
     }
 

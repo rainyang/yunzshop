@@ -54,9 +54,10 @@ class OrderReceivedEventQueueJob implements ShouldQueue
             if($this->order->orderReceivedJob->status == 'finished'){
                 return;
             }
-            event(new AfterOrderReceivedEvent($this->order));
             $this->order->orderReceivedJob->status = 'finished';
             $this->order->orderReceivedJob->save();
+            event(new AfterOrderReceivedEvent($this->order));
+
         });
     }
 }

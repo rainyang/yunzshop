@@ -66,7 +66,7 @@ class CouponService
              */
             //不可选
             if (!$coupon->isOptional()) {
-                debug_log()->coupon("优惠券{$coupon->getMemberCoupon()->id}",'不可选');
+                trace_log()->coupon("优惠券{$coupon->getMemberCoupon()->id}",'不可选');
                 return false;
             }
             //商城开启了多张优惠券 并且当前优惠券组合可以继续添加这张
