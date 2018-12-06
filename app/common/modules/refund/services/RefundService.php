@@ -183,7 +183,7 @@ class RefundService
         //环迅快捷退款 同步改变退款和订单状态
         RefundOperationService::refundComplete(['id' => $this->refundApply->id]);
         $pay = PayFactory::create($this->refundApply->order->pay_type_id);
-dd($this->refundApply->order->hasOneOrderPay->pay_sn, $this->refundApply->order->hasOneOrderPay->amount, $this->refundApply->price);
+
         $result = $pay->doRefund($this->refundApply->order->hasOneOrderPay->pay_sn, $this->refundApply->order->hasOneOrderPay->amount, $this->refundApply->price);
 
         if (!$result) {
