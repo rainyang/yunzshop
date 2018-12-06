@@ -151,7 +151,7 @@ class BalanceController extends ApiController
                 || $type == PayFactory::PAY_Huanxun_Quick
                 || $type == PayFactory::PAY_Huanxun_Wx
                 || $type == PayFactory::WFT_PAY
-                || PayFactory::WFT_ALIPAY
+                || $type == PayFactory::WFT_ALIPAY
             ) {
                 return  $this->successJson('支付接口对接成功', array_merge(['ordersn' => $this->model->ordersn], $this->payOrder()));
             }
