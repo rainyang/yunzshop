@@ -60,10 +60,10 @@ class RefundService
                 $result = $this->yunWechat();
                 break;
             case PayType::HXQUICK:
-                $result = $this->hxquick(PayType::HXQUICK);
+                $result = $this->hxquick();
                 break;
             case PayType::HXWECHAT:
-                $result = $this->hxwechat(PayType::HXWECHAT);
+                $result = $this->hxwechat();
                 break;
             default:
                 $result = false;
@@ -178,13 +178,13 @@ class RefundService
         }
     }
 
-    private function hxquick($pay_type_id)
+    private function hxquick()
     {
         //环迅快捷退款 同步改变退款和订单状态
         RefundOperationService::refundComplete(['id' => $this->refundApply->id]);
         $pay = PayFactory::create($this->refundApply->order->pay_type_id);
-dd($this->refundApply->order->hasOneOrderPay->pay_sn, $this->refundApply->order->hasOneOrderPay->amount, $this->refundApply->price, $pay_type_id);
-        $result = $pay->doRefund($this->refundApply->order->hasOneOrderPay->pay_sn, $this->refundApply->order->hasOneOrderPay->amount, $this->refundApply->price, $pay_type_id);
+dd($this->refundApply->order->hasOneOrderPay->pay_sn, $this->refundApply->order->hasOneOrderPay->amount, $this->refundApply->price);
+        $result = $pay->doRefund($this->refundApply->order->hasOneOrderPay->pay_sn, $this->refundApply->order->hasOneOrderPay->amount, $this->refundApply->price);
 
         if (!$result) {
             throw new AdminException('环迅快捷退款失败');
@@ -192,13 +192,13 @@ dd($this->refundApply->order->hasOneOrderPay->pay_sn, $this->refundApply->order-
         return $result;
     }
 
-    private function hxwechat($pay_type_id)
+    private function hxwechat()
     {
         //环迅微信退款 同步改变退款和订单状态
         RefundOperationService::refundComplete(['id' => $this->refundApply->id]);
         $pay = PayFactory::create($this->refundApply->order->pay_type_id);
 
-        $result = $pay->doRefund($this->refundApply->order->hasOneOrderPay->pay_sn, $this->refundApply->order->hasOneOrderPay->amount, $this->refundApply->price, $pay_type_id);
+        $result = $pay->doRefund($this->refundApply->order->hasOneOrderPay->pay_sn, $this->refundApply->order->hasOneOrderPay->amount, $this->refundApply->price);
 
         if (!$result) {
             throw new AdminException('环迅微信退款失败');
