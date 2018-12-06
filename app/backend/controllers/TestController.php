@@ -402,25 +402,4 @@ echo '<pre>'; print_r($attr);
         dd($zip);
     }
 
-    public function xx()
-    {
-
-$xmldata = <<<EOT
-<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-<soapenv:Body>
- <MOLECULES FORMAT="smi">
-   <MOLECULE>C1CCCCC1</MOLECULE>
-</MOLECULES>
-</soapenv:Body>
-</soapenv:Envelope>
-EOT;
-        $wsdl = 'https://newpay.ips.com.cn/psfp-entry/services/refund?wsdl';
-        try{
-            $client = new \SoapClient($wsdl);
-            $result = $client->__doRequest($xmldata,$wsdl,'refund',1,0);//发送xml必须使用__doRequest
-            print_r($result);
-        } catch(\Exception $e){
-            echo $e->getMessage();
-        }
-    }
 }
