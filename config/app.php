@@ -297,7 +297,7 @@ return [
 
     'express' => [
         'KDN' => [
-            'reqURL'=>'http://api.kdniao.cc/Ebusiness/EbusinessOrderHandle.aspx'
+            'reqURL'=>'http://api.kdniao.com/api/dist'
         ]
     ]
 ];
