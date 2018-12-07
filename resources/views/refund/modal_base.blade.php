@@ -1,3 +1,4 @@
+
 <div id="modal-refund" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"
      style="width:920px;margin:0px auto;">
     <form class="form-horizontal form" id="form-refund" action="" method="post" enctype="multipart/form-data">
@@ -30,12 +31,13 @@
                                            name='refund_status'>驳回申请
                                 </label>
                             @endif
+                            aaaaa
                             @section('operation_pass')@show
-
+bbbbbb
                             @section('operation_consensus')@show
-
+ccccc
                             @section('operation_resend')@show
-
+ddddd
 
                         </div>
                     </div>
