@@ -140,9 +140,6 @@ class HomePageController extends ApiController
                 $page = (new OtherPageService())->getOtherPage($page_id);
             } else {
                 $page = (new IndexPageService())->getIndexPage();
-                $group_goods = new GoodsGroupGoodsService();
-                $datas = $group_goods->FunGroupGoods($page['datas'],"",'select_page');
-                $page['datas'] = $datas;
             }
 
             //装修数据, 原来接口在 plugin.designer.home.index.page
