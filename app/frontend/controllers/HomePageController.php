@@ -18,9 +18,8 @@ use Yunshop\Designer\Common\Services\IndexPageService;
 use Yunshop\Designer\Common\Services\OtherPageService;
 use Yunshop\Designer\Common\Services\PageTopMenuService;
 use Yunshop\Designer\models\Designer;
-use Yunshop\Designer\models\GoodsGroupGoods;
 use Yunshop\Designer\models\DesignerMenu;
-use Yunshop\Designer\services\GoodsGroupGoodsService;
+
 
 class HomePageController extends ApiController
 {
