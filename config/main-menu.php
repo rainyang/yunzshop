@@ -1376,7 +1376,7 @@ return [
                 'item'          => 'popularize_page_show',
                 'parents'       => ['Member'],
                 'child'         => [
-                    'wechat_set'     => [
+                    'popularize_wechat_set'     => [
                         'name'          => '微信公众号',
                         'url'           => 'member.popularize-page-show.wechat-set',
                         'url_params'    => '',
@@ -1384,10 +1384,10 @@ return [
                         'menu'          => 1,
                         'icon'          => '',
                         'sort'          => 0,
-                        'item'          => 'wechat_set',
+                        'item'          => 'popularize_wechat_set',
                         'parents'       => ['Member', 'popularize_page_show'],
                     ],
-                    'mini_set'     => [
+                    'popularize_mini_set'     => [
                         'name'          => '微信小程序',
                         'url'           => 'member.popularize-page-show.mini-set',
                         'url_params'    => '',
@@ -1395,10 +1395,10 @@ return [
                         'menu'          => 1,
                         'icon'          => '',
                         'sort'          => 0,
-                        'item'          => 'mini_set',
+                        'item'          => 'popularize_mini_set',
                         'parents'       => ['Member', 'popularize_page_show'],
                     ],
-                    'wap_set'     => [
+                    'popularize_wap_set'     => [
                         'name'          => 'wap',
                         'url'           => 'member.popularize-page-show.wap-set',
                         'url_params'    => '',
@@ -1406,10 +1406,10 @@ return [
                         'menu'          => 1,
                         'icon'          => '',
                         'sort'          => 0,
-                        'item'          => 'wap_set',
+                        'item'          => 'popularize_wap_set',
                         'parents'       => ['Member', 'popularize_page_show'],
                     ],
-                    'app_set'     => [
+                    'popularize_app_set'     => [
                         'name'          => 'APP',
                         'url'           => 'member.popularize-page-show.app-set',
                         'url_params'    => '',
@@ -1417,10 +1417,10 @@ return [
                         'menu'          => 1,
                         'icon'          => '',
                         'sort'          => 0,
-                        'item'          => 'app_set',
+                        'item'          => 'popularize_app_set',
                         'parents'       => ['Member', 'popularize_page_show'],
                     ],
-                    'alipay_set'     => [
+                    'popularize_alipay_set'     => [
                         'name'          => '支付宝',
                         'url'           => 'member.popularize-page-show.alipay-set',
                         'url_params'    => '',
@@ -1428,7 +1428,7 @@ return [
                         'menu'          => 1,
                         'icon'          => '',
                         'sort'          => 0,
-                        'item'          => 'alipay_set',
+                        'item'          => 'popularize_alipay_set',
                         'parents'       => ['Member', 'popularize_page_show'],
                     ],
                 ]

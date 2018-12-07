@@ -12,7 +12,8 @@
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">不显示插件</label>
                     <div class="col-sm-9 col-xs-12">
                         <label class="checkbox-inline">
-                            <input type="checkbox"  name="set[popularize]" value="1" @if (isset($info['popularize']) && $info['popularize'] == 1) checked @endif >推广中心</input>
+                            <input type="checkbox"  name="set[popularize]" onclick="cli(this)" value="1" @if (isset($info['popularize']) && $info['popularize'] == 1) checked @endif >推广中心</input>
+                            <input type="checkbox"  name="set[vue_route][]" style="display: none" value="extension" @if (in_array('extension', $info['vue_route'])) checked @endif >
                         </label>
                     </div>
                 </div>
@@ -52,7 +53,7 @@
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">跳转页面</label>
                     <div class="col-sm-9 col-xs-12">
-                        <input type="text" name="set[callback_url]" placeholder="请输入https开头链接" class="form-control" value="">
+                        <input type="text" name="set[callback_url]" placeholder="请输入https开头链接" class="form-control" value="{{$info['callback_url']}}">
                         {{--<span class="help-block"></span>--}}
                     </div>
                 </div>
