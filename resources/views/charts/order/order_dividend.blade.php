@@ -173,4 +173,12 @@
     var street_id = $('#street_id').val();
     cascdeInit(province_id, city_id, district_id, street_id);
 </script>
+<script>
+    $(function () {
+        $('#export').click(function () {
+            $('#form1').attr('action', '{!! yzWebUrl('charts.order.order-dividend.export') !!}');
+            $('#form1').submit();
+        });
+    });
+</script>
 @endsection

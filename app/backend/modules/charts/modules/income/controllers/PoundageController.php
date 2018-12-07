@@ -29,7 +29,7 @@ class PoundageController extends BaseController
             ->where('status', 2)
             ->selectRaw("FROM_UNIXTIME(created_at,'%Y-%m-%d') as date, sum(actual_poundage) as poundage, sum(actual_servicetax) as servicetax")
             ->groupBy(DB::raw("FROM_UNIXTIME(created_at,'%Y-%m-%d')"))
-            ->orderBy('created_at','decs')
+            ->orderBy('date','decs')
             ->paginate(10);
         $pager = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
         $total = Withdraw::search($search)->where('status', 2)->selectRaw("sum(actual_poundage) as poundage, sum(actual_servicetax) as servicetax")->first();

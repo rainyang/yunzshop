@@ -15,10 +15,13 @@ use app\common\components\BaseController;
 use app\common\models\Income;
 use app\common\models\member\ChildrenOfMember;
 use app\common\models\member\ParentOfMember;
+use app\common\modules\express\KDN;
 use app\common\services\member\MemberRelation;
 use app\common\services\MessageService;
 use app\frontend\modules\member\models\SubMemberModel;
 use Carbon\Carbon;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 
 
@@ -390,4 +393,12 @@ echo '<pre>'; print_r($attr);
 
     }
 
+    public function ff()
+    {
+        $updateFile = storage_path('app/auto-update/temp') . '/1.z01';
+
+        $zip = zip_open($updateFile);
+
+        dd($zip);
+    }
 }

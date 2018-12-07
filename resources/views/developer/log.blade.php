@@ -194,9 +194,7 @@
 <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
 <script>
   $(document).ready(function () {
-    $('.table-container tr').on('click', function () {
-      $('#' + $(this).data('display')).toggle();
-    });
+
     $('#table-log').DataTable({
       "order": [$('#table-log').data('orderingIndex'), 'desc'],
       "stateSave": true,

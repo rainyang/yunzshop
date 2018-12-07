@@ -221,7 +221,7 @@ class GoodsController extends ApiController
         if ($list['total'] > 0) {
             $data = collect($list['data'])->map(function($rows) {
                 return collect($rows)->map(function($item, $key) {
-                    if ($key == 'thumb' && preg_match('/^images/', $item)) {
+                    if (($key == 'thumb' && preg_match('/^images/', $item)) || ($key == 'thumb' && preg_match('/^image/', $item))) {
                         return replace_yunshop(yz_tomedia($item));
                     } else {
                         return $item;

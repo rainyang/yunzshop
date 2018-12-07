@@ -6,7 +6,6 @@
 
 namespace app\common\services\goods;
 
-use Yunshop\VideoDemand\models\CourseGoodsModel;
 use app\common\components\BaseController;
 use Setting;
 
@@ -48,7 +47,7 @@ class VideoDemandCourseGoods extends BaseController
 
         if ($this->whetherEnabled()) {
             
-            $courseGoods = CourseGoodsModel::getCourseGoodsIdsData()->toArray();
+            $courseGoods = \Yunshop\VideoDemand\models\CourseGoodsModel::getCourseGoodsIdsData()->toArray();
             foreach ($courseGoods as $value) {
                 $courseGoods_ids[] = $value['goods_id'];
             }
@@ -67,7 +66,7 @@ class VideoDemandCourseGoods extends BaseController
 
         if ($this->whetherEnabled()) {
             
-            $data = CourseGoodsModel::uniacid()
+            $data = \Yunshop\VideoDemand\models\CourseGoodsModel::uniacid()
                                     ->select('is_course')
                                     ->where('goods_id', $goods_id)
                                     ->value('is_course');
