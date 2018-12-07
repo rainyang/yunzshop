@@ -31,13 +31,9 @@
                                            name='refund_status'>驳回申请
                                 </label>
                             @endif
-                            aaaaa
                             @section('operation_pass')@show
-bbbbbb
                             @section('operation_consensus')@show
-ccccc
                             @section('operation_resend')@show
-ddddd
 
                         </div>
                     </div>
