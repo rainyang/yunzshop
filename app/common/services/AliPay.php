@@ -127,7 +127,7 @@ class AliPay extends Pay
             } else {
 
                 $set = \Setting::get('shop.pay');
-                if (isset($set['alipay_pay_api']) || $set['alipay_pay_api'] == 1) {
+                if (isset($set['alipay_pay_api']) && $set['alipay_pay_api'] == 1) {
                     $result =  $this->alipayRefund2($refund_data, $set);
                     if ($result) {
                         $this->changeOrderStatus($refund_order, Pay::ORDER_STATUS_COMPLETE, $result['trade_no']);
