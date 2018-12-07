@@ -41,7 +41,7 @@ class Test extends Command
     public function handle()
     {
 
-        dump(1);
+        dump(app()->runningInConsole());
     }
 
 }

@@ -31,18 +31,18 @@ class LevelUpgradeService
 
     public function checkUpgrade(AfterOrderReceivedEvent $event)
     {
+        //event(new AfterOrderReceivedEvent(Order::where('status',3)->first()));
         $this->orderModel = $event->getOrderModel();
         $this->memberModel = MemberShopInfo::ofMemberId($this->orderModel->uid)->withLevel()->first();
-
         if (is_null($this->memberModel)) {
             return;
         }
 
         $result = $this->check();
-
         $this->setValidity(); // 设置会员等级期限
 
         if ($result) {
+
             return $this->upgrade($result);
         }
         return '';
@@ -219,6 +219,7 @@ class LevelUpgradeService
 
     private function upgrade($levelId)
     {
+
         $this->memberModel->level_id = $levelId;
 
         if ($this->memberModel->save()) {

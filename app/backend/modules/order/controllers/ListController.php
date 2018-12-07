@@ -70,10 +70,12 @@ class ListController extends BaseController
      */
     public function waitSend()
     {
-
+        // 会员排序
+        $condition['order_by'][] = [$this->orderModel->getModel()->getTable() . '.uid', 'desc'];
+        $condition['order_by'][] = [$this->orderModel->getModel()->getTable() . '.id', 'desc'];
         $this->orderModel->waitSend();
         $this->export($this->orderModel->waitSend());
-        return view('order.index', $this->getData())->render();
+        return view('order.index', $this->getData($condition))->render();
     }
 
     /**
@@ -110,8 +112,11 @@ class ListController extends BaseController
         return view('order.index', $this->getData())->render();
     }
 
-    protected function getData()
+    protected function getData($condition = [])
     {
+        if (!$condition || !$condition['order_by']) {
+            $condition['order_by'][] = [$this->orderModel->getModel()->getTable() . '.id', 'desc'];
+        }
         /*$params = [
             'search' => [
                 'ambiguous' => [
@@ -133,8 +138,13 @@ class ListController extends BaseController
             });
         }
 
+
         $list['total_price'] = $this->orderModel->sum('price');
-        $list += $this->orderModel->orderBy($this->orderModel->getModel()->getTable() . '.id', 'desc')->paginate(self::PAGE_SIZE)->toArray();
+        $build = $this->orderModel;
+        foreach ($condition['order_by'] as $item) {
+            $build->orderBy(...$item);
+        }
+        $list += $build->paginate(self::PAGE_SIZE)->toArray();
 
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 

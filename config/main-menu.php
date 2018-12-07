@@ -1036,9 +1036,33 @@ return [
                         'parents'       => ['Member', 'member_all',],
                     ],
 
-                    'member_member_agent' => [
+                    'member_member_agent_old' => [
                         'name'          => '推广下线',
+                        'url'           => 'member.member.agent-old',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_member_agent',
+                        'parents'       => ['Member', 'member_all',],
+                    ],
+
+                    'member_member_agent' => [
+                        'name'          => '团队下线',
                         'url'           => 'member.member.agent',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 0,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_member_agent',
+                        'parents'       => ['Member', 'member_all',],
+                    ],
+
+                    'member_member_agent_parent' => [
+                        'name'          => '推广上线',
+                        'url'           => 'member.member.agent-parent',
                         'url_params'    => '',
                         'permit'        => 1,
                         'menu'          => 0,
@@ -1335,6 +1359,19 @@ return [
                         'item'          => 'relation_base',
                         'parents'       => ['Member', 'relation_base',],
                     ],
+                ],
+            ],
+            'relation_export'     => [
+                'name'          => '关系链升级',
+                'url'           => 'member.member.exportRelation',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 0,
+                'icon'          => 'fa-circle-o',
+                'sort'          => 0,
+                'item'          => 'relation_base',
+                'parents'       => ['Member',],
+                'child'         => [
                 ],
             ],
         ],

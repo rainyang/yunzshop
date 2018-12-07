@@ -27,6 +27,7 @@ class Express
     use ValidatesRequests;
     private $event;
 
+
     /**
      * 订单模型刚生成时(未添加订单商品)
      * @param OnPreGenerateOrderCreatingEvent $event

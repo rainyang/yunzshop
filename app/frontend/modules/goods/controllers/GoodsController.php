@@ -154,6 +154,10 @@ class GoodsController extends ApiController
                 }
             }
         }
+        //默认供应商店铺名称
+        if ($goodsModel->supplier->store_name == 'null') {
+            $goodsModel->supplier->store_name = $goodsModel->supplier->user_name;
+        }
 
         if($goodsModel->hasOneShare){
             $goodsModel->hasOneShare->share_thumb = yz_tomedia($goodsModel->hasOneShare->share_thumb);
@@ -217,7 +221,7 @@ class GoodsController extends ApiController
         if ($list['total'] > 0) {
             $data = collect($list['data'])->map(function($rows) {
                 return collect($rows)->map(function($item, $key) {
-                    if ($key == 'thumb' && preg_match('/^images/', $item)) {
+                    if (($key == 'thumb' && preg_match('/^images/', $item)) || ($key == 'thumb' && preg_match('/^image/', $item))) {
                         return replace_yunshop(yz_tomedia($item));
                     } else {
                         return $item;

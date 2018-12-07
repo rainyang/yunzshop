@@ -6,6 +6,7 @@ use app\common\facades\Setting;
 use app\common\models\UniAccount;
 use app\frontend\models\MemberShopInfo;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Support\Facades\DB;
 
 
 class MemberLevelValidity
@@ -52,7 +53,7 @@ class MemberLevelValidity
 
         MemberShopInfo::uniacid()
             ->where('validity', '>', '0')
-            ->update(['validity' => \DB::raw('`validity` - 1')]);
+            ->update(['validity' => DB::raw('`validity` - 1')]);
     }
 
     public function setExpire()
