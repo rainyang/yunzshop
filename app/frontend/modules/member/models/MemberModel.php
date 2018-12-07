@@ -653,7 +653,7 @@ class MemberModel extends Member
 //        foreach ($team_member as $item) {
 //            $order_total[] = DB::table('yz_order')->select(DB::raw('count(id) as total'))->whereIn('status', [1,2,3])->where('uid', $item['child_id']);
 //        }
-        
+
         //团队订单总数
 //        $team_order_total = 0;
 //        foreach ($order_total as $k => $item) {
