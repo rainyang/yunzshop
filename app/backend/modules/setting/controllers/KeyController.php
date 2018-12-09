@@ -11,6 +11,7 @@ namespace app\backend\modules\setting\controllers;
 use app\common\components\BaseController;
 use app\common\helpers\Url;
 use app\common\facades\Setting;
+use app\common\models\Address;
 use app\common\services\AutoUpdate;
 use app\common\services\MyLink;
 use Ixudra\Curl\Facades\Curl;
@@ -32,7 +33,13 @@ class KeyController extends BaseController
     {
         $requestModel = \YunShop::request()->upgrade;
         $upgrade = Setting::get('shop.key');
+
+        $auth_url = yzWebFullUrl('setting.key.index', ['page' => 'auth']);
+        $free_url = yzWebFullUrl('setting.key.index', ['page' => 'free']);
+
         $type = \YunShop::request()->type;
+        $page = \YunShop::request()->page ?: 'register';
+
         $message = $type == 'create' ? '添加' : '取消';
         if ($requestModel) {
             //检测数据是否存在
@@ -53,8 +60,13 @@ class KeyController extends BaseController
                 }
             }
         }
+
+        $province = Address::getProvince();
+
         return view('setting.key.index', [
-            'set' => $upgrade,
+            'province' => json_encode(['data' => $province->toArray()]),
+            'page' => json_encode(['type' => $page]),
+            'url' => json_encode(['free' => $free_url, 'auth' =>$auth_url]),
         ])->render();
     }
 
@@ -115,8 +127,21 @@ class KeyController extends BaseController
         return $res;
     }
 
+    public function getCity()
+    {
+        $data = request()->data;
 
+        $addressData = Address::getCityByParentId($data['id']);
 
+        return $this->successJson('ok', $addressData);
+    }
 
+    public function getArea()
+    {
+        $data = request()->data;
 
+        $addressData = Address::getAreaByParentId($data['id']);
+
+        return $this->successJson('ok', $addressData);
+    }
 }
