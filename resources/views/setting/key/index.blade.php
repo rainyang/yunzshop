@@ -3,7 +3,7 @@
 @section('title','注册芸商城')
 
 @section('content')
-
+    <script src="../addons/yun_shop/static/yunshop/js/industry.js"></script>
     <script type="text/javascript">
         function formcheck(event) {
 
@@ -49,9 +49,12 @@
                                 <el-input v-model="form.name" placeholder="请输入公司名称" autocomplete="off"></el-input>
                             </el-form-item>
                             <el-form-item label="行业" prop="trades">
-                                <el-select v-model="form.trades" style="width:100%" placeholder="请选择行业">
-                                    <el-option label="销售" value="shanghai"></el-option>
-                                    <el-option label="软件" value="beijing"></el-option>
+                                <el-select v-model="form.trades" value-key="id" style="width:100%" placeholder="请选择行业">
+                                    <el-option v-for="item in opt_trades.data"
+                                               :key="item.id"
+                                               :label="item.name"
+                                               :value="item">
+                                    </el-option>
                                 </el-select>
                             </el-form-item>
                             <el-form-item label="所在区域" required>
@@ -171,6 +174,7 @@
                         mobile: '',
                         captcha: ''
                     },
+                    opt_trades: industry,
                     opt_province: province.data,
                     opt_city:'',
                     opt_area:'',
