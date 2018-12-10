@@ -39,7 +39,7 @@
                         <div class="col-sm-9 col-xs-12">
                             {!! app\common\helpers\ImageHelper::tplFormFieldImage('adv[thumb]',
                             $adv['thumb'])!!}
-                            <span class="help-block">建议尺寸: 640*350</span>
+                            <span class="help-block">建议尺寸: 640*1008</span>
                         </div>
                     </div>
                     <div class="form-group">

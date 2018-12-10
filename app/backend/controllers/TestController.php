@@ -15,6 +15,7 @@ use app\common\components\BaseController;
 use app\common\models\Income;
 use app\common\models\member\ChildrenOfMember;
 use app\common\models\member\ParentOfMember;
+use app\common\modules\express\KDN;
 use app\common\services\member\MemberRelation;
 use app\common\services\MessageService;
 use app\frontend\modules\member\models\SubMemberModel;

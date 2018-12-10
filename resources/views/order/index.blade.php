@@ -40,26 +40,59 @@
                                                         @if( array_get($requestSearch,'ambiguous.field','')=='member')  selected="selected"@endif>
                                                     用户姓名/ID/昵称/手机号
                                                 </option>
-                                                <option value="order_goods"
-                                                        @if( array_get($requestSearch,'ambiguous.field','')=='order_goods')  selected="selected"@endif>
-                                                    商品名称
-                                                </option>
-                                                <option value="goods_id"
+                                                <option value="goods_id"{{--order_goods--}}
                                                         @if( array_get($requestSearch,'ambiguous.field','')=='goods_id')  selected="selected"@endif>
-                                                    商品ID
+                                                    商品名称/ID
                                                 </option>
+                                                {{--<option value="goods_id"--}}
+                                                        {{--@if( array_get($requestSearch,'ambiguous.field','')=='goods_id')  selected="selected"@endif>--}}
+                                                    {{--商品ID--}}
+                                                {{--</option>--}}
                                                 <option value="dispatch"
                                                         @if( array_get($requestSearch,'ambiguous.field','')=='dispatch')  selected="selected"@endif>
                                                     快递单号
                                                 </option>
                                             </select>
                                         </div>
-                                        <div class="form-group  col-md-2 col-sm-6">
+                                        <div class='form-group col-sm-4 col-lg-3 col-xs-12'>
 
                                             <input class="form-control" name="search[ambiguous][string]" type="text"
                                                    value="{{array_get($requestSearch,'ambiguous.string','')}}"
-                                                   placeholder="订单号/支付单号">
+                                                   placeholder="订单号/支付单号" id="string">
+
+
+                                            <div class="form-group notice" id="goods_name">
+                                                <div >
+                                                    <div class='input-group'>
+                                                        <input type="text" name="search[ambiguous][name]" maxlength="30" value="{{array_get($requestSearch,'ambiguous.name','')}}" id="saler" class="form-control" readonly />
+                                                        <div class='input-group-btn'>
+                                                            <button class="btn btn-default" type="button" onclick="popwin = $('#modal-module-menus-notice').modal();">选择商品</button>
+                                                            <button class="btn btn-danger" type="button" onclick="$('#noticeopenid').val('');$('#saler').val('');$('#saleravatar').hide()">清除选择</button>
+                                                        </div>
+                                                    </div>
+                                                    <div id="modal-module-menus-notice"  class="modal fade" tabindex="-1">
+                                                        <div class="modal-dialog" style='width: 920px;'>
+                                                            <div class="modal-content">
+                                                                <div class="modal-header"><button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button><h3>选择商品名称</h3></div>
+                                                                <div class="modal-body" >
+                                                                    <div class="row">
+                                                                        <div class="input-group">
+                                                                            <input type="text" class="form-control" name="keyword" value="" id="search-kwd-notice" placeholder="请输入商品名称" />
+                                                                            <span class='input-group-btn'><button type="button" class="btn btn-default" onclick="search_members();">搜索</button></span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div id="module-menus-notice" style="padding-top:5px;"></div>
+                                                                </div>
+                                                                <div class="modal-footer"><a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</a></div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                         </div>
+
                                         <div class="form-group form-group col-sm-8 col-lg-2 col-xs-12">
 
                                             <select name="search[pay_type]" class="form-control">
@@ -87,7 +120,7 @@
                                         </div>
                                         <div class="form-group col-sm-8 col-lg-5 col-xs-12">
 
-                                            <select name="search[time_range][field]" class="form-control form-time">
+                                            <select name="search[time_range][field]" class="form-control form-time" >
                                                 <option value=""
                                                         @if( array_get($requestSearch,'time_range.field',''))selected="selected"@endif >
                                                     操作时间
@@ -307,12 +340,64 @@
         </div>
     </div>
     <script>
-        $(function () {
-            $("#ambiguous-field").on('change', function () {
+        // $(function () {
+        //     $("#ambiguous-field").on('change', function () {
+        //
+        //         $(this).next('input').attr('placeholder', $(this).find(':selected').text().trim())
+        //     });
+        // })
 
+        $(function () {
+
+            // $("#goods_name").hide();//页面加载，隐藏选择商品名称控件
+
+            $("#ambiguous-field").on('change', function () {
                 $(this).next('input').attr('placeholder', $(this).find(':selected').text().trim())
+
+
+                if ($(this).val()=='goods_id'){//选择商品名称搜索
+                    $("#string").hide();
+                    $("#goods_name").show();
+                }else {
+                    $('input[name="search[ambiguous][string]"]').val("");
+                    $("#goods_name").hide();
+                    $("#string").show();
+                }
+
             });
         })
+
+        if ($("#ambiguous-field").val()=='goods_id'){//选择商品名称搜索
+            $("#string").hide();
+            $("#goods_name").show();
+        }else {
+            $("#goods_name").hide();
+            $("#string").show();
+        }
+
+        function search_members() {
+            if ($('#search-kwd-notice').val() == '') {
+                Tip.focus('#search-kwd-notice', '请输入关键词');
+                return;
+            }
+            $("#module-menus-notice").html("正在搜索....");
+            $.get("{!! yzWebUrl('goods.goods.search-order') !!}", {
+                keyword: $.trim($('#search-kwd-notice').val())
+            }, function (dat) {
+                $('#module-menus-notice').html(dat);
+            });
+        }
+
+        function select_good (o) {
+            console.log(o.id)
+            $('input[name="search[ambiguous][string]"]').val(o.id);
+            $('input[name="search[ambiguous][name]"]').val(o.title);
+            $("#saleravatar").show();
+            $("#saleravatar").find('img').attr('src', o.thumb);
+            $("#saler").val(o.title);
+            $("#modal-module-menus-notice .close").click();
+        }
+
 
     </script>
 @section('plugin_js')

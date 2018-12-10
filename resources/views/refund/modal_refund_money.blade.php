@@ -3,7 +3,6 @@
     <label class='radio-inline'>
         <input type='radio' value='1' class='refund-action' class="refund-action"
                data-action='{{yzWebUrl("refund.pay")}}' name='refund_status'>
-        同意退款
 
     </label>
 

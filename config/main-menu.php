@@ -1361,7 +1361,6 @@ return [
                     ],
                 ],
             ],
-
             'popularize_page_show'     => [
                 'name'          => '推广中心设置',
                 'url'           => 'member.popularize-page-show.wechat-set',
@@ -1432,6 +1431,19 @@ return [
                         'parents'       => ['Member', 'popularize_page_show'],
                     ],
                 ]
+            ],
+            'relation_export'     => [
+                'name'          => '关系链升级',
+                'url'           => 'member.member.exportRelation',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 0,
+                'icon'          => 'fa-circle-o',
+                'sort'          => 0,
+                'item'          => 'relation_base',
+                'parents'       => ['Member',],
+                'child'         => [
+                ],
             ],
         ],
     ],

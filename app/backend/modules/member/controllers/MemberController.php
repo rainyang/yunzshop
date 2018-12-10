@@ -25,10 +25,13 @@ use app\common\events\member\RegisterByAgent;
 use app\common\helpers\Cache;
 use app\common\helpers\PaginationHelper;
 use app\common\models\AccountWechats;
+use app\common\models\member\ChildrenOfMember;
+use app\common\models\member\ParentOfMember;
 use app\common\models\MemberAlipay;
 use app\common\models\MemberMiniAppModel;
 use app\common\models\MemberWechatModel;
 use app\common\services\ExportService;
+use app\common\services\member\MemberRelation;
 use app\frontend\modules\member\models\SubMemberModel;
 use app\Jobs\ModifyRelationJob;
 use Illuminate\Support\Facades\DB;
@@ -853,5 +856,19 @@ class MemberController extends BaseController
         } catch (\Exception $e) {
             return json_encode(['status' => 0]);
         }*/
+    }
+
+    public function exportRelation()
+    {
+        $parentMemberModle = new ParentOfMember();
+        $childMemberModel = new ChildrenOfMember();
+        $parentMemberModle->DeletedData();
+        $childMemberModel->DeletedData();
+
+        $member_relation = new MemberRelation();
+
+        $member_relation->createParentOfMember();
+
+        return view('member.export-relation', [])->render();
     }
 }

@@ -49,12 +49,31 @@ class SendCouponController extends BaseController
                     $membersScope = trim(\YunShop::request()->send_memberid);
                     $patternMatchNumArray = preg_match('/(\d+,)+(\d+,?)/', $membersScope); //匹配比如 "2,3,78"或者"2,3,78,"
                     $patternMatchSingleNum = preg_match('/(\d+)(,)?/', $membersScope); //匹配单个数字
+
+                    $memberIds = explode(',', $membersScope);
+                    $uid = Member::getMemberId($memberIds);//提取该搜索公众号下的会员id
+                    $uids = [];
+
+                    foreach ($uid as $key=>$item){
+                        $uids[$key] = $item['uid'];//将查出的会员id装到数组里
+                    }
+
+                    $member_ids = collect($memberIds)->map(function ($item) {//循环转换为数值类型
+                        return intval($item);
+                    })->toArray();
+
+//                    dd($member_ids);
+                    $arr = array_diff($member_ids,$uids);//提交过来的会员id与查询出来的会员id对比，留下不存在该公众号的会员id
+
+                    if (!empty($arr)){  //判断是否存在不是该公众号的会员id
+                         throw new ShopException("发放优惠券失败，请确认该".implode(",", $arr)."会员是否是该公众号会员");
+                    }
+
                     if ($patternMatchNumArray || $patternMatchSingleNum) {
                         $patternMatch = true;
                     } else {
                         $patternMatch = false;
                     }
-                    $memberIds = explode(',', $membersScope);
                     break;
                 case self::BY_MEMBER_LEVEL: //根据"会员等级"获取 Member IDs
                     $sendLevel = \YunShop::request()->send_level;
@@ -148,6 +167,9 @@ class SendCouponController extends BaseController
             'agentLevelId' => isset($sendLevel) ? $sendLevel : 1,
         ])->render();
     }
+
+
+
 
 
     //发放优惠券
