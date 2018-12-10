@@ -19,13 +19,16 @@ use Yunshop\Designer\Common\Services\OtherPageService;
 use Yunshop\Designer\Common\Services\PageTopMenuService;
 use Yunshop\Designer\models\Designer;
 use Yunshop\Designer\models\DesignerMenu;
+use Yunshop\Designer\models\GoodsGroupGoods;
+use app\common\helpers\PaginationHelper;
+use Yunshop\Diyform\admin\DiyformDataController;
 
 
 class HomePageController extends ApiController
 {
     protected $publicAction = ['index', 'defaultDesign', 'defaultMenu', 'defaultMenuStyle', 'bindMobile', 'wxapp'];
     protected $ignoreAction = ['index', 'defaultDesign', 'defaultMenu', 'defaultMenuStyle', 'bindMobile', 'wxapp'];
-
+    private $pageSize = 20;
     /**
      * @return \Illuminate\Http\JsonResponse 当路由不包含page_id参数时,提供商城首页数据; 当路由包含page_id参数时,提供装修预览数据
      */
@@ -104,7 +107,6 @@ class HomePageController extends ApiController
         }
 
         $result['mailInfo']['is_bind_mobile'] = $is_bind_mobile;
-
         //用户信息, 原来接口在 member.member.getUserInfo
         if(empty($pageId)){ //如果是请求首页的数据
             if (!empty($member_id)) {
@@ -305,15 +307,20 @@ class HomePageController extends ApiController
      * 获取分页数据
      */
     public function GetPageGoods(){
-//        $group_id = \YunShop::request()->group_id;
-//        $page = \YunShop::request()->page;
-        dd(1);
-        $group_id = 'M1544064694317';
-        $page = 2;
-        $group_goods = new GoodsGroupGoods();
-
-        $data = $group_goods->GetPageGoods($group_id,$page);
-        return $data;
+//        dd(11);
+        if(app('plugins')->isEnabled('designer')) {
+            $group_id = \YunShop::request()->group_id;
+            $group_goods = new GoodsGroupGoods();
+            $data = $group_goods->GetPageGoods($group_id, 10);
+            $datas = $data->orderBy('id', 'desc')
+                ->paginate($this->pageSize)
+                ->toArray();
+            foreach ($datas['data'] as $key => $itme) {
+                $datas['data'][$key] = unserialize($itme['goods']);//反序列化
+            }
+            dd(json($datas));
+            return json($datas);
+        }
     }
 
     //增加验证码功能
