@@ -53,7 +53,7 @@
                                     <el-option v-for="item in opt_trades.data"
                                                :key="item.id"
                                                :label="item.name"
-                                               :value="item">
+                                               :value="item.name">
                                     </el-option>
                                 </el-select>
                             </el-form-item>
@@ -290,7 +290,7 @@
 
                     this.$refs.form.validate((valid) => {
                         if (valid) {
-                            /*this.$http.post("{!! yzWebUrl('plugin.share-chain.admin.set.sub') !!}", {'setting': this.form}).then(response => {
+                            this.$http.post("{!! yzWebUrl('setting.key.register') !!}", {'data': this.form}).then(response => {
                                 if (response.data.result) {
                                     this.$message({
                                         message: response.data.msg,
@@ -307,7 +307,7 @@
                                  this.formLoading = false;
                             }, response => {
                                 console.log(response);
-                            });*/
+                            });
                         } else {
                             return false;
                 }

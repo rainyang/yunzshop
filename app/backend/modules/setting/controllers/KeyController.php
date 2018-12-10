@@ -144,4 +144,13 @@ class KeyController extends BaseController
 
         return $this->successJson('ok', $addressData);
     }
+
+    public function register()
+    {
+        $data = request()->data;
+
+        $auth_url = yzWebFullUrl('setting.key.index', ['page' => 'auth']);
+
+        return $this->successJson('注册商城成功', ['url' => $auth_url]);
+    }
 }
