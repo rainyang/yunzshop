@@ -7,5 +7,6 @@
  */
 
 return [
-    'checkUrl'=>env('UPDATE_CHECK_URL','http://yun.yunzshop.com/update'),
+    'checkUrl'    => env('UPDATE_CHECK_URL','http://yun.yunzshop.com/update'),
+    'registerUrl' => env('REGISTER_CHECK_URL','http://yun1.yunzshop.com/register'),
 ];

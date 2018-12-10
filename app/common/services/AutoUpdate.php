@@ -518,14 +518,14 @@ class AutoUpdate
 
         //获取文件夹数据
         $checkUpdateFileUurl = $updateUrl . '/check/1';
-//dd($checkUpdateFileUurl);
+
         $files = Curl::to($checkUpdateFileUurl)
             ->withHeader(
                 "Authorization: Basic " . base64_encode("{$this->_username}:{$this->_password}")
             )
             ->asJsonResponse(true)
             ->get();
-//dd($files);
+
         if (!is_null($files) && !empty($files['result'])) {
             $downloadUrl = $updateUrl . '/download/';
 

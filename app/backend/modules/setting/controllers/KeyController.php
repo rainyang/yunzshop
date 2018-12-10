@@ -9,8 +9,8 @@
 namespace app\backend\modules\setting\controllers;
 
 use app\common\components\BaseController;
-use app\common\helpers\Url;
 use app\common\facades\Setting;
+use app\common\helpers\Url;
 use app\common\models\Address;
 use app\common\services\AutoUpdate;
 use app\common\services\MyLink;
@@ -149,8 +149,67 @@ class KeyController extends BaseController
     {
         $data = request()->data;
 
+        $data = [
+            "name" => "tt",
+            "trades" => "贸易|批发|零售|租赁业",
+            "province" => [
+                "id" => 150000,
+                "areaname" => "内蒙古自治区",
+                "parentid" => 0,
+                "level" => 1,
+            ],
+            "city" => [
+                "id" => 150700,
+                "areaname" => "呼伦贝尔市",
+                "parentid" => 150000,
+                "level" => 2
+            ],
+            "area" => [
+                "id" => 150724,
+                "areaname" => "鄂温克族自治旗",
+                "parentid" => 150700,
+                "level" => 3
+            ],
+            "address" => "54545",
+            "mobile" => "13712345678",
+            "captcha" => "33"
+        ];
+
         $auth_url = yzWebFullUrl('setting.key.index', ['page' => 'auth']);
 
-        return $this->successJson('注册商城成功', ['url' => $auth_url]);
+        $key = 'free';
+        $secret = request()->getHttpHost();
+
+        $url = config('auto-update.registerUrl') . "/free/{$data['name']}/{$data['trades']}/{$data['province']['areaname']}/{$data['city']['areaname']}/{$data['area']['areaname']}/{$data['address']}/{$data['mobile']}";
+
+        $update = Curl::to($url)
+            ->withHeader(
+                "Authorization: Basic " . base64_encode("{$key}:{$secret}")
+            )
+            ->asJsonResponse(true)
+            ->get();
+
+        if (!is_null($update) && 1 == $update['result']) {
+            if ($update['data']) {
+                //检测数据是否存在
+                $res = $this ->isExist($update['data']);
+                //var_dump($res);exit();
+                if(!$res['isExists']) {
+
+                    if($res['message'] == 'amount exceeded')
+                        $this->error('您已经没有剩余站点数量了，如添加新站点，请取消之前的站点或者联系我们的客服人员！');
+                    else
+                        $this->error('Key或者密钥出错了！');
+
+                } else {
+                    if ($this->processingKey($update['data'], 'create')) {
+                        //TODO 插件
+                        return $this->successJson("站点添加成功", ['url' => $auth_url]);
+                    }
+                }
+            }
+        }
+
+        $this->errorJson("站点添加失败");
     }
 }
