@@ -94,6 +94,7 @@ class CashierIncomeController extends BaseController
 
     public function export()
     {
+
         $prefix = app('db')->getTablePrefix();
         $searchTime = [];
         $search = \YunShop::request()->search;

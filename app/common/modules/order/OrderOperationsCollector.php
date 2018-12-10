@@ -22,6 +22,7 @@ class OrderOperationsCollector
     public function getOperations(Order $order)
     {
         $operationsSettings = $order->getOperationsSetting();
+
         $operations = array_map(function ($operationName) use ($order) {
             /**
              * @var OrderOperationInterface $operation
