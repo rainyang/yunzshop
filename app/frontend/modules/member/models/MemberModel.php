@@ -866,8 +866,8 @@ class MemberModel extends Member
 
             //团队1级会员
             $order = DB::table('yz_order')->select('uid','price')->where('uniacid', \YunShop::app()->uniacid)->get();
-            $result['child_order_total'] = $order->whereIn('uid', $item->uid)->count();
-            $result['child_order_money'] = $order->whereIn('uid', $item->uid)->sum('price');
+            $result['child_order_total'] = $order->whereIn('uid', $item->uid)->where('status', 3)->count();
+            $result['child_order_money'] = $order->whereIn('uid', $item->uid)->where('status', 3)->sum('price');
             //团队全部会员
             $childMemberTeam = DB::select('select member_id, group_concat(child_id) as child from '.DB::getTablePrefix().'yz_member_children where member_id =' . $item->uid . ' and uniacid='.\YunShop::app()->uniacid .' group by member_id');
             $result['team_total'] = collect(explode(',' ,$childMemberTeam[0]['child']))->count();
