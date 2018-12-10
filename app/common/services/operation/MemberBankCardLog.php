@@ -23,9 +23,6 @@ class MemberBankCardLog extends OperationBase
         } else {
             $this->setLog('mark', $this->model->getOriginal('member_id'));
         }
-//        //var_dump($this->model);exit();
-//        //$this->model->getOriginal('member_id');
-//        $this->setLog('mark', $this->model->getOriginal('member_id'));
     }
 
     protected function special()
