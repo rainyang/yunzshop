@@ -25,7 +25,7 @@ class LowerCountService
             \Setting::$uniqueAccountId = $u->uniacid;
 
             $uniacid = \YunShop::app()->uniacid;
-            $level_all_member = DB::table('yz_member_children')->select('member_id', 'level', DB::raw('count(1) as total'))->whereIn('level', [1,2,3])->groupBy('member_id', 'level')->get()->toArray();
+            $level_all_member = DB::table('yz_member_children')->select('member_id', 'level', DB::raw('count(1) as total'))->where('uniacid', $uniacid)->whereIn('level', [1,2,3])->groupBy('member_id', 'level')->get()->toArray();
             $level_all_member = collect($level_all_member);
             $result = [];
 
