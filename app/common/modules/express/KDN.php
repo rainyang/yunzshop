@@ -25,6 +25,7 @@ class KDN
 
     public function getTraces($comCode, $expressSn, $orderSn = '')
     {
+
        //快递鸟1002状态为免费，8001状态为收费
         $express_api = \Setting::get('shop.express_info');
 
@@ -49,12 +50,10 @@ class KDN
             throw new ShopException("快递鸟状态错误");
         }
 
-
         $datas['DataSign'] = $this->encrypt($requestData);
 
         $response = Curl::to($this->reqURL)->withData($datas)
             ->asJsonResponse(true)->get();
-
         return $this->format($response);
     }
 
