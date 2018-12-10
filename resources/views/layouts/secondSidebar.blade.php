@@ -3,7 +3,7 @@
     <section  class="sidebar sidebar2" data-active-color="blue" data-background-color="white" data-image="../assets/img/sidebar-1.jpg">
 
 
-        <div class="sidebar-wrapper">
+        <div class="sidebar-wrapper" style="overflow-y: scroll;overflow-x: hidden;">
 
             <ul class="nav">
 

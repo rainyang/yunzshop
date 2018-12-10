@@ -84,6 +84,11 @@ class AliPay extends Pay
         $pay_type_name = PayType::get_pay_type_name($payType);
         $this->log($data['extra']['type'], $pay_type_name, $data['amount'], $op, $data['order_no'], Pay::ORDER_STATUS_NON, \YunShop::app()->getMemberId());
 
+        if ($payType == PayFactory::PAY_APP_ALIPAY) {
+            \Log::info('云打包支付宝APP支付,支付订单号：'. $data['order_no']);
+            return true;
+        }
+
         return $this->_pay->doPay($data);
     }
 

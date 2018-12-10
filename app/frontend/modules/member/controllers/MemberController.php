@@ -475,9 +475,9 @@ class MemberController extends ApiController
             'province_name' => isset($data['province_name']) ? $data['province_name'] : '',
             'city_name' => isset($data['city_name']) ? $data['city_name'] : '',
             'area_name' => isset($data['area_name']) ? $data['area_name'] : '',
-            'province' => isset($data['province']) ? $data['province'] : 0,
-            'city' => isset($data['city']) ? $data['city'] : 0,
-            'area' => isset($data['area']) ? $data['area'] : 0,
+            'province' => isset($data['province']) ? intval($data['province']) : 0,
+            'city' => isset($data['city']) ? intval($data['city']) : 0,
+            'area' => isset($data['area']) ? intval($data['area']) : 0,
             'address' => isset($data['address']) ? $data['address'] : '',
             'wechat' => isset($data['wx']) ? $data['wx'] : '',
         ];
@@ -565,11 +565,21 @@ class MemberController extends ApiController
                 return $this->errorJson($check_code['json']);
             }
 
+            if (empty($close_invitecode)) {
 
-            if (!empty($close_invitecode)) {
                 $invitecode = MemberService::inviteCode();
+
                 if ($invitecode['status'] != 1) {
                     return $this->errorJson($invitecode['json']);
+                }
+
+                file_put_contents(storage_path("logs/" . date('Y-m-d') . "_invitecode.log"), print_r(\YunShop::app()->getMemberId() . '-'. \YunShop::request()->invite_code . '-bind' . PHP_EOL, 1), FILE_APPEND);
+
+                //邀请码
+                $parent_id = \app\common\models\Member::getMemberIdForInviteCode();
+                if (!is_null($parent_id)) {
+                    file_put_contents(storage_path("logs/" . date('Y-m-d') . "_invitecode.log"), print_r(\YunShop::app()->getMemberId() . '-'. \YunShop::request()->invite_code . '-'. $parent_id . '-bind' . PHP_EOL, 1), FILE_APPEND);
+                    MemberShopInfo::change_relation($uid, $parent_id);
                 }
             }
 
@@ -619,12 +629,6 @@ class MemberController extends ApiController
                 $member_model->password = md5($password . $salt);
 
                 if ($member_model->save()) {
-                    //邀请码
-                    $parent_id = \app\common\models\Member::getMemberIdForInviteCode();
-                    if (!is_null($parent_id)) {
-                        MemberShopInfo::change_relation($uid, $parent_id);
-                    }
-
                     if (Cache::has($member_model->uid . '_member_info')) {
                         Cache::forget($member_model->uid . '_member_info');
                     }

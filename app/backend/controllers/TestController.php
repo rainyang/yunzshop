@@ -10,24 +10,18 @@ namespace app\backend\controllers;
 
 
 use app\backend\modules\charts\modules\phone\services\PhoneAttributionService;
+use app\backend\modules\member\models\Member;
 use app\common\components\BaseController;
-use app\common\events\order\AfterOrderCreatedEvent;
-use app\common\events\order\AfterOrderCreatedImmediatelyEvent;
-use app\common\events\order\AfterOrderPaidEvent;
-use app\common\events\order\AfterOrderPaidImmediatelyEvent;
-use app\common\events\order\AfterOrderReceivedEvent;
-use app\common\events\order\AfterOrderReceivedImmediatelyEvent;
 use app\common\models\Income;
-use app\common\models\Member;
 use app\common\models\member\ChildrenOfMember;
 use app\common\models\member\ParentOfMember;
-use app\common\models\Order;
-use app\common\models\PayRequestDataLog;
-use app\common\models\PayResponseDataLog;
+use app\common\modules\express\KDN;
 use app\common\services\member\MemberRelation;
 use app\common\services\MessageService;
 use app\frontend\modules\member\models\SubMemberModel;
-use Illuminate\Events\Dispatcher;
+use Carbon\Carbon;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 
 
@@ -48,11 +42,21 @@ class TestController extends BaseController
      */
     public function index()
     {
-        dd(Order::find(20100));
-        $a = PayRequestDataLog::where('out_order_no','PN20181123081037RR')->first();
-        dump($a);
-        $b = PayResponseDataLog::where('out_order_no','PN20181123081037RR')->first();
-        dump($b);
+        $a = Carbon::createFromTimestamp(1503488629)->diffInDays(Carbon::createFromTimestamp(1504069595), true);
+        $member_relation = new MemberRelation();
+
+        $relation = $member_relation->hasRelationOfParent(66, 5, 1);
+
+        dd($relation);
+
+        $text = '{"commission":{"title":"u5206u9500","data":{"0":{"title":"u5206u9500u4f63u91d1","value":"0.01u5143"},"2":{"title":"u4f63u91d1u6bd4u4f8b","value":"0.15%"},"3":{"title":"u7ed3u7b97u5929u6570","value":"0u5929"},"4":{"title":"u4f63u91d1u65b9u5f0f","value":"+u5546u54c1u72ecu7acbu4f63u91d1"},"5":{"title":"u5206u4f63u65f6u95f4","value":"2018-10-24 09:15:31"},"6":{"title":"u7ed3u7b97u65f6u95f4","value":"2018-10-24 09:20:04"}}},"order":{"title":"u8ba2u5355","data":[{"title":"u8ba2u5355u53f7","value":"SN201810 24091508a8"},{"title":"u72b6u6001","value":"u4ea4u6613u5b8cu6210"}]},"goods":{"title":"u5546u54c1","data":[[{"title":"u540du79f0","value":"u8700u9999u98ceu7fd4u8c46u82b1u6ce1u998du5e97"},{"title":"u91d1u989d","value":"4.00u5143"}]]}}';
+
+        $pattern1 = '/\\\u[\d|\w]{4}/';
+        preg_match($pattern1, $text, $exists);
+
+        if (empty($exists)) {
+            $pattern2 = '/(u[\d|\w]{4})/';
+        }
 
     }
 
@@ -191,18 +195,92 @@ class TestController extends BaseController
     public function pp()
     {
 
-        //$this->synRun(5, '');exit;
+        $member_info = Member::getAllMembersInfosByQueue(\YunShop::app()->uniacid);
 
-        $member_relation = new MemberRelation();
+        $total       = $member_info->distinct()->count();
 
-        $member_relation->createChildOfMember();
+        dd($total);
+
+        $this->chkSynRun(10);exit;
+
+        /*$member_relation = new MemberRelation();
+
+        $member_relation->createChildOfMember();*/
     }
 
-    public function synRun($uniacid, $memberInfo)
+    public function synRun($uniacid)
     {
-        $memberModel = new \app\backend\modules\member\models\Member();
-        $childMemberModel = new ChildrenOfMember();
         $parentMemberModle = new ParentOfMember();
+        $childMemberModel = new ChildrenOfMember();
+        $memberModel = new Member();
+        $memberModel->_allNodes = collect([]);
+
+        \Log::debug('--------------清空表数据------------');
+        //$parentMemberModle->DeletedData();
+
+        $memberInfo = $memberModel->getTreeAllNodes($uniacid);
+dd($memberInfo);
+        if ($memberInfo->isEmpty()) {
+            \Log::debug('----is empty-----');
+            return;
+        }
+
+        foreach ($memberInfo as $item) {
+            $memberModel->_allNodes->put($item->member_id, $item);
+        }
+
+        \Log::debug('--------queue synRun -----');
+dd(1);
+        foreach ($memberInfo as $key => $val) {
+            $attr = [];
+            $child_attr = [];
+echo $val->member_id . '<BR>';
+            \Log::debug('--------foreach start------', $val->member_id);
+            $data = $memberModel->chktNodeParents($uniacid, $val->member_id);
+            \Log::debug('--------foreach data------', $data->count());
+
+            if (!$data->isEmpty()) {
+                \Log::debug('--------insert init------');
+
+                foreach ($data as $k => $v) {
+                    $attr[] = [
+                        'uniacid'   => $uniacid,
+                        'parent_id'  => $k,
+                        'level'     => $v['depth'] + 1,
+                        'member_id' => $val->member_id,
+                        'created_at' => time()
+                    ];
+
+                    $child_attr[] = [
+                        'uniacid'   => $uniacid,
+                        'parent_id'  => $val->member_id,
+                        'level'     => $v['depth'] + 1,
+                        'member_id' => $k,
+                        'created_at' => time()
+                    ];
+                }
+
+echo '<pre>';print_r($attr);
+echo '<BR>';
+echo '<pre>';print_r($child_attr);
+echo '--------<BR>';
+                //$parentMemberModle->createData($attr);
+                //$childMemberModel->createData($child_attr);
+            }
+        }
+
+        echo 'end';
+
+    }
+
+    public function synRun2($uniacid)
+    {
+        $childMemberModel = new ChildrenOfMember();
+        $memberModel = new Member();
+        $memberModel->_allNodes = collect([]);
+
+        \Log::debug('--------------清空表数据------------');
+        $childMemberModel->DeletedData();
 
         $memberInfo = $memberModel->getTreeAllNodes($uniacid);
 
@@ -211,61 +289,116 @@ class TestController extends BaseController
             return;
         }
 
-        //$memberInfo = $memberInfo;
-
-        $memberModel->_allNodes = collect([]);
         foreach ($memberInfo as $item) {
             $memberModel->_allNodes->put($item->member_id, $item);
         }
 
-        //dd($memberModel->_allNodes);
-        /* \Log::debug('--------queue member_model -----', get_class($this->memberModel));
-         \Log::debug('--------queue childMemberModel -----', get_class($this->childMemberModel));*/
         \Log::debug('--------queue synRun -----');
 
         foreach ($memberInfo as $key => $val) {
             $attr = [];
-            echo '-------' . $key . '--------' . $val->member_id . '<BR>';
+
+            $memberModel->filter = [];
+echo '<pre>';print_r($val->member_id);
             \Log::debug('--------foreach start------', $val->member_id);
-            //$data = $memberModel->getNodeParents($uniacid, $val->member_id);
             $data = $memberModel->getDescendants($uniacid, $val->member_id);
+
 
             \Log::debug('--------foreach data------', $data->count());
 
             if (!$data->isEmpty()) {
                 \Log::debug('--------insert init------');
                 $data = $data->toArray();
-
                 foreach ($data as $k => $v) {
-                    $attr[] = [
-                        'uniacid' => $uniacid,
-                        'child_id' => $k,
-                        'level' => $v['depth'] + 1,
-                        'member_id' => $val->member_id,
-                        'created_at' => time()
-                    ];
+                    if ($k != $val->member_id) {
+                        $attr[] = [
+                            'uniacid'   => $uniacid,
+                            'child_id'  => $k,
+                            'level'     => $v['depth'] + 1,
+                            'member_id' => $val->member_id,
+                            'created_at' => time()
+                        ];
+                    } else {
+                        $e = [$k,$v];
+                    }
                 }
-
-                $childMemberModel->createData($attr);
-                /*
-                 foreach ($data as $k => $v) {
-                     $attr[] = [
-                         'uniacid'   => $uniacid,
-                         'parent_id'  => $k,
-                         'level'     => $v['depth'] + 1,
-                         'member_id' => $val->member_id,
-                         'created_at' => time()
-                     ];
-                 }
-
-                 $parentMemberModle->createData($attr);*/
+echo '<pre>'; print_r($attr);
+              //  $childMemberModel->createData($attr);
             }
-
-
         }
 
         echo 'end';
+    }
+
+    public function cmr()
+    {
+        $member_relation = new MemberRelation();
+
+        $a = [
+            [65, 79],
+            [75, 79],
+            [37, 65],
+            [66, 65],
+            [84, 75],
+            [13, 37],
+            [13090, 66],
+            [24122, 66],
+            [24132, 66],
+            [91, 84],
+            [9231, 84],
+            [9571, 84],
+            [89, 65]
+        ];
+
+        $aa = [
+            [66, 0]
+        ];
+
+        foreach ($a as $item) {
+            $member_relation->build($item[0], $item[1]);
+        }
+        echo 'ok';
+    }
+
+    public function chkSynRun()
+    {
+        //$uniacid = \YunShop::app()->uniacid;
+
+        (new Member())->chkRelationData();
+
+
+
+        /*$memberModel->_allNodes = collect([]);
+
+        $memberInfo = $memberModel->getTreeAllNodes($uniacid);
+
+        if ($memberInfo->isEmpty()) {
+            \Log::debug('----is empty-----');
+            return;
+        }
+
+        foreach ($memberInfo as $item) {
+            $memberModel->_allNodes->put($item->member_id, $item);
+        }
+
+        \Log::debug('--------queue synRun -----');
+
+        foreach ($memberInfo as $key => $val) {
+            \Log::debug('--------foreach start------', $val->member_id);
+            $memberModel->chkNodeParents($uniacid, $val->member_id);
+
+        }
+
+        echo 'end';*/
 
     }
 
+    public function ff()
+    {
+        $updateFile = storage_path('app/auto-update/temp') . '/1.z01';
+
+        $zip = zip_open($updateFile);
+
+        dd($zip);
+    }
 }

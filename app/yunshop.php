@@ -482,9 +482,9 @@ class YunApp extends YunComponent
     {
         $account = \app\common\models\AccountWechats::getAccountByUniacid(request()->get('i'));
         return [
-            'uniacid' => request()->get('i'),
-            'weid' => request()->get('i'),
-            'acid' => request()->get('i'),
+            'uniacid' => trim(request()->get('i')),
+            'weid' => trim(request()->get('i')),
+            'acid' => trim(request()->get('i')),
             'account' => $account ? $account->toArray() : '',
         ];
     }
@@ -544,7 +544,8 @@ class YunApp extends YunComponent
      */
     public function getMemberId()
     {
-        if (config('app.debug')) {
+        if (1||config('app.debug')) {
+            //dump($_GET);
             if (isset($_GET['test_uid'])) {
                 return $_GET['test_uid'];
             }

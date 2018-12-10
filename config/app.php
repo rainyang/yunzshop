@@ -206,7 +206,8 @@ return [
 
         //拼音
         Overtrue\LaravelPinyin\ServiceProvider::class,
-
+        // 日志浏览
+        Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class,
     ],
 
     /*
@@ -294,7 +295,7 @@ return [
 
     'express' => [
         'KDN' => [
-            'reqURL'=>'http://api.kdniao.cc/Ebusiness/EbusinessOrderHandle.aspx'
+            'reqURL'=>'http://api.kdniao.com/api/dist'
         ]
     ]
 ];

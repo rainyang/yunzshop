@@ -98,7 +98,6 @@ class SupervisordController extends BaseController
         //$allProcessInfo = $supervisor->logMessage();
 
         return json_encode($result);
-
     }
 
     public function stopAll()

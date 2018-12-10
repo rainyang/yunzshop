@@ -51,6 +51,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
  * @method static self whereRaw(...$field)
  * @method static self getModel()
  * @method static string value($fields)
+ * @method static self groupBy(...$field)
  */
 class BaseModel extends Model
 {

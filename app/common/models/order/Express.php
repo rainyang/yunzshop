@@ -33,24 +33,18 @@ class Express extends BaseModel
 
     public function getExpress($express = null, $express_sn = null)
     {
-//        print_r($express);exit;
-        if (!isset($express)) {
-            $express = $this->express_code;
-        }
+
         if (!isset($express_sn)) {
             $express_sn = $this->express_sn;
         }
 //        $result = $this->kD100($express,$express_sn);
         $result = app('express')->getTraces($express, $express_sn);
 
-
         if (empty($result)) {
             return array();
         }
-
         $result['status_name'] = $this->expressStatusName($result['state']);
-//        print_r($result);
-//        exit;
+
         return $result;
     }
 
@@ -60,6 +54,7 @@ class Express extends BaseModel
 
         $result = Curl::to($url)
             ->asJsonResponse(true)->get();
+
         return $result;
     }
 
