@@ -96,6 +96,15 @@ class IncomePageFactory
         return $this->_income->needIsAgent();
     }
 
+    /**
+     * 收入页的前端路由
+     * @return string 前端路由名
+     */
+    public function getAppUrl()
+    {
+        return  $this->_income->getAppUrl();
+    }
+
 
     /**
      * 获取收入模型数据
@@ -128,7 +137,7 @@ class IncomePageFactory
     }
 
 
-    private function getTitle()
+    public function getTitle()
     {
         $mark = $this->_income->getMark();
 
