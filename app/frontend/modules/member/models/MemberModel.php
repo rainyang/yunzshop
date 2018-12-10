@@ -415,6 +415,7 @@ class MemberModel extends Member
         $set = \Setting::get('shop.member');
         $memberSet = \Setting::get('relation_base');
         $data = [];
+        $member_set = \Setting::get('relation_base');
 
         if (!empty($member_info)) {
             if (isset($set) && $set['headimg']) {
@@ -474,6 +475,11 @@ class MemberModel extends Member
             $data['team_order_money'] = $order->whereIn('uid', explode(',' ,$childMemberTeam[0]['child']))->sum('price');
 //        dd($data);
         }
+        $data['wechat'] = $member_set['relation_level']['wechat'];
+        $data['phone'] = $member_set['relation_level']['phone'];
+        $data['name1'] = $member_set['relation_level']['name1'];
+        $data['name2'] = $member_set['relation_level']['name2'];
+        $data['name3'] = $member_set['relation_level']['name3'];
 
         return $data;
     }
