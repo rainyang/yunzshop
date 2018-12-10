@@ -162,12 +162,6 @@ class TestController extends BaseController
 
     }
 
-
-    public function getPhone()
-    {
-        (new PhoneAttributionService())->phoneStatistics();
-    }
-
     public function tt()
     {
         $member_relation = new MemberRelation();
@@ -260,17 +254,20 @@ echo $val->member_id . '<BR>';
                     ];
                 }
 
-echo '<pre>';print_r($attr);
-echo '<BR>';
-echo '<pre>';print_r($child_attr);
-echo '--------<BR>';
-                //$parentMemberModle->createData($attr);
-                //$childMemberModel->createData($child_attr);
+                $childMemberModel->createData($attr);
+                /*
+                 foreach ($data as $k => $v) {
+                     $attr[] = [
+                         'uniacid'   => $uniacid,
+                         'parent_id'  => $k,
+                         'level'     => $v['depth'] + 1,
+                         'member_id' => $val->member_id,
+                         'created_at' => time()
+                     ];
+                 }
+                 $parentMemberModle->createData($attr);*/
             }
         }
-
-        echo 'end';
-
     }
 
     public function synRun2($uniacid)
@@ -326,8 +323,6 @@ echo '<pre>'; print_r($attr);
               //  $childMemberModel->createData($attr);
             }
         }
-
-        echo 'end';
     }
 
     public function cmr()
@@ -390,7 +385,6 @@ echo '<pre>'; print_r($attr);
         }
 
         echo 'end';*/
-
     }
 
     public function ff()
