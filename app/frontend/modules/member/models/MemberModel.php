@@ -475,8 +475,8 @@ class MemberModel extends Member
             $data['team_order_money'] = $order->whereIn('uid', explode(',' ,$childMemberTeam[0]['child']))->sum('price');
 //        dd($data);
         }
-        $data['wechat'] = $member_set['relation_level']['wechat'];
-        $data['phone'] = $member_set['relation_level']['phone'];
+        $data['wechat'] = $member_set['relation_level']['wechat']?:0;
+        $data['phone'] = $member_set['relation_level']['phone']?:0;
         $data['name1'] = $member_set['relation_level']['name1'];
         $data['name2'] = $member_set['relation_level']['name2'];
         $data['name3'] = $member_set['relation_level']['name3'];
