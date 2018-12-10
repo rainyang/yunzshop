@@ -10,7 +10,6 @@ namespace app\frontend\modules\order\controllers;
 
 use app\frontend\modules\member\services\MemberCartService;
 use app\frontend\modules\memberCart\MemberCartCollection;
-use app\frontend\modules\order\models\Trade;
 
 class GoodsBuyController extends PreOrderController
 {
@@ -26,6 +25,10 @@ class GoodsBuyController extends PreOrderController
         $result->push(MemberCartService::newMemberCart($goods_params));
         return $result;
     }
+
+    /**
+     * @throws \app\common\exceptions\ShopException
+     */
     protected function validateParam(){
         $this->validate([
             'goods_id' => 'required|integer',
@@ -33,6 +36,11 @@ class GoodsBuyController extends PreOrderController
             'total' => 'integer|min:1',
         ]);
     }
+
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \app\common\exceptions\ShopException
+     */
     public function index()
     {
         $this->validateParam();

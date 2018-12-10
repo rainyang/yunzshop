@@ -55,7 +55,7 @@ class Member extends BackendModel
     protected $search_fields = ['mobile', 'uid', 'nickname', 'realname'];
 
     protected $primaryKey = 'uid';
-    protected $appends = ['avatar_image'];
+    protected $appends = ['avatar_image','username'];
 
     public function bankCard()
     {
@@ -741,6 +741,14 @@ class Member extends BackendModel
     public function getAvatarImageAttribute()
     {
         return $this->avatar ? yz_tomedia($this->avatar) : yz_tomedia(\Setting::get('shop.member.headimg'));
+    }
+
+    public function getUserNameAttribute()
+    {
+        if (substr($this->nickname, 0, strlen('=')) === '=') {
+            $this->nickname = ' ' . $this->nickname;
+        }
+        return $this->nickname;
     }
 
     /**
