@@ -63,8 +63,7 @@ class RefundService
                 $result = false;
                 break;
         }
-        print_r($result);
-        exit;
+        
         return $result;
     }
 
