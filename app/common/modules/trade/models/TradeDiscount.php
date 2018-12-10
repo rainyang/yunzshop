@@ -22,7 +22,7 @@ class TradeDiscount extends BaseModel
     public function init(Trade $trade)
     {
         $this->trade = $trade;
-        $this->setRelation('discount', $this->getCoupons());
+        $this->setRelation('memberCoupons', $this->getCoupons());
         return $this;
     }
 
