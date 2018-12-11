@@ -31,32 +31,32 @@ class KeyController extends BaseController
      */
     public function index()
     {
-        $requestModel = \YunShop::request()->upgrade;
+        $requestModel = request()->upgrade;
         $upgrade = Setting::get('shop.key');
 
         $auth_url = yzWebFullUrl('setting.key.index', ['page' => 'auth']);
         $free_url = yzWebFullUrl('setting.key.index', ['page' => 'free']);
 
-        $type = \YunShop::request()->type;
-        $page = \YunShop::request()->page ?: 'register';
+        $type = request()->type;
+        $page = request()->page ?: 'register';
 
+        $btn = empty($upgrade['key']) || empty($upgrade['secret']) ? 1 : 0;
         $message = $type == 'create' ? '添加' : '取消';
         if ($requestModel) {
             //检测数据是否存在
             $res = $this ->isExist($requestModel);
+
             //var_dump($res);exit();
             if(!$res['isExists']) {
-
                 if($res['message'] == 'amount exceeded')
-                    $this->error('您已经没有剩余站点数量了，如添加新站点，请取消之前的站点或者联系我们的客服人员！');
+                    $this->errorJson('您已经没有剩余站点数量了，如添加新站点，请取消之前的站点或者联系我们的客服人员！');
                 else
-                    $this->error('Key或者密钥出错了！');
-
+                    $this->errorJson('Key或者密钥出错了！');
             } else {
                 if ($this->processingKey($requestModel, $type)) {
-                    return $this->message("站点{$message}成功", Url::absoluteWeb('setting.key.index'));
+                    return $this->successJson("站点{$message}成功", ['url' => $auth_url]);
                 } else {
-                    $this->error("站点{$message}失败");
+                    $this->errorJson("站点{$message}失败");
                 }
             }
         }
@@ -67,6 +67,7 @@ class KeyController extends BaseController
             'province' => json_encode(['data' => $province->toArray()]),
             'page' => json_encode(['type' => $page]),
             'url' => json_encode(['free' => $free_url, 'auth' =>$auth_url]),
+            'set' => json_encode(['key' => $upgrade['key'], 'secret' => $upgrade['secret'], 'btn' => $btn])
         ])->render();
     }
 
@@ -82,6 +83,7 @@ class KeyController extends BaseController
             'secret' => $requestModel['secret'],
             'domain' => $domain
         ];
+
         if($type == 'create') {
 
             $content = Curl::to(config('auto-update.checkUrl').'/app-account/create')
@@ -114,7 +116,7 @@ class KeyController extends BaseController
      */
     public function isExist($data) {
 
-        $type = \YunShop::request()->type;
+        $type = request()->type;
         $domain = request()->getHttpHost();
 
         $filename = config('auto-update.checkUrl').'/check_isKey.json';
@@ -149,60 +151,32 @@ class KeyController extends BaseController
     {
         $data = request()->data;
 
-        $data = [
-            "name" => "tt",
-            "trades" => "贸易|批发|零售|租赁业",
-            "province" => [
-                "id" => 150000,
-                "areaname" => "内蒙古自治区",
-                "parentid" => 0,
-                "level" => 1,
-            ],
-            "city" => [
-                "id" => 150700,
-                "areaname" => "呼伦贝尔市",
-                "parentid" => 150000,
-                "level" => 2
-            ],
-            "area" => [
-                "id" => 150724,
-                "areaname" => "鄂温克族自治旗",
-                "parentid" => 150700,
-                "level" => 3
-            ],
-            "address" => "54545",
-            "mobile" => "13712345678",
-            "captcha" => "33"
-        ];
-
         $auth_url = yzWebFullUrl('setting.key.index', ['page' => 'auth']);
 
         $key = 'free';
-        $secret = request()->getHttpHost();
+        $secret = request()->getSchemeAndHttpHost();
 
-        $url = config('auto-update.registerUrl') . "/free/{$data['name']}/{$data['trades']}/{$data['province']['areaname']}/{$data['city']['areaname']}/{$data['area']['areaname']}/{$data['address']}/{$data['mobile']}";
+        $url = config('auto-update.registerUrl') . "/free/{$data['name']}/{$data['trades']}/{$data['province']['areaname']}/{$data['city']['areaname']}/{$data['area']['areaname']}/{$data['address']}/{$data['mobile']}/{$data['captcha']}";
 
-        $update = Curl::to($url)
+        $register = Curl::to($url)
             ->withHeader(
                 "Authorization: Basic " . base64_encode("{$key}:{$secret}")
             )
             ->asJsonResponse(true)
             ->get();
 
-        if (!is_null($update) && 1 == $update['result']) {
-            if ($update['data']) {
+        if (!is_null($register) && 1 == $register['result']) {
+            if ($register['data']) {
                 //检测数据是否存在
-                $res = $this ->isExist($update['data']);
+                $res = $this ->isExist($register['data']['shop']);
                 //var_dump($res);exit();
                 if(!$res['isExists']) {
-
                     if($res['message'] == 'amount exceeded')
-                        $this->error('您已经没有剩余站点数量了，如添加新站点，请取消之前的站点或者联系我们的客服人员！');
+                        $this->errorJson('您已经没有剩余站点数量了，如添加新站点，请取消之前的站点或者联系我们的客服人员！');
                     else
-                        $this->error('Key或者密钥出错了！');
-
+                        $this->errorJson('Key或者密钥出错了！');
                 } else {
-                    if ($this->processingKey($update['data'], 'create')) {
+                    if ($this->processingKey($register['data']['shop'], 'create')) {
                         //TODO 插件
                         return $this->successJson("站点添加成功", ['url' => $auth_url]);
                     }
@@ -210,6 +184,24 @@ class KeyController extends BaseController
             }
         }
 
-        $this->errorJson("站点添加失败");
+        return $this->errorJson("站点添加失败");
+    }
+
+    public function sendSms()
+    {
+        $key = 'free';
+        $secret = request()->getHttpHost();
+        $mobile = request()->mobile;
+
+        $url = config('auto-update.registerUrl') . "/sendsms/{$mobile}";
+
+        $res = Curl::to($url)
+            ->withHeader(
+                "Authorization: Basic " . base64_encode("{$key}:{$secret}")
+            )
+            ->asJsonResponse(true)
+            ->get();
+
+        return $this->successJson('ok', $res);
     }
 }

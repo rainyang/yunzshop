@@ -109,34 +109,20 @@
                             </el-form-item>
                         </el-form><!--free end-->
 
-                        <div v-show="page=='auth'">
-                            <div class="form-group">
-                                <label class="col-xs-12 col-sm-3 col-md-2 control-label">Key</label>
-                                <div class="col-sm-9 col-xs-12">
-                                    <input type="text" name="upgrade[key]" class="form-control" value="{{ $set['key'] }}" />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-xs-12 col-sm-3 col-md-2 control-label">密钥</label>
-                                <div class="col-sm-9 col-xs-12">
-                                    <input type="text" name="upgrade[secret]" class="form-control" value="{{ $set['secret'] }}" />
-                                </div>
-                            </div>
+                        <el-form ref="form" :model="form" label-width="100px" class="demo-ruleForm" v-show="page=='auth'">
+                            <el-form-item label="key" prop="key">
+                                <el-input v-model="key" placeholder="请输入key" autocomplete="off"></el-input>
+                            </el-form-item>
 
-                            <div class="form-group"></div>
-                            <div class="form-group">
-                                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-                                <div class="col-sm-9 col-xs-12">
-                                    @if(!$set['secret'] || !$set['key'])
-                                        <input type="hidden" name="type" value="create" />
-                                        <input type="submit" name="submit" value="注册商城" class="btn btn-success " onclick="return formcheck(this)" />
-                                    @else
-                                        <input type="hidden" name="type" value="cancel" />
-                                        <input type="submit" name="submit" value="取消商城" class="btn btn-success " onclick="return formcheck(this)" />
-                                    @endif
-                                </div>
-                            </div>
-                        </div><!--auth end-->
+                            <el-form-item label="密钥" prop="secret">
+                                <el-input v-model="secret" placeholder="请输入密钥" autocomplete="off"></el-input>
+                            </el-form-item>
+
+                            <el-form-item>
+                                <el-button type="primary" @click="reg_shop('cancel')" v-loading="formLoading" v-if="btn == 0">取消商城</el-button>
+                                <el-button type="primary" @click="reg_shop('create')" v-loading="formLoading" v-if="btn == 1">注册商城</el-button>
+                            </el-form-item>
+                        </el-form><!--auth end-->
                     </template>
                 </div>
             </div>
@@ -152,6 +138,7 @@
                 let redirectUrl = JSON.parse('{!! $url !!}');
                 let page = JSON.parse('{!!  $page !!}');
                 let province = JSON.parse('{!! $province !!}');
+                let set = JSON.parse('{!! $set !!}');
 
                 var validateMobile = (rule, value, callback) => {
                     if (!(/^1\d{10}$/.test(value))) {
@@ -174,6 +161,9 @@
                         mobile: '',
                         captcha: ''
                     },
+                    key: set.key,
+                    secret: set.secret,
+                    btn: set.btn,
                     opt_trades: industry,
                     opt_province: province.data,
                     opt_city:'',
@@ -228,7 +218,7 @@
                     let that = this;
                     let rTime = that.t;
 
-                    if (that.form.mobile.length >= 0) {
+                    if (!(/^1\d{10}$/.test(this.form.mobile))) {
                         this.$refs.form.validateField('mobile');
                         return false;
                     }
@@ -246,6 +236,24 @@
                             that.captcha_text = '(' + that.t + 's)后重新获取';
                         }
                     }, 1000);
+
+                    that.$http.post("{!! yzWebUrl('setting.key.sendSms') !!}", {'mobile': this.form.mobile}).then(response => {
+
+                        if (response.data.result) {
+                        this.$message({
+                            message: response.data.data.msg,
+                            type: 'success'
+                        });
+                        } else {
+                            this.$message({
+                                message: '未获取到数据',
+                                type: 'error'
+                            });
+                        }
+
+                    }, response => {
+                        console.log(response);
+                    });
                 },
                 change_province: function (item) {
                     let that = this;
@@ -268,7 +276,6 @@
                 change_city: function (item) {
                     let that = this;
                     that.$http.post("{!! yzWebUrl('setting.key.getarea') !!}", {'data': item}).then(response => {
-
                         if (response.data.result) {
                         that.opt_area = response.data.data;
                     } else {
@@ -280,6 +287,26 @@
 
                     this.formLoading = false;
                 }, response => {
+                        console.log(response);
+                    });
+                },
+                reg_shop: function (type) {
+                    this.$http.post("{!! yzWebUrl('setting.key.index') !!}", {'upgrade': {'key':this.key, 'secret': this.secret}, 'type': type}).then(response => {
+                        if (response.data.result) {
+                            this.$message({
+                                message: response.data.msg,
+                                type: 'success'
+                            });
+                            window.location = response.data.data.url;
+                        } else {
+                            this.$message({
+                                message: response.data.msg,
+                                type: 'error'
+                            });
+                        }
+
+                        this.formLoading = false;
+                    }, response => {
                         console.log(response);
                     });
                 },
@@ -296,7 +323,7 @@
                                         message: response.data.msg,
                                         type: 'success'
                                     });
-                                    window.location.reload();
+                                    window.location = response.data.data.url;
                                 } else {
                                     this.$message({
                                         message: response.data.msg,
