@@ -106,7 +106,7 @@ class Member extends BackendModel
     protected $search_fields = ['mobile', 'uid', 'nickname', 'realname'];
 
     protected $primaryKey = 'uid';
-    protected $appends = ['avatar_image'];
+    protected $appends = ['avatar_image','username'];
 
     public function bankCard()
     {
@@ -725,46 +725,46 @@ class Member extends BackendModel
     {
         $result = $builder;
 
-        if (app('plugins')->isEnabled('commission')) {
-            $result = $result->with([
-                'hasOneAgent'
-            ]);
-        }
-
-        if (app('plugins')->isEnabled('team-dividend')) {
-            $result = $result->with([
-                'hasOneTeamDividend'
-            ]);
-        }
-
-        if (app('plugins')->isEnabled('area-dividend')) {
-            $result = $result->with([
-                'hasOneAreaDividend' => function ($query) {
-                    return $query->where('status', 1);
-                }
-            ]);
-        }
-
-        if (app('plugins')->isEnabled('merchant')) {
-            $result = $result->with([
-                'hasOneMerchant',
-                'hasOneMerchantCenter'
-            ]);
-        }
-
-        if (app('plugins')->isEnabled('micro')) {
-            $result = $result->with([
-                'hasOneMicro'
-            ]);
-        }
-
-        if (app('plugins')->isEnabled('supplier')) {
-            $result = $result->with([
-                'hasOneSupplier' => function ($query) {
-                    return $query->where('status', 1);
-                }
-            ]);
-        }
+//        if (app('plugins')->isEnabled('commission')) {
+//            $result = $result->with([
+//                'hasOneAgent'
+//            ]);
+//        }
+//
+//        if (app('plugins')->isEnabled('team-dividend')) {
+//            $result = $result->with([
+//                'hasOneTeamDividend'
+//            ]);
+//        }
+//
+//        if (app('plugins')->isEnabled('area-dividend')) {
+//            $result = $result->with([
+//                'hasOneAreaDividend' => function ($query) {
+//                    return $query->where('status', 1);
+//                }
+//            ]);
+//        }
+//
+//        if (app('plugins')->isEnabled('merchant')) {
+//            $result = $result->with([
+//                'hasOneMerchant',
+//                'hasOneMerchantCenter'
+//            ]);
+//        }
+//
+//        if (app('plugins')->isEnabled('micro')) {
+//            $result = $result->with([
+//                'hasOneMicro'
+//            ]);
+//        }
+//
+//        if (app('plugins')->isEnabled('supplier')) {
+//            $result = $result->with([
+//                'hasOneSupplier' => function ($query) {
+//                    return $query->where('status', 1);
+//                }
+//            ]);
+//        }
 
         return $result;
     }
@@ -792,6 +792,14 @@ class Member extends BackendModel
     public function getAvatarImageAttribute()
     {
         return $this->avatar ? yz_tomedia($this->avatar) : yz_tomedia(\Setting::get('shop.member.headimg'));
+    }
+
+    public function getUserNameAttribute()
+    {
+        if (substr($this->nickname, 0, strlen('=')) === '=') {
+            $this->nickname = ' ' . $this->nickname;
+        }
+        return $this->nickname;
     }
 
     /**

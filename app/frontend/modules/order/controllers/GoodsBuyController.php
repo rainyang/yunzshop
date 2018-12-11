@@ -34,8 +34,10 @@ class GoodsBuyController extends ApiController
     /**
      * @throws \app\common\exceptions\ShopException
      */
+
     protected function validateParam()
     {
+
         $this->validate([
             'goods_id' => 'required|integer',
             'options_id' => 'integer',
@@ -45,7 +47,7 @@ class GoodsBuyController extends ApiController
 
     /**
      * @return \Illuminate\Http\JsonResponse
-     * @throws \app\common\exceptions\AppException
+
      * @throws \app\common\exceptions\ShopException
      */
     public function index()

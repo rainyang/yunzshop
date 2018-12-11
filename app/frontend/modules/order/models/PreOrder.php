@@ -158,6 +158,7 @@ class PreOrder extends Order
      */
     public function afterCreating()
     {
+
         $this->discount = new OrderDiscount($this);
         $this->orderDispatch = new OrderDispatch($this);
         $this->orderDeduction = new OrderDeduction($this);

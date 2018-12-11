@@ -52,6 +52,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
  * @method static self getModel()
  * @method static string value($fields)
  * @method static self groupBy(...$field)
+ * @method static self delete()
  */
 class BaseModel extends Model
 {

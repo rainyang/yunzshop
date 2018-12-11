@@ -18,7 +18,11 @@ class MemberBankCardLog extends OperationBase
 
     protected function modifyDefault()
     {
-        $this->setLog('mark', $this->model->getOriginal('member_id'));
+        if (is_array($this->model)) {
+            $this->setLog('mark', $this->model['uid']);
+        } else {
+            $this->setLog('mark', $this->model->getOriginal('member_id'));
+        }
     }
 
     protected function special()
