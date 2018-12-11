@@ -1,11 +1,12 @@
 @extends('refund.modal_base')
+
 @section('operation_consensus')
     <label class='radio-inline'>
         <input type='radio' value='1' class='refund-action' class="refund-action"
                data-action='{{yzWebUrl("refund.pay")}}' name='refund_status'>
+        同意退款
 
     </label>
-
     <label class='radio-inline'>
         <input type='radio' value='2' class="refund-action" data-action="{{yzWebUrl('refund.operation.consensus')}}"
                name='refund_status'>手动退款
