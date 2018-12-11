@@ -158,7 +158,6 @@ class HomePageController extends ApiController
             if ($page) {
                 if (empty($pageId) && Cache::has($member_id.'_designer_default_0')) {
                     $designer = Cache::get($member_id.'_designer_default_0');
-                    //dd(json_decode($designer['page']['datas'],1));
                 } else {
                     $designer = (new \Yunshop\Designer\services\DesignerService())->getPageForHomePage($page->toArray());
                 }
