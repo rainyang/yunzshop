@@ -158,6 +158,7 @@ class HomePageController extends ApiController
             if ($page) {
                 if (empty($pageId) && Cache::has($member_id.'_designer_default_0')) {
                     $designer = Cache::get($member_id.'_designer_default_0');
+                    //dd(json_decode($designer['page']['datas'],1));
                 } else {
                     $designer = (new \Yunshop\Designer\services\DesignerService())->getPageForHomePage($page->toArray());
                 }
@@ -165,6 +166,7 @@ class HomePageController extends ApiController
                 if (empty($pageId) && !Cache::has($member_id.'_designer_default_0')) {
                     Cache::put($member_id.'_designer_default_0', $designer,180);
                 }
+
                 /*$store_goods = null;
                 if (app('plugins')->isEnabled('store-cashier')) {
                     $store_goods = new \Yunshop\StoreCashier\common\models\StoreGoods();
@@ -202,7 +204,6 @@ class HomePageController extends ApiController
                     }
                 }*/
                 $result['item'] = $designer;
-
                 //顶部菜单 todo 加快进度开发，暂时未优化模型，装修数据、顶部菜单、底部导航等应该在一次模型中从数据库获取、编译 Y181031
                 if ($designer['pageinfo']['params']['top_menu'] && $designer['pageinfo']['params']['top_menu_id']) {
                     $result['item']['topmenu'] = (new PageTopMenuService())->getTopMenu($designer['pageinfo']['params']['top_menu_id']);
@@ -235,7 +236,6 @@ class HomePageController extends ApiController
                     'isshow' => false
                 ];
             }
-
             //自定义菜单, 原来接口在  plugin.designer.home.index.menu
             switch ($footerMenuType){
                 case 1:
@@ -299,7 +299,8 @@ class HomePageController extends ApiController
                 $result['captcha']['status'] = $status;
             }
         }
-
+//        dd(json_decode($result['item']['page']['datas'],true));
+//        dd($result['item']['page']['datas']);
         return $this->successJson('ok', $result);
     }
 
@@ -318,7 +319,6 @@ class HomePageController extends ApiController
             foreach ($datas['data'] as $key => $itme) {
                 $datas['data'][$key] = unserialize($itme['goods']);//反序列化
             }
-            dd(json($datas));
             return json($datas);
         }
     }
