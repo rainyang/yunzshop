@@ -419,10 +419,10 @@ class RegisterController extends ApiController
             $sms = new Sms($top_client);
 
             //$type为1是注册，else 找回密码
-            if (!is_null($sms_type) && $sms_type == 1) {
-                $issendsms = $sms->send($mobile, $name, $content, $templateCode);
-            }else{
+            if (!is_null($sms_type) && $sms_type == 2) {
                 $issendsms = $sms->send($mobile, $name, $content, $templateCodeForget);
+            }else{
+                $issendsms = $sms->send($mobile, $name, $content, $templateCode);
             }
 
             if (isset($issendsms->result->success)) {
@@ -434,11 +434,11 @@ class RegisterController extends ApiController
         } elseif ($sms['type'] == 3) {
             $aly_sms = new AliyunSMS(trim($sms['aly_appkey']), trim($sms['aly_secret']));
 
-            //$type为1是注册，else 找回密码
-            if (!is_null($sms_type) && $sms_type == 1) {
+            //$type为1是注册，2是找回密码
+            if (!is_null($sms_type) && $sms_type == 2) {
                 $response = $aly_sms->sendSms(
                     $sms['aly_signname'], // 短信签名
-                    $sms['aly_templateCode'], // 注册短信模板编号
+                    $sms['aly_templateCodeForget'], // 找回密码短信模板编号
                     $mobile, // 短信接收者
                     Array(  // 短信模板中字段的值
                         "number" => $code
@@ -447,7 +447,7 @@ class RegisterController extends ApiController
             }else{
                 $response = $aly_sms->sendSms(
                     $sms['aly_signname'], // 短信签名
-                    $sms['aly_templateCodeForget'], // 找回密码短信模板编号
+                    $sms['aly_templateCode'], // 注册短信模板编号
                     $mobile, // 短信接收者
                     Array(  // 短信模板中字段的值
                         "number" => $code
