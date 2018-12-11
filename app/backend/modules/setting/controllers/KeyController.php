@@ -178,7 +178,7 @@ class KeyController extends BaseController
                 } else {
                     if ($this->processingKey($register['data']['shop'], 'create')) {
                         if ($register['data']['plugins']) {
-                            
+                            Setting::set('free.plugin', $register['data']['plugins']);
                         }
                         return $this->successJson("站点添加成功", ['url' => $auth_url]);
                     }
