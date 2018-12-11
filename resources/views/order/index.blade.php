@@ -35,7 +35,7 @@
                                                     class="form-control">
                                                 <option value=""
                                                         @if(!$requestSearch['sort'])  selected="selected"@endif>
-                                                    订单排序
+                                                    时间排序
                                                 </option>
                                                 <option value="1"
                                                         @if($requestSearch['sort'] == 1)  selected="selected"@endif>
