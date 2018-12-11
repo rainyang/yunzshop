@@ -30,7 +30,7 @@ class TradeDispatch extends BaseModel
      */
     private function getMemberAddress()
     {
-        return $this->trade->orders->first()->orderAddress;
+        return $this->trade->orders->first()->orderAddress->getMemberAddress();
     }
 
 }

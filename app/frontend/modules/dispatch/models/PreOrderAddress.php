@@ -26,7 +26,7 @@ class PreOrderAddress extends OrderAddress
      * @var PreOrder
      */
     public $order;
-
+    private $memberAddress;
     /**
      * @param PreOrder $order
      * @throws ShopException
@@ -55,6 +55,19 @@ class PreOrderAddress extends OrderAddress
      */
     protected function getOrderAddress()
     {
+        if (!isset($this->memberAddress)) {
+            $this->memberAddress = $this->_getMemberAddress();
+        }
+        return $this->memberAddress;
+    }
+
+    /**
+     * 获取用户配送地址模型
+     * @return mixed
+     * @throws AppException
+     */
+    private function _getMemberAddress()
+    {
         $member_address = $this->getMemberAddress();
 
         $orderAddress = new OrderAddress();
@@ -69,8 +82,8 @@ class PreOrderAddress extends OrderAddress
 
         if (isset($member_address->street) && $member_address->street != '其他') {
             $orderAddress->street_id = Street::where('areaname', $member_address->street)->where('parentid', $orderAddress->district_id)->value('id');
-            if(!isset($orderAddress->street_id)){
-                throw new ShopException('收货地址有误请重新保存收货地址');
+            if (!isset($orderAddress->street_id)) {
+                throw new AppException('收货地址有误请重新保存收货地址');
             }
             $orderAddress->street = $member_address->street;
             $orderAddress->address = implode(' ', [$member_address->province, $member_address->city, $member_address->district, $orderAddress->street, $member_address->address]);
@@ -99,14 +112,14 @@ class PreOrderAddress extends OrderAddress
 
         if (count($address)) {
             //$request->input('address');
-            $this->validate($address,[
-                'address' => 'required',
-                'mobile' => 'required',
-                'username' => 'required',
-                'province' => 'required',
-                'city' => 'required',
-                'district' => 'required',
-            ]
+            $this->validate($address, [
+                    'address' => 'required',
+                    'mobile' => 'required',
+                    'username' => 'required',
+                    'province' => 'required',
+                    'city' => 'required',
+                    'district' => 'required',
+                ]
             );
             $memberAddress = app(MemberAddressRepository::class)->fill($address);
 
