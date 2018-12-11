@@ -23,7 +23,7 @@ class LowerOrderService
             \Setting::$uniqueAccountId = $u->uniacid;
 
             $order = DB::table('yz_order')->select('uid','price')->where('uniacid', \YunShop::app()->uniacid)->get();
-            $member_1 = DB::select('select member_id, group_concat(child_id) as child,level from '.DB::getTablePrefix().'yz_member_children where level =1' . ' and uniacid =' . \YunShop::app()->uniacid . ' group by member_id');
+            $member_1 = DB::select('select member_id, group_concat(child_id) as child,level from '.DB::getTablePrefix().'yz_member_children where level =1' . ' and uniacid =' . \YunShop::app()->uniacid . ' group by member_id,level');
             foreach ($member_1 as $item) {
                 $result[$item['member_id']]['uid'] = $item['member_id'];
                 $result[$item['member_id']]['uniacid'] = \YunShop::app()->uniacid;
@@ -38,7 +38,7 @@ class LowerOrderService
             }
 //        dd($result);
 
-            $member_2 = DB::select('select member_id, group_concat(child_id) as child,level from '.DB::getTablePrefix().'yz_member_children where level =2' . ' and uniacid =' . \YunShop::app()->uniacid . ' group by member_id');
+            $member_2 = DB::select('select member_id, group_concat(child_id) as child,level from '.DB::getTablePrefix().'yz_member_children where level =2' . ' and uniacid =' . \YunShop::app()->uniacid . ' group by member_id,level');
             foreach ($member_2 as $item) {
                 $result[$item['member_id']]['uid'] = $item['member_id'];
                 $result[$item['member_id']]['uniacid'] = \YunShop::app()->uniacid;
@@ -49,7 +49,7 @@ class LowerOrderService
             }
 //        dd($result);
 
-            $member_3 = DB::select('select member_id, group_concat(child_id) as child,level from '.DB::getTablePrefix().'yz_member_children where level =3' . ' and uniacid =' . \YunShop::app()->uniacid . ' group by member_id');
+            $member_3 = DB::select('select member_id, group_concat(child_id) as child,level from '.DB::getTablePrefix().'yz_member_children where level =3' . ' and uniacid =' . \YunShop::app()->uniacid . ' group by member_id,level');
             foreach ($member_3 as $item) {
                 $result[$item['member_id']]['uid'] = $item['member_id'];
                 $result[$item['member_id']]['uniacid'] = \YunShop::app()->uniacid;
