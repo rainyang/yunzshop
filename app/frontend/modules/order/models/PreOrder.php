@@ -122,11 +122,15 @@ class PreOrder extends Order
 
     /**
      * 依赖对象传入之前
+     * @throws \app\common\exceptions\ShopException
      */
     public function beforeCreating()
     {
 
         $this->dispatch_type_id = $this->getRequest()->input('dispatch_type_id', 0);
+        /**
+         * @var PreOrderAddress $orderAddress
+         */
         $orderAddress = app('OrderManager')->make('PreOrderAddress');
 
         $orderAddress->setOrder($this);

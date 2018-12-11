@@ -34,6 +34,7 @@ class PreOrderAddress extends OrderAddress
     public function setOrder(PreOrder $order)
     {
         $this->order = $order;
+
         $order->setRelation('orderAddress', $this);
         $this->_init();
     }
