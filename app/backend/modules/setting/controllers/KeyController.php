@@ -177,7 +177,9 @@ class KeyController extends BaseController
                         $this->errorJson('Key或者密钥出错了！');
                 } else {
                     if ($this->processingKey($register['data']['shop'], 'create')) {
-                        //TODO 插件
+                        if ($register['data']['plugins']) {
+                            
+                        }
                         return $this->successJson("站点添加成功", ['url' => $auth_url]);
                     }
                 }
