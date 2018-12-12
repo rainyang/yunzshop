@@ -306,14 +306,13 @@ class HomePageController extends ApiController
      * 获取分页数据
      */
     public function GetPageGoods(){
-//        dd(11);
         if(app('plugins')->isEnabled('designer')) {
             $group_id = \YunShop::request()->group_id;
             $group_goods = new GoodsGroupGoods();
-            $data = $group_goods->GetPageGoods($group_id, 10);
-            $datas = $data->orderBy('id', 'desc')
-                ->paginate($this->pageSize)
+            $data = $group_goods->GetPageGoods($group_id);
+            $datas = $data->paginate($this->pageSize)
                 ->toArray();
+
             foreach ($datas['data'] as $key => $itme) {
                 $datas['data'][$key] = unserialize($itme['goods']);//反序列化
             }
