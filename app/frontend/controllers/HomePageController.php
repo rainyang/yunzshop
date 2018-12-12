@@ -316,7 +316,7 @@ class HomePageController extends ApiController
             foreach ($datas['data'] as $key => $itme) {
                 $datas['data'][$key] = unserialize($itme['goods']);//反序列化
             }
-            return json_encode($datas);
+            $this->successJson('ok', $datas);
         }
     }
 
