@@ -661,11 +661,16 @@ class MemberModel extends Member
             ];
         }
 
-       /* if (empty($keyword)) {
-            return $data;
+        foreach ($data['data'] as $k => $v) {
+            //IOS时，把微信头像url改为https前缀
+            $data['data'][$k]['avatar'] = ImageHelper::iosWechatAvatar($v['avatar']);
         }
 
-        $data = self::searchMemberRelation($data);*/
+        /* if (empty($keyword)) {
+             return $data;
+         }
+
+         $data = self::searchMemberRelation($data);*/
 
         return $data;
     }
