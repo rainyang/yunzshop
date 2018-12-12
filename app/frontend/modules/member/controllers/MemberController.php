@@ -23,6 +23,7 @@ use app\common\models\Area;
 use app\common\models\Goods;
 use app\common\models\McMappingFans;
 use app\common\models\MemberShopInfo;
+use app\common\services\popularize\PortType;
 use app\common\services\Session;
 use app\frontend\models\Member;
 use app\frontend\modules\member\models\MemberModel;
@@ -104,7 +105,8 @@ class MemberController extends ApiController
                 }else{
                     $withdraw_status = 1;
                 }
-
+                //是否显示我的推广
+                $withdraw_status = PortType::popularizeShow(\YunShop::request()->type);
                 $data['withdraw_status'] = $withdraw_status;
 
                 if (!is_null($v)) {
@@ -1208,6 +1210,9 @@ class MemberController extends ApiController
         }else{
             $switch = 1;
         }
+
+        //是否显示我的推广
+        $switch = PortType::popularizeShow(\YunShop::request()->type);
 
         $data = [
             'switch' => $switch

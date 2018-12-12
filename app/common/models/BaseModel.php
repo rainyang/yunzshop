@@ -47,6 +47,7 @@ use app\framework\Database\Eloquent\Collection;
  * @method static self whereRaw(...$field)
  * @method static self getModel()
  * @method static self groupBy(...$field)
+ * @method static self delete()
  */
 class BaseModel extends Model
 {
