@@ -260,7 +260,7 @@ class MemberModel extends Member
 //        }]);
         $result =  $result->with(['yzMember' => function ($query) {
             return $query->select('member_id', 'is_agent', 'status', 'wechat');
-        }]);
+        }])->orderBy('id', 'desc');
 
 
         return $result;
