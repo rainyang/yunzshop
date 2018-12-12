@@ -106,14 +106,16 @@ class AliPay extends Pay
         //支付宝交易单号
         $pay_order_model = PayOrder::getPayOrderInfo($out_trade_no)->first();
         if ($pay_order_model) {
+
+            $refund_data = array(
+                'out_trade_no' => $pay_order_model ->out_order_no,
+                'trade_no' => $pay_order_model ->trade_no,
+                'refund_amount' => $totalmoney,
+                'refund_reason' => '正常退款',
+                'out_request_no' => $out_refund_no
+            );
+
             if ($pay_type_id == 10) {
-                $refund_data = array(
-                    'out_trade_no' => $pay_order_model ->out_order_no,
-                    'trade_no' => $pay_order_model ->trade_no,
-                    'refund_amount' => $totalmoney,
-                    'refund_reason' => '正常退款',
-                    'out_request_no' => $out_refund_no
-                );
                 $result = $this->apprefund($refund_data);
                 if ($result) {
                     $this->changeOrderStatus($refund_order, Pay::ORDER_STATUS_COMPLETE, $result['trade_no']);
@@ -123,11 +125,24 @@ class AliPay extends Pay
                     return false;
                 }
             } else {
-                $alipay = app('alipay.web');
-                $alipay->setOutTradeNo($pay_order_model->trade_no);
-                $alipay->setTotalFee($totalmoney);
 
-                return $alipay->refund($out_refund_no);
+                $set = \Setting::get('shop.pay');
+                if (isset($set['alipay_pay_api']) && $set['alipay_pay_api'] == 1) {
+                    $result =  $this->alipayRefund2($refund_data, $set);
+                    if ($result) {
+                        $this->changeOrderStatus($refund_order, Pay::ORDER_STATUS_COMPLETE, $result['trade_no']);
+                        $this->payResponseDataLog($out_trade_no, '商城支付宝2.0新接口退款', json_encode($result));
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    $alipay = app('alipay.web');
+                    $alipay->setOutTradeNo($pay_order_model->trade_no);
+                    $alipay->setTotalFee($totalmoney);
+
+                    return $alipay->refund($out_refund_no);
+                }
             }
         } else {
             return false;
@@ -140,7 +155,30 @@ class AliPay extends Pay
         $model->trade_no = $trade_no;
         $model->save();
     }
-    
+
+    public function alipayRefund2($refund_data, $set)
+    {
+        $aop = new AopClient();
+        $request = new AlipayTradeRefundRequest();
+        $aop->gatewayUrl = 'https://openapi.alipay.com/gateway.do';
+        $aop->appId = decrypt($set['alipay_app_id']);
+        $aop->alipayrsaPublicKey = decrypt($set['rsa_public_key']);
+        $aop->rsaPrivateKey = decrypt($set['rsa_private_key']);
+        $aop->apiVersion = '1.0';
+        $aop->signType = 'RSA2';
+        $aop->postCharset='UTF-8';
+        $aop->format='json';
+        $json = json_encode($refund_data);
+        $request->setBizContent($json);
+        $result = $aop->execute($request);
+        $res = json_decode($result, 1);
+        if(!empty($res)&&$res['alipay_trade_refund_response']['code'] == '10000'){
+            return $res['alipay_trade_refund_response'];
+        } else {
+            return false;
+        }
+    }
+
     public function apprefund($refund_data)
     {
         $set = \Setting::get('shop_app.pay');

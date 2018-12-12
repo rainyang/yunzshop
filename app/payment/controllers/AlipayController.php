@@ -84,8 +84,6 @@ class AlipayController extends PaymentController
         if ($_POST['sign_type'] == 'MD5') {
             $verify_result = $this->getSignResult();
         } else {
-            //定义app支付类型，验证app回调信息
-            $this->pay_type_id = 10;
             $verify_result = $this->get_RSA2_SignResult($_POST);
         }
 
