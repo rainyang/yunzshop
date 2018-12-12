@@ -339,6 +339,9 @@ class MemberController extends ApiController
     {
         $data = MemberModel::getMyReferral_v2();
 
+        //IOS时，把微信头像url改为https前缀
+        $data['avatar'] = ImageHelper::iosWechatAvatar($data['avatar']);
+
         if (!empty($data)) {
             return $this->successJson('', $data);
         } else {
@@ -370,6 +373,9 @@ class MemberController extends ApiController
     public function getMyAgent_v2()
     {
         $data = MemberModel::getMyAgent_v2();
+
+        //IOS时，把微信头像url改为https前缀
+        $data['avatar'] = ImageHelper::iosWechatAvatar($data['avatar']);
 
         return $this->successJson('', $data);
     }
