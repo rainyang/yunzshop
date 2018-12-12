@@ -23,7 +23,8 @@ class LowerOrderService
             \Setting::$uniqueAccountId = $u->uniacid;
 
             $order = DB::table('yz_order')->select('uid','price')->where('uniacid', \YunShop::app()->uniacid)->get();
-            $member_1 = DB::select('select member_id, group_concat(child_id) as child,level from '.DB::getTablePrefix().'yz_member_children where level =1' . ' and uniacid =' . \YunShop::app()->uniacid . ' group by member_id,level');
+            $member_1 = DB::select('select member_id, group_concat(child_id) as child from '.DB::getTablePrefix().'yz_member_children where level =1' . ' and uniacid =' . \YunShop::app()->uniacid . ' group by member_id,level');
+            $member_all = DB::select('select member_id, group_concat(child_id) as child from '.DB::getTablePrefix().'yz_member_children where uniacid =' . \YunShop::app()->uniacid . ' group by member_id');
             foreach ($member_1 as $item) {
                 $result[$item['member_id']]['uid'] = $item['member_id'];
                 $result[$item['member_id']]['uniacid'] = \YunShop::app()->uniacid;
@@ -33,8 +34,8 @@ class LowerOrderService
                 $result[$item['member_id']]['second_order_amount'] = 0;
                 $result[$item['member_id']]['third_order_quantity'] = 0;
                 $result[$item['member_id']]['third_order_amount'] = 0;
-                $result[$item['member_id']]['team_order_quantity'] = $result[$item['member_id']]['first_order_quantity'];
-                $result[$item['member_id']]['team_order_amount'] = $result[$item['member_id']]['first_order_amount'];
+                $result[$item['member_id']]['team_order_quantity'] = 0;
+                $result[$item['member_id']]['team_order_amount'] = 0;
             }
 //        dd($result);
 
@@ -44,8 +45,6 @@ class LowerOrderService
                 $result[$item['member_id']]['uniacid'] = \YunShop::app()->uniacid;
                 $result[$item['member_id']]['second_order_quantity'] = $order->whereIn('uid', explode(',',$item['child']))->count();
                 $result[$item['member_id']]['second_order_amount'] = $order->whereIn('uid', explode(',',$item['child']))->sum('price');
-                $result[$item['member_id']]['team_order_quantity'] = $result[$item['member_id']]['first_order_quantity']+$result[$item['member_id']]['second_order_quantity'];
-                $result[$item['member_id']]['team_order_amount'] = $result[$item['member_id']]['first_order_amount']+$result[$item['member_id']]['second_order_amount'];
             }
 //        dd($result);
 
@@ -55,8 +54,13 @@ class LowerOrderService
                 $result[$item['member_id']]['uniacid'] = \YunShop::app()->uniacid;
                 $result[$item['member_id']]['third_order_quantity'] = $order->whereIn('uid', explode(',',$item['child']))->count();
                 $result[$item['member_id']]['third_order_amount'] = $order->whereIn('uid', explode(',',$item['child']))->sum('price');
-                $result[$item['member_id']]['team_order_quantity'] = $result[$item['member_id']]['first_order_quantity']+$result[$item['member_id']]['second_order_quantity']+$result[$item['member_id']]['third_order_quantity'];
-                $result[$item['member_id']]['team_order_amount'] = $result[$item['member_id']]['first_order_amount']+$result[$item['member_id']]['second_order_amount']+$result[$item['member_id']]['third_order_amount'];
+            }
+
+            foreach ($member_all as $item){
+                $result[$item['member_id']]['uid'] = $item['member_id'];
+                $result[$item['member_id']]['uniacid'] = \YunShop::app()->uniacid;
+                $result[$item['member_id']]['team_order_quantity'] = $order->whereIn('uid', explode(',',$item['child']))->count();
+                $result[$item['member_id']]['team_order_amount'] = $order->whereIn('uid', explode(',',$item['child']))->sum('price');
             }
 //        dd($result);
 
