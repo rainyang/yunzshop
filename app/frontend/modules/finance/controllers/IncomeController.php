@@ -16,7 +16,6 @@ use app\common\models\Income;
 use app\common\services\finance\IncomeService;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
-use Yunshop\Mryt\services\AutoWithdrawService;
 
 class IncomeController extends ApiController
 {
@@ -33,13 +32,10 @@ class IncomeController extends ApiController
         //finance.income.get-income-withdraw-mode
         if (app('plugins')->isEnabled('mryt')) {
             $uid = \YunShop::app()->getMemberId();
-            $mrytWithdrawMode = (new AutoWithdrawService())->isWithdraw($uid);
+            $mrytWithdrawMode = (new \Yunshop\Mryt\services\AutoWithdrawService())->isWithdraw($uid);
         }
 
-        $incomeWithdrawMode = $mrytWithdrawMode ?: IncomeService::getIncomeWithdrawMode();
-
-
-
+        $incomeWithdrawMode = empty($mrytWithdrawMode) ? IncomeService::getIncomeWithdrawMode() : $mrytWithdrawMode;
 
         if ($incomeWithdrawMode) {
             return $this->successJson('获取数据成功!', $incomeWithdrawMode);
