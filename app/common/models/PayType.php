@@ -38,6 +38,8 @@ class PayType extends BaseModel
     const PAY_YUN_ALIPAY = 15;//支付宝-YZ
     const REMITTANCE = 16;//转账
     const COD = 17;//货到付款
+    const HXQUICK = 18;//环迅快捷支付
+    const HXWECHAT = 22;//环迅微商支付
 
     /**
      * 查询所有分类类型
