@@ -202,7 +202,7 @@ class MemberModel extends Member
                 } else {
                     $query->where('inviter', 1)->whereRaw('FIND_IN_SET(?, relation)' . ($level != 0 ? ' = ?' : ''), [$uid, $level]);
                 }
-            });
+            })->orderBy('uid', 'desc');
 
 //            if (!empty($keyword)) {
 //                switch ($keyword) {
@@ -260,7 +260,7 @@ class MemberModel extends Member
 //        }]);
         $result =  $result->with(['yzMember' => function ($query) {
             return $query->select('member_id', 'is_agent', 'status', 'wechat');
-        }])->orderBy('id', 'desc');
+        }]);
 
 
         return $result;
