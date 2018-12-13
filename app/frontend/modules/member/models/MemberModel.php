@@ -202,7 +202,7 @@ class MemberModel extends Member
                 } else {
                     $query->where('inviter', 1)->whereRaw('FIND_IN_SET(?, relation)' . ($level != 0 ? ' = ?' : ''), [$uid, $level]);
                 }
-            });
+            })->orderBy('uid', 'desc');
 
 //            if (!empty($keyword)) {
 //                switch ($keyword) {
