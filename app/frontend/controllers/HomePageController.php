@@ -308,12 +308,10 @@ class HomePageController extends ApiController
     public function GetPageGoods(){
         if(app('plugins')->isEnabled('designer')) {
             $group_id = \YunShop::request()->group_id;
-            $page = \YunShop::request()->page;
             $group_goods = new GoodsGroupGoods();
             $data = $group_goods->GetPageGoods($group_id);
-            $datas = $data->paginate($page)
+            $datas = $data->paginate($this->pageSize)
                 ->toArray();
-
             foreach ($datas['data'] as $key => $itme) {
                 $datas['data'][$key] = unserialize($itme['goods']);//反序列化
             }
