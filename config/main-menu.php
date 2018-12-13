@@ -76,7 +76,7 @@ return [
                 'parents'           => ['Goods', 'goods_dispatch',],
                 'child'             => [
                     'goods_search_order' => [
-                        'name'              => '白名单（商品规格操作）',
+                        'name'              => '白名单（订单商品查询）',
                         'url'               => 'goods.goods.search-order',
                         'url_params'        => '',
                         'permit'            => 0,
