@@ -28,14 +28,8 @@ class IncomeController extends ApiController
      */
     public function getIncomeWithdrawMode()
     {
-        $mrytWithdrawMode = [];
         //finance.income.get-income-withdraw-mode
-        if (app('plugins')->isEnabled('mryt')) {
-            $uid = \YunShop::app()->getMemberId();
-            $mrytWithdrawMode = (new \Yunshop\Mryt\services\AutoWithdrawService())->isWithdraw($uid);
-        }
-
-        $incomeWithdrawMode = empty($mrytWithdrawMode) ? IncomeService::getIncomeWithdrawMode() : $mrytWithdrawMode;
+        $incomeWithdrawMode = IncomeService::getIncomeWithdrawMode();
 
         if ($incomeWithdrawMode) {
             return $this->successJson('获取数据成功!', $incomeWithdrawMode);
