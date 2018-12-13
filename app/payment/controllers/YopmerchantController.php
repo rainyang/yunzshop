@@ -34,6 +34,8 @@ class YopmerchantController extends YopController
 
     public function notifyUrl()
     {
+        \Log::debug('--------------易宝入网--------------', $this->parameters);
+
         $son = SubMerchant::withoutGlobalScope('is_son')->where('requestNo',$this->parameters['requestNo'])->first();
 
         if (empty($son)) {
