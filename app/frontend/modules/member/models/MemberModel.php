@@ -587,17 +587,17 @@ class MemberModel extends Member
                 case 1:
                     $is_show = in_array($i, $agent_level) ?: false;
                     $level = '一级';
-
+                    $level_p = 1;
                     break;
                 case 2:
                     $is_show = in_array($i, $agent_level) ?: false;
                     $level = '二级';
-
+                    $level_p = 2;
                     break;
                 case 3:
                     $is_show = in_array($i, $agent_level) ?: false;
                     $level = '三级';
-
+                    $level_p = 3;
                     break;
             }
 
@@ -619,7 +619,8 @@ class MemberModel extends Member
                 $data[$text] = [
                     'level' => $level,
                     'total' => count($agent_data),
-                    'is_show' => $is_show
+                    'is_show' => $is_show,
+                    'level_p' => $level_p,
                 ];
             } else {
                 $total += 0;
@@ -627,7 +628,8 @@ class MemberModel extends Member
                 $data[$text] = [
                     'level' => $level,
                     'total' => 0,
-                    'is_show' => $is_show
+                    'is_show' => $is_show,
+                    'level_p' => $level_p,
                 ];
             }
         }
