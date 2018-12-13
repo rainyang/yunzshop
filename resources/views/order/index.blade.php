@@ -133,6 +133,7 @@
                                                 </option>
                                             </select>
                                         </div>
+                                            <div class="form-group col-sm-12 col-lg-12 col-xs-12"></div>
                                         <div class="form-group col-sm-8 col-lg-5 col-xs-12">
 
                                             <select name="search[time_range][field]" class="form-control form-time" >
