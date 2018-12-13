@@ -119,7 +119,7 @@
                             </el-form-item>
 
                             <el-form-item>
-                                <el-button type="primary" @click="reg_shop('cancel')" v-loading="formLoading" v-if="btn == 0">取消商城</el-button>
+                                {{--<el-button type="primary" @click="reg_shop('cancel')" v-loading="formLoading" v-if="btn == 0">取消商城</el-button>--}}
                                 <el-button type="primary" @click="reg_shop('create')" v-loading="formLoading" v-if="btn == 1">注册商城</el-button>
                             </el-form-item>
                         </el-form><!--auth end-->

@@ -15,6 +15,7 @@ use app\common\models\Address;
 use app\common\services\AutoUpdate;
 use app\common\services\MyLink;
 use Ixudra\Curl\Facades\Curl;
+use app\common\models\Setting as SettingModel;
 
 class KeyController extends BaseController
 {
@@ -32,13 +33,38 @@ class KeyController extends BaseController
     public function index()
     {
         $requestModel = request()->upgrade;
-        $upgrade = Setting::get('shop.key');
+        $upgrade      = Setting::get('shop.key');
+        $page = 'auth';
 
-        $auth_url = yzWebFullUrl('setting.key.index', ['page' => 'auth']);
-        $free_url = yzWebFullUrl('setting.key.index', ['page' => 'free']);
+        if (empty($upgrade['key']) && empty($upgrade['secret'])) {
+            $domain = request()->getHttpHost();
+            $url = config('auto-update.registerUrl') . '/check_domain.json';
+
+            $auth_str = Curl::to($url)
+                ->withData(['domain' => $domain])
+                ->asJsonResponse(true)
+                ->get();
+
+            if (empty($auth_str['data']['key']) && empty($auth_str['data']['secret'])) {
+                $page = 'free';
+            } else {
+                $upgrade = $auth_str['data'];
+
+                $this->processingKey($upgrade, 'create');
+
+                $free_plugins = SettingModel::where('group', 'free')->where('key', 'plugin')->first();
+
+                if (!is_null($free_plugins)) {
+                    Setting::set('free.plugin', unserialize($free_plugins->value));
+                }
+            }
+        }
+
+        $auth_url = '';//yzWebFullUrl('setting.key.index', ['page' => 'auth']);
+        $free_url = '';//yzWebFullUrl('setting.key.index', ['page' => 'free']);
 
         $type = request()->type;
-        $page = request()->page ?: 'register';
+        //$page = request()->page ?: 'register';
 
         $btn = empty($upgrade['key']) || empty($upgrade['secret']) ? 1 : 0;
         $message = $type == 'create' ? '添加' : '取消';
@@ -151,7 +177,7 @@ class KeyController extends BaseController
     {
         $data = request()->data;
 
-        $auth_url = yzWebFullUrl('setting.key.index', ['page' => 'auth']);
+        $auth_url = yzWebFullUrl('setting.key.index');
 
         $key = 'free';
         $secret = request()->getSchemeAndHttpHost();
