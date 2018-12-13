@@ -200,26 +200,27 @@
             <div class="return-queue">
                 @foreach($set['servicetax'] as $key => $queue)
                     <div class="input-group">
-                        <div class="input-group-addon">劳务税比例</div>
-                        <input type="text" name="withdraw[income][servicetax][{{ $key }}][servicetax_rate]"
-                               class="form-control"
-                               value="{{ $queue['servicetax_rate'] }}"/>
-                        <div class="input-group-addon">%</div>
+                        <div class="input-group-addon">范围</div>
                         <input type="text" name="withdraw[income][servicetax][{{ $key }}][servicetax_money]"
                                class="form-control return_level"
                                value="{{ $queue['servicetax_money'] }}"/>
                         <div class="input-group-addon team-level">元</div>
+                        <input type="text" name="withdraw[income][servicetax][{{ $key }}][servicetax_rate]"
+                               class="form-control"
+                               value="{{ $queue['servicetax_rate'] }}"/>
+                        <div class="input-group-addon">%</div>
+
                         <div class="input-group-addon del-queue" title="删除"><i class="fa fa-trash"></i></div>
                     </div>
                 @endforeach
             </div>
+            <span class='help-block'>必须按金额从小到大填写</span>
         </div>
     </div>
 
     <div class="form-group">
         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
         <div class="col-xs-6">
-            <span class='help-block'>奖励金额=商城每天完成订单总营业额的百分比</span>
             <span class='help-block'><input type="button" value="添加比例" class="btn btn-success add-queue"/></span>
         </div>
     </div>
