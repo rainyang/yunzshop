@@ -259,7 +259,7 @@ class MemberModel extends Member
 //                ->groupBy('uid');
 //        }]);
         $result =  $result->with(['yzMember' => function ($query) {
-            return $query->select('member_id', 'is_agent', 'status', 'wechat');
+            return $query->select('member_id', 'is_agent', 'status', 'wechat')->where('deleted_at', '<>', null);
         }]);
 
 
