@@ -20,7 +20,10 @@ use app\common\helpers\Url;
 use app\common\models\AccountWechats;
 use app\common\models\Area;
 use app\common\models\Goods;
+<<<<<<< HEAD
 use app\common\models\Orders;
+=======
+>>>>>>> b604c5ab2498cc303f788beeb9bff98e182de885
 use app\common\models\McMappingFans;
 use app\common\models\MemberShopInfo;
 use app\common\services\popularize\PortType;
@@ -46,7 +49,10 @@ use app\common\services\alipay\OnekeyLogin;
 use app\common\helpers\Client;
 use app\common\services\plugin\huanxun\HuanxunSet;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> b604c5ab2498cc303f788beeb9bff98e182de885
 class MemberRelationController extends ApiController
 {
     /**
@@ -66,6 +72,7 @@ class MemberRelationController extends ApiController
         $termskeys = range(0, count($become_term)-1);
         $become_term = array_combine($termskeys, $become_term);
 
+<<<<<<< HEAD
         $member_uid = \YunShop::app()->getMemberId();
 
         $getCostTotalNum = Order::getCostTotalNum($member_uid);
@@ -76,6 +83,9 @@ class MemberRelationController extends ApiController
 
         $terminfo = [];
 
+=======
+        $terminfo = [];
+>>>>>>> b604c5ab2498cc303f788beeb9bff98e182de885
         foreach ($become_term as $v) {
             if ($v == 2) {
                 $terminfo['become_ordercount'] = $data[0]['become_ordercount'];
