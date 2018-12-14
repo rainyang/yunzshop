@@ -29,6 +29,21 @@
                                 @show
                                 <div>
                                     @section('search_bar')
+                                        @if($route == 'order.list.waitSend')
+                                        <div class="form-group  col-md-2 col-sm-6">
+                                            <select name="search[sort]" id="ambiguous-field"
+                                                    class="form-control">
+                                                <option value=""
+                                                        @if(!$requestSearch['sort'])  selected="selected"@endif>
+                                                    时间排序
+                                                </option>
+                                                <option value="1"
+                                                        @if($requestSearch['sort'] == 1)  selected="selected"@endif>
+                                                    会员排序
+                                                </option>
+                                            </select>
+                                        </div>
+                                        @endif
                                         <div class="form-group  col-md-2 col-sm-6">
                                             <select name="search[ambiguous][field]" id="ambiguous-field"
                                                     class="form-control">
