@@ -11,6 +11,7 @@ namespace app\frontend\models;
 use app\common\exceptions\AppException;
 use app\common\models\BaseModel;
 use app\common\models\GoodsDiscount;
+use app\framework\Database\Eloquent\Collection;
 use app\frontend\models\goods\Privilege;
 use app\frontend\models\goods\Sale;
 use app\frontend\modules\member\services\MemberService;
@@ -35,6 +36,7 @@ use Yunshop\Supplier\admin\models\SupplierGoods;
  * @property Privilege hasOnePrivilege
  * @property SupplierGoods supplierGoods
  * @property StoreGoods storeGoods
+ * @property Collection belongsToCategorys
  * @method static self search(array $search)
  */
 class Goods extends \app\common\models\Goods
