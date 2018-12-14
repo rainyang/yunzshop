@@ -552,9 +552,16 @@ class MemberRelation extends BaseModel
 
                 //判断商品
                 if ($become_term[4] == 4 && !empty($set->become_goods_id)) {
-                    $result = self::checkOrderGoods($set->become_goods_id, $uid);
-
-                    if (!$result) {
+                    $goods_id = explode(',',$set->become_goods_id);
+                    $is_goods = false;
+                    foreach ($goods_id as $id) {
+                        $result = self::checkOrderGoods($id, $uid);
+                        if ($result) {
+                            $is_goods = true;
+                            break;
+                        }
+                    }
+                    if (!$is_goods){
                         return;
                     }
                 }
@@ -796,13 +803,28 @@ class MemberRelation extends BaseModel
             if ($set->become == 3) {
 
                 //判断商品
+                //判断商品
                 if ($become_term[4] == 4 && !empty($set->become_goods_id)) {
-                    $result = self::checkOrderGoods($set->become_goods_id, $uid);
-
-                    if (!$result) {
+                    $goods_id = explode(',',$set->become_goods_id);
+                    $is_goods = false;
+                    foreach ($goods_id as $id) {
+                        $result = self::checkOrderGoods($id, $uid);
+                        if ($result) {
+                            $is_goods = true;
+                            break;
+                        }
+                    }
+                    if (!$is_goods){
                         return;
                     }
                 }
+//                if ($become_term[4] == 4 && !empty($set->become_goods_id)) {
+//                    $result = self::checkOrderGoods($set->become_goods_id, $uid);
+//
+//                    if (!$result) {
+//                        return;
+//                    }
+//                }
 
                 //判断是否有上级，上级是否是推广员，上级是否有推广权限
                 if (!empty($member->parent_id)) {
