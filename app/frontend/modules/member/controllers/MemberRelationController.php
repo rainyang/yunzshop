@@ -20,6 +20,7 @@ use app\common\helpers\Url;
 use app\common\models\AccountWechats;
 use app\common\models\Area;
 use app\common\models\Goods;
+use app\common\models\Orders;
 use app\common\models\McMappingFans;
 use app\common\models\MemberShopInfo;
 use app\common\services\popularize\PortType;
@@ -64,7 +65,16 @@ class MemberRelationController extends ApiController
         $termskeys = range(0, count($become_term)-1);
         $become_term = array_combine($termskeys, $become_term);
 
+        $member_uid = \YunShop::app()->getMemberId();
+
+        $getCostTotalNum = Order::getCostTotalNum($member_uid);
+        $getCostTotalPrice = Order::getCostTotalPrice($member_uid);
+
+        $data[0]['getCostTotalNum'] = $getCostTotalNum;
+        $data[0]['$getCostTotalPrice'] = $getCostTotalPrice;
+
         $terminfo = [];
+
         foreach ($become_term as $v) {
             if ($v == 2) {
                 $terminfo['become_ordercount'] = $data[0]['become_ordercount'];
