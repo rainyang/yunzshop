@@ -72,7 +72,7 @@ class MemberRelationController extends ApiController
         $getCostTotalPrice = Order::getCostTotalPrice($member_uid);
 
         $data[0]['getCostTotalNum'] = $getCostTotalNum;
-        $data[0]['$getCostTotalPrice'] = $getCostTotalPrice;
+        $data[0]['getCostTotalPrice'] = $getCostTotalPrice;
 
         $terminfo = [];
 
