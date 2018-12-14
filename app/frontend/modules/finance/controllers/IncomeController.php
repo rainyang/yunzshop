@@ -29,7 +29,6 @@ class IncomeController extends ApiController
     public function getIncomeWithdrawMode()
     {
         //finance.income.get-income-withdraw-mode
-
         $incomeWithdrawMode = IncomeService::getIncomeWithdrawMode();
 
         if ($incomeWithdrawMode) {
