@@ -33,17 +33,17 @@ use EasyWeChat\Foundation\Application;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Str;
-//use Yunshop\AlipayOnekeyLogin\models\MemberAlipay;
+use Yunshop\AlipayOnekeyLogin\models\MemberAlipay;
 use Yunshop\Commission\models\Agents;
-//use Yunshop\Kingtimes\common\models\Distributor;
-//use Yunshop\Kingtimes\common\models\Provider;
-//use Yunshop\Poster\models\Poster;
-//use Yunshop\Poster\services\CreatePosterService;
-//use Yunshop\TeamDividend\models\YzMemberModel;
-//use Yunshop\AlipayOnekeyLogin\services\SynchronousUserInfo;
+use Yunshop\Kingtimes\common\models\Distributor;
+use Yunshop\Kingtimes\common\models\Provider;
+use Yunshop\Poster\models\Poster;
+use Yunshop\Poster\services\CreatePosterService;
+use Yunshop\TeamDividend\models\YzMemberModel;
+use Yunshop\AlipayOnekeyLogin\services\SynchronousUserInfo;
 use app\common\services\alipay\OnekeyLogin;
 use app\common\helpers\Client;
-//use app\common\services\plugin\huanxun\HuanxunSet;
+use app\common\services\plugin\huanxun\HuanxunSet;
 
 class MemberRelationController extends ApiController
 {
@@ -53,16 +53,33 @@ class MemberRelationController extends ApiController
     public function index() {
         //判断用户是否能申请
 
-        $data = MemberRelation::uniacid()->where(['status'=>1])->get()->toArray();
+        $data = MemberRelation::uniacid()->where(['status'=>1])->get();
 
-        $data[0]['become_goods'] = unserialize($data[0]['become_goods']);
-        $data[0]['become_term'] = unserialize($data[0]['become_term']);
+        $become_goods = unserialize($data[0]['become_goods']);
+        $become_term = unserialize($data[0]['become_term']);
 
-        $goodskeys = range(0, count($data[0]['become_goods'])-1);
-        $data[0]['become_goods'] = array_combine($goodskeys, $data[0]['become_goods']);
+        $goodskeys = range(0, count($become_goods)-1);
+        $data[0]['become_goods'] = array_combine($goodskeys, $become_goods);
 
-        $termskeys = range(0, count($data[0]['become_term'])-1);
-        $data[0]['become_term'] = array_combine($termskeys, $data[0]['become_term']);
+        $termskeys = range(0, count($become_term)-1);
+        $become_term = array_combine($termskeys, $become_term);
+
+        $terminfo = [];
+        foreach ($become_term as $v) {
+            if ($v == 2) {
+                $terminfo['become_ordercount'] = $data[0]['become_ordercount'];
+            }
+            if ($v == 3) {
+                $terminfo['become_moneycount'] = $data[0]['become_moneycount'];
+            }
+            if ($v == 4) {
+                $terminfo['goodsinfo'] = $data[0]['become_goods'];
+            }
+            if ($v == 5) {
+                $terminfo['become_selfmoney'] = $data[0]['become_selfmoney'];
+            }
+        }
+        $data[0]['become_term'] = $terminfo;
 
         if ($data[0]['become'] == 2) {
             //或
