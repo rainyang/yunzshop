@@ -24,6 +24,7 @@ use Yunshop\Love\Common\Models\MemberLove;
 use Yunshop\Merchant\common\models\MerchantLevel;
 use Yunshop\Micro\common\models\MicroShopLevel;
 use Yunshop\TeamDividend\models\TeamDividendLevelModel;
+use app\common\helpers\ImageHelper;
 
 class MemberModel extends Member
 {
