@@ -201,11 +201,19 @@ class AuditService
         return $this->audit_amount = $amount;
     }
 
+    /**
+     * 增加劳务税梯度
+     * @param $amount
+     * @return mixed
+     */
     private function getLastActualServiceTax($amount)
     {
         $withdraw_set = \Setting::get('withdraw.income');
 
         $servicetax_rate = $withdraw_set['servicetax_rate'];
+        if ($this->withdrawModel->servicetax_rate != $servicetax_rate) {
+            return $this->withdrawModel->servicetax_rate;
+        }
         $servicetax = $withdraw_set['servicetax'];
         if (empty($servicetax)) {
             return $servicetax_rate;
