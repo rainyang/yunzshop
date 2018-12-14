@@ -13,6 +13,7 @@ use app\backend\modules\charts\modules\phone\services\PhoneAttributionService;
 use app\backend\modules\member\models\MemberRelation;
 use app\backend\modules\order\models\Order;
 use app\common\components\ApiController;
+use app\common\components\BaseController;
 use app\common\facades\Setting;
 use app\common\helpers\Cache;
 use app\common\helpers\ImageHelper;
@@ -22,6 +23,7 @@ use app\common\models\Area;
 use app\common\models\Goods;
 use app\common\models\McMappingFans;
 use app\common\models\MemberShopInfo;
+use app\common\services\popularize\PortType;
 use app\common\services\Session;
 use app\frontend\models\Member;
 use app\frontend\modules\member\models\MemberModel;
@@ -103,7 +105,8 @@ class MemberController extends ApiController
                 }else{
                     $withdraw_status = 1;
                 }
-
+                //是否显示我的推广
+                $withdraw_status = PortType::popularizeShow(\YunShop::request()->type);
                 $data['withdraw_status'] = $withdraw_status;
 
                 if (!is_null($v)) {
@@ -336,6 +339,9 @@ class MemberController extends ApiController
     {
         $data = MemberModel::getMyReferral_v2();
 
+        //IOS时，把微信头像url改为https前缀
+        $data['avatar'] = ImageHelper::iosWechatAvatar($data['avatar']);
+
         if (!empty($data)) {
             return $this->successJson('', $data);
         } else {
@@ -367,6 +373,9 @@ class MemberController extends ApiController
     public function getMyAgent_v2()
     {
         $data = MemberModel::getMyAgent_v2();
+
+        //IOS时，把微信头像url改为https前缀
+        $data['avatar'] = ImageHelper::iosWechatAvatar($data['avatar']);
 
         return $this->successJson('', $data);
     }
@@ -475,9 +484,9 @@ class MemberController extends ApiController
             'province_name' => isset($data['province_name']) ? $data['province_name'] : '',
             'city_name' => isset($data['city_name']) ? $data['city_name'] : '',
             'area_name' => isset($data['area_name']) ? $data['area_name'] : '',
-            'province' => isset($data['province']) ? $data['province'] : 0,
-            'city' => isset($data['city']) ? $data['city'] : 0,
-            'area' => isset($data['area']) ? $data['area'] : 0,
+            'province' => isset($data['province']) ? intval($data['province']) : 0,
+            'city' => isset($data['city']) ? intval($data['city']) : 0,
+            'area' => isset($data['area']) ? intval($data['area']) : 0,
             'address' => isset($data['address']) ? $data['address'] : '',
             'wechat' => isset($data['wx']) ? $data['wx'] : '',
         ];
@@ -566,16 +575,19 @@ class MemberController extends ApiController
             }
 
             if (empty($close_invitecode)) {
+
                 $invitecode = MemberService::inviteCode();
 
                 if ($invitecode['status'] != 1) {
                     return $this->errorJson($invitecode['json']);
                 }
 
-                //邀请码-关系
-                $parent_id = \app\common\models\Member::getMemberIdForInviteCode();
+                file_put_contents(storage_path("logs/" . date('Y-m-d') . "_invitecode.log"), print_r(\YunShop::app()->getMemberId() . '-'. \YunShop::request()->invite_code . '-bind' . PHP_EOL, 1), FILE_APPEND);
 
+                //邀请码
+                $parent_id = \app\common\models\Member::getMemberIdForInviteCode();
                 if (!is_null($parent_id)) {
+                    file_put_contents(storage_path("logs/" . date('Y-m-d') . "_invitecode.log"), print_r(\YunShop::app()->getMemberId() . '-'. \YunShop::request()->invite_code . '-'. $parent_id . '-bind' . PHP_EOL, 1), FILE_APPEND);
                     MemberShopInfo::change_relation($uid, $parent_id);
                 }
             }
@@ -1205,6 +1217,9 @@ class MemberController extends ApiController
             $switch = 1;
         }
 
+        //是否显示我的推广
+        $switch = PortType::popularizeShow(\YunShop::request()->type);
+
         $data = [
             'switch' => $switch
         ];
@@ -1460,8 +1475,15 @@ class MemberController extends ApiController
                 ];
             }
         }
+        if (app('plugins')->isEnabled('enter-goods')) {
 
-
+            $data[] = [
+                'name' => 'enter_goods',
+                'title' => '用户入驻',
+                'class' => 'icon-member_goods',
+                'url' => 'EnterShop',
+            ];
+        }
         return $this->successJson('ok', $data);
     }
 

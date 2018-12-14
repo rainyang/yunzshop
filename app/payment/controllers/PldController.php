@@ -126,7 +126,7 @@ class PldController extends PaymentController
      */
     public function getSignResult($parameter)
     {
-        $key = $parameter['ShopID'].$parameter['OrderID'].$parameter['Amount'].'zhijie';
+        $key = $parameter['OrderID'].$parameter['Amount'].'zhijie';
 
         $md5_key = md5(md5($key));
 

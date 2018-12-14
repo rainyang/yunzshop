@@ -626,6 +626,7 @@ class Supervisor
         return $response;
     }
 
+
     /**
      * Close the socket when the class destructs
      */

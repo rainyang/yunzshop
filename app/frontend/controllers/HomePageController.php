@@ -9,6 +9,7 @@ use app\common\helpers\Cache;
 use app\common\repositories\OptionRepository;
 use app\common\services\goods\VideoDemandCourseGoods;
 use app\common\services\PluginManager;
+use app\common\services\popularize\PortType;
 use app\frontend\models\Member;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\shop\controllers\IndexController;
@@ -19,6 +20,7 @@ use Yunshop\Designer\Common\Services\OtherPageService;
 use Yunshop\Designer\Common\Services\PageTopMenuService;
 use Yunshop\Designer\models\Designer;
 use Yunshop\Designer\models\DesignerMenu;
+
 
 class HomePageController extends ApiController
 {
@@ -300,6 +302,21 @@ class HomePageController extends ApiController
         return $this->successJson('ok', $result);
     }
 
+    /*
+     * 获取分页数据
+     */
+    public function GetPageGoods(){
+//        $group_id = \YunShop::request()->group_id;
+//        $page = \YunShop::request()->page;
+        dd(1);
+        $group_id = 'M1544064694317';
+        $page = 2;
+        $group_goods = new GoodsGroupGoods();
+
+        $data = $group_goods->GetPageGoods($group_id,$page);
+        return $data;
+    }
+
     //增加验证码功能
     public function captchaTest()
     {
@@ -507,19 +524,19 @@ class HomePageController extends ApiController
         }
         */
         //if($relation->status == 1){
-            $promoteMenu = Array(
-                "id"=>"menu_1489731319695",
-                "classt"=>"no",
-                "title"=>"推广",
-                "icon"=>"fa fa-send",
-                "url"=>"/addons/yun_shop/?#/member/extension?i=".$i."&mid=".$mid."&type=".$type,
-                "name"=>"extension",
-                "subMenus"=>[],
-                "textcolor"=>"#666666",
-                "bgcolor"=>"#837aef",
-                "iconcolor"=>"#666666",
-                "bordercolor"=>"#bfbfbf"
-            );
+        $promoteMenu = Array(
+            "id"=>"menu_1489731319695",
+            "classt"=>"no",
+            "title"=>"推广",
+            "icon"=>"fa fa-send",
+            "url"=>"/addons/yun_shop/?#/member/extension?i=".$i."&mid=".$mid."&type=".$type,
+            "name"=>"extension",
+            "subMenus"=>[],
+            "textcolor"=>"#666666",
+            "bgcolor"=>"#837aef",
+            "iconcolor"=>"#666666",
+            "bordercolor"=>"#bfbfbf"
+        );
         $extension_status = Setting::get('shop_app.pay.extension_status');
         if (isset($extension_status) && $extension_status == 0) {
             $extension_status = 0;
@@ -529,9 +546,12 @@ class HomePageController extends ApiController
         if ($type == 7 && $extension_status == 0) {
             unset($promoteMenu);
         }else{
-            $defaultMenu[4] = $defaultMenu[3]; //第 5 个按钮改成"会员中心"
-            $defaultMenu[3] = $defaultMenu[2]; //第 4 个按钮改成"购物车"
-            $defaultMenu[2] = $promoteMenu; //在第 3 个按钮的位置加入"推广"
+            //是否显示推广按钮
+            if (PortType::popularizeShow($type)) {
+                $defaultMenu[4] = $defaultMenu[3]; //第 5 个按钮改成"会员中心"
+                $defaultMenu[3] = $defaultMenu[2]; //第 4 个按钮改成"购物车"
+                $defaultMenu[2] = $promoteMenu; //在第 3 个按钮的位置加入"推广"
+            }
         }
 
         return $defaultMenu;

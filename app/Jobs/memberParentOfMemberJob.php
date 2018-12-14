@@ -10,6 +10,7 @@ namespace app\Jobs;
 
 
 use app\backend\modules\member\models\Member;
+use app\common\models\member\ChildrenOfMember;
 use app\common\models\member\ParentOfMember;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -24,34 +25,32 @@ class memberParentOfMemberJob implements ShouldQueue
     private $member_info;
     public  $memberModel;
     public  $childMemberModel;
+    public  $pageSize;
+    public  $offset;
 
-    /*public function __construct($uniacid, $member_info)
+    public function __construct($uniacid, $pageSize, $offset)
     {
         $this->uniacid = $uniacid;
-        $this->member_info = $member_info->toArray();
-    }*/
-
-    public $timeout = 3600;
-
-    public function __construct($uniacid)
-    {
-        $this->uniacid = $uniacid;
-        //$this->member_info = $member_info->toArray();
+        $this->pageSize = $pageSize;
+        $this->offset   = $offset;
     }
 
     public function handle()
     {
-        $this->member_info = '';//Member::getAllMembersInfosByQueue($this->uniacid)->get()->toArray();
         \Log::debug('-----queue uniacid-----', $this->uniacid);
-        \Log::debug('-----queue member count-----', count($this->member_info));
-        return $this->synRun($this->uniacid, $this->member_info);
+
+        return $this->synRun($this->uniacid);
     }
 
-    public function synRun($uniacid, $memberInfo)
+    public function synRun($uniacid)
     {
         $parentMemberModle = new ParentOfMember();
+        $childMemberModel = new ChildrenOfMember();
         $memberModel = new Member();
         $memberModel->_allNodes = collect([]);
+
+        //\Log::debug('--------------清空表数据------------');
+        //$parentMemberModle->DeletedData();
 
         $memberInfo = $memberModel->getTreeAllNodes($uniacid);
 
@@ -63,34 +62,51 @@ class memberParentOfMemberJob implements ShouldQueue
         foreach ($memberInfo as $item) {
             $memberModel->_allNodes->put($item->member_id, $item);
         }
-       /* \Log::debug('--------queue member_model -----', get_class($this->memberModel));
-        \Log::debug('--------queue childMemberModel -----', get_class($this->childMemberModel));*/
+
+        $this->member_info = Member::getAllMembersInfosByQueue($uniacid, $this->pageSize, $this->offset)->distinct()->get();
+        \Log::debug('------queue member count-----', $this->member_info->count());
+
+        if (!$this->member_info->isEmpty()) {
+            \Log::debug('-----queue member empty-----');
+        }
+
         \Log::debug('--------queue synRun -----');
 
-        foreach ($memberInfo as $key => $val) {
+        foreach ($this->member_info as $key => $val) {
             $attr = [];
+            $child_attr = [];
 
             \Log::debug('--------foreach start------', $val->member_id);
             $data = $memberModel->getNodeParents($uniacid, $val->member_id);
-            \Log::debug('--------foreach data------', $data->count());
 
             if (!$data->isEmpty()) {
                 \Log::debug('--------insert init------');
-                $data = $data->toArray();
 
                 foreach ($data as $k => $v) {
-                    $attr[] = [
-                        'uniacid'   => $uniacid,
-                        'parent_id'  => $k,
-                        'level'     => $v['depth'] + 1,
-                        'member_id' => $val->member_id,
-                        'created_at' => time()
-                    ];
+                    if ($k != $val->member_id) {
+                        $attr[] = [
+                            'uniacid'   => $uniacid,
+                            'parent_id'  => $k,
+                            'level'     => $v['depth'] + 1,
+                            'member_id' => $val->member_id,
+                            'created_at' => time()
+                        ];
+
+                        $child_attr[] = [
+                            'uniacid'   => $uniacid,
+                            'child_id'  => $val->member_id,
+                            'level'     => $v['depth'] + 1,
+                            'member_id' => $k,
+                            'created_at' => time()
+                        ];
+                    } else {
+                        file_put_contents(storage_path("logs/" . date('Y-m-d') . "_batchparent.log"), print_r([$val->member_id, $v, 'insert'], 1), FILE_APPEND);
+                    }
                 }
 
                 $parentMemberModle->createData($attr);
+                $childMemberModel->createData($child_attr);
             }
         }
-
     }
 }

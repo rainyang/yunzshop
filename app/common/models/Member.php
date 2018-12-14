@@ -55,7 +55,7 @@ class Member extends BackendModel
     protected $search_fields = ['mobile', 'uid', 'nickname', 'realname'];
 
     protected $primaryKey = 'uid';
-    protected $appends = ['avatar_image'];
+    protected $appends = ['avatar_image','username'];
 
     public function bankCard()
     {
@@ -119,6 +119,20 @@ class Member extends BackendModel
     public function hasManyMemberCoupon()
     {
         return $this->hasOne(MemberCoupon::class, 'uid', 'uid');
+    }
+
+    /**
+     * 公众号会员
+     *
+     * @return mixed
+     */
+
+    public function getMemberId($memberIds){
+          return self::select(['uid'])
+            ->uniacid()
+            ->whereIn('uid', $memberIds)->get()->map(function ($value) {
+                  return $value;
+              })->toArray();;
     }
 
     /**
@@ -395,6 +409,11 @@ class Member extends BackendModel
     {
         $model = MemberShopInfo::getMemberShopInfo($member_id);
         $code_mid = self::getMemberIdForInviteCode();
+
+        if (!is_null($code_mid)) {
+            file_put_contents(storage_path("logs/" . date('Y-m-d') . "_invitecode.log"), print_r($member_id . '-'. \YunShop::request()->invite_code . '-' . $code_mid . '-reg' . PHP_EOL, 1), FILE_APPEND);
+        }
+
         $mid   = !is_null($code_mid) ? $code_mid : self::getMid();
         $mid   = !is_null($upperMemberId) ? $upperMemberId : $mid;
 
@@ -655,46 +674,46 @@ class Member extends BackendModel
     {
         $result = $builder;
 
-        if (app('plugins')->isEnabled('commission')) {
-            $result = $result->with([
-                'hasOneAgent'
-            ]);
-        }
-
-        if (app('plugins')->isEnabled('team-dividend')) {
-            $result = $result->with([
-                'hasOneTeamDividend'
-            ]);
-        }
-
-        if (app('plugins')->isEnabled('area-dividend')) {
-            $result = $result->with([
-                'hasOneAreaDividend' => function ($query) {
-                    return $query->where('status', 1);
-                }
-            ]);
-        }
-
-        if (app('plugins')->isEnabled('merchant')) {
-            $result = $result->with([
-                'hasOneMerchant',
-                'hasOneMerchantCenter'
-            ]);
-        }
-
-        if (app('plugins')->isEnabled('micro')) {
-            $result = $result->with([
-                'hasOneMicro'
-            ]);
-        }
-
-        if (app('plugins')->isEnabled('supplier')) {
-            $result = $result->with([
-                'hasOneSupplier' => function ($query) {
-                    return $query->where('status', 1);
-                }
-            ]);
-        }
+//        if (app('plugins')->isEnabled('commission')) {
+//            $result = $result->with([
+//                'hasOneAgent'
+//            ]);
+//        }
+//
+//        if (app('plugins')->isEnabled('team-dividend')) {
+//            $result = $result->with([
+//                'hasOneTeamDividend'
+//            ]);
+//        }
+//
+//        if (app('plugins')->isEnabled('area-dividend')) {
+//            $result = $result->with([
+//                'hasOneAreaDividend' => function ($query) {
+//                    return $query->where('status', 1);
+//                }
+//            ]);
+//        }
+//
+//        if (app('plugins')->isEnabled('merchant')) {
+//            $result = $result->with([
+//                'hasOneMerchant',
+//                'hasOneMerchantCenter'
+//            ]);
+//        }
+//
+//        if (app('plugins')->isEnabled('micro')) {
+//            $result = $result->with([
+//                'hasOneMicro'
+//            ]);
+//        }
+//
+//        if (app('plugins')->isEnabled('supplier')) {
+//            $result = $result->with([
+//                'hasOneSupplier' => function ($query) {
+//                    return $query->where('status', 1);
+//                }
+//            ]);
+//        }
 
         return $result;
     }
@@ -722,6 +741,14 @@ class Member extends BackendModel
     public function getAvatarImageAttribute()
     {
         return $this->avatar ? yz_tomedia($this->avatar) : yz_tomedia(\Setting::get('shop.member.headimg'));
+    }
+
+    public function getUserNameAttribute()
+    {
+        if (substr($this->nickname, 0, strlen('=')) === '=') {
+            $this->nickname = ' ' . $this->nickname;
+        }
+        return $this->nickname;
     }
 
     /**

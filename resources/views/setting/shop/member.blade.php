@@ -153,7 +153,7 @@
                                 <span class="help-block">进入商城是否强制绑定手机号</span>
                             </div>
                         </div>
-                        <div class="form-group">
+                        {{--<div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员中心显示推荐人</label>
                             <div class="col-sm-9 col-xs-12">
                                 <label class="radio radio-inline">
@@ -165,6 +165,20 @@
                                            @if ($set['is_referrer'] == 1) checked @endif/> 是
                                 </label>
                                 <span class="help-block">会员中心显示推荐人</span>
+                            </div>
+                        </div>--}}
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员中心显示余额</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <label class="radio radio-inline">
+                                    <input type="radio" name="member[show_balance]" value="0" @if (empty($set['show_balance'])) checked @endif/>显示
+                                </label>
+                                <label class="radio radio-inline">
+                                    <input type="radio" name="member[show_balance]" value="1" @if ($set['show_balance'] == 1) checked @endif/>不显示
+                                </label>
+                                <span class="help-block">会员中心是否显示会员余额值</span>
                             </div>
                         </div>
                         {{--<div class="form-group">

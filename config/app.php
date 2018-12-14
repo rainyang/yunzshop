@@ -208,7 +208,8 @@ return [
 
         //拼音
         Overtrue\LaravelPinyin\ServiceProvider::class,
-
+        // 日志浏览
+        Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class,
     ],
 
     /*
@@ -241,7 +242,7 @@ return [
         'Gate' => Illuminate\Support\Facades\Gate::class,
         'Hash' => Illuminate\Support\Facades\Hash::class,
         'Lang' => Illuminate\Support\Facades\Lang::class,
-        'Log' => Illuminate\Support\Facades\Log::class,
+        'Log' => \app\framework\Support\Facades\Log::class,
         'Mail' => Illuminate\Support\Facades\Mail::class,
         'Notification' => Illuminate\Support\Facades\Notification::class,
         'Password' => Illuminate\Support\Facades\Password::class,
@@ -296,7 +297,7 @@ return [
 
     'express' => [
         'KDN' => [
-            'reqURL'=>'http://api.kdniao.cc/Ebusiness/EbusinessOrderHandle.aspx'
+            'reqURL'=>'http://api.kdniao.com/api/dist'
         ]
     ]
 ];
