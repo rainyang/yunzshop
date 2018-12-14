@@ -13,6 +13,8 @@ use app\common\services\popularize\PortType;
 use app\frontend\models\Member;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\shop\controllers\IndexController;
+use Yunshop\Designer\Common\Services\IndexPageService;
+use Yunshop\Designer\Common\Services\OtherPageService;
 
 
 class HomePageController extends ApiController
