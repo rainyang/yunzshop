@@ -8,6 +8,7 @@
 
 namespace app\backend\modules\order\models;
 
+use app\backend\modules\member\models\MemberParent;
 use app\backend\modules\order\services\OrderService;
 use Illuminate\Database\Eloquent\Builder;
 use \Illuminate\Support\Facades\DB;
@@ -192,6 +193,16 @@ class Order extends \app\common\models\Order
 //            })
 //            ->with('OrderGoods')
 //            ->get();
+    }
+
+    public function hasManyParentTeam()
+    {
+        return $this->hasMany(MemberParent::class, 'member_id', 'uid');
+    }
+
+    public function hasOneTeamDividend()
+    {
+        return $this->hasOne('Yunshop\TeamDividend\models\TeamDividendAgencyModel', 'uid', 'uid');
     }
 
 }
