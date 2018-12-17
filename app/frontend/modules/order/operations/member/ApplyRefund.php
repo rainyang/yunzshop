@@ -26,6 +26,9 @@ class ApplyRefund extends OrderOperation
     }
     public function getName()
     {
+        if ($this->no_refund) {
+            return '联系客服';
+        }
         return '申请退款';
     }
     public function enable()
@@ -35,9 +38,9 @@ class ApplyRefund extends OrderOperation
             return false;
         }
         //商品开启不可退款
-        if ($this->no_refund) {
-            return false;
-        }
+//        if ($this->no_refund) {
+//            return false;
+//        }
         return $this->order->canRefund();
     }
 

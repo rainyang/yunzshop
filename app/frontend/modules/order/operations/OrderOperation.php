@@ -22,17 +22,16 @@ abstract class OrderOperation implements OrderOperationInterface
     const REFUND_INFO = 18; // 已退款/退款中
     const COMMENTED = 19; // 已评价
     const REMITTANCE_RECORD = 21; // 转账信息
+    const CONTACT_CUSTOMER_SERVICE = 22; // 联系客服
 
     /**
      * @var Order
      */
     protected $order;
-    protected $no_refund;
 
     public function __construct(Order $order)
     {
         $this->order = $order;
-        $this->no_refund = $this->isNotRefund();
     }
 
     public function getType()
@@ -40,16 +39,4 @@ abstract class OrderOperation implements OrderOperationInterface
         return '';
     }
 
-    public function isNotRefund()
-    {
-        if ($this->order->hasManyOrderGoods) {
-            foreach ($this->order->hasManyOrderGoods as $goods) {
-                if ($goods->hasOneGoods->no_refund) {
-                    return true;
-
-                }
-            }
-        }
-        return false;
-    }
 }
