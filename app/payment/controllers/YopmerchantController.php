@@ -15,27 +15,9 @@ use Yunshop\YopPay\models\SubMerchant;
 class YopmerchantController extends YopController
 {
 
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->set = \Setting::get('plugin.yop_pay');
-
-
-        if (empty(\YunShop::app()->uniacid)) {
-
-            if (strpos($this->parameters['requestNo'], '_') !== false) {
-                $data = explode('_', $this->parameters['requestNo']);
-                \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $data[0];
-                AccountWechats::setConfig(AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid));
-            }
-        }
-    }
-
     public function notifyUrl()
     {
         \Log::debug('--------------易宝入网--------------', $this->parameters);
-
         $son = SubMerchant::withoutGlobalScope('is_son')->where('requestNo',$this->parameters['requestNo'])->first();
 
         if (empty($son)) {

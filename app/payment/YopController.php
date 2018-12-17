@@ -24,6 +24,9 @@ class YopController extends BaseController
 
         $this->set = DB::table('yz_yop_setting')->where('app_key', $_REQUEST['customerIdentification'])->first();
 
+        if (empty($this->set)) {
+          exit('应用AppKey不存在');
+        }
         if (empty(\YunShop::app()->uniacid)) {
             \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $this->set['uniacid'];
             AccountWechats::setConfig(AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid));
