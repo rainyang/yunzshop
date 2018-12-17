@@ -4,9 +4,22 @@
 
     <div class="w1200 m0a">
         @include('layouts.tabs')
-        <form action="{{ yzWebUrl('from.div-from.store') }}" method="post"
-              class="form-horizontal form" enctype="multipart/form-data">
+        {{--<form action="{{ yzWebUrl('from.div-from.store') }}" method="post"--}}
+              {{--class="form-horizontal form" enctype="multipart/form-data">--}}
+        <div id="test-vue">
+            <el-form ref="form" :rules="rules" :model="form" label-width="17%">
+                <el-form-item label="开启满额优惠">
+                    <el-radio v-model.bool="form.open" :label=true>开启</el-radio>
+                    <el-radio v-model.bool="form.open" :label=false>关闭</el-radio>
+                </el-form-item>
+            </el-form>
 
+            <el-form-item label="">
+                <el-row>
+                    <el-button @click="add">增加满减规则</el-button>
+                </el-row>
+            </el-form-item>
+        </div>
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">折扣类型</label>
                 <div class="col-sm-6 col-xs-6">
@@ -60,7 +73,7 @@
                 </div>
 
             </div>
-        </form>
+        {{--</form>--}}
     </div>
 
 @endsection
@@ -94,6 +107,10 @@
     $('.chksingle').click(function () {
         $(this).closest('div').find(':checkbox[class="chkall"]').removeAttr('checked');
     })
+
+    var app = new Vue({
+        el: '#test-vue',
+    });
 
 </script>
 
