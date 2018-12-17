@@ -27,14 +27,29 @@ abstract class OrderOperation implements OrderOperationInterface
      * @var Order
      */
     protected $order;
+    protected $no_refund;
 
     public function __construct(Order $order)
     {
         $this->order = $order;
+        $this->no_refund = $this->isNotRefund();
     }
 
     public function getType()
     {
         return '';
+    }
+
+    public function isNotRefund()
+    {
+        if ($this->order->hasManyOrderGoods) {
+            foreach ($this->order->hasManyOrderGoods as $goods) {
+                if ($goods->hasOneGoods->no_refund) {
+                    return true;
+
+                }
+            }
+        }
+        return false;
     }
 }
