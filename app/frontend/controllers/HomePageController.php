@@ -310,7 +310,7 @@ class HomePageController extends ApiController
             $group_id = \YunShop::request()->group_id;
             $group_goods = new GoodsGroupGoods();
             $data = $group_goods->GetPageGoods($group_id);
-            $datas = $data->paginate($this->pageSize)
+            $datas = $data->paginate(12)
                 ->toArray();
             foreach ($datas['data'] as $key => $itme) {
                 $datas['data'][$key] = unserialize($itme['goods']);//反序列化
