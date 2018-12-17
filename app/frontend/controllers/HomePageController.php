@@ -6,20 +6,15 @@ use app\backend\modules\member\models\MemberRelation;
 use app\common\components\ApiController;
 use app\common\facades\Setting;
 use app\common\helpers\Cache;
-use app\common\repositories\OptionRepository;
-use app\common\services\goods\VideoDemandCourseGoods;
-use app\common\services\PluginManager;
+
+
 use app\common\services\popularize\PortType;
+
 use app\frontend\models\Member;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\shop\controllers\IndexController;
-use Illuminate\Events\Dispatcher;
-use Illuminate\Filesystem\Filesystem;
 use Yunshop\Designer\Common\Services\IndexPageService;
 use Yunshop\Designer\Common\Services\OtherPageService;
-use Yunshop\Designer\Common\Services\PageTopMenuService;
-use Yunshop\Designer\models\Designer;
-use Yunshop\Designer\models\DesignerMenu;
 
 
 class HomePageController extends ApiController
