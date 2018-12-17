@@ -32,6 +32,9 @@ class Withdraw extends \app\common\models\Withdraw
      */
     public $withdraw_set;
 
+    //todo 自动提现临时使用需要优化
+    public $is_auto;
+
 
     /**
      * 提现的收入对应设置
