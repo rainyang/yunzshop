@@ -976,7 +976,7 @@ class AutoUpdate
             if (file_exists($this->_tempDir . 'md5.txt')) {
                 $error = [];
                 $md5 = file_get_contents($this->_tempDir . 'md5.txt');
-                $segment = explode("\r\n", $md5);
+                $segment = explode(PHP_EOL, $md5);
 
                 foreach ($segment as $item) {
                     $rows = explode(':', $item);
@@ -995,14 +995,27 @@ class AutoUpdate
 
                 foreach ($file_md5 as $k => $v) {
                     if (!is_null($v) && !empty($soure_file[$k]) && $v != $soure_file[$k]) {
-                        $error[] = $k;
+                        $error[$k] = ['source' => $v, 'destination' => $soure_file[$k]];
                     }
                 }
+                $this->_log->debug('Download zip file successfull');
 
                 if (empty($error)) {
                     // Install update
                     $yZip = new YZip();
                     $yZip->unzip($this->_tempDir, $this->_tempDir);
+
+                    $chk_url = substr(config('auto-update.checkUrl'), strpos(config('auto-update.checkUrl'), '/')+2);
+                    $chk_url = substr($chk_url, 0, strpos($chk_url, '/'));
+                    $cp_source_path = 'app/auto-update/temp/data/www/' . $chk_url . '/storage/app/apps/upgrade/';
+                    $cp_destination_path = 'app/auto-update/temp/';
+
+                    if (is_dir(storage_path($cp_source_path))) {
+                        \Log::debug('copy file start.....', $cp_source_path);
+                        app(Filesystem::class)->copyDirectory(storage_path($cp_source_path),
+                                                                    storage_path($cp_destination_path));
+                        \Log::debug('copy file end.....');
+                    }
 
                     $result = $this->_install_v2($updateFile, $simulateInstall, $update['version']);
 
@@ -1032,6 +1045,7 @@ class AutoUpdate
                     $this->runOnAllUpdateFinishCallbacks($this->getVersionsToUpdate());
                     return true;
                 } else {
+                    \Log::debug('-----下载文件校验失败-----', $error);
                     return '下载文件校验失败';
                 }
             } else {
