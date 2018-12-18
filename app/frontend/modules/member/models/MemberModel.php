@@ -197,7 +197,7 @@ class MemberModel extends Member
 //        $commission_filed = $commission['agent'] ?: '分销商';
 
         $result = self::uniacid()
-            ->whereHas('belongsToMember', function($query) use ($uid, $level){
+            ->whereHas('hasOneMemberChildren', function($query) use ($uid, $level){
                 if (1 == $level) {
                     $query->where('member_id', $uid);
                 }elseif(2 == $level) {
