@@ -269,7 +269,7 @@ class MemberModel extends Member
         }]);
 
 
-        return $result;
+        return $result->orderBy('uid', 'desc');
     }
 
     /**
