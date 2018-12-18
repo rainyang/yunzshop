@@ -325,13 +325,6 @@ class UpdateController extends BaseController
                 file_put_contents($tmpdir . "/file.txt", json_encode($upgrade));
             }
         } else {
-            //更新完执行数据表 新部署不执行
-            \Log::debug('----CLI----');
-            $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
-            if (!empty($plugins_dir)) {
-                \Artisan::call('update:version' ,['version'=>$plugins_dir]);
-            }
-
             //覆盖
             foreach ($files as $f) {
                 $path = $f['path'];
@@ -348,6 +341,12 @@ class UpdateController extends BaseController
 
                     @unlink(storage_path('app/auto-update/shop') . '/' . $path);
                 }
+            }
+
+            \Log::debug('----CLI----');
+            $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
+            if (!empty($plugins_dir)) {
+                \Artisan::call('update:version' ,['version'=>$plugins_dir]);
             }
             
             //清理缓存
@@ -547,7 +546,7 @@ class UpdateController extends BaseController
 
     private function runMigrate()
     {
-        $plugins = ['sign', 'supplier', 'team-dividend', 'store-cashier', 'commission'];
+        $plugins = ["live","kingtimes","bonus-commission","more-printer","poster","community","ranking","courier","article","lease-toy","cabinet","store-cashier","single-return","cloud-pay","mryt","designer","coin","team-return","virtual-card","train","area-store","yun-pay","fixed-reward","elive","froze","sales-commission","exhelper","alipay-onekey-login","diyform","super_kjs","traffic","team-dividend","credit","recharge-code","flow-recharge","eup-pay","member-return","group-purchase","app-set","huanxun","air","phone","share-chain","subsidiary","order-meals","clock-in","shareholder-dividend","help-center","region-mgt","video-demand","area-dividend","enter-goods","point-activity","full-return","wft-alipay","dzp","task-reward","recharge","conference","sign","wft-pay","min-app","supplier","manual-bonus","goods-assistant","printer","micro","merchant","level-return","plugins-market","commission","gasoline","consume-return","love"];
 
         foreach ($plugins as $p) {
             $path = 'plugins/' . $p . '/migrations';
