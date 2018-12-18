@@ -40,6 +40,9 @@ class DataValidatorService
      */
     public function validator()
     {
+        if($this->withdrawModel->is_auto) {
+            return true;
+        }
         $type_name = $this->withdrawModel->type_name;
 
         $amount = $this->withdrawModel->amounts;
@@ -59,7 +62,6 @@ class DataValidatorService
 
         $outlay = bcadd($this->withdrawModel->poundage, $this->withdrawModel->servicetax, 2);
         $result_amount = bcsub($amount, $outlay, 2);
-
         if (bccomp($result_amount, 1, 2) == -1) {
             throw new AppException("{$type_name}扣除手续费、劳务税金额不能小于1元");
         }

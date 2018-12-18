@@ -24,6 +24,7 @@ use Yunshop\Love\Common\Models\MemberLove;
 use Yunshop\Merchant\common\models\MerchantLevel;
 use Yunshop\Micro\common\models\MicroShopLevel;
 use Yunshop\TeamDividend\models\TeamDividendLevelModel;
+use app\common\helpers\ImageHelper;
 
 class MemberModel extends Member
 {
@@ -671,11 +672,16 @@ class MemberModel extends Member
             ];
         }
 
-       /* if (empty($keyword)) {
-            return $data;
+        foreach ($data['data'] as $k => $v) {
+            //IOS时，把微信头像url改为https前缀
+            $data['data'][$k]['avatar'] = ImageHelper::iosWechatAvatar($v['avatar']);
         }
 
-        $data = self::searchMemberRelation($data);*/
+        /* if (empty($keyword)) {
+             return $data;
+         }
+
+         $data = self::searchMemberRelation($data);*/
 
         return $data;
     }

@@ -17,11 +17,4 @@ class Income extends \app\common\models\Income
 {
     protected $appends = [];
 
-
-    public static function boot()
-    {
-        parent::boot();
-        self::addGlobalScope('member_id', new MemberIdScope);
-    }
-
 }
