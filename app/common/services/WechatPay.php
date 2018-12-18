@@ -59,6 +59,9 @@ class WechatPay extends Pay
         }
         $notify_url = Url::shopSchemeUrl('payment/wechat/notifyUrl.php');
         $app     = $this->getEasyWeChatApp($pay, $notify_url);
+        if(isset($_GET['test_uid'])){
+            dump($app);
+        }
         $payment = $app->payment;
         $data['trade_type'] = $payType == 1 ? 'JSAPI' : 'APP';
         $order = self::getEasyWeChatOrder($data, $openid, $pay_order_model);

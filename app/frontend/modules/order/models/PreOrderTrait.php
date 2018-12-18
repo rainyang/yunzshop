@@ -31,28 +31,6 @@ trait PreOrderTrait
         return $this->id;
     }
 
-    /**
-     * 递归格式化金额字段
-     * @param $attributes
-     * @return array
-     */
-    private function formatAmountAttributes($attributes)
-    {
-        // 格式化价格字段,将key中带有price,amount的属性,转为保留2位小数的字符串
-        $attributes = array_combine(array_keys($attributes), array_map(function ($value, $key) {
-            if (is_array($value)) {
-                $value = $this->formatAmountAttributes($value);
-            } else {
-                if (str_contains($key, 'price') || str_contains($key, 'amount')) {
-                    $value = sprintf('%.2f', $value);
-                }
-            }
-            return $value;
-        }, $attributes, array_keys($attributes)));
-        return $attributes;
-    }
-
-
 
     /**
      * 统计商品总数
