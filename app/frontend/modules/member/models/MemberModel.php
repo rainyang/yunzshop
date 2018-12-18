@@ -273,11 +273,11 @@ class MemberModel extends Member
 //                ->groupBy('uid');
 //        }]);
         $result =  $result->with(['yzMember' => function ($query) {
-            return $query->select('member_id', 'is_agent', 'status', 'wechat', 'deleted_at')->whereNotNull('deleted_at');
+            return $query->select('member_id', 'is_agent', 'status', 'wechat', 'deleted_at');
         }]);
 
 
-        return $result->orderBy('uid', 'desc');
+        return $result->where('created_at', '<>', 0)->orderBy('uid', 'desc');
     }
 
     /**
