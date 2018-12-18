@@ -1010,7 +1010,7 @@ class AutoUpdate
                     $cp_source_path = 'app/auto-update/temp/data/www/' . $chk_url . '/storage/app/apps/upgrade/';
                     $cp_destination_path = 'app/auto-update/temp/';
 
-                    if (is_dir($cp_source_path)) {
+                    if (is_dir(storage_path($cp_source_path))) {
                         \Log::debug('copy file start.....', $cp_source_path);
                         app(Filesystem::class)->copyDirectory(storage_path($cp_source_path),
                                                                     storage_path($cp_destination_path));
