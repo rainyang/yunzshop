@@ -15,6 +15,9 @@ use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\shop\controllers\IndexController;
 use Yunshop\Designer\Common\Services\IndexPageService;
 use Yunshop\Designer\Common\Services\OtherPageService;
+use Yunshop\Designer\Common\Services\PageTopMenuService;
+use Yunshop\Designer\models\Designer;
+use Yunshop\Designer\models\DesignerMenu;
 
 
 class HomePageController extends ApiController
