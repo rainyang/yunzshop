@@ -863,7 +863,7 @@ class MemberModel extends Member
         if (empty($agent_info)) {
             return [];
         }
-dd($agent_info);
+
         return collect($agent_info)->map(function($item) {
             $is_agent          = 0;
 //            $order_price       = 0;
