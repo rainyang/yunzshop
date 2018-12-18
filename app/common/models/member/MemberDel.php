@@ -36,6 +36,16 @@ class MemberDel extends BaseModel
 
     }
 
+    /**
+     * 删除的会员还有缓存的 清空缓存
+     * @param $member_id
+     * @return bool
+     */
+    public static function delUpdate($member_id)
+    {
+        return self::where('member_id',$member_id)->update(['type' => 1]);
+    }
+
 
     public function scopeByMemberId($query, $member_id)
     {
