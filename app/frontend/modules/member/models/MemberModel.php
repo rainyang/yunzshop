@@ -277,7 +277,7 @@ class MemberModel extends Member
         }]);
 
 
-        return $result->where('created_at', '<>', 0)->orderBy('uid', 'desc');
+        return $result->orderBy('uid', 'desc');
     }
 
     /**
