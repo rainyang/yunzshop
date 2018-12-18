@@ -197,11 +197,15 @@ class MemberModel extends Member
 //        $commission_filed = $commission['agent'] ?: '分销商';
 
         $result = self::uniacid()
-            ->whereHas('yzMember', function($query) use ($uid, $level){
+            ->whereHas('belongsToMember', function($query) use ($uid, $level){
                 if (1 == $level) {
-                    $query->where('parent_id', $uid)->where('inviter', 1);
-                } else {
-                    $query->where('inviter', 1)->whereRaw('FIND_IN_SET(?, relation)' . ($level != 0 ? ' = ?' : ''), [$uid, $level]);
+                    $query->where('member_id', $uid);
+                }elseif(2 == $level) {
+                    $query->where('member_id', $uid);
+                }elseif(3 == $level){
+                    $query->where('member_id', $uid);
+                }else{
+                    return;
                 }
             })->orderBy('uid', 'desc');
 

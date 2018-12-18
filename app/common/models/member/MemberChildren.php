@@ -10,6 +10,7 @@ namespace app\common\models\member;
 
 
 use app\common\models\BaseModel;
+use app\common\models\Member;
 
 class MemberChildren extends BaseModel
 {
@@ -23,4 +24,8 @@ class MemberChildren extends BaseModel
         });
     }
 
+    public function belongsToMember()
+    {
+        $this->belongsTo(Member::class, 'uid', 'member_id');
+    }
 }
