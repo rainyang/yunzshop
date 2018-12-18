@@ -196,18 +196,19 @@ class MemberModel extends Member
 //        $commission = self::langFiled('commission');
 //        $commission_filed = $commission['agent'] ?: '分销商';
 
-        $result = self::uniacid()
-            ->whereHas('hasOneMemberChildren', function($query) use ($uid, $level){
-                if (1 == $level) {
-                    $query->where('member_id', $uid);
-                }elseif(2 == $level) {
-                    $query->where('member_id', $uid);
-                }elseif(3 == $level){
-                    $query->where('member_id', $uid);
-                }else{
-                    return;
-                }
-            })->orderBy('uid', 'desc');
+        $child_member1 = DB::table('yz_member_children')->select(DB::raw('group_concat(child_id) as child'))->where('level', 1)->where('member_id', $uid)->groupBy('member_id')->first();
+        $child_member2 = DB::table('yz_member_children')->select(DB::raw('group_concat(child_id) as child'))->where('level', 2)->where('member_id', $uid)->groupBy('member_id')->first();
+        $child_member3 = DB::table('yz_member_children')->select(DB::raw('group_concat(child_id) as child'))->where('level', 3)->where('member_id', $uid)->groupBy('member_id')->first();
+        $child_member1 = explode(',' ,$child_member1['child']);
+        $child_member2 = explode(',' ,$child_member2['child']);
+        $child_member3 = explode(',' ,$child_member3['child']);
+        if ($level == 1) {
+            $result = self::uniacid()->whereIn('uid',$child_member1);
+        }elseif($level == 2){
+            $result = self::uniacid()->whereIn('uid',$child_member2);
+        }else{
+            $result = self::uniacid()->whereIn('uid',$child_member3);
+        }
 
 //            if (!empty($keyword)) {
 //                switch ($keyword) {
