@@ -15,6 +15,7 @@ class BatchDiscountController extends BaseController
 {
     public function index()
     {
+//        dd(request()->input('post_data'));
         return view('from.test')->render();
     }
 }
