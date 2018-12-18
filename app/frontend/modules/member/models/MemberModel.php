@@ -429,7 +429,7 @@ class MemberModel extends Member
     {
         $member_id = \YunShop::app()->getMemberId();
         $member_info = self::getMyReferrerInfo($member_id)->first();
-
+        $unicid = \YunShop::app()->uniacid;
         $set = \Setting::get('shop.member');
         $memberSet = \Setting::get('relation_base');
         $data = [];
@@ -482,16 +482,22 @@ class MemberModel extends Member
             }
 
             //团队1级会员
-            $order = DB::table('yz_order')->select('uid','price')->where('uniacid', \YunShop::app()->uniacid)->get();
-            $member_1 = DB::select('select member_id, group_concat(child_id) as child,level from '.DB::getTablePrefix().'yz_member_children where level =1' . ' and uniacid =' . \YunShop::app()->uniacid . ' and member_id='.$member_id.' group by member_id');
-            $data['child_total'] = collect(explode(',' ,$member_1[0]['child']))->count();
-            $data['child_order_money'] = $order->whereIn('uid', explode(',' ,$member_1[0]['child']))->sum('price');
+            $order = DB::table('yz_order')->select('uid','price')->where('uniacid', $unicid)->get();
+            $member_1 = DB::table('yz_member_children')->select('child_id')->where('member_id', $member_id)->where('level', 1)->where('uniacid', $unicid)->get();
+            foreach ($member_1 as $child_id) {
+                $child_id1[] = $child_id['child_id'];
+            }
+            $data['child_total'] = collect($child_id1)->count();
+            $data['child_order_money'] = $order->whereIn('uid', $child_id1)->sum('price');
 
             //团队会员
-            $childMemberTeam = DB::select('select member_id, group_concat(child_id) as child from '.DB::getTablePrefix().'yz_member_children where member_id =' . $member_id . ' and uniacid='.\YunShop::app()->uniacid .' group by member_id');
-            $data['team_total'] = collect(explode(',' ,$childMemberTeam[0]['child']))->count();
-            $data['team_order_money'] = $order->whereIn('uid', explode(',' ,$childMemberTeam[0]['child']))->sum('price');
-//        dd($data);
+            $childMemberTeam = DB::table('yz_member_children')->select('child_id')->where('member_id', $member_id)->where('uniacid', $unicid)->get();
+            foreach ($childMemberTeam as $child_id) {
+                $child_idAll[] = $child_id['child_id'];
+            }
+            $data['team_total'] = collect($child_idAll)->count();
+            $data['team_order_money'] = $order->whereIn('uid', $child_idAll)->sum('price');
+//            dd($data);
         }
         $data['wechat'] = $member_set['relation_level']['wechat']?:0;
         $data['phone'] = $member_set['relation_level']['phone']?:0;
@@ -854,11 +860,10 @@ class MemberModel extends Member
 
     public static function fetchAgentInfo($agent_info)
     {
-//        dd($agent_info);
         if (empty($agent_info)) {
             return [];
         }
-
+dd($agent_info);
         return collect($agent_info)->map(function($item) {
             $is_agent          = 0;
 //            $order_price       = 0;
@@ -894,9 +899,12 @@ class MemberModel extends Member
             $result['child_order_total'] = $order->where('status', 3)->whereIn('uid', $item->uid)->count();
             $result['child_order_money'] = $order->where('status', 3)->whereIn('uid', $item->uid)->sum('price');
             //团队全部会员
-            $childMemberTeam = DB::select('select member_id, group_concat(child_id) as child from '.DB::getTablePrefix().'yz_member_children where member_id =' . $item->uid . ' and uniacid='.\YunShop::app()->uniacid .' group by member_id');
-            $result['team_total'] = collect(explode(',' ,$childMemberTeam[0]['child']))->count();
-            $result['team_order_money'] = $order->whereIn('uid', explode(',' ,$childMemberTeam[0]['child']))->sum('price');
+            $childMemberTeam = DB::table('yz_member_children')->select('child_id')->where('member_id', $item->uid)->where('level', 1)->get();
+            foreach ($childMemberTeam as $child_id) {
+                $child_idAll[] = $child_id['child_id'];
+            }
+            $result['team_total'] = collect($child_idAll)->count();
+            $result['team_order_money'] = $order->whereIn('uid', $child_idAll)->sum('price');
 //            dd($result);
 
             return [
