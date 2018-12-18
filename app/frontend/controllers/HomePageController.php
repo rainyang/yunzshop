@@ -18,13 +18,16 @@ use Yunshop\Designer\Common\Services\OtherPageService;
 use Yunshop\Designer\Common\Services\PageTopMenuService;
 use Yunshop\Designer\models\Designer;
 use Yunshop\Designer\models\DesignerMenu;
+use Yunshop\Designer\models\GoodsGroupGoods;
+use app\common\helpers\PaginationHelper;
+use Yunshop\Diyform\admin\DiyformDataController;
 
 
 class HomePageController extends ApiController
 {
     protected $publicAction = ['index', 'defaultDesign', 'defaultMenu', 'defaultMenuStyle', 'bindMobile', 'wxapp'];
     protected $ignoreAction = ['index', 'defaultDesign', 'defaultMenu', 'defaultMenuStyle', 'bindMobile', 'wxapp'];
-
+    private $pageSize = 16;
     /**
      * @return \Illuminate\Http\JsonResponse 当路由不包含page_id参数时,提供商城首页数据; 当路由包含page_id参数时,提供装修预览数据
      */
@@ -103,7 +106,6 @@ class HomePageController extends ApiController
         }
 
         $result['mailInfo']['is_bind_mobile'] = $is_bind_mobile;
-
         //用户信息, 原来接口在 member.member.getUserInfo
         if(empty($pageId)){ //如果是请求首页的数据
             if (!empty($member_id)) {
@@ -162,6 +164,7 @@ class HomePageController extends ApiController
                 if (empty($pageId) && !Cache::has($member_id.'_designer_default_0')) {
                     Cache::put($member_id.'_designer_default_0', $designer,180);
                 }
+
                 /*$store_goods = null;
                 if (app('plugins')->isEnabled('store-cashier')) {
                     $store_goods = new \Yunshop\StoreCashier\common\models\StoreGoods();
@@ -199,7 +202,6 @@ class HomePageController extends ApiController
                     }
                 }*/
                 $result['item'] = $designer;
-
                 //顶部菜单 todo 加快进度开发，暂时未优化模型，装修数据、顶部菜单、底部导航等应该在一次模型中从数据库获取、编译 Y181031
                 if ($designer['pageinfo']['params']['top_menu'] && $designer['pageinfo']['params']['top_menu_id']) {
                     $result['item']['topmenu'] = (new PageTopMenuService())->getTopMenu($designer['pageinfo']['params']['top_menu_id']);
@@ -232,7 +234,6 @@ class HomePageController extends ApiController
                     'isshow' => false
                 ];
             }
-
             //自定义菜单, 原来接口在  plugin.designer.home.index.menu
             switch ($footerMenuType){
                 case 1:
@@ -296,7 +297,6 @@ class HomePageController extends ApiController
                 $result['captcha']['status'] = $status;
             }
         }
-
         return $this->successJson('ok', $result);
     }
 
@@ -304,15 +304,17 @@ class HomePageController extends ApiController
      * 获取分页数据
      */
     public function GetPageGoods(){
-//        $group_id = \YunShop::request()->group_id;
-//        $page = \YunShop::request()->page;
-        dd(1);
-        $group_id = 'M1544064694317';
-        $page = 2;
-        $group_goods = new GoodsGroupGoods();
-
-        $data = $group_goods->GetPageGoods($group_id,$page);
-        return $data;
+        if(app('plugins')->isEnabled('designer')) {
+            $group_id = \YunShop::request()->group_id;
+            $group_goods = new GoodsGroupGoods();
+            $data = $group_goods->GetPageGoods($group_id);
+            $datas = $data->paginate(12)
+                ->toArray();
+            foreach ($datas['data'] as $key => $itme) {
+                $datas['data'][$key] = unserialize($itme['goods']);//反序列化
+            }
+            return $this->successJson('ok', $datas);
+        }
     }
 
     //增加验证码功能
