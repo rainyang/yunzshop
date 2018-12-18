@@ -173,22 +173,26 @@ class MemberModel extends Member
 
     public static function getMyAllAgentsInfo($uid, $level)
     {
-        return self::uniacid()
-            ->whereHas('yzMember', function($query) use ($uid, $level){
-                if (1 == $level) {
-                    $query->where('parent_id', $uid)->where('inviter', 1);
-                } else {
-                    $query->where('inviter', 1)->whereRaw('FIND_IN_SET(?, relation)' . ($level != 0 ? ' = ?' : ''), [$uid, $level]);
-                }
-            })
-            ->with(['yzMember' => function ($query) {
-                return $query->select('member_id', 'is_agent', 'status');
-            }, 'hasOneOrder' => function ($query) {
-                return $query->selectRaw('uid, count(uid) as total, sum(price) as sum')
-                    ->uniacid()
-                    ->where('status', 3)
-                    ->groupBy('uid');
-            }]);
+        $child_member1 = DB::table('yz_member_children')->select('child_id')->where('member_id', $uid)->where('level', 1)->get();
+        foreach ($child_member1 as $child_id) {
+            $child_id1[] = $child_id['child_id'];
+        }
+        $child_member2 = DB::table('yz_member_children')->select('child_id')->where('member_id', $uid)->where('level', 2)->get();
+        foreach ($child_member2 as $child_id) {
+            $child_id2[] = $child_id['child_id'];
+        }
+        $child_member3 = DB::table('yz_member_children')->select('child_id')->where('member_id', $uid)->where('level', 3)->get();
+        foreach ($child_member3 as $child_id) {
+            $child_id3[] = $child_id['child_id'];
+        }
+
+        if ($level == 1) {
+            return self::uniacid()->whereIn('uid', $child_id1);
+        } elseif ($level == 2) {
+            return self::uniacid()->whereIn('uid', $child_id2);
+        } else {
+            return self::uniacid()->whereIn('uid', $child_id3);
+        }
     }
 
     public static function getMyAllAgentsInfoBySearch($uid, $level, $keyword, $role_level)
@@ -587,7 +591,7 @@ class MemberModel extends Member
         ];
 
         $total = 0;
-//        $order_total = 0;
+
         $relation_base = \Setting::get('relation_base');
 
         if (!is_null($relation_base['relation_level'])) {
