@@ -87,6 +87,9 @@ class WithdrawApplyListener
     public function validatorPayWay($event)
     {
         $withdrawModel = $event->getWithdrawModel();
+        if ($withdrawModel->is_auto) {
+            return;
+        }
 
         (new PayWayValidatorService())->validator($withdrawModel->pay_way);
     }
@@ -134,7 +137,9 @@ class WithdrawApplyListener
 
         $income_ids = explode(',', $withdrawModel->type_id);
 
+
         $result = Income::uniacid()->whereIn('id', $income_ids)->update(['status' => Income::STATUS_WITHDRAW, 'pay_status' => Income::PAY_STATUS_INITIAL]);
+
         if ($result < 1) {
             throw new AppException("{$withdrawModel->type_name}收入记录更新失败");
         }

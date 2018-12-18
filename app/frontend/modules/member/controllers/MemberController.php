@@ -339,6 +339,9 @@ class MemberController extends ApiController
     {
         $data = MemberModel::getMyReferral_v2();
 
+        //IOS时，把微信头像url改为https前缀
+        $data['avatar'] = ImageHelper::iosWechatAvatar($data['avatar']);
+
         if (!empty($data)) {
             return $this->successJson('', $data);
         } else {
@@ -1469,8 +1472,15 @@ class MemberController extends ApiController
                 ];
             }
         }
+        if (app('plugins')->isEnabled('enter-goods')) {
 
-
+            $data[] = [
+                'name' => 'enter_goods',
+                'title' => '用户入驻',
+                'class' => 'icon-member_goods',
+                'url' => 'EnterShop',
+            ];
+        }
         return $this->successJson('ok', $data);
     }
 
