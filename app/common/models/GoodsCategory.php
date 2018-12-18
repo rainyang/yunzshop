@@ -12,6 +12,11 @@ use app\common\models\BaseModel;
 use Illuminate\Database\Eloquent\Builder;
 use app\backend\modules\goods\observers\GoodsCategoryObserver;
 
+/**
+ * Class GoodsCategory
+ * @package app\common\models
+ * @property string category_ids
+ */
 class GoodsCategory extends BaseModel
 {
     public $table = 'yz_goods_category';

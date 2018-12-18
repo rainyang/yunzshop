@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string storenames
  * @property array storeids
  * @property int getstore
+ * @property string category_ids
  * @property int is_complex
  * @property array goods_ids
  * @property int id
