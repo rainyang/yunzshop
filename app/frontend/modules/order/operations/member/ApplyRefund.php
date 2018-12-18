@@ -38,9 +38,9 @@ class ApplyRefund extends OrderOperation
             return false;
         }
         //商品开启不可退款
-//        if ($this->no_refund) {
-//            return false;
-//        }
+        if ($this->order->no_refund) {
+            return false;
+        }
         return $this->order->canRefund();
     }
 

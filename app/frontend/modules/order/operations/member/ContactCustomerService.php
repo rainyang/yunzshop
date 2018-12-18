@@ -29,7 +29,7 @@ class ContactCustomerService extends OrderOperation
     public function enable()
     {
         //商品开启不可退款
-        if ($this->order->no_refund) {
+        if (!$this->order->no_refund) {
             return false;
         }
 
