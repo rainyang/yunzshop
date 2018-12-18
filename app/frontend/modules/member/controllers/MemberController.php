@@ -1494,5 +1494,55 @@ class MemberController extends ApiController
         }
         return $this->errorJson('', 0);
     }
+    /**
+     *  推广申请页面数据
+     */
+    public function shareinfo() {
 
+        $data = MemberRelation::uniacid()->where(['status'=>1])->get();
+
+        $become_goods = unserialize($data[0]['become_goods']);
+        $become_term = unserialize($data[0]['become_term']);
+
+        $goodskeys = range(0, count($become_goods)-1);
+        $data[0]['become_goods'] = array_combine($goodskeys, $become_goods);
+
+        $termskeys = range(0, count($become_term)-1);
+        $become_term = array_combine($termskeys, $become_term);
+
+        $member_uid = \YunShop::app()->getMemberId();
+
+        $getCostTotalNum = Order::getCostTotalNum($member_uid);
+        $getCostTotalPrice = Order::getCostTotalPrice($member_uid);
+
+        $data[0]['getCostTotalNum'] = $getCostTotalNum;
+        $data[0]['getCostTotalPrice'] = $getCostTotalPrice;
+
+        $terminfo = [];
+
+        foreach ($become_term as $v) {
+            if ($v == 2) {
+                $terminfo['become_ordercount'] = $data[0]['become_ordercount'];
+            }
+            if ($v == 3) {
+                $terminfo['become_moneycount'] = $data[0]['become_moneycount'];
+            }
+            if ($v == 4) {
+                $terminfo['goodsinfo'] = $data[0]['become_goods'];
+            }
+            if ($v == 5) {
+                $terminfo['become_selfmoney'] = $data[0]['become_selfmoney'];
+            }
+        }
+        $data[0]['become_term'] = $terminfo;
+
+        if ($data[0]['become'] == 2) {
+            //或
+            $data[0]['tip'] = '满足以下任意条件都可以升级';
+        } elseif ($data[0]['become'] == 3) {
+            //与
+            $data[0]['tip'] = '满足以下所有条件才可以升级';
+        }
+        return $this->successJson('ok', $data[0]);
+    }
 }

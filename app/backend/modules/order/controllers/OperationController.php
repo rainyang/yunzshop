@@ -96,7 +96,7 @@ class OperationController extends BaseController
      * @return mixed
      * @throws \app\common\exceptions\AppException
      */
-    public function Receive()
+    public function receive()
     {
         OrderService::orderReceive($this->param);
 
@@ -107,7 +107,7 @@ class OperationController extends BaseController
      * @return mixed
      * @throws \app\common\exceptions\AppException
      */
-    public function Close()
+    public function close()
     {
         OrderService::orderClose($this->param);
 
@@ -118,7 +118,7 @@ class OperationController extends BaseController
      * @return mixed
      * @throws \app\common\exceptions\AppException
      */
-    public function Delete()
+    public function delete()
     {
         OrderService::orderDelete($this->param);
 

@@ -8,15 +8,12 @@
 
 namespace app\common\models;
 
-use app\backend\modules\goods\models\Sale;
-use app\backend\modules\goods\observers\GoodsObserver;
 use app\common\exceptions\AppException;
 use app\common\models\goods\GoodsDispatch;
+use app\common\models\goods\Privilege;
 use app\framework\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
-use app\common\models\Coupon;
 
 /**
  * Class Goods
@@ -31,10 +28,36 @@ use app\common\models\Coupon;
  * @property string thumb
  * @property string thumb_url
  * @property int buyNum
+ * @property int has_option
+ * @property int virtual_sales
+ * @property int plugin_id
+ * @property int comment_num
+ * @property int is_comment
+ * @property int is_recommand
+ * @property int is_discount
+ * @property int is_hot
+ * @property int is_new
+ * @property int weight
+ * @property int real_sales
+ * @property int show_sales
+ * @property int reduce_stock_method
+ * @property int cost_price
+ * @property int price
+ * @property int market_price
+ * @property int product_sn
+ * @property string goods_sn
+ * @property string content
+ * @property string description
+ * @property string sku
+ * @property int type
+ * @property int brand_id
+ * @property int goods_video
+ * @property int display_order
  * @property Collection hasManySpecs
  * @property Collection hasManyOptions
  * @property GoodsDiscount hasManyGoodsDiscount
  * @property GoodsDispatch hasOneGoodsDispatch
+ * @property Privilege hasOnePrivilege
  */
 class Goods extends BaseModel
 {
@@ -146,6 +169,10 @@ class Goods extends BaseModel
         return $this->hasOne('app\common\models\goods\Share');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @throws \app\common\exceptions\ShopException
+     */
     public function hasOnePrivilege()
     {
         return $this->hasOne($this->getNearestModel('goods\Privilege'));
@@ -192,7 +219,7 @@ class Goods extends BaseModel
         return $this->hasOne('app\common\models\goods\GoodsLimitBuy', 'goods_id', 'id');
     }
 
-    public function scopeIsPlugin($query)
+    public function scopeIsPlugin(self $query)
     {
         return $query->where('is_plugin', 0);
     }
@@ -241,7 +268,7 @@ class Goods extends BaseModel
                     //$value = explode(',', rtrim($value, ','));
                     foreach ($value as $attr) {
                         if ($attr == 'limit_buy') {
-                            $query->whereHas('hasOneGoodsLimitBuy', function ($q) {
+                            $query->whereHas('hasOneGoodsLimitBuy', function (BaseModel $q) {
                                 $q->where('status', 1);
                             });
                         } else {
@@ -250,7 +277,7 @@ class Goods extends BaseModel
                     }
                     break;
                 case 'status':
-                    $query->where(status, $value);
+                    $query->where('status', $value);
                     break;
                 case 'min_price':
                     $query->where('price', '>', $value);
@@ -353,10 +380,10 @@ class Goods extends BaseModel
         return static::uniacid()->select('id', 'title', 'thumb', 'market_price', 'price', 'real_sales', 'sku','plugin_id','stock')
             ->where('title', 'like', '%' . $keyword . '%')
             ->where('status', 1)
-            ->with(['hasOneGoodsLimitBuy' => function ($query) {
+            ->with(['hasOneGoodsLimitBuy' => function (BaseModel $query) {
                  return $query->where('status',1)->select('goods_id', 'start_time', 'end_time');
             }])
-            ->whereHas('hasOneGoodsLimitBuy', function ($query) {
+            ->whereHas('hasOneGoodsLimitBuy', function (BaseModel $query) {
                 return $query->where('status',1);
             })
             ->whereNotIn('plugin_id', [20,31,60])//屏蔽门店、码上点餐、第三方插件接口的虚拟商品
@@ -435,8 +462,8 @@ class Goods extends BaseModel
 
     /**
      * 推广商品
-     * @param  [array] $goodsIds [商品id组]
-     * @return [array]           [推广的商品数据]
+     * @param $goodsIds
+     * @return array
      */
     public static function getPushGoods($goodsIds)
     {
@@ -447,7 +474,7 @@ class Goods extends BaseModel
     {
         parent::boot();
 
-        static::addGlobalScope(function (Builder $builder) {
+        static::addGlobalScope(function (BaseModel $builder) {
             $builder->uniacid();
         });
     }
@@ -465,14 +492,33 @@ class Goods extends BaseModel
     }
 
     /**
+     * 商品购买验证
+     * @param Member $member
+     * @param $total
+     * @throws AppException
+     */
+    public function generalValidate(Member $member,$total)
+    {
+        if (empty($this->status)) {
+            throw new AppException('(ID:' . $this->id . ')商品已下架');
+        }
+//        if (!isset($this->hasOneSale)) {
+//            throw new AppException('(ID:' . $this->id . ')商品优惠信息数据已损坏');
+//        }
+//        if (!isset($this->hasOneGoodsDispatch)) {
+//            throw new AppException('(ID:' . $this->id . ')商品配送信息数据已损坏');
+//        }
+        if (isset($this->hasOnePrivilege)) {
+            $this->hasOnePrivilege->validate($member,$total);
+        }
+    }
+    /**
      * 获取商品名称
      * @return html
-     */
+    */
     public static function getSearchOrder()
     {
         $keyword = \YunShop::request()->keyword;
         return Goods::select(['id','title', 'thumb', 'plugin_id'])->pluginId()->where('title', 'like', '%'.$keyword.'%')->get();
     }
-
-
 }

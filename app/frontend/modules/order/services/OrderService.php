@@ -9,17 +9,12 @@
 
 namespace app\frontend\modules\order\services;
 
-use app\common\events\discount\OnDiscountInfoDisplayEvent;
-use app\common\events\order\OnPreGenerateOrderCreatingEvent;
 use app\common\exceptions\AppException;
 use app\common\models\Order;
 
 use app\common\models\order\OrderGoodsChangePriceLog;
-use app\frontend\models\Member;
+use app\common\modules\orderGoods\OrderGoodsCollection;
 use \app\frontend\models\MemberCart;
-use app\frontend\modules\member\services\MemberService;
-use app\frontend\modules\memberCart\MemberCartCollection;
-use app\frontend\modules\order\models\PreOrder;
 use app\frontend\modules\order\services\behavior\OrderCancelPay;
 use app\frontend\modules\order\services\behavior\OrderCancelSend;
 use app\frontend\modules\order\services\behavior\OrderChangePrice;
@@ -31,65 +26,18 @@ use app\frontend\modules\order\services\behavior\OrderPay;
 use app\frontend\modules\order\services\behavior\OrderReceive;
 use app\frontend\modules\order\services\behavior\OrderSend;
 use app\frontend\modules\orderGoods\models\PreOrderGoods;
-use app\frontend\modules\orderGoods\models\PreOrderGoodsCollection;
-use app\frontend\modules\shop\services\ShopService;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class OrderService
 {
-    /**
-     * 获取订单信息组
-     * @param PreOrder $order
-     * @return Collection
-     * @throws AppException
-     */
-    public static function getOrderData(PreOrder $order)
-    {
-        $result = collect();
-        // todo 这里为什么要toArray
-        $result->put('order', $order->toArray());
-        $result->put('discount', self::getDiscountEventData($order));
-        $result->put('dispatch', self::getDispatchData($order));
 
-        if (!$result->has('supplier')) {
-            $result->put('supplier', ['username' => array_get(\Setting::get('shop'), 'name', '自营'), 'id' => 0]);
-        }
-
-
-        return $result;
-    }
-
-    /**
-     * @param PreOrder $order
-     * @return array
-     * @throws AppException
-     */
-    private static function getDispatchData(PreOrder $order)
-    {
-        if(!$order->needSend()){
-            return [];
-        }
-        return ['default_member_address'=>$order->orderAddress->getMemberAddress()];
-    }
-    /**
-     * 获取优惠信息
-     * @param $orderModel
-     * @return array
-     */
-    private static function getDiscountEventData($orderModel)
-    {
-        $event = new OnDiscountInfoDisplayEvent($orderModel);
-        event($event);
-
-        return collect($event->getMap());
-    }
 
     /**
      * 获取订单商品对象数组
      * @param Collection $memberCarts
-     * @return PreOrderGoodsCollection
+     * @return OrderGoodsCollection
      * @throws \Exception
      */
     public static function getOrderGoods(Collection $memberCarts)
@@ -119,47 +67,7 @@ class OrderService
             return $orderGoods;
         });
 
-        return new PreOrderGoodsCollection($result);
-    }
-
-
-    /**
-     * 根据购物车记录,获取订单信息
-     * @param MemberCartCollection $memberCarts
-     * @param Member|null $member
-     * @return PreOrder|bool|mixed
-     * @throws AppException
-     * @throws \Exception
-     */
-    public static function createOrderByMemberCarts(MemberCartCollection $memberCarts, Member $member = null)
-    {
-        if (!isset($member)) {
-            //默认使用当前登录用户下单
-            $member = Member::current();
-        }
-        if (!isset($member)) {
-            throw new AppException('用户登录状态过期');
-        }
-
-        if ($memberCarts->isEmpty()) {
-            return false;
-        }
-
-        $memberCarts->validate();
-
-        $shop = ShopService::getCurrentShopModel();
-
-        $orderGoodsCollection = OrderService::getOrderGoods($memberCarts);
-        $order = app('OrderManager')->make('PreOrder', ['uid' => $member->uid, 'uniacid' => $shop->uniacid]);
-        $order->beforeCreating();
-
-        event(new OnPreGenerateOrderCreatingEvent($order));
-        $order->setOrderGoods($orderGoodsCollection);
-        /**
-         * @var PreOrder $order
-         */
-        $order->afterCreating();
-        return $order;
+        return new OrderGoodsCollection($result);
     }
 
     /**

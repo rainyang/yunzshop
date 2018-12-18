@@ -6,13 +6,13 @@
  * Time: 下午3:11
  */
 
-namespace app\frontend\modules\order\services;
+namespace app\common\modules\order;
 
 use app\backend\modules\order\models\Order;
 use app\common\models\order\OrderCoupon;
 use app\common\models\order\OrderDeduction;
 use app\common\models\order\OrderDiscount;
-use app\common\modules\order\OrderOperationsCollector;
+use app\common\modules\trade\models\Trade;
 use app\frontend\models\MemberCart;
 use app\frontend\models\OrderAddress;
 use app\frontend\modules\dispatch\models\PreOrderAddress;
@@ -23,13 +23,11 @@ use Illuminate\Container\Container;
 class OrderManager extends Container
 {
     private $setting;
+
     public function __construct()
     {
         $this->bindModels();
-        // 订单service
-        $this->singleton('OrderService', function ($orderManager) {
-            return new OrderService();
-        });
+
         $this->singleton(OrderOperationsCollector::class, function ($orderManager) {
             return new OrderOperationsCollector();
         });
@@ -38,7 +36,7 @@ class OrderManager extends Container
 
     public function setting($key = null)
     {
-        return array_get($this->setting,$key);
+        return array_get($this->setting, $key);
     }
 
     private function bindModels()
@@ -80,6 +78,9 @@ class OrderManager extends Container
         $this->bind('OrderAddress', function ($orderManager, $attributes) {
             return new OrderAddress($attributes);
         });
+        $this->bind(Trade::class, function ($orderManager, $attributes) {
+            return new Trade($attributes);
 
+        });
     }
 }
