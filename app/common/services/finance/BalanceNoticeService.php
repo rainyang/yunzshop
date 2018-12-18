@@ -38,9 +38,12 @@ class BalanceNoticeService
         if (!$template_id) {
             return null;
         }
-
+        $pay_at = $withdrawModel->pay_at;
+        if(empty($pay_at)){
+            $pay_at = time();
+        }
         $params = [
-            ['name' => '时间', 'value' => date('Y-m-d H:i:s', $withdrawModel->pay_at)],
+            ['name' => '时间', 'value' => date('Y-m-d H:i:s', $pay_at)],
             ['name' => '金额', 'value' => $withdrawModel->amounts],
             ['name' => '手续费', 'value' => $withdrawModel->actual_poundage],
         ];
