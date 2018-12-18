@@ -196,19 +196,27 @@ class MemberModel extends Member
 //        $commission = self::langFiled('commission');
 //        $commission_filed = $commission['agent'] ?: '分销商';
 
-        $child_member1 = DB::table('yz_member_children')->select(DB::raw('group_concat(child_id) as child'))->where('level', 1)->where('member_id', $uid)->groupBy('member_id')->first();
-        $child_member2 = DB::table('yz_member_children')->select(DB::raw('group_concat(child_id) as child'))->where('level', 2)->where('member_id', $uid)->groupBy('member_id')->first();
-        $child_member3 = DB::table('yz_member_children')->select(DB::raw('group_concat(child_id) as child'))->where('level', 3)->where('member_id', $uid)->groupBy('member_id')->first();
-        $child_member1 = explode(',' ,$child_member1['child']);
-        $child_member2 = explode(',' ,$child_member2['child']);
-        $child_member3 = explode(',' ,$child_member3['child']);
-        if ($level == 1) {
-            $result = self::uniacid()->whereIn('uid',$child_member1);
-        }elseif($level == 2){
-            $result = self::uniacid()->whereIn('uid',$child_member2);
-        }else{
-            $result = self::uniacid()->whereIn('uid',$child_member3);
+        $child_member1 = DB::table('yz_member_children')->select('child_id')->where('member_id',$uid)->where('level', 1)->get();
+        foreach ($child_member1 as $child_id) {
+            $child_id1[] = $child_id['child_id'];
         }
+        $child_member2 = DB::table('yz_member_children')->select('child_id')->where('member_id',$uid)->where('level', 2)->get();
+        foreach ($child_member2 as $child_id) {
+            $child_id2[] = $child_id['child_id'];
+        }
+        $child_member3 = DB::table('yz_member_children')->select('child_id')->where('member_id',$uid)->where('level', 3)->get();
+        foreach ($child_member3 as $child_id) {
+            $child_id3[] = $child_id['child_id'];
+        }
+
+        if ($level == 1) {
+            $result = self::uniacid()->whereIn('uid', $child_id1);
+        }elseif($level == 2){
+            $result = self::uniacid()->whereIn('uid', $child_id2);
+        }else{
+            $result = self::uniacid()->whereIn('uid', $child_id3);
+        }
+//        dd($result->get());
 
 //            if (!empty($keyword)) {
 //                switch ($keyword) {
