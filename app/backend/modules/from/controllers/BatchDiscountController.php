@@ -17,4 +17,10 @@ class BatchDiscountController extends BaseController
     {
         return view('from.discount')->render();
     }
+
+    public function store()
+    {
+        return view('from.discount')->render();
+    }
+
 }
