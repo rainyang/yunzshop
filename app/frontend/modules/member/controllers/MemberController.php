@@ -1538,10 +1538,10 @@ class MemberController extends ApiController
 
         if ($data[0]['become'] == 2) {
             //或
-            $data[0]['tip'] = '满足以下任意条件都可以升级';
+            $data[0]['tip'] = '满足以下任意条件都可以成为推广员';
         } elseif ($data[0]['become'] == 3) {
             //与
-            $data[0]['tip'] = '满足以下所有条件才可以升级';
+            $data[0]['tip'] = '满足以下所有条件才可以成为推广员';
         }
         return $this->successJson('ok', $data[0]);
     }
