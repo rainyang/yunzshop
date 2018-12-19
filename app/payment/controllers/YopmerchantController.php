@@ -9,25 +9,28 @@
 namespace app\payment\controllers;
 
 use app\payment\YopController;
-use app\common\models\AccountWechats;
 use Yunshop\YopPay\models\SubMerchant;
 
 class YopmerchantController extends YopController
 {
 
+    //子商户入网
     public function notifyUrl()
     {
         \Log::debug('--------------易宝入网--------------', $this->parameters);
-        $son = SubMerchant::withoutGlobalScope('is_son')->where('requestNo',$this->parameters['requestNo'])->first();
+        $son = SubMerchant::where('requestNo', $this->parameters['requestNo'])->first();
 
         if (empty($son)) {
             exit('Merchant does not exist');
         }
+
+        $this->yopResponse('子商户入网', $this->parameters, 'sub');
+
         $status = $this->merNetInStatus();
 
         $son->status = $status;
         $son->externalId = $this->parameters['externalId'];
-        $son->remark = $this->parameters['remark']?:'';
+        $son->remark = $this->parameters['remark'] ?: '';
         $bool = $son->save();
         if ($bool) {
             echo 'SUCCESS';
@@ -61,5 +64,55 @@ class YopmerchantController extends YopController
         }
 
         return $status;
+    }
+
+    //聚合报备
+    public function backUrl()
+    {
+        \Log::debug('-------------聚合报备---------------', $this->parameters);
+        $son = SubMerchant::withoutGlobalScope('is_son')->isSon(0)->where('merchantNo', $this->parameters['merchantNo'])->first();
+
+        if (empty($son)) {
+            exit('Merchant does not exist');
+        }
+
+        $this->yopResponse('聚合报备', $this->parameters, 'back');
+
+        $report_status = $this->merNetInStatus();
+
+        $son->report_status = $report_status;
+        $bool = $son->save();
+        if ($bool) {
+            echo 'SUCCESS';
+            exit();
+        } else {
+            echo '保存出错';
+            exit();
+        }
+    }
+
+    protected function reportStatusCode()
+    {
+            switch ($this->parameters['reportStatusCode']) {
+                //报备成功
+                case '':
+                case 'NULL':
+                case '0000':
+                $report_status = SubMerchant::BACK_SUCCESS;
+                    break;
+                //处理中
+                case '1111':
+                case '1112':
+                case '3333':
+                case '710001':
+                $report_status = SubMerchant::BACK_WAIT;
+                    break;
+                //失败
+                default:
+                    $report_status = SubMerchant::BACK_FAIL;
+                    break;
+            }
+
+        return $report_status;
     }
 }

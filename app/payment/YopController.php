@@ -46,4 +46,14 @@ class YopController extends BaseController
             $this->parameters = json_decode($response, true);
         }
     }
+
+    protected function yopLog($desc,$error,$data)
+    {
+        \Yunshop\YopPay\common\YopLog::yopLog($desc, $error,$data);
+    }
+
+    protected function yopResponse($desc,$params, $type = 'unify')
+    {
+        \Yunshop\YopPay\common\YopLog::yopRequest($desc, $params, $type);
+    }
 }
