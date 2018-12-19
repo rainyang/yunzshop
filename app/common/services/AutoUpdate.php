@@ -977,6 +977,7 @@ class AutoUpdate
                 $error = [];
                 $md5 = file_get_contents($this->_tempDir . 'md5.txt');
                 $segment = explode(PHP_EOL, $md5);
+                $segment = explode("\r\n", $md5);
 
                 foreach ($segment as $item) {
                     $rows = explode(':', $item);
