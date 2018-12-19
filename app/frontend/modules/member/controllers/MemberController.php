@@ -1494,6 +1494,7 @@ class MemberController extends ApiController
         }
         return $this->errorJson('', 0);
     }
+  
     /**
      *  推广申请页面数据
      */
@@ -1512,8 +1513,11 @@ class MemberController extends ApiController
 
         $member_uid = \YunShop::app()->getMemberId();
 
-        $getCostTotalNum = Order::getCostTotalNum($member_uid);
-        $getCostTotalPrice = Order::getCostTotalPrice($member_uid);
+        $status = $data[0]['become_order'] = 1 ? 3 : 1;
+        // $getCostTotalNum = Order::getCostTotalNum($member_uid);
+        // $getCostTotalPrice = Order::getCostTotalPrice($member_uid);
+        $getCostTotalNum = Order::where('status', '=', $status)->where('uid', $member_uid)->count('id');
+        $getCostTotalPrice = Order::where('status', '=', $status)->where('uid', $member_uid)->sum('price');
 
         $data[0]['getCostTotalNum'] = $getCostTotalNum;
         $data[0]['getCostTotalPrice'] = $getCostTotalPrice;
@@ -1534,6 +1538,7 @@ class MemberController extends ApiController
                 $terminfo['become_selfmoney'] = $data[0]['become_selfmoney'];
             }
         }
+
         $data[0]['become_term'] = $terminfo;
 
         if ($data[0]['become'] == 2) {
