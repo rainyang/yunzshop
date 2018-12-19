@@ -1513,9 +1513,9 @@ class MemberController extends ApiController
 
         $member_uid = \YunShop::app()->getMemberId();
 
-        $status = $data[0]['become_order'] = 1 ? 3 : 1;
-        // $getCostTotalNum = Order::getCostTotalNum($member_uid);
-        // $getCostTotalPrice = Order::getCostTotalPrice($member_uid);
+        $status = $data[0]['become_order'] == 1 ? 3 : 1;
+         //$getCostTotalNum = Order::getCostTotalNum($member_uid);
+         //$getCostTotalPrice = Order::getCostTotalPrice($member_uid);
         $getCostTotalNum = Order::where('status', '=', $status)->where('uid', $member_uid)->count('id');
         $getCostTotalPrice = Order::where('status', '=', $status)->where('uid', $member_uid)->sum('price');
 
