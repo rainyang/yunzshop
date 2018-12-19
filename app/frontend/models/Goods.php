@@ -11,6 +11,7 @@ namespace app\frontend\models;
 use app\common\exceptions\AppException;
 use app\common\models\BaseModel;
 use app\common\models\GoodsDiscount;
+use app\framework\Database\Eloquent\Collection;
 use app\frontend\models\goods\Privilege;
 use app\frontend\models\goods\Sale;
 use app\frontend\modules\member\services\MemberService;
@@ -35,6 +36,7 @@ use Yunshop\Supplier\admin\models\SupplierGoods;
  * @property Privilege hasOnePrivilege
  * @property SupplierGoods supplierGoods
  * @property StoreGoods storeGoods
+ * @property Collection belongsToCategorys
  * @method static self search(array $search)
  */
 class Goods extends \app\common\models\Goods
@@ -98,26 +100,7 @@ class Goods extends \app\common\models\Goods
         return $this->price - $this->getVipDiscountAmount();
     }
 
-    /**
-     * 商品数据完整新验证
-     * @param int $total
-     * @throws AppException
-     */
-    public function generalValidate($total)
-    {
-        if (empty($this->status)) {
-            throw new AppException('(ID:' . $this->id . ')商品已下架');
-        }
-//        if (!isset($this->hasOneSale)) {
-//            throw new AppException('(ID:' . $this->id . ')商品优惠信息数据已损坏');
-//        }
-//        if (!isset($this->hasOneGoodsDispatch)) {
-//            throw new AppException('(ID:' . $this->id . ')商品配送信息数据已损坏');
-//        }
-        if (isset($this->hasOnePrivilege)) {
-            $this->hasOnePrivilege->validate($total);
-        }
-    }
+
 
     public function hasOneSale()
     {
