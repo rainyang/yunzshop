@@ -482,6 +482,13 @@ class UpdateController extends BaseController
                 'file' => [
                     base_path('plugins/store-cashier/migrations/2018_11_26_174034_fix_address_store.php')
                 ]
+            ],
+            [
+                'path' => base_path('plugins/supplier/migrations'),
+                'ext'  => ['php'],
+                'file' => [
+                    base_path('plugins/supplier/migrations/2018_11_26_155528_update_ims_yz_order_and_goods.php')
+                ]
             ]
         ];
 
@@ -546,7 +553,9 @@ class UpdateController extends BaseController
 
     private function runMigrate()
     {
-        $plugins = ["live","kingtimes","bonus-commission","more-printer","poster","community","ranking","courier","article","lease-toy","cabinet","store-cashier","single-return","cloud-pay","mryt","designer","coin","team-return","virtual-card","train","area-store","yun-pay","fixed-reward","elive","froze","sales-commission","exhelper","alipay-onekey-login","diyform","super_kjs","traffic","team-dividend","credit","recharge-code","flow-recharge","eup-pay","member-return","group-purchase","app-set","huanxun","air","phone","share-chain","subsidiary","order-meals","clock-in","shareholder-dividend","help-center","region-mgt","video-demand","area-dividend","enter-goods","point-activity","full-return","wft-alipay","dzp","task-reward","recharge","conference","sign","wft-pay","min-app","supplier","manual-bonus","goods-assistant","printer","micro","merchant","level-return","plugins-market","commission","gasoline","consume-return","love"];
+        $filesystem = app(Filesystem::class);
+        $update = new AutoUpdate(null, null, 300);
+        $plugins = $update->getDirsByPath('plugins', $filesystem);
 
         foreach ($plugins as $p) {
             $path = 'plugins/' . $p . '/migrations';
@@ -556,6 +565,6 @@ class UpdateController extends BaseController
             }
         }
 
-       // \Artisan::call('migrate',['--force' => true]);
+        \Artisan::call('migrate',['--force' => true]);
     }
 }
