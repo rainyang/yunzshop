@@ -1,10 +1,6 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use app\common\services\PluginManager;
-use app\common\repositories\OptionRepository;
-use Illuminate\Events\Dispatcher;
-use Illuminate\Filesystem\Filesystem;
 
 
 class YzpluginSeeder extends Seeder
