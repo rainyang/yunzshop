@@ -6,7 +6,7 @@
  * Time: 下午1:44
  */
 
-namespace app\frontend\modules\orderGoods\models;
+namespace app\common\modules\orderGoods\models;
 
 use app\frontend\modules\deduction\OrderGoodsDeductionCollection;
 use app\frontend\modules\orderGoods\price\option\NormalOrderGoodsPrice;
