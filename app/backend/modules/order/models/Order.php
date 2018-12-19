@@ -11,7 +11,7 @@ namespace app\backend\modules\order\models;
 use app\backend\modules\order\services\OrderService;
 use Illuminate\Database\Eloquent\Builder;
 use \Illuminate\Support\Facades\DB;
-
+use app\common\models\PayTypeGroup;
 /**
  * Class Order
  * @package app\backend\modules\order\models
@@ -159,7 +159,27 @@ class Order extends \app\common\models\Order
         }
         //支付方式
         if (array_get($params, 'pay_type', '')) {
+            /* 改为按支付分组方式查询后，该部分被替换
             $order_builder->where('pay_type_id', $params['pay_type']);
+            */
+            //改为支付分组查询，前端传入支付分组id，在该处通过分组id获取组中所有成员，这些成员就是确切的支付方式
+            //如前端传入的分组id为2，对应的是支付宝支付分组，然后查找属于支付宝支付组的支付方式，找到如支付宝，支付宝-yz这些具体支付方式
+            //获取到确切的支付方式后，对查询条件进行拼接
+            $payTypeGroup = PayTypeGroup::with('hasManyPayType')->find($params['pay_type']);
+            if($payTypeGroup)
+            {
+                $payTypes = $payTypeGroup->toArray();
+                if($payTypes['has_many_pay_type']) {
+                    foreach ($payTypes['has_many_pay_type'] as $index => $payType) {
+                        if($index == 0) {
+                            $order_builder->where('pay_type_id', $payType['id']);
+                        }
+                        else {
+                            $order_builder->orWhere('pay_type_id',$payType['id']);
+                        }
+                    }
+                }
+            }
         }
         //操作时间范围
 
