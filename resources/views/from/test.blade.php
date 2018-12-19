@@ -87,6 +87,53 @@
                     <el-button type="primary" @click="onSubmit">立即创建</el-button>
                     <el-button>取消</el-button>
                 </el-form-item>
+111
+
+                <div class="col-sm-12">
+                    <input type='hidden' class='form-control' id='goodsid'
+                           name='level[goods_id]' value="{{ $levelModel->goods->id }}"/>
+                    <div class='input-group'>
+                        <div class='input-group-addon'
+                             style='border:none;background:#fff;'>
+                            <label class="radio-inline" style='margin-top:-3px;'>
+                                购买指定商品</label>
+                        </div>
+
+                        <input type='text' class='form-control' id='goods'
+                               value="{{ $levelModel->goods->title }}" readonly/>
+
+                        <div class="input-group-btn">
+                            <button type="button"
+                                    onclick="$('#modal-goods').modal()"
+                                    class="btn btn-default">选择商品
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="modal-goods" class="modal fade" tabindex="-1">
+                    <div class="modal-dialog" style='width: 920px;'>
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                <h3>选择商品</h3></div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="keyword" value="" id="search-kwd-goods"
+                                               placeholder="请输入商品名称"/>
+                                        <span class='input-group-btn'><button type="button" class="btn btn-default"
+                                                                              onclick="search_goods();">搜索</button></span>
+                                    </div>
+                                </div>
+                                <div id="module-menus-goods" style="padding-top:5px;"></div>
+                            </div>
+                            <div class="modal-footer"><a href="#" class="btn btn-default" data-dismiss="modal"
+                                                         aria-hidden="true">关闭</a></div>
+                        </div>
+                    </div>
+                </div>
+
             </el-form>
         </div>
     </div>
