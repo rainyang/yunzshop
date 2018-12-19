@@ -173,15 +173,15 @@ class MemberModel extends Member
 
     public static function getMyAllAgentsInfo($uid, $level)
     {
-        $child_member1 = DB::table('yz_member_children')->select('child_id')->where('member_id', $uid)->where('level', 1)->get();
+        $child_member1 = DB::table('yz_member_children')->select('child_id')->where('member_id', $uid)->where('uniacid', \YunShop::app()->uniacid)->where('level', 1)->get();
         foreach ($child_member1 as $child_id) {
             $child_id1[] = $child_id['child_id'];
         }
-        $child_member2 = DB::table('yz_member_children')->select('child_id')->where('member_id', $uid)->where('level', 2)->get();
+        $child_member2 = DB::table('yz_member_children')->select('child_id')->where('member_id', $uid)->where('uniacid', \YunShop::app()->uniacid)->where('level', 2)->get();
         foreach ($child_member2 as $child_id) {
             $child_id2[] = $child_id['child_id'];
         }
-        $child_member3 = DB::table('yz_member_children')->select('child_id')->where('member_id', $uid)->where('level', 3)->get();
+        $child_member3 = DB::table('yz_member_children')->select('child_id')->where('member_id', $uid)->where('uniacid', \YunShop::app()->uniacid)->where('level', 3)->get();
         foreach ($child_member3 as $child_id) {
             $child_id3[] = $child_id['child_id'];
         }
@@ -200,15 +200,15 @@ class MemberModel extends Member
 //        $commission = self::langFiled('commission');
 //        $commission_filed = $commission['agent'] ?: '分销商';
 
-        $child_member1 = DB::table('yz_member_children')->select('child_id')->where('member_id',$uid)->where('level', 1)->get();
+        $child_member1 = DB::table('yz_member_children')->select('child_id')->where('member_id',$uid)->where('uniacid', \YunShop::app()->uniacid)->where('level', 1)->get();
         foreach ($child_member1 as $child_id) {
             $child_id1[] = $child_id['child_id'];
         }
-        $child_member2 = DB::table('yz_member_children')->select('child_id')->where('member_id',$uid)->where('level', 2)->get();
+        $child_member2 = DB::table('yz_member_children')->select('child_id')->where('member_id',$uid)->where('uniacid', \YunShop::app()->uniacid)->where('level', 2)->get();
         foreach ($child_member2 as $child_id) {
             $child_id2[] = $child_id['child_id'];
         }
-        $child_member3 = DB::table('yz_member_children')->select('child_id')->where('member_id',$uid)->where('level', 3)->get();
+        $child_member3 = DB::table('yz_member_children')->select('child_id')->where('member_id',$uid)->where('uniacid', \YunShop::app()->uniacid)->where('level', 3)->get();
         foreach ($child_member3 as $child_id) {
             $child_id3[] = $child_id['child_id'];
         }
@@ -899,7 +899,7 @@ class MemberModel extends Member
             $result['child_order_total'] = $order->where('status', 3)->whereIn('uid', $item->uid)->count();
             $result['child_order_money'] = $order->where('status', 3)->whereIn('uid', $item->uid)->sum('price');
             //团队全部会员
-            $childMemberTeam = DB::table('yz_member_children')->select('child_id')->where('member_id', $item->uid)->where('level', 1)->get();
+            $childMemberTeam = DB::table('yz_member_children')->select('child_id')->where('member_id', $item->uid)->where('uniacid', \YunShop::app()->uniacid)->where('level', 1)->get();
             foreach ($childMemberTeam as $child_id) {
                 $child_idAll[] = $child_id['child_id'];
             }
