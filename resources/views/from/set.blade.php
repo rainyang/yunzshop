@@ -10,7 +10,7 @@
         @include('layouts.tabs')
         
         <div class="rightlist">
-            <div id="app"  v-loading="submit_loading" v-loading="submit_loading">
+            <div id="app"  v-loading="submit_loading">
                 <template>
                     <el-form ref="form" :model="form" :rules="rules" label-width="15%">
                         <el-form-item label="选择分类" prop="classification">

@@ -12,10 +12,6 @@
             <div id="app"  v-loading="submit_loading">
                 <template>
                     <el-form ref="form" :model="form" :rules="rules" label-width="15%">
-                        <el-form-item label="折扣类型" prop="type">
-                            <el-radio v-model.number="form.type" :label="1">商品现价</el-radio>
-                            <el-radio v-model.number="form.type" :label="0">商品现价</el-radio>
-                        </el-form-item>
                         <el-form-item label="分类批量" prop="batch_list">
                             <template v-for="(item,index) in form.batch_list">
                                 <el-input v-model="item.name" style="width:60%;padding:10px 0;"></el-input>
@@ -36,7 +32,6 @@
         delimiters: ['[[', ']]'],
             data() {
                 let form = {
-                    type:0,
                     batch_list:[
                         {id:1,name:"分类1"},
                         {id:2,name:"分类2"},
