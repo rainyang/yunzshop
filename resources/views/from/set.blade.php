@@ -31,12 +31,12 @@
                                     <el-option
                                         v-for="item in categorys"
                                         :key="item.id"
-                                        :label="'[UID:'+item.id+'][昵称:'+item.name+']'"
-                                        :value="item.name">
+                                        :label="'[ID:'+item.id+'][分类:'+item.name+']'"
+                                        :value="'[ID:'+item.id+'][分类:'+item.name+']'">
                                     </el-option>
                                 </el-select>
                                 <!-- <el-button @click="search()">搜索</el-button><br> -->
-                                <div v-for="(item,index) in list">[[item.name]]</div>
+                                {{--<div v-for="(item,index) in list">[[item.name]]</div>--}}
                                 <span slot="footer" class="dialog-footer">
                                     <!-- <el-button @click="dialogVisible = false">取 消</el-button> -->
                                     <el-button type="primary" @click="choose()">确 定</el-button>
@@ -52,32 +52,13 @@
                         </el-form-item>
                         <el-form-item>
                             <template v-for="(item,index) in member_list">
-                                <el-input v-model="form.value[index]" style="width:70%;padding:10px 0;">
-                                    <template slot="prepend">[[item.name]]</template>
-                                    <template slot="append">元</template>
+                                <el-input v-model="form.discount[index]" style="width:70%;padding:10px 0;">
+                                    <template slot="prepend">[[item.level_name]]</template>
+                                    <template slot="append" v-if="!form.way">元</template>
+                                    <template slot="append" v-if="form.way">%</template>
                                 </el-input>
                             </template>
                         </el-form-item>
-                            <!-- <el-input v-model="form.member" style="width:70%;padding:10px 0;">
-                                <template slot="prepend">芸众会员1434</template>
-                                <template slot="append">元</template>
-                            </el-input> -->
-                            <!-- <el-input v-model="form.member" style="width:70%;padding:10px 0;">
-                                <template slot="prepend">桃心</template>
-                                <template slot="append">元</template>
-                            </el-input>
-                            <el-input v-model="form.member" style="width:70%;padding:10px 0;">
-                                <template slot="prepend">等级三</template>
-                                <template slot="append">元</template>
-                            </el-input>
-                            <el-input v-model="form.member" style="width:70%;padding:10px 0;">
-                                <template slot="prepend">会员等级四</template>
-                                <template slot="append">元</template>
-                            </el-input>
-                            <el-input v-model="form.member" style="width:70%;padding:10px 0;">
-                                <template slot="prepend">黑心</template>
-                                <template slot="append">元</template>
-                            </el-input> -->
                         
                     <el-form-item>
                         <a href="#">
@@ -102,34 +83,20 @@
         el:"#app",
         delimiters: ['[[', ']]'],
             data() {
-                let form = {
-                    type:1,
-                    way:1,
-                    member:"",
-                    value:[],
-                    search_categorys:"",
-                    batch_list:[
-                        {id:1,name:"分类1"},
-                        {id:2,name:"分类2"},
-                        {id:3,name:"分类3"},
-                        {id:4,name:"分类4"},
-                        ],
-                };
-                let categorys=[];
-                let member_list = [
-                        {id:1,name:"芸众会员1434"},
-                        {id:2,name:"桃心"},
-                        {id:3,name:"等级3"},
-                        {id:4,name:"会员等级4"},
-                        {id:4,name:"黑心"},
-                ];
-                let list =[];
+                let member_list = JSON.parse('{!! $levels?:'{}' !!}');
+                // let list =[];
                 return{
-                    form:form,
+                    form:{
+                        type:1,
+                        way:1,
+                        member:"",
+                        discount:[],
+                        search_categorys:""
+                    },
                     member_list:member_list,
-                    categorys:categorys,
+                    categorys:[],
                     dialogVisible:true,
-                    list:list,
+                    // list:list,
                     dialogTableVisible:false,
                     loading: false,
                     submit_loading: false,
@@ -191,10 +158,12 @@
                         if (valid) {
                             this.submit_loading = true;
                             delete(this.form['thumb_url']);
-                            this.$http.post("{!! yzWebFullUrl('#') !!}",{'form_data':this.form}).then(response => {
+                            this.$http.post("{!! yzWebUrl('from.batch-discount.store-set') !!}",{'form_data':this.form}).then(response => {
+                                console.log(this.form);
+                                console.log(response);
                                 if (response.data.result) {
                                     this.$message({type: 'success',message: '操作成功!'});
-                                    window.location.href='{!! yzWebFullUrl('plugin.asset.Backend.Modules.Category.Controllers.records') !!}';
+                                    window.location.href='{!! yzWebFullUrl('from.batch-discount.index') !!}';
                                 } else {
                                     this.$message({message: response.data.msg,type: 'error'});
                                     this.submit_loading = false;
