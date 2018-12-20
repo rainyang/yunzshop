@@ -109,11 +109,12 @@
                                         </div>
 
                                         <div class="form-group form-group col-sm-8 col-lg-2 col-xs-12">
-
+                                            <!-- 注意，由于属于支付宝支付的支付方式有好几种，包括app支付宝支付方式，支付宝-YZ方式等，所以进行了分组，
+                                             支付选项传入的支付方式是支付方式组的id，并不是支付方式的id -->
                                             <select name="search[pay_type]" class="form-control">
                                                 <option value=""
                                                         @if( array_get($requestSearch,'pay_type',''))  selected="selected"@endif>
-                                                    支付方式
+                                                    全部支付方式
                                                 </option>
                                                 <option value="1"
                                                         @if( array_get($requestSearch,'pay_type','') == '1')  selected="selected"@endif>
@@ -127,8 +128,8 @@
                                                         @if( array_get($requestSearch,'pay_type','') == '3')  selected="selected"@endif>
                                                     余额支付
                                                 </option>
-                                                <option value="5"
-                                                        @if( array_get($requestSearch,'pay_type','') == '5')  selected="selected"@endif>
+                                                <option value="4"
+                                                        @if( array_get($requestSearch,'pay_type','') == '4')  selected="selected"@endif>
                                                     后台付款
                                                 </option>
                                             </select>
