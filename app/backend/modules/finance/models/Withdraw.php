@@ -173,7 +173,7 @@ class Withdraw extends \app\common\models\Withdraw
             'poundage'          => 'numeric|min:0|max:999999999|regex:/^\d+(\.\d{1,2})?$/',
             'withdrawmoney'     => 'numeric|min:0|max:999999999',
             'roll_out_limit'    => 'regex:/^[0-9]+(.[0-9]{1,2})?$/',
-            'poundage_rate'     => 'regex:/^[\d]{1,2}+(\.[0-9]{1,2})?$/',
+            'poundage_rate'     => 'numeric|min:0|max:100|regex:/^[\d]{1,3}+(\.[0-9]{1,2})?$/',
         ];
     }
 
