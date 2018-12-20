@@ -19,6 +19,8 @@
                             <el-dialog title="选择分类" :visible.sync="dialogTableVisible">
                                 <!-- <el-input v-model="form.search_name"  placeholder="请输入分类名称" style="width:90%"></el-input> -->
                                 <el-select
+                                    value-key="id"
+                                    @change="change"
                                     v-model="form.search_categorys"
                                     filterable
                                     multiple
@@ -32,7 +34,9 @@
                                         v-for="item in categorys"
                                         :key="item.id"
                                         :label="'[ID:'+item.id+'][分类:'+item.name+']'"
-                                        :value="'[ID:'+item.id+'][分类:'+item.name+']'">
+                                        :value="item"
+                                        >
+                                        <!-- :value="'[ID:'+item.id+'][分类:'+item.name+']'" -->
                                     </el-option>
                                 </el-select>
                                 <!-- <el-button @click="search()">搜索</el-button><br> -->
@@ -84,6 +88,7 @@
         delimiters: ['[[', ']]'],
             data() {
                 let member_list = JSON.parse('{!! $levels?:'{}' !!}');
+                console.log(member_list);
                 // let list =[];
                 return{
                     form:{
@@ -93,6 +98,7 @@
                         discount:[],
                         search_categorys:""
                     },
+                    classic:[],
                     member_list:member_list,
                     categorys:[],
                     dialogVisible:true,
@@ -114,8 +120,16 @@
                         //  ]
                     },
                 }
-            },
+            }, 
+            // <!-- :value="'[ID:'+item.id+'][分类:'+item.name+']'" -->
             methods: {
+                change(item){
+                    for(var k=0;k<item.length;k++){
+                        this.classic[k] = "[ID:"+item[k].id+"][分类："+item[k].name+"]";
+                    }
+                    // console.log(val)
+                    console.log(this.classic);
+                },
                 visDia(){
                     this.dialogTableVisible=true;
                     console.log("haaaaa");
@@ -123,7 +137,7 @@
                 choose(){
                     this.dialogTableVisible=false;
                     console.log(this.form.search_categorys);
-                    this.form.classification = this.form.search_categorys.join(",");
+                    this.form.classification = this.classic.join(",");
                 },
                 goBack() {
                     history.back(-1);
@@ -156,6 +170,13 @@
                 submitForm(formName) {
                     this.$refs[formName].validate((valid) => {
                         if (valid) {
+                            var obj={};
+                            var index=[];
+                            for(var i=0;i<this.member_list.length;i++){
+                                index[i] = this.member_list[i].id
+                                obj[''+index[i]+''] = this.form.discount[i];
+                            }
+                            this.form.discount=obj;
                             this.submit_loading = true;
                             delete(this.form['thumb_url']);
                             this.$http.post("{!! yzWebUrl('from.batch-discount.store-set') !!}",{'form_data':this.form}).then(response => {
