@@ -9,13 +9,11 @@
 namespace app\frontend\modules\finance\controllers;
 
 
-use app\common\components\ApiController;
+use app\common\components\BaseController;
 
-class PopularizePageShowController extends ApiController
+class PopularizePageShowController extends BaseController
 {
 
-    protected $publicAction = ['index',];
-    protected $ignoreAction = ['index',];
 
     public function index()
     {
