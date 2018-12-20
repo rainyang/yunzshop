@@ -979,12 +979,12 @@ class AutoUpdate
                 $segment = explode(PHP_EOL, $md5);
 
                 foreach ($segment as $val) {
-                    str_replace("\n", '', $val);
-                }
+                    if (!empty($val)) {
+                        $item = str_replace("\r", '', $val);
 
-                foreach ($segment as $item) {
-                    $rows = explode(':', $item);
-                    $file_md5[$rows[0]] = $rows[1];
+                        $rows = explode(':', $item);
+                        $file_md5[$rows[0]] = $rows[1];
+                    }
                 }
 
                 $allfiles = app(Filesystem::class)->allFiles($this->_tempDir);
