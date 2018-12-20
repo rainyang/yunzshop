@@ -32,14 +32,14 @@
                                         v-for="item in categorys"
                                         :key="item.id"
                                         :label="'[UID:'+item.id+'][昵称:'+item.name+']'"
-                                        :value="item.id">
+                                        :value="item.name">
                                     </el-option>
                                 </el-select>
                                 <!-- <el-button @click="search()">搜索</el-button><br> -->
                                 <div v-for="(item,index) in list">[[item.name]]</div>
                                 <span slot="footer" class="dialog-footer">
                                     <!-- <el-button @click="dialogVisible = false">取 消</el-button> -->
-                                    <el-button type="primary" @click="dialogTableVisible = false">确 定</el-button>
+                                    <el-button type="primary" @click="choose()">确 定</el-button>
                                 </span>
                             </el-dialog>
                         </el-form-item>
@@ -152,6 +152,11 @@
                 visDia(){
                     this.dialogTableVisible=true;
                     console.log("haaaaa");
+                },
+                choose(){
+                    this.dialogTableVisible=false;
+                    console.log(this.form.search_categorys);
+                    this.form.classification = this.form.search_categorys.join(",");
                 },
                 goBack() {
                     history.back(-1);
