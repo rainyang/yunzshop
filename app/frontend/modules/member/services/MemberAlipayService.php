@@ -31,6 +31,8 @@ class MemberAlipayService extends MemberService
 
 	public function login()
 	{
+        //商城默认头像
+        $member_avatar = \Setting::get('shop.member')['headimg'];
 		$uniacid = \YunShop::app()->uniacid;
         // $appId = \YunShop::app()->app_id;
         $code = \YunShop::request()->auth_code;
@@ -67,7 +69,7 @@ class MemberAlipayService extends MemberService
 
 			$alipay_user['openid'] = $userInfo['user_id'];
 			$alipay_user['nickname'] = $userInfo['nick_name'];
-			$alipay_user['headimgurl'] = $userInfo['avatar'];
+            $alipay_user['headimgurl'] = !empty($userInfo['avatar'])?$userInfo['avatar']:$member_avatar;
 			$alipay_user['sex'] = $userInfo['gender'] == 'F' ? 0 : 1;
 			$alipay_user['province'] =  $userInfo['province'];
 			$alipay_user['city'] =  $userInfo['city'];

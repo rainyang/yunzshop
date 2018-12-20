@@ -9,6 +9,7 @@
 namespace app\backend\modules\order\controllers;
 
 use app\backend\modules\goods\models\GoodsOption;
+use app\backend\modules\member\models\MemberParent;
 use app\backend\modules\order\models\Order;
 use app\backend\modules\order\models\OrderGoods;
 use app\backend\modules\order\models\OrderJoinOrderGoods;
@@ -17,6 +18,7 @@ use app\common\components\BaseController;
 use app\common\helpers\PaginationHelper;
 use app\common\services\ExportService;
 use Illuminate\Support\Facades\DB;
+use Yunshop\TeamDividend\models\TeamDividendLevelModel;
 
 class ListController extends BaseController
 {
@@ -176,16 +178,38 @@ class ListController extends BaseController
     {
         if (\YunShop::request()->export == 1) {
             $export_page = request()->export_page ? request()->export_page : 1;
-            $orders = $orders->with(['discounts']);
+            $orders = $orders->with([
+                'discounts',
+                'hasManyParentTeam' => function($q) {
+                    $q->whereHas('hasOneTeamDividend')
+                        ->with(['hasOneTeamDividend' => function($q) {
+                            $q->with(['hasOneLevel']);
+                        }])
+                        ->with('hasOneMember')
+                        ->orderBy('level', 'asc');
+                },
+            ]);
             $export_model = new ExportService($orders, $export_page);
+            $team_list = TeamDividendLevelModel::getList()->get();
+
+            $levelId = [];
+            foreach ($team_list as $level) {
+                $export_data[0][] = $level->level_name;
+                $levelId[] = $level->id;
+            }
+
             if (!$export_model->builder_model->isEmpty()) {
                 $file_name = date('Ymdhis', time()) . '订单导出';//返现记录导出
-                $export_data[0] = $this->getColumns();
+                $export_data[0] = array_merge($export_data[0],$this->getColumns());
                 foreach ($export_model->builder_model->toArray() as $key => $item) {
+
+                    $level = $this->getLevel($item, $levelId);
+
+                    $export_data[$key + 1] = $level;
 
                     $address = explode(' ', $item['address']['address']);
 
-                    $export_data[$key + 1] = [
+                    array_push($export_data[$key + 1],
                         $item['order_sn'],
                         $item['has_one_order_pay']['pay_sn'],
                         $this->getNickname($item['belongs_to_member']['nickname']),
@@ -214,12 +238,28 @@ class ListController extends BaseController
                         !empty(strtotime($item['finish_time'])) ? $item['finish_time'] : '',
                         $item['express']['express_company_name'],
                         '[' . $item['express']['express_sn'] . ']',
-                        $item['has_one_order_remark']['remark'],
-                    ];
+                        $item['has_one_order_remark']['remark']
+                        );
                 }
                 $export_model->export($file_name, $export_data, 'order.list.index');
             }
         }
+    }
+
+    public function getLevel($member, $levelId)
+    {
+        $data = [];
+        foreach ($levelId as $k => $value) {
+            foreach ($member['has_many_parent_team'] as $key => $parent) {
+                if ($parent['has_one_team_dividend']['has_one_level']['id'] == $value) {
+                    $data[$k] = $parent['has_one_member']['nickname'].' '.$parent['has_one_member']['realname'].' '.$parent['has_one_member']['mobile'];
+                    break;
+                }
+            }
+            $data[$k] = $data[$k] ?: '';
+        }
+
+        return $data;
     }
 
     private function getColumns()
