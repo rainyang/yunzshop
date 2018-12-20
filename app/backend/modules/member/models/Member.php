@@ -470,7 +470,7 @@ class Member extends \app\common\models\Member
             ->whereNull('yz_member.deleted_at');
 
         if ($limit > 0) {
-            $result = $result->offset($offset)->limit($limit)->orderBy('mc_members.uid', 'asc');
+            $result = $result->offset($offset)->limit($limit)->orderBy('yz_member.member_id', 'asc');
         }
 
         return $result;
