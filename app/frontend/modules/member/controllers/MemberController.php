@@ -760,7 +760,6 @@ class MemberController extends ApiController
             ];
         }
         if(is_null($share['desc'])){
-            dd(11);
             $share['desc'] = "";
         }
 
