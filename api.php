@@ -18,6 +18,7 @@ if (!function_exists("getExitInfo")) {
         declare(ticks = 1);
     }
 }
+
 //getExitInfo();
 //define('IN_IA', true);
 

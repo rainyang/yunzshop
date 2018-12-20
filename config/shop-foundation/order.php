@@ -47,6 +47,6 @@ return array(
         2 => 'waitReceive',
         3 => 'complete',
         -1 => 'close',
-    ]
+    ],
 
 );

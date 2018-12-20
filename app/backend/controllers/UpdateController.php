@@ -30,12 +30,6 @@ class UpdateController extends BaseController
         $key = Setting::get('shop.key')['key'];
         $secret = Setting::get('shop.key')['secret'];
 
-        if (config('auto-update.checkUrl') == 'http://yun1.yunzshop.com/update') {
-            $key = '228059f0-e23b-11e8-86c0-110fa1027b5e';
-            $secret = '$2y$10$wwEaJ1AxwHf2LvGykUMWledrpXAXi1cDj11qpUo2bcZHN2.J/LtA2';
-        }
-
-
         $update = new AutoUpdate(null, null, 300);
         $update->setUpdateFile('check_app.json');
 
@@ -137,12 +131,6 @@ class UpdateController extends BaseController
         if(!$key || !$secret) {
             return;
         }
-
-        if (config('auto-update.checkUrl') == 'http://yun1.yunzshop.com/update') {
-            $key = '228059f0-e23b-11e8-86c0-110fa1027b5e';
-            $secret = '$2y$10$wwEaJ1AxwHf2LvGykUMWledrpXAXi1cDj11qpUo2bcZHN2.J/LtA2';
-        }
-
 
         $update = new AutoUpdate(null, null, 300);
         $update->setUpdateFile('backcheck_app.json');
@@ -337,13 +325,6 @@ class UpdateController extends BaseController
                 file_put_contents($tmpdir . "/file.txt", json_encode($upgrade));
             }
         } else {
-            //更新完执行数据表 新部署不执行
-            \Log::debug('----CLI----');
-            $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
-            if (!empty($plugins_dir)) {
-                \Artisan::call('update:version' ,['version'=>$plugins_dir]);
-            }
-
             //覆盖
             foreach ($files as $f) {
                 $path = $f['path'];
@@ -360,6 +341,12 @@ class UpdateController extends BaseController
 
                     @unlink(storage_path('app/auto-update/shop') . '/' . $path);
                 }
+            }
+
+            \Log::debug('----CLI----');
+            $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
+            if (!empty($plugins_dir)) {
+                \Artisan::call('update:version' ,['version'=>$plugins_dir]);
             }
             
             //清理缓存
@@ -390,11 +377,6 @@ class UpdateController extends BaseController
 
         $key = Setting::get('shop.key')['key'];
         $secret = Setting::get('shop.key')['secret'];
-
-        /*if (config('auto-update.checkUrl') == 'http://yun1.yunzshop.com/update') {
-            $key = '228059f0-e23b-11e8-86c0-110fa1027b5e';
-            $secret = '$2y$10$wwEaJ1AxwHf2LvGykUMWledrpXAXi1cDj11qpUo2bcZHN2.J/LtA2';
-        }*/
 
         $update = new AutoUpdate(null, null, 300);
         $update->setUpdateFile('check_app.json');
@@ -500,6 +482,13 @@ class UpdateController extends BaseController
                 'file' => [
                     base_path('plugins/store-cashier/migrations/2018_11_26_174034_fix_address_store.php')
                 ]
+            ],
+            [
+                'path' => base_path('plugins/supplier/migrations'),
+                'ext'  => ['php'],
+                'file' => [
+                    base_path('plugins/supplier/migrations/2018_11_26_155528_update_ims_yz_order_and_goods.php')
+                ]
             ]
         ];
 
@@ -564,7 +553,9 @@ class UpdateController extends BaseController
 
     private function runMigrate()
     {
-        $plugins = ['sign', 'supplier', 'team-dividend', 'store-cashier', 'commission'];
+        $filesystem = app(Filesystem::class);
+        $update = new AutoUpdate(null, null, 300);
+        $plugins = $update->getDirsByPath('plugins', $filesystem);
 
         foreach ($plugins as $p) {
             $path = 'plugins/' . $p . '/migrations';
@@ -574,6 +565,6 @@ class UpdateController extends BaseController
             }
         }
 
-       // \Artisan::call('migrate',['--force' => true]);
+        \Artisan::call('migrate',['--force' => true]);
     }
 }

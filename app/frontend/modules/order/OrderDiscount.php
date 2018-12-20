@@ -53,6 +53,7 @@ class OrderDiscount
     private function _init()
     {
         $this->discounts = collect();
+        // todo 未开启的和金额为0的优惠项是否隐藏
         //单品满减
         $this->discounts->put('singleEnoughReduce', new SingleEnoughReduce($this->order));
         //全场满减

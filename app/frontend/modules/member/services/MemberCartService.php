@@ -10,6 +10,7 @@ namespace app\frontend\modules\member\services;
 
 
 use app\common\exceptions\AppException;
+use app\frontend\models\Member;
 use \app\frontend\models\MemberCart;
 use Illuminate\Support\Collection;
 
@@ -26,11 +27,20 @@ class MemberCartService
         return app('OrderManager')->make('MemberCart')->uniacid()->whereIn('id', $ids)->delete();
     }
 
+    /**
+     * @param $params
+     * @return mixed
+     * @throws AppException
+     */
     public static function newMemberCart($params)
     {
         if (!isset($params['total']) || $params['total']<= 0) {
             // 数量默认1
             $params['total'] = 1;
+        }
+        if(Member::current()){
+            $params['member_id'] = Member::current()->uid;
+
         }
         $cart = app('OrderManager')->make('MemberCart',$params);
         return $cart;

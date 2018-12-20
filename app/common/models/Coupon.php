@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string storenames
  * @property array storeids
  * @property int getstore
+ * @property string category_ids
  * @property int is_complex
  * @property array goods_ids
  * @property int id
@@ -61,26 +62,10 @@ class  Coupon extends BaseModel
         'supplierids' => 'json',
         'storeids' => 'json',
     ];
-    public $Surplus;
-    protected $appends = ['surplus'];
-
-
-    public function getSurplusAttribute()
-    {
-        $issued = MemberCoupon::getCouponBycouponId($this->id)->count('id');
-        if ($this->total == -1) {
-            $this->Surplus = 999999;
-        } else {
-            $this->Surplus = $this->total - $issued;
-        }
-        return $this->Surplus;
-    }
-
-
-    public static function getMemberCoupon($used = 0)
-    { //todo 这张表没有used这个字段, 应该放在member_coupon表?
-        return static::uniacid()->where('used', $used);
-    }
+    protected $hidden = ['uniacid', 'cat_id', 'get_type', 'level_limit', 'use_type', 'return_type', 'coupon_type'
+        , 'coupon_method','back_type','supplier_uid','cashiersids','cashiersnames','category_ids','goods_ids',
+    'storeids','supplierids','is_complex','getcashier','getstore','getsupplier','back_money','back_credit',
+        'back_redpack','back_when','descnoset','deleted_at'];
 
     public function hasManyMemberCoupon()
     {

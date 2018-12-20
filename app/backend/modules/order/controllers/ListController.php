@@ -71,11 +71,16 @@ class ListController extends BaseController
     public function waitSend()
     {
         // 会员排序
-        $condition['order_by'][] = [$this->orderModel->getModel()->getTable() . '.uid', 'desc'];
-        $condition['order_by'][] = [$this->orderModel->getModel()->getTable() . '.id', 'desc'];
+        $sort = request()->search['sort'];
+        $condition = [];
+        if ($sort == 1) {
+            $condition['order_by'][] = [$this->orderModel->getModel()->getTable() . '.uid', 'desc'];
+            $condition['order_by'][] = [$this->orderModel->getModel()->getTable() . '.id', 'desc'];
+        }
         $this->orderModel->waitSend();
         $this->export($this->orderModel->waitSend());
         return view('order.index', $this->getData($condition))->render();
+        //return view('order.index', $this->getData())->render();
     }
 
     /**
@@ -114,7 +119,8 @@ class ListController extends BaseController
 
     protected function getData($condition = [])
     {
-        if (!$condition || !$condition['order_by']) {
+        $sort = request()->search['sort'];
+        if ($sort == 1 && (!$condition || !$condition['order_by'])) {
             $condition['order_by'][] = [$this->orderModel->getModel()->getTable() . '.id', 'desc'];
         }
         /*$params = [
@@ -141,8 +147,12 @@ class ListController extends BaseController
 
         $list['total_price'] = $this->orderModel->sum('price');
         $build = $this->orderModel;
-        foreach ($condition['order_by'] as $item) {
-            $build->orderBy(...$item);
+        if ($sort == 1) {
+            foreach ($condition['order_by'] as $item) {
+                $build->orderBy(...$item);
+            }
+        } else {
+            $build->orderBy($this->orderModel->getModel()->getTable() . '.id', 'desc');
         }
         $list += $build->paginate(self::PAGE_SIZE)->toArray();
 
@@ -156,7 +166,8 @@ class ListController extends BaseController
             'var' => \YunShop::app()->get(),
             'url' => request('route'),
             'include_ops' => 'order.ops',
-            'detail_url' => 'order.detail'
+            'detail_url' => 'order.detail',
+            'route' => request()->route
         ];
         return $data;
     }

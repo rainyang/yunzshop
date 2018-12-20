@@ -25,11 +25,10 @@ class LowerCountService
             \Setting::$uniqueAccountId = $u->uniacid;
 
             $uniacid = \YunShop::app()->uniacid;
-            $level_all_member = DB::select('select member_id,level,count(1) as total from ims_yz_member_children where uniacid=' . $uniacid . ' and level in (1,2,3) group by member_id,level');
-            $level_all_member = collect($level_all_member);
-            $result = [];
+            $level_member = DB::table('yz_member_children')->select('member_id', 'level', DB::raw('count(1) as total'))->where('uniacid', $uniacid)->whereIn('level', [1,2,3])->groupBy('member_id', 'level')->get();
+            $level_all_member = DB::table('yz_member_children')->select('member_id', DB::raw('count(1) as total'))->where('uniacid', $uniacid)->groupBy('member_id')->get();
 
-            foreach ($level_all_member as $val) {
+            foreach ($level_member as $val) {
                 if (!isset($result[$val['member_id']])) {
                     $result[$val['member_id']] = [
                         'uid' => $val['member_id'],
@@ -37,7 +36,6 @@ class LowerCountService
                         'first_total' => $val['total'],
                         'second_total' => 0,
                         'third_total' => 0,
-                        'team_total' => $val['total']
                     ];
                 } else {
                     switch ($val['level']) {
@@ -48,11 +46,14 @@ class LowerCountService
                             $result[$val['member_id']]['third_total'] = $val['total'];
                             break;
                     }
-
-                    $result[$val['member_id']]['team_total'] += $val['total'];
                 }
             }
-//        dd($result);
+
+            foreach ($level_all_member as $val) {
+                $result[$val['member_id']]['uid'] = $val['member_id'];
+                $result[$val['member_id']]['team_total'] = $val['total'];
+            }
+//            dd($result);
             $memberModel = new MemberLowerCount();
             foreach ($result as $item) {
                 $memberModel->updateOrCreate(['uid' => $item['uid']], $item);
