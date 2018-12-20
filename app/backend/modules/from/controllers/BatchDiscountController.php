@@ -9,6 +9,7 @@
 namespace app\backend\modules\from\controllers;
 
 
+use app\backend\modules\from\models\CategoryDiscount;
 use app\backend\modules\goods\models\Category;
 use app\backend\modules\member\models\MemberLevel;
 use app\common\components\BaseController;
@@ -51,7 +52,28 @@ class BatchDiscountController extends BaseController
 
     public function storeSet()
     {
-        dd(request()->form_data);
+        $form_data = request()->form_data;
+        $categorys = $form_data['search_categorys'];
+        foreach ($categorys as $v){
+            $categorys_r[] = $v['id'];
+        }
+//        dd($form_data);
+        $discountModel = new CategoryDiscount();
+        foreach ($form_data['discount'] as $k => $v) {
+            $data[] = [
+                'level_id' => intval($k),
+                'category_ids' => serialize($categorys_r),
+                'uniacid' => \YunShop::app()->uniacid,
+                'level_discount_type' => $form_data['discount_type'],
+                'discount_method' => $form_data['discount_method'],
+                'discount_value' => $v,
+            ];
+        }
+//        dd($data);
+        foreach ($data as $discount) {
+            $discountModel->insert($discount);
+        }
+
         $this->successJson('ok');
     }
 
@@ -60,7 +82,6 @@ class BatchDiscountController extends BaseController
         $kwd = \YunShop::request()->keyword;
         if ($kwd) {
             $category = Category::getCategorysByName($kwd);
-//            dd($category);
             return $this->successJson('ok', $category);
         }
     }

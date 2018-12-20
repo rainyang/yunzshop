@@ -50,16 +50,16 @@
                         <el-form-item label="折扣类型" prop="type">
                             <el-radio v-model.number="form.discount_type" :label="1">会员等级</el-radio>
                         </el-form-item>
-                        <el-form-item label="折扣方式" prop="way">
-                            <el-radio v-model.number="form.discount_way" :label="1">折扣</el-radio>
-                            <el-radio v-model.number="form.discount_way" :label="0">固定金额</el-radio>
+                        <el-form-item label="折扣方式" prop="method">
+                            <el-radio v-model.number="form.discount_method" :label="1">折扣</el-radio>
+                            <el-radio v-model.number="form.discount_method" :label="0">固定金额</el-radio>
                         </el-form-item>
                         <el-form-item>
                             <template v-for="(item,index) in member_list">
                                 <el-input v-model="form.discount[index]" style="width:70%;padding:10px 0;">
                                     <template slot="prepend">[[item.level_name]]</template>
-                                    <template slot="append" v-if="!form.discount_way">元</template>
-                                    <template slot="append" v-if="form.discount_way">%</template>
+                                    <template slot="append" v-if="!form.discount_method">元</template>
+                                    <template slot="append" v-if="form.discount_method">%</template>
                                 </el-input>
                             </template>
                         </el-form-item>
@@ -93,7 +93,7 @@
                 return{
                     form:{
                         discount_type:1,
-                        discount_way:1,
+                        discount_method:1,
                         // member:"",
                         discount:[],
                         search_categorys:""
