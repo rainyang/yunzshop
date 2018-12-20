@@ -4,6 +4,10 @@ namespace app\common\models;
 
 use app\backend\models\BackendModel;
 use app\common\events\member\BecomeAgent;
+
+use app\common\models\member\MemberChildren;
+use app\common\repositories\OptionRepository;
+use app\common\services\PluginManager;
 use app\common\modules\memberCart\MemberCartCollection;
 use app\framework\Database\Eloquent\Collection;
 use app\frontend\modules\member\models\MemberModel;
@@ -268,6 +272,18 @@ class Member extends BackendModel
     public function hasOneSupplier()
     {
         return $this->hasOne(Supplier::class, 'member_id', 'uid');
+    }
+
+    /**
+     * 子会员
+     *
+     * 会员-子会员
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function hasOneMemberChildren()
+    {
+        return $this->hasOne(MemberChildren::class, 'member_id', 'uid');
     }
 
     public function scopeOfUid($query, $uid)
