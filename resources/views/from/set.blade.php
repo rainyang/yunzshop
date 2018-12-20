@@ -44,18 +44,18 @@
                             </el-dialog>
                         </el-form-item>
                         <el-form-item label="折扣类型" prop="type">
-                            <el-radio v-model.number="form.type" :label="1">会员等级</el-radio>
+                            <el-radio v-model.number="form.discount_type" :label="1">会员等级</el-radio>
                         </el-form-item>
                         <el-form-item label="折扣方式" prop="way">
-                            <el-radio v-model.number="form.way" :label="1">折扣</el-radio>
-                            <el-radio v-model.number="form.way" :label="0">固定金额</el-radio>
+                            <el-radio v-model.number="form.discount_way" :label="1">折扣</el-radio>
+                            <el-radio v-model.number="form.discount_way" :label="0">固定金额</el-radio>
                         </el-form-item>
                         <el-form-item>
                             <template v-for="(item,index) in member_list">
                                 <el-input v-model="form.discount[index]" style="width:70%;padding:10px 0;">
                                     <template slot="prepend">[[item.level_name]]</template>
-                                    <template slot="append" v-if="!form.way">元</template>
-                                    <template slot="append" v-if="form.way">%</template>
+                                    <template slot="append" v-if="!form.discount_way">元</template>
+                                    <template slot="append" v-if="form.discount_way">%</template>
                                 </el-input>
                             </template>
                         </el-form-item>
@@ -87,9 +87,9 @@
                 // let list =[];
                 return{
                     form:{
-                        type:1,
-                        way:1,
-                        member:"",
+                        discount_type:1,
+                        discount_way:1,
+                        // member:"",
                         discount:[],
                         search_categorys:""
                     },

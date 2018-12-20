@@ -35,10 +35,13 @@
         el:"#app",
         delimiters: ['[[', ']]'],
             data() {
+                let type = JSON.parse('{!! $set !!}');
                 return{
                     form:{
                         type:0,
+                        ...type
                     },
+                    type:type,
                     submit_loading:false,
                     rules: {
                         
@@ -51,7 +54,7 @@
                         if (valid) {
                             this.submit_loading = true;
                             delete(this.form['thumb_url']);
-                            this.$http.post("{!! yzWebUrl('#') !!}",{'form_data':this.form}).then(response => {
+                            this.$http.post("{!! yzWebUrl('from.batch-discount.all-set-store') !!}",{'form_data':this.form}).then(response => {
                                 console.log(this.form);
                                 console.log(response);
                                 if (response.data.result) {

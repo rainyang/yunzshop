@@ -12,6 +12,7 @@ namespace app\backend\modules\from\controllers;
 use app\backend\modules\goods\models\Category;
 use app\backend\modules\member\models\MemberLevel;
 use app\common\components\BaseController;
+use app\common\facades\Setting;
 
 class BatchDiscountController extends BaseController
 {
@@ -22,7 +23,20 @@ class BatchDiscountController extends BaseController
 
     public function allSet()
     {
-        return view('from.all-set')->render();
+        $set = Setting::get('from.all_set');
+
+        return view('from.all-set',[
+            'set' => json_encode($set),
+        ])->render();
+    }
+
+    public function allSetStore()
+    {
+        $set_data = request()->form_data;
+
+        Setting::set('from.all_set', $set_data);
+
+        return $this->successJson('ok');
     }
 
     public function store()
