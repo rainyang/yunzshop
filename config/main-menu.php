@@ -365,6 +365,42 @@ return [
                     ],
 
                     'goods_div_from_see_two'=> [
+                        'name'              => '折扣全局设置',
+                        'url'               => 'from.batch-discount.allSet',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => '',
+                        'sort'              => '2',
+                        'item'              => 'goods_div_from_see_two',
+                        'parents'           => ['Goods','goods_div_from'],
+                        'child'             => [
+                            'goods_div_from_discount'=> [
+                                'name'              => '折扣全局设置',
+                                'url'               => 'from.batch-discount.allSet',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 1,
+                                'icon'              => '',
+                                'sort'              => '2',
+                                'item'              => 'goods_div_from_discount',
+                                'parents'           => ['Goods','goods_div_from','goods_div_from_see_two'],
+                            ],
+                            'goods_div_from_discount1'=> [
+                                'name'              => '保存设置',
+                                'url'               => 'from.batch-discount.allSet',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 1,
+                                'icon'              => '',
+                                'sort'              => '2',
+                                'item'              => 'goods_div_from_discount1',
+                                'parents'           => ['Goods','goods_div_from','goods_div_from_see_two'],
+                            ],
+                        ],
+                    ],
+
+                    'goods_div_from_see_three'=> [
                         'name'              => '折扣设置',
                         'url'               => 'from.batch-discount.index',
                         'url_params'        => '',
@@ -372,7 +408,7 @@ return [
                         'menu'              => 1,
                         'icon'              => '',
                         'sort'              => '2',
-                        'item'              => 'goods_div_from_see_two',
+                        'item'              => 'goods_div_from_see_three',
                         'parents'           => ['Goods','goods_div_from'],
                         'child'             => [
                             'goods_div_from_discount'=> [
@@ -384,7 +420,7 @@ return [
                                 'icon'              => '',
                                 'sort'              => '2',
                                 'item'              => 'goods_div_from_discount',
-                                'parents'           => ['Goods','goods_div_from','goods_div_from_see_two'],
+                                'parents'           => ['Goods','goods_div_from','goods_div_from_see_three'],
                             ],
                             'goods_div_from_discount1'=> [
                                 'name'              => '保存设置',
@@ -395,10 +431,11 @@ return [
                                 'icon'              => '',
                                 'sort'              => '2',
                                 'item'              => 'goods_div_from_discount1',
-                                'parents'           => ['Goods','goods_div_from','goods_div_from_see_two'],
+                                'parents'           => ['Goods','goods_div_from','goods_div_from_see_three'],
                             ],
                         ],
                     ],
+
                 ],
             ],
 

@@ -20,6 +20,11 @@ class BatchDiscountController extends BaseController
         return view('from.discount')->render();
     }
 
+    public function allSet()
+    {
+        return view('from.all-set')->render();
+    }
+
     public function store()
     {
         $levels = MemberLevel::getMemberLevelList();
