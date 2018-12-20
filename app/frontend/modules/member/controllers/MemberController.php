@@ -1513,6 +1513,7 @@ class MemberController extends ApiController
                 ->find($val);
 
             if ($online_good) {
+                $online_good['thumb'] = replace_yunshop(yz_tomedia($online_good['thumb']));
                 $online_goods[] = $online_good;
                 $online_goods_keys[] = $online_good->id;
             }
