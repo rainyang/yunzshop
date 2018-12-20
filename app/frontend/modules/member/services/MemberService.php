@@ -11,6 +11,7 @@ namespace app\frontend\modules\member\services;
 use app\common\exceptions\AppException;
 use app\common\helpers\Client;
 use app\common\models\Member;
+use app\common\models\member\MemberDel;
 use app\common\models\MemberGroup;
 use app\common\models\MemberShopInfo;
 use app\common\services\Session;
@@ -69,6 +70,13 @@ class MemberService
      */
     public static function isLogged()
     {
+        if (\YunShop::app()->getMemberId()) {
+            $del_member = MemberDel::byMemberId(\YunShop::app()->getMemberId())->first();
+            if ($del_member) {
+                MemberDel::delUpdate(\YunShop::app()->getMemberId());
+                Session::clear('member_id');
+            }
+        }
         return \YunShop::app()->getMemberId() && \YunShop::app()->getMemberId() > 0;
     }
 
