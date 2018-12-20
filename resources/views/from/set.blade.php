@@ -19,20 +19,20 @@
                             <el-dialog title="选择分类" :visible.sync="dialogTableVisible">
                                 <!-- <el-input v-model="form.search_name"  placeholder="请输入分类名称" style="width:90%"></el-input> -->
                                 <el-select
-                                    v-model="form.search_name"
+                                    v-model="form.search_categorys"
                                     filterable
                                     multiple
                                     remote
                                     reserve-keyword
                                     placeholder="请输入分类名称"
-                                    :remote-method="loadMembers"
+                                    :remote-method="loadCategorys"
                                     :loading="loading"
                                     style="width:100%">
                                     <el-option
-                                        v-for="item in members"
-                                        :key="item.uid"
-                                        :label="'[UID:'+item.uid+'][昵称:'+item.nickname+']'"
-                                        :value="item.uid">
+                                        v-for="item in categorys"
+                                        :key="item.id"
+                                        :label="'[UID:'+item.id+'][昵称:'+item.name+']'"
+                                        :value="item.id">
                                     </el-option>
                                 </el-select>
                                 <!-- <el-button @click="search()">搜索</el-button><br> -->
@@ -107,7 +107,7 @@
                     way:1,
                     member:"",
                     value:[],
-                    search_name:"",
+                    search_categorys:"",
                     batch_list:[
                         {id:1,name:"分类1"},
                         {id:2,name:"分类2"},
@@ -115,7 +115,7 @@
                         {id:4,name:"分类4"},
                         ],
                 };
-                let members=[];
+                let categorys=[];
                 let member_list = [
                         {id:1,name:"芸众会员1434"},
                         {id:2,name:"桃心"},
@@ -127,7 +127,7 @@
                 return{
                     form:form,
                     member_list:member_list,
-                    members:members,
+                    categorys:categorys,
                     dialogVisible:true,
                     list:list,
                     dialogTableVisible:false,
@@ -167,18 +167,18 @@
                     console.log("search");
                 },
                 
-                loadMembers(query) {
+                loadCategorys(query) {
                     if (query !== '') {
                         this.loading = true;
-                        this.$http.get("{!! yzWebUrl('#', ['keyword' => '']) !!}" + query).then(response => {
-                            this.members = response.data.data;
+                        this.$http.get("{!! yzWebUrl('from.batch-discount.select-category', ['keyword' => '']) !!}" + query).then(response => {
+                            this.categorys = response.data.data;
                             this.data=response.data.data;
                             this.loading = false;
                         }, response => {
                             console.log(response);
                         });
                     } else {
-                        this.members = [];
+                        this.categorys = [];
                     }
                 },
                 submitForm(formName) {
