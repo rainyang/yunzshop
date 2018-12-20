@@ -1502,11 +1502,26 @@ class MemberController extends ApiController
 
         $data = MemberRelation::uniacid()->where(['status'=>1])->get();
 
-        $become_goods = unserialize($data[0]['become_goods']);
         $become_term = unserialize($data[0]['become_term']);
 
-        $goodskeys = range(0, count($become_goods)-1);
-        $data[0]['become_goods'] = array_combine($goodskeys, $become_goods);
+        $goodsid = explode(',', $data[0]['become_goods_id']);
+
+        foreach ($goodsid as $key => $val) {
+
+            $online_good = Goods::where('status', 1)
+                ->select('id','title','thumb','price','market_price')
+                ->find($val);
+
+            if ($online_good) {
+                $online_goods[] = $online_good;
+                $online_goods_keys[] = $online_good->id;
+            }
+        }
+        unset($online_good);
+
+        $goodskeys = range(0, count($online_goods_keys)-1);
+
+        $data[0]['become_goods'] = array_combine($goodskeys, $online_goods);
 
         $termskeys = range(0, count($become_term)-1);
         $become_term = array_combine($termskeys, $become_term);
@@ -1514,8 +1529,6 @@ class MemberController extends ApiController
         $member_uid = \YunShop::app()->getMemberId();
 
         $status = $data[0]['become_order'] == 1 ? 3 : 1;
-         //$getCostTotalNum = Order::getCostTotalNum($member_uid);
-         //$getCostTotalPrice = Order::getCostTotalPrice($member_uid);
         $getCostTotalNum = Order::where('status', '=', $status)->where('uid', $member_uid)->count('id');
         $getCostTotalPrice = Order::where('status', '=', $status)->where('uid', $member_uid)->sum('price');
 
