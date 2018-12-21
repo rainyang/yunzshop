@@ -25,6 +25,7 @@
             </div>
         </div>
     </div>
+
     
     <script>
         var vm = new Vue({
