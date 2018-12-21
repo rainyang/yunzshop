@@ -88,6 +88,8 @@
         delimiters: ['[[', ']]'],
             data() {
                 let member_list = JSON.parse('{!! $levels?:'{}' !!}');
+                let categoryDiscount = JSON.parse('{!! $categoryDiscount?:'{}' !!}');
+                console.log(categoryDiscount);
                 console.log(member_list);
                 let form ={
                         discount_type:1,
@@ -95,8 +97,10 @@
                         // member:"",
                         discount:[],
                         classification:"",
-                        search_categorys:""
+                        search_categorys:"",
+                        ...categoryDiscount
                     };
+                console.log(form)
                 let classic =[];
                 form.classification = classic.join(",");
                 // let list =[];

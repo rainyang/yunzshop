@@ -35,7 +35,10 @@ class BatchDiscountController extends BaseController
     public function updateSet()
     {
         $id = request()->id;
-        CategoryDiscount::find($id);
+        $categoryDiscount = CategoryDiscount::find($id);
+        $categoryDiscount['category_ids'] = Category::select('id', 'name')->whereIn('id', explode(',', $categoryDiscount['category_ids']))->get()->toArray();
+
+        return $this->successJson('ok', $categoryDiscount);
     }
 
     public function allSet()
@@ -61,8 +64,13 @@ class BatchDiscountController extends BaseController
         $levels = MemberLevel::getMemberLevelList();
         $levels = array_merge($this->defaultLevel(), $levels);
 
+        $id = request()->id;
+        $categoryDiscount = CategoryDiscount::find($id);
+        $categoryDiscount['category_ids'] = Category::select('id', 'name')->whereIn('id', explode(',', $categoryDiscount['category_ids']))->get()->toArray();
+
         return view('from.set', [
             'levels' => json_encode($levels),
+            'categoryDiscount' => $categoryDiscount,
         ])->render();
     }
 
