@@ -52,7 +52,7 @@
                         </el-form-item>
                         <el-form-item label="折扣方式" prop="method">
                             <el-radio v-model.number="form.discount_method" :label="1">折扣</el-radio>
-                            <el-radio v-model.number="form.discount_method" :label="0">固定金额</el-radio>
+                            <el-radio v-model.number="form.discount_method" :label="2">固定金额</el-radio>
                         </el-form-item>
                         <el-form-item>
                             <template v-for="(item,index) in member_list">
@@ -140,19 +140,8 @@
                     this.form.classification = this.classic.join(",");
                 },
                 goBack() {
-                    history.back(-1);
+                    window.location.href='{!! yzWebFullUrl('from.batch-discount.index') !!}';
                 },
-                search() {
-                    // this.list =[
-                    //     {name:"1212"},
-                    //     {name:"1212"},
-                    //     {name:"1212"},
-                    //     {name:"1212"},
-
-                    // ]
-                    console.log("search");
-                },
-                
                 loadCategorys(query) {
                     if (query !== '') {
                         this.loading = true;
