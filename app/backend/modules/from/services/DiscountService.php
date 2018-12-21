@@ -21,8 +21,8 @@ class DiscountService
 
         $discount_data = CategoryDiscount::get()->toArray();
 //        dd($discount_data);
-        foreach ($discount_data as $k => $value) {
-            Goods::select('id')->whereHas('')
-        }
+        // foreach ($discount_data as $k => $value) {
+        //     Goods::select('id')->whereHas('')
+        // }
     }
 }

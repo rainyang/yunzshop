@@ -14,7 +14,7 @@
                     <el-form ref="form" :model="form" :rules="rules" label-width="15%">
                         <el-form-item label="分类批量" prop="batch_list">
                             <template v-for="(item,index) in form.batch_list">
-                                <el-input v-model="item.category_ids" style="width:60%;padding:10px 0;"></el-input>
+                                <el-input v-model="item.name" style="width:60%;padding:10px 0;"></el-input>
                                 <el-button @click="settingBatch(index,form.batch_list[index].id)">设置折扣</el-button>
                                 <el-button type="danger" icon="el-icon-close" @click="delBatch(index,form.batch_list[index].id)"></el-button>
                             </template><br>
@@ -31,11 +31,16 @@
         el:"#app",
         delimiters: ['[[', ']]'],
             data() {
-                let category_list = JSON.parse('{!! $category?:'{}' !!}');
+                let form = {
+                    batch_list:[
+                        {id:1,name:"分类1"},
+                        {id:2,name:"分类2"},
+                        {id:3,name:"分类3"},
+                        {id:4,name:"分类4"},
+                        ],
+                };
                 return{
-                    form:{
-                        batch_list:category_list,
-                    },
+                    form:form,
                     loading: false,
                     submit_loading: false,
                     rules: {
@@ -65,7 +70,7 @@
                 delBatch(index,id){
                     this.$confirm('确定删除吗', '提示', {confirmButtonText: '确定',cancelButtonText: '取消',type: 'warning'}).then(() => {
                         this.table_loading=true;
-                        this.$http.post('{!! yzWebFullUrl('from.batch-discount.delete-set') !!}',{id:id}).then(function (response) {
+                        this.$http.post('{!! yzWebFullUrl('#') !!}',{id:id}).then(function (response) {
                         console.log(response.data);
                         if (response.data.result) {
                             this.form.batch_list.splice(index,1);
