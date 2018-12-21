@@ -10,12 +10,14 @@ namespace app\common\models;
 
 
 use app\backend\modules\goods\observers\SettingObserver;
+use app\common\exceptions\AppException;
 use app\common\exceptions\ShopException;
 use app\common\traits\ValidatorTrait;
 use app\framework\Database\Eloquent\Builder;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use app\framework\Database\Eloquent\Collection;
+use Illuminate\Foundation\Validation\ValidatesRequests;
 
 /**
  * Class BaseModel
@@ -30,13 +32,15 @@ use app\framework\Database\Eloquent\Collection;
  * @method static self first()
  * @method static self select(...$fields)
  * @method static self where(...$where)
+ * @method static self whereNot(...$where)
  * @method static self orWhere(...$where)
  * @method static self whereBetween(array $where)
  * @method static self with($with)
  * @method static self pluginId()
  * @method static self whereIn(...$where)
+ * @method static self whereNotIn(...$where)
  * @method static self whereHas(...$where)
- * @method static self pluck($field)
+ * @method static Collection pluck($field)
  * @method static int count()
  * @method static float sum()
  * @method static self join(...$join)
@@ -46,12 +50,15 @@ use app\framework\Database\Eloquent\Collection;
  * @method static self orderBy(...$field)
  * @method static self whereRaw(...$field)
  * @method static self getModel()
+ * @method static string value($fields)
  * @method static self groupBy(...$field)
  * @method static self delete()
  */
 class BaseModel extends Model
 {
     use ValidatorTrait;
+    use ValidatesRequests;
+
     protected $search_fields;
     static protected $needLog = false;
 
@@ -382,5 +389,49 @@ class BaseModel extends Model
     public function afterSaving()
     {
         return true;
+    }
+
+    /**
+     * 递归格式化金额字段
+     * @param $attributes
+     * @return array
+     */
+    protected function formatAmountAttributes($attributes)
+    {
+        // 格式化价格字段,将key中带有price,amount的属性,转为保留2位小数的字符串
+        $attributes = array_combine(array_keys($attributes), array_map(function ($value, $key) {
+            if (is_array($value)) {
+                $value = $this->formatAmountAttributes($value);
+            } else {
+                if (str_contains($key, 'price') || str_contains($key, 'amount')) {
+                    $value = sprintf('%.2f', $value);
+                }
+            }
+            return $value;
+        }, $attributes, array_keys($attributes)));
+        return $attributes;
+    }
+    /**
+     * 校验参数
+     * @param $request
+     * @param array $rules
+     * @param array $messages
+     * @param array $customAttributes
+     * @throws AppException
+     */
+    public function validate($request, array $rules, array $messages = [], array $customAttributes = [])
+    {
+        $validator = $this->getValidationFactory()->make($request, $rules, $messages, $customAttributes);
+        //$validator->errors();
+
+        if ($validator->fails()) {
+            throw new AppException($validator->errors()->first());
+        }
+    }
+    public function getPlugin(){
+        if(isset($this->plugin_id) && $this->plugin_id > 0){
+            return app('plugins')->findPlugin($this->plugin_id);
+        }
+        return null;
     }
 }
