@@ -14,16 +14,28 @@ use app\backend\modules\goods\models\Category;
 use app\backend\modules\member\models\MemberLevel;
 use app\common\components\BaseController;
 use app\common\facades\Setting;
+use app\common\models\GoodsCategory;
+use app\common\models\GoodsDiscount;
 
 class BatchDiscountController extends BaseController
 {
     public function index()
     {
         $category = CategoryDiscount::uniacid()->get()->toArray();
+
+        foreach ($category as $k => $item) {
+            $category[$k]['category_ids'] = Category::select('id', 'name')->whereIn('id', explode(',', $item['category_ids']))->get()->toArray();
+        }
 //        dd($category);
         return view('from.discount',[
             'category' => json_encode($category),
         ])->render();
+    }
+
+    public function updateSet()
+    {
+        $id = request()->id;
+        CategoryDiscount::find($id);
     }
 
     public function allSet()
@@ -79,7 +91,21 @@ class BatchDiscountController extends BaseController
         ];
 
 //        dd($data);
-        $discountModel->insert($data);
+        $id = $discountModel->insertGetId($data);
+
+        $result = CategoryDiscount::find($id)->toArray();
+
+        $goods_ids = GoodsCategory::select('goods_id')->whereIn('category_id', explode(',', $result['category_ids']))->get()->toArray();
+
+        foreach ($goods_ids as $goods_id) {
+            $item_id[] = $goods_id['goods_id'];
+        }
+
+        GoodsDiscount::whereIn('goods_id', $item_id)->update([
+            'discount_method' => $result['discount_method'],
+            'level_id' => $result['level_id'],
+            'discount_value' => $result['discount_value'],
+        ]);
 
         $this->successJson('ok');
     }

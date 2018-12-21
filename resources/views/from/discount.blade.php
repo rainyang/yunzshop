@@ -63,26 +63,38 @@
                     )
                 },
                 delBatch(index,id){
-                    this.$confirm('确定删除吗', '提示', {confirmButtonText: '确定',cancelButtonText: '取消',type: 'warning'}).then(() => {
-                        this.table_loading=true;
-                        this.$http.post('{!! yzWebFullUrl('from.batch-discount.delete-set') !!}',{id:id}).then(function (response) {
-                        console.log(response.data);
-                        if (response.data.result) {
+                    if(!id){
+                        this.$confirm('确定删除吗', '提示', {confirmButtonText: '确定',cancelButtonText: '取消',type: 'warning'}).then(() => {
                             this.form.batch_list.splice(index,1);
                             this.$message({type: 'success',message: '删除成功!'});
-                        }
-                        else{
-                            this.$message({type: 'error',message: response.data.msg});
-                        }
-                        this.table_loading=false;
-                    },function (response) {
-                        this.$message({type: 'error',message: response.data.msg});
-                        this.table_loading=false;
-                    }
-                    );
-                    }).catch(() => {
-                        this.$message({type: 'info',message: '已取消删除'});
+                        }).catch(() => {
+                            this.$message({type: 'info',message: '已取消删除'});
                         });
+                    }
+                    else{
+
+                        this.$confirm('确定删除吗', '提示', {confirmButtonText: '确定',cancelButtonText: '取消',type: 'warning'}).then(() => {
+                            this.table_loading=true;
+                            this.$http.post('{!! yzWebFullUrl('from.batch-discount.delete-set') !!}',{id:id}).then(function (response) {
+                                    console.log(response.data);
+                                    if (response.data.result) {
+                                        this.form.batch_list.splice(index,1);
+                                        this.$message({type: 'success',message: '删除成功!'});
+                                    }
+                                    else{
+                                        this.$message({type: 'error',message: response.data.msg});
+                                    }
+                                    this.table_loading=false;
+                                },function (response) {
+                                    this.$message({type: 'error',message: response.data.msg});
+                                    this.table_loading=false;
+                                }
+                            );
+                        }).catch(() => {
+                            this.$message({type: 'info',message: '已取消删除'});
+                        });
+
+                    }
                 },
                 settingBatch(index,id) {
                     console.log(index,id);
