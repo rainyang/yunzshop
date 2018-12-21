@@ -15,10 +15,14 @@
                         <el-form-item label="分类批量" prop="batch_list">
                             <template v-for="(item,index) in form.batch_list">
                                 <el-input :value="item.new_name" style="width:60%;padding:10px 0;" disabled></el-input>
-                                <el-button @click="settingBatch(index,form.batch_list[index].id)">设置折扣</el-button>
+                                <a v-bind:href="'{{ yzWebUrl('from.batch-discount.store', array('id' => '')) }}'+[[form.batch_list[index].id]]">
+                                    <el-button>编辑</el-button>
+                                </a>
                                 <el-button type="danger" icon="el-icon-close" @click="delBatch(index,form.batch_list[index].id)"></el-button>
                             </template><br>
-                            <el-button type="primary" @click="addBatch()">添加批量折扣</el-button>
+                            <a href="{{ yzWebFullUrl('from.batch-discount.store') }}">
+                                <el-button type="primary">添加批量折扣</el-button>
+                            </a>
                         </el-form-item>
                     </el-form>
                 </template>
@@ -63,14 +67,14 @@
                 }
             },
             methods: {
-                addBatch(){
-                    this.form.batch_list.push(
-                        {   
-                            id:"",
-                            name:""
-                        }
-                    )
-                },
+                // addBatch(){
+                //     this.form.batch_list.push(
+                //         {   
+                //             id:"",
+                //             name:""
+                //         }
+                //     )
+                // },
                 delBatch(index,id){
                     if(!id){
                         this.$confirm('确定删除吗', '提示', {confirmButtonText: '确定',cancelButtonText: '取消',type: 'warning'}).then(() => {
@@ -82,7 +86,6 @@
                         });
                     }
                     else{
-
                         this.$confirm('确定删除吗', '提示', {confirmButtonText: '确定',cancelButtonText: '取消',type: 'warning'}).then(() => {
                             this.table_loading=true;
                             this.$http.post('{!! yzWebFullUrl('from.batch-discount.delete-set') !!}',{id:id}).then(function (response) {
@@ -106,10 +109,10 @@
 
                     }
                 },
-                settingBatch(index,id) {
-                    console.log(index,id);
-                    window.location.href='{!! yzWebFullUrl('from.batch-discount.store') !!}';
-                },
+                // settingBatch(index,id) {
+                //     console.log(index,id);
+                //     window.location.href='{!! yzWebFullUrl('from.batch-discount.store') !!}';
+                // },
             },
         });
     </script>

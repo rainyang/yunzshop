@@ -89,16 +89,20 @@
             data() {
                 let member_list = JSON.parse('{!! $levels?:'{}' !!}');
                 console.log(member_list);
-                // let list =[];
-                return{
-                    form:{
+                let form ={
                         discount_type:1,
                         discount_method:1,
                         // member:"",
                         discount:[],
+                        classification:"",
                         search_categorys:""
-                    },
-                    classic:[],
+                    };
+                let classic =[];
+                form.classification = classic.join(",");
+                // let list =[];
+                return{
+                    form:form,
+                    classic:classic,
                     member_list:member_list,
                     categorys:[],
                     dialogVisible:true,
