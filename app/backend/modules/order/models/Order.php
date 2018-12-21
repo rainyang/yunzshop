@@ -147,7 +147,7 @@ class Order extends \app\common\models\Order
 //                    $query->where('goods_id',$params['ambiguous']['string']);
 //                })->toSql());exit;
                 $order_builder->whereHas('hasManyOrderGoods', function ($query) use ($params) {
-                    $query->where('goods_id',$params['ambiguous']['string'])->orWhere('title',$params['ambiguous']['string']); //增加商品名称orWhere条件
+                    $query->where('goods_id',$params['ambiguous']['string'])->orWhere('title','like','%'.trim($params['ambiguous']['string']).'%'); //增加商品名称orWhere条件，支持模糊查询
                 });
             }
             //快递单号
