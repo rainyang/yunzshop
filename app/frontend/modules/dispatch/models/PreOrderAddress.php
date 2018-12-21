@@ -21,13 +21,12 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 
 class PreOrderAddress extends OrderAddress
 {
-    use ValidatesRequests;
 
     /**
      * @var PreOrder
      */
     public $order;
-
+    private $memberAddress;
     /**
      * @param PreOrder $order
      * @throws ShopException
@@ -35,6 +34,7 @@ class PreOrderAddress extends OrderAddress
     public function setOrder(PreOrder $order)
     {
         $this->order = $order;
+
         $order->setRelation('orderAddress', $this);
         $this->_init();
     }
@@ -55,6 +55,19 @@ class PreOrderAddress extends OrderAddress
      */
     protected function getOrderAddress()
     {
+        if (!isset($this->memberAddress)) {
+            $this->memberAddress = $this->_getMemberAddress();
+        }
+        return $this->memberAddress;
+    }
+
+    /**
+     * 获取用户配送地址模型
+     * @return mixed
+     * @throws AppException
+     */
+    private function _getMemberAddress()
+    {
         $member_address = $this->getMemberAddress();
 
         $orderAddress = new OrderAddress();
@@ -69,8 +82,8 @@ class PreOrderAddress extends OrderAddress
 
         if (isset($member_address->street) && $member_address->street != '其他') {
             $orderAddress->street_id = Street::where('areaname', $member_address->street)->where('parentid', $orderAddress->district_id)->value('id');
-            if(!isset($orderAddress->street_id)){
-                throw new ShopException('收货地址有误请重新保存收货地址');
+            if (!isset($orderAddress->street_id)) {
+                throw new AppException('收货地址有误请重新保存收货地址');
             }
             $orderAddress->street = $member_address->street;
             $orderAddress->address = implode(' ', [$member_address->province, $member_address->city, $member_address->district, $orderAddress->street, $member_address->address]);
@@ -95,18 +108,18 @@ class PreOrderAddress extends OrderAddress
      */
     public function getMemberAddress()
     {
-        $address = json_decode(request()->capture()->input('address', '[]'), true);
+        $address = json_decode($this->order->getRequest()->input('address', '[]'), true);
 
         if (count($address)) {
             //$request->input('address');
-            $this->validate([
-                'address.address' => 'required|string',
-                'address.mobile' => 'required|string',
-                'address.username' => 'required|string',
-                'address.province' => 'required|string',
-                'address.city' => 'required|string',
-                'address.district' => 'required|string',
-            ], ['address' => $address]
+            $this->validate($address, [
+                    'address' => 'required',
+                    'mobile' => 'required',
+                    'username' => 'required',
+                    'province' => 'required',
+                    'city' => 'required',
+                    'district' => 'required',
+                ]
             );
             $memberAddress = app(MemberAddressRepository::class)->fill($address);
 
@@ -114,23 +127,5 @@ class PreOrderAddress extends OrderAddress
         }
 
         return $this->order->belongsToMember->defaultAddress;
-    }
-
-    /**
-     * 校验参数
-     * @param $request
-     * @param array $rules
-     * @param array $messages
-     * @param array $customAttributes
-     * @throws AppException
-     */
-    private function validate($request, array $rules, array $messages = [], array $customAttributes = [])
-    {
-
-        $validator = $this->getValidationFactory()->make($request, $rules, $messages, $customAttributes);
-        //$validator->errors();
-        if ($validator->fails()) {
-            throw new AppException($validator->errors()->first());
-        }
     }
 }

@@ -20,7 +20,6 @@
             @elseif($order['has_one_refund_apply']['status'] == \app\common\models\refund\RefundApply::WAIT_RECEIVE_RETURN_GOODS)
                 (您已经收到客户寄出的快递)
             @endif
-
     </label>
 
     <label class='radio-inline'>
