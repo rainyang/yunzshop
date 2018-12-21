@@ -14,7 +14,7 @@
                     <el-form ref="form" :model="form" :rules="rules" label-width="15%">
                         <el-form-item label="分类批量" prop="batch_list">
                             <template v-for="(item,index) in form.batch_list">
-                                <el-input v-model="item.name" style="width:60%;padding:10px 0;"></el-input>
+                                <el-input :value="item.new_name" style="width:60%;padding:10px 0;" disabled></el-input>
                                 <el-button @click="settingBatch(index,form.batch_list[index].id)">设置折扣</el-button>
                                 <el-button type="danger" icon="el-icon-close" @click="delBatch(index,form.batch_list[index].id)"></el-button>
                             </template><br>
@@ -31,16 +31,19 @@
         el:"#app",
         delimiters: ['[[', ']]'],
             data() {
-                let form = {
-                    batch_list:[
-                        {id:1,name:"分类1"},
-                        {id:2,name:"分类2"},
-                        {id:3,name:"分类3"},
-                        {id:4,name:"分类4"},
-                        ],
-                };
+                let batch_list = JSON.parse('{!! $category?:'{}' !!}');
+                for(var i=0;i<batch_list.length;i++){
+                    batch_list[i].new_name=[];
+                    for(var j=0;j<batch_list[i].category_ids.length;j++){
+                        batch_list[i].new_name[j] = "[ID:"+batch_list[i].category_ids[j].id+"][分类:"+batch_list[i].category_ids[j].name+"]";
+                        
+                    }
+                    batch_list[i].new_name = batch_list[i].new_name.join(",");
+                }
                 return{
-                    form:form,
+                    form:{
+                        batch_list:batch_list,
+                    },
                     loading: false,
                     submit_loading: false,
                     rules: {
