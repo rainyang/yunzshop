@@ -19,7 +19,11 @@ class BatchDiscountController extends BaseController
 {
     public function index()
     {
-        return view('from.discount')->render();
+        $category = CategoryDiscount::uniacid()->get()->toArray();
+//        dd($category);
+        return view('from.discount',[
+            'category' => json_encode($category),
+        ])->render();
     }
 
     public function allSet()
@@ -57,22 +61,25 @@ class BatchDiscountController extends BaseController
         foreach ($categorys as $v){
             $categorys_r[] = $v['id'];
         }
-//        dd($form_data);
+        $category_ids = implode(',', $categorys_r);
         $discountModel = new CategoryDiscount();
-        foreach ($form_data['discount'] as $k => $v) {
-            $data[] = [
-                'level_id' => intval($k),
-                'category_ids' => serialize($categorys_r),
-                'uniacid' => \YunShop::app()->uniacid,
-                'level_discount_type' => $form_data['discount_type'],
-                'discount_method' => $form_data['discount_method'],
-                'discount_value' => $v,
-            ];
-        }
+        $level_discount = array_filter($form_data['discount']);
+
+        $level_id = array_keys($level_discount)[0];
+        $dicount_value =current($level_discount);
+
+        $data = [
+            'level_id' => $level_id,
+            'category_ids' => $category_ids,
+            'uniacid' => \YunShop::app()->uniacid,
+            'level_discount_type' => $form_data['discount_type'],
+            'discount_method' => $form_data['discount_method'],
+            'discount_value' => $dicount_value,
+            'created_at' => time(),
+        ];
+
 //        dd($data);
-        foreach ($data as $discount) {
-            $discountModel->insert($discount);
-        }
+        $discountModel->insert($data);
 
         $this->successJson('ok');
     }
@@ -84,6 +91,13 @@ class BatchDiscountController extends BaseController
             $category = Category::getCategorysByName($kwd);
             return $this->successJson('ok', $category);
         }
+    }
+
+    public function deleteSet()
+    {
+        if (CategoryDiscount::find(request()->id)->delete()) {
+            return $this->successJson('ok');
+        };
     }
 
     private function defaultLevel()

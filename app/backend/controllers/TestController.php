@@ -10,6 +10,7 @@ namespace app\backend\controllers;
 
 
 use app\backend\modules\charts\modules\phone\services\PhoneAttributionService;
+use app\backend\modules\from\services\DiscountService;
 use app\backend\modules\member\models\Member;
 use app\common\components\BaseController;
 use app\common\models\Income;
@@ -389,11 +390,7 @@ echo '<pre>'; print_r($attr);
 
     public function ff()
     {
-        $updateFile = storage_path('app/auto-update/temp') . '/1.z01';
-
-        $zip = zip_open($updateFile);
-
-        dd($zip);
+        (new DiscountService())->index();
     }
     protected $GoodsGroupTable = 'yz_goods_group_goods';
     protected $DesignerTable = 'yz_designer';

@@ -16,5 +16,4 @@ class CategoryDiscount extends BaseModel
     public $table = 'yz_category_discount';
     public $guarded = [];
 
-
 }
