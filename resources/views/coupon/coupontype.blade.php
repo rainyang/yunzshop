@@ -234,7 +234,7 @@
     </div>
 </div>
 
-<div class="form-group gettype">
+<div class="form-group gettype" @if($coupon['get_type'] === 0) style='display:none' @endif>
     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
     <div class="col-sm-9 form-inline">
         <div class="input-group form-group col-sm-1">
