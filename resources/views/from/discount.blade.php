@@ -15,7 +15,7 @@
                         <el-form-item label="分类批量" prop="batch_list">
                             <template v-for="(item,index) in form.batch_list">
                                 <el-input :value="item.new_name" style="width:60%;padding:10px 0;" disabled></el-input>
-                                <a v-bind:href="'{{ yzWebUrl('from.batch-discount.updateSet', array('id' => '')) }}'+[[form.batch_list[index].id]]">
+                                <a v-bind:href="'{{ yzWebUrl('from.batch-discount.updateView', array('id' => '')) }}'+[[form.batch_list[index].id]]">
                                     <el-button>编辑</el-button>
                                 </a>
                                 <el-button type="danger" icon="el-icon-close" @click="delBatch(index,form.batch_list[index].id)"></el-button>

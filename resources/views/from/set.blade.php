@@ -89,6 +89,10 @@
         delimiters: ['[[', ']]'],
             data() {
                 let member_list = JSON.parse('{!! $levels?:'{}' !!}');
+                let url = JSON.parse('{!! $url !!}');
+                let categoryDiscount = JSON.parse('{!! $categoryDiscount !!}');
+                console.log(categoryDiscount)
+                console.log(url);
                 console.log(member_list);
                 {{--let categoryDiscount = JSON.parse('{!! $categoryDiscount?:'{}' !!}');--}}
                 // console.log(categoryDiscount);
@@ -106,6 +110,7 @@
                 let classic =[];
                 form.classification = classic.join(",");
                 return{
+                    url:url,
                     form:form,
                     classic:classic,
                     member_list:member_list,
@@ -171,8 +176,8 @@
                             // }
                             // this.form.discount=obj;
                             this.submit_loading = true;
-                            delete(this.form['thumb_url']);
-                            this.$http.post("{!! yzWebUrl('from.batch-discount.store-set') !!}",{'form_data':this.form}).then(response => {
+                            
+                            this.$http.post(this.url,{'form_data':this.form}).then(response => {
                                 if (response.data.result) {
                                     this.$message({type: 'success',message: '操作成功!'});
                                     window.location.href='{!! yzWebFullUrl('from.batch-discount.index') !!}';

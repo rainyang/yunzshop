@@ -35,11 +35,47 @@ class BatchDiscountController extends BaseController
 
     public function updateSet()
     {
+        $form_data = request()->form_data;
         $id = request()->id;
+        $form_data['discount'] = array_filter($form_data['discount']);
+        $discount = $form_data[discount];
+
+        $categorys = $form_data['search_categorys'];
+        foreach ($categorys as $v){
+            $categorys_r[] = $v['id'];
+        }
+        $category_ids = implode(',', $categorys_r);
+        
+        $categoryDiscount = CategoryDiscount::find($id);
+        $data = [
+            'category_ids' => $category_ids,
+            'uniacid' => \YunShop::app()->uniacid,
+            'level_discount_type' => $form_data['discount_type'],
+            'discount_method' => $form_data['discount_method'],
+            'discount_value' => $discount,
+            'created_at' => time(),
+        ];
+        
+        $categoryDiscount->fill($data);
+        if ($categoryDiscount->save()) {
+            return $this->successJson('ok');
+        }
+    }
+
+    public function updateView()
+    {
+        $levels = MemberLevel::getMemberLevelList();
+        $levels = array_merge($this->defaultLevel(), $levels);
+        $id = request()->id;
+        
         $categoryDiscount = CategoryDiscount::find($id);
         $categoryDiscount['category_ids'] = Category::select('id', 'name')->whereIn('id', explode(',', $categoryDiscount['category_ids']))->get()->toArray();
-        dd($categoryDiscount);
-        return $this->successJson('ok', $categoryDiscount);
+      
+        return view('from.set', [
+            'levels' => json_encode($levels),
+            'categoryDiscount' => json_encode($categoryDiscount),
+            'url' => json_encode(yzWebFullUrl('from.batch-discount.update-set',['id' => $id])),
+        ])->render();
     }
 
     public function allSet()
@@ -71,7 +107,8 @@ class BatchDiscountController extends BaseController
 
         return view('from.set', [
             'levels' => json_encode($levels),
-            'categoryDiscount' => $categoryDiscount,
+            'categoryDiscount' => json_encode($categoryDiscount),
+            'url' => json_encode(yzWebFullUrl('from.batch-discount.store-set')),
         ])->render();
     }
 
