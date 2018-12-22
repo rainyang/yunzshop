@@ -47,6 +47,7 @@
                                 </span>
                             </el-dialog>
                         </el-form-item>
+
                         <el-form-item label="折扣类型" prop="type">
                             <el-radio v-model.number="form.discount_type" :label="1">会员等级</el-radio>
                         </el-form-item>
@@ -56,10 +57,10 @@
                         </el-form-item>
                         <el-form-item>
                             <template v-for="(item,index) in member_list">
-                                <el-input v-model="form.discount[index]" style="width:70%;padding:10px 0;">
+                                <el-input v-model="form.discount[item.id]" style="width:70%;padding:10px 0;">
                                     <template slot="prepend">[[item.level_name]]</template>
-                                    <template slot="append" v-if="!form.discount_method">元</template>
-                                    <template slot="append" v-if="form.discount_method">%</template>
+                                    <template slot="append" v-if="form.discount_method==1">%</template>
+                                    <template slot="append" v-if="form.discount_method==2">元</template>
                                 </el-input>
                             </template>
                         </el-form-item>
@@ -88,8 +89,9 @@
         delimiters: ['[[', ']]'],
             data() {
                 let member_list = JSON.parse('{!! $levels?:'{}' !!}');
-                let categoryDiscount = JSON.parse('{!! $categoryDiscount?:'{}' !!}');
-                console.log(categoryDiscount);
+                console.log(member_list);
+                {{--let categoryDiscount = JSON.parse('{!! $categoryDiscount?:'{}' !!}');--}}
+                // console.log(categoryDiscount);
                 console.log(member_list);
                 let form ={
                         discount_type:1,
@@ -98,19 +100,17 @@
                         discount:[],
                         classification:"",
                         search_categorys:"",
-                        ...categoryDiscount
+                        // ...categoryDiscount
                     };
-                console.log(form)
+                // console.log(form)
                 let classic =[];
                 form.classification = classic.join(",");
-                // let list =[];
                 return{
                     form:form,
                     classic:classic,
                     member_list:member_list,
                     categorys:[],
                     dialogVisible:true,
-                    // list:list,
                     dialogTableVisible:false,
                     loading: false,
                     submit_loading: false,
@@ -128,23 +128,19 @@
                         //  ]
                     },
                 }
-            }, 
-            // <!-- :value="'[ID:'+item.id+'][分类:'+item.name+']'" -->
+            },
             methods: {
                 change(item){
                     for(var k=0;k<item.length;k++){
                         this.classic[k] = "[ID:"+item[k].id+"][分类："+item[k].name+"]";
                     }
-                    // console.log(val)
-                    console.log(this.classic);
+                    // console.log(this.classic);
                 },
                 visDia(){
                     this.dialogTableVisible=true;
-                    console.log("haaaaa");
                 },
                 choose(){
                     this.dialogTableVisible=false;
-                    console.log(this.form.search_categorys);
                     this.form.classification = this.classic.join(",");
                 },
                 goBack() {
@@ -167,18 +163,16 @@
                 submitForm(formName) {
                     this.$refs[formName].validate((valid) => {
                         if (valid) {
-                            var obj={};
-                            var index=[];
-                            for(var i=0;i<this.member_list.length;i++){
-                                index[i] = this.member_list[i].id
-                                obj[''+index[i]+''] = this.form.discount[i];
-                            }
-                            this.form.discount=obj;
+                            // var obj={};
+                            // var index=[];
+                            // for(var i=0;i<this.member_list.length;i++){
+                            //     index[i] = this.member_list[i].id
+                            //     obj[''+index[i]+''] = this.form.discount[i];
+                            // }
+                            // this.form.discount=obj;
                             this.submit_loading = true;
                             delete(this.form['thumb_url']);
                             this.$http.post("{!! yzWebUrl('from.batch-discount.store-set') !!}",{'form_data':this.form}).then(response => {
-                                console.log(this.form);
-                                console.log(response);
                                 if (response.data.result) {
                                     this.$message({type: 'success',message: '操作成功!'});
                                     window.location.href='{!! yzWebFullUrl('from.batch-discount.index') !!}';

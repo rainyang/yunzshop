@@ -14,6 +14,10 @@ use app\common\models\BaseModel;
 class CategoryDiscount extends BaseModel
 {
     public $table = 'yz_category_discount';
-    public $guarded = [];
+    public $guarded = [''];
+
+    public $casts = [
+        'discount_value' => 'json'
+    ];
 
 }
