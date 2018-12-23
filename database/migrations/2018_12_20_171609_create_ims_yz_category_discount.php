@@ -19,10 +19,9 @@ class CreateImsYzCategoryDiscount extends Migration
                 $table->increments('id');
                 $table->string('category_ids')->nullable()->comment('分类id');
                 $table->integer('uniacid')->default(0);
-                $table->tinyInteger('level_discount_type')->default(0)->comment('折扣类型');
-                $table->tinyInteger('discount_method')->default(0)->comment('折扣方式');
-                $table->integer('level_id')->nullable()->comment('会员等级id');
-                $table->integer('discount_value')->default(0)->comment('折扣金额');
+                $table->tinyInteger('level_discount_type')->default(1)->comment('折扣类型');
+                $table->tinyInteger('discount_method')->default(1)->comment('折扣方式');
+                $table->text('discount_value')->nullable()->comment('折扣值');
                 $table->integer('created_at')->nullable();
                 $table->integer('updated_at')->nullable();
             });

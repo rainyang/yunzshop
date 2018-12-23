@@ -14,6 +14,7 @@ use app\backend\modules\goods\models\Category;
 use app\backend\modules\goods\models\Discount;
 use app\backend\modules\member\models\MemberLevel;
 use app\common\components\BaseController;
+use app\common\exceptions\ShopException;
 use app\common\facades\Setting;
 use app\common\models\GoodsCategory;
 
@@ -37,40 +38,51 @@ class BatchDiscountController extends BaseController
     {
         $form_data = request()->form_data;
         $id = request()->id;
-        $form_data['discount'] = array_filter($form_data['discount']);
-        $discount = $form_data[discount];
-
-        $categorys = $form_data['search_categorys'];
-        foreach ($categorys as $v){
-            $categorys_r[] = $v['id'];
+//dd($form_data);
+        if (!$id) {
+            throw new ShopException('参数错误!');
         }
-        $category_ids = implode(',', $categorys_r);
-        
-        $categoryDiscount = CategoryDiscount::find($id);
-        $data = [
-            'category_ids' => $category_ids,
-            'uniacid' => \YunShop::app()->uniacid,
-            'level_discount_type' => $form_data['discount_type'],
-            'discount_method' => $form_data['discount_method'],
-            'discount_value' => $discount,
-            'created_at' => time(),
-        ];
-        
-        $categoryDiscount->fill($data);
-        if ($categoryDiscount->save()) {
-            return $this->successJson('ok');
-        }
-    }
 
-    public function updateView()
-    {
+        if ($form_data) {
+            $form_data['discount_value'] = array_filter($form_data['discount_value']);
+            $discount = $form_data['discount_value'];
+            $categorys = $form_data['search_categorys'];
+            foreach ($categorys as $v){
+                $categorys_r[] = $v['id'];
+            }
+            $category_ids = implode(',', $categorys_r);
+
+            $categoryModel = CategoryDiscount::find($id);
+            $data = [
+                'category_ids' => $category_ids,
+                'uniacid' => \YunShop::app()->uniacid,
+                'level_discount_type' => $form_data['discount_type'],
+                'discount_method' => $form_data['discount_method'],
+                'discount_value' => $discount,
+                'created_at' => time(),
+            ];
+
+            $categoryModel->fill($data);
+            if ($categoryModel->save()) {
+                $goods_ids = GoodsCategory::select('goods_id')->whereIn('category_id', explode(',', $data['category_ids']))->get()->toArray();
+                foreach ($goods_ids as $goods_id) {
+                    $item_id[] = $goods_id['goods_id'];
+                }
+                foreach ($item_id as $goodsId) {
+                    Discount::relationSave($goodsId, $data);
+                }
+                return $this->successJson('ok');
+            }
+        }
+
         $levels = MemberLevel::getMemberLevelList();
         $levels = array_merge($this->defaultLevel(), $levels);
-        $id = request()->id;
-        
+
         $categoryDiscount = CategoryDiscount::find($id);
-        $categoryDiscount['category_ids'] = Category::select('id', 'name')->whereIn('id', explode(',', $categoryDiscount['category_ids']))->get()->toArray();
-      
+        $categoryDiscount['category_ids'] = Category::select('id', 'name')
+            ->whereIn('id', explode(',', $categoryDiscount['category_ids']))
+            ->get()->toArray();
+
         return view('from.set', [
             'levels' => json_encode($levels),
             'categoryDiscount' => json_encode($categoryDiscount),
@@ -80,6 +92,12 @@ class BatchDiscountController extends BaseController
 
     public function allSet()
     {
+        $set_data = request()->form_data;
+
+        if ($set_data) {
+            Setting::set('from.all_set', $set_data);
+            return $this->successJson('ok');
+        }
         $set = Setting::get('from.all_set');
 
         return view('from.all-set',[
@@ -87,64 +105,49 @@ class BatchDiscountController extends BaseController
         ])->render();
     }
 
-    public function allSetStore()
-    {
-        $set_data = request()->form_data;
-
-        Setting::set('from.all_set', $set_data);
-
-        return $this->successJson('ok');
-    }
-
     public function store()
     {
+        $form_data = request()->form_data;
+
+        if ($form_data) {
+            $form_data['discount_value'] = array_filter($form_data['discount_value']);
+            $discount = $form_data['discount_value'];
+
+            $categorys = $form_data['search_categorys'];
+            foreach ($categorys as $v){
+                $categorys_r[] = $v['id'];
+            }
+            $category_ids = implode(',', $categorys_r);
+
+            $data = [
+                'category_ids' => $category_ids,
+                'uniacid' => \YunShop::app()->uniacid,
+                'level_discount_type' => $form_data['discount_type'],
+                'discount_method' => $form_data['discount_method'],
+                'discount_value' => $discount,
+                'created_at' => time(),
+            ];
+            $model = new CategoryDiscount();
+            $model->fill($data);
+            if ($model->save()) {
+                $goods_ids = GoodsCategory::select('goods_id')->whereIn('category_id', explode(',', $data['category_ids']))->get()->toArray();
+                foreach ($goods_ids as $goods_id) {
+                    $item_id[] = $goods_id['goods_id'];
+                }
+                foreach ($item_id as $goodsId) {
+                    Discount::relationSave($goodsId, $data);
+                }
+                return $this->successJson('ok');
+            }
+        }
+
         $levels = MemberLevel::getMemberLevelList();
         $levels = array_merge($this->defaultLevel(), $levels);
 
-        $id = request()->id;
-        $categoryDiscount = CategoryDiscount::find($id);
-        $categoryDiscount['category_ids'] = Category::select('id', 'name')->whereIn('id', explode(',', $categoryDiscount['category_ids']))->get()->toArray();
-
         return view('from.set', [
             'levels' => json_encode($levels),
-            'categoryDiscount' => json_encode($categoryDiscount),
-            'url' => json_encode(yzWebFullUrl('from.batch-discount.store-set')),
+            'url' => json_encode(yzWebFullUrl('from.batch-discount.store')),
         ])->render();
-    }
-
-    public function storeSet()
-    {
-        $form_data = request()->form_data;
-        $form_data['discount'] = array_filter($form_data['discount']);
-        $discount = $form_data[discount];
-
-        $categorys = $form_data['search_categorys'];
-        foreach ($categorys as $v){
-            $categorys_r[] = $v['id'];
-        }
-        $category_ids = implode(',', $categorys_r);
-
-        $data = [
-            'category_ids' => $category_ids,
-            'uniacid' => \YunShop::app()->uniacid,
-            'level_discount_type' => $form_data['discount_type'],
-            'discount_method' => $form_data['discount_method'],
-            'discount_value' => $discount,
-            'created_at' => time(),
-        ];
-        $model = new CategoryDiscount();
-        $model->fill($data);
-        if ($model->save()) {
-            $goods_ids = GoodsCategory::select('goods_id')->whereIn('category_id', explode(',', $data['category_ids']))->get()->toArray();
-            foreach ($goods_ids as $goods_id) {
-                $item_id[] = $goods_id['goods_id'];
-            }
-            foreach ($item_id as $goodsId) {
-                Discount::relationSave($goodsId, $data);
-            }
-        }
-
-        $this->successJson('ok');
     }
 
     public function selectCategory()

@@ -15,7 +15,7 @@
                         <el-form-item label="分类批量" prop="batch_list">
                             <template v-for="(item,index) in form.batch_list">
                                 <el-input :value="item.new_name" style="width:60%;padding:10px 0;" disabled></el-input>
-                                <a v-bind:href="'{{ yzWebUrl('from.batch-discount.updateView', array('id' => '')) }}'+[[form.batch_list[index].id]]">
+                                <a v-bind:href="'{{ yzWebUrl('from.batch-discount.update-set', array('id' => '')) }}'+[[form.batch_list[index].id]]">
                                     <el-button>编辑</el-button>
                                 </a>
                                 <el-button type="danger" icon="el-icon-close" @click="delBatch(index,form.batch_list[index].id)"></el-button>
@@ -30,7 +30,6 @@
         </div>
     </div>
 
-    
     <script>
         var vm = new Vue({
         el:"#app",
@@ -41,7 +40,6 @@
                     batch_list[i].new_name=[];
                     for(var j=0;j<batch_list[i].category_ids.length;j++){
                         batch_list[i].new_name[j] = "[ID:"+batch_list[i].category_ids[j].id+"][分类:"+batch_list[i].category_ids[j].name+"]";
-                        
                     }
                     batch_list[i].new_name = batch_list[i].new_name.join(",");
                 }
@@ -52,29 +50,11 @@
                     loading: false,
                     submit_loading: false,
                     rules: {
-                        // sort: [
-                        //     { required: true,type: 'number', message: '请输入数字'},
-                        //     { type: 'number', min: 1, max: 99999, message: '请输入1-99999'},
-                        // ],
-                        // name: [
-                        //     { required: true,message: '请输入分类名称', trigger: 'blur' },
-                        //     { max : 45,message: '不能超过45个字符', }
-                        // ],
-                        // thumb: [
-                        //     { required: true, message: '请选择图片'},
-                        //  ]
+
                     },
                 }
             },
             methods: {
-                // addBatch(){
-                //     this.form.batch_list.push(
-                //         {   
-                //             id:"",
-                //             name:""
-                //         }
-                //     )
-                // },
                 delBatch(index,id){
                     if(!id){
                         this.$confirm('确定删除吗', '提示', {confirmButtonText: '确定',cancelButtonText: '取消',type: 'warning'}).then(() => {

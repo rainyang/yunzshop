@@ -9,6 +9,7 @@
 namespace app\frontend\models;
 
 use app\common\exceptions\AppException;
+use app\common\facades\Setting;
 use app\common\models\BaseModel;
 use app\common\models\GoodsDiscount;
 use app\framework\Database\Eloquent\Collection;
@@ -72,7 +73,12 @@ class Goods extends \app\common\models\Goods
     protected function _getVipDiscountAmount($price = null){
 
         if(!isset($price)){
-            $price = $this->price;
+            $level_discount_set = Setting::get('from.all_set');
+            if (isset($level_discount_set['type']) && $level_discount_set['type'] == 1) {
+                $price = $this->market_price;
+            }else{
+                $price = $this->price;
+            }
         }
         /**
          *会员等级折扣

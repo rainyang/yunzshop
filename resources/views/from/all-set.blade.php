@@ -14,8 +14,8 @@
                 <template>
                     <el-form ref="form" :model="form" :rules="rules" label-width="15%">
                         <el-form-item label="折扣类型" prop="type">
-                            <el-radio v-model.number="form.type" :label="1">商品现价</el-radio>
-                            <el-radio v-model.number="form.type" :label="0">商品原价</el-radio>
+                            <el-radio v-model.number="form.type" :label="0">商品现价</el-radio>
+                            <el-radio v-model.number="form.type" :label="1">商品原价</el-radio>
                         </el-form-item>
                         <el-form-item>
                             <a href="#">
@@ -54,12 +54,10 @@
                         if (valid) {
                             this.submit_loading = true;
                             delete(this.form['thumb_url']);
-                            this.$http.post("{!! yzWebUrl('from.batch-discount.all-set-store') !!}",{'form_data':this.form}).then(response => {
-                                console.log(this.form);
-                                console.log(response);
+                            this.$http.post("{!! yzWebUrl('from.batch-discount.all-set') !!}",{'form_data':this.form}).then(response => {
                                 if (response.data.result) {
                                     this.$message({type: 'success',message: '操作成功!'});
-                                    // window.location.href='{!! yzWebFullUrl('from.batch-discount.allSet') !!}';
+                                     window.location.href='{!! yzWebFullUrl('from.batch-discount.allSet') !!}';
                                 } else {
                                     this.$message({message: response.data.msg,type: 'error'});
                                     this.submit_loading = false;

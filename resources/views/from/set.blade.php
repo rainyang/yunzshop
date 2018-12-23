@@ -17,7 +17,6 @@
                             <el-input v-model="form.classification" style="width:60%;" disabled></el-input>
                             <el-button type="primary" @click="visDia()">选择分类</el-button>
                             <el-dialog title="选择分类" :visible.sync="dialogTableVisible">
-                                <!-- <el-input v-model="form.search_name"  placeholder="请输入分类名称" style="width:90%"></el-input> -->
                                 <el-select
                                     value-key="id"
                                     @change="change"
@@ -49,15 +48,15 @@
                         </el-form-item>
 
                         <el-form-item label="折扣类型" prop="type">
-                            <el-radio v-model.number="form.discount_type" :label="1">会员等级</el-radio>
+                            <el-radio v-model="form.discount_type" :label="1">会员等级</el-radio>
                         </el-form-item>
                         <el-form-item label="折扣方式" prop="method">
-                            <el-radio v-model.number="form.discount_method" :label="1">折扣</el-radio>
-                            <el-radio v-model.number="form.discount_method" :label="2">固定金额</el-radio>
+                            <el-radio v-model="form.discount_method" :label="1">折扣</el-radio>
+                            <el-radio v-model="form.discount_method" :label="2">固定金额</el-radio>
                         </el-form-item>
-                        <el-form-item>
+                        <el-form-item prop="">
                             <template v-for="(item,index) in member_list">
-                                <el-input v-model="form.discount[item.id]" style="width:70%;padding:10px 0;">
+                                <el-input type="number" v-model.number="form.discount_value[item.id]" style="width:70%;padding:10px 0;">
                                     <template slot="prepend">[[item.level_name]]</template>
                                     <template slot="append" v-if="form.discount_method==1">%</template>
                                     <template slot="append" v-if="form.discount_method==2">元</template>
@@ -90,25 +89,29 @@
             data() {
                 let member_list = JSON.parse('{!! $levels?:'{}' !!}');
                 let url = JSON.parse('{!! $url !!}');
-                let categoryDiscount = JSON.parse('{!! $categoryDiscount !!}');
-                console.log(categoryDiscount)
-                console.log(url);
-                console.log(member_list);
-                {{--let categoryDiscount = JSON.parse('{!! $categoryDiscount?:'{}' !!}');--}}
-                // console.log(categoryDiscount);
-                console.log(member_list);
+                let categoryDiscount = JSON.parse('{!! $categoryDiscount?:'{}' !!}');
+                console.log(categoryDiscount);
                 let form ={
                         discount_type:1,
                         discount_method:1,
-                        // member:"",
-                        discount:[],
+                        discount_value:[],
                         classification:"",
                         search_categorys:"",
-                        // ...categoryDiscount
+                        ...categoryDiscount
                     };
-                // console.log(form)
+
                 let classic =[];
                 form.classification = classic.join(",");
+
+                // var checkNumber = (rule, value, callback) => {
+                //     if (!Number.isInteger(value)) {
+                //         callback(new Error('请输入数字'));
+                //     }
+                //     setTimeout(() => {
+                //         callback();
+                //     }, 1000);
+                // };
+
                 return{
                     url:url,
                     form:form,
@@ -120,9 +123,10 @@
                     loading: false,
                     submit_loading: false,
                     rules: {
-                        // sort: [
-                        //     { required: true,type: 'number', message: '请输入数字'},
+                        // discount_value: [
+                        //     { required: false,type: 'number', message: '请输入数字'},
                         //     { type: 'number', min: 1, max: 99999, message: '请输入1-99999'},
+                            // { validator : checkNumber }
                         // ],
                         // name: [
                         //     { required: true,message: '请输入分类名称', trigger: 'blur' },
@@ -168,16 +172,9 @@
                 submitForm(formName) {
                     this.$refs[formName].validate((valid) => {
                         if (valid) {
-                            // var obj={};
-                            // var index=[];
-                            // for(var i=0;i<this.member_list.length;i++){
-                            //     index[i] = this.member_list[i].id
-                            //     obj[''+index[i]+''] = this.form.discount[i];
-                            // }
-                            // this.form.discount=obj;
                             this.submit_loading = true;
-                            
                             this.$http.post(this.url,{'form_data':this.form}).then(response => {
+                                console.log(this.form);
                                 if (response.data.result) {
                                     this.$message({type: 'success',message: '操作成功!'});
                                     window.location.href='{!! yzWebFullUrl('from.batch-discount.index') !!}';
