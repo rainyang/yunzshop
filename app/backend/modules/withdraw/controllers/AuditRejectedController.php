@@ -83,12 +83,16 @@ class AuditRejectedController extends PreController
     {
         $id = \YunShop::request()['id'];
         $amount = $this->withdrawModel->amount;
+        echo $amount.'<br>';
         $member_id = $this->withdrawModel->member_id;
+        echo $member_id.'<br>';
         $memberModel = Member::where('uid',$member_id)->first()->toArray();
+        dd($memberModel['credit2']);
         //用户余额
         $balance = $memberModel['credit2'];
+        $sum = $balance + $amount;
         if($member_id){
-            return Member::where('uid', $member_id)->update(['credit2' => $balance + $amount]);
+            return Member::where('uid', $member_id)->update(['credit2' => $sum]);
         }
         return false;
     }
