@@ -209,7 +209,7 @@ class PreOrder extends Order
             'price' => $this->getPrice(),//订单最终支付价格
             'order_goods_price' => $this->getOrderGoodsPrice(),//订单商品成交价
             'goods_price' => $this->getGoodsPrice(),//订单商品原价
-            'cost_amount' => $this->getGoodsPrice(),//订单商品原价
+            'cost_amount' => $this->getCostPrice(),//订单商品原价
             'discount_price' => $this->getDiscountAmount(),//订单优惠金额
             'deduction_price' => $this->getDeductionAmount(),//订单抵扣金额
             'dispatch_price' => $this->getDispatchAmount(),//订单运费
@@ -225,6 +225,16 @@ class PreOrder extends Order
         $attributes = array_merge($this->getAttributes(), $attributes);
         $this->setRawAttributes($attributes);
 
+    }
+
+    public function getCostPrice()
+    {
+        //累加所有商品数量
+        $result = $this->orderGoods->sum(function ($aOrderGoods) {
+            return $aOrderGoods->cost_price;
+        });
+
+        return $result;
     }
 
     /**

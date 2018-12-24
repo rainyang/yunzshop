@@ -5,7 +5,6 @@
     <div class="w1200 m0a">
         <div class="rightlist" id="member-blade">
             @include('layouts.tabs')
-            @if(app('plugins')->isEnabled('supplier'))
             <div class="panel panel-default">
                 <div class="panel-body">
                     <div class='alert alert-info'>
@@ -81,9 +80,6 @@
                     {{--{!! $page !!}--}}
                 </div>
             </div>
-            @else
-                未开启供应商插件
-            @endif
         </div>
     </div>
     <script>
