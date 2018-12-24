@@ -14,7 +14,7 @@ use app\backend\modules\withdraw\models\Withdraw;
 use app\common\exceptions\ShopException;
 use Illuminate\Support\Facades\DB;
 use app\common\models\Member;
-use app\backend\modules\finance\controllers\attachedMode;
+use app\backend\modules\finance\controllers\BalanceWithdrawController;
 
 class AuditRejectedController extends PreController
 {
@@ -83,7 +83,8 @@ class AuditRejectedController extends PreController
     {
         $amount = $this->withdrawModel->amount;
         $income_ids = explode(',', $this->withdrawModel->type_id);
-        $memberModel = Member::where('uid',attachedMode::attachedMode())->first()->toArray();
+        $uid = BalanceWithdrawController::attachedMode();
+        $memberModel = Member::where('uid',$uid)->first()->toArray();
         //用户余额
         $balance = $memberModel->credit2;
         if (count($income_ids) > 0) {
