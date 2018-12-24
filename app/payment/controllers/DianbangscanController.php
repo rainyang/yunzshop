@@ -149,6 +149,10 @@ class DianbangscanController extends PaymentController
         return true;
     }
 
+    public function generateSign($params, $signType = 'md5') {
+        return $this->sign($this->getSignContent($params), $signType);
+    }
+    
     /**
      * 生成signString
      * @param $params
