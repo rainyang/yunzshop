@@ -85,7 +85,6 @@ class AuditRejectedController extends PreController
         $amount = $this->withdrawModel->amount;
         $member_id = $this->withdrawModel->member_id;
         $memberModel = Member::where('uid',$member_id)->first()->toArray();
-        dd($memberModel);
         //用户余额
         $balance = $memberModel['credit2'];
         if($member_id){
