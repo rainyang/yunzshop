@@ -16,6 +16,7 @@ use app\backend\modules\finance\services\WithdrawService;
 use app\common\components\BaseController;
 use app\common\services\finance\BalanceNoticeService;
 use Illuminate\Support\Facades\Log;
+use app\backend\modules\withdraw\controllers\AuditController;
 
 class BalanceWithdrawController extends BaseController
 {
@@ -83,6 +84,10 @@ class BalanceWithdrawController extends BaseController
 
         if ($this->getPostStatus() == -1) {
             BalanceNoticeService::withdrawFailureNotice($this->withdrawModel);
+        }
+        if ($this->getPostStatus() == 3) {
+            return (new AuditRejectedController())->index();
+            BalanceNoticeService::withdrawRejectNotice($this->withdrawModel);
         }
         $this->withdrawUpdate();
         return $this->message('提交审核成功', yzWebUrl("finance.balance-withdraw.detail", ['id' => $this->getPostId()]));
