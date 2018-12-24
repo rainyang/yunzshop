@@ -95,10 +95,10 @@ class BatchDiscountController extends BaseController
         $set_data = request()->form_data;
 
         if ($set_data) {
-            Setting::set('from.all_set', $set_data);
+            Setting::set('discount.all_set', $set_data);
             return $this->successJson('ok');
         }
-        $set = Setting::get('from.all_set');
+        $set = Setting::get('discount.all_set');
 
         return view('discount.all-set',[
             'set' => json_encode($set),

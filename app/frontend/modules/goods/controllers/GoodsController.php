@@ -3,6 +3,7 @@ namespace app\frontend\modules\goods\controllers;
 
 use app\backend\modules\goods\models\Brand;
 use app\common\components\ApiController;
+use app\common\facades\Setting;
 use app\common\models\Category;
 use app\common\models\Goods;
 use app\common\models\GoodsSpecItem;
@@ -372,7 +373,12 @@ class GoodsController extends ApiController
         if ($memberModel->level) {
 
             if ($discount_value === null) {
-                $discount_value = $goodsModel->price * ($memberModel->level->discount / 10);
+                $level_discount_set = Setting::get('discount.all_set');
+                if (isset($level_discount_set) && $level_discount_set == 1) {
+                    $discount_value = $goodsModel->market_price * ($memberModel->level->discount / 10);
+                }else{
+                    $discount_value = $goodsModel->price * ($memberModel->level->discount / 10);
+                }
             }
 
             $data = [

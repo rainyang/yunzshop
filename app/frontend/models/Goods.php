@@ -73,7 +73,7 @@ class Goods extends \app\common\models\Goods
     protected function _getVipDiscountAmount($price = null){
 
         if(!isset($price)){
-            $level_discount_set = Setting::get('from.all_set');
+            $level_discount_set = Setting::get('discount.all_set');
             if (isset($level_discount_set['type']) && $level_discount_set['type'] == 1) {
                 $price = $this->market_price;
             }else{
