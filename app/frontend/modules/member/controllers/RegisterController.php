@@ -561,9 +561,13 @@ class RegisterController extends ApiController
 
     public function chkRegister()
     {
+        $member = Setting::get('shop.member');
         $shop_reg_close = 1;
         $app_reg_close  = 0;
-        $msg = '请使用微信绑定注册或微信登录';
+        $msg = $member["shop_msg"];//关闭原因
+        if ($member["get_type"]==0){
+            return $this->error($msg);
+        }
 
         if (!is_null($app_set = \Setting::get('shop_app.pay')) && 0 == $app_set['phone_oauth']) {
             $app_reg_close = 1;
