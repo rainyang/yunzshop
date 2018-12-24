@@ -56,10 +56,10 @@ class AuditRejectedController extends PreController
         if (!$result) {
             throw new ShopException('驳回失败：更新状态失败');
         }
-        $result = $this->updateIncomePayStatus();
-        if (!$result) {
-            throw new ShopException('驳回失败：更新收入失败');
-        }
+//        $result = $this->updateIncomePayStatus();
+//        if (!$result) {
+//            throw new ShopException('驳回失败：更新收入失败');
+//        }
     }
 
     /**
@@ -79,7 +79,7 @@ class AuditRejectedController extends PreController
     private function updateIncomePayStatus()
     {
         $income_ids = explode(',', $this->withdrawModel->type_id);
-dd($income_ids);
+
         if (count($income_ids) > 0) {
             return Income::whereIn('id', $income_ids)->where('pay_status', Income::PAY_STATUS_INITIAL)->update(['status' => Income::STATUS_INITIAL, 'pay_status' => Income::PAY_STATUS_REJECT]);
         }
