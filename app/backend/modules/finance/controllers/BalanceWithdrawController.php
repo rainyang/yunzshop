@@ -16,7 +16,7 @@ use app\backend\modules\finance\services\WithdrawService;
 use app\common\components\BaseController;
 use app\common\services\finance\BalanceNoticeService;
 use Illuminate\Support\Facades\Log;
-use app\backend\modules\withdraw\controllers\AuditController;
+use app\backend\modules\withdraw\controllers\AuditRejectedController;
 
 class BalanceWithdrawController extends BaseController
 {
