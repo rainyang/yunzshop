@@ -996,7 +996,7 @@ return [
 
                 'goods_discount_set'=> [
                     'name'              => '折扣设置',
-                    'url'               => 'discount.batch-discount.store',
+                    'url'               => 'discount.batch-discount.index',
                     'url_params'        => '',
                     'permit'            => 1,
                     'menu'              => 1,

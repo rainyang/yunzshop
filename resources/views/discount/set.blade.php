@@ -25,7 +25,7 @@
                                     multiple
                                     remote
                                     reserve-keyword
-                                    placeholder="请输入分类名称"
+                                    :placeholder="form.classification"
                                     :remote-method="loadCategorys"
                                     :loading="loading"
                                     style="width:100%">
@@ -147,6 +147,11 @@
                 }
                 this.form.classification = this.classic.join(",");
             },
+            watch: {
+                classic(){
+                    this.search_categorys = this.classic.join(",")
+                }
+            },
             methods: {
                 change(item){
                     for(var k=0;k<item.length;k++){
@@ -179,14 +184,14 @@
                     }
                 },
                 submitForm(formName) {
-                    if(this.form.discount_method == 1){
-                        for(let i=0;i<this.member_list.length;i++){
-                            if(this.form.discount_value[i]<10||this.form.discount_value[i]>0){
-                                this.$message({message: "折扣数值不能大于10或者小于0",type: 'error'});
-                                return false;
-                            }
-                        }
-                    }
+                    // if(this.form.discount_method == 1){
+                    //     for(let i=0;i<this.member_list.length;i++){
+                    //         if(this.form.discount_value[i]<10||this.form.discount_value[i]>0){
+                    //             this.$message({message: "折扣数值不能大于10或者小于0",type: 'error'});
+                    //             return false;
+                    //         }
+                    //     }
+                    // }
 
                     this.$refs[formName].validate((valid) => {
                         if (valid) {
