@@ -25,15 +25,8 @@ class DianbangscanController extends PaymentController
         parent::__construct();
 
         if (empty(\YunShop::app()->uniacid)) {
-
-            $this->xml = file_get_contents('php://input');
-
-            $obj = simplexml_load_string($this->xml, 'SimpleXMLElement', LIBXML_NOCDATA);
-
-            $this->parameters = json_decode(json_encode($obj), true);
-
-            \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $this->parameters['attach'];
-
+            $this->parameters = $_POST;
+            \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $this->parameters['billDesc'];
             AccountWechats::setConfig(AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid));
         }
     }
@@ -54,28 +47,28 @@ class DianbangscanController extends PaymentController
         if($this->verify()) {
 
             \Log::info('------店帮微信验证成功-----');
-            if ($this->getParameter('status') == 0 && $this->getParameter('resul t_code') == 0) {
+            if ($this->parameters['billPayment']['status'] == 'TRADE_SUCCESS') {
                 \Log::info('-------店帮微信支付开始---------->');
                 $data = [
-                    'total_fee'    => floatval($this->getParameter('total_fee')),
-                    'out_trade_no' => $this->getParameter('out_trade_no'),
-                    'trade_no'     => 'dian-bang-scan',
+                    'total_fee'    => floatval($this->getParameter('totalAmount')),
+                    'out_trade_no' => $order_no[1],
+                    'trade_no'     => $this->parameters['billPayment']['targetOrderId'],
                     'unit'         => 'fen',
                     'pay_type'     => '店帮微信支付',
                     'pay_type_id'  => 24,
                 ];
                 $this->payResutl($data);
                 \Log::info('<---------店帮微信支付结束-------');
-                echo 'success';
+                echo 'SUCCESS';
                 exit();
             } else {
                 //支付失败
-                echo 'failure';
+                echo 'FAILED';
                 exit();
             }
         } else {
             //签名验证失败
-            echo 'failure';
+            echo 'FAILED';
             exit();
         }
     }
@@ -155,7 +148,7 @@ class DianbangscanController extends PaymentController
 
         return true;
     }
-    
+
     /**
      * 生成signString
      * @param $params
