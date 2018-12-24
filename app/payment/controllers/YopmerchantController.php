@@ -9,7 +9,7 @@
 namespace app\payment\controllers;
 
 use app\payment\YopController;
-
+use Yunshop\YopPay\models\SubMerchant;
 
 class YopmerchantController extends YopController
 {
@@ -22,7 +22,7 @@ class YopmerchantController extends YopController
         $this->yopResponse('子商户入网', $this->parameters, 'sub');
 
 
-        $son = \Yunshop\YopPay\models\SubMerchant::where('requestNo', $this->parameters['requestNo'])->first();
+        $son = SubMerchant::where('requestNo', $this->parameters['requestNo'])->first();
 
         if (empty($son)) {
             exit('Merchant does not exist');
@@ -45,7 +45,7 @@ class YopmerchantController extends YopController
 
     protected function merNetInStatus()
     {
-        $status = SubMerchant::INVALID;
+        $status = \Yunshop\YopPay\models\SubMerchant::INVALID;
         if (!empty($this->parameters['merNetInStatus'])) {
             switch ($this->parameters['merNetInStatus']) {
                 case 'PROCESS_SUCCESS': //审核通过
@@ -75,7 +75,7 @@ class YopmerchantController extends YopController
 
         $this->yopResponse('聚合报备', $this->parameters, 'back');
 
-        $son = \Yunshop\YopPay\models\SubMerchant::withoutGlobalScope('is_son')->isSon(0)->where('merchantNo', $this->parameters['merchantNo'])->first();
+        $son = SubMerchant::withoutGlobalScope('is_son')->isSon(0)->where('merchantNo', $this->parameters['merchantNo'])->first();
 
         if (empty($son)) {
             exit('Merchant does not exist');

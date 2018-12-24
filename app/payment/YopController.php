@@ -54,6 +54,6 @@ class YopController extends BaseController
 
     protected function yopResponse($desc,$params, $type = 'unify')
     {
-        \Yunshop\YopPay\common\YopLog::yopRequest($desc, $params, $type);
+        \Yunshop\YopPay\common\YopLog::yopResponse($desc, $params, $type);
     }
 }
