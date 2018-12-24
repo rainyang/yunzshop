@@ -138,6 +138,15 @@
                     },
                 }
             },
+            mounted:function() {
+                console.log("hahah");
+                if(this.form.category_ids) {
+                    for(var j=0;j<this.form.category_ids.length;j++){
+                        this.classic[j] = "[ID:"+this.form.category_ids[j].id+"][分类："+this.form.category_ids[j].name+"]";
+                    }
+                }
+                this.form.classification = this.classic.join(",");
+            },
             methods: {
                 change(item){
                     for(var k=0;k<item.length;k++){
