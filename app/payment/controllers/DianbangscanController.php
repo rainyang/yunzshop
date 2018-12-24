@@ -45,7 +45,7 @@ class DianbangscanController extends PaymentController
 
         $this->log($this->parameters, '店帮微信');
 
-        $set = \Setting::get('plugin.wft_pay');
+        $set = \Setting::get('plugin.dian-bang-scan');
         $this->setKey($set['key']);
 
         if($this->getSignResult()) {
@@ -55,10 +55,10 @@ class DianbangscanController extends PaymentController
                 $data = [
                     'total_fee'    => floatval($this->getParameter('total_fee')),
                     'out_trade_no' => $this->getParameter('out_trade_no'),
-                    'trade_no'     => 'wft_pay',
+                    'trade_no'     => 'dian-bang-scan',
                     'unit'         => 'fen',
                     'pay_type'     => '店帮微信支付',
-                    'pay_type_id'  => 20,
+                    'pay_type_id'  => 24,
                 ];
                 $this->payResutl($data);
                 \Log::info('<---------店帮微信支付结束-------');
@@ -80,9 +80,9 @@ class DianbangscanController extends PaymentController
     public function alipayNotifyUrl()
     {
         \Log::debug('------------店帮支付宝异步通知---------------->');
-        $this->log($this->parameters, '威店帮支付宝');
+        $this->log($this->parameters, '店帮支付宝');
 
-        $set = \Setting::get('plugin.wft_alipay');
+        $set = \Setting::get('plugin.dian-bang-scan');
         $this->setKey($set['key']);
 
         if($this->getSignResult()) {
@@ -92,10 +92,10 @@ class DianbangscanController extends PaymentController
                 $data = [
                     'total_fee'    => floatval($this->getParameter('total_fee')),
                     'out_trade_no' => $this->getParameter('out_trade_no'),
-                    'trade_no'     => 'wft_alipay',
+                    'trade_no'     => 'dian-bang-scan',
                     'unit'         => 'fen',
                     'pay_type'     => '店帮支付宝',
-                    'pay_type_id'  => 21,
+                    'pay_type_id'  => 24,
                 ];
                 $this->payResutl($data);
                 \Log::info('<---------店帮支付宝支付结束-------');

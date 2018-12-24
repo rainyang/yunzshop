@@ -10,6 +10,7 @@ namespace app\common\services;
 
 
 use app\common\exceptions\AppException;
+use Yunshop\DianBangScan\services\DianBangScanService;
 
 class PayFactory
 {
@@ -112,6 +113,11 @@ class PayFactory
      */
     const PAY_PLD = 23;
 
+    /**
+     * DIANBANG-支付  店帮扫码支付
+     */
+    const PAY_DIANBANG = 24;
+
 
     public static function create($type = null)
     {
@@ -199,6 +205,13 @@ class PayFactory
                 }
 
                 $className = new \Yunshop\PLdPay\services\PldWithdrawService();
+                break;
+            case self::PAY_DIANBANG:
+                if (!app('plugins')->isEnabled('dian-bang-scan')) {
+                    throw new AppException('插件未开启');
+                }
+
+                $className = new \Yunshop\DianBangScan\services\DianBangScanService();
                 break;
             default:
                 $className = null;
