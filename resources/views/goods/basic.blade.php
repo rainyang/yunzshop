@@ -195,6 +195,18 @@
     </div>
 </div>
 
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">不可退货退款</label>
+    <div class="col-sm-9 col-xs-12">
+        <label for="norefund1" class="radio-inline">
+            <input type="radio" name="goods[no_refund]" value="1" id="norefund1" @if ($goods['no_refund'] == 1) checked="true" @endif /> 是</label>
+        &nbsp;&nbsp;&nbsp;
+        <label for="norefund2" class="radio-inline">
+            <input type="radio" name="goods[no_refund]" value="0" id="norefund2"  @if ($goods['no_refund'] == 0) checked="true" @endif /> 否</label>
+        <span class="help-block"></span>
+
+    </div>
+</div>
 
 <!-->
 @section('isputaway')
@@ -209,7 +221,6 @@
     </div>
 </div>
 @show
-
 <script type="text/javascript">
     $('#brand').select2();
 
