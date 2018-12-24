@@ -13,9 +13,12 @@ use app\backend\modules\income\models\Income;
 use app\backend\modules\withdraw\models\Withdraw;
 use app\common\exceptions\ShopException;
 use Illuminate\Support\Facades\DB;
+use app\common\models\Member;
+use app\backend\modules\finance\controllers\attachedMode;
 
 class AuditRejectedController extends PreController
 {
+
     /**
      * 提现记录 审核后驳回接口
      */
@@ -23,7 +26,7 @@ class AuditRejectedController extends PreController
     {
         $result = $this->auditedRebut();
         if ($result == true) {
-            BalanceNoticeService::withdrawRejectNotice($this->withdrawModel);
+//            BalanceNoticeService::withdrawRejectNotice($this->withdrawModel);
             return $this->message('驳回成功', yzWebUrl("withdraw.detail.index", ['id' => $this->withdrawModel->id]));
         }
         return $this->message('驳回失败，请刷新重试', yzWebUrl("withdraw.detail.index", ['id' => $this->withdrawModel->id]), 'error');
@@ -56,10 +59,10 @@ class AuditRejectedController extends PreController
         if (!$result) {
             throw new ShopException('驳回失败：更新状态失败');
         }
-//        $result = $this->updateIncomePayStatus();
-//        if (!$result) {
-//            throw new ShopException('驳回失败：更新收入失败');
-//        }
+        $result = $this->updateBalance();
+        if (!$result) {
+            throw new ShopException('驳回失败：更新余额失败');
+        }
     }
 
     /**
@@ -76,12 +79,15 @@ class AuditRejectedController extends PreController
     /**
      * @return bool
      */
-    private function updateIncomePayStatus()
+    private function updateBalance()
     {
+        $amount = $this->withdrawModel->amount;
         $income_ids = explode(',', $this->withdrawModel->type_id);
-
+        $memberModel = Member::where('uid',attachedMode::attachedMode())->first()->toArray();
+        //用户余额
+        $balance = $memberModel->credit2;
         if (count($income_ids) > 0) {
-            return Income::whereIn('id', $income_ids)->where('pay_status', Income::PAY_STATUS_INITIAL)->update(['status' => Income::STATUS_INITIAL, 'pay_status' => Income::PAY_STATUS_REJECT]);
+            return Member::whereIn('id', $income_ids)->update(['credit2' => $balance + $amount]);
         }
         return false;
     }
