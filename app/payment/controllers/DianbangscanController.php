@@ -45,8 +45,8 @@ class DianbangscanController extends PaymentController
         $this->setKey($set['key']);
 
         $order_no = explode('-', $this->getParameter('billNo'));
-
-        if($this->getSignResult()) {
+//        dd($order_no);
+        if($this->verify()) {
             \Log::info('------店帮微信验证成功-----');
             if ($this->parameters['billPayment']['status'] == 'TRADE_SUCCESS') {
                 \Log::info('-------店帮微信支付开始---------->');
@@ -75,73 +75,136 @@ class DianbangscanController extends PaymentController
     }
 
     //支付宝支付通知
-    public function alipayNotifyUrl()
-    {
-        \Log::debug('------------店帮支付宝异步通知---------------->');
-        $this->log($this->parameters, '店帮支付宝');
-
-        $set = \Setting::get('plugin.dian-bang-scan');
-        $this->setKey($set['key']);
-
-        if($this->getSignResult()) {
-            \Log::info('------店帮支付宝验证成功-----');
-            if ($this->getParameter('status') == 0 && $this->getParameter('result_code') == 0) {
-                \Log::info('-------店帮支付宝支付开始---------->');
-                $data = [
-                    'total_fee'    => floatval($this->getParameter('total_fee')),
-                    'out_trade_no' => $this->getParameter('out_trade_no'),
-                    'trade_no'     => 'dian-bang-scan',
-                    'unit'         => 'fen',
-                    'pay_type'     => '店帮支付宝',
-                    'pay_type_id'  => 24,
-                ];
-                $this->payResutl($data);
-                \Log::info('<---------店帮支付宝支付结束-------');
-                echo 'success';
-                exit();
-            } else {
-                //支付失败
-                echo 'failure';
-                exit();
-            }
-        } else {
-            //签名验证失败
-            echo 'failure';
-            exit();
-        }
-    }
+//    public function alipayNotifyUrl()
+//    {
+//        \Log::debug('------------店帮支付宝异步通知---------------->');
+//        $this->log($this->parameters, '店帮支付宝');
+//
+//        $set = \Setting::get('plugin.dian-bang-scan');
+//        $this->setKey($set['key']);
+//
+//        if($this->getSignResult()) {
+//            \Log::info('------店帮支付宝验证成功-----');
+//            if ($this->getParameter('status') == 0 && $this->getParameter('result_code') == 0) {
+//                \Log::info('-------店帮支付宝支付开始---------->');
+//                $data = [
+//                    'total_fee'    => floatval($this->getParameter('total_fee')),
+//                    'out_trade_no' => $this->getParameter('out_trade_no'),
+//                    'trade_no'     => 'dian-bang-scan',
+//                    'unit'         => 'fen',
+//                    'pay_type'     => '店帮支付宝',
+//                    'pay_type_id'  => 24,
+//                ];
+//                $this->payResutl($data);
+//                \Log::info('<---------店帮支付宝支付结束-------');
+//                echo 'success';
+//                exit();
+//            } else {
+//                //支付失败
+//                echo 'failure';
+//                exit();
+//            }
+//        } else {
+//            //签名验证失败
+//            echo 'failure';
+//            exit();
+//        }
+//    }
 
     public function returnUrl()
     {
+//        dd(1);
 
+//        $trade = \Setting::get('shop.trade');
+//
+//        if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
+//            return redirect($trade['redirect_url'])->send();
+//        }
+//
+//        if (0 == $_GET['state'] && $_GET['errorDetail'] == '成功') {
+//            redirect(Url::absoluteApp('member/payYes', ['i' => $_GET['attach']]))->send();
+//        } else {
+//            redirect(Url::absoluteApp('member/payErr', ['i' => $_GET['attach']]))->send();
+//        }
+    }
+
+
+
+    /**
+     * 验证签名是否正确
+     * @param $data
+     * @return bool
+     */
+    function verify($data) {
+        //返回参数生成sign
+        $signType = empty($data['signType']) ? 'md5' : $data['signType'];
+        $sign = $this->generateSign($data, $signType);
+
+        //返回的sign
+        $returnSign = $data['sign'];
+
+        if ($returnSign != $sign) {
+            return false;
+        }
+
+        return true;
+    }
+
+
+    /**
+     * 根绝类型生成sign
+     * @param $params
+     * @param string $signType
+     * @return string
+     */
+    public function generateSign($params, $signType = 'md5') {
+        return $this->sign($this->getSignContent($params), $signType);
     }
 
     /**
-     * 签名验证
-     *
-     * @return bool
+     * 生成signString
+     * @param $params
+     * @return string
      */
-    public function getSignResult()
-    {
-        $swiftpassSign = strtolower($this->getParameter('sign'));
-        $md5Sign = $this->getMD5Sign();
-
-        return $swiftpassSign == $md5Sign;
-    }
-
-    //MD5签名
-    public function getMD5Sign() {
-        $signPars = "";
-        ksort($this->parameters);
-        foreach($this->parameters as $k => $v) {
-            if("sign" != $k && "" != $v) {
-                $signPars .= $k . "=" . $v . "&";
+    public function getSignContent($params) {
+        //sign不参与计算
+        $params['sign'] = '';
+        //排序
+        ksort($params);
+        $paramsToBeSigned = [];
+        foreach ($params as $k=>$v) {
+            if ($v !== '')
+            {
+                if (is_array($v))
+                {
+                    $paramsToBeSigned[] = $k.'='.str_replace("\\/", "/", json_encode($v,JSON_UNESCAPED_UNICODE));
+                }else{
+                    $paramsToBeSigned[] = $k.'='.$v;
+                }
             }
         }
-        $signPars .= "key=" . $this->getKey();
+        unset ($k, $v);
 
-        return strtolower(md5($signPars));
+        //签名字符串
+        $stringToBeSigned = implode('&', $paramsToBeSigned);
+        $stringToBeSigned .= $this->key;
+
+        return $stringToBeSigned;
     }
+
+    /**
+     * 生成签名
+     * @param $data
+     * @param string $signType
+     * @return string
+     */
+    protected function sign($data, $signType = "md5") {
+        $sign = hash($signType, $data);
+
+        return strtoupper($sign);
+    }
+
+
 
     /**
      *设置密钥
