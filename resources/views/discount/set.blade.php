@@ -179,6 +179,15 @@
                     }
                 },
                 submitForm(formName) {
+                    if(this.form.discount_method == 1){
+                        for(let i=0;i<this.member_list.length;i++){
+                            if(this.form.discount_value[i]<10||this.form.discount_value[i]>0){
+                                this.$message({message: "折扣数值不能大于10或者小于0",type: 'error'});
+                                return false;
+                            }
+                        }
+                    }
+
                     this.$refs[formName].validate((valid) => {
                         if (valid) {
                             this.submit_loading = true;
