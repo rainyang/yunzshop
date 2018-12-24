@@ -8,11 +8,10 @@
         </label>
     @endif
 @endsection
-
 @section('operation_resend')
     @if($order['has_one_refund_apply']['status'] < \app\common\models\refund\RefundApply::WAIT_RESEND_GOODS)
 
-        <lab el class='radio-inline'>
+        <label class='radio-inline'>
             <input type='radio' value='5' class="refund-action" name='refund_status'
                    data-action="{{yzWebUrl('refund.operation.resend')}}"
                    @if($order['has_one_refund_apply']['status'] < \app\backend\modules\refund\models\RefundApply::COMPLETE) checked @endif>

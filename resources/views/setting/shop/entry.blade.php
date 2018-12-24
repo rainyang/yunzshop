@@ -22,7 +22,7 @@
                     <li>
                         <p>全部商品</p>
                         {!! QrCode::size(200)->generate(yzAppFullUrl('search')) !!}
-                        <h5><a href="javascript:;" data-clipboard-text="{!! yzAppFullUrl('search') !!}" data-url="{!! yzAppFullUrl('search') !!}" class="js-clip" title="复制链接">复制链接</a></h5>
+                        <h5><a href="javascript:;" data-clipboard-text="{!! yzAppFullUrl('searchAll') !!}" data-url="{!! yzAppFullUrl('searchAll') !!}" class="js-clip" title="复制链接">复制链接</a></h5>
                     </li>
                 </ul>
             </div>
