@@ -88,7 +88,7 @@ class AuditRejectedController extends PreController
         //用户余额
         $balance = $memberModel->credit2;
         if($member_id){
-            return Member::whereIn('id', $member_id)->update(['credit2' => $balance + $amount]);
+            return Member::where('uid', $member_id)->update(['credit2' => $balance + $amount]);
         }
         return false;
     }
