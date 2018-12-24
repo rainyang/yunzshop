@@ -53,11 +53,10 @@
                     this.$refs[formName].validate((valid) => {
                         if (valid) {
                             this.submit_loading = true;
-                            delete(this.form['thumb_url']);
-                            this.$http.post("{!! yzWebUrl('from.batch-discount.all-set') !!}",{'form_data':this.form}).then(response => {
+                            this.$http.post("{!! yzWebUrl('discount.batch-discount.all-set') !!}",{'form_data':this.form}).then(response => {
                                 if (response.data.result) {
                                     this.$message({type: 'success',message: '操作成功!'});
-                                     window.location.href='{!! yzWebFullUrl('from.batch-discount.allSet') !!}';
+                                     window.location.href='{!! yzWebFullUrl('discount.batch-discount.allSet') !!}';
                                 } else {
                                     this.$message({message: response.data.msg,type: 'error'});
                                     this.submit_loading = false;

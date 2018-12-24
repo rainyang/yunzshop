@@ -162,12 +162,12 @@
                     this.form.classification = this.classic.join(",");
                 },
                 goBack() {
-                    window.location.href='{!! yzWebFullUrl('from.batch-discount.index') !!}';
+                    window.location.href='{!! yzWebFullUrl('discount.batch-discount.index') !!}';
                 },
                 loadCategorys(query) {
                     if (query !== '') {
                         this.loading = true;
-                        this.$http.get("{!! yzWebUrl('from.batch-discount.select-category', ['keyword' => '']) !!}" + query).then(response => {
+                        this.$http.get("{!! yzWebUrl('discount.batch-discount.select-category', ['keyword' => '']) !!}" + query).then(response => {
                             this.categorys = response.data.data;
                             this.data=response.data.data;
                             this.loading = false;
@@ -186,7 +186,7 @@
                                 console.log(this.form);
                                 if (response.data.result) {
                                     this.$message({type: 'success',message: '操作成功!'});
-                                    window.location.href='{!! yzWebFullUrl('from.batch-discount.index') !!}';
+                                    window.location.href='{!! yzWebFullUrl('discount.batch-discount.index') !!}';
                                 } else {
                                     this.$message({message: response.data.msg,type: 'error'});
                                     this.submit_loading = false;

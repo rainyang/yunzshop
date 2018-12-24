@@ -6,7 +6,7 @@
  * Time: 16:51
  */
 
-namespace app\backend\modules\from\models;
+namespace app\backend\modules\discount\models;
 
 
 use app\common\models\BaseModel;

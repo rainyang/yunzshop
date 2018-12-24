@@ -6,10 +6,10 @@
  * Time: 15:28
  */
 
-namespace app\backend\modules\from\controllers;
+namespace app\backend\modules\discount\controllers;
 
 
-use app\backend\modules\from\models\CategoryDiscount;
+use app\backend\modules\discount\models\CategoryDiscount;
 use app\backend\modules\goods\models\Category;
 use app\backend\modules\goods\models\Discount;
 use app\backend\modules\member\models\MemberLevel;
@@ -29,7 +29,7 @@ class BatchDiscountController extends BaseController
             $category[$k]['category_ids'] = Category::select('id', 'name')->whereIn('id', explode(',', $item['category_ids']))->get()->toArray();
         }
 
-        return view('from.discount',[
+        return view('discount.discount',[
             'category' => json_encode($category),
         ])->render();
     }
@@ -83,10 +83,10 @@ class BatchDiscountController extends BaseController
             ->whereIn('id', explode(',', $categoryDiscount['category_ids']))
             ->get()->toArray();
 
-        return view('from.set', [
+        return view('discount.set', [
             'levels' => json_encode($levels),
             'categoryDiscount' => json_encode($categoryDiscount),
-            'url' => json_encode(yzWebFullUrl('from.batch-discount.update-set',['id' => $id])),
+            'url' => json_encode(yzWebFullUrl('discount.batch-discount.update-set',['id' => $id])),
         ])->render();
     }
 
@@ -100,7 +100,7 @@ class BatchDiscountController extends BaseController
         }
         $set = Setting::get('from.all_set');
 
-        return view('from.all-set',[
+        return view('discount.all-set',[
             'set' => json_encode($set),
         ])->render();
     }
@@ -144,9 +144,9 @@ class BatchDiscountController extends BaseController
         $levels = MemberLevel::getMemberLevelList();
         $levels = array_merge($this->defaultLevel(), $levels);
 
-        return view('from.set', [
+        return view('discount.set', [
             'levels' => json_encode($levels),
-            'url' => json_encode(yzWebFullUrl('from.batch-discount.store')),
+            'url' => json_encode(yzWebFullUrl('discount.batch-discount.store')),
         ])->render();
     }
 
