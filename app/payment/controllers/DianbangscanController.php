@@ -26,12 +26,8 @@ class DianbangscanController extends PaymentController
 
         if (empty(\YunShop::app()->uniacid)) {
 
-            $this->xml = file_get_contents('php://input');
-
-            $obj = simplexml_load_string($this->xml, 'SimpleXMLElement', LIBXML_NOCDATA);
-
-            $this->parameters = json_decode(json_encode($obj), true);
-
+            $this->parameters = $_POST;
+\Log::debug('--------diang bang notify data-------', $_POST);
             \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $this->parameters['attach'];
 
             AccountWechats::setConfig(AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid));
@@ -111,6 +107,11 @@ class DianbangscanController extends PaymentController
             echo 'failure';
             exit();
         }
+    }
+
+    public function returnUrl()
+    {
+
     }
 
     /**
