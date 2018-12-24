@@ -58,7 +58,7 @@
                             <template v-for="(item,index) in member_list">
                                 <el-input type="number" v-model.number="form.discount_value[item.id]" style="width:70%;padding:10px 0;">
                                     <template slot="prepend">[[item.level_name]]</template>
-                                    <template slot="append" v-if="form.discount_method==1">%</template>
+                                    <template slot="append" v-if="form.discount_method==1">折</template>
                                     <template slot="append" v-if="form.discount_method==2">元</template>
                                 </el-input>
                             </template>
