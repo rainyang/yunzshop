@@ -38,6 +38,7 @@ class NormalOrderGoodsPrice extends BaseOrderGoodsPrice
         $this->price -= $this->getVipDiscountAmount();
 
         $this->price = max($this->price, 0);
+
         return $this->price;
     }
 
