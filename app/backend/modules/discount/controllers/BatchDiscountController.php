@@ -154,7 +154,7 @@ class BatchDiscountController extends BaseController
     {
         $kwd = \YunShop::request()->keyword;
         if ($kwd) {
-            $category = Category::getCategorysByName($kwd);
+            $category = Category::getNotOneCategorysByName($kwd);
             return $this->successJson('ok', $category);
         }
     }
