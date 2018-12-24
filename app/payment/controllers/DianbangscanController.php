@@ -27,8 +27,8 @@ class DianbangscanController extends PaymentController
         if (empty(\YunShop::app()->uniacid)) {
 
             $this->parameters = $_POST;
-\Log::debug('--------diang bang notify data-------', $_POST);
-            \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $this->parameters['attach'];
+
+            \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $this->parameters['billDesc'];
 
             AccountWechats::setConfig(AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid));
         }
@@ -44,30 +44,32 @@ class DianbangscanController extends PaymentController
         $set = \Setting::get('plugin.dian-bang-scan');
         $this->setKey($set['key']);
 
+        $order_no = explode('-', $this->getParameter('billNo'));
+
         if($this->getSignResult()) {
             \Log::info('------店帮微信验证成功-----');
-            if ($this->getParameter('status') == 0 && $this->getParameter('result_code') == 0) {
+            if ($this->parameters['billPayment']['status'] == 'TRADE_SUCCESS') {
                 \Log::info('-------店帮微信支付开始---------->');
                 $data = [
-                    'total_fee'    => floatval($this->getParameter('total_fee')),
-                    'out_trade_no' => $this->getParameter('out_trade_no'),
-                    'trade_no'     => 'dian-bang-scan',
+                    'total_fee'    => floatval($this->getParameter('totalAmount')),
+                    'out_trade_no' => $order_no[1],
+                    'trade_no'     => $this->parameters['billPayment']['targetOrderId'],
                     'unit'         => 'fen',
                     'pay_type'     => '店帮微信支付',
                     'pay_type_id'  => 24,
                 ];
                 $this->payResutl($data);
                 \Log::info('<---------店帮微信支付结束-------');
-                echo 'success';
+                echo 'SUCCESS';
                 exit();
             } else {
                 //支付失败
-                echo 'failure';
+                echo 'FAILED';
                 exit();
             }
         } else {
             //签名验证失败
-            echo 'failure';
+            echo 'FAILED';
             exit();
         }
     }
