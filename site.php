@@ -11,4 +11,4 @@ include_once __DIR__ . '/app/laravel.php';
 
 include_once __DIR__ . '/app/yunshop.php';
 
-
+exit;
