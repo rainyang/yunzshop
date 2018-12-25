@@ -8,7 +8,7 @@
 
     <div class="w1200 m0a">
         @include('layouts.tabs')
-        
+
         <div class="rightlist">
             <div id="app"  v-loading="submit_loading">
                 <template>
@@ -63,7 +63,7 @@
                                 </el-input>
                             </template>
                         </el-form-item>
-                        
+
                     <el-form-item>
                         <a href="#">
                             <el-button type="success" @click="submitForm('form')">
@@ -81,7 +81,7 @@
             </div>
         </div>
     </div>
-    
+
     <script>
         var vm = new Vue({
         el:"#app",
@@ -215,7 +215,7 @@
                         }
                     });
                 },
-                
+
             },
         });
     </script>
