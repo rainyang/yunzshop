@@ -138,7 +138,7 @@
                                                 <option value=""
                                                         @if( array_get($requestSearch,'time_range.field',''))selected="selected"@endif >
                                                     操作时间
-                                                    客户已经寄出快递                </option>
+                                                </option>
                                                 <option value="create_time"
                                                         @if( array_get($requestSearch,'time_range.field','')=='create_time')  selected="selected"@endif >
                                                     下单
