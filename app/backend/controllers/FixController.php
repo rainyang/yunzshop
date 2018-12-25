@@ -20,6 +20,7 @@ use Yunshop\Commission\services\CommissionOrderService;
 use Yunshop\Mryt\job\UpgradeByRegisterJob;
 use Yunshop\Mryt\listeners\MemberRelationEventListener;
 use Yunshop\Mryt\services\UpgradeService;
+use Yunshop\TeamDividend\models\TeamDividendModel;
 
 class FixController extends BaseController
 {
@@ -335,15 +336,26 @@ class FixController extends BaseController
         $order_sn = \YunShop::request()->order_sn;
         $order = Order::uniacid()->where('order_sn', $order_sn)->first();
         $result = (new \Yunshop\Commission\Listener\OrderCreatedListener())->handler($order);
-        echo $result;
+        $commission_order = CommissionOrder::uniacid()->where('ordertable_id', $order->id)->first();
+        if ($commission_order) {
+            echo '成功';
+        } else {
+            echo '不成功，请检查配置是否正确，正确的话，恭喜你中大奖，客户服务器很恐怖，技术已死';
+        }
+
     }
 
     public function fixNotTeam()
     {
         $order_sn = \YunShop::request()->order_sn;
         $order = Order::uniacid()->where('order_sn', $order_sn)->first();
-        $result = (new \Yunshop\TeamDividend\Listener\OrderCreatedListener())->handle($order);
-        echo $result.'完成';
+        (new \Yunshop\TeamDividend\Listener\OrderCreatedListener())->handle($order);
+        $team_order = TeamDividendModel::uniacid()->where('order_sn', $order_sn)->first();
+        if ($team_order) {
+            echo '成功';
+        } else {
+            echo '不成功，请检查配置是否正确，正确的话，恭喜你中大奖，客户服务器很恐怖，技术已死';
+        }
     }
 
 }
