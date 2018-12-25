@@ -34,9 +34,10 @@ class ParentOfMember extends BaseModel
         return $rs;
     }
 
-    public function DeletedData()
+    public function DeletedData($uniacid = 0)
     {
-        return DB::table($this->getTable())->delete();
+        \Log::debug('----------DeletedData Parent--------');
+        return DB::table($this->getTable())->where('uniacid', $uniacid)->delete();
     }
 
     public function getParentOfMember($uid)
