@@ -74,6 +74,7 @@ class ShopController extends BaseController
         if($is_diyform){
             $diyForm = DiyformTypeModel::getDiyformList()->get();
         }
+
         if ($member["get_register"]==null){
             $member["get_register"]=1;
         }

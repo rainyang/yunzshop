@@ -272,6 +272,7 @@
                             </label>
                         </div>
                     </div>
+
                     <div class="form-group desc" id="register" @if ($set['get_register'] == 1) style="display:none" @endif>
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">关闭描述</label>
                         <div class="col-sm-9 col-xs-12">

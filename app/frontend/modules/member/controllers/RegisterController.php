@@ -566,7 +566,7 @@ class RegisterController extends ApiController
         $app_reg_close  = 0;
         $msg = $member["Close_describe"];//关闭原因
         if ($member["get_register"]==0){
-            return $this->error($msg);
+            return $this->errorJson($msg);
         }
 
         if (!is_null($app_set = \Setting::get('shop_app.pay')) && 0 == $app_set['phone_oauth']) {
