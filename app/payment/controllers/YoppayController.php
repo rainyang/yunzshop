@@ -107,6 +107,36 @@ class YoppayController extends PaymentController
         $yop_order->save();
     }
 
+    //平台分类 支付类型
+    protected function platformType()
+    {
+
+        if (!empty($this->parameters['platformType'])) {
+            switch ($this->parameters['platformType']) {
+                case 'WECHAT': //微信
+                    $status = YopPayOrder::TYPE_WECHAT;
+                    break;
+                case 'ALIPAY': //支付宝
+                    $status = YopPayOrder::TYPE_ALIPAY;
+                    break;
+                case 'NET':
+                    $status = YopPayOrder::TYPE_NET;
+                    break;
+                case 'NCPAY':
+                    $status = YopPayOrder::TYPE_NCPAY;
+                    break;
+                case 'CFL':
+                    $status = YopPayOrder::TYPE_CFL;
+                    break;
+                default:
+                    $status = 0;
+                    break;
+            }
+        }
+
+        return $status;
+    }
+
     protected function rateAmount()
     {
         $rate =  $this->set['rate'];
