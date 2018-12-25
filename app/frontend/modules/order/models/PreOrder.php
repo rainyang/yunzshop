@@ -80,6 +80,7 @@ class PreOrder extends Order
      * @param OrderGoodsCollection $orderGoods
      * @param Request|null $request
      * @return $this
+     * @throws \app\common\exceptions\ShopException
      */
     public function init(Member $member, OrderGoodsCollection $orderGoods, Request $request = null)
     {
@@ -93,7 +94,7 @@ class PreOrder extends Order
          */
         $this->afterCreating();
 
-        $this->intAttributes();
+        $this->initAttributes();
         $this->initOrderGoods();
         return $this;
     }
@@ -203,7 +204,7 @@ class PreOrder extends Order
     /**
      * 初始化属性
      */
-    protected function intAttributes()
+    protected function initAttributes()
     {
         $attributes = array(
             'price' => $this->getPrice(),//订单最终支付价格
@@ -230,8 +231,8 @@ class PreOrder extends Order
     public function getCostPrice()
     {
         //累加所有商品数量
-        $result = $this->orderGoods->sum(function ($aOrderGoods) {
-            return $aOrderGoods->cost_price;
+        $result = $this->orderGoods->sum(function (PreOrderGoods $aOrderGoods) {
+            return $aOrderGoods->goods_cost_price;
         });
 
         return $result;
@@ -263,12 +264,14 @@ class PreOrder extends Order
 
     /**
      * 计算订单成交价格
+     * 外部调用只计算一次,方法内部计算过程中递归调用会返回计算过程中的金额
      * @return int
      */
     protected function getPrice()
     {
         if (array_key_exists('price', $this->attributes)) {
-            // 一次计算内避免循环调用,返回计算过程中的价格
+            // 外部调用只计算一次,方法内部计算过程中递归调用会返回计算过程中的金额
+
             return $this->price;
         }
 
