@@ -38,7 +38,7 @@ class BatchDiscountController extends BaseController
     {
         $form_data = request()->form_data;
         $id = request()->id;
-//dd($form_data);
+
         if (!$id) {
             throw new ShopException('参数错误!');
         }
@@ -46,13 +46,14 @@ class BatchDiscountController extends BaseController
         if ($form_data) {
             $form_data['discount_value'] = array_filter($form_data['discount_value']);
             $discount = $form_data['discount_value'];
-            $categorys = $form_data['search_categorys'];
+            $categorys = $form_data['category_ids'];
             foreach ($categorys as $v){
                 $categorys_r[] = $v['id'];
             }
+            $categorys_unique = array_unique($categorys_r);
             $categoryModel = CategoryDiscount::find($id);
             $category_ids_old = explode(',', $categoryModel->category_ids);
-            $categorys_ids_new = array_merge($categorys_r, $category_ids_old);
+            $categorys_ids_new = array_merge($categorys_unique, $category_ids_old);
             $category_ids = implode(',', $categorys_ids_new);
 
             $data = [
@@ -110,16 +111,16 @@ class BatchDiscountController extends BaseController
     public function store()
     {
         $form_data = request()->form_data;
-
         if ($form_data) {
             $form_data['discount_value'] = array_filter($form_data['discount_value']);
             $discount = $form_data['discount_value'];
 
-            $categorys = $form_data['search_categorys'];
+            $categorys = $form_data['category_ids'];
             foreach ($categorys as $v){
                 $categorys_r[] = $v['id'];
             }
-            $category_ids = implode(',', $categorys_r);
+            $categorys_unique = array_unique($categorys_r);
+            $category_ids = implode(',', $categorys_unique);
 
             $data = [
                 'category_ids' => $category_ids,
