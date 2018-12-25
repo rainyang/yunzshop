@@ -105,7 +105,7 @@
     <div class="col-sm-9 col-xs-12">
         <textarea style="height:150px;" class="form-control" id="remark" name="remark" cols="70">{{$order['has_one_order_remark']['remark']}}</textarea>
     </div>
-</div>q
+</div>
 
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
