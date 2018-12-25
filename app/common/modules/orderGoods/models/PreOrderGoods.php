@@ -155,6 +155,13 @@ class PreOrderGoods extends OrderGoods
         return $this->getGoodsPrice();
     }
 
+    /**
+     * @return mixed
+     */
+    public function getCostPriceAttribute()
+    {
+        return $this->getGoodsCostPrice();
+    }
 
     /**
      * @var NormalOrderGoodsPrice

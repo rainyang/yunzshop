@@ -141,13 +141,13 @@ class Order extends \app\common\models\Order
                 });
             }
 
-            //商品id
+            //商品名称和id
             if ($params['ambiguous']['field'] == 'goods_id') {
 //                print_r($order_builder->whereHas('hasManyOrderGoods', function ($query) use ($params) {
 //                    $query->where('goods_id',$params['ambiguous']['string']);
 //                })->toSql());exit;
                 $order_builder->whereHas('hasManyOrderGoods', function ($query) use ($params) {
-                    $query->where('goods_id',$params['ambiguous']['string']);
+                    $query->where('goods_id',$params['ambiguous']['string'])->orWhere('title','like','%'.trim($params['ambiguous']['string']).'%'); //增加商品名称orWhere条件，支持模糊查询
                 });
             }
             //快递单号

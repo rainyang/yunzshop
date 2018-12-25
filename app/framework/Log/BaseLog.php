@@ -14,7 +14,7 @@ use Illuminate\Log\Writer;
 abstract class BaseLog
 {
     protected $logDir = '';
-    protected $days = 1;
+    protected $days = 7;
     /**
      * @var Writer;
      */

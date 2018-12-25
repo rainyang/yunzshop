@@ -94,21 +94,12 @@
 </div>
 
 <div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">用户备注 :</label>
-    <div class="col-sm-9 col-xs-12" class="form-control" style="height:150px;" cols="70" >
-        <textarea style="height:140px;" class="form-control"
-                  cols="70" disabled>{{$order['note']}}</textarea>
-    </div>
-</div>
-
-<div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">商户备注 :</label>
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">备注 :</label>
     <div class="col-sm-9 col-xs-12"><textarea style="height:150px;" class="form-control"
                                               id="remark" name="remark"
                                               cols="70">{{$order['has_one_order_remark']['remark']}}</textarea>
     </div>
 </div>
-
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
     <div class="col-sm-9 col-xs-12">
@@ -116,7 +107,6 @@
         <button name='saveremark' onclick="sub()" class='btn btn-default'>保存备注</button>
     </div>
 </div>
-
 
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">下单日期 :</label>
