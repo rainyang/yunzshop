@@ -524,4 +524,26 @@ class MemberShopInfo extends BaseModel
             return false;
         }
     }
+
+    /**
+     * 查询邀请码会员
+     *
+     * @return mixed
+     */
+    public function getInviteCodeMember($inviteCode)
+    {
+        $member = self::select('member_id')
+            ->where('invite_code', $inviteCode)
+            ->with(['hasOneMember' => function($q){
+                $q->select('uid', 'nickname', 'avatar', 'realname');
+            }])
+            ->uniacid()
+            ->first();
+
+        if($member){
+            return $member;
+        }else{
+            return false;
+        }
+    }
 }

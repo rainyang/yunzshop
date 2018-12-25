@@ -297,6 +297,9 @@ class HomePageController extends ApiController
                 $result['captcha']['status'] = $status;
             }
         }
+        //邀请页面开关
+        $result['invite_page'] = Setting::get('shop.member')['invite_page'];
+
         return $this->successJson('ok', $result);
     }
 

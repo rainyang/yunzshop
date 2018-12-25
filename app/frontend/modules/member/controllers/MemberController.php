@@ -1564,4 +1564,19 @@ class MemberController extends ApiController
         }
         return $this->successJson('ok', $data[0]);
     }
+
+    /**
+     *  邀请页面验证
+     */
+    public function memberInviteValidate()
+    {
+        $invite_code = request()->invite_code;
+        $member = (new MemberShopInfo())->getInviteCodeMember($invite_code);
+
+        if ($member) {
+            return $this->successJson('ok', $member);
+        }else{
+            return $this->errorJson('邀请码有误!请重新填写');
+        }
+    }
 }
