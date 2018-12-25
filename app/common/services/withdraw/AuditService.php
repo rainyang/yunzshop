@@ -153,7 +153,14 @@ class AuditService
         $poundage = $this->getActualPoundage();
 
         $amount = bcsub($audit_amount, $poundage, 2);
-        $rate = $this->withdrawModel->servicetax_rate;
+
+        //计算劳务税
+
+//        $rate = $this->withdrawModel->servicetax_rate;
+
+        $rate  = $this->getLastActualServiceTax($amount);
+
+        $this->withdrawModel->servicetax_rate = $rate;
 
         return bcdiv(bcmul($amount, $rate, 4), 100, 2);
     }
@@ -192,6 +199,35 @@ class AuditService
         $amount = Income::uniacid()->whereIn('id', $audit_ids)->sum('amount');
 
         return $this->audit_amount = $amount;
+    }
+
+    /**
+     * 增加劳务税梯度
+     * @param $amount
+     * @return mixed
+     */
+    private function getLastActualServiceTax($amount)
+    {
+        $withdraw_set = \Setting::get('withdraw.income');
+
+        $servicetax_rate = $withdraw_set['servicetax_rate'];
+        if ($this->withdrawModel->servicetax_rate != $servicetax_rate) {
+            return $this->withdrawModel->servicetax_rate;
+        }
+        $servicetax = $withdraw_set['servicetax'];
+        if (empty($servicetax)) {
+            return $servicetax_rate;
+        }
+        krsort($servicetax);
+
+        foreach ($servicetax as $value) {
+            if ($amount >= $value['servicetax_money']) {
+                return $value['servicetax_rate'];
+                break;
+            }
+        }
+
+        return $servicetax_rate;
     }
 
 }

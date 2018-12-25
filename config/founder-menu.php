@@ -91,6 +91,17 @@ return [
         'item'              => 'supervisor',
         'parents'           => ['system',],
     ],
+//    'log_viewer'      => [
+//        'name'              => '系统日志',
+//        'url'               => 'developer.log-viewer',
+//        'url_params'        => '',
+//        'permit'            => 1,
+//        'menu'              => 1,
+//        'icon'              => 'fa-history',
+//        'sort'              => '5',
+//        'item'              => 'log-viewer',
+//        'parents'           => ['system',],
+//    ],
     'shop_upgrade'      => [
         'name'              => '系统升级',
         'url'               => 'update.index',

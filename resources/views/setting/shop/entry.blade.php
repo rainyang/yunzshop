@@ -19,6 +19,11 @@
                         {!! QrCode::size(200)->generate(yzAppFullUrl('category')) !!}
                         <h5><a href="javascript:;" data-clipboard-text="{!! yzAppFullUrl('category') !!}" data-url="{!! yzAppFullUrl('category') !!}" class="js-clip" title="复制链接">复制链接</a></h5>
                     </li>
+                    <li>
+                        <p>全部商品</p>
+                        {!! QrCode::size(200)->generate(yzAppFullUrl('searchAll')) !!}
+                        <h5><a href="javascript:;" data-clipboard-text="{!! yzAppFullUrl('searchAll') !!}" data-url="{!! yzAppFullUrl('searchAll') !!}" class="js-clip" title="复制链接">复制链接</a></h5>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -29,6 +34,7 @@
                 <ul class="dimension">
                     <li>
                         <p>会员中心</p>
+
                         {!! QrCode::size(200)->generate(yzAppFullUrl('member')) !!}
                         <h5><a href="javascript:;" data-clipboard-text="{!! yzAppFullUrl('member') !!}" data-url="{!! yzAppFullUrl('member') !!}" class="js-clip" title="复制链接">复制链接</a></h5>
                     </li>
@@ -97,6 +103,7 @@
                         {!! QrCode::size(200)->generate(yzAppFullUrl('member/detailed')) !!}
                         <h5><a href="javascript:;" data-clipboard-text="{!! yzAppFullUrl('member/detailed') !!}" data-url="{!! yzAppFullUrl('member/detailed') !!}" class="js-clip" title="复制链接">复制链接</a></h5>
                     </li>
+
                 </ul>
             </div>
         </div>

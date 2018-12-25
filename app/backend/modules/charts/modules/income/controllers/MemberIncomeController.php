@@ -41,17 +41,17 @@ class MemberIncomeController extends BaseController
             ->groupBy('member_id')
             ->orderBy('total_amount', 'desc')
             ->paginate(10);
-//            ->get();
-//        dd($list->toArray());
         $total = Income::search($search)
-            ->selectRaw('sum(amount) as total_amount, sum(if(status=1,amount,0)) as withdraw, sum(if(status=0,amount,0)) as unwithdraw, member_id')
+            ->selectRaw('sum(amount) as total_amount, sum(if(status=1,amount,0)) as withdraw, sum(if(status=0,amount,0)) as unwithdraw')
             ->selectRaw('sum(if(incometable_type like "%AreaDividend", amount, 0)) as area_dividend')
             ->selectRaw('sum(if(incometable_type like "%CommissionOrder", amount, 0)) as commission_dividend')
             ->selectRaw('sum(if(incometable_type like "%MerchantBonusLog", amount, 0)) as merchant_dividend')
             ->selectRaw('sum(if(incometable_type like "%ShareholderDividendModel", amount, 0)) as shareholder_dividend')
             ->selectRaw('sum(if(incometable_type like "%TeamDividend%", amount, 0)) as team_dividend')
-            ->first()->toArray();
-        $totalPoundage = \app\common\models\Withdraw::uniacid()->selectRaw('sum(poundage) as total_poundage')->first();
+
+            ->first()
+            ->toArray();
+        $totalPoundage = \app\common\models\Withdraw::uniacid()->selectRaw('sum(actual_poundage) as total_poundage')->first();
 
         $pager = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
         return view('charts.income.member_income',[

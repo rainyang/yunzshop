@@ -20,6 +20,7 @@ class StoreIncomeController extends BaseController
      */
     public function index()
     {
+        $prefix = app('db')->getTablePrefix();
         $searchTime = [];
         $search = \YunShop::request()->search;
         if ($search['is_time'] && $search['time']) {
@@ -37,7 +38,7 @@ class StoreIncomeController extends BaseController
                     $join->on('so.order_id','o.id')->where('o.status',3);
                 })
                 ->where('s.uniacid', $uniacid)
-                ->selectRaw('ims_s.id,max(store_name) as name, max(thumb) as thumb_url, sum(if(has_settlement=1 and has_withdraw=0,amount,0)) as un_withdraw, sum(price) as price')
+                ->selectRaw(''.$prefix.'s.id,max(store_name) as name, max(thumb) as thumb_url, sum(if(has_settlement=1 and has_withdraw=0,amount,0)) as un_withdraw, sum(price) as price')
                 ->groupBy('s.id')
                 ->get();
 
@@ -46,7 +47,7 @@ class StoreIncomeController extends BaseController
                     $join->on('s.uid','sw.member_id')->where('sw.created_at','>=' ,$searchTime[0])->where('sw.created_at','<=',$searchTime[1]);
                 })
                 ->where('s.uniacid', $uniacid)
-                ->selectRaw('ims_s.id, sum(if(ims_sw.status=0 and ims_sw.incometable_type like "%StoreOrder",ims_sw.amount,0)) as withdrawing, sum(if(ims_sw.status=1 and ims_sw.incometable_type like "%StoreOrder",ims_sw.amount,0)) as withdraw')
+                ->selectRaw(''.$prefix.'s.id, sum(if('.$prefix.'sw.status=0 and '.$prefix.'sw.incometable_type like "%StoreOrder",'.$prefix.'sw.amount,0)) as withdrawing, sum(if('.$prefix.'sw.status=1 and '.$prefix.'sw.incometable_type like "%StoreOrder",'.$prefix.'sw.amount,0)) as withdraw')
                 ->groupBy('s.id')
                 ->get();
         } else {
@@ -56,14 +57,14 @@ class StoreIncomeController extends BaseController
                     $join->on('so.order_id','o.id')->where('o.status',3);
                 })
                 ->where('s.uniacid', $uniacid)
-                ->selectRaw('ims_s.id,max(store_name) as name, max(thumb) as thumb_url, sum(if(has_settlement=1 and has_withdraw=0,amount,0)) as un_withdraw, sum(price) as price')
+                ->selectRaw(''.$prefix.'s.id,max(store_name) as name, max(thumb) as thumb_url, sum(if(has_settlement=1 and has_withdraw=0,amount,0)) as un_withdraw, sum(price) as price')
                 ->groupBy('s.id')
                 ->get();
 
             $withdraws = DB::table('yz_store as s')
                 ->leftJoin('yz_member_income as sw','s.uid','sw.member_id')
                 ->where('s.uniacid', $uniacid)
-                ->selectRaw('ims_s.id, sum(if(ims_sw.status=0 and ims_sw.incometable_type like "%StoreOrder",ims_sw.amount,0)) as withdrawing, sum(if(ims_sw.status=1 and ims_sw.incometable_type like "%StoreOrder",ims_sw.amount,0)) as withdraw')
+                ->selectRaw(''.$prefix.'s.id, sum(if('.$prefix.'sw.status=0 and '.$prefix.'sw.incometable_type like "%StoreOrder",'.$prefix.'sw.amount,0)) as withdrawing, sum(if('.$prefix.'sw.status=1 and '.$prefix.'sw.incometable_type like "%StoreOrder",'.$prefix.'sw.amount,0)) as withdraw')
                 ->groupBy('s.id')
                 ->get();
         }
@@ -90,6 +91,7 @@ class StoreIncomeController extends BaseController
 
     public function export()
     {
+        $prefix = app('db')->getTablePrefix();
         $searchTime = [];
         $search = \YunShop::request()->search;
         if ($search['is_time'] && $search['time']) {
@@ -107,7 +109,7 @@ class StoreIncomeController extends BaseController
                     $join->on('so.order_id','o.id')->where('o.status',3);
                 })
                 ->where('s.uniacid', $uniacid)
-                ->selectRaw('ims_s.id,max(store_name) as name, max(thumb) as thumb_url, sum(if(has_settlement=1 and has_withdraw=0,amount,0)) as un_withdraw, sum(price) as price')
+                ->selectRaw(''.$prefix.'s.id,max(store_name) as name, max(thumb) as thumb_url, sum(if(has_settlement=1 and has_withdraw=0,amount,0)) as un_withdraw, sum(price) as price')
                 ->groupBy('s.id')
                 ->get();
 
@@ -116,7 +118,7 @@ class StoreIncomeController extends BaseController
                     $join->on('s.uid','sw.member_id')->where('sw.created_at','>=' ,$searchTime[0])->where('sw.created_at','<=',$searchTime[1]);
                 })
                 ->where('s.uniacid', $uniacid)
-                ->selectRaw('ims_s.id, sum(if(ims_sw.status=0 and ims_sw.incometable_type like "%StoreOrder",ims_sw.amount,0)) as withdrawing, sum(if(ims_sw.status=1 and ims_sw.incometable_type like "%StoreOrder",ims_sw.amount,0)) as withdraw')
+                ->selectRaw(''.$prefix.'s.id, sum(if('.$prefix.'sw.status=0 and '.$prefix.'sw.incometable_type like "%StoreOrder",'.$prefix.'sw.amount,0)) as withdrawing, sum(if('.$prefix.'sw.status=1 and '.$prefix.'sw.incometable_type like "%StoreOrder",'.$prefix.'sw.amount,0)) as withdraw')
                 ->groupBy('s.id')
                 ->get();
         } else {
@@ -126,14 +128,14 @@ class StoreIncomeController extends BaseController
                     $join->on('so.order_id','o.id')->where('o.status',3);
                 })
                 ->where('s.uniacid', $uniacid)
-                ->selectRaw('ims_s.id,max(store_name) as name, max(thumb) as thumb_url, sum(if(has_settlement=1 and has_withdraw=0,amount,0)) as un_withdraw, sum(price) as price')
+                ->selectRaw(''.$prefix.'s.id,max(store_name) as name, max(thumb) as thumb_url, sum(if(has_settlement=1 and has_withdraw=0,amount,0)) as un_withdraw, sum(price) as price')
                 ->groupBy('s.id')
                 ->get();
 
             $withdraws = DB::table('yz_store as s')
                 ->leftJoin('yz_member_income as sw','s.uid','sw.member_id')
                 ->where('s.uniacid', $uniacid)
-                ->selectRaw('ims_s.id, sum(if(ims_sw.status=0 and ims_sw.incometable_type like "%StoreOrder",ims_sw.amount,0)) as withdrawing, sum(if(ims_sw.status=1 and ims_sw.incometable_type like "%StoreOrder",ims_sw.amount,0)) as withdraw')
+                ->selectRaw(''.$prefix.'s.id, sum(if('.$prefix.'sw.status=0 and '.$prefix.'sw.incometable_type like "%StoreOrder",'.$prefix.'sw.amount,0)) as withdrawing, sum(if('.$prefix.'sw.status=1 and '.$prefix.'sw.incometable_type like "%StoreOrder",'.$prefix.'sw.amount,0)) as withdraw')
                 ->groupBy('s.id')
                 ->get();
         }

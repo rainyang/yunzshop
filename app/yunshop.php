@@ -5,16 +5,11 @@ use app\common\services\PermissionService;
 use app\common\models\Menu;
 use app\common\services\Session;
 use app\common\exceptions\NotFoundException;
-use app\common\services\PluginManager;
-use app\common\repositories\OptionRepository;
-use Illuminate\Events\Dispatcher;
-use Illuminate\Filesystem\Filesystem;
+
 
 //商城根目录
 define('SHOP_ROOT', dirname(__FILE__));
 
-
-use app\common\models\user\User;
 
 class YunShop
 {
@@ -70,7 +65,6 @@ class YunShop
             } else {
                 $dbMenu = \Cache::get('db_menu');
             }
-
             $menuList = array_merge($dbMenu, (array)Config::get($menu_array['plugins_menu']));
             //兼容旧插件使用
             $menuList = array_merge($menuList, (array)Config::get($menu_array['old_plugin_menu']));
@@ -78,13 +72,12 @@ class YunShop
             $menuList['system']['child'] = array_merge($menuList['system']['child'], (array)Config::get($menu_array['founder_menu']));
 
             Config::set('menu', $menuList);
-
             $item = Menu::getCurrentItemByRoute($controller->route, $menuList);
-            //dd($controller->route);
+//            dd($item);
             self::$currentItems = array_merge(Menu::getCurrentMenuParents($item, $menuList), [$item]);
-            //dd(self::$currentItems);
+//            dd(self::$currentItems);
             Config::set('currentMenuItem', $item);
-            //dd($item);exit;
+//            dd($item);exit;
             //检测权限
             if (!PermissionService::can($item)) {
                 //throw new \app\common\exceptions\ShopException('Sorry,您没有操作无权限，请联系管理员!');
@@ -486,9 +479,9 @@ class YunApp extends YunComponent
     {
         $account = \app\common\models\AccountWechats::getAccountByUniacid(request()->get('i'));
         return [
-            'uniacid' => request()->get('i'),
-            'weid' => request()->get('i'),
-            'acid' => request()->get('i'),
+            'uniacid' => trim(request()->get('i')),
+            'weid' => trim(request()->get('i')),
+            'acid' => trim(request()->get('i')),
             'account' => $account ? $account->toArray() : '',
         ];
     }
@@ -548,7 +541,8 @@ class YunApp extends YunComponent
      */
     public function getMemberId()
     {
-        if (config('app.debug')) {
+        if (1||config('app.debug')) {
+            //dump($_GET);
             if (isset($_GET['test_uid'])) {
                 return $_GET['test_uid'];
             }

@@ -20,6 +20,7 @@
         clear: both
     }
 
+    
     .box-card {
         width: 50%;
         margin-top:20px;

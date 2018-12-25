@@ -40,9 +40,7 @@ class Member extends \app\common\models\Member
         $member_model = Member::find($id);
         MemberDel::insertData($member_model);
         $member_model->email = '';
-        $member_model->createtime = 0;
         $member_model->nickname = '';
-        $member_model->avatar = '';
         $member_model->mobile = '';
         $member_model->email = '';
         $member_model->gender = 0;
@@ -51,13 +49,15 @@ class Member extends \app\common\models\Member
         $member_model->residecity = '';
         $member_model->salt = '';
         $member_model->password = '';
+        //todo 由于关系链下列参数不能清空
+        /*$member_model->createtime = 0;
+        $member_model->avatar = '';
         $member_model->credit1 = 0;
         $member_model->credit2 = 0;
         $member_model->credit3 = 0;
         $member_model->credit4 = 0;
         $member_model->credit5 = 0;
-        $member_model->credit6 = 0;
-
+        $member_model->credit6 = 0;*/
         if ($member_model->save()) {
             return $member_model->uid;
         } else {
@@ -464,15 +464,29 @@ class Member extends \app\common\models\Member
 
     public static function getAllMembersInfosByQueue($uniacid, $limit = 0, $offset = 0)
     {
-        $result = self::select(['mc_members.uid', 'mc_members.uniacid'])
+        $result = self::select(['yz_member.member_id', 'yz_member.parent_id'])
             ->join('yz_member', 'mc_members.uid', '=', 'yz_member.member_id')
-            ->where('mc_members.uniacid', $uniacid);
+            ->where('mc_members.uniacid', $uniacid)
+            ->whereNull('yz_member.deleted_at');
 
         if ($limit > 0) {
-            $result = $result->offset($offset)->limit($limit)->orderBy('mc_members.uid', 'asc');
+            $result = $result->offset($offset)->limit($limit)->orderBy('yz_member.member_id', 'asc');
         }
 
         return $result;
+    }
+
+    public function chkRelationByMemberIdAndParentId()
+    {
+        return self::select(['member_id', 'parent_id'])
+            ->uniacid()
+            ->join('yz_member', function ($join) {
+                $join->on('member_id', '=', 'uid')
+                     ->on('member_id', '=', 'parent_id')
+                     ->whereNull('deleted_at');
+            })
+            ->distinct()
+            ->get();
     }
 
     /**
@@ -484,9 +498,65 @@ class Member extends \app\common\models\Member
      */
     public function getTreeAllNodes($uniacid)
     {
-        return self::select(['yz_member.member_id', 'yz_member.parent_id'])
-            ->join('yz_member', 'mc_members.uid', '=', 'yz_member.member_id')
+        return self::select(['member_id', 'parent_id'])
+            ->join('yz_member', function ($join) {
+                $join->on('uid', '=', 'member_id')
+                     ->whereNull('deleted_at');
+            })
             ->where('mc_members.uniacid', $uniacid)
+            ->distinct()
             ->get();
+    }
+
+    public function chkRelationData()
+    {
+        $uniacid = \YunShop::app()->uniacid;
+
+        $this->_allNodes = collect([]);
+        $error = [];
+
+        $m_relation = $this->chkRelationByMemberIdAndParentId();
+
+        if (!is_null($m_relation)) {
+            foreach ($m_relation as $m) {
+                $error[] = $m->parent_id;
+            }
+        }
+
+        if (!empty($error)) {
+            dd($error);
+        }
+
+        $memberInfo = $this->getTreeAllNodes($uniacid);
+
+        if ($memberInfo->isEmpty()) {
+            \Log::debug('----is empty-----');
+            return;
+        }
+
+        foreach ($memberInfo as $item) {
+            $this->_allNodes->put($item->member_id, $item);
+        }
+
+        \Log::debug('--------queue synRun -----');
+
+        foreach ($memberInfo as $key => $val) {
+            $this->filter = [];
+
+            \Log::debug('--------foreach start------', $val->member_id);
+            $this->chkNodeParents($uniacid, $val->member_id);
+        }
+
+        if (file_exists(storage_path("logs/parenterror.log"))) {
+            $error = file_get_contents(storage_path("logs/parenterror.log"));
+
+            $error = array_unique(explode(',', $error));
+
+            foreach ($error as $val) {
+                if (!empty($val)) {
+                    echo $val;
+                }
+            }
+        }
     }
 }

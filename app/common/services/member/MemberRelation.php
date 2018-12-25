@@ -11,6 +11,7 @@ namespace app\common\services\member;
 
 use app\backend\modules\member\models\Member;
 use app\backend\modules\member\models\MemberShopInfo;
+use app\common\exceptions\ShopException;
 use app\common\models\member\ChildrenOfMember;
 use app\common\models\member\ParentOfMember;
 use Illuminate\Support\Facades\DB;
@@ -23,17 +24,10 @@ class MemberRelation
     public $map_parent = [];
     public $map_parent_total = 0;
 
-    public function __construct($uid, $parent_id)
+    public function __construct()
     {
         $this->parent = new ParentOfMember();
         $this->child  = new ChildrenOfMember();
-
-        $this->_init($uid, $parent_id);
-    }
-
-    private function _init($uid, $parent_id)
-    {
-
     }
 
     /**
@@ -43,32 +37,25 @@ class MemberRelation
     public function createParentOfMember()
     {
         \Log::debug('------queue parent start-----');
-        $job = (new \app\Jobs\memberParentOfMemberJob(\YunShop::app()->uniacid));
-        dispatch($job);
+        /*$job = (new \app\Jobs\memberParentOfMemberJob(\YunShop::app()->uniacid));
+        dispatch($job);*/
 
-        /*$pageSize = 1000;
-        $member_info = Member::getAllMembersInfosByQueue(\YunShop::app()->uniacid);
+        $pageSize = 100;
+        $member_info = Member::getAllMembersInfosByQueue(\YunShop::app()->uniacid)->distinct()->get();
 
-        $total       = $member_info->count();
+        $total       = count($member_info);
         $total_page  = ceil($total/$pageSize);
 
         \Log::debug('------total-----', $total);
-        \Log::debug('------total_page-----', $total_page);*/
+        \Log::debug('------total_page-----', $total_page);
 
-        //Cache::put('queque_wechat_total', $total_page, 30);
-        /*$member_model = new Member();
-        $childMemberModel = new ChildrenOfMember();*/
-
-        /*for ($curr_page = 1; $curr_page <= $total_page; $curr_page++) {
+        for ($curr_page = 1; $curr_page <= $total_page; $curr_page++) {
             \Log::debug('------curr_page-----', $curr_page);
             $offset      = ($curr_page - 1) * $pageSize;
-            $member_info = Member::getAllMembersInfosByQueue(\YunShop::app()->uniacid, $pageSize, $offset)->get();
-            \Log::debug('------member_count-----', $member_info->count());
 
-            //$job = (new \app\Jobs\memberParentOfMemberJob(\YunShop::app()->uniacid, $member_model, $childMemberModel, $member_info));
-            $job = (new \app\Jobs\memberParentOfMemberJob(\YunShop::app()->uniacid, $member_info));
+            $job = (new \app\Jobs\memberParentOfMemberJob(\YunShop::app()->uniacid, $pageSize, $offset));
             dispatch($job);
-        }*/
+        }
     }
 
     /**
@@ -114,12 +101,13 @@ class MemberRelation
      * @throws \Exception
      * @throws \Throwable
      */
-    public function delMemberOfRelation($uid)
+    public function delMemberOfRelation($uid, $n_parent_id)
     {
-        DB::transaction(function() use ($uid) {
-            $this->child->delMemberOfRelation($this->parent, $uid);
+        DB::transaction(function() use ($uid, $n_parent_id) {
+            \Log::debug('--------setp5-------');
+            $this->child->delMemberOfRelation($this->parent, $uid, $n_parent_id);
 
-            $this->parent->delMemberOfRelation($this->child, $uid);
+            $this->parent->delMemberOfRelation($this->child, $uid, $n_parent_id);
         });
     }
 
@@ -131,7 +119,11 @@ class MemberRelation
      */
     public function reAddMemberOfRelation($uid, $n_parent_id)
     {
-        DB::transaction(function() use ($uid) {
+        foreach ($this->map_relaton as $reData) {
+            $this->addMemberOfRelation($reData[1], $reData[0]);
+        }
+
+        /*DB::transaction(function() use ($uid) {
             //$reData = array_shift($this->map_relaton);
 
             $this->map_parent_total = count($this->map_parent);
@@ -164,10 +156,10 @@ class MemberRelation
                     //       dd($child_attr);
                 }
             }
-    //        dd($child_attr);
+
             $this->child->CreateData($child_attr);
             $this->parent->CreateData($parent_attr);
-        });
+        });*/
     }
 
     /**
@@ -182,9 +174,12 @@ class MemberRelation
     public function changeMemberOfRelation($uid, $o_parent_id, $n_parent_id)
     {
         DB::transaction(function() use ($uid, $o_parent_id, $n_parent_id) {
-            $this->delMemberOfRelation($uid, $o_parent_id);
+            $this->delMemberOfRelation($uid, $n_parent_id);
 
-            $this->reAddMemberOfRelation($uid, $n_parent_id);
+            if ($n_parent_id) {
+                \Log::debug('------step4-------', $n_parent_id);
+                $this->reAddMemberOfRelation($uid, $n_parent_id, $o_parent_id);
+            }
         });
     }
 
@@ -195,44 +190,80 @@ class MemberRelation
 
     public function hasRelationOfChild($uid)
     {
-        return $this->child->getChildOfMember($uid);
+        return $this->child->hasRelationOfChild($uid);
     }
 
     public function build($member_id, $parent_id)
     {
         $parent_relation = $this->hasRelationOfParent($member_id, 1);
-        $child_relation = $this->hasRelationOfChild($member_id);
-//dd($child_relation);
-        $this->map_relaton[] = [$parent_id, $member_id];
 
-        if (!$parent_relation->isEmpty() && !$child_relation->isEmpty()) {
-            foreach ($child_relation as $rows) {
-              //  dd($rows->child);
-                $ids[] = $rows['child_id'];
-            }
-//dd($ids);
-            $memberInfo = MemberShopInfo::getParentOfMember($ids);
-//dd($ids, $memberInfo);
-            foreach ($memberInfo as $val) {
-                $this->map_relaton[] = [$val['parent_id'], $val['member_id']];
-            }
-
-            $parentInfo = $this->parent->getParentsOfMember($parent_id);
-            $parentTotal = count($parentInfo);
-
-            foreach ($parentInfo as $rows) {
-                $this->map_parent[$parentTotal - $rows['level']] =$rows['parent_id'];
-            }
-
-            ksort($this->map_parent);
-        }
-//dd($this->map_relaton);
-        if ($parent_relation->isEmpty() && $child_relation->isEmpty()) {
+        if ($parent_relation->isEmpty() && intval($parent_id) > 0) {
+            \Log::debug('------step1-------');
             $this->addMemberOfRelation($member_id, $parent_id);
         }
 
         if (!$parent_relation->isEmpty() && $parent_id != $parent_relation[0]->parent_id) {
+            \Log::debug('------step2-------');
+            $child_relation = $this->hasRelationOfChild($member_id);
+            $this->map_relaton[] = [$parent_id, $member_id];
+
+            foreach ($child_relation as $rows) {
+                $ids[] = $rows['child_id'];
+            }
+
+            $memberInfo = MemberShopInfo::getParentOfMember($ids);
+
+            if (count($ids) != count($memberInfo)) {
+               throw new ShopException('关系链修改-数据异常');
+            }
+
+            foreach ($ids as $rows) {
+                foreach ($memberInfo as $val) {
+                    if ($rows == $val['member_id']) {
+                        $this->map_relaton[] = [$val['parent_id'], $val['member_id']];
+
+                        break;
+                    }
+                }
+            }
+
+            //修改上级非总店
+            if ($parent_id > 0) {
+                \Log::debug('------step3-------');
+                $parentInfo = $this->parent->getParentsOfMember($parent_id);
+                $parentTotal = count($parentInfo);
+
+                foreach ($parentInfo as $rows) {
+                    $this->map_parent[$parentTotal - $rows['level']] = $rows['parent_id'];
+                }
+
+                ksort($this->map_parent);
+            }
+
+            file_put_contents(storage_path("logs/" . date('Y-m-d') . "_changerelation.log"), print_r($member_id . '-'. $parent_relation[0]->parent_id . '-'. $parent_id . PHP_EOL, 1), FILE_APPEND);
             $this->changeMemberOfRelation($member_id, $parent_relation[0]->parent_id, $parent_id);
         }
+    }
+
+    /**
+     * 修复会员关系
+     *
+     * @param $uid
+     * @param $parent_id
+     * @throws \Exception
+     * @throws \Throwable
+     */
+    public function fixMemberOfRelation($uid, $parent_id)
+    {
+        DB::transaction(function() use ($uid, $parent_id) {
+            $this->parent->fixParentData($uid, $parent_id);
+
+            $this->child-> fixChildData($this->parent, $uid, $parent_id);
+        });
+    }
+
+    public function fixData($member_id, $parent_id)
+    {
+        $this->fixMemberOfRelation($member_id, $parent_id);
     }
 }

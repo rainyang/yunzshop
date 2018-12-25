@@ -57,12 +57,8 @@ class MemberCouponController extends ApiController
             ],
             'data' => $coupons,
         ];
-
-
         return $this->successJson('ok', $data);
     }
-
-
 
     /**
      * 获取用户所拥有的优惠券的数据接口
@@ -271,7 +267,7 @@ class MemberCouponController extends ApiController
     //用户所拥有的可使用的优惠券
     public static function getAvailableCoupons($uid, $time)
     {
-        $coupons = MemberCoupon::getCouponsOfMember($uid)->where('used', '=', 0)->get()->toArray();
+        $coupons = MemberCoupon::getCouponsOfMember($uid)->where('used', '=', 0)->where('is_member_deleted',0)->get()->toArray();
 
         $availableCoupons = array();
         foreach($coupons as $k=>$v){
@@ -303,7 +299,7 @@ class MemberCouponController extends ApiController
     //用户所拥有的已过期的优惠券
     public static function getOverdueCoupons($uid, $time)
     {
-        $coupons = MemberCoupon::getCouponsOfMember($uid)->where('used', '=', 0)->get()->toArray();
+        $coupons = MemberCoupon::getCouponsOfMember($uid)->where('used', '=', 0)->where('is_member_deleted',0)->get()->toArray();
 
         $overdueCoupons = array();
         //获取已经过期的优惠券
@@ -332,7 +328,7 @@ class MemberCouponController extends ApiController
     //用户所拥有的已使用的优惠券
     public static function getUsedCoupons($uid)
     {
-        $coupons = MemberCoupon::getCouponsOfMember($uid)->where('used', '=', 1)->get()->toArray();
+        $coupons = MemberCoupon::getCouponsOfMember($uid)->where('used', '=', 1)->where('is_member_deleted',0)->get()->toArray();
         $usedCoupons = array();
         //增加属性 - 优惠券的适用范围
         foreach($coupons as $k=>$v){
@@ -382,7 +378,7 @@ class MemberCouponController extends ApiController
             return $this->errorJson('找不到记录','');
         }
 
-        $res = $model->delete();
+        $res = $model->update(['is_member_deleted'=>1]);
         if($res){
             return $this->successJson('ok', '');
         } else{
@@ -479,8 +475,8 @@ class MemberCouponController extends ApiController
                     ];
                     $respTitle = self::dynamicMsg($couponModel->resp_title, $dynamicData);
                     $respDesc = $couponModel->resp_desc ?
-                            self::dynamicMsg($couponModel->resp_desc, $dynamicData)
-                            : '亲爱的 '.$nickname.', 您已经获取 1 张优惠券 "'.$couponModel->name.'", 有效期是 '.$validTime.' ,请及时使用';
+                        self::dynamicMsg($couponModel->resp_desc, $dynamicData)
+                        : '亲爱的 '.$nickname.', 您已经获取 1 张优惠券 "'.$couponModel->name.'", 有效期是 '.$validTime.' ,请及时使用';
 
                     $messageData = [
                         'resp_title' => $respTitle,
@@ -560,4 +556,3 @@ class MemberCouponController extends ApiController
         return $msg;
     }
 }
-

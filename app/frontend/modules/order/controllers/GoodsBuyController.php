@@ -8,12 +8,16 @@
 
 namespace app\frontend\modules\order\controllers;
 
+use app\common\components\ApiController;
 use app\frontend\modules\member\services\MemberCartService;
 use app\frontend\modules\memberCart\MemberCartCollection;
-use app\frontend\modules\order\models\Trade;
 
-class GoodsBuyController extends PreOrderController
+class GoodsBuyController extends ApiController
 {
+    /**
+     * @return MemberCartCollection
+     * @throws \app\common\exceptions\AppException
+     */
     protected function getMemberCarts()
     {
         $goods_params = [
@@ -26,16 +30,30 @@ class GoodsBuyController extends PreOrderController
         $result->push(MemberCartService::newMemberCart($goods_params));
         return $result;
     }
-    protected function validateParam(){
+
+    /**
+     * @throws \app\common\exceptions\ShopException
+     */
+
+    protected function validateParam()
+    {
+
         $this->validate([
             'goods_id' => 'required|integer',
             'options_id' => 'integer',
             'total' => 'integer|min:1',
         ]);
     }
+
+    /**
+     * @return \Illuminate\Http\JsonResponse
+
+     * @throws \app\common\exceptions\ShopException
+     */
     public function index()
     {
         $this->validateParam();
-        return parent::index();
+        $trade = $this->getMemberCarts()->getTrade();
+        return $this->successJson('成功', $trade);
     }
 }

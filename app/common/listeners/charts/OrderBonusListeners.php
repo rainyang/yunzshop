@@ -56,7 +56,7 @@ class OrderBonusListeners
 //    }
 
 
-    public function addCount(AfterOrderCreatedImmediatelyEvent $event)
+    public function addCount(AfterOrderCreatedEvent $event)
     {
         $orderModel = Order::find($event->getOrderModel()->id);
 //        $this->dispatch(new OrderCountContentJob($orderModel));

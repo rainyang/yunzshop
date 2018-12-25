@@ -19,6 +19,7 @@ class IncomeWidget extends Widget
         $set = Setting::get('withdraw.income');
         return view('finance.withdraw.withdraw-income', [
             'set' => $set,
+            'income_count' => count($set['servicetax']),
         ])->render();
     }
 }

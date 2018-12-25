@@ -151,4 +151,13 @@ class OrderGoods extends BaseModel
         return isset($this->expansion->where('key', $key)->first()['value']) ? $this->expansion->where('key', $key)->first()['value'] : null;
 
     }
+    public function isFreeShipping()
+    {
+
+        if (isset($this->goods->hasOneSale) && $this->goods->hasOneSale->isFree($this)) {
+            return true;
+        }
+
+        return false;
+    }
 }

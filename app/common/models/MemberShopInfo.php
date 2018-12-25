@@ -11,6 +11,7 @@ namespace app\common\models;
 
 use app\backend\models\BackendModel;
 use app\backend\modules\member\models\MemberRecord;
+use app\common\events\member\MemberChangeRelationEvent;
 use app\common\events\member\MemberCreateRelationEvent;
 use app\common\events\member\RegisterByAgent;
 use app\common\observers\member\MemberObserver;
@@ -21,6 +22,47 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Yunshop\Commission\models\Agents;
 use Yunshop\TeamDividend\models\TeamDividendAgencyModel;
 
+/**
+ * Class MemberShopInfo
+ * @package app\common\models
+ * @property int m_id
+ * @property int member_id
+ * @property int uniacid
+ * @property int parent_id
+ * @property int group_id
+ * @property int level_id
+ * @property int inviter
+ * @property int is_black
+ * @property string province_name
+ * @property string city_name
+ * @property string area_name
+ * @property int province
+ * @property int city
+ * @property int area
+ * @property string address
+ * @property string referralsn
+ * @property int is_agent
+ * @property string alipayname
+ * @property string alipay
+ * @property string content
+ * @property int status
+ * @property int child_time
+ * @property int agent_time
+ * @property int apply_time
+ * @property string relation
+ * @property int created_at
+ * @property int updated_at
+ * @property int deleted_at
+ * @property string custom_value
+ * @property int validity
+ * @property int member_form
+ * @property string pay_password
+ * @property string salt
+ * @property string withdraw_mobile
+ * @property string wechat
+ * @property string yz_openid
+ * @property string invite_code
+ */
 class MemberShopInfo extends BaseModel
 {
     use SoftDeletes;
@@ -423,6 +465,8 @@ class MemberShopInfo extends BaseModel
                 $member->save();
                 $record->save();
 
+                event(new MemberCreateRelationEvent($uid, $parent_id));
+
                 if ($plugin_team) {
                     $team = TeamDividendAgencyModel::getAgentByUidId($uid)->first();
 
@@ -452,7 +496,7 @@ class MemberShopInfo extends BaseModel
 
                     event(new RegisterByAgent($agent_data));
                 }
-                event(new MemberCreateRelationEvent($uid, $parent_id));
+
                 //更新2、3级会员上线和分销关系
                 dispatch(new ModifyRelationJob($uid, $member_relation, $plugin_commission));
 

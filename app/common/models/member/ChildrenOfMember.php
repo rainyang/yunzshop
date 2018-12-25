@@ -47,6 +47,11 @@ class ChildrenOfMember extends BaseModel
             ->get();
     }
 
+    public function hasRelationOfChild($uid)
+    {
+        return $this->getChildOfMember($uid);
+    }
+
     public function getChildOfMember($uid)
     {
         return self::uniacid()
@@ -68,21 +73,27 @@ class ChildrenOfMember extends BaseModel
                 $parents_ids[$val['level']] = $val['parent_id'];
             }
         }
-//dd($parents_ids);
+
         $parent_total = count($parents_ids);
 
         foreach ($parents_ids as $key => $ids) {
-            $attr[] = [
-                'uniacid' => $this->uniacid,
-                'child_id' => $uid,
-                'level' => ++$key,
-                'member_id' => $ids,
-                'created_at' => time()
-            ];
+            $level = ++$key;
+            $child_exists = $this->hasChildOfMember($ids, $uid, $level);
 
-           // dd($attr);
+            if (!$child_exists) {
+                \Log::debug('------children level------', [$level]);
+
+                $attr[] = [
+                    'uniacid' => $this->uniacid,
+                    'child_id' => $uid,
+                    'level' => $level,
+                    'member_id' => $ids,
+                    'created_at' => time()
+                ];
+            }
+            // dd($attr);
         }
-//dd($attr);
+
         /*$item = $this->countSubChildOfMember($parents_ids);
 
 
@@ -135,7 +146,7 @@ class ChildrenOfMember extends BaseModel
             ->get();
     }
 
-    public function delRelationOfParentByMemberId($parent_id, $uid)
+    public function delRelationOfChildByMemberId($parent_id, $uid)
     {
         return self::uniacid()
             ->where('member_id', $parent_id)
@@ -146,11 +157,11 @@ class ChildrenOfMember extends BaseModel
     public function delRelation($uid)
     {
         return self::uniacid()
-            ->whereIn('member_id', $uid)
+            ->where('member_id', $uid)
             ->delete();
     }
 
-    public function delMemberOfRelation(ParentOfMember $parentObj, $uid)
+    public function delMemberOfRelation(ParentOfMember $parentObj, $uid, $n_parent_id)
     {
         $parents = $parentObj->getParentOfMember($uid);
         $childs = $this->getChildOfMember($uid);
@@ -158,7 +169,7 @@ class ChildrenOfMember extends BaseModel
         //删除重新分配节点本身在子表中原父级的记录
         if (!$parents->isEmpty()) {
             foreach ($parents as $val) {
-                $this->delRelationOfParentByMemberId($val['parent_id'], $val['member_id']);
+                $this->delRelationOfChildByMemberId($val['parent_id'], $val['member_id']);
             }
         }
 
@@ -166,16 +177,18 @@ class ChildrenOfMember extends BaseModel
         if (!$childs->isEmpty()) {
             foreach ($childs as $val) {
                 foreach ($parents as $rows) {
-                    $this->delRelationOfParentByMemberId($rows['parent_id'], $val['child_id']);
+                    $this->delRelationOfChildByMemberId($rows['parent_id'], $val['child_id']);
                 }
             }
         }
 
         //可优化
-        //删除子节点本身
-        if (!$childs->isEmpty()) {
-            foreach ($childs as $val) {
-                $this->delRelation($val['member_id']);
+        if ($n_parent_id > 0) {
+            //删除重新分配节点的所有子级
+            if (!$childs->isEmpty()) {
+                foreach ($childs as $val) {
+                    $this->delRelation($val['member_id']);
+                }
             }
         }
     }
@@ -197,4 +210,50 @@ class ChildrenOfMember extends BaseModel
             }
         }
     }
+
+    public function hasChildOfMember($parent, $uid, $level)
+    {
+        return self::uniacid()
+            ->where('child_id', $uid)
+            ->where('member_id', $parent)
+            ->where('level', $level)
+            ->count();
+    }
+
+    public function fixChildData(ParentOfMember $parentObj, $uid, $parent_id)
+    {
+        $parents = $parentObj->getParentOfMember($parent_id);
+        $parents_ids = [];
+        $attr = [];
+
+        $parents_ids[] = $parent_id;
+
+        if (!empty($parents)) {
+            foreach ($parents as $val) {
+                $parents_ids[$val['level']] = $val['parent_id'];
+            }
+        }
+
+        $parent_total = count($parents_ids);
+
+        foreach ($parents_ids as $key => $ids) {
+            $level = ++$key;
+            $child_exists = $this->hasChildOfMember($ids, $uid, $level);
+
+            if (!$child_exists) {
+                echo '------children level------' . $level . '<BR>';
+                $attr[] = [
+                    'uniacid' => $this->uniacid,
+                    'child_id' => $uid,
+                    'level' => $level,
+                    'member_id' => $ids,
+                    'created_at' => time()
+                ];
+            }
+            // dd($attr);
+        }
+
+        $this->CreateData($attr);
+    }
+
 }

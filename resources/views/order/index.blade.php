@@ -163,6 +163,9 @@
                                             <button type="submit" name="export" value="1" id="export" class="btn btn-info">导出
                                                 Excel
                                             </button>
+                                            <button type="submit" name="direct_export" value="1" id="direct-export" class="btn btn-info">导出
+                                                直推 Excel
+                                            </button>
                                         @show
                                         @if( $requestSearch['plugin'] != "fund")
                                             <a class="btn btn-warning"

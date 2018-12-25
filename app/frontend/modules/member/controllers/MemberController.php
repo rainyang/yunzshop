@@ -13,6 +13,7 @@ use app\backend\modules\charts\modules\phone\services\PhoneAttributionService;
 use app\backend\modules\member\models\MemberRelation;
 use app\backend\modules\order\models\Order;
 use app\common\components\ApiController;
+use app\common\components\BaseController;
 use app\common\facades\Setting;
 use app\common\helpers\Cache;
 use app\common\helpers\ImageHelper;
@@ -22,6 +23,7 @@ use app\common\models\Area;
 use app\common\models\Goods;
 use app\common\models\McMappingFans;
 use app\common\models\MemberShopInfo;
+use app\common\services\popularize\PortType;
 use app\common\services\Session;
 use app\frontend\models\Member;
 use app\frontend\modules\member\models\MemberModel;
@@ -103,7 +105,8 @@ class MemberController extends ApiController
                 }else{
                     $withdraw_status = 1;
                 }
-
+                //是否显示我的推广
+                $withdraw_status = PortType::popularizeShow(\YunShop::request()->type);
                 $data['withdraw_status'] = $withdraw_status;
 
                 if (!is_null($v)) {
@@ -336,6 +339,9 @@ class MemberController extends ApiController
     {
         $data = MemberModel::getMyReferral_v2();
 
+        //IOS时，把微信头像url改为https前缀
+        $data['avatar'] = ImageHelper::iosWechatAvatar($data['avatar']);
+
         if (!empty($data)) {
             return $this->successJson('', $data);
         } else {
@@ -475,9 +481,9 @@ class MemberController extends ApiController
             'province_name' => isset($data['province_name']) ? $data['province_name'] : '',
             'city_name' => isset($data['city_name']) ? $data['city_name'] : '',
             'area_name' => isset($data['area_name']) ? $data['area_name'] : '',
-            'province' => isset($data['province']) ? $data['province'] : 0,
-            'city' => isset($data['city']) ? $data['city'] : 0,
-            'area' => isset($data['area']) ? $data['area'] : 0,
+            'province' => isset($data['province']) ? intval($data['province']) : 0,
+            'city' => isset($data['city']) ? intval($data['city']) : 0,
+            'area' => isset($data['area']) ? intval($data['area']) : 0,
             'address' => isset($data['address']) ? $data['address'] : '',
             'wechat' => isset($data['wx']) ? $data['wx'] : '',
         ];
@@ -566,16 +572,19 @@ class MemberController extends ApiController
             }
 
             if (empty($close_invitecode)) {
+
                 $invitecode = MemberService::inviteCode();
 
                 if ($invitecode['status'] != 1) {
                     return $this->errorJson($invitecode['json']);
                 }
 
-                //邀请码-关系
-                $parent_id = \app\common\models\Member::getMemberIdForInviteCode();
+                file_put_contents(storage_path("logs/" . date('Y-m-d') . "_invitecode.log"), print_r(\YunShop::app()->getMemberId() . '-'. \YunShop::request()->invite_code . '-bind' . PHP_EOL, 1), FILE_APPEND);
 
+                //邀请码
+                $parent_id = \app\common\models\Member::getMemberIdForInviteCode();
                 if (!is_null($parent_id)) {
+                    file_put_contents(storage_path("logs/" . date('Y-m-d') . "_invitecode.log"), print_r(\YunShop::app()->getMemberId() . '-'. \YunShop::request()->invite_code . '-'. $parent_id . '-bind' . PHP_EOL, 1), FILE_APPEND);
                     MemberShopInfo::change_relation($uid, $parent_id);
                 }
             }
@@ -1207,6 +1216,9 @@ class MemberController extends ApiController
             $switch = 1;
         }
 
+        //是否显示我的推广
+        $switch = PortType::popularizeShow(\YunShop::request()->type);
+
         $data = [
             'switch' => $switch
         ];
@@ -1462,8 +1474,15 @@ class MemberController extends ApiController
                 ];
             }
         }
+        if (app('plugins')->isEnabled('enter-goods')) {
 
-
+            $data[] = [
+                'name' => 'enter_goods',
+                'title' => '用户入驻',
+                'class' => 'icon-member_goods',
+                'url' => 'EnterShop',
+            ];
+        }
         return $this->successJson('ok', $data);
     }
 
@@ -1477,5 +1496,74 @@ class MemberController extends ApiController
         }
         return $this->errorJson('', 0);
     }
+  
+    /**
+     *  推广申请页面数据
+     */
+    public function shareinfo() {
 
+        $data = MemberRelation::uniacid()->where(['status'=>1])->get();
+
+        $become_term = unserialize($data[0]['become_term']);
+
+        $goodsid = explode(',', $data[0]['become_goods_id']);
+
+        foreach ($goodsid as $key => $val) {
+
+            $online_good = Goods::where('status', 1)
+                ->select('id','title','thumb','price','market_price')
+                ->find($val);
+
+            if ($online_good) {
+                $online_good['thumb'] = replace_yunshop(yz_tomedia($online_good['thumb']));
+                $online_goods[] = $online_good;
+                $online_goods_keys[] = $online_good->id;
+            }
+        }
+        unset($online_good);
+
+        $goodskeys = range(0, count($online_goods_keys)-1);
+
+        $data[0]['become_goods'] = array_combine($goodskeys, $online_goods);
+
+        $termskeys = range(0, count($become_term)-1);
+        $become_term = array_combine($termskeys, $become_term);
+
+        $member_uid = \YunShop::app()->getMemberId();
+
+        $status = $data[0]['become_order'] == 1 ? 3 : 1;
+        $getCostTotalNum = Order::where('status', '=', $status)->where('uid', $member_uid)->count('id');
+        $getCostTotalPrice = Order::where('status', '=', $status)->where('uid', $member_uid)->sum('price');
+
+        $data[0]['getCostTotalNum'] = $getCostTotalNum;
+        $data[0]['getCostTotalPrice'] = $getCostTotalPrice;
+
+        $terminfo = [];
+
+        foreach ($become_term as $v) {
+            if ($v == 2) {
+                $terminfo['become_ordercount'] = $data[0]['become_ordercount'];
+            }
+            if ($v == 3) {
+                $terminfo['become_moneycount'] = $data[0]['become_moneycount'];
+            }
+            if ($v == 4) {
+                $terminfo['goodsinfo'] = $data[0]['become_goods'];
+            }
+            if ($v == 5) {
+                $terminfo['become_selfmoney'] = $data[0]['become_selfmoney'];
+            }
+        }
+
+        $data[0]['become_term'] = $terminfo;
+
+        if ($data[0]['become'] == 2) {
+            //或
+            $data[0]['tip'] = '满足以下任意条件都可以成为推广员';
+        } elseif ($data[0]['become'] == 3) {
+            //与
+            $data[0]['tip'] = '满足以下所有条件才可以成为推广员';
+        }
+        return $this->successJson('ok', $data[0]);
+    }
 }
