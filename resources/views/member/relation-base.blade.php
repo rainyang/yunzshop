@@ -133,8 +133,7 @@
                             <label class="checkbox-inline">
                                 <input type="checkbox"  name="base[relation_level][]" value="1" @if (in_array(1, $relation_level))
                                 checked @endif />1级
-                                <input type="text"  name="base[relation_level][name1]" value="{{ $relation_level['name1'] }}" plac
-                                       eholder="自定义名称"/>
+                                <input type="text"  name="base[relation_level][name1]" value="{{ $relation_level['name1'] }}" placeholder="自定义名称"/>
                             </label>
                         </div>
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
@@ -142,8 +141,7 @@
                             <label class="checkbox-inline">
                                 <input type="checkbox"  name="base[relation_level][]" value="2" @if (in_array(2, $relation_level))
                                 checked @endif />2级
-                                <input type="text"  name="base[relation_level][name2]" value="{{ $relation_level['name2'] }}" plac
-                                       eholder="自定义名称"/>
+                                <input type="text"  name="base[relation_level][name2]" value="{{ $relation_level['name2'] }}" placeholder="自定义名称"/>
                             </label>
                         </div>
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
