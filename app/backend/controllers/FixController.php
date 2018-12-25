@@ -330,4 +330,20 @@ class FixController extends BaseController
         echo '修改了'.$count.'条信息';
     }
 
+    public function fixNotCommission()
+    {
+        $order_sn = \YunShop::request()->order_sn;
+        $order = Order::uniacid()->where('order_sn', $order_sn)->first();
+        $result = (new \Yunshop\Commission\Listener\OrderCreatedListener())->handler($order);
+        echo $result;
+    }
+
+    public function fixNotTeam()
+    {
+        $order_sn = \YunShop::request()->order_sn;
+        $order = Order::uniacid()->where('order_sn', $order_sn)->first();
+        $result = (new \Yunshop\TeamDividend\Listener\OrderCreatedListener())->handle($order);
+        echo $result.'完成';
+    }
+
 }
