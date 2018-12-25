@@ -564,8 +564,8 @@ class RegisterController extends ApiController
         $member = Setting::get('shop.member');
         $shop_reg_close = 1;
         $app_reg_close  = 0;
-        $msg = $member["shop_msg"];//关闭原因
-        if ($member["get_type"]==0){
+        $msg = $member["Close_describe"];//关闭原因
+        if ($member["get_register"]==0){
             return $this->error($msg);
         }
 
