@@ -13,9 +13,6 @@ use app\common\models\OrderPay;
 class DianbangscanController extends PaymentController
 {
 
-    //原始数据
-    private $xml;
-
     private $key;
 
     private $parameters = [];
@@ -39,16 +36,16 @@ class DianbangscanController extends PaymentController
         $this->log($this->parameters, '店帮微信');
 
         $set = \Setting::get('plugin.dian-bang-scan');
-        $this->setKey($set['key']);
-
-
+        $this->setKey($set['secret']);
+        \Log::debug('--------key---------',$this->key);
+        \Log::debug('--------验证的参数---------',$this->parameters);
         $order_no = explode('-', $this->getParameter('billNo'));
-//        dd($order_no);
-        if($this->verify()) {
+
+        if($this->verify($this->parameters)) {
 
             \Log::info('------店帮微信验证成功-----');
             if ($this->parameters['billPayment']['status'] == 'TRADE_SUCCESS') {
-                \Log::info('-------店帮微信支付开始---------->');
+                \Log::debug('-------店帮微信支付开始---------->');
                 $data = [
                     'total_fee'    => floatval($this->getParameter('totalAmount')),
                     'out_trade_no' => $order_no[1],
@@ -58,7 +55,7 @@ class DianbangscanController extends PaymentController
                     'pay_type_id'  => 24,
                 ];
                 $this->payResutl($data);
-                \Log::info('<---------店帮微信支付结束-------');
+                \Log::debug('<---------店帮微信支付结束-------');
                 echo 'SUCCESS';
                 exit();
             } else {
@@ -152,7 +149,7 @@ class DianbangscanController extends PaymentController
     public function generateSign($params, $signType = 'md5') {
         return $this->sign($this->getSignContent($params), $signType);
     }
-    
+
     /**
      * 生成signString
      * @param $params
