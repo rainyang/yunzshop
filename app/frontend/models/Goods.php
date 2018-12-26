@@ -78,6 +78,7 @@ class Goods extends \app\common\models\Goods
         }
         return $price;
     }
+    
     /**
      * 获取等级折扣金额
      * @param null $price
