@@ -1,4 +1,3 @@
-
 <div id="modal-refund" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"
      style="width:920px;margin:0px auto;">
     <form class="form-horizontal form" id="form-refund" action="" method="post" enctype="multipart/form-data">
@@ -32,8 +31,11 @@
                                 </label>
                             @endif
                             @section('operation_pass')@show
+
                             @section('operation_consensus')@show
+
                             @section('operation_resend')@show
+
 
                         </div>
                     </div>

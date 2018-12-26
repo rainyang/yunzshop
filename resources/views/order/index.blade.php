@@ -30,19 +30,16 @@
                                 <div>
                                     @section('search_bar')
                                         @if($route == 'order.list.waitSend')
-                                        <div class="form-group  col-md-2 col-sm-6">
-                                            <select name="search[sort]" id="ambiguous-field"
-                                                    class="form-control">
-                                                <option value=""
-                                                        @if(!$requestSearch['sort'])  selected="selected"@endif>
-                                                    时间排序
-                                                </option>
-                                                <option value="1"
-                                                        @if($requestSearch['sort'] == 1)  selected="selected"@endif>
-                                                    会员排序
-                                                </option>
-                                            </select>
-                                        </div>
+                                            <div class="form-group  col-md-2 col-sm-6">
+                                                <select name="search[sort]" id="ambiguous-field" class="form-control">
+                                                    <option value="" @if(!$requestSearch['sort'])  selected="selected"@endif>
+                                                        时间排序
+                                                    </option>
+                                                    <option value="1" @if($requestSearch['sort'] == 1)  selected="selected"@endif>
+                                                        会员排序
+                                                    </option>
+                                                </select>
+                                            </div>
                                         @endif
                                         <div class="form-group  col-md-2 col-sm-6">
                                             <select name="search[ambiguous][field]" id="ambiguous-field"
@@ -109,8 +106,8 @@
                                         </div>
 
                                         <div class="form-group form-group col-sm-8 col-lg-2 col-xs-12">
-                                            <!-- 注意，由于属于支付宝支付的支付方式有好几种，包括app支付宝支付方式，支付宝-YZ方式等，所以进行了分组，
-                                             支付选项传入的支付方式是支付方式组的id，并不是支付方式的id -->
+                                            <!-- 注意，由于属于支付宝支付的支付方式有好几种，包括app支付宝支付方式，支付宝-YZ方式
+                                            等，所以进行了分组,支付选项传入的支付方式是支付方式组的id，并不是支付方式的id -->
                                             <select name="search[pay_type]" class="form-control">
                                                 <option value=""
                                                         @if( array_get($requestSearch,'pay_type',''))  selected="selected"@endif>
@@ -134,7 +131,7 @@
                                                 </option>
                                             </select>
                                         </div>
-                                            <div class="form-group col-sm-12 col-lg-12 col-xs-12"></div>
+                                        <div class="form-group col-sm-12 col-lg-12 col-xs-12"></div>
                                         <div class="form-group col-sm-8 col-lg-5 col-xs-12">
 
                                             <select name="search[time_range][field]" class="form-control form-time" >
@@ -179,6 +176,9 @@
                                         @section('export')
                                             <button type="submit" name="export" value="1" id="export" class="btn btn-info">导出
                                                 Excel
+                                            </button>
+                                            <button type="submit" name="direct_export" value="1" id="direct-export" class="btn btn-info">导出
+                                                直推 Excel
                                             </button>
                                         @show
                                         @if( $requestSearch['plugin'] != "fund")

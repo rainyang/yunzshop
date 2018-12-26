@@ -84,8 +84,8 @@
             <div id="category" >
                 <table class="table">
                     <tbody id="param-itemscategory">
-                    @if($category_ids)
-                    @foreach($category_ids as $k=>$v)
+                    @if($coupon['category_ids'])
+                    @foreach($coupon['category_ids'] as $k=>$v)
                         <tr>
                             <td>
                                 <a href="javascript:;" onclick="deleteParam(this)" style="margin-top:10px;"  title="删除"><i class='fa fa-times'></i></a>
@@ -120,8 +120,8 @@
             <div id="goods">
                 <table class="table">
                     <tbody id="param-itemsgoods">
-                    @if ($goods_ids)
-                    @foreach ($goods_ids as $k=>$v)
+                    @if ($coupon['goods_ids'])
+                    @foreach ($coupon['goods_ids'] as $k=>$v)
                         <tr>
                             <td>
                                 <a href="javascript:;" onclick="deleteParam(this)" style="margin-top:10px;"  title="删除"><i class='fa fa-times'></i></a>

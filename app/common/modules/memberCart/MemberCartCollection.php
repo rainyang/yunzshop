@@ -24,13 +24,17 @@ class MemberCartCollection extends Collection
      * @var [MemberCart]
      */
     protected $items;
-
+    private $validated = false;
     /**
      * 验证商品有效性
      * @throws AppException
      */
     public function validate()
     {
+        if($this->validated){
+            return true;
+        }
+
         if ($this->unique('member_id')->count() != 1) {
             throw new AppException("操作无效,购物车记录属于{$this->unique('member_id')->count()}个用户");
         }
@@ -46,6 +50,7 @@ class MemberCartCollection extends Collection
         $this->each(function (Membercart $memberCart) {
             $memberCart->validate();
         });
+        $this->validated = true;
     }
 
     /**
@@ -54,7 +59,7 @@ class MemberCartCollection extends Collection
      */
     public function loadRelations()
     {
-        $with = ['goods' => function (BaseModel $query) {
+        $with = ['goods' => function ($query) {
             $query->exclude('content,description');
         }, 'goods.hasOnePrivilege', 'goods.hasOneOptions', 'goods.hasManyGoodsDiscount', 'goods.hasOneGoodsDispatch', 'goods.hasOneSale', 'goodsOption'];
         $with = array_merge($with, config('shop-foundation.member-cart.with'));
@@ -68,12 +73,14 @@ class MemberCartCollection extends Collection
     }
 
     /**
-     * 将购物车集合按插件分组
+     * 将购物车集合按groupId分组
      * @return static
      */
-    public function groupByPlugin()
+    public function groupByGroupId()
     {
-        $groups = $this->groupBy('goods.plugin_id');
+        $groups = $this->groupBy(function (MemberCart $memberCart) {
+            return $memberCart->getGroupId();
+        });
         $groups->map(function (MemberCartCollection $memberCartCollection) {
             return $memberCartCollection;
         });
@@ -157,8 +164,13 @@ class MemberCartCollection extends Collection
         return parent::first($callback, $default);
     }
 
+    /**
+     * @return null
+     * @throws AppException
+     */
     public function getPlugin()
     {
+        $this->validate();
         return $this->first()->goods->getPlugin();
     }
 }
