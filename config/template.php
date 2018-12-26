@@ -242,6 +242,22 @@ return [
             '会员昵称', '时间'
         ]
     ],
+    'universal_card_open' => [
+        'title' => '一卡通开通',
+        'subtitle' => '一卡通开通通知',
+        'value' => 'universal_card_open',
+        'param' => [
+            '昵称', '时间','会员等级','有效期'
+        ]
+    ],
+    'universal_card_expire' => [
+        'title' => '一卡通权益到期',
+        'subtitle' => '一卡通权益到期通知',
+        'value' => 'universal_card_expire',
+        'param' => [
+            '昵称', '时间','会员等级','过期时间'
+        ]
+    ],
 
 
 
