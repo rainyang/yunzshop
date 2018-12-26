@@ -60,10 +60,10 @@ class AuditRejectedController extends PreController
         if (!$result) {
             throw new ShopException('驳回失败：更新状态失败');
         }
-        $result = $this->updateBalance();
-        if (!$result) {
-            throw new ShopException('驳回失败：更新余额失败');
-        }
+//        $result = $this->updateBalance();
+//        if (!$result) {
+//            throw new ShopException('驳回失败：更新余额失败');
+//        }
         $result = $this->updateBalanceMessage();
         if (!$result) {
             throw new ShopException('驳回失败：更新余额明细失败');
@@ -81,23 +81,23 @@ class AuditRejectedController extends PreController
         return $this->withdrawModel->save();
     }
 
-    /**
-     * @return bool
-     */
-    private function updateBalance()
-    {
-        $id = \YunShop::request()['id'];
-        $amounts = $this->withdrawModel->amounts;
-        $member_id = $this->withdrawModel->member_id;
-        $memberModel = Member::where('uid',$member_id)->first()->toArray();
-        //用户余额
-        $balance = $memberModel['credit2'];
-        $sum = $balance + $amounts;
-        if($member_id){
-            return Member::where('uid', $member_id)->update(['credit2' => $sum]);
-        }
-        return false;
-    }
+//    /**
+//     * @return bool
+//     */
+//    private function updateBalance()
+//    {
+//        $id = \YunShop::request()['id'];
+//        $amounts = $this->withdrawModel->amounts;
+//        $member_id = $this->withdrawModel->member_id;
+//        $memberModel = Member::where('uid',$member_id)->first()->toArray();
+//        //用户余额
+//        $balance = $memberModel['credit2'];
+//        $sum = $balance + $amounts;
+//        if($member_id){
+//            return Member::where('uid', $member_id)->update(['credit2' => $sum]);
+//        }
+//        return false;
+//    }
 
     private function updateBalanceMessage(){
         $amounts = $this->withdrawModel->amounts;
