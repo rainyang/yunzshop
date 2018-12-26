@@ -82,16 +82,14 @@ class LevelUpgradeService
 
     public function setValidity()
     {
-        \Log::info('fsaljflsjaflsfalfasfjslafas1',$this->new_level);
         $set = Setting::get('shop.member');
         if (!$set['term']) {
             return;
         }
-        \Log::info('fsaljflsjaflsfalfasfjslafas2',$this->new_level);
+
         if (!$this->validity['is_goods']) {
             return;
         }
-        \Log::info('fsaljflsjaflsfalfasfjslafas3',$this->new_level);
         if ($this->validity['upgrade']) {
             $validity = $this->new_level->validity * $this->validity['goods_total'];
         } else {
@@ -102,7 +100,6 @@ class LevelUpgradeService
                 $validity = $this->memberModel->validity + $this->new_level->validity * $this->validity['goods_total'];
             }
         }
-        \Log::info('fsaljflsjaflsfalfasfjslafas10',$validity);
 
         if (isset($validity)) {
             $this->memberModel->validity = $validity;
@@ -137,7 +134,7 @@ class LevelUpgradeService
             default:
                 $level = '';
         }
-\Log::info('fsaljflsjaflsfalfasfjslafas',$this->new_level);
+
         //比对当前等级权重，判断是否升级
         if ($this->new_level) {
             $memberLevel = isset($this->memberModel->level->level) ? $this->memberModel->level->level : 0;
