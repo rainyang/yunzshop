@@ -72,6 +72,12 @@ class MemberController extends ApiController
 
                 $data = MemberModel::addPlugins($data);
 
+                //隐藏爱心值插件入口
+                $love_show = PortType::popularizeShow(\YunShop::request()->type);
+                if (isset($data['love']) && (!$love_show)) {
+                    $data['love']['status'] = false;
+                }
+
                 $data['income'] = MemberModel::getIncomeCount();
 
                 $data['relation_switch'] = (1 == $member_info['yz_member']['is_agent'] && 2 == $member_info['yz_member']['status'])
