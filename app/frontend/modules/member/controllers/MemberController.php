@@ -1481,6 +1481,23 @@ class MemberController extends ApiController
                 'url' => 'EnterShop',
             ];
         }
+
+        if (app('plugins')->isEnabled('universal-card')) {
+            $set = \Yunshop\UniversalCard\services\CommonService::getSet();
+            //判断插件开关
+            if ($set['switch']) {
+                $shopSet = \Setting::get('shop.member');
+                //判断商城升级条件是否为指定商品
+                if ($shopSet['level_type'] == 2) {
+                    $data[] = [
+                        'name' => 'universal_card',
+                        'title' => $set['name'],
+                        'class' => '',
+                        'url' => 'UniversalCard'
+                    ];
+                }
+            }
+        }
         return $this->successJson('ok', $data);
     }
 

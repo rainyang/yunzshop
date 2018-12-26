@@ -38,7 +38,7 @@ class LevelUpgradeService
             return;
         }
 
-        $result = $this->check();
+        $result = $this->check(0);
         $this->setValidity(); // 设置会员等级期限
 
         if ($result) {
