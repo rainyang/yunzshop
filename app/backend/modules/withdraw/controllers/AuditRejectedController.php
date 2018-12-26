@@ -100,16 +100,18 @@ class AuditRejectedController extends PreController
     }
 
     private function updateBalanceMessage(){
+        $amounts = $this->withdrawModel->amounts;
+        $member_id = $this->withdrawModel->member_id;
         $memberModel = Member::where('uid',$member_id)->first()->toArray();
         //用户余额
         $balance = $memberModel['credit2'];
         $sum = $balance + $amounts;
         $data = array(
-            'member_id'     => $member_id = $this->withdrawModel->member_id,
+            'member_id'     => $member_id,
             'remark'        => '余额提现驳回' . $amounts = $this->withdrawModel->amounts . "元",
             'source'        => ConstService::SOURCE_REJECTED,
             'operator'      => ConstService::OPERATOR_SHOP,
-//            'operator_id'   => ConstService::OPERATOR_SHOP,
+            'operator_id'   => \YunShop::app()->uniacid,
             'uniacid'       => \YunShop::app()->uniacid,
             'old_money'     => $balance,
             'change_money'  => $this->withdrawModel->amounts,
@@ -119,8 +121,9 @@ class AuditRejectedController extends PreController
 //            'status'        => BalanceRecharge::PAY_STATUS_ERROR,
         );
         $result = (new BalanceChange())->rejected($data);
-        if (!$result) {
-            return false;
+        if ($result) {
+            return true;
         }
+        return false;
     }
 }
