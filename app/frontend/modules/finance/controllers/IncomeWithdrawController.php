@@ -302,6 +302,7 @@ class IncomeWithdrawController extends ApiController
                 $can = false;
             }
         }
+        
         return [
             'type'              => $income['class'],
             'key_name'          => $income['type'],
