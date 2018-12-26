@@ -15,6 +15,7 @@ use app\common\models\Income;
 use app\common\services\finance\IncomeService;
 use app\frontend\modules\finance\models\Withdraw;
 
+
 class IncomeWithdrawController extends ApiController
 {
 
@@ -69,6 +70,9 @@ class IncomeWithdrawController extends ApiController
     public function getWithdraw()
     {
         $income_config = \Config::get('income');
+//        dd($income_config);
+//        $before_dawn = mktime(0,0,0,date("m"),date("d"),date("Y"));
+//        dd(date('Y-m-d H:i:s', $before_dawn));
 
         $income_data = [];
         foreach ($income_config as $key => $income) {
@@ -292,6 +296,12 @@ class IncomeWithdrawController extends ApiController
         if (in_array($income['type'], ['StoreCashier', 'StoreWithdraw'])) {
             $can = true;
         }
+        if ($income['type'] == 'commission') {
+            $max = $this->getWithdrawLog($income['class']);
+            if (($max['max_time'] > $this->getCondition()['max_time_out_limit']) || ($max['max_amount'] > $this->getCondition()['max_roll_out_limit'])) {
+                $can = false;
+            }
+        }
         return [
             'type'              => $income['class'],
             'key_name'          => $income['type'],
@@ -302,6 +312,8 @@ class IncomeWithdrawController extends ApiController
             'servicetax'        => $service_tax,
             'servicetax_rate'   => $this->service_tax_rate,
             'roll_out_limit'    => $this->getIncomeAmountFetter(),
+            'max_roll_out_limit' => $this->getIncomeAmountMax(),
+            'max_time_out_limit' => $this->getIncomeTimeMax(),
             'can'               => $can,
             'selected'          => $this->incomeIsCanWithdraw(),
             'type_id'           => $this->getIncomeTypeIds($income['class']),
@@ -323,7 +335,50 @@ class IncomeWithdrawController extends ApiController
         return empty($value) ? 0 : $value;
     }
 
+    /**
+     * 提现最高额度
+     * @return string
+     */
+    private function getIncomeAmountMax()
+    {
+        $value = array_get($this->income_set,'max_roll_out_limit', 0);
+        return empty($value) ? 0 : $value;
+    }
 
+    /**
+     * 提现最高次数
+     * @return string
+     */
+    private function getIncomeTimeMax()
+    {
+        $value = array_get($this->income_set,'max_time_out_limit', 0);
+        return empty($value) ? 0 : $value;
+    }
+
+    /**
+     * 获取提现记录
+     * @return string
+     */
+    private function getWithdrawLog($class)
+    {
+        $before_dawn = mktime(0,0,0,date("m"),date("d"),date("Y"));
+        $now = time();
+        $max_time = Withdraw::where('type', $class)->whereBetween('created_at', [$before_dawn, $now])->where('status', 2)->count();
+        $max_amount = Withdraw::where('type', $class)->whereBetween('created_at', [$before_dawn, $now])->where('status', 2)->sum('amounts');
+        $max = ['max_time' => $max_time, 'max_amount' => $max_amount];
+
+        return $max;
+    }
+
+    /**
+     * 分销佣金条件
+     * @return string
+     */
+    private function getCondition()
+    {
+        $commission_set = $this->setIncomeSet('commission');
+        return $commission_set;
+    }
 
     /**
      * 是否可以提现
