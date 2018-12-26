@@ -366,17 +366,7 @@ class IncomeWithdrawController extends ApiController
 
         return $max;
     }
-
-    /**
-     * 分销佣金条件
-     * @return string
-     */
-    private function getCondition()
-    {
-        $commission_set = $this->setIncomeSet('commission');
-        return $commission_set;
-    }
-
+    
     /**
      * 是否可以提现
      * @return bool
