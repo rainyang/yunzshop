@@ -43,13 +43,14 @@ class DianbangscanController extends PaymentController
 
         if($this->verify($this->parameters)) {
 
-            \Log::info('------店帮微信验证成功-----');
-            if ($this->parameters['billPayment']['status'] == 'TRADE_SUCCESS') {
+            \Log::debug('------店帮微信验证成功-----');
+            $billPayment = json_decode($this->parameters['billPayment'],true);
+            if ($billPayment['status'] == 'TRADE_SUCCESS') {
                 \Log::debug('-------店帮微信支付开始---------->');
                 $data = [
                     'total_fee'    => floatval($this->getParameter('totalAmount')),
                     'out_trade_no' => $order_no[1],
-                    'trade_no'     => $this->parameters['billPayment']['targetOrderId'],
+                    'trade_no'     => $billPayment['targetOrderId'],
                     'unit'         => 'fen',
                     'pay_type'     => '店帮微信支付',
                     'pay_type_id'  => 24,
