@@ -110,19 +110,17 @@ class DianbangscanController extends PaymentController
 
     public function returnUrl()
     {
-//        dd(1);
+        $trade = \Setting::get('shop.trade');
 
-//        $trade = \Setting::get('shop.trade');
-//
-//        if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
-//            return redirect($trade['redirect_url'])->send();
-//        }
-//
-//        if (0 == $_GET['state'] && $_GET['errorDetail'] == '成功') {
-//            redirect(Url::absoluteApp('member/payYes', ['i' => $_GET['attach']]))->send();
-//        } else {
-//            redirect(Url::absoluteApp('member/payErr', ['i' => $_GET['attach']]))->send();
-//        }
+        if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
+            return redirect($trade['redirect_url'])->send();
+        }
+
+        if (0 == $_GET['state'] && $_GET['errorDetail'] == '成功') {
+            redirect(Url::absoluteApp('member/payYes', ['i' => $_GET['attach']]))->send();
+        } else {
+            redirect(Url::absoluteApp('member/payErr', ['i' => $_GET['attach']]))->send();
+        }
     }
 
 
