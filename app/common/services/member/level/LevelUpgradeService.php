@@ -17,7 +17,6 @@ use app\common\models\MemberShopInfo;
 use app\common\models\notice\MessageTemp;
 use app\common\models\Order;
 use app\common\services\MessageService;
-use Monolog\Handler\IFTTTHandler;
 
 class LevelUpgradeService
 {
@@ -38,7 +37,7 @@ class LevelUpgradeService
             return;
         }
 
-        $result = $this->check();
+        $result = $this->check(0);
         $this->setValidity(); // 设置会员等级期限
 
         if ($result) {
@@ -209,18 +208,25 @@ class LevelUpgradeService
         foreach ($this->orderModel->hasManyOrderGoods as $time) {
             if ($time->goods_id == $level->goods_id) {
                 $this->validity['goods_total'] = $time->total;
+                //开启一卡通
+                if (app('plugins')->Enabled('universal-card')) {
+                    $level->validity = (new \Yunshop\UniversalCard\services\LevelUpgradeService)->upgrade($level->id, $time->goods_option_id);
+                }
             }
         }
+
+
+
 
 
         return $level ?: [];
     }
 
-
     private function upgrade($levelId)
     {
 
         $this->memberModel->level_id = $levelId;
+        $this->memberModel->upgrade_at = time();
 
         if ($this->memberModel->save()) {
             $this->notice();
@@ -253,6 +259,7 @@ class LevelUpgradeService
             ['name' => '旧等级', 'value' => $old_level],
             ['name' => '新等级', 'value' => $this->new_level->level_name],
             ['name' => '时间', 'value' => date('Y-m-d H:i',time())],
+//            ['name' => '到期时间', 'value' => date('Y-m-d H:i',time())],
         ];
 
         $msg = MessageTemp::getSendMsg($template_id, $params);

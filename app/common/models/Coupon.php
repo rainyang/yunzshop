@@ -2,6 +2,7 @@
 
 namespace app\common\models;
 
+use app\framework\Database\Eloquent\Builder;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -30,6 +31,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property float deduct
  * @property Carbon time_start
  * @property Carbon time_end
+ * @method  Builder memberLevel($memberLevel)
+ * @method Builder unexpired($time)
  */
 class  Coupon extends BaseModel
 {
@@ -197,5 +200,27 @@ class  Coupon extends BaseModel
             ->value('category_ids');
     }
 
+    public function scopeMemberLevel(Builder $query,$memberLevel)
+    {
+        return $query->where(function($query) use ($memberLevel){
+            $query->where('level_limit', '<=', $memberLevel)
+                ->orWhere(function($query){
+                    $query->where('level_limit',-1);
+                });
+        });
+    }
+
+    public function scopeUnexpired(Builder $query,$time = null)
+    {
+        if(!isset($time)){
+            $time = time();
+        }
+        return $query->where(function($query) use ($time){
+            $query->where('time_limit', '=', 1)->where('time_end', '>', $time)
+                ->orWhere(function($query){
+                    $query->where('time_limit', '=', 0)->where('time_days', '>=', 0);
+                });
+        });
+    }
 
 }
