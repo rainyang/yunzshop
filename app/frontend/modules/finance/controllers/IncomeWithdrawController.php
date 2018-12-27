@@ -294,7 +294,7 @@ class IncomeWithdrawController extends ApiController
         }
         if ($income['type'] == 'commission') {
             $max = $this->getWithdrawLog($income['class']);
-            if (($max['max_time'] > $this->getCondition()['max_time_out_limit']) || ($max['max_amount'] > $this->getCondition()['max_roll_out_limit'])) {
+            if (($max['max_time'] > $this->getCondition()['max_time_out_limit']) || ($max['max_amount'] > $this->getCondition()['max_roll_out_limit']) || ($this->withdraw_amounts > $this->getCondition()['max_roll_out_limit'])) {
                 $can = false;
             }
         }
