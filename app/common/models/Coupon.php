@@ -29,6 +29,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property float discount
  * @property float enough
  * @property float deduct
+ * @property int get_max
  * @property Carbon time_start
  * @property Carbon time_end
  * @method  Builder memberLevel($memberLevel)
@@ -51,6 +52,8 @@ class  Coupon extends BaseModel
 
     const COUPON_DATE_TIME_RANGE = 1;//有效期 - 时间范围
     const COUPON_SINCE_RECEIVE = 0;//有效期 - 领取后n天
+
+    const NO_LIMIT = -1; //不限
 
 
     public $table = 'yz_coupon';
@@ -200,27 +203,51 @@ class  Coupon extends BaseModel
             ->value('category_ids');
     }
 
-    public function scopeMemberLevel(Builder $query,$memberLevel)
+    /**
+     * 筛选某会员等级可领
+     * @param Builder $query
+     * @param $memberLevel
+     * @return $this
+     */
+    public function scopeMemberLevel(Builder $query, $memberLevel)
     {
-        return $query->where(function($query) use ($memberLevel){
+        return $query->where(function ($query) use ($memberLevel) {
             $query->where('level_limit', '<=', $memberLevel)
-                ->orWhere(function($query){
-                    $query->where('level_limit',-1);
+                ->orWhere(function ($query) {
+                    $query->where('level_limit', -1);
                 });
         });
     }
 
-    public function scopeUnexpired(Builder $query,$time = null)
+    /**
+     * 筛选未过期
+     * @param Builder $query
+     * @param null $time
+     * @return $this
+     */
+    public function scopeUnexpired(Builder $query, $time = null)
     {
-        if(!isset($time)){
+        if (!isset($time)) {
             $time = time();
         }
-        return $query->where(function($query) use ($time){
+        return $query->where(function ($query) use ($time) {
             $query->where('time_limit', '=', 1)->where('time_end', '>', $time)
-                ->orWhere(function($query){
+                ->orWhere(function ($query) {
                     $query->where('time_limit', '=', 0)->where('time_days', '>=', 0);
                 });
         });
     }
 
+    /**
+     * 可领取张数
+     * @param $receivedCount
+     * @return int
+     */
+    public function availableCount($receivedCount)
+    {
+        if ($this->get_max == self::NO_LIMIT) {
+            return 999;
+        }
+        return $this->get_max - $receivedCount;
+    }
 }
