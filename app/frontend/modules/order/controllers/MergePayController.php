@@ -480,7 +480,7 @@ class MergePayController extends ApiController
      * @return \Illuminate\Http\JsonResponse
      * @throws AppException
      */
-    public function dianbang(\Request $request)
+    public function dianBangScan(\Request $request)
     {
         if (\Setting::get('plugin.dian-bang-scan') == false) {
             throw new AppException('商城未开启店帮扫码支付');
