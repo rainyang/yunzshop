@@ -124,8 +124,6 @@ class EventServiceProvider extends ServiceProvider
         \app\frontend\modules\coupon\listeners\CouponDiscount::class,
         PointListener::class,
         GoodsStock::class,
-        //Order::class,
-        \app\frontend\modules\discount\listeners\Order::class,
         \app\frontend\modules\payment\listeners\Alipay::class,
         \app\frontend\modules\payment\listeners\Credit::class,
         \app\frontend\modules\payment\listeners\Wechat::class,

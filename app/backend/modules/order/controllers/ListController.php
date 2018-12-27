@@ -9,6 +9,7 @@
 namespace app\backend\modules\order\controllers;
 
 use app\backend\modules\goods\models\GoodsOption;
+use app\backend\modules\member\models\MemberParent;
 use app\backend\modules\order\models\Order;
 use app\backend\modules\order\models\OrderGoods;
 use app\backend\modules\order\models\OrderJoinOrderGoods;
@@ -17,6 +18,7 @@ use app\common\components\BaseController;
 use app\common\helpers\PaginationHelper;
 use app\common\services\ExportService;
 use Illuminate\Support\Facades\DB;
+use Yunshop\TeamDividend\models\TeamDividendLevelModel;
 
 class ListController extends BaseController
 {
@@ -48,6 +50,7 @@ class ListController extends BaseController
     public function index()
     {
         $this->export($this->orderModel);
+        $this->directExport($this->orderModel);
         return view('order.index', $this->getData())->render();
     }
 
@@ -61,6 +64,7 @@ class ListController extends BaseController
     {
         $this->orderModel->waitPay();
         $this->export($this->orderModel->waitPay());
+        $this->directExport($this->orderModel->waitPay());
         return view('order.index', $this->getData())->render();
     }
 
@@ -79,6 +83,7 @@ class ListController extends BaseController
         }
         $this->orderModel->waitSend();
         $this->export($this->orderModel->waitSend());
+        $this->directExport($this->orderModel->waitSend());
         return view('order.index', $this->getData($condition))->render();
         //return view('order.index', $this->getData())->render();
     }
@@ -91,6 +96,7 @@ class ListController extends BaseController
     {
         $this->orderModel->waitReceive();
         $this->export($this->orderModel->waitReceive());
+        $this->directExport($this->orderModel->waitReceive());
         return view('order.index', $this->getData())->render();
     }
 
@@ -103,6 +109,7 @@ class ListController extends BaseController
 
         $this->orderModel->completed();
         $this->export($this->orderModel->completed());
+        $this->directExport($this->orderModel->completed());
         return view('order.index', $this->getData())->render();
     }
 
@@ -114,6 +121,7 @@ class ListController extends BaseController
     {
         $this->orderModel->cancelled();
         $this->export($this->orderModel->cancelled());
+        $this->directExport($this->orderModel->cancelled());
         return view('order.index', $this->getData())->render();
     }
 
@@ -220,6 +228,97 @@ class ListController extends BaseController
                 $export_model->export($file_name, $export_data, 'order.list.index');
             }
         }
+    }
+
+    public function directExport($orders)
+    {
+        if (\YunShop::request()->direct_export == 1) {
+            if (app('plugins')->isEnabled('team-dividend')) {
+                return $this->message('未开启经销商插件无法导出');
+            }
+            $export_page = request()->export_page ? request()->export_page : 1;
+            $orders = $orders->with([
+                'discounts',
+                'hasManyParentTeam' => function($q) {
+                    $q->whereHas('hasOneTeamDividend')
+                        ->with(['hasOneTeamDividend' => function($q) {
+                            $q->with(['hasOneLevel']);
+                        }])
+                        ->with('hasOneMember')
+                        ->orderBy('level', 'asc');
+                },
+            ]);
+            $export_model = new ExportService($orders, $export_page);
+            $team_list = TeamDividendLevelModel::getList()->get();
+
+            $levelId = [];
+            foreach ($team_list as $level) {
+                $export_data[0][] = $level->level_name;
+                $levelId[] = $level->id;
+            }
+
+            if (!$export_model->builder_model->isEmpty()) {
+                $file_name = date('Ymdhis', time()) . '订单导出';//返现记录导出
+                $export_data[0] = array_merge($export_data[0],$this->getColumns());
+                foreach ($export_model->builder_model->toArray() as $key => $item) {
+
+                    $level = $this->getLevel($item, $levelId);
+
+                    $export_data[$key + 1] = $level;
+
+                    $address = explode(' ', $item['address']['address']);
+
+                    array_push($export_data[$key + 1],
+                        $item['order_sn'],
+                        $item['has_one_order_pay']['pay_sn'],
+                        $this->getNickname($item['belongs_to_member']['nickname']),
+                        $item['address']['realname'],
+                        $item['address']['mobile'],
+                        !empty($address[0]) ? $address[0] : '',
+                        !empty($address[1]) ? $address[1] : '',
+                        !empty($address[2]) ? $address[2] : '',
+                        $item['address']['address'],
+                        $this->getGoods($item, 'goods_title'),
+                        $this->getGoods($item, 'goods_sn'),
+                        $this->getGoods($item, 'total'),
+                        $item['pay_type_name'],
+                        $this->getExportDiscount($item, 'deduction'),
+                        $this->getExportDiscount($item, 'coupon'),
+                        $this->getExportDiscount($item, 'enoughReduce'),
+                        $this->getExportDiscount($item, 'singleEnoughReduce'),
+                        $item['goods_price'],
+                        $item['dispatch_price'],
+                        $item['price'],
+                        $this->getGoods($item, 'cost_price'),
+                        $item['status_name'],
+                        $item['create_time'],
+                        !empty(strtotime($item['pay_time'])) ? $item['pay_time'] : '',
+                        !empty(strtotime($item['send_time'])) ? $item['send_time'] : '',
+                        !empty(strtotime($item['finish_time'])) ? $item['finish_time'] : '',
+                        $item['express']['express_company_name'],
+                        '[' . $item['express']['express_sn'] . ']',
+                        $item['has_one_order_remark']['remark']
+                        );
+                }
+                $export_model->export($file_name, $export_data, 'order.list.index');
+            }
+        }
+    }
+
+    public function getLevel($member, $levelId)
+    {
+        $data = [];
+        foreach ($levelId as $k => $value) {
+            foreach ($member['has_many_parent_team'] as $key => $parent) {
+                if ($parent['has_one_team_dividend']['has_one_level']['id'] == $value) {
+                    $data[$k] = $parent['has_one_member']['nickname'].' '.$parent['has_one_member']['realname'].' '.$parent['has_one_member']['mobile'];
+                    break;
+                }
+            }
+            $data[$k] = $data[$k] ?: '';
+        }
+
+        return $data;
     }
 
     private function getColumns()

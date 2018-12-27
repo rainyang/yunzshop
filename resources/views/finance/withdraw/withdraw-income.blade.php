@@ -303,15 +303,15 @@
     $('.add-queue').click(function () {
         var html = '';
         html += '<div class="input-group">';
-        html += '<div class="input-group-addon">劳务税比例</div>';
-        html += '<input type="text" name="withdraw[income][servicetax]['+ i +'][servicetax_rate]"';
-        html += 'class="form-control"';
-        html += 'value=""/>';
-        html += '<div class="input-group-addon">% </div>';
+        html += '<div class="input-group-addon">范围</div>';
         html += '<input type="text" name="withdraw[income][servicetax]['+ i +'][servicetax_money]"';
         html += 'class="form-control return_level"';
         html += 'value=""/>';
         html += '<div class="input-group-addon team-level" >元</div>';
+        html += '<input type="text" name="withdraw[income][servicetax]['+ i +'][servicetax_rate]"';
+        html += 'class="form-control"';
+        html += 'value=""/>';
+        html += '<div class="input-group-addon">% </div>';
         html += '<div class="input-group-addon del-queue" title="删除" ><i class="fa fa-trash"></i></div>';
         html += '</div>';
         $('.return-queue').append(html);

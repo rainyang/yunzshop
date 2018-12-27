@@ -10,10 +10,6 @@ namespace app\frontend\controllers;
 
 
 use app\common\components\BaseController;
-use app\common\repositories\OptionRepository;
-use Illuminate\Events\Dispatcher;
-use Illuminate\Filesystem\Filesystem;
-use app\common\services\PluginManager;
 
 class PluginsController extends BaseController
 {

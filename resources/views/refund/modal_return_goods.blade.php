@@ -1,6 +1,6 @@
 @extends('refund.modal_base')
-@section('operation_pass')
 
+@section('operation_pass')
     @if($order['has_one_refund_apply']['status'] == \app\common\models\refund\RefundApply::WAIT_CHECK)
         <label class='radio-inline'>
             <input type='radio' value='3' class="refund-action" data-action="{{yzWebUrl('refund.operation.pass')}}"
@@ -9,7 +9,6 @@
         </label>
     @endif
 @endsection
-
 @section('operation_consensus')
     <label class='radio-inline'>
         <input type='radio' value='1' class='refund-action' class="refund-action"
@@ -27,6 +26,7 @@
         <input type='radio' value='2' class="refund-action" data-action="{{yzWebUrl('refund.operation.consensus')}}"
                name='refund_status'>手动退款
     </label>
+
     <div class="help-group" style="display: none;">
         <span class="help-block">微信支付方式： 会返回到相应的的支付渠道(如零钱或银行卡）</span>
         <span class="help-block">支付宝支付方式： 会返回到相应的的支付渠道</span>

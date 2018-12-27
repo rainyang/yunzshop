@@ -38,9 +38,12 @@ class BalanceNoticeService
         if (!$template_id) {
             return null;
         }
-
+        $pay_at = $withdrawModel->pay_at;
+        if(empty($pay_at)){
+            $pay_at = time();
+        }
         $params = [
-            ['name' => '时间', 'value' => date('Y-m-d H:i:s', $withdrawModel->pay_at)],
+            ['name' => '时间', 'value' => date('Y-m-d H:i:s', $pay_at)],
             ['name' => '金额', 'value' => $withdrawModel->amounts],
             ['name' => '手续费', 'value' => $withdrawModel->actual_poundage],
         ];
@@ -50,6 +53,21 @@ class BalanceNoticeService
     public static function withdrawFailureNotice(Model $withdrawModel)
     {
         $template_id = \Setting::get('shop.notice.withdraw_fail');
+        if (!$template_id) {
+            return null;
+        }
+
+        $params = [
+            ['name' => '时间', 'value' => date('Y-m-d H:i:s', $withdrawModel->audit_at)],
+            ['name' => '金额', 'value' => $withdrawModel->amounts],
+            ['name' => '手续费', 'value' => $withdrawModel->actual_poundage],
+        ];
+        static::notice($template_id,$params,$withdrawModel->member_id);
+    }
+
+    public static function withdrawRejectNotice(Model $withdrawModel)
+    {
+        $template_id = \Setting::get('shop.notice.withdraw_reject');
         if (!$template_id) {
             return null;
         }

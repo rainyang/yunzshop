@@ -72,6 +72,12 @@ class MemberController extends ApiController
 
                 $data = MemberModel::addPlugins($data);
 
+                //隐藏爱心值插件入口
+                $love_show = PortType::popularizeShow(\YunShop::request()->type);
+                if (isset($data['love']) && (!$love_show)) {
+                    $data['love']['status'] = false;
+                }
+
                 $data['income'] = MemberModel::getIncomeCount();
 
                 $data['relation_switch'] = (1 == $member_info['yz_member']['is_agent'] && 2 == $member_info['yz_member']['status'])
@@ -1494,5 +1500,74 @@ class MemberController extends ApiController
         }
         return $this->errorJson('', 0);
     }
+  
+    /**
+     *  推广申请页面数据
+     */
+    public function shareinfo() {
 
+        $data = MemberRelation::uniacid()->where(['status'=>1])->get();
+
+        $become_term = unserialize($data[0]['become_term']);
+
+        $goodsid = explode(',', $data[0]['become_goods_id']);
+
+        foreach ($goodsid as $key => $val) {
+
+            $online_good = Goods::where('status', 1)
+                ->select('id','title','thumb','price','market_price')
+                ->find($val);
+
+            if ($online_good) {
+                $online_good['thumb'] = replace_yunshop(yz_tomedia($online_good['thumb']));
+                $online_goods[] = $online_good;
+                $online_goods_keys[] = $online_good->id;
+            }
+        }
+        unset($online_good);
+
+        $goodskeys = range(0, count($online_goods_keys)-1);
+
+        $data[0]['become_goods'] = array_combine($goodskeys, $online_goods);
+
+        $termskeys = range(0, count($become_term)-1);
+        $become_term = array_combine($termskeys, $become_term);
+
+        $member_uid = \YunShop::app()->getMemberId();
+
+        $status = $data[0]['become_order'] == 1 ? 3 : 1;
+        $getCostTotalNum = Order::where('status', '=', $status)->where('uid', $member_uid)->count('id');
+        $getCostTotalPrice = Order::where('status', '=', $status)->where('uid', $member_uid)->sum('price');
+
+        $data[0]['getCostTotalNum'] = $getCostTotalNum;
+        $data[0]['getCostTotalPrice'] = $getCostTotalPrice;
+
+        $terminfo = [];
+
+        foreach ($become_term as $v) {
+            if ($v == 2) {
+                $terminfo['become_ordercount'] = $data[0]['become_ordercount'];
+            }
+            if ($v == 3) {
+                $terminfo['become_moneycount'] = $data[0]['become_moneycount'];
+            }
+            if ($v == 4) {
+                $terminfo['goodsinfo'] = $data[0]['become_goods'];
+            }
+            if ($v == 5) {
+                $terminfo['become_selfmoney'] = $data[0]['become_selfmoney'];
+            }
+        }
+
+        $data[0]['become_term'] = $terminfo;
+
+        if ($data[0]['become'] == 2) {
+            //或
+            $data[0]['tip'] = '满足以下任意条件都可以成为推广员';
+        } elseif ($data[0]['become'] == 3) {
+            //与
+            $data[0]['tip'] = '满足以下所有条件才可以成为推广员';
+        }
+        return $this->successJson('ok', $data[0]);
+    }
 }

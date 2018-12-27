@@ -82,7 +82,7 @@
                 </div>
             </div>
             @else
-                未开启供应商插件
+               未开启供应商插件
             @endif
         </div>
     </div>

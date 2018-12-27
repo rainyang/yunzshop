@@ -15,6 +15,7 @@ return array(
         ],
         'waitSend' => [
             \app\frontend\modules\order\operations\member\ApplyRefund::class,
+            \app\frontend\modules\order\operations\member\ContactCustomerService::class,
             \app\frontend\modules\order\operations\member\Refunding::class,
             \app\frontend\modules\order\operations\member\Refunded::class,
 
@@ -23,6 +24,7 @@ return array(
             \app\frontend\modules\order\operations\member\ExpressInfo::class,
             \app\frontend\modules\order\operations\member\Receive::class,
             \app\frontend\modules\order\operations\member\ApplyRefund::class,
+            \app\frontend\modules\order\operations\member\ContactCustomerService::class,
             \app\frontend\modules\order\operations\member\Refunding::class,
             \app\frontend\modules\order\operations\member\Refunded::class,
         ],
@@ -30,6 +32,7 @@ return array(
             \app\frontend\modules\order\operations\member\ExpressInfo::class,
             \app\frontend\modules\order\operations\member\Delete::class,
             \app\frontend\modules\order\operations\member\ApplyRefund::class,
+            \app\frontend\modules\order\operations\member\ContactCustomerService::class,
             \app\frontend\modules\order\operations\member\Refunding::class,
             \app\frontend\modules\order\operations\member\Refunded::class,
 
@@ -47,6 +50,6 @@ return array(
         2 => 'waitReceive',
         3 => 'complete',
         -1 => 'close',
-    ]
+    ],
 
 );
