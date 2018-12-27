@@ -75,7 +75,7 @@ class MemberLevelValidity
         MemberShopInfo::uniacid()
             ->where('level_id', '!=', '0')
             ->where('validity', 0)
-            ->update(['level_id' => 0]);
+            ->update(['level_id' => 0, 'downgrade_at' => time()]);
     }
 
 }

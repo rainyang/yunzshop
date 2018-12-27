@@ -226,6 +226,7 @@ class LevelUpgradeService
     {
 
         $this->memberModel->level_id = $levelId;
+        $this->memberModel->upgrade_at = time();
 
         if ($this->memberModel->save()) {
             $this->notice();
