@@ -26,6 +26,7 @@ use app\frontend\modules\payment\orderPayments\WftAlipayPayment;
 use app\frontend\modules\payment\orderPayments\YunAliPayment;
 use app\frontend\modules\payment\orderPayments\YunPayment;
 use app\frontend\modules\payment\orderPayments\WftPayment;
+use app\frontend\modules\payment\orderPayments\DianBangScanPayment;
 
 use app\frontend\modules\payment\paymentSettings\OrderPaymentSettingCollection;
 use app\frontend\modules\payment\paymentSettings\shop\AlipayAppSetting;
@@ -44,6 +45,7 @@ use app\frontend\modules\payment\paymentSettings\shop\WftAlipaySetting;
 use app\frontend\modules\payment\paymentSettings\shop\YunPayAliSetting;
 use app\frontend\modules\payment\paymentSettings\shop\YunPayWechatSetting;
 use app\frontend\modules\payment\paymentSettings\shop\WftSetting;
+use app\frontend\modules\payment\paymentSettings\shop\DianBangScanSetting;
 
 
 class PaymentConfig
@@ -191,6 +193,16 @@ class PaymentConfig
                 'settings' => [
                     'shop' => function (OrderPaymentTypeSettingManager $manager, OrderPay $orderPay) {
                         return new WftAlipaySetting($orderPay);
+                    }
+                ],
+            ],
+            'DianBangScan' => [
+                'payment' => function (OrderPay $orderPay, PayType $payType, OrderPaymentSettingCollection $settings) {
+                    return new DianBangScanPayment($orderPay, $payType, $settings);
+                },
+                'settings' => [
+                    'shop' => function (OrderPaymentTypeSettingManager $manager, OrderPay $orderPay) {
+                        return new DianBangScanSetting($orderPay);
                     }
                 ],
             ],
