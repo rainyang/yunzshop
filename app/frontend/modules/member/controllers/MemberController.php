@@ -1594,8 +1594,8 @@ class MemberController extends ApiController
         //邀请页面开关
         $result['invite_page'] = intval(Setting::get('shop.member.invite_page'));
         $result['is_invite'] = intval(Setting::get('shop.member.is_invite'));
-//        $result['required'] = Setting::get('shop.member.required');
-        if ($result['invite_page'] == 1 && $result['is_invite'] == 1) {
+        $result['required'] = Setting::get('shop.member.required');
+        if ($result['invite_page'] == 1 && $result['is_invite'] == 1 && $result['required'] == 1) {
             return $this->successJson('ok');
         }
     }
