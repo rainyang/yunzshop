@@ -147,8 +147,6 @@ class LevelUpgradeService
                 $this->validity['upgrade'] = true; // 会员期限 升级 期限叠加
                 return $this->new_level->id;
             }
-
-
             return '';
         }
         return '';
@@ -210,7 +208,7 @@ class LevelUpgradeService
                 $this->validity['goods_total'] = $time->total;
                 //开启一卡通
                 if (app('plugins')->isEnabled('universal-card')) {
-                    $level->validity = (new \Yunshop\UniversalCard\services\LevelUpgradeService)->upgrade($level->id, $time->goods_option_id);
+                    $level->validity = (new \Yunshop\UniversalCard\services\LevelUpgradeService())->upgrade($level->id, $time->goods_option_id);
                 }
             }
         }
@@ -259,7 +257,7 @@ class LevelUpgradeService
             ['name' => '旧等级', 'value' => $old_level],
             ['name' => '新等级', 'value' => $this->new_level->level_name],
             ['name' => '时间', 'value' => date('Y-m-d H:i',time())],
-//            ['name' => '到期时间', 'value' => date('Y-m-d H:i',time())],
+            ['name' => '有效期', 'value' => $this->memberModel->validity.'天'],
         ];
 
         $msg = MessageTemp::getSendMsg($template_id, $params);

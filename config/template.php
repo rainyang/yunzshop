@@ -107,7 +107,7 @@ return [
         'subtitle' => '会员升级',
         'value' => 'member_upgrade',
         'param' => [
-            '粉丝昵称', '旧等级', '新等级', '时间',
+            '粉丝昵称', '旧等级', '新等级', '时间', '有效期',
         ]
     ],
     'member_agent' => [
