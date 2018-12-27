@@ -8,13 +8,13 @@ class DianBangScanSetting extends BaseSetting
 {
     public function canUse()
     {
-        $set = \Setting::get('plugin.dian_bang_scan');
+        $set = \Setting::get('plugin.dian-bang-scan');
 
-        return \YunShop::request()->type != 7 && !is_null($set);
+        return \YunShop::request()->type != 7 && !is_null($set) && 1 == $set['switch'];
     }
 
     public function exist()
     {
-        return \Setting::get('plugin.dian_bang_scan') !== null;
+        return \Setting::get('plugin.dian-bang-scan') !== null;
     }
 }

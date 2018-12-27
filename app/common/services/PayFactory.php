@@ -208,6 +208,7 @@ class PayFactory
                 break;
             case self::PAY_DIANBANG:
                 if (!app('plugins')->isEnabled('dian-bang-scan')) {
+
                     throw new AppException('插件未开启');
                 }
 
