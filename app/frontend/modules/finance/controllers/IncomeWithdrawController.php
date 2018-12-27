@@ -70,9 +70,6 @@ class IncomeWithdrawController extends ApiController
     public function getWithdraw()
     {
         $income_config = \Config::get('income');
-//        dd($income_config);
-//        $before_dawn = mktime(0,0,0,date("m"),date("d"),date("Y"));
-//        dd(date('Y-m-d H:i:s', $before_dawn));
 
         $income_data = [];
         foreach ($income_config as $key => $income) {
@@ -289,7 +286,6 @@ class IncomeWithdrawController extends ApiController
         $poundage = $this->poundageMath($this->withdraw_amounts, $this->poundage_rate);
         $service_tax = $this->poundageMath($this->withdraw_amounts - $poundage, $this->service_tax_rate);
 
-
         $special_poundage = $this->poundageMath($this->withdraw_amounts, $this->special_poundage_rate);
         $special_service_tax = $this->poundageMath(($this->withdraw_amounts - $special_poundage), $this->special_service_tax_rate);
         $can = $this->incomeIsCanWithdraw();
@@ -298,7 +294,7 @@ class IncomeWithdrawController extends ApiController
         }
         if ($income['type'] == 'commission') {
             $max = $this->getWithdrawLog($income['class']);
-            if (($max['max_time'] > $this->getCondition()['max_time_out_limit']) || ($max['max_amount'] > $this->getCondition()['max_roll_out_limit'])) {
+            if (($max['max_time'] > $this->getCondition()['max_time_out_limit']) || ($max['max_amount'] > $this->getCondition()['max_roll_out_limit']) || ($this->withdraw_amounts > $this->getCondition()['max_roll_out_limit'])) {
                 $can = false;
             }
         }
