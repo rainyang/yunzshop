@@ -127,7 +127,8 @@ class NormalOrderGoodsPrice extends BaseOrderGoodsPrice
      */
     public function getVipDiscountAmount()
     {
-        return $this->goods()->getVipDiscountAmount() * $this->orderGoods->total;
+        //todo 为了兼容398门店特权有优化 传入 orderGoods 模型
+        return $this->goods()->getVipDiscountAmount($this->orderGoods) * $this->orderGoods->total;
     }
 
 }
