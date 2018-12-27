@@ -18,6 +18,17 @@ class MemberLevelValidity
 
     public $uniacid;
 
+
+    public function subscribe()
+    {
+        \Event::listen('cron.collectJobs', function () {
+            \Cron::add('Member-validity', '*/10 * * * * *', function () {
+                $this->handle();
+                return;
+            });
+        });
+    }
+
     public function handle()
     {
         \Log::info('会员等级到期');
@@ -67,13 +78,4 @@ class MemberLevelValidity
             ->update(['level_id' => 0]);
     }
 
-    public function subscribe()
-    {
-        \Event::listen('cron.collectJobs', function () {
-            \Cron::add('Member-validity', '*/10 * * * * *', function () {
-                $this->handle();
-                return;
-            });
-        });
-    }
 }

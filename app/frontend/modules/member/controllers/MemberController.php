@@ -1492,8 +1492,8 @@ class MemberController extends ApiController
                     $data[] = [
                         'name' => 'universal_card',
                         'title' => $set['name'],
-                        'class' => '',
-                        'url' => 'UniversalCard'
+                        'class' => 'icon-receive',
+                        'url' => 'CardIndex'
                     ];
                 }
             }
