@@ -9,16 +9,13 @@
 namespace app\backend\modules\withdraw\controllers;
 
 
-use app\backend\modules\income\models\Income;
 use app\backend\modules\withdraw\models\Withdraw;
 use app\common\exceptions\ShopException;
 use app\common\services\credit\ConstService;
 use app\common\services\finance\BalanceChange;
 use Illuminate\Support\Facades\DB;
 use app\common\models\Member;
-use app\backend\modules\finance\controllers\BalanceWithdrawController;
-use app\common\models\finance\Balance;
-use app\backend\modules\finance\controllers\BalanceController;
+use app\common\models\finance\BalanceRecharge;
 
 class AuditRejectedController extends PreController
 {
@@ -63,10 +60,10 @@ class AuditRejectedController extends PreController
         if (!$result) {
             throw new ShopException('驳回失败：更新状态失败');
         }
-        $result = $this->updateBalance();
-        if (!$result) {
-            throw new ShopException('驳回失败：更新余额失败');
-        }
+//        $result = $this->updateBalance();
+//        if (!$result) {
+//            throw new ShopException('驳回失败：更新余额失败');
+//        }
         $result = $this->updateBalanceMessage();
         if (!$result) {
             throw new ShopException('驳回失败：更新余额明细失败');
@@ -84,49 +81,49 @@ class AuditRejectedController extends PreController
         return $this->withdrawModel->save();
     }
 
-    /**
-     * @return bool
-     */
-    private function updateBalance()
-    {
-        $id = \YunShop::request()['id'];
+//    /**
+//     * @return bool
+//     */
+//    private function updateBalance()
+//    {
+//        $id = \YunShop::request()['id'];
+//        $amounts = $this->withdrawModel->amounts;
+//        $member_id = $this->withdrawModel->member_id;
+//        $memberModel = Member::where('uid',$member_id)->first()->toArray();
+//        //用户余额
+//        $balance = $memberModel['credit2'];
+//        $sum = $balance + $amounts;
+//        if($member_id){
+//            return Member::where('uid', $member_id)->update(['credit2' => $sum]);
+//        }
+//        return false;
+//    }
+
+    private function updateBalanceMessage(){
         $amounts = $this->withdrawModel->amounts;
         $member_id = $this->withdrawModel->member_id;
         $memberModel = Member::where('uid',$member_id)->first()->toArray();
         //用户余额
         $balance = $memberModel['credit2'];
         $sum = $balance + $amounts;
-        if($member_id){
-            return Member::where('uid', $member_id)->update(['credit2' => $sum]);
-        }
-        return false;
-    }
-
-    private function updateBalanceMessage(){
-        $memberModel = Member::where('uid',$member_id)->first()->toArray();
-        //用户余额
-        $balance = $memberModel['credit2'];
-        $sum = $balance + $amounts;
         $data = array(
-            'member_id'     => $member_id = $this->withdrawModel->member_id,
+            'member_id'     => $member_id,
             'remark'        => '余额提现驳回' . $amounts = $this->withdrawModel->amounts . "元",
             'source'        => ConstService::SOURCE_REJECTED,
             'operator'      => ConstService::OPERATOR_SHOP,
-            'operator_id'   => ConstService::OPERATOR_SHOP,
+            'operator_id'   => \YunShop::app()->uniacid,
             'uniacid'       => \YunShop::app()->uniacid,
             'old_money'     => $balance,
-            'money'         => $this->withdrawModel->amounts,
+            'change_money'  => $this->withdrawModel->amounts,
             'new_money'     => $sum,
-            'type'          => BalanceRecharge::PAY_TYPE_SHOP,    //未修改
-            'ordersn'       => $this->getRechargeOrderSN(),         //未修改
-            'status'        => BalanceRecharge::PAY_STATUS_ERROR,   //未修改
+//            'type'          => BalanceRecharge::PAY_TYPE_SHOP,
+            'ordersn'       => $this->withdrawModel->withdraw_sn,
+//            'status'        => BalanceRecharge::PAY_STATUS_ERROR,
         );
-
-
         $result = (new BalanceChange())->rejected($data);
-
-        if (!$result) {
-            return false;
+        if ($result) {
+            return true;
         }
+        return false;
     }
 }
