@@ -193,15 +193,6 @@ class PaymentConfig
                         return new WftAlipaySetting($orderPay);
                     }
                 ],
-            ], 'huanxunWx' => [
-                'payment' => function (OrderPay $orderPay, PayType $payType, OrderPaymentSettingCollection $settings) {
-                    return new HuanxunWxPayment($orderPay, $payType, $settings);
-                },
-                'settings' => [
-                    'shop' => function (OrderPaymentTypeSettingManager $manager, OrderPay $orderPay) {
-                        return new HuanxunWxPaySetting($orderPay);
-                    }
-                ],
             ],
         ];
     }

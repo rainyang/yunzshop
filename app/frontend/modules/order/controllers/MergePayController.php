@@ -464,12 +464,30 @@ class MergePayController extends ApiController
      */
     public function huanxunWx(\Request $request)
     {
-        if (\Setting::get('plugin.huanxun_set') == false) {
+        if (\Setting::get('plugin.dian_bang_scan_set') == false) {
             throw new AppException('商城未开启快捷支付');
         }
 
         $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
         $data = $orderPay->getPayResult(PayFactory::PAY_Huanxun_Wx, ['pay' => 'wx']);
+
+        return $this->successJson('成功', $data);
+    }
+    /**
+     * 店帮支付
+     *
+     * @param \Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     */
+    public function dianbang(\Request $request)
+    {
+        if (\Setting::get('plugin.huanxun_set') == false) {
+            throw new AppException('商城未开启快捷支付');
+        }
+
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+        $data = $orderPay->getPayResult(PayFactory::PAY_DIANBANG , ['pay' => 'wx']);
 
         return $this->successJson('成功', $data);
     }
