@@ -1589,4 +1589,10 @@ class MemberController extends ApiController
             return $this->errorJson('邀请码有误!请重新填写');
         }
     }
+
+    public function isValidate()
+    {
+        $set = \Setting::get('shop.member');
+        return $this->successJson('邀请页面开关',$set['invite_page'] ?: 0);
+    }
 }
