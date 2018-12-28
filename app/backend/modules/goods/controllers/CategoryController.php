@@ -145,7 +145,7 @@ class CategoryController extends BaseController
      * 删除商品分类
      */
     public function deletedCategory()
-    {
+    {       
         $category = Category::getCategory(\YunShop::request()->id);
         if(!$category) {
             return $this->message('无此分类或已经删除','','error');
