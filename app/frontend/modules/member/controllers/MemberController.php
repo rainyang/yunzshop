@@ -48,8 +48,8 @@ use app\common\services\plugin\huanxun\HuanxunSet;
 
 class MemberController extends ApiController
 {
-    protected $publicAction = ['guideFollow', 'wxJsSdkConfig', 'memberFromHXQModule', 'dsAlipayUserModule'];
-    protected $ignoreAction = ['guideFollow', 'wxJsSdkConfig', 'memberFromHXQModule', 'dsAlipayUserModule'];
+    protected $publicAction = ['guideFollow', 'wxJsSdkConfig', 'memberFromHXQModule', 'dsAlipayUserModule', 'isValidatePage'];
+    protected $ignoreAction = ['guideFollow', 'wxJsSdkConfig', 'memberFromHXQModule', 'dsAlipayUserModule', 'isValidatePage'];
 
     /**
      * 获取用户信息
