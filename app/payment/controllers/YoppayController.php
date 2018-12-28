@@ -45,8 +45,6 @@ class YoppayController extends PaymentController
     {
         $yop_data = $_REQUEST['response'];
 
-        $this->log($this->set['app_key'], $yop_data);
-
         if ($yop_data) {
             $response = \Yunshop\YopPay\common\Util\YopSignUtils::decrypt($yop_data, $this->set['private_key'], $this->set['yop_public_key']);
             $this->parameters = json_decode($response, true);
@@ -68,6 +66,8 @@ class YoppayController extends PaymentController
     //异步支付通知
     public function notifyUrl()
     {
+        $this->log($this->set['app_key'], $this->parameters);
+
         $this->yopResponse('支付通知', $this->parameters, 'pay');
 
         $this->savePayOrder();
