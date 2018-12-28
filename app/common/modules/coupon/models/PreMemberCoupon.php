@@ -71,13 +71,13 @@ class PreMemberCoupon extends MemberCoupon
     public function verify(MemberShopInfo $yzMember, Coupon $coupon)
     {
         if (!$coupon->available()) {
-            throw new AppException('没有该优惠券或者优惠券不可用', []);
+            throw new AppException('没有该优惠券或者优惠券不可用');
         }
         if (!empty($coupon->level_limit) && ($coupon->level_limit != -1)) { //优惠券有会员等级要求
             if (empty($yzMember->level_id)) {
-                throw new AppException('该优惠券有会员等级要求,但该用户没有会员等级', []);
+                throw new AppException('该优惠券有会员等级要求,但该用户没有会员等级');
             } elseif ($yzMember->level_id < $coupon->level_limit) {
-                throw new AppException('没有达到领取该优惠券的会员等级要求', '');
+                throw new AppException('没有达到领取该优惠券的会员等级要求');
             }
         }
 
@@ -85,19 +85,19 @@ class PreMemberCoupon extends MemberCoupon
         $timeLimit = $coupon->time_limit;
 
         if ($timeLimit == 1 && (time() > $coupon->time_end->timestamp)) {
-            throw new AppException('优惠券已过期', []);
+            throw new AppException('优惠券已过期');
 
         }
 
         //是否达到个人领取上限
         $count = self::where('uid', $yzMember->member_id)->where('coupon_id', $coupon->id)->count();
         if ($count >= $coupon->get_max && ($coupon->get_max != -1)) {
-            throw new AppException('已经达到个人领取上限', []);
+            throw new AppException('已经达到个人领取上限');
         }
 
         //验证是否达到优惠券总数上限
         if ($coupon->getReceiveCount() >= $coupon->total && ($coupon->total != -1)) {
-            throw new AppException('该优惠券已经被抢光', []);
+            throw new AppException('该优惠券已经被抢光');
         }
     }
 }
