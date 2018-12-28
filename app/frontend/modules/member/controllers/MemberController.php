@@ -1590,7 +1590,7 @@ class MemberController extends ApiController
         }
     }
 
-    public function isValidate()
+    public function isValidatePage()
     {
         $set = \Setting::get('shop.member');
         return $this->successJson('邀请页面开关',$set['invite_page'] ?: 0);
