@@ -102,14 +102,7 @@ class Goods extends \app\common\models\Goods
         }else{
             $result = (new GoodsDiscount())->getAmount($price);
         }
-        // todo 需要提取会员等级折扣类,此处临时解决
-        // 如果开启了原价计算会员折扣
-        $level_discount_set = Setting::get('discount.all_set');
-        if (isset($level_discount_set['type']) && $level_discount_set['type'] == 1) {
-            // 补齐原价与现价的差价
-            // 商品金额 = 商品现价 - （等级优惠金额 + 现价 - 原价）
-            $result += $this->price - $this->market_price;
-        }
+
         return $result;
     }
 

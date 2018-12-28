@@ -28,7 +28,7 @@ class GoodsOption extends \app\common\models\GoodsOption
     {
         $level_discount_set = Setting::get('discount.all_set');
         if (isset($level_discount_set['type']) && $level_discount_set['type'] == 1) {
-            return $this->goods->getVipDiscountAmount($this->goods()->market_price);
+            return $this->goods->getVipDiscountAmount($this->goods->market_price);
         }else{
             return $this->goods->getVipDiscountAmount($this->product_price);
         }
@@ -39,12 +39,7 @@ class GoodsOption extends \app\common\models\GoodsOption
      */
     public function getVipPriceAttribute()
     {
-        $level_discount_set = Setting::get('discount.all_set');
-        if (isset($level_discount_set['type']) && $level_discount_set['type'] == 1) {
-            return $this->goods()->market_price - $this->getVipDiscountAmount();
-        }else{
-            return $this->product_price - $this->getVipDiscountAmount();
-        }
+        return $this->product_price - $this->getVipDiscountAmount();
     }
     public function goods(){
         return $this->belongsTo(Goods::class);
