@@ -57,10 +57,11 @@ class Goods extends \app\common\models\Goods
      * @return int|mixed
      * @throws AppException
      */
-    public function getVipDiscountAmount($price = null, $orderGoods){
+    public function getVipDiscountAmount($price = null, $orderGoods = null){
         if(isset($this->vipDiscountAmount)){
             return $this->vipDiscountAmount;
         }
+        //todo blank 2018/12/28 为了兼容398门店特权有优化 传入了 orderGoods 模型
         return $this->vipDiscountAmount = $this->_getVipDiscountAmount($price, $orderGoods);
     }
     private function getDefaultVipDiscountGoodsPrice($price)
@@ -82,7 +83,6 @@ class Goods extends \app\common\models\Goods
      */
     protected function _getVipDiscountAmount($price = null, $orderGoods = null){
 
-        //todo blank 2018/12/27 为了兼容398门店特权有优化 传入了 orderGoods 模型
 //        if(!isset($price)) {
 //            $price = $this->price;
 //        }
