@@ -114,7 +114,7 @@ class AuditRejectedController extends PreController
             'operator_id'   => \YunShop::app()->uniacid,
             'uniacid'       => \YunShop::app()->uniacid,
             'old_money'     => $balance,
-            'change_money'  => $this->withdrawModel->amounts,
+            'change_value'  => $this->withdrawModel->amounts,
             'new_money'     => $sum,
 //            'type'          => BalanceRecharge::PAY_TYPE_SHOP,
             'ordersn'       => $this->withdrawModel->withdraw_sn,
