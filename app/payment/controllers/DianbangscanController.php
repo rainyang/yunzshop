@@ -12,9 +12,6 @@ use app\common\models\OrderPay;
 
 class DianbangscanController extends PaymentController
 {
-
-    private $key;
-
     private $parameters = [];
 
     public function __construct()
@@ -37,13 +34,9 @@ class DianbangscanController extends PaymentController
 
         $set = \Setting::get('plugin.dian-bang-scan');
         $this->setKey($set['secret']);
-        \Log::debug('--------key---------',$this->key);
-        \Log::debug('--------验证的参数---------',$this->parameters);
         $order_no = explode('-', $this->getParameter('billNo'));
 
         if($this->verify($this->parameters)) {
-
-            \Log::debug('------店帮微信验证成功-----');
             $billPayment = json_decode($this->parameters['billPayment'],true);
             if ($billPayment['status'] == 'TRADE_SUCCESS') {
                 \Log::debug('-------店帮微信支付开始---------->');
@@ -115,11 +108,11 @@ class DianbangscanController extends PaymentController
         if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
             return redirect($trade['redirect_url'])->send();
         }
-
+        \Log::debug('<---------支付成功后返回-------',$_GET);
         if (0 == $_GET['state'] && $_GET['errorDetail'] == '成功') {
-            redirect(Url::absoluteApp('member/payYes', ['i' => $_GET['attach']]))->send();
+            redirect(Url::absoluteApp('member/payYes', ['i' => $_GET['billDecs']]))->send();
         } else {
-            redirect(Url::absoluteApp('member/payErr', ['i' => $_GET['attach']]))->send();
+            redirect(Url::absoluteApp('member/payErr', ['i' => $_GET['billDecs']]))->send();
         }
     }
 
