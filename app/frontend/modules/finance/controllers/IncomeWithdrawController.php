@@ -294,8 +294,10 @@ class IncomeWithdrawController extends ApiController
         }
         if ($income['type'] == 'commission') {
             $max = $this->getWithdrawLog($income['class']);
-            if (($max['max_time'] > $this->getIncomeTimeMax()) || ($max['max_amount'] > $this->getIncomeAmountMax()) || ($this->withdraw_amounts > $this->getIncomeAmountMax())) {
-                $can = false;
+            if (!empty($this->getIncomeAmountMax())) {
+                if (($max['max_time'] > $this->getIncomeTimeMax()) || ($max['max_amount'] > $this->getIncomeAmountMax()) || ($this->withdraw_amounts > $this->getIncomeAmountMax())) {
+                    $can = false;
+                }
             }
         }
         
@@ -339,7 +341,7 @@ class IncomeWithdrawController extends ApiController
     private function getIncomeAmountMax()
     {
         $value = array_get($this->income_set,'max_roll_out_limit', 0);
-        return empty($value) ? 0 : $value;
+        return empty($value) ?: $value;
     }
 
     /**
@@ -349,7 +351,7 @@ class IncomeWithdrawController extends ApiController
     private function getIncomeTimeMax()
     {
         $value = array_get($this->income_set,'max_time_out_limit', 0);
-        return empty($value) ? 0 : $value;
+        return empty($value) ?: $value;
     }
 
     /**
@@ -366,7 +368,7 @@ class IncomeWithdrawController extends ApiController
 
         return $max;
     }
-    
+
     /**
      * 是否可以提现
      * @return bool
