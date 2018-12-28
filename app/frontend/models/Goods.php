@@ -80,7 +80,7 @@ class Goods extends \app\common\models\Goods
      * @return int|mixed
      * @throws AppException
      */
-    protected function _getVipDiscountAmount($price = null, $orderGoods){
+    protected function _getVipDiscountAmount($price = null, $orderGoods = null){
 
         //todo blank 2018/12/27 为了兼容398门店特权有优化 传入了 orderGoods 模型
 //        if(!isset($price)) {
