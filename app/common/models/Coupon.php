@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @package app\common\models
  * @property int coupon_method
  * @property int use_type
+ * @property int status
+ * @property int get_type
  * @property int time_limit
  * @property string name
  * @property string suppliernames
@@ -35,7 +37,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property Carbon time_end
  * @method  Builder memberLevel($memberLevel)
  * @method Builder unexpired($time)
-
  */
 class  Coupon extends BaseModel
 {
@@ -212,6 +213,7 @@ class  Coupon extends BaseModel
                 });
         });
     }
+
     /**
      * 筛选未过期
      * @param Builder $query
@@ -224,14 +226,18 @@ class  Coupon extends BaseModel
             $time = time();
         }
         return $query->where(function ($query) use ($time) {
-            $query->where('time_limit', '=', 1)->where('time_end', '>', $time)
+            // 不限时间
+            $query->where('time_limit', 1)->where('time_end', '>', $time)
                 ->orWhere(function ($query) {
-                    $query->where('time_limit', '=', 0)->where('time_days', '>=', 0);
-                });
+                // 未结束的优惠券
+                $query->where('time_limit', 0);
+            });
+
         });
     }
 
     /**
+     * todo 为什么会出现负数
      * 可领取张数
      * @param $receivedCount
      * @return int
@@ -241,7 +247,7 @@ class  Coupon extends BaseModel
         if ($this->get_max == self::NO_LIMIT) {
             return 999;
         }
-        return $this->get_max - $receivedCount;
+        return max($this->get_max - $receivedCount,0);
     }
 
     /**
@@ -249,7 +255,8 @@ class  Coupon extends BaseModel
      * 获取已领取数量
      * @return int
      */
-    public function getReceiveCount(){
+    public function getReceiveCount()
+    {
         return $this->hasManyMemberCoupon()->count();
     }
 
