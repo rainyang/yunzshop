@@ -83,13 +83,14 @@ class PreMemberCoupon extends MemberCoupon
 
         //判断优惠券是否过期
         $timeLimit = $coupon->time_limit;
-        if ($timeLimit == 1 && strtotime('now') > $coupon->time_end->timestamp) {
+
+        if ($timeLimit == 1 && (time() > $coupon->time_end->timestamp)) {
             throw new AppException('优惠券已过期', []);
 
         }
 
         //是否达到个人领取上限
-        $count = self::where('uid', $yzMember->uid)->where('coupon_id', $coupon->id)->count();
+        $count = self::where('uid', $yzMember->member_id)->where('coupon_id', $coupon->id)->count();
         if ($count >= $coupon->get_max && ($coupon->get_max != -1)) {
             throw new AppException('已经达到个人领取上限', []);
         }
