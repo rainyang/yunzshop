@@ -13,14 +13,17 @@ class Coupon extends \app\common\models\Coupon
     protected $casts = [
         'goods_ids' => 'json',
         'category_ids' => 'json',
+        'storeids' => 'json',
         'goods_names' => 'json',
         'categorynames' => 'json',
+        'storenames' => 'json',
     ];
 
     //默认值
     protected $attributes = [
         'goods_ids' => '[]',
         'category_ids' => '[]',
+        'storeids' => '[]',
         'display_order' => 0,
     ];
 
