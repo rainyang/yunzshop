@@ -735,7 +735,7 @@ class MemberController extends ApiController
         $js = $app->js;
         $js->setUrl($url);
 
-        $config = $js->config(array('onMenuShareTimeline', 'onMenuShareAppMessage', 'showOptionMenu', 'scanQRCode'));
+        $config = $js->config(array('onMenuShareTimeline', 'onMenuShareAppMessage', 'showOptionMenu', 'scanQRCode', 'updateAppMessageShareData', 'updateTimelineShareData'));
         $config = json_decode($config, 1);
 
         $info = [];
@@ -757,8 +757,11 @@ class MemberController extends ApiController
         }
 
         $shop = \Setting::get('shop');
+//        dd($shop);
         $shop['icon'] = replace_yunshop(yz_tomedia($shop['logo']));
-
+//        if ($shop){
+//            $shop['name'] = $shop['shop']['name'];
+//        }
         if (!is_null(\Config('customer_service'))) {
             $class = array_get(\Config('customer_service'), 'class');
             $function = array_get(\Config('customer_service'), 'function');
@@ -767,7 +770,6 @@ class MemberController extends ApiController
                 $shop['cservice'] = $ret;
             }
         }
-
         if (is_null($share) && is_null($shop)) {
             $share = [
                 'title' => '商家分享',
@@ -775,6 +777,9 @@ class MemberController extends ApiController
                 'desc'  => '商家分享'
             ];
         }
+//        if(is_null($share['desc'])){
+//            $share['desc'] = "";
+//        }
 
         $data = [
             'config' => $config,
@@ -782,7 +787,6 @@ class MemberController extends ApiController
             'shop' => $shop,
             'share' => $share   //分享设置
         ];
-
         return $this->successJson('', $data);
     }
 
@@ -1583,22 +1587,6 @@ class MemberController extends ApiController
             return $this->successJson('ok', $member);
         }else{
             return $this->errorJson('邀请码有误!请重新填写');
-        }
-    }
-
-    /**
-     *  邀请页面开关
-     */
-    public function memberInviteOpen()
-    {
-        $result['invite_page'] = intval(Setting::get('shop.member.invite_page'));
-        if ($result['invite_page'] == 1) {
-            $member = Member::getMemberByUid(\YunShop::app()->getMemberId());
-            if ($member) {
-                return $this->errorJson();
-            }else{
-                return $this->successJson('ok');
-            }
         }
     }
 }
