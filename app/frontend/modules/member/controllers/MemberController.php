@@ -1595,9 +1595,9 @@ class MemberController extends ApiController
         if ($result['invite_page'] == 1) {
             $member = Member::getMemberByUid(\YunShop::app()->getMemberId());
             if ($member) {
-                return false;
+                return $this->errorJson();
             }else{
-                return true;
+                return $this->successJson('ok');
             }
         }
     }
