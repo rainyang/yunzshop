@@ -10,12 +10,10 @@ namespace app\frontend\models;
 
 use app\common\exceptions\AppException;
 use app\common\facades\Setting;
-use app\common\models\BaseModel;
 use app\common\models\GoodsDiscount;
 use app\framework\Database\Eloquent\Collection;
 use app\frontend\models\goods\Privilege;
 use app\frontend\models\goods\Sale;
-use app\frontend\modules\member\services\MemberService;
 use app\common\models\Coupon;
 use Illuminate\Database\Eloquent\Builder;
 use Yunshop\StoreCashier\common\models\StoreGoods;
@@ -32,6 +30,7 @@ use Yunshop\Supplier\admin\models\SupplierGoods;
  * @property float weight
  * @property int is_plugin
  * @property int plugin_id
+ * @property float deal_price
  * @property Sale hasOneSale
  * @property GoodsOption has_option
  * @property Privilege hasOnePrivilege
@@ -43,8 +42,9 @@ use Yunshop\Supplier\admin\models\SupplierGoods;
 class Goods extends \app\common\models\Goods
 {
     public $appends = ['vip_price'];
-    public $hidden = ['content','description'];
+    public $hidden = ['content', 'description'];
     protected $vipDiscountAmount;
+    private $dealPrice;
 
     public function hasOneOptions()
     {
@@ -52,54 +52,67 @@ class Goods extends \app\common\models\Goods
     }
 
     /**
-     * 缓存等级折金额
-     * @param null $price
-     * @return int|mixed
+     * 获取交易价(实际参与交易的商品价格)
+     * @return float|int
      * @throws AppException
+     * @throws \app\common\exceptions\MemberNotLoginException
      */
-    public function getVipDiscountAmount($price = null){
-        if(isset($this->vipDiscountAmount)){
+    public function getDealPriceAttribute()
+    {
+        if (!isset($this->dealPrice)) {
+            $level_discount_set = Setting::get('discount.all_set');
+            if (
+                isset($level_discount_set['type'])
+                && $level_discount_set['type'] == 1
+                && $this->_getVipDiscountAmount($this->market_price)
+            ) {
+                // 如果开启了原价计算会员折扣,并且存在等级优惠金额
+                $this->dealPrice = $this->market_price;
+            } else {
+                // 默认使用现价
+                $this->dealPrice = $this->price;
+            }
+        }
+
+        return $this->dealPrice;
+    }
+
+    /**
+     * 缓存等级折金额
+     *  todo 如何解决等级优惠种类记录的问题
+     * @return float|int|mixed
+     * @throws AppException
+     * @throws \app\common\exceptions\MemberNotLoginException
+     */
+
+    public function getVipDiscountAmount($orderGoods)
+    {
+        if (isset($this->vipDiscountAmount)) {
+
             return $this->vipDiscountAmount;
         }
-        return $this->vipDiscountAmount = $this->_getVipDiscountAmount($price);
+        return $this->vipDiscountAmount = $this->_getVipDiscountAmount($this->deal_price,$orderGoods);
     }
 
-    /**
-     * 默认的等级折扣商品金额
-     * @return float|int
-     */
-    private function getDefaultVipDiscountGoodsPrice(){
-        $level_discount_set = Setting::get('discount.all_set');
-        if (isset($level_discount_set['type']) && $level_discount_set['type'] == 1) {
-            // 如果开启了原价计算会员折扣
-            $price = $this->market_price;
-        }else{
-            $price = $this->price;
-        }
-        return $price;
-    }
-    
+
     /**
      * 获取等级折扣金额
-     * @param null $price
+     * todo 如何解决等级优惠种类记录的问题
+     * @param $price
      * @return int|mixed
      * @throws AppException
+     * @throws \app\common\exceptions\MemberNotLoginException
      */
-    protected function _getVipDiscountAmount($price = null){
-
-        if(!isset($price)){
-            $price = $this->getDefaultVipDiscountGoodsPrice();
-        }
+    public function _getVipDiscountAmount($price,$orderGoods = null)
+    {
         /**
-         *会员等级折扣优惠金额
          * @var $goodsDiscount GoodsDiscount
          */
-
         $goodsDiscount = $this->hasManyGoodsDiscount->where('level_id', Member::current()->yzMember->level_id)->first();
 
         if (isset($goodsDiscount)) {
             $result = $goodsDiscount->getAmount($price);
-        }else{
+        } else {
             $result = (new GoodsDiscount())->getAmount($price);
         }
 
@@ -110,12 +123,12 @@ class Goods extends \app\common\models\Goods
      * 获取商品的会员价格
      * @return float|int|mixed
      * @throws AppException
+     * @throws \app\common\exceptions\MemberNotLoginException
      */
     public function getVipPriceAttribute()
     {
-        return $this->price - $this->getVipDiscountAmount();
+        return $this->deal_price - $this->getVipDiscountAmount();
     }
-
 
 
     public function hasOneSale()
@@ -123,7 +136,11 @@ class Goods extends \app\common\models\Goods
         return $this->hasOne(Sale::class);
     }
 
-    public function scopeSearch(BaseModel $query, $filters)
+    /**
+     * @param Builder $query
+     * @param $filters
+     */
+    public function scopeSearch(Builder $query, $filters)
     {
         $query->uniacid();
 
@@ -158,7 +175,7 @@ class Goods extends \app\common\models\Goods
                     $query->where('price', '<', $value);
                     break;
                 case 'category':
-                    if(array_key_exists('parentid', $value) || array_key_exists('childid', $value) || array_key_exists('thirdid', $value)){
+                    if (array_key_exists('parentid', $value) || array_key_exists('childid', $value) || array_key_exists('thirdid', $value)) {
                         $id = $value['parentid'] ? $value['parentid'] : '';
                         $id = $value['childid'] ? $value['childid'] : $id;
                         $id = $value['thirdid'] ? $value['thirdid'] : $id;
@@ -170,7 +187,7 @@ class Goods extends \app\common\models\Goods
                             'yz_goods_category.category_id as category_id',
                             'yz_goods_category.category_ids as category_ids'
                         ])->join('yz_goods_category', 'yz_goods_category.goods_id', '=', 'yz_goods.id')->whereRaw('FIND_IN_SET(?,category_ids)', [$id]);
-                    } elseif(strpos($value, ',')){
+                    } elseif (strpos($value, ',')) {
                         $scope = explode(',', $value);
                         $query->select([
                             'yz_goods.*',
@@ -178,18 +195,18 @@ class Goods extends \app\common\models\Goods
                             'yz_goods_category.goods_id as goods_id',
                             'yz_goods_category.category_id as category_id',
                             'yz_goods_category.category_ids as category_ids'
-                        ])->join('yz_goods_category', function($join) use ($scope){
+                        ])->join('yz_goods_category', function ($join) use ($scope) {
                             $join->on('yz_goods_category.goods_id', '=', 'yz_goods.id')
                                 ->whereIn('yz_goods_category.category_id', $scope);
                         });
-                    } else{
+                    } else {
                         $query->select([
                             'yz_goods.*',
                             'yz_goods_category.id as goods_category_id',
                             'yz_goods_category.goods_id as goods_id',
                             'yz_goods_category.category_id as category_id',
                             'yz_goods_category.category_ids as category_ids'
-                        ])->join('yz_goods_category', function($join) use ($value){
+                        ])->join('yz_goods_category', function ($join) use ($value) {
                             $join->on('yz_goods_category.goods_id', '=', 'yz_goods.id')
                                 ->whereRaw('FIND_IN_SET(?,category_ids)', [$value]);
 //                                ->where('yz_goods_category.category_id', $value);
@@ -198,22 +215,22 @@ class Goods extends \app\common\models\Goods
                     break;
                 case 'couponid': //搜索指定优惠券适用的商品
                     $res = Coupon::getApplicableScope($value);
-                    switch ($res['type']){
+                    switch ($res['type']) {
                         case Coupon::COUPON_GOODS_USE: //优惠券适用于指定商品
-                            if(is_array($res['scope'])){
+                            if (is_array($res['scope'])) {
                                 $query->whereIn('id', $res['scope']);
-                            } else{
+                            } else {
                                 $query->where('id', $res['scope']);
                             }
                             break;
                         case Coupon::COUPON_CATEGORY_USE: //优惠券适用于指定商品分类
-                            if(is_array($res['scope'])){
-                                $query->join('yz_goods_category', function($join) use ($res){
+                            if (is_array($res['scope'])) {
+                                $query->join('yz_goods_category', function ($join) use ($res) {
                                     $join->on('yz_goods_category.goods_id', '=', 'yz_goods.id')
                                         ->whereIn('yz_goods_category.category_id', $res['scope']);
                                 });
-                            } else{
-                                $query->join('yz_goods_category', function($join) use ($res){
+                            } else {
+                                $query->join('yz_goods_category', function ($join) use ($res) {
                                     $join->on('yz_goods_category.goods_id', '=', 'yz_goods.id')
                                         ->where('yz_goods_category.category_id', $res['scope']);
                                 });
