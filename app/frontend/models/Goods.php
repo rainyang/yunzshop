@@ -9,6 +9,7 @@
 namespace app\frontend\models;
 
 use app\common\exceptions\AppException;
+use app\common\facades\Setting;
 use app\common\models\BaseModel;
 use app\common\models\GoodsDiscount;
 use app\framework\Database\Eloquent\Collection;
