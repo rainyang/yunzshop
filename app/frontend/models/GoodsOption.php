@@ -8,10 +8,6 @@
 
 namespace app\frontend\models;
 
-
-use app\common\models\GoodsDiscount;
-use app\frontend\modules\member\services\MemberService;
-
 /**
  * Class GoodsOption
  * @package app\frontend\models
@@ -19,22 +15,33 @@ use app\frontend\modules\member\services\MemberService;
  * @property int goods_id
  * @property string title
  * @property float weight
+ * @property float product_price
  * @property Goods goods
  */
 class GoodsOption extends \app\common\models\GoodsOption
 {
-    public function getVipDiscountAmount(){
+    /**
+     * 会员等级优惠金额
+     * @return int|mixed
+     * @throws \app\common\exceptions\AppException
+     */
+    public function getVipDiscountAmount()
+    {
         return $this->goods->getVipDiscountAmount($this->product_price);
     }
+
     /**
      * 获取商品规格的会员价格
-     * @return float
+     * @return float|int|mixed
+     * @throws \app\common\exceptions\AppException
      */
     public function getVipPriceAttribute()
     {
         return $this->product_price - $this->getVipDiscountAmount();
     }
-    public function goods(){
+
+    public function goods()
+    {
         return $this->belongsTo(Goods::class);
     }
 }

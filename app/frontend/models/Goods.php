@@ -62,7 +62,17 @@ class Goods extends \app\common\models\Goods
         }
         return $this->vipDiscountAmount = $this->_getVipDiscountAmount($price);
     }
-
+    private function getDefaultVipDiscountGoodsPrice($price)
+    {
+        $level_discount_set = Setting::get('discount.all_set');
+        if (isset($level_discount_set['type']) && $level_discount_set['type'] == 1) {
+            // 如果开启了原价计算会员折扣
+            $price = $this->market_price;
+        } else {
+            $price = $this->price;
+        }
+        return $price;
+    }
     /**
      * 获取等级折扣金额
      * @param null $price
@@ -75,8 +85,10 @@ class Goods extends \app\common\models\Goods
 //        if(!isset($price)) {
 //            $price = $this->price;
 //        }
+        if(!isset($price)) {
+            $price = $this->getDefaultVipDiscountGoodsPrice($price);
 
-        $price = $this->price;
+        }
         /**
          *会员等级折扣
          * @var $goodsDiscount GoodsDiscount

@@ -34,6 +34,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property Carbon time_end
  * @method  Builder memberLevel($memberLevel)
  * @method Builder unexpired($time)
+
  */
 class  Coupon extends BaseModel
 {
@@ -233,7 +234,7 @@ class  Coupon extends BaseModel
         return $query->where(function ($query) use ($time) {
             $query->where('time_limit', '=', 1)->where('time_end', '>', $time)
                 ->orWhere(function ($query) {
-                    $query->where('time_limit', '=', 0)->where('time_days', '>=', 0);
+                    $query->where('time_limit', '=', 0);
                 });
         });
     }
