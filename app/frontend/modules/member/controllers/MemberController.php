@@ -759,9 +759,9 @@ class MemberController extends ApiController
         $shop = \Setting::get('shop');
 //        dd($shop);
         $shop['icon'] = replace_yunshop(yz_tomedia($shop['logo']));
-        if ($shop){
-            $shop['name'] = $shop['shop']['name'];
-        }
+//        if ($shop){
+//            $shop['name'] = $shop['shop']['name'];
+//        }
         if (!is_null(\Config('customer_service'))) {
             $class = array_get(\Config('customer_service'), 'class');
             $function = array_get(\Config('customer_service'), 'function');
@@ -777,9 +777,9 @@ class MemberController extends ApiController
                 'desc'  => '商家分享'
             ];
         }
-        if(is_null($share['desc'])){
-            $share['desc'] = "";
-        }
+//        if(is_null($share['desc'])){
+//            $share['desc'] = "";
+//        }
 
         $data = [
             'config' => $config,
