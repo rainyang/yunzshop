@@ -30,6 +30,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property float enough
  * @property float deduct
  * @property int get_max
+ * @property int level_limit
  * @property Carbon time_start
  * @property Carbon time_end
  * @method  Builder memberLevel($memberLevel)
@@ -99,14 +100,6 @@ class  Coupon extends BaseModel
         return static::uniacid()
             ->where('id', '=', $couponId)
             ->first();
-    }
-
-    //getter
-    public static function getter($couponId, $attribute)
-    {
-        return static::uniacid()
-            ->where('id', '=', $couponId)
-            ->value($attribute);
     }
 
     //获取优惠券优惠方式
@@ -208,7 +201,7 @@ class  Coupon extends BaseModel
      * 筛选某会员等级可领
      * @param Builder $query
      * @param $memberLevel
-     * @return $this
+     * @return Builder
      */
     public function scopeMemberLevel(Builder $query, $memberLevel)
     {
@@ -219,12 +212,11 @@ class  Coupon extends BaseModel
                 });
         });
     }
-
     /**
      * 筛选未过期
      * @param Builder $query
      * @param null $time
-     * @return $this
+     * @return Builder
      */
     public function scopeUnexpired(Builder $query, $time = null)
     {
@@ -250,5 +242,23 @@ class  Coupon extends BaseModel
             return 999;
         }
         return $this->get_max - $receivedCount;
+    }
+
+    /**
+     * todo 应在优惠券表添加这个字段
+     * 获取已领取数量
+     * @return int
+     */
+    public function getReceiveCount(){
+        return $this->hasManyMemberCoupon()->count();
+    }
+
+    /**
+     * 是否可领取
+     * @return bool
+     */
+    public function available()
+    {
+        return $this->status == 1 && $this->get_type == 1 && ($this->total == -1 || $this->total > 0);
     }
 }
