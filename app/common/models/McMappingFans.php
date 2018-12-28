@@ -10,6 +10,10 @@ namespace app\common\models;
 
 use app\backend\models\BackendModel;
 
+/**
+ * Class McMappingFans
+ * @package app\common\models
+ */
 class McMappingFans extends BackendModel
 {
     public $table = 'mc_mapping_fans';

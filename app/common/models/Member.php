@@ -90,6 +90,7 @@ use Yunshop\TeamDividend\models\TeamDividendAgencyModel;
  * @property string interest
  * @property string pay_password
  * @property Collection memberCarts
+ * @property McMappingFans hasOneFans
  * @property \app\backend\modules\member\models\MemberShopInfo yzMember
  */
 class Member extends BackendModel
