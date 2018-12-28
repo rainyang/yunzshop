@@ -9,6 +9,7 @@
 namespace app\frontend\models;
 
 
+use app\common\facades\Setting;
 use app\common\models\GoodsDiscount;
 use app\frontend\modules\member\services\MemberService;
 
@@ -23,8 +24,14 @@ use app\frontend\modules\member\services\MemberService;
  */
 class GoodsOption extends \app\common\models\GoodsOption
 {
-    public function getVipDiscountAmount(){
-        return $this->goods->getVipDiscountAmount($this->product_price);
+    public function getVipDiscountAmount()
+    {
+        $level_discount_set = Setting::get('discount.all_set');
+        if (isset($level_discount_set['type']) && $level_discount_set['type'] == 1) {
+            return $this->goods->getVipDiscountAmount($this->goods()->market_price);
+        }else{
+            return $this->goods->getVipDiscountAmount($this->product_price);
+        }
     }
     /**
      * 获取商品规格的会员价格
@@ -32,7 +39,12 @@ class GoodsOption extends \app\common\models\GoodsOption
      */
     public function getVipPriceAttribute()
     {
-        return $this->product_price - $this->getVipDiscountAmount();
+        $level_discount_set = Setting::get('discount.all_set');
+        if (isset($level_discount_set['type']) && $level_discount_set['type'] == 1) {
+            return $this->goods()->market_price - $this->getVipDiscountAmount();
+        }else{
+            return $this->product_price - $this->getVipDiscountAmount();
+        }
     }
     public function goods(){
         return $this->belongsTo(Goods::class);
