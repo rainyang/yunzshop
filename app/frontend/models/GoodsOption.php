@@ -24,10 +24,16 @@ use app\frontend\modules\member\services\MemberService;
  */
 class GoodsOption extends \app\common\models\GoodsOption
 {
+    public $appends = ['vip_price'];
+    private function getLevelDiscountSet()
+    {
+        $level_discount_set = Setting::get('discount.all_set.type');
+        return $level_discount_set ?: 0;
+    }
+
     public function getVipDiscountAmount()
     {
-        $level_discount_set = Setting::get('discount.all_set');
-        if (isset($level_discount_set['type']) && $level_discount_set['type'] == 1) {
+        if ($this->getLevelDiscountSet() == 1) {
             return $this->goods->getVipDiscountAmount($this->market_price);
         }else{
             return $this->goods->getVipDiscountAmount($this->product_price);
@@ -39,8 +45,7 @@ class GoodsOption extends \app\common\models\GoodsOption
      */
     public function getVipPriceAttribute()
     {
-        $level_discount_set = Setting::get('discount.all_set');
-        if (isset($level_discount_set['type']) && $level_discount_set['type'] == 1) {
+        if ($this->getLevelDiscountSet() == 1) {
             return $this->market_price - $this->getVipDiscountAmount();
         }else{
             return $this->product_price - $this->getVipDiscountAmount();
