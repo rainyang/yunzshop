@@ -132,8 +132,7 @@ class Coupon extends \app\common\models\Coupon
     //删除优惠券
     public static function deleteCouponById($couponId)
     {
-        return static::where('id', '=', $couponId)
-                    ->delete();
+        return static::find($couponId)->delete();
     }
 
 }
