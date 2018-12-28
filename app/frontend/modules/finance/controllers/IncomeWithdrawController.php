@@ -362,8 +362,8 @@ class IncomeWithdrawController extends ApiController
     {
         $before_dawn = mktime(0,0,0,date("m"),date("d"),date("Y"));
         $now = time();
-        $max_time = Withdraw::where('type', $class)->whereBetween('created_at', [$before_dawn, $now])->where('status', 2)->count();
-        $max_amount = Withdraw::where('type', $class)->whereBetween('created_at', [$before_dawn, $now])->where('status', 2)->sum('amounts');
+        $max_time = Withdraw::where('type', $class)->whereBetween('created_at', [$before_dawn, $now])->count();
+        $max_amount = Withdraw::where('type', $class)->whereBetween('created_at', [$before_dawn, $now])->sum('amounts');
         $max = ['max_time' => $max_time, 'max_amount' => $max_amount];
 
         return $max;
