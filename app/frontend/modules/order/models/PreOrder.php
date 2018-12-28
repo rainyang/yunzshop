@@ -218,7 +218,7 @@ class PreOrder extends Order
             'goods_total' => $this->getGoodsTotal(),//订单商品总数
             'order_sn' => OrderService::createOrderSN(),//订单编号
             'create_time' => time(),
-            'note' => $this->getRequest()->input('note', ''),//是否是虚拟商品订单
+            'note' => $this->getParams('note'),//订单备注
             'shop_name' => $this->getShopName(),//是否是虚拟商品订单
         );
 
