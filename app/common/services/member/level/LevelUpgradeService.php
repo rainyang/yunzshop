@@ -208,7 +208,9 @@ class LevelUpgradeService
                 $this->validity['goods_total'] = $time->total;
                 //开启一卡通
                 if (app('plugins')->isEnabled('universal-card')) {
-                    $level->validity = (new \Yunshop\UniversalCard\services\LevelUpgradeService())->upgrade($level->id, $time->goods_option_id);
+                    if ($time->goods_option_id) {
+                        $level->validity = (new \Yunshop\UniversalCard\services\LevelUpgradeService())->upgrade($level->id, $time->goods_option_id);
+                    }
                 }
             }
         }
