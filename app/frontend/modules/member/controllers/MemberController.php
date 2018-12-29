@@ -1602,13 +1602,22 @@ class MemberController extends ApiController
         $type = \YunShop::request()->type;
         $set = \Setting::get('shop.member');
         $invitation_log = [];
-        if ($member_id = \YunShop::app()->getMemberId()) {
-            $member = MemberShopInfo::uniacid()->where('member_id', $member_id)->first();
-            $invitation_log = MemberInvitationCodeLog::uniacid()->where('member_id', $member->parent_id)->first();
-        }
+
         $invite_page = $set['invite_page'] ?: 0;
         $data['invite_page'] = $type == 5 ? 0 : $invite_page;
-        $data['is_invite'] = $invitation_log ? 1 : 0;
+
         return $this->successJson('邀请页面开关',$data);
+    }
+
+    public function isInvite()
+    {
+        $member_id = \YunShop::app()->getMemberId();
+
+        $member = MemberShopInfo::uniacid()->where('member_id', $member_id)->first();
+        $invitation_log = MemberInvitationCodeLog::uniacid()->where('member_id', $member->parent_id)->first();
+
+        $data['is_invite'] = $invitation_log ? 1 : 0;
+
+        return $this->successJson('是否填写邀请码',$data);
     }
 }
