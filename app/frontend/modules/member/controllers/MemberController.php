@@ -1587,6 +1587,7 @@ class MemberController extends ApiController
         $member_invitation_model = new MemberInvitationCodeLog();
 
         if ($member) {
+            \Log::info('更新上级------'.\YunShop::app()->getMemberId());
             MemberShopInfo::uniacid()->where('member_id', \YunShop::app()->getMemberId())->update(['parent_id' => $member->member_id]);
 
             $member_invitation_model->uniacid = \YunShop::app()->uniacid;
