@@ -64,6 +64,6 @@ class GoodsMemberLevelDiscount
 
     public function getLog($amount)
     {
-        return $this->getDiscountCalculator()->getLog($amount);
+        return $this->getDiscountCalculator($amount)->getLog($amount);
     }
 }
