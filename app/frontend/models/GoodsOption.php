@@ -30,7 +30,8 @@ class GoodsOption extends \app\common\models\GoodsOption
      * @throws \app\common\exceptions\AppException
      * @throws \app\common\exceptions\MemberNotLoginException
      */
-    public function getDealPriceAttribute(){
+    public function getDealPriceAttribute()
+    {
         if (!isset($this->dealPrice)) {
             $level_discount_set = Setting::get('discount.all_set');
             if (
@@ -47,6 +48,11 @@ class GoodsOption extends \app\common\models\GoodsOption
         }
 
         return $this->dealPrice;
+    }
+
+    public function getVipDiscountAmount($orderGoods)
+    {
+        return $this->goods->getVipDiscountAmount($orderGoods);
     }
 
     public function goods()
