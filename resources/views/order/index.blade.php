@@ -31,7 +31,7 @@
                                     @section('search_bar')
                                         @if($route == 'order.list.waitSend')
                                             <div class="form-group  col-md-2 col-sm-6">
-                                                <select name="search[sort]" id="ambiguous-field" class="form-control">
+                                                <select name="search[sort]" class="form-control">
                                                     <option value="" @if(!$requestSearch['sort'])  selected="selected"@endif>
                                                         时间排序
                                                     </option>
