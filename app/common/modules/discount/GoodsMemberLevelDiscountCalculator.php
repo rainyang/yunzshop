@@ -28,7 +28,7 @@ class GoodsMemberLevelDiscountCalculator extends BaseGoodsMemberLevelDiscountCal
         return $this->getGoodsDiscount()->getAmount($price);
     }
 
-    public function validate()
+    public function validate($price)
     {
         if (!$this->getGoodsDiscount()) {
             return false;

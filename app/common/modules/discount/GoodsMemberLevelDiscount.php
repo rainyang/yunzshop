@@ -34,7 +34,7 @@ class GoodsMemberLevelDiscount
      * 计算者
      * @return BaseGoodsMemberLevelDiscountCalculator
      */
-    private function getDiscountCalculator()
+    private function getDiscountCalculator($price)
     {
         // 从配置文件中载入,按优先级排序 遍历取到第一个通过验证的 计算者
         $calculatorConfigs = collect(config('shop-foundation.discount.GoodsMemberLevelDiscountCalculator'))->sortBy('priority');
@@ -44,7 +44,7 @@ class GoodsMemberLevelDiscount
              * @var BaseGoodsMemberLevelDiscountCalculator $calculator
              */
             $calculator = call_user_func($calculatorConfig['class'], $this->goods, $this->member);
-            if ($calculator->validate()) {
+            if ($calculator->validate($price)) {
                 // 通过验证返回
                 return $calculator;
             }
@@ -59,7 +59,7 @@ class GoodsMemberLevelDiscount
      */
     public function getAmount($price)
     {
-        return $this->getDiscountCalculator()->getAmount($price);
+        return $this->getDiscountCalculator($price)->getAmount($price);
     }
 
     public function getLog($amount)

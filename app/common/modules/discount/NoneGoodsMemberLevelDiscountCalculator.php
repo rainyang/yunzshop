@@ -19,7 +19,7 @@ class NoneGoodsMemberLevelDiscountCalculator extends BaseGoodsMemberLevelDiscoun
     {
         return 0;
     }
-    public function validate()
+    public function validate($price)
     {
         return true;
     }
@@ -27,4 +27,10 @@ class NoneGoodsMemberLevelDiscountCalculator extends BaseGoodsMemberLevelDiscoun
     {
         return 'none';
     }
+
+    public function getName()
+    {
+       return '';
+    }
+
 }

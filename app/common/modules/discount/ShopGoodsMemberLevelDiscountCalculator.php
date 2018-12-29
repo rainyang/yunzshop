@@ -15,7 +15,7 @@ class ShopGoodsMemberLevelDiscountCalculator extends BaseGoodsMemberLevelDiscoun
     {
         return $this->member->yzMember->level->getMemberLevelGoodsDiscountAmount($price);
     }
-    public function validate()
+    public function validate($price)
     {
         if (!isset($this->member->yzMember->level)) {
             return false;

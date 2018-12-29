@@ -34,7 +34,7 @@ abstract class BaseGoodsMemberLevelDiscountCalculator
     /**
      * @return boolean
      */
-    abstract public function validate();
+    abstract public function validate($price);
 
     abstract public function getKey();
     abstract public function getName();
