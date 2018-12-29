@@ -561,20 +561,19 @@ class RegisterController extends ApiController
 
     public function chkRegister()
     {
+
         $member = Setting::get('shop.member');
         $shop_reg_close = !empty($member['get_register']) ? $member['get_register'] : 0;
         $app_reg_close  = 0;
         $msg = $member["Close_describe"] ?: '注册已关闭';//关闭原因
 
-
         if (!is_null($app_set = \Setting::get('shop_app.pay')) && 0 == $app_set['phone_oauth']) {
             $app_reg_close = 1;
         }
 
-        if (($shop_reg_close && !Client::is_app()) || ($app_reg_close && Client::is_app())) {
+        if ((!$shop_reg_close && !Client::is_app()) || ($app_reg_close && Client::is_app())) {
             return $this->errorJson($msg);
         }
-
         return $this->successJson('ok');
     }
 }
