@@ -163,9 +163,7 @@ class PluginManager
         $enabled = $this->getEnabled();
 
         $plugin = $this->getPlugin($name);
-        if(isset($_GET['test'])){
-            dd($enabled[$name]->id);
-        }
+
         $this->setEnabled($enabled[$name]->id, 0);
 
         $plugin->setEnabled(true);
@@ -249,6 +247,9 @@ class PluginManager
                 $plugin = new \ArrayObject($plugin);
             }
             $this->enabled = $enabledPlugins;
+        }
+        if(isset($_GET['test'])){
+            dd($this->enabled);
         }
         return $this->enabled;
 
