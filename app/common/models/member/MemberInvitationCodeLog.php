@@ -13,6 +13,6 @@ use app\common\models\BaseModel;
 
 class MemberInvitationCodeLog extends BaseModel
 {
-    public $table = 'yz_member_invitation_code_log';
+    public $table = 'yz_member_invitation_log';
 
 }
