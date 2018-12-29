@@ -248,9 +248,6 @@ class PluginManager
             }
             $this->enabled = $enabledPlugins;
         }
-        if(isset($_GET['test'])){
-            dd($this->enabled);
-        }
         return $this->enabled;
 
     }
