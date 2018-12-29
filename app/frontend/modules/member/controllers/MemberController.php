@@ -1595,9 +1595,8 @@ class MemberController extends ApiController
         $type = \YunShop::request()->type;
         $set = \Setting::get('shop.member');
         if ($type == 5) {
-            $data['is_bind_mobile'] = 0;
+            return $this->successJson('邀请页面开关',0);
         }
-        $data['invite_page'] = $set['invite_page'] ?: 0;
-        return $this->successJson('邀请页面开关',$data);
+        return $this->successJson('邀请页面开关',$set['invite_page'] ?: 0);
     }
 }
