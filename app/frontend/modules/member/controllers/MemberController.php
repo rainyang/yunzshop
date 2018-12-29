@@ -1592,7 +1592,12 @@ class MemberController extends ApiController
 
     public function isValidatePage()
     {
+        $type = \YunShop::request()->type;
         $set = \Setting::get('shop.member');
-        return $this->successJson('邀请页面开关',$set['invite_page'] ?: 0);
+        if ($type == 5) {
+            $data['is_bind_mobile'] = 0;
+        }
+        $data['invite_page'] = $set['invite_page'] ?: 0;
+        return $this->successJson('邀请页面开关',$data);
     }
 }
