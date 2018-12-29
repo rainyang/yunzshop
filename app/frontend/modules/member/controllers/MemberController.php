@@ -22,6 +22,7 @@ use app\common\models\AccountWechats;
 use app\common\models\Area;
 use app\common\models\Goods;
 use app\common\models\McMappingFans;
+use app\common\models\member\MemberInvitationCodeLog;
 use app\common\models\MemberShopInfo;
 use app\common\services\popularize\PortType;
 use app\common\services\Session;
@@ -1583,7 +1584,13 @@ class MemberController extends ApiController
         $invite_code = request()->invite_code;
         $member = (new MemberShopInfo())->getInviteCodeMember($invite_code);
 
+        $member_invitation_model = new MemberInvitationCodeLog();
+
         if ($member) {
+            $member_invitation_model->uniacid = \YunShop::app()->uniacid;
+            $member_invitation_model->member_id = $member->member_id;
+            $member_invitation_model->invitation_code = $invite_code;
+            $member_invitation_model->save();
             return $this->successJson('ok', $member);
         }else{
             return $this->errorJson('邀请码有误!请重新填写');
@@ -1594,9 +1601,14 @@ class MemberController extends ApiController
     {
         $type = \YunShop::request()->type;
         $set = \Setting::get('shop.member');
-        if ($type == 5) {
-            return $this->successJson('邀请页面开关',0);
+        $invitation_log = [];
+        if ($member_id = \YunShop::app()->getMemberId()) {
+            $member = MemberShopInfo::uniacid()->where('member_id', $member_id)->first();
+            $invitation_log = MemberInvitationCodeLog::uniacid()->where('member_id', $member->parent_id)->first();
         }
-        return $this->successJson('邀请页面开关',$set['invite_page'] ?: 0);
+        $invite_page = $set['invite_page'] ?: 0;
+        $data['invite_page'] = $type == 5 ? 0 : $invite_page;
+        $data['is_invite'] = $invitation_log ? 1 : 0;
+        return $this->successJson('邀请页面开关',$data);
     }
 }
