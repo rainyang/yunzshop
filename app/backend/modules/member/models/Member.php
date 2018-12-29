@@ -40,9 +40,7 @@ class Member extends \app\common\models\Member
         $member_model = Member::find($id);
         MemberDel::insertData($member_model);
         $member_model->email = '';
-        $member_model->createtime = 0;
         $member_model->nickname = '';
-        $member_model->avatar = '';
         $member_model->mobile = '';
         $member_model->email = '';
         $member_model->gender = 0;
@@ -51,13 +49,15 @@ class Member extends \app\common\models\Member
         $member_model->residecity = '';
         $member_model->salt = '';
         $member_model->password = '';
+        //todo 由于关系链下列参数不能清空
+        /*$member_model->createtime = 0;
+        $member_model->avatar = '';
         $member_model->credit1 = 0;
         $member_model->credit2 = 0;
         $member_model->credit3 = 0;
         $member_model->credit4 = 0;
         $member_model->credit5 = 0;
-        $member_model->credit6 = 0;
-
+        $member_model->credit6 = 0;*/
         if ($member_model->save()) {
             return $member_model->uid;
         } else {
@@ -470,7 +470,7 @@ class Member extends \app\common\models\Member
             ->whereNull('yz_member.deleted_at');
 
         if ($limit > 0) {
-            $result = $result->offset($offset)->limit($limit)->orderBy('mc_members.uid', 'asc');
+            $result = $result->offset($offset)->limit($limit)->orderBy('yz_member.member_id', 'asc');
         }
 
         return $result;

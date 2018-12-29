@@ -8,28 +8,30 @@
 
 namespace app\frontend\modules\order\controllers;
 
+use app\common\components\ApiController;
 use app\common\exceptions\AppException;
-use \app\frontend\models\MemberCart;
 use app\frontend\modules\memberCart\MemberCartCollection;
-use Illuminate\Support\Collection;
 
-class CartBuyController extends PreOrderController
+class CartBuyController extends ApiController
 {
     /**
-     * @return \Illuminate\Http\JsonResponse|void
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
      * @throws \app\common\exceptions\ShopException
      */
     public function index()
     {
         $this->validateParam();
+        $trade = $this->getMemberCarts()->getTrade();
 
-        parent::index();
+        return $this->successJson('成功', $trade);
     }
 
     /**
      * @throws \app\common\exceptions\ShopException
      */
-    protected function validateParam(){
+    protected function validateParam()
+    {
         $this->validate([
             'cart_ids' => 'required',
         ]);
@@ -37,7 +39,7 @@ class CartBuyController extends PreOrderController
 
     /**
      * 从url中获取购物车记录并验证
-     * @return Collection
+     * @return MemberCartCollection
      * @throws AppException
      */
     protected function getMemberCarts()
@@ -47,11 +49,11 @@ class CartBuyController extends PreOrderController
         if (!is_array($_GET['cart_ids'])) {
             $cartIds = explode(',', $_GET['cart_ids']);
         }
-        $cartIds = array_slice($cartIds,0,50);
+        $cartIds = array_slice($cartIds, 0, 50);
         if (!count($cartIds)) {
             throw new AppException('参数格式有误');
         }
-        if(!isset($memberCarts)){
+        if (!isset($memberCarts)) {
             $memberCarts = app('OrderManager')->make('MemberCart')->whereIn('id', $cartIds)->get();
             $memberCarts = new MemberCartCollection($memberCarts);
             $memberCarts->loadRelations();

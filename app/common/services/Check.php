@@ -46,7 +46,7 @@ class Check
 
     public static function setKey()
     {
-        if (app()->environment() == 'production' && \YunShop::request()->route !== 'setting.key.index') {
+        if (app()->environment() == 'production' && strpos(request()->get('route'),'setting.key') !== 0) {
             $key = Setting::get('shop.key')['key'];
             $secret = Setting::get('shop.key')['secret'];
 

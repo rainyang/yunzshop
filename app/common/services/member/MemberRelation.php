@@ -104,6 +104,7 @@ class MemberRelation
     public function delMemberOfRelation($uid, $n_parent_id)
     {
         DB::transaction(function() use ($uid, $n_parent_id) {
+            \Log::debug('--------setp5-------');
             $this->child->delMemberOfRelation($this->parent, $uid, $n_parent_id);
 
             $this->parent->delMemberOfRelation($this->child, $uid, $n_parent_id);
@@ -176,6 +177,7 @@ class MemberRelation
             $this->delMemberOfRelation($uid, $n_parent_id);
 
             if ($n_parent_id) {
+                \Log::debug('------step4-------', $n_parent_id);
                 $this->reAddMemberOfRelation($uid, $n_parent_id, $o_parent_id);
             }
         });
@@ -195,11 +197,13 @@ class MemberRelation
     {
         $parent_relation = $this->hasRelationOfParent($member_id, 1);
 
-        if ($parent_relation->isEmpty()) {
+        if ($parent_relation->isEmpty() && intval($parent_id) > 0) {
+            \Log::debug('------step1-------');
             $this->addMemberOfRelation($member_id, $parent_id);
         }
 
         if (!$parent_relation->isEmpty() && $parent_id != $parent_relation[0]->parent_id) {
+            \Log::debug('------step2-------');
             $child_relation = $this->hasRelationOfChild($member_id);
             $this->map_relaton[] = [$parent_id, $member_id];
 
@@ -225,6 +229,7 @@ class MemberRelation
 
             //修改上级非总店
             if ($parent_id > 0) {
+                \Log::debug('------step3-------');
                 $parentInfo = $this->parent->getParentsOfMember($parent_id);
                 $parentTotal = count($parentInfo);
 

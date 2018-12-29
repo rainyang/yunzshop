@@ -32,6 +32,9 @@
 <script language='javascript'>
     $(function(){
         $('.province').mouseover(function(){
+            //由于页面出现点击省份而地区正在加载时，地区没有被选择的情况
+            //改为同步请求
+            $.ajaxSettings.async = false;
             var _this = $(this);
             if(_this.find('ul').text().length == 0){
                 $.get('{!! yzWebUrl("area.area.select-city") !!}', {
@@ -41,6 +44,8 @@
                 });
             }
             _this.find('ul').show();
+            //ajax同步请求完毕后再重新设置回异步
+            $.ajaxSettings.async = true;
         }).mouseout(function(){
             $(this).find('ul').hide();
         });
@@ -59,6 +64,8 @@
             }
             else{
                 $(this).next().html("");
+                //注意，如果为没有子区域选择，则父区域要取消选择，这里可能没必要，但是还是加上的稳
+                $($(this).get(0)).attr('checked',false).removeAttr('checked');
             }
         });
 

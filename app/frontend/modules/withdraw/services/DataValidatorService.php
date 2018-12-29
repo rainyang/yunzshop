@@ -40,11 +40,15 @@ class DataValidatorService
      */
     public function validator()
     {
+        if($this->withdrawModel->is_auto) {
+            return true;
+        }
         $type_name = $this->withdrawModel->type_name;
 
+        // 12月20号修改 原：提现金额不能小于1
         $amount = $this->withdrawModel->amounts;
-        if (bccomp($amount, 1, 2) == -1) {
-            throw new AppException("{$type_name}提现金额不能小于1元");
+        if (bccomp($amount, 0, 2) == -1) {
+            throw new AppException("{$type_name}提现金额不能小于0元");
         }
 
         $real_amount = $this->getIncomeAmount();
@@ -57,11 +61,11 @@ class DataValidatorService
             throw new AppException("{$type_name}提现金额不能小于{$roll_out_limit}元");
         }
 
+        // 12月20号修改 原：扣除手续费、劳务税金额不能小于1元
         $outlay = bcadd($this->withdrawModel->poundage, $this->withdrawModel->servicetax, 2);
         $result_amount = bcsub($amount, $outlay, 2);
-
-        if (bccomp($result_amount, 1, 2) == -1) {
-            throw new AppException("{$type_name}扣除手续费、劳务税金额不能小于1元");
+        if (bccomp($result_amount, 0, 2) == -1) {
+            throw new AppException("{$type_name}扣除手续费、劳务税金额不能小于0元");
         }
     }
 

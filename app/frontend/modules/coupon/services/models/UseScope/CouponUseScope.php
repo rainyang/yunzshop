@@ -9,6 +9,7 @@
 namespace app\frontend\modules\coupon\services\models\UseScope;
 
 
+use app\common\modules\orderGoods\OrderGoodsCollection;
 use app\frontend\modules\coupon\services\models\Coupon;
 use app\frontend\modules\orderGoods\models\PreOrderGoodsCollection;
 
@@ -58,7 +59,7 @@ abstract class CouponUseScope
     protected function setOrderGoodsCollection()
     {
         //dd($this->getOrderGoodsOfUsedCoupon());
-        $this->orderGoodsGroup = new PreOrderGoodsCollection($this->getOrderGoodsOfUsedCoupon());
+        $this->orderGoodsGroup = new OrderGoodsCollection($this->getOrderGoodsOfUsedCoupon());
     }
     abstract protected function _getOrderGoodsOfUsedCoupon();
 }

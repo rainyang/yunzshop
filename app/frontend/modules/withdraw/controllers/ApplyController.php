@@ -197,8 +197,9 @@ class ApplyController extends ApiController
         if (!$post_data) {
             throw new AppException('Undetected submission of data');
         }
-        if ($post_data['total']['amounts'] < 1) {
-            throw new AppException('提现金额不能小于1元');
+        // 12月20号修改 提现原代码是提现金额不能小于1元
+        if ($post_data['total']['amounts'] < 0) {
+            throw new AppException('提现金额不能小于0元');
         }
 
         $amount = $post_data['total']['amounts'];
