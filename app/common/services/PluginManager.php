@@ -37,6 +37,7 @@ class PluginManager
      * @var Collection|null
      */
     protected $plugins;
+    private $enabled = [];
 
     public function __construct(
         Application $app,
@@ -236,9 +237,15 @@ class PluginManager
     public
     function getEnabled()
     {
-        //dd($this->option->get());
-        return (array)$this->option->get();
-//        return (array)json_decode($this->option->get('plugins_enabled'), true);
+        if (!isset($this->enabled)) {
+            $enabledPlugins = $this->option->get();
+            foreach ($enabledPlugins as &$plugin) {
+                $plugin = new \ArrayObject($plugin);
+            }
+            $this->enabled = $enabledPlugins;
+        }
+        return $this->enabled;
+
     }
 
     /**
