@@ -1,6 +1,7 @@
 <?php
 
 namespace app\frontend\modules\orderGoods\price\option;
+use app\frontend\models\orderGoods\PreOrderGoodsDiscount;
 
 /**
  * Created by PhpStorm.
@@ -38,6 +39,7 @@ class NormalOrderGoodsPrice extends BaseOrderGoodsPrice
         $this->price -= $this->getVipDiscountAmount();
 
         $this->price = max($this->price, 0);
+
         return $this->price;
     }
 
@@ -73,7 +75,7 @@ class NormalOrderGoodsPrice extends BaseOrderGoodsPrice
 
         if ($this->deductionCount != $this->orderGoods->getOrderGoodsDeductions()->count()) {
             $this->deductionCount = $this->orderGoods->getOrderGoodsDeductions()->count();
-            trace_log()->deduction('订单抵扣',"订单商品计算所有已用的抵扣金额");
+            trace_log()->deduction('订单抵扣', "订单商品计算所有已用的抵扣金额");
             $this->deductionAmount = $this->orderGoods->getOrderGoodsDeductions()->getUsedPoint()->getMoney();
 
         }
@@ -125,10 +127,27 @@ class NormalOrderGoodsPrice extends BaseOrderGoodsPrice
      * 商品的会员等级折扣金额
      * @return mixed
      */
-    public function getVipDiscountAmount()
+    protected function _getVipDiscountAmount()
     {
         //todo 为了兼容398门店特权有优化 传入 orderGoods 模型
         return $this->goods()->getVipDiscountAmount(null,$this->orderGoods) * $this->orderGoods->total;
     }
 
+    /**
+     * 商品的会员等级折扣金额(缓存)
+     * @return mixed
+     */
+    public function getVipDiscountAmount()
+    {
+        if (!isset($this->vipDiscountAmount)) {
+            $this->vipDiscountAmount = $this->_getVipDiscountAmount();
+            $preOrderGoodsDiscount = new PreOrderGoodsDiscount([
+                'discount_code' => 'vipDiscount',
+                'amount' => $this->vipDiscountAmount ?: 0,
+                'name' => '会员等级优惠',
+            ]);
+            $preOrderGoodsDiscount->setOrderGoods($this->orderGoods);
+        }
+        return $this->vipDiscountAmount;
+    }
 }
