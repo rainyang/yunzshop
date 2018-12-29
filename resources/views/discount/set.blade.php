@@ -8,16 +8,15 @@
 
     <div class="w1200 m0a">
         @include('layouts.tabs')
-
+        
         <div class="rightlist">
             <div id="app"  v-loading="submit_loading">
                 <template>
                     <el-form ref="form" :model="form" :rules="rules" label-width="15%">
                         <el-form-item label="选择分类" prop="classification">
-                            <el-input :value="form.classification" style="width:60%;" disabled></el-input>
+                            <el-input v-model="form.classification" style="width:60%;" disabled></el-input>
                             <el-button type="primary" @click="visDia()">选择分类</el-button>
                             <el-dialog title="选择分类" :visible.sync="dialogTableVisible">
-                                <!-- :placeholder="form.classification" -->
                                 <el-select
                                     value-key="id"
                                     @change="change"
@@ -26,7 +25,7 @@
                                     multiple
                                     remote
                                     reserve-keyword
-                                    
+                                    :placeholder="form.classification"
                                     :remote-method="loadCategorys"
                                     :loading="loading"
                                     style="width:100%">
@@ -51,7 +50,7 @@
                         <el-form-item label="折扣类型" prop="type">
                             <el-radio v-model="form.discount_type" :label="1">会员等级</el-radio>
                         </el-form-item>
-                        <el-form-item label="折扣方式" prop="method">
+                        <el-form-item label="会员折扣方式" prop="method">
                             <el-radio v-model="form.discount_method" :label="1">折扣</el-radio>
                             <el-radio v-model="form.discount_method" :label="2">固定金额</el-radio>
                         </el-form-item>
@@ -64,7 +63,7 @@
                                 </el-input>
                             </template>
                         </el-form-item>
-
+                        
                     <el-form-item>
                         <a href="#">
                             <el-button type="success" @click="submitForm('form')">
@@ -82,7 +81,7 @@
             </div>
         </div>
     </div>
-
+    
     <script>
         var vm = new Vue({
         el:"#app",
@@ -91,15 +90,14 @@
                 let member_list = JSON.parse('{!! $levels?:'{}' !!}');
                 let url = JSON.parse('{!! $url !!}');
                 let categoryDiscount = JSON.parse('{!! $categoryDiscount?:'{}' !!}');
-                console.log(categoryDiscount,456);
+                console.log(categoryDiscount);
                 let form ={
                         discount_type:1,
                         discount_method:1,
                         discount_value:[],
                         classification:"",
                         search_categorys:"",
-                        ...categoryDiscount,
-                        category_ids:[],
+                        ...categoryDiscount
                     };
 
                 let classic =[];
@@ -140,49 +138,33 @@
                     },
                 }
             },
-            mounted() {
+            mounted:function() {
+                console.log("hahah");
                 if(this.form.category_ids) {
                     for(var j=0;j<this.form.category_ids.length;j++){
                         this.classic[j] = "[ID:"+this.form.category_ids[j].id+"][分类："+this.form.category_ids[j].name+"]";
                     }
                 }
                 this.form.classification = this.classic.join(",");
-                this.form.search_categorys = this.classic;
+            },
+            watch: {
+                classic(){
+                    this.search_categorys = this.classic.join(",")
+                }
             },
             methods: {
                 change(item){
-                    console.log(this.form.search_categorys,123)
-                    // for(var k=0;k<item.length;k++){
-                    //     this.classic[k] = "[ID:"+item[k].id+"][分类："+item[k].name+"]";
-                    // }
-                    
-                    // if(this.form.search_categorys.indexOf(item) == -1){
-                    //     this.form.search_categorys.push(item)
-                    // }
-                    
-                    const categorys = this.form.search_categorys.map(v => {
-                        if(typeof v !== "string" && v.id){
-                            delete v.thumb
-                            v = {...v};
-                            this.form.category_ids.push(v);
-                         
-                            return `[ID:${v.id}][分类：${v.name}]`;
-                        }
-                        return v;
-                    })
-                   
-                    // 去重
-                    this.form.search_categorys = [...new Set(categorys)]
-                    
-                    this.form.classification = this.form.search_categorys.join(",");
+                    for(var k=0;k<item.length;k++){
+                        this.classic[k] = "[ID:"+item[k].id+"][分类："+item[k].name+"]";
+                    }
+                    // console.log(this.classic);
                 },
                 visDia(){
                     this.dialogTableVisible=true;
                 },
                 choose(){
                     this.dialogTableVisible=false;
-              
-                    //this.form.classification = this.classic.join(",");
+                    this.form.classification = this.classic.join(",");
                 },
                 goBack() {
                     window.location.href='{!! yzWebFullUrl('discount.batch-discount.index') !!}';
@@ -214,9 +196,8 @@
                     this.$refs[formName].validate((valid) => {
                         if (valid) {
                             this.submit_loading = true;
-
                             this.$http.post(this.url,{'form_data':this.form}).then(response => {
-                                console.log(response,'131313')
+                                console.log(this.form);
                                 if (response.data.result) {
                                     this.$message({type: 'success',message: '操作成功!'});
                                     window.location.href='{!! yzWebFullUrl('discount.batch-discount.index') !!}';
@@ -234,7 +215,7 @@
                         }
                     });
                 },
-
+                
             },
         });
     </script>
