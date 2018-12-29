@@ -14,6 +14,6 @@ class NormalOrderGoodsOptionPrice extends NormalOrderGoodsPrice
         return $this->orderGoods->goodsOption;
     }
     protected function aGoodsPrice(){
-        return $this->goods()->product_price;
+        return $this->goods()->deal_price;
     }
 }

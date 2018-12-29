@@ -36,7 +36,7 @@ class NormalOrderGoodsPrice extends BaseOrderGoodsPrice
         }
         // 商品销售价 - 等级优惠金额 - 单品满减优惠金额
         $this->price = $this->getGoodsPrice();
-        $this->price -= $this->getVipDiscountAmount();
+        $this->price -= $this->getVipDiscountAmount($this->price);
 
         $this->price = max($this->price, 0);
 
@@ -127,24 +127,23 @@ class NormalOrderGoodsPrice extends BaseOrderGoodsPrice
      * 商品的会员等级折扣金额
      * @return mixed
      */
-    protected function _getVipDiscountAmount()
+    protected function _getVipDiscountAmount($price)
     {
-        //todo 为了兼容398门店特权有优化 传入 orderGoods 模型
-        return $this->goods()->getVipDiscountAmount(null,$this->orderGoods) * $this->orderGoods->total;
+        return $this->goods()->getVipDiscountAmount($price) * $this->orderGoods->total;
     }
 
     /**
      * 商品的会员等级折扣金额(缓存)
      * @return mixed
      */
-    public function getVipDiscountAmount()
+    public function getVipDiscountAmount($price)
     {
         if (!isset($this->vipDiscountAmount)) {
-            $this->vipDiscountAmount = $this->_getVipDiscountAmount();
+            $this->vipDiscountAmount = $this->_getVipDiscountAmount($price);
             $preOrderGoodsDiscount = new PreOrderGoodsDiscount([
-                'discount_code' => 'vipDiscount',
+                'discount_code' => $this->goods()->vipDiscountLog->code,
                 'amount' => $this->vipDiscountAmount ?: 0,
-                'name' => '会员等级优惠',
+                'name' => $this->goods()->vipDiscountLog->name,
             ]);
             $preOrderGoodsDiscount->setOrderGoods($this->orderGoods);
         }

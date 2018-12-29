@@ -8,9 +8,9 @@
 
 namespace app\frontend\models;
 
-use app\common\exceptions\AppException;
+
 use app\common\facades\Setting;
-use app\common\models\GoodsDiscount;
+use app\common\modules\discount\GoodsMemberLevelDiscount;
 use app\framework\Database\Eloquent\Collection;
 use app\frontend\models\goods\Privilege;
 use app\frontend\models\goods\Sale;
@@ -41,20 +41,15 @@ use Yunshop\Supplier\admin\models\SupplierGoods;
  */
 class Goods extends \app\common\models\Goods
 {
-    public $appends = ['vip_price'];
     public $hidden = ['content', 'description'];
-    protected $vipDiscountAmount;
+    public $appends = ['vip_price'];
     private $dealPrice;
-
-    public function hasOneOptions()
-    {
-        return $this->hasOne(GoodsOption::class);
-    }
+    protected $vipDiscountAmount;
+    public $vipDiscountLog;
 
     /**
      * 获取交易价(实际参与交易的商品价格)
      * @return float|int
-     * @throws AppException
      * @throws \app\common\exceptions\MemberNotLoginException
      */
     public function getDealPriceAttribute()
@@ -64,7 +59,7 @@ class Goods extends \app\common\models\Goods
             if (
                 isset($level_discount_set['type'])
                 && $level_discount_set['type'] == 1
-                && $this->_getVipDiscountAmount($this->market_price)
+                && $this->memberLevelDiscount()->getAmount($this->market_price)
             ) {
                 // 如果开启了原价计算会员折扣,并且存在等级优惠金额
                 $this->dealPrice = $this->market_price;
@@ -77,59 +72,59 @@ class Goods extends \app\common\models\Goods
         return $this->dealPrice;
     }
 
+
+    /**
+     * @var GoodsMemberLevelDiscount
+     */
+    private $memberLevelDiscount;
+
+    /**
+     * @return GoodsMemberLevelDiscount
+     * @throws \app\common\exceptions\MemberNotLoginException
+     */
+    public function memberLevelDiscount()
+    {
+        if (!isset($this->memberLevelDiscount)) {
+            $this->memberLevelDiscount = new GoodsMemberLevelDiscount($this, Member::current());
+        }
+        return $this->memberLevelDiscount;
+    }
+
+
     /**
      * 缓存等级折金额
      *  todo 如何解决等级优惠种类记录的问题
-     * @return float|int|mixed
-     * @throws AppException
+     * @param $price
+     * @return float
      * @throws \app\common\exceptions\MemberNotLoginException
      */
 
-    public function getVipDiscountAmount($orderGoods)
+    public function getVipDiscountAmount($price)
     {
         if (isset($this->vipDiscountAmount)) {
 
             return $this->vipDiscountAmount;
         }
-        return $this->vipDiscountAmount = $this->_getVipDiscountAmount($this->deal_price,$orderGoods);
+        $this->vipDiscountAmount = $this->memberLevelDiscount()->getAmount($price);
+        $this->vipDiscountLog = $this->memberLevelDiscount()->getLog($this->vipDiscountAmount);
+        return $this->vipDiscountAmount;
     }
 
-
-    /**
-     * 获取等级折扣金额
-     * todo 如何解决等级优惠种类记录的问题
-     * @param $price
-     * @return int|mixed
-     * @throws AppException
-     * @throws \app\common\exceptions\MemberNotLoginException
-     */
-    public function _getVipDiscountAmount($price,$orderGoods = null)
-    {
-        /**
-         * @var $goodsDiscount GoodsDiscount
-         */
-        $goodsDiscount = $this->hasManyGoodsDiscount->where('level_id', Member::current()->yzMember->level_id)->first();
-
-        if (isset($goodsDiscount)) {
-            $result = $goodsDiscount->getAmount($price);
-        } else {
-            $result = (new GoodsDiscount())->getAmount($price);
-        }
-
-        return $result;
-    }
 
     /**
      * 获取商品的会员价格
      * @return float|int|mixed
-     * @throws AppException
      * @throws \app\common\exceptions\MemberNotLoginException
      */
     public function getVipPriceAttribute()
     {
-        return $this->deal_price - $this->getVipDiscountAmount();
+        return $this->deal_price - $this->getVipDiscountAmount($this->deal_price);
     }
 
+    public function hasOneOptions()
+    {
+        return $this->hasOne(GoodsOption::class);
+    }
 
     public function hasOneSale()
     {

@@ -62,6 +62,7 @@ use Yunshop\TeamDividend\models\TeamDividendAgencyModel;
  * @property string wechat
  * @property string yz_openid
  * @property string invite_code
+ * @property MemberLevel level
  */
 class MemberShopInfo extends BaseModel
 {
