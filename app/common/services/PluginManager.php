@@ -163,7 +163,9 @@ class PluginManager
         $enabled = $this->getEnabled();
 
         $plugin = $this->getPlugin($name);
-
+        if(isset($_GET['test'])){
+            dd($enabled[$name]->id);
+        }
         $this->setEnabled($enabled[$name]->id, 0);
 
         $plugin->setEnabled(true);
