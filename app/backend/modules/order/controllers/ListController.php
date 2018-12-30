@@ -233,8 +233,8 @@ class ListController extends BaseController
     public function directExport($orders)
     {
         if (\YunShop::request()->direct_export == 1) {
-            if (app('plugins')->isEnabled('team-dividend')) {
-                return $this->message('未开启经销商插件无法导出');
+            if (!app('plugins')->isEnabled('team-dividend')) {
+                return $this->error('未开启经销商插件无法导出');
             }
             $export_page = request()->export_page ? request()->export_page : 1;
             $orders = $orders->with([
