@@ -838,25 +838,21 @@ class Member extends BackendModel
 
     public static function hasInviteCode()
     {
-        $is_invite = intval(\Setting::get('shop.member.is_invite'));
         $required = intval(\Setting::get('shop.member.required'));
         $invite_code = \YunShop::request()->invite_code;
+        $is_invite = self::chkInviteCode();
 
         $member = MemberShopInfo::where('invite_code', $invite_code)->count();
 
         if ($is_invite && $required && empty($invite_code)) {
             return null;
-
         }
 
-        if ($is_invite && isset($invite_code) && !empty($invite_code)) {
-
-            if ($is_invite && isset($invite_code) && !empty($member)) {
-                return $invite_code;
-            }
-
-            return null;
+        if ($is_invite && isset($invite_code) && !empty($invite_code) && !empty($member)) {
+            return $invite_code;
         }
+
+        return null;
     }
 
     /**
@@ -885,5 +881,23 @@ class Member extends BackendModel
             $this->memberCartCollection = new MemberCartCollection($this->memberCarts->all());
         }
         return $this->memberCartCollection;
+    }
+
+    /**
+     * 邀请码是否开启
+     *
+     * @return int
+     */
+    public static function chkInviteCode()
+    {
+        $is_invite = intval(\Setting::get('shop.member.is_invite'));
+        $invite_page = intval(\Setting::get('shop.member.invite_page'));
+
+        //邀请页和邀请码都开启
+        if (1 == $invite_page && 1 == $is_invite) {
+            $is_invite = 0;
+        }
+
+        return $is_invite;
     }
 }
