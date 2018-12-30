@@ -11,6 +11,7 @@ namespace app\common\models;
 
 
 use Illuminate\Support\Facades\Config;
+use app\common\traits\CreateOrderSnTrait;
 
 /**
  * Class Withdraw
@@ -22,6 +23,8 @@ use Illuminate\Support\Facades\Config;
  */
 class Withdraw extends BaseModel
 {
+    use CreateOrderSnTrait;
+
     /**
      * 提现审核状态：无效
      */
@@ -94,6 +97,9 @@ class Withdraw extends BaseModel
     const WITHDRAW_WITH_EUP_PAY  = 'eup_pay';
 
 
+    const WITHDRAW_WITH_SEPARATE_UNION_PAY = 'separate';
+
+
     /**
      * 手动打款方式：手动至银行卡
      */
@@ -148,6 +154,7 @@ class Withdraw extends BaseModel
         self::WITHDRAW_WITH_MANUAL      => '提现手动打款',
         self::WITHDRAW_WITH_HUANXUN     => '提现到银行卡',
         self::WITHDRAW_WITH_EUP_PAY     => '提现EUP',
+        self::WITHDRAW_WITH_SEPARATE_UNION_PAY     => '提现银联',
     ];
 
 

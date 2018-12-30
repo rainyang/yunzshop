@@ -184,6 +184,9 @@ class PayedService
             case Withdraw::WITHDRAW_WITH_EUP_PAY:
                 $result = $this->eupWithdrawPay();
                 break;
+            case Withdraw::WITHDRAW_WITH_SEPARATE_UNION_PAY:
+                $result = $this->separateUnionPay();
+                break;
             default:
                 throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：未知打款类型");
         }
@@ -294,6 +297,17 @@ class PayedService
         }
 
         throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：{$result['message']}");
+    }
+
+
+    private function separateUnionPay()
+    {
+        if (app('plugins')->isEnabled('separate')) {
+
+            //$this->withdrawModel
+            //todo 调用分帐接口
+        }
+        throw new ShopException("separate 插件未开启");
     }
 
 
