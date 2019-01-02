@@ -3,7 +3,7 @@
 @section('content')
 
     <link href="{{static_url('yunshop/css/member.css')}}" media="all" rel="stylesheet" type="text/css"/>
-    <div class="w1200 m0a" style="padding-bottom:80px">
+    <div class="w1200 m0a"  style="padding-bottom:80px">
         <div class="rightlist" style="padding-bottom:100px">
             <!-- 新增加右侧顶部三级菜单 -->
             <div class="right-titpos">

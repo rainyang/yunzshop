@@ -4,17 +4,19 @@ namespace app\common\models;
 
 use app\backend\models\BackendModel;
 use app\common\events\member\BecomeAgent;
+
+use app\common\models\member\MemberChildren;
 use app\common\repositories\OptionRepository;
 use app\common\services\PluginManager;
+use app\common\modules\memberCart\MemberCartCollection;
+use app\framework\Database\Eloquent\Collection;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\MemberWechatModel;
 use app\frontend\repositories\MemberAddressRepository;
-use Illuminate\Events\Dispatcher;
-use Illuminate\Filesystem\Filesystem;
+use Carbon\Carbon;
 use Yunshop\AreaDividend\models\AreaDividendAgent;
 use Yunshop\Commission\models\Agents;
 use Yunshop\Gold\frontend\services\MemberCenterService;
-use Yunshop\Love\Common\Models\MemberShop;
 use Yunshop\Love\Common\Services\SetService;
 use Yunshop\Merchant\common\models\Merchant;
 use Yunshop\Micro\common\models\MicroShop;
@@ -35,7 +37,61 @@ use Yunshop\TeamDividend\models\TeamDividendAgencyModel;
  * Class Member
  * @package app\common\models
  * @property int uid
+ * @property int uniacid
+ * @property string mobile
+ * @property string email
+ * @property string password
+ * @property string salt
+ * @property int groupid
  * @property float credit1
+ * @property float credit2
+ * @property float credit3
+ * @property float credit4
+ * @property float credit5
+ * @property float credit6
+ * @property Carbon createtime
+ * @property string realname
+ * @property string nickname
+ * @property string avatar
+ * @property string qq
+ * @property int vip
+ * @property int gender
+ * @property int birthyear
+ * @property int birthmonth
+ * @property int birthday
+ * @property string constellation
+ * @property string zodiac
+ * @property string telephone
+ * @property string idcard
+ * @property string studentid
+ * @property string grade
+ * @property string address
+ * @property string zipcode
+ * @property string nationality
+ * @property string resideprovince
+ * @property string residecity
+ * @property string residedist
+ * @property string graduateschool
+ * @property string company
+ * @property string education
+ * @property string occupation
+ * @property string position
+ * @property string revenue
+ * @property string affectivestatus
+ * @property string lookingfor
+ * @property string bloodtype
+ * @property string height
+ * @property string weight
+ * @property string alipay
+ * @property string msn
+ * @property string taobao
+ * @property string site
+ * @property string bio
+ * @property string interest
+ * @property string pay_password
+ * @property Collection memberCarts
+ * @property McMappingFans hasOneFans
+ * @property \app\backend\modules\member\models\MemberShopInfo yzMember
  */
 class Member extends BackendModel
 {
@@ -217,6 +273,18 @@ class Member extends BackendModel
     public function hasOneSupplier()
     {
         return $this->hasOne(Supplier::class, 'member_id', 'uid');
+    }
+
+    /**
+     * 子会员
+     *
+     * 会员-子会员
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function hasOneMemberChildren()
+    {
+        return $this->hasOne(MemberChildren::class, 'member_id', 'uid');
     }
 
     public function scopeOfUid($query, $uid)
@@ -771,24 +839,66 @@ class Member extends BackendModel
 
     public static function hasInviteCode()
     {
-        $is_invite = intval(\Setting::get('shop.member.is_invite'));
         $required = intval(\Setting::get('shop.member.required'));
         $invite_code = \YunShop::request()->invite_code;
+        $is_invite = self::chkInviteCode();
 
         $member = MemberShopInfo::where('invite_code', $invite_code)->count();
 
         if ($is_invite && $required && empty($invite_code)) {
             return null;
-
         }
 
-        if ($is_invite && isset($invite_code) && !empty($invite_code)) {
-
-            if ($is_invite && isset($invite_code) && !empty($member)) {
-                return $invite_code;
-            }
-
-            return null;
+        if ($is_invite && isset($invite_code) && !empty($invite_code) && !empty($member)) {
+            return $invite_code;
         }
+
+        return null;
+    }
+
+    /**
+     * 购物车记录
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function memberCarts()
+    {
+        return $this->hasMany(MemberCart::class,'uid','member_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function orderGoods()
+    {
+        return $this->hasMany(OrderGoods::class, 'uid', 'uid');
+    }
+
+    /**
+     * @return MemberCartCollection|mixed
+     */
+    public function getMemberCartCollection()
+    {
+        if (!isset($this->memberCartCollection)) {
+            $this->memberCartCollection = new MemberCartCollection($this->memberCarts->all());
+        }
+        return $this->memberCartCollection;
+    }
+
+    /**
+     * 邀请码是否开启
+     *
+     * @return int
+     */
+    public static function chkInviteCode()
+    {
+        $is_invite = intval(\Setting::get('shop.member.is_invite'));
+        $invite_page = intval(\Setting::get('shop.member.invite_page'));
+
+        //邀请页和邀请码都开启
+        if (1 == $invite_page && 1 == $is_invite) {
+            $is_invite = 0;
+        }
+
+        return $is_invite;
     }
 }

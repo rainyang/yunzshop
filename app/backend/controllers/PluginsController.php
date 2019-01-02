@@ -10,14 +10,9 @@ namespace app\backend\controllers;
 
 
 use app\common\components\BaseController;
-use app\common\exceptions\AdminException;
 use app\common\helpers\Url;
-use app\common\repositories\OptionRepository;
 use Datatables;
-use Illuminate\Events\Dispatcher;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\Request;
-use app\common\services\PluginManager;
 use Illuminate\Support\Facades\Config;
 
 class PluginsController extends BaseController

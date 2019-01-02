@@ -22,6 +22,7 @@ abstract class OrderOperation implements OrderOperationInterface
     const REFUND_INFO = 18; // 已退款/退款中
     const COMMENTED = 19; // 已评价
     const REMITTANCE_RECORD = 21; // 转账信息
+    const CONTACT_CUSTOMER_SERVICE = 41; // 联系客服
 
     /**
      * @var Order
@@ -37,4 +38,5 @@ abstract class OrderOperation implements OrderOperationInterface
     {
         return '';
     }
+
 }

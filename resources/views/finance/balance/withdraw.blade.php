@@ -108,6 +108,9 @@
                                     <label class="radio-inline">
                                         <input type="radio" name="status" value="-1" @if($item['status'] == -1 )checked="checked"@endif/> 无效
                                     </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="status" value="3" @if($item['status'] == 3 )checked="checked"@endif/> 驳回
+                                    </label>
                                 @endif
                                 @if($item['status'] == '1' || $item['status'] == '2')
                                     {{$row['pay_status_name']}}

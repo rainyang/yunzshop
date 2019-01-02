@@ -112,6 +112,22 @@ class PluginManager
     {
         return $this->getPlugins()->get($name);
     }
+    public function getPluginId($name)
+    {
+        $pluginIdConfig =  array_first(config('shop-foundation.plugin'), function ($item) use ($name) {
+            return $item['name'] == $name;
+        }, []);
+        return $pluginIdConfig['id'];
+    }
+    public function findPlugin($id)
+    {
+        return $this->getPlugins()->first(function (Plugin $plugin) use ($id) {
+            if ('' === $plugin->getId()) {
+                return false;
+            }
+            return $plugin->getId() == $id;
+        });
+    }
 
     /**
      * Enables the plugin.
@@ -192,8 +208,8 @@ class PluginManager
     function getEnabledPlugins()
     {
         $only = [];
-        foreach ($this->getEnabled() as $key=>$plugin) {
-            if($plugin['enabled']){
+        foreach ($this->getEnabled() as $key => $plugin) {
+            if ($plugin['enabled']) {
                 $only[] = $key;
             }
         }
@@ -248,7 +264,7 @@ class PluginManager
                 'option_value' => 'true',
                 'enabled' => $enabled,
             ];
-           return $this->option->insertPlugin($pluginData);
+            return $this->option->insertPlugin($pluginData);
         }
 
 
@@ -286,10 +302,10 @@ class PluginManager
     }
 
     public
-    function enTopShow($name,$enable)
+    function enTopShow($name, $enable)
     {
         if (!$this->getPlugin($name)) {
-            $name = str_replace("_","-",$name);
+            $name = str_replace("_", "-", $name);
         }
         $enabled = $this->getEnabled();
 
@@ -297,7 +313,7 @@ class PluginManager
     }
 
     public
-    function setTopShow($id,$enabled,$name = null)
+    function setTopShow($id, $enabled, $name = null)
     {
         if ($id) {
             return $this->option->editTopShowById($id, $enabled);
@@ -317,7 +333,7 @@ class PluginManager
     {
         $plugins = (array)$this->option->get();
         if (!$this->getPlugin($name)) {
-            $name = str_replace("_","-",$name);
+            $name = str_replace("_", "-", $name);
         }
         return $plugins = $plugins[$name]['top_show'];
     }

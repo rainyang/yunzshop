@@ -33,9 +33,10 @@ class ChildrenOfMember extends BaseModel
         return $rs;
     }
 
-    public function DeletedData()
+    public function DeletedData($uniacid = 0)
     {
-        return DB::table($this->getTable())->delete();
+        \Log::debug('----------DeletedData Children-----');
+        return DB::table($this->getTable())->where('uniacid', $uniacid)->delete();
     }
 
     public function getMemberByDepth($uid, $depth)

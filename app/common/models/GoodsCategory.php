@@ -28,6 +28,11 @@ class GoodsCategory extends BaseModel
         return $this->hasOne('app\common\models\Goods','id','goods_id');
     }
 
+    public function goodsDiscount()
+    {
+        return $this->hasMany(GoodsDiscount::class, 'goods_id', 'goods_id');
+    }
+
     public function delCategory($goods_id)
     {
         return $this->where(['goods_id' => $goods_id])
