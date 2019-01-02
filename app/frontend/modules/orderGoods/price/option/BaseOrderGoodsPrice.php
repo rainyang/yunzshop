@@ -26,7 +26,7 @@ abstract class BaseOrderGoodsPrice extends OrderGoodsPrice
      */
     protected function aGoodsPrice()
     {
-        return $this->goods()->price;
+        return $this->goods()->dealPrice;
     }
 
     /**
