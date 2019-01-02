@@ -9,6 +9,7 @@
 namespace app\common\models;
 
 use app\common\exceptions\AppException;
+use app\common\models\goods\Discount;
 use app\common\models\goods\GoodsDispatch;
 use app\common\models\goods\Privilege;
 use app\framework\Database\Eloquent\Collection;
@@ -191,7 +192,7 @@ class Goods extends BaseModel
 
     public function hasManyDiscount()
     {
-        return $this->hasMany('app\common\models\goods\Discount');
+        return $this->hasMany(Discount::class, 'goods_id', 'id');
     }
 
     public function hasManyGoodsCategory()
