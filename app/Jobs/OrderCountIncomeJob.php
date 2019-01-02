@@ -46,10 +46,10 @@ class OrderCountIncomeJob implements  ShouldQueue
             $incomeData['supplier'] = SupplierOrder::where('order_id', $this->orderId)->sum('supplier_profit');
         }
         if ($orderModel->plugin_id == 31) {
-            $incomeData['cashier'] = CashierOrder::where('order_id', $this->orderId)->sum('amount');
+            $incomeData['cashier'] = CashierOrder::where('order_id', $this->orderId)->sum('fee');
         }
         if ($orderModel->plugin_id == 32) {
-            $incomeData['store'] = StoreOrder::where('order_id', $this->orderId)->sum('amount');
+            $incomeData['store'] = StoreOrder::where('order_id', $this->orderId)->sum('fee');
         }
 
         if ($orderIncome) {
