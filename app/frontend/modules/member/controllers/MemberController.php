@@ -1614,7 +1614,7 @@ class MemberController extends ApiController
         $data['invite_page'] = $type == 5 ? 0 : $invite_page;
         $mobile = \app\common\models\Member::where('uid', $member_id)->first();
         if ($mobile->mobile) {
-            $data['invite_page'] = 0;
+            $invitation_log = 1;
         }
         $data['is_invite'] = $invitation_log ? 1 : 0;
         return $this->successJson('邀请页面开关',$data);
