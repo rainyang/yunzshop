@@ -1636,4 +1636,11 @@ class MemberController extends ApiController
         $data['is_invite'] = $invitation_log ? 1 : 0;
         return $this->successJson('邀请页面开关',$data);
     }
+
+    public function getShopSet()
+    {
+        $shop_set_name = Setting::get('shop.shop.name');
+        $default_name = '商城名称';
+        return $this->successJson('ok', $shop_set_name?:$default_name);
+    }
 }
