@@ -3135,7 +3135,7 @@ return [
                         'icon'          => '',
                         'sort'          => 0,
                         'item'          => 'member_offline_count_charts',
-                        'parents'       => ['charts','goods_volume_charts'],
+                        'parents'       => ['charts','goods_charts'],
 
                     ],
                     'goods_sales_charts'     => [
@@ -3147,9 +3147,9 @@ return [
                         'icon'          => '',
                         'sort'          => 0,
                         'item'          => 'member_offline_order_charts',
-                        'parents'       => ['charts','goods_volume_charts'],
+                        'parents'       => ['charts','goods_charts'],
 
-                    ],
+                    ]
                 ]
             ],
 
