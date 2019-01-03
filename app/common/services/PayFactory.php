@@ -113,6 +113,12 @@ class PayFactory
     const PAY_PLD = 23;
 
 
+    /**
+     * PLD-支付  达人链
+     */
+    const PAY_SEPARATE = 24;
+
+
     public static function create($type = null)
     {
         $className = null;
@@ -199,6 +205,13 @@ class PayFactory
                 }
 
                 $className = new \Yunshop\PLdPay\services\PldWithdrawService();
+                break;
+            case self::PAY_SEPARATE:
+                if (!app('plugins')->isEnabled('separate')) {
+                    throw new AppException('插件未开启');
+                }
+
+                $className = new \Yunshop\Separate\Common\Services\SeparateAccountService();
                 break;
             default:
                 $className = null;

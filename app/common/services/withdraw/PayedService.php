@@ -302,12 +302,18 @@ class PayedService
 
     private function separateUnionPay()
     {
-        if (app('plugins')->isEnabled('separate')) {
-
-            //$this->withdrawModel
-            //todo 调用分帐接口
+        $member_id = $this->withdrawModel->member_id;
+        $sn = $this->withdrawModel->widgets['order_sn'];
+        $withdraw_id = $this->withdrawModel->widgets['withdraw_id'];
+        $amount = $this->withdrawModel->amounts;
+        $trade_no = $this->withdrawModel->widgets['trade_no'];
+            //调用分帐接口
+        $result = PayFactory::create(PayFactory::PAY_SEPARATE)->doWithdraw($member_id, $sn, $amount, $withdraw_id,$trade_no);
+        if($result) {
+            return true;
         }
-        throw new ShopException("separate 插件未开启");
+        //TODO  对接结果进行判断
+        throw new ShopException("分账失败");
     }
 
 
