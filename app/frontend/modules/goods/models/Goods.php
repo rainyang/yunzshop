@@ -17,7 +17,8 @@ class Goods extends \app\common\models\Goods
 
     public function getEstimatedCommissionAttribute()
     {
-        return $this->getSalesCommission();
+        $price = round($this->price * $this->getSalesCommission() / 100,2);
+        return $price;
     }
 
     public function getSalesCommission()
