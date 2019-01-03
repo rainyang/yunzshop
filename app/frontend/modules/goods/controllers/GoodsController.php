@@ -5,7 +5,7 @@ use app\backend\modules\goods\models\Brand;
 use app\common\components\ApiController;
 use app\common\facades\Setting;
 use app\common\models\Category;
-use app\common\models\Goods;
+use app\frontend\modules\goods\models\Goods;
 use app\common\models\GoodsSpecItem;
 use app\common\services\goods\SaleGoods;
 use app\common\services\goods\VideoDemandCourseGoods;
