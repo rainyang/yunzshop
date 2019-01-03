@@ -1604,12 +1604,15 @@ class MemberController extends ApiController
         $member_invitation_model = new MemberInvitationCodeLog();
 
         if ($member) {
+            \Log::info('更新上级------'.\YunShop::app()->getMemberId());
+            MemberShopInfo::uniacid()->where('member_id', \YunShop::app()->getMemberId())->update(['parent_id' => $member->member_id]);
+
             $member_invitation_model->uniacid = \YunShop::app()->uniacid;
             $member_invitation_model->member_id = $member->member_id;
             $member_invitation_model->invitation_code = $invite_code;
             $member_invitation_model->save();
             return $this->successJson('ok', $member);
-        }else{
+        } else {
             return $this->errorJson('邀请码有误!请重新填写');
         }
     }
@@ -1623,8 +1626,13 @@ class MemberController extends ApiController
             $member = MemberShopInfo::uniacid()->where('member_id', $member_id)->first();
             $invitation_log = MemberInvitationCodeLog::uniacid()->where('member_id', $member->parent_id)->first();
         }
+
         $invite_page = $set['invite_page'] ?: 0;
         $data['invite_page'] = $type == 5 ? 0 : $invite_page;
+        $mobile = \app\common\models\Member::where('uid', $member_id)->first();
+        if ($mobile->mobile) {
+            $invitation_log = 1;
+        }
         $data['is_invite'] = $invitation_log ? 1 : 0;
         return $this->successJson('邀请页面开关',$data);
     }
