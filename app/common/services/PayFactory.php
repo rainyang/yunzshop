@@ -120,7 +120,7 @@ class PayFactory
 
 
     /**
-     *
+     *  店帮支付的分账
      */
     const PAY_SEPARATE = 25;
 
