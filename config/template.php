@@ -243,33 +243,13 @@ return [
         ]
     ],
     'member_finance_balance_submit' => [
-        'title' => '会员提现(提现提交通知)',
+        'title' => '会员提现(管理员通知)',
         'subtitle' => '会员提现提交通知',
         'value' => 'member_finance_balance_submit',
         'param' => [
             '粉丝昵称', '申请时间','金额', '提现类型','提现方式'
         ]
     ],
-
-
-    'member_finance_balance_success' => [
-        'title' => '会员提现(提现成功通知)',
-        'subtitle' => '会员提现成功通知',
-        'value' => 'member_finance_balance_success',
-        'param' => [
-            '粉丝昵称', '申请时间','金额', '提现类型','提现方式'
-        ]
-    ],
-
-    'member_finance_balance_fail' => [
-        'title' => '会员提现(提现失败通知)',
-        'subtitle' => '会员提现失败通知',
-        'value' => 'member_finance_balance_fail',
-        'param' => [
-            '粉丝昵称', '申请时间','金额', '提现类型','提现方式'
-        ]
-    ],
-
 
     /*$data = [
         [
