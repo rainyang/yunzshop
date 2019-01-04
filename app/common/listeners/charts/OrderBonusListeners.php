@@ -66,7 +66,7 @@ class OrderBonusListeners
     public function updateBonus(AfterOrderReceivedEvent $event)
     {
         $this->dispatch(new OrderBonusStatusJob($event->getOrderModel()->id));
-        $this->dispatch(new OrderCountIncomeJob($event->getOrderModel()->id));
+        $this->dispatch((new OrderCountIncomeJob($event->getOrderModel()->id))->delay(10));
     }
 
     public function cancel(AfterOrderCanceledEvent $event)

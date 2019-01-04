@@ -41,18 +41,18 @@ class OrderCountIncomeJob implements  ShouldQueue
         $incomeData['day_time'] = date('Y-m-d');
         $orderIncome = OrderIncomeCount::uniacid()->where('order_id', $this->orderId)->first();
 
-        $orderModel = Order::find($this->orderId);
-        if ($orderModel->is_plugin == 1) {
-            $incomeData['supplier'] = SupplierOrder::where('order_id', $this->orderId)->sum('supplier_profit');
-        }
-        if ($orderModel->plugin_id == 31) {
-            $incomeData['cashier'] = CashierOrder::where('order_id', $this->orderId)->sum('fee');
-        }
-        if ($orderModel->plugin_id == 32) {
-            $incomeData['store'] = StoreOrder::where('order_id', $this->orderId)->sum('fee');
-        }
-
         if ($orderIncome) {
+            $orderModel = Order::find($this->orderId);
+            if ($orderModel->is_plugin == 1 || $orderModel->plugin_id == 92) {
+                $incomeData['supplier'] = SupplierOrder::where('order_id', $this->orderId)->sum('supplier_profit');
+            }
+            if ($orderModel->plugin_id == 31) {
+                $incomeData['cashier'] = CashierOrder::where('order_id', $this->orderId)->sum('amount');
+            }
+            if ($orderModel->plugin_id == 32) {
+                $incomeData['store'] = StoreOrder::where('order_id', $this->orderId)->sum('amount');
+            }
+
             $orderIncome->supplier = $incomeData['supplier'];
             $orderIncome->cashier = $incomeData['cashier'];
             $orderIncome->store = $incomeData['store'];
