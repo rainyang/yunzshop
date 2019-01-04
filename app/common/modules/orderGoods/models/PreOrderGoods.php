@@ -25,6 +25,7 @@ use Illuminate\Support\Collection;
  * @property float goods_price
  * @property float coupon_price
  * @property float discount_price
+ * @property float goods_cost_price
  * @property float $deduction_amount
  * @property float payment_amount
  * @property int goods_id
@@ -154,11 +155,10 @@ class PreOrderGoods extends OrderGoods
     {
         return $this->getGoodsPrice();
     }
-
     /**
      * @return mixed
      */
-    public function getCostPriceAttribute()
+    public function getGoodsCostPriceAttribute()
     {
         return $this->getGoodsCostPrice();
     }

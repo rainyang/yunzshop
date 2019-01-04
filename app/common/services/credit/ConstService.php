@@ -54,6 +54,8 @@ class ConstService
 
     const SOURCE_RECHARGE_CODE    = 92; //充值码充值
 
+    const SOURCE_REJECTED         = 12; //提现驳回
+
 
     protected static $title = '余额';
 
@@ -80,7 +82,9 @@ class ConstService
             self::SOURCE_CANCEL_AWARD          => '奖励取消',
             self::SOURCE_CANCEL_CONSUME        => '消费取消',
             self::SOURCE_RECHARGE_MINUS        => '后台扣除',
-            self::SOURCE_RECHARGE_CODE         => '充值码充值'
+            self::SOURCE_RECHARGE_CODE         => '充值码充值',
+            self::SOURCE_RECHARGE_CODE         => '充值码充值',
+            self::SOURCE_REJECTED              => static::$title . '提现驳回'
         ];
     }
 

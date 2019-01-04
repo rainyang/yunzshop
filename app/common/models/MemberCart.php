@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class MemberCart extends BaseModel
 {
     use SoftDeletes;
-
+    protected $guarded = ['id'];
     protected $table = 'yz_member_cart';
 
     public function isOption()
@@ -52,7 +52,7 @@ class MemberCart extends BaseModel
         //$this->getAllMemberCarts()->validate();
         //商品基本验证
 
-        $this->goods->generalValidate($this->member,$this->total);
+        $this->goods->generalValidate($this->member, $this->total);
 
         if ($this->isOption()) {
             $this->goodsOptionValidate();
@@ -93,7 +93,21 @@ class MemberCart extends BaseModel
 
     public function member()
     {
-        return $this->belongsTo(Member::class,'member_id','uid');
+        return $this->belongsTo(Member::class, 'member_id', 'uid');
     }
 
+    /**
+     * 获取购物车分组id
+     * @return int
+     */
+    public function getGroupId()
+    {
+        if (!$this->goods->getPlugin()) {
+            return 0;
+        }
+        if (!$this->goods->getPlugin()->app()->bound(MemberCart::class)) {
+            return 0;
+        }
+        return $this->goods->getPlugin()->app()->make(MemberCart::class, [$this->getAttributes()])->getGroupId();
+    }
 }

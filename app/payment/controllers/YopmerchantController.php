@@ -22,7 +22,7 @@ class YopmerchantController extends YopController
         $this->yopResponse('子商户入网', $this->parameters, 'sub');
 
 
-        $son = SubMerchant::where('requestNo', $this->parameters['requestNo'])->first();
+        $son = SubMerchant::withoutGlobalScope('is_son')->where('requestNo', $this->parameters['requestNo'])->first();
 
         if (empty($son)) {
             exit('Merchant does not exist');

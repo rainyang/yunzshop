@@ -7,7 +7,11 @@
  */
 
 namespace app\backend\modules\member\models;
-
+/**
+ * Class MemberShopInfo
+ * @package app\backend\modules\member\models
+ * @property MemberLevel level
+ */
 class MemberShopInfo extends \app\common\models\MemberShopInfo
 {
     static protected $needLog = true;

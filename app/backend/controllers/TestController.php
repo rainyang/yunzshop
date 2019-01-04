@@ -389,11 +389,7 @@ echo '<pre>'; print_r($attr);
 
     public function ff()
     {
-        $updateFile = storage_path('app/auto-update/temp') . '/1.z01';
 
-        $zip = zip_open($updateFile);
-
-        dd($zip);
     }
     protected $GoodsGroupTable = 'yz_goods_group_goods';
     protected $DesignerTable = 'yz_designer';

@@ -45,8 +45,6 @@ class YoppayController extends PaymentController
     {
         $yop_data = $_REQUEST['response'];
 
-        $this->log($this->set['app_key'], $yop_data);
-
         if ($yop_data) {
             $response = \Yunshop\YopPay\common\Util\YopSignUtils::decrypt($yop_data, $this->set['private_key'], $this->set['yop_public_key']);
             $this->parameters = json_decode($response, true);
@@ -68,6 +66,8 @@ class YoppayController extends PaymentController
     //异步支付通知
     public function notifyUrl()
     {
+        $this->log($this->set['app_key'], $this->parameters);
+
         $this->yopResponse('支付通知', $this->parameters, 'pay');
 
         $this->savePayOrder();
@@ -105,6 +105,36 @@ class YoppayController extends PaymentController
         $yop_order->fill($data);
 
         $yop_order->save();
+    }
+
+    //平台分类 支付类型
+    protected function platformType()
+    {
+
+        if (!empty($this->parameters['platformType'])) {
+            switch ($this->parameters['platformType']) {
+                case 'WECHAT': //微信
+                    $status = YopPayOrder::TYPE_WECHAT;
+                    break;
+                case 'ALIPAY': //支付宝
+                    $status = YopPayOrder::TYPE_ALIPAY;
+                    break;
+                case 'NET':
+                    $status = YopPayOrder::TYPE_NET;
+                    break;
+                case 'NCPAY':
+                    $status = YopPayOrder::TYPE_NCPAY;
+                    break;
+                case 'CFL':
+                    $status = YopPayOrder::TYPE_CFL;
+                    break;
+                default:
+                    $status = 0;
+                    break;
+            }
+        }
+
+        return $status;
     }
 
     protected function rateAmount()

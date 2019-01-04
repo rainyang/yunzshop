@@ -297,6 +297,7 @@ class HomePageController extends ApiController
                 $result['captcha']['status'] = $status;
             }
         }
+
         return $this->successJson('ok', $result);
     }
 
