@@ -75,7 +75,17 @@ return [
                 'item'              => 'goods_no_permission',
                 'parents'           => ['Goods', 'goods_dispatch',],
                 'child'             => [
-
+                    'goods_search_order' => [
+                        'name'              => '白名单（订单商品查询）',
+                        'url'               => 'goods.goods.search-order',
+                        'url_params'        => '',
+                        'permit'            => 0,
+                        'menu'              => 0,
+                        'icon'              => '',
+                        'sort'              => 0,
+                        'item'              => 'goods_search_order',
+                        'parents'           => ['Goods', 'goods_no_permission',],
+                    ],
                     'goods_get_spec_tpl' => [
                         'name'              => '白名单（商品规格操作）',
                         'url'               => 'goods.goods.getSpecTpl',
@@ -318,29 +328,42 @@ return [
                 'item'              => 'goods_div_from',
                 'parents'           => ['Goods',],
                 'child'             => [
-
                     'goods_div_from_see'=> [
                         'name'              => '查看内容',
                         'url'               => 'from.div-from.index',
                         'url_params'        => '',
                         'permit'            => 1,
-                        'menu'              => 0,
+                        'menu'              => 1,
                         'icon'              => '',
                         'sort'              => '2',
-                        'item'              => 'goods_div_from_see',
+                        'item'              => 'goods_div_from_see_one',
                         'parents'           => ['Goods','goods_div_from'],
+                        'child'             => [
+                            'goods_div_from_see'=> [
+                                'name'              => '查看内容',
+                                'url'               => 'from.div-from.index',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => '',
+                                'sort'              => '2',
+                                'item'              => 'goods_div_from_see',
+                                'parents'           => ['Goods','goods_div_from','goods_div_from_see_one'],
+                            ],
+                            'goods_div_from_store'=> [
+                                'name'              => '保存设置',
+                                'url'               => 'from.div-from.store',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => '',
+                                'sort'              => '2',
+                                'item'              => 'goods_div_from_store',
+                                'parents'           => ['Goods','goods_div_from','goods_div_from_see_one'],
+                            ],
+                        ],
                     ],
-                    'goods_div_from_store'=> [
-                        'name'              => '编辑修改',
-                        'url'               => 'from.div-from.store',
-                        'url_params'        => '',
-                        'permit'            => 1,
-                        'menu'              => 0,
-                        'icon'              => '',
-                        'sort'              => '2',
-                        'item'              => 'goods_div_from_store',
-                        'parents'           => ['Goods','goods_div_from'],
-                    ],
+
                 ],
             ],
 
@@ -920,8 +943,97 @@ return [
                         'child'             => []
                     ],
                 ],
+            ],
+
+            'discount_set' => [
+                'name'              => '折扣设置',
+                'url'               => 'discount.batch-discount.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-gift',
+                'sort'              => '6',
+                'item'              => 'discount_set',
+                'parents'           => ['Goods',],
+                'child'             => [
+                    'goods_discount_set_all'=> [
+                        'name'              => '折扣全局设置',
+                        'url'               => 'discount.batch-discount.allSet',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => '',
+                        'sort'              => '2',
+                        'item'              => 'goods_discount_set_all',
+                        'parents'           => ['Goods','discount_set'],
+                        'child'             => [
+                            'goods_discount_set_all_index' => [
+                                'name'              => '折扣设置',
+                                'url'               => 'discount.batch-discount.index',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => 'fa-sitemap',
+                                'sort'              => '2',
+                                'item'              => 'goods_discount_set_all_index',
+                                'parents'           => ['Goods', 'discount_set', 'goods_discount_set_all'],
+                                'child'             => []
+                        ],
+                             'goods_discount_set_all__store' => [
+                                'name'              => '保存设置',
+                                'url'               => 'discount.batch-discount.store',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => 'fa-sitemap',
+                                'sort'              => '2',
+                                'item'              => 'goods_discount_set_all__store',
+                                'parents'           => ['Goods', 'discount_set', 'goods_discount_set_all'],
+                                'child'             => []
+                        ],
+                    ],
+                ],
+
+                'goods_discount_set'=> [
+                    'name'              => '折扣设置',
+                    'url'               => 'discount.batch-discount.index',
+                    'url_params'        => '',
+                    'permit'            => 1,
+                    'menu'              => 1,
+                    'icon'              => '',
+                    'sort'              => '2',
+                    'item'              => 'goods_discount_set',
+                    'parents'           => ['Goods','discount_set'],
+                    'child'             => [
+                        'goods_discount_set_index' => [
+                            'name'              => '折扣设置',
+                            'url'               => 'discount.batch-discount.index',
+                            'url_params'        => '',
+                            'permit'            => 1,
+                            'menu'              => 0,
+                            'icon'              => 'fa-sitemap',
+                            'sort'              => '2',
+                            'item'              => 'goods_discount_set_index',
+                            'parents'           => ['Goods', 'discount_set', 'goods_discount_set'],
+                            'child'             => []
+                        ],
+                        'goods_discount_set_store' => [
+                            'name'              => '保存设置',
+                            'url'               => 'discount.batch-discount.store',
+                            'url_params'        => '',
+                            'permit'            => 1,
+                            'menu'              => 0,
+                            'icon'              => 'fa-sitemap',
+                            'sort'              => '2',
+                            'item'              => 'goods_discount_set_store',
+                            'parents'           => ['Goods', 'discount_set', 'goods_discount_set'],
+                            'child'             => []
+                        ],
+                    ],
+                ],
 
             ],
+        ],
         ],
     ],
 
@@ -3002,6 +3114,43 @@ return [
                 'item'          => 'order_ranking_charts',
                 'parents'       => ['charts',],
                 'child'         => []
+            ],
+            'goods_charts'     => [
+                'name'          => '商品销售统计',
+                'url'           => 'charts.goods.sales-volume-count.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts',],
+                'child'         => [
+                    'goods_volume_charts'     => [
+                        'name'          => '商品销量排行',
+                        'url'           => 'charts.goods.sales-volume-count.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_offline_count_charts',
+                        'parents'       => ['charts','goods_charts'],
+
+                    ],
+                    'goods_sales_charts'     => [
+                        'name'          => '商品销售额排行',
+                        'url'           => 'charts.goods.sales-volume-count.sales-price',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_offline_order_charts',
+                        'parents'       => ['charts','goods_charts'],
+
+                    ]
+                ]
             ],
 
         ],

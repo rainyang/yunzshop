@@ -48,5 +48,17 @@ class MemberLevel extends BaseModel
             ->uniacid()
             ->where('is_default', 1);
     }
-
+    /**
+     * 商品全局等级折扣后价格
+     * @param $goodsPrice
+     * @return float|int
+     */
+    public function getMemberLevelGoodsDiscountAmount($goodsPrice)
+    {
+        // 商品折扣 默认 10折
+        $this->discount = trim($this->discount);
+        $this->discount = $this->discount == false ? 10 : $this->discount;
+        // 折扣/10 得到折扣百分比
+        return (1 - $this->discount / 10) * $goodsPrice;
+    }
 }

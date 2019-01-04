@@ -1,111 +1,84 @@
 @extends('layouts.base')
 @section('content')
-
     <link href="{{static_url('yunshop/balance/balance.css')}}" media="all" rel="stylesheet" type="text/css"/>
-
+    <link href="{{static_url('yunshop/css/order.css')}}" media="all" rel="stylesheet" type="text/css"/>
     <div class="w1200 m0a">
         <div class="rightlist" id="member-blade">
-
             @include('layouts.tabs')
-
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <form action="" method="post" class="form-horizontal" role="form" id="form1">
+                    <div class='alert alert-info'>
+                        <p>1.按照商品销售额进行排序；</p>
+                    </div>
+                    {{--<form action="" method="post" class="form-horizontal" role="form" id="form1">--}}
 
-                        <div class="form-group col-sm-11 col-lg-11 col-xs-12">
-                            <div class="">
-                                <div class='input-group'>
-
-                                    <div class='form-input'>
-                                        <p class="input-group-addon" >会员ID</p>
-                                        <input class="form-control price" style="width: 135px;" type="text" name="search[member_id]" value="{{ $search['member_id'] or ''}}">
-                                    </div>
-
-                                    <div class='form-input'>
-                                        <p class="input-group-addon" >会员信息</p>
-                                        <input class="form-control price" style="width: 135px;" type="text" name="search[member_info]" value="{{ $search['member_info'] or ''}}">
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div class="form-group col-sm-1 col-lg-1 col-xs-12">
-                            <div class="">
-                                <input type="submit" class="btn btn-block btn-success" value="搜索">
-                            </div>
-
-                        </div>
-                    </form>
+                        {{--<div class="form-group col-sm-6 col-lg-6 col-xs-12">--}}
+                            {{--<div class="input-group">--}}
+                                {{--<span class="input-group-addon">--}}
+                                    {{--<input type="checkbox" name="search[is_time]" value="1"--}}
+                                           {{--@if($search['is_time'] == '1')checked="checked"@endif>--}}
+                                {{--</span>--}}
+                                {{--{!!app\common\helpers\DateRange::tplFormFieldDateRange('search[time]', [--}}
+                                                                        {{--'starttime'=>$search['time']['start'] ?: date('Y-m-d H:i:s'),--}}
+                                                                        {{--'endtime'=>$search['time']['end'] ?: date('Y-m-d H:i:s'),--}}
+                                                                        {{--'start'=>0,--}}
+                                                                        {{--'end'=>0--}}
+                                                                        {{--])!!}--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
+                        {{--<div class="form-group col-xs-12 col-sm-4">--}}
+                            {{--<button class="btn btn-success" type="submit" id="search"><i class="fa fa-search"></i> 搜索</button>--}}
+                            {{--<button type="submit" name="export" value="1" id="export" class="btn btn-default">导出 Excel</button>--}}
+                        {{--</div>--}}
+                    {{--</form>--}}
                 </div>
 
-
-
+                {{--<div class="panel panel-default">--}}
+                    {{--<table class='table' style='float:left;margin-bottom:0;table-layout: fixed;line-height: 40px;height: 40px'>--}}
+                        {{--<tr class='trhead'>--}}
+                            {{--<td colspan='8' style="text-align: left;">--}}
+                                {{--供应商数量: <span id="total">{{ $supplierTotal }}个</span>&nbsp;&nbsp;&nbsp;未提现收入: <span id="total">{{ $unWithdrawTotal }}元</span>&nbsp;&nbsp;&nbsp;提现中收入: <span id="total">{{ $withdrawingTotal }}元</span>&nbsp;&nbsp;&nbsp;已提现收入: <span id="total">{{ $withdrawTotal }}元</span>--}}
+                            {{--</td>--}}
+                        {{--</tr>--}}
+                    {{--</table>--}}
+                {{--</div>--}}
                 <div class='panel-body'>
                     <table class="table table-hover">
                         <thead>
-                            <tr>
-                                <th style='width:8%; text-align: center;'>排行</th>
-                                <th style="width: 12%; text-align: center;">商品名称</th>
-                                <th style="width: 10%; text-align: center;">状态</th>
-                                <th style="width: 12%; text-align: center;">下单件数</th>
-                                <th style="width: 12%; text-align: center;">下单金额</th>
-                                <th style="width: 12%; text-align: center;">下单买家数</th>
-                                <th style="width: 12%; text-align: center;">支付件数</th>
-
-                                <th style="width: 15%; text-align: center;">
-                                    支付金额
-                                    <br />
-                                    <span style="font-size: 10px;">(支付商品最终价格求和)</span>
-                                </th>
-
-                                <th style="width: 15%; text-align: center;">
-                                    支付转化率
-                                    <br />
-                                    <span style="font-size: 10px;">(支付数量/下单数量)</span>
-                                </th>
-
-                                <th style="width: 12%; text-align: center;">支付件数</th>
-                            </tr>
+                        <tr>
+                            <th style='width:80px;'>排行</th>
+                            <th>商品名称</th>
+                            <th>商品销量额</th>
+                        </tr>
                         </thead>
                         <tbody>
 
-
-
-                        @foreach($data as $key => $item)
+                        @foreach($list as $key => $item)
                             <tr>
                                 <td>
                                     @if($key <= 2)
-                                        <labe class='label label-danger' style='padding:8px;'>&nbsp;{{ $key + 1 }}&nbsp;</labe>
+                                        <label class='label label-danger' style='padding:8px;'>&nbsp;{{ $key + 1 }}&nbsp;</label>
                                     @else
-                                        <labe class='label label-default'  style='padding:8px;'>&nbsp;{{ $key + 1 }}&nbsp;</labe>
+                                        <label class='label label-default'  style='padding:8px;'>&nbsp;{{ $key + 1 }}&nbsp;</label>
                                     @endif
                                 </td>
-                                <td>{{ $item['member_id'] }}</td>
-                                <td>
-                                    @if(!empty($item['avatar']))
-                                        <img src='{{$item['avatar']}}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
-                                    @endif
-                                    @if(empty($item['member_name']))
-                                        未更新
-                                    @else
-                                        {{$item['member_name']}}
-                                    @endif
-                                </td>
-                                <td>{{ $item['lv1_offline_count'] }}</td>
-                                <td>{{ $item['lv2_offline_count'] }}</td>
-                                <td>{{ $item['lv3_offline_count'] }}</td>
-                                <td>{{ $item['offline_count'] }}</td>
+                                <td>{{ $item->title }}</td>
+                                <td>{{ $item->sales_price }}</td>
                             </tr>
                         @endforeach
 
-
-
                     </table>
-                    {!! $page !!}
+                    {{--{!! $page !!}--}}
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        $(function () {
+            $('#export').click(function () {
+                $('#form1').attr('action', '{!! yzWebUrl('charts.goods.sales-volume-count.export') !!}');
+                $('#form1').submit();
+            });
+        });
+    </script>
 @endsection

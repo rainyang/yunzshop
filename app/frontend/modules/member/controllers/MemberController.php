@@ -22,6 +22,7 @@ use app\common\models\AccountWechats;
 use app\common\models\Area;
 use app\common\models\Goods;
 use app\common\models\McMappingFans;
+use app\common\models\member\MemberInvitationCodeLog;
 use app\common\models\MemberShopInfo;
 use app\common\services\popularize\PortType;
 use app\common\services\Session;
@@ -48,8 +49,8 @@ use app\common\services\plugin\huanxun\HuanxunSet;
 
 class MemberController extends ApiController
 {
-    protected $publicAction = ['guideFollow', 'wxJsSdkConfig', 'memberFromHXQModule', 'dsAlipayUserModule'];
-    protected $ignoreAction = ['guideFollow', 'wxJsSdkConfig', 'memberFromHXQModule', 'dsAlipayUserModule'];
+    protected $publicAction = ['guideFollow', 'wxJsSdkConfig', 'memberFromHXQModule', 'dsAlipayUserModule', 'isValidatePage'];
+    protected $ignoreAction = ['guideFollow', 'wxJsSdkConfig', 'memberFromHXQModule', 'dsAlipayUserModule', 'isValidatePage'];
 
     /**
      * 获取用户信息
@@ -71,6 +72,12 @@ class MemberController extends ApiController
                 $data = MemberModel::userData($member_info, $member_info['yz_member']);
 
                 $data = MemberModel::addPlugins($data);
+
+                //隐藏爱心值插件入口
+                $love_show = PortType::popularizeShow(\YunShop::request()->type);
+                if (isset($data['love']) && (!$love_show)) {
+                    $data['love']['status'] = false;
+                }
 
                 $data['income'] = MemberModel::getIncomeCount();
 
@@ -373,9 +380,6 @@ class MemberController extends ApiController
     public function getMyAgent_v2()
     {
         $data = MemberModel::getMyAgent_v2();
-
-        //IOS时，把微信头像url改为https前缀
-        $data['avatar'] = ImageHelper::iosWechatAvatar($data['avatar']);
 
         return $this->successJson('', $data);
     }
@@ -732,7 +736,7 @@ class MemberController extends ApiController
         $js = $app->js;
         $js->setUrl($url);
 
-        $config = $js->config(array('onMenuShareTimeline', 'onMenuShareAppMessage', 'showOptionMenu', 'scanQRCode'));
+        $config = $js->config(array('onMenuShareTimeline', 'onMenuShareAppMessage', 'showOptionMenu', 'scanQRCode', 'updateAppMessageShareData', 'updateTimelineShareData'));
         $config = json_decode($config, 1);
 
         $info = [];
@@ -754,8 +758,11 @@ class MemberController extends ApiController
         }
 
         $shop = \Setting::get('shop');
+//        dd($shop);
         $shop['icon'] = replace_yunshop(yz_tomedia($shop['logo']));
-
+//        if ($shop){
+//            $shop['name'] = $shop['shop']['name'];
+//        }
         if (!is_null(\Config('customer_service'))) {
             $class = array_get(\Config('customer_service'), 'class');
             $function = array_get(\Config('customer_service'), 'function');
@@ -764,7 +771,6 @@ class MemberController extends ApiController
                 $shop['cservice'] = $ret;
             }
         }
-
         if (is_null($share) && is_null($shop)) {
             $share = [
                 'title' => '商家分享',
@@ -772,6 +778,9 @@ class MemberController extends ApiController
                 'desc'  => '商家分享'
             ];
         }
+//        if(is_null($share['desc'])){
+//            $share['desc'] = "";
+//        }
 
         $data = [
             'config' => $config,
@@ -779,7 +788,6 @@ class MemberController extends ApiController
             'shop' => $shop,
             'share' => $share   //分享设置
         ];
-
         return $this->successJson('', $data);
     }
 
@@ -1484,6 +1492,23 @@ class MemberController extends ApiController
                 'url' => 'EnterShop',
             ];
         }
+
+        if (app('plugins')->isEnabled('universal-card')) {
+            $set = \Yunshop\UniversalCard\services\CommonService::getSet();
+            //判断插件开关
+            if ($set['switch']) {
+                $shopSet = \Setting::get('shop.member');
+                //判断商城升级条件是否为指定商品
+                if ($shopSet['level_type'] == 2) {
+                    $data[] = [
+                        'name' => 'universal_card',
+                        'title' => $set['name'],
+                        'class' => 'icon-card',
+                        'url' => 'CardIndex'
+                    ];
+                }
+            }
+        }
         return $this->successJson('ok', $data);
     }
 
@@ -1497,5 +1522,118 @@ class MemberController extends ApiController
         }
         return $this->errorJson('', 0);
     }
+  
+    /**
+     *  推广申请页面数据
+     */
+    public function shareinfo() {
 
+        $data = MemberRelation::uniacid()->where(['status'=>1])->get();
+
+        $become_term = unserialize($data[0]['become_term']);
+
+        $goodsid = explode(',', $data[0]['become_goods_id']);
+
+        foreach ($goodsid as $key => $val) {
+
+            $online_good = Goods::where('status', 1)
+                ->select('id','title','thumb','price','market_price')
+                ->find($val);
+
+            if ($online_good) {
+                $online_good['thumb'] = replace_yunshop(yz_tomedia($online_good['thumb']));
+                $online_goods[] = $online_good;
+                $online_goods_keys[] = $online_good->id;
+            }
+        }
+        unset($online_good);
+
+        $goodskeys = range(0, count($online_goods_keys)-1);
+
+        $data[0]['become_goods'] = array_combine($goodskeys, $online_goods);
+
+        $termskeys = range(0, count($become_term)-1);
+        $become_term = array_combine($termskeys, $become_term);
+
+        $member_uid = \YunShop::app()->getMemberId();
+
+        $status = $data[0]['become_order'] == 1 ? 3 : 1;
+        $getCostTotalNum = Order::where('status', '=', $status)->where('uid', $member_uid)->count('id');
+        $getCostTotalPrice = Order::where('status', '=', $status)->where('uid', $member_uid)->sum('price');
+
+        $data[0]['getCostTotalNum'] = $getCostTotalNum;
+        $data[0]['getCostTotalPrice'] = $getCostTotalPrice;
+
+        $terminfo = [];
+
+        foreach ($become_term as $v) {
+            if ($v == 2) {
+                $terminfo['become_ordercount'] = $data[0]['become_ordercount'];
+            }
+            if ($v == 3) {
+                $terminfo['become_moneycount'] = $data[0]['become_moneycount'];
+            }
+            if ($v == 4) {
+                $terminfo['goodsinfo'] = $data[0]['become_goods'];
+            }
+            if ($v == 5) {
+                $terminfo['become_selfmoney'] = $data[0]['become_selfmoney'];
+            }
+        }
+
+        $data[0]['become_term'] = $terminfo;
+
+        if ($data[0]['become'] == 2) {
+            //或
+            $data[0]['tip'] = '满足以下任意条件都可以成为推广员';
+        } elseif ($data[0]['become'] == 3) {
+            //与
+            $data[0]['tip'] = '满足以下所有条件才可以成为推广员';
+        }
+        return $this->successJson('ok', $data[0]);
+    }
+
+    /**
+     *  邀请页面验证
+     */
+    public function memberInviteValidate()
+    {
+        $invite_code = request()->invite_code;
+        $member = (new MemberShopInfo())->getInviteCodeMember($invite_code);
+
+        $member_invitation_model = new MemberInvitationCodeLog();
+
+        if ($member) {
+            \Log::info('更新上级------'.\YunShop::app()->getMemberId());
+            MemberShopInfo::uniacid()->where('member_id', \YunShop::app()->getMemberId())->update(['parent_id' => $member->member_id]);
+
+            $member_invitation_model->uniacid = \YunShop::app()->uniacid;
+            $member_invitation_model->member_id = $member->member_id;
+            $member_invitation_model->invitation_code = $invite_code;
+            $member_invitation_model->save();
+            return $this->successJson('ok', $member);
+        } else {
+            return $this->errorJson('邀请码有误!请重新填写');
+        }
+    }
+
+    public function isValidatePage()
+    {
+        $type = \YunShop::request()->type;
+        $set = \Setting::get('shop.member');
+        $invitation_log = [];
+        if ($member_id = \YunShop::app()->getMemberId()) {
+            $member = MemberShopInfo::uniacid()->where('member_id', $member_id)->first();
+            $invitation_log = MemberInvitationCodeLog::uniacid()->where('member_id', $member->parent_id)->first();
+        }
+
+        $invite_page = $set['invite_page'] ?: 0;
+        $data['invite_page'] = $type == 5 ? 0 : $invite_page;
+        $mobile = \app\common\models\Member::where('uid', $member_id)->first();
+        if ($mobile->mobile) {
+            $invitation_log = 1;
+        }
+        $data['is_invite'] = $invitation_log ? 1 : 0;
+        return $this->successJson('邀请页面开关',$data);
+    }
 }

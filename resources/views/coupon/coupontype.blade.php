@@ -64,8 +64,9 @@
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">适用范围</label>
     <div class="col-sm-9 col-xs-12">
         <label class="radio-inline"><input type="radio" name="coupon[use_type]" onclick='showusetype(0)' value="0" checked>全类适用</label>
-        <label class="radio-inline"><input type="radio" name="coupon[use_type]" onclick='showusetype(1)' value="1" @if($coupon['use_type']==1)checked @endif>指定商品分类</label>
-        <label class="radio-inline"><input type="radio" name="coupon[use_type]" onclick='showusetype(2)' value="2" @if($coupon['use_type']==2)checked @endif>指定商品</label>
+        <label class="radio-inline"><input type="radio" name="coupon[use_type]" onclick='showusetype(1)' value="1" @if($usetype==1)checked @endif>指定商品分类</label>
+        <label class="radio-inline"><input type="radio" name="coupon[use_type]" onclick='showusetype(2)' value="2" @if($usetype==2)checked @endif>指定商品</label>
+        <label class="radio-inline"><input type="radio" name="coupon[use_type]" onclick='showusetype(4)' value="4" @if($coupon['use_type']==4)checked @endif>指定门店</label>
     </div>
 </div>
 
@@ -73,13 +74,13 @@
     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
 
     {{--隐藏窗口 - 适用范围:商城通用--}}
-    <div class="col-sm-7 usetype usetype0"  @if($coupon['use_type']!=0)style='display:none' @endif>
+    <div class="col-sm-7 usetype usetype0"  @if($usetype!=0)style='display:none' @endif>
         <div class='input-group'>
             <span class='help-block'>如选择此项,则支持商城所有商品使用!</span>
         </div>
     </div>
     {{--隐藏窗口 - 适用范围:指定分类--}}
-    <div class="col-sm-7 usetype usetype1"  @if($coupon['use_type']!=1)style='display:none' @endif>
+    <div class="col-sm-7 usetype usetype1"  @if($usetype!=1)style='display:none' @endif>
         <div class='input-group'>
             <div id="category" >
                 <table class="table">
@@ -114,7 +115,7 @@
         </div>
     </div>
     {{--隐藏窗口 - 适用范围:指定商品--}}
-    <div class="col-sm-7 usetype usetype2"  @if($coupon['use_type']!=2)style='display:none' @endif>
+    <div class="col-sm-7 usetype usetype2"  @if($usetype!=2)style='display:none' @endif>
         <div class='input-group'>
 
             <div id="goods">
@@ -153,6 +154,47 @@
         </div>
 
     </div>　
+    {{--隐藏窗口 - 适用范围:指定门店--}}
+    <div class="col-sm-7 usetype usetype4"  @if($coupon['use_type']!=4)style='display:none' @endif>
+        <div class='input-group'>
+
+            <div id="store">
+                <table class="table">
+                    <tbody id="param-itemsstore">
+                    @if ($coupon['storeids'])
+                        @foreach ($coupon['storeids'] as $k=>$v)
+                            <tr>
+                                <td>
+                                    <a href="javascript:;" onclick="deleteParam(this)" style="margin-top:10px;"  title="删除"><i class='fa fa-times'></i></a>
+                                </td>
+                                <td  colspan="2">
+                                    <input id="storeid" type="hidden" class="form-control" name="store_ids[]" data-id="{{$v}}" data-name="storeids"  value="{{$v}}" style="width:200px;float:left"  />
+                                    <input id="storename" class="form-control" type="text" name="store_names[]" data-id="{{$v}}" data-name="storenames" value="{{$coupon['storenames'][$k]}}" style="width:200px;float:left" readonly="true">
+                                    <span class="input-group-btn">
+                                    <button class="btn btn-default nav-link-store" type="button" data-id="{{$v}}" onclick="$('#modal-module-menus-store').modal();$(this).parent().parent().addClass('focusstore')">选择门店</button>
+                                </span>
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
+                    </tbody>
+
+                    <tbody>
+                    <tr>
+                        <td colspan="3">
+                            <a href="javascript:;" id='add-param_store' onclick="addParam('store')"
+                               style="margin-top:10px;" class="btn btn-primary" title="添加门店"><i class='fa fa-plus'></i> 添加门店</a>
+                        </td>
+                    </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+
 </div>
 
 <div id="goods" style="display: none">
@@ -219,6 +261,36 @@
     </div>
 </div>
 
+<div id="modal-module-menus-store" class="modal fade" tabindex="-1"> {{--搜索门店的弹窗--}}
+    <div class="modal-dialog" style='width: 920px;'>
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">
+                    ×
+                </button>
+                <h3>选择门店</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="keyword" value=""
+                               id="search-kwd-store" placeholder="请输入门店名称"/>
+                        <span class='input-group-btn'>
+                            <button type="button" class="btn btn-default" onclick="search_store();">搜索
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <div id="module-menus-store" style="padding-top:5px;"></div>
+            </div>
+            <div class="modal-footer"><a href="#" class="btn btn-default"
+                                         data-dismiss="modal" aria-hidden="true">关闭</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
 
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否可领取</label>
@@ -234,7 +306,7 @@
     </div>
 </div>
 
-<div class="form-group gettype">
+<div class="form-group gettype" @if($coupon['get_type'] === 0) style='display:none' @endif>
     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
     <div class="col-sm-9 form-inline">
         <div class="input-group form-group col-sm-1">

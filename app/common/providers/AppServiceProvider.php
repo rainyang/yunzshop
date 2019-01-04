@@ -6,6 +6,9 @@ use app\common\models\AccountWechats;
 use app\common\services\Check;
 use app\common\services\mews\captcha\src\Captcha;
 use app\common\services\Session;
+use app\framework\Log\DebugLog;
+use app\framework\Log\ErrorLog;
+use app\framework\Log\TraceLog;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Setting;
 use Illuminate\Support\ServiceProvider;
@@ -115,6 +118,15 @@ class AppServiceProvider extends ServiceProvider
                 $app['Illuminate\Hashing\BcryptHasher'],
                 $app['Illuminate\Support\Str']
             );
+        });
+        $this->app->singleton('Log.trace', function (){
+            return new TraceLog();
+        });
+        $this->app->singleton('Log.debug', function (){
+            return new DebugLog();
+        });
+        $this->app->singleton('Log.error', function (){
+            return new ErrorLog();
         });
     }
 }

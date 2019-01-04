@@ -58,7 +58,9 @@ class GoodsPosterController extends ApiController
 
         $this->shopSet = \Setting::get('shop.shop');
 
-        $this->goodsModel = Goods::uniacid()->with('hasOneShare')->where('plugin_id', 0)->where('status', 1)->find($id);
+
+        //$this->goodsModel = Goods::uniacid()->with('hasOneShare')->where('plugin_id', 0)->where('status', 1)->find($id);
+        $this->goodsModel = Goods::uniacid()->with('hasOneShare')->where('status', 1)->find($id);
 
         if (empty($this->goodsModel)) {
             return $this->errorJson('该商品不是商城商品');

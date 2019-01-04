@@ -34,7 +34,6 @@ class DetailController extends ApiController
             'order_id' => 'required|integer'
         ]);
         $orderId = $request->query('order_id');
-
         $order = $this->getOrder()->with(['hasManyOrderGoods','orderDeduction','orderDiscount','orderCoupon'])->find($orderId);
 
 //        if ($order->uid != \YunShop::app()->getMemberId()) {
@@ -59,15 +58,18 @@ class DetailController extends ApiController
 
             //临时解决
             $storeObj = \Yunshop\StoreCashier\common\models\Store::getStoreByCashierId($order->hasManyOrderGoods[0]->goods_id)->first();
+
             if ($storeObj) {
                 $data['button_models'] = $backups_button;
             }
 
             if ($order['dispatch_type_id'] == DispatchType::SELF_DELIVERY) {
-                $data['address_info'] = \Yunshop\StoreCashier\common\models\SelfDelivery::where('order_id', $order['id'])->first();
+                // $data['address_info'] = \Yunshop\StoreCashier\common\models\SelfDelivery::where('order_id', $order['id'])->first();
+
             }elseif($order['dispatch_type_id'] == DispatchType::STORE_DELIVERY){
-                $data['address_info'] = \Yunshop\StoreCashier\common\models\StoreDelivery::where('order_id', $order['id'])->first();
+                // $data['address_info'] = \Yunshop\StoreCashier\common\models\StoreDelivery::where('order_id', $order['id'])->first();
             }
+
         }
 
 
