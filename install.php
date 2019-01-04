@@ -2,10 +2,10 @@
 global $_W;
 
 $create_dir = [
-    'bootstrap/cache',
-    'storage/framework/views',
-    'storage/logs/error',
-    'storage/logs/debug'
+    '../addons/yun_shop/bootstrap/cache',
+    '../addons/yun_shop/storage/framework/views',
+    '../addons/yun_shop/storage/logs/error',
+    '../addons/yun_shop/storage/logs/debug'
 ];
 
 foreach ($create_dir as $dir_path) {
