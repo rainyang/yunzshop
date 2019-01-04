@@ -112,7 +112,13 @@ class PluginManager
     {
         return $this->getPlugins()->get($name);
     }
-
+    public function getPluginId($name)
+    {
+        $pluginIdConfig =  array_first(config('shop-foundation.plugin'), function ($item) use ($name) {
+            return $item['name'] == $name;
+        }, []);
+        return $pluginIdConfig['id'];
+    }
     public function findPlugin($id)
     {
         return $this->getPlugins()->first(function (Plugin $plugin) use ($id) {

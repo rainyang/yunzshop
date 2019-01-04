@@ -860,10 +860,11 @@ class MemberController extends BaseController
 
     public function exportRelation()
     {
+        $uniacid = \YunShop::app()->uniacid;
         $parentMemberModle = new ParentOfMember();
         $childMemberModel = new ChildrenOfMember();
-        $parentMemberModle->DeletedData();
-        $childMemberModel->DeletedData();
+        $parentMemberModle->DeletedData($uniacid);
+        $childMemberModel->DeletedData($uniacid);
 
         $member_relation = new MemberRelation();
 

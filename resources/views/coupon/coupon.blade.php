@@ -150,5 +150,27 @@
             $(".focusgood").removeClass("focusgood");
             $("#modal-module-menus-goods .close").click();
         }
+
+        {{--搜索门店--}}
+        function search_store() {
+            if ($.trim($('#search-kwd-store').val()) == '') {
+                Tip.focus('#search-kwd-store', '请输入关键词');
+                return;
+            }
+            $("#module-menus-store").html("正在搜索....");
+            $.get('{!! yzWebUrl('goods.goods.get-search-store') !!}', {
+                    keyword: $.trim($('#search-kwd-store').val())
+                }, function (dat) {
+                    $('#module-menus-store').html(dat);
+                }
+            );
+        }
+        function select_store(o) {
+            console.log(o);
+            $(".focusstore:last input[data-name=storeids]").val(o.id);
+            $(".focusstore:last input[data-name=storenames]").val(o.store_name);
+            $(".focusstore").removeClass("focusstore");
+            $("#modal-module-menus-store .close").click();
+        }
     </script>
 @endsection('js')

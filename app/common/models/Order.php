@@ -65,6 +65,7 @@ use app\backend\modules\order\observers\OrderObserver;
  * @property float discount_price
  * @property float dispatch_price
  * @property float change_price
+ * @property float cost_amount
  * @property float change_dispatch_price
  * @property int plugin_id
  * @property int is_plugin

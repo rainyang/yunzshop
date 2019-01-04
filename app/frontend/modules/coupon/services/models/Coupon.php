@@ -64,6 +64,9 @@ class Coupon
         return $this->order;
     }
 
+    /**
+     * @return MemberCoupon
+     */
     public function getMemberCoupon()
     {
         return $this->memberCoupon;
@@ -93,30 +96,20 @@ class Coupon
     }
 
     /**
-     * 使用范围类的实例
+     * 使用范围类的实例,从config中读取值与类的对应关系,以便插件扩展
      */
     private function getUseScopeInstance()
     {
-        switch ($this->memberCoupon->belongsToCoupon->use_type) {
-            case DbCoupon::COUPON_GOODS_USE:
-                return new GoodsScope($this);
-                break;
-            case DbCoupon::COUPON_CATEGORY_USE:
-                return new CategoryScope($this);
-                break;
-            case DbCoupon::COUPON_SHOP_USE:
-                return new ShopScope($this);
-                break;
-            default:
-//                if (config('app.debug')) {
-//                    dd($this->memberCoupon->belongsToCoupon->use_type);
-//                    dd($this->memberCoupon->belongsToCoupon);
-//                    throw new AppException('优惠券范围不存在');
-//                }
-                return null;
 
-                break;
+        $item = array_first(config('shop-foundation.coupon.OrderCoupon.scope'), function ($item) {
+            return $item['key'] == $this->memberCoupon->belongsToCoupon->use_type;
+        }, null);
+
+        if (isset($item) && $item['class'] instanceof \Closure) {
+            return call_user_func($item['class'], $this);
         }
+
+        return null;
     }
 
     /**
@@ -230,7 +223,7 @@ class Coupon
 
             if ($memberCoupon->selected == true) {
                 //本优惠券与选中的优惠券是一张
-                trace_log()->coupon("优惠券{$this->getMemberCoupon()->id}",'同一单不能使用多张此类型优惠券');
+                trace_log()->coupon("优惠券{$this->getMemberCoupon()->id}", '同一单不能使用多张此类型优惠券');
 
                 return $memberCoupon->coupon_id == $this->getMemberCoupon()->coupon_id;
             }
@@ -269,22 +262,22 @@ class Coupon
         }
         //满足范围
         if (!$this->useScope->valid()) {
-            trace_log()->coupon("优惠券{$this->getMemberCoupon()->id}",'不满足范围');
+            trace_log()->coupon("优惠券{$this->getMemberCoupon()->id}", '不满足范围');
             return false;
         }
         //满足额度
         if (!$this->price->isOptional()) {
-            trace_log()->coupon("优惠券{$this->getMemberCoupon()->id}",'不满足额度');
+            trace_log()->coupon("优惠券{$this->getMemberCoupon()->id}", '不满足额度');
             return false;
         }
         //满足时限
         if (!$this->timeLimit->valid()) {
-            trace_log()->coupon("优惠券{$this->getMemberCoupon()->id}",'不满足时限');
+            trace_log()->coupon("优惠券{$this->getMemberCoupon()->id}", '不满足时限');
             return false;
         }
         //未使用
         if ($this->getMemberCoupon()->used) {
-            trace_log()->coupon("优惠券{$this->getMemberCoupon()->id}",'已使用');
+            trace_log()->coupon("优惠券{$this->getMemberCoupon()->id}", '已使用');
             return false;
         }
 

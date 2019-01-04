@@ -185,6 +185,13 @@ abstract class Credit
         return $this->result();
     }
 
+    //余额提现驳回
+    public function rejected($data)
+    {
+        $this->source = ConstService::SOURCE_REJECTED;
+        return $this->addition($data);
+    }
+
 
     protected function result()
     {

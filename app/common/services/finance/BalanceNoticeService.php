@@ -65,6 +65,21 @@ class BalanceNoticeService
         static::notice($template_id,$params,$withdrawModel->member_id);
     }
 
+    public static function withdrawRejectNotice(Model $withdrawModel)
+    {
+        $template_id = \Setting::get('shop.notice.withdraw_reject');
+        if (!$template_id) {
+            return null;
+        }
+
+        $params = [
+            ['name' => '时间', 'value' => date('Y-m-d H:i:s', $withdrawModel->audit_at)],
+            ['name' => '金额', 'value' => $withdrawModel->amounts],
+            ['name' => '手续费', 'value' => $withdrawModel->actual_poundage],
+        ];
+        static::notice($template_id,$params,$withdrawModel->member_id);
+    }
+
     public static function notice($templateId,$params,$memberId)
     {
         if (!$templateId) {
