@@ -342,7 +342,7 @@ class FixController extends BaseController
             if ($commission_order) {
                 echo '成功';
             } else {
-                echo '不成功，请检查配置是否正确，正确？！！！恭喜新增一个拥有垃圾服务器的客户，技术已死';
+                echo '不成功，请检查设置是否正确，一定绝对必须要检查清楚！！！！！！如果正确？！那就服务器有问题，非常难受';
             }
         } else {
             echo '已有这条分红';
@@ -362,7 +362,7 @@ class FixController extends BaseController
             if ($team_order) {
                 echo '成功';
             } else {
-                echo '不成功，请检查配置是否正确，正确？！！！恭喜新增一个拥有垃圾服务器的客户，技术已死';
+                echo '不成功，请检查设置是否正确，一定绝对必须要检查清楚！！！！！！如果正确？！那就服务器有问题，非常难受';
             }
         } else {
             echo '已有这条分红';
