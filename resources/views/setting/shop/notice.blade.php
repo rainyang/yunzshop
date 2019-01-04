@@ -750,13 +750,7 @@
                                         </select>
                                         <div class="help-block">通知公众平台模板消息编号: TM00982</div>
                                     </div>
-                                    <div class="col-sm-2 col-xs-6">
-                                        <input class="mui-switch mui-switch-animbg" id="withdraw_reject" type="checkbox"
-                                               @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['withdraw_reject']))
-                                               checked
-                                               @endif
-                                               onclick="message_default(this.id)"/>
-                                    </div>
+                                    
                                 </div>
                             @endif
 
