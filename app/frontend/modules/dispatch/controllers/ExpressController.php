@@ -32,14 +32,18 @@ class ExpressController extends ApiController
         }
         //$data
         $express = $order->express->getExpress($order->express->express_code, $order->express->express_sn);
+        \Log::info('---发货1express---',['express'=>$express, 'express_code'=>$order->express->express_code, 'express_sn'=>$order->express->express_sn]);
         $data['express_sn'] = $order->express->express_sn;
-        $data['company_name'] = $order->express->express_company_name;
+        $data['company_name'] = $order->express->express_company_name;        
         $data['data'] = $express['data'];
         $data['thumb'] = $order->hasManyOrderGoods[0]->thumb;
         $data['tel'] = $express['tel'];
         $data['status_name'] = $express['status_name'];
+        \Log::info('---发货2express---', $data);
+
         return $this->successJson('成功', $data);
     }
+    
     protected function _getOrder($order_id){
         return Order::find($order_id);
 

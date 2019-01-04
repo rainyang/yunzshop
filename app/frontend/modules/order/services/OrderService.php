@@ -116,6 +116,7 @@ class OrderService
         DB::transaction(function() use($orderOperation) {
             $orderOperation->handle();
         });
+        \Log::info('-----orderOperation-----', $orderOperation->handle());
     }
 
     /**
@@ -266,7 +267,7 @@ class OrderService
     public static function orderSend($param)
     {
         $orderOperation = OrderSend::find($param['order_id']);
-
+        \Log::info('----3orderOperation--', $orderOperation);
         return self::OrderOperate($orderOperation);
     }
 

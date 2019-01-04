@@ -25,7 +25,6 @@ class PluginsController extends BaseController
     public function config($name, Request $request)
     {
         $plugin = plugin($name);
-
         if ($plugin && $plugin->isEnabled() && $plugin->hasConfigView()) {
             return $plugin->getConfigView();
         } else {

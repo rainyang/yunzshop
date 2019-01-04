@@ -1,9 +1,9 @@
 <?php
 /**
  * Created 
- * Author: 芸众商城 www.yunzshop.com
- * Date: 2018/1/24
- * Time: 下午1:43
+ * Author: 芸众商城 www.yunzshop.com 
+ * Date: 2018/1/24 
+ * Time: 下午1:43 
  */
 
 namespace app\frontend\modules\goods\controllers;
@@ -20,7 +20,7 @@ class GoodsPosterController extends ApiController
     
     private $shopSet;
     private $goodsModel;
-
+    private $storeid;
     private $mid;
     //画布大小
     // private $canvas = [
@@ -51,6 +51,8 @@ class GoodsPosterController extends ApiController
         $id = intval(\YunShop::request()->id);
 
         $this->mid = \YunShop::app()->getMemberId();
+       
+        $this->storeid = intval(\YunShop::request()->storeid);
 
         if (!$id) {
             return $this->errorJson('请传入正确参数.');
@@ -58,16 +60,14 @@ class GoodsPosterController extends ApiController
 
         $this->shopSet = \Setting::get('shop.shop');
 
-
         //$this->goodsModel = Goods::uniacid()->with('hasOneShare')->where('plugin_id', 0)->where('status', 1)->find($id);
         $this->goodsModel = Goods::uniacid()->with('hasOneShare')->where('status', 1)->find($id);
 
         if (empty($this->goodsModel)) {
-            return $this->errorJson('该商品不是商城商品');
+            return $this->errorJson('该商品不存在');
         }
 
         $imgPath = $this->get_lt();
-
 
         $urlPath =  request()->getSchemeAndHttpHost() . '/' . substr($imgPath, strpos($imgPath, 'addons'));
             
@@ -151,6 +151,7 @@ class GoodsPosterController extends ApiController
         } else {
             $goodsThumb = $this->goodsModel->thumb;
         }
+
         $target = $this->mergeGoodsImage($target, $goodsThumb);
         
         //商品二维码
@@ -161,18 +162,19 @@ class GoodsPosterController extends ApiController
         } else {
             $text = $this->goodsModel->title;
         }
+
         $target = $this->mergeQrImage($target, $goodsQr);
         
         $target = $this->mergeText($target, $this->goodsText, $text);
 
         $target = $this->mergePriceText($target);
        
-
         // header ( "Content-type: image/png" );
         // imagePng ( $target );
         // exit();
 
         imagepng($target, $this->getGoodsPosterPath());
+
         imagedestroy($target);
 
         return $this->getGoodsPosterPath();
@@ -210,11 +212,13 @@ class GoodsPosterController extends ApiController
     private function getGoodsPosterPath()
     {
         $path = storage_path('app/public/goods/'.\YunShop::app()->uniacid) . "/";
+
         if (!is_dir($path)) {
             load()->func('file');
             mkdirs($path);
         }
         $file_name = \YunShop::app()->uniacid.'-'.$this->goodsModel->id.'.png';
+
         return $path . $file_name;
     }
 
@@ -335,7 +339,14 @@ class GoodsPosterController extends ApiController
      */
     private function generateQr()
     {
-        $url = yzAppFullUrl('/goods/'.$this->goodsModel->id, ['mid'=> $this->mid]);
+        if (empty($this->storeid)) {
+            //商城商品二维码
+            $url = yzAppFullUrl('/goods/'.$this->goodsModel->id, ['mid'=> $this->mid]);
+
+        } else {
+            //门店商品二维码
+            $url = yzAppFullUrl('/goods/'.$this->goodsModel->id.'/o2o/'.$this->storeid, ['mid'=> $this->mid]);
+        }
 
         $path = storage_path('app/public/goods/qrcode/'.\YunShop::app()->uniacid);
         if (!is_dir($path)) {
