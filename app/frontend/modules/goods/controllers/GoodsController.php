@@ -3,6 +3,7 @@ namespace app\frontend\modules\goods\controllers;
 
 use app\backend\modules\goods\models\Brand;
 use app\common\components\ApiController;
+use app\common\facades\Setting;
 use app\common\models\Category;
 use app\common\models\Goods;
 use app\common\models\GoodsSpecItem;
@@ -354,14 +355,23 @@ class GoodsController extends ApiController
 // dd($discountModel);
 // dd($goodsModel);
         $discount_value = null;
+        $level_discount_set = Setting::get('discount.all_set');
 
         if ((float)$discountModel->discount_value) {
             switch ($discountModel->discount_method) {
                 case 1:
-                    $discount_value = $goodsModel->price * ($discountModel->discount_value / 10);
+                    if (isset($level_discount_set['type']) && $level_discount_set['type'] == 1) {
+                        $discount_value = $goodsModel->market_price * ($discountModel->discount_value / 10);
+                    }else{
+                        $discount_value = $goodsModel->price * ($discountModel->discount_value / 10);
+                    }
                     break;
                 case 2:
-                    $discount_value = max($goodsModel->price - $discountModel->discount_value, 0);
+                    if (isset($level_discount_set['type']) && $level_discount_set['type'] == 1) {
+                        $discount_value = max($goodsModel->market_price - $discountModel->discount_value, 0);
+                    }else{
+                        $discount_value = max($goodsModel->price - $discountModel->discount_value, 0);
+                    }
                     break;
                 default:
                     $discount_value = null;
@@ -372,7 +382,11 @@ class GoodsController extends ApiController
         if ($memberModel->level) {
 
             if ($discount_value === null) {
-                $discount_value = $goodsModel->price * ($memberModel->level->discount / 10);
+                if (isset($level_discount_set['type']) && $level_discount_set['type'] == 1) {
+                    $discount_value = $goodsModel->market_price * ($memberModel->level->discount / 10);
+                }else{
+                    $discount_value = $goodsModel->price * ($memberModel->level->discount / 10);
+                }
             }
 
             $data = [

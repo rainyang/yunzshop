@@ -32,6 +32,7 @@ use app\common\models\GoodsCategory;
 use app\frontend\modules\coupon\listeners\CouponSend;
 use Setting;
 use app\common\services\goods\VideoDemandCourseGoods;
+use app\common\models\Store as StoreCashier;
 use Yunshop\Designer\models\Store;
 
 
@@ -472,6 +473,19 @@ class GoodsController extends BaseController
         }
         return view('goods.query', [
             'goods' => $goods
+        ])->render();
+
+    }
+    /**
+     * 获取搜索门店
+     * @return html
+     */
+    public function getSearchStore()
+    {
+        $keyword = \YunShop::request()->keyword;
+        $store = StoreCashier::getStoreByName($keyword);
+        return view('goods.store', [
+            'store' => $store
         ])->render();
 
     }

@@ -86,6 +86,12 @@ return [
             'root' => storage_path('app/public/virtualcard'),
         ],
 
+        // 批量卡密上传excel文件保存路径
+        'yop' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/yop'),
+        ],
+
         'upload' => [
             'driver' => 'local',
             'root' => storage_path('app/public/avatar'),
