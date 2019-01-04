@@ -20,7 +20,7 @@ class GoodsPosterController extends ApiController
     
     private $shopSet;
     private $goodsModel;
-
+    private $storeid;
     private $mid;
     //画布大小
     // private $canvas = [
@@ -51,6 +51,8 @@ class GoodsPosterController extends ApiController
         $id = intval(\YunShop::request()->id);
 
         $this->mid = \YunShop::app()->getMemberId();
+
+        $this->storeid = intval(\YunShop::request()->storeid);
 
         if (!$id) {
             return $this->errorJson('请传入正确参数.');
@@ -335,7 +337,14 @@ class GoodsPosterController extends ApiController
      */
     private function generateQr()
     {
-        $url = yzAppFullUrl('/goods/'.$this->goodsModel->id, ['mid'=> $this->mid]);
+        if (empty($this->storeid)) {
+            
+            $url = yzAppFullUrl('/goods/'.$this->goodsModel->id, ['mid'=> $this->mid]);
+            
+        } else {
+            
+            $url = yzAppFullUrl('/goods/'.$this->goodsModel->id.'/o2o/'.$this->storeid, ['mid'=> $this->mid]);
+        }
 
         $path = storage_path('app/public/goods/qrcode/'.\YunShop::app()->uniacid);
         if (!is_dir($path)) {
