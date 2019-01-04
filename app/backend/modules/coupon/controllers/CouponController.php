@@ -33,9 +33,10 @@ class CouponController extends BaseController
 
         $pageSize = 10;
         if (empty($keyword) && empty($getType) && ($timeSearchSwitch == 0)){
-            $list = Coupon::uniacid()->orderBy('display_order','desc')->orderBy('updated_at', 'desc')->paginate($pageSize)->toArray();
+            $list = Coupon::uniacid()->pluginId()->orderBy('display_order','desc')->orderBy('updated_at', 'desc')->paginate($pageSize)->toArray();
         } else {
             $list = Coupon::getCouponsBySearch($keyword, $getType, $timeSearchSwitch, $timeStart, $timeEnd)
+                        ->pluginId()
                         ->orderBy('display_order','desc')
                         ->orderBy('updated_at', 'desc')
                         ->paginate($pageSize)
@@ -68,6 +69,11 @@ class CouponController extends BaseController
         $couponRequest['categorynames'] = \YunShop::request()->category_names;
         $couponRequest['goods_ids'] = \YunShop::request()->goods_ids;
         $couponRequest['goods_names'] = \YunShop::request()->goods_names;
+
+        //新增门店
+        $couponRequest['storeids'] = \YunShop::request()->store_ids; //去重,去空值
+        $couponRequest['store_names'] = \YunShop::request()->store_names;
+
 
         //获取会员等级列表
         $memberLevels = MemberLevel::getMemberLevelList();
