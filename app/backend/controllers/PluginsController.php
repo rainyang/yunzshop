@@ -41,10 +41,10 @@ class PluginsController extends BaseController
         $name   = \YunShop::request()->name;
         $action = \YunShop::request()->action;
 
-        if ($action == 'enable') {
-            $plugins = app('app\common\services\PluginManager');
-            $plugin  = plugin($name);
+        $plugins = app('app\common\services\PluginManager');
+        $plugin  = plugin($name);
 
+        if ($action == 'enable') {
             $url = config('auto-update.proAuthUrl') . "/chkname/{$name}";
 dd($url);
             $res = \Curl::to($url)
