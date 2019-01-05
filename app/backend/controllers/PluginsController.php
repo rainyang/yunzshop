@@ -187,12 +187,6 @@ class PluginsController extends BaseController
 
             $url = config('auto-update.proAuthUrl') . "/chkname/{$name}";
 
-            if (Config::get('app.debug')) {
-                $key    = '369e1860-fe81-11e8-9308-cfde0e61cef7';
-                $secret = '$2y$10$3Hs/7x258A.Rz2ZYa/vmg.XBQC9NYH6HB4cH.HAS7fJYby8qB0.Oq';
-                $url = "http://yun1.yunzshop.com/register/chkname/{$name}";
-            }
-
             $res = \Curl::to($url)
                 ->withHeader(
                     "Authorization: Basic " . base64_encode("{$key}:{$secret}")
