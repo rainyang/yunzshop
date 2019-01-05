@@ -50,10 +50,9 @@ class BatchDiscountController extends BaseController
             foreach ($categorys as $v){
                 $categorys_r[] = $v['id'];
             }
+            $categorys_r_unique = array_unique($categorys_r);
             $categoryModel = CategoryDiscount::find($id);
-            $category_ids_old = explode(',', $categoryModel->category_ids);
-            $categorys_ids_new = array_merge($categorys_r, $category_ids_old);
-            $category_ids = implode(',', $categorys_ids_new);
+            $category_ids = implode(',', $categorys_r_unique);
 
             $data = [
                 'category_ids' => $category_ids,
