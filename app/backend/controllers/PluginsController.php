@@ -10,6 +10,7 @@ namespace app\backend\controllers;
 
 
 use app\common\components\BaseController;
+use app\common\exceptions\ShopException;
 use app\common\helpers\Url;
 use Datatables;
 use Illuminate\Http\Request;
@@ -35,14 +36,14 @@ class PluginsController extends BaseController
 
     public function manage()
     {
-        $key     = \Setting::get('shop.key')['key'];
-        $secret  = \Setting::get('shop.key')['secret'];
-        $name    = \YunShop::request()->name;
+        $key    = \Setting::get('shop.key')['key'];
+        $secret = \Setting::get('shop.key')['secret'];
+        $name   = \YunShop::request()->name;
 
         $plugins = app('app\common\services\PluginManager');
         $plugin  = plugin($name);
 
-        $url     = config('auto-update.registerUrl') . "/{$name}";
+        $url = config('auto-update.proAuthUrl') . "/chkname/{$name}";
 
         $res = \Curl::to($url)
             ->withHeader(
@@ -51,9 +52,10 @@ class PluginsController extends BaseController
             ->asJsonResponse(true)
             ->get();
 
-
-        //TODO 验证插件name是否授权
-        //TODO 未授权异常
+        dd($res);
+        if (0) {
+            throw new ShopException('应用未授权');
+        }
 
         if ($plugin) {
             // pass the plugin title through the translator
