@@ -38,6 +38,7 @@ class PluginsController extends BaseController
     {
         $key    = \Setting::get('shop.key')['key'];
         $secret = \Setting::get('shop.key')['secret'];
+
         $name   = \YunShop::request()->name;
         $action = \YunShop::request()->action;
 
@@ -46,7 +47,13 @@ class PluginsController extends BaseController
 
         if ($action == 'enable') {
             $url = config('auto-update.proAuthUrl') . "/chkname/{$name}";
-dd($url);
+
+            if (Config::get('app.debug')) {
+                $key    = '369e1860-fe81-11e8-9308-cfde0e61cef7';
+                $secret = '$2y$10$3Hs/7x258A.Rz2ZYa/vmg.XBQC9NYH6HB4cH.HAS7fJYby8qB0.Oq';
+                $url = "http://yun1.yunzshop.com/register/chkname/{$name}";
+            }
+
             $res = \Curl::to($url)
                 ->withHeader(
                     "Authorization: Basic " . base64_encode("{$key}:{$secret}")
@@ -54,8 +61,8 @@ dd($url);
                 ->asJsonResponse(true)
                 ->get();
 
-            dd($res);
-            if (0) {
+
+            if (0 == $res['status']) {
                 throw new ShopException('应用未授权');
             }
         }
