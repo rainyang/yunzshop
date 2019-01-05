@@ -21,15 +21,6 @@
 //    }
 //});
 Route::any('/', function () {
-    $filesystem = app(\Illuminate\Filesystem\Filesystem::class);
-    $update     = new \app\common\services\AutoUpdate(null, null, 300);
-    \Log::debug('----CLI----');
-    $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
-    if (!empty($plugins_dir)) {
-        \Artisan::call('update:version', ['version' => $plugins_dir]);
-    }
-
-
     //支付回调
     if (strpos(request()->getRequestUri(), '/payment/') !== false) {
         preg_match('#(.*)/payment/(\w+)/(\w+).php(.*?)#', request()->getRequestUri(), $match);
@@ -131,6 +122,14 @@ Route::any('/', function () {
         } else {
             $eid = YunShop::request()->eid;
 
+            $filesystem = app(\Illuminate\Filesystem\Filesystem::class);
+            $update     = new \app\common\services\AutoUpdate(null, null, 300);
+            \Log::debug('----CLI----');
+            $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
+            if (!empty($plugins_dir)) {
+                \Artisan::call('update:version', ['version' => $plugins_dir]);
+            }
+            
             if (!empty($eid)) {
                 $entry = module_entry($eid);
 
