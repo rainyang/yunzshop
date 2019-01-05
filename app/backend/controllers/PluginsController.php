@@ -39,22 +39,25 @@ class PluginsController extends BaseController
         $key    = \Setting::get('shop.key')['key'];
         $secret = \Setting::get('shop.key')['secret'];
         $name   = \YunShop::request()->name;
+        $action = \YunShop::request()->action;
 
-        $plugins = app('app\common\services\PluginManager');
-        $plugin  = plugin($name);
+        if ($action == 'enable') {
+            $plugins = app('app\common\services\PluginManager');
+            $plugin  = plugin($name);
 
-        $url = config('auto-update.proAuthUrl') . "/chkname/{$name}";
+            $url = config('auto-update.proAuthUrl') . "/chkname/{$name}";
+dd($url);
+            $res = \Curl::to($url)
+                ->withHeader(
+                    "Authorization: Basic " . base64_encode("{$key}:{$secret}")
+                )
+                ->asJsonResponse(true)
+                ->get();
 
-        $res = \Curl::to($url)
-            ->withHeader(
-                "Authorization: Basic " . base64_encode("{$key}:{$secret}")
-            )
-            ->asJsonResponse(true)
-            ->get();
-
-        dd($res);
-        if (0) {
-            throw new ShopException('应用未授权');
+            dd($res);
+            if (0) {
+                throw new ShopException('应用未授权');
+            }
         }
 
         if ($plugin) {
