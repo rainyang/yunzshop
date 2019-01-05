@@ -21,15 +21,24 @@
 //    }
 //});
 Route::any('/', function () {
+    $filesystem = app(\Illuminate\Filesystem\Filesystem::class);
+    $update     = new \app\common\services\AutoUpdate(null, null, 300);
+    \Log::debug('----CLI----');
+    $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
+    if (!empty($plugins_dir)) {
+        \Artisan::call('update:version', ['version' => $plugins_dir]);
+    }
+
+
     //支付回调
     if (strpos(request()->getRequestUri(), '/payment/') !== false) {
         preg_match('#(.*)/payment/(\w+)/(\w+).php(.*?)#', request()->getRequestUri(), $match);
         if (isset($match[2])) {
-            $namespace = 'app\\payment\\controllers\\' . ucfirst($match[2]) . 'Controller';
-            $modules = [];
+            $namespace      = 'app\\payment\\controllers\\' . ucfirst($match[2]) . 'Controller';
+            $modules        = [];
             $controllerName = ucfirst($match[2]);
-            $action = $match[3];
-            $currentRoutes = [];
+            $action         = $match[3];
+            $currentRoutes  = [];
             Yunshop::run($namespace, $modules, $controllerName, $action, $currentRoutes);
         }
         return;
@@ -107,7 +116,7 @@ Route::any('/', function () {
         return;
     }
     if (strpos(request()->getRequestUri(), '/app/') !== false) {
-        return redirect(request()->getSchemeAndHttpHost().'/addons/yun_shop/?menu#/home?i='.request()->get('i'));
+        return redirect(request()->getSchemeAndHttpHost() . '/addons/yun_shop/?menu#/home?i=' . request()->get('i'));
     }
     //后台
     if (strpos(request()->getRequestUri(), '/web/') !== false) {
@@ -117,9 +126,9 @@ Route::any('/', function () {
         }
 
         //解析商城路由
-        if(YunShop::request()->route){
+        if (YunShop::request()->route) {
             YunShop::parseRoute(YunShop::request()->route);
-        }else{
+        } else {
             $eid = YunShop::request()->eid;
 
             if (!empty($eid)) {
