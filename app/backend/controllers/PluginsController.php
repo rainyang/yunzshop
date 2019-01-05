@@ -36,36 +36,13 @@ class PluginsController extends BaseController
 
     public function manage()
     {
-        $key    = \Setting::get('shop.key')['key'];
-        $secret = \Setting::get('shop.key')['secret'];
-
         $name   = \YunShop::request()->name;
         $action = \YunShop::request()->action;
 
         $plugins = app('app\common\services\PluginManager');
         $plugin  = plugin($name);
 
-        if ($action == 'enable') {
-            $url = config('auto-update.proAuthUrl') . "/chkname/{$name}";
-
-            if (Config::get('app.debug')) {
-                $key    = '369e1860-fe81-11e8-9308-cfde0e61cef7';
-                $secret = '$2y$10$3Hs/7x258A.Rz2ZYa/vmg.XBQC9NYH6HB4cH.HAS7fJYby8qB0.Oq';
-                $url = "http://yun1.yunzshop.com/register/chkname/{$name}";
-            }
-
-            $res = \Curl::to($url)
-                ->withHeader(
-                    "Authorization: Basic " . base64_encode("{$key}:{$secret}")
-                )
-                ->asJsonResponse(true)
-                ->get();
-
-
-            if (0 == $res['status']) {
-                throw new ShopException('应用未授权');
-            }
-        }
+        $this->proAuth($name, $action);
 
         if ($plugin) {
             // pass the plugin title through the translator
@@ -98,7 +75,11 @@ class PluginsController extends BaseController
     {
         $plugins = app('app\common\services\PluginManager');
         $names   = explode(',', \YunShop::request()->names);
+        $action = \YunShop::request()->action;
+
         foreach ($names as $name) {
+            $this->proAuth($name, $action);
+
             $plugin = plugin($name);
             if ($plugin) {
                 $plugin->title = trans($plugin->title);
@@ -195,6 +176,33 @@ class PluginsController extends BaseController
         } else {
             app('plugins')->enTopShow($data['name'], 1);
             return $this->message('添加顶部栏成功', Url::absoluteWeb('plugins.getPluginList'));
+        }
+    }
+
+    public function proAuth($name, $action)
+    {
+        if ($action == 'enable') {
+            $key    = \Setting::get('shop.key')['key'];
+            $secret = \Setting::get('shop.key')['secret'];
+
+            $url = config('auto-update.proAuthUrl') . "/chkname/{$name}";
+
+            if (Config::get('app.debug')) {
+                $key    = '369e1860-fe81-11e8-9308-cfde0e61cef7';
+                $secret = '$2y$10$3Hs/7x258A.Rz2ZYa/vmg.XBQC9NYH6HB4cH.HAS7fJYby8qB0.Oq';
+                $url = "http://yun1.yunzshop.com/register/chkname/{$name}";
+            }
+
+            $res = \Curl::to($url)
+                ->withHeader(
+                    "Authorization: Basic " . base64_encode("{$key}:{$secret}")
+                )
+                ->asJsonResponse(true)
+                ->get();
+
+            if (0 == $res['status']) {
+                throw new ShopException('应用未授权');
+            }
         }
     }
 
