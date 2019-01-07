@@ -42,7 +42,10 @@ return [
             'title' => '商品标签',
             'class' => 'app\backend\widgets\goods\FilteringWidget'
         ],
-
+        'tab_invite_page' => [
+            'title' => '邀请页面',
+            'class' => 'app\backend\widgets\goods\InvitePageWidget'
+        ],
     ],
     'withdraw' => [
         'income' => [
