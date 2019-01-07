@@ -3115,6 +3115,43 @@ return [
                 'parents'       => ['charts',],
                 'child'         => []
             ],
+            'goods_charts'     => [
+                'name'          => '商品销售统计',
+                'url'           => 'charts.goods.sales-volume-count.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts',],
+                'child'         => [
+                    'goods_volume_charts'     => [
+                        'name'          => '商品销量排行',
+                        'url'           => 'charts.goods.sales-volume-count.index',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_offline_count_charts',
+                        'parents'       => ['charts','goods_charts'],
+
+                    ],
+                    'goods_sales_charts'     => [
+                        'name'          => '商品销售额排行',
+                        'url'           => 'charts.goods.sales-volume-count.sales-price',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => 0,
+                        'item'          => 'member_offline_order_charts',
+                        'parents'       => ['charts','goods_charts'],
+
+                    ]
+                ]
+            ],
 
         ],
     ],

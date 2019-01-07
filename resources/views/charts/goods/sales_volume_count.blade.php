@@ -8,7 +8,7 @@
             <div class="panel panel-default">
                 <div class="panel-body">
                     <div class='alert alert-info'>
-                        <p>1.按照商品销售额进行排序；</p>
+                        <p>1.按照商品销量进行排序；</p>
                     </div>
                     {{--<form action="" method="post" class="form-horizontal" role="form" id="form1">--}}
 
@@ -48,7 +48,7 @@
                         <tr>
                             <th style='width:80px;'>排行</th>
                             <th>商品名称</th>
-                            <th>商品销量额</th>
+                            <th>商品实际销量</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -63,7 +63,7 @@
                                     @endif
                                 </td>
                                 <td>{{ $item->title }}</td>
-                                <td>{{ $item->sales_price }}</td>
+                                <td>{{ $item->real_sales }}</td>
                             </tr>
                         @endforeach
 
