@@ -20,6 +20,7 @@ use app\backend\modules\member\models\MemberUnique;
 use app\backend\modules\member\services\MemberServices;
 use app\backend\modules\member\models\MemberParent;
 use app\common\components\BaseController;
+use app\common\events\member\MemberDelEvent;
 use app\common\events\member\MemberRelationEvent;
 use app\common\events\member\RegisterByAgent;
 use app\common\helpers\Cache;
@@ -396,6 +397,8 @@ class MemberController extends BaseController
 
             //删除会员
             Member::UpdateDeleteMemberInfoById($uid);
+
+            event(new MemberDelEvent($uid));
 
             return true;
         });
