@@ -371,7 +371,7 @@ class ShopController extends BaseController
     }
 
 
-    private function upload($fileinput)
+    private function  upload($fileinput)
     {
         $valid_ext = ['pem'];
 
