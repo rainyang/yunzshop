@@ -101,6 +101,7 @@ class BaseController extends Controller
             session_id($session_id_1);
         }
 
+        //h5 app
         if (!empty($_REQUEST['uuid'])) {
             $session_id_2 = md5($_REQUEST['uuid']);
             session_id($session_id_2);
