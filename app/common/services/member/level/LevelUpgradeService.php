@@ -103,6 +103,7 @@ class LevelUpgradeService
 
         if (isset($validity)) {
             $this->memberModel->validity = $validity;
+            $this->memberModel->downgrade_at = 0;
             $this->memberModel->save();
         }
 

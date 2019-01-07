@@ -361,6 +361,17 @@ class MemberCouponController extends ApiController
                 $res .= implode(',', $couponInArrayFormat['goods_names']);
                 return $res;
                 break;
+            case 3:
+                $res = '适用于下列供应商: ';
+                $res .= implode(',', $couponInArrayFormat['suppliernames']);
+                return $res;
+                break;
+            case 4:
+            case 5:
+                $res = '适用于下列门店: ';
+                $res .= implode(',', $couponInArrayFormat['storenames']);
+                return $res;
+                break;
             default:
                 return ('Enjoy shopping');
         }
