@@ -247,12 +247,6 @@ class RegisterController extends ApiController
         if (empty($mobile)) {
             return $this->errorJson('请填入手机号');
         }
-        /*
-                $info = MemberShopInfo::getUserInfo($mobile);
-
-                if (!empty($info)) {
-                    return $this->errorJson('该手机号已被注册！不能获取验证码');
-                }*/
         $code = rand(1000, 9999);
 
         Session::set(codetime, time());
