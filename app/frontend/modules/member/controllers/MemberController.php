@@ -1622,7 +1622,7 @@ class MemberController extends ApiController
         $type = \YunShop::request()->type;
         $set = \Setting::get('shop.member');
         $invitation_log = [];
-        $member_id = \YunShop::app()->getMemberId()
+        $member_id = \YunShop::app()->getMemberId();
         if ($member_id) {
             $mobile = \app\common\models\Member::where('uid', $member_id)->first();
             if ($mobile->mobile) {
