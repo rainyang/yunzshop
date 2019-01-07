@@ -302,7 +302,7 @@ class ListController extends BaseController
                         $item['has_one_order_remark']['remark']
                         );
                 }
-                $export_model->export($file_name, $export_data, 'order.list.index');
+                $export_model->export($file_name, $export_data, 'order.list.index', 'direct_export');
             }
         }
     }
