@@ -62,10 +62,12 @@ class BaseController extends Controller
 
     /**
      * url参数验证
+     *
      * @param array $rules
      * @param \Request|null $request
      * @param array $messages
      * @param array $customAttributes
+     *
      * @throws AppException
      */
     public function validate(array $rules, \Request $request = null, array $messages = [], array $customAttributes = [])
@@ -89,7 +91,7 @@ class BaseController extends Controller
     {
         $session_id = '';
         if (isset(\YunShop::request()->state) && !empty(\YunShop::request()->state) && strpos(\YunShop::request()->state, 'yz-')) {
-            $pieces = explode('-', \YunShop::request()->state);
+            $pieces     = explode('-', \YunShop::request()->state);
             $session_id = $pieces[1];
             unset($pieces);
         }
@@ -99,9 +101,14 @@ class BaseController extends Controller
             session_id($session_id_1);
         }
 
+        if (!empty($_REQUEST['uuid'])) {
+            $session_id_2 = md5($_REQUEST['uuid']);
+            session_id($session_id_2);
+            setcookie(session_name(), $session_id_2);
+        }
 
         if (empty($session_id) && \YunShop::request()->session_id
-              && \YunShop::request()->session_id != 'undefined' && \YunShop::request()->session_id != 'null'
+            && \YunShop::request()->session_id != 'undefined' && \YunShop::request()->session_id != 'null'
         ) {
             $session_id = \YunShop::request()->session_id;
             session_id($session_id);
@@ -135,12 +142,15 @@ class BaseController extends Controller
 
     /**
      * 需要回滚
+     *
      * @param $action
+     *
      * @return bool
      */
     public function needTransaction($action)
     {
-        return in_array($action, $this->transactionActions) || in_array('*', $this->transactionActions) || $this->transactionActions == '*';
+        return in_array($action, $this->transactionActions) || in_array('*',
+                $this->transactionActions) || $this->transactionActions == '*';
     }
 
 
