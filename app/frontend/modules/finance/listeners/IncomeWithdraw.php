@@ -46,11 +46,21 @@ class IncomeWithdraw
         $noticeData = [
             'type_name'     => $withdrawModel->type_name,
             'amounts'       => $withdrawModel->amounts,
-            'status'        => "已审核",
+//            'status'        => "已审核",
             'actual_amounts'    => $withdrawModel->actual_amounts,
             'actual_poundage'   => $withdrawModel->actual_poundage,
             'pay_way'       => $withdrawModel->pay_way,
         ];
+        if ($withdrawModel->status == 1) {
+            $noticeData['status'] = "审核通过";
+
+        } elseif ($withdrawModel->status == -1) {
+            $noticeData['status'] = "驳回";
+
+        } elseif ($withdrawModel->status == 3) {
+            $noticeData['status'] = "无效";
+
+        }
         MessageService::withdrawCheck($noticeData,$member);
     }
 
