@@ -72,7 +72,7 @@ class CouponController extends BaseController
 
         //新增门店
         $couponRequest['storeids'] = \YunShop::request()->store_ids; //去重,去空值
-        $couponRequest['store_names'] = \YunShop::request()->store_names;
+        $couponRequest['storenames'] = \YunShop::request()->store_names;
 
 
         //获取会员等级列表
