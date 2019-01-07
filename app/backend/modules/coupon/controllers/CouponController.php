@@ -134,6 +134,9 @@ class CouponController extends BaseController
             $coupon->categorynames = \YunShop::request()->category_names;
             $coupon->goods_ids = array_filter(array_unique(\YunShop::request()->goods_ids)); //去重,去空值
             $coupon->goods_names = \YunShop::request()->goods_names;
+            //新增门店
+            $coupon->storeids = array_filter(array_unique(\YunShop::request()->store_ids)); //去重,去空值
+            $coupon->storenames = \YunShop::request()->store_names;
 
             //表单验证
             $coupon->fill($couponRequest);
@@ -231,6 +234,9 @@ class CouponController extends BaseController
                 break;
             case 'category':
                 return view('coupon.tpl.category')->render();
+                break;
+            case 'store':
+                return view('coupon.tpl.store')->render();
                 break;
         }
     }

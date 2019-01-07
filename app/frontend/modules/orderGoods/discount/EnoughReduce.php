@@ -23,7 +23,8 @@ class EnoughReduce extends BaseDiscount
             // 确保订单优惠先行计算
             return null;
         }
-        // (支付金额/同商品总支付金额) * 单品满减金额
+        // (支付金额/订单中同种商品已计算的支付总价 ) * 全场满减金额
+        // todo 这里应该使用 商品成交金额-优先级更高的N种优惠金额之和
         return ($this->orderGoods->getPrice() / $this->getOrderGoodsPrice()) * $this->getAmountInOrder();
     }
 
@@ -38,11 +39,12 @@ class EnoughReduce extends BaseDiscount
     }
 
     /**
+     * todo 这里应该累加 商品成交金额-优先级更高的N种优惠金额之和
      * 订单中同商品的价格小计
      * @return float
      */
     protected function getOrderGoodsPrice()
     {
-        return $this->orderGoods->order->orderGoods->where('goods_id', $this->orderGoods->goods_id)->getPrice();
+        return $this->orderGoods->order->orderGoods->getPrice();
     }
 }

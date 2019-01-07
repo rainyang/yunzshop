@@ -13,14 +13,17 @@ class Coupon extends \app\common\models\Coupon
     protected $casts = [
         'goods_ids' => 'json',
         'category_ids' => 'json',
+        'storeids' => 'json',
         'goods_names' => 'json',
         'categorynames' => 'json',
+        'storenames' => 'json',
     ];
 
     //默认值
     protected $attributes = [
         'goods_ids' => '[]',
         'category_ids' => '[]',
+        'storeids' => '[]',
         'display_order' => 0,
     ];
 
@@ -129,8 +132,7 @@ class Coupon extends \app\common\models\Coupon
     //删除优惠券
     public static function deleteCouponById($couponId)
     {
-        return static::where('id', '=', $couponId)
-                    ->delete();
+        return static::find($couponId)->delete();
     }
 
 }

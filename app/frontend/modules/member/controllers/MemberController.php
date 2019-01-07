@@ -1492,6 +1492,23 @@ class MemberController extends ApiController
                 'url' => 'EnterShop',
             ];
         }
+
+        if (app('plugins')->isEnabled('universal-card')) {
+            $set = \Yunshop\UniversalCard\services\CommonService::getSet();
+            //判断插件开关
+            if ($set['switch']) {
+                $shopSet = \Setting::get('shop.member');
+                //判断商城升级条件是否为指定商品
+                if ($shopSet['level_type'] == 2) {
+                    $data[] = [
+                        'name' => 'universal_card',
+                        'title' => $set['name'],
+                        'class' => 'icon-card',
+                        'url' => 'CardIndex'
+                    ];
+                }
+            }
+        }
         return $this->successJson('ok', $data);
     }
 
@@ -1587,12 +1604,15 @@ class MemberController extends ApiController
         $member_invitation_model = new MemberInvitationCodeLog();
 
         if ($member) {
+            \Log::info('更新上级------'.\YunShop::app()->getMemberId());
+            MemberShopInfo::uniacid()->where('member_id', \YunShop::app()->getMemberId())->update(['parent_id' => $member->member_id]);
+
             $member_invitation_model->uniacid = \YunShop::app()->uniacid;
             $member_invitation_model->member_id = $member->member_id;
             $member_invitation_model->invitation_code = $invite_code;
             $member_invitation_model->save();
             return $this->successJson('ok', $member);
-        }else{
+        } else {
             return $this->errorJson('邀请码有误!请重新填写');
         }
     }
@@ -1606,8 +1626,13 @@ class MemberController extends ApiController
             $member = MemberShopInfo::uniacid()->where('member_id', $member_id)->first();
             $invitation_log = MemberInvitationCodeLog::uniacid()->where('member_id', $member->parent_id)->first();
         }
+
         $invite_page = $set['invite_page'] ?: 0;
         $data['invite_page'] = $type == 5 ? 0 : $invite_page;
+        $mobile = \app\common\models\Member::where('uid', $member_id)->first();
+        if ($mobile->mobile) {
+            $invitation_log = 1;
+        }
         $data['is_invite'] = $invitation_log ? 1 : 0;
         return $this->successJson('邀请页面开关',$data);
     }

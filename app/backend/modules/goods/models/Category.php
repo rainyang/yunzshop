@@ -135,6 +135,18 @@ class Category extends \app\common\models\Category
             ->get();
     }
 
+    /**
+     * @param $keyword
+     * @return mixed
+     */
+    public static function getNotOneCategorysByName($keyword)
+    {
+        return static::uniacid()->select('id', 'name', 'thumb')
+            ->where('parent_id', '<>', 0)
+            ->where('name', 'like', '%' . $keyword . '%')
+            ->get();
+    }
+
     //根据商品分类ID获取分类名称
     public static function getCategoryNameByIds($categoryIds){
         if(empty($categoryIds))
