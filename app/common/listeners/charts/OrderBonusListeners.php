@@ -31,8 +31,8 @@ class OrderBonusListeners
     public function subscribe($events)
     {
         //下单
-//        $events->listen(AfterOrderCreatedImmediatelyEvent::class, OrderBonusListeners::class. '@addCount');
-        $events->listen(AfterOrderCreatedEvent::class, OrderBonusListeners::class. '@addCount');
+        $events->listen(AfterOrderCreatedImmediatelyEvent::class, OrderBonusListeners::class. '@addCount');
+//        $events->listen(AfterOrderCreatedEvent::class, OrderBonusListeners::class. '@addCount');
 
         //todo 支付之后 统计订单详情
         //$events->listen(AfterOrderPaidEvent::class, OrderBonusListeners::class . '@addBonus');
@@ -56,11 +56,11 @@ class OrderBonusListeners
 //    }
 
 
-    public function addCount(AfterOrderCreatedEvent $event)
+    public function addCount(AfterOrderCreatedImmediatelyEvent $event)
     {
         $orderModel = Order::find($event->getOrderModel()->id);
-//        $this->dispatch(new OrderCountContentJob($orderModel));
-        $this->dispatch((new OrderCountContentJob($orderModel))->delay(10));
+        $this->dispatch(new OrderCountContentJob($orderModel));
+//        $this->dispatch((new OrderCountContentJob($orderModel))->delay(10));
     }
 
     public function updateBonus(AfterOrderReceivedEvent $event)
