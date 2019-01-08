@@ -51,7 +51,11 @@ return [
             'function_validator'=>'relationValidator',
             'function_save'=>'relationSave'
         ],
-
+        'invite_page'=>[
+            'class' => 'app\backend\modules\goods\models\InvitePage',
+            'function_validator'=>'relationValidator',
+            'function_save'=>'relationSave'
+        ],
     ],
     'order' => [
         //订单操作记录
