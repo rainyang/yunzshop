@@ -213,10 +213,13 @@ class PayFactory
                 $className = new \Yunshop\PLdPay\services\PldWithdrawService();
                 break;
             case self::PAY_SEPARATE:
+
+                \Log::info('--------payFactory---------');
                 if (!app('plugins')->isEnabled('separate')) {
                     throw new AppException('插件未开启');
                 }
                 $className = new \Yunshop\Separate\Common\Services\SeparateAccountService();
+
                 break;
             case self::PAY_DIANBANG:
                 if (!app('plugins')->isEnabled('dian-bang-scan')) {
@@ -229,7 +232,7 @@ class PayFactory
             default:
                 $className = null;
         }
-
+        \Log::info('--------payFactory---------$className', print_r(get_class($className,1)));
         return $className;
     }
 
