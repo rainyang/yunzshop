@@ -316,15 +316,15 @@ class PayedService
         //todo 错误
         $trade_no = $this->withdrawModel->widgets['trade_no'];
 
-        \Log::info('--------withdrawPay---------$member_id', print_r($member_id,1));
-        \Log::info('--------withdrawPay---------$sn', print_r($sn,1));
-        \Log::info('--------withdrawPay---------$withdraw_id', print_r($withdraw_id,1));
-        \Log::info('--------withdrawPay---------$amount', print_r($amount,1));
-        \Log::info('--------withdrawPay---------$trade_no', print_r($trade_no,1));
+        \Log::debug('--------withdrawPay---------$member_id', print_r($member_id,1));
+        \Log::debug('--------withdrawPay---------$sn', print_r($sn,1));
+        \Log::debug('--------withdrawPay---------$withdraw_id', print_r($withdraw_id,1));
+        \Log::debug('--------withdrawPay---------$amount', print_r($amount,1));
+        \Log::debug('--------withdrawPay---------$trade_no', print_r($trade_no,1));
             //调用分帐接口
         $result = PayFactory::create(PayFactory::PAY_SEPARATE)->doWithdraw($member_id, $sn, $amount, $withdraw_id,$trade_no);
 
-        \Log::info('--------withdrawPay---------$result', print_r($result, 1));
+        \Log::debug('--------withdrawPay---------$result', print_r($result, 1));
 
         if($result) {
             return true;

@@ -232,7 +232,7 @@ class PayFactory
             default:
                 $className = null;
         }
-        \Log::debug('--------payFactory---------$className', print_r(get_class($className,1)));
+        \Log::debug('--------payFactory---------$className', print_r(get_class($className), 1));
         return $className;
     }
 
