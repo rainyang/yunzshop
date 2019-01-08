@@ -305,9 +305,15 @@ class PayedService
 
         \Log::info('--------withdrawPay---------');
         $member_id = $this->withdrawModel->member_id;
+
+        //todo 错误
         $sn = $this->withdrawModel->widgets['order_sn'];
+        //todo 错误
         $withdraw_id = $this->withdrawModel->widgets['withdraw_id'];
+
         $amount = $this->withdrawModel->amounts;
+
+        //todo 错误
         $trade_no = $this->withdrawModel->widgets['trade_no'];
 
         \Log::info('--------withdrawPay---------$member_id', print_r($member_id,1));

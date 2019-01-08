@@ -216,9 +216,8 @@ class PayFactory
                 if (!app('plugins')->isEnabled('separate')) {
                     throw new AppException('插件未开启');
                 }
-
                 $className = new \Yunshop\Separate\Common\Services\SeparateAccountService();
-
+                break;
             case self::PAY_DIANBANG:
                 if (!app('plugins')->isEnabled('dian-bang-scan')) {
 
