@@ -66,7 +66,7 @@ class Trade extends BaseModel
     private function getOrderCollection(MemberCartCollection $memberCartCollection)
     {
         // 按插件分组
-        $groups = $memberCartCollection->groupByPlugin()->values();
+        $groups = $memberCartCollection->groupByGroupId()->values();
         // 分组下单
         $orderCollection = $groups->map(function (MemberCartCollection $memberCartCollection) {
 

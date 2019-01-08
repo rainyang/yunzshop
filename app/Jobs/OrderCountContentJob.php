@@ -40,8 +40,8 @@ class OrderCountContentJob implements  ShouldQueue
             'status' => $this->orderModel->status,
             'plugin_id' => $this->orderModel->plugin_id,
             'dispatch_price' => $this->orderModel->dispatch_price,
-//            'shop_name' => $this->orderModel->shop_name,
-//            'cost_price' => $this->orderModel->cost_amount,
+            'shop_name' => $this->orderModel->shop_name,
+            'cost_price' => $this->orderModel->cost_amount,
             'day_time' => Carbon::today()->getTimestamp(),
         ];
         if ($this->orderModel->is_plugin) {
@@ -54,8 +54,8 @@ class OrderCountContentJob implements  ShouldQueue
         $data['parent_name'] = $parent['nickname'];
 
         //todo 记录订单商家和订单成本
-        $data['shop_name'] = $this->shopName();
-        $data['cost_price'] = $this->costPrice();
+//        $data['shop_name'] = $this->shopName();
+//        $data['cost_price'] = $this->costPrice();
 
         OrderIncomeCount::create($data);
         return true;

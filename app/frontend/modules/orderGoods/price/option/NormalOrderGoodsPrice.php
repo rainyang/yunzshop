@@ -1,6 +1,7 @@
 <?php
 
 namespace app\frontend\modules\orderGoods\price\option;
+use app\frontend\models\orderGoods\PreOrderGoodsDiscount;
 
 /**
  * Created by PhpStorm.
@@ -35,9 +36,11 @@ class NormalOrderGoodsPrice extends BaseOrderGoodsPrice
         }
         // 商品销售价 - 等级优惠金额 - 单品满减优惠金额
         $this->price = $this->getGoodsPrice();
-        $this->price -= $this->getVipDiscountAmount();
+
+        $this->price -= $this->getVipDiscountAmount($this->price);
 
         $this->price = max($this->price, 0);
+
         return $this->price;
     }
 
@@ -73,7 +76,7 @@ class NormalOrderGoodsPrice extends BaseOrderGoodsPrice
 
         if ($this->deductionCount != $this->orderGoods->getOrderGoodsDeductions()->count()) {
             $this->deductionCount = $this->orderGoods->getOrderGoodsDeductions()->count();
-            trace_log()->deduction('订单抵扣',"订单商品计算所有已用的抵扣金额");
+            trace_log()->deduction('订单抵扣', "订单商品计算所有已用的抵扣金额");
             $this->deductionAmount = $this->orderGoods->getOrderGoodsDeductions()->getUsedPoint()->getMoney();
 
         }
@@ -125,9 +128,27 @@ class NormalOrderGoodsPrice extends BaseOrderGoodsPrice
      * 商品的会员等级折扣金额
      * @return mixed
      */
-    public function getVipDiscountAmount()
+    protected function _getVipDiscountAmount($price)
     {
-        return $this->goods()->getVipDiscountAmount() * $this->orderGoods->total;
+
+        return $this->goods()->getVipDiscountAmount($price/$this->orderGoods->total) * $this->orderGoods->total;
     }
 
+    /**
+     * 商品的会员等级折扣金额(缓存)
+     * @return mixed
+     */
+    public function getVipDiscountAmount($price)
+    {
+        if (!isset($this->vipDiscountAmount)) {
+            $this->vipDiscountAmount = $this->_getVipDiscountAmount($price);
+            $preOrderGoodsDiscount = new PreOrderGoodsDiscount([
+                'discount_code' => $this->goods()->vipDiscountLog->code,
+                'amount' => $this->vipDiscountAmount ?: 0,
+                'name' => $this->goods()->vipDiscountLog->name,
+            ]);
+            $preOrderGoodsDiscount->setOrderGoods($this->orderGoods);
+        }
+        return $this->vipDiscountAmount;
+    }
 }

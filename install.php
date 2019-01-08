@@ -1,6 +1,19 @@
 <?php
 global $_W;
 
+$create_dir = [
+    '../addons/yun_shop/bootstrap/cache',
+    '../addons/yun_shop/storage/framework/views',
+    '../addons/yun_shop/storage/logs/error',
+    '../addons/yun_shop/storage/logs/debug'
+];
+
+foreach ($create_dir as $dir_path) {
+    if (!is_dir($dir_path)) {
+        @mkdir($dir_path, 0755, true);
+    }
+}
+
 $sql = "
 DROP TABLE IF EXISTS ". tablename('yz_account_open_config').";
 

@@ -11,6 +11,8 @@ namespace app\common\models;
 class Address extends BaseModel
 {
 
+    public $timestamps = false;
+
     public $table = 'yz_address';
 
     protected $guarded = [''];

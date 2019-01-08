@@ -102,7 +102,7 @@ return [
 //        'item'              => 'log-viewer',
 //        'parents'           => ['system',],
 //    ],
-    'shop_upgrade'      => [
+/*    'shop_upgrade'      => [
         'name'              => '系统升级',
         'url'               => 'update.index',
         'url_params'        => '',
@@ -112,5 +112,5 @@ return [
         'sort'              => '5',
         'item'              => 'shop_upgrade',
         'parents'           => ['system',],
-    ]
+    ]*/
 ];

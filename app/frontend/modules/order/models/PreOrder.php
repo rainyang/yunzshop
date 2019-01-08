@@ -80,6 +80,7 @@ class PreOrder extends Order
      * @param OrderGoodsCollection $orderGoods
      * @param Request|null $request
      * @return $this
+     * @throws \app\common\exceptions\ShopException
      */
     public function init(Member $member, OrderGoodsCollection $orderGoods, Request $request = null)
     {
@@ -93,7 +94,7 @@ class PreOrder extends Order
          */
         $this->afterCreating();
 
-        $this->intAttributes();
+        $this->initAttributes();
         $this->initOrderGoods();
         return $this;
     }
@@ -203,13 +204,13 @@ class PreOrder extends Order
     /**
      * 初始化属性
      */
-    protected function intAttributes()
+    protected function initAttributes()
     {
         $attributes = array(
             'price' => $this->getPrice(),//订单最终支付价格
             'order_goods_price' => $this->getOrderGoodsPrice(),//订单商品成交价
             'goods_price' => $this->getGoodsPrice(),//订单商品原价
-            'cost_amount' => $this->getGoodsPrice(),//订单商品原价
+            'cost_amount' => $this->getCostPrice(),//订单商品原价
             'discount_price' => $this->getDiscountAmount(),//订单优惠金额
             'deduction_price' => $this->getDeductionAmount(),//订单抵扣金额
             'dispatch_price' => $this->getDispatchAmount(),//订单运费
@@ -217,7 +218,7 @@ class PreOrder extends Order
             'goods_total' => $this->getGoodsTotal(),//订单商品总数
             'order_sn' => OrderService::createOrderSN(),//订单编号
             'create_time' => time(),
-            'note' => $this->getRequest()->input('note', ''),//是否是虚拟商品订单
+            'note' => $this->getParams('note'),//订单备注
             'shop_name' => $this->getShopName(),//是否是虚拟商品订单
         );
 
@@ -225,6 +226,16 @@ class PreOrder extends Order
         $attributes = array_merge($this->getAttributes(), $attributes);
         $this->setRawAttributes($attributes);
 
+    }
+
+    public function getCostPrice()
+    {
+        //累加所有商品数量
+        $result = $this->orderGoods->sum(function (PreOrderGoods $aOrderGoods) {
+            return $aOrderGoods->goods_cost_price;
+        });
+
+        return $result;
     }
 
     /**
@@ -253,12 +264,14 @@ class PreOrder extends Order
 
     /**
      * 计算订单成交价格
+     * 外部调用只计算一次,方法内部计算过程中递归调用会返回计算过程中的金额
      * @return int
      */
     protected function getPrice()
     {
         if (array_key_exists('price', $this->attributes)) {
-            // 一次计算内避免循环调用,返回计算过程中的价格
+            // 外部调用只计算一次,方法内部计算过程中递归调用会返回计算过程中的金额
+
             return $this->price;
         }
 

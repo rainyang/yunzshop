@@ -7,7 +7,16 @@
  */
 return [
     [
+        'id'=> 31,
+        'name'=>'cashier'
+    ],
+    [
+        'id'=> 32,
+        'name'=>'store'
+    ],
+    [
         'id'=>92,
         'name'=>'supplier'
-    ]
+    ],
+
 ];
