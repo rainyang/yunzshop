@@ -10,12 +10,17 @@ namespace app\backend\widgets\goods;
 
 
 use app\common\components\Widget;
+use app\common\models\goods\InvitePage;
 
 class InvitePageWidget extends Widget
 {
     public function run()
     {
-        $set = request()->setdata;
+        $goods_id = request()->id;
+        $invitePageModel = InvitePage::getDataByGoodsId($goods_id);
 
+        return view('goods.widgets.invite-page',[
+            'data' => $invitePageModel
+        ])->render();
     }
 }
