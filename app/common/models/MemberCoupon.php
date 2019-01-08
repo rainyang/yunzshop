@@ -14,6 +14,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int coupon_id
  * @property Carbon get_time
  * @property int id
+ * @property int uid
+ * @property Member member
  */
 class MemberCoupon extends BaseModel
 {
@@ -108,7 +110,12 @@ class MemberCoupon extends BaseModel
         ];
     }
 
-
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function member(){
+        return $this->belongsTo(Member::class,'uid');
+    }
     public function belongsToCoupon()
     {
         return $this->belongsTo('app\common\models\Coupon', 'coupon_id', 'id');

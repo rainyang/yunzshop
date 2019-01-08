@@ -62,6 +62,7 @@ use Yunshop\TeamDividend\models\TeamDividendAgencyModel;
  * @property string wechat
  * @property string yz_openid
  * @property string invite_code
+ * @property MemberLevel level
  */
 class MemberShopInfo extends BaseModel
 {
@@ -520,6 +521,28 @@ class MemberShopInfo extends BaseModel
 
         if($data > 0){
             return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * 查询邀请码会员
+     *
+     * @return mixed
+     */
+    public function getInviteCodeMember($inviteCode)
+    {
+        $member = self::select('member_id')
+            ->where('invite_code', $inviteCode)
+            ->with(['hasOneMember' => function($q){
+                $q->select('uid', 'nickname', 'avatar', 'realname');
+            }])
+            ->uniacid()
+            ->first();
+
+        if($member){
+            return $member;
         }else{
             return false;
         }

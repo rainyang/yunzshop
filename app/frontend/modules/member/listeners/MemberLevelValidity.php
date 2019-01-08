@@ -18,6 +18,17 @@ class MemberLevelValidity
 
     public $uniacid;
 
+
+    public function subscribe()
+    {
+        \Event::listen('cron.collectJobs', function () {
+            \Cron::add('Member-validity', '*/10 * * * * *', function () {
+                $this->handle();
+                return;
+            });
+        });
+    }
+
     public function handle()
     {
         \Log::info('会员等级到期');
@@ -64,16 +75,7 @@ class MemberLevelValidity
         MemberShopInfo::uniacid()
             ->where('level_id', '!=', '0')
             ->where('validity', 0)
-            ->update(['level_id' => 0]);
+            ->update(['level_id' => 0, 'downgrade_at' => time()]);
     }
 
-    public function subscribe()
-    {
-        \Event::listen('cron.collectJobs', function () {
-            \Cron::add('Member-validity', '*/10 * * * * *', function () {
-                $this->handle();
-                return;
-            });
-        });
-    }
 }

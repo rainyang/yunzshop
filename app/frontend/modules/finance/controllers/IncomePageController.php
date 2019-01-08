@@ -58,10 +58,15 @@ class IncomePageController extends ApiController
      */
     private function getPageInfo()
     {
-        $mrytWithdraw = 0;
+        $autoWithdraw = 0;
         if (app('plugins')->isEnabled('mryt')) {
             $uid = \YunShop::app()->getMemberId();
-            $mrytWithdraw = (new \Yunshop\Mryt\services\AutoWithdrawService())->isWithdraw($uid);
+            $autoWithdraw = (new \Yunshop\Mryt\services\AutoWithdrawService())->isWithdraw($uid);
+        }
+
+        if (app('plugins')->isEnabled('team-dividend')) {
+            $uid = \YunShop::app()->getMemberId();
+            $autoWithdraw = (new \Yunshop\TeamDividend\services\AutoWithdrawService())->isWithdraw($uid);
         }
 
         $member_id = \YunShop::app()->getMemberId();
@@ -76,7 +81,7 @@ class IncomePageController extends ApiController
             'member_id' => $memberModel->uid,
             'grand_total' => $this->getGrandTotal(),
             'usable_total' => $this->getUsableTotal(),
-            'auto_withdraw' => $mrytWithdraw,
+            'auto_withdraw' => $autoWithdraw,
         ];
     }
 
