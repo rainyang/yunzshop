@@ -16,6 +16,9 @@
 		<handles>
 			<message type="text" />
 		</handles>
+		<supports>
+		    <item type="app" /> 
+		</supports>
 		<rule embed="false" />
 		<card embed="false" />
 	</platform>

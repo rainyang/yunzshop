@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddIndexToOrderGoodsTable extends Migration
+class AddPluginIdToYzCoupon extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,12 @@ class AddIndexToOrderGoodsTable extends Migration
      */
     public function up()
     {
-
-        if (Schema::hasTable('yz_order_goods')) {
-            try{
-                Schema::table('yz_order_goods', function (Blueprint $table) {
-                    $table->index('order_id');
-                    $table->index('goods_id');
+        if (Schema::hasTable('yz_coupon')) {
+            if (!Schema::hasColumn('yz_coupon', 'plugin_id')) {
+                Schema::table('yz_coupon', function (Blueprint $table) {
+                    $table->integer('plugin_id')->default(0);
                 });
-            }catch (Exception $e){
-
             }
-
         }
     }
 
