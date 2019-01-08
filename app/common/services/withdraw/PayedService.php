@@ -302,18 +302,31 @@ class PayedService
 
     private function separateUnionPay()
     {
+
+        \Log::info('--------withdrawPay---------');
         $member_id = $this->withdrawModel->member_id;
         $sn = $this->withdrawModel->widgets['order_sn'];
         $withdraw_id = $this->withdrawModel->widgets['withdraw_id'];
         $amount = $this->withdrawModel->amounts;
         $trade_no = $this->withdrawModel->widgets['trade_no'];
+
+        \Log::info('--------withdrawPay---------$member_id', print_r($member_id,1));
+        \Log::info('--------withdrawPay---------$sn', print_r($sn,1));
+        \Log::info('--------withdrawPay---------$withdraw_id', print_r($withdraw_id,1));
+        \Log::info('--------withdrawPay---------$amount', print_r($amount,1));
+        \Log::info('--------withdrawPay---------$trade_no', print_r($trade_no,1));
             //调用分帐接口
         $result = PayFactory::create(PayFactory::PAY_SEPARATE)->doWithdraw($member_id, $sn, $amount, $withdraw_id,$trade_no);
+
+        \Log::info('--------withdrawPay---------$result', print_r($result, 1));
+
         if($result) {
             return true;
         }
+
+        return false;
         //TODO  对接结果进行判断
-        throw new ShopException("分账失败");
+        //throw new ShopException("分账失败");
     }
 
 
