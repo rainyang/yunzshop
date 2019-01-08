@@ -2692,7 +2692,7 @@ return [
                     ],
                     'remittance_audit_reject'         => [
                         'name'              => '转账审核拒绝',
-                        'url'               => 'remittanceAudit.detail.index',
+                        'url'               => 'remittanceAudit.operation.reject',
                         'url_params'        => '',
                         'permit'            => 1,
                         'menu'              => 0,
