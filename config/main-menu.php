@@ -2698,7 +2698,7 @@ return [
                         'menu'              => 0,
                         'icon'              => 'fa-gear',
                         'sort'              => 0,
-                        'item'              => 'remittanceAudit.operation.reject',
+                        'item'              => 'remittance_audit_reject',
                         'parents'           => ['finance', 'remittance_audit',],
                     ],
                 ]
