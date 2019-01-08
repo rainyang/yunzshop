@@ -8,15 +8,16 @@
 
     <div class="w1200 m0a">
         @include('layouts.tabs')
-        
+
         <div class="rightlist">
             <div id="app"  v-loading="submit_loading">
                 <template>
                     <el-form ref="form" :model="form" :rules="rules" label-width="15%">
                         <el-form-item label="选择分类" prop="classification">
-                            <el-input v-model="form.classification" style="width:60%;" disabled></el-input>
+                            <el-input :value="form.classification" style="width:60%;" disabled></el-input>
                             <el-button type="primary" @click="visDia()">选择分类</el-button>
-                            <el-dialog title="选择分类" :visible.sync="dialogTableVisible">
+                            <el-dialog title="选择分类" :visible.sync="dialogTableVisible" @close="choose()">
+                                <!-- :placeholder="form.classification" -->
                                 <el-select
                                     value-key="id"
                                     @change="change"
@@ -25,7 +26,7 @@
                                     multiple
                                     remote
                                     reserve-keyword
-                                    :placeholder="form.classification"
+                                    
                                     :remote-method="loadCategorys"
                                     :loading="loading"
                                     style="width:100%">
@@ -50,7 +51,7 @@
                         <el-form-item label="折扣类型" prop="type">
                             <el-radio v-model="form.discount_type" :label="1">会员等级</el-radio>
                         </el-form-item>
-                        <el-form-item label="会员折扣方式" prop="method">
+                        <el-form-item label="折扣方式" prop="method">
                             <el-radio v-model="form.discount_method" :label="1">折扣</el-radio>
                             <el-radio v-model="form.discount_method" :label="2">固定金额</el-radio>
                         </el-form-item>
@@ -63,7 +64,7 @@
                                 </el-input>
                             </template>
                         </el-form-item>
-                        
+
                     <el-form-item>
                         <a href="#">
                             <el-button type="success" @click="submitForm('form')">
@@ -81,7 +82,7 @@
             </div>
         </div>
     </div>
-    
+
     <script>
         var vm = new Vue({
         el:"#app",
@@ -90,14 +91,15 @@
                 let member_list = JSON.parse('{!! $levels?:'{}' !!}');
                 let url = JSON.parse('{!! $url !!}');
                 let categoryDiscount = JSON.parse('{!! $categoryDiscount?:'{}' !!}');
-                console.log(categoryDiscount);
+                console.log(categoryDiscount,456);
                 let form ={
                         discount_type:1,
                         discount_method:1,
                         discount_value:[],
+                        category_ids:[],
                         classification:"",
                         search_categorys:"",
-                        ...categoryDiscount
+                        ...categoryDiscount,
                     };
 
                 let classic =[];
@@ -138,32 +140,87 @@
                     },
                 }
             },
-            mounted:function() {
-                console.log("hahah");
+            mounted() {
                 if(this.form.category_ids) {
                     for(var j=0;j<this.form.category_ids.length;j++){
                         this.classic[j] = "[ID:"+this.form.category_ids[j].id+"][分类："+this.form.category_ids[j].name+"]";
                     }
+                    console.log(this.classic)
                 }
                 this.form.classification = this.classic.join(",");
-            },
-            watch: {
-                classic(){
-                    this.search_categorys = this.classic.join(",")
-                }
+                console.log(this.form.classification);
+                this.form.search_categorys = this.form.category_ids;
+                console.log(this.form.search_categorys);
             },
             methods: {
                 change(item){
-                    for(var k=0;k<item.length;k++){
-                        this.classic[k] = "[ID:"+item[k].id+"][分类："+item[k].name+"]";
-                    }
-                    // console.log(this.classic);
+                    console.log(item,"44545");
+                    this.form.category_ids = item;
+                    console.log(this.form.category_ids,123)
+                    // for(var k=0;k<item.length;k++){
+                    //     this.classic[k] = "[ID:"+item[k].id+"][分类："+item[k].name+"]";
+                    // }
+                    
+                    // if(this.form.search_categorys.indexOf(item) == -1){
+                    //     this.form.search_categorys.push(item)
+                    // }
+                    
+                    // const categorys = this.form.search_categorys.map(v => {
+                    //     if(typeof v !== "string" && v.id){
+                    //         delete v.thumb
+                    //         v = {...v};
+                    //         this.form.category_ids.push(v);
+                         
+                    //         return `[ID:${v.id}][分类：${v.name}]`;
+                    //     }
+                    //     return v;
+                    // })
+                   
+                    // // 去重
+                    // this.form.search_categorys = [...new Set(categorys)]
+                    
+                    // this.form.classification = this.form.search_categorys.join(",");
                 },
                 visDia(){
+                    for(var i=0;i<this.form.category_ids.length;i++){
+                        this.form.search_categorys[i]=`[ID:${this.form.category_ids[i].id}][分类：${this.form.category_ids[i].name}]`
+                        // this.form.search_categorys[i] = {id:this.form.category_ids[i].id,name:this.form.category_ids[i].name}
+                    }
                     this.dialogTableVisible=true;
                 },
                 choose(){
                     this.dialogTableVisible=false;
+                    for(let i=0;i<this.form.category_ids.length;i++){
+                        if(typeof this.form.category_ids[i]=='string'){
+                           let ids = parseInt(this.form.category_ids[i].substring(4));
+                           let index = this.form.category_ids[i].lastIndexOf("类");
+                           let cas = this.form.category_ids[i].substring(index+2,this.form.category_ids[i].length-1);
+                           this.form.category_ids[i] = {},
+                           this.form.category_ids[i].id = ids;
+                           this.form.category_ids[i].name = cas;
+                        }
+                    }
+                    // var k=[];
+                    // for(let i=0;i<this.form.category_ids.length-1;i++){
+                    //     for(let j=i+1;j<this.form.category_ids.length;j++){
+                    //         if(this.form.category_ids[i].id == this.form.category_ids[j].id){
+                    //             k.push(j);
+                    //             // this.form.category_ids.splice(j+1,1);
+                    //         }
+                    //     }
+                    //     console.log(k);
+                    //     // this.form.category_ids.splice(k+1,1);
+                    // }
+                    // for(let i=0;i<k.length;i++){
+                    //     this.form.category_ids.splice(k[i],1);
+                    // }
+                    // for(let i=0;i<this.form.category_ids.length-1;i++)
+                     this.classic=[];
+                        for(var j=0;j<this.form.category_ids.length;j++){
+                            console.log(this.form.category_ids)
+                            this.classic[j] = "[ID:"+this.form.category_ids[j].id+"][分类："+this.form.category_ids[j].name+"]";
+                            console.log(this.classic)
+                        }
                     this.form.classification = this.classic.join(",");
                 },
                 goBack() {
@@ -196,11 +253,13 @@
                     this.$refs[formName].validate((valid) => {
                         if (valid) {
                             this.submit_loading = true;
-                            this.$http.post(this.url,{'form_data':this.form}).then(response => {
                                 console.log(this.form);
+                            this.$http.post(this.url,{'form_data':this.form}).then(response => {
+
+                                console.log(response,'131313')
                                 if (response.data.result) {
                                     this.$message({type: 'success',message: '操作成功!'});
-                                    window.location.href='{!! yzWebFullUrl('discount.batch-discount.index') !!}';
+                                     window.location.href='{!! yzWebFullUrl('discount.batch-discount.index') !!}';
                                 } else {
                                     this.$message({message: response.data.msg,type: 'error'});
                                     this.submit_loading = false;
@@ -215,7 +274,7 @@
                         }
                     });
                 },
-                
+
             },
         });
     </script>

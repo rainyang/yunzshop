@@ -93,7 +93,7 @@
                                     @endif
                                 </td>
                                 <td>{{ $row['shop_name'] }}</td>
-                                <td>{{ $row['undividend'] }}</td>
+                                <td>{{ $row['undividend'] ?: '0.00' }}</td>
                                 <td>{{ sprintf("%01.2f",($row->price - $row->cost_price) > 0 ? $row->price - $row->cost_price : '0.00') }}</td>
                                 <td>{{ $row->supplier ?: '0.00' }}</td>
                                 <td>{{ $row->store ?: '0.00' }}</td>
