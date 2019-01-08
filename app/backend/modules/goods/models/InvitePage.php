@@ -15,7 +15,7 @@ class InvitePage extends \app\common\models\goods\InvitePage
 {
     use MessageTrait;
 
-    public function relationSave($goods_id, $data, $operate)
+    public static function relationSave($goods_id, $data, $operate)
     {
         if (!$goods_id) {
             return false;
