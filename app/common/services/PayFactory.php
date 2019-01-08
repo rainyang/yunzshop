@@ -214,7 +214,7 @@ class PayFactory
                 break;
             case self::PAY_SEPARATE:
 
-                \Log::info('--------payFactory---------');
+                \Log::debug('--------payFactory---------');
                 if (!app('plugins')->isEnabled('separate')) {
                     throw new AppException('插件未开启');
                 }
@@ -232,7 +232,7 @@ class PayFactory
             default:
                 $className = null;
         }
-        \Log::info('--------payFactory---------$className', print_r(get_class($className,1)));
+        \Log::debug('--------payFactory---------$className', print_r(get_class($className,1)));
         return $className;
     }
 
