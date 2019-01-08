@@ -219,6 +219,11 @@ class Goods extends BaseModel
         return $this->hasOne('app\common\models\goods\GoodsLimitBuy', 'goods_id', 'id');
     }
 
+    public function hasOneInvitePage()
+    {
+        return $this->hasOne('app\common\models\goods\InvitePage', 'goods_id', 'id');
+    }
+
     public function scopeIsPlugin(self $query)
     {
         return $query->where('is_plugin', 0);
