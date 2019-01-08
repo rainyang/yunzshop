@@ -53,6 +53,11 @@ Route::any('/', function () {
     if (strpos(request()->getRequestUri(), '/addons/') !== false &&
         strpos(request()->getRequestUri(), '/api.php') !== false
     ) {
+        $shop = Setting::get('shop.shop');
+        if (!is_null($shop) && isset($shop['close']) && 1 == $shop['close']) {
+            throw new \app\common\exceptions\AppException('站点已关闭', -1);
+        }
+
         YunShop::parseRoute(request()->input('route'));
         return;
     }
