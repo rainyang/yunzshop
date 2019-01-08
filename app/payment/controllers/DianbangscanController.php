@@ -103,17 +103,18 @@ class DianbangscanController extends PaymentController
 
     public function returnUrl()
     {
-        $trade = \Setting::get('shop.trade');
-
-        if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
-            return redirect($trade['redirect_url'])->send();
-        }
-        \Log::debug('<---------支付成功后返回-------',$_GET);
-        if (0 == $_GET['state'] && $_GET['errorDetail'] == '成功') {
-            redirect(Url::absoluteApp('member/payYes', ['i' => $_GET['billDecs']]))->send();
-        } else {
-            redirect(Url::absoluteApp('member/payErr', ['i' => $_GET['billDecs']]))->send();
-        }
+//        $trade = \Setting::get('shop.trade');
+//
+//        if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
+//            return redirect($trade['redirect_url'])->send();
+//        }
+        \Log::debug('<---------支付成功后返回------->',$_POST);
+//        if (0 == $_GET['state'] && $_GET['errorDetail'] == '成功') {
+//            redirect(Url::absoluteApp('member/payYes', ['i' => $_GET['billDecs']]))->send();
+//        } else {
+//            redirect(Url::absoluteApp('member/payErr', ['i' => $_GET['billDecs']]))->send();
+//        }
+        redirect(Url::absoluteApp('member/payYes', ['i' => $this->parameters['billDesc']]))->send();
     }
 
 
