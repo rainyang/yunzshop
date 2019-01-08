@@ -90,6 +90,7 @@ return [
         'yop' => [
             'driver' => 'local',
             'root' => storage_path('app/public/yop'),
+            'url' => env('APP_URL').'/storage/public/yop',
         ],
 
         'upload' => [
