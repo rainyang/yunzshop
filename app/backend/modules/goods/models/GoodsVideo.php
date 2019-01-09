@@ -36,8 +36,6 @@ class GoodsVideo extends \app\common\models\goods\GoodsVideo
             return $model->delete();
         }
         $attr['goods_id'] = $goodsId;
-        $attr['uniacid'] = \YunShop::app()->uniacid;
-
         //商品视频地址
         $attr['goods_video'] = $data['goods_video'];
 
