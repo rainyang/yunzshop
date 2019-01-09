@@ -247,12 +247,6 @@ class RegisterController extends ApiController
         if (empty($mobile)) {
             return $this->errorJson('请填入手机号');
         }
-
-        $info = MemberShopInfo::getUserInfo($mobile);
-
-        if (!empty($info)) {
-            return $this->errorJson('该手机号已被注册！不能获取验证码');
-        }
         $code = rand(1000, 9999);
 
         Session::set(codetime, time());
@@ -558,4 +552,23 @@ class RegisterController extends ApiController
 
         return $this->successJson('ok', $data);
     }
+    public function chkRegister()
+    {
+        $member = Setting::get('shop.member');
+        $shop_reg_close = !empty($member['get_register']) ? $member['get_register'] : 0;
+        $app_reg_close  = 0;
+        $msg = $member["Close_describe"] ?: '注册已关闭';//关闭原因
+        $list=[];
+        $list['state']= $shop_reg_close;
+        if (!is_null($app_set = \Setting::get('shop_app.pay')) && 0 == $app_set['phone_oauth']) {
+            $app_reg_close = 1;
+        }
+
+        if ((!$shop_reg_close && !Client::is_app()) || ($app_reg_close && Client::is_app())) {
+            $list['reason']=$msg;
+            return $this->errorJson('失败',$list);
+        }
+        return $this->successJson('ok',$list);
+    }
+
 }

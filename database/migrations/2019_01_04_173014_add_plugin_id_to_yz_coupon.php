@@ -1,11 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Schema;
-use \app\common\models\Flow;
-use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
-class AddNoteToProcessTable extends Migration
+class AddPluginIdToYzCoupon extends Migration
 {
     /**
      * Run the migrations.
@@ -14,16 +13,14 @@ class AddNoteToProcessTable extends Migration
      */
     public function up()
     {
-        if (Schema::hasTable('yz_process')) {
-            if (!Schema::hasColumn('yz_process', 'note')) {
-                Schema::table('yz_process', function (Blueprint $table) {
-                    $table->text('note')->nullable();
+        if (Schema::hasTable('yz_coupon')) {
+            if (!Schema::hasColumn('yz_coupon', 'plugin_id')) {
+                Schema::table('yz_coupon', function (Blueprint $table) {
+                    $table->integer('plugin_id')->default(0);
                 });
             }
         }
     }
-
-
 
     /**
      * Reverse the migrations.
@@ -32,6 +29,6 @@ class AddNoteToProcessTable extends Migration
      */
     public function down()
     {
-
+        //
     }
 }

@@ -335,13 +335,19 @@ class FixController extends BaseController
     {
         $order_sn = \YunShop::request()->order_sn;
         $order = Order::uniacid()->where('order_sn', $order_sn)->first();
-        $result = (new \Yunshop\Commission\Listener\OrderCreatedListener())->handler($order);
         $commission_order = CommissionOrder::uniacid()->where('ordertable_id', $order->id)->first();
         if ($commission_order) {
-            echo '成功';
+            $result = (new \Yunshop\Commission\Listener\OrderCreatedListener())->handler($order);
+            $commission_order = CommissionOrder::uniacid()->where('ordertable_id', $order->id)->first();
+            if ($commission_order) {
+                echo '成功';
+            } else {
+                echo '不成功，请检查设置是否正确，一定绝对必须要检查清楚！！！！！！如果正确？！那就服务器有问题，非常难受';
+            }
         } else {
-            echo '不成功，请检查配置是否正确，正确？！！！恭喜新增一个拥有垃圾服务器的客户，技术已死';
+            echo '已有这条分红';
         }
+
 
     }
 
@@ -349,13 +355,19 @@ class FixController extends BaseController
     {
         $order_sn = \YunShop::request()->order_sn;
         $order = Order::uniacid()->where('order_sn', $order_sn)->first();
-        (new \Yunshop\TeamDividend\Listener\OrderCreatedListener())->handle($order);
         $team_order = TeamDividendModel::uniacid()->where('order_sn', $order_sn)->first();
-        if ($team_order) {
-            echo '成功';
+        if (!$team_order) {
+            (new \Yunshop\TeamDividend\Listener\OrderCreatedListener())->handle($order);
+            $team_order = TeamDividendModel::uniacid()->where('order_sn', $order_sn)->first();
+            if ($team_order) {
+                echo '成功';
+            } else {
+                echo '不成功，请检查设置是否正确，一定绝对必须要检查清楚！！！！！！如果正确？！那就服务器有问题，非常难受';
+            }
         } else {
-            echo '不成功，请检查配置是否正确，正确？！！！恭喜新增一个拥有垃圾服务器的客户，技术已死';
+            echo '已有这条分红';
         }
+
     }
 
 }
