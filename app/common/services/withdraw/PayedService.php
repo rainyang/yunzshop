@@ -305,15 +305,11 @@ class PayedService
 
         \Log::debug('--------尝试打款withdrawPay---------');
         $member_id = $this->withdrawModel->member_id;
-
-        //todo 错误
         $sn = $this->withdrawModel->separate['order_sn'];
-        //todo 错误
         $withdraw_id = $this->withdrawModel->separate['withdraw_id'];
 
         $amount = $this->withdrawModel->amounts;
 
-        //todo 错误
         $trade_no = $this->withdrawModel->separate['trade_no'];
 
         \Log::debug('--------withdrawPay1---------$member_id', print_r($member_id,1));
