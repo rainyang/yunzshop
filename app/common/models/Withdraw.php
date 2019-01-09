@@ -335,7 +335,7 @@ class Withdraw extends BaseModel
 
 
 
-    public $widgets = [];
+    public $separate = [];
 
     public $attributes = [];
 
