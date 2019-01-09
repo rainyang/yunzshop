@@ -15,9 +15,7 @@ foreach ($create_dir as $dir_path) {
 }
 
 $sql = "
-DROP TABLE IF EXISTS ". tablename('yz_account_open_config').";
-
-CREATE TABLE ". tablename('yz_account_open_config')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_account_open_config')." (
   `config_id` int(11) NOT NULL,
   `uniacid` int(11) NOT NULL DEFAULT '0',
   `app_key` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -34,9 +32,7 @@ CREATE TABLE ". tablename('yz_account_open_config')." (
 # Dump of table ims_yz_address
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_address').";
-
-CREATE TABLE ". tablename('yz_address')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_address')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `areaname` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `parentid` int(11) DEFAULT NULL,
@@ -49,9 +45,7 @@ CREATE TABLE ". tablename('yz_address')." (
 # Dump of table ims_yz_balance
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_balance').";
-
-CREATE TABLE ". tablename('yz_balance')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_balance')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT NULL,
   `member_id` int(11) DEFAULT NULL,
@@ -74,9 +68,7 @@ CREATE TABLE ". tablename('yz_balance')." (
 # Dump of table ims_yz_balance_recharge
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_balance_recharge').";
-
-CREATE TABLE ". tablename('yz_balance_recharge')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_balance_recharge')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT NULL,
   `member_id` int(11) DEFAULT NULL,
@@ -96,9 +88,7 @@ CREATE TABLE ". tablename('yz_balance_recharge')." (
 # Dump of table ims_yz_balance_transfer
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_balance_transfer').";
-
-CREATE TABLE ". tablename('yz_balance_transfer')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_balance_transfer')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT NULL,
   `transferor` int(11) DEFAULT NULL,
@@ -115,9 +105,7 @@ CREATE TABLE ". tablename('yz_balance_transfer')." (
 # Dump of table ims_yz_brand
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_brand').";
-
-CREATE TABLE ". tablename('yz_brand')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_brand')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL,
   `name` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '',
@@ -136,9 +124,7 @@ CREATE TABLE ". tablename('yz_brand')." (
 # Dump of table ims_yz_category
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_category').";
-
-CREATE TABLE ". tablename('yz_category')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_category')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
   `name` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -169,9 +155,7 @@ CREATE TABLE ". tablename('yz_category')." (
 # Dump of table ims_yz_comment
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_comment').";
-
-CREATE TABLE ". tablename('yz_comment')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_comment')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL DEFAULT '0',
   `order_id` int(11) DEFAULT '0',
@@ -201,9 +185,7 @@ CREATE TABLE ". tablename('yz_comment')." (
 # Dump of table ims_yz_coupon
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_coupon').";
-
-CREATE TABLE ". tablename('yz_coupon')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_coupon')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
   `cat_id` int(11) DEFAULT '0',
@@ -269,9 +251,7 @@ CREATE TABLE ". tablename('yz_coupon')." (
 # Dump of table ims_yz_coupon_category
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_coupon_category').";
-
-CREATE TABLE ". tablename('yz_coupon_category')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_coupon_category')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
   `name` varchar(255) DEFAULT '',
@@ -288,9 +268,7 @@ CREATE TABLE ". tablename('yz_coupon_category')." (
 # Dump of table ims_yz_coupon_log
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_coupon_log').";
-
-CREATE TABLE ". tablename('yz_coupon_log')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_coupon_log')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
   `logno` varchar(255) DEFAULT '',
@@ -317,9 +295,7 @@ CREATE TABLE ". tablename('yz_coupon_log')." (
 # Dump of table ims_yz_dispatch
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_dispatch').";
-
-CREATE TABLE ". tablename('yz_dispatch')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_dispatch')." (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT NULL,
   `dispatch_name` varchar(50) DEFAULT NULL COMMENT '配送模板名称',
@@ -350,9 +326,7 @@ CREATE TABLE ". tablename('yz_dispatch')." (
 # Dump of table ims_yz_dispatch_type
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_dispatch_type').";
-
-CREATE TABLE ". tablename('yz_dispatch_type')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_dispatch_type')." (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL DEFAULT '',
   `plugin` int(11) NOT NULL,
@@ -364,9 +338,7 @@ CREATE TABLE ". tablename('yz_dispatch_type')." (
 # Dump of table ims_yz_goods
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_goods').";
-
-CREATE TABLE ". tablename('yz_goods')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_goods')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL DEFAULT '0',
   `brand_id` int(11) NOT NULL,
@@ -416,9 +388,7 @@ CREATE TABLE ". tablename('yz_goods')." (
 # Dump of table ims_yz_goods_area
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_goods_area').";
-
-CREATE TABLE ". tablename('yz_goods_area')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_goods_area')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `goods_id` int(11) NOT NULL,
   `area_id` int(11) NOT NULL,
@@ -431,9 +401,7 @@ CREATE TABLE ". tablename('yz_goods_area')." (
 # Dump of table ims_yz_goods_bonus
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_goods_bonus').";
-
-CREATE TABLE ". tablename('yz_goods_bonus')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_goods_bonus')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `goods_id` int(11) NOT NULL,
   `bonus_money` int(11) DEFAULT '0',
@@ -446,9 +414,7 @@ CREATE TABLE ". tablename('yz_goods_bonus')." (
 # Dump of table ims_yz_goods_category
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_goods_category').";
-
-CREATE TABLE ". tablename('yz_goods_category')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_goods_category')." (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `goods_id` int(11) DEFAULT NULL,
   `category_id` int(11) DEFAULT NULL,
@@ -465,9 +431,7 @@ CREATE TABLE ". tablename('yz_goods_category')." (
 # Dump of table ims_yz_goods_discount
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_goods_discount').";
-
-CREATE TABLE ". tablename('yz_goods_discount')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_goods_discount')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `goods_id` int(11) NOT NULL,
   `level_discount_type` tinyint(1) NOT NULL,
@@ -486,9 +450,7 @@ CREATE TABLE ". tablename('yz_goods_discount')." (
 # Dump of table ims_yz_goods_discount_detail
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_goods_discount_detail').";
-
-CREATE TABLE ". tablename('yz_goods_discount_detail')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_goods_discount_detail')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `discount_id` int(11) NOT NULL,
   `level_id` int(11) DEFAULT NULL,
@@ -503,9 +465,7 @@ CREATE TABLE ". tablename('yz_goods_discount_detail')." (
 # Dump of table ims_yz_goods_dispatch
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_goods_dispatch').";
-
-CREATE TABLE ". tablename('yz_goods_dispatch')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_goods_dispatch')." (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `goods_id` int(11) NOT NULL,
   `dispatch_type` tinyint(1) NOT NULL DEFAULT '1',
@@ -524,9 +484,7 @@ CREATE TABLE ". tablename('yz_goods_dispatch')." (
 # Dump of table ims_yz_goods_diyform
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_goods_diyform').";
-
-CREATE TABLE ". tablename('yz_goods_diyform')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_goods_diyform')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `good_id` int(11) NOT NULL,
   `diyform_id` int(11) DEFAULT NULL,
@@ -540,9 +498,7 @@ CREATE TABLE ". tablename('yz_goods_diyform')." (
 # Dump of table ims_yz_goods_level_returns
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_goods_level_returns').";
-
-CREATE TABLE ". tablename('yz_goods_level_returns')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_goods_level_returns')." (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `good_return_id` int(11) NOT NULL,
   `level_type` tinyint(3) NOT NULL DEFAULT '1',
@@ -557,9 +513,7 @@ CREATE TABLE ". tablename('yz_goods_level_returns')." (
 # Dump of table ims_yz_goods_notices
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_goods_notices').";
-
-CREATE TABLE ". tablename('yz_goods_notices')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_goods_notices')." (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `goods_id` int(11) NOT NULL,
   `uid` int(11) DEFAULT NULL,
@@ -573,9 +527,7 @@ CREATE TABLE ". tablename('yz_goods_notices')." (
 # Dump of table ims_yz_goods_option
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_goods_option').";
-
-CREATE TABLE ". tablename('yz_goods_option')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_goods_option')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
   `goods_id` int(10) DEFAULT '0',
@@ -607,9 +559,7 @@ CREATE TABLE ". tablename('yz_goods_option')." (
 # Dump of table ims_yz_goods_param
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_goods_param').";
-
-CREATE TABLE ". tablename('yz_goods_param')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_goods_param')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
   `goods_id` int(10) DEFAULT '0',
@@ -630,9 +580,7 @@ CREATE TABLE ". tablename('yz_goods_param')." (
 # Dump of table ims_yz_goods_privilege
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_goods_privilege').";
-
-CREATE TABLE ". tablename('yz_goods_privilege')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_goods_privilege')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `goods_id` int(11) NOT NULL,
   `show_levels` text COLLATE utf8mb4_unicode_ci,
@@ -659,9 +607,7 @@ CREATE TABLE ". tablename('yz_goods_privilege')." (
 # Dump of table ims_yz_goods_return
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_goods_return').";
-
-CREATE TABLE ". tablename('yz_goods_return')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_goods_return')." (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `good_id` int(11) NOT NULL,
   `is_level_return` tinyint(3) NOT NULL DEFAULT '0',
@@ -678,9 +624,7 @@ CREATE TABLE ". tablename('yz_goods_return')." (
 # Dump of table ims_yz_goods_sale
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_goods_sale').";
-
-CREATE TABLE ". tablename('yz_goods_sale')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_goods_sale')." (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `goods_id` int(11) NOT NULL,
   `max_point_deduct` int(11) DEFAULT '0',
@@ -700,9 +644,7 @@ CREATE TABLE ". tablename('yz_goods_sale')." (
 # Dump of table ims_yz_goods_share
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_goods_share').";
-
-CREATE TABLE ". tablename('yz_goods_share')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_goods_share')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `goods_id` int(11) NOT NULL,
   `need_follow` tinyint(1) DEFAULT NULL,
@@ -723,9 +665,7 @@ CREATE TABLE ". tablename('yz_goods_share')." (
 # Dump of table ims_yz_goods_spec
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_goods_spec').";
-
-CREATE TABLE ". tablename('yz_goods_spec')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_goods_spec')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
   `goods_id` int(11) DEFAULT '0',
@@ -749,9 +689,7 @@ CREATE TABLE ". tablename('yz_goods_spec')." (
 # Dump of table ims_yz_goods_spec_item
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_goods_spec_item').";
-
-CREATE TABLE ". tablename('yz_goods_spec_item')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_goods_spec_item')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
   `specid` int(11) DEFAULT '0',
@@ -776,9 +714,7 @@ CREATE TABLE ". tablename('yz_goods_spec_item')." (
 # Dump of table ims_yz_member
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_member').";
-
-CREATE TABLE ". tablename('yz_member')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_member')." (
   `member_id` int(11) NOT NULL,
   `uniacid` int(11) NOT NULL,
   `parent_id` int(11) NOT NULL DEFAULT '0',
@@ -815,9 +751,7 @@ CREATE TABLE ". tablename('yz_member')." (
 # Dump of table ims_yz_member_app_wechat
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_member_app_wechat').";
-
-CREATE TABLE ". tablename('yz_member_app_wechat')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_member_app_wechat')." (
   `app_wechat_id` int(11) NOT NULL,
   `uniacid` int(11) NOT NULL,
   `member_id` int(11) NOT NULL,
@@ -836,9 +770,7 @@ CREATE TABLE ". tablename('yz_member_app_wechat')." (
 # Dump of table ims_yz_member_cart
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_member_cart').";
-
-CREATE TABLE ". tablename('yz_member_cart')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_member_cart')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `member_id` int(11) NOT NULL,
   `uniacid` int(11) NOT NULL,
@@ -856,9 +788,7 @@ CREATE TABLE ". tablename('yz_member_cart')." (
 # Dump of table ims_yz_member_coupon
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_member_coupon').";
-
-CREATE TABLE ". tablename('yz_member_coupon')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_member_coupon')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
   `uid` varchar(255) DEFAULT '',
@@ -881,9 +811,7 @@ CREATE TABLE ". tablename('yz_member_coupon')." (
 # Dump of table ims_yz_member_favorite
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_member_favorite').";
-
-CREATE TABLE ". tablename('yz_member_favorite')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_member_favorite')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `member_id` int(11) NOT NULL,
   `uniacid` int(11) NOT NULL,
@@ -899,9 +827,7 @@ CREATE TABLE ". tablename('yz_member_favorite')." (
 # Dump of table ims_yz_member_group
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_member_group').";
-
-CREATE TABLE ". tablename('yz_member_group')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_member_group')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL,
   `group_name` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -917,9 +843,7 @@ CREATE TABLE ". tablename('yz_member_group')." (
 # Dump of table ims_yz_member_history
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_member_history').";
-
-CREATE TABLE ". tablename('yz_member_history')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_member_history')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `member_id` int(11) NOT NULL,
   `uniacid` int(11) NOT NULL,
