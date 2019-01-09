@@ -58,7 +58,20 @@ class GoodsPosterController extends ApiController
             return $this->errorJson('请传入正确参数.');
         }
 
-        $this->shopSet = \Setting::get('shop.shop');
+        if (empty($this->storeid)) {
+            
+            $this->shopSet = \Setting::get('shop.shop');
+        
+        } else {
+
+            if (app('plugins')->isEnabled('store-cashier')) {
+                
+                $store = \app\common\models\Store::find($this->storeid);
+                $this->shopSet['name'] = $store->store_name;
+                $this->shopSet['logo'] = $store->thumb;
+            }
+
+        }
 
 
         //$this->goodsModel = Goods::uniacid()->with('hasOneShare')->where('plugin_id', 0)->where('status', 1)->find($id);
