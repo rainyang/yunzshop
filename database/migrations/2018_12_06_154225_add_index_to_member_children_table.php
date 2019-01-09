@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddIndexToOrderGoodsTable extends Migration
+class AddIndexToMemberChildrenTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,11 +14,13 @@ class AddIndexToOrderGoodsTable extends Migration
     public function up()
     {
 
-        if (Schema::hasTable('yz_order_goods')) {
-            Schema::table('yz_order_goods', function (Blueprint $table) {
-                $table->index('order_id');
-                $table->index('goods_id');
-            });
+        if (Schema::hasTable('yz_member_children')) {
+            try {
+                Schema::table('yz_member_children', function (Blueprint $table) {
+                    $table->index('child_id');
+                });
+            } catch (Exception $e) {
+            }
         }
     }
 

@@ -7,6 +7,7 @@
  */
 
 return [
-    'checkUrl'    => env('UPDATE_CHECK_URL','http://yun.yunzshop.com/update'),
-    'registerUrl' => env('REGISTER_CHECK_URL','http://yun.yunzshop.com/register'),
+    'checkUrl'    => env('UPDATE_CHECK_URL', 'http://yun.yunzshop.com/update'),
+    'registerUrl' => env('REGISTER_CHECK_URL', 'http://yun.yunzshop.com/register'),
+    'proAuthUrl'  => env('REGISTER_CHECK_URL', 'http://yun.yunzshop.com/register'),
 ];
