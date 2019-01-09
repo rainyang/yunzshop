@@ -303,7 +303,7 @@ class PayedService
     private function separateUnionPay()
     {
 
-        \Log::info('--------withdrawPay---------');
+        \Log::debug('--------尝试打款withdrawPay---------');
         $member_id = $this->withdrawModel->member_id;
 
         //todo 错误
@@ -316,11 +316,11 @@ class PayedService
         //todo 错误
         $trade_no = $this->withdrawModel->widgets['trade_no'];
 
-        \Log::debug('--------withdrawPay---------$member_id', print_r($member_id,1));
-        \Log::debug('--------withdrawPay---------$sn', print_r($sn,1));
-        \Log::debug('--------withdrawPay---------$withdraw_id', print_r($withdraw_id,1));
-        \Log::debug('--------withdrawPay---------$amount', print_r($amount,1));
-        \Log::debug('--------withdrawPay---------$trade_no', print_r($trade_no,1));
+        \Log::debug('--------withdrawPay1---------$member_id', print_r($member_id,1));
+        \Log::debug('--------withdrawPay2---------$sn', print_r($sn,1));
+        \Log::debug('--------withdrawPay3---------$withdraw_id', print_r($withdraw_id,1));
+        \Log::debug('--------withdrawPay4---------$amount', print_r($amount,1));
+        \Log::debug('--------withdrawPay5---------$trade_no', print_r($trade_no,1));
             //调用分帐接口
         $result = PayFactory::create(PayFactory::PAY_SEPARATE)->doWithdraw($member_id, $sn, $amount, $withdraw_id,$trade_no);
 
