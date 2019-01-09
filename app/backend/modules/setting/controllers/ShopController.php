@@ -302,11 +302,25 @@ class ShopController extends BaseController
                 $requestModel = array_merge($requestModel, $updatefile['data']);
             }
 
+            if (isset($requestModel['weixin_version']) && $requestModel['weixin_version'] == 1) {
+                if (!empty($requestModel['new_weixin_cert']) && !empty($requestModel['new_weixin_key'])) {
+                    $updatefile_v2 = $this->updateFileV2(['weixin_cert' => $requestModel['new_weixin_cert'], 'weixin_key' => $requestModel['new_weixin_key']]);
+
+
+                    if ($updatefile_v2['status'] == 0) {
+                        return $this->message('文件保存失败1', Url::absoluteWeb('setting.shop.pay'), 'warning');
+                    }
+
+                    $requestModel = array_merge($requestModel, $updatefile_v2['data']);
+                }
+            }
+
+
             if (isset($pay['secret']) && 1 == $pay['secret']) {
                 Utils::dataEncrypt($requestModel);
             }
-
             if (Setting::set('shop.pay', $requestModel)) {
+                (new \app\common\services\operation\ShopPayLog(['old' => $pay, 'new' => $requestModel], 'update'));
                 $this->setAlipayParams($requestModel);
                 return $this->message('支付方式设置成功', Url::absoluteWeb('setting.shop.pay'));
             } else {
@@ -397,7 +411,7 @@ class ShopController extends BaseController
         ])->render();
     }
 
-    private function updateFile ($file)
+    private function updateFile($file)
     {
         $data = [];
 
@@ -423,6 +437,30 @@ class ShopController extends BaseController
         return null;
     }
 
+    private function updateFileV2($file_data)
+    {
+        $data = [];
+        $uniacid = \YunShop::app()->uniacid;
+        $file_suffix = '.pem';
+        foreach ($file_data as $key => $value) {
+            $file_name = $uniacid."_".$key.$file_suffix;
+            $bool = \Storage::disk('cert')->put($file_name, $value);
+
+            if ($bool) {
+                $data[$key] = storage_path('cert/' . $file_name);
+            } else {
+                return ['status' => 0];
+            }
+
+        }
+
+        if (!empty($data)) {
+            return ['status' => 1, 'data' => $data];
+        }
+
+        return null;
+    }
+
     /**
      * 设置分享默认值
      */
@@ -438,5 +476,23 @@ class ShopController extends BaseController
             ];
             \Setting::set('shop.share', $requestModel);
         }
+    }
+    /**
+     * 设置物流查询
+     */
+    public function expressInfo() {
+        $set = Setting::get('shop.express_info');//快递鸟1002状态为免费，8001状态为收费
+
+        $requestModel = \YunShop::request()->express_info;
+        if ($requestModel) {
+            if (Setting::set('shop.express_info', $requestModel)) {
+                return $this->message(' 物流查询信息设置成功', Url::absoluteWeb('setting.shop.express-info'));
+            } else {
+                $this->error('物流查询信息设置失败');
+            }
+        }
+        return view('setting.shop.express_info', [
+            'set' => $set,
+        ])->render();
     }
 }

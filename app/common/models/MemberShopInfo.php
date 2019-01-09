@@ -10,9 +10,60 @@ namespace app\common\models;
 
 
 use app\backend\models\BackendModel;
+use app\backend\modules\member\models\MemberRecord;
+use app\common\events\member\MemberChangeRelationEvent;
+use app\common\events\member\MemberCreateRelationEvent;
+use app\common\events\member\RegisterByAgent;
+use app\common\observers\member\MemberObserver;
+use app\frontend\modules\member\models\SubMemberModel;
+use app\Jobs\ModifyRelationJob;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Yunshop\Commission\models\Agents;
+use Yunshop\TeamDividend\models\TeamDividendAgencyModel;
 
+/**
+ * Class MemberShopInfo
+ * @package app\common\models
+ * @property int m_id
+ * @property int member_id
+ * @property int uniacid
+ * @property int parent_id
+ * @property int group_id
+ * @property int level_id
+ * @property int inviter
+ * @property int is_black
+ * @property string province_name
+ * @property string city_name
+ * @property string area_name
+ * @property int province
+ * @property int city
+ * @property int area
+ * @property string address
+ * @property string referralsn
+ * @property int is_agent
+ * @property string alipayname
+ * @property string alipay
+ * @property string content
+ * @property int status
+ * @property int child_time
+ * @property int agent_time
+ * @property int apply_time
+ * @property string relation
+ * @property int created_at
+ * @property int updated_at
+ * @property int deleted_at
+ * @property string custom_value
+ * @property int validity
+ * @property int member_form
+ * @property string pay_password
+ * @property string salt
+ * @property string withdraw_mobile
+ * @property string wechat
+ * @property string yz_openid
+ * @property string invite_code
+ * @property MemberLevel level
+ */
 class MemberShopInfo extends BaseModel
 {
     use SoftDeletes;
@@ -36,11 +87,6 @@ class MemberShopInfo extends BaseModel
     //private $team_offline;
 
 
-
-
-
-
-
     /**
      * todo common 中的 model 不应该使用全局作用域 2018-03-02
      * 设置全局作用域
@@ -48,6 +94,9 @@ class MemberShopInfo extends BaseModel
     public static function boot()
     {
         parent::boot();
+
+        static::observe(new MemberObserver());
+
         static::addGlobalScope('uniacid',function (Builder $builder) {
             return $builder->uniacid();
         });
@@ -362,6 +411,140 @@ class MemberShopInfo extends BaseModel
     //主表yz_member,从表mc_member
     public function hasOneMember()
     {
-        return $this->hasOne(Member::class, 'uid', 'm_id');
+        return $this->hasOne(Member::class, 'uid', 'member_id');
+    }
+
+    public static function chkInviteCode($code)
+    {
+        return self::select('member_id')->where('invite_code', $code)
+            ->uniacid()
+            ->count();
+    }
+
+    public static function updateInviteCode($member_id, $code)
+    {
+        return self::uniacid()
+            ->where('member_id', $member_id)
+            ->update(['invite_code' => $code]);
+    }
+
+    public static function getMemberIdForInviteCode($code)
+    {
+        return self::uniacid()
+            ->where('invite_code', $code)
+            ->pluck('member_id');
+    }
+
+    public static function change_relation($uid, $parent_id)
+    {
+        if (is_numeric($parent_id)) {
+            if (!empty($parent_id)) {
+                $parent = SubMemberModel::getMemberShopInfo($parent_id);
+
+                $parent_is_agent = !empty($parent) && $parent->is_agent == 1 && $parent->status == 2;
+
+                if (!$parent_is_agent) {
+                    return ['status', -1];
+                }
+            }
+
+            $member_relation   = Member::setMemberRelation($uid, $parent_id);
+            $plugin_commission = app('plugins')->isEnabled('commission');
+            $plugin_team       = app('plugins')->isEnabled('team-dividend');
+
+            if (isset($member_relation) && $member_relation !== false) {
+                $member = MemberShopInfo::getMemberShopInfo($uid);
+
+                $record = new MemberRecord();
+                $record->uniacid = \YunShop::app()->uniacid;
+                $record->uid = $uid;
+                $record->parent_id = $member->parent_id;
+
+                $member->parent_id = $parent_id;
+                $member->inviter = 1;
+
+                $member->save();
+                $record->save();
+
+                event(new MemberCreateRelationEvent($uid, $parent_id));
+
+                if ($plugin_team) {
+                    $team = TeamDividendAgencyModel::getAgentByUidId($uid)->first();
+
+                    if (!is_null($team)) {
+                        $team->parent_id = $parent_id;
+                        $team->relation = $member->relation;
+
+                        $team->save();
+                    }
+                }
+
+                if ($plugin_commission) {
+                    $agents = Agents::uniacid()->where('member_id', $uid)->first();
+
+                    if (!is_null($agents)) {
+                        $agents->parent_id = $parent_id;
+                        $agents->parent = $member->relation;
+
+                        $agents->save();
+                    }
+
+                    $agent_data = [
+                        'member_id' => $uid,
+                        'parent_id' => $parent_id,
+                        'parent' => $member->relation
+                    ];
+
+                    event(new RegisterByAgent($agent_data));
+                }
+
+                //更新2、3级会员上线和分销关系
+                dispatch(new ModifyRelationJob($uid, $member_relation, $plugin_commission));
+
+                return ['status' => 1];
+            } else {
+                return ['status' => 0];
+            }
+        }
+    }
+
+    /**
+     * 查询会员邀请码
+     *
+     * @return mixed
+     */
+    public function getInviteCode($inviteCode)
+    {
+        $data = self::select('member_id')->where('invite_code', $inviteCode)
+            ->uniacid()
+            ->count();
+
+        if($data > 0){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * 查询邀请码会员
+     *
+     * @return mixed
+     */
+    public function getInviteCodeMember($inviteCode)
+    {
+        $member = self::select('member_id')
+            ->where('invite_code', $inviteCode)
+            ->with(['hasOneMember' => function($q){
+                $q->select('uid', 'nickname', 'avatar', 'realname');
+            }])
+            ->uniacid()
+            ->first();
+
+        if($member){
+            return $member;
+        }else{
+            return false;
+        }
     }
 }

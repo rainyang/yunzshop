@@ -11,6 +11,7 @@ namespace app\common\services\finance;
 
 use app\backend\modules\member\models\Member;
 use app\common\events\MessageEvent;
+use app\common\exceptions\ShopException;
 use app\common\models\finance\PointLog;
 use app\common\models\notice\MessageTemp;
 use app\common\services\MessageService;
@@ -138,6 +139,7 @@ class PointService
             return;
         }
         $this->point_data = $point_data;
+        $this->point_data['point'] = round($this->point_data['point'], 2);
         //$member = Member::getMemberById($point_data['member_id']);
 
         $this->member = $this->getMemberModel();
@@ -154,11 +156,11 @@ class PointService
     }
 
 
-
-
     /**
-     * @name 更新会员积分
-     * @return
+     * Update member credit1.
+     *
+     * @return PointLog|bool
+     * @throws ShopException
      */
 
     public function changePoint()
@@ -208,16 +210,19 @@ class PointService
     }
 
     /**
-     * @name 获取变化之后的积分
+     * 获取变化之后的积分
+     *
+     * @throws ShopException
      */
     public function getAfterPoint()
     {
         $this->point_data['before_point'] = $this->member_point;
         $this->member_point += $this->point_data['point'];
         if ($this->member_point < PointService::POINT) {
-            $this->member_point = PointService::POINT;
+            throw new ShopException('积分不足!!!');
+            //$this->member_point = PointService::POINT;
         }
-        $this->point_data['after_point'] = $this->member_point;
+        $this->point_data['after_point'] = round($this->member_point, 2);
     }
 
     public function getModeAttribute($mode)

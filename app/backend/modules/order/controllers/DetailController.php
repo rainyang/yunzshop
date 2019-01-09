@@ -13,6 +13,7 @@ use app\backend\modules\member\models\Member;
 use app\backend\modules\order\models\Order;
 use app\common\components\BaseController;
 use app\common\exceptions\AppException;
+use app\common\models\Goods;
 use app\common\modules\order\OrderOperationsCollector;
 use app\common\services\DivFromService;
 
@@ -20,7 +21,6 @@ class DetailController extends BaseController
 {
     public function getMemberButtons()
     {
-
         $orderStatus = array_keys(app('OrderManager')->setting('status'));
         $buttons = array_map(function ($orderStatus) {
             var_dump($orderStatus);
@@ -28,6 +28,35 @@ class DetailController extends BaseController
             dump($order->buttonModels);
             dump($order->oldButtonModels);
         }, $orderStatus);
+    }
+
+    public function ajax()
+    {
+        $order = Order::orders()->with(['deductions', 'coupons', 'discounts', 'orderPays' => function ($query) {
+            $query->with('payType');
+        }, 'hasOnePayType']);
+        if (request()->has('id')) {
+            $order = $order->find(request('id'));
+        }
+        if (request()->has('order_sn')) {
+            $order = $order->where('order_sn', request('order_sn'))->first();
+        }
+        if (!$order) {
+            throw new AppException('未找到订单');
+        }
+        if (!empty($order->express)) {
+
+
+            $express = $order->express->getExpress($order->express->express_code, $order->express->express_sn);
+
+            $dispatch['express_sn'] = $order->express->express_sn;
+            $dispatch['company_name'] = $order->express->express_company_name;
+            $dispatch['data'] = $express['data'];
+            $dispatch['thumb'] = $order->hasManyOrderGoods[0]->thumb;
+            $dispatch['tel'] = '95533';
+            $dispatch['status_name'] = $express['status_name'];
+        }
+        dd($order);
     }
 
     /**
@@ -47,13 +76,15 @@ class DetailController extends BaseController
         if (request()->has('order_sn')) {
             $order = $order->where('order_sn', request('order_sn'))->first();
         }
+
         if (!$order) {
             throw new AppException('未找到订单');
         }
         if (!empty($order->express)) {
+
+
             $express = $order->express->getExpress($order->express->express_code, $order->express->express_sn);
-//            dd($express);
-//            exit;
+
             $dispatch['express_sn'] = $order->express->express_sn;
             $dispatch['company_name'] = $order->express->express_company_name;
             $dispatch['data'] = $express['data'];
@@ -90,4 +121,6 @@ class DetailController extends BaseController
 
         return $result;
     }
+
+
 }

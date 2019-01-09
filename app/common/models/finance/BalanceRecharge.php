@@ -10,38 +10,50 @@ namespace app\common\models\finance;
 
 
 use app\common\models\BaseModel;
+use app\common\scopes\UniacidScope;
 use app\common\traits\CreateOrderSnTrait;
 use Illuminate\Database\Eloquent\Builder;
 
-/*
- * 余额充值记录数据表
- *
- * */
 class BalanceRecharge extends BaseModel
 {
     use CreateOrderSnTrait;
 
-    public $table = 'yz_balance_recharge';
+
+    protected $table = 'yz_balance_recharge';
 
     protected $guarded = [''];
 
-    //设置全局作用域
+
+    /**
+     * Payment method background recharge.
+     */
+    const PAY_TYPE_SHOP = 0;
+
+    /**
+     * Recharge state success.
+     */
+    const PAY_STATUS_SUCCESS = 1;
+
+    /**
+     * Recharge state error.
+     */
+    const PAY_STATUS_ERROR = -1;
+
+
     public static function boot()
     {
         parent::boot();
-        static::addGlobalScope('uniacid',function (Builder $builder) {
-            return $builder->uniacid();
-        });
+        static::addGlobalScope('uniacid', new UniacidScope);
     }
 
     /**
-     * 模型管理，关联会员数据表
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function member()
     {
         return $this->hasOne('app\common\models\Member', 'uid', 'member_id');
     }
+
 
     /**
      * 检索条件，订单号检索
@@ -203,7 +215,8 @@ class BalanceRecharge extends BaseModel
             'new_money' => '计算后金额',
             'type'      => '充值类型',
             'ordersn'   => '充值订单号',
-            'status'    => '状态'
+            'status'    => '状态',
+            'remark'    => '备注信息'
         ];
     }
 
@@ -221,16 +234,12 @@ class BalanceRecharge extends BaseModel
             'new_money' => 'numeric',
             'type'      => 'required',
             'ordersn'   => 'required',
-            'status'    => 'required'
+            'status'    => 'required',
+            'remark'    => 'max:50'
         ];
     }
 
 
 
-    //后台充值
-    const PAY_TYPE_SHOP = 0;
 
-    const PAY_STATUS_SUCCESS = 1;
-
-    const PAY_STATUS_ERROR = -1;
 }

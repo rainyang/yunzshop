@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Collection;
 /**
  * 流程类型
  * Class Flow
+ * @inheritdoc
  * @package app\common\models\statusFlow
  * @property Collection process
  * @property int id

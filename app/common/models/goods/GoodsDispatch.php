@@ -5,6 +5,7 @@ namespace app\common\models\goods;
 use app\common\models\BaseModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Validation\Validator;
+use app\backend\modules\goods\observers\GoodsDispatchObserver;
 
 /**
  * Created by PhpStorm.
@@ -65,6 +66,11 @@ public function __construct(array $attributes = [])
         ];
     }
 
-
+    public static function boot()
+    {
+        parent::boot();
+        //注册观察者
+        static::observe(new GoodsDispatchObserver);
+    }
 
 }

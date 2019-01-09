@@ -103,7 +103,7 @@
                                         @foreach($product_attr_list as $product_attr_key => $product_attr_name)
                                             <label for="{$product_attr_key}">
                                                 <input type="checkbox"
-                                                       @if(@in_array($product_attr_key, $product_attr)) checked="checked"
+                                                       @if(@in_array($product_attr_key, $requestSearch['product_attr'])) checked="checked"
                                                        @endif name="search[product_attr][]"
                                                        value="{{$product_attr_key}}" id="{{$product_attr_key}}"/>
                                                 {{$product_attr_name}}
@@ -352,7 +352,7 @@
                         </div>
                         <div style="margin-left:13px;margin-top:8px">
                             @section('add_goods')
-                            <a class='btn btn-success ' href="{{yzWebUrl('goods.goods.create')}}"><i
+                            <a class='btn btn-success ' href="@if($add_url){{yzWebUrl($add_url)}}@else{{yzWebUrl('goods.goods.create')}}@endif"><i
                                         class='fa fa-plus'></i> 发布{{$lang['good']}}</a>
                             @show
                             @section('sub_sort')

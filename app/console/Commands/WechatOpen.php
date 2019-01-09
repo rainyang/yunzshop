@@ -2,7 +2,8 @@
 
 namespace app\Console\Commands;
 
-use app\backend\modules\charts\models\Member;
+
+use app\backend\modules\member\models\Member;
 use app\common\models\AccountWechats;
 use app\frontend\modules\member\models\MemberUniqueModel;
 use Illuminate\Console\Command;
@@ -48,7 +49,7 @@ class WechatOpen extends Command
 
     private function synRun($uniacid)
     {
-        $member_info = Member::getMembers()->get();
+        $member_info = Member::getQueueAllMembersInfo($uniacid);
 
         $account = AccountWechats::getAccountByUniacid($uniacid);
         $appId = $account->key;
@@ -65,7 +66,7 @@ class WechatOpen extends Command
 
     private function requestWechatApi($uniacid, $member_info, $global_token)
     {
-        if (!is_null($member_info) && !is_null($member_info)) {
+        if (!is_null($member_info)) {
             $time = time();
             $path = 'logs/' . $time . '_member_openid.log';
             $upgrade_path = 'logs/' . $time . '_upgrade_member_openid.log';
@@ -73,34 +74,36 @@ class WechatOpen extends Command
 
             collect($member_info)->map(function($item) use ($uniacid, $global_token, $path, $upgrade_path, $error_path) {
                 try {
-                    $this->printLog($path, $item->hasOneFans->openid);
+                    $item = $item->first();
 
-                    $global_userinfo_url = $this->_getInfo($global_token['access_token'], $item->hasOneFans->openid);
+                    if (!is_null($item->hasOneFans)) {
+                        $UnionidInfo = MemberUniqueModel::getUnionidInfoByMemberId($item->hasOneFans->uid)->first();
+                        $this->printLog($path, $item->hasOneFans->openid . '-' . $item->hasOneFans->uid);
 
-                    $user_info = \Curl::to($global_userinfo_url)
-                        ->asJsonResponse(true)
-                        ->get();
+                        if (is_null($UnionidInfo) && !empty($item->hasOneFans->openid)) {
+                            \Log::debug('----start---', [$item->yzMember->member_id]);
+                            $global_userinfo_url = $this->_getInfo($global_token['access_token'], $item->hasOneFans->openid);
 
-                    if (isset($user_info['errcode'])) {
-                        \Log::debug('----error---');
-                        $this->printLog($error_path, $item->hasOneFans->openid);
-                        return ['error' => 1, 'msg' => $user_info['errmsg']];
-                    }
+                            $user_info = \Curl::to($global_userinfo_url)
+                                ->asJsonResponse(true)
+                                ->get();
 
-                    if (isset($user_info['unionid'])) {
-                        $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $user_info['unionid'])->first();
+                            if (isset($user_info['errcode'])) {
+                                \Log::debug('----error---', [$item->yzMember->member_id]);
+                                $this->printLog($error_path, $item->yzMember->member_id . '-' . $user_info['errmsg']);
+                                return ['error' => 1, 'msg' => $user_info['errmsg']];
+                            }
 
-                        if (is_null($UnionidInfo)) {
-                            MemberUniqueModel::insertData(array(
-                                'uniacid' => $uniacid,
-                                'unionid' => $user_info['unionid'],
-                                'member_id' => $item->hasOneFans->uid,
-                                'type' => 1
-                            ));
-
-                            $this->printLog($upgrade_path, $item->hasOneFans->openid);
-                        } else {
-                            //TODO UPDATE
+                            if (isset($user_info['unionid'])) {
+                                MemberUniqueModel::insertData(array(
+                                    'uniacid' => $uniacid,
+                                    'unionid' => $user_info['unionid'],
+                                    'member_id' => $item->hasOneFans->uid,
+                                    'type' => 1
+                                ));
+                                \Log::debug('----insert---', [$item->yzMember->member_id]);
+                                $this->printLog($upgrade_path, $item->hasOneFans->openid . '-' . $item->yzMember->member_id);
+                            }
                         }
                     }
                 } catch (\Exception $e) {

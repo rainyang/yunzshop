@@ -47,8 +47,8 @@ class BasePayType extends PayType implements OrderPayInterface
         return [
             'order_no' => $this->orderPay->pay_sn,
             'amount' => $this->orderPay->orders->sum('price'),
-            'subject' => $this->orderPay->orders->first()->hasManyOrderGoods[0]->title ?: '芸众商品',
-            'body' => ($this->orderPay->orders->first()->hasManyOrderGoods[0]->title ?: '芸众商品') . ':' . \YunShop::app()->uniacid,
+            'subject' => $this->orderPay->orders->first()->hasManyOrderGoods[0]->title ?: ' ',
+            'body' => ($this->orderPay->orders->first()->hasManyOrderGoods[0]->title ?: ' ') . ':' . \YunShop::app()->uniacid,
             'extra' => $extra
         ];
     }

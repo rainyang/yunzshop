@@ -71,6 +71,8 @@ class ApplyController extends ApiController
             'refund_type' => 'required|integer',
             'order_id' => 'required|integer'
         ], $request,[
+            'reason.required'=>'退款原因未选择',
+            'refund_type.required'=>'退款方式未选择',
             'images.json' => 'images非json格式'
         ]);
 
@@ -101,6 +103,7 @@ class ApplyController extends ApiController
         if (!$order->save()) {
             throw new AppException('订单退款状态改变失败');
         }
+
         //通知买家
         RefundMessageService::applyRefundNotice($refundApply);
         return $this->successJson('成功', $refundApply->toArray());

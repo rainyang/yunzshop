@@ -165,10 +165,10 @@ abstract class Credit
         if (!isset($data['change_value']) || $data['change_value'] < 0) {
             return '变动值必须是正数';
         }
+
         $this->data = $data;
         $this->type = ConstService::TYPE_INCOME;
         $this->change_value = $this->data['change_value'];
-
         return $this->result();
     }
 
@@ -183,6 +183,13 @@ abstract class Credit
         $this->change_value = -$this->data['change_value'];
 
         return $this->result();
+    }
+
+    //余额提现驳回
+    public function rejected($data)
+    {
+        $this->source = ConstService::SOURCE_REJECTED;
+        return $this->addition($data);
     }
 
 

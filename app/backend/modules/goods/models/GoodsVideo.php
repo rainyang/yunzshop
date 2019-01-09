@@ -49,14 +49,6 @@ class GoodsVideo extends \app\common\models\goods\GoodsVideo
         return $model->save();
     }
 
-    public static  function getFile($path)
-    {
-        $str = str_replace('.', '-', uniqid('YZ',true));
-
-        return $path.DIRECTORY_SEPARATOR.$str.'.jpg';
-
-    }
-
     public static function getThis($goodsId, $operate)
     {
         $model = false;
@@ -74,23 +66,31 @@ class GoodsVideo extends \app\common\models\goods\GoodsVideo
     public function test($data)
     {
 
-//        if ($data['goods_video']) {
-//            $path = storage_path('app'.DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR.'goods'.DIRECTORY_SEPARATOR.'video-image'.DIRECTORY_SEPARATOR.\YunShop::app()->uniacid.DIRECTORY_SEPARATOR.date('Y', time()).DIRECTORY_SEPARATOR.date('m', time()));
-//            if (!is_dir($path)) {
-//                load()->func('file');
-//                mkdirs($path);
-//            }
-//            $file_path = self::getFile($path);
-//
-//            $command = 'ffmpeg -i '.$attr['goods_video'].' -y -f image2 -t 0.003 -s 352x240 '.$file_path;
-//
-//            exec($command, $output,$return_val);
-//
-//            if ($return_val !== 0) {
-//                $attr['status'] = 1;
-//            } else {
-//                $attr['video_image'] = substr($file_path, strpos($file_path, 'app'));
-//            }
-//        }
+        if ($data['goods_video']) {
+            $path = storage_path('app'.DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR.'goods'.DIRECTORY_SEPARATOR.'video-image'.DIRECTORY_SEPARATOR.\YunShop::app()->uniacid.DIRECTORY_SEPARATOR.date('Y', time()).DIRECTORY_SEPARATOR.date('m', time()));
+            if (!is_dir($path)) {
+                load()->func('file');
+                mkdirs($path);
+            }
+            $file_path = self::getFile($path);
+
+            $command = 'ffmpeg -i '.$data['goods_video'].' -y -f image2 -t 0.003 -s 352x240 '.$file_path;
+
+            exec($command, $output,$return_val);
+
+            if ($return_val !== 0) {
+                $data['status'] = 1;
+            } else {
+                $data['video_image'] = substr($file_path, strpos($file_path, 'app'));
+            }
+        }
+    }
+
+    public static  function getFile($path)
+    {
+        $str = str_replace('.', '-', uniqid('YZ',true));
+
+        return $path.DIRECTORY_SEPARATOR.$str.'.jpg';
+
     }
 }

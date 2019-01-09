@@ -8,12 +8,12 @@
 
 namespace app\frontend\modules\member\listeners;
 
-use app\common\events\order\AfterOrderCreatedEvent;
+use app\common\events\order\AfterOrderCreatedImmediatelyEvent;
 
 class Order
 {
-    public function handle(AfterOrderCreatedEvent $event){
-        $order = \app\common\models\Order::find($event->getOrder()->id);
+    public function handle(AfterOrderCreatedImmediatelyEvent $event){
+        $order = $event->getOrder();
         $goods_ids = $order->orderGoods->pluck('goods_id');
         $goods_option_ids = $order->orderGoods->pluck('goods_option_id');
 

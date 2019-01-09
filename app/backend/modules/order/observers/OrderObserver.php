@@ -21,4 +21,9 @@ class OrderObserver extends BaseObserver
     {
         $this->pluginObserver('observer.order',$model,'saved', 1);
     }
+
+    public function updating(Model $model)
+    {
+        (new \app\common\services\operation\OrderLog($model, 'update'));
+    }
 }

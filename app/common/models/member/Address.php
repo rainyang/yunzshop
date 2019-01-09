@@ -25,7 +25,15 @@ class Address extends BaseModel
      * @return array */
     public static function getAllAddress()
     {
-        return static::all()->toArray();
+        //return static::all()->toArray();
+
+        $model = static::orderBy('parentid', 'asc')->get();
+
+        if ($model->isEmpty()) {
+            return array();
+        }
+
+        return $model->toArray();
     }
 
 }

@@ -73,6 +73,50 @@ class GoodsService
         return true;
     }
 
+    public static function saveGoodsMultiNewCategory($goodsModel, $categorys, $shopset)
+    {
+        $categoryModel = new GoodsCategory();
+
+        $categoryModel->delCategory($goodsModel->id);
+
+        if (!empty($categorys)) {
+                switch ($shopset['cat_level']) {
+                    case 2:
+                        if (0 == $categorys['childid']) {
+                            continue;
+                        }
+
+                        $category_id = $categorys['childid'];
+                        $category_ids =  $categorys['parentid'] . ',' .$categorys['childid'];
+                        break;
+                    case 3:
+                        if (0 == $categorys['childid'] || 0 == $categorys['thirdid']) {
+                            //continue;
+                        }
+
+                        $category_id = $categorys['thirdid'];
+                        $category_ids = $categorys['parentid'] . ',' .$categorys['childid'] . ',' . $categorys['thirdid'];
+                        break;
+                    default:
+                        $category_id = $categorys['childid'];
+                        $category_ids = $categorys['childid'];
+                }
+
+                $goodsCategory = [
+                    'goods_id' => $goodsModel->id,
+                    'category_id' => $category_id,
+                    'category_ids' => $category_ids,
+                ];
+                $goodsCategoryModel = new GoodsCategory($goodsCategory);
+
+                if (!$goodsModel->hasManyGoodsCategory()->save($goodsCategoryModel)) {
+                    return false;
+                }
+
+        }
+        return true;
+    }
+
     /**
      * @param $goods
      * @return string

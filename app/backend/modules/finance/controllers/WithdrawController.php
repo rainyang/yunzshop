@@ -13,6 +13,7 @@ use app\backend\modules\finance\models\Withdraw;
 use app\backend\modules\finance\services\WithdrawService;
 use app\backend\modules\withdraw\controllers\AgainPayController;
 use app\backend\modules\withdraw\controllers\AuditController;
+use app\backend\modules\withdraw\controllers\AuditedRebutController;
 use app\backend\modules\withdraw\controllers\ConfirmPayController;
 use app\backend\modules\withdraw\controllers\PayController;
 use app\common\components\BaseController;
@@ -46,6 +47,9 @@ class WithdrawController extends BaseController
         } elseif (isset($resultData['again_pay'])) {
             //重新打款
             return (new AgainPayController())->index();
+        } elseif (isset($resultData['audited_rebut'])) {
+            //审核后驳回
+            return (new AuditedRebutController())->index();
         }
 
         return $this->message('提交数据有误，请刷新重试', yzWebUrl("finance.withdraw-detail.index", ['id' => $resultData['id']]));

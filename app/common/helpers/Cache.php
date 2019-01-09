@@ -13,10 +13,20 @@ use Illuminate\Support\Str;
 
 class Cache
 {
+    public static $i = null;
 
-    public static function setUniacid()
+    public static function setUniacid($uniacid = 0)
     {
-        return \YunShop::app()->uniacid . '_';
+        self::$i = $uniacid ?: \YunShop::app()->uniacid;
+    }
+
+    public static function getUniacid()
+    {
+        if (is_null(self::$i)) {
+            self::setUniacid();
+        }
+
+        return self::$i;
     }
 
     /**
@@ -112,15 +122,7 @@ class Cache
      */
     public static function has($key)
     {
-        if (Str::contains($key, '.')) {
-
-            $keys = explode('.', $key);
-            // 最外层的key
-            $key = array_shift($keys);
-            $arrayKey = implode('.', $keys);
-            return array_has(\Cache::get(self::setUniacid() . $key),$arrayKey);
-        }
-        return \Cache::has(self::setUniacid() . $key);
+        return \Cache::has(self::getUniacid() . $key);
     }
 
     /**
@@ -133,18 +135,7 @@ class Cache
      */
     public static function get($key, $default = null)
     {
-        if (Str::contains($key, '.')) {
-
-            $keys = explode('.', $key);
-            // 取出key的第一层
-            $key = array_shift($keys);
-            // 剩下的key
-            $arrayKey = implode('.', $keys);
-            // cache中只保存 公众号id_第一层的key
-
-            return array_get(\Cache::get(self::setUniacid() . $key), $arrayKey, $default);
-        }
-        return \Cache::get(self::setUniacid() . $key, $default);
+        return \Cache::get(self::getUniacid() . $key, $default);
     }
 
     /**
@@ -158,7 +149,7 @@ class Cache
      */
     public static function many($keys)
     {
-        return \Cache::many(self::setUniacid() . $keys);
+        return \Cache::many(self::getUniacid() . $keys);
     }
 
     /**
@@ -171,7 +162,7 @@ class Cache
      */
     public static function pull($key, $default = null)
     {
-        return \Cache::pull(self::setUniacid() . $key, $default);
+        return \Cache::pull(self::getUniacid() . $key, $default);
     }
 
     /**
@@ -185,28 +176,7 @@ class Cache
      */
     public static function put($key, $value, $minutes = null)
     {
-        if (Str::contains($key, '.')) {
-
-            $keys = explode('.', $key);
-            // 最外层的key
-            $key = array_shift($keys);
-            $arrayKey = implode('.', $keys);
-            // cache中最外层key的值
-
-            $oldData = Cache::get($key)?:[];
-
-            if(is_array($oldData)){
-                //存在时
-                array_set($oldData,$arrayKey,$value);
-                \Log::debug('-----cache save1 ------'.self::setUniacid() . $key,$oldData);
-                return \Cache::put(self::setUniacid() . $key,$oldData,$minutes);
-            }
-            // 不存在时
-
-        }
-        \Log::debug('-----cache save2 ------'.self::setUniacid() . $key,$oldData);
-
-        \Cache::put(self::setUniacid() . $key, $value, $minutes);
+        \Cache::put(self::getUniacid() . $key, $value, $minutes);
     }
 
 
@@ -234,7 +204,7 @@ class Cache
      */
     public static function add($key, $value, $minutes)
     {
-        return \Cache::add(self::setUniacid() . $key, $value, $minutes);
+        return \Cache::add(self::getUniacid() . $key, $value, $minutes);
     }
 
     /**
@@ -247,7 +217,7 @@ class Cache
      */
     public static function increment($key, $value = 1)
     {
-        return \Cache::increment(self::setUniacid() . $key, $value);
+        return \Cache::increment(self::getUniacid() . $key, $value);
     }
 
     /**
@@ -260,7 +230,7 @@ class Cache
      */
     public static function decrement($key, $value = 1)
     {
-        return \Cache::decrement(self::setUniacid() . $key, $value);
+        return \Cache::decrement(self::getUniacid() . $key, $value);
     }
 
     /**
@@ -273,7 +243,7 @@ class Cache
      */
     public static function forever($key, $value)
     {
-        \Cache::forever(self::setUniacid() . $key, $value);
+        \Cache::forever(self::getUniacid() . $key, $value);
     }
 
     /**
@@ -287,7 +257,7 @@ class Cache
      */
     public static function remember($key, $minutes, $callback)
     {
-        return \Cache::remember(self::setUniacid() . $key, $minutes, $callback);
+        return \Cache::remember(self::getUniacid() . $key, $minutes, $callback);
     }
 
     /**
@@ -300,7 +270,7 @@ class Cache
      */
     public static function sear($key, $callback)
     {
-        return \Cache::sear(self::setUniacid() . $key, $callback);
+        return \Cache::sear(self::getUniacid() . $key, $callback);
     }
 
     /**
@@ -313,7 +283,7 @@ class Cache
      */
     public static function rememberForever($key, $callback)
     {
-        return \Cache::rememberForever(self::setUniacid() . $key, $callback);
+        return \Cache::rememberForever(self::getUniacid() . $key, $callback);
     }
 
     /**
@@ -325,7 +295,7 @@ class Cache
      */
     public static function forget($key)
     {
-        return \Cache::forget(self::setUniacid() . $key);
+        return \Cache::forget(self::getUniacid() . $key);
     }
 
     /**
@@ -384,7 +354,7 @@ class Cache
      */
     public static function offsetExists($key)
     {
-        return \Cache::offsetExists(self::setUniacid() . $key);
+        return \Cache::offsetExists(self::getUniacid() . $key);
     }
 
     /**
@@ -396,7 +366,7 @@ class Cache
      */
     public static function offsetGet($key)
     {
-        return \Cache::offsetGet(self::setUniacid() . $key);
+        return \Cache::offsetGet(self::getUniacid() . $key);
     }
 
     /**
@@ -409,7 +379,7 @@ class Cache
      */
     public static function offsetSet($key, $value)
     {
-        \Cache::offsetSet(self::setUniacid() . $key, $value);
+        \Cache::offsetSet(self::getUniacid() . $key, $value);
     }
 
     /**
@@ -421,7 +391,7 @@ class Cache
      */
     public static function offsetUnset($key)
     {
-        \Cache::offsetUnset(self::setUniacid() . $key);
+        \Cache::offsetUnset(self::getUniacid() . $key);
     }
 
     /**

@@ -17,11 +17,13 @@ class CalculationPointService
     {
         $point_set = Setting::get('point.set');
 
+
         $order = Order::find($order_goods_model->order_id);
         $order_set = $order->orderSettings->where('key', 'point')->first();
         if ($order_set && $order_set->value['set']['give_point']) {
             $point_set['give_point'] = $order_set->value['set']['give_point'] . '%';
         }
+
 
         $point_data = [];
         //todo 如果等于0  不赠送积分

@@ -48,7 +48,6 @@ class GoodsPosterController extends ApiController
 
     public function generateGoodsPoster()
     {
-        $this->HttpAgreement('//gd1.alicdn.com/imgextra/i3/3250045354/TB23_9epNWYBuNjy1zkXXXGGpXa_!!3250045354.jpg');
         $id = intval(\YunShop::request()->id);
 
         $this->mid = \YunShop::app()->getMemberId();
@@ -59,7 +58,9 @@ class GoodsPosterController extends ApiController
 
         $this->shopSet = \Setting::get('shop.shop');
 
-        $this->goodsModel = Goods::uniacid()->with('hasOneShare')->where('plugin_id', 0)->where('status', 1)->find($id);
+
+        //$this->goodsModel = Goods::uniacid()->with('hasOneShare')->where('plugin_id', 0)->where('status', 1)->find($id);
+        $this->goodsModel = Goods::uniacid()->with('hasOneShare')->where('status', 1)->find($id);
 
         if (empty($this->goodsModel)) {
             return $this->errorJson('该商品不是商城商品');
@@ -401,7 +402,7 @@ class GoodsPosterController extends ApiController
         if (strexists($t, 'http://') || strexists($t, 'https://')) {
             return $src;
         }
-        $src = 'http://'.ltrim($src, '//');
+        $src = 'https://'.ltrim($src, '//');
         
         return $src;
     }

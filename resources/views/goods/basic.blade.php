@@ -4,9 +4,9 @@
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">排序</label>
     <div class="col-sm-9 col-xs-12">
-        <input type="text" name="goods[display_order]" id="displayorder" class="form-control" value="{{$goods['display_order']}}" />
-        <span class='help-block'>数字大的排名在前,默认排序方式为创建时间</span>
-    </div>
+        <input type="text" name="goods[display_order]" id="displayorder" maxlength="9" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')"  class="form-control" value="{{$goods['display_order']}}" />
+        <span class='help-block'>数字大的排名在前,默认排序方式为创建时间，注意：输入最大数为9位数，只能输入数字</span>
+        </div>
 </div>
 
 <div class="form-group">
@@ -211,6 +211,18 @@
     </div>
 </div>
 
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">不可退货退款</label>
+    <div class="col-sm-9 col-xs-12">
+        <label for="norefund1" class="radio-inline">
+            <input type="radio" name="goods[no_refund]" value="1" id="norefund1" @if ($goods['no_refund'] == 1) checked="true" @endif /> 是</label>
+        &nbsp;&nbsp;&nbsp;
+        <label for="norefund2" class="radio-inline">
+            <input type="radio" name="goods[no_refund]" value="0" id="norefund2"  @if ($goods['no_refund'] == 0) checked="true" @endif /> 否</label>
+        <span class="help-block"></span>
+
+    </div>
+</div>
 
 <!-->
 @section('isputaway')
@@ -225,7 +237,6 @@
     </div>
 </div>
 @show
-
 <script type="text/javascript">
     $('#brand').select2();
 

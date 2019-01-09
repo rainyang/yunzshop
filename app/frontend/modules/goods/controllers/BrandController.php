@@ -56,7 +56,7 @@ class BrandController extends ApiController
         $list = Goods::select('id', 'id as goods_id', 'title', 'thumb', 'price', 'market_price')
             ->where("status", 1)
             ->where(function($query) {
-                $query->where("plugin_id", 0)->orWhere('plugin_id', 40);
+                $query->where("plugin_id", 0)->orWhere('plugin_id', 40)->orWhere('plugin_id', 92);
             })->where('brand_id', $id)->orderBy('display_order', 'desc')
             ->paginate(20)->toArray();
 

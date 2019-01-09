@@ -28,10 +28,10 @@ class PayFactory
      */
     const PAY_CREDIT = 3;
 
-//    /**
-//     * 后台付款
-//     */
-//    const PAY_BACKEND = 5;
+    /**
+     * 后台付款
+     */
+    const PAY_BACKEND = 5;
 
     /**
      * 云收银-微信
@@ -107,6 +107,12 @@ class PayFactory
     const PAY_Huanxun_Wx = 22;
 
 
+    /**
+     * PLD-支付  达人链
+     */
+    const PAY_PLD = 23;
+
+
     public static function create($type = null)
     {
         $className = null;
@@ -119,6 +125,10 @@ class PayFactory
                 break;
             case self::PAY_CREDIT:
                 $className = new CreditPay();
+                break;
+
+            case self::PAY_BACKEND:
+                $className = new BackendPay();
                 break;
             case self::PAY_CASH:
                 $className = new CashPay();
@@ -182,6 +192,13 @@ class PayFactory
                 }
 
                 $className = new \Yunshop\WftAlipay\services\WftAlipayService();
+                break;
+            case self::PAY_PLD:
+                if (!app('plugins')->isEnabled('pld-pay')) {
+                    throw new AppException('插件未开启');
+                }
+
+                $className = new \Yunshop\PLdPay\services\PldWithdrawService();
                 break;
             default:
                 $className = null;

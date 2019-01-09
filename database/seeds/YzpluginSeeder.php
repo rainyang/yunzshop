@@ -1,10 +1,6 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use app\common\services\PluginManager;
-use app\common\repositories\OptionRepository;
-use Illuminate\Events\Dispatcher;
-use Illuminate\Filesystem\Filesystem;
 
 
 class YzpluginSeeder extends Seeder
@@ -15,8 +11,7 @@ class YzpluginSeeder extends Seeder
     public function run()
     {
 
-        $plugins = new PluginManager(app(), new OptionRepository(), new Dispatcher(), new Filesystem());
-        $installed = $plugins->getPlugins();
+        $installed = app('plugins')->getPlugins();
 
         $is_plugin = \Illuminate\Support\Facades\DB::table($this->table)->where('option_name', 'test-plugins')->get();
         if ($is_plugin->isNotEmpty()) {

@@ -2,25 +2,27 @@
 
 namespace app\frontend\modules\order\models;
 
-use app\common\exceptions\AppException;
+use app\common\models\BaseModel;
 use app\common\models\DispatchType;
-use app\frontend\models\Member;
+use app\common\models\Member;
+use app\common\modules\orderGoods\OrderGoodsCollection;
+use app\common\requests\Request;
 use app\frontend\models\Order;
-use app\frontend\models\OrderAddress;
 use app\frontend\modules\deduction\OrderDeduction;
+use app\frontend\modules\deduction\OrderDeductionCollection;
 use app\frontend\modules\dispatch\models\OrderDispatch;
+use app\frontend\modules\dispatch\models\PreOrderAddress;
 use app\frontend\modules\order\OrderDiscount;
 use app\frontend\modules\orderGoods\models\PreOrderGoods;
 use app\frontend\modules\order\services\OrderService;
 use app\frontend\modules\orderGoods\models\PreOrderGoodsCollection;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Schema;
 
 /**
  * 订单生成类
  * Class preOrder
  * @package app\frontend\modules\order\services\models
- * @property Collection orderDeductions
+ * @property OrderDeductionCollection orderDeductions
  * @property Collection orderDiscounts
  * @property Collection orderCoupons
  * @property Collection orderSettings
@@ -37,7 +39,7 @@ use Illuminate\Support\Facades\Schema;
  * @property string order_sn
  * @property int create_time
  * @property int uid
- * @property OrderAddress orderAddress
+ * @property PreOrderAddress orderAddress
  * @property int uniacid
  * @property PreOrderGoodsCollection orderGoods
  * @property Member belongsToMember
@@ -45,6 +47,7 @@ use Illuminate\Support\Facades\Schema;
  */
 class PreOrder extends Order
 {
+    use PreOrderTrait;
     protected $appends = ['pre_id'];
     protected $hidden = ['belongsToMember'];
     /**
@@ -59,44 +62,116 @@ class PreOrder extends Order
      * @var OrderDeduction 抵扣类
      */
     protected $orderDeduction;
+    /**
+     * @var Request
+     */
+    protected $request;
+    protected $attributes = ['id' => null];
 
-    public function setOrderGoods(Collection $orderGoods)
+
+    public function __construct(array $attributes = [])
     {
-        $this->setRelation('orderGoods', new PreOrderGoodsCollection());
+        parent::__construct($attributes);
+        $this->setRelation('orderSettings', $this->newCollection());
+    }
 
-        $orderGoods->each(function ($aOrderGoods) {
-            /**
-             * @var PreOrderGoods $aOrderGoods
-             */
+    /**
+     * @param Member $member
+     * @param OrderGoodsCollection $orderGoods
+     * @param Request|null $request
+     * @return $this
+     * @throws \app\common\exceptions\ShopException
+     */
+    public function init(Member $member, OrderGoodsCollection $orderGoods, Request $request = null)
+    {
+        $this->request = $request;
+        $this->setMember($member);
 
-            $this->orderGoods->push($aOrderGoods);
+        $this->beforeCreating();
+        $this->setOrderGoods($orderGoods);
+        /**
+         * @var PreOrder $order
+         */
+        $this->afterCreating();
 
-            $aOrderGoods->setOrder($this);
-        });
+        $this->initAttributes();
+        $this->initOrderGoods();
+        return $this;
+    }
+
+    /**
+     * @param $member
+     */
+    private function setMember($member)
+    {
+        $this->setRelation('belongsToMember', $member);
+        $this->uid = $this->belongsToMember->uid;
+        $this->uniacid = $this->getUniacid();
+    }
+
+    /**
+     * 获取request对象
+     * @return Request
+     */
+    public function getRequest()
+    {
+        if (!isset($this->request)) {
+            $this->request = request();
+        }
+        return $this->request;
+    }
+
+    /**
+     * 依赖对象传入之前
+     * @throws \app\common\exceptions\ShopException
+     */
+    public function beforeCreating()
+    {
+
+        $this->dispatch_type_id = $this->getRequest()->input('dispatch_type_id', 0);
+        /**
+         * @var PreOrderAddress $orderAddress
+         */
+        $orderAddress = app('OrderManager')->make('PreOrderAddress');
+
+        $orderAddress->setOrder($this);
+        //临时处理，无扩展性
+        if ($this->getRequest()->input('mark') !== 'undefined') {
+            $this->mark = $this->getRequest()->input('mark', '');
+        }
+
+    }
+
+    /**
+     * 载入订单商品集合
+     * @param OrderGoodsCollection $orderGoods
+     */
+    public function setOrderGoods(OrderGoodsCollection $orderGoods)
+    {
+        $this->setRelation('orderGoods', $orderGoods);
+
+        $this->orderGoods->setOrder($this);
+
+    }
+
+    /**
+     * 依赖对象传入之后
+     */
+    public function afterCreating()
+    {
 
         $this->discount = new OrderDiscount($this);
         $this->orderDispatch = new OrderDispatch($this);
         $this->orderDeduction = new OrderDeduction($this);
 
-    }
-
-    public function __construct(array $attributes = [])
-    {
-        $this->dispatch_type_id = request()->input('dispatch_type_id', 0);
-
-        //临时处理，无扩展性
-        if (request()->input('mark') !== 'undefined') {
-            $this->mark = request()->input('mark', '');
-        }
-        parent::__construct($attributes);
-        $this->setRelation('orderSettings', $this->newCollection());
 
     }
 
-    public function _init()
+    /**
+     * 初始化订单商品
+     */
+    public function initOrderGoods()
     {
-        $attributes = $this->getPreAttributes();
-        $this->setRawAttributes($attributes);
         $this->orderGoods->each(function ($aOrderGoods) {
             /**
              * @var PreOrderGoods $aOrderGoods
@@ -106,26 +181,113 @@ class PreOrder extends Order
     }
 
     /**
-     * 对外提供的获取订单商品方法
-     * @return PreOrderGoodsCollection
+     * 订单优惠类
+     * @return OrderDiscount
      */
-    public function getOrderGoodsModels()
+    public function getDiscount()
     {
-        return $this->orderGoods;
-    }
-
-    public function getOrder()
-    {
-        return $this;
-    }
-
-    public function getMember()
-    {
-        return $this->belongsToMember;
-    }
-    public function getDiscount(){
         return $this->discount;
     }
+
+
+    /**
+     * 显示订单数据
+     * @return array
+     */
+    public function toArray()
+    {
+        $attributes = parent::toArray();
+        $attributes = $this->formatAmountAttributes($attributes);
+        return $attributes;
+    }
+
+    /**
+     * 初始化属性
+     */
+    protected function initAttributes()
+    {
+        $attributes = array(
+            'price' => $this->getPrice(),//订单最终支付价格
+            'order_goods_price' => $this->getOrderGoodsPrice(),//订单商品成交价
+            'goods_price' => $this->getGoodsPrice(),//订单商品原价
+            'cost_amount' => $this->getCostPrice(),//订单商品原价
+            'discount_price' => $this->getDiscountAmount(),//订单优惠金额
+            'deduction_price' => $this->getDeductionAmount(),//订单抵扣金额
+            'dispatch_price' => $this->getDispatchAmount(),//订单运费
+            'is_virtual' => $this->isVirtual(),//是否是虚拟商品订单
+            'goods_total' => $this->getGoodsTotal(),//订单商品总数
+            'order_sn' => OrderService::createOrderSN(),//订单编号
+            'create_time' => time(),
+            'note' => $this->getParams('note'),//订单备注
+            'shop_name' => $this->getShopName(),//是否是虚拟商品订单
+        );
+
+
+        $attributes = array_merge($this->getAttributes(), $attributes);
+        $this->setRawAttributes($attributes);
+
+    }
+
+    public function getCostPrice()
+    {
+        //累加所有商品数量
+        $result = $this->orderGoods->sum(function (PreOrderGoods $aOrderGoods) {
+            return $aOrderGoods->goods_cost_price;
+        });
+
+        return $result;
+    }
+
+    /**
+     * 获取url中关于本订单的参数
+     * @param null $key
+     * @return mixed
+     */
+    public function getParams($key = null)
+    {
+        $result = collect(json_decode($this->getRequest()->input('orders'), true))->where('pre_id', $this->pre_id)->first();
+        if (isset($key)) {
+            return $result[$key];
+        }
+
+        return $result;
+    }
+
+    /**
+     * 订单生成前 分组订单的标识(规则: 将goods_id 排序之后用a连接)
+     * @return string
+     */
+    public function getPreIdAttribute()
+    {
+        return md5($this->orderGoods->pluck('goods_id')->toJson());
+    }
+
+    /**
+     * 计算订单成交价格
+     * 外部调用只计算一次,方法内部计算过程中递归调用会返回计算过程中的金额
+     * @return int
+     */
+    protected function getPrice()
+    {
+        if (array_key_exists('price', $this->attributes)) {
+            // 外部调用只计算一次,方法内部计算过程中递归调用会返回计算过程中的金额
+
+            return $this->price;
+        }
+
+        //订单最终价格 = 商品最终价格 - 订单优惠 + 订单运费 - 订单抵扣
+        $this->price = $this->getOrderGoodsPrice();
+
+        // todo 为了保证每一项优惠计算之后,立刻修改price ,临时修改成这样.需要想办法重写
+        $this->getDiscountAmount();
+
+        $this->price += $this->getDispatchAmount();
+
+        $this->price -= $this->getDeductionAmount();
+
+        return max($this->price, 0);
+    }
+
     /**
      * 计算订单优惠金额
      * @return number
@@ -155,196 +317,125 @@ class PreOrder extends Order
     }
 
     /**
-     * 订单生成前 分组订单的标识(规则: 将goods_id 排序之后用a连接)
+     * 公众号
+     * @return int
+     */
+    private function getUniacid()
+    {
+        return $this->belongsToMember->uniacid;
+    }
+
+    /**
+     * 店铺名
      * @return string
      */
-    public function getPreIdAttribute()
+    protected function getShopName()
     {
-        return $this->getOrderGoodsModels()->pluck('goods_id')->sort()->implode('a');
+        return \Setting::get('shop.shop.name') ?: '平台自营';
     }
 
     /**
-     * 获取url中关于本订单的参数
-     * @param null $key
-     * @return mixed
+     * 统计订单商品是否有虚拟商品
+     * @return bool
      */
-    public function getParams($key = null)
+    public function isVirtual()
     {
-        $result = collect(json_decode(request()->input('orders'), true))->where('pre_id', $this->pre_id)->first();
-        if (isset($key)) {
-            return $result[$key];
+        if ($this->is_virtual == 1) {
+            return true;
         }
 
-        return $result;
+        return $this->orderGoods->hasVirtual();
     }
 
-    public function getPreAttributes()
-    {
-        $attributes = array(
-            'price' => $this->getPrice(),//订单最终支付价格
-            'order_goods_price' => $this->getOrderGoodsPrice(),//订单商品成交价
-            'goods_price' => $this->getGoodsPrice(),//订单商品原价
-            'discount_price' => $this->getDiscountAmount(),//订单优惠金额
-            'deduction_price' => $this->getDeductionAmount(),//订单抵扣金额
-            'dispatch_price' => $this->getDispatchAmount(),//订单运费
-            'goods_total' => $this->getGoodsTotal(),//订单商品总数
-            'order_sn' => OrderService::createOrderSN(),//订单编号
-            'create_time' => time(),
-            'uid' => $this->uid,
-            'uniacid' => $this->uniacid,
-            'is_virtual' => $this->getGoodsType(),//是否是虚拟商品订单
-        );
-        $attributes = array_merge($this->getAttributes(), $attributes);
-        return $attributes;
-    }
 
     /**
-     * 显示订单数据
-     * @return array
+     * @var array 需要批量更新的字段
      */
-    public function toArray()
-    {
-        $attributes = parent::toArray();
-        $attributes = $this->formatAmountAttributes($attributes);
-        return $attributes;
-    }
+    private $batchSaveRelations = ['orderGoods', 'orderSettings', 'orderCoupons', 'orderDiscounts', 'orderDeductions'];
 
     /**
-     * 递归格式化金额字段
-     * @param $attributes
-     * @return array
-     */
-    private function formatAmountAttributes($attributes)
-    {
-        // 格式化价格字段,将key中带有price,amount的属性,转为保留2位小数的字符串
-        $attributes = array_combine(array_keys($attributes), array_map(function ($value, $key) {
-            if(is_array($value)){
-                $value = $this->formatAmountAttributes($value);
-            }else{
-                if (str_contains($key, 'price') || str_contains($key, 'amount')) {
-                    $value = sprintf('%.2f', $value);
-                }
-            }
-            return $value;
-        }, $attributes, array_keys($attributes)));
-        return $attributes;
-    }
-
-    /**
+     * 保存关联模型
      * @return bool
+     * @throws \Exception
      */
     public function push()
     {
         foreach ($this->relations as $models) {
             $models = $models instanceof Collection
                 ? $models->all() : [$models];
-
+            /**
+             * @var BaseModel $model
+             */
             foreach (array_filter($models) as $model) {
-                if (!isset($model->order_id) && Schema::hasColumn($model->getTable(), 'order_id')) {
+                if (!isset($model->order_id) && $model->hasColumn('order_id')) {
                     $model->order_id = $this->id;
                 }
             }
         }
+        /**
+         * 一对一关联模型保存
+         */
+        $relations = array_except($this->relations, $this->batchSaveRelations);
 
-        return parent::push();
-    }
+        foreach ($relations as $models) {
+            $models = $models instanceof Collection
+                ? $models->all() : [$models];
 
-
-    /**
-     * 订单插入数据库,触发订单生成事件
-     * @return mixed
-     * @throws AppException
-     */
-    public function generate()
-    {
-        $this->save();
-
-        $result = $this->push();
-
-        if ($result === false) {
-
-            throw new AppException('订单相关信息保存失败');
+            foreach (array_filter($models) as $model) {
+                if (!$model->push()) {
+                    return false;
+                }
+            }
         }
-        return $this->id;
+        /**
+         * 多对多关联模型保存
+         */
+        $this->insertRelations($this->batchSaveRelations);
+
+        return true;
     }
 
     /**
-     * 统计商品总数
-     * @return int
+     * 保存每一种 多对多的关联模型集合
+     * @param array $relations
      */
-    protected function getGoodsTotal()
+    private function insertRelations($relations = [])
     {
-        //累加所有商品数量
-        $result = $this->orderGoods->sum(function ($aOrderGoods) {
-            return $aOrderGoods->total;
-        });
-
-        return $result;
-    }
-
-    //统计订单商品是否有虚拟商品
-    protected function getGoodsType()
-    {
-        $result = $this->orderGoods->filter(function ($aOrderGoods) {
-            return $aOrderGoods->goods->type == 1;
-        });
-
-        //虚拟
-        if (empty($result->toArray())) {
-            return 1;
+        foreach ($relations as $relation) {
+            if ($this->$relation->isNotEmpty()) {
+                $this->saveManyRelations($relation);
+            }
         }
-        //实体
-        return 0;
-    }
-
-
-    /**
-     * 计算订单成交价格
-     * @return int
-     */
-    protected function getPrice()
-    {
-        if (isset($this->price)) {
-            // 一次计算内避免循环调用,返回计算过程中的价格
-            return $this->price;
-        }
-        //订单最终价格 = 商品最终价格 - 订单优惠 + 订单运费 - 订单抵扣
-        $this->price = $this->getOrderGoodsPrice();
-        // todo 为了保证每一项优惠计算之后,立刻修改price ,临时修改成这样.需要想办法重写
-        $this->getDiscountAmount();
-
-        $this->price += $this->getDispatchAmount();
-
-        $this->price -= $this->getDeductionAmount();
-        return max($this->price, 0);
     }
 
     /**
-     * 统计订单商品成交金额
-     * @return int
+     * 保存一种 多对多的关联模型集合
+     * @param $relation
      */
-    protected function getOrderGoodsPrice()
+    private function saveManyRelations($relation)
     {
-        $result = $this->orderGoods->sum(function (PreOrderGoods $aOrderGoods) {
-            return $aOrderGoods->getPrice();
+        $attributeItems = $this->$relation->map(function (BaseModel $relation) {
+            $relation->updateTimestamps();
+
+            $beforeSaving = $relation->beforeSaving();
+            if ($beforeSaving === false) {
+                return [];
+            }
+            return $relation->getAttributes();
         });
 
-        //订单属性添加商品价格属性
-        $this->goods_price = $result;
+        $attributeItems = collect($attributeItems)->filter();
 
-        return $result;
-    }
-
-    /**
-     * 统计订单商品原价
-     * @return int
-     */
-    protected function getGoodsPrice()
-    {
-        $result = $this->orderGoods->sum(function (PreOrderGoods $aOrderGoods) {
-            return $aOrderGoods->getGoodsPrice();
+        $this->$relation->first()->insert($attributeItems->toArray());
+        /**
+         * @var Collection $ids
+         */
+        $ids = $this->$relation()->pluck('id');
+        $this->$relation->each(function (BaseModel $item) use ($ids) {
+            $item->id = $ids->shift();
+            $item->afterSaving();
         });
-        return $result;
     }
+
 
 }

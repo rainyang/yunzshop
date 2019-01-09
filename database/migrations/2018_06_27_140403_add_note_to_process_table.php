@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use \app\common\models\Flow;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 
 class AddNoteToProcessTable extends Migration
 {

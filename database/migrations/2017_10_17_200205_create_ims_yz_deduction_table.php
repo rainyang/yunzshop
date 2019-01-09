@@ -26,7 +26,7 @@ class CreateImsYzDeductionTable extends Migration
                 $table->integer('update_at')->nullable();
                 $table->integer('deleted_at')->nullable();
             });
-            \Illuminate\Support\Facades\DB::select('INSERT INTO `'.app('db')->getTablePrefix().'yz_deduction` (`id`, `code`, `enable`, `created_at`, `update_at`, `deleted_at`)
+            \Illuminate\Support\Facades\DB::insert('INSERT INTO `'.app('db')->getTablePrefix().'yz_deduction` (`id`, `code`, `enable`, `created_at`, `update_at`, `deleted_at`)
 VALUES
 	(1, \'love\', 1, NULL, NULL, NULL),
 	(2, \'point\', 1, NULL, NULL, NULL),

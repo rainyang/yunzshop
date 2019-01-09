@@ -96,6 +96,15 @@ class IncomePageFactory
         return $this->_income->needIsAgent();
     }
 
+    /**
+     * 收入页的前端路由
+     * @return string 前端路由名
+     */
+    public function getAppUrl()
+    {
+        return  $this->_income->getAppUrl();
+    }
+
 
     /**
      * 获取收入模型数据
@@ -128,7 +137,7 @@ class IncomePageFactory
     }
 
 
-    private function getTitle()
+    public function getTitle()
     {
         $mark = $this->_income->getMark();
 
@@ -142,14 +151,17 @@ class IncomePageFactory
     /**
      * 收入模型累计收入值
      *
-     * @return mixed
+     * @return float
      */
     private function getValue()
     {
-        $type = $this->_income->getTypeValue();
-        $member_id = \YunShop::app()->getMemberId();
-
-        return Income::where('incometable_type', $type)->whereStatus(0)->whereMember_id($member_id)->sum('amount');
+        $value = $this->_income->getTypeValue();
+        if (is_numeric($value)) {
+            return $value;
+        } else {
+            $member_id = \YunShop::app()->getMemberId();
+            return Income::where('incometable_type', $value)->whereMember_id($member_id)->sum('amount');
+        }
     }
 
 

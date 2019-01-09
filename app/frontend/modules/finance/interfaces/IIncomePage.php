@@ -53,7 +53,7 @@ interface IIncomePage
 
 
     /**
-     * 对应收入 type 字段 value 值
+     * 对应收入 type 字段 value 值 或 该收入的金额值（计算好直接传过来的值）
      *
      * @return string
      */

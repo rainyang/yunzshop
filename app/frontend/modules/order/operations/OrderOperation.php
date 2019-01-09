@@ -10,7 +10,7 @@ namespace app\frontend\modules\order\operations;
 
 use app\frontend\models\Order;
 
-abstract class OrderOperation
+abstract class OrderOperation implements OrderOperationInterface
 {
     const PAY = 1; // 支付
     const COMPLETE = 5; // 确认收货
@@ -22,24 +22,21 @@ abstract class OrderOperation
     const REFUND_INFO = 18; // 已退款/退款中
     const COMMENTED = 19; // 已评价
     const REMITTANCE_RECORD = 21; // 转账信息
+    const CONTACT_CUSTOMER_SERVICE = 41; // 联系客服
 
     /**
      * @var Order
      */
     protected $order;
+
     public function __construct(Order $order)
     {
         $this->order = $order;
     }
-    abstract public function getApi();
-    abstract public function enable();
 
-    /**
-     * @return string
-     */
-    abstract public function getName();
-    /**
-     * @return string
-     */
-    abstract public function getValue();
+    public function getType()
+    {
+        return '';
+    }
+
 }

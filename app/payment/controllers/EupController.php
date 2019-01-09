@@ -42,10 +42,10 @@ class EupController extends PaymentController
                     $data = [
                         'total_fee'    => floatval($parameter['Amount']),
                         'out_trade_no' => $this->attach[1],
-                        'trade_no'     => 'uep',
+                        'trade_no'     => 'eup',
                         'unit'         => 'yuan',
                         'pay_type'     => 'EUP支付',
-                        'pay_type_id'  => 16,
+                        'pay_type_id'  => 19,
 
                     ];
                     $this->payResutl($data);
@@ -80,7 +80,7 @@ class EupController extends PaymentController
                     $data = [
                         'total_fee'    => floatval($parameter['Amount']),
                         'out_trade_no' => $this->attach[1],
-                        'trade_no'     => 'uep',
+                        'trade_no'     => 'eup',
                         'unit'         => 'yuan',
                         'pay_type'     => 'EUP支付',
                         'pay_type_id'  => 19,

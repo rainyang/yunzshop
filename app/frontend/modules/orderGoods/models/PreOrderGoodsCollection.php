@@ -8,42 +8,9 @@
 
 namespace app\frontend\modules\orderGoods\models;
 
-use Illuminate\Database\Eloquent\Collection;
+use app\common\modules\orderGoods\OrderGoodsCollection;
 
-class PreOrderGoodsCollection extends Collection
+class PreOrderGoodsCollection extends OrderGoodsCollection
 {
-
-    /**
-     * 获取商城价
-     * @return int
-     */
-    public function getPrice()
-    {
-        return $this->sum(function ($orderGoods) {
-            return $orderGoods->getPrice();
-        });
-    }
-
-    /**
-     * 获取销售价
-     * @return int
-     */
-    public function getPaymentAmount()
-    {
-        return $this->sum(function (PreOrderGoods $orderGoods) {
-            return $orderGoods->getPaymentAmount();
-        });
-    }
-
-    /**
-     * 获取折扣优惠券优惠金额
-     * @return int
-     */
-    public function getCouponDiscountPrice()
-    {
-        return $this->sum(function ($orderGoods) {
-            return $orderGoods->couponDiscountPrice;
-        });
-    }
 
 }

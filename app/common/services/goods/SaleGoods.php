@@ -27,7 +27,7 @@ class SaleGoods extends Sale
             $push_goods = Goods::getPushGoods($goods_ids);
             
             foreach ($push_goods as &$value) {
-               $value['thumb'] = replace_yunshop(tomedia($value['thumb']));
+               $value['thumb'] = replace_yunshop(yz_tomedia($value['thumb']));
                $value['is_course'] = $video_demand->isCourse($value['id']);
             }
         } else {

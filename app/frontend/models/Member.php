@@ -9,7 +9,10 @@
 namespace app\frontend\models;
 
 
+use app\common\exceptions\AppException;
 use app\common\models\MemberCoupon;
+use app\frontend\modules\member\models\MemberAddress;
+use app\frontend\modules\member\services\MemberService;
 use app\frontend\repositories\MemberAddressRepository;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -17,9 +20,26 @@ use Illuminate\Database\Eloquent\Collection;
  * Class Member
  * @package app\frontend\models
  * @property Collection memberCarts
+ * @property MemberAddress defaultAddress
  */
 class Member extends \app\common\models\Member
 {
+    static $current;
+
+    /**
+     * @return self
+     * @throws AppException
+     */
+    public static function current()
+    {
+        if (!isset(static::$current)) {
+            static::$current = self::find(\YunShop::app()->getMemberId());
+            if(!static::$current){
+                throw new AppException('请登录');
+            }
+        }
+        return static::$current;
+    }
     /**
      * 会员－会员优惠券1:多关系
      * @param null $backType
@@ -52,6 +72,6 @@ class Member extends \app\common\models\Member
 
     public function memberCarts()
     {
-        return $this->hasMany(app('OrderManager')->make('MemberCart'), 'member_id', 'uid');
+        return $this->hasMany(app('OrderManager')->make('MemberCart'), 'member_id', 'uid')->with('member');
     }
 }

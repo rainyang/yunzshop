@@ -21,8 +21,7 @@ class SingleEnoughReduce extends BaseDiscount
 
     /**
      * 获取金额
-     * @return float|int
-     * @throws \app\common\exceptions\ShopException
+     * @return float|int|null
      */
     protected function _getAmount()
     {
@@ -30,7 +29,9 @@ class SingleEnoughReduce extends BaseDiscount
             // 确保订单优惠先行计算
             return null;
         }
-        return ($this->orderGoods->getPaymentAmount() / $this->getOrderGoodsPaymentAmount()) * $this->getAmountInOrder();
+        // (订单商品成交金额/订单中同种商品总成交金额 ) * 订单单品满减金额
+        // 商品成交金额 = 订单成交价 - 商品等级优惠
+        return ($this->orderGoods->getPrice() / $this->getOrderGoodsPrice()) * $this->getAmountInOrder();
     }
 
     /**
@@ -41,15 +42,16 @@ class SingleEnoughReduce extends BaseDiscount
         if(is_null($this->orderGoods->goods->hasOneSale)){
             return 0;
         }
-        return $this->orderGoods->goods->hasOneSale->getEnoughReductionAmount($this->getOrderGoodsPaymentAmount());
+        return $this->orderGoods->goods->hasOneSale->getEnoughReductionAmount($this->getOrderGoodsPrice());
     }
 
     /**
-     * 订单中同商品的总支付金额
+     * 订单中同商品的价格小计
      * @return float
      */
-    protected function getOrderGoodsPaymentAmount()
+    protected function getOrderGoodsPrice()
     {
-        return $this->orderGoods->order->orderGoods->where('goods_id', $this->orderGoods->goods_id)->getPaymentAmount();
+        return $this->orderGoods->order->orderGoods->where('goods_id', $this->orderGoods->goods_id)->getPrice();
     }
+
 }

@@ -7,8 +7,6 @@
  */
 namespace app\frontend\models;
 
-use app\frontend\models\Member;
-use app\frontend\modules\refund\models\RefundApply;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -59,7 +57,7 @@ class Order extends \app\common\models\Order
 
     public function belongsToOrderGoods()
     {
-        return $this->belongsTo(self::getNearestModel('OrderGoods'), 'id', 'order_id');
+        return $this->belongsTo(app('OrderManager')->make('OrderGoods'), 'id', 'order_id');
     }
 
     public function orderGoodsBuilder($status)
@@ -122,4 +120,15 @@ class Order extends \app\common\models\Order
         });
     }
 
+    /**
+     * @return array
+     * @throws \app\common\exceptions\AppException
+     */
+    public function getOperationsSetting()
+    {
+        if (Member::current()->uid == $this->uid) {
+            return app('OrderManager')->setting('member_order_operations')[$this->statusCode] ?: [];
+        }
+        return [];
+    }
 }

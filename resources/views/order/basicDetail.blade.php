@@ -94,12 +94,19 @@
 </div>
 
 <div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">备注 :</label>
-    <div class="col-sm-9 col-xs-12"><textarea style="height:150px;" class="form-control"
-                                              id="remark" name="remark"
-                                              cols="70">{{$order['has_one_order_remark']['remark']}}</textarea>
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">用户备注 :</label>
+    <div class="col-sm-9 col-xs-12" class="form-control" style="height:150px;" cols="70" >
+        <textarea style="height:140px;" class="form-control" cols="70" disabled>{{$order['note']}}</textarea>
     </div>
 </div>
+
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">商户备注 :</label>
+    <div class="col-sm-9 col-xs-12">
+        <textarea style="height:150px;" class="form-control" id="remark" name="remark" cols="70">{{$order['has_one_order_remark']['remark']}}</textarea>
+    </div>
+</div>
+
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
     <div class="col-sm-9 col-xs-12">
@@ -248,9 +255,9 @@
                 <th class="col-md-5 col-lg-1">ID</th>
                 <th class="col-md-5 col-lg-3">商品标题</th>
                 <th class="col-md-5 col-lg-3">商品规格</th>
-                <th class="col-md-5 col-lg-2">现价/原价/成本价</th>
+                <th class="col-md-5 col-lg-3">现价/原价/成本价</th>
                 <th class="col-md-5 col-lg-1">购买数量</th>
-                <th class="col-md-5 col-lg-1" style="color:red;">折扣前<br/>折扣后</th>
+                {{--<th class="col-md-5 col-lg-1" style="color:red;">折扣前<br/>折扣后</th>--}}
                 <th class="col-md-5 col-lg-1">操作</th>
             </tr>
             </thead>
@@ -267,9 +274,9 @@
                         /{{$order_goods['goods_cost_price']}}元
                     </td>
                     <td>{{$order_goods['total']}}</td>
-                    <td style='color:red;font-weight:bold;'>{{sprintf('%.2f', $order_goods['goods_price']/$order_goods['total'])}}
-                        <br/>{{sprintf('%.2f', $order_goods['payment_amount']/$order_goods['total'])}}
-                    </td>
+                    {{--<td style='color:red;font-weight:bold;'>{{sprintf('%.2f', $order_goods['goods_price']/$order_goods['total'])}}--}}
+                        {{--<br/>{{sprintf('%.2f', $order_goods['payment_amount']/$order_goods['total'])}}--}}
+                    {{--</td>--}}
                     <td>
                         <a href="{!! yzWebUrl($edit_goods, array('id' => $order_goods['goods']['id'])) !!}"
                            class="btn btn-default btn-sm" title="编辑"><i

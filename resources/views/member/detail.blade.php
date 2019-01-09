@@ -138,8 +138,7 @@
                                 <div class='input-group'>
                                     <div class=' input-group-addon'>{{$member['credit1']}}</div>
                                     <div class='input-group-btn'>
-                                        <a class='btn btn-success'
-                                           href="{{yzWebUrl('finance.point-recharge',['id'=>$member['uid']])}}">充值</a>
+                                        <a class='btn btn-success' href="{{yzWebUrl('point.recharge.index',['id'=>$member['uid']])}}">充值</a>
                                     </div>
                                 </div>
                             </div>
@@ -149,8 +148,8 @@
                             <div class="col-sm-3">
                                 <div class='input-group'>
                                     <div class=' input-group-addon'>{{$member['credit2']}}</div>
-                                    <div class='input-group-btn'><a class='btn btn-success'
-                                                                    href="{{yzWebUrl('finance.balance.recharge', ['member_id'=>$member['uid']])}}">充值</a>
+                                    <div class='input-group-btn'>
+                                        <a class='btn btn-success' href="{{yzWebUrl('balance.recharge.index', ['member_id'=>$member['uid']])}}">充值</a>
                                     </div>
                                 </div>
                             </div>

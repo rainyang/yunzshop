@@ -36,7 +36,6 @@
 <a class="btn btn-primary btn-sm disbut"
    href="{!! yzWebUrl('order.operation.receive', array('order_id' => $order['id'])) !!}"
    onclick="return confirm('确认订单收货吗？');return false;">确认收货</a>
-<a class="btn btn-default btn-sm disbut">等待收货</a>
 @endif
 
 

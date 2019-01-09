@@ -12,6 +12,14 @@ namespace app\common\models;
 
 use Illuminate\Support\Facades\Config;
 
+/**
+ * Class Withdraw
+ * @package app\common\models
+ * @property int id
+ * @property int type_id
+ * @property float amounts
+ * @property int status
+ */
 class Withdraw extends BaseModel
 {
     /**

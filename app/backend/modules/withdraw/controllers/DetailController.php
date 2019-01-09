@@ -17,7 +17,7 @@ class DetailController extends PreController
     /**
      * 提现记录详情 接口
      *
-     * @return string
+     * @throws \Throwable
      */
     public function index()
     {

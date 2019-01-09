@@ -18,6 +18,7 @@ use app\frontend\modules\withdraw\models\Income;
 use app\frontend\modules\withdraw\services\PayWayValidatorService;
 use app\frontend\modules\withdraw\services\OutlayService;
 use app\frontend\modules\withdraw\services\DataValidatorService;
+use app\frontend\modules\withdraw\services\WithdrawMessageService;
 use app\Jobs\WithdrawFreeAuditJob;
 use Illuminate\Contracts\Events\Dispatcher;
 
@@ -62,17 +63,33 @@ class WithdrawApplyListener
             static::class . "@withdrawApplied",
             999
         );
+
+
+
+        /**
+         * 提现申请后，消息通知管理员
+         */
+        $dispatcher->listen(
+            WithdrawAppliedEvent::class,
+            static::class . "@withdrawMessage",
+            999
+        );
     }
+
 
 
     /**
      * 提现申请，验证打款方式
      *
-     * @param $event WithdrawApplyingEvent
+     * @param $event
+     * @throws AppException
      */
     public function validatorPayWay($event)
     {
         $withdrawModel = $event->getWithdrawModel();
+        if ($withdrawModel->is_auto) {
+            return;
+        }
 
         (new PayWayValidatorService())->validator($withdrawModel->pay_way);
     }
@@ -82,6 +99,7 @@ class WithdrawApplyListener
      * 提现申请，验证相关数据
      *
      * @param WithdrawApplyingEvent $event
+     * @throws AppException
      */
     public function withdrawApply($event)
     {
@@ -119,7 +137,9 @@ class WithdrawApplyListener
 
         $income_ids = explode(',', $withdrawModel->type_id);
 
+
         $result = Income::uniacid()->whereIn('id', $income_ids)->update(['status' => Income::STATUS_WITHDRAW, 'pay_status' => Income::PAY_STATUS_INITIAL]);
+
         if ($result < 1) {
             throw new AppException("{$withdrawModel->type_name}收入记录更新失败");
         }
@@ -130,7 +150,6 @@ class WithdrawApplyListener
      * 提现申请后，免审核任务
      *
      * @param $event WithdrawApplyingEvent
-     * @throws AppException
      */
     public function withdrawApplied($event)
     {
@@ -139,12 +158,24 @@ class WithdrawApplyListener
         $withdraw_set = $withdrawModel->withdraw_set;
         if ($withdraw_set['free_audit'] == 1) {
 
-            $free_audit = ['balance', 'wechat'];
+            $free_audit = ['balance', 'wechat', 'huanxun'];
             if (in_array($withdrawModel->pay_way, $free_audit)) {
 
                 $job = new WithdrawFreeAuditJob($withdrawModel);
                 dispatch($job);
             }
         }
+    }
+
+    /**
+     * 提现申请后，消息通知
+     *
+     * @param $event WithdrawAppliedEvent
+     */
+    public function withdrawMessage($event)
+    {
+        $withdrawModel = $event->getWithdrawModel();
+        (new WithdrawMessageService())->withdraw($withdrawModel);
+
     }
 }

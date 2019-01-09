@@ -11,22 +11,33 @@ namespace app\backend\modules\member\controllers;
 
 use app\backend\modules\member\models\McMappingFans;
 use app\backend\modules\member\models\Member;
+use app\backend\modules\member\models\MemberChildren;
 use app\backend\modules\member\models\MemberGroup;
 use app\backend\modules\member\models\MemberLevel;
 use app\backend\modules\member\models\MemberRecord;
 use app\backend\modules\member\models\MemberShopInfo;
+use app\backend\modules\member\models\MemberUnique;
 use app\backend\modules\member\services\MemberServices;
+use app\backend\modules\member\models\MemberParent;
 use app\common\components\BaseController;
+use app\common\events\member\MemberDelEvent;
 use app\common\events\member\MemberRelationEvent;
 use app\common\events\member\RegisterByAgent;
+use app\common\helpers\Cache;
 use app\common\helpers\PaginationHelper;
 use app\common\models\AccountWechats;
+use app\common\models\member\ChildrenOfMember;
+use app\common\models\member\ParentOfMember;
+use app\common\models\MemberAlipay;
+use app\common\models\MemberMiniAppModel;
+use app\common\models\MemberWechatModel;
 use app\common\services\ExportService;
-use app\frontend\modules\member\models\MemberUniqueModel;
+use app\common\services\member\MemberRelation;
 use app\frontend\modules\member\models\SubMemberModel;
 use app\Jobs\ModifyRelationJob;
+use Illuminate\Support\Facades\DB;
 use Yunshop\Commission\models\Agents;
-
+use Yunshop\TeamDividend\models\TeamDividendLevelModel;
 
 
 class MemberController extends BaseController
@@ -207,7 +218,7 @@ class MemberController extends BaseController
             exit;
         }
 
-        $member = Member::getMemberInfoById($uid);
+        $member = Member::getMemberInfoBlackById($uid);
 
         if (!empty($member)) {
             $member = $member->toArray();
@@ -302,6 +313,7 @@ class MemberController extends BaseController
         if ($validator->fails()) {
             $this->error($validator->messages());
         } else {
+//            (new \app\common\services\operation\ShopMemberLog($shopInfoModel, 'update'));
             if ($shopInfoModel->save()) {
 
                 if ($parame->data['agent']) {
@@ -320,59 +332,83 @@ class MemberController extends BaseController
      * 删除
      *
      */
-//    public function delete()
-//    {
-//        $del = false;
-//        $uid = \YunShop::request()->id ? intval(\YunShop::request()->id) : 0;
-//
-//        if ($uid == 0 || !is_int($uid)) {
-//            return $this->message('参数错误', '', 'error');
-//        }
-//
-//        $member = Member::getMemberBaseInfoById($uid);
-//
-//        if (empty($member)) {
-//            return $this->message('用户不存在', '', 'error');
-//        }
-//
-//        $del = DB::transaction(function () use ($uid, $member) {
-//            //商城会员表
-//            MemberShopInfo::deleteMemberInfoById($uid);
-//
-//            //unionid关联表
-//            if (isset($member->hasOneFans->unionid) && !empty($member->hasOneFans->unionid)) {
-//                $uniqueModel = MemberUnique::getMemberInfoById($member->hasOneFans->unionid)->first();
-//
-//                if (!is_null($uniqueModel)) {
-//                    if ($uniqueModel->member_id != $uid) {
-//                        MemberShopInfo::deleteMemberInfoById($uniqueModel->member_id);
-//                        //小程序会员表
-//                        MemberMiniAppModel::deleteMemberInfoById($uniqueModel->member_id);
-//                        //app会员表
-//                        MemberWechatModel::deleteMemberInfoById($uniqueModel->member_id);
-//                    }
-//                }
-//
-//                MemberUnique::deleteMemberInfoById($uid, $member->hasOneFans->unionid);
-//            } else {
-//                MemberUnique::deleteMemberInfoById($uid);
-//            }
-//
-//            //小程序会员表
-//            MemberMiniAppModel::deleteMemberInfoById($uid);
-//
-//            //app会员表
-//            MemberWechatModel::deleteMemberInfoById($uid);
-//
-//            return true;
-//        });
-//
-//        if ($del) {
-//            return $this->message('用户删除成功', yzWebUrl('member.member.index'));
-//        }
-//
-//        return $this->message('用户删除失败', yzWebUrl('member.member.index'), 'error');
-//    }
+    public function delete()
+    {
+        $del = false;
+
+        $uid = \YunShop::request()->id ? intval(\YunShop::request()->id) : 0;
+
+        if ($uid == 0 || !is_int($uid)) {
+            return $this->message('参数错误', '', 'error');
+        }
+
+        $member = Member::getMemberBaseInfoById($uid);
+
+        if (empty($member)) {
+            return $this->message('用户不存在', '', 'error');
+        }
+
+
+        $del = DB::transaction(function () use ($uid, $member) {
+            //商城会员表
+            //MemberShopInfo::deleteMemberInfoById($uid);
+
+            //unionid关联表
+            if (isset($member->hasOneFans->unionid) && !empty($member->hasOneFans->unionid)) {
+                $uniqueModel = MemberUnique::getMemberInfoById($member->hasOneFans->unionid)->first();
+
+                if (!is_null($uniqueModel)) {
+                    if ($uniqueModel->member_id != $uid) {
+                        //删除会员
+                        Member::UpdateDeleteMemberInfoById($uniqueModel->member_id);
+                        //小程序会员表
+                        MemberMiniAppModel::deleteMemberInfoById($uniqueModel->member_id);
+                        //app会员表
+                        MemberWechatModel::deleteMemberInfoById($uniqueModel->member_id);
+
+                        //删除微擎mc_mapping_fans 表数据
+                        McMappingFans::deleteMemberInfoById($uniqueModel->member_id);
+
+                        //清空 yz_member 关联
+                        MemberShopInfo::deleteMemberInfoOpenid($uniqueModel->member_id);
+                        //Member::deleteMemberInfoById($uniqueModel->member_id);
+                    }
+                }
+            }
+
+            MemberUnique::deleteMemberInfoById($uid);
+
+            if (app('plugins')->isEnabled('alipay-onekey-login')) {
+                //删除支付宝会员表
+                MemberAlipay::deleteMemberInfoById($uid);
+            }
+
+            //小程序会员表
+            MemberMiniAppModel::deleteMemberInfoById($uid);
+
+            //app会员表
+            MemberWechatModel::deleteMemberInfoById($uid);
+
+            //删除微擎mc_mapping_fans 表数据
+            McMappingFans::deleteMemberInfoById($uid);
+
+            //清空 yz_member 关联
+            MemberShopInfo::deleteMemberInfoOpenid($uid);
+
+            //删除会员
+            Member::UpdateDeleteMemberInfoById($uid);
+
+            event(new MemberDelEvent($uid));
+
+            return true;
+        });
+
+        if ($del) {
+            return $this->message('用户删除成功', yzWebUrl('member.member.index'));
+        }
+
+        return $this->message('用户删除失败', yzWebUrl('member.member.index'), 'error');
+    }
 
     /**
      * 设置黑名单
@@ -392,6 +428,7 @@ class MemberController extends BaseController
         );
 
         if (MemberShopInfo::setMemberBlack($uid, $data)) {
+            (new \app\common\services\operation\MemberBankCardLog(['uid'=> $uid, 'is_black' => \YunShop::request()->black], 'special'));
             return $this->message('黑名单设置成功', yzWebUrl('member.member.index'));
         } else {
             return $this->message('黑名单设置失败', yzWebUrl('member.member.index'), 'error');
@@ -418,7 +455,7 @@ class MemberController extends BaseController
      *
      * @return mixed
      */
-    public function agent()
+    public function agentOld()
     {
         $request = \YunShop::request();
 
@@ -434,13 +471,217 @@ class MemberController extends BaseController
 
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $this->pageSize);
 
-        return view('member.agent', [
+        return view('member.agent-old', [
             'member' => $member_info,
             'list'  => $list,
             'pager' => $pager,
             'total' => $list['total'],
             'request' => $request
         ])->render();
+    }
+
+    /**
+     * 推广下线
+     *
+     * @return mixed
+     */
+    public function agent()
+    {
+        $request = \YunShop::request();
+
+        $member_info = Member::getUserInfos($request->id)->first();
+
+        if (empty($member_info)) {
+            return $this->message('会员不存在','', 'error');
+        }
+
+        $list = MemberParent::children($request)
+            ->paginate($this->pageSize)
+            ->toArray();
+
+        $level_total = MemberParent::where('parent_id', $request->id)
+            ->selectRaw('count(member_id) as total, level, max(parent_id) as parent_id')
+            ->groupBy('level')
+            ->get();
+
+        $pager = PaginationHelper::show($list['total'], $list['current_page'], $this->pageSize);
+
+        return view('member.agent', [
+            'member' => $member_info,
+            'list'  => $list,
+            'pager' => $pager,
+            'total' => $list['total'],
+            'request' => $request,
+            'level_total' => $level_total,
+        ])->render();
+    }
+
+    public function agentExport()
+    {
+        $file_name = date('Ymdhis', time()) . '会员下级导出';
+        $export_data[0] = ['ID', '昵称', '真实姓名', '电话'];
+        $member_id = request()->id;
+        $child = MemberParent::where('parent_id', $member_id)->with('hasOneChildMember')->get();
+        foreach ($child as $key => $item) {
+            $member = $item->hasOneChildMember;
+            $export_data[$key + 1] = [
+                $member->uid,
+                $member->nickname,
+                $member->realname,
+                $member->mobile,
+            ];
+        }
+        \Excel::create($file_name, function ($excel) use ($export_data) {
+            // Set the title
+            $excel->setTitle('Office 2005 XLSX Document');
+
+            // Chain the setters
+            $excel->setCreator('芸众商城')
+                ->setLastModifiedBy("芸众商城")
+                ->setSubject("Office 2005 XLSX Test Document")
+                ->setDescription("Test document for Office 2005 XLSX, generated using PHP classes.")
+                ->setKeywords("office 2005 openxml php")
+                ->setCategory("report file");
+
+            $excel->sheet('info', function ($sheet) use ($export_data) {
+                $sheet->rows($export_data);
+            });
+        })->export('xls');
+    }
+
+
+
+    /**
+     * 推广上线
+     * @throws \Throwable
+     */
+    public function agentParent()
+    {
+        $request = \YunShop::request();
+
+        $member_info = Member::getUserInfos($request->id)->first();
+
+        if (empty($member_info)) {
+            return $this->message('会员不存在','', 'error');
+        }
+
+        $list = MemberParent::parent($request)->orderBy('level','asc')->paginate($this->pageSize)->toArray();
+
+        $pager = PaginationHelper::show($list['total'], $list['current_page'], $this->pageSize);
+
+        return view('member.agent-parent', [
+            'member' => $member_info,
+            'list'  => $list,
+            'pager' => $pager,
+            'total' => $list['total'],
+            'request' => $request
+        ])->render();
+    }
+
+    /**
+     * 推广上线导出
+     */
+    public function agentParentExport()
+    {
+        $file_name = date('Ymdhis', time()) . '会员上级导出';
+        $export_data[0] = ['ID', '昵称', '真实姓名', '电话'];
+        $member_id = request()->id;
+
+        $child = MemberParent::where('member_id', $member_id)->with(['hasOneMember'])->get();
+        foreach ($child as $key => $item) {
+            $member = $item->hasOneMember;
+            $export_data[$key + 1] = [
+                $member->uid,
+                $member->nickname,
+                $member->realname,
+                $member->mobile,
+            ];
+        }
+
+        \Excel::create($file_name, function ($excel) use ($export_data) {
+            // Set the title
+            $excel->setTitle('Office 2005 XLSX Document');
+
+            // Chain the setters
+            $excel->setCreator('芸众商城')
+                ->setLastModifiedBy("芸众商城")
+                ->setSubject("Office 2005 XLSX Test Document")
+                ->setDescription("Test document for Office 2005 XLSX, generated using PHP classes.")
+                ->setKeywords("office 2005 openxml php")
+                ->setCategory("report file");
+
+            $excel->sheet('info', function ($sheet) use ($export_data) {
+                $sheet->rows($export_data);
+            });
+        })->export('xls');
+    }
+
+    public function firstAgentExport()
+    {
+        $export_data = [];
+        $file_name = date('Ymdhis', time()) . '会员直推上级导出';
+
+        $member_id = request()->id;
+        $team_list = TeamDividendLevelModel::getList()->get();
+
+        foreach ($team_list as $level) {
+            $export_data[0][] = $level->level_name;
+            $levelId[] = $level->id;
+        }
+        array_push($export_data[0], '会员ID', '会员', '姓名/手机号码');
+
+        $child = MemberParent::where('member_id', $member_id)
+            ->where('level', 1)
+            ->with(['hasManyParent' => function($q) {
+                $q->orderBy('level','asc');
+            }])
+            ->get();
+
+        foreach ($child as $key => $item) {
+
+            $level = $this->getLevel($item, $levelId);
+
+            $export_data[$key + 1] = $level;
+
+            array_push($export_data[$key + 1],
+                $item->member_id,
+                $item->hasOneMember->nickname,
+                $item->hasOneMember->realname . '/' . $item->hasOneMember->mobile);
+        }
+
+        \Excel::create($file_name, function ($excel) use ($export_data) {
+            // Set the title
+            $excel->setTitle('Office 2005 XLSX Document');
+
+            // Chain the setters
+            $excel->setCreator('芸众商城')
+                ->setLastModifiedBy("芸众商城")
+                ->setSubject("Office 2005 XLSX Test Document")
+                ->setDescription("Test document for Office 2005 XLSX, generated using PHP classes.")
+                ->setKeywords("office 2005 openxml php")
+                ->setCategory("report file");
+
+            $excel->sheet('info', function ($sheet) use ($export_data) {
+                $sheet->rows($export_data);
+            });
+        })->export('xls');
+    }
+
+    public function getLevel($member, $levelId)
+    {
+        $data = [];
+//        $num = count($member->hasManyParentTeam);
+        foreach ($levelId as $k => $value) {
+            foreach ($member->hasManyParent as $key => $parent) {
+                if ($parent->hasOneTeamDividend->hasOneLevel->id == $value) {
+                    $data[$k] = $parent->hasOneMember->nickname.' '.$parent->hasOneMember->realname.' '.$parent->hasOneMember->mobile;
+                    break;
+                }
+            }
+            $data[$k] = $data[$k] ?: '';
+        }
+
+        return $data;
     }
 
     /**
@@ -523,60 +764,20 @@ class MemberController extends BaseController
         $parent_id = \YunShop::request()->parent;
         $uid       = \YunShop::request()->member;
 
-        if (is_numeric($parent_id)) {
-            if (!empty($parent_id)) {
-                $parent =  SubMemberModel::getMemberShopInfo($parent_id);
+        $msg = MemberShopInfo::change_relation($uid, $parent_id);
 
-                $parent_is_agent = !empty($parent) && $parent->is_agent == 1 && $parent->status == 2;
-
-                if (!$parent_is_agent) {
-                    return $this->message('上线没有推广权限', yzWebUrl('member.member.detail'), 'warning');
-                }
-            }
-
-            $member_relation = Member::setMemberRelation($uid, $parent_id);
-            $plugin_commission = app('plugins')->isEnabled('commission');
-
-            if (isset($member_relation) && $member_relation !== false) {
-                $member = MemberShopInfo::getMemberShopInfo($uid);
-
-                $record = new MemberRecord();
-                $record->uniacid   = \YunShop::app()->uniacid;
-                $record->uid       = $uid;
-                $record->parent_id = $member->parent_id;
-
-                $member->parent_id = $parent_id;
-                $member->inviter = 1;
-
-                $member->save();
-                $record->save();
-
-                if ($plugin_commission) {
-                   $agents = Agents::uniacid()->where('member_id', $uid)->first();
-
-                   if (!is_null($agents)) {
-                       $agents->parent_id = $parent_id;
-                       $agents->parent    = $member->relation;
-
-                       $agents->save();
-                   }
-
-                    $agent_data = [
-                        'member_id' => $uid,
-                        'parent_id' => $parent_id,
-                        'parent'   => $member->relation
-                    ];
-
-                    event(new RegisterByAgent($agent_data));
-                }
-
-                //更新2、3级会员上线和分销关系
-                dispatch(new ModifyRelationJob($uid, $member_relation, $plugin_commission));
-
-                response(['status' => 1])->send();
-            } else {
+        switch ($msg['status']) {
+            case -1:
+                return $this->message('上线没有推广权限', yzWebUrl('member.member.detail'), 'warning');
+                break;
+            case 0:
                 response(['status' => 0])->send();
-            }
+                break;
+            case 1:
+                response(['status' => 1])->send();
+                break;
+            default:
+                response(['status' => 0])->send();
         }
     }
 
@@ -593,7 +794,37 @@ class MemberController extends BaseController
     {
         $status = \YunShop::request()->status;
 
-        if (!is_null($status)) {
+        if (Cache::has('queque_wechat_total')) {
+            Cache::forget('queque_wechat_total');
+        }
+
+        if (Cache::has('queque_wechat_page')) {
+            Cache::forget('queque_wechat_page');
+        }
+
+        if (is_null($status)) {
+            $pageSize = 1000;
+
+            $member_info = Member::getQueueAllMembersInfo(\YunShop::app()->uniacid);
+
+            $total       = $member_info->count();
+            $total_page  = ceil($total/$pageSize);
+
+            \Log::debug('------total-----', $total);
+            \Log::debug('------total_page-----', $total_page);
+
+            Cache::put('queque_wechat_total', $total_page, 30);
+
+            for ($curr_page = 1; $curr_page <= $total_page; $curr_page++) {
+                \Log::debug('------curr_page-----', $curr_page);
+                $offset      = ($curr_page - 1) * $pageSize;
+                $member_info = Member::getQueueAllMembersInfo(\YunShop::app()->uniacid, $pageSize, $offset)->get();
+                \Log::debug('------member_count-----', $member_info->count());
+
+                $job = (new \app\Jobs\wechatUnionidJob(\YunShop::app()->uniacid, $member_info));
+                dispatch($job);
+            }
+        } else {
             switch ($status) {
                 case 0:
                     return $this->message('微信开放平台数据同步失败', yzWebUrl('member.member.index'), 'error');
@@ -610,15 +841,38 @@ class MemberController extends BaseController
 
     public function updateWechatData()
     {
-        set_time_limit(0);
-        $uniacid = \YunShop::app()->uniacid;
+        $total = Cache::get('queque_wechat_total');
+        $page  = Cache::get('queque_wechat_page');
+\Log::debug('--------ajax total-------', $total);
+        \Log::debug('--------ajax page-------', $page);
+        if ($total == $page) {
+            return json_encode(['status' => 1]);
+        } else {
+            return json_encode(['status' => 0]);
+        }
 
-        try {
+        /*ry {
             \Artisan::call('syn:wechatUnionid' ,['uniacid'=>$uniacid]);
+
 
             return json_encode(['status' => 1]);
         } catch (\Exception $e) {
             return json_encode(['status' => 0]);
-        }
+        }*/
+    }
+
+    public function exportRelation()
+    {
+        $uniacid = \YunShop::app()->uniacid;
+        $parentMemberModle = new ParentOfMember();
+        $childMemberModel = new ChildrenOfMember();
+        $parentMemberModle->DeletedData($uniacid);
+        $childMemberModel->DeletedData($uniacid);
+
+        $member_relation = new MemberRelation();
+
+        $member_relation->createParentOfMember();
+
+        return view('member.export-relation', [])->render();
     }
 }

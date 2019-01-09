@@ -24,7 +24,7 @@ class UserController extends BaseController
      **/
     public function index()
     {
-        $records = User::records()->noOperator();
+        $records = User::records();
 
         $search = \YunShop::request()->search;
         if ($search) {
@@ -39,7 +39,8 @@ class UserController extends BaseController
             'pager' => $pager,
             'roleList' => $roleList,
             'userList' => $userList,
-            'search' => $search
+            'search' => $search,
+            'hasStore' => app('plugins')->isEnabled('store-cashier')
         ])->render();
     }
 
@@ -90,7 +91,7 @@ class UserController extends BaseController
         //dd($userModel);
 
         if (!$userModel) {
-            return $this->message("未找到数据或以删除！", '', 'error');
+            return $this->message("未找到数据或已删除！", '', 'error');
         }
         $permissionService = new PermissionService();
 

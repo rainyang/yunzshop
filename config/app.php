@@ -17,7 +17,7 @@ return [
     /**
      * 微擎模块名
      */
-    'module_name'=>'yun_shop',
+    'module_name' => 'yun_shop',
 
     /*
     |--------------------------------------------------------------------------
@@ -173,8 +173,6 @@ return [
         app\common\providers\AppServiceProvider::class,
         // 商城管理
         app\common\providers\ShopProvider::class,
-        // 订单服务提供者
-        \app\common\modules\order\providers\OrderServiceProvider::class,
         app\common\providers\PluginServiceProvider::class,
         // app\common\providers\BroadcastServiceProvider::class,
         app\common\providers\EventServiceProvider::class,
@@ -208,7 +206,8 @@ return [
 
         //拼音
         Overtrue\LaravelPinyin\ServiceProvider::class,
-
+        // 日志浏览
+        Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class,
     ],
 
     /*
@@ -241,7 +240,7 @@ return [
         'Gate' => Illuminate\Support\Facades\Gate::class,
         'Hash' => Illuminate\Support\Facades\Hash::class,
         'Lang' => Illuminate\Support\Facades\Lang::class,
-        'Log' => Illuminate\Support\Facades\Log::class,
+        'Log' => \app\framework\Support\Facades\Log::class,
         'Mail' => Illuminate\Support\Facades\Mail::class,
         'Notification' => Illuminate\Support\Facades\Notification::class,
         'Password' => Illuminate\Support\Facades\Password::class,
@@ -259,16 +258,16 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         'Setting' => app\common\facades\Setting::class,//设置
-        'Option'    => app\common\facades\Option::class,
-        'Utils'     => app\common\services\Utils::class,
+        'Option' => app\common\facades\Option::class,
+        'Utils' => app\common\services\Utils::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,//Excel 组件
 
         //表单生成
-        'Form'     => Collective\Html\FormFacade::class,
-        'HTML'     => Collective\Html\HtmlFacade::class,
+        'Form' => Collective\Html\FormFacade::class,
+        'HTML' => Collective\Html\HtmlFacade::class,
         'BootForm' => Watson\BootstrapForm\Facades\BootstrapForm::class,
-         //表单生成end
-        'Curl'          => Ixudra\Curl\Facades\Curl::class,
+        //表单生成end
+        'Curl' => Ixudra\Curl\Facades\Curl::class,
 
         'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
         //php短信发送
@@ -281,18 +280,22 @@ return [
     ],
 
     'pay_type' => [
-         1 => '微信',
-         2 => '支付宝',
-         3 => '余额'
+        1 => '微信',
+        2 => '支付宝',
+        3 => '余额'
     ],
     //'menu_key'=>'menu',
-    'menu'  => [
-        'main_menu'     => 'main-menu',
-        'plugins_menu'  => 'plugins_menu',
-        'founder_menu'  => 'founder-menu',
+    'menu' => [
+        'main_menu' => 'main-menu',
+        'plugins_menu' => 'plugins_menu',
+        'founder_menu' => 'founder-menu',
         //兼容旧插件使用
-        'old_plugin_menu'   => 'menu'
+        'old_plugin_menu' => 'menu'
     ],
 
-
+    'express' => [
+        'KDN' => [
+            'reqURL'=>'http://api.kdniao.com/api/dist'
+        ]
+    ]
 ];

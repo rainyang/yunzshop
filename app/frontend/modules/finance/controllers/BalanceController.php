@@ -150,6 +150,8 @@ class BalanceController extends ApiController
                 || $type == PayFactory::PAY_YUN_WEACHAT
                 || $type == PayFactory::PAY_Huanxun_Quick
                 || $type == PayFactory::PAY_Huanxun_Wx
+                || $type == PayFactory::WFT_PAY
+                || $type == PayFactory::WFT_ALIPAY
             ) {
                 return  $this->successJson('支付接口对接成功', array_merge(['ordersn' => $this->model->ordersn], $this->payOrder()));
             }
@@ -340,18 +342,17 @@ class BalanceController extends ApiController
             'new_money' => $change_money + $this->memberInfo->credit2,
             'ordersn' => BalanceRecharge::createOrderSn('RV','ordersn'),
             'type' => intval(\YunShop::request()->pay_type),
-            'status' => BalanceRecharge::PAY_STATUS_ERROR
+            'status' => BalanceRecharge::PAY_STATUS_ERROR,
+            'remark' => '会员前端充值'
         );
     }
-
 
 
     /**
      * 会员余额充值支付接口
      *
-     * @param $data
-     * @return array|string|
-     * @Author yitian
+     * @return \app\common\services\strin5|array|bool|mixed|string
+     * @throws AppException
      */
     private function payOrder()
     {
@@ -390,6 +391,7 @@ class BalanceController extends ApiController
         if ($this->model->type == PayFactory::PAY_Huanxun_Quick) {
             $array['extra'] = ['type' => 2, 'pay' => 'quick'];
         }
+        
         return $array;
     }
 

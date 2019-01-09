@@ -24,9 +24,12 @@ class UpdateController extends BaseController
 
         //删除非法文件
         $this->deleteFile();
+        //执行迁移文件
+        $this->runMigrate();
 
         $key = Setting::get('shop.key')['key'];
         $secret = Setting::get('shop.key')['secret'];
+
         $update = new AutoUpdate(null, null, 300);
         $update->setUpdateFile('check_app.json');
 
@@ -340,13 +343,12 @@ class UpdateController extends BaseController
                 }
             }
 
-            //$filesystem->deleteDirectory(storage_path('app/auto-update/shop'));
-
-            //更新完执行数据表
             \Log::debug('----CLI----');
             $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
-            \Artisan::call('update:version' ,['version'=>$plugins_dir]);
-
+            if (!empty($plugins_dir)) {
+                \Artisan::call('update:version' ,['version'=>$plugins_dir]);
+            }
+            
             //清理缓存
             \Log::debug('----Cache Flush----');
             \Cache::flush();
@@ -375,6 +377,7 @@ class UpdateController extends BaseController
 
         $key = Setting::get('shop.key')['key'];
         $secret = Setting::get('shop.key')['secret'];
+
         $update = new AutoUpdate(null, null, 300);
         $update->setUpdateFile('check_app.json');
 
@@ -400,6 +403,7 @@ class UpdateController extends BaseController
                 \Log::debug('----CLI----');
                 \Artisan::call('update:version' ,['version'=>$version]);
             });*/
+
             $result = $update->update();
 
             if ($result === true) {
@@ -459,10 +463,32 @@ class UpdateController extends BaseController
     {
         $filesystem = app(Filesystem::class);
 
+        //file-删除指定文件，file-空 删除目录下所有文件
         $files = [
+            [
+                'path' => base_path('database/migrations'),
+                'ext'  => ['php'],
+                'file' => [
+                    base_path('database/migrations/2018_10_18_150312_add_unique_to_yz_member_income.php')
+                ]
+            ],
             [
                 'path' => storage_path('cert'),
                 'ext' => ['pem']
+            ],
+            [
+                'path' => base_path('plugins/store-cashier/migrations'),
+                'ext'  => ['php'],
+                'file' => [
+                    base_path('plugins/store-cashier/migrations/2018_11_26_174034_fix_address_store.php')
+                ]
+            ],
+            [
+                'path' => base_path('plugins/supplier/migrations'),
+                'ext'  => ['php'],
+                'file' => [
+                    base_path('plugins/supplier/migrations/2018_11_26_155528_update_ims_yz_order_and_goods.php')
+                ]
             ]
         ];
 
@@ -471,10 +497,18 @@ class UpdateController extends BaseController
 
             if (!empty($scan_file)) {
                 foreach ($scan_file as $item) {
-                    $file_info = pathinfo($item);
+                    if (!empty($rows['file'])) {
+                        foreach ($rows['file'] as $val) {
+                            if ($val == $item) {
+                                @unlink($item);
+                            }
+                        }
+                    } else {
+                        $file_info = pathinfo($item);
 
-                    if (!in_array($file_info['extension'], $rows['ext'])) {
-                        @unlink($item);
+                        if (!in_array($file_info['extension'], $rows['ext'])) {
+                            @unlink($item);
+                        }
                     }
                 }
             }
@@ -515,5 +549,22 @@ class UpdateController extends BaseController
     public function pirate()
     {
         return view('update.pirate', [])->render();
+    }
+
+    private function runMigrate()
+    {
+        $filesystem = app(Filesystem::class);
+        $update = new AutoUpdate(null, null, 300);
+        $plugins = $update->getDirsByPath('plugins', $filesystem);
+
+        foreach ($plugins as $p) {
+            $path = 'plugins/' . $p . '/migrations';
+
+            if(is_dir(base_path($path) )){
+                \Artisan::call('migrate',['--force' => true,'--path' => $path]);
+            }
+        }
+
+        \Artisan::call('migrate',['--force' => true]);
     }
 }

@@ -8,59 +8,45 @@
 
 namespace app\frontend\modules\order\controllers;
 
-use app\common\events\order\CreatingOrder;
-use app\common\exceptions\AppException;
+use app\common\components\ApiController;
 use app\frontend\modules\member\services\MemberCartService;
-use Illuminate\Support\Facades\DB;
-use Request;
-use app\common\events\order\AfterOrderCreatedEvent;
-use app\frontend\modules\order\models\PreOrder;
+use app\frontend\modules\memberCart\MemberCartCollection;
 
-class CreateController extends PreOrderController
+class CreateController extends ApiController
 {
-    protected function getMemberCarts()
-    {
-        $goods_params = json_decode(request()->input('goods'),true);
-        return collect($goods_params)->map(function ($memberCart) {
+
+    private $memberCarts;
+    protected function _getMemberCarts(){
+        $goods_params = json_decode(request()->input('goods'), true);
+
+        $memberCarts = collect($goods_params)->map(function ($memberCart) {
             return MemberCartService::newMemberCart($memberCart);
         });
+        return $memberCarts;
     }
-    protected function validateParam(){
-
-    }
-    public function index(Request $request)
+    protected function getMemberCarts()
     {
-        \Log::info('用户下单',request()->input());
-        $this->validateParam();
-        //订单组
-        $orders = collect();
-        $shopOrder = $this->getShopOrder($this->getMemberCarts());
-        if($shopOrder){
+        if(!isset($this->memberCarts)){
 
-            $orders->push($shopOrder);
+            $memberCarts = new MemberCartCollection($this->_getMemberCarts());
+            $memberCarts->loadRelations();
+            $this->memberCarts = $memberCarts;
         }
-        $orders = $orders->merge($this->getPluginOrders()[0]);
 
-        if($orders->isEmpty()){
-            throw new AppException('未找到订单商品');
-        }
-        //生成订单,触发事件
-        $order_ids = DB::transaction(function () use ($orders) {
-            return $orders->map(function ($order) {
-                /**
-                 * @var $order PreOrder
-                 */
-                $order_id = $order->generate();
-                event(new AfterOrderCreatedEvent($order->getOrder()));
-                return $order_id;
-            });
-        });
-
-        return $this->successJson('成功', ['order_ids' => $order_ids->implode(',')]);
+        return $this->memberCarts;
     }
-    private function getPluginOrders(){
-        $event = new CreatingOrder($this->getMemberCarts());
-        event($event);
-        return $event->getData();
+
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function index()
+    {
+        \Log::info('用户下单', request()->input());
+        //订单组
+        $trade = $this->getMemberCarts()->getTrade();
+        $trade->generate();
+        $orderIds = $trade->orders->pluck('id')->implode(',');
+        //生成订单,触发事件
+        return $this->successJson('成功', ['order_ids' => $orderIds]);
     }
 }

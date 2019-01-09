@@ -8,9 +8,12 @@
 
 namespace app\frontend\modules\member\controllers;
 
+use app\backend\modules\charts\modules\phone\models\PhoneAttribution;
+use app\backend\modules\charts\modules\phone\services\PhoneAttributionService;
 use app\common\components\ApiController;
 use app\common\helpers\Client;
 use app\common\helpers\Url;
+use app\common\models\Member;
 use app\common\models\MemberGroup;
 use app\common\models\MemberLevel;
 use app\common\models\MemberShopInfo;
@@ -32,8 +35,8 @@ use app\common\services\alipay\OnekeyLogin;
 class RegisterController extends ApiController
 {
     protected $publicController = ['Register'];
-    protected $publicAction = ['index', 'sendCode', 'sendCodeV2', 'checkCode', 'sendSms', 'changePassword'];
-    protected $ignoreAction = ['index', 'sendCode', 'sendCodeV2', 'checkCode', 'sendSms', 'changePassword'];
+    protected $publicAction = ['index', 'sendCode', 'sendCodeV2', 'checkCode', 'sendSms', 'changePassword', 'getInviteCode'];
+    protected $ignoreAction = ['index', 'sendCode', 'sendCodeV2', 'checkCode', 'sendSms', 'changePassword', 'getInviteCode'];
 
     public function index()
     {
@@ -49,6 +52,12 @@ class RegisterController extends ApiController
                 return $this->errorJson($check_code['json']);
             }
 
+            $invite_code = MemberService::inviteCode();
+
+            if ($invite_code['status'] != 1) {
+                return $this->errorJson($invite_code['json']);
+            }
+
             $msg = MemberService::validate($mobile, $password, $confirm_password);
 
             if ($msg['status'] != 1) {
@@ -56,14 +65,6 @@ class RegisterController extends ApiController
             }
 
             $member_info = MemberModel::getId($uniacid, $mobile);
-
-            //增加验证码验证
-            $captcha_status = Setting::get('shop.sms.status');
-            if ($captcha_status == 1) {
-                if ( app('captcha')->check(Input::get('captcha')) == false) {
-                    return $this->errorJson('验证码错误');
-                }
-            }
 
             if (!empty($member_info)) {
                 return $this->errorJson('该手机号已被注册');
@@ -97,6 +98,18 @@ class RegisterController extends ApiController
             $memberModel = MemberModel::create($data);
             $member_id = $memberModel->uid;
 
+            //手机归属地查询插入
+            $phoneData = file_get_contents((new PhoneAttributionService())->getPhoneApi($mobile));
+            $phoneArray = json_decode($phoneData);
+            $phone['uid'] = $member_id;
+            $phone['uniacid'] = $uniacid;
+            $phone['province'] = $phoneArray->data->province;
+            $phone['city'] = $phoneArray->data->city;
+            $phone['sp'] = $phoneArray->data->sp;
+
+            $phoneModel = new PhoneAttribution();
+            $phoneModel->updateOrCreate(['uid' => $member_id], $phone);
+
             //添加yz_member表
             $default_sub_group_id = MemberGroup::getDefaultGroupId()->first();
 
@@ -112,7 +125,11 @@ class RegisterController extends ApiController
                 'group_id' => $default_subgroup_id,
                 'level_id' => 0,
             );
+
             SubMemberModel::insertData($sub_data);
+            //生成分销关系链
+            Member::createRealtion($member_id);
+
 
             $cookieid = "__cookie_yun_shop_userid_{$uniacid}";
             Cookie::queue($cookieid, $member_id);
@@ -189,6 +206,8 @@ class RegisterController extends ApiController
 
         $state = \YunShop::request()->state ?: '86';
 
+        $sms_type = \YunShop::request()->sms_type;
+
         if (empty($mobile)) {
             return $this->errorJson('请填入手机号');
         }
@@ -216,7 +235,7 @@ class RegisterController extends ApiController
         if (!MemberService::smsSendLimit(\YunShop::app()->uniacid, $mobile)) {
             return $this->errorJson('发送短信数量达到今日上限');
         } else {
-            $this->sendSmsV2($mobile, $code, $state);
+            $this->sendSmsV2($mobile, $code, $state, 'reg', $sms_type);
         }
     }
 
@@ -227,12 +246,6 @@ class RegisterController extends ApiController
 
         if (empty($mobile)) {
             return $this->errorJson('请填入手机号');
-        }
-
-        $info = MemberShopInfo::getUserInfo($mobile);
-
-        if (!empty($info)) {
-            return $this->errorJson('该手机号已被注册！不能获取验证码');
         }
         $code = rand(1000, 9999);
 
@@ -261,6 +274,14 @@ class RegisterController extends ApiController
     public function sendSms($mobile, $code, $templateType = 'reg')
     {
         $sms = \Setting::get('shop.sms');
+
+        //增加验证码验证
+        $captcha_status = Setting::get('shop.sms.status');
+        if ($captcha_status == 1) {
+            if ( app('captcha')->check(Input::get('captcha')) == false) {
+                return $this->errorJson('验证码错误');
+            }
+        }
 
         //互亿无线
         if ($sms['type'] == 1) {
@@ -332,9 +353,17 @@ class RegisterController extends ApiController
         }
     }
 
-    public function sendSmsV2($mobile, $code, $state, $templateType = 'reg')
+    public function sendSmsV2($mobile, $code, $state, $templateType = 'reg', $sms_type)
     {
         $sms = \Setting::get('shop.sms');
+
+        //增加验证码验证
+        $captcha_status = Setting::get('shop.sms.status');
+        if ($captcha_status == 1) {
+            if ( app('captcha')->check(Input::get('captcha')) == false) {
+                return $this->errorJson('图形验证码错误');
+            }
+        }
 
         //互亿无线
         if ($sms['type'] == 1) {
@@ -375,14 +404,20 @@ class RegisterController extends ApiController
             $top_client = new \iscms\AlismsSdk\TopClient(trim($sms['appkey']), trim($sms['secret']));
             $name = trim($sms['signname']);
             $templateCode = trim($sms['templateCode']);
-
+            $templateCodeForget = trim($sms['templateCodeForget']);
             config([
                 'alisms.KEY' => trim($sms['appkey']),
                 'alisms.SECRETKEY' => trim($sms['secret'])
             ]);
 
             $sms = new Sms($top_client);
-            $issendsms = $sms->send($mobile, $name, $content, $templateCode);
+
+            //$type为1是注册，else 找回密码
+            if (!is_null($sms_type) && $sms_type == 2) {
+                $issendsms = $sms->send($mobile, $name, $content, $templateCodeForget);
+            }else{
+                $issendsms = $sms->send($mobile, $name, $content, $templateCode);
+            }
 
             if (isset($issendsms->result->success)) {
                 MemberService::udpateSmsSendTotal(\YunShop::app()->uniacid, $mobile);
@@ -393,14 +428,26 @@ class RegisterController extends ApiController
         } elseif ($sms['type'] == 3) {
             $aly_sms = new AliyunSMS(trim($sms['aly_appkey']), trim($sms['aly_secret']));
 
-            $response = $aly_sms->sendSms(
-                $sms['aly_signname'], // 短信签名
-                $sms['aly_templateCode'], // 短信模板编号
-                $mobile, // 短信接收者
-                Array(  // 短信模板中字段的值
-                    "number" => $code
-                )
-            );
+            //$type为1是注册，2是找回密码
+            if (!is_null($sms_type) && $sms_type == 2) {
+                $response = $aly_sms->sendSms(
+                    $sms['aly_signname'], // 短信签名
+                    $sms['aly_templateCodeForget'], // 找回密码短信模板编号
+                    $mobile, // 短信接收者
+                    Array(  // 短信模板中字段的值
+                        "number" => $code
+                    )
+                );
+            }else{
+                $response = $aly_sms->sendSms(
+                    $sms['aly_signname'], // 短信签名
+                    $sms['aly_templateCode'], // 注册短信模板编号
+                    $mobile, // 短信接收者
+                    Array(  // 短信模板中字段的值
+                        "number" => $code
+                    )
+                );
+            }
 
             if ($response->Code == 'OK' && $response->Message == 'OK') {
                 return $this->successJson();
@@ -463,14 +510,6 @@ class RegisterController extends ApiController
             }
 
             $member_info = MemberModel::getId($uniacid, $mobile);
-            
-            //增加验证码验证
-            $captcha_status = Setting::get('shop.sms.status');
-            if ($captcha_status == 1) {
-                if ( app('captcha')->check(Input::get('captcha')) == false ) {
-                    return $this->errorJson('验证码错误');
-                }
-            }
 
             if (empty($member_info)) {
                 return $this->errorJson('该手机号不存在');
@@ -494,4 +533,42 @@ class RegisterController extends ApiController
             return $this->errorJson('手机号或密码格式错误');
         }
     }
+
+    public function getInviteCode()
+    {
+        $close = \YunShop::request()->close;
+        $required =intval(\Setting::get('shop.member.required'));
+        $is_invite = Member::chkInviteCode();
+
+        if (isset($close) && 1 == $close) {
+            $is_invite = 0;
+            $required = 0;
+        }
+
+        $data = [
+            'status' => $is_invite,
+            'required' => $required
+        ];
+
+        return $this->successJson('ok', $data);
+    }
+    public function chkRegister()
+    {
+        $member = Setting::get('shop.member');
+        $shop_reg_close = !empty($member['get_register']) ? $member['get_register'] : 0;
+        $app_reg_close  = 0;
+        $msg = $member["Close_describe"] ?: '注册已关闭';//关闭原因
+        $list=[];
+        $list['state']= $shop_reg_close;
+        if (!is_null($app_set = \Setting::get('shop_app.pay')) && 0 == $app_set['phone_oauth']) {
+            $app_reg_close = 1;
+        }
+
+        if ((!$shop_reg_close && !Client::is_app()) || ($app_reg_close && Client::is_app())) {
+            $list['reason']=$msg;
+            return $this->errorJson('失败',$list);
+        }
+        return $this->successJson('ok',$list);
+    }
+
 }

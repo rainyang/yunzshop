@@ -16,6 +16,7 @@ use app\backend\modules\finance\services\WithdrawService;
 use app\common\components\BaseController;
 use app\common\services\finance\BalanceNoticeService;
 use Illuminate\Support\Facades\Log;
+use app\backend\modules\withdraw\controllers\AuditRejectedController;
 
 class BalanceWithdrawController extends BaseController
 {
@@ -56,8 +57,11 @@ class BalanceWithdrawController extends BaseController
         if (isset($requestData['submit_pay'])) {
             $result = $this->submitPay();
 
-            //BalanceNoticeService::withdrawSuccessNotice($this->withdrawModel);
             if (!empty($result) && 0 == $result['errno']) {
+                //todo 临时增加手动打款成功通知，重构时候注意优化
+                if ($this->withdrawModel->pay_way == 'manual') {
+                    BalanceNoticeService::withdrawSuccessNotice($this->withdrawModel);
+                }
                 return $this->message('提现成功', yzWebUrl('finance.balance-withdraw.detail', ['id'=>\YunShop::request()->id]));
             }
 
@@ -80,6 +84,10 @@ class BalanceWithdrawController extends BaseController
 
         if ($this->getPostStatus() == -1) {
             BalanceNoticeService::withdrawFailureNotice($this->withdrawModel);
+        }
+        if ($this->getPostStatus() == 3) {
+            return (new AuditRejectedController())->index();
+            BalanceNoticeService::withdrawRejectNotice($this->withdrawModel);
         }
         $this->withdrawUpdate();
         return $this->message('提交审核成功', yzWebUrl("finance.balance-withdraw.detail", ['id' => $this->getPostId()]));

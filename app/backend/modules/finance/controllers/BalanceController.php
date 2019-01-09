@@ -9,6 +9,7 @@
 namespace app\backend\modules\finance\controllers;
 
 
+use app\backend\modules\balance\controllers\RechargeController;
 use app\backend\modules\finance\services\BalanceService;
 use app\backend\modules\member\models\Member;
 use app\backend\modules\member\models\MemberGroup;
@@ -143,7 +144,8 @@ class BalanceController extends BaseController
      * @Author yitian */
     public function recharge()
     {
-        $memberInfo =$this->getMemberInfo();
+        return (new RechargeController())->index();
+        /*$memberInfo =$this->getMemberInfo();
         if (!$this->_member_model) {
             return $this->message('未获取到会员信息', Url::absoluteWeb('finance.balance.member'), 'error');
         }
@@ -159,7 +161,7 @@ class BalanceController extends BaseController
         return view('finance.balance.recharge', [
             'rechargeMenu'  => $this->getRechargeMenu(),
             'memberInfo'    => $memberInfo,
-        ])->render();
+        ])->render();*/
     }
 
     private function rechargeStart()

@@ -8,9 +8,8 @@
 
 namespace app\frontend\models;
 
-
-use app\common\models\GoodsDiscount;
-use app\frontend\modules\member\services\MemberService;
+use app\common\facades\Setting;
+use app\common\modules\discount\GoodsMemberLevelDiscount;
 
 /**
  * Class GoodsOption
@@ -19,29 +18,94 @@ use app\frontend\modules\member\services\MemberService;
  * @property int goods_id
  * @property string title
  * @property float weight
+ * @property float product_price
+ * @property float market_price
+ * @property float cost_price
+ * @property float deal_price
+ * @property Goods goods
  */
 class GoodsOption extends \app\common\models\GoodsOption
 {
+    private $dealPrice;
+    protected $vipDiscountAmount;
+    public $vipDiscountLog;
+
     /**
-     * 获取商品规格最终价格
-     * @return mixed
+     * 获取交易价(实际参与交易的商品价格)
+     * @return float|int
+     * @throws \app\common\exceptions\MemberNotLoginException
      */
-    public function getFinalPriceAttribute()
+    public function getDealPriceAttribute()
     {
-        return $this->product_price - $this->getVipDiscountAmount();
+        if (!isset($this->dealPrice)) {
+            $level_discount_set = Setting::get('discount.all_set');
+            if (
+                isset($level_discount_set['type'])
+                && $level_discount_set['type'] == 1
+                && $this->memberLevelDiscount()->getAmount($this->market_price)
+            ) {
+                // 如果开启了原价计算会员折扣,并且存在等级优惠金额
+                $this->dealPrice = $this->market_price;
+            } else {
+                // 默认使用现价
+                $this->dealPrice = $this->product_price;
+            }
+        }
+
+        return $this->dealPrice;
     }
-    public function getVipDiscountAmount(){
-        return $this->goods->getVipDiscountAmount($this->product_price);
-    }
+
+
     /**
-     * 获取商品规格的会员价格
+     * @var GoodsMemberLevelDiscount
+     */
+    private $memberLevelDiscount;
+
+    /**
+     * @return GoodsMemberLevelDiscount
+     * @throws \app\common\exceptions\MemberNotLoginException
+     */
+    public function memberLevelDiscount()
+    {
+        if (!isset($this->memberLevelDiscount)) {
+            $this->memberLevelDiscount = new GoodsMemberLevelDiscount($this->goods, Member::current());
+        }
+        return $this->memberLevelDiscount;
+    }
+
+
+    /**
+     * 缓存等级折金额
+     *  todo 如何解决等级优惠种类记录的问题
+     * @param $price
      * @return float
+     * @throws \app\common\exceptions\MemberNotLoginException
+     */
+
+    public function getVipDiscountAmount($price)
+    {
+        if (isset($this->vipDiscountAmount)) {
+
+            return $this->vipDiscountAmount;
+        }
+        $this->vipDiscountAmount = $this->memberLevelDiscount()->getAmount($price);
+        $this->vipDiscountLog = $this->memberLevelDiscount()->getLog($this->vipDiscountAmount);
+        return $this->vipDiscountAmount;
+    }
+
+
+    /**
+     * 获取商品的会员价格
+     * @return float|int|mixed
+     * @throws \app\common\exceptions\MemberNotLoginException
      */
     public function getVipPriceAttribute()
     {
-        return $this->product_price - $this->getVipDiscountAmount();
+        return $this->deal_price - $this->getVipDiscountAmount($this->deal_price);
     }
-    public function goods(){
+
+    public function goods()
+    {
         return $this->belongsTo(Goods::class);
     }
 }

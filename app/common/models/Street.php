@@ -1,4 +1,5 @@
 <?php
+
 namespace app\common\models;
 
 
@@ -18,7 +19,7 @@ class Street extends BaseModel
     protected $fillable = [''];
 
     public $timestamps = false;
-    
+
 
     public static function getStreetByParentId($parentId)
     {
@@ -27,5 +28,9 @@ class Street extends BaseModel
             ->get();
     }
 
-    
+    public function isLeaf()
+    {
+        return true;
+    }
+
 }

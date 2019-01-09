@@ -33,6 +33,12 @@ class WithdrawSetController extends BaseController
             }
             if ($validator && !$validator->fails()) {
                 foreach ($resultModel as $key => $item) {
+                    if ($key == 'balance') {
+                        (new \app\common\services\operation\BalanceSetLog(['type'=> 'withdraw.balance','old'=>Setting::get('withdraw.'.$key),'new'=>$item], 'update'));
+                    } elseif ($key == 'income') {
+                        (new \app\common\services\operation\IncomeSetLog(['old'=>Setting::get('withdraw.'.$key),'new'=>$item], 'update'));
+                    }
+
                     Setting::set('withdraw.' . $key, $item);
 
                 }

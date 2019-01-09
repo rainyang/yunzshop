@@ -4,13 +4,16 @@ namespace app\common\models;
 
 use app\backend\models\BackendModel;
 use app\common\events\member\BecomeAgent;
+
+use app\common\models\member\MemberChildren;
 use app\common\repositories\OptionRepository;
 use app\common\services\PluginManager;
+use app\common\modules\memberCart\MemberCartCollection;
+use app\framework\Database\Eloquent\Collection;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\MemberWechatModel;
 use app\frontend\repositories\MemberAddressRepository;
-use Illuminate\Events\Dispatcher;
-use Illuminate\Filesystem\Filesystem;
+use Carbon\Carbon;
 use Yunshop\AreaDividend\models\AreaDividendAgent;
 use Yunshop\Commission\models\Agents;
 use Yunshop\Gold\frontend\services\MemberCenterService;
@@ -34,7 +37,61 @@ use Yunshop\TeamDividend\models\TeamDividendAgencyModel;
  * Class Member
  * @package app\common\models
  * @property int uid
+ * @property int uniacid
+ * @property string mobile
+ * @property string email
+ * @property string password
+ * @property string salt
+ * @property int groupid
  * @property float credit1
+ * @property float credit2
+ * @property float credit3
+ * @property float credit4
+ * @property float credit5
+ * @property float credit6
+ * @property Carbon createtime
+ * @property string realname
+ * @property string nickname
+ * @property string avatar
+ * @property string qq
+ * @property int vip
+ * @property int gender
+ * @property int birthyear
+ * @property int birthmonth
+ * @property int birthday
+ * @property string constellation
+ * @property string zodiac
+ * @property string telephone
+ * @property string idcard
+ * @property string studentid
+ * @property string grade
+ * @property string address
+ * @property string zipcode
+ * @property string nationality
+ * @property string resideprovince
+ * @property string residecity
+ * @property string residedist
+ * @property string graduateschool
+ * @property string company
+ * @property string education
+ * @property string occupation
+ * @property string position
+ * @property string revenue
+ * @property string affectivestatus
+ * @property string lookingfor
+ * @property string bloodtype
+ * @property string height
+ * @property string weight
+ * @property string alipay
+ * @property string msn
+ * @property string taobao
+ * @property string site
+ * @property string bio
+ * @property string interest
+ * @property string pay_password
+ * @property Collection memberCarts
+ * @property McMappingFans hasOneFans
+ * @property \app\backend\modules\member\models\MemberShopInfo yzMember
  */
 class Member extends BackendModel
 {
@@ -54,7 +111,7 @@ class Member extends BackendModel
     protected $search_fields = ['mobile', 'uid', 'nickname', 'realname'];
 
     protected $primaryKey = 'uid';
-    protected $appends = ['avatar_image'];
+    protected $appends = ['avatar_image','username'];
 
     public function bankCard()
     {
@@ -65,6 +122,12 @@ class Member extends BackendModel
     public function pointLove()
     {
         return $this->hasOne('app\common\models\finance\PointLoveSet', 'member_id', 'uid');
+    }
+
+    //关联会员删除表 yz_member_del_log
+    public function hasOneDel()
+    {
+        return $this->hasOne('app\common\models\member\MemberDel', 'member_id', 'uid');
     }
 
 
@@ -112,6 +175,20 @@ class Member extends BackendModel
     public function hasManyMemberCoupon()
     {
         return $this->hasOne(MemberCoupon::class, 'uid', 'uid');
+    }
+
+    /**
+     * 公众号会员
+     *
+     * @return mixed
+     */
+
+    public function getMemberId($memberIds){
+          return self::select(['uid'])
+            ->uniacid()
+            ->whereIn('uid', $memberIds)->get()->map(function ($value) {
+                  return $value;
+              })->toArray();;
     }
 
     /**
@@ -196,6 +273,18 @@ class Member extends BackendModel
     public function hasOneSupplier()
     {
         return $this->hasOne(Supplier::class, 'member_id', 'uid');
+    }
+
+    /**
+     * 子会员
+     *
+     * 会员-子会员
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function hasOneMemberChildren()
+    {
+        return $this->hasOne(MemberChildren::class, 'member_id', 'uid');
     }
 
     public function scopeOfUid($query, $uid)
@@ -387,29 +476,20 @@ class Member extends BackendModel
     public static function createRealtion($member_id, $upperMemberId = NULL)
     {
         $model = MemberShopInfo::getMemberShopInfo($member_id);
+        $code_mid = self::getMemberIdForInviteCode();
 
-        if ($upperMemberId) {
-            event(new BecomeAgent($upperMemberId, $model));
-        } else {
-            event(new BecomeAgent(self::getMid(), $model));
+        if (!is_null($code_mid)) {
+            file_put_contents(storage_path("logs/" . date('Y-m-d') . "_invitecode.log"), print_r($member_id . '-'. \YunShop::request()->invite_code . '-' . $code_mid . '-reg' . PHP_EOL, 1), FILE_APPEND);
         }
+
+        $mid   = !is_null($code_mid) ? $code_mid : self::getMid();
+        $mid   = !is_null($upperMemberId) ? $upperMemberId : $mid;
+
+        event(new BecomeAgent($mid, $model));
     }
 
     public static function getMid()
     {
-        /*
-          if (\YunShop::request()->mid) {
-              \Log::debug(sprintf('前端获取mid-%d', \YunShop::request()->mid));
-              return \YunShop::request()->mid;
-          } elseif (Session::get('client_url') && strpos(Session::get('client_url'), 'mid')) {
-              preg_match('/.+mid=(\d+).+/', Session::get('client_url'), $matches);
-              \Log::debug('截取mid', $matches[1]);
-              if (isset($matches) && !empty($matches[1])) {
-                  return $matches[1];
-              }
-          }
-          */
-
         $mid = \YunShop::request()->mid;
 
         return ($mid && ($mid != 'null' || $mid != 'undefined')) ? (int)$mid : 0;
@@ -423,7 +503,7 @@ class Member extends BackendModel
      */
     public static function addPlugins(&$data = [])
     {
-        $plugin_class = new PluginManager(app(), new OptionRepository(), new Dispatcher(), new Filesystem());
+        $plugin_class = app('plugins');
 
         if ($plugin_class->isEnabled('supplier')) {
             $data['supplier'] = VerifyButton::button();
@@ -561,10 +641,11 @@ class Member extends BackendModel
         $incomeModel = Income::getIncomes()->where('member_id', \YunShop::app()->getMemberId())->get();
 
         if ($incomeModel) {
-            return $incomeModel->sum('amount');
+            $amount = $incomeModel->sum('amount');
+            return number_format($amount, 2);
         }
 
-        return 0;
+        return number_format(0, 2);
     }
 
     /**
@@ -661,46 +742,46 @@ class Member extends BackendModel
     {
         $result = $builder;
 
-        if (app('plugins')->isEnabled('commission')) {
-            $result = $result->with([
-                'hasOneAgent'
-            ]);
-        }
-
-        if (app('plugins')->isEnabled('team-dividend')) {
-            $result = $result->with([
-                'hasOneTeamDividend'
-            ]);
-        }
-
-        if (app('plugins')->isEnabled('area-dividend')) {
-            $result = $result->with([
-                'hasOneAreaDividend' => function ($query) {
-                    return $query->where('status', 1);
-                }
-            ]);
-        }
-
-        if (app('plugins')->isEnabled('merchant')) {
-            $result = $result->with([
-                'hasOneMerchant',
-                'hasOneMerchantCenter'
-            ]);
-        }
-
-        if (app('plugins')->isEnabled('micro')) {
-            $result = $result->with([
-                'hasOneMicro'
-            ]);
-        }
-
-        if (app('plugins')->isEnabled('supplier')) {
-            $result = $result->with([
-                'hasOneSupplier' => function ($query) {
-                    return $query->where('status', 1);
-                }
-            ]);
-        }
+//        if (app('plugins')->isEnabled('commission')) {
+//            $result = $result->with([
+//                'hasOneAgent'
+//            ]);
+//        }
+//
+//        if (app('plugins')->isEnabled('team-dividend')) {
+//            $result = $result->with([
+//                'hasOneTeamDividend'
+//            ]);
+//        }
+//
+//        if (app('plugins')->isEnabled('area-dividend')) {
+//            $result = $result->with([
+//                'hasOneAreaDividend' => function ($query) {
+//                    return $query->where('status', 1);
+//                }
+//            ]);
+//        }
+//
+//        if (app('plugins')->isEnabled('merchant')) {
+//            $result = $result->with([
+//                'hasOneMerchant',
+//                'hasOneMerchantCenter'
+//            ]);
+//        }
+//
+//        if (app('plugins')->isEnabled('micro')) {
+//            $result = $result->with([
+//                'hasOneMicro'
+//            ]);
+//        }
+//
+//        if (app('plugins')->isEnabled('supplier')) {
+//            $result = $result->with([
+//                'hasOneSupplier' => function ($query) {
+//                    return $query->where('status', 1);
+//                }
+//            ]);
+//        }
 
         return $result;
     }
@@ -727,6 +808,97 @@ class Member extends BackendModel
 
     public function getAvatarImageAttribute()
     {
-        return $this->avatar ? tomedia($this->avatar) : tomedia(\Setting::get('shop.shop.headimg'));
+        return $this->avatar ? yz_tomedia($this->avatar) : yz_tomedia(\Setting::get('shop.member.headimg'));
+    }
+
+    public function getUserNameAttribute()
+    {
+        if (substr($this->nickname, 0, strlen('=')) === '=') {
+            $this->nickname = ' ' . $this->nickname;
+        }
+        return $this->nickname;
+    }
+
+    /**
+     * 邀请码会员
+     *
+     * @return null
+     */
+    public function getMemberIdForInviteCode()
+    {
+        if ($invite_code = self::hasInviteCode()) {
+            $ids = MemberShopInfo::getMemberIdForInviteCode($invite_code);
+
+            if (!is_null($ids)) {
+                return $ids[0];
+            }
+        }
+
+        return null;
+    }
+
+    public static function hasInviteCode()
+    {
+        $required = intval(\Setting::get('shop.member.required'));
+        $invite_code = \YunShop::request()->invite_code;
+        $is_invite = self::chkInviteCode();
+
+        $member = MemberShopInfo::where('invite_code', $invite_code)->count();
+
+        if ($is_invite && $required && empty($invite_code)) {
+            return null;
+        }
+
+        if ($is_invite && isset($invite_code) && !empty($invite_code) && !empty($member)) {
+            return $invite_code;
+        }
+
+        return null;
+    }
+
+    /**
+     * 购物车记录
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function memberCarts()
+    {
+        return $this->hasMany(MemberCart::class,'uid','member_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function orderGoods()
+    {
+        return $this->hasMany(OrderGoods::class, 'uid', 'uid');
+    }
+
+    /**
+     * @return MemberCartCollection|mixed
+     */
+    public function getMemberCartCollection()
+    {
+        if (!isset($this->memberCartCollection)) {
+            $this->memberCartCollection = new MemberCartCollection($this->memberCarts->all());
+        }
+        return $this->memberCartCollection;
+    }
+
+    /**
+     * 邀请码是否开启
+     *
+     * @return int
+     */
+    public static function chkInviteCode()
+    {
+        $is_invite = intval(\Setting::get('shop.member.is_invite'));
+        $invite_page = intval(\Setting::get('shop.member.invite_page'));
+
+        //邀请页和邀请码都开启
+        if (1 == $invite_page && 1 == $is_invite) {
+            $is_invite = 0;
+        }
+
+        return $is_invite;
     }
 }

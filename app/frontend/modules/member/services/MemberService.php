@@ -11,6 +11,7 @@ namespace app\frontend\modules\member\services;
 use app\common\exceptions\AppException;
 use app\common\helpers\Client;
 use app\common\models\Member;
+use app\common\models\member\MemberDel;
 use app\common\models\MemberGroup;
 use app\common\models\MemberShopInfo;
 use app\common\services\Session;
@@ -69,6 +70,13 @@ class MemberService
      */
     public static function isLogged()
     {
+        if (\YunShop::app()->getMemberId()) {
+            $del_member = MemberDel::byMemberId(\YunShop::app()->getMemberId())->first();
+            if ($del_member) {
+                MemberDel::delUpdate(\YunShop::app()->getMemberId());
+                Session::clear('member_id');
+            }
+        }
         return \YunShop::app()->getMemberId() && \YunShop::app()->getMemberId() > 0;
     }
 
@@ -357,6 +365,35 @@ class MemberService
         if (Session::get('code') != $code) {
             return show_json('0', '验证码错误,请重新获取');
         }
+        return show_json('1');
+    }
+
+    /**
+     * 检查邀请码
+     *
+     * @return array
+     */
+    public static function inviteCode()
+    {
+        $invite_code = \YunShop::request()->invite_code;
+
+        $status = \Setting::get('shop.member');
+        $status['is_invite'] = Member::chkInviteCode();
+
+        if ($status['is_invite'] == 1) {//判断邀请码是否开启 1开启 0关闭
+
+            if ($status['required'] == 1 && empty($invite_code)){ //判断邀请码是否必填，1必填 0可选填 判断邀请码是否为空
+                return show_json('0', '请输入邀请码');
+            }
+            elseif ($status['required'] == 1 && !empty($invite_code)){  //判断邀请码是否必填，1必填 0可选填 判断邀请码是否为空
+                $data = MemberShopInfo:: getInviteCode($invite_code);  //查询邀请码是否存在
+
+                if(!$data){
+                    return show_json('0', '邀请码无效');
+                }
+            }
+        }
+
         return show_json('1');
     }
 

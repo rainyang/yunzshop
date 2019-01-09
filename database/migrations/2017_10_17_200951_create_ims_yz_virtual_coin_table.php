@@ -24,8 +24,8 @@ class CreateImsYzVirtualCoinTable extends Migration
         }
         if (Schema::hasTable('yz_virtual_coin')) {
 
-            \Illuminate\Support\Facades\DB::select('TRUNCATE TABLE `' . app('db')->getTablePrefix() . 'yz_virtual_coin`');
-            \Illuminate\Support\Facades\DB::select('INSERT INTO `' . app('db')->getTablePrefix() . 'yz_virtual_coin' . '` (`id`, `name`, `code`, `exchange_rate`)
+            \Illuminate\Support\Facades\DB::update('TRUNCATE TABLE `' . app('db')->getTablePrefix() . 'yz_virtual_coin`');
+            \Illuminate\Support\Facades\DB::insert('INSERT INTO `' . app('db')->getTablePrefix() . 'yz_virtual_coin' . '` (`id`, `name`, `code`, `exchange_rate`)
 VALUES
 	(1, \'爱心值\', \'love\', 1.00),
 	(2, \'积分\', \'point\', 1.00),

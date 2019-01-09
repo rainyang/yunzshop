@@ -11,6 +11,7 @@ use app\frontend\modules\goods\models\Brand;
 use Illuminate\Support\Facades\DB;
 use app\common\services\goods\VideoDemandCourseGoods;
 use app\common\models\Adv;
+use app\common\helpers\Cache;
 
 /**
  * Created by PhpStorm.
@@ -84,24 +85,34 @@ class IndexController extends ApiController
     {
         //$goods = new Goods();
         $field = ['id as goods_id', 'thumb', 'title', 'price', 'market_price'];
-        $goodsList = Goods::uniacid()->select(DB::raw(implode(',', $field)))
-            ->where("is_recommand", 1)
-            ->where("status", 1)
-            ->where(function ($query) {
-                $query->where('plugin_id', 0)
-                ->orWhere('plugin_id', 40);
-            })
-            ->orderBy("display_order", 'desc')
-            ->orderBy("id", 'desc')
-            ->get();
+        if(!Cache::has('YZ_Index_goodsList')) {
 
-        //是否是课程商品
+            $goodsList = Goods::uniacid()->select(DB::raw(implode(',', $field)))
+                ->where("is_recommand", 1)
+                ->where("status", 1)
+                ->where(function ($query) {
+                    $query->where('plugin_id', 0)
+                        ->orWhere('plugin_id', 40);
+                })
+                ->orderBy("display_order", 'desc')
+                ->orderBy("id", 'desc')
+                ->get();
+            foreach ($goodsList as &$value) {
+                $value->thumb = yz_tomedia($value->thumb);
+            }
+            Cache::put('YZ_Index_goodsList',$goodsList,4200);
+
+        } else {
+            $goodsList = Cache::get('YZ_Index_goodsList');
+
+        }
+        /*//是否是课程商品
         $videoDemand = new VideoDemandCourseGoods();
         foreach ($goodsList as &$value) {
             $value->thumb = yz_tomedia($value->thumb);
             $value->is_course = $videoDemand->isCourse($value->goods_id);
 
-        }
+        }*/
         
         return $goodsList;
     }

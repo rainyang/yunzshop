@@ -6,6 +6,7 @@ use app\common\facades\Setting;
 use app\common\models\UniAccount;
 use app\frontend\models\MemberShopInfo;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Support\Facades\DB;
 
 
 class MemberLevelValidity
@@ -16,6 +17,17 @@ class MemberLevelValidity
     public $setLog;
 
     public $uniacid;
+
+
+    public function subscribe()
+    {
+        \Event::listen('cron.collectJobs', function () {
+            \Cron::add('Member-validity', '*/10 * * * * *', function () {
+                $this->handle();
+                return;
+            });
+        });
+    }
 
     public function handle()
     {
@@ -52,7 +64,7 @@ class MemberLevelValidity
 
         MemberShopInfo::uniacid()
             ->where('validity', '>', '0')
-            ->update(['validity' => \DB::raw('`validity` - 1')]);
+            ->update(['validity' => DB::raw('`validity` - 1')]);
     }
 
     public function setExpire()
@@ -63,16 +75,7 @@ class MemberLevelValidity
         MemberShopInfo::uniacid()
             ->where('level_id', '!=', '0')
             ->where('validity', 0)
-            ->update(['level_id' => 0]);
+            ->update(['level_id' => 0, 'downgrade_at' => time()]);
     }
 
-    public function subscribe()
-    {
-        \Event::listen('cron.collectJobs', function () {
-            \Cron::add('Member-validity', '*/10 * * * * *', function () {
-                $this->handle();
-                return;
-            });
-        });
-    }
 }

@@ -8,7 +8,6 @@
 
 namespace app\common\models;
 
-use app\frontend\modules\member\services\MemberService;
 
 /**
  * Class GoodsDiscount
@@ -23,6 +22,11 @@ class GoodsDiscount extends BaseModel
     const MONEY_OFF = 1;//立减
     const DISCOUNT = 2;//折扣
     public $amount;
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+    }
+
     /**
      * 开启商品独立优惠
      * @return bool
@@ -33,10 +37,15 @@ class GoodsDiscount extends BaseModel
         return $this->discount_method != 0 && $this->discount_value != 0;
     }
 
+    /**
+     * @param $price
+     * @return int|mixed
+     * @throws \app\common\exceptions\AppException
+     */
     public function getAmount($price)
     {
 
-        if(isset($this->amount)){
+        if(array_key_exists('amount',$this->attributes)){
             return $this->amount;
         }
         if ($this->enable()) {
@@ -47,9 +56,14 @@ class GoodsDiscount extends BaseModel
         return $this->amount;
     }
 
+    /**
+     * @param $price
+     * @return int
+     * @throws \app\common\exceptions\AppException
+     */
     public function getGlobalDiscountAmount($price)
     {
-        $member = MemberService::getCurrentMemberModel();
+        $member = \app\frontend\models\Member::current();
         if (!isset($member->yzMember->level)) {
             return 0;
         }

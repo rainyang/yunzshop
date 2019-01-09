@@ -8,6 +8,7 @@
 
 namespace app\common\models;
 
+use app\common\exceptions\AppException;
 use app\common\models\goods\GoodsDispatch;
 use app\common\models\order\OrderGoodsChangePriceLog;
 use app\common\models\orderGoods\OrderGoodsExpansion;
@@ -17,7 +18,10 @@ use Illuminate\Database\Eloquent\Builder;
  * Class OrderGoods
  * @package app\common\models
  * @property int comment_status
+ * @property int total
+ * @property int goods_id
  * @property Goods goods
+ * @property GoodsOption goodsOption
  */
 class OrderGoods extends BaseModel
 {
@@ -28,9 +32,10 @@ class OrderGoods extends BaseModel
     protected $guarded = ['id'];
     protected $attributes = [
         'goods_option_id' => 0,
-        'goods_option_title' => ''
+        'goods_option_title' => '',
+        'comment_status' => 0
     ];
-    protected $search_fields = ['goods_sn', 'title', 'goods_id'];
+    protected $search_fields = ['title'];
 
     //public function
     public function hasOneGoods()
@@ -45,13 +50,16 @@ class OrderGoods extends BaseModel
 
     public function scopeOrderGoods(Builder $query)
     {
-        return $query->select(['id', 'order_id', 'goods_id', 'goods_price', 'total', 'goods_option_title', 'price', 'goods_market_price', 'goods_cost_price', 'thumb', 'title', 'goods_sn','payment_amount','deduction_amount'])->with('goods', function ($query) {
-            return $query->select(['id','title','status','type','thumb','sku','market_price','price','cost_price'])->goods();
-        });
+        return $query->select(['id', 'order_id', 'goods_id', 'goods_price', 'total', 'goods_option_title', 'price', 'goods_market_price', 'goods_cost_price', 'thumb', 'title', 'goods_sn','payment_amount','deduction_amount'])->with(['goods',function ($query) {
+            return $query->select(['id','title','status','type','thumb','sku','market_price','price','cost_price']);
+        }]);
     }
 
     public function getButtonsAttribute()
     {
+        if($this->uid != \YunShop::app()->getMemberId()){
+            return [];
+        }
         if ($this->comment_status == 0) {
             $result[] = [
                 'name' => '评价',
@@ -110,6 +118,25 @@ class OrderGoods extends BaseModel
         return !empty($this->goods_option_id);
     }
 
+    /**
+     * @throws AppException
+     */
+    public function stockEnough()
+    {
+        if($this->isOption()){
+            // 规格
+            if (!$this->goodsOption->stockEnough($this->total)) {
+                throw new AppException('(ID:' . $this->goods_id . ')商品库存不足');
+            }
+        }else{
+            // 普通商品
+            if (!$this->goods->stockEnough($this->total)) {
+                throw new AppException('(ID:' . $this->goods_id . ')商品库存不足');
+            }
+        }
+
+    }
+
     public function Expansion()
     {
         return $this->hasMany(OrderGoodsExpansion::class);
@@ -123,5 +150,14 @@ class OrderGoods extends BaseModel
 
         return isset($this->expansion->where('key', $key)->first()['value']) ? $this->expansion->where('key', $key)->first()['value'] : null;
 
+    }
+    public function isFreeShipping()
+    {
+
+        if (isset($this->goods->hasOneSale) && $this->goods->hasOneSale->isFree($this)) {
+            return true;
+        }
+
+        return false;
     }
 }

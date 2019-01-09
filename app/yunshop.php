@@ -5,16 +5,11 @@ use app\common\services\PermissionService;
 use app\common\models\Menu;
 use app\common\services\Session;
 use app\common\exceptions\NotFoundException;
-use app\common\services\PluginManager;
-use app\common\repositories\OptionRepository;
-use Illuminate\Events\Dispatcher;
-use Illuminate\Filesystem\Filesystem;
+
 
 //商城根目录
 define('SHOP_ROOT', dirname(__FILE__));
 
-
-use app\common\models\user\User;
 
 class YunShop
 {
@@ -38,8 +33,8 @@ class YunShop
         //检测controller继承
         $controller = new $namespace;
         if (!$controller instanceof \app\common\components\BaseController) {
-            if(config('app.debug')){
-                throw new NotFoundException($controller.' 没有继承\app\common\components\BaseController: ' . $namespace);
+            if (config('app.debug')) {
+                throw new NotFoundException($controller . ' 没有继承\app\common\components\BaseController: ' . $namespace);
             }
             throw new NotFoundException(" 路由错误:不存在控制器: " . $namespace);
 
@@ -70,7 +65,6 @@ class YunShop
             } else {
                 $dbMenu = \Cache::get('db_menu');
             }
-
             $menuList = array_merge($dbMenu, (array)Config::get($menu_array['plugins_menu']));
             //兼容旧插件使用
             $menuList = array_merge($menuList, (array)Config::get($menu_array['old_plugin_menu']));
@@ -78,13 +72,12 @@ class YunShop
             $menuList['system']['child'] = array_merge($menuList['system']['child'], (array)Config::get($menu_array['founder_menu']));
 
             Config::set('menu', $menuList);
-
             $item = Menu::getCurrentItemByRoute($controller->route, $menuList);
-            //dd($controller->route);
+//            dd($item);
             self::$currentItems = array_merge(Menu::getCurrentMenuParents($item, $menuList), [$item]);
- //dd(self::$currentItems);
+//            dd(self::$currentItems);
             Config::set('currentMenuItem', $item);
-            //dd($item);exit;
+//            dd($item);exit;
             //检测权限
             if (!PermissionService::can($item)) {
                 //throw new \app\common\exceptions\ShopException('Sorry,您没有操作无权限，请联系管理员!');
@@ -209,20 +202,17 @@ class YunShop
     /**
      * @name 验证是否商城操作员
      * @author
-     * @return bool
+     * @return array|bool|null|stdClass
      */
     public static function isRole()
     {
         global $_W;
-        $plugin_class = new PluginManager(app(), new OptionRepository(), new Dispatcher(), new Filesystem());
-        if ($plugin_class->isEnabled('supplier')) {
-            if (Schema::hasColumn('yz_supplier', 'uid')) {
-                $res = \Illuminate\Support\Facades\DB::table('yz_supplier')->where('uid', $_W['uid'])->first();
-                //$res = \Yunshop\Supplier\common\models\Supplier::getSupplierByUid($_W['uid'])->first();
-                if ($res) {
-                    return $res;
-                }
+        if (app('plugins')->isEnabled('supplier')) {
+            $res = \Illuminate\Support\Facades\DB::table('yz_supplier')->where('uid', $_W['uid'])->first();
+            if (!$res) {
+                return false;
             }
+            return $res;
         }
         return false;
     }
@@ -315,7 +305,7 @@ class YunShop
 
                 }
             }
-        }catch (Exception $exception){
+        } catch (Exception $exception) {
 //            dd($exception);
 //            exit;
 
@@ -470,6 +460,7 @@ class YunRequest extends YunComponent
 /**
  * Class YunApp
  * @property int uniacid
+ * @property int uid
  */
 class YunApp extends YunComponent
 {
@@ -488,9 +479,9 @@ class YunApp extends YunComponent
     {
         $account = \app\common\models\AccountWechats::getAccountByUniacid(request()->get('i'));
         return [
-            'uniacid' => request()->get('i'),
-            'weid' => request()->get('i'),
-            'acid' => request()->get('i'),
+            'uniacid' => trim(request()->get('i')),
+            'weid' => trim(request()->get('i')),
+            'acid' => trim(request()->get('i')),
             'account' => $account ? $account->toArray() : '',
         ];
     }
@@ -550,13 +541,14 @@ class YunApp extends YunComponent
      */
     public function getMemberId()
     {
-        if (config('app.debug')) {
+        if (1||config('app.debug')) {
+            //dump($_GET);
             if (isset($_GET['test_uid'])) {
                 return $_GET['test_uid'];
             }
             //return false;
         }
-        
+
         if (Session::get('member_id')) {
             return Session::get('member_id');
         } else {
@@ -583,9 +575,8 @@ class YunPlugin
     public function get($key = null)
     {
         if (isset($key)) {
-            $plugin_class = new PluginManager(app(), new OptionRepository(), new Dispatcher(), new Filesystem());
 
-            if ($plugin_class->isEnabled($key)) {
+            if (app('plugins')->isEnabled($key)) {
                 return true;
             }
         }

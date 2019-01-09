@@ -1,6 +1,7 @@
 <?php
 
 namespace app\frontend\modules\orderGoods\price\option;
+use app\frontend\models\orderGoods\PreOrderGoodsDiscount;
 
 /**
  * Created by PhpStorm.
@@ -8,7 +9,7 @@ namespace app\frontend\modules\orderGoods\price\option;
  * Date: 2017/5/19
  * Time: 下午6:04
  */
-class NormalOrderGoodsPrice extends OrderGoodsPrice
+class NormalOrderGoodsPrice extends BaseOrderGoodsPrice
 {
     /**
      * @var float
@@ -18,30 +19,11 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
      * @var float
      */
     private $deductionAmount;
-    private $deductionKey;
+    private $deductionCount;
     /**
      * @var float
      */
     private $price;
-
-
-    /**
-     * 获取商品的模型,规格继承时复写这个方法
-     * @return mixed
-     */
-    protected function goods()
-    {
-        return $this->orderGoods->goods;
-    }
-
-    /**
-     * 商品的原价,为了规格继承时将属性名替换掉
-     * @return mixed
-     */
-    protected function aGoodsPrice()
-    {
-        return $this->goods()->price;
-    }
 
     /**
      * 成交价
@@ -54,9 +36,11 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
         }
         // 商品销售价 - 等级优惠金额 - 单品满减优惠金额
         $this->price = $this->getGoodsPrice();
-        $this->price -= $this->getVipDiscountAmount();
+
+        $this->price -= $this->getVipDiscountAmount($this->price);
 
         $this->price = max($this->price, 0);
+
         return $this->price;
     }
 
@@ -90,8 +74,9 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
     public function getDeductionAmount()
     {
 
-        if($this->deductionKey != $this->orderGoods->getOrderGoodsDeductions()->toJson()){
-            $this->deductionKey = $this->orderGoods->getOrderGoodsDeductions()->toJson();
+        if ($this->deductionCount != $this->orderGoods->getOrderGoodsDeductions()->count()) {
+            $this->deductionCount = $this->orderGoods->getOrderGoodsDeductions()->count();
+            trace_log()->deduction('订单抵扣', "订单商品计算所有已用的抵扣金额");
             $this->deductionAmount = $this->orderGoods->getOrderGoodsDeductions()->getUsedPoint()->getMoney();
 
         }
@@ -121,24 +106,6 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
     }
 
     /**
-     * 成本价
-     * @return mixed
-     */
-    public function getGoodsCostPrice()
-    {
-        return $this->goods()->cost_price * $this->orderGoods->total;
-    }
-
-    /**
-     * 市场价
-     * @return mixed
-     */
-    public function getGoodsMarketPrice()
-    {
-        return $this->goods()->market_price * $this->orderGoods->total;
-    }
-
-    /**
      * 单品满减
      * @return float|int
      */
@@ -161,9 +128,27 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
      * 商品的会员等级折扣金额
      * @return mixed
      */
-    public function getVipDiscountAmount()
+    protected function _getVipDiscountAmount($price)
     {
-        return $this->goods()->getVipDiscountAmount() * $this->orderGoods->total;
+
+        return $this->goods()->getVipDiscountAmount($price/$this->orderGoods->total) * $this->orderGoods->total;
     }
 
+    /**
+     * 商品的会员等级折扣金额(缓存)
+     * @return mixed
+     */
+    public function getVipDiscountAmount($price)
+    {
+        if (!isset($this->vipDiscountAmount)) {
+            $this->vipDiscountAmount = $this->_getVipDiscountAmount($price);
+            $preOrderGoodsDiscount = new PreOrderGoodsDiscount([
+                'discount_code' => $this->goods()->vipDiscountLog->code,
+                'amount' => $this->vipDiscountAmount ?: 0,
+                'name' => $this->goods()->vipDiscountLog->name,
+            ]);
+            $preOrderGoodsDiscount->setOrderGoods($this->orderGoods);
+        }
+        return $this->vipDiscountAmount;
+    }
 }

@@ -8,9 +8,17 @@
 
 namespace app\backend\modules\order\models;
 
+use app\backend\modules\member\models\MemberParent;
 use app\backend\modules\order\services\OrderService;
 use Illuminate\Database\Eloquent\Builder;
-
+use \Illuminate\Support\Facades\DB;
+use app\common\models\PayTypeGroup;
+/**
+ * Class Order
+ * @package app\backend\modules\order\models
+ * @method static self exportOrders($search)
+ * @method static self search($search)
+ */
 class Order extends \app\common\models\Order
 {
     //订单导出订单数据
@@ -26,7 +34,7 @@ class Order extends \app\common\models\Order
         return $this->hasMany(OrderGoods::class, 'order_id', 'id');
     }
 
-    public function scopeExportOrders($query, $search)
+    public function scopeExportOrders(Order $query, $search)
     {
         $order_builder = $query->search($search);
 
@@ -43,7 +51,7 @@ class Order extends \app\common\models\Order
         return $orders;
     }
 
-    public function scopeOrders($order_builder, $search)
+    public function scopeOrders(Order $order_builder, $search)
     {
         $order_builder->search($search);
 
@@ -54,6 +62,7 @@ class Order extends \app\common\models\Order
             'hasOnePayType',
             'address',
             'express',
+            'process',
             'hasOneRefundApply' => self::refundBuilder(),
             'hasOneOrderRemark',
             'hasOneOrderPay'=> function (Builder $query) {
@@ -89,6 +98,7 @@ class Order extends \app\common\models\Order
 
     public function scopeSearch($order_builder, $params)
     {
+//        print_r($params['ambiguous']['field']);exit;
         if (array_get($params, 'ambiguous.field', '') && array_get($params, 'ambiguous.string', '')) {
             //订单.支付单号
             if ($params['ambiguous']['field'] == 'order') {
@@ -131,6 +141,15 @@ class Order extends \app\common\models\Order
                 });
             }
 
+            //商品id
+            if ($params['ambiguous']['field'] == 'goods_id') {
+//                print_r($order_builder->whereHas('hasManyOrderGoods', function ($query) use ($params) {
+//                    $query->where('goods_id',$params['ambiguous']['string']);
+//                })->toSql());exit;
+                $order_builder->whereHas('hasManyOrderGoods', function ($query) use ($params) {
+                    $query->where('goods_id',$params['ambiguous']['string']);
+                });
+            }
             //快递单号
             if ($params['ambiguous']['field'] == 'dispatch') {
                 $order_builder->whereHas('express', function ($query) use ($params) {
@@ -141,7 +160,27 @@ class Order extends \app\common\models\Order
         }
         //支付方式
         if (array_get($params, 'pay_type', '')) {
+            /* 改为按支付分组方式查询后，该部分被替换
             $order_builder->where('pay_type_id', $params['pay_type']);
+            */
+            //改为支付分组查询，前端传入支付分组id，在该处通过分组id获取组中所有成员，这些成员就是确切的支付方式
+            //如前端传入的分组id为2，对应的是支付宝支付分组，然后查找属于支付宝支付组的支付方式，找到如支付宝，支付宝-yz这些具体支付方式
+            //获取到确切的支付方式后，对查询条件进行拼接
+            $payTypeGroup = PayTypeGroup::with('hasManyPayType')->find($params['pay_type']);
+            if($payTypeGroup)
+            {
+                $payTypes = $payTypeGroup->toArray();
+                if($payTypes['has_many_pay_type']) {
+                    foreach ($payTypes['has_many_pay_type'] as $index => $payType) {
+                        if($index == 0) {
+                            $order_builder->where('pay_type_id', $payType['id']);
+                        }
+                        else {
+                            $order_builder->orWhere('pay_type_id',$payType['id']);
+                        }
+                    }
+                }
+            }
         }
         //操作时间范围
 
@@ -159,12 +198,31 @@ class Order extends \app\common\models\Order
         },'hasOnePayType'])->find($order_id);
     }
 
-    public static function boot()
+    /**
+     * @param $keyWord
+     *
+     */
+    public static function getOrderByName($keyWord)
     {
-        parent::boot();
 
-//        static::addGlobalScope(function (Builder $builder) {
-//            $builder->isPlugin();
-//        });
+        return \Illuminate\Support\Facades\DB::select('select title,goods_id,thumb from '.app('db')->getTablePrefix().'yz_order_goods where title like '."'%" .$keyWord ."%'");
+
+//        return self::uniacid()
+//            ->whereHas('OrderGoods', function ($query)use ($keyWord) {
+//                $query->searchLike($keyWord);
+//            })
+//            ->with('OrderGoods')
+//            ->get();
     }
+
+    public function hasManyParentTeam()
+    {
+        return $this->hasMany(MemberParent::class, 'member_id', 'uid');
+    }
+
+    public function hasOneTeamDividend()
+    {
+        return $this->hasOne('Yunshop\TeamDividend\models\TeamDividendAgencyModel', 'uid', 'uid');
+    }
+
 }

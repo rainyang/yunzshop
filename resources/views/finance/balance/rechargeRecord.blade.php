@@ -85,12 +85,13 @@
                         <tr>
                             <th style='width:15%; text-align: center;'>充值单号</th>
                             <th style='width:10%; text-align: center;'>粉丝</th>
-                            <th style='width:14%; text-align: center;'>会员信息<br/>手机号</th>
-                            <th style='width:12%; text-align: center;' class='hidden-xs'>等级/分组</th>
+                            <th style='width:10%; text-align: center;'>会员信息<br/>手机号</th>
+                            <th style='width:10%; text-align: center;' class='hidden-xs'>等级/分组</th>
                             <th style='width:12%; text-align: center;'>充值时间</th>
-                            <th style='width:12%; text-align: center;'>充值方式</th>
-                            <th style='width:12%; text-align: center;'>充值金额<br/>状态</th>
-                            <th style='width:12%; text-align: center;'>操作</th>
+                            <th style='width:10%; text-align: center;'>充值方式</th>
+                            <th style='width:10%; text-align: center;'>充值金额<br/>状态</th>
+                            <th style='width:13%; text-align: center;'>备注信息</th>
+                            <th style='width:10%; text-align: center;'>操作</th>
                         </tr>
                     </thead>
                 @foreach($recordList as $list)
@@ -142,29 +143,17 @@
                             @endif
 
                         </td>
-
+                        <td><a style="color: #0a0a0a" title="{{ $list->remark }}">{{ $list->remark }}</a></td>
                         <td>
                             <a class='btn btn-default' href="{{ yzWebUrl('member.member.detail', array('id' => $list->member_id)) }}" style="margin-bottom: 2px">用户信息</a>
                         </td>
                     </tr>
                 @endforeach
                 </table>
-                {!! $pager !!}
+                {!! $page !!}
             </div>
         </div>
     </div>
-    <script>
-        $(function () {
-            $("#ambiguous-field").on('change',function(){
 
-                $(this).next('input').attr('placeholder',$(this).find(':selected').text().trim())
-            });
-        })
-        $('#export').click(function () {
-            $('#form_p').val("order.list.export");
-            $('#form1').submit();
-            $('#form_p').val("order.list");
-        });
-    </script>
 
 @endsection

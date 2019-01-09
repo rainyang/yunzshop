@@ -38,6 +38,7 @@ class AuditController extends PreController
 
     /**
      * @return array
+     * @throws ShopException
      */
     private function auditResult()
     {

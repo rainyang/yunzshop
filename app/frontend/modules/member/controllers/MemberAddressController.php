@@ -27,6 +27,7 @@ class MemberAddressController extends ApiController
      * 会员收货地址列表
      *
      * */
+
     public function index()
     {
         $memberId = \YunShop::app()->getMemberId();
@@ -69,14 +70,14 @@ class MemberAddressController extends ApiController
     {
         if(\Setting::get('shop.trade.is_street')) {
             $member_address->province_id = Address::where('areaname',$member_address->province)->value('id');
-            $member_address->city_id = Address::where('areaname',$member_address->city)->value('id');
-            $member_address->district_id = Address::where('areaname',$member_address->district)->value('id');
-            $member_address->street_id = Street::where('parentid', $member_address->district_id)->where('areaname',$member_address->street)->value('id');
+            $member_address->city_id = Address::where('areaname',$member_address->city)->where('parentid', $member_address->province_id)->value('id');
+            $member_address->district_id = Address::where('areaname',$member_address->district)->where('parentid', $member_address->city_id)->value('id');
+            $member_address->street_id = Street::where('areaname',$member_address->street)->where('parentid', $member_address->district_id)->value('id');
 
         } else{
             $member_address->province_id = Address::where('areaname',$member_address->province)->value('id');
-            $member_address->city_id = Address::where('areaname',$member_address->city)->value('id');
-            $member_address->district_id = Address::where('areaname',$member_address->district)->value('id');
+            $member_address->city_id = Address::where('areaname',$member_address->city)->where('parentid', $member_address->province_id)->value('id');
+            $member_address->district_id = Address::where('areaname',$member_address->district)->where('parentid', $member_address->city_id)->value('id');
         }
 
         return $member_address;
@@ -326,13 +327,12 @@ class MemberAddressController extends ApiController
         foreach ($addressList as $list) {
             foreach ($address as $key) {
                 if ($list['province'] == $key['areaname']) {
-                    //dd('od');
                     $addressList[$i]['province_id'] = $key['id'];
                 }
-                if ($list['city'] == $key['areaname']) {
+                if ($list['city'] == $key['areaname'] && $addressList[$i]['province_id'] == $key['parentid']) {
                     $addressList[$i]['city_id'] = $key['id'];
                 }
-                if ($list['district'] == $key['areaname']) {
+                if ($list['district'] == $key['areaname'] && $addressList[$i]['city_id'] == $key['parentid']) {
                     $addressList[$i]['district_id'] = $key['id'];
                 }
             }

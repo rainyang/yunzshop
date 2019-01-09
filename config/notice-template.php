@@ -473,17 +473,17 @@ return [
         'data' => [
             0 => [
                 "keywords" => "keyword1",
-                "value" => "提现",
+                "value" => "余额提现",
                 "color" => "#000000",
             ],
             1 => [
                 "keywords" => "keyword2",
-                "value" => "申请审核通过",
+                "value" => "余额提现成功通知",
                 "color" => "#000000",
             ],
             2 => [
                 "keywords" => "keyword3",
-                "value" => "您于[时间]申请提现[金额]元，其中手续费[手续费]元，已通过我们的审核，我们将尽快将您提现的[审核通过金额]元通过[提现方式]支付给您。",
+                "value" => "您于[时间]申请余额提现[金额]元，其中手续费[手续费]元，已经成功到账。",
                 "color" => "#000000",
             ],
         ],
@@ -1814,56 +1814,7 @@ return [
         ],
         'remark' => '您可再次申请或者联系客服哦！',
     ],
-    'change_temp_id' => [
-        'template_id_short' => 'OPENTM207574677',
-        'title' => '爱心值变动通知',
-        'first_color' => '#000000',
-        'remark_color' => '#000000',
-        'first' => '您账户发生了一笔变动，请注意查看！',
-        'data' => [
-            0 => [
-                "keywords" => "keyword1",
-                "value" => "[变动值类型]",
-                "color" => "#000000",
-            ],
-            1 => [
-                "keywords" => "keyword2",
-                "value" => "[业务类型]",
-                "color" => "#000000",
-            ],
-            2 => [
-                "keywords" => "keyword3",
-                "value" => "尊敬的[昵称]，您于[时间]发生一笔爱心值变动，变动类型为[变动值类型]，变动数值为[变动数量]，变动后爱心值余值为[当前剩余值]。",
-                "color" => "#000000",
-            ],
-        ],
-        'remark' => '感谢您的支持！',
-    ],
-    'activation_temp_id' => [
-        'template_id_short' => 'OPENTM207574677',
-        'title' => '爱心值激活通知',
-        'first_color' => '#000000',
-        'remark_color' => '#000000',
-        'first' => '您成功激活了爱心值！',
-        'data' => [
-            0 => [
-                "keywords" => "keyword1",
-                "value" => "爱心值激活",
-                "color" => "#000000",
-            ],
-            1 => [
-                "keywords" => "keyword2",
-                "value" => "激活成功",
-                "color" => "#000000",
-            ],
-            2 => [
-                "keywords" => "keyword3",
-                "value" => "尊敬的[昵称]，您于[时间]激活了一笔爱心值，激活数值为[激活值]",
-                "color" => "#000000",
-            ],
-        ],
-        'remark' => '感谢您的支持！',
-    ],
+
     'expire' => [
         'template_id_short' => 'OPENTM207574677',
         'title' => '优惠券过期提醒',
@@ -1913,6 +1864,31 @@ return [
             ],
         ],
         'remark' => '请及时使用哦！',
+    ],
+    'member_withdraw' => [
+        'template_id_short' => 'OPENTM207574677',
+        'title' => '会员提现提醒通知！',
+        'first_color' => '#000000',
+        'remark_color' => '#000000',
+        'first' => '您有新一笔的待处理会员收入提现！',
+        'data' => [
+            0 => [
+                "keywords" => "keyword1",
+                "value" => "会员提现",
+                "color" => "#000000",
+            ],
+            1 => [
+                "keywords" => "keyword2",
+                "value" => "提现",
+                "color" => "#000000",
+            ],
+            2 => [
+                "keywords" => "keyword3",
+                "value" => "[粉丝昵称]于[申请时间]申请了一笔提现\r\n提现金额：[提现金额]\r\n提现类型：[提现类型]\r\n提现方式：[提现方式]",
+                "color" => "#000000",
+            ],
+        ],
+        'remark' => '请尽快处理这笔会员提现记录！！',
     ],
 
 ];

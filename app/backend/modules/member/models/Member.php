@@ -8,10 +8,62 @@
 
 namespace app\backend\modules\member\models;
 
+use app\common\models\member\MemberDel;
+use app\common\traits\MemberTreeTrait;
+use Illuminate\Support\Facades\DB;
+
 class Member extends \app\common\models\Member
 {
+    use MemberTreeTrait;
+
     static protected $needLog = true;
 
+    /**
+     * 删除会员信息
+     *
+     * @param $id
+     */
+    public static function deleteMemberInfoById($id)
+    {
+        return self::uniacid()
+            ->where('uid', $id)
+            ->delete();
+    }
+
+    /**
+     * 更新删除会员信息
+     *
+     * @param $id
+     */
+    public static function UpdateDeleteMemberInfoById($id)
+    {
+        $member_model = Member::find($id);
+        MemberDel::insertData($member_model);
+        $member_model->email = '';
+        $member_model->nickname = '';
+        $member_model->mobile = '';
+        $member_model->email = '';
+        $member_model->gender = 0;
+        $member_model->nationality = '';
+        $member_model->resideprovince = '';
+        $member_model->residecity = '';
+        $member_model->salt = '';
+        $member_model->password = '';
+        //todo 由于关系链下列参数不能清空
+        /*$member_model->createtime = 0;
+        $member_model->avatar = '';
+        $member_model->credit1 = 0;
+        $member_model->credit2 = 0;
+        $member_model->credit3 = 0;
+        $member_model->credit4 = 0;
+        $member_model->credit5 = 0;
+        $member_model->credit6 = 0;*/
+        if ($member_model->save()) {
+            return $member_model->uid;
+        } else {
+            return false;
+        }
+    }
 
     public function address()
     {
@@ -84,6 +136,41 @@ class Member extends \app\common\models\Member
             })
             ->with(['yzMember' => function ($query) {
                 return $query->select(['member_id', 'parent_id', 'is_agent', 'group_id', 'level_id', 'is_black', 'alipayname', 'alipay', 'content', 'status', 'custom_value', 'validity', 'member_form', 'withdraw_mobile','wechat'])->where('is_black', 0)
+                    ->with(['group' => function ($query1) {
+                        return $query1->select(['id', 'group_name']);
+                    }, 'level' => function ($query2) {
+                        return $query2->select(['id', 'level', 'level_name']);
+                    }, 'agent' => function ($query3) {
+                        return $query3->select(['uid', 'avatar', 'nickname']);
+                    }]);
+            }, 'hasOneFans' => function ($query2) {
+                return $query2->select(['uid', 'follow as followed']);
+            }, 'hasOneOrder' => function ($query5) {
+                return $query5->selectRaw('uid, count(uid) as total, sum(price) as sum')
+                    ->uniacid()
+                    ->where('status', 3)
+                    ->groupBy('uid');
+            }
+            ])
+            ->first();
+    }
+
+    /**
+     * 获取会员信息（不判断黑名单）
+     * @param $id
+     * @return mixed
+     */
+    public static function getMemberInfoBlackById($id)
+    {
+        return self::select(['uid', 'avatar', 'nickname', 'realname', 'mobile', 'createtime',
+            'credit1', 'credit2'])
+            ->uniacid()
+            ->where('uid', $id)
+            ->whereHas('yzMember', function ($query) {
+                $query->whereNull('deleted_at');
+            })
+            ->with(['yzMember' => function ($query) {
+                return $query->select(['member_id', 'parent_id', 'is_agent', 'group_id', 'level_id', 'is_black', 'alipayname', 'alipay', 'content', 'status', 'custom_value', 'validity', 'member_form', 'withdraw_mobile','wechat'])
                     ->with(['group' => function ($query1) {
                         return $query1->select(['id', 'group_name']);
                     }, 'level' => function ($query2) {
@@ -246,6 +333,9 @@ class Member extends \app\common\models\Member
                 ->groupBy('uid');
         }]);
 
+        $result->leftJoin('yz_member_del_log', 'mc_members.uid', '=', 'yz_member_del_log.member_id')->whereNull('yz_member_del_log.member_id');
+
+
         return $result;
     }
 
@@ -356,5 +446,117 @@ class Member extends \app\common\models\Member
             ->orderBy('uid', 'desc');
 
         return $query;
+    }
+
+    public static function getQueueAllMembersInfo($uniacid, $limit = 0, $offset = 0)
+    {
+        $result = self::select(['mc_members.uid', 'mc_mapping_fans.openid', 'mc_members.uniacid'])
+                   ->join('yz_member', 'mc_members.uid', '=', 'yz_member.member_id')
+                   ->join('mc_mapping_fans', 'mc_members.uid', '=', 'mc_mapping_fans.uid')
+                   ->where('mc_members.uniacid', $uniacid);
+
+        if ($limit > 0) {
+            $result = $result->offset($offset)->limit($limit)->orderBy('mc_members.uid', 'desc');
+        }
+
+        return $result;
+    }
+
+    public static function getAllMembersInfosByQueue($uniacid, $limit = 0, $offset = 0)
+    {
+        $result = self::select(['yz_member.member_id', 'yz_member.parent_id'])
+            ->join('yz_member', 'mc_members.uid', '=', 'yz_member.member_id')
+            ->where('mc_members.uniacid', $uniacid)
+            ->whereNull('yz_member.deleted_at');
+
+        if ($limit > 0) {
+            $result = $result->offset($offset)->limit($limit)->orderBy('yz_member.member_id', 'asc');
+        }
+
+        return $result;
+    }
+
+    public function chkRelationByMemberIdAndParentId()
+    {
+        return self::select(['member_id', 'parent_id'])
+            ->uniacid()
+            ->join('yz_member', function ($join) {
+                $join->on('member_id', '=', 'uid')
+                     ->on('member_id', '=', 'parent_id')
+                     ->whereNull('deleted_at');
+            })
+            ->distinct()
+            ->get();
+    }
+
+    /**
+     * 获取待处理的原始节点数据
+     *
+     * 必须实现
+     *
+     * return \Illuminate\Support\Collection
+     */
+    public function getTreeAllNodes($uniacid)
+    {
+        return self::select(['member_id', 'parent_id'])
+            ->join('yz_member', function ($join) {
+                $join->on('uid', '=', 'member_id')
+                     ->whereNull('deleted_at');
+            })
+            ->where('mc_members.uniacid', $uniacid)
+            ->distinct()
+            ->get();
+    }
+
+    public function chkRelationData()
+    {
+        $uniacid = \YunShop::app()->uniacid;
+
+        $this->_allNodes = collect([]);
+        $error = [];
+
+        $m_relation = $this->chkRelationByMemberIdAndParentId();
+
+        if (!is_null($m_relation)) {
+            foreach ($m_relation as $m) {
+                $error[] = $m->parent_id;
+            }
+        }
+
+        if (!empty($error)) {
+            dd($error);
+        }
+
+        $memberInfo = $this->getTreeAllNodes($uniacid);
+
+        if ($memberInfo->isEmpty()) {
+            \Log::debug('----is empty-----');
+            return;
+        }
+
+        foreach ($memberInfo as $item) {
+            $this->_allNodes->put($item->member_id, $item);
+        }
+
+        \Log::debug('--------queue synRun -----');
+
+        foreach ($memberInfo as $key => $val) {
+            $this->filter = [];
+
+            \Log::debug('--------foreach start------', $val->member_id);
+            $this->chkNodeParents($uniacid, $val->member_id);
+        }
+
+        if (file_exists(storage_path("logs/parenterror.log"))) {
+            $error = file_get_contents(storage_path("logs/parenterror.log"));
+
+            $error = array_unique(explode(',', $error));
+
+            foreach ($error as $val) {
+                if (!empty($val)) {
+                    echo $val;
+                }
+            }
+        }
     }
 }

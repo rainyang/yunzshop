@@ -29,8 +29,8 @@ class PayType extends BaseModel
     const PAY_CLOUD_WEACHAT = 6;//云收银微信
     const PAY_CLOUD_ALIPAY = 7;//云收银支付宝
     const CASH_PAY = 8;//现金支付
-    const WechatApp = 9;//现金支付
-    const AlipayApp = 10;//现金支付
+    const WechatApp = 9;//微信App支付
+    const AlipayApp = 10;//支付宝App支付
     const STORE_PAY = 11;//门店
     const PAY_YUN_WECHAT = 12;//微信-YZ
     const WANMI_Pay = 13;//快捷
@@ -38,6 +38,8 @@ class PayType extends BaseModel
     const PAY_YUN_ALIPAY = 15;//支付宝-YZ
     const REMITTANCE = 16;//转账
     const COD = 17;//货到付款
+    const HXQUICK = 18;//环迅快捷支付
+    const HXWECHAT = 22;//环迅微商支付
 
     /**
      * 查询所有分类类型
