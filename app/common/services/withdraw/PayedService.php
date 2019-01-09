@@ -307,14 +307,14 @@ class PayedService
         $member_id = $this->withdrawModel->member_id;
 
         //todo 错误
-        $sn = $this->withdrawModel->widgets['order_sn'];
+        $sn = $this->withdrawModel->separate['order_sn'];
         //todo 错误
-        $withdraw_id = $this->withdrawModel->widgets['withdraw_id'];
+        $withdraw_id = $this->withdrawModel->separate['withdraw_id'];
 
         $amount = $this->withdrawModel->amounts;
 
         //todo 错误
-        $trade_no = $this->withdrawModel->widgets['trade_no'];
+        $trade_no = $this->withdrawModel->separate['trade_no'];
 
         \Log::debug('--------withdrawPay1---------$member_id', print_r($member_id,1));
         \Log::debug('--------withdrawPay2---------$sn', print_r($sn,1));
