@@ -1318,9 +1318,9 @@ class MemberController extends ApiController
         if (app('plugins')->isEnabled('asset')) {
             $data[] = [
                 'name' => 'asset',
-                'title' => 'PLUGIN_ASSET_NAME',
+                'title' => PLUGIN_ASSET_NAME,
                 'class' => 'asset',
-                'url'   => 'TransHome"',
+                'url'   => 'TransHome',
             ];
         }
 
