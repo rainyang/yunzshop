@@ -31,7 +31,7 @@ class Privilege extends \app\common\models\goods\Privilege
 
     public static function relationSave($goodsId, $data, $operate)
     {
-        dd($data);
+//        dd($data);
         if(!$goodsId){
             return false;
         }
