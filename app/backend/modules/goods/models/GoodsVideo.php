@@ -39,7 +39,7 @@ class GoodsVideo extends \app\common\models\goods\GoodsVideo
         $attr['uniacid'] = \YunShop::app()->uniacid;
 
         //商品视频地址
-        $attr['goods_video'] = yz_tomedia($data['goods_video']);
+        $attr['goods_video'] = $data['goods_video'];
 
         $attr['video_image'] = $data['video_image'];
 

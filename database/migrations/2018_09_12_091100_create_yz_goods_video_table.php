@@ -16,7 +16,6 @@ class CreateYzGoodsVideoTable extends Migration
         if (!Schema::hasTable('yz_goods_video')) {
         	Schema::create('yz_goods_video', function (Blueprint $table) {
         		$table->integer('id', true);
-        		$table->integer('uniacid')->nullable()->default(0)->index('idx_uniacid');
         		$table->integer('goods_id')->nullable()->default(0)->index('idx_goods');
         		$table->string('goods_video', 255)->nullable()->default('');
         		$table->string('video_image', 200)->nullable()->default('');

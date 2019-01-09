@@ -61,6 +61,7 @@ class GoodsController extends ApiController
             ->with('hasOneGoodsLimitbuy', function ($query) {
                 return $query->select('goods_id', 'end_time');
             })
+            ->with('hasOneGoodsVideo')
             ->find($id);
 
         //商品品牌处理
