@@ -10,6 +10,7 @@ namespace app\backend\controllers;
 
 
 use app\common\components\BaseController;
+use app\common\exceptions\ShopException;
 use app\common\helpers\Url;
 use Datatables;
 use Illuminate\Http\Request;
@@ -34,8 +35,14 @@ class PluginsController extends BaseController
 
     public function manage()
     {
+        $name   = \YunShop::request()->name;
+        $action = \YunShop::request()->action;
+
         $plugins = app('app\common\services\PluginManager');
-        $plugin = plugin($name = \YunShop::request()->name);
+        $plugin  = plugin($name);
+
+        $this->proAuth($name, $action);
+
         if ($plugin) {
             // pass the plugin title through the translator
             $plugin->title = trans($plugin->title);
@@ -63,10 +70,15 @@ class PluginsController extends BaseController
         }
     }
 
-    public function batchMange() {
+    public function batchMange()
+    {
         $plugins = app('app\common\services\PluginManager');
-        $names =  explode(',',\YunShop::request()->names);
+        $names   = explode(',', \YunShop::request()->names);
+        $action = \YunShop::request()->action;
+
         foreach ($names as $name) {
+            $this->proAuth($name, $action);
+
             $plugin = plugin($name);
             if ($plugin) {
                 $plugin->title = trans($plugin->title);
@@ -80,7 +92,7 @@ class PluginsController extends BaseController
                     default:
                         die(json_encode(array(
                             "result" => 0,
-                            "error" => "操作错误"
+                            "error"  => "操作错误"
                         )));
                         break;
                 }
@@ -91,7 +103,7 @@ class PluginsController extends BaseController
     public function getPluginData()
     {
         $installed = app('plugins')->getPlugins();
-        return view('admin.plugins',[
+        return view('admin.plugins', [
             'installed' => $installed
         ]);
     }
@@ -111,25 +123,25 @@ class PluginsController extends BaseController
             $type = $plugin['type'];
             switch ($type) {
                 case 'dividend'://分润类
-                    $dividend[$key] = $plugin;
+                    $dividend[$key]                = $plugin;
                     $dividend[$key]['description'] = app('plugins')->getPlugin($key)->description;
-                break;
+                    break;
                 case 'industry'://行业类
-                    $industry[$key] = $plugin;
+                    $industry[$key]                = $plugin;
                     $industry[$key]['description'] = app('plugins')->getPlugin($key)->description;
-                break;
+                    break;
                 case 'marketing'://营销类
-                    $marketing[$key] = $plugin;
+                    $marketing[$key]                = $plugin;
                     $marketing[$key]['description'] = app('plugins')->getPlugin($key)->description;
-                break;
+                    break;
                 case 'tool'://工具类
-                    $tool[$key] = $plugin;
+                    $tool[$key]                = $plugin;
                     $tool[$key]['description'] = app('plugins')->getPlugin($key)->description;
-                break;
+                    break;
                 case 'recharge'://生活充值类
-                    $recharge[$key] = $plugin;
+                    $recharge[$key]                = $plugin;
                     $recharge[$key]['description'] = app('plugins')->getPlugin($key)->description;
-                break;
+                    break;
                 case 'api'://接口类
                     $api[$key] = $plugin;
 //                    if (!$pluginsModel->getPlugin($key)) {
@@ -138,30 +150,53 @@ class PluginsController extends BaseController
 //                        $api[$key]['description'] = $pluginsModel->getPlugin($key);
 //                    }
 //                    $api[$key]['description'] = $pluginsModel->getPlugin($key)->description;
-                break;
+                    break;
             }
         }
 
-        return view('admin.pluginslist',[
-            'plugins' => $plugins,
-            'dividend' => $dividend,
-            'industry' => $industry,
+        return view('admin.pluginslist', [
+            'plugins'   => $plugins,
+            'dividend'  => $dividend,
+            'industry'  => $industry,
             'marketing' => $marketing,
-            'tool' => $tool,
-            'recharge' => $recharge,
-            'api' => $api,
+            'tool'      => $tool,
+            'recharge'  => $recharge,
+            'api'       => $api,
         ]);
     }
 
-    public function setTopShow() {
+    public function setTopShow()
+    {
         $data = request()->input();
-        $data['action'] ?  : app('plugins')->enTopShow($data['name'],1);
+        $data['action'] ?: app('plugins')->enTopShow($data['name'], 1);
         if ($data['action']) {
-            app('plugins')->enTopShow($data['name'],0);
-            return $this->message('取消顶部栏成功',Url::absoluteWeb('plugins.getPluginList'));
+            app('plugins')->enTopShow($data['name'], 0);
+            return $this->message('取消顶部栏成功', Url::absoluteWeb('plugins.getPluginList'));
         } else {
-            app('plugins')->enTopShow($data['name'],1);
-            return $this->message('添加顶部栏成功',Url::absoluteWeb('plugins.getPluginList'));
+            app('plugins')->enTopShow($data['name'], 1);
+            return $this->message('添加顶部栏成功', Url::absoluteWeb('plugins.getPluginList'));
+        }
+    }
+
+    public function proAuth($name, $action)
+    {
+        if ($action == 'enable') {
+            $key    = \Setting::get('shop.key')['key'];
+            $secret = \Setting::get('shop.key')['secret'];
+
+            $url = config('auto-update.proAuthUrl') . "/chkname/{$name}";
+
+            $res = \Curl::to($url)
+                ->withHeader(
+                    "Authorization: Basic " . base64_encode("{$key}:{$secret}")
+                )
+                ->asJsonResponse(true)
+                ->get();
+
+            \Log::debug('-------update res-----', $res);
+            if (0 == $res['status']) {
+                throw new ShopException('应用未授权');
+            }
         }
     }
 

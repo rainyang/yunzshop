@@ -14,11 +14,13 @@ class CreateImsYzPayTypeGroupTable extends Migration
      */
     public function up()
     {
-        Schema::create('yz_pay_type_group', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name', 100)->default('');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('yz_pay_type_group')) {
+            Schema::create('yz_pay_type_group', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('name', 100)->default('');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

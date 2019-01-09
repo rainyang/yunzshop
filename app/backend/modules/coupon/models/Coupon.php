@@ -25,6 +25,7 @@ class Coupon extends \app\common\models\Coupon
         'category_ids' => '[]',
         'storeids' => '[]',
         'display_order' => 0,
+        'plugin_id' => 0,
     ];
 
     /**

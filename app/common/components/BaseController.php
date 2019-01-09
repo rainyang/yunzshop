@@ -108,28 +108,6 @@ class BaseController extends Controller
             setcookie(session_name(), $session_id);
         }
 
-
-        /*
-        if (isset($session_id) && isset($_COOKIE[session_name()]) && $session_id != $_COOKIE[session_name()]) {
-            $session_id = $_COOKIE[session_name()];
-        }
-
-        if (empty($session_id)) {
-            $session_id = $_COOKIE[session_name()];
-        }
-
-        if (empty($session_id)) {
-            $session_id = "{".\YunShop::app()->uniacid."}-" . random(20) ;
-
-            $session_id = md5($session_id);
-
-            setcookie(session_name(), $session_id);
-        }
-
-        */
-
-        //load()->classs('wesession');
-        //\WeSession::start(\YunShop::app()->uniacid, CLIENT_IP, self::COOKIE_EXPIRE);
         WeSession::start(\YunShop::app()->uniacid, CLIENT_IP, self::COOKIE_EXPIRE);
     }
 

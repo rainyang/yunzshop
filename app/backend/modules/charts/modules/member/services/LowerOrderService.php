@@ -24,7 +24,7 @@ class LowerOrderService
             $member_all = [];
 
             \Log::debug('--------执行-------', \YunShop::app()->uniacid);
-            $order   = DB::table('yz_order')->select('uid','price')->where('uniacid', \YunShop::app()->uniacid)->get();
+            $order   = DB::table('yz_order')->select('uid','price')->where('status', 3)->where('uniacid', \YunShop::app()->uniacid)->get();
             $group   = DB::select('select `member_id` from '. DB::getTablePrefix() . 'yz_member_children where uniacid =' . \YunShop::app()->uniacid . ' group by member_id');
             $members = DB::select('select `member_id`, `child_id` as child, `level` from ' . DB::getTablePrefix() .'yz_member_children where uniacid =' . \YunShop::app()->uniacid);
 
