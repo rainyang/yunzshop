@@ -620,6 +620,9 @@ class HomePageController extends ApiController
 
     public function isCloseSite()
     {
+        $shop = Setting::get('shop.shop');
+
+
         return $this->successJson('ok', ['code' => 0]);
     }
 
