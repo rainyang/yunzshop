@@ -49,15 +49,19 @@ class SupervisordController extends BaseController
     {
         //print_r($supervisor->getState());
         $allProcessInfo = $this->supervisor->getAllProcessInfo();
+
         $state = $this->supervisor->getState();
+        // dd($state);
 
         foreach($allProcessInfo->val as $key => &$val) {
             $val['cstate'] = false;
+            // echo $val;
+
         }
-        //$allProcessInfo = $supervisor->stopProcess("dev1-worker:dev1-worker_01");
-        //$allProcessInfo = $supervisor->readLog(0);
-        //$allProcessInfo = $supervisor->logMessage();
-        //dd($allProcessInfo);
+        // $allProcessInfo = $this->supervisor->stopProcess("dev1-worker:dev1-worker_01");
+        // $allProcessInfo = $this->supervisor->readLog(0);
+        //$allProcessInfo = $this->supervisor->logMessage();
+        // dd($allProcessInfo);
         return json_encode([
             'process' => $allProcessInfo,
             'state' => $state
