@@ -11,6 +11,7 @@ namespace app\frontend\modules\goods\controllers;
 
 use app\common\components\ApiController;
 use app\common\models\Goods;
+use app\common\models\Store;
 
 /**
  * 商品海报
@@ -58,7 +59,17 @@ class GoodsPosterController extends ApiController
             return $this->errorJson('请传入正确参数.');
         }
 
-        $this->shopSet = \Setting::get('shop.shop');
+        if (empty($this->storeid)) {
+            
+            $this->shopSet = \Setting::get('shop.shop');
+            
+        } else {
+            
+            $store = Store::find($this->storeid);
+
+            $this->shopSet['name'] = $store->store_name;
+            $this->shopSet['logo'] = $store->thumb;  
+        }
 
         //$this->goodsModel = Goods::uniacid()->with('hasOneShare')->where('plugin_id', 0)->where('status', 1)->find($id);
         $this->goodsModel = Goods::uniacid()->with('hasOneShare')->where('status', 1)->find($id);
