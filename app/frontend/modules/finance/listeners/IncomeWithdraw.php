@@ -57,7 +57,7 @@ class IncomeWithdraw
         } elseif ($withdrawModel->status == -1) {
             $noticeData['status'] = "无效";
 
-        } elseif ($withdrawModel->status == 2) {
+        } elseif ($withdrawModel->status == 3) {
             $noticeData['status'] = "驳回";
 
         }
