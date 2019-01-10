@@ -242,12 +242,12 @@ return [
             '会员昵称', '时间'
         ]
     ],
-    'member_finance_balance_submit' => [
+    'member_withdraw' => [
         'title' => '会员提现(管理员通知)',
         'subtitle' => '会员提现提交通知',
         'value' => 'member_finance_balance_submit',
         'param' => [
-            '粉丝昵称', '申请时间','金额', '提现类型','提现方式'
+            '粉丝昵称', '申请时间','提现金额', '提现类型','提现方式'
         ]
     ],
 
