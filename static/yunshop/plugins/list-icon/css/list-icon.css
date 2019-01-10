@@ -40,12 +40,14 @@
 .shareholder_dividend {
     background-image: url('../img/dividend/shareholder_dividend.png');
 }
-
 .sales-commission {
     background-image: url('../img/dividend/sales_commission.png');
 }
 .mryt {
     background-image: url('../img/dividend/mryt.png');
+}
+.separate {
+    background-image: url('../img/dividend/separate.png');
 }
 
 .supplier {
@@ -62,6 +64,15 @@
 }
 .store_cashier {
     background-image: url('../img/industry/store_cashier.png');
+}
+.subsidiary {
+    background-image: url('../img/industry/subsidiary.png');
+}
+.hotel {
+    background-image: url('../img/industry/hotel.png');
+}
+.kingtimes {
+    background-image: url('../img/industry/kingtimes.png');
 }
 
 .point_activity {
@@ -130,15 +141,6 @@
 .universal_card {
     background-image: url('../img/marketing/universal_card.png');
 }
-
-.subsidiary {
-    background-image: url('../img/industry/subsidiary.png');
-}
-
-.kingtimes {
-    background-image: url('../img/industry/kingtimes.png');
-}
-
 .froze {
     background-image: url('../img/marketing/froze.png');
 }
