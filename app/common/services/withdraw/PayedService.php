@@ -98,7 +98,7 @@ class PayedService
     }
 
 
-    private function payed()
+    private function  payed()
     {
         $result = $this->tryPayed();
         if ($result === true) {
