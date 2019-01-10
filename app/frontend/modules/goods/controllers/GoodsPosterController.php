@@ -55,8 +55,6 @@ class GoodsPosterController extends ApiController
        
         $this->storeid = intval(\YunShop::request()->storeid);
 
-        $this->storeid = intval(\YunShop::request()->storeid);
-
         if (!$id) {
             return $this->errorJson('请传入正确参数.');
         }
@@ -64,13 +62,7 @@ class GoodsPosterController extends ApiController
         if (empty($this->storeid)) {
             
             $this->shopSet = \Setting::get('shop.shop');
-<<<<<<< HEAD
-            
-        } else {
-            
-            $store = Store::find($this->storeid);
-=======
-        
+
         } else {
 
             if (app('plugins')->isEnabled('store-cashier')) {
@@ -79,14 +71,7 @@ class GoodsPosterController extends ApiController
                 $this->shopSet['name'] = $store->store_name;
                 $this->shopSet['logo'] = $store->thumb;
             }
-
         }
->>>>>>> 4fbc7dbe24ec4676866477a4b6ffa9689a9d2db4
-
-            $this->shopSet['name'] = $store->store_name;
-            $this->shopSet['logo'] = $store->thumb;  
-        }
-
         //$this->goodsModel = Goods::uniacid()->with('hasOneShare')->where('plugin_id', 0)->where('status', 1)->find($id);
         $this->goodsModel = Goods::uniacid()->with('hasOneShare')->where('status', 1)->find($id);
 
@@ -367,19 +352,11 @@ class GoodsPosterController extends ApiController
     private function generateQr()
     {
         if (empty($this->storeid)) {
-<<<<<<< HEAD
             //商城商品二维码
             $url = yzAppFullUrl('/goods/'.$this->goodsModel->id, ['mid'=> $this->mid]);
 
         } else {
             //门店商品二维码
-=======
-            
-            $url = yzAppFullUrl('/goods/'.$this->goodsModel->id, ['mid'=> $this->mid]);
-            
-        } else {
-            
->>>>>>> 4fbc7dbe24ec4676866477a4b6ffa9689a9d2db4
             $url = yzAppFullUrl('/goods/'.$this->goodsModel->id.'/o2o/'.$this->storeid, ['mid'=> $this->mid]);
         }
 
