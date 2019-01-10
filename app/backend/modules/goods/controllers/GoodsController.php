@@ -25,12 +25,14 @@ use app\backend\modules\goods\services\CategoryService;
 use app\backend\modules\goods\models\GoodsParam;
 use app\backend\modules\goods\models\GoodsSpec;
 use app\common\components\Widget;
+use app\common\helpers\Cache;
 use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
 use app\common\models\GoodsCategory;
 use app\frontend\modules\coupon\listeners\CouponSend;
 use Setting;
 use app\common\services\goods\VideoDemandCourseGoods;
+use app\common\models\Store as StoreCashier;
 use Yunshop\Designer\models\Store;
 
 
@@ -175,6 +177,7 @@ class GoodsController extends BaseController
         }
 
         if ($result['status'] == 1) {
+            Cache::flush();
             return $this->message('商品创建成功', Url::absoluteWeb('goods.goods.index'));
         } else if ($result['status'] == -1) {
             if (isset($result['msg'])) {
@@ -289,6 +292,7 @@ class GoodsController extends BaseController
         }
         $result = $goods_service->edit();
         if ($result['status'] == 1) {
+            Cache::flush();
             return $this->message('商品修改成功', Url::absoluteWeb('goods.goods.index'));
         } else if ($result['status'] == -1){
             if (isset($result['msg'])) {
@@ -363,6 +367,7 @@ class GoodsController extends BaseController
         $goods->$field = $data;
         //dd($goods);
         $goods->save();
+        Cache::flush();
         echo json_encode(["data" => $data, "result" => 1]);
     }
 
@@ -471,6 +476,19 @@ class GoodsController extends BaseController
         ])->render();
 
     }
+    /**
+     * 获取搜索门店
+     * @return html
+     */
+    public function getSearchStore()
+    {
+        $keyword = \YunShop::request()->keyword;
+        $store = StoreCashier::getStoreByName($keyword);
+        return view('goods.store', [
+            'store' => $store
+        ])->render();
+
+    }
 
     public function test()
     {
@@ -534,4 +552,14 @@ class GoodsController extends BaseController
             echo json_encode($goods); exit;
         }
     }
+
+    public  function SearchOrder(){//获取商品名称
+        $keyword = request()->keyword;
+        $goods= Goods::getSearchOrder($keyword);
+        return view('goods.query', [
+            'goods' => $goods->toArray(),
+        ])->render();
+    }
+
+
 }

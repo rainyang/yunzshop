@@ -20,7 +20,7 @@ class GoodsPosterController extends ApiController
     
     private $shopSet;
     private $goodsModel;
-
+    private $storeid;
     private $mid;
     //画布大小
     // private $canvas = [
@@ -52,13 +52,30 @@ class GoodsPosterController extends ApiController
 
         $this->mid = \YunShop::app()->getMemberId();
 
+        $this->storeid = intval(\YunShop::request()->storeid);
+
         if (!$id) {
             return $this->errorJson('请传入正确参数.');
         }
 
-        $this->shopSet = \Setting::get('shop.shop');
+        if (empty($this->storeid)) {
+            
+            $this->shopSet = \Setting::get('shop.shop');
+        
+        } else {
 
-        $this->goodsModel = Goods::uniacid()->with('hasOneShare')->where('plugin_id', 0)->where('status', 1)->find($id);
+            if (app('plugins')->isEnabled('store-cashier')) {
+                
+                $store = \app\common\models\Store::find($this->storeid);
+                $this->shopSet['name'] = $store->store_name;
+                $this->shopSet['logo'] = $store->thumb;
+            }
+
+        }
+
+
+        //$this->goodsModel = Goods::uniacid()->with('hasOneShare')->where('plugin_id', 0)->where('status', 1)->find($id);
+        $this->goodsModel = Goods::uniacid()->with('hasOneShare')->where('status', 1)->find($id);
 
         if (empty($this->goodsModel)) {
             return $this->errorJson('该商品不是商城商品');
@@ -333,7 +350,14 @@ class GoodsPosterController extends ApiController
      */
     private function generateQr()
     {
-        $url = yzAppFullUrl('/goods/'.$this->goodsModel->id, ['mid'=> $this->mid]);
+        if (empty($this->storeid)) {
+            
+            $url = yzAppFullUrl('/goods/'.$this->goodsModel->id, ['mid'=> $this->mid]);
+            
+        } else {
+            
+            $url = yzAppFullUrl('/goods/'.$this->goodsModel->id.'/o2o/'.$this->storeid, ['mid'=> $this->mid]);
+        }
 
         $path = storage_path('app/public/goods/qrcode/'.\YunShop::app()->uniacid);
         if (!is_dir($path)) {

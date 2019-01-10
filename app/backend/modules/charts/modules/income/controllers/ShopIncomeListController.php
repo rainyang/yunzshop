@@ -31,8 +31,8 @@ class ShopIncomeListController extends BaseController
             ->select(['order_sn', 'buy_name', 'price', 'shop_name', 'plugin_id', 'undividend', 'cost_price', 'supplier', 'store', 'cashier'])
             ->orderBy('id', 'desc')
             ->paginate($pageSize);
-
         $pager = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
+       
         return view('charts.income.shop_income_list',[
             'list' => $list,
             'pager' => $pager,

@@ -15,10 +15,15 @@ class AddIndexToOrderGoodsTable extends Migration
     {
 
         if (Schema::hasTable('yz_order_goods')) {
-            Schema::table('yz_order_goods', function (Blueprint $table) {
-                $table->index('order_id');
-                $table->index('goods_id');
-            });
+            try{
+                Schema::table('yz_order_goods', function (Blueprint $table) {
+                    $table->index('order_id');
+                    $table->index('goods_id');
+                });
+            }catch (Exception $e){
+
+            }
+
         }
     }
 

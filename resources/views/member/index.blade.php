@@ -3,7 +3,7 @@
 @section('content')
 
     <link href="{{static_url('yunshop/css/member.css')}}" media="all" rel="stylesheet" type="text/css"/>
-    <div class="w1200 m0a">
+    <div class="w1200 m0a"  style="padding-bottom:80px">
         <div class="rightlist" style="padding-bottom:100px">
             <!-- 新增加右侧顶部三级菜单 -->
             <div class="right-titpos">
@@ -312,7 +312,9 @@
                                                 <li><a href="{{yzWebUrl('order.list', ['search[ambiguous][field]' => 'order','search[ambiguous][string]'=>'uid:'.$row['uid']])}}" title='会员订单'><i class='fa fa-list'></i> 会员订单</a></li>
                                                 <li><a href="{{yzWebUrl('point.recharge.index',['id'=>$row['uid']])}}" title='充值积分'><i class='fa fa-credit-card'></i> 充值积分</a></li>
                                                 <li><a href="{{yzWebUrl('balance.recharge.index', ['member_id'=>$row['uid']])}}" title='充值余额'><i class='fa fa-money'></i> 充值余额 </a></li>
-                                                <li><a href="{{yzWebUrl('member.member.agent', ['id'=>$row['uid']])}}" title='我的下线'><i class='fa fa-exchange'></i> 推广下线 </a></li>
+                                                <li><a href="{{yzWebUrl('member.member.agent-old', ['id'=>$row['uid']])}}" title='我的下线'><i class='fa fa-exchange'></i> 推广下线 </a></li>
+                                                <li><a href="{{yzWebUrl('member.member.agent', ['id'=>$row['uid']])}}" title='团队下线'><i class='fa fa-exchange'></i> 团队下线 </a></li>
+                                                <li><a href="{{yzWebUrl('member.member.agent-parent', ['id'=>$row['uid']])}}" title='我的上线'><i class='fa fa-exchange'></i> 推广上线 </a></li>
                                                 @if($row['yz_member']['is_black']==1)
                                                     <li><a href="{{yzWebUrl('member.member.black', ['id' => $row['uid'],'black'=>0])}}" title='取消黑名单'><i class='fa fa-minus-square'></i> 取消黑名单</a></li>
                                                 @else

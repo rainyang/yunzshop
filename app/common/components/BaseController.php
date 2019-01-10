@@ -2,6 +2,7 @@
 
 namespace app\common\components;
 
+use app\common\exceptions\AppException;
 use app\common\exceptions\ShopException;
 use app\common\helpers\WeSession;
 use app\common\models\Modules;
@@ -60,12 +61,12 @@ class BaseController extends Controller
 
 
     /**
-     * 后台url参数验证
+     * url参数验证
      * @param array $rules
      * @param \Request|null $request
      * @param array $messages
      * @param array $customAttributes
-     * @throws ShopException
+     * @throws AppException
      */
     public function validate(array $rules, \Request $request = null, array $messages = [], array $customAttributes = [])
     {
@@ -75,7 +76,7 @@ class BaseController extends Controller
         $validator = $this->getValidationFactory()->make($request->all(), $rules, $messages, $customAttributes);
 
         if ($validator->fails()) {
-            throw new ShopException($validator->errors()->first());
+            throw new AppException($validator->errors()->first());
         }
     }
 
@@ -107,28 +108,6 @@ class BaseController extends Controller
             setcookie(session_name(), $session_id);
         }
 
-
-        /*
-        if (isset($session_id) && isset($_COOKIE[session_name()]) && $session_id != $_COOKIE[session_name()]) {
-            $session_id = $_COOKIE[session_name()];
-        }
-
-        if (empty($session_id)) {
-            $session_id = $_COOKIE[session_name()];
-        }
-
-        if (empty($session_id)) {
-            $session_id = "{".\YunShop::app()->uniacid."}-" . random(20) ;
-
-            $session_id = md5($session_id);
-
-            setcookie(session_name(), $session_id);
-        }
-
-        */
-
-        //load()->classs('wesession');
-        //\WeSession::start(\YunShop::app()->uniacid, CLIENT_IP, self::COOKIE_EXPIRE);
         WeSession::start(\YunShop::app()->uniacid, CLIENT_IP, self::COOKIE_EXPIRE);
     }
 

@@ -9,6 +9,7 @@
 namespace app\backend\modules\order\controllers;
 
 use app\backend\modules\goods\models\GoodsOption;
+use app\backend\modules\member\models\MemberParent;
 use app\backend\modules\order\models\Order;
 use app\backend\modules\order\models\OrderGoods;
 use app\backend\modules\order\models\OrderJoinOrderGoods;
@@ -17,6 +18,7 @@ use app\common\components\BaseController;
 use app\common\helpers\PaginationHelper;
 use app\common\services\ExportService;
 use Illuminate\Support\Facades\DB;
+use Yunshop\TeamDividend\models\TeamDividendLevelModel;
 
 class ListController extends BaseController
 {
@@ -48,6 +50,7 @@ class ListController extends BaseController
     public function index()
     {
         $this->export($this->orderModel);
+        $this->directExport($this->orderModel);
         return view('order.index', $this->getData())->render();
     }
 
@@ -61,6 +64,7 @@ class ListController extends BaseController
     {
         $this->orderModel->waitPay();
         $this->export($this->orderModel->waitPay());
+        $this->directExport($this->orderModel->waitPay());
         return view('order.index', $this->getData())->render();
     }
 
@@ -70,10 +74,18 @@ class ListController extends BaseController
      */
     public function waitSend()
     {
-
+        // 会员排序
+        $sort = request()->search['sort'];
+        $condition = [];
+        if ($sort == 1) {
+            $condition['order_by'][] = [$this->orderModel->getModel()->getTable() . '.uid', 'desc'];
+            $condition['order_by'][] = [$this->orderModel->getModel()->getTable() . '.id', 'desc'];
+        }
         $this->orderModel->waitSend();
         $this->export($this->orderModel->waitSend());
-        return view('order.index', $this->getData())->render();
+        $this->directExport($this->orderModel->waitSend());
+        return view('order.index', $this->getData($condition))->render();
+        //return view('order.index', $this->getData())->render();
     }
 
     /**
@@ -84,6 +96,7 @@ class ListController extends BaseController
     {
         $this->orderModel->waitReceive();
         $this->export($this->orderModel->waitReceive());
+        $this->directExport($this->orderModel->waitReceive());
         return view('order.index', $this->getData())->render();
     }
 
@@ -96,6 +109,7 @@ class ListController extends BaseController
 
         $this->orderModel->completed();
         $this->export($this->orderModel->completed());
+        $this->directExport($this->orderModel->completed());
         return view('order.index', $this->getData())->render();
     }
 
@@ -107,11 +121,16 @@ class ListController extends BaseController
     {
         $this->orderModel->cancelled();
         $this->export($this->orderModel->cancelled());
+        $this->directExport($this->orderModel->cancelled());
         return view('order.index', $this->getData())->render();
     }
 
-    protected function getData()
+    protected function getData($condition = [])
     {
+        $sort = request()->search['sort'];
+        if ($sort == 1 && (!$condition || !$condition['order_by'])) {
+            $condition['order_by'][] = [$this->orderModel->getModel()->getTable() . '.id', 'desc'];
+        }
         /*$params = [
             'search' => [
                 'ambiguous' => [
@@ -133,8 +152,17 @@ class ListController extends BaseController
             });
         }
 
+
         $list['total_price'] = $this->orderModel->sum('price');
-        $list += $this->orderModel->orderBy($this->orderModel->getModel()->getTable() . '.id', 'desc')->paginate(self::PAGE_SIZE)->toArray();
+        $build = $this->orderModel;
+        if ($sort == 1) {
+            foreach ($condition['order_by'] as $item) {
+                $build->orderBy(...$item);
+            }
+        } else {
+            $build->orderBy($this->orderModel->getModel()->getTable() . '.id', 'desc');
+        }
+        $list += $build->paginate(self::PAGE_SIZE)->toArray();
 
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
@@ -146,7 +174,8 @@ class ListController extends BaseController
             'var' => \YunShop::app()->get(),
             'url' => request('route'),
             'include_ops' => 'order.ops',
-            'detail_url' => 'order.detail'
+            'detail_url' => 'order.detail',
+            'route' => request()->route
         ];
         return $data;
     }
@@ -167,6 +196,7 @@ class ListController extends BaseController
                     $export_data[$key + 1] = [
                         $item['order_sn'],
                         $item['has_one_order_pay']['pay_sn'],
+                        $item['belongs_to_member']['uid'],
                         $this->getNickname($item['belongs_to_member']['nickname']),
                         $item['address']['realname'],
                         $item['address']['mobile'],
@@ -201,9 +231,101 @@ class ListController extends BaseController
         }
     }
 
+    public function directExport($orders)
+    {
+        if (\YunShop::request()->direct_export == 1) {
+            if (!app('plugins')->isEnabled('team-dividend')) {
+                return $this->error('未开启经销商插件无法导出');
+            }
+            $export_page = request()->export_page ? request()->export_page : 1;
+            $orders = $orders->with([
+                'discounts',
+                'hasManyParentTeam' => function($q) {
+                    $q->whereHas('hasOneTeamDividend')
+                        ->with(['hasOneTeamDividend' => function($q) {
+                            $q->with(['hasOneLevel']);
+                        }])
+                        ->with('hasOneMember')
+                        ->orderBy('level', 'asc');
+                },
+            ]);
+            $export_model = new ExportService($orders, $export_page);
+            $team_list = TeamDividendLevelModel::getList()->get();
+
+            $levelId = [];
+            foreach ($team_list as $level) {
+                $export_data[0][] = $level->level_name;
+                $levelId[] = $level->id;
+            }
+
+            if (!$export_model->builder_model->isEmpty()) {
+                $file_name = date('Ymdhis', time()) . '订单导出';//返现记录导出
+                $export_data[0] = array_merge($export_data[0],$this->getColumns());
+                foreach ($export_model->builder_model->toArray() as $key => $item) {
+
+                    $level = $this->getLevel($item, $levelId);
+
+                    $export_data[$key + 1] = $level;
+
+                    $address = explode(' ', $item['address']['address']);
+
+                    array_push($export_data[$key + 1],
+                        $item['order_sn'],
+                        $item['has_one_order_pay']['pay_sn'],
+                        $item['belongs_to_member']['uid'],
+                        $this->getNickname($item['belongs_to_member']['nickname']),
+                        $item['address']['realname'],
+                        $item['address']['mobile'],
+                        !empty($address[0]) ? $address[0] : '',
+                        !empty($address[1]) ? $address[1] : '',
+                        !empty($address[2]) ? $address[2] : '',
+                        $item['address']['address'],
+                        $this->getGoods($item, 'goods_title'),
+                        $this->getGoods($item, 'goods_sn'),
+                        $this->getGoods($item, 'total'),
+                        $item['pay_type_name'],
+                        $this->getExportDiscount($item, 'deduction'),
+                        $this->getExportDiscount($item, 'coupon'),
+                        $this->getExportDiscount($item, 'enoughReduce'),
+                        $this->getExportDiscount($item, 'singleEnoughReduce'),
+                        $item['goods_price'],
+                        $item['dispatch_price'],
+                        $item['price'],
+                        $this->getGoods($item, 'cost_price'),
+                        $item['status_name'],
+                        $item['create_time'],
+                        !empty(strtotime($item['pay_time'])) ? $item['pay_time'] : '',
+                        !empty(strtotime($item['send_time'])) ? $item['send_time'] : '',
+                        !empty(strtotime($item['finish_time'])) ? $item['finish_time'] : '',
+                        $item['express']['express_company_name'],
+                        '[' . $item['express']['express_sn'] . ']',
+                        $item['has_one_order_remark']['remark']
+                        );
+                }
+                $export_model->export($file_name, $export_data, 'order.list.index', 'direct_export');
+            }
+        }
+    }
+
+    public function getLevel($member, $levelId)
+    {
+        $data = [];
+        foreach ($levelId as $k => $value) {
+            foreach ($member['has_many_parent_team'] as $key => $parent) {
+                if ($parent['has_one_team_dividend']['has_one_level']['id'] == $value) {
+                    $data[$k] = $parent['has_one_member']['nickname'].' '.$parent['has_one_member']['realname'].' '.$parent['has_one_member']['mobile'];
+                    break;
+                }
+            }
+            $data[$k] = $data[$k] ?: '';
+        }
+
+        return $data;
+    }
+
     private function getColumns()
     {
-        return ["订单编号", "支付单号", "粉丝昵称", "会员姓名", "联系电话", '省', '市', '区', "收货地址", "商品名称", "商品编码", "商品数量", "支付方式", '抵扣金额', '优惠券优惠', '全场满减优惠', '单品满减优惠', "商品小计", "运费", "应收款", "成本价", "状态", "下单时间", "付款时间", "发货时间", "完成时间", "快递公司", "快递单号", "订单备注"];
+        return ["订单编号", "支付单号", "会员ID", "粉丝昵称", "会员姓名", "联系电话", '省', '市', '区', "收货地址", "商品名称", "商品编码", "商品数量", "支付方式", '抵扣金额', '优惠券优惠', '全场满减优惠', '单品满减优惠', "商品小计", "运费", "应收款", "成本价", "状态", "下单时间", "付款时间", "发货时间", "完成时间", "快递公司", "快递单号", "订单备注"];
     }
 
     protected function getExportDiscount($order, $key)

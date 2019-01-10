@@ -8,14 +8,11 @@
 
 namespace app\frontend\modules\order\controllers;
 
-use app\common\events\order\CreatingOrder;
-use app\common\exceptions\AppException;
+use app\common\components\ApiController;
 use app\frontend\modules\member\services\MemberCartService;
 use app\frontend\modules\memberCart\MemberCartCollection;
-use Illuminate\Support\Facades\DB;
-use app\frontend\modules\order\models\PreOrder;
 
-class CreateController extends PreOrderController
+class CreateController extends ApiController
 {
 
     private $memberCarts;
@@ -39,52 +36,17 @@ class CreateController extends PreOrderController
         return $this->memberCarts;
     }
 
-    protected function validateParam()
-    {
-
-    }
-
     /**
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * @throws AppException
      */
-    public function index(Request $request)
+    public function index()
     {
         \Log::info('用户下单', request()->input());
-        $this->validateParam();
         //订单组
-        $orders = collect();
-
-        $shopOrder = $this->getShopOrder($this->getMemberCarts());
-        if ($shopOrder) {
-
-            $orders->push($shopOrder);
-        }
-        $orders = $orders->merge($this->getPluginOrders()[0]);
-
-        if ($orders->isEmpty()) {
-            throw new AppException('未找到订单商品');
-        }
+        $trade = $this->getMemberCarts()->getTrade();
+        $trade->generate();
+        $orderIds = $trade->orders->pluck('id')->implode(',');
         //生成订单,触发事件
-        $order_ids = DB::transaction(function () use ($orders) {
-            return $orders->map(function ($order) {
-                /**
-                 * @var $order PreOrder
-                 */
-                $order_id = $order->generate();
-                $order->fireCreatedEvent();
-                return $order_id;
-            });
-        });
-
-        return $this->successJson('成功', ['order_ids' => $order_ids->implode(',')]);
-    }
-
-    private function getPluginOrders()
-    {
-        $event = new CreatingOrder($this->getMemberCarts());
-        event($event);
-        return $event->getData();
+        return $this->successJson('成功', ['order_ids' => $orderIds]);
     }
 }

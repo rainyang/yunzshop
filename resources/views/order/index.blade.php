@@ -29,6 +29,18 @@
                                 @show
                                 <div>
                                     @section('search_bar')
+                                        @if($route == 'order.list.waitSend')
+                                            <div class="form-group  col-md-2 col-sm-6">
+                                                <select name="search[sort]" class="form-control">
+                                                    <option value="" @if(!$requestSearch['sort'])  selected="selected"@endif>
+                                                        时间排序
+                                                    </option>
+                                                    <option value="1" @if($requestSearch['sort'] == 1)  selected="selected"@endif>
+                                                        会员排序
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        @endif
                                         <div class="form-group  col-md-2 col-sm-6">
                                             <select name="search[ambiguous][field]" id="ambiguous-field"
                                                     class="form-control">
@@ -40,32 +52,66 @@
                                                         @if( array_get($requestSearch,'ambiguous.field','')=='member')  selected="selected"@endif>
                                                     用户姓名/ID/昵称/手机号
                                                 </option>
-                                                <option value="order_goods"
-                                                        @if( array_get($requestSearch,'ambiguous.field','')=='order_goods')  selected="selected"@endif>
-                                                    商品名称
-                                                </option>
-                                                <option value="goods_id"
+                                                <option value="goods_id"{{--order_goods--}}
                                                         @if( array_get($requestSearch,'ambiguous.field','')=='goods_id')  selected="selected"@endif>
-                                                    商品ID
+                                                    商品名称/ID
                                                 </option>
+                                                {{--<option value="goods_id"--}}
+                                                        {{--@if( array_get($requestSearch,'ambiguous.field','')=='goods_id')  selected="selected"@endif>--}}
+                                                    {{--商品ID--}}
+                                                {{--</option>--}}
                                                 <option value="dispatch"
                                                         @if( array_get($requestSearch,'ambiguous.field','')=='dispatch')  selected="selected"@endif>
                                                     快递单号
                                                 </option>
                                             </select>
                                         </div>
-                                        <div class="form-group  col-md-2 col-sm-6">
+                                        <div class='form-group col-sm-4 col-lg-3 col-xs-12'>
 
                                             <input class="form-control" name="search[ambiguous][string]" type="text"
                                                    value="{{array_get($requestSearch,'ambiguous.string','')}}"
-                                                   placeholder="订单号/支付单号">
-                                        </div>
-                                        <div class="form-group form-group col-sm-8 col-lg-2 col-xs-12">
+                                                   placeholder="订单号/支付单号" id="string">
 
+
+                                            <div class="form-group notice" id="goods_name">
+                                                <div >
+                                                    <div class='input-group'>
+                                                        <input type="text" name="search[ambiguous][name]" maxlength="30" value="{{array_get($requestSearch,'ambiguous.name','')}}" id="saler" class="form-control" readonly />
+                                                        <div class='input-group-btn'>
+                                                            <button class="btn btn-default" type="button" onclick="popwin = $('#modal-module-menus-notice').modal();">选择商品</button>
+                                                            <button class="btn btn-danger" type="button" onclick="$('#noticeopenid').val('');$('#saler').val('');$('#saleravatar').hide()">清除选择</button>
+                                                        </div>
+                                                    </div>
+                                                    <div id="modal-module-menus-notice"  class="modal fade" tabindex="-1">
+                                                        <div class="modal-dialog" style='width: 920px;'>
+                                                            <div class="modal-content">
+                                                                <div class="modal-header"><button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button><h3>选择商品名称</h3></div>
+                                                                <div class="modal-body" >
+                                                                    <div class="row">
+                                                                        <div class="input-group">
+                                                                            <input type="text" class="form-control" name="keyword" value="" id="search-kwd-notice" placeholder="请输入商品名称" />
+                                                                            <span class='input-group-btn'><button type="button" class="btn btn-default" onclick="search_members();">搜索</button></span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div id="module-menus-notice" style="padding-top:5px;"></div>
+                                                                </div>
+                                                                <div class="modal-footer"><a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</a></div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="form-group form-group col-sm-8 col-lg-2 col-xs-12">
+                                            <!-- 注意，由于属于支付宝支付的支付方式有好几种，包括app支付宝支付方式，支付宝-YZ方式
+                                            等，所以进行了分组,支付选项传入的支付方式是支付方式组的id，并不是支付方式的id -->
                                             <select name="search[pay_type]" class="form-control">
                                                 <option value=""
                                                         @if( array_get($requestSearch,'pay_type',''))  selected="selected"@endif>
-                                                    支付方式
+                                                    全部支付方式
                                                 </option>
                                                 <option value="1"
                                                         @if( array_get($requestSearch,'pay_type','') == '1')  selected="selected"@endif>
@@ -79,15 +125,16 @@
                                                         @if( array_get($requestSearch,'pay_type','') == '3')  selected="selected"@endif>
                                                     余额支付
                                                 </option>
-                                                <option value="5"
-                                                        @if( array_get($requestSearch,'pay_type','') == '5')  selected="selected"@endif>
+                                                <option value="4"
+                                                        @if( array_get($requestSearch,'pay_type','') == '4')  selected="selected"@endif>
                                                     后台付款
                                                 </option>
                                             </select>
                                         </div>
+                                        <div class="form-group col-sm-12 col-lg-12 col-xs-12"></div>
                                         <div class="form-group col-sm-8 col-lg-5 col-xs-12">
 
-                                            <select name="search[time_range][field]" class="form-control form-time">
+                                            <select name="search[time_range][field]" class="form-control form-time" >
                                                 <option value=""
                                                         @if( array_get($requestSearch,'time_range.field',''))selected="selected"@endif >
                                                     操作时间
@@ -129,6 +176,9 @@
                                         @section('export')
                                             <button type="submit" name="export" value="1" id="export" class="btn btn-info">导出
                                                 Excel
+                                            </button>
+                                            <button type="submit" name="direct_export" value="1" id="direct-export" class="btn btn-info">导出
+                                                直推 Excel
                                             </button>
                                         @show
                                         @if( $requestSearch['plugin'] != "fund")
@@ -178,9 +228,7 @@
                                         @if( $order['has_one_refund_apply'] == \app\common\models\refund\RefundApply::WAIT_RECEIVE_RETURN_GOODS)
                                             <label class='label label-primary'>客户已经寄出快递</label>@endif
 
-                                        {{--@yield('shop_name')
-                                        @section('shop_name','')--}}
-                                        <label class="label label-info">总店</label>
+                                        <label class="label label-info">{{$order['shop_name']}}</label>
 
                                         @if(!empty($order['has_one_refund_apply']))
                                             <label class="label label-danger">{{$order['has_one_refund_apply']['refund_type_name']}}
@@ -307,12 +355,64 @@
         </div>
     </div>
     <script>
-        $(function () {
-            $("#ambiguous-field").on('change', function () {
+        // $(function () {
+        //     $("#ambiguous-field").on('change', function () {
+        //
+        //         $(this).next('input').attr('placeholder', $(this).find(':selected').text().trim())
+        //     });
+        // })
 
+        $(function () {
+
+            // $("#goods_name").hide();//页面加载，隐藏选择商品名称控件
+
+            $("#ambiguous-field").on('change', function () {
                 $(this).next('input').attr('placeholder', $(this).find(':selected').text().trim())
+
+
+                if ($(this).val()=='goods_id'){//选择商品名称搜索
+                    $("#string").hide();
+                    $("#goods_name").show();
+                }else {
+                    $('input[name="search[ambiguous][string]"]').val("");
+                    $("#goods_name").hide();
+                    $("#string").show();
+                }
+
             });
         })
+
+        if ($("#ambiguous-field").val()=='goods_id'){//选择商品名称搜索
+            $("#string").hide();
+            $("#goods_name").show();
+        }else {
+            $("#goods_name").hide();
+            $("#string").show();
+        }
+
+        function search_members() {
+            if ($('#search-kwd-notice').val() == '') {
+                Tip.focus('#search-kwd-notice', '请输入关键词');
+                return;
+            }
+            $("#module-menus-notice").html("正在搜索....");
+            $.get("{!! yzWebUrl('goods.goods.search-order') !!}", {
+                keyword: $.trim($('#search-kwd-notice').val())
+            }, function (dat) {
+                $('#module-menus-notice').html(dat);
+            });
+        }
+
+        function select_good (o) {
+            console.log(o.id)
+            $('input[name="search[ambiguous][string]"]').val(o.id);
+            $('input[name="search[ambiguous][name]"]').val(o.title);
+            $("#saleravatar").show();
+            $("#saleravatar").find('img').attr('src', o.thumb);
+            $("#saler").val(o.title);
+            $("#modal-module-menus-notice .close").click();
+        }
+
 
     </script>
 @section('plugin_js')

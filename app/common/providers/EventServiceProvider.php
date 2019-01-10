@@ -14,10 +14,6 @@ use app\common\events\message\SendMessageEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\events\order\AfterOrderCreatedImmediatelyEvent;
 
-use app\common\events\order\AfterOrderPaidEvent;
-use app\common\events\order\AfterOrderReceivedEvent;
-
-
 use app\common\events\PayLog;
 use app\common\events\WechatProcessor;
 use app\common\listeners\charts\OrderBonusListeners;
@@ -28,6 +24,8 @@ use app\common\listeners\WechatProcessorListener;
 use app\common\listeners\withdraw\WithdrawAuditListener;
 use app\common\listeners\withdraw\WithdrawPayListener;
 use app\common\listeners\withdraw\WithdrawSuccessListener;
+use app\common\modules\coupon\events\AfterMemberReceivedCoupon;
+use app\common\modules\coupon\listeners\AfterMemberReceivedCouponListener;
 use app\common\modules\payType\events\AfterOrderPayTypeChangedEvent;
 use app\common\modules\payType\remittance\listeners\AfterOrderPayTypeChangedListener;
 use app\common\modules\process\events\AfterProcessStateChangedEvent;
@@ -98,6 +96,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         MemberCreateRelationEvent::class=>[
             MemberCreateRelationEventListener::class
+        ],
+        AfterMemberReceivedCoupon::class=>[
+            AfterMemberReceivedCouponListener::class
         ]
     ];
     /**
@@ -124,8 +125,6 @@ class EventServiceProvider extends ServiceProvider
         \app\frontend\modules\coupon\listeners\CouponDiscount::class,
         PointListener::class,
         GoodsStock::class,
-        //Order::class,
-        \app\frontend\modules\discount\listeners\Order::class,
         \app\frontend\modules\payment\listeners\Alipay::class,
         \app\frontend\modules\payment\listeners\Credit::class,
         \app\frontend\modules\payment\listeners\Wechat::class,

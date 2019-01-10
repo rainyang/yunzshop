@@ -52,10 +52,10 @@ class RegisterController extends ApiController
                 return $this->errorJson($check_code['json']);
             }
 
-            $invitecode = MemberService::inviteCode();
+            $invite_code = MemberService::inviteCode();
 
-            if ($invitecode['status'] != 1) {
-                return $this->errorJson($invitecode['json']);
+            if ($invite_code['status'] != 1) {
+                return $this->errorJson($invite_code['json']);
             }
 
             $msg = MemberService::validate($mobile, $password, $confirm_password);
@@ -247,12 +247,6 @@ class RegisterController extends ApiController
         if (empty($mobile)) {
             return $this->errorJson('请填入手机号');
         }
-
-        $info = MemberShopInfo::getUserInfo($mobile);
-
-        if (!empty($info)) {
-            return $this->errorJson('该手机号已被注册！不能获取验证码');
-        }
         $code = rand(1000, 9999);
 
         Session::set(codetime, time());
@@ -419,10 +413,10 @@ class RegisterController extends ApiController
             $sms = new Sms($top_client);
 
             //$type为1是注册，else 找回密码
-            if (!is_null($sms_type) && $sms_type == 1) {
-                $issendsms = $sms->send($mobile, $name, $content, $templateCode);
-            }else{
+            if (!is_null($sms_type) && $sms_type == 2) {
                 $issendsms = $sms->send($mobile, $name, $content, $templateCodeForget);
+            }else{
+                $issendsms = $sms->send($mobile, $name, $content, $templateCode);
             }
 
             if (isset($issendsms->result->success)) {
@@ -434,11 +428,11 @@ class RegisterController extends ApiController
         } elseif ($sms['type'] == 3) {
             $aly_sms = new AliyunSMS(trim($sms['aly_appkey']), trim($sms['aly_secret']));
 
-            //$type为1是注册，else 找回密码
-            if (!is_null($sms_type) && $sms_type == 1) {
+            //$type为1是注册，2是找回密码
+            if (!is_null($sms_type) && $sms_type == 2) {
                 $response = $aly_sms->sendSms(
                     $sms['aly_signname'], // 短信签名
-                    $sms['aly_templateCode'], // 注册短信模板编号
+                    $sms['aly_templateCodeForget'], // 找回密码短信模板编号
                     $mobile, // 短信接收者
                     Array(  // 短信模板中字段的值
                         "number" => $code
@@ -447,7 +441,7 @@ class RegisterController extends ApiController
             }else{
                 $response = $aly_sms->sendSms(
                     $sms['aly_signname'], // 短信签名
-                    $sms['aly_templateCodeForget'], // 找回密码短信模板编号
+                    $sms['aly_templateCode'], // 注册短信模板编号
                     $mobile, // 短信接收者
                     Array(  // 短信模板中字段的值
                         "number" => $code
@@ -543,8 +537,8 @@ class RegisterController extends ApiController
     public function getInviteCode()
     {
         $close = \YunShop::request()->close;
-        $is_invite = intval(\Setting::get('shop.member.is_invite'));
         $required =intval(\Setting::get('shop.member.required'));
+        $is_invite = Member::chkInviteCode();
 
         if (isset($close) && 1 == $close) {
             $is_invite = 0;
@@ -558,4 +552,23 @@ class RegisterController extends ApiController
 
         return $this->successJson('ok', $data);
     }
+    public function chkRegister()
+    {
+        $member = Setting::get('shop.member');
+        $shop_reg_close = !empty($member['get_register']) ? $member['get_register'] : 0;
+        $app_reg_close  = 0;
+        $msg = $member["Close_describe"] ?: '注册已关闭';//关闭原因
+        $list=[];
+        $list['state']= $shop_reg_close;
+        if (!is_null($app_set = \Setting::get('shop_app.pay')) && 0 == $app_set['phone_oauth']) {
+            $app_reg_close = 1;
+        }
+
+        if ((!$shop_reg_close && !Client::is_app()) || ($app_reg_close && Client::is_app())) {
+            $list['reason']=$msg;
+            return $this->errorJson('失败',$list);
+        }
+        return $this->successJson('ok',$list);
+    }
+
 }

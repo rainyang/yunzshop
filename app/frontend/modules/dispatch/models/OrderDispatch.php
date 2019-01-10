@@ -46,11 +46,11 @@ class OrderDispatch
                 return 0;
             }
 
-            //临时解决，是柜子的不算运费
+            // todo 临时解决，是柜子的不算运费
             if (!empty($this->order->mark)) {
                 return 0;
             }
-
+            // todo 这里不该使用事件,使用策略比较好
             $event = new OrderDispatchWasCalculated($this->order);
             event($event);
             $data = $event->getData();

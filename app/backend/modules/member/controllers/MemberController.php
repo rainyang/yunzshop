@@ -11,27 +11,33 @@ namespace app\backend\modules\member\controllers;
 
 use app\backend\modules\member\models\McMappingFans;
 use app\backend\modules\member\models\Member;
+use app\backend\modules\member\models\MemberChildren;
 use app\backend\modules\member\models\MemberGroup;
 use app\backend\modules\member\models\MemberLevel;
 use app\backend\modules\member\models\MemberRecord;
 use app\backend\modules\member\models\MemberShopInfo;
 use app\backend\modules\member\models\MemberUnique;
 use app\backend\modules\member\services\MemberServices;
+use app\backend\modules\member\models\MemberParent;
 use app\common\components\BaseController;
+use app\common\events\member\MemberDelEvent;
 use app\common\events\member\MemberRelationEvent;
 use app\common\events\member\RegisterByAgent;
 use app\common\helpers\Cache;
 use app\common\helpers\PaginationHelper;
 use app\common\models\AccountWechats;
+use app\common\models\member\ChildrenOfMember;
+use app\common\models\member\ParentOfMember;
 use app\common\models\MemberAlipay;
 use app\common\models\MemberMiniAppModel;
 use app\common\models\MemberWechatModel;
 use app\common\services\ExportService;
+use app\common\services\member\MemberRelation;
 use app\frontend\modules\member\models\SubMemberModel;
 use app\Jobs\ModifyRelationJob;
 use Illuminate\Support\Facades\DB;
 use Yunshop\Commission\models\Agents;
-
+use Yunshop\TeamDividend\models\TeamDividendLevelModel;
 
 
 class MemberController extends BaseController
@@ -392,6 +398,8 @@ class MemberController extends BaseController
             //删除会员
             Member::UpdateDeleteMemberInfoById($uid);
 
+            event(new MemberDelEvent($uid));
+
             return true;
         });
 
@@ -447,7 +455,7 @@ class MemberController extends BaseController
      *
      * @return mixed
      */
-    public function agent()
+    public function agentOld()
     {
         $request = \YunShop::request();
 
@@ -463,13 +471,217 @@ class MemberController extends BaseController
 
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $this->pageSize);
 
-        return view('member.agent', [
+        return view('member.agent-old', [
             'member' => $member_info,
             'list'  => $list,
             'pager' => $pager,
             'total' => $list['total'],
             'request' => $request
         ])->render();
+    }
+
+    /**
+     * 推广下线
+     *
+     * @return mixed
+     */
+    public function agent()
+    {
+        $request = \YunShop::request();
+
+        $member_info = Member::getUserInfos($request->id)->first();
+
+        if (empty($member_info)) {
+            return $this->message('会员不存在','', 'error');
+        }
+
+        $list = MemberParent::children($request)
+            ->paginate($this->pageSize)
+            ->toArray();
+
+        $level_total = MemberParent::where('parent_id', $request->id)
+            ->selectRaw('count(member_id) as total, level, max(parent_id) as parent_id')
+            ->groupBy('level')
+            ->get();
+
+        $pager = PaginationHelper::show($list['total'], $list['current_page'], $this->pageSize);
+
+        return view('member.agent', [
+            'member' => $member_info,
+            'list'  => $list,
+            'pager' => $pager,
+            'total' => $list['total'],
+            'request' => $request,
+            'level_total' => $level_total,
+        ])->render();
+    }
+
+    public function agentExport()
+    {
+        $file_name = date('Ymdhis', time()) . '会员下级导出';
+        $export_data[0] = ['ID', '昵称', '真实姓名', '电话'];
+        $member_id = request()->id;
+        $child = MemberParent::where('parent_id', $member_id)->with('hasOneChildMember')->get();
+        foreach ($child as $key => $item) {
+            $member = $item->hasOneChildMember;
+            $export_data[$key + 1] = [
+                $member->uid,
+                $member->nickname,
+                $member->realname,
+                $member->mobile,
+            ];
+        }
+        \Excel::create($file_name, function ($excel) use ($export_data) {
+            // Set the title
+            $excel->setTitle('Office 2005 XLSX Document');
+
+            // Chain the setters
+            $excel->setCreator('芸众商城')
+                ->setLastModifiedBy("芸众商城")
+                ->setSubject("Office 2005 XLSX Test Document")
+                ->setDescription("Test document for Office 2005 XLSX, generated using PHP classes.")
+                ->setKeywords("office 2005 openxml php")
+                ->setCategory("report file");
+
+            $excel->sheet('info', function ($sheet) use ($export_data) {
+                $sheet->rows($export_data);
+            });
+        })->export('xls');
+    }
+
+
+
+    /**
+     * 推广上线
+     * @throws \Throwable
+     */
+    public function agentParent()
+    {
+        $request = \YunShop::request();
+
+        $member_info = Member::getUserInfos($request->id)->first();
+
+        if (empty($member_info)) {
+            return $this->message('会员不存在','', 'error');
+        }
+
+        $list = MemberParent::parent($request)->orderBy('level','asc')->paginate($this->pageSize)->toArray();
+
+        $pager = PaginationHelper::show($list['total'], $list['current_page'], $this->pageSize);
+
+        return view('member.agent-parent', [
+            'member' => $member_info,
+            'list'  => $list,
+            'pager' => $pager,
+            'total' => $list['total'],
+            'request' => $request
+        ])->render();
+    }
+
+    /**
+     * 推广上线导出
+     */
+    public function agentParentExport()
+    {
+        $file_name = date('Ymdhis', time()) . '会员上级导出';
+        $export_data[0] = ['ID', '昵称', '真实姓名', '电话'];
+        $member_id = request()->id;
+
+        $child = MemberParent::where('member_id', $member_id)->with(['hasOneMember'])->get();
+        foreach ($child as $key => $item) {
+            $member = $item->hasOneMember;
+            $export_data[$key + 1] = [
+                $member->uid,
+                $member->nickname,
+                $member->realname,
+                $member->mobile,
+            ];
+        }
+
+        \Excel::create($file_name, function ($excel) use ($export_data) {
+            // Set the title
+            $excel->setTitle('Office 2005 XLSX Document');
+
+            // Chain the setters
+            $excel->setCreator('芸众商城')
+                ->setLastModifiedBy("芸众商城")
+                ->setSubject("Office 2005 XLSX Test Document")
+                ->setDescription("Test document for Office 2005 XLSX, generated using PHP classes.")
+                ->setKeywords("office 2005 openxml php")
+                ->setCategory("report file");
+
+            $excel->sheet('info', function ($sheet) use ($export_data) {
+                $sheet->rows($export_data);
+            });
+        })->export('xls');
+    }
+
+    public function firstAgentExport()
+    {
+        $export_data = [];
+        $file_name = date('Ymdhis', time()) . '会员直推上级导出';
+
+        $member_id = request()->id;
+        $team_list = TeamDividendLevelModel::getList()->get();
+
+        foreach ($team_list as $level) {
+            $export_data[0][] = $level->level_name;
+            $levelId[] = $level->id;
+        }
+        array_push($export_data[0], '会员ID', '会员', '姓名/手机号码');
+
+        $child = MemberParent::where('member_id', $member_id)
+            ->where('level', 1)
+            ->with(['hasManyParent' => function($q) {
+                $q->orderBy('level','asc');
+            }])
+            ->get();
+
+        foreach ($child as $key => $item) {
+
+            $level = $this->getLevel($item, $levelId);
+
+            $export_data[$key + 1] = $level;
+
+            array_push($export_data[$key + 1],
+                $item->member_id,
+                $item->hasOneMember->nickname,
+                $item->hasOneMember->realname . '/' . $item->hasOneMember->mobile);
+        }
+
+        \Excel::create($file_name, function ($excel) use ($export_data) {
+            // Set the title
+            $excel->setTitle('Office 2005 XLSX Document');
+
+            // Chain the setters
+            $excel->setCreator('芸众商城')
+                ->setLastModifiedBy("芸众商城")
+                ->setSubject("Office 2005 XLSX Test Document")
+                ->setDescription("Test document for Office 2005 XLSX, generated using PHP classes.")
+                ->setKeywords("office 2005 openxml php")
+                ->setCategory("report file");
+
+            $excel->sheet('info', function ($sheet) use ($export_data) {
+                $sheet->rows($export_data);
+            });
+        })->export('xls');
+    }
+
+    public function getLevel($member, $levelId)
+    {
+        $data = [];
+//        $num = count($member->hasManyParentTeam);
+        foreach ($levelId as $k => $value) {
+            foreach ($member->hasManyParent as $key => $parent) {
+                if ($parent->hasOneTeamDividend->hasOneLevel->id == $value) {
+                    $data[$k] = $parent->hasOneMember->nickname.' '.$parent->hasOneMember->realname.' '.$parent->hasOneMember->mobile;
+                    break;
+                }
+            }
+            $data[$k] = $data[$k] ?: '';
+        }
+
+        return $data;
     }
 
     /**
@@ -647,5 +859,20 @@ class MemberController extends BaseController
         } catch (\Exception $e) {
             return json_encode(['status' => 0]);
         }*/
+    }
+
+    public function exportRelation()
+    {
+        $uniacid = \YunShop::app()->uniacid;
+        $parentMemberModle = new ParentOfMember();
+        $childMemberModel = new ChildrenOfMember();
+        $parentMemberModle->DeletedData($uniacid);
+        $childMemberModel->DeletedData($uniacid);
+
+        $member_relation = new MemberRelation();
+
+        $member_relation->createParentOfMember();
+
+        return view('member.export-relation', [])->render();
     }
 }

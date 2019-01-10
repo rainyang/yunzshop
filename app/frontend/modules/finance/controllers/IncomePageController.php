@@ -13,6 +13,7 @@ namespace app\frontend\modules\finance\controllers;
 use app\common\components\ApiController;
 use app\common\helpers\ImageHelper;
 use app\common\models\Income;
+use app\common\services\popularize\PortType;
 use app\frontend\models\Member;
 use app\frontend\models\MemberRelation;
 use app\frontend\modules\finance\factories\IncomePageFactory;
@@ -57,6 +58,17 @@ class IncomePageController extends ApiController
      */
     private function getPageInfo()
     {
+        $autoWithdraw = 0;
+        if (app('plugins')->isEnabled('mryt')) {
+            $uid = \YunShop::app()->getMemberId();
+            $autoWithdraw = (new \Yunshop\Mryt\services\AutoWithdrawService())->isWithdraw($uid);
+        }
+
+        if (app('plugins')->isEnabled('team-dividend')) {
+            $uid = \YunShop::app()->getMemberId();
+            $autoWithdraw = (new \Yunshop\TeamDividend\services\AutoWithdrawService())->isWithdraw($uid);
+        }
+
         $member_id = \YunShop::app()->getMemberId();
 
         $memberModel = Member::select('nickname', 'avatar', 'uid')->whereUid($member_id)->first();
@@ -68,7 +80,8 @@ class IncomePageController extends ApiController
             'nickname' => $memberModel->nickname,
             'member_id' => $memberModel->uid,
             'grand_total' => $this->getGrandTotal(),
-            'usable_total' => $this->getUsableTotal()
+            'usable_total' => $this->getUsableTotal(),
+            'auto_withdraw' => $autoWithdraw,
         ];
     }
 
@@ -95,6 +108,10 @@ class IncomePageController extends ApiController
 
         $config = $this->getIncomePageConfig();
 
+
+        //是否显示推广插件入口
+        $popularize_set = PortType::popularizeSet(\YunShop::request()->type);
+
         $available = [];
         $unavailable = [];
         foreach ($config as $key => $item) {
@@ -102,6 +119,11 @@ class IncomePageController extends ApiController
             $incomeFactory = new IncomePageFactory(new $item['class'], $lang_set, $is_relation, $is_agent);
 
             if (!$incomeFactory->isShow()) {
+                continue;
+            }
+
+            //不显示
+            if (in_array($incomeFactory->getAppUrl(), $popularize_set)) {
                 continue;
             }
 

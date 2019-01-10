@@ -19,8 +19,8 @@ class MemberCreateRelationEventListener
         $member_id = $event->getUid();
         $parent_id = $event->getParentId();
 
-        if (intval($member_id) > 0 && intval($parent_id) > 0) {
-            \Log::info('创建会员关系');
+        if (intval($member_id) > 0 && intval($parent_id) >= 0) {
+            \Log::debug('创建会员关系');
             $member_relation = new MemberRelation();
 
             $member_relation->build($member_id, $parent_id);

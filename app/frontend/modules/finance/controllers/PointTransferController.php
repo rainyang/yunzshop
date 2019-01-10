@@ -31,6 +31,7 @@ class PointTransferController extends ApiController
     public function index()
     {
         $result = Setting::get('point.set.point_transfer') ? $this->transferStart() : '未开启积分转让';
+//        dd($result);
         return $result === true ? $this->successJson('转让成功') : $this->errorJson($result);
     }
 

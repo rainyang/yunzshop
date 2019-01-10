@@ -9,7 +9,6 @@
 namespace app\common\models;
 
 
-use app\common\models\order\Address as OrderAddress;
 use app\common\events\order\AfterOrderCreatedImmediatelyEvent;
 use app\common\events\order\AfterOrderPaidImmediatelyEvent;
 use app\common\events\order\AfterOrderReceivedImmediatelyEvent;
@@ -45,7 +44,6 @@ use app\backend\modules\order\observers\OrderObserver;
 /**
  * Class Order
  * @package app\common\models
- * @property int plugin_id
  * @property int uniacid
  * @property int id
  * @property int uid
@@ -61,25 +59,31 @@ use app\backend\modules\order\observers\OrderObserver;
  * @property int is_virtual
  * @property int dispatch_type_id
  * @property int refund_id
+ * @property int no_refund
  * @property float deduction_price
  * @property float order_goods_price
  * @property float discount_price
  * @property float dispatch_price
  * @property float change_price
+ * @property float cost_amount
  * @property float change_dispatch_price
+ * @property int plugin_id
+ * @property int is_plugin
+
  * @property Collection orderGoods
  * @property Collection allStatus
  * @property Member belongsToMember
  * @property OrderDiscount discount
  * @property Collection orderPays
  * @property OrderPay hasOneOrderPay
- * @property OrderAddress address
  * @property PayType hasOnePayType
  * @property RefundApply hasOneRefundApply
  * @property Carbon finish_time
  * @property OrderCreatedJob orderCreatedJob
  * @property OrderPaidJob orderPaidJob
  * @property OrderReceivedJob orderReceivedJob
+ * @property Address address
+ * @property Address orderAddress
  * @method static self isPlugin()
  * @method static self orders(array $searchParam)
  * @method static self cancelled()
@@ -274,7 +278,7 @@ class Order extends BaseModel
 
     /**
      * 关联模型 1对多:订单信息
-     * @return \Illuminate\Database\E请填写正确的收货信息请填写正确的收货信息loquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function coupons()
     {
@@ -377,7 +381,10 @@ class Order extends BaseModel
     {
         return $this->hasOne(OrderAddress::class, 'order_id', 'id');
     }
-
+    public function orderAddress()
+    {
+        return $this->hasOne(OrderAddress::class, 'order_id', 'id');
+    }
     /**
      * 关联模型 1对1:订单支付信息
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
@@ -857,6 +864,4 @@ class Order extends BaseModel
             }
         });
     }
-
-
 }

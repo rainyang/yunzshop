@@ -41,7 +41,7 @@ class WftController extends PaymentController
     //微信公众号支付通知
     public function notifyUrl()
     {
-        \Log::debug('------------威富通微信异步通知----------------');
+        \Log::debug('------------威富通微信异步通知---------------->');
         
         $this->log($this->parameters, '威富通微信');
         
@@ -51,29 +51,19 @@ class WftController extends PaymentController
         if($this->getSignResult()) {
             \Log::info('------威富通微信验证成功-----');
             if ($this->getParameter('status') == 0 && $this->getParameter('result_code') == 0) {
-                $orderPay = OrderPay::where('pay_sn', $this->getParameter('out_trade_no'))->first();
-                $orders = Order::whereIn('id', $orderPay->order_ids)->get();
-                if (!$orders->isEmpty()) {
-                    \Log::info('-------威富通微信支付开始----------');
-                    if ($orderPay->status != 1) {
-                        $data = [
-                            'total_fee'    => floatval($this->getParameter('total_fee')),
-                            'out_trade_no' => $this->getParameter('out_trade_no'),
-                            'trade_no'     => 'wft_pay',
-                            'unit'         => 'fen',
-                            'pay_type'     => '威富通微信支付',
-                            'pay_type_id'  => 20,
-                        ];
-                        $this->payResutl($data);
-                    }
-                    \Log::info('---------威富通微信支付结束-------');
-                    echo 'success';
-                    exit();
-                } else {
-                    //订单不存在
-                    echo 'failure';
-                    exit();
-                }
+                \Log::info('-------威富通微信支付开始---------->');
+                $data = [
+                    'total_fee'    => floatval($this->getParameter('total_fee')),
+                    'out_trade_no' => $this->getParameter('out_trade_no'),
+                    'trade_no'     => 'wft_pay',
+                    'unit'         => 'fen',
+                    'pay_type'     => '威富通微信支付',
+                    'pay_type_id'  => 20,
+                ];
+                $this->payResutl($data);
+                \Log::info('<---------威富通微信支付结束-------');
+                echo 'success';
+                exit();
             } else {
                 //支付失败
                 echo 'failure';
@@ -89,7 +79,7 @@ class WftController extends PaymentController
     //支付宝支付通知
     public function alipayNotifyUrl()
     {
-        \Log::debug('------------威富通支付宝异步通知----------------');
+        \Log::debug('------------威富通支付宝异步通知---------------->');
         $this->log($this->parameters, '威富通支付宝');
 
         $set = \Setting::get('plugin.wft_alipay');
@@ -98,29 +88,19 @@ class WftController extends PaymentController
         if($this->getSignResult()) {
             \Log::info('------威富通支付宝验证成功-----');
             if ($this->getParameter('status') == 0 && $this->getParameter('result_code') == 0) {
-                $orderPay = OrderPay::where('pay_sn', $this->getParameter('out_trade_no'))->first();
-                $orders = Order::whereIn('id', $orderPay->order_ids)->get();
-                if (!$orders->isEmpty()) {
-                    \Log::info('-------威富通支付宝支付开始----------');
-                    if ($orderPay->status != 1) {
-                        $data = [
-                            'total_fee'    => floatval($this->getParameter('total_fee')),
-                            'out_trade_no' => $this->getParameter('out_trade_no'),
-                            'trade_no'     => 'wft_alipay',
-                            'unit'         => 'fen',
-                            'pay_type'     => '威富通支付宝',
-                            'pay_type_id'  => 21,
-                        ];
-                        $this->payResutl($data);
-                    }
-                    \Log::info('---------威富通支付宝支付结束-------');
-                    echo 'success';
-                    exit();
-                } else {
-                    //订单不存在
-                    echo 'failure';
-                    exit();
-                }
+                \Log::info('-------威富通支付宝支付开始---------->');
+                $data = [
+                    'total_fee'    => floatval($this->getParameter('total_fee')),
+                    'out_trade_no' => $this->getParameter('out_trade_no'),
+                    'trade_no'     => 'wft_alipay',
+                    'unit'         => 'fen',
+                    'pay_type'     => '威富通支付宝',
+                    'pay_type_id'  => 21,
+                ];
+                $this->payResutl($data);
+                \Log::info('<---------威富通支付宝支付结束-------');
+                echo 'success';
+                exit();
             } else {
                 //支付失败
                 echo 'failure';

@@ -53,6 +53,7 @@ class OrderDiscount
     private function _init()
     {
         $this->discounts = collect();
+        // todo 未开启的和金额为0的优惠项是否隐藏
         //单品满减
         $this->discounts->put('singleEnoughReduce', new SingleEnoughReduce($this->order));
         //全场满减
@@ -70,22 +71,50 @@ class OrderDiscount
     public function getAmount()
     {
         if (!isset($this->amount)) {
-            $this->discounts->each(function(BaseDiscount $discount){
+            $this->discounts->each(function (BaseDiscount $discount) {
                 // todo 暂时想不到其他办法了
                 $this->order->price -= $discount->getAmount();
-                $this->amount+= $discount->getAmount();
+                $this->amount += $discount->getAmount();
             });
 
-            //$this->setOrderDiscounts();
+            $this->setOrderDiscounts();
         }
         return $this->amount;
+    }
+
+    private function setOrderDiscounts()
+    {
+        // 将所有订单商品的优惠
+        $orderGoodsDiscounts = $this->order->orderGoods->reduce(function ($result, $aOrderGoods) {
+            if (isset($aOrderGoods->orderGoodsDiscounts)) {
+                return $result->merge($aOrderGoods->orderGoodsDiscounts);
+            }
+            return $result;
+        }, collect());
+        // 按每个种类的优惠分组 求金额的和
+        $orderGoodsDiscounts->each(function ($orderGoodsDiscount) {
+            // 新类型添加
+            if ($this->order->orderDiscounts->where('discount_code', $orderGoodsDiscount->discount_code)->isEmpty()) {
+                $preOrderDiscount = new PreOrderDiscount([
+                    'discount_code' => $orderGoodsDiscount->discount_code,
+                    'amount' => $orderGoodsDiscount->amount,
+                    'name' => $orderGoodsDiscount->name,
+
+                ]);
+                $preOrderDiscount->setOrder($this->order);
+                return;
+            }
+            // 已存在的类型累加
+            $this->order->orderDiscounts->where('discount_code', $orderGoodsDiscount->discount_code)->first()->amount += $orderGoodsDiscount->amount;
+        });
     }
 
     /**
      * @param $code
      * @return BaseDiscount
      */
-    public function getAmountByCode($code){
+    public function getAmountByCode($code)
+    {
         return $this->discounts[$code];
     }
 }
