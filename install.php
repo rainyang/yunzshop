@@ -859,9 +859,7 @@ CREATE TABLE IF NOT EXISTS ". tablename('yz_member_history')." (
 # Dump of table ims_yz_member_income
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_member_income').";
-
-CREATE TABLE ". tablename('yz_member_income')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_member_income')." (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL,
   `member_id` int(11) NOT NULL,
@@ -884,9 +882,7 @@ CREATE TABLE ". tablename('yz_member_income')." (
 # Dump of table ims_yz_member_level
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_member_level').";
-
-CREATE TABLE ". tablename('yz_member_level')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_member_level')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL,
   `level` int(11) NOT NULL,
