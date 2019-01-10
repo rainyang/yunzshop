@@ -25,11 +25,11 @@ Route::any('/', function () {
     if (strpos(request()->getRequestUri(), '/payment/') !== false) {
         preg_match('#(.*)/payment/(\w+)/(\w+).php(.*?)#', request()->getRequestUri(), $match);
         if (isset($match[2])) {
-            $namespace = 'app\\payment\\controllers\\' . ucfirst($match[2]) . 'Controller';
-            $modules = [];
+            $namespace      = 'app\\payment\\controllers\\' . ucfirst($match[2]) . 'Controller';
+            $modules        = [];
             $controllerName = ucfirst($match[2]);
-            $action = $match[3];
-            $currentRoutes = [];
+            $action         = $match[3];
+            $currentRoutes  = [];
             Yunshop::run($namespace, $modules, $controllerName, $action, $currentRoutes);
         }
         return;
@@ -53,6 +53,11 @@ Route::any('/', function () {
     if (strpos(request()->getRequestUri(), '/addons/') !== false &&
         strpos(request()->getRequestUri(), '/api.php') !== false
     ) {
+        $shop = Setting::get('shop.shop');
+        if (!is_null($shop) && isset($shop['close']) && 1 == $shop['close']) {
+            throw new \app\common\exceptions\AppException('站点已关闭', -1);
+        }
+
         YunShop::parseRoute(request()->input('route'));
         return;
     }
@@ -107,7 +112,7 @@ Route::any('/', function () {
         return;
     }
     if (strpos(request()->getRequestUri(), '/app/') !== false) {
-        return redirect(request()->getSchemeAndHttpHost().'/addons/yun_shop/?menu#/home?i='.request()->get('i'));
+        return redirect(request()->getSchemeAndHttpHost() . '/addons/yun_shop/?menu#/home?i=' . request()->get('i'));
     }
     //后台
     if (strpos(request()->getRequestUri(), '/web/') !== false) {
@@ -117,11 +122,19 @@ Route::any('/', function () {
         }
 
         //解析商城路由
-        if(YunShop::request()->route){
+        if (YunShop::request()->route) {
             YunShop::parseRoute(YunShop::request()->route);
-        }else{
+        } else {
             $eid = YunShop::request()->eid;
 
+            $filesystem = app(\Illuminate\Filesystem\Filesystem::class);
+            $update     = new \app\common\services\AutoUpdate(null, null, 300);
+            \Log::debug('----CLI----');
+            $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
+            if (!empty($plugins_dir)) {
+                \Artisan::call('update:version', ['version' => $plugins_dir]);
+            }
+            
             if (!empty($eid)) {
                 $entry = module_entry($eid);
 

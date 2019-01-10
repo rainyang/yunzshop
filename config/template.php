@@ -107,7 +107,7 @@ return [
         'subtitle' => '会员升级',
         'value' => 'member_upgrade',
         'param' => [
-            '粉丝昵称', '旧等级', '新等级', '时间',
+            '粉丝昵称', '旧等级', '新等级', '时间', '有效期',
         ]
     ],
     'member_agent' => [
@@ -242,6 +242,7 @@ return [
             '会员昵称', '时间'
         ]
     ],
+
     'member_withdraw' => [
         'title' => '会员提现(管理员通知)',
         'subtitle' => '会员提现提交通知',
@@ -250,6 +251,24 @@ return [
             '粉丝昵称', '申请时间','提现金额', '提现类型','提现方式'
         ]
     ],
+
+    'universal_card_open' => [
+        'title' => '一卡通开通',
+        'subtitle' => '一卡通开通通知',
+        'value' => 'universal_card_open',
+        'param' => [
+            '昵称', '时间','会员等级','有效期'
+        ]
+    ],
+    'universal_card_expire' => [
+        'title' => '一卡通权益到期',
+        'subtitle' => '一卡通权益到期通知',
+        'value' => 'universal_card_expire',
+        'param' => [
+            '昵称', '时间','会员等级','过期时间'
+        ]
+    ],
+    
 
     /*$data = [
         [

@@ -25,8 +25,8 @@ use Yunshop\Diyform\admin\DiyformDataController;
 
 class HomePageController extends ApiController
 {
-    protected $publicAction = ['index', 'defaultDesign', 'defaultMenu', 'defaultMenuStyle', 'bindMobile', 'wxapp'];
-    protected $ignoreAction = ['index', 'defaultDesign', 'defaultMenu', 'defaultMenuStyle', 'bindMobile', 'wxapp'];
+    protected $publicAction = ['index', 'defaultDesign', 'defaultMenu', 'defaultMenuStyle', 'bindMobile', 'wxapp', 'isCloseSite'];
+    protected $ignoreAction = ['index', 'defaultDesign', 'defaultMenu', 'defaultMenuStyle', 'bindMobile', 'wxapp', 'isCloseSite'];
     private $pageSize = 16;
     /**
      * @return \Illuminate\Http\JsonResponse 当路由不包含page_id参数时,提供商城首页数据; 当路由包含page_id参数时,提供装修预览数据
@@ -297,6 +297,7 @@ class HomePageController extends ApiController
                 $result['captcha']['status'] = $status;
             }
         }
+
         return $this->successJson('ok', $result);
     }
 
@@ -615,6 +616,11 @@ class HomePageController extends ApiController
         $result['is_bind_mobile'] = $is_bind_mobile;
 
         return $this->successJson('ok', $result);
+    }
+
+    public function isCloseSite()
+    {
+        return $this->successJson('ok', ['code' => 0]);
     }
 
 }

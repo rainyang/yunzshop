@@ -2,6 +2,7 @@
 
 namespace app\common\models;
 
+use app\framework\Database\Eloquent\Builder;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -10,6 +11,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @package app\common\models
  * @property int coupon_method
  * @property int use_type
+ * @property int status
+ * @property int get_type
  * @property int time_limit
  * @property string name
  * @property string suppliernames
@@ -28,8 +31,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property float discount
  * @property float enough
  * @property float deduct
+ * @property int get_max
+ * @property int level_limit
  * @property Carbon time_start
  * @property Carbon time_end
+ * @method  Builder memberLevel($memberLevel)
+ * @method Builder unexpired($time)
  */
 class  Coupon extends BaseModel
 {
@@ -48,6 +55,8 @@ class  Coupon extends BaseModel
 
     const COUPON_DATE_TIME_RANGE = 1;//有效期 - 时间范围
     const COUPON_SINCE_RECEIVE = 0;//有效期 - 领取后n天
+
+    const NO_LIMIT = -1; //不限
 
 
     public $table = 'yz_coupon';
@@ -92,14 +101,6 @@ class  Coupon extends BaseModel
         return static::uniacid()
             ->where('id', '=', $couponId)
             ->first();
-    }
-
-    //getter
-    public static function getter($couponId, $attribute)
-    {
-        return static::uniacid()
-            ->where('id', '=', $couponId)
-            ->value($attribute);
     }
 
     //获取优惠券优惠方式
@@ -197,5 +198,74 @@ class  Coupon extends BaseModel
             ->value('category_ids');
     }
 
+    /**
+     * 筛选某会员等级可领
+     * @param Builder $query
+     * @param $memberLevel
+     * @return Builder
+     */
+    public function scopeMemberLevel(Builder $query, $memberLevel)
+    {
+        return $query->where(function ($query) use ($memberLevel) {
+            $query->where('level_limit', '<=', $memberLevel)
+                ->orWhere(function ($query) {
+                    $query->where('level_limit', -1);
+                });
+        });
+    }
 
+    /**
+     * 筛选未过期
+     * @param Builder $query
+     * @param null $time
+     * @return Builder
+     */
+    public function scopeUnexpired(Builder $query, $time = null)
+    {
+        if (!isset($time)) {
+            $time = time();
+        }
+        return $query->where(function ($query) use ($time) {
+            // 不限时间
+            $query->where('time_limit', 1)->where('time_end', '>', $time)
+                ->orWhere(function ($query) {
+                // 未结束的优惠券
+                $query->where('time_limit', 0);
+            });
+
+        });
+    }
+
+    /**
+     * todo 为什么会出现负数
+     * 可领取张数
+     * @param $receivedCount
+     * @return int
+     */
+    public function availableCount($receivedCount)
+    {
+        if ($this->get_max == self::NO_LIMIT) {
+            return 999;
+        }
+        return max($this->get_max - $receivedCount,0);
+    }
+
+    /**
+     * todo 应在优惠券表添加这个字段
+     * 获取已领取数量
+     * @return int
+     */
+    public function getReceiveCount()
+    {
+        return $this->hasManyMemberCoupon()->count();
+    }
+
+    /**
+     * 是否可领取
+     * @return bool
+     */
+    public function available()
+    {
+        return $this->status == 1 && $this->get_type == 1 && ($this->total == -1 || $this->total > 0);
+    }
 }

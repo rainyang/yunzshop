@@ -196,6 +196,7 @@ class ListController extends BaseController
                     $export_data[$key + 1] = [
                         $item['order_sn'],
                         $item['has_one_order_pay']['pay_sn'],
+                        $item['belongs_to_member']['uid'],
                         $this->getNickname($item['belongs_to_member']['nickname']),
                         $item['address']['realname'],
                         $item['address']['mobile'],
@@ -233,8 +234,8 @@ class ListController extends BaseController
     public function directExport($orders)
     {
         if (\YunShop::request()->direct_export == 1) {
-            if (app('plugins')->isEnabled('team-dividend')) {
-                return $this->message('未开启经销商插件无法导出');
+            if (!app('plugins')->isEnabled('team-dividend')) {
+                return $this->error('未开启经销商插件无法导出');
             }
             $export_page = request()->export_page ? request()->export_page : 1;
             $orders = $orders->with([
@@ -271,6 +272,7 @@ class ListController extends BaseController
                     array_push($export_data[$key + 1],
                         $item['order_sn'],
                         $item['has_one_order_pay']['pay_sn'],
+                        $item['belongs_to_member']['uid'],
                         $this->getNickname($item['belongs_to_member']['nickname']),
                         $item['address']['realname'],
                         $item['address']['mobile'],
@@ -300,7 +302,7 @@ class ListController extends BaseController
                         $item['has_one_order_remark']['remark']
                         );
                 }
-                $export_model->export($file_name, $export_data, 'order.list.index');
+                $export_model->export($file_name, $export_data, 'order.list.index', 'direct_export');
             }
         }
     }
@@ -323,7 +325,7 @@ class ListController extends BaseController
 
     private function getColumns()
     {
-        return ["订单编号", "支付单号", "粉丝昵称", "会员姓名", "联系电话", '省', '市', '区', "收货地址", "商品名称", "商品编码", "商品数量", "支付方式", '抵扣金额', '优惠券优惠', '全场满减优惠', '单品满减优惠', "商品小计", "运费", "应收款", "成本价", "状态", "下单时间", "付款时间", "发货时间", "完成时间", "快递公司", "快递单号", "订单备注"];
+        return ["订单编号", "支付单号", "会员ID", "粉丝昵称", "会员姓名", "联系电话", '省', '市', '区', "收货地址", "商品名称", "商品编码", "商品数量", "支付方式", '抵扣金额', '优惠券优惠', '全场满减优惠', '单品满减优惠', "商品小计", "运费", "应收款", "成本价", "状态", "下单时间", "付款时间", "发货时间", "完成时间", "快递公司", "快递单号", "订单备注"];
     }
 
     protected function getExportDiscount($order, $key)

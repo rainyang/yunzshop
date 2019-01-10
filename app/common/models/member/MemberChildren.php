@@ -10,6 +10,7 @@ namespace app\common\models\member;
 
 
 use app\common\models\BaseModel;
+use app\common\models\Member;
 
 class MemberChildren extends BaseModel
 {
@@ -21,6 +22,16 @@ class MemberChildren extends BaseModel
         static::addGlobalScope(function (Builder $builder) {
             $builder->uniacid();
         });
+    }
+
+    /**
+     *会员  1:1 关系
+     *
+     * @return mixed
+     */
+    public function hasOneMember()
+    {
+        return $this->hasOne(Member::class, 'uid', 'child_id');
     }
 
 }
