@@ -46,9 +46,6 @@ class PayController extends BaseController
          */
 
         $result = (new RefundService)->pay($request['refund_id']);
-        
-        \Log::info('----result---------', $result);
-
         if (!$result) {
             throw new ShopException('操作失败');
         }

@@ -22,25 +22,23 @@ use app\common\services\PayFactory;
 class RefundService
 {
     protected $refundApply;
+    
     public function fastRefund($order_id){
         $order = Order::find($order_id);
         $refundApply = \app\common\models\refund\RefundApply::createByOrder($order);
         $refundApply->save();
         return $this->pay($refundApply->id);
     }
+    
     public function pay($refund_id)
     {
 
         $this->refundApply = RefundApply::find($refund_id);
         
-        \Log::info('---refundApply----', $this->refundApply);
-
         if (!isset($this->refundApply)) {
             throw new AdminException('未找到退款记录');
         }
         
-        \Log::info('----payType---', $this->refundApply->order->pay_type_id);
-
         switch ($this->refundApply->order->pay_type_id) {
             case PayType::WECHAT_PAY:
                 $result = $this->wechat();
@@ -74,11 +72,14 @@ class RefundService
             case PayType::HXWECHAT:
                 $result = $this->hxwechat();
                 break;
+            case PayType::STORE_PAY:
+                $result = $this->backend();
+                break;
             default:
                 $result = false;
                 break;
         }
-        \Log::info('--in_result---', $result);
+
         return $result;
     }
 
