@@ -258,6 +258,14 @@ return [
             '昵称', '时间','会员等级','过期时间'
         ]
     ],
+    'consumption_points' => [
+        'title' => '消费积分通知',
+        'subtitle' => '消费积分通知',
+        'value' => 'consumption_points',
+        'param' => [
+            '昵称', '时间','会员等级','过期时间'
+        ]
+    ],
 
 
 
