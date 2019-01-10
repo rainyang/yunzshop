@@ -903,9 +903,7 @@ CREATE TABLE IF NOT EXISTS ". tablename('yz_member_level')." (
 # Dump of table ims_yz_member_mini_app
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_member_mini_app').";
-
-CREATE TABLE ". tablename('yz_member_mini_app')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_member_mini_app')." (
   `mini_app_id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL,
   `member_id` int(11) NOT NULL,
@@ -924,9 +922,8 @@ CREATE TABLE ". tablename('yz_member_mini_app')." (
 # Dump of table ims_yz_member_qq
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_member_qq').";
 
-CREATE TABLE ". tablename('yz_member_qq')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_member_qq')." (
   `qq_id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL,
   `member_id` int(11) NOT NULL,
@@ -953,9 +950,7 @@ CREATE TABLE ". tablename('yz_member_qq')." (
 # Dump of table ims_yz_member_relation
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_member_relation').";
-
-CREATE TABLE ". tablename('yz_member_relation')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_member_relation')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT NULL,
   `status` tinyint(1) NOT NULL DEFAULT '0',
@@ -975,9 +970,8 @@ CREATE TABLE ". tablename('yz_member_relation')." (
 # Dump of table ims_yz_member_unique
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_member_unique').";
 
-CREATE TABLE ". tablename('yz_member_unique')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_member_unique')." (
   `unique_id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT NULL,
   `unionid` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -996,9 +990,7 @@ CREATE TABLE ". tablename('yz_member_unique')." (
 # Dump of table ims_yz_member_wechat
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_member_wechat').";
-
-CREATE TABLE ". tablename('yz_member_wechat')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_member_wechat')." (
   `wechat_id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL,
   `member_id` int(11) NOT NULL,
@@ -1021,9 +1013,7 @@ CREATE TABLE ". tablename('yz_member_wechat')." (
 # Dump of table ims_yz_menu
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_menu').";
-
-CREATE TABLE ". tablename('yz_menu')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_menu')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
   `item` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -1046,9 +1036,8 @@ CREATE TABLE ". tablename('yz_menu')." (
 # Dump of table ims_yz_options
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_options').";
 
-CREATE TABLE ". tablename('yz_options')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_options')." (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `option_name` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `option_value` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -1060,9 +1049,8 @@ CREATE TABLE ". tablename('yz_options')." (
 # Dump of table ims_yz_order
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_order').";
 
-CREATE TABLE ". tablename('yz_order')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_order')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL DEFAULT '0',
   `uid` int(10) NOT NULL DEFAULT '0',
@@ -1103,9 +1091,7 @@ CREATE TABLE ". tablename('yz_order')." (
 # Dump of table ims_yz_order_address
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_order_address').";
-
-CREATE TABLE ". tablename('yz_order_address')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_order_address')." (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `order_id` int(11) NOT NULL,
   `address` varchar(255) NOT NULL DEFAULT '0',
@@ -1121,9 +1107,7 @@ CREATE TABLE ". tablename('yz_order_address')." (
 # Dump of table ims_yz_order_change_log
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_order_change_log').";
-
-CREATE TABLE ". tablename('yz_order_change_log')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_order_change_log')." (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `order_id` int(11) DEFAULT NULL,
   `username` varchar(50) NOT NULL DEFAULT '',
@@ -1142,9 +1126,7 @@ CREATE TABLE ". tablename('yz_order_change_log')." (
 # Dump of table ims_yz_order_express
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_order_express').";
-
-CREATE TABLE ". tablename('yz_order_express')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_order_express')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `order_id` int(11) NOT NULL DEFAULT '0',
   `express_company_name` varchar(50) NOT NULL DEFAULT '0',
@@ -1162,9 +1144,7 @@ CREATE TABLE ". tablename('yz_order_express')." (
 # Dump of table ims_yz_order_goods
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_order_goods').";
-
-CREATE TABLE ". tablename('yz_order_goods')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_order_goods')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL DEFAULT '0',
   `order_id` int(11) NOT NULL DEFAULT '0',
@@ -1195,9 +1175,8 @@ CREATE TABLE ". tablename('yz_order_goods')." (
 # Dump of table ims_yz_order_goods_change_log
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_order_goods_change_log').";
 
-CREATE TABLE ". tablename('yz_order_goods_change_log')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_order_goods_change_log')." (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `order_change_log_id` int(11) DEFAULT NULL,
   `order_goods_id` int(11) NOT NULL,
@@ -1215,9 +1194,7 @@ CREATE TABLE ". tablename('yz_order_goods_change_log')." (
 # Dump of table ims_yz_order_mapping
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_order_mapping').";
-
-CREATE TABLE ". tablename('yz_order_mapping')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_order_mapping')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `old_order_id` int(11) NOT NULL,
   `new_order_id` int(11) NOT NULL,
@@ -1231,9 +1208,7 @@ CREATE TABLE ". tablename('yz_order_mapping')." (
 # Dump of table ims_yz_order_operation_log
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_order_operation_log').";
-
-CREATE TABLE ". tablename('yz_order_operation_log')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_order_operation_log')." (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `order_id` int(11) DEFAULT '0',
   `before_operation_status` tinyint(1) DEFAULT '0',
@@ -1251,9 +1226,7 @@ CREATE TABLE ". tablename('yz_order_operation_log')." (
 # Dump of table ims_yz_order_pay
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_order_pay').";
-
-CREATE TABLE ". tablename('yz_order_pay')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_order_pay')." (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `pay_sn` varchar(23) NOT NULL DEFAULT '',
   `status` tinyint(3) NOT NULL DEFAULT '0',
@@ -1274,9 +1247,7 @@ CREATE TABLE ". tablename('yz_order_pay')." (
 # Dump of table ims_yz_order_refund
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_order_refund').";
-
-CREATE TABLE ". tablename('yz_order_refund')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_order_refund')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL DEFAULT '0',
   `uid` int(11) NOT NULL,
@@ -1315,9 +1286,7 @@ CREATE TABLE ". tablename('yz_order_refund')." (
 # Dump of table ims_yz_order_remark
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_order_remark').";
-
-CREATE TABLE ". tablename('yz_order_remark')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_order_remark')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `order_id` int(11) NOT NULL,
   `remark` char(255) NOT NULL,
@@ -1333,9 +1302,7 @@ CREATE TABLE ". tablename('yz_order_remark')." (
 # Dump of table ims_yz_pay_access_log
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_pay_access_log').";
-
-CREATE TABLE ". tablename('yz_pay_access_log')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_pay_access_log')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL,
   `member_id` int(11) NOT NULL,
@@ -1352,9 +1319,7 @@ CREATE TABLE ". tablename('yz_pay_access_log')." (
 # Dump of table ims_yz_pay_log
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_pay_log').";
-
-CREATE TABLE ". tablename('yz_pay_log')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_pay_log')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL,
   `member_id` int(11) NOT NULL,
@@ -1373,9 +1338,7 @@ CREATE TABLE ". tablename('yz_pay_log')." (
 # Dump of table ims_yz_pay_order
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_pay_order').";
-
-CREATE TABLE ". tablename('yz_pay_order')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_pay_order')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL,
   `member_id` int(11) NOT NULL,
@@ -1400,9 +1363,7 @@ CREATE TABLE ". tablename('yz_pay_order')." (
 # Dump of table ims_yz_pay_refund_order
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_pay_refund_order').";
-
-CREATE TABLE ". tablename('yz_pay_refund_order')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_pay_refund_order')." (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL,
   `member_id` int(11) NOT NULL,
@@ -1423,9 +1384,7 @@ CREATE TABLE ". tablename('yz_pay_refund_order')." (
 # Dump of table ims_yz_pay_request_data
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_pay_request_data').";
-
-CREATE TABLE ". tablename('yz_pay_request_data')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_pay_request_data')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL,
   `out_order_no` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
@@ -1442,9 +1401,7 @@ CREATE TABLE ". tablename('yz_pay_request_data')." (
 # Dump of table ims_yz_pay_response_data
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_pay_response_data').";
-
-CREATE TABLE ". tablename('yz_pay_response_data')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_pay_response_data')." (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL,
   `out_order_no` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -1460,9 +1417,7 @@ CREATE TABLE ". tablename('yz_pay_response_data')." (
 # Dump of table ims_yz_pay_type
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_pay_type').";
-
-CREATE TABLE ". tablename('yz_pay_type')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_pay_type')." (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL DEFAULT '',
   `plugin_id` int(11) NOT NULL,
@@ -1474,9 +1429,7 @@ CREATE TABLE ". tablename('yz_pay_type')." (
 # Dump of table ims_yz_pay_withdraw_order
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_pay_withdraw_order').";
-
-CREATE TABLE ". tablename('yz_pay_withdraw_order')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_pay_withdraw_order')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL,
   `member_id` int(11) NOT NULL,
@@ -1497,9 +1450,7 @@ CREATE TABLE ". tablename('yz_pay_withdraw_order')." (
 # Dump of table ims_yz_permission
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_permission').";
-
-CREATE TABLE ". tablename('yz_permission')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_permission')." (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `type` tinyint(1) NOT NULL,
   `item_id` int(11) NOT NULL,
@@ -1512,9 +1463,7 @@ CREATE TABLE ". tablename('yz_permission')." (
 # Dump of table ims_yz_plugin_article
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_plugin_article').";
-
-CREATE TABLE ". tablename('yz_plugin_article')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_plugin_article')." (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL,
   `category_id` int(11) NOT NULL,
@@ -1557,9 +1506,7 @@ CREATE TABLE ". tablename('yz_plugin_article')." (
 # Dump of table ims_yz_plugin_article_category
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_plugin_article_category').";
-
-CREATE TABLE ". tablename('yz_plugin_article_category')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_plugin_article_category')." (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT NULL,
   `name` varchar(50) DEFAULT NULL,
@@ -1574,9 +1521,7 @@ CREATE TABLE ". tablename('yz_plugin_article_category')." (
 # Dump of table ims_yz_plugin_article_log
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_plugin_article_log').";
-
-CREATE TABLE ". tablename('yz_plugin_article_log')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_plugin_article_log')." (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `article_id` int(11) DEFAULT NULL,
   `read_num` int(11) DEFAULT NULL,
@@ -1591,9 +1536,7 @@ CREATE TABLE ". tablename('yz_plugin_article_log')." (
 # Dump of table ims_yz_plugin_article_report
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_plugin_article_report').";
-
-CREATE TABLE ". tablename('yz_plugin_article_report')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_plugin_article_report')." (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT NULL,
   `uid` int(11) DEFAULT NULL,
@@ -1608,9 +1551,7 @@ CREATE TABLE ". tablename('yz_plugin_article_report')." (
 # Dump of table ims_yz_plugin_article_share
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_plugin_article_share').";
-
-CREATE TABLE ". tablename('yz_plugin_article_share')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_plugin_article_share')." (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT NULL,
   `article_id` int(11) DEFAULT NULL,
@@ -1627,9 +1568,7 @@ CREATE TABLE ". tablename('yz_plugin_article_share')." (
 # Dump of table ims_yz_plugin_goods_assistant
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_plugin_goods_assistant').";
-
-CREATE TABLE ". tablename('yz_plugin_goods_assistant')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_plugin_goods_assistant')." (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `goods_id` int(11) NOT NULL,
   `uniacid` int(11) NOT NULL,
@@ -1644,9 +1583,7 @@ CREATE TABLE ". tablename('yz_plugin_goods_assistant')." (
 # Dump of table ims_yz_point_log
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_point_log').";
-
-CREATE TABLE ". tablename('yz_point_log')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_point_log')." (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL DEFAULT '0',
   `member_id` int(11) NOT NULL DEFAULT '0',
@@ -1667,9 +1604,7 @@ CREATE TABLE ". tablename('yz_point_log')." (
 # Dump of table ims_yz_qq_config
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_qq_config').";
-
-CREATE TABLE ". tablename('yz_qq_config')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_qq_config')." (
   `config_id` int(11) NOT NULL,
   `uniacid` int(11) NOT NULL DEFAULT '0',
   `app_key` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -1686,9 +1621,7 @@ CREATE TABLE ". tablename('yz_qq_config')." (
 # Dump of table ims_yz_resend_express
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_resend_express').";
-
-CREATE TABLE ". tablename('yz_resend_express')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_resend_express')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `refund_id` int(11) NOT NULL DEFAULT '0',
   `express_company_name` varchar(50) NOT NULL DEFAULT '0',
@@ -1706,9 +1639,7 @@ CREATE TABLE ". tablename('yz_resend_express')." (
 # Dump of table ims_yz_return_express
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_return_express').";
-
-CREATE TABLE ". tablename('yz_return_express')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_return_express')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `refund_id` int(11) NOT NULL DEFAULT '0',
   `express_company_name` varchar(50) NOT NULL DEFAULT '0',
@@ -1726,9 +1657,7 @@ CREATE TABLE ". tablename('yz_return_express')." (
 # Dump of table ims_yz_role
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_role').";
-
-CREATE TABLE ". tablename('yz_role')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_role')." (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL,
   `name` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -1744,9 +1673,7 @@ CREATE TABLE ". tablename('yz_role')." (
 # Dump of table ims_yz_setting
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_setting').";
-
-CREATE TABLE ". tablename('yz_setting')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_setting')." (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL,
   `group` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'shop',
@@ -1761,9 +1688,7 @@ CREATE TABLE ". tablename('yz_setting')." (
 # Dump of table ims_yz_slide
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_slide').";
-
-CREATE TABLE ". tablename('yz_slide')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_slide')." (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL,
   `slide_name` varchar(100) DEFAULT NULL,
@@ -1782,9 +1707,7 @@ CREATE TABLE ". tablename('yz_slide')." (
 # Dump of table ims_yz_sms_send_limit
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_sms_send_limit').";
-
-CREATE TABLE ". tablename('yz_sms_send_limit')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_sms_send_limit')." (
   `sms_id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL,
   `mobile` varchar(11) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -1800,9 +1723,7 @@ CREATE TABLE ". tablename('yz_sms_send_limit')." (
 # Dump of table ims_yz_street
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_street').";
-
-CREATE TABLE ". tablename('yz_street')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_street')." (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `areaname` varchar(255) DEFAULT NULL,
   `parentid` int(10) DEFAULT NULL,
@@ -1814,9 +1735,7 @@ CREATE TABLE ". tablename('yz_street')." (
 # Dump of table ims_yz_template_message
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_template_message').";
-
-CREATE TABLE ". tablename('yz_template_message')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_template_message')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `type` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT 'system',
   `item` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -1835,9 +1754,7 @@ CREATE TABLE ". tablename('yz_template_message')." (
 # Dump of table ims_yz_template_message_record
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_template_message_record').";
-
-CREATE TABLE ". tablename('yz_template_message_record')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_template_message_record')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT NULL,
   `member_id` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -1863,9 +1780,7 @@ CREATE TABLE ". tablename('yz_template_message_record')." (
 # Dump of table ims_yz_user_role
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_user_role').";
-
-CREATE TABLE ". tablename('yz_user_role')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_user_role')." (
   `user_id` int(11) NOT NULL,
   `role_id` int(11) NOT NULL,
   PRIMARY KEY (`user_id`,`role_id`)
@@ -1876,9 +1791,7 @@ CREATE TABLE ". tablename('yz_user_role')." (
 # Dump of table ims_yz_withdraw
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_withdraw').";
-
-CREATE TABLE ". tablename('yz_withdraw')." (
+CREATE TABLE IF NOT EXISTS ". tablename('yz_withdraw')." (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `withdraw_sn` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
   `uniacid` int(11) DEFAULT NULL,
