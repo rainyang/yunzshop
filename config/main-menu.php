@@ -2692,13 +2692,13 @@ return [
                     ],
                     'remittance_audit_reject'         => [
                         'name'              => '转账审核拒绝',
-                        'url'               => 'remittanceAudit.detail.index',
+                        'url'               => 'remittanceAudit.operation.reject',
                         'url_params'        => '',
                         'permit'            => 1,
                         'menu'              => 0,
                         'icon'              => 'fa-gear',
                         'sort'              => 0,
-                        'item'              => 'remittanceAudit.operation.reject',
+                        'item'              => 'remittance_audit_reject',
                         'parents'           => ['finance', 'remittance_audit',],
                     ],
                 ]
