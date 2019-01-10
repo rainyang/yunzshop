@@ -11,8 +11,10 @@ namespace app\common\models;
 use app\common\exceptions\AppException;
 use app\common\models\goods\GoodsDispatch;
 use app\common\models\order\OrderGoodsChangePriceLog;
+use app\common\models\orderGoods\OrderGoodsDeduction;
 use app\common\models\orderGoods\OrderGoodsExpansion;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Class OrderGoods
@@ -22,6 +24,7 @@ use Illuminate\Database\Eloquent\Builder;
  * @property int goods_id
  * @property Goods goods
  * @property GoodsOption goodsOption
+ * @property Collection orderGoodsDeductions
  */
 class OrderGoods extends BaseModel
 {
@@ -36,6 +39,10 @@ class OrderGoods extends BaseModel
         'comment_status' => 0
     ];
     protected $search_fields = ['title'];
+
+    public function orderGoodsDeductions(){
+        return $this->hasMany(OrderGoodsDeduction::class,'order_goods_id');
+    }
 
     //public function
     public function hasOneGoods()

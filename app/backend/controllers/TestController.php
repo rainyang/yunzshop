@@ -15,6 +15,7 @@ use app\common\components\BaseController;
 use app\common\models\Income;
 use app\common\models\member\ChildrenOfMember;
 use app\common\models\member\ParentOfMember;
+use app\common\models\Order;
 use app\common\modules\express\KDN;
 use app\common\services\member\MemberRelation;
 use app\common\services\MessageService;
@@ -23,6 +24,8 @@ use Carbon\Carbon;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Yunshop\PointActivity\Common\Listeners\OrderReceivedListener;
+use app\common\events\order\AfterOrderReceivedEvent;
 
 
 class TestController extends BaseController
@@ -31,8 +34,8 @@ class TestController extends BaseController
 
     public function t()
     {
-        
-
+        $orderModel = Order::find(706);
+        event(new AfterOrderReceivedEvent($orderModel));
     }
 
     public $orderId;
