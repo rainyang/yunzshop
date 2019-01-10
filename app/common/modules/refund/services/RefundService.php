@@ -32,10 +32,14 @@ class RefundService
     {
 
         $this->refundApply = RefundApply::find($refund_id);
+        
+        \Log::info('---refundApply----', $this->refundApply);
 
         if (!isset($this->refundApply)) {
             throw new AdminException('未找到退款记录');
         }
+        
+        \Log::info('----payType---', $this->refundApply->order->pay_type_id);
 
         switch ($this->refundApply->order->pay_type_id) {
             case PayType::WECHAT_PAY:
@@ -74,7 +78,7 @@ class RefundService
                 $result = false;
                 break;
         }
-
+        \Log::info('--in_result---', $result);
         return $result;
     }
 
