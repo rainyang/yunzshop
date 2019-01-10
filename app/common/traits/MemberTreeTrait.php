@@ -219,24 +219,29 @@ trait MemberTreeTrait
             $array = collect([]);
         }
 
-        $number = 1;
-        $parent = $this->getParentLevel($uniacid, $subId);
+        if (!in_array($subId, $this->filter)) {
+            $this->filter[] = $subId;
 
-        if ($parent) {
-            $nextDepth = $depth + 1;
+            $number = 1;
+            $parent = $this->getParentLevel($uniacid, $subId);
 
-            foreach ($parent as $val) {
-                $val->depth = $depth;
+            if ($parent) {
+                $nextDepth = $depth + 1;
 
-                $array->put($val->{$this->getTreeNodeParentIdName()}, $val);
+                foreach ($parent as $val) {
+                    $val->depth = $depth;
 
-                $this->getNodeParents($uniacid,
-                    $val->{$this->getTreeNodeParentIdName()},
-                    $nextDepth
-                );
-                ++$number;
+                    $array->put($val->{$this->getTreeNodeParentIdName()}, $val);
+
+                    $this->getNodeParents($uniacid,
+                        $val->{$this->getTreeNodeParentIdName()},
+                        $nextDepth
+                    );
+                    ++$number;
+                }
             }
         }
+
         return $array;
     }
 
