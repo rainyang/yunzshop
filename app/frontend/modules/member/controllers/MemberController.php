@@ -1624,21 +1624,39 @@ class MemberController extends ApiController
         $type = \YunShop::request()->type;
         $set = \Setting::get('shop.member');
         $member_id = \YunShop::app()->getMemberId();
+
+        if (!$member_id) {
+            return $this->errorJson('会员不存在!');
+        }
+
+        $mobile = \app\common\models\Member::where('uid', $member_id)->first();
+        if ($mobile->mobile) {
+            $invitation_log = 1;
+        } else {
+            $member = MemberShopInfo::uniacid()->where('member_id', $member_id)->first();
+            $invitation_log = MemberInvitationCodeLog::uniacid()->where('member_id', $member->parent_id)->where('member_id', $member_id)->first();
+        }
+
+        $invite_page = $set['invite_page'] ?: 0;
+        $data['invite_page'] = $type == 5 ? 0 : $invite_page;
+
+        $data['is_invite'] = $invitation_log ? 1 : 0;
+        $data['is_login'] = $member_id ? 1 : 0;
+        return $this->successJson('邀请页面开关',$data);
+    }
+
+    public function isValidatePageGoods()
+    {
+        $type = \YunShop::request()->type;
+        $set = \Setting::get('shop.member');
+        $member_id = \YunShop::app()->getMemberId();
         $invite_type = request()->invite_type;
 
         if (!$member_id) {
             return $this->errorJson('会员不存在!');
         }
 
-        if($invite_type == 1){
-            $mobile = \app\common\models\Member::where('uid', $member_id)->first();
-            if ($mobile->mobile) {
-                $invitation_log = 1;
-            } else {
-                $member = MemberShopInfo::uniacid()->where('member_id', $member_id)->first();
-                $invitation_log = MemberInvitationCodeLog::uniacid()->where('member_id', $member->parent_id)->where('member_id', $member_id)->where('invite_type', 1)->first();
-            }
-        } elseif ($invite_type == 2) {
+        if ($invite_type == 2) {
             $member = MemberShopInfo::uniacid()->where('member_id', $member_id)->first();
             $invitation_log = MemberInvitationCodeLog::uniacid()->where('member_id', $member->parent_id)->where('member_id', $member_id)->where('invite_type', 2)->first();
         } else {
