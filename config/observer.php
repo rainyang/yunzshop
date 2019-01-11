@@ -51,7 +51,11 @@ return [
             'function_validator'=>'relationValidator',
             'function_save'=>'relationSave'
         ],
-
+        'point_activity'=>[
+            'class'=>'app\backend\modules\goods\models\PointActivity',
+            'function_validator'=>'relationValidator',
+            'function_save'=>'relationSave'
+        ],
     ],
     'order' => [
         //订单操作记录

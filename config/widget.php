@@ -42,6 +42,10 @@ return [
             'title' => '商品标签',
             'class' => 'app\backend\widgets\goods\FilteringWidget'
         ],
+        'tab_point_activity' => [
+            'title' => '积分活动',
+            'class' => 'app\backend\widgets\goods\PointActivityWidget'
+        ],
 
     ],
     'withdraw' => [
