@@ -35,8 +35,8 @@ use app\common\services\alipay\OnekeyLogin;
 class RegisterController extends ApiController
 {
     protected $publicController = ['Register'];
-    protected $publicAction = ['index', 'sendCode', 'sendCodeV2', 'checkCode', 'sendSms', 'changePassword', 'getInviteCode'];
-    protected $ignoreAction = ['index', 'sendCode', 'sendCodeV2', 'checkCode', 'sendSms', 'changePassword', 'getInviteCode'];
+    protected $publicAction = ['index', 'sendCode', 'sendCodeV2', 'checkCode', 'sendSms', 'changePassword', 'getInviteCode', 'chkRegister'];
+    protected $ignoreAction = ['index', 'sendCode', 'sendCodeV2', 'checkCode', 'sendSms', 'changePassword', 'getInviteCode', 'chkRegister'];
 
     public function index()
     {
