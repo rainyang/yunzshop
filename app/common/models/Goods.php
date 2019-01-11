@@ -10,6 +10,7 @@ namespace app\common\models;
 
 use app\common\exceptions\AppException;
 use app\common\models\goods\GoodsDispatch;
+use app\common\models\goods\GoodsPointActivity;
 use app\common\models\goods\Privilege;
 use app\framework\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -217,6 +218,11 @@ class Goods extends BaseModel
     public function hasOneGoodsLimitBuy()
     {
         return $this->hasOne('app\common\models\goods\GoodsLimitBuy', 'goods_id', 'id');
+    }
+
+    public function hasOnePointActivity()
+    {
+        return $this->hasOne(GoodsPointActivity::class, 'goods_id', 'id');
     }
 
     public function scopeIsPlugin(self $query)

@@ -13,6 +13,8 @@ use app\backend\modules\charts\modules\phone\services\PhoneAttributionService;
 use app\backend\modules\member\models\Member;
 use app\common\components\BaseController;
 use app\common\events\order\AfterOrderReceivedEvent;
+use app\common\events\order\OrderCreatedEvent;
+use app\common\models\Goods;
 use app\common\models\Income;
 use app\common\models\member\ChildrenOfMember;
 use app\common\models\member\ParentOfMember;
@@ -33,8 +35,14 @@ class TestController extends BaseController
 
     public function t()
     {
-        $orderModel = Order::find(459);
+        $orderModel = Order::find(468);
         event(new AfterOrderReceivedEvent($orderModel));
+    }
+
+    public function o()
+    {
+        $goodsModel = Goods::find(279);
+        event(new OrderCreatedEvent($goodsModel));
     }
 
     public $orderId;
