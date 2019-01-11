@@ -9,6 +9,9 @@
 namespace app\backend\modules\member\models;
 
 
+use app\backend\modules\charts\models\Order;
+use Illuminate\Support\Facades\DB;
+
 class MemberChildren extends \app\common\models\member\MemberChildren
 {
     public function scopeChildren($query, $request)
@@ -48,6 +51,48 @@ class MemberChildren extends \app\common\models\member\MemberChildren
 
     }
 
+    public static function getTeamCount()
+    {
+        $teamModel=self::uniacid();
+
+        if (!empty($search['member'])) {
+            $teamModel->whereHas('hasOneMember', function ($query) use ($search) {
+                return $query->searchLike($search['member']);
+            });
+        }
+        if ($search['is_time']) {
+            if ($search['time']) {
+                $range = [strtotime($search['time']['start']), strtotime($search['time']['end'])];
+                $teamModel->whereBetween('created_at', $range);
+            }
+        }
+        $teamModel ->selectRaw('SUM(CASE WHEN level<3 THEN 1 END) as person');
+       $teamModel->groupBy('member_ids');
+
+       /* $teamModel->with('hasManyOrder');
+        $teamModel->groupBy('level');*/
+
+        $teamModel->selectRaw('member_id');
+        $teamModel->groupBy('member_id');
+       /* $teamModel->selectRaw('level');
+        $teamModel->selectRaw('count(yz_member_children.level=2) as unknownCount');
+        $teamModel->groupBy('level');
+        $teamModel->with(['hasOneMember', function ($query) {*/
+       /* }]);*/
+        return $teamModel;
+
+    /*    $model = static::uniacid();
+        $model->select('yz_member_children.member_id, yz_member_children.level,yz_member_children.child_id, count(yz_order.price)');
+        $model->join('yz_order', function ($join){
+            $join->on('yz_member_children.child_id', '=', 'yz_order.uid');
+        });
+        $model->groupBy('yz_member_children.member_id');
+        $model->where(function ($where) {
+            return $where->orWhere('yz_member_children.level', 1)->orWhere('yz_member_children.level', 2);
+        });
+        return $model;*/
+    }
+
     public function hasOneMember()
     {
         return $this->hasOne('app\common\models\Member', 'uid', 'child_id');
@@ -61,6 +106,11 @@ class MemberChildren extends \app\common\models\member\MemberChildren
     public function hasOneChild()
     {
         return $this->hasOne(self::class, 'member_id', 'child_id');
+    }
+
+    public function hasManyOrder()
+    {
+        return $this->hasMany('\app\common\models\Order','uid','child_id');
     }
 
 }
