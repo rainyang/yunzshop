@@ -37,6 +37,7 @@ class PayedService
 
     public function withdrawPay()
     {
+
         if ($this->withdrawModel->status == Withdraw::STATUS_AUDIT) {
             $this->_withdrawPay();
             return true;
@@ -54,6 +55,7 @@ class PayedService
      */
     public function confirmPay()
     {
+        \log::debug('---------进入确认打款接口-----------------');
         if ($this->withdrawModel->status == Withdraw::STATUS_PAYING || $this->withdrawModel->status == Withdraw::STATUS_AUDIT) {
 
             $this->withdrawModel->pay_at = time();
@@ -73,6 +75,7 @@ class PayedService
      */
     private function _withdrawPay()
     {
+        \log::debug('---------进入提现打款-----------------');
         DB::transaction(function () {
             $this->pay();
         });
@@ -349,6 +352,7 @@ class PayedService
      */
     private function updateWithdrawModel()
     {
+        \Log::debug('--------进入更新打款体现记录---------');
         $validator = $this->withdrawModel->validator();
         if ($validator->fails()) {
             throw new ShopException($validator->messages());
