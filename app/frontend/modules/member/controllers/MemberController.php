@@ -1599,17 +1599,19 @@ class MemberController extends ApiController
     public function memberInviteValidate()
     {
         $invite_code = request()->invite_code;
+        $invite_type = request()->invite_type;
         $member = (new MemberShopInfo())->getInviteCodeMember($invite_code);
-
         $member_invitation_model = new MemberInvitationCodeLog();
 
         if ($member) {
             \Log::info('更新上级------'.\YunShop::app()->getMemberId());
-            MemberShopInfo::uniacid()->where('member_id', \YunShop::app()->getMemberId())->update(['parent_id' => $member->member_id]);
+            MemberShopInfo::change_relation(\YunShop::app()->getMemberId(), $member->member_id);
 
             $member_invitation_model->uniacid = \YunShop::app()->uniacid;
+            $member_invitation_model->mid = \YunShop::app()->getMemberId();
             $member_invitation_model->member_id = $member->member_id;
             $member_invitation_model->invitation_code = $invite_code;
+            $member_invitation_model->invite_type = $invite_type;
             $member_invitation_model->save();
             return $this->successJson('ok', $member);
         } else {
@@ -1621,16 +1623,26 @@ class MemberController extends ApiController
     {
         $type = \YunShop::request()->type;
         $set = \Setting::get('shop.member');
-        $invitation_log = [];
         $member_id = \YunShop::app()->getMemberId();
-        if ($member_id) {
+        $invite_type = request()->invite_type;
+
+        if (!$member_id) {
+            return $this->errorJson('会员不存在!');
+        }
+
+        if($invite_type == 1){
             $mobile = \app\common\models\Member::where('uid', $member_id)->first();
             if ($mobile->mobile) {
                 $invitation_log = 1;
             } else {
                 $member = MemberShopInfo::uniacid()->where('member_id', $member_id)->first();
-                $invitation_log = MemberInvitationCodeLog::uniacid()->where('member_id', $member->parent_id)->first();
+                $invitation_log = MemberInvitationCodeLog::uniacid()->where('member_id', $member->parent_id)->where('member_id', $member_id)->where('invite_type', 1)->first();
             }
+        } elseif ($invite_type == 2) {
+            $member = MemberShopInfo::uniacid()->where('member_id', $member_id)->first();
+            $invitation_log = MemberInvitationCodeLog::uniacid()->where('member_id', $member->parent_id)->where('member_id', $member_id)->where('invite_type', 2)->first();
+        } else {
+            return $this->errorJson('请求数据有误!');
         }
 
         $invite_page = $set['invite_page'] ?: 0;
