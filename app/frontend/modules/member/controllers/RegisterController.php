@@ -552,6 +552,7 @@ class RegisterController extends ApiController
 
         return $this->successJson('ok', $data);
     }
+
     public function chkRegister()
     {
         $member = Setting::get('shop.member');
@@ -570,5 +571,4 @@ class RegisterController extends ApiController
         }
         return $this->successJson('ok',$list);
     }
-
 }
