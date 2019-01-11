@@ -560,7 +560,8 @@ class RegisterController extends ApiController
         $app_reg_close  = 0;
         $msg = $member["Close_describe"] ?: '注册已关闭';//关闭原因
         $list=[];
-        $list['state']= $shop_reg_close;
+        //$list['state']= $shop_reg_close;
+        $list['state']= 1;
         if (!is_null($app_set = \Setting::get('shop_app.pay')) && 0 == $app_set['phone_oauth']) {
             $app_reg_close = 1;
         }
