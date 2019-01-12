@@ -337,6 +337,8 @@ class FixController extends BaseController
         $order = Order::uniacid()->where('order_sn', $order_sn)->first();
         $commission_order = CommissionOrder::uniacid()->where('ordertable_id', $order->id)->first();
         if ($commission_order) {
+            echo '已有这条分红';
+        } else {
             $result = (new \Yunshop\Commission\Listener\OrderCreatedListener())->handler($order);
             $commission_order = CommissionOrder::uniacid()->where('ordertable_id', $order->id)->first();
             if ($commission_order) {
@@ -344,8 +346,6 @@ class FixController extends BaseController
             } else {
                 echo '不成功，请检查设置是否正确，一定绝对必须要检查清楚！！！！！！如果正确？！那就服务器有问题，非常难受';
             }
-        } else {
-            echo '已有这条分红';
         }
 
 
@@ -356,7 +356,9 @@ class FixController extends BaseController
         $order_sn = \YunShop::request()->order_sn;
         $order = Order::uniacid()->where('order_sn', $order_sn)->first();
         $team_order = TeamDividendModel::uniacid()->where('order_sn', $order_sn)->first();
-        if (!$team_order) {
+        if ($team_order) {
+            echo '已有这条分红';
+        } else {
             (new \Yunshop\TeamDividend\Listener\OrderCreatedListener())->handle($order);
             $team_order = TeamDividendModel::uniacid()->where('order_sn', $order_sn)->first();
             if ($team_order) {
@@ -364,8 +366,6 @@ class FixController extends BaseController
             } else {
                 echo '不成功，请检查设置是否正确，一定绝对必须要检查清楚！！！！！！如果正确？！那就服务器有问题，非常难受';
             }
-        } else {
-            echo '已有这条分红';
         }
 
     }

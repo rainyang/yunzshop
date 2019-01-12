@@ -561,4 +561,5 @@ class GoodsController extends BaseController
         ])->render();
     }
 
+
 }
