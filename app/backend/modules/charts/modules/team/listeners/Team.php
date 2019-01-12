@@ -25,7 +25,7 @@ class Team
     public function subscribe()
     {
         \Event::listen('cron.collectJobs', function () {
-            \Cron::add('Month-Order', '0 3 1 * * *', function() {
+            \Cron::add('Month-Order', '22 14 12 * * *', function() {
                 $this->handle();
                 return;
             });
