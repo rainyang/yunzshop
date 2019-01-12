@@ -67,20 +67,11 @@ class MemberChildren extends \app\common\models\member\MemberChildren
                 $teamModel->whereBetween('created_at', $range);
             }
         }
-        $teamModel->with(['hasManyOrder','hasOneMember']);
-       /* $teamModel ->selectRaw('SUM(CASE WHEN level<3 THEN 1 END) as person');
-       $teamModel->groupBy('member_ids');*/
+        $teamModel->with([
+            'hasOneChild' => function($q) {
+                $q->selectRaw('count(child_id) as first, member_id')->where('level', 1)->groupBy('member_id');
+            }]);
 
-
-       // $teamModel->groupBy('level');
-
-      /*  $teamModel->selectRaw('member_id');
-        $teamModel->groupBy('member_id');*/
-       /* $teamModel->selectRaw('level');
-        $teamModel->selectRaw('count(yz_member_children.level=2) as unknownCount');
-        $teamModel->groupBy('level');
-        $teamModel->with(['hasOneMember', function ($query) {*/
-       /* }]);*/
         return $teamModel;
 
     /*    $model = static::uniacid();

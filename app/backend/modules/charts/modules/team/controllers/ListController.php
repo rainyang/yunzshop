@@ -20,7 +20,7 @@ class ListController extends BaseController
        $pageSize = 20;
        $list = MemberChildren::getTeamCount($search) ->paginate($pageSize);
 
-     /*  dd($list->toArray());*/
+       dd($list->toArray());
        $pager = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
 
        return view('charts.team.list', [
