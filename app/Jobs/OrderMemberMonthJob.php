@@ -23,7 +23,7 @@ class OrderMemberMonthJob implements  ShouldQueue
 
     public function __construct($order)
     {
-        $this->orderId = $order;
+        $this->order = $order;
     }
 
     public function handle()
@@ -36,7 +36,8 @@ class OrderMemberMonthJob implements  ShouldQueue
             $year -= 1;
             $month = 12;
         }
-        $finder = MemberMonthOrder::uniacid()->where(['member_id'=>$this->order->uid,'year'=>$year,'month'=>$month])->first();
+
+        $finder = MemberMonthOrder::where(['member_id'=>$this->order->uid,'year'=>$year,'month'=>$month])->first();
         if($finder){
             $finder->order_num += 1;
             $finder->order_price = bcadd($finder->order_price ,$this->order->price,2);
