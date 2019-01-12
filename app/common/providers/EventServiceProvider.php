@@ -8,7 +8,6 @@ namespace app\common\providers;
 use app\backend\modules\charts\modules\member\listeners\MemberLowerListener;
 use app\backend\modules\charts\listeners\OrderStatistics;
 use app\backend\modules\charts\modules\phone\listeners\PhoneAttribution;
-use app\backend\modules\charts\modules\phone\listeners\Team;
 use app\backend\modules\goods\listeners\LimitBuy;
 use app\common\events\member\MemberCreateRelationEvent;
 use app\common\events\message\SendMessageEvent;
@@ -152,8 +151,6 @@ class EventServiceProvider extends ServiceProvider
         PhoneAttribution::class,
         OrderBonusListeners::class,
         MemberLowerListener::class,
-        Team::class,
-
     ];
 
     /**
