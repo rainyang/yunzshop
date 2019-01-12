@@ -117,7 +117,7 @@ class MemberChildren extends \app\common\models\member\MemberChildren
 
     public function hasManyMonth()
     {
-        return $this->hasMany(MemberMonthOrder,'uid','child_id');
+        return $this->hasMany('\app\common\models\member\MemberMonthOrder','member_id','child_id');
     }
 
 }
