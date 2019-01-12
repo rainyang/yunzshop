@@ -30,6 +30,8 @@ class OrderMemberMonthJob implements  ShouldQueue
     {
 
         $time = time();
+        $nowyear = date('Y',$time);
+        $nowmonth = date('n',$time);
         $year = date('Y',$time);
         $month = date('n',$time)-1;
         if($month == 0){
@@ -45,8 +47,8 @@ class OrderMemberMonthJob implements  ShouldQueue
         }else{
             $data=[];
             $data['member_id'] = $this->order->uid;
-            $data['year'] = $year;
-            $data['month'] = $month;
+            $data['year'] = $nowyear;
+            $data['month'] = $nowmonth;
             $data['order_num'] = 1;
             $data['order_price'] = $this->order->price;
             MemberMonthOrder::create($data);
