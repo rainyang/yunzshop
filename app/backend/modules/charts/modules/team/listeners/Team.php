@@ -10,6 +10,7 @@ namespace app\backend\modules\charts\modules\phone\listeners;
 
 
 
+use app\backend\modules\charts\modules\team\services\TeamService;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
 class Team
@@ -18,13 +19,13 @@ class Team
 
     public function handle()
     {
-        (new \TeamService())->OrderStatistics();
+        (new TeamService())->OrderStatistics();
     }
 
     public function subscribe()
     {
         \Event::listen('cron.collectJobs', function () {
-            \Cron::add('Team-Order', '0 3 1 * * *', function() {
+            \Cron::add('Month-Order', '0 3 1 * * *', function() {
                 $this->handle();
                 return;
             });
