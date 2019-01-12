@@ -32,14 +32,8 @@ class OrderMemberMonthJob implements  ShouldQueue
         $time = time();
         $nowyear = date('Y',$time);
         $nowmonth = date('n',$time);
-        $year = date('Y',$time);
-        $month = date('n',$time)-1;
-        if($month == 0){
-            $year -= 1;
-            $month = 12;
-        }
 
-        $finder = MemberMonthOrder::where(['member_id'=>$this->order->uid,'year'=>$year,'month'=>$month])->first();
+        $finder = MemberMonthOrder::where(['member_id'=>$this->order->uid,'year'=>$nowyear,'month'=>$nowmonth])->first();
         if($finder){
             $finder->order_num += 1;
             $finder->order_price = bcadd($finder->order_price ,$this->order->price,2);
