@@ -148,9 +148,21 @@
                                 </label>
                                 <label class="radio radio-inline">
                                     <input type="radio" name="member[is_bind_mobile]" value="1"
-                                           @if ($set['is_bind_mobile'] == 1) checked @endif/> 是
+                                           @if ($set['is_bind_mobile'] == 1) checked @endif/> 全局强制绑定
                                 </label>
-                                <span class="help-block">进入商城是否强制绑定手机号</span>
+                                <label class="radio radio-inline">
+                                    <input type="radio" name="member[is_bind_mobile]" value="2"
+                                           @if ($set['is_bind_mobile'] == 2) checked @endif/> 会员中心强制绑定
+                                </label>
+                                <label class="radio radio-inline">
+                                    <input type="radio" name="member[is_bind_mobile]" value="3"
+                                           @if ($set['is_bind_mobile'] == 3) checked @endif/> 商品页面强制绑定
+                                </label>
+                                <label class="radio radio-inline">
+                                    <input type="radio" name="member[is_bind_mobile]" value="4"
+                                           @if ($set['is_bind_mobile'] == 4) checked @endif/> 推广中心页面强制绑定
+                                </label>
+                                <span class="help-block">进入商城是否强制绑定手机号，指定页面才强制绑定手机</span>
                             </div>
                         </div>
                         <div class="form-group">
