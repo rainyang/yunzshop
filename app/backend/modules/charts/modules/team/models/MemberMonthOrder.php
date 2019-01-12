@@ -9,14 +9,10 @@
 namespace app\backend\modules\charts\modules\team\models;
 
 
-use app\common\models\BaseModel;
 
-class MemberMonthOrder extends BaseModel
+
+class MemberMonthOrder extends \app\common\models\member\MemberMonthOrder
 {
-    protected $table = 'yz_member_month_order';
-    protected $guarded = [''];
-
-
 
 
 }

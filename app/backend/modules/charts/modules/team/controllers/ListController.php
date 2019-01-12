@@ -19,8 +19,8 @@ class ListController extends BaseController
        $search = \YunShop::request()->search;
        $pageSize = 20;
        $list = MemberChildren::getTeamCount($search) ->paginate($pageSize);
-       ////$list = MemberChildren::getTeamCount($search) ->get();
-       dd($list->toArray());
+
+     /*  dd($list->toArray());*/
        $pager = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
 
        return view('charts.team.list', [

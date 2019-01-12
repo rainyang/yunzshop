@@ -10,6 +10,7 @@ namespace app\backend\modules\member\models;
 
 
 use app\backend\modules\charts\models\Order;
+use app\backend\modules\charts\modules\team\models\MemberMonthOrder;
 use Illuminate\Support\Facades\DB;
 
 class MemberChildren extends \app\common\models\member\MemberChildren
@@ -66,14 +67,15 @@ class MemberChildren extends \app\common\models\member\MemberChildren
                 $teamModel->whereBetween('created_at', $range);
             }
         }
-        $teamModel ->selectRaw('SUM(CASE WHEN level<3 THEN 1 END) as person');
-       $teamModel->groupBy('member_ids');
+        $teamModel->with(['hasManyOrder','hasOneMember']);
+       /* $teamModel ->selectRaw('SUM(CASE WHEN level<3 THEN 1 END) as person');
+       $teamModel->groupBy('member_ids');*/
 
-       /* $teamModel->with('hasManyOrder');
-        $teamModel->groupBy('level');*/
 
-        $teamModel->selectRaw('member_id');
-        $teamModel->groupBy('member_id');
+       // $teamModel->groupBy('level');
+
+      /*  $teamModel->selectRaw('member_id');
+        $teamModel->groupBy('member_id');*/
        /* $teamModel->selectRaw('level');
         $teamModel->selectRaw('count(yz_member_children.level=2) as unknownCount');
         $teamModel->groupBy('level');
@@ -111,6 +113,11 @@ class MemberChildren extends \app\common\models\member\MemberChildren
     public function hasManyOrder()
     {
         return $this->hasMany('\app\common\models\Order','uid','child_id');
+    }
+
+    public function hasManyMonth()
+    {
+        return $this->hasMany(MemberMonthOrder,'uid','child_id');
     }
 
 }
