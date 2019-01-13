@@ -314,6 +314,7 @@ class PayedService
         $amount = $this->withdrawModel->amounts;
 
         $trade_no = $this->withdrawModel->separate['trade_no'];
+        //TODO yz_pay_order_table $out_order_no  商户订单号
 
         \Log::debug('--------withdrawPay1---------$member_id', print_r($member_id,1));
         \Log::debug('--------withdrawPay2---------$sn', print_r($sn,1));

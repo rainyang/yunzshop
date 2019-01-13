@@ -109,6 +109,10 @@ class DianbangscanController extends PaymentController
 //            return redirect($trade['redirect_url'])->send();
 //        }
         \Log::debug('<---------支付成功后返回------->',$_POST);
+        \Log::debug('<--------$_GET-------->',$_GET);
+        $data = file_get_contents("php://input");
+        \Log::debug('<--------$data = file_get_contents("php://input")-------->',$data);
+
 //        if (0 == $_GET['state'] && $_GET['errorDetail'] == '成功') {
 //            redirect(Url::absoluteApp('member/payYes', ['i' => $_GET['billDecs']]))->send();
 //        } else {
