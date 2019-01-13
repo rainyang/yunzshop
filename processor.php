@@ -126,6 +126,7 @@ class Yun_shopModuleProcessor extends WeModuleProcessor
             );
 
             //扫海报事件队列
+           /*
             $msg = $this->message;
             $msgType = strtolower($msg['msgtype']);
             $msgEvent = strtolower($msg['event']);
@@ -136,6 +137,7 @@ class Yun_shopModuleProcessor extends WeModuleProcessor
                 dispatch($job);
                 \Log::debug('------poster queue job start-----');
             }
+           */
 
             //微信接口事件
             $response = '';
