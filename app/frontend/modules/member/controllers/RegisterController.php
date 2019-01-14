@@ -568,10 +568,8 @@ class RegisterController extends ApiController
 
         if (($shop_reg_close && !Client::is_app()) || ($app_reg_close && Client::is_app())) {
             $list['reason']=$msg;
-            dd($list);
             return $this->errorJson('失败',$list);
         }
-        dd($list);
         return $this->successJson('ok',$list);
     }
 }
