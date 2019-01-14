@@ -55,7 +55,7 @@ class PayedService
      */
     public function confirmPay()
     {
-        \log::debug('---------进入确认打款接口-----------------');
+        \Log::debug('---------进入确认打款接口-----------------');
         if ($this->withdrawModel->status == Withdraw::STATUS_PAYING || $this->withdrawModel->status == Withdraw::STATUS_AUDIT) {
 
             $this->withdrawModel->pay_at = time();
