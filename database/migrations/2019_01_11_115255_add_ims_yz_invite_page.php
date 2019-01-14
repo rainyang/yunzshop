@@ -18,10 +18,6 @@ class AddImsYzInvitePage extends Migration
                 if (!Schema::hasColumn('yz_member_invitation_log', 'mid')) {
                     $table->integer('mid')->nullable()->comment('会员id');
                 }
-                if (!Schema::hasColumn('yz_member_invitation_log', 'invite_type')) {
-                    $table->tinyInteger('invite_type')->nullable()->comment('邀请类型');
-                }
-
             });
         }
     }

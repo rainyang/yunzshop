@@ -23,6 +23,7 @@ use app\common\models\Area;
 use app\common\models\Goods;
 use app\common\models\McMappingFans;
 use app\common\models\member\MemberInvitationCodeLog;
+use app\common\models\member\MemberInviteGoodsLogController;
 use app\common\models\MemberShopInfo;
 use app\common\services\popularize\PortType;
 use app\common\services\Session;
@@ -1599,21 +1600,19 @@ class MemberController extends ApiController
     public function memberInviteValidate()
     {
         $invite_code = request()->invite_code;
-        $invite_type = request()->invite_type;
-        $member = (new MemberShopInfo())->getInviteCodeMember($invite_code);
+        $parent = (new MemberShopInfo())->getInviteCodeMember($invite_code);
         $member_invitation_model = new MemberInvitationCodeLog();
 
-        if ($member) {
+        if ($parent) {
             \Log::info('更新上级------'.\YunShop::app()->getMemberId());
-            MemberShopInfo::change_relation(\YunShop::app()->getMemberId(), $member->member_id);
+            MemberShopInfo::change_relation(\YunShop::app()->getMemberId(), $parent->member_id);
 
             $member_invitation_model->uniacid = \YunShop::app()->uniacid;
             $member_invitation_model->mid = \YunShop::app()->getMemberId();
-            $member_invitation_model->member_id = $member->member_id;
+            $member_invitation_model->member_id = $parent->member_id;
             $member_invitation_model->invitation_code = $invite_code;
-            $member_invitation_model->invite_type = $invite_type?:0;
             $member_invitation_model->save();
-            return $this->successJson('ok', $member);
+            return $this->successJson('ok', $parent);
         } else {
             return $this->errorJson('邀请码有误!请重新填写');
         }
@@ -1645,30 +1644,56 @@ class MemberController extends ApiController
         return $this->successJson('邀请页面开关',$data);
     }
 
+    public function confirmGoods()
+    {
+        $member_id = \YunShop::app()->getMemberId();
+        $member = MemberShopInfo::getMemberShopInfo($member_id);
+
+        $member_invite_goods_log_model = new MemberInviteGoodsLogController();
+        $member_invite_goods_log_model->uniacid = \YunShop::app()->uniacid;
+        $member_invite_goods_log_model->member_id = $member_id;
+        $member_invite_goods_log_model->parent_id = $member->parent_id;
+        $member_invite_goods_log_model->invitation_code = '';
+
+        if ($member_invite_goods_log_model->save()) {
+            return $this->successJson('ok');
+        }
+    }
+
+    public function refuseGoods()
+    {
+        $invite_code = request()->invite_code;
+        $parent = (new MemberShopInfo())->getInviteCodeMember($invite_code);
+        $member_invite_goods_log_model = new MemberInviteGoodsLogController();
+
+        if ($parent) {
+            \Log::info('更新上级------'.\YunShop::app()->getMemberId());
+            MemberShopInfo::change_relation(\YunShop::app()->getMemberId(), $parent->member_id);
+
+            $member_invite_goods_log_model->uniacid = \YunShop::app()->uniacid;
+            $member_invite_goods_log_model->member_id = \YunShop::app()->getMemberId();
+            $member_invite_goods_log_model->parent_id = $parent->member_id;
+            $member_invite_goods_log_model->invitation_code = $invite_code;
+            $member_invite_goods_log_model->save();
+            return $this->successJson('ok');
+        } else {
+            return $this->errorJson('邀请码有误!请重新填写');
+        }
+    }
+
     public function isValidatePageGoods()
     {
-        $type = \YunShop::request()->type;
-        $set = \Setting::get('shop.member');
         $member_id = \YunShop::app()->getMemberId();
-        $invite_type = request()->invite_type;
 
         if (!$member_id) {
             return $this->errorJson('会员不存在!');
         }
 
-        if ($invite_type == 1) {
-            $member = MemberShopInfo::uniacid()->where('member_id', $member_id)->first();
-            $invitation_log = MemberInvitationCodeLog::uniacid()->where('member_id', $member->parent_id)->where('member_id', $member_id)->where('invite_type', 1)->first();
-        } else {
-            return $this->errorJson('请求数据有误!');
-        }
+        $invitation_log = MemberInviteGoodsLogController::getLogByMemberId($member_id);
 
-        $invite_page = $set['invite_page'] ?: 0;
-        $data['invite_page'] = $type == 5 ? 0 : $invite_page;
+        $result['is_invite'] = $invitation_log ? 1 : 0;
 
-        $data['is_invite'] = $invitation_log ? 1 : 0;
-        $data['is_login'] = $member_id ? 1 : 0;
-        return $this->successJson('邀请页面开关',$data);
+        return $this->successJson('有记录',$result);
     }
 
     public function getShopSet()
