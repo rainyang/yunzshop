@@ -308,19 +308,29 @@ class PayedService
 
         \Log::debug('--------尝试打款withdrawPay---------');
         $member_id = $this->withdrawModel->member_id;
-        $sn = $this->withdrawModel->separate['order_sn'];
-        $withdraw_id = $this->withdrawModel->separate['withdraw_id'];
-
+        $withdraw_id = $this->withdrawModel->id;
         $amount = $this->withdrawModel->amounts;
 
+        $sn = $this->withdrawModel->separate['order_sn'];
         $trade_no = $this->withdrawModel->separate['trade_no'];
+        //如果订单号不存在或支付单号不存在 重新获取 服务重新打款功能
+        if(app('plugins')->isEnabled('separate') && (!$sn || !$trade_no)) {
+
+            $incomeId = $this->withdrawModel->type_id;
+
+            $incomeRelationModel = \Yunshop\Separate\Common\Models\IncomeRelationModel::whereIncomeId($incomeId)->first();
+
+            $sn = $incomeRelationModel->order_sn;
+            $trade_no = $incomeRelationModel->pay_order_sn;
+        }
+
         //TODO yz_pay_order_table $out_order_no  商户订单号
 
         \Log::debug('--------withdrawPay1---------$member_id', print_r($member_id,1));
-        \Log::debug('--------withdrawPay2---------$sn', print_r($sn,1));
-        \Log::debug('--------withdrawPay3---------$withdraw_id', print_r($withdraw_id,1));
+        //\Log::debug('--------withdrawPay2---------$sn', print_r($sn,1));
+        //\Log::debug('--------withdrawPay3---------$withdraw_id', print_r($withdraw_id,1));
         \Log::debug('--------withdrawPay4---------$amount', print_r($amount,1));
-        \Log::debug('--------withdrawPay5---------$trade_no', print_r($trade_no,1));
+        //\Log::debug('--------withdrawPay5---------$trade_no', print_r($trade_no,1));
             //调用分帐接口
         $result = PayFactory::create(PayFactory::PAY_SEPARATE)->doWithdraw($member_id, $sn, $amount, $withdraw_id,$trade_no);
 
