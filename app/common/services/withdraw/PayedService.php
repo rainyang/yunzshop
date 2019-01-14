@@ -75,7 +75,7 @@ class PayedService
      */
     private function _withdrawPay()
     {
-        \log::debug('---------进入提现打款-----------------');
+        \Log::debug('---------进入提现打款-----------------');
         DB::transaction(function () {
             $this->pay();
         });
@@ -323,8 +323,6 @@ class PayedService
             $sn = $incomeRelationModel->order_sn;
             $trade_no = $incomeRelationModel->pay_order_sn;
         }
-
-        //TODO yz_pay_order_table $out_order_no  商户订单号
 
         \Log::debug('--------withdrawPay1---------$member_id', print_r($member_id,1));
         //\Log::debug('--------withdrawPay2---------$sn', print_r($sn,1));
