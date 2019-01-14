@@ -242,10 +242,10 @@
                                                     @if(empty($row['yz_member']['agent']['nickname']))
                                                         未更新
                                                     @else
-                                                        {{$row['yz_member']['agent']['nickname']}}
                                                             @if(empty($row['yz_member']['inviter']))
                                                                 (暂定)
                                                             @endif
+                                                            {{$row['yz_member']['agent']['nickname']}}
                                                      @endif
                                                 @endif
                                         </td>
