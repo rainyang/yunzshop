@@ -46,6 +46,10 @@ return [
             'title' => '邀请页面',
             'class' => 'app\backend\widgets\goods\InvitePageWidget'
         ],
+        'tab_service' => [
+            'title' => '服务提供',
+            'class' => 'app\backend\widgets\goods\ServiceWidget'
+        ],
     ],
     'withdraw' => [
         'income' => [

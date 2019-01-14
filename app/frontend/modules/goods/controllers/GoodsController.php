@@ -65,6 +65,7 @@ class GoodsController extends ApiController
             ->with('hasOneGoodsLimitbuy', function ($query) {
                 return $query->select('goods_id', 'end_time');
             })
+            ->with('hasOneGoodsVideo')
             ->find($id);
 
         $this->validatePrivilege($goodsModel, $member);
@@ -79,6 +80,17 @@ class GoodsController extends ApiController
             foreach ($goodsModel->hasManyOptions as &$item) {
                 $item->thumb = replace_yunshop(yz_tomedia($item->thumb));
             }
+        }
+
+
+        //商品视频处理
+        if (!is_null($goodsModel->hasOneGoodsVideo) && $goodsModel->hasOneGoodsVideo->goods_video) {
+            $goodsModel->goods_video = yz_tomedia($goodsModel->hasOneGoodsVideo->goods_video);
+
+            $goodsModel->video_image = $goodsModel->hasOneGoodsVideo->video_image?yz_tomedia($goodsModel->hasOneGoodsVideo->video_image):yz_tomedia($goodsModel->thumb);
+        } else {
+            $goodsModel->goods_video = '';
+            $goodsModel->video_image = '';
         }
 
 
@@ -135,6 +147,7 @@ class GoodsController extends ApiController
             }
             $goodsModel->thumb_url = $thumb_url;
         }
+        
         foreach ($goodsModel->hasManySpecs as &$spec) {
             $spec['specitem'] = GoodsSpecItem::select('id', 'title', 'specid', 'thumb')->where('specid', $spec['id'])->get();
             foreach ($spec['specitem'] as &$specitem) {
