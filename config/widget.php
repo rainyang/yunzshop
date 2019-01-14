@@ -46,7 +46,10 @@ return [
             'title' => '积分活动',
             'class' => 'app\backend\widgets\goods\PointActivityWidget'
         ],
-
+        'tab_service' => [
+            'title' => '服务提供',
+            'class' => 'app\backend\widgets\goods\ServiceWidget'
+        ],
     ],
     'withdraw' => [
         'income' => [

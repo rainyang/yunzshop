@@ -35,8 +35,8 @@ use app\common\services\alipay\OnekeyLogin;
 class RegisterController extends ApiController
 {
     protected $publicController = ['Register'];
-    protected $publicAction = ['index', 'sendCode', 'sendCodeV2', 'checkCode', 'sendSms', 'changePassword', 'getInviteCode'];
-    protected $ignoreAction = ['index', 'sendCode', 'sendCodeV2', 'checkCode', 'sendSms', 'changePassword', 'getInviteCode'];
+    protected $publicAction = ['index', 'sendCode', 'sendCodeV2', 'checkCode', 'sendSms', 'changePassword', 'getInviteCode', 'chkRegister'];
+    protected $ignoreAction = ['index', 'sendCode', 'sendCodeV2', 'checkCode', 'sendSms', 'changePassword', 'getInviteCode', 'chkRegister'];
 
     public function index()
     {
@@ -560,12 +560,13 @@ class RegisterController extends ApiController
         $app_reg_close  = 0;
         $msg = $member["Close_describe"] ?: '注册已关闭';//关闭原因
         $list=[];
-        $list['state']= $shop_reg_close;
+        //$list['state']= $shop_reg_close;
+        $list['state']= $list['state']= $shop_reg_close;
         if (!is_null($app_set = \Setting::get('shop_app.pay')) && 0 == $app_set['phone_oauth']) {
             $app_reg_close = 1;
         }
 
-        if ((!$shop_reg_close && !Client::is_app()) || ($app_reg_close && Client::is_app())) {
+        if (($shop_reg_close && !Client::is_app()) || ($app_reg_close && Client::is_app())) {
             $list['reason']=$msg;
             return $this->errorJson('失败',$list);
         }
