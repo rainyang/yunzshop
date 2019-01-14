@@ -41,8 +41,9 @@ class PluginsController extends BaseController
 
         $plugins = app('app\common\services\PluginManager');
         $plugin  = plugin($name);
-
-        $this->proAuth($name, $action);
+        if (app()->environment() == 'production') {
+            $this->proAuth($name, $action);
+        }
 
         if ($plugin) {
             // pass the plugin title through the translator
