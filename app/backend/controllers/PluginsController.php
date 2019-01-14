@@ -42,7 +42,9 @@ class PluginsController extends BaseController
         $plugins = app('app\common\services\PluginManager');
         $plugin  = plugin($name);
 
-        $this->proAuth($name, $action);
+        if ($this->app->environment() == 'production') {
+            $this->proAuth($name, $action);
+        }
 
         if ($plugin) {
             // pass the plugin title through the translator
@@ -75,10 +77,12 @@ class PluginsController extends BaseController
     {
         $plugins = app('app\common\services\PluginManager');
         $names   = explode(',', \YunShop::request()->names);
-        $action = \YunShop::request()->action;
+        $action  = \YunShop::request()->action;
 
         foreach ($names as $name) {
-            $this->proAuth($name, $action);
+            if ($this->app->environment() == 'production') {
+                $this->proAuth($name, $action);
+            }
 
             $plugin = plugin($name);
             if ($plugin) {
