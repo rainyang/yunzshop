@@ -52,38 +52,34 @@ class MemberChildren extends \app\common\models\member\MemberChildren
 
     }
 
-    public static function getTeamCount()
+    public static function getTeamCount($search,$uniacid)
     {
-        $teamModel=self::uniacid();
-
-        if (!empty($search['member'])) {
-            $teamModel->whereHas('hasOneMember', function ($query) use ($search) {
-                return $query->searchLike($search['member']);
-            });
-        }
-        if ($search['is_time']) {
-            if ($search['time']) {
-                $range = [strtotime($search['time']['start']), strtotime($search['time']['end'])];
-                $teamModel->whereBetween('created_at', $range);
-            }
-        }
-        $teamModel->with([
-            'hasOneChild' => function($q) {
-                $q->selectRaw('count(child_id) as first, member_id')->where('level', 1)->groupBy('member_id');
-            }]);
-
+        $teamModel=DB::table('yz_member_children')
+            ->where('yz_member_children.uniacid',$uniacid)
+            ->leftJoin('mc_members',function ($join) use ($search){
+                $join->on('yz_member_children.member_id', '=', 'mc_members.uid');
+            } );
+        if(!empty($search['member_id'])){
+            $teamModel ->where('mc_members.uid',$search['member_id']);
+        };
+        if(!empty($search['nickname'])){
+            $teamModel ->where('mc_members.nickname',$search['nickname']);
+        };
+        if(!empty($search['realname'])){
+            $teamModel ->where('mc_members.realname',$search['realname']);
+        };
+        if(!empty($search['mobile'])){
+            $teamModel   ->where('mc_members.mobile',$search['mobile']);
+        };
+          $teamModel->leftJoin('yz_member_month_order',function ($join) use ($search){
+                $join->on('yz_member_children.child_id', '=', 'yz_member_month_order.member_id')
+                    ->where('yz_member_month_order.year',$search['year'])
+                    ->where('yz_member_month_order.month',$search['month']);
+            } )
+            ->select(DB::raw('ims_yz_member_children.*,ims_mc_members.avatar,ims_mc_members.nickname,ims_mc_members.realname,ims_mc_members.mobile,ims_yz_member_month_order.order_price,ims_yz_member_month_order.order_price, ims_yz_member_month_order.member_id as uid,SUM(CASE WHEN level<3 THEN 1 ELSE 0 END) as level_num,SUM(ims_yz_member_month_order.order_price) as price_all,SUM(ims_yz_member_month_order.order_num) as order_all'))
+             ->groupBy('yz_member_children.member_id')
+             ->orderBy('price_all', 'desc');
         return $teamModel;
-
-    /*    $model = static::uniacid();
-        $model->select('yz_member_children.member_id, yz_member_children.level,yz_member_children.child_id, count(yz_order.price)');
-        $model->join('yz_order', function ($join){
-            $join->on('yz_member_children.child_id', '=', 'yz_order.uid');
-        });
-        $model->groupBy('yz_member_children.member_id');
-        $model->where(function ($where) {
-            return $where->orWhere('yz_member_children.level', 1)->orWhere('yz_member_children.level', 2);
-        });
-        return $model;*/
     }
 
     public function hasOneMember()

@@ -20,28 +20,36 @@
                                 <input class="form-control" name="search[member_id]" id="" type="text"
                                        value="{{$search['member_id']}}" placeholder="请输入会员ID">
                             </div>
-                            <div class="form-group col-xs-12 col-sm-3">
-                                <input class="form-control" name="search[member]" id="" type="text"
-                                       value="{{$search['member']}}" placeholder="会员昵称/姓名/手机">
+                            <div class="form-group col-xs-12 col-sm-2">
+                                <input class="form-control" name="search[nickname]" id="" type="text"
+                                       value="{{$search['nickname']}}" placeholder="会员昵称">
+                            </div>
+                            <div class="form-group col-xs-12 col-sm-1">
+                                <input class="form-control" name="search[realname]" id="" type="text"
+                                       value="{{$search['realname']}}" placeholder="会员姓名">
                             </div>
                             <div class="form-group col-xs-12 col-sm-2">
+                                <input class="form-control" name="search[mobile]" id="" type="text"
+                                       value="{{$search['mobile']}}" placeholder="会员手机">
+                            </div>
+                            <div class="form-group col-xs-12 col-sm-1">
                                 <input class="form-control" name="search[year]" id="" type="text"
                                        value="{{$search['year']}}" placeholder="输入年关键字：2019">
                             </div>
-                            <div class="form-group col-xs-12 col-sm-2">
+                            <div class="form-group col-xs-12 col-sm-1">
                                 <select name='search[month]' class='form-control'>
-                                    <option value='1' @if($search['status'] == '1') selected @endif>1月</option>
-                                    <option value='2' @if($search['status'] == '2') selected @endif>2月</option>
-                                    <option value='3' @if($search['status'] == '3') selected @endif>3月</option>
-                                    <option value='4' @if($search['status'] == '4') selected @endif>4月</option>
-                                    <option value='5' @if($search['status'] == '5') selected @endif>5月</option>
-                                    <option value='6' @if($search['status'] == '6') selected @endif>6月</option>
-                                    <option value='7' @if($search['status'] == '7') selected @endif>7月</option>
-                                    <option value='8' @if($search['status'] == '8') selected @endif>8月</option>
-                                    <option value='9' @if($search['status'] == '9') selected @endif>9月</option>
-                                    <option value='10' @if($search['status'] == '10') selected @endif>10月</option>
-                                    <option value='11' @if($search['status'] == '11') selected @endif>11月</option>
-                                    <option value='12' @if($search['status'] == '12') selected @endif>12月</option>
+                                    <option value='1' @if($search['month'] == '1') selected @endif>1月</option>
+                                    <option value='2' @if($search['month'] == '2') selected @endif>2月</option>
+                                    <option value='3' @if($search['month'] == '3') selected @endif>3月</option>
+                                    <option value='4' @if($search['month'] == '4') selected @endif>4月</option>
+                                    <option value='5' @if($search['month'] == '5') selected @endif>5月</option>
+                                    <option value='6' @if($search['month'] == '6') selected @endif>6月</option>
+                                    <option value='7' @if($search['month'] == '7') selected @endif>7月</option>
+                                    <option value='8' @if($search['month'] == '8') selected @endif>8月</option>
+                                    <option value='9' @if($search['month'] == '9') selected @endif>9月</option>
+                                    <option value='10' @if($search['month'] == '10') selected @endif>10月</option>
+                                    <option value='11' @if($search['month'] == '11') selected @endif>11月</option>
+                                    <option value='12' @if($search['month'] == '12') selected @endif>12月</option>
                                 </select>
                             </div>
                             <div class="form-group col-xs-12 col-sm-4">
@@ -79,21 +87,21 @@
                                         <labe class='label label-default'  style='padding:8px;'>&nbsp;{{ $key + 1 }}&nbsp;</labe>
                                     @endif
                                 </td>
-                                <td style="word-wrap:break-word; white-space: pre-wrap">{{$row['address']}}</td>
+                                <td style="word-wrap:break-word; white-space: pre-wrap">{{$row['member_id']}}</td>
                                 <td>
-                                    <img src="{{tomedia($row['has_one_member']['avatar'])}}"
+                                    <img src="{{tomedia($row['avatar'])}}"
                                          style="width: 30px; height: 30px;border:1px solid #ccc;padding:1px;">
                                     </br>
-                                    {{$row['has_one_member']['nickname']}}
+                                    {{$row['nickname']}}
                                 </td>
                                 <td>
-                                    {{$row['has_one_member']['realname']}}
+                                    {{$row['realname']}}
                                     </br>
-                                    {{$row['has_one_member']['telephone']}}
+                                    {{$row['mobile']}}
                                 </td>
-                                <td>{{$row['commission'] ?: '0.00'}}</td>
-                                <td>{{$row['area_dividend'] ?: '0.00'}}</td>
-                                <td>{{$row['merchant'] ?: '0.00'}}</td>
+                                <td>{{$row['level_num'] ?: '0'}}</td>
+                                <td>{{$row['order_all'] ?: '0'}}</td>
+                                <td>{{$row['price_all'] ?: '0.00'}}</td>
                             </tr>
                         @endforeach
                         </tbody>
@@ -107,12 +115,12 @@
 </div>
 <script>
     $(function () {
-        $('#export').click(function () {
-            $('#form1').attr('action', '{!! yzWebUrl('charts.order.order-dividend.export') !!}');
+        $('#search').click(function () {
+            $('#form1').attr('action', '{!! yzWebUrl('charts.team.list') !!}');
             $('#form1').submit();
         });
         $('#export').click(function () {
-            $('#form1').attr('action', '{!! yzWebUrl('charts.order.order-dividend.export') !!}');
+            $('#form1').attr('action', '{!! yzWebUrl('charts.team.list.export') !!}');
             $('#form1').submit();
         });
     });
