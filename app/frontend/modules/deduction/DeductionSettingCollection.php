@@ -20,9 +20,8 @@ abstract class DeductionSettingCollection extends Collection
     /**
      * @return float
      */
-    public function getImportantAndValidFixedAmount()
+    public function getImportantAndValidMaxFixedAmount()
     {
-        // todo 按权重排序
         // 获取抵扣设置集合中设置了抵扣金额的,权重最高的设置项
         /**
          * @var DeductionSettingInterface $deductionSetting
@@ -34,8 +33,8 @@ abstract class DeductionSettingCollection extends Collection
                 $priceProportion = 0;
                 break;
             }
-            if($deductionSetting->getFixedAmount() !== false){
-                $priceProportion = $deductionSetting->getFixedAmount();
+            if($deductionSetting->getMaxFixedAmount() !== false){
+                $priceProportion = $deductionSetting->getMaxFixedAmount();
                 break;
             }
         }
@@ -46,9 +45,8 @@ abstract class DeductionSettingCollection extends Collection
     /**
      * @return float
      */
-    public function getImportantAndValidPriceProportion()
+    public function getImportantAndValidMaxPriceProportion()
     {
-        // todo 按权重排序
 
         // 找到抵扣设置集合中设置了价格比例的,权重最高的设置项
 
@@ -61,8 +59,8 @@ abstract class DeductionSettingCollection extends Collection
                 $priceProportion = 0;
                 break;
             }
-            if($deductionSetting->getPriceProportion() !== false){
-                $priceProportion = $deductionSetting->getPriceProportion();
+            if($deductionSetting->getMaxPriceProportion() !== false){
+                $priceProportion = $deductionSetting->getMaxPriceProportion();
                 break;
             }
         }
@@ -70,30 +68,98 @@ abstract class DeductionSettingCollection extends Collection
         return $priceProportion;
     }
 
-    public function getImportantAndValidCalculationType(){
-        // todo 按权重排序
+    public function getImportantAndValidMaxCalculationType(){
 
         $type = '';
-        $hit = '';
         foreach ($this as $deductionSetting){
-            $hit = get_class($deductionSetting);
             /**
              * @var DeductionSettingInterface $deductionSetting
              */
             if($deductionSetting->isDisable()){
                 break;
             }
-            if($deductionSetting->getDeductionType() !== false){
-                $type = $deductionSetting->getDeductionType();
+            if($deductionSetting->getMaxDeductionType() !== false){
+                $type = $deductionSetting->getMaxDeductionType();
                 break;
             }
         }
-        //var_dump($hit);
         return $type;
     }
 
+    /**
+     * @return float
+     */
+    public function getImportantAndValidMinFixedAmount()
+    {
+        // 获取抵扣设置集合中设置了抵扣金额的,权重最高的设置项
+        /**
+         * @var DeductionSettingInterface $deductionSetting
+         */
+        $priceProportion = 0;
+
+        foreach ($this as $deductionSetting){
+
+            if($deductionSetting->isDisable()){
+                $priceProportion = 0;
+                break;
+            }
+            if($deductionSetting->getMinFixedAmount() !== false){
+                $priceProportion = $deductionSetting->getMinFixedAmount();
+                break;
+            }
+        }
+        return $priceProportion;
+    }
+
+    /**
+     * @return float
+     */
+    public function getImportantAndValidMinPriceProportion()
+    {
+
+        // 找到抵扣设置集合中设置了价格比例的,权重最高的设置项
+
+        $priceProportion = 0;
+        foreach ($this as $deductionSetting){
+            /**
+             * @var DeductionSettingInterface $deductionSetting
+             */
+            if($deductionSetting->isDisable()){
+                $priceProportion = 0;
+                break;
+            }
+            if($deductionSetting->getMinPriceProportion() !== false){
+                $priceProportion = $deductionSetting->getMinPriceProportion();
+                break;
+            }
+        }
+
+        return $priceProportion;
+    }
+
+    public function getImportantAndValidMinCalculationType(){
+
+        $type = '';
+        foreach ($this as $deductionSetting){
+            /**
+             * @var DeductionSettingInterface $deductionSetting
+             */
+            if($deductionSetting->isDisable()){
+                break;
+            }
+            if($deductionSetting->getMinDeductionType() !== false){
+                $type = $deductionSetting->getMinDeductionType();
+                break;
+            }
+        }
+        return $type;
+    }
+
+    /**
+     * todo 运费抵扣应该单独提取出去
+     * @return bool|string
+     */
     public function isEnableDeductDispatchPrice(){
-        // todo 按权重排序
 
         $type = '';
         foreach ($this as $deductionSetting){
@@ -108,7 +174,6 @@ abstract class DeductionSettingCollection extends Collection
                 break;
             }
         }
-        //var_dump($hit);
         return $type;
     }
 }

@@ -12,24 +12,6 @@ use app\frontend\modules\deduction\GoodsDeduction;
 
 class PointGoodsDeduction extends GoodsDeduction
 {
-    // todo 有问题,先实现
-    public function getFixedAmount()
-    {
-        return $this->getDeductionSettingCollection()->getImportantAndValidFixedAmount();
-    }
-
-    // todo 有问题,先实现
-    public function getPriceProportion()
-    {
-        return $this->getDeductionSettingCollection()->getImportantAndValidPriceProportion();
-    }
-
-    // todo 有问题,先实现
-    public function getDeductionAmountCalculationType()
-    {
-        return $this->getDeductionSettingCollection()->getImportantAndValidCalculationType();
-    }
-
     public function deductible($goods)
     {
         return true;

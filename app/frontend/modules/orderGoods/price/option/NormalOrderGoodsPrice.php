@@ -34,7 +34,7 @@ class NormalOrderGoodsPrice extends BaseOrderGoodsPrice
         if (isset($this->price)) {
             return $this->price;
         }
-        // 商品销售价 - 等级优惠金额 - 单品满减优惠金额
+        // 商品销售价 - 等级优惠金额
         $this->price = $this->getGoodsPrice();
 
         $this->price -= $this->getVipDiscountAmount($this->price);

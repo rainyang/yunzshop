@@ -22,13 +22,13 @@ class PointDeductionSettingManager extends Container implements DeductionSetting
         /**
          * 计积分抵扣商品设置
          */
-        $this->bind('goods', function (PointDeductionSettingManager $deductionSettingManager, Goods $goods) {
-            return new PointGoodsDeductionSetting($goods);
+        $this->bind('goods', function (PointDeductionSettingManager $deductionSettingManager, array $params) {
+            return new PointGoodsDeductionSetting($params[0]);
         });
         /**
          * 积分抵扣商城设置
          */
-        $this->bind('shop', function (PointDeductionSettingManager $deductionSettingManager, Goods $goods) {
+        $this->bind('shop', function (PointDeductionSettingManager $deductionSettingManager, array $params) {
             return new PointShopDeductionSetting();
         });
     }
@@ -41,7 +41,7 @@ class PointDeductionSettingManager extends Container implements DeductionSetting
     {
         $deductionSettingCollection = collect();
         foreach ($this->getBindings() as $key => $value) {
-            $deductionSettingCollection->push($this->make($key, $goods));
+            $deductionSettingCollection->push($this->make($key, [$goods]));
         }
         // 按权重排序
         $deductionSettingCollection = $deductionSettingCollection->sortBy(function (DeductionSettingInterface $deductionSetting) {

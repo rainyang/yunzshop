@@ -14,6 +14,7 @@ use app\frontend\modules\orderGoods\models\PreOrderGoods;
  * Class Sale
  * @package app\frontend\models\goods
  * @property string max_point_deduct
+ * @property string min_point_deduct
  * @property float ed_full
  * @property float ed_reduction
  * @property string ed_areaids
