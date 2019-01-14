@@ -275,6 +275,7 @@
                                 </div>
                             </div>
                         @endif
+
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">注册状态</label>
                         <div class="col-sm-9 col-xs-12" >
