@@ -42,7 +42,7 @@ class PluginsController extends BaseController
         $plugins = app('app\common\services\PluginManager');
         $plugin  = plugin($name);
 
-        if ($this->app->environment() == 'production') {
+        if (app()->environment() == 'production') {
             $this->proAuth($name, $action);
         }
 
@@ -80,7 +80,7 @@ class PluginsController extends BaseController
         $action  = \YunShop::request()->action;
 
         foreach ($names as $name) {
-            if ($this->app->environment() == 'production') {
+            if (app()->environment() == 'production') {
                 $this->proAuth($name, $action);
             }
 
