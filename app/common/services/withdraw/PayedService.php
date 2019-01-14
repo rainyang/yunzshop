@@ -75,7 +75,7 @@ class PayedService
      */
     private function _withdrawPay()
     {
-        \log::debug('---------进入提现打款-----------------');
+        \Log::debug('---------进入提现打款-----------------');
         DB::transaction(function () {
             $this->pay();
         });
