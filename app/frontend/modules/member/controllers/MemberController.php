@@ -1611,7 +1611,7 @@ class MemberController extends ApiController
             $member_invitation_model->mid = \YunShop::app()->getMemberId();
             $member_invitation_model->member_id = $member->member_id;
             $member_invitation_model->invitation_code = $invite_code;
-            $member_invitation_model->invite_type = $invite_type;
+            $member_invitation_model->invite_type = $invite_type?:0;
             $member_invitation_model->save();
             return $this->successJson('ok', $member);
         } else {
@@ -1656,9 +1656,9 @@ class MemberController extends ApiController
             return $this->errorJson('会员不存在!');
         }
 
-        if ($invite_type == 2) {
+        if ($invite_type == 1) {
             $member = MemberShopInfo::uniacid()->where('member_id', $member_id)->first();
-            $invitation_log = MemberInvitationCodeLog::uniacid()->where('member_id', $member->parent_id)->where('member_id', $member_id)->where('invite_type', 2)->first();
+            $invitation_log = MemberInvitationCodeLog::uniacid()->where('member_id', $member->parent_id)->where('member_id', $member_id)->where('invite_type', 1)->first();
         } else {
             return $this->errorJson('请求数据有误!');
         }
