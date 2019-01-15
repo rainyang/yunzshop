@@ -8,6 +8,7 @@
 namespace app\common\services\member\level;
 
 
+use app\common\events\member\MemberLevelValidityEvent;
 use app\common\events\order\AfterOrderPaidEvent;
 use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\facades\Setting;
@@ -105,6 +106,8 @@ class LevelUpgradeService
             $this->memberModel->validity = $validity;
             $this->memberModel->downgrade_at = 0;
             $this->memberModel->save();
+
+            event(new MemberLevelValidityEvent($this->memberModel, $this->validity['goods_total']));
         }
 
     }
