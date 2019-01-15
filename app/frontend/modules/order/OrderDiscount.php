@@ -15,6 +15,7 @@ use app\frontend\modules\order\discount\EnoughReduce;
 use app\frontend\modules\order\discount\SingleEnoughReduce;
 use app\frontend\modules\order\models\PreOrder;
 use Illuminate\Support\Collection;
+use Yunshop\GoodsPackage\common\discount\PackageDiscount;
 
 class OrderDiscount
 {
@@ -60,6 +61,8 @@ class OrderDiscount
         $this->discounts->put('enoughReduce', new EnoughReduce($this->order));
         //优惠券
         $this->discounts->put('couponDiscount', new CouponDiscount($this->order));
+        // 商品套餐优惠
+        $this->discounts->put('packageDiscount', new PackageDiscount($this->order));
 
     }
 
