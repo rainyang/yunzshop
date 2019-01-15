@@ -1509,6 +1509,20 @@ class MemberController extends ApiController
                 }
             }
         }
+
+        if (app('plugins')->isEnabled('separate')) {
+            $setting = \Setting::get('plugin.separate');
+
+            if ($setting && 1 == $setting['separate_status']) {
+                $data[] = [
+                    'name'  => 'separate',
+                    'title' => '绑定银行卡',
+                    'class' => 'icon-member_card',
+                    'url'   => 'BankCard'
+                ];
+            }
+        }
+
         return $this->successJson('ok', $data);
     }
 
