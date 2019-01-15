@@ -56,7 +56,8 @@
       "App\\": "app/"
     },
     "files":[
-      "app/yunshop.php"
+      "app/yunshop.php",
+      "app/helpers.php"
     ]
   },
   "autoload-dev": {
