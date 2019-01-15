@@ -86,10 +86,8 @@
                                         @else
                                         @if( $row['rank'] <= 3)
                                             <labe class='label label-danger' style='padding:8px;'>&nbsp;{{ $row['rank'] }}&nbsp;</labe>
-                                        @elseif($row['rank'] > 3)
+                                        @else
                                             <labe class='label label-danger' style='padding:8px;'>&nbsp;{{ $row['rank'] }}&nbsp;</labe>
-                                        @elseif(!$row['rank'])
-                                            <labe class='label label-danger' style='padding:8px;'>&nbsp;暂无排名&nbsp;</labe>
                                         @endif
                                     @endif
                                 </td>
