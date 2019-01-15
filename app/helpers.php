@@ -47,7 +47,7 @@ use Ixudra\Curl\Facades\Curl;
 			UE.registerUI('myinsertimage',function(editor,uiName){
 				editor.registerCommand(uiName, {
 					execCommand:function(){
-						require(['../addons/yun_shop/static/resource/js/app/fileUploader.js'], function(uploader){
+						require(['../addons/yun_shop/static/resource/js/app/fileUploader.min.js'], function(uploader){
 							uploader.show(function(imgs){
 								if (imgs.length == 0) {
 									return;
