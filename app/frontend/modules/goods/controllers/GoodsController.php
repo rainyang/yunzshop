@@ -545,7 +545,7 @@ class GoodsController extends ApiController
 
     public function isValidateCommission($member)
     {
-        return Agents::getAgentByMemberId($member)->first();
+        return Agents::getAgentByMemberId($member->member_id)->first();
     }
 
     /**
