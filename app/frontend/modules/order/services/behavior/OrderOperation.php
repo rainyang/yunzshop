@@ -71,17 +71,22 @@ abstract class OrderOperation extends Order
 
         $event = $this->getBeforeEvent();
         event($event);
-
+        \Log::debug('refund__step1-refund_id', $this->refund_id);
         if ($this->refund_id > 0) {
+            \Log::debug('refund__step2', $this->hasOneRefundApply->isRefunding());
+
             if ($this->hasOneRefundApply->isRefunding()) {
                 throw new AppException("退款中的订单,无法执行{$this->name}操作");
-
             }
         }
+        \Log::info('---step3-refund---');
         if (!in_array($this->status, $this->statusBeforeChange)) {
-            throw new AppException("订单状态不满足{$this->name}操作");
+            \Log::info('---step4-refund---');
 
+            throw new AppException("订单状态不满足{$this->name}操作");
         }
+            \Log::info('---step5-refund---');
+
         return true;
     }
 
