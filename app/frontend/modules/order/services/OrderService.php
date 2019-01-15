@@ -116,7 +116,6 @@ class OrderService
         DB::transaction(function() use($orderOperation) {
             $orderOperation->handle();
         });
-        \Log::info('-----orderOperation-----', $orderOperation->handle());
     }
 
     /**
@@ -224,6 +223,7 @@ class OrderService
          * @var OrderOperation $orderOperation
          */
         $orderOperation = OrderPay::find($param['order_id']);
+
         if (isset($param['pay_type_id'])) {
             $orderOperation->pay_type_id = $param['pay_type_id'];
         }

@@ -83,13 +83,18 @@ abstract class OrderOperation extends Order
                 throw new AppException("退款中的订单,无法执行{$this->name}操作");
             } 
         }
+
         \Log::info('---step3-refund-status,statusBeforeChange--', [$this->status, $this->statusBeforeChange]);
+
         if (!in_array($this->status, $this->statusBeforeChange)) {
-            \Log::info('---step4-refund---');
+            dump($this->status);
+
+            \Log::info('---step4-refund---',$this->status);
 
             throw new AppException("订单状态不满足{$this->name}操作");
         }
             \Log::info('---step5-refund---');
+        dump($this->status);
 
         return true;
     }
