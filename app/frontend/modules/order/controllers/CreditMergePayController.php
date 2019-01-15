@@ -25,7 +25,9 @@ class CreditMergePayController extends MergePayController
      */
     public function credit2()
     {
+        \Log::info('------credit2');
         if (\Setting::get('shop.pay.credit') == false) {
+            \Log::info('----商城未开启余额支付');
             throw new AppException('商城未开启余额支付');
 
         }
@@ -35,19 +37,27 @@ class CreditMergePayController extends MergePayController
          * @var OrderPay $orderPay
          */
         $orderPay = OrderPay::find(request()->input('order_pay_id'));
+        \Log::info('--orderPay', $orderPay);
         $result = $orderPay->getPayResult(PayFactory::PAY_CREDIT);
+        \Log::info('--result', $result);
         if (!$result) {
             throw new AppException('余额扣除失败,请联系客服');
+            \Log::info('-------余额扣除失败');
         }
-
+        \Log::info('---step2------');
         $orderPay->pay();
+        \Log::info('---step3------');
 
         event(new ChargeComplatedEvent([
             'order_pay_id' => $orderPay->id
         ]));
+        \Log::info('---step4----');
 
         $trade = \Setting::get('shop.trade');
+        \Log::info('---trade-----', $trade);
+
         $redirect = '';
+        
         if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
             $redirect = $trade['redirect_url'];
         }
