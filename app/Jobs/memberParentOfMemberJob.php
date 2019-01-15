@@ -23,14 +23,14 @@ class memberParentOfMemberJob implements ShouldQueue
 
     private $uniacid;
     private $member_info;
-    public  $memberModel;
-    public  $childMemberModel;
-    public  $pageSize;
-    public  $offset;
+    public $memberModel;
+    public $childMemberModel;
+    public $pageSize;
+    public $offset;
 
     public function __construct($uniacid, $pageSize, $offset)
     {
-        $this->uniacid = $uniacid;
+        $this->uniacid  = $uniacid;
         $this->pageSize = $pageSize;
         $this->offset   = $offset;
     }
@@ -42,15 +42,15 @@ class memberParentOfMemberJob implements ShouldQueue
         return $this->synRun($this->uniacid);
     }
 
+    /**
+     * @param $uniacid
+     */
     public function synRun($uniacid)
     {
-        $parentMemberModle = new ParentOfMember();
-        $childMemberModel = new ChildrenOfMember();
-        $memberModel = new Member();
+        $parentMemberModle      = new ParentOfMember();
+        $childMemberModel       = new ChildrenOfMember();
+        $memberModel            = new Member();
         $memberModel->_allNodes = collect([]);
-
-        //\Log::debug('--------------清空表数据------------');
-        //$parentMemberModle->DeletedData();
 
         $memberInfo = $memberModel->getTreeAllNodes($uniacid);
 
@@ -63,7 +63,8 @@ class memberParentOfMemberJob implements ShouldQueue
             $memberModel->_allNodes->put($item->member_id, $item);
         }
 
-        $this->member_info = Member::getAllMembersInfosByQueue($uniacid, $this->pageSize, $this->offset)->distinct()->get();
+        $this->member_info = Member::getAllMembersInfosByQueue($uniacid, $this->pageSize,
+            $this->offset)->distinct()->get();
         \Log::debug('------queue member count-----', $this->member_info->count());
 
         if (!$this->member_info->isEmpty()) {
@@ -73,11 +74,12 @@ class memberParentOfMemberJob implements ShouldQueue
         \Log::debug('--------queue synRun -----');
 
         foreach ($this->member_info as $key => $val) {
-            $attr = [];
+            $attr       = [];
             $child_attr = [];
 
             \Log::debug('--------foreach start------', $val->member_id);
-            $data = $memberModel->getNodeParents($uniacid, $val->member_id);
+            $memberModel->filter = [];
+            $data                = $memberModel->getNodeParents($uniacid, $val->member_id);
 
             if (!$data->isEmpty()) {
                 \Log::debug('--------insert init------');
@@ -85,22 +87,23 @@ class memberParentOfMemberJob implements ShouldQueue
                 foreach ($data as $k => $v) {
                     if ($k != $val->member_id) {
                         $attr[] = [
-                            'uniacid'   => $uniacid,
+                            'uniacid'    => $uniacid,
                             'parent_id'  => $k,
-                            'level'     => $v['depth'] + 1,
-                            'member_id' => $val->member_id,
+                            'level'      => $v['depth'] + 1,
+                            'member_id'  => $val->member_id,
                             'created_at' => time()
                         ];
 
                         $child_attr[] = [
-                            'uniacid'   => $uniacid,
-                            'child_id'  => $val->member_id,
-                            'level'     => $v['depth'] + 1,
-                            'member_id' => $k,
+                            'uniacid'    => $uniacid,
+                            'child_id'   => $val->member_id,
+                            'level'      => $v['depth'] + 1,
+                            'member_id'  => $k,
                             'created_at' => time()
                         ];
                     } else {
-                        file_put_contents(storage_path("logs/" . date('Y-m-d') . "_batchparent.log"), print_r([$val->member_id, $v, 'insert'], 1), FILE_APPEND);
+                        file_put_contents(storage_path("logs/" . date('Y-m-d') . "_batchparent.log"),
+                            print_r([$val->member_id, $v, 'insert'], 1), FILE_APPEND);
                     }
                 }
 
