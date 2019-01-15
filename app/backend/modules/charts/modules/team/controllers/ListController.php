@@ -67,7 +67,7 @@ class ListController extends BaseController
            ->toArray();
 
        $export_data[0] = [
-          /* '排行',*/
+           '排行',
            '会员ID',
            '会员',
            '会员姓名',
@@ -79,7 +79,7 @@ class ListController extends BaseController
 
        foreach ($list as $key => $item) {
            $export_data[$key + 1] = [
-            /*   $item['created_at'],*/
+               $item['rank'],
                $item['member_id'],
                $item['nickname'],
                $item['realname'],

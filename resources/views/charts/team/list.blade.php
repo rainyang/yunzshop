@@ -81,10 +81,16 @@
                         @foreach($list['data'] as $key => $row)
                             <tr style="height: 40px; text-align: center">
                                 <td>
-                                    @if($key <= 2)
-                                        <labe class='label label-danger' style='padding:8px;'>&nbsp;{{ $key + 1 }}&nbsp;</labe>
-                                    @else
-                                        <labe class='label label-default'  style='padding:8px;'>&nbsp;{{ $key + 1 }}&nbsp;</labe>
+                                    @if(!$row['rank'])
+                                        <labe class='label label-danger' style='padding:8px;'>&nbsp;暂无排名&nbsp;</labe>
+                                        @else
+                                        @if( $row['rank'] <= 3)
+                                            <labe class='label label-danger' style='padding:8px;'>&nbsp;{{ $row['rank'] }}&nbsp;</labe>
+                                        @elseif($row['rank'] > 3)
+                                            <labe class='label label-danger' style='padding:8px;'>&nbsp;{{ $row['rank'] }}&nbsp;</labe>
+                                        @elseif(!$row['rank'])
+                                            <labe class='label label-danger' style='padding:8px;'>&nbsp;暂无排名&nbsp;</labe>
+                                        @endif
                                     @endif
                                 </td>
                                 <td style="word-wrap:break-word; white-space: pre-wrap">{{$row['member_id']}}</td>
