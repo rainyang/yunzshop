@@ -25,7 +25,7 @@ class CreditMergePayController extends MergePayController
      */
     public function credit2()
     {
-        \Log::info('------credit2');
+        // \Log::info('------credit2');
         if (\Setting::get('shop.pay.credit') == false) {
             \Log::info('----商城未开启余额支付');
             throw new AppException('商城未开启余额支付');
