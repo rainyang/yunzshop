@@ -33,7 +33,8 @@ class SaleLog extends OperationBase
             'ed_full_reduction'       => '单品满额立减',
             'award_balance' => '赠送余额',
             'point'         => '赠送积分',
-            'max_point_deduct' => '积分抵扣',
+            'max_point_deduct' => '积分最高抵扣',
+            'min_point_deduct' => '积分最低抵扣',
         ];
     }
 

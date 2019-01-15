@@ -12,14 +12,9 @@ use app\common\models\VirtualCoin;
 
 class PointCoin extends VirtualCoin
 {
-    function __construct(array $attribute = [])
-    {
-        parent::__construct($attribute);
-    }
-
     protected function _getExchangeRate()
     {
-        return \Setting::get('point.set.money',0);
+        return \Setting::get('point.set.money', 0);
     }
 
     protected function _getName()

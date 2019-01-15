@@ -11,14 +11,14 @@ namespace app\frontend\modules\deduction\models;
 
 use app\common\models\BaseModel;
 use app\common\models\VirtualCoin;
+use app\frontend\models\Goods;
 use app\frontend\modules\deduction\DeductionSettingCollection;
-use app\frontend\modules\deduction\DeductionSettingInterface;
 
 /**
  * Class Deduction
  * @package app\frontend\modules\deduction\models
  * @property int id
- * @property int code
+ * @property string code
  */
 class Deduction extends BaseModel
 {
@@ -28,6 +28,7 @@ class Deduction extends BaseModel
      * @var VirtualCoin
      */
     private $coin;
+    protected $guarded = [''];
 
     public function __construct(array $attributes = [])
     {
@@ -73,7 +74,9 @@ class Deduction extends BaseModel
         if (!app('DeductionManager')->make('DeductionSettingManager')->bound($this->getCode())) {
             return false;
         }
-        return $this->setting = app('DeductionManager')->make('DeductionSettingManager')->make($this->getCode())->getDeductionSettingCollection();
+        // todo 这里设计有错误, 没有区分订单范围内的抵扣设置项和全局范围内的抵扣设置项, 为了快速解决这个问题,在getDeductionSettingCollection方法中过滤掉 商品的抵扣设置
+
+        return $this->setting = app('DeductionManager')->make('DeductionSettingManager')->make($this->getCode())->getDeductionSettingCollection(new Goods());
     }
 
     public function isEnableDeductDispatchPrice()
@@ -84,4 +87,5 @@ class Deduction extends BaseModel
         }
         return $this->getSettingCollection()->isEnableDeductDispatchPrice();
     }
+
 }

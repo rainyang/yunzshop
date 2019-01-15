@@ -24,7 +24,6 @@ class OrderDiscount
      * @var Collection
      */
     private $discounts;
-    private $amount;
     /**
      * @var PreOrder
      */
@@ -46,46 +45,38 @@ class OrderDiscount
         $this->orderDiscounts = $order->newCollection();
         $order->setRelation('orderDiscounts', $this->orderDiscounts);
 
-        $this->_init();
-
     }
 
-    private function _init()
+    public function getDiscounts()
     {
-        $this->discounts = collect();
-        // todo 未开启的和金额为0的优惠项是否隐藏
-        //单品满减
-        $this->discounts->put('singleEnoughReduce', new SingleEnoughReduce($this->order));
-        //全场满减
-        $this->discounts->put('enoughReduce', new EnoughReduce($this->order));
-        //优惠券
-        $this->discounts->put('couponDiscount', new CouponDiscount($this->order));
+        if (!isset($this->discounts)) {
+            $this->discounts = collect();
+            // todo 未开启的和金额为0的优惠项是否隐藏
+            //单品满减
+            $this->discounts->put('singleEnoughReduce', new SingleEnoughReduce($this->order));
+            //全场满减
+            $this->discounts->put('enoughReduce', new EnoughReduce($this->order));
+            //优惠券
+            $this->discounts->put('couponDiscount', new CouponDiscount($this->order));
 
+            $this->setOrderDiscounts();
+
+        }
+        return $this->discounts;
     }
-
-    /**
-     * 获取订单优惠金额
-     * @return float
-     */
 
     public function getAmount()
     {
-        if (!isset($this->amount)) {
-            $this->discounts->each(function (BaseDiscount $discount) {
-                // todo 暂时想不到其他办法了
-                $this->order->price -= $discount->getAmount();
-                $this->amount += $discount->getAmount();
-            });
-
-            $this->setOrderDiscounts();
-        }
-        return $this->amount;
+        return $this->getDiscounts()->sum(function (BaseDiscount $discount) {
+            // 每一种订单优惠
+            return $discount->getAmount();
+        });
     }
 
     private function setOrderDiscounts()
     {
         // 将所有订单商品的优惠
-        $orderGoodsDiscounts = $this->order->orderGoods->reduce(function ($result, $aOrderGoods) {
+        $orderGoodsDiscounts = $this->order->orderGoods->reduce(function (Collection $result, $aOrderGoods) {
             if (isset($aOrderGoods->orderGoodsDiscounts)) {
                 return $result->merge($aOrderGoods->orderGoodsDiscounts);
             }

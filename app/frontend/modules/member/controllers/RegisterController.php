@@ -35,8 +35,8 @@ use app\common\services\alipay\OnekeyLogin;
 class RegisterController extends ApiController
 {
     protected $publicController = ['Register'];
-    protected $publicAction = ['index', 'sendCode', 'sendCodeV2', 'checkCode', 'sendSms', 'changePassword', 'getInviteCode'];
-    protected $ignoreAction = ['index', 'sendCode', 'sendCodeV2', 'checkCode', 'sendSms', 'changePassword', 'getInviteCode'];
+    protected $publicAction = ['index', 'sendCode', 'sendCodeV2', 'checkCode', 'sendSms', 'changePassword', 'getInviteCode', 'chkRegister'];
+    protected $ignoreAction = ['index', 'sendCode', 'sendCodeV2', 'checkCode', 'sendSms', 'changePassword', 'getInviteCode', 'chkRegister'];
 
     public function index()
     {
@@ -552,6 +552,7 @@ class RegisterController extends ApiController
 
         return $this->successJson('ok', $data);
     }
+
     public function chkRegister()
     {
         $member = Setting::get('shop.member');
@@ -559,7 +560,8 @@ class RegisterController extends ApiController
         $app_reg_close  = 0;
         $msg = $member["Close_describe"] ?: '注册已关闭';//关闭原因
         $list=[];
-        $list['state']= $shop_reg_close;
+        //$list['state']= $shop_reg_close;
+        $list['state']= 1;
         if (!is_null($app_set = \Setting::get('shop_app.pay')) && 0 == $app_set['phone_oauth']) {
             $app_reg_close = 1;
         }
@@ -570,5 +572,4 @@ class RegisterController extends ApiController
         }
         return $this->successJson('ok',$list);
     }
-
 }

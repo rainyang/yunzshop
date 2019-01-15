@@ -10,7 +10,7 @@ namespace app\frontend\modules\deduction\orderGoods\amount;
 
 
 use app\frontend\modules\deduction\GoodsDeduction;
-use app\frontend\modules\orderGoods\models\PreOrderGoods;
+use app\common\modules\orderGoods\models\PreOrderGoods;
 
 /**
  * 订单商品抵扣金额基类
@@ -30,7 +30,7 @@ abstract class OrderGoodsDeductionAmount
      */
     protected $goodsDeduction;
 
-    function __construct(PreOrderGoods $orderGoods,GoodsDeduction $goodsDeduction)
+    function __construct(PreOrderGoods $orderGoods, GoodsDeduction $goodsDeduction)
     {
         $this->orderGoods = $orderGoods;
         $this->goodsDeduction = $goodsDeduction;
@@ -39,17 +39,28 @@ abstract class OrderGoodsDeductionAmount
     /**
      * @return GoodsDeduction
      */
-    protected function getGoodsDeduction(){
+    protected function getGoodsDeduction()
+    {
         return $this->goodsDeduction;
     }
+
     /**
      * @return PreOrderGoods
      */
-    protected function getOrderGoods(){
+    protected function getOrderGoods()
+    {
         return $this->orderGoods;
     }
+
     /**
+     * 最大抵扣金额
      * @return float
      */
-    abstract public function getAmount();
+    abstract public function getMaxAmount();
+
+    /**
+     * 最少抵扣金额
+     * @return mixed
+     */
+    abstract public function getMinAmount();
 }

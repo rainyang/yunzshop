@@ -242,6 +242,16 @@ return [
             '会员昵称', '时间'
         ]
     ],
+
+    'member_withdraw' => [
+        'title' => '会员提现(管理员通知)',
+        'subtitle' => '会员提现提交通知',
+        'value' => 'member_finance_balance_submit',
+        'param' => [
+            '粉丝昵称', '申请时间','提现金额', '提现类型','提现方式'
+        ]
+    ],
+
     'universal_card_open' => [
         'title' => '一卡通开通',
         'subtitle' => '一卡通开通通知',
@@ -266,8 +276,6 @@ return [
             '昵称', '时间','业务类型','变动数量','当前剩余值'
         ]
     ],
-
-
 
     /*$data = [
         [
