@@ -70,8 +70,9 @@ abstract class OrderOperation extends Order
     {
 
         $event = $this->getBeforeEvent();
+        \Log::info('--event--', $event);
         event($event);
-        \Log::debug('refund__step1-refund_id', $this->refund_id);
+        \Log::info('$this->refund_id', $this->refund_id);
         if ($this->refund_id > 0) {
             \Log::debug('refund__step2', $this->hasOneRefundApply->isRefunding());
 

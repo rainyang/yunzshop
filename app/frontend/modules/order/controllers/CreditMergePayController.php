@@ -29,8 +29,8 @@ class CreditMergePayController extends MergePayController
         if (\Setting::get('shop.pay.credit') == false) {
             \Log::info('----商城未开启余额支付');
             throw new AppException('商城未开启余额支付');
-
         }
+        
         $this->checkPassword(\YunShop::app()->getMemberId());
 
         /**
