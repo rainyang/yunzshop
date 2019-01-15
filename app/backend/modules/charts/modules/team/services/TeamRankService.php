@@ -40,6 +40,10 @@ class TeamRankService
         foreach ($allMember as $k=>$v){
             $data[] = ['member_id'=>$k,'price'=>$v,'year'=>$nowyear,'month'=>$nowmonth];
         }
+        $filtered = collect($data)->filter(function ($value, $key) {
+            return $value['price'] != 0;
+        });
+        $data = $filtered->all();
         $data = collect($data)->sortByDesc('price')->values()->map(function($item,$key){
             $item['rank'] = $key + 1;
             return $item;
