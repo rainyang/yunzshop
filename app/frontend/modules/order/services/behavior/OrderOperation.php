@@ -68,10 +68,13 @@ abstract class OrderOperation extends Order
      */
     private function check()
     {
-
+        $i = 0;
         $event = $this->getBeforeEvent();
         \Log::info('--event--', $event);
+        \Log::info('执行次数'.$i, ['tips'=>'执行前', 'value'=>$i+1]);
         event($event);
+        \Log::info('执行次数'.$i, ['tips'=>'执行后', 'value'=>$i+2]);
+
         \Log::info('refund_id', $this->refund_id);
         if ($this->refund_id > 0) {
             \Log::info('refund__step2', [$this->hasOneRefundApply->isRefunding(), $this->name]);
