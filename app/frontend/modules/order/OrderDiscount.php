@@ -58,6 +58,7 @@ class OrderDiscount
             $this->discounts->put('enoughReduce', new EnoughReduce($this->order));
             //优惠券
             $this->discounts->put('couponDiscount', new CouponDiscount($this->order));
+
             $this->setOrderDiscounts();
 
         }

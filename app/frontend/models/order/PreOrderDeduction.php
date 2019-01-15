@@ -82,7 +82,7 @@ class PreOrderDeduction extends OrderDeduction
 
     public function getNameAttribute()
     {
-        return $this->order->uid;
+        return $this->getName();
     }
 
     /**
@@ -192,11 +192,14 @@ class PreOrderDeduction extends OrderDeduction
 
             // 抵扣金额 = 商品抵扣金额 + 运费抵扣金额
             $deductionAmount += $this->getMaxDispatchPriceDeduction()->getMoney();
+            trace_log()->deduction("订单抵扣", "{$this->name} 订单可抵扣{$deductionAmount}元");
+            trace_log()->deduction("订单抵扣", "{$this->name} 用户虚拟币可抵扣{$this->getMemberCoin()->getMaxUsableCoin()->getMoney()}元");
 
             // 取(用户可用虚拟币)与(订单抵扣虚拟币)的最小值
             $amount = min($this->getMemberCoin()->getMaxUsableCoin()->getMoney(), $deductionAmount);
 
             $this->usablePoint = $this->newCoin()->setMoney($amount);
+            trace_log()->deduction("订单抵扣", "{$this->name} 可抵扣{$this->usablePoint->getMoney()}元");
         }
 
         return $this->usablePoint;

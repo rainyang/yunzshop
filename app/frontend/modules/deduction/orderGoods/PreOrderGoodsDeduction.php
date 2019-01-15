@@ -248,6 +248,8 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
     private function _getUsableCoin()
     {
         if (!$this->getGoodsDeduction() || !$this->getGoodsDeduction()->deductible($this->orderGoods->goods)) {
+            trace_log()->deduction('订单商品抵扣', "{$this->name} 购买商品不存在抵扣记录");
+
             // 购买商品不存在抵扣记录
             return $this->newCoin();
         }
@@ -255,7 +257,7 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
         $amount = $this->getOrderGoodsMaxDeductionAmount()->getMaxAmount();
 
         $coin = $this->newCoin()->setMoney($amount);
-        trace_log()->deduction("订单抵扣", "{$this->name} 商品{$this->orderGoods->goods_id}可抵扣{$coin->getMoney()}元");
+        trace_log()->deduction("订单商品抵扣", "{$this->name} 商品{$this->orderGoods->goods_id}可抵扣{$coin->getMoney()}元");
         return $coin;
     }
 
