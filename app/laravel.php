@@ -34,7 +34,15 @@ require __DIR__.'/../bootstrap/autoload.php';
 */
 
 $app = require __DIR__.'/../bootstrap/app.php';
-
+$app->singleton('Log.trace', function (){
+    return new \app\framework\Log\TraceLog();
+});
+$app->singleton('Log.debug', function (){
+    return new \app\framework\Log\DebugLog();
+});
+$app->singleton('Log.error', function (){
+    return new \app\framework\Log\ErrorLog();
+});
 /*
 |--------------------------------------------------------------------------
 | Run The Application
