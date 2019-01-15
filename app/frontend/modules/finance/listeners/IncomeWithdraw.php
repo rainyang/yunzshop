@@ -54,11 +54,11 @@ class IncomeWithdraw
         if ($withdrawModel->status == 1) {
             $noticeData['status'] = "审核通过";
 
+        } elseif ($withdrawModel->status == 2) {
+            $noticeData['status'] = "驳回";
+
         } elseif ($withdrawModel->status == -1) {
             $noticeData['status'] = "无效";
-
-        } elseif ($withdrawModel->status == 3) {
-            $noticeData['status'] = "驳回";
 
         }
         MessageService::withdrawCheck($noticeData,$member);
