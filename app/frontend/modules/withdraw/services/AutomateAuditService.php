@@ -43,7 +43,7 @@ class AutomateAuditService
     {
         $this->withdrawAudit();
         $this->withdrawPay();
-        Log::info("收入提现免审核ID:{$this->withdrawModel->id}自动审核打款完成");
+        Log::debug("收入提现免审核ID:{$this->withdrawModel->id}自动审核打款完成");
     }
 
 

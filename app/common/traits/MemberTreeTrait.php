@@ -30,7 +30,6 @@ use InvalidArgumentException;
  *      // 自定义属性（可选）
  *      protected $treeNodeIdName = 'id';
  *      protected $treeNodeParentIdName = 'parent_id';
-
  * /**
  *  * 获取待处理的原始节点数据
  *  *
@@ -64,7 +63,7 @@ trait MemberTreeTrait
     protected $treeNodeIdName = 'member_id';
     protected $treeNodeParentIdName = 'parent_id';
 
-    public    $filter       = [];
+    public $filter = [];
 
     /**
      * 数据主ID名.
@@ -132,7 +131,7 @@ trait MemberTreeTrait
      */
     public function getSubLevel($uniacid, $parentId)
     {
-        $data = $this->getAllNodes($uniacid);
+        $data      = $this->getAllNodes($uniacid);
         $childList = collect([]);
 
         foreach ($data as $val) {
@@ -154,13 +153,15 @@ trait MemberTreeTrait
      */
     public function getParentLevel($uniacid, $subId)
     {
-        $data = $this->getAllNodes($uniacid);
+        $data       = $this->getAllNodes($uniacid);
         $parentList = collect([]);
 
         if (!empty($data[$subId]) && $subId != $data[$subId]['parent_id'] && $data[$subId]['parent_id'] > 0) {
+            \Log::debug('--------list put------', [$subId]);
             $parentList->put($subId, $data[$subId]);
         } else {
-            file_put_contents(storage_path("logs/" . date('Y-m-d') . "_batchparent.log"), print_r([$subId, $data[$subId]['parent_id'], 'repetition'], 1), FILE_APPEND);
+            file_put_contents(storage_path("logs/" . date('Y-m-d') . "_batchparent.log"),
+                print_r([$subId, $data[$subId]['parent_id'], 'repetition'], 1), FILE_APPEND);
         }
 
         return $parentList;
@@ -192,8 +193,8 @@ trait MemberTreeTrait
         $this->filter[] = $parentId;
 
         $number = 1;
-        $child = $this->getSubLevel($uniacid, $parentId);
-\Log::debug('------child----', $child->count());
+        $child  = $this->getSubLevel($uniacid, $parentId);
+        \Log::debug('------child----', $child->count());
         if ($child) {
             $nextDepth = $depth + 1;
 
@@ -218,7 +219,7 @@ trait MemberTreeTrait
         if (!$array instanceof ArrayAccess || $depth == 0) {
             $array = collect([]);
         }
-
+        \Log::debug('--------filter------', [$subId, $this->filter]);
         if (!in_array($subId, $this->filter)) {
             $this->filter[] = $subId;
 
@@ -255,7 +256,7 @@ trait MemberTreeTrait
     public function getLayerOfDescendants($id)
     {
         $child = $this->getSubLevel($id);
-        $data = collect([]);
+        $data  = collect([]);
         if ($child) {
             foreach ($child as $val) {
                 $val->child = $this->getLayerOfDescendants($val->{$this->getTreeNodeIdName()});
@@ -347,17 +348,19 @@ trait MemberTreeTrait
                 }
             }
         } else {
-            \Log::debug('---------重复上级------', [$subId, $array]);
-            file_put_contents(storage_path("logs/parenterror.log"), print_r($subId . ',', 1), FILE_APPEND);
+            \Log::debug('---------重复上级------', [$subId, $this->filter]);
+            file_put_contents(storage_path("logs/" . date('Y-m-d') . "-parenterror.log"), print_r($subId . ',', 1),
+                FILE_APPEND);
         }
     }
 
     public function chkParentLevel($uniacid, $subId)
     {
-        $data = $this->getAllNodes($uniacid);
+        $data       = $this->getAllNodes($uniacid);
         $parentList = collect([]);
 
         if (!empty($data[$subId]) && $subId != $data[$subId]['parent_id'] && $data[$subId]['parent_id'] > 0) {
+            \Log::debug('---------list put------', [$subId]);
             $parentList->put($subId, $data[$subId]);
         }
 

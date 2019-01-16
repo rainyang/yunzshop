@@ -47,7 +47,7 @@ use Ixudra\Curl\Facades\Curl;
 			UE.registerUI('myinsertimage',function(editor,uiName){
 				editor.registerCommand(uiName, {
 					execCommand:function(){
-						require(['fileUploader'], function(uploader){
+						require(['../addons/yun_shop/static/resource/js/app/fileUploader.min.js'], function(uploader){
 							uploader.show(function(imgs){
 								if (imgs.length == 0) {
 									return;
@@ -269,7 +269,11 @@ function yz_tomedia($src, $local_path = false)
     }
 
     if ($local_path || empty($setting['remote']['type']) || file_exists(base_path('../../') . '/' . $_W['config']['upload']['attachdir'] . '/' . $src)) {
-        $src = request()->getSchemeAndHttpHost() . '/attachment/' . $src;
+        if (strexists($src, '/attachment/')) {
+            $src = request()->getSchemeAndHttpHost() . $src;
+        } else {
+            $src = request()->getSchemeAndHttpHost() . '/attachment/' . $src;
+        }
     } else {
         if ($setting['remote']['type'] == 1) {
             $attachurl_remote = $setting['remote']['ftp']['url'] . '/';
