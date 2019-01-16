@@ -34,7 +34,7 @@
                             </div>
                             <div class="form-group col-xs-12 col-sm-1">
                                 <input class="form-control" name="search[year]" id="" type="text"
-                                       value="{{$search['year']}}" placeholder="输入年关键字：2019">
+                                       value="{{$search['year']}}" placeholder="输入年：xxxx">
                             </div>
                             <div class="form-group col-xs-12 col-sm-1">
                                 <select name='search[month]' class='form-control'>
