@@ -70,7 +70,7 @@ class OrderGoodsDeductManager
          * @var Collection $deductions
          */
         $deductions = Deduction::where('enable', 1)->get();
-        trace_log()->deduction('开启的抵扣类型', $deductions->pluck('code')->toJson());
+        trace_log()->deduction('订单商品开启的抵扣类型', $deductions->pluck('code')->toJson());
         if ($deductions->isEmpty()) {
             return collect();
         }

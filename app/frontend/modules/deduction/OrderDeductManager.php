@@ -113,7 +113,7 @@ class OrderDeductManager
     {
         if (!isset($this->orderGoodsDeductionCollection)) {
             $orderGoodsDeductions = $this->order->orderGoods->flatMap(function (PreOrderGoods $orderGoods) {
-                return $orderGoods->orderGoodsDeductions;
+                return $orderGoods->getOrderGoodsDeductions();
             });
             $this->orderGoodsDeductionCollection = new OrderGoodsDeductionCollection($orderGoodsDeductions->all());
         }
@@ -132,7 +132,7 @@ class OrderDeductManager
              * @var Collection $deductions
              */
             $deductions = Deduction::where('enable', 1)->get();
-            trace_log()->deduction('开启的抵扣类型', $deductions->pluck('code')->toJson());
+            trace_log()->deduction('订单开启的抵扣类型', $deductions->pluck('code')->toJson());
             if ($deductions->isEmpty()) {
                 return collect();
             }

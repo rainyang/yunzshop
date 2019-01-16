@@ -193,7 +193,7 @@ class PreOrderDeduction extends OrderDeduction
             // 抵扣金额 = 商品抵扣金额 + 运费抵扣金额
             $deductionAmount += $this->getMaxDispatchPriceDeduction()->getMoney();
             trace_log()->deduction("订单抵扣", "{$this->name} 订单可抵扣{$deductionAmount}元");
-            trace_log()->deduction("订单抵扣", "{$this->name} 用户虚拟币可抵扣{$this->getMemberCoin()->getMaxUsableCoin()->getMoney()}元");
+            trace_log()->deduction("订单抵扣", "{$this->name} 用户{$result->getName()}可抵扣{$this->getMemberCoin()->getMaxUsableCoin()->getMoney()}元");
 
             // 取(用户可用虚拟币)与(订单抵扣虚拟币)的最小值
             $amount = min($this->getMemberCoin()->getMaxUsableCoin()->getMoney(), $deductionAmount);
@@ -228,8 +228,9 @@ class PreOrderDeduction extends OrderDeduction
     private function getMaxDeduction()
     {
         if (!isset($this->maxDeduction)) {
-            trace_log()->deduction('订单抵扣', "{$this->getName()} 计算最大抵扣");
+
             $this->maxDeduction = $this->getMaxOrderGoodsDeduction();
+            trace_log()->deduction('订单抵扣', "{$this->getName()} 计算最大抵扣{$this->maxDeduction->getMoney()}元");
         }
 
         return $this->maxDeduction;
@@ -248,8 +249,9 @@ class PreOrderDeduction extends OrderDeduction
     public function getMinDeduction()
     {
         if (!isset($this->minDeduction)) {
-            trace_log()->deduction('订单抵扣', "{$this->getName()} 计算最小抵扣");
             $this->minDeduction = $this->getMinOrderGoodsDeduction();
+            trace_log()->deduction('订单抵扣', "{$this->getName()} 计算最小抵扣{$this->minDeduction->getMoney()}元");
+
         }
 
         return $this->minDeduction;

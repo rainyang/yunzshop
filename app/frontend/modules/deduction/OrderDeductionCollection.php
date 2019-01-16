@@ -54,7 +54,6 @@ class OrderDeductionCollection extends Collection
         return $this;
     }
 
-
     /**
      * @return $this
      */
