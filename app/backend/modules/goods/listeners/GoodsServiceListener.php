@@ -6,12 +6,14 @@ use app\common\models\Goods;
 use app\common\models\UniAccount;
 use Illuminate\Contracts\Events\Dispatcher;
 use app\common\models\goods\GoodsService;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 
 /**
 * 
 */
 class GoodsServiceListener
 {
+    use DispatchesJobs;
 	
 	public function subscribe(Dispatcher $events)
 	{
