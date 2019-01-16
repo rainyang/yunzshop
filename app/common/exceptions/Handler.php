@@ -119,7 +119,7 @@ class Handler extends ExceptionHandler
     protected function renderShopException(ShopException $exception)
     {
         if (\Yunshop::isApi() || request()->ajax()) {
-            return $this->errorJson($exception->getMessage(), ['code' => $exception->getCode()]);
+            return $this->errorJson($exception->getMessage(), $exception->getData());
         }
         $redirect = $exception->redirect ?: '';
         exit($this->message($exception->getMessage(), $redirect, 'error'));
