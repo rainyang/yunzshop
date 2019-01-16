@@ -192,8 +192,9 @@ class PluginsController extends BaseController
                 )
                 ->asJsonResponse(true)
                 ->get();
+            // dd($res);
 
-            \Log::debug('-------update res-----', $res);
+            // \Log::debug('-------update res-----', $res);
             if (0 == $res['status']) {
                 throw new ShopException('应用未授权');
             }
