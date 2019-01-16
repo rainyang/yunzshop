@@ -16,6 +16,7 @@ namespace app\frontend\modules\deduction;
 abstract class GoodsDeduction
 {
     protected $deductionSettingCollection;
+
     function __construct(DeductionSettingCollection $deductionSettingCollection)
     {
         $this->deductionSettingCollection = $deductionSettingCollection;
@@ -29,23 +30,45 @@ abstract class GoodsDeduction
         return $this->deductionSettingCollection;
     }
 
-    /**
-     * 获取商品可以抵扣的价格比例
-     * @return float
-     */
-    abstract public function getPriceProportion();
+    public function getMaxPriceProportion()
+    {
+        return $this->getDeductionSettingCollection()->getImportantAndValidMaxPriceProportion();
+    }
+
+    public function getMaxFixedAmount()
+    {
+        return $this->getDeductionSettingCollection()->getImportantAndValidMaxFixedAmount();
+    }
+
+    public function getMaxDeductionAmountCalculationType()
+    {
+        return $this->getDeductionSettingCollection()->getImportantAndValidMaxCalculationType();
+    }
 
     /**
-     * 获取商品可以抵扣的固定金额
+     * 获取商品最少可以抵扣的价格比例
      * @return float
      */
-    abstract public function getFixedAmount();
+    public function getMinPriceProportion(){
+        return $this->getDeductionSettingCollection()->getImportantAndValidMinFixedAmount();
+    }
 
     /**
-     * 获取抵扣金额计算方式
+     * 获取商品最少可以抵扣的固定金额
+     * @return float
+     */
+    public function getMinFixedAmount(){
+        return $this->getDeductionSettingCollection()->getImportantAndValidMinFixedAmount();
+    }
+
+    /**
+     * 获取抵扣金额最小值计算方式
      * @return string
      */
-    abstract public function getDeductionAmountCalculationType();
+    public function getMinDeductionAmountCalculationType(){
+        return $this->getDeductionSettingCollection()->getImportantAndValidMinCalculationType();
+
+    }
 
     /**
      * 商品可使用抵扣
