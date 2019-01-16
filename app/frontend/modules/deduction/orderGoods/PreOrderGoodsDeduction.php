@@ -192,7 +192,7 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
     private function getGoodsDeduction()
     {
         if (!isset($this->goodsDeduction)) {
-            $this->goodsDeduction = app('DeductionManager')->make('GoodsDeductionManager')->make($this->code, [$this->orderGoods->goods]);
+            $this->goodsDeduction = app('DeductionManager')->make('GoodsDeductionManager')->make($this->code, $this->orderGoods->goods);
         }
         return $this->goodsDeduction;
     }
