@@ -12,6 +12,7 @@ namespace app\backend\controllers;
 use app\common\components\BaseController;
 use app\common\models\Income;
 use app\common\models\Order;
+use app\common\services\member\MemberRelation;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\DB;
 use Yunshop\Commission\models\Commission;
@@ -368,6 +369,21 @@ class FixController extends BaseController
             }
         }
 
+    }
+
+    public function fixChangeMemberRelation()
+    {
+        $member_relation = new MemberRelation();
+
+        $a = [
+            [2186, 66]
+        ];
+
+
+        foreach ($a as $item) {
+            $member_relation->build($item[0], $item[1]);
+        }
+        echo 'ok';
     }
 
 }
