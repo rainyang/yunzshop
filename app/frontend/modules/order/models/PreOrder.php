@@ -220,7 +220,7 @@ class PreOrder extends Order
             'create_time' => time(),
             'note' => $this->getParams('note'),//订单备注
             'shop_name' => $this->getShopName(),//是否是虚拟商品订单
-            'need_address' => $this->getShopName(),//订单不需要填写地址
+            'need_address' => $this->isNeedAddress(),//订单不需要填写地址
         );
 
 

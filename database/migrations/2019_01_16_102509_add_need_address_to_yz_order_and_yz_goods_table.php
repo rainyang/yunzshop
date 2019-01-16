@@ -19,7 +19,7 @@ class AddNeedAddressToYzOrderAndYzGoodsTable extends Migration
         if (Schema::hasTable('yz_goods')) {
             Schema::table('yz_goods', function (Blueprint $table) {
                 if (!Schema::hasColumn('yz_goods', 'need_address')) {
-                    $table->integer('need_address')->default(0)->comment('是否需要填写收货地址 0:否1:是');
+                    $table->integer('need_address')->default(0)->comment('是否需要填写收货地址 0:是1:否');
                 }
             });
         }
@@ -27,7 +27,7 @@ class AddNeedAddressToYzOrderAndYzGoodsTable extends Migration
         if (Schema::hasTable('yz_order')) {
             Schema::table('yz_order', function (Blueprint $table) {
                 if (!Schema::hasColumn('yz_order', 'need_address')) {
-                    $table->integer('need_address')->default(0)->comment('是否需要填写收货地址 0:否1:是');
+                    $table->integer('need_address')->default(0)->comment('是否需要填写收货地址 0:是1:否');
                 }
             });
         }
@@ -35,7 +35,7 @@ class AddNeedAddressToYzOrderAndYzGoodsTable extends Migration
         if (Schema::hasTable('yz_order_goods')) {
             Schema::table('yz_order_goods', function (Blueprint $table) {
                 if (!Schema::hasColumn('yz_order_goods', 'need_address')) {
-                    $table->integer('need_address')->default(0)->comment('是否需要填写收货地址 0:否1:是');
+                    $table->integer('need_address')->default(0)->comment('是否需要填写收货地址 0:是1:否');
                 }
             });
         }
