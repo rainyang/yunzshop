@@ -153,7 +153,9 @@ class EventServiceProvider extends ServiceProvider
         PhoneAttribution::class,
         OrderBonusListeners::class,
         MemberLowerListener::class,
-        TeamRank::class
+        TeamRank::class,
+        //商品定时上下架
+        \app\backend\modules\goods\listeners\GoodsServiceListener::class,
     ];
 
     /**

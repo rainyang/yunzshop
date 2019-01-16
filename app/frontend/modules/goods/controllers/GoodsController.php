@@ -11,6 +11,7 @@ use app\common\services\goods\SaleGoods;
 use app\common\services\goods\VideoDemandCourseGoods;
 use app\common\models\MemberShopInfo;
 use Yunshop\Commission\Common\Services\GoodsDetailService;
+use Yunshop\Commission\models\Agents;
 use Yunshop\Love\Common\Models\GoodsLove;
 use app\frontend\modules\coupon\models\Coupon;
 use app\frontend\modules\coupon\controllers\MemberCouponController;
@@ -105,7 +106,7 @@ class GoodsController extends ApiController
         }
 
         //商品营销 todo 优化新的
-        $goodsModel->goods_sale = $this->getGoodsSaleV2($goodsModel);
+        $goodsModel->goods_sale = $this->getGoodsSaleV2($goodsModel, $member);
 
 //        //商品营销
 //        $goodsModel->goods_sale = $this->getGoodsSale($goodsModel);
@@ -421,7 +422,7 @@ class GoodsController extends ApiController
     }
 
 
-    public function getGoodsSaleV2($goodsModel)
+    public function getGoodsSaleV2($goodsModel, $member)
     {
         $sale = [];
         //商城积分设置
@@ -525,23 +526,26 @@ class GoodsController extends ApiController
         //佣金
         $exist_commission = app('plugins')->isEnabled('commission');
         if ($exist_commission) {
-            $commission_data = (new GoodsDetailService($goodsModel))->getGoodsDetailData();
-            if ($commission_data['commission_show'] == 1) {
-                $data['name'] = '佣金';
-                $data['key'] = 'commission';
-                $data['type'] = 'array';
+            $is_agent = $this->isValidateCommission($member);
+            if ($is_agent) {
+                $commission_data = (new GoodsDetailService($goodsModel))->getGoodsDetailData();
+                if ($commission_data['commission_show'] == 1) {
+                    $data['name'] = '佣金';
+                    $data['key'] = 'commission';
+                    $data['type'] = 'array';
 
-                if (!empty($commission_data['first_commission']) && ($commission_data['commission_show_level'] > 0)) {
-                    $data['value'][] = '一级佣金'.$commission_data['first_commission'].'元';
+                    if (!empty($commission_data['first_commission']) && ($commission_data['commission_show_level'] > 0)) {
+                        $data['value'][] = '一级佣金'.$commission_data['first_commission'].'元';
+                    }
+                    if (!empty($commission_data['second_commission']) && ($commission_data['commission_show_level'] > 1)) {
+                        $data['value'][] = '二级佣金'.$commission_data['second_commission'].'元';
+                    }
+                    if (!empty($commission_data['third_commission']) && ($commission_data['commission_show_level'] > 2)) {
+                        $data['value'][] = '三级佣金'.$commission_data['third_commission'].'元';
+                    }
+                    array_push($sale, $data);
+                    $data = [];
                 }
-                if (!empty($commission_data['second_commission']) && ($commission_data['commission_show_level'] > 1)) {
-                    $data['value'][] = '二级佣金'.$commission_data['second_commission'].'元';
-                }
-                if (!empty($commission_data['third_commission']) && ($commission_data['commission_show_level'] > 2)) {
-                    $data['value'][] = '三级佣金'.$commission_data['third_commission'].'元';
-                }
-                array_push($sale, $data);
-                $data = [];
             }
         }
 
@@ -550,6 +554,11 @@ class GoodsController extends ApiController
             'first_strip_key' =>  $sale ? $sale[rand(0, (count($sale)-1))] : [],
             'sale' => $sale,
         ];
+    }
+
+    public function isValidateCommission($member)
+    {
+        return Agents::getAgentByMemberId($member->member_id)->first();
     }
 
     /**
