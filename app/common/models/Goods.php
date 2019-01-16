@@ -224,6 +224,11 @@ class Goods extends BaseModel
         return $this->hasOne('app\common\models\goods\InvitePage', 'goods_id', 'id');
     }
 
+    public function hasOneGoodsService()
+    {
+        return $this->hasOne('app\common\models\goods\GoodsService', 'goods_id', 'id');
+    }
+
     public function hasOneGoodsVideo()
     {
         return $this->hasOne('app\common\models\goods\GoodsVideo', 'goods_id', 'id');
