@@ -1716,4 +1716,11 @@ class MemberController extends ApiController
         $default_name = '商城名称';
         return $this->successJson('ok', $shop_set_name?:$default_name);
     }
+
+    public function getArticleQr()
+    {
+        $qr = MemberModel::getAgentQR();
+
+        return $this->successJson('获取二维码成功!', $qr);
+    }
 }
