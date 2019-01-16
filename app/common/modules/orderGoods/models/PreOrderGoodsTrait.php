@@ -30,8 +30,7 @@ trait PreOrderGoodsTrait
             'price' => $this->getPrice(),
             'goods_cost_price' => $this->getGoodsCostPrice(),
             'goods_market_price' => $this->getGoodsMarketPrice(),
-
-
+            'need_address'  => $this->goods->need_address,
         );
 
         if ($this->isOption()) {

@@ -220,6 +220,7 @@ class PreOrder extends Order
             'create_time' => time(),
             'note' => $this->getParams('note'),//订单备注
             'shop_name' => $this->getShopName(),//是否是虚拟商品订单
+            'need_address' => $this->getShopName(),//订单不需要填写地址
         );
 
 
@@ -345,6 +346,19 @@ class PreOrder extends Order
         }
 
         return $this->orderGoods->hasVirtual();
+    }
+
+    /**
+     * 订单是否需要填写地址
+     * @return bool
+     */
+    public function isNeedAddress()
+    {
+        if ($this->need_address == 1) {
+            return true;
+        }
+
+        return $this->orderGoods->hasNeedAddress();
     }
 
 

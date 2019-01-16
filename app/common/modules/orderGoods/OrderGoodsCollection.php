@@ -72,4 +72,16 @@ class OrderGoodsCollection extends Collection
             return $aOrderGoods->goods->type == 2;
         });
     }
+
+    /**
+     * 订单商品集合中包含不需要地址的物品
+     * @return bool
+     */
+    public function hasNeedAddress()
+    {
+        return $this->contains(function ($aOrderGoods) {
+            // 包含不需要地址的商品
+            return $aOrderGoods->goods->need_address == 1;
+        });
+    }
 }
