@@ -78,17 +78,6 @@ class GoodsController extends ApiController
         }
 
 
-        //商品视频处理
-        if (!is_null($goodsModel->hasOneGoodsVideo) && $goodsModel->hasOneGoodsVideo->goods_video) {
-            $goodsModel->goods_video = yz_tomedia($goodsModel->hasOneGoodsVideo->goods_video);
-
-            $goodsModel->video_image = $goodsModel->hasOneGoodsVideo->video_image?yz_tomedia($goodsModel->hasOneGoodsVideo->video_image):yz_tomedia($goodsModel->thumb);
-        } else {
-            $goodsModel->goods_video = '';
-            $goodsModel->video_image = '';
-        }
-
-
         if (!$goodsModel) {
             return $this->errorJson('商品不存在.');
         }
@@ -132,6 +121,8 @@ class GoodsController extends ApiController
                 'is_deleted',
                 'reduce_stock_method',
             ]);
+
+        //商品图片处理
         if ($goodsModel->thumb) {
             $goodsModel->thumb = yz_tomedia($goodsModel->thumb);
         }
@@ -142,6 +133,17 @@ class GoodsController extends ApiController
             }
             $goodsModel->thumb_url = $thumb_url;
         }
+
+        //商品视频处理
+        if (!is_null($goodsModel->hasOneGoodsVideo) && $goodsModel->hasOneGoodsVideo->goods_video) {
+            $goodsModel->goods_video = yz_tomedia($goodsModel->hasOneGoodsVideo->goods_video);
+
+            $goodsModel->video_image = $goodsModel->hasOneGoodsVideo->video_image?yz_tomedia($goodsModel->hasOneGoodsVideo->video_image):yz_tomedia($goodsModel->thumb);
+        } else {
+            $goodsModel->goods_video = '';
+            $goodsModel->video_image = '';
+        }
+
         
         foreach ($goodsModel->hasManySpecs as &$spec) {
             $spec['specitem'] = GoodsSpecItem::select('id', 'title', 'specid', 'thumb')->where('specid', $spec['id'])->get();
@@ -192,9 +194,11 @@ class GoodsController extends ApiController
         //商城租赁
         //TODO 租赁插件是否开启 $lease_switch
         $lease_switch = LeaseToyGoods::whetherEnabled();
-
         $this->goods_lease_set($goodsModel, $lease_switch);
-        //return $this->successJson($goodsModel);
+
+
+
+
         return $this->successJson('成功', $goodsModel);
     }
     private function setGoodsPluginsRelations($goods){
