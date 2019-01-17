@@ -133,7 +133,7 @@ class PreOrderDeduction extends OrderDeduction
      */
     public function deductible()
     {
-        return $this->getUsablePoint()->getCoin() > 0;
+        return $this->amount > 0;
     }
 
     /**
@@ -178,25 +178,26 @@ class PreOrderDeduction extends OrderDeduction
         if (!isset($this->usablePoint)) {
             trace_log()->deduction('开始订单抵扣', "{$this->getName()} 计算可用金额");
 
-            $result = $this->newCoin();
+            $this->usablePoint = $this->newCoin();
 
             // 购买者不存在虚拟币记录
             if (!$this->getMemberCoin()) {
                 trace_log()->deduction('订单抵扣', "{$this->getName()} 用户没有对应虚拟币");
 
-                return $this->usablePoint = $result;
+                return $this->usablePoint;
             }
 
             // 商品金额抵扣 不能超过订单除去运费后 使用其他抵扣金额后的价格
-            $deductionAmount = min($this->order->price - $this->order->dispatch_price, $this->getMaxDeduction()->getMoney());
+
+            $deductionAmount = min($this->order->price - $this->order->getDeductionAmount() - $this->order->dispatch_price, $this->getMaxDeduction()->getMoney());
 
             // 抵扣金额 = 商品抵扣金额 + 运费抵扣金额
             $deductionAmount += $this->getMaxDispatchPriceDeduction()->getMoney();
             trace_log()->deduction("订单抵扣", "{$this->name} 订单可抵扣{$deductionAmount}元");
-            trace_log()->deduction("订单抵扣", "{$this->name} 用户{$result->getName()}可抵扣{$this->getMemberCoin()->getMaxUsableCoin()->getMoney()}元");
+            trace_log()->deduction("订单抵扣", "{$this->name} 用户{$this->usablePoint->getName()}可抵扣{$this->getMemberCoin()->getMaxUsableCoin()->getMoney()}元");
+            // 用户可用虚拟币-最低抵扣 与订单抵扣虚拟币的最小值  todo 如果以后需要一种抵扣币抵扣两次时,会产生bug
 
-            // 取(用户可用虚拟币)与(订单抵扣虚拟币)的最小值
-            $amount = min($this->getMemberCoin()->getMaxUsableCoin()->getMoney(), $deductionAmount);
+            $amount = min($this->getMemberCoin()->getMaxUsableCoin()->getMoney() - $this->getMinDeduction()->getMoney(), $deductionAmount);
 
             $this->usablePoint = $this->newCoin()->setMoney($amount);
             trace_log()->deduction("订单抵扣", "{$this->name} 可抵扣{$this->usablePoint->getMoney()}元");
@@ -407,7 +408,7 @@ class PreOrderDeduction extends OrderDeduction
     public function validateCoin()
     {
         // 验证最低抵扣大于可用抵扣
-        if ($this->getUsablePoint()->getMoney() < $this->getMinDeduction()->getMoney()) {
+        if ($this->getMemberCoin()->getMaxUsableCoin()->getMoney() < $this->getMinDeduction()->getMoney()) {
             throw new MinOrderDeductionNotEnough("订单[{$this->getName()}]可抵扣金额{$this->getUsablePoint()->getMoney()}元,不满足最低抵扣金额{$this->getMinDeduction()->getMoney()}元");
         }
     }

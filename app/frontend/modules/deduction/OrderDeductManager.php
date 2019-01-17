@@ -55,13 +55,13 @@ class OrderDeductManager
     {
         if (!isset($this->orderDeductionCollection)) {
             $this->orderDeductionCollection = $this->getAllOrderDeductions();
-
-            // 过滤调不能抵扣的项
-            $this->orderDeductionCollection->filterNotDeductible();
-            // 验证
-            $this->orderDeductionCollection->validate();
             // 按照选中状态排序
             $this->orderDeductionCollection->sortOrderDeductionCollection();
+            // 验证
+            $this->orderDeductionCollection->validate();
+            // 过滤调不能抵扣的项
+            $this->orderDeductionCollection->filterNotDeductible();
+
 
             $this->order->setRelation('orderDeductions', $this->orderDeductionCollection);
         }
@@ -169,32 +169,29 @@ class OrderDeductManager
     }
 
     /**
-     * @return mixed
-     */
-    private function _getAmount()
-    {
-        // 求和订单抵扣集合中所有已选中的可用金额
-        $result = $this->getCheckedOrderDeductions()->sum(function (PreOrderDeduction $orderDeduction) {
-            /**
-             * @var PreOrderDeduction $orderDeduction
-             */
-            trace_log()->deduction('订单抵扣', "{$orderDeduction->getName()}获取可用金额");
-
-            return $orderDeduction->amount;
-        });
-
-        // 返回 订单抵扣金额
-        return $result;
-    }
-
-    /**
      * 获取订单抵扣金额
      * @return float
      */
     public function getAmount()
     {
         if (!isset($this->amount)) {
-            $this->amount = $this->_getAmount();
+            $this->getCheckedOrderDeductions()->each(function (PreOrderDeduction $orderDeduction) {
+                /**
+                 * @var PreOrderDeduction $orderDeduction
+                 */
+                trace_log()->deduction('订单抵扣', "{$orderDeduction->getName()}获取最低可用金额");
+
+                $this->amount += $orderDeduction->getMinDeduction()->getMoney();
+            });
+
+            $this->getCheckedOrderDeductions()->each(function (PreOrderDeduction $orderDeduction) {
+                /**
+                 * @var PreOrderDeduction $orderDeduction
+                 */
+                trace_log()->deduction('订单抵扣', "{$orderDeduction->getName()}获取剩余可用金额");
+
+                $this->amount += $orderDeduction->getUsablePoint()->getMoney();
+            });
             // 将抵扣总金额保存在订单优惠信息表中
             $preOrderDiscount = new PreOrderDiscount([
                 'discount_code' => 'deduction',
