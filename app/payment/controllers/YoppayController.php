@@ -24,10 +24,10 @@ class YoppayController extends PaymentController
     {
         parent::__construct();
 
-        $this->set = DB::table('yz_yop_setting')->where('app_key', $_REQUEST['customerIdentification'])->first();
+        $this->set = $this->getMerchantNo();
 
         if (empty($this->set)) {
-            exit('应用AppKey不存在');
+            exit('商户不存在');
         }
         if (empty(\YunShop::app()->uniacid)) {
             \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $this->set['uniacid'];
@@ -41,12 +41,21 @@ class YoppayController extends PaymentController
         $this->dealWith();
     }
 
+    protected function getMerchantNo()
+    {
+        $app_key = $_REQUEST['customerIdentification'];
+        $merchant_no = substr($app_key,  strrpos($app_key, 'OPR:')+4);
+        $set = DB::table('yz_yop_setting')->where('merchant_no', $merchant_no)->first();
+
+        return $set;
+    }
+
     private function dealWith()
     {
         $yop_data = $_REQUEST['response'];
 
         if ($yop_data) {
-            $response = \Yunshop\YopPay\common\Util\YopSignUtils::decrypt($yop_data, $this->set['private_key'], $this->set['yop_public_key']);
+            $response = \Yunshop\YopPay\common\Util\YopSignUtils::decrypt($yop_data, $this->set['son_private_key'], $this->set['yop_public_key']);
             $this->parameters = json_decode($response, true);
         }
     }
@@ -66,7 +75,7 @@ class YoppayController extends PaymentController
     //异步支付通知
     public function notifyUrl()
     {
-        $this->log($this->set['app_key'], $this->parameters);
+        $this->log($this->set['merchant_no'], $this->parameters);
 
         $this->yopResponse('支付通知', $this->parameters, 'pay');
 
