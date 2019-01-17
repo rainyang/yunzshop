@@ -9,14 +9,8 @@
 
 namespace app\frontend\modules\withdraw\models;
 
-
-use app\common\traits\CreateOrderSnTrait;
-
 class Withdraw extends \app\common\models\Withdraw
 {
-    use CreateOrderSnTrait;
-
-
     /**
      * 提现的收入唯一标识
      *
