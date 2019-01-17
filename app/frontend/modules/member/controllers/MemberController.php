@@ -133,6 +133,13 @@ class MemberController extends ApiController
                     $data['inviteCode'] = 0;
                 }
 
+                //查看聚合支付是否开启
+                if (app('plugins')->isEnabled('yop-pay')) {
+                    $data['yop'] = 1;
+                }else{
+                    $data['yop'] = 0;
+                }
+
                 return $this->successJson('', $data);
             } else {
                 return $this->errorJson('[' . $member_id . ']用户不存在');
