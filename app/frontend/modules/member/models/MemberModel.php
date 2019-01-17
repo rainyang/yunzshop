@@ -1152,4 +1152,18 @@ class MemberModel extends Member
 
         return false;
     }
+
+    /**
+     * 获取我的下线全部(包含为确定的)
+     *
+     * @return mixed
+     */
+    public static function getAgentCount_v2($uid)
+    {
+        return self::uniacid()
+            ->whereHas('yzMember', function($query) use ($uid){
+                $query->where('parent_id', $uid);
+            })
+            ->count();
+    }
 }
