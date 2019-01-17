@@ -86,7 +86,7 @@ return [
             'root' => storage_path('app/public/virtualcard'),
         ],
 
-        // 批量卡密上传excel文件保存路径
+        // 易宝支付图片上传
         'yop' => [
             'driver' => 'local',
             'root' => storage_path('app/public/yop'),
