@@ -67,10 +67,14 @@ class OrderGoodsCollection extends Collection
      * @return bool
      */
     public function hasVirtual(){
-        return $this->contains(function ($aOrderGoods) {
+        $bool = $this->contains(function ($aOrderGoods) {
             // 包含虚拟商品
-            return $aOrderGoods->goods->type == 2;
+            //return $aOrderGoods->goods->type == 2;
+            //todo 20190107 blank 修改 ：包含实体商品按实体商品下单流程走
+            return $aOrderGoods->goods->type == 1;
         });
+
+        return !$bool;
     }
 
     /**
@@ -79,9 +83,13 @@ class OrderGoodsCollection extends Collection
      */
     public function hasNeedAddress()
     {
-        return $this->contains(function ($aOrderGoods) {
+        $bool = $this->contains(function ($aOrderGoods) {
             // 包含不需要地址的商品
-            return $aOrderGoods->goods->need_address == 1;
+            //return $aOrderGoods->goods->need_address == 1;
+            //todo 20190107 blank 修改 ：包含需要地址的商品按标准下单流程走
+            return $aOrderGoods->goods->need_address != 1;
         });
+
+        return !$bool;
     }
 }
