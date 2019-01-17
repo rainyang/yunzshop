@@ -89,7 +89,7 @@ class OrderAllController extends ApiController
         $str=date("Y-m-d",strtotime("-".$mark." day"))." 23:59:59";
         $range[]=strtotime($str);
         $price = Order::where('status', Order::COMPLETE)->whereBetween('finish_time',$range)->sum('price');
-        $date=date("Y-m-d",strtotime("-".$mark." day"));
+        $date=date("m-d",strtotime("-".$mark." day"));
         $data=['price'=>$price , 'date'=>$date];
         return $data;
     }
