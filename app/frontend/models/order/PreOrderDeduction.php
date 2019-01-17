@@ -90,7 +90,7 @@ class PreOrderDeduction extends OrderDeduction
      */
     public function getCoinAttribute()
     {
-        return $this->getUsablePoint()->getCoin();
+        return $this->getMinDeduction()->getCoin() + $this->getUsablePoint()->getCoin();
     }
 
     /**
@@ -100,7 +100,7 @@ class PreOrderDeduction extends OrderDeduction
     {
         return $this->getAmount();
     }
-//todo 临时修改,需要将最低抵扣单独计算
+
     public function getAmount()
     {
         return $this->getMinDeduction()->getMoney() + $this->getUsablePoint()->getMoney();

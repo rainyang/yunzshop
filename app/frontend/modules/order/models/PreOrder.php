@@ -318,12 +318,13 @@ class PreOrder extends Order
         $this->price += $this->getDispatchAmount();
 
         $this->getCheckedOrderDeductions()->each(function (PreOrderDeduction $orderDeduction) {
-            // 每一种抵扣金额
+            // 每一种最低抵扣金额 todo 考虑调整为最低限购
             $this->price -= $orderDeduction->getMinDeduction()->getMoney();
 
         });
+
         $this->getCheckedOrderDeductions()->each(function (PreOrderDeduction $orderDeduction) {
-            // 每一种抵扣金额
+            // 每一种剩余抵扣金额
             $this->price -= $orderDeduction->getUsablePoint()->getMoney();
 
         });
