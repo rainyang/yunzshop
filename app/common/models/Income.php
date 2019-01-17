@@ -9,6 +9,7 @@
 namespace app\common\models;
 
 
+use app\common\observers\income\IncomeObserver;
 use Illuminate\Support\Facades\Log;
 use Yunshop\TeamDividend\models\ErrorTeamDividend;
 
@@ -21,10 +22,10 @@ use Yunshop\TeamDividend\models\ErrorTeamDividend;
  */
 class Income extends BaseModel
 {
-    public $table = 'yz_member_income';
+    protected $table = 'yz_member_income';
 
 
-    protected $guarded = [];
+    protected $guarded = [''];
 
     protected $appends = ['status_name', 'pay_status_name'];
     /**
@@ -72,6 +73,13 @@ class Income extends BaseModel
      */
     const PAY_STATUS_REJECT = 3;
 
+    /**
+     * 分帐插件使用，['order_id' => '', 'mark' => '']
+     *
+     * @var array
+     */
+    public $separate = [];
+
 
     /**
      * 提现状态名称集合
@@ -97,6 +105,11 @@ class Income extends BaseModel
         self::PAY_STATUS_REJECT => '已驳回',
     ];
 
+    public static function boot()
+    {
+        parent::boot();
+        self::observe(IncomeObserver::class);
+    }
 
     /**
      * 通过 $status 值获取 $status 名称

@@ -75,7 +75,6 @@ class ShopController extends BaseController
             $diyForm = DiyformTypeModel::getDiyformList()->get();
         }
 
-
         return view('setting.shop.member', [
             'set' => $member,
             'is_diyform' => $is_diyform,
@@ -371,7 +370,7 @@ class ShopController extends BaseController
     }
 
 
-    private function upload($fileinput)
+    private function  upload($fileinput)
     {
         $valid_ext = ['pem'];
 

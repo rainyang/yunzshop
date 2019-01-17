@@ -21,7 +21,7 @@ use app\common\models\MemberShopInfo;
 
 class MemberAppYdbService extends MemberService
 {
-    const LOGIN_TYPE    = 7;
+    const LOGIN_TYPE = 7;
 
     public function __construct()
     {
@@ -31,17 +31,17 @@ class MemberAppYdbService extends MemberService
     public function login()
     {
         load()->func('communication');
-        $uniacid = \YunShop::app()->uniacid;
+        $uniacid  = \YunShop::app()->uniacid;
         $mobile   = \YunShop::request()->mobile;
         $password = \YunShop::request()->password;
-        $uuid = \YunShop::request()->uuid;
+        $uuid     = $_REQUEST['uuid'];
 
-        if (!empty($mobile) && !empty($password)){
+        if (!empty($mobile) && !empty($password)) {
             if (\Request::isMethod('post') && MemberService::validate($mobile, $password)) {
                 $has_mobile = MemberModel::checkMobile($uniacid, $mobile);
 
                 if (!empty($has_mobile)) {
-                    $password = md5($password. $has_mobile->salt);
+                    $password = md5($password . $has_mobile->salt);
 
                     $member_info = MemberModel::getUserInfo($uniacid, $mobile, $password)->first();
 
@@ -49,7 +49,7 @@ class MemberAppYdbService extends MemberService
                     return show_json(7, "用户不存在");
                 }
 
-                if(!empty($member_info)){
+                if (!empty($member_info)) {
                     $member_info = $member_info->toArray();
 
                     //生成分销关系链
@@ -73,22 +73,22 @@ class MemberAppYdbService extends MemberService
                             MemberWechatModel::updateData($member_info['uid'], array('uuid' => $uuid));
                         } else {
                             MemberWechatModel::insertData(array(
-                                'uniacid' => $uniacid,
+                                'uniacid'   => $uniacid,
                                 'member_id' => $member_info['uid'],
-                                'openid' => $member_info['mobile'],
-                                'nickname' => $member_info['nickname'],
-                                'gender' => $member_info['gender'],
-                                'avatar' => $member_info['avatar'],
-                                'province' => $member_info['resideprovince'],
-                                'city' => $member_info['residecity'],
-                                'country' => $member_info['nationality'],
-                                'uuid' => $uuid
+                                'openid'    => $member_info['mobile'],
+                                'nickname'  => $member_info['nickname'],
+                                'gender'    => $member_info['gender'],
+                                'avatar'    => $member_info['avatar'],
+                                'province'  => $member_info['resideprovince'],
+                                'city'      => $member_info['residecity'],
+                                'country'   => $member_info['nationality'],
+                                'uuid'      => $uuid
                             ));
                         }
                     }
 
                     return show_json(1, $data);
-                } else  {
+                } else {
                     return show_json(6, "手机号或密码错误");
                 }
             } else {
@@ -121,10 +121,11 @@ class MemberAppYdbService extends MemberService
      * @param $token
      * @param $openid
      */
-    public function app_get_userinfo ($token, $openid, $uuid) {
+    public function app_get_userinfo($token, $openid, $uuid)
+    {
         //通过接口获取用户信息
-        $url = 'https://api.weixin.qq.com/sns/userinfo?access_token=' . $token . '&openid=' . $openid;
-        $res = @ihttp_get($url);
+        $url       = 'https://api.weixin.qq.com/sns/userinfo?access_token=' . $token . '&openid=' . $openid;
+        $res       = @ihttp_get($url);
         $user_info = json_decode($res['content'], true);
 
         if (!empty($uuid)) {
@@ -145,12 +146,13 @@ class MemberAppYdbService extends MemberService
      *
      * @param $openid
      */
-    public function redirect_link ($openid) {
+    public function redirect_link($openid)
+    {
         if (!$openid) {
             $url = Url::absoluteApp('login');
         } else {
             $apptoken = Crypt::encrypt($openid);
-            $url = Url::absoluteApp('login_validate', ["apptoken" => $apptoken]);
+            $url      = Url::absoluteApp('login_validate', ["apptoken" => $apptoken]);
         }
 
         redirect($url)->send();
@@ -162,9 +164,9 @@ class MemberAppYdbService extends MemberService
         parent::updateMemberInfo($member_id, $userinfo);
 
         $record = array(
-            'openid' => $userinfo['openid'],
+            'openid'   => $userinfo['openid'],
             'nickname' => stripslashes($userinfo['nickname']),
-            'uuid'  => $userinfo['uuid']
+            'uuid'     => $userinfo['uuid']
         );
         MemberWechatModel::updateData($member_id, $record);
     }
@@ -182,10 +184,10 @@ class MemberAppYdbService extends MemberService
     public function addMcMemberFans($uid, $uniacid, $userinfo)
     {
         McMappingFansModel::insertData($userinfo, array(
-            'uid' => $uid,
-            'acid' => $uniacid,
+            'uid'     => $uid,
+            'acid'    => $uniacid,
             'uniacid' => $uniacid,
-            'salt' => Client::random(8),
+            'salt'    => Client::random(8),
         ));
     }
 
@@ -196,16 +198,16 @@ class MemberAppYdbService extends MemberService
             $this->updateMemberInfo($uid, $userinfo);
         } else {
             MemberWechatModel::insertData(array(
-                'uniacid' => $uniacid,
+                'uniacid'   => $uniacid,
                 'member_id' => $uid,
-                'openid' => $userinfo['openid'],
-                'nickname' => $userinfo['nickname'],
-                'avatar' => $userinfo['headimgurl'],
-                'gender' => $userinfo['sex'],
-                'province' => '',
-                'country' => '',
-                'city' => '',
-                'uuid' => $userinfo['uuid']
+                'openid'    => $userinfo['openid'],
+                'nickname'  => $userinfo['nickname'],
+                'avatar'    => $userinfo['headimgurl'],
+                'gender'    => $userinfo['sex'],
+                'province'  => '',
+                'country'   => '',
+                'city'      => '',
+                'uuid'      => $userinfo['uuid']
             ));
         }
     }
@@ -225,10 +227,10 @@ class MemberAppYdbService extends MemberService
     public function addMemberUnionid($uniacid, $member_id, $unionid)
     {
         MemberUniqueModel::insertData(array(
-            'uniacid' => $uniacid,
-            'unionid' => $unionid,
+            'uniacid'   => $uniacid,
+            'unionid'   => $unionid,
             'member_id' => $member_id,
-            'type' => self::LOGIN_TYPE
+            'type'      => self::LOGIN_TYPE
         ));
     }
 }
