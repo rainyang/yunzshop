@@ -50,7 +50,7 @@ abstract class GoodsDeduction
      * @return float
      */
     public function getMinPriceProportion(){
-        return $this->getDeductionSettingCollection()->getImportantAndValidMinFixedAmount();
+        return $this->getDeductionSettingCollection()->getImportantAndValidMinPriceProportion();
     }
 
     /**

@@ -63,10 +63,15 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
      */
     private $orderDeduction;
     /**
-     * 订单商品金额类
+     * 订单商品最高抵扣金额类
      * @var OrderGoodsDeductionAmount
      */
-    private $orderGoodsDeductionAmount;
+    private $orderGoodsDeductionMaxAmount;
+    /**
+     * 订单商品最低抵扣金额类
+     * @var OrderGoodsDeductionAmount
+     */
+    private $orderGoodsDeductionMinAmount;
 
     protected $appends = ['usable_amount', 'usable_coin'];
 
@@ -145,23 +150,23 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
      */
     private function getOrderGoodsMaxDeductionAmount()
     {
-        if (!isset($this->orderGoodsDeductionAmount)) {
+        if (!isset($this->orderGoodsDeductionMaxAmount)) {
             // 从商品抵扣中获取到类型
             switch ($this->getGoodsDeduction()->getMaxDeductionAmountCalculationType()) {
                 case 'FixedAmount':
-                    $this->orderGoodsDeductionAmount = new FixedAmount($this->orderGoods, $this->getGoodsDeduction());
+                    $this->orderGoodsDeductionMaxAmount = new FixedAmount($this->orderGoods, $this->getGoodsDeduction());
                     trace_log()->deduction("订单抵扣", "{$this->name} 商品{$this->orderGoods->goods_id}最大限额使用固定金额");
                     break;
                 case 'GoodsPriceProportion':
-                    $this->orderGoodsDeductionAmount = new GoodsPriceProportion($this->orderGoods, $this->getGoodsDeduction());
+                    $this->orderGoodsDeductionMaxAmount = new GoodsPriceProportion($this->orderGoods, $this->getGoodsDeduction());
                     trace_log()->deduction("订单抵扣", "{$this->name} 商品{$this->orderGoods->goods_id}最大限额使用固定比例");
                     break;
                 default:
-                    $this->orderGoodsDeductionAmount = new Invalid($this->orderGoods, $this->getGoodsDeduction());
+                    $this->orderGoodsDeductionMaxAmount = new Invalid($this->orderGoods, $this->getGoodsDeduction());
                     break;
             }
         }
-        return $this->orderGoodsDeductionAmount;
+        return $this->orderGoodsDeductionMaxAmount;
     }
 
     /**
@@ -170,23 +175,24 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
      */
     private function getOrderGoodsMinDeductionAmount()
     {
-        if (!isset($this->orderGoodsDeductionAmount)) {
+        if (!isset($this->orderGoodsDeductionMinAmount)) {
             // 从商品抵扣中获取到类型
             switch ($this->getGoodsDeduction()->getMinDeductionAmountCalculationType()) {
                 case 'FixedAmount':
-                    $this->orderGoodsDeductionAmount = new FixedAmount($this->orderGoods, $this->getGoodsDeduction());
+                    $this->orderGoodsDeductionMinAmount = new FixedAmount($this->orderGoods, $this->getGoodsDeduction());
                     trace_log()->deduction("订单抵扣", "{$this->name} 商品{$this->orderGoods->goods_id}最小限额使用固定金额");
                     break;
                 case 'GoodsPriceProportion':
-                    $this->orderGoodsDeductionAmount = new GoodsPriceProportion($this->orderGoods, $this->getGoodsDeduction());
+                    $this->orderGoodsDeductionMinAmount = new GoodsPriceProportion($this->orderGoods, $this->getGoodsDeduction());
                     trace_log()->deduction("订单抵扣", "{$this->name} 商品{$this->orderGoods->goods_id}最小限额使用固定比例");
                     break;
                 default:
-                    $this->orderGoodsDeductionAmount = new Invalid($this->orderGoods, $this->getGoodsDeduction());
+                    $this->orderGoodsDeductionMinAmount = new Invalid($this->orderGoods, $this->getGoodsDeduction());
+                    trace_log()->deduction("订单抵扣", "{$this->name} 商品{$this->orderGoods->goods_id}未设置最小限额类型");
                     break;
             }
         }
-        return $this->orderGoodsDeductionAmount;
+        return $this->orderGoodsDeductionMinAmount;
     }
 
     private function getGoodsDeduction()

@@ -113,7 +113,7 @@ class OrderDeductManager
     {
         if (!isset($this->orderGoodsDeductionCollection)) {
             $orderGoodsDeductions = $this->order->orderGoods->flatMap(function (PreOrderGoods $orderGoods) {
-                return $orderGoods->getOrderGoodsDeductions();
+                return $orderGoods->orderGoodsDeductions;
             });
             $this->orderGoodsDeductionCollection = new OrderGoodsDeductionCollection($orderGoodsDeductions->all());
         }
@@ -132,7 +132,7 @@ class OrderDeductManager
              * @var Collection $deductions
              */
             $deductions = Deduction::where('enable', 1)->get();
-            trace_log()->deduction('订单开启的抵扣类型', $deductions->pluck('code')->toJson());
+            trace_log()->deduction('开启的抵扣类型', $deductions->pluck('code')->toJson());
             if ($deductions->isEmpty()) {
                 return collect();
             }
@@ -174,16 +174,13 @@ class OrderDeductManager
     private function _getAmount()
     {
         // 求和订单抵扣集合中所有已选中的可用金额
-        $result = $this->getOrderDeductions()->sum(function (PreOrderDeduction $orderDeduction) {
+        $result = $this->getCheckedOrderDeductions()->sum(function (PreOrderDeduction $orderDeduction) {
             /**
              * @var PreOrderDeduction $orderDeduction
              */
-            if ($orderDeduction->isChecked()) {
-                trace_log()->deduction('订单抵扣', "{$orderDeduction->getName()}获取可用金额");
+            trace_log()->deduction('订单抵扣', "{$orderDeduction->getName()}获取可用金额");
 
-                return $orderDeduction->getUsablePoint()->getMoney();
-            }
-            return 0;
+            return $orderDeduction->amount;
         });
 
         // 返回 订单抵扣金额

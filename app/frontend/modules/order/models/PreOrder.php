@@ -319,10 +319,14 @@ class PreOrder extends Order
 
         $this->getCheckedOrderDeductions()->each(function (PreOrderDeduction $orderDeduction) {
             // 每一种抵扣金额
+            $this->price -= $orderDeduction->getMinDeduction()->getMoney();
+
+        });
+        $this->getCheckedOrderDeductions()->each(function (PreOrderDeduction $orderDeduction) {
+            // 每一种抵扣金额
             $this->price -= $orderDeduction->getUsablePoint()->getMoney();
 
-        });;
-
+        });
         return max($this->price, 0);
     }
 

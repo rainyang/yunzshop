@@ -100,10 +100,10 @@ class PreOrderDeduction extends OrderDeduction
     {
         return $this->getAmount();
     }
-
+//todo 临时修改,需要将最低抵扣单独计算
     public function getAmount()
     {
-        return $this->getUsablePoint()->getMoney();
+        return $this->getMinDeduction()->getMoney() + $this->getUsablePoint()->getMoney();
     }
 
     public function getOrder()
@@ -230,7 +230,7 @@ class PreOrderDeduction extends OrderDeduction
         if (!isset($this->maxDeduction)) {
 
             $this->maxDeduction = $this->getMaxOrderGoodsDeduction();
-            trace_log()->deduction('订单抵扣', "{$this->getName()} 计算最大抵扣{$this->maxDeduction->getMoney()}元");
+            trace_log()->deduction('订单抵扣', "{$this->getName()} 计算最大抵扣{$this->maxDeduction}");
         }
 
         return $this->maxDeduction;
