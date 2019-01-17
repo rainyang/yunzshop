@@ -17,19 +17,6 @@ use app\common\models\Order;
 class OrderAllController extends ApiController
 {
     public function index(){
-        $set = Setting::get('shop.shop');
-        $member_id = \YunShop::app()->getMemberId();
-        $data=['mark'=>0];
-        if($set['achievement'] != 1){
-            return $this->successJson('商城业绩不显示',$data);
-        }
-        if(!in_array(-1,$set['member_level'])){
-            $member_level = MemberShopInfo::where('member_id',$member_id)->first();
-            if(!in_array($member_level['level_id'],$set['member_level'])){
-                return $this->successJson('成员没查看权限',$data);
-            }
-        }
-        $data['mark'] = 1;
         $data['today'] = $this->getMoney('today');
         $data['month'] = $this->getMoney('month');
         $data['all'] = $this->getMoney('all');
