@@ -66,7 +66,7 @@ class OrderAllController extends ApiController
         }else {
             $price = Order::where('status', Order::COMPLETE)->whereBetween('finish_time',$range)->sum('price');
         }
-        return $price;
+        return round($price/10000,2);
     }
 
     private function getRecent($mark){
@@ -77,7 +77,7 @@ class OrderAllController extends ApiController
         $range[]=strtotime($str);
         $price = Order::where('status', Order::COMPLETE)->whereBetween('finish_time',$range)->sum('price');
         $date=date("m-d",strtotime("-".$mark." day"));
-        $data=['price'=>$price , 'date'=>$date];
+        $data=['price'=>round($price/10000,2) , 'date'=>$date];
         return $data;
     }
 }
