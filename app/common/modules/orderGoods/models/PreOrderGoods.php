@@ -90,6 +90,7 @@ class PreOrderGoods extends OrderGoods
         $this->title = (string)$this->title;
         $this->thumb = (string)$this->thumb;
         $this->goods_sn = (string)$this->goods_sn;
+        $this->goods_price = (string)$this->goods_price;
         $this->price = (float)$this->price;
         $this->goods_cost_price = (float)$this->goods_cost_price;
         $this->coupon_price = (float)$this->coupon_price;
