@@ -37,7 +37,7 @@
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">品牌</label>
     <div class="col-sm-9 col-xs-12">
-        <select name="goods[brand_id]" id="brand" >
+        <select name="goods[brand_id]" id="brand" style="width:95%">
             <option value="0">请选择品牌</option>
             @if (!empty($brands))
             @foreach ($brands as $brand)
