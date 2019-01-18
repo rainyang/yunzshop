@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddPostcodeToOrderAddress extends Migration
+class AddZipcodeToOrderAddress extends Migration
 {
     /**
      * Run the migrations.
@@ -14,9 +14,9 @@ class AddPostcodeToOrderAddress extends Migration
     public function up()
     {
         if (Schema::hasTable('yz_order_address')) {
-            if (!Schema::hasColumn('yz_order_address', 'postcode')) {
+            if (!Schema::hasColumn('yz_order_address', 'zipcode')) {
                 Schema::table('yz_order_address', function (Blueprint $table) {
-                    $table->string('postcode', 50);
+                    $table->string('zipcode', 50);
                 });
             }
         }

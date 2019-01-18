@@ -97,7 +97,7 @@ class PreOrderAddress extends OrderAddress
         $orderAddress->province = $member_address->province;
         $orderAddress->city = $member_address->city;
         $orderAddress->district = $member_address->district;
-        $orderAddress->postcode = $member_address->zipcode;
+        $orderAddress->zipcode = $member_address->zipcode;
 
         return $orderAddress;
     }
@@ -119,7 +119,7 @@ class PreOrderAddress extends OrderAddress
                     'username' => 'required',
                     'province' => 'required',
                     'city' => 'required',
-                    'postcode' => 'required',
+                    'zipcode' => 'required',
                     'district' => 'required'
                 ]
             );
