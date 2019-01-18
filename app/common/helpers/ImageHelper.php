@@ -195,7 +195,7 @@ EOF;
             $s = '
 <script type="text/javascript">
 	function showVideoDialog(elm, options) {
-		require(["util","../addons/yun_shop/static/js/file.min.js"], function(util){
+		require(["util"], function(util){
 			var btn = $(elm);
 			var ipt = btn.parent().prev();
 			var val = ipt.val();
