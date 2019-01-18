@@ -38,7 +38,7 @@ class OrderGoods extends BaseModel
     protected $search_fields = ['title'];
 
     //public function
-    public function hasOneGood()
+    public function hasOneGoods()
     {
         return $this->hasOne($this->getNearestModel('Goods'), 'id', 'goods_id');
     }
