@@ -91,6 +91,7 @@ class PreOrderGoods extends OrderGoods
         $this->thumb = (string)$this->thumb;
         $this->goods_sn = (string)$this->goods_sn;
         $this->price = (float)$this->price;
+        $this->goods_cost_price = (float)$this->goods_cost_price;
         $this->coupon_price = (float)$this->coupon_price;
         if ($this->isOption()) {
             $this->goods_option_id = (int)$this->goods_option_id;
