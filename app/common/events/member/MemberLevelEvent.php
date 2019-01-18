@@ -17,10 +17,13 @@ abstract class MemberLevelEvent extends Event
 
     protected $number;
 
-    public function __construct(MemberShopInfo $memberModel, $number)
+    protected $levelId;
+
+    public function __construct(MemberShopInfo $memberModel, $number, $levelId)
     {
         $this->memberModel = $memberModel;
         $this->number = $number;
+        $this->levelId = $levelId;
     }
 
     public function getMemberModel(){
@@ -30,5 +33,10 @@ abstract class MemberLevelEvent extends Event
     public function getNumber()
     {
         return $this->number;
+    }
+
+    public function getLevelId()
+    {
+        return $this->levelId;
     }
 }

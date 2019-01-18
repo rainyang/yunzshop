@@ -107,7 +107,8 @@ class LevelUpgradeService
             $this->memberModel->downgrade_at = 0;
             $this->memberModel->save();
 
-            event(new MemberLevelValidityEvent($this->memberModel, $this->validity['goods_total']));
+            $levelId = intval($this->new_level->id);
+            event(new MemberLevelValidityEvent($this->memberModel, $this->validity['goods_total'], $levelId));
         }
 
     }
