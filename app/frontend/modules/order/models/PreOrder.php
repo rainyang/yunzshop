@@ -121,8 +121,11 @@ class PreOrder extends Order
 
     public function getOrderDeductions()
     {
-        return $this->getOrderDeductManager()->getOrderDeductions();
+        if (!$this->getRelation('orderDeductions')) {
 
+            return $this->getOrderDeductManager()->getOrderDeductions();
+        }
+        return $this->orderDeductions;
     }
 
     public function setRequest(Request $request)
@@ -355,7 +358,10 @@ class PreOrder extends Order
      */
     public function getDeductionAmount()
     {
-        return $this->getOrderDeductManager()->getAmount();
+        if (!$this->getRelation('orderDeductions')) {
+            return $this->getOrderDeductManager()->getAmount() ?: 0;
+        }
+        return $this->orderDeductions->where('checked', 1)->sum('amount');
     }
 
     /**
