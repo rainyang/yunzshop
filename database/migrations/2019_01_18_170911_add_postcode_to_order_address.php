@@ -16,8 +16,7 @@ class AddPostcodeToOrderAddress extends Migration
         if (Schema::hasTable('yz_order_address')) {
             if (!Schema::hasColumn('yz_order_address', 'postcode')) {
                 Schema::table('yz_order_address', function (Blueprint $table) {
-                    $table->string('order_sn', 50);
-
+                    $table->string('postcode', 50);
                 });
             }
         }
