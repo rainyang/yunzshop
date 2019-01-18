@@ -47,7 +47,7 @@ if (!function_exists("yz_tpl_ueditor")) {
 			UE.registerUI('myinsertimage',function(editor,uiName){
 				editor.registerCommand(uiName, {
 					execCommand:function(){
-						require(['../addons/yun_shop/static/resource/js/app/fileUploader.min.js'], function(uploader){
+						require(['fileUploader'], function(uploader){
 							uploader.show(function(imgs){
 								if (imgs.length == 0) {
 									return;

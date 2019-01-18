@@ -304,6 +304,7 @@ class GoodsController extends BaseController
         return view('goods.goods', [
             'goods' => $goods_service->goods_model,
             'lang' => $this->lang,
+            'goods_video' => collect($goods_service->goods_model->hasOneGoodsVideo)->toArray(),
             'params' => collect($goods_service->goods_model->hasManyParams)->toArray(),
             'allspecs' => collect($goods_service->goods_model->hasManySpecs)->toArray(),
             'html' => $goods_service->optionsHtml,
