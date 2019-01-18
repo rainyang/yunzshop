@@ -189,7 +189,7 @@ class PreOrderDeduction extends OrderDeduction
 
             // 商品金额抵扣 不能超过订单除去运费后 使用其他抵扣金额后的价格
 
-            $deductionAmount = min($this->order->price - $this->order->getDeductionAmount() - $this->order->dispatch_price, $this->getMaxDeduction()->getMoney());
+            $deductionAmount = min($this->order->price - $this->order->getDeductionAmount() - $this->order->dispatch_price, $this->getMaxDeduction()->getMoney() - $this->getMinDeduction()->getMoney());
 
             // 抵扣金额 = 商品抵扣金额 + 运费抵扣金额
             $deductionAmount += $this->getMaxDispatchPriceDeduction()->getMoney();
