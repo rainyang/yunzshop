@@ -63,10 +63,10 @@ class MemberChildren extends \app\common\models\member\MemberChildren
             $teamModel ->where('mc_members.uid',$search['member_id']);
         };
         if(!empty($search['nickname'])){
-            $teamModel ->where('mc_members.nickname',$search['nickname']);
+            $teamModel ->where('mc_members.nickname','like','%'.$search['nickname'].'%');
         };
         if(!empty($search['realname'])){
-            $teamModel ->where('mc_members.realname',$search['realname']);
+            $teamModel ->where('mc_members.realname','like','%'.$search['realname'].'%');
         };
         if(!empty($search['mobile'])){
             $teamModel   ->where('mc_members.mobile',$search['mobile']);
