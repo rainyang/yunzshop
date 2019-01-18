@@ -1,22 +1,14 @@
 <?php
 namespace app\frontend\modules\finance\models;
-use app\common\models\Income;
-use app\common\traits\CreateOrderSnTrait;
-use Illuminate\Support\Facades\Config;
 
-/**
- * Created by PhpStorm.
- * Author: 芸众商城 www.yunzshop.com
- * Date: 2017/3/30
- * Time: 上午9:40
- */
+
+use app\common\models\Income;
+use Illuminate\Support\Facades\Config;
 
 class Withdraw extends \app\common\models\Withdraw
 {
-    use CreateOrderSnTrait;
-
-
     public $Incomes;
+
     protected $appends = ['incomes'];
 
     public static function getWithdrawLog($status)
