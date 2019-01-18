@@ -23,6 +23,7 @@ class PointDeductionSettingManager extends Container implements DeductionSetting
          * 计积分抵扣商品设置
          */
         $this->bind('goods', function (PointDeductionSettingManager $deductionSettingManager, array $params) {
+            //dump(debug_backtrace(0,20));
             return new PointGoodsDeductionSetting($params[0]);
         });
         /**
