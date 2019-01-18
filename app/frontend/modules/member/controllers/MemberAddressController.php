@@ -180,17 +180,21 @@ class MemberAddressController extends ApiController
         if (!\YunShop::request()->address) {
             return $this->errorJson('请输入详细地址');
         }
+        
+        if (!\YunShop::request()->zipcode) {
+            return $this->errorJson('请输入地址邮编');
+        }
 
         if ($requestAddress) {
             $data = array(
                 'username'  => \YunShop::request()->username,
                 'mobile'    => \YunShop::request()->mobile,
-                'zipcode'   => '',
+                'zipcode'   => \YunShop::request()->zipcode,
                 'isdefault' => \YunShop::request()->isdefault?:0,
                 'province'  => \YunShop::request()->province,
                 'city'      => \YunShop::request()->city,
                 'district'  => \YunShop::request()->district,
-                'address'   => \YunShop::request()->address,
+                'address'   => \YunShop::request()->address
             );
             if(\Setting::get('shop.trade.is_street')){
                 $data['street'] = \YunShop::request()->street;
@@ -263,17 +267,20 @@ class MemberAddressController extends ApiController
             return $this->errorJson('请输入详细地址');
         }
 
+        if (!\YunShop::request()->zipcode) {
+            return $this->errorJson('请输入地址邮编');
+        }
         $requestAddress = array(
             //'uid' => $requestAddress->uid,
             //'uniacid' => \YunShop::app()->uniacid,
             'username'      => \YunShop::request()->username,
             'mobile'        => \YunShop::request()->mobile,
-            'zipcode'       => '',
+            'zipcode'       => \YunShop::request()->zipcode,
 //            'isdefault'     =>  \YunShop::request()->isdefault?1:0,
             'province'      => \YunShop::request()->province,
             'city'          => \YunShop::request()->city,
             'district'      => \YunShop::request()->district,
-            'address'       => \YunShop::request()->address,
+            'address'       => \YunShop::request()->address
         );
         if(\Setting::get('shop.trade.is_street')){
             $requestAddress['street'] = \YunShop::request()->street;

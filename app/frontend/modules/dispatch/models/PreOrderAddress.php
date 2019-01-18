@@ -97,6 +97,7 @@ class PreOrderAddress extends OrderAddress
         $orderAddress->province = $member_address->province;
         $orderAddress->city = $member_address->city;
         $orderAddress->district = $member_address->district;
+        $orderAddress->postcode = $member_address->zipcode;
 
         return $orderAddress;
     }
@@ -118,7 +119,8 @@ class PreOrderAddress extends OrderAddress
                     'username' => 'required',
                     'province' => 'required',
                     'city' => 'required',
-                    'district' => 'required',
+                    'postcode' => 'required',
+                    'district' => 'required'
                 ]
             );
             $memberAddress = app(MemberAddressRepository::class)->fill($address);

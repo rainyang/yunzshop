@@ -47,6 +47,7 @@ class OrderAddress extends BaseModel
             'province_id'=> '收货省份',
             'city_id'=> '收货城市',
             'district_id'=> '收货地区',
+            'postcode' => '收件地址邮编'
         ];
     }
 
@@ -63,6 +64,7 @@ class OrderAddress extends BaseModel
             'province_id'=> 'required',
             'city_id'=> 'required',
             'district_id'=> 'required',
+            'postcode'=> 'required'
         ];
 
         return $rule;
