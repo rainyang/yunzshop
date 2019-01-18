@@ -129,6 +129,14 @@
         </div>
     </div>
 @endif
+@if ($order['status'] >= 2)
+    <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">发货时间 :</label>
+        <div class="col-sm-9 col-xs-12">
+            <p class="form-control-static">{{$order['send_time']}}</p>
+        </div>
+    </div>
+@endif
 @if ($order['status'] == 3)
     <div class="form-group">
         <label class="col-xs-12 col-sm-3 col-md-2 control-label">完成时间 :</label>

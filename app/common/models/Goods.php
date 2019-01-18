@@ -9,6 +9,7 @@
 namespace app\common\models;
 
 use app\common\exceptions\AppException;
+use app\common\models\goods\Discount;
 use app\common\models\goods\GoodsDispatch;
 use app\common\models\goods\Privilege;
 use app\framework\Database\Eloquent\Collection;
@@ -191,7 +192,7 @@ class Goods extends BaseModel
 
     public function hasManyDiscount()
     {
-        return $this->hasMany('app\common\models\goods\Discount');
+        return $this->hasMany(Discount::class, 'goods_id', 'id');
     }
 
     public function hasManyGoodsCategory()
@@ -224,7 +225,6 @@ class Goods extends BaseModel
         return $this->hasOne('app\common\models\goods\GoodsService', 'goods_id', 'id');
     }
 
-
     public function hasOneGoodsVideo()
     {
         return $this->hasOne('app\common\models\goods\GoodsVideo', 'goods_id', 'id');
@@ -235,7 +235,7 @@ class Goods extends BaseModel
         return $query->where('is_plugin', 0);
     }
 
-    public function scopeSearch(BaseModel $query, $filters)
+    public function scopeSearch($query, $filters)
     {
         $query->uniacid();
 
@@ -485,7 +485,7 @@ class Goods extends BaseModel
     {
         parent::boot();
 
-        static::addGlobalScope(function (BaseModel $builder) {
+        static::addGlobalScope(function ($builder) {
             $builder->uniacid();
         });
     }

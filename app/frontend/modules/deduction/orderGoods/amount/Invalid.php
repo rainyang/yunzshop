@@ -11,7 +11,10 @@ namespace app\frontend\modules\deduction\orderGoods\amount;
 
 class Invalid extends OrderGoodsDeductionAmount
 {
-    public function getAmount(){
+    public function getMaxAmount(){
+        return 0;
+    }
+    public function getMinAmount(){
         return 0;
     }
 
