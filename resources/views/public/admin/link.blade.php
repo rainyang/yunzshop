@@ -127,8 +127,7 @@
 
                         <div id="fe-tab-link-li-11" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 11)" nhref="{{ yzAppFullUrl('home') }}">商城首页</div>
                         <div id="fe-tab-link-li-12" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 12)" nhref="{{ yzAppFullUrl('category') }}">分类导航</div>
-                        <div id="fe-tab-link-li-13" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 13)" nhref="{{ yzAppFullUrl('search') }}">全部商品</div>
-
+                        <div id="fe-tab-link-li-13" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 13)" nhref="{{ yzAppFullUrl('searchAll') }}">全部商品</div>
                         @foreach(Config::get('shop_link.link') as $key=>$value)
                             <div id="fe-tab-link-li-{{$value['num']}}" class="btn btn-default mylink-nav" ng-click="chooseLink(1, {{$value['num']}})" nhref="{{$value['link']}}">{{$value['link_name']}}</div>
                         @endforeach

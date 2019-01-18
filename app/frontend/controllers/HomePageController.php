@@ -106,7 +106,7 @@ class HomePageController extends ApiController
         $is_bind_mobile = 0;
 
         if (!is_null($member_set)) {
-            if ((1 == $member_set['is_bind_mobile']) && $member_id && $member_id > 0) {
+            if ((0 < $member_set['is_bind_mobile']) && $member_id && $member_id > 0) {
                 if (!Cache::has($member_id . '_member_info')) {
                     $member_model = Member::getMemberById($member_id);
                     if (!is_null($member_model)) {
@@ -115,13 +115,11 @@ class HomePageController extends ApiController
                 } else {
                     $member_model = Cache::get($member_id . '_member_info');
                 }
-
                 if ($member_model && empty($member_model->mobile)) {
-                    $is_bind_mobile = 1;
+                    $is_bind_mobile = intval($member_set['is_bind_mobile']);
                 }
             }
         }
-
         $result['mailInfo']['is_bind_mobile'] = $is_bind_mobile;
         //用户信息, 原来接口在 member.member.getUserInfo
         if (empty($pageId)) { //如果是请求首页的数据
@@ -616,10 +614,26 @@ class HomePageController extends ApiController
             $member_set = Setting::get('shop.member');
         }
 
+//        $is_bind_mobile = 0;
+//
+//        if (!is_null($member_set)) {
+//            if ((1 == $member_set['is_bind_mobile']) && $member_id && $member_id > 0) {
+//                if (Cache::has($member_id . '_member_info')) {
+//                    $member_model = Cache::get($member_id . '_member_info');
+//                } else {
+//                    $member_model = Member::getMemberById($member_id);
+//                }
+//
+//                if ($member_model && empty($member_model->mobile)) {
+//                    $is_bind_mobile = 1;
+//                }
+//            }
+//        }
+
         $is_bind_mobile = 0;
 
         if (!is_null($member_set)) {
-            if ((1 == $member_set['is_bind_mobile']) && $member_id && $member_id > 0) {
+            if ((0 < $member_set['is_bind_mobile']) && $member_id && $member_id > 0) {
                 if (Cache::has($member_id . '_member_info')) {
                     $member_model = Cache::get($member_id . '_member_info');
                 } else {
@@ -627,10 +641,11 @@ class HomePageController extends ApiController
                 }
 
                 if ($member_model && empty($member_model->mobile)) {
-                    $is_bind_mobile = 1;
+                    $is_bind_mobile = intval($member_set['is_bind_mobile']);
                 }
             }
         }
+
 
         $result['is_bind_mobile'] = $is_bind_mobile;
 

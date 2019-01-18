@@ -46,6 +46,7 @@ use Yunshop\AlipayOnekeyLogin\services\SynchronousUserInfo;
 use app\common\services\alipay\OnekeyLogin;
 use app\common\helpers\Client;
 use app\common\services\plugin\huanxun\HuanxunSet;
+use Yunshop\Integral\Common\Services\SetService;
 
 class MemberController extends ApiController
 {
@@ -318,7 +319,7 @@ class MemberController extends ApiController
      */
     public function getMyAgentCount()
     {
-        return $this->successJson('', ['count' => MemberModel::getAgentCount(\YunShop::app()->getMemberId())]);
+        return $this->successJson('', ['count' => MemberModel::getAgentCount_v2(\YunShop::app()->getMemberId())]);
     }
 
     /**
@@ -1493,6 +1494,16 @@ class MemberController extends ApiController
             ];
         }
 
+        $status = SetService::getIntegralSet();
+        if (app('plugins')->isEnabled('integral') && (int)$status['member_show']) {
+            $data[] = [
+                'name' => 'integral',
+                'title' => $status['plugin_name'],
+                'class' => 'icon-member_integral',
+                'url' => 'Integral_love',
+            ];
+        }
+
         if (app('plugins')->isEnabled('universal-card')) {
             $set = \Yunshop\UniversalCard\services\CommonService::getSet();
             //判断插件开关
@@ -1525,6 +1536,8 @@ class MemberController extends ApiController
 
         return $this->successJson('ok', $data);
     }
+
+
 
     public function isOpenHuanxun() {
         $huanxun = \Setting::get('plugin.huanxun_set');

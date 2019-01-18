@@ -14,6 +14,7 @@ use app\common\models\BaseModel;
  * Class OrderGoodsDiscount
  * @package app\common\models\orderGoods
  * @property int id
+ * @property int uid
  * @property int is_indirect
  * @property float amount
  * @property string name

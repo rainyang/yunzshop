@@ -8,7 +8,7 @@
 
 namespace app\frontend\modules\order\discount;
 
-use app\frontend\modules\orderGoods\models\PreOrderGoods;
+use app\common\modules\orderGoods\models\PreOrderGoods;
 
 /**
  * 单品满减优惠

@@ -16,7 +16,7 @@ class AddNoteToProcessTable extends Migration
     {
         if (Schema::hasTable('yz_process')) {
             if (!Schema::hasColumn('yz_process', 'note')) {
-                Schema::table('yz_process', function (Blueprint $table) {
+                Schema::table('yz_process', function (\Illuminate\Database\Schema\Blueprint $table) {
                     $table->text('note')->nullable();
                 });
             }
