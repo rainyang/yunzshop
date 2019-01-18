@@ -18,6 +18,14 @@ use app\frontend\modules\order\models\PreOrder;
 
 class OrderDeductionCollection extends Collection
 {
+    public function minAmount(){
+        return $this->where('checked',1)->sum(function (PreOrderDeduction $orderDeduction) {
+            return $orderDeduction->getMinDeduction()->getMoney();
+        });
+    }
+    public function usedAmount(){
+        return $this->where('checked',1)->sum('amount');
+    }
     /**
      * 过滤掉不可抵扣的
      * @return $this
@@ -62,6 +70,7 @@ class OrderDeductionCollection extends Collection
         $this->each(function (PreOrderDeduction $orderDeduction) {
             $orderDeduction->validateCoin();
         });
+
         return $this;
     }
 

@@ -2,6 +2,7 @@
 
 namespace app\frontend\modules\order\models;
 
+use app\common\exceptions\AppException;
 use app\common\models\BaseModel;
 use app\common\models\DispatchType;
 use app\common\models\Member;
@@ -319,6 +320,7 @@ class PreOrder extends Order
         });
 
         $this->price += $this->getDispatchAmount();
+
         $this->price -= $this->getDeductionAmount();
 //        $this->getCheckedOrderDeductions()->each(function (PreOrderDeduction $orderDeduction) {
 //            // 每一种最低抵扣金额 todo 考虑调整为最低限购
@@ -354,14 +356,15 @@ class PreOrder extends Order
 
     /**
      * 获取订单抵扣金额
-     * @return number
+     * @return int|mixed
      */
     public function getDeductionAmount()
     {
         if (!$this->getRelation('orderDeductions')) {
             return $this->getOrderDeductManager()->getAmount() ?: 0;
         }
-        return $this->orderDeductions->where('checked', 1)->sum('amount');
+
+        return $this->orderDeductions->usedAmount();
     }
 
     /**

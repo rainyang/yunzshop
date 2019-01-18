@@ -9,6 +9,7 @@
 namespace app\frontend\modules\deduction;
 
 
+use app\common\exceptions\AppException;
 use app\common\modules\orderGoods\models\PreOrderGoods;
 use app\framework\Database\Eloquent\Collection;
 use app\frontend\models\order\PreOrderDeduction;
@@ -50,6 +51,7 @@ class OrderDeductManager
 
     /**
      * @return OrderDeductionCollection
+     * @throws AppException
      */
     public function getOrderDeductions()
     {
@@ -61,8 +63,9 @@ class OrderDeductManager
             $this->orderDeductionCollection->validate();
             // 过滤调不能抵扣的项
             $this->orderDeductionCollection->filterNotDeductible();
-
-
+            if ($this->orderDeductionCollection->minAmount() > $this->order->price) {
+                throw new AppException("订单支付总金额{$this->order->price}元,不满足最低抵扣总金额{$this->orderDeductionCollection->minAmount()}元");
+            }
             $this->order->setRelation('orderDeductions', $this->orderDeductionCollection);
         }
         return $this->orderDeductionCollection;
@@ -183,6 +186,7 @@ class OrderDeductManager
 
                 $this->amount += $orderDeduction->getMinDeduction()->getMoney();
             });
+
 
             $this->getCheckedOrderDeductions()->each(function (PreOrderDeduction $orderDeduction) {
                 /**
