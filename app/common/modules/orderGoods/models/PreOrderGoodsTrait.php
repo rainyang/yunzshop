@@ -67,14 +67,6 @@ trait PreOrderGoodsTrait
      * @return int
      * @throws AppException
      */
-    public function getGoodsIdAttribute()
-    {
-        return $this->getGoods()->id;
-    }
-    /**
-     * @return int
-     * @throws AppException
-     */
     public function getThumbAttribute()
     {
         return yz_tomedia($this->getGoods()->thumb);
