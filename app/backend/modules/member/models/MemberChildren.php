@@ -83,6 +83,7 @@ class MemberChildren extends \app\common\models\member\MemberChildren
                  } )
              ->select(DB::raw('ims_yz_member_children.*,ims_yz_member_month_rank.rank,ims_mc_members.avatar,ims_mc_members.nickname,ims_mc_members.realname,ims_mc_members.mobile,ims_yz_member_month_order.order_price,ims_yz_member_month_order.order_price, ims_yz_member_month_order.member_id as uid,SUM(CASE WHEN level<3 THEN 1 ELSE 0 END) as level_num,SUM(ims_yz_member_month_order.order_num) as order_all,SUM(ims_yz_member_month_order.order_price) as price_all'))
              ->groupBy('yz_member_children.member_id')
+              ->havingRaw('SUM(ims_yz_member_month_order.order_price) != 0')
              ->orderBy('price_all', 'desc');
         return $teamModel;
     }
