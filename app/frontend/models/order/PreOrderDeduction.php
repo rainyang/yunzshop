@@ -394,7 +394,7 @@ class PreOrderDeduction extends OrderDeduction
         if (!$this->isChecked() || $this->getOrderGoodsDeductionCollection()->getUsablePoint() <= 0) {
             return false;
         }
-        $this->getMemberCoin()->consume($this->getUsablePoint(), ['order_sn' => $this->order->order_sn]);
+        $this->getMemberCoin()->consume($this->newCoin()->setMoney($this->amount), ['order_sn' => $this->order->order_sn]);
         $this->code = (string)$this->code;
         $this->name = (string)$this->name;
         $this->amount = sprintf('%.2f', $this->amount);
