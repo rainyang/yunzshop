@@ -127,12 +127,6 @@ trait PreOrderGoodsTrait
         return $this->getGoodsMarketPrice();
     }
 
-    public function getGoodsOptionIdAttribute()
-    {
-
-        return $this->isOption() ? $this->goodsOption->id : 0;
-    }
-
     public function getGoodsOptionTitleAttribute()
     {
         return $this->isOption() ? $this->goodsOption->title : '';
