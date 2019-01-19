@@ -116,7 +116,7 @@ class OrderDeductManager
     {
         if (!isset($this->orderGoodsDeductionCollection)) {
             $orderGoodsDeductions = $this->order->orderGoods->flatMap(function (PreOrderGoods $orderGoods) {
-                return $orderGoods->orderGoodsDeductions;
+                return $orderGoods->getOrderGoodsDeductions();
             });
             $this->orderGoodsDeductionCollection = new OrderGoodsDeductionCollection($orderGoodsDeductions->all());
         }
