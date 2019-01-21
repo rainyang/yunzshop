@@ -110,6 +110,8 @@ class OrderService
      */
     private static function OrderOperate(OrderOperation $orderOperation)
     {
+        \Log::info('-----orderOperation-----', $orderOperation);
+
         if (!isset($orderOperation)) {
             throw new AppException('未找到该订单');
         }
@@ -266,8 +268,9 @@ class OrderService
      */
     public static function orderSend($param)
     {
+        \Log::info('---param---', $param);
         $orderOperation = OrderSend::find($param['order_id']);
-        // \Log::info('----3orderOperation--', $orderOperation);
+        \Log::info('----1orderOperation--', $orderOperation);
         return self::OrderOperate($orderOperation);
     }
 
