@@ -12,7 +12,7 @@ class CreateUsersTable extends Migration
      * @return void
      */
     public function up()
-    {
+    {    //创建发票表
         if (!Schema::hasTable('yz_order_invoice')) {
             Schema::create('yz_order_invoice', function (Blueprint $table) {
                 $table->increments('id');

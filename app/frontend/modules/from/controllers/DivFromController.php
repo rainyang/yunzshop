@@ -40,7 +40,7 @@ class DivFromController extends ApiController
         $explain = array_pluck(\Setting::getAllByGroup('div_from')->toArray(), 'value', 'key');
         return $this->successJson('ok',$explain );
     }
-
+    //判断是否开启发票
     public function isinvoice(){
         $trade = Setting::get('shop.trade');
         $invoice['papery'] = $trade['invoice']['papery']!=0 ? $trade['invoice']['papery'] :0;

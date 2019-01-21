@@ -145,6 +145,7 @@
                     </div>
                 </div>
             </div>
+
 			<div class="panel-heading">
 				收货地址
 			</div>	

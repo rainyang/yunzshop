@@ -25,14 +25,6 @@ class Rise extends ApiController
         if (!$inv){
             self::errorJson('失败');
         }
-      /*  $inv=new Invoice;
-        $inv->uid=1;
-        $inv->uniacid=1;
-        $inv->invoice_type=1;
-        $inv->rise_type=0;
-        $inv->call='lin';
-        $inv->company_number=123;
-        $inv->save();**/
     }
 
     public function getInvoice(){

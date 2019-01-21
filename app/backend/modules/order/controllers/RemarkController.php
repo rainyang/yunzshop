@@ -29,7 +29,6 @@ class RemarkController extends BaseController
                 show_json(1);
             }
             $db_remark_model->remark = \YunShop::request()->remark;
-            $db_remark_model->invoice=\YunShop::request()->invoice;
             $this->updateInvoice( \YunShop::request()->order_id,\YunShop::request()->invoice);
             (new \app\common\services\operation\OrderLog($db_remark_model, 'special'));
             $db_remark_model->save();

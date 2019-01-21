@@ -98,7 +98,7 @@ class DetailController extends BaseController
             'dispatch' => $dispatch,
             'div_from' => $this->getDivFrom($order),
             'var' => \YunShop::app()->get(),
-          //  'invoice'=>Invoice::getData($order['id'])->toArray(),
+           'invoice'=>Invoice::getData($order['id'])->toArray(),
             'ops' => 'order.ops',
             'edit_goods' => 'goods.goods.edit'
         ])->render();

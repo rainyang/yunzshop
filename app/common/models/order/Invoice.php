@@ -12,7 +12,6 @@ use app\common\models\BaseModel;
  class Invoice extends BaseModel
 {
     public $table = 'yz_order_invoice';
-   // public $timestamps = false;
      protected $guarded=[];
     public $timestamps = false;
     public static function getData($order_id)
