@@ -70,6 +70,9 @@ class RefundService
             case PayType::HXWECHAT:
                 $result = $this->hxwechat();
                 break;
+            case PayType::STORE_PAY:
+                $result = $this->backend();
+                break;
             default:
                 $result = false;
                 break;

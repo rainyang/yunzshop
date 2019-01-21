@@ -61,9 +61,13 @@ class CreateGoodsService
             if (!empty($this->request->widgets['sale']['max_point_deduct'])
                 && !empty($goods_data['price'])
                 && $this->request->widgets['sale']['max_point_deduct'] > $goods_data['price']) {
-                return ['status' => -1, 'msg' => '积分抵扣金额大于商品现价'];
+                return ['status' => -1, 'msg' => '积分最大抵扣金额大于商品现价'];
             }
-
+            if (!empty($this->request->widgets['sale']['min_point_deduct'])
+                && !empty($goods_data['price'])
+                && $this->request->widgets['sale']['min_point_deduct'] > $goods_data['price']) {
+                return ['status' => -1, 'msg' => '积分最少抵扣金额大于商品现价'];
+            }
             $this->goods_model->setRawAttributes($goods_data);
             $this->goods_model->widgets = $this->request->widgets;
             $this->goods_model->uniacid = \YunShop::app()->uniacid;

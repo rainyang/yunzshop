@@ -16,6 +16,7 @@ class Sale extends BaseModel
 
     public $attributes = [
         'max_point_deduct' => '',
+        'min_point_deduct' => '',
         'max_balance_deduct' => 0,
         'is_sendfree' => 0,
         'ed_num' => 0,
@@ -31,8 +32,6 @@ class Sale extends BaseModel
     }
 
     protected $guarded = [''];
-
-    protected $fillable = [''];
 
     public static function boot()
     {

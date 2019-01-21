@@ -17,11 +17,12 @@ use app\backend\modules\refund\models\RefundApply;
 
 class PayController extends BaseController
 {
-    private $refundApply;
+    private $refundApply;   
     public $transactionActions = ['*'];
-    public function __construct()
+
+    public function preAction()
     {
-        parent::__construct();
+        parent::preAction();
         $request = \Request::capture();
         $this->validate([
             'refund_id' => 'required',

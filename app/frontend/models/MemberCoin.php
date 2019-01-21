@@ -17,7 +17,7 @@ abstract class MemberCoin
      */
     protected $member;
 
-    function __construct($member)
+    function __construct(\app\common\models\Member $member)
     {
         $this->member = $member;
     }
