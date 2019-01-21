@@ -41,6 +41,12 @@ class DivFromController extends ApiController
         return $this->successJson('ok',$explain );
     }
 
+    public function isinvoice(){
+        $trade = Setting::get('shop.trade');
+        $invoice['papery'] = $trade['invoice']['papery']!=0 ? $trade['invoice']['papery'] :0;
+        $invoice['electron'] = $trade['invoice']['electron']!=0 ? $trade['invoice']['papery'] :0;
+        return $this->successJson('ok',['invoice'=>$invoice]);
+    }
     /**
      * 修改会员真实姓名、身份证ID
      * @return \Illuminate\Http\JsonResponse

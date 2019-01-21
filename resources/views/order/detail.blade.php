@@ -18,9 +18,11 @@
         function sub() {
             var order_id = $('.order_id').val();
             var remark = $('#remark').val();
+            var invoice = $("[name='basic-detail[invoice]']").val();
             $.post("{!! yzWebUrl('order.remark.update-remark') !!}", {
                 order_id: order_id,
-                remark: remark
+                remark: remark,
+                invoice: invoice
             }, function (json) {
                 var json = $.parseJSON(json);
                 if (json.status == 1) {
