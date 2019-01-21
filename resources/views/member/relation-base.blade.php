@@ -9,7 +9,7 @@
 
                 <div class='panel-body'>
                     <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员中心显示推荐人</label>
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员关系页面显示推荐人</label>
                         <div class="col-sm-9 col-xs-12">
                             <label class="radio radio-inline">
                                 <input type="radio" name="base[is_referrer]" value="0"
@@ -19,7 +19,7 @@
                                 <input type="radio" name="base[is_referrer]" value="1"
                                        -                                       @if ($base['is_referrer'] == 1) checked @endif/> 是
                             </label>
-                            <span class="help-block">会员中心显示推荐人</span>
+                            <span class="help-block">会员关系页面显示推荐人</span>
                         </div>
                     </div>
 
