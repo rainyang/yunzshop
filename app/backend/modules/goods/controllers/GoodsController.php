@@ -555,7 +555,12 @@ class GoodsController extends BaseController
 
     public  function SearchOrder(){//获取商品名称
         $keyword = request()->keyword;
-        $goods= Goods::getSearchOrder($keyword);
+        $pluginId = request()->plugin_id;
+
+        if (empty($pluginId)){
+            $pluginId = 0;
+        }
+        $goods= Goods::getSearchOrder($keyword,$pluginId);
         return view('goods.query', [
             'goods' => $goods->toArray(),
         ])->render();
