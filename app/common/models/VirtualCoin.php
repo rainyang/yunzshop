@@ -8,7 +8,12 @@
 
 namespace app\common\models;
 
-
+/**
+ * Class VirtualCoin
+ * @package app\common\models
+ * @property float amountOfCoin
+ * @property float amountOfMoney
+ */
 abstract class VirtualCoin extends BaseModel
 {
     protected $table = 'yz_virtual_coin';
@@ -86,11 +91,17 @@ abstract class VirtualCoin extends BaseModel
         return parent::toArray();
     }
 
+    /**
+     * @return float|int
+     */
     public function getCoin()
     {
         return $this->amountOfCoin = $this->amountOfMoney / $this->exchange_rate;
     }
 
+    /**
+     * @return mixed
+     */
     public function getMoney()
     {
         return $this->amountOfMoney;

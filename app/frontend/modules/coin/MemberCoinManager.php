@@ -16,8 +16,8 @@ class MemberCoinManager extends Container
     public function __construct()
     {
 
-        $this->bind('point',function($memberCoinManger,$uid){
-            return new MemberPointCoin($uid);
+        $this->bind('point',function($memberCoinManger,$params){
+            return new MemberPointCoin($params[0]);
         });
     }
 }

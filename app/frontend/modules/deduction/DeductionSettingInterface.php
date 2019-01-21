@@ -30,11 +30,19 @@ interface DeductionSettingInterface
      */
     public function isDisable();
 
-    public function getFixedAmount();
-    public function getPriceProportion();
+    public function getMaxFixedAmount();
+    public function getMaxPriceProportion();
     /**
      * 根据这个方法判断实例化哪个金额类
      * @return mixed
      */
-    public function getDeductionType();
+    public function getMaxDeductionType();
+
+    public function getMinFixedAmount();
+    public function getMinPriceProportion();
+    /**
+     * 根据这个方法判断实例化哪个金额类
+     * @return mixed
+     */
+    public function getMinDeductionType();
 }

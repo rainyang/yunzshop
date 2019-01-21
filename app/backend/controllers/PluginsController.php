@@ -26,7 +26,6 @@ class PluginsController extends BaseController
     public function config($name, Request $request)
     {
         $plugin = plugin($name);
-
         if ($plugin && $plugin->isEnabled() && $plugin->hasConfigView()) {
             return $plugin->getConfigView();
         } else {
@@ -197,8 +196,9 @@ class PluginsController extends BaseController
                 )
                 ->asJsonResponse(true)
                 ->get();
+            // dd($res);
 
-            \Log::debug('-------update res-----', $res);
+            // \Log::debug('-------update res-----', $res);
             if (0 == $res['status']) {
                 throw new ShopException('应用未授权');
             }

@@ -19,9 +19,20 @@ class FixedAmount extends OrderGoodsDeductionAmount
      * @return float|mixed
      * @throws \app\common\exceptions\ShopException
      */
-    public function getAmount()
+    public function getMaxAmount()
     {
-        $result = $this->getGoodsDeduction()->getFixedAmount() * $this->getOrderGoods()->total;
+        $result = $this->getGoodsDeduction()->getMaxFixedAmount() * $this->getOrderGoods()->total;
+        $result = min($result,$this->getOrderGoods()->getPrice());
+        return max($result, 0);
+    }
+
+    /**
+     * @return float|mixed
+     * @throws \app\common\exceptions\ShopException
+     */
+    public function getMinAmount()
+    {
+        $result = $this->getGoodsDeduction()->getMinFixedAmount() * $this->getOrderGoods()->total;
         $result = min($result,$this->getOrderGoods()->getPrice());
         return max($result, 0);
     }
