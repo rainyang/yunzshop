@@ -125,7 +125,7 @@ class PreOrderGoods extends OrderGoods
 
     public function getOrderGoodsDeductions()
     {
-        if (!isset($this->orderGoodsDeductions)) {
+        if (!$this->getRelation('orderGoodsDeductions')) {
             $preOrderGoodsDeduction = new OrderGoodsDeductManager($this);
             $this->setRelation('orderGoodsDeductions', $preOrderGoodsDeduction->getOrderGoodsDeductions());
 
