@@ -87,7 +87,7 @@ class YoppayController extends PaymentController
             'trade_no'     => $this->getParameter('uniqueOrderNo'),
             'unit'         => 'yuan',
             'pay_type'     => '易宝支付',
-            'pay_type_id'  => 25,
+            'pay_type_id'  => 26,
         ];
         $this->payResutl($data);
 
@@ -106,7 +106,7 @@ class YoppayController extends PaymentController
             'can_divide_amount' => $this->getParameter('payAmount'),
             'rate' =>  $this->set['rate'],
             'rate_amount'  => $this->rateAmount(),
-            'pay_at' => $this->getParameter('paySuccessDate'),
+            'pay_at' => strtotime($this->getParameter('paySuccessDate')),
         ];
 
         $yop_order =  new YopPayOrder();
