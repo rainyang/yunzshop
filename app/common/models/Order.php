@@ -151,6 +151,12 @@ class Order extends BaseModel
             ->sum('price');
     }
 
+    public static function getInvoice($order)
+    {
+        return self ::select('invoice_type','rise_type','call','company_number')
+            ->where($order)
+            ->first();
+    }
 
     public function scopePayFail($query)
     {

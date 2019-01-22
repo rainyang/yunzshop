@@ -18,16 +18,9 @@ class RiseController extends ApiController
    //获取发票图片
     public function getInvoice()
     {
-        /*$db_remark_model = Remark::select('invoice')->where('order_id', request('order_id'))->first();
-        if (substr(yz_tomedia(($db_remark_model->toArray()['invoice'])),0,5) == "https"){
-            $invoice=$db_remark_model ? "http".substr(yz_tomedia(($db_remark_model->toArray()['invoice'])),5) : [];
-        }else{
-            $invoice=yz_tomedia(($db_remark_model->toArray()['invoice']));
-        }*/
+
         $db_remark_model = Order::select('invoice')->where('id', \YunShop::request()->order_id)->first();
         $invoice=yz_tomedia($db_remark_model->invoice);
-       // $img_ext = substr($invoice, strrpos($invoice, '.'));
-       // return $this->successJson('成功', ['invoice'=>sprintf('data:%s;base64,%s',$img_ext,base64_encode($invoice))]);
         return $this->successJson('成功', ['invoice'=>$invoice]);
 
     }

@@ -42,7 +42,7 @@ class RemarkController extends BaseController
         if (!$db_invoice){
             $this->errorJson("失败");
         }
-        $db_invoice->invoice= $invoice ? $invoice : 0;
+        $db_invoice->invoice= $invoice ;
         $db_invoice->save();
         return;
     }

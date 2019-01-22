@@ -35,6 +35,7 @@ class DetailController extends ApiController
         ]);
         $orderId = $request->query('order_id');
         $order = $this->getOrder()->with(['hasManyOrderGoods','orderDeduction','orderDiscount','orderCoupon'])->find($orderId);
+       dd( (new Order())->find($orderId));
 
 //        if ($order->uid != \YunShop::app()->getMemberId()) {
 //            throw new AppException('(ID:' . $order->id . ')该订单属于其他用户');

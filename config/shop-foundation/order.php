@@ -42,6 +42,10 @@ return array(
             \app\frontend\modules\order\operations\member\Delete::class,
             \app\frontend\modules\order\operations\member\Refunded::class,
         ],
+        'checkInvoice' => [
+            \app\frontend\modules\order\operations\member\ExpressInfo::class,
+            \app\frontend\modules\order\operations\member\CheckInvoice::class,
+        ],
 
     ],
     'status' => [
@@ -50,6 +54,7 @@ return array(
         2 => 'waitReceive',
         3 => 'complete',
         -1 => 'close',
+        4 => 'checkInvoice',
     ],
 
 );
