@@ -81,6 +81,35 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">商城业绩显示</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <label class="radio radio-inline">
+                            <input type="radio" name="shop[achievement]" value="0"
+                                   @if (empty($set['achievement'])) checked @endif/> 否
+                        </label>
+                        <label class="radio radio-inline">
+                            <input type="radio" name="shop[achievement]" value="1"
+                                   @if ($set['achievement'] == 1) checked @endif/> 是
+                        </label>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员等级查看权限</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="shop[member_level][]"  value="-1" @if(in_array(-1,$set['member_level'])) checked @endif> 全部会员等级
+                                </label>
+                                @foreach($level as $row)
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" name="shop[member_level][]"  value="{{$row['id']}}" @if(in_array($row['id'],$set['member_level']))  checked @endif> {{$row['level_name']}}
+                                    </label>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">客服链接</label>
                     <div class="col-sm-9 col-xs-12">
                         <input type="text" name="shop[cservice]" class="form-control" value="{{ $set['cservice']}}" />
