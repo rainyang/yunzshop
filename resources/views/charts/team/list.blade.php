@@ -14,7 +14,7 @@
                         <i class="fa fa-bars" style="font-size: 24px;" aria-hidden="true"></i>
                     </div>
                     <div class="card-content">
-                        <h4 class="card-title">一二级团队统计</h4>
+                        <h4 class="card-title">一二级团队统计(只统计功能更新后的订单)</h4>
                         <form action="" method="post" class="form-horizontal" role="form" id="form1">
                             <div class="form-group col-xs-12 col-sm-1">
                                 <input class="form-control" name="search[member_id]" id="" type="text"
