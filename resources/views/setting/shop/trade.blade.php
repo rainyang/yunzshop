@@ -125,6 +125,7 @@
                 {{--</div>--}}
 
 			</div>
+
             <div class="panel-heading">
                 发票设置
             </div>
@@ -147,6 +148,7 @@
                     </div>
                 </div>
             </div>
+
 			<div class="panel-heading">
 				收货地址
 			</div>	

@@ -13,7 +13,6 @@ class AddOrderInvoice extends Migration
      */
     public function up()
     {
-
         //添加字段
         if (Schema::hasTable('yz_order')) {
             if (!Schema::hasColumn('yz_order', 'invoice')) {

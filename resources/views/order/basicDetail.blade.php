@@ -92,7 +92,6 @@
     </div>
 
 </div>
-
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">上传发票</label>
     <div class="col-sm-9 col-xs-12">
@@ -157,11 +156,9 @@
 @if (!empty($order['has_one_refund_apply']))
     @include('refund.index')
 @endif
-
 @if(!empty($invoice_set))
     @include('invoice.display')
 @endif
-
 @if (count($order['discounts']))
     <div class="panel panel-default">
         <div class="panel-heading">

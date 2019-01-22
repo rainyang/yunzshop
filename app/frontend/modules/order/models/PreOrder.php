@@ -243,7 +243,6 @@ class PreOrder extends Order
             'note' => $this->getParams('note'),//订单备注
             'shop_name' => $this->getShopName(),//是否是虚拟商品订单
             'need_address' => $this->isNeedAddress(),//订单不需要填写地址
-
             'invoice_type'=>$this->getParams()->input('invoice_type'),//发票类型
             'rise_type'=>$this->getParams()->input('rise_type'),//收件人或单位
             'call'=>$this->getParams()->input('call'),//抬头或单位名称

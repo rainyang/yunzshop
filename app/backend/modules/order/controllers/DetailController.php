@@ -94,6 +94,7 @@ class DetailController extends BaseController
             $dispatch['status_name'] = $express['status_name'];
         }
         $trade = \Setting::get('shop.trade');
+
         return view('order.detail', [
             'order' => $order ? $order->toArray() : [],
             'invoice_set'=>$trade['invoice'],
