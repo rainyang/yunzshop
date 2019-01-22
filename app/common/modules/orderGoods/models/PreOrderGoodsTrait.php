@@ -34,7 +34,7 @@ trait PreOrderGoodsTrait
             'price' => $this->getPrice(),
             'goods_cost_price' => $this->getGoodsCostPrice(),
             'goods_market_price' => $this->getGoodsMarketPrice(),
-            'need_address'  => $this->goods->need_address,
+            'need_address' => $this->goods->need_address,
         );
 
         if ($this->isOption()) {
@@ -70,6 +70,12 @@ trait PreOrderGoodsTrait
     {
         return yz_tomedia($this->getGoods()->thumb);
     }
+
+    public function getNeedAddressAttribute()
+    {
+        return $this->goods->need_address;
+    }
+
     /**
      * @return int
      * @throws AppException

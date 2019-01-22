@@ -101,7 +101,7 @@ class AuditService
 
         //如果全驳回
         if ($rebut_count > 0 && $rebut_count == $type_ids_count) {
-            return Withdraw::STATUS_PAY;
+            return Withdraw::STATUS_REBUT;
         }
 
         //如果是无效 + 驳回 [同全驳回，直接完成]

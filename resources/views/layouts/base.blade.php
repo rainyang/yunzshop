@@ -61,7 +61,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
       }
 
       window.sysinfo = {
-        'is_new': '{{IMS_VERSION > 1.4 ? 1:0}}',
+        'is_new': '{{IMS_FAMILY == "v" ? (IMS_VERSION > 1.4 ? 1:0):1}}',
         'uniacid': '{{YunShop::app()->uniacid}}',
         'acid': '{{YunShop::app()->acid}}',
         'openid': '{{YunShop::app()->openid}}',
