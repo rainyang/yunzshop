@@ -1782,8 +1782,13 @@ class MemberController extends ApiController
 
     public function getArticleQr()
     {
-        $qr = MemberModel::getAgentQR();
-
-        return $this->successJson('获取二维码成功!', $qr);
+        if (app('plugins')->isEnabled('article')) {
+            $article_qr_set = Setting::get('plugin.article.qr');
+            $qr = MemberModel::getAgentQR();
+            if ($article_qr_set == 1) {
+                return $this->errorJson('二维码开关关闭!');
+            }
+            return $this->successJson('获取二维码成功!', $qr);
+        }
     }
 }
