@@ -68,11 +68,11 @@ abstract class OrderOperation extends Order
      */
     private function check()
     {
-
         $event = $this->getBeforeEvent();
         \Log::info('---event---', $event);
         event($event);
         \Log::info('--refund_id--', $this->refund_id);
+
         if ($this->refund_id > 0) {
             if ($this->hasOneRefundApply->isRefunding()) {
                 throw new AppException("退款中的订单,无法执行{$this->name}操作");

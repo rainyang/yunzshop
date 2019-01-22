@@ -111,10 +111,9 @@ class OrderService
     private static function OrderOperate(OrderOperation $orderOperation)
     {
         \Log::info('-----orderOperation-----', $orderOperation);
-
         if (!isset($orderOperation)) {
             throw new AppException('未找到该订单');
-        }
+        }        
         DB::transaction(function() use($orderOperation) {
             $orderOperation->handle();
         });
