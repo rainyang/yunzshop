@@ -35,16 +35,12 @@ return array(
             \app\frontend\modules\order\operations\member\ContactCustomerService::class,
             \app\frontend\modules\order\operations\member\Refunding::class,
             \app\frontend\modules\order\operations\member\Refunded::class,
-
+            \app\frontend\modules\order\operations\member\CheckInvoice::class,
         ],
         'close' => [
             \app\frontend\modules\order\operations\member\ExpressInfo::class,
             \app\frontend\modules\order\operations\member\Delete::class,
             \app\frontend\modules\order\operations\member\Refunded::class,
-        ],
-        'checkInvoice' => [
-            \app\frontend\modules\order\operations\member\ExpressInfo::class,
-            \app\frontend\modules\order\operations\member\CheckInvoice::class,
         ],
 
     ],
@@ -54,7 +50,6 @@ return array(
         2 => 'waitReceive',
         3 => 'complete',
         -1 => 'close',
-        4 => 'checkInvoice',
     ],
 
 );
