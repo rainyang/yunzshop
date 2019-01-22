@@ -99,7 +99,7 @@ class PreOrderGoods extends OrderGoods
         $this->need_address = (float)$this->need_address;
         if ($this->isOption()) {
             $this->goods_option_id = (int)$this->goods_option_id;
-            $this->goods_option_title = (int)$this->goods_option_title;
+            $this->goods_option_title = (string)$this->goods_option_title;
         }
     }
 
