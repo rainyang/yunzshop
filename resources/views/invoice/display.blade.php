@@ -1,3 +1,4 @@
+
 <div class="panel panel-default">
     <div class="panel-heading">
         发票
@@ -10,7 +11,7 @@
                     @if (1==$order['invoice_type'])
                         纸质发票
                     @elseif(0==$order['invoice_type'])
-                         电子发票
+                        电子发票
                     @endif
                 </p>
             </div>
@@ -24,11 +25,10 @@
                         个人
                     @elseif(0==$order['rise_type'])
                         单位
-                     @endif
+                    @endif
                 </p>
             </div>
         </div>
-
         <div class="form-group">
             @if(1==$order['rise_type'])
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">抬头 :</label>

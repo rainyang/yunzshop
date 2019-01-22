@@ -25,18 +25,16 @@ class RiseController extends ApiController
         }*/
 
         $db_remark_model = Order::select('invoice')->where('id', \YunShop::request()->order_id)->first();
-        $invoice=yz_tomedia($db_remark_model->toArray()['invoice']);
-        $img_ext = substr($invoice, strrpos($invoice, '.'));
-        if (0==$db_remark_model->toArray()['invoice']){
-            return $this->errorJson('失败');
-        }
 
-        return $this->successJson('成功', ['invoice'=>sprintf('data:%s;base64,%s',$img_ext,base64_encode($invoice))]);
+        $invoice=yz_tomedia($db_remark_model->invoice);
+       // $img_ext = substr($invoice, strrpos($invoice, '.'));
+       // return $this->successJson('成功', ['invoice'=>sprintf('data:%s;base64,%s',$img_ext,base64_encode($invoice))]);
+        return $this->successJson('成功', ['invoice'=>$invoice]);
 
     }
             //获取订单信息
     public function getData(){
-        $db_remark_model = Order::select('call','order_sn','invoice_type','invoice')->where('id', \YunShop::request()->order_id)->first();
+        $db_remark_model = Order::select('call','order_sn','invoice_type','invoice')->where('id', 13493)->first();
         if (!$db_remark_model){
             return $this->errorJson("失败");
         }

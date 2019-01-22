@@ -157,7 +157,11 @@
 @if (!empty($order['has_one_refund_apply']))
     @include('refund.index')
 @endif
-@include('invoice.display')
+
+@if(!empty($invoice_set))
+    @include('invoice.display')
+@endif
+
 @if (count($order['discounts']))
     <div class="panel panel-default">
         <div class="panel-heading">

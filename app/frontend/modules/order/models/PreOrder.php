@@ -246,7 +246,7 @@ class PreOrder extends Order
 
             'invoice_type'=>$this->getParams()->input('invoice_type'),//发票类型
             'rise_type'=>$this->getParams()->input('rise_type'),//收件人或单位
-            'call'=>$this->getParams()->input('call'),//名称
+            'call'=>$this->getParams()->input('call'),//抬头或单位名称
             'company_number'=>$this->getParams()->input('company_number'),//单位识别号
         );
 

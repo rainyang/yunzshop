@@ -29,7 +29,6 @@ class RemarkController extends BaseController
                 show_json(1);
             }
             $db_remark_model->remark = \YunShop::request()->remark;
-
             $this->updateInvoice( \YunShop::request()->order_id,\YunShop::request()->invoice );
 
             (new \app\common\services\operation\OrderLog($db_remark_model, 'special'));
@@ -37,6 +36,7 @@ class RemarkController extends BaseController
             show_json(1);
         }
     }
+
     //保存图片
     public function updateInvoice($order_id,$invoice){
         $db_invoice=Order::where('id',$order_id)->first();

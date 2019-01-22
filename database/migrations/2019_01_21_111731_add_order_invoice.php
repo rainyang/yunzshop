@@ -13,6 +13,7 @@ class AddOrderInvoice extends Migration
      */
     public function up()
     {
+
         //添加字段
         if (Schema::hasTable('yz_order')) {
             if (!Schema::hasColumn('yz_order', 'invoice')) {
@@ -22,7 +23,6 @@ class AddOrderInvoice extends Migration
                     $table->string('call');
                     $table->integer('company_number')->default(0);
                     $table->string('invoice')->default(0);
-
                 });
             }
         }
