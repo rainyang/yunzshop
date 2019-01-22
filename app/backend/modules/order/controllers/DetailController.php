@@ -93,12 +93,12 @@ class DetailController extends BaseController
             $dispatch['tel'] = '95533';
             $dispatch['status_name'] = $express['status_name'];
         }
+
         return view('order.detail', [
             'order' => $order ? $order->toArray() : [],
             'dispatch' => $dispatch,
             'div_from' => $this->getDivFrom($order),
             'var' => \YunShop::app()->get(),
-           'invoice'=>Invoice::getData($order['id'])->toArray(),
             'ops' => 'order.ops',
             'edit_goods' => 'goods.goods.edit'
         ])->render();

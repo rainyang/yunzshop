@@ -11,7 +11,7 @@ namespace app\backend\modules\order\controllers;
 
 use app\common\components\BaseController;
 use app\common\models\order\Remark;
-use app\common\models\order\Invoice;
+use app\common\models\Order;
 
 class RemarkController extends BaseController
 {
@@ -29,15 +29,15 @@ class RemarkController extends BaseController
                 show_json(1);
             }
             $db_remark_model->remark = \YunShop::request()->remark;
-            $this->updateInvoice( \YunShop::request()->order_id,\YunShop::request()->invoice);
+
+            $this->updateInvoice( \YunShop::request()->order_id,\YunShop::request()->invoice );
             (new \app\common\services\operation\OrderLog($db_remark_model, 'special'));
             $db_remark_model->save();
             show_json(1);
         }
     }
     public function updateInvoice($order_id,$invoice){
-
-        $db_invoice=Invoice::where('order_id',$order_id)->first();
+        $db_invoice=Order::where('id',$order_id)->first();
         if (!$db_invoice){
             $this->errorJson("失败");
         }

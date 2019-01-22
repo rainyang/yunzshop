@@ -42,7 +42,8 @@ class DivFromController extends ApiController
     }
     //判断是否开启发票
     public function isinvoice(){
-        $trade = Setting::get('shop.trade');
+
+        $trade = \Setting::get('shop.trade');
         $invoice['papery'] = $trade['invoice']['papery']!=0 ? $trade['invoice']['papery'] :0;
         $invoice['electron'] = $trade['invoice']['electron']!=0 ? $trade['invoice']['papery'] :0;
         return $this->successJson('ok',['invoice'=>$invoice]);

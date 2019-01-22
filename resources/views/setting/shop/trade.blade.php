@@ -123,6 +123,7 @@
                         {{--<span class='help-block'>是否显示商城用户下单飘窗提示</span>--}}
                     {{--</div>--}}
                 {{--</div>--}}
+
 			</div>
             <div class="panel-heading">
                 发票设置
