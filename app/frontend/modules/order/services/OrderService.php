@@ -267,9 +267,11 @@ class OrderService
      */
     public static function orderSend($param)
     {
-        \Log::info('---param---', $param);
+        // \Log::info('---param---', $param);
         $orderOperation = OrderSend::find($param['order_id']);
-        \Log::info('----1orderOperation--', $orderOperation);
+
+        $orderOperation->params = $param;
+        // \Log::info('----1orderOperation--', $orderOperation);
         return self::OrderOperate($orderOperation);
     }
 
