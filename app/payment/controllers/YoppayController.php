@@ -107,6 +107,8 @@ class YoppayController extends PaymentController
             'rate' =>  $this->set['rate'],
             'rate_amount'  => $this->rateAmount(),
             'pay_at' => strtotime($this->getParameter('paySuccessDate')),
+            'platform_type' => $this->platformType(),
+            'payment_product' => $this->paymentProduct(),
         ];
 
         $yop_order =  new YopPayOrder();
@@ -146,10 +148,40 @@ class YoppayController extends PaymentController
         return $status;
     }
 
+    //支付产品
+    protected function paymentProduct()
+    {
+
+        if (!empty($this->parameters['paymentProduct'])) {
+            switch ($this->parameters['paymentProduct']) {
+                case 'WECHAT_OPENID': //微信公众号
+                    $status = YopPayOrder::WECHAT_OPENID;
+                    break;
+                case 'SCCANPAY': //用户扫码
+                    $status = YopPayOrder::SCCANPAY;
+                    break;
+                case 'ZFB_SHH': //支付宝生活号
+                    $status = YopPayOrder::ZFB_SHH;
+                    break;
+                case 'ZF_ZHZF': //商户账户支付
+                    $status = YopPayOrder::ZF_ZHZF;
+                    break;
+                case 'EWALLETH5': //钱包H5支付
+                    $status = YopPayOrder::EWALLETH5;
+                    break;
+                default:
+                    $status = 0;
+                    break;
+            }
+        }
+
+        return $status;
+    }
+
     protected function rateAmount()
     {
         $rate =  $this->set['rate'];
-        $rate_amount = bcsub($this->getParameter('orderAmount'),bcmul($this->getParameter('orderAmount'), $rate, 2),2);
+        $rate_amount = bcmul($this->getParameter('orderAmount'), $rate, 2);
 
         return max($rate_amount, 0);
     }
@@ -178,7 +210,7 @@ class YoppayController extends PaymentController
 
         $data = [
             'status' => 1,
-            'cs_at' => $this->getParameter('csSuccessDate'),
+            'cs_at' => strtotime($this->getParameter('csSuccessDate')),
             'merchant_fee' => $this->getParameter('merchantFee'),
             'customer_fee' => $this->getParameter('customerFee'),
         ];
