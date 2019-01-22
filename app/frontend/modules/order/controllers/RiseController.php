@@ -6,14 +6,14 @@
  * Time: 10:47
  */
 
-namespace app\frontend\modules\order\invoice;
+namespace app\frontend\modules\order\controllers;
 
 
 use app\common\models\order\Invoice;
 use app\common\components\ApiController;
 use app\common\facades\Setting;
 use app\common\models\Order;
-class Rise extends ApiController
+class RiseController extends ApiController
 {
    //获取发票图片
     public function getInvoice(){
@@ -34,7 +34,7 @@ class Rise extends ApiController
         return $this->successJson('成功', ['invoice'=>sprintf('data:%s;base64,%s',$img_ext,base64_encode($invoice))]);
 
     }
-
+            //获取订单信息
     public function getData(){
         $db_remark_model = Order::select('call','order_sn','invoice_type','invoice')->where('id', \YunShop::request()->order_id)->first();
         if (!$db_remark_model){
@@ -54,7 +54,7 @@ class Rise extends ApiController
     public function isState(){
         $db_remark_model = Order::select('invoice')->where('id', \YunShop::request()->order_id)->first();
         if (0==$db_remark_model->toArray()['invoice']){
-            return $this->errorJson('未开启发票功能',['state'=>1]);
+            return $this->errorJson('未开启发票功能',['state'=>0]);
         }
         return $this->successJson('已开启发票功能',['name'=>'查看发票','state'=>1]);
     }

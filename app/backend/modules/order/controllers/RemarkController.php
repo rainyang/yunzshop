@@ -31,11 +31,13 @@ class RemarkController extends BaseController
             $db_remark_model->remark = \YunShop::request()->remark;
 
             $this->updateInvoice( \YunShop::request()->order_id,\YunShop::request()->invoice );
+
             (new \app\common\services\operation\OrderLog($db_remark_model, 'special'));
             $db_remark_model->save();
             show_json(1);
         }
     }
+    //保存图片
     public function updateInvoice($order_id,$invoice){
         $db_invoice=Order::where('id',$order_id)->first();
         if (!$db_invoice){

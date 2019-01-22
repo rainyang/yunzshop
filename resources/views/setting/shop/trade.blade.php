@@ -128,6 +128,7 @@
             <div class="panel-heading">
                 发票设置
             </div>
+
             <div class='panel-body'>
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">支持发票类型

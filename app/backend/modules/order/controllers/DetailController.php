@@ -93,7 +93,6 @@ class DetailController extends BaseController
             $dispatch['tel'] = '95533';
             $dispatch['status_name'] = $express['status_name'];
         }
-
         return view('order.detail', [
             'order' => $order ? $order->toArray() : [],
             'dispatch' => $dispatch,

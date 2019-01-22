@@ -28,6 +28,7 @@
                 </p>
             </div>
         </div>
+
         <div class="form-group">
             @if(1==$order['rise_type'])
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">抬头 :</label>
