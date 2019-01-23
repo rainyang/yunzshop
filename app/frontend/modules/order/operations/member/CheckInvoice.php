@@ -20,7 +20,6 @@ class CheckInvoice extends OrderOperation
     {
         return '查看发票';
     }
-
     public function getValue()
     {
         return static::CHECK_INVOICE;
@@ -28,6 +27,9 @@ class CheckInvoice extends OrderOperation
 
     public function enable()
     {
+        if ('0'==$this->order->call) {
+            return false;
+        }
         return true;
     }
 }

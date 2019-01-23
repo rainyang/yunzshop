@@ -32,7 +32,6 @@ class RiseController extends ApiController
             return $this->errorJson("失败");
         }
         $db_remark_model->invoice= "0" == $db_remark_model->invoice ? 0 : 1;
-        dd($db_remark_model->invoice);
         $date=[
             'call'=>$db_remark_model->call,
             'order_sn'=>$db_remark_model->order_sn,
@@ -44,11 +43,10 @@ class RiseController extends ApiController
 
     public function isState()
     {
-        $db_remark_model = Order::select('invoice')->where('id', \YunShop::request()->order_id)->first();
-        if ('0'===$db_remark_model->invoice){
-            return $this->errorJson('未开启发票功能',['state'=>0]);
-        }
-        return $this->successJson('已开启发票功能',['name'=>'查看发票','state'=>1]);
+        $db_remark_model = Order::select('call')->where('id', \YunShop::request()->order_id)->first();
+
+            return $db_remark_model->invoice;
+
     }
 
 }

@@ -36,6 +36,7 @@ return array(
             \app\frontend\modules\order\operations\member\Refunding::class,
             \app\frontend\modules\order\operations\member\Refunded::class,
             \app\frontend\modules\order\operations\member\CheckInvoice::class,
+
         ],
         'close' => [
             \app\frontend\modules\order\operations\member\ExpressInfo::class,
