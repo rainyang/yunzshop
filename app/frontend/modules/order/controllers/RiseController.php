@@ -24,14 +24,6 @@ class RiseController extends ApiController
         return $this->successJson('成功', ['invoice'=>$invoice]);
 
     }
-    public function download()
-    {
-        $db_remark_model = Order::select('invoice')->where('id', \YunShop::request()->order_id)->first();
-        $invoice=yz_tomedia($db_remark_model->invoice);
-
-        $invoice=substr($invoice,0,-3).'pdf';
-        return $this->successJson('成功', ['invoice'=>$invoice]);
-    }
             //获取订单信息
     public function getData()
     {

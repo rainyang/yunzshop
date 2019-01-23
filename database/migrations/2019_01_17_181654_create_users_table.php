@@ -22,7 +22,7 @@ class CreateUsersTable extends Migration
                 $table->integer('invoice_type');
                 $table->integer('rise_type');
                 $table->string('call');
-                $table->integer('company_number')->default(0);
+                $table->string('company_number')->default(0);
                 $table->string('invoice')->default(0);
             });
         }
