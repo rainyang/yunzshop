@@ -166,7 +166,6 @@ abstract class Credit
      */
     public function cancelConsume(array $data)
     {
-        \Log::debug("cancelConsume",$data);
         $this->source = ConstService::SOURCE_CANCEL_CONSUME;
         return $this->addition($data);
     }
@@ -175,9 +174,7 @@ abstract class Credit
     //加法
     protected function addition($data)
     {
-        \Log::debug("addition",$data);
         if (!isset($data['change_value']) || $data['change_value'] < 0) {
-            \Log::debug("加法".$data['change_value']);
             return '变动值必须是正数';
         }
 
