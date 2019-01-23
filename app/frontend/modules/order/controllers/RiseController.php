@@ -30,7 +30,6 @@ class RiseController extends ApiController
         $invoice=yz_tomedia($db_remark_model->invoice);
 
         $invoice=substr($invoice,0,-3).'pdf';
-        dd($invoice);
         return $this->successJson('成功', ['invoice'=>$invoice]);
     }
             //获取订单信息
