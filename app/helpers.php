@@ -6,7 +6,7 @@ use app\common\services\PermissionService;
 use app\common\helpers\Url;
 use Ixudra\Curl\Facades\Curl;
 
-
+if (!function_exists("yz_tpl_ueditor")) {
     function yz_tpl_ueditor($id, $value = '', $options = array())
     {
         $s = '';
@@ -47,7 +47,7 @@ use Ixudra\Curl\Facades\Curl;
 			UE.registerUI('myinsertimage',function(editor,uiName){
 				editor.registerCommand(uiName, {
 					execCommand:function(){
-						require(['../addons/yun_shop/static/resource/js/app/fileUploader.min.js'], function(uploader){
+						require(['fileUploader'], function(uploader){
 							uploader.show(function(imgs){
 								if (imgs.length == 0) {
 									return;
@@ -135,7 +135,7 @@ use Ixudra\Curl\Facades\Curl;
     });
     return btn;
 }, 20);
-			".(!empty($id) ? "
+			" . (!empty($id) ? "
 				$(function(){
 					var ue = UE.getEditor('{$id}', ueditoroption);
 					$('#{$id}').data('editor', ue);
@@ -144,12 +144,12 @@ use Ixudra\Curl\Facades\Curl;
 							ue.execCommand('source');
 						}
 					});
-				});" : '')."
+				});" : '') . "
 	</script>";
         return $s;
     }
 
-
+}
 if (!function_exists("html_images")) {
 
     function html_images($detail = '')
@@ -238,7 +238,7 @@ function yz_tomedia($src, $local_path = false)
 
     if (strexists($src, 'addons/')) {
         if ($os == \app\common\helpers\Client::OS_TYPE_IOS) {
-            $url_dz =  request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/addons/'));
+            $url_dz = request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/addons/'));
             return 'https:' . substr($url_dz, strpos($url_dz, '//'));
         }
         return request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/addons/'));
@@ -247,7 +247,7 @@ function yz_tomedia($src, $local_path = false)
     $local = strtolower($src);
     if (strexists($src, '/attachment/')) {
         if ($os == \app\common\helpers\Client::OS_TYPE_IOS) {
-            $url_dz =  request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/attachment/'));
+            $url_dz = request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/attachment/'));
             return 'https:' . substr($url_dz, strpos($url_dz, '//'));
         }
         if (strexists($local, 'http://') || strexists($local, 'https://') || substr($local, 0, 2) == '//') {
@@ -278,16 +278,16 @@ function yz_tomedia($src, $local_path = false)
         if ($setting['remote']['type'] == 1) {
             $attachurl_remote = $setting['remote']['ftp']['url'] . '/';
         } elseif ($setting['remote']['type'] == 2) {
-            $attachurl_remote = $setting['remote']['alioss']['url'].'/';
+            $attachurl_remote = $setting['remote']['alioss']['url'] . '/';
         } elseif ($setting['remote']['type'] == 3) {
-            $attachurl_remote = $setting['remote']['qiniu']['url'].'/';
+            $attachurl_remote = $setting['remote']['qiniu']['url'] . '/';
         } elseif ($setting['remote']['type'] == 4) {
-            $attachurl_remote = $setting['remote']['cos']['url'].'/';
+            $attachurl_remote = $setting['remote']['cos']['url'] . '/';
         }
 
         $src = $attachurl_remote . $src;
     }
-    
+
     $src = 'https:' . substr($src, strpos($src, '//'));
 
     return $src;
@@ -612,10 +612,11 @@ if (!function_exists('array_child_kv_exists')) {
     function array_child_kv_exists($array, $childKey, $value)
     {
         $result = false;
+
         if (is_array($array)) {
             foreach ($array as $v) {
                 if (is_array($v) && isset($v[$childKey])) {
-                    $result = $v[$childKey] == $value;
+                    $result += $v[$childKey] == $value;
                 }
             }
         }
@@ -865,28 +866,29 @@ if (!function_exists('tdd')) {
     function tdd()
     {
         global $testDd;
-        if($testDd){
+        if ($testDd) {
             dd(func_get_args());
         }
     }
 
 }
-  /*
-   * 生成一个随机订单号：如果需要唯一性，请自己验证重复调用
-   *
-   * @params string $prefix 标示 SN RV
-   * @params bool $numeric 是否为纯数字
-   *
-   * @return mixed
-   * @Author yitian */
+/*
+ * 生成一个随机订单号：如果需要唯一性，请自己验证重复调用
+ *
+ * @params string $prefix 标示 SN RV
+ * @params bool $numeric 是否为纯数字
+ *
+ * @return mixed
+ * @Author yitian */
 if (!function_exists('createNo')) {
     function createNo($prefix, $length = 6, $numeric = FALSE)
     {
         return $prefix . date('YmdHis') . \app\common\helpers\Client::random($length, $numeric);
     }
 }
-if(!function_exists('yz_array_set')){
-    function yz_array_set(&$array, $key, $value){
+if (!function_exists('yz_array_set')) {
+    function yz_array_set(&$array, $key, $value)
+    {
         $keys = explode('.', $key);
         while (count($keys) > 1) {
             $key = array_shift($keys);

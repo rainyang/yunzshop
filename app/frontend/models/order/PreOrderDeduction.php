@@ -8,6 +8,7 @@
 
 namespace app\frontend\models\order;
 
+use app\common\exceptions\MinOrderDeductionNotEnough;
 use app\common\models\order\OrderDeduction;
 use app\common\models\VirtualCoin;
 use app\frontend\models\MemberCoin;
@@ -15,9 +16,9 @@ use app\frontend\modules\deduction\models\Deduction;
 use app\frontend\modules\deduction\OrderGoodsDeductionCollection;
 use app\frontend\modules\deduction\orderGoods\PreOrderGoodsDeduction;
 use app\frontend\modules\order\models\PreOrder;
-use app\frontend\modules\orderGoods\models\PreOrderGoods;
 
 /**
+ * 订单抵扣类
  * Class PreOrderDeduction
  * @package app\frontend\models\order
  * @property int uid
@@ -28,28 +29,19 @@ use app\frontend\modules\orderGoods\models\PreOrderGoods;
  */
 class PreOrderDeduction extends OrderDeduction
 {
-    /**
-     * @return array
-     */
-    public function toArray()
-    {
-        $this->amount = sprintf('%.2f', $this->amount);
-
-        $this->coin = sprintf('%.2f', $this->coin);
-        return parent::toArray();
-    }
-
     protected $appends = ['checked'];
     /**
      * @var PreOrder
      */
     public $order;
+    /**
+     * @var Deduction
+     */
     private $deduction;
     /**
      * @var MemberCoin
      */
     private $memberCoin;
-    private $virtualCoin;
     /**
      * @var OrderGoodsDeductionCollection
      */
@@ -57,25 +49,74 @@ class PreOrderDeduction extends OrderDeduction
     /**
      * @var VirtualCoin
      */
-    private $useablePoint;
+    private $usablePoint;
 
     /**
-     * PreOrderDeduction constructor.
-     * @param array $attributes
-     * @param $deduction
-     * @param $order
-     * @param $virtualCoin
+     * @param Deduction $deduction
+     * @param PreOrder $order
+     * @param OrderGoodsDeductionCollection $orderGoodsDeductionCollection
      */
-    public function __construct(array $attributes = [], $deduction, $order, $virtualCoin)
+    public function init(
+        Deduction $deduction,
+        PreOrder $order,
+        OrderGoodsDeductionCollection $orderGoodsDeductionCollection)
     {
         $this->deduction = $deduction;
-        $this->virtualCoin = $virtualCoin;
 
         $this->setOrder($order);
-        $this->setOrderGoodsDeductions();
+        $this->setOrderGoodsDeductionCollection($orderGoodsDeductionCollection);
+        $this->orderGoodsDeductionCollection->each(function (PreOrderGoodsDeduction $orderGoodsDeduction) {
+            $orderGoodsDeduction->setOrderDeduction($this);
+        });
+    }
 
-        $this->_init();
-        parent::__construct($attributes);
+    public function getUidAttribute()
+    {
+        return $this->order->uid;
+    }
+
+    public function getCodeAttribute()
+    {
+        return $this->getCode();
+    }
+
+    public function getNameAttribute()
+    {
+        return $this->getName();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCoinAttribute()
+    {
+        return $this->getMinDeduction()->getCoin() + $this->getUsablePoint()->getCoin();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAmountAttribute()
+    {
+        return $this->getAmount();
+    }
+
+    public function getAmount()
+    {
+        return $this->getMinDeduction()->getMoney() + $this->getUsablePoint()->getMoney();
+    }
+
+    public function getOrder()
+    {
+        return $this->order;
+    }
+
+    /**
+     * @return Deduction
+     */
+    public function getDeduction()
+    {
+        return $this->deduction;
     }
 
     /**
@@ -90,20 +131,18 @@ class PreOrderDeduction extends OrderDeduction
      * 下单时此抵扣可选
      * @return bool
      */
-    private function deductible()
+    public function deductible()
     {
-        return $this->getUsablePoint()->getCoin() > 0;
+        return $this->amount > 0;
     }
 
     /**
      * 实例化并绑定所有的订单商品抵扣实例,集合  并将集合绑定在订单抵扣上
+     * @param OrderGoodsDeductionCollection $orderGoodsDeductionCollection
      */
-    private function setOrderGoodsDeductions()
+    private function setOrderGoodsDeductionCollection(OrderGoodsDeductionCollection $orderGoodsDeductionCollection)
     {
-        $orderGoodsDeductionCollection = $this->order->orderGoods->map(function (PreOrderGoods $aOrderGoods) {
-            return new PreOrderGoodsDeduction([], $aOrderGoods, $this, $this->getDeduction());
-        });
-        $this->orderGoodsDeductionCollection = new  OrderGoodsDeductionCollection($orderGoodsDeductionCollection);
+        $this->orderGoodsDeductionCollection = $orderGoodsDeductionCollection;
     }
 
 
@@ -118,30 +157,7 @@ class PreOrderDeduction extends OrderDeduction
         }
         $code = $this->getCode();
 
-        return app('CoinManager')->make('MemberCoinManager')->make($code, $this->order->belongsToMember);
-    }
-
-    /**
-     *
-     */
-    private function _init()
-    {
-        $this->uid = $this->order->uid;
-        $this->coin = $this->getUsablePoint()->getCoin();
-        $this->amount = $this->getUsablePoint()->getMoney();
-        $this->code = $this->getCode();
-        $this->name = $this->getName();
-        if ($this->deductible()) {
-            $this->order->orderDeductions->push($this);
-        }
-    }
-
-    /**
-     * @return Deduction
-     */
-    private function getDeduction()
-    {
-        return $this->deduction;
+        return app('CoinManager')->make('MemberCoinManager')->make($code, [$this->order->belongsToMember]);
     }
 
     /**
@@ -155,53 +171,39 @@ class PreOrderDeduction extends OrderDeduction
 
     /**
      * 订单中实际可用的此抵扣
-     * @return VirtualCoin
+     * @return $this|VirtualCoin
      */
     public function getUsablePoint()
     {
-        if (isset($this->useablePoint)) {
-            return $this->useablePoint;
-        }
-        trace_log()->deduction('开始订单抵扣',"{$this->getName()} 计算可用金额");
+        if (!isset($this->usablePoint)) {
+            trace_log()->deduction('开始订单抵扣', "{$this->getName()} 计算可用金额");
 
-        $result = $this->newCoin();
+            $this->usablePoint = $this->newCoin();
 
-        // 购买者不存在虚拟币记录
-        if (!$this->getMemberCoin()) {
-            trace_log()->deduction('订单抵扣',"{$this->getName()} 用户没有对应虚拟币");
+            // 购买者不存在虚拟币记录
+            if (!$this->getMemberCoin()) {
+                trace_log()->deduction('订单抵扣', "{$this->getName()} 用户没有对应虚拟币");
 
-            return $this->useablePoint = $result;
-        }
-
-
-
-
-        // 商品金额抵扣 不能超过订单除去运费后 使用其他抵扣金额后的价格
-        $deductionAmount = min($this->order->price - $this->order->getDispatchAmount() - $this->getOtherDeductionAmount(), $this->getMaxDeduction()->getMoney());
-        // 抵扣金额 = 商品抵扣金额 + 运费抵扣金额
-        $deductionAmount += $this->getMaxDispatchPriceDeduction()->getMoney();
-
-        // 取(用户可用虚拟币)与(订单抵扣虚拟币)的最小值
-        $amount = min($this->getMemberCoin()->getMaxUsableCoin()->getMoney(), $deductionAmount);
-
-        return $this->useablePoint = $this->newCoin()->setMoney($amount);
-    }
-
-    /**
-     * 订单中已经参与了计算的其他抵扣总金额
-     * todo 修改订单中的获取抵扣金额方法,然后删除这个方法
-     * @return mixed
-     */
-    private function getOtherDeductionAmount()
-    {
-        trace_log()->deduction('订单抵扣',"{$this->getName()} 计算其他抵扣金额");
-
-        return $this->order->orderDeductions->sum(function (PreOrderDeduction $orderDeduction) {
-            if ($orderDeduction->isChecked()) {
-                return $orderDeduction->getUsablePoint()->getMoney();
+                return $this->usablePoint;
             }
-            return 0;
-        });
+
+            // 商品金额抵扣 不能超过订单除去运费后 使用其他抵扣金额后的价格
+
+            $deductionAmount = min($this->order->price - $this->order->getDeductionAmount() - $this->order->dispatch_price, $this->getMaxDeduction()->getMoney() - $this->getMinDeduction()->getMoney());
+
+            // 抵扣金额 = 商品抵扣金额 + 运费抵扣金额
+            $deductionAmount += $this->getMaxDispatchPriceDeduction()->getMoney();
+            trace_log()->deduction("订单抵扣", "{$this->name} 订单可抵扣{$deductionAmount}元");
+            trace_log()->deduction("订单抵扣", "{$this->name} 用户{$this->usablePoint->getName()}可抵扣{$this->getMemberCoin()->getMaxUsableCoin()->getMoney()}元");
+            // 用户可用虚拟币-最低抵扣 与订单抵扣虚拟币的最小值  todo 如果以后需要一种抵扣币抵扣两次时,会产生bug
+
+            $amount = min($this->getMemberCoin()->getMaxUsableCoin()->getMoney() - $this->getMinDeduction()->getMoney(), $deductionAmount);
+
+            $this->usablePoint = $this->newCoin()->setMoney($amount);
+            trace_log()->deduction("订单抵扣", "{$this->name} 可抵扣{$this->usablePoint->getMoney()}元");
+        }
+
+        return $this->usablePoint;
     }
 
     /**
@@ -216,17 +218,44 @@ class PreOrderDeduction extends OrderDeduction
     }
 
     /**
+     * @var VirtualCoin
+     */
+    private $maxDeduction;
+
+    /**
      * 订单中此抵扣可用最大值
      * @return VirtualCoin
      */
     private function getMaxDeduction()
     {
-        trace_log()->deduction('订单抵扣',"{$this->getName()} 计算最大抵扣");
+        if (!isset($this->maxDeduction)) {
 
-        $result =  $this->getMaxOrderGoodsDeduction();
+            $this->maxDeduction = $this->getMaxOrderGoodsDeduction();
+            trace_log()->deduction('订单抵扣', "{$this->getName()} 计算最大抵扣{$this->maxDeduction}");
+        }
 
-        return $result;
+        return $this->maxDeduction;
 
+    }
+
+    /**
+     * @var VirtualCoin
+     */
+    private $minDeduction;
+
+    /**
+     * 订单中此抵扣可用最小值
+     * @return VirtualCoin
+     */
+    public function getMinDeduction()
+    {
+        if (!isset($this->minDeduction)) {
+            $this->minDeduction = $this->getMinOrderGoodsDeduction();
+            trace_log()->deduction('订单抵扣', "{$this->getName()} 计算最小抵扣{$this->minDeduction->getMoney()}元");
+
+        }
+
+        return $this->minDeduction;
     }
 
     /**
@@ -237,6 +266,16 @@ class PreOrderDeduction extends OrderDeduction
     public function getMaxOrderGoodsDeduction()
     {
         return $this->getOrderGoodsDeductionCollection()->getUsablePoint();
+    }
+
+    /**
+     * 最低抵扣商品金额的虚拟币
+     * 累加所有订单商品的可用虚拟币
+     * @return VirtualCoin
+     */
+    public function getMinOrderGoodsDeduction()
+    {
+        return $this->getOrderGoodsDeductionCollection()->getMinPoint();
     }
 
     /**
@@ -292,33 +331,85 @@ class PreOrderDeduction extends OrderDeduction
         return $this->isChecked();
     }
 
+    private $isChecked;
+
+    public function setChecked()
+    {
+        $this->isChecked = true;
+    }
+
+    /**
+     * 必须选中
+     * @return bool
+     */
+    public function mustBeChecked()
+    {
+        // 设置了最低抵扣必须选中
+        return $this->getMinDeduction()->getMoney() > 0;
+    }
+
     /**
      * 选择了此抵扣
      * @return bool
      */
     public function isChecked()
     {
-        $deduction_codes = $this->order->getParams('deduction_ids');
+        if (!isset($this->isChecked)) {
+            if ($this->mustBeChecked()) {
+                // 必须选中
+                $this->isChecked = true;
+            } else {
+                // 用户选中
+                $deduction_codes = $this->order->getParams('deduction_ids');
 
-        if (!is_array($deduction_codes)) {
-            $deduction_codes = json_decode($deduction_codes, true);
-            if (!is_array($deduction_codes)) {
-                $deduction_codes = explode(',', $deduction_codes);
+                if (!is_array($deduction_codes)) {
+                    $deduction_codes = json_decode($deduction_codes, true);
+                    if (!is_array($deduction_codes)) {
+                        $deduction_codes = explode(',', $deduction_codes);
+                    }
+                }
+                $this->isChecked = in_array($this->getCode(), $deduction_codes);
             }
         }
-
-        return in_array($this->getCode(), $deduction_codes);
+        return $this->isChecked;
     }
 
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        $this->code = (string)$this->code;
+        $this->name = (string)$this->name;
+        $this->amount = sprintf('%.2f', $this->amount);
+        $this->coin = sprintf('%.2f', $this->coin);
+        return parent::toArray();
+    }
+
+    /**
+     * @return bool
+     */
     public function beforeSaving()
     {
         if (!$this->isChecked() || $this->getOrderGoodsDeductionCollection()->getUsablePoint() <= 0) {
-            // todo 应该返回什么
             return false;
         }
-        $this->getMemberCoin()->consume($this->getUsablePoint(), ['order_sn' => $this->order->order_sn]);
-
-        return parent::beforeSaving(); // TODO: Change the autogenerated stub
+        $this->getMemberCoin()->consume($this->newCoin()->setMoney($this->amount), ['order_sn' => $this->order->order_sn]);
+        $this->code = (string)$this->code;
+        $this->name = (string)$this->name;
+        $this->amount = sprintf('%.2f', $this->amount);
+        $this->coin = sprintf('%.2f', $this->coin);
+        return parent::beforeSaving();
     }
 
+    /**
+     * @throws MinOrderDeductionNotEnough
+     */
+    public function validateCoin()
+    {
+        // 验证最低抵扣大于可用抵扣
+        if ($this->getMemberCoin()->getMaxUsableCoin()->getMoney() < $this->getMinDeduction()->getMoney()) {
+            throw new MinOrderDeductionNotEnough("订单[{$this->getName()}]可抵扣金额{$this->getUsablePoint()->getMoney()}元,不满足最低抵扣金额{$this->getMinDeduction()->getMoney()}元");
+        }
+    }
 }

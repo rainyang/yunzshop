@@ -431,7 +431,6 @@ class MemberModel extends Member
         $member_info = self::getMyReferrerInfo($member_id)->first();
         $unicid = \YunShop::app()->uniacid;
         $set = \Setting::get('shop.member');
-        $memberSet = \Setting::get('relation_base');
         $data = [];
         $member_set = \Setting::get('relation_base');
 
@@ -457,7 +456,7 @@ class MemberModel extends Member
                         'avatar' => $info['avatar'],
                         'nickname' => $info['nickname'],
                         'level' => $info['yz_member']['level']['level_name'],
-                        'is_show' => $memberSet['is_referrer']?:0,
+                        'is_show' => $member_set['is_referrer']?:0,
 //                        'role'   => $member_role
                     ];
                 } else {
@@ -466,7 +465,7 @@ class MemberModel extends Member
                         'avatar' => $avatar,
                         'nickname' => '总店',
                         'level' => '',
-                        'is_show' => $memberSet['is_referrer']?:0,
+                        'is_show' => $member_set['is_referrer']?:0,
 //                        'role'   => $member_role
                     ];
                 }
@@ -476,7 +475,7 @@ class MemberModel extends Member
                     'avatar' => $avatar,
                     'nickname' => '暂无',
                     'level' => '',
-                    'is_show' => $memberSet['is_referrer']?:0,
+                    'is_show' => $member_set['is_referrer']?:0,
 //                    'role'   => $member_role
                 ];
             }
@@ -1151,5 +1150,19 @@ class MemberModel extends Member
         }
 
         return false;
+    }
+
+    /**
+     * 获取我的下线全部(包含为确定的)
+     *
+     * @return mixed
+     */
+    public static function getAgentCount_v2($uid)
+    {
+        return self::uniacid()
+            ->whereHas('yzMember', function($query) use ($uid){
+                $query->where('parent_id', $uid);
+            })
+            ->count();
     }
 }

@@ -148,11 +148,24 @@
                                 </label>
                                 <label class="radio radio-inline">
                                     <input type="radio" name="member[is_bind_mobile]" value="1"
-                                           @if ($set['is_bind_mobile'] == 1) checked @endif/> 是
+                                           @if ($set['is_bind_mobile'] == 1) checked @endif/> 全局强制绑定
                                 </label>
-                                <span class="help-block">进入商城是否强制绑定手机号</span>
+                                <label class="radio radio-inline">
+                                    <input type="radio" name="member[is_bind_mobile]" value="2"
+                                           @if ($set['is_bind_mobile'] == 2) checked @endif/> 会员中心强制绑定
+                                </label>
+                                <label class="radio radio-inline">
+                                    <input type="radio" name="member[is_bind_mobile]" value="3"
+                                           @if ($set['is_bind_mobile'] == 3) checked @endif/> 商品页面强制绑定
+                                </label>
+                                <label class="radio radio-inline">
+                                    <input type="radio" name="member[is_bind_mobile]" value="4"
+                                           @if ($set['is_bind_mobile'] == 4) checked @endif/> 推广中心页面强制绑定
+                                </label>
+                                <span class="help-block">进入商城是否强制绑定手机号，指定页面才强制绑定手机</span>
                             </div>
                         </div>
+                        <!--
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员中心显示推荐人</label>
                             <div class="col-sm-9 col-xs-12">
@@ -167,7 +180,7 @@
                                 <span class="help-block">会员中心显示推荐人</span>
                             </div>
                         </div>
-
+                        -->
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员中心显示余额</label>
                             <div class="col-sm-9 col-xs-12">

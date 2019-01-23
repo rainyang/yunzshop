@@ -268,7 +268,14 @@ return [
             '昵称', '时间','会员等级','过期时间'
         ]
     ],
-    
+    'consumption_points' => [
+        'title' => '消费积分【变动通知】',
+        'subtitle' => '消费积分变动通知',
+        'value' => 'consumption_points',
+        'param' => [
+            '昵称', '时间','业务类型','变动数量','当前剩余值'
+        ]
+    ],
 
     /*$data = [
         [

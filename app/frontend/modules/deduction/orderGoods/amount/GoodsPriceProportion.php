@@ -15,9 +15,16 @@ namespace app\frontend\modules\deduction\orderGoods\amount;
  */
 class GoodsPriceProportion extends OrderGoodsDeductionAmount
 {
-    public function getAmount()
+    public function getMaxAmount()
     {
-        $result = $this->getGoodsDeduction()->getPriceProportion() * $this->orderGoods->price / 100;
+        $result = $this->getGoodsDeduction()->getMaxPriceProportion() * $this->orderGoods->price / 100;
+
+        return max($result,0);
+    }
+
+    public function getMinAmount()
+    {
+        $result = $this->getGoodsDeduction()->getMinPriceProportion() * $this->orderGoods->price / 100;
 
         return max($result,0);
     }

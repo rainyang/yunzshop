@@ -30,8 +30,7 @@ class OrderSend extends ChangeStatusOperation
 
         if ($this->dispatch_type_id == DispatchType::EXPRESS) {
             //实体订单
-            $order_id = request()->input('order_id');
-
+            $order_id = request()->input('order_id');   
             $db_express_model = Express::where('order_id', $order_id)->first();
 
             !$db_express_model && $db_express_model = new Express();

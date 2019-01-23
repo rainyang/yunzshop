@@ -76,6 +76,7 @@
                                             <div class="form-group notice" id="goods_name">
                                                 <div >
                                                     <div class='input-group'>
+                                                        <input type="hidden" id="plugin_id" name="plugin_id" value="@if(!empty($list['plugin_id'])) {{$list['plugin_id']}} @else 0 @endif">
                                                         <input type="text" name="search[ambiguous][name]" maxlength="30" value="{{array_get($requestSearch,'ambiguous.name','')}}" id="saler" class="form-control" readonly />
                                                         <div class='input-group-btn'>
                                                             <button class="btn btn-default" type="button" onclick="popwin = $('#modal-module-menus-notice').modal();">选择商品</button>
@@ -397,7 +398,8 @@
             }
             $("#module-menus-notice").html("正在搜索....");
             $.get("{!! yzWebUrl('goods.goods.search-order') !!}", {
-                keyword: $.trim($('#search-kwd-notice').val())
+                keyword: $.trim($('#search-kwd-notice').val()),
+                plugin_id : $.trim($('#plugin_id').val()),
             }, function (dat) {
                 $('#module-menus-notice').html(dat);
             });
