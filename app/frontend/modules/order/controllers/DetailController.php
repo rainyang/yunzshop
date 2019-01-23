@@ -41,15 +41,16 @@ class DetailController extends ApiController
         $invoice=Order::getInvoice($orderId);
 
         if (is_null($order)) {
-            throw new AppException('该订单查询失败');
+           // throw new AppException('该订单查询失败');
         }
         $data = $order->toArray();
+        $invoice->invoice = ("0" != $invoice->invoice) ? 1 : 0;
         $data['invoice_type'] =$invoice->invoice_type;
         $data['rise_type'] =$invoice->rise_type;
         $data['call'] =$invoice->call;
         $data['company_number'] =$invoice->company_number;
+        $data['invoice_state'] = $invoice->invoice;
         $backups_button = $data['button_models'];
-
 
         $data['address_info'] = OrderAddress::select('address', 'mobile', 'realname')->where('order_id', $order['id'])->first()?:[];
 

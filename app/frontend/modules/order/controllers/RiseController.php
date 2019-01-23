@@ -24,29 +24,5 @@ class RiseController extends ApiController
         return $this->successJson('成功', ['invoice'=>$invoice]);
 
     }
-            //获取订单信息
-    public function getData()
-    {
-        $db_remark_model = Order::select('call','order_sn','invoice_type','invoice')->where('id', \YunShop::request()->order_id)->first();
-        if (!$db_remark_model){
-            return $this->errorJson("失败");
-        }
-        $db_remark_model->invoice= ("0" != $db_remark_model->invoice) ? 1 : 0;
-        $date=[
-            'call'=>$db_remark_model->call,
-            'order_sn'=>$db_remark_model->order_sn,
-            'invoice_type'=>$db_remark_model->invoice_type,
-            'state'=>$db_remark_model->invoice
-        ];
-        return $this->successJson('ok', $date);
-    }
-
-    public function isState()
-    {
-        $db_remark_model = Order::select('call')->where('id', \YunShop::request()->order_id)->first();
-
-            return $db_remark_model->invoice;
-
-    }
 
 }
