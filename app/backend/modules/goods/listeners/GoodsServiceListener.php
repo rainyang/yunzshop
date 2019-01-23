@@ -37,6 +37,8 @@ class GoodsServiceListener
 
             $goods = Goods::select(['id', 'status'])->whereHas('hasOneGoodsService', function ($query) {
                 return $query->where('is_automatic', 1);
+            })->whereHas('hasOneGoodsLimitBuy', function ($q) {
+                return $q->where('status', 0);
             })->with(['hasOneGoodsService' => function ($query2) {
                 return $query2->select(['goods_id', 'on_shelf_time', 'lower_shelf_time']);
             }])->get();
