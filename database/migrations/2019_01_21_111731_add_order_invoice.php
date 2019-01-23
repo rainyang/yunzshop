@@ -20,7 +20,7 @@ class AddOrderInvoice extends Migration
 
                     $table->integer('invoice_type');
                     $table->integer('rise_type');
-                    $table->string('call');
+                    $table->string('call')->default(0);
                     $table->integer('company_number')->default(0);
                     $table->string('invoice')->default(0);
                 });
