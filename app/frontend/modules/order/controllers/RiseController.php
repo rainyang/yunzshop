@@ -31,8 +31,8 @@ class RiseController extends ApiController
         if (!$db_remark_model){
             return $this->errorJson("失败");
         }
-        $db_remark_model->invoice= 0==$db_remark_model->invoice ? 0 : 1;
-
+        $db_remark_model->invoice= "0" == $db_remark_model->invoice ? 0 : 1;
+        dd($db_remark_model->invoice);
         $date=[
             'call'=>$db_remark_model->call,
             'order_sn'=>$db_remark_model->order_sn,
