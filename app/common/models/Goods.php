@@ -532,9 +532,9 @@ class Goods extends BaseModel
      * 获取商品名称
      * @return html
     */
-    public static function getSearchOrder()
+    public static function getSearchOrder($keyword,$pluginId)
     {
-        $keyword = \YunShop::request()->keyword;
-        return Goods::select(['id','title', 'thumb', 'plugin_id'])->pluginId()->where('title', 'like', '%'.$keyword.'%')->get();
+//        $keyword = \YunShop::request()->keyword;
+        return Goods::select(['id','title', 'thumb', 'plugin_id'])->pluginId($pluginId)->where('title', 'like', '%'.$keyword.'%')->get();
     }
 }

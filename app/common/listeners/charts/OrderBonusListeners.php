@@ -20,6 +20,7 @@ use app\Jobs\OrderBonusUpdateJob;
 use app\Jobs\OrderCountContentJob;
 use app\Jobs\OrderCountIncomeJob;
 use app\Jobs\OrderCountStatusJob;
+use app\Jobs\OrderMemberMonthJob;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use app\common\models\Order;
 
@@ -65,6 +66,7 @@ class OrderBonusListeners
 
     public function updateBonus(AfterOrderReceivedEvent $event)
     {
+        $this->dispatch(new OrderMemberMonthJob($event->getOrderModel()));
         $this->dispatch(new OrderBonusStatusJob($event->getOrderModel()->id));
         $this->dispatch((new OrderCountIncomeJob($event->getOrderModel()->id))->delay(10));
     }

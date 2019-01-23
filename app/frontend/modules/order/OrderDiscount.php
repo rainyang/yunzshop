@@ -11,8 +11,6 @@ namespace app\frontend\modules\order;
 use app\frontend\models\order\PreOrderDiscount;
 use app\frontend\modules\order\discount\BaseDiscount;
 use app\frontend\modules\order\discount\CouponDiscount;
-use app\frontend\modules\order\discount\EnoughReduce;
-use app\frontend\modules\order\discount\SingleEnoughReduce;
 use app\frontend\modules\order\models\PreOrder;
 use Illuminate\Support\Collection;
 
@@ -52,12 +50,9 @@ class OrderDiscount
         if (!isset($this->discounts)) {
             $this->discounts = collect();
             // todo 未开启的和金额为0的优惠项是否隐藏
-            //单品满减
-            $this->discounts->put('singleEnoughReduce', new SingleEnoughReduce($this->order));
-            //全场满减
-            $this->discounts->put('enoughReduce', new EnoughReduce($this->order));
-            //优惠券
-            $this->discounts->put('couponDiscount', new CouponDiscount($this->order));
+            foreach (config('shop-foundation.order-discount') as $configItem) {
+                $this->discounts->put($configItem['key'], call_user_func($configItem['class'], $this->order));
+            }
 
             $this->setOrderDiscounts();
 
