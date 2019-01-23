@@ -69,9 +69,9 @@ abstract class OrderOperation extends Order
     private function check()
     {
         $event = $this->getBeforeEvent();
-        \Log::info('---event---', $event);
+        // \Log::info('---event---', $event);
         event($event);
-        \Log::info('--refund_id--', $this->refund_id);
+        // \Log::info('--refund_id--', $this->refund_id);
 
         if ($this->refund_id > 0) {
             if ($this->hasOneRefundApply->isRefunding()) {
@@ -79,7 +79,7 @@ abstract class OrderOperation extends Order
 
             }
         }
-        \Log::info('--status--', [$this->status, $this->statusBeforeChange]);
+        // \Log::info('--status--', [$this->status, $this->statusBeforeChange]);
         if (!in_array($this->status, $this->statusBeforeChange)) {
             throw new AppException("订单状态不满足{$this->name}操作");
 

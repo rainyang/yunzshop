@@ -64,7 +64,7 @@ class OrderAddress extends BaseModel
             'province_id'=> 'required',
             'city_id'=> 'required',
             'district_id'=> 'required',
-            'zipcode'=> 'required'
+            // 'zipcode'=> ''
         ];
 
         return $rule;
