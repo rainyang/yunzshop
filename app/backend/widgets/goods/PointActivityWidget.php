@@ -18,9 +18,11 @@ class PointActivityWidget extends Widget
     {
         $goods_id = request()->id;
         $data = GoodsPointActivity::getDataByGoodsId($goods_id);
+        $is_open = app('plugins')->isEnabled('point-activity');
 
         return view('goods.widgets.point_activity', [
-            'data' => $data
+            'data' => $data,
+            'is_open' => $is_open,
         ])->render();
     }
 }

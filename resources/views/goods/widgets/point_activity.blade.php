@@ -1,3 +1,4 @@
+@if($is_open == 1)
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">积分活动奖励</label>
     <div class="col-sm-9 col-xs-12">
@@ -11,3 +12,4 @@
         </label>
     </div>
 </div>
+@endif
