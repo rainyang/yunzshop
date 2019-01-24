@@ -8,6 +8,7 @@
 
 namespace app\frontend\modules\finance\deduction\deductionSettings;
 
+use app\framework\Support\Facades\Log;
 use app\frontend\models\Goods;
 use app\frontend\modules\deduction\DeductionSettingInterface;
 
@@ -31,6 +32,7 @@ class PointGoodsDeductionSetting implements DeductionSettingInterface
 // todo 这个方法应该放在订单抵扣设置中
     public function isEnableDeductDispatchPrice()
     {
+        Log::debug("监听订单抵扣设置",\Setting::get('point.set.point_freight'));
         return \Setting::get('point.set.point_freight');
     }
 
