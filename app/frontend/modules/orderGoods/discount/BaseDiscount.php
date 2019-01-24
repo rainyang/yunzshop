@@ -10,7 +10,7 @@ namespace app\frontend\modules\orderGoods\discount;
 
 use app\frontend\models\orderGoods\PreOrderGoodsDiscount;
 use app\frontend\modules\order\models\PreOrder;
-use app\frontend\modules\orderGoods\models\PreOrderGoods;
+use app\common\modules\orderGoods\models\PreOrderGoods;
 
 abstract class BaseDiscount
 {

@@ -13,6 +13,7 @@ use app\common\helpers\Cache;
 use app\common\helpers\Url;
 use app\common\facades\Setting;
 use app\common\models\AccountWechats;
+use app\common\models\MemberLevel;
 use app\common\models\notice\MessageTemp;
 use app\common\modules\refund\services\RefundService;
 use app\common\services\MyLink;
@@ -31,6 +32,7 @@ class ShopController extends BaseController
     public function index()
     {
         $shop = Setting::get('shop.shop');
+        $level = MemberLevel::get(['id','level_name']);
         $requestModel = \YunShop::request()->shop;
         \Log::debug('data', $requestModel);
         if ($requestModel) {
@@ -46,7 +48,8 @@ class ShopController extends BaseController
         }
 
         return view('setting.shop.shop', [
-            'set' => $shop
+            'set' => $shop,
+            'level' => $level
         ])->render();
     }
 
@@ -370,7 +373,7 @@ class ShopController extends BaseController
     }
 
 
-    private function upload($fileinput)
+    private function  upload($fileinput)
     {
         $valid_ext = ['pem'];
 

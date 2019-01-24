@@ -139,7 +139,7 @@ class CommentController extends ApiController
             return $this->errorJson('回复评论失败!未检测到评论内容!');
         }
 
-        if (isset($comment['images']) && is_array($comment['images'])) {
+        if (isset($comment['images'] ) && is_array($comment['images'])) {
             $comment['images'] = serialize($comment['images']);
         } else {
             $comment['images'] = serialize([]);

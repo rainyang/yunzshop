@@ -82,6 +82,17 @@ abstract class Credit
     }
 
     /**
+     * 转让收入接口
+     * @param array $data
+     * @return string
+     */
+    public function recipient(array $data)
+    {
+        $this->source = ConstService::SOURCE_TRANSFER;
+        return $this->addition($data);
+    }
+
+    /**
      * 抵扣接口
      * @param array $data
      * @return string

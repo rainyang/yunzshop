@@ -25,7 +25,7 @@ class GoodsDeductionManager extends Container
         /**
          * 积分抵扣设置模型
          */
-        $this->bind('point', function ($deductionSettingManager, Goods $goods) {
+        $this->bind('point', function ($deductionSettingManager, $params) {
             /**
              * @var DeductionSettingManagerInterface $aDeductionSettingManager
              */
@@ -33,7 +33,7 @@ class GoodsDeductionManager extends Container
             /**
              * @var PointDeductionSettingManager $aDeductionSettingManager
              */
-            $deductionSettingCollection = $aDeductionSettingManager->getDeductionSettingCollection($goods);
+            $deductionSettingCollection = $aDeductionSettingManager->getDeductionSettingCollection($params[0]);
             return new PointGoodsDeduction($deductionSettingCollection);
         });
     }

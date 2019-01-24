@@ -84,7 +84,10 @@ class MessageService
             return false;
         }
 
-        $memberModel = Member::whereUid($member_id)->first();
+        $memberModel = Member::whereUid($member_id)->with([
+            'hasOneFans' => function($q) {
+                $q->uniacid();
+            }])->first();
 
         if (!isset($memberModel)) {
             \Log::error("微信消息推送：未找到uid:{$member_id}的用户");

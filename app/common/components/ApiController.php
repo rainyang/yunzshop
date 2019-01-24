@@ -9,7 +9,9 @@
 namespace app\common\components;
 
 use app\backend\modules\member\models\MemberRelation;
-use app\common\exceptions\AppException;
+use app\common\exceptions\MemberNotLoginException;
+use app\common\exceptions\ShopException;
+use app\common\exceptions\UniAccountNotFoundException;
 use app\common\helpers\Client;
 use app\common\helpers\Url;
 use app\common\models\Member;
@@ -24,18 +26,21 @@ class ApiController extends BaseController
     protected $publicAction = [];
     protected $ignoreAction = [];
 
+    /**
+     * @throws ShopException
+     * @throws UniAccountNotFoundException
+     */
     public function preAction()
     {
         parent::preAction();
-
-        if(!UniAccount::checkIsExistsAccount(\YunShop::app()->uniacid)){
-            return $this->errorJson('无此公众号', ['login_status' => -2]);
+        if (!UniAccount::checkIsExistsAccount(\YunShop::app()->uniacid)) {
+            throw new UniAccountNotFoundException('无此公众号', ['login_status' => -2]);
         }
 
         $relaton_set = MemberRelation::getSetInfo()->first();
 
-        $type  = \YunShop::request()->type;
-        $mid   = Member::getMid();
+        $type = \YunShop::request()->type;
+        $mid = Member::getMid();
 
         if (self::is_alipay() && $type != 8) {
             $type = 8;
@@ -45,8 +50,8 @@ class ApiController extends BaseController
         }
 
         if (!MemberService::isLogged()) {
-            if (($relaton_set->status == 1 && !in_array($this->action,$this->ignoreAction))
-                || ($relaton_set->status == 0 && !in_array($this->action,$this->publicAction))
+            if (($relaton_set->status == 1 && !in_array($this->action, $this->ignoreAction))
+                || ($relaton_set->status == 0 && !in_array($this->action, $this->publicAction))
             ) {
                 $this->jumpUrl($type, $mid);
             }
@@ -62,7 +67,7 @@ class ApiController extends BaseController
             }
 
             if (MemberShopInfo::isBlack(\YunShop::app()->getMemberId())) {
-                return $this->errorJson('黑名单用户，请联系管理员', ['login_status' => -1]);
+                throw new ShopException('黑名单用户，请联系管理员', ['login_status' => -1]);
             }
 
             //发展下线
@@ -76,6 +81,11 @@ class ApiController extends BaseController
         }
         return false;
     }
+    /**
+     * @param $type
+     * @param $mid
+     * @throws ShopException
+     */
     private function jumpUrl($type, $mid)
     {
         if (empty($type) || $type == 'undefined') {
@@ -84,18 +94,12 @@ class ApiController extends BaseController
         $queryString = ['type'=>$type,'session_id'=>session_id(), 'i'=>\YunShop::app()->uniacid, 'mid'=>$mid];
 
         if (5 == $type || 7 == $type) {
-            return $this->errorJson('',['login_status'=> 1,'login_url'=>'', 'type'=>$type,'session_id'=>session_id(), 'i'=>\YunShop::app()->uniacid, 'mid'=>$mid]);
+            throw new MemberNotLoginException('请登录', ['login_status' => 1, 'login_url' => '', 'type' => $type, 'session_id' => session_id(), 'i' => \YunShop::app()->uniacid, 'mid' => $mid]);
         }
 
-//        return $this->errorJson('',['login_status'=> 0,'login_url'=>Url::absoluteApi('member.login.index', $queryString)]);
-        return $this->errorJsonExit($queryString);
+        throw new MemberNotLoginException('请登录', ['login_status' => 0, 'login_url' => Url::absoluteApi('member.login.index', $queryString)]);
     }
 
-    private function errorJsonExit($queryString)
-    {
-        $this->errorJson('',['login_status'=> 0,'login_url'=>Url::absoluteApi('member.login.index', $queryString)]);
 
-        exit;
-    }
 
 }

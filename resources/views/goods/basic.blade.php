@@ -37,7 +37,7 @@
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">品牌</label>
     <div class="col-sm-9 col-xs-12">
-        <select name="goods[brand_id]" id="brand" >
+        <select name="goods[brand_id]" id="brand" style="width:95%">
             <option value="0">请选择品牌</option>
             @if (!empty($brands))
             @foreach ($brands as $brand)
@@ -52,8 +52,22 @@
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">商品类型</label>
     <div class="col-sm-9 col-xs-12">
          <div style="float: left" id="ttttype">
-            <label for="isshow3" class="radio-inline"><input type="radio" name="goods[type]" value="1" id="isshow3" @if (empty($goods['type']) || $goods['type'] == 1) checked="true" @endif onclick="$('#product').show();$('#type_virtual').hide();$('#divdeposit').hide();" /> 实体商品</label>
-            <label for="isshow4" class="radio-inline"><input type="radio" name="goods[type]" value="2" id="isshow4"  @if ($goods['type'] == 2) checked="true" @endif  onclick="$('#product').hide();$('#type_virtual').hide();$('#divdeposit').hide()" /> 虚拟商品</label>
+             {{-- 2019-01-16 删 onclick="$('#product').show();$('#type_virtual').hide();$('#divdeposit').hide();--}}
+            <label for="isshow3" class="radio-inline"><input type="radio" name="goods[type]" value="1" id="isshow3" @if (empty($goods['type']) || $goods['type'] == 1) checked="true" @endif
+                onclick="$('#need_address_idx').hide();$(':radio[name=\'goods[need_address]\'][value=\'0\']').prop('checked', true);" />
+                实体商品
+            </label>
+            <label for="isshow4" class="radio-inline"><input type="radio" name="goods[type]" value="2" id="isshow4"  @if ($goods['type'] == 2) checked="true" @endif  onclick="$('#need_address_idx').show();" /> 虚拟商品</label>
+        </div>
+    </div>
+</div>
+
+<div id="need_address_idx" class="form-group" @if ($goods['type'] != 2) style="display: none"  @endif>
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">下单是否需要地址</label>
+    <div class="col-sm-9 col-xs-12">
+        <div style="float: left">
+            <label class="radio-inline"><input type="radio" name="goods[need_address]" value="0" @if (empty($goods['need_address']) || $goods['need_address'] == 0) checked="true" @endif onclick="" /> 需要地址</label>
+            <label class="radio-inline"><input type="radio" name="goods[need_address]" value="1" @if ($goods['need_address'] == 1) checked="true" @endif  onclick="" /> 不需要地址</label>
         </div>
 
     </div>
@@ -117,7 +131,8 @@
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">首图视频</label>
     <div class="col-sm-9  col-md-6 col-xs-12">
 
-        {!! tpl_form_field_video('widgets[video][goods_video]',$goods->hasOneGoodsVideo->goods_video) !!}
+        {!! app\common\helpers\ImageHelper::tplFormFieldVideo('widgets[video][goods_video]', $goods->hasOneGoodsVideo->goods_video) !!}
+        {{--{!! tpl_form_field_video('widgets[video][goods_video]',$goods->hasOneGoodsVideo->goods_video) !!}--}}
             <span class="help-block">设置后商品详情首图默认显示视频，建议时长9-30秒</span>
            
     </div>

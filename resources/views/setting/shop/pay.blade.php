@@ -1,4 +1,5 @@
 @extends('layouts.base')
+@section('title', trans('基础设置'))
 
 @section('content')
     <div class="w1200 m0a">
