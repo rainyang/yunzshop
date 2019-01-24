@@ -97,6 +97,14 @@
     <div class="col-sm-9 col-xs-12">
         {!! app\common\helpers\ImageHelper::tplFormFieldImage('basic-detail[invoice]', $order['invoice']) !!}
     </div>
+
+</div>
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+    <div class="col-sm-9 col-xs-12">
+        <br/>
+        <button name='saveremark' onclick="sub()" class='btn btn-default'>保存发票</button>
+    </div>
 </div>
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">用户备注 :</label>
