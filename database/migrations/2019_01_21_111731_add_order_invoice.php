@@ -18,8 +18,8 @@ class AddOrderInvoice extends Migration
             if (!Schema::hasColumn('yz_order', 'invoice')) {
                 Schema::table('yz_order', function (Blueprint $table) {
 
-                    $table->integer('invoice_type');
-                    $table->integer('rise_type');
+                    $table->integer('invoice_type')->nullable();
+                    $table->integer('rise_type')->nullable();
                     $table->string('call')->default(0);
                     $table->integer('company_number')->default(0);
                     $table->string('invoice')->default(0);
