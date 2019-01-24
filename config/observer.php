@@ -51,11 +51,6 @@ return [
             'function_validator'=>'relationValidator',
             'function_save'=>'relationSave'
         ],
-        'point_activity'=>[
-            'class'=>'app\backend\modules\goods\models\PointActivity',
-            'function_validator'=>'relationValidator',
-            'function_save'=>'relationSave'
-        ],
         'service'=>[
             'class'=>'app\backend\modules\goods\models\GoodsService',
             'function_validator'=>'relationValidator',
