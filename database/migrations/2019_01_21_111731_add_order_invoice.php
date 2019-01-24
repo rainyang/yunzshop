@@ -36,7 +36,7 @@ class AddOrderInvoice extends Migration
     public function down()
     {
         if (Schema::hasTable('yz_order')) {
-            if (Schema::hasColumn('invoice_type', 'rise_type','company_number','call','invoice')) {
+            if (Schema::hasColumn('yz_order', 'invoice')) {
                 Schema::table('yz_order', function (Blueprint $table) {
                     $table->dropColumn('invoice_type');
                     $table->dropColumn('rise_type');
@@ -44,7 +44,7 @@ class AddOrderInvoice extends Migration
                     $table->dropColumn('company_number');
                     $table->dropColumn('invoice');
                 });
-            }
+           }
         }
         //
     }
