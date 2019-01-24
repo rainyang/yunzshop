@@ -22,7 +22,7 @@ class PointShopDeductionSetting implements DeductionSettingInterface
     // todo 将运费抵扣分离出去
     public function isEnableDeductDispatchPrice()
     {
-        \Log::debug("监听抵扣状态",\Setting::get('point.set.point_freight'));
+        Log::debug("监听抵扣状态",\Setting::get('point.set.point_freight'));
         return \Setting::get('point.set.point_freight');
     }
 
