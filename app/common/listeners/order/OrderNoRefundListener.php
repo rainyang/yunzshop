@@ -13,12 +13,18 @@ use app\common\events\order\AfterOrderCreatedEvent;
 
 class OrderNoRefundListener
 {
-    public function handle(AfterOrderCreatedEvent $event)
+    protected $orderModel;
+
+    public function subscribe($event)
     {
-        $orderModel = $event->getOrderModel();
-        $order = Order::find($orderModel->id);
-        $order->no_refund = $this->isNotRefund($order);
-        $order->save();
+        $event->listen(AfterOrderCreatedEvent::class, OrderNoRefundListener::class. '@noRefund');
+    }
+
+    public function noRefund(AfterOrderCreatedEvent $event)
+    {
+        $orderModel = Order::find($event->getOrderModel()->id);
+        $orderModel->no_refund = $this->isNotRefund($orderModel);
+        $orderModel->save();
     }
 
     public function isNotRefund($order)
