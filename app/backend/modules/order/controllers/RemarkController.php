@@ -15,36 +15,28 @@ use app\common\models\Order;
 
 class RemarkController extends BaseController
 {
-    public function updateRemark()
+    public function index()
     {
-        if (\YunShop::app()->ispost) {
-            $db_remark_model = Remark::where('order_id', \YunShop::request()->order_id)->first();
-            if (!$db_remark_model) {
-                Remark::create(
-                    [
-                        'order_id' => \YunShop::request()->order_id,
-                        'remark' => \YunShop::request()->remark
-                    ]
-                );
-                show_json(1);
+        $order = Order::find(request()->input('order_id'));
+        if(!$order){
+            throw new AppException("未找到该订单".request()->input('order_id'));
+        }
+        if(request()->has('remark')){
+            $remark = $order->hasOneOrderRemark;
+            if (!$remark) {
+                $remark = new Remark([
+                    'order_id' => request()->input('order_id'),
+                    'remark' => request()->input('remark')
+                ]);
             }
+            if(!$remark->save()){
+                return $this->errorJson();
+            }
+        }
+        //(new \app\common\services\operation\OrderLog($remark, 'special'));
+        $order->invoice = request()->input('invoice');
+        $order->save();
+        echo json_encode(["data" => '', "result" => 1]);
+    }
 
-            $db_remark_model->remark = \YunShop::request()->remark;
-            $this->updateInvoice( \YunShop::request()->order_id,\YunShop::request()->invoice );
-            (new \app\common\services\operation\OrderLog($db_remark_model, 'special'));
-            $db_remark_model->save();
-            show_json(1);
-        }
-    }
-    //保存图片
-    public function updateInvoice($order_id,$invoice)
-    {
-        $db_invoice=Order::where('id',$order_id)->first();
-        if (!$db_invoice){
-            $this->errorJson("失败");
-        }
-        $db_invoice->invoice= $invoice ;
-        $db_invoice->save();
-        return;
-    }
 }
