@@ -17,6 +17,8 @@ class OrderNoRefundListener
 
     public function subscribe($event)
     {
+        // 订单生成后，循环判断订单中的商品是否有不可退换货的商品，如果有，则将订单的no_refund字段设置为1
+        // 设置后，在订单支付之后，在前端查看订单时，就不会出现申请退货按钮
         $event->listen(AfterOrderCreatedEvent::class, OrderNoRefundListener::class. '@noRefund');
     }
 
