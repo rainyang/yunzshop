@@ -164,7 +164,7 @@
 @if (!empty($order['has_one_refund_apply']))
     @include('refund.index')
 @endif
-@if(!empty($invoice_set) && '0'!=$order['call'])
+@if(!empty($invoice_set) && !empty($order['call']))
     @include('invoice.display')
 @endif
 @if (count($order['discounts']))
