@@ -29,6 +29,7 @@ use Illuminate\Support\Collection;
  * @property float coupon_price
  * @property float discount_price
  * @property float goods_cost_price
+ * @property float goods_market_price
  * @property float $deduction_amount
  * @property float payment_amount
  * @property int goods_id
@@ -93,10 +94,12 @@ class PreOrderGoods extends OrderGoods
         $this->goods_price = (string)$this->goods_price;
         $this->price = (float)$this->price;
         $this->goods_cost_price = (float)$this->goods_cost_price;
+        $this->goods_market_price = (float)$this->goods_market_price;
         $this->coupon_price = (float)$this->coupon_price;
+        $this->need_address = (float)$this->need_address;
         if ($this->isOption()) {
             $this->goods_option_id = (int)$this->goods_option_id;
-            $this->goods_option_title = (int)$this->goods_option_title;
+            $this->goods_option_title = (string)$this->goods_option_title;
         }
     }
 

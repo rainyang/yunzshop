@@ -3152,7 +3152,18 @@ return [
                     ]
                 ]
             ],
-
+            'team_charts'     => [
+                'name'          => '会员一二级团队统计',
+                'url'           => 'charts.team.list.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts',],
+                'child'         => []
+            ],
         ],
     ],
 
