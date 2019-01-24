@@ -1696,7 +1696,7 @@ class MemberController extends ApiController
 
     public function isValidatePage()
     {
-        $data['is_bind_mobile'] = $this->isBindMobile() ?: 0;
+        $data['is_bind_mobile'] = $this->isBindMobile();
         $data['invite_page'] = 0;
         $data['is_invite'] = 0;
         $data['is_login'] = 0;
