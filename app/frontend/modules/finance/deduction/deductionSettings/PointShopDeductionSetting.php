@@ -8,6 +8,7 @@
 
 namespace app\frontend\modules\finance\deduction\deductionSettings;
 
+use app\framework\Support\Facades\Log;
 use app\frontend\modules\deduction\DeductionSettingInterface;
 
 class PointShopDeductionSetting implements DeductionSettingInterface
@@ -21,6 +22,7 @@ class PointShopDeductionSetting implements DeductionSettingInterface
     // todo 将运费抵扣分离出去
     public function isEnableDeductDispatchPrice()
     {
+        \Log::debug("监听抵扣状态",\Setting::get('point.set.point_freight'));
         return \Setting::get('point.set.point_freight');
     }
 

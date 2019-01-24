@@ -11,6 +11,7 @@ namespace app\frontend\models\order;
 use app\common\exceptions\MinOrderDeductionNotEnough;
 use app\common\models\order\OrderDeduction;
 use app\common\models\VirtualCoin;
+use app\framework\Support\Facades\Log;
 use app\frontend\models\MemberCoin;
 use app\frontend\modules\deduction\models\Deduction;
 use app\frontend\modules\deduction\OrderGoodsDeductionCollection;
@@ -286,6 +287,7 @@ class PreOrderDeduction extends OrderDeduction
     {
         $result = $this->newCoin();
 
+        \Log::debug("监听抵扣",$this->getDeduction()->isEnableDeductDispatchPrice());
         //开关
         if ($this->getDeduction()->isEnableDeductDispatchPrice()) {
 
@@ -294,7 +296,7 @@ class PreOrderDeduction extends OrderDeduction
 
             $result->setMoney($amount);
         }
-
+        \Log::debug("监听抵扣运费",$result);
         return $result;
     }
 
