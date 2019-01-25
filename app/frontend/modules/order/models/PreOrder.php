@@ -15,7 +15,6 @@ use app\frontend\modules\deduction\OrderDeductionCollection;
 use app\frontend\modules\dispatch\models\OrderDispatch;
 use app\frontend\modules\dispatch\models\PreOrderAddress;
 use app\frontend\modules\order\discount\BaseDiscount;
-use app\frontend\modules\order\discount\OrderDeductionPriceNode;
 use app\frontend\modules\order\discount\OrderDiscountPriceNode;
 use app\frontend\modules\order\discount\OrderMinDeductionPriceNode;
 use app\frontend\modules\order\discount\OrderRestDeductionPriceNode;
@@ -158,6 +157,10 @@ class PreOrder extends Order
         return $this->orderDeductManager;
     }
 
+    /**
+     * @return OrderDeductionCollection|static
+     * @throws \app\common\exceptions\AppException
+     */
     public function getCheckedOrderDeductions()
     {
         return $this->getOrderDeductManager()->getCheckedOrderDeductions();
@@ -270,6 +273,7 @@ class PreOrder extends Order
 
     /**
      * 初始化属性
+     * @throws \app\common\exceptions\AppException
      */
     protected function initAttributes()
     {
@@ -380,15 +384,12 @@ class PreOrder extends Order
 
     /**
      * 获取订单抵扣金额
-     * @return int|mixed
+     * @return int
+     * @throws \app\common\exceptions\AppException
      */
     public function getDeductionAmount()
     {
-        if (!$this->getRelation('orderDeductions')) {
-            return $this->getOrderDeductManager()->getAmount() ?: 0;
-        }
-
-        return $this->orderDeductions->usedAmount();
+        return $this->getCheckedOrderDeductions()->sum('amount') ?: 0;
     }
 
     /**

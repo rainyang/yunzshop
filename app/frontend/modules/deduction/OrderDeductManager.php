@@ -23,10 +23,7 @@ class OrderDeductManager
      * @var PreOrder
      */
     private $order;
-    /**
-     * @var float
-     */
-    private $amount;
+
     /**
      * @var OrderDeductionCollection
      */
@@ -63,10 +60,11 @@ class OrderDeductManager
             $this->orderDeductionCollection->validate();
             // 过滤调不能抵扣的项
             $this->orderDeductionCollection->filterNotDeductible();
-            if ($this->orderDeductionCollection->minAmount() > $this->order->price) {
-                throw new AppException("订单支付总金额{$this->order->price}元,不满足最低抵扣总金额{$this->orderDeductionCollection->minAmount()}元");
+
+            if ($this->orderDeductionCollection->minAmount() > $this->order->getPriceBefore('orderDispatchPrice')) {
+                throw new AppException("订单支付总金额{$this->order->getPriceBefore('orderDispatchPrice')}元,不满足最低抵扣总金额{$this->orderDeductionCollection->minAmount()}元");
             }
-            $this->order->setRelation('orderDeductions', $this->orderDeductionCollection);
+            $this->order->setRelation('orderDeductions',$this->orderDeductionCollection);
         }
         return $this->orderDeductionCollection;
     }
@@ -157,6 +155,10 @@ class OrderDeductManager
         return $this->deductions;
     }
 
+    /**
+     * @return OrderDeductionCollection|static
+     * @throws AppException
+     */
     public function getCheckedOrderDeductions()
     {
         if (!isset($this->checkedOrderDeductionCollection)) {
@@ -164,47 +166,17 @@ class OrderDeductManager
             $this->checkedOrderDeductionCollection = $this->getOrderDeductions()->filter(function (PreOrderDeduction $orderDeduction) {
                 return $orderDeduction->isChecked();
             });
-        }
-
-
-        // 返回 订单抵扣金额
-        return $this->checkedOrderDeductionCollection;
-    }
-
-    /**
-     * 获取订单抵扣金额
-     * @return float
-     */
-    public function getAmount()
-    {
-        if (!isset($this->amount)) {
-            $this->getCheckedOrderDeductions()->each(function (PreOrderDeduction $orderDeduction) {
-                /**
-                 * @var PreOrderDeduction $orderDeduction
-                 */
-                trace_log()->deduction('订单抵扣', "{$orderDeduction->getName()}获取最低可用金额");
-
-                $this->amount += $orderDeduction->getMinDeduction()->getMoney();
-            });
-
-
-            $this->getCheckedOrderDeductions()->each(function (PreOrderDeduction $orderDeduction) {
-                /**
-                 * @var PreOrderDeduction $orderDeduction
-                 */
-                trace_log()->deduction('订单抵扣', "{$orderDeduction->getName()}获取剩余可用金额");
-
-                $this->amount += $orderDeduction->getUsablePoint()->getMoney();
-            });
             // 将抵扣总金额保存在订单优惠信息表中
             $preOrderDiscount = new PreOrderDiscount([
                 'discount_code' => 'deduction',
-                'amount' => $this->amount,
+                'amount' => $this->checkedOrderDeductionCollection->usedAmount(),
                 'name' => '抵扣金额',
 
             ]);
             $preOrderDiscount->setOrder($this->order);
         }
-        return $this->amount;
+
+        // 返回 订单抵扣金额
+        return $this->checkedOrderDeductionCollection;
     }
 }

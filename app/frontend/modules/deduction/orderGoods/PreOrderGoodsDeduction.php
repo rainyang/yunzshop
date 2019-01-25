@@ -135,6 +135,7 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
      */
     private function getOrderDeduction()
     {
+
         if (!isset($this->orderDeduction)) {
             $this->orderDeduction = $this->orderGoods->getOrder()->getOrderDeductions()->where('code', $this->code)->first();
             if (!$this->orderDeduction) {
