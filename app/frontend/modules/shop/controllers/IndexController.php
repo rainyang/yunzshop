@@ -1,4 +1,5 @@
 <?php
+
 namespace app\frontend\modules\shop\controllers;
 
 use app\api\Base;
@@ -28,7 +29,7 @@ class IndexController extends ApiController
         $set = Setting::get('shop.category');
         $set['cat_adv_img'] = replace_yunshop(yz_tomedia($set['cat_adv_img']));
         $category = $this->getRecommentCategoryList();
-        foreach ($category  as &$item){
+        foreach ($category as &$item) {
             $item['thumb'] = replace_yunshop(yz_tomedia($item['thumb']));
             $item['adv_img'] = replace_yunshop(yz_tomedia($item['adv_img']));
         }
@@ -40,6 +41,7 @@ class IndexController extends ApiController
         ];
         return $this->successJson('成功', $data);
     }
+
     //获取推荐品牌
     public function getRecommentBrandList()
     {
@@ -67,7 +69,7 @@ class IndexController extends ApiController
             ->where("status", 1)
             ->where(function ($query) {
                 $query->where('plugin_id', 0)
-                ->orWhere('plugin_id', 40);
+                    ->orWhere('plugin_id', 40);
             })
             ->orderBy("display_order", 'desc')
             ->orderBy("id", 'desc')
@@ -75,17 +77,18 @@ class IndexController extends ApiController
         if (!empty($timeGoods->toArray())) {
             foreach ($timeGoods as $key => &$value) {
                 $value->thumb = yz_tomedia($value->thumb);
-                $value->hasOneGoodsLimitBuy->start_time = date('Y/m/d H:i:s',  $value->hasOneGoodsLimitBuy->start_time);
-                $value->hasOneGoodsLimitBuy->end_time = date('Y/m/d H:i:s',  $value->hasOneGoodsLimitBuy->end_time);
+                $value->hasOneGoodsLimitBuy->start_time = date('Y/m/d H:i:s', $value->hasOneGoodsLimitBuy->start_time);
+                $value->hasOneGoodsLimitBuy->end_time = date('Y/m/d H:i:s', $value->hasOneGoodsLimitBuy->end_time);
             }
         }
         return $timeGoods;
     }
+
     public function getRecommentGoods()
     {
         //$goods = new Goods();
         $field = ['id as goods_id', 'thumb', 'title', 'price', 'market_price'];
-        if(!Cache::has('YZ_Index_goodsList')) {
+        if (!Cache::has('YZ_Index_goodsList')) {
 
             $goodsList = Goods::uniacid()->select(DB::raw(implode(',', $field)))
                 ->where("is_recommand", 1)
@@ -96,11 +99,13 @@ class IndexController extends ApiController
                 })
                 ->orderBy("display_order", 'desc')
                 ->orderBy("id", 'desc')
-                ->get();
+                ->get()->map(function (Goods $goods) {
+                    return $goods->append('vip_price');
+                });
             foreach ($goodsList as &$value) {
                 $value->thumb = yz_tomedia($value->thumb);
             }
-            Cache::put('YZ_Index_goodsList',$goodsList,4200);
+            Cache::put('YZ_Index_goodsList', $goodsList, 4200);
 
         } else {
             $goodsList = Cache::get('YZ_Index_goodsList');
@@ -113,7 +118,7 @@ class IndexController extends ApiController
             $value->is_course = $videoDemand->isCourse($value->goods_id);
 
         }*/
-        
+
         return $goodsList;
     }
 
@@ -121,9 +126,9 @@ class IndexController extends ApiController
     {
 
         $request = Category::getRecommentCategoryList()
-        ->where('is_home','1')
-        ->pluginId()
-        ->get();
+            ->where('is_home', '1')
+            ->pluginId()
+            ->get();
         foreach ($request as &$item) {
             $item['thumb'] = replace_yunshop(yz_tomedia($item['thumb']));
             $item['adv_img'] = replace_yunshop(yz_tomedia($item['adv_img']));
@@ -141,10 +146,9 @@ class IndexController extends ApiController
     {
         $slide = [];
         $slide = Slide::getSlidesIsEnabled()->get();
-        if($slide){
+        if ($slide) {
             $slide = $slide->toArray();
-            foreach ($slide as &$item)
-            {
+            foreach ($slide as &$item) {
                 $item['thumb'] = replace_yunshop(yz_tomedia($item['thumb']));
             }
         }
@@ -161,9 +165,9 @@ class IndexController extends ApiController
                 if ($value['img'] || $value['link']) {
                     $advs[$i]['img'] = yz_tomedia($value['img']);
                     $advs[$i]['link'] = $value['link'];
-                    $i +=1;
+                    $i += 1;
                 }
-            }    
+            }
         }
         return $advs;
     }

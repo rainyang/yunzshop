@@ -15,7 +15,7 @@ use app\common\models\goods\Privilege;
 use app\framework\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
-use app\common\facades\Setting;
+use app\common\facades\Setting as SettingFacades;
 use app\common\modules\discount\GoodsMemberLevelDiscount;
 
 /**
@@ -550,7 +550,7 @@ class Goods extends BaseModel
     public function getDealPriceAttribute()
     {
         if (!isset($this->dealPrice)) {
-            $level_discount_set = Setting::get('discount.all_set');
+            $level_discount_set = SettingFacades::get('discount.all_set');
             if (
                 isset($level_discount_set['type'])
                 && $level_discount_set['type'] == 1
@@ -580,7 +580,7 @@ class Goods extends BaseModel
     public function memberLevelDiscount()
     {
         if (!isset($this->memberLevelDiscount)) {
-            if (\YunShop::app()->getMemberId() !== null) {
+            if (\YunShop::app()->getMemberId()) {
                 $member = \app\frontend\models\Member::current();
             } else {
                 $member = new \app\frontend\models\Member();
