@@ -1729,7 +1729,7 @@ class MemberController extends ApiController
                 }
             }
 
-            $invite_page = $member_set['invite_page'] ?: 0;
+            $invite_page = $member_set['invite_page'] ? 1 : 0;
             $data['invite_page'] = $type == 5 ? 0 : $invite_page;
 
             $data['is_invite'] = $invitation_log ? 1 : 0;
