@@ -187,8 +187,8 @@ class PreOrderGoods extends OrderGoods
     public function beforeSaving()
     {
         $this->touchPreAttributes();
-        $this->deduction_amount = $this->getDeductionAmount();
-        $this->payment_amount = $this->getPaymentAmount();
+        $this->deduction_amount = (float)$this->getDeductionAmount();
+        $this->payment_amount = (float)$this->getPaymentAmount();
     }
 
     /**
