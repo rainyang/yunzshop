@@ -158,8 +158,6 @@ class SettingController extends BaseController
                 'dividend_amount' => '',
             ],
             'area_dividend' => [
-                'title' => '',
-                'dividend' => '',
                 'area_dividend' => '',
                 'dividend_amount' => '',
             ]
