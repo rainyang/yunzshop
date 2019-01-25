@@ -10,6 +10,7 @@ namespace app\common\services\credit;
 
 
 use app\common\exceptions\ShopException;
+use app\framework\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 
 abstract class Credit
@@ -165,6 +166,7 @@ abstract class Credit
      */
     public function cancelConsume(array $data)
     {
+        \Log::debug("消费取消回滚接口",$data);
         $this->source = ConstService::SOURCE_CANCEL_CONSUME;
         return $this->addition($data);
     }
@@ -180,6 +182,7 @@ abstract class Credit
         $this->data = $data;
         $this->type = ConstService::TYPE_INCOME;
         $this->change_value = $this->data['change_value'];
+        \Log::debug("监听加法",$this->change_value);
         return $this->result();
     }
 
