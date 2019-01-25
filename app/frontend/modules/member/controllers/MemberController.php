@@ -1546,7 +1546,7 @@ class MemberController extends ApiController
             if ($status['member_show']) {
                 $data[] = [
                     'name'  => 'integral',
-                    'title' => $status['plugin_name'],
+                    'title' => $status['plugin_name'] ?: '消费积分',
                     'class' => 'icon-member_integral',
                     'url'   => 'Integral_love',
                 ];
