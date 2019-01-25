@@ -86,7 +86,8 @@ class SettingController extends BaseController
     public function getBalance()
     {
         $shop = Setting::get('shop.shop');
-        return $this->successJson('获取余额设置成功',['balance'=>$shop['credit']]);
+        $credit=$shop['credit'] ?: '余额';
+        return $this->successJson('获取余额设置成功',['balance'=>$credit]);
     }
     /**
      * @return \Illuminate\Http\JsonResponse
