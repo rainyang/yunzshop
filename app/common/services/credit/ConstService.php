@@ -8,7 +8,7 @@
 
 namespace app\common\services\credit;
 
-
+use app\common\facades\Setting;
 class ConstService
 {
 
