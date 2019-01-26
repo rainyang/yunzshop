@@ -137,6 +137,11 @@ class Goods extends BaseModel
         return static::find($id);
     }
 
+    public static function getGoodsByIds($ids)
+    {
+        return self::whereIn('id', $ids)->get();
+    }
+
     public function hasManyParams()
     {
         return $this->hasMany('app\common\models\GoodsParam');
