@@ -99,9 +99,10 @@ class IndexController extends ApiController
                 })
                 ->orderBy("display_order", 'desc')
                 ->orderBy("id", 'desc')
-                ->get()->map(function (Goods $goods) {
-                    return $goods->append('vip_price');
-                });
+                ->get();
+//                ->get()->map(function (Goods $goods) {
+//                    return $goods->append('vip_price');
+//                });
             foreach ($goodsList as &$value) {
                 $value->thumb = yz_tomedia($value->thumb);
             }
