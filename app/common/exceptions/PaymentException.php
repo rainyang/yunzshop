@@ -19,16 +19,19 @@ class PaymentException extends ShopException
     {
         $this->code = self::PAY_PASSWORD_SETTING_CLOSED;
         $this->message = '商城支付密码设置未开启';
+        $this->data['code'] =  $this->code ;
         return $this;
     }
     public function notSet(){
         $this->code = self::MEMBER_NOT_SET_PAY_PASSWORD;
         $this->message = '用户未设置支付密码';
+        $this->data['code'] =  $this->code ;
         return $this;
     }
     public function passwordError(){
         $this->code = self::PAY_PASSWORD_ERROR;
         $this->message = '支付密码错误';
+        $this->data['code'] =  $this->code ;
         return $this;
     }
 }
