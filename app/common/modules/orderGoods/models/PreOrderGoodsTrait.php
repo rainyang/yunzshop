@@ -104,6 +104,15 @@ trait PreOrderGoodsTrait
      * @return string
      * @throws AppException
      */
+    public function getProductSnAttribute()
+    {
+        return $this->getGoods()->product_sn;
+    }
+
+    /**
+     * @return string
+     * @throws AppException
+     */
     public function getTitleAttribute()
     {
         return $this->getGoods()->title;
