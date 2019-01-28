@@ -22,7 +22,7 @@ use Mews\Captcha\Captcha;
 use Yunshop\Diyform\models\DiyformTypeModel;
 use Gregwar\Captcha\CaptchaBuilder;
 use Gregwar\Captcha\PhraseBuilder;
-
+use app\common\models\PayType;
 class ShopController extends BaseController
 {
     /**
@@ -41,11 +41,18 @@ class ShopController extends BaseController
             }
 
             if (Setting::set('shop.shop', $requestModel)) {
+                $dalance=Setting::get('shop.shop');
+                if($dalance['credit']){
+                    PayType::updateDalance(3,$dalance['credit'])?:$this->error("余额字样保存失败");
+                }
+
                 return $this->message('商城设置成功', Url::absoluteWeb('setting.shop.index'));
             } else {
                 $this->error('商城设置失败');
             }
         }
+
+
 
         return view('setting.shop.shop', [
             'set' => $shop,
