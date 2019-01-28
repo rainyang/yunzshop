@@ -18,13 +18,13 @@ class TeamRank
 
     public function handle()
     {
-        (new TeamRankService())->getRank();
+        (new TeamRankService())->handle();
     }
 
     public function subscribe()
     {
         \Event::listen('cron.collectJobs', function () {
-            \Cron::add('Team-Rank', '0 3 1 * * *', function() {
+            \Cron::add('Team-Rank', '* * * * * *', function() {
                 $this->handle();
                 return;
             });
