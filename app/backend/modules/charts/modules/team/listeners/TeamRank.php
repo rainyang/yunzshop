@@ -24,7 +24,7 @@ class TeamRank
     public function subscribe()
     {
         \Event::listen('cron.collectJobs', function () {
-            \Cron::add('Team-Rank', '* * * * * *', function() {
+            \Cron::add('Team-Rank', '0 2 1 * * *', function() {
                 $this->handle();
                 return;
             });
