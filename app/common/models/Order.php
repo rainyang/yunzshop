@@ -150,7 +150,13 @@ class Order extends BaseModel
             ->where('uid', $uid)
             ->sum('price');
     }
-
+    //获取发票信息
+    public static function getInvoice($order)
+    {
+        return self ::select('invoice_type','rise_type','call','company_number','invoice')
+            ->where('id',$order)
+            ->first();
+    }
 
     public function scopePayFail($query)
     {

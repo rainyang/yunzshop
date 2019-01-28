@@ -92,7 +92,20 @@
     </div>
 
 </div>
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">上传发票</label>
+    <div class="col-sm-9 col-xs-12">
+        {!! app\common\helpers\ImageHelper::tplFormFieldImage('basic-detail[invoice]', $order['invoice']) !!}
+    </div>
 
+</div>
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+    <div class="col-sm-9 col-xs-12">
+        <br/>
+        <button name='saveremark' onclick="sub()" class='btn btn-default'>保存发票</button>
+    </div>
+</div>
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">用户备注 :</label>
     <div class="col-sm-9 col-xs-12" class="form-control" style="height:150px;" cols="70" >
@@ -150,6 +163,9 @@
 @endif
 @if (!empty($order['has_one_refund_apply']))
     @include('refund.index')
+@endif
+@if(!empty($order['call']))
+    @include('invoice.display')
 @endif
 @if (count($order['discounts']))
     <div class="panel panel-default">

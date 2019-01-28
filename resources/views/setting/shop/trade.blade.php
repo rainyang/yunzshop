@@ -123,7 +123,31 @@
                         {{--<span class='help-block'>是否显示商城用户下单飘窗提示</span>--}}
                     {{--</div>--}}
                 {{--</div>--}}
+
 			</div>
+
+            <div class="panel-heading">
+                发票设置
+            </div>
+
+            <div class='panel-body'>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">支持发票类型
+                    </label>
+                    <div class="col-sm-9 col-xs-12">
+                        <label class="checkbox-inline">
+                            <input type="checkbox" value="1" name='trade[invoice][papery]'
+                                   @if ($set['invoice']['papery']) checked @endif /> 纸质发票
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" value="1" name='trade[invoice][electron]'
+                                   @if ($set['invoice']['electron']) checked @endif /> 电子发票
+                        </label>
+
+                        <div class="help-block">当商品支持开发票时，买家可以选择以上勾选的类型</div>
+                    </div>
+                </div>
+            </div>
 
 			<div class="panel-heading">
 				收货地址
