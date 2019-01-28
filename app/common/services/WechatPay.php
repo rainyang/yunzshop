@@ -18,6 +18,7 @@ use app\common\models\PayOrder;
 use app\common\models\PayType;
 use app\common\models\Order;
 use app\common\services\finance\Withdraw;
+use app\frontend\modules\member\services\factory\MemberFactory;
 use EasyWeChat\Foundation\Application;
 use EasyWeChat\Payment\Order as easyOrder;
 
@@ -327,7 +328,8 @@ class WechatPay extends Pay
     private function payParams($payType)
     {
         $pay = \Setting::get('shop.pay');
-        if (\YunShop::request()->app_type == 'wechat') {
+
+        if (request()->input('type') == MemberFactory::LOGIN_MINI_APP || \YunShop::request()->app_type == 'wechat') {
             self::$attach_type = 'wechat';
 
             $min_set = \Setting::get('plugin.min_app');
