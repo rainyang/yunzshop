@@ -384,7 +384,9 @@ class Goods extends BaseModel
             ->where('status', 1)
             //->where('is_plugin', 0)
             ->whereNotIn('plugin_id', [20, 31, 60])//屏蔽门店、码上点餐、第三方插件接口的虚拟商品
-            ->get();
+            ->get()->map(function (Goods $goods) {
+                return $goods->append('vip_price');
+            });
     }
 
     /**
