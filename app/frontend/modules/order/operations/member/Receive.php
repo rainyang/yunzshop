@@ -46,6 +46,9 @@ class Receive extends OrderOperation
 
     public function enable()
     {
+        if ($this->order->plugin_id == 33) {
+            return false;
+        }
         return true;
     }
 }
