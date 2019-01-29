@@ -58,12 +58,7 @@ class OrderDeductManager
             $this->orderDeductionCollection->sortOrderDeductionCollection();
             // 验证
             $this->orderDeductionCollection->validate();
-            // 过滤调不能抵扣的项
-            $this->orderDeductionCollection->filterNotDeductible();
 
-            if ($this->orderDeductionCollection->minAmount() > $this->order->getPriceBefore('orderDispatchPrice')) {
-                throw new AppException("订单支付总金额{$this->order->getPriceBefore('orderDispatchPrice')}元,不满足最低抵扣总金额{$this->orderDeductionCollection->minAmount()}元");
-            }
             $this->order->setRelation('orderDeductions',$this->orderDeductionCollection);
         }
         return $this->orderDeductionCollection;
@@ -166,6 +161,13 @@ class OrderDeductManager
             $this->checkedOrderDeductionCollection = $this->getOrderDeductions()->filter(function (PreOrderDeduction $orderDeduction) {
                 return $orderDeduction->isChecked();
             });
+            // 过滤调不能抵扣的项
+            $this->checkedOrderDeductionCollection->filterNotDeductible();
+
+            if ($this->checkedOrderDeductionCollection->minAmount() > $this->order->getPriceBefore('orderDispatchPrice')) {
+                throw new AppException("订单支付总金额{$this->order->getPriceBefore('orderDispatchPrice')}元,不满足最低抵扣总金额{$this->checkedOrderDeductionCollection->minAmount()}元");
+            }
+
             // 将抵扣总金额保存在订单优惠信息表中
             $preOrderDiscount = new PreOrderDiscount([
                 'discount_code' => 'deduction',

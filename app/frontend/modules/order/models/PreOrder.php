@@ -95,15 +95,17 @@ class PreOrder extends Order
             return new OrderDiscountPriceNode($this, $discount, 2000);
         });
         // 订单最低抵扣节点
-        $deductionMinNodes = $this->getCheckedOrderDeductions()->map(function (PreOrderDeduction $orderDeduction) {
+        $deductionMinNodes = $this->getOrderDeductions()->map(function (PreOrderDeduction $orderDeduction) {
             return new OrderMinDeductionPriceNode($this, $orderDeduction, 9000);
         });
         // 订单剩余抵扣节点
-        $deductionRestNodes = $this->getCheckedOrderDeductions()->map(function (PreOrderDeduction $orderDeduction) {
-            return new OrderRestDeductionPriceNode($this, $orderDeduction, 9100);
+        $deductionRestNodes = $this->getOrderDeductions()->map(function (PreOrderDeduction $orderDeduction) {
+            $a  = new OrderRestDeductionPriceNode($this, $orderDeduction, 9100);
+            //dump($a->getKey());
+            return $a;
         });
-        // 按照weight排序
 
+        // 按照weight排序
         return $nodes->merge($discountNodes)->merge($deductionMinNodes)->merge($deductionRestNodes)->sortBy(function (PriceNode $priceNode) {
             return $priceNode->getWeight();
         })->values();
@@ -364,6 +366,7 @@ class PreOrder extends Order
             // 外部调用只计算一次,方法内部计算过程中递归调用会返回计算过程中的金额
             $this->price = max($this->getPriceAfter($this->getPriceNodes()->last()->getKey()), 0);
         }
+
         //订单最终价格 = 商品最终价格 - 订单优惠 + 订单运费 - 订单抵扣
         return $this->price;
     }
