@@ -182,13 +182,14 @@ class BalanceWithdrawController extends BalanceController
      */
     private function getWithdrawData()
     {
+        $dalance=Setting::get('shop.shop');
         return array(
             'withdraw_sn'           => Withdraw::createOrderSn('WS','withdraw_sn'),
             'uniacid'               => $this->uniacid,
             'member_id'             => $this->memberModel->uid,
             'type'                  => 'balance',
             'type_id'               => '',
-            'type_name'             => '余额提现',
+            'type_name'             => $dalance['credit'],//'余额提现'
             'amounts'               => $this->getWithdrawMoney(),                   //提现金额
             'poundage'              => $this->getPoundage(),                        //提现手续费
             'poundage_rate'         => $this->balanceSet->withdrawPoundageType() ? '0' : $this->PoundageRate(),//手续费比例
