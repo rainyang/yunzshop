@@ -11,7 +11,6 @@ namespace app\frontend\models\order;
 use app\common\exceptions\MinOrderDeductionNotEnough;
 use app\common\models\order\OrderDeduction;
 use app\common\models\VirtualCoin;
-use app\framework\Support\Facades\Log;
 use app\frontend\models\MemberCoin;
 use app\frontend\modules\deduction\models\Deduction;
 use app\frontend\modules\deduction\OrderGoodsDeductionCollection;
@@ -196,7 +195,7 @@ class PreOrderDeduction extends OrderDeduction
             }
 
             // 商品金额抵扣+ 运费抵扣金额 不能超过订单当前抵扣项之前的金额
-            $deductionAmount = min($this->order->getPriceBefore($this->getCode() . 'RestDeduction'), $this->getMaxDeduction()->getMoney() + $this->getMaxDispatchPriceDeduction()->getMoney() - $this->getMinDeduction()->getMoney());
+            $deductionAmount = min($this->order->getPriceBefore($this->getCode() . 'RestDeduction') - $this->getMaxDispatchPriceDeduction()->getMoney(), $this->getMaxDeduction()->getMoney() - $this->getMinDeduction()->getMoney());
 
             trace_log()->deduction("订单抵扣", "{$this->name} 订单可抵扣{$deductionAmount}元");
             trace_log()->deduction("订单抵扣", "{$this->name} 用户{$this->usablePoint->getName()}可抵扣{$this->getMemberCoin()->getMaxUsableCoin()->getMoney()}元");
@@ -293,7 +292,7 @@ class PreOrderDeduction extends OrderDeduction
 
         \Log::debug("监听抵扣",$this->getDeduction()->isEnableDeductDispatchPrice());
         //开关
-        if ($this->getDeduction()->isEnableDeductDispatchPrice()) {
+        if (!$this->getDeduction()->isEnableDeductDispatchPrice()) {
 
             //订单运费
             $amount = $this->order->getDispatchAmount();
