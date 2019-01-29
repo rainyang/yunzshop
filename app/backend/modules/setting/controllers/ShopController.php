@@ -42,10 +42,8 @@ class ShopController extends BaseController
 
             if (Setting::set('shop.shop', $requestModel)) {
                 $dalance=Setting::get('shop.shop');
-                if($dalance['credit']){
-                    PayType::updateDalance(3,$dalance['credit'])?:$this->error("余额字样保存失败");
-                }
-
+                $credit=$dalance['credit']?:"余额";
+                PayType::updateDalance(3,$credit)?:$this->error("余额字样保存失败");
                 return $this->message('商城设置成功', Url::absoluteWeb('setting.shop.index'));
             } else {
                 $this->error('商城设置失败');
