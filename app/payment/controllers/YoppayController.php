@@ -224,6 +224,12 @@ class YoppayController extends PaymentController
 
     }
 
+    //订单退款
+    public function refundUrl()
+    {
+
+    }
+
     /**
      *获取参数值
      */
