@@ -11,7 +11,6 @@ namespace app\common\models;
 use app\common\exceptions\AppException;
 use app\common\models\goods\Discount;
 use app\common\models\goods\GoodsDispatch;
-use app\common\models\goods\GoodsPointActivity;
 use app\common\models\goods\Privilege;
 use app\framework\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -229,7 +228,7 @@ class Goods extends BaseModel
 
     public function hasOnePointActivity()
     {
-        return $this->hasOne(GoodsPointActivity::class, 'goods_id', 'id');
+        return $this->hasOne('Yunshop\PointActivity\Backend\Models\GoodsPointActivity', 'goods_id', 'id');
     }
 
     public function hasOneGoodsService()
