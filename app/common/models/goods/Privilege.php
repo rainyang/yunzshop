@@ -331,15 +331,15 @@ class Privilege extends BaseModel
      */
     public static function validatePrivilegeGroup($goodsModel, $member)
     {
-        if (empty($goodsModel->hasOnePrivilege->buy_groups)) {
+        if (empty($goodsModel->hasOnePrivilege->show_groups)) {
             return;
         }
-        $buy_groups = explode(',', $goodsModel->hasOnePrivilege->buy_groups);
-        $group_names = MemberGroup::select(DB::raw('group_concat(group_name) as group_name'))->whereIn('id', $buy_groups)->value('group_name');
+        $show_groups = explode(',', $goodsModel->hasOnePrivilege->show_groups);
+        $group_names = MemberGroup::select(DB::raw('group_concat(group_name) as group_name'))->whereIn('id', $show_groups)->value('group_name');
         if (empty($group_names)) {
             return;
         }
-        if (!in_array($member->group_id, $buy_groups)) {
+        if (!in_array($member->group_id, $show_groups)) {
             throw new AppException('(' . $goodsModel->title . ')该商品仅限[' . $group_names . ']浏览');
         }
     }
