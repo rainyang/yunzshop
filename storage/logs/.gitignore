@@ -1,0 +1,5 @@
+*.log
+trace/*
+error/*
+debug/*
+!.gitignore
