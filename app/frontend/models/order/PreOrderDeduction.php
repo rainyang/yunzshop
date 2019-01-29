@@ -87,7 +87,8 @@ class PreOrderDeduction extends OrderDeduction
     }
 
     /**
-     * @return mixed
+     * @return float|int
+     * @throws \app\common\exceptions\AppException
      */
     public function getCoinAttribute()
     {
@@ -96,12 +97,17 @@ class PreOrderDeduction extends OrderDeduction
 
     /**
      * @return mixed
+     * @throws \app\common\exceptions\AppException
      */
     public function getAmountAttribute()
     {
         return $this->getAmount();
     }
 
+    /**
+     * @return mixed
+     * @throws \app\common\exceptions\AppException
+     */
     public function getAmount()
     {
         return $this->getMinDeduction()->getMoney() + $this->getUsablePoint()->getMoney();

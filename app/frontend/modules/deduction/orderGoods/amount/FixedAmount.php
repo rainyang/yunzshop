@@ -22,7 +22,7 @@ class FixedAmount extends OrderGoodsDeductionAmount
     public function getMaxAmount()
     {
         $result = $this->getGoodsDeduction()->getMaxFixedAmount() * $this->getOrderGoods()->total;
-        $result = min($result,$this->getOrderGoods()->getPrice());
+        $result = min($result,$this->getOrderGoods()->getPriceBefore($this->getGoodsDeduction()->getCode().'Deduction'));
         return max($result, 0);
     }
 
@@ -33,7 +33,8 @@ class FixedAmount extends OrderGoodsDeductionAmount
     public function getMinAmount()
     {
         $result = $this->getGoodsDeduction()->getMinFixedAmount() * $this->getOrderGoods()->total;
-        $result = min($result,$this->getOrderGoods()->getPrice());
+        $result = min($result,$this->getOrderGoods()->getPriceBefore($this->getGoodsDeduction()->getCode().'Deduction'));
+
         return max($result, 0);
     }
 }
