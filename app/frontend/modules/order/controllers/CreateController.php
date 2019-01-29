@@ -46,6 +46,7 @@ class CreateController extends ApiController
         $trade = $this->getMemberCarts()->getTrade();
         $trade->generate();
         $orderIds = $trade->orders->pluck('id')->implode(',');
+
         //生成订单,触发事件
         return $this->successJson('成功', ['order_ids' => $orderIds]);
     }

@@ -17,6 +17,7 @@ use app\common\models\Goods;
 use app\common\modules\order\OrderOperationsCollector;
 use app\common\services\DivFromService;
 
+use app\common\models\order\Invoice;
 class DetailController extends BaseController
 {
     public function getMemberButtons()
@@ -56,7 +57,7 @@ class DetailController extends BaseController
             $dispatch['tel'] = '95533';
             $dispatch['status_name'] = $express['status_name'];
         }
-        dd($order);
+
     }
 
     /**
@@ -92,9 +93,11 @@ class DetailController extends BaseController
             $dispatch['tel'] = '95533';
             $dispatch['status_name'] = $express['status_name'];
         }
+        $trade = \Setting::get('shop.trade');
 
         return view('order.detail', [
             'order' => $order ? $order->toArray() : [],
+            'invoice_set'=>$trade['invoice'],
             'dispatch' => $dispatch,
             'div_from' => $this->getDivFrom($order),
             'var' => \YunShop::app()->get(),

@@ -10,7 +10,7 @@ namespace app\frontend\modules\goods\models;
 
 class Goods extends \app\common\models\Goods
 {
-    public $appends = ['status_name','estimated_commission'];
+    public $appends = ['status_name','estimated_commission','vip_price'];
 
     public function getEstimatedCommissionAttribute()
     {
