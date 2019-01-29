@@ -84,8 +84,8 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">商品最高抵扣</label>
-                        <div class="col-sm-5">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">商品抵扣</label>
+                        <div class="col-sm-3">
                             <div class='input-group'>
                                 <span class='input-group-addon'>最多可抵扣</span>
                                 <input type="text" name="set[money_max]" value="{{$set['money_max']}}"
@@ -93,6 +93,15 @@
                                 <span class='input-group-addon'>%</span>
                             </div>
                             <span class='help-block'>商品最高抵扣比例</span>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class='input-group'>
+                                <span class='input-group-addon'>最少需抵扣</span>
+                                <input type="text" name="set[money_min]" value="{{$set['money_min']}}"
+                                       class="form-control"/>
+                                <span class='input-group-addon'>%</span>
+                            </div>
+                            <span class='help-block'>商品最少抵扣比例</span>
                         </div>
                     </div>
                 </div>

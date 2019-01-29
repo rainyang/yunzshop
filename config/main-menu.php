@@ -2668,6 +2668,17 @@ return [
                 'item'              => 'remittance_audit',
                 'parents'           => ['finance',],
                 'child'             => [
+                    'remittance_audit_ajax'         => [
+                        'name'              => '转账审核全部',
+                        'url'               => 'finance.remittance-audit.ajax',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => 'fa-gear',
+                        'sort'              => 0,
+                        'item'              => 'remittance_audit_ajax',
+                        'parents'           => ['finance', 'remittance_audit',],
+                    ],
                     'remittance_audit_detail'         => [
                         'name'              => '转账审核详情',
                         'url'               => 'remittanceAudit.detail.index',
@@ -3152,7 +3163,18 @@ return [
                     ]
                 ]
             ],
-
+            'team_charts'     => [
+                'name'          => '会员一二级团队统计',
+                'url'           => 'charts.team.list.index',
+                'url_params'    => '',
+                'permit'        => 1,
+                'menu'          => 1,
+                'icon'          => 'fa-bar-chart-o',
+                'sort'          => 0,
+                'item'          => 'order_ranking_charts',
+                'parents'       => ['charts',],
+                'child'         => []
+            ],
         ],
     ],
 

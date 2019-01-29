@@ -2,31 +2,7 @@
 
 @section('content')
 
-    <script type="text/javascript">
-        function formcheck() {
-            var numerictype = /^(0|[1-9]\d*)$/; //非负整数验证
-            var thumb = /\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/;
 
-
-            if ($(':input[name="member[headimg]"]').val() != '') {
-                if (!thumb.test($(':input[name="member[headimg]"]').val())) {
-                    Tip.focus(':input[name="member[headimg]"]', '图片类型必须是.gif,jpeg,jpg,png中的一种.');
-                    return false;
-                }
-            }
-
-            /*
-             if ($(':input[name="member[term_time]"]').val() != '') {
-             if (!numerictype.test($(':input[name="member[term_time]"]').val())) {
-             Tip.focus(':input[name="member[term_time]"]', '会员等级到期时间,只能为非负整数.');
-             return false;
-             }
-             }
-             */
-            return true;
-
-        }
-    </script>
     <div class="w1200 m0a">
         <div class="rightlist">
 
@@ -148,11 +124,24 @@
                                 </label>
                                 <label class="radio radio-inline">
                                     <input type="radio" name="member[is_bind_mobile]" value="1"
-                                           @if ($set['is_bind_mobile'] == 1) checked @endif/> 是
+                                           @if ($set['is_bind_mobile'] == 1) checked @endif/> 全局强制绑定
                                 </label>
-                                <span class="help-block">进入商城是否强制绑定手机号</span>
+                                <label class="radio radio-inline">
+                                    <input type="radio" name="member[is_bind_mobile]" value="2"
+                                           @if ($set['is_bind_mobile'] == 2) checked @endif/> 会员中心强制绑定
+                                </label>
+                                <label class="radio radio-inline">
+                                    <input type="radio" name="member[is_bind_mobile]" value="3"
+                                           @if ($set['is_bind_mobile'] == 3) checked @endif/> 商品页面强制绑定
+                                </label>
+                                <label class="radio radio-inline">
+                                    <input type="radio" name="member[is_bind_mobile]" value="4"
+                                           @if ($set['is_bind_mobile'] == 4) checked @endif/> 推广中心页面强制绑定
+                                </label>
+                                <span class="help-block">进入商城是否强制绑定手机号，指定页面才强制绑定手机</span>
                             </div>
                         </div>
+                        <!--
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员中心显示推荐人</label>
                             <div class="col-sm-9 col-xs-12">
@@ -167,7 +156,7 @@
                                 <span class="help-block">会员中心显示推荐人</span>
                             </div>
                         </div>
-
+                        -->
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员中心显示余额</label>
                             <div class="col-sm-9 col-xs-12">
@@ -310,5 +299,37 @@
             </form>
         </div>
     </div>
+    <script type="text/javascript">
+        function formcheck() {
+            var numerictype = /^(0|[1-9]\d*)$/; //非负整数验证
+            var thumb = /\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/;
+
+
+            if ($(':input[name="member[headimg]"]').val() != '') {
+                if (!thumb.test($(':input[name="member[headimg]"]').val())) {
+                    Tip.focus(':input[name="member[headimg]"]', '图片类型必须是.gif,jpeg,jpg,png中的一种.');
+                    return false;
+                }
+            }
+            if ($(':input[name="member[is_bind_mobile]"]:checked').val() != 0 && $(':input[name="member[invite_page]"]:checked').val() != 0) {
+                if (!thumb.test($(':input[name="member[is_bind_mobile]"]').val())) {
+                    Tip.focus(':input[name="member[is_bind_mobile]"]', '强制绑定手机不能跟邀请页面同时开启');
+                    alert('强制绑定手机不能跟邀请页面同时开启');
+                    return false;
+                }
+            }
+
+            /*
+             if ($(':input[name="member[term_time]"]').val() != '') {
+             if (!numerictype.test($(':input[name="member[term_time]"]').val())) {
+             Tip.focus(':input[name="member[term_time]"]', '会员等级到期时间,只能为非负整数.');
+             return false;
+             }
+             }
+             */
+            return true;
+
+        }
+    </script>
     @include('public.admin.mylink')
 @endsection('content')

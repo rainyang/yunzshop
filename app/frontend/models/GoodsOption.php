@@ -101,7 +101,8 @@ class GoodsOption extends \app\common\models\GoodsOption
      */
     public function getVipPriceAttribute()
     {
-        return $this->deal_price - $this->getVipDiscountAmount($this->deal_price);
+        return sprintf('%.2f', $this->deal_price - $this->getVipDiscountAmount($this->deal_price));;
+
     }
 
     public function goods()

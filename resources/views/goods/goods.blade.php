@@ -176,7 +176,12 @@
         @section('widget_js')
         if (!numerictype.test($(':input[name="widgets[sale][max_point_deduct]"]').val()) && $(':input[name="widgets[sale][max_point_deduct]"]').val() != '') {
             $('#myTab a[href="#tab_sale"]').tab('show');
-            Tip.focus(':input[name="widgets[sale][max_point_deduct]"]', '积分抵扣格式错误,只能为非负整数或空.');
+            Tip.focus(':input[name="widgets[sale][max_point_deduct]"]', '最大积分抵扣格式错误,只能为非负整数或空.');
+            return false;
+        }
+        if (!numerictype.test($(':input[name="widgets[sale][min_point_deduct]"]').val()) && $(':input[name="widgets[sale][min_point_deduct]"]').val() != '') {
+            $('#myTab a[href="#tab_sale"]').tab('show');
+            Tip.focus(':input[name="widgets[sale][min_point_deduct]"]', '最小积分抵扣格式错误,只能为非负整数或空.');
             return false;
         }
         /*if ($(':input[name="widgets[sale][max_point_deduct]"]').val() == '') {

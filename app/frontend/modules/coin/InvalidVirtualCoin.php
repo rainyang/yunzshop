@@ -24,7 +24,7 @@ class InvalidVirtualCoin extends VirtualCoin
 
     protected function _getExchangeRate()
     {
-        return 0;
+        return 1;
     }
 
     protected function _getName()

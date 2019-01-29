@@ -8,6 +8,7 @@
 
 namespace app\frontend\modules\finance\deduction\deductionSettings;
 
+use app\framework\Support\Facades\Log;
 use app\frontend\modules\deduction\DeductionSettingInterface;
 
 class PointShopDeductionSetting implements DeductionSettingInterface
@@ -17,8 +18,11 @@ class PointShopDeductionSetting implements DeductionSettingInterface
     {
         return 30;
     }
+
+    // todo 将运费抵扣分离出去
     public function isEnableDeductDispatchPrice()
     {
+        Log::debug("监听抵扣状态",\Setting::get('point.set.point_freight'));
         return \Setting::get('point.set.point_freight');
     }
 
@@ -27,16 +31,33 @@ class PointShopDeductionSetting implements DeductionSettingInterface
         return !\Setting::get('point.set.point_deduct');
     }
 
-    public function getFixedAmount()
+    public function getMaxFixedAmount()
     {
         return false;
     }
 
-    public function getPriceProportion()
+    public function getMaxPriceProportion()
     {
         return \Setting::get('point.set.money_max');
     }
-    public function getDeductionType(){
+
+    public function getMinDeductionType()
+    {
+        return 'GoodsPriceProportion';
+    }
+
+    public function getMinFixedAmount()
+    {
+        return false;
+    }
+
+    public function getMinPriceProportion()
+    {
+        return \Setting::get('point.set.money_min');
+    }
+
+    public function getMaxDeductionType()
+    {
         return 'GoodsPriceProportion';
     }
 }

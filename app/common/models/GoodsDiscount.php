@@ -42,7 +42,7 @@ class GoodsDiscount extends BaseModel
      * @return int|mixed
      * @throws \app\common\exceptions\AppException
      */
-    public function getAmount($price)
+    public function getAmount($price,$member = null)
     {
 
         if(array_key_exists('amount',$this->attributes)){
@@ -51,7 +51,7 @@ class GoodsDiscount extends BaseModel
         if ($this->enable()) {
             $this->amount =  $this->getIndependentDiscountAmount($price);
         } else {
-            $this->amount =  $this->getGlobalDiscountAmount($price);
+            $this->amount =  $this->getGlobalDiscountAmount($price,$member);
         }
         return $this->amount;
     }
@@ -61,9 +61,9 @@ class GoodsDiscount extends BaseModel
      * @return int
      * @throws \app\common\exceptions\AppException
      */
-    public function getGlobalDiscountAmount($price)
+    public function getGlobalDiscountAmount($price,$member = null)
     {
-        $member = \app\frontend\models\Member::current();
+        //$member = \app\frontend\models\Member::current();
         if (!isset($member->yzMember->level)) {
             return 0;
         }

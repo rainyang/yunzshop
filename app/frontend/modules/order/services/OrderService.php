@@ -223,6 +223,7 @@ class OrderService
          * @var OrderOperation $orderOperation
          */
         $orderOperation = OrderPay::find($param['order_id']);
+
         if (isset($param['pay_type_id'])) {
             $orderOperation->pay_type_id = $param['pay_type_id'];
         }
@@ -265,8 +266,8 @@ class OrderService
      */
     public static function orderSend($param)
     {
-        $orderOperation = OrderSend::find($param['order_id']);
-
+        $orderOperation = OrderSend::find($param['order_id']);        
+        // \Log::info('----3orderOperation--', $orderOperation);
         return self::OrderOperate($orderOperation);
     }
 

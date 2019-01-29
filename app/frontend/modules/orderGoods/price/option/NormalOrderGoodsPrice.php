@@ -34,7 +34,7 @@ class NormalOrderGoodsPrice extends BaseOrderGoodsPrice
         if (isset($this->price)) {
             return $this->price;
         }
-        // 商品销售价 - 等级优惠金额 - 单品满减优惠金额
+        // 商品销售价 - 等级优惠金额
         $this->price = $this->getGoodsPrice();
 
         $this->price -= $this->getVipDiscountAmount($this->price);
@@ -76,7 +76,7 @@ class NormalOrderGoodsPrice extends BaseOrderGoodsPrice
 
         if ($this->deductionCount != $this->orderGoods->getOrderGoodsDeductions()->count()) {
             $this->deductionCount = $this->orderGoods->getOrderGoodsDeductions()->count();
-            trace_log()->deduction('订单抵扣', "订单商品计算所有已用的抵扣金额");
+            trace_log()->deduction('订单商品计算者', "订单商品计算所有已用的抵扣金额");
             $this->deductionAmount = $this->orderGoods->getOrderGoodsDeductions()->getUsedPoint()->getMoney();
 
         }

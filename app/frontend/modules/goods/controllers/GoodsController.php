@@ -59,9 +59,9 @@ class GoodsController extends ApiController
             ->with(['hasOneBrand' => function ($query) {
                 return $query->select('id','logo', 'name', 'desc');
             }])
-            ->with('hasOneGoodsLimitbuy', function ($query) {
+            ->with(['hasOneGoodsLimitbuy'=> function ($query) {
                 return $query->select('goods_id', 'end_time');
-            })
+            }])
             ->with('hasOneGoodsVideo')
             ->find($id);
 
@@ -75,17 +75,6 @@ class GoodsController extends ApiController
             foreach ($goodsModel->hasManyOptions as &$item) {
                 $item->thumb = replace_yunshop(yz_tomedia($item->thumb));
             }
-        }
-
-
-        //商品视频处理
-        if (!is_null($goodsModel->hasOneGoodsVideo) && $goodsModel->hasOneGoodsVideo->goods_video) {
-            $goodsModel->goods_video = yz_tomedia($goodsModel->hasOneGoodsVideo->goods_video);
-
-            $goodsModel->video_image = $goodsModel->hasOneGoodsVideo->video_image?yz_tomedia($goodsModel->hasOneGoodsVideo->video_image):yz_tomedia($goodsModel->thumb);
-        } else {
-            $goodsModel->goods_video = '';
-            $goodsModel->video_image = '';
         }
 
 
@@ -132,6 +121,8 @@ class GoodsController extends ApiController
                 'is_deleted',
                 'reduce_stock_method',
             ]);
+
+        //商品图片处理
         if ($goodsModel->thumb) {
             $goodsModel->thumb = yz_tomedia($goodsModel->thumb);
         }
@@ -142,6 +133,17 @@ class GoodsController extends ApiController
             }
             $goodsModel->thumb_url = $thumb_url;
         }
+
+        //商品视频处理
+        if (!is_null($goodsModel->hasOneGoodsVideo) && $goodsModel->hasOneGoodsVideo->goods_video) {
+            $goodsModel->goods_video = yz_tomedia($goodsModel->hasOneGoodsVideo->goods_video);
+
+            $goodsModel->video_image = $goodsModel->hasOneGoodsVideo->video_image?yz_tomedia($goodsModel->hasOneGoodsVideo->video_image):yz_tomedia($goodsModel->thumb);
+        } else {
+            $goodsModel->goods_video = '';
+            $goodsModel->video_image = '';
+        }
+
         
         foreach ($goodsModel->hasManySpecs as &$spec) {
             $spec['specitem'] = GoodsSpecItem::select('id', 'title', 'specid', 'thumb')->where('specid', $spec['id'])->get();
@@ -153,7 +155,7 @@ class GoodsController extends ApiController
         // 商品详情挂件
         if (\Config::get('goods_detail')) {
             foreach (\Config::get('goods_detail') as $key_name => $row) {
-                $row_res = $row['class']::$row['function']($id, true);
+                $row_res = $row['class']::{$row['function']}($id, true);
                 if ($row_res) {
                     $goodsModel->$key_name = $row_res;
                     //供应商在售商品总数
@@ -192,9 +194,11 @@ class GoodsController extends ApiController
         //商城租赁
         //TODO 租赁插件是否开启 $lease_switch
         $lease_switch = LeaseToyGoods::whetherEnabled();
-
         $this->goods_lease_set($goodsModel, $lease_switch);
-        //return $this->successJson($goodsModel);
+
+
+
+
         return $this->successJson('成功', $goodsModel);
     }
     private function setGoodsPluginsRelations($goods){
@@ -363,59 +367,19 @@ class GoodsController extends ApiController
      * @param  [type] $member        [description]
      * @return [type]                [description]
      */
-    public function getDiscount($goodsModel, $memberModel)
+    public function getDiscount(Goods $goodsModel, $memberModel)
     {
-        $discountModel = $goodsModel->hasManyDiscount[0];
-// dd($discountModel);
-// dd($goodsModel);
-        $discount_value = null;
-        $level_discount_set = Setting::get('discount.all_set');
-
-        if ((float)$discountModel->discount_value) {
-            switch ($discountModel->discount_method) {
-                case 1:
-                    if (isset($level_discount_set['type']) && $level_discount_set['type'] == 1) {
-                        $discount_value = $goodsModel->market_price * ($discountModel->discount_value / 10);
-                    }else{
-                        $discount_value = $goodsModel->price * ($discountModel->discount_value / 10);
-                    }
-                    break;
-                case 2:
-                    if (isset($level_discount_set['type']) && $level_discount_set['type'] == 1) {
-                        $discount_value = max($goodsModel->market_price - $discountModel->discount_value, 0);
-                    }else{
-                        $discount_value = max($goodsModel->price - $discountModel->discount_value, 0);
-                    }
-                    break;
-                default:
-                    $discount_value = null;
-                    break;
-            }
-        }
 
         if ($memberModel->level) {
-
-            if ($discount_value === null) {
-                if (isset($level_discount_set['type']) && $level_discount_set['type'] == 1) {
-                    $discount_value = $goodsModel->market_price * ($memberModel->level->discount / 10);
-                }else{
-                    $discount_value = $goodsModel->price * ($memberModel->level->discount / 10);
-                }
-            }
-
             $data = [
                 'level_name' => $memberModel->level->level_name,
-                'discount_value' => $discount_value,
-
+                'discount_value' => $goodsModel->vip_price,
             ];
         } else {
-
             $data = [
                 'level_name' => '普通会员',
-                'discount_value' => $discount_value,
-
+                'discount_value' => $goodsModel->vip_price,
             ];
-
         }
 
         return $data['discount_value'] !== null ? $data : [];
@@ -485,6 +449,15 @@ class GoodsController extends ApiController
             }
             if (!empty($max_point_deduct)) {
                 $data['value'][] = '最高抵扣'.$max_point_deduct.$data['name'];
+            }
+        }
+        if ($set['point_deduct'] && $goodsModel->hasOneSale->min_point_deduct !== '0') {
+            $min_point_deduct = $set['money_min'] ? $set['money_min'].'%' : 0;
+            if ($goodsModel->hasOneSale->min_point_deduct) {
+                $min_point_deduct = $goodsModel->hasOneSale->min_point_deduct;
+            }
+            if (!empty($min_point_deduct)) {
+                $data['value'][] = '最少抵扣'.$min_point_deduct.$data['name'];
             }
         }
         if (!empty($data['value'])) {
@@ -588,7 +561,8 @@ class GoodsController extends ApiController
             'ed_reduction' => 0, //单品立减
             'award_balance' => 0, //赠送余额
             'point' => 0,        //赠送积分
-            'max_point_deduct' => 0, //积分抵扣
+            'max_point_deduct' => 0, //积分最大抵扣
+            'min_point_deduct' => 0, //积分最小抵扣
             'coupon' => 0,         //商品优惠券赠送
             'deduction_proportion' => 0, //爱心值最高抵扣
             'award_proportion' => 0, //奖励爱心值
@@ -641,7 +615,19 @@ class GoodsController extends ApiController
                 $data['sale_count'] += 1;
             }
         }
+        if ($set['point_deduct'] && $goodsModel->hasOneSale->min_point_deduct !== '0') {
 
+            $data['min_point_deduct'] = $set['money_min'] ? $set['money_min'].'%' : 0;
+
+            if ($goodsModel->hasOneSale->min_point_deduct) {
+
+                $data['min_point_deduct'] = $goodsModel->hasOneSale->min_point_deduct;
+            }
+            if (!empty($data['min_point_deduct'])) {
+                $data['first_strip_key'] = 'min_point_deduct';
+                $data['sale_count'] += 1;
+            }
+        }
         if ($goodsModel->hasOneGoodsCoupon->is_give) {
 
             $data['coupon'] = $goodsModel->hasOneGoodsCoupon->send_type ? '商品订单完成返优惠券' : '每月一号返优惠券';

@@ -5,13 +5,16 @@
  * Date: 2018/11/26
  * Time: 3:54 PM
  */
+
 namespace app\common\modules\orderGoods\models;
 
+use app\common\exceptions\AppException;
 use app\common\models\OrderGoods;
 use app\common\models\BaseModel;
 use app\frontend\models\Goods;
 use app\frontend\models\goods\Sale;
 use app\frontend\models\GoodsOption;
+use app\frontend\modules\deduction\OrderGoodsDeductManager;
 use app\frontend\modules\deduction\OrderGoodsDeductionCollection;
 use app\frontend\modules\orderGoods\price\option\NormalOrderGoodsOptionPrice;
 use app\frontend\modules\orderGoods\price\option\NormalOrderGoodsPrice;
@@ -26,6 +29,7 @@ use Illuminate\Support\Collection;
  * @property float coupon_price
  * @property float discount_price
  * @property float goods_cost_price
+ * @property float goods_market_price
  * @property float $deduction_amount
  * @property float payment_amount
  * @property int goods_id
@@ -37,6 +41,9 @@ use Illuminate\Support\Collection;
  * @property int uniacid
  * @property int goods_option_id
  * @property string goods_option_title
+ * @property string goods_sn
+ * @property string thumb
+ * @property string title
  * @property GoodsOption goodsOption
  * @property OrderGoodsDeductionCollection orderGoodsDeductions
  * @property Collection orderGoodsDiscounts
@@ -55,62 +62,90 @@ class PreOrderGoods extends OrderGoods
      * @var Collection
      */
     public $coupons;
+    /**
+     * @var OrderGoodsDeductManager
+     */
+    private $orderGoodsDeduction;
 
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
         // 订单商品优惠使用记录集合
         $this->setRelation('orderGoodsDiscounts', $this->newCollection());
-        // 订单商品优惠使用记录集合
-        $this->setRelation('orderGoodsDeductions', new OrderGoodsDeductionCollection());
     }
 
     /**
      * 为订单model提供的方法 ,设置所属的订单model
      * @param PreOrder $order
      */
-    public function setOrder(PreOrder $order)
+    public function init(PreOrder $order)
     {
         $this->order = $order;
-        $this->uid = $order->uid;
-        $this->uniacid = $order->uniacid;
+    }
+
+    public function touchPreAttributes()
+    {
+        $this->uid = (int)$this->uid;
+        $this->uniacid = (int)$this->uniacid;
+        $this->goods_id = (int)$this->goods_id;
+        $this->title = (string)$this->title;
+        $this->thumb = (string)$this->thumb;
+        $this->goods_sn = (string)$this->goods_sn;
+        $this->goods_price = (string)$this->goods_price;
+        $this->price = (float)$this->price;
+        $this->goods_cost_price = (float)$this->goods_cost_price;
+        $this->goods_market_price = (float)$this->goods_market_price;
+        $this->coupon_price = (float)$this->coupon_price;
+        $this->need_address = (float)$this->need_address;
+        if ($this->isOption()) {
+            $this->goods_option_id = (int)$this->goods_option_id;
+            $this->goods_option_title = (string)$this->goods_option_title;
+        }
+    }
+
+    public function getUidAttribute()
+    {
+        return $this->order->uid;
+    }
+
+    public function getUniacidAttribute()
+    {
+        return $this->order->uniacid;
+
     }
 
     /**
-     * 初始化属性,计算金额和价格,由于优惠金额的计算依赖于订单的优惠金额计算,所以需要在订单类计算完优惠金额之后,再执行这个方法
+     * @return PreOrder
+     * @throws AppException
      */
-    public function _init()
+    public function getOrder()
     {
-
-
-        $attributes = $this->getPreAttributes();
-        $this->setRawAttributes($attributes);
-        $attributes = $this->getPreAttributes();
-        $this->setRawAttributes($attributes);
-        $attributes = [
-            'price' => $this->getPrice(),
-            'coupon_price' => $this->getCouponAmount()
-        ];
-
-        $attributes = array_merge($this->getAttributes(), $attributes);
-        $this->setRawAttributes($attributes);
-
+        if (!isset($this->order)) {
+            throw new AppException('调用顺序错误,Order对象还没有载入');
+        }
+        return $this->order;
     }
 
-
-    /**
-     * 与生成后的 OrderGoods 对象一致,方便外部调用
-     * @return mixed
-     */
-    public function getPriceAttribute()
+    public function getOrderGoodsDeductions()
     {
-        return $this->getPrice();
+        if (!$this->getRelation('orderGoodsDeductions')) {
+            $preOrderGoodsDeduction = new OrderGoodsDeductManager($this);
+            $this->setRelation('orderGoodsDeductions', $preOrderGoodsDeduction->getOrderGoodsDeductions());
+
+        }
+        return $this->orderGoodsDeductions;
+    }
+
+    public function getCouponPriceAttribute()
+    {
+        return $this->getCouponAmount();
     }
 
     /**
      * @throws \Exception
      */
-    public function afterSaving(){
+    public function afterSaving()
+    {
         foreach ($this->relations as $models) {
             $models = $models instanceof Collection
                 ? $models->all() : [$models];
@@ -136,14 +171,22 @@ class PreOrderGoods extends OrderGoods
 
     public function save(array $options = [])
     {
-        if(isset($this->id)){
+        if (isset($this->id)) {
             return true;
         }
-        return parent::save($options); // TODO: Change the autogenerated stub
+        return parent::save($options);
+    }
+
+    public function toArray()
+    {
+
+        $this->touchPreAttributes();
+        return parent::toArray();
     }
 
     public function beforeSaving()
     {
+        $this->touchPreAttributes();
         $this->deduction_amount = $this->getDeductionAmount();
         $this->payment_amount = $this->getPaymentAmount();
     }
@@ -155,6 +198,7 @@ class PreOrderGoods extends OrderGoods
     {
         return $this->getGoodsPrice();
     }
+
     /**
      * @return mixed
      */

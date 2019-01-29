@@ -21,7 +21,6 @@ class OfflineCountController extends BaseController
         $search = \YunShop::request()->search;
 
         $list = MemberLowerCount::getMember($search)->orderBy('team_total', 'desc')->paginate($pageSize);
-
         $page = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
         return view('charts.member.offline_count', [
             'page' => $page,

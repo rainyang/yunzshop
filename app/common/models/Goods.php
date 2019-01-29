@@ -9,11 +9,15 @@
 namespace app\common\models;
 
 use app\common\exceptions\AppException;
+use app\common\models\goods\Discount;
 use app\common\models\goods\GoodsDispatch;
+use app\common\models\goods\GoodsPointActivity;
 use app\common\models\goods\Privilege;
 use app\framework\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
+use app\common\facades\Setting as SettingFacades;
+use app\common\modules\discount\GoodsMemberLevelDiscount;
 
 /**
  * Class Goods
@@ -53,6 +57,8 @@ use Illuminate\Support\Facades\DB;
  * @property int brand_id
  * @property int goods_video
  * @property int display_order
+ * @property float deal_price
+ * @property float vip_price
  * @property Collection hasManySpecs
  * @property Collection hasManyOptions
  * @property GoodsDiscount hasManyGoodsDiscount
@@ -79,7 +85,9 @@ class Goods extends BaseModel
     protected $search_fields = ['title'];
 
     static protected $needLog = true;
-
+    private $dealPrice;
+    protected $vipDiscountAmount;
+    public $vipDiscountLog;
     /**
      * 实物
      */
@@ -191,7 +199,7 @@ class Goods extends BaseModel
 
     public function hasManyDiscount()
     {
-        return $this->hasMany('app\common\models\goods\Discount');
+        return $this->hasMany(Discount::class, 'goods_id', 'id');
     }
 
     public function hasManyGoodsCategory()
@@ -219,11 +227,15 @@ class Goods extends BaseModel
         return $this->hasOne('app\common\models\goods\GoodsLimitBuy', 'goods_id', 'id');
     }
 
+    public function hasOnePointActivity()
+    {
+        return $this->hasOne(GoodsPointActivity::class, 'goods_id', 'id');
+    }
+
     public function hasOneGoodsService()
     {
         return $this->hasOne('app\common\models\goods\GoodsService', 'goods_id', 'id');
     }
-
 
     public function hasOneGoodsVideo()
     {
@@ -235,7 +247,7 @@ class Goods extends BaseModel
         return $query->where('is_plugin', 0);
     }
 
-    public function scopeSearch(BaseModel $query, $filters)
+    public function scopeSearch($query, $filters)
     {
         $query->uniacid();
 
@@ -373,7 +385,7 @@ class Goods extends BaseModel
      */
     public static function getGoodsByName($keyword)
     {
-        return static::uniacid()->select('id', 'title', 'thumb', 'market_price', 'price', 'real_sales', 'sku','plugin_id','stock')
+        return static::uniacid()->select('id', 'title', 'thumb', 'market_price', 'price', 'real_sales', 'sku', 'plugin_id', 'stock')
             ->where('title', 'like', '%' . $keyword . '%')
             ->where('status', 1)
             //->where('is_plugin', 0)
@@ -388,16 +400,16 @@ class Goods extends BaseModel
     public static function getGoodsByNameForLimitBuy($keyword)
     {
 
-        return static::uniacid()->select('id', 'title', 'thumb', 'market_price', 'price', 'real_sales', 'sku','plugin_id','stock')
+        return static::uniacid()->select('id', 'title', 'thumb', 'market_price', 'price', 'real_sales', 'sku', 'plugin_id', 'stock')
             ->where('title', 'like', '%' . $keyword . '%')
             ->where('status', 1)
             ->with(['hasOneGoodsLimitBuy' => function (BaseModel $query) {
-                 return $query->where('status',1)->select('goods_id', 'start_time', 'end_time');
+                return $query->where('status', 1)->select('goods_id', 'start_time', 'end_time');
             }])
             ->whereHas('hasOneGoodsLimitBuy', function (BaseModel $query) {
-                return $query->where('status',1);
+                return $query->where('status', 1);
             })
-            ->whereNotIn('plugin_id', [20,31,60])//屏蔽门店、码上点餐、第三方插件接口的虚拟商品
+            ->whereNotIn('plugin_id', [20, 31, 60])//屏蔽门店、码上点餐、第三方插件接口的虚拟商品
             ->get();
     }
 
@@ -485,7 +497,7 @@ class Goods extends BaseModel
     {
         parent::boot();
 
-        static::addGlobalScope(function (BaseModel $builder) {
+        static::addGlobalScope(function ($builder) {
             $builder->uniacid();
         });
     }
@@ -497,9 +509,11 @@ class Goods extends BaseModel
 
         return $model;
     }
-    public function getStatusNameAttribute(){
 
-        return [0=>'下架',1=>'上架'][$this->status];
+    public function getStatusNameAttribute()
+    {
+
+        return [0 => '下架', 1 => '上架'][$this->status];
     }
 
     /**
@@ -508,7 +522,7 @@ class Goods extends BaseModel
      * @param $total
      * @throws AppException
      */
-    public function generalValidate(Member $member,$total)
+    public function generalValidate(Member $member, $total)
     {
         if (empty($this->status)) {
             throw new AppException('(ID:' . $this->id . ')商品已下架');
@@ -520,16 +534,95 @@ class Goods extends BaseModel
 //            throw new AppException('(ID:' . $this->id . ')商品配送信息数据已损坏');
 //        }
         if (isset($this->hasOnePrivilege)) {
-            $this->hasOnePrivilege->validate($member,$total);
+            $this->hasOnePrivilege->validate($member, $total);
         }
     }
+
     /**
      * 获取商品名称
      * @return html
-    */
-    public static function getSearchOrder()
+     */
+    public static function getSearchOrder($keyword, $pluginId)
     {
-        $keyword = \YunShop::request()->keyword;
-        return Goods::select(['id','title', 'thumb', 'plugin_id'])->pluginId()->where('title', 'like', '%'.$keyword.'%')->get();
+//        $keyword = \YunShop::request()->keyword;
+        return Goods::select(['id', 'title', 'thumb', 'plugin_id'])->pluginId($pluginId)->where('title', 'like', '%' . $keyword . '%')->get();
+    }
+
+    /**
+     * 获取交易价(实际参与交易的商品价格)
+     * @return float|int
+     * @throws \app\common\exceptions\MemberNotLoginException
+     */
+    public function getDealPriceAttribute()
+    {
+        if (!isset($this->dealPrice)) {
+            $level_discount_set = SettingFacades::get('discount.all_set');
+            if (
+                isset($level_discount_set['type'])
+                && $level_discount_set['type'] == 1
+                && $this->memberLevelDiscount()->getAmount($this->market_price)
+            ) {
+                // 如果开启了原价计算会员折扣,并且存在等级优惠金额
+                $this->dealPrice = $this->market_price;
+            } else {
+                // 默认使用现价
+                $this->dealPrice = $this->price;
+            }
+        }
+
+        return $this->dealPrice;
+    }
+
+
+    /**
+     * @var GoodsMemberLevelDiscount
+     */
+    private $memberLevelDiscount;
+
+    /**
+     * @return GoodsMemberLevelDiscount
+     * @throws AppException
+     */
+    public function memberLevelDiscount()
+    {
+        if (!isset($this->memberLevelDiscount)) {
+            if (\YunShop::app()->getMemberId()) {
+                $member = \app\frontend\models\Member::current();
+            } else {
+                $member = new \app\frontend\models\Member();
+            }
+            $this->memberLevelDiscount = new GoodsMemberLevelDiscount($this, $member);
+        }
+        return $this->memberLevelDiscount;
+    }
+
+
+    /**
+     * 缓存等级折金额
+     * @param $price
+     * @return float
+     * @throws AppException
+     */
+
+    public function getVipDiscountAmount($price)
+    {
+        if (isset($this->vipDiscountAmount)) {
+
+            return $this->vipDiscountAmount;
+        }
+        $this->vipDiscountAmount = $this->memberLevelDiscount()->getAmount($price);
+        $this->vipDiscountLog = $this->memberLevelDiscount()->getLog($this->vipDiscountAmount);
+        return $this->vipDiscountAmount;
+    }
+
+
+    /**
+     * 获取商品的会员价格
+     * @return float|mixed
+     * @throws AppException
+     */
+    public function getVipPriceAttribute()
+    {
+        return sprintf('%.2f', $this->deal_price - $this->getVipDiscountAmount($this->deal_price));
     }
 }

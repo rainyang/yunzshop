@@ -2,18 +2,22 @@
 
 namespace app\frontend\modules\order\models;
 
+use app\common\exceptions\AppException;
 use app\common\models\BaseModel;
 use app\common\models\DispatchType;
 use app\common\models\Member;
+use app\common\models\OrderRequest;
 use app\common\modules\orderGoods\OrderGoodsCollection;
-use app\common\requests\Request;
+use app\framework\Http\Request;
 use app\frontend\models\Order;
-use app\frontend\modules\deduction\OrderDeduction;
+use app\frontend\models\order\PreOrderDeduction;
+use app\frontend\modules\deduction\OrderDeductManager;
 use app\frontend\modules\deduction\OrderDeductionCollection;
 use app\frontend\modules\dispatch\models\OrderDispatch;
 use app\frontend\modules\dispatch\models\PreOrderAddress;
+use app\frontend\modules\order\discount\BaseDiscount;
 use app\frontend\modules\order\OrderDiscount;
-use app\frontend\modules\orderGoods\models\PreOrderGoods;
+use app\common\modules\orderGoods\models\PreOrderGoods;
 use app\frontend\modules\order\services\OrderService;
 use app\frontend\modules\orderGoods\models\PreOrderGoodsCollection;
 use Illuminate\Support\Collection;
@@ -59,9 +63,10 @@ class PreOrder extends Order
      */
     protected $discount;
     /**
-     * @var OrderDeduction 抵扣类
+     * @var OrderDeductManager 抵扣类
      */
-    protected $orderDeduction;
+    protected $orderDeductManager;
+
     /**
      * @var Request
      */
@@ -82,27 +87,57 @@ class PreOrder extends Order
      * @return $this
      * @throws \app\common\exceptions\ShopException
      */
-    public function init(Member $member, OrderGoodsCollection $orderGoods, Request $request = null)
+    public function init(Member $member, OrderGoodsCollection $orderGoods, Request $request)
     {
-        $this->request = $request;
+        $this->setRequest($request);
         $this->setMember($member);
-
         $this->beforeCreating();
         $this->setOrderGoods($orderGoods);
-        /**
-         * @var PreOrder $order
-         */
+
+        $this->discount = new OrderDiscount($this);
+        $this->orderDispatch = new OrderDispatch($this);
+
         $this->afterCreating();
 
         $this->initAttributes();
-        $this->initOrderGoods();
+
         return $this;
+    }
+
+    /**
+     * @return OrderDeductManager
+     */
+    public function getOrderDeductManager()
+    {
+        if (!isset($this->orderDeductManager)) {
+            $this->orderDeductManager = new OrderDeductManager($this);
+        }
+        return $this->orderDeductManager;
+    }
+
+    public function getCheckedOrderDeductions()
+    {
+        return $this->getOrderDeductManager()->getCheckedOrderDeductions();
+    }
+
+    public function getOrderDeductions()
+    {
+        if (!$this->getRelation('orderDeductions')) {
+
+            return $this->getOrderDeductManager()->getOrderDeductions();
+        }
+        return $this->orderDeductions;
+    }
+
+    public function setRequest(Request $request)
+    {
+        $this->request = $request;
     }
 
     /**
      * @param $member
      */
-    private function setMember($member)
+    public function setMember($member)
     {
         $this->setRelation('belongsToMember', $member);
         $this->uid = $this->belongsToMember->uid;
@@ -149,35 +184,21 @@ class PreOrder extends Order
     public function setOrderGoods(OrderGoodsCollection $orderGoods)
     {
         $this->setRelation('orderGoods', $orderGoods);
-
-        $this->orderGoods->setOrder($this);
-
-    }
-
-    /**
-     * 依赖对象传入之后
-     */
-    public function afterCreating()
-    {
-
-        $this->discount = new OrderDiscount($this);
-        $this->orderDispatch = new OrderDispatch($this);
-        $this->orderDeduction = new OrderDeduction($this);
-
-
-    }
-
-    /**
-     * 初始化订单商品
-     */
-    public function initOrderGoods()
-    {
         $this->orderGoods->each(function ($aOrderGoods) {
             /**
              * @var PreOrderGoods $aOrderGoods
              */
-            $aOrderGoods->_init();
+            $aOrderGoods->init($this);
         });
+
+    }
+
+    /**
+     *
+     */
+    public function afterCreating()
+    {
+
     }
 
     /**
@@ -214,17 +235,36 @@ class PreOrder extends Order
             'discount_price' => $this->getDiscountAmount(),//订单优惠金额
             'deduction_price' => $this->getDeductionAmount(),//订单抵扣金额
             'dispatch_price' => $this->getDispatchAmount(),//订单运费
-            'is_virtual' => $this->isVirtual(),//是否是虚拟商品订单
             'goods_total' => $this->getGoodsTotal(),//订单商品总数
+
+            'is_virtual' => $this->isVirtual(),//是否是虚拟商品订单
             'order_sn' => OrderService::createOrderSN(),//订单编号
             'create_time' => time(),
             'note' => $this->getParams('note'),//订单备注
             'shop_name' => $this->getShopName(),//是否是虚拟商品订单
+            'need_address' => $this->isNeedAddress(),//订单不需要填写地址
+            'invoice_type'=>$this->getRequest()->input('invoice_type'),//发票类型
+            'rise_type'=>$this->getRequest()->input('rise_type'),//收件人或单位
+            'call'=>$this->getRequest()->input('call'),//抬头或单位名称
+            'company_number'=>$this->getRequest()->input('company_number'),//单位识别号
         );
 
 
         $attributes = array_merge($this->getAttributes(), $attributes);
         $this->setRawAttributes($attributes);
+
+    }
+
+    public function beforeSaving()
+    {
+        $this->setOrderRequest($this->getRequest()->input());
+    }
+
+    public function setOrderRequest(array $input)
+    {
+        $orderRequest = new OrderRequest();
+        $orderRequest->request = $input;
+        $this->setRelation('orderRequest', $orderRequest);
 
     }
 
@@ -278,19 +318,41 @@ class PreOrder extends Order
         //订单最终价格 = 商品最终价格 - 订单优惠 + 订单运费 - 订单抵扣
         $this->price = $this->getOrderGoodsPrice();
 
-        // todo 为了保证每一项优惠计算之后,立刻修改price ,临时修改成这样.需要想办法重写
-        $this->getDiscountAmount();
+        $this->getDiscounts()->each(function (BaseDiscount $discount) {
+            // 每一种订单优惠
+            $this->price -= $discount->getAmount();
+
+        });
 
         $this->price += $this->getDispatchAmount();
 
         $this->price -= $this->getDeductionAmount();
-
+//        $this->getCheckedOrderDeductions()->each(function (PreOrderDeduction $orderDeduction) {
+//            // 每一种最低抵扣金额 todo 考虑调整为最低限购
+//            $this->price -= $orderDeduction->getMinDeduction()->getMoney();
+//
+//        });
+//
+//        $this->getCheckedOrderDeductions()->each(function (PreOrderDeduction $orderDeduction) {
+//            // 每一种剩余抵扣金额
+//            $this->price -= $orderDeduction->getUsablePoint()->getMoney();
+//
+//        });
         return max($this->price, 0);
     }
 
     /**
-     * 计算订单优惠金额
-     * @return number
+     * 获取所有优惠
+     * @return Collection
+     */
+    protected function getDiscounts()
+    {
+        return $this->discount->getDiscounts();
+    }
+
+    /**
+     * 获取总优惠金额
+     * @return Collection
      */
     protected function getDiscountAmount()
     {
@@ -299,11 +361,15 @@ class PreOrder extends Order
 
     /**
      * 获取订单抵扣金额
-     * @return number
+     * @return int|mixed
      */
-    protected function getDeductionAmount()
+    public function getDeductionAmount()
     {
-        return $this->orderDeduction->getAmount();
+        if (!$this->getRelation('orderDeductions')) {
+            return $this->getOrderDeductManager()->getAmount() ?: 0;
+        }
+
+        return $this->orderDeductions->usedAmount();
     }
 
     /**
@@ -345,6 +411,19 @@ class PreOrder extends Order
         }
 
         return $this->orderGoods->hasVirtual();
+    }
+
+    /**
+     * 订单是否需要填写地址
+     * @return bool
+     */
+    public function isNeedAddress()
+    {
+        if ($this->need_address == 1) {
+            return true;
+        }
+
+        return $this->orderGoods->hasNeedAddress();
     }
 
 

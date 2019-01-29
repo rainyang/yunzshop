@@ -18,13 +18,15 @@
         function sub() {
             var order_id = $('.order_id').val();
             var remark = $('#remark').val();
-            $.post("{!! yzWebUrl('order.remark.update-remark') !!}", {
+            var invoice = $("[name='basic-detail[invoice]']").val();//获取发票
+            $.post("{!! yzWebUrl('order.edit') !!}", {
                 order_id: order_id,
-                remark: remark
+                remark: remark,
+                invoice: invoice,
             }, function (json) {
                 var json = $.parseJSON(json);
-                if (json.status == 1) {
-                    location.href = location.href;
+                if (json.result == 1) {
+                    window.location.reload();
                 }
             });
         }

@@ -25,7 +25,7 @@ require.config({
         'webuploader' : '../../components/webuploader/webuploader.min',
         //'fileUploader' : window.sysinfo['static_url'] + (window.sysinfo['is_new'] !='1' ? 'resource/js/app/fileUploader': 'resource/js/app/fileUploader.min'),
         //视频上传需要
-        'fileUploader' : window.sysinfo['static_url'] + (window.sysinfo['is_new'] !='1' ? 'resource/js/app/fileUploader': 'js/file.min'),
+        'fileUploader' : window.sysinfo['static_url'] + (window.sysinfo['is_new'] !='1' ? 'resource/js/app/fileUploader': 'js/app/fileUploader'),
         'json2' : '../lib/json2',
         'wapeditor' : './wapeditor',
         'jquery.wookmark': '../lib/jquery.wookmark.min',

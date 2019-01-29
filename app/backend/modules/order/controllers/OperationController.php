@@ -26,6 +26,7 @@ class OperationController extends BaseController
     public function preAction()
     {
         parent::preAction();
+
         $this->param = request()->input();
 
         if (!isset($this->param['order_id'])) {
