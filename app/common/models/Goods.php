@@ -238,7 +238,7 @@ class Goods extends BaseModel
 
     public function hasOnePointActivity()
     {
-        return $this->hasOne(\Yunshop\PointActivity\Backend\Models\GoodsPointActivity::class, 'goods_id', 'id');
+        return $this->hasOne('Yunshop\PointActivity\Backend\Models\GoodsPointActivity', 'goods_id', 'id');
     }
 
     public function hasOneGoodsService()
