@@ -46,7 +46,6 @@ return [
             'title' => '服务提供',
             'class' => 'app\backend\widgets\goods\ServiceWidget'
         ],
-
     ],
     'withdraw' => [
         'income' => [

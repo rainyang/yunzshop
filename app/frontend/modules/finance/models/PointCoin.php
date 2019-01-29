@@ -14,7 +14,7 @@ class PointCoin extends VirtualCoin
 {
     protected function _getExchangeRate()
     {
-        return \Setting::get('point.set.money', 0);
+        return \Setting::get('point.set.money', 1);
     }
 
     protected function _getName()

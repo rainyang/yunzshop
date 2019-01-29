@@ -19,10 +19,8 @@ use app\frontend\models\Member;
  */
 class GoodsMemberLevelDiscount
 {
-    private $discountCalculator;
     private $goods;
     private $member;
-    private $discountLog;
 
     public function __construct(Goods $goods, Member $member)
     {
