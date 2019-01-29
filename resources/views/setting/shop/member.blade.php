@@ -2,31 +2,7 @@
 
 @section('content')
 
-    <script type="text/javascript">
-        function formcheck() {
-            var numerictype = /^(0|[1-9]\d*)$/; //非负整数验证
-            var thumb = /\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/;
 
-
-            if ($(':input[name="member[headimg]"]').val() != '') {
-                if (!thumb.test($(':input[name="member[headimg]"]').val())) {
-                    Tip.focus(':input[name="member[headimg]"]', '图片类型必须是.gif,jpeg,jpg,png中的一种.');
-                    return false;
-                }
-            }
-
-            /*
-             if ($(':input[name="member[term_time]"]').val() != '') {
-             if (!numerictype.test($(':input[name="member[term_time]"]').val())) {
-             Tip.focus(':input[name="member[term_time]"]', '会员等级到期时间,只能为非负整数.');
-             return false;
-             }
-             }
-             */
-            return true;
-
-        }
-    </script>
     <div class="w1200 m0a">
         <div class="rightlist">
 
@@ -323,5 +299,37 @@
             </form>
         </div>
     </div>
+    <script type="text/javascript">
+        function formcheck() {
+            var numerictype = /^(0|[1-9]\d*)$/; //非负整数验证
+            var thumb = /\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/;
+
+
+            if ($(':input[name="member[headimg]"]').val() != '') {
+                if (!thumb.test($(':input[name="member[headimg]"]').val())) {
+                    Tip.focus(':input[name="member[headimg]"]', '图片类型必须是.gif,jpeg,jpg,png中的一种.');
+                    return false;
+                }
+            }
+            if ($(':input[name="member[is_bind_mobile]"]:checked').val() != 0 && $(':input[name="member[invite_page]"]:checked').val() != 0) {
+                if (!thumb.test($(':input[name="member[is_bind_mobile]"]').val())) {
+                    Tip.focus(':input[name="member[is_bind_mobile]"]', '强制绑定手机不能跟邀请页面同时开启');
+                    alert('强制绑定手机不能跟邀请页面同时开启');
+                    return false;
+                }
+            }
+
+            /*
+             if ($(':input[name="member[term_time]"]').val() != '') {
+             if (!numerictype.test($(':input[name="member[term_time]"]').val())) {
+             Tip.focus(':input[name="member[term_time]"]', '会员等级到期时间,只能为非负整数.');
+             return false;
+             }
+             }
+             */
+            return true;
+
+        }
+    </script>
     @include('public.admin.mylink')
 @endsection('content')

@@ -10,12 +10,29 @@ namespace app\backend\modules\charts\modules\team\services;
 
 
 
+use app\common\facades\Setting;
 use app\common\models\member\MemberChildren;
 use app\common\models\member\MemberMonthOrder;
 use app\common\models\member\MemberMonthRank;
+use app\common\models\UniAccount;
 
 class TeamRankService
 {
+
+    public function handle()
+    {
+        //数字资产定时激活
+        set_time_limit(0);
+
+        $uniAccount = UniAccount::get() ?: [];
+        foreach ($uniAccount as $u) {
+            Setting::$uniqueAccountId = \YunShop::app()->uniacid = $u->uniacid;
+
+            $this->getRank();
+        }
+        return true;
+    }
+
     public function getRank()
     {
         $time=time();

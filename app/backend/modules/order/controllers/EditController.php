@@ -10,10 +10,11 @@ namespace app\backend\modules\order\controllers;
 
 
 use app\common\components\BaseController;
+use app\common\exceptions\AppException;
 use app\common\models\order\Remark;
 use app\common\models\Order;
 
-class RemarkController extends BaseController
+class EditController extends BaseController
 {
     public function index()
     {
@@ -34,6 +35,7 @@ class RemarkController extends BaseController
             }
         }
         //(new \app\common\services\operation\OrderLog($remark, 'special'));
+
         $order->invoice = request()->input('invoice');
         $order->save();
         echo json_encode(["data" => '', "result" => 1]);
