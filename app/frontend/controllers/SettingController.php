@@ -82,7 +82,13 @@ class SettingController extends BaseController
 
         return $this->successJson('获取注册协议成功', $member_protocol);
     }
-
+    //获取余额设置
+    public function getBalance()
+    {
+        $shop = Setting::get('shop.shop');
+        $credit=$shop['credit'] ?: '余额';
+        return $this->successJson('获取余额设置成功',['balance'=>$credit]);
+    }
     /**
      * @return \Illuminate\Http\JsonResponse
      * 注册自定义表单接口

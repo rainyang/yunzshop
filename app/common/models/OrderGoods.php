@@ -11,6 +11,7 @@ namespace app\common\models;
 use app\common\exceptions\AppException;
 use app\common\models\goods\GoodsDispatch;
 use app\common\models\order\OrderGoodsChangePriceLog;
+use app\common\models\orderGoods\OrderGoodsDeduction;
 use app\common\models\orderGoods\OrderGoodsExpansion;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -37,7 +38,10 @@ class OrderGoods extends BaseModel
     ];
     protected $search_fields = ['title'];
 
-    //public function
+    public function orderGoodsDeductions(){
+        return $this->hasMany(OrderGoodsDeduction::class,'order_goods_id');
+    }
+
     public function hasOneGoods()
     {
         return $this->hasOne($this->getNearestModel('Goods'), 'id', 'goods_id');
