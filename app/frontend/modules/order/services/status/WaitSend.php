@@ -21,7 +21,15 @@ class WaitSend extends Status
 
     public function getStatusName()
     {
-        return '待发货';
+        $name = '待发货';
+        switch ($this->order->dispatch_type_id) {
+            case 4:
+                $name = '待确认';
+                break;
+
+        }
+
+        return $name;
     }
 
     public function getButtonModels()
