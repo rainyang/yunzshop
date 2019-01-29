@@ -22,10 +22,6 @@ abstract class OrderPriceNode extends PriceNode
         parent::__construct($weight);
     }
 
-    abstract public function getKey();
-
-    abstract public function getPrice();
-
     public function getWeight()
     {
         return $this->weight;
