@@ -58,6 +58,12 @@ class PayType extends BaseModel
             ->get();
     }
 
+
+    public static function updateDalance($name_id,$name)
+    {
+         return self::where('id',$name_id)
+             ->update(['name'=>$name]);
+    }
     public static function fetchPayType($name)
     {
         return self::where('name', $name)
