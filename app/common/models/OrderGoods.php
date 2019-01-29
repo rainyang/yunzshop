@@ -44,7 +44,6 @@ class OrderGoods extends BaseModel
         return $this->hasMany(OrderGoodsDeduction::class,'order_goods_id');
     }
 
-    //public function
     public function hasOneGoods()
     {
         return $this->hasOne($this->getNearestModel('Goods'), 'id', 'goods_id');

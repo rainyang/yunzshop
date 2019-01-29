@@ -9,10 +9,10 @@
 namespace app\common\models;
 
 
+use app\backend\modules\order\observers\OrderObserver;
 use app\common\events\order\AfterOrderCreatedImmediatelyEvent;
 use app\common\events\order\AfterOrderPaidImmediatelyEvent;
 use app\common\events\order\AfterOrderReceivedImmediatelyEvent;
-use app\frontend\modules\order\services\OrderService;
 use app\common\exceptions\AppException;
 use app\common\models\order\Express;
 use app\common\models\order\OrderChangePriceLog;
@@ -25,10 +25,11 @@ use app\common\models\order\Remark;
 use app\common\models\refund\RefundApply;
 use app\common\modules\order\OrderOperationsCollector;
 use app\common\modules\payType\events\AfterOrderPayTypeChangedEvent;
+use app\common\modules\refund\services\RefundService;
 use app\common\services\PayFactory;
 use app\common\traits\HasProcessTrait;
-use app\common\modules\refund\services\RefundService;
 use app\frontend\modules\order\OrderCollection;
+use app\frontend\modules\order\services\OrderService;
 use app\frontend\modules\order\services\status\StatusFactory;
 use app\frontend\modules\orderPay\models\PreOrderPay;
 use app\Jobs\OrderCreatedEventQueueJob;
@@ -39,7 +40,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\DB;
-use app\backend\modules\order\observers\OrderObserver;
 
 /**
  * Class Order
@@ -150,7 +150,13 @@ class Order extends BaseModel
             ->where('uid', $uid)
             ->sum('price');
     }
-
+    //获取发票信息
+    public static function getInvoice($order)
+    {
+        return self ::select('invoice_type','rise_type','call','company_number','invoice')
+            ->where('id',$order)
+            ->first();
+    }
 
     public function scopePayFail($query)
     {

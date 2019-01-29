@@ -381,59 +381,19 @@ class GoodsController extends ApiController
      * @param  [type] $member        [description]
      * @return [type]                [description]
      */
-    public function getDiscount($goodsModel, $memberModel)
+    public function getDiscount(Goods $goodsModel, $memberModel)
     {
-        $discountModel = $goodsModel->hasManyDiscount[0];
-// dd($discountModel);
-// dd($goodsModel);
-        $discount_value = null;
-        $level_discount_set = Setting::get('discount.all_set');
-
-        if ((float)$discountModel->discount_value) {
-            switch ($discountModel->discount_method) {
-                case 1:
-                    if (isset($level_discount_set['type']) && $level_discount_set['type'] == 1) {
-                        $discount_value = $goodsModel->market_price * ($discountModel->discount_value / 10);
-                    }else{
-                        $discount_value = $goodsModel->price * ($discountModel->discount_value / 10);
-                    }
-                    break;
-                case 2:
-                    if (isset($level_discount_set['type']) && $level_discount_set['type'] == 1) {
-                        $discount_value = max($goodsModel->market_price - $discountModel->discount_value, 0);
-                    }else{
-                        $discount_value = max($goodsModel->price - $discountModel->discount_value, 0);
-                    }
-                    break;
-                default:
-                    $discount_value = null;
-                    break;
-            }
-        }
 
         if ($memberModel->level) {
-
-            if ($discount_value === null) {
-                if (isset($level_discount_set['type']) && $level_discount_set['type'] == 1) {
-                    $discount_value = $goodsModel->market_price * ($memberModel->level->discount / 10);
-                }else{
-                    $discount_value = $goodsModel->price * ($memberModel->level->discount / 10);
-                }
-            }
-
             $data = [
                 'level_name' => $memberModel->level->level_name,
-                'discount_value' => $discount_value,
-
+                'discount_value' => $goodsModel->vip_price,
             ];
         } else {
-
             $data = [
                 'level_name' => '普通会员',
-                'discount_value' => $discount_value,
-
+                'discount_value' => $goodsModel->vip_price,
             ];
-
         }
 
         return $data['discount_value'] !== null ? $data : [];

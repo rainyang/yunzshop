@@ -335,7 +335,7 @@ class Privilege extends BaseModel
             return;
         }
         $buy_groups = explode(',', $goodsModel->hasOnePrivilege->buy_groups);
-        $group_names = MemberGroup::select(DB::raw('group_concat(group_name) as level_name'))->whereIn('id', $buy_groups)->value('level_name');
+        $group_names = MemberGroup::select(DB::raw('group_concat(group_name) as group_name'))->whereIn('id', $buy_groups)->value('group_name');
         if (empty($group_names)) {
             return;
         }
