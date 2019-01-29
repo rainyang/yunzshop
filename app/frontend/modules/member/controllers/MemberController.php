@@ -1456,7 +1456,6 @@ class MemberController extends ApiController
         }
 
         if (app('plugins')->isEnabled('store-cashier')) {
-            $store = \Yunshop\StoreCashier\common\models\Store::getStoreByUid(\YunShop::app()->getMemberId())->first();
             if (!$store) {
                 $data[] = [
                     'name'  => 'store_apply',
@@ -1578,6 +1577,17 @@ class MemberController extends ApiController
                     'title' => '绑定银行卡',
                     'class' => 'icon-member_card',
                     'url'   => 'BankCard'
+                ];
+            }
+        }
+        if (app('plugins')->isEnabled('hotel')) {
+            $store = \Yunshop\Hotel\common\models\Hotel::getHotelByUid(\YunShop::app()->getMemberId())->first();
+            if ($store) {
+                $data[] = [
+                    'name'  => 'hotel',
+                    'title' => '酒店管理',
+                    'class' => 'icon-member_hotel',
+                    'url'   => 'HotelIndex'
                 ];
             }
         }
