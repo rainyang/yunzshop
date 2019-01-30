@@ -12,6 +12,7 @@ use app\payment\PaymentController;
 use Illuminate\Support\Facades\DB;
 use app\common\models\AccountWechats;
 use app\common\services\Pay;
+use Yunshop\YopPay\models\YopOrderRefund;
 use Yunshop\YopPay\models\YopPayOrder;
 
 class YoppayController extends PaymentController
@@ -227,7 +228,52 @@ class YoppayController extends PaymentController
     //订单退款
     public function refundUrl()
     {
+        $yop_refund = YopOrderRefund::getRefundAnnal($this->getParameter('orderId'), $this->getParameter('refundRequestId'))->first();
 
+        if (!$yop_refund) {
+            $this->yopLog('订单退款异步','易宝订单退款记录不存在',$this->parameters);
+            exit('Record does not exist');
+        }
+
+
+        $yop_refund->status = $this->refundStatus();
+
+        if ($this->getParameter('refundSuccessDate')) {
+            $yop_refund->refund_at = strtotime($this->getParameter('refundSuccessDate'));
+        }
+
+        if ($this->getParameter('errorMessage')) {
+            $yop_refund->error_message = $this->getParameter('errorMessage');
+        }
+
+        $yop_refund->save();
+
+        echo 'SUCCESS';
+        exit();
+    }
+
+    //支付产品
+    protected function refundStatus()
+    {
+        $status = 0;
+        if (!empty($this->parameters['status'])) {
+            switch ($this->parameters['status']) {
+                case 'FAILED':
+                    $status = YopOrderRefund::REFUND_FAILED;
+                    break;
+                case 'SUCCESS':
+                    $status = YopOrderRefund::REFUND_SUCCESS;
+                    break;
+                case 'CANCEL':
+                    $status = YopOrderRefund::REFUND_CANCEL;
+                    break;
+                default:
+                    $status = 0;
+                    break;
+            }
+        }
+
+        return $status;
     }
 
     /**
