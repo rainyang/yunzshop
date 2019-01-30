@@ -30,6 +30,8 @@ class EditController extends BaseController
                     'remark' => request()->input('remark')
                 ]);
             }
+
+            $remark->remark=request()->input('remark');
             if(!$remark->save()){
                 return $this->errorJson();
             }
