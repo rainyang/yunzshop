@@ -145,6 +145,8 @@ class MemberController extends ApiController
                     $data['inviteCode'] = 0;
                 }
 
+                $data['is_open_hotel'] = app('plugins')->isEnabled('hotel') ? 1 : 0;
+
                 return $this->successJson('', $data);
             } else {
                 return $this->errorJson('[' . $member_id . ']用户不存在');
@@ -155,6 +157,7 @@ class MemberController extends ApiController
         }
 
     }
+
 
     /**
      * 检查会员推广资格
@@ -1607,6 +1610,7 @@ class MemberController extends ApiController
         }
         return $this->errorJson('', 0);
     }
+
 
     /**
      *  推广申请页面数据
