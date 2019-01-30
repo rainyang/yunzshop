@@ -1587,7 +1587,7 @@ class MemberController extends ApiController
                     'name'  => 'hotel',
                     'title' => '酒店管理',
                     'class' => 'icon-member_hotel',
-                    'url'   => 'HotelIndex'
+                    'url'   => 'HotelManage'
                 ];
             }
         }
