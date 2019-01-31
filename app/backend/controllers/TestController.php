@@ -27,6 +27,7 @@ use Carbon\Carbon;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Yunshop\PointActivity\Common\Listeners\OrderReceivedListener;
 
 
 class TestController extends BaseController
@@ -35,14 +36,7 @@ class TestController extends BaseController
 
     public function t()
     {
-        $orderModel = Order::find(2816);
-        event(new AfterOrderReceivedEvent($orderModel));
-    }
 
-    public function o()
-    {
-        $goodsModel = Goods::find(279);
-        event(new OrderCreatedEvent($goodsModel));
     }
 
     public $orderId;
