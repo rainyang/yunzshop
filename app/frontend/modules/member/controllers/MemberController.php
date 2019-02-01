@@ -1460,6 +1460,7 @@ class MemberController extends ApiController
         }
 
         if (app('plugins')->isEnabled('store-cashier')) {
+            $store = \Yunshop\StoreCashier\common\models\Store::getStoreByUid(\YunShop::app()->getMemberId())->first();
             if (!$store) {
                 $data[] = [
                     'name'  => 'store_apply',
