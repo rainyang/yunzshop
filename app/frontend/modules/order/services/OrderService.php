@@ -330,7 +330,7 @@ class OrderService
         if (!$days) {
             return;
         }
-        $orders = \app\backend\modules\order\models\Order::waitReceive()->where('send_time', '<', (int)Carbon::now()->addDays(-$days)->timestamp)->normal()->get();
+        $orders = \app\backend\modules\order\models\Order::waitReceive()->where('auto_receipt', 0)->where('send_time', '<', (int)Carbon::now()->addDays(-$days)->timestamp)->normal()->get();
         if (!$orders->isEmpty()) {
             $orders->each(function ($order) {
                 try {

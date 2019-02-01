@@ -146,6 +146,8 @@ class MemberController extends ApiController
                     $data['inviteCode'] = 0;
                 }
 
+                $data['is_open_hotel'] = app('plugins')->isEnabled('hotel') ? 1 : 0;
+
                 return $this->successJson('', $data);
             } else {
                 return $this->errorJson('[' . $member_id . ']用户不存在');
@@ -156,6 +158,7 @@ class MemberController extends ApiController
         }
 
     }
+
 
     /**
      * 检查会员推广资格
@@ -1591,6 +1594,17 @@ class MemberController extends ApiController
                 ];
             }
         }
+        if (app('plugins')->isEnabled('hotel')) {
+            $store = \Yunshop\Hotel\common\models\Hotel::getHotelByUid(\YunShop::app()->getMemberId())->first();
+            if ($store) {
+                $data[] = [
+                    'name'  => 'hotel',
+                    'title' => '酒店管理',
+                    'class' => 'icon-member_hotel',
+                    'url'   => 'HotelManage'
+                ];
+            }
+        }
 
         return $this->successJson('ok', $data);
     }
@@ -1607,6 +1621,7 @@ class MemberController extends ApiController
         }
         return $this->errorJson('', 0);
     }
+
 
     /**
      *  推广申请页面数据
