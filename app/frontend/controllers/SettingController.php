@@ -82,12 +82,12 @@ class SettingController extends BaseController
 
         return $this->successJson('获取注册协议成功', $member_protocol);
     }
-
     //获取余额设置
     public function getBalance()
     {
         $shop = Setting::get('shop.shop');
-        return $this->successJson('获取余额设置成功',['balance'=>$shop['credit']]);
+        $credit=$shop['credit'] ?: '余额';
+        return $this->successJson('获取余额设置成功',['balance'=>$credit]);
     }
     /**
      * @return \Illuminate\Http\JsonResponse
@@ -159,6 +159,14 @@ class SettingController extends BaseController
                 'team_dividend' => '',
                 'team_agent_centre' => '',
                 'dividend' => '',
+                'flat_prize' => '',
+                'award_gratitude' => '',
+                'dividend_amount' => '',
+            ],
+            'area_dividend' => [
+                'area_dividend_center' => '',
+                'area_dividend' => '',
+                'dividend_amount' => '',
             ]
         ];
 

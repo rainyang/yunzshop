@@ -219,6 +219,8 @@
 
                         <div id="fe-tab-link-li-99" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 99)" data-href="{{ yzAppFullUrl('goodsorder') }}">填写订单</div>
 
+                        <div id="fe-tab-link-li-101" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 101)" data-href="{{ yzAppFullUrl('voiceList') }}">音频文章</div>
+
                         <!-- 新增链接结束 -->
 <!-- ========================================================================= -->
                     </div>

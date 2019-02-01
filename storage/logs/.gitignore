@@ -1,4 +1,5 @@
-*
+*.log
+*.zip
 trace/
 error/
 debug/
