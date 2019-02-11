@@ -1603,7 +1603,7 @@ class MemberController extends ApiController
             }
         }
         //获取所有模板
-        $sets = ViewSet::uniacid()->select('names', 'type')->get()->toArray();
+        $sets = \Yunshop\Designer\models\ViewSet::uniacid()->select('names', 'type')->get()->toArray();
 
         if (!$sets) {
             $arr['ViewSet'] = [];
