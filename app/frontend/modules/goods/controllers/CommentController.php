@@ -261,12 +261,23 @@ class CommentController extends ApiController
     public static function unSerializeImage(&$arrComment)
     {
         $arrComment['images'] = unserialize($arrComment['images']);
+        foreach ($arrComment['images'] as &$image) {
+            $image = yz_tomedia($image);
+        }
         if ($arrComment['append']) {
-            $arrComment['append']['images'] = yz_tomedia(unserialize($arrComment['append']['images']));
+            foreach ($arrComment['append'] as &$comment) {
+                $comment['images'] = unserialize($comment['images']);
+                foreach ($comment['images'] as &$image) {
+                    $image = yz_tomedia($image);
+                }
+            }
         }
         if ($arrComment['has_many_reply']) {
             foreach ($arrComment['has_many_reply'] as &$comment) {
-                $comment['images'] = yz_tomedia(unserialize($comment['images']));
+                $comment['images'] = unserialize($comment['images']);
+                foreach ($comment['images'] as &$image) {
+                    $image = yz_tomedia($image);
+                }
             }
         }
     }
