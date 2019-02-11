@@ -262,11 +262,11 @@ class CommentController extends ApiController
     {
         $arrComment['images'] = unserialize($arrComment['images']);
         if ($arrComment['append']) {
-            $arrComment['append']['images'] = unserialize($arrComment['append']['images']);
+            $arrComment['append']['images'] = yz_tomedia(unserialize($arrComment['append']['images']));
         }
         if ($arrComment['has_many_reply']) {
             foreach ($arrComment['has_many_reply'] as &$comment) {
-                $comment['images'] = unserialize($comment['images']);
+                $comment['images'] = yz_tomedia(unserialize($comment['images']));
             }
         }
     }
