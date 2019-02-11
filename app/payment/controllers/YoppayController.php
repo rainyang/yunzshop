@@ -9,6 +9,7 @@
 namespace app\payment\controllers;
 
 use app\payment\PaymentController;
+use app\common\helpers\Url;
 use Illuminate\Support\Facades\DB;
 use app\common\models\AccountWechats;
 use app\common\services\Pay;
@@ -190,7 +191,10 @@ class YoppayController extends PaymentController
     //同步通知
     public function redirectUrl()
     {
-
+//        $yop_data = $_REQUEST;
+        \Log::debug('---------------------------易宝同步通知----------------', $_REQUEST);
+        //$url = str_replace('https','http', Url::shopSchemeUrl("?menu#/member/payYes?i={$uniacid}"));
+        //redirect($url)->send();
     }
 
     //订单超时通知地址

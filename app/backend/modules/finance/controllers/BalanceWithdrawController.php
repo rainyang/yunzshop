@@ -130,6 +130,12 @@ class BalanceWithdrawController extends BaseController
 
             $this->withdrawUpdate();
         }
+//        elseif ($this->withdrawModel->pay_way == 'yop_pay') {
+//            $this->withdrawModel->pay_at = time();
+//            $this->withdrawModel->status = 4;
+//
+//            $this->withdrawUpdate();
+//        }
 
         return $result;
     }
@@ -172,6 +178,9 @@ class BalanceWithdrawController extends BaseController
                 break;
             case 'huanxun':
                 return $this->huanxunPayment();
+                break;
+            case 'yop_pay':
+                return $this->yopPayment();
                 break;
             default:
                 throw new AppException('未知打款方式！！！');
@@ -234,6 +243,7 @@ class BalanceWithdrawController extends BaseController
     }
 
     /**
+     * @author blank
      * EUP打款
      * @return array|mixed|void
      */
@@ -247,6 +257,23 @@ class BalanceWithdrawController extends BaseController
 
         return $result;
     }
+
+    /**
+     * @author blank
+     * 易宝打款
+     * @return array|mixed|void
+     */
+    private function yopPayment()
+    {
+        $result = WithdrawService::yopWithdrawPay($this->withdrawModel);
+
+        if (!empty($result) && $result['errno'] == 1) {
+            return $this->paymentError($result['message']);
+        }
+
+        return $result;
+    }
+
 
     private function huanxunPayment()
     {

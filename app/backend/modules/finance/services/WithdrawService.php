@@ -86,6 +86,12 @@ class WithdrawService extends Withdraw
         return  PayFactory::create(PayFactory::PAY_EUP)->doWithdraw($withdraw->member_id, $withdraw->withdraw_sn, $withdraw->actual_amounts);
     }
 
+    //blank 易宝提现
+    public static function yopWithdrawPay($withdraw)
+    {
+        return  PayFactory::create(PayFactory::YOP)->doWithdraw($withdraw->member_id, $withdraw->withdraw_sn, $withdraw->actual_amounts);
+    }
+
     public static function huanxunPayment($withdraw)
     {
         return  PayFactory::create(PayFactory::PAY_Huanxun_Quick)->doWithdraw($withdraw->member_id, $withdraw->withdraw_sn, $withdraw->actual_amounts);
