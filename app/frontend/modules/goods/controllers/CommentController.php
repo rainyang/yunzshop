@@ -67,7 +67,7 @@ class CommentController extends ApiController
             return $this->errorJson('评论失败!未检测到评论等级!');
         }
 
-        if (isset(\YunShop::request()->images)) {
+        if (\YunShop::request()->images) {
             $comment['images'] = json_decode(\YunShop::request()->images);
             if (is_array($comment['images'])) {
                 if (count($comment['images']) > self::COMMENT_IMAGE_COUNT) {
@@ -80,7 +80,6 @@ class CommentController extends ApiController
         } else {
             $comment['images'] = serialize([]);
         }
-
 
         $commentModel->setRawAttributes($comment);
 
@@ -117,7 +116,7 @@ class CommentController extends ApiController
             return $this->errorJson('追加评论失败!未检测到评论内容!');
         }
 
-        if (isset(\YunShop::request()->images)) {
+        if (\YunShop::request()->images) {
             $comment['images'] = json_decode(\YunShop::request()->images);
             if (is_array($comment['images'])) {
                 if (count($comment['images']) > self::COMMENT_IMAGE_COUNT) {
@@ -174,7 +173,7 @@ class CommentController extends ApiController
 //        } else {
 //            $comment['images'] = serialize([]);
 //        }
-        if (isset(\YunShop::request()->images)) {
+        if (\YunShop::request()->images) {
             $comment['images'] = json_decode(\YunShop::request()->images);
             if (is_array($comment['images'])) {
                 if (count($comment['images']) > self::COMMENT_IMAGE_COUNT) {
