@@ -101,6 +101,8 @@ class PreOrderGoods extends OrderGoods
         if ($this->isOption()) {
             $this->goods_option_id = (int)$this->goods_option_id;
             $this->goods_option_title = (string)$this->goods_option_title;
+            $this->goods_sn = (string)$this->goodsOption->goods_sn;
+            $this->product_sn = (string)$this->goodsOption->product_sn;
         }
     }
 
