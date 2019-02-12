@@ -23,6 +23,7 @@ use app\common\models\Area;
 use app\common\models\Goods;
 use app\common\models\McMappingFans;
 use app\common\models\member\MemberInvitationCodeLog;
+use app\common\models\member\MemberInviteGoodsLogController;
 use app\common\models\MemberShopInfo;
 use app\common\services\popularize\PortType;
 use app\common\services\Session;
@@ -145,6 +146,8 @@ class MemberController extends ApiController
                     $data['inviteCode'] = 0;
                 }
 
+                $data['is_open_hotel'] = app('plugins')->isEnabled('hotel') ? 1 : 0;
+
                 return $this->successJson('', $data);
             } else {
                 return $this->errorJson('[' . $member_id . ']用户不存在');
@@ -155,6 +158,7 @@ class MemberController extends ApiController
         }
 
     }
+
 
     /**
      * 检查会员推广资格
@@ -1581,6 +1585,17 @@ class MemberController extends ApiController
                 ];
             }
         }
+        if (app('plugins')->isEnabled('hotel')) {
+            $store = \Yunshop\Hotel\common\models\Hotel::getHotelByUid(\YunShop::app()->getMemberId())->first();
+            if ($store) {
+                $data[] = [
+                    'name'  => 'hotel',
+                    'title' => '酒店管理',
+                    'class' => 'icon-member_hotel',
+                    'url'   => 'HotelManage'
+                ];
+            }
+        }
 
         return $this->successJson('ok', $data);
     }
@@ -1597,6 +1612,7 @@ class MemberController extends ApiController
         }
         return $this->errorJson('', 0);
     }
+
 
     /**
      *  推广申请页面数据
@@ -1675,20 +1691,16 @@ class MemberController extends ApiController
     public function memberInviteValidate()
     {
         $invite_code = request()->invite_code;
-        $member      = (new MemberShopInfo())->getInviteCodeMember($invite_code);
-
+        $parent = (new MemberShopInfo())->getInviteCodeMember($invite_code);
         $member_invitation_model = new MemberInvitationCodeLog();
 
-        if ($member) {
-            \Log::info('更新上级------' . \YunShop::app()->getMemberId());
-            MemberShopInfo::uniacid()->where('member_id',
-                \YunShop::app()->getMemberId())->update(['parent_id' => $member->member_id]);
+        if ($parent) {
+            \Log::info('更新上级------'.\YunShop::app()->getMemberId());
+            MemberShopInfo::change_relation(\YunShop::app()->getMemberId(), $parent->member_id);
 
-            $member_invitation_model->uniacid         = \YunShop::app()->uniacid;
-            $member_invitation_model->member_id       = $member->member_id;
-            $member_invitation_model->invitation_code = $invite_code;
-            $member_invitation_model->save();
-            return $this->successJson('ok', $member);
+            $member_invitation_model->uniacid = \YunShop::app()->uniacid;
+            $member_invitation_model->mid = \YunShop::app()->getMemberId();
+            $member_invitation_model->member_id = $parent->member_id;
         } else {
             return $this->errorJson('邀请码有误!请重新填写');
         }
@@ -1738,11 +1750,76 @@ class MemberController extends ApiController
         }
     }
 
+    public function confirmGoods()
+    {
+        $member_id = \YunShop::app()->getMemberId();
+        $member = MemberShopInfo::getMemberShopInfo($member_id);
+
+        $member_invite_goods_log_model = new MemberInviteGoodsLogController();
+        $member_invite_goods_log_model->uniacid = \YunShop::app()->uniacid;
+        $member_invite_goods_log_model->member_id = $member_id;
+        $member_invite_goods_log_model->parent_id = $member->parent_id;
+        $member_invite_goods_log_model->invitation_code = '';
+
+        if ($member_invite_goods_log_model->save()) {
+            return $this->successJson('ok');
+        }
+    }
+
+    public function refuseGoods()
+    {
+        $invite_code = request()->invite_code;
+        $parent = (new MemberShopInfo())->getInviteCodeMember($invite_code);
+        $member_invite_goods_log_model = new MemberInviteGoodsLogController();
+
+        if ($parent) {
+            \Log::info('更新上级------'.\YunShop::app()->getMemberId());
+            MemberShopInfo::change_relation(\YunShop::app()->getMemberId(), $parent->member_id);
+
+            $member_invite_goods_log_model->uniacid = \YunShop::app()->uniacid;
+            $member_invite_goods_log_model->member_id = \YunShop::app()->getMemberId();
+            $member_invite_goods_log_model->parent_id = $parent->member_id;
+            $member_invite_goods_log_model->invitation_code = $invite_code;
+            $member_invite_goods_log_model->save();
+            return $this->successJson('ok');
+        } else {
+            return $this->errorJson('邀请码有误!请重新填写');
+        }
+    }
+
+    public function isValidatePageGoods()
+    {
+        $member_id = \YunShop::app()->getMemberId();
+
+        if (!$member_id) {
+            return $this->errorJson('会员不存在!');
+        }
+
+        $invitation_log = MemberInviteGoodsLogController::getLogByMemberId($member_id);
+
+        $result['is_invite'] = $invitation_log ? 1 : 0;
+
+        return $this->successJson('有记录',$result);
+    }
+
     public function getShopSet()
     {
         $shop_set_name = Setting::get('shop.shop.name');
         $default_name  = '商城名称';
         return $this->successJson('ok', $shop_set_name ?: $default_name);
+    }
+
+
+    public function getArticleQr()
+    {
+        if (app('plugins')->isEnabled('article')) {
+            $article_qr_set = Setting::get('plugin.article.qr');
+            $qr = MemberModel::getAgentQR();
+            if ($article_qr_set == 1) {
+                return $this->errorJson('二维码开关关闭!');
+            }
+            return $this->successJson('获取二维码成功!', $qr);
+        }
     }
 
     public function isBindMobile($member_set, $member_id)

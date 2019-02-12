@@ -5,11 +5,13 @@ use app\backend\modules\goods\models\Brand;
 use app\common\components\ApiController;
 use app\common\facades\Setting;
 use app\common\models\Category;
+use app\common\models\goods\Privilege;
 use app\frontend\modules\goods\models\Goods;
 use app\common\models\GoodsSpecItem;
 use app\common\services\goods\SaleGoods;
 use app\common\services\goods\VideoDemandCourseGoods;
 use app\common\models\MemberShopInfo;
+use Illuminate\Support\Facades\DB;
 use Yunshop\Commission\Common\Services\GoodsDetailService;
 use Yunshop\Commission\models\Agents;
 use Yunshop\Love\Common\Models\GoodsLove;
@@ -17,7 +19,8 @@ use app\frontend\modules\coupon\models\Coupon;
 use app\frontend\modules\coupon\controllers\MemberCouponController;
 use app\common\services\goods\LeaseToyGoods;
 use Yunshop\Supplier\common\models\SupplierGoods;
-
+use app\common\models\MemberLevel;
+use app\common\models\MemberGroup;
 
 /**
  * Created by PhpStorm.
@@ -56,6 +59,7 @@ class GoodsController extends ApiController
             ->with('hasOneSale')
             ->with('hasOneGoodsCoupon')
             ->with('hasOneGoodsLimitBuy')
+            ->with('hasOneInvitePage')
             ->with(['hasOneBrand' => function ($query) {
                 return $query->select('id','logo', 'name', 'desc');
             }])
@@ -64,6 +68,8 @@ class GoodsController extends ApiController
             }])
             ->with('hasOneGoodsVideo')
             ->find($id);
+
+        $this->validatePrivilege($goodsModel, $member);
 
         //商品品牌处理
         if ($goodsModel->hasOneBrand) {
@@ -196,17 +202,25 @@ class GoodsController extends ApiController
         $lease_switch = LeaseToyGoods::whetherEnabled();
         $this->goods_lease_set($goodsModel, $lease_switch);
 
-
-
+        //判断是否酒店商品
+        $goodsModel->is_hotel = $goodsModel->plugin_id == 33 ? 1 : 0;
 
         return $this->successJson('成功', $goodsModel);
     }
+
+    public function validatePrivilege($goodsModel, $member)
+    {
+        Privilege::validatePrivilegeLevel($goodsModel, $member);
+        Privilege::validatePrivilegeGroup($goodsModel, $member);
+    }
+
     private function setGoodsPluginsRelations($goods){
         $goodsRelations = app('GoodsManager')->tagged('GoodsRelations');
         collect($goodsRelations)->each(function($goodsRelation) use($goods){
             $goodsRelation->setGoods($goods);
         });
     }
+
     public function searchGoods()
     {
         $requestSearch = \YunShop::request()->search;

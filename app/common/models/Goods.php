@@ -11,7 +11,6 @@ namespace app\common\models;
 use app\common\exceptions\AppException;
 use app\common\models\goods\Discount;
 use app\common\models\goods\GoodsDispatch;
-use app\common\models\goods\GoodsPointActivity;
 use app\common\models\goods\Privilege;
 use app\framework\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -144,6 +143,11 @@ class Goods extends BaseModel
         return static::find($id);
     }
 
+    public static function getGoodsByIds($ids)
+    {
+        return self::whereIn('id', $ids)->get();
+    }
+
     public function hasManyParams()
     {
         return $this->hasMany('app\common\models\GoodsParam');
@@ -227,9 +231,14 @@ class Goods extends BaseModel
         return $this->hasOne('app\common\models\goods\GoodsLimitBuy', 'goods_id', 'id');
     }
 
+    public function hasOneInvitePage()
+    {
+        return $this->hasOne('app\common\models\goods\InvitePage', 'goods_id', 'id');
+    }
+
     public function hasOnePointActivity()
     {
-        return $this->hasOne(GoodsPointActivity::class, 'goods_id', 'id');
+        return $this->hasOne('Yunshop\PointActivity\Backend\Models\GoodsPointActivity', 'goods_id', 'id');
     }
 
     public function hasOneGoodsService()

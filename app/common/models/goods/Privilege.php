@@ -299,4 +299,49 @@ class Privilege extends BaseModel
             throw new AppException('(' . $this->goods->title . ')该商品仅限[' . $group_names . ']购买');
         }
     }
+
+    /**
+     * 用户等級限制浏览
+     * @param
+     * @throws AppException
+     */
+    public static function validatePrivilegeLevel($goodsModel, $member)
+    {
+        if (empty($goodsModel->hasOnePrivilege->show_levels) && $goodsModel->hasOnePrivilege->show_levels !== '0') {
+            return;
+        }
+        $show_levels = explode(',', $goodsModel->hasOnePrivilege->show_levels);
+        if ($goodsModel->hasOnePrivilege->show_levels !== '0') {
+            $level_names = MemberLevel::select(DB::raw('group_concat(level_name) as level_name'))->whereIn('id', $show_levels)->value('level_name');
+            if (empty($level_names)) {
+                return;
+            }
+        }
+        if (!in_array($member->level_id, $show_levels)) {
+            $ordinaryMember = in_array('0', $show_levels)? '普通会员 ':'';
+
+            throw new AppException('商品(' . $goodsModel->title . ')仅限' . $ordinaryMember.$level_names . '浏览');
+        }
+    }
+
+    /**
+     * 用户组限制浏览
+     * @param
+     * @throws AppException
+     */
+    public static function validatePrivilegeGroup($goodsModel, $member)
+    {
+        if (empty($goodsModel->hasOnePrivilege->show_groups)) {
+            return;
+        }
+        $show_groups = explode(',', $goodsModel->hasOnePrivilege->show_groups);
+        $group_names = MemberGroup::select(DB::raw('group_concat(group_name) as group_name'))->whereIn('id', $show_groups)->value('group_name');
+        if (empty($group_names)) {
+            return;
+        }
+        if (!in_array($member->group_id, $show_groups)) {
+            throw new AppException('(' . $goodsModel->title . ')该商品仅限[' . $group_names . ']浏览');
+        }
+    }
+
 }
