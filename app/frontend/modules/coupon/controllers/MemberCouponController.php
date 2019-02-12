@@ -282,7 +282,7 @@ class MemberCouponController extends ApiController
                 $usageLimit = array('api_limit' => self::usageLimitDescription($v['belongs_to_coupon'])); //增加属性 - 优惠券的适用范围
                 $availableCoupons[] = array_merge($coupons[$k], $usageLimit);
             } elseif ($v['belongs_to_coupon']['time_limit'] == Coupon::COUPON_SINCE_RECEIVE
-                && ($time < Carbon::createFromTimestamp(strtotime($v['get_time']) + $v['belongs_to_coupon']['time_days'] * 3600 * 24)->endOfDay())) {
+                && ($time < Carbon::createFromTimestamp(strtotime($v['get_time']) + $v['belongs_to_coupon']['time_days'] * 3600 * 24)->endOfDay()->timestamp)) {
                 $coupons[$k]['belongs_to_coupon']['start'] = substr($v['get_time'], 0, 10); //前端需要统一的起止时间
                 $coupons[$k]['belongs_to_coupon']['end'] = date('Y-m-d', (strtotime($v['get_time']) + $v['belongs_to_coupon']['time_days'] * 3600 * 24)); //前端需要统一的起止时间
                 $usageLimit = array('api_limit' => self::usageLimitDescription($v['belongs_to_coupon'])); //增加属性 - 优惠券的适用范围
@@ -311,7 +311,7 @@ class MemberCouponController extends ApiController
 
             if ($v['belongs_to_coupon']['time_limit'] == Coupon::COUPON_SINCE_RECEIVE
                 && ($v['belongs_to_coupon']['time_days'] !== 0)
-                && ($time > Carbon::createFromTimestamp(strtotime($v['get_time']) + $v['belongs_to_coupon']['time_days'] * 3600 * 24)->endOfDay())) {
+                && ($time > Carbon::createFromTimestamp(strtotime($v['get_time']) + $v['belongs_to_coupon']['time_days'] * 3600 * 24)->endOfDay()->timestamp)) {
                 $coupons[$k]['belongs_to_coupon']['start'] = substr($v['get_time'], 0, 10); //前端需要统一的起止时间
                 $coupons[$k]['belongs_to_coupon']['end'] = date('Y-m-d', (strtotime($v['get_time']) + $v['belongs_to_coupon']['time_days'] * 3600 * 24)); //前端需要统一的起止时间
                 $usageLimit = array('api_limit' => self::usageLimitDescription($v['belongs_to_coupon'])); //增加属性 - 优惠券的适用范围
