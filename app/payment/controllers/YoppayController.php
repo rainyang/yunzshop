@@ -81,7 +81,10 @@ class YoppayController extends PaymentController
 
         $this->yopResponse('支付通知', $this->parameters, 'pay');
 
-        $this->savePayOrder();
+        $pay_order = YopPayOrder::paySn($this->getParameter('orderId'))->first();
+        if (!$pay_order) {
+            $this->savePayOrder();
+        }
 
         $data = [
             'total_fee'    => floatval($this->getParameter('orderAmount')),
