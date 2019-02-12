@@ -31,6 +31,8 @@ use app\common\exceptions\AppException;
 use Mews\Captcha\Captcha;
 use app\common\facades\Setting;
 use app\common\services\alipay\OnekeyLogin;
+use app\common\models\member\MemberInvitationCodeLog;
+
 
 class RegisterController extends ApiController
 {
@@ -54,19 +56,19 @@ class RegisterController extends ApiController
 
             $invite_code = MemberService::inviteCode();
             \Log::info('invite_code', $invite_code);
-            
+
             if ($invite_code['status'] != 1) {
                 return $this->errorJson($invite_code['json']);
             }
 
             $msg = MemberService::validate($mobile, $password, $confirm_password);
-            \Log::info('msg', $msg);
 
             if ($msg['status'] != 1) {
                 return $this->errorJson($msg['json']);
             }
 
             $member_info = MemberModel::getId($uniacid, $mobile);
+
             \Log::info('member_info', $member_info);
 
             if (!empty($member_info)) {
@@ -103,7 +105,18 @@ class RegisterController extends ApiController
             $data['password'] = md5($password . $data['salt']);
             $memberModel = MemberModel::create($data);
             $member_id = $memberModel->uid;
-            \Log::info('member_id', $member_id);
+
+            //邀请码关系链
+            $codeowner = MemberShopInfo::uniacid()->where('invite_code', trim(\YunShop::request()->invite_code))->first();
+
+            $codemodel = new MemberInvitationCodeLog();
+
+            $codemodel->uniacid = $uniacid;
+            $codemodel->invitation_code = trim(\YunShop::request()->invite_code);
+            $codemodel->member_id = $codeowner->invite_code;
+            $codemodel->mid = $member_id;
+      
+            $codemodel->save();
 
             //手机归属地查询插入
             $phoneData = file_get_contents((new PhoneAttributionService())->getPhoneApi($mobile));
@@ -137,7 +150,6 @@ class RegisterController extends ApiController
             //生成分销关系链
             Member::createRealtion($member_id);
 
-
             $cookieid = "__cookie_yun_shop_userid_{$uniacid}";
             Cookie::queue($cookieid, $member_id);
             Session::set('member_id', $member_id);
@@ -147,6 +159,7 @@ class RegisterController extends ApiController
             $yz_member = MemberShopInfo::getMemberShopInfo($member_id)->toArray();
 
             $data = MemberModel::userData($member_info, $yz_member);
+
             //app注册添加member_wechat表中数据
             $type = \YunShop::request()->type;
             if ($type == 7) {
