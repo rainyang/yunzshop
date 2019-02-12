@@ -53,18 +53,21 @@ class RegisterController extends ApiController
             }
 
             $invite_code = MemberService::inviteCode();
-
+            \Log::info('invite_code', $invite_code);
+            
             if ($invite_code['status'] != 1) {
                 return $this->errorJson($invite_code['json']);
             }
 
             $msg = MemberService::validate($mobile, $password, $confirm_password);
+            \Log::info('msg', $msg);
 
             if ($msg['status'] != 1) {
                 return $this->errorJson($msg['json']);
             }
 
             $member_info = MemberModel::getId($uniacid, $mobile);
+            \Log::info('member_info', $member_info);
 
             if (!empty($member_info)) {
                 return $this->errorJson('该手机号已被注册');
@@ -72,14 +75,17 @@ class RegisterController extends ApiController
 
             //添加mc_members表
             $default_groupid = MemberGroup::getDefaultGroupId($uniacid)->first();
+            \Log::info('default_groupid', $default_groupid);
 
             $member_set = \Setting::get('shop.member');
+            \Log::info('member_set', $member_set);
 
             if (isset($member_set) && $member_set['headimg']) {
                 $avatar = replace_yunshop(tomedia($member_set['headimg']));
             } else {
                 $avatar = Url::shopUrl('static/images/photo-mr.jpg');
             }
+            \Log::info('avatar', $avatar);
 
             $data = array(
                 'uniacid' => $uniacid,
@@ -92,11 +98,12 @@ class RegisterController extends ApiController
                 'residecity' => '',
             );
             $data['salt'] = Str::random(8);
+            \Log::info('salt', $data['salt']);
 
             $data['password'] = md5($password . $data['salt']);
-
             $memberModel = MemberModel::create($data);
             $member_id = $memberModel->uid;
+            \Log::info('member_id', $member_id);
 
             //手机归属地查询插入
             $phoneData = file_get_contents((new PhoneAttributionService())->getPhoneApi($mobile));
