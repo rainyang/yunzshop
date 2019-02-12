@@ -235,6 +235,7 @@ class YoppayController extends PaymentController
     //订单退款
     public function refundUrl()
     {
+        \Log::debug('---------------------------易宝订单退款通知----------------');
         $yop_refund = YopOrderRefund::getRefundAnnal($this->getParameter('orderId'), $this->getParameter('refundRequestId'))->first();
 
         if (!$yop_refund) {
