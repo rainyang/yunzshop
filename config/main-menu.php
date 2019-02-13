@@ -1557,19 +1557,7 @@ return [
                 'child'         => [
                 ],
             ],
-            'invited_code'     => [
-                'name'          => '会员邀请码',
-                'url'           => 'member.member.invited',
-                'url_params'    => '',
-                'permit'        => 1,
-                'menu'          => 1,
-                'icon'          => 'fa-circle-o',
-                'sort'          => 0,
-                'item'          => 'invited_code',
-                'parents'       => ['Member',],
-                'child'         => [
-                ],
-            ],
+           
         ],
     ],
 

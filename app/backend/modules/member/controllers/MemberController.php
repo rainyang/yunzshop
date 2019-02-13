@@ -876,15 +876,5 @@ class MemberController extends BaseController
         return view('member.export-relation', [])->render();
     }
 
-    public function invited()
-    {
-        // $member_invitation_model = new \app\common\models\member\MemberInvitationCodeLog;
-        // $total = $member_invitation_model->count();
-        
-        $list =  \app\common\models\member\MemberInvitationCodeLog::orderBy('id','desc')->paginate(1)->toArray();
-        $pager = PaginationHelper::show($list['total'], $list['current_page'], $this->pageSize);
-        
-        
-        return view('member.export-relation', ['list'=>$list, 'pager'=>$pager])->render();
-    }
+   
 }
