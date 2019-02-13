@@ -21,7 +21,8 @@ use Yunshop\Designer\models\DesignerMenu;
 use Yunshop\Designer\models\GoodsGroupGoods;
 use app\common\helpers\PaginationHelper;
 use Yunshop\Diyform\admin\DiyformDataController;
-
+use app\common\models\MemberShopInfo;
+use app\common\models\member\MemberInvitationCodeLog;
 
 class HomePageController extends ApiController
 {
@@ -629,6 +630,18 @@ class HomePageController extends ApiController
 //                }
 //            }
 //        }
+        //邀请码关系链
+            $codeowner = MemberShopInfo::uniacid()->where('invite_code', trim(\YunShop::request()->invite_code))->first();
+
+            $codemodel = new MemberInvitationCodeLog();
+
+            $codemodel->uniacid = $uniacid;
+            $codemodel->invitation_code = trim(\YunShop::request()->invite_code);
+            $codemodel->member_id = $member_id; //使用者id
+            $codemodel->mid = $codeowner->member_id;  //邀请人id
+      
+            $codemodel->save();
+
 
         $is_bind_mobile = 0;
 

@@ -31,7 +31,6 @@ use app\common\exceptions\AppException;
 use Mews\Captcha\Captcha;
 use app\common\facades\Setting;
 use app\common\services\alipay\OnekeyLogin;
-use app\common\models\member\MemberInvitationCodeLog;
 
 
 class RegisterController extends ApiController
@@ -105,18 +104,6 @@ class RegisterController extends ApiController
             $data['password'] = md5($password . $data['salt']);
             $memberModel = MemberModel::create($data);
             $member_id = $memberModel->uid;
-
-            //邀请码关系链
-            $codeowner = MemberShopInfo::uniacid()->where('invite_code', trim(\YunShop::request()->invite_code))->first();
-
-            $codemodel = new MemberInvitationCodeLog();
-
-            $codemodel->uniacid = $uniacid;
-            $codemodel->invitation_code = trim(\YunShop::request()->invite_code);
-            $codemodel->member_id = $codeowner->member_id;
-            $codemodel->mid = $member_id;
-      
-            $codemodel->save();
 
             //手机归属地查询插入
             $phoneData = file_get_contents((new PhoneAttributionService())->getPhoneApi($mobile));
