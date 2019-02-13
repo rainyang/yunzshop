@@ -35,6 +35,9 @@ class IncomeWithdrawController extends ApiController
     //手续费比例
     private $poundage_rate;
 
+    //手续费类型
+    private $poundage_type;
+
 
     //劳务税比例
     private $service_tax_rate;
@@ -148,9 +151,13 @@ class IncomeWithdrawController extends ApiController
 
         $value = array_get($this->income_set, 'poundage_rate', 0);
 
+        $type = array_get($this->income_set, 'poundage_type', 0);
+        $this->poundage_type = empty($type) ? 0 : $type;
+
         //如果使用 提现到余额独立手续费
         if ($this->isUseBalanceSpecialSet()) {
             $value = array_get($this->withdraw_set, 'special_poundage', 0);
+            $this->poundage_type = 0;
         }
         return $this->poundage_rate = empty($value) ? 0 : $value;
     }
@@ -307,6 +314,7 @@ class IncomeWithdrawController extends ApiController
             'type_name'         => $this->getLangTitle($key) ? $this->getLangTitle($key) : $income['title'],
             'income'            => $this->withdraw_amounts,
             'poundage'          => $poundage,
+            'poundage_type'     => $this->poundage_type,
             'poundage_rate'     => $this->poundage_rate,
             'servicetax'        => $service_tax,
             'servicetax_rate'   => $this->service_tax_rate,
