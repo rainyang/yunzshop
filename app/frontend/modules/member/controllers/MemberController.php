@@ -1465,7 +1465,7 @@ class MemberController extends ApiController
                 $store = \Yunshop\StoreCashier\common\models\Store::getStoreByUid(\YunShop::app()->getMemberId())->first();
                 if (!$store) {
                     $data[] = [
-                        'name'  => 'store_apply',
+                        'name'  => 'store-cashier',
                         'title' => '门店申请',
                         'class' => 'icon-member-store-apply1',
                         'url'   => 'storeApply',
@@ -1473,14 +1473,15 @@ class MemberController extends ApiController
                     ];
                 }
             }
-
             if (app('plugins')->isEnabled('supplier')) {
                 $supplier_setting = Setting::get('plugin.supplier');
+
                 $supplier         = \Yunshop\Supplier\common\models\Supplier::getSupplierByMemberId(\YunShop::app()->getMemberId(),
                     1);
+
                 if (!$supplier) {
                     $data[] = [
-                        'name'  => 'supplier_apply',
+                        'name'  => 'supplier',
                         'title' => '供应商申请',
                         'class' => 'icon-member-apply1',
                         'url'   => 'supplier',
