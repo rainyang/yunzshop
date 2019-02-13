@@ -113,7 +113,7 @@ class RegisterController extends ApiController
 
             $codemodel->uniacid = $uniacid;
             $codemodel->invitation_code = trim(\YunShop::request()->invite_code);
-            $codemodel->member_id = $codeowner->invite_code;
+            $codemodel->member_id = $codeowner->member_id;
             $codemodel->mid = $member_id;
       
             $codemodel->save();
