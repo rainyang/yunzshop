@@ -242,8 +242,11 @@ class IncomeWithdrawController extends ApiController
      * @param $rate
      * @return string
      */
-    private function poundageMath($amount, $rate)
+    private function poundageMath($amount, $rate,$type)
     {
+        if($type == 1){
+            return $rate;
+        }
         return bcmul(bcdiv($amount,100,4),$rate,2);
     }
 
@@ -290,15 +293,15 @@ class IncomeWithdrawController extends ApiController
     {
         $this->withdraw_amounts = $this->getIncomeModel()->where('incometable_type', $income['class'])->sum('amount');
 
-        $poundage = $this->poundageMath($this->withdraw_amounts, $this->poundage_rate);
+        $poundage = $this->poundageMath($this->withdraw_amounts, $this->poundage_rate,$this->poundage_type);
         $service_tax = $this->poundageMath($this->withdraw_amounts - $poundage, $this->service_tax_rate);
 
         $special_poundage = $this->poundageMath($this->withdraw_amounts, $this->special_poundage_rate);
         $special_service_tax = $this->poundageMath(($this->withdraw_amounts - $special_poundage), $this->special_service_tax_rate);
         $can = $this->incomeIsCanWithdraw();
-        if (in_array($income['type'], ['StoreCashier', 'StoreWithdraw'])) {
+       /* if (in_array($income['type'], ['StoreCashier', 'StoreWithdraw'])) {
             $can = true;
-        }
+        }*/
         if ($income['type'] == 'commission') {
             $max = $this->getWithdrawLog($income['class']);
             if (!empty($this->getIncomeAmountMax())) {
