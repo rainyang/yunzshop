@@ -1326,8 +1326,8 @@ class MemberController extends ApiController
         $diyarr = [
             'tool' => ['separate'],
             'asset_equity' => ['integral','credit','asset'],
-            'merchant' => ['supplier', '', '', 'hotel'],
-            'market' => ['ranking','article','clock-in','conference', '', 'enter-goods']
+            'merchant' => ['supplier', 'kingtimes', 'hotel'],
+            'market' => ['ranking','article','clock-in','conference', 'video_demand', 'enter_goods']
         ];
 
         $data   = [];
@@ -1494,16 +1494,17 @@ class MemberController extends ApiController
                     ];
                 }
             }
-
             if (app('plugins')->isEnabled('kingtimes')) {
                 $provider    = Provider::select(['id', 'uid', 'status'])->where('uid',
                     \YunShop::app()->getMemberId())->first();
                 $distributor = Distributor::select(['id', 'uid', 'status'])->where('uid',
                     \YunShop::app()->getMemberId())->first();
-                if ($provider) {
+
+                if ($provider) {    
+
                     if ($provider->status == 1) {
                         $data[] = [
-                            'name'  => 'provider_center',
+                            'name'  => 'kingtimes',
                             'title' => '补货商中心',
                             'class' => 'icon-member-replenishment',
                             'url'   => 'ReplenishmentApply',
@@ -1511,7 +1512,7 @@ class MemberController extends ApiController
                     }
                 } else {
                     $data[] = [
-                        'name'  => 'provider_apply',
+                        'name'  => 'kingtimes',
                         'title' => '补货商申请',
                         'class' => 'icon-member-replenishment',
                         'url'   => 'ReplenishmentApply',
@@ -1520,7 +1521,7 @@ class MemberController extends ApiController
                 if ($distributor) {
                     if ($distributor->status == 1) {
                         $data[] = [
-                            'name'  => 'distributor_center',
+                            'name'  => 'kingtimes',
                             'title' => '配送站中心',
                             'class' => 'icon-member-express-list',
                             'url'   => 'DeliveryTerminalApply',
@@ -1528,12 +1529,14 @@ class MemberController extends ApiController
                     }
                 } else {
                     $data[] = [
-                        'name'  => 'distributor_apply',
+                        'name'  => 'kingtimes',
                         'title' => '配送站申请',
                         'class' => 'icon-member-express-list',
                         'url'   => 'DeliveryTerminalApply',
                     ];
                 }
+                // dd($data);
+
             }
             if (app('plugins')->isEnabled('enter-goods')) {
 
@@ -1589,6 +1592,7 @@ class MemberController extends ApiController
             }
         
         foreach ($data as $k => $v) {
+
             if (in_array($v['name'], $diyarr['tool'])) {
                 $arr['tool'][] = $v;
             }
