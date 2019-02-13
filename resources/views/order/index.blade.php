@@ -52,6 +52,10 @@
                                                         @if( array_get($requestSearch,'ambiguous.field','')=='member')  selected="selected"@endif>
                                                     用户姓名/ID/昵称/手机号
                                                 </option>
+                                                <option value="address"
+                                                        @if( array_get($requestSearch,'ambiguous.field','')=='address')  selected="selected"@endif>
+                                                       省/市/区/街道
+                                                </option>
                                                 <option value="goods_id"{{--order_goods--}}
                                                         @if( array_get($requestSearch,'ambiguous.field','')=='goods_id')  selected="selected"@endif>
                                                     商品名称/ID
