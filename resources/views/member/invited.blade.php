@@ -30,8 +30,8 @@
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                             <!-- <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员信息</label>-->
                             <div class="">
-                                <input type="text" class="form-control" name="search[mid]"
-                                       value="{{$request['search']['mid']}}" placeholder="可搜索邀请码"/>
+                                <input type="text" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');}).call(this)" onblur="this.v();" class="form-control" name="search[mid]"
+                                       value="{{$request['search']['mid']}}" placeholder="可搜索邀请人id或被邀请人id"/>
                             </div>
                         </div>
                         <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg">
@@ -82,32 +82,32 @@
                                 <th style='width:20%;text-align: center;'>ID</th>
                                 <th style='width:20%;text-align: center;'>推荐人</th>
                                 <th style='width:20%;text-align: center;'>使用人</th>
-                                <th style='width:20%;'>邀请码</th>
-                                <th style='width:20%;'>使用时间</th>
+                                <th style='width:20%;text-align: center;'>邀请码</th>
+                                <th style='width:20%;text-align: center;'>使用时间</th>
                             </tr>
                             </thead>
                             <tbody>
                         @foreach($list['data'] as $row)
                             <tr>
-                                <td>{{$row['id']}}</td>
-                                <td>
+                                <td style="text-align: center; width: 20%;">{{$row['id']}}</td>
+                                <td style="text-align: center; width: 20%;">
                                     <!-- {{$row['member_id']}} -->
-                                    @if(!empty($row['yz_member']['agent']['avatar']))
-                                        <img src='{{$row['yz_member']['agent']['avatar']}}'
+                                    @if(!empty($row['yz_member']['has_one_member']['avatar']))
+                                        <img src='{{$row['yz_member']['has_one_member']['avatar']}}'
                                              style='width:30px;height:30px;padding:1px;border:1px solid #ccc'/>
                                         <br/>
                                     @endif
-                                    @if(empty($row['yz_member']['agent']['nickname']))
+                                    @if(empty($row['yz_member']['has_one_member']['nickname']))
                                         未更新
                                     @else
                                             @if(empty($row['yz_member']['inviter']))
                                                 (暂定)
                                             @endif
-                                            {{$row['yz_member']['agent']['nickname']}}
+                                            {{$row['yz_member']['has_one_member']['nickname']}}
                                      @endif
                                 </td>
 
-                                <td>
+                                <td style="text-align: center; width: 20%;">
                                     @if(!empty($row['avatar']))
                                         <img src='{{$row['avatar']}}'
                                              style='width:30px;height:30px;padding:1px;border:1px solid #ccc'/><br/>
@@ -118,8 +118,8 @@
                                         {{$row['nickname']}}
                                     @endif
                                 </td>
-                                <td>{{$row['invitation_code']}}</td>
-                                <td>{!! date('Y-m-d H:i:s', $row['created_time'])!!}</td>
+                                <td style="text-align: center; width: 20%;">{{$row['invitation_code']}}</td>
+                                <td style="text-align: center; width: 20%;">{{date('Y-m-d H:i:s', $row['created_at'])}}</td>
                             </tr>
                         @endforeach
                             </tbody>
