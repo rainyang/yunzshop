@@ -14,7 +14,7 @@ $default_slave_port     = '';
 
 $db_conn_name     = env('DB_CONNECTION', 'mysql');
 
-if (!env('APP_Framework') == 'platform') {
+if (env('APP_Framework') != 'platform') {
     include dirname(dirname(dirname(__DIR__))) . '/data/config.php';
 
     if ($config['db']['slave_status']) {
