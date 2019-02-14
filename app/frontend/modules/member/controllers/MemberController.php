@@ -906,11 +906,12 @@ class MemberController extends ApiController
                     $setting = Setting::get('shop');
                     $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
 
-                    $logo = replace_yunshop(tomedia($setting['logo']));
+                    $logo = replace_yunshop(tomedia($setting['shop']['logo']));
                     $text = $account->name;
                 }
 
                 return $this->successJson('', [
+                   
                     'logo' => $logo,
                     'text' => $text,
                     'url' => $set['follow_url']
