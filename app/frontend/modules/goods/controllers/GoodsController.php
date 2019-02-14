@@ -390,8 +390,14 @@ class GoodsController extends ApiController
                 'discount_value' => $goodsModel->vip_price,
             ];
         } else {
+            $level = Setting::get('shop.member.level_name');
+            $level_name = '普通会员';
+
+            if (!empty($level)){//判断是否设置了，默认会员等级名称
+                $level_name = $level;
+            }
             $data = [
-                'level_name' => Setting::get('shop.member.level_name'),//'普通会员',
+                'level_name' => $level_name,
                 'discount_value' => $goodsModel->vip_price,
             ];
         }
