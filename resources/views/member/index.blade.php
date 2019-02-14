@@ -215,7 +215,7 @@
                                 <th style='width:8%;'>等级/分组</th>
                                 <th style='width:10%;'>注册时间</th>
                                 <th style='width:15%;'>积分/余额</th>
-                                <th style='width:15%;'>成交</th>
+                                <th style='width:15%;'>已完成订单</th>
                                 <th style='width:6%'>关注</th>
                                 <th style='width:13%'>操作</th>
                             </tr>
