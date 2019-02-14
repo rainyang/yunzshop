@@ -35,6 +35,7 @@ use app\common\models\Store as StoreCashier;
 use Yunshop\Designer\models\Store;
 use Yunshop\LeaseToy\models\LeaseOrderModel;
 use Yunshop\LeaseToy\models\LeaseToyGoodsModel;
+use Yunshop\VideoDemand\models\CourseGoodsModel;
 
 
 class GoodsController extends BaseController
@@ -295,6 +296,7 @@ class GoodsController extends BaseController
         $result = $goods_service->edit();
         $type2 = \YunShop::request()->goods['type2'];
         $goods = \app\common\models\Goods::find($this->goods_id);
+        $item = CourseGoodsModel::getModel($this->goods_id,'');
         $plugin_id = '';
         if (app('plugins')->isEnabled('lease-toy')) {
             $LeaseToyGoods = LeaseToyGoodsModel::ofGoodsId($this->goods_id)->first();
@@ -312,20 +314,25 @@ class GoodsController extends BaseController
                 $LeaseToyGoods->save();
                 $goods->save();
             }
-            if (Setting::get('shop.goods.type2') == '2') {
-                $goods->type2 = Setting::get('shop.goods.type2');
-                $goods->save();
-                Setting::set('shop.goods.type2', '');
-            }
+//            if (Setting::get('shop.goods.type2') == '2') {
+//                $goods->type2 = Setting::get('shop.goods.type2');
+//                $goods->save();
+//                Setting::set('shop.goods.type2', '');
+//            }
+
         }
-        if (!app('plugins')->isEnabled('lease-toy') && $goods->type2 == '2' || !app('plugins')->isEnabled('video-demand') && $goods->type2 == '3') {
+        if (/*!app('plugins')->isEnabled('lease-toy') && $goods->type2 == '2' ||*/ !app('plugins')->isEnabled('video-demand') && $goods->type2 == '3') {
             Setting::set('shop.goods.type2', $goods->type2);
             $goods->type2 = '1';
             $goods->save();
-        } else if (app('plugins')->isEnabled('video-demand') && Setting::get('shop.goods.type2') == '3') {
-            $goods->type2 = Setting::get('shop.goods.type2');
+        } else if (app('plugins')->isEnabled('video-demand')) {
+            if (Setting::get('shop.goods.type2') == '3') {
+                $goods->type2 = Setting::get('shop.goods.type2');
+            }
+            if ($item->is_course == '1') {
+                $goods->type2 =  '3';
+            }
             $goods->save();
-            Setting::set('shop.goods.type2', '');
         }
 
         if ($result['status'] == 1) {
