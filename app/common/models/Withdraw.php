@@ -96,6 +96,12 @@ class Withdraw extends BaseModel
      */
     const WITHDRAW_WITH_EUP_PAY  = 'eup_pay';
 
+    /**
+     * @author blank
+     * 提现打款方式：打款到易宝
+     */
+    const WITHDRAW_WITH_YOP  = 'yop_pay';
+
 
     const WITHDRAW_WITH_SEPARATE_UNION_PAY = 'separate';
 
@@ -154,6 +160,7 @@ class Withdraw extends BaseModel
         self::WITHDRAW_WITH_MANUAL      => '提现手动打款',
         self::WITHDRAW_WITH_HUANXUN     => '提现到银行卡',
         self::WITHDRAW_WITH_EUP_PAY     => '提现EUP',
+        self::WITHDRAW_WITH_YOP     => '提现易宝',
         self::WITHDRAW_WITH_SEPARATE_UNION_PAY     => '提现银联',
     ];
 
