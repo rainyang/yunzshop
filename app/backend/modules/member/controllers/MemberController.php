@@ -73,7 +73,6 @@ class MemberController extends BaseController
 
         $list = Member::searchMembers($parames);
 
-
         if ($parames['search']['first_count'] ||
             $parames['search']['second_count'] ||
             $parames['search']['third_count'] ||
@@ -112,10 +111,10 @@ class MemberController extends BaseController
             $list = $list->whereIn('uid', $result_ids);
         }
 
-
         $list = $list->orderBy('uid', 'desc')
             ->paginate($this->pageSize)
             ->toArray();
+            
         $set = \Setting::get('shop.member');
 
         if (empty($set['level_name'])) {

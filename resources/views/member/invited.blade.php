@@ -80,8 +80,8 @@
                             <thead class="navbar-inner">
                             <tr>
                                 <th style='width:20%;text-align: center;'>ID</th>
-                                <th style='width:20%;text-align: center;'>推荐人</th>
                                 <th style='width:20%;text-align: center;'>使用人</th>
+                                <th style='width:20%;text-align: center;'>推荐人</th>
                                 <th style='width:20%;text-align: center;'>邀请码</th>
                                 <th style='width:20%;text-align: center;'>使用时间</th>
                             </tr>
@@ -119,7 +119,7 @@
                                     @endif
                                 </td>
                                 <td style="text-align: center; width: 20%;">{{$row['invitation_code']}}</td>
-                                <td style="text-align: center; width: 20%;">{{date('Y-m-d H:i:s', $row['created_at'])}}</td>
+                                <td style="text-align: center; width: 20%;">{{$row['created_at']}}</td>
                             </tr>
                         @endforeach
                             </tbody>

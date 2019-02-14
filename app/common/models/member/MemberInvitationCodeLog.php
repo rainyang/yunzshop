@@ -18,22 +18,32 @@ class MemberInvitationCodeLog extends BaseModel
     public $table = 'yz_member_invitation_log';
     public $search_fields = ['member_id', 'invitation_code', 'mid'];
 
-    public  function searchLog($params)
+    public static function searchLog($params)
     {
-    	$search = self::uniacid();
+    	$res = self::uniacid();
 
         if (isset($params['mid']) && $params['mid'] > 0) {
-            $res = self::uniacid()->where('mid', trim($params['mid']))
+            $res = self::where('mid', trim($params['mid']))
             	->orWhere('member_id', trim($params['mid']));
         }
         
         if (isset($params['code'])) {
-            $res = self::uniacid()->where('invitation_code', trim($params['code']));
+            $res = self::where('invitation_code', trim($params['code']));
         }
 
         if ($params['searchtime']) {
-        	$res = self::uniacid()->where('created_at', '>=', strtotime($params['times']['starttime']))->where('created_at', '<=', strtotime($params['times']['endtime']));
+        	$res = self::where('created_at', '>=', strtotime($params['times']['starttime']))->where('created_at', '<=', strtotime($params['times']['endtime']));
         }
+        
+        $res = $res->with(['yzMember'=>function($query) {
+            
+            $query->with('hasOneMember');
+
+        }]);
+
+        // $res->leftJoin('yz_member', 'yz_member_invitation_log.mid', '=', 'yz_member.m_id');
+        // $res->leftJoin('yz_member', 'mc_members.uid', '=', 'yz_member.member_id');
+
         return $res;
     }
 
@@ -41,6 +51,7 @@ class MemberInvitationCodeLog extends BaseModel
     {
     	return $this->hasOne('\app\common\models\MemberShopInfo', 'm_id', 'member_id');
     }
+
 
     public function yzMembers()
     {
