@@ -42,7 +42,7 @@ class IncomeWithdrawController extends ApiController
     //劳务税比例
     private $service_tax_rate;
 
-
+    private $special_poundage_type;
     //
     private $special_poundage_rate;
 
@@ -92,6 +92,7 @@ class IncomeWithdrawController extends ApiController
                 $this->special_poundage_rate = 0;
                 $this->special_service_tax_rate = 0;
             } else {
+                $this->setSpecialPoundageType();
                 $this->setPoundageRate($income['type']);
                 $this->setServiceTaxRate();
                 $this->setSpecialPoundageRate();
@@ -188,6 +189,17 @@ class IncomeWithdrawController extends ApiController
         $value = array_get($this->withdraw_set, 'special_poundage', 0);
 
         return $this->special_poundage_rate = empty($value) ? 0 : $value;
+    }
+
+    /**
+     * 提现到余额独立手续费比例
+     * @return int|mixed
+     */
+    private function setSpecialPoundageType()
+    {
+        $value = array_get($this->withdraw_set, 'special_poundage_type', 0);
+
+        return $this->special_poundage_type = empty($value) ? 0 : $value;
     }
 
 
@@ -330,6 +342,7 @@ class IncomeWithdrawController extends ApiController
             'can'               => $can,
             'selected'          => $this->incomeIsCanWithdraw(),
             'type_id'           => $this->getIncomeTypeIds($income['class']),
+            'special_poundage_type' =>  $this->special_poundage_type,
             'special_poundage'  => $special_poundage,
             'special_poundage_rate'  => $this->special_poundage_rate,
             'special_service_tax'    => $special_service_tax,

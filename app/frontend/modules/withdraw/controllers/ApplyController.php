@@ -104,7 +104,7 @@ class ApplyController extends ApiController
             $withdrawModel->fill($this->getWithdrawData($item));
 
             event(new WithdrawApplyEvent($withdrawModel));
-
+            throw new AppException($withdrawModel);
             $validator = $withdrawModel->validator();
             if ($validator->fails()) {
                 throw new AppException("ERROR:Data anomaly -- {$item['key_name']}::{$validator->messages()->first()}");
