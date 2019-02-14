@@ -120,8 +120,9 @@ class OutlayService
     {
         $rate = $this->getToBalancePoundageRate();
         $amount = $this->getWithdrawAmount();
+        $type = $this->getToBalancePoundageType();
 
-        return $this->calculate($amount, $rate);
+        return $this->calculate($amount, $rate,$type);
     }
 
 
