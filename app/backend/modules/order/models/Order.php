@@ -133,7 +133,8 @@ class Order extends \app\common\models\Order
                 });
 
             }
-            //地址
+
+            //地址,姓名，手机号
             if ($params['ambiguous']['field'] == 'address') {
                 call_user_func(function () use (&$order_builder, $params) {
                     list($field, $value) = explode(':', $params['ambiguous']['string']);
@@ -141,7 +142,9 @@ class Order extends \app\common\models\Order
                         return $order_builder->where($field, $value);
                     } else {
                         return $order_builder->whereHas('address', function ($query) use ($params) {
-                            return $query->where('address','like', '%' . $params['ambiguous']['string'] . '%');
+                            return $query->where('address','like', '%' . $params['ambiguous']['string'] . '%')
+                                          ->orWhere('mobile','like','%' . $params['ambiguous']['string'] . '%')
+                                          ->orWhere('realname','like','%' . $params['ambiguous']['string'] . '%');
                         });
                     }
                 });
