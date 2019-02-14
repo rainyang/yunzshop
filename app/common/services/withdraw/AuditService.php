@@ -137,6 +137,10 @@ class AuditService
     {
         $amount = $this->audit_amount;
         $rate = $this->withdrawModel->poundage_rate;
+        if($this->withdrawModel->poundage_type == 1)
+        {
+            return $rate;
+        }
 
         return bcdiv(bcmul($amount, $rate, 4), 100, 2);
     }

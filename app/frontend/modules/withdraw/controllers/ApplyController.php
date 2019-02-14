@@ -144,7 +144,7 @@ class ApplyController extends ApiController
             'amounts'           => $withdraw_item['income'],
             'poundage'          => '0.00',
             'poundage_rate'     => '0.00',
-            'poundage_type'     => $withdraw_item['poundage_type'],
+            'poundage_type'     => $withdraw_item['poundage_type']?:0,
             'actual_poundage'   => '0.00',
             'actual_amounts'    => '0.00',
             'servicetax'        => '0.00',
