@@ -34,6 +34,7 @@ class CommentController extends ApiController
                 $item->reply_count = $item->hasManyReply->count('id');
                 $item->head_img_url = replace_yunshop(yz_tomedia($item->head_img_url));
             }
+            //对评论图片进行处理，反序列化并组装完整图片url
             $list = $list->toArray();
             foreach ($list['data'] as &$item) {
                 self::unSerializeImage($item);
