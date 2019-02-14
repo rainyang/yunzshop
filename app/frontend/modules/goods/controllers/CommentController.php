@@ -34,6 +34,10 @@ class CommentController extends ApiController
                 $item->reply_count = $item->hasManyReply->count('id');
                 $item->head_img_url = replace_yunshop(yz_tomedia($item->head_img_url));
             }
+            $list = $list->toArray();
+            foreach ($list['data'] as &$item) {
+                self::unSerializeImage($item);
+            }
             return $this->successJson('获取评论数据成功!', $list);
         }
         return $this->errorJson('未检测到评论数据!', $list);
