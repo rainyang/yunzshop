@@ -134,7 +134,7 @@ class Order extends \app\common\models\Order
 
             }
 
-            //地址,姓名，手机号
+            //增加地址,姓名，手机号搜索
             if ($params['ambiguous']['field'] == 'address') {
                 call_user_func(function () use (&$order_builder, $params) {
                     list($field, $value) = explode(':', $params['ambiguous']['string']);
