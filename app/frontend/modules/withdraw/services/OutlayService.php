@@ -50,6 +50,11 @@ class OutlayService
         return $this->getIncomeSet('poundage_rate');
     }
 
+    public function getPoundageType()
+    {
+        return $this->withdrawModel->poundage_type;
+    }
+
 
     /**
      * @return float
@@ -58,8 +63,9 @@ class OutlayService
     {
         $rate = $this->getPoundageRate();
         $amount = $this->getWithdrawAmount();
+        $type = $this->getPoundageType();
 
-        return $this->calculate($amount, $rate);
+        return $this->calculate($amount, $rate,$type);
     }
 
 
@@ -154,8 +160,12 @@ class OutlayService
      * @param $rate
      * @return float
      */
-    private function calculate($amount, $rate)
+    private function calculate($amount, $rate,$type=0)
     {
+        if($type == 1)
+        {
+            return $rate;
+        }
         return bcdiv(bcmul($amount, $rate, 2), 100, 2);
     }
 
