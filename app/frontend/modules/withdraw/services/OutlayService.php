@@ -104,6 +104,14 @@ class OutlayService
         return $this->getWithdrawSet('special_poundage');
     }
 
+    /**
+     * @return float
+     */
+    public function getToBalancePoundageType()
+    {
+        return $this->getWithdrawSet('special_poundage_type');
+    }
+
 
     /**
      * @return float
