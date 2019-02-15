@@ -108,15 +108,19 @@
                                 </td>
 
                                 <td style="text-align: center; width: 20%;">
-                                    @if(!empty($row['avatar']))
-                                        <img src='{{$row['avatar']}}'
-                                             style='width:30px;height:30px;padding:1px;border:1px solid #ccc'/><br/>
+                                    @if(!empty($row['has_one_mc_member']['has_one_member']['avatar']))
+                                        <img src='{{$row['has_one_mc_member']['has_one_member']['avatar']}}'
+                                             style='width:30px;height:30px;padding:1px;border:1px solid #ccc'/>
+                                        <br/>
                                     @endif
-                                    @if(empty($row['nickname']))
+                                    @if(empty($row['has_one_mc_member']['has_one_member']['nickname']))
                                         未更新
                                     @else
-                                        {{$row['nickname']}}
-                                    @endif
+                                            @if(empty($row['has_one_mc_member']['inviter']))
+                                                (暂定)
+                                            @endif
+                                            {{$row['has_one_mc_member']['has_one_member']['nickname']}}
+                                     @endif
                                 </td>
                                 <td style="text-align: center; width: 20%;">{{$row['invitation_code']}}</td>
                                 <td style="text-align: center; width: 20%;">{{$row['created_at']}}</td>
