@@ -20,25 +20,13 @@ class MemberInvitedController extends BaseController
 {
     public function index()
     {
-//        dd(\Yunshop::request());
-        $search = \YunShop::request();
-        // $mid = \Yunshop::request()->mid;
-        // $member_id = \Yunshop::request()->member_id;
-        // $invitation_code = \Yunshop::request()->invitation_code;
-        // $member_invitation_model = new MemberInvitationCodeLog;
+        $search = \YunShop::request()->search;
         $pageSize = 1;
 
         $list =  MemberInvitationCodeLog::
         searchLog($search)
-        // with(['yz_member'])
         ->paginate()
-        // ->get();
         ->toArray();
-         // dd($list);
-        foreach ($list['data'] as $k => $v) {
-            // $list['data'][$k]['midinfo'] = MemberInvitationCodeLog::uniacid()->where('member_id', $v['mid'])->first();
-            // $m = MemberInvitationCodeLog::uniacid()->where('member_id'=>$v['mid']])
-        }
         // dd($list);
 
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $pageSize);
