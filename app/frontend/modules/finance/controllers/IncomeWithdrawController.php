@@ -106,7 +106,8 @@ class IncomeWithdrawController extends ApiController
         if ($income_data) {
             $data = [
                 'data' => $income_data,
-                'setting' => ['balance_special' => $this->getBalanceSpecialSet()]
+                'setting' => ['balance_special' => $this->getBalanceSpecialSet()],
+                'special_type' => $this->special_poundage_type
             ];
             return $this->successJson('获取数据成功!', $data);
         }
@@ -342,7 +343,6 @@ class IncomeWithdrawController extends ApiController
             'can'               => $can,
             'selected'          => $this->incomeIsCanWithdraw(),
             'type_id'           => $this->getIncomeTypeIds($income['class']),
-            'special_poundage_type' =>  $this->special_poundage_type,
             'special_poundage'  => $special_poundage,
             'special_poundage_rate'  => $this->special_poundage_rate,
             'special_service_tax'    => $special_service_tax,
