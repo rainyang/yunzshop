@@ -1608,19 +1608,15 @@ class MemberController extends ApiController
             }
             
             if (app('plugins')->isEnabled('hotel')) {
-                $store = \Yunshop\Hotel\common\models\Hotel::getHotelByUid(\YunShop::app()->getMemberId())->first();
-                if ($store) {
+                $hotel = \Yunshop\Hotel\common\models\Hotel::getHotelByUid(\YunShop::app()->getMemberId())->first();
+                if ($hotel) {
                     $data[] = [
                         'name'  => 'hotel',
                         'title' => '酒店管理',
                         'class' => 'icon-member_hotel',
                         'url'   => 'HotelManage'
                     ];
-                }
-            }
-            if (app('plugins')->isEnabled('hotel')) {
-                $store = \Yunshop\Hotel\common\models\Hotel::getHotelByUid(\YunShop::app()->getMemberId())->first();
-                if (!$store) {
+                } else {
                     $data[] = [
                         'name'  => 'hotel-apply',
                         'title' => '酒店申请',
@@ -1659,20 +1655,7 @@ class MemberController extends ApiController
             }
         }
         
-        if (app('plugins')->isEnabled('hotel')) {
-            $store = \Yunshop\Hotel\common\models\Hotel::getHotelByUid(\YunShop::app()->getMemberId())->first();
-            if (!$store) {
-                $data[] = [
-                    'name'  => 'hotel-apply',
-                    'title' => '酒店申请',
-                    'class' => 'icon-member-hotel-apply',
-                    'url'   => 'hotelApply'
-                ];
-            }
-        }
-
-        return $this->successJson('ok', $data);
-
+        return $this->successJson('ok', $arr);
     }
 
 
