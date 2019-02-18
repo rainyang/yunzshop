@@ -392,7 +392,14 @@ class MemberOfficeAccountService extends MemberService
      */
     public function isPhoneLogin($uniacid, $type = 4 , $mid = 0)
     {
-        $redirect_url = Url::absoluteApp('login', ['i' => $uniacid, 'type' => $type, 'mid' => $mid]);
-        redirect($redirect_url)->send();
+        $mobile   = \YunShop::request()->mobile;
+        $password = \YunShop::request()->password;
+        if ($mobile && $password) {
+            MemberMobileService::login();
+        } else {
+            $redirect_url = Url::absoluteApp('login', ['i' => $uniacid, 'type' => $type, 'mid' => $mid]);
+            redirect($redirect_url)->send();
+        }
+
     }
 }
