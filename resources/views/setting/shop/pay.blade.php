@@ -780,6 +780,7 @@
                                        @if ( $set['remittance'] == 0) checked @endif />
                                 关闭
                             </label>
+                            <span class="help-block">ps：前端转账支付页选择汇款支付，上传支付凭证，后台财务审核</span>
                         </div>
                     </div>
                     <div id='remittance' @if ( empty($set['remittance'])) style="display:none" @endif>
