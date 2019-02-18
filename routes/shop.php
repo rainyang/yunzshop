@@ -1,26 +1,5 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-//@todo 接口api部份设置跨域
-//header('Access-Control-Allow-Origin: http://localhost:8081' );
-//header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT');
-//header('Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Requested-With');
-//header('Access-Control-Allow-Credentials: true');
-//Route::any('/addons/yun_shop/api.php', function () {
-//    if(strpos($_SERVER['PHP_SELF'],'phpunit')){
-//        YunShop::parseRoute('order.list');
-//    }
-//});
-
 Route::any('/', function () {
     //支付回调
     if (strpos(request()->getRequestUri(), '/payment/') !== false) {
@@ -119,51 +98,16 @@ Route::any('/', function () {
 
     //后台
     if (strpos(request()->getRequestUri(), config('app.root')) !== false) {
+        // TODO 是否登录
+
         //如未设置当前公众号则加到选择公众号列表
         if (!YunShop::app()->uniacid) {
-            return redirect('?c=account&a=display');
+            // TODO 跳转到平台管理页面
         }
 
         //解析商城路由
         if (YunShop::request()->route) {
             YunShop::parseRoute(YunShop::request()->route);
-        } else {
-            $eid = YunShop::request()->eid;
-
-            $filesystem = app(\Illuminate\Filesystem\Filesystem::class);
-            $update     = new \app\common\services\AutoUpdate(null, null, 300);
-            \Log::debug('----CLI----');
-            $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
-            if (!empty($plugins_dir)) {
-                \Artisan::call('update:version', ['version' => $plugins_dir]);
-            }
-            
-            if (!empty($eid)) {
-                $entry = module_entry($eid);
-
-                switch ($entry['do']) {
-                    case 'shop':
-                        return redirect('?c=site&a=entry&do=shop&m=yun_shop&route=index.index');
-                        break;
-                    case 'member':
-                        return redirect('?c=site&a=entry&do=shop&m=yun_shop&route=member.member.index');
-                        break;
-                    case 'order':
-                        return redirect('?c=site&a=entry&do=shop&m=yun_shop&route=order.list');
-                        break;
-                    case 'finance':
-                        return redirect('?c=site&a=entry&do=shop&m=yun_shop&route=finance.withdraw-set.see');
-                        break;
-                    case 'plugins':
-                        return redirect('?c=site&a=entry&do=shop&m=yun_shop&route=plugins.get-plugin-data');
-                        break;
-                    case 'system':
-                        return redirect('?c=site&a=entry&do=shop&m=yun_shop&route=setting.shop.index');
-                        break;
-                    default:
-                        return redirect('?c=site&a=entry&do=shop&m=yun_shop&route=index.index');
-                }
-            }
         }
     }
     return;

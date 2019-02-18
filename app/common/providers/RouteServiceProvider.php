@@ -35,11 +35,13 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map()
     {
-
-       // $this->mapApiRoutes();
-        $this->mapWebRoutes();
-
-        //
+        if (env('APP_Framework') == 'platform') {
+            $this->mapPlatformRoutes();
+            $this->mapShopRoutes();
+        } else {
+            // $this->mapApiRoutes();
+            $this->mapWebRoutes();
+        }
     }
 
     /**
@@ -65,6 +67,26 @@ class RouteServiceProvider extends ServiceProvider
         Route::middleware('api')->prefix('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/api.php'));
+    }
+
+    protected function mapPlatformRoutes()
+    {
+        Route::group([
+            'prefix' => 'admin',
+            'namespace' => $this->namespace,
+        ], function ($router) {
+            require base_path('routes/admin.php');
+        });
+    }
+
+    protected function mapShopRoutes()
+    {
+        Route::group([
+            'prefix' => 'shop',
+            'namespace' => $this->namespace,
+        ], function ($router) {
+            require base_path('routes/shop.php');
+        });
     }
 
 }

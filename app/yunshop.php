@@ -162,7 +162,7 @@ class YunShop
 
     public static function isWeb()
     {
-        return strpos($_SERVER['PHP_SELF'], '/web/index.php') !== false ? true : false;
+        return strpos($_SERVER['PHP_SELF'], config('app.isWeb')) !== false ? true : false;
     }
 
     public static function isApp()
@@ -175,7 +175,7 @@ class YunShop
 
     public static function isApi()
     {
-        return (strpos($_SERVER['PHP_SELF'], '/addons/') !== false &&
+        return (strpos($_SERVER['PHP_SELF'], config('app.subDir')) === false &&
             strpos($_SERVER['PHP_SELF'], '/api.php') !== false) ? true : false;
     }
 
@@ -185,7 +185,7 @@ class YunShop
      */
     public static function isWechatApi()
     {
-        return (strpos($_SERVER['PHP_SELF'], '/addons/') === false &&
+        return (strpos($_SERVER['PHP_SELF'], config('app.subDir')) === false &&
             strpos($_SERVER['PHP_SELF'], '/api.php') !== false) ? true : false;
     }
 
@@ -556,6 +556,10 @@ class YunApp extends YunComponent
         }
     }
 
+    public function setValue($params)
+    {
+        $this->values = $params;
+    }
 
 }
 

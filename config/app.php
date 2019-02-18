@@ -297,5 +297,9 @@ return [
         'KDN' => [
             'reqURL'=>'http://api.kdniao.com/api/dist'
         ]
-    ]
+    ],
+
+    'isWeb'  => '/index.php',
+    'subDir' => '/',
+    'root' => '/'
 ];
