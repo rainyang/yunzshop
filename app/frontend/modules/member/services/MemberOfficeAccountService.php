@@ -37,7 +37,7 @@ class MemberOfficeAccountService extends MemberService
         $uniacid = \YunShop::app()->uniacid;
 
         if (Setting::get('shop.member')['wechat_login_mode'] == '1') {
-            $this->isPhoneLogin($uniacid);
+            return $this->isPhoneLogin($uniacid);
         }
 
         $code = \YunShop::request()->code;
