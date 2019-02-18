@@ -133,6 +133,22 @@ class Order extends \app\common\models\Order
                 });
 
             }
+
+            //增加地址,姓名，手机号搜索
+            if ($params['ambiguous']['field'] == 'address') {
+                call_user_func(function () use (&$order_builder, $params) {
+                    list($field, $value) = explode(':', $params['ambiguous']['string']);
+                    if (isset($value)) {
+                        return $order_builder->where($field, $value);
+                    } else {
+                        return $order_builder->whereHas('address', function ($query) use ($params) {
+                            return $query->where('address','like', '%' . $params['ambiguous']['string'] . '%')
+                                          ->orWhere('mobile','like','%' . $params['ambiguous']['string'] . '%')
+                                          ->orWhere('realname','like','%' . $params['ambiguous']['string'] . '%');
+                        });
+                    }
+                });
+            }
             //订单商品
             if ($params['ambiguous']['field'] == 'order_goods') {
                 $order_builder->whereHas('hasManyOrderGoods', function ($query) use ($params) {
@@ -225,3 +241,4 @@ class Order extends \app\common\models\Order
     }
 
 }
+
