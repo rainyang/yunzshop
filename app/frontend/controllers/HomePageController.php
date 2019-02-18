@@ -630,16 +630,23 @@ class HomePageController extends ApiController
         //            }
         //        }
         //邀请码关系链
+            \Log::info('member_id:bind_mobile', $member_id);
             $codeowner = MemberShopInfo::uniacid()->where('invite_code', trim(request()->invite_code))->first();
+            \Log::info('codeowner:bind_mobile', $codeowner);
+
             $codemodel = new MemberInvitationCodeLog();
+            
+            if ($member_id &&  $codeowner->member_id) {
+                
+                $codemodel->uniacid = \YunShop::app()->uniacid;
+                $codemodel->invitation_code = trim(request()->invite_code);
+            \Log::info('invitation_code:bind_mobile', request()->invite_code);
 
-            $codemodel->uniacid = \YunShop::app()->uniacid;
-            $codemodel->invitation_code = trim(request()->invite_code);
-            $codemodel->member_id = $member_id; //使用者id
-            $codemodel->mid = $codeowner->member_id;  //邀请人id
-      
-            $codemodel->save();
-
+                $codemodel->member_id = $member_id; //使用者id
+                $codemodel->mid = $codeowner->member_id;  //邀请人id
+          
+                $codemodel->save();
+            }
 
         $is_bind_mobile = 0;
 
