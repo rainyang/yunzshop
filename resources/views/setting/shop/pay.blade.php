@@ -35,7 +35,7 @@
                                 关闭
                             </label>
                             <span class="help-block">标准微信支付、及其他微信支付接口（云收银）总开关</span>
-                            <span>ps：微信支付授权目录填写路径：域名/addons/yun_shop/</span>
+                            <span class="help-block">ps：微信支付授权目录填写路径：域名/addons/yun_shop/</span>
                         </div>
                     </div>
                     <div id='certs' @if (empty($set['weixin'])) style="display:none" @endif>
@@ -96,7 +96,7 @@
                                     <input type="text" class="form-control" name="pay[weixin_mchid]"
                                            value="{{ @$set['weixin_mchid'] }}" autocomplete="off">
                                 </div>
-                                <span>ps：微信公众号以邮件形式告知</span>
+                                <span class="help-block">ps：微信公众号以邮件形式告知</span>
                             </div>
                         </div>
 
@@ -110,7 +110,7 @@
                                     <input type="text" class="form-control" name="pay[weixin_apisecret]"
                                            value="{{ @$set['weixin_apisecret'] }}" autocomplete="off">
                                 </div>
-                                <span>ps：获取路径：微信支付商户平台>账户设置>API安全--设置支付密钥（32位数）</span>
+                                <span class="help-block">ps：获取路径：微信支付商户平台>账户设置>API安全--设置支付密钥（32位数）</span>
                             </div>
                         </div>
 
@@ -133,7 +133,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                             <div class="col-sm-9 col-xs-12">
-                                <span>ps：微信支付证书获取途径：登录微信商户平台--账户中心--API安全--下载证书</span>
+                                <span class="help-block">ps：微信支付证书获取途径：登录微信商户平台--账户中心--API安全--下载证书</span>
                             </div>
                         </div>
 
@@ -433,7 +433,7 @@
                                     <input type="text" class="form-control" name="pay[alipay_account]"
                                            value="{{ @$set['alipay_account'] }}" autocomplete="off">
                                 </div>
-                                <span>ps：卖家支付宝账号</span>
+                                <span class="help-block">ps：卖家支付宝账号</span>
                             </div>
                         </div>
                         <div class="form-group">
@@ -446,7 +446,7 @@
                                     <input type="text" class="form-control" name="pay[alipay_partner]"
                                            value="{{ @$set['alipay_partner'] }}" autocomplete="off">
                                 </div>
-                                <span>ps：签约的支付宝账号对应的支付宝唯一用户号,以 2088 开头的 16 位纯数字组成</span>
+                                <span class="help-block">ps：签约的支付宝账号对应的支付宝唯一用户号,以 2088 开头的 16 位纯数字组成</span>
                             </div>
                         </div>
                         <div class="form-group">
@@ -459,7 +459,7 @@
                                     <input type="text" class="form-control" name="pay[alipay_secret]"
                                            value="{{ @$set['alipay_secret'] }}" autocomplete="off">
                                 </div>
-                                <span>ps：支付宝开放平台--账户中心--mapi网关产品密钥--MD5密钥</span>
+                                <span class="help-block">ps：支付宝开放平台--账户中心--mapi网关产品密钥--MD5密钥</span>
                             </div>
                         </div>
                     </div>
