@@ -386,10 +386,9 @@ class MemberOfficeAccountService extends MemberService
     }
 
     /**
-     * @name 判断是否为手机登录
+     * 判断是否为手机登录
      * @param $uniacid
-     * @param int $type
-     * @param int $mid
+     * @return array
      */
     public function isPhoneLogin($uniacid)
     {
