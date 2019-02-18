@@ -8,6 +8,9 @@
 
 namespace app\common\services;
 
+use app\common\helpers\WeSession;
+use app\common\helpers\YunSession;
+
 /**
  * Session控制类
  */
@@ -105,5 +108,14 @@ class Session
     public static function flash($key, $value)
     {
         self::put($key, $value);
+    }
+
+    public static function factory($uniacid, $ip, $expire)
+    {
+        if (env('APP_Framework') == 'platform') {
+            YunSession::start($uniacid, $ip, $expire);
+        } else {
+            WeSession::start($uniacid, $ip, $expire);
+        }
     }
 }

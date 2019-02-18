@@ -7,6 +7,7 @@ use app\common\exceptions\ShopException;
 use app\common\helpers\WeSession;
 use app\common\models\Modules;
 use app\common\services\Check;
+use app\common\services\Session;
 use app\common\traits\JsonTrait;
 use app\common\traits\MessageTrait;
 use app\common\traits\PermissionTrait;
@@ -116,7 +117,7 @@ class BaseController extends Controller
             setcookie(session_name(), $session_id);
         }
 
-        WeSession::start(\YunShop::app()->uniacid, CLIENT_IP, self::COOKIE_EXPIRE);
+        Session::factory(\YunShop::app()->uniacid, CLIENT_IP, self::COOKIE_EXPIRE);
     }
 
     /**
