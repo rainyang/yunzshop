@@ -254,7 +254,16 @@ class YoppayController extends PaymentController
             $yop_refund->error_message = $this->getParameter('errorMessage');
         }
 
-        $yop_refund->save();
+        $bool = $yop_refund->save();
+
+        if ($bool) {
+            $yop_order =  YopPayOrder::paySn($this->getParameter('orderId'))->first();
+            $yop_order->refund_amount = bcadd($yop_order->refund_amount, $this->getParameter('refundAmount'), 2);
+            $yop_order->can_refund = YopOrderRefund::REFUND_SUCCESS;
+            $yop_order->save();
+        }
+
+
 
         echo 'SUCCESS';
         exit();
