@@ -194,6 +194,7 @@ class ListController extends BaseController
                     $address = explode(' ', $item['address']['address']);
 
                     $export_data[$key + 1] = [
+                        $item['id'],
                         $item['order_sn'],
                         $item['has_one_order_pay']['pay_sn'],
                         $item['belongs_to_member']['uid'],
@@ -270,6 +271,7 @@ class ListController extends BaseController
                     $address = explode(' ', $item['address']['address']);
 
                     array_push($export_data[$key + 1],
+                        $item['id'],
                         $item['order_sn'],
                         $item['has_one_order_pay']['pay_sn'],
                         $item['belongs_to_member']['uid'],
