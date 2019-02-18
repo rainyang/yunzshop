@@ -333,7 +333,7 @@ class IncomeWithdrawController extends ApiController
             'type_name'         => $this->getLangTitle($key) ? $this->getLangTitle($key) : $income['title'],
             'income'            => $this->withdraw_amounts,
             'poundage'          => $poundage,
-            'poundage_type'     => $this->poundage_type,
+            'poundage_type'     => $this->poundage_type?:0,
             'poundage_rate'     => $this->poundage_rate,
             'servicetax'        => $service_tax,
             'servicetax_rate'   => $this->service_tax_rate,
