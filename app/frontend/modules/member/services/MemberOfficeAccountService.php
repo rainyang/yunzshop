@@ -35,6 +35,7 @@ class MemberOfficeAccountService extends MemberService
         $member_id = 0;
 
         $uniacid = \YunShop::app()->uniacid;
+
         if (Setting::get('shop.member')['wechat_login_mode'] == '1') {
             $this->isPhoneLogin($uniacid);
         }
@@ -390,16 +391,25 @@ class MemberOfficeAccountService extends MemberService
      * @param int $type
      * @param int $mid
      */
-    public function isPhoneLogin($uniacid, $type = 4 , $mid = 0)
+    public function isPhoneLogin($uniacid)
     {
+        $mid = Member::getMid();
+        $type = \YunShop::request()->type ;
         $mobile   = \YunShop::request()->mobile;
         $password = \YunShop::request()->password;
+
+        $yz_redirect = \YunShop::request()->yz_redirect;
         if ($mobile && $password) {
-            MemberMobileService::login();
+            $res =  MemberMobileService::login();
+            if ($res['status'] == 1) {
+                $redirect_url = $this->_getClientRequestUrl();
+                $res['json']['redirect_url'] = $redirect_url;
+            }
+            return $res;
         } else {
-            $redirect_url = Url::absoluteApp('login', ['i' => $uniacid, 'type' => $type, 'mid' => $mid]);
+            $this->_setClientRequestUrl();
+            $redirect_url = Url::absoluteApp('login', ['i' => $uniacid, 'type' => $type, 'mid' => $mid, 'yz_redirect' => $yz_redirect]);
             redirect($redirect_url)->send();
         }
-
     }
 }

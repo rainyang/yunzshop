@@ -55,7 +55,7 @@ class LoginController extends ApiController
         }
 
         if (!empty($type)) {
-                $member = MemberFactory::create(1);
+                $member = MemberFactory::create($type);
 
                 if ($member !== NULL) {
                     $msg = $member->login();
