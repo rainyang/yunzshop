@@ -15,7 +15,8 @@ class UpdateOrderInvoice extends Migration
     {
         //修改单位识别号字段属性
         if (Schema::hasTable('yz_order')) {
-            Schema::table('yz_order', function (Blueprint $table) {
+            if (!Schema::hasColumn('yz_order', 'company_number')) {
+                 Schema::table('yz_order', function (Blueprint $table) {
                 $table->string('company_number')->change();
             });
 
