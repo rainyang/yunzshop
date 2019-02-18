@@ -499,7 +499,7 @@ class Goods extends BaseModel
      */
     public static function getPushGoods($goodsIds)
     {
-        return self::select('id', 'title', 'thumb', 'price')->whereIn('id', $goodsIds)->where('status', 1)->get()->toArray();
+        return self::select('id', 'title', 'thumb', 'price','market_price')->whereIn('id', $goodsIds)->where('status', 1)->get()->toArray();
     }
 
     public static function boot()
