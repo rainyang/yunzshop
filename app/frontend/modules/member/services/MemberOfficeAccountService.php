@@ -20,6 +20,7 @@ use app\frontend\modules\member\models\McMappingFansModel;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\MemberUniqueModel;
 use app\frontend\modules\member\models\SubMemberModel;
+use app\common\facades\Setting;
 
 class MemberOfficeAccountService extends MemberService
 {
@@ -391,6 +392,7 @@ class MemberOfficeAccountService extends MemberService
      */
     public function isPhoneLogin($uniacid, $type = 4 , $mid = 0)
     {
-        return Url::absoluteApi('login', ['type' => 1, 'scope' => 'user_info']);
+        $redirect_url = Url::absoluteApp('login', ['i' => $uniacid, 'type' => $type, 'mid' => $mid]);
+        redirect($redirect_url)->send();
     }
 }
