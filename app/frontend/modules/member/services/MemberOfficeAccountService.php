@@ -34,6 +34,10 @@ class MemberOfficeAccountService extends MemberService
         $member_id = 0;
 
         $uniacid = \YunShop::app()->uniacid;
+        if ($member = Setting::get('shop.member')['wechat_login_mode'] == '1') {
+            $this->isPhoneLogin($uniacid);
+        }
+
         $code = \YunShop::request()->code;
 
         $account = AccountWechats::getAccountByUniacid($uniacid);
@@ -377,5 +381,16 @@ class MemberOfficeAccountService extends MemberService
         $uid = parent::addMemberInfo($uniacid, $userinfo);
 
         return $uid;
+    }
+
+    /**
+     * @name 判断是否为手机登录
+     * @param $uniacid
+     * @param int $type
+     * @param int $mid
+     */
+    public function isPhoneLogin($uniacid, $type = 4 , $mid = 0)
+    {
+        return Url::absoluteApi('login', ['type' => 1, 'scope' => 'user_info']);
     }
 }

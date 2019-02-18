@@ -280,25 +280,37 @@
                             </div>
                         @endif
 
-                    <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">注册状态</label>
-                        <div class="col-sm-9 col-xs-12" >
-                            <label class="radio-inline">
-                                <input type="radio" name="member[get_register]" value="1" @if($set['get_register'] == 1)checked="true" @endif onclick="$('#register').show()" />关闭
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio" name="member[get_register]" value="0" @if($set['get_register'] == 0)checked="true" @endif onclick="$('#register').hide()"/> 开启
-                            </label>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">注册状态</label>
+                            <div class="col-sm-9 col-xs-12" >
+                                <label class="radio-inline">
+                                    <input type="radio" name="member[get_register]" value="1" @if($set['get_register'] == 1)checked="true" @endif onclick="$('#register').show()" />关闭
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="member[get_register]" value="0" @if($set['get_register'] == 0)checked="true" @endif onclick="$('#register').hide()"/> 开启
+                                </label>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group desc" id="register" @if ($set['get_register'] == 0) style="display:none" @endif>
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">关闭描述</label>
-                        <div class="col-sm-9 col-xs-12">
-                            <input type="text" name="member[Close_describe]" class="form-control" value="{{ $set['Close_describe']}}" />
-                            <span class='help-block'>关闭描述</span>
+                        <div class="form-group desc" id="register" @if ($set['get_register'] == 0) style="display:none" @endif>
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">关闭描述</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <input type="text" name="member[Close_describe]" class="form-control" value="{{ $set['Close_describe']}}" />
+                                <span class='help-block'>关闭描述</span>
+                            </div>
                         </div>
-                    </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">微信端登录方式</label>
+                            <div class="col-sm-9 col-xs-12" >
+                                <label class="radio-inline">
+                                    <input type="radio" name="member[wechat_login_mode]" value="1" @if($set['wechat_login_mode'] == 1)checked="true" @endif/> 手机号码
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="member[wechat_login_mode]" value="0" @if($set['wechat_login_mode'] == 0)checked="true" @endif/> 自动授权登录
+                                </label>
+                            </div>
+                        </div>
 
                         <div class="form-group"></div>
                         <div class="form-group">
