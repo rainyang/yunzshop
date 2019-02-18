@@ -41,6 +41,8 @@ class TeamRankService
         if($nowmonth == 1){
             $nowyear = $nowyear -1;
             $nowmonth =12 ;
+        }else{
+            $nowmonth =$nowmonth -1;
         }
         $allMember = MemberChildren::uniacid()->where('level',1)->orWhere('level',2)->get();
         $allMember = $allMember->groupBy('member_id')->map(function($item) use($nowyear,$nowmonth){

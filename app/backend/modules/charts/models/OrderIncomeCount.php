@@ -25,7 +25,7 @@ class OrderIncomeCount extends BaseModel
         }
 
         if ($search['shop_name']) {
-            $query->where('shop_name', $search['shop_name']);
+            $query->where('shop_name','like','%'.$search['shop_name'].'%');
         }
 
         if ($search['member']) {
