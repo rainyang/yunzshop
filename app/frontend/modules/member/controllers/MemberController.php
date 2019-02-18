@@ -1609,14 +1609,14 @@ class MemberController extends ApiController
             }
         }
 
-        if (app('plugins')->isEnabled('provider-platform')) {
-            $data[] = [
-                'name'  => 'provider-platform',
-                'title' => '分站管理',
-                'class' => 'icon-provider-platform',
-                'url'   => 'ProviderPlatform'
-            ];
-        }
+//        if (app('plugins')->isEnabled('provider-platform')) {
+//            $data[] = [
+//                'name'  => 'provider-platform',
+//                'title' => '分站管理',
+//                'class' => 'icon-provider-platform',
+//                'url'   => 'ProviderPlatform'
+//            ];
+//        }
         return $this->successJson('ok', $data);
     }
 
