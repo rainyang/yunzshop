@@ -129,13 +129,12 @@ class BalanceWithdrawController extends BaseController
             $this->withdrawModel->status = 4;
 
             $this->withdrawUpdate();
+        } elseif ($this->withdrawModel->pay_way == 'yop_pay') {
+            $this->withdrawModel->pay_at = time();
+            $this->withdrawModel->status = 4;
+
+            $this->withdrawUpdate();
         }
-//        elseif ($this->withdrawModel->pay_way == 'yop_pay') {
-//            $this->withdrawModel->pay_at = time();
-//            $this->withdrawModel->status = 4;
-//
-//            $this->withdrawUpdate();
-//        }
 
         return $result;
     }
