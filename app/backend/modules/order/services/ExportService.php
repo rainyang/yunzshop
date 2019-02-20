@@ -34,7 +34,7 @@ class ExportService
 
     protected function getOrder($order){
         $order['pay_sn'] = $order['has_one_order_pay']['pay_sn'];
-        $order['nickname'] = $order['belongs_to_member']['uid'];
+        $order['uid'] = $order['belongs_to_member']['uid'];
         $order['nickname'] = $order['belongs_to_member']['nickname'];
         $order['realname'] = $order['address']['realname'];
         $order['mobile'] = $order['address']['mobile'];
