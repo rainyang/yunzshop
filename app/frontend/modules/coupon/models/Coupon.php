@@ -50,7 +50,7 @@ class Coupon extends \app\common\models\Coupon
             ->leftjoin('yz_member_level','yz_coupon.level_limit','=','yz_member_level.id')
             ->where(function ($query) use ($memberLevel) {
                 $query->where('yz_member_level.level','<=',\app\common\models\MemberLevel::find($memberLevel)->level)
-                    ->orWhere('yz_coupon.level_limit', -1);
+                    ->orWhere('yz_coupon.level_limit','=', -1);
             });
 
         if (!is_null($couponId)) {
