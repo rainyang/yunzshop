@@ -37,6 +37,7 @@ class Coupon extends \app\common\models\Coupon
     //获取该用户可领取的优惠券的状态
     public static function getCouponsForMember($memberId, $memberLevel, $couponId = null, $time = null)
     {
+        var_dump(\app\common\models\MemberLevel::find($memberLevel)->level);die;
 
         $res = static::uniacid()
             ->select(['yz_coupon.id', 'yz_coupon.name', 'yz_coupon.coupon_method', 'yz_coupon.deduct', 'yz_coupon.discount', 'yz_coupon.enough', 'yz_coupon.use_type', 'yz_coupon.category_ids',
