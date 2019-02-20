@@ -64,7 +64,6 @@ class GoodsPosterController extends ApiController
         if (empty($this->storeid)) {
             
             $this->shopSet = \Setting::get('shop.shop');
-
         } else {
 
             if (app('plugins')->isEnabled('store-cashier')) {
@@ -365,6 +364,10 @@ class GoodsPosterController extends ApiController
 
         } else {
             //门店商品二维码
+<<<<<<< HEAD
+=======
+
+>>>>>>> update_ordersend_zeng
             $url = yzAppFullUrl('/goods/'.$this->goodsModel->id.'/o2o/'.$this->storeid, ['mid'=> $this->mid]);
         }
 

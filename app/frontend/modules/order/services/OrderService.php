@@ -112,7 +112,7 @@ class OrderService
     {
         if (!isset($orderOperation)) {
             throw new AppException('未找到该订单');
-        }
+        }        
         DB::transaction(function() use($orderOperation) {
             $orderOperation->handle();
         });
@@ -266,8 +266,16 @@ class OrderService
      */
     public static function orderSend($param)
     {
+<<<<<<< HEAD
         $orderOperation = OrderSend::find($param['order_id']);        
         // \Log::info('----3orderOperation--', $orderOperation);
+=======
+        // \Log::info('---param---', $param);
+        $orderOperation = OrderSend::find($param['order_id']);
+
+        $orderOperation->params = $param;
+        // \Log::info('----1orderOperation--', $orderOperation);
+>>>>>>> update_ordersend_zeng
         return self::OrderOperate($orderOperation);
     }
 
