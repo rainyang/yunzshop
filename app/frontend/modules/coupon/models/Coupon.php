@@ -37,7 +37,8 @@ class Coupon extends \app\common\models\Coupon
     //获取该用户可领取的优惠券的状态
     public static function getCouponsForMember($memberId, $memberLevel, $couponId = null, $time = null)
     {
-        var_dump(\app\common\models\MemberLevel::find($memberLevel)->level);die;
+        // 通过id找到会员等级
+        $memberLevel = \app\common\models\MemberLevel::find($memberLevel)->level;
 
         $res = static::uniacid()
             ->select(['yz_coupon.id', 'yz_coupon.name', 'yz_coupon.coupon_method', 'yz_coupon.deduct', 'yz_coupon.discount', 'yz_coupon.enough', 'yz_coupon.use_type', 'yz_coupon.category_ids',
@@ -50,7 +51,7 @@ class Coupon extends \app\common\models\Coupon
             //->memberLevel($memberLevel);
             ->leftjoin('yz_member_level','yz_coupon.level_limit','=','yz_member_level.id')
             ->where(function ($query) use ($memberLevel) {
-                $query->where('yz_member_level.level','<=',\app\common\models\MemberLevel::find($memberLevel)->level)
+                $query->where('yz_member_level.level','<=', !empty($memberLevel) ? $memberLevel : 0)//如果会员等级为空，也就是会员表等级默认的0，则默认为0，等级肯定大于等于1
                     ->orWhere('yz_coupon.level_limit','=', -1);
             });
 
