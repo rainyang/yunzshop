@@ -47,7 +47,7 @@ class Coupon extends \app\common\models\Coupon
             ->where('yz_coupon.get_max', '!=', 0)
             // 优惠券的level_limit改为存储yz_member_level表的id，所以要关联yz_member_level表
             //->memberLevel($memberLevel);
-            ->join('yz_member_level','yz_coupon.level_limit','=','yz_member_level.id')
+            ->leftjoin('yz_member_level','yz_coupon.level_limit','=','yz_member_level.id')
             ->where(function ($query) use ($memberLevel) {
                 $query->where('yz_member_level.level','<=',\app\common\models\MemberLevel::find($memberLevel)->level)
                     ->orWhere('yz_coupon.level_limit', -1);
