@@ -39,12 +39,12 @@ class Coupon extends \app\common\models\Coupon
     {
 
         $res = static::uniacid()
-            ->select(['id', 'name', 'coupon_method', 'deduct', 'discount', 'enough', 'use_type', 'category_ids',
-                'categorynames', 'goods_ids', 'goods_names', 'time_limit', 'time_days', 'time_start', 'time_end', 'get_max', 'total',
-                'money', 'credit'])
-            ->where('get_type', '=', 1)
-            ->where('status', '=', 1)
-            ->where('get_max', '!=', 0)
+            ->select(['yz_coupon.id', 'yz_coupon.name', 'yz_coupon.coupon_method', 'yz_coupon.deduct', 'yz_coupon.discount', 'yz_coupon.enough', 'yz_coupon.use_type', 'yz_coupon.category_ids',
+                'yz_coupon.categorynames', 'yz_coupon.goods_ids', 'yz_coupon.goods_names', 'yz_coupon.time_limit', 'yz_coupon.time_days', 'yz_coupon.time_start', 'yz_coupon.time_end', 'yz_coupon.get_max', 'yz_coupon.total',
+                'yz_coupon.money', 'yz_coupon.credit'])
+            ->where('yz_coupon.get_type', '=', 1)
+            ->where('yz_coupon.status', '=', 1)
+            ->where('yz_coupon.get_max', '!=', 0)
             // 优惠券的level_limit改为存储yz_member_level表的id，所以要关联yz_member_level表
             //->memberLevel($memberLevel);
             ->join('yz_member_level','yz_coupon.level_limit','=','yz_member_level.id')
