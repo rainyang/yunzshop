@@ -124,19 +124,19 @@ class BalancePasswordController extends ApiController
         }
 
         $password = trim(\YunShop::request()->password);
-        $old_password = trim(\YunShop::request()->old_password);
+        /*$old_password = trim(\YunShop::request()->old_password);*/
 
         $passwordService = new PasswordService();
 
-        $result = $passwordService->check($old_password,$this->memberModel->yzMember->pay_password,$this->memberModel->yzMember->salt);
+        /*$result = $passwordService->check($old_password,$this->memberModel->yzMember->pay_password,$this->memberModel->yzMember->salt);
         if (!$result) {
             return $this->errorJson('原密码错误，请重试！');
-        }
+        }*/
 
         //验证码验证
         $check_code = MemberService::checkCode();
         if ($check_code['status'] != 1) {
-            return $check_code['json'];
+            return $this->errorJson($check_code['json']);
         }
 
         $password = $passwordService->make($password,$this->memberModel->yzMember->salt);
