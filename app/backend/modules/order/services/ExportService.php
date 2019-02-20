@@ -34,6 +34,7 @@ class ExportService
 
     protected function getOrder($order){
         $order['pay_sn'] = $order['has_one_order_pay']['pay_sn'];
+        $order['nickname'] = $order['belongs_to_member']['uid'];
         $order['nickname'] = $order['belongs_to_member']['nickname'];
         $order['realname'] = $order['address']['realname'];
         $order['mobile'] = $order['address']['mobile'];
@@ -115,6 +116,11 @@ class ExportService
                 "title" => "支付单号",
                 "field" => "pay_sn",
                 "width" => 24
+            ] ,
+            [
+                "title" => "粉丝ID",
+                "field" => "uid",
+                "width" => 12
             ] ,
             [
                 "title" => "粉丝昵称",
