@@ -129,7 +129,7 @@ class BalanceWithdrawController extends BaseController
             $this->withdrawModel->status = 4;
 
             $this->withdrawUpdate();
-        } elseif ($this->withdrawModel->pay_way == 'yop_pay') {
+        } elseif ($this->withdrawModel->pay_way == 'yop_pay') { //易宝余额提现
             $this->withdrawModel->pay_at = time();
             $this->withdrawModel->status = 4;
 
@@ -178,7 +178,7 @@ class BalanceWithdrawController extends BaseController
             case 'huanxun':
                 return $this->huanxunPayment();
                 break;
-            case 'yop_pay':
+            case 'yop_pay': //易宝余额提现
                 return $this->yopPayment();
                 break;
             default:
@@ -259,7 +259,7 @@ class BalanceWithdrawController extends BaseController
 
     /**
      * @author blank
-     * 易宝打款
+     * 易宝余额提现
      * @return array|mixed|void
      */
     private function yopPayment()
