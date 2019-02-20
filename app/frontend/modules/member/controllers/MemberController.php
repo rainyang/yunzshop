@@ -1594,18 +1594,6 @@ class MemberController extends ApiController
                     ];
                 }
             }
-
-            if (app('plugins')->isEnabled('hotel')) {
-                $store = \Yunshop\Hotel\common\models\Hotel::getHotelByUid(\YunShop::app()->getMemberId())->first();
-                if (!$store) {
-                    $data[] = [
-                        'name'  => 'hotel-apply',
-                        'title' => '酒店申请',
-                        'class' => 'icon-member-hotel-apply',
-                        'url'   => 'hotelApply'
-                    ];
-                }
-            }
             
             if (app('plugins')->isEnabled('hotel')) {
                 $hotel = \Yunshop\Hotel\common\models\Hotel::getHotelByUid(\YunShop::app()->getMemberId())->first();
