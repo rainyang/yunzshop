@@ -8,6 +8,7 @@
 
 namespace app\backend\modules\member\models;
 
+use app\backend\modules\order\models\Order;
 use app\common\models\member\MemberDel;
 use app\common\traits\MemberTreeTrait;
 use Illuminate\Support\Facades\DB;
@@ -330,6 +331,7 @@ class Member extends \app\common\models\Member
         }, 'hasOneOrder' => function ($query5) {
             return $query5->selectRaw('uid, count(uid) as total, sum(price) as sum')
                 ->uniacid()
+                ->where('status', Order::COMPLETE)
                 ->groupBy('uid');
         }]);
 

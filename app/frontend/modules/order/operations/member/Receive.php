@@ -46,6 +46,9 @@ class Receive extends OrderOperation
 
     public function enable()
     {
+        if ($this->order->dispatch_type_id == DispatchType::HOTEL_CHECK_IN) {
+            return false;
+        }
         return true;
     }
 }

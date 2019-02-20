@@ -8,7 +8,7 @@
 
 namespace app\common\services\credit;
 
-
+use app\common\facades\Setting;
 class ConstService
 {
 
@@ -64,6 +64,9 @@ class ConstService
 
     public function __construct($title = '')
     {
+
+        $shop = Setting::get('shop.shop');
+        static::$title              = $shop['credit'] ?: static::$title;
         static::$title              = $title ?: static::$title;
     }
 

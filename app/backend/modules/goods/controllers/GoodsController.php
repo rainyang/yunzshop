@@ -490,6 +490,23 @@ class GoodsController extends BaseController
 
     }
 
+    /**
+     * 获取搜索商品by经销商
+     * @return html
+     */
+    public function getSearchGoodsByDividend()
+    {
+        $keyword = \YunShop::request()->keyword;
+        $goods = Goods::getGoodsByName($keyword);
+        if (!$goods->isEmpty()) {
+            $goods = set_medias($goods->toArray(), array('thumb', 'share_icon'));
+        }
+        return view('goods.dividend_goods_query', [
+            'goods' => $goods
+        ])->render();
+
+    }
+
     public function test()
     {
         $request = [

@@ -288,7 +288,9 @@ function yz_tomedia($src, $local_path = false)
         $src = $attachurl_remote . $src;
     }
 
-    $src = 'https:' . substr($src, strpos($src, '//'));
+    if (!config('app.debug')) {
+        $src = 'https:' . substr($src, strpos($src, '//'));
+    }
 
     return $src;
 }

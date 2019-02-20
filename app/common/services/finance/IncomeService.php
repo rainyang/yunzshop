@@ -31,9 +31,10 @@ class IncomeService
 
     public static function getModeName($key)
     {
+        $dalance=Setting::get('shop.shop');
         switch ($key) {
             case 'balance':
-                return '提现到余额';
+                return '提现到'.$dalance['credit'];
                 break;
             case 'wechat':
                 return '提现到微信';

@@ -33,6 +33,7 @@ class PluginSettleController extends ApiController
 
     protected function available($key, $value)
     {
+        $lang = \Setting::get('shop.lang', ['lang' => 'zh_cn'])['zh_cn'];
         $arr = [];
         switch ($key) {
             case 'merchant':
@@ -60,7 +61,7 @@ class PluginSettleController extends ApiController
             case 'areaDividend':
                 if (\Setting::get('plugin.area_dividend.settlement_model')) {
                     $arr =  [
-                        'title' => $value['title'],
+                        'title' => $lang['area_dividend']['title']?:$value['title'],
                         'type'  => $value['type'],
                         'amount'=>  $value['class']::getNotSettleAmount(\YunShop::app()->getMemberId()),
                         'api'   => 'finance.plugin-settle.plugin-area-dividend',
@@ -71,7 +72,7 @@ class PluginSettleController extends ApiController
             case 'teamDividend':
                 if (\Setting::get('plugin.team_dividend.settlement_model')) {
                     $arr =  [
-                        'title' => $value['title'],
+                        'title' => $lang['team_dividend']['title']?:$value['title'],
                         'type'  => $value['type'],
                         'amount'=>  $value['class']::getNotSettleAmount(\YunShop::app()->getMemberId()),
                         'api'   => 'finance.plugin-settle.plugin-team-dividend',

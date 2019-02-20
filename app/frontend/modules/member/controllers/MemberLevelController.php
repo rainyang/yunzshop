@@ -104,7 +104,7 @@ class MemberLevelController extends ApiController
             'member_data' => $memberData,
             'level_type' => $this->settinglevel['level_type'],
             'data' => $data,
-            'cservice' => $shopSet['cservice'],
+            'shop_set' => $shopSet,
             'shop_description' => html_entity_decode($shopContact['description']),
         ];
 
