@@ -69,7 +69,8 @@
                     <label class='radio-inline'>
                         <div class="input-group">
                             <input type="text" name="withdraw[income][special_poundage]" class="form-control" value="{{ $set['special_poundage'] or '' }}" placeholder="提现至余额独立手续费比例"/>
-                            <div class="input-group-addon" id="special_poundage_unit">%</div>
+                            <div class="input-group-addon" id="special_poundage_unit">@if($set['special_poundage_type'] == 1) 元 @else
+                                    % @endif</div>
                         </div>
                     </label>
                 </div>
