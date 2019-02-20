@@ -364,10 +364,6 @@ class GoodsPosterController extends ApiController
 
         } else {
             //门店商品二维码
-<<<<<<< HEAD
-=======
-
->>>>>>> update_ordersend_zeng
             $url = yzAppFullUrl('/goods/'.$this->goodsModel->id.'/o2o/'.$this->storeid, ['mid'=> $this->mid]);
         }
 
