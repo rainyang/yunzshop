@@ -19,6 +19,7 @@
             var order_id = $('.order_id').val();
             var remark = $('#remark').val();
             var invoice = $("[name='basic-detail[invoice]']").val();//获取发票
+            // $.post("{!! yzWebUrl('order.') !!}", {
             $.post("{!! yzWebUrl('order.edit') !!}", {
                 order_id: order_id,
                 remark: remark,
