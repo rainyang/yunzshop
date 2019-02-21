@@ -6,10 +6,7 @@ use app\backend\modules\member\models\MemberRelation;
 use app\common\components\ApiController;
 use app\common\facades\Setting;
 use app\common\helpers\Cache;
-
-
 use app\common\services\popularize\PortType;
-
 use app\frontend\models\Member;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\shop\controllers\IndexController;
@@ -604,8 +601,9 @@ class HomePageController extends ApiController
         );
     }
 
-     public function bindMobile()
+    public function bindMobile()
     {
+
         $member_id = \YunShop::app()->getMemberId();
         //强制绑定手机号
         if (Cache::has('shop_member')) {
@@ -628,29 +626,31 @@ class HomePageController extends ApiController
         //                }
         //            }
         //        }
+        
         //邀请码关系链
-            $codeowner = MemberShopInfo::uniacid()->where('invite_code', trim(request()->invite_code))->first();
-            $codemodel = new MemberInvitationCodeLog();
-            
-            if ($member_id &&  $codeowner->member_id) {
+            if (request()->invite_code) {
                 
-                $codemodel->uniacid = \YunShop::app()->uniacid;
-                $codemodel->invitation_code = trim(request()->invite_code);
+                $codeowner = MemberShopInfo::uniacid()->where('invite_code', trim(request()->invite_code))->first();
+                dd($codeowner);
+                $codemodel = new MemberInvitationCodeLog();
+                
+                if ($member_id &&  $codeowner->member_id) {
+                    
+                    $codemodel->uniacid = \YunShop::app()->uniacid;
+                    $codemodel->invitation_code = trim(request()->invite_code);
 
-                $codemodel->member_id = $member_id; //使用者id
-                $codemodel->mid = $codeowner->member_id;  //邀请人id
-                
-                if ($codemodel->where('member_id', $member_id)->where('mid', $codeowner->member_id)->first()) {
-                    \Log::info('邀请码使用记录已存在');
-                
-                } else {
+                    $codemodel->member_id = $member_id; //使用者id
+                    $codemodel->mid = $codeowner->member_id;  //邀请人id
+                    if ($codemodel->where('member_id', $member_id)->where('mid', $codeowner->member_id)->first()) {
+                        \Log::info('邀请码使用记录已存在');
+                    
+                    } else {
 
-                    if (!$codemodel->save()) {
-                        \Log::debug('邀请码使用记录保存出错');
+                        if (!$codemodel->save()) {
+                            \Log::debug('邀请码使用记录保存出错');
+                        }
                     }
                 }
-
-                
             }
 
         $is_bind_mobile = 0;
