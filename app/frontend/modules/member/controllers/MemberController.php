@@ -888,12 +888,12 @@ class MemberController extends ApiController
         if (empty($member_id)) {
             return $this->errorJson('用户未登录', []);
         }
-        if($request->type==2) {
+        if($request->type==1) {
 
             $set = \Setting::get('shop.share');
             $fans_model = McMappingFans::getFansById($member_id);
             $mid = \app\common\models\Member::getMid();
-            echo $set;
+           
 
             if (!empty($set['follow_url']) && $fans_model->follow === 0) {
 
