@@ -48,7 +48,7 @@ class YopController extends BaseController
 
     protected function getMerchantNo()
     {
-        \Log::debug('--------------易宝入网参数--------------', $_REQUEST);
+        //\Log::debug('--------------易宝入网参数--------------', $_REQUEST);
 
         $app_key = $_REQUEST['customerIdentification'];
         $merchant_no = substr($app_key,  strrpos($app_key, 'OPR:')+4);
@@ -57,25 +57,23 @@ class YopController extends BaseController
 
         if ($model) {
             return [
-                'uniacid' =>$model->uniacid,
-                'merchant_number' => $model->parent_merchant_no,
-                'private_key' => $model->private_key,
-                'yop_public_key' => $model->yop_public_key,
+                'uniacid' => $model['uniacid'],
+                'merchant_number' => $model['parent_merchant_no'],
+                'private_key' => $model['private_key'],
+                'yop_public_key' => $model['yop_public_key'],
             ];
         }
 
         $model = DB::table('yz_yop_setting')->where('merchant_no', $merchant_no)->first();
 
-
         if (empty($model)) {
             exit('商户不存在');
         }
-
         return [
-            'uniacid' =>$model->uniacid,
-            'merchant_number' => $model->merchant_no,
-            'private_key' => $model->son_private_key,
-            'yop_public_key' => $model->yop_public_key,
+            'uniacid' => $model['uniacid'],
+            'merchant_number' => $model['merchant_no'],
+            'private_key' => $model['son_private_key'],
+            'yop_public_key' => $model['yop_public_key'],
         ];
     }
 
