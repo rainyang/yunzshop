@@ -485,15 +485,22 @@ class Member extends BackendModel
 
             //邀请码关系链
             $codemodel = new MemberInvitationCodeLog();
-        \Log::info('registe_3_code', \YunShop::request()->invite_code);
-
-            $codemodel->uniacid = \YunShop::app()->uniacid;
-            $codemodel->invitation_code = trim(\YunShop::request()->invite_code);
-            $codemodel->member_id = $member_id; //使用者id
-            $codemodel->mid = $code_mid; //邀请人id
-      
-            $codemodel->save();
-        \Log::info('registe_4', $codemodel->save());
+            \Log::info('registe_3_code', \YunShop::request()->invite_code);
+            
+            if (!$codemodel->where('member_id', $member_id)->where('mid', $code_mid)->first()) {
+                
+                $codemodel->uniacid = \YunShop::app()->uniacid;
+                $codemodel->invitation_code = trim(\YunShop::request()->invite_code);
+                $codemodel->member_id = $member_id; //使用者id
+                $codemodel->mid = $code_mid; //邀请人id
+              
+                $codemodel->save();
+                \Log::info('registe_4', $codemodel->save());
+            
+            } else {
+                \Log::info('已存在');
+            }
+           
 
             file_put_contents(storage_path("logs/" . date('Y-m-d') . "_invitecode.log"), print_r($member_id . '-'. \YunShop::request()->invite_code . '-' . $code_mid . '-reg' . PHP_EOL, 1), FILE_APPEND);
         }

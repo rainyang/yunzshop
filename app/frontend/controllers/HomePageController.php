@@ -626,38 +626,6 @@ class HomePageController extends ApiController
         //                }
         //            }
         //        }
-        \Log::info('1---invite_code', \YunShop::request()->invite_code);
-        //邀请码关系链
-            if (\YunShop::request()->invite_code) {
-        \Log::info('--step--2');
-                
-                $codeowner = MemberShopInfo::uniacid()->where('invite_code', trim(\YunShop::request()->invite_code))->first();
-        \Log::info('--step--3: codeowner', $codeowner);
-
-                $codemodel = new MemberInvitationCodeLog();
-        \Log::info('--step--4: mid, member_id', [$codeowner->$member_id, $member_id]);
-                
-                if ($member_id &&  $codeowner->member_id) {
-                    
-                    $codemodel->uniacid = \YunShop::app()->uniacid;
-                    $codemodel->invitation_code = trim(request()->invite_code);
-
-                    $codemodel->member_id = $member_id; //使用者id
-                    $codemodel->mid = $codeowner->member_id;  //邀请人id
-
-        \Log::info('5: checklog', $codemodel->where('member_id', $member_id)->where('mid', $codeowner->member_id)->first());
-
-                    if ($codemodel->where('member_id', $member_id)->where('mid', $codeowner->member_id)->first()) {
-                        \Log::info('邀请码使用记录已存在');
-                    
-                    } else {
-
-                        if (!$codemodel->save()) {
-                            \Log::debug('邀请码使用记录保存出错');
-                        }
-                    }
-                }
-            }
 
         $is_bind_mobile = 0;
 
@@ -674,7 +642,12 @@ class HomePageController extends ApiController
                 }
             }
         }
-
+        
+        if (\YunShop::request()->invite_code) {
+            \Log::info('绑定手机号填写邀请码');
+            //分销关系链
+            \app\common\models\Member::createRealtion($member_id);
+        }
 
         $result['is_bind_mobile'] = $is_bind_mobile;
 
