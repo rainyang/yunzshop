@@ -1330,7 +1330,7 @@ class MemberController extends ApiController
             'tool' => ['separate'],
             'asset_equity' => ['integral','credit','asset'],
             'merchant' => ['supplier', 'kingtimes', 'hotel', 'store-cashier'],
-            'market' => ['ranking','article','clock_in','conference', 'video_demand', 'enter_goods']
+            'market' => ['ranking','article','clock_in','conference', 'video_demand', 'enter_goods', 'universal_card']
         ];
 
         $data   = [];
