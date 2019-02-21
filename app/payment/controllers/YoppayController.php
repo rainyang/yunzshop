@@ -79,7 +79,7 @@ class YoppayController extends PaymentController
     {
         $this->log($this->set['merchant_no'], $this->parameters);
 
-        $this->yopResponse('支付通知', $this->parameters, 'pay');
+        $this->yopResponse('支付通知pay_sn:'.$this->getParameter('orderId'), $this->parameters, 'pay');
 
         $pay_order = YopPayOrder::paySn($this->getParameter('orderId'))->first();
         if (!$pay_order) {
@@ -186,7 +186,7 @@ class YoppayController extends PaymentController
     protected function rateAmount()
     {
         $rate =  $this->set['rate'];
-        $rate_amount = bcmul($this->getParameter('orderAmount'), $rate, 2);
+        $rate_amount = bcmul($this->getParameter('orderAmount'), bcdiv($rate, 100,4), 2);
 
         return max($rate_amount, 0);
     }
@@ -216,6 +216,9 @@ class YoppayController extends PaymentController
             exit('Record does not exist');
         }
 
+        $this->yopResponse('订单清算pay_sn:'.$this->getParameter('orderId'), $this->parameters, 'cs');
+
+
         $data = [
             'status' => 1,
             'cs_at' => strtotime($this->getParameter('csSuccessDate')),
@@ -239,10 +242,11 @@ class YoppayController extends PaymentController
         $yop_refund = YopOrderRefund::getRefundAnnal($this->getParameter('orderId'), $this->getParameter('refundRequestId'))->first();
 
         if (!$yop_refund) {
-            $this->yopLog('订单退款异步','易宝订单退款记录不存在',$this->parameters);
+            $this->yopLog('退款不存在pay_sn:'.$this->getParameter('orderId'),'易宝订单退款记录不存在',$this->parameters);
             exit('Record does not exist');
         }
 
+        $this->yopResponse('退款通知pay_sn:'.$this->getParameter('orderId'), $this->parameters, 'refund');
 
         $yop_refund->status = $this->refundStatus();
 
@@ -262,9 +266,7 @@ class YoppayController extends PaymentController
             $yop_order->can_refund = YopOrderRefund::REFUND_SUCCESS;
             $yop_order->save();
         }
-
-
-
+        
         echo 'SUCCESS';
         exit();
     }
