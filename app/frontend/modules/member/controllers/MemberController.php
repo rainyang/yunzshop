@@ -1330,7 +1330,7 @@ class MemberController extends ApiController
             'tool' => ['separate'],
             'asset_equity' => ['integral','credit','asset'],
             'merchant' => ['supplier', 'kingtimes', 'hotel', 'store-cashier'],
-            'market' => ['ranking','article','clock-in','conference', 'video_demand', 'enter_goods']
+            'market' => ['ranking','article','clock_in','conference', 'video_demand', 'enter_goods']
         ];
 
         $data   = [];
@@ -1584,7 +1584,6 @@ class MemberController extends ApiController
 
             if (app('plugins')->isEnabled('separate')) {
                 $setting = \Setting::get('plugin.separate');
-
                 if ($setting && 1 == $setting['separate_status']) {
                     $data[] = [
                         'name'  => 'separate',
@@ -1594,19 +1593,6 @@ class MemberController extends ApiController
                     ];
                 }
             }
-
-            if (app('plugins')->isEnabled('hotel')) {
-                $store = \Yunshop\Hotel\common\models\Hotel::getHotelByUid(\YunShop::app()->getMemberId())->first();
-                if (!$store) {
-                    $data[] = [
-                        'name'  => 'hotel-apply',
-                        'title' => '酒店申请',
-                        'class' => 'icon-member-hotel-apply',
-                        'url'   => 'hotelApply'
-                    ];
-                }
-            }
-            
             if (app('plugins')->isEnabled('hotel')) {
                 $hotel = \Yunshop\Hotel\common\models\Hotel::getHotelByUid(\YunShop::app()->getMemberId())->first();
                 if ($hotel) {
@@ -1618,7 +1604,7 @@ class MemberController extends ApiController
                     ];
                 } else {
                     $data[] = [
-                        'name'  => 'hotel-apply',
+                        'name'  => 'hotel',
                         'title' => '酒店申请',
                         'class' => 'icon-member-hotel-apply',
                         'url'   => 'hotelApply'
