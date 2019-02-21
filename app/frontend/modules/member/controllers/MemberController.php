@@ -1606,7 +1606,7 @@ class MemberController extends ApiController
                     ];
                 } else {
                     $data[] = [
-                        'name'  => 'hotel-apply',
+                        'name'  => 'hotel',
                         'title' => '酒店申请',
                         'class' => 'icon-member-hotel-apply',
                         'url'   => 'hotelApply'
