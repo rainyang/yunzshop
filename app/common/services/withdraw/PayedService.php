@@ -310,7 +310,7 @@ class PayedService
         $member_id = $this->withdrawModel->member_id;
         $sn = $this->withdrawModel->withdraw_sn;
         $amount = $this->withdrawModel->actual_amounts;
-        $remark = '';
+        $remark = 'withdraw';
 
         $result = PayFactory::create(PayFactory::YOP)->doWithdraw($member_id, $sn, $amount, $remark);
         if ($result['errno'] == 200) {
