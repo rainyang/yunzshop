@@ -631,7 +631,6 @@ class HomePageController extends ApiController
             if (request()->invite_code) {
                 
                 $codeowner = MemberShopInfo::uniacid()->where('invite_code', trim(request()->invite_code))->first();
-                dd($codeowner);
                 $codemodel = new MemberInvitationCodeLog();
                 
                 if ($member_id &&  $codeowner->member_id) {

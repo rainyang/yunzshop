@@ -21,7 +21,7 @@ class MemberInvitedController extends BaseController
     public function index()
     {
         $search = \YunShop::request()->search;
-        $pageSize = 1;
+        $pageSize = 10;
 
         $list =  MemberInvitationCodeLog::
         searchLog($search)
