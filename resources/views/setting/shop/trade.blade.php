@@ -25,7 +25,7 @@
                             <input type="text" name="trade[close_order_days]" class="form-control" value="{{ $set['close_order_days'] }}" />
                             <div class="input-group-addon">天</div>
                         </div>
-                        <span class='help-block'>订单下单未付款，n天后自动关闭，空为不自动关闭</span>
+                        <span class='help-block'>订单下单未付款，n天后自动关闭，0/空为不自动关闭</span>
                     </div>
                 </div>
 
@@ -53,7 +53,7 @@
                             <input type="text" name="trade[receive]" class="form-control" value="{{ $set['receive'] }}" />
                             <div class="input-group-addon">天</div>
                         </div>
-                        <span class='help-block'>订单发货后，用户收货的天数，如果在期间未确认收货，系统自动完成收货，空为不自动收货</span>
+                        <span class='help-block'>订单发货后，用户收货的天数，如果在期间未确认收货，系统自动完成收货，0/空为不自动收货</span>
                     </div>
                 </div>
 
