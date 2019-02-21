@@ -13,7 +13,6 @@ class CreateDispatchClassify extends Migration
      */
     public function up()
     {
-
         if (!Schema::hasTable('yz_dispatch_classify')) {
             Schema::create('yz_dispatch_classify', function (Blueprint $table) {
                 $table->increments('id');
