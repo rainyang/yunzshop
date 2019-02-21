@@ -1759,6 +1759,9 @@ class MemberController extends ApiController
             $member_invitation_model->uniacid = \YunShop::app()->uniacid;
             $member_invitation_model->mid = \YunShop::app()->getMemberId();
             $member_invitation_model->member_id = $parent->member_id;
+            $member_invitation_model->invitation_code = $invite_code;
+            $member_invitation_model->save();
+            return $this->successJson('ok', $parent);
         } else {
             return $this->errorJson('邀请码有误!请重新填写');
         }
