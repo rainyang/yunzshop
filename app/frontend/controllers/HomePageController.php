@@ -626,16 +626,16 @@ class HomePageController extends ApiController
         //                }
         //            }
         //        }
-        \Log::info('1---invite_code', request()->invite_code);
+        \Log::info('1---invite_code', \YunShop::request()->invite_code);
         //邀请码关系链
-            if (request()->invite_code) {
-        \Log::info('2');
+            if (\YunShop::request()->invite_code) {
+        \Log::info('--step--2');
                 
-                $codeowner = MemberShopInfo::uniacid()->where('invite_code', trim(request()->invite_code))->first();
-        \Log::info('3:', $codeowner);
+                $codeowner = MemberShopInfo::uniacid()->where('invite_code', trim(\YunShop::request()->invite_code))->first();
+        \Log::info('--step--3: codeowner', $codeowner);
 
                 $codemodel = new MemberInvitationCodeLog();
-        \Log::info('4:', [$codeowner->$member_id, $member_id]);
+        \Log::info('--step--4: mid, member_id', [$codeowner->$member_id, $member_id]);
                 
                 if ($member_id &&  $codeowner->member_id) {
                     
@@ -645,7 +645,7 @@ class HomePageController extends ApiController
                     $codemodel->member_id = $member_id; //使用者id
                     $codemodel->mid = $codeowner->member_id;  //邀请人id
 
-        \Log::info('5:', $codemodel->where('member_id', $member_id)->where('mid', $codeowner->member_id)->first());
+        \Log::info('5: checklog', $codemodel->where('member_id', $member_id)->where('mid', $codeowner->member_id)->first());
 
                     if ($codemodel->where('member_id', $member_id)->where('mid', $codeowner->member_id)->first()) {
                         \Log::info('邀请码使用记录已存在');
