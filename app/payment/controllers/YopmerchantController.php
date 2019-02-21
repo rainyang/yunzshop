@@ -45,7 +45,7 @@ class YopmerchantController extends YopController
 
     protected function merNetInStatus()
     {
-        $status = \Yunshop\YopPay\models\SubMerchant::INVALID;
+        $status = SubMerchant::INVALID;
         if (!empty($this->parameters['merNetInStatus'])) {
             switch ($this->parameters['merNetInStatus']) {
                 case 'PROCESS_SUCCESS': //审核通过
