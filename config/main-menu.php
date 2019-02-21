@@ -1032,6 +1032,31 @@ return [
                     ],
                 ],
 
+                    'goods_dispatch_freight'=> [
+                        'name'              => '运费设置',
+                        'url'               => 'discount.batch-dispatch.freight',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => '',
+                        'sort'              => '2',
+                        'item'              => 'goods_dispatch_freight-set',
+                        'parents'           => ['Goods','discount_set'],
+                        'child'             => [
+                            'goods_dispatch_set_freight' => [
+                                'name'              => '折扣设置',
+                                'url'               => 'discount.batch-dispatch.freight-set',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => 'fa-sitemap',
+                                'sort'              => '2',
+                                'item'              => 'goods_dispatch_set_freight',
+                                'parents'           => ['Goods', 'discount_set', 'goods_dispatch_freight-set'],
+                                'child'             => []
+                            ],
+                        ],
+                    ],
             ],
         ],
         ],

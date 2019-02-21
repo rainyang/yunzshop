@@ -103,4 +103,10 @@ class GoodsDispatch extends \app\common\models\goods\GoodsDispatch
         return self::where('id', $dispatchId)->delete();
     }
 
+
+    public static function deletedGoodsID($dispatchId)
+    {
+        return self::where('goods_id', $dispatchId)->delete();
+    }
+
 }
