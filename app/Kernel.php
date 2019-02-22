@@ -32,6 +32,20 @@ class Kernel extends HttpKernel
             //\Illuminate\View\Middleware\ShareErrorsFromSession::class,
             //VerifyCsrfToken::class,
         ],
+        'admin' => [
+            EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            VerifyCsrfToken::class
+        ],
+        'shop' => [
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ],
         'api' => [
             'throttle:60,1',
         ],
@@ -45,5 +59,7 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
+        'auth' => \app\common\middleware\Authenticate::class,
+        'authAdmin' => \app\common\middleware\AuthenticateAdmin::class,
     ];
 }
