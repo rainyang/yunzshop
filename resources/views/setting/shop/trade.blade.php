@@ -215,7 +215,7 @@
 
 
             <div class="panel-heading">
-                共享链支付协议开启
+                支付协议开启
             </div>
 
             <div class='panel-body'>
@@ -233,7 +233,7 @@
             </div>
 
             <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">共享链支付协议</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">支付协议</label>
                 <div class="col-sm-9 col-xs-12">
                     {!! yz_tpl_ueditor('trade[pay_content]', $set['pay_content']) !!}
                 </div>
