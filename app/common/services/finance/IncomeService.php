@@ -32,6 +32,7 @@ class IncomeService
     public static function getModeName($key)
     {
         //$dalance=Setting::get('shop.shop');
+        //从数据库获取
         $balance= empty(PayType::get_pay_type_name(3))?"余额":PayType::get_pay_type_name(3);
         switch ($key) {
             case 'balance':
