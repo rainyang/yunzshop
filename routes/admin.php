@@ -1,16 +1,19 @@
 <?php
-Route::get('login', '\app\platform\controllers\LoginController@showLoginForm');
-Route::post('login', '\app\platform\controllers\LoginController@login');
-Route::get('logout', 'LoginController@logout');
-Route::post('logout', 'LoginController@logout');
+Route::group(['namespace' => 'platform\controllers', 'middleware' => ['admin']], function () {
+    Route::get('login', 'LoginController@showLoginForm')->name('admin.login');
+    Route::post('login', 'LoginController@login');
+    Route::get('logout', 'LoginController@logout');
+    Route::post('logout', 'LoginController@logout');
 
-Route::get('/', 'IndexController@index');
+    Route::get('register', 'RegisterController@showRegistrationForm')->name('admin.register');
+    Route::post('register', 'RegisterController@register');
 
+    Route::get('/', 'IndexController@index');
+});
 
+Route::group(['middleware' => ['admin', 'auth:admin', 'authAdmin']], function () {
 
-Route::group(['middleware' => ['auth:admin', 'menu', 'authAdmin']], function () {
-
-    Route::get('index', ['as' => 'admin.index', 'uses' => 'IndexController@index']);
+    Route::get('index', ['as' => 'admin.index', 'uses' => '\app\platform\controllers\IndexController@index']);
 
     //权限管理路由
     Route::get('permission/{parentId}/create', ['as' => 'admin.permission.create', 'uses' => 'PermissionController@create']);

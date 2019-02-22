@@ -16,7 +16,7 @@ class IndexController extends BaseController
 {
     public function index()
     {
-        strpos(request()->getBaseUrl(),'/web/index.php') === 0 && Check::setKey();
+        //strpos(request()->getBaseUrl(),'/web/index.php') === 0 && Check::setKey();
         //redirect(Url::absoluteWeb('goods.goods.index'))->send();
 
         return view('index',[])->render();

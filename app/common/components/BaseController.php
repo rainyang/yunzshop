@@ -37,7 +37,7 @@ class BaseController extends Controller
 
     public function __construct()
     {
-        $this->setCookie();
+        //$this->setCookie();
 
         $modules = Modules::getModuleName('yun_shop');
 

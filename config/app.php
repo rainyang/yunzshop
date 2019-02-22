@@ -175,6 +175,7 @@ return [
         app\common\providers\ShopProvider::class,
         app\common\providers\PluginServiceProvider::class,
         // app\common\providers\BroadcastServiceProvider::class,
+        app\common\providers\AuthServiceProvider::class,
         app\common\providers\EventServiceProvider::class,
         app\common\providers\RouteServiceProvider::class,
 

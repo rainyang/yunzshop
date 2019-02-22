@@ -9,23 +9,82 @@
 namespace app\platform\controllers;
 
 
-use app\common\components\BaseController;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends BaseController
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Login Controller
+    |--------------------------------------------------------------------------
+    |
+    | This controller handles authenticating users for the application and
+    | redirecting them to your home screen. The controller uses a trait
+    | to conveniently provide its functionality to your applications.
+    |
+    */
 
-    public function index()
+    use AuthenticatesUsers;
+
+    /**
+     * Where to redirect users after login.
+     *
+     * @var string
+     */
+    protected $redirectTo = '/admin';
+    protected $username;
+
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
     {
-        echo 'index';
+   //     $this->middleware('guest:admin', ['except' => 'logout']);
     }
-
-    public function login()
-    {
-        echo 'login';
-    }
-
+    /**
+     * 重写登录视图页面
+     * @return [type]                   [description]
+     */
     public function showLoginForm()
     {
-        echo 'showLoginForm';exit;
+        return view('admin.auth.login');
+    }
+    /**
+     * 自定义认证驱动
+     * @return [type]                   [description]
+     */
+    protected function guard()
+    {
+        return auth()->guard('admin');
+    }
+
+    /**
+     * 重写验证字段.
+     *
+     * @return string
+     */
+    public function username()
+    {
+        return 'name';
+    }
+
+    /**
+     * Log the user out of the application.
+     *
+     * @param  Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function logout()
+    {
+        $this->guard('admin')->logout();
+
+        request()->session()->flush();
+
+        request()->session()->regenerate();
+
+        return redirect('/admin/login');
     }
 }
