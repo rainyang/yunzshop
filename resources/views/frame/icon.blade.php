@@ -7,6 +7,86 @@
 </style>
 <div class="icon-selection">
     <div class="page-header">
+        <h3>iconfont Icons</h3>
+    </div>
+    <div class="clearfix">
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-baoguofahuo"><i class="iconfont icon-baoguofahuo"></i><span>icon-baoguofahuo</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-wuliuqiache2"><i class="iconfont icon-wuliuqiache2"></i><span>icon-wuliuqiache2</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-wuliuguanli"><i class="iconfont icon-wuliuguanli"></i><span>icon-wuliuguanli</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-wuliuxinxi"><i class="iconfont icon-wuliuxinxi"></i><span>icon-wuliuxinxi</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-wuliu1"><i class="iconfont icon-wuliu1"></i><span>icon-wuliu1</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-wuliu"><i class="iconfont icon-wuliu"></i><span>icon-wuliu</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-htmal5icon29"><i class="iconfont icon-htmal5icon29"></i><span>icon-htmal5icon29</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-gouwuche_"><i class="iconfont icon-gouwuche_"></i><span>icon-gouwuche_</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-gouwuche"><i class="iconfont icon-gouwuche"></i><span>icon-gouwuche</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-gouwuche1"><i class="iconfont icon-gouwuche1"></i><span>icon-gouwuche1</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-gaiicon-"><i class="iconfont icon-gaiicon-"></i><span>icon-gaiicon-</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-icozhuanhuan"><i class="iconfont icon-icozhuanhuan"></i><span>icon-icozhuanhuan</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-shopcart"><i class="iconfont icon-shopcart"></i><span>icon-shopcart</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-gouwuche2"><i class="iconfont icon-gouwuche2"></i><span>icon-gouwuche2</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-leimupinleifenleileibie2"><i class="iconfont icon-leimupinleifenleileibie2"></i><span>icon-leimupinleifenleileibie2</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-fenlei1"><i class="iconfont icon-fenlei1"></i><span>icon-fenlei1</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-sort-full"><i class="iconfont icon-sort-full"></i><span>icon-sort-full</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-fenlei-xuanzhong"><i class="iconfont icon-fenlei-xuanzhong"></i><span>icon-fenlei-xuanzhong</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-fenleifill"><i class="iconfont icon-fenleifill"></i><span>icon-fenleifill</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-fenlei7"><i class="iconfont icon-fenlei7"></i><span>icon-fenlei7</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-fenlei6"><i class="iconfont icon-fenlei6"></i><span>icon-fenlei6</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-icon-test1"><i class="iconfont icon-icon-test1"></i><span>icon-icon-test1</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-fenlei5"><i class="iconfont icon-fenlei5"></i><span>icon-fenlei5</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-fenlei4"><i class="iconfont icon-fenlei4"></i><span>icon-fenlei4</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-fenlei3"><i class="iconfont icon-fenlei3"></i><span>icon-fenlei3</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-fenlei"><i class="iconfont icon-fenlei"></i><span>icon-fenlei</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-laba1"><i class="iconfont icon-laba1"></i><span>icon-laba1</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-tuiguang-kuai"><i class="iconfont icon-tuiguang-kuai"></i><span>icon-tuiguang-kuai</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-xuanchuantuiguang"><i class="iconfont icon-xuanchuantuiguang"></i><span>icon-xuanchuantuiguang</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-zizhutuiguang"><i class="iconfont icon-zizhutuiguang"></i><span>icon-zizhutuiguang</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-home1"><i class="iconfont icon-home1"></i><span>icon-home1</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-home-page"><i class="iconfont icon-home-page"></i><span>icon-home-page</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-zhuye2"><i class="iconfont icon-zhuye2"></i><span>icon-zhuye2</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-gaiicon-1"><i class="iconfont icon-gaiicon-1"></i><span>icon-gaiicon-1</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-icon-test"><i class="iconfont icon-icon-test"></i><span>icon-icon-test</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-home"><i class="iconfont icon-home"></i><span>icon-home</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-shangcheng2"><i class="iconfont icon-shangcheng2"></i><span>icon-shangcheng2</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-huiyuan"><i class="iconfont icon-huiyuan"></i><span>icon-huiyuan</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-huiyuan1"><i class="iconfont icon-huiyuan1"></i><span>icon-huiyuan1</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-huiyuan2"><i class="iconfont icon-huiyuan2"></i><span>icon-huiyuan2</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-huiyuan3"><i class="iconfont icon-huiyuan3"></i><span>icon-huiyuan3</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-huiyuan4"><i class="iconfont icon-huiyuan4"></i><span>icon-huiyuan4</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-renxiang"><i class="iconfont icon-renxiang"></i><span>icon-renxiang</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-weibiaoti--"><i class="iconfont icon-weibiaoti--"></i><span>icon-weibiaoti--</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-huiyuan6"><i class="iconfont icon-huiyuan6"></i><span>icon-huiyuan6</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-kehuhuiyuanguanli"><i class="iconfont icon-kehuhuiyuanguanli"></i><span>icon-kehuhuiyuanguanli</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-huiyuan5"><i class="iconfont icon-huiyuan5"></i><span>icon-huiyuan5</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-gouwu1"><i class="iconfont icon-gouwu1"></i><span>icon-gouwu1</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-shangpin1"><i class="iconfont icon-shangpin1"></i><span>icon-shangpin1</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-shangpin-"><i class="iconfont icon-shangpin-"></i><span>icon-shangpin-</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-shangpinku"><i class="iconfont icon-shangpinku"></i><span>icon-shangpinku</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-shangpin"><i class="iconfont icon-shangpin"></i><span>icon-shangpin</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-zhanghushouru"><i class="iconfont icon-zhanghushouru"></i><span>icon-zhanghushouru</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-shouru1"><i class="iconfont icon-shouru1"></i><span>icon-shouru1</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-shouru"><i class="iconfont icon-shouru"></i><span>icon-shouru</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-jifen"><i class="iconfont icon-jifen"></i><span>icon-jifen</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-tubiao309"><i class="iconfont icon-tubiao309"></i><span>icon-tubiao309</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-kefu4"><i class="iconfont icon-kefu4"></i><span>icon-kefu4</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-kefu3"><i class="iconfont icon-kefu3"></i><span>icon-kefu3</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-liaotian1"><i class="iconfont icon-liaotian1"></i><span>icon-liaotian1</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-liaotian"><i class="iconfont icon-liaotian"></i><span>icon-liaotian</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-kefu2"><i class="iconfont icon-kefu2"></i><span>icon-kefu2</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-lvzhou_liaoliao"><i class="iconfont icon-lvzhou_liaoliao"></i><span>icon-lvzhou_liaoliao</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-liaotianduihua"><i class="iconfont icon-liaotianduihua"></i><span>icon-liaotianduihua</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-kefu1"><i class="iconfont icon-kefu1"></i><span>icon-kefu1</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-linedesign-20"><i class="iconfont icon-linedesign-20"></i><span>icon-linedesign-20</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-weixinliaotian"><i class="iconfont icon-weixinliaotian"></i><span>icon-weixinliaotian</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-custom-service"><i class="iconfont icon-custom-service"></i><span>icon-custom-service</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-zuji"><i class="iconfont icon-zuji"></i><span>icon-zuji</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-zuji1"><i class="iconfont icon-zuji1"></i><span>icon-zuji1</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-youhuiquan1"><i class="iconfont icon-youhuiquan1"></i><span>icon-youhuiquan1</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-weibiaoti2fuzhi02"><i class="iconfont icon-weibiaoti2fuzhi02"></i><span>icon-weibiaoti2fuzhi02</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-youhuiquan01"><i class="iconfont icon-youhuiquan01"></i><span>icon-youhuiquan01</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-faxian"><i class="iconfont icon-faxian"></i><span>icon-faxian</span></a>
+        <a href="javascript:;" onclick="{{ $callback }}('iconfont ' + $(this).find('span').text());" title="icon-faxianshebei"><i class="iconfont icon-faxianshebei"></i><span>icon-faxianshebei</span></a>
+    </div>
+    <div class="page-header">
         <h3>Web Application Icons</h3>
     </div>
     <div class="clearfix">

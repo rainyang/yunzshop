@@ -93,6 +93,9 @@ class BalancePasswordController extends ApiController
     public function sendCode()
     {
         $mobile = \YunShop::request()->mobile;
+        $state = \YunShop::request()->state ?: '86';
+        $sms_type = \YunShop::request()->sms_type;
+
         if (empty($mobile)) {
             return $this->errorJson('请填入手机号');
         }
@@ -108,7 +111,7 @@ class BalancePasswordController extends ApiController
         if (!MemberService::smsSendLimit(\YunShop::app()->uniacid, $mobile)) {
             return $this->errorJson('发送短信数量达到今日上限');
         } else {
-            (new RegisterController())->sendSms($mobile, $code);
+            (new RegisterController())->sendSmsV2($mobile, $code, $state, 'reg', $sms_type);;
         }
     }
 
@@ -124,19 +127,19 @@ class BalancePasswordController extends ApiController
         }
 
         $password = trim(\YunShop::request()->password);
-        $old_password = trim(\YunShop::request()->old_password);
+        /*$old_password = trim(\YunShop::request()->old_password);*/
 
         $passwordService = new PasswordService();
 
-        $result = $passwordService->check($old_password,$this->memberModel->yzMember->pay_password,$this->memberModel->yzMember->salt);
+        /*$result = $passwordService->check($old_password,$this->memberModel->yzMember->pay_password,$this->memberModel->yzMember->salt);
         if (!$result) {
             return $this->errorJson('原密码错误，请重试！');
-        }
+        }*/
 
         //验证码验证
         $check_code = MemberService::checkCode();
         if ($check_code['status'] != 1) {
-            return $check_code['json'];
+            return $this->errorJson($check_code['json']);
         }
 
         $password = $passwordService->make($password,$this->memberModel->yzMember->salt);

@@ -360,7 +360,7 @@ class RegisterController extends ApiController
         }
     }
 
-    public function sendSmsV2($mobile, $code, $state, $templateType = 'reg', $sms_type)
+    public function sendSmsV2($mobile, $code, $state, $templateType = 'reg', $sms_type=1)
     {
         $sms = \Setting::get('shop.sms');
 
