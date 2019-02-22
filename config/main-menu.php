@@ -1740,7 +1740,7 @@ return [
 
                             'order_operation_remark' => [
                                 'name'              => '订单备注',
-                                // 'url'               => 'order.remark.update-remark',
+                                // 'url'               => 'order.remark.index',
                                 'url'               => 'order.operation.remark',
                                 'url_params'        => '',
                                 'permit'            => 1,
