@@ -467,7 +467,6 @@ class MemberController extends BaseController
         $list = Member::getAgentInfoByMemberId($request)
             ->paginate($this->pageSize)
             ->toArray();
-//        dd($list);
 
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $this->pageSize);
 
@@ -498,8 +497,6 @@ class MemberController extends BaseController
         $list = MemberParent::children($request)
             ->paginate($this->pageSize)
             ->toArray();
-
-        dd($list);
 
         $level_total = MemberParent::where('parent_id', $request->id)
             ->selectRaw('count(member_id) as total, level, max(parent_id) as parent_id')
