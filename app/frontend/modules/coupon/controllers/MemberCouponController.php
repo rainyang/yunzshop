@@ -125,8 +125,8 @@ class MemberCouponController extends ApiController
 
         $now = strtotime('now');
         $coupons = Coupon::getCouponsForMember($uid, $memberLevel, null, $now)
-            ->orderBy('display_order', 'desc')
-            ->orderBy('updated_at', 'desc');
+            ->orderBy('yz_coupon.display_order', 'desc')
+            ->orderBy('yz_coupon.updated_at', 'desc');
         if ($coupons->get()->isEmpty()) {
             return $this->errorJson('没有找到记录', []);
         }

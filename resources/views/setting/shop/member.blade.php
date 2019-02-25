@@ -48,7 +48,8 @@
                                 <label class='radio-inline'><input type='radio' name='member[display_page]' value='1'
                                                                    @if ($set['display_page'] == 1) checked @endif/> 是</label>
                             <!-- <span class="help-block">后台会员等级权益页面是否显示设置为是， 前端会员中心等级按钮形式则可以点击进入</span> -->
-                                <span class="help-block">ps：只有会员等级升级依据为购买指定商品，会员中心才会有显示</span>
+                                <!-- <span class="help-block">ps：只有会员等级升级依据为购买指定商品，会员中心才会有显示</span> -->
+                                <span class="help-block">ps：只有会员等级升级依据为购买指定商品，在会员中心点击会员等级才可以进入等级权益页面</span>
                             </div>
                         </div>
                         <div class="form-group">

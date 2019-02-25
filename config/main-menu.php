@@ -1557,21 +1557,21 @@ return [
                 'child'         => [
                 ],
             ],
-            'member_invited'     => [
-                'name'          => '会员邀请码',
-                'url'           => 'member.member_invited.index',
-                'url_params'    => '',
-                'permit'        => 0,
-                'menu'          => 1,
-                'icon'          => 'fa-circle-o',
-                'sort'          => 0,
-                'left_first_show'   => 1,
-                'left_second_show'  => 1,
-                'item'          => 'member_invited',
-                'parents'       => ['Member'],
-                'child'         => [
-                ],
-            ],
+            // 'member_invited'     => [
+            //     'name'          => '会员邀请码',
+            //     'url'           => 'member.member_invited.index',
+            //     'url_params'    => '',
+            //     'permit'        => 0,
+            //     'menu'          => 1,
+            //     'icon'          => 'fa-circle-o',
+            //     'sort'          => 0,
+            //     'left_first_show'   => 1,
+            //     'left_second_show'  => 1,
+            //     'item'          => 'member_invited',
+            //     'parents'       => ['Member'],
+            //     'child'         => [
+            //     ],
+            // ],
         ],
     ],
 
@@ -1740,9 +1740,10 @@ return [
 
                             'order_operation_remark' => [
                                 'name'              => '订单备注',
-                                'url'               => 'order.remark.update-remark',
+                                // 'url'               => 'order.remark.index',
+                                'url'               => 'order.operation.remark',
                                 'url_params'        => '',
-                                'permit'            => 0,
+                                'permit'            => 1,
                                 'menu'              => 0,
                                 'icon'              => '',
                                 'sort'              => 1,
