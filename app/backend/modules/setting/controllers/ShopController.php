@@ -64,6 +64,7 @@ class ShopController extends BaseController
     {
         $member = Setting::get('shop.member');
         $requestModel = \YunShop::request()->member;
+
         if ($requestModel) {
             if(Cache::has('shop_member')){
                 Cache::forget('shop_member');
@@ -76,9 +77,11 @@ class ShopController extends BaseController
             }
         }
         $is_diyform = \YunShop::plugin()->get('diyform');
+
         $diyForm = [];
         if($is_diyform){
             $diyForm = DiyformTypeModel::getDiyformList()->get();
+            
         }
 
         return view('setting.shop.member', [

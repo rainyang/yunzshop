@@ -93,6 +93,9 @@ class BalancePasswordController extends ApiController
     public function sendCode()
     {
         $mobile = \YunShop::request()->mobile;
+        $state = \YunShop::request()->state ?: '86';
+        $sms_type = \YunShop::request()->sms_type;
+
         if (empty($mobile)) {
             return $this->errorJson('请填入手机号');
         }
@@ -108,7 +111,7 @@ class BalancePasswordController extends ApiController
         if (!MemberService::smsSendLimit(\YunShop::app()->uniacid, $mobile)) {
             return $this->errorJson('发送短信数量达到今日上限');
         } else {
-            (new RegisterController())->sendSms($mobile, $code);
+            (new RegisterController())->sendSmsV2($mobile, $code, $state, 'reg', $sms_type);;
         }
     }
 
