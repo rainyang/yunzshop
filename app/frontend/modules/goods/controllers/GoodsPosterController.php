@@ -64,7 +64,6 @@ class GoodsPosterController extends ApiController
         if (empty($this->storeid)) {
             
             $this->shopSet = \Setting::get('shop.shop');
-
         } else {
 
             if (app('plugins')->isEnabled('store-cashier')) {
