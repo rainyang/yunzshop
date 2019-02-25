@@ -44,7 +44,7 @@ class Url
         $defaultParams = ['c'=>'site','a'=>'entry','m'=>'yun_shop','do'=>rand(1000,9999),'route'=>$route];
         $params = array_merge($defaultParams, $params);
 
-        return  '/web/index.php?'. http_build_query($params);
+        return  \config('app.isWeb'). '?'. http_build_query($params);
     }
 
     /**
@@ -204,7 +204,7 @@ class Url
 
     public static function getPath($module)
     {
-        if (env('APP_Framework' == 'platform')) {
+        if (env('APP_Framework') == 'platform') {
             return '/';
         }
 

@@ -449,8 +449,7 @@ class YunRequest extends YunComponent
 
     public function __construct()
     {
-        global $_GPC;
-        $this->values = !YunShop::isWeb() && !YunShop::isWechatApi() ? request()->input() : request()->input();
+        $this->values = !YunShop::isWeb() && !YunShop::isWechatApi() ? request()->input() : \config('app.global');
     }
 
 

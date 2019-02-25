@@ -302,5 +302,6 @@ return [
 
     'isWeb'  => '/index.php',
     'subDir' => '/',
-    'root' => '/'
+    'root' => '/',
+    'global' => []
 ];
