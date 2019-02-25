@@ -81,7 +81,7 @@ class Url
             $params['i'] = \YunShop::app()->uniacid;
         }
         $module = request()->get('m','yun_shop');
-        return   '/addons/' . $module . '?menu#'.$route .  ($params ? '/'. $params['page_id'] . '/?i=' . $params['i'] : '');
+        return   self::getPath($module) . '?menu#'.$route .  ($params ? '/'. $params['page_id'] . '/?i=' . $params['i'] : '');
     }
 
     /**
