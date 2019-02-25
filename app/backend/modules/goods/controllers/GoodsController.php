@@ -296,7 +296,6 @@ class GoodsController extends BaseController
         $result = $goods_service->edit();
         $type2 = \YunShop::request()->goods['type2'];
         $goods = \app\common\models\Goods::find($this->goods_id);
-        $item = CourseGoodsModel::getModel($this->goods_id,'');
         $plugin_id = '';
         if (app('plugins')->isEnabled('lease-toy')) {
             $LeaseToyGoods = LeaseToyGoodsModel::ofGoodsId($this->goods_id)->first();
@@ -326,6 +325,7 @@ class GoodsController extends BaseController
             $goods->type2 = '1';
             $goods->save();
         } else if (app('plugins')->isEnabled('video-demand')) {
+            $item = CourseGoodsModel::getModel($this->goods_id,'');
             if (Setting::get('shop.goods.type2') == '3') {
                 $goods->type2 = Setting::get('shop.goods.type2');
             }
@@ -344,6 +344,8 @@ class GoodsController extends BaseController
             }
             !session()->has('flash_notification.message') && $this->error('商品修改失败');
         }
+
+        $goods_service = new EditGoodsService($request->id, \YunShop::request());
 
         //dd($this->lang);
         return view('goods.goods', [
