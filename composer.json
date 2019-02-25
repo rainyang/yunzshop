@@ -56,7 +56,7 @@
       "App\\": "app/"
     },
     "files":[
-      "app/yz_yunshop.php",
+      "app/yunshop.php",
       "app/helpers.php"
     ]
   },
