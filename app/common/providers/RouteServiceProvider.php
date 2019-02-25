@@ -36,6 +36,7 @@ class RouteServiceProvider extends ServiceProvider
     public function map()
     {
         if (env('APP_Framework') == 'platform') {
+            $this->mapWebBootRoutes();
             $this->mapPlatformRoutes();
             $this->mapShopRoutes();
         } else {
@@ -69,10 +70,21 @@ class RouteServiceProvider extends ServiceProvider
             ->group(base_path('routes/api.php'));
     }
 
+    protected function mapWebBootRoutes()
+    {
+        Route::group([
+            'namespace' => $this->namespace,
+        ], function ($router) {
+            //strpos(request()->get('route'),'setting.key') !== 0 && Check::app();
+            require base_path('routes/boot.php');
+        });
+    }
+
     protected function mapPlatformRoutes()
     {
         Route::group([
             'prefix' => 'admin',
+            'middleware' => ['admin'],
             'namespace' => $this->namespace,
         ], function ($router) {
             require base_path('routes/admin.php');
@@ -83,6 +95,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::group([
             'prefix' => 'shop',
+            'middleware' => ['admin'],
             'namespace' => $this->namespace,
         ], function ($router) {
             require base_path('routes/shop.php');

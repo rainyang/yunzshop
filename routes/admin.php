@@ -1,5 +1,5 @@
 <?php
-Route::group(['namespace' => 'platform\controllers', 'middleware' => ['admin']], function () {
+Route::group(['namespace' => 'platform\controllers'], function () {
     Route::get('login', 'LoginController@showLoginForm')->name('admin.login');
     Route::post('login', 'LoginController@login');
     Route::get('logout', 'LoginController@logout');
@@ -11,7 +11,7 @@ Route::group(['namespace' => 'platform\controllers', 'middleware' => ['admin']],
     Route::get('/', 'IndexController@index');
 });
 
-Route::group(['middleware' => ['admin', 'auth:admin', 'authAdmin']], function () {
+Route::group(['middleware' => ['auth:admin', 'authAdmin']], function () {
 
     Route::get('index', ['as' => 'admin.index', 'uses' => '\app\platform\controllers\IndexController@index']);
 
