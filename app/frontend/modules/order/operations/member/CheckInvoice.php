@@ -27,7 +27,10 @@ class CheckInvoice extends OrderOperation
 
     public function enable()
     {
-        if ('0'==$this->order->call) {
+        $trade = \Setting::get('shop.trade')['invoice'];
+        if (!isset($trade) || '0'==$this->order->call ){
+          //  if ('0'==$this->order->call) {
+            
             return false;
         }
         return true;
