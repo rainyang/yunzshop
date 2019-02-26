@@ -21,6 +21,7 @@ use app\backend\modules\member\services\MemberServices;
 use app\backend\modules\member\models\MemberParent;
 use app\common\components\BaseController;
 use app\common\events\member\MemberDelEvent;
+use app\common\events\member\MemberLevelUpgradeEvent;
 use app\common\events\member\MemberRelationEvent;
 use app\common\events\member\RegisterByAgent;
 use app\common\helpers\Cache;
@@ -307,6 +308,11 @@ class MemberController extends BaseController
             $yz['status'] =  0;
         }
 
+        $is_upgrade = false;
+        if ($shopInfoModel->level_id != $yz['level_id']) {
+            $is_upgrade = true;
+        }
+
         $shopInfoModel->fill($yz);
         $validator = $shopInfoModel->validator();
         if ($validator->fails()) {
@@ -315,9 +321,13 @@ class MemberController extends BaseController
 //            (new \app\common\services\operation\ShopMemberLog($shopInfoModel, 'update'));
             if ($shopInfoModel->save()) {
 
-                if ($parame->data['agent']) {
-                    $member = Member::getMemberByUid($uid)->with('hasOneFans')->first();
+                $member = Member::getMemberByUid($uid)->with('hasOneFans')->first();
+                if ($is_upgrade) {
+                    //会员等级升级触发事件
+                    event(new MemberLevelUpgradeEvent($member));
+                }
 
+                if ($parame->data['agent']) {
                     event(new MemberRelationEvent($member));
                 }
 
