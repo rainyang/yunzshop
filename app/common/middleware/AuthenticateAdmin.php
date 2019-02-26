@@ -30,7 +30,7 @@ class AuthenticateAdmin
             return $next($request);
         }
 
-        $previousUrl = URL::previous();
+        /*$previousUrl = URL::previous();
         $routeName = starts_with(\Route::currentRouteName(), 'admin.') ? \Route::currentRouteName() : 'admin.' . \Route::currentRouteName();
         if (!\Gate::forUser(auth('admin')->user())->check($routeName)) {
             if ($request->ajax() && ($request->getMethod() != 'GET')) {
@@ -42,7 +42,7 @@ class AuthenticateAdmin
             } else {
                 return response()->view('admin.errors.403', compact('previousUrl'));
             }
-        }
+        }*/
 
         return $next($request);
     }
