@@ -42,6 +42,7 @@ class BatchDispatchController extends BaseController
     {
         $dispatch_templates = Dispatch::select('id','dispatch_name')
             ->where('uniacid',\YunShop::app()->uniacid)
+            ->where('is_plugin',0)
             ->get();
         return view('discount.freight-set', [
             'list'=>$dispatch_templates,
@@ -95,6 +96,7 @@ class BatchDispatchController extends BaseController
 
     public function freightSave(){
            $form_data = request()->form_data;
+           $pay = Setting::get('shop.pay')['COD'];
             if ($form_data) {
                 $categorys = $form_data['search_categorys'];
                 foreach ($categorys as $v) {
@@ -107,7 +109,7 @@ class BatchDispatchController extends BaseController
                     'freight_type' => $form_data['freight_type'],
                     'freight_value' => $form_data['freight_value'],
                     'template_id' => $form_data['template_id'],
-                    'is_cod'=>$form_data['is_cod'],
+                    'is_cod'=>$pay,
                 ];
                 $model = new DispatchClassify();
                 $model->fill($data);
@@ -149,7 +151,7 @@ class BatchDispatchController extends BaseController
     {
         $kwd = \YunShop::request()->keyword;
         if ($kwd) {
-            $category = Category::getNotOneCategorysByName($kwd);
+            $category = Category::getMallCategorysByName($kwd);
             return $this->successJson('ok', $category);
         }
     }

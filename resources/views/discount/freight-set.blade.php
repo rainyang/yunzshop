@@ -46,7 +46,10 @@
                                     <el-button type="primary" @click="choose()">确 定</el-button>
                                 </span>
                             </el-dialog>
+                            <p class="help-block">只能选择商品的二级、三级分类</p>
                         </el-form-item>
+
+
 
                         <el-form-item label="邮费设置">
                             <el-radio v-model="form.freight_type" :label="1">统一邮费</el-radio>
@@ -57,10 +60,6 @@
                             <el-select v-model="form.template_id" value-key="id" style="width:60%" placeholder="请选择运费模板" :disabled="form.freight_type!=2">
                                 <el-option v-for="item in template_list" :key="item.id" :label="item.dispatch_name" :value="item.id"></el-option>
                             </el-select>
-                        </el-form-item>
-                        <el-form-item label="是否支持货到付款">
-                            <el-radio v-model="form.is_cod" :label="1">支持</el-radio>
-                            <el-radio v-model="form.is_cod" :label="2">不支持</el-radio>
                         </el-form-item>
                         <el-form-item>
                             <a href="#">
@@ -98,7 +97,6 @@
                         freight_type:1,
                         freight_value:"",
                         template_id:1,
-                        is_cod:1,
                         ...categoryDiscount,
                     };
                 let template_list = JSON.parse('{!! $list?:"{}" !!}');
