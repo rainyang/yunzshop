@@ -56,6 +56,11 @@ class FixController extends BaseController
 
                     $handle += 1;
                     $commissionOrder->status = 1;
+                    if ($status == 1) {
+                        $commissionOrder->recrive_at = $orderModel->pay_time;
+                    } else {
+                        $commissionOrder->recrive_at = $orderModel->finish_time;
+                    }
 
                     if ($commissionOrder->save()) {
                         $success += 1;
