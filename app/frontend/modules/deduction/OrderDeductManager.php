@@ -196,14 +196,15 @@ class OrderDeductManager
 
                 $this->amount += $orderDeduction->getUsablePoint()->getMoney();
             });
-            // 将抵扣总金额保存在订单优惠信息表中
-            $preOrderDiscount = new PreOrderDiscount([
-                'discount_code' => 'deduction',
-                'amount' => $this->amount,
-                'name' => '抵扣金额',
-
-            ]);
-            $preOrderDiscount->setOrder($this->order);
+            if ($this->amount) {
+                // 将抵扣总金额保存在订单优惠信息表中
+                $preOrderDiscount = new PreOrderDiscount([
+                    'discount_code' => 'deduction',
+                    'amount' => $this->amount,
+                    'name' => '抵扣金额',
+                ]);
+                $preOrderDiscount->setOrder($this->order);
+            }
         }
         return $this->amount;
     }

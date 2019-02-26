@@ -20,6 +20,7 @@ use app\frontend\modules\member\models\McMappingFansModel;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\MemberUniqueModel;
 use app\frontend\modules\member\models\SubMemberModel;
+use app\common\facades\Setting;
 
 class MemberOfficeAccountService extends MemberService
 {
@@ -34,6 +35,11 @@ class MemberOfficeAccountService extends MemberService
         $member_id = 0;
 
         $uniacid = \YunShop::app()->uniacid;
+
+        if (Setting::get('shop.member')['wechat_login_mode'] == '1') {
+            return $this->isPhoneLogin($uniacid);
+        }
+
         $code = \YunShop::request()->code;
 
         $account = AccountWechats::getAccountByUniacid($uniacid);
@@ -377,5 +383,32 @@ class MemberOfficeAccountService extends MemberService
         $uid = parent::addMemberInfo($uniacid, $userinfo);
 
         return $uid;
+    }
+
+    /**
+     * 判断是否为手机登录
+     * @param $uniacid
+     * @return array
+     */
+    public function isPhoneLogin($uniacid)
+    {
+        $mid = Member::getMid();
+        $type = \YunShop::request()->type ;
+        $mobile   = \YunShop::request()->mobile;
+        $password = \YunShop::request()->password;
+
+        $yz_redirect = \YunShop::request()->yz_redirect;
+        if ($mobile && $password) {
+            $res =  MemberMobileService::login();
+            if ($res['status'] == 1) {
+                $redirect_url = $this->_getClientRequestUrl();
+                $res['json']['redirect_url'] = $redirect_url;
+            }
+            return $res;
+        } else {
+            $this->_setClientRequestUrl();
+            $redirect_url = Url::absoluteApp('login', ['i' => $uniacid, 'type' => $type, 'mid' => $mid, 'yz_redirect' => $yz_redirect]);
+            redirect($redirect_url)->send();
+        }
     }
 }
