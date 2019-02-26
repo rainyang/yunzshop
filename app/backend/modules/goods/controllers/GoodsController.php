@@ -328,6 +328,7 @@ class GoodsController extends BaseController
             $item = CourseGoodsModel::getModel($this->goods_id,'');
             if (Setting::get('shop.goods.type2') == '3') {
                 $goods->type2 = Setting::get('shop.goods.type2');
+                Setting::set('shop.goods.type2', '');
             }
             if ($item->is_course == '1') {
                 $goods->type2 =  '3';
