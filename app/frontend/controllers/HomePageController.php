@@ -21,7 +21,8 @@ use Yunshop\Designer\models\DesignerMenu;
 use Yunshop\Designer\models\GoodsGroupGoods;
 use app\common\helpers\PaginationHelper;
 use Yunshop\Diyform\admin\DiyformDataController;
-
+use app\common\models\MemberShopInfo;
+use app\common\models\member\MemberInvitationCodeLog;
 
 class HomePageController extends ApiController
 {
@@ -603,7 +604,7 @@ class HomePageController extends ApiController
         );
     }
 
-    public function bindMobile()
+     public function bindMobile()
     {
         $member_id = \YunShop::app()->getMemberId();
 
@@ -613,22 +614,32 @@ class HomePageController extends ApiController
         } else {
             $member_set = Setting::get('shop.member');
         }
+        //        $is_bind_mobile = 0;
+        //
+        //        if (!is_null($member_set)) {
+        //            if ((1 == $member_set['is_bind_mobile']) && $member_id && $member_id > 0) {
+        //                if (Cache::has($member_id . '_member_info')) {
+        //                    $member_model = Cache::get($member_id . '_member_info');
+        //                } else {
+        //                    $member_model = Member::getMemberById($member_id);
+        //                }
+        //
+        //                if ($member_model && empty($member_model->mobile)) {
+        //                    $is_bind_mobile = 1;
+        //                }
+        //            }
+        //        }
+        //邀请码关系链
+            $codeowner = MemberShopInfo::uniacid()->where('invite_code', trim(request()->invite_code))->first();
+            $codemodel = new MemberInvitationCodeLog();
 
-//        $is_bind_mobile = 0;
-//
-//        if (!is_null($member_set)) {
-//            if ((1 == $member_set['is_bind_mobile']) && $member_id && $member_id > 0) {
-//                if (Cache::has($member_id . '_member_info')) {
-//                    $member_model = Cache::get($member_id . '_member_info');
-//                } else {
-//                    $member_model = Member::getMemberById($member_id);
-//                }
-//
-//                if ($member_model && empty($member_model->mobile)) {
-//                    $is_bind_mobile = 1;
-//                }
-//            }
-//        }
+            $codemodel->uniacid = \YunShop::app()->uniacid;
+            $codemodel->invitation_code = trim(request()->invite_code);
+            $codemodel->member_id = $member_id; //使用者id
+            $codemodel->mid = $codeowner->member_id;  //邀请人id
+      
+            $codemodel->save();
+
 
         $is_bind_mobile = 0;
 

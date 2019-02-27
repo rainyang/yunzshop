@@ -376,19 +376,28 @@ class MemberService
     public static function inviteCode()
     {
         $invite_code = \YunShop::request()->invite_code;
+        \Log::info('invite_code', $invite_code);
 
         $status = \Setting::get('shop.member');
+        \Log::info('status', $status);
+
         $status['is_invite'] = Member::chkInviteCode();
+        \Log::info('is_invite', $status['is_invite']);
 
         if ($status['is_invite'] == 1) {//判断邀请码是否开启 1开启 0关闭
+        \Log::info('is_invite == 1');
 
             if ($status['required'] == 1 && empty($invite_code)){ //判断邀请码是否必填，1必填 0可选填 判断邀请码是否为空
+        \Log::info('empty--invite_code');
+
                 return show_json('0', '请输入邀请码');
             }
             elseif ($status['required'] == 1 && !empty($invite_code)){  //判断邀请码是否必填，1必填 0可选填 判断邀请码是否为空
                 $data = MemberShopInfo:: getInviteCode($invite_code);  //查询邀请码是否存在
+        \Log::info('data', $data);
 
                 if(!$data){
+            \Log::info('invalited--invite_code');
                     return show_json('0', '邀请码无效');
                 }
             }

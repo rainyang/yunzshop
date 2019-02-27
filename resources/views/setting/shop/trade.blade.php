@@ -25,7 +25,7 @@
                             <input type="text" name="trade[close_order_days]" class="form-control" value="{{ $set['close_order_days'] }}" />
                             <div class="input-group-addon">天</div>
                         </div>
-                        <span class='help-block'>订单下单未付款，n天后自动关闭，空为不自动关闭</span>
+                        <span class='help-block'>订单下单未付款，n天后自动关闭，0/空为不自动关闭</span>
                     </div>
                 </div>
 
@@ -53,7 +53,7 @@
                             <input type="text" name="trade[receive]" class="form-control" value="{{ $set['receive'] }}" />
                             <div class="input-group-addon">天</div>
                         </div>
-                        <span class='help-block'>订单发货后，用户收货的天数，如果在期间未确认收货，系统自动完成收货，空为不自动收货</span>
+                        <span class='help-block'>订单发货后，用户收货的天数，如果在期间未确认收货，系统自动完成收货，0/空为不自动收货</span>
                     </div>
                 </div>
 
@@ -213,6 +213,32 @@
                 </div>
             </div>
 
+
+            <div class="panel-heading">
+                支付协议开启
+            </div>
+
+            <div class='panel-body'>
+                <div class="form-group">
+
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否开启
+                    </label>
+                    <div class="col-sm-9 col-xs-12">
+
+                        <label class='radio-inline'><input type='radio' name='trade[share_chain_pay_open]' value='1' @if ($set['share_chain_pay_open'] == 1) checked @endif/> 开启</label>
+                        <label class='radio-inline'><input type='radio' name='trade[share_chain_pay_open]' value='0' @if ($set['share_chain_pay_open'] == 0) checked @endif /> 关闭</label>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">支付协议</label>
+                <div class="col-sm-9 col-xs-12">
+                    {!! yz_tpl_ueditor('trade[pay_content]', $set['pay_content']) !!}
+                </div>
+            </div>
+
 			<div class="form-group"></div>
             <div class="form-group">
 				<label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
@@ -220,8 +246,6 @@
 					<input type="submit" name="submit" value="提交" class="btn btn-success"  />
 				</div>
             </div>
-
-
 
 	 </div>     
 </form>
