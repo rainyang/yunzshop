@@ -8,7 +8,9 @@
 
 namespace app\platform\controllers;
 
+use app\common\exceptions\AdminException;
 use app\platform\models\AdminUser;
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\RegistersUsers;
 
 class RegisterController extends BaseController
@@ -24,7 +26,9 @@ class RegisterController extends BaseController
     |
     */
 
-    use RegistersUsers;
+    use RegistersUsers {
+         register as traitregister;
+    }
 
     /**
      * Where to redirect users after login / registration.
@@ -52,8 +56,8 @@ class RegisterController extends BaseController
     protected function validator(array $data)
     {
         return \Validator::make($data, [
-            'name' => 'required|max:255',
-            'email' => 'required|email|max:255',  //|unique:users
+            'name' => 'required|max:255|unique:admin_users',
+            'email' => 'required|email|max:255',
             'password' => 'required|min:6|confirmed',
         ]);
     }
@@ -90,5 +94,14 @@ class RegisterController extends BaseController
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
+    }
+
+    public function register(Request $request)
+    {
+        try {
+            $this->traitregister($request);
+        } catch (\Exception $e) {
+            throw new AdminException($e->getMessage());
+        }
     }
 }
