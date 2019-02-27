@@ -300,8 +300,9 @@ return [
         ]
     ],
 
-    'isWeb'  => '/index.php',
-    'subDir' => '/',
-    'root' => '/',
-    'global' => []
+    'isWeb'  => '/shop',
+    'isApi' => '/api',
+    'root' => '/shop',
+    'global' => [],
+    'sys_global' => []
 ];

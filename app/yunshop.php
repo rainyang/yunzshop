@@ -162,7 +162,11 @@ class YunShop
 
     public static function isWeb()
     {
-        return strpos($_SERVER['PHP_SELF'], config('app.isWeb')) !== false ? true : false;
+        if (env('APP_Framework') == 'platform') {
+            return strpos(request()->getRequestUri(), config('app.isWeb')) !== false ? true : false;
+        } else {
+            return strpos($_SERVER['PHP_SELF'], '/web/index.php') !== false ? true : false;
+        }
     }
 
     public static function isApp()
@@ -175,8 +179,12 @@ class YunShop
 
     public static function isApi()
     {
-        return (strpos($_SERVER['PHP_SELF'], config('app.subDir')) === false &&
-            strpos($_SERVER['PHP_SELF'], '/api.php') !== false) ? true : false;
+        if (env('APP_Framework') == 'platform') {
+            return strpos(request()->getRequestUri(), config('app.isApi')) !== false ? true : false;
+        } else {
+            return (strpos($_SERVER['PHP_SELF'], '/addons/') === false &&
+                strpos($_SERVER['PHP_SELF'], '/api.php') !== false) ? true : false;
+        }
     }
 
     /**
@@ -185,8 +193,12 @@ class YunShop
      */
     public static function isWechatApi()
     {
-        return (strpos($_SERVER['PHP_SELF'], config('app.subDir')) === false &&
-            strpos($_SERVER['PHP_SELF'], '/api.php') !== false) ? true : false;
+        if (env('APP_Framework') == 'platform') {
+            return strpos(request()->getRequestUri(), config('app.isApi')) !== false ? true : false;
+       } else {
+           return (strpos($_SERVER['PHP_SELF'], '/addons/') === false &&
+               strpos($_SERVER['PHP_SELF'], '/api.php') !== false) ? true : false;
+       }
     }
 
     /**
@@ -195,8 +207,13 @@ class YunShop
      */
     public static function isPlugin()
     {
-        return (strpos($_SERVER['PHP_SELF'], '/web/') !== false &&
-            strpos($_SERVER['PHP_SELF'], '/plugin.php') !== false) ? true : false;
+        if (env('APP_Framework') == 'platform') {
+            return (strpos(request()->getRequestUri(), config('app.isWeb')) !== false &&
+                strpos(request()->getRequestUri(), '/plugin') !== false) ? true : false;
+        } else {
+            return (strpos($_SERVER['PHP_SELF'], '/web/') !== false &&
+                strpos($_SERVER['PHP_SELF'], '/plugin.php') !== false) ? true : false;
+        }
     }
 
     /**
@@ -451,7 +468,7 @@ class YunRequest extends YunComponent
     public function __construct()
     {
         if (env('APP_Framework') == 'platform') {
-            $sys_global_params = \config('app.global');
+            $sys_global_params = \config('app.sys_global');
         } else {
             global $_GPC;
 
@@ -477,8 +494,15 @@ class YunApp extends YunComponent
 
     public function __construct()
     {
-        global $_W;
-        $this->values = !YunShop::isWeb() && !YunShop::isWechatApi() ? $this->getW() : (array)$_W;
+        if (env('APP_Framework') == 'platform') {
+            $global_params = \config('app.global');
+        } else {
+            global $_W;
+
+            $global_params = $_W;
+        }
+
+        $this->values = !YunShop::isWeb() && !YunShop::isWechatApi() ? $this->getW() : (array)$global_params;
         $this->routeList = Config::get('menu');
     }
 
