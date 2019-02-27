@@ -35,21 +35,21 @@
             </div>
         </div>
 
-        {{--<div class="form-group">--}}
-        {{--<label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>--}}
-        {{--<div class="col-sm-9 col-xs-12">--}}
-        {{--<div class="input-group multi-img-details">--}}
-        {{--@foreach(iunserializer($reply['images']) as $img)--}}
-        {{--<div class="multi-item">--}}
-        {{--<a href='{!! tomedia($img) !!}' target='_blank'>--}}
-        {{--<img class="img-responsive img-thumbnail" src='{!! tomedia($img) !!}'--}}
-        {{--onerror="this.src='./resource/images/nopic.jpg'; this.title='图片未找到.'">--}}
-        {{--</a>--}}
-        {{--</div>--}}
-        {{--@endforeach--}}
-        {{--</div>--}}
-        {{--</div>--}}
-        {{--</div>--}}
+        <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+        <div class="col-sm-9 col-xs-12">
+        <div class="input-group multi-img-details">
+        @foreach(iunserializer($reply['images']) as $img)
+        <div class="multi-item">
+        <a href='{!! tomedia($img) !!}' target='_blank'>
+        <img class="img-responsive img-thumbnail" src='{!! tomedia($img) !!}'
+        onerror="this.src='./resource/images/nopic.jpg'; this.title='图片未找到.'">
+        </a>
+        </div>
+        @endforeach
+        </div>
+        </div>
+        </div>
 
     </div>
 

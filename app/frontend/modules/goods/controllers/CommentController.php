@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\Input;
 
 class CommentController extends ApiController
 {
+    // 前端评论时，图片不能超过5张
+    const COMMENT_IMAGE_COUNT = 5;
 
     public function getComment()
     {
@@ -31,6 +33,11 @@ class CommentController extends ApiController
             foreach ($list as &$item) {
                 $item->reply_count = $item->hasManyReply->count('id');
                 $item->head_img_url = replace_yunshop(yz_tomedia($item->head_img_url));
+            }
+            //对评论图片进行处理，反序列化并组装完整图片url
+            $list = $list->toArray();
+            foreach ($list['data'] as &$item) {
+                self::unSerializeImage($item);
             }
             return $this->successJson('获取评论数据成功!', $list);
         }
@@ -65,6 +72,19 @@ class CommentController extends ApiController
             return $this->errorJson('评论失败!未检测到评论等级!');
         }
 
+        if (\YunShop::request()->images) {
+            $comment['images'] = json_decode(\YunShop::request()->images);
+            if (is_array($comment['images'])) {
+                if (count($comment['images']) > self::COMMENT_IMAGE_COUNT) {
+                    return $this->errorJson('追加评论失败!评论图片不能多于5张!');
+                }
+                $comment['images'] = serialize($comment['images']);
+            } else {
+                return $this->errorJson('追加评论失败!评论图片数据不正确!');
+            }
+        } else {
+            $comment['images'] = serialize([]);
+        }
 
         $commentModel->setRawAttributes($comment);
 
@@ -99,6 +119,20 @@ class CommentController extends ApiController
         ];
         if (!$comment['content']) {
             return $this->errorJson('追加评论失败!未检测到评论内容!');
+        }
+
+        if (\YunShop::request()->images) {
+            $comment['images'] = json_decode(\YunShop::request()->images);
+            if (is_array($comment['images'])) {
+                if (count($comment['images']) > self::COMMENT_IMAGE_COUNT) {
+                    return $this->errorJson('追加评论失败!评论图片不能多于5张!');
+                }
+                $comment['images'] = serialize($comment['images']);
+            } else {
+                return $this->errorJson('追加评论失败!评论图片数据不正确!');
+            }
+        } else {
+            $comment['images'] = serialize([]);
         }
 
         $commentModel->setRawAttributes($comment);
@@ -139,8 +173,21 @@ class CommentController extends ApiController
             return $this->errorJson('回复评论失败!未检测到评论内容!');
         }
 
-        if (isset($comment['images'] ) && is_array($comment['images'])) {
-            $comment['images'] = serialize($comment['images']);
+//        if (isset($comment['images'] ) && is_array($comment['images'])) {
+//            $comment['images'] = serialize($comment['images']);
+//        } else {
+//            $comment['images'] = serialize([]);
+//        }
+        if (\YunShop::request()->images) {
+            $comment['images'] = json_decode(\YunShop::request()->images);
+            if (is_array($comment['images'])) {
+                if (count($comment['images']) > self::COMMENT_IMAGE_COUNT) {
+                    return $this->errorJson('追加评论失败!评论图片不能多于5张!');
+                }
+                $comment['images'] = serialize($comment['images']);
+            } else {
+                return $this->errorJson('追加评论失败!评论图片数据不正确!');
+            }
         } else {
             $comment['images'] = serialize([]);
         }
@@ -205,10 +252,67 @@ class CommentController extends ApiController
             ->where('uid', $uid)
             ->first();
         if ($comment) {
-            return $this->successJson('获取评论数据成功!', $comment->toArray());
+            // 将图片字段反序列化
+            $arrComment = $comment->toArray();
+            self::unSerializeImage($arrComment);
+            return $this->successJson('获取评论数据成功!', $arrComment);
         }
         return $this->errorJson('未检测到评论数据!');
 
+
+    }
+
+    // 反序列化图片
+    public static function unSerializeImage(&$arrComment)
+    {
+        $arrComment['images'] = unserialize($arrComment['images']);
+        foreach ($arrComment['images'] as &$image) {
+            $image = yz_tomedia($image);
+        }
+        if ($arrComment['append']) {
+            foreach ($arrComment['append'] as &$comment) {
+                $comment['images'] = unserialize($comment['images']);
+                foreach ($comment['images'] as &$image) {
+                    $image = yz_tomedia($image);
+                }
+            }
+        }
+        if ($arrComment['has_many_reply']) {
+            foreach ($arrComment['has_many_reply'] as &$comment) {
+                $comment['images'] = unserialize($comment['images']);
+                foreach ($comment['images'] as &$image) {
+                    $image = yz_tomedia($image);
+                }
+            }
+        }
+    }
+
+    /**
+     * 添加评论上传图片
+     * @author
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function upload()
+    {
+        $file = request()->file('file');
+        if (!$file) {
+            return $this->errorJson('请传入正确参数.');
+        }
+        if ($file->isValid()) {
+            // 获取文件相关信息
+            $originalName = $file->getClientOriginalName(); // 文件原名
+            $realPath = $file->getRealPath();   //临时文件的绝对路径
+            $ext = $file->getClientOriginalExtension();
+            $newOriginalName = md5($originalName . str_random(6)) . '.' . $ext;
+
+            \Storage::disk('image')->put($newOriginalName, file_get_contents($realPath));
+
+            return $this->successJson('上传成功', [
+                'img'    => \Storage::disk('image')->url($newOriginalName),
+            ]);
+        } else {
+            return $this->errorJson('上传失败!');
+        }
 
     }
 
