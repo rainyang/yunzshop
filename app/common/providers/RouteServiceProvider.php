@@ -39,8 +39,8 @@ class RouteServiceProvider extends ServiceProvider
             $this->mapWebBootRoutes();
             $this->mapPlatformRoutes();
             $this->mapShopRoutes();
+            $this->mapApiRoutes();
         } else {
-            // $this->mapApiRoutes();
             $this->mapWebRoutes();
         }
     }
@@ -58,16 +58,19 @@ class RouteServiceProvider extends ServiceProvider
             'middleware' => ['web'],
             'namespace' => $this->namespace,
         ], function ($router) {
-            //strpos(request()->get('route'),'setting.key') !== 0 && Check::app();
             require base_path('routes/web.php');
         });
     }
 
     protected function mapApiRoutes()
     {
-        Route::middleware('api')->prefix('api')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/api.php'));
+        Route::group([
+            'prefix' => 'api',
+            'middleware' => ['web'],
+            'namespace' => $this->namespace,
+        ], function ($router) {
+            require base_path('routes/api.php');
+        });
     }
 
     protected function mapWebBootRoutes()
@@ -75,7 +78,6 @@ class RouteServiceProvider extends ServiceProvider
         Route::group([
             'namespace' => $this->namespace,
         ], function ($router) {
-            //strpos(request()->get('route'),'setting.key') !== 0 && Check::app();
             require base_path('routes/boot.php');
         });
     }
