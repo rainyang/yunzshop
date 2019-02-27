@@ -9,7 +9,7 @@ namespace app\common\services\finance;
 
 
 use app\common\facades\Setting;
-
+use app\common\models\PayType;
 class IncomeService
 {
     private static $pay_way = ['balance','wechat','alipay','manual', 'huanxun', 'eup_pay', 'yop_pay'];
@@ -31,10 +31,13 @@ class IncomeService
 
     public static function getModeName($key)
     {
-        $dalance=Setting::get('shop.shop');
+        //$dalance=Setting::get('shop.shop');
+        //从数据库获取
+        $balance= empty(PayType::get_pay_type_name(3))?"余额":PayType::get_pay_type_name(3);
         switch ($key) {
             case 'balance':
-                return '提现到'.$dalance['credit'];
+                return '提现到'.$balance;
+               // return '提现到'.$dalance['credit'];
                 break;
             case 'wechat':
                 return '提现到微信';

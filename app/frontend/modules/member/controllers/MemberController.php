@@ -47,6 +47,7 @@ use Yunshop\AlipayOnekeyLogin\services\SynchronousUserInfo;
 use app\common\services\alipay\OnekeyLogin;
 use app\common\helpers\Client;
 use app\common\services\plugin\huanxun\HuanxunSet;
+use Symfony\Component\HttpFoundation\Request;
 
 class MemberController extends ApiController
 {
@@ -886,39 +887,44 @@ class MemberController extends ApiController
         return $this->errorJson('暂无数据', []);
     }
 
-    public function guideFollow()
+    public function guideFollow(Request $request)
     {
+
         $member_id = \YunShop::app()->getMemberId();
+
         if (empty($member_id)) {
             return $this->errorJson('用户未登录', []);
         }
+        if($request->type==1) {
 
-        $set        = \Setting::get('shop.share');
-        $fans_model = McMappingFans::getFansById($member_id);
-        $mid        = \app\common\models\Member::getMid();
+            $set = \Setting::get('shop.share');
+            $fans_model = McMappingFans::getFansById($member_id);
+            $mid = \app\common\models\Member::getMid();
+           
 
-        if (!empty($set['follow_url']) && $fans_model->follow === 0) {
+            if (!empty($set['follow_url']) && $fans_model->follow === 0) {
 
-            if ($mid != null && $mid != 'undefined' && $mid > 0) {
-                $member_model = Member::getMemberById($mid);
+                if ($mid != null && $mid != 'undefined' && $mid > 0) {
+                    $member_model = Member::getMemberById($mid);
 
-                $logo = $member_model->avatar;
-                $text = $member_model->nickname;
-            } else {
-                $setting = Setting::get('shop');
-                $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
+                    $logo = $member_model->avatar;
+                    $text = $member_model->nickname;
+                } else {
+                    $setting = Setting::get('shop');
+                    $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
 
-                $logo = replace_yunshop(tomedia($setting['logo']));
-                $text = $account->name;
+                    $logo = replace_yunshop(tomedia($setting['shop']['logo']));
+                    $text = $account->name;
+                }
+
+                return $this->successJson('', [
+                   
+                    'logo' => $logo,
+                    'text' => $text,
+                    'url' => $set['follow_url']
+                ]);
             }
-
-            return $this->successJson('', [
-                'logo' => $logo,
-                'text' => $text,
-                'url'  => $set['follow_url']
-            ]);
         }
-
         return $this->errorJson('暂无数据', []);
     }
 
@@ -1337,7 +1343,7 @@ class MemberController extends ApiController
             'tool' => ['separate'],
             'asset_equity' => ['integral','credit','asset'],
             'merchant' => ['supplier', 'kingtimes', 'hotel', 'store-cashier'],
-            'market' => ['ranking','article','clock-in','conference', 'video_demand', 'enter_goods']
+            'market' => ['ranking','article','clock_in','conference', 'video_demand', 'enter_goods', 'universal_card']
         ];
 
         $data   = [];
@@ -1591,7 +1597,6 @@ class MemberController extends ApiController
 
             if (app('plugins')->isEnabled('separate')) {
                 $setting = \Setting::get('plugin.separate');
-
                 if ($setting && 1 == $setting['separate_status']) {
                     $data[] = [
                         'name'  => 'separate',
@@ -1601,19 +1606,6 @@ class MemberController extends ApiController
                     ];
                 }
             }
-
-            if (app('plugins')->isEnabled('hotel')) {
-                $store = \Yunshop\Hotel\common\models\Hotel::getHotelByUid(\YunShop::app()->getMemberId())->first();
-                if (!$store) {
-                    $data[] = [
-                        'name'  => 'hotel-apply',
-                        'title' => '酒店申请',
-                        'class' => 'icon-member-hotel-apply',
-                        'url'   => 'hotelApply'
-                    ];
-                }
-            }
-            
             if (app('plugins')->isEnabled('hotel')) {
                 $hotel = \Yunshop\Hotel\common\models\Hotel::getHotelByUid(\YunShop::app()->getMemberId())->first();
                 if ($hotel) {
@@ -1625,7 +1617,7 @@ class MemberController extends ApiController
                     ];
                 } else {
                     $data[] = [
-                        'name'  => 'hotel-apply',
+                        'name'  => 'hotel',
                         'title' => '酒店申请',
                         'class' => 'icon-member-hotel-apply',
                         'url'   => 'hotelApply'
@@ -1766,6 +1758,9 @@ class MemberController extends ApiController
             $member_invitation_model->uniacid = \YunShop::app()->uniacid;
             $member_invitation_model->mid = \YunShop::app()->getMemberId();
             $member_invitation_model->member_id = $parent->member_id;
+            $member_invitation_model->invitation_code = $invite_code;
+            $member_invitation_model->save();
+            return $this->successJson('ok', $parent);
         } else {
             return $this->errorJson('邀请码有误!请重新填写');
         }

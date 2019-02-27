@@ -70,6 +70,7 @@ class  Coupon extends BaseModel
         'categorynames' => 'json',
         'supplierids' => 'json',
         'storeids' => 'json',
+        'storenames' => 'json',
     ];
 //    protected $hidden = ['uniacid', 'cat_id', 'get_type', 'level_limit', 'use_type', 'return_type', 'coupon_type'
 //        , 'coupon_method','back_type','supplier_uid','cashiersids','cashiersnames','category_ids','goods_ids',

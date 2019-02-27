@@ -25,6 +25,7 @@ use Yunshop\StoreCashier\common\models\Store;
 use Yunshop\Supplier\admin\models\Supplier;
 use Yunshop\Supplier\common\services\VerifyButton;
 use Yunshop\TeamDividend\models\TeamDividendAgencyModel;
+use app\common\models\member\MemberInvitationCodeLog;
 
 /**
  * Created by PhpStorm.
@@ -479,6 +480,17 @@ class Member extends BackendModel
         $code_mid = self::getMemberIdForInviteCode();
 
         if (!is_null($code_mid)) {
+
+            //邀请码关系链
+            $codemodel = new MemberInvitationCodeLog();
+
+            $codemodel->uniacid = $uniacid;
+            $codemodel->invitation_code = trim(\YunShop::request()->invite_code);
+            $codemodel->member_id = $member_id; //使用者id
+            $codemodel->mid = $code_mid; //邀请人id
+      
+            $codemodel->save();
+
             file_put_contents(storage_path("logs/" . date('Y-m-d') . "_invitecode.log"), print_r($member_id . '-'. \YunShop::request()->invite_code . '-' . $code_mid . '-reg' . PHP_EOL, 1), FILE_APPEND);
         }
 
