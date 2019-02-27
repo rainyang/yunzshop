@@ -20,7 +20,6 @@
 //        YunShop::parseRoute('order.list');
 //    }
 //});
-
 Route::any('/', function () {
     //支付回调
     if (strpos(request()->getRequestUri(), '/payment/') !== false) {
@@ -36,14 +35,14 @@ Route::any('/', function () {
         return;
     }
     //插件入口
-    if (strpos(request()->getRequestUri(), config('app.subDir')) !== false &&
+    if (strpos(request()->getRequestUri(), '/addons/') !== false &&
         strpos(request()->getRequestUri(), '/plugin.php') !== false
     ) {
         YunShop::parseRoute(request()->input('route'));
         return;
     }
 
-    if (strpos(request()->getRequestUri(), config('app.root')) !== false &&
+    if (strpos(request()->getRequestUri(), '/web/') !== false &&
         strpos(request()->getRequestUri(), '/plugin.php') !== false
     ) {
         YunShop::parseRoute(request()->input('route'));
@@ -51,7 +50,7 @@ Route::any('/', function () {
     }
 
     //api
-    if (strpos(request()->getRequestUri(), config('app.subDir')) !== false &&
+    if (strpos(request()->getRequestUri(), '/addons/') !== false &&
         strpos(request()->getRequestUri(), '/api.php') !== false
     ) {
         $shop = Setting::get('shop.shop');
@@ -63,14 +62,14 @@ Route::any('/', function () {
         return;
     }
     //shop.php
-    if (strpos(request()->getRequestUri(), config('app.subDir')) !== false &&
+    if (strpos(request()->getRequestUri(), '/addons/') !== false &&
         strpos(request()->getRequestUri(), '/shop.php') !== false
     ) {
         YunShop::parseRoute(request()->input('route'));
         return;
     }
     //任务调度
-    if (strpos(request()->getRequestUri(), config('app.subDir')) !== false &&
+    if (strpos(request()->getRequestUri(), '/addons/') !== false &&
         strpos(request()->getRequestUri(), '/cron.php') !== false
     ) {
         // Get security key from config
@@ -106,19 +105,17 @@ Route::any('/', function () {
     }
 
     //微信回调
-    if (strpos(request()->getRequestUri(), config('app.subDir')) === false &&
+    if (strpos(request()->getRequestUri(), '/addons/') === false &&
         strpos(request()->getRequestUri(), '/api.php') !== false
     ) {
 
         return;
     }
-
     if (strpos(request()->getRequestUri(), '/app/') !== false) {
         return redirect(request()->getSchemeAndHttpHost() . '/addons/yun_shop/?menu#/home?i=' . request()->get('i'));
     }
-
     //后台
-    if (strpos(request()->getRequestUri(), config('app.root')) !== false) {
+    if (strpos(request()->getRequestUri(), '/web/') !== false) {
         //如未设置当前公众号则加到选择公众号列表
         if (!YunShop::app()->uniacid) {
             return redirect('?c=account&a=display');
@@ -137,7 +134,7 @@ Route::any('/', function () {
             if (!empty($plugins_dir)) {
                 \Artisan::call('update:version', ['version' => $plugins_dir]);
             }
-            
+
             if (!empty($eid)) {
                 $entry = module_entry($eid);
 
