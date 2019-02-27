@@ -100,12 +100,12 @@
                         </div>
                     </div>
 
-                    {{--<div class="form-group">--}}
-                        {{--<label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>--}}
-                        {{--<div class="col-sm-9 col-xs-12">--}}
-                            {{--{!! app\common\helpers\ImageHelper::tplFormFieldMultiImage('reply[reply_images]','') !!}--}}
-                        {{--</div>--}}
-                    {{--</div>--}}
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                        <div class="col-sm-9 col-xs-12">
+                            {!! app\common\helpers\ImageHelper::tplFormFieldMultiImage('reply[reply_images]','') !!}
+                        </div>
+                    </div>
                     <input type="hidden" name="id" value="{{$comment['id']}}"/>
                     <input type="hidden" name="reply[order_id]" value="{{$comment['order_id']}}"/>
                     <input type="hidden" name="reply[goods_id]" value="{{$comment['goods_id']}}"/>

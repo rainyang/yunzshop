@@ -112,7 +112,7 @@
                                         <div class="multi-item saler-item" openid="{{ $goods_id }}">
                                             <img class="img-responsive img-thumbnail" src='{{ tomedia($good['thumb']) }}'
                                                  onerror="this.src='{{static_url('resource/images/nopic.jpg')}}'; this.title='图片未找到.'">
-                                            <div class='img-nickname'>{{ $good['title'] }}</div>
+                                            <div class='img-nickname' style="overflow: hidden">{{ $good['title'] }}</div>
                                             <input type="hidden" value="{{ $goods_id }}"
                                                    name="setdata[become_goods_id][{{ $goods_id }}]">
                                             <input type="hidden" value="{{ $goods_id }}"
@@ -240,7 +240,7 @@
             // var html = "<input type='hidden' class='form-control' name='setdata[become_goods_id]["+ o.id+"]' value='' />"
             var html = '<div class="multi-item" openid="' + o.id + '">';
             html += '<img class="img-responsive img-thumbnail" src="' + o.thumb + '" onerror="this.src=\'{{static_url('resource/images/nopic.jpg')}}\'; this.title=\'图片未找到.\'">';
-            html += '<div class="img-nickname">' + o.title + '</div>';
+            html += '<div class="img-nickname" style="overflow: hidden">' + o.title + '</div>';
             html += '<input type="hidden" value="' + o.title + '" name="setdata[become_goods][' + o.id + '][title]">';
             html += '<input type="hidden" value="' + o.thumb + '" name="setdata[become_goods][' + o.id + '][thumb]">';
             html += '<input type="hidden" value="' + o.id + '" name="setdata[become_goods][' + o.id + '][goods_id]">';
