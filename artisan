@@ -1,6 +1,5 @@
 #!/usr/bin/env php
 <?php
-
 $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
 
 $file = __DIR__ . '/../../framework/bootstrap.inc.php';
