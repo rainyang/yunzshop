@@ -62,6 +62,19 @@ class RouteServiceProvider extends ServiceProvider
         });
     }
 
+    protected function mapWebBootRoutes()
+    {
+        Route::group([
+            'namespace' => $this->namespace,
+        ], function ($router) {
+            require base_path('routes/boot.php');
+        });
+    }
+
+    /**
+     * 前端路由
+     *
+     */
     protected function mapApiRoutes()
     {
         Route::group([
@@ -73,15 +86,10 @@ class RouteServiceProvider extends ServiceProvider
         });
     }
 
-    protected function mapWebBootRoutes()
-    {
-        Route::group([
-            'namespace' => $this->namespace,
-        ], function ($router) {
-            require base_path('routes/boot.php');
-        });
-    }
-
+    /**
+     * 框架路由
+     *
+     */
     protected function mapPlatformRoutes()
     {
         Route::group([
@@ -93,6 +101,10 @@ class RouteServiceProvider extends ServiceProvider
         });
     }
 
+    /**
+     * 商城路由
+     *
+     */
     protected function mapShopRoutes()
     {
         Route::group([
