@@ -1380,7 +1380,7 @@ class MemberController extends ApiController
                 'name'  => 'asset',
                 'title' => PLUGIN_ASSET_NAME,
                 'class' => 'icon-member-credit01',
-                'url'   => 'my_asset'
+                'url'   => 'MyAsset'
             ];
         }
         if (app('plugins')->isEnabled('credit')) {
