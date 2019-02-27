@@ -1,10 +1,12 @@
 #!/usr/bin/env php
 <?php
-if (env('APP_Framework') != 'platform') {
-    $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-    include_once __DIR__ . '/../../framework/bootstrap.inc.php';
-}
 
+$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+
+$file = __DIR__ . '/../../framework/bootstrap.inc.php';
+if (file_exists($file)) {
+    include_once $file;
+}
 
 /*
 |--------------------------------------------------------------------------
