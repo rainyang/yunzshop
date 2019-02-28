@@ -182,7 +182,7 @@ class YunShop
         if (env('APP_Framework') == 'platform') {
             return strpos(request()->getRequestUri(), config('app.isApi')) !== false ? true : false;
         } else {
-            return (strpos($_SERVER['PHP_SELF'], '/addons/') === false &&
+            return (strpos($_SERVER['PHP_SELF'], '/addons/') !== false &&
                 strpos($_SERVER['PHP_SELF'], '/api.php') !== false) ? true : false;
         }
     }

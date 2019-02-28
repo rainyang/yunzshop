@@ -16,7 +16,11 @@ class Url
         }
         //$domain = request()->getSchemeAndHttpHost();
         $module = request()->get('m','yun_shop');
-        return self::getPath($module) . (strpos($uri,'/') === 0 ? '':'') . $uri;
+        if (env('APP_Framework') == 'platform') {
+            return self::getPath($module)  . $uri;
+        } else {
+            return self::getPath($module) . (strpos($uri,'/') === 0 ? '':'/') . $uri;
+        }
     }
 
     public static function shopSchemeUrl($uri)
@@ -26,7 +30,12 @@ class Url
         }
         $domain = request()->getSchemeAndHttpHost();
         $module = request()->get('m','yun_shop');
-        return $domain . self::getPath($module) . (strpos($uri,'/') === 0 ? '':'') . $uri;
+
+        if (env('APP_Framework') == 'platform') {
+            return $domain . self::getPath($module)  . $uri;
+        } else {
+            return $domain . self::getPath($module) . (strpos($uri,'/') === 0 ? '':'/') . $uri;
+        }
     }
 
     /**
@@ -44,7 +53,12 @@ class Url
         $defaultParams = ['c'=>'site','a'=>'entry','m'=>'yun_shop','do'=>rand(1000,9999),'route'=>$route];
         $params = array_merge($defaultParams, $params);
 
-        return  \config('app.isWeb'). '?'. http_build_query($params);
+        if (env('APP_Framework') == 'platform') {
+            return  \config('app.isWeb'). '?'. http_build_query($params);
+        } else {
+            return  '/web/index.php?'. http_build_query($params);
+        }
+
     }
 
     /**
@@ -66,7 +80,7 @@ class Url
             $params['i'] = \YunShop::app()->uniacid;
         }
         $module = request()->get('m','yun_shop');
-        return self::getPath($module) . '/?menu#'.$route .  ($params ? '?'.http_build_query($params) : '');
+        return   '/addons/' . $module . '/?menu#'.$route .  ($params ? '?'.http_build_query($params) : '');
     }
 
     public static function appDiy($route, $params = [])
@@ -81,7 +95,7 @@ class Url
             $params['i'] = \YunShop::app()->uniacid;
         }
         $module = request()->get('m','yun_shop');
-        return   self::getPath($module) . '/?menu#'.$route .  ($params ? '/'. $params['page_id'] . '/?i=' . $params['i'] : '');
+        return   '/addons/' . $module . '/?menu#'.$route .  ($params ? '/'. $params['page_id'] . '/?i=' . $params['i'] : '');
     }
 
     /**
@@ -98,12 +112,12 @@ class Url
         }
         $defaultParams = ['i'=>\YunShop::app()->uniacid,'route'=>$route];
         $params = array_merge($defaultParams, $params);
-        $module = request()->get('m','yun_shop');
+
 
         if (env('APP_Framework') == 'platform') {
-            return  self::getPath($module).'?'. http_build_query($params);
+            return  config('app.isApi') . '?'. http_build_query($params);
         } else {
-            return  self::getPath($module).'/api.php?'. http_build_query($params);
+            return  '/addons/yun_shop/api.php?'. http_build_query($params);
         }
     }
 
@@ -214,7 +228,7 @@ class Url
     public static function getPath($module)
     {
         if (env('APP_Framework') == 'platform') {
-            return config('app.isApi');
+            return '/';
         }
 
         return '/addons/' . $module;

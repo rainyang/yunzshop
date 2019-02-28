@@ -152,7 +152,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script type="text/javascript" src="{{static_url('resource/js/app/util.js?time=3232')}}"></script>
     <script type="text/javascript" src="{{static_url('resource/js/require.js')}}"></script>
 
-    <script type="text/javascript" src="{{static_url('js/app/config.js')}}"></script>
+    @if (env('APP_Framework') == 'platform')
+    <script type="text/javascript" src="{{static_url('js/app/yz_config.js')}}"></script>
+    @else
+        <script type="text/javascript" src="{{static_url('js/app/config.js')}}"></script>
+    @endif
     <script type="text/javascript" src="{{static_url('js/dist/tooltipbox.js')}}"></script>
 
 
