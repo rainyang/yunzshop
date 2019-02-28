@@ -415,7 +415,7 @@ class Member extends \app\common\models\Member
         }
 
         $query->whereHas('yzMember', function ($query) use ($request) {
-            $query->where('parent_id', $request->id)->where('inviter', 1);
+            $query->where('parent_id', $request->id);
 
             if ($request->aid) {
                 $query->where('member_id', $request->aid);
@@ -438,7 +438,7 @@ class Member extends \app\common\models\Member
         }
 
         $query->with(['yzMember' => function ($query) {
-            return $query->select(['member_id', 'parent_id', 'is_agent', 'group_id', 'level_id', 'is_black', 'status'])->with(['agent' => function ($query) {
+            return $query->select(['member_id', 'parent_id', 'is_agent', 'group_id', 'level_id', 'is_black', 'status', 'inviter'])->with(['agent' => function ($query) {
                 return $query->select(['uid', 'avatar', 'nickname']);
             }]);
         }, 'hasOneFans' => function ($query) {
