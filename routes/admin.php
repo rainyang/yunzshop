@@ -19,8 +19,8 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams']], func
     Route::group(['prefix' => 'system'], function (){
         // 站点设置
         Route::any('site', ['as' => 'admin.system.site', 'uses' => '\app\platform\modules\system\controllers\SiteController@index']);
-//        Route::post()
         // 附件设置-全局设置
+        Route::any('attachment', ['as' => 'admin.system.attachment', 'uses' => '\app\platform\modules\system\controllers\AttachmentController@index']);
 
     });
 

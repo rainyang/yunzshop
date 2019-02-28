@@ -15,16 +15,4 @@ class SystemSetting extends BaseModel
     public $table = 'yz_system_setting';
     public $timestamps = true;
     protected $guarded = [''];
-
-    public static function setHotelSetting($hotel_id)
-    {
-        $setting_data = self::getDefaultSetting();
-        foreach ($setting_data as $key => $value) {
-            self::create([
-                'hotel_id'  => $hotel_id,
-                'key'       => $key,
-                'value'     => $value
-            ]);
-        }
-    }
 }

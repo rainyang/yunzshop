@@ -45,7 +45,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">平台logo</label>
                             <div class="col-sm-9 col-xs-12 col-md-6 detail-logo">
-                                {!! app\common\helpers\ImageHelper::tplFormFieldImage('setdata[site_logo]', $setdata->site_logo) !!}
+                                {--!! app\common\helpers\ImageHelper::tplFormFieldImage('setdata[site_logo]', $setdata->site_logo) !!--}
                                 <span class="help-block">请上传 100 * 60 的图片 </span>
                                 @if (!empty($setdata->site_logo))
                                     <a href='{{tomedia($setdata->site_logo)}}' target='_blank'>
@@ -58,7 +58,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">favorite icon</label>
                             <div class="col-sm-9 col-xs-12 col-md-6 detail-logo">
-                                {!! app\common\helpers\ImageHelper::tplFormFieldImage('setdata[title_icon]', $setdata->title_icon) !!}
+                                {--!! app\common\helpers\ImageHelper::tplFormFieldImage('setdata[title_icon]', $setdata->title_icon) !!--}
                                 <span class="help-block">显示在浏览器标题的图标</span>
                                 @if (!empty($setdata->title_icon))
                                     <a href='{{tomedia($setdata->title_icon)}}' target='_blank'>
@@ -71,7 +71,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">登录页广告</label>
                             <div class="col-sm-9 col-xs-12 col-md-6 detail-logo">
-                                {!! app\common\helpers\ImageHelper::tplFormFieldImage('setdata[advertisement]', $setdata->advertisement) !!}
+                                {--!! app\common\helpers\ImageHelper::tplFormFieldImage('setdata[advertisement]', $setdata->advertisement) !!--}
                                 <span class="help-block">请上传 400 * 250 px 图片</span>
                                 @if (!empty($setdata->advertisement))
                                     <a href='{{tomedia($setdata->advertisement)}}' target='_blank'>
@@ -87,13 +87,10 @@
                                 {!! yz_tpl_ueditor('setdata[information]', $setdata->information) !!}
                             </div>
                         </div>
-
-                        <div class="tab-pane" id="tab_option">@include('goods.tpl.option')</div>
                     </div>
                     <div class="form-group col-sm-12 mrleft40 border-t">
                         <input type="submit" name="submit" value="提交" class="btn btn-success"
                                onclick="return formcheck()"/>
-
                     </div>
                 </div>
             </div>
