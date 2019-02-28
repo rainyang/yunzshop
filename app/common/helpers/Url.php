@@ -53,7 +53,12 @@ class Url
         $defaultParams = ['c'=>'site','a'=>'entry','m'=>'yun_shop','do'=>rand(1000,9999),'route'=>$route];
         $params = array_merge($defaultParams, $params);
 
-        return  \config('app.isWeb'). '?'. http_build_query($params);
+        if (env('APP_Framework') == 'platform') {
+            return  \config('app.isWeb'). '?'. http_build_query($params);
+        } else {
+            return  '/web/index.php?'. http_build_query($params);
+        }
+
     }
 
     /**
