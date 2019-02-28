@@ -194,7 +194,7 @@ class YunShop
     public static function isWechatApi()
     {
         if (env('APP_Framework') == 'platform') {
-            return strpos(request()->getRequestUri(), config('app.isApi')) !== false ? true : false;
+            return strpos(request()->getRequestUri(), config('app.isApi')) === false ? true : false;
        } else {
            return (strpos($_SERVER['PHP_SELF'], '/addons/') === false &&
                strpos($_SERVER['PHP_SELF'], '/api.php') !== false) ? true : false;
@@ -255,7 +255,12 @@ class YunShop
     public static function app()
     {
         if (self::$_app !== null) {
-            return self::$_app;
+            //新框架加载yunshop机制不同
+            if (env('APP_Framework') == 'platform' && !\config('app.global')) {
+                self::$_app = new YunApp();
+            } else {
+                return self::$_app;
+            }
         } else {
             self::$_app = new YunApp();
             return self::$_app;
