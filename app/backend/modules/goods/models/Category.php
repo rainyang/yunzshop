@@ -151,7 +151,7 @@ class Category extends \app\common\models\Category
     {
         return static::uniacid()->select('id', 'name', 'thumb')
             ->where('parent_id', '<>', 0)
-            ->PluginId()
+            ->where('plugin_id',0)
             ->where('name', 'like', '%' . $keyword . '%')
             ->get();
     }

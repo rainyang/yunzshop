@@ -946,7 +946,7 @@ return [
             ],
 
             'discount_set' => [
-                'name'              => '折扣设置',
+                'name'              => '批量操作',
                 'url'               => 'discount.batch-discount.index',
                 'url_params'        => '',
                 'permit'            => 1,
@@ -1033,7 +1033,7 @@ return [
                 ],
 
                     'goods_dispatch_freight'=> [
-                        'name'              => '运费设置',
+                        'name'              => '运费批量设置',
                         'url'               => 'discount.batch-dispatch.freight',
                         'url_params'        => '',
                         'permit'            => 1,
