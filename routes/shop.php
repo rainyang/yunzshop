@@ -1,6 +1,6 @@
 <?php
 
-Route::group(['middleware' => ['auth:admin']], function () {
+Route::group(['middleware' => ['auth:admin', 'globalparams']], function () {
     Route::any('/', function () {
         //支付回调
         if (strpos(request()->getRequestUri(), '/payment/') !== false) {
