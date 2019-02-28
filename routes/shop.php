@@ -1,6 +1,6 @@
 <?php
 
-Route::group(['middleware' => ['auth:admin']], function () {
+Route::group(['middleware' => ['auth:admin', 'globalparams']], function () {
     Route::any('/', function () {
         //支付回调
         if (strpos(request()->getRequestUri(), '/payment/') !== false) {
@@ -16,7 +16,7 @@ Route::group(['middleware' => ['auth:admin']], function () {
             return;
         }
         //插件入口
-        if (strpos(request()->getRequestUri(), config('app.subDir')) !== false &&
+        if (strpos(request()->getRequestUri(), config('app.isApi')) !== false &&
             strpos(request()->getRequestUri(), '/plugin.php') !== false
         ) {
             YunShop::parseRoute(request()->input('route'));
@@ -31,8 +31,8 @@ Route::group(['middleware' => ['auth:admin']], function () {
         }
 
         //api
-        if (strpos(request()->getRequestUri(), config('app.subDir')) !== false &&
-            strpos(request()->getRequestUri(), '/api.php') !== false
+        if (strpos(request()->getRequestUri(), config('app.isApi')) !== false &&
+            strpos(request()->getRequestUri(), '/api') !== false
         ) {
             $shop = Setting::get('shop.shop');
             if (!is_null($shop) && isset($shop['close']) && 1 == $shop['close']) {
@@ -43,14 +43,14 @@ Route::group(['middleware' => ['auth:admin']], function () {
             return;
         }
         //shop.php
-        if (strpos(request()->getRequestUri(), config('app.subDir')) !== false &&
+        if (strpos(request()->getRequestUri(), config('app.isApi')) !== false &&
             strpos(request()->getRequestUri(), '/shop.php') !== false
         ) {
             YunShop::parseRoute(request()->input('route'));
             return;
         }
         //任务调度
-        if (strpos(request()->getRequestUri(), config('app.subDir')) !== false &&
+        if (strpos(request()->getRequestUri(), config('app.isApi')) !== false &&
             strpos(request()->getRequestUri(), '/cron.php') !== false
         ) {
             // Get security key from config
@@ -86,7 +86,7 @@ Route::group(['middleware' => ['auth:admin']], function () {
         }
 
         //微信回调
-        if (strpos(request()->getRequestUri(), config('app.subDir')) === false &&
+        if (strpos(request()->getRequestUri(), config('app.isApi')) === false &&
             strpos(request()->getRequestUri(), '/api.php') !== false
         ) {
 

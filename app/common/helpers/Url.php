@@ -66,7 +66,7 @@ class Url
             $params['i'] = \YunShop::app()->uniacid;
         }
         $module = request()->get('m','yun_shop');
-        return self::getPath($module) . '?menu#'.$route .  ($params ? '?'.http_build_query($params) : '');
+        return self::getPath($module) . '/?menu#'.$route .  ($params ? '?'.http_build_query($params) : '');
     }
 
     public static function appDiy($route, $params = [])
@@ -81,7 +81,7 @@ class Url
             $params['i'] = \YunShop::app()->uniacid;
         }
         $module = request()->get('m','yun_shop');
-        return   self::getPath($module) . '?menu#'.$route .  ($params ? '/'. $params['page_id'] . '/?i=' . $params['i'] : '');
+        return   self::getPath($module) . '/?menu#'.$route .  ($params ? '/'. $params['page_id'] . '/?i=' . $params['i'] : '');
     }
 
     /**
@@ -99,7 +99,12 @@ class Url
         $defaultParams = ['i'=>\YunShop::app()->uniacid,'route'=>$route];
         $params = array_merge($defaultParams, $params);
         $module = request()->get('m','yun_shop');
-        return  self::getPath($module).'api.php?'. http_build_query($params);
+
+        if (env('APP_Framework') == 'platform') {
+            return  self::getPath($module).'?'. http_build_query($params);
+        } else {
+            return  self::getPath($module).'/api.php?'. http_build_query($params);
+        }
     }
 
     /**
@@ -117,7 +122,11 @@ class Url
         $defaultParams = ['i'=>\YunShop::app()->uniacid,'route'=>$route];
         $params = array_merge($defaultParams, $params);
 
-        return   '/web/plugin.php?'. http_build_query($params);
+        if (env('APP_Framework') == 'platform') {
+            return   config('app.isWeb') . '/plugig?'. http_build_query($params);
+        } else {
+            return   '/web/plugin.php?'. http_build_query($params);
+        }
     }
 
     /**
@@ -205,9 +214,9 @@ class Url
     public static function getPath($module)
     {
         if (env('APP_Framework') == 'platform') {
-            return '/';
+            return config('app.isApi');
         }
 
-        return '/addons/' . $module . '/';
+        return '/addons/' . $module;
     }
 }

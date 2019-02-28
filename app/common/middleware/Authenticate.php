@@ -36,8 +36,6 @@ class Authenticate
             }
         }
 
-        \config::set('app.global', array_merge($request->input(), \Cookie::get()));
-
         return $next($request);
     }
 }
