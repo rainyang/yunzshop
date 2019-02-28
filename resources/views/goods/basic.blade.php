@@ -62,6 +62,24 @@
     </div>
 </div>
 
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">商品类型2</label>
+    <div class="col-sm-9 col-xs-12">
+        <div style="float: left" id="ttttype2">
+            <label class="radio-inline"><input type="radio" name="goods[type2]" value="1" id="isshow3" @if (empty($goods['type2']) || $goods['type2'] == 1) checked="true" @endif/>
+                普通商品
+            </label>
+            <input type="hidden" id="plugin_id" value="{{$plugin_id}}">
+            @if (app('plugins')->isEnabled('lease-toy'))
+                <label class="radio-inline"><input type="radio" name="goods[type2]" value="2" id="isshow4"  @if ($goods['type2'] == 2) checked="true" @endif/> 租赁商品</label>
+            @endif
+            @if (app('plugins')->isEnabled('video-demand'))
+                <label class="radio-inline"><input type="radio" name="goods[type2]" value="3" id="isshow4"  @if ($goods['type2'] == 3) checked="true" @endif/> 课程商品</label>
+            @endif
+        </div>
+    </div>
+</div>
+
 <div id="need_address_idx" class="form-group" @if ($goods['type'] != 2) style="display: none"  @endif>
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">下单是否需要地址</label>
     <div class="col-sm-9 col-xs-12">
@@ -285,6 +303,8 @@
         } else {
             alert('商品分类必选');
         }
+
+
     });
 </script>
 {{--@section('js')--}}
