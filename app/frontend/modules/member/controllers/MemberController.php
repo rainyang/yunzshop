@@ -1642,18 +1642,21 @@ class MemberController extends ApiController
             }
         }
         //获取所有模板
-        $sets = \Yunshop\Designer\models\ViewSet::uniacid()->select('names', 'type')->get()->toArray();
+        if (app('plugins')->isEnabled('designer')) {
+            $sets = \Yunshop\Designer\models\ViewSet::uniacid()->select('names', 'type')->get()->toArray();
 
-        if (!$sets) {
-            $arr['ViewSet'] = [];
-        } else {
+            if (!$sets) {
+                $arr['ViewSet'] = [];
+            } else {
 
-            foreach ($sets as $k => $v) {
+                foreach ($sets as $k => $v) {
 
-                $arr['ViewSet'][$v['type']]['name'] = $v['names'];
-                $arr['ViewSet'][$v['type']]['name'] = $v['names'];
+                    $arr['ViewSet'][$v['type']]['name'] = $v['names'];
+                    $arr['ViewSet'][$v['type']]['name'] = $v['names'];
+                }
             }
         }
+
         
         return $this->successJson('ok', $arr);
     }
