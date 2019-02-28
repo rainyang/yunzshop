@@ -1,145 +1,132 @@
 @extends('layouts.base')
-@section('title', trans('插件管理'))
+@section('title', trans('站点信息'))
 @section('content')
-    <div class="w1200 m0a">
-        <script language="javascript" src="{{static_url('js/dist/nestable/jquery.nestable.js')}}"></script>
-        <link rel="stylesheet" type="text/css" href="{{static_url('js/dist/nestable/nestable.css')}}"/>
 
-        <!-- 新增加右侧顶部三级菜单 -->
-        <section class="content-header">
-            <h3 style="display: inline-block;    padding-left: 10px;">
-                {{ trans('插件管理') }}
-            </h3>
-            <a href="{{yzWebUrl('plugin.plugins-market.Controllers.market.show')}}" class="btn btn-success" style="font-size: 13px;float: right;margin-top: 20px;">插件安装/升级</a>
-        </section>
+    <link rel="stylesheet" type="text/css" href="{{static_url('css/font-awesome.min.css')}}">
+    {{--<link href="{{static_url('yunshop/goods/goods.css')}}" media="all" rel="stylesheet" type="text/css"/>--}}
+    <div class="right-titpos">
+        <ul class="add-snav">
+            <li class="active"><a href="#"><i class="fa fa-circle-o" style="color: #33b5d2;"></i>站点设置</a></li>
+        </ul>
+    </div>
+    {{--<div class="main rightlist">--}}
 
-        <div style="color:#ff2620">
-            （更新插件后，请在插件管理页面，将已更新了的插件禁用后再启用）
-        </div>
-        <div class='panel panel-default'>
-            <div class='panel-body'>
-                <button class="btn btn-success checkall">全选</button>
-                <button class="btn btn-success checkrev">反选</button>
-                <button class="btn btn-success batchenable" type="submit">批量启用</button>
-                <button class="btn btn-danger batchdisable" type="submit">批量禁用</button>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th style="width: 3%;">选择</th>
-                            <th style='width:10%;'>版本</th>
-                            <th style='width:10%;'>名称</th>
-                            <th style='width:50%;'>描述</th>
-                            <th style='width:10%;'>状态</th>
-                            <th style='width:20%;'>操作</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    @foreach($installed as $plugin)
-                        <tr>
-                            <td><input type="checkbox" name="check1" value="{{$plugin->name}}"></td>
-                            <td>[{{$plugin->version}}]</td>
-                            <td class="tip" title="{{$plugin->title}}">
-                                {{$plugin->title}}
-                            </td>
-                            <td style="color:#f39c12" class="tip" title="{{$plugin->description}}">
-                                {{$plugin->description}}
-                            </td>
-                            <td>@if($plugin->isEnabled())
-                                    启用
-                                @else
-                                    禁用
+    <form id="goods-edit" action="" method="post" class="form-horizontal form" enctype="multipart/form-data">
+        {{ csrf_field() }}
+        <div class="panel-default panel-center">
+            <div class="top">
+                <ul class="add-shopnav" id="myTab">
+                    <li class="active"><a href="#tab_basic">基本信息</a></li>
+                </ul>
+            </div>
+            <div class="info">
+                <div class="panel-body">
+                    <div class="tab-content">
+
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">站点状态</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <div style="float: left" id="ttttype">
+                                    <label for="isshow3" class="radio-inline"><input type="radio" name="setdata[status]" value="0" id="isshow3" @if ($setdata->status == 0) checked="true" @endif />
+                                        开启站点
+                                    </label>
+                                    <label for="isshow4" class="radio-inline"><input type="radio" name="setdata[status]" value="1" id="isshow4"  @if ($setdata->status == 1) checked="true" @endif />关闭站点</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">站点名称</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <input type="text" name="setdata[name]" id="displayorder" placeholder="单行输入" class="form-control" value="{{$setdata->name}}" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">平台logo</label>
+                            <div class="col-sm-9 col-xs-12 col-md-6 detail-logo">
+                                {!! app\common\helpers\ImageHelper::tplFormFieldImage('setdata[site_logo]', $setdata->site_logo) !!}
+                                <span class="help-block">请上传 100 * 60 的图片 </span>
+                                @if (!empty($setdata->site_logo))
+                                    <a href='{{tomedia($setdata->site_logo)}}' target='_blank'>
+                                        <img src="{{tomedia($setdata->site_logo)}}" style='width:100px;border:1px solid #ccc;padding:1px' />
+                                    </a>
                                 @endif
-                            </td>
-                            <td>
-                                <a class='btn btn-default btn-sm'
-                                   href="{{yzWebUrl('plugins.manage', ['name'=>$plugin['name'],'action'=>($plugin->isEnabled() ? 'disable' : 'enable')])}}"
-                                   title='{{($plugin->isEnabled() ? '禁用' : '启用')}}'>
-                                    @if($plugin->isEnabled())
-                                        <i class="fa fa-power-off"></i>
-                                    @else
-                                        <i class="fa fa-check-circle-o"></i>
-                                    @endif
+                            </div>
+                        </div>
 
-                                </a>
-                                {{--<a class='btn btn-default btn-sm'
-                                   href="{{yzWebUrl('plugins.manage', ['name'=>$plugin['name'],'action'=>'delete'])}}"
-                                   title='删除' onclick="return confirm('确认删除此插件吗？');return false;">
-                                    <i class="fa fa-remove"></i>
-                                </a>--}}
-                            </td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
-                <button class="btn btn-success checkall">全选</button>
-                <button class="btn btn-success checkrev">反选</button>
-                <button class="btn btn-success batchenable" type="submit">批量启用</button>
-                <button class="btn btn-danger batchdisable" type="submit">批量禁用</button>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">favorite icon</label>
+                            <div class="col-sm-9 col-xs-12 col-md-6 detail-logo">
+                                {!! app\common\helpers\ImageHelper::tplFormFieldImage('setdata[title_icon]', $setdata->title_icon) !!}
+                                <span class="help-block">显示在浏览器标题的图标</span>
+                                @if (!empty($setdata->title_icon))
+                                    <a href='{{tomedia($setdata->title_icon)}}' target='_blank'>
+                                        <img src="{{tomedia($setdata->title_icon)}}" style='width:100px;border:1px solid #ccc;padding:1px' />
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">登录页广告</label>
+                            <div class="col-sm-9 col-xs-12 col-md-6 detail-logo">
+                                {!! app\common\helpers\ImageHelper::tplFormFieldImage('setdata[advertisement]', $setdata->advertisement) !!}
+                                <span class="help-block">请上传 400 * 250 px 图片</span>
+                                @if (!empty($setdata->advertisement))
+                                    <a href='{{tomedia($setdata->advertisement)}}' target='_blank'>
+                                        <img src="{{tomedia($setdata->advertisement)}}" style='width:100px;border:1px solid #ccc;padding:1px' />
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">门店详情</label>
+                            <div class="col-sm-9 col-xs-12">
+                                {!! yz_tpl_ueditor('setdata[information]', $setdata->information) !!}
+                            </div>
+                        </div>
+
+                        <div class="tab-pane" id="tab_option">@include('goods.tpl.option')</div>
+                    </div>
+                    <div class="form-group col-sm-12 mrleft40 border-t">
+                        <input type="submit" name="submit" value="提交" class="btn btn-success"
+                               onclick="return formcheck()"/>
+
+                    </div>
+                </div>
             </div>
         </div>
+    </form>
+    {{--</div>--}}
 
-        <script>
-            $(function(){
-                $(".checkall").click(function(){
-                    //全选
-                    if($(this).html() == '全选') {
-                        $(this).html('全不选');
-                        $('[name=check1]:checkbox').prop('checked',true);
-                    } else {
-                        $(this).html('全选');
-                        $('[name=check1]:checkbox').prop('checked',false);
-                    }
-                });
-                $(".checkrev").click(function(){
-                    //反选
-                    $('[name=check1]:checkbox').each(function(){
-                        this.checked=!this.checked;
-                    });
-                });
-
-                var arr = new Array();
-                var url = "{!! yzWebUrl('plugins.batchMange') !!}"
-
-                $(".batchenable").click(function () {
-                    $(this).html('启用中...');
-                    $("input[type='checkbox']:checked").each(function(i){
-                        arr[i] = $(this).val();
-                    });
-                    var vals = arr.join(",");
-                    var postdata = {
-                        names: vals,
-                        action: 'enable',
-                    };
-                    $.post(url,postdata,function(data){
-                        if (data) {
-                            alert('操作失败，请重新选择');
-                            return false;
-                        }
-                        $(".batchenable").html('启用成功');
-                        setTimeout(location.reload(), 3000);
-                    });
-                });
-
-                $(".batchdisable").click(function () {
-                    $(this).html('禁用中...');
-                    $("input[type='checkbox']:checked").each(function(i){
-                        arr[i] = $(this).val();
-                    });
-                    var vals = arr.join(",");
-                    var postdata = {
-                        names: vals,
-                        action: 'disable',
-                    };
-                    $.post(url,postdata,function (data) {
-                        if (data) {
-                            alert('操作失败，请重新选择');
-                            return false;
-                        }
-                        $(".batchdisable").html('禁用成功');
-                        setTimeout(location.reload(), 3000);
-                    });
-                });
-            });
-        </script>
-
+    <script type="text/javascript">
+        $("#form1").submit(function() {
+            if ($("input[name='status']:checked").val() == 1) {
+                if ($("textarea[name='reason']").val() == '') {
+                    util.message('请填写站点关闭原因');
+                    return false;
+                }
+            }
+        });
+        $("input[name='status']").click(function() {
+            if ($(this).val() == 1) {
+                $(".reason").show();
+                var reason = $("input[name='reasons']").val();
+                $("textarea[name='reason']").text(reason);
+            } else {
+                $(".reason").hide();
+            }
+        });
+        $("input[name='mobile_status']").click(function() {
+            if ($(this).val() == 0) {
+                $("#login_type_status-1").attr("checked", false);
+                $("#login_type_status-0").prop("checked", true);
+                $("#login_type_status-1").attr("disabled", true);
+            } else {
+                $("#login_type_status-1").attr("disabled", false);
+            }
+        });
+    </script>
 @endsection

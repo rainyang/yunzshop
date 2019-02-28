@@ -18,7 +18,10 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams']], func
     // 站点管理
     Route::group(['prefix' => 'system'], function (){
         // 站点设置
-        Route::get('site', ['as' => 'admin.system.site', 'uses' => '\app\platform\models\system\controllers\SiteController@index']);
+        Route::any('site', ['as' => 'admin.system.site', 'uses' => '\app\platform\modules\system\controllers\SiteController@index']);
+//        Route::post()
+        // 附件设置-全局设置
+
     });
 
     Route::group(['namespace' => 'platform\modules\application\controllers'], function () {
