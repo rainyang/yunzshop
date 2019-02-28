@@ -229,8 +229,13 @@ if (!function_exists("tomedia")) {
 
 function yz_tomedia($src, $local_path = false)
 {
-    global $_W;
-    $setting = \setting_load();
+    if (env('APP_Framework') == 'platform') {
+        $setting = [];
+    } else {
+        global $_W;
+        $setting = \setting_load();
+    }
+
     if (empty($src)) {
         return '';
     }
