@@ -124,26 +124,31 @@ class BatchDispatchController extends BaseController
             'url' => json_encode(yzWebFullUrl('discount.batch-dispatch.freight')),
         ])->render();
     }
+
     public function updateGoodsDispatch($data){
         $goods_ids = GoodsCategory::select('goods_id')->whereIn('category_id', explode(',', $data['dispatch_id']))->get()->toArray();
         foreach ($goods_ids as $goods_id) {
             $item_id[] = $goods_id['goods_id'];
         }
-        $goods_dispatch=new GoodsDispatch();
-        $goods_dispatch->dispatch_type=$data['freight_type'];
-        $goods_dispatch->is_cod=$data['is_cod'];
-
-        if ($data['freight_type']==1) {
-            $goods_dispatch->dispatch_price=$data['freight_value'];
-        }else{
-            $goods_dispatch->dispatch_id=$data['dispatch_id'];
+        foreach($item_id as $goodsID){
+            GoodsDispatch::freightSave($goodsID,$data);
         }
 
-        foreach ($item_id as $goodsId) {
-            $goods_dispatch->goods_id=$goodsId;
-            GoodsDispatch::deletedGoodsID($goodsId);
-            $goods_dispatch->save();
-        }
+//        $goods_dispatch=new GoodsDispatch();
+//        $goods_dispatch->dispatch_type=$data['freight_type'];
+//        $goods_dispatch->is_cod=$data['is_cod'];
+//
+//        if ($data['freight_type']==1) {
+//            $goods_dispatch->dispatch_price=$data['freight_value'];
+//        }else{
+//            $goods_dispatch->dispatch_id=$data['dispatch_id'];
+//        }
+//
+//        foreach ($item_id as $goodsId) {
+//            $goods_dispatch->goods_id=$goodsId;
+//            GoodsDispatch::deletedGoodsID($goodsId);
+//            $goods_dispatch->save();
+//        }
     }
 
 
