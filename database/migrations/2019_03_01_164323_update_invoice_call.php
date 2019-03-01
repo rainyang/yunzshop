@@ -18,7 +18,6 @@ class UpdateInvoiceCall extends Migration
             if (Schema::hasColumn('yz_order', 'call')) {
                 Schema::table('yz_order', function (Blueprint $table) {
                     $table->renameColumn('call', 'collect_name');
-                    $table->string('company_number')->change();
                 });
             }
         }
