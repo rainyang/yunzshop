@@ -245,7 +245,7 @@ class PreOrder extends Order
             'need_address' => $this->isNeedAddress(),//订单不需要填写地址
             'invoice_type'=>$this->getRequest()->input('invoice_type'),//发票类型
             'rise_type'=>$this->getRequest()->input('rise_type'),//收件人或单位
-            'call'=>$this->getRequest()->input('call'),//抬头或单位名称
+            'collect_name'=>$this->getRequest()->input('collect_name'),//抬头或单位名称
             'company_number'=>$this->getRequest()->input('company_number'),//单位识别号
         );
 
