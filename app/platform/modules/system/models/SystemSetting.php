@@ -7,6 +7,7 @@
  */
 namespace app\platform\modules\system\models;
 
+
 use Illuminate\Database\Eloquent\Model;
 use app\common\models\BaseModel;
 
