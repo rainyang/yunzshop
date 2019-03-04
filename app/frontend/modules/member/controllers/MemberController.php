@@ -628,6 +628,17 @@ class MemberController extends ApiController
                         print_r(\YunShop::app()->getMemberId() . '-' . \YunShop::request()->invite_code . '-' . $parent_id . '-bind' . PHP_EOL,
                             1), FILE_APPEND);
                     MemberShopInfo::change_relation($uid, $parent_id);
+                    
+                    //增加邀请码使用记录
+                    $codemodel = new \app\common\models\member\MemberInvitationCodeLog;
+
+                    if (!$codemodel->where('member_id', $uid)->where('mid', $parent_id)->first()) {
+                        $codemodel->uniacid = \YunShop::app()->uniacid;
+                        $codemodel->invitation_code = trim(\YunShop::request()->invite_code);
+                        $codemodel->member_id = $uid; //使用者id
+                        $codemodel->mid = $parent_id; //邀请人id
+                        $codemodel->save();
+                    }
                 }
             }
 
@@ -681,6 +692,7 @@ class MemberController extends ApiController
                     if (Cache::has($member_model->uid . '_member_info')) {
                         Cache::forget($member_model->uid . '_member_info');
                     }
+
                     return $this->successJson('手机号码绑定成功');
                 } else {
                     return $this->errorJson('手机号码绑定失败');

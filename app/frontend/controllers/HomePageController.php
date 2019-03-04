@@ -605,11 +605,14 @@ class HomePageController extends ApiController
     {
 
         $member_id = \YunShop::app()->getMemberId();
+        \Log::info('member_id', $member_id);
         //强制绑定手机号
         if (Cache::has('shop_member')) {
             $member_set = Cache::get('shop_member');
+            \Log::info('member_set-1', $member_set);
         } else {
             $member_set = Setting::get('shop.member');
+            \Log::info('member_set-2', $member_set);
         }
         //        $is_bind_mobile = 0;
         //
@@ -630,19 +633,24 @@ class HomePageController extends ApiController
         $is_bind_mobile = 0;
 
         if (!is_null($member_set)) {
+            \Log::info('not_null_member_set', [$member_set]);
             if ((0 < $member_set['is_bind_mobile']) && $member_id && $member_id > 0) {
+                \Log::info('0 < $member_set[is_bind_mobile]) && $member_id && $member_id > 0', [$member_set['is_bind_mobile'], $member_id]);
+
                 if (Cache::has($member_id . '_member_info')) {
                     $member_model = Cache::get($member_id . '_member_info');
+                    \Log::info('$member_model-1',$member_model);
                 } else {
                     $member_model = Member::getMemberById($member_id);
+                    \Log::info('$member_model-2',$member_model);
                 }
 
                 if ($member_model && empty($member_model->mobile)) {
+                    \Log::info('$member_model && empty($member_model->mobile)',[ $member_model, $member_model->mobile]);
                     $is_bind_mobile = intval($member_set['is_bind_mobile']);
                 }
             }
         }
-        
         if (\YunShop::request()->invite_code) {
             \Log::info('绑定手机号填写邀请码');
             //分销关系链
