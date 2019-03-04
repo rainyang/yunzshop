@@ -40,10 +40,15 @@ class BatchDispatchController extends BaseController
 
     public function freightSet()
     {
-        $dispatch_templates = Dispatch::select('id','dispatch_name')
-            ->where('uniacid',\YunShop::app()->uniacid)
-            ->where('is_plugin',0)
-            ->get();
+//        $dispatch_templates = Dispatch::select('id','dispatch_name')
+//            ->where('uniacid',\YunShop::app()->uniacid)
+//            ->where('is_plugin',0)
+//            ->get();
+//        dd($dispatch_templates);
+
+
+        $dispatch_templates = Dispatch::getTemplate();
+
         return view('discount.freight-set', [
             'list'=>$dispatch_templates,
             'url' => json_encode(yzWebFullUrl('discount.batch-dispatch.freight-save')),
@@ -83,9 +88,10 @@ class BatchDispatchController extends BaseController
             ->whereIn('id', explode(',', $categoryDiscount['dispatch_id']))
             ->get()->toArray();
 
-        $dispatch_templates = Dispatch::select('id','dispatch_name')
-            ->where('uniacid',\YunShop::app()->uniacid)
-            ->get();
+//        $dispatch_templates = Dispatch::select('id','dispatch_name')
+//            ->where('uniacid',\YunShop::app()->uniacid)
+//            ->get();
+        $dispatch_templates = Dispatch::getTemplate();
 
         return view('discount.freight-set', [
             'list'=>$dispatch_templates,
@@ -133,22 +139,6 @@ class BatchDispatchController extends BaseController
         foreach($item_id as $goodsID){
             GoodsDispatch::freightSave($goodsID,$data);
         }
-
-//        $goods_dispatch=new GoodsDispatch();
-//        $goods_dispatch->dispatch_type=$data['freight_type'];
-//        $goods_dispatch->is_cod=$data['is_cod'];
-//
-//        if ($data['freight_type']==1) {
-//            $goods_dispatch->dispatch_price=$data['freight_value'];
-//        }else{
-//            $goods_dispatch->dispatch_id=$data['dispatch_id'];
-//        }
-//
-//        foreach ($item_id as $goodsId) {
-//            $goods_dispatch->goods_id=$goodsId;
-//            GoodsDispatch::deletedGoodsID($goodsId);
-//            $goods_dispatch->save();
-//        }
     }
 
 

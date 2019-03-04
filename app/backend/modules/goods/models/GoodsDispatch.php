@@ -129,7 +129,7 @@ class GoodsDispatch extends \app\common\models\goods\GoodsDispatch
         if ($data['freight_type']==1) {
             $datas['dispatch_price']=$data['freight_value'];
         }else{
-            $datas['dispatch_price']=$data['dispatch_id'];
+            $datas['dispatch_id']=$data['template_id'];
         }
 //
 //        $goods_dispatch->goods_id=$goodsId;

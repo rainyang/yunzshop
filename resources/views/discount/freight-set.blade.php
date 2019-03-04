@@ -56,8 +56,8 @@
                             <el-input v-model.number="form.freight_value" style="width:60%;" :disabled="form.freight_type!=1">
                                 <template slot="append">元</template>
                             </el-input><br>
-                            <el-radio v-model="form.freight_type" :label="2">运费模板</el-radio>
-                            <el-select v-model="form.template_id" value-key="id" style="width:60%" placeholder="请选择运费模板" :disabled="form.freight_type!=2">
+                            <el-radio v-model="form.freight_type" :label="0">运费模板</el-radio>
+                            <el-select v-model="form.template_id" value-key="id" style="width:60%" placeholder="请选择运费模板" :disabled="form.freight_type!=0">
                                 <el-option v-for="item in template_list" :key="item.id" :label="item.dispatch_name" :value="item.id"></el-option>
                             </el-select>
                         </el-form-item>
