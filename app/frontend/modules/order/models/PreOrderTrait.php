@@ -20,6 +20,7 @@ trait PreOrderTrait
      */
     public function generate()
     {
+        $this->beforeSaving();
         $this->save();
 
         $result = $this->push();
@@ -50,7 +51,7 @@ trait PreOrderTrait
      * 统计订单商品成交金额
      * @return int
      */
-    protected function getOrderGoodsPrice()
+    public function getOrderGoodsPrice()
     {
         return $this->goods_price = $this->orderGoods->getPrice();
     }
