@@ -488,7 +488,7 @@ class Member extends BackendModel
             \Log::info('registe_3_code', \YunShop::request()->invite_code);
             
             if (!$codemodel->where('member_id', $member_id)->where('mid', $code_mid)->first()) {
-                
+                \Log::info('add_codemodel');
                 $codemodel->uniacid = \YunShop::app()->uniacid;
                 \Log::info('--uniacid', \YunShop::app()->uniacid);
                 $codemodel->invitation_code = trim(\YunShop::request()->invite_code);
