@@ -21,7 +21,6 @@ class MemberInvitedController extends BaseController
     public function index()
     {
         $search = \YunShop::request()->search;
-        $pageSize = 10;
 
         $list =  MemberInvitationCodeLog::
         searchLog($search)
@@ -30,8 +29,7 @@ class MemberInvitedController extends BaseController
         ->toArray();
         // dd($list);
 
-        //$pager = PaginationHelper::show($list['total'], $list['current_page'], $pageSize);
-        $pager = PaginationHelper::show($list->total(), $list->current_page(), $list->perPage());
+        $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
         return view('member.invited', ['list'=>$list, 'pager'=>$pager])->render();
     }
