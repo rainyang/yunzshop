@@ -490,10 +490,16 @@ class Member extends BackendModel
             if (!$codemodel->where('member_id', $member_id)->where('mid', $code_mid)->first()) {
                 
                 $codemodel->uniacid = \YunShop::app()->uniacid;
+                \Log::info('--uniacid', \YunShop::app()->uniacid);
                 $codemodel->invitation_code = trim(\YunShop::request()->invite_code);
+                \Log::info('--invitation_code', \YunShop::request()->invite_code);
+
                 $codemodel->member_id = $member_id; //使用者id
+                \Log::info('--member_id', $member_id);
+
                 $codemodel->mid = $code_mid; //邀请人id
-              
+                \Log::info('--mid', $code_mid);
+
                 $codemodel->save();
                 \Log::info('registe_4', $codemodel->save());
             
