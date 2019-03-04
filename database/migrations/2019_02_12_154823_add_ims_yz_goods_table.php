@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateOrderInvoice extends Migration
+class AddImsYzGoodsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,10 @@ class UpdateOrderInvoice extends Migration
      */
     public function up()
     {
-        //修改单位识别号字段属性
-        if (Schema::hasTable('yz_order')) {
-            if (Schema::hasColumn('yz_order', 'company_number')) {
-                Schema::table('yz_order', function (Blueprint $table) {
-                    $table->string('company_number')->change();
-                });
-            }
+        if (Schema::hasTable('yz_goods')) {
+            Schema::table('yz_goods', function (Blueprint $table) {
+                $table->boolean('type2')->nullable()->default(1)->comment('商品类型2');
+            });
         }
     }
 

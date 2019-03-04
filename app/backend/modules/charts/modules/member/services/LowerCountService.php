@@ -23,6 +23,7 @@ class LowerCountService
         foreach ($uniAccount as $u) {
             \YunShop::app()->uniacid = $u->uniacid;
             \Setting::$uniqueAccountId = $u->uniacid;
+            $result = [];
 
             $uniacid = \YunShop::app()->uniacid;
             $level_member = DB::table('yz_member_children')->select('member_id', 'level', DB::raw('count(1) as total'))->where('uniacid', $uniacid)->whereIn('level', [1,2,3])->groupBy('member_id', 'level')->get();
