@@ -30,7 +30,8 @@ class MemberInvitedController extends BaseController
         ->toArray();
         // dd($list);
 
-        $pager = PaginationHelper::show($list['total'], $list['current_page'], $pageSize);
+        //$pager = PaginationHelper::show($list['total'], $list['current_page'], $pageSize);
+        $pager = PaginationHelper::show($list->total(), $list->current_page(), $list->perPage());
 
         return view('member.invited', ['list'=>$list, 'pager'=>$pager])->render();
     }
