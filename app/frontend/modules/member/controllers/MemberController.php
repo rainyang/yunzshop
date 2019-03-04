@@ -601,7 +601,7 @@ class MemberController extends ApiController
 
 
         $member_model = MemberModel::getMemberById($uid);
-
+        \Log::info('member_model--', $member_model);
         if (\YunShop::app()->getMemberId() && $uid > 0) {
             $check_code = MemberService::checkCode();
 
