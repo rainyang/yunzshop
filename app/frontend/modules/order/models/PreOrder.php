@@ -446,11 +446,13 @@ class PreOrder extends Order
              * @var BaseModel $model
              */
             foreach (array_filter($models) as $model) {
-                if (!isset($model->order_id) && $model->hasColumn('order_id')) {
+                if (!isset($model->order_id) && in_array('order_id',\Illuminate\Support\Facades\Schema::getColumnListing($model->getTable()))) {
                     $model->order_id = $this->id;
                 }
+
             }
         }
+
         /**
          * 一对一关联模型保存
          */
