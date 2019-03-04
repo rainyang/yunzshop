@@ -153,7 +153,8 @@ class Order extends BaseModel
     //获取发票信息
     public static function getInvoice($order)
     {
-        return self ::select('invoice_type','rise_type','call','company_number','invoice')
+        //return self ::select('invoice_type','rise_type','call','company_number','invoice')
+        return self ::select('invoice_type','rise_type','collect_name','company_number','invoice')
             ->where('id',$order)
             ->first();
     }

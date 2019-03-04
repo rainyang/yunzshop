@@ -126,6 +126,7 @@
                             <th style='width:12%;'>姓名</th>
                             <th style='width:12%;'>手机号码</th>
                             <th style='width:12%;'>状态</th>
+                            <th style='width:12%;'>下线状态</th>
                             <th style='width:14%;'>注册时间</th>
                             <th style='width:10%;text-align: center;'>关注</th>
                             <th style='width:13%'>操作</th>
@@ -175,7 +176,13 @@
                                 @else
                                 -
                                 @endif
-
+                            </td>
+                            <td>
+                                @if($row['yz_member']['inviter'] == 0)
+                                    <span class="label label-default">暂定下线</span>
+                                @elseif($row['yz_member']['inviter'] == 1)
+                                    <span class="label label-success">锁定关系下线</span>
+                                @endif
                             </td>
                             <td>{{date('Y-m-d H:i',$row['createtime'])}}</td>
                             <td class="text-center">
