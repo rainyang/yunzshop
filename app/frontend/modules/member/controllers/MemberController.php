@@ -675,8 +675,9 @@ class MemberController extends ApiController
                 $member_model->salt     = $salt;
                 $member_model->mobile   = $mobile;
                 $member_model->password = md5($password . $salt);
-
+                \Log::info('member_save', $member_model);
                 if ($member_model->save()) {
+
                     if (Cache::has($member_model->uid . '_member_info')) {
                         Cache::forget($member_model->uid . '_member_info');
                     }
