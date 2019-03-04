@@ -25,6 +25,7 @@ class MemberInvitedController extends BaseController
 
         $list =  MemberInvitationCodeLog::
         searchLog($search)
+        ->orderBy('id', 'desc')
         ->paginate()
         ->toArray();
         // dd($list);
@@ -36,7 +37,7 @@ class MemberInvitedController extends BaseController
 
     public function export()
     {
-        $member_builder = MemberInvitationCodeLog::searchLog(\YunShop::request()->search);
+        $member_builder = MemberInvitationCodeLog::searchLog(\YunShop::request()->search)->orderBy('id', 'desc');
         $export_page = request()->export_page ? request()->export_page : 1; 
 
         $export_model = new ExportService($member_builder, $export_page);
