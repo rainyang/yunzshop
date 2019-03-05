@@ -54,7 +54,7 @@ class AuditService
     /**
      * @return bool
      */
-    private function _withdrawAudit()
+    private function  _withdrawAudit()
     {
         DB::transaction(function () {
             $this->audit();
@@ -158,6 +158,9 @@ class AuditService
 
         $amount = bcsub($audit_amount, $poundage, 2);
 
+        if($amount <= 0){
+            throw new ShopException("驳回部分后提现金额小于手续费，不能通过申请！");
+        }
         //计算劳务税
 
 //        $rate = $this->withdrawModel->servicetax_rate;
