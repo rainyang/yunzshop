@@ -9,6 +9,8 @@
                 <ul class="add-snav">
                     <li class="active"><a href="{{yzWebUrl('member.member.index')}}">会员管理</a></li>
                     <li><a href="#">&nbsp;<i class="fa fa-angle-double-right"></i> &nbsp;会员详情</a></li>
+                    <li><a href="javascript:void"><i class="fa fa-angle-double-right"></i></a></li>
+                    <li class="active"> <a class="btn btn-info dropdown-toggle" style="height: 35px;margin-top: 5px;color: white;" href="{{yzWebUrl('member.member.add-member')}}">添加会员</a></li>
                 </ul>
             </div>
             <!-- 新增加右侧顶部三级菜单结束 -->
@@ -146,7 +148,7 @@
                 return false;
             }
 
-            if (!$("#mobile").val().match(/^(((13[0-9]{1})|159|153)+\d{8})$/)) {
+            if (!$("#mobile").val().match(/^1\d{10}$/)) {
                 alert("手机号码格式不正确！");
                 $("#mobile").focus();
                 return false;
@@ -160,8 +162,8 @@
                 alert("两次密码不正确");
                 return false;
             }
-            if ($("#password1").val().length < 6){
-                alert("密码不能小于6位");
+            if ($("#password1").val().length < 6 || $("#password1").val().match(/^[A-Za-z0-9@!#\$%\^&\*]+$/)){
+                alert("密码格式不正确！");
                 return false;
             }
 

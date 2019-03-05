@@ -170,11 +170,11 @@ class MemberController extends BaseController
         $uniacid = \YunShop::app()->uniacid;
 
         if ((\Request::getMethod() == 'POST')) {
-            $msg = MemberService::validate($mobile, $password, $confirm_password,'Backstage');
-
-            if ($msg != 1) {
-                return $this->message($msg, yzWebUrl('member.member.add-member'));
-            }
+//            $msg = MemberService::validate($mobile, $password, $confirm_password,'Backstage');
+//
+//            if ($msg != 1) {
+//                return $this->message($msg, yzWebUrl('member.member.add-member'));
+//            }
 
             //判断是否已注册
             $member_info = MemberModel::getId($uniacid, $mobile);

@@ -85,7 +85,7 @@ class MemberService
      *
      * @return bool
      */
-    public static function validate($mobile, $password, $confirm_password = '',$operation='')
+    public static function validate($mobile, $password, $confirm_password = '')
     {
         if ($confirm_password == '') {
             $data = array(
@@ -130,17 +130,6 @@ class MemberService
         }
 
         $validate = \Validator::make($data,$rules,$message,$attributes);
-
-        if ('Backstage' == $operation){
-            if ($validate->fails()) {
-                $warnings = $validate->messages();
-                $show_warning = $warnings->first();
-                return $show_warning;
-            } else {
-                return 1;
-            }
-        }
-
         if ($validate->fails()) {
             $warnings = $validate->messages();
             $show_warning = $warnings->first();
