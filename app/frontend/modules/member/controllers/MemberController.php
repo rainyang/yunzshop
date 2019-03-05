@@ -147,6 +147,13 @@ class MemberController extends ApiController
                     $data['inviteCode'] = 0;
                 }
 
+                //查看聚合支付是否开启
+                if (app('plugins')->isEnabled('yop-pay')) {
+                    $data['yop'] = 1;
+                }else{
+                    $data['yop'] = 0;
+                }
+
                 $data['is_open_hotel'] = app('plugins')->isEnabled('hotel') ? 1 : 0;
 
                 return $this->successJson('', $data);

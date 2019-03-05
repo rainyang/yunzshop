@@ -143,6 +143,24 @@
     </div>
 @endif
 
+@if(app('plugins')->isEnabled('yop-pay'))
+    <div class="tab-pane  active">
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现到易宝</label>
+            <div class="col-sm-9 col-xs-12">
+                <label class='radio-inline'>
+                    <input type='radio' name='withdraw[income][yop_pay]' value='1' @if($set['yop_pay'] == 1) checked @endif />
+                    开启
+                </label>
+                <label class='radio-inline'>
+                    <input type='radio' name='withdraw[income][yop_pay]' value='0' @if($set['yop_pay'] == 0) checked @endif />
+                    关闭
+                </label>
+            </div>
+        </div>
+    </div>
+@endif
+
 <div class="tab-pane  active">
     <div class="form-group">
         <label class="col-xs-12 col-sm-3 col-md-2 control-label">手动提现</label>

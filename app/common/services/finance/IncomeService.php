@@ -12,7 +12,7 @@ use app\common\facades\Setting;
 use app\common\models\PayType;
 class IncomeService
 {
-    private static $pay_way = ['balance','wechat','alipay','manual', 'huanxun', 'eup_pay'];
+    private static $pay_way = ['balance','wechat','alipay','manual', 'huanxun', 'eup_pay', 'yop_pay'];
 
     public static function getIncomeWithdrawMode()
     {
@@ -53,6 +53,8 @@ class IncomeService
                 break;
             case 'eup_pay':
                 return '提现到EUP';
+            case 'yop_pay':
+                return '提现到易宝';
                 break;
         }
     }
