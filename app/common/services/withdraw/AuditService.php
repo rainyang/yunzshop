@@ -139,7 +139,12 @@ class AuditService
         $rate = $this->withdrawModel->poundage_rate;
         if($this->withdrawModel->poundage_type == 1)
         {
-            return $rate;
+            if($amount != 0){
+                return $rate;
+            }else{
+                return 0;
+            }
+
         }
 
         return bcdiv(bcmul($amount, $rate, 4), 100, 2);
@@ -158,7 +163,7 @@ class AuditService
 
         $amount = bcsub($audit_amount, $poundage, 2);
 
-        if($amount < 0){
+        if($amount < 0 && $amount!=0){
             throw new ShopException("驳回部分后提现金额小于手续费，不能通过申请！");
         }
         //计算劳务税
