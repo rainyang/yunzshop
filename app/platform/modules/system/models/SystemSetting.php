@@ -7,6 +7,7 @@
  */
 namespace app\platform\modules\system\models;
 
+
 use Illuminate\Database\Eloquent\Model;
 use app\common\models\BaseModel;
 
@@ -15,4 +16,63 @@ class SystemSetting extends BaseModel
     public $table = 'yz_system_setting';
     public $timestamps = true;
     protected $guarded = [''];
+
+    /**
+     * @name 保存数据
+     * @param string $data
+     * @param string $key
+     * @param $cache_name
+     * @return SystemSetting|bool
+     */
+    public function settingSave($data = '', $key = '', $cache_name = '')
+    {
+        if (!$data && !$key) {
+            return false;
+        }
+
+        $is_exists = self::where('key', $key)->first();
+        $data = serialize($data);
+        if (!$is_exists) {
+            $system_setting = new self;
+            // 添加
+            $result = $system_setting::create([
+                'key'       => $key,
+                'value'     => $data
+            ]);
+        } else {
+            // 修改
+            $result = self::where('key', $key)->update(['value' => $data]);
+        }
+        if ($result) {
+            \Cache::put($cache_name, $data, 3600);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @name 读取数据
+     * @param string $key
+     * @param string $cache_name
+     * @return SystemSetting
+     */
+    public function settingLoad($key = '', $cache_name = '')
+    {
+        if (!\Cache::has($cache_name)) {
+            $result = self::getKeyList($key);
+            \Cache::put($cache_name, $result, 3600);
+        } else {
+            $result = \Cache::get($cache_name);
+        }
+        if ($result) {
+            $result['value'] = unserialize($result['value']);
+        }
+
+        return $result;
+    }
+
+    public function getKeyList($key)
+    {
+        return self::where('key', $key)->first();
+    }
 }
