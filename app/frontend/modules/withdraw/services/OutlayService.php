@@ -74,6 +74,10 @@ class OutlayService
      */
     public function getServiceTaxRate()
     {
+        if(in_array($this->withdrawModel->type_name, ['门店提现','收银台提现','连锁店提现']))
+        {
+            return 0;
+        }
         return $this->getWithdrawSet('servicetax_rate');
     }
 
@@ -131,6 +135,10 @@ class OutlayService
      */
     public function getToBalanceServiceTaxRate()
     {
+        if(in_array($this->withdrawModel->type_name, ['门店提现','收银台提现','连锁店提现']))
+        {
+            return 0;
+        }
         return $this->getWithdrawSet('special_service_tax');
     }
 
