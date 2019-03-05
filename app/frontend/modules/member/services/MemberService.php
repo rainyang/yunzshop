@@ -85,7 +85,7 @@ class MemberService
      *
      * @return bool
      */
-    public static function validate($mobile, $password, $confirm_password = '')
+    public static function validate($mobile, $password, $confirm_password = '',$operation='')
     {
         if ($confirm_password == '') {
             $data = array(
@@ -131,6 +131,16 @@ class MemberService
 
         $validate = \Validator::make($data,$rules,$message,$attributes);
 
+        if ('Backstage' == $operation){
+            if ($validate->fails()) {
+                $warnings = $validate->messages();
+                $show_warning = $warnings->first();
+                return $show_warning;
+            } else {
+                return 1;
+            }
+        }
+
         if ($validate->fails()) {
             $warnings = $validate->messages();
             $show_warning = $warnings->first();
@@ -140,6 +150,7 @@ class MemberService
             return show_json('1');
         }
     }
+
 
     /**
      * 短信发送限制
