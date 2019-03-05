@@ -22,6 +22,7 @@ use app\common\helpers\Url;
 use app\backend\modules\charts\modules\phone\services\PhoneAttributionService;
 use app\backend\modules\charts\modules\phone\models\PhoneAttribution;
 use app\frontend\modules\member\models\SubMemberModel as SubMember_Model;
+use app\common\exceptions\AppException;
 
 use app\backend\modules\member\models\McMappingFans;
 use app\backend\modules\member\models\Member;
