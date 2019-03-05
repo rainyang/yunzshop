@@ -56,7 +56,7 @@ class Coupon extends \app\common\models\Coupon
             });
 
         if (!is_null($couponId)) {
-            $res = $res->where('id', '=', $couponId);
+            $res = $res->where('yz_coupon.id', '=', $couponId);
         }
 
         if (!is_null($time)) {
