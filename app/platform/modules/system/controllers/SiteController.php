@@ -9,42 +9,25 @@ namespace app\platform\modules\system\controllers;
 
 use app\platform\controllers\BaseController;
 use app\platform\modules\system\models\SystemSetting;
-use app\common\helpers\Url;
 
 class SiteController extends BaseController
 {
     public function index()
     {
-        $site = SystemSetting::where('key', 'site')->pluck('value');
         $set_data = request()->setdata;
+        $copyright = SystemSetting::settingLoad('copyright', 'system_copyright');
+
         if ($set_data) {
-            $set_data = \GuzzleHttp\json_encode($set_data);
-            if ($site->isEmpty()) {
-                // 添加
-                $system_setting = SystemSetting::create([
-                    'key'       => 'site',
-                    'value'     => $set_data
-                ]);
-                if ($system_setting) {
-                    return $this->commonRedirect('/admin/system/site', '成功');
-                } else {
-                    return $this->commonRedirect('/admin/system/site', '失败', 'failed');
-                }
+            $site = SystemSetting::settingSave($set_data, 'copyright', 'system_copyright');
+            if ($site) {
+                return $this->commonRedirect('/admin/system/site', '成功');
             } else {
-                // 修改
-                $system_setting = SystemSetting::where('key', 'site')->update(['value' => $set_data]);
-                if ($system_setting) {
-                    return $this->commonRedirect('/admin/system/site', '成功');
-                } else {
-                    return $this->commonRedirect('/admin/system/site', '失败', 'failed');
-                }
+                return $this->commonRedirect('/admin/system/site', '失败', 'failed');
             }
         }
 
-//        dd(json_decode($site['0']));
-
         return view('system.site', [
-            'setdata' => json_decode($site['0'])
+            'setdata' => $copyright
         ]);
 
         /* 站点设置字段名 */

@@ -17,8 +17,8 @@ class AttachmentController extends BaseController
         $post_max_size = ini_get('post_max_size');
         $post_max_size = $post_max_size > 0 ? $this->bytecount($post_max_size) / 1024 : 0;
         $upload_max_filesize = ini_get('upload_max_filesize');
-        $global = SystemSetting::where('key', 'global')->pluck('value');
-        $remote = SystemSetting::where('key', 'remote')->pluck('value');
+        $global = SystemSetting::settingLoad('global', 'system_global');
+        $remote = SystemSetting::settingLoad('remote', 'system_remote');
         $set_data = request()->upload;
         $alioss = request()->alioss;
         $cos = request()->cos;
@@ -80,26 +80,11 @@ class AttachmentController extends BaseController
                 echo '<script type="text/javascript"> alert("请设置音频视频上传支持的文件大小, 单位 KB."); location.href="/index.php/admin/system/attachment"; </script>';
             }
 
-            $set_data = \GuzzleHttp\json_encode($set_data);
-            if ($global->isEmpty()) {
-                // 添加
-                $system_setting = SystemSetting::create([
-                    'key' => 'global',
-                    'value' => $set_data
-                ]);
-                if ($system_setting) {
-                    return $this->commonRedirect('/admin/system/attachment', '成功');
-                } else {
-                    return $this->commonRedirect('/admin/system/attachment', '失败', 'failed');
-                }
+            $globals = SystemSetting::settingSave($set_data, 'global', 'system_global');
+            if ($globals) {
+                return $this->commonRedirect('/admin/system/attachment', '成功');
             } else {
-                // 修改
-                $system_setting = SystemSetting::where('key', 'global')->update(['value' => $set_data]);
-                if ($system_setting) {
-                    return $this->commonRedirect('/admin/system/attachment', '成功');
-                } else {
-                    return $this->commonRedirect('/admin/system/attachment', '失败', 'failed');
-                }
+                return $this->commonRedirect('/admin/system/attachment', '失败', 'failed');
             }
 
             //  缩略设置 thumb
@@ -116,28 +101,25 @@ class AttachmentController extends BaseController
         $config['audio_extentions'] = ['0' => 'mp3'];
         $config['audio_limit'] = 5000;
 
-        if ($global->isEmpty()) {
+        if (!$global) {
             $global = $config;
         }
 
-        $global = json_decode($global['0']);
-        $remote = json_decode($remote['0']);
-
-        $global->thumb_width = intval($global->thumb_width);
-        if (!$global->thumb_width) {
-            $global->thumb_width = 800;
+        $global['thumb_width'] = intval($global['thumb_width']);
+        if (!$global['thumb_width']) {
+            $global['thumb_width'] = 800;
         }
 
-        if ($global->image_extentions['0']) {
-            $global->image_extentions = implode("\n", $global->image_extentions);
+        if ($global['image_extentions']['0']) {
+            $global['image_extentions'] = implode("\n", $global['image_extentions']);
         }
 
-        if ($global->audio_extentions['0']) {
-            $global->audio_extentions = implode("\n", $global->audio_extentions);
+        if ($global['audio_extentions']['0']) {
+            $global['audio_extentions'] = implode("\n", $global['audio_extentions']);
         }
 
-        if (!$global->zip_percentage) {
-            $global->zip_percentage = 100;
+        if (!$global['zip_percentage']) {
+            $global['zip_percentage'] = 100;
         }
 
         if ($alioss || $cos) {
@@ -243,29 +225,12 @@ class AttachmentController extends BaseController
                 }
             }
 
-            $set_data = \GuzzleHttp\json_encode($set_data);
-            if ($global->isEmpty()) {
-                // 添加
-                $system_setting = SystemSetting::create([
-                    'key' => 'global',
-                    'value' => $set_data
-                ]);
-                if ($system_setting) {
-                    return $this->commonRedirect('/admin/system/attachment', '成功');
-                } else {
-                    return $this->commonRedirect('/admin/system/attachment', '失败', 'failed');
-                }
+            $remotes = SystemSetting::settingSave($set_data, 'remote', 'system_remote');
+            if ($remotes) {
+                return $this->commonRedirect('/admin/system/attachment', '成功');
             } else {
-                // 修改
-                $system_setting = SystemSetting::where('key', 'global')->update(['value' => $set_data]);
-                if ($system_setting) {
-                    return $this->commonRedirect('/admin/system/attachment', '成功');
-                } else {
-                    return $this->commonRedirect('/admin/system/attachment', '失败', 'failed');
-                }
+                return $this->commonRedirect('/admin/system/attachment', '失败', 'failed');
             }
-
-
         }
 
         return view('system.attachment', [
