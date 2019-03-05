@@ -262,7 +262,7 @@ class YoppayController extends PaymentController
 
         if ($bool) {
             $yop_order =  YopPayOrder::paySn($this->getParameter('orderId'))->first();
-            $yop_order->can_divide_amount = bcsub($yop_order->can_divide_amount, $this->getParameter('refundAmount'),2);
+            //$yop_order->can_divide_amount = bcsub($yop_order->can_divide_amount, $this->getParameter('refundAmount'),2);
             $yop_order->refund_amount = bcadd($yop_order->refund_amount, $this->getParameter('refundAmount'), 2);
             $yop_order->can_refund = YopOrderRefund::REFUND;
             $yop_order->save();
