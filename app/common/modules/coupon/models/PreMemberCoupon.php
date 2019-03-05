@@ -74,9 +74,13 @@ class PreMemberCoupon extends MemberCoupon
             throw new AppException('没有该优惠券或者优惠券不可用');
         }
         if (!empty($coupon->level_limit) && ($coupon->level_limit != -1)) { //优惠券有会员等级要求
+            // 通过会员记录的level_id找到会员等级
+            $memberLevel = \app\common\models\MemberLevel::find($yzMember->level_id)->level;
+            // 通过优惠券记录的level_id找到会员等级,level_limit实际就是level_id
+            $couponMemberLevel = \app\common\models\MemberLevel::find($coupon->level_limit)->level;
             if (empty($yzMember->level_id)) {
                 throw new AppException('该优惠券有会员等级要求,但该用户没有会员等级');
-            } elseif ($yzMember->level_id < $coupon->level_limit) {
+            } elseif ((!empty($memberLevel) ? $memberLevel : 0) < $couponMemberLevel) {
                 throw new AppException('没有达到领取该优惠券的会员等级要求');
             }
         }

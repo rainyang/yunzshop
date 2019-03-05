@@ -245,7 +245,8 @@ class PreOrder extends Order
             'need_address' => $this->isNeedAddress(),//订单不需要填写地址
             'invoice_type'=>$this->getRequest()->input('invoice_type'),//发票类型
             'rise_type'=>$this->getRequest()->input('rise_type'),//收件人或单位
-            'call'=>$this->getRequest()->input('call'),//抬头或单位名称
+           // 'call'=>$this->getRequest()->input('call'),//抬头或单位名称
+            'collect_name'=>$this->getRequest()->input('call'),//抬头或单位名称
             'company_number'=>$this->getRequest()->input('company_number'),//单位识别号
         );
 
@@ -446,11 +447,13 @@ class PreOrder extends Order
              * @var BaseModel $model
              */
             foreach (array_filter($models) as $model) {
-                if (!isset($model->order_id) && $model->hasColumn('order_id')) {
+                if (!isset($model->order_id) && in_array('order_id',\Illuminate\Support\Facades\Schema::getColumnListing($model->getTable()))) {
                     $model->order_id = $this->id;
                 }
+
             }
         }
+
         /**
          * 一对一关联模型保存
          */

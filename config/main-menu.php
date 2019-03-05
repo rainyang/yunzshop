@@ -3462,6 +3462,27 @@ return [
                 'sort'              => '6',
                 'item'              => 'setting_shop_notice',
                 'parents'           => ['system',],
+                'child'             => [
+
+                    'setting_shop_default_notice_open'  => [
+                        'name'              => '默认消息模版开启',
+                        'url'               => 'setting.default-notice.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'item'              => 'setting_shop_default_notice_open',
+                        'parents'           => ['system','setting_shop_notice'],
+                    ],
+                    'setting_shop_default_notice_closed'  => [
+                        'name'              => '默认消息模版取消',
+                        'url'               => 'setting.default-notice.cancel',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'item'              => 'setting_shop_default_notice_closed',
+                        'parents'           => ['system','setting_shop_notice'],
+                    ],
+                ]
             ],
 
             'setting_wechat_notice' => [
