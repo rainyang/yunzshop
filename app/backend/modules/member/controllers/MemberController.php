@@ -181,7 +181,8 @@ class MemberController extends BaseController
             \Log::info('member_info', $member_info);
 
             if (!empty($member_info)) {
-                return $this->message('该手机号已被注册', yzWebUrl('member.member.add-member'));
+                throw new AppException('该手机号已被注册');
+//                return $this->message('该手机号已被注册', yzWebUrl('member.member.add-member'));
 //               return $this->errorJson('该手机号已被注册');
             }
             //添加mc_members表

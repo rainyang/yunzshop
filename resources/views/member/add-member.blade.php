@@ -101,46 +101,20 @@
 
             });
         });
-        function sub() {
-
-            if ($("#mobile").val() == "") {
-                alert("手机号码不能为空！");
-                $("#mobile").focus();
-                return false;
-            }
-
-            if (!$("#mobile").val().match(/^(((13[0-9]{1})|159|153)+\d{8})$/)) {
-                alert("手机号码格式不正确！");
-                $("#mobile").focus();
-                return false;
-            }
-            if ($("#password1").val()=="" || $("#password2").val() == ""){
-                alert('密码框不能为空');
-                return false;
-            }
-
-            if ($("#password1").val() != $("#password2").val() ){
-                alert("两次密码不正确");
-                return false;
-            }
-            if ($("#password1").val().length < 6){
-                alert("密码不能小于6位");
-                return false;
-            }
             {{--var mobile = $("#mobile").val();--}}
             {{--var password = $("#password1").val();--}}
             {{--var confirm_password = $("#password2").val();--}}
             {{--$.post("{!! yzWebUrl('member.member.add-member') !!}", {--}}
-                {{--mobile: mobile,--}}
-                {{--password: password,--}}
-                {{--confirm_password: confirm_password,--}}
+            {{--mobile: mobile,--}}
+            {{--password: password,--}}
+            {{--confirm_password: confirm_password,--}}
             {{--}, function (json) {--}}
-                {{--var json = $.parseJSON(json);--}}
-                {{--if (json.status == 1) {--}}
+            {{--var json = $.parseJSON(json);--}}
+            {{--if (json.status == 1) {--}}
 
-                {{--}--}}
+            {{--}--}}
             {{--});--}}
-        }
+
         function isRemeber() {
             if ($("#mobile").val() == "") {
                 alert("手机号码不能为空！");
@@ -162,7 +136,7 @@
                 alert("两次密码不正确");
                 return false;
             }
-            if ($("#password1").val().length < 6 || $("#password1").val().match(/^[A-Za-z0-9@!#\$%\^&\*]+$/)){
+            if ($("#password1").val().length < 6 || !$("#password1").val().match(/^[A-Za-z0-9@!#\$%\^&\*]+$/)){
                 alert("密码格式不正确！");
                 return false;
             }
