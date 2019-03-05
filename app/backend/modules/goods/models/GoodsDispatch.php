@@ -117,24 +117,23 @@ class GoodsDispatch extends \app\common\models\goods\GoodsDispatch
         if (!$data) {
             return false;
         }
+
+
         self::deletedGoodsID($goodsId);
         $datas=[
             'goods_id'=>$goodsId,
             'dispatch_type'=>$data['freight_type'],
             'is_cod'=>$data['is_cod'],
         ];
-//        $goods_dispatch=new static;
-//        $goods_dispatch->dispatch_type=$data['freight_type'];
-//        $goods_dispatch->is_cod=$data['is_cod'];
+
         if ($data['freight_type']==1) {
             $datas['dispatch_price']=$data['freight_value'];
         }else{
             $datas['dispatch_id']=$data['template_id'];
         }
-//
-//        $goods_dispatch->goods_id=$goodsId;
+
         return self::relationSave($goodsId,$datas,"created");
-      //  $goods_dispatch->save();
+
 
     }
 

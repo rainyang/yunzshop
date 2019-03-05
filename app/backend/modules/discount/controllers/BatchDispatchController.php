@@ -46,7 +46,7 @@ class BatchDispatchController extends BaseController
 //            ->get();
 //        dd($dispatch_templates);
 
-
+       // $dispatch = new GoodsDispatch();
         $dispatch_templates = Dispatch::getTemplate();
 
         return view('discount.freight-set', [
@@ -132,10 +132,18 @@ class BatchDispatchController extends BaseController
     }
 
     public function updateGoodsDispatch($data){
-        $goods_ids = GoodsCategory::select('goods_id')->whereIn('category_id', explode(',', $data['dispatch_id']))->get()->toArray();
+        $goods_ids = GoodsCategory::select('goods_id')
+            ->whereHas('goods', function ($query) {
+                $query->where('is_plugin',0)->where('plugin_id',0);
+            })
+            ->whereIn('category_id', explode(',', $data['dispatch_id']))
+            ->get()
+            ->toArray();
+
         foreach ($goods_ids as $goods_id) {
             $item_id[] = $goods_id['goods_id'];
         }
+
         foreach($item_id as $goodsID){
             GoodsDispatch::freightSave($goodsID,$data);
         }
