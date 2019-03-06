@@ -53,6 +53,8 @@ class Sale extends \app\common\models\Sale
         $data['ed_reduction'] = empty($data['ed_reduction']) ? 0 : $data['ed_reduction'];
         $data['point'] = trim($data['point']);
         $data['award_balance'] = trim($data['award_balance']);
+        $data['max_point_deduct'] = empty($data['max_point_deduct']) ? '' : $data['max_point_deduct'];
+        $data['min_point_deduct'] = empty($data['min_point_deduct']) ? '' : $data['min_point_deduct'];
 
         /**
          * Author:blank
