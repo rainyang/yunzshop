@@ -190,6 +190,9 @@ class PayedService
             case Withdraw::WITHDRAW_WITH_SEPARATE_UNION_PAY:
                 $result = $this->separateUnionPay();
                 break;
+            case Withdraw::WITHDRAW_WITH_YOP:
+                $result = $this->yopWithdrawPay();
+                break;
             default:
                 throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：未知打款类型");
         }
@@ -297,6 +300,21 @@ class PayedService
         $result = PayFactory::create(PayFactory::PAY_EUP)->doWithdraw($member_id, $sn, $amount, $remark);
         if ($result['errno'] === 0) {
             return true;
+        }
+
+        throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：{$result['message']}");
+    }
+
+    private function yopWithdrawPay()
+    {
+        $member_id = $this->withdrawModel->member_id;
+        $sn = $this->withdrawModel->withdraw_sn;
+        $amount = $this->withdrawModel->actual_amounts;
+        $remark = 'withdraw';
+
+        $result = PayFactory::create(PayFactory::YOP)->doWithdraw($member_id, $sn, $amount, $remark);
+        if ($result['errno'] == 200) {
+            return false;
         }
 
         throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：{$result['message']}");

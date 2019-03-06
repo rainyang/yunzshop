@@ -156,11 +156,14 @@
                         <input type="hidden" name="pay_way" value="4">
                         <input type="submit" name="submit_pay" value="手动打款" class="btn btn-primary " style='margin-left:10px;' onclick='return '/>
                     @elseif($item['pay_way'] == 'eup_pay')
-                        <input type="hidden" name="pay_way" value="4">
+                        <input type="hidden" name="pay_way" value="5">
                         <input type="submit" name="submit_pay" value="EUP提现" class="btn btn-primary " style='margin-left:10px;' onclick='return '/>
                     @elseif($item['pay_way'] == 'huanxun')
-                        <input type="hidden" name="pay_way" value="4">
+                        <input type="hidden" name="pay_way" value="6">
                         <input type="submit" name="submit_pay" value="打款到银行卡" class="btn btn-primary " style='margin-left:10px;' onclick='return '/>
+                    @elseif($item['pay_way'] == 'yop_pay')
+                        <input type="hidden" name="pay_way" value="7">
+                        <input type="submit" name="submit_pay" value="易宝提现" class="btn btn-primary " style='margin-left:10px;' onclick='return '/>
                     @endif
                 @endif
 

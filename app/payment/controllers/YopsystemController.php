@@ -2,20 +2,20 @@
 /**
  * Created by PhpStorm.
  * User: Administrator
- * Date: 2018/12/12
- * Time: 9:09
+ * Date: 2019/3/1
+ * Time: 10:09
  */
 
 namespace app\payment\controllers;
 
 use app\common\components\BaseController;
-use app\common\models\AccountWechats;
 use app\common\modules\yop\sdk\Util\YopSignUtils;
+use Yunshop\YopSystem\common\YopLog;
+use Yunshop\YopSystem\models\YopSystemMerchant;
+use app\common\models\AccountWechats;
 use Illuminate\Support\Facades\DB;
-use Yunshop\YopPay\models\SubMerchant;
 
-
-class YopmerchantController extends BaseController
+class YopsystemController extends BaseController
 {
 
     protected $set;
@@ -26,8 +26,8 @@ class YopmerchantController extends BaseController
     {
         parent::__construct();
 
-        if (!app('plugins')->isEnabled('yop-pay')) {
-            echo 'Not turned on yop pay';
+        if (!app('plugins')->isEnabled('yop-system')) {
+            echo 'Not turned on yop system';
             exit();
         }
 
@@ -52,45 +52,29 @@ class YopmerchantController extends BaseController
 
     protected function getMerchantNo()
     {
-        //\Log::debug('--------------易宝入网参数--------------', $_REQUEST);
+        \Log::debug('--------------易宝入网参数--------------', $_REQUEST);
 
         $app_key = $_REQUEST['customerIdentification'];
         $merchant_no = substr($app_key,  strrpos($app_key, 'OPR:')+4);
 
-//        $model = DB::table('yz_yop_setting')->where('parent_merchant_no', $merchant_no)->first();
-//
-//        if ($model) {
-//            return [
-//                'uniacid' => $model['uniacid'],
-//                'merchant_number' => $model['parent_merchant_no'],
-//                'private_key' => $model['private_key'],
-//                'yop_public_key' => $model['yop_public_key'],
-//            ];
-//        }
-
-        $model = DB::table('yz_yop_setting')->where('merchant_no', $merchant_no)->first();
+        $model = DB::table('yz_yop_system')->where('parent_merchant_no', $merchant_no)->first();
 
         if (empty($model)) {
             exit('商户不存在');
         }
-        return [
-            'uniacid' => $model['uniacid'],
-            'merchant_number' => $model['merchant_no'],
-            'private_key' => $model['son_private_key'],
-            'yop_public_key' => $model['yop_public_key'],
-        ];
-    }
 
+        return $model;
+    }
 
     //子商户入网
     public function notifyUrl()
     {
         \Log::debug('--------------易宝入网--------------', $this->parameters);
 
-        $this->yopResponse('子商户入网', $this->parameters, 'sub');
+        $this->yopResponse('子商户入网:'.$this->parameters['requestNo'], $this->parameters);
 
 
-        $son = SubMerchant::withoutGlobalScope('is_son')->where('requestNo', $this->parameters['requestNo'])->first();
+        $son = YopSystemMerchant::where('requestNo', $this->parameters['requestNo'])->first();
 
         if (empty($son)) {
             exit('Merchant does not exist');
@@ -113,20 +97,20 @@ class YopmerchantController extends BaseController
 
     protected function merNetInStatus()
     {
-        $status = SubMerchant::INVALID;
+        $status = YopSystemMerchant::INVALID;
         if (!empty($this->parameters['merNetInStatus'])) {
             switch ($this->parameters['merNetInStatus']) {
                 case 'PROCESS_SUCCESS': //审核通过
-                    $status = SubMerchant::PROCESS_SUCCESS;
+                    $status = YopSystemMerchant::PROCESS_SUCCESS;
                     break;
                 case 'PROCESS_REJECT': //审核拒绝
-                    $status = SubMerchant::PROCESS_REJECT;
+                    $status = YopSystemMerchant::PROCESS_REJECT;
                     break;
                 case 'PROCESS_BACK': //审核回退
-                    $status = SubMerchant::PROCESS_BACK;
+                    $status = YopSystemMerchant::PROCESS_BACK;
                     break;
                 case 'PROCESSING_PRODUCT_INFO_SUCCESS': //审核中-产品提前开通
-                    $status = SubMerchant::PROCESSING_PRODUCT_INFO_SUCCESS;
+                    $status = YopSystemMerchant::PROCESSING_PRODUCT_INFO_SUCCESS;
                     break;
                 default:
                     break;
@@ -141,9 +125,9 @@ class YopmerchantController extends BaseController
     {
         \Log::debug('-------------聚合报备---------------', $this->parameters);
 
-        $this->yopResponse('聚合报备', $this->parameters, 'back');
+        $this->yopResponse('聚合报备:'.$this->parameters['merchantNo'], $this->parameters);
 
-        $son = SubMerchant::withoutGlobalScope('is_son')->isSon(0)->where('merchantNo', $this->parameters['merchantNo'])->first();
+        $son = YopSystemMerchant::where('merchantNo', $this->parameters['merchantNo'])->first();
 
         if (empty($son)) {
             exit('Merchant does not exist');
@@ -164,36 +148,37 @@ class YopmerchantController extends BaseController
 
     protected function reportStatusCode()
     {
-            switch ($this->parameters['reportStatusCode']) {
-                //报备成功
-                case '':
-                case 'NULL':
-                case '0000':
-                $report_status = SubMerchant::BACK_SUCCESS;
-                    break;
-                //处理中
-                case '1111':
-                case '1112':
-                case '3333':
-                case '710001':
-                $report_status = SubMerchant::BACK_WAIT;
-                    break;
-                //失败
-                default:
-                    $report_status = SubMerchant::BACK_FAIL;
-                    break;
-            }
+        switch ($this->parameters['reportStatusCode']) {
+            //报备成功
+            case '':
+            case 'NULL':
+            case '0000':
+                $report_status = YopSystemMerchant::BACK_SUCCESS;
+                break;
+            //处理中
+            case '1111':
+            case '1112':
+            case '3333':
+            case '710001':
+                $report_status = YopSystemMerchant::BACK_WAIT;
+                break;
+            //失败
+            default:
+                $report_status = YopSystemMerchant::BACK_FAIL;
+                break;
+        }
 
         return $report_status;
     }
 
-    protected function yopLog($desc,$error,$data)
+    protected function yopLog($desc, $data)
     {
-        \Yunshop\YopPay\common\YopLog::yopLog($desc, $error,$data);
+        YopLog::yopLog($desc, $data);
     }
 
-    protected function yopResponse($desc,$params, $type = 'unify')
+    protected function yopResponse($desc, $params)
     {
-        \Yunshop\YopPay\common\YopLog::yopResponse($desc, $params, $type);
+        YopLog::yopResponse($desc, $params);
     }
+
 }

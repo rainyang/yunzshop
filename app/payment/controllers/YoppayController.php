@@ -9,9 +9,11 @@
 namespace app\payment\controllers;
 
 use app\payment\PaymentController;
+use app\common\helpers\Url;
 use Illuminate\Support\Facades\DB;
 use app\common\models\AccountWechats;
 use app\common\services\Pay;
+use Yunshop\YopPay\models\YopOrderRefund;
 use Yunshop\YopPay\models\YopPayOrder;
 
 class YoppayController extends PaymentController
@@ -24,10 +26,10 @@ class YoppayController extends PaymentController
     {
         parent::__construct();
 
-        $this->set = DB::table('yz_yop_setting')->where('app_key', $_REQUEST['customerIdentification'])->first();
+        $this->set = $this->getMerchantNo();
 
         if (empty($this->set)) {
-            exit('应用AppKey不存在');
+            exit('商户不存在');
         }
         if (empty(\YunShop::app()->uniacid)) {
             \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $this->set['uniacid'];
@@ -41,14 +43,21 @@ class YoppayController extends PaymentController
         $this->dealWith();
     }
 
+    protected function getMerchantNo()
+    {
+        $app_key = $_REQUEST['customerIdentification'];
+        $merchant_no = substr($app_key,  strrpos($app_key, 'OPR:')+4);
+        $set = DB::table('yz_yop_setting')->where('merchant_no', $merchant_no)->first();
+
+        return $set;
+    }
+
     private function dealWith()
     {
         $yop_data = $_REQUEST['response'];
 
-        $this->log($this->set['app_key'], $yop_data);
-
         if ($yop_data) {
-            $response = \Yunshop\YopPay\common\Util\YopSignUtils::decrypt($yop_data, $this->set['private_key'], $this->set['yop_public_key']);
+            $response = \Yunshop\YopPay\common\Util\YopSignUtils::decrypt($yop_data, $this->set['son_private_key'], $this->set['yop_public_key']);
             $this->parameters = json_decode($response, true);
         }
     }
@@ -68,9 +77,14 @@ class YoppayController extends PaymentController
     //异步支付通知
     public function notifyUrl()
     {
-        $this->yopResponse('支付通知', $this->parameters, 'pay');
+        $this->log($this->set['merchant_no'], $this->parameters);
 
-        $this->savePayOrder();
+        $this->yopResponse('支付通知pay_sn:'.$this->getParameter('orderId'), $this->parameters, 'pay');
+
+        $pay_order = YopPayOrder::paySn($this->getParameter('orderId'))->first();
+        if (!$pay_order) {
+            $this->savePayOrder();
+        }
 
         $data = [
             'total_fee'    => floatval($this->getParameter('orderAmount')),
@@ -78,7 +92,7 @@ class YoppayController extends PaymentController
             'trade_no'     => $this->getParameter('uniqueOrderNo'),
             'unit'         => 'yuan',
             'pay_type'     => '易宝支付',
-            'pay_type_id'  => 25,
+            'pay_type_id'  => 26,
         ];
         $this->payResutl($data);
 
@@ -97,7 +111,9 @@ class YoppayController extends PaymentController
             'can_divide_amount' => $this->getParameter('payAmount'),
             'rate' =>  $this->set['rate'],
             'rate_amount'  => $this->rateAmount(),
-            'pay_at' => $this->getParameter('paySuccessDate'),
+            'pay_at' => strtotime($this->getParameter('paySuccessDate')),
+            'platform_type' => $this->platformType(),
+            'payment_product' => $this->paymentProduct(),
         ];
 
         $yop_order =  new YopPayOrder();
@@ -107,10 +123,70 @@ class YoppayController extends PaymentController
         $yop_order->save();
     }
 
+    //平台分类 支付类型
+    protected function platformType()
+    {
+
+        if (!empty($this->parameters['platformType'])) {
+            switch ($this->parameters['platformType']) {
+                case 'WECHAT': //微信
+                    $status = YopPayOrder::TYPE_WECHAT;
+                    break;
+                case 'ALIPAY': //支付宝
+                    $status = YopPayOrder::TYPE_ALIPAY;
+                    break;
+                case 'NET':
+                    $status = YopPayOrder::TYPE_NET;
+                    break;
+                case 'NCPAY':
+                    $status = YopPayOrder::TYPE_NCPAY;
+                    break;
+                case 'CFL':
+                    $status = YopPayOrder::TYPE_CFL;
+                    break;
+                default:
+                    $status = 0;
+                    break;
+            }
+        }
+
+        return $status;
+    }
+
+    //支付产品
+    protected function paymentProduct()
+    {
+
+        if (!empty($this->parameters['paymentProduct'])) {
+            switch ($this->parameters['paymentProduct']) {
+                case 'WECHAT_OPENID': //微信公众号
+                    $status = YopPayOrder::WECHAT_OPENID;
+                    break;
+                case 'SCCANPAY': //用户扫码
+                    $status = YopPayOrder::SCCANPAY;
+                    break;
+                case 'ZFB_SHH': //支付宝生活号
+                    $status = YopPayOrder::ZFB_SHH;
+                    break;
+                case 'ZF_ZHZF': //商户账户支付
+                    $status = YopPayOrder::ZF_ZHZF;
+                    break;
+                case 'EWALLETH5': //钱包H5支付
+                    $status = YopPayOrder::EWALLETH5;
+                    break;
+                default:
+                    $status = 0;
+                    break;
+            }
+        }
+
+        return $status;
+    }
+
     protected function rateAmount()
     {
         $rate =  $this->set['rate'];
-        $rate_amount = bcsub($this->getParameter('orderAmount'),bcmul($this->getParameter('orderAmount'), $rate, 2),2);
+        $rate_amount = bcmul($this->getParameter('orderAmount'), bcdiv($rate, 100,4), 2);
 
         return max($rate_amount, 0);
     }
@@ -118,7 +194,10 @@ class YoppayController extends PaymentController
     //同步通知
     public function redirectUrl()
     {
-
+//        $yop_data = $_REQUEST;
+        \Log::debug('---------------------------易宝同步通知----------------', $_REQUEST);
+        //$url = str_replace('https','http', Url::shopSchemeUrl("?menu#/member/payYes?i={$uniacid}"));
+        //redirect($url)->send();
     }
 
     //订单超时通知地址
@@ -137,9 +216,12 @@ class YoppayController extends PaymentController
             exit('Record does not exist');
         }
 
+        $this->yopResponse('订单清算pay_sn:'.$this->getParameter('orderId'), $this->parameters, 'cs');
+
+
         $data = [
             'status' => 1,
-            'cs_at' => $this->getParameter('csSuccessDate'),
+            'cs_at' => strtotime($this->getParameter('csSuccessDate')),
             'merchant_fee' => $this->getParameter('merchantFee'),
             'customer_fee' => $this->getParameter('customerFee'),
         ];
@@ -151,6 +233,67 @@ class YoppayController extends PaymentController
         echo 'SUCCESS';
         exit();
 
+    }
+
+    //订单退款
+    public function refundUrl()
+    {
+        \Log::debug('---------------------------易宝订单退款通知----------------');
+        $yop_refund = YopOrderRefund::getRefundAnnal($this->getParameter('orderId'), $this->getParameter('refundRequestId'))->first();
+
+        if (!$yop_refund) {
+            $this->yopLog('退款不存在pay_sn:'.$this->getParameter('orderId'),'易宝订单退款记录不存在',$this->parameters);
+            exit('Record does not exist');
+        }
+
+        $this->yopResponse('退款通知pay_sn:'.$this->getParameter('orderId'), $this->parameters, 'refund');
+
+        $yop_refund->status = $this->refundStatus();
+
+        if ($this->getParameter('refundSuccessDate')) {
+            $yop_refund->refund_at = strtotime($this->getParameter('refundSuccessDate'));
+        }
+
+        if ($this->getParameter('errorMessage')) {
+            $yop_refund->error_message = $this->getParameter('errorMessage');
+        }
+
+        $bool = $yop_refund->save();
+
+        if ($bool) {
+            $yop_order =  YopPayOrder::paySn($this->getParameter('orderId'))->first();
+            //$yop_order->can_divide_amount = bcsub($yop_order->can_divide_amount, $this->getParameter('refundAmount'),2);
+            $yop_order->refund_amount = bcadd($yop_order->refund_amount, $this->getParameter('refundAmount'), 2);
+            $yop_order->can_refund = YopOrderRefund::REFUND;
+            $yop_order->save();
+        }
+        
+        echo 'SUCCESS';
+        exit();
+    }
+
+    //支付产品
+    protected function refundStatus()
+    {
+        $status = 0;
+        if (!empty($this->parameters['status'])) {
+            switch ($this->parameters['status']) {
+                case 'FAILED':
+                    $status = YopOrderRefund::REFUND_FAILED;
+                    break;
+                case 'SUCCESS':
+                    $status = YopOrderRefund::REFUND_SUCCESS;
+                    break;
+                case 'CANCEL':
+                    $status = YopOrderRefund::REFUND_CANCEL;
+                    break;
+                default:
+                    $status = 0;
+                    break;
+            }
+        }
+
+        return $status;
     }
 
     /**
