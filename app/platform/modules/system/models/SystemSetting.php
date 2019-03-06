@@ -65,7 +65,7 @@ class SystemSetting extends BaseModel
             $result = \Cache::get($cache_name);
         }
         if ($result) {
-            $result['value'] = unserialize($result['value']);
+            $result = unserialize($result);
         }
 
         return $result;

@@ -491,4 +491,17 @@ class MergePayController extends ApiController
 
         return $this->successJson('成功', $data);
     }
+
+    public function yopPay()
+    {
+        if (!app('plugins')->isEnabled('yop-pay')) {
+            throw new AppException('商城未开启易宝支付未开启');
+        }
+
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+        $data = $orderPay->getPayResult(PayFactory::YOP);
+
+        return $this->successJson('成功', $data);
+
+    }
 }

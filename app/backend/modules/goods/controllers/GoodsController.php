@@ -346,7 +346,7 @@ class GoodsController extends BaseController
             !session()->has('flash_notification.message') && $this->error('商品修改失败');
         }
 
-        $goods_service = new EditGoodsService($request->id, \YunShop::request());
+        $goods_service->goods_model->type2 = $goods->type2;
 
         //dd($this->lang);
         return view('goods.goods', [
