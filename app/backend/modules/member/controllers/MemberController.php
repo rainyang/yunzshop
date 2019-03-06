@@ -321,13 +321,13 @@ class MemberController extends BaseController
 //            (new \app\common\services\operation\ShopMemberLog($shopInfoModel, 'update'));
             if ($shopInfoModel->save()) {
 
-                $member = Member::getMemberByUid($uid)->with('hasOneFans')->first();
                 if ($is_upgrade) {
                     //会员等级升级触发事件
-                    event(new MemberLevelUpgradeEvent($member));
+                    event(new MemberLevelUpgradeEvent($shopInfoModel));
                 }
 
                 if ($parame->data['agent']) {
+                    $member = Member::getMemberByUid($uid)->with('hasOneFans')->first();
                     event(new MemberRelationEvent($member));
                 }
 
