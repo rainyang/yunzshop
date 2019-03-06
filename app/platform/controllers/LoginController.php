@@ -86,7 +86,7 @@ class LoginController extends BaseController
 
         request()->session()->regenerate();
 
-        return redirect('/admin/login');
+        return $this->successJson('成功', []);
     }
 
     public function sendLoginResponse(Request $request)
