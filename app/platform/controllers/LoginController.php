@@ -10,6 +10,7 @@ namespace app\platform\controllers;
 
 
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
 
 class LoginController extends BaseController
 {
@@ -86,5 +87,16 @@ class LoginController extends BaseController
         request()->session()->regenerate();
 
         return redirect('/admin/login');
+    }
+
+    public function sendLoginResponse(Request $request)
+    {
+        $request->session()->regenerate();
+
+        $this->clearLoginAttempts($request);
+
+        return response()
+            ->json(['token' => 'yyy']);
+
     }
 }
