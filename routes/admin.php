@@ -21,6 +21,16 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams']], func
         Route::any('site', ['as' => 'admin.system.site', 'uses' => '\app\platform\modules\system\controllers\SiteController@index']);
         // 附件设置-全局设置
         Route::any('attachment', ['as' => 'admin.system.attachment', 'uses' => '\app\platform\modules\system\controllers\AttachmentController@index']);
+        // 系统升级
+        Route::any('update/index', ['as' => 'admin.system.update.index', 'uses' => '\app\platform\modules\system\controllers\UpdateController@index']);
+        // 检查更新
+        Route::get('update/verifyCheck', ['as' => 'admin.system.update.verifyCheck', 'uses' => '\app\platform\modules\system\controllers\UpdateController@verifyCheck']);
+        // 更新
+        Route::any('update/fileDownload', ['as' => 'admin.system.update.fileDownload', 'uses' => '\app\platform\modules\system\controllers\UpdateController@fileDownload']);
+        // 版权
+        Route::any('update/pirate', ['as' => 'admin.system.update.pirate', 'uses' => '\app\platform\modules\system\controllers\UpdateController@pirate']);
+        // 初始程序
+        Route::any('update/startDownload', ['as' => 'admin.system.update.startDownload', 'uses' => '\app\platform\modules\system\controllers\UpdateController@startDownload']);
 
     });
 
