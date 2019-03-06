@@ -39,6 +39,9 @@ class PayWayValidatorService
             case 'eup_pay':
                 $this->eupPayValidator();
                 break;
+            case 'yop_pay':
+                $this->yopPayValidator();
+                break;
             default:
                 throw new AppException('未知提现方式');
                 break;
@@ -71,6 +74,11 @@ class PayWayValidatorService
 
 
     private function eupPayValidator()
+    {
+
+    }
+
+    private function yopPayValidator()
     {
 
     }
