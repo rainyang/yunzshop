@@ -147,6 +147,13 @@ class MemberController extends ApiController
                     $data['inviteCode'] = 0;
                 }
 
+                //查看聚合支付是否开启
+                if (app('plugins')->isEnabled('yop-pay')) {
+                    $data['yop'] = 1;
+                }else{
+                    $data['yop'] = 0;
+                }
+
                 $data['is_open_hotel'] = app('plugins')->isEnabled('hotel') ? 1 : 0;
 
                 return $this->successJson('', $data);
@@ -1336,7 +1343,7 @@ class MemberController extends ApiController
             'tool' => ['separate'],
             'asset_equity' => ['integral','credit','asset'],
             'merchant' => ['supplier', 'kingtimes', 'hotel', 'store-cashier'],
-            'market' => ['ranking','article','clock_in','conference', 'video_demand', 'enter_goods', 'universal_card']
+            'market' => ['ranking','article','clock_in','conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code']
         ];
 
         $data   = [];
@@ -1599,6 +1606,7 @@ class MemberController extends ApiController
                     ];
                 }
             }
+            
             if (app('plugins')->isEnabled('hotel')) {
                 $hotel = \Yunshop\Hotel\common\models\Hotel::getHotelByUid(\YunShop::app()->getMemberId())->first();
                 if ($hotel) {
@@ -1633,19 +1641,23 @@ class MemberController extends ApiController
                 $arr['market'][] = $v;
             }
         }
-        //获取所有模板
-        $sets = \Yunshop\Designer\models\ViewSet::uniacid()->select('names', 'type')->get()->toArray();
 
-        if (!$sets) {
-            $arr['ViewSet'] = [];
-        } else {
+        if (app('plugins')->isEnabled('designer')) {
+            //获取所有模板
+            $sets = \Yunshop\Designer\models\ViewSet::uniacid()->select('names', 'type')->get()->toArray();
 
-            foreach ($sets as $k => $v) {
+            if (!$sets) {
+                $arr['ViewSet'] = [];
+            } else {
 
-                $arr['ViewSet'][$v['type']]['name'] = $v['names'];
-                $arr['ViewSet'][$v['type']]['name'] = $v['names'];
+                foreach ($sets as $k => $v) {
+
+                    $arr['ViewSet'][$v['type']]['name'] = $v['names'];
+                    $arr['ViewSet'][$v['type']]['name'] = $v['names'];
+                }
             }
         }
+
         
         return $this->successJson('ok', $arr);
     }
