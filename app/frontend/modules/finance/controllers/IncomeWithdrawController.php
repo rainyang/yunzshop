@@ -322,22 +322,22 @@ class IncomeWithdrawController extends ApiController
             $max = $this->getWithdrawLog($income['class']);
             if ($this->getIncomeAmountMax() === "") {
                 if ($this->getIncomeTimeMax() === "") {
-                    $can = true;
+                    $can = $can;
                 }else{
                     if ($max['max_time'] >= $this->getIncomeTimeMax()){
                         $can = false;
                     }else{
-                        $can = true;
+                        $can = $can;
                     }
                 }
             }elseif ($this->getIncomeTimeMax() === ""){
                 if ($this->getIncomeAmountMax() === "") {
-                    $can = true;
+                    $can = $can;
                 }else{
                     if ($max['max_amount']+$this->withdraw_amounts > $this->getIncomeAmountMax()){
                         $can = false;
                     }else{
-                        $can = true;
+                        $can = $can;
                     }
                 }
             }else{
@@ -346,7 +346,7 @@ class IncomeWithdrawController extends ApiController
                 }elseif ($max['max_amount']+$this->withdraw_amounts > $this->getIncomeAmountMax()) {
                     $can = false;
                 }else{
-                    $can = true;
+                    $can = $can;
                 }
             }
         }
