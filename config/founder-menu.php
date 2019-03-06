@@ -84,7 +84,7 @@ return [
         'name'              => '队列管理',
         'url'               => 'supervisord.supervisord',
         'url_params'        => '',
-        'permit'            => 1,
+        'permit'            => 0,
         'menu'              => 1,
         'icon'              => 'fa-history',
         'sort'              => '5',
