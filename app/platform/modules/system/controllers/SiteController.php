@@ -20,15 +20,29 @@ class SiteController extends BaseController
         if ($set_data) {
             $site = SystemSetting::settingSave($set_data, 'copyright', 'system_copyright');
             if ($site) {
-                return $this->commonRedirect('/admin/system/site', '成功');
+                return \Response::json([
+                    'result' => 1,
+                    'msg' => '成功',
+                    'data' => ''
+                ]);
             } else {
-                return $this->commonRedirect('/admin/system/site', '失败', 'failed');
+                return \Response::json([
+                    'result' => 0,
+                    'msg' => '失败',
+                    'data' => ''
+                ]);
             }
         }
 
-        return view('system.site', [
-            'setdata' => $copyright
+        return \Response::json([
+            'result' => 1,
+            'msg' => '成功',
+            'data' => $copyright
         ]);
+
+//        return view('system.site', [
+//            'setdata' =>
+//        ]);
 
         /* 站点设置字段名 */
         // 是否关闭站点 status
