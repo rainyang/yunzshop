@@ -8,16 +8,10 @@
 
 namespace app\platform\controllers;
 
-use app\common\traits\JsonTrait;
-use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Routing\Controller;
-use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use app\common\components\BaseController as Controller;
 
 class BaseController extends Controller
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests, JsonTrait;
-
     /*
      * 基础跳转公共方法
      * @param 1 $path 跳转路径
