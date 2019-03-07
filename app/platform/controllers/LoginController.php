@@ -164,7 +164,7 @@ class LoginController extends BaseController
 
         $this->clearLoginAttempts($request);
 
-        return $this->successJson('成功', []);
+        return $this->successJson('成功', ['user' => $this->guard()->user()]);
 
     }
 
