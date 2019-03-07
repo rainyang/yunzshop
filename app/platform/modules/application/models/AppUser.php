@@ -13,6 +13,7 @@ class AppUser extends BaseModel
 	protected $table = 'app_user';
 	protected $search_fields = [''];
   	protected $guarded = [''];
+    protected $hidden = ['deleted_at', 'updated_at', 'created_at'];
   	// protected $dates = ['deleted_at'];
 
 

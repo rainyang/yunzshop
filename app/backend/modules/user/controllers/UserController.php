@@ -11,7 +11,7 @@ namespace app\backend\modules\user\controllers;
 
 use app\backend\modules\user\services\PermissionService;
 use app\common\components\BaseController;
-    use app\common\helpers\PaginationHelper;
+use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
 use app\common\models\user\User;
 use app\common\models\user\YzRole;
