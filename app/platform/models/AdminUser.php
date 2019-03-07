@@ -14,7 +14,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class AdminUser extends Authenticatable
 {
     use Notifiable;
-    protected $table = 'admin_users';
+    protected $table = 'yz_admin_users';
 
     /**
      * The attributes that are mass assignable.
@@ -33,7 +33,7 @@ class AdminUser extends Authenticatable
     //用户角色
     public function roles()
     {
-        return $this->belongsToMany(Role::class, 'admin_role_user', 'user_id', 'role_id');
+        return $this->belongsToMany(Role::class, 'yz_admin_role_user', 'user_id', 'role_id');
     }
 
     // 判断用户是否具有某个角色
