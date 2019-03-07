@@ -392,7 +392,7 @@ class UpdateController extends BaseController
         }
 
         $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
-        Setting::get('auth.key');
+        \app\common\facades\Setting::get('auth.key');
         $update->setBasicAuth($key, $secret);
 
         //Check for a new update
