@@ -308,8 +308,11 @@ class MemberController extends BaseController
             $yz['status'] =  0;
         }
 
+        //判断会员等级是否改变
         $is_upgrade = false;
-        if ($shopInfoModel->level_id != $yz['level_id']) {
+
+        $new_level = MemberLevel::find($yz['level_id'])->level;
+        if ($shopInfoModel->level_id != $yz['level_id'] && $new_level > $shopInfoModel->level->level) {
             $is_upgrade = true;
         }
 
@@ -852,7 +855,7 @@ class MemberController extends BaseController
     {
         $total = Cache::get('queque_wechat_total');
         $page  = Cache::get('queque_wechat_page');
-\Log::debug('--------ajax total-------', $total);
+        \Log::debug('--------ajax total-------', $total);
         \Log::debug('--------ajax page-------', $page);
         if ($total == $page) {
             return json_encode(['status' => 1]);
