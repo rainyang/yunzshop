@@ -8,8 +8,9 @@
 namespace app\platform\modules\system\models;
 
 
-use Illuminate\Database\Eloquent\Model;
 use app\common\models\BaseModel;
+use app\common\helpers\Cache;
+
 
 class SystemSetting extends BaseModel
 {
@@ -44,7 +45,7 @@ class SystemSetting extends BaseModel
             $result = self::where('key', $key)->update(['value' => $data]);
         }
         if ($result) {
-            \Cache::put($cache_name, $data, 3600);
+            Cache::put($cache_name, $data, 3600);
         }
 
         return $result;
@@ -58,9 +59,9 @@ class SystemSetting extends BaseModel
      */
     public function settingLoad($key = '', $cache_name = '')
     {
-        if (!\Cache::has($cache_name)) {
+        if (!Cache::has($cache_name)) {
             $result = self::getKeyList($key);
-            \Cache::put($cache_name, $result, 3600);
+            Cache::put($cache_name, $result, 3600);
         } else {
             $result = \Cache::get($cache_name);
         }

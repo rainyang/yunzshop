@@ -4,13 +4,13 @@ namespace app\platform\modules\application\controllers;
 
 use app\platform\controllers\BaseController;
 use app\platform\modules\application\models\UniacidApp;
+use app\common\helpers\Cache;
 use app\common\helpers\PaginationHelper;
 
 class ApplicationController extends BaseController
 {
     protected $key = 'application';
 
-   
     public function index()
     {
         $search = request()->search;
@@ -21,23 +21,20 @@ class ApplicationController extends BaseController
             
             $app = $app->search($search);
 
-            $list = $app->orderBy('id', 'desc')->limit((int)request()->current_page * 15 ,  15)->get();
 
-        } else {
+        } 
+        // else {
+            $list = $app->orderBy('id', 'desc')->paginate(5)->toArray();
 
-            $total = \Cache::get($this->key.'_num');
-            
-            for($i = 1; $i< $total; $i++ ) {
+//            $total = Cache::get($this->key.'_num');
+//
+//            for($i = 1; $i< $total; $i++ ) {
+//
+//               $list[] = Cache::paginate(request()->input('pagesize',20))->get($this->key.':'.$i);
+//            }
+        // }
 
-               $list[] = \Cache::get($this->key.':'.$i);
-            }
-        }
-
-        return View('admin.application.index', [
-            'list' => $list,
-            'totalPage' => ceil(count($list)/15),
-            'perPage' => 15
-        ]);
+        return $this->successJson('获取成功',  $list);
     }
 
     public function add()
@@ -59,19 +56,21 @@ class ApplicationController extends BaseController
             } else {
 
                 if ($app->save()) {
+                    
+                    // $id = $app->insertGetId();
                     //更新缓存
-                    // \Cache::put($this->key.':'. $app->insertGetId(), $app->find($app->insertGetId()));
-                    // \Cache::put($this->key.'_num', $app->insertGetId());
+                    // Cache::put($this->key.':'. $id, $app->find($id));
+                    // Cache::put($this->key.'_num', $id);
 
-                    return $this->backMsg(1, '添加成功');
+                    return $this->successJson('添加成功');
 
                 } else {
 
-                    return $this->backMsg(0, '添加失败');
+                    return $this->errorJson('添加失败');
                 }
             }
         }
-        return View('admin.application.form');
+        // return View('admin.application.form');
     }
 
     public function update()
@@ -83,7 +82,7 @@ class ApplicationController extends BaseController
         $info = $app->find($id);
 
         if (!$id || !$info) {
-            return $this->backMsg(0, '请选择要修改的应用');
+            return $this->errorJson('请选择要修改的应用');
         }
         
         if (request()->input()) {
@@ -104,17 +103,16 @@ class ApplicationController extends BaseController
 
                 if ($app->where('id', $id)->update($data)) {
                     //更新缓存
-                    \Cache::put($this->key.':'. $id, $app->find($id));
+                    Cache::put($this->key.':'. $id, $app->find($id), $data['validity_time']);
 
-                    return $this->backMsg(1, '修改成功');
+                    return $this->successJson('修改成功');
                 } else {
                     
-                    return $this->backMsg(0, '修改失败');
+                    return $this->errorJson('修改失败');
                 }
             }
         }
-
-        return View('admin.application.form', ['item'=>$info]);
+        return $this->successJson('成功获取', ['item'=>$info]);
     }
 
     //加入回收站 删除
@@ -125,7 +123,7 @@ class ApplicationController extends BaseController
         $info = UniacidApp::withTrashed()->find($id);
 
         if (!$id || !$info) {
-            return $this->backMsg(0, '请选择要修改的应用');
+            return $this->errorJson('请选择要修改的应用');
         }
         // dd($info->deleted_at);
         if ($info->deleted_at) {
@@ -133,16 +131,16 @@ class ApplicationController extends BaseController
            //强制删除
             $info->forceDelete();           
         
-            \Cache::forget($this->key.':'.$id);
+            Cache::forget($this->key.':'.$id);
 
         } else {
 
             $info->delete();
 
-            \Cache::put($this->key.':'.$id, UniacidApp::find($id));
+            Cache::put($this->key.':'.$id, UniacidApp::find($id));
         }
 
-        return $this->backMsg(1, 'OK');
+        return $this->successJson('OK');
     }
 
     //启用禁用或恢复应用
@@ -153,7 +151,7 @@ class ApplicationController extends BaseController
         $info = UniacidApp::withTrashed()->find($id);
 
         if (!$id || !$info) {
-            return $this->backMsg(0, '请选择要修改的应用');
+            return $this->errorJson('请选择要修改的应用');
         }
 
         if (request()->status) {
@@ -169,17 +167,17 @@ class ApplicationController extends BaseController
         if ($info->deleted_at) {
 
             //从回收站中恢复应用
-            $res = $app->withTrashed()->where('id', $id)->restore();
+            $res = UniacidApp::withTrashed()->where('id', $id)->restore();
             // dd('2');
         }
 
         if ($res) {
             //更新缓存
-            \Cache::put($this->key.':'.$id, UniacidApp::find($id));
+            Cache::put($this->key.':'.$id, UniacidApp::find($id), $info->validity_time);
 
-            return $this->backMsg(1, '操作成功');
+            return $this->successJson('操作成功');
         } else {
-            return $this->backMsg(0, '操作失败');
+            return $this->errorJson('操作失败');
         }
        
     }
@@ -187,15 +185,12 @@ class ApplicationController extends BaseController
     //回收站 列表
     public function recycle()
     {
-        $list = UniacidApp::onlyTrashed()->orderBy('id', 'desc')
-            ->limit((int)request()->current_page *15, 15)
-            ->get();
+        $list = UniacidApp::onlyTrashed()
+            ->orderBy('id', 'desc')
+            ->paginate(20)
+            ->toArray();
 
-        // return View('admin/application/recycle', [
-        //     'list' => $list,
-        //     'totalPage' => ceil(count($list)/15),
-        //     'perPage' => 15
-        // ]);
+        return $this->successJson('获取成功', $list);
     }
 
     private function fillData($data)
@@ -215,9 +210,9 @@ class ApplicationController extends BaseController
         ];
     }
 
-    private function backMsg(int $status, string $msg, mix $data = null)
-    {
-        return json_encode(array('result'=>$status, 'msg'=>$msg, 'data'=>$data));
-    }
+    // private function backMsg(int $status, string $msg, mix $data = null)
+    // {
+        // return json_encode(array('result'=>$status, 'msg'=>$msg, 'data'=>$data));
+    // }
 
 }

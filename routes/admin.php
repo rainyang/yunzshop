@@ -16,22 +16,24 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams']], func
     Route::get('index', ['as' => 'admin.index', 'uses' => '\app\platform\controllers\IndexController@index']);
 
     // 站点管理
-    Route::group(['prefix' => 'system'], function (){
+    Route::group(['prefix' => 'system', 'namespace' => 'platform\modules\system\controllers'], function (){
         // 站点设置
-        Route::any('site', ['as' => 'admin.system.site', 'uses' => '\app\platform\modules\system\controllers\SiteController@index']);
+        Route::any('site', 'SiteController@index');
         // 附件设置-全局设置
-        Route::any('attachment', ['as' => 'admin.system.attachment', 'uses' => '\app\platform\modules\system\controllers\AttachmentController@index']);
+        Route::any('attachment', 'AttachmentController@index');
         // 系统升级
-        Route::any('update/index', ['as' => 'admin.system.update.index', 'uses' => '\app\platform\modules\system\controllers\UpdateController@index']);
+        Route::any('update/index', 'UpdateController@index');
         // 检查更新
-        Route::get('update/verifyCheck', ['as' => 'admin.system.update.verifyCheck', 'uses' => '\app\platform\modules\system\controllers\UpdateController@verifyCheck']);
+        Route::get('update/verifyCheck', 'UpdateController@verifyCheck');
         // 更新
-        Route::any('update/fileDownload', ['as' => 'admin.system.update.fileDownload', 'uses' => '\app\platform\modules\system\controllers\UpdateController@fileDownload']);
+        Route::any('update/fileDownload', 'UpdateController@fileDownload');
         // 版权
-        Route::any('update/pirate', ['as' => 'admin.system.update.pirate', 'uses' => '\app\platform\modules\system\controllers\UpdateController@pirate']);
+        Route::any('update/pirate', 'UpdateController@pirate');
         // 初始程序
-        Route::any('update/startDownload', ['as' => 'admin.system.update.startDownload', 'uses' => '\app\platform\modules\system\controllers\UpdateController@startDownload']);
-
+        Route::any('update/startDownload', 'UpdateController@startDownload');
+        /* 上传 */
+        // 图片
+        Route::any('upload/image', 'UploadController@image');
     });
 
     Route::group(['namespace' => 'platform\modules\application\controllers'], function () {
@@ -49,9 +51,9 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams']], func
 		Route::get('application/recycle/', 'ApplicationController@recycle');
 
 		//平台用户管理
-		Route::get('appuser/', 'AppuserController@index');
+		// Route::get('appuser/', 'AppuserController@index');
 		Route::post('appuser/{id}', 'AppuserController@update');
-		Route::post('appuser/', 'AppuserController@add');
+		Route::get('appuser/', 'AppuserController@add');
 		Route::get('appuser/{id}', 'AppuserController@delete');
 	});
 });
