@@ -134,6 +134,10 @@ class EditGoodsService
             foreach($goods_categorys = $this->goods_model->hasManyGoodsCategory->toArray() as $goods_category){
                 $this->catetory_menus[] = CategoryService::getCategoryMultiMenu(['catlevel' => Setting::get('shop.category')['cat_level'], 'ids' => explode(",", $goods_category['category_ids'])]);
             }
+
+        } else {
+            $this->catetory_menus[] = CategoryService::getCategoryMultiMenu(['catlevel' => Setting::get('shop.category')['cat_level'], 'ids' => []]);
         }
+
     }
 }

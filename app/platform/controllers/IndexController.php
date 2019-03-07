@@ -21,6 +21,10 @@ class IndexController extends BaseController
 
         Cookie::queue('user_id', $user->id);
         Cookie::queue('user_name', $user->name);
-        echo 'base index';
+
+        return response()->json([
+            'message' => 'Successful created',
+            'data'    => ['user' => $user, 'token' => 'wwww']
+        ]);
     }
 }
