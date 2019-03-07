@@ -78,7 +78,7 @@ class LoginController extends BaseController
      */
     public function showLoginForm()
     {
-        return view('admin.auth.login');
+        //return view('admin.auth.login');
     }
     /**
      * 自定义认证驱动

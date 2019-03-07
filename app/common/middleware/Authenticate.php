@@ -28,7 +28,7 @@ class Authenticate
                 //return response('Unauthorized.', 401);
             } else {
                 $login_path = [
-                    'admin' => '/admin/login',
+                    'admin' => '/#/login',
                 ];
                 $url = empty($guard) ? '/login' : (isset($login_path[$guard]) ? $login_path[$guard] : '/login');
 
