@@ -13,8 +13,8 @@ class CreateAdminRoleUserTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('admin_role_user')) {
-            Schema::create('admin_role_user', function (Blueprint $table) {
+        if (!Schema::hasTable('yz_admin_role_user')) {
+            Schema::create('yz_admin_role_user', function (Blueprint $table) {
                 $table->integer('role_id');
                 $table->integer('user_id');
             });
@@ -28,6 +28,6 @@ class CreateAdminRoleUserTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('admin_role_user');
+        Schema::dropIfExists('yz_admin_role_user');
     }
 }

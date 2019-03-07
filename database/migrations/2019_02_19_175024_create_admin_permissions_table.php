@@ -13,8 +13,8 @@ class CreateAdminPermissionsTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('admin_permissions')) {
-            Schema::create('admin_permissions', function (Blueprint $table) {
+        if (!Schema::hasTable('yz_admin_permissions')) {
+            Schema::create('yz_admin_permissions', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('name')->comment('权限名');
                 $table->string('label')->comment('权限解释名称');
@@ -33,6 +33,6 @@ class CreateAdminPermissionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('admin_permissions');
+        Schema::dropIfExists('yz_admin_permissions');
     }
 }

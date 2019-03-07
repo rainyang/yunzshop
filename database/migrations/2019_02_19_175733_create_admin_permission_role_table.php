@@ -13,8 +13,8 @@ class CreateAdminPermissionRoleTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('admin_permission_role')) {
-            Schema::create('admin_permission_role', function (Blueprint $table) {
+        if (!Schema::hasTable('yz_admin_permission_role')) {
+            Schema::create('yz_admin_permission_role', function (Blueprint $table) {
                 $table->integer('permission_id');
                 $table->integer('role_id');
             });
@@ -28,6 +28,6 @@ class CreateAdminPermissionRoleTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('admin_permission_role');
+        Schema::dropIfExists('yz_admin_permission_role');
     }
 }

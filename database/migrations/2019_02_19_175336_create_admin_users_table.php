@@ -13,8 +13,8 @@ class CreateAdminUsersTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('admin_users')) {
-            Schema::create('admin_users', function (Blueprint $table) {
+        if (!Schema::hasTable('yz_admin_users')) {
+            Schema::create('yz_admin_users', function (Blueprint $table) {
                 $table->increments('id')->comment('管理员用户表ID');
                 $table->string('name');
                 $table->string('email')->unique();
@@ -32,6 +32,6 @@ class CreateAdminUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('admin_users');
+        Schema::dropIfExists('yz_admin_users');
     }
 }
