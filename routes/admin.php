@@ -51,9 +51,9 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams']], func
 		Route::get('application/recycle/', 'ApplicationController@recycle');
 
 		//平台用户管理
-		Route::get('appuser/', 'AppuserController@index');
+		// Route::get('appuser/', 'AppuserController@index');
 		Route::post('appuser/{id}', 'AppuserController@update');
-		Route::post('appuser/', 'AppuserController@add');
+		Route::get('appuser/', 'AppuserController@add');
 		Route::get('appuser/{id}', 'AppuserController@delete');
 	});
 });

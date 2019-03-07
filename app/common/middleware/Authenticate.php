@@ -9,10 +9,13 @@
 namespace app\common\middleware;
 
 
+use app\common\exceptions\MemberNotLoginException;
+use app\common\traits\JsonTrait;
 use Illuminate\Support\Facades\Auth;
 
 class Authenticate
 {
+    use JsonTrait;
     /**
      * Handle an incoming request.
      *
@@ -28,11 +31,11 @@ class Authenticate
                 //return response('Unauthorized.', 401);
             } else {
                 $login_path = [
-                    'admin' => '/admin/login',
+                    'admin' => '/#/login',
                 ];
                 $url = empty($guard) ? '/login' : (isset($login_path[$guard]) ? $login_path[$guard] : '/login');
 
-                return redirect()->guest($url);
+                return $this->successJson('请登录', ['login_status' => 1, 'login_url' => $url]);
             }
         }
 
