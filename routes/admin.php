@@ -31,7 +31,9 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams']], func
         Route::any('update/pirate', ['as' => 'admin.system.update.pirate', 'uses' => '\app\platform\modules\system\controllers\UpdateController@pirate']);
         // 初始程序
         Route::any('update/startDownload', ['as' => 'admin.system.update.startDownload', 'uses' => '\app\platform\modules\system\controllers\UpdateController@startDownload']);
-
+        /* 上传 */
+        // 图片
+        Route::any('upload/image', ['as' => 'admin.system.upload.image', 'uses' => '\app\platform\modules\system\controllers\UploadController@image']);
     });
 
     Route::group(['namespace' => 'platform\modules\application\controllers'], function () {
