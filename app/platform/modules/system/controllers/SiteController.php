@@ -15,7 +15,7 @@ class SiteController extends BaseController
     public function index()
     {
         $set_data = request()->setdata;
-        $copyright = SystemSetting::settingLoad('kk', 'kk');
+        $copyright = SystemSetting::settingLoad('copyright', 'system_copyright');
 
         if ($set_data) {
             $site = SystemSetting::settingSave($set_data, 'copyright', 'system_copyright');
