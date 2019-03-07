@@ -183,7 +183,7 @@ class BalanceWithdrawController extends BalanceController
     private function getWithdrawData()
     {
         $dalance=Setting::get('shop.shop');
-        $dalance['credit']=$dalance['credit']?"余额":$dalance['credit'];
+        $dalance['credit']=empty($dalance['credit'])?"余额":$dalance['credit'];
         return array(
             'withdraw_sn'           => Withdraw::createOrderSn('WS','withdraw_sn'),
             'uniacid'               => $this->uniacid,
