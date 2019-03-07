@@ -129,7 +129,7 @@ class UpdateController extends BaseController
         $filter_file = ['composer.json', 'composer.lock', 'README.md'];
         $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
 
-        $result = ['result' => 0, 'msg' => '网络请求超时', 'last_version' => ''];
+        $result = ['result' => 0, 'msg' => '网络请求超时', 'version' => ''];
         $key = $this->setting()['key'];
         $secret = $this->setting()['secret'];
         if(!$key || !$secret) {
@@ -224,7 +224,7 @@ class UpdateController extends BaseController
                 preg_match('/"[\d\.]+"/', file_get_contents(base_path('config/') . 'version.php'), $match);
                 $version = $match ? trim($match[0], '"') : '1.0.0';
 
-                $result = ['result' => 99, 'msg' => '', 'last_version' => $version];
+                $result = ['result' => 99, 'msg' => '', 'version' => $version];
             }
         }
 

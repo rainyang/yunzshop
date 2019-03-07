@@ -20,32 +20,16 @@ class SiteController extends BaseController
         if ($set_data) {
             $site = SystemSetting::settingSave($set_data, 'copyright', 'system_copyright');
             if ($site) {
-                return \Response::json([
-                    'result' => 1,
-                    'msg' => '成功',
-                    'data' => ''
-                ]);
+                return $this->successJson('成功', '');
             } else {
-                return \Response::json([
-                    'result' => 0,
-                    'msg' => '失败',
-                    'data' => ''
-                ]);
+                return $this->errorJson('失败', '');
             }
         }
 
         if ($copyright) {
-            return \Response::json([
-                'result' => 1,
-                'msg' => '成功',
-                'data' => $copyright
-            ]);
+            return $this->successJson('成功', $copyright);
         } else {
-            return \Response::json([
-                'result' => 0,
-                'msg' => '失败',
-                'data' => ''
-            ]);
+            return $this->errorJson('失败', $copyright);
         }
     }
 }
