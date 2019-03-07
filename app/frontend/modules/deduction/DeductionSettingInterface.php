@@ -28,7 +28,9 @@ interface DeductionSettingInterface
     /**
      * @return bool 已禁用
      */
-    public function isDisable();
+    public function isMaxDisable();
+    public function isMinDisable();
+    public function isDispatchDisable();
 
     public function getMaxFixedAmount();
     public function getMaxPriceProportion();
