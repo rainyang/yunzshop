@@ -6,6 +6,11 @@ use app\platform\controllers\BaseController;
 use app\platform\modules\application\models\UniacidApp;
 use app\common\helpers\Cache;
 use app\common\helpers\PaginationHelper;
+// use Illuminate\Support\Facades\Storage;
+use app\common\services\Storage;
+use Intervention\Image\File;
+use app\common\services\UploadStrategy;
+use  Illuminate\Filesystem\FilesystemManager;
 
 class ApplicationController extends BaseController
 {
@@ -70,7 +75,7 @@ class ApplicationController extends BaseController
                 }
             }
         }
-        // return View('admin.application.form');
+        return View('admin.application.form');
     }
 
     public function update()
@@ -82,7 +87,7 @@ class ApplicationController extends BaseController
         $info = $app->find($id);
 
         if (!$id || !$info) {
-            return $this->errorJson('请选择要修改的应用');
+            return $this->errorJson('请选择应用');
         }
         
         if (request()->input()) {
@@ -112,7 +117,7 @@ class ApplicationController extends BaseController
                 }
             }
         }
-        return $this->successJson('成功获取', ['item'=>$info]);
+        return $this->successJson('成功获取', $info);
     }
 
     //加入回收站 删除
@@ -129,18 +134,22 @@ class ApplicationController extends BaseController
         if ($info->deleted_at) {
             
            //强制删除
-            $info->forceDelete();           
+            if (!$info->forceDelete()) {
+                return $this->errorJson('操作失败');            
+            }
         
             Cache::forget($this->key.':'.$id);
 
         } else {
 
-            $info->delete();
+            if(!$info->delete()){
+                return $this->errorJson('操作失败');            
+            }
 
             Cache::put($this->key.':'.$id, UniacidApp::find($id));
         }
 
-        return $this->successJson('OK');
+        return $this->successJson('操作成功');
     }
 
     //启用禁用或恢复应用
@@ -190,14 +199,19 @@ class ApplicationController extends BaseController
             ->paginate(20)
             ->toArray();
 
-        return $this->successJson('获取成功', $list);
+        if ($list) {
+
+            return $this->successJson('获取成功', $list);
+        } else {
+            return $this->errorJson('获取失败,暂无数据');
+        }
     }
 
     private function fillData($data)
     {
         return [
             'img' => request()->img ?  : 'http://www.baidu.com',
-            'url' => request()->url ?  : 'http://www.jd.com',
+            'url' => request()->url,
             'name' => request()->name ?  : 'test',
             'kind' => request()->kind ?  : '',
             'type' => request()->type ?  : 2,
@@ -206,13 +220,8 @@ class ApplicationController extends BaseController
             'status' => request()->status ?  : '',
             // 'uniacid' => $app->insertGetId() + 1,
             'version' => request()->version ?  : 1.0,
-            'validity_time' => request()->validity_time ?  : time()+(3600*24*30),
+            'validity_time' => request()->validity_time ?  : 0,
         ];
     }
-
-    // private function backMsg(int $status, string $msg, mix $data = null)
-    // {
-        // return json_encode(array('result'=>$status, 'msg'=>$msg, 'data'=>$data));
-    // }
 
 }
