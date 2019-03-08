@@ -163,6 +163,7 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
                     break;
                 default:
                     $this->orderGoodsDeductionMaxAmount = new Invalid($this->orderGoods, $this->getGoodsDeduction());
+                    trace_log()->deduction("订单抵扣", "{$this->name} 商品{$this->orderGoods->goods_id}最大限额设置无效");
                     break;
             }
         }

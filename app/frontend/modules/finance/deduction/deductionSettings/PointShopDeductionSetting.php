@@ -26,7 +26,17 @@ class PointShopDeductionSetting implements DeductionSettingInterface
         return \Setting::get('point.set.point_freight');
     }
 
-    public function isDisable()
+    public function isMaxDisable()
+    {
+        return !\Setting::get('point.set.point_deduct');
+    }
+
+    public function isMinDisable()
+    {
+        return !\Setting::get('point.set.point_deduct');
+    }
+
+    public function isDispatchDisable()
     {
         return !\Setting::get('point.set.point_deduct');
     }
