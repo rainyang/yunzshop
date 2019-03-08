@@ -43,36 +43,32 @@ class ApplicationController extends BaseController
     {
         $app = new UniacidApp();
 
-        if (request()->input()) {
+        $data = $this->fillData(request()->input());
 
-            $data = $this->fillData(request()->input());
+        $app->fill($data);
 
-            $app->fill($data);
+        $validator = $app->validator();
 
-            $validator = $app->validator();
+        if ($validator->fails()) {
+        
+            // return $this->error($validator->messages());
+        
+        } else {
 
-            if ($validator->fails()) {
-            
-                // return $this->error($validator->messages());
-            
+            if ($app->save()) {
+                
+                // $id = $app->insertGetId();
+                //更新缓存
+                // Cache::put($this->key.':'. $id, $app->find($id));
+                // Cache::put($this->key.'_num', $id);
+
+                return $this->successJson('添加成功');
+
             } else {
 
-                if ($app->save()) {
-                    
-                    // $id = $app->insertGetId();
-                    //更新缓存
-                    // Cache::put($this->key.':'. $id, $app->find($id));
-                    // Cache::put($this->key.'_num', $id);
-
-                    return $this->successJson('添加成功');
-
-                } else {
-
-                    return $this->errorJson('添加失败');
-                }
+                return $this->errorJson('添加失败');
             }
         }
-        // return View('admin.application.form');
     }
 
     public function update()
@@ -251,18 +247,18 @@ class ApplicationController extends BaseController
             
             $extPath = $extPath.'\\'.date('Ymd');
 
-                $filename = date('Ymd').uniqid().rand(1,9999).'.'.$ext;
+            $filename = date('Ymd').uniqid().rand(1, 9999).'.'.$ext;
             \Log::info('up_filename', $filename);
 
-                $url = $path.'\\'.$filename;
+            $url = $path.'\\'.$filename;
             \Log::info('up_url', $url);
                
-                Storage::put($url, $content);
+            Storage::put($url, $content);
 
-                $res = \Storage::url();
+            $res = \Storage::url();
             \Log::info('up_res', $res);
 
-                return $this->successJson('上传成功', asset($res.'app/public/'.$filename));
+            return $this->successJson('上传成功', asset($res.'app/public/'.$filename));
     }
 
     public function temp()
