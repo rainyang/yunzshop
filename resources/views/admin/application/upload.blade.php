@@ -39,10 +39,10 @@
 
 <body> 
     <form class="form-horizontal" method="post" enctype="multipart/form-data" action="/index.php/admin/application/upload/">
-    <input type="file" value="img" id="demo_input" /> 
+    <input type="file" value="file" id="demo_input" /> 
     <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
-    <textarea name="img" id="result" rows=30 cols=300></textarea> 
+    <textarea name="file" id="result" rows=30 cols=300></textarea> 
     <p id="img_area"></p> 
     <input type="submit" value="提交">
 </form>

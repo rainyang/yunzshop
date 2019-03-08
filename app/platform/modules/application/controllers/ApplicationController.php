@@ -222,7 +222,7 @@ class ApplicationController extends BaseController
             header('Access-Control-Allow-Origin:*');
 
             // $file = request()->file();
-            $file = $_POST['img'];
+            $file = $_POST['file'];
 
             \Log::info('file_content', $file);
 
@@ -240,23 +240,32 @@ class ApplicationController extends BaseController
             $extPath = str_replace(substr($path, -7, 1), "\\", $path);
             \Log::info('up_extPath', $extPath);
 
-            if (!file_exists($extPath)) {
+
+            if (!file_exists($extPath) || !is_dir($extPath)) {
                 
-                mkdir($extPath);
+                // mkdir($extPath);
+                \Log::info('upload_dir_not_exists');
+                return false;
             }
+            
+            chmod($extPath, 0777);
+
+            $ch = opendir($extPath);
             
             $extPath = $extPath.'\\'.date('Ymd');
 
             $filename = date('Ymd').uniqid().rand(1, 9999).'.'.$ext;
-            \Log::info('up_filename', $filename);
+                \Log::info('up_filename', $filename);
 
             $url = $path.'\\'.$filename;
-            \Log::info('up_url', $url);
+                \Log::info('up_url', $url);
                
             Storage::put($url, $content);
 
             $res = \Storage::url();
-            \Log::info('up_res', $res);
+                \Log::info('up_res', $res);
+            
+            closedir($ch);
 
             return $this->successJson('上传成功', asset($res.'app/public/'.$filename));
     }
