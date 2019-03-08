@@ -93,6 +93,7 @@ class IncomeWithdrawController extends ApiController
                 $this->special_poundage_rate = 0;
                 $this->special_service_tax_rate = 0;
             } else {
+                $this->setSpecialPoundageType();
                 $this->setPoundageRate($income['type']);
                 $this->setServiceTaxRate($income['type']);
                 $this->setSpecialPoundageRate();
@@ -103,7 +104,7 @@ class IncomeWithdrawController extends ApiController
             $income_data[] = $this->getItemData($key, $income);
         }
 
-        $this->setSpecialPoundageType();
+
 
         if ($income_data) {
             $data = [
