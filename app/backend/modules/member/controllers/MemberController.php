@@ -36,6 +36,7 @@ use app\backend\modules\member\services\MemberServices;
 use app\backend\modules\member\models\MemberParent;
 use app\common\components\BaseController;
 use app\common\events\member\MemberDelEvent;
+use app\common\events\member\MemberLevelUpgradeEvent;
 use app\common\events\member\MemberRelationEvent;
 use app\common\events\member\RegisterByAgent;
 use app\common\helpers\Cache;
@@ -426,6 +427,14 @@ class MemberController extends BaseController
             $yz['status'] =  0;
         }
 
+        //判断会员等级是否改变
+        $is_upgrade = false;
+
+        $new_level = MemberLevel::find($yz['level_id'])->level;
+        if ($shopInfoModel->level_id != $yz['level_id'] && $new_level > $shopInfoModel->level->level) {
+            $is_upgrade = true;
+        }
+
         $shopInfoModel->fill($yz);
         $validator = $shopInfoModel->validator();
         if ($validator->fails()) {
@@ -434,9 +443,13 @@ class MemberController extends BaseController
 //            (new \app\common\services\operation\ShopMemberLog($shopInfoModel, 'update'));
             if ($shopInfoModel->save()) {
 
+                if ($is_upgrade) {
+                    //会员等级升级触发事件
+                    event(new MemberLevelUpgradeEvent($shopInfoModel));
+                }
+
                 if ($parame->data['agent']) {
                     $member = Member::getMemberByUid($uid)->with('hasOneFans')->first();
-
                     event(new MemberRelationEvent($member));
                 }
 
@@ -961,7 +974,7 @@ class MemberController extends BaseController
     {
         $total = Cache::get('queque_wechat_total');
         $page  = Cache::get('queque_wechat_page');
-\Log::debug('--------ajax total-------', $total);
+        \Log::debug('--------ajax total-------', $total);
         \Log::debug('--------ajax page-------', $page);
         if ($total == $page) {
             return json_encode(['status' => 1]);
