@@ -237,7 +237,8 @@ class IncomeWithdrawController extends ApiController
      */
     private function isUseBalanceSpecialSet()
     {
-        if ($this->pay_way == Withdraw::WITHDRAW_WITH_BALANCE &&
+       // if ($this->pay_way == Withdraw::WITHDRAW_WITH_BALANCE &&   这里判断不知道有什么意义，暂时屏蔽
+        if (
             $this->getBalanceSpecialSet()
         ) {
             return true;
@@ -321,11 +322,13 @@ class IncomeWithdrawController extends ApiController
         {
             $poundage = number_format($this->poundage_rate, 2, '.','');
         }
-
-        if($this->special_poundage_type == 1)
-        {
-            $poundage = number_format($this->special_poundage_rate, 2, '.','');
+        
+        if ($this->isUseBalanceSpecialSet()) {
+            if ($this->special_poundage_type == 1) {
+                $poundage = number_format($this->special_poundage_rate, 2, '.', '');
+            }
         }
+
 
         $service_tax = $this->poundageMath($this->withdraw_amounts - $poundage, $this->service_tax_rate);
 
