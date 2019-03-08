@@ -36,6 +36,21 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams']], func
         Route::any('upload/image', 'UploadController@image');
     });
 
+    // 用户管理
+    Route::group(['prefix' => 'user', 'namespace' => 'platform\modules\user\controllers'], function (){
+        // 用户列表
+        Route::get('list', 'AdminUserController@index');
+        // 添加用户
+        Route::any('add', 'AdminUserController@add');
+        // 用户编辑
+        Route::any('edit', 'AdminUserController@edit');
+        // 用户修改状态
+        Route::any('status', 'AdminUserController@status');
+
+
+    });
+
+
     Route::group(['namespace' => 'platform\modules\application\controllers'], function () {
 		// 平台管理
 		Route::get('application/', 'ApplicationController@index');
