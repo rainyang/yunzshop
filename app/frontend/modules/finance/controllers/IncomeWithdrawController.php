@@ -75,6 +75,7 @@ class IncomeWithdrawController extends ApiController
         $income_config = \Config::get('income');
 
         $income_data = [];
+
         foreach ($income_config as $key => $income) {
 
             //余额不计算
@@ -92,7 +93,6 @@ class IncomeWithdrawController extends ApiController
                 $this->special_poundage_rate = 0;
                 $this->special_service_tax_rate = 0;
             } else {
-                $this->setSpecialPoundageType();
                 $this->setPoundageRate($income['type']);
                 $this->setServiceTaxRate($income['type']);
                 $this->setSpecialPoundageRate();
@@ -102,6 +102,8 @@ class IncomeWithdrawController extends ApiController
 
             $income_data[] = $this->getItemData($key, $income);
         }
+
+        $this->setSpecialPoundageType();
 
         if ($income_data) {
             $data = [
@@ -221,7 +223,7 @@ class IncomeWithdrawController extends ApiController
         if(in_array($income_type, ['StoreCashier','StoreWithdraw','StoreBossWithdraw'])){
             $value = 0;
         }
-        
+
         return $this->special_service_tax_rate = empty($value) ? 0 : $value;
     }
 
@@ -315,6 +317,11 @@ class IncomeWithdrawController extends ApiController
         $poundage = $this->poundageMath($this->withdraw_amounts, $this->poundage_rate);
         
         if($this->poundage_type == 1)
+        {
+            $poundage = number_format($this->poundage_rate, 2, '.','');
+        }
+
+        if($this->special_poundage_type == 1)
         {
             $poundage = number_format($this->poundage_rate, 2, '.','');
         }
