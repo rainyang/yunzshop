@@ -221,9 +221,8 @@ class ApplicationController extends BaseController
     {
             header('Access-Control-Allow-Origin:*');
 
-            // $file = request()->file();
-            $file = $_POST['file'];
-
+            $file = request()->file('file');
+            // $file = $_POST['file'];
             \Log::info('file_content', $file);
 
             $first = explode(',', $file);
@@ -237,22 +236,20 @@ class ApplicationController extends BaseController
             $path = config('filesystems.disks.public')['root'];
             \Log::info('up_path', $path);
 
-            $extPath = str_replace(substr($path, -7, 1), "\\", $path);
-            \Log::info('up_extPath', $extPath);
+            // $extPath = str_replace(substr($path, -7, 1), "\\", $path);
+            // \Log::info('up_extPath', $extPath);
 
 
-            if (!file_exists($extPath) || !is_dir($extPath)) {
+            if (!file_exists($path) || !is_dir($path)) {
                 
-                // mkdir($extPath);
+                // mkdir($path);
                 \Log::info('upload_dir_not_exists');
                 return false;
             }
             
-            chmod($extPath, 0777);
+            chmod($path, 0777);
 
-            $ch = opendir($extPath);
-            
-            $extPath = $extPath.'\\'.date('Ymd');
+            $ch = opendir($path);
 
             $filename = date('Ymd').uniqid().rand(1, 9999).'.'.$ext;
                 \Log::info('up_filename', $filename);
