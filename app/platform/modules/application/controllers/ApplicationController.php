@@ -56,7 +56,7 @@ class ApplicationController extends BaseController
 
             if ($validator->fails()) {
             
-                return $this->error($validator->messages());
+                // return $this->error($validator->messages());
             
             } else {
 
@@ -67,15 +67,17 @@ class ApplicationController extends BaseController
                     // Cache::put($this->key.':'. $id, $app->find($id));
                     // Cache::put($this->key.'_num', $id);
 
-                    return $this->successJson('添加成功');
-
+                    // return $this->successJson('添加成功');
+                    return json_encode(array('result'=>1, 'msg'=>'添加成功', 'data'=>''));
+                    
                 } else {
 
-                    return $this->errorJson('添加失败');
+                    // return $this->errorJson('添加失败');
+                    return json_encode(array('result'=>0, 'msg'=>'添加失败', 'data'=>''));
                 }
             }
         }
-        return View('admin.application.form');
+        // return View('admin.application.form');
     }
 
     public function update()
@@ -224,4 +226,55 @@ class ApplicationController extends BaseController
         ];
     }
 
+    public function upl()
+    {
+            $file = request()->file('img');
+            //自定义路径
+            $path = config('filesystems.disks.public')['root'];
+            \Log::info('up_path', $path);
+            // dd($path);
+            $extPath = str_replace(substr($path, -7, 1), "\\", $path);
+            \Log::info('up_extPath', $extPath);
+
+            // dd($path);
+            if (!file_exists($extPath)) {
+                
+                mkdir($extPath);
+            }
+            $extPath = $extPath.'\\'.date('Ymd');
+            // dd($extPath);    
+            \Log::info('up_extPath2', $extPath);
+            
+            //判断文件是否上传成功
+            if ($file->isValid()){
+                //原文件名
+                $originalName = $file->getClientOriginalName();          
+            \Log::info('up_originalName', $originalName);
+
+                //扩展名
+                $ext = $file->getClientOriginalExtension(); 
+            \Log::info('up_ext', $ext);
+
+                //MimeType
+                // $type = $file->getClientMimeType();
+                //临时绝对路径
+                $realPath = $file->getRealPath();
+            // dd($realPath);
+            \Log::info('up_realPath', $realPath);
+
+                $filename = date('Ymd').uniqid().rand(1,9999).'.'.$ext;
+            \Log::info('up_filename', $filename);
+
+                $url = $path.'\\'.$filename;
+            \Log::info('up_url', $url);
+               
+                Storage::put($url, file_get_contents($realPath));
+
+                $res = \Storage::url();
+            \Log::info('up_res', $res);
+
+                // return $this->successJson('上传成功', asset('public/'.$filename));
+                return $this->successJson('上传成功', asset($res.'app/public/'.$filename));
+            }
+    }
 }

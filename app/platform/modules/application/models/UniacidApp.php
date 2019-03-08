@@ -17,7 +17,6 @@ class UniacidApp extends BaseModel
   	protected $dates = ['validity_time'];
   	protected $hidden = ['deleted_at', 'updated_at', 'created_at',
                          'type', 'kind', 'title', 'descr', 'version', 'uniacid'];
-    protected $appends = ['status_name'];
 
 
   	public function scopeSearch($query, $keyword)
@@ -66,8 +65,4 @@ class UniacidApp extends BaseModel
         ];
     }
 
-    public function getStatusNameAttribute()
-    {
-    	return ['禁用', '启用'][$this->status];
-    }
 }
