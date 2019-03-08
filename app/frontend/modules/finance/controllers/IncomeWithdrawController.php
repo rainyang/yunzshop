@@ -94,9 +94,9 @@ class IncomeWithdrawController extends ApiController
             } else {
                 $this->setSpecialPoundageType();
                 $this->setPoundageRate($income['type']);
-                $this->setServiceTaxRate();
+                $this->setServiceTaxRate($income['type']);
                 $this->setSpecialPoundageRate();
-                $this->setSpecialServiceTaxRate();
+                $this->setSpecialServiceTaxRate($income['type']);
             }
 
 
@@ -168,7 +168,7 @@ class IncomeWithdrawController extends ApiController
     /**
      * @return int|mixed
      */
-    private function setServiceTaxRate()
+    private function setServiceTaxRate($income_type)
     {
         $value = array_get($this->withdraw_set, 'servicetax_rate', 0);
 
@@ -176,6 +176,11 @@ class IncomeWithdrawController extends ApiController
         if ($this->isUseBalanceSpecialSet()) {
             $value = array_get($this->withdraw_set, 'special_service_tax', 0);
         }
+
+        if(in_array($income_type, ['StoreCashier','StoreWithdraw','StoreBossWithdraw'])){
+            $value = 0;
+        }
+
         return $this->service_tax_rate = empty($value) ? 0 : $value;
     }
 
@@ -209,10 +214,14 @@ class IncomeWithdrawController extends ApiController
      * 提现到余额独立劳务税
      * @return int|mixed
      */
-    private function setSpecialServiceTaxRate()
+    private function setSpecialServiceTaxRate($income_type)
     {
         $value = array_get($this->withdraw_set, 'special_service_tax', 0);
 
+        if(in_array($income_type, ['StoreCashier','StoreWithdraw','StoreBossWithdraw'])){
+            $value = 0;
+        }
+        
         return $this->special_service_tax_rate = empty($value) ? 0 : $value;
     }
 
