@@ -36,12 +36,12 @@
     {{--</form>--}}
 
     @if($item)
-        <form class="form-horizontal" method="post" action="/index.php/admin/application/{{$item['id']}}">
+        <form class="form-horizontal" enctype="multipart/form-data" method="post" action="/index.php/admin/application/{{$item['id']}}">
             <!-- <input type="hidden" name="id" value="{{$item['id']}}"> -->
         <!-- <form class="form-horizontal" method="post" enctype="multipart/form-data" action="/index.php/admin/application/upload"> -->
 
     @else
-        <form class="form-horizontal" method="post" action="/index.php/admin/application/">
+        <form class="form-horizontal" method="post" enctype="multipart/form-data" action="/index.php/admin/application/upload/">
     @endif
 
         <input type="hidden" name="_token" value="{{ csrf_token() }}">

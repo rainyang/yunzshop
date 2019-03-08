@@ -77,7 +77,7 @@ class ApplicationController extends BaseController
                 }
             }
         }
-        // return View('admin.application.form');
+        return View('admin.application.form');
     }
 
     public function update()
