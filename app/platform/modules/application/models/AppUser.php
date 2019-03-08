@@ -4,17 +4,14 @@ namespace app\platform\modules\application\models;
 
 use app\common\models\BaseModel;
 use Illuminate\Database\Eloquent\Model;
-// use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AppUser extends BaseModel
 {
-	// use SoftDeletes;
 	
 	protected $table = 'app_user';
 	protected $search_fields = [''];
   	protected $guarded = [''];
     protected $hidden = ['deleted_at', 'updated_at', 'created_at'];
-  	// protected $dates = ['deleted_at'];
 
 
     public function atributeNames() 

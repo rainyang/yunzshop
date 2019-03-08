@@ -36,10 +36,12 @@
     {{--</form>--}}
 
     @if($item)
-        <form class="form-horizontal" method="post" action="/index.php/admin/application/{{$item['id']}}">
-            <input type="hidden" name="id" value="{{$item['id']}}">
+        <form class="form-horizontal" enctype="multipart/form-data" method="post" action="/index.php/admin/application/{{$item['id']}}">
+            <!-- <input type="hidden" name="id" value="{{$item['id']}}"> -->
+        <!-- <form class="form-horizontal" method="post" enctype="multipart/form-data" action="/index.php/admin/application/upload"> -->
+
     @else
-        <form class="form-horizontal" method="post" action="/index.php/admin/application/">
+        <form class="form-horizontal" method="post" enctype="multipart/form-data" action="/index.php/admin/application/upload/">
     @endif
 
         <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -72,6 +74,18 @@
                 </label>
                 <label class="radio-inline">
                     <input type="radio" name="status" value="0" @if($item['status']==0) checked @endif> 禁用
+                </label>
+            </div>
+            <div class="col-sm-5">
+                <!-- <p class="form-control-static text-danger">{{ $errors->first('status') }}</p> -->
+            </div>
+        </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">img</label>
+
+            <div class="col-sm-5">
+                <label class="radio-inline">
+                    <input type="file" name="img"> 图片
                 </label>
             </div>
             <div class="col-sm-5">

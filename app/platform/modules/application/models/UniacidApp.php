@@ -15,10 +15,9 @@ class UniacidApp extends BaseModel
 	protected $search_fields = ['name', 'validity_time'];
   	protected $guarded = [''];
   	protected $dates = ['validity_time'];
-  	protected $hidden = ['deleted_at', 'updated_at', 'created_at', 'status',
+  	protected $hidden = ['deleted_at', 'updated_at', 'created_at',
                          'type', 'kind', 'title', 'descr', 'version', 'uniacid'];
     protected $appends = ['status_name'];
-
 
   	public function scopeSearch($query, $keyword)
   	{
@@ -70,4 +69,5 @@ class UniacidApp extends BaseModel
     {
     	return ['禁用', '启用'][$this->status];
     }
+
 }

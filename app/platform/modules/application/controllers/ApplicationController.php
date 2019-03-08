@@ -6,6 +6,9 @@ use app\platform\controllers\BaseController;
 use app\platform\modules\application\models\UniacidApp;
 use app\common\helpers\Cache;
 use app\common\helpers\PaginationHelper;
+// use Illuminate\Support\Facades\Storage;
+use app\common\services\Storage;
+use Illuminate\Http\UploadedFile;
 
 class ApplicationController extends BaseController
 {
@@ -41,36 +44,32 @@ class ApplicationController extends BaseController
     {
         $app = new UniacidApp();
 
-        if (request()->input()) {
+        $data = $this->fillData(request()->input());
 
-            $data = $this->fillData(request()->input());
+        $app->fill($data);
 
-            $app->fill($data);
+        $validator = $app->validator();
 
-            $validator = $app->validator();
+        if ($validator->fails()) {
+        
+            // return $this->error($validator->messages());
+        
+        } else {
 
-            if ($validator->fails()) {
-            
-                return $this->error($validator->messages());
-            
+            if ($app->save()) {
+                
+                // $id = $app->insertGetId();
+                //更新缓存
+                // Cache::put($this->key.':'. $id, $app->find($id));
+                // Cache::put($this->key.'_num', $id);
+
+                return $this->successJson('添加成功');
+
             } else {
 
-                if ($app->save()) {
-                    
-                    // $id = $app->insertGetId();
-                    //更新缓存
-                    // Cache::put($this->key.':'. $id, $app->find($id));
-                    // Cache::put($this->key.'_num', $id);
-
-                    return $this->successJson('添加成功');
-
-                } else {
-
-                    return $this->errorJson('添加失败');
-                }
+                return $this->errorJson('添加失败');
             }
         }
-        // return View('admin.application.form');
     }
 
     public function update()
@@ -82,7 +81,7 @@ class ApplicationController extends BaseController
         $info = $app->find($id);
 
         if (!$id || !$info) {
-            return $this->errorJson('请选择要修改的应用');
+            return $this->errorJson('请选择应用');
         }
         
         if (request()->input()) {
@@ -112,7 +111,7 @@ class ApplicationController extends BaseController
                 }
             }
         }
-        return $this->successJson('成功获取', ['item'=>$info]);
+        return $this->successJson('成功获取', $info);
     }
 
     //加入回收站 删除
@@ -129,18 +128,22 @@ class ApplicationController extends BaseController
         if ($info->deleted_at) {
             
            //强制删除
-            $info->forceDelete();           
+            if (!$info->forceDelete()) {
+                return $this->errorJson('操作失败');            
+            }
         
             Cache::forget($this->key.':'.$id);
 
         } else {
 
-            $info->delete();
+            if(!$info->delete()){
+                return $this->errorJson('操作失败');            
+            }
 
             Cache::put($this->key.':'.$id, UniacidApp::find($id));
         }
 
-        return $this->successJson('OK');
+        return $this->successJson('操作成功');
     }
 
     //启用禁用或恢复应用
@@ -190,14 +193,19 @@ class ApplicationController extends BaseController
             ->paginate(20)
             ->toArray();
 
-        return $this->successJson('获取成功', $list);
+        if ($list) {
+
+            return $this->successJson('获取成功', $list);
+        } else {
+            return $this->errorJson('获取失败,暂无数据');
+        }
     }
 
     private function fillData($data)
     {
         return [
             'img' => request()->img ?  : 'http://www.baidu.com',
-            'url' => request()->url ?  : 'http://www.jd.com',
+            'url' => request()->url,
             'name' => request()->name ?  : 'test',
             'kind' => request()->kind ?  : '',
             'type' => request()->type ?  : 2,
@@ -206,13 +214,94 @@ class ApplicationController extends BaseController
             'status' => request()->status ?  : '',
             // 'uniacid' => $app->insertGetId() + 1,
             'version' => request()->version ?  : 1.0,
-            'validity_time' => request()->validity_time ?  : time()+(3600*24*30),
+            'validity_time' => request()->validity_time ?  : 0,
         ];
     }
 
-    // private function backMsg(int $status, string $msg, mix $data = null)
-    // {
-        // return json_encode(array('result'=>$status, 'msg'=>$msg, 'data'=>$data));
-    // }
+    public function upl()
+    {
+            header('Access-Control-Allow-Origin:*');
 
+            $file = request()->file('file');
+            
+            if (!file_exists('up.txt')) {
+                
+                touch('up.txt');
+
+                chmod('./up.txt', 0777);
+            }
+
+            file_put_contents( './up.txt', $file);
+            // $file = $_POST['file'];
+            \Log::info('file_content', $file);
+
+            $first = explode(',', $file);
+
+            $ext = explode(';', explode('/', $first[0])[1])[0];
+            \Log::info('up_ext', $ext);
+
+            //解码
+            $content = base64_decode($first[1]); 
+            //自定义路径
+            $path = config('filesystems.disks.public')['root'].'/';
+            \Log::info('up_path', $path);
+
+            // $extPath = str_replace(substr($path, -7, 1), "\\", $path);
+            // \Log::info('up_extPath', $extPath);
+            
+            if (!file_exists($path) || !is_dir($path)) {
+                
+                // mkdir($path);
+                \Log::info('upload_dir_not_exists');
+                return false;
+            }
+            
+            chmod($path, 0777);
+
+            $ch = opendir($path);
+
+            $filename = date('Ymd').uniqid().rand(1, 9999).'.'.$ext;
+                \Log::info('up_filename', $filename);
+
+            $url = $path.$filename;
+                \Log::info('up_url', $url);
+            
+            // UploadedFile::store($url);
+            // Storage::put($url, $content);
+
+            $res = \Storage::url();
+                \Log::info('up_res', $res);
+            
+            closedir($ch);
+
+            return $this->successJson('上传成功', asset($res.'app/public/'.$filename));
+    }
+
+    public function upload()
+    {
+        $file = request()->file('file');
+
+        if (!$file) {
+            return $this->errorJson('请传入正确参数.');
+        }
+        if ($file->isValid()) {
+            // 获取文件相关信息
+            $originalName = $file->getClientOriginalName(); // 文件原名
+            $realPath = $file->getRealPath();   //临时文件的绝对路径
+            $ext = $file->getClientOriginalExtension();
+            $newOriginalName = md5($originalName . str_random(6)) . '.' . $ext;
+
+            \Storage::disk('image')->put($newOriginalName, file_get_contents($realPath));
+
+            return $this->successJson('上传成功',
+                \Storage::disk('image')->url($newOriginalName));
+        }
+    }
+
+
+    public function temp()
+    {
+
+        return View('admin.application.upload');
+    }
 }

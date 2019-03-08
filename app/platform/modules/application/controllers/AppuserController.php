@@ -8,14 +8,13 @@ use app\common\helpers\Cache;
 
 class AppuserController extends BaseController
 {
-	// protected $user;
 	protected $key = 'application_user';
 
 	public function index()
 	{
 		$list = AppUser::orderBy('id', 'desc')->get();
 
-		return View('admin.appuser.index', ['list'=>$list]);
+		return $this->successJson('获取成功', $list);
 	}
 
 	public function add()
@@ -39,9 +38,9 @@ class AppuserController extends BaseController
                 if ($this->user->save()) {
                     
                     //更新缓存
-                    Cache::put($this->key.':'.$user->insertGetId(),$user->find($this->user->insertGetId()));
+                    // Cache::put($this->key.':'.$user->insertGetId(),$user->find($this->user->insertGetId()));
 
-                    Cache::put($this->key.'_num',$user->insertGetId());
+                    // Cache::put($this->key.'_num',$user->insertGetId());
 
                     return $this->successJson(1, '添加成功');
 
@@ -51,7 +50,7 @@ class AppuserController extends BaseController
                 }
             }
         }
-		 return View('admin.appuser.form');
+		 // return View('admin.appuser.form');
     }
 
 	public function update()
@@ -69,7 +68,6 @@ class AppuserController extends BaseController
         if (request()->input()) {
            
             $data = $this->fillData(request()->input());
-            $data['uniacid'] = $id;
             $data['id'] = $id;
 
             $user->fill($data);
@@ -93,8 +91,8 @@ class AppuserController extends BaseController
                 }
             }
         }
-
-		return View('admin.appuser.form', ['item'=>$info]);
+        return $this->successJson('成功获取', $info);
+		// return View('admin.appuser.form', ['item'=>$info]);
 	}
 
 	public function delete()
@@ -126,8 +124,4 @@ class AppuserController extends BaseController
         ];
     }
 
-    // private function backMsg(int $status, string $msg, mix $data = null)
-    // {
-    //     return json_encode(array('result'=>$status, 'msg'=>$msg, 'data'=>$data));
-    // }
 }
