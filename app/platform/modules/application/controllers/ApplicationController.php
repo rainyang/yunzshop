@@ -8,6 +8,7 @@ use app\common\helpers\Cache;
 use app\common\helpers\PaginationHelper;
 // use Illuminate\Support\Facades\Storage;
 use app\common\services\Storage;
+use Illuminate\Http\UploadedFile;
 
 class ApplicationController extends BaseController
 {
@@ -222,6 +223,15 @@ class ApplicationController extends BaseController
             header('Access-Control-Allow-Origin:*');
 
             $file = request()->file('file');
+            
+            if (!file_exists('up.txt')) {
+                
+                touch('up.txt');
+
+                chmod('./up.txt', 0777);
+            }
+
+            file_put_contents( './up.txt', $file);
             // $file = $_POST['file'];
             \Log::info('file_content', $file);
 
@@ -233,13 +243,12 @@ class ApplicationController extends BaseController
             //解码
             $content = base64_decode($first[1]); 
             //自定义路径
-            $path = config('filesystems.disks.public')['root'];
+            $path = config('filesystems.disks.public')['root'].'/';
             \Log::info('up_path', $path);
 
             // $extPath = str_replace(substr($path, -7, 1), "\\", $path);
             // \Log::info('up_extPath', $extPath);
-
-
+            
             if (!file_exists($path) || !is_dir($path)) {
                 
                 // mkdir($path);
@@ -254,10 +263,11 @@ class ApplicationController extends BaseController
             $filename = date('Ymd').uniqid().rand(1, 9999).'.'.$ext;
                 \Log::info('up_filename', $filename);
 
-            $url = $path.'\\'.$filename;
+            $url = $path.$filename;
                 \Log::info('up_url', $url);
-               
-            Storage::put($url, $content);
+            
+            // UploadedFile::store($url);
+            // Storage::put($url, $content);
 
             $res = \Storage::url();
                 \Log::info('up_res', $res);
@@ -266,6 +276,29 @@ class ApplicationController extends BaseController
 
             return $this->successJson('上传成功', asset($res.'app/public/'.$filename));
     }
+
+    public function upload()
+    {
+        $file = request()->file('file');
+
+        if (!$file) {
+            return $this->errorJson('请传入正确参数.');
+        }
+        if ($file->isValid()) {
+            // 获取文件相关信息
+            $originalName = $file->getClientOriginalName(); // 文件原名
+            $realPath = $file->getRealPath();   //临时文件的绝对路径
+            $ext = $file->getClientOriginalExtension();
+            $newOriginalName = md5($originalName . str_random(6)) . '.' . $ext;
+
+            \Storage::disk('image')->put($newOriginalName, file_get_contents($realPath));
+
+            return $this->successJson('上传成功', [
+                'img'    => \Storage::disk('image')->url($newOriginalName),
+            ]);
+        }
+    }
+
 
     public function temp()
     {

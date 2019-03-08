@@ -50,7 +50,7 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams']], func
 		//回收站
 		Route::get('application/recycle/', 'ApplicationController@recycle');
 		//图片上传
-		Route::post('application/upload/', 'ApplicationController@upl');
+		Route::post('application/upload/', 'ApplicationController@upload');
 
 		//平台用户管理
 		Route::get('appuser/', 'AppuserController@index');
