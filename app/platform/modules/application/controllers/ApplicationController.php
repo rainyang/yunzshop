@@ -293,9 +293,8 @@ class ApplicationController extends BaseController
 
             \Storage::disk('image')->put($newOriginalName, file_get_contents($realPath));
 
-            return $this->successJson('上传成功', [
-                'img'    => \Storage::disk('image')->url($newOriginalName),
-            ]);
+            return $this->successJson('上传成功',
+                \Storage::disk('image')->url($newOriginalName));
         }
     }
 
