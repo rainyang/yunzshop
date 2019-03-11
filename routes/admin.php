@@ -15,6 +15,38 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams']], func
 
     Route::get('index', ['as' => 'admin.index', 'uses' => '\app\platform\controllers\IndexController@index']);
 
+    //用户管理
+    Route::group(['namespace' => 'platform\modules\user\controllers'], function () {
+        //权限管理路由
+        Route::get('permission/{parentId}/create', ['as' => 'admin.permission.create', 'uses' => 'PermissionController@create']);
+        Route::post('permission/{parentId}/create', ['as' => 'admin.permission.create', 'uses' => 'PermissionController@store']);
+        Route::get('permission/{id}/edit', ['as' => 'admin.permission.edit', 'uses' => 'PermissionController@edit']);
+        Route::post('permission/{id}/edit', ['as' => 'admin.permission.edit', 'uses' => 'PermissionController@update']);
+        Route::get('permission/{id}/delete', ['as' => 'admin.permission.destroy', 'uses' => 'PermissionController@destroy']);
+        Route::get('permission/{parentId}/index', ['as' => 'admin.permission.index', 'uses' => 'PermissionController@index']);
+        Route::get('permission/index', ['as' => 'admin.permission.index', 'uses' => 'PermissionController@index']);
+        Route::post('permission/index', ['as' => 'admin.permission.index', 'uses' => 'PermissionController@index']);
+
+        //角色管理路由
+        Route::get('role/index', ['as' => 'admin.role.index', 'uses' => 'RoleController@index']);
+        Route::post('role/index', ['as' => 'admin.role.index', 'uses' => 'RoleController@index']);
+        Route::get('role/create', ['as' => 'admin.role.create', 'uses' => 'RoleController@create']);
+        Route::post('role/create', ['as' => 'admin.role.create', 'uses' => 'RoleController@store']);
+        Route::get('role/{id}/edit', ['as' => 'admin.role.edit', 'uses' => 'RoleController@edit']);
+        Route::post('role/{id}/edit', ['as' => 'admin.role.edit', 'uses' => 'RoleController@update']);
+        Route::get('role/{id}/delete', ['as' => 'admin.role.destroy', 'uses' => 'RoleController@destroy']);
+
+        //用户管理路由
+        Route::get('user/index', ['as' => 'admin.user.index', 'uses' => 'UserController@index']);
+        Route::post('user/index', ['as' => 'admin.user.index', 'uses' => 'UserController@index']);
+        Route::get('user/create', ['as' => 'admin.user.create', 'uses' => 'UserController@create']);
+        Route::post('user/create', ['as' => 'admin.user.create', 'uses' => 'UserController@store']);
+        Route::get('user/{id}/edit', ['as' => 'admin.user.edit', 'uses' => 'UserController@edit']);
+        Route::post('user/{id}/edit', ['as' => 'admin.user.edit', 'uses' => 'UserController@update']);
+        Route::get('user/{id}/delete', ['as' => 'admin.user.destroy', 'uses' => 'UserController@destroy']);
+
+    });
+
     // 站点管理
     Route::group(['prefix' => 'system', 'namespace' => 'platform\modules\system\controllers'], function (){
         // 站点设置

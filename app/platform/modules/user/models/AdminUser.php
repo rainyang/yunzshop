@@ -6,7 +6,7 @@
  * Time: 下午4:51
  */
 
-namespace app\platform\models;
+namespace app\platform\modules\user\models;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;

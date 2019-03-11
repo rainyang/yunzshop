@@ -75,7 +75,7 @@ return [
         ],
         'yz_admin_users' => [
             'driver' => 'eloquent',
-            'model' => app\platform\models\AdminUser::class,
+            'model' => \app\platform\modules\user\models\AdminUser::class,
         ],
         // 'users' => [
         //     'driver' => 'database',
