@@ -52,7 +52,7 @@ class UniacidApp extends BaseModel
     public function rules()
     {
     	return [
-            'img' => 'url',
+            'img' => '',
             'url' => '',
             'name' => 'max:10',
             'kind' => '',

@@ -39,7 +39,7 @@ class ApplicationController extends BaseController
             // }
 
             return $this->successJson('获取成功',  $list);
-        }
+        }    
     }
 
     public function add()
@@ -226,7 +226,7 @@ class ApplicationController extends BaseController
             'type' => $data['type'] ?  : 2,
             'title' => $data['title'] ?  : '',
             'descr' => $data['descr'] ?  : '',
-            'status' => $data['status'] ?  : '',
+            'status' => $data['status'] ?  : 1,
             // 'uniacid' => $app->insertGetId() + 1,
             'version' => $data['version'] ?  : 0.00,
             'validity_time' => $data['validity_time'] ?  : 0,
