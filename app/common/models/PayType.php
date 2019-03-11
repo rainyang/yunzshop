@@ -40,6 +40,7 @@ class PayType extends BaseModel
     const COD = 17;//货到付款
     const HXQUICK = 18;//环迅快捷支付
     const HXWECHAT = 22;//环迅微商支付
+    const YOP = 26;//易宝支付
 
     /**
      * 查询所有分类类型

@@ -124,6 +124,11 @@ class PayFactory
      */
     const PAY_SEPARATE = 25;
 
+    /**
+     *  易宝支付
+     */
+    const YOP = 26;
+
 
     public static function create($type = null)
     {
@@ -228,6 +233,13 @@ class PayFactory
                 }
 
                 $className = new \Yunshop\DianBangScan\services\DianBangScanService();
+                break;
+            case self::YOP:
+                if (!app('plugins')->isEnabled('yop-pay')) {
+
+                    throw new AppException('易宝插件未开启');
+                }
+                $className = new \Yunshop\YopPay\services\YopPayService();
                 break;
             default:
                 $className = null;

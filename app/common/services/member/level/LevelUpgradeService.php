@@ -8,6 +8,7 @@
 namespace app\common\services\member\level;
 
 
+use app\common\events\member\MemberLevelUpgradeEvent;
 use app\common\events\member\MemberLevelValidityEvent;
 use app\common\events\order\AfterOrderPaidEvent;
 use app\common\events\order\AfterOrderReceivedEvent;
@@ -172,6 +173,7 @@ class LevelUpgradeService
             $orderMoney = Order::where('uid', $this->orderModel->uid)->where('status', Order::COMPLETE)->sum('price');
         }
 
+        //获取满足条件的最高等级
         $level = MemberLevel::uniacid()->select('id', 'level', 'level_name')->whereBetween('order_money', [1, $orderMoney])->orderBy('level', 'desc')->first();
 
         return $level;
@@ -234,6 +236,8 @@ class LevelUpgradeService
         $this->memberModel->upgrade_at = time();
 
         if ($this->memberModel->save()) {
+            //会员等级升级触发事件
+            event(new MemberLevelUpgradeEvent($this->memberModel));
             $this->notice();
             \Log::info('会员ID' . $this->memberModel->member_id . '会员等级升级成功，等级ID' . $levelId);
         } else {

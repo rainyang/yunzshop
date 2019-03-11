@@ -23,6 +23,7 @@ use app\frontend\modules\payment\orderPayments\HuanxunWxPayment;
 use app\frontend\modules\payment\orderPayments\RemittancePayment;
 use app\frontend\modules\payment\orderPayments\WebPayment;
 use app\frontend\modules\payment\orderPayments\WftAlipayPayment;
+use app\frontend\modules\payment\orderPayments\YopPayment;
 use app\frontend\modules\payment\orderPayments\YunAliPayment;
 use app\frontend\modules\payment\orderPayments\YunPayment;
 use app\frontend\modules\payment\orderPayments\WftPayment;
@@ -42,6 +43,7 @@ use app\frontend\modules\payment\paymentSettings\shop\RemittanceSetting;
 use app\frontend\modules\payment\paymentSettings\shop\WechatAppPaySetting;
 use app\frontend\modules\payment\paymentSettings\shop\WechatPaySetting;
 use app\frontend\modules\payment\paymentSettings\shop\WftAlipaySetting;
+use app\frontend\modules\payment\paymentSettings\shop\YopSetting;
 use app\frontend\modules\payment\paymentSettings\shop\YunPayAliSetting;
 use app\frontend\modules\payment\paymentSettings\shop\YunPayWechatSetting;
 use app\frontend\modules\payment\paymentSettings\shop\WftSetting;
@@ -203,6 +205,16 @@ class PaymentConfig
                 'settings' => [
                     'shop' => function (OrderPaymentTypeSettingManager $manager, OrderPay $orderPay) {
                         return new DianBangScanSetting($orderPay);
+                    }
+                ],
+            ],
+            'yop' => [
+                'payment' => function (OrderPay $orderPay, PayType $payType, OrderPaymentSettingCollection $settings) {
+                    return new YopPayment($orderPay, $payType, $settings);
+                },
+                'settings' => [
+                    'shop' => function (OrderPaymentTypeSettingManager $manager, OrderPay $orderPay) {
+                        return new YopSetting($orderPay);
                     }
                 ],
             ],
