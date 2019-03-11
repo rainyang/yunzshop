@@ -45,7 +45,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">平台logo</label>
                             <div class="col-sm-9 col-xs-12 col-md-6 detail-logo">
-                                {--!! app\common\helpers\ImageHelper::tplFormFieldImage('setdata[site_logo]', $setdata->site_logo) !!--}
+                                {!! app\common\helpers\ImageHelper::tplFormFieldImage('setdata[site_logo]', $setdata->site_logo) !!}
                                 <span class="help-block">请上传 100 * 60 的图片 </span>
                                 @if (!empty($setdata->site_logo))
                                     <a href='{{tomedia($setdata->site_logo)}}' target='_blank'>

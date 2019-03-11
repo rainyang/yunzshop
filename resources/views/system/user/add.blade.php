@@ -36,7 +36,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">确认密码</label>
                             <div class="col-sm-9 col-xs-12">
-                                <input type="password" name="user[repassword]" id="displayorder" placeholder="请输入确认密码" class="form-control" />
+                                <input type="password" name="user[re_password]" id="displayorder" placeholder="请输入确认密码" class="form-control" />
                             </div>
                         </div>
                         @endif

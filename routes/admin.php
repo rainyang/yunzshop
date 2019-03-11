@@ -46,6 +46,8 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams']], func
         Route::any('edit', 'AdminUserController@edit');
         // 用户修改状态
         Route::any('status', 'AdminUserController@status');
+        // 用户修改密码
+        Route::any('change', 'AdminUserController@change');
 
 
     });

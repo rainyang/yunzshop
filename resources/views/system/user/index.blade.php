@@ -126,7 +126,7 @@
                                         </td>
                                         <td>
                                             <a class="btn btn-info" href="/index.php/admin/user/application_list"><i class="fa fa-plus"></i> 平台列表</a>
-                                            <a class="btn btn-danger" href="/index.php/admin/user/change"><i class="fa fa-plus"></i> 修改密码</a>
+                                            <a class="btn btn-danger" href="/index.php/admin/user/change?id={{$item['id']}}"><i class="fa fa-plus"></i> 修改密码</a>
                                             @if($item['status']=='0')
                                                 <a class="btn batchdisable" href="/index.php/admin/user/status?status=2&id={{$item['id']}}"><i class="fa fa-plus"></i> 禁用</a>
                                             @elseif($item['status']=='2')

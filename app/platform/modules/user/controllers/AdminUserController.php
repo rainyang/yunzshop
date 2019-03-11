@@ -15,52 +15,46 @@ use app\common\exceptions\AppException;
 
 class AdminUserController extends BaseController
 {
+    /**
+     * 显示用户列表
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index()
     {
         $users = AdminUser::getList();
-
-        foreach ($users as $item) {
-            $item['create_at'] = $item['created_at']->format('Y-m-d');
-            if ($item['effective_time'] == 0) {
-                $item['effective_time'] = '永久有效';
-            }else {
-                if (time() < $item['effective_time']) {
-                    $item['status'] = 1;
-                    AdminUser::where('id', $item['id'])->update(['status'=>1]);
-                }
-                $item['effective_time'] = date('Y-m-d', $item['effective_time']);
-            }
-        }
-
-//        dd($users['0']->create_at);
 
         return view('system.user.index', [
             'users' => $users
         ]);
     }
 
+    /**
+     * 添加用户
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|mixed
+     */
     public function add()
     {
         $user = request()->user;
         if ($user) {
-            return AdminUser::saveData($user);
+            return AdminUser::saveData($user, $user_model = '');
         }
 
         return view('system.user.add', [
-//            'user' => $user
         ]);
     }
 
+    /**
+     * 用户修改
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\JsonResponse|\Illuminate\View\View|mixed
+     */
     public function edit()
     {
         $id = request()->id;
         if (!$id) {
             return $this->errorJson('参数错误');
         }
-        $this->check($id);
         $user = AdminUser::getData($id);
         $data = request()->user;
-
 
         if($data) {
             return AdminUser::saveData($data, $user);
@@ -71,6 +65,10 @@ class AdminUserController extends BaseController
         ]);
     }
 
+    /**
+     * 修改状态
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function status()
     {
         $id = request()->id;
@@ -81,5 +79,29 @@ class AdminUserController extends BaseController
         } else {
             return $this->errorJson('失败');
         }
+    }
+
+    /**
+     * 修改密码
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|mixed
+     */
+    public function change()
+    {
+        $id = request()->id;
+        $data = request()->user;
+        if ($data){
+            $user = AdminUser::getData($id);
+            return AdminUser::saveData($data, $user);
+        }
+
+        return view('system.user.change');
+    }
+
+    /**
+     * 单个用户平台列表
+     */
+    public function applicationList()
+    {
+        $id = request()->id;
     }
 }

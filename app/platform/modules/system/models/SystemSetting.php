@@ -25,7 +25,7 @@ class SystemSetting extends BaseModel
      * @param $cache_name
      * @return SystemSetting|bool
      */
-    public function settingSave($data = '', $key = '', $cache_name = '')
+    public static function settingSave($data = '', $key = '', $cache_name = '')
     {
         if (!$data && !$key) {
             return false;
@@ -57,7 +57,7 @@ class SystemSetting extends BaseModel
      * @param string $cache_name
      * @return SystemSetting
      */
-    public function settingLoad($key = '', $cache_name = '')
+    public static function settingLoad($key = '', $cache_name = '')
     {
         if (!Cache::has($cache_name)) {
             $result = self::getKeyList($key);
