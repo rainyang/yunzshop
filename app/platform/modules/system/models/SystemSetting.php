@@ -5,12 +5,12 @@
  * Date: 2019/2/27
  * Time: 17:54
  */
+
 namespace app\platform\modules\system\models;
 
 
 use app\common\models\BaseModel;
 use app\common\helpers\Cache;
-
 
 class SystemSetting extends BaseModel
 {
@@ -19,7 +19,7 @@ class SystemSetting extends BaseModel
     protected $guarded = [''];
 
     /**
-     * @name 保存数据
+     * 保存数据
      * @param string $data
      * @param string $key
      * @param $cache_name
@@ -52,7 +52,7 @@ class SystemSetting extends BaseModel
     }
 
     /**
-     * @name 读取数据
+     * 读取数据
      * @param string $key
      * @param string $cache_name
      * @return SystemSetting
