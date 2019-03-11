@@ -74,7 +74,7 @@ class OutlayService
      */
     public function getServiceTaxRate()
     {
-        if(in_array($this->withdrawModel->type_name, ['门店提现','收银台提现','连锁店提现']))
+        if(in_array($this->withdrawModel->mark, ['StoreCashier','StoreWithdraw','StoreBossWithdraw']))
         {
             return 0;
         }
@@ -135,7 +135,7 @@ class OutlayService
      */
     public function getToBalanceServiceTaxRate()
     {
-        if(in_array($this->withdrawModel->key_name, ['StoreCashier','StoreWithdraw','StoreBossWithdraw']))
+        if(in_array($this->withdrawModel->mark, ['StoreCashier','StoreWithdraw','StoreBossWithdraw']))
         {
             return 0;
         }
