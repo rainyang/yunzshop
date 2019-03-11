@@ -332,6 +332,12 @@ class IncomeWithdrawController extends ApiController
         $service_tax = $this->poundageMath($this->withdraw_amounts - $poundage, $this->service_tax_rate);
 
         $special_poundage = $this->poundageMath($this->withdraw_amounts, $this->special_poundage_rate);
+        if ($this->isUseBalanceSpecialSet()) {
+            if ($this->special_poundage_type == 1) {
+                $special_poundage = number_format($this->special_poundage_rate, 2, '.', '');
+            }
+        }
+
         $special_service_tax = $this->poundageMath(($this->withdraw_amounts - $special_poundage), $this->special_service_tax_rate);
         $can = $this->incomeIsCanWithdraw();
        /* if (in_array($income['type'], ['StoreCashier', 'StoreWithdraw'])) {
