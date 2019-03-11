@@ -13,10 +13,10 @@ class AddColumnToApp extends Migration
      */
     public function up()
     {
-        if (Schema::hasTable('uniacid_app')) {
-            if (!Schema::hasColumn('uniacid_app', 'url')) {
+        if (Schema::hasTable('yz_uniacid_app')) {
+            if (!Schema::hasColumn('yz_uniacid_app', 'url')) {
                 
-                Schema::table('uniacid_app', function (Blueprint $table) {
+                Schema::table('yz_uniacid_app', function (Blueprint $table) {
                     
                     $table->string('url')->nullable();
 

@@ -66,12 +66,12 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams']], func
 		Route::get('application/recycle/', 'ApplicationController@recycle');
 		//图片上传
 		Route::post('application/upload/', 'ApplicationController@upload');
+		Route::get('application/temp/', 'ApplicationController@temp');
 
 		//平台用户管理
 		Route::get('appuser/', 'AppuserController@index');
 		Route::post('appuser/{id}', 'AppuserController@update');
-		Route::get('appuser/', 'AppuserController@add');
-		Route::get('appuser/{id}', 'AppuserController@delete');
+		Route::delete('appuser/{id}', 'AppuserController@delete');
 	});
 });
 
