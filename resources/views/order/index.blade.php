@@ -266,6 +266,7 @@
                                             {{--@if( !empty($order_goods['goods_option_title']))<br/><span--}}
                                                     {{--class="label label-primary sizebg">{{$order_goods['goods_option_title']}}</span>--}}
                                             @if( !empty($order_goods['goods_option_title']))<br/>
+                                        
                                               <span style="font-size: 6px;color: #AEB9C0">{{$order_goods['goods_option_title']}}</span>
                                             @endif
                                             {{--<br/>{{$order_goods['goods_sn']}}--}}
