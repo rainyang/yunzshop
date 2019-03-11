@@ -8,6 +8,21 @@
 
 namespace app\backend\modules\member\controllers;
 
+use app\common\models\Member as Members;
+use app\frontend\modules\member\models\MemberModel;
+//use app\frontend\modules\member\models\SubMemberModel;
+use app\frontend\modules\member\models\MemberWechatModel as MemberWechat_Model;
+use app\frontend\modules\member\services\MemberService;
+use app\common\models\MemberShopInfo as MemberShop_Info;
+use app\common\models\MemberGroup as Member_Group;
+use Illuminate\Support\Facades\Cookie;
+use app\common\services\Session;
+use Illuminate\Support\Str;
+use app\common\helpers\Url;
+use app\backend\modules\charts\modules\phone\services\PhoneAttributionService;
+use app\backend\modules\charts\modules\phone\models\PhoneAttribution;
+use app\frontend\modules\member\models\SubMemberModel as SubMember_Model;
+use app\common\exceptions\AppException;
 
 use app\backend\modules\member\models\McMappingFans;
 use app\backend\modules\member\models\Member;
@@ -21,6 +36,7 @@ use app\backend\modules\member\services\MemberServices;
 use app\backend\modules\member\models\MemberParent;
 use app\common\components\BaseController;
 use app\common\events\member\MemberDelEvent;
+use app\common\events\member\MemberLevelUpgradeEvent;
 use app\common\events\member\MemberRelationEvent;
 use app\common\events\member\RegisterByAgent;
 use app\common\helpers\Cache;
@@ -40,10 +56,12 @@ use Yunshop\Commission\models\Agents;
 use Yunshop\TeamDividend\models\TeamDividendLevelModel;
 
 
+
 class MemberController extends BaseController
 {
     private $pageSize = 20;
-
+    protected $publicAction = ['addMember'];
+    protected $ignoreAction = ['addMember'];
     /**
      * 列表
      *
@@ -72,7 +90,6 @@ class MemberController extends BaseController
         }
 
         $list = Member::searchMembers($parames);
-
 
         if ($parames['search']['first_count'] ||
             $parames['search']['second_count'] ||
@@ -112,10 +129,10 @@ class MemberController extends BaseController
             $list = $list->whereIn('uid', $result_ids);
         }
 
-
         $list = $list->orderBy('uid', 'desc')
             ->paginate($this->pageSize)
             ->toArray();
+            
         $set = \Setting::get('shop.member');
 
         if (empty($set['level_name'])) {
@@ -147,6 +164,108 @@ class MemberController extends BaseController
         ])->render();
     }
 
+    public function addMember(){
+
+        $mobile = \YunShop::request()['mobile'];
+        $password = \YunShop::request()['password'];
+        $confirm_password = \YunShop::request()['confirm_password'];
+        $uniacid = \YunShop::app()->uniacid;
+
+        if ((\Request::getMethod() == 'POST')) {
+//            $msg = MemberService::validate($mobile, $password, $confirm_password,'Backstage');
+//
+//            if ($msg != 1) {
+//                return $this->message($msg, yzWebUrl('member.member.add-member'));
+//            }
+
+            //判断是否已注册
+            $member_info = MemberModel::getId($uniacid, $mobile);
+            \Log::info('member_info', $member_info);
+
+            if (!empty($member_info)) {
+                throw new AppException('该手机号已被注册');
+//                return $this->message('该手机号已被注册', yzWebUrl('member.member.add-member'));
+//               return $this->errorJson('该手机号已被注册');
+            }
+            //添加mc_members表
+            $default_groupid = Member_Group::getDefaultGroupId($uniacid)->first();
+            \Log::info('default_groupid', $default_groupid);
+
+            //获取图片
+            $member_set = \Setting::get('shop.member');
+            \Log::info('member_set', $member_set);
+            if (isset($member_set) && $member_set['headimg']) {
+                $avatar = replace_yunshop($member_set['headimg']);
+            } else {
+                $avatar = Url::shopUrl('static/images/photo-mr.jpg');
+            }
+            \Log::info('avatar', $avatar);
+
+            $data = array(
+                'uniacid' => $uniacid,
+                'mobile' => $mobile,
+                'groupid' => $default_groupid->id ? $default_groupid->id : 0,
+                'createtime' => time(),
+                'nickname' => $mobile,
+                'avatar' => $avatar,
+                'gender' => 0,
+                'residecity' => '',
+            );
+            //随机数
+            $data['salt'] = Str::random(8);
+            \Log::info('salt', $data['salt']);
+
+            //加密
+            $data['password'] = md5($password . $data['salt']);
+            $memberModel = MemberModel::create($data);
+            $member_id = $memberModel->uid;
+
+            //手机归属地查询插入
+            $phoneData = file_get_contents((new PhoneAttributionService())->getPhoneApi($mobile));
+            $phoneArray = json_decode($phoneData);
+            $phone['uid'] = $member_id;
+            $phone['uniacid'] = $uniacid;
+            $phone['province'] = $phoneArray->data->province;
+            $phone['city'] = $phoneArray->data->city;
+            $phone['sp'] = $phoneArray->data->sp;
+
+            $phoneModel = new PhoneAttribution();
+            $phoneModel->updateOrCreate(['uid' => $member_id], $phone);
+
+            //默认分组表
+            //添加yz_member表
+            $default_sub_group_id = Member_Group::getDefaultGroupId()->first();
+
+            if (!empty($default_sub_group_id)) {
+                $default_subgroup_id = $default_sub_group_id->id;
+            } else {
+                $default_subgroup_id = 0;
+            }
+
+            $sub_data = array(
+                'member_id' => $member_id,
+                'uniacid' => $uniacid,
+                'group_id' => $default_subgroup_id,
+                'level_id' => 0,
+            );
+
+            //添加用户子表
+            SubMember_Model::insertData($sub_data);
+            //生成分销关系链
+            Members::createRealtion($member_id);
+
+            $cookieid = "__cookie_yun_shop_userid_{$uniacid}";
+            Cookie::queue($cookieid, $member_id);
+            Session::set('member_id', $member_id);
+
+            $password = $data['password'];
+            $member_info = MemberModel::getUserInfo($uniacid, $mobile, $password)->first();
+            $yz_member = MemberShop_Info::getMemberShopInfo($member_id)->toArray();
+            $data = MemberModel::userData($member_info, $yz_member);
+            return $this->message("添加用户成功", yzWebUrl('member.member.index'));
+        }
+        return view('member.add-member')->render();
+    }
 
 
     private function getResultIds(array $result_ids, $member_id, $compare, $compared, $is_added)
@@ -308,6 +427,14 @@ class MemberController extends BaseController
             $yz['status'] =  0;
         }
 
+        //判断会员等级是否改变
+        $is_upgrade = false;
+
+        $new_level = MemberLevel::find($yz['level_id'])->level;
+        if ($shopInfoModel->level_id != $yz['level_id'] && $new_level > $shopInfoModel->level->level) {
+            $is_upgrade = true;
+        }
+
         $shopInfoModel->fill($yz);
         $validator = $shopInfoModel->validator();
         if ($validator->fails()) {
@@ -316,9 +443,13 @@ class MemberController extends BaseController
 //            (new \app\common\services\operation\ShopMemberLog($shopInfoModel, 'update'));
             if ($shopInfoModel->save()) {
 
+                if ($is_upgrade) {
+                    //会员等级升级触发事件
+                    event(new MemberLevelUpgradeEvent($shopInfoModel));
+                }
+
                 if ($parame->data['agent']) {
                     $member = Member::getMemberByUid($uid)->with('hasOneFans')->first();
-
                     event(new MemberRelationEvent($member));
                 }
 
@@ -843,7 +974,7 @@ class MemberController extends BaseController
     {
         $total = Cache::get('queque_wechat_total');
         $page  = Cache::get('queque_wechat_page');
-\Log::debug('--------ajax total-------', $total);
+        \Log::debug('--------ajax total-------', $total);
         \Log::debug('--------ajax page-------', $page);
         if ($total == $page) {
             return json_encode(['status' => 1]);
@@ -875,4 +1006,6 @@ class MemberController extends BaseController
 
         return view('member.export-relation', [])->render();
     }
+
+   
 }

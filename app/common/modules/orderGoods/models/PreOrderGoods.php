@@ -91,6 +91,7 @@ class PreOrderGoods extends OrderGoods
         $this->title = (string)$this->title;
         $this->thumb = (string)$this->thumb;
         $this->goods_sn = (string)$this->goods_sn;
+        $this->product_sn = (string)$this->product_sn;
         $this->goods_price = (string)$this->goods_price;
         $this->price = (float)$this->price;
         $this->goods_cost_price = (float)$this->goods_cost_price;
@@ -100,6 +101,8 @@ class PreOrderGoods extends OrderGoods
         if ($this->isOption()) {
             $this->goods_option_id = (int)$this->goods_option_id;
             $this->goods_option_title = (string)$this->goods_option_title;
+            $this->goods_sn = $this->goodsOption->goods_sn ? (string)$this->goodsOption->goods_sn : $this->goods_sn;
+            $this->product_sn = $this->goodsOption->product_sn ? (string)$this->goodsOption->product_sn : $this->product_sn;
         }
     }
 

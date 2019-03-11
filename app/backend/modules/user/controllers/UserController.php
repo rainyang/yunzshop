@@ -71,9 +71,7 @@ class UserController extends BaseController
 
         }
         //$permissions = \Config::get('menu');
-
         $roleList = YzRole::getRoleListToUser();
-
         return view('user.user.form',[
             'user'=>$userModel,
             'roleList' => $roleList,

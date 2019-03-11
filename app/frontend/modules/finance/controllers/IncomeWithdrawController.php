@@ -294,9 +294,33 @@ class IncomeWithdrawController extends ApiController
         }
         if ($income['type'] == 'commission') {
             $max = $this->getWithdrawLog($income['class']);
-            if (!empty($this->getIncomeAmountMax())) {
-                if (($max['max_time'] >= $this->getIncomeTimeMax()) || ($max['max_amount']+$this->withdraw_amounts > $this->getIncomeAmountMax())) {
+            if ($this->getIncomeAmountMax() === "") {
+                if ($this->getIncomeTimeMax() === "") {
+                    $can = true;
+                }else{
+                    if ($max['max_time'] >= $this->getIncomeTimeMax()){
+                        $can = false;
+                    }else{
+                        $can = true;
+                    }
+                }
+            }elseif ($this->getIncomeTimeMax() === ""){
+                if ($this->getIncomeAmountMax() === "") {
+                    $can = true;
+                }else{
+                    if ($max['max_amount']+$this->withdraw_amounts > $this->getIncomeAmountMax()){
+                        $can = false;
+                    }else{
+                        $can = true;
+                    }
+                }
+            }else{
+                if ($max['max_time'] >= $this->getIncomeTimeMax()){
                     $can = false;
+                }elseif ($max['max_amount']+$this->withdraw_amounts > $this->getIncomeAmountMax()) {
+                    $can = false;
+                }else{
+                    $can = true;
                 }
             }
         }
@@ -340,8 +364,8 @@ class IncomeWithdrawController extends ApiController
      */
     private function getIncomeAmountMax()
     {
-        $value = array_get($this->income_set,'max_roll_out_limit', 0);
-        return empty($value) ?: $value;
+        $value = array_get($this->income_set,'max_roll_out_limit');
+        return $value;
     }
 
     /**
@@ -350,8 +374,8 @@ class IncomeWithdrawController extends ApiController
      */
     private function getIncomeTimeMax()
     {
-        $value = array_get($this->income_set,'max_time_out_limit', 0);
-        return empty($value) ?: $value;
+        $value = array_get($this->income_set,'max_time_out_limit');
+        return $value;
     }
 
     /**

@@ -15,13 +15,24 @@ class MemberRelationEvent extends Event
 {
     protected $user;
 
-    public function __construct(Member $model)
+    // Yy edit:2019-03-06
+    protected $orderId;
+
+    public function __construct(Member $model, $orderId = 0)
     {
         $this->user = $model;
+        // Yy edit:2019-03-06
+        $this->orderId = $orderId;
     }
 
     public function getMemberModel()
     {
         return $this->user;
+    }
+
+    // Yy edit:2019-03-06
+    public function getOrderId()
+    {
+        return $this->orderId;
     }
 }

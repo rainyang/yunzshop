@@ -73,6 +73,9 @@ class RefundService
             case PayType::STORE_PAY:
                 $result = $this->backend();
                 break;
+            case PayType::YOP:
+                $result = $this->yopWechat();
+                break;
             default:
                 $result = false;
                 break;
@@ -150,6 +153,20 @@ class RefundService
         if ($result !== true) {
             throw new AdminException($result);
         }
+        return $result;
+    }
+
+    private function yopWechat()
+    {
+        $result = PayFactory::create($this->refundApply->order->pay_type_id)->doRefund($this->refundApply->order->hasOneOrderPay->pay_sn, $this->refundApply->order->hasOneOrderPay->amount, $this->refundApply->price);
+
+        if ($result !== true) {
+            throw new AdminException($result);
+        }
+
+        //退款状态设为完成
+        RefundOperationService::refundComplete(['id' => $this->refundApply->id]);
+
         return $result;
     }
 

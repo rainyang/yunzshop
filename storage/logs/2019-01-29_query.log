@@ -1,0 +1,343 @@
+2019-01-29 15:05:28: select * from `ims_yz_options` where `uniacid` = '6' or `uniacid` = 0
+2019-01-29 15:05:28: select * from `ims_yz_options` where `uniacid` = '6' or `uniacid` = 0
+2019-01-29 15:05:28: select * from `ims_yz_supplier` where `uid` is null limit 1
+2019-01-29 15:05:28: select * from `ims_yz_supplier` where `uid` is null limit 1
+2019-01-29 15:05:28: select * from `ims_modules` where `name` = 'yun_shop' and `type` = 'biz' limit 1
+2019-01-29 15:05:28: select * from `ims_uni_account` where `ims_uni_account`.`uniacid` = '6' limit 1
+2019-01-29 15:05:28: select * from `ims_yz_member_relation` where `ims_yz_member_relation`.`uniacid` = '6' limit 1
+2019-01-29 15:05:28: select * from `ims_yz_member_del_log` where `member_id` = '2455' and `ims_yz_member_del_log`.`deleted_at` is null limit 1
+2019-01-29 15:05:28: select * from `ims_yz_member` where `member_id` = '2455' and `ims_yz_member`.`uniacid` = '6' and `ims_yz_member`.`deleted_at` is null and `ims_yz_member`.`uniacid` = '6' limit 1
+2019-01-29 15:05:28: select * from `ims_yz_member` where `member_id` = '2455' and `ims_yz_member`.`uniacid` = '6' and `ims_yz_member`.`deleted_at` is null and `ims_yz_member`.`uniacid` = '6' limit 1
+2019-01-29 15:05:28: select * from `ims_yz_member` where `member_id` = '2455' and `ims_yz_member`.`uniacid` = '6' and `ims_yz_member`.`deleted_at` is null and `ims_yz_member`.`uniacid` = '6' limit 1
+2019-01-29 15:05:28: select * from `ims_yz_member_relation` where `ims_yz_member_relation`.`uniacid` = '6' limit 1
+2019-01-29 15:05:28: select * from `ims_yz_member` where `member_id` = 2455 and `ims_yz_member`.`uniacid` = '6' and `ims_yz_member`.`deleted_at` is null and `ims_yz_member`.`uniacid` = '6' limit 1
+2019-01-29 15:05:28: select count(*) as aggregate from `ims_yz_order` where `ims_yz_order`.`status` <> '-1' and `plugin_id` = '<>' and `plugin_id` < '900' and `plugin_id` = 33 and `ims_yz_order`.`is_member_deleted` = 0 and `ims_yz_order`.`uniacid` = '6'
+2019-01-29 15:07:10: select * from `ims_yz_options` where `uniacid` = '6' or `uniacid` = 0
+2019-01-29 15:07:11: select * from `ims_yz_options` where `uniacid` = '6' or `uniacid` = 0
+2019-01-29 15:07:11: select * from `ims_yz_supplier` where `uid` is null limit 1
+2019-01-29 15:07:11: select * from `ims_yz_supplier` where `uid` is null limit 1
+2019-01-29 15:07:11: select * from `ims_modules` where `name` = 'yun_shop' and `type` = 'biz' limit 1
+2019-01-29 15:07:11: select * from `ims_uni_account` where `ims_uni_account`.`uniacid` = '6' limit 1
+2019-01-29 15:07:11: select * from `ims_yz_member_relation` where `ims_yz_member_relation`.`uniacid` = '6' limit 1
+2019-01-29 15:07:11: select * from `ims_yz_member_del_log` where `member_id` = '2455' and `ims_yz_member_del_log`.`deleted_at` is null limit 1
+2019-01-29 15:07:11: select * from `ims_yz_member` where `member_id` = '2455' and `ims_yz_member`.`uniacid` = '6' and `ims_yz_member`.`deleted_at` is null and `ims_yz_member`.`uniacid` = '6' limit 1
+2019-01-29 15:07:11: select * from `ims_yz_member` where `member_id` = '2455' and `ims_yz_member`.`uniacid` = '6' and `ims_yz_member`.`deleted_at` is null and `ims_yz_member`.`uniacid` = '6' limit 1
+2019-01-29 15:07:11: select * from `ims_yz_member` where `member_id` = '2455' and `ims_yz_member`.`uniacid` = '6' and `ims_yz_member`.`deleted_at` is null and `ims_yz_member`.`uniacid` = '6' limit 1
+2019-01-29 15:07:11: select * from `ims_yz_member_relation` where `ims_yz_member_relation`.`uniacid` = '6' limit 1
+2019-01-29 15:07:11: select * from `ims_yz_member` where `member_id` = 2455 and `ims_yz_member`.`uniacid` = '6' and `ims_yz_member`.`deleted_at` is null and `ims_yz_member`.`uniacid` = '6' limit 1
+2019-01-29 15:07:11: select count(*) as aggregate from `ims_yz_order` where `ims_yz_order`.`status` <> '-1' and `plugin_id` < '900' and `plugin_id` = 33 and `ims_yz_order`.`is_member_deleted` = 0 and `ims_yz_order`.`uniacid` = '6'
+2019-01-29 15:07:11: select * from `ims_yz_order` where `ims_yz_order`.`status` <> '-1' and `plugin_id` < '900' and `plugin_id` = 33 and `ims_yz_order`.`is_member_deleted` = 0 and `ims_yz_order`.`uniacid` = '6' order by `ims_yz_order`.`id` desc limit 20 offset 0
+2019-01-29 15:07:11: select `order_id`, `goods_id`, `goods_price`, `total`, `price`, `thumb`, `title`, `goods_option_id`, `goods_option_title`, `comment_status` from `ims_yz_order_goods` where `ims_yz_order_goods`.`order_id` in (792, 791, 790, 789, 788, 787, 786, 785, 784, 783, 780, 726, 725)
+2019-01-29 15:07:11: select * from `ims_yz_pay_type` where `ims_yz_pay_type`.`id` in (5, 0)
+2019-01-29 15:07:11: select `order_id`, `hotel_id`, `enter_at`, `leave_at` from `ims_yz_plugin_hotel_order` where `ims_yz_plugin_hotel_order`.`order_id` in (792, 791, 790, 789, 788, 787, 786, 785, 784, 783, 780, 726, 725) and `ims_yz_plugin_hotel_order`.`deleted_at` is null
+2019-01-29 15:07:11: select * from `ims_yz_process` where `ims_yz_process`.`model_id` = 792 and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:07:27: select * from `ims_yz_options` where `uniacid` = '6' or `uniacid` = 0
+2019-01-29 15:07:28: select * from `ims_yz_options` where `uniacid` = '6' or `uniacid` = 0
+2019-01-29 15:07:28: select * from `ims_yz_supplier` where `uid` is null limit 1
+2019-01-29 15:07:28: select * from `ims_yz_supplier` where `uid` is null limit 1
+2019-01-29 15:07:28: select * from `ims_modules` where `name` = 'yun_shop' and `type` = 'biz' limit 1
+2019-01-29 15:07:28: select * from `ims_uni_account` where `ims_uni_account`.`uniacid` = '6' limit 1
+2019-01-29 15:07:28: select * from `ims_yz_member_relation` where `ims_yz_member_relation`.`uniacid` = '6' limit 1
+2019-01-29 15:07:28: select * from `ims_yz_member_del_log` where `member_id` = '2455' and `ims_yz_member_del_log`.`deleted_at` is null limit 1
+2019-01-29 15:07:28: select * from `ims_yz_member` where `member_id` = '2455' and `ims_yz_member`.`uniacid` = '6' and `ims_yz_member`.`deleted_at` is null and `ims_yz_member`.`uniacid` = '6' limit 1
+2019-01-29 15:07:28: select * from `ims_yz_member` where `member_id` = '2455' and `ims_yz_member`.`uniacid` = '6' and `ims_yz_member`.`deleted_at` is null and `ims_yz_member`.`uniacid` = '6' limit 1
+2019-01-29 15:07:28: select * from `ims_yz_member` where `member_id` = '2455' and `ims_yz_member`.`uniacid` = '6' and `ims_yz_member`.`deleted_at` is null and `ims_yz_member`.`uniacid` = '6' limit 1
+2019-01-29 15:07:28: select * from `ims_yz_member_relation` where `ims_yz_member_relation`.`uniacid` = '6' limit 1
+2019-01-29 15:07:28: select * from `ims_yz_member` where `member_id` = 2455 and `ims_yz_member`.`uniacid` = '6' and `ims_yz_member`.`deleted_at` is null and `ims_yz_member`.`uniacid` = '6' limit 1
+2019-01-29 15:07:28: select count(*) as aggregate from `ims_yz_order` where `ims_yz_order`.`status` <> '-1' and `plugin_id` < '900' and `plugin_id` = 33 and `ims_yz_order`.`is_member_deleted` = 0 and `ims_yz_order`.`uniacid` = '6'
+2019-01-29 15:07:28: select * from `ims_yz_order` where `ims_yz_order`.`status` <> '-1' and `plugin_id` < '900' and `plugin_id` = 33 and `ims_yz_order`.`is_member_deleted` = 0 and `ims_yz_order`.`uniacid` = '6' order by `ims_yz_order`.`id` desc limit 20 offset 0
+2019-01-29 15:07:28: select `order_id`, `goods_id`, `goods_price`, `total`, `price`, `thumb`, `title`, `goods_option_id`, `goods_option_title`, `comment_status` from `ims_yz_order_goods` where `ims_yz_order_goods`.`order_id` in (792, 791, 790, 789, 788, 787, 786, 785, 784, 783, 780, 726, 725)
+2019-01-29 15:07:28: select * from `ims_yz_pay_type` where `ims_yz_pay_type`.`id` in (5, 0)
+2019-01-29 15:07:28: select `order_id`, `hotel_id`, `enter_at`, `leave_at` from `ims_yz_plugin_hotel_order` where `ims_yz_plugin_hotel_order`.`order_id` in (792, 791, 790, 789, 788, 787, 786, 785, 784, 783, 780, 726, 725) and `ims_yz_plugin_hotel_order`.`deleted_at` is null
+2019-01-29 15:07:28: select * from `ims_yz_process` where `ims_yz_process`.`model_id` = 792 and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:07:28: select * from `ims_yz_hotel` where `ims_yz_hotel`.`id` = 1 and `ims_yz_hotel`.`id` is not null and `ims_yz_hotel`.`uniacid` = '6' limit 1
+2019-01-29 15:07:28: select * from `ims_mc_members` where `ims_mc_members`.`uid` = '2455' limit 1
+2019-01-29 15:07:28: select * from `ims_mc_members` where `ims_mc_members`.`uid` = '2455' limit 1
+2019-01-29 15:07:28: select * from `ims_yz_order_refund` where `ims_yz_order_refund`.`id` = 0 and `ims_yz_order_refund`.`id` is not null and `ims_yz_order_refund`.`uniacid` = '6' order by `created_at` desc limit 1
+2019-01-29 15:07:28: select `areaname` from `ims_yz_address` where `id` in (440000, 440100, 440111, 440111008)
+2019-01-29 15:07:28: select * from `ims_yz_process` where `ims_yz_process`.`model_id` = 791 and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:07:28: select * from `ims_yz_status` where `ims_yz_status`.`id` = 23 and `ims_yz_status`.`deleted_at` is null limit 1
+2019-01-29 15:07:28: select * from `ims_yz_hotel` where `ims_yz_hotel`.`id` = 1 and `ims_yz_hotel`.`id` is not null and `ims_yz_hotel`.`uniacid` = '6' limit 1
+2019-01-29 15:07:28: select `areaname` from `ims_yz_address` where `id` in (440000, 440100, 440111, 440111008)
+2019-01-29 15:07:28: select * from `ims_yz_flow` where `ims_yz_flow`.`id` = 6 limit 1
+2019-01-29 15:07:28: select * from `ims_yz_process` where `ims_yz_process`.`model_id` = 790 and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:07:28: select * from `ims_yz_hotel` where `ims_yz_hotel`.`id` = 1 and `ims_yz_hotel`.`id` is not null and `ims_yz_hotel`.`uniacid` = '6' limit 1
+2019-01-29 15:07:28: select * from `ims_yz_order_refund` where `ims_yz_order_refund`.`id` = 0 and `ims_yz_order_refund`.`id` is not null and `ims_yz_order_refund`.`uniacid` = '6' order by `created_at` desc limit 1
+2019-01-29 15:07:28: select `areaname` from `ims_yz_address` where `id` in (440000, 440100, 440111, 440111008)
+2019-01-29 15:07:28: select * from `ims_yz_flow` where `ims_yz_flow`.`id` = 6 limit 1
+2019-01-29 15:07:28: select * from `ims_yz_status` where `ims_yz_status`.`id` = 24 and `ims_yz_status`.`deleted_at` is null limit 1
+2019-01-29 15:07:28: select * from `ims_yz_process` where `ims_yz_process`.`model_id` = 789 and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:07:28: select * from `ims_yz_hotel` where `ims_yz_hotel`.`id` = 1 and `ims_yz_hotel`.`id` is not null and `ims_yz_hotel`.`uniacid` = '6' limit 1
+2019-01-29 15:07:28: select `areaname` from `ims_yz_address` where `id` in (440000, 440100, 440111, 440111008)
+2019-01-29 15:07:28: select * from `ims_yz_flow` where `ims_yz_flow`.`id` = 6 limit 1
+2019-01-29 15:07:28: select * from `ims_yz_status` where `ims_yz_status`.`id` = 22 and `ims_yz_status`.`deleted_at` is null limit 1
+2019-01-29 15:07:28: select * from `ims_yz_process` where `ims_yz_process`.`model_id` = 788 and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:07:28: select * from `ims_yz_status` where `ims_yz_status`.`id` = 23 and `ims_yz_status`.`deleted_at` is null limit 1
+2019-01-29 15:07:28: select * from `ims_yz_hotel` where `ims_yz_hotel`.`id` = 1 and `ims_yz_hotel`.`id` is not null and `ims_yz_hotel`.`uniacid` = '6' limit 1
+2019-01-29 15:07:28: select `areaname` from `ims_yz_address` where `id` in (440000, 440100, 440111, 440111008)
+2019-01-29 15:07:28: select * from `ims_yz_flow` where `ims_yz_flow`.`id` = 6 limit 1
+2019-01-29 15:07:28: select * from `ims_yz_process` where `ims_yz_process`.`model_id` = 787 and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:07:28: select * from `ims_yz_hotel` where `ims_yz_hotel`.`id` = 1 and `ims_yz_hotel`.`id` is not null and `ims_yz_hotel`.`uniacid` = '6' limit 1
+2019-01-29 15:07:28: select * from `ims_yz_order_refund` where `ims_yz_order_refund`.`id` = 0 and `ims_yz_order_refund`.`id` is not null and `ims_yz_order_refund`.`uniacid` = '6' order by `created_at` desc limit 1
+2019-01-29 15:07:28: select `areaname` from `ims_yz_address` where `id` in (440000, 440100, 440111, 440111008)
+2019-01-29 15:07:28: select * from `ims_yz_flow` where `ims_yz_flow`.`id` = 6 limit 1
+2019-01-29 15:07:28: select * from `ims_yz_status` where `ims_yz_status`.`id` = 24 and `ims_yz_status`.`deleted_at` is null limit 1
+2019-01-29 15:07:28: select * from `ims_yz_flow` where `ims_yz_flow`.`id` = 6 limit 1
+2019-01-29 15:07:28: select * from `ims_yz_status` where `ims_yz_status`.`id` = 24 and `ims_yz_status`.`deleted_at` is null limit 1
+2019-01-29 15:07:28: select * from `ims_yz_flow` where `ims_yz_flow`.`id` = 6 limit 1
+2019-01-29 15:07:28: select * from `ims_yz_status` where `ims_yz_status`.`id` = 24 and `ims_yz_status`.`deleted_at` is null limit 1
+2019-01-29 15:07:28: select * from `ims_yz_process` where `ims_yz_process`.`model_id` = 786 and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:07:28: select * from `ims_yz_hotel` where `ims_yz_hotel`.`id` = 1 and `ims_yz_hotel`.`id` is not null and `ims_yz_hotel`.`uniacid` = '6' limit 1
+2019-01-29 15:07:28: select `areaname` from `ims_yz_address` where `id` in (440000, 440100, 440111, 440111008)
+2019-01-29 15:07:28: select * from `ims_yz_process` where `ims_yz_process`.`model_id` = 785 and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:07:28: select * from `ims_yz_hotel` where `ims_yz_hotel`.`id` = 1 and `ims_yz_hotel`.`id` is not null and `ims_yz_hotel`.`uniacid` = '6' limit 1
+2019-01-29 15:07:28: select `areaname` from `ims_yz_address` where `id` in (440000, 440100, 440111, 440111008)
+2019-01-29 15:07:28: select * from `ims_yz_flow` where `ims_yz_flow`.`id` = 6 limit 1
+2019-01-29 15:07:28: select * from `ims_yz_status` where `ims_yz_status`.`id` = 22 and `ims_yz_status`.`deleted_at` is null limit 1
+2019-01-29 15:07:28: select * from `ims_yz_process` where `ims_yz_process`.`model_id` = 784 and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:07:28: select * from `ims_yz_hotel` where `ims_yz_hotel`.`id` = 1 and `ims_yz_hotel`.`id` is not null and `ims_yz_hotel`.`uniacid` = '6' limit 1
+2019-01-29 15:07:28: select * from `ims_yz_order_refund` where `ims_yz_order_refund`.`id` = 0 and `ims_yz_order_refund`.`id` is not null and `ims_yz_order_refund`.`uniacid` = '6' order by `created_at` desc limit 1
+2019-01-29 15:07:28: select `areaname` from `ims_yz_address` where `id` in (440000, 440100, 440111, 440111008)
+2019-01-29 15:07:28: select * from `ims_yz_flow` where `ims_yz_flow`.`id` = 6 limit 1
+2019-01-29 15:07:28: select * from `ims_yz_status` where `ims_yz_status`.`id` = 22 and `ims_yz_status`.`deleted_at` is null limit 1
+2019-01-29 15:07:28: select * from `ims_yz_process` where `ims_yz_process`.`model_id` = 783 and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:07:28: select * from `ims_yz_status` where `ims_yz_status`.`id` = 23 and `ims_yz_status`.`deleted_at` is null limit 1
+2019-01-29 15:07:28: select * from `ims_yz_hotel` where `ims_yz_hotel`.`id` = 1 and `ims_yz_hotel`.`id` is not null and `ims_yz_hotel`.`uniacid` = '6' limit 1
+2019-01-29 15:07:28: select * from `ims_yz_order_refund` where `ims_yz_order_refund`.`id` = 0 and `ims_yz_order_refund`.`id` is not null and `ims_yz_order_refund`.`uniacid` = '6' order by `created_at` desc limit 1
+2019-01-29 15:07:28: select `areaname` from `ims_yz_address` where `id` in (440000, 440100, 440111, 440111008)
+2019-01-29 15:07:28: select * from `ims_yz_flow` where `ims_yz_flow`.`id` = 6 limit 1
+2019-01-29 15:07:28: select * from `ims_yz_process` where `ims_yz_process`.`model_id` = 780 and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:07:28: select * from `ims_yz_hotel` where `ims_yz_hotel`.`id` = 1 and `ims_yz_hotel`.`id` is not null and `ims_yz_hotel`.`uniacid` = '6' limit 1
+2019-01-29 15:07:28: select `areaname` from `ims_yz_address` where `id` in (440000, 440100, 440111, 440111008)
+2019-01-29 15:07:28: select * from `ims_yz_flow` where `ims_yz_flow`.`id` = 6 limit 1
+2019-01-29 15:07:28: select * from `ims_yz_status` where `ims_yz_status`.`id` = 22 and `ims_yz_status`.`deleted_at` is null limit 1
+2019-01-29 15:07:28: select * from `ims_yz_process` where `ims_yz_process`.`model_id` = 726 and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:07:28: select * from `ims_yz_order_refund` where `ims_yz_order_refund`.`id` = 0 and `ims_yz_order_refund`.`id` is not null and `ims_yz_order_refund`.`uniacid` = '6' order by `created_at` desc limit 1
+2019-01-29 15:07:28: select * from `ims_yz_process` where `ims_yz_process`.`model_id` = 725 and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:07:28: select * from `ims_yz_order_refund` where `ims_yz_order_refund`.`id` = 0 and `ims_yz_order_refund`.`id` is not null and `ims_yz_order_refund`.`uniacid` = '6' order by `created_at` desc limit 1
+2019-01-29 15:08:20: select * from `ims_yz_options` where `uniacid` = 6 or `uniacid` = 0
+2019-01-29 15:08:21: select * from `ims_yz_area_dividend_agent` where `ims_yz_area_dividend_agent`.`uniacid` = 6 and `user_id` = '1' and `ims_yz_area_dividend_agent`.`deleted_at` is null limit 1
+2019-01-29 15:08:21: select * from `ims_yz_hotel` where `user_uid` = '1' and `ims_yz_hotel`.`uniacid` = 6 limit 1
+2019-01-29 15:08:21: select * from `ims_yz_options` where `uniacid` = 6 or `uniacid` = 0
+2019-01-29 15:08:21: select * from `ims_yz_store` where `user_uid` = '1' and `ims_yz_store`.`uniacid` = 6 limit 1
+2019-01-29 15:08:21: select * from `ims_yz_supplier` where `uid` = '1' limit 1
+2019-01-29 15:08:21: select * from `ims_yz_supplier` where `uid` = '1' limit 1
+2019-01-29 15:08:21: select * from `ims_modules` where `name` = 'yun_shop' and `type` = 'biz' limit 1
+2019-01-29 15:08:21: select * from `ims_yz_hotel_category` where `ims_yz_hotel_category`.`uniacid` = 6
+2019-01-29 15:08:21: select count(*) as aggregate from `ims_yz_hotel` where `ims_yz_hotel`.`uniacid` = 6
+2019-01-29 15:08:21: select * from `ims_yz_hotel` where `ims_yz_hotel`.`uniacid` = 6 order by `id` desc limit 10 offset 0
+2019-01-29 15:08:21: select * from `ims_yz_hotel_setting` where `ims_yz_hotel_setting`.`hotel_id` in (1) and `key` = 'hotel'
+2019-01-29 15:08:21: select * from `ims_yz_address` where `id` = 440000 limit 1
+2019-01-29 15:08:21: select * from `ims_yz_address` where `id` = 440100 limit 1
+2019-01-29 15:08:21: select * from `ims_yz_address` where `id` = 440111 limit 1
+2019-01-29 15:08:21: select * from `ims_yz_street` where `id` = 440111008 limit 1
+2019-01-29 15:08:21: select * from `ims_mc_members` where `ims_mc_members`.`uid` = 2462 and `ims_mc_members`.`uid` is not null limit 1
+2019-01-29 15:08:21: select * from `ims_yz_hotel_category` where `ims_yz_hotel_category`.`id` = 2 and `ims_yz_hotel_category`.`id` is not null and `ims_yz_hotel_category`.`uniacid` = 6 limit 1
+2019-01-29 15:08:21: select * from `ims_yz_options` where `uniacid` = 6 or `uniacid` = 0
+2019-01-29 15:08:21: select * from `ims_yz_supplier` where `uid` = '1' limit 1
+2019-01-29 15:08:22: select * from `ims_yz_options` where `uniacid` = 6 or `uniacid` = 0
+2019-01-29 15:08:22: select * from `ims_yz_area_dividend_agent` where `ims_yz_area_dividend_agent`.`uniacid` = 6 and `user_id` = '1' and `ims_yz_area_dividend_agent`.`deleted_at` is null limit 1
+2019-01-29 15:08:22: select * from `ims_yz_hotel` where `user_uid` = '1' and `ims_yz_hotel`.`uniacid` = 6 limit 1
+2019-01-29 15:08:22: select * from `ims_yz_options` where `uniacid` = 6 or `uniacid` = 0
+2019-01-29 15:08:22: select * from `ims_yz_store` where `user_uid` = '1' and `ims_yz_store`.`uniacid` = 6 limit 1
+2019-01-29 15:08:22: select * from `ims_yz_supplier` where `uid` = '1' limit 1
+2019-01-29 15:08:22: select * from `ims_yz_supplier` where `uid` = '1' limit 1
+2019-01-29 15:08:22: select * from `ims_modules` where `name` = 'yun_shop' and `type` = 'biz' limit 1
+2019-01-29 15:08:22: select * from `ims_yz_address` where `level` = '1'
+2019-01-29 15:08:23: select * from `ims_yz_options` where `uniacid` = 6 or `uniacid` = 0
+2019-01-29 15:08:23: select * from `ims_yz_area_dividend_agent` where `ims_yz_area_dividend_agent`.`uniacid` = 6 and `user_id` = '1' and `ims_yz_area_dividend_agent`.`deleted_at` is null limit 1
+2019-01-29 15:08:23: select * from `ims_yz_hotel` where `user_uid` = '1' and `ims_yz_hotel`.`uniacid` = 6 limit 1
+2019-01-29 15:08:23: select * from `ims_yz_options` where `uniacid` = 6 or `uniacid` = 0
+2019-01-29 15:08:23: select * from `ims_yz_store` where `user_uid` = '1' and `ims_yz_store`.`uniacid` = 6 limit 1
+2019-01-29 15:08:23: select * from `ims_yz_supplier` where `uid` = '1' limit 1
+2019-01-29 15:08:23: select * from `ims_yz_supplier` where `uid` = '1' limit 1
+2019-01-29 15:08:23: select * from `ims_modules` where `name` = 'yun_shop' and `type` = 'biz' limit 1
+2019-01-29 15:08:23: select * from `ims_yz_address` where `parentid` = '0' and `level` = '2'
+2019-01-29 15:08:23: select * from `ims_yz_options` where `uniacid` = 6 or `uniacid` = 0
+2019-01-29 15:08:23: select * from `ims_yz_area_dividend_agent` where `ims_yz_area_dividend_agent`.`uniacid` = 6 and `user_id` = '1' and `ims_yz_area_dividend_agent`.`deleted_at` is null limit 1
+2019-01-29 15:08:23: select * from `ims_yz_hotel` where `user_uid` = '1' and `ims_yz_hotel`.`uniacid` = 6 limit 1
+2019-01-29 15:08:23: select * from `ims_yz_options` where `uniacid` = 6 or `uniacid` = 0
+2019-01-29 15:08:24: select * from `ims_yz_store` where `user_uid` = '1' and `ims_yz_store`.`uniacid` = 6 limit 1
+2019-01-29 15:08:24: select * from `ims_yz_supplier` where `uid` = '1' limit 1
+2019-01-29 15:08:24: select * from `ims_yz_supplier` where `uid` = '1' limit 1
+2019-01-29 15:08:24: select * from `ims_modules` where `name` = 'yun_shop' and `type` = 'biz' limit 1
+2019-01-29 15:08:24: select * from `ims_yz_address` where `parentid` = '0' and `level` = '3'
+2019-01-29 15:08:24: select * from `ims_yz_options` where `uniacid` = 6 or `uniacid` = 0
+2019-01-29 15:08:24: select * from `ims_yz_area_dividend_agent` where `ims_yz_area_dividend_agent`.`uniacid` = 6 and `user_id` = '1' and `ims_yz_area_dividend_agent`.`deleted_at` is null limit 1
+2019-01-29 15:08:24: select * from `ims_yz_hotel` where `user_uid` = '1' and `ims_yz_hotel`.`uniacid` = 6 limit 1
+2019-01-29 15:08:24: select * from `ims_yz_options` where `uniacid` = 6 or `uniacid` = 0
+2019-01-29 15:08:24: select * from `ims_yz_store` where `user_uid` = '1' and `ims_yz_store`.`uniacid` = 6 limit 1
+2019-01-29 15:08:24: select * from `ims_yz_supplier` where `uid` = '1' limit 1
+2019-01-29 15:08:24: select * from `ims_yz_supplier` where `uid` = '1' limit 1
+2019-01-29 15:08:24: select * from `ims_modules` where `name` = 'yun_shop' and `type` = 'biz' limit 1
+2019-01-29 15:08:24: select * from `ims_yz_street` where `parentid` = '0' and `level` = '4'
+2019-01-29 15:08:32: select * from `ims_yz_options` where `uniacid` = 6 or `uniacid` = 0
+2019-01-29 15:08:33: select * from `ims_yz_area_dividend_agent` where `ims_yz_area_dividend_agent`.`uniacid` = 6 and `user_id` = '1' and `ims_yz_area_dividend_agent`.`deleted_at` is null limit 1
+2019-01-29 15:08:33: select * from `ims_yz_hotel` where `user_uid` = '1' and `ims_yz_hotel`.`uniacid` = 6 limit 1
+2019-01-29 15:08:33: select * from `ims_yz_options` where `uniacid` = 6 or `uniacid` = 0
+2019-01-29 15:08:33: select * from `ims_yz_store` where `user_uid` = '1' and `ims_yz_store`.`uniacid` = 6 limit 1
+2019-01-29 15:08:33: select * from `ims_yz_supplier` where `uid` = '1' limit 1
+2019-01-29 15:08:33: select * from `ims_yz_supplier` where `uid` = '1' limit 1
+2019-01-29 15:08:33: select * from `ims_modules` where `name` = 'yun_shop' and `type` = 'biz' limit 1
+2019-01-29 15:08:33: select `id`, `group_name`, `uniacid` from `ims_yz_member_group` where `ims_yz_member_group`.`uniacid` = 6 and `ims_yz_member_group`.`deleted_at` is null
+2019-01-29 15:08:33: select * from `ims_yz_member_level` where `ims_yz_member_level`.`uniacid` = 6 and `ims_yz_member_level`.`deleted_at` is null and `ims_yz_member_level`.`uniacid` = 6
+2019-01-29 15:08:33: select count(*) as aggregate from `ims_mc_members` left join `ims_yz_member_del_log` on `ims_mc_members`.`uid` = `ims_yz_member_del_log`.`member_id` where `ims_mc_members`.`uniacid` = 6 and exists (select * from `ims_yz_member` where `ims_yz_member`.`member_id` = `ims_mc_members`.`uid` and `deleted_at` is null and `ims_yz_member`.`deleted_at` is null and `ims_yz_member`.`uniacid` = 6) and `ims_yz_member_del_log`.`member_id` is null
+2019-01-29 15:08:33: select `uid`, `avatar`, `nickname`, `realname`, `mobile`, `createtime`, `credit1`, `credit2` from `ims_mc_members` left join `ims_yz_member_del_log` on `ims_mc_members`.`uid` = `ims_yz_member_del_log`.`member_id` where `ims_mc_members`.`uniacid` = 6 and exists (select * from `ims_yz_member` where `ims_yz_member`.`member_id` = `ims_mc_members`.`uid` and `deleted_at` is null and `ims_yz_member`.`deleted_at` is null and `ims_yz_member`.`uniacid` = 6) and `ims_yz_member_del_log`.`member_id` is null order by `uid` desc limit 20 offset 0
+2019-01-29 15:08:33: select `member_id`, `parent_id`, `inviter`, `is_agent`, `group_id`, `level_id`, `is_black`, `withdraw_mobile` from `ims_yz_member` where `ims_yz_member`.`member_id` in (2476, 2475, 2473, 2472, 2471, 2470, 2464, 2462, 2461, 2460, 2459, 2458, 2457, 2456, 2455) and `ims_yz_member`.`deleted_at` is null and `ims_yz_member`.`uniacid` = 6
+2019-01-29 15:08:33: select `id`, `group_name` from `ims_yz_member_group` where `ims_yz_member_group`.`id` in (0) and `ims_yz_member_group`.`uniacid` = 6 and `ims_yz_member_group`.`deleted_at` is null
+2019-01-29 15:08:33: select `id`, `level_name` from `ims_yz_member_level` where `ims_yz_member_level`.`id` in (7, 6, 0) and `ims_yz_member_level`.`uniacid` = 6 and `ims_yz_member_level`.`deleted_at` is null and `ims_yz_member_level`.`uniacid` = 6
+2019-01-29 15:08:33: select `uid`, `avatar`, `nickname` from `ims_mc_members` where `ims_mc_members`.`uid` in (2454, 2455, 2464, 2456) and `ims_mc_members`.`uniacid` = 6
+2019-01-29 15:08:33: select `uid`, `follow` as `followed` from `ims_mc_mapping_fans` where `ims_mc_mapping_fans`.`uid` in (2476, 2475, 2473, 2472, 2471, 2470, 2464, 2462, 2461, 2460, 2459, 2458, 2457, 2456, 2455) and `ims_mc_mapping_fans`.`uniacid` = 6
+2019-01-29 15:08:33: select uid, count(uid) as total, sum(price) as sum from `ims_yz_order` where `ims_yz_order`.`uid` in (2476, 2475, 2473, 2472, 2471, 2470, 2464, 2462, 2461, 2460, 2459, 2458, 2457, 2456, 2455) and `ims_yz_order`.`uniacid` = 6 and `ims_yz_order`.`uniacid` = 6 group by `uid`
+2019-01-29 15:08:33: select * from `ims_yz_process` where `ims_yz_process`.`model_id` is null and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:08:33: select * from `ims_yz_process` where `ims_yz_process`.`model_id` is null and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:08:33: select * from `ims_yz_process` where `ims_yz_process`.`model_id` is null and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:08:33: select * from `ims_yz_process` where `ims_yz_process`.`model_id` is null and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:08:33: select * from `ims_yz_process` where `ims_yz_process`.`model_id` is null and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:08:33: select * from `ims_yz_process` where `ims_yz_process`.`model_id` is null and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:08:33: select * from `ims_yz_process` where `ims_yz_process`.`model_id` is null and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:08:33: select * from `ims_yz_options` where `uniacid` = 6 or `uniacid` = 0
+2019-01-29 15:08:33: select * from `ims_yz_supplier` where `uid` = '1' limit 1
+2019-01-29 15:08:48: select * from `ims_yz_options` where `uniacid` = '6' or `uniacid` = 0
+2019-01-29 15:08:48: select * from `ims_yz_options` where `uniacid` = '6' or `uniacid` = 0
+2019-01-29 15:08:48: select * from `ims_yz_supplier` where `uid` is null limit 1
+2019-01-29 15:08:48: select * from `ims_yz_supplier` where `uid` is null limit 1
+2019-01-29 15:08:48: select * from `ims_modules` where `name` = 'yun_shop' and `type` = 'biz' limit 1
+2019-01-29 15:08:48: select * from `ims_uni_account` where `ims_uni_account`.`uniacid` = '6' limit 1
+2019-01-29 15:08:48: select * from `ims_yz_member_relation` where `ims_yz_member_relation`.`uniacid` = '6' limit 1
+2019-01-29 15:08:48: select * from `ims_yz_member_del_log` where `member_id` = '2462' and `ims_yz_member_del_log`.`deleted_at` is null limit 1
+2019-01-29 15:08:48: select * from `ims_yz_member` where `member_id` = '2462' and `ims_yz_member`.`uniacid` = '6' and `ims_yz_member`.`deleted_at` is null and `ims_yz_member`.`uniacid` = '6' limit 1
+2019-01-29 15:08:48: select * from `ims_yz_member` where `member_id` = '2462' and `ims_yz_member`.`uniacid` = '6' and `ims_yz_member`.`deleted_at` is null and `ims_yz_member`.`uniacid` = '6' limit 1
+2019-01-29 15:08:48: select * from `ims_yz_member` where `member_id` = '2462' and `ims_yz_member`.`uniacid` = '6' and `ims_yz_member`.`deleted_at` is null and `ims_yz_member`.`uniacid` = '6' limit 1
+2019-01-29 15:08:48: select * from `ims_yz_member_relation` where `ims_yz_member_relation`.`uniacid` = '6' limit 1
+2019-01-29 15:08:48: select * from `ims_yz_member` where `member_id` = 2462 and `ims_yz_member`.`uniacid` = '6' and `ims_yz_member`.`deleted_at` is null and `ims_yz_member`.`uniacid` = '6' limit 1
+2019-01-29 15:08:48: select count(*) as aggregate from `ims_yz_order` where `ims_yz_order`.`status` <> '-1' and `plugin_id` < '900' and `plugin_id` = 33 and `ims_yz_order`.`is_member_deleted` = 0 and `ims_yz_order`.`uniacid` = '6'
+2019-01-29 15:08:48: select * from `ims_yz_order` where `ims_yz_order`.`status` <> '-1' and `plugin_id` < '900' and `plugin_id` = 33 and `ims_yz_order`.`is_member_deleted` = 0 and `ims_yz_order`.`uniacid` = '6' order by `ims_yz_order`.`id` desc limit 20 offset 0
+2019-01-29 15:08:48: select `order_id`, `goods_id`, `goods_price`, `total`, `price`, `thumb`, `title`, `goods_option_id`, `goods_option_title`, `comment_status` from `ims_yz_order_goods` where `ims_yz_order_goods`.`order_id` in (792, 791, 790, 789, 788, 787, 786, 785, 784, 783, 780, 726, 725)
+2019-01-29 15:08:48: select * from `ims_yz_pay_type` where `ims_yz_pay_type`.`id` in (5, 0)
+2019-01-29 15:08:49: select `order_id`, `hotel_id`, `enter_at`, `leave_at` from `ims_yz_plugin_hotel_order` where `ims_yz_plugin_hotel_order`.`order_id` in (792, 791, 790, 789, 788, 787, 786, 785, 784, 783, 780, 726, 725) and `ims_yz_plugin_hotel_order`.`deleted_at` is null
+2019-01-29 15:08:49: select * from `ims_yz_process` where `ims_yz_process`.`model_id` = 792 and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:08:49: select * from `ims_yz_hotel` where `ims_yz_hotel`.`id` = 1 and `ims_yz_hotel`.`id` is not null and `ims_yz_hotel`.`uniacid` = '6' limit 1
+2019-01-29 15:08:49: select * from `ims_mc_members` where `ims_mc_members`.`uid` = '2462' limit 1
+2019-01-29 15:08:49: select * from `ims_yz_order_refund` where `ims_yz_order_refund`.`id` = 0 and `ims_yz_order_refund`.`id` is not null and `ims_yz_order_refund`.`uniacid` = '6' order by `created_at` desc limit 1
+2019-01-29 15:08:49: select `areaname` from `ims_yz_address` where `id` in (440000, 440100, 440111, 440111008)
+2019-01-29 15:08:49: select * from `ims_yz_process` where `ims_yz_process`.`model_id` = 791 and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:08:49: select * from `ims_yz_status` where `ims_yz_status`.`id` = 23 and `ims_yz_status`.`deleted_at` is null limit 1
+2019-01-29 15:08:49: select * from `ims_yz_hotel` where `ims_yz_hotel`.`id` = 1 and `ims_yz_hotel`.`id` is not null and `ims_yz_hotel`.`uniacid` = '6' limit 1
+2019-01-29 15:08:49: select `areaname` from `ims_yz_address` where `id` in (440000, 440100, 440111, 440111008)
+2019-01-29 15:08:49: select * from `ims_yz_flow` where `ims_yz_flow`.`id` = 6 limit 1
+2019-01-29 15:08:49: select * from `ims_yz_process` where `ims_yz_process`.`model_id` = 790 and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:08:49: select * from `ims_yz_hotel` where `ims_yz_hotel`.`id` = 1 and `ims_yz_hotel`.`id` is not null and `ims_yz_hotel`.`uniacid` = '6' limit 1
+2019-01-29 15:08:49: select * from `ims_yz_order_refund` where `ims_yz_order_refund`.`id` = 0 and `ims_yz_order_refund`.`id` is not null and `ims_yz_order_refund`.`uniacid` = '6' order by `created_at` desc limit 1
+2019-01-29 15:08:49: select `areaname` from `ims_yz_address` where `id` in (440000, 440100, 440111, 440111008)
+2019-01-29 15:08:49: select * from `ims_yz_flow` where `ims_yz_flow`.`id` = 6 limit 1
+2019-01-29 15:08:49: select * from `ims_yz_status` where `ims_yz_status`.`id` = 24 and `ims_yz_status`.`deleted_at` is null limit 1
+2019-01-29 15:08:49: select * from `ims_yz_process` where `ims_yz_process`.`model_id` = 789 and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:08:49: select * from `ims_yz_hotel` where `ims_yz_hotel`.`id` = 1 and `ims_yz_hotel`.`id` is not null and `ims_yz_hotel`.`uniacid` = '6' limit 1
+2019-01-29 15:08:49: select `areaname` from `ims_yz_address` where `id` in (440000, 440100, 440111, 440111008)
+2019-01-29 15:08:49: select * from `ims_yz_flow` where `ims_yz_flow`.`id` = 6 limit 1
+2019-01-29 15:08:49: select * from `ims_yz_status` where `ims_yz_status`.`id` = 22 and `ims_yz_status`.`deleted_at` is null limit 1
+2019-01-29 15:08:49: select * from `ims_yz_process` where `ims_yz_process`.`model_id` = 788 and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:08:49: select * from `ims_yz_status` where `ims_yz_status`.`id` = 23 and `ims_yz_status`.`deleted_at` is null limit 1
+2019-01-29 15:08:49: select * from `ims_yz_hotel` where `ims_yz_hotel`.`id` = 1 and `ims_yz_hotel`.`id` is not null and `ims_yz_hotel`.`uniacid` = '6' limit 1
+2019-01-29 15:08:49: select `areaname` from `ims_yz_address` where `id` in (440000, 440100, 440111, 440111008)
+2019-01-29 15:08:49: select * from `ims_yz_flow` where `ims_yz_flow`.`id` = 6 limit 1
+2019-01-29 15:08:49: select * from `ims_yz_process` where `ims_yz_process`.`model_id` = 787 and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:08:49: select * from `ims_yz_hotel` where `ims_yz_hotel`.`id` = 1 and `ims_yz_hotel`.`id` is not null and `ims_yz_hotel`.`uniacid` = '6' limit 1
+2019-01-29 15:08:49: select * from `ims_yz_order_refund` where `ims_yz_order_refund`.`id` = 0 and `ims_yz_order_refund`.`id` is not null and `ims_yz_order_refund`.`uniacid` = '6' order by `created_at` desc limit 1
+2019-01-29 15:08:49: select `areaname` from `ims_yz_address` where `id` in (440000, 440100, 440111, 440111008)
+2019-01-29 15:08:49: select * from `ims_yz_flow` where `ims_yz_flow`.`id` = 6 limit 1
+2019-01-29 15:08:49: select * from `ims_yz_status` where `ims_yz_status`.`id` = 24 and `ims_yz_status`.`deleted_at` is null limit 1
+2019-01-29 15:08:49: select * from `ims_yz_flow` where `ims_yz_flow`.`id` = 6 limit 1
+2019-01-29 15:08:49: select * from `ims_yz_status` where `ims_yz_status`.`id` = 24 and `ims_yz_status`.`deleted_at` is null limit 1
+2019-01-29 15:08:49: select * from `ims_yz_flow` where `ims_yz_flow`.`id` = 6 limit 1
+2019-01-29 15:08:49: select * from `ims_yz_status` where `ims_yz_status`.`id` = 24 and `ims_yz_status`.`deleted_at` is null limit 1
+2019-01-29 15:08:49: select * from `ims_yz_process` where `ims_yz_process`.`model_id` = 786 and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:08:49: select * from `ims_yz_hotel` where `ims_yz_hotel`.`id` = 1 and `ims_yz_hotel`.`id` is not null and `ims_yz_hotel`.`uniacid` = '6' limit 1
+2019-01-29 15:08:49: select `areaname` from `ims_yz_address` where `id` in (440000, 440100, 440111, 440111008)
+2019-01-29 15:08:49: select * from `ims_yz_process` where `ims_yz_process`.`model_id` = 785 and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:08:49: select * from `ims_yz_hotel` where `ims_yz_hotel`.`id` = 1 and `ims_yz_hotel`.`id` is not null and `ims_yz_hotel`.`uniacid` = '6' limit 1
+2019-01-29 15:08:49: select `areaname` from `ims_yz_address` where `id` in (440000, 440100, 440111, 440111008)
+2019-01-29 15:08:49: select * from `ims_yz_flow` where `ims_yz_flow`.`id` = 6 limit 1
+2019-01-29 15:08:49: select * from `ims_yz_status` where `ims_yz_status`.`id` = 22 and `ims_yz_status`.`deleted_at` is null limit 1
+2019-01-29 15:08:49: select * from `ims_yz_process` where `ims_yz_process`.`model_id` = 784 and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:08:49: select * from `ims_yz_hotel` where `ims_yz_hotel`.`id` = 1 and `ims_yz_hotel`.`id` is not null and `ims_yz_hotel`.`uniacid` = '6' limit 1
+2019-01-29 15:08:49: select * from `ims_yz_order_refund` where `ims_yz_order_refund`.`id` = 0 and `ims_yz_order_refund`.`id` is not null and `ims_yz_order_refund`.`uniacid` = '6' order by `created_at` desc limit 1
+2019-01-29 15:08:49: select `areaname` from `ims_yz_address` where `id` in (440000, 440100, 440111, 440111008)
+2019-01-29 15:08:49: select * from `ims_yz_flow` where `ims_yz_flow`.`id` = 6 limit 1
+2019-01-29 15:08:49: select * from `ims_yz_status` where `ims_yz_status`.`id` = 22 and `ims_yz_status`.`deleted_at` is null limit 1
+2019-01-29 15:08:49: select * from `ims_yz_process` where `ims_yz_process`.`model_id` = 783 and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:08:49: select * from `ims_yz_status` where `ims_yz_status`.`id` = 23 and `ims_yz_status`.`deleted_at` is null limit 1
+2019-01-29 15:08:49: select * from `ims_yz_hotel` where `ims_yz_hotel`.`id` = 1 and `ims_yz_hotel`.`id` is not null and `ims_yz_hotel`.`uniacid` = '6' limit 1
+2019-01-29 15:08:49: select * from `ims_yz_order_refund` where `ims_yz_order_refund`.`id` = 0 and `ims_yz_order_refund`.`id` is not null and `ims_yz_order_refund`.`uniacid` = '6' order by `created_at` desc limit 1
+2019-01-29 15:08:49: select `areaname` from `ims_yz_address` where `id` in (440000, 440100, 440111, 440111008)
+2019-01-29 15:08:49: select * from `ims_yz_flow` where `ims_yz_flow`.`id` = 6 limit 1
+2019-01-29 15:08:49: select * from `ims_yz_process` where `ims_yz_process`.`model_id` = 780 and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:08:49: select * from `ims_yz_hotel` where `ims_yz_hotel`.`id` = 1 and `ims_yz_hotel`.`id` is not null and `ims_yz_hotel`.`uniacid` = '6' limit 1
+2019-01-29 15:08:49: select `areaname` from `ims_yz_address` where `id` in (440000, 440100, 440111, 440111008)
+2019-01-29 15:08:49: select * from `ims_yz_flow` where `ims_yz_flow`.`id` = 6 limit 1
+2019-01-29 15:08:49: select * from `ims_yz_status` where `ims_yz_status`.`id` = 22 and `ims_yz_status`.`deleted_at` is null limit 1
+2019-01-29 15:08:49: select * from `ims_yz_process` where `ims_yz_process`.`model_id` = 726 and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:08:49: select * from `ims_mc_members` where `ims_mc_members`.`uid` = '2462' limit 1
+2019-01-29 15:08:49: select * from `ims_yz_process` where `ims_yz_process`.`model_id` = 725 and `ims_yz_process`.`model_id` is not null and `model_type` = 'app\common\models\Order' and `ims_yz_process`.`deleted_at` is null
+2019-01-29 15:37:55: select * from `ims_yz_options` where `uniacid` = 6 or `uniacid` = 0
+2019-01-29 15:37:55: select * from `ims_yz_area_dividend_agent` where `ims_yz_area_dividend_agent`.`uniacid` = 6 and `user_id` = '1' and `ims_yz_area_dividend_agent`.`deleted_at` is null limit 1
+2019-01-29 15:37:55: select * from `ims_yz_hotel` where `user_uid` = '1' and `ims_yz_hotel`.`uniacid` = 6 limit 1
+2019-01-29 15:37:55: select * from `ims_yz_options` where `uniacid` = 6 or `uniacid` = 0
+2019-01-29 15:37:55: select * from `ims_yz_store` where `user_uid` = '1' and `ims_yz_store`.`uniacid` = 6 limit 1
+2019-01-29 15:37:55: select * from `ims_yz_supplier` where `uid` = '1' limit 1
+2019-01-29 15:37:55: select * from `ims_yz_supplier` where `uid` = '1' limit 1
+2019-01-29 15:37:55: select * from `ims_modules` where `name` = 'yun_shop' and `type` = 'biz' limit 1
+2019-01-29 15:37:56: select * from `ims_yz_yop_setting` where `ims_yz_yop_setting`.`uniacid` = 6 and `ims_yz_yop_setting`.`deleted_at` is null limit 1
+2019-01-29 15:37:56: select * from `ims_yz_options` where `uniacid` = 6 or `uniacid` = 0
+2019-01-29 15:37:56: select * from `ims_yz_supplier` where `uid` = '1' limit 1
+2019-01-29 15:37:58: select * from `ims_yz_options` where `uniacid` = 6 or `uniacid` = 0
+2019-01-29 15:37:59: select * from `ims_yz_area_dividend_agent` where `ims_yz_area_dividend_agent`.`uniacid` = 6 and `user_id` = '1' and `ims_yz_area_dividend_agent`.`deleted_at` is null limit 1
+2019-01-29 15:37:59: select * from `ims_yz_hotel` where `user_uid` = '1' and `ims_yz_hotel`.`uniacid` = 6 limit 1
+2019-01-29 15:37:59: select * from `ims_yz_options` where `uniacid` = 6 or `uniacid` = 0
+2019-01-29 15:37:59: select * from `ims_yz_store` where `user_uid` = '1' and `ims_yz_store`.`uniacid` = 6 limit 1
+2019-01-29 15:37:59: select * from `ims_yz_supplier` where `uid` = '1' limit 1
+2019-01-29 15:37:59: select * from `ims_yz_supplier` where `uid` = '1' limit 1
+2019-01-29 15:37:59: select * from `ims_modules` where `name` = 'yun_shop' and `type` = 'biz' limit 1
+2019-01-29 15:37:59: select count(*) as aggregate from `ims_yz_yop_pay_order` where `ims_yz_yop_pay_order`.`uniacid` = 6
+2019-01-29 15:37:59: select * from `ims_yz_yop_pay_order` where `ims_yz_yop_pay_order`.`uniacid` = 6 order by `id` desc limit 15 offset 0
+2019-01-29 15:37:59: select * from `ims_yz_options` where `uniacid` = 6 or `uniacid` = 0
+2019-01-29 15:37:59: select * from `ims_yz_supplier` where `uid` = '1' limit 1
+2019-01-29 15:49:47: select * from `ims_yz_options` where `uniacid` = '6' or `uniacid` = 0
+2019-01-29 15:49:47: select * from `ims_yz_options` where `uniacid` = '6' or `uniacid` = 0
+2019-01-29 15:49:47: select * from `ims_yz_supplier` where `uid` is null limit 1
+2019-01-29 15:49:47: select * from `ims_yz_supplier` where `uid` is null limit 1
+2019-01-29 15:49:55: select * from `ims_yz_options` where `uniacid` = '6' or `uniacid` = 0
+2019-01-29 15:49:55: select * from `ims_yz_options` where `uniacid` = '6' or `uniacid` = 0
+2019-01-29 15:49:55: select * from `ims_yz_supplier` where `uid` is null limit 1
+2019-01-29 15:49:55: select * from `ims_yz_supplier` where `uid` is null limit 1
+2019-01-29 15:50:12: select * from `ims_yz_options` where `uniacid` = '6' or `uniacid` = 0
+2019-01-29 15:50:12: select * from `ims_yz_options` where `uniacid` = '6' or `uniacid` = 0
+2019-01-29 15:50:12: select * from `ims_yz_supplier` where `uid` is null limit 1
+2019-01-29 15:50:12: select * from `ims_yz_supplier` where `uid` is null limit 1
+2019-01-29 15:50:23: select * from `ims_yz_options` where `uniacid` = '6' or `uniacid` = 0
+2019-01-29 15:50:23: select * from `ims_yz_options` where `uniacid` = '6' or `uniacid` = 0
+2019-01-29 15:50:23: select * from `ims_yz_supplier` where `uid` is null limit 1
+2019-01-29 15:50:23: select * from `ims_yz_supplier` where `uid` is null limit 1
+2019-01-29 15:50:23: select * from `ims_modules` where `name` = 'yun_shop' and `type` = 'biz' limit 1
+2019-01-29 15:50:23: select * from `ims_yz_yop_setting` where `ims_yz_yop_setting`.`uniacid` = '6' and `ims_yz_yop_setting`.`deleted_at` is null limit 1
+2019-01-29 15:50:23: select * from `ims_yz_yop_pay_order` where `ims_yz_yop_pay_order`.`uniacid` = '6' and `pay_sn` = 'PN20190122163329pB' limit 1
+2019-01-29 15:50:39: select * from `ims_yz_options` where `uniacid` = '6' or `uniacid` = 0
+2019-01-29 15:50:40: select * from `ims_yz_options` where `uniacid` = '6' or `uniacid` = 0
+2019-01-29 15:50:40: select * from `ims_yz_supplier` where `uid` is null limit 1
+2019-01-29 15:50:40: select * from `ims_yz_supplier` where `uid` is null limit 1
+2019-01-29 15:50:40: select * from `ims_modules` where `name` = 'yun_shop' and `type` = 'biz' limit 1
+2019-01-29 15:50:40: select * from `ims_yz_yop_setting` where `ims_yz_yop_setting`.`uniacid` = '6' and `ims_yz_yop_setting`.`deleted_at` is null limit 1
+2019-01-29 15:50:40: select * from `ims_yz_yop_pay_order` where `ims_yz_yop_pay_order`.`uniacid` = '6' and `pay_sn` = 'PN20190122163329p' limit 1
+2019-01-29 15:51:45: select * from `ims_yz_options` where `uniacid` = '6' or `uniacid` = 0
+2019-01-29 15:51:45: select * from `ims_yz_options` where `uniacid` = '6' or `uniacid` = 0
+2019-01-29 15:51:46: select * from `ims_yz_supplier` where `uid` is null limit 1
+2019-01-29 15:51:46: select * from `ims_yz_supplier` where `uid` is null limit 1
+2019-01-29 15:51:46: select * from `ims_modules` where `name` = 'yun_shop' and `type` = 'biz' limit 1
+2019-01-29 15:51:53: select * from `ims_yz_options` where `uniacid` = '6' or `uniacid` = 0
+2019-01-29 15:51:53: select * from `ims_yz_options` where `uniacid` = '6' or `uniacid` = 0
+2019-01-29 15:51:53: select * from `ims_yz_supplier` where `uid` is null limit 1
+2019-01-29 15:51:53: select * from `ims_yz_supplier` where `uid` is null limit 1
+2019-01-29 15:51:53: select * from `ims_modules` where `name` = 'yun_shop' and `type` = 'biz' limit 1
+2019-01-29 15:51:53: select * from `ims_yz_yop_setting` where `ims_yz_yop_setting`.`uniacid` = '6' and `ims_yz_yop_setting`.`deleted_at` is null limit 1
+2019-01-29 15:51:53: select * from `ims_yz_yop_pay_order` where `ims_yz_yop_pay_order`.`uniacid` = '6' and `pay_sn` = 'PN20190122163329pB' limit 1

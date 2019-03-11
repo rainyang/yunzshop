@@ -12,7 +12,6 @@ use app\common\components\BaseController;
 use app\backend\modules\charts\models\Supplier;
 use app\common\services\ExportService;
 use Illuminate\Support\Facades\DB;
-use Yunshop\Supplier\supplier\models\SupplierOrderJoinOrder;
 
 class SupplierIncomeController extends BaseController
 {
@@ -92,9 +91,15 @@ class SupplierIncomeController extends BaseController
         ])->render();
     }
 
-    //todo 以后有问题再用关联关系
+    /**
+     * @return string
+     * @throws \Throwable
+     */
     public function index()
     {
+        if (!app('plugins')->isEnabled('supplier')) {
+            return view('charts.merchant.supplier',[])->render();
+        }
         $searchTime = [];
         $search = \YunShop::request()->search;
         if ($search['is_time'] && $search['time']) {
@@ -108,12 +113,15 @@ class SupplierIncomeController extends BaseController
                 ->where('status', 1)
                 ->with([
                     'hasOneSupplierOrder' => function($q) use($searchTime) {
-                        $q->whereHas('hasOneOrder',function ($q) {
-                            $q->where('status',3);
-                        })->whereBetween('created_at',$searchTime)->selectRaw('sum(if(apply_status=0,supplier_profit,0)) as un_withdraw_amount, supplier_id')->groupBy('supplier_id');
+                        $q->whereHas('hasOneOrder',function ($q) use ($searchTime) {
+                            $q->where('status',3)->whereBetween('finish_time',$searchTime);
+                        })->selectRaw('sum(if(apply_status=0,supplier_profit,0)) as un_withdraw_amount, supplier_id')->groupBy('supplier_id');
                     },
                     'hasOneSupplierWithdraw' => function($q) use($searchTime) {
-                        $q->whereBetween('created_at',$searchTime)->selectRaw('sum(if(status in (3),money,0)) as withdraw_amount, sum(if(status in (1,2),money,0)) as withdrawing_amount, supplier_id')->groupBy('supplier_id');
+                        $q->whereBetween('updated_at',$searchTime)->selectRaw('sum(if(status in (3),money,0)) as withdraw_amount, supplier_id')->groupBy('supplier_id');
+                    },
+                    'hasOneSupplierWithdrawing' => function($q) use($searchTime) {
+                        $q->whereBetween('created_at',$searchTime)->selectRaw('sum(if(status in (1,2),money,0)) as withdrawing_amount, supplier_id')->groupBy('supplier_id');
                     },
                     'hasManyOrder' => function($q) use($searchTime) {
                         $q->whereBetween('finish_time',$searchTime)->where('status', 3);
@@ -131,7 +139,10 @@ class SupplierIncomeController extends BaseController
                         })->selectRaw('sum(if(apply_status=0,supplier_profit,0)) as un_withdraw_amount, supplier_id')->groupBy('supplier_id');
                     },
                     'hasOneSupplierWithdraw' => function($q) {
-                        $q->selectRaw('sum(if(status in (3),money,0)) as withdraw_amount, sum(if(status in (1,2),money,0)) as withdrawing_amount, supplier_id')->groupBy('supplier_id');
+                        $q->selectRaw('sum(if(status in (3),money,0)) as withdraw_amount, supplier_id')->groupBy('supplier_id');
+                    },
+                    'hasOneSupplierWithdrawing' => function($q) {
+                        $q->selectRaw('sum(if(status in (1,2),money,0)) as withdrawing_amount, supplier_id')->groupBy('supplier_id');
                     },
                     'hasManyOrder' => function($q) {
                         $q->where('status', 3);
@@ -146,7 +157,7 @@ class SupplierIncomeController extends BaseController
             $list[$key]['name'] = $value->username;
             $list[$key]['un_withdraw'] = $value->hasOneSupplierOrder->un_withdraw_amount ?: '0.00';
             $list[$key]['withdraw'] = $value->hasOneSupplierWithdraw->withdraw_amount ?: '0.00';
-            $list[$key]['withdrawing'] = $value->hasOneSupplierWithdraw->withdrawing_amount ?: '0.00';
+            $list[$key]['withdrawing'] = $value->hasOneSupplierWithdrawing->withdrawing_amount ?: '0.00';
             $list[$key]['price'] = $value->hasManyOrder->sum('price');
         }
 
