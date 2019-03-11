@@ -13,8 +13,8 @@ class CreateTableUniacidApplication extends Migration
      */
     public function up()
     {
-       if (!Schema::hasTable('uniacid_app')) {
-            Schema::create('uniacid_app', function (Blueprint $table) {
+       if (!Schema::hasTable('yz_uniacid_app')) {
+            Schema::create('yz_uniacid_app', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('uniacid')->index()->nullable();
                 $table->string('img')->comment('应用图片');
@@ -43,9 +43,9 @@ class CreateTableUniacidApplication extends Migration
      */
     public function down()
     {
-        if (Schema::hasTable('uniacid_app')) {
+        if (Schema::hasTable('yz_uniacid_app')) {
 
-            Schema::dropIfExists('uniacid_app');
+            Schema::dropIfExists('yz_uniacid_app');
         }
     }
 }

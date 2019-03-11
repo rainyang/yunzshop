@@ -9,7 +9,7 @@
 namespace app\platform\controllers;
 
 use app\common\exceptions\AdminException;
-use app\platform\models\AdminUser;
+use app\platform\modules\user\models\AdminUser;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\RegistersUsers;
 

@@ -11,7 +11,7 @@ class UniacidApp extends BaseModel
 {
 	use SoftDeletes;
 	
-	protected $table = 'uniacid_app';
+	protected $table = 'yz_uniacid_app';
 	protected $search_fields = ['name', 'validity_time'];
   	protected $guarded = [''];
   	protected $dates = ['validity_time'];
@@ -48,20 +48,20 @@ class UniacidApp extends BaseModel
             'validity_time' => "有效期",
         ];
     }
-    
+ 
     public function rules()
     {
     	return [
             'img' => 'url',
-            'url' => 'url',
-            'name' => 'string|max:10',
-            'kind' => 'string|max:10',
-            'type' => 'numeric',
-            'title' => 'string|max:10',
-            'descr' => 'string|max:40',
-            'status' => 'numeric',
+            'url' => '',
+            'name' => 'max:10',
+            'kind' => '',
+            'type' => '',
+            'title' => '',
+            'descr' => '',
+            'status' => '',
             'version' => '',
-            'validity_time' => '',
+            'validity_time' => 'numeric',
         ];
     }
 

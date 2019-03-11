@@ -16,11 +16,13 @@ use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\events\order\AfterOrderCreatedImmediatelyEvent;
 
 use app\common\events\PayLog;
+use app\common\events\UserActionEvent;
 use app\common\events\WechatProcessor;
 use app\common\listeners\charts\OrderBonusListeners;
 use app\common\listeners\member\MemberCreateRelationEventListener;
 use app\common\listeners\PayLogListener;
 use app\common\listeners\point\PointListener;
+use app\common\listeners\UserActionListener;
 use app\common\listeners\WechatProcessorListener;
 use app\common\listeners\withdraw\WithdrawAuditListener;
 use app\common\listeners\withdraw\WithdrawPayListener;
@@ -100,7 +102,10 @@ class EventServiceProvider extends ServiceProvider
         ],
         AfterMemberReceivedCoupon::class=>[
             AfterMemberReceivedCouponListener::class
-        ]
+        ],
+        UserActionEvent::class => [
+            UserActionListener::class,
+        ],
     ];
     /**
      * 注册监听者类

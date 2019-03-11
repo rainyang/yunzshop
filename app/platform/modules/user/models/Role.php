@@ -6,11 +6,11 @@
  * Time: 下午5:03
  */
 
-namespace app\platform\models;
+namespace app\platform\modules\user\models;
 
-use Illuminate\Database\Eloquent\Model;
+use app\common\models\BaseModel;
 
-class Role extends Model
+class Role extends BaseModel
 {
     protected $table='yz_admin_roles';
     //

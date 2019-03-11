@@ -43,7 +43,7 @@ class ApplicationController extends BaseController
     public function add()
     {
         $app = new UniacidApp();
-
+        // dd(request());
         $data = $this->fillData(request()->input());
 
         $app->fill($data);
@@ -51,8 +51,8 @@ class ApplicationController extends BaseController
         $validator = $app->validator();
 
         if ($validator->fails()) {
-        
-            // return $this->error($validator->messages());
+
+            return $this->errorJson($validator->messages());
         
         } else {
 
@@ -96,7 +96,7 @@ class ApplicationController extends BaseController
 
             if ($validator->fails()) {
 
-                return $this->error($validator->messages());
+                return $this->errorJson($validator->messages());
             
             } else {
 
@@ -203,18 +203,19 @@ class ApplicationController extends BaseController
 
     private function fillData($data)
     {
+        // dd($data);
         return [
-            'img' => request()->img ?  : 'http://www.baidu.com',
-            'url' => request()->url,
-            'name' => request()->name ?  : 'test',
-            'kind' => request()->kind ?  : '',
-            'type' => request()->type ?  : 2,
-            'title' => request()->title ?  : '',
-            'descr' => request()->descr ?  : '',
-            'status' => request()->status ?  : '',
+            'img' => $data['img'] ?  : 'http://www.baidu.com',
+            'url' => $data['url'],
+            'name' => $data['name'] ?  : 'test',
+            'kind' => $data['kind'] ?  : '',
+            'type' => $data['type'] ?  : 2,
+            'title' => $data['title'] ?  : '',
+            'descr' => $data['descr'] ?  : '',
+            'status' => $data['status'] ?  : '',
             // 'uniacid' => $app->insertGetId() + 1,
-            'version' => request()->version ?  : 1.0,
-            'validity_time' => request()->validity_time ?  : 0,
+            'version' => $data['version'] ?  : 0.00,
+            'validity_time' => $data['validity_time'] ?  : 0,
         ];
     }
 
@@ -223,7 +224,7 @@ class ApplicationController extends BaseController
             header('Access-Control-Allow-Origin:*');
 
             $file = request()->file('file');
-            
+
             if (!file_exists('up.txt')) {
                 
                 touch('up.txt');
@@ -267,9 +268,9 @@ class ApplicationController extends BaseController
                 \Log::info('up_url', $url);
             
             // UploadedFile::store($url);
-            // Storage::put($url, $content);
+            $res = Storage::put($url, $content);
 
-            $res = \Storage::url();
+            // $res = \Storage::url();
                 \Log::info('up_res', $res);
             
             closedir($ch);
@@ -277,9 +278,10 @@ class ApplicationController extends BaseController
             return $this->successJson('上传成功', asset($res.'app/public/'.$filename));
     }
 
-    public function upload()
+    public function uploadFile()
     {
         $file = request()->file('file');
+        \Log::info('file', $file);
 
         if (!$file) {
             return $this->errorJson('请传入正确参数.');
@@ -287,17 +289,56 @@ class ApplicationController extends BaseController
         if ($file->isValid()) {
             // 获取文件相关信息
             $originalName = $file->getClientOriginalName(); // 文件原名
+            \Log::info('up_originalName', $originalName);
+
             $realPath = $file->getRealPath();   //临时文件的绝对路径
+            \Log::info('up_realPath', $realPath);
+
             $ext = $file->getClientOriginalExtension();
+            \Log::info('up_ext', $ext);
+
+            $path = config('filesystems.disks.public')['root'].'/';
+            \Log::info('up_path', $path);
+
             $newOriginalName = md5($originalName . str_random(6)) . '.' . $ext;
+            \Log::info('up_newOriginalName', $newOriginalName);
 
-            \Storage::disk('image')->put($newOriginalName, file_get_contents($realPath));
+            \Storage::put($path.$newOriginalName, file_get_contents($realPath));
 
-            return $this->successJson('上传成功',
-                \Storage::disk('image')->url($newOriginalName));
+            return $this->successJson('上传成功',\Storage::url($path.$newOriginalName) );
+            // return $this->successJson('上传成功', asset($path.'app/public/'.$newOriginalName));
         }
     }
 
+    public function upload()
+    {
+        $file = request()->file('file');
+        \Log::info('file', $file);
+
+        if (!$file) {
+            return $this->errorJson('请传入正确参数');
+        }
+        if ($file->isValid()) {
+            $originalName = $file->getClientOriginalName(); // 文件原名
+            \Log::info('originalName', $originalName);
+            $realPath = $file->getRealPath();   //临时文件的绝对路径
+            \Log::info('realPath', $realPath);
+
+            $ext = $file->getClientOriginalExtension();
+            \Log::info('ext', $ext);
+            
+            // $path = config('filesystems.disks.public')['root'].'/';   //后期存放路径
+
+            $newOriginalName = md5($originalName . str_random(6)) . '.' . $ext;
+            \Log::info('newOriginalName', $newOriginalName);
+
+            // $res = \Storage::disk('image')->put($newOriginalName, file_get_contents($realPath));
+            $res = \Storage::disk('public')->put($newOriginalName, file_get_contents($realPath));
+            \Log::info('res-path', [$res, \Storage::disk('public')]);
+
+            return $this->successJson('上传成功', \Storage::disk('public')->url($newOriginalName));
+        }
+    }
 
     public function temp()
     {
