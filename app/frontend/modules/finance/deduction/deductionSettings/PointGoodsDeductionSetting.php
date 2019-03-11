@@ -36,10 +36,20 @@ class PointGoodsDeductionSetting implements DeductionSettingInterface
         return \Setting::get('point.set.point_freight');
     }
 
-    public function isDisable()
+    public function isDispatchDisable()
     {
         // 商品抵扣设置为0,则商品不参与抵扣
         return $this->setting->max_point_deduct === '0';
+    }
+
+    public function isMaxDisable()
+    {
+        return $this->setting->max_point_deduct === '0';
+    }
+
+    public function isMinDisable()
+    {
+        return $this->setting->min_point_deduct === '0';
     }
 
     public function getMaxFixedAmount()
