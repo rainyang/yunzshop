@@ -266,11 +266,14 @@
                                             {{--@if( !empty($order_goods['goods_option_title']))<br/><span--}}
                                                     {{--class="label label-primary sizebg">{{$order_goods['goods_option_title']}}</span>--}}
                                             {{--@if( !empty($order_goods['goods_option_title']))<br/>--}}
-                                            @if($order_goods['goods']['has_option']==1)<br/>
-                                              <span style="font-size: 6px;color: #AEB9C0">{{$order_goods['goods_option_title']}}</span>
+                                            @if($order_goods['goods']['has_option']==1)
+                                                @if(!empty($order_goods['goods_option_title']))<br/>
+                                                      <span style="font-size: 6px;color: #AEB9C0">{{$order_goods['goods_option_title']}}</span>
+                                                @endif
+                                              <br/><span style="font-size: 6px;color: #AEB9C0">{{$order_goods['goods_sn']}}</span>
                                             @endif
                                             {{--<br/>{{$order_goods['goods_sn']}}--}}
-                                            <br/><span style="font-size: 6px;color: #AEB9C0">{{$order_goods['goods_sn']}}</span>
+
                                         </td>
                                         <td class="price">
                                             原价: {{ number_format($order_goods['goods_price']/$order_goods['total'],2)}}
