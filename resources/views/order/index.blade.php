@@ -261,7 +261,7 @@
                                         <td class="goods_info">
                                             <img src="{{tomedia($order_goods['thumb'])}}">
                                         </td>
-                                        <td class="top" valign='top'>
+                                        <td class="top" valign='top' style="font-size: 6px;color: #AEB9C0">
                                             <a href="{{yzWebUrl('goods.goods.edit', array('id' => $order_goods['goods_id']))}}">{{$order_goods['title']}}</a>
                                             {{--@if( !empty($order_goods['goods_option_title']))<br/><span--}}
                                                     {{--class="label label-primary sizebg">{{$order_goods['goods_option_title']}}</span>--}}
@@ -270,9 +270,8 @@
                                                 @if(!empty($order_goods['goods_option_title']))<br/>
                                                       <span style="font-size: 6px;color: #AEB9C0">{{$order_goods['goods_option_title']}}</span>
                                                 @endif
-                                              <br/><span style="font-size: 6px;color: #AEB9C0">{{$order_goods['goods_sn']}}</span>
                                             @endif
-                                            {{--<br/>{{$order_goods['goods_sn']}}--}}
+                                            <br/>{{$order_goods['goods_sn']}}
 
                                         </td>
                                         <td class="price">
