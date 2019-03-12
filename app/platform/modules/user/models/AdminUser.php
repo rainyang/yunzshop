@@ -194,4 +194,63 @@ class AdminUser extends Authenticatable
 
 //        return $result;
     }
+
+    /**
+     * 检索会员信息
+     *
+     * @param $parame
+     * @return mixed
+     */
+    public static function searchUsers($parame, $credit = null)
+    {
+        if (!isset($credit)) {
+            $credit = 'credit2';
+        }
+        $result = self::select(['uid', 'avatar', 'nickname', 'realname', 'mobile', 'createtime',
+            'credit1', 'credit2'])
+            ->uniacid();
+
+        if (!empty($parame['search']['mid'])) {
+            $result = $result->where('uid', $parame['search']['mid']);
+        }
+        if (isset($parame['search']['searchtime']) && $parame['search']['searchtime'] == 1) {
+            if ($parame['search']['times']['start'] != '请选择' && $parame['search']['times']['end'] != '请选择') {
+                $range = [strtotime($parame['search']['times']['start']), strtotime($parame['search']['times']['end'])];
+                $result = $result->whereBetween('createtime', $range);
+            }
+        }
+
+        if (!empty($parame['search']['realname'])) {
+            $result = $result->where(function ($w) use ($parame) {
+                $w->where('nickname', 'like', '%' . $parame['search']['realname'] . '%')
+                    ->orWhere('realname', 'like', '%' . $parame['search']['realname'] . '%')
+                    ->orWhere('mobile', 'like', $parame['search']['realname'] . '%');
+            });
+        }
+
+        if (!empty($parame['search']['groupid']) || !empty($parame['search']['level']) || $parame['search']['isblack'] != ''
+            || $parame['search']['isagent'] != ''
+        ) {
+
+            $result = $result->whereHas('yzMember', function ($q) use ($parame) {
+                if (!empty($parame['search']['groupid'])) {
+                    $q = $q->where('group_id', $parame['search']['groupid']);
+                }
+
+                if (!empty($parame['search']['level'])) {
+                    $q = $q->where('level_id', $parame['search']['level']);
+                }
+
+                if ($parame['search']['isblack'] != '') {
+                    $q->where('is_black', $parame['search']['isblack']);
+                }
+
+                if ($parame['search']['isagent'] != '') {
+                    $q->where('is_agent', $parame['search']['isagent']);
+                }
+            });
+        }
+
+        return $result;
+    }
 }

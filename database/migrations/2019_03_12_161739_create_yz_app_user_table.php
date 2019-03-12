@@ -18,8 +18,8 @@ class CreateYzAppUserTable extends Migration
                 $table->increments('id');
                 $table->integer('uniacid')->comment('平台id');
                 $table->integer('uid')->comment('用户id');
-                $table->string('role')->default('')->comment('用户角色');
-                $table->integer('rank')->default(0);
+                $table->string('role')->comment('用户角色(manager:管理员; operator: 操作员; clerk:操作员)');
+                $table->integer('rank')->default(0)->comment('公众号及小程序置顶排序');
                 $table->integer('created_at')->nullable();
                 $table->integer('updated_at')->nullable();
                 $table->integer('deleted_at')->nullable();

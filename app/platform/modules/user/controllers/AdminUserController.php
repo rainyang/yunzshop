@@ -18,7 +18,7 @@ use app\platform\modules\user\requests\AdminUserCreateRequest;
 use app\platform\modules\user\requests\AdminUserUpdateRequest;
 use Illuminate\Http\Request;
 
-class UserController extends BaseController
+class AdminUserController extends BaseController
 {
     protected $fields = [
         'name' => '',

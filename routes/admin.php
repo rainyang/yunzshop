@@ -61,15 +61,15 @@ Route::group(['middleware' => ['globalparams', 'auth:admin', 'authAdmin']], func
     // 用户管理
     Route::group(['prefix' => 'user', 'namespace' => 'platform\modules\user\controllers'], function (){
         // 用户列表
-        Route::get('index', 'UserController@index');
+        Route::get('index', 'AdminUserController@index');
         // 添加用户
-        Route::any('create', 'UserController@create');
+        Route::any('create', 'AdminUserController@create');
         // 用户编辑
-        Route::any('edit', 'UserController@edit');
+        Route::any('edit', 'AdminUserController@edit');
         // 用户修改状态
-        Route::any('status', 'UserController@status');
+        Route::any('status', 'AdminUserController@status');
         // 用户修改密码
-        Route::any('change', 'UserController@change');
+        Route::any('change', 'AdminUserController@change');
     });
 
     Route::group(['namespace' => 'platform\modules\application\controllers'], function () {

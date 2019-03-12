@@ -91,7 +91,7 @@
                                 <button class="btn btn-block btn-success"><i class="fa fa-search"></i> 搜索</button>
                             </div>
 
-                            <a class="btn btn-info " href="/index.php/admin/user/add"><i class="fa fa-plus"></i> 添加用户</a>
+                            <a class="btn btn-info " href="/index.php/admin/user/create"><i class="fa fa-plus"></i> 添加用户</a>
 
                         </form>
                     </div>
