@@ -20,6 +20,7 @@ class AfterOrderPaidListener
         \Log::debug('AfterOrderPaidEvent'.$model->id);
 
         \Log::debug('推广资格-' . $model->uid);
-        MemberRelation::checkOrderPay($model->uid);
+        // Yy edit:2019-03-06
+        MemberRelation::checkOrderPay($model->uid, $model->id);
     }
 }

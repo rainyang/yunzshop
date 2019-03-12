@@ -477,19 +477,36 @@ class Member extends BackendModel
     public static function createRealtion($member_id, $upperMemberId = NULL)
     {
         $model = MemberShopInfo::getMemberShopInfo($member_id);
+        \Log::info('registe_1: member_id, ', [$member_id, $model]);
         $code_mid = self::getMemberIdForInviteCode();
+        \Log::info('registe_2: mid', $code_mid);
 
         if (!is_null($code_mid)) {
 
             //邀请码关系链
             $codemodel = new MemberInvitationCodeLog();
+            \Log::info('registe_3_code', \YunShop::request()->invite_code);
+            
+            if (!$codemodel->where('member_id', $member_id)->where('mid', $code_mid)->first()) {
+                \Log::info('add_codemodel');
+                $codemodel->uniacid = \YunShop::app()->uniacid;
+                \Log::info('--uniacid', \YunShop::app()->uniacid);
+                $codemodel->invitation_code = trim(\YunShop::request()->invite_code);
+                \Log::info('--invitation_code', \YunShop::request()->invite_code);
 
-            $codemodel->uniacid = $uniacid;
-            $codemodel->invitation_code = trim(\YunShop::request()->invite_code);
-            $codemodel->member_id = $member_id; //使用者id
-            $codemodel->mid = $code_mid; //邀请人id
-      
-            $codemodel->save();
+                $codemodel->member_id = $member_id; //使用者id
+                \Log::info('--member_id', $member_id);
+
+                $codemodel->mid = $code_mid; //邀请人id
+                \Log::info('--mid', $code_mid);
+
+                $codemodel->save();
+                \Log::info('registe_4', $codemodel->save());
+            
+            } else {
+                \Log::info('已存在');
+            }
+           
 
             file_put_contents(storage_path("logs/" . date('Y-m-d') . "_invitecode.log"), print_r($member_id . '-'. \YunShop::request()->invite_code . '-' . $code_mid . '-reg' . PHP_EOL, 1), FILE_APPEND);
         }

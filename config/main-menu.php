@@ -946,7 +946,7 @@ return [
             ],
 
             'discount_set' => [
-                'name'              => '折扣设置',
+                'name'              => '批量操作',
                 'url'               => 'discount.batch-discount.index',
                 'url_params'        => '',
                 'permit'            => 1,
@@ -1032,6 +1032,31 @@ return [
                     ],
                 ],
 
+                    'goods_dispatch_freight'=> [
+                        'name'              => '运费批量设置',
+                        'url'               => 'discount.batch-dispatch.freight',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => '',
+                        'sort'              => '2',
+                        'item'              => 'goods_dispatch_freight-set',
+                        'parents'           => ['Goods','discount_set'],
+                        'child'             => [
+                            'goods_dispatch_set_freight' => [
+                                'name'              => '折扣设置',
+                                'url'               => 'discount.batch-dispatch.freight-set',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => 'fa-sitemap',
+                                'sort'              => '2',
+                                'item'              => 'goods_dispatch_set_freight',
+                                'parents'           => ['Goods', 'discount_set', 'goods_dispatch_freight-set'],
+                                'child'             => []
+                            ],
+                        ],
+                    ],
             ],
         ],
         ],
@@ -1557,21 +1582,21 @@ return [
                 'child'         => [
                 ],
             ],
-            // 'member_invited'     => [
-            //     'name'          => '会员邀请码',
-            //     'url'           => 'member.member_invited.index',
-            //     'url_params'    => '',
-            //     'permit'        => 0,
-            //     'menu'          => 1,
-            //     'icon'          => 'fa-circle-o',
-            //     'sort'          => 0,
-            //     'left_first_show'   => 1,
-            //     'left_second_show'  => 1,
-            //     'item'          => 'member_invited',
-            //     'parents'       => ['Member'],
-            //     'child'         => [
-            //     ],
-            // ],
+            'member_invited'     => [
+                'name'          => '会员邀请码',
+                'url'           => 'member.member_invited.index',
+                'url_params'    => '',
+                'permit'        => 0,
+                'menu'          => 1,
+                'icon'          => 'fa-circle-o',
+                'sort'          => 0,
+                'left_first_show'   => 1,
+                'left_second_show'  => 1,
+                'item'          => 'member_invited',
+                'parents'       => ['Member'],
+                'child'         => [
+                ],
+            ],
         ],
     ],
 
