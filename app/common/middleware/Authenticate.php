@@ -27,16 +27,12 @@ class Authenticate
     public function handle($request, \Closure $next, $guard = null)
     {
         if (Auth::guard($guard)->guest()) {
-            if ($request->ajax() || $request->wantsJson()) {
-                //return response('Unauthorized.', 401);
-            } else {
-                $login_path = [
-                    'admin' => '/#/login',
-                ];
-                $url = empty($guard) ? '/login' : (isset($login_path[$guard]) ? $login_path[$guard] : '/login');
+            $login_path = [
+                'admin' => '/#/login',
+            ];
+            $url = empty($guard) ? '/login' : (isset($login_path[$guard]) ? $login_path[$guard] : '/login');
 
-                return $this->errorJson('请登录', ['login_status' => 1, 'login_url' => $url]);
-            }
+            return $this->errorJson('请登录', ['login_status' => 1, 'login_url' => $url]);
         }
 
         return $next($request);
