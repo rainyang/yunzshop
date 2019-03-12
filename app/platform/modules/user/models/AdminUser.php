@@ -94,9 +94,9 @@ class AdminUser extends Authenticatable
         $result = $verify_res->save();
         if ($result) {
             Cache::put('admin_users', $data, 3600);
-            if (request()->path() != "admin/user/create") {
+            if (request()->path() == "admin/user/create") {
                 event(new UserActionEvent(self::class, $verify_res->id, 1, '添加了用户' . $verify_res->name));
-            } elseif (request()->path() != "admin/user/edit") {
+            } elseif (request()->path() == "admin/user/edit") {
                 event(new UserActionEvent(AdminUser::class, $verify_res->id, 3, '编辑了用户' . $verify_res->name));
             }
 
