@@ -74,7 +74,7 @@ Route::group(['middleware' => ['globalparams', 'auth:admin', 'authAdmin']], func
 
     Route::group(['namespace' => 'platform\modules\application\controllers'], function () {
 		// 平台管理
-		Route::any('application/', 'ApplicationController@index');
+        Route::any('application/', 'ApplicationController@index');
 		//修改应用
 		Route::post('application/update/{id}', 'ApplicationController@update');
 		//启用禁用或恢复应用及跳转链接
