@@ -27,9 +27,18 @@ class UniacidApp extends BaseModel
   			$query = $query->where('name', 'like', '%'.$keyword['name'].'%');
   		}
 
-  		if ($keyword['validity_time']) {
-  			$query = $query->where('validity_time', $keyword['validity_time']);
+  		if ($keyword['maturity']) {
+  			
+  			if ($keyword['maturity'] == 1) {
+  				// 到期
+	  			$query = $query->where(date('Y-m-d', 'validity_time'), '=', date('Y-m-d'));
+	  		}
+
+	  		if ($keyword['maturity'] == 2) {
+	  			$query = $query->where(date('Y-m-d', 'validity_time'), '!=', date('Y-m-d'));
+	  		}
   		}
+
   		return $query;
   	}
 

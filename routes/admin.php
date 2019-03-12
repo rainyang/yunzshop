@@ -87,7 +87,7 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams']], func
 
     Route::group(['namespace' => 'platform\modules\application\controllers'], function () {
 		// 平台管理
-		Route::get('application/', 'ApplicationController@index');
+		Route::any('application/', 'ApplicationController@index');
 		//修改应用
 		Route::post('application/update/{id}', 'ApplicationController@update');
 		//启用禁用或恢复应用及跳转链接
@@ -95,7 +95,7 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams']], func
 		//添加应用
 		Route::post('application/add/', 'ApplicationController@add');
 		//删除 加入回收站
-		Route::delete('application/{id}', 'ApplicationController@delete');
+		Route::get('application/{id}', 'ApplicationController@delete');
 		//回收站
 		Route::get('application/recycle/', 'ApplicationController@recycle');
 		//图片上传
