@@ -23,6 +23,17 @@ class ApplicationController extends BaseController
         } 
             $list = $app->orderBy('id', 'desc')->paginate()->toArray();
 
+            foreach ($list['data'] as $key => $value) {
+                
+                if ($value['validity_time'] == 0) {
+
+                    $list['data'][$key]['validity_time'] = intval($value['validity_time']);
+
+                } else {
+                    
+                    $list['data'][$key]['validity_time'] = date('Y-m-d', $value['validity_time'] );
+                }
+            }
 
         return $this->successJson('获取成功',  $list);
     }
@@ -125,6 +136,8 @@ class ApplicationController extends BaseController
                 return $this->errorJson('操作失败');
             }
 
+            UniacidApp::where('id', $id)->update(['status'=> 0]);
+
             Cache::put($this->key . ':' . $id, UniacidApp::find($id));
         }
 
@@ -156,7 +169,8 @@ class ApplicationController extends BaseController
         if ($info->deleted_at) {
 
             //从回收站中恢复应用
-            $res = UniacidApp::withTrashed()->where('id', $id)->restore();
+            $res1 = UniacidApp::withTrashed()->where('id', $id)->restore();
+            $res2 =  UniacidApp::where('id', $id)->update(['status'=> 1]);
         }
 
         if ($res) {
@@ -172,11 +186,31 @@ class ApplicationController extends BaseController
     //回收站 列表
     public function recycle()
     {
+        $search = request()->search;
 
-        $list = UniacidApp::onlyTrashed()
+        $app = new UniacidApp();
+
+        if ($search) {
+            $app = $app->search($search);
+        }
+
+        $list = $app
+            ->onlyTrashed()
             ->orderBy('id', 'desc')
-            ->paginate(20)
+            ->paginate()
             ->toArray();
+
+        foreach ($list['data'] as $key => $value) {
+                
+            if ($value['validity_time'] == 0) {
+
+                $list['data'][$key]['validity_time'] = intval($value['validity_time']);
+
+            } else {
+                
+                $list['data'][$key]['validity_time'] = date('Y-m-d', $value['validity_time'] );
+            }
+        }
 
         if ($list) {
             return $this->successJson('获取成功', $list);

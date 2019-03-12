@@ -15,7 +15,7 @@ class UniacidApp extends BaseModel
 	protected $table = 'yz_uniacid_app';
 	protected $search_fields = ['name', 'validity_time'];
   	protected $guarded = [''];
-  	protected $dates = ['validity_time'];
+  	// protected $dates = ['validity_time'];
   	protected $hidden = ['deleted_at', 'updated_at', 'created_at',
                          'type', 'kind', 'title', 'descr', 'version', 'uniacid'];
     protected $appends = ['status_name'];
@@ -32,11 +32,11 @@ class UniacidApp extends BaseModel
   			
   			if ($keyword['maturity'] == 1) {
   				// 到期
-	  			$query = $query->whereDate('validity_time', '=', Carbon::today());
+	  			$query = $query->whereDate('validity_time',  Carbon::today());
 	  		}
 
 	  		if ($keyword['maturity'] == 2) {
-	  			$query = $query->whereDate('validity_time', '!=', Carbon::today());
+	  			$query = $query->whereDate('validity_time',  Carbon::today());
 	  		}
   		}
 
