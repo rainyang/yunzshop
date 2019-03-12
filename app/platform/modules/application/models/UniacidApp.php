@@ -6,6 +6,7 @@ use app\common\models\BaseModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 
 class UniacidApp extends BaseModel
 {
@@ -31,11 +32,11 @@ class UniacidApp extends BaseModel
   			
   			if ($keyword['maturity'] == 1) {
   				// 到期
-	  			$query = $query->where(date('Y-m-d', 'validity_time'), '=', date('Y-m-d'));
+	  			$query = $query->whereDate('validity_time', '=', Carbon::today());
 	  		}
 
 	  		if ($keyword['maturity'] == 2) {
-	  			$query = $query->where(date('Y-m-d', 'validity_time'), '!=', date('Y-m-d'));
+	  			$query = $query->whereDate('validity_time', '!=', Carbon::today());
 	  		}
   		}
 

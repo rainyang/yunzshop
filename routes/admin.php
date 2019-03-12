@@ -95,7 +95,7 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams']], func
 		//添加应用
 		Route::post('application/add/', 'ApplicationController@add');
 		//删除 加入回收站
-		Route::get('application/{id}', 'ApplicationController@delete');
+		Route::get('application/delete/{id}', 'ApplicationController@delete');
 		//回收站
 		Route::get('application/recycle/', 'ApplicationController@recycle');
 		//图片上传
