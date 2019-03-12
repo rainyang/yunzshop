@@ -19,7 +19,7 @@ class AfterOrderReceivedListener
 
         $model = $event->getOrderModel();
 
-        MemberRelation::checkOrderFinish($model->uid);
-
+        // Yy edit:2019-03-06
+        MemberRelation::checkOrderFinish($model->uid, $model->id);
     }
 }

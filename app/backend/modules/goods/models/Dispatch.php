@@ -29,6 +29,9 @@ class Dispatch extends \app\common\models\goods\Dispatch
         return self::getDispatchList();
     }
 
+    public static function getTemplate(){
+        return self::getDispatch();
+    }
     /**
      * 获取配送模板单条数据
      * @param int $goodsId

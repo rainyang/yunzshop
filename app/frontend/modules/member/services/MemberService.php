@@ -130,7 +130,6 @@ class MemberService
         }
 
         $validate = \Validator::make($data,$rules,$message,$attributes);
-
         if ($validate->fails()) {
             $warnings = $validate->messages();
             $show_warning = $warnings->first();
@@ -140,6 +139,7 @@ class MemberService
             return show_json('1');
         }
     }
+
 
     /**
      * 短信发送限制

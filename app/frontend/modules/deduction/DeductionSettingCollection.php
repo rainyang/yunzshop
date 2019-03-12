@@ -29,7 +29,7 @@ abstract class DeductionSettingCollection extends Collection
         $priceProportion = 0;
         foreach ($this as $deductionSetting){
 
-            if($deductionSetting->isDisable()){
+            if($deductionSetting->isMaxDisable()){
                 $priceProportion = 0;
                 break;
             }
@@ -55,7 +55,7 @@ abstract class DeductionSettingCollection extends Collection
             /**
              * @var DeductionSettingInterface $deductionSetting
              */
-            if($deductionSetting->isDisable()){
+            if($deductionSetting->isMaxDisable()){
                 $priceProportion = 0;
                 break;
             }
@@ -75,10 +75,12 @@ abstract class DeductionSettingCollection extends Collection
             /**
              * @var DeductionSettingInterface $deductionSetting
              */
-            if($deductionSetting->isDisable()){
+            if($deductionSetting->isMaxDisable()){
+                trace_log()->deduction("订单抵扣", "最大抵扣类型设置".get_class($deductionSetting)."禁用");
                 break;
             }
             if($deductionSetting->getMaxDeductionType() !== false){
+                trace_log()->deduction("订单抵扣", "最大抵扣类型设置".get_class($deductionSetting)."启用");
                 $type = $deductionSetting->getMaxDeductionType();
                 break;
             }
@@ -98,8 +100,10 @@ abstract class DeductionSettingCollection extends Collection
         $priceProportion = 0;
 
         foreach ($this as $deductionSetting){
-
-            if($deductionSetting->isDisable()){
+            /**
+             * @var DeductionSettingInterface $deductionSetting
+             */
+            if($deductionSetting->isMinDisable()){
                 $priceProportion = 0;
                 break;
             }
@@ -124,7 +128,7 @@ abstract class DeductionSettingCollection extends Collection
             /**
              * @var DeductionSettingInterface $deductionSetting
              */
-            if($deductionSetting->isDisable()){
+            if($deductionSetting->isMinDisable()){
                 $priceProportion = 0;
                 break;
             }
@@ -144,7 +148,7 @@ abstract class DeductionSettingCollection extends Collection
             /**
              * @var DeductionSettingInterface $deductionSetting
              */
-            if($deductionSetting->isDisable()){
+            if($deductionSetting->isMinDisable()){
                 break;
             }
             if($deductionSetting->getMinDeductionType() !== false){
@@ -166,7 +170,7 @@ abstract class DeductionSettingCollection extends Collection
             /**
              * @var DeductionSettingInterface $deductionSetting
              */
-            if($deductionSetting->isDisable()){
+            if($deductionSetting->isDispatchDisable()){
                 break;
             }
             if($deductionSetting->isEnableDeductDispatchPrice() !== false){
