@@ -24,6 +24,8 @@ class MemberRelation extends BaseModel
 
     public $timestamps = false;
 
+    private static $orderId;
+
     /**
      * 可以批量赋值的属性
      *
@@ -348,16 +350,16 @@ class MemberRelation extends BaseModel
     }
 
     /**
-     * 发展下线资格 付款后
-     *
-     * 成为下线条件 首次付款
-     *
-     * 触发 支付回调
-     *
-     * @return void
+     * @name 发展下线资格 付款后 成为下线条件 首次付款触发 支付回调
+     * @author
+     * @param $uid
+     * @param int $orderId
      */
-    public static function checkOrderPay($uid)
+    public static function checkOrderPay($uid, $orderId = 0)
     {
+        // Yy edit:2019-03-06
+        self::$orderId = $orderId;
+
         $set = self::getSetInfo()->first();
         $become_check = intval($set->become_check);
 
@@ -421,14 +423,16 @@ class MemberRelation extends BaseModel
     }
 
     /**
-     * 发现下线资格 完成后
-     *
-     * 触发 订单完成
-     *
-     * @return void
+     * @name 发现下线资格 完成后 触发 订单完成
+     * @author
+     * @param $uid
+     * @param int $orderId
      */
-    public static function checkOrderFinish($uid)
+    public static function checkOrderFinish($uid, $orderId = 0)
     {
+        // Yy edit:2019-03-06
+        self::$orderId = $orderId;
+
         $set = self::getSetInfo()->first();
         $become_check = intval($set->become_check);
 
@@ -699,7 +703,12 @@ class MemberRelation extends BaseModel
 
         $member = Member::getMemberByUid($uid)->with('hasOneFans')->first();
 
-        event(new MemberRelationEvent($member));
+        // Yy edit:2019-03-06
+        if (!isset(self::$orderId)) {
+            self::$orderId = 0;
+        }
+        // Yy edit:2019-03-06
+        event(new MemberRelationEvent($member, self::$orderId));
 
         $member->follow = $member->hasOneFans->follow;
         $member->openid = $member->hasOneFans->openid;

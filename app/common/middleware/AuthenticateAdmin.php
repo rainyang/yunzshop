@@ -8,8 +8,8 @@
 
 namespace app\common\middleware;
 
+use Auth;
 use Closure;
-use Route, URL, Auth;
 
 class AuthenticateAdmin
 {
@@ -20,29 +20,27 @@ class AuthenticateAdmin
 
     /**
      * Handle an incoming request.
+     *
      * @param $request
      * @param Closure $next
+     *
      * @return mixed
      */
     public function handle($request, Closure $next)
     {
-        if (Auth::guard('admin')->user()->id === 1) {
-            return $next($request);
-        }
+        $set        = \config::get('app.global');
 
-        /*$previousUrl = URL::previous();
-        $routeName = starts_with(\Route::currentRouteName(), 'admin.') ? \Route::currentRouteName() : 'admin.' . \Route::currentRouteName();
-        if (!\Gate::forUser(auth('admin')->user())->check($routeName)) {
-            if ($request->ajax() && ($request->getMethod() != 'GET')) {
-                return response()->json([
-                    'status' => -1,
-                    'code'   => 403,
-                    'msg'    => '您没有权限执行此操作',
-                ]);
-            } else {
-                return response()->view('admin.errors.403', compact('previousUrl'));
-            }
-        }*/
+        if (Auth::guard('admin')->user()->id === 1) {
+            $app_global = ['role' => 'founder', 'isfounder' => true];
+            \config::set('app.global', array_merge($set, $app_global));
+        } else {
+            // TODO 验证用户组 manager,operator
+            $app_global = ['role' => 'operator', 'isfounder' => false];
+            \config::set('app.global', array_merge($set, $app_global));
+            // TODO 如果是操作台直接跳转到商城
+            $url = 'shop?route=index.index';
+            return redirect()->guest($url);
+        }
 
         return $next($request);
     }

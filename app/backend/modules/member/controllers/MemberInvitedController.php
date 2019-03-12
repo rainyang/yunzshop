@@ -21,22 +21,22 @@ class MemberInvitedController extends BaseController
     public function index()
     {
         $search = \YunShop::request()->search;
-        $pageSize = 1;
 
         $list =  MemberInvitationCodeLog::
         searchLog($search)
+        ->orderBy('id', 'desc')
         ->paginate()
         ->toArray();
         // dd($list);
 
-        $pager = PaginationHelper::show($list['total'], $list['current_page'], $pageSize);
+        $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
         return view('member.invited', ['list'=>$list, 'pager'=>$pager])->render();
     }
 
     public function export()
     {
-        $member_builder = MemberInvitationCodeLog::searchLog(\YunShop::request()->search);
+        $member_builder = MemberInvitationCodeLog::searchLog(\YunShop::request()->search)->orderBy('id', 'desc');
         $export_page = request()->export_page ? request()->export_page : 1; 
 
         $export_model = new ExportService($member_builder, $export_page);

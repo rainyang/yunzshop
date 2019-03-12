@@ -11,7 +11,7 @@ Route::group(['namespace' => 'platform\controllers'], function () {
     Route::get('/', 'IndexController@index');
 });
 
-Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams']], function () {
+Route::group(['middleware' => ['globalparams', 'auth:admin', 'authAdmin']], function () {
 
     Route::get('index', ['as' => 'admin.index', 'uses' => '\app\platform\controllers\IndexController@index']);
 
@@ -74,7 +74,7 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams']], func
 
     Route::group(['namespace' => 'platform\modules\application\controllers'], function () {
 		// 平台管理
-		Route::get('application/', 'ApplicationController@index');
+		Route::any('application/', 'ApplicationController@index');
 		//修改应用
 		Route::post('application/update/{id}', 'ApplicationController@update');
 		//启用禁用或恢复应用及跳转链接
@@ -82,17 +82,17 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams']], func
 		//添加应用
 		Route::post('application/add/', 'ApplicationController@add');
 		//删除 加入回收站
-		Route::delete('application/{id}', 'ApplicationController@delete');
+		Route::get('application/delete/{id}', 'ApplicationController@delete');
 		//回收站
-		Route::get('application/recycle/', 'ApplicationController@recycle');
+		Route::any('application/recycle/', 'ApplicationController@recycle');
 		//图片上传
 		Route::post('application/upload/', 'ApplicationController@upload');
 		Route::get('application/temp/', 'ApplicationController@temp');
 
 		//平台用户管理
-		Route::get('appuser/', 'AppuserController@index');
-		Route::post('appuser/{id}', 'AppuserController@update');
-		Route::delete('appuser/{id}', 'AppuserController@delete');
+		Route::any('appuser/', 'AppuserController@index');
+		Route::post('appuser/add/', 'AppuserController@add');
+		Route::get('appuser/delete/', 'AppuserController@delete');
 	});
 });
 

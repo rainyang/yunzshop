@@ -38,7 +38,6 @@ class Kernel extends HttpKernel
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            //VerifyCsrfToken::class
         ],
         'api' => [
             'throttle:60,1',
@@ -53,8 +52,8 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
+        'globalparams' => \app\common\middleware\GlobalParams::class,
         'auth' => \app\common\middleware\Authenticate::class,
         'authAdmin' => \app\common\middleware\AuthenticateAdmin::class,
-        'globalparams' => \app\common\middleware\GlobalParams::class,
     ];
 }

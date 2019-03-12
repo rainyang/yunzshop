@@ -15,8 +15,8 @@ class GlobalParams
     {
         \config::set('app.sys_global', array_merge($request->input(), \Cookie::get()));
 
-        $app_global = ['role' => 'founder', 'isfounder' => true];
-        \config::set('app.global', array_merge($app_global,$request->input(), \Cookie::get()));
+
+        \config::set('app.global', array_merge($request->input(), \Cookie::get()));
 
         return $next($request);
     }

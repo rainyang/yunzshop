@@ -6,6 +6,7 @@ use app\common\models\BaseModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 
 class UniacidApp extends BaseModel
 {
@@ -14,7 +15,7 @@ class UniacidApp extends BaseModel
 	protected $table = 'yz_uniacid_app';
 	protected $search_fields = ['name', 'validity_time'];
   	protected $guarded = [''];
-  	protected $dates = ['validity_time'];
+  	// protected $dates = ['validity_time'];
   	protected $hidden = ['deleted_at', 'updated_at', 'created_at',
                          'type', 'kind', 'title', 'descr', 'version', 'uniacid'];
     protected $appends = ['status_name'];
@@ -27,9 +28,20 @@ class UniacidApp extends BaseModel
   			$query = $query->where('name', 'like', '%'.$keyword['name'].'%');
   		}
 
-  		if ($keyword['validity_time']) {
-  			$query = $query->where('validity_time', $keyword['validity_time']);
+  		if ($keyword['maturity']) {
+  			
+  			if ($keyword['maturity'] == 1) {
+  				// 到期
+	  			// $query = $query->where(DATE_FORMAT('validity_time', '%Y-%m-%d'),  date('Y-m-d'));
+	  			$query = $query->whereDate('validity_time',  date('Y-m-d'));
+	  		}
+
+	  		if ($keyword['maturity'] == 2) {
+	  			// $query = $query->where(DATE_FORMAT('validity_time', '%Y-%m-%d'), '!=' , date('Y-m-d'));
+	  			$query = $query->whereDate('validity_time', '!=' , date('Y-m-d'));
+	  		}
   		}
+  		
   		return $query;
   	}
 
@@ -52,7 +64,7 @@ class UniacidApp extends BaseModel
     public function rules()
     {
     	return [
-            'img' => 'url',
+            'img' => '',
             'url' => '',
             'name' => 'max:10',
             'kind' => '',
