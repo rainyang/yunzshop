@@ -32,14 +32,16 @@ class UniacidApp extends BaseModel
   			
   			if ($keyword['maturity'] == 1) {
   				// 到期
-	  			$query = $query->whereDate('validity_time',  Carbon::today());
+	  			// $query = $query->where(DATE_FORMAT('validity_time', '%Y-%m-%d'),  date('Y-m-d'));
+	  			$query = $query->whereDate('validity_time',  date('Y-m-d'));
 	  		}
 
 	  		if ($keyword['maturity'] == 2) {
-	  			$query = $query->whereDate('validity_time',  Carbon::today());
+	  			// $query = $query->where(DATE_FORMAT('validity_time', '%Y-%m-%d'), '!=' , date('Y-m-d'));
+	  			$query = $query->whereDate('validity_time', '!=' , date('Y-m-d'));
 	  		}
   		}
-
+  		
   		return $query;
   	}
 

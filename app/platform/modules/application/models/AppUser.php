@@ -3,7 +3,9 @@
 namespace app\platform\modules\application\models;
 
 use app\common\models\BaseModel;
+use app\platform\modules\user\models\AdminUser;
 use Illuminate\Database\Eloquent\Model;
+
 
 class AppUser extends BaseModel
 {
@@ -17,24 +19,30 @@ class AppUser extends BaseModel
     public function atributeNames() 
     {
         return [
-            'name' => "名称",
-            'owner_uid' => "创建用户",
-            'uniacid' => "所属公众号",
-            'app_role_id' => "角色",
-            'app_permission_id' => "权限",
-            'status' => "应用状态",
+            'uniacid' => '',
+
+            'uid' => '',
+
+            'role' => ''
         ];
     }
     
     public function rules()
     {
     	return [
-            'name' => 'string|max:10',
-            'owner_uid' => 'numeric',
-            'uniacid' => 'numeric',
-            'app_role_id' => '',
-            'app_permission_id' => '',
-            'status' => 'numeric',
+            'uniacid' => 'required | integer',
+            'uid' => 'required | integer',
+            'role' => 'required | string | max:20',
         ];
+    }
+
+    public function hasOneApp()
+    {
+        return $this->hasOne(\app\platform\modules\application\models\UniacidApp::class, 'id', 'uniacid');
+    }
+
+    public function hasOneUser()
+    {
+        return $this->hasOne(\app\platform\modules\user\models\AdminUser::class, 'id', 'uid');
     }
 }

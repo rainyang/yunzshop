@@ -99,7 +99,7 @@ class ApplicationController extends BaseController
 
                 if ($app->where('id', $id)->update($data)) {
                     //更新缓存
-                    Cache::put($this->key . ':' . $id, $app->find($id), $data['validity_time']);
+                    // Cache::put($this->key . ':' . $id, $app->find($id), $data['validity_time']);
 
                     return $this->successJson('修改成功');
                 } else {
@@ -128,7 +128,7 @@ class ApplicationController extends BaseController
                 return $this->errorJson('操作失败');
             }
 
-            Cache::forget($this->key . ':' . $id);
+            // Cache::forget($this->key . ':' . $id);
 
         } else {
 
@@ -138,7 +138,7 @@ class ApplicationController extends BaseController
 
             UniacidApp::where('id', $id)->update(['status'=> 0]);
 
-            Cache::put($this->key . ':' . $id, UniacidApp::find($id));
+            // Cache::put($this->key . ':' . $id, UniacidApp::find($id));
         }
 
         return $this->successJson('操作成功');
@@ -169,13 +169,13 @@ class ApplicationController extends BaseController
         if ($info->deleted_at) {
 
             //从回收站中恢复应用
-            $res1 = UniacidApp::withTrashed()->where('id', $id)->restore();
-            $res2 =  UniacidApp::where('id', $id)->update(['status'=> 1]);
+            $res = UniacidApp::withTrashed()->where('id', $id)->restore();
+            UniacidApp::where('id', $id)->update(['status'=> 1]);
         }
 
         if ($res) {
             //更新缓存
-            Cache::put($this->key . ':' . $id, UniacidApp::find($id), $info->validity_time);
+            // Cache::put($this->key . ':' . $id, UniacidApp::find($id), $info->validity_time);
 
             return $this->successJson('操作成功');
         } else {
