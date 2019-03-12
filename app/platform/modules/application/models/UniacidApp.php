@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
+use app\platform\modules\user\models\AdminUser;
+use app\platform\modules\application\models\AppUser;
 
 class UniacidApp extends BaseModel
 {
@@ -20,10 +22,11 @@ class UniacidApp extends BaseModel
                          'type', 'kind', 'title', 'descr', 'version', 'uniacid'];
     protected $appends = ['status_name'];
 
+  	
   	public function scopeSearch($query, $keyword)
   	{
-  		$query = $query->where('status', 1);
-
+  		$query = $query->whereIn('id', self::checkRole())->where('status', 1);
+  		// dd(self::checkRole());
   		if ($keyword['name']) {
   			$query = $query->where('name', 'like', '%'.$keyword['name'].'%');
   		}
@@ -41,7 +44,7 @@ class UniacidApp extends BaseModel
 	  			$query = $query->whereDate('validity_time', '!=' , date('Y-m-d'));
 	  		}
   		}
-  		
+
   		return $query;
   	}
 
@@ -80,6 +83,41 @@ class UniacidApp extends BaseModel
     public function getStatusNameAttribute()
     {
     	return ['禁用', '启用'][$this->status];
+    }
+
+    public function chekcApp($id)
+    {
+		$app = self::find($id);
+		// dd($app);
+		if (!$app || $app->status != 1) {
+			return false;
+		}
+		return true;
+    }
+
+    public function checkRole()
+    {
+    	$uid = \Auth::guard('admin')->user()->id;
+
+        $user = AdminUser::find($uid);
+
+        $appUser = AppUser::where('uid', $uid)->get();
+
+        if (!$user || !$appUser || $user->type != 1) {
+            // return $this->errorJson('您无权限查看平台应用');
+            return false;
+        }
+
+        if ($user->status != 0) {
+            // return $this->errorJson('您的账号已过期');
+            return false;
+        }
+
+        foreach ($appUser->toArray() as $k => $v) {
+        	$ids[] = $v['id'];	
+        }
+
+        return $ids;
     }
 
 }

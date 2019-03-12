@@ -16,13 +16,13 @@ class ApplicationController extends BaseController
         
         $app = new UniacidApp();
 
-        if ($search) {
+        // if ($search) {
             
-            $app = $app->search($search);
+            // $app = $app->search($search);
 
-        } 
-            $list = $app->orderBy('id', 'desc')->paginate()->toArray();
-
+        // } 
+            $list = $app->search($search ? $search : '')->orderBy('id', 'desc')->paginate()->toArray();
+            
             foreach ($list['data'] as $key => $value) {
                 
                 if ($value['validity_time'] == 0) {

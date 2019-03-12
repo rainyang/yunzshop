@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 class AppUser extends BaseModel
 {
 	
-	protected $table = 'app_user';
+	protected $table = 'yz_app_user';
 	protected $search_fields = [''];
   	protected $guarded = [''];
     protected $hidden = ['deleted_at', 'updated_at', 'created_at'];
@@ -19,11 +19,11 @@ class AppUser extends BaseModel
     public function atributeNames() 
     {
         return [
-            'uniacid' => '',
+            'uniacid' => '平台id',
 
-            'uid' => '',
+            'uid' => '用户id',
 
-            'role' => ''
+            'role' => '角色'
         ];
     }
     

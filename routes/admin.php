@@ -91,7 +91,7 @@ Route::group(['middleware' => ['globalparams', 'auth:admin', 'authAdmin']], func
 
 		//平台用户管理
 		Route::any('appuser/', 'AppuserController@index');
-		Route::post('appuser/add/', 'AppuserController@add');
+		Route::get('appuser/add/', 'AppuserController@add');
 		Route::get('appuser/delete/', 'AppuserController@delete');
 	});
 });
