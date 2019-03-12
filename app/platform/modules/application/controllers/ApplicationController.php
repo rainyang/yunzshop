@@ -16,7 +16,7 @@ class ApplicationController extends BaseController
 
     public function index()
     {
-        if (request()->ajax()) {
+        // if (request()->ajax()) {
             
             $search = request()->search;
             
@@ -39,12 +39,12 @@ class ApplicationController extends BaseController
             // }
 
             return $this->successJson('获取成功',  $list);
-        }    
+        // }    
     }
 
     public function add()
     {
-        if (request()->ajax()) {
+        // if (request()->ajax()) {
 
             $app = new UniacidApp();
             // dd(request());
@@ -74,12 +74,12 @@ class ApplicationController extends BaseController
                     return $this->errorJson('添加失败');
                 }
             }
-        }
+        // }
     }
 
     public function update()
     {
-        if (request()->ajax()) {
+        // if (request()->ajax()) {
 
             $id = request()->id;
 
@@ -118,13 +118,13 @@ class ApplicationController extends BaseController
                     }
                 }
             }
-        }
+        // }
     }
 
     //加入回收站 删除
     public function delete()
     {
-        if (request()->ajax()) {
+        // if (request()->ajax()) {
 
             $id = request()->id;
 
@@ -153,13 +153,13 @@ class ApplicationController extends BaseController
             }
 
             return $this->successJson('操作成功');
-        }
+        // }
     }
 
     //启用禁用或恢复应用
     public function switchStatus()
     {
-        if (request()->ajax()) {
+        // if (request()->ajax()) {
 
             $id = request()->id;
 
@@ -194,13 +194,13 @@ class ApplicationController extends BaseController
             } else {
                 return $this->errorJson('操作失败');
             }
-        }
+        // }
     }
 
     //回收站 列表
     public function recycle()
     {
-        if (request()->ajax()) {
+        // if (request()->ajax()) {
 
             $list = UniacidApp::onlyTrashed()
                 ->orderBy('id', 'desc')
@@ -212,7 +212,7 @@ class ApplicationController extends BaseController
             } else {
                 return $this->errorJson('获取失败,暂无数据');
             }
-        }
+        // }
     }
 
     private function fillData($data)
@@ -318,14 +318,16 @@ class ApplicationController extends BaseController
             $res = \Storage::disk('public')->put($newOriginalName, file_get_contents($realPath));
             \Log::info('res-path', [$res, \Storage::disk('public')]);
 
+            $proto = stripos($_SERVER['SERVER_PROTOCOL'],'https') ? 'https://' : 'http://';
+
             // return $this->successJson('上传成功', \Storage::disk('public')->url('app/public/'.$newOriginalName));
-            return $this->successJson('上传成功', $_SERVER['HTTP_HOST'].'/storage/app/public/'.$newOriginalName);
+            return $this->successJson('上传成功', $proto.$_SERVER['HTTP_HOST'].'/storage/app/public/'.$newOriginalName);
         }
     }
 
     public function temp()
     {
-
-        return View('admin.application.upload');
+        dd();
+        // return View('admin.application.upload');
     }
 }
