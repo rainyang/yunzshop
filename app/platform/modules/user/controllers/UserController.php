@@ -22,124 +22,85 @@ class UserController extends BaseController
 {
     protected $fields = [
         'name' => '',
-        'email' => '',
+        'phone' => '',
         'roles' => [],
     ];
 
     /**
-     * Display a listing of the resource.
+     * Display a listing of the resource.(显示用户列表.)
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $users = User::select(['id', 'name', 'email', 'password', 'created_at', 'updated_at'])->orderBy('id', 'desc')->get();
+        $parames = \YunShop::request();
+        if (strpos($parames['search']['searchtime'], '×') !== FALSE) {
+            $search_time = explode('×', $parames['search']['searchtime']);
 
-        return view('admin.user.index', ['users' => $users]);
+            if (!empty($search_time)) {
+                $parames['search']['searchtime'] = $search_time[0];
+
+                $start_time = explode('=', $search_time[1]);
+                $end_time = explode('=', $search_time[2]);
+
+                $parames->times = [
+                    'start' => $start_time[1],
+                    'end' => $end_time[1]
+                ];
+            }
+
+            $list = User::searchUsers($parames);
+
+            dd($list);
+        }
+
+        $users = User::getList();
+
+        return view('system.user.index', [
+            'users' => $users
+        ]);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new resource And Store a newly created resource in storage.(添加用户)
      *
-     * @return \Illuminate\Http\Response
      */
+    // @return \Illuminate\Http\Response
     public function create()
     {
-        $data = [];
-        foreach ($this->fields as $field => $default) {
-            $data[$field] = old($field, $default);
+        $user = request()->user;
+        if ($user) {
+            $this->validate($this->rules(), $user, $this->message());
+            return User::saveData($user, $user_model = '');
         }
-        $data['rolesAll'] = Role::all()->toArray();
 
-        return view('admin.user.create', $data);
+        return view('system.user.add', [
+        ]);
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * Show the form for editing the specified resource And Update the specified resource in storage.(修改用户)
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\JsonResponse|\Illuminate\View\View|mixed
      */
-    public function store(AdminUserCreateRequest $request)
+    public function edit()
     {
-        $user = new User();
-        foreach (array_keys($this->fields) as $field) {
-            $user->$field = $request->get($field);
+        $id = request()->id;
+        if (!$id) {
+            return $this->errorJson('参数错误');
         }
-        $user->password = bcrypt($request->get('password'));
-        unset($user->roles);
-        $user->save();
-        if (is_array($request->get('roles'))) {
-            $user->giveRoleTo($request->get('roles'));
-        }
-        event(new UserActionEvent(AdminUser::class, $user->id, 1, '添加了用户' . $user->name));
-
-        return redirect('/admin/user/index')->withSuccess('添加成功！');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        $user = User::find((int)$id);
+        $user = AdminUser::getData($id);
         if (!$user) {
-            return redirect('/admin/user')->withErrors("找不到该用户!");
+            return $this->errorJson('找不到该用户');
         }
-        $roles = [];
-        if ($user->roles) {
-            foreach ($user->roles as $v) {
-                $roles[] = $v->id;
-            }
-        }
-        $user->roles = $roles;
-        foreach (array_keys($this->fields) as $field) {
-            $data[$field] = old($field, $user->$field);
-        }
-        $data['rolesAll'] = Role::all()->toArray();
-        $data['id'] = (int)$id;
-        event(new UserActionEvent(AdminUser::class, $user->id, 3, '编辑了用户' . $user->name));
+        $data = request()->user;
 
-        return view('admin.user.edit', $data);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(AdminUserUpdateRequest $request, $id)
-    {
-        $user = User::find((int)$id);
-        foreach (array_keys($this->fields) as $field) {
-            $user->$field = $request->get($field);
-        }
-        unset($user->roles);
-        if ($request->get('password') != '') {
-            $user->password = bcrypt($request->get('password'));
-
+        if($data) {
+            return AdminUser::saveData($data, $user);
         }
 
-        $user->save();
-        $user->giveRoleTo($request->get('roles', []));
-
-        return redirect('/admin/user/index')->withSuccess('添加成功！');
+        return view('system.user.add', [
+            'user' => $user
+        ]);
     }
 
     /**
@@ -164,4 +125,88 @@ class UserController extends BaseController
         return redirect()->back()
             ->withSuccess("删除成功");
     }
+
+    public function validate(array $rules, \Request $request = null, array $messages = [], array $customAttributes = [])
+    {
+        if (!isset($request)) {
+            $request = request();
+        }
+        $validator = $this->getValidationFactory()->make($request, $rules, $messages, $customAttributes);
+
+        if ($validator->fails()) {
+            echo $this->errorJson($validator->errors()->all()); exit;
+        }
+    }
+
+    public function rules()
+    {
+        $rules = [];
+        if (request()->path() != "admin/user/change") {
+            $rules = [
+                'name' => 'required|regex:/^[\x{4e00}-\x{9fa5}A-Za-z0-9_\-]{3,30}$/u|unique:yz_admin_users',
+                'phone' => 'required|regex:/^1[34578]\d{9}$/|unique:yz_admin_users|unique:yz_admin_users',
+            ];
+        }
+
+        if (request()->path() != "admin/user/edit") {
+            $rules['password'] = 'required';
+            $rules['re_password'] = 'same:password';
+        }
+        return $rules;
+    }
+
+    public function message()
+    {
+        return [
+            'name.required' => '用户名不能为空',
+            'name.regex' => '用户名格式不正确',
+            'name.unique' => '用户名已存在',
+            'phone.required' => '手机号已存在',
+            'phone.regex' => '手机号格式不正确',
+            'phone.unique' => '手机号已存在',
+            'password.required' => '密码不能为空',
+            're_password.same' => '两次密码不一致',
+        ];
+    }
+
+    /**
+     * 修改状态
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function status()
+    {
+        $id = request()->id;
+        $status = request()->status;
+        $result = AdminUser::where('id', $id)->update(['status'=>$status]);
+        if ($result) {
+            return $this->successJson('成功');
+        } else {
+            return $this->errorJson('失败');
+        }
+    }
+
+    /**
+     * 修改密码
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|mixed
+     */
+    public function change()
+    {
+        $id = request()->id;
+        $data = request()->user;
+        if ($data){
+            $user = AdminUser::getData($id);
+            return AdminUser::saveData($data, $user);
+        }
+
+        return view('system.user.change');
+    }
+
+    /**
+     * 单个用户平台列表
+     */
+    public function applicationList()
+    {
+        $id = request()->id;
+    }
 }
+

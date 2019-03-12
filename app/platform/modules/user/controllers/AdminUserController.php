@@ -10,18 +10,38 @@ namespace app\platform\modules\user\controllers;
 
 
 use app\platform\controllers\BaseController;
-use app\platform\modules\user\models\AdminUser;
-use app\common\exceptions\AppException;
+use app\platform\modules\user\models\AdminUser2;
 
 class AdminUserController extends BaseController
 {
     /**
      * 显示用户列表
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index()
     {
-        $users = AdminUser::getList();
+        $parames = \YunShop::request();
+
+        if (strpos($parames['search']['searchtime'], '×') !== FALSE) {
+            $search_time = explode('×', $parames['search']['searchtime']);
+
+            if (!empty($search_time)) {
+                $parames['search']['searchtime'] = $search_time[0];
+
+                $start_time = explode('=', $search_time[1]);
+                $end_time = explode('=', $search_time[2]);
+
+                $parames->times = [
+                    'start' => $start_time[1],
+                    'end' => $end_time[1]
+                ];
+            }
+
+            $list = AdminUser2::searchUsers($parames);
+
+            dd($list);
+        }
+
+        $users = AdminUser2::getList();
 
         return view('system.user.index', [
             'users' => $users
@@ -36,7 +56,7 @@ class AdminUserController extends BaseController
     {
         $user = request()->user;
         if ($user) {
-            return AdminUser::saveData($user, $user_model = '');
+            return AdminUser2::saveData($user, $user_model = '');
         }
 
         return view('system.user.add', [
@@ -53,11 +73,11 @@ class AdminUserController extends BaseController
         if (!$id) {
             return $this->errorJson('参数错误');
         }
-        $user = AdminUser::getData($id);
+        $user = AdminUser2::getData($id);
         $data = request()->user;
 
         if($data) {
-            return AdminUser::saveData($data, $user);
+            return AdminUser2::saveData($data, $user);
         }
 
         return view('system.user.add', [
@@ -73,7 +93,7 @@ class AdminUserController extends BaseController
     {
         $id = request()->id;
         $status = request()->status;
-        $result = AdminUser::where('id', $id)->update(['status'=>$status]);
+        $result = AdminUser2::where('id', $id)->update(['status'=>$status]);
         if ($result) {
             return $this->successJson('成功');
         } else {
@@ -90,8 +110,8 @@ class AdminUserController extends BaseController
         $id = request()->id;
         $data = request()->user;
         if ($data){
-            $user = AdminUser::getData($id);
-            return AdminUser::saveData($data, $user);
+            $user = AdminUser2::getData($id);
+            return AdminUser2::saveData($data, $user);
         }
 
         return view('system.user.change');

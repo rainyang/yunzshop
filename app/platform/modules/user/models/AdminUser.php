@@ -8,21 +8,21 @@
 
 namespace app\platform\modules\user\models;
 
+
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
+use app\platform\controllers\BaseController;
+use app\common\helpers\Cache;
+use Illuminate\Support\Facades\Hash;
+use app\common\events\UserActionEvent;
 
 class AdminUser extends Authenticatable
 {
     use Notifiable;
     protected $table = 'yz_admin_users';
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = ['name', 'email', 'password'];
+    public $timestamps = true;
+    protected $guarded = [''];
+    protected $dateFormat = 'U';
 
     /**
      * The attributes excluded from the model's JSON form.
@@ -75,5 +75,123 @@ class AdminUser extends Authenticatable
             $this->assignRole($v);
         }
         return true;
+    }
+
+    /**
+     * 保存数据
+     * @param $data
+     * @param string $user_model
+     * @return mixed
+     */
+    public static function saveData($data, $user_model)
+    {
+        $base = new BaseController;
+        $verify_res = self::verifyData($data, $user_model);
+        if ($verify_res['re_password']) {
+            $verify_res['password'] = bcrypt($verify_res['password']);
+            unset($verify_res['re_password']);
+        }
+        $result = $verify_res->save();
+        if ($result) {
+            Cache::put('admin_users', $data, 3600);
+            if (request()->path() != "admin/user/create") {
+                event(new UserActionEvent(self::class, $verify_res->id, 1, '添加了用户' . $verify_res->name));
+            } elseif (request()->path() != "admin/user/edit") {
+                event(new UserActionEvent(AdminUser::class, $verify_res->id, 3, '编辑了用户' . $verify_res->name));
+            }
+
+            echo $base->successJson('成功'); exit;
+        } else {
+            echo $base->errorJson('失败'); exit;
+        }
+    }
+
+    /**
+     * 整合数据
+     * @param $data
+     * @param string $user_model
+     * @return AdminUser|string
+     */
+    public static function verifyData($data, $user_model = '')
+    {
+        $base = new BaseController;
+        if (request()->path() != "admin/user/change") {
+            $data['name'] = trim($data['name']);
+            $data['phone'] = trim($data['phone']);
+            if ($data['application_number'] == 0) {
+                $data['application_number'] = '';
+            }
+            if ($data['effective_time'] == 0) {
+                $data['effective_time'] = '';
+            } else {
+                $data['effective_time'] = strtotime($data['effective_time']);
+            }
+            $data['remarks'] = trim($data['remarks']);
+        } else {
+            $data['old_password'] = trim($data['old_password']);
+            if (!Hash::check($data['old_password'], $user_model['password'])) {
+                echo $base->errorJson('原密码错误'); exit;
+            } elseif (Hash::check($data['password'], $user_model['password'])) {
+                echo $base->errorJson('新密码与原密码一致'); exit;
+            }
+            unset($data['old_password']);
+        }
+        if (request()->path() != "admin/user/edit") {
+            $data['password'] = trim($data['password']);
+            $data['re_password'] = trim($data['re_password']);
+        }
+
+        if (!$user_model) {
+            $user_model = new self();
+        }
+        $user_model->fill($data);
+
+        return $user_model;
+    }
+
+    /**
+     * 读取所有数据
+     * @return \app\framework\Database\Eloquent\Collection
+     */
+    public static function getList()
+    {
+        $users = self::orderBy('id', 'desc')->get();
+        foreach ($users as $item) {
+            $item['create_at'] = $item['created_at']->format('Y-m-d');
+            if ($item['effective_time'] == 0) {
+                $item['effective_time'] = '永久有效';
+            }else {
+                if (time() > $item['effective_time']) {
+                    $item['status'] = 1;
+                    self::where('id', $item['id'])->update(['status'=>1]);
+                }
+                $item['effective_time'] = date('Y-m-d', $item['effective_time']);
+            }
+        }
+
+        return $users;
+    }
+
+    /**
+     * 读取单条数据
+     * @param $id
+     * @return AdminUser
+     */
+    public static function getData($id)
+    {
+
+        return self::find($id);
+
+//        if (!Cache::has($cache_name)) {
+//            $result = self::getKeyList($key);
+//            Cache::put($cache_name, $result, 3600);
+//        } else {
+//            $result = \Cache::get($cache_name);
+//        }
+//        if ($result) {
+//            $result = unserialize($result);
+//        }
+
+//        return $result;
     }
 }

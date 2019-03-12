@@ -13,7 +13,7 @@ use app\common\models\BaseModel;
 use app\common\helpers\Cache;
 use Illuminate\Support\Facades\Hash;
 
-class AdminUser extends BaseModel
+class AdminUser2 extends BaseModel
 {
     public $table = 'yz_admin_user';
     public $timestamps = true;
@@ -175,5 +175,110 @@ class AdminUser extends BaseModel
         }
 
         return $users;
+    }
+
+    /**
+     * 检索会员信息
+     *
+     * @param $parame
+     * @return mixed
+     */
+    public static function searchUsers($parame, $credit = null)
+    {
+        if (!isset($credit)) {
+            $credit = 'credit2';
+        }
+        $result = self::select(['uid', 'avatar', 'nickname', 'realname', 'mobile', 'createtime',
+            'credit1', 'credit2'])
+            ->uniacid();
+
+        if (!empty($parame['search']['mid'])) {
+            $result = $result->where('uid', $parame['search']['mid']);
+        }
+        if (isset($parame['search']['searchtime']) && $parame['search']['searchtime'] == 1) {
+            if ($parame['search']['times']['start'] != '请选择' && $parame['search']['times']['end'] != '请选择') {
+                $range = [strtotime($parame['search']['times']['start']), strtotime($parame['search']['times']['end'])];
+                $result = $result->whereBetween('createtime', $range);
+            }
+        }
+
+        if (!empty($parame['search']['realname'])) {
+            $result = $result->where(function ($w) use ($parame) {
+                $w->where('nickname', 'like', '%' . $parame['search']['realname'] . '%')
+                    ->orWhere('realname', 'like', '%' . $parame['search']['realname'] . '%')
+                    ->orWhere('mobile', 'like', $parame['search']['realname'] . '%');
+            });
+        }
+
+//        $result = $result->whereHas('yzMember', function ($query) use ($parame) {
+//            $query->whereNull('deleted_at');
+//
+//            if($parame['search']['custom_value']){
+//                $query->where('custom_value', 'like', '%' . $parame['search']['custom_value'] . '%');
+//            }
+//
+//
+//        });
+
+        if (!empty($parame['search']['groupid']) || !empty($parame['search']['level']) || $parame['search']['isblack'] != ''
+            || $parame['search']['isagent'] != ''
+        ) {
+
+            $result = $result->whereHas('yzMember', function ($q) use ($parame) {
+                if (!empty($parame['search']['groupid'])) {
+                    $q = $q->where('group_id', $parame['search']['groupid']);
+                }
+
+                if (!empty($parame['search']['level'])) {
+                    $q = $q->where('level_id', $parame['search']['level']);
+                }
+
+                if ($parame['search']['isblack'] != '') {
+                    $q->where('is_black', $parame['search']['isblack']);
+                }
+
+                if ($parame['search']['isagent'] != '') {
+                    $q->where('is_agent', $parame['search']['isagent']);
+                }
+            });
+        }
+
+        //余额区间搜索
+//        if ($parame['search']['min_credit2']) {
+//            $result = $result->where($credit, '>', $parame['search']['min_credit2']);
+//        }
+//        if ($parame['search']['max_credit2']) {
+//            $result = $result->where($credit, '<', $parame['search']['max_credit2']);
+//        }
+//
+//        if ($parame['search']['followed'] != '') {
+//            $result = $result->whereHas('hasOneFans', function ($q2) use ($parame) {
+//                $q2->where('follow', $parame['search']['followed']);
+//            });
+//        }
+
+
+//        $result = $result->with(['yzMember' => function ($query) {
+//            return $query->select(['member_id', 'parent_id', 'inviter', 'is_agent', 'group_id', 'level_id', 'is_black', 'withdraw_mobile'])
+//                ->with(['group' => function ($query1) {
+//                    return $query1->select(['id', 'group_name'])->uniacid();
+//                }, 'level' => function ($query2) {
+//                    return $query2->select(['id', 'level_name'])->uniacid();
+//                }, 'agent' => function ($query3) {
+//                    return $query3->select(['uid', 'avatar', 'nickname'])->uniacid();
+//                }]);
+//        }, 'hasOneFans' => function ($query4) {
+//            return $query4->select(['uid', 'follow as followed'])->uniacid();
+//        }, 'hasOneOrder' => function ($query5) {
+//            return $query5->selectRaw('uid, count(uid) as total, sum(price) as sum')
+//                ->uniacid()
+//                ->where('status', Order::COMPLETE)
+//                ->groupBy('uid');
+//        }]);
+
+//        $result->leftJoin('yz_member_del_log', 'mc_members.uid', '=', 'yz_member_del_log.member_id')->whereNull('yz_member_del_log.member_id');
+
+
+        return $result;
     }
 }

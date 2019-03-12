@@ -46,15 +46,16 @@
                                     <div class="time">
 
                                         <select name='search[searchtime]' class='form-control'>
+                                            <option value="">选择时间类型</option>
                                             <option value='0'
                                                     @if($request['search']['searchtime']=='0')
                                                     selected
-                                                    @endif>注册时间不限
+                                                    @endif>注册时间
                                             </option>
                                             <option value='1'
                                                     @if($request['search']['searchtime']=='1')
                                                     selected
-                                                    @endif>搜索注册时间
+                                                    @endif>到期时间
                                             </option>
                                         </select>
                                     </div>
@@ -115,7 +116,7 @@
                                 @foreach($users as $item)
                                     <tr>
                                         <td>{{$item['id']}}</td>
-                                        <td>{{$item['username']}}</td>
+                                        <td>{{$item['name']}}</td>
                                         <td>{{$item['create_at']}}</td>
                                         <td>{{$item['effective_time']}}</td>
                                         <td>

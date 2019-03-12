@@ -36,7 +36,7 @@
                     </div>
                     <div class="panel-body">
 
-                        <form class="form-horizontal" role="form" method="POST" action="/admin/permission/{{$parent_id}}/create">
+                        <form class="form-horizontal" role="form" method="POST" action="/index.php/admin/permission/{{$parent_id}}/create">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="cove_image"/>
 
