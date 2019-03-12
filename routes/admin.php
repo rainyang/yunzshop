@@ -97,15 +97,15 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams']], func
 		//删除 加入回收站
 		Route::get('application/delete/{id}', 'ApplicationController@delete');
 		//回收站
-		Route::get('application/recycle/', 'ApplicationController@recycle');
+		Route::any('application/recycle/', 'ApplicationController@recycle');
 		//图片上传
 		Route::post('application/upload/', 'ApplicationController@upload');
 		Route::get('application/temp/', 'ApplicationController@temp');
 
 		//平台用户管理
-		Route::get('appuser/', 'AppuserController@index');
-		Route::post('appuser/{id}', 'AppuserController@update');
-		Route::delete('appuser/{id}', 'AppuserController@delete');
+		Route::any('appuser/', 'AppuserController@index');
+		Route::post('appuser/add/', 'AppuserController@add');
+		Route::get('appuser/delete/', 'AppuserController@delete');
 	});
 });
 
