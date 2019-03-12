@@ -271,7 +271,7 @@
                                                       <span style="font-size: 6px;color: #AEB9C0">{{$order_goods['goods_option_title']}}</span>
                                                 @endif
                                             @endif
-                                            <br/>{{$order_goods['goods_sn']}}
+                                            <br/><span style="font-size: 6px;color: #AEB9C0">{{$order_goods['goods_sn']}}</span>
 
                                         </td>
                                         <td class="price">
