@@ -50,12 +50,21 @@
                                 </select>
                             </div>
                             <div class="search-select">
-                                {!! app\common\helpers\DateRange::tplFormFieldDateRange('search[times]', [
-                                'starttime'=>date('Y-m-d H:i', $starttime),
-                                'endtime'=>date('Y-m-d H:i',$endtime),
-                                'start'=>0,
-                                'end'=>0
-                                ], true) !!}
+                                @if($starttime && $endtime)
+                                    {!! app\common\helpers\DateRange::tplFormFieldDateRange('search[times]', [
+                                    'starttime'=>date('Y-m-d H:i', $starttime),
+                                    'endtime'=>date('Y-m-d H:i',$endtime),
+                                    'start'=>0,
+                                    'end'=>0
+                                    ], true) !!}
+                                @else
+                                    {!! app\common\helpers\DateRange::tplFormFieldDateRange('search[times]', [
+                                    'starttime'=>date('Y-m-d H:i'),
+                                    'endtime'=>date('Y-m-d H:i'),
+                                    'start'=>0,
+                                    'end'=>0
+                                    ], true) !!}
+                                @endif
                             </div>
                         </div>
                         <div class="form-group  col-xs-12 col-md-12 col-lg-6">
@@ -98,7 +107,7 @@
                                         <br/>
                                     @endif
                                     @if(empty($row['yz_member']['has_one_member']['nickname']))
-                                        未更新
+                                        暂未获取到数据
                                     @else
                                             @if(empty($row['yz_member']['inviter']))
                                                 (暂定)
@@ -114,7 +123,7 @@
                                         <br/>
                                     @endif
                                     @if(empty($row['has_one_mc_member']['has_one_member']['nickname']))
-                                        未更新
+                                        暂未获取到数据
                                     @else
                                             @if(empty($row['has_one_mc_member']['inviter']))
                                                 (暂定)
@@ -128,6 +137,7 @@
                         @endforeach
                             </tbody>
                         </table>
+                           {!!$pager!!}
                     </div>
                 </div>
             </div>

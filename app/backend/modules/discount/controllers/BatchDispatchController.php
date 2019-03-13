@@ -40,10 +40,15 @@ class BatchDispatchController extends BaseController
 
     public function freightSet()
     {
-        $dispatch_templates = Dispatch::select('id','dispatch_name')
-            ->where('uniacid',\YunShop::app()->uniacid)
-            ->where('is_plugin',0)
-            ->get();
+//        $dispatch_templates = Dispatch::select('id','dispatch_name')
+//            ->where('uniacid',\YunShop::app()->uniacid)
+//            ->where('is_plugin',0)
+//            ->get();
+//        dd($dispatch_templates);
+
+       // $dispatch = new GoodsDispatch();
+        $dispatch_templates = Dispatch::getTemplate();
+
         return view('discount.freight-set', [
             'list'=>$dispatch_templates,
             'url' => json_encode(yzWebFullUrl('discount.batch-dispatch.freight-save')),
@@ -74,7 +79,10 @@ class BatchDispatchController extends BaseController
                 if(!(DispatchClassify::find($id)->update($data))){
                     return $this->errorJson("修改失敗");
                 }
-                $this->updateGoodsDispatch($data);
+            foreach( $categorys_r as  $categoryID){
+                $this->updateGoodsDispatch($data,$categoryID);
+            }
+               // $this->updateGoodsDispatch($data);
             return $this->successJson('ok');
 
         }
@@ -82,10 +90,7 @@ class BatchDispatchController extends BaseController
         $categoryDiscount['category_ids'] = Category::select('id', 'name')
             ->whereIn('id', explode(',', $categoryDiscount['dispatch_id']))
             ->get()->toArray();
-
-        $dispatch_templates = Dispatch::select('id','dispatch_name')
-            ->where('uniacid',\YunShop::app()->uniacid)
-            ->get();
+        $dispatch_templates = Dispatch::getTemplate();
 
         return view('discount.freight-set', [
             'list'=>$dispatch_templates,
@@ -114,7 +119,9 @@ class BatchDispatchController extends BaseController
                 $model = new DispatchClassify();
                 $model->fill($data);
                 if ($model->save()) {
-                    $this->updateGoodsDispatch($data);
+                    foreach( $categorys_r as  $categoryID){
+                        $this->updateGoodsDispatch($data,$categoryID);
+                    }
                     return $this->successJson('ok');
 
                 }
@@ -125,30 +132,45 @@ class BatchDispatchController extends BaseController
         ])->render();
     }
 
-    public function updateGoodsDispatch($data){
-        $goods_ids = GoodsCategory::select('goods_id')->whereIn('category_id', explode(',', $data['dispatch_id']))->get()->toArray();
-        foreach ($goods_ids as $goods_id) {
+    public function updateGoodsDispatch($data,$categoryID){
+        //2级联动
+       if ( Setting::get('shop.category')['cat_level']==2){
+           //$goods_ids = GoodsCategory::select('goods_id')
+           $goods_ids = GoodsCategory::select('goods_id')
+               ->whereHas('goods', function ($query) {
+                   $query->where('is_plugin',0)->where('plugin_id',0);
+               })
+               ->where('category_ids','like', '%,'.$categoryID.',%')
+               ->get()
+               ->toArray();
+
+           $goods_id = GoodsCategory::select('goods_id')
+               ->whereHas('goods', function ($query) {
+                   $query->where('is_plugin',0)->where('plugin_id',0);
+               })
+               ->where('category_id', $categoryID)
+               ->get()
+               ->toArray();
+
+           $arr = array_merge($goods_ids, $goods_id);
+       }else {
+           $arr = GoodsCategory::select('goods_id')
+               ->whereHas('goods', function ($query) {
+                   $query->where('is_plugin', 0)->where('plugin_id', 0);
+               })
+               ->where('category_id', $categoryID)
+               ->get()
+               ->toArray();
+
+       }
+
+        foreach ($arr as $goods_id) {
             $item_id[] = $goods_id['goods_id'];
         }
+
         foreach($item_id as $goodsID){
             GoodsDispatch::freightSave($goodsID,$data);
         }
-
-//        $goods_dispatch=new GoodsDispatch();
-//        $goods_dispatch->dispatch_type=$data['freight_type'];
-//        $goods_dispatch->is_cod=$data['is_cod'];
-//
-//        if ($data['freight_type']==1) {
-//            $goods_dispatch->dispatch_price=$data['freight_value'];
-//        }else{
-//            $goods_dispatch->dispatch_id=$data['dispatch_id'];
-//        }
-//
-//        foreach ($item_id as $goodsId) {
-//            $goods_dispatch->goods_id=$goodsId;
-//            GoodsDispatch::deletedGoodsID($goodsId);
-//            $goods_dispatch->save();
-//        }
     }
 
 
