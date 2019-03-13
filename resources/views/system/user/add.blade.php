@@ -21,7 +21,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">用户名</label>
                             <div class="col-sm-9 col-xs-12">
-                                <input type="text" name="user[username]" id="displayorder" placeholder="请输入用户名，用户名为3-30个字符，包括汉字、大写小字母、数字" class="form-control" value="{{$user->username}}" />
+                                <input type="text" name="user[name]" id="displayorder" placeholder="请输入用户名，用户名为3-30个字符，包括汉字、大写小字母、数字" class="form-control" value="{{$user->name}}" />
                             </div>
                         </div>
 

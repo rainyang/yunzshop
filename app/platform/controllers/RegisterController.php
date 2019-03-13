@@ -56,8 +56,8 @@ class RegisterController extends BaseController
     protected function validator(array $data)
     {
         return \Validator::make($data, [
-            'name' => 'required|max:255|unique:admin_users',
-            'email' => 'required|email|max:255',
+            'name' => 'required|max:255|unique:yz_admin_users',
+            'phone' => 'required|regex:/^1[34578]\d{9}$/|unique:yz_admin_users',
             'password' => 'required|min:6|confirmed',
         ]);
     }
@@ -91,7 +91,7 @@ class RegisterController extends BaseController
     {
         return AdminUser::create([
             'name' => $data['name'],
-            'email' => $data['email'],
+            'phone' => $data['phone'],
             'password' => bcrypt($data['password']),
         ]);
     }

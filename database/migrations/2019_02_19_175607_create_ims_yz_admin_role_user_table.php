@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAdminPermissionRoleTable extends Migration
+class CreateImsYzAdminRoleUserTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateAdminPermissionRoleTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('yz_admin_permission_role')) {
-            Schema::create('yz_admin_permission_role', function (Blueprint $table) {
-                $table->integer('permission_id');
+        if (!Schema::hasTable('yz_admin_role_user')) {
+            Schema::create('yz_admin_role_user', function (Blueprint $table) {
                 $table->integer('role_id');
+                $table->integer('user_id');
             });
         }
     }
@@ -28,6 +28,6 @@ class CreateAdminPermissionRoleTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('yz_admin_permission_role');
+        Schema::dropIfExists('yz_admin_role_user');
     }
 }

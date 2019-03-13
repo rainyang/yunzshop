@@ -43,11 +43,11 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="email" class="col-md-4 control-label">E-Mail Address</label>
+                            <label for="phone" class="col-md-4 control-label">Phone</label>
 
                             <div class="col-md-6">
 
-                                <input id="email" type="email" class="form-control" name="email" value="" required>
+                                <input id="phone" type="text" class="form-control" name="phone" value="" required>
 
                             </div>
                         </div>

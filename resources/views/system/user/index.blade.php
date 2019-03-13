@@ -46,15 +46,16 @@
                                     <div class="time">
 
                                         <select name='search[searchtime]' class='form-control'>
+                                            <option value="">选择时间类型</option>
                                             <option value='0'
                                                     @if($request['search']['searchtime']=='0')
                                                     selected
-                                                    @endif>注册时间不限
+                                                    @endif>注册时间
                                             </option>
                                             <option value='1'
                                                     @if($request['search']['searchtime']=='1')
                                                     selected
-                                                    @endif>搜索注册时间
+                                                    @endif>到期时间
                                             </option>
                                         </select>
                                     </div>
@@ -90,7 +91,7 @@
                                 <button class="btn btn-block btn-success"><i class="fa fa-search"></i> 搜索</button>
                             </div>
 
-                            <a class="btn btn-info " href="/index.php/admin/user/add"><i class="fa fa-plus"></i> 添加用户</a>
+                            <a class="btn btn-info " href="/index.php/admin/user/create"><i class="fa fa-plus"></i> 添加用户</a>
 
                         </form>
                     </div>
@@ -115,7 +116,7 @@
                                 @foreach($users as $item)
                                     <tr>
                                         <td>{{$item['id']}}</td>
-                                        <td>{{$item['username']}}</td>
+                                        <td>{{$item['name']}}</td>
                                         <td>{{$item['create_at']}}</td>
                                         <td>{{$item['effective_time']}}</td>
                                         <td>

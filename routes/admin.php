@@ -35,16 +35,6 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams', 'shopb
         Route::get('role/{id}/edit', ['as' => 'admin.role.edit', 'uses' => 'RoleController@edit']);
         Route::post('role/{id}/edit', ['as' => 'admin.role.edit', 'uses' => 'RoleController@update']);
         Route::get('role/{id}/delete', ['as' => 'admin.role.destroy', 'uses' => 'RoleController@destroy']);
-
-        //用户管理路由
-        Route::get('user/index', ['as' => 'admin.user.index', 'uses' => 'UserController@index']);
-        Route::post('user/index', ['as' => 'admin.user.index', 'uses' => 'UserController@index']);
-        Route::get('user/create', ['as' => 'admin.user.create', 'uses' => 'UserController@create']);
-        Route::post('user/create', ['as' => 'admin.user.create', 'uses' => 'UserController@store']);
-        Route::get('user/{id}/edit', ['as' => 'admin.user.edit', 'uses' => 'UserController@edit']);
-        Route::post('user/{id}/edit', ['as' => 'admin.user.edit', 'uses' => 'UserController@update']);
-        Route::get('user/{id}/delete', ['as' => 'admin.user.destroy', 'uses' => 'UserController@destroy']);
-
     });
 
     // 站点管理
@@ -71,23 +61,20 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams', 'shopb
     // 用户管理
     Route::group(['prefix' => 'user', 'namespace' => 'platform\modules\user\controllers'], function (){
         // 用户列表
-        Route::get('list', 'AdminUserController@index');
+        Route::get('index', 'AdminUserController@index');
         // 添加用户
-        Route::any('add', 'AdminUserController@add');
+        Route::any('create', 'AdminUserController@create');
         // 用户编辑
         Route::any('edit', 'AdminUserController@edit');
         // 用户修改状态
         Route::any('status', 'AdminUserController@status');
         // 用户修改密码
         Route::any('change', 'AdminUserController@change');
-
-
     });
-
-
+ 
     Route::group(['namespace' => 'platform\modules\application\controllers'], function () {
 		// 平台管理
-		Route::any('application/', 'ApplicationController@index');
+        Route::any('application/', 'ApplicationController@index');
 		//修改应用
 		Route::post('application/update/{id}', 'ApplicationController@update');
 		//启用禁用或恢复应用及跳转链接
@@ -103,9 +90,13 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams', 'shopb
 		Route::get('application/temp/', 'ApplicationController@temp');
 
 		//平台用户管理
-		Route::any('appuser/', 'AppuserController@index');
-		Route::post('appuser/add/', 'AppuserController@add');
-		Route::get('appuser/delete/', 'AppuserController@delete');
+		// Route::any('appuser/', 'AppuserController@index');
+		//添加平台用户
+		Route::post('appuser/add', 'AppuserController@add');
+		//删除平台用户
+		Route::get('appuser/delete', 'AppuserController@delete');
+		//搜索会员
+		Route::any('appuser/checkname', 'AppuserController@checkname');
 	});
 });
 

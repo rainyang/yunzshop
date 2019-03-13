@@ -36,12 +36,9 @@
                     </div>
                     <div class="panel-body">
 
-                        <form class="form-horizontal" role="form" method="POST" action="/admin/user/create">
+                        <form class="form-horizontal" role="form" method="POST" action="/index.php/admin/user/create">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="cove_image"/>
-
-
-
 
                             <div class="form-group">
                                 <label for="tag" class="col-md-3 control-label">用户名</label>
@@ -50,9 +47,9 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="tag" class="col-md-3 control-label">邮箱</label>
+                                <label for="tag" class="col-md-3 control-label">手机号</label>
                                 <div class="col-md-5">
-                                    <input type="text" class="form-control" name="email" id="tag" value="{{ $email }}" autofocus>
+                                    <input type="text" class="form-control" name="phone" id="tag" value="{{ $phone }}" autofocus>
                                 </div>
                             </div>
 
