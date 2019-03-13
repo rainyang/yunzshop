@@ -28,18 +28,13 @@ class AuthenticateAdmin
      */
     public function handle($request, Closure $next)
     {
-        $set        = \config::get('app.global');
-
         if (Auth::guard('admin')->user()->id === 1) {
-            $app_global = ['role' => 'founder', 'isfounder' => true];
-            \config::set('app.global', array_merge($set, $app_global));
+            $set  = \config::get('app.global');
+            $role = ['role' => 'founder', 'isfounder' => true];
+
+            \config::set('app.global', array_merge($set, $role));
         } else {
-            // TODO 验证用户组 manager,operator
-            $app_global = ['role' => 'operator', 'isfounder' => false];
-            \config::set('app.global', array_merge($set, $app_global));
-            // TODO 如果是操作台直接跳转到商城
-            $url = 'shop?route=index.index';
-            return redirect()->guest($url);
+            //TODO 验证公众号和用户是否匹配
         }
 
         return $next($request);
