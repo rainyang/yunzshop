@@ -27,7 +27,7 @@ class AppuserController extends BaseController
             $user = new AppUser();
             
             $data = $this->fillData(request()->input());
-           
+
             if (!is_array($data)) {
 
             	return $this->errorJson($data);
@@ -35,7 +35,7 @@ class AppuserController extends BaseController
 
             $user->fill($data);
 
-            $validator =$user->validator();
+            $validator = $user->validator();
 
             if ($validator->fails()) {
             
@@ -43,18 +43,17 @@ class AppuserController extends BaseController
             
             } else {
 
-                if ($this->user->save()) {
+                if ($user->save()) {
                     
                     //更新缓存
                     // Cache::put($this->key.':'.$user->insertGetId(),$user->find($this->user->insertGetId()));
-
                     // Cache::put($this->key.'_num',$user->insertGetId());
 
-                    return $this->successJson(1, '添加成功');
+                    return $this->successJson('添加成功');
 
                 } else {
 
-                    return $this->errorJson(0, '添加失败');
+                    return $this->errorJson('添加失败');
                 }
             }
         }
@@ -75,13 +74,7 @@ class AppuserController extends BaseController
 
         // Cache::put($this->key.':'.$id, AppUser::find($id));
 
-        return $this->successJson(1, 'OK');
-	}
-
-	public function checkUser($data)
-	{
-		
-		return true;
+        return $this->successJson('OK');
 	}
 
 	private function fillData($data)
@@ -92,16 +85,17 @@ class AppuserController extends BaseController
         if (!$checkUser ) {
         	return 'uid 无效';
         }
-        // dd(UniacidApp::chekcApp( intval($data['uniacid'])) );
         //检测平台
 		if (! UniacidApp::chekcApp($data['uniacid'])) {
         	return '平台id 无效';
-        	// return false;
 		}
 
 		if (!in_array($data['role'], $this->role)) {
 			return '权限值非法';
-			// return false;
+		}
+
+		if(AppUser::where('uniacid', $data['uniacid'])->where('uid', $data['uid'])->first()) {
+			return '数据重复';
 		}
 
         return [
@@ -111,4 +105,16 @@ class AppuserController extends BaseController
         ];
     }
 
+    public function checkname()
+    {
+    	$data['search']['realname'] = htmlentities(request()->name);
+    	// dd($data);
+    	if (!$data) {
+    		return $this->errorJson('请输入要查询的用户名');
+    	}
+
+    	// return AdminUser::searchUsers($data)->get();
+    	
+    	return $this->successJson('查询成功', AdminUser::where('name', 'like', '%'.$data['search']['realname'].'%')->get());
+    }
 }

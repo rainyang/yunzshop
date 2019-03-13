@@ -71,7 +71,7 @@ Route::group(['middleware' => ['globalparams', 'auth:admin', 'authAdmin']], func
         // 用户修改密码
         Route::any('change', 'AdminUserController@change');
     });
-
+ 
     Route::group(['namespace' => 'platform\modules\application\controllers'], function () {
 		// 平台管理
         Route::any('application/', 'ApplicationController@index');
@@ -90,9 +90,13 @@ Route::group(['middleware' => ['globalparams', 'auth:admin', 'authAdmin']], func
 		Route::get('application/temp/', 'ApplicationController@temp');
 
 		//平台用户管理
-		Route::any('appuser/', 'AppuserController@index');
-		Route::get('appuser/add/', 'AppuserController@add');
-		Route::get('appuser/delete/', 'AppuserController@delete');
+		// Route::any('appuser/', 'AppuserController@index');
+		//添加平台用户
+		Route::post('appuser/add', 'AppuserController@add');
+		//删除平台用户
+		Route::get('appuser/delete', 'AppuserController@delete');
+		//搜索会员
+		Route::any('appuser/checkname', 'AppuserController@checkname');
 	});
 });
 

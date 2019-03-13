@@ -25,8 +25,15 @@ class UniacidApp extends BaseModel
   	
   	public function scopeSearch($query, $keyword)
   	{
-  		$query = $query->whereIn('id', self::checkRole())->where('status', 1);
-  		// dd(self::checkRole());
+  		$ids = self::checkRole();
+
+  		if (!is_array($ids)) {
+  			return $query;
+  		}
+
+  		$query = $query->where('status', 1);
+  		// $query = $query->where('id', $ids)->where('status', 1)->get();
+		// dd($query);  		
   		if ($keyword['name']) {
   			$query = $query->where('name', 'like', '%'.$keyword['name'].'%');
   		}
@@ -85,17 +92,16 @@ class UniacidApp extends BaseModel
     	return ['禁用', '启用'][$this->status];
     }
 
-    public function chekcApp($id)
+    public static function chekcApp($id)
     {
 		$app = self::find($id);
-		// dd($app);
 		if (!$app || $app->status != 1) {
 			return false;
 		}
 		return true;
     }
 
-    public function checkRole()
+    public static function checkRole()
     {
     	$uid = \Auth::guard('admin')->user()->id;
 
@@ -104,19 +110,17 @@ class UniacidApp extends BaseModel
         $appUser = AppUser::where('uid', $uid)->get();
 
         if (!$user || !$appUser || $user->type != 1) {
-            // return $this->errorJson('您无权限查看平台应用');
-            return false;
+            return '您无权限查看平台应用';
         }
 
         if ($user->status != 0) {
-            // return $this->errorJson('您的账号已过期');
-            return false;
+            return '您的账号已过期';
         }
-
+        
         foreach ($appUser->toArray() as $k => $v) {
-        	$ids[] = $v['id'];	
+        	$ids[] = $v['id'];
         }
-
+        
         return $ids;
     }
 
