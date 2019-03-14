@@ -12,6 +12,7 @@ use app\backend\modules\member\models\MemberRelation;
 use app\common\exceptions\MemberNotLoginException;
 use app\common\exceptions\ShopException;
 use app\common\exceptions\UniAccountNotFoundException;
+use app\common\helpers\Cache;
 use app\common\helpers\Client;
 use app\common\helpers\Url;
 use app\common\models\Member;
@@ -57,8 +58,9 @@ class ApiController extends BaseController
                 $this->jumpUrl($type, $mid);
             }
         } else {
-            if (1 == $type) {
+            if (1 == $type && !Cache::has('chekAccount') && $this->action != 'chekAccount' ) {
                 \Log::debug('------chk login------');
+                Cache::put('chekAccount', 1, 1);
                 $queryString = ['type'=>$type,'session_id'=>session_id(), 'i'=>\YunShop::app()->uniacid, 'mid'=>$mid];
 
                 throw new MemberNotLoginException('请登录', ['login_status' => 0, 'login_url' => Url::absoluteApi('member.login.chekAccount', $queryString)]);
