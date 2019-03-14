@@ -112,6 +112,9 @@ class PointService
     const POINT_MODE_RECEIVE_OVERDUE = 26;
     const POINT_MODE_RECEIVE_OVERDUE_ATTACHED = '领取失效';
 
+    const POINT_MODE_COMMISSION_TRANSFER = 27;
+    const POINT_MODE_COMMISSION_TRANSFER_ATTACHED = '分销商分红转入';
+
 
 
     const POINT = 0;
@@ -303,6 +306,9 @@ class PointService
                 break;
             case (26):
                 $mode_attribute = self::POINT_MODE_RECEIVE_OVERDUE_ATTACHED;
+                break;
+            case (27):
+                $mode_attribute = self::POINT_MODE_COMMISSION_TRANSFER_ATTACHED;
                 break;
             case (92):
                 $mode_attribute = self::POINT_MODE_RECHARGE_CODE_ATTACHED;
