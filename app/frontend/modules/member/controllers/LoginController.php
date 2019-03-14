@@ -20,8 +20,8 @@ use app\frontend\modules\member\services\MemberService;
 class LoginController extends ApiController
 {
     protected $publicController = ['Login'];
-    protected $publicAction = ['index', 'phoneSetGet'];
-    protected $ignoreAction = ['index', 'phoneSetGet'];
+    protected $publicAction = ['index', 'phoneSetGet', 'chekAccount'];
+    protected $ignoreAction = ['index', 'phoneSetGet', 'chekAccount'];
 
     public function index()
     {
