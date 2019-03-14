@@ -173,14 +173,22 @@ class MemberRelation
      */
     public function changeMemberOfRelation($uid, $o_parent_id, $n_parent_id)
     {
-        DB::transaction(function() use ($uid, $o_parent_id, $n_parent_id) {
-            $this->delMemberOfRelation($uid, $n_parent_id);
+        try {
+            DB::transaction(function() use ($uid, $o_parent_id, $n_parent_id) {
+                $this->delMemberOfRelation($uid, $n_parent_id);
 
-            if ($n_parent_id) {
-                \Log::debug('------step4-------', $n_parent_id);
-                $this->reAddMemberOfRelation($uid, $n_parent_id, $o_parent_id);
-            }
-        });
+                if ($n_parent_id) {
+                    \Log::debug('------step4-------', $n_parent_id);
+                    $this->reAddMemberOfRelation($uid, $n_parent_id, $o_parent_id);
+                }
+            });
+
+            return true;
+        } catch (\Exception $e) {
+            \Log::debug('------修改会员关系error----', [$e->getMessage()]);
+
+            return false;
+        }
     }
 
     public function hasRelationOfParent($uid, $depth)
@@ -241,7 +249,13 @@ class MemberRelation
             }
 
             file_put_contents(storage_path("logs/" . date('Y-m-d') . "_changerelation.log"), print_r($member_id . '-'. $parent_relation[0]->parent_id . '-'. $parent_id . PHP_EOL, 1), FILE_APPEND);
-            $this->changeMemberOfRelation($member_id, $parent_relation[0]->parent_id, $parent_id);
+            if ($this->changeMemberOfRelation($member_id, $parent_relation[0]->parent_id, $parent_id)) {
+                return ['status' => 1];
+            }
+
+            return ['status' => 0];
+        } else {
+            return ['status' => 0];
         }
     }
 
