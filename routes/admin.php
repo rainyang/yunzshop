@@ -87,12 +87,12 @@ Route::group(['middleware' => ['globalparams', 'auth:admin', 'authAdmin']], func
 		Route::any('application/recycle/', 'ApplicationController@recycle');
 		//图片上传
 		Route::post('application/upload/', 'ApplicationController@upload');
-		Route::get('application/temp/', 'ApplicationController@temp');
+		Route::any('application/temp/', 'ApplicationController@temp');
 
 		//平台用户管理
-		// Route::any('appuser/', 'AppuserController@index');
+		Route::any('appuser/', 'AppuserController@index');
 		//添加平台用户
-		Route::post('appuser/add', 'AppuserController@add');
+		Route::any('appuser/add', 'AppuserController@add');
 		//删除平台用户
 		Route::get('appuser/delete', 'AppuserController@delete');
 		//搜索会员

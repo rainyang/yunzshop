@@ -21,11 +21,11 @@
     }
     function readFile(){
         var file = this.files[0]; 
-        //这里我们判断下类型如果不是图片就返回 去掉就可以上传任意文件   
-        if(!/image\/\w+/.test(file.type)){
-            alert("请确保文件为图像类型"); 
-            return false; 
-        }
+        // //这里我们判断下类型如果不是图片就返回 去掉就可以上传任意文件   
+        // if(!/image\/\w+/.test(file.type)){
+        //     alert("请确保文件为图像类型"); 
+        //     return false; 
+        // }
         var reader = new FileReader(); 
         reader.readAsDataURL(file); 
         console.log();
@@ -38,7 +38,7 @@
 </head>
 
 <body> 
-    <form class="form-horizontal" method="post" enctype="multipart/form-data" action="/index.php/admin/application/upload/">
+    <form class="form-horizontal" method="post" enctype="multipart/form-data" action="/index.php/admin/application/temp/">
     <input type="file" value="file" id="demo_input" /> 
     <input type="hidden" name="_token" value="{{ csrf_token() }}">
 

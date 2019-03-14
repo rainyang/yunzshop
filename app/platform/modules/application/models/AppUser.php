@@ -43,6 +43,6 @@ class AppUser extends BaseModel
 
     public function hasOneUser()
     {
-        return $this->hasOne(\app\platform\modules\user\models\AdminUser::class, 'id', 'uid');
+        return $this->hasOne(\app\platform\modules\user\models\AdminUser::class, 'uid', 'uid');
     }
 }
