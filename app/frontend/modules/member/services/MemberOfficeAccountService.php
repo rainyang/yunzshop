@@ -434,6 +434,7 @@ class MemberOfficeAccountService extends MemberService
         $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
 
         if (!empty($code)) {
+            \Log::debug('-------code------', $code);
             $token = \Curl::to($tokenurl)
                 ->asJsonResponse(true)
                 ->get();
@@ -450,6 +451,7 @@ class MemberOfficeAccountService extends MemberService
                 return show_json(-3, '微信登陆授权失败');
             }
         } else {
+            \Log::debug('-------code jump------');
             redirect($authurl)->send();
             exit;
         }
