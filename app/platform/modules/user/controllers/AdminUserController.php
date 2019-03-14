@@ -74,9 +74,6 @@ class AdminUserController extends BaseController
             $this->validate($this->rules(), $user, $this->message());
             return User::saveData($user, $user_model = '');
         }
-
-        return view('system.user.add', [
-        ]);
     }
 
     /**
@@ -101,10 +98,6 @@ class AdminUserController extends BaseController
             $this->validate($this->rules($uid, $profile['id']), $data, $this->message());
             return AdminUser::saveData($data, $user);
         }
-
-        return view('system.user.add', [
-            'user' => $user
-        ]);
     }
 
     /**
@@ -188,6 +181,9 @@ class AdminUserController extends BaseController
     {
         $uid = request()->uid;
         $status = request()->status;
+        if (!$uid || !$status) {
+            return $this->errorJson('参数错误');
+        }
         $result = AdminUser::where('uid', $uid)->update(['status'=>$status]);
         if ($result) {
             return $this->successJson('成功');
@@ -204,6 +200,9 @@ class AdminUserController extends BaseController
     {
         $uid = request()->uid;
         $data = request()->user;
+        if (!$uid || !$data) {
+            return $this->errorJson('参数错误');
+        }
         if ($data){
             $user = AdminUser::getData($uid);
             return AdminUser::saveData($data, $user);
