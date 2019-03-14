@@ -692,6 +692,7 @@
                     <div class="tab-pane" id="tab_des">@include('goods.des')</div>
                     <div class="tab-pane" id="tab_param">@include('goods.tpl.param')</div>
                     <div class="tab-pane" id="tab_option">@include('goods.tpl.option')</div>
+                    @section('tpl_tab_goods') @show
                     @foreach(Config::get('widget.goods') as $key=>$value)
                         @if ($goods['type2'] != 2 && $key == 'tab_lease_toy' || $goods['type2'] != 3 && $key == 'tab_video_demand')
                             @continue
