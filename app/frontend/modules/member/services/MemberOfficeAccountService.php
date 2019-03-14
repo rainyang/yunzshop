@@ -451,7 +451,7 @@ class MemberOfficeAccountService extends MemberService
                 return show_json(-3, '微信登陆授权失败');
             }
         } else {
-            \Log::debug('-------code jump------');
+            \Log::debug('-------code jump------', $authurl);
             redirect($authurl)->send();
             exit;
         }
