@@ -78,7 +78,7 @@ class MemberOfficeAccountService extends MemberService
 
             //Login
             $member_id = $this->memberLogin($userinfo);
-$member_id = 323;
+
             \YunShop::app()->openid = $userinfo['openid'];
 
             Session::set('member_id', $member_id);
