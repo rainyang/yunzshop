@@ -87,11 +87,19 @@ class MemberRelation
      */
     public function addMemberOfRelation($uid, $parent_id)
     {
-        DB::transaction(function() use ($uid, $parent_id) {
-            $this->parent->addNewParentData($uid, $parent_id);
+        try {
+            DB::transaction(function() use ($uid, $parent_id) {
+                $this->parent->addNewParentData($uid, $parent_id);
 
-            $this->child-> addNewChildData($this->parent, $uid, $parent_id);
-        });
+                $this->child-> addNewChildData($this->parent, $uid, $parent_id);
+            });
+
+            return true;
+        } catch (\Exception $e) {
+            \Log::debug('-------member relation add error-----', [$e->getMessage()]);
+            return false;
+        }
+
     }
 
     /**
@@ -207,7 +215,9 @@ class MemberRelation
 
         if ($parent_relation->isEmpty() && intval($parent_id) > 0) {
             \Log::debug('------step1-------');
-            $this->addMemberOfRelation($member_id, $parent_id);
+            if ($this->addMemberOfRelation($member_id, $parent_id)) {
+                return ['status' => 1];
+            }
         }
 
         if (!$parent_relation->isEmpty() && $parent_id != $parent_relation[0]->parent_id) {
@@ -252,11 +262,9 @@ class MemberRelation
             if ($this->changeMemberOfRelation($member_id, $parent_relation[0]->parent_id, $parent_id)) {
                 return ['status' => 1];
             }
-
-            return ['status' => 0];
-        } else {
-            return ['status' => 0];
         }
+
+        return ['status' => 0];
     }
 
     /**
