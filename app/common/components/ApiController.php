@@ -57,11 +57,7 @@ class ApiController extends BaseController
                 $this->jumpUrl($type, $mid);
             }
         } else {
-            if (1 == $type) {
-                \Log::debug('------chk login------');
-                $member = MemberFactory::create($type);
-                $member->chekAccount();
-            }
+
 
             if (!MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId())) {
                 Session::clear('member_id');

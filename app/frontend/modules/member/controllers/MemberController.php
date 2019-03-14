@@ -30,6 +30,7 @@ use app\common\services\Session;
 use app\frontend\models\Member;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\SubMemberModel;
+use app\frontend\modules\member\services\factory\MemberFactory;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\models\OrderListModel;
 use EasyWeChat\Foundation\Application;
@@ -72,6 +73,10 @@ class MemberController extends ApiController
      */
     public function getUserInfo()
     {
+        \Log::debug('------chk login------');
+        $member = MemberFactory::create(1);
+        $member->chekAccount();
+
         $member_id = \YunShop::app()->getMemberId();
         $v         = request('v');
 
