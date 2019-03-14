@@ -284,7 +284,7 @@ class PointService
                 $mode_attribute = self::POINT_MODE_TRANSFER_LOVE_ATTACHED;
                 break;
             case (19):
-                $mode_attribute = self::POINT_MODE_SIGN_REWARD_ATTACHED;
+                $mode_attribute = trans('Yunshop\Sign::sign.plugin_name') ? trans('Yunshop\Sign::sign.plugin_name').'奖励' : self::POINT_MODE_SIGN_REWARD_ATTACHED;
                 break;
             case (20):
                 $mode_attribute = self::POINT_MODE_COURIER_REWARD_ATTACHED;
