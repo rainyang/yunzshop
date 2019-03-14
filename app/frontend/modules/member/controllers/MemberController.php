@@ -1939,7 +1939,6 @@ class MemberController extends ApiController
         $mid = Member::getMid();
 
         if (1 == $type && !Cache::has('chekAccount')) {
-            \Log::debug('----user chk---');
             Cache::put('chekAccount', 1, 1);
             $queryString = ['type'=>$type,'session_id'=>session_id(), 'i'=>\YunShop::app()->uniacid, 'mid'=>$mid];
 

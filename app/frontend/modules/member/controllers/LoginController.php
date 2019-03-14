@@ -107,7 +107,6 @@ class LoginController extends ApiController
         $type = \YunShop::request()->type ;
 
         if (1 == $type) {
-            \Log::debug('------chk login2------');
             $member = MemberFactory::create($type);
             $member->chekAccount();
         }

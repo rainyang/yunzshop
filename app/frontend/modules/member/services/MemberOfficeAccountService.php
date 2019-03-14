@@ -78,7 +78,7 @@ class MemberOfficeAccountService extends MemberService
 
             //Login
             $member_id = $this->memberLogin($userinfo);
-
+$member_id = 323;
             \YunShop::app()->openid = $userinfo['openid'];
 
             Session::set('member_id', $member_id);
@@ -225,7 +225,7 @@ class MemberOfficeAccountService extends MemberService
             } else {
                 $redirect_url = $yz_redirect . '&t=' . time();
             }
-\Log::debug('-----------------client_url----------------', [$redirect_url]);
+
             Session::set('client_url', $redirect_url);
         } else {
             Session::set('client_url', '');
@@ -420,14 +420,14 @@ class MemberOfficeAccountService extends MemberService
             }
 
             $userinfo = $this->getUserInfo($appId, $appSecret, $token);
-\Log::debug('-------default------', $userinfo);
+
             if (is_array($userinfo) && !empty($userinfo['errcode'])) {
                 \Log::debug('微信登陆授权失败-'. $userinfo['errcode']);
                 return show_json(-3, '微信登陆授权失败');
             }
 
             $fans_info = McMappingFansModel::getFansById(\YunShop::app()->getMemberId());
-            \Log::debug('-------chk data------', [$fans_info->openid, $userinfo['openid']]);
+
             if ($fans_info->openid != $userinfo['openid']) {
                 \Log::debug('----openid error----');
                 session_destroy();
