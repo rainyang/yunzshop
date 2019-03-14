@@ -44,12 +44,12 @@
     });
 
     function formcheck() {
-        var plugin_id=$('input:radio[name="goods[type2]"]:checked').val();
-        var p_id = $('#plugin_id').val();
-        if(plugin_id == '2') {
-            var txt=$("<input type='hidden' name='goods[plugin_id]' value='"+p_id+"'>");     // 使用 jQuery 创建元素
-            $('input:radio[name="goods[type2]"]').after(txt);          // 在图片后添加文本
-        }
+        // var plugin_id=$('input:radio[name="goods[type2]"]:checked').val();
+        // var p_id = $('#plugin_id').val();
+        // if(plugin_id == '2') {
+        //     var txt=$("<input type='hidden' name='goods[plugin_id]' value='"+p_id+"'>");     // 使用 jQuery 创建元素
+        //     $('input:radio[name="goods[type2]"]').after(txt);          // 在图片后添加文本
+        // }
 
         window.type = $("input[name='goods[type]']:checked").val();
         window.virtual = $("#virtual").val();
@@ -675,11 +675,8 @@
                 <li><a href="#tab_des">{{$lang['shopdesc']}}</a></li>
                 <li><a href="#tab_param">属性</a></li>
                 <li><a href="#tab_option">{{$lang['shopoption']}}</a></li>
-
+                @section('tab_goods_title') @show
                 @foreach(Config::get('widget.goods') as $key=>$value)
-                    @if ($goods['type2'] != 2 && $key == 'tab_lease_toy' || $goods['type2'] != 3 && $key == 'tab_video_demand')
-                        @continue
-                    @endif
                         <li><a href="#{{$key}}">{{$value['title']}}</a></li>
                 @endforeach
 
@@ -692,11 +689,8 @@
                     <div class="tab-pane" id="tab_des">@include('goods.des')</div>
                     <div class="tab-pane" id="tab_param">@include('goods.tpl.param')</div>
                     <div class="tab-pane" id="tab_option">@include('goods.tpl.option')</div>
-                    @section('tpl_tab_goods') @show
+                    @section('tab_goods_view') @show
                     @foreach(Config::get('widget.goods') as $key=>$value)
-                        @if ($goods['type2'] != 2 && $key == 'tab_lease_toy' || $goods['type2'] != 3 && $key == 'tab_video_demand')
-                            @continue
-                        @endif
                         <div class="tab-pane"
                              id="{{$key}}">{!! widget($value['class'], ['goods_id'=> $goods->id])!!}</div>
                     @endforeach

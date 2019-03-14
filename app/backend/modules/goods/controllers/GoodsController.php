@@ -291,10 +291,8 @@ class GoodsController extends BaseController
         //todo 所有操作去service里进行，供应商共用此方法。
         $goods_service = new EditGoodsService($request->id, \YunShop::request());
 
-        if (!$goods_service->goods) {
-            return $this->message('未找到商品或已经被删除', '', 'error');
-        }
         $result = $goods_service->edit();
+        /*
         $type2 = \YunShop::request()->goods['type2'];
         $goods = \app\common\models\Goods::find($this->goods_id);
         $plugin_id = '';
@@ -314,14 +312,9 @@ class GoodsController extends BaseController
                 $LeaseToyGoods->save();
                 $goods->save();
             }
-//            if (Setting::get('shop.goods.type2') == '2') {
-//                $goods->type2 = Setting::get('shop.goods.type2');
-//                $goods->save();
-//                Setting::set('shop.goods.type2', '');
-//            }
-
         }
-        if (/*!app('plugins')->isEnabled('lease-toy') && $goods->type2 == '2' ||*/ !app('plugins')->isEnabled('video-demand') && $goods->type2 == '3') {
+        //!app('plugins')->isEnabled('lease-toy') && $goods->type2 == '2' ||
+        if (!app('plugins')->isEnabled('video-demand') && $goods->type2 == '3') {
             Setting::set('shop.goods.type2', $goods->type2);
             $goods->type2 = '1';
             $goods->save();
@@ -336,7 +329,7 @@ class GoodsController extends BaseController
             }
             $goods->save();
         }
-
+    */
         if ($result['status'] == 1) {
             Cache::flush();
             return $this->message('商品修改成功', Url::absoluteWeb($this->success_url));
@@ -347,9 +340,6 @@ class GoodsController extends BaseController
             !session()->has('flash_notification.message') && $this->error('商品修改失败');
         }
 
-        $goods_service->goods_model->type2 = $goods->type2;
-
-        //dd($this->lang);
         return view('goods.goods', [
             'goods' => $goods_service->goods_model,
             'lang' => $this->lang,
@@ -363,7 +353,6 @@ class GoodsController extends BaseController
             'virtual_types' => [],
             'shopset' => $this->shopset,
             'type' => 'edit',
-            'plugin_id' => $plugin_id
         ])->render();
     }
 
