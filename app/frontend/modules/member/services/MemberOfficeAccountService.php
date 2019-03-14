@@ -434,7 +434,8 @@ class MemberOfficeAccountService extends MemberService
         $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
 
         if (!empty($code)) {
-            \Log::debug('-------code------', $code);
+            $redirect_url = $this->_getClientRequestUrl();
+
             $token = \Curl::to($tokenurl)
                 ->asJsonResponse(true)
                 ->get();
@@ -444,16 +445,20 @@ class MemberOfficeAccountService extends MemberService
             }
 
             $userinfo = $this->getUserInfo($appId, $appSecret, $token);
-
-            \Log::debug('-------default------', $userinfo);
+\Log::debug('-------default------', $userinfo);
             if (is_array($userinfo) && !empty($userinfo['errcode'])) {
                 \Log::debug('微信登陆授权失败-'. $userinfo['errcode']);
                 return show_json(-3, '微信登陆授权失败');
             }
         } else {
-            \Log::debug('-------code jump------', $authurl);
+            $this->_setClientRequestUrl();
+
             redirect($authurl)->send();
             exit;
         }
+
+        \Log::debug('------------redirect_url2----------', [$redirect_url]);
+        redirect($redirect_url)->send();
+        exit;
     }
 }
