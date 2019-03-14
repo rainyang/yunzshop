@@ -17,6 +17,7 @@ use app\platform\modules\user\models\Role;
 use app\platform\modules\user\requests\AdminUserCreateRequest;
 use app\platform\modules\user\requests\AdminUserUpdateRequest;
 use Illuminate\Http\Request;
+use app\platform\modules\user\models\YzUserProfile;
 
 class AdminUserController extends BaseController
 {
@@ -84,17 +85,20 @@ class AdminUserController extends BaseController
      */
     public function edit()
     {
-        $id = request()->id;
-        if (!$id) {
+        $uid = request()->uid;
+        if (!$uid) {
             return $this->errorJson('参数错误');
         }
-        $user = AdminUser::getData($id);
-        if (!$user) {
+        $user = AdminUser::getData($uid);
+        $profile = YzUserProfile::where('uid', $uid)->first();
+        $user['mobile'] = $profile['mobile'];
+        if (!$user || !$profile) {
             return $this->errorJson('找不到该用户');
         }
         $data = request()->user;
 
         if($data) {
+            $this->validate($this->rules($uid, $profile['id']), $data, $this->message());
             return AdminUser::saveData($data, $user);
         }
 
@@ -109,13 +113,13 @@ class AdminUserController extends BaseController
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($uid)
     {
-        $tag = User::find((int)$id);
+        $tag = User::find((int)$uid);
         foreach ($tag->roles as $v) {
             $tag->roles()->detach($v);
         }
-        if ($tag && $tag->id != 1) {
+        if ($tag && $tag->$uid != 1) {
             $tag->delete();
         } else {
             return redirect()->back()
@@ -138,13 +142,20 @@ class AdminUserController extends BaseController
         }
     }
 
-    public function rules()
+    public function rules($u_id, $p_id)
     {
         $rules = [];
-        if (request()->path() != "admin/user/change") {
+        if (request()->path() == "admin/user/create") {
             $rules = [
-                'name' => 'required|regex:/^[\x{4e00}-\x{9fa5}A-Za-z0-9_\-]{3,30}$/u|unique:yz_admin_users',
-                'phone' => 'required|regex:/^1[34578]\d{9}$/|unique:yz_admin_users|unique:yz_admin_users',
+                'username' => 'required|regex:/^[\x{4e00}-\x{9fa5}A-Za-z0-9_\-]{3,30}$/u|unique:yz_admin_users',
+                'mobile' => 'required|regex:/^1[34578]\d{9}$/|unique:yz_users_profile',
+            ];
+        }
+
+        if (request()->path() == "admin/user/edit") {
+            $rules = [
+                'username' => 'required|regex:/^[\x{4e00}-\x{9fa5}A-Za-z0-9_\-]{3,30}$/u|unique:yz_admin_users,username,'.$u_id.',uid',
+                'mobile' => 'required|regex:/^1[34578]\d{9}$/|unique:yz_users_profile,mobile,'.$p_id,
             ];
         }
 
@@ -158,12 +169,12 @@ class AdminUserController extends BaseController
     public function message()
     {
         return [
-            'name.required' => '用户名不能为空',
-            'name.regex' => '用户名格式不正确',
-            'name.unique' => '用户名已存在',
-            'phone.required' => '手机号已存在',
-            'phone.regex' => '手机号格式不正确',
-            'phone.unique' => '手机号已存在',
+            'username.required' => '用户名不能为空',
+            'username.regex' => '用户名格式不正确',
+            'username.unique' => '用户名已存在',
+            'mobile.required' => '手机号已存在',
+            'mobile.regex' => '手机号格式不正确',
+            'mobile.unique' => '手机号已存在',
             'password.required' => '密码不能为空',
             're_password.same' => '两次密码不一致',
         ];
@@ -175,9 +186,9 @@ class AdminUserController extends BaseController
      */
     public function status()
     {
-        $id = request()->id;
+        $uid = request()->uid;
         $status = request()->status;
-        $result = AdminUser::where('id', $id)->update(['status'=>$status]);
+        $result = AdminUser::where('uid', $uid)->update(['status'=>$status]);
         if ($result) {
             return $this->successJson('成功');
         } else {
@@ -191,10 +202,10 @@ class AdminUserController extends BaseController
      */
     public function change()
     {
-        $id = request()->id;
+        $uid = request()->uid;
         $data = request()->user;
         if ($data){
-            $user = AdminUser::getData($id);
+            $user = AdminUser::getData($uid);
             return AdminUser::saveData($data, $user);
         }
 
@@ -206,7 +217,7 @@ class AdminUserController extends BaseController
      */
     public function applicationList()
     {
-        $id = request()->id;
+        $uid = request()->uid;
     }
 }
 

@@ -30,7 +30,7 @@ class AuthenticateAdmin
     {
         $set        = \config::get('app.global');
 
-        if (Auth::guard('admin')->user()->id === 1) {
+        if (Auth::guard('admin')->user()->uid === 1) {
             $app_global = ['role' => 'founder', 'isfounder' => true];
             \config::set('app.global', array_merge($set, $app_global));
         } else {

@@ -44,7 +44,9 @@ class UserObserver extends BaseObserver
 
         $profileModel->fill($model->widgets['profile']);
         $profileModel->uid = $model->uid;
-        $profileModel->createtime = time();
+        if (env('APP_Framework') != 'platform') {
+            $profileModel->createtime = time();
+        }
         if (!$profileModel->save()) {
             dd("操作员简介写入失败,请重试！！");
             $this->error("操作员简介写入失败,请重试！！");
@@ -93,7 +95,7 @@ class UserObserver extends BaseObserver
             'uid'       => $model->uid,
             'role'      => 'operator',
             'rank'      => '0',
-            'uniacid'   => \YunShop::app()->uniacid
+            'uniacid'   => ''
         );
         $uniAccountUserModel->fill($accountData);
         if (!$uniAccountUserModel->save()) {

@@ -37,7 +37,18 @@ class User extends BaseModel
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
-        $this->attributes = $this->getNewAttributes();
+        if (env('APP_Framework') == 'platform') {
+//            $this->$attributes = [
+//                'type' => 1,
+//                'remark' => '',
+//                'endtime' => 0
+//            ];
+            unset($this->attributes['groupid']);
+            $this->timestamps = true;
+            $this->table = 'yz_admin_users';
+        } else {
+            $this->attributes = $this->getNewAttributes();
+        }
     }
 
     public function getNewAttributes()

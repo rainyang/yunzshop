@@ -36,7 +36,7 @@
         <form action="{{ url('/admin/login') }}" method="post">
             {!! csrf_field() !!}
             <div class="form-group has-feedback">
-                <input type="text" class="form-control" placeholder="用户名"  name="name" value="">
+                <input type="text" class="form-control" placeholder="用户名"  name="username" value="">
                 <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
             </div>
             <div class="form-group has-feedback">
