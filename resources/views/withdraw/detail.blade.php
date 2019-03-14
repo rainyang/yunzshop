@@ -51,6 +51,9 @@
                         银行卡
                 </p>
                 <p>
+                    <b>姓名：</b>{{$item->bankCard->member_name}}
+                </p>
+                <p>
                     <b>开户行：</b>{{$item->bankCard->bank_name}}
                 </p>
                 <p>
