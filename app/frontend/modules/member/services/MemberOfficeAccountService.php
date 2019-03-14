@@ -414,23 +414,22 @@ class MemberOfficeAccountService extends MemberService
 
     public function chekAccount()
     {
-        $code = '';
         $uniacid = \YunShop::app()->uniacid;
+
+        $code = \YunShop::request()->code;
+
         $account = AccountWechats::getAccountByUniacid($uniacid);
         $appId = $account->key;
         $appSecret = $account->secret;
 
-
         $callback = ($_SERVER['REQUEST_SCHEME'] ? $_SERVER['REQUEST_SCHEME'] : 'http')  . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        //$callback = Url::absoluteApp('login_validate', ['mid' => Member::getMid()]);
+
         \Log::debug('---------callback--------', [$callback]);
 
         $state = 'yz-' . session_id();
 
         $authurl = $this->_getAuthBaseUrl($appId, $callback, $state);
-
-        $authInfo = \Curl::to($authurl)
-            ->asJsonResponse(true)
-            ->get();
 
         $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
 
@@ -447,10 +446,14 @@ class MemberOfficeAccountService extends MemberService
 
             $userinfo = $this->getUserInfo($appId, $appSecret, $token);
 
+            \Log::debug('-------default------', $userinfo);
             if (is_array($userinfo) && !empty($userinfo['errcode'])) {
                 \Log::debug('微信登陆授权失败-'. $userinfo['errcode']);
                 return show_json(-3, '微信登陆授权失败');
             }
+        } else {
+            redirect($authurl)->send();
+            exit;
         }
     }
 }
