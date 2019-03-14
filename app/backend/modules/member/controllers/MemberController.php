@@ -627,6 +627,7 @@ class MemberController extends BaseController
         }
 
         $list = MemberParent::children($request)
+            ->orderBy('level','asc')
             ->paginate($this->pageSize)
             ->toArray();
 
@@ -679,6 +680,7 @@ class MemberController extends BaseController
             });
         })->export('xls');
     }
+
 
 
 
