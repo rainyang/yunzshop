@@ -57,7 +57,7 @@ class ApiController extends BaseController
                 $this->jumpUrl($type, $mid);
             }
         } else {
-            if (2 == $type) {
+            if (1 == $type) {
                 \Log::debug('------chk login------');
                 $member = MemberFactory::create($type);
                 $member->chekAccount();
