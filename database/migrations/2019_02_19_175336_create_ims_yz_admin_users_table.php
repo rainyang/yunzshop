@@ -15,7 +15,7 @@ class CreateImsYzAdminUsersTable extends Migration
     {
         if (!Schema::hasTable('yz_admin_users')) {
             Schema::create('yz_admin_users', function (Blueprint $table) {
-                $table->increments('id')->comment('管理员用户表ID');
+                $table->increments('uid')->comment('管理员用户表ID');
                 $table->string('username')->unique()->comment('用户名');
                 $table->string('password')->comment('密码');
                 $table->tinyInteger('status')->default(2)->comment('状态(0:超级管理员(admin); 1:审核; 2:有效; 3:禁用)');
