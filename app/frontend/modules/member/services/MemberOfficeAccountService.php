@@ -8,19 +8,15 @@
 
 namespace app\frontend\modules\member\services;
 
+use app\common\facades\Setting;
+use app\common\helpers\Cache;
 use app\common\helpers\Client;
 use app\common\helpers\Url;
 use app\common\models\AccountWechats;
 use app\common\models\Member;
-use app\common\models\MemberGroup;
-use app\common\models\MemberShopInfo;
 use app\common\services\Session;
-use app\frontend\models\McGroupsModel;
 use app\frontend\modules\member\models\McMappingFansModel;
-use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\MemberUniqueModel;
-use app\frontend\modules\member\models\SubMemberModel;
-use app\common\facades\Setting;
 
 class MemberOfficeAccountService extends MemberService
 {
@@ -46,16 +42,7 @@ class MemberOfficeAccountService extends MemberService
         $appId = $account->key;
         $appSecret = $account->secret;
 
-        if ($params['scope'] == 'user_info') {
-            $callback = Url::absoluteApi('member.login.index', ['type' => 1, 'scope' => 'user_info']);
-
-
-        } else {
-            $callback = ($_SERVER['REQUEST_SCHEME'] ? $_SERVER['REQUEST_SCHEME'] : 'http')  . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-              //$callback = Url::absoluteApp('login_validate', ['mid' => Member::getMid()]);
-
-            \Log::debug('---------callback--------', [$callback]);
-        }
+        $callback = ($_SERVER['REQUEST_SCHEME'] ? $_SERVER['REQUEST_SCHEME'] : 'http')  . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
         $state = 'yz-' . session_id();
 
@@ -95,6 +82,7 @@ class MemberOfficeAccountService extends MemberService
             \YunShop::app()->openid = $userinfo['openid'];
 
             Session::set('member_id', $member_id);
+            Cache::put('chekAccount', 1, 1);
         } else {
             $this->_setClientRequestUrl();
 
@@ -102,14 +90,8 @@ class MemberOfficeAccountService extends MemberService
             exit;
         }
 
-        if (\YunShop::request()->scope == 'user_info') {
-            return show_json(1, 'user_info_api');
-        } else {
-            //return show_json(1, ['redirect_url' => $redirect_url]);
-            \Log::debug('------------redirect_url----------', [$redirect_url]);
-            redirect($redirect_url)->send();
-            exit;
-        }
+        redirect($redirect_url)->send();
+        exit;
     }
 
     /**
@@ -415,22 +397,15 @@ class MemberOfficeAccountService extends MemberService
     public function chekAccount()
     {
         $uniacid = \YunShop::app()->uniacid;
-
         $code = \YunShop::request()->code;
-
         $account = AccountWechats::getAccountByUniacid($uniacid);
         $appId = $account->key;
         $appSecret = $account->secret;
-
-        $callback = ($_SERVER['REQUEST_SCHEME'] ? $_SERVER['REQUEST_SCHEME'] : 'http')  . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-        //$callback = Url::absoluteApp('login_validate', ['mid' => Member::getMid()]);
-
-        \Log::debug('---------callback2--------', [$callback]);
-
         $state = 'yz-' . session_id();
 
-        $authurl = $this->_getAuthBaseUrl($appId, $callback, $state);
+        $callback = ($_SERVER['REQUEST_SCHEME'] ? $_SERVER['REQUEST_SCHEME'] : 'http')  . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
+        $authurl = $this->_getAuthBaseUrl($appId, $callback, $state);
         $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
 
         if (!empty($code)) {
@@ -450,6 +425,16 @@ class MemberOfficeAccountService extends MemberService
                 \Log::debug('微信登陆授权失败-'. $userinfo['errcode']);
                 return show_json(-3, '微信登陆授权失败');
             }
+
+            $fans_info = McMappingFansModel::getFansById(\YunShop::app()->getMemberId());
+            \Log::debug('-------chk data------', [$fans_info->openid, $userinfo['openid']]);
+            if ($fans_info->openid != $userinfo['openid']) {
+                \Log::debug('----openid error----');
+                session_destroy();
+                redirect($redirect_url)->send();
+            } else {
+             \Log::debug('----openid ok-----');
+            }
         } else {
             $this->_setClientRequestUrl();
 
@@ -457,7 +442,6 @@ class MemberOfficeAccountService extends MemberService
             exit;
         }
 
-        \Log::debug('------------redirect_url2----------', [$redirect_url]);
         redirect($redirect_url)->send();
         exit;
     }

@@ -9,7 +9,6 @@
 namespace app\frontend\modules\member\controllers;
 
 use app\common\components\ApiController;
-use app\common\facades\Setting;
 use app\common\helpers\Client;
 use app\common\helpers\Url;
 use app\common\models\Member;
