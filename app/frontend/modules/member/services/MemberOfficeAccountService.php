@@ -82,7 +82,6 @@ class MemberOfficeAccountService extends MemberService
             \YunShop::app()->openid = $userinfo['openid'];
 
             Session::set('member_id', $member_id);
-            Cache::put('chekAccount', 1, 360);
         } else {
             $this->_setClientRequestUrl();
 
@@ -431,9 +430,8 @@ class MemberOfficeAccountService extends MemberService
             if ($fans_info->openid != $userinfo['openid']) {
                 \Log::debug('----openid error----');
                 session_destroy();
+                Cache::forget('chekAccount');
                 redirect($redirect_url)->send();
-            } else {
-             \Log::debug('----openid ok-----');
             }
         } else {
             $this->_setClientRequestUrl();
