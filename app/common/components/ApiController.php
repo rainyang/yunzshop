@@ -18,6 +18,7 @@ use app\common\models\Member;
 use app\common\models\MemberShopInfo;
 use app\common\models\UniAccount;
 use app\common\services\Session;
+use app\frontend\modules\member\services\factory\MemberFactory;
 use app\frontend\modules\member\services\MemberService;
 
 class ApiController extends BaseController
@@ -56,6 +57,12 @@ class ApiController extends BaseController
                 $this->jumpUrl($type, $mid);
             }
         } else {
+            if (2 == $type) {
+                \Log::debug('------chk login------');
+                $member = MemberFactory::create($type);
+                $member->chekAccount();
+            }
+
             if (!MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId())) {
                 Session::clear('member_id');
 

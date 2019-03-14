@@ -425,7 +425,7 @@ class MemberOfficeAccountService extends MemberService
         $callback = ($_SERVER['REQUEST_SCHEME'] ? $_SERVER['REQUEST_SCHEME'] : 'http')  . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         //$callback = Url::absoluteApp('login_validate', ['mid' => Member::getMid()]);
 
-        \Log::debug('---------callback--------', [$callback]);
+        \Log::debug('---------callback2--------', [$callback]);
 
         $state = 'yz-' . session_id();
 
@@ -434,8 +434,6 @@ class MemberOfficeAccountService extends MemberService
         $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
 
         if (!empty($code)) {
-            $redirect_url = $this->_getClientRequestUrl();
-
             $token = \Curl::to($tokenurl)
                 ->asJsonResponse(true)
                 ->get();
