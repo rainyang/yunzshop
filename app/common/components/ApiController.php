@@ -57,7 +57,12 @@ class ApiController extends BaseController
                 $this->jumpUrl($type, $mid);
             }
         } else {
+            if (1 == $type) {
+                \Log::debug('------chk login------');
+                $queryString = ['type'=>$type,'session_id'=>session_id(), 'i'=>\YunShop::app()->uniacid, 'mid'=>$mid];
 
+                throw new MemberNotLoginException('请登录', ['login_status' => 0, 'login_url' => Url::absoluteApi('member.login.chekAccount', $queryString)]);
+            }
 
             if (!MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId())) {
                 Session::clear('member_id');

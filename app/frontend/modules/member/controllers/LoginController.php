@@ -102,4 +102,15 @@ class LoginController extends ApiController
         }
         return $this->successJson('ok', ['phone_oauth' => $phone_oauth]);
     }
+
+    public function chekAccount()
+    {
+        $type = \YunShop::request()->type ;
+
+        if (1 == $type) {
+            \Log::debug('------chk login2------');
+            $member = MemberFactory::create($type);
+            $member->chekAccount();
+        }
+    }
 }
