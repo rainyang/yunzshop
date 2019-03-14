@@ -170,7 +170,7 @@ class UserController extends BaseController
             $data['lastvisit'] = time();
             $data['lastip'] = getIp();
             $data['joinip'] = getIp();
-            $data['salt'] = $this->randNum(8);
+            $data['salt'] = randNum(8);
         } else {
             $data['joindate'] = $data['lastvisit'] = $data['starttime'] = time();
             $data['lastip'] = CLIENT_IP;

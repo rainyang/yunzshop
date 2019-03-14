@@ -17,6 +17,7 @@ class IndexController extends BaseController
 
     public function index()
     {
+        dd(\YunShop::app()->uniacid);
         $user = \Auth::guard('admin')->user();
 
         Cookie::queue('user_id', $user->uid);
