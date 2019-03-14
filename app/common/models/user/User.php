@@ -38,11 +38,6 @@ class User extends BaseModel
     {
         parent::__construct($attributes);
         if (env('APP_Framework') == 'platform') {
-//            $this->$attributes = [
-//                'type' => 1,
-//                'remark' => '',
-//                'endtime' => 0
-//            ];
             unset($this->attributes['groupid']);
             $this->timestamps = true;
             $this->table = 'yz_admin_users';

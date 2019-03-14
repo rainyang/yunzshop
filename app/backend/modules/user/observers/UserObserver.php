@@ -95,7 +95,7 @@ class UserObserver extends BaseObserver
             'uid'       => $model->uid,
             'role'      => 'operator',
             'rank'      => '0',
-            'uniacid'   => ''
+            'uniacid'   => \YunShop::app()->uniacid
         );
         $uniAccountUserModel->fill($accountData);
         if (!$uniAccountUserModel->save()) {
