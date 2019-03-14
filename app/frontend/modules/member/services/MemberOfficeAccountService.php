@@ -411,4 +411,46 @@ class MemberOfficeAccountService extends MemberService
             redirect($redirect_url)->send();
         }
     }
+
+    public function chekAccount()
+    {
+        $code = '';
+        $uniacid = \YunShop::app()->uniacid;
+        $account = AccountWechats::getAccountByUniacid($uniacid);
+        $appId = $account->key;
+        $appSecret = $account->secret;
+
+
+        $callback = ($_SERVER['REQUEST_SCHEME'] ? $_SERVER['REQUEST_SCHEME'] : 'http')  . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        \Log::debug('---------callback--------', [$callback]);
+
+        $state = 'yz-' . session_id();
+
+        $authurl = $this->_getAuthBaseUrl($appId, $callback, $state);
+
+        $authInfo = \Curl::to($authurl)
+            ->asJsonResponse(true)
+            ->get();
+
+        $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
+
+        if (!empty($code)) {
+            $redirect_url = $this->_getClientRequestUrl();
+
+            $token = \Curl::to($tokenurl)
+                ->asJsonResponse(true)
+                ->get();
+
+            if (!empty($token) && !empty($token['errmsg']) && $token['errmsg'] == 'invalid code') {
+                return show_json(5, 'token请求错误');
+            }
+
+            $userinfo = $this->getUserInfo($appId, $appSecret, $token);
+
+            if (is_array($userinfo) && !empty($userinfo['errcode'])) {
+                \Log::debug('微信登陆授权失败-'. $userinfo['errcode']);
+                return show_json(-3, '微信登陆授权失败');
+            }
+        }
+    }
 }
