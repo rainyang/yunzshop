@@ -19,10 +19,7 @@ class AddColumnToYzUniacidApp extends Migration
                 
                 Schema::table('yz_uniacid_app', function (Blueprint $table) {
                     
-                    $table->string('url')->nullable();
-                    $table->integer('creator')->nullable();
-                    // $table->softDeletes();
-                    // $table->timestamps();
+                    $table->integer('creator')->nullable()->comment('平台创建者');
                 });
             }
         }
