@@ -57,9 +57,11 @@ class AdminUserController extends BaseController
 
         $users = User::getList();
 
-        return view('system.user.index', [
-            'users' => $users
-        ]);
+        if (!$users->isEmpty()) {
+            return $this->successJson('成功', $users);
+        } else {
+            return $this->errorJson('未获取到用户信息');
+        }
     }
 
     /**
@@ -74,6 +76,8 @@ class AdminUserController extends BaseController
             $this->validate($this->rules(), $user, $this->message());
             return User::saveData($user, $user_model = '');
         }
+
+        return view('system.user.add');
     }
 
     /**
@@ -97,6 +101,12 @@ class AdminUserController extends BaseController
         if($data) {
             $this->validate($this->rules($uid, $profile['id']), $data, $this->message());
             return AdminUser::saveData($data, $user);
+        }
+
+        if ($user) {
+            return $this->successJson('成功', $user);
+        } else {
+            return $this->errorJson('失败');
         }
     }
 
@@ -131,7 +141,7 @@ class AdminUserController extends BaseController
         $validator = $this->getValidationFactory()->make($request, $rules, $messages, $customAttributes);
 
         if ($validator->fails()) {
-            echo $this->errorJson($validator->errors()->all()); exit;
+            $this->errorsJson('失败', $validator->errors()->all());
         }
     }
 
@@ -217,6 +227,31 @@ class AdminUserController extends BaseController
     public function applicationList()
     {
         $uid = request()->uid;
+    }
+
+    /**
+     *
+     */
+    public function errorsJson($msg = '', $data = '')
+    {
+        $array = [
+            'result' => 0,
+            'msg' => $msg,
+            'data' => $data
+        ];
+
+        echo json_encode($array); exit;
+    }
+
+    public function succesJson($msg = '', $data = '')
+    {
+        $array = [
+            'result' => 1,
+            'msg' => $msg,
+            'data' => $data
+        ];
+
+        echo json_encode($array); exit;
     }
 }
 

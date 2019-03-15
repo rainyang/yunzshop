@@ -28,6 +28,7 @@ class CreateImsYzAdminUsersTable extends Migration
                 $table->string('joinip', 15)->comment('加入ip');
                 $table->integer('lastvisit')->comment('最后访问');
                 $table->string('lastip', 15)->comment('最后访问ip');
+                $table->rememberToken();
                 $table->integer('created_at')->nullable();
                 $table->integer('updated_at')->nullable();
                 $table->integer('deleted_at')->nullable();
