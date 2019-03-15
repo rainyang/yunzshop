@@ -152,10 +152,23 @@ class ApplicationController extends BaseController
         }
     }
 
+    public function getApp()
+    {
+        $id = request()->id;
+        
+        $app = new UniacidApp();
+
+        $info = $app->find($id);
+
+        if (!$id || !$info) {
+            return $this->errorJson('获取失败');
+        }
+        return $this->successJson('获取成功', $info);
+    }
+
     //加入回收站 删除
     public function delete()
     {
-
         $id = request()->id;
 
         $info = UniacidApp::withTrashed()->find($id);

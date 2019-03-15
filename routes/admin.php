@@ -83,6 +83,8 @@ Route::group(['middleware' => ['globalparams', 'auth:admin', 'authAdmin']], func
 		Route::post('application/update/{id}', 'ApplicationController@update');
 		//启用禁用或恢复应用及跳转链接
 		Route::get('application/switchStatus/{id}', 'ApplicationController@switchStatus');
+        //详情
+        Route::any('application/getApp', 'ApplicationController@getApp');
 		//添加应用
 		Route::post('application/add/', 'ApplicationController@add');
 		//删除 加入回收站
