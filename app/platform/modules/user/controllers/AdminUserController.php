@@ -30,7 +30,7 @@ class AdminUserController extends BaseController
     /**
      * Display a listing of the resource.(显示用户列表.)
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
@@ -60,47 +60,54 @@ class AdminUserController extends BaseController
         if (!$users->isEmpty()) {
             return $this->successJson('成功', $users);
         } else {
-            return $this->errorJson('未获取到用户信息');
+            return $this->check(6);
         }
+
     }
 
     /**
      * Show the form for creating a new resource And Store a newly created resource in storage.(添加用户)
-     *
+     * @return \Illuminate\Http\JsonResponse|void
+     * @throws \app\common\exceptions\AppException
      */
-    // @return \Illuminate\Http\Response
     public function create()
     {
         $user = request()->user;
         if ($user) {
-            $this->validate($this->rules(), $user, $this->message());
-            return User::saveData($user, $user_model = '');
+            $validate = $this->validate($this->rules(), $user, $this->message());
+            if ($validate) {
+                return $validate;
+            }
+            return $this->check(User::saveData($user, $user_model = ''));
         }
-
-        return view('system.user.add');
     }
 
     /**
      * Show the form for editing the specified resource And Update the specified resource in storage.(修改用户)
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\JsonResponse|\Illuminate\View\View|mixed
+     *
+     * @return \Illuminate\Http\JsonResponse|void
+     * @throws \app\common\exceptions\AppException
      */
     public function edit()
     {
         $uid = request()->uid;
         if (!$uid) {
-            return $this->errorJson('参数错误');
+            return $this->check(5);
         }
         $user = AdminUser::getData($uid);
         $profile = YzUserProfile::where('uid', $uid)->first();
         $user['mobile'] = $profile['mobile'];
         if (!$user || !$profile) {
-            return $this->errorJson('找不到该用户');
+            return $this->check(6);
         }
         $data = request()->user;
 
         if($data) {
-            $this->validate($this->rules($uid, $profile['id']), $data, $this->message());
-            return AdminUser::saveData($data, $user);
+            $validate  = $this->validate($this->rules(), $data, $this->message());
+            if ($validate) {
+                return $validate;
+            }
+            return $this->check(AdminUser::saveData($data, $user));
         }
 
         if ($user) {
@@ -141,7 +148,7 @@ class AdminUserController extends BaseController
         $validator = $this->getValidationFactory()->make($request, $rules, $messages, $customAttributes);
 
         if ($validator->fails()) {
-            $this->errorsJson('失败', $validator->errors()->all());
+            return $this->errorJson('失败', $validator->errors()->all());
         }
     }
 
@@ -185,6 +192,7 @@ class AdminUserController extends BaseController
 
     /**
      * 修改状态
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function status()
@@ -192,33 +200,72 @@ class AdminUserController extends BaseController
         $uid = request()->uid;
         $status = request()->status;
         if (!$uid || !$status) {
-            return $this->errorJson('参数错误');
+            return $this->check(5);
         }
         $result = AdminUser::where('uid', $uid)->update(['status'=>$status]);
         if ($result) {
-            return $this->successJson('成功');
+            return $this->check(1);
         } else {
-            return $this->errorJson('失败');
+            return $this->check(0);
         }
     }
 
     /**
      * 修改密码
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|mixed
+     *
+     * @return \Illuminate\Http\JsonResponse|void
+     * @throws \app\common\exceptions\AppException
      */
     public function change()
     {
         $uid = request()->uid;
         $data = request()->user;
         if (!$uid || !$data) {
-            return $this->errorJson('参数错误');
+            return $this->check(5);
         }
         if ($data){
             $user = AdminUser::getData($uid);
-            return AdminUser::saveData($data, $user);
+            if (!$user) {
+                return $this->check(6);
+            }
+            $validate  = $this->validate($this->rules(), $data, $this->message());
+            if ($validate) {
+                return $validate;
+            }
+            return $this->check(AdminUser::saveData($data, $user));
         }
+    }
 
-        return view('system.user.change');
+    /**
+     * 返回 json 信息
+     *
+     * @param $user
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function check($user)
+    {
+        switch ($user) {
+            case 1:
+                return $this->successJson('成功');
+                break;
+            case 2:
+                return $this->errorJson('原密码错误');
+                break;
+            case 3:
+                return $this->errorJson('新密码与原密码一致');
+                break;
+            case 4:
+                return $this->errorJson('存储相关信息表失败');
+                break;
+            case 5:
+                return $this->errorJson('参数错误');
+                break;
+            case 6:
+                return $this->errorJson('未获取到数据');
+                break;
+            default:
+                return $this->errorJson('失败');
+        }
     }
 
     /**
@@ -229,29 +276,5 @@ class AdminUserController extends BaseController
         $uid = request()->uid;
     }
 
-    /**
-     *
-     */
-    public function errorsJson($msg = '', $data = '')
-    {
-        $array = [
-            'result' => 0,
-            'msg' => $msg,
-            'data' => $data
-        ];
-
-        echo json_encode($array); exit;
-    }
-
-    public function succesJson($msg = '', $data = '')
-    {
-        $array = [
-            'result' => 1,
-            'msg' => $msg,
-            'data' => $data
-        ];
-
-        echo json_encode($array); exit;
-    }
 }
 
