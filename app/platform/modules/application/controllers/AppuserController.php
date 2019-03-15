@@ -115,6 +115,6 @@ class AppuserController extends BaseController
 
     	// return AdminUser::searchUsers($data)->get();
     	
-    	return $this->successJson('查询成功', AdminUser::where('name', 'like', '%'.$data['search']['realname'].'%')->get());
+    	return $this->successJson('查询成功', AdminUser::where('username', 'like', '%'.$data['search']['realname'].'%')->get());
     }
 }
