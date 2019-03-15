@@ -160,9 +160,9 @@ class IncomeWithdrawController extends ApiController
         $this->poundage_type = empty($type) ? 0 : $type;
 
         //如果使用 提现到余额独立手续费
-        if ($this->isUseBalanceSpecialSet()) {
+       /* if ($this->isUseBalanceSpecialSet()) {
             $value = array_get($this->withdraw_set, 'special_poundage', 0);
-        }
+        }*/
         return $this->poundage_rate = empty($value) ? 0 : $value;
     }
 
@@ -322,11 +322,11 @@ class IncomeWithdrawController extends ApiController
             $poundage = number_format($this->poundage_rate, 2, '.','');
         }
         
-        if ($this->isUseBalanceSpecialSet()) {
+        /*if ($this->isUseBalanceSpecialSet()) {
             if ($this->special_poundage_type == 1) {
                 $poundage = number_format($this->special_poundage_rate, 2, '.', '');
             }
-        }
+        }*/
 
 
         $service_tax = $this->poundageMath($this->withdraw_amounts - $poundage, $this->service_tax_rate);
