@@ -83,8 +83,6 @@ class AdminUserController extends BaseController
             }
             return $this->check(User::saveData($user, $user_model = ''));
         }
-
-        return view('system.user.add');
     }
 
     /**
@@ -102,13 +100,15 @@ class AdminUserController extends BaseController
         $user['mobile'] = $profile['mobile'];
         if (!$user || !$profile) {
             return $this->check(6);
-//            return $this->errorJson('找不到该用户');
         }
         $data = request()->user;
 
         if($data) {
-            $this->validate($this->rules($uid, $profile['id']), $data, $this->message());
-            return AdminUser::saveData($data, $user);
+            $validate  = $this->validate($this->rules(), $data, $this->message());
+            if ($validate) {
+                return $validate;
+            }
+            return $this->check(AdminUser::saveData($data, $user));
         }
 
         if ($user) {
@@ -149,7 +149,7 @@ class AdminUserController extends BaseController
         $validator = $this->getValidationFactory()->make($request, $rules, $messages, $customAttributes);
 
         if ($validator->fails()) {
-            return $this->errorJson($validator->errors()->all());
+            return $this->errorJson('失败', $validator->errors()->all());
         }
     }
 
@@ -232,8 +232,6 @@ class AdminUserController extends BaseController
             }
             return $this->check(AdminUser::saveData($data, $user));
         }
-
-        return view('system.user.change');
     }
 
     /**
