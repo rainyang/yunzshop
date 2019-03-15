@@ -57,9 +57,11 @@ class AdminUserController extends BaseController
 
         $users = User::getList();
 
-        return view('system.user.index', [
-            'users' => $users
-        ]);
+        if (!$users->isEmpty()) {
+            return $this->successJson('成功', $users);
+        } else {
+            return $this->errorJson('未获取到用户信息');
+        }
     }
 
     /**
@@ -97,6 +99,12 @@ class AdminUserController extends BaseController
         if($data) {
             $this->validate($this->rules($uid, $profile['id']), $data, $this->message());
             return AdminUser::saveData($data, $user);
+        }
+
+        if ($user) {
+            return $this->successJson('成功', $user);
+        } else {
+            return $this->errorJson('失败');
         }
     }
 
