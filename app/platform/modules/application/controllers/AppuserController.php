@@ -15,7 +15,8 @@ class AppuserController extends BaseController
 
 	public function index()
 	{
-		$list = AppUser::orderBy('id', 'desc')->paginate()->toArray();
+        // dd(request()->search);
+		$list = AppUser::with('hasOneUser')->search(request()->search ? : '')->orderBy('id', 'desc')->paginate()->toArray();
 
 		return $this->successJson('获取成功', $list);
 	}
@@ -115,6 +116,6 @@ class AppuserController extends BaseController
 
     	// return AdminUser::searchUsers($data)->get();
     	
-    	return $this->successJson('查询成功', AdminUser::where('name', 'like', '%'.$data['search']['realname'].'%')->get());
+    	return $this->successJson('查询成功', AdminUser::where('username', 'like', '%'.$data['search']['realname'].'%')->get());
     }
 }

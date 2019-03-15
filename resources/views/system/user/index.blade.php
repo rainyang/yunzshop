@@ -115,28 +115,25 @@
                                 @section('foreach')
                                 @foreach($users as $item)
                                     <tr>
-                                        <td>{{$item['id']}}</td>
-                                        <td>{{$item['name']}}</td>
+                                        <td>{{$item['uid']}}</td>
+                                        <td>{{$item['username']}}</td>
                                         <td>{{$item['create_at']}}</td>
-                                        <td>{{$item['effective_time']}}</td>
+                                        <td>{{$item['endtime']}}</td>
                                         <td>
-                                            @if($item['status']=='0') 有效
-                                                @elseif($item['status'] == '1') 已过期
-                                                @elseif($item['status'] == '2') 已禁用
+                                            @if($item['status']=='2') 有效
+                                                @elseif($item['status'] == '3') 已禁用
                                             @endif
                                         </td>
                                         <td>
                                             <a class="btn btn-info" href="/index.php/admin/user/application_list"><i class="fa fa-plus"></i> 平台列表</a>
-                                            <a class="btn btn-danger" href="/index.php/admin/user/change?id={{$item['id']}}"><i class="fa fa-plus"></i> 修改密码</a>
-                                            @if($item['status']=='0')
-                                                <a class="btn batchdisable" href="/index.php/admin/user/status?status=2&id={{$item['id']}}"><i class="fa fa-plus"></i> 禁用</a>
-                                            @elseif($item['status']=='2')
-                                                <a class="btn btn-info" href="/index.php/admin/user/status?status=0&id={{$item['id']}}"><i class="fa fa-plus"></i> 启用</a>
-                                            @elseif($item['status']=='1')
-                                                <a class="btn batchdisable"><i class="fa fa-plus"></i>已过期</a>
+                                            <a class="btn btn-danger" href="/index.php/admin/user/change?uid={{$item['uid']}}"><i class="fa fa-plus"></i> 修改密码</a>
+                                            @if($item['status']=='2')
+                                                <a class="btn batchdisable" href="/index.php/admin/user/status?status=3&uid={{$item['uid']}}"><i class="fa fa-plus"></i> 禁用</a>
+                                            @elseif($item['status']=='3')
+                                                <a class="btn btn-info" href="/index.php/admin/user/status?status=2&uid={{$item['uid']}}"><i class="fa fa-plus"></i> 启用</a>
                                             @endif
                                                 {{ csrf_field() }}
-                                            <a class="btn btn-info " href="/index.php/admin/user/edit?id={{$item['id']}}"><i class="fa fa-plus"></i> 编辑</a>
+                                            <a class="btn btn-info " href="/index.php/admin/user/edit?uid={{$item['uid']}}"><i class="fa fa-plus"></i> 编辑</a>
                                         </td>
                                     </tr>
 

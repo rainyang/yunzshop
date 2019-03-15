@@ -70,6 +70,10 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams', 'shopb
         Route::any('status', 'AdminUserController@status');
         // 用户修改密码
         Route::any('change', 'AdminUserController@change');
+        // 平台列表
+        Route::any('app_list', 'AdminUserController@applicationList');
+        // 店员用户列表
+        Route::any('clerk_list', 'AdminUserController@clerkList');
     });
  
     Route::group(['namespace' => 'platform\modules\application\controllers'], function () {
@@ -79,6 +83,8 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams', 'shopb
 		Route::post('application/update/{id}', 'ApplicationController@update');
 		//启用禁用或恢复应用及跳转链接
 		Route::get('application/switchStatus/{id}', 'ApplicationController@switchStatus');
+        //详情
+        Route::any('application/getApp', 'ApplicationController@getApp');
 		//添加应用
 		Route::post('application/add/', 'ApplicationController@add');
 		//删除 加入回收站
@@ -87,12 +93,12 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams', 'shopb
 		Route::any('application/recycle/', 'ApplicationController@recycle');
 		//图片上传
 		Route::post('application/upload/', 'ApplicationController@upload');
-		Route::get('application/temp/', 'ApplicationController@temp');
+		Route::any('application/temp/', 'ApplicationController@temp');
 
 		//平台用户管理
-		// Route::any('appuser/', 'AppuserController@index');
+		Route::any('appuser/', 'AppuserController@index');
 		//添加平台用户
-		Route::post('appuser/add', 'AppuserController@add');
+		Route::any('appuser/add', 'AppuserController@add');
 		//删除平台用户
 		Route::get('appuser/delete', 'AppuserController@delete');
 		//搜索会员

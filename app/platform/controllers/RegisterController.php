@@ -12,6 +12,8 @@ use app\common\exceptions\AdminException;
 use app\platform\modules\user\models\AdminUser;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use app\platform\modules\user\models\YzUserProfile;
+
 
 class RegisterController extends BaseController
 {
@@ -56,8 +58,7 @@ class RegisterController extends BaseController
     protected function validator(array $data)
     {
         return \Validator::make($data, [
-            'name' => 'required|max:255|unique:yz_admin_users',
-            'phone' => 'required|regex:/^1[34578]\d{9}$/|unique:yz_admin_users',
+            'username' => 'required|max:255|unique:yz_admin_users',
             'password' => 'required|min:6|confirmed',
         ]);
     }
@@ -89,11 +90,13 @@ class RegisterController extends BaseController
      */
     protected function create(array $data)
     {
-        return AdminUser::create([
-            'name' => $data['name'],
-            'phone' => $data['phone'],
+        $user_model = new AdminUser;
+        $user_model->fill([
+            'username' => $data['username'],
             'password' => bcrypt($data['password']),
         ]);
+        dump($user_model->save());
+        return $user_model;
     }
 
     public function register(Request $request)
@@ -102,6 +105,18 @@ class RegisterController extends BaseController
             $this->traitregister($request);
         } catch (\Exception $e) {
             throw new AdminException($e->getMessage());
+        }
+        $data = [
+            'mobile' => request()->profile['mobile'],
+            'uid' => \Auth::guard('admin')->user()->uid
+        ];
+        $profile_model = new YzUserProfile;
+        $profile_model->fill($data);
+        $validator = $profile_model->validator();
+        if ($validator->fails()) {
+            return $this->errorJson($validator->messages());
+        } else {
+            $profile_model->save();
         }
     }
 }

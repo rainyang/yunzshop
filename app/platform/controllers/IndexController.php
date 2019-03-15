@@ -15,7 +15,7 @@ class IndexController extends BaseController
     public function index()
     {
         $user = \Auth::guard('admin')->user();
-
+        
         /*Cookie::queue('user_id', $user->id);
         Cookie::queue('user_name', $user->name);*/
 

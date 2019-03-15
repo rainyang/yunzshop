@@ -17,6 +17,8 @@ use app\platform\modules\user\models\Role;
 use app\platform\modules\user\requests\AdminUserCreateRequest;
 use app\platform\modules\user\requests\AdminUserUpdateRequest;
 use Illuminate\Http\Request;
+use app\platform\modules\user\models\YzUserProfile;
+use app\platform\modules\application\models\UniacidApp;
 
 class AdminUserController extends BaseController
 {
@@ -29,7 +31,7 @@ class AdminUserController extends BaseController
     /**
      * Display a listing of the resource.(显示用户列表.)
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
@@ -56,51 +58,64 @@ class AdminUserController extends BaseController
 
         $users = User::getList();
 
-        return view('system.user.index', [
-            'users' => $users
-        ]);
+        if (!$users->isEmpty()) {
+            return $this->successJson('成功', $users);
+        } else {
+            return $this->check(6);
+        }
+
     }
 
     /**
      * Show the form for creating a new resource And Store a newly created resource in storage.(添加用户)
-     *
+     * @return \Illuminate\Http\JsonResponse|void
+     * @throws \app\common\exceptions\AppException
      */
-    // @return \Illuminate\Http\Response
     public function create()
     {
         $user = request()->user;
         if ($user) {
-            $this->validate($this->rules(), $user, $this->message());
-            return User::saveData($user, $user_model = '');
+            $validate = $this->validate($this->rules(), $user, $this->message());
+            if ($validate) {
+                return $validate;
+            }
+            return $this->check(User::saveData($user, $user_model = ''));
         }
-
-        return view('system.user.add', [
-        ]);
     }
 
     /**
      * Show the form for editing the specified resource And Update the specified resource in storage.(修改用户)
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\JsonResponse|\Illuminate\View\View|mixed
+     *
+     * @return \Illuminate\Http\JsonResponse|void
+     * @throws \app\common\exceptions\AppException
      */
     public function edit()
     {
-        $id = request()->id;
-        if (!$id) {
-            return $this->errorJson('参数错误');
+        $uid = request()->uid;
+        if (!$uid) {
+            return $this->check(5);
         }
-        $user = AdminUser::getData($id);
-        if (!$user) {
-            return $this->errorJson('找不到该用户');
+        $user = AdminUser::getData($uid);
+        $profile = YzUserProfile::where('uid', $uid)->first();
+        $user['mobile'] = $profile['mobile'];
+        if (!$user || !$profile) {
+            return $this->check(6);
         }
         $data = request()->user;
 
         if($data) {
-            return AdminUser::saveData($data, $user);
+            $validate  = $this->validate($this->rules(), $data, $this->message());
+            if ($validate) {
+                return $validate;
+            }
+            return $this->check(AdminUser::saveData($data, $user));
         }
 
-        return view('system.user.add', [
-            'user' => $user
-        ]);
+        if ($user) {
+            return $this->successJson('成功', $user);
+        } else {
+            return $this->errorJson('失败');
+        }
     }
 
     /**
@@ -109,13 +124,13 @@ class AdminUserController extends BaseController
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($uid)
     {
-        $tag = User::find((int)$id);
+        $tag = User::find((int)$uid);
         foreach ($tag->roles as $v) {
             $tag->roles()->detach($v);
         }
-        if ($tag && $tag->id != 1) {
+        if ($tag && $tag->$uid != 1) {
             $tag->delete();
         } else {
             return redirect()->back()
@@ -134,17 +149,24 @@ class AdminUserController extends BaseController
         $validator = $this->getValidationFactory()->make($request, $rules, $messages, $customAttributes);
 
         if ($validator->fails()) {
-            echo $this->errorJson($validator->errors()->all()); exit;
+            return $this->errorJson('失败', $validator->errors()->all());
         }
     }
 
-    public function rules()
+    public function rules($u_id, $p_id)
     {
         $rules = [];
-        if (request()->path() != "admin/user/change") {
+        if (request()->path() == "admin/user/create") {
             $rules = [
-                'name' => 'required|regex:/^[\x{4e00}-\x{9fa5}A-Za-z0-9_\-]{3,30}$/u|unique:yz_admin_users',
-                'phone' => 'required|regex:/^1[34578]\d{9}$/|unique:yz_admin_users|unique:yz_admin_users',
+                'username' => 'required|regex:/^[\x{4e00}-\x{9fa5}A-Za-z0-9_\-]{3,30}$/u|unique:yz_admin_users',
+                'mobile' => 'required|regex:/^1[34578]\d{9}$/|unique:yz_users_profile',
+            ];
+        }
+
+        if (request()->path() == "admin/user/edit") {
+            $rules = [
+                'username' => 'required|regex:/^[\x{4e00}-\x{9fa5}A-Za-z0-9_\-]{3,30}$/u|unique:yz_admin_users,username,'.$u_id.',uid',
+                'mobile' => 'required|regex:/^1[34578]\d{9}$/|unique:yz_users_profile,mobile,'.$p_id,
             ];
         }
 
@@ -158,12 +180,12 @@ class AdminUserController extends BaseController
     public function message()
     {
         return [
-            'name.required' => '用户名不能为空',
-            'name.regex' => '用户名格式不正确',
-            'name.unique' => '用户名已存在',
-            'phone.required' => '手机号已存在',
-            'phone.regex' => '手机号格式不正确',
-            'phone.unique' => '手机号已存在',
+            'username.required' => '用户名不能为空',
+            'username.regex' => '用户名格式不正确',
+            'username.unique' => '用户名已存在',
+            'mobile.required' => '手机号已存在',
+            'mobile.regex' => '手机号格式不正确',
+            'mobile.unique' => '手机号已存在',
             'password.required' => '密码不能为空',
             're_password.same' => '两次密码不一致',
         ];
@@ -171,34 +193,80 @@ class AdminUserController extends BaseController
 
     /**
      * 修改状态
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function status()
     {
-        $id = request()->id;
+        $uid = request()->uid;
         $status = request()->status;
-        $result = AdminUser::where('id', $id)->update(['status'=>$status]);
+        if (!$uid || !$status) {
+            return $this->check(5);
+        }
+        $result = AdminUser::where('uid', $uid)->update(['status'=>$status]);
         if ($result) {
-            return $this->successJson('成功');
+            return $this->check(1);
         } else {
-            return $this->errorJson('失败');
+            return $this->check(0);
         }
     }
 
     /**
      * 修改密码
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|mixed
+     *
+     * @return \Illuminate\Http\JsonResponse|void
+     * @throws \app\common\exceptions\AppException
      */
     public function change()
     {
-        $id = request()->id;
+        $uid = request()->uid;
         $data = request()->user;
-        if ($data){
-            $user = AdminUser::getData($id);
-            return AdminUser::saveData($data, $user);
+        if (!$uid || !$data) {
+            return $this->check(5);
         }
+        if ($data){
+            $user = AdminUser::getData($uid);
+            if (!$user) {
+                return $this->check(6);
+            }
+            $validate  = $this->validate($this->rules(), $data, $this->message());
+            if ($validate) {
+                return $validate;
+            }
+            return $this->check(AdminUser::saveData($data, $user));
+        }
+    }
 
-        return view('system.user.change');
+    /**
+     * 返回 json 信息
+     *
+     * @param $user
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function check($user)
+    {
+        switch ($user) {
+            case 1:
+                return $this->successJson('成功');
+                break;
+            case 2:
+                return $this->errorJson('原密码错误');
+                break;
+            case 3:
+                return $this->errorJson('新密码与原密码一致');
+                break;
+            case 4:
+                return $this->errorJson('存储相关信息表失败');
+                break;
+            case 5:
+                return $this->errorJson('参数错误');
+                break;
+            case 6:
+                return $this->errorJson('未获取到数据');
+                break;
+            default:
+                return $this->errorJson('失败');
+        }
     }
 
     /**
@@ -206,7 +274,42 @@ class AdminUserController extends BaseController
      */
     public function applicationList()
     {
-        $id = request()->id;
+        $uid = request()->uid;
+        $user = AdminUser::where('uid', $uid)->first();
+        $app_id = $user->hasManyAppUser;
+        foreach ($app_id as &$item) {
+            $item->hasOneApp;
+        }
+        $data = [
+            'username' => $user->username,
+            'app' => $app_id,
+        ];
+
+        if (!$user) {
+            return $this->errorJson('未获取到该用户', '');
+        }
+        if ($data['app']->isEmpty()) {
+            return $this->errorJson('该用户暂时没有平台', '');
+        }
+
+        return $this->successJson('成功', $data);
+    }
+    /**
+     * 单个用户平台列表
+     */
+    public function clerkList()
+    {
+        $user = AdminUser::with(['hasOneProfile'])->where('type', 3)->get();
+        foreach ($user as &$item) {
+            $item['create_at'] = $item['created_at']->format('Y年m月d日');
+            $item->hasOneAppUser['app_name'] = $item->hasOneAppUser->hasOneApp->name;
+        }
+
+        if ($user->isEmpty()) {
+            return $this->errorJson('未获取到店员信息', '');
+        }
+
+        return $this->successJson('成功', $user);
     }
 }
 

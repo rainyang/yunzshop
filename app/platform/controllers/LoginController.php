@@ -56,7 +56,7 @@ class LoginController extends BaseController
     public function atributeNames()
     {
         return [
-            'name' => '用户名',
+            'username' => '用户名',
             'password' => '密码'
         ];
     }
@@ -68,7 +68,7 @@ class LoginController extends BaseController
     public function rules()
     {
         return [
-            'name' => 'required',
+            'username' => 'required',
             'password' => 'required',
         ];
     }
@@ -97,7 +97,7 @@ class LoginController extends BaseController
      */
     public function username()
     {
-        return 'name';
+        return 'username';
     }
 
     /**

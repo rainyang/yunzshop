@@ -35,19 +35,19 @@
                         {{ csrf_field() }}
 
                         <div class="form-group">
-                            <label for="name" class="col-md-4 control-label">Name</label>
+                            <label for="username" class="col-md-4 control-label">UserName</label>
 
                             <div class="col-md-6">
-                                <input id="name" type="text" class="form-control" name="name" value="" required autofocus>
+                                <input id="username" type="text" class="form-control" name="username" value="" required autofocus>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="phone" class="col-md-4 control-label">Phone</label>
+                            <label for="mobile" class="col-md-4 control-label">Phone</label>
 
                             <div class="col-md-6">
 
-                                <input id="phone" type="text" class="form-control" name="phone" value="" required>
+                                <input id="mobile" type="text" class="form-control" name="profile[mobile]" value="" required>
 
                             </div>
                         </div>

@@ -5,6 +5,8 @@ namespace app\platform\modules\application\controllers;
 use app\platform\controllers\BaseController;
 use app\platform\modules\application\models\UniacidApp;
 use app\common\helpers\Cache;
+use app\platform\modules\user\models\AdminUser;
+use app\platform\modules\application\models\AppUser;
 
 class ApplicationController extends BaseController
 {
@@ -16,12 +18,19 @@ class ApplicationController extends BaseController
         
         $app = new UniacidApp();
 
+        $ids = self::checkRole();
+
+        if (!is_array($ids)) {
+            
+            return $this->errorJson($ids);
+        }
+
         if ($search) {
             
-            $app = $app->search($search);
-
+            $app = $app->whereIn('id', $ids)->search($search);
         } 
-            $list = $app->orderBy('id', 'desc')->paginate()->toArray();
+
+            $list = $app->whereIn('id', $ids)->orderBy('id', 'desc')->paginate()->toArray();
             
             foreach ($list['data'] as $key => $value) {
                 
@@ -36,6 +45,39 @@ class ApplicationController extends BaseController
             }
 
         return $this->successJson('获取成功',  $list);
+    }
+
+    public static function checkRole()
+    {
+        $uid = \Auth::guard('admin')->user()->uid;
+
+        $user = AdminUser::find($uid);
+
+        $appUser = AppUser::where('uid', $uid)->get();
+
+        // if (!$user || !$appUser || $user->type != 0 ) {
+        if (!$user || !$appUser ) {
+            return '您无权限查看平台应用';
+        }
+
+        if ($user->endtime != 0 && $user->endtime < time()) {
+            return '您的账号已过期';
+        }
+        
+        foreach ($appUser->toArray() as $k => $v) {
+            $ids[] = $v['uniacid'];
+        }
+        
+        $app = UniacidApp::where('creator', $uid)->get();
+
+        if ($app) {
+
+            foreach ($app as $key => $value) {
+                
+                $ids[] = $value['id'];
+            }
+        }
+        return $ids;
     }
 
     public function add()
@@ -110,10 +152,23 @@ class ApplicationController extends BaseController
         }
     }
 
+    public function getApp()
+    {
+        $id = request()->id;
+        
+        $app = new UniacidApp();
+
+        $info = $app->find($id);
+
+        if (!$id || !$info) {
+            return $this->errorJson('获取失败');
+        }
+        return $this->successJson('获取成功', $info);
+    }
+
     //加入回收站 删除
     public function delete()
     {
-
         $id = request()->id;
 
         $info = UniacidApp::withTrashed()->find($id);
@@ -230,6 +285,7 @@ class ApplicationController extends BaseController
             'title' => $data['title'] ?  : '',
             'descr' => $data['descr'] ?  : '',
             'status' => $data['status'] ?  : 1,
+            'creator' => \Auth::guard('admin')->user()->uid,
             // 'uniacid' => $app->insertGetId() + 1,
             'version' => $data['version'] ?  : 0.00,
             'validity_time' => $data['validity_time'] ?  : 0,
@@ -261,7 +317,8 @@ class ApplicationController extends BaseController
             $res = \Storage::disk('public')->put($newOriginalName, file_get_contents($realPath));
             \Log::info('res-path', [$res, \Storage::disk('public')]);
 
-            $proto = explode('/', $_SERVER['SERVER_PROTOCOL'])[0] === 'https' ? 'https://' : 'http://';
+            // $proto = explode('/', $_SERVER['SERVER_PROTOCOL'])[0] === 'https' ? 'https://' : 'http://';
+            $proto = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https://' : 'http://';
 
             return $this->successJson('上传成功', $proto.$_SERVER['HTTP_HOST'].'/storage/app/public/'.$newOriginalName);
         }
@@ -269,6 +326,33 @@ class ApplicationController extends BaseController
 
     public function temp()
     {
+        if (request()->input()) {
+            
+            $file = request()->file;
+            // dd($file);
+            if ($file) {
+
+            $first = explode(',', $file);
+            $ext = explode(';', explode('/', $first[0])[1])[0];
+
+            //解码
+            $content = base64_decode($first[1]); 
+            //自定义路径
+            // $path = config('filesystems.disks.public')['root'].'/';
+
+            // $extPath = str_replace(substr($path, -7, 1), "\\", $path);
+            
+            $filename = date('Ymd').uniqid().rand(1, 9999).'.'.$ext;
+
+            $url = $path.$filename;
+            
+            // UploadedFile::store($url);
+            $res = \Storage::disk('public')->put($url, $content);
+            // dd($res);
+            return $this->successJson('上传成功', $proto.$_SERVER['HTTP_HOST'].'/storage/app/public/'.$filename);
+
+            }
+        }
         return View('admin.application.upload');
     }
 }

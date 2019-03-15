@@ -46,6 +46,7 @@ class AuthenticateAdmin
         return $next($request);
     }
 
+
     private function setRole()
     {
         if (\Auth::guard('admin')->user()->id === 1) {

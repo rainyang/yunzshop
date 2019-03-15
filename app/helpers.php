@@ -930,3 +930,56 @@ if (!function_exists('debug_log')) {
         return app('Log.debug');
     }
 }
+
+if (!function_exists('getIp')) {
+    /**
+     * 获取登录的 ip 地址
+     * @return string
+     */
+    function getIp()
+    {
+        static $ip = '';
+        $ip = $_SERVER['REMOTE_ADDR'];
+        if (isset($_SERVER['HTTP_CDN_SRC_IP'])) {
+            $ip = $_SERVER['HTTP_CDN_SRC_IP'];
+        } elseif (isset($_SERVER['HTTP_CLIENT_IP'])) {
+            $ip = $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && preg_match_all('#\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}#s', $_SERVER['HTTP_X_FORWARDED_FOR'], $matches)) {
+            foreach ($matches[0] AS $xip) {
+                if (!preg_match('#^(10|172\.16|192\.168)\.#', $xip)) {
+                    $ip = $xip;
+                    break;
+                }
+            }
+        }
+        if (preg_match('/^([0-9]{1,3}\.){3}[0-9]{1,3}$/', $ip)) {
+            return $ip;
+        } else {
+            return '127.0.0.1';
+        }
+    }
+}
+
+if (!function_exists('randNum')) {
+    /**
+     * 获取随机字符串
+     * @param number $length 字符串长度
+     * @param boolean $numeric 是否为纯数字
+     * @return string
+     */
+     function randNum($length, $numeric = FALSE) {
+        $seed = base_convert(md5(microtime() . $_SERVER['DOCUMENT_ROOT']), 16, $numeric ? 10 : 35);
+        $seed = $numeric ? (str_replace('0', '', $seed) . '012340567890') : ($seed . 'zZ' . strtoupper($seed));
+        if ($numeric) {
+            $hash = '';
+        } else {
+            $hash = chr(rand(1, 26) + rand(0, 1) * 32 + 64);
+            $length--;
+        }
+        $max = strlen($seed) - 1;
+        for ($i = 0; $i < $length; $i++) {
+            $hash .= $seed{mt_rand(0, $max)};
+        }
+        return $hash;
+    }
+}

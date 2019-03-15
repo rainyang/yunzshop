@@ -19,10 +19,17 @@ use app\common\events\UserActionEvent;
 class AdminUser extends Authenticatable
 {
     use Notifiable;
+    public $primaryKey = 'uid';
     protected $table = 'yz_admin_users';
     public $timestamps = true;
     protected $guarded = [''];
     protected $dateFormat = 'U';
+    public static $base = '';
+
+    public function __construct()
+    {
+        self::$base = new BaseController;
+    }
 
     /**
      * The attributes excluded from the model's JSON form.
@@ -85,24 +92,26 @@ class AdminUser extends Authenticatable
      */
     public static function saveData($data, $user_model)
     {
-        $base = new BaseController;
         $verify_res = self::verifyData($data, $user_model);
+        if ($verify_res == '1') {
+            return 2;
+        } elseif ($verify_res == '2') {
+            return 3;
+        }
+
         if ($verify_res['re_password']) {
             $verify_res['password'] = bcrypt($verify_res['password']);
             unset($verify_res['re_password']);
         }
         $result = $verify_res->save();
         if ($result) {
-            Cache::put('admin_users', $data, 3600);
-            if (request()->path() == "admin/user/create") {
-                event(new UserActionEvent(self::class, $verify_res->id, 1, '添加了用户' . $verify_res->name));
-            } elseif (request()->path() == "admin/user/edit") {
-                event(new UserActionEvent(AdminUser::class, $verify_res->id, 3, '编辑了用户' . $verify_res->name));
+            if (self::saveProfile($data, $verify_res)) {
+                return 4;
             }
-
-            echo $base->successJson('成功'); exit;
+//            Cache::put('admin_users', $data, 3600);
+            return 1;
         } else {
-            echo $base->errorJson('失败'); exit;
+            return 0;
         }
     }
 
@@ -114,25 +123,23 @@ class AdminUser extends Authenticatable
      */
     public static function verifyData($data, $user_model = '')
     {
-        $base = new BaseController;
         if (request()->path() != "admin/user/change") {
-            $data['name'] = trim($data['name']);
-            $data['phone'] = trim($data['phone']);
+            $data['username'] = trim($data['username']);
             if ($data['application_number'] == 0) {
                 $data['application_number'] = '';
             }
-            if ($data['effective_time'] == 0) {
-                $data['effective_time'] = '';
-            } else {
-                $data['effective_time'] = strtotime($data['effective_time']);
-            }
-            $data['remarks'] = trim($data['remarks']);
+            if ($data['endtime'] == 0) {
+                $data['endtime'] = '';
+            } /*else {*/
+//                $data['endtime'] = strtotime($data['endtime']);
+//            }
+            $data['remark'] = trim($data['remark']);
         } else {
             $data['old_password'] = trim($data['old_password']);
             if (!Hash::check($data['old_password'], $user_model['password'])) {
-                echo $base->errorJson('原密码错误'); exit;
+                return '1';
             } elseif (Hash::check($data['password'], $user_model['password'])) {
-                echo $base->errorJson('新密码与原密码一致'); exit;
+                return '2';
             }
             unset($data['old_password']);
         }
@@ -140,11 +147,16 @@ class AdminUser extends Authenticatable
             $data['password'] = trim($data['password']);
             $data['re_password'] = trim($data['re_password']);
         }
+        $data['lastvisit'] =time();
+        $data['lastip'] = getIp();
+        $data['joinip'] = getIp();
+        $data['salt'] = self::randNum(8);
 
         if (!$user_model) {
             $user_model = new self();
         }
         $user_model->fill($data);
+        unset($user_model['mobile']);
 
         return $user_model;
     }
@@ -155,17 +167,17 @@ class AdminUser extends Authenticatable
      */
     public static function getList()
     {
-        $users = self::orderBy('id', 'desc')->get();
+        $users = self::orderBy('uid', 'desc')->get();
         foreach ($users as $item) {
-            $item['create_at'] = $item['created_at']->format('Y-m-d');
-            if ($item['effective_time'] == 0) {
-                $item['effective_time'] = '永久有效';
+            $item['create_at'] = $item['created_at']->format('Y年m月d日');
+            if ($item['endtime'] == 0) {
+                $item['endtime'] = '永久有效';
             }else {
-                if (time() > $item['effective_time']) {
+                if (time() > $item['endtime']) {
                     $item['status'] = 1;
-                    self::where('id', $item['id'])->update(['status'=>1]);
+                    self::where('uid', $item['uid'])->update(['status'=>1]);
                 }
-                $item['effective_time'] = date('Y-m-d', $item['effective_time']);
+                $item['endtime'] = date('Y年m月d日', $item['endtime']);
             }
         }
 
@@ -177,10 +189,10 @@ class AdminUser extends Authenticatable
      * @param $id
      * @return AdminUser
      */
-    public static function getData($id)
+    public static function getData($uid)
     {
 
-        return self::find($id);
+        return self::find($uid);
 
 //        if (!Cache::has($cache_name)) {
 //            $result = self::getKeyList($key);
@@ -253,4 +265,79 @@ class AdminUser extends Authenticatable
 
         return $result;
     }
+
+    /**
+     * 获取随机字符串
+     * @param number $length 字符串长度
+     * @param boolean $numeric 是否为纯数字
+     * @return string
+     */
+    private static function randNum($length, $numeric = FALSE) {
+        $seed = base_convert(md5(microtime() . $_SERVER['DOCUMENT_ROOT']), 16, $numeric ? 10 : 35);
+        $seed = $numeric ? (str_replace('0', '', $seed) . '012340567890') : ($seed . 'zZ' . strtoupper($seed));
+        if ($numeric) {
+            $hash = '';
+        } else {
+            $hash = chr(rand(1, 26) + rand(0, 1) * 32 + 64);
+            $length--;
+        }
+        $max = strlen($seed) - 1;
+        for ($i = 0; $i < $length; $i++) {
+            $hash .= $seed{mt_rand(0, $max)};
+        }
+        return $hash;
+    }
+
+    public static function saveProfile($data, $user)
+    {
+        if (request()->path() == "admin/user/create") {
+            $data = [
+                'mobile' => $data['mobile'],
+                'uid' => $user->uid
+            ];
+            $profile_model = new YzUserProfile;
+            $profile_model->fill($data);
+            if (!$profile_model->save()) {
+                return 1;
+            }
+            event(new UserActionEvent(self::class, $user['uid'], 1, '添加了用户' . $user['username']));
+        } elseif (request()->path() == "admin/user/edit") {
+            $data = [
+                'mobile' => $data['mobile'],
+            ];
+            $profile_model = YzUserProfile::where('uid', $user->uid)->first();
+            $profile_model->fill($data);
+            if (!$profile_model->save()) {
+                return 1;
+            }
+            event(new UserActionEvent(AdminUser::class, $user['uid'], 3, '编辑了用户' . $user['username']));
+        }
+    }
+
+    /**
+     * 获得此平台的使用者。
+     */
+    public function hasManyAppUser()
+    {
+        return $this->hasMany(\app\platform\modules\application\models\AppUser::class, 'uid', 'uid');
+    }
+
+    /**
+     * 获取与用户表相关的用户信息
+     */
+    public function hasOneProfile()
+    {
+        return $this->hasOne(\app\platform\modules\user\models\YzUserProfile::class, 'uid', 'uid');
+    }
+
+    public function hasOneAppUser()
+    {
+        return $this->hasOne(\app\platform\modules\application\models\AppUser::class, 'uid', 'uid');
+    }
+
+    public function app()
+    {
+//        return $this->hasMany(\app\platform\modules\application\models\UniacidApp::class,'user_id','role_id');
+    }
+
 }
