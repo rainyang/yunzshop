@@ -11,7 +11,7 @@ namespace app\platform\modules\user\models;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use app\platform\controllers\BaseController;
+use app\platform\modules\user\controllers\AdminUserController;
 use app\common\helpers\Cache;
 use Illuminate\Support\Facades\Hash;
 use app\common\events\UserActionEvent;
@@ -28,7 +28,7 @@ class AdminUser extends Authenticatable
 
     public function __construct()
     {
-        self::$base = new BaseController;
+        self::$base = new AdminUserController;
     }
 
     /**
@@ -102,9 +102,9 @@ class AdminUser extends Authenticatable
         if ($result) {
             self::saveProfile($data, $verify_res);
 //            Cache::put('admin_users', $data, 3600);
-            echo self::$base->successJson('成功'); exit;
+            return self::$base->succesJson('成功');
         } else {
-            echo self::$base->errorJson('失败'); exit;
+            return self::$base->errorJson('失败');
         }
     }
 
@@ -130,9 +130,9 @@ class AdminUser extends Authenticatable
         } else {
             $data['old_password'] = trim($data['old_password']);
             if (!Hash::check($data['old_password'], $user_model['password'])) {
-                echo self::$base->errorJson('原密码错误'); exit;
+                return self::$base->errorsJson('原密码错误');
             } elseif (Hash::check($data['password'], $user_model['password'])) {
-                echo self::$base->errorJson('新密码与原密码一致'); exit;
+                return self::$base->errorsJson('新密码与原密码一致');
             }
             unset($data['old_password']);
         }
@@ -291,7 +291,7 @@ class AdminUser extends Authenticatable
             $profile_model = new YzUserProfile;
             $profile_model->fill($data);
             if (!$profile_model->save()) {
-                echo self::$base->errorJson('存储相关信息表失败'); exit;
+                return self::$base->errorsJson('存储相关信息表失败');
             }
             event(new UserActionEvent(self::class, $user['uid'], 1, '添加了用户' . $user['username']));
         } elseif (request()->path() == "admin/user/edit") {
@@ -301,7 +301,7 @@ class AdminUser extends Authenticatable
             $profile_model = YzUserProfile::where('uid', $user->uid)->first();
             $profile_model->fill($data);
             if (!$profile_model->save()) {
-                echo self::$base->errorJson('存储相关信息表失败'); exit;
+                return self::$base->errorJson('存储相关信息表失败');
             }
             event(new UserActionEvent(AdminUser::class, $user['uid'], 3, '编辑了用户' . $user['username']));
         }

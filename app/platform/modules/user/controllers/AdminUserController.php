@@ -76,6 +76,8 @@ class AdminUserController extends BaseController
             $this->validate($this->rules(), $user, $this->message());
             return User::saveData($user, $user_model = '');
         }
+
+        return view('system.user.add');
     }
 
     /**
@@ -139,7 +141,7 @@ class AdminUserController extends BaseController
         $validator = $this->getValidationFactory()->make($request, $rules, $messages, $customAttributes);
 
         if ($validator->fails()) {
-            echo $this->errorJson($validator->errors()->all()); exit;
+            $this->errorsJson('失败', $validator->errors()->all());
         }
     }
 
@@ -225,6 +227,31 @@ class AdminUserController extends BaseController
     public function applicationList()
     {
         $uid = request()->uid;
+    }
+
+    /**
+     *
+     */
+    public function errorsJson($msg = '', $data = '')
+    {
+        $array = [
+            'result' => 0,
+            'msg' => $msg,
+            'data' => $data
+        ];
+
+        echo json_encode($array); exit;
+    }
+
+    public function succesJson($msg = '', $data = '')
+    {
+        $array = [
+            'result' => 1,
+            'msg' => $msg,
+            'data' => $data
+        ];
+
+        echo json_encode($array); exit;
     }
 }
 
