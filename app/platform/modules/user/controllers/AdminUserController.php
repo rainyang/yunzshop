@@ -30,7 +30,7 @@ class AdminUserController extends BaseController
     /**
      * Display a listing of the resource.(显示用户列表.)
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
@@ -57,22 +57,19 @@ class AdminUserController extends BaseController
 
         $users = User::getList();
 
-        return view('system.user.index', ['users'=>$users]);
-
-
         if (!$users->isEmpty()) {
             return $this->successJson('成功', $users);
         } else {
-            return $this->errorJson('未获取到用户信息');
+            return $this->check(6);
         }
 
     }
 
     /**
      * Show the form for creating a new resource And Store a newly created resource in storage.(添加用户)
-     *
+     * @return \Illuminate\Http\JsonResponse|void
+     * @throws \app\common\exceptions\AppException
      */
-    // @return \Illuminate\Http\Response
     public function create()
     {
         $user = request()->user;
@@ -87,7 +84,9 @@ class AdminUserController extends BaseController
 
     /**
      * Show the form for editing the specified resource And Update the specified resource in storage.(修改用户)
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\JsonResponse|\Illuminate\View\View|mixed
+     *
+     * @return \Illuminate\Http\JsonResponse|void
+     * @throws \app\common\exceptions\AppException
      */
     public function edit()
     {
@@ -193,6 +192,7 @@ class AdminUserController extends BaseController
 
     /**
      * 修改状态
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function status()
@@ -212,13 +212,15 @@ class AdminUserController extends BaseController
 
     /**
      * 修改密码
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|mixed
+     *
+     * @return \Illuminate\Http\JsonResponse|void
+     * @throws \app\common\exceptions\AppException
      */
     public function change()
     {
         $uid = request()->uid;
         $data = request()->user;
-        if (!$uid) {
+        if (!$uid || !$data) {
             return $this->check(5);
         }
         if ($data){
@@ -236,6 +238,7 @@ class AdminUserController extends BaseController
 
     /**
      * 返回 json 信息
+     *
      * @param $user
      * @return \Illuminate\Http\JsonResponse
      */
