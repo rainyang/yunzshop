@@ -11,7 +11,7 @@ namespace app\platform\modules\user\models;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use app\platform\modules\user\controllers\AdminUserController;
+use app\platform\controllers\BaseController;
 use app\common\helpers\Cache;
 use Illuminate\Support\Facades\Hash;
 use app\common\events\UserActionEvent;
@@ -28,7 +28,7 @@ class AdminUser extends Authenticatable
 
     public function __construct()
     {
-        self::$base = new AdminUserController;
+        self::$base = new BaseController;
     }
 
     /**
@@ -93,6 +93,11 @@ class AdminUser extends Authenticatable
     public static function saveData($data, $user_model)
     {
         $verify_res = self::verifyData($data, $user_model);
+        if ($verify_res == '1') {
+            return 2;
+        } elseif ($verify_res == '2') {
+            return 3;
+        }
 
         if ($verify_res['re_password']) {
             $verify_res['password'] = bcrypt($verify_res['password']);
@@ -100,11 +105,13 @@ class AdminUser extends Authenticatable
         }
         $result = $verify_res->save();
         if ($result) {
-            self::saveProfile($data, $verify_res);
+            if (self::saveProfile($data, $verify_res)) {
+                return 4;
+            }
 //            Cache::put('admin_users', $data, 3600);
-            return self::$base->succesJson('成功');
+            return 1;
         } else {
-            return self::$base->errorJson('失败');
+            return 0;
         }
     }
 
@@ -123,16 +130,16 @@ class AdminUser extends Authenticatable
             }
             if ($data['endtime'] == 0) {
                 $data['endtime'] = '';
-            } else {
+            } /*else {*/
 //                $data['endtime'] = strtotime($data['endtime']);
-            }
+//            }
             $data['remark'] = trim($data['remark']);
         } else {
             $data['old_password'] = trim($data['old_password']);
             if (!Hash::check($data['old_password'], $user_model['password'])) {
-                return self::$base->errorsJson('原密码错误');
+                return '1';
             } elseif (Hash::check($data['password'], $user_model['password'])) {
-                return self::$base->errorsJson('新密码与原密码一致');
+                return '2';
             }
             unset($data['old_password']);
         }
@@ -291,7 +298,7 @@ class AdminUser extends Authenticatable
             $profile_model = new YzUserProfile;
             $profile_model->fill($data);
             if (!$profile_model->save()) {
-                return self::$base->errorsJson('存储相关信息表失败');
+                return 1;
             }
             event(new UserActionEvent(self::class, $user['uid'], 1, '添加了用户' . $user['username']));
         } elseif (request()->path() == "admin/user/edit") {
@@ -301,7 +308,7 @@ class AdminUser extends Authenticatable
             $profile_model = YzUserProfile::where('uid', $user->uid)->first();
             $profile_model->fill($data);
             if (!$profile_model->save()) {
-                return self::$base->errorJson('存储相关信息表失败');
+                return 1;
             }
             event(new UserActionEvent(AdminUser::class, $user['uid'], 3, '编辑了用户' . $user['username']));
         }
