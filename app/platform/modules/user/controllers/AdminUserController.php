@@ -16,7 +16,6 @@ use app\platform\modules\user\models\AdminUser;
 use app\platform\modules\user\models\Role;
 use app\platform\modules\user\requests\AdminUserCreateRequest;
 use app\platform\modules\user\requests\AdminUserUpdateRequest;
-use Illuminate\Http\Request;
 use app\platform\modules\user\models\YzUserProfile;
 use app\platform\modules\application\models\UniacidApp;
 
