@@ -124,7 +124,7 @@ class AdminUser extends Authenticatable
             if ($data['endtime'] == 0) {
                 $data['endtime'] = '';
             } else {
-                $data['endtime'] = strtotime($data['endtime']);
+//                $data['endtime'] = strtotime($data['endtime']);
             }
             $data['remark'] = trim($data['remark']);
         } else {
