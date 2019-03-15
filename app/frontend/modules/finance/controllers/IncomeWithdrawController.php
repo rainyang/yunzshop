@@ -322,11 +322,11 @@ class IncomeWithdrawController extends ApiController
             $poundage = number_format($this->poundage_rate, 2, '.','');
         }
         
-        if ($this->isUseBalanceSpecialSet()) {
+        /*if ($this->isUseBalanceSpecialSet()) {
             if ($this->special_poundage_type == 1) {
                 $poundage = number_format($this->special_poundage_rate, 2, '.', '');
             }
-        }
+        }*/
 
 
         $service_tax = $this->poundageMath($this->withdraw_amounts - $poundage, $this->service_tax_rate);
