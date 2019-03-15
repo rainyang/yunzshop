@@ -35,35 +35,14 @@ class AdminUserController extends BaseController
      */
     public function index()
     {
-        $parames = \YunShop::request();
-        if (strpos($parames['search']['searchtime'], '×') !== FALSE) {
-            $search_time = explode('×', $parames['search']['searchtime']);
-
-            if (!empty($search_time)) {
-                $parames['search']['searchtime'] = $search_time[0];
-
-                $start_time = explode('=', $search_time[1]);
-                $end_time = explode('=', $search_time[2]);
-
-                $parames->times = [
-                    'start' => $start_time[1],
-                    'end' => $end_time[1]
-                ];
-            }
-
-            $list = User::searchUsers($parames);
-
-            dd($list);
-        }
-
-        $users = User::getList();
+        $parames = request();
+        $users = User::getList($parames);
 
         if (!$users->isEmpty()) {
             return $this->successJson('成功', $users);
         } else {
             return $this->check(6);
         }
-
     }
 
     /**
