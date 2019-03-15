@@ -8,6 +8,7 @@ use app\common\helpers\Cache;
 use app\platform\modules\user\models\AdminUser;
 use app\platform\modules\application\models\AppUser;
 
+
 class ApplicationController extends BaseController
 {
     protected $key = 'application';
@@ -150,6 +151,7 @@ class ApplicationController extends BaseController
                 }
             }
         }
+        return $this->successJson('获取成功', $info);
     }
 
     //加入回收站 删除
