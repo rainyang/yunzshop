@@ -7,5 +7,6 @@
         <li ><a href="#tab_full_return">满额返现设置</a></li>
         <li ><a href="#tab_team_dividend">团队分红设置</a></li>
         <li ><a href="#tab_area_dividend">区域分红设置</a></li>
+        <li ><a href="#tab_store_carry">门店收银台设置</a></li>
     </ul>
 </div>
