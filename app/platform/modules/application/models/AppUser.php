@@ -41,9 +41,7 @@ class AppUser extends BaseModel
     {
         return [
             'uniacid' => '平台id',
-
             'uid' => '用户id',
-
             'role' => '角色'
         ];
     }

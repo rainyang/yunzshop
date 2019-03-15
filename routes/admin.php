@@ -70,6 +70,8 @@ Route::group(['middleware' => ['globalparams', 'auth:admin', 'authAdmin']], func
         Route::any('status', 'AdminUserController@status');
         // 用户修改密码
         Route::any('change', 'AdminUserController@change');
+        // 平台列表
+        Route::any('app_list', 'AdminUserController@applicationList');
     });
  
     Route::group(['namespace' => 'platform\modules\application\controllers'], function () {

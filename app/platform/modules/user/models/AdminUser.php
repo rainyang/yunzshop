@@ -313,4 +313,18 @@ class AdminUser extends Authenticatable
             event(new UserActionEvent(AdminUser::class, $user['uid'], 3, '编辑了用户' . $user['username']));
         }
     }
+
+    /**
+     * 获得此平台的使用者。
+     */
+    public function app_user()
+    {
+        return $this->hasMany(\app\platform\modules\application\models\AppUser::class, 'uid', 'uid');
+    }
+
+    public function app()
+    {
+//        return $this->hasMany(\app\platform\modules\application\models\UniacidApp::class,'user_id','role_id');
+    }
+
 }

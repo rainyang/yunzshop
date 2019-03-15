@@ -18,6 +18,7 @@ use app\platform\modules\user\requests\AdminUserCreateRequest;
 use app\platform\modules\user\requests\AdminUserUpdateRequest;
 use Illuminate\Http\Request;
 use app\platform\modules\user\models\YzUserProfile;
+use app\platform\modules\application\models\UniacidApp;
 
 class AdminUserController extends BaseController
 {
@@ -274,7 +275,31 @@ class AdminUserController extends BaseController
     public function applicationList()
     {
         $uid = request()->uid;
-    }
+        $user = AdminUser::where('uid', $uid)->first();
+        $app_id = $user->app_user;
+        foreach ($app_id as &$item) {
+            $item->hasOneApp;
+        }
+        $data = [
+            'username' => $user->username,
+            'app' => $app_id,
+        ];
 
+        if (!$user) {
+            return $this->errorJson('未获取到该用户', '');
+        }
+        if ($data['app']->isEmpty()) {
+            return $this->errorJson('该用户暂时没有平台', '');
+        }
+
+        return $this->successJson('成功', $data);
+    }
+    /**
+     * 单个用户平台列表
+     */
+    public function clerkList()
+    {
+        
+    }
 }
 
