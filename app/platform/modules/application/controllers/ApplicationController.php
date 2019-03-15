@@ -8,7 +8,6 @@ use app\common\helpers\Cache;
 use app\platform\modules\user\models\AdminUser;
 use app\platform\modules\application\models\AppUser;
 
-
 class ApplicationController extends BaseController
 {
     protected $key = 'application';
@@ -124,7 +123,7 @@ class ApplicationController extends BaseController
             return $this->errorJson('请选择应用');
         }
 
-        if (!request()->detail) {
+        if (request()->input()) {
 
             $data = $this->fillData(request()->input());
             $data['uniacid'] = $id;
@@ -151,13 +150,25 @@ class ApplicationController extends BaseController
                 }
             }
         }
-            return $this->successJson('获取成功', $info);
+    }
+
+    public function getApp()
+    {
+        $id = request()->id;
+        
+        $app = new UniacidApp();
+
+        $info = $app->find($id);
+
+        if (!$id || !$info) {
+            return $this->errorJson('获取失败');
+        }
+        return $this->successJson('获取成功', $info);
     }
 
     //加入回收站 删除
     public function delete()
     {
-
         $id = request()->id;
 
         $info = UniacidApp::withTrashed()->find($id);
