@@ -66,6 +66,13 @@ class AppUser extends BaseModel
     }
     public function getRoleNameAttribute()
     {
-        return $this->role_name = $this->role === 'manager' ? '管理员' : '操作员';
+        if ($this->role == 'manager') {
+            return $this->role_name = '管理员';
+        } elseif ($this->role == 'clerk') {
+            return $this->role_name = '店员';
+        } elseif ($this->role == 'operator') {
+            return  $this->role_name = '店员';
+        }
+//        return $this->role_name = $this->role === 'manager' ? '管理员' : '操作员';
     }
 }

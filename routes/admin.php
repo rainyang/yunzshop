@@ -72,6 +72,8 @@ Route::group(['middleware' => ['globalparams', 'auth:admin', 'authAdmin']], func
         Route::any('change', 'AdminUserController@change');
         // 平台列表
         Route::any('app_list', 'AdminUserController@applicationList');
+        // 店员用户列表
+        Route::any('clerk_list', 'AdminUserController@clerkList');
     });
  
     Route::group(['namespace' => 'platform\modules\application\controllers'], function () {

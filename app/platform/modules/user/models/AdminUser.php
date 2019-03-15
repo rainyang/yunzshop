@@ -169,7 +169,7 @@ class AdminUser extends Authenticatable
     {
         $users = self::orderBy('uid', 'desc')->get();
         foreach ($users as $item) {
-            $item['create_at'] = $item['created_at']->format('Y-m-d');
+            $item['create_at'] = $item['created_at']->format('Y年m月d日');
             if ($item['endtime'] == 0) {
                 $item['endtime'] = '永久有效';
             }else {
@@ -177,7 +177,7 @@ class AdminUser extends Authenticatable
                     $item['status'] = 1;
                     self::where('uid', $item['uid'])->update(['status'=>1]);
                 }
-                $item['endtime'] = date('Y-m-d', $item['endtime']);
+                $item['endtime'] = date('Y年m月d日', $item['endtime']);
             }
         }
 
@@ -317,9 +317,22 @@ class AdminUser extends Authenticatable
     /**
      * 获得此平台的使用者。
      */
-    public function app_user()
+    public function hasManyAppUser()
     {
         return $this->hasMany(\app\platform\modules\application\models\AppUser::class, 'uid', 'uid');
+    }
+
+    /**
+     * 获取与用户表相关的用户信息
+     */
+    public function hasOneProfile()
+    {
+        return $this->hasOne(\app\platform\modules\user\models\YzUserProfile::class, 'uid', 'uid');
+    }
+
+    public function hasOneAppUser()
+    {
+        return $this->hasOne(\app\platform\modules\application\models\AppUser::class, 'uid', 'uid');
     }
 
     public function app()

@@ -276,7 +276,7 @@ class AdminUserController extends BaseController
     {
         $uid = request()->uid;
         $user = AdminUser::where('uid', $uid)->first();
-        $app_id = $user->app_user;
+        $app_id = $user->hasManyAppUser;
         foreach ($app_id as &$item) {
             $item->hasOneApp;
         }
@@ -299,7 +299,17 @@ class AdminUserController extends BaseController
      */
     public function clerkList()
     {
-        
+        $user = AdminUser::with(['hasOneProfile'])->where('type', 3)->get();
+        foreach ($user as &$item) {
+            $item['create_at'] = $item['created_at']->format('Y年m月d日');
+            $item->hasOneAppUser['app_name'] = $item->hasOneAppUser->hasOneApp->name;
+        }
+
+        if ($user->isEmpty()) {
+            return $this->errorJson('未获取到店员信息', '');
+        }
+
+        return $this->successJson('成功', $user);
     }
 }
 
