@@ -13,8 +13,29 @@ class AppUser extends BaseModel
 	protected $table = 'yz_app_user';
 	protected $search_fields = [''];
   	protected $guarded = [''];
+    protected $appends = ['role_name'];
     protected $hidden = ['deleted_at', 'updated_at', 'created_at'];
 
+    public function scopeSearch($query, $keyword)
+    {
+        if ($keyword['name']) {
+            
+            $query = $query->whereHas('hasOneUser', function($query) use($keyword) {
+            
+                $query = $query->where('username', 'like', '%'.$keyword['name'].'%');
+           
+            });
+        }
+        
+        if ($keyword['uid']) {
+            $query = $query->whereHas('hasOneUser', function($query) use ($keyword) {
+                
+                $query = $query->where('uid', $keyword['uid']);
+            });
+        }
+
+        return $query;
+    }
 
     public function atributeNames() 
     {
@@ -42,5 +63,9 @@ class AppUser extends BaseModel
     public function hasOneUser()
     {
         return $this->hasOne(\app\platform\modules\user\models\AdminUser::class, 'uid', 'uid');
+    }
+    public function getRoleNameAttribute()
+    {
+        return $this->role_name = $this->role === 'manager' ? '管理员' : '操作员';
     }
 }
