@@ -675,10 +675,11 @@
                 <li><a href="#tab_des">{{$lang['shopdesc']}}</a></li>
                 <li><a href="#tab_param">属性</a></li>
                 <li><a href="#tab_option">{{$lang['shopoption']}}</a></li>
-                @section('tab_goods_title') @show
+                @section('goods_widget_title')
                 @foreach(Config::get('widget.goods') as $key=>$value)
                         <li><a href="#{{$key}}">{{$value['title']}}</a></li>
                 @endforeach
+                @show
 
             </ul>
         </div>
@@ -689,12 +690,12 @@
                     <div class="tab-pane" id="tab_des">@include('goods.des')</div>
                     <div class="tab-pane" id="tab_param">@include('goods.tpl.param')</div>
                     <div class="tab-pane" id="tab_option">@include('goods.tpl.option')</div>
-                    @section('tab_goods_view') @show
+                    @section('goods_widget_view')
                     @foreach(Config::get('widget.goods') as $key=>$value)
                         <div class="tab-pane"
                              id="{{$key}}">{!! widget($value['class'], ['goods_id'=> $goods->id])!!}</div>
                     @endforeach
-
+                    @show
                 </div>
                 <div class="form-group col-sm-12 mrleft40 border-t">
                     <input type="submit" name="submit" value="{{$lang['shopsubmit']}}" class="btn btn-success"
