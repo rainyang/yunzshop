@@ -15,7 +15,7 @@ class AppuserController extends BaseController
 
 	public function index()
 	{
-		$list = AppUser::orderBy('id', 'desc')->paginate()->toArray();
+		$list = AppUser::with(['hasOneUser'])->orderBy('id', 'desc')->paginate()->toArray();
 
 		return $this->successJson('获取成功', $list);
 	}
