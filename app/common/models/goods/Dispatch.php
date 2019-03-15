@@ -47,6 +47,15 @@ class Dispatch extends BaseModel
         return $dispatchList;
     }
 
+    public static function getDispatch()
+    {
+        $dispatchList = self::uniacid()
+            ->select('id','dispatch_name')
+            ->where('enabled', 1)
+            ->Where('is_plugin', 0)
+            ->get();
+        return $dispatchList;
+    }
     /**
      * 自定义字段名
      * 可使用

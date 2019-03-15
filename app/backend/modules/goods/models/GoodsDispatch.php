@@ -103,4 +103,38 @@ class GoodsDispatch extends \app\common\models\goods\GoodsDispatch
         return self::where('id', $dispatchId)->delete();
     }
 
+
+    public static function deletedGoodsID($dispatchId)
+    {
+        return self::where('goods_id', $dispatchId)->delete();
+    }
+
+    public static function freightSave($goodsId, $data, $operate = '')
+    {
+        if (!$goodsId) {
+            return false;
+        }
+        if (!$data) {
+            return false;
+        }
+
+
+        self::deletedGoodsID($goodsId);
+        $datas=[
+            'goods_id'=>$goodsId,
+            'dispatch_type'=>$data['freight_type'],
+            'is_cod'=>$data['is_cod'],
+        ];
+
+        if ($data['freight_type']==1) {
+            $datas['dispatch_price']=$data['freight_value'];
+        }else{
+            $datas['dispatch_id']=$data['template_id'];
+        }
+
+        return self::relationSave($goodsId,$datas,"created");
+
+
+    }
+
 }
