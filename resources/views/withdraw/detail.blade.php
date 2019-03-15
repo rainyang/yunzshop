@@ -51,6 +51,18 @@
                         银行卡
                 </p>
                 <p>
+                    <b>姓名：</b>{{$item->bankCard->member_name}}
+                </p>
+                <p>
+                    <b>开户行：</b>{{$item->bankCard->bank_name}}
+                </p>
+                <p>
+                    <b>开户省市：</b>{{$item->bankCard->bank_province}} | {{$item->bankCard->bank_city}}
+                </p>
+                <p>
+                    <b>开户支行：</b>{{$item->bankCard->bank_branch}}
+                </p>
+                <p>
                     <b>银行卡：</b>{{$item->bankCard->bank_card}}
                 </p>
             @elseif($item->manual_type == 2)

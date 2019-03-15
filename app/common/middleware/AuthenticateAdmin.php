@@ -8,15 +8,23 @@
 
 namespace app\common\middleware;
 
-use Auth;
+use app\common\traits\JsonTrait;
+use app\platform\modules\application\models\AppUser;
 use Closure;
+use Illuminate\Support\Facades\Cookie;
 
 class AuthenticateAdmin
 {
+    use JsonTrait;
 
     protected $except = [
         'admin/index',
     ];
+
+    private $account = null;
+    private $uniacid = 0;
+    private $role    = ['role' => '', 'isfounder' => false];
+    private $authRole = ['operator', 'manager'];
 
     /**
      * Handle an incoming request.
@@ -28,20 +36,51 @@ class AuthenticateAdmin
      */
     public function handle($request, Closure $next)
     {
-        $set        = \config::get('app.global');
+        $this->account = AppUser::getAccount(\Auth::guard('admin')->user()->id);
 
-        if (Auth::guard('admin')->user()->uid === 1) {
-            $app_global = ['role' => 'founder', 'isfounder' => true];
-            \config::set('app.global', array_merge($set, $app_global));
-        } else {
-            // TODO 验证用户组 manager,operator
-            $app_global = ['role' => 'operator', 'isfounder' => false];
-            \config::set('app.global', array_merge($set, $app_global));
-            // TODO 如果是操作台直接跳转到商城
-            $url = 'shop?route=index.index';
-            return redirect()->guest($url);
-        }
+        $this->setUniacid();
+        //$this->accessPermissions();
+
+        \config::set('app.global', array_merge(\config::get('app.global'), $this->setRole()));
 
         return $next($request);
+    }
+
+
+    private function setRole()
+    {
+        if (\Auth::guard('admin')->user()->id === 1) {
+            $this->role = ['role' => 'founder', 'isfounder' => true];
+        } else {
+            $this->role    = ['role' => $this->account->role, 'isfounder' => false];
+        }
+
+        return $this->role;
+    }
+
+    private function setUniacid()
+    {
+        if (!empty(request('uniacid')) && request('uniacid') > 0) {
+            Cookie::queue('uniacid', request('uniacid'), 1);
+        }
+
+        if (in_array($this->account->role, $this->authRole)) {
+            Cookie::queue('uniacid', $this->account->uniacid);
+        }
+
+        $this->uniacid = Cookie::get('uniacid');
+    }
+
+    private function accessPermissions()
+    {
+        if (\Auth::guard('admin')->user()->id !== 1 && !empty($this->uniacid)) {
+            if ($this->account->uniacid != $this->uniacid) {
+                \Auth::guard('admin')->logout();
+                request()->session()->flush();
+                request()->session()->regenerate();
+
+                return $this->errorJson('请登录', ['login_status' => 1, 'login_url' => '/#/login']);
+            }
+        }
     }
 }

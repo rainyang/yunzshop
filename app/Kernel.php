@@ -52,8 +52,9 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'globalparams' => \app\common\middleware\GlobalParams::class,
         'auth' => \app\common\middleware\Authenticate::class,
         'authAdmin' => \app\common\middleware\AuthenticateAdmin::class,
+        'globalparams' => \app\common\middleware\GlobalParams::class,
+        'shopbootstrap' => \app\common\middleware\ShopBootstrap::class,
     ];
 }
