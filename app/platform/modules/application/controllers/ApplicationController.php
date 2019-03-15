@@ -124,7 +124,7 @@ class ApplicationController extends BaseController
             return $this->errorJson('请选择应用');
         }
 
-        if (request()->input()) {
+        if (!request()->detail) {
 
             $data = $this->fillData(request()->input());
             $data['uniacid'] = $id;
@@ -151,7 +151,7 @@ class ApplicationController extends BaseController
                 }
             }
         }
-        return $this->successJson('获取成功', $info);
+            return $this->successJson('获取成功', $info);
     }
 
     //加入回收站 删除
