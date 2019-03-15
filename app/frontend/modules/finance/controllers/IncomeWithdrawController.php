@@ -160,9 +160,9 @@ class IncomeWithdrawController extends ApiController
         $this->poundage_type = empty($type) ? 0 : $type;
 
         //如果使用 提现到余额独立手续费
-        if ($this->isUseBalanceSpecialSet()) {
+       /* if ($this->isUseBalanceSpecialSet()) {
             $value = array_get($this->withdraw_set, 'special_poundage', 0);
-        }
+        }*/
         return $this->poundage_rate = empty($value) ? 0 : $value;
     }
 
