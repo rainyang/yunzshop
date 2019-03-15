@@ -11,6 +11,7 @@ namespace app\platform\controllers;
 
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Lang;
 
 class LoginController extends BaseController
@@ -108,10 +109,10 @@ class LoginController extends BaseController
     public function logout()
     {
         $this->guard('admin')->logout();
-
         request()->session()->flush();
-
         request()->session()->regenerate();
+
+        Cookie::queue(Cookie::forget('uniacid'));
 
         return $this->successJson('成功', []);
     }

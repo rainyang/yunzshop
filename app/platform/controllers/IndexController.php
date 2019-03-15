@@ -9,9 +9,6 @@
 namespace app\platform\controllers;
 
 
-
-use Illuminate\Support\Facades\Cookie;
-
 class IndexController extends BaseController
 {
 
@@ -19,8 +16,8 @@ class IndexController extends BaseController
     {
         $user = \Auth::guard('admin')->user();
 
-        Cookie::queue('user_id', $user->id);
-        Cookie::queue('user_name', $user->name);
+        /*Cookie::queue('user_id', $user->id);
+        Cookie::queue('user_name', $user->name);*/
 
         return $this->successJson('', ['user' => $user]);
     }

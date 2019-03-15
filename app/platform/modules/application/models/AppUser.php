@@ -45,4 +45,9 @@ class AppUser extends BaseModel
     {
         return $this->hasOne(\app\platform\modules\user\models\AdminUser::class, 'id', 'uid');
     }
+
+    public static function getAccount($uid)
+    {
+        return self::where('uid', $uid)->first();
+    }
 }

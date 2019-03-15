@@ -9,19 +9,21 @@
 namespace app\common\middleware;
 
 
+use app\common\helpers\Url;
+
 class ShopBootstrap
 {
+    private $authRole = ['operator'];
+
     public function handle($request, \Closure $next, $guard = null)
     {
         if (\Auth::guard('admin')->user()->id !== 1) {
-            //TODO 查询用户组表 确定用户所属uniacid
-            // TODO 如果是操作员直接跳转到商城
-            $uniacid = 5;
-            $url = 'shop?route=index.index&uniacid=' . $uniacid ;
-            return redirect()->guest($url);
-        }
+            $base_config = \config::get('app.global');
 
-        //TODO uniacid 是否需要存储在cookie中
+            if (in_array($base_config['role'], $this->authRole)) {
+                return redirect()->guest(Url::absoluteWeb('index.index'));
+            }
+        }
 
         return $next($request);
     }
