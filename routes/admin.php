@@ -92,6 +92,7 @@ Route::group(['middleware' => ['globalparams', 'auth:admin', 'authAdmin']], func
 		//图片上传
 		Route::post('application/upload/', 'ApplicationController@upload');
 		Route::any('application/temp/', 'ApplicationController@temp');
+        Route::any('application/test/', 'ApplicationController@test');
 
 		//平台用户管理
 		Route::any('appuser/', 'AppuserController@index');

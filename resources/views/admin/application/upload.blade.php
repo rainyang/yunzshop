@@ -38,7 +38,7 @@
 </head>
 
 <body> 
-    <form class="form-horizontal" method="post" enctype="multipart/form-data" action="/index.php/admin/application/temp/">
+    <form class="form-horizontal" method="post" enctype="multipart/form-data" action="/index.php/admin/application/test/">
     <input type="file" value="file" id="demo_input" /> 
     <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
