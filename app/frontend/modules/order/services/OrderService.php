@@ -112,7 +112,7 @@ class OrderService
     {
         if (!isset($orderOperation)) {
             throw new AppException('未找到该订单');
-        }
+        }        
         DB::transaction(function() use($orderOperation) {
             $orderOperation->handle();
         });
@@ -266,8 +266,11 @@ class OrderService
      */
     public static function orderSend($param)
     {
-        $orderOperation = OrderSend::find($param['order_id']);        
-        // \Log::info('----3orderOperation--', $orderOperation);
+        // \Log::info('---param---', $param);
+        $orderOperation = OrderSend::find($param['order_id']);
+
+        $orderOperation->params = $param;
+        // \Log::info('----1orderOperation--', $orderOperation);
         return self::OrderOperate($orderOperation);
     }
 
@@ -330,7 +333,7 @@ class OrderService
         if (!$days) {
             return;
         }
-        $orders = \app\backend\modules\order\models\Order::waitReceive()->where('send_time', '<', (int)Carbon::now()->addDays(-$days)->timestamp)->normal()->get();
+        $orders = \app\backend\modules\order\models\Order::waitReceive()->where('auto_receipt', 0)->where('send_time', '<', (int)Carbon::now()->addDays(-$days)->timestamp)->normal()->get();
         if (!$orders->isEmpty()) {
             $orders->each(function ($order) {
                 try {

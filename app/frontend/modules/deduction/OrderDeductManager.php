@@ -176,6 +176,7 @@ class OrderDeductManager
 
             ]);
             $preOrderDiscount->setOrder($this->order);
+
         }
 
         // 返回 订单抵扣金额

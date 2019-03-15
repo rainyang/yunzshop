@@ -22,6 +22,7 @@ class GoodsPosterController extends ApiController
     private $shopSet;
     private $goodsModel;
     private $storeid;
+    private $hotel_id;
     private $mid;
     //画布大小
     // private $canvas = [
@@ -54,6 +55,7 @@ class GoodsPosterController extends ApiController
         $this->mid = \YunShop::app()->getMemberId();
        
         $this->storeid = intval(\YunShop::request()->storeid);
+        $this->hotel_id = intval(\YunShop::request()->hotel_id);
 
         if (!$id) {
             return $this->errorJson('请传入正确参数.');
@@ -62,7 +64,6 @@ class GoodsPosterController extends ApiController
         if (empty($this->storeid)) {
             
             $this->shopSet = \Setting::get('shop.shop');
-
         } else {
 
             if (app('plugins')->isEnabled('store-cashier')) {
@@ -70,6 +71,12 @@ class GoodsPosterController extends ApiController
                 $store = \app\common\models\Store::find($this->storeid);
                 $this->shopSet['name'] = $store->store_name;
                 $this->shopSet['logo'] = $store->thumb;
+            }
+            if (app('plugins')->isEnabled('hotel')) {
+
+                $hotel = \Yunshop\Hotel\common\models\Hotel::find($this->hotel_id);
+                $this->shopSet['name'] = $hotel->hotel_name;
+                $this->shopSet['logo'] = $hotel->thumb;
             }
         }
         //$this->goodsModel = Goods::uniacid()->with('hasOneShare')->where('plugin_id', 0)->where('status', 1)->find($id);

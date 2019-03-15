@@ -14,6 +14,7 @@ use app\common\models\order\OrderGoodsChangePriceLog;
 use app\common\models\orderGoods\OrderGoodsDeduction;
 use app\common\models\orderGoods\OrderGoodsExpansion;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Class OrderGoods
@@ -23,6 +24,7 @@ use Illuminate\Database\Eloquent\Builder;
  * @property int goods_id
  * @property Goods goods
  * @property GoodsOption goodsOption
+ * @property Collection orderGoodsDeductions
  */
 class OrderGoods extends BaseModel
 {

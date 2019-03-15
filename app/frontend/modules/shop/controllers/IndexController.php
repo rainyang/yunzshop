@@ -173,4 +173,15 @@ class IndexController extends ApiController
         return $advs;
     }
 
+    public function getPayProtocol()
+    {
+        $setting = Setting::get('shop.trade');
+        //共享链支付协议开启
+        if ($setting['share_chain_pay_open'] == 1) {
+                
+            return $this->successJson('获取成功', str_replace('&nbsp;', '',strip_tags(htmlspecialchars_decode($setting['pay_content']) )) );
+        } 
+        
+        return $this->errorJson('未开启共享链支付协议');
+    }
 }

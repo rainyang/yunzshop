@@ -1,5 +1,6 @@
 *.log
-trace/*
-error/*
-debug/*
+*.zip
+trace/
+error/
+debug/
 !.gitignore

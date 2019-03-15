@@ -33,6 +33,9 @@ use Setting;
 use app\common\services\goods\VideoDemandCourseGoods;
 use app\common\models\Store as StoreCashier;
 use Yunshop\Designer\models\Store;
+use Yunshop\LeaseToy\models\LeaseOrderModel;
+use Yunshop\LeaseToy\models\LeaseToyGoodsModel;
+use Yunshop\VideoDemand\models\CourseGoodsModel;
 
 
 class GoodsController extends BaseController
@@ -283,13 +286,56 @@ class GoodsController extends BaseController
                 $catetory_menus = CategoryService::getCategoryMenu(['catlevel' => $this->shopset['cat_level'], 'ids' => explode(",", $goods_category['category_ids'])]);
             }
         }*/
-
+//        dump(\Config::get('widget.goods'));
         //todo 所有操作去service里进行，供应商共用此方法。
         $goods_service = new EditGoodsService($request->id, \YunShop::request());
+
         if (!$goods_service->goods) {
             return $this->message('未找到商品或已经被删除', '', 'error');
         }
         $result = $goods_service->edit();
+        $type2 = \YunShop::request()->goods['type2'];
+        $goods = \app\common\models\Goods::find($this->goods_id);
+        $plugin_id = '';
+        if (app('plugins')->isEnabled('lease-toy')) {
+            $LeaseToyGoods = LeaseToyGoodsModel::ofGoodsId($this->goods_id)->first();
+            $plugin_id = LeaseOrderModel::PLUGIN_ID;
+            if ($type2) {
+                if ($type2 != '2') {
+                    $goods->plugin_id =  0;
+                    $LeaseToyGoods->is_lease = 0;
+                    $goods->save();
+                } else if($type2 == '2') {
+                    $goods->plugin_id =  $plugin_id;
+                    $goods->type2 =  $type2;
+                    $LeaseToyGoods->is_lease = '1';
+                }
+                $LeaseToyGoods->save();
+                $goods->save();
+            }
+//            if (Setting::get('shop.goods.type2') == '2') {
+//                $goods->type2 = Setting::get('shop.goods.type2');
+//                $goods->save();
+//                Setting::set('shop.goods.type2', '');
+//            }
+
+        }
+        if (/*!app('plugins')->isEnabled('lease-toy') && $goods->type2 == '2' ||*/ !app('plugins')->isEnabled('video-demand') && $goods->type2 == '3') {
+            Setting::set('shop.goods.type2', $goods->type2);
+            $goods->type2 = '1';
+            $goods->save();
+        } else if (app('plugins')->isEnabled('video-demand')) {
+            $item = CourseGoodsModel::getModel($this->goods_id,'');
+            if (Setting::get('shop.goods.type2') == '3') {
+                $goods->type2 = Setting::get('shop.goods.type2');
+                Setting::set('shop.goods.type2', '');
+            }
+            if ($item->is_course == '1') {
+                $goods->type2 =  '3';
+            }
+            $goods->save();
+        }
+
         if ($result['status'] == 1) {
             Cache::flush();
             return $this->message('商品修改成功', Url::absoluteWeb('goods.goods.index'));
@@ -299,6 +345,8 @@ class GoodsController extends BaseController
             }
             !session()->has('flash_notification.message') && $this->error('商品修改失败');
         }
+
+        $goods_service->goods_model->type2 = $goods->type2;
 
         //dd($this->lang);
         return view('goods.goods', [
@@ -313,7 +361,8 @@ class GoodsController extends BaseController
             'catetory_menus' => implode('', $goods_service->catetory_menus),
             'virtual_types' => [],
             'shopset' => $this->shopset,
-            'type' => 'edit'
+            'type' => 'edit',
+            'plugin_id' => $plugin_id
         ])->render();
     }
 
@@ -486,6 +535,23 @@ class GoodsController extends BaseController
         $store = StoreCashier::getStoreByName($keyword);
         return view('goods.store', [
             'store' => $store
+        ])->render();
+
+    }
+
+    /**
+     * 获取搜索商品by经销商
+     * @return html
+     */
+    public function getSearchGoodsByDividend()
+    {
+        $keyword = \YunShop::request()->keyword;
+        $goods = Goods::getGoodsByName($keyword);
+        if (!$goods->isEmpty()) {
+            $goods = set_medias($goods->toArray(), array('thumb', 'share_icon'));
+        }
+        return view('goods.dividend_goods_query', [
+            'goods' => $goods
         ])->render();
 
     }

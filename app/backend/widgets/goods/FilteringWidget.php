@@ -23,7 +23,7 @@ class FilteringWidget extends Widget
 
         return view('goods.widgets.filtering', [
             'filtering' => $filtering,
-            'goods_filter' =>  $goods_filter,
+            'goods_filter' =>  $goods_filter,                                                           
         ])->render();
     }
 

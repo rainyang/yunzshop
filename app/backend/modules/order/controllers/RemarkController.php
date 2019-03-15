@@ -22,20 +22,34 @@ class RemarkController extends BaseController
             throw new AppException("未找到该订单".request()->input('order_id'));
         }
         if(request()->has('remark')){
+           
             $remark = $order->hasOneOrderRemark;
+            
             if (!$remark) {
                 $remark = new Remark([
                     'order_id' => request()->input('order_id'),
                     'remark' => request()->input('remark')
                 ]);
-            }
-            if(!$remark->save()){
-                return $this->errorJson();
+
+                if(!$remark->save()){
+                    return $this->errorJson();
+                }
+           
+                $order->invoice = request()->input('invoice');
+                $order->save();
+           
+            } else {
+                $reUp = Remark::where('order_id', request()->input('order_id') )
+                    ->where('remark', $remark->remark)
+                    ->update(['remark'=> request()->input('remark')]);
+
+                if (!$reUp) {
+                    return $this->errorJson();
+                }
             }
         }
         //(new \app\common\services\operation\OrderLog($remark, 'special'));
-        $order->invoice = request()->input('invoice');
-        $order->save();
+        
         echo json_encode(["data" => '', "result" => 1]);
     }
 

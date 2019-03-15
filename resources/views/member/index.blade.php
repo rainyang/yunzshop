@@ -9,7 +9,9 @@
             <div class="right-titpos">
                 <ul class="add-snav">
                     <li class="active"><a href="{{yzWebUrl('member.member.index')}}">会员管理</a></li>
-                    <li><a href="javascript:void"> &nbsp; <i class="fa fa-angle-double-right"></i> &nbsp;全部会员</a></li>
+                    <li><a href="javascript:void"> &nbsp;<i class="fa fa-angle-double-right"></i> &nbsp;全部会员</a></li>
+                    <li><a href="javascript:void"><i class="fa fa-angle-double-right"></i></a></li>
+                    <li class="active"> <a class="btn btn-info dropdown-toggle" style="height: 35px;margin-top: 5px;color: white;" href="{{yzWebUrl('member.member.add-member')}}">添加会员</a></li>
                 </ul>
             </div>
             <!-- 新增加右侧顶部三级菜单结束 -->
@@ -215,7 +217,7 @@
                                 <th style='width:8%;'>等级/分组</th>
                                 <th style='width:10%;'>注册时间</th>
                                 <th style='width:15%;'>积分/余额</th>
-                                <th style='width:15%;'>成交</th>
+                                <th style='width:15%;'>已完成订单</th>
                                 <th style='width:6%'>关注</th>
                                 <th style='width:13%'>操作</th>
                             </tr>

@@ -159,6 +159,14 @@ class SettingController extends BaseController
                 'team_dividend' => '',
                 'team_agent_centre' => '',
                 'dividend' => '',
+                'flat_prize' => '',
+                'award_gratitude' => '',
+                'dividend_amount' => '',
+            ],
+            'area_dividend' => [
+                'area_dividend_center' => '',
+                'area_dividend' => '',
+                'dividend_amount' => '',
             ]
         ];
 

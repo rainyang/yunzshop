@@ -24,6 +24,7 @@ class ConfirmPayController extends PreController
         $result = (new PayedService($this->withdrawModel))->confirmPay();
 
         if ($result == true) {
+            $this->withdrawModel->update(['pay_way'=>Withdraw::WITHDRAW_WITH_MANUAL]);   //线下手动打款后更改提现记录途径
             return $this->message('确认打款成功', yzWebUrl("withdraw.detail.index", ['id' => $this->withdrawModel->id]));
         }
         return $this->message('确认打款失败，请刷新重试', yzWebUrl("withdraw.detail.index", ['id' => $this->withdrawModel->id]), 'error');

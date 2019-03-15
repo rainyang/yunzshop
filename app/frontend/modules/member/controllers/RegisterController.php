@@ -32,6 +32,7 @@ use Mews\Captcha\Captcha;
 use app\common\facades\Setting;
 use app\common\services\alipay\OnekeyLogin;
 
+
 class RegisterController extends ApiController
 {
     protected $publicController = ['Register'];
@@ -53,6 +54,7 @@ class RegisterController extends ApiController
             }
 
             $invite_code = MemberService::inviteCode();
+            \Log::info('invite_code', $invite_code);
 
             if ($invite_code['status'] != 1) {
                 return $this->errorJson($invite_code['json']);
@@ -66,20 +68,25 @@ class RegisterController extends ApiController
 
             $member_info = MemberModel::getId($uniacid, $mobile);
 
+            \Log::info('member_info', $member_info);
+
             if (!empty($member_info)) {
                 return $this->errorJson('该手机号已被注册');
             }
 
             //添加mc_members表
             $default_groupid = MemberGroup::getDefaultGroupId($uniacid)->first();
+            \Log::info('default_groupid', $default_groupid);
 
             $member_set = \Setting::get('shop.member');
+            \Log::info('member_set', $member_set);
 
             if (isset($member_set) && $member_set['headimg']) {
                 $avatar = replace_yunshop(tomedia($member_set['headimg']));
             } else {
                 $avatar = Url::shopUrl('static/images/photo-mr.jpg');
             }
+            \Log::info('avatar', $avatar);
 
             $data = array(
                 'uniacid' => $uniacid,
@@ -92,9 +99,9 @@ class RegisterController extends ApiController
                 'residecity' => '',
             );
             $data['salt'] = Str::random(8);
+            \Log::info('salt', $data['salt']);
 
             $data['password'] = md5($password . $data['salt']);
-
             $memberModel = MemberModel::create($data);
             $member_id = $memberModel->uid;
 
@@ -130,7 +137,6 @@ class RegisterController extends ApiController
             //生成分销关系链
             Member::createRealtion($member_id);
 
-
             $cookieid = "__cookie_yun_shop_userid_{$uniacid}";
             Cookie::queue($cookieid, $member_id);
             Session::set('member_id', $member_id);
@@ -140,6 +146,7 @@ class RegisterController extends ApiController
             $yz_member = MemberShopInfo::getMemberShopInfo($member_id)->toArray();
 
             $data = MemberModel::userData($member_info, $yz_member);
+
             //app注册添加member_wechat表中数据
             $type = \YunShop::request()->type;
             if ($type == 7) {
@@ -353,7 +360,7 @@ class RegisterController extends ApiController
         }
     }
 
-    public function sendSmsV2($mobile, $code, $state, $templateType = 'reg', $sms_type)
+    public function sendSmsV2($mobile, $code, $state, $templateType = 'reg', $sms_type=1)
     {
         $sms = \Setting::get('shop.sms');
 

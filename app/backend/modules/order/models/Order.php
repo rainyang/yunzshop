@@ -133,6 +133,22 @@ class Order extends \app\common\models\Order
                 });
 
             }
+
+            //增加地址,姓名，手机号搜索
+            if ($params['ambiguous']['field'] == 'address') {
+                call_user_func(function () use (&$order_builder, $params) {
+                    list($field, $value) = explode(':', $params['ambiguous']['string']);
+                    if (isset($value)) {
+                        return $order_builder->where($field, $value);
+                    } else {
+                        return $order_builder->whereHas('address', function ($query) use ($params) {
+                            return $query->where('address','like', '%' . $params['ambiguous']['string'] . '%')
+                                          ->orWhere('mobile','like','%' . $params['ambiguous']['string'] . '%')
+                                          ->orWhere('realname','like','%' . $params['ambiguous']['string'] . '%');
+                        });
+                    }
+                });
+            }
             //订单商品
             if ($params['ambiguous']['field'] == 'order_goods') {
                 $order_builder->whereHas('hasManyOrderGoods', function ($query) use ($params) {
@@ -166,23 +182,17 @@ class Order extends \app\common\models\Order
             //如前端传入的分组id为2，对应的是支付宝支付分组，然后查找属于支付宝支付组的支付方式，找到如支付宝，支付宝-yz这些具体支付方式
             //获取到确切的支付方式后，对查询条件进行拼接
             $payTypeGroup = PayTypeGroup::with('hasManyPayType')->find($params['pay_type']);
+
             if($payTypeGroup)
             {
                 $payTypes = $payTypeGroup->toArray();
                 if($payTypes['has_many_pay_type']) {
-                    foreach ($payTypes['has_many_pay_type'] as $index => $payType) {
-                        if($index == 0) {
-                            $order_builder->where('pay_type_id', $payType['id']);
-                        }
-                        else {
-                            $order_builder->orWhere('pay_type_id',$payType['id']);
-                        }
-                    }
+                    $pay_type_ids = array_column($payTypes['has_many_pay_type'], 'id');
+                    $order_builder->whereIn('pay_type_id', $pay_type_ids);
                 }
             }
         }
         //操作时间范围
-
         if (array_get($params, 'time_range.field', '') && array_get($params, 'time_range.start', 0) && array_get($params, 'time_range.end', 0)) {
             $range = [strtotime($params['time_range']['start']), strtotime($params['time_range']['end'])];
             $order_builder->whereBetween($params['time_range']['field'], $range);
@@ -225,3 +235,4 @@ class Order extends \app\common\models\Order
     }
 
 }
+
