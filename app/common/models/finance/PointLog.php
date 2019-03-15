@@ -148,6 +148,9 @@ class PointLog extends BaseModel
             case (26):
                 $mode_attribute = PointService::POINT_MODE_RECEIVE_OVERDUE_ATTACHED;
                 break;
+            case (27):
+                $mode_attribute = PointService::POINT_MODE_COMMISSION_TRANSFER_ATTACHED;
+                break;
             case (92):
                 $mode_attribute = PointService::POINT_MODE_RECHARGE_CODE_ATTACHED;
                 break;

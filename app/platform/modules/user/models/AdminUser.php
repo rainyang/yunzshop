@@ -26,11 +26,6 @@ class AdminUser extends Authenticatable
     protected $dateFormat = 'U';
     public static $base = '';
 
-    public function __construct()
-    {
-        self::$base = new BaseController;
-    }
-
     /**
      * The attributes excluded from the model's JSON form.
      *
@@ -163,13 +158,14 @@ class AdminUser extends Authenticatable
 
     /**
      * 读取所有数据
-     * @return \app\framework\Database\Eloquent\Collection
+     * @param $parames
+     * @return mixed
      */
-    public static function getList()
+    public static function getList($parames)
     {
-        $users = self::orderBy('uid', 'desc')->get();
+        $users = self::searchUsers($parames)->orderBy('uid', 'desc')->get();
         foreach ($users as $item) {
-            $item['create_at'] = $item['created_at']->format('Y-m-d');
+            $item['create_at'] = $item['created_at']->format('Y年m月d日');
             if ($item['endtime'] == 0) {
                 $item['endtime'] = '永久有效';
             }else {
@@ -177,7 +173,7 @@ class AdminUser extends Authenticatable
                     $item['status'] = 1;
                     self::where('uid', $item['uid'])->update(['status'=>1]);
                 }
-                $item['endtime'] = date('Y-m-d', $item['endtime']);
+                $item['endtime'] = date('Y年m月d日', $item['endtime']);
             }
         }
 
@@ -186,25 +182,13 @@ class AdminUser extends Authenticatable
 
     /**
      * 读取单条数据
-     * @param $id
-     * @return AdminUser
+     *
+     * @param $uid
+     * @return mixed
      */
     public static function getData($uid)
     {
-
         return self::find($uid);
-
-//        if (!Cache::has($cache_name)) {
-//            $result = self::getKeyList($key);
-//            Cache::put($cache_name, $result, 3600);
-//        } else {
-//            $result = \Cache::get($cache_name);
-//        }
-//        if ($result) {
-//            $result = unserialize($result);
-//        }
-
-//        return $result;
     }
 
     /**
@@ -213,54 +197,34 @@ class AdminUser extends Authenticatable
      * @param $parame
      * @return mixed
      */
-    public static function searchUsers($parame, $credit = null)
+    public static function searchUsers($parame)
     {
-        if (!isset($credit)) {
-            $credit = 'credit2';
-        }
-        $result = self::select(['uid', 'avatar', 'nickname', 'realname', 'mobile', 'createtime',
-            'credit1', 'credit2'])
-            ->uniacid();
+        $result = self::select(['uid', 'username', 'status', 'type', 'remark', 'application_number', 'endtime', 'created_at', 'updated_at']);
 
-        if (!empty($parame['search']['mid'])) {
-            $result = $result->where('uid', $parame['search']['mid']);
+        if ($parame['search']['keyword']) {
+            $result = $result->where('username', 'like', '%' . $parame['search']['keyword'] . '%')
+            ->whereHas('hasOneProfile', function ($query) use ($parame) {
+                    $query->where('mobile', 'like', '%' . $parame['search']['keyword'] . '%');
+            });
         }
-        if (isset($parame['search']['searchtime']) && $parame['search']['searchtime'] == 1) {
-            if ($parame['search']['times']['start'] != '请选择' && $parame['search']['times']['end'] != '请选择') {
+
+        if ($parame['search']['searchtime']) {
+            if ($parame['search']['searchtime'] == 1) {
                 $range = [strtotime($parame['search']['times']['start']), strtotime($parame['search']['times']['end'])];
-                $result = $result->whereBetween('createtime', $range);
+                $result = $result->whereBetween('created_at', $range);
+            } elseif ($parame['search']['searchtime'] == 2) {
+                $range = [strtotime($parame['search']['times']['start']), strtotime($parame['search']['times']['end'])];
+                $result = $result->whereBetween('endtime', $range);
             }
         }
 
-        if (!empty($parame['search']['realname'])) {
-            $result = $result->where(function ($w) use ($parame) {
-                $w->where('nickname', 'like', '%' . $parame['search']['realname'] . '%')
-                    ->orWhere('realname', 'like', '%' . $parame['search']['realname'] . '%')
-                    ->orWhere('mobile', 'like', $parame['search']['realname'] . '%');
-            });
-        }
-
-        if (!empty($parame['search']['groupid']) || !empty($parame['search']['level']) || $parame['search']['isblack'] != ''
-            || $parame['search']['isagent'] != ''
-        ) {
-
-            $result = $result->whereHas('yzMember', function ($q) use ($parame) {
-                if (!empty($parame['search']['groupid'])) {
-                    $q = $q->where('group_id', $parame['search']['groupid']);
-                }
-
-                if (!empty($parame['search']['level'])) {
-                    $q = $q->where('level_id', $parame['search']['level']);
-                }
-
-                if ($parame['search']['isblack'] != '') {
-                    $q->where('is_black', $parame['search']['isblack']);
-                }
-
-                if ($parame['search']['isagent'] != '') {
-                    $q->where('is_agent', $parame['search']['isagent']);
-                }
-            });
+        if ($parame['search']['status']) {
+            if ($parame['search']['status'] == 4) {
+                $time = [['endtime', '<', time()], ['endtime', '>', '0']];
+                $result = $result->where($time);
+            } else {
+                $result = $result->where('status', $parame['search']['status']);
+            }
         }
 
         return $result;
@@ -268,6 +232,7 @@ class AdminUser extends Authenticatable
 
     /**
      * 获取随机字符串
+     *
      * @param number $length 字符串长度
      * @param boolean $numeric 是否为纯数字
      * @return string
@@ -288,6 +253,13 @@ class AdminUser extends Authenticatable
         return $hash;
     }
 
+    /**
+     * 保存用户信息表
+     *
+     * @param $data
+     * @param $user
+     * @return int
+     */
     public static function saveProfile($data, $user)
     {
         if (request()->path() == "admin/user/create") {
@@ -315,16 +287,32 @@ class AdminUser extends Authenticatable
     }
 
     /**
-     * 获得此平台的使用者。
+     * 获得多个平台的使用者.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function app_user()
+    public function hasManyAppUser()
     {
         return $this->hasMany(\app\platform\modules\application\models\AppUser::class, 'uid', 'uid');
     }
 
-    public function app()
+    /**
+     * 获取与用户表相关的用户信息
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function hasOneProfile()
     {
-//        return $this->hasMany(\app\platform\modules\application\models\UniacidApp::class,'user_id','role_id');
+        return $this->hasOne(\app\platform\modules\user\models\YzUserProfile::class, 'uid', 'uid');
     }
 
+    /**
+     * 获得单个平台的使用者.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function hasOneAppUser()
+    {
+        return $this->hasOne(\app\platform\modules\application\models\AppUser::class, 'uid', 'uid');
+    }
 }

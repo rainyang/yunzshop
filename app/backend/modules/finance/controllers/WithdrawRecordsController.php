@@ -68,6 +68,7 @@ class WithdrawRecordsController extends BaseController
 
         $export_data[0] = [
             '提现编号',
+            '会员ID',
             '粉丝',
             '姓名、手机',
             '收入类型',
@@ -103,6 +104,7 @@ class WithdrawRecordsController extends BaseController
         {
             $export_data[$key + 1] = [
                 $item->withdraw_sn,
+                $item->member_id,
                 $item->hasOneMember->nickname,
                 $item->hasOneMember->realname.'/'.$item->hasOneMember->mobile,
                 $item->type_name,

@@ -35,35 +35,14 @@ class AdminUserController extends BaseController
      */
     public function index()
     {
-        $parames = \YunShop::request();
-        if (strpos($parames['search']['searchtime'], '×') !== FALSE) {
-            $search_time = explode('×', $parames['search']['searchtime']);
-
-            if (!empty($search_time)) {
-                $parames['search']['searchtime'] = $search_time[0];
-
-                $start_time = explode('=', $search_time[1]);
-                $end_time = explode('=', $search_time[2]);
-
-                $parames->times = [
-                    'start' => $start_time[1],
-                    'end' => $end_time[1]
-                ];
-            }
-
-            $list = User::searchUsers($parames);
-
-            dd($list);
-        }
-
-        $users = User::getList();
+        $parames = request();
+        $users = User::getList($parames);
 
         if (!$users->isEmpty()) {
             return $this->successJson('成功', $users);
         } else {
             return $this->check(6);
         }
-
     }
 
     /**
@@ -276,7 +255,7 @@ class AdminUserController extends BaseController
     {
         $uid = request()->uid;
         $user = AdminUser::where('uid', $uid)->first();
-        $app_id = $user->app_user;
+        $app_id = $user->hasManyAppUser;
         foreach ($app_id as &$item) {
             $item->hasOneApp;
         }
@@ -299,7 +278,17 @@ class AdminUserController extends BaseController
      */
     public function clerkList()
     {
-        
+        $user = AdminUser::with(['hasOneProfile'])->where('type', 3)->get();
+        foreach ($user as &$item) {
+            $item['create_at'] = $item['created_at']->format('Y年m月d日');
+            $item->hasOneAppUser['app_name'] = $item->hasOneAppUser->hasOneApp->name;
+        }
+
+        if ($user->isEmpty()) {
+            return $this->errorJson('未获取到店员信息', '');
+        }
+
+        return $this->successJson('成功', $user);
     }
 }
 

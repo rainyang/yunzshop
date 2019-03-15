@@ -11,7 +11,7 @@ Route::group(['namespace' => 'platform\controllers'], function () {
     Route::get('/', 'IndexController@index');
 });
 
-Route::group(['middleware' => ['globalparams', 'auth:admin', 'authAdmin']], function () {
+Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams', 'shopbootstrap']], function () {
 
     Route::get('index', ['as' => 'admin.index', 'uses' => '\app\platform\controllers\IndexController@index']);
 
@@ -61,7 +61,7 @@ Route::group(['middleware' => ['globalparams', 'auth:admin', 'authAdmin']], func
     // 用户管理
     Route::group(['prefix' => 'user', 'namespace' => 'platform\modules\user\controllers'], function (){
         // 用户列表
-        Route::get('index', 'AdminUserController@index');
+        Route::any('index', 'AdminUserController@index');
         // 添加用户
         Route::any('create', 'AdminUserController@create');
         // 用户编辑
@@ -72,6 +72,8 @@ Route::group(['middleware' => ['globalparams', 'auth:admin', 'authAdmin']], func
         Route::any('change', 'AdminUserController@change');
         // 平台列表
         Route::any('app_list', 'AdminUserController@applicationList');
+        // 店员用户列表
+        Route::any('clerk_list', 'AdminUserController@clerkList');
     });
  
     Route::group(['namespace' => 'platform\modules\application\controllers'], function () {

@@ -13,11 +13,21 @@ class GlobalParams
 {
     public function handle($request, \Closure $next, $guard = null)
     {
+        $base_config    = $this->setConfigInfo();
+
+        \config::set('app.global', array_merge(\config::get('app.global'), $base_config));
         \config::set('app.sys_global', array_merge($request->input(), \Cookie::get()));
 
-
-        \config::set('app.global', array_merge($request->input(), \Cookie::get()));
-
         return $next($request);
+    }
+
+    private function setConfigInfo()
+    {
+        return ['uniacid' => $this->getUniacid()];
+    }
+
+    private function getUniacid()
+    {
+        return \Cookie::get('uniacid');
     }
 }

@@ -47,13 +47,13 @@
 
                                         <select name='search[searchtime]' class='form-control'>
                                             <option value="">选择时间类型</option>
-                                            <option value='0'
-                                                    @if($request['search']['searchtime']=='0')
+                                            <option value='1'
+                                                    @if($request['search']['searchtime']=='1')
                                                     selected
                                                     @endif>注册时间
                                             </option>
-                                            <option value='1'
-                                                    @if($request['search']['searchtime']=='1')
+                                            <option value='2'
+                                                    @if($request['search']['searchtime']=='2')
                                                     selected
                                                     @endif>到期时间
                                             </option>
@@ -74,12 +74,12 @@
                                     <div class="">
                                         <select name="search[status]" class='form-control'>
                                             <option value="">状态不限</option>
-                                            <option value="0"
-                                                    @if($requestSearch['status'] == '1') selected @endif>有效</option>
-                                            <option value="1"
-                                                    @if($requestSearch['status'] == '0') selected @endif>已过期</option>
                                             <option value="2"
-                                                    @if($requestSearch['status'] == '0') selected @endif>已禁用</option>
+                                                    @if($requestSearch['status'] == '2') selected @endif>有效</option>
+                                            <option value="4"
+                                                    @if($requestSearch['status'] == '4') selected @endif>已过期</option>
+                                            <option value="3"
+                                                    @if($requestSearch['status'] == '3') selected @endif>已禁用</option>
                                         </select>
                                     </div>
                                 </div>
