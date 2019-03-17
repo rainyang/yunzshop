@@ -17,7 +17,7 @@ class ShopBootstrap
 
     public function handle($request, \Closure $next, $guard = null)
     {
-        if (\Auth::guard('admin')->user()->id !== 1) {
+        if (\Auth::guard('admin')->user()->uid !== 1) {
             $base_config = \config::get('app.global');
 
             if (in_array($base_config['role'], $this->authRole)) {

@@ -23,11 +23,6 @@ class GlobalParams
 
     private function setConfigInfo()
     {
-        return ['uniacid' => $this->getUniacid()];
-    }
-
-    private function getUniacid()
-    {
-        return \Cookie::get('uniacid');
+        return [];
     }
 }

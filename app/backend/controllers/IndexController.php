@@ -9,13 +9,12 @@
 namespace app\backend\controllers;
 
 use app\common\components\BaseController;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
 
 class IndexController extends BaseController
 {
     public function index()
-    {dd(Cookie::get());
+    {
         return view('index',[])->render();
     }
 
