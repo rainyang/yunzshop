@@ -43,7 +43,7 @@
 {
     "filp/whoops": "^2.1",
     "fzaninotto/faker": "^1.6",
-    "mockery/mockery": "0.9.*",
+    "mockery/mockery": "0.9.*"
 },
 "autoload":
 {
