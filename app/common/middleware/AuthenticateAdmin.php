@@ -36,17 +36,32 @@ class AuthenticateAdmin
      */
     public function handle($request, Closure $next)
     {
-        $this->account = AppUser::getAccount(\Auth::guard('admin')->user()->uid);
+        $this->saveUniacid();
 
-        $uniacid = $this->setUniacid();
+        $this->account = AppUser::getAccount(\Auth::guard('admin')->user()->uid, $this->uniacid);
+
         $this->accessPermissions();
 
-        \config::set('app.global', array_merge(\config::get('app.global'), $this->setRole(), $uniacid));
+        \config::set('app.global', array_merge($this->setConfigInfo(), $this->setRole()));
 
         return $next($request);
     }
 
+    /**
+     * 获取全局参数
+     *
+     * @return array
+     */
+    private function setConfigInfo()
+    {
+        return array_merge(\config::get('app.global'), ['uniacid' => $this->uniacid]);
+    }
 
+    /**
+     * 获取用户身份
+     *
+     * @return array
+     */
     private function setRole()
     {
         if (\Auth::guard('admin')->user()->uid === 1) {
@@ -58,21 +73,33 @@ class AuthenticateAdmin
         return $this->role;
     }
 
-    private function setUniacid()
+    /**
+     * 保存公众号
+     *
+     */
+    private function saveUniacid()
     {
         if (!empty(request('uniacid')) && request('uniacid') > 0) {
             $this->uniacid = request('uniacid');
-            Cookie::queue('uniacid', request('uniacid'));
+            setcookie('uniacid', request('uniacid'));
         }
 
         if (in_array($this->account->role, $this->authRole)) {
             $this->uniacid = $this->account->uniacid;
-            Cookie::queue('uniacid', $this->account->uniacid);
+            setcookie('uniacid', $this->account->uniacid);
         }
 
-        return ['uniacid' => $this->uniacid];
+        if (empty($this->uniacid) && isset($_COOKIE['uniacid'])) {
+            $this->uniacid = $_COOKIE['uniacid'];
+        }
+
     }
 
+    /**
+     * 验证访问权限
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     private function accessPermissions()
     {
         if (\Auth::guard('admin')->user()->uid !== 1) {
@@ -83,7 +110,7 @@ class AuthenticateAdmin
 
                 Cookie::queue(Cookie::forget('uniacid'));
 
-                return $this->errorJson('请登录', ['login_status' => 1, 'login_url' => '/#/login']);
+                return $this->errorJson('请重新登录', ['login_status' => 1, 'login_url' => '/#/login']);
             }
         }
     }
