@@ -19,7 +19,11 @@ if (!function_exists("getExitInfo")) {
     }
 }
 
-require '../../framework/bootstrap.inc.php';
+$file = __DIR__ . '/../../framework/bootstrap.inc.php';
+
+if (file_exists($file)) {
+    include_once $file;
+}
 
 include_once __DIR__ . '/app/laravel.php';
 
