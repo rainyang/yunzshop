@@ -9,7 +9,6 @@
 namespace app\common\middleware;
 
 
-use app\common\exceptions\MemberNotLoginException;
 use app\common\traits\JsonTrait;
 use Illuminate\Support\Facades\Auth;
 
@@ -26,6 +25,8 @@ class Authenticate
      */
     public function handle($request, \Closure $next, $guard = null)
     {
+        $this->install();
+
         if (Auth::guard($guard)->guest()) {
             $login_path = [
                 'admin' => '/#/login',
@@ -36,5 +37,23 @@ class Authenticate
         }
 
         return $next($request);
+    }
+
+    private function install()
+    {
+        $path = 'addons/yun_shop';
+        $file = $path .  '/api.php';
+
+        if (!file_exists($file)) {
+            if (!is_dir($path)) {
+                mkdir($path, 0777, true);
+            }
+
+            $f_data = file_get_contents('api.php');
+
+            file_put_contents($file, $f_data);
+        }
+
+        //TODO install.lock
     }
 }

@@ -36,7 +36,7 @@ class RouteServiceProvider extends ServiceProvider
     public function map()
     {
         if (env('APP_Framework') == 'platform') {
-            $this->mapWebBootRoutes();
+           // $this->mapWebBootRoutes();
             $this->mapPlatformRoutes();
             $this->mapShopRoutes();
             $this->mapApiRoutes();

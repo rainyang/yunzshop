@@ -15,14 +15,23 @@ class GlobalParams
     {
         $base_config    = $this->setConfigInfo();
 
-        \config::set('app.global', array_merge(\config::get('app.global'), $base_config));
-        \config::set('app.sys_global', array_merge($request->input(), \Cookie::get()));
+        \config::set('app.global', $base_config);
+        \config::set('app.sys_global', array_merge($request->input(), $_COOKIE));
 
         return $next($request);
     }
 
+    /**
+     * 获取全局参数
+     *
+     * @return array
+     */
     private function setConfigInfo()
     {
-        return [];
+        if (request('uniacid')) {
+            return \config::get('app.global');
+        }
+
+        return array_merge(\config::get('app.global'), $_COOKIE);
     }
 }

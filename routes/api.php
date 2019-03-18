@@ -30,31 +30,31 @@ Route::group(['middleware' => ['globalparams']], function () {
             return;
         }
 
-    //api
-    if (strpos(request()->getRequestUri(), '/addons/') !== false &&
-        strpos(request()->getRequestUri(), '/api.php') !== false
-    ) {
-        $shop = Setting::get('shop.shop');
-        if (!is_null($shop) && isset($shop['close']) && 1 == $shop['close']) {
-            throw new \app\common\exceptions\AppException('站点已关闭', -1);
-        }
+        //api
+        if (strpos(request()->getRequestUri(), '/addons/') !== false &&
+            strpos(request()->getRequestUri(), '/api.php') !== false
+        ) {
+            $shop = Setting::get('shop.shop');
+            if (!is_null($shop) && isset($shop['close']) && 1 == $shop['close']) {
+                throw new \app\common\exceptions\AppException('站点已关闭', -1);
+            }
 
-        YunShop::parseRoute(request()->input('route'));
-        return;
-    }
-    //shop.php
-    if (strpos(request()->getRequestUri(), '/addons/') !== false &&
-        strpos(request()->getRequestUri(), '/shop.php') !== false
-    ) {
-        YunShop::parseRoute(request()->input('route'));
-        return;
-    }
-    //任务调度
-    if (strpos(request()->getRequestUri(), '/addons/') !== false &&
-        strpos(request()->getRequestUri(), '/cron.php') !== false
-    ) {
-        // Get security key from config
-        $cronkeyConfig = \Config::get('liebigCron.cronKey');
+            YunShop::parseRoute(request()->input('route'));
+            return;
+        }
+        //shop.php
+        if (strpos(request()->getRequestUri(), '/addons/') !== false &&
+            strpos(request()->getRequestUri(), '/shop.php') !== false
+        ) {
+            YunShop::parseRoute(request()->input('route'));
+            return;
+        }
+        //任务调度
+        if (strpos(request()->getRequestUri(), '/addons/') !== false &&
+            strpos(request()->getRequestUri(), '/cron.php') !== false
+        ) {
+            // Get security key from config
+            $cronkeyConfig = \Config::get('liebigCron.cronKey');
 
             // If no security key is set in the config, this route is disabled
             if (empty($cronkeyConfig)) {
@@ -85,11 +85,9 @@ Route::group(['middleware' => ['globalparams']], function () {
             return;
         }
 
-    //微信回调
-    if (strpos(request()->getRequestUri(), '/addons/') === false &&
-        strpos(request()->getRequestUri(), '/api.php') !== false
-    ) {
-
+        //微信回调
+        if (strpos(request()->getRequestUri(), '/addons/') === false && strpos(request()->getRequestUri(),
+                '/api.php') !== false) {
             return;
         }
 
@@ -97,18 +95,6 @@ Route::group(['middleware' => ['globalparams']], function () {
             return redirect(request()->getSchemeAndHttpHost() . '/addons/yun_shop/?menu#/home?i=' . request()->get('i'));
         }
 
-        //后台
-        if (strpos(request()->getRequestUri(), config('app.root')) !== false) {
-            //如未设置当前公众号则加到选择公众号列表
-            if (!YunShop::app()->uniacid) {
-                // TODO 跳转到平台管理页面
-            }
-
-            //解析商城路由
-            if (YunShop::request()->route) {
-                YunShop::parseRoute(YunShop::request()->route);
-            }
-        }
         return;
     });
 });
