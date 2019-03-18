@@ -19,13 +19,11 @@ if (!function_exists("getExitInfo")) {
     }
 }
 
-//getExitInfo();
-//define('IN_IA', true);
+$file = __DIR__ . '/../../framework/bootstrap.inc.php';
 
-require '../../framework/bootstrap.inc.php';
-//define('IA_ROOT', str_replace("\\", '/', dirname(dirname(dirname(__FILE__)))));
-
-//require IA_ROOT . '/framework/class/loader.class.php';
+if (file_exists($file)) {
+    include_once $file;
+}
 
 include_once __DIR__ . '/app/laravel.php';
 
