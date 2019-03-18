@@ -345,16 +345,37 @@ class IncomeWithdrawController extends ApiController
         }*/
         if ($income['type'] == 'commission') {
             $max = $this->getWithdrawLog($income['class']);
-            if($this->getIncomeAmountMax() === "" && $this->getIncomeTimeMax() === "")
+            if(is_numeric($this->getIncomeAmountMax()) || is_numeric($this->getIncomeTimeMax()))
             {
-                $can = $can;
-            }else{
-                if($this->getIncomeAmountMax() === "")
+                if(!is_numeric($this->getIncomeAmountMax()))
                 {
                     if ($max['max_time'] >= $this->getIncomeTimeMax()){
                         $can = false;
                     }
-                }elseif($this->getIncomeTimeMax() === ""){
+                }elseif(!is_numeric($this->getIncomeTimeMax())){
+                    if ($max['max_amount']+$this->withdraw_amounts > $this->getIncomeAmountMax()){
+                        $can = false;
+                    }
+                }else{
+                    if ($max['max_time'] >= $this->getIncomeTimeMax()){
+                        $can = false;
+                    }elseif ($max['max_amount']+$this->withdraw_amounts > $this->getIncomeAmountMax()) {
+                        $can = false;
+                    }
+                }
+            }
+        }
+
+        if ($income['type'] == 'commission') {
+            $max = $this->getWithdrawLog($income['class']);
+            if(is_numeric($this->getIncomeAmountMax()) || is_numeric($this->getIncomeTimeMax()))
+            {
+                if(!is_numeric($this->getIncomeAmountMax()))
+                {
+                    if ($max['max_time'] >= $this->getIncomeTimeMax()){
+                        $can = false;
+                    }
+                }elseif(!is_numeric($this->getIncomeTimeMax())){
                     if ($max['max_amount']+$this->withdraw_amounts > $this->getIncomeAmountMax()){
                         $can = false;
                     }
