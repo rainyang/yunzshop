@@ -25,6 +25,12 @@ if (file_exists($file)) {
     include_once $file;
 }
 
-include_once __DIR__ . '/app/laravel.php';
+$extend = '';
+if (!file_exists($file)) {
+    $extend = '/../..';
+}
 
-include_once __DIR__ . '/app/yunshop.php';
+
+include_once __DIR__ . $extend . '/app/laravel.php';
+
+include_once __DIR__ . $extend . '/app/yunshop.php';

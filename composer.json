@@ -38,8 +38,6 @@
     "phpxmlrpc/phpxmlrpc": "4.0",
     "indigophp/supervisor": "^3.0",
     "rap2hpoutre/laravel-log-viewer": "^0.22.1",
-    "aliyuncs/oss-sdk-php": "^2.3",
-    "qcloud/cos-sdk-v5": ">=1.0"
 },
 "require-dev":
 {
