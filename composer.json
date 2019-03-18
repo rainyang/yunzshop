@@ -43,9 +43,7 @@
 {
     "filp/whoops": "^2.1",
     "fzaninotto/faker": "^1.6",
-    "mockery/mockery": "0.9.*",
-    "barryvdh/laravel-ide-helper": "^2.3"
-
+    "mockery/mockery": "0.9.*"
 },
 "autoload":
 {
@@ -79,8 +77,6 @@
     ],
     "post-install-cmd": [
         "Illuminate\\Foundation\\ComposerScripts::postInstall",
-        "php artisan ide-helper:generate",
-        "php artisan ide-helper:meta",
         "php artisan optimize"
     ],
     "post-update-cmd": [
