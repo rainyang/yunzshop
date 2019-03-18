@@ -37,7 +37,7 @@
     "guzzlehttp/guzzle": "^6.3",
     "phpxmlrpc/phpxmlrpc": "4.0",
     "indigophp/supervisor": "^3.0",
-    "rap2hpoutre/laravel-log-viewer": "^0.22.1",
+    "rap2hpoutre/laravel-log-viewer": "^0.22.1"
 },
 "require-dev":
 {
