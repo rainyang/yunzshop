@@ -345,27 +345,25 @@ class IncomeWithdrawController extends ApiController
         }*/
         if ($income['type'] == 'commission') {
             $max = $this->getWithdrawLog($income['class']);
-            if ($this->getIncomeAmountMax() === "") {
-                if ($this->getIncomeTimeMax() === "") {
-                    $can = $can;
-                }else{
+            if($this->getIncomeAmountMax() === "" && $this->getIncomeTimeMax() === "")
+            {
+                $can = $can;
+            }else{
+                if($this->getIncomeAmountMax() === "")
+                {
                     if ($max['max_time'] >= $this->getIncomeTimeMax()){
                         $can = false;
                     }
-                }
-            }elseif ($this->getIncomeTimeMax() === ""){
-                if ($this->getIncomeAmountMax() === "") {
-                    $can = $can;
-                }else{
+                }elseif($this->getIncomeTimeMax() === ""){
                     if ($max['max_amount']+$this->withdraw_amounts > $this->getIncomeAmountMax()){
                         $can = false;
                     }
-                }
-            }else{
-                if ($max['max_time'] >= $this->getIncomeTimeMax()){
-                    $can = false;
-                }elseif ($max['max_amount']+$this->withdraw_amounts > $this->getIncomeAmountMax()) {
-                    $can = false;
+                }else{
+                    if ($max['max_time'] >= $this->getIncomeTimeMax()){
+                        $can = false;
+                    }elseif ($max['max_amount']+$this->withdraw_amounts > $this->getIncomeAmountMax()) {
+                        $can = false;
+                    }
                 }
             }
         }
