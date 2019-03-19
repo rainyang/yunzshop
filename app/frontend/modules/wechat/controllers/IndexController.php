@@ -22,7 +22,10 @@ class IndexController extends ApiController
 {
     public function index()
     {
-        var_dump($_GET);die;
+        \Log::debug('-------------wechat_start----------------------');
+        \Log::debug($_GET);
+        \Log::debug('-------------wechat_end------------------------');
+        die;
         //引入laravel
         require_once __DIR__.'/bootstrap/autoload.php';
         $app = require_once __DIR__.'/bootstrap/app.php';
